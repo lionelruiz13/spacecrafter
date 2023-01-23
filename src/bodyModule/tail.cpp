@@ -145,7 +145,7 @@ void Tail::draw(const Navigator *nav, SmallBody *body, const Vec3f &eye_planet, 
 {
     auto direction = eye_planet - eye_sun;
     const float distToSun = direction.length();
-    Vec2f tailFactor = body->getComaDiameterAndTailLengthAU(distToSun) * radius;
+    Vec2f tailFactor = body->getComaDiameterAndTailLengthAU(distToSun) / AU;
     if (tailFactor[0] > tailFactor[1])
         return;
     direction /= distToSun;
