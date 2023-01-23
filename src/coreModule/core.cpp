@@ -350,9 +350,11 @@ void Core::init(const InitParser& conf)
 	ssystemFactory->setFlagClouds(true);
 
 	observatory->load(conf, SCS_INIT_LOCATION);
+	observatory->setEyeRelativeMode(false);
 
 	// make sure nothing selected or tracked
 	deselect();
+	setHomePlanet("Earth");
 	navigation->setFlagTraking(0);
 	navigation->setFlagLockEquPos(0);
 

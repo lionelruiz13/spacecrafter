@@ -478,6 +478,7 @@ void App::init()
 		}
 	}
 
+	switchMode("in_solarsystem");
 	core->init(conf);
 
 	// Navigation section
@@ -505,10 +506,10 @@ void App::init()
 
 	fontFactory->reloadAllFont();
 	commander->deleteVar();
-	core->init(conf);
-	ui->init(conf);
-	core->init(conf);
-	ui->init(conf);
+	// core->init(conf);
+	// ui->init(conf);
+	// core->init(conf);
+	// ui->init(conf);
 	scriptMgr->playStartupScript();
 	context.stat->capture(Capture::APP_INIT_END);
 }

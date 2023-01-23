@@ -139,10 +139,7 @@ void UI::init(const InitParser& conf)
 	cLog::get()->write("Landscape : "+default_landscape ,LOG_TYPE::L_INFO);
 
 	// initial.sts commands
-	coreLink->setEyeRelativeMode(false);
 
-	app->switchMode("in_solarsystem");
-	core->setHomePlanet("Earth");
 	double lati = coreLink->observatoryGetLatitude();
 	double longi = coreLink->observatoryGetLongitude();
 	double alti = coreLink->observatoryGetAltitude()/1000000.0;
