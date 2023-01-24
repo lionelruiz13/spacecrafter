@@ -48,6 +48,11 @@ public:
 
 	Halo(Body* body);
 
+	void overrideMag(float _rmag, float _cmag) {
+		rmag = _rmag;
+		cmag = _cmag;
+	}
+
 	void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
 
 	void computeHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);

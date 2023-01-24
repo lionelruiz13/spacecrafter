@@ -827,6 +827,9 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 						}
 					});
 				}
+				if (!param["halo_alpha_override"].empty() && !param["halo_scale_override"].empty()) {
+					b.overrideHalo(Utility::strToFloat(param["halo_alpha_override"]), Utility::strToFloat(param["halo_scale_override"]));
+				}
 			}
 			break;
 		default:

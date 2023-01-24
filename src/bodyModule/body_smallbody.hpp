@@ -76,6 +76,12 @@ public:
 		}
 		return cachedComaDiameterAndTailLengthAU;
 	}
+
+	void overrideHalo(float alpha, float scale) {
+		overridedHalo = true;
+		haloAlpha = alpha;
+		haloScale = scale;
+	}
 protected :
 	void defineSet();
 	//! Return set to bind, may change at every frame
@@ -91,6 +97,9 @@ protected :
 	float absoluteMagnitude = -99.f;
 	float slopeParameter = -10.f;
 	float lastR = 0;
+	float haloAlpha;
+	float haloScale;
 	Vec2f cachedComaDiameterAndTailLengthAU;
 	bool initialized = false;
+	bool overridedHalo = false;
 };

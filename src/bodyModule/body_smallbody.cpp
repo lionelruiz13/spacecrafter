@@ -221,6 +221,8 @@ void SmallBody::setAbsoluteMagnitudeAndSlope(float magnitude, float slope)
 void SmallBody::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
 {
 	if (isVisible && flags.flag_halo && this->getOnScreenSize(prj, nav) < 10) {
+        if (overridedHalo)
+            halo->overrideMag(screen_sz * haloScale, haloAlpha);
         halo->drawHalo(nav, prj, eye);
 	}
     for (auto &tail : tails)
