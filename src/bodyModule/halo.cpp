@@ -92,6 +92,22 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	data.rmag = rmag;
 }
 
+void Halo::drawHaloOverride(const Navigator* nav, const Projector* prj, const ToneReproductor* eye, float rmag, float cmag)
+{
+	if (!global->tex_halo) return;
+	computeHalo(nav, prj, eye);
+	auto &data = global->pData[global->offset + global->size++];
+	data.pos[0] = body->screenPos[0];
+	data.pos[1] = body->screenPos[1];
+	if (rmag < this->rmag) {
+		data.Color = body->myColor->getHalo() * this->cmag;
+		data.rmag = this->rmag;
+	} else {
+		data.Color = body->myColor->getHalo() * cmag;
+		data.rmag = rmag;
+	}
+}
+
 void Halo::computeHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
 {
 	float fov_q = prj->getFov();

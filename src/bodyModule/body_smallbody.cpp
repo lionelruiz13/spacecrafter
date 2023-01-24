@@ -222,8 +222,9 @@ void SmallBody::drawHalo(const Navigator* nav, const Projector* prj, const ToneR
 {
 	if (isVisible && flags.flag_halo && this->getOnScreenSize(prj, nav) < 10) {
         if (overridedHalo)
-            halo->overrideMag(screen_sz * haloScale, haloAlpha);
-        halo->drawHalo(nav, prj, eye);
+            halo->drawHaloOverride(nav, prj, eye, screen_sz * haloScale, haloAlpha);
+        else
+            halo->drawHalo(nav, prj, eye);
 	}
     for (auto &tail : tails)
         tail.draw(nav, this, eye_planet, eye_sun, radius, lastJD);
