@@ -180,7 +180,7 @@ VolumObj3D::~VolumObj3D()
     }
 }
 
-void VolumObj3D::reconstruct(const std::string& tex_color_file, const std::string &tex_absorbtion_file, int _rayPoints, bool z_reflection, int colorDepth, int absorbtionDepth)
+void VolumObj3D::reconstruct(const std::string& tex_color_file, const std::string &tex_absorbtion_file, int _rayPoints, bool z_reflection, int colorDepth, int absorbtionDepth, int colorDepthColumn)
 {
     selected = tex_absorbtion_file.empty() ? PS_PACKED : PS_SPLIT;
     if (colorDepth == 0) {
@@ -202,7 +202,7 @@ void VolumObj3D::reconstruct(const std::string& tex_color_file, const std::strin
         mapTexture->getDimensions(size, size);
         isLoaded = (size >= 8);
     }
-    colorTexture = std::make_unique<s_texture>(tex_color_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, colorDepth, 4, 1, false, true);
+    colorTexture = std::make_unique<s_texture>(tex_color_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, colorDepth, 4, 1, false, true, colorDepthColumn);
     colorTexture->getDimensions(size, size);
     if (size < 8)
         isLoaded = false;

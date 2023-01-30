@@ -73,6 +73,8 @@ short s_texture::releaseTexIdx = 0;
 PipelineLayout *s_texture::layoutMipmap = nullptr;
 ComputePipeline *s_texture::pipelineMipmap4 = nullptr;
 ComputePipeline *s_texture::pipelineMipmap1 = nullptr;
+ComputePipeline *s_texture::pipelinePackedMipmap4 = nullptr;
+ComputePipeline *s_texture::pipelinePackedMipmap1 = nullptr;
 std::thread s_texture::bigTextureThread;
 VkFence s_texture::uploadFence = VK_NULL_HANDLE;
 bool s_texture::asyncUpload = true;
@@ -101,7 +103,7 @@ s_texture::s_texture(const s_texture *t)
 	texture = t->texture;
 }
 
-s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap, bool resolution, int depth, int nbChannels, int channelSize, bool useBlendMipmap, bool force3D) : textureName(_textureName),
+s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap, bool resolution, int depth, int nbChannels, int channelSize, bool useBlendMipmap, bool force3D, int depthColumn) : textureName(_textureName),
 	loadType(PNG_BLEND1), loadWrapping(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE)
 {
 	switch (_loadType) {
@@ -127,9 +129,9 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap
 	bool succes;
 
 	if (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName))
-		succes = preload(textureName, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap, force3D);
+		succes = preload(textureName, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap, force3D, depthColumn);
 	else
-		succes = preload(texDir + textureName, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap, force3D);
+		succes = preload(texDir + textureName, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap, force3D, depthColumn);
 
 	if (!succes)
 		createEmptyTex();
@@ -192,8 +194,7 @@ void s_texture::createEmptyTex()
 		texture->width = 2;
 		texture->height = 1;
 		texture->depth = 1;
-		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, *Context::instance->stagingMgr, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, "Fallback texture");
-		texture->texture->init(2, 1, image_data);
+		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, TextureInfo{.width=2, .content=image_data, .mgr=Context::instance->stagingMgr.get(), .name="Fallback texture"});
         textureQueue.emplace(texture);
 		tex = texture;
 	} else {
@@ -201,7 +202,7 @@ void s_texture::createEmptyTex()
 	}
 }
 
-bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolution, int depth, int _nbChannels, int _channelSize, bool useBlendMipmap, bool force3D)
+bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolution, int depth, int _nbChannels, int _channelSize, bool useBlendMipmap, bool force3D, int depthColumn)
 {
 	auto &tex = texCache[fullName];
 	nbChannels = _nbChannels;
@@ -214,8 +215,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
     		texture->width = 2;
     		texture->height = 1;
     		texture->depth = 1;
-    		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, *Context::instance->stagingMgr, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, "Empty texture");
-    		texture->texture->init(2, 1, image_data);
+            texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, TextureInfo{.width=2, .content=image_data, .mgr=Context::instance->stagingMgr.get(), .name="Empty texture"});
             textureQueue.emplace(texture);
     		tex = texture;
             return true;
@@ -271,6 +271,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
 		texture->depth = depth;
 		texture->mipmap = mipmap;
         texture->blendMipmap = useBlendMipmap;
+        texture->blendPacked = (nbChannels > 1);
         if (resolution && !minified && (unsigned int) (realWidth * realHeight *4+2)/3 * nbChannels * channelSize > minifyMax) {
             texture->bigWidth = realWidth;
             texture->bigHeight = realHeight;
@@ -280,8 +281,14 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
             }
         } else {
             const int depthPower = std::log2(depth);
-    		texture->width /= (1 << (depthPower / 2));
-    		texture->height /= (1 << ((depthPower + 1) / 2));
+            if (depthColumn) {
+                depthColumn = std::log2(depthColumn);
+                texture->width >>= depthColumn;
+                texture->height >>= depthPower - depthColumn;
+            } else {
+                texture->width >>= depthPower / 2;
+        		texture->height >>= (depthPower + 1) / 2;
+            }
         }
         texture->size = texture->width * texture->height * nbChannels * channelSize;
 		if (loadInLowResolution && depth == 1 && texture->size > lowResMax) {
@@ -293,13 +300,10 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
 		}
 		if (channelSize == 1)
 			blend(loadType, data, texture->size);
-		VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+		usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 		if (mipmap)
 			usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-		const VkImageType imgType = (depth > 1 || force3D) ? VK_IMAGE_TYPE_3D : ((texture->height > 1) ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D);
-		--_nbChannels;
-		const VkFormat format = formatTable[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
-		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, *Context::instance->texStagingMgr, usage, fullName.substr(fullName.find(".spacecrafter/")+14), format, imgType);
+		imgType = (depth > 1 || force3D) ? VK_IMAGE_TYPE_3D : ((texture->height > 1) ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D);
         load(data, realWidth, realHeight);
 		stbi_image_free(data);
     	textureQueue.emplace(texture);
@@ -341,17 +345,17 @@ bool s_texture::load(stbi_uc *data, int realWidth, int realHeight)
 	}
 	// Use negated height to flip this axis
     const auto texHeight = (texture->depth == 1) ? -texture->height : texture->height;
-	bool ret = texture->texture->init(texture->width, texHeight, data, texture->mipmap, nbChannels, channelSize, VK_IMAGE_ASPECT_COLOR_BIT, VK_SAMPLE_COUNT_1_BIT, texture->depth);
-	if (!ret) {
-		releaseUnusedMemory();
-		ret = texture->texture->init(texture->width, texHeight, data, texture->mipmap, nbChannels, channelSize, VK_IMAGE_ASPECT_COLOR_BIT, VK_SAMPLE_COUNT_1_BIT, texture->depth);
-	}
+    int _nbChannels = nbChannels - 1;
+    const VkFormat format = formatTable[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
+    auto pos = textureName.find(".spacecrafter/");
+    std::string name = (pos == std::string::npos) ? textureName : textureName.substr(pos+14);
+    texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, TextureInfo{
+        .width=texture->width, .height=texHeight, .depth=texture->depth, .depthColumn=(texture->width / realWidth),
+        .nbChannels=nbChannels, .channelSize=channelSize, .content=data, .mgr=Context::instance->texStagingMgr.get(),
+        .usage=usage, .type=imgType, .format=format, .name=name, .mipmap=texture->mipmap,
+    });
 	if (realWidth != texture->width && texture->depth == 1)
 		delete[] data;
-	if (!ret) {
-		cLog::get()->write("s_texture: not enough memory for " + textureName, LOG_TYPE::L_ERROR);
-		return false;
-	}
 	return true;
 }
 
@@ -416,6 +420,8 @@ void s_texture::forceUnload()
         delete layoutMipmap;
         delete pipelineMipmap4;
         delete pipelineMipmap1;
+        delete pipelinePackedMipmap4;
+        delete pipelinePackedMipmap1;
         layoutMipmap = nullptr;
     }
     cache.store();
@@ -593,7 +599,9 @@ void s_texture::recordTransfer(VkCommandBuffer cmd)
 	releaseMemory[releaseIdx].clear();
 	std::shared_ptr<texRecap> tex;
 	while (textureQueue.pop(tex)) {
-        if (tex->blendMipmap) {
+        if (!tex->blendMipmap) {
+            tex->texture->use(cmd, true);
+        } else {
             {
                 VkImageMemoryBarrier barrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, tex->texture->getImage(), {tex->texture->getAspect(), 0, 1, 0, 1}};
                 vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
@@ -608,30 +616,40 @@ void s_texture::recordTransfer(VkCommandBuffer cmd)
                 vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 2, barrier);
             }
             VkImageMemoryBarrier barrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_GENERAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, tex->texture->getImage(), {tex->texture->getAspect(), 1, 1, 0, 1}};
-            pipelineMipmap4->bind(cmd);
+
+            if (tex->blendPacked) {
+                pipelinePackedMipmap4->bind(cmd);
+            } else
+                pipelineMipmap4->bind(cmd);
             int setIdx = 0;
+            int width = tex->width / 4;
+            int height = tex->height / 4;
             for (int depth = tex->depth / 8; depth > 0; depth /= 2) {
+                width /= 2;
+                height /= 2;
                 layoutMipmap->bindSet(cmd, *tex->sets[setIdx++], 0, VK_PIPELINE_BIND_POINT_COMPUTE);
-                vkCmdDispatch(cmd, depth, depth, depth);
+                vkCmdDispatch(cmd, width, height, depth);
                 vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
                 ++barrier.subresourceRange.baseMipLevel;
             }
-            pipelineMipmap1->bind(cmd);
+            if (tex->blendPacked) {
+                pipelinePackedMipmap1->bind(cmd);
+            } else
+                pipelineMipmap1->bind(cmd);
             // Build 2x2x2 mipmap
             layoutMipmap->bindSet(cmd, *tex->sets[setIdx++], 0, VK_PIPELINE_BIND_POINT_COMPUTE);
-            vkCmdDispatch(cmd, 2, 2, 2);
+            vkCmdDispatch(cmd, width*2, height*2, 2);
             vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
             // Build 1x1x1 mipmap
             layoutMipmap->bindSet(cmd, *tex->sets[setIdx++], 0, VK_PIPELINE_BIND_POINT_COMPUTE);
-            vkCmdDispatch(cmd, 1, 1, 1);
+            vkCmdDispatch(cmd, width, height, 1);
             // Perform final transition
             barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
             barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             barrier.subresourceRange.baseMipLevel = 0;
             barrier.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
             vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
-        } else
-            tex->texture->use(cmd, true);
+        }
 		releaseMemory[releaseIdx].push_back(tex);
 	}
     std::vector<VkImageMemoryBarrier> barriers;
@@ -659,6 +677,12 @@ void s_texture::init3DBuild(texRecap &tex)
         pipelineMipmap1 = new ComputePipeline(vkmgr, layoutMipmap);
         pipelineMipmap1->bindShader("smartDepthMipmapMini.comp.spv");
         pipelineMipmap1->build();
+        pipelinePackedMipmap4 = new ComputePipeline(vkmgr, layoutMipmap);
+        pipelinePackedMipmap4->bindShader("smartPackedMipmap.comp.spv");
+        pipelinePackedMipmap4->build();
+        pipelinePackedMipmap1 = new ComputePipeline(vkmgr, layoutMipmap);
+        pipelinePackedMipmap1->bindShader("smartPackedMipmapMini.comp.spv");
+        pipelinePackedMipmap1->build();
     }
     const int mipmaps = tex.texture->getMipmapCount();
     tex.imageViews.reserve(mipmaps);

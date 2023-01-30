@@ -282,6 +282,7 @@ void DsoNavigator::setupVolumetric(std::map<std::string, std::string> &args, int
     Vec3f shaping(1, 1, 1);
     float scaling = 1;
     int absorbtionDepth = 0;
+    int colorDepthColumn = 0;
     int rayPoints = 0;
     bool z_reflection = false;
     auto it = args.find("z_reflection");
@@ -300,7 +301,8 @@ void DsoNavigator::setupVolumetric(std::map<std::string, std::string> &args, int
     EXTRACT(scaling, "scale");
     IEXTRACT(absorbtionDepth, "depth");
     IEXTRACT(colorDepth, "color_depth");
-    volum3D->reconstruct(args["color_tex"], args["alpha_tex"], rayPoints, z_reflection, colorDepth, absorbtionDepth);
+    IEXTRACT(colorDepthColumn, "color_depth_column");
+    volum3D->reconstruct(args["color_tex"], args["alpha_tex"], rayPoints, z_reflection, colorDepth, absorbtionDepth, colorDepthColumn);
     volum3D->setModel(Mat4f::translation(position) * Mat4f::yawPitchRoll(yawPitchRoll[0], yawPitchRoll[1], yawPitchRoll[2]) * Mat4f::scaling(scaling), shaping);
 }
 

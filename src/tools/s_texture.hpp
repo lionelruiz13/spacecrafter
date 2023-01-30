@@ -63,7 +63,7 @@ class s_texture {
 public:
 	// If resolution is true, use texture with -preview suffix, or downscale original texture
 	// In this case, the full resolution texture can be dynamically loaded and querried with getBigTexture()
-	s_texture(const std::string& _textureName, int _loadType = TEX_LOAD_TYPE_PNG_BLEND1, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1, bool useBlendMipmap = false, bool force3D = false);
+	s_texture(const std::string& _textureName, int _loadType = TEX_LOAD_TYPE_PNG_BLEND1, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1, bool useBlendMipmap = false, bool force3D = false, int depthColumn = 0);
 	// create a texture from a texture, pass the ownership of the texture to s_texture
 	s_texture(const std::string& _textureName, Texture *_imgTex);
 	// texture destructor
@@ -136,7 +136,7 @@ public:
 	}
 private:
 	void unload();
-	bool preload(const std::string& fullName, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1, bool useBlendMipmap = false, bool force3D = false);
+	bool preload(const std::string& fullName, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1, bool useBlendMipmap = false, bool force3D = false, int depthColumn = 0);
 	bool load();
 	bool load(unsigned char *data, int realWidth, int realHeight);
 	struct bigTexRecap {
@@ -172,6 +172,7 @@ private:
 		bool mipmap = false;
 		bool quickloadable = false;
 		bool blendMipmap = false;
+		bool blendPacked = false;
 		bigTexRecap *bigTexture = nullptr;
 	};
 
@@ -218,6 +219,8 @@ private:
 	int loadWrapping;
 	int nbChannels;
 	int channelSize;
+	VkImageUsageFlags usage;
+	VkImageType imgType;
 
 	static std::string texDir;
 	static bool loadInLowResolution;
@@ -240,6 +243,8 @@ private:
 	static PipelineLayout *layoutMipmap;
 	static ComputePipeline *pipelineMipmap4;
 	static ComputePipeline *pipelineMipmap1;
+	static ComputePipeline *pipelinePackedMipmap4;
+	static ComputePipeline *pipelinePackedMipmap1;
 	static std::thread bigTextureThread;
 	static VkFence uploadFence;
 	static bool asyncUpload;
