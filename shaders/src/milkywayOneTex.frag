@@ -17,5 +17,5 @@ layout (location=0) out vec4 FragColor;
 
 void main(void)
 {
-	FragColor = vec4(max(vec3(texture(texunit0,TexCoord)) * cmag, vec3(pollum)), 1.f);
+	FragColor = vec4(max(vec3(texture(texunit0,TexCoord)) * cmag, vec3(pollum, 0.8 * pollum, 0.5 * pollum)), 1.f);
 }
