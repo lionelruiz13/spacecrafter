@@ -63,7 +63,7 @@ class Observer;
 class FrameSender;
 class InitParser;
 
-enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, COLOR_INVERSE, SUBTITLE};
+enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, COLOR_INVERSE, SUBTITLE, DSO_PICK, STAR_PICK, BODY_PICK};
 
 /**
 @author initial Fabien Chereau

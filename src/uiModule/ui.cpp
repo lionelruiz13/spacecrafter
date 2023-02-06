@@ -148,6 +148,9 @@ void UI::init(const InitParser& conf)
 	media->imageDropAll();
 	coreLink->milkyWaySetFlagZodiacal(false);
 	app->flag(APP_FLAG::COLOR_INVERSE, false);
+	app->flag(APP_FLAG::BODY_PICK, false);
+	app->flag(APP_FLAG::STAR_PICK, false);
+	app->flag(APP_FLAG::DSO_PICK, false);
 	core->setDsoPictograms(false);
 
 	coreLink->planetSwitchTexMap("Sun", false);

@@ -413,6 +413,12 @@ void App::flag(APP_FLAG layerValue, bool _value) {
 				flagAlive = _value; break;
 		case APP_FLAG::COLOR_INVERSE :
 				flagColorInverse = _value; break;
+		case APP_FLAG::BODY_PICK :
+				coreLink->bodySetFlagIsolateSelected(_value); break;
+		case APP_FLAG::STAR_PICK :
+				coreLink->starSetFlagIsolateSelected(_value); break;
+		case APP_FLAG::DSO_PICK :
+				coreLink->nebulaSetFlagIsolateSelected(_value); break;
 		case APP_FLAG::SUBTITLE :
 				flagSubtitle = _value; break;
 		case APP_FLAG::ANTIALIAS :
