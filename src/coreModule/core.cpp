@@ -786,7 +786,7 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 
 	} else if (type=="planet") {
 		ssystemFactory->setSelected(id); //setPlanetsSelected(id);
-		selectObject(ssystemFactory->getSelected());
+		// selectObject(ssystemFactory->getSelected());
 		// asterisms->setSelected(Object());
 
 	} else if (type=="nebula") {
@@ -1724,66 +1724,70 @@ void Core::setSelectedBodyName(const Object &selected_object)
 //! @return true if the object was selected (false if the same was already selected)
 bool Core::selectObject(const Object &obj)
 {
-	// Unselect if it is the same object
-	if (obj && selected_object==obj) {
+	// Unselect if it is empty or the same object
+	if (!obj) {
+		unSelect();
+		return false;
+	} else if (selected_object==obj) {
 		unSelect();
 		return true;
 	}
-
-	if (obj.getType()==OBJECT_CONSTELLATION) {
-		return selectObject(obj.getBrightestStarInConstellation().get());
-	} else {
-		old_selected_object = selected_object;
-		selected_object = obj;
-
-		// If an object has been found
-		if (selected_object) {
-			setSelectedBodyName(selected_object);
-			// If an object was selected keep the earth following
-			if (getFlagTracking()) navigation->setFlagLockEquPos(1);
-			setFlagTracking(false);
-
-			if (selected_object.getType()==OBJECT_STAR) {
-				ssystemFactory->setSelectedObject(selected_object);
-				asterisms->setSelected(selected_object);
-				hip_stars->setSelected(selected_object);
-
-				// Build a constellation with the currently selected stars
-				if (starLines->getFlagSelected()) {
-					auto selected_stars = hip_stars->getSelected();
-					std::string starLinesCommand = "customConst " + std::to_string(selected_stars.size()-1);
-					for (std::size_t i = 0; i + 1 < selected_stars.size(); i++) {
-						starLinesCommand += " " + std::to_string(selected_stars[i]);
-						starLinesCommand += " " + std::to_string(selected_stars[i+1]);
-					}
-					starLines->loadStringData(starLinesCommand);
-				}
-
-				// potentially record this action
-				if (!recordActionCallback.empty()) recordActionCallback("select " + selected_object.getEnglishName());
-			} else {
-				asterisms->setSelected(Object());
-			}
-
-			if (selected_object.getType()==OBJECT_BODY) {
-				ssystemFactory->setSelected(selected_object);
-				// potentially record this action
-				if (!recordActionCallback.empty()) recordActionCallback("select planet " + selected_object.getEnglishName());
-			}
-
-			if (selected_object.getType()==OBJECT_NEBULA) {
-				nebulas->setSelected(selected_object);
-				// potentially record this action
-				if (!recordActionCallback.empty()) recordActionCallback("select nebula \"" + selected_object.getEnglishName() + "\"");
-			}
-
-			return true;
-		} else {
-			unSelect();
-			return false;
-		}
+	switch (obj.getType()) {
+		case OBJECT_CONSTELLATION:
+			return selectObject(obj.getBrightestStarInConstellation().get());
+		case OBJECT_STAR:
+			break;
+		default:
+			asterisms->setSelected(Object());
 	}
-	assert(0);
+	if (obj.getType() == OBJECT_CONSTELLATION)
+		return selectObject(obj.getBrightestStarInConstellation().get());
+
+	old_selected_object = selected_object;
+	selected_object = obj;
+	setSelectedBodyName(selected_object);
+	// If an object was selected keep the earth following
+	if (getFlagTracking())
+		navigation->setFlagLockEquPos(1);
+	setFlagTracking(false);
+
+	switch (obj.getType()) {
+		case OBJECT_STAR:
+			ssystemFactory->setSelectedObject(selected_object);
+			asterisms->setSelected(selected_object);
+			hip_stars->setSelected(selected_object);
+
+			// Build a constellation with the currently selected stars
+			if (starLines->getFlagSelected()) {
+				auto selected_stars = hip_stars->getSelected();
+				std::string starLinesCommand = "customConst " + std::to_string(selected_stars.size()-1);
+				for (std::size_t i = 0; i + 1 < selected_stars.size(); i++) {
+					starLinesCommand += " " + std::to_string(selected_stars[i]);
+					starLinesCommand += " " + std::to_string(selected_stars[i+1]);
+				}
+				starLines->loadStringData(starLinesCommand);
+			}
+
+			// potentially record this action
+			if (!recordActionCallback.empty())
+				recordActionCallback("select " + selected_object.getEnglishName());
+			break;
+		case OBJECT_BODY:
+			ssystemFactory->setSelected(selected_object);
+			// potentially record this action
+			if (!recordActionCallback.empty())
+				recordActionCallback("select planet " + selected_object.getEnglishName());
+			break;
+		case OBJECT_NEBULA:
+			nebulas->setSelected(selected_object);
+			// potentially record this action
+			if (!recordActionCallback.empty())
+				recordActionCallback("select nebula \"" + selected_object.getEnglishName() + "\"");
+			break;
+		default:
+			assert(0);
+	}
+	return true;
 }
 
 
