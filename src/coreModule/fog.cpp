@@ -83,8 +83,8 @@ void Fog::createSC_context()
 	set = new Set(vkmgr, *context.setMgr, layout);
 	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
 	set->bindTexture(fog_tex->getTexture(), 0);
-	vUniformID1 = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 1, 16);
-	vUniformID2 = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 2, 2);
+	vUniformID1 = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 1, sizeof(Mat4f));
+	vUniformID2 = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 2, sizeof(frag));
 }
 
 void Fog::destroySC_context()
