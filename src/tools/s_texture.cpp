@@ -219,6 +219,32 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
             textureQueue.emplace(texture);
     		tex = texture;
             return true;
+        } else if (fullName.substr(fullName.size() - 4) == ".raw") {
+            auto p1 = fullName.find_last_of('x', fullName.size()-4);
+            auto p2 = fullName.find_last_of('x', p1-1);
+            auto p3 = p2 - 4;
+            while (fullName[p3] < '0' || fullName[p3] > '9')
+                ++p3;
+            texture = std::make_shared<texRecap>();
+            texture->width = std::stoi(fullName.substr(p3, p2-p3));
+            ++p2;
+    		texture->height = std::stoi(fullName.substr(p2, p1-p2));
+            ++p1;
+    		texture->depth = std::stoi(fullName.substr(p1, fullName.size()-4-p1));
+            texture->size = texture->width * texture->height * texture->depth * nbChannels * channelSize;
+            texture->mipmap = mipmap;
+            texture->blendMipmap = useBlendMipmap;
+            texture->blendPacked = (nbChannels > 1);
+            usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+    		if (mipmap)
+    			usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+    		imgType = (texture->depth > 1 || force3D) ? VK_IMAGE_TYPE_3D : ((texture->height > 1) ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D);
+            bool ret = load(nullptr, texture->width, texture->height);
+            texture->texture->createSurface();
+            std::ifstream file(fullName, std::ifstream::binary);
+            file.read(static_cast<char*>(texture->texture->acquireStagingMemoryPtr()), texture->size);
+            textureQueue.emplace(texture);
+            return ret;
         }
 
 		int channels;
@@ -350,7 +376,7 @@ bool s_texture::load(stbi_uc *data, int realWidth, int realHeight)
     auto pos = textureName.find(".spacecrafter/");
     std::string name = (pos == std::string::npos) ? textureName : textureName.substr(pos+14);
     texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, TextureInfo{
-        .width=texture->width, .height=texHeight, .depth=texture->depth, .depthColumn=(texture->width / realWidth),
+        .width=texture->width, .height=texHeight, .depth=texture->depth, .depthColumn=(realWidth / texture->width),
         .nbChannels=nbChannels, .channelSize=channelSize, .content=data, .mgr=Context::instance->texStagingMgr.get(),
         .usage=usage, .type=imgType, .format=format, .name=name, .mipmap=texture->mipmap,
     });

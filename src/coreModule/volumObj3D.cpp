@@ -185,8 +185,10 @@ void VolumObj3D::reconstruct(const std::string& tex_color_file, const std::strin
     selected = tex_absorbtion_file.empty() ? PS_PACKED : PS_SPLIT;
     if (colorDepth == 0) {
         int tmpSize = tex_color_file.find_last_of('.');
-        int tmpPos = tex_color_file.find_last_of('d', tmpSize) + 1;
-        colorDepth = std::stoi(tex_color_file.substr(tmpPos, tmpSize - tmpPos));
+        if (*reinterpret_cast<const int*>(tex_color_file.data()+tmpSize) != 0x7761722e) { // Check if the extension is not ".raw"
+            int tmpPos = tex_color_file.find_last_of('d', tmpSize) + 1;
+            colorDepth = std::stoi(tex_color_file.substr(tmpPos, tmpSize - tmpPos));
+        }
     }
     int size;
     if (selected) {
@@ -346,8 +348,8 @@ Mat4f VolumObj3D::drawExternal(const Navigator * nav, const Projector* prj)
 
 void VolumObj3D::recordVolumetricObject(VkCommandBuffer cmd)
 {
-    shared->pipeline->bind(cmd);
-    shared->layout->bindSet(cmd, *set);
+    shared->pipeline[selected].bind(cmd);
+    shared->layout[selected].bindSet(cmd, *set);
     shared->vertex->bind(cmd);
     vkCmdBindIndexBuffer(cmd, shared->index.buffer, shared->index.offset, VK_INDEX_TYPE_UINT16);
     vkCmdDrawIndexed(cmd, 3*2*6, 1, 0, 0, 0);
