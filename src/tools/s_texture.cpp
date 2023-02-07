@@ -1186,3 +1186,14 @@ void s_texture::subQuickSaveCache(CacheSaveData *info, char *data, int size)
     info->file.write(data, size);
     info->cache->jpegSize += size;
 }
+
+void s_texture::willRead(const std::string &_textureName)
+{
+    #ifdef __linux__
+    int fd = open(((CallSystem::isAbsolute(_textureName) || CallSystem::fileExist(_textureName)) ? _textureName : (texDir + _textureName)).c_str(), O_RDONLY);
+    if (fd != -1) {
+        posix_fadvise(fd, 0, 0, POSIX_FADV_WILLNEED);
+        close(fd);
+    }
+    #endif
+}

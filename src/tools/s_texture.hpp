@@ -114,6 +114,8 @@ public:
 		return texCache.size();
 	}
 
+	// Inform the kernel that we will load this texture in a few seconds
+	static void willRead(const std::string &_textureName);
 	// Release every big textures which have not been querried with getBigTexture() for 2 frames
 	static void update();
 	// Unload every big textures

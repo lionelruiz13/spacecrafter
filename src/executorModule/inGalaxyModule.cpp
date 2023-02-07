@@ -66,6 +66,7 @@ void InGalaxyModule::onEnter()
 		std::cout << "InGalaxy mode" << std::endl;
 		// observer->setAltitude((minAltToGoDown+maxAltToGoUp/2.0));
 	}
+	s_texture::willRead("MilkyWayRGBAVolume1024x1024x128.raw");
 }
 
 void InGalaxyModule::onExit()

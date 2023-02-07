@@ -53,6 +53,8 @@ void InUniverseModule::onEnter()
 	observer->setAltitude(minAltToGoDown);
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
 	EventRecorder::getInstance()->queue(event);
+	core->volumGalaxy->reconstruct("MilkyWayRGBAVolume1024x1024x128.raw", "\0", 1024, false);
+	core->volumGalaxy->setModel(Mat4f::translation(Vec3f( -0.0001, -0.0001, -0.005)) * Mat4f::yawPitchRoll(90, 0, 0) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
 }
 
 void InUniverseModule::onExit()
