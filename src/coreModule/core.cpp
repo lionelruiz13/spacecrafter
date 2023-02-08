@@ -785,9 +785,7 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="planet") {
-		ssystemFactory->setSelected(id); //setPlanetsSelected(id);
-		// selectObject(ssystemFactory->getSelected());
-		// asterisms->setSelected(Object());
+		selectObject(ssystemFactory->searchByEnglishName(id).get());
 
 	} else if (type=="nebula") {
 		selectObject(nebulas->search(id));
