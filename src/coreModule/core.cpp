@@ -98,7 +98,7 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	cloudNav = std::make_unique<CloudNavigator>();
 	universeCloudNav = std::make_unique<CloudNavigator>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
 	starGalaxy = std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
-	volumGalaxy = std::make_unique<VolumObj3D>("\0", "\0", false);
+	volumGalaxy = std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true);
 	dsoNav = std::make_unique<DsoNavigator>();
 	starLines = std::make_unique<StarLines>();
 	ojmMgr = std::make_unique<OjmMgr>();
