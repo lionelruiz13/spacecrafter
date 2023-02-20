@@ -199,7 +199,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 			if (textFader) {
 				if (isolateSelected) {
 					const std::string nebula_name = n->getNameI18n();
-					if (selected_nebulas.find(nebula_name) != selected_nebulas.end()) {
+					if (selected_nebulas.count(nebula_name)) {
 						n->drawName(prj, labelColor, font);
 					}
 				} else
@@ -214,7 +214,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 					bool displayPicto = false;
 					if (isolateSelected) {
 						const std::string nebula_name = n->getNameI18n();
-						if (selected_nebulas.find(nebula_name) != selected_nebulas.end())
+						if (selected_nebulas.count(nebula_name))
 							displayPicto = true;
 					}
 					else
@@ -354,12 +354,9 @@ std::vector<Object> NebulaMgr::searchAround(Vec3d v, double lim_fov) const
 }
 
 void NebulaMgr::setSelected(Object obj) {
-	auto it = selected_nebulas.find(obj.getNameI18n());
-	if (it != selected_nebulas.end()) {
-		selected_nebulas.erase(it);
-	} else {
-		selected_nebulas.insert(std::pair<std::string, bool>(obj.getNameI18n(), true));
-	}
+	auto it = selected_nebulas.insert(obj.getNameI18n());
+	if (!it.second) // It is already in the set
+		selected_nebulas.erase(it.first);
 }
 
 bool NebulaMgr::loadDeepskyObject(std::string _englishName, std::string _DSOType, std::string _constellation, float _ra, float _de, float _mag, float _size, std::string _classe,

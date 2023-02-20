@@ -29,6 +29,7 @@
 
 #include <vector>
 #include <memory>
+#include <set>
 #include "tools/object.hpp"
 #include "tools/auto_fader.hpp"
 #include "tools/SphereGrid.hpp"
@@ -269,7 +270,7 @@ private:
 	int dsoPictoSize;			// Define the size/2 from picto tex
 
 	bool isolateSelected=false;
-	std::map<std::string, bool> selected_nebulas;
+	std::set<std::string> selected_nebulas;
 };
 
 #endif // _NEBULA_MGR_H_
