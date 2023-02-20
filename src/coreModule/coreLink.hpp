@@ -803,9 +803,12 @@ public:
 	}
 
 	void setEyeRelativeMode(bool mode) {
-		core->observatory->setEyeRelativeMode(mode);
-		if (!mode)
-			core->setBodyDecor();
+		core->observatory->setEyeRelativeMode(mode, core->projection, core->navigation);
+		if (mode) {
+			core->bodyDecor->anchorAssign();
+		} else {
+			core->bindHomePlanet();
+		}
 	}
 
 	bool getEyeRelativeMode() const {

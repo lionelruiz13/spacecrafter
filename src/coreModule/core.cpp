@@ -1615,14 +1615,18 @@ void Core::setHomePlanet(const std::string &planet)
 		result =  ssystemFactory->switchToAnchor(selected_object);
 	else
 		result =  ssystemFactory->switchToAnchor(planet);
-	if (result) {
-		setLandscapeToBody();
-		if (observatory->getHomeBody()) {
-			// here you have to get the planet you are on to access the modelAtmosphere field in AtmosphereParams of the body in question
-			atmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
-		} else {
-			cLog::get()->write("Can't setup Atmosphere : No home body", LOG_TYPE::L_WARNING);
-		}
+	if (result)
+		bindHomePlanet();
+}
+
+void Core::bindHomePlanet()
+{
+	setLandscapeToBody();
+	if (observatory->getHomeBody()) {
+		// here you have to get the planet you are on to access the modelAtmosphere field in AtmosphereParams of the body in question
+		atmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
+	} else {
+		cLog::get()->write("Can't setup Atmosphere : No home body", LOG_TYPE::L_WARNING);
 	}
 }
 

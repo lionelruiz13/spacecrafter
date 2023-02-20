@@ -377,6 +377,7 @@ public:
 	std::string getPlanetHashString(void);
 	//Functions above and below defined in core.cpp
 	void setHomePlanet(const std::string &planet);
+	void bindHomePlanet();
 
 	//! Adds year(s) and month(s) to the current date without affecting the other date parameters
 	void setJDayRelative(int year, int month);
