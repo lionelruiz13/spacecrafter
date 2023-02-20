@@ -375,8 +375,9 @@ bool s_texture::load(stbi_uc *data, int realWidth, int realHeight)
     const VkFormat format = formatTable[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
     auto pos = textureName.find(".spacecrafter/");
     std::string name = (pos == std::string::npos) ? textureName : textureName.substr(pos+14);
+    const int depthColumn = (texture->depth == 1) ? 0 : realWidth / texture->width;
     texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, TextureInfo{
-        .width=texture->width, .height=texHeight, .depth=texture->depth, .depthColumn=(realWidth / texture->width),
+        .width=texture->width, .height=texHeight, .depth=texture->depth, .depthColumn=depthColumn,
         .nbChannels=nbChannels, .channelSize=channelSize, .content=data, .mgr=Context::instance->texStagingMgr.get(),
         .usage=usage, .type=imgType, .format=format, .name=name, .mipmap=texture->mipmap,
     });
