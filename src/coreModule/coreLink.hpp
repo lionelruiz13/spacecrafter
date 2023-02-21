@@ -803,7 +803,7 @@ public:
 	}
 
 	void setEyeRelativeMode(bool mode) {
-		core->observatory->setEyeRelativeMode(mode, core->projection, core->navigation);
+		core->observatory->setEyeRelativeMode(mode);
 		if (mode) {
 			core->bodyDecor->anchorAssign();
 		} else {
