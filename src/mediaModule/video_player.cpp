@@ -228,7 +228,10 @@ void VideoPlayer::update()
 	// We should prepair frames in advance !
 	while (plannedFrames < (MAX_CACHED_FRAMES - 1)) {
 		requestQueue.emplace(frameIdxSwap);
-		frameIdxSwap = (frameIdxSwap + 1) % MAX_CACHED_FRAMES;
+		if (++frameIdxSwap == MAX_CACHED_FRAMES) {
+			frameIdxSwap = 0;
+			requestQueue.flush(); // Just in case
+		}
 		++plannedFrames;
 	}
 	// Tell how many frames we need now
