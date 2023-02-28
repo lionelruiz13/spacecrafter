@@ -95,7 +95,7 @@ bool VideoPlayer::restartCurrentVideo()
 		return false;
 	threadInterrupt();
 	auto result = av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD);
-	threadResume();
+	threadPlay();
 	if (result < 0) {
 		printf("av_seek_frame forward failed. \n");
 		return false;
@@ -110,11 +110,8 @@ bool VideoPlayer::restartCurrentVideo()
 
 bool VideoPlayer::playNewVideo(const std::string& _fileName)
 {
-	decodeEnd = false;
 	if (m_isVideoPlayed)
 		stopCurrentVideo(true);
-	if (thread.joinable())
-		thread.join();
 	std::ifstream fichier(_fileName.c_str());
 	if (!fichier.fail()) { // check if the video file exists
 		cLog::get()->write("Videoplayer: reading file "+ _fileName, LOG_TYPE::L_INFO);
@@ -190,7 +187,6 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 		cLog::get()->write("Video codec isn't in AV_PIX_FMT_YUV420P format", LOG_TYPE::L_ERROR);
 		return false;
 	}
-	thread = std::thread(&VideoPlayer::mainloop, this);
 	pFrameIn = av_frame_alloc();
 	pFrameOut=av_frame_alloc();
 	out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1));
@@ -203,12 +199,12 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 	lastCount = firstCount;
 	d_lastCount = firstCount;
 	currentFrame = 0;
-	plannedFrames = 1; // because getNextVideoFrame fetch the frame 0
+	frameCached = 0;
+	frameUsed = 0;
 	needFrames = 0;
-	while (displayQueue.pop(frameIdxSwap)); // Clear frame to display cache
-	frameIdxSwap = 0;
 	m_isVideoPlayed = true;
-	this->getNextVideoFrame(frameIdxSwap++); // The first frame must be ready on time
+	this->getNextVideoFrame(); // The first frame must be ready on time
+	threadPlay();
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
 	EventRecorder::getInstance()->queue(event);
@@ -225,15 +221,6 @@ void VideoPlayer::update()
 	}
 	int timePassed = SDL_GetTicks()- lastCount;
 
-	// We should prepair frames in advance !
-	while (plannedFrames < (MAX_CACHED_FRAMES - 1)) {
-		requestQueue.emplace(frameIdxSwap);
-		if (++frameIdxSwap == MAX_CACHED_FRAMES) {
-			frameIdxSwap = 0;
-			requestQueue.flush(); // Just in case
-		}
-		++plannedFrames;
-	}
 	// Tell how many frames we need now
 	if ( timePassed > 0) {
 		++needFrames;
@@ -242,19 +229,12 @@ void VideoPlayer::update()
 	}
 }
 
-void VideoPlayer::getNextFrame()
+bool VideoPlayer::getNextFrame()
 {
-	bool getNextFrame= false;
-
-	while(!getNextFrame) {
-
-		if(av_read_frame(pFormatCtx, packet)<0) {
-			m_isVideoSeeking = true;
-			// Ensure no more frames will be submitted
-			plannedFrames += MAX_CACHED_FRAMES;
-			requestQueue.abortPending();
-			decodeEnd = true;
-			return;
+	while (true) {
+		if (av_read_frame(pFormatCtx, packet)<0) {
+			decoding = false;
+			return false;
 		}
 
 		if(packet->stream_index==videoindex) {
@@ -268,29 +248,31 @@ void VideoPlayer::getNextFrame()
 				cLog::get()->write("not got frame", LOG_TYPE::L_DEBUG);
 				continue;
 			}
-			if (m_isVideoSeeking && pFrameIn->key_frame==1) {
-				m_isVideoSeeking=false;
+			if (m_isVideoSeeking) {
+				if (pFrameIn->key_frame==1) {
+					m_isVideoSeeking=false;
+				} else {
+					--needFrames;
+					av_packet_unref(packet);
+					return false;
+				}
 			}
-
-			getNextFrame = true;
 			av_packet_unref(packet);
+			return true;
 		}
+		av_packet_unref(packet);
 	}
 }
 
 
-void VideoPlayer::getNextVideoFrame(int frameIdx)
+void VideoPlayer::getNextVideoFrame()
 {
-	this->getNextFrame();
-	if (!m_isVideoSeeking) {
+	if (getNextFrame()) {
 		sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
 		for (int i = 0; i < 3; i++) {
-			memcpy(pImageBuffer[i][frameIdx], pFrameOut->data[i], widths[i] * heights[i]);
+			memcpy(pImageBuffer[i][frameCached % MAX_CACHED_FRAMES], pFrameOut->data[i], widths[i] * heights[i]);
 		}
-		displayQueue.push(frameIdx);
-	} else {
-		// The frame can't be decoded
-		displayQueue.emplace(-1);
+		++frameCached;
 	}
 }
 
@@ -304,9 +286,8 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 	}
 
 	m_isVideoPlayed = false;
-	requestQueue.close();
-	thread.join(); // Don't overlap av_* calls
-	needFrames = 0;
+	threadTerminate(); // Don't overlap av_* calls
+
 	sws_freeContext(img_convert_ctx);
 	av_frame_free(&pFrameOut);
 	av_frame_free(&pFrameIn);
@@ -403,14 +384,14 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 		threadInterrupt();
 		if (avformat_seek_file(pFormatCtx, -1, INT64_MIN, currentFrame * frameRateDuration *1000, INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
 			printf("av_seek_frame forward failed. \n");
-			threadResume();
+			threadPlay();
 			return false;
 		}
 		firstCount = firstCount - (int)( frameToSkeep * frameRateDuration);
 
 		reallyDeltaTime= currentFrame * frameRateDuration/1000.0;
 		m_isVideoSeeking = true;
-		threadResume();
+		threadPlay();
 		return true;
 	}
 	// end of file ... video stops
@@ -434,28 +415,25 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		videoTexture.sync->syncOut->placeBarrier(cmd);
 		Context::instance->waitFrameSync[1].stageMask |= VK_PIPELINE_STAGE_2_COPY_BIT_KHR;
 	}
-	if (needFrames) {
-		int frameIdx;
-		if (displayQueue.pop(frameIdx)) {
+	if (needFrames > 0) {
+		if (frameUsed != frameCached) {
 			--needFrames;
-			--plannedFrames;
-			if (frameIdx >= 0) {
-				VkBufferImageCopy region;
-				region.bufferRowLength = region.bufferImageHeight = 0;
-				region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
-				region.imageOffset = VkOffset3D{};
-				region.imageExtent.depth = 1;
-				for (int i = 0; i < 3; ++i) {
-					region.bufferOffset = imageBuffers[i][frameIdx].offset;
-					region.imageExtent.width = widths[i];
-					region.imageExtent.height = heights[i];
-					vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
-				}
+			int frameIdx = (++frameUsed) % MAX_CACHED_FRAMES;
+			VkBufferImageCopy region;
+			region.bufferRowLength = region.bufferImageHeight = 0;
+			region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
+			region.imageOffset = VkOffset3D{};
+			region.imageExtent.depth = 1;
+			for (int i = 0; i < 3; ++i) {
+				region.bufferOffset = imageBuffers[i][frameIdx].offset;
+				region.imageExtent.width = widths[i];
+				region.imageExtent.height = heights[i];
+				vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 			}
-		} else if (decodeEnd) {
+			cv.notify_one();
+		} else if (!decoding) {
 			if (media->getLoop()) {
 				media->playerRestart();
-				decodeEnd = false;
 			} else {
 				cLog::get()->write("end of file");
 				stopCurrentVideo(false);
@@ -476,32 +454,49 @@ void VideoPlayer::recordUpdateDependency(VkCommandBuffer cmd)
 
 void VideoPlayer::mainloop()
 {
-	int frameIdx;
-	requestQueue.acquire();
-	while (requestQueue.pop(frameIdx)) {
-		if (wantInterrupt) {
-			requestQueue.abortPending();
-			continue;
-		}
-		getNextVideoFrame(frameIdx);
+	std::unique_lock<std::mutex> ulock(mtx);
+	while (decoding) {
+		getNextVideoFrame();
+		while (frameCached - frameUsed >= MAX_CACHED_FRAMES)
+			cv.wait(ulock);
 	}
-	requestQueue.release();
+}
+
+void VideoPlayer::threadTerminate()
+{
+	if (thread.joinable()) {
+		decoding = false;
+		mtx.lock();
+		frameCached.store(frameUsed);
+		mtx.unlock();
+		cv.notify_all();
+		thread.join();
+	}
+	frameCached = 0;
+	frameUsed = 0;
+	needFrames = 0;
 }
 
 void VideoPlayer::threadInterrupt()
 {
-	wantInterrupt = true;
-	requestQueue.interrupt();
-	wantInterrupt = false;
-	requestQueue.abortPending();
+	if (decoding) {
+		frameCached += MAX_CACHED_FRAMES;
+		mtx.lock();
+	} else if (thread.joinable()) {
+		thread.join();
+	}
+	frameCached = 0;
+	frameUsed = 0;
 	needFrames = 0;
-	plannedFrames = 0;
-	decodeEnd = false;
-	int frameIdx;
-	while (displayQueue.pop(frameIdx));
 }
 
-void VideoPlayer::threadResume()
+void VideoPlayer::threadPlay()
 {
-	requestQueue.resume();
+	if (decoding) {
+		mtx.unlock();
+		cv.notify_all();
+	} else {
+		decoding = true;
+		thread = std::thread(&VideoPlayer::mainloop, this);
+	}
 }

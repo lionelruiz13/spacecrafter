@@ -44,7 +44,7 @@ class Media;
 class SyncEvent;
 class BufferMgr;
 
-#define MAX_CACHED_FRAMES 31
+#define MAX_CACHED_FRAMES 32
 
 /**
  * \class VideoPlayer
@@ -110,9 +110,9 @@ public:
 	void recordUpdateDependency(VkCommandBuffer cmd);
 private:
 	// returns the new video frame and converts it in the CG memory.
-	void getNextVideoFrame(int frameIdx);
+	void getNextVideoFrame();
 	// retrieves the new video frame before conversion
-	void getNextFrame();
+	bool getNextFrame();
 	// initialization of the class
 	void init();
 	// internal jump function in the video
@@ -153,11 +153,9 @@ private:
 	int widths[3];
 	int heights[3];
 
+	std::atomic<uint32_t> frameCached = 0; // Index of the last cached frame
+	std::atomic<bool> decoding = false; // Tell if the video have not been fully decoded yet
 
-	enum VideoThreadEvent {
-		INTERRUPT = -2,
-		RESUME = -1
-	};
 	//parameters related to ffmpeg
 	AVFormatContext	*pFormatCtx;
 	int				videoindex;
@@ -167,20 +165,21 @@ private:
 	AVStream		*video_st;
 	AVPacket		*packet;
 	struct SwsContext *img_convert_ctx;
+
+	std::atomic<uint32_t> frameUsed = 0; // Index of the last rendered frame
+	int frameIdxSwap = 0;
 	bool firstUse = true; // Tell if this texture is new and uninitialized yet
-	bool decodeEnd = false; // Tell if the last frame of the video have been decoded
-	bool wantInterrupt = false; // Tell if the worker thread should be interrupted
-	std::atomic<int> needFrames = 0; // Tell how many frames are required now
-	std::atomic<int> plannedFrames = 0; // Tell how many frame have been planned but not used
-	int frameIdxSwap = 0; // To alternate between frameIdx
 	void mainloop();
+	// Stop video thread and drop every pending frames
+	void threadTerminate();
 	// Interrupt video thread and drop every pending frames
 	void threadInterrupt();
-	// Resume video thread
-	void threadResume();
+	// Start or resume video thread
+	void threadPlay();
 	std::thread thread;
-	PushQueue<int, MAX_CACHED_FRAMES> displayQueue; // Frames ready to display
-	WorkQueue<int, MAX_CACHED_FRAMES> requestQueue; // Frames to compute
+	std::mutex mtx;
+	std::condition_variable cv;
+	std::atomic<int> needFrames = 0; // Number of frames requested
 };
 
 #endif // VIDEOPLAYER_HPP
