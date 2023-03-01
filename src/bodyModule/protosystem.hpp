@@ -188,6 +188,10 @@ public:
 
     // Call computeDraw on all visible bodies and sort them
     void computeDraw(const Projector *prj, const Navigator *nav);
+
+    inline Body *getCenterOfInterest() const {
+        return mainBody;
+    }
 protected:
     inline void hideBody(Body *body) {
         if (renderedBodies.erase(body))
@@ -198,6 +202,7 @@ protected:
             sortedRenderedBodies.push_back(body);
     }
     static Vec3d currentCenterPos;
+    Body *mainBody = nullptr; // This is the dominant body on screen, higher quality is expected for this body.
 	ObjLMgr *objLMgr=nullptr;					// represents the light objects of the ss
 	std::shared_ptr<Body> bodyTrace; //returns the body that is selected by bodyTrace
 	std::shared_ptr<OrbitCreator> orbitCreator;

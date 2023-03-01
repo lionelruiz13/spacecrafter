@@ -150,6 +150,8 @@ private:
 	void initVulkan(InitParser &conf);
 	//! Initialize vulkan resources needed outside of the splash screen
 	void finalizeInitVulkan(InitParser &conf);
+	//! Initialize vulkan resources used for the shadow
+	void initShadowSystem(InitParser &conf);
 
 	bool flagAlive; 				//!< indicates if the application should stop or not
 	bool flagVisible;				//!< say if your App Is Visible or not
@@ -178,7 +180,7 @@ private:
 	std::vector<std::unique_ptr<Texture>> senderImage; // If using sender instead of swapchain
 	VkSampleCountFlagBits sampleCount;
 	std::vector<std::unique_ptr<Texture>> multisampleImage;
-	std::unique_ptr<Texture> depthBuffer;
+	std::unique_ptr<Texture> depthBuffer, shadowBuffer;
 	bool flushFrames = false; // Flush every frames, reduce framerates but potentially remove some graphical glitches
 	bool initialized = false;
 
@@ -208,7 +210,7 @@ private:
 	EventHandler* eventHandler;
 
 	Uint16 width, height;  						//! Contains the resolution w and h of the SDL window
-	int colorID, depthID, multiColorID;
+	int colorID, depthID, multiColorID, shadowID;
 	SDL_Event	E;
 };
 #endif

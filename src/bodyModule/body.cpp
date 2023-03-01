@@ -930,13 +930,13 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 		myParent = false;
 	}
 
-	model = mat.convert();
-	view = nav->getHelioToEyeMat().convert();
-	vp = prj->getMatProjection().convert() * view;
+	model = mat;
+	// view = nav->getHelioToEyeMat().convert();
+	// vp = prj->getMatProjection().convert() * view;
 
 	mat = nav->getHelioToEyeMat() * mat;
 
-	proj = prj->getMatProjection().convert();
+	// proj = prj->getMatProjection().convert();
 
 	parent_mat = nav->getHelioToEyeMat() * parent_mat;
 
@@ -1175,4 +1175,14 @@ void Body::preload(int keepFrames)
 bool Body::needBucket(const Observer *obs)
 {
    return isVisibleOnScreen() || obs->isOnBody(this);
+}
+
+Vec3f Body::drawShadow(const ShadowParams &params)
+{
+    auto m = params.lookAt * model;
+    Vec3f ret(m.r[12], m.r[13], boundingRadius + params.smoothRadius);
+    m.r[14] = m.r[13] = m.r[12] = 0;
+    m = Mat4d::scaling(1/ret.v[2]) * m;
+
+    return ret;
 }

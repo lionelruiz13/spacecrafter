@@ -44,6 +44,7 @@ drawState_t BodyShader::shaderNormalTes;
 drawState_t BodyShader::myMoon;
 drawState_t BodyShader::shaderArtificial;
 drawState_t BodyShader::depthTrace;
+drawState_t BodyShader::myEarthShadowed;
 
 
 void BodyShader::createShader()
@@ -312,4 +313,31 @@ void BodyShader::createShader()
 	depthTrace.pipeline->bindShader("body_depth_trace.vert.spv");
 	depthTrace.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	depthTrace.pipeline->build("depthTrace");
+
+	// ========== myEarthShadowed ========== //
+	context.layouts.push_back(std::make_unique<PipelineLayout>(vkmgr));
+	myEarthShadowed.layout = context.layouts.back().get();
+	myEarthShadowed.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // globalProj
+	myEarthShadowed.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // globalFrag
+	myEarthShadowed.layout->setTextureLocation(2, &tmp);
+	myEarthShadowed.layout->setTextureLocation(3, &tmp);
+	myEarthShadowed.layout->setTextureLocation(4, &tmp);
+	myEarthShadowed.layout->setTextureLocation(5, &tmp);
+	myEarthShadowed.layout->setTextureLocation(6, &tmp);
+	myEarthShadowed.layout->buildLayout();
+	myEarthShadowed.layout->build();
+
+	context.pipelines.push_back(std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, myEarthShadowed.layout));
+	myEarthShadowed.pipeline = context.pipelines.back().get();
+	myEarthShadowed.pipeline->setCullMode(true);
+	// myEarthShadowed.pipeline->setFrontFace(); // Body with tesselation don't have the same front face...
+	myEarthShadowed.pipeline->setBlendMode(BLEND_NONE);
+	myEarthShadowed.pipeline->bindVertex(*context.ojmVertexArray);
+	myEarthShadowed.pipeline->removeVertexEntry(1);
+	myEarthShadowed.pipeline->removeVertexEntry(2);
+	myEarthShadowed.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	// myEarthShadowed.pipeline->setTessellationState(3);
+	myEarthShadowed.pipeline->bindShader("body_tes_shadow.vert.spv");
+	myEarthShadowed.pipeline->bindShader("my_earth_shadow.frag.spv");
+	myEarthShadowed.pipeline->build("myEarthShadowed");
 }

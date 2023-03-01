@@ -32,6 +32,7 @@ class Projector;
 class Navigator;
 class Observer;
 class ToneReproductor;
+class Body;
 
 /**
  * \file solarsystem_display.hpp
@@ -50,13 +51,18 @@ class ToneReproductor;
 class SolarSystemDisplay {
 public:
     SolarSystemDisplay(ProtoSystem * _ssystem);
-    ~SolarSystemDisplay(){};
+    ~SolarSystemDisplay() {
+        instance = nullptr;
+    }
 
     void changeSystem(ProtoSystem * _ssystem) {
 		ssystem = _ssystem;
 	}
 
 	void computePreDraw(const Projector * prj, const Navigator * nav);
+
+    //! Draw the shadows so they can be used when drawing the main body
+    void drawShadow(Projector * prj, const Navigator * nav);
 
 	//! Draw all the elements of the solar system
 	void draw(Projector * prj, const Navigator * nav, const Observer* observatory,
@@ -89,8 +95,10 @@ public:
 	//! home_planet is needed for light travel time computation
 	void computeTransMatrices(double date,const Observer * obs);
 
+    static SolarSystemDisplay *instance;
 private:
     ProtoSystem * ssystem;
+    Body *mainBody;
 
 	bool flagShow= true;
 	bool flag_light_travel_time = false;
@@ -100,7 +108,14 @@ private:
 		double zfar;
 	};
 
+    struct ShadowingBody {
+        Body *body;
+        float distToSun;
+        float distToMainBody;
+    };
+
 	std::vector<depthBucket> listBuckets;
+    std::vector<ShadowingBody> shadowingBody; // Bodies who project a shadow on the mainBody
     int cmds[3] {-1};
 };
 

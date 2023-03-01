@@ -90,6 +90,9 @@
 #define SCK_RINGS_MEDIUM                    "rings_medium"
 #define SCK_RINGS_HIGH                      "rings_high"
 #define SCK_OORT_ELEMENTS                   "oort_elements"
+#define SCK_SHADOW_RESOLUTION               "shadow_resolution"
+#define SCK_SELF_SHADOW_RESOLUTION          "self_shadow_resolution"
+#define SCK_EXPERIMENTAL_SHADOWS            "experimental_shadows"
 
 #define SCK_SKY_CULTURE                     "sky_culture"
 #define SCK_SKY_LOCALE                      "sky_locale"

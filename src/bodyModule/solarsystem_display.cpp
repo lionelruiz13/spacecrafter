@@ -35,8 +35,12 @@
 #include "EntityCore/Core/FrameMgr.hpp"
 #include "EntityCore/Resource/Pipeline.hpp"
 
+SolarSystemDisplay *SolarSystemDisplay::instance = nullptr;
+
 SolarSystemDisplay::SolarSystemDisplay(ProtoSystem * _ssystem)
 {
+    assert(!instance);
+    instance = this;
     ssystem = _ssystem;
 }
 
@@ -49,15 +53,45 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
     // sort all body from the furthest to the closest to the observer
     ssystem->computeDraw(prj, nav);
 
+    auto tmp = ssystem->getCenterOfInterest();
+    if (tmp != mainBody) {
+        if (mainBody)
+            mainBody->looseInterest();
+        if (tmp)
+            tmp->gainInterest();
+        mainBody = tmp;
+    }
+    if (!mainBody)
+        return; // There is no relevant body
+
+    // Prepair computing shadowing bodies
+    const float sunRadius = ssystem->getCenterObject()->getRadius();
+    const float r1 = mainBody->getBoundingRadius();
+    Vec3f n1 = mainBody->get_heliocentric_ecliptic_pos();
+    const float d1 = n1.length();
+    n1 /= d1;
+    const float cst1 = r1+sunRadius;
+    const float cst2 = -sunRadius/d1;
+
 	// Determine optimal depth buffer buckets for drawing the scene
 	// This is similar to Celestia, but instead of using ranges within one depth
 	// buffer we just clear and reuse the entire depth buffer for each bucket.
 	listBuckets.clear();
+    shadowingBody.clear();
 	depthBucket db {};
 
     const auto _end = ssystem->endSorted();
 	for (auto it = ssystem->beginSorted(); it != _end; ++it) {
         auto &body = **it;
+        {
+            auto v2 = body.get_heliocentric_ecliptic_pos();
+            float d = n1.dot(v2);
+            if (d > 0 && d < d1) {
+                float tmp = body.getBoundingRadius()+cst1+d*cst2;
+                if ((v2.lengthSquared() - d*d) < tmp*tmp)
+                    shadowingBody.push_back({&body, d, d1-d});
+            }
+        }
         if (!body.isVisibleOnScreen()) // Only reserve a bucket for visible body
             continue;
 
@@ -99,12 +133,38 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
         listBuckets.push_back(db);
 }
 
+void SolarSystemDisplay::drawShadow(Projector * prj, const Navigator * nav)
+{
+    if (!mainBody)
+        return;
+
+    ShadowParams params;
+    ShadowRenderData renderData;
+    auto mainPos = mainBody->get_heliocentric_ecliptic_pos();
+    float sunCoef = ssystem->getCenterObject()->getRadius() / mainPos.length();
+    renderData.lookAt = params.lookAt = Mat4d::lookAt(ssystem->getCenterPos(), mainPos, Vec3d(0, 1, 0));
+    params.mainBodyRadius = mainBody->getBoundingRadius();
+    renderData.sinSunHalfAngle = sin(atan(sunCoef));
+    for (auto &s : shadowingBody) {
+        params.smoothRadius = sunCoef * s.distToMainBody;
+        renderData.shadowingBodies.push_back(s.body->drawShadow(params));
+        // TODO use bounding
+    }
+    mainBody->bindShadows(renderData);
+    // The matrix, defining the position, is known to the body, but what interest us is the matrix orthogonal to the target, so we want the matrix of the main body
+    // body matrix : body -> heliocentric
+    // lookat : heliocentric -> sun to main body
+    // translate : center to body
+}
+
 // Draw all the elements of the solar system
 // We are supposed to be in heliocentric coordinate
 void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Observer* observatory, const ToneReproductor* eye, /*bool flag_point,*/ bool drawHomePlanet)
 {
 	if (!getFlagShow())
 		return; // 0;
+
+    drawShadow(prj, nav);
 
 	Halo::beginDraw();
     Tail::beginDraw(prj->getFov());

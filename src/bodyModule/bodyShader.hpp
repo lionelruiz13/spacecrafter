@@ -39,7 +39,7 @@
 #include "tools/vecmath.hpp"
 
 enum SHADER_USE {SHADER_SUN = 0, SHADER_NORMAL = 1,  SHADER_NORMAL_TES = 11,  SHADER_BUMP = 2, SHADER_NIGHT = 3,SHADER_NIGHT_TES = 31,  SHADER_RINGED = 4,
-				SHADER_MODEL3D = 5, SHADER_MOON_NORMAL = 6, SHADER_MOON_NORMAL_TES = 61 , SHADER_MOON_BUMP = 7, SHADER_MOON_NIGHT=32, SHADER_ARTIFICIAL = 8, SHADER_UNDEFINED = 127};
+				SHADER_MODEL3D = 5, SHADER_MOON_NORMAL = 6, SHADER_MOON_NORMAL_TES = 61 , SHADER_MOON_BUMP = 7, SHADER_MOON_NIGHT=32, SHADER_ARTIFICIAL = 8, SHADER_NIGHT_TES_SHADOW = 30, SHADER_UNDEFINED = 127};
 
 /*struct bodyShaderStatus {
 	bool map;
@@ -78,6 +78,10 @@ public:
 		return &myEarth;
 	};
 
+	static drawState_t *getShaderNightTesShadowed() {
+		return &myEarthShadowed;
+	};
+
 	static drawState_t *getShaderRinged() {
 		return &shaderRinged;
 	};
@@ -108,12 +112,14 @@ protected:
 	static drawState_t myEarth, shaderNormal, shaderNormalTes;
 	static drawState_t shaderRinged;
 	static drawState_t myMoon; //, shaderMoonBump, shaderMoonNormal;
+	static drawState_t myEarthShadowed; //, shaderMoonBump, shaderMoonNormal;
 	static drawState_t shaderArtificial;
 	static drawState_t depthTrace;
 };
 
 typedef Mat4f mat4;
 typedef Vec3f vec3;
+typedef Vec2f vec2;
 typedef Vec3i ivec3;
 
 struct depthTraceInfo {
@@ -189,5 +195,34 @@ typedef struct {
 	float fixAlignment; // fix alignment
     vec3 Intensity;	// A,D,S intensity
 } LightInfo;
+
+struct ShadowVert {
+	mat4 ModelViewMatrix;
+	// mat3 ShadowMatrix;
+	float WorldToModelMatrix[12];
+	// vec3 lightDirection; // Light direction in world coordinates
+	float zNear;
+	float zRange;
+	float fov;
+};
+
+struct vec3p {
+	vec3 value;
+	float padding;
+	void operator=(const vec3 &v) {
+		value = v;
+	}
+};
+
+struct ShadowFrag {
+	float ShadowMatrix[12];
+	vec3 lightDirection; // In body-local coordinates
+	float sinSunHalfAngle;
+	float heightMapDepthLevel; // 0.9
+	float heightMapDepth; // 0.1
+	float squaredHeightMapDepthLevel; // 0.81
+	int nbShadowingBodies;
+	vec3p shadowingBodies[4];
+};
 
 #endif // _BODY_SHADER_HPP_

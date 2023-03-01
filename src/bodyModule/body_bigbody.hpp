@@ -70,6 +70,10 @@ public:
 	virtual void preload(int keepFrames) override;
 
 	virtual void drawOrbit(VkCommandBuffer cmdBodyDepth, VkCommandBuffer cmdOrbit, const Observer* observatory, const Navigator* nav, const Projector* prj) override;
+
+	virtual void bindShadows(const ShadowRenderData &renderData) override;
+
+	void drawCenterOfInterest(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav);
 protected :
 
 	virtual void drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);
@@ -93,6 +97,8 @@ protected :
 	std::unique_ptr<SharedBuffer<globalTescGeom>> uGlobalTescGeom; // tes
 	std::unique_ptr<SharedBuffer<Mat4f>> uModelViewMatrixInverse;
 	std::unique_ptr<SharedBuffer<ringFrag>> uRingFrag;
+	std::unique_ptr<SharedBuffer<ShadowVert>> uShadowVert;
+	std::unique_ptr<SharedBuffer<ShadowFrag>> uShadowFrag;
 	//useful for shader NIGHT
 	std::shared_ptr<s_texture> tex_night;
 	std::shared_ptr<s_texture> tex_specular;

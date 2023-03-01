@@ -58,10 +58,11 @@ public:
     std::unique_ptr<VertexArray> multiVertexArray;
     std::unique_ptr<SetMgr> setMgr;
     std::unique_ptr<Texture> starColorAttachment;
+    std::unique_ptr<Texture> shadow;
     std::vector<HipStarMgr *> starUsed; // nullptr if not used at this frame, otherwise a pointer to a HipStarMgr which operate a draw
     std::vector<std::unique_ptr<SyncEvent>> starSync; // synchronize access to starColorAttachment
     std::unique_ptr<SyncEvent> transferSync; // synchronize transfers
-    std::unique_ptr<RenderMgr> render;
+    std::unique_ptr<RenderMgr> render, renderShadow;
     std::vector<std::unique_ptr<FrameMgr>> frame;
     // std::unique_ptr<RenderMgr> renderAlone; // Single-pass rendering without depth buffer
     // std::vector<std::unique_ptr<FrameMgr>> frameAlone;
@@ -93,6 +94,9 @@ public:
     uint32_t frameIdx = 2;
     uint32_t lastFrameIdx = 1;
     VkBool32 isFloat64Supported = VK_TRUE;
+
+    // Experimental features enabled
+    static bool experimental_shadows;
 };
 
 #endif /* end of include guard: CONTEXT_HPP_ */

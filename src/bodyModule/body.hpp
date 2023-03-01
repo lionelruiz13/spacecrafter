@@ -90,6 +90,23 @@ typedef struct AtmosphereParams {
 	float limLandscape = 0.f;
 } AtmosphereParams;
 
+struct ShadowParams {
+	Mat4d lookAt;
+	float smoothRadius;
+	float mainBodyRadius;
+};
+
+// Rendering informations for the center of interest
+struct ShadowRenderData {
+	Mat4d lookAt;
+	float sinSunHalfAngle;
+	std::vector<Vec3f> shadowingBodies;
+};
+
+struct ShadowDescriptor {
+    VkCommandBuffer cmd;
+    Body *assignment = nullptr; // The body this descriptor is assigned to
+};
 
 class Body : public ObjectBase, public std::enable_shared_from_this<Body> {
 
@@ -448,6 +465,11 @@ public:
 	//! @param keepFrames number of frames from which the big texture can be destroyed if it was still unused
 	virtual void preload(int keepFrames);
 
+	// Return the screen_size if visible, 0 otherwise
+	inline float getImportance() {
+		return (isVisible) ? screen_sz : 0;
+	}
+
 	inline bool isVisibleOnScreen() {
 		return screen_sz > 2 && isVisible;
 	}
@@ -458,8 +480,26 @@ public:
 	}
 
 	virtual bool needBucket(const Observer *obs);
-protected:
 
+	// This body is now the center of interest
+	virtual void gainInterest() {
+		isCenterOfInterest = true;
+		changed = true;
+	}
+
+	// This body is no longer the center of interest
+	virtual void looseInterest() {
+		isCenterOfInterest = false;
+		changed = true;
+	}
+
+	virtual void bindShadows(const ShadowRenderData &renderData) {}
+
+	// Draw a shadow, return a Vec2f center and float radius
+	Vec3f drawShadow(const ShadowParams &params);
+
+	virtual void drawShadow(VkCommandBuffer drawCmd, const ShadowParams &params) {}
+protected:
 	bool useParentPrecession(double jd) {
 		return getOrbit()->useParentPrecession(jd);
 	}
@@ -531,9 +571,11 @@ protected:
 	Vec3f eye_planet;
 	SHADER_USE myShader = SHADER_UNDEFINED;  			// the name of the shader used for his display
 	drawState_t *drawState;		// State for draw, include Pipeline and PipelineLayout
+	ShadowDescriptor *shadow = nullptr;
 	int cmds[3] = {-1, -1, -1};
 	bool changed = true;
 	bool hasAtmosphere = false;
+	bool isCenterOfInterest = false;
 
 	ObjL *currentObj = nullptr;
 
@@ -590,10 +632,10 @@ protected:
 	std::shared_ptr<Halo> halo;
 	std::unique_ptr<AtmExt> atmExt;
 
-	Mat4f model;
-	Mat4f view;
-	Mat4f vp;
-	Mat4f proj;
+	Mat4d model;
+	// Mat4f view;
+	// Mat4f vp;
+	// Mat4f proj;
 
 	// //GZ Tail additions
 	// Vec2f tailFactors; // result of latest call to getComaDiameterAndTailLengthAU(); Results cached here for infostring. [0]=Coma diameter, [1] gas tail length.

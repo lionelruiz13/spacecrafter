@@ -54,6 +54,8 @@ void main()
         coord.z *= 2;
         dir.z *= 2;
     }
+    if (t > number)
+        t = number;
     vec4 color = vec4(0);
     while (t-- >= 0) {
         color += texture(colorTexture, coord) * (texture(mapTexture, coord).x * (1.f - color.a) / colorScale);

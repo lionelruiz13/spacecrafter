@@ -241,6 +241,14 @@ void App::initVulkan(InitParser &conf)
 	context.collector = std::make_unique<Collector>(vkmgr);
 	depthBuffer = std::make_unique<Texture>(vkmgr, width, height, sampleCount);
 	depthBuffer->use();
+	shadowBuffer = std::make_unique<Texture>(vkmgr, TextureInfo{
+		.width=4096, .height=4096,
+		.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+		.format = VK_FORMAT_D24_UNORM_S8_UINT,
+		.aspect = VK_IMAGE_ASPECT_DEPTH_BIT,
+		.name = "Shadow Depth Buffer",
+	});
+	shadowBuffer->use();
 	// ========== DEFINE RENDERING ========== //
 	context.render = std::make_unique<RenderMgr>(vkmgr);
 	colorID = context.render->attach(VK_FORMAT_B8G8R8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, vkmgr.getSwapchainView().empty() ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL : VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
@@ -357,6 +365,8 @@ void App::finalizeInitVulkan(InitParser &conf)
 	context.multiVertexMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, context.multiVertexArray->alignment*64*1024, "draw_helper BufferMgr");
 	context.starColorAttachment = std::make_unique<Texture>(vkmgr, vkmgr.getScreenRect().extent.width, vkmgr.getScreenRect().extent.height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 	context.starColorAttachment->use();
+	const int shadowRes = conf.getInt(SCS_RENDERING, SCK_SELF_SHADOW_RESOLUTION);
+	context.shadow = std::make_unique<Texture>(vkmgr, TextureInfo{.width=shadowRes, .height=shadowRes, .nbChannels=1, });
 	context.transferSync->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
 	context.transferSync->bufferBarrier(*context.multiVertexMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
 	context.transferSync->bufferBarrier(*context.ojmBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
@@ -459,6 +469,7 @@ void App::init()
 	AppSettings::Instance()->loadAppSettings( &conf );
 
 	appDraw->setFlagAntialiasLines(conf.getBoolean(SCS_RENDERING, SCK_FLAG_ANTIALIAS_LINES));
+	Context::experimental_shadows = conf.getBoolean(SCS_RENDERING, SCK_EXPERIMENTAL_SHADOWS);
 
 	internalFPS->setMaxFps(conf.getDouble (SCS_VIDEO,SCK_MAXIMUM_FPS));
 	internalFPS->setVideoFps(conf.getDouble(SCS_VIDEO,SCK_REC_VIDEO_FPS));

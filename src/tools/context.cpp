@@ -17,3 +17,5 @@ Context::~Context()
     for (auto p : pipelineArray)
         delete[] p;
 }
+
+bool Context::experimental_shadows = false;

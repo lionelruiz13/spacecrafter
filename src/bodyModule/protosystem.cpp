@@ -41,6 +41,7 @@
 #include "bodyModule/body_center.hpp"
 #include "bodyModule/body_star.hpp"
 #include "tools/object.hpp"
+#include "tools/context.hpp"
 #include "interfaceModule/base_command_interface.hpp"
 
 #define EARTH_MASS 5.976e24
@@ -945,8 +946,21 @@ void ProtoSystem::selectSystem()
 
 void ProtoSystem::computeDraw(const Projector *prj, const Navigator *nav)
 {
-	for (Body *body : renderedBodies)
-		body->computeDraw(prj, nav);
+	mainBody = nullptr;
+	if (Context::experimental_shadows) {
+		float highestImportance = 0;
+		for (Body *body : renderedBodies) {
+			body->computeDraw(prj, nav);
+			if (body->getImportance() > highestImportance) {
+				highestImportance = body->getImportance();
+				mainBody = body;
+			}
+		}
+	} else {
+		for (Body *body : renderedBodies) {
+			body->computeDraw(prj, nav);
+		}
+	}
 	if (sortedRenderedBodies.size() < 2)
 		return; // Nothing to sort
 
