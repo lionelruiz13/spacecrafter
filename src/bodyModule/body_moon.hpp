@@ -52,6 +52,13 @@ public:
 
 	virtual void selectShader();
 
+	virtual void bindShadows(const ShadowRenderData &renderData) override;
+
+	virtual void gainInterest() override;
+
+	virtual void looseInterest() override;
+
+	void drawCenterOfInterest(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav);
 protected :
 	void defineSet();
 	//! Return set to bind, may change at every frame
@@ -71,6 +78,8 @@ protected :
 	std::unique_ptr<SharedBuffer<Vec3f>> uUmbraColor; // bump
 	std::unique_ptr<SharedBuffer<moonFrag>> uMoonFrag;
 	std::unique_ptr<SharedBuffer<globalTescGeom>> uGlobalTescGeom; // moon
+	std::unique_ptr<SharedBuffer<ShadowVert>> uShadowVert;
+	std::unique_ptr<SharedBuffer<ShadowFrag>> uShadowFrag;
 	std::unique_ptr<s_texture> tex_night=nullptr;			// for moon with night event to see
 };
 

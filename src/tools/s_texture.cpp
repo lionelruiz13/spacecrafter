@@ -87,7 +87,10 @@ bool s_texture::cacheTexture = false;
 int s_texture::bigTextureLifetime = 90;
 
 // Conversion table
-const VkFormat formatTable[] = {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM};
+const VkFormat formatTable[] = {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM, VK_FORMAT_R8G8B8A8_SNORM};
+
+const int formatChannels[] = {1, 2, 3, 4, 1, 2, 3, 4, 4};
+const int formatSizes[] = {1, 2, 3, 4, 2, 4, 6, 8, 4};
 
 s_texture::texRecap::~texRecap()
 {
@@ -113,6 +116,11 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap
 		case TEX_LOAD_TYPE_PNG_SOLID :
 			loadType=PNG_SOLID;
 			break;
+        case TEX_LOAD_TYPE_NORMAL_MAP:
+            loadType=PNG_SOLID;
+            formatOverride = VK_FORMAT_R8G8B8A8_SNORM;
+            nbChannels = 4;
+            break;
 		case TEX_LOAD_TYPE_PNG_BLEND3:
 			loadType=PNG_BLEND3;
 			break;
@@ -372,7 +380,7 @@ bool s_texture::load(stbi_uc *data, int realWidth, int realHeight)
 	// Use negated height to flip this axis
     const auto texHeight = (texture->depth == 1) ? -texture->height : texture->height;
     int _nbChannels = nbChannels - 1;
-    const VkFormat format = formatTable[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
+    const VkFormat format = (formatOverride) ? formatOverride : formatTable[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
     auto pos = textureName.find(".spacecrafter/");
     std::string name = (pos == std::string::npos) ? textureName : textureName.substr(pos+14);
     const int depthColumn = (texture->depth == 1) ? 0 : realWidth / texture->width;
@@ -526,7 +534,15 @@ s_texture::bigTexRecap *s_texture::acquireBigTexture()
         }
 		if ((width * height *4+2)/3 * nbChannels * channelSize <= minifyMax)
 			return nullptr; // Don't create a big texture with worse resolution than the preview one
-		bigTextures.push_back({1, (unsigned short) width, (unsigned short) height, nullptr, textureName, 3, (unsigned char) (nbChannels + 4 * channelSize - 5), -1, false, true});
+        unsigned char formatIdx;
+        switch (formatOverride) {
+            case VK_FORMAT_R8G8B8A8_SNORM:
+                formatIdx = 8;
+                break;
+            default:
+                formatIdx = nbChannels + 4 * channelSize - 5;
+        }
+		bigTextures.push_back({1, (unsigned short) width, (unsigned short) height, nullptr, textureName, 3, formatIdx, -1, false, true});
         bt = &bigTextures.back();
 		texture->bigTextureBinding = 1;
         if (texture->quickloadable)
@@ -540,8 +556,16 @@ s_texture::bigTexRecap *s_texture::acquireBigTexture()
 
 s_texture::bigTexRecap *s_texture::acquireBigTexture(int width, int height)
 {
+    unsigned char formatIdx;
+    switch (formatOverride) {
+        case VK_FORMAT_R8G8B8A8_SNORM:
+            formatIdx = 8;
+            break;
+        default:
+            formatIdx = nbChannels + 4 * channelSize - 5;
+    }
     for (auto &bt : bigTextures) {
-        if (bt.width == width && bt.height == height && bt.formatIdx == (nbChannels + 4 * channelSize - 5)) {
+        if (bt.width == width && bt.height == height && bt.formatIdx == formatIdx) {
             if (bt.acquired) {
                 if (textureName == bt.texName) {
                     bt.lifetime = bigTextureLifetime;
@@ -782,7 +806,7 @@ void s_texture::bigTextureLoader()
                 if (tex->texture) {
                     tex->texture.reset();
                 } else {
-                    currentAllocation -= (tex->width * tex->height * 4+2)/3 * (tex->formatIdx + 1);
+                    currentAllocation -= (tex->width * tex->height * 4+2)/3 * formatSizes[tex->formatIdx];
                 }
             } else {
                 --wantReleaseAllMemory;
@@ -799,12 +823,11 @@ void s_texture::bigTextureLoader()
         unsigned int width = tex->width;
         unsigned int height = tex->height;
         // Not fully implemented 16-bpp support from here
-        const int _nbChannels = tex->formatIdx + 1;
+        const int _nbChannels = formatChannels[tex->formatIdx];
         if (tex->texture) {
             tex->texture->rename(texName);
         } else {
-            const VkFormat format = formatTable[tex->formatIdx];
-            tex->texture = std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, texName, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, format, VK_IMAGE_ASPECT_COLOR_BIT, true);
+            tex->texture = std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, texName, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, formatTable[tex->formatIdx], VK_IMAGE_ASPECT_COLOR_BIT, true);
             tex->texture->use();
             currentAllocation -= (width * height * 4+2)/3 * _nbChannels;
         }
@@ -1038,12 +1061,12 @@ bool s_texture::quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, v
         if (read(tex->quickLoader, stor, cache.jpegSize) == -1)
             throw std::system_error(errno, std::system_category(), "read");
         int vwidth, vheight, unused;
-        auto pixels = stbi_load_from_memory((stbi_uc *) stor, cache.jpegSize, &vwidth, &vheight, &unused, tex->formatIdx + 1);
+        auto pixels = stbi_load_from_memory((stbi_uc *) stor, cache.jpegSize, &vwidth, &vheight, &unused, formatChannels[tex->formatIdx]);
         auto srcBegin = pixels;
-        size_t fullSize = vwidth * vheight * (tex->formatIdx + 1);
+        size_t fullSize = vwidth * vheight * formatChannels[tex->formatIdx];
         // Define from which layer to start
         int layerWidth = cache.width;
-        size_t layerSize = cache.width * cache.height * (tex->formatIdx + 1);
+        size_t layerSize = cache.width * cache.height * formatChannels[tex->formatIdx];
         while (width < layerWidth) {
             srcBegin += layerSize;
             fullSize -= layerSize;
@@ -1081,12 +1104,12 @@ bool s_texture::quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, v
             // Read the jpeg data
             file.read((char *) stor, cache.jpegSize);
             int vwidth, vheight, unused;
-            auto pixels = stbi_load_from_memory((stbi_uc *) stor, cache.jpegSize, &vwidth, &vheight, &unused, tex->formatIdx + 1);
+            auto pixels = stbi_load_from_memory((stbi_uc *) stor, cache.jpegSize, &vwidth, &vheight, &unused, formatChannels[tex->formatIdx]);
             auto srcBegin = pixels;
-            size_t fullSize = vwidth * vheight * (tex->formatIdx + 1);
+            size_t fullSize = vwidth * vheight * formatChannels[tex->formatIdx];
             // Define from which layer to start
             int layerWidth = cache.width;
-            size_t layerSize = cache.width * cache.height * (tex->formatIdx + 1);
+            size_t layerSize = cache.width * cache.height * formatChannels[tex->formatIdx];
             while (width > layerWidth) {
                 srcBegin += layerSize;
                 fullSize -= layerSize;
@@ -1116,7 +1139,7 @@ void s_texture::quickSaveCache(CacheSaveData &info, void *firstLayer, void *mipm
             cLog::get()->write("Caching data for '" + info.tex->texName + "'", LOG_TYPE::L_DEBUG);
             const int width = info.cache->width;
             const int height = info.cache->height;
-            const int nbChannels = info.tex->formatIdx + 1;
+            const int nbChannels = formatChannels[info.tex->formatIdx];
             const int firstLayerSize = height * width * nbChannels;
             int mipmapSize = 0;
             for (int w=width, h=height; (w | h) > 1;) {

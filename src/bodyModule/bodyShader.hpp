@@ -38,8 +38,24 @@
 //
 #include "tools/vecmath.hpp"
 
-enum SHADER_USE {SHADER_SUN = 0, SHADER_NORMAL = 1,  SHADER_NORMAL_TES = 11,  SHADER_BUMP = 2, SHADER_NIGHT = 3,SHADER_NIGHT_TES = 31,  SHADER_RINGED = 4,
-				SHADER_MODEL3D = 5, SHADER_MOON_NORMAL = 6, SHADER_MOON_NORMAL_TES = 61 , SHADER_MOON_BUMP = 7, SHADER_MOON_NIGHT=32, SHADER_ARTIFICIAL = 8, SHADER_NIGHT_TES_SHADOW = 30, SHADER_UNDEFINED = 127};
+enum SHADER_USE {
+	SHADER_SUN = 0,
+	SHADER_NORMAL = 1,
+	SHADER_NORMAL_TES = 11,
+	SHADER_BUMP = 2,
+	SHADER_NIGHT = 3,
+	SHADER_NIGHT_TES = 31,
+	SHADER_RINGED = 4,
+	SHADER_MODEL3D = 5,
+	SHADER_MOON_NORMAL = 6,
+	SHADER_MOON_NORMAL_TES = 61,
+	SHADER_MOON_BUMP = 7,
+	SHADER_MOON_NIGHT=32,
+	SHADER_ARTIFICIAL = 8,
+	SHADER_NIGHT_TES_SHADOW = 30,
+	SHADER_TES_SHADOW = 12,
+	SHADER_UNDEFINED = 127
+};
 
 /*struct bodyShaderStatus {
 	bool map;
@@ -54,8 +70,10 @@ class Set;
 
 struct drawState_t {
 	PipelineLayout *layout;
+	PipelineLayout *layoutShadow = nullptr;
 	Pipeline *pipeline;
 	Pipeline *pipelineNoDepth = nullptr;
+	Pipeline *pipelineShadow = nullptr;
 };
 
 class BodyShader {
@@ -98,6 +116,10 @@ public:
 		return &myMoon;
 	};
 
+	static drawState_t *getShaderTesShadowed() {
+		return &shaderShadowedTes;
+	};
+
 	static drawState_t *getShaderArtificial() {
 		return &shaderArtificial;
 	};
@@ -114,6 +136,7 @@ protected:
 	static drawState_t myMoon; //, shaderMoonBump, shaderMoonNormal;
 	static drawState_t myEarthShadowed; //, shaderMoonBump, shaderMoonNormal;
 	static drawState_t shaderArtificial;
+	static drawState_t shaderShadowedTes;
 	static drawState_t depthTrace;
 };
 
@@ -217,12 +240,15 @@ struct vec3p {
 struct ShadowFrag {
 	float ShadowMatrix[12];
 	vec3 lightDirection; // In body-local coordinates
-	float sinSunHalfAngle;
+	float sinSunAngle;
 	float heightMapDepthLevel; // 0.9
 	float heightMapDepth; // 0.1
 	float squaredHeightMapDepthLevel; // 0.81
 	int nbShadowingBodies;
 	vec3p shadowingBodies[4];
+	vec3 atmColor;
+	float sunDeviation;
+	float atmDeviation;
 };
 
 #endif // _BODY_SHADER_HPP_

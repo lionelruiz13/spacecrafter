@@ -51,6 +51,7 @@ class BigSave;
 #define TEX_LOAD_TYPE_PNG_ALPHA 0
 #define TEX_LOAD_TYPE_PNG_SOLID 1
 #define TEX_LOAD_TYPE_PNG_BLEND3 2
+#define TEX_LOAD_TYPE_NORMAL_MAP 3
 #define TEX_LOAD_TYPE_PNG_SOLID_REPEAT 4
 #define TEX_LOAD_TYPE_PNG_BLEND1 7
 
@@ -223,6 +224,7 @@ private:
 	int channelSize;
 	VkImageUsageFlags usage;
 	VkImageType imgType;
+	VkFormat formatOverride = VK_FORMAT_UNDEFINED;
 
 	static std::string texDir;
 	static bool loadInLowResolution;

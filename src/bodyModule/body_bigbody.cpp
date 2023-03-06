@@ -177,6 +177,21 @@ void BigBody::selectShader ()
 	}
 
 	if (tex_norm) { //bump Shader
+        if (isCenterOfInterest && tex_heightmap) {
+            myShader = SHADER_TES_SHADOW;
+            drawState = BodyShader::getShaderTesShadowed();
+            set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, -1, false, true);
+            if (!uShadowVert)
+                uShadowVert = std::make_unique<SharedBuffer<ShadowVert>>(*context.uniformMgr);
+            if (!uShadowFrag)
+                uShadowFrag = std::make_unique<SharedBuffer<ShadowFrag>>(*context.uniformMgr);
+            set->bindUniform(uShadowVert, 0);
+            set->bindUniform(uShadowFrag, 1);
+            set->bindTexture(tex_heightmap->getTexture(), 2);
+            set->bindTexture(tex_norm->getTexture(), 3);
+            set->bindTexture(tex_current->getTexture(), 4);
+            return;
+        }
 		myShader = SHADER_BUMP;
 		drawState = BodyShader::getShaderBump();
         set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, -1, false, true);
@@ -285,8 +300,12 @@ void BigBody::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigato
         selectShader();
         updateBoundingRadii();
     }
-    if (myShader == SHADER_NIGHT_TES_SHADOW)
-        return drawCenterOfInterest(cmd, prj, nav);
+    switch (myShader) {
+        case SHADER_NIGHT_TES_SHADOW:
+        case SHADER_TES_SHADOW:
+            return drawCenterOfInterest(cmd, prj, nav);
+        default:;
+    }
     if (depthTest)
         drawState->pipeline[pipelineOffset].bind(cmd);
     else
@@ -439,6 +458,25 @@ Set &BigBody::getSet(float screen_sz)
                     bigSet->bindTexture(*tex2, 4);
                     bigSet->bindTexture(*tex3, 5);
                     bigSet->bindTexture(*tex4, 6);
+                }
+            }
+            break;
+        }
+        case SHADER_TES_SHADOW: {
+            auto tex0 = tex_heightmap->getBigTexture();
+            auto tex1 = tex_norm->getBigTexture();
+            auto tex2 = tex_current->getBigTexture();
+            if (bigSet) {
+                if (!(tex0 && tex1 && tex2))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1 && tex2) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uShadowVert, 0);
+                    bigSet->bindUniform(uShadowFrag, 1);
+                    bigSet->bindTexture(*tex0, 2);
+                    bigSet->bindTexture(*tex1, 3);
+                    bigSet->bindTexture(*tex2, 4);
                 }
             }
             break;
@@ -608,7 +646,7 @@ void BigBody::bindShadows(const ShadowRenderData &renderData)
         frag.ShadowMatrix[8] = m.r[8];
         frag.ShadowMatrix[9] = m.r[9];
         frag.ShadowMatrix[10] = m.r[10];
-        frag.sinSunHalfAngle = renderData.sinSunHalfAngle;
+        frag.sinSunAngle = 2 * renderData.sinSunHalfAngle;
         frag.nbShadowingBodies = renderData.shadowingBodies.size();
         for (uint8_t i = 0; i < renderData.shadowingBodies.size(); ++i) {
             frag.shadowingBodies[i] = renderData.shadowingBodies[i];
@@ -621,8 +659,8 @@ void BigBody::drawCenterOfInterest(VkCommandBuffer cmd, const Projector *prj, co
     auto &vert = **uShadowVert;
     auto &frag = **uShadowFrag;
 
-    float altimetryCoef = 1 + 0.01 * bodyTesselation->getPlanetAltimetryFactor();
-    float finalRadius = radius * altimetryCoef;
+    const float altimetryFactor = 0.01 * bodyTesselation->getPlanetAltimetryFactor();
+    float finalRadius = std::min(radius * (1 + altimetryFactor), mat.getTranslation().length() - radius/64);
     auto m = mat * Mat4d::zrotation(M_PI/180*(axis_rotation + 90));
     vert.ModelViewMatrix = (m * Mat4d::scaling(Vec3d(finalRadius, finalRadius, finalRadius * one_minus_oblateness))).convert();
     {
@@ -646,14 +684,21 @@ void BigBody::drawCenterOfInterest(VkCommandBuffer cmd, const Projector *prj, co
     vert.zRange = clipping_fov[1] - clipping_fov[0];
     vert.fov = clipping_fov[2];
 
-    altimetryCoef = 1/altimetryCoef;
+    const float altimetryCoef = radius / finalRadius;
     frag.heightMapDepthLevel = altimetryCoef;
-    frag.heightMapDepth = 1 - altimetryCoef;
+    frag.heightMapDepth = altimetryFactor * altimetryCoef;
     frag.squaredHeightMapDepthLevel = altimetryCoef*altimetryCoef;
+    frag.atmColor = atmosphereParams->atmColor;
+    frag.sunDeviation = atmosphereParams->sunDeviation;
+    frag.atmDeviation = atmosphereParams->atmDeviation;
 
     drawState->pipeline->bind(cmd);
     currentObj->bind(cmd);
-    drawState->layout->bindSet(cmd, getSet(screen_sz));
+    if (myShader == SHADER_NIGHT_TES_SHADOW) {
+        drawState->layout->bindSet(cmd, getSet(screen_sz));
+    } else {
+        drawState->layout->bindSets(cmd, {getSet(screen_sz), *Context::instance->uboSet});
+    }
     currentObj->draw(cmd, screen_sz);
     drawAtmExt(cmd, prj, nav, m.convert(), screen_sz, true);
 }

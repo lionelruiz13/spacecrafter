@@ -88,6 +88,10 @@ typedef struct AtmosphereParams {
 	float limInf = 0.f;
 	float limSup = 0.f;
 	float limLandscape = 0.f;
+	Vec3f atmColor = Vec3f(0, 0, 0);
+	float sunDeviation = 0.f;
+	float atmDeviation = 0.f;
+
 } AtmosphereParams;
 
 struct ShadowParams {

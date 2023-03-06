@@ -1,5 +1,5 @@
 //
-// my earth tessellation
+// Moon shadow
 //
 
 #version 430
@@ -7,12 +7,12 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
+#include <cam_block.glsl>
+
 layout (binding=2) uniform sampler2D heightMap;
 layout (binding=3) uniform sampler2D normalMap;
 layout (binding=4) uniform sampler2D dayTexture;
-layout (binding=5) uniform sampler2D nightTexture;
-layout (binding=6) uniform sampler2D SpecularTexture;
-// layout (binding=7) uniform sampler2DArray bodyShadows;
+// layout (binding=6) uniform sampler2DArray bodyShadows;
 
 #define M_PI 3.14159265358979323846
 
@@ -105,10 +105,9 @@ void main(void)
 			yAxis = -yAxis;
 		vec3 normal = normalize(mat3(xAxis,yAxis, nSamplePos) * (texture(normalMap, texCoord).xyz * 2 - 1));
 		vec3 sunDirection = normalize(nSamplePos * sunDeviation - lightDirection);
-		float NdotL = max(dot(sunDirection, normal), 0);
+		float NdotL = clamp(dot(sunDirection, normal) + ambient, ambient, 1);
 		float atmosphere = clamp(atmDeviation - dot(lightDirection, nSamplePos), 0, 1);
-		shadowPos *= (textureLod(heightMap, texCoord, 0).r * heightMapDepth + heightMapDepthLevel) / depth;
-		if (NdotL + atmosphere > 0) {
+		if (NdotL + atmosphere > ambient) {
 			float shadowing = 1;
 			// Process shadow of bodies
 			for (int i = 0; i < nbShadowingBodies; ++i) {
@@ -125,23 +124,15 @@ void main(void)
 			vec3 tmp;
 			do {
 				tmp = xyzToLonLatAlt(samplePos + sunDirection * rayLength);
-				fragColor = vec4(tmp, 1);
 				maxOcclusion = min(maxOcclusion, (tmp.z - textureLod(heightMap, tmp.xy, 0).r) / rayLength);
 				rayLength *= SHADOW_STEP_FACTOR;
 			} while (tmp.z < 1);
 			NdotL *= clamp(maxOcclusion * heightMapDepth / sinSunAngle + 0.5, 0, 1);
 
 			// Process color
-			color = texture(dayTexture, texCoord).xyz * mix(vec3(NdotL), vec3(atmosphere), atmColor);
-			float specularity = dot(normal, normalize(sunDirection - view));
-			if (specularity > 0.9) {
-				color += texture(SpecularTexture, texCoord).xyz * pow(specularity, 32);
-			}
-			if (atmosphere < 0.1) {
-				color = max(color * shadowing, texture(nightTexture, texCoord).xyz * smoothstep(0.0, 0.1, 0.1 - atmosphere));
-			}
+			color = texture(dayTexture, texCoord).xyz * mix(vec3(NdotL), vec3(min(atmosphere + ambient, 1)), atmColor);
 		} else {
-			color = texture(nightTexture, texCoord).xyz;
+			color = texture(dayTexture, texCoord).xyz * ambient;
 		}
 	} else {
 		discard;

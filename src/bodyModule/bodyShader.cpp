@@ -45,6 +45,7 @@ drawState_t BodyShader::myMoon;
 drawState_t BodyShader::shaderArtificial;
 drawState_t BodyShader::depthTrace;
 drawState_t BodyShader::myEarthShadowed;
+drawState_t BodyShader::shaderShadowedTes;
 
 
 void BodyShader::createShader()
@@ -330,14 +331,36 @@ void BodyShader::createShader()
 	context.pipelines.push_back(std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, myEarthShadowed.layout));
 	myEarthShadowed.pipeline = context.pipelines.back().get();
 	myEarthShadowed.pipeline->setCullMode(true);
-	// myEarthShadowed.pipeline->setFrontFace(); // Body with tesselation don't have the same front face...
 	myEarthShadowed.pipeline->setBlendMode(BLEND_NONE);
 	myEarthShadowed.pipeline->bindVertex(*context.ojmVertexArray);
 	myEarthShadowed.pipeline->removeVertexEntry(1);
 	myEarthShadowed.pipeline->removeVertexEntry(2);
 	myEarthShadowed.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
-	// myEarthShadowed.pipeline->setTessellationState(3);
 	myEarthShadowed.pipeline->bindShader("body_tes_shadow.vert.spv");
 	myEarthShadowed.pipeline->bindShader("my_earth_shadow.frag.spv");
 	myEarthShadowed.pipeline->build("myEarthShadowed");
+
+	// ========== shaderShadowedTes ========== //
+	context.layouts.push_back(std::make_unique<PipelineLayout>(vkmgr));
+	shaderShadowedTes.layout = context.layouts.back().get();
+	shaderShadowedTes.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // globalProj
+	shaderShadowedTes.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // globalFrag
+	shaderShadowedTes.layout->setTextureLocation(2, &tmp);
+	shaderShadowedTes.layout->setTextureLocation(3, &tmp);
+	shaderShadowedTes.layout->setTextureLocation(4, &tmp);
+	shaderShadowedTes.layout->buildLayout();
+	shaderShadowedTes.layout->setGlobalPipelineLayout(context.layouts.front().get());
+	shaderShadowedTes.layout->build();
+
+	context.pipelines.push_back(std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shaderShadowedTes.layout));
+	shaderShadowedTes.pipeline = context.pipelines.back().get();
+	shaderShadowedTes.pipeline->setCullMode(true);
+	shaderShadowedTes.pipeline->setBlendMode(BLEND_NONE);
+	shaderShadowedTes.pipeline->bindVertex(*context.ojmVertexArray);
+	shaderShadowedTes.pipeline->removeVertexEntry(1);
+	shaderShadowedTes.pipeline->removeVertexEntry(2);
+	shaderShadowedTes.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	shaderShadowedTes.pipeline->bindShader("body_tes_shadow.vert.spv");
+	shaderShadowedTes.pipeline->bindShader("my_moon_shadow.frag.spv");
+	shaderShadowedTes.pipeline->build("shaderShadowedTes");
 }

@@ -851,6 +851,13 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 		tmp->limInf = Utility::strToFloat(param["atmosphere_lim_inf"], 40000.f);
 		tmp->limSup = Utility::strToFloat(param["atmosphere_lim_sup"], 80000.f);
 		tmp->limLandscape = Utility::strToFloat(param["atmosphere_lim_landscape"], 10000.f);
+		tmp->atmColor.set(
+			Utility::strToFloat(param["atmosphere_ambient_r"]),
+			Utility::strToFloat(param["atmosphere_ambient_g"]),
+			Utility::strToFloat(param["atmosphere_ambient_b"])
+		);
+		tmp->sunDeviation = sin(Utility::strToFloat(param["atmosphere_sun_deviation"])*M_PI/180);
+		tmp->atmDeviation = sin(Utility::strToFloat(param["atmosphere_ambient_deviation"])*M_PI/180);
 		p->setAtmosphereParams(tmp);
 	}
 
