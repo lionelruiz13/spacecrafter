@@ -391,10 +391,10 @@ void Moon::drawCenterOfInterest(VkCommandBuffer cmd, const Projector *prj, const
     auto &vert = **uShadowVert;
     auto &frag = **uShadowFrag;
 
-    const float altimetryFactor = 0.01 * bodyTesselation->getPlanetAltimetryFactor();
+    const float altimetryFactor = 0.01 * bodyTesselation->getMoonAltimetryFactor();
     float finalRadius = std::min(radius * (1 + altimetryFactor), mat.getTranslation().length() - radius/64);
     auto m = mat * Mat4d::zrotation(M_PI/180*(axis_rotation + 90));
-    vert.ModelViewMatrix = (m * Mat4d::scaling(Vec3d(finalRadius, finalRadius, finalRadius * one_minus_oblateness))).convert();
+    vert.ModelViewMatrix = (m * Mat4d::scaling(Vec3d(1, 1, one_minus_oblateness))).convert();
     {
         auto m2 = m.transpose();
         vert.WorldToModelMatrix[0] = m2.r[0];
@@ -406,6 +406,7 @@ void Moon::drawCenterOfInterest(VkCommandBuffer cmd, const Projector *prj, const
         vert.WorldToModelMatrix[8] = m2.r[8];
         vert.WorldToModelMatrix[9] = m2.r[9];
         vert.WorldToModelMatrix[10] = m2.r[10];
+        vert.radius = finalRadius;
 
         Vec3f tmp = m2 * (eye_planet - eye_sun);
         tmp.normalize();

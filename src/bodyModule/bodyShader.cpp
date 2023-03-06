@@ -332,6 +332,7 @@ void BodyShader::createShader()
 	myEarthShadowed.pipeline = context.pipelines.back().get();
 	myEarthShadowed.pipeline->setCullMode(true);
 	myEarthShadowed.pipeline->setBlendMode(BLEND_NONE);
+	myEarthShadowed.pipeline->setDepthStencilMode();
 	myEarthShadowed.pipeline->bindVertex(*context.ojmVertexArray);
 	myEarthShadowed.pipeline->removeVertexEntry(1);
 	myEarthShadowed.pipeline->removeVertexEntry(2);
@@ -356,6 +357,7 @@ void BodyShader::createShader()
 	shaderShadowedTes.pipeline = context.pipelines.back().get();
 	shaderShadowedTes.pipeline->setCullMode(true);
 	shaderShadowedTes.pipeline->setBlendMode(BLEND_NONE);
+	shaderShadowedTes.pipeline->setDepthStencilMode();
 	shaderShadowedTes.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderShadowedTes.pipeline->removeVertexEntry(1);
 	shaderShadowedTes.pipeline->removeVertexEntry(2);

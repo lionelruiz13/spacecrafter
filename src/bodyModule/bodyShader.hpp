@@ -227,6 +227,7 @@ struct ShadowVert {
 	float zNear;
 	float zRange;
 	float fov;
+	float radius;
 };
 
 struct vec3p {

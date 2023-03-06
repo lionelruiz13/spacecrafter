@@ -18,6 +18,7 @@ layout (binding=0) uniform globalProj {
 	float zNear;
 	float zRange;
 	float fov;
+	float radius;
 	// float heightmapDepth;
 };
 
@@ -36,7 +37,7 @@ layout (location=1) out vec3 viewDirection;
 void main()
 {
 	entryPos = position;
-	vec4 pos = ModelViewMatrix * vec4(position, 1);
+	vec4 pos = ModelViewMatrix * vec4(position * radius, 1);
 	float rq = pos.x*pos.x + pos.y*pos.y;
 	float depth = sqrt(rq + pos.z*pos.z);
 	rq = sqrt(rq);
@@ -60,5 +61,5 @@ void main()
 
 	f /= rq * fov;
 	depth = (depth - zNear) / zRange;
-	gl_Position = vec4(pos.x*f, pos.y*f, depth, 1);
+	gl_Position = vec4(pos.x*f, pos.y*f, 0, 1);
 }
