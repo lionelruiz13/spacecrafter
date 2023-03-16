@@ -661,7 +661,7 @@ void BigBody::drawCenterOfInterest(VkCommandBuffer cmd, const Projector *prj, co
 
     const float altimetryFactor = 0.01 * bodyTesselation->getPlanetAltimetryFactor();
     float finalRadius = std::min(radius * (1 + altimetryFactor), mat.getTranslation().length() - radius/64);
-    auto m = mat * Mat4d::zrotation(M_PI/180*(axis_rotation + 90));
+    auto m = mat * Mat4d::zrotation(M_PI/180*axis_rotation);
     vert.ModelViewMatrix = (m * Mat4d::scaling(Vec3d(1, 1, one_minus_oblateness))).convert();
     {
         auto m2 = m.transpose();

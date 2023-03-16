@@ -48,7 +48,7 @@ vec3 xyzToLonLatAlt(vec3 pos)
 {
 	float depth = length(pos);
 	float lat = acos(-pos.z/depth) / M_PI;
-	float lon = 0.5 + atan(-pos.y, -pos.x) / (2 * M_PI);
+	float lon = 0.5 + atan(pos.y, pos.x) / (2 * M_PI);
 	return vec3(lon, lat, (depth - heightMapDepthLevel) / heightMapDepth);
 }
 
@@ -85,7 +85,7 @@ void main(void)
 			}
 		}
 		float depth = length(samplePos);
-		vec2 texCoord = vec2(0.5 + atan(-samplePos.y, -samplePos.x) / (2 * M_PI), acos(-samplePos.z/depth) / M_PI);
+		vec2 texCoord = vec2(0.5 + atan(samplePos.y, samplePos.x) / (2 * M_PI), acos(-samplePos.z/depth) / M_PI);
 		vec2 shadowPos = vec2(ShadowMatrix * samplePos); // For shadow projection
 		vec3 nSamplePos = samplePos/depth;
 		vec3 xAxis = normalize(vec3(-samplePos.y, samplePos.x, 0));
