@@ -46,12 +46,9 @@ layout (location=0) out vec4 fragColor;
 
 vec3 xyzToLonLatAlt(vec3 pos)
 {
-	float rq = pos.x*pos.x+pos.y*pos.y;
-	float depth = sqrt(rq+pos.z*pos.z);
+	float depth = length(pos);
 	float lat = acos(-pos.z/depth) / M_PI;
-	float lon = acos(pos.x/sqrt(rq)) / (2 * M_PI);
-	if (pos.y < 0)
-		lon = 1 - lon;
+	float lon = 0.5 + atan(-pos.y, -pos.x) / (2 * M_PI);
 	return vec3(lon, lat, (depth - heightMapDepthLevel) / heightMapDepth);
 }
 
@@ -87,16 +84,8 @@ void main(void)
 				samplePos += rayStep;
 			}
 		}
-		float rq = samplePos.x*samplePos.x+samplePos.y*samplePos.y;
-		float depth = sqrt(rq+samplePos.z*samplePos.z);
-		rq = sqrt(rq);
-		float lat = acos(-samplePos.z/depth) / M_PI;
-		float lon = acos(samplePos.x/rq) / (2 * M_PI);
-		if (samplePos.y < 0)
-			lon = 1 - lon;
-		// samplePos /= depth;
-		// rq /= depth;
-		vec2 texCoord = vec2(lon, lat);
+		float depth = length(samplePos);
+		vec2 texCoord = vec2(0.5 + atan(-samplePos.y, -samplePos.x) / (2 * M_PI), acos(-samplePos.z/depth) / M_PI);
 		vec2 shadowPos = vec2(ShadowMatrix * samplePos); // For shadow projection
 		vec3 nSamplePos = samplePos/depth;
 		vec3 xAxis = normalize(vec3(-samplePos.y, samplePos.x, 0));
