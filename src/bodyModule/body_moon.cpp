@@ -95,8 +95,8 @@ void Moon::defineSet()
     set->bindUniform(uGlobalVertProj, 0);
     switch (myShader) {
         case SHADER_TES_SHADOW:
-            set->bindUniform(uShadowFrag, 0);
-            set->bindUniform(uShadowVert, 1);
+            set->bindUniform(uShadowVert, 0);
+            set->bindUniform(uShadowFrag, 1);
             set->bindTexture(tex_heightmap->getTexture(), 2);
             set->bindTexture(tex_norm->getTexture(), 3);
             set->bindTexture(tex_current->getTexture(), 4);
@@ -239,7 +239,7 @@ Set &Moon::getSet(float screen_sz)
             // Not handled !
             return *set;
     }
-    return (bigSet && screen_sz > 512) ? *bigSet : *set;
+    return bigSet ? *bigSet : *set;
 }
 
 void Moon::selectShader()
