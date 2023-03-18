@@ -38,7 +38,7 @@
 #include "tools/sc_const.hpp"
 #include <chrono>
 #include "bodyModule/ring.hpp"
-
+#include "bodyModule/solarsystem_display.hpp"
 #include "tools/file_path.hpp"
 #include "bodyModule/trail.hpp"
 #include "bodyModule/axis.hpp"
@@ -174,6 +174,8 @@ Body::~Body()
 {
     if (parent)
         parent->satellites.remove(this);
+    if (isCenterOfInterest)
+        SolarSystemDisplay::instance->invalidateCenterOfInterest();
 }
 
 void Body::switchMapSkin(bool a) {

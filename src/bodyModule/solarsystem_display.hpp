@@ -95,6 +95,8 @@ public:
 	//! home_planet is needed for light travel time computation
 	void computeTransMatrices(double date,const Observer * obs);
 
+    void invalidateCenterOfInterest();
+
     static SolarSystemDisplay *instance;
 private:
     ProtoSystem * ssystem;

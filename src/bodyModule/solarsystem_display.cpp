@@ -317,3 +317,10 @@ void SolarSystemDisplay::computeTransMatrices(double date,const Observer * obs)
 		}
 	}
 }
+
+void SolarSystemDisplay::invalidateCenterOfInterest()
+{
+   if (mainBody)
+       mainBody->looseInterest();
+   mainBody = nullptr;
+}
