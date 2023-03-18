@@ -98,7 +98,7 @@ public:
     static SolarSystemDisplay *instance;
 private:
     ProtoSystem * ssystem;
-    Body *mainBody;
+    Body *mainBody = nullptr;
 
 	bool flagShow= true;
 	bool flag_light_travel_time = false;
