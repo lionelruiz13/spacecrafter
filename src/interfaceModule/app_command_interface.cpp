@@ -2220,6 +2220,8 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 {
 	std::string argAction = args[W_ACTION];
 	std::string filen = args[W_FILENAME];
+	if (filen.size() < 4 || filen[filen.size()-4] != '.')
+		filen = evalString(filen);
 	if (!argAction.empty()) {
 		if (argAction==W_END) {
 			scriptInterface->cancelScript();
