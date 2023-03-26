@@ -124,13 +124,17 @@ void main(void)
 			color = texture(dayTexture, texCoord).xyz * mix(vec3(NdotL), vec3(atmosphere), atmColor);
 			float specularity = dot(normal, normalize(sunDirection - view));
 			if (specularity > 0.9) {
-				color += texture(SpecularTexture, texCoord).xyz * pow(specularity, 32);
+				color += texture(SpecularTexture, texCoord).xyz * pow(specularity, 56);
 			}
 			if (atmosphere < 0.1) {
 				color = max(color * shadowing, texture(nightTexture, texCoord).xyz * smoothstep(0.0, 0.1, 0.1 - atmosphere));
 			}
 		} else {
 			color = texture(nightTexture, texCoord).xyz;
+			float specularity = dot(normal, normalize(sunDirection - view));
+			if (specularity > 0.9) {
+				color += texture(SpecularTexture, texCoord).xyz * pow(specularity, 56);
+			}
 		}
 	} else {
 		discard;
