@@ -233,14 +233,27 @@ void SkyPerson::loadData(const std::string& filename)
 	std::ifstream fichier(filename, std::ios::in);
 	if (fichier) {
 		fichier >> nblines;
+		float deg2rad=1;
+		if (nblines<0) {
+			nblines=-nblines;
+			deg2rad=M_PI/180.0;
+		}
+		fichier >> alpha >> delta;
+		Utility::spheToRect(alpha*deg2rad, delta*deg2rad, punts);
+		*(dataSky++) = punts;
+		++dataSkySize;
 		if (nblines > NB_MAX_POINTS)
 			nblines = NB_MAX_POINTS;
 
-		for (int i = 0; i < nblines; i++) {
+		for (int i = 1; i < nblines; i++) {
 			fichier >> alpha >> delta;
-			Utility::spheToRect(alpha, delta, punts);
+			Utility::spheToRect(alpha*deg2rad, delta*deg2rad, punts);
 			*(dataSky++) = punts;
 			++dataSkySize;
+ 			if (deg2rad!=1) {
+				*(dataSky++) = punts;
+				++dataSkySize;
+			}
 		}
 		aperson = alpha;
 		fichier.close();
