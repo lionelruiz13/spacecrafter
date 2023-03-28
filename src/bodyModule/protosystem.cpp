@@ -577,6 +577,15 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 		orb = std::make_unique<stillOrbit>(Utility::strToDouble(param["orbit_x"]),
 		                     Utility::strToDouble(param["orbit_y"]),
 		                     Utility::strToDouble(param["orbit_z"]));
+	} else if (funcname == "location_orbit") {
+		orb = std::make_unique<LocationOrbit>(
+			Utility::strToDouble(param["orbit_lon"]),
+			Utility::strToDouble(param["orbit_lat"]),
+			Utility::strToDouble(param["orbit_alt"]),
+			parent->getRadius(),
+			parent->getSiderealDay(),
+			parent->getSiderealTime(0)
+		);
 	} else {
 
 		orb = std::move(orbitCreator->handle(param));

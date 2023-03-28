@@ -319,6 +319,20 @@ private:
 	double x,y,z;
 };
 
+class LocationOrbit : public Orbit {
+public:
+	LocationOrbit(double _lon, double _lat, double _alt, double parentRadius, double parentPeriod, double parentOffset);
+
+	virtual ~LocationOrbit();
+
+	virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
+
+	std::string saveOrbit() const;
+
+private:
+	double lon, lat, alt, JDToRotation;
+};
+
 class linearOrbit : public Orbit {
 public:
 	linearOrbit(double _t_start, double _t_end, double *_posInitial, double *_posFinal );
