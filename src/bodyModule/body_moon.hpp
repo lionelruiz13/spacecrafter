@@ -81,6 +81,7 @@ protected :
 	std::unique_ptr<SharedBuffer<ShadowVert>> uShadowVert;
 	std::unique_ptr<SharedBuffer<ShadowFrag>> uShadowFrag;
 	std::unique_ptr<s_texture> tex_night=nullptr;			// for moon with night event to see
+	const bool isEarthMoon;
 };
 
 #endif /* end of include guard: BODY_MOON_HPP_ */

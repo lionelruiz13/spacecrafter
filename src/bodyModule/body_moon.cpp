@@ -68,7 +68,8 @@ Moon::Moon(std::shared_ptr<Body> parent,
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
-		 _bodyTexture)
+		 _bodyTexture),
+    isEarthMoon(englishName == "Moon")
 {
 	if (_bodyTexture.tex_night != "") {
 		tex_night = std::make_unique<s_texture>(FilePath(_bodyTexture.tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
@@ -313,12 +314,12 @@ void Moon::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator *
         case SHADER_MOON_NORMAL_TES: // myMoon
             uMoonFrag->get().MoonPosition1 = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
             uMoonFrag->get().MoonRadius1 = parent->getRadius();
-            uMoonFrag->get().UmbraColor = (getEnglishName() == "Moon") ? tmp2 : tmp;
+            uMoonFrag->get().UmbraColor = (isEarthMoon) ? tmp2 : tmp;
             uMoonFrag->get().SunHalfAngle = sun_half_angle;
             uGlobalTescGeom->get().TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor());
             break;
 		case SHADER_MOON_BUMP:
-            *uUmbraColor = (getEnglishName() == "Moon") ? tmp2 : tmp;
+            *uUmbraColor = (isEarthMoon) ? tmp2 : tmp;
             [[fallthrough]];
 		case SHADER_MOON_NIGHT:
 		case SHADER_MOON_NORMAL:
@@ -362,11 +363,24 @@ void Moon::handleVisibilityFader(const Observer* observatory, const Projector* p
 
 void Moon::bindShadows(const ShadowRenderData &renderData)
 {
-    if (changed) {
-        defineSet();
-        updateBoundingRadii();
+    if (isEarthMoon) {
+        if (renderData.shadowingBodies.empty()) {
+            if (myShader == SHADER_MOON_NORMAL_TES && tex_norm) {
+                myShader = SHADER_TES_SHADOW;
+                drawState = BodyShader::getShaderTesShadowed();
+                changed = true;
+            }
+        } else if (myShader == SHADER_TES_SHADOW) {
+            myShader = SHADER_MOON_NORMAL_TES;
+            drawState = BodyShader::getShaderMoonNormalTes();
+            changed = true;
+        }
     }
-    if (uShadowVert) {
+    if (myShader == SHADER_TES_SHADOW) {
+        if (changed) {
+            defineSet();
+            updateBoundingRadii();
+        }
         auto &frag = **uShadowFrag;
         auto m = renderData.lookAt * model;
         frag.ShadowMatrix[0] = m.r[0];
