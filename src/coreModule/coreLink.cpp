@@ -1255,6 +1255,14 @@ double CoreLink::getSelectedDE() const {
 	return core->ssystemFactory->getSelectedDE(core->navigation);
 }
 
+double CoreLink::getSelectedStarRA() const {
+	return core->ssystemFactory->getSelectedStarRA(core->navigation);
+}
+
+double CoreLink::getSelectedStarDE() const {
+	return core->ssystemFactory->getSelectedStarDE(core->navigation);
+}
+
 double CoreLink::getBodySelected() const {
 	return double(core->getSelectedBodyName());
 }

@@ -578,6 +578,12 @@ public:
 	//return the Selected body DE
 	double getSelectedDE() const;
 
+	//return the Sected star RA
+	double getSelectedStarRA() const;
+
+	//return the Selected star DE
+	double getSelectedStarDE() const;
+
 	double getDateYear() const;
 	double getDateMonth() const;
 	double getDateDay() const;

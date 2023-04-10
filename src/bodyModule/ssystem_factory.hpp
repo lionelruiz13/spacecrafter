@@ -274,6 +274,18 @@ public:
     	ssystemSelected->getSelected().getAltAz(nav, &alt, &az);
     	return alt*180./M_PI;
     }
+
+    double getSelectedStarRA(const Navigator *nav) const {
+        double ra=0, de;
+        selected_object.getRaDeValue(nav, &ra, &de);
+        return (ra < 0) ? ra + 360 : ra;//*180.0/M_PI;
+    }
+    double getSelectedStarDE(const Navigator *nav) const {
+        double ra, de=0;
+        selected_object.getRaDeValue(nav, &ra, &de);
+        return de;
+    }
+
     double getSelectedRA(const Navigator * nav) const {
         double ra=0, de;
         ssystemSelected->getSelected().getRaDeValue(nav, &ra, &de);

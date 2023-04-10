@@ -31,6 +31,8 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_SELECTED_ALT]=SC_RESERVED_VAR::SELECTED_ALT;
 	m_reservedVar[ACI_RW_SELECTED_RA]=SC_RESERVED_VAR::SELECTED_RA;
 	m_reservedVar[ACI_RW_SELECTED_DE]=SC_RESERVED_VAR::SELECTED_DE;
+	m_reservedVar[ACI_RW_SELECTED_STAR_RA]=SC_RESERVED_VAR::SELECTED_STAR_RA;
+	m_reservedVar[ACI_RW_SELECTED_STAR_DE]=SC_RESERVED_VAR::SELECTED_STAR_DE;
 	m_reservedVar[ACI_RW_DATE_YEAR]=SC_RESERVED_VAR::DATE_YEAR;
 	m_reservedVar[ACI_RW_DATE_MONTH]=SC_RESERVED_VAR::DATE_MONTH;
 	m_reservedVar[ACI_RW_DATE_DAY]=SC_RESERVED_VAR::DATE_DAY;
@@ -261,6 +263,10 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			return coreLink->getSelectedRA();
 		case SC_RESERVED_VAR::SELECTED_DE:
 			return coreLink->getSelectedDE();
+		case SC_RESERVED_VAR::SELECTED_STAR_RA:
+			return coreLink->getSelectedStarRA();
+		case SC_RESERVED_VAR::SELECTED_STAR_DE:
+			return coreLink->getSelectedStarDE();
 		case SC_RESERVED_VAR::DATE_YEAR:
 			return coreLink->getDateYear();
 		case SC_RESERVED_VAR::DATE_MONTH:
