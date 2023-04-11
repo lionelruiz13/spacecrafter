@@ -636,7 +636,7 @@ void BigBody::bindShadows(const ShadowRenderData &renderData)
     }
     if (uShadowVert) {
         auto &frag = **uShadowFrag;
-        auto m = renderData.lookAt * model;
+        auto m = renderData.lookAt * (model * Mat4d::zrotation(M_PI/180*axis_rotation));
         frag.ShadowMatrix[0] = m.r[0];
         frag.ShadowMatrix[1] = m.r[1];
         frag.ShadowMatrix[2] = m.r[2];
@@ -649,7 +649,9 @@ void BigBody::bindShadows(const ShadowRenderData &renderData)
         frag.sinSunAngle = 2 * renderData.sinSunHalfAngle;
         frag.nbShadowingBodies = renderData.shadowingBodies.size();
         for (uint8_t i = 0; i < renderData.shadowingBodies.size(); ++i) {
-            frag.shadowingBodies[i] = renderData.shadowingBodies[i];
+            auto tmp = renderData.shadowingBodies[i];
+            tmp[2] /= (radius * (1 + 0.01 * bodyTesselation->getPlanetAltimetryFactor()));
+            frag.shadowingBodies[i] = tmp;
         }
     }
 }

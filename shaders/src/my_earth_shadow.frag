@@ -103,9 +103,9 @@ void main(void)
 			for (int i = 0; i < nbShadowingBodies; ++i) {
 				vec2 tmp = shadowPos - shadowingBodies[i].xy;
 				float sr = shadowingBodies[i].z;
-				if (dot(tmp, tmp) < sr) {
+				if (dot(tmp, tmp) < sr*sr) {
 					// shadowing += texture(shadowTexture, vec3((tmp + sr) / (sr * 2), i)).r
-					shadowing *= dot(tmp, tmp) / sr; // Temporary solution
+					shadowing *= dot(tmp, tmp) / (sr*sr); // Temporary solution
 				}
 			}
 			// shortly ray trace toward -lightDirection for self-shadowing
