@@ -43,13 +43,15 @@ layout (location=0) out vec4 fragColor;
 #define STEP_COUNT 24
 #define SHADOW_STEP_FACTOR 1.1
 #define SHADOW_STEP_INIT (1.f/8192)
+#define SHADOW_MIN_STEP (1.f/65536)
 
-vec3 xyzToLonLatAlt(vec3 pos)
+float xyzToHeight(vec3 pos)
 {
 	float depth = length(pos);
-	float lat = acos(-pos.z/depth) / M_PI;
-	float lon = 0.5 + atan(pos.y, pos.x) / (2 * M_PI);
-	return vec3(lon, lat, (depth - heightMapDepthLevel) / heightMapDepth);
+	return (depth - heightMapDepthLevel) / heightMapDepth - textureLod(heightMap, vec2(
+		0.5 + atan(pos.y, pos.x) / (2 * M_PI),
+		acos(-pos.z/depth) / M_PI
+	), 0).r;
 }
 
 void main(void)
@@ -65,8 +67,7 @@ void main(void)
 	vec3 rayStep = view * (rayLength / stepCount);
 	for (int i = 0; i < stepCount; ++i) {
 		samplePos += rayStep;
-		vec3 tmp = xyzToLonLatAlt(samplePos);
-		if (textureLod(heightMap, tmp.xy, 0).r > tmp.z) {
+		if (xyzToHeight(samplePos) < 0) {
 			hitBody = true;
 			rayStep /= 2;
 			samplePos -= rayStep;
@@ -77,8 +78,7 @@ void main(void)
 	if (hitBody) {
 		for (int i = 0; i < STEP_COUNT; ++i) {
 			rayStep /= 2;
-			vec3 tmp = xyzToLonLatAlt(samplePos);
-			if (textureLod(heightMap, tmp.xy, 0).r > tmp.z) {
+			if (xyzToHeight(samplePos) < 0) {
 				samplePos -= rayStep; // Ground hit
 			} else {
 				samplePos += rayStep;
@@ -87,15 +87,16 @@ void main(void)
 		float depth = length(samplePos);
 		vec2 texCoord = vec2(0.5 + atan(samplePos.y, samplePos.x) / (2 * M_PI), acos(-samplePos.z/depth) / M_PI);
 		vec2 shadowPos = vec2(ShadowMatrix * samplePos); // For shadow projection
-		vec3 nSamplePos = samplePos/depth;
 		vec3 xAxis = normalize(vec3(-samplePos.y, samplePos.x, 0));
-		vec3 yAxis = normalize(cross(xAxis, nSamplePos));
+		samplePos /= depth;
+		vec3 yAxis = normalize(cross(xAxis, samplePos));
 		if (yAxis.z < 0)
 			yAxis = -yAxis;
-		vec3 normal = normalize(mat3(xAxis,yAxis, nSamplePos) * (texture(normalMap, texCoord).xyz * 2 - 1));
-		vec3 sunDirection = normalize(nSamplePos * sunDeviation - lightDirection);
+		vec3 normal = normalize(mat3(xAxis,yAxis, samplePos) * (texture(normalMap, texCoord).xyz * 2 - 1));
+		vec3 sunDirection = normalize(samplePos * sunDeviation - lightDirection);
 		float NdotL = clamp(dot(sunDirection, normal) + ambient, ambient, 1);
-		float atmosphere = clamp(atmDeviation - dot(lightDirection, nSamplePos), 0, 1);
+		float atmosphere = clamp(atmDeviation - dot(lightDirection, samplePos), 0, 1);
+		samplePos *= textureLod(heightMap, texCoord, 0).r * heightMapDepth + heightMapDepthLevel;
 		if (NdotL + atmosphere > ambient) {
 			float shadowing = 1;
 			// Process shadow of bodies
@@ -110,12 +111,30 @@ void main(void)
 			// shortly ray trace toward -lightDirection for self-shadowing
 			rayLength = SHADOW_STEP_INIT;
 			float maxOcclusion = 1;
-			vec3 tmp;
+			float tmp;
+			float prev = 0;
+			bool approaching = false; // Is previously approaching
 			do {
-				tmp = xyzToLonLatAlt(samplePos + sunDirection * rayLength);
-				maxOcclusion = min(maxOcclusion, (tmp.z - textureLod(heightMap, tmp.xy, 0).r) / rayLength);
+				tmp = xyzToHeight(samplePos + sunDirection * rayLength);
+				if (tmp < prev) {
+					approaching = true;
+				} else if (approaching) {
+					prev = rayLength / SHADOW_STEP_FACTOR;
+					float tmpR = rayLength - prev;
+					do {
+						tmpR /= 2;
+						if (xyzToHeight(samplePos + sunDirection * (prev - tmpR)) < xyzToHeight(samplePos + sunDirection * (prev + tmpR))) {
+							prev -= tmpR;
+						} else {
+							prev += tmpR;
+						}
+					} while (tmpR > SHADOW_MIN_STEP);
+					maxOcclusion = min(maxOcclusion, xyzToHeight(samplePos + sunDirection * prev) / prev);
+					approaching = false;
+				}
+				prev = tmp;
 				rayLength *= SHADOW_STEP_FACTOR;
-			} while (tmp.z < 1);
+			} while (tmp < 0.8);
 			NdotL *= clamp(maxOcclusion * heightMapDepth / sinSunAngle + 0.5, 0, 1);
 
 			// Process color
