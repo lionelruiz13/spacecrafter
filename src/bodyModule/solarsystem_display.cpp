@@ -88,13 +88,9 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
             Vec3d v2 = body.get_heliocentric_ecliptic_pos();
             double d = v1.dot(v2); // d1*d2
             if (d > 0 && d < sd1) {
-                double tmp = cst1+d*cst2;
-                if (tmp < body.getBoundingRadius() * 3) { // Ignore diffuse shadow (max occlusion < 11%)
-                    tmp += body.getBoundingRadius();
-                    if (((v2 - v1 * (d/sd1))/tmp).lengthSquared() < 1) {
-                        std::cout << "Fit : " << ((v2 - v1 * (d/sd1))/tmp).length() << '\n';
-                        shadowingBody.push_back({&body, d, sd1-d});
-                    }
+                double tmp = cst1+d*cst2 + body.getBoundingRadius();
+                if (((v2 - v1 * (d/sd1))/tmp).lengthSquared() < 1) {
+                    shadowingBody.push_back({&body, d, sd1-d});
                 }
             }
         }
