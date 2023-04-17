@@ -649,9 +649,7 @@ void BigBody::bindShadows(const ShadowRenderData &renderData)
         frag.sinSunAngle = 2 * renderData.sinSunHalfAngle;
         frag.nbShadowingBodies = renderData.shadowingBodies.size();
         for (uint8_t i = 0; i < renderData.shadowingBodies.size(); ++i) {
-            auto tmp = renderData.shadowingBodies[i];
-            tmp[2] /= (radius * (1 + 0.01 * bodyTesselation->getPlanetAltimetryFactor()));
-            frag.shadowingBodies[i] = tmp;
+            frag.shadowingBodies[i] = renderData.shadowingBodies[i] / (radius * (1 + 0.01 * bodyTesselation->getPlanetAltimetryFactor()));
         }
     }
 }

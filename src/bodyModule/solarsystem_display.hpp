@@ -112,8 +112,8 @@ private:
 
     struct ShadowingBody {
         Body *body;
-        float distToSun;
-        float distToMainBody;
+        double distToSun;
+        double distToMainBody;
     };
 
 	std::vector<depthBucket> listBuckets;

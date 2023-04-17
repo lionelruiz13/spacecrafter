@@ -101,11 +101,10 @@ void main(void)
 			float shadowing = 1;
 			// Process shadow of bodies
 			for (int i = 0; i < nbShadowingBodies; ++i) {
-				vec2 tmp = shadowPos - shadowingBodies[i].xy;
-				float sr = shadowingBodies[i].z;
-				if (dot(tmp, tmp) < sr) {
-					// shadowing += texture(shadowTexture, vec3((tmp + sr) / (sr * 2), i)).r
-					shadowing *= dot(tmp, tmp) / sr; // Temporary solution
+				vec2 tmp = (shadowPos - shadowingBodies[i].xy) / shadowingBodies[i].z;
+				if (dot(tmp, tmp) < 1) {
+					// shadowing += texture(shadowTexture, vec3(tmp * 0.5 + 0.5, i)).r
+					shadowing *= dot(tmp, tmp); // Temporary solution
 				}
 			}
 			// shortly ray trace toward -lightDirection for self-shadowing
@@ -138,7 +137,7 @@ void main(void)
 			NdotL *= clamp(maxOcclusion * heightMapDepth / sinSunAngle + 0.5, 0, 1);
 
 			// Process color
-			color = texture(dayTexture, texCoord).xyz * mix(vec3(NdotL), vec3(min(atmosphere + ambient, 1)), atmColor);
+			color = texture(dayTexture, texCoord).xyz * min(mix(vec3(NdotL), vec3(atmosphere), atmColor) * shadowing + ambient, 1);
 		} else {
 			color = texture(dayTexture, texCoord).xyz * ambient;
 		}

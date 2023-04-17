@@ -65,13 +65,14 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
         return; // There is no relevant body
 
     // Prepair computing shadowing bodies
-    const float sunRadius = ssystem->getCenterObject()->getRadius();
-    const float r1 = mainBody->getBoundingRadius();
-    Vec3f n1 = mainBody->get_heliocentric_ecliptic_pos();
-    const float d1 = n1.length();
-    n1 /= d1;
-    const float cst1 = r1+sunRadius;
-    const float cst2 = -sunRadius/d1;
+    const double sunRadius = ssystem->getCenterObject()->getRadius();
+    const double r1 = mainBody->getBoundingRadius();
+    Vec3d v1 = mainBody->get_heliocentric_ecliptic_pos();
+    const double sd1 = v1.lengthSquared();
+    // const double d1 = sqrt(sd1);
+    // n1 /= d1;
+    const double cst1 = r1+sunRadius;
+    const double cst2 = -sunRadius/sd1;
 
 	// Determine optimal depth buffer buckets for drawing the scene
 	// This is similar to Celestia, but instead of using ranges within one depth
@@ -84,12 +85,17 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
 	for (auto it = ssystem->beginSorted(); it != _end; ++it) {
         auto &body = **it;
         {
-            auto v2 = body.get_heliocentric_ecliptic_pos();
-            float d = n1.dot(v2);
-            if (d > 0 && d < d1) {
-                float tmp = body.getBoundingRadius()+cst1+d*cst2;
-                if ((v2.lengthSquared() - d*d) < tmp*tmp)
-                    shadowingBody.push_back({&body, d, d1-d});
+            Vec3d v2 = body.get_heliocentric_ecliptic_pos();
+            double d = v1.dot(v2); // d1*d2
+            if (d > 0 && d < sd1) {
+                double tmp = cst1+d*cst2;
+                if (tmp < body.getBoundingRadius() * 3) { // Ignore diffuse shadow (max occlusion < 11%)
+                    tmp += body.getBoundingRadius();
+                    if (((v2 - v1 * (d/sd1))/tmp).lengthSquared() < 1) {
+                        std::cout << "Fit : " << ((v2 - v1 * (d/sd1))/tmp).length() << '\n';
+                        shadowingBody.push_back({&body, d, sd1-d});
+                    }
+                }
             }
         }
         if (!body.isVisibleOnScreen()) // Only reserve a bucket for visible body
@@ -140,11 +146,12 @@ void SolarSystemDisplay::drawShadow(Projector * prj, const Navigator * nav)
 
     ShadowParams params;
     ShadowRenderData renderData;
-    auto mainPos = mainBody->get_heliocentric_ecliptic_pos();
-    float sunCoef = ssystem->getCenterObject()->getRadius() / mainPos.length();
+    Vec3d mainPos = mainBody->get_heliocentric_ecliptic_pos();
+    const double sunRadius = ssystem->getCenterObject()->getRadius();
+    double sunCoef = sunRadius / mainPos.lengthSquared();
     renderData.lookAt = params.lookAt = Mat4d::lookAt(ssystem->getCenterPos(), mainPos, Vec3d(0, 1, 0));
     params.mainBodyRadius = mainBody->getBoundingRadius();
-    renderData.sinSunHalfAngle = sin(atan(sunCoef));
+    renderData.sinSunHalfAngle = sunRadius / mainPos.length();
     for (auto &s : shadowingBody) {
         params.smoothRadius = sunCoef * s.distToMainBody;
         renderData.shadowingBodies.push_back(s.body->drawShadow(params));

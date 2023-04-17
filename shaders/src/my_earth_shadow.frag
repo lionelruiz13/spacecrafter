@@ -101,11 +101,10 @@ void main(void)
 			float shadowing = 1;
 			// Process shadow of bodies
 			for (int i = 0; i < nbShadowingBodies; ++i) {
-				vec2 tmp = shadowPos - shadowingBodies[i].xy;
-				float sr = shadowingBodies[i].z;
-				if (dot(tmp, tmp) < sr*sr) {
-					// shadowing += texture(shadowTexture, vec3((tmp + sr) / (sr * 2), i)).r
-					shadowing *= dot(tmp, tmp) / (sr*sr); // Temporary solution
+				vec2 tmp = (shadowPos - shadowingBodies[i].xy) / shadowingBodies[i].z;
+				if (dot(tmp, tmp) < 1) {
+					// shadowing += texture(shadowTexture, vec3(tmp * 0.5 + 0.5, i)).r
+					shadowing *= dot(tmp, tmp); // Temporary solution
 				}
 			}
 			// shortly ray trace toward -lightDirection for self-shadowing
@@ -140,18 +139,17 @@ void main(void)
 			// Process color
 			color = texture(dayTexture, texCoord).xyz * mix(vec3(NdotL), vec3(atmosphere), atmColor);
 			float specularity = dot(normal, normalize(sunDirection - view));
-			if (specularity > 0.9) {
-				color += texture(SpecularTexture, texCoord).xyz * pow(specularity, 56);
-			}
+			if (specularity > 0.95)
+				color += texture(SpecularTexture, texCoord).xyz * pow(specularity, 64);
+			color *= shadowing;
 			if (atmosphere < 0.1) {
-				color = max(color * shadowing, texture(nightTexture, texCoord).xyz * smoothstep(0.0, 0.1, 0.1 - atmosphere));
+				color = max(color, texture(nightTexture, texCoord).xyz * smoothstep(0.0, 0.1, 0.1 - atmosphere));
 			}
 		} else {
 			color = texture(nightTexture, texCoord).xyz;
 			float specularity = dot(normal, normalize(sunDirection - view));
-			if (specularity > 0.9) {
-				color += texture(SpecularTexture, texCoord).xyz * pow(specularity, 56);
-			}
+			if (specularity > 0.95)
+				color += texture(SpecularTexture, texCoord).xyz * pow(specularity, 64);
 		}
 	} else {
 		discard;
