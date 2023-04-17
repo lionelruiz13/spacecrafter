@@ -174,7 +174,7 @@ Body::~Body()
 {
     if (parent)
         parent->satellites.remove(this);
-    if (isCenterOfInterest)
+    if (isCenterOfInterest && SolarSystemDisplay::instance)
         SolarSystemDisplay::instance->invalidateCenterOfInterest();
 }
 
