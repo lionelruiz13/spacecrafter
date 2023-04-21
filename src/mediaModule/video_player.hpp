@@ -26,7 +26,7 @@
 #include <array>
 #include "mediaModule/media_base.hpp"
 #include "EntityCore/SubBuffer.hpp"
-
+#include <chrono>
 #include <thread>
 #include <mutex>
 #include "EntityCore/Tools/SafeQueue.hpp"
@@ -134,20 +134,13 @@ private:
 	bool m_isVideoSeeking;	//!< indicates if a frame is being skipped
 
 	//time management
-	int64_t TickCount;
-	int64_t firstCount;
-	int64_t lastCount;
-	double d_lastCount;
+	std::chrono::steady_clock::time_point nextFrame; // Time from which the next frame is needed
 
 	//frameRate management
 	int64_t currentFrame;	//!< number of the current frame
 	int64_t nbTotalFrame;	//!< number of frames in the video
 	double frameRate;
-	double frameRateDuration;
-
-	//pause management
-	Uint32 startPause;
-	Uint32 endPause;
+	std::chrono::steady_clock::duration deltaFrame; // Time between two frames
 
 	// avoid recalculating each time
 	int widths[3];
@@ -179,7 +172,6 @@ private:
 	std::thread thread;
 	std::mutex mtx;
 	std::condition_variable cv;
-	std::atomic<int> needFrames = 0; // Number of frames requested
 };
 
 #endif // VIDEOPLAYER_HPP

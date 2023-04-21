@@ -61,14 +61,10 @@ void VideoPlayer::pauseCurrentVideo()
 {
 	if (m_isVideoInPause==false) {
 		m_isVideoInPause = true;
-		startPause = SDL_GetTicks();
-	}
-	else {
-		endPause = SDL_GetTicks();
-		m_isVideoInPause = !m_isVideoInPause;
-		firstCount = firstCount + (endPause - startPause);
-		d_lastCount = d_lastCount + (endPause - startPause);
-		lastCount = (int)d_lastCount;
+		nextFrame += std::chrono::hours(24);
+	} else {
+		m_isVideoInPause = false;
+		nextFrame = std::chrono::steady_clock::now();
 	}
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PAUSE);
@@ -101,8 +97,7 @@ bool VideoPlayer::restartCurrentVideo()
 		return false;
 	}
 
-	firstCount =  SDL_GetTicks();
-	currentFrame = 0;
+	// currentFrame = 0;
 
 	return true;
 }
@@ -169,8 +164,8 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 
 	AVRational frame_rate = av_guess_frame_rate(pFormatCtx, video_st, NULL);
 	frameRate = frame_rate.num/(double)frame_rate.den;
-	frameRateDuration = 1000*frame_rate.den/(double)frame_rate.num;
-	nbTotalFrame = static_cast<int>(((pFormatCtx->duration)/1000)/frameRateDuration);
+	deltaFrame = std::chrono::steady_clock::duration(std::chrono::steady_clock::period::den * frame_rate.den / (std::chrono::steady_clock::period::num * frame_rate.num));
+	nbTotalFrame = static_cast<int>((pFormatCtx->duration+1) * frameRate / AV_TIME_BASE);
 
 	initTexture();
 
@@ -195,15 +190,10 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 
 	packet=(AVPacket *)av_malloc(sizeof(AVPacket));
 
-	firstCount = SDL_GetTicks();
-	lastCount = firstCount;
-	d_lastCount = firstCount;
 	currentFrame = 0;
 	frameCached = 0;
 	frameUsed = 0;
-	needFrames = 0;
 	m_isVideoPlayed = true;
-	this->getNextVideoFrame(); // The first frame must be ready on time
 	threadPlay();
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
@@ -213,30 +203,25 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 
 void VideoPlayer::update()
 {
-	if (! m_isVideoPlayed)
-		return;
-
-	if (m_isVideoInPause) {
-		return;
-	}
-	int timePassed = SDL_GetTicks()- lastCount;
-
-	// Tell how many frames we need now
-	if ( timePassed > 0) {
-		++needFrames;
-		d_lastCount = firstCount + (int)(frameRateDuration*++currentFrame);
-		lastCount = (int)d_lastCount;
-	}
+	// if (! m_isVideoPlayed)
+	// 	return;
+	//
+	// if (m_isVideoInPause) {
+	// 	return;
+	// }
+	//
+	// int currentCount = SDL_GetTicks();
+	// // Tell how many frames we need now
+	// while (currentCount > lastCount) {
+	// 	++needFrames;
+	// 	d_lastCount = firstCount + (int)(frameRateDuration*++currentFrame);
+	// 	lastCount = (int)d_lastCount;
+	// }
 }
 
 bool VideoPlayer::getNextFrame()
 {
-	while (true) {
-		if (av_read_frame(pFormatCtx, packet)<0) {
-			decoding = false;
-			return false;
-		}
-
+	for (; av_read_frame(pFormatCtx, packet) >= 0; av_packet_unref(packet)) {
 		if(packet->stream_index==videoindex) {
 			int ret = avcodec_send_packet(pCodecCtx, packet);
 			if(ret < 0) {
@@ -252,7 +237,7 @@ bool VideoPlayer::getNextFrame()
 				if (pFrameIn->key_frame==1) {
 					m_isVideoSeeking=false;
 				} else {
-					--needFrames;
+					++currentFrame;
 					av_packet_unref(packet);
 					return false;
 				}
@@ -260,8 +245,9 @@ bool VideoPlayer::getNextFrame()
 			av_packet_unref(packet);
 			return true;
 		}
-		av_packet_unref(packet);
 	}
+	decoding = false;
+	return false;
 }
 
 
@@ -354,7 +340,7 @@ bool VideoPlayer::jumpInCurrentVideo(float deltaTime, float &reallyDeltaTime)
 	if (m_isVideoInPause==true)
 		this->pauseCurrentVideo();
 
-	int64_t frameToSkeep = (1000.0*deltaTime) / frameRateDuration;
+	int64_t frameToSkeep = deltaTime * frameRate;
 	return seekVideo(frameToSkeep, reallyDeltaTime);
 }
 
@@ -382,16 +368,14 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 	}
 	if(currentFrame < nbTotalFrame) { // we check that we don't jump out of the video
 		threadInterrupt();
-		if (avformat_seek_file(pFormatCtx, -1, INT64_MIN, currentFrame * frameRateDuration *1000, INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
+		if (avformat_seek_file(pFormatCtx, -1, INT64_MIN, static_cast<int64_t>(currentFrame / frameRate * AV_TIME_BASE), INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
 			printf("av_seek_frame forward failed. \n");
 			threadPlay();
 			return false;
 		}
-		firstCount = firstCount - (int)( frameToSkeep * frameRateDuration);
-
-		reallyDeltaTime= currentFrame * frameRateDuration/1000.0;
 		m_isVideoSeeking = true;
 		threadPlay();
+		reallyDeltaTime = currentFrame / frameRate;
 		return true;
 	}
 	// end of file ... video stops
@@ -415,15 +399,22 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		videoTexture.sync->syncOut->placeBarrier(cmd);
 		Context::instance->waitFrameSync[1].stageMask |= VK_PIPELINE_STAGE_2_COPY_BIT_KHR;
 	}
-	if (needFrames > 0) {
+	auto now = std::chrono::steady_clock::now();
+	if (nextFrame <= now) {
 		if (frameUsed != frameCached) {
-			--needFrames;
+			nextFrame += deltaFrame;
+			++currentFrame;
 			int frameIdx = (++frameUsed) % MAX_CACHED_FRAMES;
 			VkBufferImageCopy region;
 			region.bufferRowLength = region.bufferImageHeight = 0;
 			region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
 			region.imageOffset = VkOffset3D{};
 			region.imageExtent.depth = 1;
+			while (nextFrame <= now && frameUsed != frameCached) { // Skip some frames in case of latency
+				nextFrame += deltaFrame;
+				++currentFrame;
+				frameIdx = (++frameUsed) % MAX_CACHED_FRAMES;
+			}
 			for (int i = 0; i < 3; ++i) {
 				region.bufferOffset = imageBuffers[i][frameIdx].offset;
 				region.imageExtent.width = widths[i];
@@ -471,7 +462,6 @@ void VideoPlayer::threadTerminate()
 	}
 	frameCached = 0;
 	frameUsed = 0;
-	needFrames = 0;
 }
 
 void VideoPlayer::threadInterrupt()
@@ -484,11 +474,12 @@ void VideoPlayer::threadInterrupt()
 	}
 	frameCached = 0;
 	frameUsed = 0;
-	needFrames = 0;
 }
 
 void VideoPlayer::threadPlay()
 {
+	nextFrame = std::chrono::steady_clock::now();
+	this->getNextVideoFrame(); // The first valid frame must be ready
 	if (decoding) {
 		mtx.unlock();
 		cv.notify_all();
