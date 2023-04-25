@@ -13,7 +13,6 @@
 *
 */
 
-
 #include <fstream>
 #include <SDL2/SDL.h>
 #include <chrono>
@@ -402,27 +401,23 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 	auto now = std::chrono::steady_clock::now();
 	if (nextFrame <= now) {
 		if (frameUsed != frameCached) {
-			nextFrame += deltaFrame;
-			++currentFrame;
-			int frameIdx = (++frameUsed) % MAX_CACHED_FRAMES;
-			VkBufferImageCopy region;
-			region.bufferRowLength = region.bufferImageHeight = 0;
-			region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
-			region.imageOffset = VkOffset3D{};
-			region.imageExtent.depth = 1;
-			while (nextFrame <= now && frameUsed != frameCached) { // Skip some frames in case of latency
+			if (canDeliverFrame(now)) {
 				nextFrame += deltaFrame;
 				++currentFrame;
-				frameIdx = (++frameUsed) % MAX_CACHED_FRAMES;
+				int frameIdx = (++frameUsed) % MAX_CACHED_FRAMES;
+				VkBufferImageCopy region;
+				region.bufferRowLength = region.bufferImageHeight = 0;
+				region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
+				region.imageOffset = VkOffset3D{};
+				region.imageExtent.depth = 1;
+				for (int i = 0; i < 3; ++i) {
+					region.bufferOffset = imageBuffers[i][frameIdx].offset;
+					region.imageExtent.width = widths[i];
+					region.imageExtent.height = heights[i];
+					vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				}
 			}
-			for (int i = 0; i < 3; ++i) {
-				region.bufferOffset = imageBuffers[i][frameIdx].offset;
-				region.imageExtent.width = widths[i];
-				region.imageExtent.height = heights[i];
-				vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
-			}
-			cv.notify_one();
-		} else if (!decoding) {
+		} else if (m_isVideoPlayed && !decoding) {
 			if (media->getLoop()) {
 				media->playerRestart();
 			} else {
@@ -479,6 +474,7 @@ void VideoPlayer::threadInterrupt()
 void VideoPlayer::threadPlay()
 {
 	nextFrame = std::chrono::steady_clock::now();
+	lastFrame = nextFrame - deltaFrame * 2;
 	this->getNextVideoFrame(); // The first valid frame must be ready
 	if (decoding) {
 		mtx.unlock();

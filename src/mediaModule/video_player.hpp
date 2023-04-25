@@ -44,7 +44,14 @@ class Media;
 class SyncEvent;
 class BufferMgr;
 
-#define MAX_CACHED_FRAMES 32
+// Maximal number of frames to load in advance (no longer need to be a power-of-two)
+#define MAX_CACHED_FRAMES 40
+// Minimal number of cached frames below which frames will be delivered with some latency
+#define CACHE_STRESS 16
+// Maximal number of cached frames over CACHE_STRESS after which the frame delivery stop accelerating
+#define MAX_CACHE_SPEEDUP 1
+// Speed factor determining how fast we resync the video with the audio. Higher is faster, lower is smoother unless cache is empty.
+#define VIDEO_BOOST_FACTOR 1.0
 
 /**
  * \class VideoPlayer
@@ -109,6 +116,23 @@ public:
 	//! Record event synchronization which can't be performed inside the renderPass
 	void recordUpdateDependency(VkCommandBuffer cmd);
 private:
+	// This function determine if it is time to deliver a frame or not
+	inline bool canDeliverFrame(const std::chrono::steady_clock::time_point &now) {
+		int cacheDelta = CACHE_STRESS - (frameCached - frameUsed);
+		if (cacheDelta < -MAX_CACHE_SPEEDUP) {
+			cacheDelta = -MAX_CACHE_SPEEDUP;
+			cv.notify_one();
+		} else if (!decoding) {
+			cacheDelta = 0;
+		}
+		const std::chrono::steady_clock::duration deltaTime(static_cast<intmax_t>(deltaFrame.count() * (1 + (nextFrame + deltaFrame * cacheDelta - now).count() * (VIDEO_BOOST_FACTOR / std::chrono::steady_clock::period::den))));
+		if (lastFrame + deltaTime > now)
+			return false;
+		lastFrame += deltaTime;
+		if (lastFrame < nextFrame)
+			lastFrame = nextFrame;
+		return true;
+	}
 	// returns the new video frame and converts it in the CG memory.
 	void getNextVideoFrame();
 	// retrieves the new video frame before conversion
@@ -135,6 +159,7 @@ private:
 
 	//time management
 	std::chrono::steady_clock::time_point nextFrame; // Time from which the next frame is needed
+	std::chrono::steady_clock::time_point lastFrame; // Time at which the last frame have been delivered
 
 	//frameRate management
 	int64_t currentFrame;	//!< number of the current frame
