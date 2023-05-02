@@ -168,8 +168,14 @@ void Audio::musicJump(float secondJump)
 
 void Audio::musicRewind()
 {
-	if (!music_loaded)	return;
-	Mix_RewindMusic();
+	if (!music_loaded)
+		return;
+	if (Mix_PlayingMusic() == 1) {
+		Mix_RewindMusic();
+	} else if (Mix_PlayMusic(track, 0) >= 0) {
+		music_isPlaying = true;
+		state = A_STATE::V_PLAY;
+	}
 	cLog::get()->write("Audio::musicRewind "+ music_name, LOG_TYPE::L_DEBUG );
 }
 

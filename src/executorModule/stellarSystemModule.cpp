@@ -95,6 +95,8 @@ void StellarSystemModule::update(int delta_time)
 	if( core->firstTime ) // Do not update prior to Init. Causes intermittent problems at startup
 		return;
 
+    core->update(delta_time);
+
 	// Update the position of observation and time etc...
 	observer->update(delta_time);
 	core->timeMgr->update(delta_time);
@@ -138,7 +140,6 @@ void StellarSystemModule::update(int delta_time)
     asyncUpdateBegin({sunPos, moonPos});
 
     // Update faders
-    core->update(delta_time);
 	core->skyGridMgr->update(delta_time);
 	core->skyLineMgr->update(delta_time);
 	core->asterisms->update(delta_time);
