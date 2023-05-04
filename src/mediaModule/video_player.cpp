@@ -405,6 +405,13 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 				nextFrame += deltaFrame;
 				++currentFrame;
 				int frameIdx = (++frameUsed) % MAX_CACHED_FRAMES;
+				if ((lastFrame + deltaFrame * 2 < now) && (frameCached - frameUsed > (CACHE_STRESS + MAX_CACHE_SPEEDUP))) {
+					nextFrame += deltaFrame;
+					lastFrame += deltaFrame;
+					++currentFrame;
+					frameIdx = (++frameUsed) % MAX_CACHED_FRAMES;
+					cLog::get()->write("Skip one video frame", LOG_TYPE::L_DEBUG);
+				}
 				VkBufferImageCopy region;
 				region.bufferRowLength = region.bufferImageHeight = 0;
 				region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
