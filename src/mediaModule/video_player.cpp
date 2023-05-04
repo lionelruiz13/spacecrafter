@@ -96,7 +96,7 @@ bool VideoPlayer::restartCurrentVideo()
 		return false;
 	}
 
-	// currentFrame = 0;
+	currentFrame = 0;
 
 	return true;
 }
@@ -235,10 +235,9 @@ bool VideoPlayer::getNextFrame()
 			if (m_isVideoSeeking) {
 				if (pFrameIn->key_frame==1) {
 					m_isVideoSeeking=false;
+					currentFrame = (frameRate * (pFrameIn->pts) * video_st->time_base.num) / video_st->time_base.den + 0.5;
 				} else {
-					++currentFrame;
-					av_packet_unref(packet);
-					return false;
+					continue;
 				}
 			}
 			av_packet_unref(packet);
@@ -367,7 +366,7 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 	}
 	if(currentFrame < nbTotalFrame) { // we check that we don't jump out of the video
 		threadInterrupt();
-		if (avformat_seek_file(pFormatCtx, -1, INT64_MIN, static_cast<int64_t>(currentFrame / frameRate * AV_TIME_BASE), INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
+		if (avformat_seek_file(pFormatCtx, -1, INT64_MIN, static_cast<int64_t>(currentFrame / frameRate * AV_TIME_BASE), INT64_MAX, 0) < 0) {
 			printf("av_seek_frame forward failed. \n");
 			threadPlay();
 			return false;
