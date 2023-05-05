@@ -1,0 +1,708 @@
+; SPIR-V
+; Version: 1.3
+; Generator: Google Shaderc over Glslang; 11
+; Bound: 1009
+; Schema: 0
+               OpCapability Shader
+               OpCapability StorageImageExtendedFormats
+               OpCapability GroupNonUniform
+               OpCapability GroupNonUniformVote
+          %1 = OpExtInstImport "GLSL.std.450"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint GLCompute %4 "main" %gl_GlobalInvocationID
+               OpExecutionMode %4 LocalSize 256 1 1
+               OpDecorate %gl_GlobalInvocationID BuiltIn GlobalInvocationId
+               OpDecorate %18 SpecId 0
+               OpDecorate %20 SpecId 1
+               OpDecorate %38 DescriptorSet 0
+               OpDecorate %38 Binding 1
+               OpDecorate %38 NonWritable
+               OpDecorate %_arr_int_18 ArrayStride 16
+               OpMemberDecorate %_struct_79 0 Offset 0
+               OpMemberDecorate %_struct_79 1 Offset 16
+               OpDecorate %_struct_79 Block
+               OpDecorate %81 DescriptorSet 0
+               OpDecorate %81 Binding 0
+               OpDecorate %211 DescriptorSet 0
+               OpDecorate %211 Binding 2
+               OpDecorate %211 NonReadable
+               OpDecorate %gl_WorkGroupSize BuiltIn WorkgroupSize
+       %void = OpTypeVoid
+          %3 = OpTypeFunction %void
+        %int = OpTypeInt 32 1
+       %uint = OpTypeInt 32 0
+     %v3uint = OpTypeVector %uint 3
+%_ptr_Input_v3uint = OpTypePointer Input %v3uint
+%gl_GlobalInvocationID = OpVariable %_ptr_Input_v3uint Input
+     %uint_0 = OpConstant %uint 0
+%_ptr_Input_uint = OpTypePointer Input %uint
+         %18 = OpSpecConstant %int 64
+         %20 = OpSpecConstant %int 256
+      %int_1 = OpConstant %int 1
+      %int_0 = OpConstant %int 0
+       %bool = OpTypeBool
+         %36 = OpTypeImage %uint 2D 0 0 0 2 R8ui
+%_ptr_UniformConstant_36 = OpTypePointer UniformConstant %36
+         %38 = OpVariable %_ptr_UniformConstant_36 UniformConstant
+      %v2int = OpTypeVector %int 2
+     %v4uint = OpTypeVector %uint 4
+         %54 = OpSpecConstantOp %int ISub %20 %18
+     %uint_3 = OpConstant %uint 3
+      %float = OpTypeFloat 32
+%_arr_int_18 = OpTypeArray %int %18
+ %_struct_79 = OpTypeStruct %float %_arr_int_18
+%_ptr_Uniform__struct_79 = OpTypePointer Uniform %_struct_79
+         %81 = OpVariable %_ptr_Uniform__struct_79 Uniform
+%_ptr_Uniform_int = OpTypePointer Uniform %int
+        %130 = OpSpecConstantOp %int IAdd %18 %int_1
+        %209 = OpTypeImage %float 2D 0 0 0 2 R8
+%_ptr_UniformConstant_209 = OpTypePointer UniformConstant %209
+        %211 = OpVariable %_ptr_UniformConstant_209 UniformConstant
+%_ptr_Uniform_float = OpTypePointer Uniform %float
+    %float_0 = OpConstant %float 0
+    %v4float = OpTypeVector %float 4
+        %230 = OpSpecConstantOp %int ISub %20 %18
+        %250 = OpSpecConstantOp %int IAdd %18 %int_1
+        %356 = OpSpecConstantOp %int IAdd %18 %int_1
+        %449 = OpSpecConstantOp %int ISub %20 %18
+        %455 = OpSpecConstantOp %int ISub %20 %int_1
+        %547 = OpSpecConstantOp %int IAdd %18 %int_1
+        %656 = OpSpecConstantOp %int ISub %20 %18
+        %677 = OpSpecConstantOp %int IAdd %18 %int_1
+        %785 = OpSpecConstantOp %int IAdd %18 %int_1
+   %uint_256 = OpConstant %uint 256
+     %uint_1 = OpConstant %uint 1
+%gl_WorkGroupSize = OpConstantComposite %v3uint %uint_256 %uint_1 %uint_1
+          %4 = OpFunction %void None %3
+          %5 = OpLabel
+         %15 = OpAccessChain %_ptr_Input_uint %gl_GlobalInvocationID %uint_0
+         %16 = OpLoad %uint %15
+         %17 = OpBitcast %int %16
+         %19 = OpIAdd %int %17 %18
+         %21 = OpSMod %int %19 %20
+               OpBranch %25
+         %25 = OpLabel
+        %938 = OpPhi %uint %uint_0 %5 %48 %26
+        %924 = OpPhi %int %18 %5 %32 %26
+         %32 = OpISub %int %924 %int_1
+         %35 = OpSGreaterThan %bool %924 %int_0
+               OpLoopMerge %27 %26 None
+               OpBranchConditional %35 %26 %27
+         %26 = OpLabel
+         %39 = OpLoad %36 %38
+         %43 = OpCompositeConstruct %v2int %32 %21
+         %46 = OpImageRead %uint %39 %43
+         %48 = OpIAdd %uint %938 %46
+               OpBranch %25
+         %27 = OpLabel
+         %50 = OpSGreaterThanEqual %bool %21 %18
+               OpSelectionMerge %52 None
+               OpBranchConditional %50 %51 %52
+         %51 = OpLabel
+         %55 = OpSLessThan %bool %21 %54
+               OpBranch %52
+         %52 = OpLabel
+         %56 = OpPhi %bool %50 %27 %55 %51
+         %58 = OpGroupNonUniformAll %bool %uint_3 %56
+               OpSelectionMerge %60 None
+               OpBranchConditional %58 %59 %441
+         %59 = OpLabel
+               OpBranch %61
+         %61 = OpLabel
+        %978 = OpPhi %uint %938 %59 %998 %64
+        %971 = OpPhi %int %18 %59 %111 %64
+         %67 = OpSGreaterThan %bool %971 %int_0
+               OpLoopMerge %63 %64 None
+               OpBranchConditional %67 %62 %63
+         %62 = OpLabel
+         %71 = OpIAdd %int %21 %971
+         %75 = OpISub %int %21 %971
+         %84 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %971
+         %85 = OpLoad %int %84
+               OpBranch %86
+         %86 = OpLabel
+        %998 = OpPhi %uint %978 %62 %109 %87
+        %996 = OpPhi %int %85 %62 %92 %87
+         %92 = OpISub %int %996 %int_1
+         %93 = OpSGreaterThan %bool %996 %int_0
+               OpLoopMerge %88 %87 None
+               OpBranchConditional %93 %87 %88
+         %87 = OpLabel
+         %94 = OpLoad %36 %38
+         %97 = OpCompositeConstruct %v2int %92 %71
+         %99 = OpImageRead %uint %94 %97
+        %101 = OpIAdd %uint %998 %99
+        %105 = OpCompositeConstruct %v2int %92 %75
+        %107 = OpImageRead %uint %94 %105
+        %109 = OpIAdd %uint %101 %107
+               OpBranch %86
+         %88 = OpLabel
+               OpBranch %64
+         %64 = OpLabel
+        %111 = OpISub %int %971 %int_1
+               OpBranch %61
+         %63 = OpLabel
+               OpBranch %112
+        %112 = OpLabel
+        %977 = OpPhi %uint %978 %63 %993 %115
+        %972 = OpPhi %int %int_0 %63 %226 %115
+        %118 = OpSLessThanEqual %bool %972 %18
+               OpLoopMerge %114 %115 None
+               OpBranchConditional %118 %113 %114
+        %113 = OpLabel
+        %119 = OpLoad %36 %38
+        %121 = OpIAdd %int %972 %18
+        %123 = OpCompositeConstruct %v2int %121 %21
+        %125 = OpImageRead %uint %119 %123
+        %127 = OpIAdd %uint %977 %125
+        %131 = OpISub %int %972 %130
+        %133 = OpSGreaterThanEqual %bool %131 %int_0
+               OpSelectionMerge %135 None
+               OpBranchConditional %133 %134 %135
+        %134 = OpLabel
+        %139 = OpCompositeConstruct %v2int %131 %21
+        %141 = OpImageRead %uint %119 %139
+        %143 = OpISub %uint %127 %141
+               OpBranch %135
+        %135 = OpLabel
+        %994 = OpPhi %uint %127 %113 %143 %134
+               OpBranch %145
+        %145 = OpLabel
+        %993 = OpPhi %uint %994 %135 %1008 %148
+        %990 = OpPhi %int %18 %135 %208 %148
+        %151 = OpSGreaterThan %bool %990 %int_0
+               OpLoopMerge %147 %148 None
+               OpBranchConditional %151 %146 %147
+        %146 = OpLabel
+        %155 = OpIAdd %int %21 %990
+        %159 = OpISub %int %21 %990
+        %162 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %990
+        %163 = OpLoad %int %162
+        %164 = OpIAdd %int %972 %163
+        %168 = OpCompositeConstruct %v2int %164 %155
+        %170 = OpImageRead %uint %119 %168
+        %172 = OpIAdd %uint %993 %170
+        %176 = OpCompositeConstruct %v2int %164 %159
+        %178 = OpImageRead %uint %119 %176
+        %180 = OpIAdd %uint %172 %178
+        %185 = OpISub %int %972 %163
+        %186 = OpISub %int %185 %int_1
+        %188 = OpSGreaterThanEqual %bool %186 %int_0
+               OpSelectionMerge %190 None
+               OpBranchConditional %188 %189 %190
+        %189 = OpLabel
+        %194 = OpCompositeConstruct %v2int %186 %155
+        %196 = OpImageRead %uint %119 %194
+        %198 = OpISub %uint %180 %196
+        %202 = OpCompositeConstruct %v2int %186 %159
+        %204 = OpImageRead %uint %119 %202
+        %206 = OpISub %uint %198 %204
+               OpBranch %190
+        %190 = OpLabel
+       %1008 = OpPhi %uint %180 %146 %206 %189
+               OpBranch %148
+        %148 = OpLabel
+        %208 = OpISub %int %990 %int_1
+               OpBranch %145
+        %147 = OpLabel
+        %212 = OpLoad %209 %211
+        %215 = OpCompositeConstruct %v2int %972 %21
+        %217 = OpConvertUToF %float %993
+        %219 = OpAccessChain %_ptr_Uniform_float %81 %int_0
+        %220 = OpLoad %float %219
+        %221 = OpFDiv %float %217 %220
+               OpImageWrite %212 %215 %221
+               OpBranch %115
+        %115 = OpLabel
+        %226 = OpIAdd %int %972 %int_1
+               OpBranch %112
+        %114 = OpLabel
+               OpBranch %231
+        %231 = OpLabel
+        %976 = OpPhi %uint %977 %114 %989 %234
+        %973 = OpPhi %int %972 %114 %331 %234
+        %238 = OpSLessThan %bool %973 %230
+               OpLoopMerge %233 %234 None
+               OpBranchConditional %238 %232 %233
+        %232 = OpLabel
+        %239 = OpLoad %36 %38
+        %241 = OpIAdd %int %973 %18
+        %243 = OpCompositeConstruct %v2int %241 %21
+        %245 = OpImageRead %uint %239 %243
+        %247 = OpIAdd %uint %976 %245
+        %251 = OpISub %int %973 %250
+        %253 = OpCompositeConstruct %v2int %251 %21
+        %255 = OpImageRead %uint %239 %253
+        %257 = OpISub %uint %247 %255
+               OpBranch %259
+        %259 = OpLabel
+        %989 = OpPhi %uint %257 %232 %317 %260
+        %987 = OpPhi %int %18 %232 %319 %260
+        %265 = OpSGreaterThan %bool %987 %int_0
+               OpLoopMerge %261 %260 None
+               OpBranchConditional %265 %260 %261
+        %260 = OpLabel
+        %269 = OpIAdd %int %21 %987
+        %273 = OpISub %int %21 %987
+        %277 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %987
+        %278 = OpLoad %int %277
+        %279 = OpIAdd %int %973 %278
+        %283 = OpCompositeConstruct %v2int %279 %269
+        %285 = OpImageRead %uint %239 %283
+        %287 = OpIAdd %uint %989 %285
+        %291 = OpCompositeConstruct %v2int %279 %273
+        %293 = OpImageRead %uint %239 %291
+        %295 = OpIAdd %uint %287 %293
+        %300 = OpISub %int %973 %278
+        %301 = OpISub %int %300 %int_1
+        %305 = OpCompositeConstruct %v2int %301 %269
+        %307 = OpImageRead %uint %239 %305
+        %309 = OpISub %uint %295 %307
+        %313 = OpCompositeConstruct %v2int %301 %273
+        %315 = OpImageRead %uint %239 %313
+        %317 = OpISub %uint %309 %315
+        %319 = OpISub %int %987 %int_1
+               OpBranch %259
+        %261 = OpLabel
+        %320 = OpLoad %209 %211
+        %323 = OpCompositeConstruct %v2int %973 %21
+        %325 = OpConvertUToF %float %989
+        %326 = OpAccessChain %_ptr_Uniform_float %81 %int_0
+        %327 = OpLoad %float %326
+        %328 = OpFDiv %float %325 %327
+               OpImageWrite %320 %323 %328
+               OpBranch %234
+        %234 = OpLabel
+        %331 = OpIAdd %int %973 %int_1
+               OpBranch %231
+        %233 = OpLabel
+               OpBranch %332
+        %332 = OpLabel
+        %975 = OpPhi %uint %976 %233 %983 %335
+        %974 = OpPhi %int %973 %233 %440 %335
+        %338 = OpSLessThan %bool %974 %20
+               OpLoopMerge %334 %335 None
+               OpBranchConditional %338 %333 %334
+        %333 = OpLabel
+        %341 = OpIAdd %int %974 %18
+        %343 = OpSLessThan %bool %341 %20
+               OpSelectionMerge %345 None
+               OpBranchConditional %343 %344 %345
+        %344 = OpLabel
+        %346 = OpLoad %36 %38
+        %349 = OpCompositeConstruct %v2int %341 %21
+        %351 = OpImageRead %uint %346 %349
+        %353 = OpIAdd %uint %975 %351
+               OpBranch %345
+        %345 = OpLabel
+        %980 = OpPhi %uint %975 %333 %353 %344
+        %354 = OpLoad %36 %38
+        %357 = OpISub %int %974 %356
+        %359 = OpCompositeConstruct %v2int %357 %21
+        %361 = OpImageRead %uint %354 %359
+        %363 = OpISub %uint %980 %361
+               OpBranch %365
+        %365 = OpLabel
+        %983 = OpPhi %uint %363 %345 %426 %368
+        %981 = OpPhi %int %18 %345 %428 %368
+        %371 = OpSGreaterThan %bool %981 %int_0
+               OpLoopMerge %367 %368 None
+               OpBranchConditional %371 %366 %367
+        %366 = OpLabel
+        %375 = OpIAdd %int %21 %981
+        %379 = OpISub %int %21 %981
+        %382 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %981
+        %383 = OpLoad %int %382
+        %384 = OpIAdd %int %974 %383
+        %386 = OpSLessThan %bool %384 %20
+               OpSelectionMerge %388 None
+               OpBranchConditional %386 %387 %388
+        %387 = OpLabel
+        %392 = OpCompositeConstruct %v2int %384 %375
+        %394 = OpImageRead %uint %354 %392
+        %396 = OpIAdd %uint %983 %394
+        %400 = OpCompositeConstruct %v2int %384 %379
+        %402 = OpImageRead %uint %354 %400
+        %404 = OpIAdd %uint %396 %402
+               OpBranch %388
+        %388 = OpLabel
+        %986 = OpPhi %uint %983 %366 %404 %387
+        %409 = OpISub %int %974 %383
+        %410 = OpISub %int %409 %int_1
+        %414 = OpCompositeConstruct %v2int %410 %375
+        %416 = OpImageRead %uint %354 %414
+        %418 = OpISub %uint %986 %416
+        %422 = OpCompositeConstruct %v2int %410 %379
+        %424 = OpImageRead %uint %354 %422
+        %426 = OpISub %uint %418 %424
+               OpBranch %368
+        %368 = OpLabel
+        %428 = OpISub %int %981 %int_1
+               OpBranch %365
+        %367 = OpLabel
+        %429 = OpLoad %209 %211
+        %432 = OpCompositeConstruct %v2int %974 %21
+        %434 = OpConvertUToF %float %983
+        %435 = OpAccessChain %_ptr_Uniform_float %81 %int_0
+        %436 = OpLoad %float %435
+        %437 = OpFDiv %float %434 %436
+               OpImageWrite %429 %432 %437
+               OpBranch %335
+        %335 = OpLabel
+        %440 = OpIAdd %int %974 %int_1
+               OpBranch %332
+        %334 = OpLabel
+               OpBranch %60
+        %441 = OpLabel
+        %446 = OpSelect %int %50 %18 %21
+        %450 = OpSLessThan %bool %21 %449
+               OpSelectionMerge %453 None
+               OpBranchConditional %450 %452 %454
+        %452 = OpLabel
+               OpBranch %453
+        %454 = OpLabel
+        %457 = OpISub %int %455 %21
+               OpBranch %453
+        %453 = OpLabel
+        %925 = OpPhi %int %18 %452 %457 %454
+               OpBranch %460
+        %460 = OpLabel
+        %935 = OpPhi %uint %938 %453 %970 %463
+        %926 = OpPhi %int %446 %453 %492 %463
+        %466 = OpSGreaterThan %bool %926 %int_0
+               OpLoopMerge %462 %463 None
+               OpBranchConditional %466 %461 %462
+        %461 = OpLabel
+        %470 = OpISub %int %21 %926
+        %473 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %926
+        %474 = OpLoad %int %473
+               OpBranch %475
+        %475 = OpLabel
+        %970 = OpPhi %uint %935 %461 %490 %476
+        %968 = OpPhi %int %474 %461 %481 %476
+        %481 = OpISub %int %968 %int_1
+        %482 = OpSGreaterThan %bool %968 %int_0
+               OpLoopMerge %477 %476 None
+               OpBranchConditional %482 %476 %477
+        %476 = OpLabel
+        %483 = OpLoad %36 %38
+        %486 = OpCompositeConstruct %v2int %481 %470
+        %488 = OpImageRead %uint %483 %486
+        %490 = OpIAdd %uint %970 %488
+               OpBranch %475
+        %477 = OpLabel
+               OpBranch %463
+        %463 = OpLabel
+        %492 = OpISub %int %926 %int_1
+               OpBranch %460
+        %462 = OpLabel
+               OpBranch %494
+        %494 = OpLabel
+        %934 = OpPhi %uint %935 %462 %967 %497
+        %927 = OpPhi %int %925 %462 %526 %497
+        %500 = OpSGreaterThan %bool %927 %int_0
+               OpLoopMerge %496 %497 None
+               OpBranchConditional %500 %495 %496
+        %495 = OpLabel
+        %504 = OpIAdd %int %21 %927
+        %507 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %927
+        %508 = OpLoad %int %507
+               OpBranch %509
+        %509 = OpLabel
+        %967 = OpPhi %uint %934 %495 %524 %510
+        %965 = OpPhi %int %508 %495 %515 %510
+        %515 = OpISub %int %965 %int_1
+        %516 = OpSGreaterThan %bool %965 %int_0
+               OpLoopMerge %511 %510 None
+               OpBranchConditional %516 %510 %511
+        %510 = OpLabel
+        %517 = OpLoad %36 %38
+        %520 = OpCompositeConstruct %v2int %515 %504
+        %522 = OpImageRead %uint %517 %520
+        %524 = OpIAdd %uint %967 %522
+               OpBranch %509
+        %511 = OpLabel
+               OpBranch %497
+        %497 = OpLabel
+        %526 = OpISub %int %927 %int_1
+               OpBranch %494
+        %496 = OpLabel
+               OpBranch %527
+        %527 = OpLabel
+        %933 = OpPhi %uint %934 %496 %960 %530
+        %928 = OpPhi %int %int_0 %496 %654 %530
+        %533 = OpSLessThanEqual %bool %928 %18
+               OpLoopMerge %529 %530 None
+               OpBranchConditional %533 %528 %529
+        %528 = OpLabel
+        %537 = OpIAdd %int %928 %18
+        %539 = OpCompositeConstruct %v2int %537 %21
+        %540 = OpLoad %36 %38
+        %543 = OpImageRead %uint %540 %539
+        %545 = OpIAdd %uint %933 %543
+        %548 = OpISub %int %928 %547
+        %907 = OpCompositeInsert %v2int %548 %539 0
+        %550 = OpSGreaterThanEqual %bool %548 %int_0
+               OpSelectionMerge %552 None
+               OpBranchConditional %550 %551 %552
+        %551 = OpLabel
+        %556 = OpImageRead %uint %540 %907
+        %558 = OpISub %uint %545 %556
+               OpBranch %552
+        %552 = OpLabel
+        %962 = OpPhi %uint %545 %528 %558 %551
+               OpBranch %561
+        %561 = OpLabel
+        %961 = OpPhi %uint %962 %552 %1005 %564
+        %955 = OpPhi %int %446 %552 %600 %564
+        %567 = OpSGreaterThan %bool %955 %int_0
+               OpLoopMerge %563 %564 None
+               OpBranchConditional %567 %562 %563
+        %562 = OpLabel
+        %570 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %955
+        %571 = OpLoad %int %570
+        %572 = OpIAdd %int %928 %571
+        %575 = OpISub %int %21 %955
+        %576 = OpCompositeConstruct %v2int %572 %575
+        %580 = OpImageRead %uint %540 %576
+        %582 = OpIAdd %uint %961 %580
+        %587 = OpISub %int %928 %571
+        %588 = OpISub %int %587 %int_1
+        %909 = OpCompositeInsert %v2int %588 %576 0
+        %590 = OpSGreaterThanEqual %bool %588 %int_0
+               OpSelectionMerge %592 None
+               OpBranchConditional %590 %591 %592
+        %591 = OpLabel
+        %596 = OpImageRead %uint %540 %909
+        %598 = OpISub %uint %582 %596
+               OpBranch %592
+        %592 = OpLabel
+       %1005 = OpPhi %uint %582 %562 %598 %591
+               OpBranch %564
+        %564 = OpLabel
+        %600 = OpISub %int %955 %int_1
+               OpBranch %561
+        %563 = OpLabel
+               OpBranch %603
+        %603 = OpLabel
+        %960 = OpPhi %uint %961 %563 %1006 %606
+        %956 = OpPhi %int %925 %563 %642 %606
+        %609 = OpSGreaterThan %bool %956 %int_0
+               OpLoopMerge %605 %606 None
+               OpBranchConditional %609 %604 %605
+        %604 = OpLabel
+        %612 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %956
+        %613 = OpLoad %int %612
+        %614 = OpIAdd %int %928 %613
+        %617 = OpIAdd %int %21 %956
+        %618 = OpCompositeConstruct %v2int %614 %617
+        %622 = OpImageRead %uint %540 %618
+        %624 = OpIAdd %uint %960 %622
+        %629 = OpISub %int %928 %613
+        %630 = OpISub %int %629 %int_1
+        %911 = OpCompositeInsert %v2int %630 %618 0
+        %632 = OpSGreaterThanEqual %bool %630 %int_0
+               OpSelectionMerge %634 None
+               OpBranchConditional %632 %633 %634
+        %633 = OpLabel
+        %638 = OpImageRead %uint %540 %911
+        %640 = OpISub %uint %624 %638
+               OpBranch %634
+        %634 = OpLabel
+       %1006 = OpPhi %uint %624 %604 %640 %633
+               OpBranch %606
+        %606 = OpLabel
+        %642 = OpISub %int %956 %int_1
+               OpBranch %603
+        %605 = OpLabel
+        %643 = OpLoad %209 %211
+        %646 = OpCompositeConstruct %v2int %928 %21
+        %648 = OpConvertUToF %float %960
+        %649 = OpAccessChain %_ptr_Uniform_float %81 %int_0
+        %650 = OpLoad %float %649
+        %651 = OpFDiv %float %648 %650
+               OpImageWrite %643 %646 %651
+               OpBranch %530
+        %530 = OpLabel
+        %654 = OpIAdd %int %928 %int_1
+               OpBranch %527
+        %529 = OpLabel
+               OpBranch %657
+        %657 = OpLabel
+        %932 = OpPhi %uint %933 %529 %953 %660
+        %929 = OpPhi %int %928 %529 %775 %660
+        %664 = OpSLessThan %bool %929 %656
+               OpLoopMerge %659 %660 None
+               OpBranchConditional %664 %658 %659
+        %658 = OpLabel
+        %667 = OpIAdd %int %929 %18
+        %669 = OpCompositeConstruct %v2int %667 %21
+        %670 = OpLoad %36 %38
+        %673 = OpImageRead %uint %670 %669
+        %675 = OpIAdd %uint %932 %673
+        %678 = OpISub %int %929 %677
+        %913 = OpCompositeInsert %v2int %678 %669 0
+        %683 = OpImageRead %uint %670 %913
+        %685 = OpISub %uint %675 %683
+               OpBranch %688
+        %688 = OpLabel
+        %954 = OpPhi %uint %685 %658 %722 %689
+        %949 = OpPhi %int %446 %658 %724 %689
+        %694 = OpSGreaterThan %bool %949 %int_0
+               OpLoopMerge %690 %689 None
+               OpBranchConditional %694 %689 %690
+        %689 = OpLabel
+        %697 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %949
+        %698 = OpLoad %int %697
+        %699 = OpIAdd %int %929 %698
+        %702 = OpISub %int %21 %949
+        %703 = OpCompositeConstruct %v2int %699 %702
+        %707 = OpImageRead %uint %670 %703
+        %709 = OpIAdd %uint %954 %707
+        %714 = OpISub %int %929 %698
+        %715 = OpISub %int %714 %int_1
+        %915 = OpCompositeInsert %v2int %715 %703 0
+        %720 = OpImageRead %uint %670 %915
+        %722 = OpISub %uint %709 %720
+        %724 = OpISub %int %949 %int_1
+               OpBranch %688
+        %690 = OpLabel
+               OpBranch %727
+        %727 = OpLabel
+        %953 = OpPhi %uint %954 %690 %761 %728
+        %950 = OpPhi %int %925 %690 %763 %728
+        %733 = OpSGreaterThan %bool %950 %int_0
+               OpLoopMerge %729 %728 None
+               OpBranchConditional %733 %728 %729
+        %728 = OpLabel
+        %736 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %950
+        %737 = OpLoad %int %736
+        %738 = OpIAdd %int %929 %737
+        %741 = OpIAdd %int %21 %950
+        %742 = OpCompositeConstruct %v2int %738 %741
+        %746 = OpImageRead %uint %670 %742
+        %748 = OpIAdd %uint %953 %746
+        %753 = OpISub %int %929 %737
+        %754 = OpISub %int %753 %int_1
+        %917 = OpCompositeInsert %v2int %754 %742 0
+        %759 = OpImageRead %uint %670 %917
+        %761 = OpISub %uint %748 %759
+        %763 = OpISub %int %950 %int_1
+               OpBranch %727
+        %729 = OpLabel
+        %764 = OpLoad %209 %211
+        %767 = OpCompositeConstruct %v2int %929 %21
+        %769 = OpConvertUToF %float %953
+        %770 = OpAccessChain %_ptr_Uniform_float %81 %int_0
+        %771 = OpLoad %float %770
+        %772 = OpFDiv %float %769 %771
+               OpImageWrite %764 %767 %772
+               OpBranch %660
+        %660 = OpLabel
+        %775 = OpIAdd %int %929 %int_1
+               OpBranch %657
+        %659 = OpLabel
+               OpBranch %776
+        %776 = OpLabel
+        %931 = OpPhi %uint %932 %659 %944 %779
+        %930 = OpPhi %int %929 %659 %902 %779
+        %782 = OpSLessThan %bool %930 %20
+               OpLoopMerge %778 %779 None
+               OpBranchConditional %782 %777 %778
+        %777 = OpLabel
+        %786 = OpISub %int %930 %785
+        %788 = OpCompositeConstruct %v2int %786 %21
+        %789 = OpLoad %36 %38
+        %792 = OpImageRead %uint %789 %788
+        %794 = OpISub %uint %931 %792
+        %796 = OpIAdd %int %930 %18
+        %919 = OpCompositeInsert %v2int %796 %788 0
+        %798 = OpSLessThan %bool %796 %20
+               OpSelectionMerge %800 None
+               OpBranchConditional %798 %799 %800
+        %799 = OpLabel
+        %804 = OpImageRead %uint %789 %919
+        %806 = OpIAdd %uint %794 %804
+               OpBranch %800
+        %800 = OpLabel
+        %946 = OpPhi %uint %794 %777 %806 %799
+               OpBranch %809
+        %809 = OpLabel
+        %945 = OpPhi %uint %946 %800 %1001 %812
+        %939 = OpPhi %int %446 %800 %848 %812
+        %815 = OpSGreaterThan %bool %939 %int_0
+               OpLoopMerge %811 %812 None
+               OpBranchConditional %815 %810 %811
+        %810 = OpLabel
+        %818 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %939
+        %819 = OpLoad %int %818
+        %820 = OpISub %int %930 %819
+        %821 = OpISub %int %820 %int_1
+        %824 = OpISub %int %21 %939
+        %825 = OpCompositeConstruct %v2int %821 %824
+        %829 = OpImageRead %uint %789 %825
+        %831 = OpISub %uint %945 %829
+        %836 = OpIAdd %int %930 %819
+        %921 = OpCompositeInsert %v2int %836 %825 0
+        %838 = OpSLessThan %bool %836 %20
+               OpSelectionMerge %840 None
+               OpBranchConditional %838 %839 %840
+        %839 = OpLabel
+        %844 = OpImageRead %uint %789 %921
+        %846 = OpIAdd %uint %831 %844
+               OpBranch %840
+        %840 = OpLabel
+       %1001 = OpPhi %uint %831 %810 %846 %839
+               OpBranch %812
+        %812 = OpLabel
+        %848 = OpISub %int %939 %int_1
+               OpBranch %809
+        %811 = OpLabel
+               OpBranch %851
+        %851 = OpLabel
+        %944 = OpPhi %uint %945 %811 %1002 %854
+        %940 = OpPhi %int %925 %811 %890 %854
+        %857 = OpSGreaterThan %bool %940 %int_0
+               OpLoopMerge %853 %854 None
+               OpBranchConditional %857 %852 %853
+        %852 = OpLabel
+        %860 = OpAccessChain %_ptr_Uniform_int %81 %int_1 %940
+        %861 = OpLoad %int %860
+        %862 = OpISub %int %930 %861
+        %863 = OpISub %int %862 %int_1
+        %866 = OpIAdd %int %21 %940
+        %867 = OpCompositeConstruct %v2int %863 %866
+        %871 = OpImageRead %uint %789 %867
+        %873 = OpISub %uint %944 %871
+        %878 = OpIAdd %int %930 %861
+        %923 = OpCompositeInsert %v2int %878 %867 0
+        %880 = OpSLessThan %bool %878 %20
+               OpSelectionMerge %882 None
+               OpBranchConditional %880 %881 %882
+        %881 = OpLabel
+        %886 = OpImageRead %uint %789 %923
+        %888 = OpIAdd %uint %873 %886
+               OpBranch %882
+        %882 = OpLabel
+       %1002 = OpPhi %uint %873 %852 %888 %881
+               OpBranch %854
+        %854 = OpLabel
+        %890 = OpISub %int %940 %int_1
+               OpBranch %851
+        %853 = OpLabel
+        %891 = OpLoad %209 %211
+        %894 = OpCompositeConstruct %v2int %930 %21
+        %896 = OpConvertUToF %float %944
+        %897 = OpAccessChain %_ptr_Uniform_float %81 %int_0
+        %898 = OpLoad %float %897
+        %899 = OpFDiv %float %896 %898
+               OpImageWrite %891 %894 %899
+               OpBranch %779
+        %779 = OpLabel
+        %902 = OpIAdd %int %930 %int_1
+               OpBranch %776
+        %778 = OpLabel
+               OpBranch %60
+         %60 = OpLabel
+               OpReturn
+               OpFunctionEnd

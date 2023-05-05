@@ -26,6 +26,7 @@ layout (location=3) out float Ambient;
 
 layout (binding=0, set=2) uniform custom {
 	mat4 NormalMatrix;
+	float radius;
 };
 
 //uniform mat4 ModelViewMatrix;
@@ -39,7 +40,7 @@ void main()
     Ambient = ambient;
     TexCoord = VertexTexCoord;
     Normal = normalize( mat3(NormalMatrix) * VertexNormal);
-    Position = VertexPosition;
+    Position = VertexPosition * radius;
 
     //~ gl_Position = MVP * vec4(VertexPosition,1.0);
     // gl_Position = MVP * posToFisheye(VertexPosition);

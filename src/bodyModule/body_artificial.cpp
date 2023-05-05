@@ -69,7 +69,9 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
 	     _bodyTexture)
 {
 	selectShader();
-	obj3D = std::make_unique<Ojm>(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/", radius);
+	obj3D = Ojm::load(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/");
+    initialRadius *= obj3D->getRadius();
+    radius = initialRadius;
 	if (!obj3D -> getOk())
 		std::cout << "Error with " << englishName << " " << model_name << std::endl;
     orbitPlot = std::make_unique<Orbit3D>(this);
@@ -97,10 +99,10 @@ void Artificial::createSC_context()
     auto &vkmgr = *VulkanMgr::instance;
     auto &context = *Context::instance;
     set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, 2, false, true);
-    uNormalMatrix = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+    uVert = std::make_unique<SharedBuffer<artVert>>(*context.uniformMgr);
     uProj = std::make_unique<SharedBuffer<artGeom>>(*context.uniformMgr);
     uLight = std::make_unique<SharedBuffer<LightInfo>>(*context.uniformMgr);
-    set->bindUniform(uNormalMatrix, 0);
+    set->bindUniform(uVert, 0);
     set->bindUniform(uProj, 1);
     set->bindUniform(uLight, 2);
     initialized = true;
@@ -113,7 +115,8 @@ void Artificial::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navig
     auto &context = *Context::instance;
 
     Mat4f matrix = mat.convert() * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
-    *uNormalMatrix = matrix.inverse().transpose();
+    uVert->get().normal = matrix.inverse().transpose();
+    uVert->get().radius = radius;
     uLight->get().Intensity =Vec3f(1.0, 1.0, 1.0);
     drawState->layout->bindSet(cmd, *context.uboSet);
     drawState->layout->bindSet(cmd, *set, 2);

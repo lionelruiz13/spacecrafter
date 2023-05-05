@@ -81,7 +81,7 @@ private:
 
 	struct OjmContainer
 	{
-		std::unique_ptr<Ojm> Obj3D;
+		std::shared_ptr<Ojm> Obj3D;
 		std::string name;
 		Mat4f model;
 		STATE_POSITION myState;

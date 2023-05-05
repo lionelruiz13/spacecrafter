@@ -63,8 +63,14 @@ bool OjmMgr::load(const std::string &mode, const std::string &name, const std::s
 	tmp = new OjmContainer;
 	tmp->myState = tmpState;
 	tmp->name = name;
-	tmp->model = Mat4f::translation(Position);
-	tmp->Obj3D = std::make_unique<Ojm>(fileName, pathFile, multiplier);
+	tmp->Obj3D = Ojm::load(fileName, pathFile);
+	multiplier *= tmp->Obj3D->getRadius();
+	tmp->model = Mat4f(
+		multiplier, 0, 0, 0,
+		0, multiplier, 0, 0,
+		0, 0, multiplier, 0,
+		Position[0], Position[1], Position[2], 1
+	);
 	tmp->uniform = std::make_unique<SharedBuffer<OjmContainer::uniformData>>(*Context::instance->uniformMgr);
 
 	if (!tmp->Obj3D->getOk()) {

@@ -1,0 +1,171 @@
+#version 420
+#extension GL_ARB_compute_shader : require
+#extension GL_KHR_shader_subgroup_vote : require
+layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
+
+layout (constant_id=0) const int radius = 64;
+layout (constant_id=1) const int border = 256;
+
+layout(binding=0) uniform descriptor {
+    float pixelCount; // Number of pixels fetched per output pixel
+    int offsets[radius];
+};
+
+layout(binding=1, r8ui) uniform readonly uimage2D bodyShadow;
+layout(binding=2, r8) uniform writeonly image2D groundShadow;
+
+// WARNING : Require radius < border/2
+void main()
+{
+    const int baseY = (int(gl_GlobalInvocationID.x) + radius) % border;
+    uint sum = 0;
+    int i = radius;
+    while (i-- > 0)
+        sum += imageLoad(bodyShadow, ivec2(i, baseY)).r;
+
+    if (subgroupAll(baseY >= radius && baseY < border - radius)) { // Y-Safe tracing (faster)
+        // Initialize sum
+        for (i = radius; i > 0; --i) {
+            int baseY1 = baseY + i;
+            int baseY2 = baseY - i;
+            int j = offsets[i];
+            while (j-- > 0) {
+                sum += imageLoad(bodyShadow, ivec2(j, baseY1)).r;
+                sum += imageLoad(bodyShadow, ivec2(j, baseY2)).r;
+            }
+        }
+        // Start early tracing
+        for (i = 0; i <= radius; ++i) {
+            sum += imageLoad(bodyShadow, ivec2(i+radius, baseY)).r;
+            int baseX = i-(radius+1);
+            if (baseX >= 0)
+                sum -= imageLoad(bodyShadow, ivec2(baseX, baseY)).r;
+            for (int j = radius; j > 0; --j) {
+                int baseY1 = baseY+j;
+                int baseY2 = baseY-j;
+                baseX = i+offsets[j];
+                sum += imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
+                sum += imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+                baseX = i-offsets[j]-1;
+                if (baseX >= 0) {
+                    sum -= imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
+                    sum -= imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+                }
+            }
+            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+        }
+        int safeEnd = border - radius;
+        // Start tracing
+        for (int safeEnd = border - radius; i < safeEnd; ++i) {
+            sum += imageLoad(bodyShadow, ivec2(i+radius, baseY)).r;
+            sum -= imageLoad(bodyShadow, ivec2(i-(radius+1), baseY)).r;
+            for (int j = radius; j > 0; --j) {
+                int baseY1 = baseY+j;
+                int baseY2 = baseY-j;
+                int baseX = i+offsets[j];
+                sum += imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
+                sum += imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+                baseX = i-offsets[j]-1;
+                sum -= imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
+                sum -= imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+            }
+            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+        }
+        // Start late tracing
+        for (; i < border; ++i) {
+            int baseX = i+radius;
+            if (baseX < border)
+                sum += imageLoad(bodyShadow, ivec2(baseX, baseY)).r;
+            sum -= imageLoad(bodyShadow, ivec2(i-(radius+1), baseY)).r;
+            for (int j = radius; j > 0; --j) {
+                int baseY1 = baseY+j;
+                int baseY2 = baseY-j;
+                baseX = i+offsets[j];
+                if (baseX < border) {
+                    sum += imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
+                    sum += imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+                }
+                baseX = i-offsets[j]-1;
+                sum -= imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
+                sum -= imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+            }
+            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+        }
+    } else { // Y-Unsafe tracing (slower)
+        int minRelY = (baseY >= radius) ? radius : baseY;
+        int maxRelY = (baseY < border - radius) ? radius : (border-1) - baseY;
+        // Initialize sum
+        for (i = minRelY; i > 0; --i) {
+            int baseY1 = baseY-i;
+            int j = offsets[i];
+            while (j-- > 0)
+                sum += imageLoad(bodyShadow, ivec2(j, baseY1)).r;
+        }
+        for (i = maxRelY; i > 0; --i) {
+            int baseY2 = baseY+i;
+            int j = offsets[i];
+            while (j-- > 0)
+                sum += imageLoad(bodyShadow, ivec2(j, baseY2)).r;
+        }
+        // Start early tracing
+        for (i = 0; i <= radius; ++i) {
+            ivec2 coord = ivec2(i+radius, baseY);
+            sum += imageLoad(bodyShadow, coord).r;
+            if ((coord.x = i-(radius+1)) >= 0)
+                sum -= imageLoad(bodyShadow, coord).r;
+            for (int j = minRelY; j > 0; --j) {
+                coord = ivec2(i+offsets[j], baseY-j);
+                sum += imageLoad(bodyShadow, coord).r;
+                if ((coord.x = i-offsets[j]-1) >= 0)
+                    sum -= imageLoad(bodyShadow, coord).r;
+            }
+            for (int j = maxRelY; j > 0; --j) {
+                coord = ivec2(i+offsets[j], baseY+j);
+                sum += imageLoad(bodyShadow, coord).r;
+                if ((coord.x = i-offsets[j]-1) >= 0)
+                    sum -= imageLoad(bodyShadow, coord).r;
+            }
+            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+        }
+        // Start tracing
+        for (int safeEnd = border - radius; i < safeEnd; ++i) {
+            ivec2 coord = ivec2(i+radius, baseY);
+            sum += imageLoad(bodyShadow, coord).r;
+            coord.x = i-(radius+1);
+            sum -= imageLoad(bodyShadow, coord).r;
+            for (int j = minRelY; j > 0; --j) {
+                coord = ivec2(i+offsets[j], baseY-j);
+                sum += imageLoad(bodyShadow, coord).r;
+                coord.x = i-offsets[j]-1;
+                sum -= imageLoad(bodyShadow, coord).r;
+            }
+            for (int j = maxRelY; j > 0; --j) {
+                coord = ivec2(i+offsets[j], baseY+j);
+                sum += imageLoad(bodyShadow, coord).r;
+                coord.x = i-offsets[j]-1;
+                sum -= imageLoad(bodyShadow, coord).r;
+            }
+            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+        }
+        // Start late tracing
+        for (; i < border; ++i) {
+            ivec2 coord = ivec2(i-(radius+1), baseY);
+            sum -= imageLoad(bodyShadow, coord).r;
+            if ((coord.x = i+radius) < border)
+                sum += imageLoad(bodyShadow, coord).r;
+            for (int j = minRelY; j > 0; --j) {
+                coord = ivec2(i-offsets[j]-1, baseY-j);
+                sum -= imageLoad(bodyShadow, coord).r;
+                if ((coord.x = i+offsets[j]) < border)
+                    sum += imageLoad(bodyShadow, coord).r;
+            }
+            for (int j = maxRelY; j > 0; --j) {
+                coord = ivec2(i-offsets[j]-1, baseY+j);
+                sum -= imageLoad(bodyShadow, coord).r;
+                if ((coord.x = i+offsets[j]) < border)
+                    sum += imageLoad(bodyShadow, coord).r;
+            }
+            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+        }
+    }
+}

@@ -1,0 +1,341 @@
+; SPIR-V
+; Version: 1.3
+; Generator: Google Shaderc over Glslang; 10
+; Bound: 252
+; Schema: 0
+               OpCapability Shader
+          %2 = OpExtInstImport "GLSL.std.450"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint Fragment %main "main" %gl_FragCoord %fragColor %direction
+               OpExecutionMode %main OriginUpperLeft
+          %1 = OpString "inVolumObj3DPacked.frag"
+               OpSource GLSL 450 %1 "//
+// Draw volumetric object when inside
+//
+#version 450
+
+// Direction in the volumetric object, with max(abs(direction.x), abs(direction.y), abs(direction.z)) == 1
+layout (location=0) in vec3 direction;
+
+layout (location=0) out vec4 fragColor;
+
+layout (binding=1) uniform ubo {
+    vec3 camCoord; // Position of the camera in the volumetric object in [0, 1]
+};
+
+layout (binding=2) uniform sampler3D colorTexture;
+
+layout(constant_id=0) const float colorScale = 2;
+layout(constant_id=1) const bool z_reflection = false;
+
+// Viewport cropping
+layout(constant_id=2) const int radius2 = 512*512;
+layout(constant_id=3) const int centerX = 512;
+layout(constant_id=4) const int centerY = 512;
+
+void main()
+{
+    { // Viewport cropping
+        ivec2 tmp = ivec2(gl_FragCoord.x - centerX, gl_FragCoord.y - centerY);
+        if (dot(tmp, tmp) > radius2) {
+            fragColor = vec4(0);
+            return; // Avoid processing hidden pixels
+        }
+    }
+    int t;
+    vec3 coord = camCoord;
+    if (z_reflection) {
+        // Clamp to edge
+        vec3 dirCoef = (step(0.f, -direction) - camCoord) / direction;
+        float rectification = max(max(dirCoef.x, dirCoef.y), dirCoef.z);
+        if (rectification > 0)
+            coord += direction * rectification;
+        // Ray lenght computation
+        dirCoef = (step(0.f, direction) - coord) / direction;
+        t = int(min(min(dirCoef.x, dirCoef.y), dirCoef.z)); // Distance in samples to the border
+    } else {
+        // Ray lenght computation
+        vec3 dirCoef = (step(0.f, direction) - camCoord) / direction;
+        t = int(min(min(dirCoef.x, dirCoef.y), dirCoef.z)); // Distance in samples to the border
+    }
+
+    vec3 dir = direction;
+    if (z_reflection) {
+        coord.z *= 2;
+        dir.z *= 2;
+    }
+    vec3 color = vec3(0);
+    float opacity = 0;
+    while (t-- >= 0) {
+        vec4 tmp = texture(colorTexture, coord);
+        float factor = tmp.a * (1.f - opacity) / colorScale;
+        color += vec3(tmp) * factor;
+        opacity += factor;
+        if (opacity > 0.99f) { // Avoid processing for less than 1% of the color processing
+            fragColor = vec4(color / opacity, 1);
+            return;
+        }
+        coord += dir;
+    }
+    fragColor = vec4(color, opacity);
+}
+"
+               OpSourceExtension "GL_GOOGLE_cpp_style_line_directive"
+               OpSourceExtension "GL_GOOGLE_include_directive"
+               OpName %main "main"
+               OpName %gl_FragCoord "gl_FragCoord"
+               OpName %centerX "centerX"
+               OpName %centerY "centerY"
+               OpName %radius2 "radius2"
+               OpName %fragColor "fragColor"
+               OpName %ubo "ubo"
+               OpMemberName %ubo 0 "camCoord"
+               OpName %_ ""
+               OpName %z_reflection "z_reflection"
+               OpName %direction "direction"
+               OpName %colorTexture "colorTexture"
+               OpName %colorScale "colorScale"
+               OpModuleProcessed "entry-point main"
+               OpModuleProcessed "client vulkan100"
+               OpModuleProcessed "target-env spirv1.3"
+               OpModuleProcessed "target-env vulkan1.1"
+               OpModuleProcessed "entry-point main"
+               OpDecorate %gl_FragCoord BuiltIn FragCoord
+               OpDecorate %centerX SpecId 3
+               OpDecorate %centerY SpecId 4
+               OpDecorate %radius2 SpecId 2
+               OpDecorate %fragColor Location 0
+               OpMemberDecorate %ubo 0 Offset 0
+               OpDecorate %ubo Block
+               OpDecorate %_ DescriptorSet 0
+               OpDecorate %_ Binding 1
+               OpDecorate %z_reflection SpecId 1
+               OpDecorate %direction Location 0
+               OpDecorate %colorTexture DescriptorSet 0
+               OpDecorate %colorTexture Binding 2
+               OpDecorate %colorScale SpecId 0
+       %void = OpTypeVoid
+          %4 = OpTypeFunction %void
+        %int = OpTypeInt 32 1
+      %v2int = OpTypeVector %int 2
+      %float = OpTypeFloat 32
+    %v4float = OpTypeVector %float 4
+%_ptr_Input_v4float = OpTypePointer Input %v4float
+%gl_FragCoord = OpVariable %_ptr_Input_v4float Input
+       %uint = OpTypeInt 32 0
+     %uint_0 = OpConstant %uint 0
+%_ptr_Input_float = OpTypePointer Input %float
+    %centerX = OpSpecConstant %int 512
+     %uint_1 = OpConstant %uint 1
+    %centerY = OpSpecConstant %int 512
+    %v2float = OpTypeVector %float 2
+    %radius2 = OpSpecConstant %int 262144
+       %bool = OpTypeBool
+%_ptr_Output_v4float = OpTypePointer Output %v4float
+  %fragColor = OpVariable %_ptr_Output_v4float Output
+    %float_0 = OpConstant %float 0
+         %47 = OpConstantComposite %v4float %float_0 %float_0 %float_0 %float_0
+    %v3float = OpTypeVector %float 3
+        %ubo = OpTypeStruct %v3float
+%_ptr_Uniform_ubo = OpTypePointer Uniform %ubo
+          %_ = OpVariable %_ptr_Uniform_ubo Uniform
+      %int_0 = OpConstant %int 0
+%_ptr_Uniform_v3float = OpTypePointer Uniform %v3float
+%z_reflection = OpSpecConstantFalse %bool
+%_ptr_Input_v3float = OpTypePointer Input %v3float
+  %direction = OpVariable %_ptr_Input_v3float Input
+    %float_2 = OpConstant %float 2
+        %145 = OpConstantComposite %v3float %float_0 %float_0 %float_0
+      %int_1 = OpConstant %int 1
+        %158 = OpTypeImage %float 3D 0 0 0 1 Unknown
+        %159 = OpTypeSampledImage %158
+%_ptr_UniformConstant_159 = OpTypePointer UniformConstant %159
+%colorTexture = OpVariable %_ptr_UniformConstant_159 UniformConstant
+    %float_1 = OpConstant %float 1
+ %colorScale = OpSpecConstant %float 2
+%float_0_99000001 = OpConstant %float 0.99000001
+      %false = OpConstantFalse %bool
+       %true = OpConstantTrue %bool
+       %main = OpFunction %void None %4
+          %6 = OpLabel
+               OpSelectionMerge %210 None
+               OpSwitch %uint_0 %211
+        %211 = OpLabel
+               OpLine %1 28 0
+         %18 = OpAccessChain %_ptr_Input_float %gl_FragCoord %uint_0
+         %19 = OpLoad %float %18
+         %21 = OpConvertSToF %float %centerX
+         %22 = OpFSub %float %19 %21
+         %23 = OpConvertFToS %int %22
+         %25 = OpAccessChain %_ptr_Input_float %gl_FragCoord %uint_1
+         %26 = OpLoad %float %25
+         %28 = OpConvertSToF %float %centerY
+         %29 = OpFSub %float %26 %28
+         %30 = OpConvertFToS %int %29
+         %31 = OpCompositeConstruct %v2int %23 %30
+               OpLine %1 29 0
+         %34 = OpConvertSToF %v2float %31
+         %37 = OpDot %float %34 %34
+         %39 = OpConvertSToF %float %radius2
+         %41 = OpFOrdGreaterThan %bool %37 %39
+               OpSelectionMerge %43 None
+               OpBranchConditional %41 %42 %43
+         %42 = OpLabel
+               OpLine %1 30 0
+               OpStore %fragColor %47
+               OpLine %1 31 0
+               OpBranch %210
+         %43 = OpLabel
+               OpLine %1 35 0
+         %57 = OpAccessChain %_ptr_Uniform_v3float %_ %int_0
+         %58 = OpLoad %v3float %57
+               OpSelectionMerge %61 None
+               OpBranchConditional %z_reflection %60 %112
+         %60 = OpLabel
+               OpLine %1 38 0
+         %65 = OpLoad %v3float %direction
+         %66 = OpFNegate %v3float %65
+         %68 = OpExtInst %v3float %2 Step %145 %66
+         %71 = OpFSub %v3float %68 %58
+         %73 = OpFDiv %v3float %71 %65
+               OpLine %1 39 0
+         %77 = OpCompositeExtract %float %73 0
+         %79 = OpCompositeExtract %float %73 1
+         %80 = OpExtInst %float %2 FMax %77 %79
+         %83 = OpCompositeExtract %float %73 2
+         %84 = OpExtInst %float %2 FMax %80 %83
+               OpLine %1 40 0
+         %86 = OpFOrdGreaterThan %bool %84 %float_0
+               OpSelectionMerge %88 None
+               OpBranchConditional %86 %87 %88
+         %87 = OpLabel
+               OpLine %1 41 0
+         %91 = OpVectorTimesScalar %v3float %65 %84
+         %93 = OpFAdd %v3float %58 %91
+               OpBranch %88
+         %88 = OpLabel
+        %234 = OpPhi %v3float %58 %60 %93 %87
+               OpLine %1 43 0
+         %96 = OpExtInst %v3float %2 Step %145 %65
+         %98 = OpFSub %v3float %96 %234
+        %100 = OpFDiv %v3float %98 %65
+               OpLine %1 44 0
+        %104 = OpCompositeExtract %float %100 0
+        %106 = OpCompositeExtract %float %100 1
+        %107 = OpExtInst %float %2 FMin %104 %106
+        %109 = OpCompositeExtract %float %100 2
+        %110 = OpExtInst %float %2 FMin %107 %109
+        %111 = OpConvertFToS %int %110
+               OpBranch %61
+        %112 = OpLabel
+               OpLine %1 47 0
+        %114 = OpLoad %v3float %direction
+        %116 = OpExtInst %v3float %2 Step %145 %114
+        %119 = OpFSub %v3float %116 %58
+        %121 = OpFDiv %v3float %119 %114
+               OpLine %1 48 0
+        %123 = OpCompositeExtract %float %121 0
+        %125 = OpCompositeExtract %float %121 1
+        %126 = OpExtInst %float %2 FMin %123 %125
+        %128 = OpCompositeExtract %float %121 2
+        %129 = OpExtInst %float %2 FMin %126 %128
+        %130 = OpConvertFToS %int %129
+               OpBranch %61
+         %61 = OpLabel
+        %238 = OpPhi %int %111 %88 %130 %112
+        %235 = OpPhi %v3float %234 %88 %58 %112
+               OpLine %1 51 0
+        %132 = OpLoad %v3float %direction
+               OpSelectionMerge %134 None
+               OpBranchConditional %z_reflection %133 %134
+        %133 = OpLabel
+               OpLine %1 53 0
+        %137 = OpCompositeExtract %float %235 2
+        %138 = OpFMul %float %137 %float_2
+        %229 = OpCompositeInsert %v3float %138 %235 2
+               OpLine %1 54 0
+        %141 = OpCompositeExtract %float %132 2
+        %142 = OpFMul %float %141 %float_2
+        %232 = OpCompositeInsert %v3float %142 %132 2
+               OpBranch %134
+        %134 = OpLabel
+        %244 = OpPhi %v3float %132 %61 %232 %133
+        %240 = OpPhi %v3float %235 %61 %229 %133
+               OpLine %1 57 0
+               OpBranch %147
+               OpLine %1 58 0
+
+        %147 = OpLabel
+               OpNoLine
+        %242 = OpPhi %v3float %145 %134 %183 %150
+        %241 = OpPhi %float %float_0 %134 %186 %150
+        %239 = OpPhi %v3float %240 %134 %203 %150
+        %236 = OpPhi %int %238 %134 %154 %150
+        %154 = OpISub %int %236 %int_1
+        %155 = OpSGreaterThanEqual %bool %236 %int_0
+               OpLine %1 58 0
+               OpLoopMerge %149 %150 None
+               OpBranchConditional %155 %148 %149
+
+; Ray tracing loop
+        %148 = OpLabel
+               OpLine %1 59 0
+        %162 = OpLoad %159 %colorTexture
+        %164 = OpImageSampleImplicitLod %v4float %162 %239
+               OpLine %1 60 0
+        %168 = OpCompositeExtract %float %164 3
+        %171 = OpFSub %float %float_1 %241
+        %172 = OpFMul %float %168 %171
+        %174 = OpFDiv %float %172 %colorScale
+               OpLine %1 61 0
+        %176 = OpCompositeExtract %float %164 0
+        %177 = OpCompositeExtract %float %164 1
+        %178 = OpCompositeExtract %float %164 2
+        %179 = OpCompositeConstruct %v3float %176 %177 %178
+        %181 = OpVectorTimesScalar %v3float %179 %174
+        %183 = OpFAdd %v3float %242 %181
+               OpLine %1 62 0
+        %186 = OpFAdd %float %241 %174
+               OpLine %1 63 0
+        %189 = OpFOrdGreaterThan %bool %186 %float_0_99000001
+               OpSelectionMerge %191 None
+               OpBranchConditional %189 %190 %191
+
+; Stop tracing for less than 1% of the color
+        %190 = OpLabel
+               OpLine %1 64 0
+        %194 = OpCompositeConstruct %v3float %186 %186 %186
+        %195 = OpFDiv %v3float %183 %194
+        %196 = OpCompositeExtract %float %195 0
+        %197 = OpCompositeExtract %float %195 1
+        %198 = OpCompositeExtract %float %195 2
+        %199 = OpCompositeConstruct %v4float %196 %197 %198 %float_1
+               OpStore %fragColor %199
+               OpLine %1 65 0
+               OpBranch %149
+
+        %191 = OpLabel
+               OpLine %1 67 0
+        %203 = OpFAdd %v3float %239 %244
+               OpBranch %150
+        %150 = OpLabel
+               OpBranch %147
+
+        %149 = OpLabel
+        %251 = OpPhi %float %241 %147 %186 %190
+        %250 = OpPhi %v3float %242 %147 %183 %190
+        %245 = OpPhi %bool %false %147 %true %190
+               OpSelectionMerge %216 None
+               OpBranchConditional %245 %210 %216
+
+        %216 = OpLabel
+               OpLine %1 69 0
+        %206 = OpCompositeExtract %float %250 0
+        %207 = OpCompositeExtract %float %250 1
+        %208 = OpCompositeExtract %float %250 2
+        %209 = OpCompositeConstruct %v4float %206 %207 %208 %251
+               OpStore %fragColor %209
+               OpBranch %210
+        %210 = OpLabel
+               OpReturn
+               OpFunctionEnd

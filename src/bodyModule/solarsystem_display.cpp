@@ -97,7 +97,7 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
         if (!body.isVisibleOnScreen()) // Only reserve a bucket for visible body
             continue;
 
-		double bounding = body.getBoundingRadius() * 11.1;
+		double bounding = body.getBoundingRadius() * 1.1;
 
 		if (bounding <= 0) // Check if it has a bounding
             continue;
@@ -150,8 +150,8 @@ void SolarSystemDisplay::drawShadow(Projector * prj, const Navigator * nav)
     renderData.sinSunHalfAngle = sunRadius / mainPos.length();
     for (auto &s : shadowingBody) {
         params.smoothRadius = sunCoef * s.distToMainBody;
-        renderData.shadowingBodies.push_back(s.body->drawShadow(params));
-        // TODO use bounding
+        if (params.smoothRadius < s.body->getBoundingRadius() * 4) // Ignore shadow with less than 4% of occlusion
+            renderData.shadowingBodies.push_back(s.body->drawShadow(params));
     }
     mainBody->bindShadows(renderData);
     // The matrix, defining the position, is known to the body, but what interest us is the matrix orthogonal to the target, so we want the matrix of the main body
@@ -198,7 +198,7 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 		dist = body.getDistance();
         if (body.needOrbitDepth()) {
             // Add this body to the orbit depth bucket
-            const double bounding = body.getBoundingRadius() * 11.1;
+            const double bounding = body.getBoundingRadius() * 1.1;
             if (orbitBucket.znear > dist - bounding)
                 orbitBucket.znear = dist - bounding;
             if (orbitBucket.zfar < dist + bounding)

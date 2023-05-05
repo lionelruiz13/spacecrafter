@@ -67,10 +67,10 @@ protected :
 		return;
 	}
 
-	std::unique_ptr<Ojm> obj3D;
+	std::shared_ptr<Ojm> obj3D;
 	std::unique_ptr<Set> set;
 	std::unique_ptr<SharedBuffer<artGeom>> uProj;
 	std::unique_ptr<SharedBuffer<LightInfo>> uLight;
-	std::unique_ptr<SharedBuffer<Mat4f>> uNormalMatrix;
+	std::unique_ptr<SharedBuffer<artVert>> uVert;
 	bool initialized = false;
 };

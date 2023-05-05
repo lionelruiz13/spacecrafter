@@ -214,6 +214,11 @@ typedef struct {
 } artGeom;
 
 typedef struct {
+	mat4 normal;
+	float radius;
+} artVert;
+
+typedef struct {
 	vec3 Position;	// Light position in eye coords.
 	float fixAlignment; // fix alignment
     vec3 Intensity;	// A,D,S intensity

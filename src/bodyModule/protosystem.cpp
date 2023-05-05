@@ -620,7 +620,7 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 	};
 
 	ObjL *currentOBJ;
-	{
+	if (typePlanet != ARTIFICIAL) {
 		const std::string &modelName = param["model_name"];
 		if (modelName.empty()) {
 			currentOBJ = objLMgr->selectDefault();
