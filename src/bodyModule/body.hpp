@@ -471,7 +471,7 @@ public:
 
 	// Return the screen_size if visible, 0 otherwise
 	inline float getImportance() {
-		return (isVisible) ? screen_sz : 0;
+		return (isVisible) ? screen_sz/distance : 0;
 	}
 
 	inline bool isVisibleOnScreen() {

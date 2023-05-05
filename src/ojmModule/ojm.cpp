@@ -139,6 +139,8 @@ bool Ojm::readCache()
 			cLog::get()->write("Failed to check source for '" + fileName + "', assume cache is up to date.", LOG_TYPE::L_WARNING);
 		}
 		radius = mainHead.radius;
+		if (mainHead.poorlyCentered)
+			cLog::get()->write("OJM '" + fileName + "' is poorly centered, this may reduce rendering quality", LOG_TYPE::L_WARNING);
 		cshapes.resize(mainHead.nbShapes);
 		ShapeHeader header;
 		char tmp[255];
@@ -168,6 +170,7 @@ void Ojm::compileCache()
 		mainHead.sourceTimestamp = std::filesystem::last_write_time(fileName).time_since_epoch().count();
 		mainHead.radius = radius;
 		mainHead.nbShapes = shapes.size();
+		mainHead.poorlyCentered = poorlyCentered;
 		ShapeHeader header;
 		ShapeAttributes attr{};
 		header.pushAttr = true;
@@ -253,6 +256,8 @@ bool Ojm::readOJM(const std::string& filename)
     if(stream.is_open())
     {
         int shapeIter=-1;
+		Vec3f posBorder{};
+		Vec3f negBorder{};
 
         do{
             stream.getline(line,256);
@@ -272,9 +277,13 @@ bool Ojm::readOJM(const std::string& filename)
                     {
                         Vec3f vertex;
                         std::stringstream ss(std::string(line+2));
-                        ss>>vertex.v[0];
-                        ss>>vertex.v[1];
-                        ss>>vertex.v[2];
+						for (int i = 0; i < 3; ++i) {
+							ss >> vertex.v[i];
+							if (posBorder.v[i] < vertex.v[i])
+								posBorder.v[i] = vertex.v[i];
+							if (negBorder.v[i] > vertex.v[i])
+								negBorder.v[i] = vertex.v[i];
+						}
 						float tmp = vertex.lengthSquared();
 						if (radius < tmp)
 							radius = tmp;
@@ -414,6 +423,13 @@ bool Ojm::readOJM(const std::string& filename)
             }
         } while(!stream.eof());
 		radius = sqrt(radius);
+		posBorder += negBorder;
+		if (posBorder.length() / radius > 0.4) {
+			poorlyCentered = true;
+			std::ostringstream oss;
+			oss << "OJM '" << fileName << "' center is detected around " << posBorder << ", is it expected ?";
+			cLog::get()->write(oss.str(), LOG_TYPE::L_WARNING);
+		}
 		for (auto &s : shapes) {
 			for (auto &v : s.vertices) {
 				v /= radius;

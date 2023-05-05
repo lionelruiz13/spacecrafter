@@ -33,7 +33,8 @@ struct Shape {
 struct OjmHeader {
     ssize_t sourceTimestamp; // Last modification time of the source file
     float radius; // Radius of the ojm before normalization
-    uint32_t nbShapes; // Number of shapes in this OJM
+    uint16_t nbShapes; // Number of shapes in this OJM
+    bool poorlyCentered;
 };
 
 struct ShapeAttributes {
@@ -115,6 +116,7 @@ private:
 	std::string fileName;
 	std::string pathFile;
     float radius = 0;
+    bool poorlyCentered = false;
 };
 
 
