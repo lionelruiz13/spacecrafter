@@ -218,6 +218,7 @@ protected:
 
 	// load one object from a hash
 	virtual void addBody(stringHash_t param, bool deletable);
+    void showBodyRecursive(Body *body);
     void hideBodyRecursive(Body *body);
 
 	// determine the planet type: Sun, planet, moon, dwarf, asteroid ...

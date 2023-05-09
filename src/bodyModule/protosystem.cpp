@@ -279,7 +279,7 @@ void ProtoSystem::setPlanetHidden(const std::string &name, bool planethidden)
 	if (planethidden) {
 		hideBodyRecursive(body);
 	} else {
-		showBody(body);
+		showBodyRecursive(body);
 	}
 }
 
@@ -288,6 +288,13 @@ void ProtoSystem::hideBodyRecursive(Body *body)
 	for (auto &b : body->getSatellites())
 		hideBodyRecursive(b);
 	hideBody(body);
+}
+
+void ProtoSystem::showBodyRecursive(Body *body)
+{
+	for (auto &b : body->getSatellites())
+		showBodyRecursive(b);
+	showBody(body);
 }
 
 // Search if any Body is close to position given in earth equatorial position and return the distance
