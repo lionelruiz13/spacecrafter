@@ -48,6 +48,7 @@
 #include "tools/s_texture.hpp"
 #include "mainModule/CPUInfo.hpp"
 #include "EntityCore/Tools/LinuxExecutor.hpp"
+#include "EntityCore/Executor/AsyncLoaderMgr.hpp"
 
 #ifdef __linux__
 #include <sys/types.h>
@@ -323,6 +324,8 @@ int main(int argc, const char *argv[])
 	vkmgrInfo.preferedFeatures.features.samplerAnisotropy = VK_TRUE;
 	vkmgrInfo.preferedFeatures.pNext = &timelineSemaphore;
 
+	AsyncLoaderMgr loader(appDir, ini->getUserDir()+"cache/");
+	loader.minPriority = LoadPriority::NOW; // Don't load anything while performing the initial loading
 	std::unique_ptr<VulkanMgr> vulkan = std::make_unique<VulkanMgr>(vkmgrInfo);
 	std::unique_ptr<App> app = std::make_unique<App>(sdl.get());
 
@@ -335,6 +338,8 @@ int main(int argc, const char *argv[])
 
 	// SC logical software start here
 	app->firstInit();
+	loader.minPriority = LoadPriority::LOADING;
+	loader.flush();
 	app->startMainLoop();
 	//SC logical software end here
 

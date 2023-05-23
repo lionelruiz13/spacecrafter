@@ -24,6 +24,7 @@
 #include "SphereObjL.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
+#include "LazyOjmL.hpp"
 
 #ifdef __GNUC__
 constexpr float icosahedron_G = 0.5*(1.0+sqrt(5.0));
@@ -126,8 +127,8 @@ SphereObjL::SphereObjL()
 
 	// Generate OjmL
 	low = std::make_unique<OjmL>(vertex, indexLow, indexCountLow);
-	medium = std::make_unique<OjmL>(vertex, indexMedium, indexCountMedium);
-	high = std::make_unique<OjmL>(vertex, indexHigh, indexCountHigh);
+	medium = std::make_unique<LazyOjmL>(vertex.get(), indexMedium, indexCountMedium);
+	high = std::make_unique<LazyOjmL>(vertex.get(), indexHigh, indexCountHigh);
 }
 
 SphereObjL::~SphereObjL()

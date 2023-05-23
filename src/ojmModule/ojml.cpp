@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include <cmath>
-
+#include "tools/log.hpp"
 #include "ojmModule/ojml.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/Core/BufferMgr.hpp"
@@ -109,22 +109,18 @@ bool OjmL::readOJML(const std::string & _fileName)
     std::ifstream stream;
     char line[265];
 
-    stream.open(_fileName.c_str(),std::ios_base::in);
+    stream.open(_fileName, std::ios_base::in);
 
-    if(stream.is_open())
-    {
-        while(!stream.eof()) {
+    if (stream.is_open()) {
+        while (!stream.eof()) {
             stream.getline(line,256);
 
-            switch(line[0])
-            {
+            switch(line[0]) {
                 case 'v':
                     {
                         Vec3f vertex;
                         std::stringstream ss(std::string(line+2));
-                        ss>>vertex.v[0];
-                        ss>>vertex.v[1];
-                        ss>>vertex.v[2];
+                        ss >> vertex.v[0] >> vertex.v[1] >> vertex.v[2];
                         insert_vec3(vertices, vertex);
                     }
                 break;

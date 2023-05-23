@@ -80,6 +80,7 @@
 #include "EntityCore/Resource/TileMap.hpp"
 #include "tools/NDISender.hpp"
 #include "EntityCore/Tools/CaptureMetrics.hpp"
+#include "EntityCore/Executor/AsyncLoaderMgr.hpp"
 #include "capture.hpp"
 
 #ifdef __linux__
@@ -348,6 +349,7 @@ void App::finalizeInitVulkan(InitParser &conf)
 {
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	cLog::get()->write("Finalizing Vulkan initialization...", LOG_TYPE::L_INFO);
+	context.asyncStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 8*128*1024*1024, "Async staging BufferMgr");
 	context.texStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 1*1024*1024*1024, "Texture staging BufferMgr");
 	context.asyncTexStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, BIG_TEXTURE_SIZE, "Async texture upload buffer"); // Support up to 16k x 8k big texture, around 682 Mo
 	context.readbackMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_HOST_CACHED_BIT, 3*4*width*height, "readback BufferMgr");
@@ -695,6 +697,7 @@ void App::draw(int delta_time)
 	// Define semaphore synchronization semantics
 	context.stat->capture(Capture::FRAME_ACQUIRE);
 	vkmgr.update();
+	AsyncLoaderMgr::instance->update();
 	core->uboCamUpdate();
 	s_texture::update();
 	context.frame[context.frameIdx]->discardRecord();

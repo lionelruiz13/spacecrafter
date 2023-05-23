@@ -42,6 +42,7 @@ public:
     std::unique_ptr<DrawHelper> helper;
     std::unique_ptr<Collector> collector;
     std::unique_ptr<BufferMgr> stagingMgr;
+    std::unique_ptr<BufferMgr> asyncStagingMgr;
     std::unique_ptr<BufferMgr> texStagingMgr;
     std::unique_ptr<BufferMgr> asyncTexStagingMgr;
     std::vector<std::unique_ptr<TransferMgr>> transfers;
@@ -73,6 +74,7 @@ public:
     std::vector<std::unique_ptr<PipelineLayout>> layouts;
     std::vector<Pipeline *> pipelineArray;
     std::vector<SubBuffer> transientBuffer[3];
+    std::vector<SubBuffer> transientAsyncBuffer[3];
     // Semaphore synchronization - sync from next frame to current
     VkSemaphoreSubmitInfoKHR waitFrameSync[2] {{.sType=VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO_KHR, .pNext=nullptr, .semaphore=VK_NULL_HANDLE, .value=0, .stageMask=VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR, .deviceIndex=0}, {.sType=VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO_KHR, .pNext=nullptr, .semaphore=VK_NULL_HANDLE, .value=0, .stageMask=0u, .deviceIndex=0}};
     // Semaphore synchronization - sync from previous frame to current

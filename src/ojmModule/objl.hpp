@@ -11,6 +11,7 @@
 
 class Projector;
 class Pipeline;
+class LazyOjmL;
 
 /**
  * \class ObjL
@@ -35,21 +36,15 @@ class ObjL {
 public:
 	ObjL();
 	virtual ~ObjL();
-	void draw(VkCommandBuffer &cmd, const float screenSize);
+	void draw(VkCommandBuffer cmd, const float screenSize);
 	bool init(const std::string &repertory, const std::string &name);
-	void bind(VkCommandBuffer &cmd);
+	void bind(VkCommandBuffer cmd);
 	void bind(Pipeline &pipeline);
 
-	bool isOk() {
-		return isUsable;
-	}
-
 protected:
-	bool isUsable = false;
-
 	std::unique_ptr<OjmL> low;
-	std::unique_ptr<OjmL> medium;
-	std::unique_ptr<OjmL> high;
+	std::unique_ptr<LazyOjmL> medium;
+	std::unique_ptr<LazyOjmL> high;
 };
 
 
