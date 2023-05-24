@@ -260,9 +260,8 @@ public:
 		return parent;
 	}
 
-	// modifiable
-	std::shared_ptr<Body> getParent(void) {
-		return parent;
+	inline Body *getParent(void) {
+		return parent.get();
 	}
 
 	static void setFont(s_font* f) {
@@ -433,10 +432,6 @@ public:
 	}
 
 	Vec3d getPositionAtDate(double jDate) const;
-
-	inline const std::shared_ptr<Body> &getParent() const {
-		return parent;
-	}
 
 	const AtmosphereParams* getAtmosphereParams() const {
 		return this->atmosphereParams;
