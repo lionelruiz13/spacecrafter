@@ -54,6 +54,7 @@
 #define SCK_CPU_INFO                        "cpu_info"
 #define SCK_FLAG_ALWAYS_VISIBLE             "flag_always_visible"
 #define SCK_STATISTICS                      "query_statistics"
+#define SCK_BUILDER_THREADS                 "builder_threads"
 
 #define SCK_ENABLE_MKFIFO                   "enable_mkfifo"
 #define SCK_ENABLE_TCP                      "enable_tcp"

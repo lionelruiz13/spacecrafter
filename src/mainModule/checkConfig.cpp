@@ -45,6 +45,7 @@ void CheckConfig::checkMainSettings()
 	tmpSettings[SCK_DEBUG_LAYER]="false";
 	tmpSettings[SCK_TEX_CACHE]="false";
 	tmpSettings[SCK_STATISTICS]="false";
+	tmpSettings[SCK_BUILDER_THREADS]="3";
 	tmpSettings[SCK_LOG]="true";
 	// mainSettings["debug_opengl"]="false";
 	tmpSettings[SCK_MILKYWAY_IRIS] = "false";

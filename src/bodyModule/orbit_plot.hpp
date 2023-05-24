@@ -22,7 +22,6 @@
 
 #include <vector>
 #include <memory>
-
 #include "tools/fader.hpp"
 #include "tools/vecmath.hpp"
 #include <vulkan/vulkan.h>
@@ -55,8 +54,11 @@ public:
 	static void createSC_context();
 	// static void deleteShader();
 
-	void updateShader(double delta_time);
-	LinearFader getOrbitFader() {
+	inline void updateShader(double delta_time) {
+		orbit_fader.update(delta_time);
+	}
+
+	LinearFader &getOrbitFader() {
 		return orbit_fader;
 	}
 

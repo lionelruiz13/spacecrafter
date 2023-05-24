@@ -63,16 +63,17 @@ void SolarSystemSelected::setFlagTrails(bool b)
 {
 	flagTrails = b;
 
-	if (!b || !selected || selected == Object(ssystem->getCenterObject().get())) {
+	if (!b || !selected || (selected == ssystem->getCenterObject().get())) {
         for (auto &v : *ssystem) {
 			v.second.body->setFlagTrail(b);
 		}
 	} else {
 		// if a Body is selected and trails are on, fade out non-selected ones
         for (auto &v : *ssystem) {
-			if (selected == v.second.body.get() || (v.second.body->get_parent() && v.second.body->get_parent()->getEnglishName() == selected.getEnglishName()) )
+			if ((selected == v.second.body.get()) || (selected == v.second.body->getParent()))
 				v.second.body->setFlagTrail(b);
-			else v.second.body->setFlagTrail(false);
+			else
+                v.second.body->setFlagTrail(false);
 		}
 	}
 }

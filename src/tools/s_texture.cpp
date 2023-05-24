@@ -86,6 +86,8 @@ bool s_texture::cacheTexture = false;
 // Set to 1 to release every big textures every tic
 int s_texture::bigTextureLifetime = 90;
 
+std::chrono::steady_clock::duration loadTime;
+
 // Conversion table
 const VkFormat formatTable[] = {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM, VK_FORMAT_R8G8B8A8_SNORM};
 
@@ -136,6 +138,7 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap
 	}
 	bool succes;
 
+    auto now = std::chrono::steady_clock::now();
 	if (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName))
 		succes = preload(textureName, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap, force3D, depthColumn);
 	else
@@ -143,6 +146,7 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap
 
 	if (!succes)
 		createEmptyTex();
+    loadTime += std::chrono::steady_clock::now() - now;
 }
 
 s_texture::s_texture(const std::string& _textureName, Texture *_imgTex)
@@ -460,6 +464,7 @@ void s_texture::forceUnload()
         layoutMipmap = nullptr;
     }
     cache.store();
+    std::cout << "Total blocking texture loading time : " << std::chrono::duration_cast<std::chrono::milliseconds>(loadTime).count() << " ms\n";
 }
 
 void s_texture::update()

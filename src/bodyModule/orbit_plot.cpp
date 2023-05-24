@@ -89,11 +89,6 @@ void OrbitPlot::createSC_context()
 	pipelineOrbit3d->build();
 }
 
-void OrbitPlot::updateShader(double delta_time)
-{
-	orbit_fader.update(delta_time);
-}
-
 void OrbitPlot::computeOrbit(double date)
 {
 	// Large performance advantage from avoiding object overhead

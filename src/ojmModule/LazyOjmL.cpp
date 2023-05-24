@@ -23,7 +23,7 @@ LazyOjmL::LazyOjmL(const std::filesystem::path &source, LoadPriority priority) :
     AsyncLoader(source, priority)
 {
     once = false;
-    AsyncLoaderMgr::instance->addTask(this);
+    AsyncLoaderMgr::instance->addLoad(this);
 }
 
 LazyOjmL::LazyOjmL(VertexBuffer *vertex, SubBuffer index, unsigned int indexCount) :

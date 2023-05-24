@@ -109,6 +109,10 @@ public:
 		return dynamic_cast<T *>(rep);
 	}
 	// static void deleteShaders();
+
+	inline bool operator==(ObjectBase *other) const {
+		return rep == other;
+	}
 private:
 	ObjectBase *rep;
 };

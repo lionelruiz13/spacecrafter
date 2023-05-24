@@ -231,6 +231,7 @@ void App::initVulkan(InitParser &conf)
 	width = vkmgr.getSwapChainExtent().width;
 	height = vkmgr.getSwapChainExtent().height;
 	context.stagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 512*1024*1024, "Staging BufferMgr");
+	context.uniformMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "uniform BufferMgr", true);
 	context.setMgr = std::make_unique<SetMgr>(vkmgr, 4096, 1024, 4096, 1, 64, true);
 	context.graphicFamily = vkmgr.acquireQueue(context.graphicQueue, VulkanMgr::QueueType::GRAPHIC_COMPUTE, "main");
 	if (context.graphicFamily) {
@@ -349,12 +350,11 @@ void App::finalizeInitVulkan(InitParser &conf)
 {
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	cLog::get()->write("Finalizing Vulkan initialization...", LOG_TYPE::L_INFO);
-	context.asyncStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 8*128*1024*1024, "Async staging BufferMgr");
+	context.asyncStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 256*1024*1024, "Async staging BufferMgr");
 	context.texStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 1*1024*1024*1024, "Texture staging BufferMgr");
 	context.asyncTexStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, BIG_TEXTURE_SIZE, "Async texture upload buffer"); // Support up to 16k x 8k big texture, around 682 Mo
 	context.readbackMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_HOST_CACHED_BIT, 3*4*width*height, "readback BufferMgr");
 	context.globalBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 128*1024*1024, "global BufferMgr");
-	context.uniformMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "uniform BufferMgr", true);
 	context.tinyMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "tiny BufferMgr");
 	context.ojmBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 128*1024*1024, "OJM BufferMgr");
 	context.ojmVertexArray = std::make_unique<VertexArray>(vkmgr, context.ojmAlignment);
@@ -389,6 +389,9 @@ void App::finalizeInitVulkan(InitParser &conf)
 			context.frame.back()->bind(multiColorID, *multisampleImage[i]);
 		context.frame.back()->build(context.graphicFamily->id, true, true);
 		context.graphicTransferCmd[i] = context.frame.back()->createMain();
+		auto &barrier = context.transfers[i]->overrideBarrier();
+		barrier.bufferBarrier(*context.asyncStagingMgr, VK_PIPELINE_STAGE_2_HOST_BIT_KHR, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_ACCESS_2_HOST_WRITE_BIT_KHR, VK_ACCESS_2_TRANSFER_READ_BIT_KHR);
+		barrier.build();
 	}
 	context.helper = std::make_unique<DrawHelper>();
 	if (vkmgr.getSwapchainView().empty()) {
@@ -697,6 +700,11 @@ void App::draw(int delta_time)
 	// Define semaphore synchronization semantics
 	context.stat->capture(Capture::FRAME_ACQUIRE);
 	vkmgr.update();
+	if (AsyncLoaderMgr::instance->isLoaderIdle()) {
+		for (auto &buffer : context.transientAsyncBuffer[context.frameIdx])
+			context.asyncStagingMgr->releaseBuffer(buffer);
+		context.transientAsyncBuffer[context.frameIdx].clear();
+	}
 	AsyncLoaderMgr::instance->update();
 	core->uboCamUpdate();
 	s_texture::update();
