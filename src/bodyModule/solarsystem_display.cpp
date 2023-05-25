@@ -79,7 +79,7 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
 	// buffer we just clear and reuse the entire depth buffer for each bucket.
 	listBuckets.clear();
     shadowingBody.clear();
-	depthBucket db {};
+	depthBucket db {0, 0};
 
     const auto _end = ssystem->endSorted();
 	for (auto it = ssystem->beginSorted(); it != _end; ++it) {
@@ -102,7 +102,7 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
 		if (bounding <= 0) // Check if it has a bounding
             continue;
 
-        double dist = body.getEarthEquPos(nav).length();  // AU
+        double dist = body.getDistance();  // AU
 		double znear = dist - bounding;
 		double zfar  = dist + bounding;
 
