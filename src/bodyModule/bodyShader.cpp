@@ -334,7 +334,6 @@ void BodyShader::createShader()
 	myEarthShadowed.pipeline->setBlendMode(BLEND_NONE);
 	myEarthShadowed.pipeline->setDepthStencilMode();
 	myEarthShadowed.pipeline->bindVertex(*context.ojmVertexArray);
-	myEarthShadowed.pipeline->removeVertexEntry(1);
 	myEarthShadowed.pipeline->removeVertexEntry(2);
 	myEarthShadowed.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	myEarthShadowed.pipeline->bindShader("body_tes_shadow.vert.spv");
@@ -359,7 +358,6 @@ void BodyShader::createShader()
 	shaderShadowedTes.pipeline->setBlendMode(BLEND_NONE);
 	shaderShadowedTes.pipeline->setDepthStencilMode();
 	shaderShadowedTes.pipeline->bindVertex(*context.ojmVertexArray);
-	shaderShadowedTes.pipeline->removeVertexEntry(1);
 	shaderShadowedTes.pipeline->removeVertexEntry(2);
 	shaderShadowedTes.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	shaderShadowedTes.pipeline->bindShader("body_tes_shadow.vert.spv");

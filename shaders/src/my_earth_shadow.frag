@@ -32,6 +32,7 @@ layout (binding=1) uniform globalFrag {
 
 layout (location=0) in vec3 entryPos;
 layout (location=1) in vec3 viewDirection;
+layout (location=2) in flat float side;
 
 layout (location=0) out vec4 fragColor;
 
@@ -48,8 +49,10 @@ layout (location=0) out vec4 fragColor;
 float xyzToHeight(vec3 pos)
 {
 	float depth = length(pos);
+	float tmp = atan(pos.y, pos.x) / (2 * M_PI);
+	tmp += mix(0.5, side, (tmp > 0));
 	return (depth - heightMapDepthLevel) / heightMapDepth - textureLod(heightMap, vec2(
-		0.5 + atan(pos.y, pos.x) / (2 * M_PI),
+		tmp,
 		acos(-pos.z/depth) / M_PI
 	), 0).r;
 }
@@ -84,8 +87,10 @@ void main(void)
 				samplePos += rayStep;
 			}
 		}
+		float tmp = atan(samplePos.y, samplePos.x) / (2 * M_PI);
+		tmp += mix(0.5, side, (tmp > 0));
 		float depth = length(samplePos);
-		vec2 texCoord = vec2(0.5 + atan(samplePos.y, samplePos.x) / (2 * M_PI), acos(-samplePos.z/depth) / M_PI);
+		vec2 texCoord = vec2(tmp, acos(-samplePos.z/depth) / M_PI);
 		vec2 shadowPos = vec2(ShadowMatrix * samplePos); // For shadow projection
 		vec3 xAxis = normalize(vec3(-samplePos.y, samplePos.x, 0));
 		samplePos /= depth;

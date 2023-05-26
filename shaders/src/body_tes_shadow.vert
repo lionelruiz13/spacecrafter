@@ -7,7 +7,7 @@
 
 // Specialized for sphere
 layout (location=0) in vec3 position;
-// layout (location=1) in vec2 texcoord;
+layout (location=1) in float texcoord;
 // layout (location=2) in vec3 normal;
 
 layout (binding=0) uniform globalProj {
@@ -24,6 +24,7 @@ layout (binding=0) uniform globalProj {
 
 layout (location=0) out vec3 entryPos;
 layout (location=1) out vec3 viewDirection;
+layout (location=2) out float side;
 
 // layout(location=0) out vec3 outNormal; // entry point
 // layout(location=0) out vec2 viewTexRay; // View direction in the texture
@@ -61,5 +62,6 @@ void main()
 
 	f /= rq * fov;
 	depth = (depth - zNear) / zRange;
+	side = mix(0.5, -0.5, (texcoord < 0.5));
 	gl_Position = vec4(pos.x*f, pos.y*f, 0, 1);
 }
