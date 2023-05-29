@@ -975,7 +975,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
     angularSize *= 2;
 
     float tmp = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
-    tmp = atan2f(tmp, -eye_planet[2]) / (tmp * halfFov);
+    tmp = (tmp > 0.00001) ? (atan2f(tmp, -eye_planet[2]) / (tmp * halfFov)) : 0;
     screenPos = VulkanMgr::instance->rectToScreen({eye_planet[0] * tmp, eye_planet[1] * tmp});
 }
 
