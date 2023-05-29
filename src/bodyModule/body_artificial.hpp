@@ -67,6 +67,10 @@ protected :
 		return;
 	}
 
+	virtual bool skipDrawingThisBody(const Observer* observatory, bool drawHomePlanet) override {
+		return false;
+	}
+
 	std::shared_ptr<Ojm> obj3D;
 	std::unique_ptr<Set> set;
 	std::unique_ptr<SharedBuffer<artGeom>> uProj;
