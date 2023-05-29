@@ -970,8 +970,9 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
     distance = eye_planet.length();
 
     const float halfFov = prj->getFov() * (M_PI / 360);
-    angularSize = atanf(radius / sqrt(distance*distance - radius*radius)) * 2;
-    isVisible = ((distance <= boundingRadius) || ((-eye_planet[2] / distance) > cos(halfFov + atanf(boundingRadius / sqrt(distance*distance - boundingRadius*boundingRadius)))));
+    angularSize = atanf(radius / sqrt(distance*distance - radius*radius));
+    isVisible = (-eye_planet[2] / distance) > cos(halfFov + angularSize));
+    angularSize *= 2;
 
     float tmp = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
     tmp = atan2f(tmp, -eye_planet[2]) / (tmp * halfFov);
