@@ -61,30 +61,28 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
             tmp->gainInterest();
         mainBody = tmp;
     }
-    if (!mainBody)
-        return; // There is no relevant body
 
-    // Prepair computing shadowing bodies
-    const double sunRadius = ssystem->getCenterObject()->getRadius();
-    const double r1 = mainBody->getBoundingRadius();
-    Vec3d v1 = mainBody->get_heliocentric_ecliptic_pos();
-    const double sd1 = v1.lengthSquared();
-    // const double d1 = sqrt(sd1);
-    // n1 /= d1;
-    const double cst1 = r1+sunRadius;
-    const double cst2 = -sunRadius/sd1;
-
-	// Determine optimal depth buffer buckets for drawing the scene
-	// This is similar to Celestia, but instead of using ranges within one depth
-	// buffer we just clear and reuse the entire depth buffer for each bucket.
-	listBuckets.clear();
+    // Determine optimal depth buffer buckets for drawing the scene
+    // This is similar to Celestia, but instead of using ranges within one depth
+    // buffer we just clear and reuse the entire depth buffer for each bucket.
+    listBuckets.clear();
     shadowingBody.clear();
-	depthBucket db {0, 0};
+    depthBucket db {0, 0};
 
     const auto _end = ssystem->endSorted();
-	for (auto it = ssystem->beginSorted(); it != _end; ++it) {
-        auto &body = **it;
-        {
+    if (mainBody) {
+        // Prepair computing shadowing bodies
+        const double sunRadius = ssystem->getCenterObject()->getRadius();
+        const double r1 = mainBody->getBoundingRadius();
+        Vec3d v1 = mainBody->get_heliocentric_ecliptic_pos();
+        const double sd1 = v1.lengthSquared();
+        // const double d1 = sqrt(sd1);
+        // n1 /= d1;
+        const double cst1 = r1+sunRadius;
+        const double cst2 = -sunRadius/sd1;
+
+        for (auto it = ssystem->beginSorted(); it != _end; ++it) {
+            auto &body = **it;
             Vec3d v2 = body.get_heliocentric_ecliptic_pos();
             double d = v1.dot(v2); // d1*d2
             if (d > 0 && d < sd1) {
@@ -94,6 +92,9 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
                 }
             }
         }
+    }
+	for (auto it = ssystem->beginSorted(); it != _end; ++it) {
+        auto &body = **it;
         if (!body.isVisibleOnScreen()) // Only reserve a bucket for visible body
             continue;
 
@@ -106,8 +107,8 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
 		double znear = dist - bounding;
 		double zfar  = dist + bounding;
 
-		if (znear < 0.00000001) // The camera is in the bucket !
-			znear = 0.00000001;
+		if (znear < 1e-10) // The camera is in the bucket !
+			znear = 1e-10;
 
 		// see if overlaps previous bucket
 		// TODO check that buffer isn't too deep
