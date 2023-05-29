@@ -72,7 +72,14 @@ class InitParser;
  *  SUPER represents the ² key (to the left of &1)
  *  KWIN represents the Windows key (between CTRL and ALT)
  */
-enum MODIFIER { NONE, CTRL, KWIN, SUPER, SHIFT};
+enum MODIFIER {
+	NONE = 0x00,
+	CTRL = 0x01,
+	KWIN = 0x02,
+	SUPER= 0x04,
+	SHIFT= 0x08,
+	ALT  = 0x10
+};
 
 enum class UI_FLAG : char {SHOW_FPS, SHOW_LATLON, SHOW_FOV,
 						 SHOW_PLANETNAME, SHOW_TUISHORTOBJ_INFO,
@@ -124,7 +131,7 @@ public:
 	//! handle Joystick Hat
 	void handleJoyHat(SDL_JoyHatEvent E);
 
-	void handleInputs(SDL_Event E);
+	void handleInputs();
 
 	void moveMouseAlt(double x);
 
@@ -382,7 +389,7 @@ private:
 	Vec3f text_ui; 									// Color info text
 	Vec3f text_tui_root; 							// Color menu text
 
-	enum MODIFIER key_Modifier;
+	uint8_t key_Modifier;
 
 	double KeyTimeLeft;  							// for shift timeout (seconds)
 
