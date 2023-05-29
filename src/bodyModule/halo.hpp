@@ -72,7 +72,7 @@ private:
 
 	struct HaloContext {
 		struct pData_t {
-			Vec2f pos;
+			std::pair<float, float> pos;
 			Vec3f Color;
 			float rmag;
 		} *pData;

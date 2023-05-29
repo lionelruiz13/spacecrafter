@@ -122,7 +122,7 @@ void Sun::createHaloShader(float viewport_y)
     m_bigHaloGL->createBindingEntry(sizeof(Vec2f));
     m_bigHaloGL->addInput(VK_FORMAT_R32G32_SFLOAT);
     haloBuffer = m_bigHaloGL->createBuffer(0, 1, context.tinyMgr.get());
-    screenPosF = static_cast<Vec2f *>(context.tinyMgr->getPtr(haloBuffer->get()));
+    screenPosF = static_cast<std::pair<float, float> *>(context.tinyMgr->getPtr(haloBuffer->get()));
 
     layoutBigHalo = std::make_unique<PipelineLayout>(vkmgr);
     layoutBigHalo->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
@@ -162,14 +162,13 @@ void Sun::createHaloShader(float viewport_y)
 
 void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
 {
-	float screen_r = getOnScreenSize(prj, nav);
 	float rmag = big_halo_size/2/sqrt(nav->getObserverHelioPos().length());
-	float cmag = rmag/screen_r;
+	float cmag = rmag/screen_sz;
 	if (cmag>1.f) cmag = 1.f;
 
-	if (rmag<screen_r*2) {
-		cmag*=rmag/(screen_r*2);
-		rmag = screen_r*2;
+	if (rmag<screen_sz*2) {
+		cmag*=rmag/(screen_sz*2);
+		rmag = screen_sz*2;
 	}
 
 	if (rmag<32) rmag = 32;
@@ -179,7 +178,7 @@ void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneRepr
     *uRmag = rmag;
     *uRadius = getOnScreenSize(prj, nav);
 
-    *screenPosF = Vec2f((float) screenPos[0], (float)screenPos[1]);
+    *screenPosF = screenPos;
 
     Context::instance->frame[Context::instance->frameIdx]->toExecute(haloCmds[Context::instance->frameIdx], PASS_MULTISAMPLE_DEPTH);
 }
@@ -217,66 +216,9 @@ void Sun::createSunShader()
 // Draw the Sun and all the related infos : name, circle etc..
 void Sun::computeDraw(const Projector* prj, const Navigator * nav)
 {
-	eye_sun = nav->getHelioToEyeMat() * v3fNull;
-
-	mat = mat_local_to_parent;
-	parent_mat = Mat4d::identity();
-
-    // \todo account for moon orbit precession (independent of parent)
-	// also does not allow for multiple levels of precession
-	std::shared_ptr<Body> p = parent;
-
-    bool myParent = true;
-	if (p) {   //This loop works to enable planets for stellarsystems and moons for solarsystem
-		// Some orbits are already precessed, namely elp82
-		if(myParent && !useParentPrecession(lastJD)) {
-			mat = Mat4d::translation(p->get_ecliptic_pos())
-			      * mat
-			      * p->get_rot_local_to_parent_unprecessed();
-		}
-		else {
-			mat = Mat4d::translation(p->get_ecliptic_pos())
-			      * mat
-			      * p->get_rot_local_to_parent();
-		}
-
-		parent_mat = Mat4d::translation(p->get_ecliptic_pos())
-		             * parent_mat;
-
-		p = p->get_parent();
-
-		myParent = false;
-	}
-
-	// This removed totally the Body shaking bug!!!
-	mat = nav->getHelioToEyeMat() * mat;
-	parent_mat = nav->getHelioToEyeMat() * parent_mat;
-
-    eye_planet = mat.getTranslation();
-
-	lightDirection = eye_sun - eye_planet;
-	sun_half_angle = atan(696000.0/AU/lightDirection.length());  // hard coded Sun radius!
-	//	cout << sun_half_angle << " sun angle on " << englishName << endl;
-	lightDirection.normalize();
-
-	// Compute the 2D position and check if in the screen
-	screen_sz = getOnScreenSize(prj, nav);
-
-	float screen_size_with_halo = screen_sz;
-	if (big_halo_size > screen_sz)
-		screen_size_with_halo = big_halo_size;
-
-	isVisible = prj->projectCustomCheck(v3fNull, screenPos, mat, (int)(screen_size_with_halo/2));
-
-	visibilityFader = isVisible;
-
-	// Do not draw anything else if was not visible
-	// Draw the name, and the circle if it's not too close from the body it's turning around
-	// this prevents name overlaping (ie for jupiter satellites)
-	ang_dist = 300.f*atan(get_ecliptic_pos().length()/getEarthEquPos(nav).length())/prj->getFov();
-
-    // Compute the distance to the observer
-    distance = eye_planet.length();
+    Body::computeDraw(prj, nav);
+    if (!isVisible)
+        isVisible = (acos(-eye_planet[2] / distance) * (360 / M_PI) / prj->getFov() < (1 + big_halo_size / prj->getViewportRadius()));
 }
 
 bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool needClearDepthBuffer)

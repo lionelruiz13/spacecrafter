@@ -99,7 +99,7 @@ protected:
 	int cmds[3] {-1, -1, -1}; // sun cmds
 	std::unique_ptr<VertexArray> m_bigHaloGL;
 	std::unique_ptr<VertexBuffer> haloBuffer;
-	Vec2f *screenPosF = nullptr;
+	std::pair<float, float> *screenPosF = nullptr;
 	std::unique_ptr<Pipeline> pipelineBigHalo, pipelineSun, pipelineSunNoDepth;
 	std::unique_ptr<PipelineLayout> layoutBigHalo, layoutSun;
 	std::unique_ptr<Set> descriptorSetBigHalo;

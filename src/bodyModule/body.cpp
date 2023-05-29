@@ -668,14 +668,13 @@ float Body::computeMagnitude(const Navigator * nav) const
 // Return the radius of a circle containing the object on screen
 float Body::getOnScreenSize(const Projector* prj, const Navigator * nav, bool orb_only)
 {
-	double rad = radius;
-	return atanf(rad/sqrt(getEarthEquPos(nav).lengthSquared()-rad*rad))*2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+	return angularSize * (180./M_PI) /prj->getFov()*prj->getViewportHeight();
 }
 
 // Return the angle (degrees) of the Body orb
 float Body::get_angular_size(const Projector* prj, const Navigator * nav)
 {
-	return atanf(radius/sqrt(getEarthEquPos(nav).lengthSquared()-radius*radius))*2.f*180./M_PI;
+    return angularSize * (180 / M_PI);
 }
 
 
@@ -907,7 +906,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 
 	// \todo account for moon orbit precession (independent of parent)
 	// also does not allow for multiple levels of precession
-	std::shared_ptr<Body> p = parent;
+	Body *p = parent.get();
 
 	bool myParent = true;
 	if (p) {   //this loop worked to enable moons when while but now with if ?
@@ -927,7 +926,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 		parent_mat = Mat4d::translation(p->get_ecliptic_pos())
 		             * parent_mat;
 
-		p = p->get_parent();
+		p = p->getParent();
 
 		myParent = false;
 	}
@@ -946,7 +945,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 
 	lightDirection = eye_sun - eye_planet;
     sun_half_angle = atan(696000.0/AU/lightDirection.length());  // hard coded Sun radius!
-    for (p = parent; p; p = p->get_parent()) {
+    for (p = parent.get(); p; p = p->getParent()) {
         if (p->getBodyType() == SUN) {
             eye_sun = (nav->getHelioToEyeMat() * p->mat_local_to_parent).getTranslation();
             sun_half_angle = atan(p->radius/AU/lightDirection.length());
@@ -958,7 +957,6 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 
 	// Compute the 2D position and check if in the screen
 	screen_sz = getOnScreenSize(prj, nav);
-	isVisible = prj->projectCustomCheck(v3fNull, screenPos, mat, (int)(screen_sz/2));
 
 	// Do not draw anything else if was not visible
 	// Draw the name, and the circle if it's not too close from the body it's turning around
@@ -970,6 +968,15 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 
     // Compute the distance to the observer
     distance = eye_planet.length();
+
+    const float halfFov = prj->getFov() * (M_PI / 360);
+    angularSize = atanf(radius / sqrt(distance*distance - radius*radius));
+    isVisible = (-eye_planet[2] / distance) > cos(halfFov + angularSize);
+    angularSize *= 2;
+
+    float tmp = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
+    tmp = -atanf(tmp / eye_planet[2]) / (tmp * halfFov);
+    screenPos = VulkanMgr::instance->rectToScreen({eye_planet[0] * tmp, eye_planet[1] * tmp});
 }
 
 double Body::getAxisAngle() const {

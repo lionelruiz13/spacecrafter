@@ -545,7 +545,7 @@ protected:
 	double initialScale; 			// return the initial scale between actual radius et real radius
 	double one_minus_oblateness;    // (polar radius)/(equatorial radius)
 	Vec3d ecliptic_pos; 			// Position in UA in the rectangular ecliptic coordinate system centered on the parent Planet
-	Vec3d screenPos;			// Used to store temporarily the 2D position on screen
+	std::pair<float, float> screenPos;			// Used to store temporarily the 2D position on screen
 	BODY_TYPE typePlanet;			//get the type of Body in univers: real planet, moon, dwarf ...
 
 	std::shared_ptr<BodyColor> myColor=nullptr;
@@ -619,8 +619,9 @@ protected:
 	Mat4d parent_mat;
 	Vec3f lightDirection;
 	float screen_sz;
-	bool isVisible;
+	float angularSize;
 	float ang_dist;
+	bool isVisible;
 
 	body_flags flags;
 

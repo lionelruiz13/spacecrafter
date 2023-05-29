@@ -42,5 +42,5 @@ public:
 		const BodyTexture &_bodyTexture);
 	~Center();
 
-	virtual void computeDraw(const Projector* prj, const Navigator * nav) override;
+	// virtual void computeDraw(const Projector* prj, const Navigator * nav) override;
 };

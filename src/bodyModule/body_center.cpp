@@ -70,41 +70,41 @@ Center::~Center()
 {
 }
 
-// Draw the Center and all the related infos : name, circle etc..
-void Center::computeDraw(const Projector* prj, const Navigator * nav)
-{
-	eye_sun = nav->getHelioToEyeMat() * v3fNull;
-
-	mat = mat_local_to_parent;
-	parent_mat = Mat4d::identity();
-
-	// This removed totally the Body shaking bug!!!
-	mat = nav->getHelioToEyeMat() * mat;
-	parent_mat = nav->getHelioToEyeMat() * parent_mat;
-
-	eye_planet = mat * v3fNull;
-
-	lightDirection = eye_sun - eye_planet;
-	sun_half_angle = atan(696000.0/AU/lightDirection.length());  // hard coded Center radius!
-	//	cout << sun_half_angle << " center angle on " << englishName << endl;
-	lightDirection.normalize();
-
-	// Compute the 2D position and check if in the screen
-	screen_sz = getOnScreenSize(prj, nav);
-
-	float screen_size_with_halo = screen_sz;
-	if (big_halo_size > screen_sz)
-		screen_size_with_halo = big_halo_size;
-
-	isVisible = prj->projectCustomCheck(v3fNull, screenPos, mat, (int)(screen_size_with_halo/2));
-
-	visibilityFader = isVisible;
-
-	// Do not draw anything else if was not visible
-	// Draw the name, and the circle if it's not too close from the body it's turning around
-	// this prevents name overlaping (ie for jupiter satellites)
-	ang_dist = 300.f*atan(get_ecliptic_pos().length()/getEarthEquPos(nav).length())/prj->getFov();
-
-    // Compute the distance to the observer
-    distance = eye_planet.length();
-}
+// // Draw the Center and all the related infos : name, circle etc..
+// void Center::computeDraw(const Projector* prj, const Navigator * nav)
+// {
+// 	eye_sun = nav->getHelioToEyeMat() * v3fNull;
+//
+// 	mat = mat_local_to_parent;
+// 	parent_mat = Mat4d::identity();
+//
+// 	// This removed totally the Body shaking bug!!!
+// 	mat = nav->getHelioToEyeMat() * mat;
+// 	parent_mat = nav->getHelioToEyeMat() * parent_mat;
+//
+// 	eye_planet = mat * v3fNull;
+//
+// 	lightDirection = eye_sun - eye_planet;
+// 	sun_half_angle = atan(696000.0/AU/lightDirection.length());  // hard coded Center radius!
+// 	//	cout << sun_half_angle << " center angle on " << englishName << endl;
+// 	lightDirection.normalize();
+//
+// 	// Compute the 2D position and check if in the screen
+// 	screen_sz = getOnScreenSize(prj, nav);
+//
+// 	float screen_size_with_halo = screen_sz;
+// 	if (big_halo_size > screen_sz)
+// 		screen_size_with_halo = big_halo_size;
+//
+// 	isVisible = prj->projectCustomCheck(v3fNull, screenPos, mat, (int)(screen_size_with_halo/2));
+//
+// 	visibilityFader = isVisible;
+//
+// 	// Do not draw anything else if was not visible
+// 	// Draw the name, and the circle if it's not too close from the body it's turning around
+// 	// this prevents name overlaping (ie for jupiter satellites)
+// 	ang_dist = 300.f*atan(get_ecliptic_pos().length()/getEarthEquPos(nav).length())/prj->getFov();
+//
+//     // Compute the distance to the observer
+//     distance = eye_planet.length();
+// }
