@@ -841,9 +841,10 @@ void App::startMainLoop()
 	// Start the main loop
 	context.stat->capture(Capture::APP_MAINLOOP_START);
 	while (flagAlive) {
-		while (SDL_PollEvent(&E)) {	// Fetch all Event Of The Queue
-			ui->handleInputs(E);
-		}
+		ui->handleInputs();	// Fetch all Event Of The Queue
+		// while (SDL_PollEvent(&E)) {
+		// 	ui->handleInputs(E);
+		// }
 
 		//analyzes the joystick in case events have been accumulated for the joystick
 		ui->handleDeal();
