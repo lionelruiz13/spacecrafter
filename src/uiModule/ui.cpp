@@ -873,7 +873,7 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 			media->playerJump(10.0);
 			break;
 		case SDL_SCANCODE_UP :
-			media->playerJump(600.0);
+			media->playerJump(60.0);
 			break;
 		case SDL_SCANCODE_DOWN :
 			// JUMP BEGINNING
