@@ -969,10 +969,16 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
     // Compute the distance to the observer
     distance = eye_planet.length();
 
-    const float halfFov = prj->getFov() * (M_PI / 360);
-    angularSize = atanf(radius / sqrt(distance*distance - radius*radius));
-    isVisible = ((-eye_planet[2] / distance) > cos(halfFov + angularSize));
-    angularSize *= 2;
+    float halfFov = prj->getFov() * (M_PI / 360);
+    if (distance > radius) {
+        angularSize = atanf(radius / sqrt(distance*distance - radius*radius));
+        halfFov += angularSize;
+        angularSize *= 2;
+        isVisible = (halfFov > M_PI) ? true : (-eye_planet[2] / distance) > cos(halfFov);
+    } else {
+        angularSize = M_PI;
+        isVisible = true;
+    }
 
     float tmp = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
     tmp = atan2f(tmp, -eye_planet[2]) / (tmp * halfFov);
@@ -1190,8 +1196,8 @@ Vec3f Body::drawShadow(const ShadowParams &params)
 {
     auto m = params.lookAt * model;
     Vec3f ret(m.r[12], m.r[13], boundingRadius + params.smoothRadius);
-    m.r[14] = m.r[13] = m.r[12] = 0;
-    m = Mat4d::scaling(1/ret.v[2]) * m;
-
+    auto scaling = radius/ret.v[2];
+    bindShadow(Mat4d::scaling(Vec3d(scaling, scaling, scaling * one_minus_oblateness)) * m);
+    sunProjectionRadius = params.smoothRadius/ret.v[2];
     return ret;
 }

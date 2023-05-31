@@ -54,6 +54,8 @@ enum SHADER_USE {
 	SHADER_ARTIFICIAL = 8,
 	SHADER_NIGHT_TES_SHADOW = 30,
 	SHADER_TES_SHADOW = 12,
+	SHADER_SHADOW = 9,
+	SHADER_ARTIFICIAL_SHADOW = 10,
 	SHADER_UNDEFINED = 127
 };
 
@@ -124,9 +126,18 @@ public:
 		return &shaderArtificial;
 	};
 
+	static drawState_t *getShaderArtificialShadowed() {
+		return &shaderArtificialShadowed;
+	};
+
 	// Used when a global depth shape is required
 	static drawState_t *getShaderDepthTrace() {
 		return &depthTrace;
+	}
+
+	// Used when a depth/stencil trace without fisheye projection is required
+	static drawState_t *getShaderShadowTrace() {
+		return &shadowTrace;
 	}
 protected:
 	static drawState_t shaderBump;
@@ -136,8 +147,10 @@ protected:
 	static drawState_t myMoon; //, shaderMoonBump, shaderMoonNormal;
 	static drawState_t myEarthShadowed; //, shaderMoonBump, shaderMoonNormal;
 	static drawState_t shaderArtificial;
+	static drawState_t shaderArtificialShadowed;
 	static drawState_t shaderShadowedTes;
 	static drawState_t depthTrace;
+	static drawState_t shadowTrace;
 };
 
 typedef Mat4f mat4;
@@ -255,6 +268,14 @@ struct ShadowFrag {
 	vec3 atmColor;
 	float sunDeviation;
 	float atmDeviation;
+};
+
+struct OjmShadowFrag {
+	float ShadowMatrix[12];
+	vec3p lightPosition;
+	vec3 lightIntensity;
+	int nbShadowingBodies;
+	vec3p shadowingBodies[4];
 };
 
 #endif // _BODY_SHADER_HPP_

@@ -180,7 +180,7 @@ private:
 	std::vector<std::unique_ptr<Texture>> senderImage; // If using sender instead of swapchain
 	VkSampleCountFlagBits sampleCount;
 	std::vector<std::unique_ptr<Texture>> multisampleImage;
-	std::unique_ptr<Texture> depthBuffer, shadowBuffer;
+	std::unique_ptr<Texture> depthBuffer;
 	bool flushFrames = false; // Flush every frames, reduce framerates but potentially remove some graphical glitches
 	bool initialized = false;
 

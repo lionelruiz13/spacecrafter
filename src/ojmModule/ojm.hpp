@@ -82,7 +82,10 @@ public:
 
     //! @brief record Ojm draw commands
     //! @param pipelines {pipeline with texture, pipeline without texture}
-    int record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layout, int selectedPipeline = -1, bool firstRecorded = true);
+    int record(VkCommandBuffer cmd, Pipeline *pipelines, PipelineLayout *layout, int selectedPipeline = -1, bool firstRecorded = true);
+
+    // Record draws of the object, for shadow tracing
+    void drawShadow(VkCommandBuffer cmd);
 
 	//! for debugging : print
 	void print();

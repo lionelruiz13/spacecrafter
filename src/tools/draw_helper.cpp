@@ -5,6 +5,7 @@
 #include "tools/s_font.hpp"
 #include "coreModule/ubo_cam.hpp"
 #include "EntityCore/Resource/TileMap.hpp"
+#include "EntityCore/Core/RenderMgr.hpp"
 #include "bodyModule/hints.hpp"
 #include "coreModule/nebula.hpp"
 #include "mediaModule/video_player.hpp"
@@ -409,6 +410,8 @@ void DrawHelper::submitFrame(unsigned char frameIdx, unsigned char lastFrameIdx)
     queue.flush();
 }
 
+// y = sqrt(radius*radius - cst*cst)
+
 void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
 {
     currentLastFrameIdx = lastFrameIdx;
@@ -424,6 +427,44 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
     Context::instance->transferSync->placeBarrier(cmd);
     if (Context::instance->starUsed[frameIdx])
         Context::instance->starUsed[frameIdx]->updateFramebuffer(cmd);
+    if (d.selfShadow) {
+        Context::instance->renderSelfShadow->begin(0, cmd);
+        d.selfShadow->drawShadow(cmd);
+        vkCmdEndRenderPass(cmd);
+        d.selfShadow = nullptr;
+    }
+    for (auto &s : d.shadowers) {
+        Context::instance->renderShadow->begin(0, cmd);
+        float radius = s.radius;
+        s.body->drawShadow(cmd, s.idx);
+        vkCmdEndRenderPass(cmd);
+        auto &sd = Context::instance->shadowData[s.idx];
+        VkImageMemoryBarrier imageBarrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, VK_ACCESS_SHADER_READ_BIT, VK_ACCESS_SHADER_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, Context::instance->shadow->getImage(), {VK_IMAGE_ASPECT_COLOR_BIT, 0, VK_REMAINING_MIP_LEVELS, s.idx, 1}};
+        vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &imageBarrier);
+        const int iradius = radius;
+        if (iradius != sd.constRadius) {
+            sd.constRadius = iradius;
+            sd.pipeline->modifySpecializedConstant(0, iradius);
+            auto oldPipeline = sd.pipeline->build(true);
+            if (oldPipeline != VK_NULL_HANDLE)
+                vkDestroyPipeline(VulkanMgr::instance->refDevice, oldPipeline, nullptr);
+        }
+        int pixelCount = 0;
+        radius *= radius;
+        for (int i = 0; i <= iradius; ++i) {
+            int tmp = sqrt(radius + i*i);
+            pixelCount += tmp;
+            sd.uniform->offsets[i] = tmp;
+        }
+        sd.uniform->pixelCount = pixelCount * 4 + 1;
+        sd.pipeline->bind(cmd);
+        imageBarrier.srcAccessMask = imageBarrier.dstAccessMask;
+        imageBarrier.oldLayout = imageBarrier.newLayout;
+        imageBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+        imageBarrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &imageBarrier);
+    }
+    d.shadowers.clear();
     frame->postBegin();
     frame->submitInline();
     frame = nullptr;

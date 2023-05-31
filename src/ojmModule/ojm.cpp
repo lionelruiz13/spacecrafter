@@ -89,7 +89,7 @@ bool Ojm::testIndices()
 	return true;
 }
 
-int Ojm::record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layout, int selectedPipeline, bool firstRecorded)
+int Ojm::record(VkCommandBuffer cmd, Pipeline *pipelines, PipelineLayout *layout, int selectedPipeline, bool firstRecorded)
 {
 	Texture *boundTex = nullptr;
 
@@ -122,6 +122,14 @@ int Ojm::record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layou
 		vkCmdDrawIndexed(cmd, s.index.size / sizeof(int), 1, s.index.offset / sizeof(int), s.vertex->getOffset(), 0);
 	}
 	return selectedPipeline;
+}
+
+void Ojm::drawShadow(VkCommandBuffer cmd)
+{
+	VertexArray::bindGlobal(cmd, cshapes[0].vertex->get());
+	vkCmdBindIndexBuffer(cmd, cshapes[0].index.buffer, 0, VK_INDEX_TYPE_UINT32);
+	for (auto &s : cshapes)
+		vkCmdDrawIndexed(cmd, s.index.size / sizeof(int), 1, s.index.offset / sizeof(int), s.vertex->getOffset(), 0);
 }
 
 bool Ojm::readCache()

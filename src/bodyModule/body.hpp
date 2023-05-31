@@ -497,7 +497,13 @@ public:
 	// Draw a shadow, return a Vec2f center and float radius
 	Vec3f drawShadow(const ShadowParams &params);
 
-	virtual void drawShadow(VkCommandBuffer drawCmd, const ShadowParams &params) {}
+	virtual void bindShadow(const Mat4d &matrix) {}
+
+	// Record the self-shadow draw
+	virtual void drawShadow(VkCommandBuffer drawCmd) {}
+
+	// Record the shadow draw, return a normalized float describing the sun radius in the shadow
+	virtual void drawShadow(VkCommandBuffer drawCmd, int idx) {}
 protected:
 	bool useParentPrecession(double jd) {
 		return getOrbit()->useParentPrecession(jd);
@@ -621,6 +627,7 @@ protected:
 	float screen_sz;
 	float angularSize;
 	float ang_dist;
+	float sunProjectionRadius;
 	bool isVisible;
 
 	body_flags flags;

@@ -34,6 +34,7 @@
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "EntityCore/Resource/VertexArray.hpp"
 #include "EntityCore/Resource/Set.hpp"
+#include "EntityCore/Resource/Texture.hpp"
 
 drawState_t BodyShader::shaderBump;
 drawState_t BodyShader::shaderNight;
@@ -44,8 +45,10 @@ drawState_t BodyShader::shaderNormalTes;
 drawState_t BodyShader::myMoon;
 drawState_t BodyShader::shaderArtificial;
 drawState_t BodyShader::depthTrace;
+drawState_t BodyShader::shadowTrace;
 drawState_t BodyShader::myEarthShadowed;
 drawState_t BodyShader::shaderShadowedTes;
+drawState_t BodyShader::shaderArtificialShadowed;
 
 
 void BodyShader::createShader()
@@ -264,6 +267,41 @@ void BodyShader::createShader()
 	shaderArtificial.pipelineNoDepth[0].build("shaderArtificial textured noDepth");
 	shaderArtificial.pipelineNoDepth[1].build("shaderArtificial colored noDepth");
 
+	// ========== body_artificial Shadowed ========== //
+	shaderArtificialShadowed.layout = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(shaderArtificialShadowed.layout);
+	shaderArtificialShadowed.layout->setGlobalPipelineLayout(context.layouts.front().get());
+	shaderArtificialShadowed.layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+	shaderArtificialShadowed.layout->buildLayout();
+	shaderArtificialShadowed.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // NormalMatrix
+	shaderArtificialShadowed.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1); // artGeom
+	shaderArtificialShadowed.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 2); // OjmShadowFrag
+	shaderArtificialShadowed.layout->setTextureLocation(3, &PipelineLayout::DEFAULT_SAMPLER); // Self-shadow
+	shaderArtificialShadowed.layout->setTextureLocation(4, &PipelineLayout::DEFAULT_SAMPLER); // Shadow traces
+	shaderArtificialShadowed.layout->buildLayout();
+	shaderArtificialShadowed.layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 44);
+	shaderArtificialShadowed.layout->build();
+
+	shaderArtificialShadowed.pipeline = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shaderArtificialShadowed.layout}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shaderArtificialShadowed.layout}};
+	context.pipelineArray.push_back(shaderArtificialShadowed.pipeline);
+	float selfShadowRes;
+	{
+		int tmp;
+		context.shadowBuffer->getDimensions(tmp, tmp);
+		selfShadowRes = tmp;
+	}
+	for (short i = 0; i < 2; ++i) {
+		shaderArtificialShadowed.pipeline[i].setCullMode(true);
+		shaderArtificialShadowed.pipeline[i].setBlendMode(BLEND_NONE);
+		shaderArtificialShadowed.pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+		shaderArtificialShadowed.pipeline[i].bindVertex(*context.ojmVertexArray);
+		shaderArtificialShadowed.pipeline[i].bindShader("body_artificial.vert.spv");
+		shaderArtificialShadowed.pipeline[i].bindShader("body_artificial.geom.spv");
+		shaderArtificialShadowed.pipeline[i].bindShader((i & 1) ? "body_artificial_shadow_notex.frag.spv" : "body_artificial_shadow_tex.frag.spv");
+		shaderArtificialShadowed.pipeline[i].setSpecializedConstant(0, selfShadowRes);
+		shaderArtificialShadowed.pipeline[i].build((i & 1) ? "shaderArtificialShadowed colored" : "shaderArtificialShadowed textured");
+	}
+
 	// ========== my_moon ========== //
 	myMoon.layout = new PipelineLayout(vkmgr);
 	context.layouts.emplace_back(myMoon.layout);
@@ -363,4 +401,20 @@ void BodyShader::createShader()
 	shaderShadowedTes.pipeline->bindShader("body_tes_shadow.vert.spv");
 	shaderShadowedTes.pipeline->bindShader("my_moon_shadow.frag.spv");
 	shaderShadowedTes.pipeline->build("shaderShadowedTes");
+
+	// ========== shadow_trace ========== //
+	context.layouts.push_back(std::make_unique<PipelineLayout>(vkmgr));
+	shadowTrace.layout = context.layouts.back().get();
+	shadowTrace.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // mat3
+	shadowTrace.layout->buildLayout();
+	shadowTrace.layout->build();
+
+	context.pipelines.push_back(std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shadowTrace.layout));
+	shadowTrace.pipeline = context.pipelines.back().get();
+	shadowTrace.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	shadowTrace.pipeline->bindVertex(*context.ojmVertexArray);
+	shadowTrace.pipeline->removeVertexEntry(1);
+	shadowTrace.pipeline->removeVertexEntry(2);
+	shadowTrace.pipeline->bindShader("shadow_trace.vert.spv");
+	shadowTrace.pipeline->build("shadowTrace");
 }

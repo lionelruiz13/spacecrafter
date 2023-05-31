@@ -71,10 +71,21 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
 	selectShader();
 	obj3D = Ojm::load(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/");
     initialRadius *= obj3D->getRadius();
-    radius = initialRadius;
-	if (!obj3D -> getOk())
+    this->radius = initialRadius;
+	if (!obj3D->getOk()) {
 		std::cout << "Error with " << englishName << " " << model_name << std::endl;
+        this->radius = initialRadius = 0; // Prevent it from being drawn
+    }
     orbitPlot = std::make_unique<Orbit3D>(this);
+    auto &vkmgr = *VulkanMgr::instance;
+    auto &context = *Context::instance;
+    set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, 2, false, true);
+    uVert = std::make_unique<SharedBuffer<artVert>>(*Context::instance->uniformMgr);
+    uProj = std::make_unique<SharedBuffer<artGeom>>(*Context::instance->uniformMgr);
+    uLight = std::make_unique<SharedBuffer<LightInfo>>(*context.uniformMgr);
+    set->bindUniform(uVert, 0);
+    set->bindUniform(uProj, 1);
+    set->bindUniform(uLight, 2);
     // if (orbit_bounding_radius <= 0) {
     //     orbitPlot->computeOrbit(CoreLink::instance->getJDay(), true);
     //     orbit_bounding_radius = orbitPlot->computeOrbitBoundingRadius();
@@ -88,48 +99,128 @@ Artificial::~Artificial()
 
 void Artificial::selectShader ()
 {
-	myShader = SHADER_ARTIFICIAL;
-	drawState = BodyShader::getShaderArtificial();
-}
-
-void Artificial::createSC_context()
-{
-    if (initialized)
-        return;
-    auto &vkmgr = *VulkanMgr::instance;
-    auto &context = *Context::instance;
-    set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, 2, false, true);
-    uVert = std::make_unique<SharedBuffer<artVert>>(*context.uniformMgr);
-    uProj = std::make_unique<SharedBuffer<artGeom>>(*context.uniformMgr);
-    uLight = std::make_unique<SharedBuffer<LightInfo>>(*context.uniformMgr);
-    set->bindUniform(uVert, 0);
-    set->bindUniform(uProj, 1);
-    set->bindUniform(uLight, 2);
-    initialized = true;
+    if (isCenterOfInterest && false) { // Disable for now - todo write _shadow version of shaders
+        myShader = SHADER_ARTIFICIAL_SHADOW;
+        drawState = BodyShader::getShaderArtificialShadowed();
+    } else {
+        myShader = SHADER_ARTIFICIAL;
+        drawState = BodyShader::getShaderArtificial();
+    }
 }
 
 void Artificial::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
-    createSC_context();
+    if (changed) {
+        selectShader();
+        changed = false;
+    }
 
     auto &context = *Context::instance;
 
     Mat4f matrix = mat.convert() * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
     uVert->get().normal = matrix.inverse().transpose();
     uVert->get().radius = radius;
-    uLight->get().Intensity =Vec3f(1.0, 1.0, 1.0);
-    drawState->layout->bindSet(cmd, *context.uboSet);
-    drawState->layout->bindSet(cmd, *set, 2);
-    obj3D->record(cmd, depthTest ? drawState->pipeline : drawState->pipelineNoDepth, drawState->layout);
     uProj->get().ModelViewMatrix = matrix;
     uProj->get().clipping_fov = prj->getClippingFov();
-    uLight->get().Position = eye_sun;
+    if (isCenterOfInterest && false) {
+        uShadowFrag->get().lightIntensity =Vec3f(1.0, 1.0, 1.0);
+        uShadowFrag->get().lightPosition = eye_sun;
+        drawState->layout->bindSet(cmd, *context.uboSet);
+        drawState->layout->bindSet(cmd, *shadowSet, 2);
+        obj3D->record(cmd, drawState->pipeline, drawState->layout);
+    } else {
+        uLight->get().Intensity =Vec3f(1.0, 1.0, 1.0);
+        uLight->get().Position = eye_sun;
+        drawState->layout->bindSet(cmd, *context.uboSet);
+        drawState->layout->bindSet(cmd, *set, 2);
+        obj3D->record(cmd, depthTest ? drawState->pipeline : drawState->pipelineNoDepth, drawState->layout);
+    }
+}
+
+void Artificial::bindShadow(const Mat4d &m)
+{
+    if (!uShadowFrag) {
+        auto &context = *Context::instance;
+        uShadowFrag = std::make_unique<SharedBuffer<OjmShadowFrag>>(*context.uniformMgr);
+        if (!shadowTraceSet) {
+            shadowTraceSet = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, BodyShader::getShaderShadowTrace()->layout, -1, false, true);
+            shadowTraceSet->bindUniform(uShadowFrag, 0);
+        }
+        if (!shadowSet) {
+            shadowSet = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, BodyShader::getShaderArtificialShadowed()->layout, 2, false, true);
+            shadowSet->bindUniform(uVert, 0);
+            shadowSet->bindUniform(uProj, 1);
+            shadowSet->bindUniform(uShadowFrag, 2);
+            shadowSet->bindTexture(*context.shadowBuffer, 3);
+            shadowSet->bindTextures(context.shadowView, 4);
+        }
+    }
+    auto &frag = **uShadowFrag;
+    frag.ShadowMatrix[0] = m.r[0];
+    frag.ShadowMatrix[1] = m.r[1];
+    frag.ShadowMatrix[2] = m.r[2];
+    frag.ShadowMatrix[4] = m.r[4];
+    frag.ShadowMatrix[5] = m.r[5];
+    frag.ShadowMatrix[6] = m.r[6];
+    frag.ShadowMatrix[8] = m.r[8];
+    frag.ShadowMatrix[9] = m.r[9];
+    frag.ShadowMatrix[10] = m.r[10];
+}
+
+void Artificial::drawShadow(VkCommandBuffer drawCmd)
+{
+    BodyShader::getShaderShadowTrace()->pipeline->bind(drawCmd);
+    BodyShader::getShaderShadowTrace()->layout->bindSet(drawCmd, *shadowTraceSet);
+    obj3D->drawShadow(drawCmd);
+}
+
+void Artificial::drawShadow(VkCommandBuffer drawCmd, int idx)
+{
+    obj3D->drawShadow(drawCmd);
+}
+
+void Artificial::bindShadows(const ShadowRenderData &renderData)
+{
+    if (!uShadowFrag) {
+        auto &context = *Context::instance;
+        uShadowFrag = std::make_unique<SharedBuffer<OjmShadowFrag>>(*context.uniformMgr);
+        if (!shadowTraceSet) {
+            shadowTraceSet = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, BodyShader::getShaderShadowTrace()->layout, -1, false, true);
+            shadowTraceSet->bindUniform(uShadowFrag, 0);
+        }
+        if (!shadowSet) {
+            shadowSet = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, BodyShader::getShaderArtificialShadowed()->layout, 2, false, true);
+            shadowSet->bindUniform(uVert, 0);
+            shadowSet->bindUniform(uProj, 1);
+            shadowSet->bindUniform(uShadowFrag, 2);
+            shadowSet->bindTexture(*context.shadowBuffer, 3);
+            shadowSet->bindTextures(context.shadowView, 4);
+        }
+    }
+    auto &frag = **uShadowFrag;
+    auto m = renderData.lookAt * (model * Mat4d::zrotation(M_PI/180*(axis_rotation + 90)));
+    frag.ShadowMatrix[0] = m.r[0];
+    frag.ShadowMatrix[1] = m.r[1];
+    frag.ShadowMatrix[2] = m.r[2];
+    frag.ShadowMatrix[4] = m.r[4];
+    frag.ShadowMatrix[5] = m.r[5];
+    frag.ShadowMatrix[6] = m.r[6];
+    frag.ShadowMatrix[8] = m.r[8];
+    frag.ShadowMatrix[9] = m.r[9];
+    frag.ShadowMatrix[10] = m.r[10];
+    // frag.sinSunAngle = 2 * renderData.sinSunHalfAngle;
+    frag.nbShadowingBodies = renderData.shadowingBodies.size();
+    for (uint8_t i = 0; i < renderData.shadowingBodies.size(); ++i) {
+        frag.shadowingBodies[i] = renderData.shadowingBodies[i] / radius;
+    }
 }
 
 void Artificial::drawOrbit(VkCommandBuffer cmdBodyDepth, VkCommandBuffer cmdOrbit, const Observer* observatory, const Navigator* nav, const Projector* prj)
 {
     if (isVisibleOnScreen()) {
-        // TODO : Draw ojm trace
+        depthTraceInfo pdata {mat.convert(), prj->getClippingFov(), (float) radius, (float) one_minus_oblateness};
+        BodyShader::getShaderDepthTrace()->layout->pushConstant(cmdBodyDepth, 0, &pdata);
+        obj3D->drawShadow(cmdBodyDepth);
     }
     if (orbitPlot)
         orbitPlot->drawOrbit(cmdOrbit, nav, prj, parent_mat);

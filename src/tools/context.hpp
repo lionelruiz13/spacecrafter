@@ -6,7 +6,7 @@
 #include <mutex>
 #include "EntityCore/Forward.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
-#include "EntityCore/SubBuffer.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 #include "EntityCore/Resource/Collector.hpp"
 class HipStarMgr;
 class DrawHelper;
@@ -30,6 +30,21 @@ enum {
     PASS_MULTISAMPLE_DEPTH = PASS_BACKGROUND, // multi-sample, depth buffer
     PASS_MULTISAMPLE_FRONT = PASS_MULTISAMPLE_DEPTH, // multi-sample, no depth buffer
     PASS_FOREGROUND, // single sample, no depth buffer
+};
+
+struct ShadowUniform {
+    float pixelCount;
+    int offsets[511]; // assert(radius <= 510) --> shadow_resolution <= 1024 (~1G operations)
+};
+
+struct ShadowData {
+    ShadowData();
+    ~ShadowData();
+    std::unique_ptr<ComputePipeline> pipeline;
+    std::unique_ptr<Set> set;
+    SharedBuffer<ShadowUniform> uniform;
+    float radius = 0;
+    uint16_t constRadius = 0; // constant radius set in the pipeline
 };
 
 class Context {
@@ -60,11 +75,16 @@ public:
     std::unique_ptr<SetMgr> setMgr;
     std::unique_ptr<Texture> starColorAttachment;
     std::unique_ptr<Texture> shadow;
+    std::unique_ptr<Texture> shadowBuffer; // For self-shadowing
+    std::unique_ptr<Texture> shadowTrace; // For shadow projection
+    std::vector<VkImageView> shadowView;
+    ShadowData *shadowData = nullptr;
     std::vector<HipStarMgr *> starUsed; // nullptr if not used at this frame, otherwise a pointer to a HipStarMgr which operate a draw
     std::vector<std::unique_ptr<SyncEvent>> starSync; // synchronize access to starColorAttachment
     std::unique_ptr<SyncEvent> transferSync; // synchronize transfers
-    std::unique_ptr<RenderMgr> render, renderShadow;
+    std::unique_ptr<RenderMgr> render, renderSelfShadow, renderShadow;
     std::vector<std::unique_ptr<FrameMgr>> frame;
+    std::unique_ptr<FrameMgr> frameSelfShadow, frameShadow;
     // std::unique_ptr<RenderMgr> renderAlone; // Single-pass rendering without depth buffer
     // std::vector<std::unique_ptr<FrameMgr>> frameAlone;
     std::vector<VkFence> fences;

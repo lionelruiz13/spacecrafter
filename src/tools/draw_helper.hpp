@@ -18,6 +18,7 @@
 class Hints;
 class s_texture;
 class VideoPlayer;
+class Body;
 
 enum DrawFlag {
     DRAW_PRINT = 1,
@@ -81,6 +82,12 @@ typedef union {
     s_submit submit;
 } DrawData; // sizeof(DrawData) == 32
 
+struct ShadowingData {
+    Body *body;
+    float radius;
+    uint8_t idx;
+};
+
 /**
  * @file draw_helper.hpp
  * @class DrawHelper
@@ -113,6 +120,10 @@ public:
     //! This can be called from the submitFunc only
     unsigned char getLastFrameIdx() const {
         return currentLastFrameIdx;
+    }
+    //! Sumbit self-shadowing for ojm
+    void selfShadow(Body *target) {
+        drawer[internalVFrameIdx].selfShadow = target;
     }
 private:
     void beginDraw(unsigned char subpass);
@@ -160,6 +171,8 @@ private:
         VkCommandBuffer nebula;
         std::vector<VkCommandBuffer> cmds;
         std::vector<VkCommandBuffer> cancelledCmds;
+        Body *selfShadow = nullptr;
+        std::vector<ShadowingData> shadowers;
         std::list<s_sigpass> sigpass;
         std::mutex waitMutex;
         // bool hasDraw; // Tell if the next command must be submitted on nextDraw/endDraw or not

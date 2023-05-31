@@ -243,14 +243,24 @@ void App::initVulkan(InitParser &conf)
 	context.collector = std::make_unique<Collector>(vkmgr);
 	depthBuffer = std::make_unique<Texture>(vkmgr, width, height, sampleCount);
 	depthBuffer->use();
-	shadowBuffer = std::make_unique<Texture>(vkmgr, TextureInfo{
-		.width=4096, .height=4096,
+	const int selfShadowRes = conf.getInt(SCS_RENDERING, SCK_SELF_SHADOW_RESOLUTION);
+	context.shadowBuffer = std::make_unique<Texture>(vkmgr, TextureInfo{
+		.width=selfShadowRes, .height=selfShadowRes,
 		.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
 		.format = VK_FORMAT_D24_UNORM_S8_UINT,
 		.aspect = VK_IMAGE_ASPECT_DEPTH_BIT,
 		.name = "Shadow Depth Buffer",
 	});
-	shadowBuffer->use();
+	context.shadowBuffer->use();
+	const int shadowRes = conf.getInt(SCS_RENDERING, SCK_SHADOW_RESOLUTION);
+	context.shadowTrace = std::make_unique<Texture>(vkmgr, TextureInfo{
+		.width=shadowRes, .height=shadowRes,
+		.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, // VK_IMAGE_USAGE_STORAGE_BIT is unsupported
+		.format = VK_FORMAT_D24_UNORM_S8_UINT, // VK_FORMAT_S8_UINT is unsupported
+		.aspect = VK_IMAGE_ASPECT_STENCIL_BIT,
+		.name = "Shadow Stencil Buffer",
+	});
+	context.shadowTrace->use();
 	// ========== DEFINE RENDERING ========== //
 	context.render = std::make_unique<RenderMgr>(vkmgr);
 	colorID = context.render->attach(VK_FORMAT_B8G8R8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, vkmgr.getSwapchainView().empty() ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL : VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
@@ -271,6 +281,8 @@ void App::initVulkan(InitParser &conf)
 	context.render->addDependency(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, VK_ACCESS_SHADER_READ_BIT, false);
 	// For hip star fbo sync with pipeline barrier
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, false);
+	// For shadow sync with compute processing
+	context.render->addDependency(VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, false);
 	// context.render->pushLayer();
 	// PASS_MULTISAMPLE_DEPTH
 	// context.render->bindColor(multiColorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
@@ -307,6 +319,32 @@ void App::initVulkan(InitParser &conf)
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, 0, false);
 	context.render->build(3);
 	// ========== END DEFINE RENDERING ========== //
+	// ========== DEFINE SHADOW RENDERING ========== //
+	context.renderSelfShadow = std::make_unique<RenderMgr>(vkmgr);
+	int depthShadowID = context.renderSelfShadow->attach(VK_FORMAT_D24_UNORM_S8_UINT, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, true);
+	context.renderSelfShadow->setupClear(depthShadowID, 0);
+	context.renderSelfShadow->bindDepth(depthShadowID, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+	context.renderSelfShadow->addDependency(VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT, VK_ACCESS_SHADER_READ_BIT, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, false);
+	context.renderSelfShadow->pushLayer();
+	context.renderSelfShadow->addDependency(VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, false);
+	context.renderSelfShadow->build(1);
+
+	context.renderShadow = std::make_unique<RenderMgr>(vkmgr);
+	int stencilShadowID = context.renderShadow->attach(VK_FORMAT_D24_UNORM_S8_UINT, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, true);
+	context.renderShadow->setupClear(stencilShadowID, 0);
+	context.renderShadow->bindDepth(stencilShadowID, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+	context.renderShadow->addDependency(VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT, VK_ACCESS_SHADER_READ_BIT, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, false);
+	context.renderShadow->pushLayer();
+	context.renderShadow->addDependency(VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, false);
+	context.renderShadow->build(1);
+	// ========== END DEFINE SHADOW RENDERING ========== //
+	context.frameSelfShadow = std::make_unique<FrameMgr>(vkmgr, *context.renderSelfShadow, 0, selfShadowRes, selfShadowRes, "self shadow");
+	context.frameSelfShadow->bind(depthShadowID, *context.shadowBuffer);
+	context.frameSelfShadow->build();
+	context.frameShadow = std::make_unique<FrameMgr>(vkmgr, *context.renderShadow, 0, shadowRes, shadowRes, "shadow tracer");
+	context.frameShadow->bind(stencilShadowID, *context.shadowTrace);
+	context.frameShadow->build();
+
 	context.transferSync = std::make_unique<SyncEvent>();
 	context.transfers.resize(3);
 	context.fences.resize(3);
@@ -367,8 +405,12 @@ void App::finalizeInitVulkan(InitParser &conf)
 	context.multiVertexMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, context.multiVertexArray->alignment*64*1024, "draw_helper BufferMgr");
 	context.starColorAttachment = std::make_unique<Texture>(vkmgr, vkmgr.getScreenRect().extent.width, vkmgr.getScreenRect().extent.height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 	context.starColorAttachment->use();
-	const int shadowRes = conf.getInt(SCS_RENDERING, SCK_SELF_SHADOW_RESOLUTION);
-	context.shadow = std::make_unique<Texture>(vkmgr, TextureInfo{.width=shadowRes, .height=shadowRes, .nbChannels=1, });
+	context.shadowData = new ShadowData[4];
+	const int shadowRes = conf.getInt(SCS_RENDERING, SCK_SHADOW_RESOLUTION);
+	context.shadow = std::make_unique<Texture>(vkmgr, TextureInfo{.width=shadowRes, .height=shadowRes, .nbChannels=1, .arrayLayers=4, .usage=VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT, .format=VK_FORMAT_R8_UNORM, .name="Projected shadows"});
+	context.shadow->use();
+	for (uint32_t i = 0; i < 4; ++i)
+		context.shadowView.push_back(context.shadow->createView(0, 1, i, 1));
 	context.transferSync->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
 	context.transferSync->bufferBarrier(*context.multiVertexMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
 	context.transferSync->bufferBarrier(*context.ojmBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
