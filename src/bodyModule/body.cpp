@@ -969,24 +969,23 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
     // Compute the distance to the observer
     distance = eye_planet.length();
 
-    float halfFov = prj->getFov() * (M_PI / 360);
-    {
-        const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
-        double f = asin(rq/distance);
-        if (eye_planet[2] > 0)
-            f = M_PI - f;
-        f /= rq * halfFov;
-        screenPos = VulkanMgr::instance->rectToScreenf({eye_planet[0] * f, eye_planet[1] * f});
-    }
+    const float halfFov = prj->getFov() * (M_PI / 360);
     if (distance > radius) {
         angularSize = atanf(radius / sqrt(distance*distance - radius*radius));
-        halfFov += angularSize;
+        const float tmp = halfFov + angularSize;
         angularSize *= 2;
-        isVisible = (halfFov > M_PI) ? true : (-eye_planet[2] / distance) > cos(halfFov);
+        isVisible = (tmp > M_PI) ? true : (-eye_planet[2] / distance) >= cos(tmp);
     } else {
         angularSize = M_PI;
         isVisible = true;
     }
+
+    const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
+    double f = asin(rq/distance);
+    if (eye_planet[2] > 0)
+        f = M_PI - f;
+    f /= rq * halfFov;
+    screenPos = VulkanMgr::instance->rectToScreenf({eye_planet[0] * f, eye_planet[1] * f});
 }
 
 double Body::getAxisAngle() const {
