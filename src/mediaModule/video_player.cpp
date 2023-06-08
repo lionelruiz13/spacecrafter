@@ -322,6 +322,7 @@ void VideoPlayer::initTexture()
 				pImageBuffer[i][j] = stagingBuffer->getPtr(imageBuffers[i][j]);
 			}
 			videoTexture.sync->syncOut->imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR);
+			videoTexture.sync->syncOut->bufferBarrier(*stagingBuffer, VK_PIPELINE_STAGE_2_HOST_BIT_KHR, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_ACCESS_2_HOST_WRITE_BIT_KHR, VK_ACCESS_2_TRANSFER_READ_BIT_KHR);
 			videoTexture.sync->syncIn->imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR);
 		}
 		videoTexture.sync->syncOut->build();
@@ -403,12 +404,12 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 			if (canDeliverFrame(now)) {
 				nextFrame += deltaFrame;
 				++currentFrame;
-				int frameIdx = (++frameUsed) % MAX_CACHED_FRAMES;
+				int frameIdx = (frameUsed++) % MAX_CACHED_FRAMES;
 				if ((lastFrame + deltaFrame * 2 < now) && (frameCached - frameUsed > (CACHE_STRESS + MAX_CACHE_SPEEDUP))) {
 					nextFrame += deltaFrame;
 					lastFrame += deltaFrame;
 					++currentFrame;
-					frameIdx = (++frameUsed) % MAX_CACHED_FRAMES;
+					frameIdx = (frameUsed++) % MAX_CACHED_FRAMES;
 					cLog::get()->write("Skip one video frame", LOG_TYPE::L_DEBUG);
 				}
 				VkBufferImageCopy region;
