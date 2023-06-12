@@ -403,14 +403,16 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		if (frameUsed != frameCached) {
 			if (canDeliverFrame(now)) {
 				nextFrame += deltaFrame;
-				++currentFrame;
-				int frameIdx = (frameUsed++) % MAX_CACHED_FRAMES;
+				int frameIdx = frameUsed % MAX_CACHED_FRAMES;
 				if ((lastFrame + deltaFrame * 2 < now) && (frameCached - frameUsed > (CACHE_STRESS + MAX_CACHE_SPEEDUP))) {
 					nextFrame += deltaFrame;
 					lastFrame += deltaFrame;
-					++currentFrame;
-					frameIdx = (frameUsed++) % MAX_CACHED_FRAMES;
+					currentFrame += 2;
+					frameUsed += 2;
 					cLog::get()->write("Skip one video frame", LOG_TYPE::L_DEBUG);
+				} else {
+					++currentFrame;
+					++frameUsed;
 				}
 				VkBufferImageCopy region;
 				region.bufferRowLength = region.bufferImageHeight = 0;
