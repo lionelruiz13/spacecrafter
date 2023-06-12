@@ -452,7 +452,7 @@ void VideoPlayer::mainloop()
 	std::unique_lock<std::mutex> ulock(mtx);
 	while (decoding) {
 		getNextVideoFrame();
-		while (frameCached - frameUsed >= MAX_CACHED_FRAMES && decoding)
+		while (frameCached - frameUsed >= (MAX_CACHED_FRAMES-1) && decoding)
 			cv.wait(ulock);
 	}
 }
