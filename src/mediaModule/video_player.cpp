@@ -407,6 +407,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 				if ((lastFrame + deltaFrame * 2 < now) && (frameCached - frameUsed > (CACHE_STRESS + MAX_CACHE_SPEEDUP))) {
 					nextFrame += deltaFrame;
 					lastFrame += deltaFrame;
+					++frameIdx;
 					currentFrame += 2;
 					frameUsed += 2;
 					cLog::get()->write("Skip one video frame", LOG_TYPE::L_DEBUG);
