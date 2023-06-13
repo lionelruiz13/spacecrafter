@@ -981,10 +981,14 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
     }
 
     const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
-    double f = asin(rq/distance);
-    if (eye_planet[2] > 0)
-        f = M_PI - f;
-    f /= rq * halfFov;
+    double f;
+        if (rq > distance * 1e-5) {
+            f = asin(rq/distance);
+            if (eye_planet[2] > 0)
+                f = M_PI - f;
+            f /= rq * halfFov;
+        } else
+            f = 0;
     screenPos = VulkanMgr::instance->rectToScreenf({eye_planet[0] * f, eye_planet[1] * f});
 }
 
