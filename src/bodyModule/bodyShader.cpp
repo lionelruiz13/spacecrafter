@@ -30,6 +30,7 @@
 
 #include "tools/context.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
+#include "EntityCore/Core/FrameMgr.hpp"
 #include "EntityCore/Resource/Pipeline.hpp"
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "EntityCore/Resource/VertexArray.hpp"
@@ -46,6 +47,7 @@ drawState_t BodyShader::myMoon;
 drawState_t BodyShader::shaderArtificial;
 drawState_t BodyShader::depthTrace;
 drawState_t BodyShader::shadowTrace;
+drawState_t BodyShader::shadowShape;
 drawState_t BodyShader::myEarthShadowed;
 drawState_t BodyShader::shaderShadowedTes;
 drawState_t BodyShader::shaderArtificialShadowed;
@@ -241,7 +243,7 @@ void BodyShader::createShader()
 	shaderArtificial.layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	shaderArtificial.layout->buildLayout();
 	shaderArtificial.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // NormalMatrix
-	shaderArtificial.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1); // artGeom
+	shaderArtificial.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, 1); // artGeom
 	shaderArtificial.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 2); // LightInfo
 	shaderArtificial.layout->buildLayout();
 	shaderArtificial.layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 44);
@@ -274,10 +276,10 @@ void BodyShader::createShader()
 	shaderArtificialShadowed.layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	shaderArtificialShadowed.layout->buildLayout();
 	shaderArtificialShadowed.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // NormalMatrix
-	shaderArtificialShadowed.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1); // artGeom
+	shaderArtificialShadowed.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, 1); // artGeom
 	shaderArtificialShadowed.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 2); // OjmShadowFrag
 	shaderArtificialShadowed.layout->setTextureLocation(3, &PipelineLayout::DEFAULT_SAMPLER); // Self-shadow
-	shaderArtificialShadowed.layout->setTextureLocation(4, &PipelineLayout::DEFAULT_SAMPLER); // Shadow traces
+	shaderArtificialShadowed.layout->setTextureArrayLocation(4, 4, &PipelineLayout::DEFAULT_SAMPLER); // Shadow traces
 	shaderArtificialShadowed.layout->buildLayout();
 	shaderArtificialShadowed.layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 44);
 	shaderArtificialShadowed.layout->build();
@@ -409,12 +411,41 @@ void BodyShader::createShader()
 	shadowTrace.layout->buildLayout();
 	shadowTrace.layout->build();
 
-	context.pipelines.push_back(std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shadowTrace.layout));
+	context.pipelines.push_back(std::make_unique<Pipeline>(vkmgr, *context.renderSelfShadow, 0, shadowTrace.layout));
 	shadowTrace.pipeline = context.pipelines.back().get();
+	shadowTrace.pipeline->setCullMode(true);
+	shadowTrace.pipeline->setFrontFace(); // Prefer culling the back face, this doesn't work for thin surface through
 	shadowTrace.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	shadowTrace.pipeline->bindVertex(*context.ojmVertexArray);
 	shadowTrace.pipeline->removeVertexEntry(1);
 	shadowTrace.pipeline->removeVertexEntry(2);
+	shadowTrace.pipeline->setDepthStencilMode(VK_TRUE, VK_TRUE, VK_COMPARE_OP_GREATER);
 	shadowTrace.pipeline->bindShader("shadow_trace.vert.spv");
-	shadowTrace.pipeline->build("shadowTrace");
+	{ // The viewport must be preserved until the pipeline is build
+		auto viewport = context.frameSelfShadow->makeViewport();
+		shadowTrace.pipeline->setViewportState(viewport);
+		shadowTrace.pipeline->build("shadowTrace");
+	}
+
+	// ========== shadow_shape ========== //
+	context.layouts.push_back(std::make_unique<PipelineLayout>(vkmgr));
+	shadowShape.layout = context.layouts.back().get();
+	shadowShape.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // mat3
+	shadowShape.layout->buildLayout();
+	shadowShape.layout->build();
+
+	context.pipelines.push_back(std::make_unique<Pipeline>(vkmgr, *context.renderShadow, 0, shadowShape.layout));
+	shadowShape.pipeline = context.pipelines.back().get();
+	shadowShape.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	shadowShape.pipeline->bindVertex(*context.ojmVertexArray);
+	shadowShape.pipeline->removeVertexEntry(1);
+	shadowShape.pipeline->removeVertexEntry(2);
+	shadowShape.pipeline->setDepthStencilMode();
+	shadowShape.pipeline->setStencilMode({VK_STENCIL_OP_REPLACE, VK_STENCIL_OP_REPLACE, VK_STENCIL_OP_REPLACE, VK_COMPARE_OP_NEVER, 0x00, 0x01, 0x01}, {VK_STENCIL_OP_REPLACE, VK_STENCIL_OP_REPLACE, VK_STENCIL_OP_REPLACE, VK_COMPARE_OP_NEVER, 0x00, 0x01, 0x01});
+	shadowShape.pipeline->bindShader("shadow_trace.vert.spv");
+	{ // The viewport must be preserved until the pipeline is build
+		auto viewport = context.frameShadow->makeViewport();
+		shadowShape.pipeline->setViewportState(viewport);
+		shadowShape.pipeline->build("shadowShape");
+	}
 }

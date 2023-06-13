@@ -330,8 +330,8 @@ void App::initVulkan(InitParser &conf)
 	context.renderSelfShadow->build(1);
 
 	context.renderShadow = std::make_unique<RenderMgr>(vkmgr);
-	int stencilShadowID = context.renderShadow->attach(VK_FORMAT_D24_UNORM_S8_UINT, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, true);
-	context.renderShadow->setupClear(stencilShadowID, 0);
+	int stencilShadowID = context.renderShadow->attach(VK_FORMAT_D24_UNORM_S8_UINT, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, false, false, true, false);
+	context.renderShadow->setupClearStencil(stencilShadowID, 0);
 	context.renderShadow->bindDepth(stencilShadowID, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 	context.renderShadow->addDependency(VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT, VK_ACCESS_SHADER_READ_BIT, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, false);
 	context.renderShadow->pushLayer();

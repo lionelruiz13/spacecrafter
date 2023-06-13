@@ -21,12 +21,17 @@ layout (location=0) out vec3 Position;
 layout (location=1) out vec3 Normal;
 layout (location=2) out vec2 TexCoord;
 layout (location=3) out float Ambient;
+layout (location=4) out vec4 glPosition;
 
 //uniform bool useTexture;
 
+layout (binding=1, set=2) uniform artGeom {
+	mat4 ModelViewMatrix;
+	vec3 clipping_fov;
+};
+
 layout (binding=0, set=2) uniform custom {
-	mat4 NormalMatrix;
-	float radius;
+	mat3 NormalMatrix;
 };
 
 //uniform mat4 ModelViewMatrix;
@@ -34,13 +39,15 @@ layout (binding=0, set=2) uniform custom {
 //uniform mat4 MVP;
 
 #include <cam_block_only.glsl> // for ambient
+#include <fisheye.glsl>
 
 void main()
 {
     Ambient = ambient;
     TexCoord = VertexTexCoord;
-    Normal = normalize( mat3(NormalMatrix) * VertexNormal);
-    Position = VertexPosition * radius;
+    Normal = normalize(NormalMatrix * VertexNormal);
+    Position = VertexPosition;
+	glPosition = fisheyeProject(VertexPosition, clipping_fov);
 
     //~ gl_Position = MVP * vec4(VertexPosition,1.0);
     // gl_Position = MVP * posToFisheye(VertexPosition);
@@ -78,8 +85,8 @@ void main()
 // double my_atan(double x)
 // {
 //     double a, z, p, r, s, q, o;
-//     /* argument reduction: 
-//        arctan (-x) = -arctan(x); 
+//     /* argument reduction:
+//        arctan (-x) = -arctan(x);
 //        arctan (1/x) = 1/2 * pi - arctan (x), when x > 0
 //     */
 //     z = abs (x);
@@ -91,15 +98,15 @@ void main()
 //     /* use Estrin's scheme for low-order terms */
 //     p = fma (fma (fma (0.0000202585530444381072727802473032454599888296797871589660644531250, s,0.000223022403457582792975222307774174623773433268070220947265625), q,
 //                   fma (-0.00116407177799304783517853056906687925220467150211334228515625, s, 0.0038559749383629666162620619473955230205319821834564208984375)), o,
-//              fma (fma (-0.00918455921871650336762993305228519602678716182708740234375, s, 0.016978035834597275666180138387062470428645610809326171875), q, 
+//              fma (fma (-0.00918455921871650336762993305228519602678716182708740234375, s, 0.016978035834597275666180138387062470428645610809326171875), q,
 //                   fma (-0.02582679681449594200071118166306405328214168548583984375, s,0.034067811082715081238969645482939085923135280609130859375 )));
 //     /* use Horner's scheme for high-order terms */
 //     p = fma (fma (fma (fma (fma (fma (fma (fma (fma (fma (fma (fma (p, s,
 //         -0.040926382420509950510467689355209586210548877716064453125), s,
-//         0.0467394961991579871440904980772756971418857574462890625), s, 
-//         -0.052392330054601317368412338737471145577728748321533203125), s,  
-//         0.058773077721790849270444567764570820145308971405029296875), s, 
-//         -0.06665860363351257256159243524962221272289752960205078125), s,  
+//         0.0467394961991579871440904980772756971418857574462890625), s,
+//         -0.052392330054601317368412338737471145577728748321533203125), s,
+//         0.058773077721790849270444567764570820145308971405029296875), s,
+//         -0.06665860363351257256159243524962221272289752960205078125), s,
 //         0.07692212930586783681263796097482554614543914794921875), s,
 //         -0.090909012354005225287068014949909411370754241943359375), s,
 //         0.11111110678749423763544967869165702722966670989990234375), s,
@@ -109,7 +116,7 @@ void main()
 //     /* back substitution based on argument reduction */
 //     r = (z > 1.0) ? (1.5707963267948965579989817342720925807952880859375- p) : p;
 // 	//~ return copysign (r, x);
-//     if (x>=0) 
+//     if (x>=0)
 // 		return r;
 //     else
 // 		return (-r);
@@ -129,7 +136,7 @@ void main()
 //     vec4 win = vec4(invec,1.0);
 //     win=ModelViewMatrix*win;
 //     win[3]=0.0;
-	
+
 // 	float depth = length(win);
 
 //     float rq1 = win.x*win.x+win.y*win.y;
@@ -153,7 +160,7 @@ void main()
 //         //~ float a = M_PI/2.0 + atan(win.z*oneoverh);
 //         double aa = M_PI/2.0 + my_atan(win.z*oneoverh);
 //         float a = float(aa);
-        
+
 //         float f = a * fisheye_scale_factor;
 
 //         f *= viewport_radius * oneoverh;
@@ -171,10 +178,10 @@ void main()
 // 	}
 // }
 
-        
+
 // vec4 custom_unproject(vec4 invec, vec4 viewport)
-// {  
-// 	// gluUnproject    
+// {
+// 	// gluUnproject
 // 	vec4 pos = invec;
 
 // 	vec4 unproj_vec=vec4( (pos.x-viewport.x)/viewport.z*2.0-1.0,
@@ -185,7 +192,7 @@ void main()
 // 	unproj_vec=inverseModelViewProjectionMatrix *unproj_vec;
 // 	if(unproj_vec.z==0.0)
 // 		return vec4(0.0);
-		
+
 // 	unproj_vec.w=1.0/unproj_vec.w;
 // 	unproj_vec.x=unproj_vec.x*unproj_vec.w;
 // 	unproj_vec.y=unproj_vec.y*unproj_vec.w;

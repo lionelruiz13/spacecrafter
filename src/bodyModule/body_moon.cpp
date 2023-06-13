@@ -383,15 +383,7 @@ void Moon::bindShadows(const ShadowRenderData &renderData)
         }
         auto &frag = **uShadowFrag;
         auto m = renderData.lookAt * (model * Mat4d::zrotation(M_PI/180*axis_rotation));
-        frag.ShadowMatrix[0] = m.r[0];
-        frag.ShadowMatrix[1] = m.r[1];
-        frag.ShadowMatrix[2] = m.r[2];
-        frag.ShadowMatrix[4] = m.r[4];
-        frag.ShadowMatrix[5] = m.r[5];
-        frag.ShadowMatrix[6] = m.r[6];
-        frag.ShadowMatrix[8] = m.r[8];
-        frag.ShadowMatrix[9] = m.r[9];
-        frag.ShadowMatrix[10] = m.r[10];
+        m.setMat3(frag.ShadowMatrix);
         frag.sinSunAngle = 2 * renderData.sinSunHalfAngle;
         frag.nbShadowingBodies = renderData.shadowingBodies.size();
         for (uint8_t i = 0; i < renderData.shadowingBodies.size(); ++i) {
@@ -411,15 +403,7 @@ void Moon::drawCenterOfInterest(VkCommandBuffer cmd, const Projector *prj, const
     vert.ModelViewMatrix = (m * Mat4d::scaling(Vec3d(1, 1, one_minus_oblateness))).convert();
     {
         auto m2 = m.transpose();
-        vert.WorldToModelMatrix[0] = m2.r[0];
-        vert.WorldToModelMatrix[1] = m2.r[1];
-        vert.WorldToModelMatrix[2] = m2.r[2];
-        vert.WorldToModelMatrix[4] = m2.r[4];
-        vert.WorldToModelMatrix[5] = m2.r[5];
-        vert.WorldToModelMatrix[6] = m2.r[6];
-        vert.WorldToModelMatrix[8] = m2.r[8];
-        vert.WorldToModelMatrix[9] = m2.r[9];
-        vert.WorldToModelMatrix[10] = m2.r[10];
+        m2.setMat3(vert.WorldToModelMatrix);
         vert.radius = finalRadius;
 
         Vec3f tmp = m2 * (eye_planet - eye_sun);

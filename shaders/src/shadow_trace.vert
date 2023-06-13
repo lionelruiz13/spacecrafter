@@ -8,5 +8,6 @@ layout (binding=0) uniform global {
 
 void main()
 {
-    gl_Position = vec4(matrix * position, 1);
+    vec3 tmp = matrix * position;
+    gl_Position = vec4(tmp.xy, tmp.z * 0.5 + 0.5, 1);
 }

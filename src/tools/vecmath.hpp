@@ -324,6 +324,7 @@ public:
 	Matrix4<T> linearMix(const Matrix4<T> other,const T coef )const;
 
 	void setVector(const Vector4<T>&v, unsigned int ind);
+	void setMat3(float *dst) const;
 
 	inline void print(void) const;
 
@@ -2333,6 +2334,13 @@ template<class T> constexpr Matrix4<T> Matrix4<T>::fromQuaternion(const Vector4<
 				   2*(a*c+b*d), 2*(c*d-a*b), a*a-b*b-c*c+d*d, 0,
 			  	   0, 0, 0, 1);
 	return ret;
+}
+
+template<class T> void Matrix4<T>::setMat3(float *dst) const
+{
+	dst[0] = r[0]; dst[1] = r[1]; dst[2] = r[2];
+	dst[4] = r[4]; dst[5] = r[5]; dst[6] = r[6];
+	dst[8] = r[8]; dst[9] = r[9]; dst[10] = r[10];
 }
 
 //! Construct quaternion from rotation matrix

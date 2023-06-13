@@ -135,9 +135,14 @@ public:
 		return &depthTrace;
 	}
 
-	// Used when a depth/stencil trace without fisheye projection is required
+	// Used when a depth trace without fisheye projection is required
 	static drawState_t *getShaderShadowTrace() {
 		return &shadowTrace;
+	}
+
+	// Used when a stencil shadow shape (without fisheye projection) is required
+	static drawState_t *getShaderShadowShape() {
+		return &shadowShape;
 	}
 protected:
 	static drawState_t shaderBump;
@@ -151,6 +156,7 @@ protected:
 	static drawState_t shaderShadowedTes;
 	static drawState_t depthTrace;
 	static drawState_t shadowTrace;
+	static drawState_t shadowShape;
 };
 
 typedef Mat4f mat4;
@@ -227,7 +233,7 @@ typedef struct {
 } artGeom;
 
 typedef struct {
-	mat4 normal;
+	float normal[12];
 	float radius;
 } artVert;
 
@@ -272,7 +278,8 @@ struct ShadowFrag {
 
 struct OjmShadowFrag {
 	float ShadowMatrix[12];
-	vec3p lightPosition;
+	mat4 ModelMatrix;
+	vec3p lightDirection;
 	vec3 lightIntensity;
 	int nbShadowingBodies;
 	vec3p shadowingBodies[4];

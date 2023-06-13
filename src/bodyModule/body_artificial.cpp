@@ -99,7 +99,7 @@ Artificial::~Artificial()
 
 void Artificial::selectShader ()
 {
-    if (isCenterOfInterest && false) { // Disable for now - todo write _shadow version of shaders
+    if (isCenterOfInterest) {
         myShader = SHADER_ARTIFICIAL_SHADOW;
         drawState = BodyShader::getShaderArtificialShadowed();
     } else {
@@ -118,16 +118,18 @@ void Artificial::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navig
     auto &context = *Context::instance;
 
     Mat4f matrix = mat.convert() * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
-    uVert->get().normal = matrix.inverse().transpose();
+    matrix.setMat3(uVert->get().normal);
     uVert->get().radius = radius;
-    uProj->get().ModelViewMatrix = matrix;
+    uProj->get().ModelViewMatrix = matrix * Mat4f::scaling(radius);
     uProj->get().clipping_fov = prj->getClippingFov();
-    if (isCenterOfInterest && false) {
+    if (isCenterOfInterest) {
+        uShadowFrag->get().ModelMatrix = model.convert();
         uShadowFrag->get().lightIntensity =Vec3f(1.0, 1.0, 1.0);
-        uShadowFrag->get().lightPosition = eye_sun;
+        uShadowFrag->get().lightDirection = -lightDirection;
         drawState->layout->bindSet(cmd, *context.uboSet);
         drawState->layout->bindSet(cmd, *shadowSet, 2);
         obj3D->record(cmd, drawState->pipeline, drawState->layout);
+        Context::instance->helper->selfShadow(this);
     } else {
         uLight->get().Intensity =Vec3f(1.0, 1.0, 1.0);
         uLight->get().Position = eye_sun;
@@ -156,15 +158,7 @@ void Artificial::bindShadow(const Mat4d &m)
         }
     }
     auto &frag = **uShadowFrag;
-    frag.ShadowMatrix[0] = m.r[0];
-    frag.ShadowMatrix[1] = m.r[1];
-    frag.ShadowMatrix[2] = m.r[2];
-    frag.ShadowMatrix[4] = m.r[4];
-    frag.ShadowMatrix[5] = m.r[5];
-    frag.ShadowMatrix[6] = m.r[6];
-    frag.ShadowMatrix[8] = m.r[8];
-    frag.ShadowMatrix[9] = m.r[9];
-    frag.ShadowMatrix[10] = m.r[10];
+    m.setMat3(frag.ShadowMatrix);
 }
 
 void Artificial::drawShadow(VkCommandBuffer drawCmd)
@@ -199,15 +193,7 @@ void Artificial::bindShadows(const ShadowRenderData &renderData)
     }
     auto &frag = **uShadowFrag;
     auto m = renderData.lookAt * (model * Mat4d::zrotation(M_PI/180*(axis_rotation + 90)));
-    frag.ShadowMatrix[0] = m.r[0];
-    frag.ShadowMatrix[1] = m.r[1];
-    frag.ShadowMatrix[2] = m.r[2];
-    frag.ShadowMatrix[4] = m.r[4];
-    frag.ShadowMatrix[5] = m.r[5];
-    frag.ShadowMatrix[6] = m.r[6];
-    frag.ShadowMatrix[8] = m.r[8];
-    frag.ShadowMatrix[9] = m.r[9];
-    frag.ShadowMatrix[10] = m.r[10];
+    m.setMat3(frag.ShadowMatrix);
     // frag.sinSunAngle = 2 * renderData.sinSunHalfAngle;
     frag.nbShadowingBodies = renderData.shadowingBodies.size();
     for (uint8_t i = 0; i < renderData.shadowingBodies.size(); ++i) {
