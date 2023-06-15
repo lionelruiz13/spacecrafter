@@ -57,8 +57,10 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
     if (tmp != mainBody) {
         if (mainBody)
             mainBody->looseInterest();
-        if (tmp)
+        if (tmp) {
             tmp->gainInterest();
+            std::cout << tmp->getEnglishName() << " is now the Center of Interest\n";
+        }
         mainBody = tmp;
     }
 

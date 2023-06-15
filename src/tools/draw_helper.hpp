@@ -121,9 +121,20 @@ public:
     unsigned char getLastFrameIdx() const {
         return currentLastFrameIdx;
     }
+    //! Initialize shadowing system
+    void initShadow(float shadowRes) {
+        halfShadowRes = shadowRes / 2.f;
+    }
     //! Sumbit self-shadowing for ojm
     void selfShadow(Body *target) {
-        drawer[internalVFrameIdx].selfShadow = target;
+        drawer[externalVFrameIdx].selfShadow = target;
+    }
+    //! Sumbit shadowing body
+    uint8_t drawShadower(Body *target, float radius) {
+        auto &vec = drawer[externalVFrameIdx].shadowers;
+        uint8_t idx = vec.size();
+        vec.push_back({target, radius * halfShadowRes, idx});
+        return idx;
     }
 private:
     void beginDraw(unsigned char subpass);
@@ -161,8 +172,10 @@ private:
     unsigned char internalSubpass;
     unsigned char externalSubpass;
     unsigned char lastFlag = SIGNAL_PASS;
+    float halfShadowRes;
     unsigned short drawIdx = 0;
     unsigned char currentLastFrameIdx = 2;
+    bool notInitialized = true;
     Vec4f hintColor;
     PipelineLayout *layoutNebula = nullptr;
     struct {

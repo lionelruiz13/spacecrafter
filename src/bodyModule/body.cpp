@@ -979,6 +979,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
         angularSize = M_PI;
         isVisible = true;
     }
+    isRelevant &= isVisible;
 
     const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
     double f = asin(rq/distance);
@@ -998,6 +999,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
     Context &context = *Context::instance;
     FrameMgr &frame = *context.frame[context.frameIdx];
 
+    isRelevant = false;
 	if(skipDrawingThisBody(observatory, drawHomePlanet)) {
 		if(hasRings()) {
             if (cmds[context.frameIdx] == -1) {
@@ -1009,7 +1011,6 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
             frame.compile();
             frame.toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 		}
-
 		return drawn;
 	}
 
@@ -1029,6 +1030,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
     VkCommandBuffer cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 
 	if(isVisibleOnScreen()) {
+        isRelevant = true; // It is the only place where we know this...
         if (needClearDepthBuffer || (!depthTest && hasRings())) {
             VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
             VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
@@ -1200,7 +1202,15 @@ Vec3f Body::drawShadow(const ShadowParams &params)
     auto m = params.lookAt * model;
     Vec3f ret(m.r[12], m.r[13], boundingRadius + params.smoothRadius);
     auto scaling = radius/ret.v[2];
-    bindShadow(Mat4d::scaling(Vec3d(scaling, scaling, scaling * one_minus_oblateness)) * m);
-    sunProjectionRadius = params.smoothRadius/ret.v[2];
+    auto idx = Context::instance->helper->drawShadower(this, params.smoothRadius/ret.v[2]);
+    (m * Mat4d::scaling(Vec3d(scaling, scaling, scaling * one_minus_oblateness))).setMat3(Context::instance->shadowData[idx].shadowMat);
     return ret;
+}
+
+void Body::drawShadow(VkCommandBuffer drawCmd, int idx)
+{
+    BodyShader::getShaderShadowShape()->pipeline->bind(drawCmd);
+    BodyShader::getShaderShadowShape()->layout->bindSet(drawCmd, *Context::instance->shadowData[idx].traceSet);
+    currentObj->bind(drawCmd);
+    currentObj->draw(drawCmd, Context::instance->shadowRes);
 }

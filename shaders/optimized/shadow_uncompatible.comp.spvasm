@@ -16,6 +16,7 @@
                OpDecorate %20 SpecId 1
                OpDecorate %38 DescriptorSet 0
                OpDecorate %38 Binding 1
+               OpDecorate %38 NonWritable
                OpDecorate %_arr_int_18 ArrayStride 16
                OpMemberDecorate %_struct_79 0 Offset 0
                OpMemberDecorate %_struct_79 1 Offset 16
@@ -40,7 +41,7 @@
       %int_1 = OpConstant %int 1
       %int_0 = OpConstant %int 0
        %bool = OpTypeBool
-         %36 = OpTypeImage %uint 2D 0 0 0 1 R8ui
+         %36 = OpTypeImage %uint 2D 0 0 0 2 R8ui
 %_ptr_UniformConstant_36 = OpTypePointer UniformConstant %36
          %38 = OpVariable %_ptr_UniformConstant_36 UniformConstant
       %v2int = OpTypeVector %int 2
@@ -90,9 +91,8 @@
          %26 = OpLabel
          %39 = OpLoad %36 %38
          %43 = OpCompositeConstruct %v2int %32 %21
-         %46 = OpImageFetch %v4uint %39 %43
-         %47 = OpCompositeExtract %uint %46 0
-         %48 = OpIAdd %uint %938 %47
+         %46 = OpImageRead %uint %39 %43
+         %48 = OpIAdd %uint %938 %46
                OpBranch %25
          %27 = OpLabel
          %50 = OpSGreaterThanEqual %bool %21 %18
@@ -130,13 +130,11 @@
          %87 = OpLabel
          %94 = OpLoad %36 %38
          %97 = OpCompositeConstruct %v2int %92 %71
-         %99 = OpImageFetch %v4uint %94 %97
-        %100 = OpCompositeExtract %uint %99 0
-        %101 = OpIAdd %uint %998 %100
+         %99 = OpImageRead %uint %94 %97
+        %101 = OpIAdd %uint %998 %99
         %105 = OpCompositeConstruct %v2int %92 %75
-        %107 = OpImageFetch %v4uint %94 %105
-        %108 = OpCompositeExtract %uint %107 0
-        %109 = OpIAdd %uint %101 %108
+        %107 = OpImageRead %uint %94 %105
+        %109 = OpIAdd %uint %101 %107
                OpBranch %86
          %88 = OpLabel
                OpBranch %64
@@ -155,18 +153,16 @@
         %119 = OpLoad %36 %38
         %121 = OpIAdd %int %972 %18
         %123 = OpCompositeConstruct %v2int %121 %21
-        %125 = OpImageFetch %v4uint %119 %123
-        %126 = OpCompositeExtract %uint %125 0
-        %127 = OpIAdd %uint %977 %126
+        %125 = OpImageRead %uint %119 %123
+        %127 = OpIAdd %uint %977 %125
         %131 = OpISub %int %972 %130
         %133 = OpSGreaterThanEqual %bool %131 %int_0
                OpSelectionMerge %135 None
                OpBranchConditional %133 %134 %135
         %134 = OpLabel
         %139 = OpCompositeConstruct %v2int %131 %21
-        %141 = OpImageFetch %v4uint %119 %139
-        %142 = OpCompositeExtract %uint %141 0
-        %143 = OpISub %uint %127 %142
+        %141 = OpImageRead %uint %119 %139
+        %143 = OpISub %uint %127 %141
                OpBranch %135
         %135 = OpLabel
         %994 = OpPhi %uint %127 %113 %143 %134
@@ -184,13 +180,11 @@
         %163 = OpLoad %int %162
         %164 = OpIAdd %int %972 %163
         %168 = OpCompositeConstruct %v2int %164 %155
-        %170 = OpImageFetch %v4uint %119 %168
-        %171 = OpCompositeExtract %uint %170 0
-        %172 = OpIAdd %uint %993 %171
+        %170 = OpImageRead %uint %119 %168
+        %172 = OpIAdd %uint %993 %170
         %176 = OpCompositeConstruct %v2int %164 %159
-        %178 = OpImageFetch %v4uint %119 %176
-        %179 = OpCompositeExtract %uint %178 0
-        %180 = OpIAdd %uint %172 %179
+        %178 = OpImageRead %uint %119 %176
+        %180 = OpIAdd %uint %172 %178
         %185 = OpISub %int %972 %163
         %186 = OpISub %int %185 %int_1
         %188 = OpSGreaterThanEqual %bool %186 %int_0
@@ -198,13 +192,11 @@
                OpBranchConditional %188 %189 %190
         %189 = OpLabel
         %194 = OpCompositeConstruct %v2int %186 %155
-        %196 = OpImageFetch %v4uint %119 %194
-        %197 = OpCompositeExtract %uint %196 0
-        %198 = OpISub %uint %180 %197
+        %196 = OpImageRead %uint %119 %194
+        %198 = OpISub %uint %180 %196
         %202 = OpCompositeConstruct %v2int %186 %159
-        %204 = OpImageFetch %v4uint %119 %202
-        %205 = OpCompositeExtract %uint %204 0
-        %206 = OpISub %uint %198 %205
+        %204 = OpImageRead %uint %119 %202
+        %206 = OpISub %uint %198 %204
                OpBranch %190
         %190 = OpLabel
        %1008 = OpPhi %uint %180 %146 %206 %189
@@ -236,14 +228,12 @@
         %239 = OpLoad %36 %38
         %241 = OpIAdd %int %973 %18
         %243 = OpCompositeConstruct %v2int %241 %21
-        %245 = OpImageFetch %v4uint %239 %243
-        %246 = OpCompositeExtract %uint %245 0
-        %247 = OpIAdd %uint %976 %246
+        %245 = OpImageRead %uint %239 %243
+        %247 = OpIAdd %uint %976 %245
         %251 = OpISub %int %973 %250
         %253 = OpCompositeConstruct %v2int %251 %21
-        %255 = OpImageFetch %v4uint %239 %253
-        %256 = OpCompositeExtract %uint %255 0
-        %257 = OpISub %uint %247 %256
+        %255 = OpImageRead %uint %239 %253
+        %257 = OpISub %uint %247 %255
                OpBranch %259
         %259 = OpLabel
         %989 = OpPhi %uint %257 %232 %317 %260
@@ -258,23 +248,19 @@
         %278 = OpLoad %int %277
         %279 = OpIAdd %int %973 %278
         %283 = OpCompositeConstruct %v2int %279 %269
-        %285 = OpImageFetch %v4uint %239 %283
-        %286 = OpCompositeExtract %uint %285 0
-        %287 = OpIAdd %uint %989 %286
+        %285 = OpImageRead %uint %239 %283
+        %287 = OpIAdd %uint %989 %285
         %291 = OpCompositeConstruct %v2int %279 %273
-        %293 = OpImageFetch %v4uint %239 %291
-        %294 = OpCompositeExtract %uint %293 0
-        %295 = OpIAdd %uint %287 %294
+        %293 = OpImageRead %uint %239 %291
+        %295 = OpIAdd %uint %287 %293
         %300 = OpISub %int %973 %278
         %301 = OpISub %int %300 %int_1
         %305 = OpCompositeConstruct %v2int %301 %269
-        %307 = OpImageFetch %v4uint %239 %305
-        %308 = OpCompositeExtract %uint %307 0
-        %309 = OpISub %uint %295 %308
+        %307 = OpImageRead %uint %239 %305
+        %309 = OpISub %uint %295 %307
         %313 = OpCompositeConstruct %v2int %301 %273
-        %315 = OpImageFetch %v4uint %239 %313
-        %316 = OpCompositeExtract %uint %315 0
-        %317 = OpISub %uint %309 %316
+        %315 = OpImageRead %uint %239 %313
+        %317 = OpISub %uint %309 %315
         %319 = OpISub %int %987 %int_1
                OpBranch %259
         %261 = OpLabel
@@ -305,18 +291,16 @@
         %344 = OpLabel
         %346 = OpLoad %36 %38
         %349 = OpCompositeConstruct %v2int %341 %21
-        %351 = OpImageFetch %v4uint %346 %349
-        %352 = OpCompositeExtract %uint %351 0
-        %353 = OpIAdd %uint %975 %352
+        %351 = OpImageRead %uint %346 %349
+        %353 = OpIAdd %uint %975 %351
                OpBranch %345
         %345 = OpLabel
         %980 = OpPhi %uint %975 %333 %353 %344
         %354 = OpLoad %36 %38
         %357 = OpISub %int %974 %356
         %359 = OpCompositeConstruct %v2int %357 %21
-        %361 = OpImageFetch %v4uint %354 %359
-        %362 = OpCompositeExtract %uint %361 0
-        %363 = OpISub %uint %980 %362
+        %361 = OpImageRead %uint %354 %359
+        %363 = OpISub %uint %980 %361
                OpBranch %365
         %365 = OpLabel
         %983 = OpPhi %uint %363 %345 %426 %368
@@ -335,26 +319,22 @@
                OpBranchConditional %386 %387 %388
         %387 = OpLabel
         %392 = OpCompositeConstruct %v2int %384 %375
-        %394 = OpImageFetch %v4uint %354 %392
-        %395 = OpCompositeExtract %uint %394 0
-        %396 = OpIAdd %uint %983 %395
+        %394 = OpImageRead %uint %354 %392
+        %396 = OpIAdd %uint %983 %394
         %400 = OpCompositeConstruct %v2int %384 %379
-        %402 = OpImageFetch %v4uint %354 %400
-        %403 = OpCompositeExtract %uint %402 0
-        %404 = OpIAdd %uint %396 %403
+        %402 = OpImageRead %uint %354 %400
+        %404 = OpIAdd %uint %396 %402
                OpBranch %388
         %388 = OpLabel
         %986 = OpPhi %uint %983 %366 %404 %387
         %409 = OpISub %int %974 %383
         %410 = OpISub %int %409 %int_1
         %414 = OpCompositeConstruct %v2int %410 %375
-        %416 = OpImageFetch %v4uint %354 %414
-        %417 = OpCompositeExtract %uint %416 0
-        %418 = OpISub %uint %986 %417
+        %416 = OpImageRead %uint %354 %414
+        %418 = OpISub %uint %986 %416
         %422 = OpCompositeConstruct %v2int %410 %379
-        %424 = OpImageFetch %v4uint %354 %422
-        %425 = OpCompositeExtract %uint %424 0
-        %426 = OpISub %uint %418 %425
+        %424 = OpImageRead %uint %354 %422
+        %426 = OpISub %uint %418 %424
                OpBranch %368
         %368 = OpLabel
         %428 = OpISub %int %981 %int_1
@@ -407,9 +387,8 @@
         %476 = OpLabel
         %483 = OpLoad %36 %38
         %486 = OpCompositeConstruct %v2int %481 %470
-        %488 = OpImageFetch %v4uint %483 %486
-        %489 = OpCompositeExtract %uint %488 0
-        %490 = OpIAdd %uint %970 %489
+        %488 = OpImageRead %uint %483 %486
+        %490 = OpIAdd %uint %970 %488
                OpBranch %475
         %477 = OpLabel
                OpBranch %463
@@ -439,9 +418,8 @@
         %510 = OpLabel
         %517 = OpLoad %36 %38
         %520 = OpCompositeConstruct %v2int %515 %504
-        %522 = OpImageFetch %v4uint %517 %520
-        %523 = OpCompositeExtract %uint %522 0
-        %524 = OpIAdd %uint %967 %523
+        %522 = OpImageRead %uint %517 %520
+        %524 = OpIAdd %uint %967 %522
                OpBranch %509
         %511 = OpLabel
                OpBranch %497
@@ -460,18 +438,16 @@
         %537 = OpIAdd %int %928 %18
         %539 = OpCompositeConstruct %v2int %537 %21
         %540 = OpLoad %36 %38
-        %543 = OpImageFetch %v4uint %540 %539
-        %544 = OpCompositeExtract %uint %543 0
-        %545 = OpIAdd %uint %933 %544
+        %543 = OpImageRead %uint %540 %539
+        %545 = OpIAdd %uint %933 %543
         %548 = OpISub %int %928 %547
         %907 = OpCompositeInsert %v2int %548 %539 0
         %550 = OpSGreaterThanEqual %bool %548 %int_0
                OpSelectionMerge %552 None
                OpBranchConditional %550 %551 %552
         %551 = OpLabel
-        %556 = OpImageFetch %v4uint %540 %907
-        %557 = OpCompositeExtract %uint %556 0
-        %558 = OpISub %uint %545 %557
+        %556 = OpImageRead %uint %540 %907
+        %558 = OpISub %uint %545 %556
                OpBranch %552
         %552 = OpLabel
         %962 = OpPhi %uint %545 %528 %558 %551
@@ -488,9 +464,8 @@
         %572 = OpIAdd %int %928 %571
         %575 = OpISub %int %21 %955
         %576 = OpCompositeConstruct %v2int %572 %575
-        %580 = OpImageFetch %v4uint %540 %576
-        %581 = OpCompositeExtract %uint %580 0
-        %582 = OpIAdd %uint %961 %581
+        %580 = OpImageRead %uint %540 %576
+        %582 = OpIAdd %uint %961 %580
         %587 = OpISub %int %928 %571
         %588 = OpISub %int %587 %int_1
         %909 = OpCompositeInsert %v2int %588 %576 0
@@ -498,9 +473,8 @@
                OpSelectionMerge %592 None
                OpBranchConditional %590 %591 %592
         %591 = OpLabel
-        %596 = OpImageFetch %v4uint %540 %909
-        %597 = OpCompositeExtract %uint %596 0
-        %598 = OpISub %uint %582 %597
+        %596 = OpImageRead %uint %540 %909
+        %598 = OpISub %uint %582 %596
                OpBranch %592
         %592 = OpLabel
        %1005 = OpPhi %uint %582 %562 %598 %591
@@ -522,9 +496,8 @@
         %614 = OpIAdd %int %928 %613
         %617 = OpIAdd %int %21 %956
         %618 = OpCompositeConstruct %v2int %614 %617
-        %622 = OpImageFetch %v4uint %540 %618
-        %623 = OpCompositeExtract %uint %622 0
-        %624 = OpIAdd %uint %960 %623
+        %622 = OpImageRead %uint %540 %618
+        %624 = OpIAdd %uint %960 %622
         %629 = OpISub %int %928 %613
         %630 = OpISub %int %629 %int_1
         %911 = OpCompositeInsert %v2int %630 %618 0
@@ -532,9 +505,8 @@
                OpSelectionMerge %634 None
                OpBranchConditional %632 %633 %634
         %633 = OpLabel
-        %638 = OpImageFetch %v4uint %540 %911
-        %639 = OpCompositeExtract %uint %638 0
-        %640 = OpISub %uint %624 %639
+        %638 = OpImageRead %uint %540 %911
+        %640 = OpISub %uint %624 %638
                OpBranch %634
         %634 = OpLabel
        %1006 = OpPhi %uint %624 %604 %640 %633
@@ -566,14 +538,12 @@
         %667 = OpIAdd %int %929 %18
         %669 = OpCompositeConstruct %v2int %667 %21
         %670 = OpLoad %36 %38
-        %673 = OpImageFetch %v4uint %670 %669
-        %674 = OpCompositeExtract %uint %673 0
-        %675 = OpIAdd %uint %932 %674
+        %673 = OpImageRead %uint %670 %669
+        %675 = OpIAdd %uint %932 %673
         %678 = OpISub %int %929 %677
         %913 = OpCompositeInsert %v2int %678 %669 0
-        %683 = OpImageFetch %v4uint %670 %913
-        %684 = OpCompositeExtract %uint %683 0
-        %685 = OpISub %uint %675 %684
+        %683 = OpImageRead %uint %670 %913
+        %685 = OpISub %uint %675 %683
                OpBranch %688
         %688 = OpLabel
         %954 = OpPhi %uint %685 %658 %722 %689
@@ -587,15 +557,13 @@
         %699 = OpIAdd %int %929 %698
         %702 = OpISub %int %21 %949
         %703 = OpCompositeConstruct %v2int %699 %702
-        %707 = OpImageFetch %v4uint %670 %703
-        %708 = OpCompositeExtract %uint %707 0
-        %709 = OpIAdd %uint %954 %708
+        %707 = OpImageRead %uint %670 %703
+        %709 = OpIAdd %uint %954 %707
         %714 = OpISub %int %929 %698
         %715 = OpISub %int %714 %int_1
         %915 = OpCompositeInsert %v2int %715 %703 0
-        %720 = OpImageFetch %v4uint %670 %915
-        %721 = OpCompositeExtract %uint %720 0
-        %722 = OpISub %uint %709 %721
+        %720 = OpImageRead %uint %670 %915
+        %722 = OpISub %uint %709 %720
         %724 = OpISub %int %949 %int_1
                OpBranch %688
         %690 = OpLabel
@@ -612,15 +580,13 @@
         %738 = OpIAdd %int %929 %737
         %741 = OpIAdd %int %21 %950
         %742 = OpCompositeConstruct %v2int %738 %741
-        %746 = OpImageFetch %v4uint %670 %742
-        %747 = OpCompositeExtract %uint %746 0
-        %748 = OpIAdd %uint %953 %747
+        %746 = OpImageRead %uint %670 %742
+        %748 = OpIAdd %uint %953 %746
         %753 = OpISub %int %929 %737
         %754 = OpISub %int %753 %int_1
         %917 = OpCompositeInsert %v2int %754 %742 0
-        %759 = OpImageFetch %v4uint %670 %917
-        %760 = OpCompositeExtract %uint %759 0
-        %761 = OpISub %uint %748 %760
+        %759 = OpImageRead %uint %670 %917
+        %761 = OpISub %uint %748 %759
         %763 = OpISub %int %950 %int_1
                OpBranch %727
         %729 = OpLabel
@@ -647,18 +613,16 @@
         %786 = OpISub %int %930 %785
         %788 = OpCompositeConstruct %v2int %786 %21
         %789 = OpLoad %36 %38
-        %792 = OpImageFetch %v4uint %789 %788
-        %793 = OpCompositeExtract %uint %792 0
-        %794 = OpISub %uint %931 %793
+        %792 = OpImageRead %uint %789 %788
+        %794 = OpISub %uint %931 %792
         %796 = OpIAdd %int %930 %18
         %919 = OpCompositeInsert %v2int %796 %788 0
         %798 = OpSLessThan %bool %796 %20
                OpSelectionMerge %800 None
                OpBranchConditional %798 %799 %800
         %799 = OpLabel
-        %804 = OpImageFetch %v4uint %789 %919
-        %805 = OpCompositeExtract %uint %804 0
-        %806 = OpIAdd %uint %794 %805
+        %804 = OpImageRead %uint %789 %919
+        %806 = OpIAdd %uint %794 %804
                OpBranch %800
         %800 = OpLabel
         %946 = OpPhi %uint %794 %777 %806 %799
@@ -676,18 +640,16 @@
         %821 = OpISub %int %820 %int_1
         %824 = OpISub %int %21 %939
         %825 = OpCompositeConstruct %v2int %821 %824
-        %829 = OpImageFetch %v4uint %789 %825
-        %830 = OpCompositeExtract %uint %829 0
-        %831 = OpISub %uint %945 %830
+        %829 = OpImageRead %uint %789 %825
+        %831 = OpISub %uint %945 %829
         %836 = OpIAdd %int %930 %819
         %921 = OpCompositeInsert %v2int %836 %825 0
         %838 = OpSLessThan %bool %836 %20
                OpSelectionMerge %840 None
                OpBranchConditional %838 %839 %840
         %839 = OpLabel
-        %844 = OpImageFetch %v4uint %789 %921
-        %845 = OpCompositeExtract %uint %844 0
-        %846 = OpIAdd %uint %831 %845
+        %844 = OpImageRead %uint %789 %921
+        %846 = OpIAdd %uint %831 %844
                OpBranch %840
         %840 = OpLabel
        %1001 = OpPhi %uint %831 %810 %846 %839
@@ -710,18 +672,16 @@
         %863 = OpISub %int %862 %int_1
         %866 = OpIAdd %int %21 %940
         %867 = OpCompositeConstruct %v2int %863 %866
-        %871 = OpImageFetch %v4uint %789 %867
-        %872 = OpCompositeExtract %uint %871 0
-        %873 = OpISub %uint %944 %872
+        %871 = OpImageRead %uint %789 %867
+        %873 = OpISub %uint %944 %871
         %878 = OpIAdd %int %930 %861
         %923 = OpCompositeInsert %v2int %878 %867 0
         %880 = OpSLessThan %bool %878 %20
                OpSelectionMerge %882 None
                OpBranchConditional %880 %881 %882
         %881 = OpLabel
-        %886 = OpImageFetch %v4uint %789 %923
-        %887 = OpCompositeExtract %uint %886 0
-        %888 = OpIAdd %uint %873 %887
+        %886 = OpImageRead %uint %789 %923
+        %888 = OpIAdd %uint %873 %886
                OpBranch %882
         %882 = OpLabel
        %1002 = OpPhi %uint %873 %852 %888 %881

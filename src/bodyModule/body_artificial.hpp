@@ -28,6 +28,7 @@
 
 class Ojm;
 class Set;
+class ShadowExtension;
 
 class Artificial: public Body {
 
@@ -57,7 +58,6 @@ public:
 	virtual void drawShadow(VkCommandBuffer drawCmd) override;
 	virtual void drawShadow(VkCommandBuffer drawCmd, int idx) override;
 
-	virtual void bindShadow(const Mat4d &matrix) override;
 	virtual void bindShadows(const ShadowRenderData &renderData) override;
 protected :
 	//! Return set to bind, may change at every frame
@@ -76,9 +76,9 @@ protected :
 	}
 
 	std::shared_ptr<Ojm> obj3D;
-	std::unique_ptr<Set> set, shadowTraceSet, shadowSet;
-	std::unique_ptr<SharedBuffer<artGeom>> uProj;
-	std::unique_ptr<SharedBuffer<LightInfo>> uLight;
-	std::unique_ptr<SharedBuffer<artVert>> uVert;
-	std::unique_ptr<SharedBuffer<OjmShadowFrag>> uShadowFrag;
+	std::unique_ptr<Set> set;
+	SharedBuffer<artGeom> uProj;
+	SharedBuffer<LightInfo> uLight;
+	SharedBuffer<artVert> uVert;
+	std::unique_ptr<ShadowExtension> ext;
 };

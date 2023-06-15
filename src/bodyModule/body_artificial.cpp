@@ -39,6 +39,21 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 
+class ShadowExtension {
+public:
+	ShadowExtension(VulkanMgr &master, SetMgr &mgr, BufferMgr &umgr, PipelineLayout *shadowLayout, PipelineLayout *shapeLayout) :
+		shadow(umgr), shadowSet(master, mgr, shadowLayout, 2, true, true), traceSet(master, mgr, shapeLayout, -1, true, true)
+	{
+		traceSet.bindUniform(shadow, 0);
+		shadowSet.bindUniform(shadow, 2);
+		shadowSet.bindTexture(*Context::instance->shadowBuffer, 3);
+		shadowSet.bindTexture(*Context::instance->shadow, 4);
+	}
+	SharedBuffer<OjmShadowFrag> shadow;
+	Set shadowSet;
+	Set traceSet;
+};
+
 Artificial::Artificial(std::shared_ptr<Body> parent,
                        const std::string& englishName,
                        bool flagHalo,
@@ -58,7 +73,7 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
 	     BODY_TYPE::ARTIFICIAL,
 	     flagHalo,
 	     radius,
-	     1.0,
+	     0.0,
 	     std::move(_myColor),
 	     _sol_local_day,
 	     albedo,
@@ -66,7 +81,7 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
 	     close_orbit,
 	     nullptr,
 	     orbit_bounding_radius,
-	     _bodyTexture)
+	     _bodyTexture), uProj(*Context::instance->uniformMgr), uLight(*Context::instance->uniformMgr), uVert(*Context::instance->uniformMgr)
 {
 	selectShader();
 	obj3D = Ojm::load(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/");
@@ -80,9 +95,6 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
     auto &vkmgr = *VulkanMgr::instance;
     auto &context = *Context::instance;
     set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, 2, false, true);
-    uVert = std::make_unique<SharedBuffer<artVert>>(*Context::instance->uniformMgr);
-    uProj = std::make_unique<SharedBuffer<artGeom>>(*Context::instance->uniformMgr);
-    uLight = std::make_unique<SharedBuffer<LightInfo>>(*context.uniformMgr);
     set->bindUniform(uVert, 0);
     set->bindUniform(uProj, 1);
     set->bindUniform(uLight, 2);
@@ -118,80 +130,49 @@ void Artificial::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navig
     auto &context = *Context::instance;
 
     Mat4f matrix = mat.convert() * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
-    matrix.setMat3(uVert->get().normal);
-    uVert->get().radius = radius;
-    uProj->get().ModelViewMatrix = matrix * Mat4f::scaling(radius);
-    uProj->get().clipping_fov = prj->getClippingFov();
+    matrix.setMat3(uVert->normal);
+    uVert->radius = radius;
+    uProj->ModelViewMatrix = matrix * Mat4f::scaling(radius);
+    uProj->clipping_fov = prj->getClippingFov();
     if (isCenterOfInterest) {
-        uShadowFrag->get().ModelMatrix = model.convert();
-        uShadowFrag->get().lightIntensity =Vec3f(1.0, 1.0, 1.0);
-        uShadowFrag->get().lightDirection = -lightDirection;
+        ext->shadow->ModelMatrix = model.convert();
+        ext->shadow->lightIntensity =Vec3f(1.0, 1.0, 1.0);
+        ext->shadow->lightDirection = -lightDirection;
         drawState->layout->bindSet(cmd, *context.uboSet);
-        drawState->layout->bindSet(cmd, *shadowSet, 2);
+        drawState->layout->bindSet(cmd, ext->shadowSet, 2);
         obj3D->record(cmd, drawState->pipeline, drawState->layout);
         Context::instance->helper->selfShadow(this);
     } else {
-        uLight->get().Intensity =Vec3f(1.0, 1.0, 1.0);
-        uLight->get().Position = eye_sun;
+        uLight->Intensity =Vec3f(1.0, 1.0, 1.0);
+        uLight->Position = eye_sun;
         drawState->layout->bindSet(cmd, *context.uboSet);
         drawState->layout->bindSet(cmd, *set, 2);
         obj3D->record(cmd, depthTest ? drawState->pipeline : drawState->pipelineNoDepth, drawState->layout);
     }
 }
 
-void Artificial::bindShadow(const Mat4d &m)
-{
-    if (!uShadowFrag) {
-        auto &context = *Context::instance;
-        uShadowFrag = std::make_unique<SharedBuffer<OjmShadowFrag>>(*context.uniformMgr);
-        if (!shadowTraceSet) {
-            shadowTraceSet = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, BodyShader::getShaderShadowTrace()->layout, -1, false, true);
-            shadowTraceSet->bindUniform(uShadowFrag, 0);
-        }
-        if (!shadowSet) {
-            shadowSet = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, BodyShader::getShaderArtificialShadowed()->layout, 2, false, true);
-            shadowSet->bindUniform(uVert, 0);
-            shadowSet->bindUniform(uProj, 1);
-            shadowSet->bindUniform(uShadowFrag, 2);
-            shadowSet->bindTexture(*context.shadowBuffer, 3);
-            shadowSet->bindTextures(context.shadowView, 4);
-        }
-    }
-    auto &frag = **uShadowFrag;
-    m.setMat3(frag.ShadowMatrix);
-}
-
 void Artificial::drawShadow(VkCommandBuffer drawCmd)
 {
     BodyShader::getShaderShadowTrace()->pipeline->bind(drawCmd);
-    BodyShader::getShaderShadowTrace()->layout->bindSet(drawCmd, *shadowTraceSet);
+    BodyShader::getShaderShadowTrace()->layout->bindSet(drawCmd, ext->traceSet);
     obj3D->drawShadow(drawCmd);
 }
 
 void Artificial::drawShadow(VkCommandBuffer drawCmd, int idx)
 {
+	BodyShader::getShaderShadowShape()->pipeline->bind(drawCmd);
+	BodyShader::getShaderShadowShape()->layout->bindSet(drawCmd, *Context::instance->shadowData[idx].traceSet);
     obj3D->drawShadow(drawCmd);
 }
 
 void Artificial::bindShadows(const ShadowRenderData &renderData)
 {
-    if (!uShadowFrag) {
-        auto &context = *Context::instance;
-        uShadowFrag = std::make_unique<SharedBuffer<OjmShadowFrag>>(*context.uniformMgr);
-        if (!shadowTraceSet) {
-            shadowTraceSet = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, BodyShader::getShaderShadowTrace()->layout, -1, false, true);
-            shadowTraceSet->bindUniform(uShadowFrag, 0);
-        }
-        if (!shadowSet) {
-            shadowSet = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, BodyShader::getShaderArtificialShadowed()->layout, 2, false, true);
-            shadowSet->bindUniform(uVert, 0);
-            shadowSet->bindUniform(uProj, 1);
-            shadowSet->bindUniform(uShadowFrag, 2);
-            shadowSet->bindTexture(*context.shadowBuffer, 3);
-            shadowSet->bindTextures(context.shadowView, 4);
-        }
-    }
-    auto &frag = **uShadowFrag;
+	if (!ext) {
+		ext = std::make_unique<ShadowExtension>(*VulkanMgr::instance, *Context::instance->setMgr, *Context::instance->uniformMgr, BodyShader::getShaderArtificialShadowed()->layout, BodyShader::getShaderShadowTrace()->layout);
+		ext->shadowSet.bindUniform(uVert, 0);
+		ext->shadowSet.bindUniform(uProj, 1);
+	}
+    auto &frag = *ext->shadow;
     auto m = renderData.lookAt * (model * Mat4d::zrotation(M_PI/180*(axis_rotation + 90)));
     m.setMat3(frag.ShadowMatrix);
     // frag.sinSunAngle = 2 * renderData.sinSunHalfAngle;

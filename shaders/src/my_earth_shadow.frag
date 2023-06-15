@@ -12,7 +12,7 @@ layout (binding=3) uniform sampler2D normalMap;
 layout (binding=4) uniform sampler2D dayTexture;
 layout (binding=5) uniform sampler2D nightTexture;
 layout (binding=6) uniform sampler2D SpecularTexture;
-// layout (binding=7) uniform sampler2DArray bodyShadows;
+layout (binding=7) uniform sampler2DArray bodyShadows;
 
 #define M_PI 3.14159265358979323846
 
@@ -108,8 +108,7 @@ void main(void)
 			for (int i = 0; i < nbShadowingBodies; ++i) {
 				vec2 tmp = (shadowPos - shadowingBodies[i].xy) / shadowingBodies[i].z;
 				if (dot(tmp, tmp) < 1) {
-					// shadowing += texture(shadowTexture, vec3(tmp * 0.5 + 0.5, i)).r
-					shadowing *= dot(tmp, tmp); // Temporary solution
+					shadowing *= 1 - texture(bodyShadows, vec3(tmp * 0.5 + 0.5, i)).r;
 				}
 			}
 			// shortly ray trace toward -lightDirection for self-shadowing

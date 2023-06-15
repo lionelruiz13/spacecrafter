@@ -11,7 +11,7 @@ layout(binding=0) uniform descriptor {
     int offsets[radius];
 };
 
-layout(binding=1, r8ui) uniform readonly uimage2D bodyShadow;
+layout(binding=1) uniform usampler2DRect bodyShadow;
 layout(binding=2, r8) uniform writeonly image2D groundShadow;
 
 // WARNING : Require radius < border/2
@@ -21,7 +21,7 @@ void main()
     uint sum = 0;
     int i = radius;
     while (i-- > 0)
-        sum += imageLoad(bodyShadow, ivec2(i, baseY)).r;
+        sum += uint(texelFetch(bodyShadow, ivec2(i, baseY)));
 
     if (subgroupAll(baseY >= radius && baseY < border - radius)) { // Y-Safe tracing (faster)
         // Initialize sum
@@ -30,26 +30,26 @@ void main()
             int baseY2 = baseY - i;
             int j = offsets[i];
             while (j-- > 0) {
-                sum += imageLoad(bodyShadow, ivec2(j, baseY1)).r;
-                sum += imageLoad(bodyShadow, ivec2(j, baseY2)).r;
+                sum += uint(texelFetch(bodyShadow, ivec2(j, baseY1)));
+                sum += uint(texelFetch(bodyShadow, ivec2(j, baseY2)));
             }
         }
         // Start early tracing
         for (i = 0; i <= radius; ++i) {
-            sum += imageLoad(bodyShadow, ivec2(i+radius, baseY)).r;
+            sum += uint(texelFetch(bodyShadow, ivec2(i+radius, baseY)));
             int baseX = i-(radius+1);
             if (baseX >= 0)
-                sum -= imageLoad(bodyShadow, ivec2(baseX, baseY)).r;
+                sum -= uint(texelFetch(bodyShadow, ivec2(baseX, baseY)));
             for (int j = radius; j > 0; --j) {
                 int baseY1 = baseY+j;
                 int baseY2 = baseY-j;
                 baseX = i+offsets[j];
-                sum += imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
-                sum += imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+                sum += uint(texelFetch(bodyShadow, ivec2(baseX, baseY1)));
+                sum += uint(texelFetch(bodyShadow, ivec2(baseX, baseY2)));
                 baseX = i-offsets[j]-1;
                 if (baseX >= 0) {
-                    sum -= imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
-                    sum -= imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+                    sum -= uint(texelFetch(bodyShadow, ivec2(baseX, baseY1)));
+                    sum -= uint(texelFetch(bodyShadow, ivec2(baseX, baseY2)));
                 }
             }
             imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
@@ -57,17 +57,17 @@ void main()
         int safeEnd = border - radius;
         // Start tracing
         for (int safeEnd = border - radius; i < safeEnd; ++i) {
-            sum += imageLoad(bodyShadow, ivec2(i+radius, baseY)).r;
-            sum -= imageLoad(bodyShadow, ivec2(i-(radius+1), baseY)).r;
+            sum += uint(texelFetch(bodyShadow, ivec2(i+radius, baseY)));
+            sum -= uint(texelFetch(bodyShadow, ivec2(i-(radius+1), baseY)));
             for (int j = radius; j > 0; --j) {
                 int baseY1 = baseY+j;
                 int baseY2 = baseY-j;
                 int baseX = i+offsets[j];
-                sum += imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
-                sum += imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+                sum += uint(texelFetch(bodyShadow, ivec2(baseX, baseY1)));
+                sum += uint(texelFetch(bodyShadow, ivec2(baseX, baseY2)));
                 baseX = i-offsets[j]-1;
-                sum -= imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
-                sum -= imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+                sum -= uint(texelFetch(bodyShadow, ivec2(baseX, baseY1)));
+                sum -= uint(texelFetch(bodyShadow, ivec2(baseX, baseY2)));
             }
             imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
         }
@@ -75,19 +75,19 @@ void main()
         for (; i < border; ++i) {
             int baseX = i+radius;
             if (baseX < border)
-                sum += imageLoad(bodyShadow, ivec2(baseX, baseY)).r;
-            sum -= imageLoad(bodyShadow, ivec2(i-(radius+1), baseY)).r;
+                sum += uint(texelFetch(bodyShadow, ivec2(baseX, baseY)));
+            sum -= uint(texelFetch(bodyShadow, ivec2(i-(radius+1), baseY)));
             for (int j = radius; j > 0; --j) {
                 int baseY1 = baseY+j;
                 int baseY2 = baseY-j;
                 baseX = i+offsets[j];
                 if (baseX < border) {
-                    sum += imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
-                    sum += imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+                    sum += uint(texelFetch(bodyShadow, ivec2(baseX, baseY1)));
+                    sum += uint(texelFetch(bodyShadow, ivec2(baseX, baseY2)));
                 }
                 baseX = i-offsets[j]-1;
-                sum -= imageLoad(bodyShadow, ivec2(baseX, baseY1)).r;
-                sum -= imageLoad(bodyShadow, ivec2(baseX, baseY2)).r;
+                sum -= uint(texelFetch(bodyShadow, ivec2(baseX, baseY1)));
+                sum -= uint(texelFetch(bodyShadow, ivec2(baseX, baseY2)));
             }
             imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
         }
@@ -99,71 +99,71 @@ void main()
             int baseY1 = baseY-i;
             int j = offsets[i];
             while (j-- > 0)
-                sum += imageLoad(bodyShadow, ivec2(j, baseY1)).r;
+                sum += uint(texelFetch(bodyShadow, ivec2(j, baseY1)));
         }
         for (i = maxRelY; i > 0; --i) {
             int baseY2 = baseY+i;
             int j = offsets[i];
             while (j-- > 0)
-                sum += imageLoad(bodyShadow, ivec2(j, baseY2)).r;
+                sum += uint(texelFetch(bodyShadow, ivec2(j, baseY2)));
         }
         // Start early tracing
         for (i = 0; i <= radius; ++i) {
             ivec2 coord = ivec2(i+radius, baseY);
-            sum += imageLoad(bodyShadow, coord).r;
+            sum += uint(texelFetch(bodyShadow, coord));
             if ((coord.x = i-(radius+1)) >= 0)
-                sum -= imageLoad(bodyShadow, coord).r;
+                sum -= uint(texelFetch(bodyShadow, coord));
             for (int j = minRelY; j > 0; --j) {
                 coord = ivec2(i+offsets[j], baseY-j);
-                sum += imageLoad(bodyShadow, coord).r;
+                sum += uint(texelFetch(bodyShadow, coord));
                 if ((coord.x = i-offsets[j]-1) >= 0)
-                    sum -= imageLoad(bodyShadow, coord).r;
+                    sum -= uint(texelFetch(bodyShadow, coord));
             }
             for (int j = maxRelY; j > 0; --j) {
                 coord = ivec2(i+offsets[j], baseY+j);
-                sum += imageLoad(bodyShadow, coord).r;
+                sum += uint(texelFetch(bodyShadow, coord));
                 if ((coord.x = i-offsets[j]-1) >= 0)
-                    sum -= imageLoad(bodyShadow, coord).r;
+                    sum -= uint(texelFetch(bodyShadow, coord));
             }
             imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
         }
         // Start tracing
         for (int safeEnd = border - radius; i < safeEnd; ++i) {
             ivec2 coord = ivec2(i+radius, baseY);
-            sum += imageLoad(bodyShadow, coord).r;
+            sum += uint(texelFetch(bodyShadow, coord));
             coord.x = i-(radius+1);
-            sum -= imageLoad(bodyShadow, coord).r;
+            sum -= uint(texelFetch(bodyShadow, coord));
             for (int j = minRelY; j > 0; --j) {
                 coord = ivec2(i+offsets[j], baseY-j);
-                sum += imageLoad(bodyShadow, coord).r;
+                sum += uint(texelFetch(bodyShadow, coord));
                 coord.x = i-offsets[j]-1;
-                sum -= imageLoad(bodyShadow, coord).r;
+                sum -= uint(texelFetch(bodyShadow, coord));
             }
             for (int j = maxRelY; j > 0; --j) {
                 coord = ivec2(i+offsets[j], baseY+j);
-                sum += imageLoad(bodyShadow, coord).r;
+                sum += uint(texelFetch(bodyShadow, coord));
                 coord.x = i-offsets[j]-1;
-                sum -= imageLoad(bodyShadow, coord).r;
+                sum -= uint(texelFetch(bodyShadow, coord));
             }
             imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
         }
         // Start late tracing
         for (; i < border; ++i) {
             ivec2 coord = ivec2(i-(radius+1), baseY);
-            sum -= imageLoad(bodyShadow, coord).r;
+            sum -= uint(texelFetch(bodyShadow, coord));
             if ((coord.x = i+radius) < border)
-                sum += imageLoad(bodyShadow, coord).r;
+                sum += uint(texelFetch(bodyShadow, coord));
             for (int j = minRelY; j > 0; --j) {
                 coord = ivec2(i-offsets[j]-1, baseY-j);
-                sum -= imageLoad(bodyShadow, coord).r;
+                sum -= uint(texelFetch(bodyShadow, coord));
                 if ((coord.x = i+offsets[j]) < border)
-                    sum += imageLoad(bodyShadow, coord).r;
+                    sum += uint(texelFetch(bodyShadow, coord));
             }
             for (int j = maxRelY; j > 0; --j) {
                 coord = ivec2(i-offsets[j]-1, baseY+j);
-                sum -= imageLoad(bodyShadow, coord).r;
+                sum -= uint(texelFetch(bodyShadow, coord));
                 if ((coord.x = i+offsets[j]) < border)
-                    sum += imageLoad(bodyShadow, coord).r;
+                    sum += uint(texelFetch(bodyShadow, coord));
             }
             imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
         }

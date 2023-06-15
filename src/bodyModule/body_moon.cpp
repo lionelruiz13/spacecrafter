@@ -101,6 +101,7 @@ void Moon::defineSet()
             set->bindTexture(tex_heightmap->getTexture(), 2);
             set->bindTexture(tex_norm->getTexture(), 3);
             set->bindTexture(tex_current->getTexture(), 4);
+            set->bindTexture(*context.shadow, 5);
             break;
         case SHADER_MOON_NORMAL_TES:
             set->bindUniform(uMoonFrag, 1);
@@ -154,6 +155,7 @@ Set &Moon::getSet(float screen_sz)
                     bigSet->bindTexture(*tex0, 2);
                     bigSet->bindTexture(*tex1, 3);
                     bigSet->bindTexture(*tex2, 4);
+                    bigSet->bindTexture(*Context::instance->shadow, 5);
                 }
             }
             break;

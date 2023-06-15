@@ -133,6 +133,7 @@ void BigBody::selectShader ()
             set->bindTexture(tex_current->getTexture(), 4);
             set->bindTexture(tex_night->getTexture(), 5);
             set->bindTexture(tex_specular->getTexture(), 6);
+            set->bindTexture(*context.shadow, 7);
             return;
         }
 		myShader = SHADER_NIGHT_TES; // myEarth
@@ -190,6 +191,7 @@ void BigBody::selectShader ()
             set->bindTexture(tex_heightmap->getTexture(), 2);
             set->bindTexture(tex_norm->getTexture(), 3);
             set->bindTexture(tex_current->getTexture(), 4);
+            set->bindTexture(*context.shadow, 5);
             return;
         }
 		myShader = SHADER_BUMP;
@@ -458,6 +460,7 @@ Set &BigBody::getSet(float screen_sz)
                     bigSet->bindTexture(*tex2, 4);
                     bigSet->bindTexture(*tex3, 5);
                     bigSet->bindTexture(*tex4, 6);
+                    bigSet->bindTexture(*Context::instance->shadow, 7);
                 }
             }
             break;
@@ -477,6 +480,7 @@ Set &BigBody::getSet(float screen_sz)
                     bigSet->bindTexture(*tex0, 2);
                     bigSet->bindTexture(*tex1, 3);
                     bigSet->bindTexture(*tex2, 4);
+                    bigSet->bindTexture(*Context::instance->shadow, 5);
                 }
             }
             break;

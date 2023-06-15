@@ -419,6 +419,10 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
     if (!d.cancelledCmds.empty())
         frame->cancelExecution(d.cancelledCmds);
     auto cmd = frame->preBegin();
+    if (notInitialized) {
+        Context::instance->shadow->use(cmd, Implicit::LAYOUT); // Perform a fully implicit layout transition
+        notInitialized = false;
+    }
     player->recordUpdate(cmd);
     s_texture::recordTransfer(cmd);
     if (s_font::tileMap)
@@ -447,7 +451,7 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
             sd.pipeline->modifySpecializedConstant(0, iradius);
             auto oldPipeline = sd.pipeline->build(true);
             if (oldPipeline != VK_NULL_HANDLE)
-                vkDestroyPipeline(VulkanMgr::instance->refDevice, oldPipeline, nullptr);
+                vkDestroyPipeline(VulkanMgr::instance->refDevice, oldPipeline, nullptr); // Warning : can be in use
         }
         int pixelCount = 0;
         radius *= radius;
@@ -457,7 +461,7 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
             sd.uniform->offsets[i] = tmp;
         }
         sd.uniform->pixelCount = pixelCount * 4 + 1;
-        sd.pipeline->bind(cmd);
+        sd.compute(cmd);
         imageBarrier.srcAccessMask = imageBarrier.dstAccessMask;
         imageBarrier.oldLayout = imageBarrier.newLayout;
         imageBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;

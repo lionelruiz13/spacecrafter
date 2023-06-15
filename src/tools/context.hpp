@@ -24,6 +24,9 @@ class CaptureMetrics;
 #define BIG_TEXTURE_MIPMAP_SIZE (BIG_TEXTURE_MAIN_SIZE+2l)/3l
 #endif
 
+// Warning : This MUST match the LocalSize in shadow.comp.spvasm (compiled into shadow.comp.spv)
+#define SHADOW_LOCAL_SIZE 256
+
 enum {
     PASS_BACKGROUND = 0, // multi-sample, no depth buffer
     // PASS_STAR_FBO, // star framebuffer, no depth buffer
@@ -38,11 +41,13 @@ struct ShadowUniform {
 };
 
 struct ShadowData {
-    ShadowData();
+    ShadowData(int idx);
     ~ShadowData();
+    void compute(VkCommandBuffer cmd);
     std::unique_ptr<ComputePipeline> pipeline;
-    std::unique_ptr<Set> set;
+    std::unique_ptr<Set> set, traceSet;
     SharedBuffer<ShadowUniform> uniform;
+    SharedBuffer<float[12]> shadowMat;
     float radius = 0;
     uint16_t constRadius = 0; // constant radius set in the pipeline
 };
@@ -79,6 +84,7 @@ public:
     std::unique_ptr<Texture> shadowTrace; // For shadow projection
     std::vector<VkImageView> shadowView;
     ShadowData *shadowData = nullptr;
+    std::unique_ptr<PipelineLayout> shadowLayout, traceLayout;
     std::vector<HipStarMgr *> starUsed; // nullptr if not used at this frame, otherwise a pointer to a HipStarMgr which operate a draw
     std::vector<std::unique_ptr<SyncEvent>> starSync; // synchronize access to starColorAttachment
     std::unique_ptr<SyncEvent> transferSync; // synchronize transfers
@@ -116,6 +122,7 @@ public:
     uint32_t frameIdx = 2;
     uint32_t lastFrameIdx = 1;
     VkBool32 isFloat64Supported = VK_TRUE;
+    uint32_t shadowRes;
 
     // Experimental features enabled
     static bool experimental_shadows;

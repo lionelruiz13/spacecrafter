@@ -279,7 +279,7 @@ void BodyShader::createShader()
 	shaderArtificialShadowed.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, 1); // artGeom
 	shaderArtificialShadowed.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 2); // OjmShadowFrag
 	shaderArtificialShadowed.layout->setTextureLocation(3, &PipelineLayout::DEFAULT_SAMPLER); // Self-shadow
-	shaderArtificialShadowed.layout->setTextureArrayLocation(4, 4, &PipelineLayout::DEFAULT_SAMPLER); // Shadow traces
+	shaderArtificialShadowed.layout->setTextureLocation(4, &PipelineLayout::DEFAULT_SAMPLER); // Shadow traces
 	shaderArtificialShadowed.layout->buildLayout();
 	shaderArtificialShadowed.layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 44);
 	shaderArtificialShadowed.layout->build();
@@ -365,6 +365,7 @@ void BodyShader::createShader()
 	myEarthShadowed.layout->setTextureLocation(4, &tmp);
 	myEarthShadowed.layout->setTextureLocation(5, &tmp);
 	myEarthShadowed.layout->setTextureLocation(6, &tmp);
+	myEarthShadowed.layout->setTextureLocation(7, &tmp);
 	myEarthShadowed.layout->buildLayout();
 	myEarthShadowed.layout->build();
 
@@ -388,6 +389,7 @@ void BodyShader::createShader()
 	shaderShadowedTes.layout->setTextureLocation(2, &tmp);
 	shaderShadowedTes.layout->setTextureLocation(3, &tmp);
 	shaderShadowedTes.layout->setTextureLocation(4, &tmp);
+	shaderShadowedTes.layout->setTextureLocation(5, &tmp);
 	shaderShadowedTes.layout->buildLayout();
 	shaderShadowedTes.layout->setGlobalPipelineLayout(context.layouts.front().get());
 	shaderShadowedTes.layout->build();
@@ -405,11 +407,7 @@ void BodyShader::createShader()
 	shaderShadowedTes.pipeline->build("shaderShadowedTes");
 
 	// ========== shadow_trace ========== //
-	context.layouts.push_back(std::make_unique<PipelineLayout>(vkmgr));
-	shadowTrace.layout = context.layouts.back().get();
-	shadowTrace.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // mat3
-	shadowTrace.layout->buildLayout();
-	shadowTrace.layout->build();
+	shadowTrace.layout = context.traceLayout.get();
 
 	context.pipelines.push_back(std::make_unique<Pipeline>(vkmgr, *context.renderSelfShadow, 0, shadowTrace.layout));
 	shadowTrace.pipeline = context.pipelines.back().get();
@@ -428,11 +426,7 @@ void BodyShader::createShader()
 	}
 
 	// ========== shadow_shape ========== //
-	context.layouts.push_back(std::make_unique<PipelineLayout>(vkmgr));
-	shadowShape.layout = context.layouts.back().get();
-	shadowShape.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // mat3
-	shadowShape.layout->buildLayout();
-	shadowShape.layout->build();
+	shadowShape.layout = shadowTrace.layout;
 
 	context.pipelines.push_back(std::make_unique<Pipeline>(vkmgr, *context.renderShadow, 0, shadowShape.layout));
 	shadowShape.pipeline = context.pipelines.back().get();

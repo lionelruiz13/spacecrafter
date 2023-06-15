@@ -7,7 +7,7 @@
 
 
 layout (set = 2, binding=3) uniform sampler2D shadowMap;
-// layout (set = 2, binding=4) uniform sampler2DArray bodyShadows;
+layout (set = 2, binding=4) uniform sampler2DArray bodyShadows;
 
 #include <selfShadow.glsl>
 
@@ -45,8 +45,7 @@ void main()
     for (int i = 0; i < nbShadowingBodies; ++i) {
         vec2 tmp = (shadowPos.xy - shadowingBodies[i].xy) / shadowingBodies[i].z;
         if (dot(tmp, tmp) < 1) {
-            // shadowing += texture(shadowTexture, vec3(tmp * 0.5 + 0.5, i)).r
-            shadowing *= dot(tmp, tmp); // Temporary solution
+            shadowing *= 1 - texture(bodyShadows, vec3(tmp * 0.5 + 0.5, i)).r;
         }
     }
     FragColor = LightIntensity * (
