@@ -125,7 +125,7 @@ void BigBody::selectShader ()
             if (!uShadowVert)
                 uShadowVert = std::make_unique<SharedBuffer<ShadowVert>>(*context.uniformMgr);
             if (!uShadowFrag)
-                uShadowFrag = std::make_unique<SharedBuffer<ShadowFrag>>(*context.uniformMgr);
+                uShadowFrag = std::make_unique<SharedBuffer<ShadowFrag>>(*context.uniformMgr, sizeof(ShadowFrag) + sizeof(UShadowingBody) * Context::instance->maxShadowCast);
             set->bindUniform(uShadowVert, 0);
             set->bindUniform(uShadowFrag, 1);
             set->bindTexture(tex_heightmap->getTexture(), 2);
@@ -185,7 +185,7 @@ void BigBody::selectShader ()
             if (!uShadowVert)
                 uShadowVert = std::make_unique<SharedBuffer<ShadowVert>>(*context.uniformMgr);
             if (!uShadowFrag)
-                uShadowFrag = std::make_unique<SharedBuffer<ShadowFrag>>(*context.uniformMgr);
+                uShadowFrag = std::make_unique<SharedBuffer<ShadowFrag>>(*context.uniformMgr, sizeof(ShadowFrag) + sizeof(UShadowingBody) * Context::instance->maxShadowCast);
             set->bindUniform(uShadowVert, 0);
             set->bindUniform(uShadowFrag, 1);
             set->bindTexture(tex_heightmap->getTexture(), 2);
@@ -645,7 +645,8 @@ void BigBody::bindShadows(const ShadowRenderData &renderData)
         frag.sinSunAngle = 2 * renderData.sinSunHalfAngle;
         frag.nbShadowingBodies = renderData.shadowingBodies.size();
         for (uint8_t i = 0; i < renderData.shadowingBodies.size(); ++i) {
-            frag.shadowingBodies[i] = renderData.shadowingBodies[i] / (radius * (1 + 0.01 * bodyTesselation->getPlanetAltimetryFactor()));
+            frag.shadowingBodies[i].posRadius = renderData.shadowingBodies[i].posRadius / (radius * (1 + 0.01 * bodyTesselation->getPlanetAltimetryFactor()));
+            frag.shadowingBodies[i].idx = renderData.shadowingBodies[i].idx;
         }
     }
 }

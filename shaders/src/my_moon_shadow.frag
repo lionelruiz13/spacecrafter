@@ -16,6 +16,12 @@ layout (binding=5) uniform sampler2DArray bodyShadows;
 
 #define M_PI 3.14159265358979323846
 
+struct ShadowingBody {
+    vec2 pos;
+    float size;
+    int idx;
+};
+
 layout (binding=1) uniform globalFrag {
 	mat3 ShadowMatrix;
 	vec3 lightDirection; // In body-local coordinates
@@ -23,11 +29,11 @@ layout (binding=1) uniform globalFrag {
 	float heightMapDepthLevel; // 0.9
 	float heightMapDepth; // 0.1
 	float squaredHeightMapDepthLevel; // 0.81
-	int nbShadowingBodies;
-	vec3 shadowingBodies[4];
-	vec3 atmColor; // Colorimetry of the atmosphere
 	float sunDeviation; // Deviation of the sun ray
 	float atmDeviation; // Deviation of the atmosphere color
+	vec3 atmColor; // Colorimetry of the atmosphere
+	int nbShadowingBodies;
+	ShadowingBody shadowingBodies[4];
 };
 
 layout (location=0) in vec3 entryPos;
@@ -106,9 +112,9 @@ void main(void)
 			float shadowing = 1;
 			// Process shadow of bodies
 			for (int i = 0; i < nbShadowingBodies; ++i) {
-				vec2 tmp = (shadowPos - shadowingBodies[i].xy) / shadowingBodies[i].z;
+				vec2 tmp = (shadowPos.xy - shadowingBodies[i].pos) / shadowingBodies[i].size;
 				if (dot(tmp, tmp) < 1) {
-					shadowing *= 1 - texture(bodyShadows, vec3(tmp * 0.5 + 0.5, i)).r;
+					shadowing *= 1 - texture(bodyShadows, vec3(tmp * 0.5 + 0.5, shadowingBodies[i].idx)).r;
 				}
 			}
 			// shortly ray trace toward -lightDirection for self-shadowing

@@ -262,6 +262,11 @@ struct vec3p {
 	}
 };
 
+struct UShadowingBody {
+	vec3 posRadius;
+	int idx;
+};
+
 struct ShadowFrag {
 	float ShadowMatrix[12];
 	vec3 lightDirection; // In body-local coordinates
@@ -269,11 +274,12 @@ struct ShadowFrag {
 	float heightMapDepthLevel; // 0.9
 	float heightMapDepth; // 0.1
 	float squaredHeightMapDepthLevel; // 0.81
-	int nbShadowingBodies;
-	vec3p shadowingBodies[4];
-	vec3 atmColor;
 	float sunDeviation;
 	float atmDeviation;
+	vec3 _padding;
+	vec3 atmColor;
+	int nbShadowingBodies;
+	UShadowingBody shadowingBodies[];
 };
 
 struct OjmShadowFrag {
@@ -282,7 +288,7 @@ struct OjmShadowFrag {
 	vec3p lightDirection;
 	vec3 lightIntensity;
 	int nbShadowingBodies;
-	vec3p shadowingBodies[4];
+	UShadowingBody shadowingBodies[];
 };
 
 #endif // _BODY_SHADER_HPP_

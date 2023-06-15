@@ -18,6 +18,12 @@ layout (location=1) in vec2 TexCoord;
 layout (location=2) in vec3 Normal;
 layout (location=3) in float Ambient;
 
+struct ShadowingBody {
+    vec2 pos;
+    float size;
+    int idx;
+};
+
 layout (binding=2, set=2) uniform OjmShadowFrag {
     mat3 ShadowMatrix;
     mat3 ModelMatrix;
@@ -25,7 +31,7 @@ layout (binding=2, set=2) uniform OjmShadowFrag {
     vec3 lightDirection;	// Light direction
     vec3 LightIntensity;	// A,D,S intensity
     int nbShadowingBodies;
-    vec3 shadowingBodies[4];
+    ShadowingBody shadowingBodies[4];
 };
 
 layout (push_constant) uniform MaterialInfo {
@@ -43,9 +49,9 @@ void main()
     vec3 shadowPos = ShadowMatrix * Position;
     float shadowing = computeEnlightment(shadowPos, sDotN);
     for (int i = 0; i < nbShadowingBodies; ++i) {
-        vec2 tmp = (shadowPos.xy - shadowingBodies[i].xy) / shadowingBodies[i].z;
+        vec2 tmp = (shadowPos.xy - shadowingBodies[i].pos) / shadowingBodies[i].size;
         if (dot(tmp, tmp) < 1) {
-            shadowing *= 1 - texture(bodyShadows, vec3(tmp * 0.5 + 0.5, i)).r;
+            shadowing *= 1 - texture(bodyShadows, vec3(tmp * 0.5 + 0.5, shadowingBodies[i].idx)).r;
         }
     }
     FragColor = LightIntensity * (

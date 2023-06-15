@@ -130,12 +130,7 @@ public:
         drawer[externalVFrameIdx].selfShadow = target;
     }
     //! Sumbit shadowing body
-    uint8_t drawShadower(Body *target, float radius) {
-        auto &vec = drawer[externalVFrameIdx].shadowers;
-        uint8_t idx = vec.size();
-        vec.push_back({target, radius * halfShadowRes, idx});
-        return idx;
-    }
+    uint8_t drawShadower(Body *target, float radius);
 private:
     void beginDraw(unsigned char subpass);
     void beginDrawCommand(unsigned char subpass); // Start draw command recording

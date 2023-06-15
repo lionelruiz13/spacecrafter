@@ -389,7 +389,8 @@ void Moon::bindShadows(const ShadowRenderData &renderData)
         frag.sinSunAngle = 2 * renderData.sinSunHalfAngle;
         frag.nbShadowingBodies = renderData.shadowingBodies.size();
         for (uint8_t i = 0; i < renderData.shadowingBodies.size(); ++i) {
-            frag.shadowingBodies[i] = renderData.shadowingBodies[i] / (radius * (1 + 0.01 * bodyTesselation->getPlanetAltimetryFactor()));
+            frag.shadowingBodies[i].posRadius = renderData.shadowingBodies[i].posRadius / (radius * (1 + 0.01 * bodyTesselation->getPlanetAltimetryFactor()));
+            frag.shadowingBodies[i].idx = renderData.shadowingBodies[i].idx;
         }
     }
 }
@@ -441,7 +442,7 @@ void Moon::gainInterest()
        if (!uShadowVert)
            uShadowVert = std::make_unique<SharedBuffer<ShadowVert>>(*Context::instance->uniformMgr);
        if (!uShadowFrag)
-           uShadowFrag = std::make_unique<SharedBuffer<ShadowFrag>>(*Context::instance->uniformMgr);
+           uShadowFrag = std::make_unique<SharedBuffer<ShadowFrag>>(*Context::instance->uniformMgr, sizeof(ShadowFrag) + sizeof(UShadowingBody) * Context::instance->maxShadowCast);
        changed = true;
    }
 }

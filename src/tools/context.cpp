@@ -5,7 +5,7 @@
 #include "EntityCore/Resource/SetMgr.hpp"
 #include "EntityCore/Tools/CaptureMetrics.hpp"
 
-ShadowData::ShadowData(int idx) :
+ShadowData::ShadowData() :
     uniform(*Context::instance->uniformMgr), shadowMat(*Context::instance->uniformMgr)
 {
     auto &vkmgr = *VulkanMgr::instance;
@@ -30,7 +30,6 @@ ShadowData::ShadowData(int idx) :
     set = std::make_unique<Set>(vkmgr, *Context::instance->setMgr, Context::instance->shadowLayout.get());
     set->bindUniform(uniform, 0);
     set->bindImage(*Context::instance->shadowTrace, 1);
-    set->bindStorageImage(Context::instance->shadowView[idx], 2);
     traceSet = std::make_unique<Set>(vkmgr, *Context::instance->setMgr, Context::instance->traceLayout.get());
     traceSet->bindUniform(shadowMat, 0);
     pipeline = std::make_unique<ComputePipeline>(vkmgr, Context::instance->shadowLayout.get());
@@ -41,6 +40,11 @@ ShadowData::ShadowData(int idx) :
 
 ShadowData::~ShadowData()
 {
+}
+
+void ShadowData::init(VkImageView target)
+{
+    set->bindStorageImage(target, 2);
 }
 
 void ShadowData::compute(VkCommandBuffer cmd)

@@ -1201,14 +1201,14 @@ bool Body::needBucket(const Observer *obs)
    return isVisibleOnScreen() || obs->isOnBody(this);
 }
 
-Vec3f Body::drawShadow(const ShadowParams &params)
+UShadowingBody Body::drawShadow(const ShadowParams &params)
 {
     auto m = params.lookAt * model;
     Vec3f ret(m.r[12], m.r[13], boundingRadius + params.smoothRadius);
     auto scaling = radius/ret.v[2];
     auto idx = Context::instance->helper->drawShadower(this, params.smoothRadius/ret.v[2]);
     (m * Mat4d::scaling(Vec3d(scaling, scaling, scaling * one_minus_oblateness))).setMat3(Context::instance->shadowData[idx].shadowMat);
-    return ret;
+    return {ret, idx};
 }
 
 void Body::drawShadow(VkCommandBuffer drawCmd, int idx)

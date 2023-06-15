@@ -55,11 +55,19 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
 
     auto tmp = ssystem->getCenterOfInterest();
     if (tmp != mainBody) {
-        if (mainBody)
+        if (mainBody) {
+            if (mainBody->getParent()->isCoI())
+                mainBody->getParent()->looseInterest();
             mainBody->looseInterest();
+        }
         if (tmp) {
             tmp->gainInterest();
             std::cout << tmp->getEnglishName() << " is now the Center of Interest\n";
+            if (tmp->isSatellite()) {
+                // We may expect to see the parent body as well
+                // TODO find a better heuristic in case there is an intermediate body, or the body is not visible
+                tmp->getParent()->gainInterest();
+            }
         }
         mainBody = tmp;
     }
@@ -69,6 +77,7 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
     // buffer we just clear and reuse the entire depth buffer for each bucket.
     listBuckets.clear();
     shadowingBody.clear();
+    shadowingBody2.clear();
     depthBucket db {0, 0};
 
     const auto _end = ssystem->endSorted();
@@ -83,14 +92,42 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
         const double cst1 = r1+sunRadius;
         const double cst2 = -sunRadius/sd1;
 
-        for (auto it = ssystem->beginSorted(); it != _end; ++it) {
-            auto &body = **it;
-            Vec3d v2 = body.get_heliocentric_ecliptic_pos();
-            double d = v1.dot(v2); // d1*d2
-            if (d > 0 && d < sd1) {
-                double tmp = cst1+d*cst2 + body.getBoundingRadius();
-                if (((v2 - v1 * (d/sd1))/tmp).lengthSquared() < 1) {
-                    shadowingBody.push_back({&body, d, sd1-d});
+        Body *mainBody2 = mainBody->getParent();
+        if (mainBody2 && mainBody2->isCoI()) {
+            const double r12 = mainBody2->getBoundingRadius();
+            Vec3d v12 = mainBody2->get_heliocentric_ecliptic_pos();
+            const double sd12 = v12.lengthSquared();
+            const double cst12 = r12+sunRadius;
+            const double cst22 = -sunRadius/sd12;
+
+            for (auto it = ssystem->beginSorted(); it != _end; ++it) {
+                auto &body = **it;
+                Vec3d v2 = body.get_heliocentric_ecliptic_pos();
+                double d = v1.dot(v2); // d1*d2
+                if (d > 0 && d < sd1) {
+                    double tmp = cst1+d*cst2 + body.getBoundingRadius();
+                    if (((v2 - v1 * (d/sd1))/tmp).lengthSquared() < 1) {
+                        shadowingBody.push_back({&body, d, sd1-d});
+                    }
+                }
+                d = v12.dot(v2);
+                if (d > 0 && d < sd12) {
+                    double tmp = cst12+d*cst22 + body.getBoundingRadius();
+                    if (((v2 - v12 * (d/sd12))/tmp).lengthSquared() < 1) {
+                        shadowingBody2.push_back({&body, d, sd12-d});
+                    }
+                }
+            }
+        } else {
+            for (auto it = ssystem->beginSorted(); it != _end; ++it) {
+                auto &body = **it;
+                Vec3d v2 = body.get_heliocentric_ecliptic_pos();
+                double d = v1.dot(v2); // d1*d2
+                if (d > 0 && d < sd1) {
+                    double tmp = cst1+d*cst2 + body.getBoundingRadius();
+                    if (((v2 - v1 * (d/sd1))/tmp).lengthSquared() < 1) {
+                        shadowingBody.push_back({&body, d, sd1-d});
+                    }
                 }
             }
         }
@@ -161,6 +198,23 @@ void SolarSystemDisplay::drawShadow(Projector * prj, const Navigator * nav)
     // body matrix : body -> heliocentric
     // lookat : heliocentric -> sun to main body
     // translate : center to body
+
+    // Potentially handle the parent body
+    if (auto body = mainBody->getParent()) {
+        if (body->isCoI()) {
+            mainPos = body->get_heliocentric_ecliptic_pos();
+            sunCoef = sunRadius / mainPos.lengthSquared();
+            renderData.lookAt = params.lookAt = Mat4d::lookAt(ssystem->getCenterPos(), mainPos, Vec3d(0, 1, 0));
+            params.mainBodyRadius = mainBody->getBoundingRadius();
+            renderData.sinSunHalfAngle = sunRadius / mainPos.length();
+            for (auto &s : shadowingBody2) {
+                params.smoothRadius = sunCoef * s.distToMainBody;
+                if (params.smoothRadius < s.body->getBoundingRadius() * 4) // Ignore shadow with less than 4% of occlusion
+                    renderData.shadowingBodies.push_back(s.body->drawShadow(params));
+            }
+            body->bindShadows(renderData);
+        }
+    }
 }
 
 // Draw all the elements of the solar system
@@ -326,7 +380,10 @@ void SolarSystemDisplay::computeTransMatrices(double date,const Observer * obs)
 
 void SolarSystemDisplay::invalidateCenterOfInterest()
 {
-   if (mainBody)
-       mainBody->looseInterest();
-   mainBody = nullptr;
+    if (mainBody) {
+        if (mainBody->getParent()->isCoI())
+            mainBody->getParent()->looseInterest();
+        mainBody->looseInterest();
+    }
+    mainBody = nullptr;
 }

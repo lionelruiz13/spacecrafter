@@ -26,6 +26,8 @@ class CaptureMetrics;
 
 // Warning : This MUST match the LocalSize in shadow.comp.spvasm (compiled into shadow.comp.spv)
 #define SHADOW_LOCAL_SIZE 256
+// The following ensure that the radius won't exceed 510 pixels
+#define SHADOW_MAX_SIZE 1280
 
 enum {
     PASS_BACKGROUND = 0, // multi-sample, no depth buffer
@@ -41,8 +43,9 @@ struct ShadowUniform {
 };
 
 struct ShadowData {
-    ShadowData(int idx);
+    ShadowData();
     ~ShadowData();
+    void init(VkImageView target);
     void compute(VkCommandBuffer cmd);
     std::unique_ptr<ComputePipeline> pipeline;
     std::unique_ptr<Set> set, traceSet;
@@ -83,7 +86,7 @@ public:
     std::unique_ptr<Texture> shadowBuffer; // For self-shadowing
     std::unique_ptr<Texture> shadowTrace; // For shadow projection
     std::vector<VkImageView> shadowView;
-    ShadowData *shadowData = nullptr;
+    ShadowData *shadowData;
     std::unique_ptr<PipelineLayout> shadowLayout, traceLayout;
     std::vector<HipStarMgr *> starUsed; // nullptr if not used at this frame, otherwise a pointer to a HipStarMgr which operate a draw
     std::vector<std::unique_ptr<SyncEvent>> starSync; // synchronize access to starColorAttachment
@@ -123,6 +126,7 @@ public:
     uint32_t lastFrameIdx = 1;
     VkBool32 isFloat64Supported = VK_TRUE;
     uint32_t shadowRes;
+    uint8_t maxShadowCast = 4;
 
     // Experimental features enabled
     static bool experimental_shadows;

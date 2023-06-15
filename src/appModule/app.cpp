@@ -253,9 +253,12 @@ void App::initVulkan(InitParser &conf)
 	});
 	context.shadowBuffer->use();
 	context.shadowRes = conf.getInt(SCS_RENDERING, SCK_SHADOW_RESOLUTION);
-	if (context.shadowRes % SHADOW_LOCAL_SIZE) {
+	if (context.shadowRes > SHADOW_MAX_SIZE) {
+		context.shadowRes = SHADOW_MAX_SIZE;
+		cLog::get()->write("shadow_resolution MUSTN'T exceed " + std::to_string(SHADOW_MAX_SIZE), LOG_TYPE::L_WARNING);
+	} else if (context.shadowRes % SHADOW_LOCAL_SIZE) {
 		context.shadowRes += SHADOW_LOCAL_SIZE - (context.shadowRes % SHADOW_LOCAL_SIZE);
-		cLog::get()->write("shadow_resolution MUST be a multiple of " + std::to_string(SHADOW_LOCAL_SIZE) + " - fallback to shadow_resolution of " + std::to_string(context.shadowRes));
+		cLog::get()->write("shadow_resolution MUST be a multiple of " + std::to_string(SHADOW_LOCAL_SIZE) + " - fallback to shadow_resolution of " + std::to_string(context.shadowRes), LOG_TYPE::L_WARNING);
 	}
 	context.shadowTrace = std::make_unique<Texture>(vkmgr, TextureInfo{
 		.width=(int) context.shadowRes, .height=(int) context.shadowRes,
@@ -409,11 +412,15 @@ void App::finalizeInitVulkan(InitParser &conf)
 	context.multiVertexMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, context.multiVertexArray->alignment*64*1024, "draw_helper BufferMgr");
 	context.starColorAttachment = std::make_unique<Texture>(vkmgr, vkmgr.getScreenRect().extent.width, vkmgr.getScreenRect().extent.height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 	context.starColorAttachment->use();
-	context.shadow = std::make_unique<Texture>(vkmgr, TextureInfo{.width=(int) context.shadowRes, .height=(int) context.shadowRes, .nbChannels=1, .arrayLayers=4, .usage=VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT, .format=VK_FORMAT_R8_UNORM, .name="Projected shadows"});
+	context.maxShadowCast = conf.getInt(SCS_RENDERING, SCK_MAX_SHADOW_CAST);
+	context.shadow = std::make_unique<Texture>(vkmgr, TextureInfo{.width=(int) context.shadowRes, .height=(int) context.shadowRes, .nbChannels=1, .arrayLayers=context.maxShadowCast, .usage=VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT, .format=VK_FORMAT_R8_UNORM, .name="Projected shadows"});
 	context.shadow->use();
-	for (uint32_t i = 0; i < 4; ++i)
+	context.shadowView.reserve(context.maxShadowCast);
+	context.shadowData = new ShadowData[context.maxShadowCast];
+	for (uint32_t i = 0; i < context.maxShadowCast; ++i) {
 		context.shadowView.push_back(context.shadow->createView(0, 1, i, 1));
-	context.shadowData = new ShadowData[4] {{0}, {1}, {2}, {3}};
+		context.shadowData[i].init(context.shadowView.back());
+	}
 	context.transferSync->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
 	context.transferSync->bufferBarrier(*context.multiVertexMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
 	context.transferSync->bufferBarrier(*context.ojmBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);

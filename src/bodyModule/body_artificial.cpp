@@ -42,7 +42,7 @@
 class ShadowExtension {
 public:
 	ShadowExtension(VulkanMgr &master, SetMgr &mgr, BufferMgr &umgr, PipelineLayout *shadowLayout, PipelineLayout *shapeLayout) :
-		shadow(umgr), shadowSet(master, mgr, shadowLayout, 2, true, true), traceSet(master, mgr, shapeLayout, -1, true, true)
+		shadow(umgr, sizeof(OjmShadowFrag) + sizeof(UShadowingBody) * Context::instance->maxShadowCast), shadowSet(master, mgr, shadowLayout, 2, true, true), traceSet(master, mgr, shapeLayout, -1, true, true)
 	{
 		traceSet.bindUniform(shadow, 0);
 		shadowSet.bindUniform(shadow, 2);
@@ -178,7 +178,8 @@ void Artificial::bindShadows(const ShadowRenderData &renderData)
     // frag.sinSunAngle = 2 * renderData.sinSunHalfAngle;
     frag.nbShadowingBodies = renderData.shadowingBodies.size();
     for (uint8_t i = 0; i < renderData.shadowingBodies.size(); ++i) {
-        frag.shadowingBodies[i] = renderData.shadowingBodies[i] / radius;
+        frag.shadowingBodies[i].posRadius = renderData.shadowingBodies[i].posRadius / radius;
+        frag.shadowingBodies[i].idx = renderData.shadowingBodies[i].idx;
     }
 }
 

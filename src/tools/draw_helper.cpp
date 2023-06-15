@@ -477,3 +477,22 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
     d.waitMutex.unlock();
     internalVFrameIdx %= 3;
 }
+
+uint8_t DrawHelper::drawShadower(Body *target, float radius)
+{
+   auto &vec = drawer[externalVFrameIdx].shadowers;
+   for (auto &v : vec) {
+       if (v.body == target && fabs(v.radius - radius * halfShadowRes) < 1)
+           return v.idx; // Don't draw twice if the shadow is almost the same
+   }
+   uint8_t idx = vec.size();
+   if (idx == Context::instance->maxShadowCast) {
+       VulkanMgr::instance->putLog("Shadow cast count is ABOVE LIMIT - using failsafe to minimize issues, but shadow shapes are mostly unpredictible - Please, increase max_shadow_cast in " + AppSettings::Instance()->getConfigFile(), LogType::ERROR);
+       for (--idx; vec[idx].body->getBodyType() != target->getBodyType(); --idx); // Try to minimize shadow hazards
+       vec[idx].body = target;
+       vec[idx].radius = radius * halfShadowRes;
+   } else {
+       vec.push_back({target, radius * halfShadowRes, idx});
+   }
+   return idx;
+}

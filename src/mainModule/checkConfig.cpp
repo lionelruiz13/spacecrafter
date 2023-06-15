@@ -124,7 +124,8 @@ void CheckConfig::checkRenderingSettings()
 	tmpSettings[SCK_OORT_ELEMENTS]="10000";
 	tmpSettings[SCK_SHADOW_RESOLUTION]="512";
 	tmpSettings[SCK_SELF_SHADOW_RESOLUTION]="4096";
-	tmpSettings[SCK_EXPERIMENTAL_SHADOWS]="false";
+	tmpSettings[SCK_MAX_SHADOW_CAST]="4";
+	tmpSettings[SCK_EXPERIMENTAL_SHADOWS]="true";
 
 	sectionSettings.push_back(SCS_RENDERING);
 	insertKeyFromTmpSettings(SCS_RENDERING);

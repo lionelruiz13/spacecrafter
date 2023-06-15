@@ -104,7 +104,7 @@ struct ShadowParams {
 struct ShadowRenderData {
 	Mat4d lookAt;
 	float sinSunHalfAngle;
-	std::vector<Vec3f> shadowingBodies;
+	std::vector<UShadowingBody> shadowingBodies;
 };
 
 struct ShadowDescriptor {
@@ -492,10 +492,14 @@ public:
 		changed = true;
 	}
 
+	inline bool isCoI() const {
+		return isCenterOfInterest;
+	}
+
 	virtual void bindShadows(const ShadowRenderData &renderData) {}
 
 	// Draw a shadow, return a Vec2f center and float radius
-	Vec3f drawShadow(const ShadowParams &params);
+	UShadowingBody drawShadow(const ShadowParams &params);
 
 	// Record the self-shadow draw
 	virtual void drawShadow(VkCommandBuffer drawCmd) {}

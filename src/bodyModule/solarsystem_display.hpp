@@ -118,6 +118,7 @@ private:
 
 	std::vector<depthBucket> listBuckets;
     std::vector<ShadowingBody> shadowingBody; // Bodies who project a shadow on the mainBody
+    std::vector<ShadowingBody> shadowingBody2; // Bodies who project a shadow on the mainBody's parent
     int cmds[3] {-1};
 };
 
