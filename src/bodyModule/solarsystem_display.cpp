@@ -56,14 +56,15 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
     auto tmp = ssystem->getCenterOfInterest();
     if (tmp != mainBody) {
         if (mainBody) {
-            if (mainBody->getParent()->isCoI())
-                mainBody->getParent()->looseInterest();
+            auto mainBody2 = mainBody->getParent();
+            if (mainBody2 && mainBody2->isCoI())
+                mainBody2->looseInterest();
             mainBody->looseInterest();
         }
         if (tmp) {
             tmp->gainInterest();
             std::cout << tmp->getEnglishName() << " is now the Center of Interest\n";
-            if (tmp->isSatellite()) {
+            if (tmp->isSatellite() && tmp->getBodyType() != ARTIFICIAL) { // We can't self-shadow two body artifical
                 // We may expect to see the parent body as well
                 // TODO find a better heuristic in case there is an intermediate body, or the body is not visible
                 tmp->getParent()->gainInterest();
@@ -381,8 +382,9 @@ void SolarSystemDisplay::computeTransMatrices(double date,const Observer * obs)
 void SolarSystemDisplay::invalidateCenterOfInterest()
 {
     if (mainBody) {
-        if (mainBody->getParent()->isCoI())
-            mainBody->getParent()->looseInterest();
+        auto mainBody2 = mainBody->getParent();
+        if (mainBody2 && mainBody2->isCoI())
+            mainBody2->looseInterest();
         mainBody->looseInterest();
     }
     mainBody = nullptr;
