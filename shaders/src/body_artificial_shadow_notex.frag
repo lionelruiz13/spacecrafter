@@ -49,7 +49,7 @@ void main()
     if (sDotN < Ambient) {
         sDotN = Ambient;
     } else {
-        specular = pow(max(dot(lightDirection - Normal * (2 * sDotN), -v), 0), Material.Ns);
+        specular = pow(max(dot(lightDirection + Normal * (2 * sDotN), -v), 0), Material.Ns);
     }
     vec3 shadowPos = ShadowMatrix * Position;
     float shadowing = computeEnlightment(shadowPos, sDotN);
