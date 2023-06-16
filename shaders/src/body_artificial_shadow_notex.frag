@@ -44,8 +44,13 @@ layout (push_constant) uniform MaterialInfo {
 void main()
 {
     vec3 v = normalize(ModelMatrix * Position + ModelPosition);
-    vec3 r = reflect(lightDirection, Normal);
-    float sDotN = max(-dot(lightDirection,Normal), Ambient);
+    float sDotN = -dot(lightDirection, Normal);
+    float specular = 0;
+    if (sDotN < Ambient) {
+        sDotN = Ambient;
+    } else {
+        specular = pow(max(dot(lightDirection - Normal * (2 * sDotN), -v), 0), Material.Ns);
+    }
     vec3 shadowPos = ShadowMatrix * Position;
     float shadowing = computeEnlightment(shadowPos, sDotN);
     for (int i = 0; i < nbShadowingBodies; ++i) {
@@ -54,8 +59,5 @@ void main()
             shadowing *= 1 - texture(bodyShadows, vec3(tmp * 0.5 + 0.5, shadowingBodies[i].idx)).r;
         }
     }
-    FragColor = LightIntensity * (
-        Material.Ka * ((Material.Kd * shadowing + Material.Ka) * sDotN) // Diffuse + ambient
-        + (Material.Ks * (shadowing * pow(max(dot(r, -v), 0), Material.Ns))) // Specular
-    );
+    FragColor = LightIntensity * (Material.Ka * ((Material.Kd * shadowing + Material.Ka) * sDotN) + Material.Ks * (shadowing * specular));
 }
