@@ -64,7 +64,7 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
         if (tmp) {
             tmp->gainInterest();
             std::cout << tmp->getEnglishName() << " is now the Center of Interest\n";
-            if (tmp->isSatellite() && tmp->getBodyType() != ARTIFICIAL) { // We can't self-shadow two body artifical
+            if (tmp->isSatellite() && tmp->getParent()->getBodyType() != ARTIFICIAL) { // We can't self-shadow two body artifical
                 // We may expect to see the parent body as well
                 // TODO find a better heuristic in case there is an intermediate body, or the body is not visible
                 tmp->getParent()->gainInterest();
