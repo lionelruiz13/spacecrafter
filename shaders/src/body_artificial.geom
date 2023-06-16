@@ -33,7 +33,7 @@ layout (location=1) out vec2 cfOutTexCoord;
 layout (location=2) out vec3 cfOutNormal;
 layout (location=3) out float cfOutAmbient;
 
-#define TOLERANCE 0.6
+#define TOLERANCE 1
 
 void main(void)
 {
