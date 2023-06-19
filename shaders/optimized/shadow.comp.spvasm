@@ -60,15 +60,7 @@
 %_ptr_Uniform_float = OpTypePointer Uniform %float
     %float_0 = OpConstant %float 0
     %v4float = OpTypeVector %float 4
-        %230 = OpSpecConstantOp %int ISub %20 %18
-        %250 = OpSpecConstantOp %int IAdd %18 %int_1
-        %356 = OpSpecConstantOp %int IAdd %18 %int_1
-        %449 = OpSpecConstantOp %int ISub %20 %18
         %455 = OpSpecConstantOp %int ISub %20 %int_1
-        %547 = OpSpecConstantOp %int IAdd %18 %int_1
-        %656 = OpSpecConstantOp %int ISub %20 %18
-        %677 = OpSpecConstantOp %int IAdd %18 %int_1
-        %785 = OpSpecConstantOp %int IAdd %18 %int_1
    %uint_256 = OpConstant %uint 256
      %uint_1 = OpConstant %uint 1
 %gl_WorkGroupSize = OpConstantComposite %v3uint %uint_256 %uint_1 %uint_1
@@ -229,7 +221,7 @@
         %231 = OpLabel
         %976 = OpPhi %uint %977 %114 %989 %234
         %973 = OpPhi %int %972 %114 %331 %234
-        %238 = OpSLessThan %bool %973 %230
+        %238 = OpSLessThan %bool %973 %54
                OpLoopMerge %233 %234 None
                OpBranchConditional %238 %232 %233
         %232 = OpLabel
@@ -239,7 +231,7 @@
         %245 = OpImageFetch %v4uint %239 %243
         %246 = OpCompositeExtract %uint %245 0
         %247 = OpIAdd %uint %976 %246
-        %251 = OpISub %int %973 %250
+        %251 = OpISub %int %973 %130
         %253 = OpCompositeConstruct %v2int %251 %21
         %255 = OpImageFetch %v4uint %239 %253
         %256 = OpCompositeExtract %uint %255 0
@@ -312,7 +304,7 @@
         %345 = OpLabel
         %980 = OpPhi %uint %975 %333 %353 %344
         %354 = OpLoad %36 %38
-        %357 = OpISub %int %974 %356
+        %357 = OpISub %int %974 %130
         %359 = OpCompositeConstruct %v2int %357 %21
         %361 = OpImageFetch %v4uint %354 %359
         %362 = OpCompositeExtract %uint %361 0
@@ -375,7 +367,7 @@
                OpBranch %60
         %441 = OpLabel
         %446 = OpSelect %int %50 %18 %21
-        %450 = OpSLessThan %bool %21 %449
+        %450 = OpSLessThan %bool %21 %54
                OpSelectionMerge %453 None
                OpBranchConditional %450 %452 %454
         %452 = OpLabel
@@ -463,7 +455,7 @@
         %543 = OpImageFetch %v4uint %540 %539
         %544 = OpCompositeExtract %uint %543 0
         %545 = OpIAdd %uint %933 %544
-        %548 = OpISub %int %928 %547
+        %548 = OpISub %int %928 %130
         %907 = OpCompositeInsert %v2int %548 %539 0
         %550 = OpSGreaterThanEqual %bool %548 %int_0
                OpSelectionMerge %552 None
@@ -559,7 +551,7 @@
         %657 = OpLabel
         %932 = OpPhi %uint %933 %529 %953 %660
         %929 = OpPhi %int %928 %529 %775 %660
-        %664 = OpSLessThan %bool %929 %656
+        %664 = OpSLessThan %bool %929 %54
                OpLoopMerge %659 %660 None
                OpBranchConditional %664 %658 %659
         %658 = OpLabel
@@ -569,7 +561,7 @@
         %673 = OpImageFetch %v4uint %670 %669
         %674 = OpCompositeExtract %uint %673 0
         %675 = OpIAdd %uint %932 %674
-        %678 = OpISub %int %929 %677
+        %678 = OpISub %int %929 %130
         %913 = OpCompositeInsert %v2int %678 %669 0
         %683 = OpImageFetch %v4uint %670 %913
         %684 = OpCompositeExtract %uint %683 0
@@ -644,7 +636,7 @@
                OpLoopMerge %778 %779 None
                OpBranchConditional %782 %777 %778
         %777 = OpLabel
-        %786 = OpISub %int %930 %785
+        %786 = OpISub %int %930 %130
         %788 = OpCompositeConstruct %v2int %786 %21
         %789 = OpLoad %36 %38
         %792 = OpImageFetch %v4uint %789 %788

@@ -37,9 +37,19 @@ enum {
     PASS_FOREGROUND, // single sample, no depth buffer
 };
 
+template<typename Scalar>
+struct Padded {
+    Scalar operator=(Scalar newValue) {
+        value = newValue;
+        return newValue;
+    }
+    Scalar value;
+    int64_t padding;
+};
+
 struct ShadowUniform {
-    float pixelCount;
-    int offsets[511]; // assert(radius <= 510) --> shadow_resolution <= 1024 (~1G operations)
+    Padded<float> pixelCount;
+    Padded<int> offsets[511]; // assert(radius <= 510) --> shadow_resolution <= 1024 (~1G operations)
 };
 
 struct ShadowData {

@@ -456,7 +456,7 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
         int pixelCount = 0;
         radius *= radius;
         for (int i = 0; i <= iradius; ++i) {
-            int tmp = sqrt(radius + i*i);
+            int tmp = sqrt(radius - i*i);
             pixelCount += tmp;
             sd.uniform->offsets[i] = tmp;
         }
