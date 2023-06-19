@@ -506,6 +506,11 @@ public:
 
 	// Record the shadow draw, return a normalized float describing the sun radius in the shadow
 	virtual void drawShadow(VkCommandBuffer drawCmd, int idx);
+
+	// Get sun direction in body-local coordinates
+	Vec3f getLocalSunDirection() const {
+		return mat.inverseUntranslated().multiplyWithoutTranslation(lightDirection);
+	}
 protected:
 	bool useParentPrecession(double jd) {
 		return getOrbit()->useParentPrecession(jd);

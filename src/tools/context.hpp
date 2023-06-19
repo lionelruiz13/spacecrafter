@@ -12,6 +12,7 @@ class HipStarMgr;
 class DrawHelper;
 class QueueFamily;
 class CaptureMetrics;
+class Body;
 
 // Maximal size of the big texture with his mipmaps
 #ifdef WIN32 // Only windows long long are unix long
@@ -28,6 +29,11 @@ class CaptureMetrics;
 #define SHADOW_LOCAL_SIZE 256
 // The following ensure that the radius won't exceed 510 pixels
 #define SHADOW_MAX_SIZE 1280
+// Maximal difference of radius (in pixel) allowed to reuse the shadow
+#define SHADOW_RADIUS_TOLERANCE 0.4
+// Minimal value of the dot product of the cached and current light direction to reuse the shadow
+// The change before invalidating the cache is below ((1 - invalidating_angle) * shadow_size / 2) pixels
+#define SHADOW_INVALIDATING_ANGLE 0.998
 
 enum {
     PASS_BACKGROUND = 0, // multi-sample, no depth buffer
@@ -57,12 +63,15 @@ struct ShadowData {
     ~ShadowData();
     void init(VkImageView target);
     void compute(VkCommandBuffer cmd);
+    Body *body = nullptr;
     std::unique_ptr<ComputePipeline> pipeline;
     std::unique_ptr<Set> set, traceSet;
     SharedBuffer<ShadowUniform> uniform;
     SharedBuffer<float[12]> shadowMat;
+    float bodyLight[3]; // Light direction, relative to the body ojm.
     float radius = 0;
     uint16_t constRadius = 0; // constant radius set in the pipeline
+    bool used = false;
 };
 
 class Context {

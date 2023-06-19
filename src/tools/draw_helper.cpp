@@ -103,6 +103,18 @@ void DrawHelper::beginDraw(unsigned char subpass, FrameMgr &frame)
     drawer[externalVFrameIdx].frame = &frame;
     extCmdIdx = 0;
     beginDraw(subpass);
+    // Clear unused shadow slots, so they can be reused
+    uint8_t i = Context::instance->maxShadowCast;
+    while (i--) {
+        auto &sd = Context::instance->shadowData[i];
+        if (sd.body) {
+            if (sd.used) {
+                sd.used = false;
+            } else {
+                sd.body = nullptr;
+            }
+        }
+    }
 }
 
 void DrawHelper::beginDraw(unsigned char subpass)
@@ -478,21 +490,60 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
     internalVFrameIdx %= 3;
 }
 
+// Implement caching here
 uint8_t DrawHelper::drawShadower(Body *target, float radius)
 {
-   auto &vec = drawer[externalVFrameIdx].shadowers;
-   for (auto &v : vec) {
-       if (v.body == target && fabs(v.radius - radius * halfShadowRes) < 1)
-           return v.idx; // Don't draw twice if the shadow is almost the same
-   }
-   uint8_t idx = vec.size();
-   if (idx == Context::instance->maxShadowCast) {
-       VulkanMgr::instance->putLog("Shadow cast count is ABOVE LIMIT - using failsafe to minimize issues, but shadow shapes are mostly unpredictible - Please, increase max_shadow_cast in " + AppSettings::Instance()->getConfigFile(), LogType::ERROR);
-       for (--idx; vec[idx].body->getBodyType() != target->getBodyType(); --idx); // Try to minimize shadow hazards
-       vec[idx].body = target;
-       vec[idx].radius = radius * halfShadowRes;
-   } else {
-       vec.push_back({target, radius * halfShadowRes, idx});
-   }
-   return idx;
+    auto &vec = drawer[externalVFrameIdx].shadowers;
+    auto *shadowData = Context::instance->shadowData;
+    const auto nbShadowData = Context::instance->maxShadowCast;
+    // Scan for matching shadowing body
+    uint8_t matchLevel = 0; // 1 = empty slot, 2 = matching body, 3 = cache-matching body
+    uint8_t idx = UINT8_MAX;
+    auto lsd = target->getLocalSunDirection();
+    radius *= halfShadowRes;
+    for (uint8_t i = 0; i < nbShadowData; ++i) {
+        auto &sd = shadowData[i];
+        switch (matchLevel) {
+            case 0:
+                if (!sd.used) {
+                    idx = i;
+                    matchLevel = (sd.body == nullptr);
+                }
+                [[fallthrough]];
+            case 1:
+                if (sd.body == target && !sd.used) {
+                    idx = i;
+                    matchLevel = 2;
+                }
+                [[fallthrough]];
+            case 2:
+                if (sd.body == target && fabs(sd.radius - radius) < SHADOW_RADIUS_TOLERANCE) {
+                    auto tmp = lsd[0] * sd.bodyLight[0] + lsd[1] * sd.bodyLight[1] + lsd[2] * sd.bodyLight[2];
+                    tmp *= tmp;
+                    const auto tmp2 = (sd.bodyLight[0] * sd.bodyLight[0] + sd.bodyLight[1] * sd.bodyLight[1] + sd.bodyLight[2] * sd.bodyLight[2]) * lsd.lengthSquared();
+                    if (tmp >= tmp2 * SHADOW_INVALIDATING_ANGLE) {
+                        idx = i;
+                        matchLevel = 3;
+                    }
+                }
+        }
+    }
+    if (idx < nbShadowData) {
+        shadowData += idx;
+        shadowData->used = true;
+        if (matchLevel < 3) {
+            shadowData->body = target;
+            shadowData->bodyLight[0] = lsd[0];
+            shadowData->bodyLight[1] = lsd[1];
+            shadowData->bodyLight[2] = lsd[2];
+            shadowData->radius = radius;
+            vec.push_back({target, radius, idx});
+        }
+    } else {
+        VulkanMgr::instance->putLog("Shadow cast count is ABOVE LIMIT - using failsafe to minimize issues, but shadow shapes are mostly unpredictible - Please, increase max_shadow_cast in " + AppSettings::Instance()->getConfigFile(), LogType::ERROR);
+        for (idx = nbShadowData - 1; vec[idx].body->getBodyType() != target->getBodyType(); --idx); // Try to minimize shadow hazards
+        vec[idx].body = target;
+        vec[idx].radius = radius;
+    }
+    return idx;
 }
