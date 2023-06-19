@@ -6,7 +6,7 @@ vec2 fisheye2DNoMV(vec3 pos, in float fov)
     float depth = sqrt(rq + pos.z*pos.z);
 	rq = sqrt(rq);
 
-	float f = asin(rq/depth);
+	float f = asin(min(rq/depth, 1)); // min patch a driver bug were rq/depth > 1
 	if (pos.z > 0)
 		f = M_PI - f;
 	f /= rq * fov;

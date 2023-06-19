@@ -42,7 +42,7 @@ void main()
 	float rq = pos.x*pos.x + pos.y*pos.y;
 	float depth = sqrt(rq + pos.z*pos.z);
 	rq = sqrt(rq);
-	float f = asin(rq/depth);
+	float f = asin(min(rq/depth, 1)); // min patch a driver bug were rq/depth > 1
 	if (pos.z > 0)
 		f = M_PI - f;
 
@@ -61,7 +61,7 @@ void main()
 	// outNormal = normal;
 
 	f /= rq * fov;
-	depth = (depth - zNear) / zRange;
+	// depth = (depth - zNear) / zRange;
 	side = mix(0.5, -0.5, (texcoord < 0.5));
 	gl_Position = vec4(pos.x*f, pos.y*f, 0, 1);
 }

@@ -7,7 +7,7 @@ vec4 fisheye2D(vec4 win, in float fov)
     float depth = sqrt(rq + win.z*win.z);
 	rq = sqrt(rq);
 
-	float f = asin(rq/depth);
+	float f = asin(min(rq/depth, 1)); // min patch a driver bug were rq/depth > 1
 	if (win.z > 0)
 		f = M_PI - f;
 	f /= rq * fov;
