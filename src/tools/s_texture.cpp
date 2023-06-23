@@ -99,8 +99,9 @@ const int formatSizes[] = {1, 2, 3, 4, 2, 4, 6, 8, 4};
 
 s_texture::texRecap::~texRecap()
 {
-   if (texture)
-	   releaseTexture[releaseTexIdx].push_back(std::move(texture));
+    loader.reset();
+    if (texture)
+        releaseTexture[releaseTexIdx].push_back(std::move(texture));
 }
 
 TextureLoader::TextureLoader(s_texture *tex, const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn) :
@@ -111,6 +112,22 @@ TextureLoader::TextureLoader(s_texture *tex, const std::string &fullName, bool r
 
 TextureLoader::~TextureLoader()
 {
+    if (!deletable) {
+        cLog::get()->write("Early destruction of texture " + fullName, LOG_TYPE::L_WARNING);
+        if (priority > LoadPriority::LOADING) {
+            priority = LoadPriority::DONE;
+            AsyncLoaderMgr::instance->update();
+        } else {
+            while (priority != LoadPriority::COMPLETED) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            }
+            AsyncLoaderMgr::instance->update();
+        }
+        while (!deletable) {
+            std::this_thread::yield();
+            AsyncLoaderMgr::instance->update();
+        }
+    }
 }
 
 void TextureLoader::asyncLoad()
@@ -706,6 +723,8 @@ void s_texture::recordTransfer(VkCommandBuffer cmd)
 	releaseMemory[releaseIdx].clear();
 	std::shared_ptr<texRecap> tex;
 	while (textureQueue.pop(tex)) {
+        if (!tex->texture)
+            continue; // In case of early texture cancellation
         if (!tex->blendMipmap) {
             tex->texture->use(cmd, true);
         } else {
