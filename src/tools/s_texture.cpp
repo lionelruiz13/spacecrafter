@@ -36,7 +36,7 @@
 #include "tools/call_system.hpp"
 #include <cassert>
 #include <vulkan/vulkan.h>
-
+#include "EntityCore/Executor/AsyncLoaderMgr.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/log.hpp"
 #include "tools/context.hpp"
@@ -82,9 +82,12 @@ VkImageMemoryBarrier s_texture::bigBarrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRI
 BigSave s_texture::cache;
 std::string s_texture::cacheDir;
 bool s_texture::cacheTexture = false;
+s_texture::Loading s_texture::strategy = s_texture::Loading::LEGACY;
 // Number of tic from the last use after which a big texture is released
 // Set to 1 to release every big textures every tic
 int s_texture::bigTextureLifetime = 90;
+std::atomic<int16_t> s_texture::textureQueueSize(0);
+std::mutex s_texture::dispatchedLoadMutex;
 
 std::chrono::steady_clock::duration loadTime;
 
@@ -98,6 +101,25 @@ s_texture::texRecap::~texRecap()
 {
    if (texture)
 	   releaseTexture[releaseTexIdx].push_back(std::move(texture));
+}
+
+TextureLoader::TextureLoader(s_texture *tex, const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn) :
+   AsyncBuilder(LoadPriority::BACKGROUND), tex(tex), fullName(fullName), depth(depth), depthColumn(depthColumn), resolution(resolution), force3D(force3D)
+{
+   AsyncLoaderMgr::instance->addBuild(this);
+}
+
+TextureLoader::~TextureLoader()
+{
+}
+
+void TextureLoader::asyncLoad()
+{
+    tex->loadInternal(fullName, resolution, depth, force3D, depthColumn);
+}
+
+void TextureLoader::postLoad()
+{
 }
 
 s_texture::s_texture(const s_texture *t)
@@ -220,16 +242,15 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
 	nbChannels = _nbChannels;
 	channelSize = _channelSize;
 	if (tex.expired()) {
+        tex = texture = std::make_shared<texRecap>();
         if (fullName.substr(fullName.size() - 5) == "empty") {
             unsigned char image_data[8] = {0,0,0,0, 0,0,0,0}; // Must be a multiple of 8
-            texture = std::make_shared<texRecap>();
     		texture->size = 8;
     		texture->width = 2;
     		texture->height = 1;
     		texture->depth = 1;
             texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, TextureInfo{.width=2, .content=image_data, .mgr=Context::instance->stagingMgr.get(), .name="Empty texture"});
             textureQueue.emplace(texture);
-    		tex = texture;
             return true;
         } else if (fullName.substr(fullName.size() - 4) == ".raw") {
             auto p1 = fullName.find_last_of('x', fullName.size()-4);
@@ -237,7 +258,6 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
             auto p3 = p2 - 4;
             while (fullName[p3] < '0' || fullName[p3] > '9')
                 ++p3;
-            texture = std::make_shared<texRecap>();
             texture->width = std::stoi(fullName.substr(p3, p2-p3));
             ++p2;
     		texture->height = std::stoi(fullName.substr(p2, p1-p2));
@@ -259,97 +279,106 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
             return ret;
         }
 
-		int channels;
-		texture = std::make_shared<texRecap>();
-		stbi_uc *data = nullptr;
-        int realWidth, realHeight;
-        if (resolution) {
-            const int pos = fullName.find_last_of('.');
-            std::string previewName = fullName.substr(0, pos) + "-preview" + fullName.substr(pos);
-            if (channelSize == 1)
-                data = stbi_load(previewName.c_str(), &realWidth, &realHeight, &channels, nbChannels);
-            else
-                data = reinterpret_cast<stbi_uc*>(stbi_load_16(previewName.c_str(), &realWidth, &realHeight, &channels, nbChannels));
-        }
-
-        std::string cacheEntryName = getCacheEntryName(fullName);
-        const bool minified = (data != nullptr);
-        if (minified) { // We need to determine the size of the big texture
-            auto &bigData = cache[Section::BIG_TEXTURE][cacheEntryName].get<BigTextureCache>();
-            if (bigData.width == 0) {
-                ++cache.get<int>(); // Inform update, required because reducedCheck is true
-                stbi_image_free(stbi_load(fullName.c_str(), &bigData.width, &bigData.height, &channels, nbChannels));
-            }
-            texture->bigWidth = bigData.width;
-            texture->bigHeight = bigData.height;
-            texture->quickloadable = bigData.cached;
-        } else {
-            if (channelSize == 1)
-                data = stbi_load(fullName.c_str(), &realWidth, &realHeight, &channels, nbChannels);
-            else
-                data = reinterpret_cast<stbi_uc*>(stbi_load_16(fullName.c_str(), &realWidth, &realHeight, &channels, nbChannels));
-            if (!data) {
-    			cLog::get()->write("s_texture: could not load " + fullName , LOG_TYPE::L_ERROR);
-    			return false;
-    		}
-            if (resolution) {
-                auto &bigData = cache[Section::BIG_TEXTURE][cacheEntryName].get<BigTextureCache>();
-                if (bigData.width == 0) {
-                    ++cache.get<int>(); // Inform update, required because reducedCheck is true
-                    bigData.width = realWidth;
-                    bigData.height = realHeight;
-                }
-                texture->quickloadable = bigData.cached;
-            }
-        }
-
-		tex = texture;
-        texture->width = realWidth;
-        texture->height = realHeight;
-		texture->depth = depth;
-		texture->mipmap = mipmap;
+        texture->depth = depth;
+        texture->mipmap = mipmap;
         texture->blendMipmap = useBlendMipmap;
         texture->blendPacked = (nbChannels > 1);
-        if (resolution && !minified && (unsigned int) (realWidth * realHeight *4+2)/3 * nbChannels * channelSize > minifyMax) {
-            texture->bigWidth = realWidth;
-            texture->bigHeight = realHeight;
-            while ((unsigned int) (texture->width * texture->height *4+2)/3 * nbChannels * channelSize > minifyMax) {
-                texture->width /= 2;
-                texture->height /= 2;
-            }
+        usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+        if (mipmap)
+            usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+        if (strategy == Loading::LEGACY) {
+            return loadInternal(fullName, resolution, depth, force3D, depthColumn);
         } else {
-            const int depthPower = std::log2(depth);
-            if (depthColumn) {
-                depthColumn = std::log2(depthColumn);
-                texture->width >>= depthColumn;
-                texture->height >>= depthPower - depthColumn;
-            } else {
-                texture->width >>= depthPower / 2;
-        		texture->height >>= (depthPower + 1) / 2;
-            }
+            texture->loader = std::make_unique<TextureLoader>(this, fullName, resolution, depth, force3D, depthColumn);
+            return true;
         }
-        texture->size = texture->width * texture->height * nbChannels * channelSize;
-		if (loadInLowResolution && depth == 1 && texture->size > lowResMax) {
-			// Scale image, don't modify the x/y ratio
-			float scale = std::sqrt(lowResMax / (float) texture->size);
-			texture->width *= scale;
-			texture->height *= scale;
-			texture->size = texture->width * texture->height * nbChannels * channelSize;
-		}
-		if (channelSize == 1)
-			blend(loadType, data, texture->size);
-		usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-		if (mipmap)
-			usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-		imgType = (depth > 1 || force3D) ? VK_IMAGE_TYPE_3D : ((texture->height > 1) ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D);
-        load(data, realWidth, realHeight);
-		stbi_image_free(data);
-    	textureQueue.emplace(texture);
 	} else {
 		texture = tex.lock();
 		cLog::get()->write("s_texture: already in cache " + fullName , LOG_TYPE::L_INFO);
 	}
 	return true;
+}
+
+bool s_texture::loadInternal(const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn)
+{
+    int channels;
+    stbi_uc *data = nullptr;
+    int realWidth, realHeight;
+    if (resolution) {
+        const int pos = fullName.find_last_of('.');
+        std::string previewName = fullName.substr(0, pos) + "-preview" + fullName.substr(pos);
+        if (channelSize == 1)
+            data = stbi_load(previewName.c_str(), &realWidth, &realHeight, &channels, nbChannels);
+        else
+            data = reinterpret_cast<stbi_uc*>(stbi_load_16(previewName.c_str(), &realWidth, &realHeight, &channels, nbChannels));
+    }
+
+    std::string cacheEntryName = getCacheEntryName(fullName);
+    const bool minified = (data != nullptr);
+    if (minified) { // We need to determine the size of the big texture
+        auto &bigData = cache[Section::BIG_TEXTURE][cacheEntryName].get<BigTextureCache>();
+        if (bigData.width == 0) {
+            ++cache.get<int>(); // Inform update, required because reducedCheck is true
+            stbi_image_free(stbi_load(fullName.c_str(), &bigData.width, &bigData.height, &channels, nbChannels));
+        }
+        texture->bigWidth = bigData.width;
+        texture->bigHeight = bigData.height;
+        texture->quickloadable = bigData.cached;
+    } else {
+        if (channelSize == 1)
+            data = stbi_load(fullName.c_str(), &realWidth, &realHeight, &channels, nbChannels);
+        else
+            data = reinterpret_cast<stbi_uc*>(stbi_load_16(fullName.c_str(), &realWidth, &realHeight, &channels, nbChannels));
+        if (!data) {
+            cLog::get()->write("s_texture: could not load " + fullName , LOG_TYPE::L_ERROR);
+            return false;
+        }
+        if (resolution) {
+            auto &bigData = cache[Section::BIG_TEXTURE][cacheEntryName].get<BigTextureCache>();
+            if (bigData.width == 0) {
+                ++cache.get<int>(); // Inform update, required because reducedCheck is true
+                bigData.width = realWidth;
+                bigData.height = realHeight;
+            }
+            texture->quickloadable = bigData.cached;
+        }
+    }
+
+    texture->width = realWidth;
+    texture->height = realHeight;
+    if (resolution && !minified && (unsigned int) (realWidth * realHeight *4+2)/3 * nbChannels * channelSize > minifyMax) {
+        texture->bigWidth = realWidth;
+        texture->bigHeight = realHeight;
+        while ((unsigned int) (texture->width * texture->height *4+2)/3 * nbChannels * channelSize > minifyMax) {
+            texture->width /= 2;
+            texture->height /= 2;
+        }
+    } else {
+        const int depthPower = std::log2(depth);
+        if (depthColumn) {
+            depthColumn = std::log2(depthColumn);
+            texture->width >>= depthColumn;
+            texture->height >>= depthPower - depthColumn;
+        } else {
+            texture->width >>= depthPower / 2;
+            texture->height >>= (depthPower + 1) / 2;
+        }
+    }
+    texture->size = texture->width * texture->height * nbChannels * channelSize;
+    if (loadInLowResolution && depth == 1 && texture->size > lowResMax) {
+        // Scale image, don't modify the x/y ratio
+        float scale = std::sqrt(lowResMax / (float) texture->size);
+        texture->width *= scale;
+        texture->height *= scale;
+        texture->size = texture->width * texture->height * nbChannels * channelSize;
+    }
+    if (channelSize == 1)
+        blend(loadType, data, texture->size);
+    imgType = (depth > 1 || force3D) ? VK_IMAGE_TYPE_3D : ((texture->height > 1) ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D);
+    load(data, realWidth, realHeight);
+    textureQueue.emplace(texture);
+    stbi_image_free(data);
+    return true;
 }
 
 void s_texture::unload()
@@ -388,11 +417,18 @@ bool s_texture::load(stbi_uc *data, int realWidth, int realHeight)
     auto pos = textureName.find(".spacecrafter/");
     std::string name = (pos == std::string::npos) ? textureName : textureName.substr(pos+14);
     const int depthColumn = (texture->depth == 1) ? 0 : realWidth / texture->width;
-    texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, TextureInfo{
+    const TextureInfo texInfo = {
         .width=texture->width, .height=texHeight, .depth=texture->depth, .depthColumn=depthColumn,
         .nbChannels=nbChannels, .channelSize=channelSize, .content=data, .mgr=Context::instance->texStagingMgr.get(),
         .usage=usage, .type=imgType, .format=format, .name=name, .mipmap=texture->mipmap,
-    });
+    };
+    if (strategy == Loading::LEGACY) {
+        texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, texInfo);
+    } else {
+        dispatchedLoadMutex.lock();
+        texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, texInfo);
+        dispatchedLoadMutex.unlock();
+    }
 	if (realWidth != texture->width && texture->depth == 1)
 		delete[] data;
 	return true;
@@ -485,10 +521,25 @@ void s_texture::update()
 
 Texture &s_texture::getTexture()
 {
-	if (!texture->texture->isOnGPU()) {
-		texture->texture->use();
-	}
-	return *texture->texture;
+    if (texture->loader) {
+        auto now = std::chrono::steady_clock::now();
+        auto &priority = texture->loader->priority;
+        if (priority > LoadPriority::LOADING) {
+            priority = LoadPriority::NOW;
+            while (priority != LoadPriority::COMPLETED)
+                std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for loaded
+        } else if (priority == LoadPriority::DONE) {
+            texture->loader.reset(); // loader might still been acquired, unlikely but crashy
+        } else {
+            while (priority != LoadPriority::COMPLETED)
+                std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for loaded
+        }
+        loadTime += std::chrono::steady_clock::now() - now;
+    }
+    Texture &ret = *texture->texture;
+	if (!ret.isOnGPU())
+		ret.use();
+	return ret;
 }
 
 Texture *s_texture::getBigTexture()
@@ -1029,6 +1080,17 @@ std::string s_texture::getCacheEntryName(const std::string &name)
 std::string s_texture::getCacheName(bigTexRecap *tex)
 {
     return getCacheName(tex->texName);
+}
+
+void s_texture::setLoadingStrategy(const std::string &_strategy)
+{
+    if (_strategy == "legacy") {
+        strategy = Loading::LEGACY;
+    } else if (_strategy == "dispatched") {
+        strategy = Loading::DISPATCHED;
+    } else {
+        cLog::get()->write("texture_loading must be one of [legacy, dispatched]", LOG_TYPE::L_WARNING);
+    }
 }
 
 #ifdef __linux__

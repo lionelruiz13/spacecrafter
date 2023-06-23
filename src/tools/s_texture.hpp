@@ -33,6 +33,8 @@
 #include <vector>
 #include <memory>
 #include "EntityCore/Tools/SafeQueue.hpp"
+#include "EntityCore/Executor/AsyncBuilder.hpp"
+#include "EntityCore/Resource/Texture.hpp"
 #include <vulkan/vulkan.h>
 #include <thread>
 #include <fstream>
@@ -55,12 +57,29 @@ class BigSave;
 #define TEX_LOAD_TYPE_PNG_SOLID_REPEAT 4
 #define TEX_LOAD_TYPE_PNG_BLEND1 7
 
-class Texture;
 class Set;
 class ComputePipeline;
 class PipelineLayout;
 
+class s_texture;
+
+class TextureLoader : public AsyncBuilder {
+public:
+	TextureLoader(s_texture *tex, const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn);
+	~TextureLoader();
+	virtual void asyncLoad() override;
+    virtual void postLoad() override;
+	s_texture *tex;
+	unsigned char *data = nullptr;
+	const std::string fullName;
+	int depth;
+	int depthColumn;
+	bool resolution;
+	bool force3D;
+};
+
 class s_texture {
+	friend class TextureLoader; // Because TextureLoader handle internal s_texture loading, it need internal access
 public:
 	// If resolution is true, use texture with -preview suffix, or downscale original texture
 	// In this case, the full resolution texture can be dynamically loaded and querried with getBigTexture()
@@ -137,9 +156,11 @@ public:
 		bigTextureLifetime = lifetime;
 		return ret;
 	}
+	static void setLoadingStrategy(const std::string &strategy);
 private:
 	void unload();
 	bool preload(const std::string& fullName, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1, bool useBlendMipmap = false, bool force3D = false, int depthColumn = 0);
+	bool loadInternal(const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn);
 	bool load();
 	bool load(unsigned char *data, int realWidth, int realHeight);
 	struct bigTexRecap {
@@ -164,6 +185,7 @@ private:
 		int width;
 		int height;
 		int depth;
+		std::unique_ptr<TextureLoader> loader;
 		std::unique_ptr<Texture> texture;
 		std::vector<VkImageView> imageViews;
 		std::vector<std::unique_ptr<Set>> sets;
@@ -187,6 +209,11 @@ private:
 	enum Section { // Sections of the cache
 		BIG_TEXTURE = 0, // string map
 		CACHE_VERSION = 1, // Single int
+	};
+
+	enum class Loading : unsigned char {
+		LEGACY,
+		DISPATCHED, // Blocking multi-thread loading
 	};
 
 	struct BigTextureCache {
@@ -256,7 +283,10 @@ private:
 	static BigSave cache;
 	static std::string cacheDir;
 	static bool cacheTexture;
+	static Loading strategy;
 	static int bigTextureLifetime;
+	static std::atomic<int16_t> textureQueueSize; // Expected number of elements in textureQueue
+	static std::mutex dispatchedLoadMutex;
 };
 
 #endif // _S_TEXTURE_H_

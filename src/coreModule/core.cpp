@@ -395,6 +395,8 @@ void Core::init(const InitParser& conf)
 		ObjectBase::setFontResolution(conf.getInt(SCS_FONT, SCK_FONT_RESOLUTION_SIZE));
 		//Init of the text's shaders
 		s_font::createSC_context();
+	} else {
+		milky_way->restoreDefaultMilky();
 	}
 
 	tone_converter->setWorldAdaptationLuminance(3.75f + atmosphere->getIntensity()*40000.f);

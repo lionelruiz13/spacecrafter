@@ -125,6 +125,7 @@ App::App( SDLFacade* const sdl )
 
 	finalizeInitVulkan(conf);
 	s_texture::loadCache(settings->getUserDir() + "cache/", conf.getBoolean(SCS_MAIN, SCK_TEX_CACHE));
+	s_texture::setLoadingStrategy(conf.getStr(SCS_MAIN, SCK_TEXTURE_LOADING));
 	fontFactory = std::make_unique<FontFactory>();
 
 	media = std::make_shared<Media>();

@@ -183,7 +183,6 @@ void UI::init(const InitParser& conf)
 	core->removeSupplementalNebulae();
 	coreLink->illuminateRemoveTex();
 	coreLink->illuminateRemoveAll();
-	coreLink->milkyWayRestoreDefault();
 	coreLink->nebulaSetFlag(true);
 	coreLink->nebulaSetFlagBright(true);
 	coreLink->bodyTraceSetFlag(false);
