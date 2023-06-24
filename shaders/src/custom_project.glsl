@@ -13,11 +13,9 @@ vec4 custom_project(vec4 invec)
 
 	vec4 win = invec;
     win = Mat * win;
-    win.w = 0.0;
-
-	float depth = length(win);
 
     float rq1 = win.x*win.x+win.y*win.y;
+	float depth = sqrt(rq1 + win.z*win.z);
 
 	if (rq1 <= 0.0 ) {
 		win.x = viewport_center_x;
@@ -26,11 +24,13 @@ vec4 custom_project(vec4 invec)
 		win.w =-1.0;
 		return win;
 	}
-        float oneoverh = 1.0/sqrt(rq1);
-        float a = M_PI/2.0 + atan(win.z*oneoverh);
-        float f = a * fisheye_scale_factor;
+        rq1 = sqrt(rq1);
+		float f = asin(min(rq1/depth, 1)); // min patch a driver bug were rq/depth > 1
+		if (win.z > 0)
+			f = M_PI - f;
+		win.w = (f<0.9*M_PI) ? 1.0 : -1.0;
+        f *= fisheye_scale_factor / rq1;
 
-        f *= oneoverh;
 		//	Realtime ALLSPHERE distorsion
 		//	f = f *1200.f;
 		//	f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
@@ -41,10 +41,6 @@ vec4 custom_project(vec4 invec)
         win.y = viewport_center_y + win.y * f;
 
         win.z = (abs(depth) - zNear) / (zFar-zNear);
-        if (a<0.9*M_PI)
-			win.w = 1.0;
-        else
-			win.w = -1.0;
 	if (win.z == 0.0)
 		win.z = -1e30;
         return win;
