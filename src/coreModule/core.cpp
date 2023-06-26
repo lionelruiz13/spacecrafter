@@ -575,13 +575,17 @@ void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 
 void Core::setLandscapeToBody()
 {
+	if (!observatory->isOnBody())
+		return;
+
+	// here you have to get the planet you are on to access the modelAtmosphere field in AtmosphereParams of the body in question
+	atmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
+
 	//std::cout << "Core::setLandscapeToBody()" << std::endl;
 	if (!autoLandscapeMode)
 		return;
 
 	//std::cout << "Core::setLandscapeToBody() with automode" << std::endl;
-	if (!observatory->isOnBody())
-		return;
 
 	// case of the sun
 	if (observatory->isSun()) {
@@ -1624,12 +1628,6 @@ void Core::setHomePlanet(const std::string &planet)
 void Core::bindHomePlanet()
 {
 	setLandscapeToBody();
-	if (observatory->getHomeBody()) {
-		// here you have to get the planet you are on to access the modelAtmosphere field in AtmosphereParams of the body in question
-		atmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
-	} else {
-		cLog::get()->write("Can't setup Atmosphere : No home body", LOG_TYPE::L_WARNING);
-	}
 }
 
 void Core::setLightPollutionLimitingMagnitude(float mag) {
