@@ -44,8 +44,8 @@ vec4 custom_project(vec4 invec)
 		if (win.z < 0.0) {
 			win.x = viewport_center_x;
 			win.y = viewport_center_y;
-			win.z = 1.0;
-			win.w =-1.0;
+			win.z = (abs(depth) - zNear) / (zFar-zNear);
+			win.w = 1.0;
 			return win;
 		}
 		win.x = viewport_center_x;
@@ -54,20 +54,18 @@ vec4 custom_project(vec4 invec)
 		win.w = -1.0;
 		return win;
 	}
-	else{
-		float rq1 = sqrt(rq1);
-		float f = asin(min(rq1/depth, 1)); // min patch a driver bug were rq/depth > 1
-		if (win.z > 0)
-			f = M_PI - f;
-		win.w = (f<0.9*M_PI) ? 1.0 : -1.0;
-        f *= fisheye_scale_factor * viewport_radius / rq1;
+	rq1 = sqrt(rq1);
+	float f = asin(min(rq1/depth, 1)); // min patch a driver bug were rq/depth > 1
+	if (win.z > 0)
+		f = M_PI - f;
+	win.w = (f<0.9*M_PI) ? 1.0 : -1.0;
+    f *= fisheye_scale_factor * viewport_radius / rq1;
 
-        win.x = viewport_center_x + win.x * f;
-        win.y = viewport_center_y + win.y * f;
+    win.x = viewport_center_x + win.x * f;
+    win.y = viewport_center_y + win.y * f;
 
-        win.z = (abs(depth) - zNear) / (zFar-zNear);
-        return win;
-	}
+    win.z = (abs(depth) - zNear) / (zFar-zNear);
+    return win;
 }
 
 void main()
