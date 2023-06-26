@@ -384,8 +384,8 @@ void Tully::setTexture(const std::string& tex_file)
 	texGalaxy = new s_texture(tex_file,/*true*/ TEX_LOAD_TYPE_PNG_SOLID);
 
 	int width, height;
-	texGalaxy->getDimensions(width, height);
 	set->bindTexture(texGalaxy->getTexture(), 2);
+	texGalaxy->getDimensions(width, height);
 	if (width ==0 || height ==0)
 		nbTextures = 0;
 	else
