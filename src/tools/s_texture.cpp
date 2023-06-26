@@ -105,7 +105,7 @@ s_texture::texRecap::~texRecap()
 }
 
 TextureLoader::TextureLoader(s_texture *tex, const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn) :
-   AsyncBuilder(LoadPriority::BACKGROUND), tex(tex), fullName(fullName), depth(depth), depthColumn(depthColumn), resolution(resolution), force3D(force3D)
+   AsyncBuilder(LoadPriority::PRELOAD), tex(tex), fullName(fullName), depth(depth), depthColumn(depthColumn), resolution(resolution), force3D(force3D)
 {
    AsyncLoaderMgr::instance->addBuild(this);
 }

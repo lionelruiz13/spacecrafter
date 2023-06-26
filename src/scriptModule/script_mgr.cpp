@@ -262,11 +262,14 @@ void ScriptMgr::update(int delta_time)
 	/**	isVideoPlayed && waitOnVideo :
 	 * case of video is playing and scriptMgr should wait on it :
 	 * so next if must be false*/
-	if (scriptState==ScriptState::PLAY && (isVideoPlayed && waitOnVideo ? false : true) ) {
+	if (scriptState==ScriptState::PLAY && (isVideoPlayed && !waitOnVideo) ) {
 
     wait_time -= delta_time;
-		if (wait_time<0)
-			wait_time =0;
+	if (wait_time < 0) {
+		if (commander->isInterrupted())
+			return;
+		wait_time = 0;
+	}
 
 		while (wait_time==0) {
 			std::string comd;

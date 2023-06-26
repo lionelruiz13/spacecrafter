@@ -1135,24 +1135,42 @@ int AppCommandInterface::commandPlanetScale()
 
 int AppCommandInterface::commandWait(uint64_t &wait)
 {
-
-	if (!args[W_DURATION].empty()) {
-		float fdelay = evalDouble(args[W_DURATION]);
-		if (fdelay > 0) wait = (int)(fdelay*1000);
-		return executeCommandStatus();
-	}
-
-	std::string videoTermination = args[W_VIDEO_TERMINATION];
-	if ( !videoTermination.empty()) {
-		if (videoTermination==W_TOGGLE)
-			scriptInterface->waitOnVideoTermination();
-		else {
-			if (Utility::isTrue(videoTermination))
-				scriptInterface->setWaitOnVideoTermination(true);
-			else
-				scriptInterface->setWaitOnVideoTermination(false);
+	const auto &level = args[W_LOADING];
+	if (level.empty()) {
+		if (!args[W_DURATION].empty()) {
+			float fdelay = evalDouble(args[W_DURATION]);
+			if (fdelay > 0) wait = (int)(fdelay*1000);
+			return executeCommandStatus();
 		}
-		wait = 5;
+
+		std::string videoTermination = args[W_VIDEO_TERMINATION];
+		if ( !videoTermination.empty()) {
+			if (videoTermination==W_TOGGLE)
+				scriptInterface->waitOnVideoTermination();
+			else {
+				if (Utility::isTrue(videoTermination))
+					scriptInterface->setWaitOnVideoTermination(true);
+				else
+					scriptInterface->setWaitOnVideoTermination(false);
+			}
+			wait = 5;
+			return executeCommandStatus();
+		}
+	} else {
+		waitPriority = LoadPriority::NOW;
+		if (level == W_PRELOAD) {
+			waitPriority = LoadPriority::PRELOAD;
+		} else if (level == W_BACKGROUND) {
+			waitPriority = LoadPriority::BACKGROUND;
+		} else if (level == W_ALL) {
+			waitPriority = LoadPriority::LOADING;
+		}
+		// We can specify a minimal duration to wait
+		if (args[W_DURATION].empty()) {
+			wait = 1;
+		} else {
+			wait = std::max(static_cast<int>(evalDouble(args[W_DURATION]) * 1000), 1);
+		}
 		return executeCommandStatus();
 	}
 	debug_message = _("command_'wait' : unrecognized or malformed argument name.");
