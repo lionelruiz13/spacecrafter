@@ -72,3 +72,4 @@ Context::~Context()
 }
 
 bool Context::experimental_shadows = false;
+bool Context::default_experimental_shadows = false;

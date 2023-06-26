@@ -149,6 +149,7 @@ public:
 
     // Experimental features enabled
     static bool experimental_shadows;
+    static bool default_experimental_shadows;
 };
 
 #endif /* end of include guard: CONTEXT_HPP_ */

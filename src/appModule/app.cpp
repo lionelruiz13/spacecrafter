@@ -528,7 +528,7 @@ void App::init()
 	AppSettings::Instance()->loadAppSettings( &conf );
 
 	appDraw->setFlagAntialiasLines(conf.getBoolean(SCS_RENDERING, SCK_FLAG_ANTIALIAS_LINES));
-	Context::experimental_shadows = conf.getBoolean(SCS_RENDERING, SCK_EXPERIMENTAL_SHADOWS);
+	Context::experimental_shadows = Context::default_experimental_shadows = conf.getBoolean(SCS_RENDERING, SCK_EXPERIMENTAL_SHADOWS);
 
 	internalFPS->setMaxFps(conf.getDouble (SCS_VIDEO,SCK_MAXIMUM_FPS));
 	internalFPS->setVideoFps(conf.getDouble(SCS_VIDEO,SCK_REC_VIDEO_FPS));

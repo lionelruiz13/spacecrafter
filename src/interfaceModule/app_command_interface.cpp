@@ -1002,6 +1002,18 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !coreLink->getEyeRelativeMode();
 			coreLink->setEyeRelativeMode(newval);
 			break;
+		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS:
+			switch (flag_value) {
+				case FLAG_VALUES::FV_TOGGLE:
+					Context::instance->experimental_shadows ^= Context::instance->default_experimental_shadows;
+					break;
+				case FLAG_VALUES::FV_ON:
+					Context::instance->experimental_shadows = Context::instance->default_experimental_shadows;
+					break;
+				case FLAG_VALUES::FV_OFF:
+					Context::instance->experimental_shadows = false;
+			}
+			break;
 		default:
 			cLog::get()->write("no effect with unknown case ",LOG_TYPE::L_DEBUG);
 			break;
