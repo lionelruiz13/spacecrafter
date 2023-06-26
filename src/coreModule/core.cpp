@@ -1788,6 +1788,9 @@ bool Core::selectObject(const Object &obj)
 			if (!recordActionCallback.empty())
 				recordActionCallback("select nebula \"" + selected_object.getEnglishName() + "\"");
 			break;
+		case OBJECT_STAR_CLUSTER:
+			// TODO select it
+			break;
 		default:
 			assert(0);
 	}
