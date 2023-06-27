@@ -43,7 +43,7 @@ void main(void)
 	vec3 night = vec3(texture(NightTexture, TexCoord));
 	vec3 reflective = vec3(texture(SpecularTexture, TexCoord)); 
 	vec3 halfangle = normalize(Light + ViewDirection);
-	const float specularExp = 25.0;
+	const float specularExp = 64.0;
 	float NdotH = dot(Normal, halfangle);
 	vec3 specular = reflective * vec3(pow(max(0.0, NdotH), specularExp)); 
 	float NdotL = dot(Normal, Light);
