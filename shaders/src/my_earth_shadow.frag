@@ -149,7 +149,7 @@ void main(void)
 			// Process color
 			color = texture(dayTexture, texCoord).xyz * mix(vec3(NdotL), vec3(atmosphere), atmColor);
 			float specularity = dot(normal, normalize(sunDirection - view));
-			if (specularity > 0.95)
+			if (specularity > 0.8)
 				color += texture(SpecularTexture, texCoord).xyz * pow(specularity, 64);
 			color *= shadowing;
 			if (atmosphere < 0.1) {
