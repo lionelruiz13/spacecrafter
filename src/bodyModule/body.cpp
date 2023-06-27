@@ -955,9 +955,6 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 
 	lightDirection.normalize();
 
-	// Compute the 2D position and check if in the screen
-	screen_sz = getOnScreenSize(prj, nav);
-
 	// Do not draw anything else if was not visible
 	// Draw the name, and the circle if it's not too close from the body it's turning around
 	// this prevents name overlaping (ie for jupiter satellites)
@@ -980,6 +977,9 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
         isVisible = true;
     }
     isRelevant &= isVisible;
+
+    // Compute the 2D position and check if in the screen
+	screen_sz = getOnScreenSize(prj, nav);
 
     const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
     double f;
