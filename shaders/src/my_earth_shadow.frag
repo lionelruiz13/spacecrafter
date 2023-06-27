@@ -147,10 +147,11 @@ void main(void)
 			NdotL *= clamp(maxOcclusion * heightMapDepth / sinSunAngle + 0.5, 0, 1);
 
 			// Process color
-			color = texture(dayTexture, texCoord).xyz * mix(vec3(NdotL), vec3(atmosphere), atmColor);
+            vec3 dayColor = texture(dayTexture, texCoord).xyz;
+			color = dayColor * mix(vec3(NdotL), vec3(atmosphere), atmColor);
 			float specularity = dot(normal, normalize(sunDirection - view));
 			if (specularity > 0.8)
-				color += texture(SpecularTexture, texCoord).xyz * pow(specularity, 64);
+				color += dayColor * texture(SpecularTexture, texCoord).xyz * pow(specularity, 64);
 			color *= shadowing;
 			if (atmosphere < 0.1) {
 				color = max(color, texture(nightTexture, texCoord).xyz * smoothstep(0.0, 0.1, 0.1 - atmosphere));
