@@ -120,8 +120,7 @@ void StellarSystemModule::update(int delta_time)
 	core->updateMove(delta_time);
 
 	// Compute the sun position in local coordinate
-	Vec3d temp(0.,0.,0.);
-	Vec3d sunPos = core->navigation->helioToLocal(temp);
+	Vec3d sunPos = core->navigation->helioToLocal(ProtoSystem::getCenterPos());
 
 	// Compute the moon position in local coordinate
 	Vec3d moon = core->ssystemFactory->getMoon()->get_heliocentric_ecliptic_pos();
