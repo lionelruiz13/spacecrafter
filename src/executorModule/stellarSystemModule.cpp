@@ -228,7 +228,7 @@ void StellarSystemModule::asyncUpdateBegin(std::pair<Vec3d, Vec3d> data)
 
 void StellarSystemModule::asyncUpdateEnd()
 {
-    if (asyncWorkState)
+    while (asyncWorkState)
         threadQueue.waitIdle();
 }
 

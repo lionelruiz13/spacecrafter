@@ -235,7 +235,7 @@ void SolarSystemModule::asyncUpdateBegin(std::pair<Vec3d, Vec3d> data)
 
 void SolarSystemModule::asyncUpdateEnd()
 {
-    if (asyncWorkState)
+    while (asyncWorkState)
         threadQueue.waitIdle();
 }
 
