@@ -593,12 +593,7 @@ double Body::getSiderealTime(double jd) const
 	if (englishName=="Earth")
         return get_apparent_sidereal_time(jd);
 
-	double t = jd - re.epoch;
-	double rotations = t / (double) re.period;
-	double wholeRotations = floor(rotations);
-	double remainder = rotations - wholeRotations;
-
-	return remainder * 360. + re.offset;
+	return fmod((jd - re.epoch) / re.period * 360. + re.offset, 360);
 }
 
 // Get the Body position in the parent Body ecliptic coordinate

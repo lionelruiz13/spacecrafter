@@ -544,6 +544,7 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 	//
 	std::unique_ptr<Orbit> orb;
 	bool close_orbit = Utility::strToBool(param["close_orbit"], 1);
+	bool bound_to_surface = false;
 
 	// default value of -1 means unused
 	double orbit_bounding_radius = Utility::strToDouble(param["orbit_bounding_radius"], -1);
@@ -593,6 +594,7 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 			parent->getSiderealDay(),
 			parent->getSiderealTime(0)
 		);
+		bound_to_surface = true;
 	} else {
 
 		orb = std::move(orbitCreator->handle(param));
@@ -903,15 +905,30 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 		//cout << "\tCalculated rotational ascending node: " << rot_asc_node*180./M_PI << endl;
 	}
 
-	p->set_rotation_elements(
-	    Utility::strToDouble(param["rot_periode"], Utility::strToDouble(param["orbit_period"], 24.))/24.,
-	    Utility::strToDouble(param["rot_rotation_offset"],0.),
-	    Utility::strToDouble(param["rot_epoch"], J2000),
-	    rot_obliquity,
-	    rot_asc_node,
-	    Utility::strToDouble(param["rot_precession_rate"],0.)*M_PI/(180*36525),
-	    Utility::strToDouble(param["orbit_visualization_period"],0.),
-	    Utility::strToDouble(param["axial_tilt"],0.) );
+	if (bound_to_surface) {
+		const auto tmp = parent->getSiderealDay();
+		p->set_rotation_elements(
+			tmp,
+			Utility::strToDouble(param["rot_rotation_offset"],0.) + parent->getSiderealTime(J2000),
+			J2000,
+			M_PI_2 - Utility::strToDouble(param["orbit_lat"]) * (M_PI / 180.), // X rotation in radian
+			Utility::strToDouble(param["orbit_lon"]) * (M_PI / 180.), // Z rotation in radian
+			tmp,
+			Utility::strToDouble(param["orbit_visualization_period"],0.),
+			Utility::strToDouble(param["axial_tilt"], 0.)
+		);
+	} else {
+		p->set_rotation_elements(
+			Utility::strToDouble(param["rot_periode"], Utility::strToDouble(param["orbit_period"], 24.))/24.,
+			Utility::strToDouble(param["rot_rotation_offset"],0.),
+			Utility::strToDouble(param["rot_epoch"], J2000),
+			rot_obliquity,
+			rot_asc_node,
+			Utility::strToDouble(param["rot_precession_rate"],0.)*M_PI/(180*36525),
+			Utility::strToDouble(param["orbit_visualization_period"],0.),
+			Utility::strToDouble(param["axial_tilt"], 0.)
+		);
+	}
 
 	// Clone current flags to new body unless one is currently selected
 	// WARNING TODO
