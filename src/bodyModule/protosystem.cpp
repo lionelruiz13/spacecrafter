@@ -545,7 +545,8 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 	std::unique_ptr<Orbit> orb;
 	bool close_orbit = Utility::strToBool(param["close_orbit"], 1);
 	bool bound_to_surface = false;
-
+	float parentSideralDay;
+	float parentOffset;
 	// default value of -1 means unused
 	double orbit_bounding_radius = Utility::strToDouble(param["orbit_bounding_radius"], -1);
 	if (funcname=="earth_custom") {
@@ -586,12 +587,14 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 		                     Utility::strToDouble(param["orbit_y"]),
 		                     Utility::strToDouble(param["orbit_z"]));
 	} else if (funcname == "location_orbit") {
+		parentSideralDay = parent->getSiderealDay();
+		parentOffset = parent->getSiderealTime(J2000);
 		orb = std::make_unique<LocationOrbit>(
 			Utility::strToDouble(param["orbit_lon"]),
 			Utility::strToDouble(param["orbit_lat"]),
 			Utility::strToDouble(param["orbit_alt"]),
 			parent->getRadius(),
-			parent->getSiderealDay(),
+			parentSideralDay,
 			parent->getSiderealTime(0)
 		);
 		bound_to_surface = true;
@@ -906,14 +909,13 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 	}
 
 	if (bound_to_surface) {
-		const auto tmp = parent->getSiderealDay();
 		p->set_rotation_elements(
-			tmp,
-			Utility::strToDouble(param["rot_rotation_offset"],0.) + parent->getSiderealTime(J2000),
+			parentSideralDay,
+			Utility::strToDouble(param["rot_rotation_offset"],0.) + parentOffset,
 			J2000,
 			M_PI_2 - Utility::strToDouble(param["orbit_lat"]) * (M_PI / 180.), // X rotation in radian
 			Utility::strToDouble(param["orbit_lon"]) * (M_PI / 180.), // Z rotation in radian
-			tmp,
+			parentSideralDay,
 			Utility::strToDouble(param["orbit_visualization_period"],0.),
 			Utility::strToDouble(param["axial_tilt"], 0.)
 		);

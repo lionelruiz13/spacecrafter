@@ -70,7 +70,7 @@ struct ShadowData {
     SharedBuffer<float[12]> shadowMat;
     float bodyLight[3]; // Light direction, relative to the body ojm.
     float radius = 0;
-    uint16_t constRadius = 0; // constant radius set in the pipeline
+    uint16_t constRadius = UINT16_MAX; // constant radius set in the pipeline
     bool used = false;
 };
 
