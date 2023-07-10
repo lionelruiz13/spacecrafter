@@ -4,6 +4,7 @@
 #include "EntityCore/Executor/AsyncLoaderMgr.hpp"
 #include "tools/vecmath.hpp"
 #include "tools/log.hpp"
+#include "header.hpp"
 #include <sstream>
 
 struct OjmVertex {
@@ -23,7 +24,21 @@ LazyOjmL::LazyOjmL(const std::filesystem::path &source, LoadPriority priority) :
     AsyncLoader(source, priority)
 {
     once = false;
-    AsyncLoaderMgr::instance->addLoad(this);
+    if (source.extension() == ".ojm") {
+        AsyncLoaderMgr::instance->addLoad(this);
+    } else {
+        std::ifstream stream(source, std::ios_base::in | std::ios_base::binary);
+        ShapeHeader head;
+        stream.seekg(sizeof(OjmHeader));
+        stream.read((char *) &head, sizeof(head));
+        stream.seekg(sizeof(OjmHeader) + sizeof(head) + head.len_map_Ka + head.len_map_Kd + head.len_map_Ks + (head.pushAttr ? sizeof(ShapeAttributes) : 0));
+        index.count = head.indexCount;
+        index.offset = head.vertexCount;
+        staging = Context::instance->asyncStagingMgr->acquireBuffer(index.count * sizeof(int) + index.offset * sizeof(OjmVertex));
+        stream.read((char*) Context::instance->asyncStagingMgr->getPtr(staging), staging.size);
+        postLoad();
+        this->priority = LoadPriority::DONE;
+    }
 }
 
 LazyOjmL::LazyOjmL(VertexBuffer *vertex, SubBuffer index, unsigned int indexCount) :

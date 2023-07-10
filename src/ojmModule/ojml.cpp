@@ -11,6 +11,7 @@
 #include "EntityCore/Resource/VertexBuffer.hpp"
 #include "EntityCore/Resource/TransferMgr.hpp"
 #include "EntityCore/Resource/Pipeline.hpp"
+#include "header.hpp"
 
 // *****************************************************************************
 //
@@ -45,6 +46,21 @@ OjmL::~OjmL()
 
 bool OjmL::init(const std::string & _fileName)
 {
+	if (_fileName.compare(_fileName.size() - 8, 8, ".ojm.bin", 8) == 0) {
+		// Load header and move to the begin of the vertices to read
+		std::ifstream stream(_fileName, std::ios_base::in | std::ios_base::binary);
+		ShapeHeader head;
+		stream.seekg(sizeof(OjmHeader));
+		stream.read((char *) &head, sizeof(head));
+		stream.seekg(sizeof(OjmHeader) + sizeof(head) + head.len_map_Ka + head.len_map_Kd + head.len_map_Ks + (head.pushAttr ? sizeof(ShapeAttributes) : 0));
+		// Load vertices and indices
+		Context &context = *Context::instance;
+		vertex = std::shared_ptr<VertexBuffer>(context.ojmVertexArray->newBuffer(0, head.vertexCount, context.ojmBufferMgr.get()));
+		index = context.indexBufferMgr->acquireBuffer(head.indexCount * sizeof(int));
+		stream.read(context.transfer->planCopy<char>(vertex->get()), head.vertexCount * (8 * sizeof(float)));
+		stream.read(context.transfer->planCopy<char>(index), head.indexCount * sizeof(int));
+		return true;
+	}
 	pIndex = (unsigned int *) Context::instance->transfer->beginPlanCopy(0); // We don't know the size yet
 	is_ok = readOJML(_fileName);
 	if (is_ok) {

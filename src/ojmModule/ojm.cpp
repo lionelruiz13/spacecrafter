@@ -140,11 +140,13 @@ bool Ojm::readCache()
 	if (file) {
 		OjmHeader mainHead;
 		file.read((char*) &mainHead, sizeof(mainHead));
-		try {
-			if (mainHead.sourceTimestamp != std::filesystem::last_write_time(fileName).time_since_epoch().count())
-				return false; // out of date
-		} catch (...) {
-			cLog::get()->write("Failed to check source for '" + fileName + "', assume cache is up to date.", LOG_TYPE::L_WARNING);
+		if (mainHead.sourceTimestamp != -1) {
+			try {
+				if (mainHead.sourceTimestamp != std::filesystem::last_write_time(fileName).time_since_epoch().count())
+					return false; // out of date
+			} catch (...) {
+				cLog::get()->write("Failed to check source for '" + fileName + "', assume cache is up to date.", LOG_TYPE::L_WARNING);
+			}
 		}
 		radius = mainHead.radius;
 		if (mainHead.poorlyCentered)
