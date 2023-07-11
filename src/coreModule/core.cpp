@@ -1679,7 +1679,6 @@ void Core::setLanguage()
 		for (j = 1; j <= 26 && lang[i] != j + 96; j++);
 		language = language * 100 + j;
 	}
-	std::cout << "Language value " << language << std::endl;
 }
 
 //set name as number for selected_object
