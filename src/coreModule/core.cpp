@@ -1207,6 +1207,7 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	nebulas->translateNames(skyTranslator);
 	hip_stars->updateI18n(skyTranslator);
 	starNav->updateI18n(skyTranslator);
+	setLanguage();
 }
 
 
@@ -1666,6 +1667,19 @@ bool Core::getIsTimeNow(void) const
 		previousResult = (fabs(timeMgr->getJDay()-SpaceDate::JulianFromSys())<JD_SECOND);
 	}
 	return previousResult;
+}
+
+//set name as number for language
+void Core::setLanguage()
+{
+	int j = 0;
+	std::string lang = getSkyLanguage();
+	language = 0;
+	for (int i = 0; i < 2; i++) {
+		for (j = 1; j <= 26 && lang[i] != j + 96; j++);
+		language = language * 100 + j;
+	}
+	std::cout << "Language value " << language << std::endl;
 }
 
 //set name as number for selected_object

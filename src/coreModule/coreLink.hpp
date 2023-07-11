@@ -590,6 +590,8 @@ public:
 	double getDateHour() const;
 	double getDateMinute() const;
 
+	int getLanguage() const;
+
 	//return body selected
 	double getBodySelected() const;
 

@@ -456,6 +456,10 @@ public:
 		setLandscapeToBody();
 	}
 
+	int getLanguage() {
+		return language;
+	}
+
 	int getSelectedBodyName() {
 		return selected_body_name;
 	}
@@ -477,6 +481,9 @@ private:
 	//! Select passed object
 	//! @return true if the object was selected (false if the same was already selected)
 	bool selectObject(const Object &obj);
+
+	//set name as number for language
+	void setLanguage();
 
 	//set name as number for selected_object
 	void setSelectedBodyName(const Object &selected_object);
@@ -578,6 +585,7 @@ private:
 	float auto_move_duration;			// Duration of movement for the auto move to a selected objectin seconds
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)
 	int selected_body_name=999;
+	int language = 0;
 
 	InitialValue initialvalue;			// variable used to remember various string indicators in use
 };

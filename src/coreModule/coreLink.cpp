@@ -1263,6 +1263,10 @@ double CoreLink::getSelectedStarDE() const {
 	return core->ssystemFactory->getSelectedStarDE(core->navigation);
 }
 
+int CoreLink::getLanguage() const {
+	return double(core->getLanguage());
+}
+
 double CoreLink::getBodySelected() const {
 	return double(core->getSelectedBodyName());
 }
