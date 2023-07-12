@@ -309,6 +309,7 @@ void CheckConfig::checkViewingSettings()
 {
 	tmpSettings[SCK_NEBULA_PICTO_SIZE] = "6";
 	tmpSettings[SCK_ATMOSPHERE_FADE_DURATION] = "2";
+	tmpSettings[SCK_MOON_BRIGHTNESS] = "0.5";
 	tmpSettings[SCK_FLAG_CONSTELLATION_DRAWING] = "false";
 	tmpSettings[SCK_FLAG_CONSTELLATION_NAME] = "false";
 	tmpSettings[SCK_FLAG_CONSTELLATION_BOUNDARIES] = "false";

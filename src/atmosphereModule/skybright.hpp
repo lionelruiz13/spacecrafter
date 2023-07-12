@@ -24,6 +24,7 @@
 
 #ifndef _SKYBRIGHT_H_
 #define _SKYBRIGHT_H_
+#include <iostream>
 
 class Skybright {
 public:
@@ -50,6 +51,24 @@ public:
 	//			cos_dist_zenith = cos(angular distance between zenith and the position)
 	float getLuminance(float cos_dist_moon, float cos_dist_sun, float cos_dist_zenith);//, int cor_optoma);
 
+	float getMoonBrightness() {
+		return m_brightness;
+	}
+
+	void setMoonBrightness(double brightness) {
+		m_brightness = brightness;
+		std::cout << "Value send : " << brightness << std::endl;
+		std::cout << "Moon Brightness : " << m_brightness << std::endl;
+	}
+
+	void setDefaultMoonBrightness(double brightness) {
+		m_brightness = brightness;
+	}
+
+	void setDefaultMoonBrightness() {
+		setMoonBrightness(m_brightness);
+	}
+
 private:
 	float air_mass_moon;	// Air mass for the Moon
 	float air_mass_sun;		// Air mass for the Sun
@@ -59,6 +78,7 @@ private:
 	float C3;				// Term for moon brightness computation
 	float C4;				// Term for sky brightness computation
 	float SN = 1.f; 		// Snellen Ratio (20/20=1.0, good 20/10=2.0)
+	double m_brightness;
 
 	// Optimisation variables
 	float b_night_term;

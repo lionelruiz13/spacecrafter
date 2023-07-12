@@ -145,8 +145,8 @@ float Skybright::getLuminance(float cos_dist_moon, float cos_dist_sun, float cos
 
 	// Total sky brightness
 	//b_daylight>b_twilight ? b_total = b_night + b_twilight + b_moon : b_total = b_night + b_daylight + b_moon;
-	b_daylight>b_twilight ? b_total = b_night + b_twilight + b_moon/2.f : b_total = b_night + b_daylight + b_moon/2.f;
-
+	b_daylight>b_twilight ? b_total = b_night + b_twilight + b_moon * m_brightness : b_total = b_night + b_daylight + b_moon * m_brightness;
+	//std::cout << "Brightness MOON : " << m_brightness << std::endl;
 	return (b_total<0.f) ? 0.f : b_total/1.11E-15 * 1E-5/M_PI; // cd/m^2
 
 	//	return (b_total<0.f) ? 0.f : b_total * 900900.9f * M_PI * 1e-4 * 3239389*2;

@@ -58,6 +58,7 @@
 #include "coreModule/cardinals.hpp"
 #include "coreModule/illuminate_mgr.hpp"
 #include "atmosphereModule/atmosphere.hpp"
+#include "atmosphereModule/skybright.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/sky_localizer.hpp"
 #include "ojmModule/ojm_mgr.hpp"
@@ -88,6 +89,7 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	uboCam = std::make_unique<UBOCam>();
 	tone_converter = new ToneReproductor();
 	atmosphere = std::make_shared<Atmosphere>();
+	skybright = std::make_shared<Skybright>();
 	timeMgr = std::make_shared<TimeMgr>();
 	navigation = new Navigator();
 	observatory = _observatory;
@@ -466,6 +468,9 @@ void Core::init(const InitParser& conf)
 	atmosphere->setFlagShow(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
 	atmosphere->setFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
 	atmosphere->setDefaultFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
+
+	skybright->setMoonBrightness(conf.getDouble(SCS_VIEWING,SCK_MOON_BRIGHTNESS));
+	skybright->setDefaultMoonBrightness(conf.getDouble(SCS_VIEWING,SCK_MOON_BRIGHTNESS));
 
 	// Viewing section
 	asterisms->setFlagLines( conf.getBoolean(SCS_VIEWING,SCK_FLAG_CONSTELLATION_DRAWING));

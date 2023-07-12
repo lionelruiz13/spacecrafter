@@ -209,6 +209,7 @@
 
 #define SCK_NEBULA_PICTO_SIZE               "nebula_picto_size"
 #define SCK_ATMOSPHERE_FADE_DURATION        "atmosphere_fade_duration"
+#define SCK_MOON_BRIGHTNESS                 "moon_brightness"
 #define SCK_FLAG_CONSTELLATION_DRAWING      "flag_constellation_drawing"
 #define SCK_FLAG_CONSTELLATION_NAME         "flag_constellation_name"
 #define SCK_FLAG_CONSTELLATION_BOUNDARIES   "flag_constellation_boundaries"

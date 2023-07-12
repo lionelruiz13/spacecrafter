@@ -29,6 +29,7 @@
 #include <string>
 #include "bodyModule/body_common.hpp"
 //#include "atmosphereModule/atmosphere.hpp"
+#include "atmosphereModule/skybright.hpp"
 #include "bodyModule/body_decor.hpp"
 #include "bodyModule/body_trace.hpp"
 #include "bodyModule/solarsystem.hpp"
@@ -97,6 +98,7 @@ class MeteorMgr;
 class MilkyWay;
 class IlluminateMgr;
 class Atmosphere;
+class Skybright;
 class SkyLocalizer;
 class CloudNavigator;
 class DsoNavigator;
@@ -542,6 +544,7 @@ private:
 	SSystemFactory* ssystemFactory;
 
 	std::shared_ptr<Atmosphere> atmosphere;			// Atmosphere
+	std::shared_ptr<Skybright> skybright;			//Skybright
 
 	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! grid manager
 	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! line manager
