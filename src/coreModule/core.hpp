@@ -544,7 +544,6 @@ private:
 	SSystemFactory* ssystemFactory;
 
 	std::shared_ptr<Atmosphere> atmosphere;			// Atmosphere
-	std::shared_ptr<Skybright> skybright;			//Skybright
 
 	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! grid manager
 	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! line manager

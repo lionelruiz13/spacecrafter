@@ -136,6 +136,18 @@ public:
 	// indicates which atmosphere model will be calculated according to the planet
 	void setModel(ATMOSPHERE_MODEL atmModel);
 
+	inline void setMoonBrightness(float b) {
+		skyb->setMoonBrightness(b);
+	}
+
+	inline void setDefaultMoonBrightness(float b) {
+		skyb->setDefaultMoonBrightness(b);
+		skyb->setMoonBrightness(b);
+	}
+
+	inline void setDefaultMoonBrightness() {
+		skyb->setDefaultMoonBrightness();
+	}
 private:
 	//! initialize the shader parameters
 	void createSC_context();

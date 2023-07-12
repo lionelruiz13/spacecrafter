@@ -426,12 +426,12 @@ void CoreLink::atmosphereSetDefaultFadeDuration() {
 
 //! Set moon brightness
 void CoreLink::moonSetBrightness(double f) {
-	core->skybright->setMoonBrightness(f);
+	core->atmosphere->setMoonBrightness(f);
 }
 
 //! Set default moon brightness
 void CoreLink::moonSetDefaultBrightness() {
-	core->skybright->setDefaultMoonBrightness();
+	core->atmosphere->setDefaultMoonBrightness();
 }
 
 //! Set flag for activating atmospheric refraction correction
