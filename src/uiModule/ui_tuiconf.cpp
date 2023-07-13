@@ -72,8 +72,10 @@ void UI::drawGravityUi(MODULE module)
 			if (coreLink->observatoryGetAltitude()>1000) {
 				switch (module) {
 					case SOLAR_SYSTEM:
-					case STELLAR_SYSTEM:
 						os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << " km";
+						break;
+					case STELLAR_SYSTEM:
+						os << " Alt: " << coreLink->observatoryGetAltitude() << " km";
 						break;
 					case IN_UNIVERSE:
 					  os << " Alt: " << 3.44e-5 * coreLink->observatoryGetAltitude() << " l.y.";
