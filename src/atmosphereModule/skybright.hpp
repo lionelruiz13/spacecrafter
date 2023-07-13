@@ -24,7 +24,6 @@
 
 #ifndef _SKYBRIGHT_H_
 #define _SKYBRIGHT_H_
-#include <iostream>
 
 class Skybright {
 public:
@@ -57,8 +56,6 @@ public:
 
 	void setMoonBrightness(double brightness) {
 		m_brightness = brightness;
-		std::cout << "Value send : " << brightness << std::endl;
-		std::cout << "Moon Brightness : " << m_brightness << std::endl;
 	}
 
 	void setDefaultMoonBrightness(double brightness) {

@@ -435,7 +435,9 @@ double Body::getCloseFov(const Navigator* nav) const
 
 double Body::getSatellitesFov(const Navigator * nav) const
 {
-
+    if (typePlanet == COMET){
+        return 1.;
+    }
 	if ( !satellites.empty() && englishName != "Sun") {
 		double rad = getBoundingRadius();
 		if ( rad > 0 ) return atanf(rad/getEarthEquPos(nav).length()) *180./M_PI * 4;

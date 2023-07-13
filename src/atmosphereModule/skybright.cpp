@@ -73,9 +73,9 @@ void Skybright::setSunMoon(float cos_dist_moon_zenith, float cos_dist_sun_zenith
 
 //if ( cor_optoma )
     if (cos_dist_moon_zenith<0)
-		b_moon_term1 = pow10(-0.4f * (mag_moon + 54.32f))/(2.f);
-    else
-		b_moon_term1 = pow10(-0.4f * (mag_moon + 54.32f))/(2.f-1.5f*cos_dist_moon_zenith);
+		b_moon_term1 = pow10(-0.4f * (mag_moon + 54.32f)) * 0;
+	else
+		b_moon_term1 = (pow10(-0.4f * (mag_moon + 54.32f)) / (2.f-1.5f * cos_dist_moon_zenith)) * m_brightness;
 //else
 
 	// Moon should have no impact if below the horizon
