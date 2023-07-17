@@ -106,6 +106,15 @@ public:
 	Texture *getBigTexture();
 	// Return the texture, request his loading if not loaded yet
 	Texture &getTexture();
+	// Return true if the texture is currently loading
+	inline bool isLoading() {
+		return (texture->loader && texture->loader->priority != LoadPriority::DONE);
+	}
+	// Modify the level of priority
+	inline void prioritize(LoadPriority level) {
+		if (texture->loader && texture->loader->priority > LoadPriority::LOADING)
+			texture->loader->priority = level;
+	}
 
 	// Return the average texture luminance : 0 is black, 1 is white
 	float getAverageLuminance() const;
