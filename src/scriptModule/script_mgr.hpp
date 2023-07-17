@@ -152,6 +152,14 @@ public:
 		isVideoPlayed = b;
 	}
 
+	void setFlagScriptPause(bool b) {
+		flagScriptPause = b;
+	}
+
+	bool getFlagScriptPause(void) const {
+		return flagScriptPause;
+	}
+
 private:
 	// the states of the script engine with respect to the current scripts.
 	enum class ScriptState : char {PLAY, PAUSE, NONE};
@@ -179,6 +187,7 @@ private:
 	int nbrLoop=0;		//!< number of remaining loops
 	std::vector<std::string> loopVector; //!< the vector that contains the loop instructions to be repeated
 	unsigned int indiceInLoop=0; //!< indicates the place where we are in the loop
+	bool flagScriptPause; //!< skip pause in script
 };
 
 

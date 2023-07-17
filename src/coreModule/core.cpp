@@ -71,6 +71,7 @@
 #include "EntityCore/EntityCore.hpp"
 #include "coreModule/tully.hpp"
 #include "coreModule/volumObj3D.hpp"
+#include "scriptModule/script_mgr.hpp"
 
 Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback<void, std::string>& recordCallback, std::shared_ptr<Observer> _observatory) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),

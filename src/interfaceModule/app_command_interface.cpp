@@ -303,7 +303,7 @@ void AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value)
 {
 	bool val;
 	if (setFlag( flagName, flag_value, val) == false) {
-		debug_message = _("Unrecognized or malformed flag argument");
+		debug_message = ("Unrecognized or malformed flag argument");
 	}
 
 	if (recordable) {
@@ -1002,6 +1002,12 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !coreLink->getEyeRelativeMode();
 			coreLink->setEyeRelativeMode(newval);
 			break;
+		case FLAG_NAMES::FN_SCRIPT_PAUSE:
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->scriptGetFlagScriptPause();
+
+			coreLink->scriptSetFlagScriptPause(newval);
+			break;
 		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS:
 			switch (flag_value) {
 				case FLAG_VALUES::FV_TOGGLE:
@@ -1053,7 +1059,7 @@ int AppCommandInterface::commandFlag()
 	if (args.begin() != args.end()) {
 		bool val;
 		if (setFlag( args.begin()->first, args.begin()->second, val) == false)
-			debug_message = _("Unrecognized or malformed flag argument");
+			debug_message = ("Unrecognized or malformed flag argument");
 
 		// rewrite command for recording so that actual state is known (rather than W_TOGGLE)
 		if (args.begin()->second == W_TOGGLE) {

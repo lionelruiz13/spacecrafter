@@ -63,6 +63,7 @@ void ScriptInterface::resumeScript() {
 }
 
 void ScriptInterface::pauseScript() {
+    std::cout << "script in paused" << std::endl;
     scriptMgr->pauseScript();
 }
 

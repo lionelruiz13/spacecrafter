@@ -120,8 +120,7 @@ void ScriptMgr::cancelScript()
 
 void ScriptMgr::pauseScript()
 {
-	if (scriptState==ScriptState::NONE)	return;
-
+	if (scriptState==ScriptState::NONE || flagScriptPause == true)	return;
 	scriptState=ScriptState::PAUSE;
 	media->audioMusicPause();
 	commander->executeCommand("timerate action pause");

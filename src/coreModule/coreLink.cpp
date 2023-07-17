@@ -47,6 +47,7 @@
 #include "coreModule/ubo_cam.hpp"
 #include "coreModule/tully.hpp"
 #include "mediaModule/media.hpp"
+#include "scriptModule/script_mgr.hpp"
 
 CoreLink *CoreLink::instance = nullptr;
 
@@ -1329,4 +1330,17 @@ void CoreLink::rotateLandscape(double rotation) {
 
 std::string CoreLink::landscapeGetName() {
  	return core->landscape->getName();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Script-------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+//! Set flag for skip pause in script
+void CoreLink::scriptSetFlagScriptPause(bool b) {
+	core->script->setFlagScriptPause(b);
+}
+//! Get flag for skip pause in script
+bool CoreLink::scriptGetFlagScriptPause() const {
+	return core->script->getFlagScriptPause();
 }
