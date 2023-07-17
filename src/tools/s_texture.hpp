@@ -63,13 +63,21 @@ class PipelineLayout;
 
 class s_texture;
 
+struct TextureCache {
+	uint8_t timestamp[sizeof(uint64_t)];
+	float averageLuminance; // Average luminance, -1 if not computed
+	int width;
+	int height;
+};
+
 class TextureLoader : public AsyncBuilder {
 public:
-	TextureLoader(s_texture *tex, const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn);
+	TextureLoader(s_texture *tex, TextureCache &cache, const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn);
 	~TextureLoader();
 	virtual void asyncLoad() override;
     virtual void postLoad() override;
 	s_texture *tex;
+	TextureCache &cache;
 	unsigned char *data = nullptr;
 	const std::string fullName;
 	int depth;
@@ -182,6 +190,7 @@ private:
 	struct texRecap {
 		~texRecap();
 		uint64_t size;
+		float averageLuminance;
 		int width;
 		int height;
 		int depth;

@@ -104,8 +104,8 @@ s_texture::texRecap::~texRecap()
         releaseTexture[releaseTexIdx].push_back(std::move(texture));
 }
 
-TextureLoader::TextureLoader(s_texture *tex, const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn) :
-   AsyncBuilder(LoadPriority::PRELOAD), tex(tex), fullName(fullName), depth(depth), depthColumn(depthColumn), resolution(resolution), force3D(force3D)
+TextureLoader::TextureLoader(s_texture *tex, TextureCache &cache, const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn) :
+   AsyncBuilder(LoadPriority::PRELOAD), tex(tex), cache(cache), fullName(fullName), depth(depth), depthColumn(depthColumn), resolution(resolution), force3D(force3D)
 {
    AsyncLoaderMgr::instance->addBuild(this);
 }
@@ -137,6 +137,7 @@ void TextureLoader::asyncLoad()
 
 void TextureLoader::postLoad()
 {
+    tex->getDimensions(cache.width, cache.height);
 }
 
 s_texture::s_texture(const s_texture *t)
@@ -295,7 +296,13 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
             textureQueue.emplace(texture);
             return ret;
         }
-
+        auto &cacheEntry = AsyncLoaderMgr::instance->getCache(fullName);
+        TextureCache &cache = cacheEntry;
+        if (cacheEntry.checkCache(fullName)) {
+            cache.averageLuminance = -1;
+            cache.height = -1;
+        }
+        texture->averageLuminance = cache.averageLuminance;
         texture->depth = depth;
         texture->mipmap = mipmap;
         texture->blendMipmap = useBlendMipmap;
@@ -305,9 +312,13 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
             usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
         if (strategy == Loading::LEGACY) {
             return loadInternal(fullName, resolution, depth, force3D, depthColumn);
-        } else {
-            texture->loader = std::make_unique<TextureLoader>(this, fullName, resolution, depth, force3D, depthColumn);
+        } else if (std::filesystem::exists(fullName)) {
+            texture->width = cache.width;
+            texture->height = cache.height;
+            texture->loader = std::make_unique<TextureLoader>(this, cache, fullName, resolution, depth, force3D, depthColumn);
             return true;
+        } else {
+            return false;
         }
 	} else {
 		texture = tex.lock();
@@ -453,12 +464,16 @@ bool s_texture::load(stbi_uc *data, int realWidth, int realHeight)
 
 void s_texture::getDimensions(int &width, int &height) const
 {
+    while (texture->height < 0)
+        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
 	width = texture->width;
 	height = texture->height;
 }
 
 void s_texture::getDimensions(int &width, int &height, int &depth) const
 {
+    while (texture->height < 0)
+        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
 	width = texture->width;
 	height = texture->height;
 	depth = texture->depth;
@@ -467,26 +482,33 @@ void s_texture::getDimensions(int &width, int &height, int &depth) const
 // Return the average texture luminance : 0 is black, 1 is white
 float s_texture::getAverageLuminance() const
 {
-	double sum = 0;
-	uint8_t *p;
-	const int64_t size = static_cast<int64_t>(texture->width)*static_cast<int64_t>(texture->height);
-	if (texture->texture->isOnCPU()) {
-		p = (uint8_t *) texture->texture->acquireStagingMemoryPtr();
-		for (int64_t i = 0; i < size; ++i)
-			sum += p[i * 4];
-		// texture->texture->releaseStagingMemoryPtr();
-	} else {
-		int width, height, channels;
-		p = stbi_load(textureName.c_str(), &width, &height, &channels, 4);
-		if (!p) {
-			cLog::get()->write("Failed to compute average luminance for " + textureName, LOG_TYPE::L_ERROR);
-			return (0);
-		}
-		for (int64_t i = 0; i < size; ++i)
-			sum += p[i * 4];
-		stbi_image_free(p);
-	}
-	return (sum/size);
+    if (texture->averageLuminance == -1) {
+        double sum = 0;
+    	uint8_t *p;
+    	if (strategy == Loading::LEGACY && texture->texture->isOnCPU()) {
+            const int64_t size = static_cast<int64_t>(texture->width)*static_cast<int64_t>(texture->height);
+    		p = (uint8_t *) texture->texture->acquireStagingMemoryPtr();
+    		for (int64_t i = 0; i < size; ++i)
+    			sum += p[i * 4];
+            texture->averageLuminance = sum/size;
+    	} else {
+    		int width, height, channels;
+    		p = stbi_load(textureName.c_str(), &width, &height, &channels, 4);
+    		if (!p) {
+    			cLog::get()->write("Failed to compute average luminance for " + textureName, LOG_TYPE::L_ERROR);
+    			return (0);
+    		}
+            const int64_t size = static_cast<int64_t>(width)*static_cast<int64_t>(height);
+    		for (int64_t i = 0; i < size; ++i)
+    			sum += p[i * 4];
+    		stbi_image_free(p);
+            texture->averageLuminance = sum/size;
+    	}
+        const std::filesystem::path filePath = (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName)) ? textureName : texDir + textureName;
+        TextureCache &cache = AsyncLoaderMgr::instance->getCache(filePath);
+        cache.averageLuminance = texture->averageLuminance;
+    }
+	return texture->averageLuminance;
 }
 
 void s_texture::forceUnload()
@@ -546,7 +568,8 @@ Texture &s_texture::getTexture()
             while (priority != LoadPriority::COMPLETED)
                 std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for loaded
         } else if (priority == LoadPriority::DONE) {
-            texture->loader.reset(); // loader might still been acquired, unlikely but crashy
+            if (texture->loader->deletable)
+                texture->loader.reset();
         } else {
             while (priority != LoadPriority::COMPLETED)
                 std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for loaded
