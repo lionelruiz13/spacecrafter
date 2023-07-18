@@ -263,7 +263,7 @@ public:
 // Column-major matrix compatible with openGL.
 template<class T> class Matrix4 {
 public:
-	Matrix4();
+	Matrix4() = default;
 	Matrix4(const Matrix4<T>& m);
 	Matrix4(T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T);
 	Matrix4(const T*);
@@ -281,6 +281,8 @@ public:
 	inline Matrix4 operator-(const Matrix4<T>&) const;
 	inline Matrix4 operator+(const Matrix4<T>&) const;
 	inline Matrix4 operator*(const Matrix4<T>&) const;
+	inline Matrix4<T> multiplyFast(const Matrix4<T>&) const;
+	inline Matrix4<T> multiplyInversed(const Matrix4<T>&) const;
 
 	inline Vector3<T> operator*(const Vector3<T>&) const;
 	inline Vector3<T> multiplyWithoutTranslation(const Vector3<T>& a) const;
@@ -306,6 +308,8 @@ public:
 	static const Matrix4<T> yrotation(T);
 	static const Matrix4<T> zrotation(T);
 	static const Matrix4<T> zrotation(T cosinus,T sinus);
+	static const Matrix4<T> xzrotation(T, T);
+	static const Matrix4<T> zxrotation(T, T);
 	static const Matrix4<T> scaling(const Vector3<T>&);
 	static const Matrix4<T> scaling(T);
 
@@ -1453,28 +1457,6 @@ Vector4<T> operator*(T s,const Vector4<T>&v)
 //
 // -------------------------------------------------------------------
 
-
-//! Basic constructor, set all to 0.
-template<class T> Matrix4<T>::Matrix4()
-{
-	r[0]=0;
-	r[1]=0;
-	r[2]=0;
-	r[3]=0;
-	r[4]=0;
-	r[5]=0;
-	r[6]=0;
-	r[7]=0;
-	r[8]=0;
-	r[9]=0;
-	r[10]=0;
-	r[11]=0;
-	r[12]=0;
-	r[13]=0;
-	r[14]=0;
-	r[15]=0;
-}
-
 //! Copy constructor.
 //! @param m the matrix to copy.
 template<class T> Matrix4<T>::Matrix4(const Matrix4<T>& m)
@@ -1936,6 +1918,42 @@ template<class T> const Matrix4<T> Matrix4<T>::zrotation(T cos,T sin)
 	                  0, 0, 0, 1 );
 }
 
+//! Gives a rotation matrix around the x then z axis ending with a translation
+//! WARNING this rotation is unconventionally clockwise!
+//! @param angle the angle in radians.
+//! @return the corresponding rotation matrix.
+template<class T> const Matrix4<T> Matrix4<T>::xzrotation(T xangle, T zangle)
+{
+	T cz = cos(zangle);
+	T sz = sin(zangle);
+	T cx = cos(xangle);
+	T sx = sin(xangle);
+	return {{
+		cz   , sz   , 0 , 0,
+       -sz*cx, cz*cx, sx, 0,
+        sz*sx,-cz*sx, cx, 0,
+        0, 0, 0, 1
+	}};
+}
+
+//! Gives a rotation matrix around the z then x axis ending with a translation
+//! WARNING this rotation is unconventionally clockwise!
+//! @param angle the angle in radians.
+//! @return the corresponding rotation matrix.
+template<class T> const Matrix4<T> Matrix4<T>::zxrotation(T zangle, T xangle)
+{
+	T cz = cos(zangle);
+	T sz = sin(zangle);
+	T cx = cos(xangle);
+	T sx = sin(xangle);
+	return {{
+		cz,-sz*cx, sz*sx, 0,
+        sz, cz*cx,-cz*sx, 0,
+        0 ,    sx,    cx, 0,
+        0, 0, 0, 1
+	}};
+}
+
 //! Gives a scaling matrix.
 //! @param s a vector which contains the 3 scale factors.
 //! @return the corresponding scaling matrix.
@@ -2013,6 +2031,46 @@ template<class T> Matrix4<T> Matrix4<T>::operator*(const Matrix4<T>& a) const
 	                    MATMUL(0,8), MATMUL(1,8), MATMUL(2,8), MATMUL(3,8),
 	                    MATMUL(0,12), MATMUL(1,12), MATMUL(2,12), MATMUL(3,12) );
 #undef MATMUL
+}
+
+//! Multiplication of 2 matrix only defining rotation and translation.
+//! @param a the right operand.
+//! @return this*a.
+template<class T> Matrix4<T> Matrix4<T>::multiplyFast(const Matrix4<T> &a) const
+{
+	#define MATMUL(R, C) (r[R] * a.r[C] + r[R+4] * a.r[C+1] + r[R+8] * a.r[C+2])
+	#define MATMUL2(R) (r[R] * a.r[12] + r[R+4] * a.r[13] + r[R+8] * a.r[14] + r[R+12])
+	return {{
+		MATMUL(0,0), MATMUL(1,0), MATMUL(2,0), 0,
+        MATMUL(0,4), MATMUL(1,4), MATMUL(2,4), 0,
+        MATMUL(0,8), MATMUL(1,8), MATMUL(2,8), 0,
+        MATMUL2(0), MATMUL2(1), MATMUL2(2), 1
+	}};
+	#undef MATMUL
+	#undef MATMUL2
+}
+
+
+//! Multiplication of 2 matrix only defining rotation and translation, with the first matrix virtually transposed
+//! @param a the right operand.
+//! @return this.inverse()*a.
+template<class T> Matrix4<T> Matrix4<T>::multiplyInversed(const Matrix4<T> &a) const
+{
+	#define MATMUL(R, C) (r[R] * a.r[C] + r[R+1] * a.r[C+1] + r[R+2] * a.r[C+2] + r[R+3] * a.r[C+3])
+	#define MATMUL2(R) (r[R] * tr[0] + r[R+1] * tr[1] + r[R+2] * tr[2])
+	const T tr[3] = {
+		a.r[12]-r[12],
+		a.r[13]-r[13],
+		a.r[14]-r[14],
+	};
+	return {{
+		MATMUL(0,0), MATMUL(4,0), MATMUL(8,0), 0,
+		MATMUL(0,4), MATMUL(4,4), MATMUL(8,4), 0,
+		MATMUL(0,8), MATMUL(4,8), MATMUL(8,8), 0,
+		MATMUL2(0), MATMUL2(4), MATMUL2(8), 1
+	}};
+	#undef MATMUL
+	#undef MATMUL2
 }
 
 //! Matrix addition.
