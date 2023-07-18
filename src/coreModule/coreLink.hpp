@@ -888,15 +888,6 @@ public:
 		core->navigation->setLocalVision(_pos);
 	}
 
-	////////////////////////////////////////////////////////////////////////////////
-	//Scrit-----
-	////////////////////////////////////////////////////////////////////////////////
-
-	//! Set flag for skip pause in script
-	void scriptSetFlagScriptPause(bool b);
-	//! Get flag for skip pause in script
-	bool scriptGetFlagScriptPause() const;
-
     CoreLink(std::shared_ptr<Core> _core) {
 		core = _core;
 		instance = this;

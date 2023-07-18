@@ -1004,9 +1004,8 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			break;
 		case FLAG_NAMES::FN_SCRIPT_PAUSE:
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->scriptGetFlagScriptPause();
-
-			coreLink->scriptSetFlagScriptPause(newval);
+				newval = !scriptInterface->isScriptPauseDisabled();
+			scriptInterface->setScriptPauseDisabled(newval);
 			break;
 		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS:
 			switch (flag_value) {
@@ -2281,7 +2280,7 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 		} else if (argAction==W_CANCEL) {
 			scriptInterface->cancelRecordScript();
 			recordable = 0;  // don't record this command!
-		} else if (argAction==W_PAUSE && !scriptInterface->isScriptPaused()) {
+		} else if (argAction==W_PAUSE && !scriptInterface->isScriptPaused() && !scriptInterface->isScriptPauseDisabled()) {
 			wait = 1;
 			scriptInterface->pauseScript();
 		} else if (argAction==W_PAUSE || argAction==W_RESUME) {

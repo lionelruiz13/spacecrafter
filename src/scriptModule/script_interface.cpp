@@ -46,6 +46,14 @@ bool ScriptInterface::isScriptPaused() const {
     return scriptMgr->isPaused();
 }
 
+bool ScriptInterface::isScriptPauseDisabled() const{
+    return scriptMgr->getFlagScriptPause();
+}
+
+void ScriptInterface::setScriptPauseDisabled(bool b) {
+    scriptMgr->setFlagScriptPause(b);
+}
+
 void ScriptInterface::slowerSpeed() {
     return scriptMgr->slowerSpeed();
 }
@@ -63,7 +71,6 @@ void ScriptInterface::resumeScript() {
 }
 
 void ScriptInterface::pauseScript() {
-    std::cout << "script in paused" << std::endl;
     scriptMgr->pauseScript();
 }
 
