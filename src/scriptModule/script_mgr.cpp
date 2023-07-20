@@ -150,7 +150,7 @@ void ScriptMgr::fasterSpeed()
 	if (multiplierRate==1)
 		media->audioMusicMute();
 
-	if (multiplierRate>4)
+	if (multiplierRate>=256)
 		return;
 
 	multiplierRate *=2;

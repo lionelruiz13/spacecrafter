@@ -86,7 +86,6 @@ public:
 	bool isScriptPaused() const;
     bool isScriptPauseDisabled() const;
     void setScriptPauseDisabled(bool b);
-    // TODO Add isScriptPauseDisabled && setScriptPauseDisabled
 
 	void waitOnVideoTermination() const;
 	void setWaitOnVideoTermination(bool b) const;
