@@ -1200,6 +1200,11 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	skyTranslator = Translator(AppSettings::Instance()->getLanguageDir(), newSkyLocaleName);
 	cLog::get()->write("Sky locale is " + skyTranslator.getLocaleName(), LOG_TYPE::L_INFO);
 	//printf("SkyLocale : %s\n", newSkyLocaleName.c_str());
+	std::string language = skyTranslator.getLocaleName();
+	if (language[0] == 'z' && language[1] == 'h')
+		fontFactory->updateAllFont("/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf");
+	else
+		fontFactory->updateAllFont("/home/planetarium/.spacecrafter/fonts/DejaVuSans-Bold.ttf");
 
 	// Translate all labels with the new language
 	cardinals_points->translateLabels(skyTranslator);

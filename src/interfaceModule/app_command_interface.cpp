@@ -3342,6 +3342,7 @@ int AppCommandInterface::commandFont()
 
 	if (!fileName.empty()) {
 		FilePath myFile  = FilePath(fileName, FilePath::TFP::FONTS);
+		std::cout << myFile.toString() << std::endl;
 			if (myFile) {
 				fontFactory->updateFont(targetName, myFile.toString(), args[W_SIZE]);
 
