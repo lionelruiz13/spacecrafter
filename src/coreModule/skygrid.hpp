@@ -88,6 +88,10 @@ public:
 		internalNav=a;
 	}
 
+	void setInternalAstronomical (bool a) {
+		internalAstronomical = a;
+	}
+
 	static void createShader();
 	static void destroyShader();
 
@@ -140,6 +144,7 @@ private:
 	Vec3f** alt_points;
 	Vec3f** azi_points;
 	bool internalNav;
+	bool internalAstronomical;
 	LinearFader fader;
 };
 

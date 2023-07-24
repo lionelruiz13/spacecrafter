@@ -71,6 +71,12 @@ void SkyLineMgr::setInternalNav(bool a)
 	}
 }
 
+void SkyLineMgr::setInternalAstronomical(bool a)
+{
+	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
+		it->second->setInternalAstronomical(a);
+	}
+}
 
 bool SkyLineMgr::isExist(SKYLINE_TYPE type_obj)
 {

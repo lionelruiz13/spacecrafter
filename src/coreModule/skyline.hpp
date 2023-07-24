@@ -81,6 +81,10 @@ public:
 		internalNav=a;
 	}
 
+	void setInternalAstronomical (bool a) {
+		internalAstronomical = a;
+	}
+
 	void flipFlagShow() {
 		fader = ! fader;
 	}
@@ -102,6 +106,7 @@ protected:
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
 	LinearFader fader;
 	bool internalNav;
+	bool internalAstronomical;
 	mutable Vec3d pt1;
 	mutable Vec3d pt2;
 	std::string month[13]; // labels for translating on ecliptic

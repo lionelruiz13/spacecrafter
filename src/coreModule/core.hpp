@@ -443,6 +443,12 @@ public:
 		return flagNav;
 	}
 
+	void setFlagAstronomical(bool a);
+
+	bool getFlagAstronomical() {
+		return flagAstronomical;
+	}
+
 	void setFlagIngalaxy(MODULE a) {
 		currentModule = a;
 	}
@@ -578,6 +584,7 @@ private:
 	bool FlagEnableMoveKeys;
 	bool FlagAtmosphericRefraction = false;
 	bool flagNav = false; 				// define the NAV version edition
+	bool flagAstronomical = false; 		// define the astronomical version edition
 	bool FlagManualZoom;				// Define whether auto zoom can go further
 	bool firstTime= true;               // For init to track if reload or first time setup
 	bool flagEnableTransition = true;

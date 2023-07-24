@@ -243,6 +243,13 @@ void Core::setFlagNav(bool a)
 	skyLineMgr->setInternalNav(a);
 }
 
+void Core::setFlagAstronomical(bool a)
+{
+	flagAstronomical = a;
+	cardinals_points->setInternalAstronomical(a);
+	skyGridMgr->setInternalAstronomical(a);
+	skyLineMgr->setInternalAstronomical(a);
+}
 
 //! Load core data and initialize with default values
 void Core::init(const InitParser& conf)

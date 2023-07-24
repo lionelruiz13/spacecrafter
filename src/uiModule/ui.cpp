@@ -1559,7 +1559,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL:
-					// media->audioDebug();
+					event = new ScriptEvent( IDIR+"internal/astronomical.sts");
+					EventRecorder::getInstance()->queue(event);
 					break;
 				default:
 					break;
