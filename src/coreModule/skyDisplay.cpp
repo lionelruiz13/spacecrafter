@@ -275,15 +275,15 @@ void SkyPerson::loadString(const std::string& message)
 	std::string txt = message;
 	// std::cout << message << std::endl;
     // Checks for the presence of a letter
-    for(std::string::size_type i = 0; i < txt.length(); i++)
-    {
-        char c = txt[i];
-        if(!(isdigit(c)||c==';'||c=='.')){ //check si le caractère est une lettre
-			cLog::get()->write("Skyperson error loading dataStr, check dataStr", LOG_TYPE::L_WARNING);
-			// std::cout << "   " << c << std::endl;
-            txt.erase(i, 1);
-        }
-    }
+    // for(std::string::size_type i = 0; i < txt.length(); i++)
+    // {
+    //     char c = txt[i];
+    //     if(!(isdigit(c)||c==';'||c=='.')){ //check si le caractère est une lettre
+	// 		cLog::get()->write("Skyperson error loading dataStr, check dataStr", LOG_TYPE::L_WARNING);
+	// 		// std::cout << "   " << c << std::endl;
+    //         txt.erase(i, 1);
+    //     }
+    // }
 	// std::cout << txt << std::endl;
 
     size_t pos = 0;
@@ -301,7 +301,7 @@ void SkyPerson::loadString(const std::string& message)
 
         dataTmp.push_back(ftemp);
         txt.erase(0, pos + delimiter.length());
-		// std::cout << txt  << std::endl;
+		// std::cout << message  << std::endl;
     }
 	// we still check that the content is a multiple of 2
 	// otherwise we delete the last values.
@@ -315,10 +315,11 @@ void SkyPerson::loadString(const std::string& message)
 	clear();
 	Vec3f punts;
 	for (auto it =dataTmp.begin(); it!=dataTmp.end(); it++) {
-			Utility::spheToRect(*it, *++it, punts);
-			// std::cout << punts[0] << "|"<< punts[1] << "|"<< punts[2] << std::endl;
-			*(dataSky++) = punts;
-			++dataSkySize;
+		float p1 = *it;
+		Utility::spheToRect(p1, *++it, punts);
+		// std::cout << punts[0] << "|"<< punts[1] << "|"<< punts[2] << std::endl;
+		*(dataSky++) = punts;
+		++dataSkySize;
 	}
 
 	// we load the points in a vbo
