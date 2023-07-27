@@ -173,11 +173,11 @@ void StellarSystemModule::draw(int delta_time)
 	core->illuminates->draw(core->projection, core->navigation);
 	core->asterisms->draw(core->projection, core->navigation);
 	core->starLines->draw(core->navigation);
-    if (core->observatory->getAltitude() <= 7.91706e+08){
-        core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
-    } else {
+    //if (core->observatory->getAltitude() <= 7.91706e+08){
+    //    core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
+    //} else {
         core->starNav->draw(core->navigation, core->projection, true);
-    }
+    //}
 	core->skyGridMgr->draw(core->projection);
 	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
