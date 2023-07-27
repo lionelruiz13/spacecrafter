@@ -55,6 +55,7 @@ public:
 	virtual void registerFont(s_font* _font) override;
 
 	void setInternalNav(bool a);
+	void setInternalAstronomical(bool a);
 
 	void setColor(SKYLINE_TYPE typeObj, const Vec3f& c);
 	const Vec3f& getColor(SKYLINE_TYPE typeObj);

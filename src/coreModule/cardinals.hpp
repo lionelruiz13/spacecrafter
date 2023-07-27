@@ -53,10 +53,15 @@ public:
 		internalNav=a;
 	}
 
+	void setInternalAstronomical (bool a){
+		internalAstronomical = a;
+	}
+
 private:
 	float radius;
 	std::string sNorth, sSouth, sEast, sWest;
 	bool internalNav;
+	bool internalAstronomical;
 };
 
 

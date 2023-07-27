@@ -729,7 +729,7 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 	}
 
 	for (unsigned int i=0; i<nb_segment; ++i) {
-		if (internalNav) {
+		if ((internalNav) || (internalAstronomical)) {
 			inclination=70*M_PI/180.;
 
 			if((prj->*proj_func)(points[nb_segment+1+i], pt1) && (prj->*proj_func)(points[nb_segment+1+i+1], pt2)) {
@@ -897,7 +897,7 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 		}
 	}
 	for (unsigned int i=0; i<nb_segment; ++i) {
-		if (internalNav) {
+		if ((internalNav) || (internalAstronomical)) {
 			inclination=70*M_PI/180.;
 
 			if((prj->*proj_func)(points[nb_segment+1+i], pt1) && (prj->*proj_func)(points[nb_segment+1+i+1], pt2)) {
@@ -965,7 +965,7 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 				std::ostringstream oss;
 				int tickl = 3;
 
-				if ((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) {
+				if (((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) || ((internalAstronomical) && (line_equator_type != GALACTIC_EQUATOR))) {
 
 					double num = 360.0f/(nb_segment/2.f)*(nb_segment/2.f-(i+1)/2.f);
 					if (fmod(num,15) == 0) {
@@ -991,7 +991,7 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
-				if ((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) {
+				if (((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) || ((internalAstronomical) && (line_equator_type != GALACTIC_EQUATOR))) {
 					if ((i+1) % (2*4) == 0) {
 
 						tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
@@ -1009,9 +1009,9 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
 				}
 
-				if (((i+1)%2==0) && font && ((internalNav) && (line_equator_type != GALACTIC_EQUATOR)))
+				if ((((i+1)%2==0) && font && ((internalNav) && (line_equator_type != GALACTIC_EQUATOR))) || (((i+1)%2==0) && font && ((internalAstronomical) && (line_equator_type != GALACTIC_EQUATOR))))
 					font->print(-26,-2,oss.str(), Color, MVP*TRANSFO ,1);
-				if (((i+1)%2==0) && font && !((internalNav) && (line_equator_type != GALACTIC_EQUATOR)))
+				if ((((i+1)%2==0) && font && !((internalNav) && (line_equator_type != GALACTIC_EQUATOR))) || (((i+1)%2==0) && font && !((internalAstronomical) && (line_equator_type != GALACTIC_EQUATOR))))
 					font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1);
 			}
 		}
@@ -1277,7 +1277,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 				if (observatory->isEarth()) {
 					float degree = i-84.5;
 					if (degree < 0) degree += 360;
-					if (internalNav)
+					if ((internalNav) || (internalAstronomical))
 						oss <<  month[ (i+15)/30 ] << " " << degree << "°";
 					else
 						oss << month[ (i+15)/30 ];

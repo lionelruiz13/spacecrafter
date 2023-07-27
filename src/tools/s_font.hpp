@@ -97,6 +97,10 @@ public:
 	//! Initialize printer
 	static void beginPrint();
 	static TileMap *tileMap;
+
+	float getFontSize(){
+		return fontSize;
+	}
 protected:
 	renderedString_struct renderString(const std::string &s, bool withBorder) const;
 	renderedStringHash_t renderCache;

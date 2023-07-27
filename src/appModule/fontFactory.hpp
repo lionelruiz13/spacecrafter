@@ -39,14 +39,14 @@
  *
  * \class FontFactory
  *
- * \brief Transforms alphanumeric entry to Font 
+ * \brief Transforms alphanumeric entry to Font
  *
- * The purpose of this class is to analyze character strings (string name and string size) 
+ * The purpose of this class is to analyze character strings (string name and string size)
  * and get to all Core Font Module aprouved s_font parameters
  *
  * Each planetarium has its own resolution. To harmonize the size of the fonts regardless of the resolution,
- * we use a reference font size : FontResolution. And we apply proportionality to determine the size of the 
- * fonts to display. 
+ * we use a reference font size : FontResolution. And we apply proportionality to determine the size of the
+ * fonts to display.
  *
 */
 class s_font;
@@ -85,7 +85,7 @@ class FontFactory {
 public:
     FontFactory();
     ~FontFactory();
-	//! initialize fonts: files and sizes 
+	//! initialize fonts: files and sizes
     void init(int _resolution, const InitParser& conf);
 	//! builds all fonts
 	void buildAllFont();
@@ -97,6 +97,7 @@ public:
 
 	//! updates Core fonts
 	void updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue);
+	void updateAllFont(const std::string& fontName);
 
 	//! resets all FontFactory fonts
 	void reloadAllFont();

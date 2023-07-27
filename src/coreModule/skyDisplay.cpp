@@ -37,6 +37,7 @@
 #include "navModule/navigator.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
+#include "coreModule/coreLink.hpp"
 
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
@@ -580,7 +581,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 	int x,y;
 	SDL_GetMouseState(&x,&y);
 	Vec3d equPos = prj->getCursorPosEqu(x, y);
-
+	bool orientation = CoreLink::instance->skyDisplayMgrCheckDraw();
 
 	double tempDE, tempRA;
 	float alt, az, aza, alta, ra, dec, mn;
@@ -618,7 +619,10 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
 		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
-		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+		if (orientation)
+			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+		else
+			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "alt:";
 		if (alt < 0.) {
 			alt = -alt;
@@ -652,7 +656,10 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
 		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
-		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+		if (orientation)
+			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+		else
+			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "az :";
 		if (az < 0.) {
 			az = -az;
@@ -689,7 +696,10 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
 		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
-		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+		if (orientation)
+			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+		else
+			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "ra :";
 		if (ra < 10.)
 			oss << "0";
@@ -719,7 +729,10 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
 		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
-		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+		if (orientation)
+			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), -pi_div_2 - angle);
+		else
+			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "dec:";
 		if (dec < 0.) {
 			dec = -dec;

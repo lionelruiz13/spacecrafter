@@ -295,6 +295,12 @@ void CoreLink::skyDisplayMgrLoadString(SKYDISPLAY_NAME nameObj, const std::strin
 	core->skyDisplayMgr->loadString(nameObj,dataStr);
 }
 
+bool CoreLink::skyDisplayMgrCheckDraw(){
+	if (core->getSelectedPlanetEnglishName() == core->getHomePlanetEnglishName())
+		return (true);
+	return (false);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // StarLines---------------------------
 ////////////////////////////////////////////////////////////////////////////////

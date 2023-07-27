@@ -106,7 +106,6 @@ void StellarSystemModule::update(int delta_time)
 	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), observer);
 
 	core->ssystemFactory->updateAnchorManager();
-
 	// Transform matrices between coordinates systems
 	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
 	// Direction of vision
@@ -125,7 +124,6 @@ void StellarSystemModule::update(int delta_time)
 	// Compute the moon position in local coordinate
 	Vec3d moon = core->ssystemFactory->getMoon()->get_heliocentric_ecliptic_pos();
 	Vec3d moonPos = core->navigation->helioToLocal(moon);
-
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
 	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
@@ -175,8 +173,11 @@ void StellarSystemModule::draw(int delta_time)
 	core->illuminates->draw(core->projection, core->navigation);
 	core->asterisms->draw(core->projection, core->navigation);
 	core->starLines->draw(core->navigation);
-    core->starNav->draw(core->navigation, core->projection, true);
-	// core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
+    if (core->observatory->getAltitude() <= 7.91706e+08){
+        core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
+    } else {
+        core->starNav->draw(core->navigation, core->projection, true);
+    }
 	core->skyGridMgr->draw(core->projection);
 	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));

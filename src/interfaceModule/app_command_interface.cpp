@@ -408,6 +408,13 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			stcore->setFlagNav(newval);
 			break;
 
+		case FLAG_NAMES::FN_ASTRONOMICAL :
+			if (flag_value == FLAG_VALUES::FV_TOGGLE)
+				newval = !stcore->getFlagAstronomical();
+
+			stcore->setFlagAstronomical(newval);
+			break;
+
 		case FLAG_NAMES::FN_LIGHT_TRAVEL_TIME :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !coreLink->getFlagLightTravelTime();
@@ -3342,6 +3349,7 @@ int AppCommandInterface::commandFont()
 
 	if (!fileName.empty()) {
 		FilePath myFile  = FilePath(fileName, FilePath::TFP::FONTS);
+		std::cout << myFile.toString() << std::endl;
 			if (myFile) {
 				fontFactory->updateFont(targetName, myFile.toString(), args[W_SIZE]);
 

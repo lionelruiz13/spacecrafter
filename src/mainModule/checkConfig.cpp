@@ -369,6 +369,7 @@ void CheckConfig::checkViewingSettings()
 void CheckConfig::checkNavigationSettings()
 {
 	tmpSettings[SCK_FLAG_NAVIGATION]="false";
+	tmpSettings[SCK_FLAG_ASTRONOMICAL]="false";
 	tmpSettings[SCK_PRESET_SKY_TIME]="2453065.333344907";
 	tmpSettings[SCK_AUTO_MOVE_DURATION]="5";
 	tmpSettings[SCK_DAY_KEY_MODE]="calendar";

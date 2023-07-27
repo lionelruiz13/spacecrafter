@@ -96,7 +96,7 @@ void Cardinals::draw(const Projector* prj, double latitude, bool gravityON) cons
 	// W for West
 	pos.set(0.f, -1.f, 0.12f);
 	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
-	if (internalNav) {
+	if ((internalNav) || (internalAstronomical)) {
 		// NW
 		pos.set(-0.715f, -0.685f, 0.13f);
 		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);

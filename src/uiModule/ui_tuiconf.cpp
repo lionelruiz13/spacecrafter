@@ -87,7 +87,7 @@ void UI::drawGravityUi(MODULE module)
 			}
 		}
 
-		if (core->getFlagNav()) {
+		if (core->getFlagNav() || core->getFlagAstronomical()) {
 			std::string info = spaceDate->getPrintableTimeNav(coreLink->getJDay(), coreLink->observatoryGetLatitude(), coreLink->observatoryGetLongitudeForDisplay());
 			std::string s_1, s_2, s_3;
 			s_1= info.substr(0, info.find("@"));
