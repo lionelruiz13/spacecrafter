@@ -262,6 +262,8 @@ void Core::init(const InitParser& conf)
 
 	flagNav= conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);
 	setFlagNav(flagNav);
+	flagAstronomical = conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);
+	setFlagAstronomical(flagAstronomical);
 	FlagAtmosphericRefraction = conf.getBoolean(SCS_VIEWING,SCK_FLAG_ATMOSPHERIC_REFRACTION);
 
 	initialvalue.initial_landscapeName=conf.getStr(SCS_INIT_LOCATION,SCK_LANDSCAPE_NAME);

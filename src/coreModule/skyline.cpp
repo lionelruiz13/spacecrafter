@@ -966,16 +966,18 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 				int tickl = 3;
 
 				if (((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) || ((internalAstronomical) && (line_equator_type != GALACTIC_EQUATOR))) {
-
 					double num = 360.0f/(nb_segment/2.f)*(nb_segment/2.f-(i+1)/2.f);
 					if (fmod(num,15) == 0) {
 						tickl = 8;
-						if ((i+1)/2 == 24*4) oss << " 0h   ";
-						else {
-							if ((i+1)/(2*4)<10) oss << " ";
-							oss << (i+1)/(2*4) << "h   ";
+						if (internalAstronomical && !internalNav){
+							if ((i+1)/2 == 24*4) oss << " 0h   ";
+							else {
+								if ((i+1)/(2*4)<10) oss << " ";
+								oss << (i+1)/(2*4) << "h   ";
+							}
+						} else {
+							oss << num << "°";
 						}
-						oss << num << "°";
 					} else if (fmod(num,7.5) == 0) {
 						oss << num << "°";
 						tickl = 4;
