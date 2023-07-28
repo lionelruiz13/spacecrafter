@@ -589,6 +589,7 @@ public:
 	double getDateDay() const;
 	double getDateHour() const;
 	double getDateMinute() const;
+	double getDateSecond() const;
 
 	int getLanguage() const;
 

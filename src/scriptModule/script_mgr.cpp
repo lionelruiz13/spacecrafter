@@ -38,6 +38,7 @@
 #include "tools/log.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/call_system.hpp"
+#include "coreModule/coreLink.hpp"
 
 
 ScriptMgr::ScriptMgr(std::shared_ptr<AppCommandInterface> command_interface,const std::string &_data_dir, std::shared_ptr<Media> _media )
@@ -211,6 +212,10 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 		sR.record_elapsed_time = 0;
 		sR.rec_file << "# Spacecrafter "<< AppSettings::Instance()->getVersion() << std::endl;
 		sR.rec_file << "# Script recorded "<< this->getRecordDate() << std::endl << "#" << std::endl;
+		sR.rec_file << "set home_planet " << CoreLink::instance->getObserverHomePlanetEnglishName() << std::endl;
+		sR.rec_file << "moveto lat " << CoreLink::instance->observatoryGetLatitude() << " lon " << CoreLink::instance->observatoryGetLongitude() << " alt " << CoreLink::instance->observatoryGetAltitude() << " duration 0" << std::endl;
+		sR.rec_file << "date utc " << CoreLink::instance->getDateYear() << ":" << CoreLink::instance->getDateMonth() << ":" << CoreLink::instance->getDateDay() << "T" << CoreLink::instance->getDateHour() << ":" << CoreLink::instance->getDateMinute() << ":" << CoreLink::instance->getDateSecond() << std::endl;
+		sR.rec_file << "deselect" << std::endl;
 		cLog::get()->write("ScriptMgr::Now recording actions to file: " + script_filename, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 	} else {
 		cLog::get()->write("ScriptMgr::Error opening script file for writing: " + script_filename, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);

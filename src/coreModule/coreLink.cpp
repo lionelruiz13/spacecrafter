@@ -115,6 +115,16 @@ double CoreLink::getDateMinute() const
 	return minute;
 }
 
+double CoreLink::getDateSecond() const
+{
+	double jd = core->timeMgr->getJDay();
+	int year,month,day,hour,minute;
+	double second;
+
+	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
+	return second;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Skyline et Skygrid---------------------------
 ////////////////////////////////////////////////////////////////////////////////
