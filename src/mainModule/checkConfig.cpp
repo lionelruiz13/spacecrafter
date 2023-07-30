@@ -344,7 +344,6 @@ void CheckConfig::checkViewingSettings()
 	tmpSettings[SCK_FLAG_GREENWICH_LINE] = "false";
 	tmpSettings[SCK_FLAG_PERSONAL] = "false";
 	tmpSettings[SCK_FLAG_PERSONEQ] = "false";
-	tmpSettings[SCK_FLAG_SKIP_PAUSE] = "false";
 	tmpSettings[SCK_FLAG_NAUTICAL_RA] = "false";
 	tmpSettings[SCK_FLAG_NAUTICAL_ALT] = "false";
 	tmpSettings[SCK_FLAG_OBJECT_COORDINATES] = "false";
@@ -370,6 +369,7 @@ void CheckConfig::checkNavigationSettings()
 {
 	tmpSettings[SCK_FLAG_NAVIGATION]="false";
 	tmpSettings[SCK_FLAG_ASTRONOMICAL]="false";
+	tmpSettings[SCK_FLAG_SKIP_PAUSE] = "false";
 	tmpSettings[SCK_PRESET_SKY_TIME]="2453065.333344907";
 	tmpSettings[SCK_AUTO_MOVE_DURATION]="5";
 	tmpSettings[SCK_DAY_KEY_MODE]="calendar";
