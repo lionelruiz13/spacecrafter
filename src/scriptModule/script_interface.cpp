@@ -46,12 +46,12 @@ bool ScriptInterface::isScriptPaused() const {
     return scriptMgr->isPaused();
 }
 
-bool ScriptInterface::isScriptPauseDisabled() const{
-    return scriptMgr->getFlagScriptPause();
+bool ScriptInterface::isSkipPauseDisabled() const{
+    return scriptMgr->getFlagSkipPause();
 }
 
-void ScriptInterface::setScriptPauseDisabled(bool b) {
-    scriptMgr->setFlagScriptPause(b);
+void ScriptInterface::setSkipPauseDisabled(bool b) {
+    scriptMgr->setFlagSkipPause(b);
 }
 
 void ScriptInterface::slowerSpeed() {

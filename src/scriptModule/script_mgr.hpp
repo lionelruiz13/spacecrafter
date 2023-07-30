@@ -152,12 +152,12 @@ public:
 		isVideoPlayed = b;
 	}
 
-	void setFlagScriptPause(bool b) {
-		flagScriptPause = b;
+	void setFlagSkipPause(bool b) {
+		flagSkipPause = b;
 	}
 
-	bool getFlagScriptPause(void) const {
-		return flagScriptPause;
+	bool getFlagSkipPause(void) const {
+		return flagSkipPause;
 	}
 
 private:
@@ -187,7 +187,7 @@ private:
 	int nbrLoop=0;		//!< number of remaining loops
 	std::vector<std::string> loopVector; //!< the vector that contains the loop instructions to be repeated
 	unsigned int indiceInLoop=0; //!< indicates the place where we are in the loop
-	bool flagScriptPause; //!< skip pause in script
+	bool flagSkipPause; //!< skip pause in script
 };
 
 

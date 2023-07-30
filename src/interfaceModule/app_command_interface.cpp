@@ -1009,10 +1009,10 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !coreLink->getEyeRelativeMode();
 			coreLink->setEyeRelativeMode(newval);
 			break;
-		case FLAG_NAMES::FN_SCRIPT_PAUSE:
+		case FLAG_NAMES::FN_SKIP_PAUSE:
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !scriptInterface->isScriptPauseDisabled();
-			scriptInterface->setScriptPauseDisabled(newval);
+				newval = !scriptInterface->isSkipPauseDisabled();
+			scriptInterface->setSkipPauseDisabled(newval);
 			break;
 		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS:
 			switch (flag_value) {
@@ -2287,7 +2287,7 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 		} else if (argAction==W_CANCEL) {
 			scriptInterface->cancelRecordScript();
 			recordable = 0;  // don't record this command!
-		} else if (argAction==W_PAUSE && !scriptInterface->isScriptPaused() && !scriptInterface->isScriptPauseDisabled()) {
+		} else if (argAction==W_PAUSE && !scriptInterface->isScriptPaused() && !scriptInterface->isSkipPauseDisabled()) {
 			wait = 1;
 			scriptInterface->pauseScript();
 		} else if (argAction==W_PAUSE || argAction==W_RESUME) {

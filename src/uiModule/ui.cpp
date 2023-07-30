@@ -1362,7 +1362,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->pauseScriptOrTimeRate();
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_SCRIPT_PAUSE , FLAG_VALUES::FV_TOGGLE);
+					event = new FlagEvent( FLAG_NAMES::FN_SKIP_PAUSE , FLAG_VALUES::FV_TOGGLE);
 					EventRecorder::getInstance()->queue(event);
 					RESET_MOD(SUPER);
 					break;

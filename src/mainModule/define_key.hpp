@@ -244,7 +244,7 @@
 #define SCK_FLAG_GREENWICH_LINE             "flag_greenwich_line"
 #define SCK_FLAG_PERSONAL                   "flag_personal"
 #define SCK_FLAG_PERSONEQ                   "flag_personeq"
-#define SCK_FLAG_SCRIPT_PAUSE               "flag_pause_script"
+#define SCK_FLAG_SKIP_PAUSE                 "flag_pause_skip"
 #define SCK_FLAG_NAUTICAL_RA                "flag_nautical_ra"
 #define SCK_FLAG_NAUTICAL_ALT               "flag_nautical_alt"
 #define SCK_FLAG_OBJECT_COORDINATES         "flag_object_coordinates"

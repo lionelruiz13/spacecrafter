@@ -344,7 +344,7 @@ void CheckConfig::checkViewingSettings()
 	tmpSettings[SCK_FLAG_GREENWICH_LINE] = "false";
 	tmpSettings[SCK_FLAG_PERSONAL] = "false";
 	tmpSettings[SCK_FLAG_PERSONEQ] = "false";
-	tmpSettings[SCK_FLAG_SCRIPT_PAUSE] = "false";
+	tmpSettings[SCK_FLAG_SKIP_PAUSE] = "false";
 	tmpSettings[SCK_FLAG_NAUTICAL_RA] = "false";
 	tmpSettings[SCK_FLAG_NAUTICAL_ALT] = "false";
 	tmpSettings[SCK_FLAG_OBJECT_COORDINATES] = "false";

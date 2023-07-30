@@ -198,7 +198,7 @@ void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES>
 	m_flags[ACP_FN_EYE_RELATIVE_MODE] = FLAG_NAMES::FN_EYE_RELATIVE_MODE;
 	m_flags[ACP_FN_SUBTITLE] = FLAG_NAMES::FN_SUBTITLE;
 	m_flags[ACP_FN_EXPERIMENTAL_SHADOWS] = FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS;
-	m_flags[ACP_FN_SCRIPT_PAUSE] = FLAG_NAMES::FN_SCRIPT_PAUSE;
+	m_flags[ACP_FN_SKIP_PAUSE] = FLAG_NAMES::FN_SKIP_PAUSE;
 
 	for (auto it = m_flags.begin(); it != m_flags.end(); ++it) {
         m_flagsToString.emplace(it->second, it->first);
