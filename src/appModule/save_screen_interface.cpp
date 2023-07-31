@@ -176,7 +176,10 @@ std::string SaveScreenInterface::getNextScreenshotFilename()
 	time_t tTime = time ( NULL );
 	tm * tmTime = localtime ( &tTime );
 	char timestr[28];
-	strftime( timestr, 24, "-%y.%m.%d-%H.%M.%S.jpg", tmTime );
+	if (imageCompressionLoss)
+		strftime( timestr, 24, "-%y.%m.%d-%H.%M.%S.jpg", tmTime );
+	else
+		strftime( timestr, 24, "-%y.%m.%d-%H.%M.%S.png", tmTime );
 
 	tempName = snapBaseName +timestr;
 	return tempName;

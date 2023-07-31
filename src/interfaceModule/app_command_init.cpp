@@ -199,6 +199,7 @@ void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES>
 	m_flags[ACP_FN_SUBTITLE] = FLAG_NAMES::FN_SUBTITLE;
 	m_flags[ACP_FN_EXPERIMENTAL_SHADOWS] = FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS;
 	m_flags[ACP_FN_SKIP_PAUSE] = FLAG_NAMES::FN_SKIP_PAUSE;
+	m_flags[ACP_FN_IMAGE_COMPRESSION_LOSS] = FLAG_NAMES::FN_IMAGE_COMPRESSION_LOSS;
 
 	for (auto it = m_flags.begin(); it != m_flags.end(); ++it) {
         m_flagsToString.emplace(it->second, it->first);

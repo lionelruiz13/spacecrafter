@@ -245,6 +245,7 @@
 #define SCK_FLAG_PERSONAL                   "flag_personal"
 #define SCK_FLAG_PERSONEQ                   "flag_personeq"
 #define SCK_FLAG_SKIP_PAUSE                 "flag_skip_pause"
+#define SCK_FLAG_IMAGE_COMPRESSION_LOSS     "flag_image_compression_loss"
 #define SCK_FLAG_NAUTICAL_RA                "flag_nautical_ra"
 #define SCK_FLAG_NAUTICAL_ALT               "flag_nautical_alt"
 #define SCK_FLAG_OBJECT_COORDINATES         "flag_object_coordinates"

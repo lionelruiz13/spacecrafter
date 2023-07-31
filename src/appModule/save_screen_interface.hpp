@@ -78,6 +78,14 @@ public:
         snapBaseName = _value;
     }
 
+	bool getImageCompressionLoss(){
+		return imageCompressionLoss;
+	}
+
+	void setImageCompressionLoss(bool b){
+		imageCompressionLoss = b;
+	}
+
 	void update();
 private:
     void writeScreenshot(const std::string &filename, int idx);
@@ -106,6 +114,8 @@ private:
 	VkImageMemoryBarrier postImageBarrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, VK_ACCESS_TRANSFER_READ_BIT, 0, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_UNDEFINED, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, VK_NULL_HANDLE, {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1}};
 	VkBufferMemoryBarrier postBufferBarrier {VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER, nullptr, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_HOST_READ_BIT, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, VK_NULL_HANDLE, 0, 0};
 	VkBufferImageCopy copyInfo {};
+
+	bool imageCompressionLoss;
 };
 
 #endif //SAVE_SCREEN_INTERFACE_HPP

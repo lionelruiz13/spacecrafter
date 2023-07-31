@@ -1014,6 +1014,11 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !scriptInterface->isSkipPauseDisabled();
 			scriptInterface->setSkipPauseDisabled(newval);
 			break;
+		case FLAG_NAMES::FN_IMAGE_COMPRESSION_LOSS:
+			if (flag_value == FLAG_VALUES::FV_TOGGLE)
+				newval = !saveScreenInterface->getImageCompressionLoss();
+			saveScreenInterface->setImageCompressionLoss(newval);
+			break;
 		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS:
 			switch (flag_value) {
 				case FLAG_VALUES::FV_TOGGLE:
