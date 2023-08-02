@@ -31,6 +31,7 @@
 #include <mutex>
 #include <string>
 #include <memory>
+#include <png.h>
 #include "tools/no_copy.hpp"
 #include <vulkan/vulkan.h>
 #include "EntityCore/Tools/SafeQueue.hpp"
@@ -89,6 +90,7 @@ public:
 	void update();
 private:
     void writeScreenshot(const std::string &filename, int idx);
+	void write_png_image(const std::string &file, int idx);
     std::string getNextScreenshotFilename();
 	void mainloop();
 
@@ -115,6 +117,7 @@ private:
 	VkBufferMemoryBarrier postBufferBarrier {VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER, nullptr, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_HOST_READ_BIT, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, VK_NULL_HANDLE, 0, 0};
 	VkBufferImageCopy copyInfo {};
 
+	png_bytep *row_pointers = NULL;
 	bool imageCompressionLoss;
 };
 

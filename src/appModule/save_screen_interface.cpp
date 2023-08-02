@@ -168,6 +168,176 @@ void SaveScreenInterface::writeScreenshot(const std::string &fileName, int idx)
 	saveScreen->saveScreenBuffer(fileName, idx);
 }
 
+void SaveScreenInterface::write_png_image(const std::string &file, int idx)
+{
+	int length = file.length();
+	char *filename = new char[length + 1];
+	strcpy(filename, file.c_str());
+	png_byte** row_pointers; // pointer to image bytes
+    FILE* fp; // file for image
+	unsigned char *src = static_cast<unsigned char *>(pBuffers[idx]) + 4 * minWH * (minWH - 1);
+
+    row_pointers = (png_byte**)malloc(sizeof(png_byte*) * height);
+    if (!row_pointers)
+    {
+        printf("Allocation failed\n");
+	    //free allocated memory
+	    for (unsigned int i = 0; i < height; i++)
+	    {
+	        if (row_pointers[i])
+	        {
+	            free(row_pointers[i]);
+	        }
+	    }
+	    if (row_pointers)
+	    {
+	        free(row_pointers);
+	    }
+		return;
+    }
+    for (unsigned int i = 0; i < height; i++)
+    {
+        row_pointers[i] = (png_byte*)malloc(4*width);
+        if (!row_pointers[i])
+        {
+            printf("Allocation failed\n");
+			printf("Allocation failed\n");
+		    //free allocated memory
+		    for (unsigned int i = 0; i < height; i++)
+		    {
+		        if (row_pointers[i])
+		        {
+		            free(row_pointers[i]);
+		        }
+		    }
+		    if (row_pointers)
+		    {
+		        free(row_pointers);
+		    }
+			return;
+        }
+    }
+    // fill image with color
+    for (unsigned int y = height - 1; y >= 0 && y < height; y--)
+    {
+        for (unsigned int x = 0; x < width*4; x+=4)
+        {
+            row_pointers[y][x] = src[2]; // R component
+            row_pointers[y][x + 1] = src[1]; // G component
+            row_pointers[y][x + 2] = src[0]; // B component
+            row_pointers[y][x + 3] = 255; //a
+			src += 4;
+        }
+		src -= 2 * 4 * minWH;
+    }
+
+    fp = fopen(filename, "w+"); //create file for output
+    if (!fp)
+    {
+        printf("Open file failed\n");
+		printf("Allocation failed\n");
+		if (fp)
+	    {
+	        fclose(fp);
+	    }
+	    //free allocated memory
+	    for (unsigned int i = 0; i < height; i++)
+	    {
+	        if (row_pointers[i])
+	        {
+	            free(row_pointers[i]);
+	        }
+	    }
+	    if (row_pointers)
+	    {
+	        free(row_pointers);
+	    }
+		return;
+    }
+    png_struct* png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL); //create structure for write
+    if (!png)
+    {
+        printf("Create write struct failed\n");
+		printf("Allocation failed\n");
+		if (fp)
+	    {
+	        fclose(fp);
+	    }
+	    //free allocated memory
+	    for (unsigned int i = 0; i < height; i++)
+	    {
+	        if (row_pointers[i])
+	        {
+	            free(row_pointers[i]);
+	        }
+	    }
+	    if (row_pointers)
+	    {
+	        free(row_pointers);
+	    }
+		return;
+    }
+    png_infop info = png_create_info_struct(png); // create info structure
+    if (!info)
+    {
+        printf("Create info struct failed\n");
+		printf("Allocation failed\n");
+		if (fp)
+	    {
+	        fclose(fp);
+	    }
+	    //free allocated memory
+	    for (unsigned int i = 0; i < height; i++)
+	    {
+	        if (row_pointers[i])
+	        {
+	            free(row_pointers[i]);
+	        }
+	    }
+	    if (row_pointers)
+	    {
+	        free(row_pointers);
+	    }
+		return;
+    }
+    if (setjmp(png_jmpbuf(png))) // this is some routine for errors?
+    {
+        printf("setjmp failed\n");
+    }
+    png_init_io(png, fp); //initialize file output
+    png_set_IHDR( //set image properties
+        png, //pointer to png_struct
+        info, //pointer to info_struct
+        width, //image width
+        height, //image height
+        8, //color depth
+        PNG_COLOR_TYPE_RGBA, //color type
+        PNG_INTERLACE_NONE, //interlace type
+        PNG_COMPRESSION_TYPE_DEFAULT, //compression type
+        PNG_FILTER_TYPE_DEFAULT //filter type
+        );
+    png_write_info(png, info); //write png image information to file
+    png_write_image(png, row_pointers); //the thing we gathered here for
+    png_write_end(png, NULL);
+    //close file
+    if (fp)
+    {
+        fclose(fp);
+    }
+    //free allocated memory
+    for (unsigned int i = 0; i < height; i++)
+    {
+        if (row_pointers[i])
+        {
+            free(row_pointers[i]);
+        }
+    }
+    if (row_pointers)
+    {
+        free(row_pointers);
+    }
+}
+
 //! Return the next sequential screenshot filename to use
 std::string SaveScreenInterface::getNextScreenshotFilename()
 {
@@ -192,8 +362,12 @@ void SaveScreenInterface::update()
 	if (asyncEngine) {
 		while (!pendingIdx.emplace({fileNameNextScreenshot, bufferIdx}))
 			SDL_Delay(10);
-	} else
-		writeScreenshot(fileNameNextScreenshot, bufferIdx);
+	} else{
+		if (imageCompressionLoss)
+			writeScreenshot(fileNameNextScreenshot, bufferIdx);
+		else
+			write_png_image(fileNameNextScreenshot, bufferIdx);
+	}
 	shouldCapture = false;
 }
 
@@ -202,7 +376,10 @@ void SaveScreenInterface::mainloop()
 	std::pair<std::string, int> args;
 	pendingIdx.acquire();
 	while (pendingIdx.pop(args)) {
-		writeScreenshot(args.first, args.second);
+		if (imageCompressionLoss)
+			writeScreenshot(args.first, args.second);
+		else
+			write_png_image(args.first, args.second);
 	}
 	pendingIdx.release();
 }
