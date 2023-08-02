@@ -553,6 +553,20 @@ public:
 
     //! Return the selected anchor name
     std::string querySelectedAnchorName();
+
+    void setDefaultSunBrightness(){
+        ssystem->setDefaultHaloSize();
+    }
+
+    void setDefaultSunBrightness(double f){
+        ssystem->setDefaultHaloSize(f);
+        ssystem->setHaloSize(f);
+    }
+
+    void setSunBrightness(double f){
+        ssystem->setHaloSize(f);
+    }
+
 private:
     //! Select current system
     void selectSystem();

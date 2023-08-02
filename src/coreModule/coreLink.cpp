@@ -450,6 +450,16 @@ void CoreLink::moonSetDefaultBrightness() {
 	core->atmosphere->setDefaultMoonBrightness();
 }
 
+//! Set sun brightness
+void CoreLink::sunSetBrightness(double f) {
+	core->ssystemFactory->setSunBrightness(f);
+}
+
+//! Set default sun brightness
+void CoreLink::sunSetDefaultBrightness() {
+	core->ssystemFactory->setDefaultSunBrightness();
+}
+
 //! Set flag for activating atmospheric refraction correction
 void CoreLink::atmosphericRefractionSetFlag(bool b) {
 	core->FlagAtmosphericRefraction = b;

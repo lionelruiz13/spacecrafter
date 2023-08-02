@@ -1638,6 +1638,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 	switch(parserSet) {
 		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : if (setValue==W_DEFAULT) coreLink->atmosphereSetDefaultFadeDuration(); else coreLink->atmosphereSetFadeDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_MOON_BRIGHTNESS : if (setValue==W_DEFAULT) coreLink->moonSetDefaultBrightness(); else coreLink->moonSetBrightness(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_SUN_BRIGHTNESS : if (setValue==W_DEFAULT) coreLink->sunSetDefaultBrightness(); else coreLink->sunSetBrightness(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION: coreLink->constellationSetArtFadeDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(setValue)); break;

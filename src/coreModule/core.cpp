@@ -477,6 +477,7 @@ void Core::init(const InitParser& conf)
 	atmosphere->setFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
 	atmosphere->setDefaultFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
 	atmosphere->setDefaultMoonBrightness(conf.getDouble(SCS_VIEWING,SCK_MOON_BRIGHTNESS));
+	ssystemFactory->setDefaultSunBrightness(conf.getDouble(SCS_VIEWING,SCK_SUN_BRIGHTNESS));
 
 	// Viewing section
 	asterisms->setFlagLines( conf.getBoolean(SCS_VIEWING,SCK_FLAG_CONSTELLATION_DRAWING));

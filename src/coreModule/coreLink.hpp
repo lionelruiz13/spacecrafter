@@ -854,10 +854,14 @@ public:
 	void atmosphereSetFadeDuration(float f);
 	//! Set default atmosphere fade duration
 	void atmosphereSetDefaultFadeDuration();
-	//! Set default moon brightness
+	//! Set moon brightness
 	void moonSetBrightness(double f);
 	//! Set default moon brightness
 	void moonSetDefaultBrightness();
+	//! Set sun brightness
+	void sunSetBrightness(double f);
+	//! Set default sun brightness
+	void sunSetDefaultBrightness();
 	//! Set flag for activating atmospheric refraction correction
 	void atmosphericRefractionSetFlag(bool b);
 	//! Get flag for activating atmospheric refraction correction

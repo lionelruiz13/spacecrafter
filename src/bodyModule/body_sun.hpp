@@ -68,6 +68,14 @@ public:
 		big_halo_size = s;
 	}
 
+	void setDefaultHaloSize(float s){
+		big_halo_size = s;
+	}
+
+	void setDefaultHaloSize(){
+		big_halo_size = 1;
+	}
+
 	//big_halo_size
 	void setBigHaloSize(int bhs);
 
