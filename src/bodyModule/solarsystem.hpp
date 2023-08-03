@@ -77,6 +77,10 @@ public:
 		return flagMoonScale;
 	}
 
+	double getHaloSize(){
+		return (getSun()->getBigHaloSize());
+	}
+
 	void setDefaultHaloSize(){
 		getSun()->setDefaultHaloSize();
 	}

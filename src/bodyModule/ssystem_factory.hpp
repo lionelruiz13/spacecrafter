@@ -554,6 +554,10 @@ public:
     //! Return the selected anchor name
     std::string querySelectedAnchorName();
 
+    double getSunBrightness() {
+        return (ssystem->getHaloSize());
+    }
+
     void setDefaultSunBrightness(){
         ssystem->setDefaultHaloSize();
     }
