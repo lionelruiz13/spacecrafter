@@ -118,7 +118,10 @@ void SaveScreenInterface::readScreenShot(VkCommandBuffer cmd, VkImage image)
 		case ReadScreen::VIDEO : {
 			std::ostringstream ss;
 			ss << std::setw(6) << std::setfill('0') << fileNumber;
-			fileNameNextScreenshot = videoBaseName + "-" + ss.str() + ".jpg";
+			if (imageCompressionLoss)
+				fileNameNextScreenshot = videoBaseName + "-" + ss.str() + ".jpg";
+			else
+				fileNameNextScreenshot = videoBaseName + "-" + ss.str() + ".png";
 			fileNumber++;
 			shouldCapture = true;
 			}
