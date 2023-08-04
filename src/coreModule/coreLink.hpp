@@ -607,6 +607,14 @@ public:
 	// send param tesselation, name design the param to change to value
 	void planetTesselation(std::string name, int value);
 
+	std::string getSelectedPlanetEnglishName(){
+		return (core->getSelectedPlanetEnglishName());
+	}
+
+	std::string getHomePlanetEnglishName(){
+		return (core->getHomePlanetEnglishName());
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	// Fog---------------------------
 	////////////////////////////////////////////////////////////////////////////////
@@ -893,6 +901,10 @@ public:
 
 	void setLocalVision(const Vec3d& _pos) {
 		core->navigation->setLocalVision(_pos);
+	}
+
+	bool getFlagTracking() {
+		return (core->getFlagTracking());
 	}
 
     CoreLink(std::shared_ptr<Core> _core) {

@@ -215,7 +215,14 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 		sR.rec_file << "set home_planet " << CoreLink::instance->getObserverHomePlanetEnglishName() << std::endl;
 		sR.rec_file << "moveto lat " << CoreLink::instance->observatoryGetLatitude() << " lon " << CoreLink::instance->observatoryGetLongitude() << " alt " << CoreLink::instance->observatoryGetAltitude() << " duration 0" << std::endl;
 		sR.rec_file << "date utc " << CoreLink::instance->getDateYear() << ":" << CoreLink::instance->getDateMonth() << ":" << CoreLink::instance->getDateDay() << "T" << CoreLink::instance->getDateHour() << ":" << CoreLink::instance->getDateMinute() << ":" << CoreLink::instance->getDateSecond() << std::endl;
-		sR.rec_file << "deselect" << std::endl;
+		if (CoreLink::instance->getSelectedPlanetEnglishName() == CoreLink::instance->getHomePlanetEnglishName())
+			sR.rec_file << "select planet home_planet duration 5" << std::endl;
+		else
+			sR.rec_file << "deselect" << std::endl;
+		if (CoreLink::instance->getFlagTracking())
+			sR.rec_file << "flag track_object on" << std::endl;
+		else
+			sR.rec_file << "flag track_object off" << std::endl;
 		cLog::get()->write("ScriptMgr::Now recording actions to file: " + script_filename, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 	} else {
 		cLog::get()->write("ScriptMgr::Error opening script file for writing: " + script_filename, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
