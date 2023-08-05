@@ -33,6 +33,7 @@
 #include "tools/vecmath.hpp"
 #include "tools/rotator.hpp"
 #include "tools/no_copy.hpp"
+#include "experimentalModule/ModularBodyPtr.hpp"
 
 class Body;
 class AnchorPoint;
@@ -227,6 +228,7 @@ private:
 	double start_alt, end_alt;
 	float move_to_coef, move_to_mult;
 
+	ModularBodyPtr parent;
 	std::shared_ptr<AnchorPoint> anchor; // Current anchor
 	std::shared_ptr<AnchorPoint> anchorAlt; // Alternate anchor
 	Rotator<double> rotator;

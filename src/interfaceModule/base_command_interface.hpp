@@ -292,6 +292,8 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_LOADING                   "loading"
 #define W_BACKGROUND				"background"
 #define W_MINIMAL					"minimal"
+#define W_REPLACE					"replace"
+#define W_RECURSIVE					"recursive"
 
 // name of the arguments maps appCommandInit
 //CommandsNames

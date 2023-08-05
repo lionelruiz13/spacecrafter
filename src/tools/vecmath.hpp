@@ -283,6 +283,7 @@ public:
 	inline Matrix4 operator*(const Matrix4<T>&) const;
 	inline Matrix4<T> multiplyFast(const Matrix4<T>&) const;
 	inline Matrix4<T> multiplyInversed(const Matrix4<T>&) const;
+	inline void multiplyTranslation(const Vector3<T>&);
 
 	inline Vector3<T> operator*(const Vector3<T>&) const;
 	inline Vector3<T> multiplyWithoutTranslation(const Vector3<T>& a) const;
@@ -2071,6 +2072,20 @@ template<class T> Matrix4<T> Matrix4<T>::multiplyInversed(const Matrix4<T> &a) c
 	}};
 	#undef MATMUL
 	#undef MATMUL2
+}
+
+//! Apply pre-translation to this matrix
+//! @param a the right operand.
+//! @return this*Matrix4<T>::translation(pos).
+template<class T> void Matrix4<T>::multiplyTranslation(const Vector3<T> &a)
+{
+	#define MATMUL(R) (r[R] * a.v[0] + r[R+4] * a.r[1] + r[R+8] * a.r[2])
+	float x = MATMUL(0);
+	float y = MATMUL(1);
+	r[14] += MATMUL(2);
+	r[12] += x;
+	r[13] += y;
+	#undef MATMUL
 }
 
 //! Matrix addition.

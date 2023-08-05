@@ -321,7 +321,7 @@ private:
 
 class LocationOrbit : public Orbit {
 public:
-	LocationOrbit(double _lon, double _lat, double _alt, double parentRadius, double parentPeriod, double parentOffset);
+	LocationOrbit(double _lon, double _lat, double _alt, double parentRadius, double parentPeriod=0, double parentOffset=0);
 
 	virtual ~LocationOrbit();
 

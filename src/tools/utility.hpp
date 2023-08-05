@@ -38,6 +38,13 @@
 #include <ctime>
 #include "tools/vecmath.hpp"
 
+constexpr uint32_t str4(const char *str) {
+	return str[0] | str[1] * 0x100 | str[2] * 0x10000 | str[3] * 0x1000000;
+}
+
+constexpr uint16_t str2(const char *str) {
+	return str[0] | str[1] * 0x100;
+}
 
 // template <typename T> T std::min(T a, T b){
 //    if(a<b)
@@ -149,8 +156,30 @@ public:
 
 	static float clamp( float value, float min, float max ) ;
 	static bool isBoolean(const std::string &a);
-	static bool isTrue(const std::string &a);
-	static bool isFalse(const std::string &a);
+	static inline bool isTrue(const std::string &a) {
+		switch (a.size()) {
+			case 4:
+				return (*reinterpret_cast<const uint32_t *>(a.data()) & 0x4f4f4f4f) == str4("TRUE");
+			case 2:
+				return (*reinterpret_cast<const uint16_t *>(a.data()) & 0x4f4f) == str2("ON");
+			case 1:
+				return a.first() == '1';
+			default:
+				return false;
+		}
+	}
+	static inline bool isFalse(const std::string &a) {
+		switch (a.size()) {
+			case 5:
+				return (*reinterpret_cast<const uint32_t *>(a.data()) & 0x4f4f4f4f) == str4("FALSE");
+			case 3:
+				return (*reinterpret_cast<const uint32_t *>(a.data()) & 0x4f4f4f) == str4("OFF");
+			case 1:
+				return a.first() == '0';
+			default:
+				return false;
+		}
+	}
 };
 
 #endif

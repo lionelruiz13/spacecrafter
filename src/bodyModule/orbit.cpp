@@ -1100,7 +1100,7 @@ void stillOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, doubl
 }
 
 LocationOrbit::LocationOrbit(double _lon, double _lat, double _alt, double parentRadius, double parentPeriod, double parentOffset) :
-	lon((_lon+parentOffset)*M_PI/180), lat(_lat), alt(_alt/AU+parentRadius), JDToRotation((2*M_PI)/parentPeriod)
+	lon((_lon+parentOffset)*M_PI/180), lat(_lat), alt(_alt/AU+parentRadius), JDToRotation(parentPeriod ? (2*M_PI)/parentPeriod : 0)
 {
 }
 
@@ -1110,11 +1110,7 @@ LocationOrbit::~LocationOrbit()
 
 void LocationOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
 {
-	Vec3d tmp;
-	Utility::spheToRect(lon+JD*JDToRotation, lat, tmp);
-	v[0] = tmp[0] * alt;
-	v[1] = tmp[1] * alt;
-	v[2] = tmp[2] * alt;
+	Utility::spheToRect(lon+JD*JDToRotation, lat, alt, *reinterpret_cast<Vec3d *>(v));
 }
 
 linearOrbit::linearOrbit(double _t_start, double _t_end, double *_posInitial, double *_posFinal )

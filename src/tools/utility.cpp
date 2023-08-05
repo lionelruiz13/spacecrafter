@@ -490,23 +490,3 @@ bool Utility::isBoolean(const std::string &a)
 	else
 		return false;
 }
-
-bool Utility::isTrue(const std::string &a)
-{
-	std::string _a=a;
-	std::transform(a.begin(), a.end(),_a.begin(), ::tolower);
-	if (_a=="true" || _a == "1" || _a== "on" )
-		return true;
-	else
-		return false;
-}
-
-bool Utility::isFalse(const std::string &a)
-{
-	std::string _a=a;
-	std::transform(a.begin(), a.end(),_a.begin(), ::tolower);
-	if (_a=="false" || _a =="0" || _a=="off" )
-		return true;
-	else
-		return false;
-}

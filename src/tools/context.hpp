@@ -8,6 +8,7 @@
 #include "EntityCore/Core/VulkanMgr.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
 #include "EntityCore/Resource/Collector.hpp"
+#include "experimentalModule/Renderer.hpp"
 class HipStarMgr;
 class DrawHelper;
 class QueueFamily;
@@ -80,6 +81,7 @@ public:
     ~Context();
 
     static Context *instance;
+    Renderer renderer;
     std::unique_ptr<CaptureMetrics> stat;
     std::unique_ptr<DrawHelper> helper;
     std::unique_ptr<Collector> collector;

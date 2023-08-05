@@ -41,6 +41,7 @@ class Texture;
 class Set;
 
 class Halo {
+	friend class Renderer; // For now, Renderer use internal globals
 public:
 
 	Halo()=delete;

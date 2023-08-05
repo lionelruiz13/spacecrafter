@@ -11,7 +11,7 @@
 #include "mediaModule/video_player.hpp"
 #include "starModule/hip_star_mgr.hpp"
 
-#define MAX_CMDS 128
+#define MAX_CMDS 64
 #define WRITE_PRINT(x, y, tx, ty) *(ptr++) = x; *(ptr++) = y; *(ptr++) = data.texture->tx; *ptr = data.texture->ty; ptr += 3
 #define WRITE_PRINTH(x, y, t1x, t1y, t2x, t2y) *(ptr++) = x; *(ptr++) = y; *(ptr++) = t1x; *(ptr++) = t1y; *(ptr++) = t2x; *(ptr++) = t2y
 

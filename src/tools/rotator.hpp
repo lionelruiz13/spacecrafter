@@ -58,13 +58,13 @@ public:
     inline bool moving() const {
         return onTransition;
     }
-    //! Increment the internal counter of delta_time ticks
+    //! Increment the internal counter of deltaTime
     //! @param updateCache should this update perform an update of the cached current quaternion and matrix
     //! @return true if the angle is modified with this update, false otherwise
-    inline bool update(int delta_ticks, bool updateCache = false) {
+    inline bool update(float deltaTime, bool updateCache = false) {
         if (!onTransition)
             return false;
-        timer += delta_ticks;
+        timer += deltaTime;
         if (timer >= timerTarget) {
             setRotation(dst);
         } else {
