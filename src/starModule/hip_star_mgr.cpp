@@ -751,10 +751,10 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		}
 		int zone=0;
 		for (GeodesicSearchInsideIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty());
+			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty(), hide_stars);
 		}
 		for (GeodesicSearchBorderIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty());
+			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty(), hide_stars);
 		}
 
 	}
@@ -1122,4 +1122,23 @@ std::vector<std::string> HipStarMgr::listMatchingObjectsI18n( const std::string&
 	sort(result.begin(), result.end());
 
 	return result;
+}
+
+void HipStarMgr::add_hide_stars(int hip)
+{
+	std::string name = getCommonName(hip);
+	auto it = hide_stars.find(name);
+	if (it != hide_stars.end()) {
+		it->second = true;
+	} else {
+		hide_stars.insert(std::pair<std::string, bool>(name, true));
+	}
+}
+
+void HipStarMgr::remove_hide_stars(int hip)
+{
+	std::string name = getCommonName(hip);
+	auto it = hide_stars.find(name);
+	if (it != hide_stars.end())
+		it->second = false;
 }

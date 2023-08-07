@@ -458,6 +458,10 @@ public:
 	void setColorStarTable(int p, Vec3f a);
 	void updateFramebuffer(VkCommandBuffer cmd);
 	void syncFramebuffer(VkCommandBuffer cmd);
+
+	void add_hide_stars(int hip);
+	void remove_hide_stars(int hip);
+
 private:
 	//! Load all the stars from the files.
 	void load_data(const InitParser &conf);
@@ -480,6 +484,7 @@ private:
 	bool isolateSelected=false;
 	std::map<std::string, bool> selected_star;
 	std::vector<int> selected_stars;
+	std::map<std::string, bool> hide_stars;
 
 	s_texture* starTexture; //! star texture
 
@@ -504,6 +509,7 @@ private:
 
 	static std::map<int, std::string> sci_names_map_i18n;
 	static std::map<std::string, int> sci_names_index_i18n;
+
 
 	static double current_JDay;
 

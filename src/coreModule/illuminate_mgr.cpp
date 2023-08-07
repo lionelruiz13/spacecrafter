@@ -126,6 +126,12 @@ void IlluminateMgr::load(int num, const Vec3f& _color, double _size, double rota
 {
 	if (num>NR_OF_HIP)
 		return;
+	if (_size <= 0){
+		hip_stars->add_hide_stars(num);
+		remove(num);
+		return;
+	} else
+		hip_stars->remove_hide_stars(num);
 	Object selected_object = hip_stars->searchHP(num).get();
 	//Vec3f color = selected_object.getRGB();
 	double ra, de;

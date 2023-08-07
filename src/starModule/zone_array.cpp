@@ -287,7 +287,7 @@ template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 
 
 template<class Star>
-void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars,  bool atmosphere, bool isolateSelected) const
+void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars,  bool atmosphere, bool isolateSelected, std::map<std::string, bool> hide_stars) const
 {
 	SpecialZoneData<Star> *const z = getZones() + index;
 	Vec3d xy;
@@ -300,6 +300,12 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 		double alt, az;
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
 		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+		std::string starnames = s->getNameI18n();
+		if (hide_stars.find(starnames) != hide_stars.end()){
+			std::map<std::string, bool>::iterator it = hide_stars.find(starnames);
+			if (it->second == true)
+				continue;
+		}
 
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
