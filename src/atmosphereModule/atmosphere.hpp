@@ -136,6 +136,10 @@ public:
 	// indicates which atmosphere model will be calculated according to the planet
 	void setModel(ATMOSPHERE_MODEL atmModel);
 
+	inline float getMoonBrightness() {
+		return (skyb->getMoonBrightness());
+	}
+
 	inline void setMoonBrightness(float b) {
 		skyb->setMoonBrightness(b);
 	}

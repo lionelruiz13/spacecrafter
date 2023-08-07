@@ -556,6 +556,7 @@ void App::init()
 
 	switchMode("in_solarsystem");
 	core->init(conf);
+	scriptInterface->setSkipPauseDisabled(conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_SKIP_PAUSE));
 
 	// Navigation section
 	PresetSkyTime 		= conf.getDouble (SCS_NAVIGATION, SCK_PRESET_SKY_TIME); //,2451545.);
