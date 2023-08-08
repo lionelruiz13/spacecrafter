@@ -2,6 +2,7 @@
 #define MODULAR_SYSTEM_HPP_
 
 #include "ModularBodyPtr.hpp"
+#include "ModularBody.hpp"
 
 class ModularSystem : public ModularBody {
 public:

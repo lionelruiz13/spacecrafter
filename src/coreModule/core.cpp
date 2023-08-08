@@ -157,7 +157,7 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	oort =  std::make_unique<Oort>();
 	dso3d = std::make_unique<Dso3d>();
 	tully = std::make_unique<Tully>();
-	Context::instance->renderer.init(tone_reproductor);
+	Context::instance->renderer.init(tone_converter);
 	object_pointer_visibility = 1;
 }
 

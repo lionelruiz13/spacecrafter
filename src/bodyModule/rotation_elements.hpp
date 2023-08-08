@@ -29,21 +29,15 @@
 #define J2000 2451545.0
 
 // Class used to store orbital elements
-class RotationElements {
-public:
-	RotationElements(void)
-		: period(1.), offset(0.), epoch(J2000),
-		  obliquity(0.), ascendingNode(0.), precessionRate(0.),
-		  sidereal_period(0.), axialTilt(0.) {}
-	float period;        // rotation period
-	float offset;        // rotation at epoch
-	double epoch;
-	float obliquity;     // tilt of rotation axis w.r.t. ecliptic
-	float ascendingNode; // long. of ascending node of equator on the ecliptic
-	float precessionRate; // rate of precession of rotation axis in rads/day
-	double sidereal_period; // sidereal period (Body year in earth days)
-	float axialTilt; // Only used for tropic lines on planets
+struct RotationElements {
+	float period = 1;        // rotation period
+	float offset = 0;        // rotation at epoch
+	double epoch = J2000;
+	float obliquity = 0;     // tilt of rotation axis w.r.t. ecliptic
+	float ascendingNode = 0; // long. of ascending node of equator on the ecliptic
+	float precessionRate = 0; // rate of precession of rotation axis in rads/day
+	double sidereal_period = 0; // sidereal period (Body year in earth days)
+	float axialTilt = 0; // Only used for tropic lines on planets
 };
 
 #endif // _ROTATION_ELEMENTS_HPP_
-

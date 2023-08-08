@@ -1,7 +1,10 @@
 #ifndef MODULAR_BODY_PTR_HPP_
 #define MODULAR_BODY_PTR_HPP_
 
-#include "ModularBody.hpp"
+#include <vector>
+#include <cstddef>
+
+class ModularBody;
 
 // Safe long-lived ModularBody pointer
 // Prefer raw ModularBody pointer when short-lived
@@ -11,12 +14,7 @@ public:
     {
         ref.push_back(this);
     }
-    inline ModularBodyPtr(ModularBody *body) : ptr(body)
-    {
-        if (body)
-            ++(body->pointerCount);
-        ref.push_back(this);
-    }
+    ModularBodyPtr(ModularBody *body);
     ~ModularBodyPtr();
 
     inline ModularBody &operator*() const {
@@ -35,57 +33,24 @@ public:
         return *ptr;
     }
 
-    inline void operator=(nullptr_t) {
-        if (ptr)
-            --(ptr->pointerCount);
-        ptr = nullptr;
-    }
-    inline ModularBody *operator=(ModularBody *body) {
-        if (ptr)
-            --(ptr->pointerCount);
-        if (ptr = body)
-            ++(ptr->pointerCount);
-    }
+    void operator=(nullptr_t);
+    void operator=(ModularBody *body);
 
     static void redirect(ModularBody *from, ModularBody *to);
-private:
-    ModularBody *ptr;
-    static std::vector<ModularBodyPtr *> ref;
 
     // Allow ModularBody to keep track of their parent body while hidden (thus not considered as a child)
-    friend bool ModularBody::show();
-    friend bool ModularBody::hide();
-    friend bool ModularBody::remove(bool);
-    static inline void rawTrack(ModularBody *&toTrack) {
-        ++toTrack->pointerCount;
-        auto self = reinterpret_cast<ModularBodyPtr *>(&toTrack);
-        ref.push_back(self);
-    }
-    static inline void rawUntrack(ModularBody *&toTrack) {
-        reinterpret_cast<ModularBodyPtr&>(toTrack).~ModularBodyPtr();
-    }
+    static void rawTrack(ModularBody *&toTrack);
+    static void rawUntrack(ModularBody *&toTrack);
+protected:
+    ModularBody *ptr;
+    static std::vector<ModularBodyPtr *> ref;
 };
 
-class ModularBodySelector {
+class ModularBodySelector : public ModularBodyPtr {
 public:
     ~ModularBodySelector();
-    inline void operator=(nullptr_t) {
-        if (ptr) {
-            --(ptr->pointerCount);
-            ptr->deselect();
-        }
-        ptr = nullptr;
-    }
-    inline ModularBody *operator=(ModularBody *body) {
-        if (ptr) {
-            --(ptr->pointerCount);
-            ptr->deselect();
-        }
-        if (ptr = body) {
-            ++(ptr->pointerCount);
-            ptr->select();
-        }
-    }
+    inline void operator=(nullptr_t);
+    inline void operator=(ModularBody *body);
 };
 
 #endif /* end of include guard: MODULAR_BODY_PTR_HPP_ */

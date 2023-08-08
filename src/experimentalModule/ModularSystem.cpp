@@ -1,4 +1,42 @@
 #include "ModularSystem.hpp"
+#include "ModuleLoaderMgr.hpp"
+#include "tools/log.hpp"
+#include "tools/sc_const.hpp"
+
+const Mat4f mat_j2000_to_vsop87(
+    Mat4f::xrotation(-23.4392803055555555556*(M_PI/180)) *
+    Mat4f::zrotation(0.0000275*(M_PI/180))
+);
+
+constexpr uint32_t casify(const char *data) {
+	return ((uint32_t) data[0]) | (((uint32_t) data[1]) << 8) | (((uint32_t) data[2]) << 16) | (((uint32_t) data[3]) << 24);
+}
+
+#define CASE(name, type) case casify(name): return BodyType::type
+
+static inline BodyType strToBodyType(const std::string &str)
+{
+	if (str.size() < 3)
+		return BodyType::CUSTOM_BODY;
+	switch (*(const uint32_t *) str.data()) {
+		CASE("Sun", STAR);
+		CASE("Star", STAR);
+        CASE("Asteroid", MINOR_BODY);
+        CASE("KBO", MINOR_BODY);
+        CASE("Comet", MINOR_BODY);
+		CASE("Planet", CUSTOM_BODY);
+		CASE("Moon", CUSTOM_BODY);
+		CASE("Dwarf", CUSTOM_BODY);
+		CASE("Artificial", CUSTOM_BODY);
+		CASE("Observer", ANCHOR);
+		CASE("Anchor", ANCHOR);
+		CASE("Center", ANCHOR);
+		default:
+			return BodyType::CUSTOM_BODY;
+	}
+}
+
+#undef CASE
 
 ModularSystem::ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info) :
     ModularBody(parent, info), star(this)
@@ -6,7 +44,7 @@ ModularSystem::ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info) :
     isNotIsolated = false;
 }
 
-void ModularBody::cleanUp()
+void ModularSystem::cleanUp()
 {
     // TODO Use another sorting algorithm for elements far from their final position
     ModularBody **pos = sortedSystemBodies.data();
@@ -54,13 +92,13 @@ void ModularSystem::updateSystem()
 void ModularSystem::drawSystem(Renderer &renderer)
 {
     for (auto &module : inComponents)
-        module.draw(renderer, this, matrix);
+        module->draw(renderer, this, mat);
     ModularBody ** const end = sortedSystemBodies.data() + sortedSystemBodies.size();
     for (ModularBody **pos = sortedSystemBodies.data(); pos < end; ++pos) {
         (**pos).draw(renderer);
     }
     for (auto &module : nearComponents)
-        module.draw(renderer, this, matrix);
+        module->draw(renderer, this, mat);
 }
 
 void ModularSystem::loadBody(std::map<std::string, std::string> &param)
@@ -68,7 +106,6 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
     // Avoid string copy and map search
     const std::string &englishName = param["name"];
     const std::string &parentName = param["parent"];
-    const std::string &funcname = param["coord_func"];
 
     if (englishName.empty()) {
         cLog::get()->write("Can't load unnamed body", LOG_TYPE::L_WARNING);
@@ -93,27 +130,27 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         }
     }
 
-    bool close_orbit = !Utility::isFalse(param["close_orbit"]);
-    double orbit_bounding_radius = Utility::strToDouble(param["orbit_bounding_radius"], -1);
-    float radius = Utility::strToDouble(param["radius"]);
+    // bool close_orbit = !Utility::isFalse(param["close_orbit"]);
+    // float orbit_bounding_radius = Utility::strToFloat(param["orbit_bounding_radius"], -1);
+    float radius = Utility::strToFloat(param["radius"]);
 
     // Use J2000 N pole data if available
-	double rot_obliquity = Utility::strToDouble(param["rot_obliquity"],0.)*M_PI/180.;
-	double rot_asc_node  = Utility::strToDouble(param["rot_equator_ascending_node"],0.)*M_PI/180.;
+	float rot_obliquity = Utility::strToFloat(param["rot_obliquity"],0.)*M_PI/180.;
+	float rot_asc_node  = Utility::strToFloat(param["rot_equator_ascending_node"],0.)*M_PI/180.;
 
 	// In J2000 coordinates
-	double J2000_npole_ra = Utility::strToDouble(param["rot_pole_ra"],0.)*M_PI/180.;
-	double J2000_npole_de = Utility::strToDouble(param["rot_pole_de"],0.)*M_PI/180.;
+	float J2000_npole_ra = Utility::strToFloat(param["rot_pole_ra"],0.)*M_PI/180.;
+	float J2000_npole_de = Utility::strToFloat(param["rot_pole_de"],0.)*M_PI/180.;
 
 	// NB: north pole needs to be defined by right hand rotation rule
 	if (param["rot_pole_ra"] != "" || param["rot_pole_de"] != "") {
 		// cout << "Using north pole data for " << englishName << endl;
-		Vec3d J2000_npole;
+		Vec3f J2000_npole;
 		Utility::spheToRect(J2000_npole_ra,J2000_npole_de,J2000_npole);
 
-		Vec3d vsop87_pole(mat_j2000_to_vsop87.multiplyWithoutTranslation(J2000_npole));
+		Vec3f vsop87_pole(mat_j2000_to_vsop87.multiplyWithoutTranslation(J2000_npole));
 
-		double ra, de;
+		float ra, de;
 		Utility::rectToSphe(&ra, &de, vsop87_pole);
 
 		rot_obliquity = (M_PI_2 - de);
@@ -123,81 +160,34 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
 	}
 
     ModularBodyCreateInfo createInfo {
-        .orbit=nullptr,
+        .orbit=ModuleLoaderMgr::instance.loadOrbit(param),
         .englishName=englishName,
         .re={
-            Utility::strToDouble(param["rot_periode"], Utility::strToDouble(param["orbit_period"], 24.))/24.,
-            Utility::strToDouble(param["rot_rotation_offset"],0.),
+            Utility::strToFloat(param["rot_periode"], Utility::strToFloat(param["orbit_period"], 24.f))/24.f,
+            Utility::strToFloat(param["rot_rotation_offset"],0.),
             Utility::strToDouble(param["rot_epoch"], J2000),
             rot_obliquity,
             rot_asc_node,
-            Utility::strToDouble(param["rot_precession_rate"],0.)*M_PI/(180*36525),
+            Utility::strToFloat(param["rot_precession_rate"],0.)*static_cast<float>(M_PI/(180*36525)),
             Utility::strToDouble(param["orbit_visualization_period"],0.),
-            Utility::strToDouble(param["axial_tilt"], 0.)
+            Utility::strToFloat(param["axial_tilt"], 0.)
         },
         .haloColor=param["color"].empty() ? defaultHaloColor : Utility::strToVec3f(param["color"]),
-        .albedo=Utility::strToDouble(param["albedo"]),
-        .radius=radius/AU,
-        .innerRadius=Utility::strToDouble(param["min_distance"], radius*1.2)/AU,
-        .oblateness=Utility::strToDouble(param["oblateness"], 0.0),
-        .solLocalDay=Utility::strToDouble(param["sol_local_day"],1.0),
+        .albedo=Utility::strToFloat(param["albedo"]),
+        .radius=radius/static_cast<float>(AU),
+        .innerRadius=Utility::strToFloat(param["min_distance"], radius*1.2f)/static_cast<float>(AU),
+        .oblateness=Utility::strToFloat(param["oblateness"], 0.0),
+        .solLocalDay=Utility::strToFloat(param["sol_local_day"],1.0),
         .bodyType=strToBodyType(param["type"]),
         .isHaloEnabled=Utility::isTrue(param["halo"]),
+		.altitudeRelativeToRadius=Utility::isFalse("solid")
     };
-
-    if (funcname=="earth_custom") {
-		// Special case to take care of Earth-Moon Barycenter at a higher level than in ephemeris library
-
-		//cout << "Creating Earth orbit...\n" << endl;
-		cLog::get()->write("Creating Earth orbit...", LOG_TYPE::L_INFO);
-		std::unique_ptr<SpecialOrbit> sorb = std::make_unique<SpecialOrbit>("emb_special");
-		if (!sorb->isValid()) {
-			std::string error = std::string("ERROR : can't find position function ") + funcname + std::string(" for ") + englishName + std::string("\n");
-			cLog::get()->write(error, LOG_TYPE::L_ERROR);
-			return;
-		}
-		// NB. moon has to be added later
-		createInfo.orbit = std::make_unique<BinaryOrbit>(std::move(sorb), 0.0121505677733761);
-
-	} else if(funcname == "lunar_custom") {
-		// This allows chaotic Moon ephemeris to be removed once start leaving acurate and sane range
-
-		std::unique_ptr<SpecialOrbit> sorb = std::make_unique<SpecialOrbit>("lunar_special");
-
-		if (!sorb->isValid()) {
-			std::string error = std::string("ERROR : can't find position function ") + funcname + std::string(" for ") + englishName + std::string("\n");
-			cLog::get()->write(error, LOG_TYPE::L_ERROR);
-			return ;
-		}
-
-		createInfo.orbit = std::make_unique<MixedOrbit>(std::move(sorb),
-		                     Utility::strToDouble(param["orbit_period"]),
-		                     SpaceDate::JulianDayFromDateTime(-10000, 1, 1, 1, 1, 1),
-		                     SpaceDate::JulianDayFromDateTime(10000, 1, 1, 1, 1, 1),
-		                     EARTH_MASS + LUNAR_MASS,
-		                     0, 0, 0,
-		                     false);
-
-	} else if (funcname == "still_orbit") {
-		createInfo.orbit = std::make_unique<stillOrbit>(Utility::strToDouble(param["orbit_x"]),
-		                     Utility::strToDouble(param["orbit_y"]),
-		                     Utility::strToDouble(param["orbit_z"]));
-	} else if (funcname == "location_orbit") {
-		createInfo.orbit = std::make_unique<LocationOrbit>(
-			Utility::strToDouble(param["orbit_lon"]),
-			Utility::strToDouble(param["orbit_lat"]),
-			Utility::strToDouble(param["orbit_alt"]),
-			parent->getRadius()
-		);
-	} else {
-		createInfo.orbit = orbitCreator->handle(param);
-		if (createInfo.orbit == nullptr) {
-			std::cout << "something went wrong when creating orbit from "<< englishName << std::endl;
-			cLog::get()->write("Error when creating orbit from " + englishName, LOG_TYPE::L_ERROR);
-		}
+	if (!createInfo.orbit) {
+		cLog::get()->write("Invalid orbit '" + param["coord_func"] + "' for body '" + englishName + "', skip loading this body.", LOG_TYPE::L_ERROR);
+		return;
 	}
 
-    ModularBody *body = parent->createChild();
+    ModularBody *body = parent->createChild(createInfo);
     if (Utility::isTrue(param["bound_to_surface"]))
         body->boundToSurface = true;
     if (Utility::isTrue(param["hidden"]))
@@ -206,27 +196,27 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
     // TODO NEXT TIME !
     // 1 - THIS
     // 2 - BIND TO ssystemFactory (in parallel to current system ?)
-    // 3 - BIND TO Observer
+    // 3 - IMPLEMENT BASIC ELEMENTS
 }
 
 ModularBody *ModularSystem::findBodyAt(const std::pair<float, float> &searchPos) const
 {
     float mostLikely = 0;
     ModularBody *ret = nullptr;
-    for (auto &child : sortedSystemBodies) {
-        if (child.isVisible & child.isBodyVisible) {
-            float squaredDistance = child.screenPos.first - searchPos.first;
+    for (auto child : sortedSystemBodies) {
+        if (*child) {
+            float squaredDistance = child->screenPos.first - searchPos.first;
             squaredDistance *= squaredDistance;
             {
-                float tmp = child.screenPos.second - searchPos.second;
+                float tmp = child->screenPos.second - searchPos.second;
                 tmp *= tmp;
                 squaredDistance += tmp;
             }
-            if (squaredDistance < child.screenSize * child.screenSize + 0.0001) {
-                const float likely = std::min(child.screenSize, 0.001) / squaredDistance;
+            if (squaredDistance < child->screenSize * child->screenSize + 0.0001f) {
+                const float likely = std::min(child->screenSize, 0.001f) / squaredDistance;
                 if (mostLikely <= likely) {
                     mostLikely = likely;
-                    ret = &child;
+                    ret = child;
                 }
             }
         }

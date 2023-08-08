@@ -1,6 +1,8 @@
 #ifndef BODY_MODULE_HPP_
 #define BODY_MODULE_HPP_
 
+#include "tools/vecmath.hpp"
+
 class ModularBody;
 class Renderer;
 
@@ -16,6 +18,7 @@ enum class BodyModuleType : unsigned char {
     TAIL,
     ATMOSPHERE,
     AXIS,
+    NB_MODULE_TYPE // For array size
 };
 
 enum class RelativePosition : unsigned char {
@@ -51,11 +54,12 @@ public:
     virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
     // Compare an object position and radius with this ModularBody
     virtual RelativePosition compare(const Vec3f &localPos, const Vec3f &zAxis, float radius) {
-        const float distance = pos.length();
+        const float distance = localPos.lengthSquared();
         radius += boundingRadius;
+        radius *= radius;
         if (distance > radius) {
             const float tmp = localPos.dot(zAxis);
-            if ((localPos - zAxis * tmp).lengthSquared() > radius*radius)
+            if ((localPos - zAxis * tmp).lengthSquared() > radius)
                 return RelativePosition::ANY;
             return (tmp > 0) ? RelativePosition::BACK : RelativePosition::FRONT;
         } else {

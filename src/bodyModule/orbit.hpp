@@ -10,6 +10,7 @@
 #ifndef _ORBIT_H_
 #define _ORBIT_H_
 
+#include "experimentalModule/ModularBodyPtr.hpp"
 #include "tools/vecmath.hpp"
 #include <string>
 #include <memory>
@@ -19,6 +20,7 @@ typedef void (PositionFunctionType)(double jd,double xyz[3]);
 typedef void (OsculatingFunctionType)(double jd0,double jd,double xyz[3]);
 
 class Body;
+class ModularBody;
 
 class Orbit {
 public:
@@ -372,6 +374,25 @@ public:
 
 private:
 	std::shared_ptr<Body> bodyA, bodyB;
+	double a,b;
+};
+
+class BarycenterOrbit2 : public Orbit {
+public:
+	BarycenterOrbit2() = delete;
+	BarycenterOrbit2(ModularBody *bodyA, ModularBody *bodyB, double a, double b);
+	virtual ~BarycenterOrbit2() { }
+
+	void positionAtTimevInVSOP87Coordinates(double, double, double*) const;
+
+	bool useParentPrecession(double) const {
+		return false;
+	}
+
+	std::string saveOrbit() const;
+
+private:
+	ModularBodyPtr bodyA, bodyB;
 	double a,b;
 };
 

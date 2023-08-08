@@ -163,7 +163,7 @@ public:
 			case 2:
 				return (*reinterpret_cast<const uint16_t *>(a.data()) & 0x4f4f) == str2("ON");
 			case 1:
-				return a.first() == '1';
+				return a.front() == '1';
 			default:
 				return false;
 		}
@@ -175,7 +175,7 @@ public:
 			case 3:
 				return (*reinterpret_cast<const uint32_t *>(a.data()) & 0x4f4f4f) == str4("OFF");
 			case 1:
-				return a.first() == '0';
+				return a.front() == '0';
 			default:
 				return false;
 		}

@@ -25,6 +25,7 @@
 #include "bodyModule/body.hpp"
 #include "tools/vecmath.hpp"
 #include "bodyModule/protosystem.hpp"
+#include "experimentalModule/ModularBody.hpp"
 
 
 #define EPSILON 1e-10 //a placer dans my_const
@@ -1179,6 +1180,44 @@ void BarycenterOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, 
 }
 
 std::string BarycenterOrbit::saveOrbit() const
+{
+
+	std::ostringstream os;
+
+	os << "coord_func = barycenter" << std::endl;
+	os << "body_A = " << bodyA->getEnglishName() << std::endl;
+	os << "body_B = " << bodyB->getEnglishName() << std::endl;
+	os << "a = " << a << std::endl;
+	os << "b = " << b << std::endl;
+
+	return os.str();
+}
+
+BarycenterOrbit2::BarycenterOrbit2(ModularBody *_bodyA, ModularBody *_bodyB, double _a, double _b)
+{
+	bodyA = _bodyA;
+	bodyB = _bodyB;
+	a = _a;
+	b = _b;
+}
+
+void BarycenterOrbit2::positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v)const
+{
+	Vec3d posBary = bodyB->calculateSwitchCompensation(bodyA).getTranslation() * b/(a+b);
+
+	Mat4d J2000toVsop87(
+	    Mat4d::xrotation(-23.4392803055555555556*(M_PI/180)) *
+	    Mat4d::zrotation(0.0000275*(M_PI/180)));
+
+	posBary = J2000toVsop87 * posBary;
+
+	v[0] = posBary[0];
+	v[1] = posBary[1];
+	v[2] = posBary[2];
+
+}
+
+std::string BarycenterOrbit2::saveOrbit() const
 {
 
 	std::ostringstream os;

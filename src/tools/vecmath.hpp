@@ -1929,12 +1929,12 @@ template<class T> const Matrix4<T> Matrix4<T>::xzrotation(T xangle, T zangle)
 	T sz = sin(zangle);
 	T cx = cos(xangle);
 	T sx = sin(xangle);
-	return {{
+	return Matrix4<T>(
 		cz   , sz   , 0 , 0,
        -sz*cx, cz*cx, sx, 0,
         sz*sx,-cz*sx, cx, 0,
         0, 0, 0, 1
-	}};
+	);
 }
 
 //! Gives a rotation matrix around the z then x axis ending with a translation
@@ -1947,12 +1947,12 @@ template<class T> const Matrix4<T> Matrix4<T>::zxrotation(T zangle, T xangle)
 	T sz = sin(zangle);
 	T cx = cos(xangle);
 	T sx = sin(xangle);
-	return {{
+	return Matrix4<T>(
 		cz,-sz*cx, sz*sx, 0,
         sz, cz*cx,-cz*sx, 0,
         0 ,    sx,    cx, 0,
         0, 0, 0, 1
-	}};
+	);
 }
 
 //! Gives a scaling matrix.
@@ -2041,12 +2041,12 @@ template<class T> Matrix4<T> Matrix4<T>::multiplyFast(const Matrix4<T> &a) const
 {
 	#define MATMUL(R, C) (r[R] * a.r[C] + r[R+4] * a.r[C+1] + r[R+8] * a.r[C+2])
 	#define MATMUL2(R) (r[R] * a.r[12] + r[R+4] * a.r[13] + r[R+8] * a.r[14] + r[R+12])
-	return {{
+	return Matrix4<T>(
 		MATMUL(0,0), MATMUL(1,0), MATMUL(2,0), 0,
         MATMUL(0,4), MATMUL(1,4), MATMUL(2,4), 0,
         MATMUL(0,8), MATMUL(1,8), MATMUL(2,8), 0,
         MATMUL2(0), MATMUL2(1), MATMUL2(2), 1
-	}};
+	);
 	#undef MATMUL
 	#undef MATMUL2
 }
@@ -2064,12 +2064,12 @@ template<class T> Matrix4<T> Matrix4<T>::multiplyInversed(const Matrix4<T> &a) c
 		a.r[13]-r[13],
 		a.r[14]-r[14],
 	};
-	return {{
+	return Matrix4<T>(
 		MATMUL(0,0), MATMUL(4,0), MATMUL(8,0), 0,
 		MATMUL(0,4), MATMUL(4,4), MATMUL(8,4), 0,
 		MATMUL(0,8), MATMUL(4,8), MATMUL(8,8), 0,
 		MATMUL2(0), MATMUL2(4), MATMUL2(8), 1
-	}};
+	);
 	#undef MATMUL
 	#undef MATMUL2
 }
@@ -2079,7 +2079,7 @@ template<class T> Matrix4<T> Matrix4<T>::multiplyInversed(const Matrix4<T> &a) c
 //! @return this*Matrix4<T>::translation(pos).
 template<class T> void Matrix4<T>::multiplyTranslation(const Vector3<T> &a)
 {
-	#define MATMUL(R) (r[R] * a.v[0] + r[R+4] * a.r[1] + r[R+8] * a.r[2])
+	#define MATMUL(R) (r[R] * a.v[0] + r[R+4] * a.v[1] + r[R+8] * a.v[2])
 	float x = MATMUL(0);
 	float y = MATMUL(1);
 	r[14] += MATMUL(2);

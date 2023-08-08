@@ -1,7 +1,10 @@
 #include "ModularBody.hpp"
 #include "ModularBodyPtr.hpp"
+#include "ModularSystem.hpp"
+#include "tools/log.hpp"
 
 Vec3f ModularBody::lightPosition;
+float ModularBody::lightDistance;
 ModularBody *ModularBody::lastFit = nullptr;
 std::map<std::string, ModularBody *> ModularBody::bodyReference;
 std::list<ModularBody> ModularBody::hidden;
@@ -9,9 +12,10 @@ float ModularBody::halfFov = M_PI_2;
 Vec3f ModularBody::defaultHaloColor{};
 float ModularBody::haloScale = 1;
 float ModularBody::haloSizeLimit = 9;
+std::vector<ModularBody *> ModularBody::notableBody;
 
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
-    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), radius(info.radius), innerRadius(info.innerRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), typePlanet(info.typePlanet), isHaloEnabled(info.isHaloEnabled)
+    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), radius(info.radius), innerRadius(info.innerRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
 {
     auto &ref = bodyReference[englishName];
     if (ref && !englishName.empty()) {
@@ -22,7 +26,7 @@ ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
             child.parent = this;
         if (ref->pointerCount)
             ModularBodyPtr::redirect(ref, this);
-        ref.remove();
+        ref->remove(true);
         bodyReference[englishName] = this;
     } else {
         ref = this;
@@ -43,7 +47,7 @@ ModularBody *ModularBody::createChild(ModularBodyCreateInfo &info)
 {
     childs.emplace_back(this, info);
     auto ret = &childs.back();
-    auto p = ret->parent;
+    auto p = this;
     while (p->isNotIsolated)
         p = p->parent;
     static_cast<ModularSystem *>(p)->addBody(this);
@@ -69,20 +73,22 @@ ModularBody::~ModularBody()
 bool ModularBody::remove(bool recursive)
 {
     if (recursive || childs.empty()) {
-        auto it = hidden.find(*this);
-        if (it == hidden.end()) {
-            parent->childs.remove(*this);
-        } else {
-            ModularBodyPtr::rawUntrack(parent);
-            hidden.erase(it);
+        const auto end = hidden.end();
+        for (auto it = hidden.begin(); it != end; ++it) {
+            if (&*it == this) {
+                ModularBodyPtr::rawUntrack(parent);
+                hidden.erase(it);
+                return true;
+            }
         }
+        parent->childs.remove(*this);
         return true;
     } else {
         return false;
     }
 }
 
-void ModularBody::updateEclipticPos(Vec3f eclipticPos, double jd, double targetJD);
+void ModularBody::updateEclipticPos(Vec3f eclipticPos, double jd, double targetJD)
 {
    Vec3d tmp;
    if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
@@ -92,7 +98,7 @@ void ModularBody::updateEclipticPos(Vec3f eclipticPos, double jd, double targetJ
    }
    computedEclipticPos = tmp;
    deltaEclipticPos = (computedEclipticPos - eclipticPos) / (targetJD - jd);
-   computeJD = jd;
+   computedJD = jd;
 }
 
 void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBody)
@@ -140,16 +146,16 @@ void ModularBody::updateCache()
     scaledInnerRadius = innerRadius * scaling;
     boundingRadius = scaledRadius;
     for (auto &module : nearComponents) {
-        cached &= module.update(this, scaledRadius);
-        if (boundingRadius < module.getBoundingRadius())
-            boundingRadius = module.getBoundingRadius();
+        cached &= module->update(this, scaledRadius);
+        if (boundingRadius < module->getBoundingRadius())
+            boundingRadius = module->getBoundingRadius();
     }
     for (auto &module : inComponents) {
-        cached &= module.update(this, scaledRadius);
+        cached &= module->update(this, scaledRadius);
     }
     if (parent)
         parent->invalidateCachedState();
-    const float squaredSubsystemRadius = boundingRadius*boundingRadius;
+    float squaredSubsystemRadius = boundingRadius*boundingRadius;
     for (auto &c : childs) {
         const float tmp = c.computedEclipticPos.lengthSquared();
         if (squaredSubsystemRadius < tmp)
@@ -171,26 +177,26 @@ void ModularBody::drawLoaded(Renderer &renderer)
         renderer.clearDepth();
         if (screenSize < 0.2) {
             for (auto &module : nearComponents) {
-                if (module.isLoaded()) {
-                    module.draw(renderer, this, matrix);
+                if (module->isLoaded()) {
+                    module->draw(renderer, this, matrix);
                 } else
                     loaded = false;
             }
         } else {
             if (distance < scaledInnerRadius) {
                 for (auto &module : inComponents) {
-                    if (module.isLoaded()) {
-                        module.draw(renderer, this, matrix);
+                    if (module->isLoaded()) {
+                        module->draw(renderer, this, matrix);
                     } else
                         loaded = false;
                 }
                 for (auto &module : nearComponents)
-                    loaded &= module.isLoaded();
+                    loaded &= module->isLoaded();
                 return;
             } else {
                 for (auto &module : nearComponents) {
-                    if (module.isLoaded()) {
-                        module.draw(renderer, this, matrix);
+                    if (module->isLoaded()) {
+                        module->draw(renderer, this, matrix);
                     } else
                         loaded = false;
                 }
@@ -198,15 +204,15 @@ void ModularBody::drawLoaded(Renderer &renderer)
         }
     } else {
         for (auto &module : nearComponents) {
-            if (module.isLoaded()) {
-                module.drawNoDepth(renderer, this, matrix);
+            if (module->isLoaded()) {
+                module->drawNoDepth(renderer, this, matrix);
             } else
                 loaded = false;
         }
         drawHalo(renderer);
     }
     for (auto &module : inComponents)
-        loaded &= module.isLoaded();
+        loaded &= module->isLoaded();
 }
 
 void ModularBody::setChildNoLongerVisible()
@@ -230,12 +236,12 @@ ModularBody *ModularBody::findBodyNameI18n(const std::string &nameI18)
 
 bool ModularBody::hide()
 {
-    auto it = parent->childs.find(*this);
-    if (it != parent->childs.end()) {
+    const auto end = parent->childs.end();
+    for (auto it = parent->childs.begin(); it != end; ++it) {
         isVisible = false;
         if (isChildVisible)
             setChildNoLongerVisible();
-        hidden.splice(hidden.end(), parent->childs, it);
+        hidden.splice(hidden.begin(), parent->childs, it);
         ModularBodyPtr::rawTrack(parent);
         parent->invalidateCachedState();
         return true;
@@ -245,31 +251,32 @@ bool ModularBody::hide()
 
 bool ModularBody::show()
 {
-    auto it = hidden.find(*this);
-    if (it != hidden.end()) {
-        parent->childs.splice(parent->childs.end(), hidden, it);
-        ModularBodyPtr::rawUntrack(parent);
-        parent->invalidateCachedState();
-        return true;
+    const auto end = hidden.end();
+    for (auto it = hidden.begin(); it != end; ++it) {
+        if (&*it == this) {
+            parent->childs.splice(parent->childs.begin(), hidden, it);
+            ModularBodyPtr::rawUntrack(parent);
+            parent->invalidateCachedState();
+            return true;
+        }
     }
     return false;
 }
 
-Mat4f ModularBody::calculateSwitchCompensation(ModularBody *to) const
+Mat4f ModularBody::calculateSwitchCompensation(const ModularBody *to) const
 {
     Mat4f diff(Mat4f::identity());
     auto common = findCommonParent(to);
     // Start from target body
     for (auto body = to; body != common; body = body->parent)
-        body->transformBodyToParent(body->lastJD, diff);
+        body->transformBodyToParent(diff);
     // Find dependency chain from the common body to this body
-    std::vector<ModularBody *> travel;
+    std::vector<const ModularBody *> travel;
     for (auto body = this; body != common; body = body->parent)
         travel.push_back(body);
     // Go to this body
     while (travel.size()) {
-        travel.back()->transformParentToBodyPos(travel.back()->lastJD, diff);
-        diff = diff.multiplyFast(travel.back()->computeBodyPosToBody());
+        travel.back()->transformParentToBody(diff);
         travel.pop_back();
     }
     return diff;

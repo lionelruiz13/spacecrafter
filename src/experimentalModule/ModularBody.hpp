@@ -3,8 +3,15 @@
 
 #include "BodyModule.hpp"
 #include "Renderer.hpp"
+#include "../planetsephems/sideral_time.h"
+#include "coreModule/time_mgr.hpp"
+#include "bodyModule/rotation_elements.hpp"
+#include "bodyModule/orbit.hpp"
+#include <memory>
+#include <list>
 
 enum class BodyType : unsigned char {
+    VOID,
     ANCHOR, // Simplest type, just an anchor
     MINOR_BODY, // A body with minor features, usefull for massively instanciated bodies
     SPHERICAL_BODY, // A spherical body, who doesn't use self-shadowing
@@ -15,6 +22,11 @@ enum class BodyType : unsigned char {
     EARTH = 0x80,
     EARTH_MOON,
 };
+
+inline constexpr BodyType operator&(BodyType t1, BodyType t2)
+{
+    return static_cast<BodyType>(static_cast<uint8_t>(t1) & static_cast<uint8_t>(t2));
+}
 
 #define UPDATE_CADENCY JD_SECOND
 
@@ -36,12 +48,23 @@ struct ModularBodyCreateInfo {
 };
 
 class ModularBody {
+    // For pointer count and selection modification
     friend class ModularBodyPtr;
     friend class ModularBodySelector;
-    // For the initial loading of a ModularBody
-    friend class ModularBodyLoader;
+    // For ModularBody and BodyModule loading
+    friend class ModuleLoader;
+    // For some ModularBody management
+    friend class ModularSystem;
 public:
     ~ModularBody();
+    // For emplace_back
+    ModularBody(ModularBody *parent, ModularBodyCreateInfo &info);
+    // Prevent copy
+    ModularBody(const ModularBody &) = delete;
+    ModularBody(ModularBody &&) = delete;
+    ModularBody &operator=(const ModularBody &) = delete;
+    ModularBody &operator=(ModularBody &&) = delete;
+
     // Create a new child body. If a body with the same englishName exists, it is replaced by this one.
     ModularBody *createChild(ModularBodyCreateInfo &info);
     // The boolean representation of this body is whether it is visible or not
@@ -140,7 +163,7 @@ public:
     inline void draw(Renderer &renderer) {
         if (isVisible & isBodyVisible) {
             for (auto &module : farComponents)
-                module.draw(renderer, this, mat);
+                module->draw(renderer, this, mat);
             if (screenSize > 0.0015) {
                 if (loaded) {
                     const auto matrix = mat.multiplyFast(computeBodyToSurface()); // TODO Fix ojml ?
@@ -148,19 +171,19 @@ public:
                         renderer.clearDepth();
                         if (screenSize < 0.2) {
                             for (auto &module : nearComponents)
-                                module.draw(renderer, this, matrix);
+                                module->draw(renderer, this, matrix);
                         } else {
                             if (distance < scaledInnerRadius) {
                                 for (auto &module : inComponents)
-                                    module.draw(renderer, this, matrix);
+                                    module->draw(renderer, this, matrix);
                             } else {
                                 for (auto &module : nearComponents)
-                                    module.draw(renderer, this, matrix);
+                                    module->draw(renderer, this, matrix);
                             }
                         }
                     } else {
                         for (auto &module : nearComponents)
-                            module.drawNoDepth(renderer, this, matrix);
+                            module->drawNoDepth(renderer, this, matrix);
                         drawHalo(renderer);
                     }
                 } else
@@ -180,16 +203,27 @@ public:
         } else {
             eclipticPos += deltaEclipticPos * delta;
         }
-        if (boundToParent)
+        if (boundToSurface)
             mat_local_to_body = mat_local_to_body.multiplyFast(computeBodyToSurface());
         mat_local_to_body.multiplyTranslation(eclipticPos);
     }
 
-    inline Mat4f computeBodyPosToBody() {
+    inline Mat4f computeBodyPosToBody(double jd) {
         return Mat4f::xzrotation(
             re.obliquity,
             re.ascendingNode -re.precessionRate*(jd-re.epoch)
         );
+    }
+
+    // Use cached informations from last update
+    inline void transformParentToBody(Mat4f &mat_local_to_body) const {
+        if (boundToSurface)
+            mat_local_to_body = mat_local_to_body.multiplyFast(computeBodyToSurface());
+        mat_local_to_body.multiplyTranslation(eclipticPos);
+        mat_local_to_body.multiplyFast(Mat4f::xzrotation(
+            re.obliquity,
+            re.ascendingNode -re.precessionRate*(lastJD-re.epoch)
+        ));
     }
 
     inline void transformBodyToParent(double jd, Mat4f &mat_local_to_body) {
@@ -217,11 +251,29 @@ public:
         }
     }
 
+    // Use cached informations from last update
+    inline void transformBodyToParent(Mat4f &mat_local_to_body) const {
+        mat_local_to_body = mat_local_to_body.multiplyFast(Mat4f::zxrotation(
+            re.precessionRate*(lastJD-re.epoch) - re.ascendingNode,
+            -re.obliquity
+        ));
+        if (boundToSurface) {
+            // Maybe don't inline this unfrequent case
+            auto tmp = Mat4f::zrotation(-M_PI_2 - axisRotation);
+            tmp.r[12] -= eclipticPos[0];
+            tmp.r[13] -= eclipticPos[1];
+            tmp.r[14] -= eclipticPos[2];
+            mat_local_to_body = mat_local_to_body.multiplyFast(tmp);
+        } else {
+            mat_local_to_body.multiplyTranslation(-eclipticPos);
+        }
+    }
+
     inline void selectiveUpdate(double jd, Mat4f mat_local_to_parent) {
         transformParentToBodyPos(jd, mat_local_to_parent);
         preUpdate(jd, mat_local_to_parent);
         if (isVisible) {
-            recursiveUpdate(jd, mat_local_to_parent.multiplyFast(computeBodyPosToBody()));
+            recursiveUpdate(jd, mat_local_to_parent.multiplyFast(computeBodyPosToBody(jd)));
         } else {
             mat.r[12] = mat_local_to_parent.r[12];
             mat.r[13] = mat_local_to_parent.r[13];
@@ -254,16 +306,22 @@ public:
         scaling = _scale;
         uncached = true;
     }
+    inline float getRotAscendingnode(void) const {
+		return re.ascendingNode;
+	}
+	inline float getRotObliquity(void) const {
+		return re.obliquity;
+	}
     // Invalidate the internal state cache
     inline void invalidateCachedState() {
         uncached = true;
     }
     // Calculate a matrix to apply to the observer for a seemless change of body reference
-    Mat4f calculateSwitchCompensation(ModularBody *to) const;
+    Mat4f calculateSwitchCompensation(const ModularBody *to) const;
     // Find the nearest common parent between two bodies
-    inline ModularBody *findCommonParent(ModularBody *with) const {
-        for (ModularBody *common = with; common; common = common->parent) {
-            for (ModularBody *p = this; p; p = p->parent) {
+    inline const ModularBody *findCommonParent(const ModularBody *with) const {
+        for (const ModularBody *common = with; common; common = common->parent) {
+            for (const ModularBody *p = this; p; p = p->parent) {
                 if (common == p)
                     return common;
             }
@@ -276,11 +334,14 @@ public:
     bool show();
     inline void preload() {
         for (auto &module : nearComponents) {
-            module.preload(this);
+            module->preload(this);
         }
         for (auto &module : inComponents) {
-            module.preload(this);
+            module->preload(this);
         }
+    }
+    inline const std::pair<float, float> &getScreenPos() const {
+        return screenPos;
     }
     inline float getScreenSize() const {
         return screenSize;
@@ -294,6 +355,7 @@ public:
     // Update this body as being the light source
     inline void updateAsLightSource() const {
         lightPosition = mat.getTranslation();
+        lightDistance = lightPosition.length();
     }
     // Get the distance reference for the altitude
     inline float getAltitudeReference() const {
@@ -306,10 +368,10 @@ public:
         }
     }
     // Find a better reference body, return nullptr if this body is the best one
-    inline ModularBody *findBetterReference() const {
+    inline ModularBody *findBetterReference() {
         if (distance > areaOfInfluence)
             return parent;
-        for (auto &c : ret->childs) {
+        for (auto &c : childs) {
             if (c.isInAreaOfInfluence())
                 return &c;
         }
@@ -344,16 +406,38 @@ public:
     inline bool isInAreaOfInfluence() const {
         return distance <= areaOfInfluence;
     }
-protected:
-    ModularBody(ModularBody *parent, ModularBodyCreateInfo &info);
+    // Must be called after update as it depends on updated values
+    inline float getPhase() const {
+        const Vec3f heliopos = mat.getTranslation() - lightPosition;
+        const float Rq = heliopos.lengthSquared();
+        const float pq = distance*distance;
+        const float cos_chi = (pq + Rq - lightDistance*lightDistance)/(2.0*distance*sqrt(Rq));
+        return ((M_PI - acos(cos_chi)) * cos_chi + sqrt(1.0 - cos_chi*cos_chi)) / M_PI;
+    }
+    // Must be called after update as it depends on updated values
+    inline float computeMagnitude() const {
+        float factor;
+        if ((bodyType & BodyType::STAR) != BodyType::VOID) {
+            factor = distance*distance;
+        } else {
+        	const Vec3f heliopos = mat.getTranslation() - lightPosition;
+        	const float Rq = heliopos.lengthSquared();
+        	const float pq = distance*distance;
+        	const float cos_chi = (pq + Rq - lightDistance*lightDistance)/(2.0*distance*sqrt(Rq));
+            const float phase = ((M_PI - acos(cos_chi)) * cos_chi + sqrt(1.0 - cos_chi*cos_chi)) / M_PI;
+            factor = 2 * albedo * scaledRadius * scaledRadius * phase / (3 * pq * Rq);
+        }
+        return -26.73f + 2.5f*log10f(factor);
+    }
+private:
     void select();
     void deselect();
     inline void drawHalo(Renderer &renderer) {
-        const float fov_q = std::min(halfFov, (M_PI/6));
+        const float fov_q = std::min(halfFov, static_cast<float>(M_PI)/6.f);
         const float mag = computeMagnitude();
 
         rmag = sqrtf(renderer.adaptLuminance((expf(-0.92103f*(mag + 12.12331f)) * 8.2295998f) / (fov_q * fov_q))) * 30.f * ModularBody::haloScale;
-        if (!(body->parent.bodyType & BodyType::STAR))
+        if ((parent->bodyType & BodyType::STAR) == BodyType::VOID)
             rmag /= (halfFov >= (M_PI/6)) ? 25 : 5;
         if (rmag < 1.2f) {
             cmag = (mag > 0) ? (rmag*rmag/1.44f) : (rmag/1.2f);
@@ -377,16 +461,13 @@ protected:
     		rmag = screen_r;
     	}
 
-        if (!(body->parent.bodyType & BodyType::STAR)) {
+        if ((parent->bodyType & BodyType::STAR) == BodyType::VOID) {
             const Vec3f _planet = parent->mat.getTranslation() - lightPosition;
             const Vec3f _satellite = mat.getTranslation() - lightPosition;
             double OP = _planet.length();
     		double OS = _satellite.length();
-            float c = _planet.dot(_satellite);
-            if (c>0 && parent->distance < distance) {
-                if (fabs(acos(c/(parent->distance*distance))) < atan(parent->radius/parent->distance)) {
-                    cmag = 0.0;
-                }
+            if (OP < OS && fabs(acos(_planet.dot(_satellite)/(OP*OS))) < atan(parent->radius/OP)) {
+                cmag = 0.0;
             }
         }
 
@@ -403,7 +484,7 @@ protected:
     std::list<std::shared_ptr<BodyModule>> farComponents; // 2D behind body, SKIP when screenSize > 20%, update NEVER called
     std::list<std::shared_ptr<BodyModule>> nearComponents; // Drawn if screenSize >= 0.15% and distance > innerRadius
     std::list<std::shared_ptr<BodyModule>> inComponents; // Draw if distance <= innerRadius
-    std::list<std::shared_ptr<BodyOrbitModule>> orbitalComponents; // Components drawing lines between bodies
+    // std::list<std::shared_ptr<BodyOrbitModule>> orbitalComponents; // Components drawing lines between bodies
     // std::list<std::shared_ptr<EnvironmentModule>> environmentComponents; // Component defining the environment
 
     // Positionnal
@@ -461,6 +542,7 @@ protected:
 
     // Global datas
     static Vec3f lightPosition; // Observer-local light source position
+    static float lightDistance; // Observer-local light source distance
     static ModularBody *lastFit;
     static std::map<std::string, ModularBody *> bodyReference;
     static std::list<ModularBody> hidden;

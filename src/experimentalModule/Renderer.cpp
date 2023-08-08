@@ -8,6 +8,10 @@
 
 #define CMD_BATCH_SIZE 8
 
+Renderer::Renderer()
+{
+}
+
 void Renderer::init(ToneReproductor *_eye)
 {
     allocateCommands();
@@ -18,7 +22,7 @@ void Renderer::beginDraw(uint8_t _frameIdx)
 {
     cmdIdx = UINT16_MAX;
     frameIdx = _frameIdx;
-    frame = Context::instance->frame[frameIdx];
+    frame = Context::instance->frame[frameIdx].get();
 }
 
 void Renderer::beginBodyDraw()
@@ -65,13 +69,14 @@ void Renderer::nextCommandBuffer()
         vkEndCommandBuffer(cmd);
     if (++cmdIdx >= cmds[frameIdx].size())
         allocateCommands();
-    cmd = frame->begin(cmds[frameIdx][cmdIdx], PASS_MULTISAMPLE_DEPTH);
+    cmd = cmds[frameIdx][cmdIdx];
+    frame->begin(cmd, PASS_MULTISAMPLE_DEPTH);
     frame->toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 }
 
 void Renderer::allocateCommands()
 {
-    const auto oldSize = cmds[i].size();
+    const auto oldSize = cmds[0].size();
     for (uint8_t i = 0; i < 3; ++i) {
         cmds[i].resize(oldSize+CMD_BATCH_SIZE);
         if (Context::instance->frame[i]->createExternal(cmds[i].data()+oldSize, CMD_BATCH_SIZE) != VK_SUCCESS) {
