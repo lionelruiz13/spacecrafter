@@ -207,7 +207,7 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 			//SET UNIFORM
 			uGeom->get().matRotation = Mat4f::zrotation((float)local_time/750.);
 			// factor for resolution size
-			float factor = prj->getViewportHeight() / m_fontResolution;
+			float factor = sqrtf(prj->getViewportHeight() / m_fontResolution);
 			uGeom->get().radius = 13.f * factor;
 			*uColor = getRGB();
 

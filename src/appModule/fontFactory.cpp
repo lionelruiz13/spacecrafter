@@ -83,7 +83,7 @@ void FontFactory::init(int resolution, const InitParser& conf)
     if (m_fontResolution<1) {
         m_fontResolution = 1024;
 	}
-	fontFactor = (float) resolution / (float)m_fontResolution;
+	fontFactor = (float) sqrtf(resolution / (float)m_fontResolution);
 
 	std::string FontFileNamePlanet = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_PLANET_NAME);
 	float FontSizePlanet = conf.getDouble(SCS_FONT,SCK_FONT_PLANET_SIZE);
