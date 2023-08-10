@@ -459,8 +459,9 @@ public:
 	void updateFramebuffer(VkCommandBuffer cmd);
 	void syncFramebuffer(VkCommandBuffer cmd);
 
-	void add_hide_stars(int hip);
-	void remove_hide_stars(int hip);
+	void hideStar(int hip);
+	void showStar(int hip);
+	void showAllStar();
 
 private:
 	//! Load all the stars from the files.
@@ -484,7 +485,6 @@ private:
 	bool isolateSelected=false;
 	std::map<std::string, bool> selected_star;
 	std::vector<int> selected_stars;
-	std::map<std::string, bool> hide_stars;
 
 	s_texture* starTexture; //! star texture
 

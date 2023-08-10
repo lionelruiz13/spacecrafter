@@ -77,8 +77,11 @@ public:
 	}
 	virtual void updateHipIndex(HipIndexStruct hip_index[]) const {};
 	virtual void searchAround(int index,const Vec3d &v,double cos_lim_fov, std::vector<ObjectBaseP > &result) = 0;
+	virtual void showStar(int index, int hip) {};
+	virtual void hideStar(int index, int hip) {};
+	virtual void showAllStar(int index) {};
 
-	virtual void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars, bool atmosphere, bool isolateSelected, std::map<std::string, bool> hide_stars) const = 0;
+	virtual void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars, bool atmosphere, bool isolateSelected) const = 0;
 
 	bool isInitialized(void) const {
 		return (nr_of_zones>0);
@@ -117,9 +120,9 @@ private:
 	#ifdef WIN32
 	HANDLE mapping_handle;
 	#endif
-	void scaleAxis(void);
-	void searchAround(int index,const Vec3d &v,double cos_lim_fov, std::vector<ObjectBaseP > &result);
-	void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars, bool atmosphere, bool isolateSelected, std::map<std::string, bool> hide_stars) const;
+	void scaleAxis(void) override;
+	void searchAround(int index,const Vec3d &v,double cos_lim_fov, std::vector<ObjectBaseP > &result) override;
+	void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars, bool atmosphere, bool isolateSelected) const override {};
 };
 
 template<class Star> void SpecialZoneArray<Star>::scaleAxis(void)
@@ -143,8 +146,14 @@ class ZoneArray1 : public SpecialZoneArray<Star1> {
 public:
 	ZoneArray1(FILE *f,bool byte_swap,bool use_mmap, const HipStarMgr &hip_star_mgr, int level,int mag_min,int mag_range,int mag_steps)
 		: SpecialZoneArray<Star1>(f,byte_swap,use_mmap,hip_star_mgr,level, mag_min,mag_range,mag_steps) {}
+
+	void hideStar(int index, int hip) override;
+	void showStar(int index, int hip) override;
+	void showAllStar(int index) override;
+	void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars, bool atmosphere, bool isolateSelected) const override;
 private:
-	void updateHipIndex(HipIndexStruct hip_index[]) const;
+	void updateHipIndex(HipIndexStruct hip_index[]) const override;
+	std::set<int> hide_stars;
 };
 
 } // namespace BigStarCatalog

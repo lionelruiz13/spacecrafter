@@ -697,6 +697,18 @@ void CoreLink::starNavigatorSave(const std::string &fileName, bool binaryMode){
 	core->starNav->saveData(fileName, binaryMode);
 }
 
+void CoreLink::starNavigatorHideStar(int hip){
+	core->starNav->hideStar(hip);
+}
+
+void CoreLink::starNavigatorShowStar(int hip){
+	core->starNav->showStar(hip);
+}
+
+void CoreLink::starNavigatorShowAllStar(){
+	core->starNav->showAllStar();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // UBO---------------------------
 ////////////////////////////////////////////////////////////////////////////////

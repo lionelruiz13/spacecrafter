@@ -511,6 +511,9 @@ bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
 		float y = si->posXYZ[1];
 		float z = si->posXYZ[2];
 
+		if (si->show == false)
+			continue;
+
 		//test magnitude if magnitude too low, the star will not be displayed
 		float dist =sqrt((x-pos[0])*(x-pos[0]) + (y-pos[1])*(y-pos[1]) +(z-pos[2])*(z-pos[2]));
 		float mag_v = si->mag+5*(log10(dist)-1);
@@ -645,4 +648,25 @@ void StarNavigator::drawRaw(const Mat4f &matrix) const noexcept
 	*uMat = matrix;
 	const int idx = Context::instance->frameIdx;
 	Context::instance->frame[idx]->toExecute(cmds[idx], PASS_MULTISAMPLE_DEPTH);
+}
+
+void StarNavigator::hideStar(unsigned int hip)
+{
+	starInfo *si = getStarInfo(hip);
+	si->show = false;
+}
+
+void StarNavigator::showStar(unsigned int hip)
+{
+	starInfo *si = getStarInfo(hip);
+	si->show = true;
+}
+
+void StarNavigator::showAllStar()
+{
+	for(unsigned int i = 0; i != maxStars; i++) {
+		starInfo *si = listGlobalStarVisible[i];
+		if (si->show == false)
+			si->show = true;
+	}
 }

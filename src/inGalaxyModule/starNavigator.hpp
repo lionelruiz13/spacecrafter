@@ -181,6 +181,10 @@ public:
 		return color_table[bv];
 	}
 
+	void hideStar(unsigned int hip);
+	void showStar(unsigned int hip);
+	void showAllStar();
+
 private:
 	//buffers for displaying shaders
 	float *starVec;

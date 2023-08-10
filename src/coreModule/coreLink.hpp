@@ -227,6 +227,12 @@ public:
 
 	void starNavigatorSave(const std::string &fileName, bool binaryMode);
 
+	void starNavigatorHideStar(int hip);
+
+	void starNavigatorShowStar(int hip);
+
+	void starNavigatorShowAllStar();
+
 	////////////////////////////////////////////////////////////////////////////////
 	// SunTrace---------------------------
 	////////////////////////////////////////////////////////////////////////////////

@@ -44,6 +44,7 @@ struct starInfo {
 	float mag;	//magnitude of the object
 	int B_V;	//color index of the object
 	float pc; 	//unit : parsec
+	bool show;
 };
 
 // GPU need posXYZ, mag, B_V (COMPACT = 4 float, 1 int)

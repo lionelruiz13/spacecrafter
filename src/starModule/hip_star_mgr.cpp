@@ -52,6 +52,7 @@
 #include "EntityCore/EntityCore.hpp"
 #include "EntityCore/Core/RenderMgr.hpp"
 #include "tools/context.hpp"
+#include "coreModule/coreLink.hpp"
 
 static BigStarCatalog::StringArray spectral_array;
 static BigStarCatalog::StringArray component_array;
@@ -751,10 +752,10 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		}
 		int zone=0;
 		for (GeodesicSearchInsideIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty(), hide_stars);
+			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty());
 		}
 		for (GeodesicSearchBorderIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty(), hide_stars);
+			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty());
 		}
 
 	}
@@ -1124,21 +1125,29 @@ std::vector<std::string> HipStarMgr::listMatchingObjectsI18n( const std::string&
 	return result;
 }
 
-void HipStarMgr::add_hide_stars(int hip)
+void HipStarMgr::hideStar(int hip)
 {
-	std::string name = getCommonName(hip);
-	auto it = hide_stars.find(name);
-	if (it != hide_stars.end()) {
-		it->second = true;
-	} else {
-		hide_stars.insert(std::pair<std::string, bool>(name, true));
+	int zone = 0;
+	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++, zone++) {
+		it->second->hideStar(zone, hip);
 	}
+	CoreLink::instance->starNavigatorHideStar(hip);
 }
 
-void HipStarMgr::remove_hide_stars(int hip)
+void HipStarMgr::showStar(int hip)
 {
-	std::string name = getCommonName(hip);
-	auto it = hide_stars.find(name);
-	if (it != hide_stars.end())
-		it->second = false;
+	int zone = 0;
+	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++, zone++) {
+		it->second->showStar(zone, hip);
+	}
+	CoreLink::instance->starNavigatorShowStar(hip);
+}
+
+void HipStarMgr::showAllStar(void)
+{
+	int zone = 0;
+	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++, zone++) {
+		it->second->showAllStar(zone);
+	}
+	CoreLink::instance->starNavigatorShowAllStar();
 }

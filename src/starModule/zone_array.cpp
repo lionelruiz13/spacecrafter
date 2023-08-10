@@ -258,6 +258,27 @@ void ZoneArray1::updateHipIndex(HipIndexStruct hip_index[]) const
 	}
 }
 
+void ZoneArray1::hideStar(int index, int hip)
+{
+	std::set<int>::iterator it = hide_stars.find(hip);
+	if (it != hide_stars.end()) {
+		return;
+	} else {
+		hide_stars.insert(hip);
+	}
+}
+
+void ZoneArray1::showStar(int index, int hip)
+{
+	std::set<int>::iterator it = hide_stars.find(hip);
+	if (it != hide_stars.end())
+		hide_stars.erase(hip);
+}
+
+void ZoneArray1::showAllStar(int index)
+{
+	hide_stars.clear();
+}
 
 template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 {
@@ -286,26 +307,21 @@ template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 }
 
 
-template<class Star>
-void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars,  bool atmosphere, bool isolateSelected, std::map<std::string, bool> hide_stars) const
+void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars,  bool atmosphere, bool isolateSelected) const
 {
-	SpecialZoneData<Star> *const z = getZones() + index;
+	SpecialZoneData<Star1> *const z = getZones() + index;
 	Vec3d xy;
-	const Star *const end = z->getStars() + z->size;
+	const Star1 *const end = z->getStars() + z->size;
 	const double d2000 = 2451545.0;
 	const double movement_factor = (M_PI/180)*(0.0001/3600)
 	                               * ((HipStarMgr::getCurrentJDay()-d2000)/365.25)
 	                               / star_position_scale;
-	for (const Star *s=z->getStars(); s<end; s++) {
+	for (const Star1 *s=z->getStars(); s<end; s++) {
 		double alt, az;
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
 		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
-		std::string starnames = s->getNameI18n();
-		if (hide_stars.find(starnames) != hide_stars.end()){
-			std::map<std::string, bool>::iterator it = hide_stars.find(starnames);
-			if (it->second == true)
-				continue;
-		}
+		if (hide_stars.find(s->getHip()) != hide_stars.end())
+			continue;
 
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
@@ -504,6 +520,5 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 		}
 	}
 }
-
 
 } // namespace BigStarCatalog

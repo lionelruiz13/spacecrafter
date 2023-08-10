@@ -304,6 +304,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 				si->B_V=B_V;
 				si->pc=pc;
 				nbrS++;
+				si->show = true;
 
 				cube->addStar(si);
 				numberRead++;
@@ -435,6 +436,7 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 				si->mag=mag;
 				si->B_V=B_V;
 				si->pc=pc;
+				si->show = true;
 
 				cube->addStar(si);
 			}
@@ -733,6 +735,7 @@ starInfo* StarManager::createStar(unsigned int hip, float RArad, float DErad, fl
 	si->pc = parsec;
 	si->mag = mag_app-5*(log10(parsec)-1);
 	si->B_V = (int) ((BV+0.5)/4.*127.);
+	si->show = true;
 
 	if (si->B_V < 0) {
 		si->B_V = 0;
