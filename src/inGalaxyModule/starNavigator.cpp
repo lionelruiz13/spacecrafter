@@ -30,6 +30,7 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "inGalaxyModule/Star3DWrapper.hpp"
+#include "coreModule/coreLink.hpp"
 
 #include "EntityCore/EntityCore.hpp"
 #include "tools/context.hpp"
@@ -462,7 +463,7 @@ void StarNavigator::computePosition(Vec3f posI) noexcept
 	if (needComputeRCMagTable) {
 		this->computeRCMagTable();
 	} else {
-		if ((pos-old_pos).length() < DELTA_PARSEC) { //proximity test
+		if ((pos-old_pos).length() < DELTA_PARSEC && CoreLink::instance->getFlagIngalaxy() != MODULE::STELLAR_SYSTEM) { //proximity test
 			return; //nothing to do.
 		}
 	}

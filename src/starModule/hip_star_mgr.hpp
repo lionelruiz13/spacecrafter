@@ -458,6 +458,7 @@ public:
 	void setColorStarTable(int p, Vec3f a);
 	void updateFramebuffer(VkCommandBuffer cmd);
 	void syncFramebuffer(VkCommandBuffer cmd);
+	int getHPFromStarName(const std::string& name) const;
 
 	void hideStar(int hip);
 	void showStar(int hip);
@@ -468,7 +469,6 @@ private:
 	void load_data(const InitParser &conf);
 
 	void drawStarName( Projector* prj );
-	int getHPFromStarName(const std::string& name) const;
 
 	ALinearFader names_fader;
 

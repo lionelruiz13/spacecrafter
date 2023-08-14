@@ -1049,7 +1049,7 @@ int HipStarMgr::getHPFromStarName(const std::string& name) const {
 	transform(objw.begin(), objw.end(), objw.begin(), ::toupper);
 	// Search by HP number if it's an HP formated number
 	// Please help, if you know a better way to do this:
-	if (name.length() >= 2 && name[0]=='H' && name[1]=='P') {
+	if (name.length() >= 2) { //&& name[0]=='H' && name[1]=='P') {
 		bool hp_ok = false;
 		std::string::size_type i=2;
 		// ignore spaces

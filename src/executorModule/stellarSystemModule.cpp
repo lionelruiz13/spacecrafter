@@ -102,6 +102,22 @@ void StellarSystemModule::update(int delta_time)
 	core->timeMgr->update(delta_time);
 	core->navigation->update(delta_time);
 
+    if (core->selected_object != NULL && core->observatory->getAltitude() <= 7.91706e+08){
+        int hip = core->hip_stars->getHPFromStarName(core->selected_object.getNameI18n());
+        if (hip != -1)
+            core->starNav->hideStar(hip);
+    }
+
+    if (core->selected_object != NULL && core->observatory->getAltitude() >= 7.91706e+08){
+        int hip = 0;
+        hip = core->hip_stars->getHPFromStarName(core->selected_object.getNameI18n());
+        if (hip != -1){
+            core->starNav->showStar(hip);
+        }
+    }
+
+    core->starNav->computePosition(center);
+
 	// Position of sun and all the satellites (ie planets)
 	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), observer);
 
@@ -173,11 +189,7 @@ void StellarSystemModule::draw(int delta_time)
 	core->illuminates->draw(core->projection, core->navigation);
 	core->asterisms->draw(core->projection, core->navigation);
 	core->starLines->draw(core->navigation);
-    //if (core->observatory->getAltitude() <= 7.91706e+08){
-    //    core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
-    //} else {
-        core->starNav->draw(core->navigation, core->projection, true);
-    //}
+    core->starNav->draw(core->navigation, core->projection, true);
 	core->skyGridMgr->draw(core->projection);
 	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
