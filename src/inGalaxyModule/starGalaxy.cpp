@@ -254,7 +254,7 @@ void StarGalaxy::loadCatalog(const std::string &filename)
 				continue;
 		}
 		pos *= scaling;
-		pos = Mat4f::translation(Vec3f( -0.0001, -0.0001, -0.005)) * Mat4f::yawPitchRoll(90, 0, 0) *pos;
+		pos = Mat4f::translation(Vec3f( -0.002, 0.0001, -0.005)) * Mat4f::yawPitchRoll(112, 0, 0) *pos;
 		tmp.push_back({pos, color_table[colorID]});
     }
 	nbStars = tmp.size();

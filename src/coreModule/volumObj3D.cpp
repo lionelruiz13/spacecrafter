@@ -170,7 +170,6 @@ VolumObj3D::VolumObj3D(const std::string& tex_color_file, const std::string &tex
     if (tex_color_file.empty())
         return;
     reconstruct(tex_color_file, tex_absorbtion_file, rayPoints, z_reflection);
-    setModel(Mat4f::translation(Vec3f( -0.0001, -0.0001, -0.005)) * Mat4f::yawPitchRoll(90, 0, 0) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
 }
 
 VolumObj3D::~VolumObj3D()
