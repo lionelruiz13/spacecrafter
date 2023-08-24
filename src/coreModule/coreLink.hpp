@@ -785,23 +785,23 @@ public:
 
 	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration=0) {
 		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
-		Camera::instance->moveTo({static_cast<float>(lat*M_PI/180), static_cast<float>(lon*M_PI/180), static_cast<float>(alt*1000*AU)}, duration*1000.f, calculate_duration);
+		Camera::instance->moveTo({static_cast<float>(lat*M_PI/180), static_cast<float>(lon*M_PI/180), static_cast<float>(alt/(1000*AU))}, duration/1000.f, calculate_duration);
 	}
 
 	//! Move to relative longitude where home planet is fixed.
 	void observerMoveRelLon(double lon, int delay) {
 		core->observatory->moveRelLon(lon, delay);
-		Camera::instance->moveRelLon(lon*M_PI/180, delay*1000.f);
+		Camera::instance->moveRelLon(lon*M_PI/180, delay/1000.f);
 	}
 	//! Move to relative latitude where home planet is fixed.
 	void observerMoveRelLat(double lat, int delay) {
 		core->observatory->moveRelLat(lat, delay);
-		Camera::instance->moveRelLon(lat*M_PI/180, delay*1000.f);
+		Camera::instance->moveRelLon(lat*M_PI/180, delay/1000.f);
 	}
 	//! Move to relative altitude where home planet is fixed.
 	void observerMoveRelAlt(double alt, int delay) {
 		core->observatory->moveRelAlt(alt, delay);
-		Camera::instance->moveRelLon(alt, delay*1000.f);
+		Camera::instance->moveRelLon(alt, delay/1000.f);
 	}
 
 	void observerSetConf(InitParser &conf,const std::string &section) {

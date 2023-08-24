@@ -73,7 +73,7 @@ public:
 protected:
     float boundingRadius;
     BodyModuleType type;
-    bool loaded = true; // May be used internally
+    bool loaded = false; // May be used internally
 };
 
 #endif /* end of include guard: BODY_MODULE_HPP_ */

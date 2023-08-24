@@ -257,5 +257,5 @@ void Camera::setHalfFov(float halfFov, float duration)
 
 void Camera::setAltitude(double altitude)
 {
-    distance = altitude*1000*AU+reference->getAltitudeReference();
+    distance = altitude/(1000*AU)+reference->getAltitudeReference();
 }
