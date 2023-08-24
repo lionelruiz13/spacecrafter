@@ -55,12 +55,13 @@ void Halo::nextDraw(VkCommandBuffer cmd)
 	Tail::drawBatch(cmd);
 }
 
-void Halo::endDraw()
+void Halo::endDraw(VkCommandBuffer cmd)
 {
 	Context &context = *Context::instance;
 	if (global->size || Tail::shouldDraw()) {
 		auto &frame = *context.frame[context.frameIdx];
-		auto &cmd = frame.begin(global->cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
+		if (cmd == VK_NULL_HANDLE)
+			cmd = frame.begin(global->cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 		nextDraw(cmd);
 		frame.compile(cmd);
 		frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);

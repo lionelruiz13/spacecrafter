@@ -40,6 +40,9 @@ public:
 	bool init(const std::string &repertory, const std::string &name);
 	void bind(VkCommandBuffer cmd);
 	void bind(Pipeline &pipeline);
+	inline void drawLow(VkCommandBuffer cmd) {
+		low->draw(cmd);
+	}
 
 protected:
 	std::unique_ptr<OjmL> low;

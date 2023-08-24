@@ -28,12 +28,17 @@
 #include "bodyModule/ssystem_factory.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
+#include "tools/context.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_observatory.hpp"
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
+#include "experimentalModule/ModularSystem.hpp"
+#include "experimentalModule/Camera.hpp"
+#include "experimentalModule/ModuleLoaderMgr.hpp"
 
-SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
+SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr) :
+    observatory(observatory), navigation(navigation), timeMgr(timeMgr)
 {
     // creation of 3D models for planets
     objLMgr = std::make_unique<ObjLMgr>();
@@ -53,16 +58,30 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
 
-    stellarSystem = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
-
+    std::map<std::string, std::string> params;
+    params["coord_func"] = "still_orbit";
+    params["orbit_x"] = "0";
+    params["orbit_y"] = "0";
+    params["orbit_z"] = "0";
+    ModularBodyCreateInfo createInfo{
+        .orbit = ModuleLoaderMgr::instance.loadOrbit(params),
+        .englishName = "MilkyWay",
+        .re = {},
+        .haloColor = {},
+        .albedo = 0,
+        .radius = 0,
+        .innerRadius = 0,
+        .oblateness = 0,
+        .solLocalDay = 0,
+        .bodyType = BodyType::GALAXY,
+        .isHaloEnabled = false,
+        .altitudeRelativeToRadius = false,
+    };
+    milkyway = std::make_unique<ModularSystem>(nullptr, createInfo);
     galacticSystem = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
     galacticAnchorMgr = galacticSystem->getAnchorManager();
     bodytrace= std::make_shared<BodyTrace>();
-
-    // Don't forget this-> for class variables with name of local variables
-    this->observatory = observatory;
-    this->navigation = navigation;
-    this->timeMgr = timeMgr;
+    createModularSystem("Solar", "ssystem.ini", {});
 }
 
 SSystemFactory::~SSystemFactory()
@@ -70,16 +89,40 @@ SSystemFactory::~SSystemFactory()
 	//delete bodytrace;
 }
 
+void SSystemFactory::loadCamera(const InitParser &conf)
+{
+    const Vec3f lonLatAlt(
+        Utility::getDecAngle(conf.getStr(SCS_INIT_LOCATION, SCK_LONGITUDE)) * (M_PI/180),
+        Utility::getDecAngle(conf.getStr(SCS_INIT_LOCATION, SCK_LATITUDE)) * (M_PI/180),
+        conf.getDouble(SCS_INIT_LOCATION, SCK_ALTITUDE) / (1000*AU)
+    );
+    ModularBody *home = ModularBody::findBody(conf.getStr(SCS_INIT_LOCATION, SCK_HOME_PLANET));
+    if (camera) {
+        camera->setBoundToSurface(true);
+        camera->setFreeMode(false);
+        camera->warpToBody(home);
+        camera->moveTo(lonLatAlt);
+    } else {
+        camera = std::make_unique<Camera>(home, lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]);
+    }
+    camera->trackBody(nullptr);
+    camera->setHeading(conf.getDouble(SCS_NAVIGATION, SCK_HEADING) * (M_PI/180));
+    camera->setHalfFov(conf.getDouble(SCS_NAVIGATION, SCK_INIT_FOV) * (M_PI/360), 0);
+    camera->lookTo(Utility::strToVec3f(conf.getStr(SCS_NAVIGATION, SCK_INIT_VIEW_POS)), 0);
+}
+
 void SSystemFactory::changeSystem(const std::string &mode)
 {
-    if (mode == "SolarSystem" || mode == "Sun" || mode == "temp_point")
+    if (mode == "SolarSystem" || mode == "Sun" || mode == "temp_point") {
         currentSystem = ssystem.get();
-    else {
+        camera->switchToBody(ModularBody::findBodyOnce("SolarSystem"));
+    } else {
         try {
             currentSystem = systems.at(mode).get();
         } catch (...) {
             currentSystem = createSystem(mode).get();
         }
+        camera->switchToBody(ModularBody::findBodyOnce(mode + "System"));
     }
     selectSystem();
 }
@@ -98,8 +141,56 @@ void SSystemFactory::selectSystem()
 void SSystemFactory::addSystem(const std::string &name, const std::string &file)
 {
     auto &system = systems[name];
-    system = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr, systemOffsets[name]);
+    auto &offset = systemOffsets[name];
+    system = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr, offset);
     system->load(file);
+    createModularSystem(name, file, offset);
+}
+
+void SSystemFactory::createModularSystem(const std::string &name, const std::string &filename, const Vec3d &pos)
+{
+    std::map<std::string, std::string> params;
+    params["coord_func"] = "still_orbit";
+    params["orbit_x"] = std::to_string(pos[0]);
+    params["orbit_y"] = std::to_string(pos[1]);
+    params["orbit_z"] = std::to_string(pos[2]);
+    ModularBodyCreateInfo info {
+        .orbit = ModuleLoaderMgr::instance.loadOrbit(params),
+        .englishName = name + "System",
+        .re = {},
+        .haloColor = {},
+        .albedo = 0,
+        .radius = 0,
+        .innerRadius = 0,
+        .oblateness = 0,
+        .solLocalDay = 0,
+        .bodyType = BodyType::SYSTEM,
+        .isHaloEnabled = false,
+        .altitudeRelativeToRadius = false,
+    };
+    modularSystems.emplace_back(milkyway.get(), info);
+    if (filename.empty()) {
+        stringHash_t bodyParams;
+        bodyParams["name"] = name.substr(0, name.size()-6); // Remove the 'System' suffix for the star
+    	bodyParams["parent"] = "none";
+    	bodyParams["type"] = "Star";
+    	bodyParams["radius"] = "1190.856";
+    	bodyParams["halo"] = "false";
+    	Vec3f color = selected_object.getRGB();
+    	bodyParams["color"] = std::to_string(color[0]) + "," + std::to_string(color[1]) + "," + std::to_string(color[2]);
+    	bodyParams["label_color"] = bodyParams["color"];
+    	bodyParams["orbit_color"] = bodyParams["color"];
+    	bodyParams["tex_halo"] = "empty";
+    	bodyParams["tex_big_halo"] = "big_halo.png";
+    	bodyParams["big_halo_size"] = "10";
+    	bodyParams["lighting"] = "false";
+    	bodyParams["albedo"] = "-1.";
+    	bodyParams["coord_func"] = "sun_special";
+        bodyParams["system_star"] = "true";
+        modularSystems.back().loadBody(bodyParams);
+    } else {
+        modularSystems.back().loadSystem(filename);
+    }
 }
 
 void SSystemFactory::loadGalacticSystem(const std::string &path, const std::string &name)
@@ -157,6 +248,7 @@ std::unique_ptr<ProtoSystem> &SSystemFactory::createSystem(const std::string &mo
     auto &system = systems[mode];
     system = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr, systemOffsets[mode]);
     system->load(selected_object);
+    createModularSystem(mode, "", pos);
     return system;
 }
 
@@ -180,4 +272,38 @@ void SSystemFactory::leaveSystem()
         selectSystem();
         inSystem = false;
     }
+}
+
+void SSystemFactory::draw(Projector *prj, const Navigator *nav, const Observer *observatory, const ToneReproductor *eye, bool drawHomePlanet)
+{
+    if (drawModularSystem) {
+        Context::instance->renderer.beginDraw(Context::instance->frameIdx);
+        camera->draw(Context::instance->renderer);
+    } else {
+        bodytrace->draw(prj, nav);
+        ssystemDisplay->draw(prj, nav, observatory, eye, drawHomePlanet);
+    }
+}
+
+void SSystemFactory::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
+{
+    ssystemTex->updateTesselation(delta_time);
+    currentSystem->update(delta_time, nav, timeMgr);
+    bodytrace->update(delta_time);
+    camera->update(timeMgr->getJDay(), delta_time/1000.f);
+
+    #ifndef NDEBUG // For switching between modes in debug build
+    static int downCounter = 1000;
+    downCounter -= delta_time;
+    if (downCounter < 0) {
+        downCounter = 1000;
+        drawModularSystem = !drawModularSystem;
+    }
+    #endif
+}
+
+void SSystemFactory::addBody(stringHash_t &param)
+{
+    currentSystem->addBody(param);
+    camera->getCurrentSystem()->loadBody(param);
 }

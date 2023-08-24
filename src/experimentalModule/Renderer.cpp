@@ -20,27 +20,29 @@ void Renderer::init(ToneReproductor *_eye)
 
 void Renderer::beginDraw(uint8_t _frameIdx)
 {
-    cmdIdx = UINT16_MAX;
+    cmdIdx = 0;
     frameIdx = _frameIdx;
     frame = Context::instance->frame[frameIdx].get();
+    clippingFov.v[2] = ModularBody::halfFov;
+    cmd = cmds[frameIdx].front();
+    frame->begin(cmd, PASS_MULTISAMPLE_DEPTH);
+    frame->toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 }
 
 void Renderer::beginBodyDraw()
 {
     Halo::beginDraw();
+    clippingFov.v[2] = ModularBody::halfFov;
     Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
 }
 
 void Renderer::endBodyDraw()
 {
     Halo::endDraw();
-    if (cmd) {
-        vkEndCommandBuffer(cmd);
-        cmd = VK_NULL_HANDLE;
-    }
+    vkEndCommandBuffer(cmd);
 }
 
-void Renderer::clearDepth()
+void Renderer::clearDepth(float zCenter, float boundingRadius)
 {
     nextCommandBuffer();
     Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
@@ -48,12 +50,14 @@ void Renderer::clearDepth()
     VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
     VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
     vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
+    clippingFov.v[0] = zCenter - boundingRadius;
+    clippingFov.v[1] = zCenter + boundingRadius;
 }
 
 void Renderer::drawHalo(const std::pair<float, float> &pos, const Vec3f &color, float rmag)
 {
     auto &data = Halo::global->pData[Halo::global->offset + Halo::global->size++];
-    data.pos = pos;
+    data.pos = VulkanMgr::instance->rectToScreenf(pos);
     data.Color = color;
     data.rmag = rmag;
 }
@@ -65,8 +69,7 @@ float Renderer::adaptLuminance(float world_luminance) const
 
 void Renderer::nextCommandBuffer()
 {
-    if (cmd)
-        vkEndCommandBuffer(cmd);
+    vkEndCommandBuffer(cmd);
     if (++cmdIdx >= cmds[frameIdx].size())
         allocateCommands();
     cmd = cmds[frameIdx][cmdIdx];

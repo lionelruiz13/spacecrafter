@@ -5,7 +5,9 @@
 #include "bodyModule/orbit.hpp"
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp"
+#include "tools/s_texture.hpp"
 #include "appModule/space_date.hpp"
+#include "EntityCore/EntityCore.hpp"
 extern const Mat4d mat_j2000_to_vsop87;
 
 #define SOLAR_MASS 1.989e30
@@ -22,6 +24,8 @@ extern const Mat4d mat_j2000_to_vsop87;
 #include "orbitModules/SpecialOrbitLoader.hpp"
 #include "orbitModules/StillOrbitLoader.hpp"
 
+#include "bodyModules/BasicMeshLoader.hpp"
+
 void ModuleLoaderMgr::init()
 {
     registerModule("barycenter", std::make_unique<BaryOrbitLoader>());
@@ -32,4 +36,6 @@ void ModuleLoaderMgr::init()
     registerModule("lunar_custom", std::make_unique<LunarOrbitLoader>());
     registerModule("still_orbit", std::make_unique<StillOrbitLoader>());
     registerModule(std::make_unique<SpecialOrbitLoader>());
+
+    registerModule(BodyModuleType::MESH, std::make_unique<BasicMeshLoader>("bodies/eclipse_map.png"));
 }

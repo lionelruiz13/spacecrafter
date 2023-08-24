@@ -53,12 +53,12 @@ CoreLink *CoreLink::instance = nullptr;
 
 bool CoreLink::cameraSave(const std::string& name)
 {
-	return core->ssystemFactory->cameraSave(AppSettings::Instance()->getUserDir() + "anchors/" + name);
+	return core->ssystemFactory->cameraSave("anchors/" + name);
 }
 
 bool CoreLink::loadCameraPosition(const std::string& filename)
 {
-	return core->ssystemFactory->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
+	return core->ssystemFactory->loadCameraPosition("anchors/" + filename);
 }
 
 // void CoreLink::fontUpdateFont(const std::string& _targetName, const std::string& _fontName, const std::string& _sizeValue)

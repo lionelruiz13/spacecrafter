@@ -30,7 +30,7 @@ void ModuleLoaderMgr::registerModule(std::unique_ptr<OrbitLoader> loader)
 void ModuleLoaderMgr::loadModule(BodyModuleType type, ModularBody *target, std::map<std::string, std::string> &params)
 {
     uint8_t i = 0;
-    ModuleLoader *loader;
+    ModuleLoader *loader = nullptr;
     for (auto &l : loaders[static_cast<uint8_t>(type)]) {
         uint8_t tmp = l->isLikely(target, params);
         if (tmp > i) {

@@ -258,7 +258,7 @@ void BodyShader::createShader()
 		shaderArtificial.pipeline[i].bindVertex(*context.ojmVertexArray);
 		shaderArtificial.pipeline[i].bindShader("body_artificial.vert.spv");
 		shaderArtificial.pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
-		shaderArtificial.pipeline[i].bindShader("body_artificial.geom.spv");
+		// shaderArtificial.pipeline[i].bindShader("body_artificial.geom.spv");
 		shaderArtificial.pipeline[i].bindShader((i & 1) ? "body_artificial_notex.frag.spv" : "body_artificial_tex.frag.spv");
 		if (i & 2)
 			shaderArtificial.pipeline[i].setDepthStencilMode();
@@ -298,7 +298,7 @@ void BodyShader::createShader()
 		shaderArtificialShadowed.pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		shaderArtificialShadowed.pipeline[i].bindVertex(*context.ojmVertexArray);
 		shaderArtificialShadowed.pipeline[i].bindShader("body_artificial.vert.spv");
-		shaderArtificialShadowed.pipeline[i].bindShader("body_artificial.geom.spv");
+		// shaderArtificialShadowed.pipeline[i].bindShader("body_artificial.geom.spv");
 		shaderArtificialShadowed.pipeline[i].bindShader((i & 1) ? "body_artificial_shadow_notex.frag.spv" : "body_artificial_shadow_tex.frag.spv");
 		shaderArtificialShadowed.pipeline[i].setSpecializedConstant(0, selfShadowRes);
 		shaderArtificialShadowed.pipeline[i].build((i & 1) ? "shaderArtificialShadowed colored" : "shaderArtificialShadowed textured");

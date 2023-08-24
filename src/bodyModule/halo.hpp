@@ -66,7 +66,7 @@ public:
 	//! Process halo draws in the given CommandBuffer and prepair the next batch
 	static void nextDraw(VkCommandBuffer cmd);
 	//! Finalize and submit halo drawings
-	static void endDraw();
+	static void endDraw(VkCommandBuffer cmd = VK_NULL_HANDLE);
 
 private:
 	Body * body;

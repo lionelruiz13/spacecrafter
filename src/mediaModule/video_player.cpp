@@ -403,6 +403,10 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		if (frameUsed != frameCached) {
 			if (canDeliverFrame(now)) {
 				nextFrame += deltaFrame;
+				if (nextFrame < now) { // DEBUG
+					int nbCached = frameCached - frameUsed;
+					std::cout << "Video cache " << nbCached << '/' << CACHE_STRESS << " with latency of " << std::chrono::duration_cast<std::chrono::milliseconds>(now - nextFrame).count() << "ms\n";
+				}
 				int frameIdx = frameUsed % MAX_CACHED_FRAMES;
 				if ((lastFrame + deltaFrame * 2 < now) && (frameCached - frameUsed > (CACHE_STRESS + MAX_CACHE_SPEEDUP))) {
 					nextFrame += deltaFrame;

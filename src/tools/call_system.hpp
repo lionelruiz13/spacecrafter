@@ -53,7 +53,7 @@ public:
 	//! Recursively create missing directory to ensure the path exist
 	static void ensurePathExist(const std::string &path);
     //! returns true if the given path is absolute
-    static bool isAbsolute(const std::string path);
+    static bool isAbsolute(const std::string &path);
     //! copies the src file to the destination dest
     static bool fileCopy(const std::string &src, const std::string &dest) ;
     //! Checks if the user ini files are present and rebuilds them if needed

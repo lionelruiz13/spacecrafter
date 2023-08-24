@@ -2,9 +2,11 @@
 #include "ModularBodyPtr.hpp"
 #include "ModularSystem.hpp"
 #include "tools/log.hpp"
+#include "tools/translator.hpp"
 
 Vec3f ModularBody::lightPosition;
 float ModularBody::lightDistance;
+float ModularBody::lightSize;
 ModularBody *ModularBody::lastFit = nullptr;
 std::map<std::string, ModularBody *> ModularBody::bodyReference;
 std::list<ModularBody> ModularBody::hidden;
@@ -13,10 +15,13 @@ Vec3f ModularBody::defaultHaloColor{};
 float ModularBody::haloScale = 1;
 float ModularBody::haloSizeLimit = 9;
 std::vector<ModularBody *> ModularBody::notableBody;
+Translator *ModularBody::translator = nullptr;
 
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), radius(info.radius), innerRadius(info.innerRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
 {
+    if (translator)
+        nameI18 = translator->translateUTF8(englishName);
     auto &ref = bodyReference[englishName];
     if (ref && !englishName.empty()) {
         // It is too late to abort the body creation, so we replace it
@@ -50,7 +55,7 @@ ModularBody *ModularBody::createChild(ModularBodyCreateInfo &info)
     auto p = this;
     while (p->isNotIsolated)
         p = p->parent;
-    static_cast<ModularSystem *>(p)->addBody(this);
+    static_cast<ModularSystem *>(p)->addBody(ret);
     return ret;
 }
 
@@ -174,8 +179,10 @@ void ModularBody::drawLoaded(Renderer &renderer)
     loaded = true;
     const auto matrix = mat.multiplyFast(computeBodyToSurface()); // TODO Fix ojml ?
     if (screenSize > 0.008) {
-        renderer.clearDepth();
+        renderer.clearDepth(distance, boundingRadius);
         if (screenSize < 0.2) {
+            for (auto &module : farComponents)
+                module->draw(renderer, this, mat);
             for (auto &module : nearComponents) {
                 if (module->isLoaded()) {
                     module->draw(renderer, this, matrix);
@@ -183,6 +190,8 @@ void ModularBody::drawLoaded(Renderer &renderer)
                     loaded = false;
             }
         } else {
+            for (auto &module : farComponents)
+                module->draw(renderer, this, mat);
             if (distance < scaledInnerRadius) {
                 for (auto &module : inComponents) {
                     if (module->isLoaded()) {
@@ -203,6 +212,8 @@ void ModularBody::drawLoaded(Renderer &renderer)
             }
         }
     } else {
+        for (auto &module : farComponents)
+            module->draw(renderer, this, mat);
         for (auto &module : nearComponents) {
             if (module->isLoaded()) {
                 module->drawNoDepth(renderer, this, matrix);
@@ -220,7 +231,7 @@ void ModularBody::setChildNoLongerVisible()
     for (auto &c : childs) {
         if (c.isChildVisible)
             c.setChildNoLongerVisible();
-        c.isVisible = false;
+        c.distance = 0;
     }
     isChildVisible = false;
 }
@@ -280,4 +291,23 @@ Mat4f ModularBody::calculateSwitchCompensation(const ModularBody *to) const
         travel.pop_back();
     }
     return diff;
+}
+
+void ModularBody::setTranslator(Translator &_translator)
+{
+    translator = &_translator;
+    for (auto &ref : bodyReference)
+        ref.second->nameI18 = _translator.translateUTF8(ref.second->englishName);
+}
+
+std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::string, std::string> &param)
+{
+    std::vector<BodyModuleType> ret;
+    if (param.count("tex_ring"))
+        ret.push_back(BodyModuleType::RING);
+    if (param.count("tex_map"))
+        ret.push_back(BodyModuleType::MESH);
+    if (param.count("model_name"))
+        ret.push_back(BodyModuleType::OJM);
+    return ret;
 }

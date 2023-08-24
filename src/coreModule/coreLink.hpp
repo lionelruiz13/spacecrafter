@@ -26,7 +26,7 @@
 
 #include <memory>
 #include "coreModule/core.hpp"
-
+#include "experimentalModule/Camera.hpp"
 
 class CoreLink {
 public:
@@ -293,6 +293,7 @@ public:
 	//! Zoom to the given FOV (in degree)
 	void zoomTo(double aim_fov, float move_duration = 1.) {
 		core->projection->zoomTo(aim_fov, move_duration);
+		Camera::instance->setHalfFov(aim_fov*M_PI/360, move_duration);
 	}
 
 	//! Get current FOV (in degree)
@@ -308,6 +309,7 @@ public:
 	//! Set the current FOV (in degree)
 	void setFov(double f) {
 		core->projection->setFov(f);
+		Camera::instance->setHalfFov(f*M_PI/360);
 	}
 
 	//! Set the maximum FOV (in degree)
@@ -354,6 +356,7 @@ public:
 	bool loadCameraPosition(const std::string& filename);
 
 	bool lookAt(double az, double alt, double time = 1.){
+		Camera::instance->lookTo(alt*M_PI/180, az*M_PI/180, time);
 		return core->navigation->lookAt(az, alt, time);
 	}
 
@@ -756,10 +759,12 @@ public:
 
 	void observatorySetLatitude(double l) {
 		core->observatory->setLatitude(l);
+		Camera::instance->setLatitude(l);
 	}
 
 	void observatorySetLongitude(double l) {
 		core->observatory->setLongitude(l);
+		Camera::instance->setLongitude(l);
 	}
 
 	///////////////////////////////////////////////////////////
@@ -767,6 +772,7 @@ public:
 	// -------------------------------
 	void observatorySetAltitude(double l) {
 	 	core->observatory->setAltitude(l);
+		Camera::instance->setAltitude(l);
 	}
 
 	std::string getObserverHomePlanetEnglishName() {
@@ -779,19 +785,23 @@ public:
 
 	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration=0) {
 		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
+		Camera::instance->moveTo({static_cast<float>(lat*M_PI/180), static_cast<float>(lon*M_PI/180), static_cast<float>(alt*1000*AU)}, duration*1000.f, calculate_duration);
 	}
 
 	//! Move to relative longitude where home planet is fixed.
 	void observerMoveRelLon(double lon, int delay) {
 		core->observatory->moveRelLon(lon, delay);
+		Camera::instance->moveRelLon(lon*M_PI/180, delay*1000.f);
 	}
 	//! Move to relative latitude where home planet is fixed.
 	void observerMoveRelLat(double lat, int delay) {
 		core->observatory->moveRelLat(lat, delay);
+		Camera::instance->moveRelLon(lat*M_PI/180, delay*1000.f);
 	}
 	//! Move to relative altitude where home planet is fixed.
 	void observerMoveRelAlt(double alt, int delay) {
 		core->observatory->moveRelAlt(alt, delay);
+		Camera::instance->moveRelLon(alt, delay*1000.f);
 	}
 
 	void observerSetConf(InitParser &conf,const std::string &section) {
@@ -826,6 +836,7 @@ public:
 	//! change the Heading value
 	void moveHeadingRelative(float f) {
 		core->navigation->setHeading(core->navigation->getHeading() + f);
+		Camera::instance->moveHeading(f*M_PI/180);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -870,6 +881,7 @@ public:
 	//! set environment rotation around observer
 	void setHeading(double heading, int duration=0) {
 		core->navigation->changeHeading(heading, duration);
+		Camera::instance->setHeading(heading*M_PI/180);
 	}
 
 	void setDefaultHeading() {
@@ -886,6 +898,7 @@ public:
 
 	void setLocalVision(const Vec3d& _pos) {
 		core->navigation->setLocalVision(_pos);
+		Camera::instance->lookTo(_pos, 0);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

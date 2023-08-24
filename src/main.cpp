@@ -190,6 +190,9 @@ int main(int argc, const char *argv[])
 	LinuxExecutor executor(0, 0);
 	executor.start(false);
 
+	// Set .spacecrafter as current directory
+	std::filesystem::current_path(appDir);
+
 	//check if home Directory exist and if not try to create it.
 	std::string dirResult;
 	CallSystem::checkUserDirectory(appDir, dirResult);
@@ -200,7 +203,7 @@ int main(int argc, const char *argv[])
 	//-------------------------------------------
 	cLog* Log = cLog::get();
 
-	Log->setDirectory(appDir + "log/");
+	Log->setDirectory("log/");
 
 	// Open log files
 	Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
@@ -246,7 +249,7 @@ int main(int argc, const char *argv[])
 	//test if config.ini is not to old.
 	{
 		std::unique_ptr<CheckConfig> configUptodate =  std::make_unique<CheckConfig>();
-	configUptodate->checkConfigIni(appDir+"config.ini", std::string(VERSION));
+	configUptodate->checkConfigIni("config.ini", std::string(VERSION));
 		//delete configUptodate;
 	}
 
@@ -310,7 +313,7 @@ int main(int argc, const char *argv[])
 	VulkanMgrCreateInfo vkmgrInfo {.AppName=APP_LOWER_NAME, .appVersion=VK_MAKE_API_VERSION(0, GETV(0), GETV(3), GETV(6)),
 		.window=sdl->getWindow(), .vulkanVersion=VK_API_VERSION_1_1, .width=curMin, .height=-curMin, .queueRequest={2, 0, 0, 1, 1},
 		.requiredExtensions={"VK_KHR_timeline_semaphore"},
-		.redirectLog=cLog::writeECLog, .cachePath=ini->getUserDir()+"cache/", .logPath=appDir+"log/",
+		.redirectLog=cLog::writeECLog, .cachePath="cache/", .logPath="log/",
 		.swapchainUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, .chunkSize=256, .forceSwapchainCount=3,
 		.enableDebugLayers=conf.getBoolean(SCS_MAIN, SCK_DEBUG_LAYER), .drawLogs=conf.getBoolean(SCS_MAIN, SCK_DEBUG),
 		.saveLogs=conf.getBoolean(SCS_MAIN, SCK_LOG), .preserveCrashLogs = true,
@@ -324,7 +327,7 @@ int main(int argc, const char *argv[])
 	vkmgrInfo.preferedFeatures.features.samplerAnisotropy = VK_TRUE;
 	vkmgrInfo.preferedFeatures.pNext = &timelineSemaphore;
 
-	AsyncLoaderMgr loader(appDir, ini->getUserDir()+"cache/");
+	AsyncLoaderMgr loader(".", "cache/");
 	loader.minPriority = LoadPriority::LOADING;
 	loader.startBuilders(conf.getInt(SCS_MAIN, SCK_BUILDER_THREADS));
 	std::unique_ptr<VulkanMgr> vulkan = std::make_unique<VulkanMgr>(vkmgrInfo);

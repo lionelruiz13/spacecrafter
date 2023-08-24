@@ -38,7 +38,7 @@
 
 #define BUFFER_SIZE 1024
 
-bool CallSystem::isAbsolute(const std::string path)
+bool CallSystem::isAbsolute(const std::string &path)
 {
     return std::filesystem::path(path).is_absolute();
 }

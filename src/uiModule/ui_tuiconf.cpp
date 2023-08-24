@@ -255,7 +255,7 @@ void UI::initTui()
 
 	// 3. General settings
 	tui_general_landscape = new s_tui::MultiSetItem<std::string>(std::string("3.1 ") );
-	tui_general_landscape->addItemList(std::string(Landscape::getFileContent(AppSettings::Instance()->getUserDir() + "landscapes.ini")));
+	tui_general_landscape->addItemList(std::string(Landscape::getFileContent("landscapes.ini")));
 
 	tui_general_landscape->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbTuiGeneralChangeLandscape));
 	tui_menu_general->addComponent(tui_general_landscape);

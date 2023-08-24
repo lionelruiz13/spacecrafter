@@ -66,7 +66,6 @@ class Translator;
 class ToneReproductor;
 class Navigator;
 class Projector;
-class Observatory;
 class Observer;
 class Set;
 class BodyColor;

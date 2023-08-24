@@ -9,6 +9,7 @@ class Renderer;
 enum class BodyModuleType : unsigned char {
     CUSTOM, // For modules without a specific role
     MESH,
+    OJM,
     VOLUMETRIC,
     RING,
     HINT,
@@ -47,7 +48,7 @@ public:
     // Draw a minimalist representation of this Body Module, without depth buffer
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
     // Draw a shadow to project onto another body
-    virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
+    virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx) {}
     // Draw a shadow for self-shadowing
     virtual void drawSelfShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
     // Draw a trace for orbit tracing
@@ -72,6 +73,7 @@ public:
 protected:
     float boundingRadius;
     BodyModuleType type;
+    bool loaded = true; // May be used internally
 };
 
 #endif /* end of include guard: BODY_MODULE_HPP_ */

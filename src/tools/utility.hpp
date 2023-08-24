@@ -159,9 +159,9 @@ public:
 	static inline bool isTrue(const std::string &a) {
 		switch (a.size()) {
 			case 4:
-				return (*reinterpret_cast<const uint32_t *>(a.data()) & 0x4f4f4f4f) == str4("TRUE");
+				return (*reinterpret_cast<const uint32_t *>(a.data()) & 0x5f5f5f5f) == str4("TRUE");
 			case 2:
-				return (*reinterpret_cast<const uint16_t *>(a.data()) & 0x4f4f) == str2("ON");
+				return (*reinterpret_cast<const uint16_t *>(a.data()) & 0x5f5f) == str2("ON");
 			case 1:
 				return a.front() == '1';
 			default:
@@ -171,9 +171,9 @@ public:
 	static inline bool isFalse(const std::string &a) {
 		switch (a.size()) {
 			case 5:
-				return (*reinterpret_cast<const uint32_t *>(a.data()) & 0x4f4f4f4f) == str4("FALSE");
+				return (*reinterpret_cast<const uint32_t *>(a.data()) & 0x5f5f5f5f) == str4("FALSE");
 			case 3:
-				return (*reinterpret_cast<const uint32_t *>(a.data()) & 0x4f4f4f) == str4("OFF");
+				return (*reinterpret_cast<const uint32_t *>(a.data()) & 0x5f5f5f) == str4("OFF");
 			case 1:
 				return a.front() == '0';
 			default:

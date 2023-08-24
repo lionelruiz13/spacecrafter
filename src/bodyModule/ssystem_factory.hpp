@@ -40,6 +40,11 @@
 #include "mainModule/define_key.hpp"
 #include "ojmModule/objl_mgr.hpp"
 #include "navModule/anchor_manager.hpp"
+#include "experimentalModule/ModularBody.hpp"
+#include "experimentalModule/ModularBodyPtr.hpp"
+
+class Camera;
+class ModularSystem;
 
 /**
  * \file ssystem_factory.hpp
@@ -59,6 +64,8 @@ class SSystemFactory: public NoCopy {
 public:
     SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
     ~SSystemFactory();
+
+    void loadCamera(const InitParser &conf);
 
     SolarSystem * getSolarSystem(void) {
         return ssystem.get();
@@ -165,6 +172,18 @@ public:
 
 	void setPlanetHidden(const std::string &name, bool planethidden) {
         currentSystem->setPlanetHidden(name, planethidden);
+        if (planethidden) {
+            ModularBody::findBody(name)->hide();
+        } else {
+            ModularBody::findBody(name)->show();
+        }
+    }
+
+    void togglePlanetHidden(const std::string &name) {
+        auto body = ModularBody::findBody(name);
+        if (!body->hide())
+            body->show();
+        currentSystem->setPlanetHidden(name, !currentSystem->getPlanetHidden(name));
     }
 
 	bool getPlanetHidden(const std::string &name) {
@@ -331,19 +350,11 @@ public:
         currentSystem->selectSystem();
     }
 
-	void loadStellar(const std::string& planetfile) {
-        stellarSystem->load(planetfile);
-    }
-
 	void computePositions(double date,const Observer *obs) {
         ssystemDisplay->computePositions(date, obs);
     }
 
-	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr) {
-        ssystemTex->updateTesselation(delta_time);
-        currentSystem->update(delta_time, nav, timeMgr);
-	    bodytrace->update(delta_time);
-    }
+	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
 
 	void bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const {
         ssystem->bodyTraceGetAltAz(nav, alt, az);
@@ -355,20 +366,17 @@ public:
 
 	void draw(Projector * prj, const Navigator * nav, const Observer* observatory,
 	          const ToneReproductor* eye,
-	          bool drawHomePlanet ) {
-    	bodytrace->draw(prj, nav);
-        ssystemDisplay->draw(prj, nav, observatory, eye, drawHomePlanet);
-    }
+	          bool drawHomePlanet );
 
-	void addBody(stringHash_t & param) {
-        currentSystem->addBody(param);
-    }
+	void addBody(stringHash_t &param);
 
     void preloadBody(stringHash_t & param) {
         currentSystem->preloadBody(param);
     }
 
 	bool removeBody(const std::string &name) {
+        if (auto body = ModularBody::findBodyOnce(name))
+            body->remove(true);
         return currentSystem->removeBody(name);
     }
 
@@ -397,6 +405,7 @@ public:
 
 	void translateNames(Translator& trans) {
         currentSystem->translateNames(trans);
+        ModularBody::setTranslator(trans);
     }
 
 	void setDefaultBodyColor(const std::string& halo, const std::string& label, const std::string& orbit, const std::string& trail) {
@@ -512,7 +521,7 @@ public:
 
     void anchorManagerInit(const InitParser &conf) {
         currentSystem->getAnchorManager()->setRotationMultiplierCondition(conf.getDouble(SCS_NAVIGATION, SCK_STALL_RADIUS_UNIT));
-		currentSystem->getAnchorManager()->load(AppSettings::Instance()->getUserDir() + "anchor.ini");
+		currentSystem->getAnchorManager()->load("anchor.ini");
 		currentSystem->getAnchorManager()->initFirstAnchor(conf.getStr(SCS_INIT_LOCATION, SCK_HOME_PLANET));
     }
 
@@ -530,11 +539,11 @@ public:
     }
 
     bool cameraSave(const std::string& name) {
-	    return currentSystem->getAnchorManager()->saveCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + name);
+	    return currentSystem->getAnchorManager()->saveCameraPosition("anchors/" + name);
     }
 
     bool loadCameraPosition(const std::string& filename) {
-	    return currentSystem->getAnchorManager()->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
+	    return currentSystem->getAnchorManager()->loadCameraPosition("anchors/" + filename);
     }
 
     void changeSystem(const std::string &mode);
@@ -544,6 +553,7 @@ public:
     void loadGalacticSystem(const std::string &path, const std::string &file);
     void loadSystem(const std::string &path, stringHash_t &params);
     std::unique_ptr<ProtoSystem> &createSystem(const std::string &mode);
+    void createModularSystem(const std::string &name, const std::string &filename, const Vec3d &pos);
 
     //! Enter a system (leave the galactic system)
     void enterSystem();
@@ -553,6 +563,9 @@ public:
 
     //! Return the selected anchor name
     std::string querySelectedAnchorName();
+
+    //! For debugging, should the modular system been drawn ?
+    bool drawModularSystem = false;
 private:
     //! Select current system
     void selectSystem();
@@ -562,11 +575,13 @@ private:
     std::unique_ptr<SolarSystemScale> ssystemScale;
     std::unique_ptr<SolarSystemSelected> ssystemSelected;
     std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
-    std::unique_ptr<ProtoSystem> stellarSystem;
 
+    std::unique_ptr<ModularSystem> milkyway;
     std::unique_ptr<ProtoSystem> galacticSystem;
     std::shared_ptr<AnchorManager> galacticAnchorMgr;
 
+    // At least for now, systems are stored here
+    std::list<ModularSystem> modularSystems;
     std::map<std::string, std::unique_ptr<ProtoSystem>> systems;
     std::map<std::string, Vec3d> systemOffsets;
 
@@ -576,6 +591,7 @@ private:
     Observer *observatory;
     Navigator *navigation;
     TimeMgr *timeMgr;
+    std::unique_ptr<Camera> camera;
 
     ProtoSystem * currentSystem;
     bool inSystem = true;

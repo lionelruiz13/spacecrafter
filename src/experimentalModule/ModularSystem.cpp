@@ -67,21 +67,20 @@ void ModularSystem::updateSystem()
     star->updateAsLightSource();
     if (needCleanUp)
         cleanUp();
-    { // SORT
+    if (sortedSystemBodies.size() > 1) { // SORT
         // Use dual bubble sort algorithm - average complexity of O(N) as bodies stay mostly sorted between frames
-    	// This come with a higher complexity at the frame newly showing multiple bodies (due to addBody)
+    	// This come with a higher complexity at the frame newly showing multiple bodies (due to loadBody)
         ModularBody **pos = sortedSystemBodies.data();
         ModularBody ** const begin = pos - 1;
         ModularBody ** const end = begin + sortedSystemBodies.size();
-    	ModularBody **swapPos;
-    	ModularBody *tmp;
     	do {
-    		if (*pos[0] < *pos[1]) {
-    			swapPos = pos;
-    			tmp = pos[1];
+            auto tmpDistance = pos[0]->distance;
+            if (tmpDistance < pos[1]->distance) {
+    			ModularBody **swapPos = pos;
+    			ModularBody *tmp = pos[1];
     			do { // Backward loop, bring up the body
     				pos[1] = pos[0];
-    			} while (--pos != begin && *pos[0] < *pos[1]);
+    			} while (--pos != begin && tmpDistance < pos[1]->distance);
     			pos[1] = tmp;
     			pos = swapPos;
     		}
@@ -93,10 +92,14 @@ void ModularSystem::drawSystem(Renderer &renderer)
 {
     for (auto &module : inComponents)
         module->draw(renderer, this, mat);
+    renderer.beginBodyDraw();
     ModularBody ** const end = sortedSystemBodies.data() + sortedSystemBodies.size();
     for (ModularBody **pos = sortedSystemBodies.data(); pos < end; ++pos) {
+        if ((**pos).distance == 0)
+            break; // Skip bodies not evaluated on update
         (**pos).draw(renderer);
     }
+    renderer.endBodyDraw();
     for (auto &module : nearComponents)
         module->draw(renderer, this, mat);
 }
@@ -111,11 +114,11 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         cLog::get()->write("Can't load unnamed body", LOG_TYPE::L_WARNING);
         return;
     }
-    cLog::get()->write("Loading body " + englishName, LOG_TYPE::L_INFO);
-
     if (!Utility::isTrue(param["replace"]) && ModularBody::exists(englishName)) {
-        cLog::get()->write("Abort loading " + englishName + " as it already exists and replace param isn't true", LOG_TYPE::L_WARNING);
+        cLog::get()->write("Skip loading " + englishName + " as it already exists and replace param isn't true", LOG_TYPE::L_WARNING);
+        return;
     }
+    cLog::get()->write("Loading body " + englishName, LOG_TYPE::L_INFO);
 
     ModularBody *parent;
     if (parentName.empty()) {
@@ -187,16 +190,17 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
 		return;
 	}
 
+    if (Utility::isTrue(param["hardcoded"]))
+        applyHardcodedContent(createInfo, param);
     ModularBody *body = parent->createChild(createInfo);
     if (Utility::isTrue(param["bound_to_surface"]))
         body->boundToSurface = true;
     if (Utility::isTrue(param["hidden"]))
         body->hide();
-
-    // TODO NEXT TIME !
-    // 1 - THIS
-    // 2 - BIND TO ssystemFactory (in parallel to current system ?)
-    // 3 - IMPLEMENT BASIC ELEMENTS
+    if (Utility::isTrue(param["system_star"]) || (!star && body->isStar() && parent == this))
+        star = body;
+    for (auto moduleType : body->deduceBodyModuleList(param))
+        ModuleLoaderMgr::instance.loadModule(moduleType, body, param);
 }
 
 ModularBody *ModularSystem::findBodyAt(const std::pair<float, float> &searchPos) const
@@ -222,4 +226,51 @@ ModularBody *ModularSystem::findBodyAt(const std::pair<float, float> &searchPos)
         }
     }
     return ret;
+}
+
+void ModularSystem::loadSystem(const std::string &filename)
+{
+    std::ifstream file(filename);
+    if (file) {
+        systemFilename = filename;
+        stringHash_t bodyParams;
+        std::string line;
+        while (getline(file, line)) {
+            if (line.size() < 2) // Smallest is "[]"
+                continue;
+            switch (line.front()) {
+                case '#':
+                    continue;
+                case '[':
+                    if (!bodyParams.empty()) {
+                        loadBody(bodyParams);
+                        bodyParams.clear();
+                    }
+                    break;
+                default:
+                    if (line.back() == '\r')
+                        line.pop_back();
+                    {
+                        int pos = line.find('=', 2); // Smallest is "a = b", with '=' at index 2
+                        bodyParams[line.substr(0, pos-1)] = line.substr(pos+2);
+                    }
+                    break;
+            }
+        }
+        if (!bodyParams.empty())
+            loadBody(bodyParams);
+    } else {
+        cLog::get()->write("Unable to open file " + filename, LOG_TYPE::L_ERROR);
+    }
+    cLog::get()->write("(system " + englishName + " loaded)", LOG_TYPE::L_INFO);
+	cLog::get()->mark();
+}
+
+void ModularSystem::applyHardcodedContent(ModularBodyCreateInfo &createInfo, std::map<std::string, std::string> &param)
+{
+    if (createInfo.englishName == "Earth") {
+        createInfo.bodyType = BodyType::EARTH;
+    } else if (createInfo.englishName == "Moon") {
+        createInfo.bodyType = BodyType::EARTH_MOON;
+    }
 }

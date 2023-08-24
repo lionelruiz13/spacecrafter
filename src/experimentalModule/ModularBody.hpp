@@ -10,9 +10,24 @@
 #include <memory>
 #include <list>
 
+#define TM(num, name) auto tex##num = name.getBigTexture()
+#define TB(num) ((tex##num != nullptr) << num)
+
+// Big texture mapping
+#define TEXMAP1(t0) TM(0, t0); const uint16_t texmap = TB(0)
+#define TEXMAP2(t0, t1) TM(0, t0); TM(1, t1); const uint16_t texmap = TB(0) | TB(1)
+#define TEXMAP3(t0, t1, t2) TM(0, t0); TM(1, t1); TM(2, t2); const uint16_t texmap = TB(0) | TB(1) | TB(2)
+#define TEXMAP4(t0, t1, t2, t3) TM(0, t0); TM(1, t1); TM(2, t2); TM(3, t3); const uint16_t texmap = TB(0) | TB(1) | TB(2) | TB(3)
+#define TEXMAP5(t0, t1, t2, t3, t4) TM(0, t0); TM(1, t1); TM(2, t2); TM(3, t3); TM(4, t4); const uint16_t texmap = TB(0) | TB(1) | TB(2) | TB(3) | TB(4)
+
+// Get the Texture at the 'num' parameter of TEXMAP which is 'name'
+#define TEX(num, name) (tex##num ? *tex##num : name.getTexture())
+
 enum class BodyType : unsigned char {
     VOID,
     ANCHOR, // Simplest type, just an anchor
+    SYSTEM, // A body system
+    GALAXY, // A galaxy
     MINOR_BODY, // A body with minor features, usefull for massively instanciated bodies
     SPHERICAL_BODY, // A spherical body, who doesn't use self-shadowing
     SINGLE_BODY, // A body with a single shape
@@ -31,6 +46,7 @@ inline constexpr BodyType operator&(BodyType t1, BodyType t2)
 #define UPDATE_CADENCY JD_SECOND
 
 class ModularSystem;
+class Translator;
 
 struct ModularBodyCreateInfo {
     std::unique_ptr<Orbit> orbit;
@@ -146,7 +162,7 @@ public:
     }
 
     inline float getAxisRotation() const {
-        return axisRotation + M_PI_2;
+        return axisRotation + M_PI_2; // TODO Fix ojml ?
     }
 
     inline Mat4f computeBodyToSurface() const {
@@ -162,14 +178,14 @@ public:
     // Draw this body if it is visible
     inline void draw(Renderer &renderer) {
         if (isVisible & isBodyVisible) {
-            for (auto &module : farComponents)
-                module->draw(renderer, this, mat);
             if (screenSize > 0.0015) {
                 if (loaded) {
-                    const auto matrix = mat.multiplyFast(computeBodyToSurface()); // TODO Fix ojml ?
+                    const auto matrix = mat.multiplyFast(computeBodyToSurface());
                     if (screenSize > 0.008) {
-                        renderer.clearDepth();
+                        renderer.clearDepth(distance, boundingRadius);
                         if (screenSize < 0.2) {
+                            for (auto &module : farComponents)
+                                module->draw(renderer, this, mat);
                             for (auto &module : nearComponents)
                                 module->draw(renderer, this, matrix);
                         } else {
@@ -182,6 +198,8 @@ public:
                             }
                         }
                     } else {
+                        for (auto &module : farComponents)
+                            module->draw(renderer, this, mat);
                         for (auto &module : nearComponents)
                             module->drawNoDepth(renderer, this, matrix);
                         drawHalo(renderer);
@@ -189,6 +207,8 @@ public:
                 } else
                     drawLoaded(renderer);
             } else {
+                for (auto &module : farComponents)
+                    module->draw(renderer, this, mat);
                 drawHalo(renderer);
             }
         }
@@ -356,6 +376,7 @@ public:
     inline void updateAsLightSource() const {
         lightPosition = mat.getTranslation();
         lightDistance = lightPosition.length();
+        lightSize = scaledRadius;
     }
     // Get the distance reference for the altitude
     inline float getAltitudeReference() const {
@@ -417,7 +438,7 @@ public:
     // Must be called after update as it depends on updated values
     inline float computeMagnitude() const {
         float factor;
-        if ((bodyType & BodyType::STAR) != BodyType::VOID) {
+        if (isStar()) {
             factor = distance*distance;
         } else {
         	const Vec3f heliopos = mat.getTranslation() - lightPosition;
@@ -429,7 +450,45 @@ public:
         }
         return -26.73f + 2.5f*log10f(factor);
     }
+    static void setTranslator(Translator &_translator);
+    inline float getDistanceToObserver() const {
+        return distance;
+    }
+    // Return true if this body has the STAR bit set, meaning it emit light
+    inline bool isStar() const {
+        return (bodyType & BodyType::STAR) == BodyType::STAR;
+    }
+    // Return true if this body is a system
+    inline bool isSystem() const {
+        return bodyType == BodyType::SYSTEM;
+    }
+    // Return true if this body is at the center of his system
+    inline bool isSystemCentered() const {
+        const ModularBody *body = this;
+        while (body->isNotIsolated) {
+            if (computedEclipticPos.v[0] || computedEclipticPos.v[1] || computedEclipticPos.v[2])
+                return false;
+            body = body->parent;
+        }
+        return (body->bodyType == BodyType::SYSTEM);
+    }
+
+    inline void enterEnvironment() {
+    }
+    inline void leaveEnvironment() {
+    }
+    static inline const Vec3f &getLightPosition() {
+        return lightPosition;
+    }
+    inline float getOneMinusOblateness() const {
+        return one_minus_oblateness;
+    }
+    inline float getLightHalfAngle() const {
+        return atan(lightSize/(lightPosition-mat.getTranslation()).length());
+    }
 private:
+    // Deduce which modules are to be bound to this body from the parameters
+    std::vector<BodyModuleType> deduceBodyModuleList(std::map<std::string, std::string> &param);
     void select();
     void deselect();
     inline void drawHalo(Renderer &renderer) {
@@ -437,7 +496,7 @@ private:
         const float mag = computeMagnitude();
 
         rmag = sqrtf(renderer.adaptLuminance((expf(-0.92103f*(mag + 12.12331f)) * 8.2295998f) / (fov_q * fov_q))) * 30.f * ModularBody::haloScale;
-        if ((parent->bodyType & BodyType::STAR) == BodyType::VOID)
+        if (!isStar())
             rmag /= (halfFov >= (M_PI/6)) ? 25 : 5;
         if (rmag < 1.2f) {
             cmag = (mag > 0) ? (rmag*rmag/1.44f) : (rmag/1.2f);
@@ -451,6 +510,7 @@ private:
     			if (rmag > ModularBody::haloSizeLimit)
     				rmag = ModularBody::haloSizeLimit;
     		}
+            cmag = 1.f;
         }
         const float screen_r = screenSize * 1024;
         cmag *= 0.5*rmag/screen_r;
@@ -461,7 +521,7 @@ private:
     		rmag = screen_r;
     	}
 
-        if ((parent->bodyType & BodyType::STAR) == BodyType::VOID) {
+        if (!isStar()) {
             const Vec3f _planet = parent->mat.getTranslation() - lightPosition;
             const Vec3f _satellite = mat.getTranslation() - lightPosition;
             double OP = _planet.length();
@@ -543,7 +603,9 @@ private:
     // Global datas
     static Vec3f lightPosition; // Observer-local light source position
     static float lightDistance; // Observer-local light source distance
+    static float lightSize;     // Light source radius
     static ModularBody *lastFit;
+    static Translator *translator;
     static std::map<std::string, ModularBody *> bodyReference;
     static std::list<ModularBody> hidden;
     static std::vector<ModularBody *> notableBody; // List of bodies sufficiently large to need a depth bucket

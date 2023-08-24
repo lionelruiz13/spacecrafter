@@ -81,6 +81,7 @@
 #include "tools/NDISender.hpp"
 #include "EntityCore/Tools/CaptureMetrics.hpp"
 #include "EntityCore/Executor/AsyncLoaderMgr.hpp"
+#include "experimentalModule/ModuleLoaderMgr.hpp"
 #include "capture.hpp"
 
 #ifdef __linux__
@@ -109,7 +110,7 @@ App::App( SDLFacade* const sdl )
 	PipelineLayout::DEFAULT_SAMPLER.maxAnisotropy = conf.getDouble(SCS_RENDERING, SCK_ANISOTROPY);
 	context.isFloat64Supported = VulkanMgr::instance->getDeviceFeatures().features.shaderFloat64;
 
-	context.stat = std::make_unique<CaptureMetrics>(settings->getUserDir() + "log/statistics.dat", CAPTURE_FLAG_NAMES);
+	context.stat = std::make_unique<CaptureMetrics>("log/statistics.dat", CAPTURE_FLAG_NAMES);
 	if (conf.getBoolean(SCS_MAIN, SCK_STATISTICS))
 		context.stat->startCapture();
 
@@ -124,7 +125,8 @@ App::App( SDLFacade* const sdl )
 	flushFrames = conf.getBoolean(SCS_RENDERING, SCK_FLUSH_FRAMES);
 
 	finalizeInitVulkan(conf);
-	s_texture::loadCache(settings->getUserDir() + "cache/", conf.getBoolean(SCS_MAIN, SCK_TEX_CACHE));
+	s_texture::setTexDir(AppSettings::Instance()->getTextureDir() );
+	s_texture::loadCache("cache/", conf.getBoolean(SCS_MAIN, SCK_TEX_CACHE));
 	s_texture::setLoadingStrategy(conf.getStr(SCS_MAIN, SCK_TEXTURE_LOADING));
 	fontFactory = std::make_unique<FontFactory>();
 
@@ -135,6 +137,7 @@ App::App( SDLFacade* const sdl )
 
 	screenFader =  std::make_unique<ScreenFader>();
 
+	ModuleLoaderMgr::instance.init();
 	observatory = std::make_shared<Observer>();
 	core = std::make_shared<Core>(width, height, media, fontFactory, mBoost::callback<void, std::string>(this, &App::recordCommand), observatory);
 	coreLink = std::make_unique<CoreLink>(core);
@@ -144,7 +147,7 @@ App::App( SDLFacade* const sdl )
 
 	ui = std::make_shared<UI>(core, coreLink.get(), this, mSdl, media);
 	commander = std::make_shared<AppCommandInterface>(core, coreLink, coreBackup, this, ui.get(), media, fontFactory);
-	scriptMgr = std::make_shared<ScriptMgr>(commander, settings->getUserDir(), media);
+	scriptMgr = std::make_shared<ScriptMgr>(commander, "", media);
 	scriptInterface = std::make_shared<ScriptInterface>(scriptMgr);
 	internalFPS = std::make_unique<Fps>();
 	spaceDate = std::make_shared<SpaceDate>();
