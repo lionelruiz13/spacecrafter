@@ -23,8 +23,8 @@ layout (binding=1, set=2) uniform artGeom {
 
 //in-out
 layout (location=0) in vec3 Position[3];
-layout (location=1) in vec3 Normal[3];
-layout (location=2) in vec2 TexCoord[3];
+layout (location=1) in vec2 TexCoord[3];
+layout (location=2) in vec3 Normal[3];
 layout (location=3) in float Ambient[3];
 layout (location=4) in vec4 pos[3];
 

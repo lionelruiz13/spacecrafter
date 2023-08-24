@@ -57,6 +57,7 @@ po/*
 *.jpg
 *.log
 *.ojm
+*.ojm.bin
 *.obj
 *.mtl
 *.zip
