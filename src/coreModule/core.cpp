@@ -1215,6 +1215,8 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	std::string language = skyTranslator.getLocaleName();
 	if (language[0] == 'z' && language[1] == 'h')
 		fontFactory->updateAllFont("/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf");
+	else if (language[0] == 'j' && language[1] == 'a')
+		fontFactory->updateAllFont("/home/planetarium/.spacecrafter/fonts/PretendardJPVariable.ttf");
 	else
 		fontFactory->updateAllFont("/home/planetarium/.spacecrafter/fonts/DejaVuSans-Bold.ttf");
 
