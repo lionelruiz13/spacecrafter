@@ -105,6 +105,7 @@ void ViewPort::setTexture(VideoTexture _tex)
 {
 	// There must be no command using this set
 	set->unGet();
+	set->clear();
 	set->bindTexture(*_tex.y, 0);
 	set->bindTexture(*_tex.u, 1);
 	set->bindTexture(*_tex.v, 2);
