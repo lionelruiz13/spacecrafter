@@ -51,7 +51,7 @@ enum class FLAG_NAMES: char {FN_ANTIALIAS_LINES = 30, FN_CONSTELLATION_DRAWING, 
                              FN_ZODIAC_LIGHT , FN_TULLY, FN_TULLY_COLOR_MODE, FN_SATELLITES, FN_MOUSECOORD, FN_ATMOSPHERIC_REFRACTION, FN_QUATERNION_MODE, FN_EYE_RELATIVE_MODE, FN_EXPERIMENTAL_SHADOWS, FN_SKIP_PAUSE, FN_IMAGE_COMPRESSION_LOSS,
                             };
 
-enum class COLORCOMMAND_NAMES: char {CC_CONSTELLATION_LINES = 30, CC_CONSTELLATION_NAMES, CC_CONSTELLATION_ART, CC_CONSTELLATION_BOUNDARIES, CC_CARDINAL_POINTS,
+enum class COLORCOMMAND_NAMES: char {CC_CONSTELLATION_LINES = 30, CC_CONST_LINES3D_COLOR, CC_CONSTELLATION_NAMES, CC_CONSTELLATION_ART, CC_CONSTELLATION_BOUNDARIES, CC_CARDINAL_POINTS,
                                      CC_PLANET_ORBITS, CC_PLANET_NAMES, CC_PLANET_TRAILS, CC_AZIMUTHAL_GRID, CC_EQUATOR_GRID, CC_ECLIPTIC_GRID,
                                      CC_GALACTIC_GRID, CC_EQUATOR_LINE, CC_GALACTIC_LINE, CC_ECLIPTIC_LINE, CC_MERIDIAN_LINE, CC_ZENITH_LINE,
                                      CC_POLAR_POINT, CC_POLAR_CIRCLE, CC_ECLIPTIC_CENTER, CC_GALACTIC_POLE, CC_GALACTIC_CENTER, CC_VERNAL_POINTS,
@@ -126,7 +126,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_TRAIL                     "trail"
 #define W_INDEX                     "index"
 #define W_HP                        "hp"
-#define W_COLOR               "color"
+#define W_COLOR               		"color"
 #define W_COLOR_VALUE               "color_value"
 #define W_FADER                     "fader"
 #define W_NONE                      "NONE" //??
@@ -455,6 +455,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 
 //ColorCommand
 #define ACP_CC_CONSTELLATION_LINES                  "constellation_lines"
+#define ACP_CC_CONST_LINES3D_COLOR					"const_lines3d_color"
 #define ACP_CC_CONSTELLATION_NAMES                  "constellation_names"
 #define ACP_CC_CONSTELLATION_ART                    "constellation_art"
 #define ACP_CC_CONSTELLATION_BOUNDARIES             "constellation_boundaries"
