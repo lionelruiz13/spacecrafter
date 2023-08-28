@@ -99,7 +99,7 @@ public:
 		rotate_z = rotation;
 	}
 
-	void draw(const Projector* prj, const Navigator* nav);
+	virtual void draw(const Projector* prj, const Navigator* nav);
 
 	static Landscape* createFromFile(const std::string& landscape_file, const std::string& section_name);
 	static Landscape* createFromHash(stringHash_t & param);
@@ -112,6 +112,7 @@ protected:
 	virtual void load(const std::string& file_name, const std::string& section_name) {};
 	//! Load attributes common to all landscapes
 	void loadCommon(const std::string& landscape_file, const std::string& section_name);
+	virtual void setLanding(bool isLanding) {}
 	float radius;
 	float sky_brightness;
 	bool valid_landscape;   // was a landscape loaded properly?
@@ -156,7 +157,6 @@ private:
 	float tex_fov;
 };
 
-
 class LandscapeSpherical : public Landscape {
 public:
 	LandscapeSpherical(float _radius = 1.);
@@ -164,11 +164,14 @@ public:
 	virtual void load(const std::string& fileName, const std::string& section_name);
 	void create(const std::string _name, const std::string _maptex, const float _base_altitude,
 	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, const bool _mipmap);
+	virtual void draw(const Projector* prj, const Navigator* nav) override;
 private:
 	void createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
 	                         double bottom_altitude, double top_altitude, float * data);
 	void initShader();
+	virtual void setLanding(bool isLanding) override;
 	float base_altitude, top_altitude;  // for partial sphere coverage
+	ACustomLinearFader landingFader;
 };
 
 #endif // _LANDSCAPE_H_
