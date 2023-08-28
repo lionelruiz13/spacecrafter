@@ -76,7 +76,7 @@ static float setLimitedShade(float _value )
 	return Utility::clamp(_value, minShadeValue, maxShadeValue);
 }
 
-Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.), landingFader(true, 2)
+Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 {
 	map_tex = nullptr;
 	map_tex_night = nullptr;
@@ -494,8 +494,8 @@ void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, 
 
 LandscapeSpherical::LandscapeSpherical(float _radius) : Landscape(_radius),  base_altitude(-90), top_altitude(90), landingFader(false, 2)
 {
-	landingFader.zeroValue = base_altitude;
-	landingFader.delta = top_altitude - base_altitude;
+	landingFader.interpolator.zeroValue = base_altitude;
+	landingFader.interpolator.delta = top_altitude - base_altitude;
 	landingFader.setNoDelay(true); // Switching false to true update the cached value with the new parameters
 	rotate_z = 0;
 }
@@ -578,7 +578,7 @@ void LandscapeSpherical::draw(const Projector* prj, const Navigator* nav)
 {
 	if (top_altitude != landingFader) {
 		top_altitude = landingFader;
-		createSphericalMesh(radius, 1.0, slices,stacks, base_altitude, top_altitude, (float *) context.transfer->planCopy(vertex->get()));
+		createSphericalMesh(radius, 1.0, slices,stacks, base_altitude, top_altitude, (float *) Context::instance->transfer->planCopy(vertex->get()));
 	}
 	Landscape::draw(prj, nav);
 }
