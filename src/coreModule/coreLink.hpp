@@ -432,6 +432,8 @@ public:
 	Vec3f constellationGetColorLine() const;
 	//! Set constellation line color
 	void constellationSetColorLine(const Vec3f& v);
+	//! Set constellation color 3D
+	void constellationSetColor(const Vec3f& v);
 	//! Get constellation names color
 	Vec3f constellationGetColorNames() const;
 	//! Set constellation names color

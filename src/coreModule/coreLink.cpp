@@ -976,6 +976,10 @@ void CoreLink::constellationSetColorLine(const Vec3f& v) {
 	core->asterisms->setLineColor(v);
 }
 
+void CoreLink::constellationSetColor(const Vec3f& v){
+	core->starLines->setColor(v);
+}
+
 Vec3f CoreLink::constellationGetColorNames() const {
 	return core->asterisms->getLabelColor();
 }
