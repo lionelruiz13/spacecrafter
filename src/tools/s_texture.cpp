@@ -539,7 +539,7 @@ void s_texture::forceUnload()
         layoutMipmap = nullptr;
     }
     cache.store();
-    std::cout << "Total blocking texture loading time : " << std::chrono::duration_cast<std::chrono::milliseconds>(loadTime).count() << " ms\n";
+    cLog::get()->write("Total blocking texture loading time : " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(loadTime).count()) + "ms", LOG_TYPE::L_INFO);
 }
 
 void s_texture::update()

@@ -33,17 +33,21 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 #include "tools/insert_all.hpp"
+#include "coreModule/coreLink.hpp"
 
 PipelineLayout *Image::m_layoutViewport;
 PipelineLayout *Image::m_layoutUnifiedRGB;
 PipelineLayout *Image::m_layoutUnifiedYUV;
 Pipeline *Image::m_pipelineViewport;
 std::array<Pipeline *, 4> Image::m_pipelineUnified;
+std::array<Pipeline *, 4> Image::m_pipelineSphere;
 std::unique_ptr<VertexArray> Image::m_imageViewportGL;
 std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
+std::unique_ptr<VertexArray> Image::m_imageSphereGL;
 int Image::cmds[3];
 VkCommandBuffer Image::cmd = VK_NULL_HANDLE;
 Pipeline *Image::pipelineUsed = nullptr;
+OjmL *Image::sphere = nullptr;
 
 Image::Image(const std::string& filename, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap)
 {
@@ -95,18 +99,22 @@ void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJE
 		image_ratio = -1; // no image loaded
 	else
 		image_ratio = (float)img_w/img_h;
-	if (pos_type == IMG_POSITION::POS_VIEWPORT) {
-		if (needFlip) {
-			insert_all(vecImgTex,0,1,0,0,1,1,1,0);
-		}
-		else {
-			insert_all(vecImgTex,0,0,0,1,1,0,1,1);
-		}
-		vertex = m_imageViewportGL->createBuffer(0, 4, Context::instance->tinyMgr.get());
-		imgData = (float *) Context::instance->tinyMgr->getPtr(vertex->get());
-		vertex->fillEntry(2, 4, vecImgTex.data(), imgData + 2);
-	} else {
-		vertexSize = 0;
+	switch (pos_type) {
+		case IMG_POSITION::POS_VIEWPORT:
+			if (needFlip) {
+				insert_all(vecImgTex,0,1,0,0,1,1,1,0);
+			}
+			else {
+				insert_all(vecImgTex,0,0,0,1,1,0,1,1);
+			}
+			vertex = m_imageViewportGL->createBuffer(0, 4, Context::instance->tinyMgr.get());
+			imgData = (float *) Context::instance->tinyMgr->getPtr(vertex->get());
+			vertex->fillEntry(2, 4, vecImgTex.data(), imgData + 2);
+			break;
+		case IMG_POSITION::POS_SPHERICAL:
+			break;
+		default:
+			vertexSize = 0;
 	}
 }
 
@@ -141,6 +149,8 @@ void Image::initCache(const Projector * prj)
 		ybase = viewh/2;
 		xbase = ybase*image_ratio;
 	}
+	if (image_pos_type == IMG_POSITION::POS_SPHERICAL)
+		sphere = CoreLink::instance->milkyWayGetOjmL();
 	initialised = true;
 }
 
@@ -162,6 +172,10 @@ void Image::createSC_context()
 	m_imageUnifiedGL->createBindingEntry(5 * sizeof(float));
 	m_imageUnifiedGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
 	m_imageUnifiedGL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
+	m_imageSphereGL = std::make_unique<VertexArray>(vkmgr, context.ojmAlignment);
+	m_imageSphereGL->createBindingEntry(8 * sizeof(float));
+	m_imageSphereGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
+	m_imageSphereGL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
 	m_imageViewportGL = std::make_unique<VertexArray>(vkmgr);
 	m_imageViewportGL->createBindingEntry(4 * sizeof(float));
 	m_imageViewportGL->addInput(VK_FORMAT_R32G32_SFLOAT); // POS2D
@@ -207,13 +221,28 @@ void Image::createSC_context()
 		m_pipelineUnified[i]->bindVertex(*m_imageUnifiedGL);
 		m_pipelineUnified[i]->bindShader("imageUnified.vert.spv");
 		m_pipelineUnified[i]->setSpecializedConstant(7, context.isFloat64Supported);
+
+		m_pipelineSphere[i] = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
+		context.pipelines.emplace_back(m_pipelineSphere[i]);
+		m_pipelineSphere[i]->setDepthStencilMode();
+		m_pipelineSphere[i]->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+		m_pipelineSphere[i]->setCullMode(true);
+		m_pipelineSphere[i]->bindVertex(*m_imageSphereGL);
+		m_pipelineSphere[i]->bindShader("imageUnified.vert.spv");
+		m_pipelineSphere[i]->setSpecializedConstant(7, context.isFloat64Supported);
 	}
 	m_pipelineUnified[0]->bindShader("imageUnifiedRGB.frag.spv");
 	m_pipelineUnified[1]->bindShader("imageUnifiedRGBTransparency.frag.spv");
 	m_pipelineUnified[2]->bindShader("imageUnifiedYUV.frag.spv");
 	m_pipelineUnified[3]->bindShader("imageUnifiedYUVTransparency.frag.spv");
-	for (int i = 0; i < 4; ++i)
+	m_pipelineSphere[0]->bindShader("imageUnifiedRGB.frag.spv");
+	m_pipelineSphere[1]->bindShader("imageUnifiedRGBTransparency.frag.spv");
+	m_pipelineSphere[2]->bindShader("imageUnifiedYUV.frag.spv");
+	m_pipelineSphere[3]->bindShader("imageUnifiedYUVTransparency.frag.spv");
+	for (int i = 0; i < 4; ++i) {
 		m_pipelineUnified[i]->build();
+		m_pipelineSphere[i]->build();
+	}
 	// CommandBuffer
 	for (int i = 0; i < 3; ++i) {
 		cmds[i] = context.frame[i]->create(1);
@@ -478,7 +507,7 @@ void Image::draw(const Navigator * nav, const Projector * prj)
 			break;
 
 		case IMG_POSITION::POS_SPHERICAL:
-			// drawSpherical(nav, prj);
+			drawSpherical(nav, prj);
 			break;
 
 		default:
@@ -541,6 +570,35 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	vertex->bind(cmd);
 	vkCmdDraw(cmd, 4, 1, 0, 0);
 	// imageTexture->unbindSet(cmd);
+}
+
+void Image::drawSpherical(const Navigator *nav, const Projector *prj)
+{
+	PipelineLayout *layout;
+	if (imageTexture->isYUV()) {
+		setPipeline(m_pipelineSphere[transparency ? 3 : 2]);
+		layout = m_layoutUnifiedYUV;
+	} else {
+		setPipeline(m_pipelineSphere[transparency ? 1 : 0]);
+		layout = m_layoutUnifiedRGB;
+	}
+	imageTexture->bindSet(cmd, layout);
+	struct {
+		Mat4f matrix;
+		Vec3f clipping_fov;
+	} uVert;
+	uVert.matrix = nav->getLocalToEyeMat().convert();
+	uVert.clipping_fov = prj->getClippingFov();
+	layout->pushConstant(cmd, 0, &uVert);
+	if (transparency) {
+		float tmpBuff[5];
+		tmpBuff[0] = image_alpha;
+		*reinterpret_cast<Vec4f *>(tmpBuff + 1) = noColor;
+		layout->pushConstant(cmd, 1, &tmpBuff, 0, 20);
+	} else
+		layout->pushConstant(cmd, 1, &image_alpha, 0, 4);
+	sphere->bind(cmd);
+	sphere->draw(cmd);
 }
 
 static int decalages(int i, int howManyDisplay)

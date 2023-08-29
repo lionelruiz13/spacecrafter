@@ -39,6 +39,7 @@ ImageMgr::ImageMgr()
 	strToPos["equatorial"] = IMG_POSITION::POS_EQUATORIAL;
 	strToPos["j2000"] = IMG_POSITION::POS_J2000;
 	strToPos["dome"] = IMG_POSITION::POS_DOME;
+	strToPos["spherical"] = IMG_POSITION::POS_SPHERICAL;
 	currentImg = nullptr;
 }
 

@@ -678,6 +678,9 @@ public:
 	//! Change Milkyway texture without intensity
 	void milkyWayChangeStateWithoutIntensity(const std::string& mdir);
 
+	// For reusing the sphere ojml instead of loading it at each place it is needed
+	OjmL *milkyWayGetOjmL();
+
 	////////////////////////////////////////////////////////////////////////////////
 	// Nebulae---------------------------
 	////////////////////////////////////////////////////////////////////////////////

@@ -46,20 +46,10 @@ class PipelineLayout;
 class VertexArray;
 class VertexBuffer;
 class ImageTexture;
+class OjmL;
 
 class Image : public NoCopy {
-
 public:
-	// is the image flat on the viewport or positioned with alt-azimuthal or earth equatorial coordinates?
-	enum class IMAGE_POSITIONING : char {
-		POS_VIEWPORT,
-		POS_HORIZONTAL,
-		POS_EQUATORIAL,
-		POS_J2000,
-		POS_DOME,
-		POS_SPHERICAL
-	};
-
 	Image() = delete;
 	Image(const std::string& filename, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap);
 	Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project);
@@ -108,6 +98,7 @@ private:
 	void setPipeline(Pipeline *pipeline);
 	void drawViewport(const Navigator * nav, const Projector * prj);
 	void drawUnified(bool drawUp, const Navigator * nav, const Projector * prj);
+	void drawSpherical(const Navigator *nav, const Projector *prj);
 	void initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap = false);
 	void initCache(const Projector * prj);
 
@@ -129,12 +120,6 @@ private:
 		float end;		// Final position
 		float coef;		// defined as start + coef * duration == end
 	};
-
-	void drawViewport(const Navigator * nav, Projector * prj);
-	void drawUnified(bool drawUp, const Navigator * nav, Projector * prj);
-
-	void initialise(const std::string& name, IMAGE_POSITIONING pos_type, bool mipmap = false);
-	void initCache(Projector * prj);
 
 	s_texture* image_tex = nullptr;
 	std::string image_name;
@@ -165,10 +150,12 @@ private:
 	static Pipeline *m_pipelineViewport;
 	// RGB, RBG with transparency, YUV, YUV with transparency
 	static std::array<Pipeline *, 4> m_pipelineUnified;
-	static std::unique_ptr<VertexArray> m_imageViewportGL, m_imageUnifiedGL;
+	static std::array<Pipeline *, 4> m_pipelineSphere;
+	static std::unique_ptr<VertexArray> m_imageViewportGL, m_imageUnifiedGL, m_imageSphereGL;
 	static int cmds[3];
 	static VkCommandBuffer cmd; // Currently recording command
 	static Pipeline *pipelineUsed;
+	static OjmL *sphere;
 	std::unique_ptr<VertexBuffer> vertex;
 	uint32_t vertexSize;
 

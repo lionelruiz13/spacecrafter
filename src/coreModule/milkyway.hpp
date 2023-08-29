@@ -172,6 +172,10 @@ public:
 		pollum = value;
 	}
 
+	// For reusing the sphere ojml instead of loading it at each place it is needed
+	OjmL *getOjmL() {
+		return sphere;
+	}
 private:
 	struct MilkyData{
 		std::string name; // the exact name of the texture
