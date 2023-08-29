@@ -52,11 +52,18 @@ layout (location=0) out vec4 fragColor;
 #define SHADOW_STEP_INIT (1.f/8192)
 #define SHADOW_MIN_STEP (1.f/65536)
 
+// tex < 0.5 -> [-0.5, 1]
+// tex > 0.5 -> [0, 1.5]
+// tex < 0.5 && tmp > 0 -> -0.5
+// tex < 0.5 && tmp < 0 -> 0.5
+// tex > 0.5 && tmp > 0 -> 0.5
+// tex > 0.5 && tmp < 0 -> 1.5
+
 float xyzToHeight(vec3 pos)
 {
 	float depth = length(pos);
 	float tmp = atan(pos.y, pos.x) / (2 * M_PI);
-	tmp += mix(0.5, side, (tmp > 0));
+    tmp += mix(0.5, 1.5, tmp < side);
 	return (depth - heightMapDepthLevel) / heightMapDepth - textureLod(heightMap, vec2(
 		tmp,
 		acos(-pos.z/depth) / M_PI
@@ -94,7 +101,7 @@ void main(void)
 			}
 		}
 		float tmp = atan(samplePos.y, samplePos.x) / (2 * M_PI);
-		tmp += mix(0.5, side, (tmp > 0));
+        tmp += mix(0.5, 1.5, tmp < side);
 		float depth = length(samplePos);
 		vec2 texCoord = vec2(tmp, acos(-samplePos.z/depth) / M_PI);
 		vec2 shadowPos = vec2(ShadowMatrix * samplePos); // For shadow projection

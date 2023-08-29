@@ -62,6 +62,6 @@ void main()
 
 	f /= rq * fov;
 	// depth = (depth - zNear) / zRange;
-	side = mix(0.5, -0.5, (texcoord < 0.5));
+	side = mix(-1, -0.2, (texcoord < 0.5));
 	gl_Position = vec4(pos.x*f, pos.y*f, 0, 1);
 }
