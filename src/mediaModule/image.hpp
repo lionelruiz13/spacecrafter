@@ -146,7 +146,7 @@ private:
 	//OpenGL vars
 	std::vector<float> vecImgPos, vecImgTex;
 	float *imgData;
-	static PipelineLayout *m_layoutViewport, *m_layoutUnifiedRGB, *m_layoutUnifiedYUV;
+	static PipelineLayout *m_layoutViewport, *m_layoutUnifiedRGB, *m_layoutUnifiedYUV, *m_layoutSphereRGB, *m_layoutSphereYUV;
 	static Pipeline *m_pipelineViewport;
 	// RGB, RBG with transparency, YUV, YUV with transparency
 	static std::array<Pipeline *, 4> m_pipelineUnified;

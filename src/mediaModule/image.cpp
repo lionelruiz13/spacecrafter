@@ -39,6 +39,8 @@
 PipelineLayout *Image::m_layoutViewport;
 PipelineLayout *Image::m_layoutUnifiedRGB;
 PipelineLayout *Image::m_layoutUnifiedYUV;
+PipelineLayout *Image::m_layoutSphereRGB;
+PipelineLayout *Image::m_layoutSphereYUV;
 Pipeline *Image::m_pipelineViewport;
 std::array<Pipeline *, 4> Image::m_pipelineUnified;
 std::array<Pipeline *, 4> Image::m_pipelineSphere;
@@ -54,13 +56,13 @@ Image::Image(const std::string& filename, const std::string& name, IMG_POSITION 
 	// load image using alpha channel in image, otherwise no transparency
 	// other than through setAlpha method -- could allow alpha load option from command
 	s_texture* imageRGB = new s_texture(filename, TEX_LOAD_TYPE_PNG_ALPHA, mipmap);
-	imageTexture = new RBGImageTexture(imageRGB, m_layoutUnifiedRGB);
+	imageTexture = new RBGImageTexture(imageRGB, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereRGB : m_layoutUnifiedRGB);
 	initialise(name, pos_type,project, mipmap);
 }
 
 Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project)
 {
-	imageTexture = new YUVImageTexture(imgTex.y, imgTex.u, imgTex.v, m_layoutUnifiedYUV);
+	imageTexture = new YUVImageTexture(imgTex.y, imgTex.u, imgTex.v, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereRGB : m_layoutUnifiedRGB);
 	imageTexture->setupSync(imgTex.sync);
 	needFlip = true;
 	isPersistent = true;
@@ -195,6 +197,24 @@ void Image::createSC_context()
 	m_layoutUnifiedYUV->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
 	m_layoutUnifiedYUV->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
 	m_layoutUnifiedYUV->build();
+	auto tmpSampler = PipelineLayout::DEFAULT_SAMPLER;
+	tmpSampler.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	m_layoutSphereRGB = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(m_layoutSphereRGB);
+	m_layoutSphereRGB->setTextureLocation(0, &tmpSampler);
+	m_layoutSphereRGB->buildLayout();
+	m_layoutSphereRGB->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
+	m_layoutSphereRGB->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
+	m_layoutSphereRGB->build();
+	m_layoutSphereYUV = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(m_layoutSphereYUV);
+	m_layoutSphereYUV->setTextureLocation(0, &tmpSampler);
+	m_layoutSphereYUV->setTextureLocation(1, &tmpSampler);
+	m_layoutSphereYUV->setTextureLocation(2, &tmpSampler);
+	m_layoutSphereYUV->buildLayout();
+	m_layoutSphereYUV->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
+	m_layoutSphereYUV->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
+	m_layoutSphereYUV->build();
 	m_layoutViewport = new PipelineLayout(vkmgr);
 	context.layouts.emplace_back(m_layoutViewport);
 	m_layoutViewport->setGlobalPipelineLayout(m_layoutUnifiedRGB);
@@ -220,11 +240,12 @@ void Image::createSC_context()
 		m_pipelineUnified[i]->bindShader("imageUnified.vert.spv");
 		m_pipelineUnified[i]->setSpecializedConstant(7, context.isFloat64Supported);
 
-		m_pipelineSphere[i] = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
+		m_pipelineSphere[i] = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, i < 2 ? m_layoutSphereRGB : m_layoutSphereYUV);
 		context.pipelines.emplace_back(m_pipelineSphere[i]);
 		m_pipelineSphere[i]->setDepthStencilMode();
 		m_pipelineSphere[i]->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		m_pipelineSphere[i]->setCullMode(true);
+		m_pipelineSphere[i]->setFrontFace();
 		m_pipelineSphere[i]->bindVertex(*m_imageSphereGL);
 		m_pipelineSphere[i]->bindShader("imageUnified.vert.spv");
 		m_pipelineSphere[i]->setSpecializedConstant(7, context.isFloat64Supported);
@@ -575,10 +596,10 @@ void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 	PipelineLayout *layout;
 	if (imageTexture->isYUV()) {
 		setPipeline(m_pipelineSphere[transparency ? 3 : 2]);
-		layout = m_layoutUnifiedYUV;
+		layout = m_layoutSphereYUV;
 	} else {
 		setPipeline(m_pipelineSphere[transparency ? 1 : 0]);
-		layout = m_layoutUnifiedRGB;
+		layout = m_layoutSphereRGB;
 	}
 	imageTexture->bindSet(cmd, layout);
 	struct {
