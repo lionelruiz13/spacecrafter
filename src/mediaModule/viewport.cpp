@@ -109,6 +109,8 @@ void ViewPort::setTexture(VideoTexture _tex)
 	set->bindTexture(*_tex.y, 0);
 	set->bindTexture(*_tex.u, 1);
 	set->bindTexture(*_tex.v, 2);
+	set->bindUniform(uFrag, 3);
+	set->update();
 	sync = _tex.sync;
 	for (int i = 0; i < 3; ++i)
 		needUpdate[i] = true;
