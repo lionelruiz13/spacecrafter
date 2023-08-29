@@ -225,7 +225,7 @@ void Image::createSC_context()
 		m_pipelineSphere[i] = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
 		context.pipelines.emplace_back(m_pipelineSphere[i]);
 		m_pipelineSphere[i]->setDepthStencilMode();
-		m_pipelineSphere[i]->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+		m_pipelineSphere[i]->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		m_pipelineSphere[i]->setCullMode(true);
 		m_pipelineSphere[i]->bindVertex(*m_imageSphereGL);
 		m_pipelineSphere[i]->bindShader("imageUnified.vert.spv");
