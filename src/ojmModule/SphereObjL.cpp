@@ -23,6 +23,7 @@
 
 #include "SphereObjL.hpp"
 #include "tools/context.hpp"
+#include "tools/log.hpp"
 #include "EntityCore/EntityCore.hpp"
 #include "LazyOjmL.hpp"
 
@@ -80,6 +81,7 @@ SphereObjL::SphereObjL()
 	SubBuffer indexLow, indexMedium, indexHigh, tmpBuffer;
 	unsigned int indexCountLow, indexCountMedium, indexCountHigh, tmp;
 	uint64_t *src, *dst;
+	auto now = std::chrono::steady_clock::now();
 	// Construct sphere and upload indices
 
 	construct(SUBDIVISE_LOW_RES);
@@ -129,6 +131,7 @@ SphereObjL::SphereObjL()
 	low = std::make_unique<OjmL>(vertex, indexLow, indexCountLow);
 	medium = std::make_unique<LazyOjmL>(vertex.get(), indexMedium, indexCountMedium);
 	high = std::make_unique<LazyOjmL>(vertex.get(), indexHigh, indexCountHigh);
+	cLog::get()->write("Generating EquiSphere took : " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now).count()) + "ms", LOG_TYPE::L_INFO);
 }
 
 SphereObjL::~SphereObjL()

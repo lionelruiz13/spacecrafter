@@ -79,13 +79,16 @@ private:
 		auto &op2 = points[p2];
 		OjmPoint point;
 		point.pos = (op1.pos + op2.pos)/2;
-		point.tex = (op1.tex + op2.tex)/2;
-		if (fabs(op1.pos[2]) > 0.999999)
-			point.tex[0] = op2.tex[0];
-		if (fabs(op2.pos[2]) > 0.999999)
-			point.tex[0] = op1.tex[0];
 		point.pos.normalize();
 		point.normal = point.pos;
+		if (fabs(op1.pos[2]) > 0.999999) {
+			point.tex[0] = op2.tex[0];
+		} else if (fabs(op2.pos[2]) > 0.999999) {
+			point.tex[0] = op1.tex[0];
+		} else {
+			point.tex[0] = (op1.tex[0] + op2.tex[0])/2;
+		}
+		point.tex[1] = acos(-point.pos[2])/M_PI;
 		points.push_back(point);
 		return points.size() - 1;
 	}
