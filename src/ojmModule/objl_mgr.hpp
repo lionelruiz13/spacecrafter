@@ -57,7 +57,7 @@ public:
 	ObjL* select(const std::string &name);
 
 	//! selects the default object
-	ObjL* selectDefault() {
+	inline ObjL *selectDefault() {
 		return defaultObject;
 	}
 

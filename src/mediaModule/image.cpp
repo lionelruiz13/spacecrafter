@@ -33,7 +33,8 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 #include "tools/insert_all.hpp"
-#include "coreModule/coreLink.hpp"
+#include "ojmModule/objl_mgr.hpp"
+#include "ojmModule/objl.hpp"
 
 PipelineLayout *Image::m_layoutViewport;
 PipelineLayout *Image::m_layoutUnifiedRGB;
@@ -47,7 +48,6 @@ std::unique_ptr<VertexArray> Image::m_imageSphereGL;
 int Image::cmds[3];
 VkCommandBuffer Image::cmd = VK_NULL_HANDLE;
 Pipeline *Image::pipelineUsed = nullptr;
-OjmL *Image::sphere = nullptr;
 
 Image::Image(const std::string& filename, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap)
 {
@@ -149,8 +149,6 @@ void Image::initCache(const Projector * prj)
 		ybase = viewh/2;
 		xbase = ybase*image_ratio;
 	}
-	if (image_pos_type == IMG_POSITION::POS_SPHERICAL)
-		sphere = CoreLink::instance->milkyWayGetOjmL();
 	initialised = true;
 }
 
@@ -597,8 +595,9 @@ void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 		layout->pushConstant(cmd, 1, &tmpBuff, 0, 20);
 	} else
 		layout->pushConstant(cmd, 1, &image_alpha, 0, 4);
-	sphere->bind(cmd);
-	sphere->draw(cmd);
+	auto objl = ObjLMgr::instance->selectDefault();
+	objl->bind(cmd);
+	objl->draw(cmd, 1024);
 }
 
 static int decalages(int i, int howManyDisplay)

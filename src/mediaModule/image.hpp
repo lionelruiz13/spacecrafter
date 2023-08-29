@@ -155,7 +155,6 @@ private:
 	static int cmds[3];
 	static VkCommandBuffer cmd; // Currently recording command
 	static Pipeline *pipelineUsed;
-	static OjmL *sphere;
 	std::unique_ptr<VertexBuffer> vertex;
 	uint32_t vertexSize;
 
