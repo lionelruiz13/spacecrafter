@@ -464,6 +464,9 @@ public:
 	void showStar(int hip);
 	void showAllStar();
 
+	void addVariableStar(int hip, float mag);
+	void removeVariableStar(int hip);
+
 private:
 	//! Load all the stars from the files.
 	void load_data(const InitParser &conf);

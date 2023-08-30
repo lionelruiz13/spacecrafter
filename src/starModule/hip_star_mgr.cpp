@@ -1127,27 +1127,38 @@ std::vector<std::string> HipStarMgr::listMatchingObjectsI18n( const std::string&
 
 void HipStarMgr::hideStar(int hip)
 {
-	int zone = 0;
-	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++, zone++) {
-		it->second->hideStar(zone, hip);
+	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
+		it->second->hideStar(hip);
 	}
 	CoreLink::instance->starNavigatorHideStar(hip);
 }
 
 void HipStarMgr::showStar(int hip)
 {
-	int zone = 0;
-	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++, zone++) {
-		it->second->showStar(zone, hip);
+	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
+		it->second->showStar(hip);
 	}
 	CoreLink::instance->starNavigatorShowStar(hip);
 }
 
 void HipStarMgr::showAllStar(void)
 {
-	int zone = 0;
-	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++, zone++) {
-		it->second->showAllStar(zone);
+	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
+		it->second->showAllStar();
 	}
 	CoreLink::instance->starNavigatorShowAllStar();
+}
+
+void HipStarMgr::addVariableStar(int hip, float mag)
+{
+	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
+		it->second->addVariableStar(hip, mag);
+	}
+}
+
+void HipStarMgr::removeVariableStar(int hip)
+{
+	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
+		it->second->removeVariableStar(hip);
+	}
 }

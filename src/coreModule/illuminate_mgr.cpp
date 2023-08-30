@@ -136,13 +136,21 @@ void IlluminateMgr::load(int num, const Vec3f& _color, double _size, double rota
 	//Vec3f color = selected_object.getRGB();
 	double ra, de;
 	selected_object.getRaDeValue(navigator,&ra,&de);
+	if (_size > 0 && _size < 1) {
+		float mag = selected_object.getMag(navigator);
+		mag = mag / _size;
+		hip_stars->addVariableStar(num, mag);
+		return;
+	} else {
+		hip_stars->removeVariableStar(num);
+	}
 	double size = _size;
 	//setup size
-	if (size<1.0) {
+	/*if (size<1.0) {
 		float mag = selected_object.getMag(navigator);
 		if (mag<0) mag=10;
 		size = defaultSize + 4.0 * (10-mag);
-	}
+	}*/
 	//std::cout << num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl;
 	//std::cout << num << " with color" << std::endl;
 	loadIlluminate(num, ra, de, size, _color[0], _color[1], _color[2], rotation );

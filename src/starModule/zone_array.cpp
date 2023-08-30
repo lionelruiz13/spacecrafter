@@ -258,7 +258,7 @@ void ZoneArray1::updateHipIndex(HipIndexStruct hip_index[]) const
 	}
 }
 
-void ZoneArray1::hideStar(int index, int hip)
+void ZoneArray1::hideStar(int hip)
 {
 	std::set<int>::iterator it = hide_stars.find(hip);
 	if (it != hide_stars.end()) {
@@ -268,16 +268,35 @@ void ZoneArray1::hideStar(int index, int hip)
 	}
 }
 
-void ZoneArray1::showStar(int index, int hip)
+void ZoneArray1::showStar(int hip)
 {
 	std::set<int>::iterator it = hide_stars.find(hip);
 	if (it != hide_stars.end())
 		hide_stars.erase(hip);
 }
 
-void ZoneArray1::showAllStar(int index)
+void ZoneArray1::showAllStar(void)
 {
 	hide_stars.clear();
+}
+
+void ZoneArray1::addVariableStar(int hip, float mag)
+{
+	std::map<int, float>::iterator it = variable_stars.find(hip);
+	if (it != variable_stars.end()){
+		variable_stars[hip] = mag;
+		return;
+	} else {
+		variable_stars[hip] = mag;
+	}
+}
+
+void ZoneArray1::removeVariableStar(int hip)
+{
+	std::map<int, float>::iterator it = variable_stars.find(hip);
+	if (it != variable_stars.end()) {
+		variable_stars.erase(hip);
+	}
 }
 
 template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
@@ -320,9 +339,14 @@ void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projec
 		double alt, az;
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
 		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
-		if (hide_stars.find(s->getHip()) != hide_stars.end())
+		int hip = s->getHip();
+		if (hide_stars.find(hip) != hide_stars.end())
 			continue;
-
+		int mag = s->getMag();
+		auto it = variable_stars.find(hip);
+		if (it != variable_stars.end()) {
+			mag = it->second;
+		}
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
 		    Utility::rectToSphe(&az,&alt,local_pos);
@@ -337,15 +361,14 @@ void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projec
 		    alt = deg2rad*ha;
 		    Utility::spheToRect(az, alt, local_pos);
 		}
-
 		if (is_inside
 		        ? prj->projectLocal(local_pos,xy)
 		        : prj->projectLocalCheck(local_pos,xy)) {
-			if (0 > hip_star_mgr.drawStar(prj,xy,rcmag_table + 2*(s->getMag()), HipStarMgr::color_table[s->getBVIndex()])) {
+			if (0 > hip_star_mgr.drawStar(prj,xy,rcmag_table + 2*(mag), HipStarMgr::color_table[s->getBVIndex()])) {
 				break;
 			}
 			if (!isolateSelected) {
-				if (s->getMag() < max_mag_star_name) {
+				if (mag < max_mag_star_name) {
 					const std::string starname = s->getNameI18n();
 					if (!starname.empty()) {
 						Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75,
