@@ -62,7 +62,7 @@ Image::Image(const std::string& filename, const std::string& name, IMG_POSITION 
 
 Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project)
 {
-	imageTexture = new YUVImageTexture(imgTex.y, imgTex.u, imgTex.v, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereRGB : m_layoutUnifiedRGB);
+	imageTexture = new YUVImageTexture(imgTex.y, imgTex.u, imgTex.v, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereYUV : m_layoutUnifiedYUV);
 	imageTexture->setupSync(imgTex.sync);
 	needFlip = true;
 	isPersistent = true;
