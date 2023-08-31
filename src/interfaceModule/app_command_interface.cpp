@@ -1447,7 +1447,7 @@ int AppCommandInterface::commandColor()
 
 	switch(m_color_it->second) {
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES:	coreLink->constellationSetColorLine( Vcolor ); break;
-		case COLORCOMMAND_NAMES::CC_CONST_LINES3D_COLOR:	coreLink->constellationSetColor( Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES3D:	coreLink->constellationSetColor( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_NAMES:	coreLink->constellationSetColorNames( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_ART: 		coreLink->constellationSetColorArt( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_BOUNDARIES:	coreLink->constellationSetColorBoundaries( Vcolor ); break;
