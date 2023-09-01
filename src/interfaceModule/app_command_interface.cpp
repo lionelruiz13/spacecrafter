@@ -2072,11 +2072,15 @@ int AppCommandInterface::commandMeteors()
 int AppCommandInterface::commandLandscape()
 {
 	std::string argAction = args[W_ACTION];
+	std::string argLanding = args[W_LANDING];
 	if (!argAction.empty()) {
 		if (argAction ==  W_LOAD) {
 			// textures are relative to script
 			args[W_PATH] = scriptInterface->getScriptPath();
-			stcore->loadLandscape(args); //TODO retour d'erreurs
+			if (argLanding == "0")
+				stcore->loadLandscape(args, 0); //TODO retour d'erreurs
+			else
+				stcore->loadLandscape(args, 1); //TODO retour d'erreurs
 		} else if (argAction == W_ROTATE) {
 			if (!args[W_ROTATION].empty()) {
 				coreLink->rotateLandscape((M_PI/180.0)*evalDouble(args[W_ROTATION]));
@@ -2088,6 +2092,13 @@ int AppCommandInterface::commandLandscape()
 		} else {
 			debug_message = "command 'landscape' : invalid action parameter";
 		}
+	} else if (!argLanding.empty()) {
+		if (argLanding == "0")
+			stcore->setLandingLandscape(false);
+		else if (argLanding == "1")
+			stcore->setLandingLandscape(true);
+		else
+			debug_message = "command 'landscape' : invalid action parameter";
 	} else
 		debug_message = "command 'landscape' : unknown argument";
 	return executeCommandStatus();

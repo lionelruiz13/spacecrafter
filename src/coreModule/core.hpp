@@ -172,9 +172,11 @@ public:
 	//! Set the landscape
 	bool setLandscape(const std::string& new_landscape_name);
 
+	void setLandingLandscape(bool landing);
+
 	//! Load a landscape based on a hash of parameters mirroring the landscape.ini file
 	//! and make it the current landscape
-	bool loadLandscape(stringHash_t& param);
+	bool loadLandscape(stringHash_t& param, int landing);
 
 	//! @brief Set the sky language and reload the sky objects names with the new translation
 	//! This function has no permanent effect on the global locale

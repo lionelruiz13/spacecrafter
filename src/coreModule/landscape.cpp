@@ -156,9 +156,11 @@ Landscape* Landscape::createFromFile(const std::string& landscape_file, const st
 	Landscape* ldscp = nullptr;
 	if (s==L_SPHERICAL) {
 		ldscp = new LandscapeSpherical();
+		ldscp->format = pd.getStr(section_name, L_TYPE);
 	}
 	else if (s==L_FISHEYE) {
 		ldscp = new LandscapeFisheye();
+		ldscp->format = pd.getStr(section_name, L_TYPE);
 	}
 	else {
 		cLog::get()->write( "Unknown landscape type: " + s, LOG_TYPE::L_ERROR);
@@ -171,7 +173,7 @@ Landscape* Landscape::createFromFile(const std::string& landscape_file, const st
 
 
 // create landscape from parameters passed in a hash (same keys as with ini file)
-Landscape* Landscape::createFromHash(stringHash_t & param)
+Landscape* Landscape::createFromHash(stringHash_t & param, int landing)
 {
 	// night landscape textures for spherical and fisheye landscape types or possibility to have limitedShare
 	std::string night_tex="";
@@ -194,14 +196,16 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 	// NOTE: textures should be full filename (and path)
 	if (param[L_TYPE]==L_FISHEYE) {
 		LandscapeFisheye* ldscp = new LandscapeFisheye();
+		ldscp->format = param[L_TYPE];
 		ldscp->create(param[L_NAME], texture, Utility::strToDouble(param["fov"], Utility::strToDouble(param["texturefov"], 180)),
 		              Utility::strToDouble(param["rotate_z"], 0.), night_tex, limitedShadeValue, mipmap);
 		return ldscp;
 	}
 	else if (param[L_TYPE]==L_SPHERICAL) {
 		LandscapeSpherical* ldscp = new LandscapeSpherical();
+		ldscp->format = param[L_TYPE];
 		ldscp->create(param[L_NAME], texture, Utility::strToDouble(param["base_altitude"], -90),
-		              Utility::strToDouble(param["top_altitude"], 90), Utility::strToDouble(param["rotate_z"], 0.),  night_tex, limitedShadeValue, mipmap);
+		              Utility::strToDouble(param["top_altitude"], 90), Utility::strToDouble(param["rotate_z"], 0.),  night_tex, limitedShadeValue, mipmap, landing);
 		return ldscp;
 	}
 	else {    //wrong Landscape
@@ -543,12 +547,12 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 	       pd.getDouble(section_name, "top_altitude", 90),
 	       pd.getDouble(section_name, "rotate_z", 0.),
 	       night_texture, limitedShadeValue,
-	       pd.getBoolean(section_name, L_TEXTURE, true));
+	       pd.getBoolean(section_name, L_TEXTURE, true), 1);
 }
 
 // create a spherical landscape from basic parameters (no ini file needed)
 void LandscapeSpherical::create(const std::string _name, const std::string _maptex, const float _base_altitude,
-                                const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, bool _mipmap)
+                                const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, bool _mipmap, int landing)
 {
 	valid_landscape = 1;  // assume ok...
 	cLog::get()->write( "Landscape Spherical " + _name + " created", LOG_TYPE::L_INFO);
@@ -570,6 +574,10 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
 	top_altitude = ((_top_altitude >= -90 && _top_altitude <= 90) ? _top_altitude : 90);
 	rotate_z = _rotate_z*M_PI/180.;
 
+	if (landing == 0)
+		landingFader.setNoDelay(false);
+	else
+		landingFader.setNoDelay(true);
 	initShader();
 	fog->initShader();
 }

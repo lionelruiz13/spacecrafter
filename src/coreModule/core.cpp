@@ -684,12 +684,18 @@ void Core::testLandscapeCompatibleWithAutoMode()
 	}
 }
 
+void Core::setLandingLandscape(bool landing)
+{
+	if (landscape->getFormat() == "spherical")
+		landscape->setLanding(landing);
+}
+
 //! Load a landscape based on a hash of parameters mirroring the landscape.ini file
 //! and make it the current landscape
-bool Core::loadLandscape(stringHash_t& param)
+bool Core::loadLandscape(stringHash_t& param, int landing)
 {
 
-	Landscape* newLandscape = Landscape::createFromHash(param);
+	Landscape* newLandscape = Landscape::createFromHash(param, landing);
 	if (!newLandscape) return 0;
 
 	if (landscape) {
