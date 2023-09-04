@@ -2093,10 +2093,10 @@ int AppCommandInterface::commandLandscape()
 			debug_message = "command 'landscape' : invalid action parameter";
 		}
 	} else if (!argLanding.empty()) {
-		if (argLanding == "0")
-			stcore->setLandingLandscape(false);
-		else if (argLanding == "1")
-			stcore->setLandingLandscape(true);
+		if (argLanding == "0" || (argLanding[0] == '0' && argLanding[1] == '.'))
+			stcore->setLandingLandscape(false, std::stof(argLanding));
+		else if (argLanding == "1" || (argLanding[0] == '1' && argLanding[1] == '.'))
+			stcore->setLandingLandscape(true, std::stof(argLanding) - 1);
 		else
 			debug_message = "command 'landscape' : invalid action parameter";
 	} else

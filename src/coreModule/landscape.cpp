@@ -696,7 +696,9 @@ void LandscapeSpherical::createSphericalMesh(double radius, double one_minus_obl
 	}
 }
 
-void LandscapeSpherical::setLanding(bool isLanding)
+void LandscapeSpherical::setLanding(bool isLanding, float speed)
 {
+	landingFader.interpolator.zeroValue = -90 + ((speed * 10) * 18);
+	landingFader.interpolator.delta = 90 - landingFader.interpolator.zeroValue;
 	landingFader = isLanding;
 }

@@ -111,7 +111,7 @@ public:
 	static std::string getLandscapeNames(const std::string& landscape_file);
 	static void createSC_context();
 	static void destroySC_context();
-	virtual void setLanding(bool isLanding) {}
+	virtual void setLanding(bool isLanding, float speed) {}
 protected:
 	std::unique_ptr<Fog> fog;
 	virtual void load(const std::string& file_name, const std::string& section_name) {};
@@ -170,7 +170,7 @@ public:
 	void create(const std::string _name, const std::string _maptex, const float _base_altitude,
 	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, const bool _mipmap, int landing);
 	virtual void draw(const Projector* prj, const Navigator* nav) override;
-	virtual void setLanding(bool isLanding) override;
+	virtual void setLanding(bool isLanding, float speed) override;
 private:
 	void createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
 	                         double bottom_altitude, double top_altitude, float * data);

@@ -172,7 +172,7 @@ public:
 	//! Set the landscape
 	bool setLandscape(const std::string& new_landscape_name);
 
-	void setLandingLandscape(bool landing);
+	void setLandingLandscape(bool landing, float speed);
 
 	//! Load a landscape based on a hash of parameters mirroring the landscape.ini file
 	//! and make it the current landscape
