@@ -29,26 +29,19 @@
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
 #include <string>
-#include "ojmModule/ojml.hpp"
+#include "ojmModule/objl.hpp"
+#include "ojmModule/objl_mgr.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
-
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 
 MilkyWay::MilkyWay()
 {
-	sphere = new OjmL(AppSettings::Instance()->getModel3DDir()+"MilkyWay.ojm");
-	if (!sphere->getOk()) {
-		cLog::get()->write("MilkyWay : error loading sphere, no draw", LOG_TYPE::L_ERROR);
-		return;
-	} else {
-		cLog::get()->write("MilkyWay : successful loading sphere", LOG_TYPE::L_INFO);
-		isDraw = true;
-	}
+	sphere = ObjLMgr::instance->selectDefault();
 	switchTexFader = false;
 	intensityMilky.set(0.f);
 	pollum.set(0.f);
@@ -60,18 +53,20 @@ void MilkyWay::createSC_context()
 {
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
+	auto tmp = PipelineLayout::DEFAULT_SAMPLER;
+	tmp.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 
 	layout = std::make_unique<PipelineLayout>(vkmgr);
 	layout->setGlobalPipelineLayout(context.layouts.front().get());
-	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+	layout->setTextureLocation(0, &tmp);
 	layout->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 64);
 	layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 64, 8);
 	layout->buildLayout();
 	layout->build();
 	layoutTwoTex = std::make_unique<PipelineLayout>(vkmgr);
 	layoutTwoTex->setGlobalPipelineLayout(context.layouts.front().get());
-	layoutTwoTex->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	layoutTwoTex->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
+	layoutTwoTex->setTextureLocation(0, &tmp);
+	layoutTwoTex->setTextureLocation(1, &tmp);
 	layoutTwoTex->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 64);
 	layoutTwoTex->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 64, 12);
 	layoutTwoTex->buildLayout();
@@ -81,6 +76,7 @@ void MilkyWay::createSC_context()
 		pipelineMilky[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		pipelineMilky[i].setDepthStencilMode();
 		pipelineMilky[i].setCullMode(true);
+		pipelineMilky[i].setFrontFace();
 		pipelineMilky[i].setBlendMode(BLEND_NONE);
 		sphere->bind(pipelineMilky[i]);
 		pipelineMilky[i].removeVertexEntry(2);
@@ -188,7 +184,7 @@ void MilkyWay::endTexTransition()
 
 void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay)
 {
-	if (!(isDraw && showFader.getInterstate()))
+	if (showFader.getInterstate() <= 0)
 		return;
 
 	// .045 chosen so that ad_lum = 1 at standard NELM of 6.5
@@ -233,7 +229,7 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 	}
 
 	sphere->bind(cmd);
-	sphere->draw(cmd);
+	sphere->draw(cmd, 4096);
 	//nextZodiacalLight
 	if (zodiacal.tex != nullptr && zodiacalFader.getInterstate() && allowZodiacal) {
 		pipelineZodiacal->bind(cmd);
@@ -246,7 +242,7 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 		layout->pushConstant(cmd, 0, &matrix);
 		layout->pushConstant(cmd, 1, &frag);
 		layout->bindSet(cmd, *setZodiacal, 1);
-		sphere->draw(cmd);
+		sphere->draw(cmd, 4096);
 	}
 	context.frame[context.frameIdx]->compile(cmd);
 	context.frame[context.frameIdx]->toExecute(cmd, PASS_BACKGROUND);

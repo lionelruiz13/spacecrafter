@@ -231,10 +231,6 @@ void CoreLink::milkyWayChangeStateWithoutIntensity(const std::string& mdir) {
 	core->milky_way->changeMilkywayStateWithoutIntensity(mdir);
 }
 
-OjmL *CoreLink::milkyWayGetOjmL() {
-	return core->milky_way->getOjmL();
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // Meteors---------------------------
 ////////////////////////////////////////////////////////////////////////////////
