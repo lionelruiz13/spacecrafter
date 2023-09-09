@@ -83,7 +83,7 @@ void FontFactory::init(int resolution, const InitParser& conf)
     if (m_fontResolution<1) {
         m_fontResolution = 1024;
 	}
-	fontFactor = (float) sqrtf(resolution / (float)m_fontResolution);
+	fontFactor = sqrtf((float)resolution / (float)m_fontResolution);
 
 	std::string FontFileNamePlanet = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_PLANET_NAME);
 	float FontSizePlanet = conf.getDouble(SCS_FONT,SCK_FONT_PLANET_SIZE);
@@ -175,7 +175,7 @@ void FontFactory::updateAllFont(const std::string& fontName)
 	for (it = m_strToTarget.begin(); it != m_strToTarget.end(); it++){
 		it2 = std::find_if( listFont.begin(), listFont.end(), [&](const FontContener &element){ return element.classeFont == it->second;} );
 		float size = it2->fontPtr->getFontSize();
-		updateFont(it->first, fontName, std::to_string(size));
+		updateFont(it->first, fontName, std::to_string(size/fontFactor));
 	}
 }
 
