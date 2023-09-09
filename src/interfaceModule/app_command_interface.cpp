@@ -3202,7 +3202,7 @@ int AppCommandInterface::commandDate()
 		} else if (argSun == W_MIDNIGHT) {
 			double tmp=coreLink->dateSunMeridian(coreLink->getJDay(), coreLink->observatoryGetLongitude()+180, -coreLink->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO and if ==?
-				coreLink->setJDay(tmp);
+				coreLink->setJDay(tmp+1);
 		} else
 			_("Command 'date': unknown sun value");
 		return executeCommandStatus();
