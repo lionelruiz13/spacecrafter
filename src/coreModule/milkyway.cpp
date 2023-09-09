@@ -274,6 +274,7 @@ void MilkyWay::buildZodiacal()
 	pipelineZodiacal->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	pipelineZodiacal->setDepthStencilMode();
 	pipelineZodiacal->setCullMode(true);
+	pipelineZodiacal->setFrontFace();
 	sphere->bind(*pipelineZodiacal);
 	pipelineZodiacal->removeVertexEntry(2);
 	pipelineZodiacal->bindShader("milkyway.vert.spv");
