@@ -280,14 +280,14 @@ void ZoneArray1::showAllStar(void)
 	hide_stars.clear();
 }
 
-void ZoneArray1::addVariableStar(int hip, float mag)
+void ZoneArray1::addVariableStar(int hip, double ratio)
 {
 	std::map<int, float>::iterator it = variable_stars.find(hip);
 	if (it != variable_stars.end()){
-		variable_stars[hip] = mag;
+		variable_stars[hip] = ratio;
 		return;
 	} else {
-		variable_stars[hip] = mag;
+		variable_stars[hip] = ratio;
 	}
 }
 
@@ -297,6 +297,21 @@ void ZoneArray1::removeVariableStar(int hip)
 	if (it != variable_stars.end()) {
 		variable_stars.erase(hip);
 	}
+}
+
+void ZoneArray1::removeAllVariableStar(void)
+{
+	variable_stars.clear();
+}
+
+float ZoneArray1::checkMag(int hip)
+{
+	for (std::map<int, float>::iterator it = variable_stars.begin(); it != variable_stars.end(); it++) {
+		if (hip == it->first) {
+			return it->second;
+		}
+	}
+	return -1;
 }
 
 template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
@@ -342,10 +357,11 @@ void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projec
 		int hip = s->getHip();
 		if (hide_stars.find(hip) != hide_stars.end())
 			continue;
-		int mag = s->getMag();
+		int mag = s->getMag(), variableStar = 0;
 		auto it = variable_stars.find(hip);
 		if (it != variable_stars.end()) {
-			mag = it->second;
+			mag = it->second * s->getMag();
+			variableStar = 1;
 		}
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
@@ -364,7 +380,7 @@ void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projec
 		if (is_inside
 		        ? prj->projectLocal(local_pos,xy)
 		        : prj->projectLocalCheck(local_pos,xy)) {
-			if (0 > hip_star_mgr.drawStar(prj,xy,rcmag_table + 2*(mag), HipStarMgr::color_table[s->getBVIndex()])) {
+			if (0 > hip_star_mgr.drawStar(prj,xy,rcmag_table + 2*(mag), HipStarMgr::color_table[s->getBVIndex()], variableStar)) {
 				break;
 			}
 			if (!isolateSelected) {

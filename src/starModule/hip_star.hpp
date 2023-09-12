@@ -163,6 +163,10 @@ public :
 		return d[9] >> 3;
 	}
 
+	inline int getHip() const {
+		return -1;
+	}
+
 	static constexpr double max_pos_val=((1<<19)-1);
 
 	ObjectBaseP createStelObject(const SpecialZoneArray<Star2> *a, const SpecialZoneData<Star2> *z) const;
@@ -209,6 +213,10 @@ public:
 
 	inline int getMag() const {
 		return d[5] >> 3;
+	}
+
+	inline int getHip() const {
+		return -1;
 	}
 
 	static constexpr double max_pos_val=((1<<17)-1)	;

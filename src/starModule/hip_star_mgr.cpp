@@ -604,9 +604,16 @@ void HipStarMgr::loadSciNames(const std::string& sciNameFile)
 	fclose(snFile);
 }
 
-int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, const float rc_mag[2], const Vec3f &color)
+int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, const float rc_mag[2], const Vec3f &color, int variableStar)
 {
-	if (rc_mag[0]<=0.f || rc_mag[1]<=0.f || nbStarsToDraw[drawIdx] >= NBR_MAX_STARS) return -1;
+	if (nbStarsToDraw[drawIdx] >= NBR_MAX_STARS) return -1;
+
+	if (rc_mag[0]<=0.f || rc_mag[1]<=0.f) {
+		if (variableStar == 1)
+		 	return 0;
+		else
+			return (-1);
+	}
 
 	float mag = 2.f*rc_mag[0];
 
@@ -1149,10 +1156,18 @@ void HipStarMgr::showAllStar(void)
 	CoreLink::instance->starNavigatorShowAllStar();
 }
 
-void HipStarMgr::addVariableStar(int hip, float mag)
+void HipStarMgr::addVariableStar(int hip, double mag, double size)
 {
+	double ratio = 0;
+	if (0 < hip && hip <= NR_OF_HIP) {
+		const BigStarCatalog::Star1 *const s = hip_index[hip].s;
+		if (s) {
+			const BigStarCatalog::SpecialZoneArray<BigStarCatalog::Star1> *const a = hip_index[hip].a;
+			ratio = ((mag/size) - 0.001f*a->mag_min) *a->mag_steps/(0.001f*a->mag_range) / s->getMag();
+		}
+	}
 	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
-		it->second->addVariableStar(hip, mag);
+		it->second->addVariableStar(hip, ratio);
 	}
 }
 
@@ -1161,4 +1176,32 @@ void HipStarMgr::removeVariableStar(int hip)
 	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
 		it->second->removeVariableStar(hip);
 	}
+}
+
+void HipStarMgr::removeAllVariableStar(void)
+{
+	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
+		it->second->removeAllVariableStar();
+	}
+}
+
+float HipStarMgr::checkRatio(int hip, bool realMag)
+{
+	float ratio = -1, size = 0;
+	if (0 >= hip && hip > NR_OF_HIP)
+		return -1;
+	const BigStarCatalog::Star1 *const s = hip_index[hip].s;
+	if (s) {
+		const BigStarCatalog::SpecialZoneArray<BigStarCatalog::Star1> *const a = hip_index[hip].a;
+		for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
+			ratio = it->second->checkMag(hip);
+			if (ratio != -1 && realMag == false)
+				return ratio;
+			if (realMag == true){
+				size = 0.001f*a->mag_min + s->getMag()*(0.001f*a->mag_range)/a->mag_steps;
+				return size;
+			}
+		}
+	}
+	return ratio;
 }

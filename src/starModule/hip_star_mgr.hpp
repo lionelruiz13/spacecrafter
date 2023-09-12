@@ -430,11 +430,11 @@ public:
 	}
 
 	//! Draw a star of specified position, magnitude and color.
-	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color);
+	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color, int variableStar);
 
-	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color) const {
+	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color, int variableStar) const {
 		//! drawStar write to vertexData and nbStarsToDraw, thus it can't be const
-		return const_cast<HipStarMgr *>(this)->drawStar(prj, XY, rc_mag, color);
+		return const_cast<HipStarMgr *>(this)->drawStar(prj, XY, rc_mag, color, variableStar);
 	}
 
 	//! Get the (translated) common name for a star with a specified
@@ -464,8 +464,10 @@ public:
 	void showStar(int hip);
 	void showAllStar();
 
-	void addVariableStar(int hip, float mag);
+	void addVariableStar(int hip, double mag, double size);
 	void removeVariableStar(int hip);
+	void removeAllVariableStar(void);
+	float checkRatio(int hip, bool realMag);
 
 private:
 	//! Load all the stars from the files.

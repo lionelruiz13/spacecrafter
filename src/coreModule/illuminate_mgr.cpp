@@ -44,6 +44,7 @@
 #include "EntityCore/Resource/TransferMgr.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
 #include "EntityCore/Core/FrameMgr.hpp"
+#include "coreModule/coreLink.hpp"
 
 //a copy of zone_array.hpp
 #define NR_OF_HIP 120416
@@ -137,9 +138,10 @@ void IlluminateMgr::load(int num, const Vec3f& _color, double _size, double rota
 	double ra, de;
 	selected_object.getRaDeValue(navigator,&ra,&de);
 	if (_size > 0 && _size < 1) {
-		float mag = selected_object.getMag(navigator);
-		mag = mag / _size;
-		hip_stars->addVariableStar(num, mag);
+		float mag = selected_object.getMag(navigator), magn = CoreLink::instance->checkRatio(num, true);
+		if (magn != -1)
+			mag = magn;
+		hip_stars->addVariableStar(num, mag, _size);
 		return;
 	} else {
 		hip_stars->removeVariableStar(num);
@@ -177,6 +179,7 @@ void IlluminateMgr::removeAll()
 {
 	illuminateGrid.clear();
 	hip_stars->showAllStar();
+	hip_stars->removeAllVariableStar();
 }
 
 // Draw all the Illuminate

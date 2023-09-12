@@ -26,6 +26,7 @@
 #include "tools/vecmath.hpp"
 //#include "tools/fmath.hpp"
 #include "tools/object_base.hpp"
+#include "coreModule/coreLink.hpp"
 
 namespace BigStarCatalog {
 
@@ -92,7 +93,14 @@ protected:
 		return HipStarMgr::color_table[s->getBVIndex()];
 	}
 	float getMag(const Navigator *nav) const {
-		return 0.001f*a->mag_min + s->getMag()*(0.001f*a->mag_range)/a->mag_steps;
+		int hip = s->getHip();
+		float mag = s->getMag();
+		if (hip != -1) {
+			float ratio = CoreLink::instance->checkRatio(hip, false);
+			if (ratio != -1)
+				mag = mag * ratio;
+		}
+		return 0.001f*a->mag_min + mag*(0.001f*a->mag_range)/a->mag_steps;
 	}
 	float getSelectPriority(const Navigator *nav) const {
 		return getMag(nav);
