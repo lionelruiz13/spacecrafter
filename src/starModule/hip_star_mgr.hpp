@@ -468,6 +468,9 @@ public:
 	void removeVariableStar(int hip);
 	void removeAllVariableStar(void);
 	float checkRatio(int hip, bool realMag);
+	double durationToJulianDay(std::string duration/*int day, int hour, int minute, int seconde*/) const;
+	int checkVariableStar(TimeMgr* timeMgr, int hip, double refJDay, double period, double lowPeriod, double downPeriod, double upPeriod, double magMin);
+	void readFileVariableStar(TimeMgr* timeMgr);
 
 private:
 	//! Load all the stars from the files.

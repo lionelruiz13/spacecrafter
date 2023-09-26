@@ -27,6 +27,7 @@
 #include <list>
 #include <errno.h>
 #include <string.h>
+#include <math.h>
 
 #include <iostream>
 
@@ -53,6 +54,7 @@
 #include "EntityCore/Core/RenderMgr.hpp"
 #include "tools/context.hpp"
 #include "coreModule/coreLink.hpp"
+#include "appModule/space_date.hpp"
 
 static BigStarCatalog::StringArray spectral_array;
 static BigStarCatalog::StringArray component_array;
@@ -718,6 +720,7 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 	if (altitude>2000)
 		twinkle_param=std::max(0.,1.-(altitude-2000.)/50000.);
 	current_JDay = timeMgr->getJulian();
+	readFileVariableStar(timeMgr);
 
 	// If stars are turned off don't waste time below projecting all stars just to draw disembodied labels
 	if (fader.isZero())
@@ -1204,4 +1207,91 @@ float HipStarMgr::checkRatio(int hip, bool realMag)
 		}
 	}
 	return ratio;
+}
+
+double HipStarMgr::durationToJulianDay(std::string duration/*int day, int hour, int minute, int seconde*/) const
+{
+	int day = 0, hour = 0, minute = 0, seconde = 0;
+	std::string tmp;
+	for (int i = 0, j = 0; duration[i] != '\0'; i++, j++){
+		if (duration[i] <= 57 && duration[i] >= 48){
+			tmp += duration[i];
+			continue;
+		}
+		switch (duration[i]){
+			case 'd':
+				day = std::stod(tmp);
+				break;
+			case 'h':
+				hour = std::stod(tmp);
+				break;
+			case 'm':
+				minute = std::stod(tmp);
+			case 's':
+				seconde = std::stod(tmp);
+				break;
+			default:{
+				return -1;
+			}
+		}
+		j = 0;
+		tmp.clear();
+	}
+	double time = day, dayfrac = hour / 24.0;
+	if (dayfrac < 0.0) {
+		dayfrac += 1.0;
+		--time;
+	}
+	double jtime = dayfrac + (minute + seconde / 60.0) / (60.0 * 24.0);
+	return (jtime + time);
+}
+
+int HipStarMgr::checkVariableStar(TimeMgr* timeMgr, int hip, double refJDay, double period, double lowPeriod, double downPeriod, double upPeriod, double magMin)
+{
+	if (period == -1 || lowPeriod == -1 || downPeriod == -1 || upPeriod == -1)
+		return -1;
+	double result = current_JDay - refJDay, mag = checkRatio(hip, true);
+
+	if (fmod(result, period) > period - lowPeriod/2 || fmod(result, period) < lowPeriod/2){
+		if (fmod(result, period) > period - (lowPeriod/2 - downPeriod) || fmod(result, period) < lowPeriod/2 - upPeriod){
+			addVariableStar(hip, mag, mag/magMin);
+		} else {
+			if (fmod(result, period) < lowPeriod/2){
+				double magIntermediate = (mag-magMin)/upPeriod*(fmod(result, period) - lowPeriod/2) + mag;
+				addVariableStar(hip, mag, mag/magIntermediate);
+			} else {
+				double magIntermediate = (magMin-mag)/downPeriod*(fmod(result, period) - (period - lowPeriod/2)) + mag;
+				addVariableStar(hip, mag, mag/magIntermediate);
+			}
+		}
+	} else {
+		removeVariableStar(hip);
+	}
+	return (0);
+}
+
+void HipStarMgr::readFileVariableStar(TimeMgr* timeMgr)
+{
+	std::string fileName = AppSettings::Instance()->getUserDir() + "variable_stars.txt";
+	std::ifstream fileIn(fileName);
+
+	if (!fileIn.is_open()) {
+		cLog::get()->write("VariableStar error opening "+fileName + " - Feature disabled", LOG_TYPE::L_ERROR);
+		return;
+	}
+
+	std::string record, period, lowPeriod, downPeriod, upPeriod;
+	int hip;
+	double refJDay, magMin;
+
+	while (!fileIn.eof() && std::getline(fileIn, record)) {
+		std::istringstream istr(record);
+		if (!(istr >> hip >> refJDay >> period >> lowPeriod >> downPeriod >> upPeriod >> magMin)) {
+			cLog::get()->write("VariableStar error parsing "+record, LOG_TYPE::L_ERROR);
+			return;
+		}
+		if (checkVariableStar(timeMgr, hip, refJDay, durationToJulianDay(period), durationToJulianDay(lowPeriod), durationToJulianDay(downPeriod), durationToJulianDay(upPeriod), magMin) == -1)
+			cLog::get()->write("VariableStar error parsing "+record, LOG_TYPE::L_ERROR);
+	}
+	fileIn.close();
 }
