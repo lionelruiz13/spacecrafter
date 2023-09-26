@@ -2926,12 +2926,14 @@ int AppCommandInterface::commandMedia()
 
 			std::string type_string = args[W_TYPE];
 			VID_TYPE type = media->strToVideoType(type_string);
+			std::string audioName = args[W_AUDIONAME];
+			if (type==VID_TYPE::V_NONE && !audioName.empty())
+				return (executeCommand("audio filename " + args[W_AUDIONAME] + " action play loop " + args[W_LOOP]));
 			if (type==VID_TYPE::V_NONE) {
 				debug_message = "Command 'media' argument action need argument 'type'";
 				return executeCommandStatus();
 			}
 			std::string videoName = args[W_VIDEONAME];
-			std::string audioName = args[W_AUDIONAME];
 			std::string argName =  args[W_NAME];
 			std::string argPosition = args[W_POSITION];
 

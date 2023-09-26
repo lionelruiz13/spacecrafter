@@ -73,9 +73,9 @@ void Media::setProjector(const Projector* projection)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Media::audioMusicLoad(const std::string &filename, bool )
+void Media::audioMusicLoad(const std::string &filename, bool loop)
 {
-	audio->musicLoad(filename, false);
+	audio->musicLoad(filename, loop);
 	audioMusicPlay();
 }
 
