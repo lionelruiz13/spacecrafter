@@ -1209,12 +1209,13 @@ float HipStarMgr::checkRatio(int hip, bool realMag)
 	return ratio;
 }
 
-double HipStarMgr::durationToJulianDay(std::string duration/*int day, int hour, int minute, int seconde*/) const
+double HipStarMgr::durationToJulianDay(std::string duration) const
 {
-	int day = 0, hour = 0, minute = 0, seconde = 0;
+	int hour = 0, minute = 0, seconde = 0;
+	double day = 0;
 	std::string tmp;
 	for (int i = 0, j = 0; duration[i] != '\0'; i++, j++){
-		if (duration[i] <= 57 && duration[i] >= 48){
+		if ((duration[i] <= 57 && duration[i] >= 48) || duration[i] == '.'){
 			tmp += duration[i];
 			continue;
 		}
