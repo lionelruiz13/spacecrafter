@@ -406,6 +406,9 @@ public:
 	//! remove all user added nebulae
 	void removeSupplementalNebulae();
 
+	bool loadDso2d(int typeDso, std::string name, float size, float alpha, float delta, float distance, int xyz);
+	void removeSupplementalDso();
+
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Projection
 

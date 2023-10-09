@@ -236,6 +236,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 		case SC_COMMAND::SC_DOMEMASTERS :	return commandDomemasters(); break;
 		case SC_COMMAND::SC_DSO :	return commandDso(); break;
 		case SC_COMMAND::SC_DSO3D :	return commandDso3D(); break;
+		case SC_COMMAND::SC_DSO2D : return commandDso2D(); break;
 		case SC_COMMAND::SC_EXTERNASC_VIEWER :	return commandExternalViewer(); break;
 		case SC_COMMAND::SC_FLAG :	return commandFlag(); break;
 		case SC_COMMAND::SC_FONT :	return commandFont(); break;
@@ -1316,6 +1317,30 @@ int AppCommandInterface::commandDso3D()
 	} else {
 		debug_message = _("command 'dso3d' : unknown argument");
 	}
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandDso2D()
+{
+	std::string argAction = args[W_ACTION];
+
+	if (!argAction.empty()) {
+		if (argAction == ACP_CN_CLEAR) {
+			// drop all nebulae that are not in the original config file
+			stcore->removeSupplementalDso();
+			return executeCommandStatus();
+		}
+		if (argAction== W_LOAD) {
+			bool status = stcore->loadDso2d(evalDouble(args[W_INDEX]), args[W_NAME], evalDouble(args[W_SIZE]), evalDouble(args[W_RA]), evalDouble(args[W_DE]), evalDouble(args[W_DISTANCE]), evalDouble(args[W_XYZ]));
+			if (status==false)
+				debug_message = "Error loading dso.";
+			return executeCommandStatus();
+		}
+
+		debug_message = _("Command 'dso2D': unknown action value");
+		return executeCommandStatus();
+	}
+	debug_message = _("command 'dso2D' : unknown argument");
 	return executeCommandStatus();
 }
 

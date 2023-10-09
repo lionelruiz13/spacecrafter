@@ -1214,7 +1214,7 @@ double HipStarMgr::durationToJulianDay(std::string duration) const
 	int hour = 0, minute = 0, seconde = 0;
 	double day = 0;
 	std::string tmp;
-	for (int i = 0, j = 0; duration[i] != '\0'; i++, j++){
+	for (int i = 0; duration[i] != '\0'; i++){
 		if ((duration[i] <= 57 && duration[i] >= 48) || duration[i] == '.'){
 			tmp += duration[i];
 			continue;
@@ -1235,7 +1235,6 @@ double HipStarMgr::durationToJulianDay(std::string duration) const
 				return -1;
 			}
 		}
-		j = 0;
 		tmp.clear();
 	}
 	double time = day, dayfrac = hour / 24.0;
@@ -1251,7 +1250,8 @@ int HipStarMgr::checkVariableStar(TimeMgr* timeMgr, int hip, double refJDay, dou
 {
 	if (period == -1 || lowPeriod == -1 || downPeriod == -1 || upPeriod == -1)
 		return -1;
-	double result = current_JDay - refJDay, mag = checkRatio(hip, true);
+	double result = current_JDay - refJDay;
+	double mag = checkRatio(hip, true);
 
 	if (fmod(result, period) > period - lowPeriod/2 || fmod(result, period) < lowPeriod/2){
 		if (fmod(result, period) > period - (lowPeriod/2 - downPeriod) || fmod(result, period) < lowPeriod/2 - upPeriod){
@@ -1286,6 +1286,8 @@ void HipStarMgr::readFileVariableStar(TimeMgr* timeMgr)
 	double refJDay, magMin;
 
 	while (!fileIn.eof() && std::getline(fileIn, record)) {
+		if (record[0] == '#')
+			continue;
 		std::istringstream istr(record);
 		if (!(istr >> hip >> refJDay >> period >> lowPeriod >> downPeriod >> upPeriod >> magMin)) {
 			cLog::get()->write("VariableStar error parsing "+record, LOG_TYPE::L_ERROR);

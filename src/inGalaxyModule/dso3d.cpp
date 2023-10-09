@@ -155,6 +155,53 @@ bool Dso3d::loadCatalog(const std::string &cat) noexcept
 	return true;
 }
 
+bool Dso3d::loadCommand(int typeDso, std::string name, float size, float alpha, float delta, float distance, int xyz)
+{
+	float x,y,z,xr,yr,zr;
+	//x y z position
+	nbNebulae++;
+	if (xyz==1) {
+		posDso3d.push_back(alpha);
+		posDso3d.push_back(delta);
+		posDso3d.push_back(distance);
+	} else {
+	//x y z calculation
+		x=distance*cos(alpha*M_PI/180.0)*sin((90.0-delta)*M_PI/180.0);
+		y=distance*sin(alpha*M_PI/180.0)*sin((90.0-delta)*M_PI/180.0);
+		z=distance*cos((90.0-delta)*M_PI/180.0);
+	// ecliptic coordinates change
+		xr=x;
+		yr=y*cos(-23.43928*M_PI/180.0)-z*sin(-23.43928*M_PI/180.0);
+		zr=y*sin(-23.43928*M_PI/180.0)+z*cos(-23.43928*M_PI/180.0);
+
+		posDso3d.push_back(xr/2.0);
+		posDso3d.push_back(yr/2.0);
+		posDso3d.push_back(zr/2.0);
+	}
+	//dso texture
+	texDso3d.push_back(typeDso);
+	scaleDso3d.push_back(size);
+	nameDso3d.push_back(name);
+	vertex = sData->createBuffer(0, nbNebulae, Context::instance->globalBuffer.get());
+	float *data = (float *) Context::instance->transfer->planCopy(vertex->get());
+	vertex->fillEntry(3, nbNebulae, posDso3d.data(), data);
+	vertex->fillEntry(1, nbNebulae, texDso3d.data(), data + 3);
+	vertex->fillEntry(1, nbNebulae, scaleDso3d.data(), data + 4);
+	build();
+	return true;
+}
+
+void Dso3d::removeSupplementalDso()
+{
+	posDso3d.clear();
+	texDso3d.clear();
+	scaleDso3d.clear();
+	nameDso3d.clear();
+	nbNebulae = 0;
+	if (loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat"))
+		build();
+}
+
 void Dso3d::setTexture(const std::string& tex_file)
 {
 	texNebulae = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_SOLID);

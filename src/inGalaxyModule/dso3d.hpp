@@ -100,6 +100,10 @@ public:
 	//! read data from the catalog whose name is passed in parameter
 	bool loadCatalog(const std::string &cat) noexcept;
 
+	//! add Dso with command line
+	bool loadCommand(int typeDso, std::string name, float size, float alpha, float delta, float distance, int xyz);
+	void removeSupplementalDso();
+
 	//! Build draw command
 	void build();
 private:

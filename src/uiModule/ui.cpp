@@ -181,6 +181,7 @@ void UI::init(const InitParser& conf)
 	coreLink->setDefaultHeading();
 	core->setInitialLandscapeName();
 	core->removeSupplementalNebulae();
+	core->removeSupplementalDso();
 	coreLink->illuminateRemoveTex();
 	coreLink->illuminateRemoveAll();
 	coreLink->nebulaSetFlag(true);

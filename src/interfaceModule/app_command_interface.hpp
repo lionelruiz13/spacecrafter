@@ -96,6 +96,7 @@ protected:
 	int commandDomemasters();
 	int commandDso();
 	int commandDso3D();
+	int commandDso2D();
 	//int commandExternalMplayer();
 	int commandExternalViewer();
 	int commandFont();

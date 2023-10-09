@@ -138,7 +138,8 @@ void IlluminateMgr::load(int num, const Vec3f& _color, double _size, double rota
 	double ra, de;
 	selected_object.getRaDeValue(navigator,&ra,&de);
 	if (_size > 0 && _size < 1) {
-		float mag = selected_object.getMag(navigator), magn = CoreLink::instance->checkRatio(num, true);
+		float mag = selected_object.getMag(navigator);
+		float magn = CoreLink::instance->checkRatio(num, true);
 		if (magn != -1)
 			mag = magn;
 		hip_stars->addVariableStar(num, mag, _size);

@@ -1948,6 +1948,16 @@ void Core::removeSupplementalNebulae()
 	nebulas->removeSupplementalNebulae();
 }
 
+bool Core::loadDso2d(int typeDso, std::string name, float size, float alpha, float delta, float distance, int xyz)
+{
+	return dso3d->loadCommand(typeDso, name, size, alpha, delta, distance, xyz);
+}
+
+void Core::removeSupplementalDso()
+{
+	dso3d->removeSupplementalDso();
+}
+
 void Core::setJDayRelative(int year, int month)
 {
 	double jd = timeMgr->getJDay();
