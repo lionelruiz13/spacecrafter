@@ -30,9 +30,11 @@ void main()
 	// position de la nebuleuse
 	vec4 pos = custom_project( gl_in[0].gl_Position );
 	// todo : utiliser length
-	vec4 dist = gl_in[0].gl_Position-vec4(camPos, 1.0); 
+	vec4 dist = gl_in[0].gl_Position-vec4(camPos, 1.0);
 	float distance = sqrt(dist.x*dist.x + dist.y*dist.y + dist.z*dist.z );
 	float radius = scale[0] * 60. / distance;
+	if (texture[0] == 31)
+		radius = scale[0];
 
 	if (pos.w == 1.0) {
 		if (radius>=1.0) {
@@ -41,18 +43,18 @@ void main()
 			gl_Position   = MVP2D * ( pos +vec4( radius, -radius, 0.0, 0.0) );
 			TexCoord= vec2(tex, .0f);
 			EmitVertex();
-	
+
 			// en haut à droite
 			gl_Position   = MVP2D * ( pos +vec4( radius, radius, 0.0, 0.0) );
 			TexCoord= vec2(tex, 1.0f);
-			EmitVertex();    
+			EmitVertex();
 
 			tex = texture[0]/nbTextures;
 			// en Bas à gauche
 			gl_Position   = MVP2D * ( pos +vec4( -radius, -radius, 0.0, 0.0) );
 			TexCoord= vec2(tex, 0.0f);
 			EmitVertex();
-	
+
 			// en haut à gauche
 			gl_Position   = MVP2D * ( pos +vec4( -radius, radius, 0.0, 0.0) );
 			TexCoord= vec2(tex, 1.0f);
