@@ -1213,6 +1213,8 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	if ( !hip_stars || !cardinals_points || !asterisms || ! skyLineMgr->isExist(SKYLINE_TYPE::LINE_ECLIPTIC)) return; // objects not initialized yet
 
 	std::string oldLocale = getSkyLanguage();
+	InitParser conf;
+	AppSettings::Instance()->loadAppSettings( &conf );
 
 	// Update the translator with new locale name
 	skyTranslator = Translator(AppSettings::Instance()->getLanguageDir(), newSkyLocaleName);
@@ -1223,8 +1225,18 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 		fontFactory->updateAllFont("/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf");
 	else if (language[0] == 'j' && language[1] == 'a')
 		fontFactory->updateAllFont("/home/planetarium/.spacecrafter/fonts/PretendardJPVariable.ttf");
-	else
-		fontFactory->updateAllFont("/home/planetarium/.spacecrafter/fonts/DejaVuSans-Bold.ttf");
+	else {
+		fontFactory->updateFont("text", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_TEXT_NAME), conf.getStr(SCS_FONT, SCK_FONT_TEXT_SIZE));
+		fontFactory->updateFont("menu", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_MENU_NAME), conf.getStr(SCS_FONT, SCK_FONT_MENUTUI_SIZE));
+		fontFactory->updateFont("planets", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_PLANET_NAME), conf.getStr(SCS_FONT, SCK_FONT_PLANET_SIZE));
+		fontFactory->updateFont("constellations", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_CONSTELLATION_NAME), conf.getStr(SCS_FONT, SCK_FONT_CONSTELLATION_SIZE));
+		fontFactory->updateFont("cardinal_points", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_CARDINALPOINTS_NAME), conf.getStr(SCS_FONT, SCK_FONT_CARDINALPOINTS_SIZE));
+		fontFactory->updateFont("grids", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GRID_NAME), conf.getStr(SCS_FONT, SCK_FONT_GRID_SIZE));
+		fontFactory->updateFont("lines", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_LINES_NAME), conf.getStr(SCS_FONT, SCK_FONT_LINE_SIZE));
+		fontFactory->updateFont("displays", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_DISPLAY_NAME), conf.getStr(SCS_FONT, SCK_FONT_DISPLAY_SIZE));
+		fontFactory->updateFont("stars", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_HIPSTARS_NAME), conf.getStr(SCS_FONT, SCK_FONT_HIPSTARS_SIZE));
+		fontFactory->updateFont("nebulae", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_NEBULAS_NAME), conf.getStr(SCS_FONT, SCK_FONT_NEBULAS_SIZE));
+	}
 
 	// Translate all labels with the new language
 	cardinals_points->translateLabels(skyTranslator);
