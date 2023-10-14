@@ -20,6 +20,7 @@ sudo apt install -y libsdl2-ttf-dev
 sudo apt install -y libsdl2-image-dev
 sudo apt install -y libsdl2-net-dev
 #sudo apt-get install -y libfreetype6-dev
+sudo apt install -y libpng-dev
 
 sudo apt install -y gettext
 sudo apt install -y make
