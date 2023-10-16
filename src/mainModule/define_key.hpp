@@ -49,6 +49,7 @@
 #define SCK_DEBUG_LAYER                     "debug_layer"
 #define SCK_TEX_CACHE                       "texture_caching"
 #define SCK_TEXTURE_LOADING                 "texture_loading"
+#define SCK_LOW_MEMORY                      "low_memory"
 #define SCK_LOG                             "write_log"
 #define SCK_MILKYWAY_IRIS                   "milkyway_iris"
 // #define SCK_FLAG_OPTOMA                     "flag_optoma"
