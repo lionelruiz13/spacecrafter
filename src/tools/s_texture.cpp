@@ -296,28 +296,30 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
             textureQueue.emplace(texture);
             return ret;
         }
-        auto &cacheEntry = AsyncLoaderMgr::instance->getCache(fullName);
-        TextureCache &cache = cacheEntry;
-        if (cacheEntry.checkCache(fullName)) {
-            cache.averageLuminance = -1;
-            cache.height = -1;
-        }
-        texture->averageLuminance = cache.averageLuminance;
-        texture->depth = depth;
-        texture->mipmap = mipmap;
-        texture->blendMipmap = useBlendMipmap;
-        texture->blendPacked = (nbChannels > 1);
-        usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-        if (mipmap)
-            usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-        if (strategy == Loading::LEGACY) {
-            return loadInternal(fullName, resolution, depth, force3D, depthColumn);
-        } else if (std::filesystem::exists(fullName)) {
-            texture->width = cache.width;
-            texture->height = cache.height;
-            texture->loader = std::make_unique<TextureLoader>(this, cache, fullName, resolution, depth, force3D, depthColumn);
-            return true;
-        } else {
+        try {
+            auto &cacheEntry = AsyncLoaderMgr::instance->getCache(fullName);
+            TextureCache &cache = cacheEntry;
+            if (cacheEntry.checkCache(fullName)) {
+                cache.averageLuminance = -1;
+                cache.height = -1;
+            }
+            texture->averageLuminance = cache.averageLuminance;
+            texture->depth = depth;
+            texture->mipmap = mipmap;
+            texture->blendMipmap = useBlendMipmap;
+            texture->blendPacked = (nbChannels > 1);
+            usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+            if (mipmap)
+                usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+            if (strategy == Loading::LEGACY) {
+                return loadInternal(fullName, resolution, depth, force3D, depthColumn);
+            } else {
+                texture->width = cache.width;
+                texture->height = cache.height;
+                texture->loader = std::make_unique<TextureLoader>(this, cache, fullName, resolution, depth, force3D, depthColumn);
+                return true;
+            }
+        } catch (...) {
             return false;
         }
 	} else {
