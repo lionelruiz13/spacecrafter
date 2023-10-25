@@ -45,7 +45,7 @@ void CheckConfig::checkMainSettings()
 	tmpSettings[SCK_DEBUG_LAYER]="false";
 	tmpSettings[SCK_TEX_CACHE]="false";
 	tmpSettings[SCK_TEXTURE_LOADING]="legacy";
-	tmpSettings[SCK_LOW_MEMORY]="true";
+	tmpSettings[SCK_LOW_MEMORY]="false";
 	tmpSettings[SCK_STATISTICS]="false";
 	tmpSettings[SCK_BUILDER_THREADS]="3";
 	tmpSettings[SCK_LOG]="true";
