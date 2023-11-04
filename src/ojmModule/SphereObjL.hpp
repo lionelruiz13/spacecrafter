@@ -86,7 +86,9 @@ private:
 		} else if (fabs(op2.pos[2]) > 0.999999) {
 			point.tex[0] = op1.tex[0];
 		} else {
-			point.tex[0] = (op1.tex[0] + op2.tex[0])/2;
+			point.tex[0] = atan2(-point.pos[1], -point.pos[0]) / (2*M_PI) + 0.25;
+			if (op1.tex[0] - point.tex[0] > 0.5)
+				point.tex[0] += 1;
 		}
 		point.tex[1] = acos(-point.pos[2])/M_PI;
 		points.push_back(point);
