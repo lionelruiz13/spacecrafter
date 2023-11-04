@@ -653,21 +653,18 @@ void StarNavigator::drawRaw(const Mat4f &matrix) const noexcept
 
 void StarNavigator::hideStar(unsigned int hip)
 {
-	starInfo *si = getStarInfo(hip);
-	si->show = false;
+	if (starInfo *si = getStarInfo(hip))
+		si->show = false;
 }
 
 void StarNavigator::showStar(unsigned int hip)
 {
-	starInfo *si = getStarInfo(hip);
-	si->show = true;
+	if (starInfo *si = getStarInfo(hip))
+		si->show = true;
 }
 
 void StarNavigator::showAllStar()
 {
-	for(unsigned int i = 0; i != maxStars; i++) {
-		starInfo *si = listGlobalStarVisible[i];
-		if (si->show == false)
-			si->show = true;
-	}
+	for(starInfo *si : listGlobalStarVisible)
+		si->show = true;
 }
