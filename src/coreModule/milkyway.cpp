@@ -106,7 +106,6 @@ void MilkyWay::initModelMatrix()
 
 MilkyWay::~MilkyWay()
 {
-	if (sphere) delete sphere;
 	if (pipelineMilky) delete[] pipelineMilky;
 }
 
