@@ -778,7 +778,7 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 		return 0.;
 
 	previousSync.emplace(starTrace ? STAR_STORE : STAR_CLEAR);
-	previousSync.emplace(starTrace ? STAR_STORE : STAR_CLEAR);
+	//previousSync.emplace(starTrace ? STAR_STORE : STAR_CLEAR);
 	Context &context = *Context::instance;
 
 	// 6 * sizeof(float) is the vertex stride
