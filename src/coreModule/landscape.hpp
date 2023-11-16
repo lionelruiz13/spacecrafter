@@ -175,7 +175,7 @@ private:
 	void createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
 	                         double bottom_altitude, double top_altitude, float * data);
 	void initShader();
-	float base_altitude, top_altitude;  // for partial sphere coverage
+	float base_altitude, top_altitude, base_top_altitude;  // for partial sphere coverage
 	ACustomLinearFader landingFader;
 };
 

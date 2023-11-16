@@ -496,10 +496,11 @@ void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, 
 //
 // *********************************************************************
 
-LandscapeSpherical::LandscapeSpherical(float _radius) : Landscape(_radius),  base_altitude(-90), top_altitude(90), landingFader(false, 2)
+LandscapeSpherical::LandscapeSpherical(float _radius) :
+	Landscape(_radius),  base_altitude(-90), top_altitude(90), base_top_altitude(90), landingFader(false, 2)
 {
 	landingFader.interpolator.zeroValue = base_altitude;
-	landingFader.interpolator.delta = top_altitude - base_altitude;
+	landingFader.interpolator.delta = base_top_altitude - base_altitude;
 	landingFader.setNoDelay(true); // Switching false to true update the cached value with the new parameters
 	rotate_z = 0;
 }
@@ -571,8 +572,11 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
 	}
 
 	base_altitude = ((_base_altitude >= -90 && _base_altitude <= 90) ? _base_altitude : -90);
-	top_altitude = ((_top_altitude >= -90 && _top_altitude <= 90) ? _top_altitude : 90);
+	base_top_altitude = top_altitude = ((_top_altitude >= -90 && _top_altitude <= 90) ? _top_altitude : 90);
 	rotate_z = _rotate_z*M_PI/180.;
+
+	landingFader.interpolator.zeroValue = base_altitude;
+	landingFader.interpolator.delta = base_top_altitude - base_altitude;
 
 	if (landing == 0)
 		landingFader.setNoDelay(false);
@@ -698,7 +702,7 @@ void LandscapeSpherical::createSphericalMesh(double radius, double one_minus_obl
 
 void LandscapeSpherical::setLanding(bool isLanding, float speed)
 {
-	landingFader.interpolator.zeroValue = -90 + ((speed * 10) * 18);
-	landingFader.interpolator.delta = 90 - landingFader.interpolator.zeroValue;
+	landingFader.interpolator.zeroValue = base_top_altitude-180 + ((speed * 10) * 18);
+	landingFader.interpolator.delta = base_top_altitude - landingFader.interpolator.zeroValue;
 	landingFader = isLanding;
 }
