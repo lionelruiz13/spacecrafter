@@ -77,6 +77,22 @@ void Axis::computeAxis(const Projector* prj, const Mat4d& mat)
 	pos /= sqrt(rq1)+1e-30; // Don't divide by zero
 	f = (atan(pos[2]) / M_PI + 0.5f) * M_PI / clipping_fov[2];
 	pPosAxis[1] = Vec3d(pos[0] * f, pos[1] * f, depth);
+
+	/*old stellarium360 version for axis and equator
+	//axis
+	glBegin(GL_LINE_STRIP);
+	prj->sVertex3(0, 0,  1.4 * radius * sphere_scale, mat);
+	prj->sVertex3(0, 0, -1.4 * radius * sphere_scale, mat);
+	glEnd();
+
+	//equatorial circle
+	glBegin(GL_LINE_LOOP);
+	for(int i=0; i<180; i++) {
+		prj->sVertex3(cos(i*2*M_PI/180)* radius * sphere_scale*1.03, sin(i*2*M_PI/180)* radius * sphere_scale*1.03, 0,  mat);
+	}
+	glEnd();
+	glDisable(GL_LINE_SMOOTH);
+	glPopMatrix();*/
 }
 
 // Calculate the angle of the axis on the screen
