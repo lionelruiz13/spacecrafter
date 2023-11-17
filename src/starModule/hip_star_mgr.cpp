@@ -1162,6 +1162,8 @@ void HipStarMgr::showAllStar(void)
 void HipStarMgr::addVariableStar(int hip, double mag, double size)
 {
 	double ratio = 0;
+	if (mag == 0)
+		mag = 0.1;
 	if (0 < hip && hip <= NR_OF_HIP) {
 		const BigStarCatalog::Star1 *const s = hip_index[hip].s;
 		if (s) {
