@@ -340,29 +340,30 @@ template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 	nr_of_stars = 0;
 }
 
-
-void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars,  bool atmosphere, bool isolateSelected) const
+template<class Star>
+void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars,  bool atmosphere, bool isolateSelected) const
 {
-	SpecialZoneData<Star1> *const z = getZones() + index;
+	SpecialZoneData<Star> *const z = getZones() + index;
 	Vec3d xy;
-	const Star1 *const end = z->getStars() + z->size;
+	const Star *const end = z->getStars() + z->size;
 	const double d2000 = 2451545.0;
 	const double movement_factor = (M_PI/180)*(0.0001/3600)
 	                               * ((HipStarMgr::getCurrentJDay()-d2000)/365.25)
 	                               / star_position_scale;
-	for (const Star1 *s=z->getStars(); s<end; s++) {
+	for (const Star *s=z->getStars(); s<end; s++) {
 		double alt, az;
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
 		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
 		int hip = s->getHip();
+		/*if (hip == -1 &&
 		if (hide_stars.find(hip) != hide_stars.end())
-			continue;
+			continue;*/
 		int mag = s->getMag(), variableStar = 0;
-		auto it = variable_stars.find(hip);
+		/*auto it = variable_stars.find(hip);
 		if (it != variable_stars.end()) {
 			mag = it->second * s->getMag();
 			variableStar = 1;
-		}
+		}*/
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
 		    Utility::rectToSphe(&az,&alt,local_pos);
