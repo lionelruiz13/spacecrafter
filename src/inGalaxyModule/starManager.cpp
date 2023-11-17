@@ -31,6 +31,7 @@
 
 #include <list>
 #include <cstdlib>
+#include <cstring>
 
 /**
  * The inputs and outputs of the binary files are of the form
@@ -628,7 +629,7 @@ void StarManager::addHcStar(starInfo* star)
 //    <Astron. Astrophys. 474, 653 (2007)>
 //
 //    http://cdsarc.u-strasbg.fr/viz-bin/Cat?I/311
-bool StarManager::loadStarRaw(const std::string &catPath)
+/*bool StarManager::loadStarRaw(const std::string &catPath)
 {
 	//std::cout << "StarManager::loadStarRaw " << catPath << std::endl;
 	cLog::get()->write("Starmanager::loadStarRaw " + catPath);
@@ -699,8 +700,120 @@ bool StarManager::loadStarRaw(const std::string &catPath)
 		cLog::get()->write("StarManager, unable to open star cat", LOG_TYPE::L_ERROR);
 		return false;
 	}
-}
+}*/
 
+// Star catalog reading function
+// Fills a list of stars with those found in the catalog
+//
+//    I/311 Hipparcos, the New Reduction  (van Leeuwen, 2007)
+//    Hipparcos, the new Reduction of the Raw data van Leeuwen F.
+//    <Astron. Astrophys. 474, 653 (2007)>
+//
+//    http://cdsarc.u-strasbg.fr/viz-bin/Cat?I/311
+bool StarManager::loadStarRaw(const std::string &catPath)
+{
+	//std::cout << "StarManager::loadStarRaw " << catPath << std::endl;
+	cLog::get()->write("Starmanager::loadStarRaw " + catPath);
+	std::ifstream file(catPath);
+	unsigned int hip;
+	float RArad, DErad, Plx, pmRA, pmDE, mag_app, BV;
+	unsigned starAccepted=0, starRejected =0;
+
+	//Create the hypercube and the initial cube to contain the sun
+	Vec3f origin(0.00001, 0.00001, 0.00001);
+	starInfo *sun = new starInfo;
+	sun->posXYZ = origin;
+	sun->HIP = 0;
+	sun->mag = 4.52649;
+	sun->B_V = 38;
+	sun->pc = 1.32484;
+
+	HyperCube *hyper_Initial = new HyperCube(0,0,0);
+	Cube *cube_Initial = new Cube(0,0,0);
+
+	cube_Initial->addStar(sun);
+	hyper_Initial->addCube(cube_Initial);
+	addHyperCube(hyper_Initial);
+
+	if (file) { // Fails if can't open the file
+		std::string line1; // variable which will contain each line of the file
+		std::string section; // variable which will contain each section of the line
+		cLog::get()->write("Reading the initial catalog " + catPath);
+
+		// readig file line per line
+		while (getline(file, line1)) {
+			std::istringstream section_iss(line1);
+			for (int nb_section = 0; getline(section_iss, section, ';'); nb_section++) {
+				switch (nb_section) {
+					case 0 : break;
+					case 1 : break;
+					case 2 :
+					{
+						std::istringstream hip_iss(section);
+				   		hip_iss >> hip;
+						return true;
+						break;
+					}
+					case 3 :
+					{
+						std::istringstream RArad_iss(section);
+						RArad_iss >> RArad;
+						break;
+					}
+					case 4 :
+					{
+						std::istringstream DErad_iss(section);
+						DErad_iss >> DErad;
+						break;
+					}
+					case 5 :
+					{
+						std::istringstream Plx_iss(section);
+						Plx_iss >> Plx;
+						break;
+					}
+					case 6 :
+					{
+						std::istringstream pmRA_iss(section);
+						pmRA_iss >> pmRA;
+						break;
+					}
+					case 7 :
+					{
+						std::istringstream pmDE_iss(section);
+						pmDE_iss >> pmDE;
+						break;
+					}
+					case 8 :
+					{
+						std::istringstream mag_iss(section);
+						mag_iss >> mag_app;
+						break;
+					}
+					case 9 :
+					{
+						std::istringstream BV_iss(section);
+						BV_iss >> BV;
+						break;
+					}
+				}
+			}
+			starInfo *si = nullptr;
+			si = createStar( hip, RArad, DErad, Plx, pmRA, pmDE, mag_app, BV);
+			this->addHcStar(si);
+			starAccepted++;
+		}
+		file.close();
+
+		cLog::get()->write("Star(s) accepted : " + std::to_string(starAccepted) );
+		cLog::get()->write("Star(s) rejected : " + std::to_string(starRejected) );
+
+		return true;
+	} else {
+		cLog::get()->write("StarManager, unable to open star cat", LOG_TYPE::L_ERROR);
+		return false;
+	}
+}
 
 starInfo* StarManager::createStar(unsigned int hip, float RArad, float DErad, float Plx, float pmRA, float pmDE, float mag_app, float BV)
 {
