@@ -33,6 +33,8 @@ sudo apt install -y libavutil-dev
 sudo apt install -y libswscale-dev
 sudo apt install -y libavfilter-dev
 sudo apt install -y libswresample-dev 
+#In case you don't have a NVIDIA graphic card (insane)
+#sudo apt install -y libvdpau-va-gl1
 
 sudo apt install -y mplayer
 
