@@ -430,11 +430,11 @@ public:
 	}
 
 	//! Draw a star of specified position, magnitude and color.
-	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color, int variableStar);
+	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color);
 
-	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color, int variableStar) const {
+	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color) const {
 		//! drawStar write to vertexData and nbStarsToDraw, thus it can't be const
-		return const_cast<HipStarMgr *>(this)->drawStar(prj, XY, rc_mag, color, variableStar);
+		return const_cast<HipStarMgr *>(this)->drawStar(prj, XY, rc_mag, color);
 	}
 
 	//! Get the (translated) common name for a star with a specified

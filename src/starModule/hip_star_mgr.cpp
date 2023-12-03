@@ -606,15 +606,16 @@ void HipStarMgr::loadSciNames(const std::string& sciNameFile)
 	fclose(snFile);
 }
 
-int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, const float rc_mag[2], const Vec3f &color, int variableStar)
+int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, const float rc_mag[2], const Vec3f &color)
 {
-	if (nbStarsToDraw[drawIdx] >= NBR_MAX_STARS) return -1;
+	if (nbStarsToDraw[drawIdx] >= NBR_MAX_STARS)
+		return -1;
 
 	if (rc_mag[0]<=0.f || rc_mag[1]<=0.f) {
-		if (variableStar == 1)
-		 	return 0;
-		else
-			return (-1);
+		// if (variableStar == 1)
+		//  	return 0;
+		// else
+		return -1;
 	}
 
 	float mag = 2.f*rc_mag[0];
@@ -1192,23 +1193,20 @@ void HipStarMgr::removeAllVariableStar(void)
 
 float HipStarMgr::checkRatio(int hip, bool realMag)
 {
-	float ratio = -1, size = 0;
-	if (0 >= hip && hip > NR_OF_HIP)
-		return -1;
 	const BigStarCatalog::Star1 *const s = hip_index[hip].s;
 	if (s) {
 		const BigStarCatalog::SpecialZoneArray<BigStarCatalog::Star1> *const a = hip_index[hip].a;
-		for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
-			ratio = it->second->checkMag(hip);
-			if (ratio != -1 && realMag == false)
-				return ratio;
-			if (realMag == true){
-				size = 0.001f*a->mag_min + s->getMag()*(0.001f*a->mag_range)/a->mag_steps;
-				return size;
+		if (realMag) {
+			return 0.001f*a->mag_min + s->getMag()*(0.001f*a->mag_range)/a->mag_steps;
+		} else {
+			for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
+				float ratio = it->second->checkMag(hip);
+				if (ratio != -1)
+					return ratio;
 			}
 		}
 	}
-	return ratio;
+	return -1;
 }
 
 double HipStarMgr::durationToJulianDay(std::string duration) const
@@ -1253,24 +1251,25 @@ int HipStarMgr::checkVariableStar(TimeMgr* timeMgr, int hip, double refJDay, dou
 	if (period == -1 || lowPeriod == -1 || downPeriod == -1 || upPeriod == -1)
 		return -1;
 	double result = current_JDay - refJDay;
+	result -= static_cast<int>(result / period) * period;
 	double mag = checkRatio(hip, true);
 
-	if (fmod(result, period) > period - lowPeriod/2 || fmod(result, period) < lowPeriod/2){
-		if (fmod(result, period) > period - (lowPeriod/2 - downPeriod) || fmod(result, period) < lowPeriod/2 - upPeriod){
+	if (result > period - lowPeriod/2 || result < lowPeriod/2){
+		if (result > period - (lowPeriod/2 - downPeriod) || result < lowPeriod/2 - upPeriod){
 			addVariableStar(hip, mag, mag/magMin);
 		} else {
-			if (fmod(result, period) < lowPeriod/2){
-				double magIntermediate = (mag-magMin)/upPeriod*(fmod(result, period) - lowPeriod/2) + mag;
+			if (result < lowPeriod/2){
+				double magIntermediate = (mag-magMin)/upPeriod*(result - lowPeriod/2) + mag;
 				addVariableStar(hip, mag, mag/magIntermediate);
 			} else {
-				double magIntermediate = (magMin-mag)/downPeriod*(fmod(result, period) - (period - lowPeriod/2)) + mag;
+				double magIntermediate = (magMin-mag)/downPeriod*(result - (period - lowPeriod/2)) + mag;
 				addVariableStar(hip, mag, mag/magIntermediate);
 			}
 		}
 	} else {
 		removeVariableStar(hip);
 	}
-	return (0);
+	return 0;
 }
 
 void HipStarMgr::readFileVariableStar(TimeMgr* timeMgr)

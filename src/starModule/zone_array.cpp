@@ -306,12 +306,80 @@ void ZoneArray1::removeAllVariableStar(void)
 
 float ZoneArray1::checkMag(int hip)
 {
-	for (std::map<int, float>::iterator it = variable_stars.begin(); it != variable_stars.end(); it++) {
-		if (hip == it->first) {
-			return it->second;
+	auto it = variable_stars.find(hip);
+	if (it != variable_stars.end())
+		return it->second;
+	return -1;
+}
+
+void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars,  bool atmosphere, bool isolateSelected) const
+{
+	auto *const z = getZones() + index;
+	Vec3d xy;
+	const auto *const end = z->getStars() + z->size;
+	const double d2000 = 2451545.0;
+	const double movement_factor = (M_PI/180)*(0.0001/3600)
+	                               * ((HipStarMgr::getCurrentJDay()-d2000)/365.25)
+	                               / star_position_scale;
+	for (const auto *s = z->getStars(); s < end; s++) {
+		double alt, az;
+		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
+		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+		int hip = s->getHip();
+		if (hide_stars.count(hip))
+			continue;
+		int mag = s->getMag();
+		auto it = variable_stars.find(hip);
+		const bool variableStar = (it != variable_stars.end());
+		if (variableStar)
+			mag *= it->second;
+		// Correct star position accounting for atmospheric refraction
+		if (atmosphere) {
+		    Utility::rectToSphe(&az,&alt,local_pos);
+		    //float press_temp_corr = (1013.f)/1010.f * 283.f/(273.f+10.f) / 60.f; //temperature and pressure correction based on Stellarium's code
+		    const float rad2deg = 180.0f/M_PI;
+		    const float deg2rad = M_PI/180.0f;
+		    float ha = rad2deg*alt;
+		    float r;
+		    if (ha>-5.0) r = 1.02f/tan((ha+10.3f/(ha+5.11f))*deg2rad)/60.0; else r=0.0f;
+		    //r = press_temp_corr * (1.f / tan((ha+7.31f/(ha+4.4f))*deg2rad) + 0.0013515f); //Bennett formula
+		    ha += r;
+		    alt = deg2rad*ha;
+		    Utility::spheToRect(az, alt, local_pos);
+		}
+		if (is_inside
+		        ? prj->projectLocal(local_pos,xy)
+		        : prj->projectLocalCheck(local_pos,xy)) {
+			if (hip_star_mgr.drawStar(prj,xy,rcmag_table + 2*(mag), HipStarMgr::color_table[s->getBVIndex()]) && !variableStar) {
+				break;
+			}
+			if (!isolateSelected) {
+				if (mag < max_mag_star_name) {
+					const std::string starname = s->getNameI18n();
+					if (!starname.empty()) {
+						Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][1]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][2]*0.75,
+								names_brightness);
+						// prj->printGravity180(starFont,xy[0],xy[1], starname, Color, true, 4, 4);//, false);
+						starNameToDraw.push_back(std::make_tuple(xy[0],xy[1], starname, Color));
+					}
+				}
+			} else {
+				const std::string starname = s->getNameI18n();
+				if (selected_stars.find(starname) != selected_stars.end()) {
+					if (!starname.empty()) {
+						Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][1]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][2]*0.75,
+								names_brightness);
+						// prj->printGravity180(starFont,xy[0],xy[1], starname, Color, true, 4, 4);//, false);
+						starNameToDraw.push_back(std::make_tuple(xy[0],xy[1], starname, Color));
+					}
+				}
+			}
 		}
 	}
-	return -1;
 }
 
 template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
@@ -354,16 +422,7 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 		double alt, az;
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
 		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
-		int hip = s->getHip();
-		/*if (hip == -1 &&
-		if (hide_stars.find(hip) != hide_stars.end())
-			continue;*/
-		int mag = s->getMag(), variableStar = 0;
-		/*auto it = variable_stars.find(hip);
-		if (it != variable_stars.end()) {
-			mag = it->second * s->getMag();
-			variableStar = 1;
-		}*/
+		int mag = s->getMag();
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
 		    Utility::rectToSphe(&az,&alt,local_pos);
@@ -381,7 +440,7 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 		if (is_inside
 		        ? prj->projectLocal(local_pos,xy)
 		        : prj->projectLocalCheck(local_pos,xy)) {
-			if (0 > hip_star_mgr.drawStar(prj,xy,rcmag_table + 2*(mag), HipStarMgr::color_table[s->getBVIndex()], variableStar)) {
+			if (hip_star_mgr.drawStar(prj,xy,rcmag_table + 2*(mag), HipStarMgr::color_table[s->getBVIndex()])) {
 				break;
 			}
 			if (!isolateSelected) {
