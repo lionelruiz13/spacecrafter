@@ -27,13 +27,13 @@
 #ifndef _EXECUTOR_MODULE_
 #define _EXECUTOR_MODULE_
 
-enum MODULE {SOLAR_SYSTEM, IN_GALAXY, IN_UNIVERSE, STELLAR_SYSTEM};
+enum MODULE {SOLAR_SYSTEM, IN_GALAXY, IN_UNIVERSE, STELLAR_SYSTEM, IN_SANDBOX};
 
 class ExecutorModule {
 public:
 
     ~ExecutorModule() {};
-    
+
 	virtual void onEnter() = 0;
 	virtual void onExit() = 0;
 	virtual void update(int delta_time)=0;
@@ -55,7 +55,7 @@ public:
 	MODULE getExecutorModule() {
 		return module;
 	}
-	
+
 protected:
 
 	double minAltToGoDown = 0.0;	// min altitude before switching to upMode

@@ -23,7 +23,7 @@
  */
 
 #include <iostream>
-#include "InSandBoxModule.hpp"
+#include "inSandBoxModule.hpp"
 #include "eventModule/event.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScreenFader.hpp"
@@ -78,37 +78,32 @@ void InSandBoxModule::update(int delta_time)
 {
 		// Update the position of observation and time etc...
 	observer->update(delta_time);
-	core->timeMgr->update(delta_time);
-	core->navigation->update(delta_time);
-
-	// Position of sun and all the satellites (ie planets)
-	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), observer);
-
-	core->ssystemFactory->updateAnchorManager();
+//	core->timeMgr->update(delta_time);
+//	core->navigation->update(delta_time);
 
 	// Transform matrices between coordinates systems
-	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
+//	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
 	// Direction of vision
-	core->navigation->updateVisionVector(delta_time, core->selected_object);
+//	core->navigation->updateVisionVector(delta_time, core->selected_object);
 	// Field of view
-	core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
+//	core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
 	// Move the view direction and/or fov
-	core->updateMove(delta_time);
+//	core->updateMove(delta_time);
 	// Update faders
-	core->update(delta_time);
-	core->starLines->update(delta_time);
-	core->milky_way->update(delta_time);
-	core->dso3d->update(delta_time);
+//	core->update(delta_time);
+//	core->starLines->update(delta_time);
+//	core->milky_way->update(delta_time);
+//	core->dso3d->update(delta_time);
 
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
-	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
-	                                    core->navigation->getEarthEquToEyeMatFixed(),
-	                                    core->navigation->getHelioToEyeMat(),
-	                                    core->navigation->getLocalToEyeMat(),
-	                                    core->navigation->getJ2000ToEyeMat(),
-	                                    core->navigation->geTdomeMat(),
-	                                    core->navigation->getDomeFixedMat());
+//	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
+//	                                    core->navigation->getEarthEquToEyeMatFixed(),
+//	                                    core->navigation->getHelioToEyeMat(),
+//	                                    core->navigation->getLocalToEyeMat(),
+//	                                    core->navigation->getJ2000ToEyeMat(),
+//	                                    core->navigation->geTdomeMat(),
+//	                                    core->navigation->getDomeFixedMat());
 	Event* event = new ScreenFaderInterludeEvent(
 		ScreenFaderInterludeEvent::UP, maxAltToGoUp/2.0,maxAltToGoUp, observer->getAltitude());
 	EventRecorder::getInstance()->queue(event);
@@ -116,18 +111,18 @@ void InSandBoxModule::update(int delta_time)
 
 void InSandBoxModule::draw(int delta_time)
 {
-	core->applyClippingPlanes(0.01, 2000.01);
+//	core->applyClippingPlanes(0.01, 2000.01);
 	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]);
-	core->starNav->computePosition(core->navigation->getObserverHelioPos());
-	core->cloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
-	core->dsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+//	core->starNav->computePosition(core->navigation->getObserverHelioPos());
+//	core->cloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+//	core->dsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 
 	//for VR360 drawing
-	core->media->drawVR360(core->projection, core->navigation);
+//	core->media->drawVR360(core->projection, core->navigation);
 
-	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
+	//core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 
-	if (core->selected_object && core->object_pointer_visibility) core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
+	//if (core->selected_object && core->object_pointer_visibility) core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 	//set mode
 	//drawing lines without activating the depth buffer.
 	//core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
@@ -151,7 +146,7 @@ bool InSandBoxModule::testValidAltitude(double altitude)
 		return true;
 	}
 	if (altitude<minAltToGoDown) {
-		nextMode = (core->ssystemFactory->querySelectedAnchorName() == "Sun") ? downMode : downModeAlt;
+//		nextMode = (core->ssystemFactory->querySelectedAnchorName() == "Sun") ? downMode : downModeAlt;
 		return true;
 	}
 	return false;
