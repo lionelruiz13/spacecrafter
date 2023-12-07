@@ -2292,7 +2292,7 @@ int AppCommandInterface::commandText()
 
 int AppCommandInterface::commandSkyCulture()
 {
-	std::string argPath = args[W_PATH];
+	std::string argPath = FilePath(args[W_PATH], FilePath::TFP::IMAGE);
 	if (!argPath.empty() && args[W_ACTION]== W_LOAD) {
 		if (!stcore->loadSkyCulture(argPath))
 			debug_message = "Error loading sky culture from path specified.";
