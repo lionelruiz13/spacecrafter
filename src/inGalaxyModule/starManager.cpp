@@ -751,7 +751,7 @@ bool StarManager::loadStarRaw(const std::string &catPath)
 					{
 						std::istringstream hip_iss(section);
 				   		hip_iss >> hip;
-						return true;
+						// return true;
 						break;
 					}
 					case 3 :
@@ -772,25 +772,26 @@ bool StarManager::loadStarRaw(const std::string &catPath)
 						Plx_iss >> Plx;
 						break;
 					}
-					case 6 :
+					case 6 : break; // error plx
+					case 7 :
 					{
 						std::istringstream pmRA_iss(section);
 						pmRA_iss >> pmRA;
 						break;
 					}
-					case 7 :
+					case 8 :
 					{
 						std::istringstream pmDE_iss(section);
 						pmDE_iss >> pmDE;
 						break;
 					}
-					case 8 :
+					case 9 :
 					{
 						std::istringstream mag_iss(section);
 						mag_iss >> mag_app;
 						break;
 					}
-					case 9 :
+					case 10 :
 					{
 						std::istringstream BV_iss(section);
 						BV_iss >> BV;
@@ -799,7 +800,7 @@ bool StarManager::loadStarRaw(const std::string &catPath)
 				}
 			}
 			starInfo *si = nullptr;
-			si = createStar( hip, RArad, DErad, Plx, pmRA, pmDE, mag_app, BV);
+			si = createStar( hip, RArad*3.1415926/180.0, DErad*3.1415926/180.0, Plx, pmRA, pmDE, mag_app, BV);
 			this->addHcStar(si);
 			starAccepted++;
 		}
