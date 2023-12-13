@@ -20,7 +20,7 @@ fi
 
 git submodule update --init || (cd ../src && git clone https://github.com/Calvin-Ruiz/EntityCore.git)
 cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build . $1 --config Release
+nice cmake --build . $1 --config Release
 sudo cmake --install . --config Release
 cd ..
 

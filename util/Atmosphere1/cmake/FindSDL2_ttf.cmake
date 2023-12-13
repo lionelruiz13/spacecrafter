@@ -1,16 +1,16 @@
 # Locate SDL2_ttf library
 # This module defines
-# SDL2_TTF_LIBRARY, the name of the library to link against
-# SDL2_TTF_FOUND, if false, do not try to link to SDL2_ttf
-# SDL2_TTF_INCLUDE_DIR, where to find SDL_image.h
+# SDL2_ttf_LIBRARY, the name of the library to link against
+# SDL2_ttf_FOUND, if false, do not try to link to SDL2_ttf
+# SDL2_ttf_INCLUDE_DIR, where to find SDL_image.h
 #
-# Additional Note: If you see an empty SDL2_TTF_LIBRARY_TEMP in your configuration
-# and no SDL2_TTF_LIBRARY, it means CMake did not find your SDL2_Image library
+# Additional Note: If you see an empty SDL2_ttf_LIBRARY_TEMP in your configuration
+# and no SDL2_ttf_LIBRARY, it means CMake did not find your SDL2_Image library
 # (SDL2_ttf.dll, libsdl2_image.so, SDL2_ttf.framework, etc).
-# Set SDL2_TTF_LIBRARY_TEMP to point to your SDL2 library, and configure again.
+# Set SDL2_ttf_LIBRARY_TEMP to point to your SDL2 library, and configure again.
 # Similarly, if you see an empty SDL2MAIN_LIBRARY, you should set this value
-# as appropriate. These values are used to generate the final SDL2_TTF_LIBRARY
-# variable, but when these values are unset, SDL2_TTF_LIBRARY does not get created.
+# as appropriate. These values are used to generate the final SDL2_ttf_LIBRARY
+# variable, but when these values are unset, SDL2_ttf_LIBRARY does not get created.
 #
 # $SDL2 is an environment variable that would
 # correspond to the ./configure --prefix=$SDL2
@@ -29,7 +29,7 @@
 #
 # On OSX, this will prefer the Framework version (if found) over others.
 # People will have to manually change the cache values of
-# SDL2_TTF_LIBRARY to override this selection or set the CMake environment
+# SDL2_ttf_LIBRARY to override this selection or set the CMake environment
 # CMAKE_INCLUDE_PATH to modify the search paths.
 #
 # Note that the header path has changed from SDL2/SDL.h to just SDL.h
@@ -88,11 +88,11 @@
 # (To distribute this file outside of CMake, substitute the full
 # License text for the above reference.)
 
-FIND_PATH(SDL2_TTF_INCLUDE_DIR SDL_ttf.h
+FIND_PATH(SDL2_ttf_INCLUDE_DIR SDL_ttf.h
 	HINTS
 	${SDL2}
 	$ENV{SDL2}
-	$ENV{SDL2_TTF}
+	$ENV{SDL2_ttf}
 	PATH_SUFFIXES include/SDL2 include SDL2
 	i686-w64-mingw32/include/SDL2
 	PATHS
@@ -108,12 +108,12 @@ FIND_PATH(SDL2_TTF_INCLUDE_DIR SDL_ttf.h
 
 # Lookup the 64 bit libs on x64
 IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	FIND_LIBRARY(SDL2_TTF_LIBRARY_TEMP
+	FIND_LIBRARY(SDL2_ttf_LIBRARY_TEMP
 		NAMES SDL2_ttf
 		HINTS
 		${SDL2}
 		$ENV{SDL2}
-		$ENV{SDL2_TTF}
+		$ENV{SDL2_ttf}
 		PATH_SUFFIXES lib64 lib
 		lib/x64
 		x86_64-w64-mingw32/lib
@@ -125,12 +125,12 @@ IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	)
 # On 32bit build find the 32bit libs
 ELSE(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	FIND_LIBRARY(SDL2_TTF_LIBRARY_TEMP
+	FIND_LIBRARY(SDL2_ttf_LIBRARY_TEMP
 		NAMES SDL2_ttf
 		HINTS
 		${SDL2}
 		$ENV{SDL2}
-		$ENV{SDL2_TTF}
+		$ENV{SDL2_ttf}
 		PATH_SUFFIXES lib
 		lib/x86
 		i686-w64-mingw32/lib
@@ -142,16 +142,16 @@ ELSE(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	)
 ENDIF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 
-SET(SDL2_TTF_FOUND "NO")
-	IF(SDL2_TTF_LIBRARY_TEMP)
+SET(SDL2_ttf_FOUND "NO")
+	IF(SDL2_ttf_LIBRARY_TEMP)
 	# Set the final string here so the GUI reflects the final state.
-	SET(SDL2_TTF_LIBRARY ${SDL2_TTF_LIBRARY_TEMP} CACHE STRING "Where the SDL2_ttf Library can be found")
+	SET(SDL2_ttf_LIBRARY ${SDL2_ttf_LIBRARY_TEMP} CACHE STRING "Where the SDL2_ttf Library can be found")
 	# Set the temp variable to INTERNAL so it is not seen in the CMake GUI
-	SET(SDL2_TTF_LIBRARY_TEMP "${SDL2_TTF_LIBRARY_TEMP}" CACHE INTERNAL "")
-	SET(SDL2_TTF_FOUND "YES")
-ENDIF(SDL2_TTF_LIBRARY_TEMP)
+	SET(SDL2_ttf_LIBRARY_TEMP "${SDL2_ttf_LIBRARY_TEMP}" CACHE INTERNAL "")
+	SET(SDL2_ttf_FOUND "YES")
+ENDIF(SDL2_ttf_LIBRARY_TEMP)
 
 INCLUDE(FindPackageHandleStandardArgs)
 
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2_TTF REQUIRED_VARS SDL2_TTF_LIBRARY SDL2_TTF_INCLUDE_DIR)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2_ttf REQUIRED_VARS SDL2_ttf_LIBRARY SDL2_ttf_INCLUDE_DIR)
 
