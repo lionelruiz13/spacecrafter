@@ -332,7 +332,9 @@ void SphereGrid<T>::subdivise(int _nbSubdivision)
 	allDataCenter.clear();
 	angleLvl.clear();
 	allDataCenter.reserve(20 * pow(4, _nbSubdivision)); // This container mustn't need to reallocate memory
+	#ifndef NDEBUG
 	void *ptr = allDataCenter.data(); // There must be no reallocation
+	#endif
 	nbSubdivision = _nbSubdivision;
 	for (auto &value: dataCenter) {
 		value.clear();

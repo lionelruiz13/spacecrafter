@@ -240,7 +240,7 @@ if (diff & HAT_BIT(flag)) { \
 void JoypadController::handleJoyHat(const SDL_JoyHatEvent &E) noexcept
 {
 	joy_button_action *hat_action = (mode ? hatAltActions : hatActions);
-	Uint8 value;
+	Uint8 value = 0;
 
 	switch (E.value) {
 		case SDL_HAT_CENTERED:

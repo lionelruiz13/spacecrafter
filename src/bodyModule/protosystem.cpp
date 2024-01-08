@@ -545,8 +545,8 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 	std::unique_ptr<Orbit> orb;
 	bool close_orbit = Utility::strToBool(param["close_orbit"], 1);
 	bool bound_to_surface = false;
-	float parentSideralDay;
-	float parentOffset;
+	float parentSideralDay = 1;
+	float parentOffset = 0;
 	// default value of -1 means unused
 	double orbit_bounding_radius = Utility::strToDouble(param["orbit_bounding_radius"], -1);
 	if (funcname=="earth_custom") {
