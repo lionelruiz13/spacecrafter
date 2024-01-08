@@ -409,7 +409,7 @@ void App::finalizeInitVulkan(InitParser &conf)
 	if (conf.getBoolean(SCS_MAIN, SCK_LOW_MEMORY))
 		context.globalBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 64*1024*1024, "global BufferMgr");
 	else
-		context.globalBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 128*1024*1024, "global BufferMgr");
+		context.globalBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 256*1024*1024, "global BufferMgr");
 	context.tinyMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "tiny BufferMgr");
 	context.ojmBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 128*1024*1024, "OJM BufferMgr");
 	context.ojmVertexArray = std::make_unique<VertexArray>(vkmgr, context.ojmAlignment);
