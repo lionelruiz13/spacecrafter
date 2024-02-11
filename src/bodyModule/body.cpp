@@ -963,12 +963,13 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
     // Compute the distance to the observer
     distance = eye_planet.length();
 
-    const float halfFov = prj->getFov() * (M_PI / 360);
+    // Object visibility detection algorithm
+    const double halfFov = prj->getFov() * (M_PI / 360);
     if (distance > radius) {
-        angularSize = atanf(radius / sqrt(distance*distance - radius*radius));
-        const float tmp = halfFov + angularSize;
-        angularSize *= 2;
-        isVisible = (tmp > M_PI) ? true : (-eye_planet[2] >= cos(tmp) * distance);
+        long double tmp = atan2(radius, sqrt(eye_planet.lengthSquared() - radius*radius));
+        angularSize = tmp * 2;
+        tmp += halfFov;
+        isVisible = (tmp > M_PI) ? true : (-eye_planet[2] / distance >= cos(tmp) - 1e6);
     } else {
         angularSize = M_PI;
         isVisible = true;
