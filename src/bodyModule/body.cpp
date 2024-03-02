@@ -969,7 +969,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
         long double tmp = atan2(radius, sqrt(eye_planet.lengthSquared() - radius*radius));
         angularSize = tmp * 2;
         tmp += halfFov;
-        isVisible = (tmp > M_PI) ? true : (-eye_planet[2] / distance >= cos(tmp) - 1e6);
+        isVisible = (tmp > M_PI) ? true : (-eye_planet[2] / distance >= cos(tmp) - 1e-6);
     } else {
         angularSize = M_PI;
         isVisible = true;
