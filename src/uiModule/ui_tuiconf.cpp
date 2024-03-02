@@ -71,6 +71,7 @@ void UI::drawGravityUi(MODULE module)
 			   << " Lon: " << Utility::printAngleDMS(lonmodulo*3.1415926/180);
 			if (coreLink->observatoryGetAltitude()>1000) {
 				switch (module) {
+					case IN_SANDBOX:
 					case SOLAR_SYSTEM:
 						os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << " km";
 						break;

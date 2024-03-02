@@ -242,7 +242,7 @@ private:
 
 	bool FlagEnableTuiMenu;
 	bool FlagShowGravityUi;
-	bool FlagShowTuiMenu;
+	bool FlagShowTuiMenu = false;
 	bool FlagShowTuiDateTime;
 	bool FlagShowTuiShortObjInfo;
 
@@ -258,7 +258,7 @@ private:
 
 	////////////////////////////////////////////////////////////////////////////
 	// Text UI components
-	s_tui::Branch* tui_root;
+	s_tui::Branch* tui_root = nullptr;
 
 	// Menu branches
 	s_tui::MenuBranch* tui_menu_location;
@@ -389,9 +389,9 @@ private:
 	Vec3f text_ui; 									// Color info text
 	Vec3f text_tui_root; 							// Color menu text
 
-	uint8_t key_Modifier;
+	uint8_t key_Modifier = 0x00;
 
-	double KeyTimeLeft;  							// for shift timeout (seconds)
+	double KeyTimeLeft=0;  							// for shift timeout (seconds)
 
 	enum class DeltaSpeed: char {NO, UP, DOWN} deltaSpeed;	//!< variation of the time acceleration via the joystick
 

@@ -65,14 +65,9 @@ std::string default_landscape = "";
 std::string current_landscape = "";
 
 UI::UI(std::shared_ptr<Core> _core, CoreLink * _coreLink, App * _app, SDLFacade *_m_sdl, std::shared_ptr<Media> _media) :
-	tuiFont(nullptr),
-	FlagShowTuiMenu(0),
-	tui_root(nullptr),
-	key_Modifier(NONE) ,
-	KeyTimeLeft(0) ,
-	deltaSpeed(DeltaSpeed::NO),
 	posMouse(_m_sdl->getDisplayWidth()/2 , _m_sdl->getDisplayHeight()/2),
-	nposMouse(VulkanMgr::instance->screenToRect(posMouse))
+	nposMouse(VulkanMgr::instance->screenToRect(posMouse)),
+	deltaSpeed(DeltaSpeed::NO)
 {
 	if (!_core) {
 		cLog::get()->write("UI.CPP CRITICAL : In stel_ui constructor, invalid core.",LOG_TYPE::L_ERROR);

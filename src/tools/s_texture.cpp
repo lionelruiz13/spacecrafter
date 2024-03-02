@@ -466,16 +466,16 @@ bool s_texture::load(stbi_uc *data, int realWidth, int realHeight)
 
 void s_texture::getDimensions(int &width, int &height) const
 {
-    while (texture->height < 0)
-        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
+	while (texture->height < 0)
+		std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
 	width = texture->width;
 	height = texture->height;
 }
 
 void s_texture::getDimensions(int &width, int &height, int &depth) const
 {
-    while (texture->height < 0)
-        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
+	while (texture->height < 0)
+		std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
 	width = texture->width;
 	height = texture->height;
 	depth = texture->depth;
