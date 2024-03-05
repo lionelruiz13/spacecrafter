@@ -754,15 +754,16 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 					std::ostringstream oss;
 					float tickl = 4.0;
 
-					double res;
-					if (i<18*(nb_segment/36)) res = 180-(i+1)/((nb_segment/36.0))*10;
-					if (i>18*(nb_segment/36)) res = 540-(i+1)/((nb_segment/36.0))*10;
+					double res = (i <= 18*(nb_segment/36)) ? 180 : 540;
+					res -= (i+1)/((nb_segment/36.0))*10;
 					if ((i+1)%((nb_segment/36)*2) == 0) {
 						oss << res << "°";
 						tickl = 4.0;
 					} else if ((i+2-5)%((nb_segment/36)*2) == 0) {
 						tickl = 2.0;
-					} else tickl = 1.0;
+					} else {
+						tickl = 1.0;
+					}
 
 					Mat4f MVP = prj->getMatProjectionOrtho2D();
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );

@@ -42,10 +42,6 @@ Cardinals::Cardinals(float _radius) : radius(_radius)
 	color.set(0.6,0.2,0.2);
 	// Default labels - if sky locale specified, loaded later
 	// Improvement for gettext translation
-	sNorth = "N";
-	sSouth = "S";
-	sEast = "E";
-	sWest = "W";
 }
 
 Cardinals::~Cardinals()
