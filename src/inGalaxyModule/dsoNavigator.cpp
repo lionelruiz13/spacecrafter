@@ -117,8 +117,14 @@ void DsoNavigator::overrideCurrent(const std::string& tex_file, const std::strin
 
     instanced = true;
     auto &context = *Context::instance;
-    texture = std::make_unique<s_texture>(tex3d_file, TEX_LOAD_TYPE_PNG_SOLID, true, 0, depth, 1, 2, true);
-    colorTexture = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_SOLID);
+    if (!(texture && *texture == tex3d_file)) {
+        texture.reset();
+        texture = std::make_unique<s_texture>(tex3d_file, TEX_LOAD_TYPE_PNG_SOLID, true, 0, depth, 1, 2, true);
+    }
+    if (!(colorTexture && *colorTexture == tex_file)) {
+        colorTexture.reset();
+        colorTexture = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_SOLID);
+    }
     float maxLod = texture->getTexture().getMipmapCount() - 1;
     pipeline->setSpecializedConstantOf("obj3D.frag.spv", 0, &maxLod, sizeof(maxLod));
     int width, height;

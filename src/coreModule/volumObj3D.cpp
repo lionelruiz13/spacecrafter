@@ -199,11 +199,17 @@ void VolumObj3D::reconstruct(const std::string& tex_color_file, const std::strin
             int tmpPos = tex_absorbtion_file.find_last_of('d', tmpSize) + 1;
             absorbtionDepth = std::stoi(tex_absorbtion_file.substr(tmpPos, tmpSize - tmpPos));
         }
-        mapTexture = std::make_unique<s_texture>(tex_absorbtion_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, absorbtionDepth, 1, 1, false, true);
+        if (!(mapTexture && *mapTexture == tex_absorbtion_file)) {
+            mapTexture.reset();
+            mapTexture = std::make_unique<s_texture>(tex_absorbtion_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, absorbtionDepth, 1, 1, false, true);
+        }
         mapTexture->getDimensions(size, size);
         isLoaded = (size >= 8);
     }
-    colorTexture = std::make_unique<s_texture>(tex_color_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, colorDepth, 4, 1, false, true, colorDepthColumn);
+    if (!(colorTexture && *colorTexture == tex_color_file)) {
+        colorTexture.reset();
+        colorTexture = std::make_unique<s_texture>(tex_color_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, colorDepth, 4, 1, false, true, colorDepthColumn);
+    }
     colorTexture->getDimensions(size, size);
     if (size < 8)
         isLoaded = false;
