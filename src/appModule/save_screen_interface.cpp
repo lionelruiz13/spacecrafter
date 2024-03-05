@@ -221,7 +221,7 @@ void SaveScreenInterface::write_png_image(const std::string &file, int idx)
         }
     }
     // fill image with color
-    for (unsigned int y = height - 1; y >= 0 && y < height; y--)
+    for (unsigned int y = height - 1; y < height; y--)
     {
         for (unsigned int x = 0; x < width*4; x+=4)
         {

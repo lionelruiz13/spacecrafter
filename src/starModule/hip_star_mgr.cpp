@@ -1215,7 +1215,7 @@ double HipStarMgr::durationToJulianDay(std::string duration) const
 	double day = 0;
 	std::string tmp;
 	for (int i = 0; duration[i] != '\0'; i++){
-		if ((duration[i] <= 57 && duration[i] >= 48) || duration[i] == '.'){
+		if ((duration[i] <= '9' && duration[i] >= '0') || duration[i] == '.'){
 			tmp += duration[i];
 			continue;
 		}
@@ -1228,6 +1228,7 @@ double HipStarMgr::durationToJulianDay(std::string duration) const
 				break;
 			case 'm':
 				minute = std::stod(tmp);
+				break;
 			case 's':
 				seconde = std::stod(tmp);
 				break;
