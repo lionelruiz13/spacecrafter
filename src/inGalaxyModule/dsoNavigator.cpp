@@ -104,14 +104,7 @@ DsoNavigator::~DsoNavigator() {}
 
 void DsoNavigator::overrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth)
 {
-    if (volum3D)
-        volum3D->drop();
-    texture.reset();
-    colorTexture.reset();
-    dsoData.clear();
-    dsoPos.clear();
-    set.reset();
-    instanceCount = 0; // Ensure rebuild will occur
+    drop();
     if (tex_file.empty())
         return;
 
@@ -161,6 +154,16 @@ void DsoNavigator::build()
     vkCmdBindIndexBuffer(cmd, index.buffer, index.offset, VK_INDEX_TYPE_UINT16);
     vkCmdDrawIndexed(cmd, 3*2*6, instanceCount, 0, 0, 0);
     context.frame[context.frameIdx]->compile(cmd);
+}
+
+void DsoNavigator::drop()
+{
+    if (volum3D)
+        volum3D->drop();
+    dsoData.clear();
+    dsoPos.clear();
+    set.reset();
+    instanceCount = 0;
 }
 
 //! Sort dso in depth-first order, linear in time when already sorted

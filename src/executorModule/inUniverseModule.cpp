@@ -50,6 +50,7 @@ void InUniverseModule::onEnter()
 	core->setFlagIngalaxy(MODULE::IN_UNIVERSE);
     std::cout << "->InUniverse" << std::endl;
 	//set altitude in CoreExecutorInUniverse when enter
+	core->dsoNav->drop();
 	observer->setAltitude(minAltToGoDown);
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
 	EventRecorder::getInstance()->queue(event);
@@ -62,6 +63,7 @@ void InUniverseModule::onExit()
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
 	EventRecorder::getInstance()->queue(event);
 	std::cout << "InUniverse->" << std::endl;
+	core->dsoNav->drop();
 }
 
 void InUniverseModule::update(int delta_time)
@@ -100,6 +102,7 @@ void InUniverseModule::draw(int delta_time)
 {
 	core->applyClippingPlanes(0.0001, 10);
 	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]);
+	core->dsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 	// core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
@@ -117,7 +120,9 @@ void InUniverseModule::draw(int delta_time)
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
 	core->starGalaxy->draw(core->navigation, core->projection);
-	if (core->selected_object && core->object_pointer_visibility) core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
+	if (core->selected_object && core->object_pointer_visibility)
+		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
+	core->dsoNav->draw(core->navigation, core->projection);
 	//core->postDraw();
 }
 
