@@ -640,8 +640,21 @@ s_texture::bigTexRecap *s_texture::acquireBigTexture()
             default:
                 formatIdx = nbChannels + 4 * channelSize - 5;
         }
-		bigTextures.push_back({1, (unsigned short) width, (unsigned short) height, nullptr, textureName, 3, formatIdx, -1, false, true});
-        bt = &bigTextures.back();
+        if (droppedBigTextures.size() > 2 && !droppedBigTextures.front().texture) {
+            bigTextures.splice(bigTextures.end(), droppedBigTextures, droppedBigTextures.rbegin());
+            bt = &bigTextures.back();
+            bt->width = width;
+            bt->height = height;
+            bt->texName = textureName;
+            bt->lifetime = 3;
+            bt->formatIdx = formatIdx;
+            bt->quickLoader = -1;
+            bt->ready = false;
+    		bt->acquired = true;
+        } else {
+            bigTextures.push_back({1, (unsigned short) width, (unsigned short) height, nullptr, textureName, 3, formatIdx, -1, false, true});
+            bt = &bigTextures.back();
+        }
 		texture->bigTextureBinding = 1;
         if (texture->quickloadable)
             preQuickLoadCache(bt);
