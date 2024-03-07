@@ -36,6 +36,7 @@
 #include "tools/context.hpp"
 #include "tools/draw_helper.hpp"
 #include "coreModule/volumObj3D.hpp"
+#include "inGalaxyModule/dsoNavigator.hpp"
 
 InUniverseModule::InUniverseModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer)
 {

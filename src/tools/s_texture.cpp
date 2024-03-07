@@ -641,7 +641,7 @@ s_texture::bigTexRecap *s_texture::acquireBigTexture()
                 formatIdx = nbChannels + 4 * channelSize - 5;
         }
         if (droppedBigTextures.size() > 2 && !droppedBigTextures.front().texture) {
-            bigTextures.splice(bigTextures.end(), droppedBigTextures, droppedBigTextures.rbegin());
+            bigTextures.splice(bigTextures.end(), droppedBigTextures, droppedBigTextures.begin());
             bt = &bigTextures.back();
             bt->width = width;
             bt->height = height;
