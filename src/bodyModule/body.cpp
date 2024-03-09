@@ -940,16 +940,17 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 
     eye_planet = mat.getTranslation();
 
-	lightDirection = eye_sun - eye_planet;
+    lightDirection = eye_sun - eye_planet;
     sun_half_angle = atan(696000.0/AU/lightDirection.length());  // hard coded Sun radius!
     for (p = parent.get(); p; p = p->getParent()) {
         if (p->getBodyType() == SUN) {
             eye_sun = (nav->getHelioToEyeMat() * p->mat_local_to_parent).getTranslation();
-            sun_half_angle = atan(p->radius/AU/lightDirection.length());
+            lightDirection = eye_sun - eye_planet;
+            float sun_radius = p->radius;
+            sun_half_angle = atan2(sun_radius, sqrt(lightDirection.lengthSquared() - sun_radius*sun_radius));
             break;
         }
     }
-
 	lightDirection.normalize();
 
 	// Do not draw anything else if was not visible

@@ -35,56 +35,55 @@ layout (location=4) in vec3 TangentLight;
 layout (location=5) in vec3 Light;
 
 void main(void)
-{ 
+{
 	vec3 umbra = vec3(0.0, 0.0, 0.0);
 	vec4 color = texture(mapTexture, TexCoord);
 	vec3 light_b = normalize(TangentLight);
-	vec3 normal_b = 2.0 * vec3(texture(normalTexture, TexCoord)) - vec3(1.0); 
+	vec3 normal_b = 2.0 * vec3(texture(normalTexture, TexCoord)) - vec3(1.0);
 	float diffuse = max(dot(normal_b, light_b), 0.0);
 	float shadowScale = 1.0;
-	if(diffuse != 0.0) { 
-		vec3 moon; 
+	if(diffuse != 0.0) {
+		vec3 moon;
 		float moonHalfAngle;
-		vec2 ratio; 
+		vec2 ratio;
 		float distance;
-		vec3 lookup;
+		float lookup;
 		if(MoonRadius1 != 0.0) {
 			moon = MoonPosition1 - Position;
-			moonHalfAngle = atan( MoonRadius1/ length(moon) ); 
+			moonHalfAngle = atan(MoonRadius1/length(moon));
 			distance = acos(dot(Light, normalize(moon)));
-			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
-			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
-			lookup = vec3(texture(shadowTexture, ratio)); 
-			shadowScale = shadowScale * lookup.r;
+			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0);
+			ratio.x = distance/(moonHalfAngle + SunHalfAngle);
+			shadowScale = texture(shadowTexture, ratio).r;
 			umbra = UmbraColor;
 		}
-		if(MoonRadius2 != 0.0) { 
+		if(MoonRadius2 != 0.0) {
 			moon = MoonPosition2 - Position;
-			moonHalfAngle = atan( MoonRadius2/ length(moon) ); 
-			distance = acos(dot(Light, normalize(moon))); 
-			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
-			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
-			lookup = vec3(texture(shadowTexture, ratio)).rgb; 
-			diffuse = diffuse * lookup.r; 
-		} 
-		if(MoonRadius3 != 0.0) { 
+			moonHalfAngle = atan(MoonRadius2/length(moon));
+			distance = acos(dot(Light, normalize(moon)));
+			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0);
+			ratio.x = distance/(moonHalfAngle + SunHalfAngle);
+			lookup = texture(shadowTexture, ratio).r;
+			diffuse = diffuse * lookup;
+		}
+		if(MoonRadius3 != 0.0) {
 			moon = MoonPosition3 - Position;
-			moonHalfAngle = atan( MoonRadius3/ length(moon) ); 
-			distance = acos(dot(Light, normalize(moon))); 
-			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
-			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
-			lookup = vec3(texture(shadowTexture, ratio)).rbg; 
-			diffuse = diffuse * lookup.r; 
-		} 
-		if(MoonRadius4 != 0.0) { 
+			moonHalfAngle = atan(MoonRadius3/length(moon));
+			distance = acos(dot(Light, normalize(moon)));
+			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0);
+			ratio.x = distance/(moonHalfAngle + SunHalfAngle);
+			lookup = texture(shadowTexture, ratio).r;
+			diffuse = diffuse * lookup;
+		}
+		if(MoonRadius4 != 0.0) {
 			moon = MoonPosition4 - Position;
-			moonHalfAngle = atan( MoonRadius4/ length(moon) ); 
-			distance = acos(dot(Light, normalize(moon))); 
-			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
-			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
-			lookup = vec3(texture(shadowTexture, ratio)).rgb; 
-			diffuse = diffuse * lookup.r; 
-		} 
+			moonHalfAngle = atan(MoonRadius4/length(moon));
+			distance = acos(dot(Light, normalize(moon)));
+			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0);
+			ratio.x = distance/(moonHalfAngle + SunHalfAngle);
+			lookup = texture(shadowTexture, ratio).r;
+			diffuse = diffuse * lookup;
+		}
 	}
 	FragColor = vec4(color.rgb*min(diffuse*(shadowScale+umbra*max(0.0,1.0-shadowScale))+Ambient,1.0), color.a);
 }
