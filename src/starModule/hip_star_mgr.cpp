@@ -1252,7 +1252,7 @@ int HipStarMgr::checkVariableStar(TimeMgr* timeMgr, int hip, double refJDay, dou
 	if (period == -1 || lowPeriod == -1 || downPeriod == -1 || upPeriod == -1)
 		return -1;
 	double result = current_JDay - refJDay;
-	result -= static_cast<int>(result / period) * period;
+	result -= abs(static_cast<int>(result / period)) * period;
 	double mag = checkRatio(hip, true);
 
 	if (result > period - lowPeriod/2 || result < lowPeriod/2){
