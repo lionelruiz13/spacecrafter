@@ -73,6 +73,7 @@ endif()
 ########### Find packages ###########
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+if(UNIX)
 # search for pkg-config
 include (FindPkgConfig)
 if (NOT PKG_CONFIG_FOUND)
@@ -88,6 +89,8 @@ else ()
     link_directories (${LIBPNG_LIBRARY_DIRS})
     link_libraries (${LIBPNG_LIBRARIES})
 endif ()
+
+endif()
 
 FIND_PACKAGE(Vulkan REQUIRED)
 

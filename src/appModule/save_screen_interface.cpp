@@ -171,12 +171,13 @@ void SaveScreenInterface::writeScreenshot(const std::string &fileName, int idx)
 	saveScreen->saveScreenBuffer(fileName, idx);
 }
 
+#ifndef WIN32
 void SaveScreenInterface::write_png_image(const std::string &file, int idx)
 {
 	int length = file.length();
 	char *filename = new char[length + 1];
 	strcpy(filename, file.c_str());
-	png_byte** row_pointers; // pointer to image bytes
+    png_byte** row_pointers; // pointer to image bytes
     FILE* fp; // file for image
 	unsigned char *src = static_cast<unsigned char *>(pBuffers[idx]) + 4 * minWH * (minWH - 1);
 
@@ -340,6 +341,7 @@ void SaveScreenInterface::write_png_image(const std::string &file, int idx)
         free(row_pointers);
     }
 }
+#endif
 
 //! Return the next sequential screenshot filename to use
 std::string SaveScreenInterface::getNextScreenshotFilename()
@@ -368,8 +370,10 @@ void SaveScreenInterface::update()
 	} else{
 		if (imageCompressionLoss)
 			writeScreenshot(fileNameNextScreenshot, bufferIdx);
+		#ifdef WIN32
 		else
 			write_png_image(fileNameNextScreenshot, bufferIdx);
+		#endif
 	}
 	shouldCapture = false;
 }
@@ -381,8 +385,10 @@ void SaveScreenInterface::mainloop()
 	while (pendingIdx.pop(args)) {
 		if (imageCompressionLoss)
 			writeScreenshot(args.first, args.second);
+		#ifdef WIN32
 		else
 			write_png_image(args.first, args.second);
+		#endif
 	}
 	pendingIdx.release();
 }
