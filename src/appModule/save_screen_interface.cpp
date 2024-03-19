@@ -370,7 +370,7 @@ void SaveScreenInterface::update()
 	} else{
 		if (imageCompressionLoss)
 			writeScreenshot(fileNameNextScreenshot, bufferIdx);
-		#ifdef WIN32
+		#ifndef WIN32
 		else
 			write_png_image(fileNameNextScreenshot, bufferIdx);
 		#endif
@@ -385,7 +385,7 @@ void SaveScreenInterface::mainloop()
 	while (pendingIdx.pop(args)) {
 		if (imageCompressionLoss)
 			writeScreenshot(args.first, args.second);
-		#ifdef WIN32
+		#ifndef WIN32
 		else
 			write_png_image(args.first, args.second);
 		#endif

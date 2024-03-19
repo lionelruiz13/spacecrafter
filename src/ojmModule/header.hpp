@@ -2,7 +2,11 @@
 #define OJM_HEADER_HPP_
 
 struct OjmHeader {
+#ifdef WIN32
+    int64_t sourceTimestamp; // Last modification time of the source file
+#else
     ssize_t sourceTimestamp; // Last modification time of the source file
+#endif
     float radius; // Radius of the ojm before normalization
     uint16_t nbShapes; // Number of shapes in this OJM
     bool poorlyCentered;

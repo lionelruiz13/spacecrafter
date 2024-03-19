@@ -70,7 +70,7 @@ bool ObjL::init(const std::string &repertory, const std::string &_name)
 			cLog::get()->write("Could not find medium and/or high resoultion file object " + _name, LOG_TYPE::L_ERROR);
 			return false;
 		}
-	} else if (!((CallSystem::fileExist(nameL)) && (CallSystem::fileExist(nameM)) && (CallSystem::fileExist(nameH)))) {
+	} else if (!((std::filesystem::exists(nameL)) && (std::filesystem::exists(nameM)) && (std::filesystem::exists(nameH)))) {
 		cLog::get()->write("Could not find file object " + _name, LOG_TYPE::L_ERROR);
 		return false;
 	}

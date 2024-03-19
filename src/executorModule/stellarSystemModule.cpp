@@ -102,13 +102,13 @@ void StellarSystemModule::update(int delta_time)
 	core->timeMgr->update(delta_time);
 	core->navigation->update(delta_time);
 
-    if (core->selected_object != NULL && core->observatory->getAltitude() <= 7.91706e+08){
+    if (core->selected_object && core->observatory->getAltitude() <= 7.91706e+08){
         int hip = core->hip_stars->getHPFromStarName(core->selected_object.getNameI18n());
         if (hip != -1)
             core->starNav->hideStar(hip);
     }
 
-    if (core->selected_object != NULL && core->observatory->getAltitude() >= 7.91706e+08){
+    if (core->selected_object && core->observatory->getAltitude() >= 7.91706e+08){
         int hip = 0;
         hip = core->hip_stars->getHPFromStarName(core->selected_object.getNameI18n());
         if (hip != -1){
