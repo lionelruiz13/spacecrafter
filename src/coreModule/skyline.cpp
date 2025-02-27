@@ -1232,7 +1232,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 					tmp = TRANSFO * Vec4f(9.0,0.0,0.0,1.0);
 					vecDrawPos.push_back( tmp[0] );
 					vecDrawPos.push_back( tmp[1] );
-				} else if ((i==6)|| (i==11) || (i==16) || (i==21) || (i==26)
+				} else if ((i==6) || (i==11) || (i==16) || (i==21) || (i==26)
 				           || (i==37) || (i==42) || (i==47) || (i==52) || (i==57)
 				           || (i==65) || (i==70) || (i==75) || (i==80) || (i==85)
 				           || (i==96) || (i==101) || (i==106) || (i==111) || (i==116)

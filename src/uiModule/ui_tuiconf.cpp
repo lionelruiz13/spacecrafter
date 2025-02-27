@@ -77,10 +77,10 @@ void UI::drawGravityUi(MODULE module)
 				switch (module) {
 					case IN_SANDBOX:
 					case SOLAR_SYSTEM:
-						os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << " km Speed: " << trunc(dist * app->getFpsClock() / 3E8) << " c/s";
+						os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << " km Speed: " << trunc(dist * app->getFpsClock() / 3E7)/10 << " c";
 						break;
 					case STELLAR_SYSTEM:
-						os << " Alt: " << coreLink->observatoryGetAltitude() << " km Speed: " << dist * trunc(app->getFpsClock() / 3E5) << " c/s";
+						os << " Alt: " << coreLink->observatoryGetAltitude() << " km Speed: " << dist * trunc(app->getFpsClock() / 3E4)/10 << " c";
 						break;
 					case IN_UNIVERSE:
 					  os << " Alt: " << 3.44e-5 * coreLink->observatoryGetAltitude() << " l.y. Speed: " << trunc(3.44e-5 * dist * app->getFpsClock()) << " ly/s";
