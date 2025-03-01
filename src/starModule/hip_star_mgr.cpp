@@ -124,7 +124,6 @@ void HipStarMgr::readColorTable ()
 			HipStarMgr::color_table[i] = v3fNull;
 		}
 	}
-	readFileVariableStar();
 }
 
 void HipStarMgr::setColorStarTable(int p, Vec3f a)
@@ -414,6 +413,7 @@ void HipStarMgr::init(const InitParser &conf)
 {
 	load_data(conf);
 	InitColorTableFromConfigFile(conf);
+	readFileVariableStar();
 	// Load star texture no mipmap:
 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
 	m_setStars->bindTexture(starTexture->getTexture(), 0);
