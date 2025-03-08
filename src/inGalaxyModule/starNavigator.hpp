@@ -51,7 +51,7 @@ class Pipeline;
 class PipelineLayout;
 class Set;
 class s_texture;
-struct starInfo;
+struct StarInfo;
 class StarManager;
 
 typedef std::tuple<double, double, const std::string , const Vec4f > starDBtoDraw;
@@ -171,7 +171,7 @@ public:
 		needComputeRCMagTable = true;
 	}
 
-	starInfo* getStarInfo(unsigned int HIPName) const;
+	StarInfo* getStarInfo(unsigned int HIPName) const;
 
 	static std::string getStarName(unsigned int HIPName);
 
@@ -221,7 +221,7 @@ private:
 	//precalculation of the color table
 	void computeRCMagTable();
 	//list of stars to display from the StarManager
-	std::vector<starInfo*> listGlobalStarVisible;
+	std::vector<StarInfo*> listGlobalStarVisible;
 	// size of the listGlobalStarVisible
 	unsigned int maxStars;
 	int nbStars;

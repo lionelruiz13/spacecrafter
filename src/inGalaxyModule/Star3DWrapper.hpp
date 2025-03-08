@@ -29,7 +29,7 @@
 
 class Star3DWrapper : public ObjectBase {
 public:
-    Star3DWrapper(starInfo *star, Vec3f pos) : star(star), pos(pos) {}
+    Star3DWrapper(StarInfo *star, Vec3f pos) : star(star), pos(pos) {}
     virtual ~Star3DWrapper() = default;
 
     virtual void retain() override {
@@ -88,6 +88,6 @@ public:
 private:
     int refCount = 0;
     // observer's position in parsec
-    starInfo *star;
+    StarInfo *star;
 	Vec3f pos;
 };

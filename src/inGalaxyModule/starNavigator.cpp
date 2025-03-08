@@ -216,7 +216,7 @@ void StarNavigator::clearBuffer()
 	starVec = (float *) Context::instance->transfer->beginPlanCopy(maxStars * 7 * sizeof(float));
 }
 
-starInfo* StarNavigator::getStarInfo(unsigned int HIPName) const {
+StarInfo* StarNavigator::getStarInfo(unsigned int HIPName) const {
 	return starMgr->findStar(HIPName);
 }
 
@@ -230,27 +230,10 @@ std::string StarNavigator::getStarName(unsigned int HIPName) {
 
 void StarNavigator::setListGlobalStarVisible()
 {
-	std::vector<HyperCube*> hcList = starMgr->getHyperCubeList();
-	std::vector<HyperCube*> hcGlobalVisible;
-	std::vector<Cube*> cubeGlobalVisible;
-	std::vector<HyperCube*> hcVisible;
-	std::vector<Cube*> cubeVisible;
-
-	for(std::vector<HyperCube*>::iterator i = hcList.begin(); i != hcList.end(); ++i) {
-		HyperCube *hc = *i;
-
-		hcGlobalVisible.push_back(hc);
-		std::vector<Cube*> cubeList = hc->getCubeList();
-
-		for(std::vector<Cube*>::iterator j = cubeList.begin(); j != cubeList.end(); ++j) {
-			Cube *c = *j;
-
-			cubeGlobalVisible.push_back(c);
-			std::vector<starInfo*> stars = c->getStarList();
-
-			for(std::vector<starInfo*>::iterator k = stars.begin(); k != stars.end(); ++k) {
-				starInfo *si = *k;
-				listGlobalStarVisible.push_back(si);
+	for (HyperCube &hc : starMgr->getHyperCubeList()) {
+		for (Cube &cube : hc) {
+			for (StarInfo &star : cube) {
+				listGlobalStarVisible.push_back(&star);
 			}
 		}
 	}
@@ -506,7 +489,7 @@ bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
 	float intensite;
 
 	for(unsigned int i = first; i != last; ++i) {
-		starInfo *si = listGlobalStarVisible[i];
+		StarInfo *si = listGlobalStarVisible[i];
 
 		float x = -si->posXYZ[0];
 		float y = si->posXYZ[1];
@@ -653,18 +636,18 @@ void StarNavigator::drawRaw(const Mat4f &matrix) const noexcept
 
 void StarNavigator::hideStar(unsigned int hip)
 {
-	if (starInfo *si = getStarInfo(hip))
+	if (StarInfo *si = getStarInfo(hip))
 		si->show = false;
 }
 
 void StarNavigator::showStar(unsigned int hip)
 {
-	if (starInfo *si = getStarInfo(hip))
+	if (StarInfo *si = getStarInfo(hip))
 		si->show = true;
 }
 
 void StarNavigator::showAllStar()
 {
-	for(starInfo *si : listGlobalStarVisible)
+	for(StarInfo *si : listGlobalStarVisible)
 		si->show = true;
 }
