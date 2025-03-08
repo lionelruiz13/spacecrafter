@@ -187,7 +187,6 @@ void IlluminateMgr::removeAll()
 {
 	illuminateGrid.clear();
 	hip_stars->showAllStar();
-	hip_stars->removeAllVariableStar();
 }
 
 // Draw all the Illuminate
