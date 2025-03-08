@@ -1356,6 +1356,10 @@ void HipStarMgr::readFileVariableStar()
 		if (record[0] == '#')
 			continue;
 		std::istringstream istr(record);
+		if (!(istr >> hip >> refJDay >> period >> lowPeriod >> downPeriod >> upPeriod >> magMin)) {
+			cLog::get()->write("VariableStar error parsing "+record, LOG_TYPE::L_ERROR);
+			return;
+		}
 		VariableStar star{
 			.hip=hip,
 			.magMax=getBaseMag(hip),
@@ -1366,10 +1370,6 @@ void HipStarMgr::readFileVariableStar()
 			.upPeriod=durationToJulianDay(upPeriod),
 			.magMin=magMin,
 		};
-		if (!(istr >> hip >> refJDay >> period >> lowPeriod >> downPeriod >> upPeriod >> magMin)) {
-			cLog::get()->write("VariableStar error parsing "+record, LOG_TYPE::L_ERROR);
-			return;
-		}
 		if (star.period == -1
 		 || star.halfLowPeriod == -0.5
 		 || star.downPeriod == -1
