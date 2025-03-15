@@ -32,6 +32,7 @@
 
 #include <vector>
 #include "tools/vecmath.hpp"
+#include <cstdint>
 //#include "tools/ia.hpp"
 
 //! \struct StarInfo
