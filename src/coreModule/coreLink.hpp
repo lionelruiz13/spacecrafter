@@ -938,6 +938,8 @@ public:
 		core->updateList.remove(arg);
 	}
 
+	//! Whether App thing HipStarMgr is in use or not
+	bool isDrawingHipStarMgr;
 	static CoreLink *instance;
 private:
     std::shared_ptr<Core> core;

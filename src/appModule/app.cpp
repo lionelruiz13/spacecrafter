@@ -956,6 +956,7 @@ void App::startMainLoop()
 
 void App::switchMode(const std::string setValue) {
 		executor->switchMode(setValue);
+		coreLink->isDrawingHipStarMgr = (executor->getExecutorModule() == SOLAR_SYSTEM);
 }
 
 void App::submitFrame(App *self, int id)

@@ -705,11 +705,13 @@ void CoreLink::starNavigatorSave(const std::string &fileName, bool binaryMode){
 }
 
 void CoreLink::starNavigatorHideStar(int hip){
-	core->starNav->hideStar(hip);
+	if (!isDrawingHipStarMgr)
+		core->starNav->hideStar(hip);
 }
 
 void CoreLink::starNavigatorShowStar(int hip){
-	core->starNav->showStar(hip);
+	if (!isDrawingHipStarMgr)
+		core->starNav->showStar(hip);
 }
 
 void CoreLink::starNavigatorShowAllStar(){
