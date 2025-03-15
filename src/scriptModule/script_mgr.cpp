@@ -79,21 +79,22 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 bool ScriptMgr::addScriptFirst(const std::string & script)
 {
 	std::vector <Token*> commands;
-	Token *token=nullptr;
 	std::istringstream iss(script);
 	std::string line;
 
 	//get the tokens into a vector
 	while (getline(iss, line)){
 		// transformation of the beginning of character strings by deleting spaces and tabs at the beginning of the string
-		while (line[0]==' ' || line[0]=='\t') {
-	        line.erase(0,1);
-			//std::cout << str << std::endl;
-		}
-		// consideration of lines
-		if ( line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n') {
-			token = new Token(line, getScriptPath());
-			commands.push_back(token);
+		auto pos = line.find_first_not_of(" \t");
+		if (pos == std::string::npos)
+			continue;
+		switch (line[pos]) { // consideration of lines
+			case '#':
+			case '\r':
+			case '\n':
+				break;
+			default:
+				commands.push_back(new Token((pos == 0) ? line : line.substr(pos), getScriptPath()));
 		}
 	}
 	//add the tokens to the queue in reverse order (since we add to the begining of the queue
@@ -123,7 +124,8 @@ void ScriptMgr::cancelScript()
 
 void ScriptMgr::pauseScript()
 {
-	if (scriptState==ScriptState::NONE)	return;
+	if (scriptState==ScriptState::NONE)
+		return;
 	scriptState=ScriptState::PAUSE;
 	media->audioMusicPause();
 	commander->executeCommand("timerate action pause");
@@ -132,7 +134,8 @@ void ScriptMgr::pauseScript()
 
 void ScriptMgr::resumeScript()
 {
-	if (scriptState==ScriptState::NONE)	return;
+	if (scriptState==ScriptState::NONE)
+		return;
 	scriptState=ScriptState::PLAY;
 
 	media->audioMusicResume();
@@ -278,7 +281,8 @@ void ScriptMgr::acquireGlobalLock()
 // runs maximum of one command per update note that waits can drift by up to 1/fps seconds
 void ScriptMgr::update(int delta_time)
 {
-	if (sR.recording) sR.record_elapsed_time += delta_time;
+	if (sR.recording)
+		sR.record_elapsed_time += delta_time;
 
 	/**	isVideoPlayed && waitOnVideo :
 	 * case of video is playing and scriptMgr should wait on it :
