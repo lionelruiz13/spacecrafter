@@ -295,6 +295,10 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_MINIMAL					"minimal"
 #define W_LANDING					"landing"
 #define W_VIDEO						"video"
+#define W_LOCK						"lock"
+#define W_ACQUIRE					"acquire"
+#define W_RELEASE					"release"
+#define W_GLOBAL					"global"
 
 // name of the arguments maps appCommandInit
 //CommandsNames

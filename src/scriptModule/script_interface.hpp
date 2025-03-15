@@ -92,6 +92,8 @@ public:
 
 	void setIsVideoPlayed(bool b) const;
 
+    void acquireGlobalLock();
+    void releaseGlobalLock();
 private:
     std::shared_ptr<ScriptMgr> scriptMgr;
 

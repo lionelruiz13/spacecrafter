@@ -2357,6 +2357,14 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 			scriptInterface->slowerSpeed();
 		} else if (argAction==W_DEFAULT) {
 			scriptInterface->defaultSpeed();
+		} else if (argAction==W_ACQUIRE) {
+			if (args[W_LOCK] == W_GLOBAL) {
+				scriptInterface->acquireGlobalLock();
+			}
+		} else if (argAction==W_RELEASE) {
+			if (args[W_LOCK] == W_GLOBAL) {
+				scriptInterface->releaseGlobalLock();
+			}
 		} else
 			debug_message = "command_script : unknown parameter from 'action' argument";
 		return executeCommandStatus();

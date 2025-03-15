@@ -140,3 +140,11 @@ void ScriptInterface::setIsVideoPlayed(bool b) const {
 void ScriptInterface::setWaitOnVideoTermination(bool b) const {
     scriptMgr->setWaitOnVideoTermination(b);
 }
+
+void ScriptInterface::acquireGlobalLock() {
+    scriptMgr->acquireGlobalLock();
+}
+
+void ScriptInterface::releaseGlobalLock() {
+    scriptMgr->releaseGlobalLock();
+}

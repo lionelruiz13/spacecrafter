@@ -39,6 +39,7 @@
 #include "tools/app_settings.hpp"
 #include "tools/call_system.hpp"
 #include "coreModule/coreLink.hpp"
+#include <chrono>
 
 
 ScriptMgr::ScriptMgr(std::shared_ptr<AppCommandInterface> command_interface,const std::string &_data_dir, std::shared_ptr<Media> _media )
@@ -117,6 +118,7 @@ void ScriptMgr::cancelScript()
 	isInLoop = false;
 	repeatLoop = false;
 	waitOnVideo = false;
+	global_lock_count = 0;
 }
 
 void ScriptMgr::pauseScript()
@@ -265,6 +267,14 @@ void ScriptMgr::resetScriptLoop()
 	repeatLoop = false;
 }
 
+void ScriptMgr::acquireGlobalLock()
+{
+	if (++global_lock_count == 0) {
+		cLog::get()->write("ScriptMgr::acquireGlobalLock - Can't simultaneously acquire more than 255 locks - one script is leaking a lock !", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+		global_lock_count = UINT8_MAX;
+	}
+}
+
 // runs maximum of one command per update note that waits can drift by up to 1/fps seconds
 void ScriptMgr::update(int delta_time)
 {
@@ -281,6 +291,8 @@ void ScriptMgr::update(int delta_time)
 				return;
 			wait_time = 0;
 		}
+
+		auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(400);
 
 		while (wait_time==0) {
 			std::string comd;
@@ -317,6 +329,8 @@ void ScriptMgr::update(int delta_time)
 				commander->terminateScript();
 				return;
 			}
+			if (global_lock_count == 0 && deadline < std::chrono::steady_clock::now())
+				break;
 		}
 	}
 }
