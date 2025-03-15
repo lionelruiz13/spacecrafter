@@ -33,6 +33,42 @@
 #include <cstdlib>
 #include <cstring>
 
+static inline StarInfo StarInfo_create(unsigned int hip, float ra, float de, float plx, float pmRa, float pmDe, float mag, float bv)
+{
+	StarInfo ret;
+	// conversion in x,y,z coordinates
+	// we decide to modify the minimal Plx and to fix it at 0.2 which makes a star at worst at 16000 al
+	double parsec = 1000.0 / ((plx >PLX_MIN) ? plx : (PLX_MIN+0.01* (rand()%10)));
+	ret.posXYZ[0] = parsec * cos( pmRa ) * cos( pmDe );
+	ret.posXYZ[1] = parsec * sin ( pmDe );
+	ret.posXYZ[2] = parsec * sin ( pmRa ) * cos( pmDe );
+
+	//patch Lionel Ruiz to conform to the OpenGL benchmark
+	ret.posXYZ[0] = -ret.posXYZ[0];
+	ret.posXYZ[1] = -ret.posXYZ[1];
+
+	ret.HIP = hip;
+	ret.pmRA = pmRa;
+	ret.pmDE = pmDe;
+	ret.pc = parsec;
+	ret.mag = mag-5*(log10(parsec)-1);
+	int b_v = (bv+0.5)/4.*127.;
+	ret.show = true;
+
+	if (b_v < 0) {
+		ret.B_V = 0;
+		// cout << ret.HIP << " " << si ->B_V << endl;
+		cLog::get()->write("Star B_V to 0 with hip "+ std::to_string(ret.HIP), LOG_TYPE::L_WARNING);
+	} else if (b_v > 127) {
+		ret.B_V = 127;
+		// cout << ret.HIP << " " << si ->B_V << endl;
+		cLog::get()->write("Star B_V to 127 with hip "+ std::to_string(ret.HIP), LOG_TYPE::L_WARNING);
+	} else {
+		ret.B_V = static_cast<uint8_t>(b_v);
+	}
+	return ret;
+}
+
 /**
  * The inputs and outputs of the binary files are of the form
  *
@@ -731,43 +767,6 @@ bool StarManager::loadStarRaw(const std::string &catPath)
 		cLog::get()->write("StarManager, unable to open star cat", LOG_TYPE::L_ERROR);
 		return false;
 	}
-}
-
-
-StarInfo StarInfo_create(unsigned int hip, float ra, float de, float plx, float pmRa, float pmDe, float mag, float bv)
-{
-	StarInfo ret;
-	// conversion in x,y,z coordinates
-	// we decide to modify the minimal Plx and to fix it at 0.2 which makes a star at worst at 16000 al
-	double parsec = 1000.0 / ((plx >PLX_MIN) ? plx : (PLX_MIN+0.01* (rand()%10)));
-	ret.posXYZ[0] = parsec * cos( pmRa ) * cos( pmDe );
-	ret.posXYZ[1] = parsec * sin ( pmDe );
-	ret.posXYZ[2] = parsec * sin ( pmRa ) * cos( pmDe );
-
-	//patch Lionel Ruiz to conform to the OpenGL benchmark
-	ret.posXYZ[0] = -ret.posXYZ[0];
-	ret.posXYZ[1] = -ret.posXYZ[1];
-
-	ret.HIP = hip;
-	ret.pmRA = pmRa;
-	ret.pmDE = pmDe;
-	ret.pc = parsec;
-	ret.mag = mag-5*(log10(parsec)-1);
-	int b_v = (bv+0.5)/4.*127.;
-	ret.show = true;
-
-	if (b_v < 0) {
-		ret.B_V = 0;
-		// cout << ret.HIP << " " << si ->B_V << endl;
-		cLog::get()->write("Star B_V to 0 with hip "+ std::to_string(ret.HIP), LOG_TYPE::L_WARNING);
-	} else if (b_v > 127) {
-		ret.B_V = 127;
-		// cout << ret.HIP << " " << si ->B_V << endl;
-		cLog::get()->write("Star B_V to 127 with hip "+ std::to_string(ret.HIP), LOG_TYPE::L_WARNING);
-	} else {
-		ret.B_V = static_cast<uint8_t>(b_v);
-	}
-	return ret;
 }
 
 int StarManager::getNbrCubes()

@@ -1251,20 +1251,25 @@ void HipStarMgr::addVariableStar(VariableStar &&star)
 {
 	if (variableStars.size() >= 0x7f) {
 		cLog::get()->write("VariableStar error, limit of 127 variable stars reached", LOG_TYPE::L_ERROR);
-
+		return;
 	}
-	hip_index[star.hip].s->setVariableStarIndex(variableStars.size());
-	variableStars.push_back(std::move(star));
+	if (int index = hip_index[star.hip].s->getVariableStarIndex()) {
+		cLog::get()->write("Variable star " + std::to_string(star.hip) + " redeclared - Only the last redeclaration is taken into account", LOG_TYPE::L_WARNING);
+		variableStars[index] = std::move(star);
+	} else {
+		hip_index[star.hip].s->setVariableStarIndex(variableStars.size());
+		variableStars.push_back(std::move(star));
+	}
 }
 
 void HipStarMgr::removeVariableStar(uint32_t hip)
 {
 	if (int idx = hip_index[hip].s->getVariableStarIndex()) {
 		hip_index[hip].s->setVariableStarIndex(0);
-		if (variableStars.size() == idx+1) {
+		if (variableStars.size() == static_cast<size_t>(idx)+1ULL) {
 			variableStars.pop_back();
 		} else {
-			cLog::get()->write("VariableStar::removeVariableStar not fully implemented yet", LOG_TYPE::L_WARNING);
+			cLog::get()->write("VariableStar::removeVariableStar not fully implemented yet - Only the last variable star can be removed", LOG_TYPE::L_WARNING);
 		}
 	}
 }
@@ -1365,10 +1370,10 @@ void HipStarMgr::readFileVariableStar()
 			.magMax=getBaseMag(hip),
 			.refJDay=refJDay,
 			.period=durationToJulianDay(period),
-			.halfLowPeriod=durationToJulianDay(lowPeriod) / 2,
-			.downPeriod=durationToJulianDay(downPeriod),
-			.upPeriod=durationToJulianDay(upPeriod),
-			.magMin=magMin,
+			.halfLowPeriod=static_cast<float>(durationToJulianDay(lowPeriod) / 2),
+			.downPeriod=static_cast<float>(durationToJulianDay(downPeriod)),
+			.upPeriod=static_cast<float>(durationToJulianDay(upPeriod)),
+			.magMin=static_cast<float>(magMin),
 		};
 		if (star.period == -1
 		 || star.halfLowPeriod == -0.5

@@ -48,8 +48,6 @@ struct StarInfo {
 	bool show;
 };
 
-static StarInfo StarInfo_create(unsigned int hip, float ra, float de, float plx, float pmRa, float pmDe, float mag, float bv);
-
 // GPU need posXYZ, mag, B_V (COMPACT = 4 float, 1 int)
 // CPU need HIP
 
