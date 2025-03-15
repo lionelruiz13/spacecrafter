@@ -205,6 +205,7 @@ private:
 	int frameIdxSwap = 0;
 	uint8_t codecDecodeThreads = 0;
 	bool firstUse = true; // Tell if this texture is new and uninitialized yet
+	bool skipFrame = false; // Tell if frame could be skipped when playing a video
 	void mainloop();
 	// Stop video thread and drop every pending frames
 	void threadTerminate();

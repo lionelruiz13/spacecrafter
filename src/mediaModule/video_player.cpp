@@ -35,6 +35,7 @@ VideoPlayer::VideoPlayer(Media* _media, InitParser &conf)
 	m_isVideoPlayed = false;
 	m_isVideoInPause = false;
 	m_isVideoSeeking = false;
+	skipFrame = conf.getBoolean(SCS_IO, SCK_VIDEO_FRAME_SKIP);
 	img_convert_ctx = NULL;
 	std::string videoPlayerCodecThreadConfig = conf.getStr(SCS_IO, SCK_VIDEO_CODEC_THREADS);
 	if (videoPlayerCodecThreadConfig.empty()) {
@@ -452,7 +453,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 			if (canDeliverFrame(now)) {
 				nextFrame += deltaFrame;
 				int frameIdx = frameUsed % MAX_CACHED_FRAMES;
-				if ((lastFrame + deltaFrame * 2 < now) && (frameCached - frameUsed > (CACHE_STRESS + MAX_CACHE_SPEEDUP))) {
+				if (skipFrame && (lastFrame + deltaFrame * 2 < now) && (frameCached - frameUsed > (CACHE_STRESS + MAX_CACHE_SPEEDUP))) {
 					nextFrame += deltaFrame;
 					lastFrame += deltaFrame;
 					++frameIdx;
