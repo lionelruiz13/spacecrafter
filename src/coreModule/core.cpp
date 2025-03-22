@@ -2013,3 +2013,9 @@ void Core::lookAnchor(const std::string &name, double duration)
 	// 	navigation->moveTo(ssystemFactory->, duration);
 	// }
 }
+
+void Core::setPredictibleRendering(bool enable, int framerate)
+{
+	predictibleRendering = enable;
+	media->setRenderFramerate(framerate);
+}

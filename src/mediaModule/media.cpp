@@ -143,13 +143,15 @@ void Media::audioVolume(const AudioVolume& volumeOrder, float _value)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
+bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload)
 {
+	player->setAdaptiveFramerate(true);
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+filename, LOG_TYPE::L_DEBUG);
-	if (player->playNewVideo(filename) ==false) {
+	if (player->playNewVideo(filename, preload) ==false) {
 		cLog::get()->write("Media::playerPlay error playing videofilename "+filename, LOG_TYPE::L_ERROR);
 		return false;
 	}
+	preloading=preload;
 
 	m_videoState.state=V_STATE::V_PLAY;
 
@@ -204,15 +206,17 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 	return true;
 }
 
-bool Media::playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
+bool Media::playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload)
 {
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+videoname, LOG_TYPE::L_DEBUG);
-	bool tmp = playerPlay(type, videoname, _name, _position, tmpProject);
+	bool tmp = playerPlay(type, videoname, _name, _position, tmpProject, preload);
 	if (tmp && !audioname.empty()) {
 		audioNotInVideo = false;
 		audioMusicHalt();
 		audioMusicLoad(audioname, false);
-		audioMusicPlay();
+		player->setAdaptiveFramerate(false);
+		if (!preload)
+			audioMusicPlay();
 		cLog::get()->write("Media::playerPlay trying to play audiofilename "+audioname, LOG_TYPE::L_DEBUG);
 		return true;
 	} else
@@ -285,6 +289,19 @@ void Media::playerInvertflow()
 	else {
 		audio->musicResume();
 		audio->musicJump(realDelta);
+	}
+}
+
+void Media::interruptUntilVideoCacheFull()
+{
+	playerPause();
+	resumeWhenCacheFull=true;
+}
+
+void Media::resyncAudio(float displacement)
+{
+	if (!audioNotInVideo) {
+		audio->musicJump(displacement);
 	}
 }
 

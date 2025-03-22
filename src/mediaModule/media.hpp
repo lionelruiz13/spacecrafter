@@ -366,6 +366,10 @@ public:
 
 	void playerUpdate() {
 		player->update();
+		if (resumeWhenCacheFull && player->isVideoCacheFull()) {
+			playerPause();
+			resumeWhenCacheFull = false;
+		}
 	}
 
 	void playerPause() {
@@ -373,7 +377,7 @@ public:
 		audio->musicPause();
 	}
 
-	bool playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
+	bool playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload);
 
 	void playerStop(bool newVideo);
 
@@ -397,8 +401,16 @@ public:
 	void playerRecordUpdateDependency(VkCommandBuffer cmd) {
 		player->recordUpdateDependency(cmd);
 	}
+
+	void setRenderFramerate(int framerate) {
+		player->setRenderFramerate(framerate);
+	}
+
+	void interruptUntilVideoCacheFull();
+
+	void resyncAudio(float displacement);
 private:
-	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
+	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload);
 
 	std::unique_ptr<Audio> audio = nullptr;
 	std::unique_ptr<ImageMgr> imageMgr = nullptr;
@@ -414,6 +426,8 @@ private:
 	bool audioNoPause=false;
 	bool loop=false;
 	bool dualViewport=false;
+	bool preloading=false;
+	bool resumeWhenCacheFull=false;
 
 	std::string imageVideoName;
 	bool audioNotInVideo;

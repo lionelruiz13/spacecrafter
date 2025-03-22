@@ -938,6 +938,15 @@ public:
 		core->updateList.remove(arg);
 	}
 
+	//! Whether the rendered frame must be predictible (at the expense of framerate) or not
+	inline bool predictibleRendering() const {
+		return core->predictibleRendering;
+	}
+
+	inline void setPredictibleRendering(bool enable, int framerate) {
+		core->setPredictibleRendering(enable, framerate);
+	}
+
 	//! Whether App thing HipStarMgr is in use or not
 	bool isDrawingHipStarMgr;
 	static CoreLink *instance;

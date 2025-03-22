@@ -479,6 +479,8 @@ public:
 
 	// Update tickable elements
 	void update(int delta_time);
+
+	void setPredictibleRendering(bool enable, int framerate);
 private:
 	struct ViewZoomMove {
 		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
@@ -593,6 +595,7 @@ private:
 	bool FlagManualZoom;				// Define whether auto zoom can go further
 	bool firstTime= true;               // For init to track if reload or first time setup
 	bool flagEnableTransition = true;
+	bool predictibleRendering = false;  // Whether the rendered frames must be strictly reproductible (ex : recording sequence) or not (ex : realtime use)
 	ViewZoomMove vzm;					// var for ViewZoomMove
 	float InitFov;						// Default viewing FOV
 	Vec3d InitViewPos;					// Default viewing direction

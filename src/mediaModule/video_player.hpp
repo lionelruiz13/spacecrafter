@@ -49,10 +49,12 @@ class InitParser;
 #define MAX_CACHED_FRAMES 80
 // Minimal number of cached frames below which frames will be delivered with some latency
 #define CACHE_STRESS 16
-// Maximal number of cached frames over CACHE_STRESS after which the frame delivery stop accelerating
-#define MAX_CACHE_SPEEDUP 1
-// Speed factor determining how fast we resync the video with the audio. Higher is faster, lower is smoother unless cache is empty.
-#define VIDEO_BOOST_FACTOR 1.0
+// Maximal speed at which the video is played when there is more than CACHE_STRESS cached frames and the video stream is behind
+#define MAX_VIDEO_SPEED 1.5
+// Minimal speed at which the video is played when below CACHE_STRESS
+#define MIN_VIDEO_SPEED 0.6
+
+constexpr double SPEED_INCREMENT_PER_CACHED_FRAME = (1 - MIN_VIDEO_SPEED) / CACHE_STRESS;
 
 enum class DecodePolicy {
 	ASYNC, // Asynchronously decode using a single thread
@@ -88,7 +90,11 @@ public:
 	void update();
 
 	//! initializes the ffmpeg with the name of the file passed in argument
-	bool playNewVideo(const std::string& fileName, DecodePolicy policy = DecodePolicy::ASYNC);
+	bool playNewVideo(const std::string& fileName, bool paused = false, DecodePolicy policy = DecodePolicy::ASYNC);
+
+	void setRenderFramerate(int framerate) {
+		renderDeltaFrame = std::chrono::steady_clock::duration(std::chrono::steady_clock::period::den / (std::chrono::steady_clock::period::num * framerate));
+	}
 
 	//! ends the playback of a video in progress
 	void stopCurrentVideo(bool newVideo);
@@ -113,7 +119,7 @@ public:
 	}
 
 	bool isVideoCacheFull() const {
-		return (frameCached - frameUsed >= (MAX_CACHED_FRAMES-1)) || !decoding;
+		return (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= (MAX_CACHED_FRAMES-1)) || !decoding;
 	}
 
 	//! Returns the ID of the YUV textures in the GPU representing the frame read from the video file
@@ -125,24 +131,10 @@ public:
 	void recordUpdate(VkCommandBuffer cmd);
 	//! Record event synchronization which can't be performed inside the renderPass
 	void recordUpdateDependency(VkCommandBuffer cmd);
-private:
-	// This function determine if it is time to deliver a frame or not
-	inline bool canDeliverFrame(const std::chrono::steady_clock::time_point &now) {
-		int cacheDelta = CACHE_STRESS - (frameCached - frameUsed);
-		if (cacheDelta < -MAX_CACHE_SPEEDUP) {
-			cacheDelta = -MAX_CACHE_SPEEDUP;
-			cv.notify_one();
-		} else if (!decoding) {
-			cacheDelta = 0;
-		}
-		const std::chrono::steady_clock::duration deltaTime(static_cast<intmax_t>(deltaFrame.count() * (1 + (nextFrame + deltaFrame * cacheDelta - now).count() * (VIDEO_BOOST_FACTOR / std::chrono::steady_clock::period::den))));
-		if (lastFrame + deltaTime > now)
-			return false;
-		lastFrame += deltaTime;
-		if (lastFrame < nextFrame)
-			lastFrame = nextFrame;
-		return true;
+	void setAdaptiveFramerate(bool enable) {
+		adaptiveFramerate = enable;
 	}
+private:
 	// returns the new video frame and converts it in the CG memory.
 	void getNextVideoFrame();
 	// retrieves the new video frame before conversion
@@ -168,14 +160,16 @@ private:
 	bool m_isVideoSeeking;	//!< indicates if a frame is being skipped
 
 	//time management
-	std::chrono::steady_clock::time_point nextFrame; // Time from which the next frame is needed
-	std::chrono::steady_clock::time_point lastFrame; // Time at which the last frame have been delivered
+	std::chrono::steady_clock::time_point nextFrame; // Time at which the next video frame should be rendered
+	std::chrono::steady_clock::time_point currentTime; // Time at which the last frame was rendered, regardless of the video frame used
 
 	//frameRate management
 	int64_t currentFrame;	//!< number of the current frame
 	int64_t nbTotalFrame;	//!< number of frames in the video
 	double frameRate;
+	std::chrono::steady_clock::duration latency; // Time behind the video which need to be reclaimed
 	std::chrono::steady_clock::duration deltaFrame; // Time between two frames
+	std::chrono::steady_clock::duration renderDeltaFrame; // Time between two rendered frames
 
 	//performance query
 	std::chrono::steady_clock::time_point sTime;
@@ -206,6 +200,7 @@ private:
 	uint8_t codecDecodeThreads = 0;
 	bool firstUse = true; // Tell if this texture is new and uninitialized yet
 	bool skipFrame = false; // Tell if frame could be skipped when playing a video
+	bool adaptiveFramerate = false;
 	void mainloop();
 	// Stop video thread and drop every pending frames
 	void threadTerminate();

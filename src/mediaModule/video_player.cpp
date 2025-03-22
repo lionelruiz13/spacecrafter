@@ -74,12 +74,15 @@ void VideoPlayer::createTextures()
 
 void VideoPlayer::pauseCurrentVideo()
 {
-	if (m_isVideoInPause==false) {
+	if (m_isVideoInPause) {
+		m_isVideoInPause = false;
+		currentTime = std::chrono::steady_clock::now();
+		nextFrame = currentTime + deltaFrame;
+		media->resyncAudio(std::chrono::duration_cast<std::chrono::duration<double>>(deltaFrame-latency).count());
+		latency = -deltaFrame;
+	} else {
 		m_isVideoInPause = true;
 		nextFrame += std::chrono::hours(24);
-	} else {
-		m_isVideoInPause = false;
-		nextFrame = std::chrono::steady_clock::now();
 	}
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PAUSE);
@@ -118,7 +121,7 @@ bool VideoPlayer::restartCurrentVideo()
 }
 
 
-bool VideoPlayer::playNewVideo(const std::string& _fileName, DecodePolicy policy)
+bool VideoPlayer::playNewVideo(const std::string& _fileName, bool paused, DecodePolicy policy)
 {
 	if (m_isVideoPlayed)
 		stopCurrentVideo(true);
@@ -218,6 +221,7 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, DecodePolicy policy
 	frameUsed = 0;
 	m_isVideoPlayed = true;
 	threadPlay();
+	m_isVideoInPause = paused;
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
 	EventRecorder::getInstance()->queue(event);
@@ -295,7 +299,7 @@ void VideoPlayer::getNextVideoFrame()
 				dst += widths[i];
 			}
 		}
-		++frameCached;
+		frameCached.fetch_add(1, std::memory_order_release);
 		sWrite += std::chrono::steady_clock::now() - sTime;
 	}
 }
@@ -447,23 +451,43 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		videoTexture.sync->syncOut->placeBarrier(cmd);
 		Context::instance->waitFrameSync[1].stageMask |= VK_PIPELINE_STAGE_2_COPY_BIT_KHR;
 	}
-	auto now = std::chrono::steady_clock::now();
-	if (nextFrame <= now) {
-		if (frameUsed != frameCached) {
-			if (canDeliverFrame(now)) {
-				nextFrame += deltaFrame;
-				int frameIdx = frameUsed % MAX_CACHED_FRAMES;
-				if (skipFrame && (lastFrame + deltaFrame * 2 < now) && (frameCached - frameUsed > (CACHE_STRESS + MAX_CACHE_SPEEDUP))) {
-					nextFrame += deltaFrame;
-					lastFrame += deltaFrame;
-					++frameIdx;
-					currentFrame += 2;
-					frameUsed += 2;
-					cLog::get()->write("Skip one video frame", LOG_TYPE::L_DEBUG);
-				} else {
+	if (m_isVideoInPause) {
+		if (CoreLink::instance->predictibleRendering()) {
+			currentTime += renderDeltaFrame;
+			latency += renderDeltaFrame;
+			while (decoding && frameUsed.load(std::memory_order_relaxed) == frameCached.load(std::memory_order_relaxed))
+				std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		} else {
+			auto now = std::chrono::steady_clock::now();
+			latency += now - currentTime;
+			currentTime = now;
+		}
+		if (nextFrame <= currentTime) {
+			if (auto nbFrames = frameCached.load(std::memory_order_acquire) - frameUsed.load(std::memory_order_relaxed)) {
+				uint32_t frameIdx;
+				do { // Determine how many frames to load
 					++currentFrame;
-					++frameUsed;
-				}
+					frameIdx = frameUsed.fetch_add(1, std::memory_order_relaxed);
+					latency -= deltaFrame;
+					if (adaptiveFramerate) {
+						if (--nbFrames) {
+							if (nbFrames < CACHE_STRESS || latency.count() > 0) {
+								nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(
+									deltaFrame.count() * std::min(MIN_VIDEO_SPEED + nbFrames * SPEED_INCREMENT_PER_CACHED_FRAME, MAX_VIDEO_SPEED)
+								));
+							} else {
+								nextFrame += deltaFrame;
+							}
+						} else {
+							nextFrame = currentTime + deltaFrame;
+						}
+					} else {
+						nextFrame += deltaFrame;
+						break;
+					}
+				} while (nextFrame <= currentTime && skipFrame);
+				cv.notify_all();
+				frameIdx %= MAX_CACHED_FRAMES;
 				VkBufferImageCopy region;
 				region.bufferRowLength = region.bufferImageHeight = 0;
 				region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
@@ -475,13 +499,15 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 					region.imageExtent.height = heights[i];
 					vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 				}
-			}
-		} else if (m_isVideoPlayed && !decoding) {
-			if (media->getLoop()) {
-				media->playerRestart();
+			} else if (m_isVideoPlayed && !decoding) {
+				if (media->getLoop()) {
+					media->playerRestart();
+				} else {
+					cLog::get()->write("end of file");
+					stopCurrentVideo(false);
+				}
 			} else {
-				cLog::get()->write("end of file");
-				stopCurrentVideo(false);
+				media->interruptUntilVideoCacheFull();
 			}
 		}
 	}
@@ -502,7 +528,7 @@ void VideoPlayer::mainloop()
 	std::unique_lock<std::mutex> ulock(mtx);
 	while (decoding) {
 		getNextVideoFrame();
-		while (frameCached - frameUsed >= (MAX_CACHED_FRAMES-1) && decoding)
+		while (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= (MAX_CACHED_FRAMES-1) && decoding)
 			cv.wait(ulock);
 	}
 }
@@ -532,8 +558,9 @@ void VideoPlayer::threadInterrupt()
 
 void VideoPlayer::threadPlay()
 {
-	nextFrame = std::chrono::steady_clock::now();
-	lastFrame = nextFrame - deltaFrame * 2;
+	currentTime = std::chrono::steady_clock::now();
+	nextFrame = currentTime + deltaFrame;
+	latency = -deltaFrame;
 	this->getNextVideoFrame(); // The first valid frame must be ready
 	if (decoding) {
 		mtx.unlock();
