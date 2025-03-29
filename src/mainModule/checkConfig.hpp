@@ -43,6 +43,7 @@ private:
 	void insertKeyFromTmpSettings(const std::string& nameSection);
 
 	void checkMainSettings();
+	void checkDebugSettings();
 	void checkIoSettings();
 	void checkVideoSettings();
 	void checkRenderingSettings();
@@ -59,7 +60,7 @@ private:
 	void checkLocationSettings();
 
 	void checkMigration2020();
-	
+
     InitParser user_conf;
     std::list<std::string> sectionSettings;
 	std::list<std::string> sectionKeySettings;

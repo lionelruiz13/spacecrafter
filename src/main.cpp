@@ -256,11 +256,11 @@ int main(int argc, const char *argv[])
 	AppSettings* ini = AppSettings::Instance();
 	ini->loadAppSettings( &conf );
 
-	Log->setDebug(conf.getBoolean(SCS_MAIN, SCK_DEBUG));
-	Log->setWriteLog(conf.getBoolean(SCS_MAIN, SCK_LOG));
+	Log->setDebug(conf.getBoolean(SCS_MAIN, SCK_PRINT_LOG));
+	Log->setWriteLog(conf.getBoolean(SCS_DEBUG, SCK_WRITE_LOG));
 
 	std::unique_ptr<CPUInfo> cpuInfo =  nullptr;
-	if (conf.getBoolean(SCS_MAIN,SCK_CPU_INFO)) {
+	if (conf.getBoolean(SCS_DEBUG,SCK_CPU_INFO)) {
 		cpuInfo = std::make_unique<CPUInfo>();
 		cpuInfo -> init(ini->getLogDir()+"CPUlog.csv",ini->getLogDir()+"GPUlog.csv");
 		cpuInfo -> start();
@@ -314,8 +314,8 @@ int main(int argc, const char *argv[])
 		.redirectLog=cLog::writeECLog, .cachePath=ini->getUserDir()+"cache/", .logPath=appDir+"log/",
 		.swapchainUsage = (renderSize <= 0) ? VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT,
 		.chunkSize=256, .forceSwapchainCount=3,
-		.enableDebugLayers=conf.getBoolean(SCS_MAIN, SCK_DEBUG_LAYER), .drawLogs=conf.getBoolean(SCS_MAIN, SCK_DEBUG),
-		.saveLogs=conf.getBoolean(SCS_MAIN, SCK_LOG), .preserveCrashLogs = true,
+		.enableDebugLayers=conf.getBoolean(SCS_DEBUG, SCK_DEBUG_LAYER), .drawLogs=conf.getBoolean(SCS_DEBUG, SCK_PRINT_LOG),
+		.saveLogs=conf.getBoolean(SCS_DEBUG, SCK_WRITE_LOG), .preserveCrashLogs = true,
 		.preferIntegrated=false, .allowOverrides=true, .customReleaseMemory=&s_texture::releaseUnusedMemory
 	};
 	vkmgrInfo.requiredFeatures.features.geometryShader = VK_TRUE;

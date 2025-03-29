@@ -41,19 +41,14 @@ CheckConfig::~CheckConfig()
 
 void CheckConfig::checkMainSettings()
 {
-	tmpSettings[SCK_DEBUG]="false";
-	tmpSettings[SCK_DEBUG_LAYER]="false";
 	tmpSettings[SCK_TEX_CACHE]="false";
 	tmpSettings[SCK_TEXTURE_LOADING]="legacy";
 	tmpSettings[SCK_LOW_MEMORY]="false";
-	tmpSettings[SCK_STATISTICS]="false";
 	tmpSettings[SCK_BUILDER_THREADS]="3";
-	tmpSettings[SCK_LOG]="true";
 	// mainSettings["debug_opengl"]="false";
 	tmpSettings[SCK_MILKYWAY_IRIS] = "false";
 	// tmpSettings[SCK_FLAG_OPTOMA]="false";
 	// mainSettings["script_debug"]="false";
-	tmpSettings[SCK_CPU_INFO]="false";
 	tmpSettings[SCK_FLAG_ALWAYS_VISIBLE]="true";
 
 	sectionSettings.push_back(SCS_MAIN);
@@ -61,6 +56,23 @@ void CheckConfig::checkMainSettings()
 	tmpSettings.clear();
 }
 
+
+void CheckConfig::checkDebugSettings()
+{
+	tmpSettings[SCK_CPU_INFO]="false";
+	tmpSettings[SCK_DEBUG_LAYER]="false";
+	tmpSettings[SCK_STATISTICS]="false";
+	tmpSettings[SCK_WRITE_LOG]="true";
+	tmpSettings[SCK_PRINT_VIDEO_INFO]="false";
+	tmpSettings[SCK_PRINT_LOG]="true";
+	tmpSettings[SCK_FLUSH_FRAMES]="false";
+	// ioSettings["mplayer_name"]="/usr/bin/mplayer";
+	// ioSettings["mplayer_mkfifo_name"]="/tmp/mplayer_mkfifo_name.fifo";
+
+	sectionSettings.push_back(SCS_DEBUG);
+	insertKeyFromTmpSettings(SCS_DEBUG);
+	tmpSettings.clear();
+}
 
 void CheckConfig::checkIoSettings()
 {
@@ -113,7 +125,6 @@ void CheckConfig::checkRenderingSettings()
 	tmpSettings[SCK_LOW_RES_MAX]="1024";
 	tmpSettings[SCK_ANTIALIASING]="8";
 	tmpSettings[SCK_LINE_WIDTH]="1.5";
-	tmpSettings[SCK_FLUSH_FRAMES]="false";
 	tmpSettings[SCK_ANISOTROPY]="8";
 	tmpSettings[SCK_LANDSCAPE_SLICES]="80";
 	tmpSettings[SCK_LANDSCAPE_STACKS]="20";
@@ -471,6 +482,7 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 	tmpSettings.clear();
 
 	checkMainSettings();
+	checkDebugSettings();
 	checkIoSettings();
 	checkVideoSettings();
 	checkRenderingSettings();

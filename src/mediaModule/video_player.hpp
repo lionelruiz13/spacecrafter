@@ -134,6 +134,10 @@ public:
 	void setAdaptiveFramerate(bool enable) {
 		adaptiveFramerate = enable;
 	}
+
+	static unsigned char *tracer_frameCache(void *data, unsigned char *buffer);
+	static unsigned char *tracer_atomic_bool(void *data, unsigned char *buffer);
+	static unsigned char *tracer_duration(void *data, unsigned char *buffer);
 private:
 	// returns the new video frame and converts it in the CG memory.
 	void getNextVideoFrame();
@@ -201,6 +205,7 @@ private:
 	bool firstUse = true; // Tell if this texture is new and uninitialized yet
 	bool skipFrame = false; // Tell if frame could be skipped when playing a video
 	bool adaptiveFramerate = false;
+	bool debugMode = false;
 	void mainloop();
 	// Stop video thread and drop every pending frames
 	void threadTerminate();

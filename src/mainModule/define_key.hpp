@@ -28,6 +28,7 @@
 
 //SCS_X mean Spacecrafter Section X
 #define SCS_MAIN                             "main"
+#define SCS_DEBUG                            "debug"
 #define SCS_IO                               "io"
 #define SCS_VIDEO                            "video"
 #define SCS_RENDERING                        "rendering"
@@ -50,7 +51,9 @@
 #define SCK_TEX_CACHE                       "texture_caching"
 #define SCK_TEXTURE_LOADING                 "texture_loading"
 #define SCK_LOW_MEMORY                      "low_memory"
-#define SCK_LOG                             "write_log"
+#define SCK_WRITE_LOG                       "write_log"
+#define SCK_PRINT_LOG                       "print_log"
+#define SCK_PRINT_VIDEO_INFO                "print_videoplayer_state"
 #define SCK_MILKYWAY_IRIS                   "milkyway_iris"
 // #define SCK_FLAG_OPTOMA                     "flag_optoma"
 #define SCK_CPU_INFO                        "cpu_info"

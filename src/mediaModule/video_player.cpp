@@ -28,14 +28,37 @@
 #include "eventModule/EventVideo.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
+#include "EntityCore/Tools/Tracer.hpp"
+
+Tracer tracer{80, 24};
+
 
 VideoPlayer::VideoPlayer(Media* _media, InitParser &conf)
 {
+	tracer.emplace(Trace::CUSTOM, this, "cache", &VideoPlayer::tracer_frameCache);
+	tracer.emplace(Trace::CUSTOM, &decoding, "decoding", &VideoPlayer::tracer_atomic_bool);
+	tracer.emplace(Trace::CUSTOM, &latency, "latency", &VideoPlayer::tracer_duration);
+	tracer.emplace(Trace::ULONG, &currentFrame, "currentFrame");
+	tracer.emplace(Trace::ULONG, &nbTotalFrame, "nbFrames");
+	tracer.emplace(Trace::UCHAR, &m_isVideoPlayed, "played");
+	tracer.emplace(Trace::UCHAR, &m_isVideoInPause, "paused");
+	tracer.emplace(Trace::UCHAR, &m_isVideoSeeking, "seek");
+	tracer.emplace(Trace::UCHAR, &skipFrame, "canskip");
+	tracer.emplace(Trace::UCHAR, &adaptiveFramerate, "adaptive");
+	tracer.emplace(Trace::INT, &videoRes.w, "width");
+	tracer.emplace(Trace::INT, &videoRes.h, "height");
 	media = _media;
 	m_isVideoPlayed = false;
 	m_isVideoInPause = false;
 	m_isVideoSeeking = false;
 	skipFrame = conf.getBoolean(SCS_IO, SCK_VIDEO_FRAME_SKIP);
+	if (conf.getBoolean(SCS_DEBUG, SCK_PRINT_VIDEO_INFO)) {
+		if (conf.getBoolean(SCS_DEBUG, SCK_PRINT_LOG)) {
+			cLog::get()->write(SCK_PRINT_VIDEO_INFO " can't be enabled while " SCK_PRINT_LOG " is active.", LOG_TYPE::L_ERROR);
+		} else {
+			debugMode = true;
+		}
+	}
 	img_convert_ctx = NULL;
 	std::string videoPlayerCodecThreadConfig = conf.getStr(SCS_IO, SCK_VIDEO_CODEC_THREADS);
 	if (videoPlayerCodecThreadConfig.empty()) {
@@ -125,6 +148,8 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, bool paused, Decode
 {
 	if (m_isVideoPlayed)
 		stopCurrentVideo(true);
+	if (debugMode)
+		tracer.start();
 	std::ifstream fichier(_fileName.c_str());
 	if (!fichier.fail()) { // check if the video file exists
 		cLog::get()->write("Videoplayer: reading file "+ _fileName, LOG_TYPE::L_INFO);
@@ -312,6 +337,7 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 			thread.join();
 		return;
 	}
+	tracer.stop();
 
 	m_isVideoPlayed = false;
 	threadTerminate(); // Don't overlap av_* calls
@@ -569,4 +595,59 @@ void VideoPlayer::threadPlay()
 		decoding = true;
 		thread = std::thread(&VideoPlayer::mainloop, this);
 	}
+}
+
+
+//// Tracer facilities ////
+static void traceNbr(uint32_t value, unsigned char *&buffer) {
+	if (value > 9)
+		traceNbr(value / 10, buffer);
+	*(buffer++) = '0' + value % 10;
+}
+
+unsigned char *VideoPlayer::tracer_frameCache(void *data, unsigned char *buffer)
+{
+	uint32_t nbCached = reinterpret_cast<VideoPlayer*>(data)->frameCached.load(std::memory_order_relaxed) - reinterpret_cast<VideoPlayer*>(data)->frameUsed.load(std::memory_order_relaxed);
+	traceNbr(nbCached, buffer);
+	*(buffer++) = '/';
+	traceNbr(MAX_CACHED_FRAMES, buffer);
+	return buffer;
+}
+
+unsigned char *VideoPlayer::tracer_atomic_bool(void *data, unsigned char *buffer)
+{
+	if (reinterpret_cast<std::atomic<bool>*>(data)->load(std::memory_order_relaxed)) {
+		memcpy(buffer, "true", 4);
+		return buffer+4;
+	} else {
+		memcpy(buffer, "false", 5);
+		return buffer+5;
+	}
+}
+
+unsigned char *VideoPlayer::tracer_duration(void *data, unsigned char *buffer)
+{
+	int64_t time = std::chrono::duration_cast<std::chrono::milliseconds>(*reinterpret_cast<std::chrono::steady_clock::duration*>(data)).count();
+	memcpy(buffer, " 00m 00s 000ms", 14);
+	if (time < 0) {
+		*buffer = '-';
+		time = -time;
+	}
+	buffer += 11;
+	*buffer |= time % 10;
+	time /= 10;
+	*--buffer |= time % 10;
+	time /= 10;
+	*--buffer |= time % 10;
+	time /= 10;
+	buffer -= 3;
+	*buffer |= time % 10;
+	time /= 10;
+	*--buffer |= time % 6;
+	time /= 6;
+	buffer -= 3;
+	*buffer |= time % 10;
+	time /= 10;
+	*--buffer |= (time < 10) ? time : 15;
+	return buffer + 13;
 }

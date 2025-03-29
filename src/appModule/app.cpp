@@ -111,7 +111,7 @@ App::App( SDLFacade* const sdl )
 	context.isFloat64Supported = VulkanMgr::instance->getDeviceFeatures().features.shaderFloat64;
 
 	context.stat = std::make_unique<CaptureMetrics>(settings->getUserDir() + "log/statistics.dat", CAPTURE_FLAG_NAMES);
-	if (conf.getBoolean(SCS_MAIN, SCK_STATISTICS))
+	if (conf.getBoolean(SCS_DEBUG, SCK_STATISTICS))
 		context.stat->startCapture();
 
 	context.stat->capture(Capture::FRAME_START);
@@ -122,7 +122,7 @@ App::App( SDLFacade* const sdl )
 	appDraw = std::make_unique<AppDraw>();
 	appDraw->initSplash();
 	context.stat->capture(Capture::INIT_SPLASH);
-	flushFrames = conf.getBoolean(SCS_RENDERING, SCK_FLUSH_FRAMES);
+	flushFrames = conf.getBoolean(SCS_DEBUG, SCK_FLUSH_FRAMES);
 
 	finalizeInitVulkan(conf);
 	s_texture::loadCache(settings->getUserDir() + "cache/", conf.getBoolean(SCS_MAIN, SCK_TEX_CACHE));
@@ -188,7 +188,7 @@ App::App( SDLFacade* const sdl )
 
 	context.stat->capture(Capture::INIT_APPDRAW);
 	if (flushFrames)
-		cLog::get()->write("Performance issue : Frame flush is enabled", LOG_TYPE::L_WARNING);
+		cLog::get()->write("Performance issue : Frame flush is enabled -- Only enable this if you suspect a bug in the synchronization mechanism.", LOG_TYPE::L_WARNING);
 }
 
 App::~App()
