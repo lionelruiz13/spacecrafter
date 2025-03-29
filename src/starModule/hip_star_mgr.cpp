@@ -1255,7 +1255,7 @@ void HipStarMgr::addVariableStar(VariableStar &&star)
 	}
 	if (int index = hip_index[star.hip].s->getVariableStarIndex()) {
 		cLog::get()->write("Variable star " + std::to_string(star.hip) + " redeclared - Only the last redeclaration is taken into account", LOG_TYPE::L_WARNING);
-		variableStars[index] = std::move(star);
+		variableStars[index-1] = std::move(star);
 	} else {
 		hip_index[star.hip].s->setVariableStarIndex(variableStars.size());
 		variableStars.push_back(std::move(star));
@@ -1266,11 +1266,13 @@ void HipStarMgr::removeVariableStar(uint32_t hip)
 {
 	if (int idx = hip_index[hip].s->getVariableStarIndex()) {
 		hip_index[hip].s->setVariableStarIndex(0);
-		if (variableStars.size() == static_cast<size_t>(idx)+1ULL) {
-			variableStars.pop_back();
-		} else {
-			cLog::get()->write("VariableStar::removeVariableStar not fully implemented yet - Only the last variable star can be removed", LOG_TYPE::L_WARNING);
+		while (idx < static_cast<int>(variableStars.size())) {
+			auto &vstar = variableStars[idx];
+			hip_index[vstar.hip].s->setVariableStarIndex(idx);
+			variableStars[idx-1] = vstar;
+			++idx;
 		}
+		variableStars.pop_back();
 	}
 }
 
