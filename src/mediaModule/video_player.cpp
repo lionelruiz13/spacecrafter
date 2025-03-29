@@ -451,7 +451,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		videoTexture.sync->syncOut->placeBarrier(cmd);
 		Context::instance->waitFrameSync[1].stageMask |= VK_PIPELINE_STAGE_2_COPY_BIT_KHR;
 	}
-	if (m_isVideoInPause) {
+	if (!m_isVideoInPause) {
 		if (CoreLink::instance->predictibleRendering()) {
 			currentTime += renderDeltaFrame;
 			latency += renderDeltaFrame;
