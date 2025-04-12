@@ -501,22 +501,18 @@ Vec3d Body::getObsJ2000Pos(const Navigator *nav) const
 
 void Body::compute_position(const double date)
 {
-	OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction();
-
 	if(orbitPlot != nullptr && orbitPlot->getOrbitFader().getInterstate()) {
 		orbitPlot->computeOrbit(date);
 	}
 
-	double delta = date-lastJD;
-	delta = fabs(delta);
-
-	if(delta >= deltaJD ) {
-		if(oscFunc)
-			(*oscFunc)(date,date,ecliptic_pos);
-		else
-			orbit->positionAtTimevInVSOP87Coordinates(date,date,ecliptic_pos);
-		lastJD = date;
-	}
+    if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
+        // if (fabs(date-lastJD) < deltaJD)
+        //     return;
+        (*oscFunc)(date,date,ecliptic_pos);
+    } else {
+        orbit->positionAtTimevInVSOP87Coordinates(date,date,ecliptic_pos);
+    }
+    lastJD = date;
 }
 
 // Compute the transformation matrix from the local Body coordinate to the parent Body coordinate

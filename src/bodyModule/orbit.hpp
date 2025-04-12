@@ -11,6 +11,7 @@
 #define _ORBIT_H_
 
 #include "tools/vecmath.hpp"
+#include "iterative_orbits.hpp"
 #include <string>
 #include <memory>
 
@@ -110,6 +111,10 @@ private:
 	double eccentricAnomaly(double) const;
 	Vec3d positionAtE(double) const;
 
+	//! Last value returned by eccentricAnomaly, used for iterative precision
+	mutable double lastE = 0;
+
+
 	double pericenterDistance;
 	double eccentricity;
 	double inclination;
@@ -129,9 +134,22 @@ private:
 	bool m_UseParentPrecession;
 };
 
-
 class CometOrbit : public Orbit {
 public:
+	// Prepair orbit computation around JD0 and rectify the deltaJD
+	virtual std::pair<double, double> prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double deltaJD) override;
+	// Override position for orbit computation so they are more equally spaced
+	virtual void fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
+	void deltaJDToOrbitJD(double JD, double &deltaJD) const;
+	void orbitJDToJD(double &JD) const;
+	// //! updating comet tails is a bit expensive. try not to overdo it.
+	// virtual bool getUpdateTails() const override{ return updateTails; }
+	// virtual void setUpdateTails(const bool update) override{ updateTails=update; }
+	double getPeriod() const;
+	double getBoundingRadius() const;
+	virtual std::string saveOrbit() const;
+
+protected:
 	CometOrbit(double pericenter_distance,
 	           double eccentricity,
 	           double inclination,
@@ -143,37 +161,78 @@ public:
 	           double parent_rot_ascendingnode,
 	           double parent_rot_J2000_longitude);
 
-	// Compute the orbit for a specified Julian date and return an "application compliant" function
-	virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
-	// Prepair orbit computation around JD0 and rectify the deltaJD
-	virtual std::pair<double, double> prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double deltaJD) override;
-	// Override position for orbit computation so they are more equally spaced
-	virtual void fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
-	void deltaJDToOrbitJD(double JD, double &deltaJD) const;
-	void orbitJDToJD(double &JD) const;
-	// //! updating comet tails is a bit expensive. try not to overdo it.
-	// virtual bool getUpdateTails() const override{ return updateTails; }
-	// virtual void setUpdateTails(const bool update) override{ updateTails=update; }
-	Vec3d positionAtTime(double) const;
-	double getPeriod() const;
-	double getBoundingRadius() const;
-	virtual std::string saveOrbit() const;
-
-private:
 	const double q;
 	const double e;
-	const double i;
-	const double Om;
-	const double o;
 	const double t0;
 	const double n;
 	double orbitJDCorrection;
 	Vec3d d1;
 	Vec3d d2;
 	double rotate_to_vsop87[9];
-	bool updateTails; //!< flag to signal that comet tails must be recomputed.
 };
 
+class HypCometOrbit : public CometOrbit {
+public:
+	HypCometOrbit(double pericenter_distance,
+	           double eccentricity,
+	           double inclination,
+	           double ascendingNode,
+	           double arg_of_perhelion,
+	           double time_at_perihelion,
+	           double mean_motion,
+	           double parent_rot_obliquity,
+	           double parent_rot_ascendingnode,
+	           double parent_rot_J2000_longitude);
+
+    void warp(double JD);
+   // Compute the orbit for a specified Julian date and return an "application compliant" function
+   	virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
+   	Vec3d positionAtTime(double) const;
+private:
+	mutable IterativeHyp orbit; // Mitigation - mutable car positionAtTimevInVSOP87Coordinates ne devrais pas etre const...
+};
+
+class EllCometOrbit : public CometOrbit {
+public:
+	EllCometOrbit(double pericenter_distance,
+	           double eccentricity,
+	           double inclination,
+	           double ascendingNode,
+	           double arg_of_perhelion,
+	           double time_at_perihelion,
+	           double mean_motion,
+	           double parent_rot_obliquity,
+	           double parent_rot_ascendingnode,
+	           double parent_rot_J2000_longitude);
+
+
+   // Compute the orbit for a specified Julian date and return an "application compliant" function
+   	virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
+   	Vec3d positionAtTime(double) const;
+private:
+	mutable IterativeEll orbit; // Mitigation - mutable car positionAtTimevInVSOP87Coordinates ne devrais pas etre const...
+};
+
+class ParCometOrbit : public CometOrbit {
+public:
+	ParCometOrbit(double pericenter_distance,
+	           double eccentricity,
+	           double inclination,
+	           double ascendingNode,
+	           double arg_of_perhelion,
+	           double time_at_perihelion,
+	           double mean_motion,
+	           double parent_rot_obliquity,
+	           double parent_rot_ascendingnode,
+	           double parent_rot_J2000_longitude);
+
+
+   // Compute the orbit for a specified Julian date and return an "application compliant" function
+   	virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
+	// If possible, do faster (and less accurate) calculation for orbits
+	virtual void fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
+   	Vec3d positionAtTime(double) const;
+};
 
 //! A Special Orbit uses special ephemeris algorithms
 class SpecialOrbit : public Orbit {
