@@ -97,7 +97,7 @@ public:
 		H -= (M-H+e*s)/(e*c-1);
 		c = cos(H);
 		s = sin(H);
-		return d1 * (a*(e-c)) + d2 * (h1*s);
+		return d1 * (a*(c-e)) + d2 * (h1*s);
 	}
 private:
 	const double n;
