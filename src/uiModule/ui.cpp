@@ -359,7 +359,7 @@ int UI::handleClic(const std::pair<uint16_t, uint16_t> &pos, s_gui::S_GUI_VALUE 
 		if (button==s_gui::S_GUI_MOUSE_RIGHT && state==s_gui::S_GUI_RELEASED) {
 			switch(key_Modifier) {
 				case NONE:
-			        this->executeCommand("select");
+			        this->executeCommand("deselect");
 					break;
 
 				case KWIN:
