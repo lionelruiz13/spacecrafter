@@ -379,13 +379,12 @@ void App::initVulkan(InitParser &conf)
 	}
 	for (int i = 0; i < 3; ++i)
 		context.transfers[i] = std::make_unique<TransferMgr>(*context.stagingMgr, 64*1024*1024);
-	context.transfer = context.transfers[context.lastFrameIdx].get(); // Assume the previous frame is the frame 2
+	context.transfer = nullptr;
 	context.waitFrameSync[1].semaphore = context.signalFrameSync[1].semaphore = context.collector->createSemaphore(0, "Timeline");
-	{ // Only build the first frame
-		constexpr int i = 0;
-		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, 0, width, height, "main " + std::to_string(0), (void (*)(void *, int)) &App::submitFrame, (void *) this));
+	for (int i = 0; i < 3; ++i) {
+		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
 		if (vkmgr.getSwapchainView().empty()) {
-			offscreenImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(0), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
+			offscreenImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
 			context.frame.back()->bind(colorID, *offscreenImage.back());
 		} else {
 			context.frame.back()->bind(colorID, vkmgr.getSwapchainView()[i]);
@@ -448,23 +447,6 @@ void App::finalizeInitVulkan(InitParser &conf)
 	context.transferSync->build();
 	context.cmdInfo.commandPool = context.cmdPool = context.collector->create(
 		VkCommandPoolCreateInfo{VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO, nullptr, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT, context.graphicFamily->id}, "Secondary CmdPool");
-	for (uint8_t i = 1; i < 3; ++i) {
-		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
-		if (vkmgr.getSwapchainView().empty()) {
-			offscreenImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
-			context.frame.back()->bind(colorID, *offscreenImage.back());
-		} else {
-			context.frame.back()->bind(colorID, vkmgr.getSwapchainView()[i]);
-		}
-		context.frame.back()->bind(depthID, *depthBuffer);
-		if (multiColorID != colorID)
-			context.frame.back()->bind(multiColorID, *multisampleImage[i]);
-		context.frame.back()->build(context.graphicFamily->id, true, true);
-		context.graphicTransferCmd[i] = context.frame.back()->createMain();
-		auto &barrier = context.transfers[i]->overrideBarrier();
-		barrier.bufferBarrier(*context.asyncStagingMgr, VK_PIPELINE_STAGE_2_HOST_BIT_KHR, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_ACCESS_2_HOST_WRITE_BIT_KHR, VK_ACCESS_2_TRANSFER_READ_BIT_KHR);
-		barrier.build();
-	}
 	context.helper = std::make_unique<DrawHelper>();
 	context.helper->initShadow(context.shadowRes);
 	if (vkmgr.getSwapchainView().empty() && renderSize == 0) {

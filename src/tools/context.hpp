@@ -141,8 +141,8 @@ public:
     VkQueue graphicQueue;
     VkQueue computeQueue;
     unsigned int ojmAlignment = 3*8*sizeof(float); // obj : POS3D(3) TEXTURE(2) NORMAL(3)
-    uint32_t frameIdx = 2;
-    uint32_t lastFrameIdx = 1;
+    uint32_t frameIdx = UINT32_MAX;
+    uint32_t lastFrameIdx = UINT32_MAX;
     VkBool32 isFloat64Supported = VK_TRUE;
     uint32_t shadowRes;
     uint8_t maxShadowCast = 4;

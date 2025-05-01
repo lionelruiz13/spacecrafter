@@ -189,8 +189,14 @@ void AppDraw::initSplash()
     set.update();
 
     context.lastFrameIdx = context.frameIdx;
-    context.waitFrameSync[0].semaphore = context.semaphores[context.lastFrameIdx];
+    context.waitFrameSync[0].semaphore = context.semaphores[(context.lastFrameIdx == UINT32_MAX) ? 0 : context.lastFrameIdx];
     vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), UINT32_MAX, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx);
+    if (context.lastFrameIdx == UINT32_MAX) {
+        context.lastFrameIdx = (context.frameIdx+2U)%3U; // Arbitrarily pick one of the two non-acquired-frame as the last frame.
+        context.transfer = context.transfers[context.lastFrameIdx].get();
+        context.semaphores[0] = context.semaphores[context.lastFrameIdx];
+        context.semaphores[context.lastFrameIdx] = context.waitFrameSync[0].semaphore;
+    }
     vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, UINT32_MAX);
     vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 
