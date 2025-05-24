@@ -160,42 +160,58 @@ public:
 	void audioMusicLoad(const std::string &filename, bool loop);
 
 	void audioMusicPlay() {
+		if (audioRedirected)
+			return;
 		audio->musicPlay();
 	}
 
 	void audioMusicMute() {
+		if (audioRedirected)
+			return;
 		if (!audioNoPause)
 			audio->musicMute();
 	}
 
 	void audioMusicPause() {
+		if (audioRedirected)
+			return;
 		if (!audioNoPause)
 			audio->musicPause();
 	}
 
 	void audioMusicResume() {
+		if (audioRedirected)
+			return;
 		audio->musicResume();
 	}
 
 	void audioMusicRewind() {
+		if (audioRedirected)
+			return;
 		audio->musicRewind();
 	}
 
 	void audioMusicHalt() {
-		if (m_videoState.state != V_STATE::V_PLAY) {
-			audio->musicHalt();
-		}
+		if (audioRedirected)
+			return;
+		audio->musicHalt();
 	}
 
 	void audioMusicSync() {
+		if (audioRedirected)
+			return;
 		audio->musicSync();
 	}
 
 	void audioMusicDrop() {
+		if (audioRedirected)
+			return;
 		audio->musicDrop();
 	}
 
 	void audioMusicJump(float deltaTime) {
+		if (audioRedirected)
+			return;
 		audio->musicJump(deltaTime);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -345,11 +361,7 @@ public:
 	VID_TYPE strToVideoType(const std::string& value);
 
 	void setLoop(bool _loop) {
-		loop = _loop;
-	}
-
-	bool getLoop() const {
-		return loop;
+		player->setLoop(_loop);
 	}
 
 	bool getDualViewport() {
@@ -366,15 +378,10 @@ public:
 
 	void playerUpdate() {
 		player->update();
-		if (resumeWhenCacheFull && player->isVideoCacheFull()) {
-			playerPause();
-			resumeWhenCacheFull = false;
-		}
 	}
 
 	void playerPause() {
 		player->pauseCurrentVideo();
-		audio->musicPause();
 	}
 
 	bool playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload);
@@ -405,12 +412,8 @@ public:
 	void setRenderFramerate(int framerate) {
 		player->setRenderFramerate(framerate);
 	}
-
-	void interruptUntilVideoCacheFull();
-
-	void resyncAudio(float displacement);
 private:
-	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload);
+	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload, bool withMusic);
 
 	std::unique_ptr<Audio> audio = nullptr;
 	std::unique_ptr<ImageMgr> imageMgr = nullptr;
@@ -424,13 +427,10 @@ private:
 	std::string skyLanguage;
 	bool mplayerEnable;
 	bool audioNoPause=false;
-	bool loop=false;
 	bool dualViewport=false;
-	bool preloading=false;
-	bool resumeWhenCacheFull=false;
+	bool audioRedirected=false;
 
 	std::string imageVideoName;
-	bool audioNotInVideo;
 
 	struct VideoState {
 		V_TYPE type;

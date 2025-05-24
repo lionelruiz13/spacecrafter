@@ -41,6 +41,7 @@ extern "C"
 
 class s_texture;
 class Media;
+class Audio;
 class SyncEvent;
 class BufferMgr;
 class InitParser;
@@ -78,7 +79,7 @@ class VideoPlayer {
 public:
 	//! \fn VideoPlayer
 	//! \brief Constructor: initializes the states of the ffmpeg
-	VideoPlayer(Media* _media, InitParser &conf);
+	VideoPlayer(Media *media, InitParser &conf);
 
 	//! Destructor, closes the states of the ffmpeg
 	~VideoPlayer();
@@ -90,7 +91,7 @@ public:
 	void update();
 
 	//! initializes the ffmpeg with the name of the file passed in argument
-	bool playNewVideo(const std::string& fileName, bool paused = false, DecodePolicy policy = DecodePolicy::ASYNC);
+	bool playNewVideo(const std::string& fileName, Audio *_audio = nullptr, bool paused = false, DecodePolicy policy = DecodePolicy::ASYNC);
 
 	void setRenderFramerate(int framerate) {
 		renderDeltaFrame = std::chrono::steady_clock::duration(std::chrono::steady_clock::period::den / (std::chrono::steady_clock::period::num * framerate));
@@ -105,12 +106,11 @@ public:
 	//! Restarts the current video at the beginning
 	bool restartCurrentVideo();
 
-	bool invertVideoFlow(float &reallyDeltaTime);
+	bool invertVideoFlow();
 
 	//! Allows to make a relative jump in the video stream
 	//! \param seconde time to jump (in seconds)
-	//! \param reallyDeltaTime : tells the Media class how far we have moved in the end.
-	bool jumpInCurrentVideo(float seconde, float &reallyDeltaTime);
+	bool jumpInCurrentVideo(float seconde);
 
 	//! Returns the state of the player
 	//! @return true if a file is playing, false otherwise
@@ -135,6 +135,10 @@ public:
 		adaptiveFramerate = enable;
 	}
 
+	inline void setLoop(bool loopy) {
+		reloop = loopy;
+	}
+
 	static unsigned char *tracer_frameCache(void *data, unsigned char *buffer);
 	static unsigned char *tracer_atomic_bool(void *data, unsigned char *buffer);
 	static unsigned char *tracer_duration(void *data, unsigned char *buffer);
@@ -146,11 +150,12 @@ private:
 	// initialization of the class
 	void init();
 	// internal jump function in the video
-	bool seekVideo(int64_t frameToSkeep, float &reallyDeltaTime);
+	bool seekVideo(int64_t frameToSkeep);
 	//! initialize a texture to the size of the video
 	void initTexture();
 
-	Media* media=nullptr;
+	Media *media=nullptr;
+	Audio *audio=nullptr;
 	VideoTexture videoTexture;	//!< returns the texture indices for the classes requiring
 	std::unique_ptr<BufferMgr> stagingBuffer;
 	SubBuffer imageBuffers[3][MAX_CACHED_FRAMES];
@@ -206,6 +211,8 @@ private:
 	bool skipFrame = false; // Tell if frame could be skipped when playing a video
 	bool adaptiveFramerate = false;
 	bool debugMode = false;
+	bool waitCacheFull = false;
+	bool reloop = false;
 	void mainloop();
 	// Stop video thread and drop every pending frames
 	void threadTerminate();

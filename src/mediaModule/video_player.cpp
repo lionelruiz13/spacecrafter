@@ -33,7 +33,7 @@
 Tracer tracer{80, 24};
 
 
-VideoPlayer::VideoPlayer(Media* _media, InitParser &conf)
+VideoPlayer::VideoPlayer(Media *media, InitParser &conf) : media(media)
 {
 	tracer.emplace(Trace::CUSTOM, this, "cache", &VideoPlayer::tracer_frameCache);
 	tracer.emplace(Trace::CUSTOM, &decoding, "decoding", &VideoPlayer::tracer_atomic_bool);
@@ -47,7 +47,6 @@ VideoPlayer::VideoPlayer(Media* _media, InitParser &conf)
 	tracer.emplace(Trace::UCHAR, &adaptiveFramerate, "adaptive");
 	tracer.emplace(Trace::INT, &videoRes.w, "width");
 	tracer.emplace(Trace::INT, &videoRes.h, "height");
-	media = _media;
 	m_isVideoPlayed = false;
 	m_isVideoInPause = false;
 	m_isVideoSeeking = false;
@@ -97,15 +96,21 @@ void VideoPlayer::createTextures()
 
 void VideoPlayer::pauseCurrentVideo()
 {
+	if (waitCacheFull)
+		return;
 	if (m_isVideoInPause) {
 		m_isVideoInPause = false;
 		currentTime = std::chrono::steady_clock::now();
 		nextFrame = currentTime + deltaFrame;
-		media->resyncAudio(std::chrono::duration_cast<std::chrono::duration<double>>(deltaFrame-latency).count());
+		if (audio) {
+			audio->musicJump(std::chrono::duration_cast<std::chrono::duration<double>>(deltaFrame-latency).count());
+			audio->musicResume();
+		}
 		latency = -deltaFrame;
 	} else {
 		m_isVideoInPause = true;
 		nextFrame += std::chrono::hours(24);
+		audio->musicPause();
 	}
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PAUSE);
@@ -132,6 +137,8 @@ bool VideoPlayer::restartCurrentVideo()
 		return false;
 	threadInterrupt();
 	auto result = av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD);
+	if (audio)
+		audio->musicRewind();
 	threadPlay();
 	if (result < 0) {
 		printf("av_seek_frame forward failed. \n");
@@ -144,7 +151,7 @@ bool VideoPlayer::restartCurrentVideo()
 }
 
 
-bool VideoPlayer::playNewVideo(const std::string& _fileName, bool paused, DecodePolicy policy)
+bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool paused, DecodePolicy policy)
 {
 	if (m_isVideoPlayed)
 		stopCurrentVideo(true);
@@ -245,8 +252,11 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, bool paused, Decode
 	frameCached = 0;
 	frameUsed = 0;
 	m_isVideoPlayed = true;
+	audio = _audio;
 	threadPlay();
 	m_isVideoInPause = paused;
+	if (audio && !paused)
+		audio->musicPlay();
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
 	EventRecorder::getInstance()->queue(event);
@@ -255,20 +265,10 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, bool paused, Decode
 
 void VideoPlayer::update()
 {
-	// if (! m_isVideoPlayed)
-	// 	return;
-	//
-	// if (m_isVideoInPause) {
-	// 	return;
-	// }
-	//
-	// int currentCount = SDL_GetTicks();
-	// // Tell how many frames we need now
-	// while (currentCount > lastCount) {
-	// 	++needFrames;
-	// 	d_lastCount = firstCount + (int)(frameRateDuration*++currentFrame);
-	// 	lastCount = (int)d_lastCount;
-	// }
+	if (waitCacheFull && isVideoCacheFull()) {
+		waitCacheFull = false;
+		pauseCurrentVideo();
+	}
 }
 
 bool VideoPlayer::getNextFrame()
@@ -340,6 +340,8 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 	tracer.stop();
 
 	m_isVideoPlayed = false;
+	if (audio)
+		audio->musicDrop();
 	threadTerminate(); // Don't overlap av_* calls
 
 	sws_freeContext(img_convert_ctx);
@@ -411,37 +413,28 @@ void VideoPlayer::initTexture()
 
 
 /* lets take a leap forward the video */
-bool VideoPlayer::jumpInCurrentVideo(float deltaTime, float &reallyDeltaTime)
+bool VideoPlayer::jumpInCurrentVideo(float deltaTime)
 {
-	if (m_isVideoPlayed==false)
-		return false;
-	if (m_isVideoInPause==true)
-		this->pauseCurrentVideo();
-
-	int64_t frameToSkeep = deltaTime * frameRate;
-	return seekVideo(frameToSkeep, reallyDeltaTime);
+	return seekVideo(deltaTime * frameRate);
 }
 
 
-bool VideoPlayer::invertVideoFlow(float &reallyDeltaTime)
+bool VideoPlayer::invertVideoFlow()
 {
-	if (m_isVideoPlayed==false)
-		return false;
-	if (m_isVideoInPause==true)
-		this->pauseCurrentVideo();
-
-	return seekVideo(nbTotalFrame - 2*currentFrame, reallyDeltaTime);
+	return seekVideo(nbTotalFrame - 2*currentFrame);
 }
 
 
-bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
+bool VideoPlayer::seekVideo(int64_t frameToSkeep)
 {
+	if (!m_isVideoPlayed)
+		return false;
+
 	currentFrame = currentFrame + frameToSkeep;
 
 	//jump before the beginning of the video
 	if (currentFrame <= 0) {
 		this->restartCurrentVideo();
-		reallyDeltaTime=0.0;
 		return true;
 	}
 	if(currentFrame < nbTotalFrame) { // we check that we don't jump out of the video
@@ -451,14 +444,16 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 			threadPlay();
 			return false;
 		}
+		if (!m_isVideoInPause) {
+			pauseCurrentVideo();
+			waitCacheFull = true;
+		}
 		m_isVideoSeeking = true;
 		threadPlay();
-		reallyDeltaTime = currentFrame / frameRate;
 		return true;
 	}
 	// end of file ... video stops
 	this->stopCurrentVideo(false);
-	reallyDeltaTime= -1.0;
 	return true;
 }
 
@@ -526,14 +521,15 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 					vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 				}
 			} else if (m_isVideoPlayed && !decoding) {
-				if (media->getLoop()) {
-					media->playerRestart();
+				if (reloop) {
+					restartCurrentVideo();
 				} else {
 					cLog::get()->write("end of file");
 					stopCurrentVideo(false);
 				}
 			} else {
-				media->interruptUntilVideoCacheFull();
+				pauseCurrentVideo();
+				waitCacheFull = true;
 			}
 		}
 	}
