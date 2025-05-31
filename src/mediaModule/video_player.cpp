@@ -103,14 +103,15 @@ void VideoPlayer::pauseCurrentVideo()
 		currentTime = std::chrono::steady_clock::now();
 		nextFrame = currentTime + deltaFrame;
 		if (audio) {
-			audio->musicJump(std::chrono::duration_cast<std::chrono::duration<double>>(deltaFrame-latency).count());
+			audio->musicJump(std::chrono::duration_cast<std::chrono::duration<double>>(currentFrame * deltaFrame).count());
 			audio->musicResume();
 		}
 		latency = -deltaFrame;
 	} else {
 		m_isVideoInPause = true;
 		nextFrame += std::chrono::hours(24);
-		audio->musicPause();
+		if (audio)
+			audio->musicPause();
 	}
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PAUSE);
