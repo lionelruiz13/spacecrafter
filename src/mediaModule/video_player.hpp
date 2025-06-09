@@ -213,6 +213,7 @@ private:
 	bool debugMode = false;
 	bool waitCacheFull = false;
 	bool reloop = false;
+	bool drawNextFrame = false; // Draw the next frame, unconditionnally
 	void mainloop();
 	// Stop video thread and drop every pending frames
 	void threadTerminate();

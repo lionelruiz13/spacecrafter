@@ -473,7 +473,20 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		videoTexture.sync->syncOut->placeBarrier(cmd);
 		Context::instance->waitFrameSync[1].stageMask |= VK_PIPELINE_STAGE_2_COPY_BIT_KHR;
 	}
-	if (!m_isVideoInPause) {
+	if (drawNextFrame) {
+		VkBufferImageCopy region;
+		region.bufferRowLength = region.bufferImageHeight = 0;
+		region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
+		region.imageOffset = VkOffset3D{};
+		region.imageExtent.depth = 1;
+		for (int i = 0; i < 3; ++i) {
+			region.bufferOffset = imageBuffers[i][frameUsed.fetch_add(1, std::memory_order_relaxed)].offset;
+			region.imageExtent.width = widths[i];
+			region.imageExtent.height = heights[i];
+			vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+		}
+		drawNextFrame = false;
+	} else if (!m_isVideoInPause) {
 		if (CoreLink::instance->predictibleRendering()) {
 			currentTime += renderDeltaFrame;
 			latency += renderDeltaFrame;
@@ -584,6 +597,7 @@ void VideoPlayer::threadPlay()
 	currentTime = std::chrono::steady_clock::now();
 	nextFrame = currentTime + deltaFrame;
 	latency = -deltaFrame;
+	drawNextFrame = true;
 	this->getNextVideoFrame(); // The first valid frame must be ready
 	if (decoding) {
 		mtx.unlock();
