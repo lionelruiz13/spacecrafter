@@ -211,7 +211,6 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 bool Media::playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload)
 {
 	if (!audioname.empty()) {
-		audio->musicHalt();
 		audio->musicLoad(audioname, false);
 		cLog::get()->write("Media::playerPlay trying to play audiofilename "+audioname, LOG_TYPE::L_DEBUG);
 	}

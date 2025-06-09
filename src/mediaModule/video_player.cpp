@@ -256,8 +256,11 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 	audio = _audio;
 	threadPlay();
 	m_isVideoInPause = paused;
-	if (audio && !paused)
+	if (audio) {
 		audio->musicPlay();
+		if (paused)
+			audio->musicPause();
+	}
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
 	EventRecorder::getInstance()->queue(event);
@@ -341,8 +344,9 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 	tracer.stop();
 
 	m_isVideoPlayed = false;
-	if (audio)
+	if (audio && !newVideo) {
 		audio->musicDrop();
+	}
 	threadTerminate(); // Don't overlap av_* calls
 
 	sws_freeContext(img_convert_ctx);
@@ -479,8 +483,9 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
 		region.imageOffset = VkOffset3D{};
 		region.imageExtent.depth = 1;
+		auto frameIdx = frameUsed.fetch_add(1, std::memory_order_relaxed);
 		for (int i = 0; i < 3; ++i) {
-			region.bufferOffset = imageBuffers[i][frameUsed.fetch_add(1, std::memory_order_relaxed)].offset;
+			region.bufferOffset = imageBuffers[i][frameIdx].offset;
 			region.imageExtent.width = widths[i];
 			region.imageExtent.height = heights[i];
 			vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
