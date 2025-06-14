@@ -223,6 +223,7 @@ private:
 	void threadPlay();
 	std::thread thread;
 	std::mutex mtx;
+	std::mutex videoTransitionMutex;
 	std::condition_variable cv;
 };
 

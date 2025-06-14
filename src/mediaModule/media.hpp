@@ -412,6 +412,9 @@ public:
 	void setRenderFramerate(int framerate) {
 		player->setRenderFramerate(framerate);
 	}
+
+	//! Indicate that the player stopped playing video
+	void playerStopped();
 private:
 	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload, bool withMusic);
 

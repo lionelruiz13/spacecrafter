@@ -154,8 +154,7 @@ bool VideoPlayer::restartCurrentVideo()
 
 bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool paused, DecodePolicy policy)
 {
-	if (m_isVideoPlayed)
-		stopCurrentVideo(true);
+	stopCurrentVideo(true);
 	if (debugMode)
 		tracer.start();
 	std::ifstream fichier(_fileName.c_str());
@@ -336,16 +335,18 @@ void VideoPlayer::getNextVideoFrame()
 
 void VideoPlayer::stopCurrentVideo(bool newVideo)
 {
-	if (m_isVideoPlayed==false) {
-		if (thread.joinable())
-			thread.join();
+	std::unique_lock<std::mutex> lock(videoTransitionMutex);
+	if (!m_isVideoPlayed)
 		return;
-	}
 	tracer.stop();
 
 	m_isVideoPlayed = false;
-	if (audio && !newVideo) {
-		audio->musicDrop();
+	if (!newVideo) {
+		if (audio)
+			audio->musicDrop();
+		Event* event = new VideoEvent(VIDEO_ORDER::STOP);
+		EventRecorder::getInstance()->queue(event);
+		media->playerStopped();
 	}
 	threadTerminate(); // Don't overlap av_* calls
 
@@ -354,11 +355,6 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 	av_frame_free(&pFrameIn);
 	avcodec_close(pCodecCtx);
 
-	if (media) {
-		Event* event = new VideoEvent(VIDEO_ORDER::STOP);
-		EventRecorder::getInstance()->queue(event);
-		media->playerStop(newVideo);
-	}
 	std::ostringstream oss;
 	auto total = (sRead + sParse + sDecode + sWrite).count() / 100ULL;
 	oss << "Video decode statistics : ";

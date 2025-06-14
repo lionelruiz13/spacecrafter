@@ -222,16 +222,18 @@ void Media::playerStop(bool newVideo)
 {
 	cLog::get()->write("Media::playerPlayStop", LOG_TYPE::L_INFO);
 	player->stopCurrentVideo(newVideo);
+}
+
+void Media::playerStopped()
+{
 	audioRedirected = false;
 	m_videoState.state=V_STATE::V_NONE;
 	switch(m_videoState.type) {
 		case V_TYPE::V_VR360 :
-			if (!newVideo)
-				vr360->display(false);
+			vr360->display(false);
 			break;
 		case V_TYPE::V_VRCUBE :
-			if (!newVideo)
-				vr360->display(false);
+			vr360->display(false);
 			break;
 		case V_TYPE::V_VIEWPORT :
 			viewPort->display(false);
