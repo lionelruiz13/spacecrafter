@@ -148,6 +148,22 @@ void Media::audioVolume(const AudioVolume& volumeOrder, float _value)
 
 bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload, bool withMusic)
 {
+	switch(m_videoState.type) {
+		case V_TYPE::V_VR360 :
+			vr360->displayStop();
+			break;
+		case V_TYPE::V_VRCUBE :
+			vr360->displayStop();
+			break;
+		case V_TYPE::V_VIEWPORT :
+			viewPort->displayStop();
+			break;
+		case V_TYPE::V_IMAGE:
+			break;
+		default:
+			break;
+	}
+
 	player->setAdaptiveFramerate(!withMusic);
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+filename, LOG_TYPE::L_DEBUG);
 	if (player->playNewVideo(filename, withMusic ? audio.get() : nullptr, preload) ==false) {
@@ -156,9 +172,6 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 	}
 
 	m_videoState.state=V_STATE::V_PLAY;
-
-	vr360->displayStop();
-	viewPort->displayStop();
 
 	if (!playerIsVideoPlayed()) {
 		m_videoState.state=V_STATE::V_NONE;
@@ -245,7 +258,6 @@ void Media::playerStopped()
 		default:
 			break;
 	}
-	m_videoState.type=V_TYPE::V_NONE;
 }
 
 void Media::playerRestart()

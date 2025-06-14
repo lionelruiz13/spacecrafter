@@ -268,7 +268,7 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 
 void VideoPlayer::update()
 {
-	if (waitCacheFull && isVideoCacheFull()) {
+	if (waitCacheFull && isVideoCachePrefilled()) {
 		waitCacheFull = false;
 		pauseCurrentVideo();
 	}
@@ -338,15 +338,11 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 	std::unique_lock<std::mutex> lock(videoTransitionMutex);
 	if (!m_isVideoPlayed)
 		return;
-	tracer.stop();
 
 	m_isVideoPlayed = false;
 	if (!newVideo) {
 		if (audio)
 			audio->musicDrop();
-		Event* event = new VideoEvent(VIDEO_ORDER::STOP);
-		EventRecorder::getInstance()->queue(event);
-		media->playerStopped();
 	}
 	threadTerminate(); // Don't overlap av_* calls
 
@@ -364,6 +360,10 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 	oss << "Copy " << std::chrono::duration_cast<std::chrono::seconds>(sWrite).count() << "s (" << sWrite.count() / total << "%)";
 	cLog::get()->write(oss.str(), LOG_TYPE::L_INFO);
 	sRead = sParse = sDecode = sWrite = std::chrono::steady_clock::duration{};
+
+	EventRecorder::getInstance()->queue(new VideoEvent(VIDEO_ORDER::STOP));
+	media->playerStopped();
+	tracer.stop();
 }
 
 void VideoPlayer::initTexture()
@@ -426,12 +426,12 @@ bool VideoPlayer::invertVideoFlow()
 }
 
 
-bool VideoPlayer::seekVideo(int64_t frameToSkeep)
+bool VideoPlayer::seekVideo(int64_t framesToSkip)
 {
 	if (!m_isVideoPlayed)
 		return false;
 
-	currentFrame = currentFrame + frameToSkeep;
+	currentFrame = currentFrame + framesToSkip;
 
 	//jump before the beginning of the video
 	if (currentFrame <= 0) {
@@ -535,16 +535,18 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 					region.imageExtent.height = heights[i];
 					vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 				}
-			} else if (m_isVideoPlayed && !decoding) {
-				if (reloop) {
-					restartCurrentVideo();
+			} else if (m_isVideoPlayed) {
+				if (decoding) {
+					pauseCurrentVideo();
+					waitCacheFull = true;
 				} else {
-					cLog::get()->write("end of file");
-					stopCurrentVideo(false);
+					if (reloop) {
+						restartCurrentVideo();
+					} else {
+						cLog::get()->write("end of file");
+						stopCurrentVideo(false);
+					}
 				}
-			} else {
-				pauseCurrentVideo();
-				waitCacheFull = true;
 			}
 		}
 	}

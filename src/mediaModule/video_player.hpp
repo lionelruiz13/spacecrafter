@@ -48,6 +48,8 @@ class InitParser;
 
 // Maximal number of frames to load in advance (no longer need to be a power-of-two)
 #define MAX_CACHED_FRAMES 80
+// Minimal number of frames to load before resuming, after running out of frames
+#define MAX_PRELOAD_FRAMES 60
 // Minimal number of cached frames below which frames will be delivered with some latency
 #define CACHE_STRESS 16
 // Maximal speed at which the video is played when there is more than CACHE_STRESS cached frames and the video stream is behind
@@ -122,6 +124,10 @@ public:
 		return (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= (MAX_CACHED_FRAMES-1)) || !decoding;
 	}
 
+	bool isVideoCachePrefilled() const {
+		return (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= MAX_PRELOAD_FRAMES) || !decoding;
+	}
+
 	//! Returns the ID of the YUV textures in the GPU representing the frame read from the video file
 	VideoTexture getYUV_VideoTexture() const {
 		return videoTexture;
@@ -150,7 +156,7 @@ private:
 	// initialization of the class
 	void init();
 	// internal jump function in the video
-	bool seekVideo(int64_t frameToSkeep);
+	bool seekVideo(int64_t framesToSkip);
 	//! initialize a texture to the size of the video
 	void initTexture();
 
