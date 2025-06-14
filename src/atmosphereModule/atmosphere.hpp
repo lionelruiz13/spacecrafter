@@ -109,7 +109,7 @@ public:
 		return fader;
 	}
 
-	float getWorldAdaptationLuminance() const { //unused
+	float getWorldAdaptationLuminance() const { // Computed from eye luminance to update eye luminance
 		return world_adaptation_luminance;
 	}
 

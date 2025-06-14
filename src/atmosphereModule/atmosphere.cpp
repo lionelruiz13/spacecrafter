@@ -236,10 +236,10 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 			pSkyColor[x + y * (SKY_RESOLUTION + 1)].set(atm_intensity*b2.color[0],atm_intensity*b2.color[1],atm_intensity*b2.color[2]);
 		}
 	}
-
-	world_adaptation_luminance = 3.75f + lightPollutionLuminance + 3.5*sum_lum/NB_LUM*atm_intensity;
-	milkyway_adaptation_luminance = min_mw_lum*(1-atm_intensity) + 30*sum_lum/NB_LUM*atm_intensity;
-	sum_lum = 0.f;
+	if (isnormal(sum_lum)) {
+		world_adaptation_luminance = 3.75f + lightPollutionLuminance + 3.5*sum_lum/NB_LUM*atm_intensity;
+		milkyway_adaptation_luminance = min_mw_lum*(1-atm_intensity) + 30*sum_lum/NB_LUM*atm_intensity;
+	}
 }
 
 void Atmosphere::draw()
