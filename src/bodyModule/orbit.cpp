@@ -439,11 +439,6 @@ EllipticalOrbit::EllipticalOrbit(double pericenterDistance,
 std::pair<double, double> EllipticalOrbit::prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double deltaJD)
 {
 	batchLastE = 0;
-	JD0 = JD0 - epoch;
-	const double meanMotion = 2.0 * M_PI / period;
-	const double meanAnomaly = meanAnomalyAtEpoch + JD0 * meanMotion;
-	for (size_t i = 0; i < 10; ++i)
-		eccentricAnomaly(meanAnomaly, batchLastE);
 	return std::make_pair(-deltaJD, deltaJD);
 }
 
@@ -453,6 +448,11 @@ void EllipticalOrbit::fastPositionAtTimevInVSOP87Coordinates(double JD0, double 
 	JD = JD - epoch;
 	const double meanMotion = 2.0 * M_PI / period;
 	const double meanAnomaly = meanAnomalyAtEpoch + JD * meanMotion;
+
+	if (batchLastE == 0) {
+		for (size_t i = 0; i < 10; ++i)
+			eccentricAnomaly(meanAnomaly, batchLastE);
+	}
 
 	Vec3d pos = positionAtE(eccentricAnomaly(meanAnomaly, batchLastE));
 
