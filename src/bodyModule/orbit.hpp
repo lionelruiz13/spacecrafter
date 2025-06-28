@@ -95,6 +95,9 @@ public:
 	// parent_rot_obliquity and parent_rot_ascendingnode must be supplied.
 	virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
 
+	virtual std::pair<double, double> prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double deltaJD) override;
+	virtual void fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
+
 	// Original one
 	Vec3d positionAtTime(double) const;
 	double getPeriod() const;
@@ -108,12 +111,13 @@ public:
 	virtual std::string saveOrbit() const;
 
 private:
-	double eccentricAnomaly(double) const;
+	double eccentricAnomaly(double m, double &lastE) const;
 	Vec3d positionAtE(double) const;
 
 	//! Last value returned by eccentricAnomaly, used for iterative precision
-	mutable double lastE = 0;
-
+	mutable double iterativeLastE = 0;
+	//! Last value returned by eccentricAnomaly, used for fast precision with batch position
+	mutable double batchLastE = 0;
 
 	double pericenterDistance;
 	double eccentricity;

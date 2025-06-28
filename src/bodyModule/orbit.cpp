@@ -435,6 +435,32 @@ EllipticalOrbit::EllipticalOrbit(double pericenterDistance,
 
 }
 
+// Either fix deltaJD or fix position
+std::pair<double, double> EllipticalOrbit::prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double deltaJD)
+{
+	batchLastE = 0;
+	JD0 = JD0 - epoch;
+	const double meanMotion = 2.0 * M_PI / period;
+	const double meanAnomaly = meanAnomalyAtEpoch + JD0 * meanMotion;
+	for (size_t i = 0; i < 10; ++i)
+		eccentricAnomaly(meanAnomaly, batchLastE);
+	return std::make_pair(-deltaJD, deltaJD);
+}
+
+
+void EllipticalOrbit::fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
+{
+	JD = JD - epoch;
+	const double meanMotion = 2.0 * M_PI / period;
+	const double meanAnomaly = meanAnomalyAtEpoch + JD * meanMotion;
+
+	Vec3d pos = positionAtE(eccentricAnomaly(meanAnomaly, batchLastE));
+
+	v[0] = rotate_to_vsop87[0]*pos[0] + rotate_to_vsop87[1]*pos[1] + rotate_to_vsop87[2]*pos[2];
+	v[1] = rotate_to_vsop87[3]*pos[0] + rotate_to_vsop87[4]*pos[1] + rotate_to_vsop87[5]*pos[2];
+	v[2] = rotate_to_vsop87[6]*pos[0] + rotate_to_vsop87[7]*pos[1] + rotate_to_vsop87[8]*pos[2];
+}
+
 
 void EllipticalOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
 {
@@ -485,7 +511,7 @@ static double sign(double x)
 		return 0.;
 }
 
-double EllipticalOrbit::eccentricAnomaly(double M) const
+double EllipticalOrbit::eccentricAnomaly(double M, double &lastE) const
 {
 	if (eccentricity == 0.0)
 		return M; // Circular orbit
@@ -541,7 +567,7 @@ Vec3d EllipticalOrbit::positionAtTime(double t) const
 	t = t - epoch;
 	double meanMotion = 2.0 * M_PI / period;
 	double meanAnomaly = meanAnomalyAtEpoch + t * meanMotion;
-	double E = eccentricAnomaly(meanAnomaly);
+	double E = eccentricAnomaly(meanAnomaly, iterativeLastE);
 
 	return positionAtE(E);
 }
