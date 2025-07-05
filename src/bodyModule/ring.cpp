@@ -201,10 +201,6 @@ void Ring::createAsteroidRing()
 		sum_probability += std::max(alpha*alpha - 0.01f, 0.f);
 		// In the texture, 0.15 correspond to no asteroids
 		probability.push_back(sum_probability);
-		std::cout << "Color";
-		for (int i = -3; i < 1; ++i)
-			std::cout << ' ' << (int) pDataLoop[i];
-		std::cout << "\n";
 		pDataLoop += 4;
 	}
 	std::cout << "\e[94mRing density : " << sum_probability << "\e[0m\n";
