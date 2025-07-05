@@ -60,6 +60,7 @@ po/*
 *.obj
 *.mtl
 *.zip
+*.cat
 
 
 # Executables
