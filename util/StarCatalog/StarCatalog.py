@@ -101,11 +101,13 @@ class Catalogs:
 			print("-----", c.filename, "-----")
 			ret = getattr(c, "zone"+str(zone)).findByCriteria(func)
 
+"""
 cat=Catalogs()
 def asyncLoad():
 	cat.load()
 thread = threading.Thread(target=asyncLoad, name="Async Catalog Loader")
 thread.start()
+"""
 
 c = None
 z = None
