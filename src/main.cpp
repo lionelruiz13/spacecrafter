@@ -256,7 +256,7 @@ int main(int argc, const char *argv[])
 	AppSettings* ini = AppSettings::Instance();
 	ini->loadAppSettings( &conf );
 
-	Log->setDebug(conf.getBoolean(SCS_MAIN, SCK_PRINT_LOG));
+	Log->setDebug(conf.getBoolean(SCS_DEBUG, SCK_PRINT_LOG));
 	Log->setWriteLog(conf.getBoolean(SCS_DEBUG, SCK_WRITE_LOG));
 
 	std::unique_ptr<CPUInfo> cpuInfo =  nullptr;

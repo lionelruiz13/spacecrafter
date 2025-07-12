@@ -1437,7 +1437,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS, ssystemFactory->getFlagPlanetsOrbits());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME, ssystemFactory->getFlagLightTravelTime());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_MILKY_WAY, milky_way->getFlagShow());
-	conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_INTENSITY, milky_way->getIntensity());
+	conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_INTENSITY, (milky_way->getIntensity() > 1.0f) ? milky_way->getIntensity() * 100 : milky_way->getIntensity());
 	conf.setDouble(SCS_ASTRO, SCK_STAR_SIZE_LIMIT, starGetSizeLimit());
 	conf.setDouble(SCS_ASTRO, SCK_PLANET_SIZE_MARGINAL_LIMIT, getPlanetsSizeLimit());
 	conf.setStr(SCS_INIT_LOCATION , SCK_LANDSCAPE_NAME, landscape->getName() );
