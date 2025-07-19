@@ -949,6 +949,7 @@ public:
 
 	//! Whether App thing HipStarMgr is in use or not
 	bool isDrawingHipStarMgr;
+	bool isJoypadConnected = false;
 	static CoreLink *instance;
 private:
     std::shared_ptr<Core> core;

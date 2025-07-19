@@ -524,10 +524,12 @@ void UI::handleJoyAddStick()
 {
 	joypadController = new JoypadController(this);
 	joypadController->init("joypad.ini");
+	coreLink->isJoypadConnected = true;
 }
 
 void UI::handleJoyRemoveStick()
 {
+	coreLink->isJoypadConnected = false;
 	delete joypadController;
 	joypadController = nullptr;
 }

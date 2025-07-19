@@ -69,7 +69,7 @@ enum class SCD_NAMES: char {APP_ATMOSPHERE_FADE_DURATION = 30,APP_MOON_BRIGHTNES
                             APP_STALL_RADIUS_UNIT,/*APP_TULLY_COLOR_MODE,*/ APP_DATETIME_DISPLAY_POSITION,APP_DATETIME_DISPLAY_NUMBER,APP_FLAG_NONE
                             };
 
-enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE, SUN_AZIMUTH, DATE_YEAR, DATE_MONTH, DATE_DAY, DATE_HOUR, DATE_MINUTE, HEADING, SELECTED_RA, SELECTED_DE, SELECTED_STAR_RA, SELECTED_STAR_DE, SELECTED_AZ, SELECTED_ALT, BODY_SELECTED, LANGUAGE };
+enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE, SUN_AZIMUTH, DATE_YEAR, DATE_MONTH, DATE_DAY, DATE_HOUR, DATE_MINUTE, HEADING, SELECTED_RA, SELECTED_DE, SELECTED_STAR_RA, SELECTED_STAR_DE, SELECTED_AZ, SELECTED_ALT, BODY_SELECTED, LANGUAGE, JOYPAD };
 
 
 // name of the arguments of the commands
@@ -618,12 +618,12 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACI_RW_ALTITUDE             "altitude"
 #define ACI_RW_SUN_ALTITUDE         "sun_altitude"
 #define ACI_RW_SUN_AZIMUTH          "sun_azimuth"
-#define ACI_RW_SELECTED_AZ         "selected_az"
+#define ACI_RW_SELECTED_AZ          "selected_az"
 #define ACI_RW_SELECTED_ALT         "selected_alt"
-#define ACI_RW_SELECTED_RA         "selected_ra"
-#define ACI_RW_SELECTED_DE         "selected_de"
-#define ACI_RW_SELECTED_STAR_RA    "selected_star_ra"
-#define ACI_RW_SELECTED_STAR_DE    "selected_star_de"
+#define ACI_RW_SELECTED_RA          "selected_ra"
+#define ACI_RW_SELECTED_DE          "selected_de"
+#define ACI_RW_SELECTED_STAR_RA     "selected_star_ra"
+#define ACI_RW_SELECTED_STAR_DE     "selected_star_de"
 #define ACI_RW_DATE_YEAR            "date_year"
 #define ACI_RW_DATE_MONTH           "date_month"
 #define ACI_RW_DATE_DAY             "date_day"
@@ -632,7 +632,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACI_RW_HEADING              "heading"
 #define ACI_RW_BODY_SELECTED        "body_selected"
 #define ACI_RW_LANGUAGE        		"language"
-
+#define ACI_RW_JOYPAD			    "joypad"
 
 // list command for text_font
 #define TF_TEXT                       "text"
