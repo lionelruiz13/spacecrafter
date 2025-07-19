@@ -312,7 +312,7 @@ int main(int argc, const char *argv[])
 		.window=sdl->getWindow(), .vulkanVersion=VK_API_VERSION_1_1, .width=curMin, .height=-curMin, .queueRequest={2, 0, 0, 1, 1},
 		.requiredExtensions={"VK_KHR_timeline_semaphore"},
 		.redirectLog=cLog::writeECLog, .cachePath=ini->getUserDir()+"cache/", .logPath=appDir+"log/",
-		.swapchainUsage = (renderSize <= 0) ? VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+		.swapchainUsage = static_cast<VkImageUsageFlags>((renderSize <= 0) ? VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT),
 		.chunkSize=256, .forceSwapchainCount=3,
 		.enableDebugLayers=conf.getBoolean(SCS_DEBUG, SCK_DEBUG_LAYER), .drawLogs=conf.getBoolean(SCS_DEBUG, SCK_PRINT_LOG),
 		.saveLogs=conf.getBoolean(SCS_DEBUG, SCK_WRITE_LOG), .preserveCrashLogs = true,
