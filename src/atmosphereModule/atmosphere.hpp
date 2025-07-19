@@ -175,11 +175,6 @@ private:
 	Vec3f *pSkyColor = nullptr;
 	VkCommandBuffer cmds[3];
 
-	//variables on the grid position
-	float stepX; //!< step size on the x axis
-	float stepY; //!< step size on the y-axis
-	float viewport_left; //!<spacing on the left of the grid
-	float viewport_bottom; //!< spacing at the bottom of the grid
 	float default_fader_duration;
 };
 

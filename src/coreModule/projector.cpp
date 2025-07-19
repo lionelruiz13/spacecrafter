@@ -29,7 +29,7 @@
 #include <cstdio>
 #include "coreModule/projector.hpp"
 #include "tools/s_font.hpp"
-
+#include "EntityCore/Core/VulkanMgr.hpp"
 
 #include <fcntl.h>
 //#include "tools/fmath.hpp"
@@ -263,34 +263,42 @@ bool Projector::projectCustomFixedFov(const Vec3d &v,Vec3d &win, const Mat4d &ma
 
 void Projector::unproject(double x, double y, const Mat4d& m, Vec3d& v) const
 {
-	double d = getViewportRadius();
+	const auto pos = VulkanMgr::instance->screenToRect({x, y});
+	double length = sqrt(pos.first*pos.first + pos.second*pos.second);
+	const double angle_center = length * fov * (M_PI/360.);
+	const double r = sin(angle_center);
 
-	//	printf("unproject x,y: %f, %f   cx,cy: %f, %f\n", x, y, center[0], center[1]);
-	v[0] = (x - viewport_center[0]); //shear_horz;
-	v[1] = y - viewport_center[1];
-	v[2] = 0;
-
-	double length = v.length()/d;
-
-	//  printf("viewport radius = %f, length = %f \n", d, length);
-
-	double angle_center = length * fov/2*M_PI/180;
-	double r = sin(angle_center);
-
-	if (length!=0) {
-		v.normalize();
-		v*= r;
-		v[2] = sqrt(1.-(v[0]*v[0]+v[1]*v[1]));
+	if (length) {
+		length = r / length;
+		v.set(pos.first * length, -pos.second * length, sqrt(1.-r*r));
 	} else {
-		v.set(0.,0.,1.);
+		v.set(0, 0, 1);
 	}
 
-	if (angle_center>M_PI_2) v[2] = -v[2];
+	if (angle_center>M_PI_2)
+		v[2] = -v[2];
 
 	v.transfo4d(m);
 }
 
+void Projector::unprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const
+{
+	double length = sqrt(x*x + y*y);
+	const double angle_center = length * fov * (M_PI/360.);
+	const double r = sin(angle_center);
 
+	if (length) {
+		length = r / length;
+		v.set(x * length, y * length, sqrt(1.-r*r));
+	} else {
+		v.set(0, 0, 1);
+	}
+
+	if (angle_center>M_PI_2)
+		v[2] = -v[2];
+
+	v.transfo4d(m);
+}
 
 // Set the standard modelview matrices used for projection
 void Projector::setModelViewMatrices(	const Mat4d& _mat_earth_equ_to_eye,

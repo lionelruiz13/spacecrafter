@@ -985,7 +985,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
             f /= rq * halfFov;
         } else
             f = 1 / (distance * halfFov);
-    screenPos = VulkanMgr::instance->rectToScreenf({eye_planet[0] * f, eye_planet[1] * f});
+    screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
 }
 
 double Body::getAxisAngle() const {

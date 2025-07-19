@@ -158,7 +158,7 @@ void AppDraw::initSplash()
 {
     Context &context = *Context::instance;
     VulkanMgr &vkmgr = *VulkanMgr::instance;
-    if (vkmgr.getSwapchainView().empty()) {
+    if (vkmgr.getSwapchain() == VK_NULL_HANDLE) {
         cLog::get()->write("No drawable swapchain, skip splash screen.", LOG_TYPE::L_DEBUG);
         return;
     }

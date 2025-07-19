@@ -101,7 +101,8 @@ App::App( SDLFacade* const sdl )
 	settings = AppSettings::Instance();
 	InitParser conf;
 	settings->loadAppSettings( &conf );
-	renderSize = std::max(conf.getInt(SCS_VIDEO, SCK_RENDER_SIZE), 0);
+	if (renderSize = std::max(conf.getInt(SCS_VIDEO, SCK_RENDER_SIZE), 0))
+		VulkanMgr::instance->dedicatedViewport(renderSize, -renderSize);
 	Texture::setTextureDir(settings->getTextureDir());
 	Pipeline::setShaderDir(settings->getShaderDir());
 	ComputePipeline::setShaderDir(settings->getShaderDir());
@@ -429,7 +430,7 @@ void App::finalizeInitVulkan(InitParser &conf)
 	context.indexBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 64*1024*1024, "indexBuffer BufferMgr");
 	context.multiVertexArray = std::make_unique<VertexArray>(vkmgr, 6*sizeof(float));
 	context.multiVertexMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, context.multiVertexArray->alignment*64*1024, "draw_helper BufferMgr");
-	context.starColorAttachment = std::make_unique<Texture>(vkmgr, vkmgr.getScreenRect().extent.width, vkmgr.getScreenRect().extent.height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+	context.starColorAttachment = std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 	context.starColorAttachment->use();
 	context.maxShadowCast = conf.getInt(SCS_RENDERING, SCK_MAX_SHADOW_CAST);
 	context.shadow = std::make_unique<Texture>(vkmgr, TextureInfo{.width=(int) context.shadowRes, .height=(int) context.shadowRes, .nbChannels=1, .arrayLayers=context.maxShadowCast, .usage=VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT, .format=VK_FORMAT_R8_UNORM, .name="Projected shadows"});
@@ -974,7 +975,7 @@ void App::submitFrame(App *self, int id)
 			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
 			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
 			.image = self->offscreenImage[id]->getImage(),
-			.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1}
+			.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1}
 		},{
 			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
 			.pNext = nullptr,
@@ -985,15 +986,17 @@ void App::submitFrame(App *self, int id)
 			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
 			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
 			.image = VulkanMgr::instance->getSwapchainImage()[id],
-			.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1}
+			.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1}
 		}};
 		vkCmdPipelineBarrier(mainCmd, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 2, imageBarrier);
 
+		const auto screen0 = VulkanMgr::instance->rectToScreen({-1.f, -1.f});
+		const auto screen1 = VulkanMgr::instance->rectToScreen({1.f, 1.f});
 		VkImageBlit blit{
 			.srcSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
 			.srcOffsets = {},
 			.dstSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
-			.dstOffsets = {{}, {static_cast<int32_t>(VulkanMgr::instance->getSwapChainExtent().width), static_cast<int32_t>(VulkanMgr::instance->getSwapChainExtent().height), 1}},
+			.dstOffsets = {{screen0.first, screen0.second, 0}, {screen1.first, screen1.second, 1}},
 		};
 		self->offscreenImage[id]->getDimensions(blit.srcOffsets[1].x, blit.srcOffsets[1].y, blit.srcOffsets[1].z);
 		vkCmdBlitImage(mainCmd, self->offscreenImage[id]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VulkanMgr::instance->getSwapchainImage()[id], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit, VK_FILTER_LINEAR);

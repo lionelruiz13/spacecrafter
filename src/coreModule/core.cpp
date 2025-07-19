@@ -905,7 +905,7 @@ bool Core::findAndSelect(const Vec3d& pos)
 bool Core::findAndSelect(int x, int y)
 {
 	Vec3d v;
-	projection->unprojectEarthEqu(x,projection->getViewportHeight()-y,v);
+	projection->unprojectEarthEqu(x, y, v);
 	return findAndSelect(v);
 }
 
@@ -1472,7 +1472,7 @@ std::string Core::getCursorPos(int x, int y)
 Vec3f Core::getCursorPosEqu(int x, int y)
 {
 	Vec3d v;
-	projection->unprojectEarthEqu(x,projection->getViewportHeight()-y,v);
+	projection->unprojectEarthEqu(x, y,v);
 	return v;
 }
 
@@ -1573,11 +1573,11 @@ void Core::dragView(int x1, int y1, int x2, int y2)
 	Vec3d tempvec1, tempvec2;
 	double az1, alt1, az2, alt2;
 	if (navigation->getViewingMode()==Navigator::VIEW_HORIZON) {
-		projection->unprojectLocal(x2,projection->getViewportHeight()-y2, tempvec2);
-		projection->unprojectLocal(x1,projection->getViewportHeight()-y1, tempvec1);
+		projection->unprojectLocal(x2, y2, tempvec2);
+		projection->unprojectLocal(x1, y1, tempvec1);
 	} else {
-		projection->unprojectEarthEqu(x2,projection->getViewportHeight()-y2, tempvec2);
-		projection->unprojectEarthEqu(x1,projection->getViewportHeight()-y1, tempvec1);
+		projection->unprojectEarthEqu(x2, y2, tempvec2);
+		projection->unprojectEarthEqu(x1, y1, tempvec1);
 	}
 	Utility::rectToSphe(&az1, &alt1, tempvec1);
 	Utility::rectToSphe(&az2, &alt2, tempvec2);
