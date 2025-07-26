@@ -466,15 +466,19 @@ public:
 	void showStar(uint32_t hip);
 	void showAllStar();
 
-	struct VariableStar {
-		uint32_t hip;
-		float magMax;
-		double refJDay{};
+	struct VariableStarCurve {
 		double period{};
-		float halfLowPeriod{};
+		double refJDay{};
+		float lowPeriod{};
 		float downPeriod{};
 		float upPeriod{};
 		float magMin;
+	};
+
+	struct VariableStar {
+		uint32_t hip;
+		float magMax;
+		std::vector<VariableStarCurve> curves;
 	};
 
 	void addVariableStar(VariableStar &&star);

@@ -1222,29 +1222,21 @@ void HipStarMgr::showAllStar(void)
 float HipStarMgr::getVariableStarMag(int variableStarIndex)
 {
 	VariableStar &vstar = variableStars[variableStarIndex-1];
-	if (vstar.magMax == vstar.magMin)
-		return vstar.magMax;
 
-	float result;
-	{
-		double res = current_JDay - vstar.refJDay;
-		res -= floor(res / vstar.period) * vstar.period;
-		result = res;
-	}
-
-	if (result > vstar.period - vstar.halfLowPeriod || result < vstar.halfLowPeriod){
-		if (result > vstar.period - (vstar.halfLowPeriod - vstar.downPeriod) || result < vstar.halfLowPeriod - vstar.upPeriod) {
-			return vstar.magMin;
-		} else {
-			if (result < vstar.halfLowPeriod){
-				return vstar.magMax + (vstar.magMax-vstar.magMin)/vstar.upPeriod*(result - vstar.halfLowPeriod);
-			} else {
-				return vstar.magMax + (vstar.magMin-vstar.magMax)/vstar.downPeriod*(result - (vstar.period - vstar.halfLowPeriod));
+	for (VariableStarCurve &curve : vstar.curves) {
+		float result = fmod(current_JDay - curve.refJDay, curve.period);
+		if (result < curve.lowPeriod) {
+			if (result < curve.downPeriod) {
+				return vstar.magMax + (curve.magMin-vstar.magMax) * result / curve.downPeriod;
 			}
+			result += curve.upPeriod - curve.lowPeriod;
+			if (result > 0) {
+				return curve.magMin + (vstar.magMax-curve.magMin) * result / curve.upPeriod;
+			}
+			return curve.magMin;
 		}
-	} else {
-		return vstar.magMax;
 	}
+	return vstar.magMax;
 }
 
 void HipStarMgr::addVariableStar(VariableStar &&star)
@@ -1254,8 +1246,7 @@ void HipStarMgr::addVariableStar(VariableStar &&star)
 		return;
 	}
 	if (int index = hip_index[star.hip].s->getVariableStarIndex()) {
-		cLog::get()->write("Variable star " + std::to_string(star.hip) + " redeclared - Only the last redeclaration is taken into account", LOG_TYPE::L_WARNING);
-		variableStars[index-1] = std::move(star);
+		variableStars[index-1].curves.push_back(star.curves[0]);
 	} else {
 		hip_index[star.hip].s->setVariableStarIndex(variableStars.size());
 		variableStars.push_back(std::move(star));
@@ -1367,20 +1358,24 @@ void HipStarMgr::readFileVariableStar()
 			cLog::get()->write("VariableStar error parsing "+record, LOG_TYPE::L_ERROR);
 			return;
 		}
+		// lower reach floor upper reach top
+		// factor variation : time to low, when to up, time to up
 		VariableStar star{
 			.hip=hip,
 			.magMax=getBaseMag(hip),
-			.refJDay=refJDay,
-			.period=durationToJulianDay(period),
-			.halfLowPeriod=static_cast<float>(durationToJulianDay(lowPeriod) / 2),
-			.downPeriod=static_cast<float>(durationToJulianDay(downPeriod)),
-			.upPeriod=static_cast<float>(durationToJulianDay(upPeriod)),
-			.magMin=static_cast<float>(magMin),
+			.curves={VariableStarCurve{
+				.period=durationToJulianDay(period),
+				.refJDay=refJDay,
+				.lowPeriod=static_cast<float>(durationToJulianDay(lowPeriod)),
+				.downPeriod=static_cast<float>(durationToJulianDay(downPeriod)),
+				.upPeriod=static_cast<float>(durationToJulianDay(upPeriod)),
+				.magMin=static_cast<float>(magMin),
+			}}
 		};
-		if (star.period == -1
-		 || star.halfLowPeriod == -0.5
-		 || star.downPeriod == -1
-		 || star.upPeriod == -1
+		if (star.curves[0].period == -1
+		 || star.curves[0].lowPeriod == -1
+		 || star.curves[0].downPeriod == -1
+		 || star.curves[0].upPeriod == -1
 		 || hip > NR_OF_HIP
 		 || hip_index[hip].s == nullptr
 		) {

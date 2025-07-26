@@ -430,7 +430,7 @@ void App::finalizeInitVulkan(InitParser &conf)
 	context.indexBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 64*1024*1024, "indexBuffer BufferMgr");
 	context.multiVertexArray = std::make_unique<VertexArray>(vkmgr, 6*sizeof(float));
 	context.multiVertexMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, context.multiVertexArray->alignment*64*1024, "draw_helper BufferMgr");
-	context.starColorAttachment = std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+	context.starColorAttachment = std::make_unique<Texture>(vkmgr, vkmgr.getScreenRect().extent.width, vkmgr.getScreenRect().extent.height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 	context.starColorAttachment->use();
 	context.maxShadowCast = conf.getInt(SCS_RENDERING, SCK_MAX_SHADOW_CAST);
 	context.shadow = std::make_unique<Texture>(vkmgr, TextureInfo{.width=(int) context.shadowRes, .height=(int) context.shadowRes, .nbChannels=1, .arrayLayers=context.maxShadowCast, .usage=VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT, .format=VK_FORMAT_R8_UNORM, .name="Projected shadows"});
