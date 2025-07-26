@@ -113,7 +113,7 @@ void MilkyWay::defineZodiacalState(const std::string& tex_file, float _intensity
 {
 	if (zodiacal.tex==nullptr) { //fist time to read this texture
 		zodiacal.tex = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-		zodiacal.intensity = std::clamp(_intensity, 0.f, 1.f);
+		zodiacal.intensity = std::clamp(_intensity, 0.f, 10.f);
 		zodiacal.name = tex_file;
 		buildZodiacal();
 	} else {
@@ -125,16 +125,16 @@ void MilkyWay::defineInitialMilkywayState(const std::string& path_file,const std
 {
 	if (defaultMilky.tex==nullptr) {
 		defaultMilky.tex = std::make_unique<s_texture>(path_file + tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-		defaultMilky.intensity = std::clamp(_intensity, 0.f, 1.f);
+		defaultMilky.intensity = std::clamp(_intensity, 0.f, 10.f);
 		defaultMilky.name = path_file +tex_file;
 		currentMilky.tex = std::make_unique<s_texture>(path_file + tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-		currentMilky.intensity =  std::clamp(_intensity, 0.f, 1.f);
+		currentMilky.intensity =  std::clamp(_intensity, 0.f, 10.f);
 		currentMilky.name = path_file +tex_file;
 		intensityMilky.set(currentMilky.intensity);
 
 		if (useIrisMilky && !iris_tex_file.empty()) {
 			irisMilky.tex = std::make_unique<s_texture>(path_file + iris_tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-			irisMilky.intensity =  std::clamp(_intensity, 0.f, 1.f);
+			irisMilky.intensity =  std::clamp(_intensity, 0.f, 10.f);
 			irisMilky.name = path_file + iris_tex_file;
 			cLog::get()->write("Milkyway: define irisMilky, name "+ iris_tex_file, LOG_TYPE::L_DEBUG);
 		} else
