@@ -155,9 +155,8 @@ public:
 		unproject(x, y, inv_mat_earth_equ_to_eye, v);
 	}
 
-	inline bool unprojectJ2000(double x, double y, Vec3d& v) const {
-		unproject(x, y, inv_mat_j2000_to_eye, v);
-		return true;
+	inline void unprojectJ2000Normalized(double x, double y, Vec3d& v) const {
+		unprojectNormalized(x, y, inv_mat_j2000_to_eye, v);
 	}
 
 	// taking account of precession

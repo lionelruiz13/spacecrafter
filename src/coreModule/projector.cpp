@@ -107,50 +107,46 @@ StelGeom::ConvexS Projector::unprojectViewport(void) const
 	// or at least very small d/n.length().
 	if ((fov < 90) /*&& fov < 360.0*/) {
 		Vec3d e0,e1,e2,e3;
-		bool ok;
-		if (fov >= 120.0) {
-			unprojectJ2000(viewport_center[0],viewport_center[1],e0);
-			StelGeom::ConvexS rval(1);
-			rval[0].n = e0;
-			rval[0].d = (fov<360.0) ? cos(fov*(M_PI/360.0)) : -1.0;
-			return rval;
-		}
-		ok  = unprojectJ2000(viewport_center[0] - 0.5*viewport_fov_diameter, viewport_center[1] - 0.5*viewport_fov_diameter,e0);
-		ok &= unprojectJ2000(viewport_center[0] + 0.5*viewport_fov_diameter, viewport_center[1] + 0.5*viewport_fov_diameter,e2);
-		ok &= unprojectJ2000(viewport_center[0] - 0.5*viewport_fov_diameter, viewport_center[1] + 0.5*viewport_fov_diameter,e1);
-		ok &= unprojectJ2000(viewport_center[0] + 0.5*viewport_fov_diameter, viewport_center[1] - 0.5*viewport_fov_diameter,e3);
+		// if (fov >= 120.0) {
+		// 	unprojectJ2000Normalized(0.f, 0.f, e0);
+		// 	StelGeom::ConvexS rval(1);
+		// 	rval[0].n = e0;
+		// 	rval[0].d = (fov<360.0) ? cos(fov*(M_PI/360.0)) : -1.0;
+		// 	return rval;
+		// }
+		unprojectJ2000Normalized(-1.f, -1.f, e0);
+		unprojectJ2000Normalized(+1.f, +1.f, e2);
+		unprojectJ2000Normalized(-1.f, +1.f, e1);
+		unprojectJ2000Normalized(+1.f, -1.f, e3);
 
-		if (ok) {
-			StelGeom::HalfSpace h0(e0^e1);
-			StelGeom::HalfSpace h1(e1^e2);
-			StelGeom::HalfSpace h2(e2^e3);
-			StelGeom::HalfSpace h3(e3^e0);
-			if (h0.contains(e2) && h0.contains(e3) &&
-			        h1.contains(e3) && h1.contains(e0) &&
-			        h2.contains(e0) && h2.contains(e1) &&
-			        h3.contains(e1) && h3.contains(e2)) {
-				StelGeom::ConvexS rval(4);
-				rval[0] = h0;
-				rval[1] = h1;
-				rval[2] = h2;
-				rval[3] = h3;
-				return rval;
-			} else {
-				Vec3d middle;
-				if (unprojectJ2000(vec_viewport[0]+0.5*vec_viewport[2], vec_viewport[1]+0.5*vec_viewport[3],middle)) {
-					double d = middle*e0;
-					double h = middle*e1;
-					if (d > h) d = h;
-					h = middle*e2;
-					if (d > h) d = h;
-					h = middle*e3;
-					if (d > h) d = h;
-					StelGeom::ConvexS rval(1);
-					rval[0].n = middle;
-					rval[0].d = d;
-					return rval;
-				}
-			}
+		StelGeom::HalfSpace h0(e0^e1);
+		StelGeom::HalfSpace h1(e1^e2);
+		StelGeom::HalfSpace h2(e2^e3);
+		StelGeom::HalfSpace h3(e3^e0);
+		if (h0.contains(e2) && h0.contains(e3) &&
+		        h1.contains(e3) && h1.contains(e0) &&
+		        h2.contains(e0) && h2.contains(e1) &&
+		        h3.contains(e1) && h3.contains(e2)) {
+			StelGeom::ConvexS rval(4);
+			rval[0] = h0;
+			rval[1] = h1;
+			rval[2] = h2;
+			rval[3] = h3;
+			return rval;
+		} else {
+			Vec3d middle;
+			unprojectJ2000Normalized(0.f, 0.f, middle);
+			double d = middle*e0;
+			double h = middle*e1;
+			if (d > h) d = h;
+			h = middle*e2;
+			if (d > h) d = h;
+			h = middle*e3;
+			if (d > h) d = h;
+			StelGeom::ConvexS rval(1);
+			rval[0].n = middle;
+			rval[0].d = d;
+			return rval;
 		}
 	}
 	StelGeom::ConvexS rval(1);
