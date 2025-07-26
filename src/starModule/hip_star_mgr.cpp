@@ -797,15 +797,17 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
 		const float mag_min = 0.001f*it->second->mag_min;
 
-		const float k = (0.001f*it->second->mag_range)/it->second->mag_steps;
-		for (int i=it->second->mag_steps-1; i>=0; i--) {
-			const float mag = mag_min+k*i;
-			if (mag_converter->computeRCMag(mag, eye, rcmag_table + 2*i) < 0) {
-				if (i==0) {
-					return 0.; //goto exit_loop;
-				}
-			}
-			rcmag_table[2*i] *= fader;
+		const float k = static_cast<float>(it->second->mag_range)/(it->second->mag_steps*1000);
+		if (mag_converter->computeRCMag(mag_min, eye, rcmag_table) < 0)
+			return 0.; //goto exit_loop;
+		rcmag_table[0] *= fader;
+
+		int i = 0;
+		const int end = it->second->mag_steps * 2;
+		float mag = mag_min;
+		while ((i+=2) < end) {
+			mag += k;
+			mag_converter->computeRCMag(mag, eye, rcmag_table + i);
 		}
 		last_max_search_level = it->first;
 
