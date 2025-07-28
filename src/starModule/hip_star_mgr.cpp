@@ -1250,7 +1250,7 @@ void HipStarMgr::addVariableStar(VariableStar &&star)
 	if (int index = hip_index[star.hip].s->getVariableStarIndex()) {
 		variableStars[index-1].curves.push_back(star.curves[0]);
 	} else {
-		hip_index[star.hip].s->setVariableStarIndex(variableStars.size());
+		hip_index[star.hip].s->setVariableStarIndex(variableStars.size()+1);
 		variableStars.push_back(std::move(star));
 	}
 }
