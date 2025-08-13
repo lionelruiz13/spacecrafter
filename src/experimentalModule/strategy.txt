@@ -1,0 +1,18 @@
+Priority :
+- LAZY
+- BACKGROUND
+- PRELOAD
+- NOW
+
+Taskable :
+- ModularBody
+
+ModularBody drawing :
+- Update position
+- Execute tasks
+- 
+
+Loading :
+- ModularBody (Taskable )
+- Optionnal light lazy module loading (Load on background - LAZY , prioritize on activation, keep loaded)
+- Light lazy module loading (BACKGROUND priority on background,  keep loaded)

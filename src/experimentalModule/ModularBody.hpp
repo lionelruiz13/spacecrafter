@@ -7,6 +7,8 @@
 #include "coreModule/time_mgr.hpp"
 #include "bodyModule/rotation_elements.hpp"
 #include "bodyModule/orbit.hpp"
+#include "AsyncHub.hpp"
+#include "EntityCore/Executor/ASmooth.hpp"
 #include <memory>
 #include <list>
 
@@ -38,6 +40,12 @@ enum class BodyType : unsigned char {
     EARTH_MOON,
 };
 
+enum ModularBodyTraits {
+    MBT_REPLICATED, // This modular body is heavily replicated (ex : asteroid ring)
+    MBT_HALO, // This modular body have a halo
+    MBT_CLUSTER, // This modular body must use cluster optimisation (ex : asteroid ring)
+};
+
 inline constexpr BodyType operator&(BodyType t1, BodyType t2)
 {
     return static_cast<BodyType>(static_cast<uint8_t>(t1) & static_cast<uint8_t>(t2));
@@ -55,12 +63,106 @@ struct ModularBodyCreateInfo {
     Vec3f haloColor;
     float albedo;
     float radius;
-    float innerRadius;
-    float oblateness;
+    float oblateness; // Not universal
     float solLocalDay;
-    BodyType bodyType;
-    bool isHaloEnabled;
-    bool altitudeRelativeToRadius;
+    Vec3f haloColor;
+    // New
+    Vec3f shadowAbsorbtion;
+    float brightness;
+
+    // Deprecated
+    float innerRadius; // Deprecated
+    BodyType bodyType; // Deprecated
+    bool isHaloEnabled; // May deprecate
+    bool altitudeRelativeToRadius; // Deprecated
+};
+
+//! Minimal size of the system on screen for showing orbiting bodies, in pixels
+constexpr int SYSTEM_VISIBILITY_SUBSYSTEM_SIZE = 16;
+//! Minimal size of the body (bounding) on screen for showing the outer BodyModule without shadows nor Grounded ModularBody, in pixels
+constexpr int BODY_EARLY_VISIBILITY_BOUNDING_SIZE = 2;
+//! Minimal size of the body (bounding) on screen for showing the body normally in pixels
+constexpr int BODY_FULL_VISIBILITY_BOUNDING_SIZE = 16;
+//! Minimal speed while under the area of influence of a body, in body_radius/s
+constexpr double MIN_MOVEMENT_SPEED = 0.125;
+//! Minimal distance to the center of the body for showing surface BodyModule, in multiple of body radius
+constexpr double BODY_SURFACE_HEIGHT = 2;
+//! Maximal sizeof a texture to be considered negligible (lazy)
+constexpr size_t MAX_LAZY_TEXTURE_SIZE = 4*1024*1024;
+constexpr int MAIN_SELF_SHADOWING_RESOLUTION = 8192;
+constexpr int SECONDARY_SELF_SHADOWING_RESOLUTION = 2048;
+
+// ModularBody :
+// - Relative position (position from orbit, when the body is not visible)
+// - [volatile] SystemMatrix (rotation from orbit, feeding back relative position)
+// - Axis
+// - Rotation
+// - Grounded ModularBody
+// - Outer orbiting ModularBody
+// - Inner ModularBody (shown when inside the AoI)
+// - Outer BodyModule (shown when outside the bounding radius)
+// - Surface BodyModule (shown instead of Outer BodyModule when the body is the nearest to be bigger than the viewport)
+// - Inner BodyModule (shown when inside the body radius but outside the AoI of inner ModularBody)
+// - Received shadows (used for caching of the shadow state, allowing to reuse it as long as it's close enough)
+// - Grounded EnvironmentModule - Priority over InAoI EnvironmentModule
+// - InAoI EnvironmentModule
+// - [Loader] All unique instanced BodyModule (by tag)
+// - [Loader] All non-unique instanced BodyModule (by name)
+// - Body radius
+// - Body scaling (Just visual scaling)
+// - Bounding radius
+// - System Radius
+// - Area of Influence radius
+// - Separation plane, if any (Mostly used for body rings and milkyway)
+// - Brightness (only if it's a star)
+// - Projected shadow absorbtion (ex : earth's projected shadow is {0.0, 1.0, 1.0})
+
+// Shadow projection :
+// - With outer orbiting ModularBody
+// - Outer : DepthBuffer shared with grounded ModularBody for drawing and shadowing
+// - Surface : DepthBuffer split between grounded ModularBody, parent's depth trace is drawn in each DepthBuffer, project shadow with and between grounded ModularBody
+
+// Depth buffers :
+// - Orbit depth buffer : Depth bounds calibrated for the smallest system visible [only update bound values] - It may go wrong though
+// - Body depth buffer : Cleared for each significant bodies
+// - Self-shadowing depth buffer : Large depth buffer for main body, 2k for others
+// - Shadow casting stencil buffer
+
+// Requests threads :
+// - Main thread (Event + render while updating)
+// - Resource loader
+// - GPU computing (ex : shadow tracing)
+// - Script
+// - Texture/resource async loaders
+// - Video stream
+
+//! @brief The level of prioritisation of the resources of this body
+enum class ResourcePriority {
+    UNLOADED, // No resources acquired, either because it was either explicitly unloaded or because it is an inner ModularBody or a child of it and the camera is outside of his area of influence
+    LAZY, // Only minimal ressources shall be loaded on background (default)
+    BACKGROUND, // High resolution of this ressource will probably been needed (lower resolution in use)
+    PRELOAD, // High resolution of this ressource is needed in the near future (preload request)
+    ACTIVE, // This ressource is currently needed (ex : missing resolution expected, ressource currently used)
+};
+
+enum class BodyRelation {
+    HIDDEN_GROUNDED,
+    HIDDEN_ORBITING,
+    HIDDEN_INNER,
+    GROUNDED,
+    ORBITING,
+    INNER,
+};
+
+enum BodyModuleType {
+    BMT_BODY,
+    BMT_SURFACE,
+    BMT_RING,
+    BMT_ORBIT,
+    BMT_TRAIL,
+    BMT_HINT,
+    BMT_ATMOSPHERE,
+    BMT_INSTANCE, // Not a type
 };
 
 class ModularBody {
@@ -540,6 +642,22 @@ private:
 
     // Relations
     ModularBody *parent;
+    BodyRelation relation;
+    std::vector<std::unique_ptr<ModularBody>> groundedBodies;
+    std::vector<std::unique_ptr<ModularBody>> orbitingBodies;
+    std::vector<std::unique_ptr<ModularBody>> innerBodies;
+    std::vector<std::unique_ptr<BodyModule>> outerComponents;
+    std::vector<std::unique_ptr<BodyModule>> surfaceComponents;
+    std::vector<std::unique_ptr<BodyModule>> innerComponents;
+    std::vector<std::unique_ptr<EnvironmentModule>> groundedEnvironment;
+    std::vector<std::unique_ptr<EnvironmentModule>> environment;
+    std::vector<std::unique_ptr<ShadowProjection>> shadows;
+
+    // Resource manager only - may put out of this class
+    std::unique_ptr<BodyModule> genericComponents[BMT_INSTANCE];
+    std::map<std::string_view, std::unique_ptr<BodyModule>> extraComponents;
+
+    // Deprecated
     std::list<ModularBody> childs; // Drawn if screenSize >= 10%
     std::list<std::shared_ptr<BodyModule>> farComponents; // 2D behind body, SKIP when screenSize > 20%, update NEVER called
     std::list<std::shared_ptr<BodyModule>> nearComponents; // Drawn if screenSize >= 0.15% and distance > innerRadius
@@ -551,7 +669,7 @@ private:
     std::unique_ptr<Orbit> orbit;
     RotationElements re;
 
-    // Cached data
+    // Cached data (may deprecate)
     Mat4f mat; // Matrix defining this body regarding to the observer
     Vec3f eclipticPos;
     std::pair<float, float> screenPos;
@@ -564,7 +682,7 @@ private:
     float rmag;
     float cmag;
 
-    // Asynchronous internal datas
+    // Asynchronous internal datas, deprecated
     double lastJD = 0; // Last JD
     double computedJD = 0; // Computed JD
     Vec3f computedEclipticPos; // computed position reached in the future, relative to the parent body
@@ -575,14 +693,14 @@ private:
     float albedo;					// Body albedo
 
     // Navigation and visibility
+    ASmooth<AsyncHub, float, 5.f> scaling;
     float radius;
-    float scaling = 1;
-    float innerRadius; // Radius of the area in which inComponents are drawn
+    float innerRadius; // [deprecated] Radius of the area in which inComponents are drawn
     float boundingRadius; // Smallest radius including all nearComponents
     float subsystemRadius; // Radius including all child bodies
     float areaOfInfluence; // Area under the influence of this body
 
-    // Internal datas
+    // Internal datas, deprecated
     float one_minus_oblateness;
     float solLocalDay;			//time of a sideral day in this planet
     uint8_t pointerCount = 0; // Number of pointer pointing this object

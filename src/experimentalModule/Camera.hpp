@@ -78,7 +78,7 @@ public:
     }
 
     inline Vec3f observedToLocalPos(const Vec3f &observedPos) const {
-        return view.getCachedMatrix().transpose().multiplyWithoutTranslation(observedPos);
+        return Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az)).transpose().multiplyWithoutTranslation(observedPos);
     }
     inline Vec3f observedToBodyLocalPos(const Vec3f &observedPos) const {
         Vec3f ret = observedToLocalPos(observedPos);
@@ -106,8 +106,8 @@ public:
         Vec3f direction = observedToLocalPos(observedPos);
         std::pair<float, float> ret;
         if ((direction[0] + direction[1]) == 0) {
-            ret.first = 0;
-            ret.second = std::copysign(M_PI_2, direction[2]);
+            ret.first = std::copysign(M_PI_2, direction[2]);
+            ret.second = 0;
         } else {
             Utility::rectToSphe(&ret.second, &ret.first, direction);
         }

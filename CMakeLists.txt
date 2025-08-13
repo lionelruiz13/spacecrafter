@@ -80,10 +80,25 @@ FIND_PACKAGE(SDL2 REQUIRED)
 FIND_PACKAGE(SDL2_mixer REQUIRED)
 FIND_PACKAGE(SDL2_ttf REQUIRED)
 FIND_PACKAGE(SDL2_net REQUIRED)
-FIND_PACKAGE(FFmpeg REQUIRED)
+FIND_PACKAGE(FFmpeg)
+if (FFMPEG_INCLUDE_DIR)
+INCLUDE_DIRECTORIES(${FFMPEG_INCLUDE_DIR})
+else()
+message("Try getting ffmpeg using PkgConfig")
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LIBAV REQUIRED IMPORTED_TARGET
+    libavdevice
+    libavfilter
+    libavformat
+    libavcodec
+    libswresample
+    libswscale
+    libavutil
+)
+SET(FFMPEG_LIBRARIES "PkgConfig::LIBAV")
+endif()
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(${FFMPEG_INCLUDE_DIR})
 else()
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
 link_directories(${PROJECT_SOURCE_DIR}/lib)

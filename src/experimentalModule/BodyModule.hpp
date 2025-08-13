@@ -29,6 +29,19 @@ enum class RelativePosition : unsigned char {
     BACK = 0x4,
 };
 
+enum BodyModuleTraits {
+    BMT_REPLICATED =            0x00000001, // Heavily used, some batching or similar strategy is recommended
+    BMT_CACHED =                0x00000002, // Some state should be cached for performance, maybe a bad idea ?
+    BMT_DYNAMIC =               0x00000004, // Use dynamic resolution mechanism
+    BMT_DEPTH_TRACE =           0x00000008, // Affect the depth buffer
+    BMT_USE_DEPTH =             0x00000010, // Use the depth buffer (pointer/halo doesn't)
+    BMT_BASIC_SELF_SHADOW =     0x00000020, // Project monochrome self-shadowing
+    BMT_RGBA8_SELF_SHADOW =     0x00000020, // Project RGBA8 self-shadowing
+    BMT_PROJECT_G1_SHADOW =     0x00000040, // Project monochrome shadow
+    BMT_PROJECT_G8_SHADOW =     0x00000080, // Project greyscale shadow (up to 10 is possible)
+    BMT_PROJECT_BISHADOW =      0x00000100, // Project bicolor shadow - ONLY WORKS WHEN 10 TIMES CLOSER
+};
+
 class BodyModule {
 public:
     BodyModule(BodyModuleType type = BodyModuleType::CUSTOM) : type(type) {}

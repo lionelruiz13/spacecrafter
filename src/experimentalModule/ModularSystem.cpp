@@ -178,7 +178,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         .haloColor=param["color"].empty() ? defaultHaloColor : Utility::strToVec3f(param["color"]),
         .albedo=Utility::strToFloat(param["albedo"]),
         .radius=radius/static_cast<float>(AU),
-        .innerRadius=Utility::strToFloat(param["min_distance"], radius*1.2f)/static_cast<float>(AU),
+        .innerRadius=Utility::strToFloat(param["min_distance"], radius*1.002f)/static_cast<float>(AU),
         .oblateness=Utility::strToFloat(param["oblateness"], 0.0),
         .solLocalDay=Utility::strToFloat(param["sol_local_day"],1.0),
         .bodyType=strToBodyType(param["type"]),
@@ -201,6 +201,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         star = body;
     for (auto moduleType : body->deduceBodyModuleList(param))
         ModuleLoaderMgr::instance.loadModule(moduleType, body, param);
+    body->updateCache(); // Ensure bounding radius are properly set
 }
 
 ModularBody *ModularSystem::findBodyAt(const std::pair<float, float> &searchPos) const

@@ -3,6 +3,8 @@
 #include <cmath>
 
 // Remark : neutral is (1, 0, 0), up is (0, 0, 1)
+// In spheToRect/rectToSphe, xyz is xzy
+// The z axis is inverted : negative is forward
 
 Camera *Camera::instance = nullptr;
 float Camera::minHalfFov = 8.7e-7;
@@ -46,8 +48,9 @@ void Camera::warpToBody(ModularBody *dst)
 
 void Camera::update(double jd, float deltaTime)
 {
-    if (target) // Note : the tracked position is from the last update
+    if (target) { // Note : the tracked position is from the last update
         lookTo(observedToLocalPos(target->getObservedPosition()), 5, true);
+    }
     if (zoomDuration) {
         zoomTimer += deltaTime;
         if (zoomTimer > zoomDuration) {
@@ -77,15 +80,17 @@ void Camera::update(double jd, float deltaTime)
         if (auto newRef = reference->findBetterReference()) {
             switchToBody(newRef);
         }
-        mat = view.getMatrix();
+        // mat = view.getMatrix();
+        mat = Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az));
         mat.multiplyTranslation(position);
     } else {
-        mat = view.getMatrix();
-        mat.multiplyTranslation(Vec3f(0, 0, distance));
-        mat = mat.multiplyFast(Mat4f::yrotation(M_PI_2-latitude)).multiplyFast(Mat4f::zrotation(longitude));
+        // mat = view.getMatrix();
+        mat = Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az));
+        mat.multiplyTranslation(Vec3f(0, 0, -distance));
+        mat = mat.multiplyFast(Mat4f::xrotation(latitude-M_PI_2)).multiplyFast(Mat4f::zrotation(longitude));
     }
     if (boundToSurface)
-        mat = mat.multiplyFast(reference->computeBodyToSurface());
+        mat = mat.multiplyFast(reference->computeSurfaceToBody());
     system = ModularBody::dispatchUpdate(reference, jd, mat);
     system->updateSystem();
 }
@@ -102,7 +107,7 @@ void Camera::setFreeMode(bool b)
 
     if (b) {
         view.setRotation(view.getMatrix()
-            .multiplyFast(Mat4f::yrotation(M_PI_2-latitude))
+            .multiplyFast(Mat4f::yrotation(latitude-M_PI_2))
             .multiplyFast(Mat4f::zrotation(longitude))
             .toQuaternion()
         );
@@ -111,7 +116,7 @@ void Camera::setFreeMode(bool b)
     } else {
         view.setRotation(view.getMatrix()
             .multiplyFast(Mat4f::zrotation(-longitude))
-            .multiplyFast(Mat4f::yrotation(latitude-M_PI_2))
+            .multiplyFast(Mat4f::yrotation(M_PI_2-latitude))
             .toQuaternion()
         );
         Utility::rectToSphe(&longitude, &latitude, position);
@@ -126,15 +131,16 @@ void Camera::recomputeAltAzHeading()
     Vec3f direction = view.getMatrix().multiplyWithoutTranslation({1, 0, 0});
     if ((direction[0] + direction[1]) == 0) {
         if (std::signbit(direction[2])) {
-            az = -M_PI_2;
+            alt = M_PI_2;
             direction = view.getMatrix().multiplyWithoutTranslation({0, 0, 1});
         } else {
-            az = M_PI_2;
+            alt = -M_PI_2;
             direction = view.getMatrix().multiplyWithoutTranslation({0, 0, -1});
         }
-        alt = atan2(direction[1], direction[0]) - heading;
+        az = atan2(direction[1], direction[0]) - heading;
     } else {
         Utility::rectToSphe(&az, &alt, direction);
+        alt = -alt;
     }
 }
 
@@ -161,25 +167,28 @@ void Camera::setBoundToSurface(bool b)
 void Camera::lookTo(const Vec3f &direction, float duration, bool isMaxDuration)
 {
     if ((direction[0] + direction[1]) == 0) {
-        az = std::copysign(M_PI_2, direction[2]);
+        alt = std::copysign(M_PI_2, direction[2]);
+        az = M_PI;
     } else {
         Utility::rectToSphe(&az, &alt, direction);
     }
-    view.moveTo(Vec4f::zrotation(heading).combineQuaternions(Vec4f::zyrotation(az, alt)), duration, isMaxDuration);
+    alt = -alt;
+    // view.setRotation(((Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az))).toQuaternion()));
+    // view.moveTo(((Mat4f::zrotation(heading).multiplyFast(Mat4f::zxrotation(az, alt))).toQuaternion()), duration, isMaxDuration);
 }
 
 void Camera::lookTo(float _alt, float _az, float duration, bool isMaxDuration)
 {
     alt = _alt;
     az = _az;
-    view.moveTo(Vec4f::zrotation(heading).combineQuaternions(Vec4f::zyrotation(az, alt)), duration, isMaxDuration);
+    // view.moveTo(Vec4f::zrotation(heading).combineQuaternions(Vec4f::zyrotation(-az, M_PI_2-alt)), duration, isMaxDuration);
 }
 
 void Camera::lookRel(float deltaAlt, float deltaAz, float duration, bool isMaxDuration)
 {
     alt = std::fmod(alt+deltaAlt, M_PI*2);
     az = std::fmod(az+deltaAz, M_PI*2);
-    view.moveTo(Vec4f::zrotation(heading).combineQuaternions(Vec4f::zyrotation(az, alt)), duration, isMaxDuration);
+    // view.moveTo(Vec4f::zrotation(heading).combineQuaternions(Vec4f::zyrotation(-az, -alt)), duration, isMaxDuration);
 }
 
 void Camera::moveRel(const Vec3f &deltaPos, float duration, bool calculateDuration)

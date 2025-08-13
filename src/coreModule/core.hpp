@@ -78,6 +78,7 @@
 #include "tools/no_copy.hpp"
 #include "tools/translator.hpp"
 #include "EntityCore/Executor/Tickable.hpp"
+#include "experimentalModule/AsyncHub.hpp"
 
 class StarNavigator;
 class BodyDecor;
@@ -571,6 +572,7 @@ private:
 	std::list<Tickable<CoreLink> *> updateList;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
+	AsyncHub transitions;
 	MODULE currentModule = MODULE::SOLAR_SYSTEM;
 
 	float sky_brightness;				// Current sky Brightness in ?
