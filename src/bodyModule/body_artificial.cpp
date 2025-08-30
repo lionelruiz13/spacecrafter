@@ -178,7 +178,7 @@ void Artificial::bindShadows(const ShadowRenderData &renderData)
     // frag.sinSunAngle = 2 * renderData.sinSunHalfAngle;
     frag.nbShadowingBodies = renderData.shadowingBodies.size();
     for (uint8_t i = 0; i < renderData.shadowingBodies.size(); ++i) {
-        frag.shadowingBodies[i].posRadius = renderData.shadowingBodies[i].posRadius / radius;
+        frag.shadowingBodies[i].posRadius = renderData.shadowingBodies[i].posRadius / initialRadius;
         frag.shadowingBodies[i].idx = renderData.shadowingBodies[i].idx;
     }
 }

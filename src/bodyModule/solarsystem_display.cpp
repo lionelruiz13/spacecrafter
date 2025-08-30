@@ -85,7 +85,7 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
     if (mainBody) {
         // Prepair computing shadowing bodies
         const double sunRadius = ssystem->getCenterObject()->getRadius();
-        const double r1 = mainBody->getBoundingRadius();
+        const double r1 = mainBody->getUnscaledBoundingRadius();
         Vec3d v1 = mainBody->get_heliocentric_ecliptic_pos();
         const double sd1 = v1.lengthSquared();
         // const double d1 = sqrt(sd1);
@@ -95,7 +95,7 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
 
         Body *mainBody2 = mainBody->getParent();
         if (mainBody2 && mainBody2->isCoI()) {
-            const double r12 = mainBody2->getBoundingRadius();
+            const double r12 = mainBody2->getUnscaledBoundingRadius();
             Vec3d v12 = mainBody2->get_heliocentric_ecliptic_pos();
             const double sd12 = v12.lengthSquared();
             const double cst12 = r12+sunRadius;
@@ -106,14 +106,14 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
                 Vec3d v2 = body.get_heliocentric_ecliptic_pos();
                 double d = v1.dot(v2); // d1*d2
                 if (d > 0 && d < sd1) {
-                    double tmp = cst1+d*cst2 + body.getBoundingRadius();
+                    double tmp = cst1+d*cst2 + body.getUnscaledBoundingRadius();
                     if (((v2 - v1 * (d/sd1))/tmp).lengthSquared() < 1) {
                         shadowingBody.push_back({&body, d, sd1-d});
                     }
                 }
                 d = v12.dot(v2);
                 if (d > 0 && d < sd12) {
-                    double tmp = cst12+d*cst22 + body.getBoundingRadius();
+                    double tmp = cst12+d*cst22 + body.getUnscaledBoundingRadius();
                     if (((v2 - v12 * (d/sd12))/tmp).lengthSquared() < 1) {
                         shadowingBody2.push_back({&body, d, sd12-d});
                     }
@@ -125,7 +125,7 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
                 Vec3d v2 = body.get_heliocentric_ecliptic_pos();
                 double d = v1.dot(v2); // d1*d2
                 if (d > 0 && d < sd1) {
-                    double tmp = cst1+d*cst2 + body.getBoundingRadius();
+                    double tmp = cst1+d*cst2 + body.getUnscaledBoundingRadius();
                     if (((v2 - v1 * (d/sd1))/tmp).lengthSquared() < 1) {
                         shadowingBody.push_back({&body, d, sd1-d});
                     }
@@ -187,11 +187,11 @@ void SolarSystemDisplay::drawShadow(Projector * prj, const Navigator * nav)
     const double sunRadius = ssystem->getCenterObject()->getRadius();
     double sunCoef = sunRadius / mainPos.lengthSquared();
     renderData.lookAt = params.lookAt = Mat4d::lookAt(ssystem->getCenterPos(), mainPos, Vec3d(0, 1, 0));
-    params.mainBodyRadius = mainBody->getBoundingRadius();
+    params.mainBodyRadius = mainBody->getUnscaledBoundingRadius();
     renderData.sinSunHalfAngle = sunRadius / mainPos.length();
     for (auto &s : shadowingBody) {
         params.smoothRadius = sunCoef * s.distToMainBody;
-        if (params.smoothRadius < s.body->getBoundingRadius() * 4) // Ignore shadow with less than 4% of occlusion
+        if (params.smoothRadius < s.body->getUnscaledBoundingRadius() * 4) // Ignore shadow with less than 4% of occlusion
             renderData.shadowingBodies.push_back(s.body->drawShadow(params));
     }
     mainBody->bindShadows(renderData);
@@ -206,11 +206,11 @@ void SolarSystemDisplay::drawShadow(Projector * prj, const Navigator * nav)
             mainPos = body->get_heliocentric_ecliptic_pos();
             sunCoef = sunRadius / mainPos.lengthSquared();
             renderData.lookAt = params.lookAt = Mat4d::lookAt(ssystem->getCenterPos(), mainPos, Vec3d(0, 1, 0));
-            params.mainBodyRadius = mainBody->getBoundingRadius();
+            params.mainBodyRadius = mainBody->getUnscaledBoundingRadius();
             renderData.sinSunHalfAngle = sunRadius / mainPos.length();
             for (auto &s : shadowingBody2) {
                 params.smoothRadius = sunCoef * s.distToMainBody;
-                if (params.smoothRadius < s.body->getBoundingRadius() * 4) // Ignore shadow with less than 4% of occlusion
+                if (params.smoothRadius < s.body->getUnscaledBoundingRadius() * 4) // Ignore shadow with less than 4% of occlusion
                     renderData.shadowingBodies.push_back(s.body->drawShadow(params));
             }
             body->bindShadows(renderData);

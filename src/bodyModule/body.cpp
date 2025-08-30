@@ -86,7 +86,7 @@ Body::Body(std::shared_ptr<Body> parent,
 	englishName(englishName), initialRadius(_radius), one_minus_oblateness(1.0-oblateness),
 	albedo(_albedo), axis_rotation(0.),
 	tex_map(nullptr), tex_norm(nullptr), eye_sun(0.0f, 0.0f, 0.0f),
-	lastJD(J2000), deltaJD(JD_SECOND/4), orbit(std::move(_orbit)), parent(parent), close_orbit(close_orbit),
+	lastJD(J2000), orbit(std::move(_orbit)), parent(parent), close_orbit(close_orbit),
     orbit_bounding_radius(orbit_bounding_radius), boundingRadius(-1), sun_half_angle(0.0)
 	// tailFactors(-1., -1.), // mark "invalid"
 	// tailActive(false),
@@ -1200,7 +1200,7 @@ UShadowingBody Body::drawShadow(const ShadowParams &params)
 {
     auto m = params.lookAt * model;
     Vec3f ret(m.r[12], m.r[13], boundingRadius + params.smoothRadius);
-    auto scaling = radius/ret.v[2];
+    auto scaling = initialRadius/ret.v[2];
     auto idx = Context::instance->helper->drawShadower(this, params.smoothRadius/ret.v[2]);
     (m * Mat4d::scaling(Vec3d(scaling, scaling, scaling * one_minus_oblateness))).setMat3(Context::instance->shadowData[idx].shadowMat);
     return {ret, idx};
