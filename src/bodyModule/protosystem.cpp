@@ -989,7 +989,7 @@ void ProtoSystem::selectSystem()
 void ProtoSystem::computeDraw(const Projector *prj, const Navigator *nav)
 {
 	mainBody = nullptr;
-	if (Context::experimental_shadows) {
+	if (Context::experimental_shadows && Context::shadow_ready) {
 		float highestImportance = 0;
 		for (Body *body : renderedBodies) {
 			body->computeDraw(prj, nav);

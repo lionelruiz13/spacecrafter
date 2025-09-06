@@ -34,6 +34,10 @@ class Body;
 // Minimal value of the dot product of the cached and current light direction to reuse the shadow
 // The change before invalidating the cache is below ((1 - invalidating_angle) * shadow_size / 2) pixels
 #define SHADOW_INVALIDATING_ANGLE 0.998
+// This means ~1G operations, so don't go beyond
+#define MAX_RADIUS_HARD_LIMIT 510U
+// Number of threads building shadow pipeline
+#define SHADOW_PIPELINE_BUILD_THREAD 4U
 
 enum {
     PASS_BACKGROUND = 0, // multi-sample, no depth buffer
@@ -55,7 +59,7 @@ struct Padded {
 
 struct ShadowUniform {
     Padded<float> pixelCount;
-    Padded<int> offsets[511]; // assert(radius <= 510) --> shadow_resolution <= 1024 (~1G operations)
+    Padded<int> offsets[MAX_RADIUS_HARD_LIMIT+1]; // assert(radius <= 510) --> shadow_resolution <= 1024 (~1G operations)
 };
 
 struct ShadowData {
@@ -64,13 +68,11 @@ struct ShadowData {
     void init(VkImageView target);
     void compute(VkCommandBuffer cmd);
     Body *body = nullptr;
-    std::unique_ptr<ComputePipeline> pipeline;
     std::unique_ptr<Set> set, traceSet;
     SharedBuffer<ShadowUniform> uniform;
     SharedBuffer<float[12]> shadowMat;
     float bodyLight[3]; // Light direction, relative to the body ojm.
     float radius = 0;
-    uint16_t constRadius = UINT16_MAX; // constant radius set in the pipeline
     bool used = false;
 };
 
@@ -78,6 +80,8 @@ class Context {
 public:
     Context();
     ~Context();
+    void nextTick();
+    void initShadowStructures();
 
     static Context *instance;
     std::unique_ptr<CaptureMetrics> stat;
@@ -106,6 +110,7 @@ public:
     std::unique_ptr<Texture> shadowTrace; // For shadow projection
     std::vector<VkImageView> shadowView;
     ShadowData *shadowData;
+    ComputePipeline *shadowPipelines;
     std::unique_ptr<PipelineLayout> shadowLayout, traceLayout;
     std::vector<HipStarMgr *> starUsed; // nullptr if not used at this frame, otherwise a pointer to a HipStarMgr which operate a draw
     std::vector<std::unique_ptr<SyncEvent>> starSync; // synchronize access to starColorAttachment
@@ -146,10 +151,15 @@ public:
     VkBool32 isFloat64Supported = VK_TRUE;
     uint32_t shadowRes;
     uint8_t maxShadowCast = 4;
+    std::atomic<uint32_t> shadowPipelineSegmentBuilt = 0;
 
     // Experimental features enabled
+    static bool shadow_ready;
     static bool experimental_shadows;
     static bool default_experimental_shadows;
+
+private:
+    void buildShadowPipeline(uint32_t begin, uint32_t end);
 };
 
 #endif /* end of include guard: CONTEXT_HPP_ */

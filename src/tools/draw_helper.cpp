@@ -457,14 +457,7 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
         auto &sd = Context::instance->shadowData[s.idx];
         VkImageMemoryBarrier imageBarrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, VK_ACCESS_SHADER_READ_BIT, VK_ACCESS_SHADER_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, Context::instance->shadow->getImage(), {VK_IMAGE_ASPECT_COLOR_BIT, 0, VK_REMAINING_MIP_LEVELS, s.idx, 1}};
         vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &imageBarrier);
-        const int iradius = radius;
-        if (iradius != sd.constRadius) {
-            sd.constRadius = iradius;
-            sd.pipeline->modifySpecializedConstant(0, iradius);
-            auto oldPipeline = sd.pipeline->build(true);
-            if (oldPipeline != VK_NULL_HANDLE)
-                vkDestroyPipeline(VulkanMgr::instance->refDevice, oldPipeline, nullptr); // Warning : can be in use
-        }
+        const int iradius = sd.radius = radius;
         int pixelCount = 0;
         radius *= radius;
         for (int i = 0; i <= iradius; ++i) {
@@ -488,6 +481,7 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
     d.hasCompleted = true;
     d.waitMutex.unlock();
     internalVFrameIdx %= 3;
+    Context::instance->nextTick();
 }
 
 // Implement caching here
