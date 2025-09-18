@@ -109,7 +109,8 @@ void ConstellationMgr::createSC_context()
 	m_vertexLines->addInput(VK_FORMAT_R32G32_SFLOAT);
 	m_vertexLines->addInput(VK_FORMAT_R32G32B32A32_SFLOAT);
 	vertexLines = m_vertexLines->createBuffer(0, 16384, context.globalBuffer.get());
-	m_pipelineLines = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, m_layout.get());
+	std::vector<VkDynamicState> dynStates = {VK_DYNAMIC_STATE_LINE_WIDTH};
+	m_pipelineLines = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, m_layout.get(), dynStates);
 	m_pipelineLines->bindVertex(*m_vertexLines);
 	m_pipelineLines->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
 	m_pipelineLines->setDepthStencilMode();
@@ -456,6 +457,8 @@ void ConstellationMgr::drawLines(VkCommandBuffer &cmd, const Projector * prj)
 		return;
 
 	m_pipelineLines->bind(cmd);
+	const auto lineWidth = Pipeline::getDefaultLineWidth();
+	vkCmdSetLineWidth(cmd, lineWidth); // Update line width
 	if (!submitSomething)
 		m_layout->bindSets(cmd, {*Context::instance->uboSet, *m_set});
 	vertexLines->bind(cmd);
