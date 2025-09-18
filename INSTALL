@@ -3,20 +3,22 @@
 ===============================================================================
         COMPILATION from the source package (spacecrafterXXXX-master.zip)
 ===============================================================================
-If you can't find a suited binary package or if you are curious you can also 
+If you can't find a suited binary package or if you are curious you can also
 compile the software by yourself.
 
-Make sure you install all the necessary dependencies. 
+Make sure you install all the necessary dependencies.
 
 Launch install-dependencies-ubuntu.sh or install-dependencies-mageia.sh
 
 Spacecrafter requires :
-- Cmake > v3.3 
+
+- Cmake > v3.3
 - SDL2-dev
 - SDL2_mixer-dev
 - SDL2_net-dev
 - SDL2_ttf-dev
 - Vulkan libraries
+- FFMPEG (VCPKG => 5.1.2#10) (required => avcodec-59.dll, avformat-59.dll, avutil-57.dll, swscale-6.dll, swresample-4.dll) (higher versions crash)
 
 Once they are installed you are ready to compile Spacecrafter sources:
 
