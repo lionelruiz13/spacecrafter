@@ -30,7 +30,15 @@ set (CMAKE_CXX_STANDARD 20)
 
 ################# plateform configuration ############################
 
-add_compile_definitions(LINUX=1)
+if(WIN32)
+  set(PLATFORM "windows")
+  add_compile_definitions(WIN32=1)
+elseif(UNIX)
+  set(PLATFORM "linux")
+  add_compile_definitions(LINUX=1)
+else()
+  message(FATAL_ERROR "Unsupported platform")
+endif()
 
 ################# Flags configuration ############################
 
