@@ -198,7 +198,7 @@ void Dso3d::removeSupplementalDso()
 	scaleDso3d.clear();
 	nameDso3d.clear();
 	nbNebulae = 0;
-	if (loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat"))
+	if (loadCatalog("dso3d.dat"))
 		build();
 }
 

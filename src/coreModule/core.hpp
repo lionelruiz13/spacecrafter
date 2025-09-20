@@ -78,6 +78,7 @@
 #include "tools/no_copy.hpp"
 #include "tools/translator.hpp"
 #include "EntityCore/Executor/Tickable.hpp"
+#include "experimentalModule/AsyncHub.hpp"
 
 class StarNavigator;
 class BodyDecor;
@@ -106,6 +107,7 @@ class OjmMgr;
 class StarNavigator;
 class UBOCam;
 class NebulaMgr;
+class ScriptMgr;
 class HipStarMgr;
 class ConstellationMgr;
 class SSystemFactory;
@@ -551,6 +553,7 @@ private:
 	std::shared_ptr<HipStarMgr> hip_stars;		// Manage the hipparcos stars
 	std::shared_ptr<ConstellationMgr> asterisms;		// Manage constellations (boundaries, names etc..)
 	std::unique_ptr<NebulaMgr> nebulas;				// Manage the nebulas
+	std::unique_ptr<ScriptMgr> script;
 	std::unique_ptr<IlluminateMgr> illuminates;		// Manage the illuminations
 	//TextMgr * text_usr;				// manage all user text in dome
 	//SolarSystem* ssystem;				// Manage the solar system
@@ -582,6 +585,7 @@ private:
 	std::list<Tickable<CoreLink> *> updateList;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
+	AsyncHub transitions;
 	MODULE currentModule = MODULE::SOLAR_SYSTEM;
 
 	float sky_brightness;				// Current sky Brightness in ?

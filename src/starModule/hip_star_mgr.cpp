@@ -1339,7 +1339,7 @@ double HipStarMgr::durationToJulianDay(std::string duration) const
 
 void HipStarMgr::readFileVariableStar()
 {
-	std::string fileName = AppSettings::Instance()->getUserDir() + "variable_stars.txt";
+	std::string fileName = "variable_stars.txt";
 	std::ifstream fileIn(fileName);
 
 	if (!fileIn.is_open()) {

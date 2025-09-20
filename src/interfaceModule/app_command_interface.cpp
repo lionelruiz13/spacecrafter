@@ -1795,7 +1795,7 @@ int AppCommandInterface::commandConfiguration()
 				return executeCommandStatus();
 			} else
 			if (argAction == W_SAVE) {
-				coreLink->starLinesSaveCat(AppSettings::Instance()->getUserDir() + argName, binaryMode);
+				coreLink->starLinesSaveCat(argName, binaryMode);
 				return executeCommandStatus();
 			} else
 			if (argAction == W_LOAD_STAR) {
@@ -1852,7 +1852,7 @@ int AppCommandInterface::commandConfiguration()
 				}
 			} else
 			if (argAction == W_SAVE) {
-				coreLink->starNavigatorSave(AppSettings::Instance()->getUserDir() + argName, binaryMode);
+				coreLink->starNavigatorSave(argName, binaryMode);
 			} else
 				debug_message = "command 'configuration': unknown starNavigator action argument";
 		} else
@@ -3418,7 +3418,6 @@ int AppCommandInterface::commandFont()
 
 	if (!fileName.empty()) {
 		FilePath myFile  = FilePath(fileName, FilePath::TFP::FONTS);
-		std::cout << myFile.toString() << std::endl;
 			if (myFile) {
 				fontFactory->updateFont(targetName, myFile.toString(), args[W_SIZE]);
 

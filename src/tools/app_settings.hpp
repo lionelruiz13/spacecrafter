@@ -26,9 +26,9 @@
 
 /**
  * @file app_setting.h
- * 
+ *
  * @class AppSettings
- * 
+ *
  * @brief Provides a single point of access to common application settings such as data
  * and configuration directories. The singleton is initialized in main.cpp and
  * is henceforth available from anywhere via the Instance method.
@@ -74,9 +74,6 @@ public:
 
 	//! Get the name of the local script directory
 	const std::string getScriptDir() const;
-
-	//! Get the fullname of the directory containing the data user
-	const std::string getUserDir() const;
 
 	//! Get the fullname of the directory containing all SkyCulture
 	const std::string getSkyCultureDir() const;

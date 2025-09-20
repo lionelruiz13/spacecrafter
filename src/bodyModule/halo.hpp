@@ -41,6 +41,8 @@ class Texture;
 class Set;
 
 class Halo {
+
+	friend class Renderer; // TODO implement inline function here instead
 public:
 
 	Halo()=delete;

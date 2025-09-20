@@ -71,6 +71,7 @@
 #include "EntityCore/EntityCore.hpp"
 #include "coreModule/tully.hpp"
 #include "coreModule/volumObj3D.hpp"
+#include "scriptModule/script_mgr.hpp"
 #include <filesystem>
 
 Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback<void, std::string>& recordCallback, std::shared_ptr<Observer> _observatory) :
@@ -161,6 +162,7 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	oort =  std::make_unique<Oort>();
 	dso3d = std::make_unique<Dso3d>();
 	tully = std::make_unique<Tully>();
+	Context::instance->renderer.init(tone_converter);
 	object_pointer_visibility = 1;
 }
 
@@ -294,26 +296,26 @@ void Core::init(const InitParser& conf)
 
 		ssystemFactory->iniTextures();
 
-		ssystemFactory->load(AppSettings::Instance()->getUserDir() + "ssystem.ini");
+		ssystemFactory->load("ssystem.ini");
 
 		ssystemFactory->anchorManagerInit(conf);
 		//TODO Oli: remember to use file selection class.
-		ssystemFactory->loadGalacticSystem(AppSettings::Instance()->getUserDir(), "galactic.ini");
+		ssystemFactory->loadGalacticSystem(".", "galactic.ini");
 		// Init stars
 		hip_stars->iniColorTable();
 		hip_stars->readColorTable();
 		hip_stars->init(conf);
 
 		// Init nebulas
-		nebulas->loadDeepskyObject(AppSettings::Instance()->getUserDir() + "deepsky_objects.fab");
+		nebulas->loadDeepskyObject("deepsky_objects.fab");
 
 		Landscape::createSC_context();
 		landscape->setSlices(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_SLICES));
 		landscape->setStacks(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_STACKS));
 		setLandscape(initialvalue.initial_landscapeName);
 
-		starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.txt", false);
-		starLines->loadCat(AppSettings::Instance()->getUserDir() + "asterism.txt", false);
+		starNav->loadData("hip2007.txt", false);
+		starLines->loadCat("asterism.txt", false);
 	}
 
 	// Astro section
@@ -367,6 +369,9 @@ void Core::init(const InitParser& conf)
 	observatory->load(conf, SCS_INIT_LOCATION);
 	observatory->setEyeRelativeMode(false);
 
+	ssystemFactory->loadCamera(conf);
+	// We may expect to do the same, no ?
+
 	// make sure nothing selected or tracked
 	deselect();
 	setHomePlanet("Earth");
@@ -391,11 +396,11 @@ void Core::init(const InitParser& conf)
 		oort->populate(conf.getInt("rendering","oort_elements"));
 		oort->build();
 		tully->setTexture("typegals.png");
-		tully->loadCatalog(AppSettings::Instance()->getUserDir() + "tully.dat");
-		tully->loadBigCatalog(AppSettings::Instance()->getUserDir() + "6df.dat", 5e+12);
+		tully->loadCatalog("tully.dat");
+		tully->loadBigCatalog("6df.dat", 5e+12);
 		tully->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
 		dso3d->setTexture("dsocat.png");
-		if (dso3d->loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat"))
+		if (dso3d->loadCatalog("dso3d.dat"))
 			dso3d->build();
 
 		ojmMgr->init();
@@ -641,7 +646,7 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 	transform(l_min.begin(), l_min.end(), l_min.begin(), ::tolower);
 	if (new_landscape_name == l_min) return 0;
 
-	Landscape* newLandscape = Landscape::createFromFile(AppSettings::Instance()->getUserDir() + "landscapes.ini", new_landscape_name);
+	Landscape* newLandscape = Landscape::createFromFile("landscapes.ini", new_landscape_name);
 	if (!newLandscape) return 0;
 
 	if (landscape) {
@@ -1582,6 +1587,8 @@ void Core::dragView(int x1, int y1, int x2, int y2)
 	Utility::rectToSphe(&az1, &alt1, tempvec1);
 	Utility::rectToSphe(&az2, &alt2, tempvec2);
 	navigation->updateMove(az2-az1, alt1-alt2, projection->getFov());
+	Camera::instance->lookRel(alt1-alt2, az2-az1, 0);
+	Camera::instance->trackBody(nullptr);
 	setFlagTracking(false);
 	setFlagLockSkyPosition(false);
 }
@@ -1885,9 +1892,12 @@ void Core::setFlagTracking(bool b)
 {
 	if (!b || !selected_object) {
 		navigation->setFlagTraking(0);
+		if (Camera::instance)
+			Camera::instance->trackBody(nullptr);
 	} else if ( !navigation->getFlagTraking()) {
 		navigation->moveTo(selected_object.getEarthEquPos(navigation), getAutoMoveDuration());
 		navigation->setFlagTraking(1);
+		Camera::instance->trackBody(ModularBody::findBody(selected_object.getEnglishName()));
 	}
 }
 
@@ -2002,6 +2012,7 @@ void Core::update(int delta_time) {
 	if (flagEnableTransition) {
 		const float deltaSeconds = delta_time / 1000.f;
 	   	updateList.remove_if([deltaSeconds](auto *obj){return obj->update(deltaSeconds);});
+		transitions.update(deltaSeconds);
 	}
 }
 

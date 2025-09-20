@@ -139,97 +139,88 @@ const std::string AppSettings::getShaderDir() const
 
 const std::string AppSettings::getModel3DDir() const
 {
-	return getUserDir()+REP_MODEL3D+"/";
+	return REP_MODEL3D+"/";
 }
 
 const std::string AppSettings::getPictureDir() const
 {
-	return getUserDir()+REP_PICTURE + "/";
+	return REP_PICTURE + "/";
 }
 
 const std::string AppSettings::getTextureDir() const
 {
-	return getUserDir()+ REP_TEXTURE + "/";
+	return REP_TEXTURE + "/";
 }
 
 const std::string AppSettings::getUserFontDir() const
 {
-	return getUserDir()  + REP_FONT+"/";
+	return REP_FONT+"/";
 }
 
 const std::string AppSettings::getSkyCultureDir() const
 {
-	return getUserDir()  + REP_SKY_CULTURE+"/";
+	return REP_SKY_CULTURE+"/";
 }
 
 const std::string AppSettings::getScreenshotDirectory() const
 {
-	return getUserDir()  +REP_SCREENSHOT+"/";
+	return REP_SCREENSHOT+"/";
 }
 
 const std::string AppSettings::getVframeDirectory() const
 {
-	return getUserDir()  + REP_VFRAME + "/";
+	return REP_VFRAME + "/";
 }
 
 const std::string AppSettings::getScriptDir() const
 {
-	return getUserDir() + REP_SCRIPT + "/";
+	return REP_SCRIPT + "/";
 }
 
 const std::string AppSettings::getAudioDir() const
 {
-	return getUserDir() + REP_AUDIO + "/";
+	return REP_AUDIO + "/";
 }
 
 const std::string AppSettings::getVideoDir() const
 {
-	return getUserDir() + REP_VIDEO + "/";
+	return REP_VIDEO + "/";
 }
 
 const std::string AppSettings::getMediaDir() const
 {
-	return getUserDir() + REP_MEDIA + "/";
+	return REP_MEDIA + "/";
 }
 
 const std::string AppSettings::getVR360Dir() const
 {
-	return getUserDir() + REP_VR360 + "/";
+	return REP_VR360 + "/";
 }
 
 const std::string AppSettings::getFtpDir() const
 {
-	return getUserDir() + REP_FTP + "/";
+	return REP_FTP + "/";
 }
 
 const std::string AppSettings::getLogDir() const
 {
-	return getUserDir() + REP_LOG + "/";
+	return REP_LOG + "/";
 }
 
 const std::string AppSettings::getWebDir() const
 {
-	return getUserDir() + REP_WEB + "/";
+	return REP_WEB + "/";
 }
 
 const std::string AppSettings::getLandscapeDir() const
 {
-	return getUserDir() + REP_LANDSCAPE + "/";
+	return REP_LANDSCAPE + "/";
 }
 
 
 const std::string AppSettings::getLanguageDir() const
 {
-	return getUserDir() + REP_LANGUAGE + "/";
-}
-
-const std::string AppSettings::getUserDir() const
-{
-	#ifdef __linux__
-		return std::string(getenv("HOME")) + "/." + APP_LOWER_NAME + "/";
-	#else
-		return std::string(getenv("USERPROFILE")) + "/." + APP_LOWER_NAME + "/";
-	#endif
+	return REP_LANGUAGE + "/";
 }
 
 const std::string AppSettings::getVersion() const {
@@ -246,7 +237,6 @@ void AppSettings::display_all() const
 	std::cout << "getLocaleDir " << getLocaleDir() << std::endl;
 	std::cout << "getUserFontDir " << getUserFontDir() << std::endl;
 	std::cout << "getScriptDir " << getScriptDir() << std::endl;
-	std::cout << "getUserDir " << getUserDir() << std::endl;
 	std::cout << "getLogDir " << getLogDir() << std::endl;
 	std::cout << "getWebDir " << getWebDir() << std::endl;
 	std::cout << "getLandscapeDir " << getLandscapeDir() << std::endl;
