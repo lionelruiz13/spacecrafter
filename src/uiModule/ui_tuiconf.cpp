@@ -56,6 +56,9 @@ void UI::drawGravityUi(MODULE module)
 	if (FlagShowTuiDateTime) {
 		double jd = coreLink->getJDay();
 		double lonmodulo = coreLink->observatoryGetLongitudeForDisplay();
+		double x2=coreLink->observatoryGetAltitude()*cos(lonmodulo*3.1415926/180)*cos(coreLink->observatoryGetLatitude()*3.1415926/180);
+		double y2=coreLink->observatoryGetAltitude()*sin(lonmodulo*3.1415926/180)*cos(coreLink->observatoryGetLatitude()*3.1415926/180);
+		double z2=coreLink->observatoryGetAltitude()*sin(coreLink->observatoryGetLatitude()*3.1415926/180);
 		std::ostringstream os;
 
 		os << spaceDate->getPrintableDateLocal(jd) << " " << spaceDate->getPrintableTimeLocal(jd);
@@ -70,24 +73,25 @@ void UI::drawGravityUi(MODULE module)
 			os << " Lat: " << Utility::printAngleDMS(coreLink->observatoryGetLatitude()*3.1415926/180)
 			   << " Lon: " << Utility::printAngleDMS(lonmodulo*3.1415926/180);
 			if (coreLink->observatoryGetAltitude()>1000) {
+				double dist=sqrt((x2-oldX)*(x2-oldX)+(y2-oldY)*(y2-oldY)+(z2-oldZ)*(z2-oldZ));
 				switch (module) {
+					case IN_SANDBOX:
 					case SOLAR_SYSTEM:
-						os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << " km";
+						os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << " km Speed: " << trunc(dist * app->getFpsClock() / 3E7)/10 << " c";
 						break;
 					case STELLAR_SYSTEM:
-						os << " Alt: " << coreLink->observatoryGetAltitude() << " km";
+						os << " Alt: " << coreLink->observatoryGetAltitude() << " km Speed: " << dist * trunc(app->getFpsClock() / 3E4)/10 << " c";
 						break;
 					case IN_UNIVERSE:
-					  os << " Alt: " << 3.44e-5 * coreLink->observatoryGetAltitude() << " l.y.";
+					  os << " Alt: " << 3.44e-5 * coreLink->observatoryGetAltitude() << " l.y. Speed: " << trunc(3.44e-5 * dist * app->getFpsClock()) << " ly/s";
 					  break;
 					case IN_GALAXY:
-						os << " Alt: " << 2.26e-11 * coreLink->observatoryGetAltitude() << " l.y.";
+						os << " Alt: " << 2.26e-11 * coreLink->observatoryGetAltitude() << " l.y. Speed: " << trunc(2.26e-11 * dist * app->getFpsClock()) << " ly/s";
 						break;
 				}
 			}
 		}
-
-		if (core->getFlagNav()) {
+		if (core->getFlagNav() || core->getFlagAstronomical()) {
 			std::string info = spaceDate->getPrintableTimeNav(coreLink->getJDay(), coreLink->observatoryGetLatitude(), coreLink->observatoryGetLongitudeForDisplay());
 			std::string s_1, s_2, s_3;
 			s_1= info.substr(0, info.find("@"));
@@ -113,9 +117,11 @@ void UI::drawGravityUi(MODULE module)
 					PosDateTimeL=PosDateTimeL%360;
 					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui, TEXT_ALIGN::LEFT, false);//,  1, 1);
 			}
+			oldX = x2;
+			oldY = y2;
+			oldZ = z2;
 		}
 	}
-
 	if (core->getFlagHasSelected() && FlagShowTuiShortObjInfo) {
 		std::string info = core->getSelectedObjectShortInfo();
 		Vec3f tmpColor = Vec3f(core->getSelectedObjectInfoColor());

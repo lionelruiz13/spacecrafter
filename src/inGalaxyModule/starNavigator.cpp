@@ -30,6 +30,7 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "inGalaxyModule/Star3DWrapper.hpp"
+#include "coreModule/coreLink.hpp"
 
 #include "EntityCore/EntityCore.hpp"
 #include "tools/context.hpp"
@@ -215,7 +216,7 @@ void StarNavigator::clearBuffer()
 	starVec = (float *) Context::instance->transfer->beginPlanCopy(maxStars * 7 * sizeof(float));
 }
 
-starInfo* StarNavigator::getStarInfo(unsigned int HIPName) const {
+StarInfo* StarNavigator::getStarInfo(unsigned int HIPName) const {
 	return starMgr->findStar(HIPName);
 }
 
@@ -229,27 +230,10 @@ std::string StarNavigator::getStarName(unsigned int HIPName) {
 
 void StarNavigator::setListGlobalStarVisible()
 {
-	std::vector<HyperCube*> hcList = starMgr->getHyperCubeList();
-	std::vector<HyperCube*> hcGlobalVisible;
-	std::vector<Cube*> cubeGlobalVisible;
-	std::vector<HyperCube*> hcVisible;
-	std::vector<Cube*> cubeVisible;
-
-	for(std::vector<HyperCube*>::iterator i = hcList.begin(); i != hcList.end(); ++i) {
-		HyperCube *hc = *i;
-
-		hcGlobalVisible.push_back(hc);
-		std::vector<Cube*> cubeList = hc->getCubeList();
-
-		for(std::vector<Cube*>::iterator j = cubeList.begin(); j != cubeList.end(); ++j) {
-			Cube *c = *j;
-
-			cubeGlobalVisible.push_back(c);
-			std::vector<starInfo*> stars = c->getStarList();
-
-			for(std::vector<starInfo*>::iterator k = stars.begin(); k != stars.end(); ++k) {
-				starInfo *si = *k;
-				listGlobalStarVisible.push_back(si);
+	for (HyperCube &hc : starMgr->getHyperCubeList()) {
+		for (Cube &cube : hc) {
+			for (StarInfo &star : cube) {
+				listGlobalStarVisible.push_back(&star);
 			}
 		}
 	}
@@ -462,7 +446,7 @@ void StarNavigator::computePosition(Vec3f posI) noexcept
 	if (needComputeRCMagTable) {
 		this->computeRCMagTable();
 	} else {
-		if ((pos-old_pos).length() < DELTA_PARSEC) { //proximity test
+		if ((pos-old_pos).length() < DELTA_PARSEC && CoreLink::instance->getFlagIngalaxy() != MODULE::STELLAR_SYSTEM) { //proximity test
 			return; //nothing to do.
 		}
 	}
@@ -505,11 +489,14 @@ bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
 	float intensite;
 
 	for(unsigned int i = first; i != last; ++i) {
-		starInfo *si = listGlobalStarVisible[i];
+		StarInfo *si = listGlobalStarVisible[i];
 
 		float x = -si->posXYZ[0];
 		float y = si->posXYZ[1];
 		float z = si->posXYZ[2];
+
+		if (si->show == false)
+			continue;
 
 		//test magnitude if magnitude too low, the star will not be displayed
 		float dist =sqrt((x-pos[0])*(x-pos[0]) + (y-pos[1])*(y-pos[1]) +(z-pos[2])*(z-pos[2]));
@@ -645,4 +632,22 @@ void StarNavigator::drawRaw(const Mat4f &matrix) const noexcept
 	*uMat = matrix;
 	const int idx = Context::instance->frameIdx;
 	Context::instance->frame[idx]->toExecute(cmds[idx], PASS_MULTISAMPLE_DEPTH);
+}
+
+void StarNavigator::hideStar(unsigned int hip)
+{
+	if (StarInfo *si = getStarInfo(hip))
+		si->show = false;
+}
+
+void StarNavigator::showStar(unsigned int hip)
+{
+	if (StarInfo *si = getStarInfo(hip))
+		si->show = true;
+}
+
+void StarNavigator::showAllStar()
+{
+	for(StarInfo *si : listGlobalStarVisible)
+		si->show = true;
 }

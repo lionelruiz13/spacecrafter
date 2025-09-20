@@ -44,6 +44,7 @@
 #include "EntityCore/Resource/TransferMgr.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
 #include "EntityCore/Core/FrameMgr.hpp"
+#include "coreModule/coreLink.hpp"
 
 //a copy of zone_array.hpp
 #define NR_OF_HIP 120416
@@ -126,17 +127,40 @@ void IlluminateMgr::load(int num, const Vec3f& _color, double _size, double rota
 {
 	if (num>NR_OF_HIP)
 		return;
+	if (_size <= 0){
+		hip_stars->hideStar(num);
+		remove(num);
+		return;
+	} else {
+		hip_stars->showStar(num);
+		if (_size <= 1) {
+			remove(num);
+			return;
+		}
+	}
 	Object selected_object = hip_stars->searchHP(num).get();
 	//Vec3f color = selected_object.getRGB();
 	double ra, de;
 	selected_object.getRaDeValue(navigator,&ra,&de);
+	/*
+	if (_size > 0 && _size < 1) {
+		float mag = selected_object.getMag(navigator);
+		float magn = CoreLink::instance->getBaseMag(num);
+		if (magn != -1)
+			mag = magn;
+		hip_stars->addVariableStar(HipStarMgr::VariableStar{.hip=num, .magMax=mag*_size, .magMin=mag*_size});
+		return;
+	} else {
+		hip_stars->removeVariableStar(num);
+	}
+	*/
 	double size = _size;
 	//setup size
-	if (size<1.0) {
+	/*if (size<1.0) {
 		float mag = selected_object.getMag(navigator);
 		if (mag<0) mag=10;
 		size = defaultSize + 4.0 * (10-mag);
-	}
+	}*/
 	//std::cout << num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl;
 	//std::cout << num << " with color" << std::endl;
 	loadIlluminate(num, ra, de, size, _color[0], _color[1], _color[2], rotation );
@@ -162,6 +186,7 @@ void IlluminateMgr::remove(unsigned int name)
 void IlluminateMgr::removeAll()
 {
 	illuminateGrid.clear();
+	hip_stars->showAllStar();
 }
 
 // Draw all the Illuminate

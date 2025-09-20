@@ -155,9 +155,8 @@ public:
 		unproject(x, y, inv_mat_earth_equ_to_eye, v);
 	}
 
-	inline bool unprojectJ2000(double x, double y, Vec3d& v) const {
-		unproject(x, y, inv_mat_j2000_to_eye, v);
-		return true;
+	inline void unprojectJ2000Normalized(double x, double y, Vec3d& v) const {
+		unprojectNormalized(x, y, inv_mat_j2000_to_eye, v);
 	}
 
 	// taking account of precession
@@ -203,6 +202,10 @@ public:
 		unproject(x, y, inv_mat_local_to_eye, v);
 	}
 
+	inline void unprojectNormalizedLocal(double x, double y, Vec3d &v) const {
+		unprojectNormalized(x, y, inv_mat_local_to_eye, v);
+	}
+
 	// Same function with input vector v in dome coordinates
 	inline bool projectDome(const Vec3d& v, Vec3d& win) const {	//unused
 		return projectCustomFixedFov(v, win, mat_dome);
@@ -238,7 +241,7 @@ public:
 
 	Vec3d getCursorPosEqu(int x, int y) const {
 		Vec3d v;
-		unprojectEarthEqu(x,getViewportHeight()-y,v);
+		unprojectEarthEqu(x,y,v);
 		return v;
 	}
 
@@ -311,6 +314,7 @@ protected:
 	// transformation from screen 2D point x,y to object
 	// m is here the already inverted full tranfo matrix
 	void unproject(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void unprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const;
 
 	// Automove
 	auto_zoom zoom_move;		// Current auto movement

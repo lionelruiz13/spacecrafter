@@ -214,6 +214,10 @@ public:
 
 	float  starGetTwinkleAmount() const;
 
+	float getMag(int hip);
+
+	float getBaseMag(int hip);
+
 	////////////////////////////////////////////////////////////////////////////////
 	// StarNavigator---------------------------
 	////////////////////////////////////////////////////////////////////////////////
@@ -226,6 +230,16 @@ public:
 	void starNavigatorLoadOther(const std::string &fileName);
 
 	void starNavigatorSave(const std::string &fileName, bool binaryMode);
+
+	void starNavigatorHideStar(int hip);
+
+	void starNavigatorShowStar(int hip);
+
+	void starNavigatorShowAllStar();
+
+	MODULE getFlagIngalaxy(){
+		return core->getFlagIngalaxy();
+	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	// SunTrace---------------------------
@@ -425,6 +439,8 @@ public:
 	Vec3f constellationGetColorLine() const;
 	//! Set constellation line color
 	void constellationSetColorLine(const Vec3f& v);
+	//! Set constellation color 3D
+	void constellationSetColor(const Vec3f& v);
 	//! Get constellation names color
 	Vec3f constellationGetColorNames() const;
 	//! Set constellation names color
@@ -592,6 +608,7 @@ public:
 	double getDateDay() const;
 	double getDateHour() const;
 	double getDateMinute() const;
+	double getDateSecond() const;
 
 	int getLanguage() const;
 
@@ -608,6 +625,14 @@ public:
 
 	// send param tesselation, name design the param to change to value
 	void planetTesselation(std::string name, int value);
+
+	std::string getSelectedPlanetEnglishName(){
+		return (core->getSelectedPlanetEnglishName());
+	}
+
+	std::string getHomePlanetEnglishName(){
+		return (core->getHomePlanetEnglishName());
+	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Fog---------------------------
@@ -725,6 +750,8 @@ public:
 	void skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string& fileName);
 
 	void skyDisplayMgrLoadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr);
+
+	bool skyDisplayMgrCheckDraw();
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Observatory---------------------------
@@ -862,10 +889,14 @@ public:
 	void atmosphereSetFadeDuration(float f);
 	//! Set default atmosphere fade duration
 	void atmosphereSetDefaultFadeDuration();
-	//! Set default moon brightness
+	//! Set moon brightness
 	void moonSetBrightness(double f);
 	//! Set default moon brightness
 	void moonSetDefaultBrightness();
+	//! Set sun brightness
+	void sunSetBrightness(double f);
+	//! Set default sun brightness
+	void sunSetDefaultBrightness();
 	//! Set flag for activating atmospheric refraction correction
 	void atmosphericRefractionSetFlag(bool b);
 	//! Get flag for activating atmospheric refraction correction
@@ -901,14 +932,9 @@ public:
 		Camera::instance->lookTo(_pos, 0);
 	}
 
-	////////////////////////////////////////////////////////////////////////////////
-	//Scrit-----
-	////////////////////////////////////////////////////////////////////////////////
-
-	//! Set flag for skip pause in script
-	void scriptSetFlagScriptPause(bool b);
-	//! Get flag for skip pause in script
-	bool scriptGetFlagScriptPause() const;
+	bool getFlagTracking() {
+		return (core->getFlagTracking());
+	}
 
     CoreLink(std::shared_ptr<Core> _core) {
 		core = _core;
@@ -925,6 +951,18 @@ public:
 		core->updateList.remove(arg);
 	}
 
+	//! Whether the rendered frame must be predictible (at the expense of framerate) or not
+	inline bool predictibleRendering() const {
+		return core->predictibleRendering;
+	}
+
+	inline void setPredictibleRendering(bool enable, int framerate) {
+		core->setPredictibleRendering(enable, framerate);
+	}
+
+	//! Whether App thing HipStarMgr is in use or not
+	bool isDrawingHipStarMgr;
+	bool isJoypadConnected = false;
 	static CoreLink *instance;
 private:
     std::shared_ptr<Core> core;

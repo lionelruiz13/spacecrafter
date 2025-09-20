@@ -132,7 +132,6 @@ TextureLoader::~TextureLoader()
 
 void TextureLoader::asyncLoad()
 {
-    // FIXME UNSAFE - Don't use tex, use a std::shared_ptr<texRecap> instead and move logic and loading datas in TextureLoader
     tex->loadInternal(fullName, resolution, depth, force3D, depthColumn);
 }
 
@@ -297,28 +296,30 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
             textureQueue.emplace(texture);
             return ret;
         }
-        auto &cacheEntry = AsyncLoaderMgr::instance->getCache(fullName);
-        TextureCache &cache = cacheEntry;
-        if (cacheEntry.checkCache(fullName)) {
-            cache.averageLuminance = -1;
-            cache.height = -1;
-        }
-        texture->averageLuminance = cache.averageLuminance;
-        texture->depth = depth;
-        texture->mipmap = mipmap;
-        texture->blendMipmap = useBlendMipmap;
-        texture->blendPacked = (nbChannels > 1);
-        usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-        if (mipmap)
-            usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-        if (strategy == Loading::LEGACY) {
-            return loadInternal(fullName, resolution, depth, force3D, depthColumn);
-        } else if (std::filesystem::exists(fullName)) {
-            texture->width = cache.width;
-            texture->height = cache.height;
-            texture->loader = std::make_unique<TextureLoader>(this, cache, fullName, resolution, depth, force3D, depthColumn);
-            return true;
-        } else {
+        try {
+            auto &cacheEntry = AsyncLoaderMgr::instance->getCache(fullName);
+            TextureCache &cache = cacheEntry;
+            if (cacheEntry.checkCache(fullName)) {
+                cache.averageLuminance = -1;
+                cache.height = -1;
+            }
+            texture->averageLuminance = cache.averageLuminance;
+            texture->depth = depth;
+            texture->mipmap = mipmap;
+            texture->blendMipmap = useBlendMipmap;
+            texture->blendPacked = (nbChannels > 1);
+            usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+            if (mipmap)
+                usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+            if (strategy == Loading::LEGACY) {
+                return loadInternal(fullName, resolution, depth, force3D, depthColumn);
+            } else {
+                texture->width = cache.width;
+                texture->height = cache.height;
+                texture->loader = std::make_unique<TextureLoader>(this, cache, fullName, resolution, depth, force3D, depthColumn);
+                return true;
+            }
+        } catch (...) {
             return false;
         }
 	} else {
@@ -443,11 +444,13 @@ bool s_texture::load(stbi_uc *data, int realWidth, int realHeight)
     const auto texHeight = (texture->depth == 1) ? -texture->height : texture->height;
     int _nbChannels = nbChannels - 1;
     const VkFormat format = (formatOverride) ? formatOverride : formatTable[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
+    auto pos = textureName.find(".spacecrafter/");
+    std::string name = (pos == std::string::npos) ? textureName : textureName.substr(pos+14);
     const int depthColumn = (texture->depth == 1) ? 0 : realWidth / texture->width;
     const TextureInfo texInfo = {
         .width=texture->width, .height=texHeight, .depth=texture->depth, .depthColumn=depthColumn,
         .nbChannels=nbChannels, .channelSize=channelSize, .content=data, .mgr=Context::instance->texStagingMgr.get(),
-        .usage=usage, .type=imgType, .format=format, .name=textureName, .mipmap=texture->mipmap,
+        .usage=usage, .type=imgType, .format=format, .name=name, .mipmap=texture->mipmap,
     };
     if (strategy == Loading::LEGACY) {
         texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, texInfo);
@@ -463,16 +466,16 @@ bool s_texture::load(stbi_uc *data, int realWidth, int realHeight)
 
 void s_texture::getDimensions(int &width, int &height) const
 {
-    while (texture->height < 0)
-        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
+	while (texture->height < 0)
+		std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
 	width = texture->width;
 	height = texture->height;
 }
 
 void s_texture::getDimensions(int &width, int &height, int &depth) const
 {
-    while (texture->height < 0)
-        std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
+	while (texture->height < 0)
+		std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
 	width = texture->width;
 	height = texture->height;
 	depth = texture->depth;
@@ -538,7 +541,7 @@ void s_texture::forceUnload()
         layoutMipmap = nullptr;
     }
     cache.store();
-    std::cout << "Total blocking texture loading time : " << std::chrono::duration_cast<std::chrono::milliseconds>(loadTime).count() << " ms\n";
+    cLog::get()->write("Total blocking texture loading time : " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(loadTime).count()) + "ms", LOG_TYPE::L_INFO);
 }
 
 void s_texture::update()
@@ -637,8 +640,21 @@ s_texture::bigTexRecap *s_texture::acquireBigTexture()
             default:
                 formatIdx = nbChannels + 4 * channelSize - 5;
         }
-		bigTextures.push_back({1, (unsigned short) width, (unsigned short) height, nullptr, textureName, 3, formatIdx, -1, false, true});
-        bt = &bigTextures.back();
+        if (droppedBigTextures.size() > 2 && !droppedBigTextures.front().texture) {
+            bigTextures.splice(bigTextures.end(), droppedBigTextures, droppedBigTextures.begin());
+            bt = &bigTextures.back();
+            bt->width = width;
+            bt->height = height;
+            bt->texName = textureName;
+            bt->lifetime = 3;
+            bt->formatIdx = formatIdx;
+            bt->quickLoader = -1;
+            bt->ready = false;
+    		bt->acquired = true;
+        } else {
+            bigTextures.push_back({1, (unsigned short) width, (unsigned short) height, nullptr, textureName, 3, formatIdx, -1, false, true});
+            bt = &bigTextures.back();
+        }
 		texture->bigTextureBinding = 1;
         if (texture->quickloadable)
             preQuickLoadCache(bt);
@@ -914,7 +930,7 @@ void s_texture::bigTextureLoader()
             currentAllocation += droppedTex->getTextureSize();
             droppedTex.reset();
         }
-        std::string shortName = tex->texName;
+        std::string shortName = tex->texName.substr(tex->texName.find(".spacecrafter/")+14);
         std::string texName = "big \"" + shortName + "\"";
         cLog::get()->write("Loading big " + shortName + "...", LOG_TYPE::L_DEBUG);
         unsigned int width = tex->width;
@@ -1026,7 +1042,7 @@ void s_texture::bigTextureLoader()
             barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             barrier.srcQueueFamilyIndex = queueFamily->id;
             barrier.dstQueueFamilyIndex = context.graphicFamily->id;
-            vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+            vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
             vkEndCommandBuffer(cmd);
             vkQueueSubmit(queue, 1, &submit, fence);
             auto res = vkWaitForFences(vkmgr.refDevice, 1, &fence, VK_TRUE, 60L*1000*1000*1000); // 60 seconds
@@ -1072,7 +1088,7 @@ void s_texture::debugBigTexture()
         std::ostringstream desc;
         desc << "- " << bt.width << 'x' << bt.height;
         if (bt.acquired) {
-            desc << ((bt.ready) ? " <active> " : " <uploading> ") << bt.texName;
+            desc << ((bt.ready) ? " <active> " : " <uploading> ") << bt.texName.substr(bt.texName.find(".spacecrafter/")+14);
         } else
             desc << " <unused>";
         cLog::get()->write(desc, LOG_TYPE::L_DEBUG);
@@ -1095,10 +1111,11 @@ void s_texture::loadCache(const std::string &path, bool _cacheTexture)
 
 std::string s_texture::getCacheName(const std::string &name)
 {
-    const auto p = name.find_first_of('/') - 1;
+    const auto p1 = name.find(".spacecrafter/")+14;
+    const auto p2 = name.find_first_of('/', p1) - 1;
     std::string filename = name.substr();
-    filename = name.substr(p, name.size() - p);
-    filename.front() = name.front();
+    filename = name.substr(p2, name.size() - p2);
+    filename.front() = name[p1];
     for (char &c : filename) {
         if (c == '/')
             c = '-';
@@ -1109,10 +1126,11 @@ std::string s_texture::getCacheName(const std::string &name)
 
 std::string s_texture::getCacheEntryName(const std::string &name)
 {
-    const auto p = name.find_first_of('/') - 1;
+    const auto p1 = name.find(".spacecrafter/")+14;
+    const auto p2 = name.find_first_of('/', p1) - 1;
     std::string filename = name.substr();
-    filename = name.substr(p, name.size() - p - 4);
-    filename.front() = name.front();
+    filename = name.substr(p2, name.size() - p2 - 4);
+    filename.front() = name[p1];
     return filename;
 }
 

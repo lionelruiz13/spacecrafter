@@ -65,14 +65,9 @@ std::string default_landscape = "";
 std::string current_landscape = "";
 
 UI::UI(std::shared_ptr<Core> _core, CoreLink * _coreLink, App * _app, SDLFacade *_m_sdl, std::shared_ptr<Media> _media) :
-	tuiFont(nullptr),
-	FlagShowTuiMenu(0),
-	tui_root(nullptr),
-	key_Modifier(NONE) ,
-	KeyTimeLeft(0) ,
-	deltaSpeed(DeltaSpeed::NO),
 	posMouse(_m_sdl->getDisplayWidth()/2 , _m_sdl->getDisplayHeight()/2),
-	nposMouse(VulkanMgr::instance->screenToRect(posMouse))
+	nposMouse(VulkanMgr::instance->screenToRect(posMouse)),
+	deltaSpeed(DeltaSpeed::NO)
 {
 	if (!_core) {
 		cLog::get()->write("UI.CPP CRITICAL : In stel_ui constructor, invalid core.",LOG_TYPE::L_ERROR);
@@ -146,7 +141,7 @@ void UI::init(const InitParser& conf)
 
 	double lati = coreLink->observatoryGetLatitude();
 	double longi = coreLink->observatoryGetLongitude();
-	double alti = coreLink->observatoryGetAltitude()/1000000.0;
+	double alti = coreLink->observatoryGetAltitude(); // /1000000.0;
 	coreLink->observerMoveTo(lati,longi,alti,0);
 
 	media->imageDropAll();
@@ -181,6 +176,7 @@ void UI::init(const InitParser& conf)
 	coreLink->setDefaultHeading();
 	core->setInitialLandscapeName();
 	core->removeSupplementalNebulae();
+	core->removeSupplementalDso();
 	coreLink->illuminateRemoveTex();
 	coreLink->illuminateRemoveAll();
 	coreLink->nebulaSetFlag(true);
@@ -363,7 +359,7 @@ int UI::handleClic(const std::pair<uint16_t, uint16_t> &pos, s_gui::S_GUI_VALUE 
 		if (button==s_gui::S_GUI_MOUSE_RIGHT && state==s_gui::S_GUI_RELEASED) {
 			switch(key_Modifier) {
 				case NONE:
-			        this->executeCommand("select");
+			        this->executeCommand("deselect");
 					break;
 
 				case KWIN:
@@ -528,10 +524,12 @@ void UI::handleJoyAddStick()
 {
 	joypadController = new JoypadController(this);
 	joypadController->init("joypad.ini");
+	coreLink->isJoypadConnected = true;
 }
 
 void UI::handleJoyRemoveStick()
 {
+	coreLink->isJoypadConnected = false;
 	delete joypadController;
 	joypadController = nullptr;
 }
@@ -1362,6 +1360,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->pauseScriptOrTimeRate();
 					break;
 				case SUPER:
+					event = new FlagEvent( FLAG_NAMES::FN_SKIP_PAUSE , FLAG_VALUES::FV_TOGGLE);
+					EventRecorder::getInstance()->queue(event);
 					RESET_MOD(SUPER);
 					break;
 				case SHIFT:
@@ -1557,7 +1557,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL:
-					// media->audioDebug();
+					event = new ScriptEvent( IDIR+"internal/astronomical.sts");
+					EventRecorder::getInstance()->queue(event);
 					break;
 				default:
 					break;

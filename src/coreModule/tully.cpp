@@ -159,7 +159,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		aGalaxie >> index >> r >> g >> b >> x >> y >> z >> typeGalaxy;
 		nbGalaxy++;
 
-		xr=200.f*x;
+		xr=200.f*x-.0015;
 		yr=-200.f*z;
 		zr=200.f*y;
 

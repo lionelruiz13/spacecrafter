@@ -72,6 +72,7 @@
 #include "coreModule/tully.hpp"
 #include "coreModule/volumObj3D.hpp"
 #include "scriptModule/script_mgr.hpp"
+#include <filesystem>
 
 Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback<void, std::string>& recordCallback, std::shared_ptr<Observer> _observatory) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
@@ -84,6 +85,8 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	fontFactory = _fontFactory;
 	projection = new Projector( width,height, 60 );
 	media->setProjector(projection);
+	// Set textures directory and suffix
+	s_texture::setTexDir(AppSettings::Instance()->getTextureDir() );
 	//set Shaders directory and suffix
 	uboCam = std::make_unique<UBOCam>();
 	tone_converter = new ToneReproductor();
@@ -98,7 +101,11 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	cloudNav = std::make_unique<CloudNavigator>();
 	universeCloudNav = std::make_unique<CloudNavigator>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
 	starGalaxy = std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
-	volumGalaxy = std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true);
+	if (std::filesystem::exists(s_texture::getTexDir() + "milkyway-vguerin-d128.png")) {
+		volumGalaxy = std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false);
+	} else {
+		volumGalaxy = std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true);
+	}
 	dsoNav = std::make_unique<DsoNavigator>();
 	starLines = std::make_unique<StarLines>();
 	ojmMgr = std::make_unique<OjmMgr>();
@@ -243,6 +250,13 @@ void Core::setFlagNav(bool a)
 	skyLineMgr->setInternalNav(a);
 }
 
+void Core::setFlagAstronomical(bool a)
+{
+	flagAstronomical = a;
+	cardinals_points->setInternalAstronomical(a);
+	skyGridMgr->setInternalAstronomical(a);
+	skyLineMgr->setInternalAstronomical(a);
+}
 
 //! Load core data and initialize with default values
 void Core::init(const InitParser& conf)
@@ -255,6 +269,8 @@ void Core::init(const InitParser& conf)
 
 	flagNav= conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);
 	setFlagNav(flagNav);
+	flagAstronomical = conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);
+	setFlagAstronomical(flagAstronomical);
 	FlagAtmosphericRefraction = conf.getBoolean(SCS_VIEWING,SCK_FLAG_ATMOSPHERIC_REFRACTION);
 
 	initialvalue.initial_landscapeName=conf.getStr(SCS_INIT_LOCATION,SCK_LANDSCAPE_NAME);
@@ -284,7 +300,7 @@ void Core::init(const InitParser& conf)
 
 		ssystemFactory->anchorManagerInit(conf);
 		//TODO Oli: remember to use file selection class.
-		ssystemFactory->loadGalacticSystem("", "galactic.ini");
+		ssystemFactory->loadGalacticSystem(".", "galactic.ini");
 		// Init stars
 		hip_stars->iniColorTable();
 		hip_stars->readColorTable();
@@ -389,8 +405,14 @@ void Core::init(const InitParser& conf)
 
 		ojmMgr->init();
 		// 3D object integration test
-		if (!volumGalaxy->loaded())
-			ojmMgr-> load("in_universe", "Milkyway", AppSettings::Instance()->getModel3DDir() + "Milkyway/Milkyway.ojm",AppSettings::Instance()->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01);
+		if (volumGalaxy->loaded()) {
+			if (std::filesystem::exists(s_texture::getTexDir() + "milkyway-vguerin-d128.png")) {
+				volumGalaxy->setModel(Mat4f::translation(Vec3f( -0.002, 0.0001, -0.005)) * Mat4f::yawPitchRoll(112, 0, 90) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
+			} else {
+				volumGalaxy->setModel(Mat4f::translation(Vec3f( -0.002, 0.0001, -0.005)) * Mat4f::yawPitchRoll(112, 0, 0) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
+			}
+		} else
+			ojmMgr->load("in_universe", "Milkyway", AppSettings::Instance()->getModel3DDir() + "Milkyway/Milkyway.ojm",AppSettings::Instance()->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01);
 
 		// Load the pointer textures
 		Object::initTextures();
@@ -471,6 +493,7 @@ void Core::init(const InitParser& conf)
 	atmosphere->setFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
 	atmosphere->setDefaultFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
 	atmosphere->setDefaultMoonBrightness(conf.getDouble(SCS_VIEWING,SCK_MOON_BRIGHTNESS));
+	ssystemFactory->setDefaultSunBrightness(conf.getDouble(SCS_VIEWING,SCK_SUN_BRIGHTNESS));
 
 	// Viewing section
 	asterisms->setFlagLines( conf.getBoolean(SCS_VIEWING,SCK_FLAG_CONSTELLATION_DRAWING));
@@ -675,12 +698,18 @@ void Core::testLandscapeCompatibleWithAutoMode()
 	}
 }
 
+void Core::setLandingLandscape(bool landing, float speed)
+{
+	if (landscape->getFormat() == "spherical")
+		landscape->setLanding(landing, speed);
+}
+
 //! Load a landscape based on a hash of parameters mirroring the landscape.ini file
 //! and make it the current landscape
-bool Core::loadLandscape(stringHash_t& param)
+bool Core::loadLandscape(stringHash_t& param, int landing)
 {
 
-	Landscape* newLandscape = Landscape::createFromHash(param);
+	Landscape* newLandscape = Landscape::createFromHash(param, landing);
 	if (!newLandscape) return 0;
 
 	if (landscape) {
@@ -828,6 +857,7 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 	} else {
 		std::cerr << "Invalid selection type specified: " << type << std::endl;
 		std::cout << "Invalid selection type specified: " << type << std::endl;
+		unSelect();
 		return 0;
 	}
 
@@ -880,7 +910,7 @@ bool Core::findAndSelect(const Vec3d& pos)
 bool Core::findAndSelect(int x, int y)
 {
 	Vec3d v;
-	projection->unprojectEarthEqu(x,projection->getViewportHeight()-y,v);
+	projection->unprojectEarthEqu(x, y, v);
 	return findAndSelect(v);
 }
 
@@ -1198,11 +1228,30 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	if ( !hip_stars || !cardinals_points || !asterisms || ! skyLineMgr->isExist(SKYLINE_TYPE::LINE_ECLIPTIC)) return; // objects not initialized yet
 
 	std::string oldLocale = getSkyLanguage();
+	InitParser conf;
+	AppSettings::Instance()->loadAppSettings( &conf );
 
 	// Update the translator with new locale name
 	skyTranslator = Translator(AppSettings::Instance()->getLanguageDir(), newSkyLocaleName);
 	cLog::get()->write("Sky locale is " + skyTranslator.getLocaleName(), LOG_TYPE::L_INFO);
 	//printf("SkyLocale : %s\n", newSkyLocaleName.c_str());
+	std::string language = skyTranslator.getLocaleName();
+	if (language[0] == 'z' && language[1] == 'h')
+		fontFactory->updateAllFont("/home/planetarium/.spacecrafter/fonts/HanWangHeiHeavy.ttf");
+	else if (language[0] == 'j' && language[1] == 'a')
+		fontFactory->updateAllFont("/home/planetarium/.spacecrafter/fonts/PretendardJPVariable.ttf");
+	else {
+		fontFactory->updateFont("text", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_TEXT_NAME), conf.getStr(SCS_FONT, SCK_FONT_TEXT_SIZE));
+		fontFactory->updateFont("menu", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_MENU_NAME), conf.getStr(SCS_FONT, SCK_FONT_MENUTUI_SIZE));
+		fontFactory->updateFont("planets", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_PLANET_NAME), conf.getStr(SCS_FONT, SCK_FONT_PLANET_SIZE));
+		fontFactory->updateFont("constellations", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_CONSTELLATION_NAME), conf.getStr(SCS_FONT, SCK_FONT_CONSTELLATION_SIZE));
+		fontFactory->updateFont("cardinal_points", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_CARDINALPOINTS_NAME), conf.getStr(SCS_FONT, SCK_FONT_CARDINALPOINTS_SIZE));
+		fontFactory->updateFont("grids", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GRID_NAME), conf.getStr(SCS_FONT, SCK_FONT_GRID_SIZE));
+		fontFactory->updateFont("lines", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_LINES_NAME), conf.getStr(SCS_FONT, SCK_FONT_LINE_SIZE));
+		fontFactory->updateFont("displays", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_DISPLAY_NAME), conf.getStr(SCS_FONT, SCK_FONT_DISPLAY_SIZE));
+		fontFactory->updateFont("stars", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_HIPSTARS_NAME), conf.getStr(SCS_FONT, SCK_FONT_HIPSTARS_SIZE));
+		fontFactory->updateFont("nebulae", AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_NEBULAS_NAME), conf.getStr(SCS_FONT, SCK_FONT_NEBULAS_SIZE));
+	}
 
 	// Translate all labels with the new language
 	cardinals_points->translateLabels(skyTranslator);
@@ -1428,7 +1477,7 @@ std::string Core::getCursorPos(int x, int y)
 Vec3f Core::getCursorPosEqu(int x, int y)
 {
 	Vec3d v;
-	projection->unprojectEarthEqu(x,projection->getViewportHeight()-y,v);
+	projection->unprojectEarthEqu(x, y,v);
 	return v;
 }
 
@@ -1529,11 +1578,11 @@ void Core::dragView(int x1, int y1, int x2, int y2)
 	Vec3d tempvec1, tempvec2;
 	double az1, alt1, az2, alt2;
 	if (navigation->getViewingMode()==Navigator::VIEW_HORIZON) {
-		projection->unprojectLocal(x2,projection->getViewportHeight()-y2, tempvec2);
-		projection->unprojectLocal(x1,projection->getViewportHeight()-y1, tempvec1);
+		projection->unprojectLocal(x2, y2, tempvec2);
+		projection->unprojectLocal(x1, y1, tempvec1);
 	} else {
-		projection->unprojectEarthEqu(x2,projection->getViewportHeight()-y2, tempvec2);
-		projection->unprojectEarthEqu(x1,projection->getViewportHeight()-y1, tempvec1);
+		projection->unprojectEarthEqu(x2, y2, tempvec2);
+		projection->unprojectEarthEqu(x1, y1, tempvec1);
 	}
 	Utility::rectToSphe(&az1, &alt1, tempvec1);
 	Utility::rectToSphe(&az2, &alt2, tempvec2);
@@ -1931,6 +1980,16 @@ void Core::removeSupplementalNebulae()
 	nebulas->removeSupplementalNebulae();
 }
 
+bool Core::loadDso2d(int typeDso, std::string name, float size, float alpha, float delta, float distance, int xyz)
+{
+	return dso3d->loadCommand(typeDso, name, size, alpha, delta, distance, xyz);
+}
+
+void Core::removeSupplementalDso()
+{
+	dso3d->removeSupplementalDso();
+}
+
 void Core::setJDayRelative(int year, int month)
 {
 	double jd = timeMgr->getJDay();
@@ -1964,4 +2023,10 @@ void Core::lookAnchor(const std::string &name, double duration)
 	// } else {
 	// 	navigation->moveTo(ssystemFactory->, duration);
 	// }
+}
+
+void Core::setPredictibleRendering(bool enable, int framerate)
+{
+	predictibleRendering = enable;
+	media->setRenderFramerate(framerate);
 }

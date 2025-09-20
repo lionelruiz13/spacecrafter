@@ -46,6 +46,14 @@ bool ScriptInterface::isScriptPaused() const {
     return scriptMgr->isPaused();
 }
 
+bool ScriptInterface::isSkipPauseDisabled() const{
+    return scriptMgr->getFlagSkipPause();
+}
+
+void ScriptInterface::setSkipPauseDisabled(bool b) {
+    scriptMgr->setFlagSkipPause(b);
+}
+
 void ScriptInterface::slowerSpeed() {
     return scriptMgr->slowerSpeed();
 }
@@ -63,7 +71,6 @@ void ScriptInterface::resumeScript() {
 }
 
 void ScriptInterface::pauseScript() {
-    std::cout << "script in paused" << std::endl;
     scriptMgr->pauseScript();
 }
 
@@ -132,4 +139,12 @@ void ScriptInterface::setIsVideoPlayed(bool b) const {
 
 void ScriptInterface::setWaitOnVideoTermination(bool b) const {
     scriptMgr->setWaitOnVideoTermination(b);
+}
+
+void ScriptInterface::acquireGlobalLock() {
+    scriptMgr->acquireGlobalLock();
+}
+
+void ScriptInterface::releaseGlobalLock() {
+    scriptMgr->releaseGlobalLock();
 }

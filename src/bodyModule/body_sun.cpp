@@ -70,7 +70,7 @@ Sun::Sun(std::shared_ptr<Body> parent,
 {
 	//more adding could be placed here for the constructor of Sun
 	createSunShader();
-	createHaloShader(VulkanMgr::instance->getSwapChainExtent().height);
+	createHaloShader(VulkanMgr::instance->getScreenRect().extent.height);
 }
 
 Sun::~Sun()

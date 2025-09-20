@@ -29,6 +29,8 @@
 #include <cstdint>
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <thread>
+#include <atomic>
 
 #include "tools/no_copy.hpp"
 
@@ -50,8 +52,14 @@
 */
 class Fps  : public NoCopy {
 public:
-	Fps(){};
-	~Fps(){};
+	Fps() : watchdog(&Fps::watchdogMainloop, this)
+	{
+	}
+	~Fps()
+	{
+		active = false;
+		watchdog.join();
+	}
 
 	//! Initializes the clock parameters
 	void init() {
@@ -61,7 +69,7 @@ public:
 
 	//! returns the number of frames displayed since the launch of the software
 	uint64_t getElapsedFrame() const {
-		return numberFrames;
+		return numberFrames.load(std::memory_order_relaxed);
 	}
 
 	//! adds a frame
@@ -115,8 +123,10 @@ public:
 
 	//! callback function launched by SDL2
 	static Uint32 callbackfunc(Uint32 interval, void *param);
+
+	void watchdogMainloop();
 private:
-	uint64_t numberFrames=0;
+	std::atomic<uint64_t> numberFrames=0;
 	int frame = 0;
 	int fps = 0;
 	float videoFPS=1.f;
@@ -128,6 +138,8 @@ private:
 	bool recVideoMode = false;
 
 	const float SECONDEDURATION=1000.0;
+	std::thread watchdog;
+	bool active = true;
 };
 
 #endif

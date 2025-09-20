@@ -109,7 +109,7 @@ public:
 		return fader;
 	}
 
-	float getWorldAdaptationLuminance() const { //unused
+	float getWorldAdaptationLuminance() const { // Computed from eye luminance to update eye luminance
 		return world_adaptation_luminance;
 	}
 
@@ -135,6 +135,10 @@ public:
 
 	// indicates which atmosphere model will be calculated according to the planet
 	void setModel(ATMOSPHERE_MODEL atmModel);
+
+	inline float getMoonBrightness() {
+		return (skyb->getMoonBrightness());
+	}
 
 	inline void setMoonBrightness(float b) {
 		skyb->setMoonBrightness(b);
@@ -171,11 +175,6 @@ private:
 	Vec3f *pSkyColor = nullptr;
 	VkCommandBuffer cmds[3];
 
-	//variables on the grid position
-	float stepX; //!< step size on the x axis
-	float stepY; //!< step size on the y-axis
-	float viewport_left; //!<spacing on the left of the grid
-	float viewport_bottom; //!< spacing at the bottom of the grid
 	float default_fader_duration;
 };
 

@@ -26,13 +26,15 @@
 #include <cstdint>
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <chrono>
 
 #include "appModule/fps.hpp"
+#include "tools/log.hpp"
 
 
 //! add a frame
 void Fps::addFrame() {
-	numberFrames++;
+	numberFrames.fetch_add(1, std::memory_order_relaxed);
 	frame++;
 }
 
@@ -90,4 +92,27 @@ Uint32 Fps::callbackfunc(Uint32 interval, void *param)
 
     SDL_PushEvent(&event);
     return(interval);
+}
+
+void Fps::watchdogMainloop()
+{
+	uint64_t lastFrame = 0;
+	uint32_t nbSameFrame = 0;
+	while (active) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		const uint64_t currentFrame = numberFrames.load(std::memory_order_relaxed);
+		if (lastFrame != currentFrame) {
+			lastFrame = currentFrame;
+			nbSameFrame = 0;
+		} else if (lastFrame > 10) {
+			switch (++nbSameFrame) {
+				case 2:
+					cLog::get()->write("Frame stall detected", LOG_TYPE::L_WARNING);
+					break;
+				case 20:
+					cLog::get()->write("This frame stall is very long", LOG_TYPE::L_WARNING);
+					break;
+			}
+		}
+	}
 }

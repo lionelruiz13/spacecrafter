@@ -57,10 +57,6 @@ Atmosphere::~Atmosphere()
 
 void Atmosphere::initGridViewport(const Projector *prj)
 {
-	stepX = (float)prj->getViewportWidth() / SKY_RESOLUTION;
-	stepY = (float)prj->getViewportHeight() / SKY_RESOLUTION;
-	viewport_left = (float)prj->getViewportPosX();
-	viewport_bottom = (float)prj->getViewportPosY();
 }
 
 //initializes the point grid for the atmosphere calculation
@@ -68,11 +64,16 @@ void Atmosphere::initGridPos()
 {
 	{
 		float *data = (float *) Context::instance->transfer->planCopy(skyPos->get());
+		float y_val = -1.f;
 		for (int y=0; y<SKY_RESOLUTION+1; y++) {
+			float x_val = -1.f;
 			for (int x=0; x<SKY_RESOLUTION+1; x++) {
-				*(data++) = viewport_left+x*stepX;
-				*(data++) = viewport_bottom+y*stepY;
+				auto pos = VulkanMgr::instance->rectToRender({x_val, y_val});
+				*(data++) = pos.first;
+				*(data++) = pos.second;
+				x_val += (2.f / SKY_RESOLUTION);
 			}
+			y_val += (2.f / SKY_RESOLUTION);
 		}
 	}
 	{
@@ -208,10 +209,13 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 	double sum_lum = 0.;
 
 	// Compute the sky color for every point above the ground
-	for (int x=0; x<SKY_RESOLUTION+1; x++) {
-		for (int y=0; y<SKY_RESOLUTION+1; y++) {
-			prj->unprojectLocal((double)viewport_left+x*stepX, (double)viewport_bottom+y*stepY,point);
+	float x_val = -1.f;
+	for (int x=0; x <= SKY_RESOLUTION; x++) {
+		float y_val = -1.f;
+		for (int y=0; y <= SKY_RESOLUTION; y++) {
+			prj->unprojectNormalizedLocal(x_val, y_val, point);
 			point.normalize();
+			y_val += (2.f / SKY_RESOLUTION);
 
 			if (point[2]<=0) {
 				point[2] = -point[2];
@@ -235,11 +239,12 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 			eye->xyY_to_RGB(b2.color);
 			pSkyColor[x + y * (SKY_RESOLUTION + 1)].set(atm_intensity*b2.color[0],atm_intensity*b2.color[1],atm_intensity*b2.color[2]);
 		}
+		x_val += (2.f / SKY_RESOLUTION);
 	}
-
-	world_adaptation_luminance = 3.75f + lightPollutionLuminance + 3.5*sum_lum/NB_LUM*atm_intensity;
-	milkyway_adaptation_luminance = min_mw_lum*(1-atm_intensity) + 30*sum_lum/NB_LUM*atm_intensity;
-	sum_lum = 0.f;
+	if (isnormal(sum_lum)) {
+		world_adaptation_luminance = 3.75f + lightPollutionLuminance + 3.5*sum_lum/NB_LUM*atm_intensity;
+		milkyway_adaptation_luminance = min_mw_lum*(1-atm_intensity) + 30*sum_lum/NB_LUM*atm_intensity;
+	}
 }
 
 void Atmosphere::draw()

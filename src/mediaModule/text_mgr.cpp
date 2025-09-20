@@ -101,6 +101,8 @@ void TextMgr::add(const std::string& name, const TEXT_MGR_PARAM& textParam)
 		case FONT_SIZE::T_XX_LARGE:
 			tmp = textFont[6].get();
 			break;
+		default:
+			return;
 	}
 
 	//set align

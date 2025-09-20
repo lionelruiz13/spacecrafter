@@ -49,6 +49,8 @@ bool OjmL::init(const std::string & _fileName)
 	if (_fileName.compare(_fileName.size() - 8, 8, ".ojm.bin", 8) == 0) {
 		// Load header and move to the begin of the vertices to read
 		std::ifstream stream(_fileName, std::ios_base::in | std::ios_base::binary);
+		if (!stream)
+			return false;
 		ShapeHeader head;
 		stream.seekg(sizeof(OjmHeader));
 		stream.read((char *) &head, sizeof(head));

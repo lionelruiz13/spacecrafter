@@ -38,6 +38,8 @@
 #include "tools/log.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/call_system.hpp"
+#include "coreModule/coreLink.hpp"
+#include <chrono>
 
 
 ScriptMgr::ScriptMgr(std::shared_ptr<AppCommandInterface> command_interface,const std::string &_data_dir, std::shared_ptr<Media> _media )
@@ -77,21 +79,22 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 bool ScriptMgr::addScriptFirst(const std::string & script)
 {
 	std::vector <Token*> commands;
-	Token *token=nullptr;
 	std::istringstream iss(script);
 	std::string line;
 
 	//get the tokens into a vector
 	while (getline(iss, line)){
 		// transformation of the beginning of character strings by deleting spaces and tabs at the beginning of the string
-		while (line[0]==' ' || line[0]=='\t') {
-	        line.erase(0,1);
-			//std::cout << str << std::endl;
-		}
-		// consideration of lines
-		if ( line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n') {
-			token = new Token(line, getScriptPath());
-			commands.push_back(token);
+		auto pos = line.find_first_not_of(" \t");
+		if (pos == std::string::npos)
+			continue;
+		switch (line[pos]) { // consideration of lines
+			case '#':
+			case '\r':
+			case '\n':
+				break;
+			default:
+				commands.push_back(new Token((pos == 0) ? line : line.substr(pos), getScriptPath()));
 		}
 	}
 	//add the tokens to the queue in reverse order (since we add to the begining of the queue
@@ -116,11 +119,13 @@ void ScriptMgr::cancelScript()
 	isInLoop = false;
 	repeatLoop = false;
 	waitOnVideo = false;
+	global_lock_count = 0;
 }
 
 void ScriptMgr::pauseScript()
 {
-	if (scriptState==ScriptState::NONE || flagScriptPause == true)	return;
+	if (scriptState==ScriptState::NONE)
+		return;
 	scriptState=ScriptState::PAUSE;
 	media->audioMusicPause();
 	commander->executeCommand("timerate action pause");
@@ -129,7 +134,8 @@ void ScriptMgr::pauseScript()
 
 void ScriptMgr::resumeScript()
 {
-	if (scriptState==ScriptState::NONE)	return;
+	if (scriptState==ScriptState::NONE)
+		return;
 	scriptState=ScriptState::PLAY;
 
 	media->audioMusicResume();
@@ -150,7 +156,7 @@ void ScriptMgr::fasterSpeed()
 	if (multiplierRate==1)
 		media->audioMusicMute();
 
-	if (multiplierRate>4)
+	if (multiplierRate>=256)
 		return;
 
 	multiplierRate *=2;
@@ -211,6 +217,17 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 		sR.record_elapsed_time = 0;
 		sR.rec_file << "# Spacecrafter "<< AppSettings::Instance()->getVersion() << std::endl;
 		sR.rec_file << "# Script recorded "<< this->getRecordDate() << std::endl << "#" << std::endl;
+		sR.rec_file << "set home_planet " << CoreLink::instance->getObserverHomePlanetEnglishName() << std::endl;
+		sR.rec_file << "moveto lat " << CoreLink::instance->observatoryGetLatitude() << " lon " << CoreLink::instance->observatoryGetLongitude() << " alt " << CoreLink::instance->observatoryGetAltitude() << " duration 0" << std::endl;
+		sR.rec_file << "date utc " << CoreLink::instance->getDateYear() << ":" << CoreLink::instance->getDateMonth() << ":" << CoreLink::instance->getDateDay() << "T" << CoreLink::instance->getDateHour() << ":" << CoreLink::instance->getDateMinute() << ":" << CoreLink::instance->getDateSecond() << std::endl;
+		if (CoreLink::instance->getSelectedPlanetEnglishName() == CoreLink::instance->getHomePlanetEnglishName())
+			sR.rec_file << "select planet home_planet duration 5" << std::endl;
+		else
+			sR.rec_file << "deselect" << std::endl;
+		if (CoreLink::instance->getFlagTracking())
+			sR.rec_file << "flag track_object on" << std::endl;
+		else
+			sR.rec_file << "flag track_object off" << std::endl;
 		cLog::get()->write("ScriptMgr::Now recording actions to file: " + script_filename, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 	} else {
 		cLog::get()->write("ScriptMgr::Error opening script file for writing: " + script_filename, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
@@ -253,10 +270,19 @@ void ScriptMgr::resetScriptLoop()
 	repeatLoop = false;
 }
 
+void ScriptMgr::acquireGlobalLock()
+{
+	if (++global_lock_count == 0) {
+		cLog::get()->write("ScriptMgr::acquireGlobalLock - Can't simultaneously acquire more than 255 locks - one script is leaking a lock !", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+		global_lock_count = UINT8_MAX;
+	}
+}
+
 // runs maximum of one command per update note that waits can drift by up to 1/fps seconds
 void ScriptMgr::update(int delta_time)
 {
-	if (sR.recording) sR.record_elapsed_time += delta_time;
+	if (sR.recording)
+		sR.record_elapsed_time += delta_time;
 
 	/**	isVideoPlayed && waitOnVideo :
 	 * case of video is playing and scriptMgr should wait on it :
@@ -269,6 +295,8 @@ void ScriptMgr::update(int delta_time)
 				return;
 			wait_time = 0;
 		}
+
+		auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(400);
 
 		while (wait_time==0) {
 			std::string comd;
@@ -305,6 +333,8 @@ void ScriptMgr::update(int delta_time)
 				commander->terminateScript();
 				return;
 			}
+			if (global_lock_count == 0 && deadline < std::chrono::steady_clock::now())
+				break;
 		}
 	}
 }

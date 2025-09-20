@@ -31,6 +31,43 @@
 
 #include <list>
 #include <cstdlib>
+#include <cstring>
+
+static inline StarInfo StarInfo_create(unsigned int hip, float ra, float de, float plx, float pmRa, float pmDe, float mag, float bv)
+{
+	StarInfo ret;
+	// conversion in x,y,z coordinates
+	// we decide to modify the minimal Plx and to fix it at 0.2 which makes a star at worst at 16000 al
+	double parsec = 1000.0 / ((plx >PLX_MIN) ? plx : (PLX_MIN+0.01* (rand()%10)));
+	ret.posXYZ[0] = parsec * cos( pmRa ) * cos( pmDe );
+	ret.posXYZ[1] = parsec * sin ( pmDe );
+	ret.posXYZ[2] = parsec * sin ( pmRa ) * cos( pmDe );
+
+	//patch Lionel Ruiz to conform to the OpenGL benchmark
+	ret.posXYZ[0] = -ret.posXYZ[0];
+	ret.posXYZ[1] = -ret.posXYZ[1];
+
+	ret.HIP = hip;
+	ret.pmRA = pmRa;
+	ret.pmDE = pmDe;
+	ret.pc = parsec;
+	ret.mag = mag-5*(log10(parsec)-1);
+	int b_v = (bv+0.5)/4.*127.;
+	ret.show = true;
+
+	if (b_v < 0) {
+		ret.B_V = 0;
+		// cout << ret.HIP << " " << si ->B_V << endl;
+		cLog::get()->write("Star B_V to 0 with hip "+ std::to_string(ret.HIP), LOG_TYPE::L_WARNING);
+	} else if (b_v > 127) {
+		ret.B_V = 127;
+		// cout << ret.HIP << " " << si ->B_V << endl;
+		cLog::get()->write("Star B_V to 127 with hip "+ std::to_string(ret.HIP), LOG_TYPE::L_WARNING);
+	} else {
+		ret.B_V = static_cast<uint8_t>(b_v);
+	}
+	return ret;
+}
 
 /**
  * The inputs and outputs of the binary files are of the form
@@ -71,18 +108,14 @@ Cube::Cube( int  a, int b, int c):size(CUBESIZE)
 
 Cube::~Cube()
 {
-	while(!starList.empty()) {
-		delete starList.back();
-		starList.pop_back();
-	}
 }
 
 
-void Cube::addStar(starInfo *si)
+void Cube::addStar(StarInfo &&si)
 {
-	starList.push_back(si);
-	if ((si->mag) < MinMagnitude)
-		MinMagnitude = si->mag;
+	if (si.mag < MinMagnitude)
+		MinMagnitude = si.mag;
+	starList.push_back(std::move(si));
 }
 
 
@@ -100,45 +133,33 @@ HyperCube::HyperCube(int x, int y, int z) :hcSize(HCSIZE), min(9999), max(0)
 	c_z= z;
 	NbTotalHyperCube ++;
 	MinMagnitude = 500;
-	nbrCubes=0;
 	//~ printf("creation of a hypercube of center (%i,%i,%i)\n", c_x, c_y, c_z);
-}
-
-void HyperCube::addCube(Cube *c)
-{
-	cubeList.push_back( c );
-	nbrCubes=nbrCubes+1;
 }
 
 unsigned int HyperCube::getNbrStars()
 {
 	unsigned tmp = 0;
-	std::vector<Cube*> list = getCubeList();
-	for(std::vector<Cube*>::iterator i = list.begin(); i!= list.end(); ++i) {
-		tmp = tmp+ (*i)->getNbStars();
+	for (Cube &cube : cubeList) {
+		tmp += cube.getNbStars();
 	}
 	return tmp;
 }
 
-//Determine if a cube exists, if so return a pointer
-Cube* HyperCube::cubeExist(int a, int b, int c)
+Cube &HyperCube::getCube(int a, int b, int c)
 {
-	std::vector<Cube*> list = getCubeList();
-	for(std::vector<Cube*>::iterator i = list.begin(); i!= list.end(); ++i) {
-		Cube *cube = *i;
-		if( ( (*i)->getCx() == a) && ( (*i)->getCy() == b) && ( (*i)->getCz() == c) ) {
+	for (Cube &cube : cubeList) {
+		if ((cube.getCx() == a) && (cube.getCy() == b) && (cube.getCz() == c))
 			return cube;
-		}
 	}
-	return nullptr;
+	return cubeList.emplace_back(a, b, c);
 }
 
 //Find in which cube the star is located
-void HyperCube::addCubeStar(starInfo* star)
+void HyperCube::addCubeStar(StarInfo &&star)
 {
-	float X = star->posXYZ[0];
-	float Y = star->posXYZ[1];
-	float Z = star->posXYZ[2];
+	float X = star.posXYZ[0];
+	float Y = star.posXYZ[1];
+	float Z = star.posXYZ[2];
 
 	int cubX = floor((X) / CUBESIZE);
 	int cubY = floor((Y) / CUBESIZE);
@@ -154,34 +175,21 @@ void HyperCube::addCubeStar(starInfo* star)
 		//~ sleep(2);
 	// }
 
-	Cube *tmp = nullptr;
-	tmp= cubeExist(cub_centerX, cub_centerY, cub_centerZ);
-
-	if ( tmp == nullptr) { //return a null pointer nor the cube does not exist
-		tmp = new Cube(cub_centerX, cub_centerY, cub_centerZ); //Creation of a cube
-		addCube(tmp);
-		tmp->addStar(star);
-	} else {
-		tmp->addStar(star);
-	}
+	getCube(cub_centerX, cub_centerY, cub_centerZ).addStar(std::move(star));
 }
 
 HyperCube::~HyperCube()
 {
 	//~ printf("Delete H...\n");
-	while(!cubeList.empty()) {
-		delete cubeList.back();
-		cubeList.pop_back();
-	}
 }
 
 float HyperCube::getMinMagnitude()
 {
 	//if not computed then computes it
 	if (MinMagnitude==500) {
-		for(std::vector<Cube*>::iterator i = cubeList.begin(); i!= cubeList.end(); ++i) {
-			if( (*i)->getMinMagnitude() <MinMagnitude  )
-				MinMagnitude=(*i)->getMinMagnitude();
+		for (Cube &cube : cubeList) {
+			if( cube.getMinMagnitude() <MinMagnitude  )
+				MinMagnitude=cube.getMinMagnitude();
 		}
 	}
 	return MinMagnitude;
@@ -194,33 +202,19 @@ float HyperCube::getMinMagnitude()
 //
 // ===========================================================================
 
-StarManager::StarManager():nbrCubes(0), nbrHyperCubes(0), MinMagnitude(500)
+StarManager::StarManager()
 {
-	for(int i=0; i<NBR_PAS_STATHC; i++) statHc[i]=0;
-}
-
-void StarManager::addHyperCube(HyperCube *hcb)
-{
-	hyperCubeList.push_back( hcb );
-	nbrHyperCubes++;
 }
 
 StarManager::~StarManager()
 {
-	//~ printf("delete ...\n");
-	while(!hyperCubeList.empty()) {
-		delete hyperCubeList.back();
-		hyperCubeList.pop_back();
-	}
 }
-
 
 unsigned int StarManager::getNbrStars()
 {
 	unsigned int tmp = 0;
-	std::vector<HyperCube*> list = getHyperCubeList();
-	for(std::vector<HyperCube*>::iterator i = list.begin(); i!= list.end(); ++i) {
-		tmp = tmp + (*i)->getNbrStars();
+	for (HyperCube &hc : hyperCubeList) {
+		tmp += hc.getNbrStars();
 	}
 	return tmp;
 }
@@ -264,7 +258,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 			return false;
 		}
 
-		HyperCube *hc = new HyperCube(hcX,hcY,hcZ);
+		HyperCube *hc = &getHC(hcX,hcY,hcZ);
 		nbrH++;
 
 		// we read each cube one after the other
@@ -278,7 +272,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 				return false;
 			}
 
-			Cube *cube = new Cube(cubeX,cubeY,cubeZ);
+			Cube *cube = &hc->getCube(cubeX,cubeY,cubeZ);
 			nbrC++;
 
 			// we read all the stars in the cube
@@ -293,24 +287,20 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 					cLog::get()->write("StarManager error parsing:  S needed but i see "+line, LOG_TYPE::L_ERROR);
 					return false;
 				}
-
-				Vec3f xyz(starX,starY,starZ);
-				starInfo *si = new starInfo();
-				si->HIP=HIP;
-				si->posXYZ=xyz;
-				si->pmRA=pmRA;
-				si->pmDE=pmDE;
-				si->mag=mag;
-				si->B_V=B_V;
-				si->pc=pc;
 				nbrS++;
-
-				cube->addStar(si);
+				cube->addStar(StarInfo{
+					.HIP=HIP,
+					.posXYZ={starX,starY,starZ},
+					.pmRA=pmRA,
+					.pmDE=pmDE,
+					.mag=mag,
+					.pc=pc,
+					.B_V=static_cast<uint8_t>(B_V),
+					.show = true,
+				});
 				numberRead++;
 			}
-			hc->addCube(cube); //TODO what if the number of cubes is exceeded?
 		}
-		addHyperCube(hc);
 	}
 	file.close();
 
@@ -372,7 +362,7 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 		fileIn.read((char *)&hcX,sizeof(hcX));
 		fileIn.read((char *)&hcY,sizeof(hcY));
 		fileIn.read((char *)&hcZ,sizeof(hcZ));
-		HyperCube *hc = new HyperCube(hcX,hcY,hcZ);
+		HyperCube &hc = getHC(hcX,hcY,hcZ);
 		fileIn.read((char *)&cubesNumber,sizeof(cubesNumber));
 
 		// we read each cube one after the other
@@ -395,7 +385,7 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 			fileIn.read((char *)&cubeX,sizeof(cubeX));
 			fileIn.read((char *)&cubeY,sizeof(cubeY));
 			fileIn.read((char *)&cubeZ,sizeof(cubeZ));
-			Cube *cube = new Cube(cubeX,cubeY,cubeZ);
+			Cube &cube = hc.getCube(cubeX,cubeY,cubeZ);
 			fileIn.read((char *)&starsNumber,sizeof(starsNumber));
 
 			// we read all the stars in the cube
@@ -426,21 +416,18 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 				fileIn.read((char *)&B_V,sizeof(B_V));
 				fileIn.read((char *)&pc,sizeof(pc));
 
-				Vec3f xyz(starX,starY,starZ);
-				starInfo *si = new starInfo();
-				si->HIP=HIP;
-				si->posXYZ=xyz;
-				si->pmRA=pmRA;
-				si->pmDE=pmDE;
-				si->mag=mag;
-				si->B_V=B_V;
-				si->pc=pc;
-
-				cube->addStar(si);
+				cube.addStar(StarInfo{
+					.HIP=HIP,
+					.posXYZ={starX,starY,starZ},
+					.pmRA=pmRA,
+					.pmDE=pmDE,
+					.mag=mag,
+					.pc=pc,
+					.B_V=static_cast<uint8_t>(B_V),
+					.show = true,
+				});
 			}
-			hc->addCube(cube); //TODO and if the number of cubes is exceeded?
 		}
-		addHyperCube(hc);
 	}
 	fileIn.close();
 
@@ -471,13 +458,12 @@ bool StarManager::saveStarBinCatalog(const std::string &fileName)
 
 	uint64_t nbrH=0, nbrC=0, nbrS=0;
 
-	for(std::vector<HyperCube*>::iterator hc = hyperCubeList.begin(); hc!= hyperCubeList.end(); hc++) {
-
-		//~ file << "H" << " " << (*hc)->getCx() << " " << (*hc)->getCy() << " " << (*hc)->getCz() << " " << (*hc)->getNbrCubes() << std::endl;
-		x = (*hc)->getCx();
-		y = (*hc)->getCy();
-		z = (*hc)->getCz();
-		nbr = (*hc)->getNbrCubes();
+	for (HyperCube &hc : hyperCubeList) {
+		//~ file << "H" << " " << hc.getCx() << " " << hc.getCy() << " " << hc.getCz() << " " << hc.getNbrCubes() << std::endl;
+		x = hc.getCx();
+		y = hc.getCy();
+		z = hc.getCz();
+		nbr = hc.getNbrCubes();
 
 		file.put('H');
 		nbrH++;
@@ -486,38 +472,35 @@ bool StarManager::saveStarBinCatalog(const std::string &fileName)
 		file.write((char *)&z, sizeof(z));
 		file.write((char *)&nbr, sizeof(nbr));
 
-		std::vector<Cube*> List = (*hc)->getCubeList();
-		for(std::vector<Cube*>::iterator c = List.begin(); c!= List.end(); ++c) {
-
+		for (Cube &cube : hc) {
 			//~ file << "C" << " " << (*c)->getCx() << " " <<(*c)->getCy() << " " << (*c)->getCz() << " " << (*c)->getNbStars() << std::endl;
 			file.put('C');
 			nbrC++;
-			x = (*c)->getCx();
-			y = (*c)->getCy();
-			z = (*c)->getCz();
-			nbr = (*c)->getNbStars();
+			x = cube.getCx();
+			y = cube.getCy();
+			z = cube.getCz();
+			nbr = cube.getNbStars();
 			file.write((char *)&x, sizeof(x));
 			file.write((char *)&y, sizeof(y));
 			file.write((char *)&z, sizeof(z));
 			file.write((char *)&nbr, sizeof(nbr));
 
-			std::vector<starInfo*> List2 = (*c)->getStarList();
-			for(std::vector<starInfo*>::iterator star = List2.begin(); star!= List2.end(); ++star) {
+			for (StarInfo &star : cube) {
 				file.put('S');
 				nbrS++;
-				nbr = (*star)->HIP;
-				x = (*star)->posXYZ[0];
-				y = (*star)->posXYZ[1];
-				z = (*star)->posXYZ[2];
+				nbr = star.HIP;
+				x = star.posXYZ[0];
+				y = star.posXYZ[1];
+				z = star.posXYZ[2];
 				file.write((char *)&nbr, sizeof(nbr));
 				file.write((char *)&x, sizeof(y));
 				file.write((char *)&y, sizeof(y));
 				file.write((char *)&z, sizeof(z));
-				pmRA = (*star)->pmRA;
-				pmDE = (*star)->pmDE;
-				mag = (*star)->mag;
-				B_V = (*star)->B_V;
-				pc = (*star)->pc;
+				pmRA = star.pmRA;
+				pmDE = star.pmDE;
+				mag = star.mag;
+				B_V = star.B_V;
+				pc = star.pc;
 				file.write((char *)&pmRA, sizeof(pmRA));
 				file.write((char *)&pmDE, sizeof(pmDE));
 				file.write((char *)&mag, sizeof(mag));
@@ -550,19 +533,12 @@ bool StarManager::saveStarCatalog(const std::string &fileName)
 		return false;
 	}
 
-	for(std::vector<HyperCube*>::iterator hc = hyperCubeList.begin(); hc!= hyperCubeList.end(); hc++) {
-
-		file << "H" << " " << (*hc)->getCx() << " " << (*hc)->getCy() << " " << (*hc)->getCz() << " " << (*hc)->getNbrCubes() << std::endl;
-
-		std::vector<Cube*> List = (*hc)->getCubeList();
-		for(std::vector<Cube*>::iterator c = List.begin(); c!= List.end(); ++c) {
-
-			file << "C" << " " << (*c)->getCx() << " " <<(*c)->getCy() << " " << (*c)->getCz() << " " << (*c)->getNbStars() << std::endl;
-
-			std::vector<starInfo*> List2 = (*c)->getStarList();
-			for(std::vector<starInfo*>::iterator star = List2.begin(); star!= List2.end(); ++star) {
-
-				file << "S" << " " << (*star)->HIP << " " << (*star)->posXYZ[0] << " " << (*star)->posXYZ[1] << " " << (*star)->posXYZ[2] << " " << (*star)->pmRA << " " << (*star)->pmDE << " " << (*star)->mag << " " << (*star)->B_V << " " << (*star)->pc << std::endl;
+	for (HyperCube &hc : hyperCubeList) {
+		file << "H" << " " << hc.getCx() << " " << hc.getCy() << " " << hc.getCz() << " " << hc.getNbrCubes() << std::endl;
+		for (Cube &cube : hc) {
+			file << "C" << " " << cube.getCx() << " " <<cube.getCy() << " " << cube.getCz() << " " << cube.getNbStars() << std::endl;
+			for (StarInfo &star : cube) {
+				file << "S" << " " << star.HIP << " " << star.posXYZ[0] << " " << star.posXYZ[1] << " " << star.posXYZ[2] << " " << star.pmRA << " " << star.pmDE << " " << star.mag << " " << star.B_V << " " << star.pc << std::endl;
 			}
 		}
 	}
@@ -571,26 +547,22 @@ bool StarManager::saveStarCatalog(const std::string &fileName)
 	return true;
 }
 
-//Determine if a hypercube exists, if so return a pointer
-HyperCube* StarManager::hcExist(int a, int b, int c)
+HyperCube &StarManager::getHC(int a, int b, int c)
 {
-	std::vector<HyperCube*> list = getHyperCubeList();
-	for(std::vector<HyperCube*>::iterator i = list.begin(); i!= list.end(); ++i) {
-
-		if (((*i)->getCx()== a) && ((*i)->getCy()== b) && ((*i)->getCz()== c) ) {
-			return (*i);
-		}
+	for (HyperCube &hc : hyperCubeList) {
+		if ((hc.getCx() == a) && (hc.getCy() == b) && (hc.getCz() == c))
+			return hc;
 	}
-	return nullptr;
+	return hyperCubeList.emplace_back(a, b, c);
 }
 
 
 //Find in which hypercube the star is located
-void StarManager::addHcStar(starInfo* star)
+void StarManager::addHcStar(StarInfo &&star)
 {
-	float X = star->posXYZ[0];
-	float Y = star->posXYZ[1];
-	float Z = star->posXYZ[2];
+	float X = star.posXYZ[0];
+	float Y = star.posXYZ[1];
+	float Z = star.posXYZ[2];
 
 	int hcX = floor((X +HCSIZE/2) / HCSIZE);
 	int hcY = floor((Y +HCSIZE/2) / HCSIZE);
@@ -606,16 +578,7 @@ void StarManager::addHcStar(starInfo* star)
 		//~ sleep(2);
 	// }
 
-	HyperCube *tmp=nullptr;
-	tmp = hcExist(hc_centerX, hc_centerY, hc_centerZ );
-
-	if (tmp == nullptr) { //return a null pointer nor the hypercube does not exist
-		tmp = new HyperCube(hc_centerX, hc_centerY, hc_centerZ);
-		addHyperCube(tmp); //adds a hypercube to the StarManager
-		tmp->addCubeStar(star);
-	} else {
-		tmp->addCubeStar(star);
-	}
+	getHC(hc_centerX, hc_centerY, hc_centerZ).addCubeStar(std::move(star));
 }
 
 // Star catalog reading function
@@ -626,7 +589,7 @@ void StarManager::addHcStar(starInfo* star)
 //    <Astron. Astrophys. 474, 653 (2007)>
 //
 //    http://cdsarc.u-strasbg.fr/viz-bin/Cat?I/311
-bool StarManager::loadStarRaw(const std::string &catPath)
+/*bool StarManager::loadStarRaw(const std::string &catPath)
 {
 	//std::cout << "StarManager::loadStarRaw " << catPath << std::endl;
 	cLog::get()->write("Starmanager::loadStarRaw " + catPath);
@@ -637,7 +600,7 @@ bool StarManager::loadStarRaw(const std::string &catPath)
 
 	//Create the hypercube and the initial cube to contain the sun
 	Vec3f origin(0.00001, 0.00001, 0.00001);
-	starInfo *sun = new starInfo;
+	StarInfo *sun = new StarInfo;
 	sun->posXYZ = origin;
 	sun->HIP = 0;
 	sun->mag = 4.52649;
@@ -682,7 +645,7 @@ bool StarManager::loadStarRaw(const std::string &catPath)
 			std::istringstream BV_iss(line1.substr(153,5));
 			BV_iss >> BV;
 
-			starInfo *si = nullptr;
+			StarInfo *si = nullptr;
 			si = createStar( hip, RArad, DErad, Plx, pmRA, pmDE, mag_app, BV);
 			this->addHcStar(si);
 			starAccepted++;
@@ -697,61 +660,120 @@ bool StarManager::loadStarRaw(const std::string &catPath)
 		cLog::get()->write("StarManager, unable to open star cat", LOG_TYPE::L_ERROR);
 		return false;
 	}
-}
+}*/
 
-
-starInfo* StarManager::createStar(unsigned int hip, float RArad, float DErad, float Plx, float pmRA, float pmDE, float mag_app, float BV)
+// Star catalog reading function
+// Fills a list of stars with those found in the catalog
+//
+//    I/311 Hipparcos, the New Reduction  (van Leeuwen, 2007)
+//    Hipparcos, the new Reduction of the Raw data van Leeuwen F.
+//    <Astron. Astrophys. 474, 653 (2007)>
+//
+//    http://cdsarc.u-strasbg.fr/viz-bin/Cat?I/311
+bool StarManager::loadStarRaw(const std::string &catPath)
 {
-	float x, y, z;
-	double parsec;
+	//std::cout << "StarManager::loadStarRaw " << catPath << std::endl;
+	cLog::get()->write("Starmanager::loadStarRaw " + catPath);
+	std::ifstream file(catPath);
+	unsigned int hip;
+	float RArad, DErad, Plx, pmRA, pmDE, mag_app, BV;
+	unsigned starAccepted=0, starRejected =0;
 
-	// conversion in x,y,z coordinates
-	// we decide to modify the minimal Plx and to fix it at 0.2 which makes a star at worst at 16000 al
-	if (Plx >PLX_MIN) {
-		parsec = 1000.0 / Plx; //calculation in parsec
+	//Create the hypercube and the initial cube to contain the sun
+	HyperCube *hyper_Initial = &getHC(0, 0, 0);
+	Cube *cube_Initial = &hyper_Initial->getCube(0, 0, 0);
+	cube_Initial->addStar(StarInfo{ // Sun
+		.HIP = 0,
+		.posXYZ = {0.00001, 0.00001, 0.00001},
+		.mag = 4.52649,
+		.pc = 1.32484,
+		.B_V = 38,
+	});
+
+	if (file) { // Fails if can't open the file
+		std::string line1; // variable which will contain each line of the file
+		std::string section; // variable which will contain each section of the line
+		cLog::get()->write("Reading the initial catalog " + catPath);
+
+		// readig file line per line
+		while (getline(file, line1)) {
+			std::istringstream section_iss(line1);
+			for (int nb_section = 0; getline(section_iss, section, ';'); nb_section++) {
+				switch (nb_section) {
+					case 0 : break;
+					case 1 : break;
+					case 2 :
+					{
+						std::istringstream hip_iss(section);
+				   		hip_iss >> hip;
+						// return true;
+						break;
+					}
+					case 3 :
+					{
+						std::istringstream RArad_iss(section);
+						RArad_iss >> RArad;
+						break;
+					}
+					case 4 :
+					{
+						std::istringstream DErad_iss(section);
+						DErad_iss >> DErad;
+						break;
+					}
+					case 5 :
+					{
+						std::istringstream Plx_iss(section);
+						Plx_iss >> Plx;
+						break;
+					}
+					case 6 : break; // error plx
+					case 7 :
+					{
+						std::istringstream pmRA_iss(section);
+						pmRA_iss >> pmRA;
+						break;
+					}
+					case 8 :
+					{
+						std::istringstream pmDE_iss(section);
+						pmDE_iss >> pmDE;
+						break;
+					}
+					case 9 :
+					{
+						std::istringstream mag_iss(section);
+						mag_iss >> mag_app;
+						break;
+					}
+					case 10 :
+					{
+						std::istringstream BV_iss(section);
+						BV_iss >> BV;
+						break;
+					}
+				}
+			}
+			addHcStar(StarInfo_create(hip, RArad*3.1415926/180.0, DErad*3.1415926/180.0, Plx, pmRA, pmDE, mag_app, BV));
+			starAccepted++;
+		}
+		file.close();
+
+		cLog::get()->write("Star(s) accepted : " + std::to_string(starAccepted) );
+		cLog::get()->write("Star(s) rejected : " + std::to_string(starRejected) );
+
+		return true;
 	} else {
-		parsec = 1000.0 / (PLX_MIN+0.01* (rand()%10) );
+		cLog::get()->write("StarManager, unable to open star cat", LOG_TYPE::L_ERROR);
+		return false;
 	}
-
-	x = parsec * cos( RArad ) * cos( DErad );
-	y = parsec * sin ( DErad );
-	z = parsec * sin ( RArad ) * cos( DErad );
-
-	//patch Lionel Ruiz to conform to the OpenGL benchmark
-	x = -x;
-	y = -y;
-
-	starInfo *si = nullptr;
-	si = new starInfo;
-	if (si==nullptr)
-		return nullptr;
-
-	si->HIP = hip;
-	si->posXYZ = Vec3f(x,y,z);
-	si->pmRA = pmRA;
-	si->pmDE = pmDE;
-	si->pc = parsec;
-	si->mag = mag_app-5*(log10(parsec)-1);
-	si->B_V = (int) ((BV+0.5)/4.*127.);
-
-	if (si->B_V < 0) {
-		si->B_V = 0;
-		// cout << si->HIP << " " << si ->B_V << endl;
-		cLog::get()->write("Star B_V to 0 with hip "+ std::to_string(si->HIP), LOG_TYPE::L_WARNING);
-	}
-	if (si->B_V >127) {
-		si->B_V = 127;
-		// cout << si->HIP << " " << si ->B_V << endl;
-		cLog::get()->write("Star B_V to 127 with hip "+ std::to_string(si->HIP), LOG_TYPE::L_WARNING);
-	}
-	return si;
 }
 
 int StarManager::getNbrCubes()
 {
 	nbrCubes = 0;
-	for(int unsigned i = 0; i<hyperCubeList.size(); i++) {
-		nbrCubes += hyperCubeList[i]->getNbrCubes();
+	for (HyperCube &hc : hyperCubeList) {
+		nbrCubes += hc.getNbrCubes();
 	}
 	return nbrCubes;
 }
@@ -761,9 +783,9 @@ float StarManager::getMinMagnitude()
 {
 	//if not calculated then calculate it
 	if (MinMagnitude==500) {
-		for(std::vector<HyperCube*>::iterator i = hyperCubeList.begin(); i!= hyperCubeList.end(); ++i) {
-			if( (*i)->getMinMagnitude() <MinMagnitude  )
-				MinMagnitude=(*i)->getMinMagnitude();
+		for (HyperCube &hc : hyperCubeList) {
+			if( hc.getMinMagnitude() < MinMagnitude  )
+				MinMagnitude=hc.getMinMagnitude();
 		}
 	}
 	return MinMagnitude;
@@ -778,8 +800,8 @@ void StarManager::HyperCubeStatistiques()
 	tmp_max_cube = HCSIZE / CUBESIZE * HCSIZE / CUBESIZE * HCSIZE / CUBESIZE;
 	int un_cube =0, max_cube=0;
 	int val = (HCSIZE/CUBESIZE)*(HCSIZE/CUBESIZE)*(HCSIZE/CUBESIZE)/ NBR_PAS_STATHC;
-	for(std::vector<HyperCube*>::iterator i = hyperCubeList.begin(); i!= hyperCubeList.end(); ++i) {
-		tmp = (*i)->getNbrCubes();
+	for (HyperCube &hc : hyperCubeList) {
+		tmp = hc.getNbrCubes();
 		if (tmp==1) un_cube++;
 		if (tmp==tmp_max_cube) max_cube++;
 		tmp= tmp/val;
@@ -804,15 +826,15 @@ void StarManager::MagStarStatistiques()
 {
 	for(int i=0; i< MAG_PAS; i++)
 		statMagStars[i]=0;
-	for(std::vector<HyperCube*>::iterator i = hyperCubeList.begin(); i!= hyperCubeList.end(); ++i) {
-		std::vector<Cube*> List = (*i)->getCubeList();
-		for(std::vector<Cube*>::iterator j = List.begin(); j!= List.end(); ++j) {
-			std::vector<starInfo*> List2 = (*j)->getStarList();
-			for (std::vector<starInfo*>::iterator k = List2.begin(); k!= List2.end(); ++k) {
-				int tmp=(40+(*k)->mag)/5;
-				if (tmp<0) tmp=0;
-				if (tmp+1>MAG_PAS) tmp=MAG_PAS-1;
-				statMagStars[tmp]=statMagStars[tmp]+1;
+	for (HyperCube &hc : hyperCubeList) {
+		for (Cube &cube : hc) {
+			for (StarInfo &star : cube) {
+				int tmp=(40+star.mag)/5;
+				if (tmp<0)
+					tmp=0;
+				if (tmp+1>MAG_PAS)
+					tmp=MAG_PAS-1;
+				++statMagStars[tmp];
 			}
 		}
 	}
@@ -828,42 +850,38 @@ bool StarManager::verificationData()
 {
 	int nbr_cube_max = (HCSIZE/CUBESIZE)*(HCSIZE/CUBESIZE)*(HCSIZE/CUBESIZE);
 	//verification of hypercubes
-	for(std::vector<HyperCube*>::iterator i = hyperCubeList.begin(); i!= hyperCubeList.end(); ++i) {
-		HyperCube *tmp =(*i);
-		if (tmp->getCx() %HCSIZE !=0 || tmp->getCy() %HCSIZE !=0 || tmp->getCz() %HCSIZE !=0 ) {
-			printf("HyperCube -- coordinates %i %i %i\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
+	for (HyperCube &hc : hyperCubeList) {
+		if (hc.getCx() %HCSIZE !=0 || hc.getCy() %HCSIZE !=0 || hc.getCz() %HCSIZE !=0 ) {
+			printf("HyperCube -- coordinates %i %i %i\n", hc.getCx(), hc.getCy(), hc.getCz());
 			return false;
 		}
 
-		if (tmp->getNbrCubes()<0 || tmp->getNbrCubes()>nbr_cube_max) {
-			printf("HyperCube -%i %i %i- numbers of cubes %i\n", tmp->getCx(), tmp->getCy(), tmp->getCz(), tmp->getNbrCubes());
+		if (hc.getNbrCubes()<0 || hc.getNbrCubes()>nbr_cube_max) {
+			printf("HyperCube -%i %i %i- numbers of cubes %i\n", hc.getCx(), hc.getCy(), hc.getCz(), hc.getNbrCubes());
 			return false;
 		}
 
-		if (tmp->getNbrCubes()==0) {
-			printf("HyperCube -%i %i %i- no cube\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
+		if (hc.getNbrCubes()==0) {
+			printf("HyperCube -%i %i %i- no cube\n", hc.getCx(), hc.getCy(), hc.getCz());
 		}
 
 		//verification of cubes
-		std::vector<Cube*> List = (*i)->getCubeList();
-		for(std::vector<Cube*>::iterator j = List.begin(); j!= List.end(); ++j) {
-			Cube *tmp2 = (*j);
-
-			if (tmp2->getCx() %CUBESIZE !=0 || tmp2->getCy() %CUBESIZE !=0 || tmp2->getCz() %CUBESIZE !=0 ) {
-				printf("HyperCube -- coordinates %i %i %i\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
-				printf("Cube -- coordinates %i %i %i\n", tmp2->getCx(), tmp2->getCy(), tmp2->getCz());
+		for (Cube &cube : hc) {
+			if (cube.getCx() %CUBESIZE !=0 || cube.getCy() %CUBESIZE !=0 || cube.getCz() %CUBESIZE !=0 ) {
+				printf("HyperCube -- coordinates %i %i %i\n", hc.getCx(), hc.getCy(), hc.getCz());
+				printf("Cube -- coordinates %i %i %i\n", cube.getCx(), cube.getCy(), cube.getCz());
 				return false;
 			}
 
-			if (tmp2->getNbStars()<0 || tmp2->getNbStars()>65000) {
-				printf("HyperCube -%i %i %i-\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
-				printf("Cube -- coordinates %i %i %i stars : %i\n", tmp2->getCx(), tmp2->getCy(), tmp2->getCz(), tmp2->getNbStars());
+			if (cube.getNbStars()<0 || cube.getNbStars()>65000) {
+				printf("HyperCube -%i %i %i-\n", hc.getCx(), hc.getCy(), hc.getCz());
+				printf("Cube -- coordinates %i %i %i stars : %i\n", cube.getCx(), cube.getCy(), cube.getCz(), cube.getNbStars());
 				return false;
 			}
 
-			if (tmp2->getNbStars()==0) {
-				printf("HyperCube -%i %i %i-\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
-				printf("Cube -- coordinates %i %i %i %i has no stars \n", tmp2->getCx(), tmp2->getCy(), tmp2->getCz(), tmp2->getNbStars());
+			if (cube.getNbStars()==0) {
+				printf("HyperCube -%i %i %i-\n", hc.getCx(), hc.getCy(), hc.getCz());
+				printf("Cube -- coordinates %i %i %i %i has no stars \n", cube.getCx(), cube.getCy(), cube.getCz(), cube.getNbStars());
 			}
 		}
 	}
@@ -878,7 +896,7 @@ bool StarManager::saveAsterismStarsPosition(const std::string &fileNameIn,const 
 	std::ofstream fileOut(fileNameOut, std::ifstream::out);
 	std::list<int> asterimStars;
 	unsigned int HIPName=0;
-	starInfo* si= nullptr;
+	StarInfo* si= nullptr;
 
 	if (fileIn && fileOut) { // Fails if can't open the file
 		std::string line; // variable which will contain each line of the file
@@ -905,15 +923,13 @@ bool StarManager::saveAsterismStarsPosition(const std::string &fileNameIn,const 
 	return false;
 }
 
-starInfo* StarManager::findStar(unsigned int HIPName)
+StarInfo *StarManager::findStar(unsigned int HIPName)
 {
-	for(std::vector<HyperCube*>::iterator hc = hyperCubeList.begin(); hc!= hyperCubeList.end(); ++hc) {
-		std::vector<Cube*> List = (*hc)->getCubeList();
-		for(std::vector<Cube*>::iterator c = List.begin(); c!= List.end(); ++c) {
-			std::vector<starInfo*> List2 = (*c)->getStarList();
-			for(std::vector<starInfo*>::iterator star = List2.begin(); star!= List2.end(); ++star) {
-				if ((*star)->HIP == HIPName)
-					return (*star);
+	for (HyperCube &hc : hyperCubeList) {
+		for (Cube &cube : hc) {
+			for (StarInfo &star : cube) {
+				if (star.HIP == HIPName)
+					return &star;
 			}
 		}
 	}
@@ -934,7 +950,6 @@ bool StarManager::loadOtherStar(const std::string &fileName)
 
 		unsigned int hip;
 		float ra, de, plx, pmRa, pmDe, mag, bv;
-		starInfo * si =nullptr;
 
 		while (getline(fileIn, line)) {
 
@@ -945,9 +960,7 @@ bool StarManager::loadOtherStar(const std::string &fileName)
 				std::istringstream parseLine(line);
 				parseLine >> hip >> ra >> de >> plx >> pmRa >> pmDe >> mag >> bv;
 
-				si = createStar(hip, ra, de, plx, pmRa, pmDe, mag, bv);
-				addHcStar(si);
-				si = nullptr;
+				addHcStar(StarInfo_create(hip, ra, de, plx, pmRa, pmDe, mag, bv));
 			}
 		}
 		fileIn.close();

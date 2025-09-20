@@ -6,7 +6,9 @@ class LocationOrbitLoader : public OrbitLoader {
 			Utility::strToDouble(params["orbit_lon"]),
 			Utility::strToDouble(params["orbit_lat"]),
 			Utility::strToDouble(params["orbit_alt"]),
-			parent->getRadius()
+            parent->getRadius(),
+            parent->getSiderealDay(),
+            parent->getSiderealTime(0)
 		);
     }
 };

@@ -94,6 +94,21 @@ AppCommandInterface::~AppCommandInterface()
 	m_set.clear();
 }
 
+bool AppCommandInterface::isInterrupted()
+{
+	if (waitPriority != LoadPriority::DONE) {
+		if (AsyncLoaderMgr::instance->isTaskWithPriority(waitPriority))
+			return true;
+		waitPriority = LoadPriority::DONE;
+	}
+	if (waitVideoCache) {
+		if (media->isVideoCacheFull())
+			return true;
+		waitVideoCache = false;
+	}
+	return false;
+}
+
 void AppCommandInterface::setTcp(ServerSocket* _tcp)
 {
 	tcp=_tcp;
@@ -236,6 +251,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 		case SC_COMMAND::SC_DOMEMASTERS :	return commandDomemasters(); break;
 		case SC_COMMAND::SC_DSO :	return commandDso(); break;
 		case SC_COMMAND::SC_DSO3D :	return commandDso3D(); break;
+		case SC_COMMAND::SC_DSO2D : return commandDso2D(); break;
 		case SC_COMMAND::SC_EXTERNASC_VIEWER :	return commandExternalViewer(); break;
 		case SC_COMMAND::SC_FLAG :	return commandFlag(); break;
 		case SC_COMMAND::SC_FONT :	return commandFont(); break;
@@ -310,7 +326,7 @@ void AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value)
 		// @TODO reconstruct commandline to avoid passing std::string _commandline
 		auto m_flags_ToString_it = m_flags_ToString.find(flagName);
 		if (m_flags_ToString_it != m_flags_ToString.end()) {
-			commandline = "set " + m_flags_ToString_it->second + " " + std::to_string(val);
+			commandline = "flag " + m_flags_ToString_it->second + " " + std::to_string(val);
 		}
 	}
 	executeCommandStatus();
@@ -406,6 +422,13 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !stcore->getFlagNav();
 
 			stcore->setFlagNav(newval);
+			break;
+
+		case FLAG_NAMES::FN_ASTRONOMICAL :
+			if (flag_value == FLAG_VALUES::FV_TOGGLE)
+				newval = !stcore->getFlagAstronomical();
+
+			stcore->setFlagAstronomical(newval);
 			break;
 
 		case FLAG_NAMES::FN_LIGHT_TRAVEL_TIME :
@@ -1002,11 +1025,15 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !coreLink->getEyeRelativeMode();
 			coreLink->setEyeRelativeMode(newval);
 			break;
-		case FLAG_NAMES::FN_SCRIPT_PAUSE:
+		case FLAG_NAMES::FN_SKIP_PAUSE:
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->scriptGetFlagScriptPause();
-
-			coreLink->scriptSetFlagScriptPause(newval);
+				newval = !scriptInterface->isSkipPauseDisabled();
+			scriptInterface->setSkipPauseDisabled(newval);
+			break;
+		case FLAG_NAMES::FN_IMAGE_COMPRESSION_LOSS:
+			if (flag_value == FLAG_VALUES::FV_TOGGLE)
+				newval = !saveScreenInterface->getImageCompressionLoss();
+			saveScreenInterface->setImageCompressionLoss(newval);
 			break;
 		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS:
 			switch (flag_value) {
@@ -1170,6 +1197,8 @@ int AppCommandInterface::commandWait(uint64_t &wait)
 			waitPriority = LoadPriority::BACKGROUND;
 		} else if (level == W_ALL) {
 			waitPriority = LoadPriority::LOADING;
+		} else if (level == W_VIDEO) {
+			waitVideoCache = true;
 		}
 		// We can specify a minimal duration to wait
 		if (args[W_DURATION].empty()) {
@@ -1308,6 +1337,30 @@ int AppCommandInterface::commandDso3D()
 	return executeCommandStatus();
 }
 
+int AppCommandInterface::commandDso2D()
+{
+	std::string argAction = args[W_ACTION];
+
+	if (!argAction.empty()) {
+		if (argAction == ACP_CN_CLEAR) {
+			// drop all nebulae that are not in the original config file
+			stcore->removeSupplementalDso();
+			return executeCommandStatus();
+		}
+		if (argAction== W_LOAD) {
+			bool status = stcore->loadDso2d(evalDouble(args[W_INDEX]), args[W_NAME], evalDouble(args[W_SIZE]), evalDouble(args[W_RA]), evalDouble(args[W_DE]), evalDouble(args[W_DISTANCE]), evalDouble(args[W_XYZ]));
+			if (status==false)
+				debug_message = "Error loading dso.";
+			return executeCommandStatus();
+		}
+
+		debug_message = _("Command 'dso2D': unknown action value");
+		return executeCommandStatus();
+	}
+	debug_message = _("command 'dso2D' : unknown argument");
+	return executeCommandStatus();
+}
+
 int AppCommandInterface::commandPersoneq()
 {
 	std::string argAction = args[W_ACTION];
@@ -1436,6 +1489,7 @@ int AppCommandInterface::commandColor()
 
 	switch(m_color_it->second) {
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES:	coreLink->constellationSetColorLine( Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES3D:	coreLink->constellationSetColor( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_NAMES:	coreLink->constellationSetColorNames( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_ART: 		coreLink->constellationSetColorArt( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_BOUNDARIES:	coreLink->constellationSetColorBoundaries( Vcolor ); break;
@@ -1547,7 +1601,6 @@ int AppCommandInterface::commandIlluminate()
 		coreLink->illuminateRemoveTex();
 		return executeCommandStatus();
 	}
-
 	std::string argFileName = args[W_FILENAME];
 	if (!argFileName.empty()) {
 		FilePath myFile  = FilePath(argFileName, FilePath::TFP::IMAGE);
@@ -1627,6 +1680,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 	switch(parserSet) {
 		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : if (setValue==W_DEFAULT) coreLink->atmosphereSetDefaultFadeDuration(); else coreLink->atmosphereSetFadeDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_MOON_BRIGHTNESS : if (setValue==W_DEFAULT) coreLink->moonSetDefaultBrightness(); else coreLink->moonSetBrightness(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_SUN_BRIGHTNESS : if (setValue==W_DEFAULT) coreLink->sunSetDefaultBrightness(); else coreLink->sunSetBrightness(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION: coreLink->constellationSetArtFadeDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(setValue)); break;
@@ -2060,11 +2114,15 @@ int AppCommandInterface::commandMeteors()
 int AppCommandInterface::commandLandscape()
 {
 	std::string argAction = args[W_ACTION];
+	std::string argLanding = args[W_LANDING];
 	if (!argAction.empty()) {
 		if (argAction ==  W_LOAD) {
 			// textures are relative to script
 			args[W_PATH] = scriptInterface->getScriptPath();
-			stcore->loadLandscape(args); //TODO retour d'erreurs
+			if (argLanding == "0")
+				stcore->loadLandscape(args, 0); //TODO retour d'erreurs
+			else
+				stcore->loadLandscape(args, 1); //TODO retour d'erreurs
 		} else if (argAction == W_ROTATE) {
 			if (!args[W_ROTATION].empty()) {
 				coreLink->rotateLandscape((M_PI/180.0)*evalDouble(args[W_ROTATION]));
@@ -2076,6 +2134,13 @@ int AppCommandInterface::commandLandscape()
 		} else {
 			debug_message = "command 'landscape' : invalid action parameter";
 		}
+	} else if (!argLanding.empty()) {
+		if (argLanding == "0" || (argLanding[0] == '0' && argLanding[1] == '.'))
+			stcore->setLandingLandscape(false, std::stof(argLanding));
+		else if (argLanding == "1" || (argLanding[0] == '1' && argLanding[1] == '.'))
+			stcore->setLandingLandscape(true, std::stof(argLanding) - 1);
+		else
+			debug_message = "command 'landscape' : invalid action parameter";
 	} else
 		debug_message = "command 'landscape' : unknown argument";
 	return executeCommandStatus();
@@ -2244,7 +2309,7 @@ int AppCommandInterface::commandText()
 
 int AppCommandInterface::commandSkyCulture()
 {
-	std::string argPath = args[W_PATH];
+	std::string argPath = FilePath(args[W_PATH], FilePath::TFP::IMAGE);
 	if (!argPath.empty() && args[W_ACTION]== W_LOAD) {
 		if (!stcore->loadSkyCulture(argPath))
 			debug_message = "Error loading sky culture from path specified.";
@@ -2281,7 +2346,7 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 		} else if (argAction==W_CANCEL) {
 			scriptInterface->cancelRecordScript();
 			recordable = 0;  // don't record this command!
-		} else if (argAction==W_PAUSE && !scriptInterface->isScriptPaused()) {
+		} else if (argAction==W_PAUSE && !scriptInterface->isScriptPaused() && !scriptInterface->isSkipPauseDisabled()) {
 			wait = 1;
 			scriptInterface->pauseScript();
 		} else if (argAction==W_PAUSE || argAction==W_RESUME) {
@@ -2292,6 +2357,14 @@ int AppCommandInterface::commandScript(uint64_t &wait)
 			scriptInterface->slowerSpeed();
 		} else if (argAction==W_DEFAULT) {
 			scriptInterface->defaultSpeed();
+		} else if (argAction==W_ACQUIRE) {
+			if (args[W_LOCK] == W_GLOBAL) {
+				scriptInterface->acquireGlobalLock();
+			}
+		} else if (argAction==W_RELEASE) {
+			if (args[W_LOCK] == W_GLOBAL) {
+				scriptInterface->releaseGlobalLock();
+			}
 		} else
 			debug_message = "command_script : unknown parameter from 'action' argument";
 		return executeCommandStatus();
@@ -2350,7 +2423,7 @@ int AppCommandInterface::commandAudio()
 			media->audioMusicResume();
 			return executeCommandStatus();
 		} else if (argAction==W_PLAY){
-			std::string argFileName = args[W_FILENAME];
+			std::string argFileName = evalString(args[W_FILENAME]);
 			if (!argFileName.empty() ) {
 				if (FilePath myFile  = FilePath(argFileName, FilePath::TFP::AUDIO)) {
 					media->audioMusicLoad(myFile, Utility::isTrue(args[W_LOOP]));
@@ -2528,7 +2601,7 @@ int AppCommandInterface::commandImage()
 int AppCommandInterface::commandSelect()
 {
 	// default is to deselect current object
-	stcore->unSelect();
+	//stcore->unSelect();
 
 	std::string select_type, identifier;
 
@@ -2892,7 +2965,7 @@ int AppCommandInterface::commandMedia()
 	if (!argAction.empty() ) {
 
 		if (argAction == W_PLAY) {
-
+			bool paused = Utility::strToBool(args[W_PAUSE], false);
 			std::string argLoop = args[W_LOOP];
 			if (!argLoop.empty()) {
 				if (Utility::isTrue(argLoop))
@@ -2903,12 +2976,14 @@ int AppCommandInterface::commandMedia()
 
 			std::string type_string = args[W_TYPE];
 			VID_TYPE type = media->strToVideoType(type_string);
+			std::string audioName = args[W_AUDIONAME];
+			if (type==VID_TYPE::V_NONE && !audioName.empty())
+				return (executeCommand("audio filename " + args[W_AUDIONAME] + " action play loop " + args[W_LOOP]));
 			if (type==VID_TYPE::V_NONE) {
 				debug_message = "Command 'media' argument action need argument 'type'";
 				return executeCommandStatus();
 			}
 			std::string videoName = args[W_VIDEONAME];
-			std::string audioName = args[W_AUDIONAME];
 			std::string argName =  args[W_NAME];
 			std::string argPosition = args[W_POSITION];
 
@@ -2947,11 +3022,11 @@ int AppCommandInterface::commandMedia()
 						FilePath fileAudio = FilePath(audioName, FilePath::TFP::MEDIA);
 						if (fileAudio.exist()) {
 								cLog::get()->write("command 'media':: succesfull locale audio "+audioName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-								media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject );
+								media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject , paused);
 							}
 						else {
 							cLog::get()->write("command 'media':: locale audio not found "+audioName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject );
+							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject , paused);
 						}
 					}
 				} else {
@@ -2960,21 +3035,21 @@ int AppCommandInterface::commandMedia()
 						FilePath fileAudio = FilePath(audioName, stcore->getSkyLanguage() );
 						if (!fileAudio.exist()) {
 							cLog::get()->write("command 'media':: locale audio not found ", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject );
+							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject , paused);
 						} else
-							media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject );
+							media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject , paused);
 					} else { //simple file without internationalization
 						FilePath fileAudio = FilePath(audioName, localRepertory);
 						if (!fileAudio.exist()) {
 							cLog::get()->write("command 'media':: audio not found ", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject);
+							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject, paused);
 						} else
-							media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject);
+							media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject, paused);
 					}
 				}
 			} else {
-					media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject);
-				}
+				media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject, paused);
+			}
 
 			Vec3f Vcolor;
 			std::string argValue = args[W_COLOR_VALUE];
@@ -3179,7 +3254,7 @@ int AppCommandInterface::commandDate()
 		} else if (argSun == W_MIDNIGHT) {
 			double tmp=coreLink->dateSunMeridian(coreLink->getJDay(), coreLink->observatoryGetLongitude()+180, -coreLink->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO and if ==?
-				coreLink->setJDay(tmp);
+				coreLink->setJDay(tmp+1);
 		} else
 			_("Command 'date': unknown sun value");
 		return executeCommandStatus();

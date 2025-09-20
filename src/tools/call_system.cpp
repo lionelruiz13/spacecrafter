@@ -38,7 +38,7 @@
 
 #define BUFFER_SIZE 1024
 
-bool CallSystem::isAbsolute(const std::string &path)
+bool CallSystem::isAbsolute(const std::string path)
 {
     return std::filesystem::path(path).is_absolute();
 }
@@ -109,69 +109,65 @@ void CallSystem::checkUserDirectory(const std::string &userDir, std::string & lo
 void CallSystem::checkUserSubDirectory(const std::string &CDIR, std::string& dirResult)
 {
 	// take name and true if Directory should be copied or not
-	std::map<std::string,bool> listSubDirectory;
+	std::vector<std::pair<std::string,bool>> listSubDirectory;
     std::ostringstream out;
 
-	listSubDirectory[REP_AUDIO]=true;
-	listSubDirectory[REP_FONT]=true;
-	listSubDirectory[REP_FTP]=true;
-	listSubDirectory[REP_LANDSCAPE]=true;
-	listSubDirectory[REP_LOG]=false;
-	listSubDirectory[REP_SCREENSHOT]=false;
-	listSubDirectory[REP_SCRIPT]=true;
-	listSubDirectory[REP_PICTURE]=false;
-	//~ listSubDirectory[REP_TEXTURE]=false;
-	listSubDirectory[REP_VFRAME]=false;
-	listSubDirectory[REP_VIDEO]=true;
-	listSubDirectory[REP_MEDIA]=false;
-	listSubDirectory[REP_VR360]=false;
-	listSubDirectory[REP_WEB]=false;
-	listSubDirectory[REP_SKY_CULTURE]=true;
-	listSubDirectory[REP_MODEL3D]=true;
-	listSubDirectory[REP_LANGUAGE]=true;
+	listSubDirectory.emplace_back(REP_AUDIO, true);
+	listSubDirectory.emplace_back(REP_FONT, true);
+	listSubDirectory.emplace_back(REP_FTP, true);
+	listSubDirectory.emplace_back(REP_LANDSCAPE, true);
+	listSubDirectory.emplace_back(REP_LOG, false);
+	listSubDirectory.emplace_back(REP_SCREENSHOT, false);
+	listSubDirectory.emplace_back(REP_SCRIPT, true);
+	listSubDirectory.emplace_back(REP_PICTURE, false);
+	listSubDirectory.emplace_back(REP_TEXTURE, true);
+	listSubDirectory.emplace_back(REP_VFRAME, false);
+	listSubDirectory.emplace_back(REP_VIDEO, true);
+	listSubDirectory.emplace_back(REP_MEDIA, false);
+	listSubDirectory.emplace_back(REP_VR360, false);
+	listSubDirectory.emplace_back(REP_WEB, false);
+	listSubDirectory.emplace_back(REP_SKY_CULTURE, true);
+	listSubDirectory.emplace_back(REP_MODEL3D, true);
+	listSubDirectory.emplace_back(REP_LANGUAGE, true);
 
     std::filesystem::path subDir;
 	for (auto &entry : listSubDirectory) {
         subDir = CDIR + entry.first;
         if (!std::filesystem::exists(subDir)) {
-            if (std::filesystem::create_directories(subDir)) {
-                out << "Successfully created home subdirectory " << entry.first << '\n';
-                if (entry.second) {
-                    std::error_code ec;
+            std::filesystem::create_directories(subDir);
+            if (entry.second) {
+                std::error_code ec{};
+                if (std::filesystem::exists(CONFIG_DATA_DIR+entry.first)) {
+                    std::filesystem::copy(std::string(CONFIG_DATA_DIR)+entry.first, subDir, std::filesystem::copy_options::recursive, ec);
+                } else {
                     std::filesystem::copy(std::string(CONFIG_DATA_DIR)+"data/"+entry.first, subDir, std::filesystem::copy_options::recursive, ec);
-                    if (ec) {
-                        out << "Completed copy of " << entry.first << " in " << CDIR << '\n';
-                    } else {
-                        std::cerr << "Failed to copy " << entry.first << " in " << CDIR << "\nAbort !\n";
+                }
+                if (ec || ec.message() == "Success") {
+                    out << "Completed copy of " << entry.first << " in " << CDIR << '\n';
+                } else {
+                    std::cerr << "Failed to copy " << entry.first << " in " << CDIR << " : " << ec.message() << std::endl;
+                    if (std::filesystem::is_empty(subDir)) {
+                        std::filesystem::remove(subDir);
+                        std::cerr << "Abort !\n";
                         exit(-1);
+                    } else {
+                        out << "But it seems copied, let continue anyway.\n";
                     }
                 }
             } else {
-                std::cerr << "Failed to create local home subdirectory " << entry.first << "\nAbort !\n";
-                exit(3);
+                out << "Successfully created home subdirectory " << entry.first << '\n';
             }
-		} else
+		} else {
 			out << "Check " << entry.first << " subdirectory ok\n";
+        }
 	}
 
-    checkUserSubDirectory(CDIR, REP_TEXTURE, out);
-    checkUserSubDirectory(CDIR, REP_LANGUAGE, out);
     dirResult += out.str();
 }
 
 void CallSystem::checkUserSubDirectory(const std::string &CDIR, const std::string &subDirectory, std::ostringstream &out)
 {
-    std::filesystem::path subDir = CDIR + subDirectory;
-    if (!std::filesystem::exists(subDir)) {
-        std::error_code ec;
-        std::filesystem::copy(std::string(CONFIG_DATA_DIR)+"data/"+subDirectory, subDir, std::filesystem::copy_options::recursive, ec);
-        if (ec) {
-            out << "Completed copy of " << subDirectory << " in " << CDIR << '\n';
-        } else {
-            std::cerr << "Failed to copy " << subDirectory << " in " << CDIR << "\nAbort !\n";
-            exit(-1);
-        }
-    }
+    throw std::runtime_error("Not implemented");
 }
 
 bool CallSystem::useSystemCommand(const std::string & strCommand)

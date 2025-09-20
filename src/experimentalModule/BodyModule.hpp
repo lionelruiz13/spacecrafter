@@ -2,11 +2,24 @@
 #define BODY_MODULE_HPP_
 
 #include "tools/vecmath.hpp"
+#include <cstdint>
 
 class ModularBody;
 class Renderer;
 
-enum class BodyModuleType : unsigned char {
+enum class DedicatedBodyModuleSlot : uint8_t {
+    BODY,
+    RING,
+    HINT,
+    ORBIT,
+    POINTER,
+    TRAIL,
+    AXIS,
+    ATMOSPHERE,
+    NB_SLOTS
+};
+
+enum class BodyModuleType : uint8_t {
     CUSTOM, // For modules without a specific role
     MESH,
     OJM,
@@ -22,7 +35,7 @@ enum class BodyModuleType : unsigned char {
     NB_MODULE_TYPE // For array size
 };
 
-enum class RelativePosition : unsigned char {
+enum class RelativePosition : uint8_t {
     ANY = 0x0, // Relative position has no importance : they doesn't overlap on screen
     FRONT = 0x1,
     OVERLAP = 0x2,

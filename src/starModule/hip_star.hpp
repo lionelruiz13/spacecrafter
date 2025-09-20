@@ -49,18 +49,20 @@ static inline float IndexToBV(unsigned char b_v)
 }
 
 struct Star1 { //! 28 bytes
-	//~ int hip:24;                  //! 17 bits needed
-	//~ unsigned char component_ids; //!  5 bits needed
-	//~ Int32 x0;                    //! 32 bits needed
-	//~ Int32 x1;                    //! 32 bits needed
-	//~ unsigned char b_v;           //!  7 bits needed
-	//~ unsigned char mag;           //!  8 bits needed
-	//~ Uint16 sp_int;               //! 14 bits needed
-	//~ Int32 dx0,dx1,plx;
+	//~ int hip:17;                  //! 17 bits needed, 17 reserved
+	//~ int dimm:7;                  //!  7 bits needed, 7 reserved
+	//~ unsigned char component_ids; //!  5 bits needed, 7 reserved
+	//~ Int32 x0;                    //! 32 bits needed, 32 reserved
+	//~ Int32 x1;                    //! 32 bits needed, 32 reserved
+	//~ unsigned char b_v;           //!  7 bits needed, 8 reserved
+	//~ unsigned char mag;           //!  8 bits needed, 8 reserved
+	//~ Uint16 sp_int;               //! 14 bits needed, 16 reserved
+	//~ Int32 dx0,dx1,plx;           //! 96 bits needed, 96 reserved
 private:
 	union {
 		uint8_t  uint8[28];
 		uint16_t uint16[14];
+		int32_t  uint32[7];
 		int32_t  int32[7];
 	} d;
 
@@ -74,6 +76,11 @@ public:
 	//getter of Magnitude and fill hip_mag
 	inline int getMag() const {
 		return d.uint8[13];
+	}
+
+	//! @brief Override mag, for variable star
+	inline void overrideMag(int mag) {
+		d.uint8[13] = mag;
 	}
 
 	inline int getSpInt() const {
@@ -95,14 +102,32 @@ public:
 		return SDL_SwapLE32(d.int32[6]);
 	}
 
-
 	inline int getHip() const {
-		uint32_t v = d.uint8[0] | d.uint8[1] << 8 | d.uint8[2] << 16;
-		return ((int32_t)v) << 8 >> 8;
+		return d.uint32[0] & 0x01ffff;
+	}
+
+	inline void setVariableStarIndex(int dimm) {
+		d.uint8[2] = (d.uint8[2] & 1) | (dimm << 1);
+	}
+
+	inline int getVariableStarIndex() const {
+		return d.uint8[2] >> 1;
 	}
 
 	inline int getComponentIds() const {
-		return d.uint8[3];
+		return d.uint8[3] & 0x7f;
+	}
+
+	inline void setHidden() {
+		d.uint8[3] |= 0x80;
+	}
+
+	inline void clearHidden() {
+		d.uint8[3] &= 0x7f;
+	}
+
+	inline bool getHidden() const {
+		return d.uint8[3] >> 7;
 	}
 
 	static constexpr double max_pos_val=0x7FFFFFFF;
@@ -163,6 +188,10 @@ public :
 		return d[9] >> 3;
 	}
 
+	inline int getHip() const {
+		return -1;
+	}
+
 	static constexpr double max_pos_val=((1<<19)-1);
 
 	ObjectBaseP createStelObject(const SpecialZoneArray<Star2> *a, const SpecialZoneData<Star2> *z) const;
@@ -211,6 +240,10 @@ public:
 		return d[5] >> 3;
 	}
 
+	inline int getHip() const {
+		return -1;
+	}
+
 	static constexpr double max_pos_val=((1<<17)-1)	;
 
 	ObjectBaseP createStelObject(const SpecialZoneArray<Star3> *a, const SpecialZoneData<Star3> *z) const;
@@ -233,4 +266,3 @@ public:
 } // namespace BigStarCatalog
 
 #endif
-

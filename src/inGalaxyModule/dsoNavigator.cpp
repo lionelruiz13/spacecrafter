@@ -104,21 +104,20 @@ DsoNavigator::~DsoNavigator() {}
 
 void DsoNavigator::overrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth)
 {
-    if (volum3D)
-        volum3D->drop();
-    texture.reset();
-    colorTexture.reset();
-    dsoData.clear();
-    dsoPos.clear();
-    set.reset();
-    instanceCount = 0; // Ensure rebuild will occur
+    drop();
     if (tex_file.empty())
         return;
 
     instanced = true;
     auto &context = *Context::instance;
-    texture = std::make_unique<s_texture>(tex3d_file, TEX_LOAD_TYPE_PNG_SOLID, true, 0, depth, 1, 2, true);
-    colorTexture = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_SOLID);
+    if (!(texture && *texture == tex3d_file)) {
+        texture.reset();
+        texture = std::make_unique<s_texture>(tex3d_file, TEX_LOAD_TYPE_PNG_SOLID, true, 0, depth, 1, 2, true);
+    }
+    if (!(colorTexture && *colorTexture == tex_file)) {
+        colorTexture.reset();
+        colorTexture = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_SOLID);
+    }
     float maxLod = texture->getTexture().getMipmapCount() - 1;
     pipeline->setSpecializedConstantOf("obj3D.frag.spv", 0, &maxLod, sizeof(maxLod));
     int width, height;
@@ -155,6 +154,16 @@ void DsoNavigator::build()
     vkCmdBindIndexBuffer(cmd, index.buffer, index.offset, VK_INDEX_TYPE_UINT16);
     vkCmdDrawIndexed(cmd, 3*2*6, instanceCount, 0, 0, 0);
     context.frame[context.frameIdx]->compile(cmd);
+}
+
+void DsoNavigator::drop()
+{
+    if (volum3D)
+        volum3D->drop();
+    dsoData.clear();
+    dsoPos.clear();
+    set.reset();
+    instanceCount = 0;
 }
 
 //! Sort dso in depth-first order, linear in time when already sorted

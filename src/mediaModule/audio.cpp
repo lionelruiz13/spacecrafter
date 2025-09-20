@@ -78,26 +78,23 @@ Audio::~Audio()
 
 void Audio::musicLoad(const std::string& filename, bool _loop)
 {
-	if (!isDriverReady)	return;
+	if (!isDriverReady)
+		return;
 	if (music_loaded) {
 		cLog::get()->write("Another music was played ...  " +music_name, LOG_TYPE::L_DEBUG);
 		this->musicDrop();
 		state = A_STATE::V_NONE;
 	}
-	// track reset to guarantee the future state of the class
-	track = nullptr;
-	track = Mix_LoadMUS(filename.c_str());
-	if (track == nullptr) {
-		music_loaded = false;
-		cLog::get()->write("Could not load audio file " +filename, LOG_TYPE::L_WARNING);
-		state = A_STATE::V_NONE;
-	}
-	else  {
+	if (track = Mix_LoadMUS(filename.c_str())) {
 		music_loaded = true;
 		music_isPlaying = false;
 		music_name = filename;
 		elapsed_seconds=0.0;
 		loop = _loop;
+		state = A_STATE::V_NONE;
+	} else {
+		music_loaded = false;
+		cLog::get()->write("Could not load audio file " +filename, LOG_TYPE::L_WARNING);
 		state = A_STATE::V_NONE;
 	}
 }
@@ -105,7 +102,8 @@ void Audio::musicLoad(const std::string& filename, bool _loop)
 
 void Audio::musicPlay()
 {
-	if (!music_loaded)	return;
+	if (!music_loaded)
+		return;
 	cLog::get()->write("Audio::musicPlay play "+ music_name, LOG_TYPE::L_DEBUG );
 	music_isPlaying = true;
 	state = A_STATE::V_PLAY;

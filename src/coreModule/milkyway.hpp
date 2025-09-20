@@ -52,7 +52,7 @@
  *
  */
 
-class OjmL;
+class ObjL;
 class Projector;
 class Navigator;
 class ToneReproductor;
@@ -171,7 +171,6 @@ public:
 	void setPollum(float value) {
 		pollum = value;
 	}
-
 private:
 	struct MilkyData{
 		std::string name; // the exact name of the texture
@@ -190,9 +189,8 @@ private:
 	LinearFader showFader;
 	ParabolicFader switchTexFader;
 	LinearFader zodiacalFader;
-	bool isDraw = false;
 
-	OjmL* sphere = nullptr;
+	ObjL *sphere = nullptr;
 
 	bool onTextureTransition = false;		//!< indicates a transition on the texture
 	bool displayIrisMilky = false;			//!< indicates that we need to use the iris texture

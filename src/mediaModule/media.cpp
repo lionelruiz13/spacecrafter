@@ -31,11 +31,15 @@
 
 #define STEP_VOLUME 5
 
-Media::Media()
+Media::Media(InitParser &conf)
 {
-	audio = std::make_unique<Audio>();
+	audio = std::make_unique<Audio>(
+		conf.getDouble(SCS_VIDEO, SCK_AUDIO_FREQUENCY),
+		conf.getDouble(SCS_VIDEO, SCK_AUDIO_CHANNELS),
+		conf.getDouble(SCS_VIDEO, SCK_AUDIO_CHUNKSIZE)
+	);
 	imageMgr = std::make_unique<ImageMgr>();
-	player = std::make_unique<VideoPlayer>(this);
+	player = std::make_unique<VideoPlayer>(this, conf);
 	viewPort = std::make_unique<ViewPort>();
 	vr360 = std::make_unique<VR360>();
 	textMgr = std::make_unique<TextMgr>();
@@ -73,14 +77,17 @@ void Media::setProjector(const Projector* projection)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Media::audioMusicLoad(const std::string &filename, bool )
+void Media::audioMusicLoad(const std::string &filename, bool loop)
 {
-	audio->musicLoad(filename, false);
-	audioMusicPlay();
+	if (audioRedirected)
+		return;
+	audio->musicLoad(filename, loop);
 }
 
 void Media::audioFunction(const AudioFunction& audioFunction, const AudioParam& audioParam)
 {
+	if (audioRedirected)
+		return;
 	switch (audioFunction) {
 		case AudioFunction::AF_MUSICPLAY:
 			audio->musicPlay();
@@ -139,19 +146,32 @@ void Media::audioVolume(const AudioVolume& volumeOrder, float _value)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
+bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload, bool withMusic)
 {
+	switch(m_videoState.type) {
+		case V_TYPE::V_VR360 :
+			vr360->displayStop();
+			break;
+		case V_TYPE::V_VRCUBE :
+			vr360->displayStop();
+			break;
+		case V_TYPE::V_VIEWPORT :
+			viewPort->displayStop();
+			break;
+		case V_TYPE::V_IMAGE:
+			break;
+		default:
+			break;
+	}
+
+	player->setAdaptiveFramerate(!withMusic);
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+filename, LOG_TYPE::L_DEBUG);
-	if (player->playNewVideo(filename) ==false) {
+	if (player->playNewVideo(filename, withMusic ? audio.get() : nullptr, preload) ==false) {
 		cLog::get()->write("Media::playerPlay error playing videofilename "+filename, LOG_TYPE::L_ERROR);
 		return false;
 	}
 
 	m_videoState.state=V_STATE::V_PLAY;
-
-	audioMusicHalt();
-	vr360->displayStop();
-	viewPort->displayStop();
 
 	if (!playerIsVideoPlayed()) {
 		m_videoState.state=V_STATE::V_NONE;
@@ -197,40 +217,36 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 			m_videoState.type=V_TYPE::V_NONE;
 			break;
 	}
+	audioRedirected = withMusic;
 	return true;
 }
 
-bool Media::playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
+bool Media::playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload)
 {
-	cLog::get()->write("Media::playerPlay trying to play videofilename "+videoname, LOG_TYPE::L_DEBUG);
-	bool tmp = playerPlay(type, videoname, _name, _position, tmpProject);
-	if (tmp && !audioname.empty()) {
-		audioNotInVideo = false;
-		audioMusicHalt();
-		audioMusicLoad(audioname, false);
-		audioMusicPlay();
+	if (!audioname.empty()) {
+		audio->musicLoad(audioname, false);
 		cLog::get()->write("Media::playerPlay trying to play audiofilename "+audioname, LOG_TYPE::L_DEBUG);
-		return true;
-	} else
-		audioNotInVideo = true;
-	return tmp;
+	}
+	cLog::get()->write("Media::playerPlay trying to play videofilename "+videoname, LOG_TYPE::L_DEBUG);
+	return playerPlay(type, videoname, _name, _position, tmpProject, preload, !audioname.empty());
 }
 
 void Media::playerStop(bool newVideo)
 {
 	cLog::get()->write("Media::playerPlayStop", LOG_TYPE::L_INFO);
 	player->stopCurrentVideo(newVideo);
+}
+
+void Media::playerStopped()
+{
+	audioRedirected = false;
 	m_videoState.state=V_STATE::V_NONE;
-	if (!audioNotInVideo)
-		audio->musicDrop();
 	switch(m_videoState.type) {
 		case V_TYPE::V_VR360 :
-			if (!newVideo)
-				vr360->display(false);
+			vr360->display(false);
 			break;
 		case V_TYPE::V_VRCUBE :
-			if (!newVideo)
-				vr360->display(false);
+			vr360->display(false);
 			break;
 		case V_TYPE::V_VIEWPORT :
 			viewPort->display(false);
@@ -242,47 +258,24 @@ void Media::playerStop(bool newVideo)
 		default:
 			break;
 	}
-	m_videoState.type=V_TYPE::V_NONE;
 }
 
 void Media::playerRestart()
 {
 	cLog::get()->write("Media::playerRestart", LOG_TYPE::L_INFO);
 	player->restartCurrentVideo();
-	audio->musicRewind();
 }
 
 void Media::playerJump(float deltaTime)
 {
-	float realDelta=0.f;
-	player->jumpInCurrentVideo(deltaTime, realDelta);
-	if (realDelta==0.f) {
-		audio->musicRewind();
-		return;
-	}
-	if (realDelta==-1.f)
-		audio->musicDrop();
-	else {
-		audio->musicResume();
-		audio->musicJump(realDelta);
-	}
+	player->jumpInCurrentVideo(deltaTime);
 }
 
 void Media::playerInvertflow()
 {
-	float realDelta=0.f;
-	player->invertVideoFlow(realDelta);
-	if (realDelta==0.f) {
-		audio->musicRewind();
-		return;
-	}
-	if (realDelta==-1.f)
-		audio->musicDrop();
-	else {
-		audio->musicResume();
-		audio->musicJump(realDelta);
-	}
+	player->invertVideoFlow();
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 

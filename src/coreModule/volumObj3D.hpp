@@ -36,6 +36,7 @@ class ObjL;
 // Volumetric 3D object
 class VolumObj3D {
 public:
+    //! @param tex_absorbtion_file Texture decrivant la composante alpha ou "" pour utiliser tex_color_file
     VolumObj3D(const std::string& tex_color_file, const std::string &tex_absorbtion_file, bool z_reflection);
     ~VolumObj3D();
     void setModel(const Mat4f &model, const Vec3f &scale);
@@ -48,6 +49,7 @@ public:
     void drawInside(const Navigator * nav, const Projector* prj);
     Mat4f drawExternal(const Navigator * nav, const Projector* prj);
     void recordVolumetricObject(VkCommandBuffer cmd);
+    //! @param tex_absorbtion_file Texture decrivant la composante alpha ou "" pour utiliser tex_color_file
     void reconstruct(const std::string& tex_color_file, const std::string &tex_absorbtion_file, int _rayPoints = 0, bool z_reflection = false, int colorDepth = 0, int absorbtionDepth = 0, int colorDepthColumn = 0);
     void drop();
     bool loaded() const {return isLoaded;}

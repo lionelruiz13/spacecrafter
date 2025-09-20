@@ -41,18 +41,14 @@ CheckConfig::~CheckConfig()
 
 void CheckConfig::checkMainSettings()
 {
-	tmpSettings[SCK_DEBUG]="false";
-	tmpSettings[SCK_DEBUG_LAYER]="false";
 	tmpSettings[SCK_TEX_CACHE]="false";
 	tmpSettings[SCK_TEXTURE_LOADING]="legacy";
-	tmpSettings[SCK_STATISTICS]="false";
+	tmpSettings[SCK_LOW_MEMORY]="false";
 	tmpSettings[SCK_BUILDER_THREADS]="3";
-	tmpSettings[SCK_LOG]="true";
 	// mainSettings["debug_opengl"]="false";
 	tmpSettings[SCK_MILKYWAY_IRIS] = "false";
 	// tmpSettings[SCK_FLAG_OPTOMA]="false";
 	// mainSettings["script_debug"]="false";
-	tmpSettings[SCK_CPU_INFO]="false";
 	tmpSettings[SCK_FLAG_ALWAYS_VISIBLE]="true";
 
 	sectionSettings.push_back(SCS_MAIN);
@@ -60,6 +56,23 @@ void CheckConfig::checkMainSettings()
 	tmpSettings.clear();
 }
 
+
+void CheckConfig::checkDebugSettings()
+{
+	tmpSettings[SCK_CPU_INFO]="false";
+	tmpSettings[SCK_DEBUG_LAYER]="false";
+	tmpSettings[SCK_STATISTICS]="false";
+	tmpSettings[SCK_WRITE_LOG]="true";
+	tmpSettings[SCK_PRINT_VIDEO_INFO]="false";
+	tmpSettings[SCK_PRINT_LOG]="true";
+	tmpSettings[SCK_FLUSH_FRAMES]="false";
+	// ioSettings["mplayer_name"]="/usr/bin/mplayer";
+	// ioSettings["mplayer_mkfifo_name"]="/tmp/mplayer_mkfifo_name.fifo";
+
+	sectionSettings.push_back(SCS_DEBUG);
+	insertKeyFromTmpSettings(SCS_DEBUG);
+	tmpSettings.clear();
+}
 
 void CheckConfig::checkIoSettings()
 {
@@ -71,6 +84,8 @@ void CheckConfig::checkIoSettings()
 	tmpSettings[SCK_MKFIFO_FILE_IN]="/tmp/spacecrafter.fifo";
 	tmpSettings[SCK_MKFIFO_BUFFER_IN_SIZE]="256";
 	tmpSettings[SCK_FLAG_MASTERPUT]="false";
+	tmpSettings[SCK_VIDEO_CODEC_THREADS]="50%";
+	tmpSettings[SCK_VIDEO_FRAME_SKIP]="true";
 	// ioSettings["mplayer_name"]="/usr/bin/mplayer";
 	// ioSettings["mplayer_mkfifo_name"]="/tmp/mplayer_mkfifo_name.fifo";
 
@@ -86,11 +101,16 @@ void CheckConfig::checkVideoSettings()
 	tmpSettings[SCK_FULLSCREEN]="true";
 	tmpSettings[SCK_REMOTE_DISPLAY]="false";
 	tmpSettings[SCK_KEEP_EMPTY_WINDOW]="true";
+	tmpSettings[SCK_FLAG_IMAGE_COMPRESSION_LOSS] = "true";
+	tmpSettings[SCK_RENDER_SIZE]="0";
 	tmpSettings[SCK_SCREEN_W]="1024";
 	tmpSettings[SCK_SCREEN_H]="1024";
 	//tmpSettings[SCK_BBP_MODE]="24";
 	tmpSettings[SCK_MAXIMUM_FPS]="60";
 	tmpSettings[SCK_REC_VIDEO_FPS]="30";
+	tmpSettings[SCK_AUDIO_FREQUENCY]="44100";
+	tmpSettings[SCK_AUDIO_CHUNKSIZE]="2048";
+	tmpSettings[SCK_AUDIO_CHANNELS]="2";
 
 	sectionSettings.push_back(SCS_VIDEO);
 	insertKeyFromTmpSettings(SCS_VIDEO);
@@ -105,7 +125,6 @@ void CheckConfig::checkRenderingSettings()
 	tmpSettings[SCK_LOW_RES_MAX]="1024";
 	tmpSettings[SCK_ANTIALIASING]="8";
 	tmpSettings[SCK_LINE_WIDTH]="1.5";
-	tmpSettings[SCK_FLUSH_FRAMES]="false";
 	tmpSettings[SCK_ANISOTROPY]="8";
 	tmpSettings[SCK_LANDSCAPE_SLICES]="80";
 	tmpSettings[SCK_LANDSCAPE_STACKS]="20";
@@ -125,7 +144,7 @@ void CheckConfig::checkRenderingSettings()
 	tmpSettings[SCK_OORT_ELEMENTS]="10000";
 	tmpSettings[SCK_SHADOW_RESOLUTION]="512";
 	tmpSettings[SCK_SELF_SHADOW_RESOLUTION]="4096";
-	tmpSettings[SCK_MAX_SHADOW_CAST]="4";
+	tmpSettings[SCK_MAX_SHADOW_CAST]="8";
 	tmpSettings[SCK_EXPERIMENTAL_SHADOWS]="false";
 
 	sectionSettings.push_back(SCS_RENDERING);
@@ -310,6 +329,7 @@ void CheckConfig::checkViewingSettings()
 	tmpSettings[SCK_NEBULA_PICTO_SIZE] = "6";
 	tmpSettings[SCK_ATMOSPHERE_FADE_DURATION] = "2";
 	tmpSettings[SCK_MOON_BRIGHTNESS] = "0.5";
+	tmpSettings[SCK_SUN_BRIGHTNESS] = "200";
 	tmpSettings[SCK_FLAG_CONSTELLATION_DRAWING] = "false";
 	tmpSettings[SCK_FLAG_CONSTELLATION_NAME] = "false";
 	tmpSettings[SCK_FLAG_CONSTELLATION_BOUNDARIES] = "false";
@@ -344,7 +364,6 @@ void CheckConfig::checkViewingSettings()
 	tmpSettings[SCK_FLAG_GREENWICH_LINE] = "false";
 	tmpSettings[SCK_FLAG_PERSONAL] = "false";
 	tmpSettings[SCK_FLAG_PERSONEQ] = "false";
-	tmpSettings[SCK_FLAG_SCRIPT_PAUSE] = "false";
 	tmpSettings[SCK_FLAG_NAUTICAL_RA] = "false";
 	tmpSettings[SCK_FLAG_NAUTICAL_ALT] = "false";
 	tmpSettings[SCK_FLAG_OBJECT_COORDINATES] = "false";
@@ -369,6 +388,8 @@ void CheckConfig::checkViewingSettings()
 void CheckConfig::checkNavigationSettings()
 {
 	tmpSettings[SCK_FLAG_NAVIGATION]="false";
+	tmpSettings[SCK_FLAG_ASTRONOMICAL]="false";
+	tmpSettings[SCK_FLAG_SKIP_PAUSE] = "false";
 	tmpSettings[SCK_PRESET_SKY_TIME]="2453065.333344907";
 	tmpSettings[SCK_AUTO_MOVE_DURATION]="5";
 	tmpSettings[SCK_DAY_KEY_MODE]="calendar";
@@ -461,6 +482,7 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 	tmpSettings.clear();
 
 	checkMainSettings();
+	checkDebugSettings();
 	checkIoSettings();
 	checkVideoSettings();
 	checkRenderingSettings();

@@ -70,7 +70,7 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 void Ring::initialize()
 {
 	if (initialized) {
-		if (asteroidComputed) {
+		if (asteroidComputed.load(std::memory_order_acquire)) {
 			if (threadAsteroid.joinable()) {
 				threadAsteroid.join();
 				auto staging = asyncStagingBuffer->fastAcquireBuffer(instanceAsteroid->get().size);
@@ -201,10 +201,6 @@ void Ring::createAsteroidRing()
 		sum_probability += std::max(alpha*alpha - 0.01f, 0.f);
 		// In the texture, 0.15 correspond to no asteroids
 		probability.push_back(sum_probability);
-		std::cout << "Color";
-		for (int i = -3; i < 1; ++i)
-			std::cout << ' ' << (int) pDataLoop[i];
-		std::cout << "\n";
 		pDataLoop += 4;
 	}
 	std::cout << "\e[94mRing density : " << sum_probability << "\e[0m\n";
@@ -233,7 +229,7 @@ void Ring::createAsteroidRing()
 		(tmp++)->set(tmpColor[0] * factor, tmpColor[1] * factor, tmpColor[2] * factor);
 	}
     tex->releaseContent(pData);
-	asteroidComputed = true;
+	asteroidComputed.store(true, std::memory_order_release);
 }
 
 Ring::~Ring(void)

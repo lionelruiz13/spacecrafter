@@ -29,7 +29,7 @@
 #include <cstdio>
 #include "coreModule/projector.hpp"
 #include "tools/s_font.hpp"
-
+#include "EntityCore/Core/VulkanMgr.hpp"
 
 #include <fcntl.h>
 //#include "tools/fmath.hpp"
@@ -107,50 +107,46 @@ StelGeom::ConvexS Projector::unprojectViewport(void) const
 	// or at least very small d/n.length().
 	if ((fov < 90) /*&& fov < 360.0*/) {
 		Vec3d e0,e1,e2,e3;
-		bool ok;
-		if (fov >= 120.0) {
-			unprojectJ2000(viewport_center[0],viewport_center[1],e0);
-			StelGeom::ConvexS rval(1);
-			rval[0].n = e0;
-			rval[0].d = (fov<360.0) ? cos(fov*(M_PI/360.0)) : -1.0;
-			return rval;
-		}
-		ok  = unprojectJ2000(viewport_center[0] - 0.5*viewport_fov_diameter, viewport_center[1] - 0.5*viewport_fov_diameter,e0);
-		ok &= unprojectJ2000(viewport_center[0] + 0.5*viewport_fov_diameter, viewport_center[1] + 0.5*viewport_fov_diameter,e2);
-		ok &= unprojectJ2000(viewport_center[0] - 0.5*viewport_fov_diameter, viewport_center[1] + 0.5*viewport_fov_diameter,e1);
-		ok &= unprojectJ2000(viewport_center[0] + 0.5*viewport_fov_diameter, viewport_center[1] - 0.5*viewport_fov_diameter,e3);
+		// if (fov >= 120.0) {
+		// 	unprojectJ2000Normalized(0.f, 0.f, e0);
+		// 	StelGeom::ConvexS rval(1);
+		// 	rval[0].n = e0;
+		// 	rval[0].d = (fov<360.0) ? cos(fov*(M_PI/360.0)) : -1.0;
+		// 	return rval;
+		// }
+		unprojectJ2000Normalized(-1.f, -1.f, e0);
+		unprojectJ2000Normalized(+1.f, +1.f, e2);
+		unprojectJ2000Normalized(-1.f, +1.f, e1);
+		unprojectJ2000Normalized(+1.f, -1.f, e3);
 
-		if (ok) {
-			StelGeom::HalfSpace h0(e0^e1);
-			StelGeom::HalfSpace h1(e1^e2);
-			StelGeom::HalfSpace h2(e2^e3);
-			StelGeom::HalfSpace h3(e3^e0);
-			if (h0.contains(e2) && h0.contains(e3) &&
-			        h1.contains(e3) && h1.contains(e0) &&
-			        h2.contains(e0) && h2.contains(e1) &&
-			        h3.contains(e1) && h3.contains(e2)) {
-				StelGeom::ConvexS rval(4);
-				rval[0] = h0;
-				rval[1] = h1;
-				rval[2] = h2;
-				rval[3] = h3;
-				return rval;
-			} else {
-				Vec3d middle;
-				if (unprojectJ2000(vec_viewport[0]+0.5*vec_viewport[2], vec_viewport[1]+0.5*vec_viewport[3],middle)) {
-					double d = middle*e0;
-					double h = middle*e1;
-					if (d > h) d = h;
-					h = middle*e2;
-					if (d > h) d = h;
-					h = middle*e3;
-					if (d > h) d = h;
-					StelGeom::ConvexS rval(1);
-					rval[0].n = middle;
-					rval[0].d = d;
-					return rval;
-				}
-			}
+		StelGeom::HalfSpace h0(e0^e1);
+		StelGeom::HalfSpace h1(e1^e2);
+		StelGeom::HalfSpace h2(e2^e3);
+		StelGeom::HalfSpace h3(e3^e0);
+		if (h0.contains(e2) && h0.contains(e3) &&
+		        h1.contains(e3) && h1.contains(e0) &&
+		        h2.contains(e0) && h2.contains(e1) &&
+		        h3.contains(e1) && h3.contains(e2)) {
+			StelGeom::ConvexS rval(4);
+			rval[0] = h0;
+			rval[1] = h1;
+			rval[2] = h2;
+			rval[3] = h3;
+			return rval;
+		} else {
+			Vec3d middle;
+			unprojectJ2000Normalized(0.f, 0.f, middle);
+			double d = middle*e0;
+			double h = middle*e1;
+			if (d > h) d = h;
+			h = middle*e2;
+			if (d > h) d = h;
+			h = middle*e3;
+			if (d > h) d = h;
+			StelGeom::ConvexS rval(1);
+			rval[0].n = middle;
+			rval[0].d = d;
+			return rval;
 		}
 	}
 	StelGeom::ConvexS rval(1);
@@ -263,34 +259,42 @@ bool Projector::projectCustomFixedFov(const Vec3d &v,Vec3d &win, const Mat4d &ma
 
 void Projector::unproject(double x, double y, const Mat4d& m, Vec3d& v) const
 {
-	double d = getViewportRadius();
+	const auto pos = VulkanMgr::instance->screenToRect({x, y});
+	double length = sqrt(pos.first*pos.first + pos.second*pos.second);
+	const double angle_center = length * fov * (M_PI/360.);
+	const double r = sin(angle_center);
 
-	//	printf("unproject x,y: %f, %f   cx,cy: %f, %f\n", x, y, center[0], center[1]);
-	v[0] = (x - viewport_center[0]); //shear_horz;
-	v[1] = y - viewport_center[1];
-	v[2] = 0;
-
-	double length = v.length()/d;
-
-	//  printf("viewport radius = %f, length = %f \n", d, length);
-
-	double angle_center = length * fov/2*M_PI/180;
-	double r = sin(angle_center);
-
-	if (length!=0) {
-		v.normalize();
-		v*= r;
-		v[2] = sqrt(1.-(v[0]*v[0]+v[1]*v[1]));
+	if (length) {
+		length = r / length;
+		v.set(pos.first * length, -pos.second * length, sqrt(1.-r*r));
 	} else {
-		v.set(0.,0.,1.);
+		v.set(0, 0, 1);
 	}
 
-	if (angle_center>M_PI_2) v[2] = -v[2];
+	if (angle_center>M_PI_2)
+		v[2] = -v[2];
 
 	v.transfo4d(m);
 }
 
+void Projector::unprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const
+{
+	double length = sqrt(x*x + y*y);
+	const double angle_center = length * fov * (M_PI/360.);
+	const double r = sin(angle_center);
 
+	if (length) {
+		length = r / length;
+		v.set(x * length, y * length, sqrt(1.-r*r));
+	} else {
+		v.set(0, 0, 1);
+	}
+
+	if (angle_center>M_PI_2)
+		v[2] = -v[2];
+
+	v.transfo4d(m);
+}
 
 // Set the standard modelview matrices used for projection
 void Projector::setModelViewMatrices(	const Mat4d& _mat_earth_equ_to_eye,

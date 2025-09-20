@@ -102,11 +102,26 @@ void StellarSystemModule::update(int delta_time)
 	core->timeMgr->update(delta_time);
 	core->navigation->update(delta_time);
 
+    if (core->selected_object && core->observatory->getAltitude() <= 7.91706e+08){
+        int hip = core->hip_stars->getHPFromStarName(core->selected_object.getNameI18n());
+        if (hip != -1)
+            core->starNav->hideStar(hip);
+    }
+
+    if (core->selected_object && core->observatory->getAltitude() >= 7.91706e+08){
+        int hip = 0;
+        hip = core->hip_stars->getHPFromStarName(core->selected_object.getNameI18n());
+        if (hip != -1){
+            core->starNav->showStar(hip);
+        }
+    }
+
+    core->starNav->computePosition(center);
+
 	// Position of sun and all the satellites (ie planets)
 	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), observer);
 
 	core->ssystemFactory->updateAnchorManager();
-
 	// Transform matrices between coordinates systems
 	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
 	// Direction of vision
@@ -125,7 +140,6 @@ void StellarSystemModule::update(int delta_time)
 	// Compute the moon position in local coordinate
 	Vec3d moon = core->ssystemFactory->getMoon()->get_heliocentric_ecliptic_pos();
 	Vec3d moonPos = core->navigation->helioToLocal(moon);
-
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
 	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
@@ -176,7 +190,6 @@ void StellarSystemModule::draw(int delta_time)
 	core->asterisms->draw(core->projection, core->navigation);
 	core->starLines->draw(core->navigation);
     core->starNav->draw(core->navigation, core->projection, true);
-	// core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
 	core->skyGridMgr->draw(core->projection);
 	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));

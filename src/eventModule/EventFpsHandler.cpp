@@ -27,21 +27,25 @@
 #include "EventFpsHandler.hpp"
 #include "appModule/fps.hpp"
 #include "eventModule/EventFps.hpp"
+#include "coreModule/coreLink.hpp"
 
 
 void EventFpsHandler::handle(const Event* e, Executor *executor)
 {
     FpsEvent * event = (FpsEvent *)e;
-    switch(event->getOrder()) {
+    switch (event->getOrder()) {
         case FPS_ORDER::LOW_FPS :
-            clock->selectVideoFps(); break;
-
+            clock->selectVideoFps();
+            CoreLink::instance->setPredictibleRendering(true, clock->getTargetFps());
+            break;
         case FPS_ORDER::HIGH_FPS :
-            clock->selectMaxFps(); break;
-
+            clock->selectMaxFps();
+            CoreLink::instance->setPredictibleRendering(false, clock->getTargetFps());
+            break;
         case FPS_ORDER::AFTER_ONE_SECOND :
-            clock->afterOneSecond(); break;
-
-        default: break;
+            clock->afterOneSecond();
+            break;
+        default:
+            break;
     }
 }

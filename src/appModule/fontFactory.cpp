@@ -64,7 +64,7 @@ void FontFactory::initMediaFont(Media * _media)
 
 void FontFactory::buildAllFont()
 {
-	std::for_each(listFont.begin(), listFont.end(), 
+	std::for_each(listFont.begin(), listFont.end(),
 		[](FontContener &n){ n.fontPtr = std::make_unique<s_font>(n.sizeFont, n.nameFont); }
 	);
 
@@ -83,7 +83,7 @@ void FontFactory::init(int resolution, const InitParser& conf)
     if (m_fontResolution<1) {
         m_fontResolution = 1024;
 	}
-	fontFactor = (float) resolution / (float)m_fontResolution;
+	fontFactor = sqrtf((float)resolution / (float)m_fontResolution);
 
 	std::string FontFileNamePlanet = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_PLANET_NAME);
 	float FontSizePlanet = conf.getDouble(SCS_FONT,SCK_FONT_PLANET_SIZE);
@@ -168,6 +168,16 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 	}
 }
 
+void FontFactory::updateAllFont(const std::string& fontName)
+{
+	std::map< std::string, CLASSEFONT>::iterator it;
+	std::list<FontContener>::iterator it2 = listFont.begin();
+	for (it = m_strToTarget.begin(); it != m_strToTarget.end(); it++){
+		it2 = std::find_if( listFont.begin(), listFont.end(), [&](const FontContener &element){ return element.classeFont == it->second;} );
+		float size = it2->fontPtr->getFontSize();
+		updateFont(it->first, fontName, std::to_string(size/fontFactor));
+	}
+}
 
 s_font* FontFactory::registerFont(CLASSEFONT _cf)
 {

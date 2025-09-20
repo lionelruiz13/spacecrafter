@@ -63,6 +63,7 @@ public:
 	virtual void registerFont(s_font* _font) override;
 
 	void setInternalNav(bool a);
+	void setInternalAstronomical(bool a);
 
 	void setColor(SKYGRID_TYPE typeObj, const Vec3f& c);
 	const Vec3f& getColor(SKYGRID_TYPE typeObj);

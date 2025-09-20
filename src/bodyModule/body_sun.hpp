@@ -65,7 +65,21 @@ public:
 	void setBigHalo(const std::string& halotexfile, const std::string& path);
 
 	void setHaloSize(float s) {
-		big_halo_size = s;
+		if (s < 0)
+			big_halo_size = 0;
+		else
+			big_halo_size = s;
+	}
+
+	void setDefaultHaloSize(float s){
+		if (s < 0)
+			big_halo_size = 0;
+		else
+			big_halo_size = s;
+	}
+
+	void setDefaultHaloSize(){
+		big_halo_size = 1;
 	}
 
 	//big_halo_size

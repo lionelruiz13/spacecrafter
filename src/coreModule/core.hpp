@@ -174,9 +174,11 @@ public:
 	//! Set the landscape
 	bool setLandscape(const std::string& new_landscape_name);
 
+	void setLandingLandscape(bool landing, float speed);
+
 	//! Load a landscape based on a hash of parameters mirroring the landscape.ini file
 	//! and make it the current landscape
-	bool loadLandscape(stringHash_t& param);
+	bool loadLandscape(stringHash_t& param, int landing);
 
 	//! @brief Set the sky language and reload the sky objects names with the new translation
 	//! This function has no permanent effect on the global locale
@@ -406,6 +408,9 @@ public:
 	//! remove all user added nebulae
 	void removeSupplementalNebulae();
 
+	bool loadDso2d(int typeDso, std::string name, float size, float alpha, float delta, float distance, int xyz);
+	void removeSupplementalDso();
+
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Projection
 
@@ -445,6 +450,12 @@ public:
 		return flagNav;
 	}
 
+	void setFlagAstronomical(bool a);
+
+	bool getFlagAstronomical() {
+		return flagAstronomical;
+	}
+
 	void setFlagIngalaxy(MODULE a) {
 		currentModule = a;
 	}
@@ -470,6 +481,8 @@ public:
 
 	// Update tickable elements
 	void update(int delta_time);
+
+	void setPredictibleRendering(bool enable, int framerate);
 private:
 	struct ViewZoomMove {
 		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
@@ -582,9 +595,11 @@ private:
 	bool FlagEnableMoveKeys;
 	bool FlagAtmosphericRefraction = false;
 	bool flagNav = false; 				// define the NAV version edition
+	bool flagAstronomical = false; 		// define the astronomical version edition
 	bool FlagManualZoom;				// Define whether auto zoom can go further
 	bool firstTime= true;               // For init to track if reload or first time setup
 	bool flagEnableTransition = true;
+	bool predictibleRendering = false;  // Whether the rendered frames must be strictly reproductible (ex : recording sequence) or not (ex : realtime use)
 	ViewZoomMove vzm;					// var for ViewZoomMove
 	float InitFov;						// Default viewing FOV
 	Vec3d InitViewPos;					// Default viewing direction

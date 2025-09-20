@@ -65,6 +65,12 @@ void SkyGridMgr::setInternalNav(bool a)
 	}
 }
 
+void SkyGridMgr::setInternalAstronomical(bool a)
+{
+	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
+		it->second->setInternalAstronomical(a);
+	}
+}
 
 // void SkyGridMgr::setFont(float font_size, const std::string& font_name)
 // {

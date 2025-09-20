@@ -166,21 +166,25 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         .orbit=ModuleLoaderMgr::instance.loadOrbit(param),
         .englishName=englishName,
         .re={
-            Utility::strToFloat(param["rot_periode"], Utility::strToFloat(param["orbit_period"], 24.f))/24.f,
-            Utility::strToFloat(param["rot_rotation_offset"],0.),
-            Utility::strToDouble(param["rot_epoch"], J2000),
-            rot_obliquity,
-            rot_asc_node,
-            Utility::strToFloat(param["rot_precession_rate"],0.)*static_cast<float>(M_PI/(180*36525)),
-            Utility::strToDouble(param["orbit_visualization_period"],0.),
-            Utility::strToFloat(param["axial_tilt"], 0.)
+            .period=Utility::strToFloat(param["rot_periode"], Utility::strToFloat(param["orbit_period"], 24.f))/24.f,
+            .offset=Utility::strToFloat(param["rot_rotation_offset"],0.),
+            .epoch=Utility::strToDouble(param["rot_epoch"], J2000),
+            .obliquity=rot_obliquity,
+            .ascendingNode=rot_asc_node,
+            .precessionRate=Utility::strToFloat(param["rot_precession_rate"],0.)*static_cast<float>(M_PI/(180*36525)),
+            .sidereal_period=Utility::strToDouble(param["orbit_visualization_period"],0.),
+            .axialTilt=Utility::strToFloat(param["axial_tilt"], 0.)
         },
         .haloColor=param["color"].empty() ? defaultHaloColor : Utility::strToVec3f(param["color"]),
         .albedo=Utility::strToFloat(param["albedo"]),
         .radius=radius/static_cast<float>(AU),
-        .innerRadius=Utility::strToFloat(param["min_distance"], radius*1.002f)/static_cast<float>(AU),
+        //.innerRadius=Utility::strToFloat(param["min_distance"], radius*1.002f)/static_cast<float>(AU),
         .oblateness=Utility::strToFloat(param["oblateness"], 0.0),
         .solLocalDay=Utility::strToFloat(param["sol_local_day"],1.0),
+
+        .shadowAbsorbtion=(param.find("shadow_color") != param.end()) ? Utility::strToVec3f(param["shadow_color"]) : Vec3f{1, 1, 1},
+        .brightness=Utility::strToFloat(param["brightness"], 0.0),
+
         .bodyType=strToBodyType(param["type"]),
         .isHaloEnabled=Utility::isTrue(param["halo"]),
 		.altitudeRelativeToRadius=Utility::isFalse("solid")

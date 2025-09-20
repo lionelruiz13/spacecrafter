@@ -98,7 +98,7 @@ public:
 	//! displays all the images in the container
 	void draw(const Navigator * nav, const Projector * prj);
 
-	//! converts a string into IMAGE_POSITIONING enum
+	//! converts a string into IMG_POSITION enum
 	IMG_POSITION  convertStrToPosition( const std::string & coordinate) const;
 private:
 	Image * currentImg=nullptr;

@@ -33,14 +33,19 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 #include "tools/insert_all.hpp"
+#include "ojmModule/objl_mgr.hpp"
+#include "ojmModule/objl.hpp"
 
-PipelineLayout *Image::m_layoutViewport;
 PipelineLayout *Image::m_layoutUnifiedRGB;
 PipelineLayout *Image::m_layoutUnifiedYUV;
-Pipeline *Image::m_pipelineViewport;
+PipelineLayout *Image::m_layoutSphereRGB;
+PipelineLayout *Image::m_layoutSphereYUV;
+std::array<Pipeline *, 4> Image::m_pipelineViewport;
 std::array<Pipeline *, 4> Image::m_pipelineUnified;
+std::array<Pipeline *, 4> Image::m_pipelineSphere;
 std::unique_ptr<VertexArray> Image::m_imageViewportGL;
 std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
+std::unique_ptr<VertexArray> Image::m_imageSphereGL;
 int Image::cmds[3];
 VkCommandBuffer Image::cmd = VK_NULL_HANDLE;
 Pipeline *Image::pipelineUsed = nullptr;
@@ -50,13 +55,13 @@ Image::Image(const std::string& filename, const std::string& name, IMG_POSITION 
 	// load image using alpha channel in image, otherwise no transparency
 	// other than through setAlpha method -- could allow alpha load option from command
 	s_texture* imageRGB = new s_texture(filename, TEX_LOAD_TYPE_PNG_ALPHA, mipmap);
-	imageTexture = new RBGImageTexture(imageRGB, m_layoutUnifiedRGB);
+	imageTexture = new RBGImageTexture(imageRGB, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereRGB : m_layoutUnifiedRGB);
 	initialise(name, pos_type,project, mipmap);
 }
 
 Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project)
 {
-	imageTexture = new YUVImageTexture(imgTex.y, imgTex.u, imgTex.v, m_layoutUnifiedYUV);
+	imageTexture = new YUVImageTexture(imgTex.y, imgTex.u, imgTex.v, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereYUV : m_layoutUnifiedYUV);
 	imageTexture->setupSync(imgTex.sync);
 	needFlip = true;
 	isPersistent = true;
@@ -95,18 +100,22 @@ void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJE
 		image_ratio = -1; // no image loaded
 	else
 		image_ratio = (float)img_w/img_h;
-	if (pos_type == IMG_POSITION::POS_VIEWPORT) {
-		if (needFlip) {
-			insert_all(vecImgTex,0,1,0,0,1,1,1,0);
-		}
-		else {
-			insert_all(vecImgTex,0,0,0,1,1,0,1,1);
-		}
-		vertex = m_imageViewportGL->createBuffer(0, 4, Context::instance->tinyMgr.get());
-		imgData = (float *) Context::instance->tinyMgr->getPtr(vertex->get());
-		vertex->fillEntry(2, 4, vecImgTex.data(), imgData + 2);
-	} else {
-		vertexSize = 0;
+	switch (pos_type) {
+		case IMG_POSITION::POS_VIEWPORT:
+			if (needFlip) {
+				insert_all(vecImgTex,0,1,0,0,1,1,1,0);
+			}
+			else {
+				insert_all(vecImgTex,0,0,0,1,1,0,1,1);
+			}
+			vertex = m_imageViewportGL->createBuffer(0, 4, Context::instance->tinyMgr.get());
+			imgData = (float *) Context::instance->tinyMgr->getPtr(vertex->get());
+			vertex->fillEntry(2, 4, vecImgTex.data(), imgData + 2);
+			break;
+		case IMG_POSITION::POS_SPHERICAL:
+			break;
+		default:
+			vertexSize = 0;
 	}
 }
 
@@ -162,6 +171,10 @@ void Image::createSC_context()
 	m_imageUnifiedGL->createBindingEntry(5 * sizeof(float));
 	m_imageUnifiedGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
 	m_imageUnifiedGL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
+	m_imageSphereGL = std::make_unique<VertexArray>(vkmgr, context.ojmAlignment);
+	m_imageSphereGL->createBindingEntry(8 * sizeof(float));
+	m_imageSphereGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
+	m_imageSphereGL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
 	m_imageViewportGL = std::make_unique<VertexArray>(vkmgr);
 	m_imageViewportGL->createBindingEntry(4 * sizeof(float));
 	m_imageViewportGL->addInput(VK_FORMAT_R32G32_SFLOAT); // POS2D
@@ -183,21 +196,26 @@ void Image::createSC_context()
 	m_layoutUnifiedYUV->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
 	m_layoutUnifiedYUV->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
 	m_layoutUnifiedYUV->build();
-	m_layoutViewport = new PipelineLayout(vkmgr);
-	context.layouts.emplace_back(m_layoutViewport);
-	m_layoutViewport->setGlobalPipelineLayout(m_layoutUnifiedRGB);
-	m_layoutViewport->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 64);
-	m_layoutViewport->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 64, 4);
-	m_layoutViewport->build();
+	auto tmpSampler = PipelineLayout::DEFAULT_SAMPLER;
+	tmpSampler.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	m_layoutSphereRGB = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(m_layoutSphereRGB);
+	m_layoutSphereRGB->setTextureLocation(0, &tmpSampler);
+	m_layoutSphereRGB->buildLayout();
+	m_layoutSphereRGB->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
+	m_layoutSphereRGB->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
+	m_layoutSphereRGB->build();
+	m_layoutSphereYUV = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(m_layoutSphereYUV);
+	m_layoutSphereYUV->setTextureLocation(0, &tmpSampler);
+	m_layoutSphereYUV->setTextureLocation(1, &tmpSampler);
+	m_layoutSphereYUV->setTextureLocation(2, &tmpSampler);
+	m_layoutSphereYUV->buildLayout();
+	m_layoutSphereYUV->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
+	m_layoutSphereYUV->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
+	m_layoutSphereYUV->build();
+
 	// Pipeline
-	m_pipelineViewport = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, m_layoutViewport);
-	context.pipelines.emplace_back(m_pipelineViewport);
-	m_pipelineViewport->setDepthStencilMode();
-	m_pipelineViewport->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
-	m_pipelineViewport->bindVertex(*m_imageViewportGL);
-	m_pipelineViewport->bindShader("imageViewport.vert.spv");
-	m_pipelineViewport->bindShader("imageViewport.frag.spv");
-	m_pipelineViewport->build();
 	for (int i = 0; i < 4; ++i) {
 		m_pipelineUnified[i] = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
 		context.pipelines.emplace_back(m_pipelineUnified[i]);
@@ -207,13 +225,42 @@ void Image::createSC_context()
 		m_pipelineUnified[i]->bindVertex(*m_imageUnifiedGL);
 		m_pipelineUnified[i]->bindShader("imageUnified.vert.spv");
 		m_pipelineUnified[i]->setSpecializedConstant(7, context.isFloat64Supported);
+
+		m_pipelineViewport[i] = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
+		context.pipelines.emplace_back(m_pipelineViewport[i]);
+		m_pipelineViewport[i]->setDepthStencilMode();
+		m_pipelineViewport[i]->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+		m_pipelineViewport[i]->bindVertex(*m_imageViewportGL);
+		m_pipelineViewport[i]->bindShader("imageViewport.vert.spv");
+		m_pipelineViewport[i]->setSpecializedConstant(7, context.isFloat64Supported);
+
+		m_pipelineSphere[i] = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, i < 2 ? m_layoutSphereRGB : m_layoutSphereYUV);
+		context.pipelines.emplace_back(m_pipelineSphere[i]);
+		m_pipelineSphere[i]->setDepthStencilMode();
+		m_pipelineSphere[i]->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+		m_pipelineSphere[i]->setCullMode(true);
+		m_pipelineSphere[i]->setFrontFace();
+		m_pipelineSphere[i]->bindVertex(*m_imageSphereGL);
+		m_pipelineSphere[i]->bindShader("imageUnified.vert.spv");
+		m_pipelineSphere[i]->setSpecializedConstant(7, context.isFloat64Supported);
 	}
 	m_pipelineUnified[0]->bindShader("imageUnifiedRGB.frag.spv");
 	m_pipelineUnified[1]->bindShader("imageUnifiedRGBTransparency.frag.spv");
 	m_pipelineUnified[2]->bindShader("imageUnifiedYUV.frag.spv");
 	m_pipelineUnified[3]->bindShader("imageUnifiedYUVTransparency.frag.spv");
-	for (int i = 0; i < 4; ++i)
+	m_pipelineSphere[0]->bindShader("imageUnifiedRGB.frag.spv");
+	m_pipelineSphere[1]->bindShader("imageUnifiedRGBTransparency.frag.spv");
+	m_pipelineSphere[2]->bindShader("imageUnifiedYUV.frag.spv");
+	m_pipelineSphere[3]->bindShader("imageUnifiedYUVTransparency.frag.spv");
+	m_pipelineViewport[0]->bindShader("imageUnifiedRGB.frag.spv");
+	m_pipelineViewport[1]->bindShader("imageUnifiedRGBTransparency.frag.spv");
+	m_pipelineViewport[2]->bindShader("imageUnifiedYUV.frag.spv");
+	m_pipelineViewport[3]->bindShader("imageUnifiedYUVTransparency.frag.spv");
+	for (int i = 0; i < 4; ++i) {
 		m_pipelineUnified[i]->build();
+		m_pipelineSphere[i]->build();
+		m_pipelineViewport[i]->build();
+	}
 	// CommandBuffer
 	for (int i = 0; i < 3; ++i) {
 		cmds[i] = context.frame[i]->create(1);
@@ -478,7 +525,7 @@ void Image::draw(const Navigator * nav, const Projector * prj)
 			break;
 
 		case IMG_POSITION::POS_SPHERICAL:
-			// drawSpherical(nav, prj);
+			drawSpherical(nav, prj);
 			break;
 
 		default:
@@ -520,8 +567,15 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	else {
 		h /= image_ratio;
 	}
-	setPipeline(m_pipelineViewport);
-	imageTexture->bindSet(cmd, m_layoutViewport);
+	PipelineLayout *layout;
+	if (imageTexture->isYUV()) {
+		setPipeline(m_pipelineViewport[transparency ? 3 : 2]);
+		layout = m_layoutUnifiedYUV;
+	} else {
+		setPipeline(m_pipelineViewport[transparency ? 1 : 0]);
+		layout = m_layoutUnifiedRGB;
+	}
+	imageTexture->bindSet(cmd, layout);
 
 	//	  cout << "drawing image viewport " << image_name << endl;
 	// at x or y = 1, image is centered on projection edge centered in viewport at 0,0
@@ -536,11 +590,47 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	insert_all(vecImgPos, w, -h, -w, -h, w, h, -w, h);
 	vertex->fillEntry(2, 4, vecImgPos.data(), imgData);
 	MVP = MVP * TRANSFO;
-	m_layoutViewport->pushConstant(cmd, 0, &MVP);
-	m_layoutViewport->pushConstant(cmd, 1, &image_alpha);
+	layout->pushConstant(cmd, 0, &MVP);
+	if (transparency) {
+		float tmpBuff[5];
+		tmpBuff[0] = image_alpha;
+		*reinterpret_cast<Vec4f *>(tmpBuff + 1) = noColor;
+		layout->pushConstant(cmd, 1, &tmpBuff, 0, 20);
+	} else
+		layout->pushConstant(cmd, 1, &image_alpha, 0, 4);
 	vertex->bind(cmd);
 	vkCmdDraw(cmd, 4, 1, 0, 0);
 	// imageTexture->unbindSet(cmd);
+}
+
+void Image::drawSpherical(const Navigator *nav, const Projector *prj)
+{
+	PipelineLayout *layout;
+	if (imageTexture->isYUV()) {
+		setPipeline(m_pipelineSphere[transparency ? 3 : 2]);
+		layout = m_layoutSphereYUV;
+	} else {
+		setPipeline(m_pipelineSphere[transparency ? 1 : 0]);
+		layout = m_layoutSphereRGB;
+	}
+	imageTexture->bindSet(cmd, layout);
+	struct {
+		Mat4f matrix;
+		Vec3f clipping_fov;
+	} uVert;
+	uVert.matrix = nav->getLocalToEyeMat().convert();
+	uVert.clipping_fov = prj->getClippingFov();
+	layout->pushConstant(cmd, 0, &uVert);
+	if (transparency) {
+		float tmpBuff[5];
+		tmpBuff[0] = image_alpha;
+		*reinterpret_cast<Vec4f *>(tmpBuff + 1) = noColor;
+		layout->pushConstant(cmd, 1, &tmpBuff, 0, 20);
+	} else
+		layout->pushConstant(cmd, 1, &image_alpha, 0, 4);
+	auto objl = ObjLMgr::instance->selectDefault();
+	objl->bind(cmd);
+	objl->draw(cmd, 1024);
 }
 
 static int decalages(int i, int howManyDisplay)

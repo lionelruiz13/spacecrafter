@@ -172,18 +172,6 @@ public:
 
 	void setPlanetHidden(const std::string &name, bool planethidden) {
         currentSystem->setPlanetHidden(name, planethidden);
-        if (planethidden) {
-            ModularBody::findBody(name)->hide();
-        } else {
-            ModularBody::findBody(name)->show();
-        }
-    }
-
-    void togglePlanetHidden(const std::string &name) {
-        auto body = ModularBody::findBody(name);
-        if (!body->hide())
-            body->show();
-        currentSystem->setPlanetHidden(name, !currentSystem->getPlanetHidden(name));
     }
 
 	bool getPlanetHidden(const std::string &name) {
@@ -563,6 +551,23 @@ public:
 
     //! Return the selected anchor name
     std::string querySelectedAnchorName();
+
+    double getSunBrightness() {
+        return (ssystem->getHaloSize());
+    }
+
+    void setDefaultSunBrightness(){
+        ssystem->setDefaultHaloSize();
+    }
+
+    void setDefaultSunBrightness(double f){
+        ssystem->setDefaultHaloSize(f);
+        ssystem->setHaloSize(f);
+    }
+
+    void setSunBrightness(double f){
+        ssystem->setHaloSize(f);
+    }
 
     //! For debugging, should the modular system been drawn ?
     bool drawModularSystem = false;

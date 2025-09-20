@@ -42,23 +42,6 @@
 // override velocityAtTime().
 //~ static const double ORBITAL_VELOCITY_DIFF_DELTA = 1.0 / 1440.0;
 
-static void InitHyp(double q,double n,double e,double dt,double &a1,double &a2)
-{
-	const double M = n*dt;
-	double H = M;
-	{
-		double tmp;
-		do {
-			tmp = (e*sinh(H)-H-M)/(e*cosh(H)-1);
-			H -= tmp;
-		} while (fabs(tmp) >= EPSILON);
-	}
-	const double a = q/(e-1.0);
-	const double h1 = q*sqrt((e+1.0)/(e-1.0));
-	a1 = a*(e-cosh(H));
-	a2 = h1*sinh(H);
-}
-
 static void InitHypLinear(double q,double n,double e,double dt,double &a1,double &a2)
 {
 	const double M = n*dt;
@@ -115,38 +98,6 @@ static double InitHypLinearOrbitJDToJD(double n,double e,double dt)
 {
 	double H = n*dt;
 	return (e*sinh(H)-H)/n;
-}
-
-
-static void InitPar(double q,double n,double dt,double &a1,double &a2)
-{
-	const double A = n*dt;
-	const double h = sqrt(A*A+1.0);
-	double c = cbrt(fabs(A)+h);
-	c = c*c;
-	const double tan_nu_h = 2*A/(1+c+1/c);
-	a1 = q*(1-tan_nu_h*tan_nu_h);
-	a2 = 2.0*q*tan_nu_h;
-}
-
-static void InitEll(double q,double n,double e,double dt,double &a1,double &a2)
-{
-	double M = fmod(n*dt,2*M_PI);
-	if (M < 0.0)
-		M += 2.0*M_PI;
-	double H = M;
-	{
-		double tmp;
-		do {
-			tmp = (M-H+e*sin(H))/(e*cos(H)-1);
-			H -= tmp;
-		} while (fabs(tmp) >= EPSILON);
-	}
-
-	const double a = q/(1.0-e);
-	const double h1 = q*sqrt((1.0+e)/(1.0-e));
-	a1 = a*(cos(H)-e);
-	a2 = h1*sin(H);
 }
 
 static void InitEllLinear(double q,double n,double e,double dt,double &a1,double &a2)
@@ -245,9 +196,9 @@ CometOrbit::CometOrbit(double pericenter_distance,
                        double parent_rot_obliquity,
                        double parent_rot_ascendingnode,
                        double parent_rot_J2000_longitude)
-	:q(pericenter_distance),e(eccentricity),i(inclination),
-	 Om(ascendingNode),o(arg_of_perhelion),t0(time_at_perihelion),
-	 n(mean_motion) //, updateTails(true)
+	:q(pericenter_distance),e(eccentricity),
+	//i(inclination), Om(ascendingNode),o(arg_of_perhelion)
+	t0(time_at_perihelion), n(mean_motion)
 {
 
 	const double c_obl = cos(parent_rot_obliquity);
@@ -257,12 +208,12 @@ CometOrbit::CometOrbit(double pericenter_distance,
 	const double cj = cos(parent_rot_J2000_longitude);
 	const double sj = sin(parent_rot_J2000_longitude);
 
-	const double co = cos(o);
-	const double so = sin(o);
-	const double cOm = cos(Om);
-	const double sOm = sin(Om);
-	const double ci = cos(i);
-	const double si = sin(i);
+	const double co = cos(arg_of_perhelion);
+	const double so = sin(arg_of_perhelion);
+	const double cOm = cos(ascendingNode);
+	const double sOm = sin(ascendingNode);
+	const double ci = cos(inclination);
+	const double si = sin(inclination);
 
 	d1.set(-so*sOm*ci+co*cOm, so*cOm*ci+co*sOm, so*si);
 	d2.set(-co*sOm*ci-so*cOm, co*cOm*ci-so*sOm, co*si);
@@ -276,21 +227,6 @@ CometOrbit::CometOrbit(double pericenter_distance,
 	rotate_to_vsop87[6] =                 s_obl*sj;
 	rotate_to_vsop87[7] =                 s_obl*cj;
 	rotate_to_vsop87[8] =                 c_obl;
-
-}
-
-
-void CometOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
-{
-	Vec3d pos = positionAtTime(JD);
-
-	v[0] = rotate_to_vsop87[0]*pos[0] + rotate_to_vsop87[1]*pos[1] + rotate_to_vsop87[2]*pos[2];
-	v[1] = rotate_to_vsop87[3]*pos[0] + rotate_to_vsop87[4]*pos[1] + rotate_to_vsop87[5]*pos[2];
-	v[2] = rotate_to_vsop87[6]*pos[0] + rotate_to_vsop87[7]*pos[1] + rotate_to_vsop87[8]*pos[2];
-
-
-	// to adapt
-	// setUpdateTails(true);
 }
 
 std::pair<double, double> CometOrbit::prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double deltaJD)
@@ -313,11 +249,9 @@ void CometOrbit::fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, d
 	double a1,a2;
 	if (e < 1.0) {
 		InitEllLinear(q,n,e,JD+orbitJDCorrection,a1,a2);
-	} else if (e > 1.0) {
+	} else {
 		InitHypLinear(q,n,e,JD+orbitJDCorrection,a1,a2);
-	} else
-		InitPar(q,n,JD+orbitJDCorrection,a1,a2);
-
+	}
 	Vec3d pos = d1*a1 + d2*a2;
 	v[0] = rotate_to_vsop87[0]*pos[0] + rotate_to_vsop87[1]*pos[1] + rotate_to_vsop87[2]*pos[2];
 	v[1] = rotate_to_vsop87[3]*pos[0] + rotate_to_vsop87[4]*pos[1] + rotate_to_vsop87[5]*pos[2];
@@ -342,25 +276,6 @@ void CometOrbit::orbitJDToJD(double &JD) const
 	}
 }
 
-Vec3d CometOrbit::positionAtTime(double JD) const
-{
-	JD -= t0;
-	double a1,a2;
-
-	if (e < 1.0) {
-		InitEll(q,n,e,JD,a1,a2);
-	} else if (e > 1.0) {
-		InitHyp(q,n,e,JD,a1,a2);
-	} else
-		InitPar(q,n,JD,a1,a2);
-	// Vec3d p;
-	// Init3D(i,Om,o,a1,a2,p[0],p[1],p[2]);
-
-	return d1*a1 + d2*a2;
-
-}
-
-
 double CometOrbit::getPeriod() const
 {
 	return (2*M_PI)/n;
@@ -369,6 +284,111 @@ double CometOrbit::getPeriod() const
 double CometOrbit::getBoundingRadius() const
 {
 	return -1;  // Undefined
+}
+
+HypCometOrbit::HypCometOrbit(
+	double pericenter_distance,
+	double eccentricity,
+	double inclination,
+	double ascendingNode,
+	double arg_of_perhelion,
+	double time_at_perihelion,
+	double mean_motion,
+	double parent_rot_obliquity,
+	double parent_rot_ascendingnode,
+	double parent_rot_J2000_longitude
+): CometOrbit(pericenter_distance, eccentricity, inclination, ascendingNode, arg_of_perhelion, time_at_perihelion, mean_motion, parent_rot_obliquity, parent_rot_ascendingnode, parent_rot_J2000_longitude),
+	orbit(pericenter_distance, mean_motion, eccentricity)
+{
+}
+
+void HypCometOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
+{
+	Vec3d pos = positionAtTime(JD);
+
+	v[0] = rotate_to_vsop87[0]*pos[0] + rotate_to_vsop87[1]*pos[1] + rotate_to_vsop87[2]*pos[2];
+	v[1] = rotate_to_vsop87[3]*pos[0] + rotate_to_vsop87[4]*pos[1] + rotate_to_vsop87[5]*pos[2];
+	v[2] = rotate_to_vsop87[6]*pos[0] + rotate_to_vsop87[7]*pos[1] + rotate_to_vsop87[8]*pos[2];
+}
+
+Vec3d HypCometOrbit::positionAtTime(double JD) const
+{
+	return orbit(JD - t0, d1, d2);
+}
+
+EllCometOrbit::EllCometOrbit(
+	double pericenter_distance,
+	double eccentricity,
+	double inclination,
+	double ascendingNode,
+	double arg_of_perhelion,
+	double time_at_perihelion,
+	double mean_motion,
+	double parent_rot_obliquity,
+	double parent_rot_ascendingnode,
+	double parent_rot_J2000_longitude
+): CometOrbit(pericenter_distance, eccentricity, inclination, ascendingNode, arg_of_perhelion, time_at_perihelion, mean_motion, parent_rot_obliquity, parent_rot_ascendingnode, parent_rot_J2000_longitude),
+	orbit(pericenter_distance, mean_motion, eccentricity)
+{
+}
+
+void EllCometOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
+{
+	Vec3d pos = positionAtTime(JD);
+
+	v[0] = rotate_to_vsop87[0]*pos[0] + rotate_to_vsop87[1]*pos[1] + rotate_to_vsop87[2]*pos[2];
+	v[1] = rotate_to_vsop87[3]*pos[0] + rotate_to_vsop87[4]*pos[1] + rotate_to_vsop87[5]*pos[2];
+	v[2] = rotate_to_vsop87[6]*pos[0] + rotate_to_vsop87[7]*pos[1] + rotate_to_vsop87[8]*pos[2];
+}
+
+Vec3d EllCometOrbit::positionAtTime(double JD) const
+{
+	return orbit(JD - t0, d1, d2);
+}
+
+ParCometOrbit::ParCometOrbit(
+	double pericenter_distance,
+	double eccentricity,
+	double inclination,
+	double ascendingNode,
+	double arg_of_perhelion,
+	double time_at_perihelion,
+	double mean_motion,
+	double parent_rot_obliquity,
+	double parent_rot_ascendingnode,
+	double parent_rot_J2000_longitude
+): CometOrbit(pericenter_distance, eccentricity, inclination, ascendingNode, arg_of_perhelion, time_at_perihelion, mean_motion, parent_rot_obliquity, parent_rot_ascendingnode, parent_rot_J2000_longitude)
+{
+	d1 *= pericenter_distance;
+	d2 *= pericenter_distance * 2;
+}
+
+void ParCometOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
+{
+	Vec3d pos = positionAtTime(JD);
+
+	v[0] = rotate_to_vsop87[0]*pos[0] + rotate_to_vsop87[1]*pos[1] + rotate_to_vsop87[2]*pos[2];
+	v[1] = rotate_to_vsop87[3]*pos[0] + rotate_to_vsop87[4]*pos[1] + rotate_to_vsop87[5]*pos[2];
+	v[2] = rotate_to_vsop87[6]*pos[0] + rotate_to_vsop87[7]*pos[1] + rotate_to_vsop87[8]*pos[2];
+}
+
+void ParCometOrbit::fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
+{
+	Vec3d pos = positionAtTime(JD+orbitJDCorrection);
+
+	v[0] = rotate_to_vsop87[0]*pos[0] + rotate_to_vsop87[1]*pos[1] + rotate_to_vsop87[2]*pos[2];
+	v[1] = rotate_to_vsop87[3]*pos[0] + rotate_to_vsop87[4]*pos[1] + rotate_to_vsop87[5]*pos[2];
+	v[2] = rotate_to_vsop87[6]*pos[0] + rotate_to_vsop87[7]*pos[1] + rotate_to_vsop87[8]*pos[2];
+}
+
+Vec3d ParCometOrbit::positionAtTime(double JD) const
+{
+	const double A = n*JD;
+	const double h = sqrt(A*A+1.0);
+	double c = cbrt(fabs(A)+h);
+	c = c*c;
+	const double tan_nu_h = 2*A/(1+c+1/c);
+	return d1*(1-tan_nu_h*tan_nu_h) + d2*tan_nu_h;
 }
 
 EllipticalOrbit::EllipticalOrbit(double pericenterDistance,
@@ -416,6 +436,32 @@ EllipticalOrbit::EllipticalOrbit(double pericenterDistance,
 
 }
 
+// Either fix deltaJD or fix position
+std::pair<double, double> EllipticalOrbit::prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double deltaJD)
+{
+	batchLastE = 0;
+	return std::make_pair(-deltaJD, deltaJD);
+}
+
+
+void EllipticalOrbit::fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
+{
+	JD = JD - epoch;
+	const double meanMotion = 2.0 * M_PI / period;
+	const double meanAnomaly = meanAnomalyAtEpoch + JD * meanMotion;
+
+	if (batchLastE == 0) {
+		for (size_t i = 0; i < 10; ++i)
+			eccentricAnomaly(meanAnomaly, batchLastE);
+	}
+
+	Vec3d pos = positionAtE(eccentricAnomaly(meanAnomaly, batchLastE));
+
+	v[0] = rotate_to_vsop87[0]*pos[0] + rotate_to_vsop87[1]*pos[1] + rotate_to_vsop87[2]*pos[2];
+	v[1] = rotate_to_vsop87[3]*pos[0] + rotate_to_vsop87[4]*pos[1] + rotate_to_vsop87[5]*pos[2];
+	v[2] = rotate_to_vsop87[6]*pos[0] + rotate_to_vsop87[7]*pos[1] + rotate_to_vsop87[8]*pos[2];
+}
+
 
 void EllipticalOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
 {
@@ -456,35 +502,6 @@ Vec3d EllipticalOrbit::positionAtE(double E) const
 
 }
 
-// Standard iteration for solving Kepler's Equation
-struct SolveKeplerFunc1 {
-	double ecc;
-	double M;
-
-	SolveKeplerFunc1(double _ecc, double _M) : ecc(_ecc), M(_M) {};
-
-	double operator()(double x) const
-	{
-		return M + ecc * sin(x);
-	}
-};
-
-
-// Faster converging iteration for Kepler's Equation; more efficient
-// than above for orbits with eccentricities greater than 0.3.  This
-// is from Jean Meeus's _Astronomical Algorithms_ (2nd ed), p. 199
-struct SolveKeplerFunc2 {
-	double ecc;
-	double M;
-
-	SolveKeplerFunc2(double _ecc, double _M) : ecc(_ecc), M(_M) {};
-
-	double operator()(double x) const
-	{
-		return x + (M + ecc * sin(x) - x) / (1 - ecc * cos(x));
-	}
-};
-
 static double sign(double x)
 {
 	if (x < 0.)
@@ -495,86 +512,53 @@ static double sign(double x)
 		return 0.;
 }
 
-struct SolveKeplerLaguerreConway {
-	double ecc;
-	double M;
-
-	SolveKeplerLaguerreConway(double _ecc, double _M) : ecc(_ecc), M(_M) {};
-
-	double operator()(double x) const
-	{
-		double s = ecc * sin(x);
-		double c = ecc * cos(x);
-		double f = x - s - M;
-		double f1 = 1 - c;
-		double f2 = s;
-		x += -5 * f / (f1 + sign(f1) * sqrt(abs(16 * f1 * f1 - 20 * f * f2)));
-
-		return x;
-	}
-};
-
-struct SolveKeplerLaguerreConwayHyp {
-	double ecc;
-	double M;
-
-	SolveKeplerLaguerreConwayHyp(double _ecc, double _M) : ecc(_ecc), M(_M) {};
-
-	double operator()(double x) const
-	{
-		double s = ecc * sinh(x);
-		double c = ecc * cosh(x);
-		double f = s - x - M;
-		double f1 = c - 1;
-		double f2 = s;
-		x += -5 * f / (f1 + sign(f1) * sqrt(abs(16 * f1 * f1 - 20 * f * f2)));
-
-		return x;
-	}
-};
-
-typedef std::pair<double, double> Solution;
-
-
-double EllipticalOrbit::eccentricAnomaly(double M) const
+double EllipticalOrbit::eccentricAnomaly(double M, double &lastE) const
 {
-	if (eccentricity == 0.0) {
-		// Circular orbit
-		return M;
-	}
-	else if (eccentricity < 0.2) {
+	if (eccentricity == 0.0)
+		return M; // Circular orbit
+	if (eccentricity < 0.2) {
 		// Low eccentricity, so use the standard iteration technique
-		Solution sol = solveIterationFixed(SolveKeplerFunc1(eccentricity, M), M, 5);
-		return sol.first;
-	}
-	else if (eccentricity < 0.9) {
-		// Higher eccentricity elliptical orbit; use a more complex but
-		// much faster converging iteration.
-		Solution sol = solveIterationFixed(SolveKeplerFunc2(eccentricity, M), M, 6);
-		// Debugging
-		// printf("ecc: %f, error: %f mas\n",
-		//        eccentricity, radToDeg(sol.second) * 3600000);
-		return sol.first;
-	}
-	else if (eccentricity < 1.0) {
+		if (lastE == 0)
+			lastE = M;
+		// Standard iteration for solving Kepler's Equation
+		lastE = M + eccentricity * sin(lastE);
+	} else if (eccentricity < 0.9) {
+		if (lastE == 0)
+			lastE = M;
+		// Faster converging iteration for Kepler's Equation; more efficient
+		// than above for orbits with eccentricities greater than 0.3.  This
+		// is from Jean Meeus's _Astronomical Algorithms_ (2nd ed), p. 199
+		lastE += (M + eccentricity * sin(lastE) - lastE) / (1 - eccentricity * cos(lastE));
+	} else if (eccentricity < 1.0) {
 		// Extremely stable Laguerre-Conway method for solving Kepler's
 		// equation.  Only use this for high-eccentricity orbits, as it
 		// requires more calcuation.
-		double E = M + 0.85 * eccentricity * sign(sin(M));
-		Solution sol = solveIterationFixed(SolveKeplerLaguerreConway(eccentricity, M), E, 8);
-		return sol.first;
-	}
-	else if (eccentricity == 1.0) {
+		if (lastE == 0)
+			lastE = M + 0.85 * eccentricity * sign(sin(M));
+		// Standard iteration for solving Kepler's Equation
+		const double s = eccentricity * sin(lastE);
+		const double c = eccentricity * cos(lastE);
+		const double f = lastE - s - M;
+		const double f1 = 1 - c;
+		lastE += -5 * f / (f1 + sign(f1) * sqrt(abs(16 * f1 * f1 - 20 * f * s)));
+	} else if (eccentricity == 1.0) {
 		// Nearly parabolic orbit; very common for comets
 		// TODO: handle this
 		return M;
-	}
-	else {
+	} else {
 		// Laguerre-Conway method for hyperbolic (ecc > 1) orbits.
-		double E = log(2 * M / eccentricity + 1.85);
-		Solution sol = solveIterationFixed(SolveKeplerLaguerreConwayHyp(eccentricity, M), E, 30);
-		return sol.first;
+		if (lastE == 0)
+			lastE = log(2 * M / eccentricity + 1.85);
+		// Faster converging iteration for Kepler's Equation; more efficient
+		// than above for orbits with eccentricities greater than 0.3.  This
+		// is from Jean Meeus's _Astronomical Algorithms_ (2nd ed), p. 199
+		double s = eccentricity * sinh(lastE);
+		double c = eccentricity * cosh(lastE);
+		double f = s - lastE - M;
+		double f1 = c - 1;
+		lastE += -5 * f / (f1 + sign(f1) * sqrt(abs(16 * f1 * f1 - 20 * f * s)));
 	}
+	return lastE;
 }
 
 
@@ -584,7 +568,7 @@ Vec3d EllipticalOrbit::positionAtTime(double t) const
 	t = t - epoch;
 	double meanMotion = 2.0 * M_PI / period;
 	double meanAnomaly = meanAnomalyAtEpoch + t * meanMotion;
-	double E = eccentricAnomaly(meanAnomaly);
+	double E = eccentricAnomaly(meanAnomaly, iterativeLastE);
 
 	return positionAtE(E);
 }
@@ -1101,7 +1085,7 @@ void stillOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, doubl
 }
 
 LocationOrbit::LocationOrbit(double _lon, double _lat, double _alt, double parentRadius, double parentPeriod, double parentOffset) :
-	lon((_lon+parentOffset)*M_PI/180), lat(_lat), alt(_alt/AU+parentRadius), JDToRotation(parentPeriod ? (2*M_PI)/parentPeriod : 0)
+	lon((_lon+parentOffset)*M_PI/180), lat(_lat), alt(_alt/AU+parentRadius), JDToRotation((2*M_PI)/parentPeriod)
 {
 }
 
@@ -1111,7 +1095,11 @@ LocationOrbit::~LocationOrbit()
 
 void LocationOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
 {
-	Utility::spheToRect(lon+JD*JDToRotation, lat, alt, *reinterpret_cast<Vec3d *>(v));
+	Vec3d tmp;
+	Utility::spheToRect(lon+JD*JDToRotation, lat, tmp);
+	v[0] = tmp[0] * alt;
+	v[1] = tmp[1] * alt;
+	v[2] = tmp[2] * alt;
 }
 
 linearOrbit::linearOrbit(double _t_start, double _t_end, double *_posInitial, double *_posFinal )

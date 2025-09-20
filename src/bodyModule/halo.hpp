@@ -41,7 +41,8 @@ class Texture;
 class Set;
 
 class Halo {
-	friend class Renderer; // For now, Renderer use internal globals
+
+	friend class Renderer; // TODO implement inline function here instead
 public:
 
 	Halo()=delete;
@@ -66,7 +67,7 @@ public:
 	//! Process halo draws in the given CommandBuffer and prepair the next batch
 	static void nextDraw(VkCommandBuffer cmd);
 	//! Finalize and submit halo drawings
-	static void endDraw(VkCommandBuffer cmd = VK_NULL_HANDLE);
+	static void endDraw();
 
 private:
 	Body * body;

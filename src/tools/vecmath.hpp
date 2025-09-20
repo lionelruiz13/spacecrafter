@@ -333,7 +333,7 @@ public:
 
 	inline void print(void) const;
 
-	T r[16];
+	alignas(64) T r[16];
 };
 
 

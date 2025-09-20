@@ -32,18 +32,20 @@
 
 #include <vector>
 #include "tools/vecmath.hpp"
+#include <cstdint>
 //#include "tools/ia.hpp"
 
-//! \struct starInfo
+//! \struct StarInfo
 //! \brief Stars are stocked in this structure
-struct starInfo {
+struct StarInfo {
 	unsigned int HIP;	//name of the star
 	Vec3f posXYZ;	//position in space in al
 	float pmRA;	// RA in mas
 	float pmDE;	// DE in mas
 	float mag;	//magnitude of the object
-	int B_V;	//color index of the object
 	float pc; 	//unit : parsec
+	uint8_t B_V;	//color index of the object
+	bool show;
 };
 
 // GPU need posXYZ, mag, B_V (COMPACT = 4 float, 1 int)
@@ -54,8 +56,6 @@ struct starInfo {
 //! \brief la classe cube va contenir les étoiles
 class Cube  {
 public:
-	Cube() {}
-
 	//! \fn Cube(int size, int x, int y, int z, int cubeName)
 	//! \brief Cube's constructor
 	//! \param size is the cube size
@@ -66,7 +66,7 @@ public:
 	~Cube();
 
 	//! \return return the size of the cube
-	int getSize() {
+	size_t getSize() {
 		return size;
 	}
 
@@ -81,23 +81,26 @@ public:
 		return c_z;
 	}
 
-	//! \fn void addStar(starInfo *si)
+	//! \fn void addStar(StarInfo *si)
 	//! \brief add a star to the starList
-	//! \param *si pointer on a starInfo type
-	void addStar(starInfo *si);
+	//! \param *si pointer on a StarInfo type
+	void addStar(StarInfo &&si);
 
 	//! \fn return the number of stars
 	int getNbStars() {
 		return starList.size();
 	}
 
-	//! \brief getter sur la lsite des étoiles du cube
-	std::vector<starInfo*> getStarList() {
-		return starList;
+	inline std::vector<StarInfo>::iterator begin() {
+		return starList.begin();
+	}
+
+	inline std::vector<StarInfo>::iterator end() {
+		return starList.end();
 	}
 
 	//! \brief renvoi le nombre total de cube dans la structure
-	unsigned int getTotalCube() {
+	static unsigned int getTotalCube() {
 		return NbTotalCube;
 	}
 
@@ -109,7 +112,7 @@ public:
 protected:
 	int size;
 	int c_x, c_y, c_z;
-	std::vector<starInfo*> starList;
+	std::vector<StarInfo> starList;
 	float MinMagnitude;
 	static unsigned int NbTotalCube;
 };
@@ -135,17 +138,17 @@ public:
 		return hcSize;
 	}
 
-	//! \return return the cube list for an hyperCube
-	std::vector<Cube*> getCubeList() {
-		return cubeList;
+	inline std::vector<Cube>::iterator begin() {
+		return cubeList.begin();
 	}
 
-	//! \brief add a cube to the HyperCube
-	void addCube(Cube *c);
+	inline std::vector<Cube>::iterator end() {
+		return cubeList.end();
+	}
 
 	//! \return return the cubes which are currently in the hypercube
 	int getNbrCubes() {
-		return nbrCubes;
+		return cubeList.size();
 	}
 
 	//! \brief getter sur la position du cube
@@ -159,12 +162,11 @@ public:
 		return c_z;
 	}
 
-	//! \brief Vérifie qu'un cube existe en coordonnée (a,b,c)
-	//! \return pointeur sur le cube s'il existe nullptr sinon
-	Cube* cubeExist(int a, int b, int c);
+	//! \brief Renvoie le cube en coordonnée (a,b,c), cree un cube si besoin
+	//! \return Cube aux coordonnees demandees
+	Cube &getCube(int a, int b, int c);
 
-	//! \brief ajoute une étoile dans l'Hypercube, crée un cube si besoin
-	void addCubeStar(starInfo* star);
+	void addCubeStar(StarInfo &&star);
 
 	//! \brief renvoie la magnitude minimale de l'étoile inclue dans l'HC
 	float getMinMagnitude();
@@ -178,12 +180,11 @@ public:
 	unsigned int getNbrStars();
 
 protected:
-	int nbrCubes;
 	int hcSize;
 	int c_x;
 	int c_y;
 	int c_z;
-	std::vector<Cube*> cubeList;
+	std::vector<Cube> cubeList;
 	int min,max;
 	float MinMagnitude;
 	static unsigned int NbTotalHyperCube;
@@ -209,14 +210,9 @@ public:
 	//! \brief StarManager destructor
 	~StarManager();
 
-	//! \fn void addHyperCubeList(HyperCube *hc)
-	//! \brief add an hypercube into the list
-	//! \param *hc pointer of hypercube type
-	void addHyperCube(HyperCube *hc);
-
 	//! \return return the number of hypercube
 	int getNbrHyperCubes() {
-		return nbrHyperCubes;
+		return hyperCubeList.size();
 	}
 
 	//! récupère le nombre de cubes dans les hypercubes
@@ -224,7 +220,8 @@ public:
 	int getNbrCubes();
 
 	//! \return return the hypercube list which is in the starManager
-	std::vector<HyperCube*> getHyperCubeList() {
+	//! \warning The existence of such function break the OOP paradigm
+	std::vector<HyperCube> &getHyperCubeList() {
 		return hyperCubeList;
 	}
 
@@ -249,11 +246,11 @@ public:
 	//! \brief used to save in binary mode the stars/cubes/hypercube in the structure
 	bool saveStarBinCatalog(const std::string &fileName);
 
-	//! \brief Détermine si un hypercube existe, si oui retourne un pointeur sur ce dernier
-	HyperCube* hcExist(int a, int b, int c);
+	//! \brief Renvoie le hypercube aux coordonnees demandees, en le creant s'il n'existe pas.
+	HyperCube &getHC(int a, int b, int c);
 
 	//! \brief Ajoute une étoile dans starManager
-	void addHcStar(starInfo* star);
+	void addHcStar(StarInfo &&star);
 
 	//! \brief renvoie la plus grande magnitude absolue de toutes les étoiles
 	float getMinMagnitude();
@@ -275,16 +272,14 @@ public:
 	bool saveAsterismStarsPosition(const std::string &fileNameIn,const std::string &fileNameOut);
 
 	//! \brief renvoie les caractéristiques de l'étoile identifiée par HIPName
-	starInfo* findStar(unsigned int HIPName);
+	StarInfo *findStar(unsigned int HIPName);
 
 protected:
-	std::vector<HyperCube*> hyperCubeList;
-	int nbrCubes;
-	int nbrHyperCubes;
-	float MinMagnitude;
-	int statHc[NBR_PAS_STATHC];
+	std::vector<HyperCube> hyperCubeList;
+	int nbrCubes = 0;
+	float MinMagnitude = 500;
+	int statHc[NBR_PAS_STATHC] {0};
 	unsigned int statMagStars[MAG_PAS];
-	starInfo* createStar(unsigned int hip, float ra, float de, float plx, float pmRa, float pmDe, float mag, float bv);
 };
 
 #endif

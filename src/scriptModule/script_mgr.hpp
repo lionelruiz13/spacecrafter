@@ -152,14 +152,21 @@ public:
 		isVideoPlayed = b;
 	}
 
-	void setFlagScriptPause(bool b) {
-		flagScriptPause = b;
+	void setFlagSkipPause(bool b) {
+		flagSkipPause = b;
 	}
 
-	bool getFlagScriptPause(void) const {
-		return flagScriptPause;
+	bool getFlagSkipPause(void) const {
+		return flagSkipPause;
 	}
 
+	void acquireGlobalLock();
+
+	void releaseGlobalLock() {
+		if (--global_lock_count == UINT8_MAX) {
+			global_lock_count = 0;
+		}
+	}
 private:
 	// the states of the script engine with respect to the current scripts.
 	enum class ScriptState : char {PLAY, PAUSE, NONE};
@@ -178,6 +185,7 @@ private:
 	AppCommandInterface *commander;  //!< for executing script commands
 	Script * script = nullptr; //!< currently loaded script
 	int64_t wait_time=0;     //!< ms until next script command should be executed
+	uint8_t global_lock_count=0;	//! number of global lock acquired, prevent ticking while acquired (unless explicitly waiting)
 	bool waitOnVideo=false; 			//!< if Video launch, say if script should wait on it.
 	bool isVideoPlayed = false;		 	//!< say if a video is played
 	std::string DataDir;
@@ -187,7 +195,7 @@ private:
 	int nbrLoop=0;		//!< number of remaining loops
 	std::vector<std::string> loopVector; //!< the vector that contains the loop instructions to be repeated
 	unsigned int indiceInLoop=0; //!< indicates the place where we are in the loop
-	bool flagScriptPause; //!< skip pause in script
+	bool flagSkipPause; //!< skip pause in script
 };
 
 

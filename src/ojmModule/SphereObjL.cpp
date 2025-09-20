@@ -23,19 +23,21 @@
 
 #include "SphereObjL.hpp"
 #include "tools/context.hpp"
+#include "tools/log.hpp"
 #include "EntityCore/EntityCore.hpp"
 #include "LazyOjmL.hpp"
 
 #ifdef __GNUC__
-constexpr float icosahedron_G = 0.5*(1.0+sqrt(5.0));
-constexpr float icosahedron_b = 1.0/sqrt(1.0+icosahedron_G*icosahedron_G);
-#else // constexpr sqrt is not supported for non-gcc compilers
-constexpr float icosahedron_G = 1.6180339887498948482045868343656;
-constexpr float icosahedron_b = 0.52573111211913360602566908484788;
+constexpr double icosahedron_G = (1.0+sqrt(5.0))/2;
+constexpr double icosahedron_b = 1.0/sqrt(1.0+icosahedron_G*icosahedron_G);
+#else // constexpr sqrt is not supported for non-gcc compilers until C++23
+constexpr double icosahedron_G = 1.6180339887498948482045868343656;
+constexpr double icosahedron_b = 0.52573111211913360602566908484788;
 #endif
 
-constexpr double icosahedron_a = icosahedron_b*icosahedron_G;
-constexpr double segment = icosahedron_b * 2;
+//constexpr double icosahedron_a = icosahedron_b*icosahedron_G;
+//0.95 ~ 0.5*sqrt(phi*sqrt(5))
+constexpr double segment = icosahedron_b * 2; // *0.95
 constexpr double PI_MUL_2 = M_PI * 2;
 
 #ifdef __GNUC__
@@ -80,12 +82,17 @@ SphereObjL::SphereObjL()
 	SubBuffer indexLow, indexMedium, indexHigh, tmpBuffer;
 	unsigned int indexCountLow, indexCountMedium, indexCountHigh, tmp;
 	uint64_t *src, *dst;
+	auto now = std::chrono::steady_clock::now();
 	// Construct sphere and upload indices
 
 	construct(SUBDIVISE_LOW_RES);
 	indexCountLow = triangles.size() * 3;
 	indexLow = context.indexBufferMgr->acquireBuffer(indexCountLow * sizeof(int));
 	tmp = indexCountLow / 2;
+	for (auto &p : points) {
+		p.pos.normalize();
+		p.normal.normalize();
+	}
 	src = (uint64_t *) triangles.data();
 	dst = (uint64_t *) context.transfer->planCopy(indexLow);
 	while (tmp--)
@@ -129,6 +136,7 @@ SphereObjL::SphereObjL()
 	low = std::make_unique<OjmL>(vertex, indexLow, indexCountLow);
 	medium = std::make_unique<LazyOjmL>(vertex.get(), indexMedium, indexCountMedium);
 	high = std::make_unique<LazyOjmL>(vertex.get(), indexHigh, indexCountHigh);
+	cLog::get()->write("Generating EquiSphere took : " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now).count()) + "ms", LOG_TYPE::L_INFO);
 }
 
 SphereObjL::~SphereObjL()

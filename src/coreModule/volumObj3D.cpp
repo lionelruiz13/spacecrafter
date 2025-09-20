@@ -170,7 +170,6 @@ VolumObj3D::VolumObj3D(const std::string& tex_color_file, const std::string &tex
     if (tex_color_file.empty())
         return;
     reconstruct(tex_color_file, tex_absorbtion_file, rayPoints, z_reflection);
-    setModel(Mat4f::translation(Vec3f( -0.0001, -0.0001, -0.005)) * Mat4f::yawPitchRoll(90, 0, 0) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
 }
 
 VolumObj3D::~VolumObj3D()
@@ -200,11 +199,17 @@ void VolumObj3D::reconstruct(const std::string& tex_color_file, const std::strin
             int tmpPos = tex_absorbtion_file.find_last_of('d', tmpSize) + 1;
             absorbtionDepth = std::stoi(tex_absorbtion_file.substr(tmpPos, tmpSize - tmpPos));
         }
-        mapTexture = std::make_unique<s_texture>(tex_absorbtion_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, absorbtionDepth, 1, 1, false, true);
+        if (!(mapTexture && *mapTexture == tex_absorbtion_file)) {
+            mapTexture.reset();
+            mapTexture = std::make_unique<s_texture>(tex_absorbtion_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, absorbtionDepth, 1, 1, false, true);
+        }
         mapTexture->getDimensions(size, size);
         isLoaded = (size >= 8);
     }
-    colorTexture = std::make_unique<s_texture>(tex_color_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, colorDepth, 4, 1, false, true, colorDepthColumn);
+    if (!(colorTexture && *colorTexture == tex_color_file)) {
+        colorTexture.reset();
+        colorTexture = std::make_unique<s_texture>(tex_color_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, colorDepth, 4, 1, false, true, colorDepthColumn);
+    }
     colorTexture->getDimensions(size, size);
     if (size < 8)
         isLoaded = false;

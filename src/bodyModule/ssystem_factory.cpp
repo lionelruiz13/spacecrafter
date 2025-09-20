@@ -43,7 +43,7 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
     // creation of 3D models for planets
     objLMgr = std::make_unique<ObjLMgr>();
 	objLMgr -> setDirectoryPath(AppSettings::Instance()->getModel3DDir() );
-	objLMgr->insertDefault("Sphere");
+	// objLMgr->insertDefault("Sphere");
 
 	if (!objLMgr->checkDefaultObject()) {
 		cLog::get()->write("SolarSystem: no default objMgr loaded, system aborded", LOG_TYPE::L_ERROR);
@@ -70,7 +70,6 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
         .haloColor = {},
         .albedo = 0,
         .radius = 0,
-        .innerRadius = 0,
         .oblateness = 0,
         .solLocalDay = 0,
         .bodyType = BodyType::GALAXY,
@@ -161,7 +160,6 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
         .haloColor = {},
         .albedo = 0,
         .radius = 0,
-        .innerRadius = 0,
         .oblateness = 0,
         .solLocalDay = 0,
         .bodyType = BodyType::SYSTEM,

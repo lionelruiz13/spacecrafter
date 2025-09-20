@@ -101,6 +101,14 @@ public:
 	s_texture(const s_texture *t);
 	//ban operator =
 	const s_texture &operator=(const s_texture &t) = delete;
+	// Allow comparing a texture by his source filename
+	inline bool operator==(const std::string &filename) const {
+		return filename == textureName;
+	}
+	// Allow comparing a texture by his source filename
+	inline bool operator!=(const std::string &filename) const {
+		return filename != textureName;
+	}
 
 	// Return the big texture, or nullptr if not loaded at this frame
 	Texture *getBigTexture();
@@ -136,6 +144,9 @@ public:
 	// Indicates the default path of the textures.
 	static void setTexDir(const std::string& _texDir) {
 		s_texture::texDir = _texDir;
+	}
+	static const std::string& getTexDir() {
+		return texDir;
 	}
 
 	// Indicates if we must load the textures in low resolution or not.

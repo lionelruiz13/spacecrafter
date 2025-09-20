@@ -243,7 +243,7 @@ bool ZoneArray::readStarFile(FILE *f,void *data,size_t size)
 void ZoneArray1::updateHipIndex(HipIndexStruct hip_index[]) const
 {
 	for (const SpecialZoneData<Star1> *z=getZones()+(nr_of_zones-1); z>=getZones(); z--) {
-		for (const Star1 *s = z->getStars()+z->size-1; s>=z->getStars(); s--) {
+		for (Star1 *s = z->getStars()+z->size-1; s>=z->getStars(); s--) {
 			const int hip = s->getHip();
 			if (hip < 0 || NR_OF_HIP < hip) {
 				std::cerr << "ERROR: ZoneArray1::updateHipIndex: invalid HP number: " << hip << std::endl;
@@ -258,6 +258,69 @@ void ZoneArray1::updateHipIndex(HipIndexStruct hip_index[]) const
 	}
 }
 
+void ZoneArray1::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
+{
+	auto *const z = getZones() + index;
+	Vec3d xy;
+	const auto *const end = z->getStars() + z->size;
+	const double d2000 = 2451545.0;
+	const double movement_factor = (M_PI/180)*(0.0001/3600)
+	                               * ((HipStarMgr::getCurrentJDay()-d2000)/365.25)
+	                               / star_position_scale;
+	for (const auto *s = z->getStars(); s < end; s++) {
+		if (s->getHidden())
+			continue;
+		double alt, az;
+		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
+		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+		int mag = s->getMag();
+		// Correct star position accounting for atmospheric refraction
+		if (atmosphere) {
+		    Utility::rectToSphe(&az,&alt,local_pos);
+		    //float press_temp_corr = (1013.f)/1010.f * 283.f/(273.f+10.f) / 60.f; //temperature and pressure correction based on Stellarium's code
+		    const float rad2deg = 180.0f/M_PI;
+		    const float deg2rad = M_PI/180.0f;
+		    float ha = rad2deg*alt;
+			if (ha>-5.0)
+				ha += 1.02f/tan((ha+10.3f/(ha+5.11f))*deg2rad)/60.0;
+		    	//ha += press_temp_corr * (1.f / tan((ha+7.31f/(ha+4.4f))*deg2rad) + 0.0013515f); //Bennett formula
+		    alt = deg2rad*ha;
+		    Utility::spheToRect(az, alt, local_pos);
+		}
+		if (is_inside
+		        ? prj->projectLocal(local_pos,xy)
+		        : prj->projectLocalCheck(local_pos,xy)) {
+			if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()], s->getVariableStarIndex())) {
+				break;
+			}
+			if (!isolateSelected) {
+				if (mag < max_mag_star_name) {
+					const std::string starname = s->getNameI18n();
+					if (!starname.empty()) {
+						Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][1]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][2]*0.75,
+								names_brightness);
+						// prj->printGravity180(starFont,xy[0],xy[1], starname, Color, true, 4, 4);//, false);
+						starNameToDraw.push_back(std::make_tuple(xy[0],xy[1], starname, Color));
+					}
+				}
+			} else {
+				const std::string starname = s->getNameI18n();
+				if (selected_stars.find(starname) != selected_stars.end()) {
+					if (!starname.empty()) {
+						Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][1]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][2]*0.75,
+								names_brightness);
+						// prj->printGravity180(starFont,xy[0],xy[1], starname, Color, true, 4, 4);//, false);
+						starNameToDraw.push_back(std::make_tuple(xy[0],xy[1], starname, Color));
+					}
+				}
+			}
+		}
+	}
+}
 
 template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 {
@@ -285,9 +348,8 @@ template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 	nr_of_stars = 0;
 }
 
-
 template<class Star>
-void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars,  bool atmosphere, bool isolateSelected) const
+void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> &selected_stars,  bool atmosphere, bool isolateSelected) const
 {
 	SpecialZoneData<Star> *const z = getZones() + index;
 	Vec3d xy;
@@ -300,7 +362,7 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 		double alt, az;
 		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
 		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
-
+		int mag = s->getMag();
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
 		    Utility::rectToSphe(&az,&alt,local_pos);
@@ -308,22 +370,20 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 		    const float rad2deg = 180.0f/M_PI;
 		    const float deg2rad = M_PI/180.0f;
 		    float ha = rad2deg*alt;
-		    float r;
-		    if (ha>-5.0) r = 1.02f/tan((ha+10.3f/(ha+5.11f))*deg2rad)/60.0; else r=0.0f;
+			if (ha>-5.0)
+				ha += 1.02f/tan((ha+10.3f/(ha+5.11f))*deg2rad)/60.0;
 		    //r = press_temp_corr * (1.f / tan((ha+7.31f/(ha+4.4f))*deg2rad) + 0.0013515f); //Bennett formula
-		    ha += r;
 		    alt = deg2rad*ha;
 		    Utility::spheToRect(az, alt, local_pos);
 		}
-
 		if (is_inside
 		        ? prj->projectLocal(local_pos,xy)
 		        : prj->projectLocalCheck(local_pos,xy)) {
-			if (0 > hip_star_mgr.drawStar(prj,xy,rcmag_table + 2*(s->getMag()), HipStarMgr::color_table[s->getBVIndex()])) {
+			if (hip_star_mgr.drawStar(prj,xy,rcmag_table[2*mag], rcmag_table[2*mag|1], HipStarMgr::color_table[s->getBVIndex()])) {
 				break;
 			}
 			if (!isolateSelected) {
-				if (s->getMag() < max_mag_star_name) {
+				if (mag < max_mag_star_name) {
 					const std::string starname = s->getNameI18n();
 					if (!starname.empty()) {
 						Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75,
@@ -421,7 +481,7 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 				#endif /* LINUX */
 				const int64_t mmap_offset = start_in_file % page_size;
 				#ifdef __linux__
-				mmap_start = mmap(0,mmap_offset+sizeof(Star)*nr_of_stars,PROT_READ, MAP_PRIVATE | MAP_NORESERVE, fileno(f),start_in_file-mmap_offset);
+				mmap_start = mmap(0,mmap_offset+sizeof(Star)*nr_of_stars,PROT_READ | PROT_WRITE, MAP_PRIVATE, fileno(f),start_in_file-mmap_offset);
 				if (mmap_start == MAP_FAILED) {
 					std::cerr << "ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray:  mmap(" << fileno(f) << ',' << start_in_file << ','
 							  << (sizeof(Star)*nr_of_stars) << ") failed: " << strerror(errno) << std::endl;
@@ -443,13 +503,13 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 				if (file_handle == INVALID_HANDLE_VALUE) {
 					std::cerr << "ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: _get_osfhandle(_fileno(f)) failed" << std::endl;
 				} else {
-					mapping_handle = CreateFileMapping(file_handle,NULL,PAGE_READONLY, 0,0,NULL);
+					mapping_handle = CreateFileMapping(file_handle,NULL,PAGE_WRITECOPY, 0,0,NULL);
 					if (mapping_handle == NULL) {
 						// yes, NULL indicates failure, not INVALID_HANDLE_VALUE
 						std::cerr << "ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: CreateFileMapping failed: " << GetLastError() << std::endl;
 					} else {
 						mmap_start = MapViewOfFile(mapping_handle,
-						                           FILE_MAP_READ,
+						                           FILE_MAP_COPY,
 						                           0,
 						                           start_in_file-mmap_offset,
 						                           mmap_offset+sizeof(Star)*nr_of_stars);
@@ -498,6 +558,5 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 		}
 	}
 }
-
 
 } // namespace BigStarCatalog

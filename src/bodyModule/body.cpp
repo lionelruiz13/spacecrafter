@@ -86,7 +86,7 @@ Body::Body(std::shared_ptr<Body> parent,
 	englishName(englishName), initialRadius(_radius), one_minus_oblateness(1.0-oblateness),
 	albedo(_albedo), axis_rotation(0.),
 	tex_map(nullptr), tex_norm(nullptr), eye_sun(0.0f, 0.0f, 0.0f),
-	lastJD(J2000), deltaJD(JD_SECOND/4), orbit(std::move(_orbit)), parent(parent), close_orbit(close_orbit),
+	lastJD(J2000), orbit(std::move(_orbit)), parent(parent), close_orbit(close_orbit),
     orbit_bounding_radius(orbit_bounding_radius), boundingRadius(-1), sun_half_angle(0.0)
 	// tailFactors(-1., -1.), // mark "invalid"
 	// tailActive(false),
@@ -501,22 +501,18 @@ Vec3d Body::getObsJ2000Pos(const Navigator *nav) const
 
 void Body::compute_position(const double date)
 {
-	OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction();
-
 	if(orbitPlot != nullptr && orbitPlot->getOrbitFader().getInterstate()) {
 		orbitPlot->computeOrbit(date);
 	}
 
-	double delta = date-lastJD;
-	delta = fabs(delta);
-
-	if(delta >= deltaJD ) {
-		if(oscFunc)
-			(*oscFunc)(date,date,ecliptic_pos);
-		else
-			orbit->positionAtTimevInVSOP87Coordinates(date,date,ecliptic_pos);
-		lastJD = date;
-	}
+    if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
+        // if (fabs(date-lastJD) < deltaJD)
+        //     return;
+        (*oscFunc)(date,date,ecliptic_pos);
+    } else {
+        orbit->positionAtTimevInVSOP87Coordinates(date,date,ecliptic_pos);
+    }
+    lastJD = date;
 }
 
 // Compute the transformation matrix from the local Body coordinate to the parent Body coordinate
@@ -940,16 +936,17 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 
     eye_planet = mat.getTranslation();
 
-	lightDirection = eye_sun - eye_planet;
+    lightDirection = eye_sun - eye_planet;
     sun_half_angle = atan(696000.0/AU/lightDirection.length());  // hard coded Sun radius!
     for (p = parent.get(); p; p = p->getParent()) {
         if (p->getBodyType() == SUN) {
             eye_sun = (nav->getHelioToEyeMat() * p->mat_local_to_parent).getTranslation();
-            sun_half_angle = atan(p->radius/AU/lightDirection.length());
+            lightDirection = eye_sun - eye_planet;
+            float sun_radius = p->radius;
+            sun_half_angle = atan2(sun_radius, sqrt(lightDirection.lengthSquared() - sun_radius*sun_radius));
             break;
         }
     }
-
 	lightDirection.normalize();
 
 	// Do not draw anything else if was not visible
@@ -963,12 +960,13 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
     // Compute the distance to the observer
     distance = eye_planet.length();
 
-    const float halfFov = prj->getFov() * (M_PI / 360);
+    // Object visibility detection algorithm
+    const double halfFov = prj->getFov() * (M_PI / 360);
     if (distance > radius) {
-        angularSize = atanf(radius / sqrt(distance*distance - radius*radius));
-        const float tmp = halfFov + angularSize;
-        angularSize *= 2;
-        isVisible = (tmp > M_PI) ? true : (-eye_planet[2] >= cos(tmp) * distance);
+        long double tmp = atan2(radius, sqrt(eye_planet.lengthSquared() - radius*radius));
+        angularSize = tmp * 2;
+        tmp += halfFov;
+        isVisible = (tmp > M_PI) ? true : (-eye_planet[2] / distance >= cos(tmp) - 1e-6);
     } else {
         angularSize = M_PI;
         isVisible = true;
@@ -987,7 +985,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
             f /= rq * halfFov;
         } else
             f = 1 / (distance * halfFov);
-    screenPos = VulkanMgr::instance->rectToScreenf({eye_planet[0] * f, eye_planet[1] * f});
+    screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
 }
 
 double Body::getAxisAngle() const {
@@ -1202,7 +1200,7 @@ UShadowingBody Body::drawShadow(const ShadowParams &params)
 {
     auto m = params.lookAt * model;
     Vec3f ret(m.r[12], m.r[13], boundingRadius + params.smoothRadius);
-    auto scaling = radius/ret.v[2];
+    auto scaling = initialRadius/ret.v[2];
     auto idx = Context::instance->helper->drawShadower(this, params.smoothRadius/ret.v[2]);
     (m * Mat4d::scaling(Vec3d(scaling, scaling, scaling * one_minus_oblateness))).setMat3(Context::instance->shadowData[idx].shadowMat);
     return {ret, idx};

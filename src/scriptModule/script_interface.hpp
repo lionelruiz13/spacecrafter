@@ -84,13 +84,16 @@ public:
 	bool isScriptPlaying() const;
 	bool isScriptRecording() const;
 	bool isScriptPaused() const;
-    // TODO Add isScriptPauseDisabled && setScriptPauseDisabled
+    bool isSkipPauseDisabled() const;
+    void setSkipPauseDisabled(bool b);
 
 	void waitOnVideoTermination() const;
 	void setWaitOnVideoTermination(bool b) const;
 
 	void setIsVideoPlayed(bool b) const;
 
+    void acquireGlobalLock();
+    void releaseGlobalLock();
 private:
     std::shared_ptr<ScriptMgr> scriptMgr;
 

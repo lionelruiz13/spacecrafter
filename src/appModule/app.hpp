@@ -177,7 +177,7 @@ private:
 	// Graphic context
 	Context context;
 	std::unique_ptr<FrameSender> sender;
-	std::vector<std::unique_ptr<Texture>> senderImage; // If using sender instead of swapchain
+	std::vector<std::unique_ptr<Texture>> offscreenImage; // If using sender instead of swapchain
 	VkSampleCountFlagBits sampleCount;
 	std::vector<std::unique_ptr<Texture>> multisampleImage;
 	std::unique_ptr<Texture> depthBuffer;
@@ -209,6 +209,7 @@ private:
 	EventRecorder* eventRecorder;
 	EventHandler* eventHandler;
 
+	uint16_t renderSize = 0; //! Render size, if render surface is not the screen surface
 	Uint16 width, height;  						//! Contains the resolution w and h of the SDL window
 	int colorID, depthID, multiColorID, shadowID;
 	SDL_Event	E;

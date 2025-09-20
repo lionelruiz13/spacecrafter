@@ -136,7 +136,7 @@ private:
 	float mc = 1.0;
 	bool initialized = false;
 	bool fullyInitialized = false;
-	bool asteroidComputed = false;
+	std::atomic<bool> asteroidComputed = false;
 	bool asteroidReady = false;
 };
 

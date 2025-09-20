@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <map>
 #include <ctime>
+#include <cstdint>
 #include "tools/vecmath.hpp"
 
 constexpr uint32_t str4(const char *str) {

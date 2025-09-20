@@ -95,7 +95,7 @@ void CPUInfo::getCPUstate(std::vector<CoreData> &entrie)
 void CPUInfo::getGPUstate()
 {
 	std::vector<char> cache;
-	const char *args[] = {"nvidia-smi", "--format=csv,noheader,nounits", "--query-gpu=utilization.gpu,utilization.memory,memory.free,pstate,fan.speed,temperature.gpu"};
+	const char *args[] = {"nvidia-smi", "--format=csv,noheader,nounits", "--query-gpu=utilization.gpu,utilization.memory,memory.free,pstate,fan.speed,temperature.gpu", nullptr};
 	ExecutorInfo info{.args=args, .pushedInput={}, .saveOutput=true};
 	auto instance = LinuxExecutor::instance->spawnInstance(info, cache);
 	LinuxExecutor::instance->waitInstance(instance);

@@ -30,7 +30,23 @@ public:
     }
 };
 
+class CustomLinearInterp {
+public:
+    inline float operator()(float v) const {
+        return zeroValue+delta*v;
+    }
+    inline float zero() const {
+        return zeroValue;
+    }
+    inline float one() const {
+        return zeroValue+delta;
+    }
+    float zeroValue = 0;
+    float delta = 1;
+};
+
 typedef AFader<CoreLink, LinearInterp> ALinearFader;
 typedef AFader<CoreLink, ParabolicInterp> AParabolicFader;
+typedef AFader<CoreLink, CustomLinearInterp> ACustomLinearFader;
 
 #endif /* end of include guard: AUTO_FADER_HPP_ */

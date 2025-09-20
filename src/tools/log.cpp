@@ -29,10 +29,10 @@
 #include <SDL2/SDL.h>
 #include "EntityCore/Core/VulkanMgr.hpp"
 
-#define LOG_EE "(EE): "
-#define LOG_WW "(WW): "
-#define LOG_II "(II): "
-#define LOG_DD "(DD): "
+#define LOG_EE "(Error): "
+#define LOG_WW "(Warn.): "
+#define LOG_II "(Info ): "
+#define LOG_DD "(Debug): "
 
 // thanks to internet for color !!
 // http://stackoverflow.com/questions/1961209/making-some-text-in-printf-appear-in-green-and-red

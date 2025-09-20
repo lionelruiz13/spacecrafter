@@ -66,6 +66,7 @@ class Translator;
 class ToneReproductor;
 class Navigator;
 class Projector;
+class Observatory;
 class Observer;
 class Set;
 class BodyColor;
@@ -280,7 +281,7 @@ public:
 	virtual void setSphereScale(float s, bool initial_scale =  false);
 
 	// returns the ratio radius_actual/initial radius
-	float getSphereScale(void) {
+	float getSphereScale(void) const {
 		return (radius/initialRadius);
 	}
 
@@ -342,6 +343,10 @@ public:
 
 	double getBoundingRadius() const {
 		return boundingRadius;
+	}
+
+	double getUnscaledBoundingRadius() const {
+		return boundingRadius / getSphereScale();
 	}
 
 	// double getBoundingRadiusWithOrbit() const {
@@ -594,7 +599,6 @@ protected:
 	double distance;				// Temporary variable used to store the distance to a given point it is used for sorting while drawing
 
 	double lastJD;
-	double deltaJD;
 
 	std::unique_ptr<Orbit> orbit=nullptr;            // orbit object for this body
 	Vec3f orbit_position;    // position of the planet

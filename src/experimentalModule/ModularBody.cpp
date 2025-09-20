@@ -18,7 +18,7 @@ std::vector<ModularBody *> ModularBody::notableBody;
 Translator *ModularBody::translator = nullptr;
 
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
-    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), scaling(1), radius(info.radius), innerRadius(info.innerRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
+    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), scaling(1), radius(info.radius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
 {
     if (translator)
         nameI18 = translator->translateUTF8(englishName);
@@ -148,7 +148,6 @@ void ModularBody::updateCache()
 {
     bool cached = !scaling.isTransiting();
     scaledRadius = radius * scaling;
-    scaledInnerRadius = innerRadius * scaling;
     boundingRadius = scaledRadius;
     for (auto &module : nearComponents) {
         cached &= module->update(this, scaledRadius);
@@ -192,7 +191,7 @@ void ModularBody::drawLoaded(Renderer &renderer)
         } else {
             for (auto &module : farComponents)
                 module->draw(renderer, this, mat);
-            if (distance < scaledInnerRadius) {
+            if (distance < scaledRadius) {
                 for (auto &module : inComponents) {
                     if (module->isLoaded()) {
                         module->draw(renderer, this, matrix);

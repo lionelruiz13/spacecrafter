@@ -729,7 +729,7 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 	}
 
 	for (unsigned int i=0; i<nb_segment; ++i) {
-		if (internalNav) {
+		if ((internalNav) || (internalAstronomical)) {
 			inclination=70*M_PI/180.;
 
 			if((prj->*proj_func)(points[nb_segment+1+i], pt1) && (prj->*proj_func)(points[nb_segment+1+i+1], pt2)) {
@@ -754,15 +754,16 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 					std::ostringstream oss;
 					float tickl = 4.0;
 
-					double res;
-					if (i<18*(nb_segment/36)) res = 180-(i+1)/((nb_segment/36.0))*10;
-					if (i>18*(nb_segment/36)) res = 540-(i+1)/((nb_segment/36.0))*10;
+					double res = (i <= 18*(nb_segment/36)) ? 180 : 540;
+					res -= (i+1)/((nb_segment/36.0))*10;
 					if ((i+1)%((nb_segment/36)*2) == 0) {
 						oss << res << "°";
 						tickl = 4.0;
 					} else if ((i+2-5)%((nb_segment/36)*2) == 0) {
 						tickl = 2.0;
-					} else tickl = 1.0;
+					} else {
+						tickl = 1.0;
+					}
 
 					Mat4f MVP = prj->getMatProjectionOrtho2D();
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
@@ -897,7 +898,7 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 		}
 	}
 	for (unsigned int i=0; i<nb_segment; ++i) {
-		if (internalNav) {
+		if ((internalNav) || (internalAstronomical)) {
 			inclination=70*M_PI/180.;
 
 			if((prj->*proj_func)(points[nb_segment+1+i], pt1) && (prj->*proj_func)(points[nb_segment+1+i+1], pt2)) {
@@ -965,8 +966,7 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 				std::ostringstream oss;
 				int tickl = 3;
 
-				if ((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) {
-
+				if (((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) || ((internalAstronomical) && (line_equator_type != GALACTIC_EQUATOR))) {
 					double num = 360.0f/(nb_segment/2.f)*(nb_segment/2.f-(i+1)/2.f);
 					if (fmod(num,15) == 0) {
 						tickl = 8;
@@ -991,7 +991,7 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
-				if ((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) {
+				if (((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) || ((internalAstronomical) && (line_equator_type != GALACTIC_EQUATOR))) {
 					if ((i+1) % (2*4) == 0) {
 
 						tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
@@ -1009,9 +1009,9 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
 				}
 
-				if (((i+1)%2==0) && font && ((internalNav) && (line_equator_type != GALACTIC_EQUATOR)))
+				if ((((i+1)%2==0) && font && ((internalNav) && (line_equator_type != GALACTIC_EQUATOR))) || (((i+1)%2==0) && font && ((internalAstronomical) && (line_equator_type != GALACTIC_EQUATOR))))
 					font->print(-26,-2,oss.str(), Color, MVP*TRANSFO ,1);
-				if (((i+1)%2==0) && font && !((internalNav) && (line_equator_type != GALACTIC_EQUATOR)))
+				if ((((i+1)%2==0) && font && !((internalNav) && (line_equator_type != GALACTIC_EQUATOR))) && (((i+1)%2==0) && font && !((internalAstronomical) && (line_equator_type != GALACTIC_EQUATOR))))
 					font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1);
 			}
 		}
@@ -1232,7 +1232,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 					tmp = TRANSFO * Vec4f(9.0,0.0,0.0,1.0);
 					vecDrawPos.push_back( tmp[0] );
 					vecDrawPos.push_back( tmp[1] );
-				} else if ((i==6)|| (i==11) || (i==16) || (i==21) || (i==26)
+				} else if ((i==6) || (i==11) || (i==16) || (i==21) || (i==26)
 				           || (i==37) || (i==42) || (i==47) || (i==52) || (i==57)
 				           || (i==65) || (i==70) || (i==75) || (i==80) || (i==85)
 				           || (i==96) || (i==101) || (i==106) || (i==111) || (i==116)
@@ -1277,7 +1277,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 				if (observatory->isEarth()) {
 					float degree = i-84.5;
 					if (degree < 0) degree += 360;
-					if (internalNav)
+					if (((internalNav)) || ((internalAstronomical)))
 						oss <<  month[ (i+15)/30 ] << " " << degree << "°";
 					else
 						oss << month[ (i+15)/30 ];

@@ -37,12 +37,12 @@ public:
 	ObjL();
 	virtual ~ObjL();
 	void draw(VkCommandBuffer cmd, const float screenSize);
-	bool init(const std::string &repertory, const std::string &name);
-	void bind(VkCommandBuffer cmd);
-	void bind(Pipeline &pipeline);
 	inline void drawLow(VkCommandBuffer cmd) {
 		low->draw(cmd);
 	}
+	bool init(const std::string &repertory, const std::string &name);
+	void bind(VkCommandBuffer cmd);
+	void bind(Pipeline &pipeline);
 
 protected:
 	std::unique_ptr<OjmL> low;

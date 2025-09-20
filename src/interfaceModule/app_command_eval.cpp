@@ -41,6 +41,7 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_HEADING]=SC_RESERVED_VAR::HEADING;
 	m_reservedVar[ACI_RW_BODY_SELECTED]=SC_RESERVED_VAR::BODY_SELECTED;
 	m_reservedVar[ACI_RW_LANGUAGE]=SC_RESERVED_VAR::LANGUAGE;
+	m_reservedVar[ACI_RW_JOYPAD]=SC_RESERVED_VAR::JOYPAD;
 
 	// for conivence, the map inverse
 	for (const auto& [key, val] : m_reservedVar)
@@ -108,7 +109,7 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 		//if (v == trunc(v))
 		//	variables[mArg] = std::to_string(evalInt(mValue));
 		//else
-			variables[mArg] = std::to_string(v);
+		variables[mArg] = std::to_string(v);
 	//	this->printVar();
 	}
 }
@@ -281,7 +282,9 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 		case SC_RESERVED_VAR::BODY_SELECTED:
 			return coreLink->getBodySelected();
 		case SC_RESERVED_VAR::LANGUAGE:
-				return coreLink->getLanguage();
+			return coreLink->getLanguage();
+		case SC_RESERVED_VAR::JOYPAD:
+			return coreLink->isJoypadConnected;
 		default:
 			//std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
 			cLog::get()->write("Unknown reserved variable " + var +". Default 0.0 is returned.", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);

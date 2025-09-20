@@ -56,6 +56,8 @@ public:
     void overrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth);
     //! Place a unique 3D volumetric object in the world
     void setupVolumetric(std::map<std::string, std::string> &args, int colorDepth = 0);
+    //! Drop everything, stop drawing
+    void drop();
 private:
     void build();
 

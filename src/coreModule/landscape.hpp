@@ -95,18 +95,23 @@ public:
 		return description;
 	}
 
+	std::string getFormat() const {
+		return format;
+	}
+
 	virtual void setRotation(float rotation) {
 		rotate_z = rotation;
 	}
 
-	void draw(const Projector* prj, const Navigator* nav);
+	virtual void draw(const Projector* prj, const Navigator* nav);
 
 	static Landscape* createFromFile(const std::string& landscape_file, const std::string& section_name);
-	static Landscape* createFromHash(stringHash_t & param);
+	static Landscape* createFromHash(stringHash_t & param, int landscape);
 	static std::string getFileContent(const std::string& landscape_file);
 	static std::string getLandscapeNames(const std::string& landscape_file);
 	static void createSC_context();
 	static void destroySC_context();
+	virtual void setLanding(bool isLanding, float speed) {}
 protected:
 	std::unique_ptr<Fog> fog;
 	virtual void load(const std::string& file_name, const std::string& section_name) {};
@@ -119,6 +124,7 @@ protected:
 	std::string name;
 	std::string author;
 	std::string description;
+	std::string format;
 	std::unique_ptr<s_texture> map_tex;
 	std::unique_ptr<s_texture> map_tex_night;
 	bool haveNightTex;
@@ -156,19 +162,21 @@ private:
 	float tex_fov;
 };
 
-
 class LandscapeSpherical : public Landscape {
 public:
 	LandscapeSpherical(float _radius = 1.);
 	virtual ~LandscapeSpherical();
 	virtual void load(const std::string& fileName, const std::string& section_name);
 	void create(const std::string _name, const std::string _maptex, const float _base_altitude,
-	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, const bool _mipmap);
+	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, const bool _mipmap, int landing);
+	virtual void draw(const Projector* prj, const Navigator* nav) override;
+	virtual void setLanding(bool isLanding, float speed) override;
 private:
 	void createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
 	                         double bottom_altitude, double top_altitude, float * data);
 	void initShader();
-	float base_altitude, top_altitude;  // for partial sphere coverage
+	float base_altitude, top_altitude, base_top_altitude;  // for partial sphere coverage
+	ACustomLinearFader landingFader;
 };
 
 #endif // _LANDSCAPE_H_

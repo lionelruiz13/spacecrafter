@@ -77,6 +77,22 @@ public:
 		return flagMoonScale;
 	}
 
+	double getHaloSize(){
+		return (getSun()->getBigHaloSize());
+	}
+
+	void setDefaultHaloSize(){
+		getSun()->setDefaultHaloSize();
+	}
+
+	void setDefaultHaloSize(double f){
+		getSun()->setDefaultHaloSize(f);
+	}
+
+	void setHaloSize(double f){
+		getSun()->setHaloSize(f);
+	}
+
 	//! Set if Sun display is scaled
 	void setFlagSunScale(bool b) {
 		if (!b) {

@@ -102,7 +102,7 @@ public:
 
     template <typename T>
     inline void draw(T *data) {
-        while (!queue.push(reinterpret_cast<DrawData *&>(data))) {
+        while (!queue.emplace(reinterpret_cast<DrawData *>(data))) {
             queue.flush();
             std::this_thread::sleep_for(std::chrono::microseconds(100));
         }

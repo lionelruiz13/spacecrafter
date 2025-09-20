@@ -120,8 +120,10 @@ public:
 	void setFov(float fov);
 	void setEye(const ToneReproductor *eye);
 	int computeRCMag(float mag, const ToneReproductor *eye, float rc_mag[2]) const;
+	int computeRCMag(float mag, float &radius, float &brightness) const;
 private:
 	const HipStarMgr &mgr;
+	const ToneReproductor *eye;
 	float max_fov, min_fov, mag_shift, max_mag, max_scaled_60deg_mag, min_rmag, fov_factor;
 };
 
@@ -430,11 +432,11 @@ public:
 	}
 
 	//! Draw a star of specified position, magnitude and color.
-	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color);
+	int drawStar(const Projector *prj, const Vec3d &XY, float radius, float brightness, const Vec3f &color, int variableStarIndex = 0);
 
-	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color) const {
+	int drawStar(const Projector *prj, const Vec3d &XY, float radius, float brightness, const Vec3f &color, int variableStarIndex = 0) const {
 		//! drawStar write to vertexData and nbStarsToDraw, thus it can't be const
-		return const_cast<HipStarMgr *>(this)->drawStar(prj, XY, rc_mag, color);
+		return const_cast<HipStarMgr *>(this)->drawStar(prj, XY, radius, brightness, color, variableStarIndex);
 	}
 
 	//! Get the (translated) common name for a star with a specified
@@ -458,12 +460,44 @@ public:
 	void setColorStarTable(int p, Vec3f a);
 	void updateFramebuffer(VkCommandBuffer cmd);
 	void syncFramebuffer(VkCommandBuffer cmd);
+	int getHPFromStarName(const std::string& name) const;
+
+	void hideStar(uint32_t hip);
+	void showStar(uint32_t hip);
+	void showAllStar();
+
+	struct VariableStarCurve {
+		double period{};
+		double refJDay{};
+		float lowPeriod{};
+		float downPeriod{};
+		float upPeriod{};
+		float magMin;
+	};
+
+	struct VariableStar {
+		uint32_t hip;
+		float magMax;
+		std::vector<VariableStarCurve> curves;
+	};
+
+	void addVariableStar(VariableStar &&star);
+	void removeVariableStar(uint32_t hip);
+	void removeAllVariableStar();
+
+	float getMag(int hip);
+	float getBaseMag(int hip);
+	double durationToJulianDay(std::string duration/*int day, int hour, int minute, int seconde*/) const;
+	int checkVariableStar(TimeMgr* timeMgr, int hip, double refJDay, double period, double lowPeriod, double downPeriod, double upPeriod, double magMin);
+	void readFileVariableStar();
+
 private:
+	float getVariableStarMag(int variableStarIndex);
+
 	//! Load all the stars from the files.
 	void load_data(const InitParser &conf);
 
 	void drawStarName( Projector* prj );
-	int getHPFromStarName(const std::string& name) const;
 
 	ALinearFader names_fader;
 
@@ -478,6 +512,7 @@ private:
 	float twinkleAmount;
 	bool gravityLabel;
 	bool isolateSelected=false;
+	std::vector<VariableStar> variableStars;
 	std::map<std::string, bool> selected_star;
 	std::vector<int> selected_stars;
 
@@ -504,6 +539,7 @@ private:
 
 	static std::map<int, std::string> sci_names_map_i18n;
 	static std::map<std::string, int> sci_names_index_i18n;
+
 
 	static double current_JDay;
 

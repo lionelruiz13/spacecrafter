@@ -88,6 +88,10 @@ public:
 		internalNav=a;
 	}
 
+	void setInternalAstronomical (bool a) {
+		internalAstronomical = a;
+	}
+
 	static void createShader();
 	static void destroyShader();
 
@@ -98,7 +102,7 @@ public:
 protected:
 	// Create and precompute positions of a SkyGrid
 	SkyGrid(unsigned int _nb_meridian = 24, unsigned int _nb_parallel = 17,
-	        double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 50);
+	        double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 144);
 
 	void createBuffer();
 	//! Record draw command
@@ -140,6 +144,7 @@ private:
 	Vec3f** alt_points;
 	Vec3f** azi_points;
 	bool internalNav;
+	bool internalAstronomical;
 	LinearFader fader;
 };
 
@@ -147,7 +152,7 @@ private:
 class GridEquatorial: public SkyGrid {
 public:
 	GridEquatorial(unsigned int _nb_meridian = 24, unsigned int _nb_parallel = 17,
-	               double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 50)
+	               double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 144)
 		:SkyGrid(_nb_meridian, _nb_parallel, _radius, _nb_alt_segment, _nb_azi_segment) {
 		gtype = EQUATORIAL;
 		proj_func = &Projector::projectEarthEqu;
@@ -158,7 +163,7 @@ public:
 class GridEcliptic: public SkyGrid {
 public:
 	GridEcliptic(unsigned int _nb_meridian = 24, unsigned int _nb_parallel = 17,
-	             double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 50)
+	             double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 144)
 		:SkyGrid(_nb_meridian, _nb_parallel, _radius, _nb_alt_segment, _nb_azi_segment) {
 		gtype = ECLIPTIC;
 		proj_func = &Projector::projectEarthEcliptic;
@@ -169,7 +174,7 @@ public:
 class GridAltAzimutal: public SkyGrid {
 public:
 	GridAltAzimutal(unsigned int _nb_meridian = 24, unsigned int _nb_parallel = 17,
-	                double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 50)
+	                double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 144)
 		:SkyGrid(_nb_meridian, _nb_parallel, _radius, _nb_alt_segment, _nb_azi_segment) {
 		gtype = ALTAZIMUTAL;
 		proj_func = &Projector::projectLocal;
@@ -180,7 +185,7 @@ public:
 class GridGalactic: public SkyGrid {
 public:
 	GridGalactic(unsigned int _nb_meridian = 24, unsigned int _nb_parallel = 17,
-	             double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 50)
+	             double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 144)
 		:SkyGrid(_nb_meridian, _nb_parallel, _radius, _nb_alt_segment, _nb_azi_segment) {
 		gtype = GALACTIC;
 		proj_func = &Projector::projectJ2000Galactic;

@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2018 Immersive Adventure
+ * Copyright (C) 2021 Jérémy Calvo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,22 +22,32 @@
  *
  */
 
-#ifndef _ROTATION_ELEMENTS_HPP_
-#define _ROTATION_ELEMENTS_HPP_
+#ifndef _IN_SANDBOX_MODULE_
+#define _IN_SANDBOX_MODULE_
 
-// epoch J2000: 12 UT on 1 Jan 2000
-#define J2000 2451545.0
+#include "executorModule.hpp"
+#include "coreModule/core.hpp"
+#include "mediaModule/media.hpp"
 
-// Class used to store orbital elements
-struct RotationElements {
-	float period = 1.;        // rotation period
-	float offset = 0.;        // rotation at epoch
-	double epoch = J2000;
-	float obliquity = 0.;     // tilt of rotation axis w.r.t. ecliptic
-	float ascendingNode = 0.; // long. of ascending node of equator on the ecliptic
-	float precessionRate = 0.; // rate of precession of rotation axis in rads/day
-	double sidereal_period = 0.; // sidereal period (Body year in earth days)
-	float axialTilt = 0.; // Only used for tropic lines on planets
+class InSandBoxModule : public ExecutorModule {
+public:
+
+    InSandBoxModule(std::shared_ptr<Core> _core, Observer *_observer);
+    ~InSandBoxModule() {};
+
+    virtual void onEnter() override;
+	virtual void onExit() override;
+	virtual void update(int delta_time) override;
+	virtual void draw(int delta_time) override;
+    bool testValidAltitude(double altitude) override;
+
+    void defineDownModeAlt(ExecutorModule *_downModeAlt) {
+		downModeAlt = _downModeAlt;
+	}
+private:
+    std::shared_ptr<Core> core;
+    Observer *observer;
+    ExecutorModule *downModeAlt = nullptr;
 };
 
-#endif // _ROTATION_ELEMENTS_HPP_
+#endif

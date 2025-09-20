@@ -158,8 +158,8 @@ void AppDraw::initSplash()
 {
     Context &context = *Context::instance;
     VulkanMgr &vkmgr = *VulkanMgr::instance;
-    if (vkmgr.getSwapchainView().empty()) {
-        cLog::get()->write("No swapchain available, skip splash screen.", LOG_TYPE::L_DEBUG);
+    if (vkmgr.getSwapchain() == VK_NULL_HANDLE) {
+        cLog::get()->write("No drawable swapchain, skip splash screen.", LOG_TYPE::L_DEBUG);
         return;
     }
     if (!layout) {
@@ -169,8 +169,11 @@ void AppDraw::initSplash()
         layout->build();
 
         // This is not the main SpaceCrafter loop, don't invoke s_texture mechanics
-        texture = std::make_unique<Texture>(vkmgr, *context.stagingMgr, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, std::string("splash/spacecrafter.png"));
-        texture->init();
+        texture = std::make_unique<Texture>(vkmgr, TextureInfo{
+            .mgr = context.stagingMgr.get(),
+            .usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+            .name = "splash/spacecrafter.png"
+        });
 
         pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, layout.get());
         pipeline->setBlendMode(BLEND_NONE);
@@ -186,8 +189,14 @@ void AppDraw::initSplash()
     set.update();
 
     context.lastFrameIdx = context.frameIdx;
-    context.waitFrameSync[0].semaphore = context.semaphores[context.lastFrameIdx];
+    context.waitFrameSync[0].semaphore = context.semaphores[(context.lastFrameIdx == UINT32_MAX) ? 0 : context.lastFrameIdx];
     vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), UINT32_MAX, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx);
+    if (context.lastFrameIdx == UINT32_MAX) {
+        context.lastFrameIdx = (context.frameIdx+2U)%3U; // Arbitrarily pick one of the two non-acquired-frame as the last frame.
+        context.transfer = context.transfers[context.lastFrameIdx].get();
+        context.semaphores[0] = context.semaphores[context.lastFrameIdx];
+        context.semaphores[context.lastFrameIdx] = context.waitFrameSync[0].semaphore;
+    }
     vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, UINT32_MAX);
     vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 

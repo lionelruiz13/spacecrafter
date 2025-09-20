@@ -44,6 +44,7 @@
 class Projector;
 class Navigator;
 class Subtitle;
+class InitParser;
 
 enum class AudioFunction : char {
 	AF_MUSICLOAD,
@@ -87,7 +88,7 @@ enum class V_STATE: char { V_NONE, V_PAUSE, V_PLAY };
 class Media : public NoCopy {
 
 public:
-	Media();
+	Media(InitParser &conf);
 	~Media();
 
 	////////////////////////////////////////////////////////////////////////////
@@ -159,42 +160,58 @@ public:
 	void audioMusicLoad(const std::string &filename, bool loop);
 
 	void audioMusicPlay() {
+		if (audioRedirected)
+			return;
 		audio->musicPlay();
 	}
 
 	void audioMusicMute() {
+		if (audioRedirected)
+			return;
 		if (!audioNoPause)
 			audio->musicMute();
 	}
 
 	void audioMusicPause() {
+		if (audioRedirected)
+			return;
 		if (!audioNoPause)
 			audio->musicPause();
 	}
 
 	void audioMusicResume() {
+		if (audioRedirected)
+			return;
 		audio->musicResume();
 	}
 
 	void audioMusicRewind() {
+		if (audioRedirected)
+			return;
 		audio->musicRewind();
 	}
 
 	void audioMusicHalt() {
-		if (m_videoState.state != V_STATE::V_PLAY) {
-			audio->musicHalt();
-		}
+		if (audioRedirected)
+			return;
+		audio->musicHalt();
 	}
 
 	void audioMusicSync() {
+		if (audioRedirected)
+			return;
 		audio->musicSync();
 	}
 
 	void audioMusicDrop() {
+		if (audioRedirected)
+			return;
 		audio->musicDrop();
 	}
 
 	void audioMusicJump(float deltaTime) {
+		if (audioRedirected)
+			return;
 		audio->musicJump(deltaTime);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -344,11 +361,7 @@ public:
 	VID_TYPE strToVideoType(const std::string& value);
 
 	void setLoop(bool _loop) {
-		loop = _loop;
-	}
-
-	bool getLoop() const {
-		return loop;
+		player->setLoop(_loop);
 	}
 
 	bool getDualViewport() {
@@ -369,10 +382,9 @@ public:
 
 	void playerPause() {
 		player->pauseCurrentVideo();
-		audio->musicPause();
 	}
 
-	bool playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
+	bool playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload);
 
 	void playerStop(bool newVideo);
 
@@ -382,8 +394,12 @@ public:
 
 	void playerInvertflow();
 
-	bool playerIsVideoPlayed() {
+	bool playerIsVideoPlayed() const {
 		return player->isVideoPlayed();
+	}
+
+	bool isVideoCacheFull() const {
+		return player->isVideoCacheFull();
 	}
 
 	void playerRecordUpdate(VkCommandBuffer cmd) {
@@ -392,8 +408,15 @@ public:
 	void playerRecordUpdateDependency(VkCommandBuffer cmd) {
 		player->recordUpdateDependency(cmd);
 	}
+
+	void setRenderFramerate(int framerate) {
+		player->setRenderFramerate(framerate);
+	}
+
+	//! Indicate that the player stopped playing video
+	void playerStopped();
 private:
-	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
+	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload, bool withMusic);
 
 	std::unique_ptr<Audio> audio = nullptr;
 	std::unique_ptr<ImageMgr> imageMgr = nullptr;
@@ -407,11 +430,10 @@ private:
 	std::string skyLanguage;
 	bool mplayerEnable;
 	bool audioNoPause=false;
-	bool loop=false;
 	bool dualViewport=false;
+	bool audioRedirected=false;
 
 	std::string imageVideoName;
-	bool audioNotInVideo;
 
 	struct VideoState {
 		V_TYPE type;

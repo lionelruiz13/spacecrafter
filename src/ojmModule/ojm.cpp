@@ -221,7 +221,7 @@ void Ojm::compileCache()
 				}
 			}
 			file.write((const char*) data, header.vertexCount * (8 * sizeof(float)));
-			delete data;
+			delete[] data;
 			file.write((const char*) s.indices.data(), s.indices.size() * sizeof(int));
 			header.pushAttr = false;
 		}

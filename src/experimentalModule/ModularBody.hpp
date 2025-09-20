@@ -7,10 +7,12 @@
 #include "coreModule/time_mgr.hpp"
 #include "bodyModule/rotation_elements.hpp"
 #include "bodyModule/orbit.hpp"
+#include "EnvironmentModule.hpp"
 #include "AsyncHub.hpp"
 #include "EntityCore/Executor/ASmooth.hpp"
 #include <memory>
 #include <list>
+#include <vector>
 
 #define TM(num, name) auto tex##num = name.getBigTexture()
 #define TB(num) ((tex##num != nullptr) << num)
@@ -63,15 +65,13 @@ struct ModularBodyCreateInfo {
     Vec3f haloColor;
     float albedo;
     float radius;
-    float oblateness; // Not universal
+    float oblateness; // Not universal - only for pure spherical body modules (so, single-shape body ?) - may provide immense optimisation and quality
     float solLocalDay;
-    Vec3f haloColor;
     // New
     Vec3f shadowAbsorbtion;
     float brightness;
 
     // Deprecated
-    float innerRadius; // Deprecated
     BodyType bodyType; // Deprecated
     bool isHaloEnabled; // May deprecate
     bool altitudeRelativeToRadius; // Deprecated
@@ -154,16 +154,7 @@ enum class BodyRelation {
     INNER,
 };
 
-enum BodyModuleType {
-    BMT_BODY,
-    BMT_SURFACE,
-    BMT_RING,
-    BMT_ORBIT,
-    BMT_TRAIL,
-    BMT_HINT,
-    BMT_ATMOSPHERE,
-    BMT_INSTANCE, // Not a type
-};
+enum class BodyModuleType : unsigned char;
 
 class ModularBody {
     // For pointer count and selection modification
@@ -588,6 +579,14 @@ public:
     inline float getLightHalfAngle() const {
         return atan(lightSize/(lightPosition-mat.getTranslation()).length());
     }
+    double getSiderealDay(void) const {
+        return re.period;
+    }
+    double getSiderealTime(double jd) const {
+        if (bodyType==BodyType::EARTH)
+            return get_apparent_sidereal_time(jd);
+    	return fmod((jd - re.epoch) / re.period * 360. + re.offset, 360);
+    }
 private:
     // Deduce which modules are to be bound to this body from the parameters
     std::vector<BodyModuleType> deduceBodyModuleList(std::map<std::string, std::string> &param);
@@ -651,17 +650,17 @@ private:
     std::vector<std::unique_ptr<BodyModule>> innerComponents;
     std::vector<std::unique_ptr<EnvironmentModule>> groundedEnvironment;
     std::vector<std::unique_ptr<EnvironmentModule>> environment;
-    std::vector<std::unique_ptr<ShadowProjection>> shadows;
+    // std::vector<std::unique_ptr<ShadowProjection>> shadows;
 
     // Resource manager only - may put out of this class
-    std::unique_ptr<BodyModule> genericComponents[BMT_INSTANCE];
+    std::unique_ptr<BodyModule> genericComponents[static_cast<uint8_t>(DedicatedBodyModuleSlot::NB_SLOTS)];
     std::map<std::string_view, std::unique_ptr<BodyModule>> extraComponents;
 
     // Deprecated
     std::list<ModularBody> childs; // Drawn if screenSize >= 10%
     std::list<std::shared_ptr<BodyModule>> farComponents; // 2D behind body, SKIP when screenSize > 20%, update NEVER called
-    std::list<std::shared_ptr<BodyModule>> nearComponents; // Drawn if screenSize >= 0.15% and distance > innerRadius
-    std::list<std::shared_ptr<BodyModule>> inComponents; // Draw if distance <= innerRadius
+    std::list<std::shared_ptr<BodyModule>> nearComponents; // Drawn if screenSize >= 0.15% and distance > radius
+    std::list<std::shared_ptr<BodyModule>> inComponents; // Draw if distance <= radius
     // std::list<std::shared_ptr<BodyOrbitModule>> orbitalComponents; // Components drawing lines between bodies
     // std::list<std::shared_ptr<EnvironmentModule>> environmentComponents; // Component defining the environment
 
@@ -695,7 +694,6 @@ private:
     // Navigation and visibility
     ASmooth<AsyncHub, float, 5.f> scaling;
     float radius;
-    float innerRadius; // [deprecated] Radius of the area in which inComponents are drawn
     float boundingRadius; // Smallest radius including all nearComponents
     float subsystemRadius; // Radius including all child bodies
     float areaOfInfluence; // Area under the influence of this body

@@ -38,6 +38,7 @@ Skybright::Skybright()
 void Skybright::setDate(int year, int month, float moon_phase)
 {
 	mag_moon = -12.73f + 1.4896903f * fabs(moon_phase) + 0.04310727f * pow(moon_phase, 4.f);
+	ml_brightness = moon_phase * m_brightness;
 
 	RA = (month - 3.f) * 0.52359878f;
 
@@ -75,7 +76,7 @@ void Skybright::setSunMoon(float cos_dist_moon_zenith, float cos_dist_sun_zenith
     if (cos_dist_moon_zenith<0)
 		b_moon_term1 = pow10(-0.4f * (mag_moon + 54.32f)) * 0;
 	else
-		b_moon_term1 = (pow10(-0.4f * (mag_moon + 54.32f))) * cos_dist_moon_zenith * m_brightness;
+		b_moon_term1 = (pow10(-0.4f * (mag_moon + 54.32f))) * cos_dist_moon_zenith * ml_brightness;
 //else
 
 	// Moon should have no impact if below the horizon
@@ -145,7 +146,7 @@ float Skybright::getLuminance(float cos_dist_moon, float cos_dist_sun, float cos
 
 	// Total sky brightness
 	//b_daylight>b_twilight ? b_total = b_night + b_twilight + b_moon : b_total = b_night + b_daylight + b_moon;
-	b_daylight>b_twilight ? b_total = b_night + b_twilight + b_moon * m_brightness : b_total = b_night + b_daylight + b_moon * m_brightness;
+	b_daylight>b_twilight ? b_total = b_night + b_twilight + b_moon * ml_brightness : b_total = b_night + b_daylight + b_moon * ml_brightness;
 	//std::cout << "Brightness MOON : " << m_brightness << std::endl;
 	return (b_total<0.f) ? 0.f : b_total/1.11E-15 * 1E-5/M_PI; // cd/m^2
 

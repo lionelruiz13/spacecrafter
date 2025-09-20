@@ -218,13 +218,31 @@ std::unique_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
 	const double ascending_node = Utility::strToDouble(params["orbit_ascendingnode"])*(M_PI/180.0);
 	const double arg_of_pericenter = Utility::strToDouble(params["orbit_argofpericenter"])*(M_PI/180.0);
 
-	return std::make_unique<CometOrbit>(
-	           pericenter_distance, eccentricity,
-	           inclination, ascending_node,
-	           arg_of_pericenter, time_at_pericenter,
-	           mean_motion, parent_rot_obliquity,
-	           parent_rot_asc_node, parent_rot_J2000_longitude);
-
+	if (eccentricity == 1.0) {
+		return std::make_unique<ParCometOrbit>(
+			pericenter_distance, eccentricity,
+			inclination, ascending_node,
+			arg_of_pericenter, time_at_pericenter,
+			mean_motion, parent_rot_obliquity,
+			parent_rot_asc_node, parent_rot_J2000_longitude
+		);
+	} else if (eccentricity < 1.0) {
+		return std::make_unique<EllCometOrbit>(
+			pericenter_distance, eccentricity,
+			inclination, ascending_node,
+			arg_of_pericenter, time_at_pericenter,
+			mean_motion, parent_rot_obliquity,
+			parent_rot_asc_node, parent_rot_J2000_longitude
+		);
+	} else {
+		return std::make_unique<HypCometOrbit>(
+			pericenter_distance, eccentricity,
+			inclination, ascending_node,
+			arg_of_pericenter, time_at_pericenter,
+			mean_motion, parent_rot_obliquity,
+			parent_rot_asc_node, parent_rot_J2000_longitude
+		);
+	}
 }
 
 OrbitCreatorSpecial::OrbitCreatorSpecial(std::shared_ptr<OrbitCreator> next) :

@@ -116,6 +116,16 @@ double CoreLink::getDateMinute() const
 	return minute;
 }
 
+double CoreLink::getDateSecond() const
+{
+	double jd = core->timeMgr->getJDay();
+	int year,month,day,hour,minute;
+	double second;
+
+	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
+	return second;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Skyline et Skygrid---------------------------
 ////////////////////////////////////////////////////////////////////////////////
@@ -222,7 +232,6 @@ void CoreLink::milkyWayChangeStateWithoutIntensity(const std::string& mdir) {
 	core->milky_way->changeMilkywayStateWithoutIntensity(mdir);
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // Meteors---------------------------
 ////////////////////////////////////////////////////////////////////////////////
@@ -294,6 +303,12 @@ void CoreLink::skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string&
 
 void CoreLink::skyDisplayMgrLoadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr) {
 	core->skyDisplayMgr->loadString(nameObj,dataStr);
+}
+
+bool CoreLink::skyDisplayMgrCheckDraw(){
+	if (core->getSelectedPlanetEnglishName() == core->getHomePlanetEnglishName())
+		return (true);
+	return (false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -433,6 +448,16 @@ void CoreLink::moonSetBrightness(double f) {
 //! Set default moon brightness
 void CoreLink::moonSetDefaultBrightness() {
 	core->atmosphere->setDefaultMoonBrightness();
+}
+
+//! Set sun brightness
+void CoreLink::sunSetBrightness(double f) {
+	core->ssystemFactory->setSunBrightness(f);
+}
+
+//! Set default sun brightness
+void CoreLink::sunSetDefaultBrightness() {
+	core->ssystemFactory->setDefaultSunBrightness();
 }
 
 //! Set flag for activating atmospheric refraction correction
@@ -649,6 +674,14 @@ float CoreLink::starGetTwinkleAmount() const {
 	return core->hip_stars->getTwinkleAmount();
 }
 
+float CoreLink::getMag(int hip) {
+	return core->hip_stars->getMag(hip);
+}
+
+float CoreLink::getBaseMag(int hip) {
+	return core->hip_stars->getBaseMag(hip);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // StarNavigator---------------------------
 ////////////////////////////////////////////////////////////////////////////////
@@ -670,6 +703,20 @@ void CoreLink::starNavigatorLoadOther(const std::string &fileName){
 
 void CoreLink::starNavigatorSave(const std::string &fileName, bool binaryMode){
 	core->starNav->saveData(fileName, binaryMode);
+}
+
+void CoreLink::starNavigatorHideStar(int hip){
+	if (!isDrawingHipStarMgr)
+		core->starNav->hideStar(hip);
+}
+
+void CoreLink::starNavigatorShowStar(int hip){
+	if (!isDrawingHipStarMgr)
+		core->starNav->showStar(hip);
+}
+
+void CoreLink::starNavigatorShowAllStar(){
+	core->starNav->showAllStar();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -934,6 +981,10 @@ Vec3f CoreLink::constellationGetColorLine() const {
 
 void CoreLink::constellationSetColorLine(const Vec3f& v) {
 	core->asterisms->setLineColor(v);
+}
+
+void CoreLink::constellationSetColor(const Vec3f& v){
+	core->starLines->setColor(v);
 }
 
 Vec3f CoreLink::constellationGetColorNames() const {
@@ -1330,17 +1381,4 @@ void CoreLink::rotateLandscape(double rotation) {
 
 std::string CoreLink::landscapeGetName() {
  	return core->landscape->getName();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Script-------------------------
-////////////////////////////////////////////////////////////////////////////////
-
-//! Set flag for skip pause in script
-void CoreLink::scriptSetFlagScriptPause(bool b) {
-	core->script->setFlagScriptPause(b);
-}
-//! Get flag for skip pause in script
-bool CoreLink::scriptGetFlagScriptPause() const {
-	return core->script->getFlagScriptPause();
 }

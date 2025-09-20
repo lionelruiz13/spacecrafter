@@ -27,6 +27,7 @@
 #include <list>
 #include <errno.h>
 #include <string.h>
+#include <math.h>
 
 #include <iostream>
 
@@ -52,6 +53,8 @@
 #include "EntityCore/EntityCore.hpp"
 #include "EntityCore/Core/RenderMgr.hpp"
 #include "tools/context.hpp"
+#include "coreModule/coreLink.hpp"
+#include "appModule/space_date.hpp"
 
 static BigStarCatalog::StringArray spectral_array;
 static BigStarCatalog::StringArray component_array;
@@ -410,6 +413,7 @@ void HipStarMgr::init(const InitParser &conf)
 {
 	load_data(conf);
 	InitColorTableFromConfigFile(conf);
+	readFileVariableStar();
 	// Load star texture no mipmap:
 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
 	m_setStars->bindTexture(starTexture->getTexture(), 0);
@@ -603,24 +607,40 @@ void HipStarMgr::loadSciNames(const std::string& sciNameFile)
 	fclose(snFile);
 }
 
-int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, const float rc_mag[2], const Vec3f &color)
+int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, float radius, float brightness, const Vec3f &color, int variableStarIndex)
 {
-	if (rc_mag[0]<=0.f || rc_mag[1]<=0.f || nbStarsToDraw[drawIdx] >= NBR_MAX_STARS) return -1;
+	if (nbStarsToDraw[drawIdx] >= NBR_MAX_STARS)
+		return -1;
 
-	float mag = 2.f*rc_mag[0];
+	if (radius<=0.f || brightness<=0.f) {
+		return -1;
+	}
+
+	if (variableStarIndex) {
+		if (mag_converter->computeRCMag(getVariableStarMag(variableStarIndex), radius, brightness) < 0) {
+			return 0;
+		}
+	}
 
 	// Roll off star size limit as fov decreases to match planet halo scale
 	RangeMap<float> rmap(180, 1, -starSizeLimit, -(starSizeLimit + objectSizeLimit));
 	float rolloff = -rmap.Map(prj->getFov());
-	if( mag > rolloff )
-		mag = rolloff;
+	radius *= 2.f;
+	if( radius > rolloff )
+		radius = rolloff;
 
 	*(vertexData++) = XY[0];
 	*(vertexData++) = XY[1];
-	*(vertexData++) = color[0]*rc_mag[1]*(1.-twinkle_amount*rand()/RAND_MAX);
-	*(vertexData++) = color[1]*rc_mag[1]*(1.-twinkle_amount*rand()/RAND_MAX);
-	*(vertexData++) = color[2]*rc_mag[1]*(1.-twinkle_amount*rand()/RAND_MAX);
-	*(vertexData++) = mag;
+	if (twinkle_amount > 0) {
+		*(vertexData++) = color[0]*brightness*(1.-twinkle_amount*rand()/RAND_MAX);
+		*(vertexData++) = color[1]*brightness*(1.-twinkle_amount*rand()/RAND_MAX);
+		*(vertexData++) = color[2]*brightness*(1.-twinkle_amount*rand()/RAND_MAX);
+	} else {
+		*(vertexData++) = color[0]*brightness;
+		*(vertexData++) = color[1]*brightness;
+		*(vertexData++) = color[2]*brightness;
+	}
+	*(vertexData++) = radius;
 
 	nbStarsToDraw[drawIdx] += 1;
 
@@ -650,10 +670,56 @@ void MagConverter::setFov(float fov)
 
 void MagConverter::setEye(const ToneReproductor *eye)
 {
+	this->eye = eye;
 	min_rmag
 	    = std::sqrt(eye->adaptLuminance(
 	                    std::exp(-0.92103f*(max_scaled_60deg_mag + mag_shift + 12.12331f))
 	                    * (108064.73f / 3600.f))) * 30.f;
+}
+
+int MagConverter::computeRCMag(float mag, float &radius, float &brightness) const
+{
+	if (mag > max_mag) {
+		radius = brightness = 0.f;
+		return -1;
+	}
+
+	// rmag:
+	radius = std::sqrt(
+	                eye->adaptLuminance(
+	                    std::exp(-0.92103f*(mag + mag_shift + 12.12331f)) * fov_factor))
+	            * 30.f;
+
+	if (radius < min_rmag) {
+		radius = brightness = 0.f;
+		return -1;
+	}
+
+	// if size of star is too small (blink) we put its size to 1.2 --> no more blink
+	// And we compensate the difference of brighteness with cmag
+	if (radius<1.2f) {
+		if (radius * mgr.getScale() < 0.1f) {
+			radius = brightness = 0.f;
+			return -1;
+		}
+		brightness = radius * radius / 1.44f;
+		if (brightness * mgr.getMagScale() < 0.1f) {
+			radius = brightness = 0.f;
+			return -1;
+		}
+		radius = 1.2f;
+	} else {
+		// cmag:
+		brightness = 1.f;
+		if (radius > mgr.getStarSizeLimit()) {
+			radius = mgr.getStarSizeLimit();
+		}
+	}
+	// Global scaling
+	radius *= mgr.getScale();
+	brightness *= mgr.getMagScale();
+
+	return 0;
 }
 
 int MagConverter::computeRCMag(float mag, const ToneReproductor *eye, float rc_mag[2]) const
@@ -723,8 +789,7 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 	mag_converter->setEye(eye);
 
 	// Set temporary static variable for optimization
-	if (flagStarTwinkle) twinkle_amount = twinkleAmount*twinkle_param;
-	else twinkle_amount = 0;
+	twinkle_amount = (flagStarTwinkle) ? twinkleAmount*twinkle_param : 0;
 	const float names_brightness = fader * names_fader;
 
 	float rcmag_table[2*256];
@@ -732,29 +797,33 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
 		const float mag_min = 0.001f*it->second->mag_min;
 
-		const float k = (0.001f*it->second->mag_range)/it->second->mag_steps;
-		for (int i=it->second->mag_steps-1; i>=0; i--) {
-			const float mag = mag_min+k*i;
-			if (mag_converter->computeRCMag(mag, eye, rcmag_table + 2*i) < 0) {
-				if (i==0) {
-					return 0.; //goto exit_loop;
-				}
-			}
-			rcmag_table[2*i] *= fader;
+		const float k = static_cast<float>(it->second->mag_range)/(it->second->mag_steps*1000);
+		if (mag_converter->computeRCMag(mag_min, eye, rcmag_table) < 0)
+			return 0.; //goto exit_loop;
+		rcmag_table[0] *= fader;
+
+		int i = 0;
+		const int end = it->second->mag_steps * 2;
+		float mag = mag_min;
+		while ((i+=2) < end) {
+			mag += k;
+			mag_converter->computeRCMag(mag, eye, rcmag_table + i);
 		}
 		last_max_search_level = it->first;
 
 		unsigned int max_mag_star_name = 0;
 		if (names_fader.isNonZero()) {
 			int x = (int)((maxMagStarName-mag_min)/k);
-			if (x > 0) max_mag_star_name = x;
+			if (x > 0)
+				max_mag_star_name = x;
 		}
+		const bool onlySelected = isolateSelected && !selected_star.empty();
 		int zone=0;
 		for (GeodesicSearchInsideIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty());
+			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, onlySelected);
 		}
 		for (GeodesicSearchBorderIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty());
+			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, onlySelected);
 		}
 
 	}
@@ -767,7 +836,7 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 		return 0.;
 
 	previousSync.emplace(starTrace ? STAR_STORE : STAR_CLEAR);
-	previousSync.emplace(starTrace ? STAR_STORE : STAR_CLEAR);
+	//previousSync.emplace(starTrace ? STAR_STORE : STAR_CLEAR);
 	Context &context = *Context::instance;
 
 	// 6 * sizeof(float) is the vertex stride
@@ -1048,7 +1117,7 @@ int HipStarMgr::getHPFromStarName(const std::string& name) const {
 	transform(objw.begin(), objw.end(), objw.begin(), ::toupper);
 	// Search by HP number if it's an HP formated number
 	// Please help, if you know a better way to do this:
-	if (name.length() >= 2 && name[0]=='H' && name[1]=='P') {
+	if (name.length() >= 2) { //&& name[0]=='H' && name[1]=='P') {
 		bool hp_ok = false;
 		std::string::size_type i=2;
 		// ignore spaces
@@ -1122,4 +1191,200 @@ std::vector<std::string> HipStarMgr::listMatchingObjectsI18n( const std::string&
 	sort(result.begin(), result.end());
 
 	return result;
+}
+
+void HipStarMgr::hideStar(uint32_t hip)
+{
+	if (hip <= NR_OF_HIP) {
+		if (BigStarCatalog::Star1 *const s = hip_index[hip].s)
+			s->setHidden();
+	}
+	CoreLink::instance->starNavigatorHideStar(hip);
+}
+
+void HipStarMgr::showStar(uint32_t hip)
+{
+	if (hip <= NR_OF_HIP) {
+		if (BigStarCatalog::Star1 *const s = hip_index[hip].s)
+			s->clearHidden();
+	}
+	CoreLink::instance->starNavigatorShowStar(hip);
+}
+
+void HipStarMgr::showAllStar(void)
+{
+	for (uint32_t hip = 0; hip <= NR_OF_HIP; ++hip) {
+		if (BigStarCatalog::Star1 *const s = hip_index[hip].s) {
+			s->clearHidden();
+		}
+	}
+	CoreLink::instance->starNavigatorShowAllStar();
+}
+
+float HipStarMgr::getVariableStarMag(int variableStarIndex)
+{
+	VariableStar &vstar = variableStars[variableStarIndex-1];
+
+	for (VariableStarCurve &curve : vstar.curves) {
+		float result = fmod(current_JDay - curve.refJDay, curve.period);
+		if (result < curve.lowPeriod) {
+			if (result < curve.downPeriod) {
+				return vstar.magMax + (curve.magMin-vstar.magMax) * result / curve.downPeriod;
+			}
+			result += curve.upPeriod - curve.lowPeriod;
+			if (result > 0) {
+				return curve.magMin + (vstar.magMax-curve.magMin) * result / curve.upPeriod;
+			}
+			return curve.magMin;
+		}
+	}
+	return vstar.magMax;
+}
+
+void HipStarMgr::addVariableStar(VariableStar &&star)
+{
+	if (variableStars.size() >= 0x7f) {
+		cLog::get()->write("VariableStar error, limit of 127 variable stars reached", LOG_TYPE::L_ERROR);
+		return;
+	}
+	if (int index = hip_index[star.hip].s->getVariableStarIndex()) {
+		variableStars[index-1].curves.push_back(star.curves[0]);
+	} else {
+		hip_index[star.hip].s->setVariableStarIndex(variableStars.size()+1);
+		variableStars.push_back(std::move(star));
+	}
+}
+
+void HipStarMgr::removeVariableStar(uint32_t hip)
+{
+	if (int idx = hip_index[hip].s->getVariableStarIndex()) {
+		hip_index[hip].s->setVariableStarIndex(0);
+		while (idx < static_cast<int>(variableStars.size())) {
+			auto &vstar = variableStars[idx];
+			hip_index[vstar.hip].s->setVariableStarIndex(idx);
+			variableStars[idx-1] = vstar;
+			++idx;
+		}
+		variableStars.pop_back();
+	}
+}
+
+void HipStarMgr::removeAllVariableStar()
+{
+	for (auto &item : variableStars) {
+		hip_index[item.hip].s->setVariableStarIndex(0);
+	}
+	variableStars.clear();
+}
+
+float HipStarMgr::getBaseMag(int hip)
+{
+	if (const BigStarCatalog::Star1 *const s = hip_index[hip].s) {
+		const BigStarCatalog::SpecialZoneArray<BigStarCatalog::Star1> *const a = hip_index[hip].a;
+		return 0.001f*(a->mag_min + s->getMag()*(a->mag_range)/a->mag_steps);
+	}
+	return -1;
+}
+
+float HipStarMgr::getMag(int hip)
+{
+	if (const BigStarCatalog::Star1 *const s = hip_index[hip].s) {
+		const BigStarCatalog::SpecialZoneArray<BigStarCatalog::Star1> *const a = hip_index[hip].a;
+		if (int idx = s->getVariableStarIndex()) {
+			return getVariableStarMag(idx);
+		} else {
+			return 0.001f*(a->mag_min + s->getMag()*(a->mag_range)/a->mag_steps);
+		}
+	}
+	return -1;
+}
+
+double HipStarMgr::durationToJulianDay(std::string duration) const
+{
+	int hour = 0, minute = 0, seconde = 0;
+	double day = 0;
+	std::string tmp;
+	for (int i = 0; duration[i] != '\0'; i++){
+		if ((duration[i] <= '9' && duration[i] >= '0') || duration[i] == '.'){
+			tmp += duration[i];
+			continue;
+		}
+		switch (duration[i]){
+			case 'd':
+				day = std::stod(tmp);
+				break;
+			case 'h':
+				hour = std::stod(tmp);
+				break;
+			case 'm':
+				minute = std::stod(tmp);
+				break;
+			case 's':
+				seconde = std::stod(tmp);
+				break;
+			default:{
+				return -1;
+			}
+		}
+		tmp.clear();
+	}
+	double time = day, dayfrac = hour / 24.0;
+	if (dayfrac < 0.0) {
+		dayfrac += 1.0;
+		--time;
+	}
+	double jtime = dayfrac + (minute + seconde / 60.0) / (60.0 * 24.0);
+	return (jtime + time);
+}
+
+void HipStarMgr::readFileVariableStar()
+{
+	std::string fileName = "variable_stars.txt";
+	std::ifstream fileIn(fileName);
+
+	if (!fileIn.is_open()) {
+		cLog::get()->write("VariableStar error opening "+fileName + " - Feature disabled", LOG_TYPE::L_ERROR);
+		return;
+	}
+	removeAllVariableStar();
+
+	std::string record, period, lowPeriod, downPeriod, upPeriod;
+	uint32_t hip;
+	double refJDay, magMin;
+
+	while (!fileIn.eof() && std::getline(fileIn, record)) {
+		if (record[0] == '#')
+			continue;
+		std::istringstream istr(record);
+		if (!(istr >> hip >> refJDay >> period >> lowPeriod >> downPeriod >> upPeriod >> magMin)) {
+			cLog::get()->write("VariableStar error parsing "+record, LOG_TYPE::L_ERROR);
+			return;
+		}
+		// lower reach floor upper reach top
+		// factor variation : time to low, when to up, time to up
+		VariableStar star{
+			.hip=hip,
+			.magMax=getBaseMag(hip),
+			.curves={VariableStarCurve{
+				.period=durationToJulianDay(period),
+				.refJDay=refJDay,
+				.lowPeriod=static_cast<float>(durationToJulianDay(lowPeriod)),
+				.downPeriod=static_cast<float>(durationToJulianDay(downPeriod)),
+				.upPeriod=static_cast<float>(durationToJulianDay(upPeriod)),
+				.magMin=static_cast<float>(magMin),
+			}}
+		};
+		if (star.curves[0].period == -1
+		 || star.curves[0].lowPeriod == -1
+		 || star.curves[0].downPeriod == -1
+		 || star.curves[0].upPeriod == -1
+		 || hip > NR_OF_HIP
+		 || hip_index[hip].s == nullptr
+		) {
+			cLog::get()->write("VariableStar error parsing "+record, LOG_TYPE::L_ERROR);
+			return;
+		}
+		addVariableStar(std::move(star));
+	}
+	fileIn.close();
 }

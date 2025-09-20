@@ -68,14 +68,7 @@ public:
 
 	void setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value);
 	void setTcp(ServerSocket* _tcp);
-	inline bool isInterrupted() {
-		if (waitPriority != LoadPriority::DONE) {
-			if (AsyncLoaderMgr::instance->isTaskWithPriority(waitPriority))
-				return true;
-			waitPriority = LoadPriority::DONE;
-		}
-		return false;
-	}
+	bool isInterrupted();
 
 protected:
 	//all different command
@@ -96,6 +89,7 @@ protected:
 	int commandDomemasters();
 	int commandDso();
 	int commandDso3D();
+	int commandDso2D();
 	//int commandExternalMplayer();
 	int commandExternalViewer();
 	int commandFont();
@@ -173,6 +167,7 @@ private:
 	int recordable;
 	bool swapCommand;					// boolean which indicates if the instruction must be executed or not
 	bool unskippable = false;			// set to true to force execution of the next command
+	bool waitVideoCache = false;
 	LoadPriority waitPriority = LoadPriority::NOW;
 	std::unique_ptr<IfSwap> ifSwap; 	// management of multiple if statements
 	std::string debug_message;			//!< for 'executeCommand' error details
