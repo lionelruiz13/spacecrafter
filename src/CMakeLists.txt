@@ -14,3 +14,25 @@ file(GLOB CARRIED_DLL ${PROJECT_SOURCE_DIR}/lib/*.dll)
 INSTALL(FILES ${CARRIED_DLL} DESTINATION bin)
 endif()
 INSTALL(TARGETS spacecrafter DESTINATION bin)
+
+if (WIN32)
+    install(DIRECTORY "$<TARGET_FILE_DIR:spacecrafter>/"
+        DESTINATION bin
+        FILES_MATCHING
+            PATTERN "SDL2*.dll"
+            PATTERN "SDL2_mixer*.dll"
+            PATTERN "SDL2_ttf*.dll"
+            PATTERN "SDL2_net*.dll"
+            PATTERN "avcodec*.dll"
+            PATTERN "avformat*.dll"
+            PATTERN "avutil*.dll"
+            PATTERN "swscale*.dll"
+            PATTERN "swresample*.dll"
+            # PATTERN "vulkan-1.dll"
+            PATTERN "msvcp*.dll" EXCLUDE
+            PATTERN "vcruntime*.dll" EXCLUDE
+            PATTERN "concrt*.dll" EXCLUDE
+            PATTERN "api-ms-win-*.dll" EXCLUDE
+            PATTERN "ext-ms-*.dll" EXCLUDE
+    )
+endif()
