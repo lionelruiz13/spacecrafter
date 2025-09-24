@@ -19,16 +19,75 @@ if (WIN32)
     install(DIRECTORY "$<TARGET_FILE_DIR:spacecrafter>/"
         DESTINATION bin
         FILES_MATCHING
-            PATTERN "SDL2*.dll"
-            PATTERN "SDL2_mixer*.dll"
-            PATTERN "SDL2_ttf*.dll"
-            PATTERN "SDL2_net*.dll"
+            # --- FFmpeg core + modules
             PATTERN "avcodec*.dll"
             PATTERN "avformat*.dll"
             PATTERN "avutil*.dll"
             PATTERN "swscale*.dll"
             PATTERN "swresample*.dll"
-            # PATTERN "vulkan-1.dll"
+            PATTERN "avdevice*.dll"
+            PATTERN "avfilter*.dll"
+
+            # --- SDL2 + add-ons
+            PATTERN "SDL2*.dll"
+
+            # --- Ogg family
+            PATTERN "libogg-*.dll"
+            PATTERN "libogg*.dll"
+            PATTERN "ogg*.dll"
+
+            # --- Opus
+            PATTERN "libopus-*.dll"
+            PATTERN "libopus*.dll"
+            PATTERN "opus*.dll"
+
+            # --- Opusfile
+            PATTERN "libopusfile-*.dll"
+            PATTERN "libopusfile*.dll"
+            PATTERN "opusfile*.dll"
+
+            # --- Vorbis (often pulled by SDL_mixer)
+            PATTERN "libvorbis-*.dll"
+            PATTERN "libvorbis*.dll"
+            PATTERN "vorbis*.dll"
+            PATTERN "libvorbisfile-*.dll"
+            PATTERN "libvorbisfile*.dll"
+            PATTERN "vorbisfile*.dll"
+
+            # --- WavPack (all variants)
+            PATTERN "libwavpack-*.dll"
+            PATTERN "libwavpack*.dll"
+            PATTERN "wavpack*.dll"
+            PATTERN "wavpackdll*.dll"
+
+            # --- Game Music Emu
+            PATTERN "libgme*.dll"
+            PATTERN "gme*.dll"
+
+            # --- XMP (libxmp / xmp / libxmp-lite depending on port)
+            PATTERN "libxmp*.dll"
+            PATTERN "xmp*.dll"
+
+            # --- FreeType
+            PATTERN "freetype*.dll"
+            PATTERN "libfreetype*.dll"
+            PATTERN "freetype-6*.dll"
+
+            # --- Brotli (according to FreeType build)
+            PATTERN "brotli*.dll"
+            PATTERN "brotlidec*.dll"
+            PATTERN "brotlicommon*.dll"
+
+            # --- zlib / libpng (often needed by FreeType)
+            PATTERN "zlib*.dll"
+            PATTERN "libpng*.dll"
+
+            # --- BZip2
+            PATTERN "bzip2*.dll"
+            PATTERN "libbz2*.dll"
+            PATTERN "bz2*.dll"
+
+            # --- Exclude MSVC runtime libraries (already installed by CMake and MSVC automatically)
             PATTERN "msvcp*.dll" EXCLUDE
             PATTERN "vcruntime*.dll" EXCLUDE
             PATTERN "concrt*.dll" EXCLUDE
