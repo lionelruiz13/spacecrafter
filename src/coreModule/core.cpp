@@ -315,6 +315,7 @@ void Core::init(const InitParser& conf)
 		starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.txt", false);
 		starLines->loadCat(AppSettings::Instance()->getUserDir() + "asterism.txt", false);
 	}
+	ssystemFactory->reloadColors(AppSettings::Instance()->getUserDir() + "ssystem.ini");
 
 	// Astro section
 	hip_stars->setFlagShow(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STARS));

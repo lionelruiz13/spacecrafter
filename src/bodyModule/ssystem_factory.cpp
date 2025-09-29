@@ -70,6 +70,109 @@ SSystemFactory::~SSystemFactory()
 	//delete bodytrace;
 }
 
+void SSystemFactory::reloadColors(const std::string& planetfile) {
+    // {"PlanetName": {"colorName": colorVec3f}}
+    std::map<std::string, std::map<std::string, Vec3f>> colorMap;
+
+    // {"PlanetName": "nameValue"}
+    std::map<std::string, std::string> nameMap;
+
+    std::ifstream file(planetfile);
+
+    if (file) {
+        std::string line;
+        std::string currentBody;
+        while (std::getline(file, line)) {
+            // Trim whitespace
+            line.erase(0, line.find_first_not_of(" \t"));
+            line.erase(line.find_last_not_of(" \t") + 1);
+            if (line.empty()) {
+                continue; // Skip empty lines
+            }
+
+            // Remove comments
+            size_t commentPos = line.find('#');
+            if (commentPos != std::string::npos) {
+                line = line.substr(0, commentPos);
+            }
+
+            if (line[0] == '[') {
+                // New body section
+                size_t endPos = line.find(']');
+                if (endPos != std::string::npos) {
+                    currentBody = line.substr(1, endPos - 1);
+                }
+                continue;
+            }
+
+            if (!line.starts_with("label_color") &&
+                !line.starts_with("orbit_color") &&
+                !line.starts_with("trail_color") &&
+                !line.starts_with("color") && // halo
+                !line.starts_with("name")) {
+                continue; // Skip non-color lines and non-name lines
+            }
+
+            // Parse the line for planet colors
+            std::istringstream iss(line);
+            std::string propertyName;
+            int equalPos = line.find('=');
+            if (equalPos != std::string::npos) {
+                // Extract property name and trim whitespace
+                propertyName = line.substr(0, equalPos);
+                propertyName.erase(propertyName.find_last_not_of(" \t") + 1);
+
+                // Ensure we have a current body and property name
+                if (propertyName.empty() || currentBody.empty()) {
+                    continue;
+                }
+
+                if (propertyName == "name") {
+                    // Extract name value and trim whitespace
+                    std::string nameValue = line.substr(equalPos + 1);
+                    nameValue.erase(0, nameValue.find_first_not_of(" \t"));
+                    nameValue.erase(nameValue.find_last_not_of(" \t") + 1);
+                    nameMap[currentBody] = nameValue;
+                } else {
+                    // Parse the RGB values
+                    Vec3f colorValue;
+                    std::string values = line.substr(equalPos + 1);
+                    std::replace(values.begin(), values.end(), ',', ' ');
+                    std::istringstream valueStream(values);
+                    float r, g, b;
+                    if (valueStream >> r >> g >> b) {
+                        colorValue = Vec3f(r, g, b);
+                        colorMap[currentBody][propertyName] = colorValue;
+                    }
+                }
+            }
+        }
+    }
+    file.close();
+
+    // Apply the colors to the bodies
+    for (const auto& [planetName, colors] : colorMap) {
+        for (const auto& [colorName, colorValue] : colors) {
+            // Check if nameMap has an entry for this planet
+            if (nameMap.find(planetName) == nameMap.end()) {
+                cLog::get()->write("Warning: No name found for planet '" + planetName + "' in " + planetfile, LOG_TYPE::L_WARNING);
+                continue; // Skip if no name found
+            }
+
+            if (colorName == "color") {
+                ssystemColor->setBodyColor(nameMap[planetName], "halo", colorValue);
+                continue;
+            }
+
+            // Remove the _color suffix
+            std::string baseName = colorName.substr(0, colorName.size() - 6);
+
+            // Set the color using the name from nameMap
+            ssystemColor->setBodyColor(nameMap[planetName], baseName, colorValue);
+        }
+    }
+}
+
 void SSystemFactory::changeSystem(const std::string &mode)
 {
     if (mode == "SolarSystem" || mode == "Sun" || mode == "temp_point")
