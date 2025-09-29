@@ -347,6 +347,9 @@ int main(int argc, const char *argv[])
 	//SC logical software end here
 
 	// Close all
+	#ifdef __linux__
+	signal(SIGPIPE, SIG_IGN);
+	#endif
 	executor.close();
 	remove_lock_file(lock_file);
 	// close cpu information
