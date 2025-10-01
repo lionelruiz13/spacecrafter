@@ -808,6 +808,8 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		while ((i+=2) < end) {
 			mag += k;
 			mag_converter->computeRCMag(mag, eye, rcmag_table + i);
+			// Apply fader to brightness
+			rcmag_table[i+1] *= fader;
 		}
 		last_max_search_level = it->first;
 
