@@ -381,6 +381,7 @@ void App::initVulkan(InitParser &conf)
 	for (int i = 0; i < 3; ++i)
 		context.transfers[i] = std::make_unique<TransferMgr>(*context.stagingMgr, 64*1024*1024);
 	context.transfer = nullptr;
+	context.waitFrameSync[0].semaphore = context.collector->createSemaphore("Acquire 3");
 	context.waitFrameSync[1].semaphore = context.signalFrameSync[1].semaphore = context.collector->createSemaphore(0, "Timeline");
 	for (int i = 0; i < 3; ++i) {
 		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
@@ -715,7 +716,7 @@ void App::draw(int delta_time)
 		sender->acquireFrame(context.frameIdx);
 	} else {
 		context.helper->waitFrame(context.lastFrameIdx);
-		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 20000000, context.semaphores[context.lastFrameIdx], VK_NULL_HANDLE, &context.frameIdx);
+		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 20000000, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx);
 		switch (res) {
 			case VK_SUCCESS:
 				break;
@@ -940,7 +941,6 @@ void App::submitFrame(App *self, int id)
 	VkCommandBuffer mainCmd = self->context.frame[id]->getMainHandle();
 	vkCmdEndRenderPass(mainCmd);
 	if (self->initialized) { // Is initialized
-		self->context.waitFrameSync[0].semaphore = self->context.semaphores[self->context.helper->getLastFrameIdx()];
 		self->media->playerRecordUpdateDependency(mainCmd);
 		if (self->context.starUsed[id]) {
 			self->context.starUsed[id]->syncFramebuffer(mainCmd);
@@ -955,8 +955,7 @@ void App::submitFrame(App *self, int id)
 			if (self->sender)
 				self->sender->setupReadback(mainCmd, id);
 		}
-	} else
-		self->context.waitFrameSync[0].semaphore = self->context.semaphores[self->context.lastFrameIdx];
+	}
 	if (self->renderSize) { // Extra step needed : blit
 		VkImageMemoryBarrier imageBarrier[2]{{
 			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
@@ -1079,6 +1078,7 @@ void App::submitFrame(App *self, int id)
 				return;
 		}
 	}
+	std::swap(self->context.waitFrameSync[0].semaphore, self->context.semaphores[id]);
 	self->context.waitFrameSync[1].stageMask = self->context.nextWaitStage;
 	self->context.signalFrameSync[1].stageMask = VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT_KHR;
 	self->context.nextWaitStage = VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT_KHR;
