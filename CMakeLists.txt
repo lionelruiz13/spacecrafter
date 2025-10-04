@@ -96,6 +96,17 @@ pkg_check_modules(LIBAV REQUIRED IMPORTED_TARGET
     libavutil
 )
 SET(FFMPEG_LIBRARIES "PkgConfig::LIBAV")
+
+# check for libpng
+pkg_check_modules (LIBPNG libpng16 REQUIRED)
+if (NOT LIBPNG_FOUND)
+    message(FATAL_ERROR "You don't seem to have libpng16 development libraries installed")
+else ()
+    include_directories (${LIBPNG_INCLUDE_DIRS})
+    link_directories (${LIBPNG_LIBRARY_DIRS})
+    link_libraries (${LIBPNG_LIBRARIES})
+endif ()
+
 endif()
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIR})
