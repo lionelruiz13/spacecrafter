@@ -25,6 +25,8 @@
  */
 
 #include <iostream>
+#include <cmath>
+#include <algorithm>
 #include "coreModule/projector.hpp"
 #include "mediaModule/image.hpp"
 #include "mediaModule/imageTexture.hpp"
@@ -71,6 +73,7 @@ Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type
 void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap)
 {
 	flag_alpha = flag_scale = flag_location = flag_rotation = ratio.onTransition = 0;
+	spherical_base_altitude_transition.onTransition = spherical_top_altitude_transition.onTransition = 0;
 	image_pos_type = pos_type;
 	image_alpha = 0;  // begin not visible
 	image_rotation = 0;
@@ -175,6 +178,7 @@ void Image::createSC_context()
 	m_imageSphereGL->createBindingEntry(8 * sizeof(float));
 	m_imageSphereGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
 	m_imageSphereGL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
+	m_imageSphereGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // NORMALE
 	m_imageViewportGL = std::make_unique<VertexArray>(vkmgr);
 	m_imageViewportGL->createBindingEntry(4 * sizeof(float));
 	m_imageViewportGL->addInput(VK_FORMAT_R32G32_SFLOAT); // POS2D
@@ -397,6 +401,71 @@ void Image::setRatio(float new_ratio, float duration)
 	ratio.timer = 0; // count time elapsed from the beginning of the command
 }
 
+void Image::setSphericalBaseAltitude(float base_altitude, float duration)
+{
+	if (duration <= 0) {
+		spherical_base_altitude_transition.onTransition = 0;
+		spherical_base_altitude = (base_altitude >= -90.0f && base_altitude <= 90.0f) ? base_altitude : -90.0f;
+		// Ensure base_altitude <= top_altitude
+		if (spherical_base_altitude > spherical_top_altitude) {
+			spherical_base_altitude = spherical_top_altitude;
+		}
+		// If a top altitude transition is in progress, ensure the new base altitude does not violate the constraint
+		if (spherical_top_altitude_transition.onTransition && spherical_base_altitude > spherical_top_altitude_transition.end) {
+			spherical_base_altitude = spherical_top_altitude_transition.end;
+		}
+		spherical_geometry_dirty = true; // Mark geometry as dirty
+		return;
+	}
+
+	spherical_base_altitude_transition.onTransition = 1;
+	spherical_base_altitude_transition.duration = int(duration * 1000.f);
+	spherical_base_altitude_transition.start = spherical_base_altitude;
+	spherical_base_altitude_transition.end = (base_altitude >= -90.0f && base_altitude <= 90.0f) ? base_altitude : -90.0f;
+	// Ensure base_altitude <= top_altitude
+	if (spherical_base_altitude_transition.end > spherical_top_altitude) {
+		spherical_base_altitude_transition.end = spherical_top_altitude;
+	}
+	// If a top altitude transition is in progress, ensure the new base altitude does not violate the constraint
+	if (spherical_top_altitude_transition.onTransition && spherical_base_altitude_transition.end > spherical_top_altitude_transition.end) {
+		spherical_base_altitude_transition.end = spherical_top_altitude_transition.end;
+	}
+	spherical_base_altitude_transition.coef = (spherical_base_altitude_transition.end - spherical_base_altitude_transition.start) / spherical_base_altitude_transition.duration;
+	spherical_base_altitude_transition.timer = 0; // count time elapsed from the beginning of the command
+}
+
+void Image::setSphericalTopAltitude(float top_altitude, float duration)
+{
+	if (duration <= 0) {
+		spherical_top_altitude_transition.onTransition = 0;
+		spherical_top_altitude = (top_altitude >= -90.0f && top_altitude <= 90.0f) ? top_altitude : 90.0f;
+		// Ensure base_altitude <= top_altitude
+		if (spherical_top_altitude < spherical_base_altitude) {
+			spherical_top_altitude = spherical_base_altitude;
+		}
+		// If a base altitude transition is in progress, ensure the new top altitude does not violate the constraint
+		if (spherical_base_altitude_transition.onTransition && spherical_top_altitude < spherical_base_altitude_transition.end) {
+			spherical_top_altitude = spherical_base_altitude_transition.end;
+		}
+		spherical_geometry_dirty = true; // Mark geometry as dirty
+		return;
+	}
+
+	spherical_top_altitude_transition.onTransition = 1;
+	spherical_top_altitude_transition.duration = int(duration * 1000.f);
+	spherical_top_altitude_transition.start = spherical_top_altitude;
+	spherical_top_altitude_transition.end = (top_altitude >= -90.0f && top_altitude <= 90.0f) ? top_altitude : 90.0f;
+	// Ensure base_altitude <= top_altitude
+	if (spherical_top_altitude_transition.end < spherical_base_altitude) {
+		spherical_top_altitude_transition.end = spherical_base_altitude;
+	}
+	// If a base altitude transition is in progress, ensure the new top altitude does not violate the constraint
+	if (spherical_base_altitude_transition.onTransition && spherical_top_altitude_transition.end < spherical_base_altitude_transition.end) {
+		spherical_top_altitude_transition.end = spherical_base_altitude_transition.end;
+	}
+	spherical_top_altitude_transition.coef = (spherical_top_altitude_transition.end - spherical_top_altitude_transition.start) / spherical_top_altitude_transition.duration;
+	spherical_top_altitude_transition.timer = 0; // count time elapsed from the beginning of the command
+}
 
 bool Image::update(int delta_time)
 {
@@ -487,6 +556,30 @@ bool Image::update(int delta_time)
 		else {
 			image_ratio = ratio.end;
 			ratio.onTransition = 0;
+		}
+	}
+
+	if (spherical_base_altitude_transition.onTransition) {
+		spherical_base_altitude_transition.timer += delta_time; // update local timer
+		if (spherical_base_altitude_transition.timer < spherical_base_altitude_transition.duration) {
+			spherical_base_altitude = spherical_base_altitude_transition.start + spherical_base_altitude_transition.timer * spherical_base_altitude_transition.coef; // linear function
+			spherical_geometry_dirty = true;
+		} else {
+			spherical_base_altitude = spherical_base_altitude_transition.end;
+			spherical_base_altitude_transition.onTransition = 0;
+			spherical_geometry_dirty = true; // Mark geometry as dirty at the end of the transition
+		}
+	}
+
+	if (spherical_top_altitude_transition.onTransition) {
+		spherical_top_altitude_transition.timer += delta_time; // update local timer
+		if (spherical_top_altitude_transition.timer < spherical_top_altitude_transition.duration) {
+			spherical_top_altitude = spherical_top_altitude_transition.start + spherical_top_altitude_transition.timer * spherical_top_altitude_transition.coef; // linear function
+			spherical_geometry_dirty = true;
+		} else {
+			spherical_top_altitude = spherical_top_altitude_transition.end;
+			spherical_top_altitude_transition.onTransition = 0;
+			spherical_geometry_dirty = true; // Mark geometry as dirty at the end of the transition
 		}
 	}
 	return 1;
@@ -603,6 +696,189 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	// imageTexture->unbindSet(cmd);
 }
 
+// Can be optimized by sharing vertices between triangles and quads (requires using an index buffer)
+void Image::generateSphericalGeometry()
+{
+	// Use tolerance to avoid unnecessary regenerations due to float precision
+	const float tolerance = 0.01f; // Tolerance of 0.01 degree
+
+	// Check if we need to regenerate the geometry
+	if (!spherical_geometry_dirty &&
+		std::fabs(cached_base_altitude - spherical_base_altitude) < tolerance &&
+		std::fabs(cached_top_altitude - spherical_top_altitude) < tolerance) {
+		return; // Geometry is already up to date
+	}
+
+	// Mark geometry as clean only if no transition is in progress
+	if (!spherical_base_altitude_transition.onTransition && !spherical_top_altitude_transition.onTransition) {
+		spherical_geometry_dirty = false;
+	}
+	cached_base_altitude = spherical_base_altitude;
+	cached_top_altitude = spherical_top_altitude;
+
+	// Constants for sphere generation with adaptive density
+	const int slices = 48;  // Number of longitude divisions (increased to reduce artifacts)
+
+	// Calculate number of stacks based on altitude range to maintain uniform density
+	float altitudeRangeDeg = spherical_top_altitude - spherical_base_altitude;
+	int stacks = std::max(16, std::min(96, (int)(altitudeRangeDeg * 0.8f))); // Between 16 and 96 stacks
+
+	const float radius = 1.0f;
+
+	// Convert altitudes to radians and adjust them
+	float baseLatRad = (spherical_base_altitude) * M_PI / 180.0f;
+	float topLatRad = (spherical_top_altitude) * M_PI / 180.0f;
+
+	// Ensure values are within proper bounds
+	baseLatRad = std::max<float>(-float(M_PI_2), std::min<float>(float(M_PI_2), baseLatRad));
+	topLatRad = std::max<float>(-float(M_PI_2), std::min<float>(float(M_PI_2), topLatRad));
+
+	// Check that we have a valid range
+	if (baseLatRad >= topLatRad) {
+		vertexSize = 0;
+		return; // No geometry to generate
+	}
+
+	// Calculate altitude range and step between stacks
+	float altitudeRange = topLatRad - baseLatRad;
+	float stackStep = altitudeRange / stacks;
+
+	// Calculate required size for vertices
+	int numQuads = stacks * slices;
+	int numVertices = numQuads * 6; // 2 triangles per quad
+
+	// Allocate buffer if necessary (8 floats per vertex: 3 pos + 2 tex + 3 normal)
+	Context &context = *Context::instance;
+	float *sphereData = (float *) context.transfer->beginPlanCopy(numVertices * 8 * sizeof(float));
+	float *currentData = sphereData;
+
+	int actualVertices = 0;
+
+	// Generate sphere geometry between specified altitudes
+	for (int stack = 0; stack < stacks; ++stack) {
+		for (int slice = 0; slice < slices; ++slice) {
+			// Calculate latitudes based on current altitude range with higher precision
+			double lat1_d = (double)baseLatRad + (double)stack * (double)stackStep;
+			double lat2_d = (double)baseLatRad + (double)(stack + 1) * (double)stackStep;
+			double lon1_d = 2.0 * M_PI * (double)slice / (double)slices;
+			double lon2_d = 2.0 * M_PI * (double)(slice + 1) / (double)slices;
+
+			float lat1 = (float)lat1_d;
+			float lat2 = (float)lat2_d;
+			float lon1 = (float)lon1_d;
+			float lon2 = (float)lon2_d;
+
+			// Avoid degenerate triangles when lat1 ≈ lat2
+			if (std::fabs(lat2 - lat1) < 0.001f) continue;
+
+			// Calculate positions and texture coordinates for the 4 vertices
+			Vec3f v1, v2, v3, v4;
+			Vec2f t1, t2, t3, t4;
+
+			// Calculate texture coordinates based on current altitude range with higher precision
+			// Map range [baseLatRad, topLatRad] to appropriate texture portion [0, 1]
+			// Convention: U = horizontal (longitude), V = vertical (latitude)
+
+			// V coordinates (vertical/latitude) with higher precision
+			// Map from [-π/2, π/2] to [0, 1] range for texture coordinates
+			double texV1_d = (lat1_d + M_PI_2) / M_PI; // texV1 = lower latitude
+			double texV2_d = (lat2_d + M_PI_2) / M_PI; // texV2 = upper latitude
+
+			// Clamp texture coordinates to ensure they're within valid [0,1] range
+			texV1_d = std::max(0.0, std::min(1.0, texV1_d));
+			texV2_d = std::max(0.0, std::min(1.0, texV2_d));
+
+			float texV1 = (float)texV1_d;
+			float texV2 = (float)texV2_d;
+
+			// U coordinates (horizontal/longitude) with higher precision - inverted for horizontal flip
+			double texU1_d = 1.0 - (double)slice / (double)slices;       // texU1 = left longitude (inverted)
+			double texU2_d = 1.0 - (double)(slice + 1) / (double)slices; // texU2 = right longitude (inverted)
+			float texU1 = (float)texU1_d;
+			float texU2 = (float)texU2_d;
+
+			// Vertex 1 (bottom-left)
+			v1[0] = radius * cosf(lat1) * cosf(lon1);
+			v1[1] = radius * cosf(lat1) * sinf(lon1);
+			v1[2] = radius * sinf(lat1);
+			t1[0] = texU1;
+			t1[1] = texV1;
+
+			// Vertex 2 (bottom-right)
+			v2[0] = radius * cosf(lat1) * cosf(lon2);
+			v2[1] = radius * cosf(lat1) * sinf(lon2);
+			v2[2] = radius * sinf(lat1);
+			t2[0] = texU2;
+			t2[1] = texV1;
+
+			// Vertex 3 (top-right)
+			v3[0] = radius * cosf(lat2) * cosf(lon2);
+			v3[1] = radius * cosf(lat2) * sinf(lon2);
+			v3[2] = radius * sinf(lat2);
+			t3[0] = texU2;
+			t3[1] = texV2;
+
+			// Vertex 4 (top-left)
+			v4[0] = radius * cosf(lat2) * cosf(lon1);
+			v4[1] = radius * cosf(lat2) * sinf(lon1);
+			v4[2] = radius * sinf(lat2);
+			t4[0] = texU1;
+			t4[1] = texV2;
+
+			// Calculate normals (for a sphere, vertex normal is the normalized vertex direction)
+			Vec3f n1 = v1; n1.normalize();
+			Vec3f n2 = v2; n2.normalize();
+			Vec3f n3 = v3; n3.normalize();
+			Vec3f n4 = v4; n4.normalize();
+
+			// First triangle (v1, v2, v3)
+			*(currentData++) = v1[0]; *(currentData++) = v1[1]; *(currentData++) = v1[2];
+			*(currentData++) = t1[0]; *(currentData++) = t1[1];
+			*(currentData++) = n1[0]; *(currentData++) = n1[1]; *(currentData++) = n1[2];
+			actualVertices++;
+
+			*(currentData++) = v2[0]; *(currentData++) = v2[1]; *(currentData++) = v2[2];
+			*(currentData++) = t2[0]; *(currentData++) = t2[1];
+			*(currentData++) = n2[0]; *(currentData++) = n2[1]; *(currentData++) = n2[2];
+			actualVertices++;
+
+			*(currentData++) = v3[0]; *(currentData++) = v3[1]; *(currentData++) = v3[2];
+			*(currentData++) = t3[0]; *(currentData++) = t3[1];
+			*(currentData++) = n3[0]; *(currentData++) = n3[1]; *(currentData++) = n3[2];
+			actualVertices++;
+
+			// Second triangle (v1, v3, v4)
+			*(currentData++) = v1[0]; *(currentData++) = v1[1]; *(currentData++) = v1[2];
+			*(currentData++) = t1[0]; *(currentData++) = t1[1];
+			*(currentData++) = n1[0]; *(currentData++) = n1[1]; *(currentData++) = n1[2];
+			actualVertices++;
+
+			*(currentData++) = v3[0]; *(currentData++) = v3[1]; *(currentData++) = v3[2];
+			*(currentData++) = t3[0]; *(currentData++) = t3[1];
+			*(currentData++) = n3[0]; *(currentData++) = n3[1]; *(currentData++) = n3[2];
+			actualVertices++;
+
+			*(currentData++) = v4[0]; *(currentData++) = v4[1]; *(currentData++) = v4[2];
+			*(currentData++) = t4[0]; *(currentData++) = t4[1];
+			*(currentData++) = n4[0]; *(currentData++) = n4[1]; *(currentData++) = n4[2];
+			actualVertices++;
+		}
+	}
+
+	// Create or update vertex buffer
+	if (vertexSize != actualVertices || !vertex) {
+		vertexSize = actualVertices;
+		vertex.reset();
+		if (actualVertices > 0) {
+			vertex = m_imageSphereGL->createBuffer(0, actualVertices, Context::instance->globalBuffer.get());
+		}
+	}
+
+	if (actualVertices > 0) {
+		context.transfer->endPlanCopy(vertex->get(), actualVertices * 8 * sizeof(float));
+	}
+}
+
 void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 {
 	PipelineLayout *layout;
@@ -618,7 +894,9 @@ void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 		Mat4f matrix;
 		Vec3f clipping_fov;
 	} uVert;
-	uVert.matrix = nav->getLocalToEyeMat().convert();
+	// Apply the rotation to the transformation matrix as a rotation around the Z axis
+	Mat4d rotationMatrix = Mat4d::zrotation(image_rotation * M_PI / 180.0f);
+	uVert.matrix = (nav->getLocalToEyeMat() * rotationMatrix).convert();
 	uVert.clipping_fov = prj->getClippingFov();
 	layout->pushConstant(cmd, 0, &uVert);
 	if (transparency) {
@@ -628,9 +906,15 @@ void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 		layout->pushConstant(cmd, 1, &tmpBuff, 0, 20);
 	} else
 		layout->pushConstant(cmd, 1, &image_alpha, 0, 4);
-	auto objl = ObjLMgr::instance->selectDefault();
-	objl->bind(cmd);
-	objl->draw(cmd, 1024);
+
+	// Generate spherical geometry that respects altitude limits
+	generateSphericalGeometry();
+
+	// Use the generated geometry instead of the default object
+	if (vertex && vertexSize > 0) {
+		vertex->bind(cmd);
+		vkCmdDraw(cmd, vertexSize, 1, 0, 0);
+	}
 }
 
 static int decalages(int i, int howManyDisplay)

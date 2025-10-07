@@ -83,6 +83,10 @@ public:
 	void setScale(float scale, float duration);
 	//! changes the rotation angle of currentImg
 	void setRotation(float rotation, float duration);
+	//! changes the base altitude of currentImg (spherical images only)
+	void setSphericalBaseAltitude(float base_altitude, float duration);
+	//! changes the top altitude of currentImg (spherical images only)
+	void setSphericalTopAltitude(float top_altitude, float duration);
 	//! changes the position of currentImg on the dome
 	void setLocation(float xpos, bool deltax, float ypos, bool deltay, float duration, bool accelerate_x = false, bool decelerate_x = false, bool accelerate_y = false, bool decelerate_y = false);
 	//! changes the ratio of currentImg

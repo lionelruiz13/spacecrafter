@@ -2520,6 +2520,8 @@ int AppCommandInterface::commandImage()
 	std::string argDecelerate_x = args[W_DECELERATE_ALT];
 	std::string argDecelerate_y = args[W_DECELERATE_AZ];
 	std::string argHP = args[W_HP];
+	std::string argTopAltitude = args[W_TOP_ALTITUDE];
+	std::string argBaseAltitude = args[W_BASE_ALTITUDE];
 
 	if (!argAlpha.empty())
 		media->imageSetAlpha(evalDouble(argAlpha), evalDouble(argDuration));
@@ -2529,6 +2531,12 @@ int AppCommandInterface::commandImage()
 
 	if (!argRotation.empty())
 		media->imageSetRotation(evalDouble(argRotation), evalDouble(argDuration));
+
+	if (!argTopAltitude.empty())
+		media->imageSetSphericalTopAltitude(evalDouble(argTopAltitude), evalDouble(argDuration));
+
+	if (!argBaseAltitude.empty())
+		media->imageSetSphericalBaseAltitude(evalDouble(argBaseAltitude), evalDouble(argDuration));
 
 	if (!argRatio.empty())
 		media->imageSetRatio(evalDouble(argRatio), evalDouble(argDuration));

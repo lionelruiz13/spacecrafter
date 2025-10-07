@@ -169,6 +169,8 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_ACCELERATE_AZ             "accelerate_az"
 #define W_DECELERATE_ALT            "decelerate_alt"
 #define W_DECELERATE_AZ             "decelerate_az"
+#define W_BASE_ALTITUDE             "base_altitude"
+#define W_TOP_ALTITUDE              "top_altitude"
 #define W_ON                        "on"
 #define W_OFF                       "off"
 #define W_KEYCOLOR                  "keycolor"

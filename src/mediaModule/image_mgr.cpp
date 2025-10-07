@@ -171,6 +171,18 @@ void ImageMgr::setRotation(float rotation, float duration)
 		currentImg -> setRotation(rotation, duration);
 }
 
+void ImageMgr::setSphericalBaseAltitude(float base_altitude, float duration)
+{
+	if (currentImg != nullptr)
+		currentImg -> setSphericalBaseAltitude(base_altitude, duration);
+}
+
+void ImageMgr::setSphericalTopAltitude(float top_altitude, float duration)
+{
+	if (currentImg != nullptr)
+		currentImg -> setSphericalTopAltitude(top_altitude, duration);
+}
+
 void ImageMgr::setLocation(float xpos, bool deltax, float ypos, bool deltay, float duration, bool accelerate_x, bool decelerate_x, bool accelerate_y, bool decelerate_y)
 {
 	if (currentImg != nullptr)

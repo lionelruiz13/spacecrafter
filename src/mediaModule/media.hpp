@@ -263,6 +263,14 @@ public:
 		imageMgr->setRotation(rotation, duration);
 	}
 
+	void imageSetSphericalBaseAltitude(float base_altitude, float duration) {
+		imageMgr->setSphericalBaseAltitude(base_altitude, duration);
+	}
+
+	void imageSetSphericalTopAltitude(float top_altitude, float duration) {
+		imageMgr->setSphericalTopAltitude(top_altitude, duration);
+	}
+
 	void imageSetPersistent(bool value) {
 		imageMgr->setPersistent(value);
 	}

@@ -60,6 +60,8 @@ public:
 	void setRotation(float rotation, float duration);
 	void setLocation(float xpos, bool deltax, float ypos, bool deltay, float duration, bool accelerate_x = false, bool decelerate_x = false, bool accelerate_y = false, bool decelerate_y = false);
 	void setRatio(float ratio, float duration);
+	void setSphericalBaseAltitude(float base_altitude, float duration);
+	void setSphericalTopAltitude(float top_altitude, float duration);
 	void setPersistent(bool value) {
 		isPersistent = value;
 	}
@@ -98,6 +100,7 @@ private:
 	void setPipeline(Pipeline *pipeline);
 	void drawViewport(const Navigator * nav, const Projector * prj);
 	void drawUnified(bool drawUp, const Navigator * nav, const Projector * prj);
+	void generateSphericalGeometry();
 	void drawSpherical(const Navigator *nav, const Projector *prj);
 	void initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap = false);
 	void initCache(const Projector * prj);
@@ -178,6 +181,17 @@ private:
 	Vec3d imagev, ortho1, ortho2;
 	int grid_size;
 	bool needFlip = false;
+
+	// For spherical images: altitude limits (as in landscape.cpp)
+	linearTransition spherical_base_altitude_transition;
+	float spherical_base_altitude = -90.0f;  // Lowest altitude in degrees
+	linearTransition spherical_top_altitude_transition;
+	float spherical_top_altitude = 90.0f;    // Highest altitude in degrees
+
+	// Cache for spherical geometry
+	float cached_base_altitude = -91.0f;  // Invalid value to force regeneration
+	float cached_top_altitude = -91.0f;   // Invalid value to force regeneration
+	bool spherical_geometry_dirty = true;
 };
 
 #endif // _IMAGE_H
