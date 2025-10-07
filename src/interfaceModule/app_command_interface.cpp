@@ -2509,6 +2509,7 @@ int AppCommandInterface::commandImage()
 	std::string argAlpha = args[W_ALPHA];
 	std::string argScale = args[W_SCALE];
 	std::string argRotation = args[W_ROTATION];
+	std::string argRotateZ = args[W_ROTATE_Z];
 	std::string argRatio = args[W_RATIO];
 	std::string argXpos = args[W_XPOS];
 	std::string argYpos = args[W_YPOS];
@@ -2531,6 +2532,9 @@ int AppCommandInterface::commandImage()
 
 	if (!argRotation.empty())
 		media->imageSetRotation(evalDouble(argRotation), evalDouble(argDuration));
+
+	if (!argRotateZ.empty())
+		media->imageSetRotation(evalDouble(argRotateZ), evalDouble(argDuration));
 
 	if (!argTopAltitude.empty())
 		media->imageSetSphericalTopAltitude(evalDouble(argTopAltitude), evalDouble(argDuration));

@@ -109,6 +109,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_MAGNITUDE                 "magnitude"
 #define W_ANGULAR_S                 "angular_size"
 #define W_ROTATION                  "rotation"
+#define W_ROTATE_Z                  "rotate_z"
 #define W_CREDIT                    "credit"
 #define W_TEXTURE                   "texture_luminance_adjust"
 #define W_DISTANCE                  "distance"
