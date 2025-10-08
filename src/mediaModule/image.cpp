@@ -776,13 +776,14 @@ void Image::generateSphericalGeometry()
 			Vec2f t1, t2, t3, t4;
 
 			// Calculate texture coordinates based on current altitude range with higher precision
-			// Map range [baseLatRad, topLatRad] to appropriate texture portion [0, 1]
+			// Map the current altitude range [baseLatRad, topLatRad] to the full texture [0, 1]
+			// This ensures the entire image is visible on the generated sphere portion
 			// Convention: U = horizontal (longitude), V = vertical (latitude)
 
 			// V coordinates (vertical/latitude) with higher precision
-			// Map from [-π/2, π/2] to [0, 1] range for texture coordinates
-			double texV1_d = (lat1_d + M_PI_2) / M_PI; // texV1 = lower latitude
-			double texV2_d = (lat2_d + M_PI_2) / M_PI; // texV2 = upper latitude
+			// Map the current latitude range to [0, 1] so the entire image fits on the sphere portion
+			double texV1_d = (lat1_d - baseLatRad) / (topLatRad - baseLatRad); // texV1 = lower latitude
+			double texV2_d = (lat2_d - baseLatRad) / (topLatRad - baseLatRad); // texV2 = upper latitude
 
 			// Clamp texture coordinates to ensure they're within valid [0,1] range
 			texV1_d = std::max(0.0, std::min(1.0, texV1_d));
