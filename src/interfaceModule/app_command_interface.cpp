@@ -2633,6 +2633,11 @@ int AppCommandInterface::commandSelect()
 		identifier = args[W_PLANET];
 		if (args[W_PLANET] == ACP_SC_HOME_PLANET)
 			identifier = coreLink->getObserverHomePlanetEnglishName();
+	} else if (args[W_BODY]!="") {
+		select_type = W_PLANET;
+		identifier = args[W_BODY];
+		if (args[W_BODY] == ACP_SC_HOME_PLANET)
+			identifier = coreLink->getObserverHomePlanetEnglishName();
 	} else if (args[W_NEBULA]!="") {
 		select_type = W_NEBULA  ;
 		identifier = args[W_NEBULA];
