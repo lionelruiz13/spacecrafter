@@ -52,7 +52,7 @@ class Image : public NoCopy {
 public:
 	Image() = delete;
 	Image(const std::string& filename, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap);
-	Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project);
+	Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool hasAlphaChannel = false);
 	virtual ~Image();
 
 	void setAlpha(float alpha, float duration);
@@ -150,10 +150,13 @@ private:
 	std::vector<float> vecImgPos, vecImgTex;
 	float *imgData;
 	static PipelineLayout *m_layoutUnifiedRGB, *m_layoutUnifiedYUV, *m_layoutSphereRGB, *m_layoutSphereYUV;
+	static PipelineLayout *m_layoutUnifiedYUVA, *m_layoutSphereYUVA; // Layouts for YUVA with alpha
 	// RGB, RBG with transparency, YUV, YUV with transparency
 	static std::array<Pipeline *, 4> m_pipelineViewport;
 	static std::array<Pipeline *, 4> m_pipelineUnified;
 	static std::array<Pipeline *, 4> m_pipelineSphere;
+	// YUVA separate pipelines
+	static Pipeline *m_pipelineYUVAViewport, *m_pipelineYUVAUnified, *m_pipelineYUVASphere;
 	static std::unique_ptr<VertexArray> m_imageViewportGL, m_imageUnifiedGL, m_imageSphereGL;
 	static int cmds[3];
 	static VkCommandBuffer cmd; // Currently recording command

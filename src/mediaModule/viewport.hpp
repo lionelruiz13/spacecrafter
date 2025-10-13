@@ -85,6 +85,9 @@ public:
 	//! KeyColor to use for transparency
 	void setKeyColor(const Vec3f&color, float intensity);
 
+	//! Indicates if the video has an alpha channel (YUVA format / YUV + Alpha_mode)
+	void setHasAlphaChannel(bool hasAlpha);
+
 	void createSC_context();
 
 private:
@@ -98,13 +101,14 @@ private:
 		Vec4f noColor;
 		float fader;
 		VkBool32 transparency;
+		VkBool32 hasAlphaChannel;
 	};
 	std::unique_ptr<SharedBuffer<s_frag>> uFrag;
 	std::unique_ptr<VertexArray> vertexModel;
 	std::unique_ptr<VertexBuffer> vertex; // First 4 = fullscreen, next 8 = dual
 	std::shared_ptr<VideoSync> sync;
 	VkCommandBuffer cmds[3];
-	bool needUpdate[3]{};
+	bool needUpdate[4]{}; // 4 textures (YUV + Alpha)
 	float lastHeading = 0;
 
 	//uint32_t videoTex[3];	//!< indicates which YUV textures are used for display

@@ -182,18 +182,21 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 	switch(type) {
 		case VID_TYPE::V_VR360 :
 			vr360->setTexture(player->getYUV_VideoTexture());
+			vr360->setHasAlphaChannel(player->getHasAlphaChannel());
 			vr360->modeSphere();
 			vr360->display(true);
 			m_videoState.type=V_TYPE::V_VR360;
 			break;
 		case VID_TYPE::V_VRCUBE :
 			vr360->setTexture(player->getYUV_VideoTexture());
+			vr360->setHasAlphaChannel(player->getHasAlphaChannel());
 			vr360->modeCube();
 			vr360->display(true);
 			m_videoState.type=V_TYPE::V_VRCUBE;
 			break;
 		case VID_TYPE::V_FULLVIEWPORT :
 			viewPort->setTexture(player->getYUV_VideoTexture());
+			viewPort->setHasAlphaChannel(player->getHasAlphaChannel());
 			viewPort->displayFullScreen(true);
 			viewPort->display(true);
 			m_videoState.type=V_TYPE::V_VIEWPORT;
@@ -201,6 +204,7 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 			break;
 		case VID_TYPE::V_DUALVIEWPORT :
 			viewPort->setTexture(player->getYUV_VideoTexture());
+			viewPort->setHasAlphaChannel(player->getHasAlphaChannel());
 			viewPort->displayFullScreen(false);
 			viewPort->display(true);
 			m_videoState.type=V_TYPE::V_VIEWPORT;
@@ -209,7 +213,7 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 		case VID_TYPE::V_IMAGE :
 			m_videoState.type=V_TYPE::V_IMAGE;
 			imageVideoName = _name;
-			imageMgr->loadImage(player->getYUV_VideoTexture(),_name, _position, tmpProject);
+			imageMgr->loadImage(player->getYUV_VideoTexture(),_name, _position, tmpProject, player->getHasAlphaChannel());
 			break;
 		case VID_TYPE::V_NONE :
 			playerStop(false);

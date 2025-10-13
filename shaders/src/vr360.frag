@@ -7,9 +7,11 @@
 layout (binding=0, set=1) uniform sampler2D s_tex_y;
 layout (binding=1, set=1) uniform sampler2D s_tex_u;
 layout (binding=2, set=1) uniform sampler2D s_tex_v;
-layout (binding=3, set=1) uniform udata {
+layout (binding=3, set=1) uniform sampler2D s_tex_a; // Texture alpha
+layout (binding=4, set=1) uniform udata {
 	mat4 ModelViewMatrix;
 	float fader;
+	bool hasAlphaChannel;
 };
 
 #include <convertToRGB.glsl>
@@ -17,9 +19,17 @@ layout (binding=3, set=1) uniform udata {
 layout (location=0) in vec2 TexCoord;
 
 layout (location=0)out vec4 FragColor;
- 
+
 void main(void)
 {
     vec3 tex_color = convertToRGB(s_tex_y, s_tex_u, s_tex_v, TexCoord);
-    FragColor = vec4(tex_color, fader);  
+
+    // Compute final alpha by combining fader and video alpha channel
+    float finalAlpha = fader;
+    if (hasAlphaChannel) {
+        float videoAlpha = texture(s_tex_a, TexCoord).r;
+        finalAlpha *= videoAlpha;
+    }
+
+    FragColor = vec4(tex_color, finalAlpha);
 }

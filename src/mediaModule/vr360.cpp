@@ -74,10 +74,11 @@ void VR360::createSC_context()
     vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
 	layout = std::make_unique<PipelineLayout>(vkmgr);
 	layout->setGlobalPipelineLayout(context.layouts.front().get());
-	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	layout->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
-	layout->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER);
-	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 3);
+	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER); // Y
+	layout->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER); // U
+	layout->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER); // V
+	layout->setTextureLocation(3, &PipelineLayout::DEFAULT_SAMPLER); // A
+	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 4); // Binding 4 : uniform
 	layout->buildLayout();
 	layout->build();
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, layout.get());
@@ -90,7 +91,7 @@ void VR360::createSC_context()
 	pipeline->bindShader("vr360.frag.spv");
 	pipeline->build();
 	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
-	set->bindUniform(uniform, 3);
+	set->bindUniform(uniform, 4); // Binding 4 : uniform
 }
 
 // void VR360::deleteShader()
@@ -154,6 +155,7 @@ void VR360::setTexture(VideoTexture _tex)
 	set->bindTexture(*_tex.y, 0);
 	set->bindTexture(*_tex.u, 1);
 	set->bindTexture(*_tex.v, 2);
+	set->bindTexture(*_tex.a, 3);
 	sync = _tex.sync;
 }
 
@@ -168,6 +170,7 @@ void VR360::draw(const Projector* prj, const Navigator* nav)
 	                     Mat4d::yrotation(M_PI)*
 	                     Mat4d::zrotation(M_PI/180*270)).convert();
 	uniform->fading = showFader;
+	uniform->hasAlphaChannel = hasAlphaChannel ? VK_TRUE : VK_FALSE;
 
 	Context::instance->frame[Context::instance->frameIdx]->toExecute(cmds[Context::instance->frameIdx], PASS_BACKGROUND);
 }

@@ -133,6 +133,11 @@ public:
 		return videoTexture;
 	}
 
+	//! Returns true if the video has an alpha channel (YUVA format / YUV + Alpha_mode)
+	bool getHasAlphaChannel() const {
+		return hasAlphaChannel;
+	}
+
 	//! Record texture update to the transfer command executed in the graphic queue where the texture is used
 	void recordUpdate(VkCommandBuffer cmd);
 	//! Record event synchronization which can't be performed inside the renderPass
@@ -164,8 +169,8 @@ private:
 	Audio *audio=nullptr;
 	VideoTexture videoTexture;	//!< returns the texture indices for the classes requiring
 	std::unique_ptr<BufferMgr> stagingBuffer;
-	SubBuffer imageBuffers[3][MAX_CACHED_FRAMES];
-	std::array<void *[MAX_CACHED_FRAMES], 3> pImageBuffer;
+	SubBuffer imageBuffers[4][MAX_CACHED_FRAMES];
+	std::array<void *[MAX_CACHED_FRAMES], 4> pImageBuffer;
 
 	std::string fileName; 	//!< video name
 	Resolution videoRes;	//!< int video_w, video_h;	//!< size w,h of the vidéo
@@ -194,8 +199,8 @@ private:
 	std::chrono::steady_clock::duration sWrite{};
 
 	// avoid recalculating each time
-	int widths[3];
-	int heights[3];
+	int widths[4];
+	int heights[4];
 
 	std::atomic<uint32_t> frameCached = 0; // Index of the last cached frame
 	std::atomic<bool> decoding = false; // Tell if the video have not been fully decoded yet
@@ -209,6 +214,7 @@ private:
 	AVStream		*video_st;
 	AVPacket		*packet;
 	struct SwsContext *img_convert_ctx;
+	AVPixelFormat targetFormat; // Target format for conversion (YUV420P or YUVA420P)
 
 	std::atomic<uint32_t> frameUsed = 0; // Index of the last rendered frame
 	int frameIdxSwap = 0;
@@ -220,6 +226,7 @@ private:
 	bool waitCacheFull = false;
 	bool reloop = false;
 	bool drawNextFrame = false; // Draw the next frame, unconditionnally
+	bool hasAlphaChannel = false; // Indicates if the video has an alpha channel (YUVA format / YUV + Alpha_mode)
 	void mainloop();
 	// Stop video thread and drop every pending frames
 	void threadTerminate();

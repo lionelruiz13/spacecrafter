@@ -89,3 +89,26 @@ void YUVImageTexture::getDimensions(int &img_w, int &img_h)
 {
 	imageY->getDimensions(img_w, img_h);
 }
+
+YUVAImageTexture::YUVAImageTexture(Texture *imgY, Texture *imgU, Texture *imgV, Texture *imgA, PipelineLayout *layout) : ImageTexture(layout)
+{
+	imageY = imgY;
+	imageU = imgU;
+	imageV = imgV;
+	imageA = imgA;
+	type = "useYUVA";
+	isyuv = true;
+	set->bindTexture(*imageY, 0);
+	set->bindTexture(*imageU, 1);
+	set->bindTexture(*imageV, 2);
+	set->bindTexture(*imageA, 3); // Bind alpha texture
+}
+
+YUVAImageTexture::~YUVAImageTexture()
+{
+}
+
+void YUVAImageTexture::getDimensions(int &img_w, int &img_h)
+{
+	imageY->getDimensions(img_w, img_h);
+}

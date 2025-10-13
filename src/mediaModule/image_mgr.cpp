@@ -55,12 +55,12 @@ ImageMgr::~ImageMgr()
 }
 
 
-bool ImageMgr::loadImage(VideoTexture imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project)
+bool ImageMgr::loadImage(VideoTexture imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project, bool hasAlphaChannel)
 {
 	// if name already exists, replace with new image
 	this->drop_image(name);
 	IMG_POSITION img_pos = convertStrToPosition(coordinate);
-	std::unique_ptr<Image> img = std::make_unique<Image>(imgTex, name, img_pos, project);
+	std::unique_ptr<Image> img = std::make_unique<Image>(imgTex, name, img_pos, project, hasAlphaChannel);
 
 	if (!img || img->imageLoaded()) {
 		active_images.push_back(std::move(img));

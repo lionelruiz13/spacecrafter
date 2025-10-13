@@ -42,9 +42,15 @@ PipelineLayout *Image::m_layoutUnifiedRGB;
 PipelineLayout *Image::m_layoutUnifiedYUV;
 PipelineLayout *Image::m_layoutSphereRGB;
 PipelineLayout *Image::m_layoutSphereYUV;
+PipelineLayout *Image::m_layoutUnifiedYUVA; // Layout for YUVA unified
+PipelineLayout *Image::m_layoutSphereYUVA;  // Layout for YUVA sphere
 std::array<Pipeline *, 4> Image::m_pipelineViewport;
 std::array<Pipeline *, 4> Image::m_pipelineUnified;
 std::array<Pipeline *, 4> Image::m_pipelineSphere;
+// YUVA separate pipelines
+Pipeline *Image::m_pipelineYUVAViewport = nullptr;
+Pipeline *Image::m_pipelineYUVAUnified = nullptr;
+Pipeline *Image::m_pipelineYUVASphere = nullptr;
 std::unique_ptr<VertexArray> Image::m_imageViewportGL;
 std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
 std::unique_ptr<VertexArray> Image::m_imageSphereGL;
@@ -61,9 +67,16 @@ Image::Image(const std::string& filename, const std::string& name, IMG_POSITION 
 	initialise(name, pos_type,project, mipmap);
 }
 
-Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project)
+Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool hasAlphaChannel)
 {
-	imageTexture = new YUVImageTexture(imgTex.y, imgTex.u, imgTex.v, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereYUV : m_layoutUnifiedYUV);
+
+	if (hasAlphaChannel && imgTex.a) {
+		// Utiliser YUVAImageTexture pour les vidéos avec alpha
+		imageTexture = new YUVAImageTexture(imgTex.y, imgTex.u, imgTex.v, imgTex.a, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereYUVA : m_layoutUnifiedYUVA);
+	} else {
+		// Utiliser YUVImageTexture classique pour les vidéos sans alpha
+		imageTexture = new YUVImageTexture(imgTex.y, imgTex.u, imgTex.v, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereYUV : m_layoutUnifiedYUV);
+	}
 	imageTexture->setupSync(imgTex.sync);
 	needFlip = true;
 	isPersistent = true;
@@ -219,6 +232,29 @@ void Image::createSC_context()
 	m_layoutSphereYUV->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
 	m_layoutSphereYUV->build();
 
+	// Layouts for YUVA with alpha channel
+	m_layoutUnifiedYUVA = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(m_layoutUnifiedYUVA);
+	m_layoutUnifiedYUVA->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER); // Y
+	m_layoutUnifiedYUVA->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER); // U
+	m_layoutUnifiedYUVA->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER); // V
+	m_layoutUnifiedYUVA->setTextureLocation(3, &PipelineLayout::DEFAULT_SAMPLER); // A
+	m_layoutUnifiedYUVA->buildLayout();
+	m_layoutUnifiedYUVA->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
+	m_layoutUnifiedYUVA->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
+	m_layoutUnifiedYUVA->build();
+
+	m_layoutSphereYUVA = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(m_layoutSphereYUVA);
+	m_layoutSphereYUVA->setTextureLocation(0, &tmpSampler); // Y
+	m_layoutSphereYUVA->setTextureLocation(1, &tmpSampler); // U
+	m_layoutSphereYUVA->setTextureLocation(2, &tmpSampler); // V
+	m_layoutSphereYUVA->setTextureLocation(3, &tmpSampler); // A
+	m_layoutSphereYUVA->buildLayout();
+	m_layoutSphereYUVA->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
+	m_layoutSphereYUVA->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
+	m_layoutSphereYUVA->build();
+
 	// Pipeline
 	for (int i = 0; i < 4; ++i) {
 		m_pipelineUnified[i] = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
@@ -265,6 +301,41 @@ void Image::createSC_context()
 		m_pipelineSphere[i]->build();
 		m_pipelineViewport[i]->build();
 	}
+
+	// YUVA separate pipelines
+	m_pipelineYUVAViewport = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, m_layoutUnifiedYUVA);
+	context.pipelines.emplace_back(m_pipelineYUVAViewport);
+	m_pipelineYUVAViewport->setDepthStencilMode();
+	m_pipelineYUVAViewport->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+	m_pipelineYUVAViewport->bindVertex(*m_imageViewportGL);
+	m_pipelineYUVAViewport->bindShader("imageViewport.vert.spv");
+	m_pipelineYUVAViewport->bindShader("imageViewportYUVA.frag.spv");
+	m_pipelineYUVAViewport->setSpecializedConstant(7, context.isFloat64Supported);
+	m_pipelineYUVAViewport->build();
+
+	m_pipelineYUVAUnified = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, m_layoutUnifiedYUVA);
+	context.pipelines.emplace_back(m_pipelineYUVAUnified);
+	m_pipelineYUVAUnified->setDepthStencilMode();
+	m_pipelineYUVAUnified->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+	m_pipelineYUVAUnified->setCullMode(true);
+	m_pipelineYUVAUnified->bindVertex(*m_imageUnifiedGL);
+	m_pipelineYUVAUnified->bindShader("imageUnified.vert.spv");
+	m_pipelineYUVAUnified->bindShader("imageUnifiedYUVA.frag.spv");
+	m_pipelineYUVAUnified->setSpecializedConstant(7, context.isFloat64Supported);
+	m_pipelineYUVAUnified->build();
+
+	m_pipelineYUVASphere = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, m_layoutSphereYUVA);
+	context.pipelines.emplace_back(m_pipelineYUVASphere);
+	m_pipelineYUVASphere->setDepthStencilMode();
+	m_pipelineYUVASphere->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	m_pipelineYUVASphere->setCullMode(true);
+	m_pipelineYUVASphere->setFrontFace();
+	m_pipelineYUVASphere->bindVertex(*m_imageSphereGL);
+	m_pipelineYUVASphere->bindShader("imageUnified.vert.spv");
+	m_pipelineYUVASphere->bindShader("imageUnifiedYUVA.frag.spv");
+	m_pipelineYUVASphere->setSpecializedConstant(7, context.isFloat64Supported);
+	m_pipelineYUVASphere->build();
+
 	// CommandBuffer
 	for (int i = 0; i < 3; ++i) {
 		cmds[i] = context.frame[i]->create(1);
@@ -661,7 +732,10 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 		h /= image_ratio;
 	}
 	PipelineLayout *layout;
-	if (imageTexture->isYUV()) {
+	if (imageTexture->isYUVA()) {
+		setPipeline(m_pipelineYUVAViewport);
+		layout = m_layoutUnifiedYUVA;  // Use unified layout like other viewport modes
+	} else if (imageTexture->isYUV()) {
 		setPipeline(m_pipelineViewport[transparency ? 3 : 2]);
 		layout = m_layoutUnifiedYUV;
 	} else {
@@ -785,6 +859,12 @@ void Image::generateSphericalGeometry()
 			double texV1_d = (lat1_d - baseLatRad) / (topLatRad - baseLatRad); // texV1 = lower latitude
 			double texV2_d = (lat2_d - baseLatRad) / (topLatRad - baseLatRad); // texV2 = upper latitude
 
+			// If texture is YUV or YUVA (video), flip V coordinates
+			if (imageTexture->isYUV() || imageTexture->isYUVA()) {
+				texV1_d = 1.0 - texV1_d;
+				texV2_d = 1.0 - texV2_d;
+			}
+
 			// Clamp texture coordinates to ensure they're within valid [0,1] range
 			texV1_d = std::max(0.0, std::min(1.0, texV1_d));
 			texV2_d = std::max(0.0, std::min(1.0, texV2_d));
@@ -883,7 +963,10 @@ void Image::generateSphericalGeometry()
 void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 {
 	PipelineLayout *layout;
-	if (imageTexture->isYUV()) {
+	if (imageTexture->isYUVA()) {
+		setPipeline(m_pipelineYUVASphere);
+		layout = m_layoutSphereYUVA;
+	} else if (imageTexture->isYUV()) {
 		setPipeline(m_pipelineSphere[transparency ? 3 : 2]);
 		layout = m_layoutSphereYUV;
 	} else {
@@ -952,7 +1035,10 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 		uVert.clipping_fov[2] = M_PI_2;
 
 	PipelineLayout *layout;
-	if (imageTexture->isYUV()) {
+	if (imageTexture->isYUVA()) {
+		setPipeline(m_pipelineYUVAUnified);
+		layout = m_layoutUnifiedYUVA;
+	} else if (imageTexture->isYUV()) {
 		setPipeline(m_pipelineUnified[transparency ? 3 : 2]);
 		layout = m_layoutUnifiedYUV;
 	} else {

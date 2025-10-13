@@ -51,6 +51,9 @@ public :
 	bool isYUV() const {
 		return isyuv;
 	}
+	bool isYUVA() const {
+		return type == "useYUVA";
+	}
 	void bindSet(VkCommandBuffer cmd, PipelineLayout *layout);
 	void setupSync(std::shared_ptr<VideoSync> &sync);
 protected:
@@ -80,6 +83,18 @@ private:
 	Texture *imageY;
 	Texture *imageU;
 	Texture *imageV;
+};
+
+class YUVAImageTexture: public ImageTexture {
+public:
+	YUVAImageTexture(Texture *imgY, Texture *imgU, Texture *imgV, Texture *imgA, PipelineLayout *layout);
+	virtual ~YUVAImageTexture();
+	virtual void getDimensions(int &img_w, int &img_h)  override;
+private:
+	Texture *imageY;
+	Texture *imageU;
+	Texture *imageV;
+	Texture *imageA; // Texture alpha
 };
 
 #endif // _IMAGE_TEXTURE_HPP

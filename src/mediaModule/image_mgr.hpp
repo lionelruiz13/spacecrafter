@@ -65,7 +65,7 @@ public:
 	//! load an image in the container
 	bool loadImage(const std::string& filename, const std::string& name, const std::string& coordinate, IMG_PROJECT project, bool mipmap);
 	//! load an image directly from the OpenGL
-	bool loadImage(VideoTexture imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project);
+	bool loadImage(VideoTexture imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project, bool hasAlphaChannel = false);
 	//! removes the image name from the container
 	void drop_image(const std::string &name);
 	//! deletes all non-persistent images from the container
