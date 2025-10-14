@@ -321,9 +321,6 @@ int UI::handleClic(const std::pair<uint16_t, uint16_t> &pos, s_gui::S_GUI_VALUE 
 	// Do not allow use of mouse while script is playing otherwise script can get confused
 	if (scriptInterface->isScriptPlaying() && ! FlagMouseUsableInScript) return 0;
 
-	// Make sure object pointer is turned on (script may have turned off)
-	core->setFlagSelectedObjectPointer(true);
-
 	// Show cursor
 	SDL_ShowCursor(1);
 	MouseTimeLeft = MouseCursorTimeout*1000;
