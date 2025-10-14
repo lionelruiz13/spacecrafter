@@ -34,6 +34,7 @@
 #include "tools/s_texture.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
+#include "EntityCore/SubBuffer.hpp"
 #include "tools/insert_all.hpp"
 #include "ojmModule/objl_mgr.hpp"
 #include "ojmModule/objl.hpp"
@@ -129,9 +130,12 @@ void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJE
 			vertex->fillEntry(2, 4, vecImgTex.data(), imgData + 2);
 			break;
 		case IMG_POSITION::POS_SPHERICAL:
+			vertexSize = 0;
+			indexCount = 0;
 			break;
 		default:
 			vertexSize = 0;
+			indexCount = 0;
 	}
 }
 
@@ -174,6 +178,10 @@ Image::~Image()
 {
 	// if (image_RGB) delete image_RGB;
 	delete imageTexture;
+	// Release index buffer if allocated
+	if (indexBuffer) {
+		Context::instance->indexBufferMgr->releaseBuffer(*indexBuffer);
+	}
 	vecImgPos.clear();
 	vecImgTex.clear();
 }
@@ -187,11 +195,10 @@ void Image::createSC_context()
 	m_imageUnifiedGL->createBindingEntry(5 * sizeof(float));
 	m_imageUnifiedGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
 	m_imageUnifiedGL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
-	m_imageSphereGL = std::make_unique<VertexArray>(vkmgr, context.ojmAlignment);
-	m_imageSphereGL->createBindingEntry(8 * sizeof(float));
+	m_imageSphereGL = std::make_unique<VertexArray>(vkmgr);
+	m_imageSphereGL->createBindingEntry(5 * sizeof(float));
 	m_imageSphereGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
 	m_imageSphereGL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
-	m_imageSphereGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // NORMALE
 	m_imageViewportGL = std::make_unique<VertexArray>(vkmgr);
 	m_imageViewportGL->createBindingEntry(4 * sizeof(float));
 	m_imageViewportGL->addInput(VK_FORMAT_R32G32_SFLOAT); // POS2D
@@ -770,7 +777,7 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	// imageTexture->unbindSet(cmd);
 }
 
-// Can be optimized by sharing vertices between triangles and quads (requires using an index buffer)
+// Optimized sphere generation using index buffer to share vertices between triangles
 void Image::generateSphericalGeometry()
 {
 	// Use tolerance to avoid unnecessary regenerations due to float precision
@@ -810,6 +817,7 @@ void Image::generateSphericalGeometry()
 	// Check that we have a valid range
 	if (baseLatRad >= topLatRad) {
 		vertexSize = 0;
+		indexCount = 0;
 		return; // No geometry to generate
 	}
 
@@ -817,151 +825,147 @@ void Image::generateSphericalGeometry()
 	float altitudeRange = topLatRad - baseLatRad;
 	float stackStep = altitudeRange / stacks;
 
-	// Calculate required size for vertices
-	int numQuads = stacks * slices;
-	int numVertices = numQuads * 6; // 2 triangles per quad
+	// Calculate required size for vertices and indices
+	// Vertex grid: (stacks+1) x (slices+1) vertices
+	int numVertices = (stacks + 1) * (slices + 1);
+	// Index buffer: stacks x slices quads, each quad = 6 indices (2 triangles)
+	int numIndices = stacks * slices * 6;
 
-	// Allocate buffer if necessary (8 floats per vertex: 3 pos + 2 tex + 3 normal)
 	Context &context = *Context::instance;
-	float *sphereData = (float *) context.transfer->beginPlanCopy(numVertices * 8 * sizeof(float));
-	float *currentData = sphereData;
 
-	int actualVertices = 0;
+	// Prepare vertex data in local memory first
+	std::vector<float> vertexData(numVertices * 5);
+	float *currentData = vertexData.data();
 
-	// Generate sphere geometry between specified altitudes
-	for (int stack = 0; stack < stacks; ++stack) {
-		for (int slice = 0; slice < slices; ++slice) {
-			// Calculate latitudes based on current altitude range with higher precision
-			double lat1_d = (double)baseLatRad + (double)stack * (double)stackStep;
-			double lat2_d = (double)baseLatRad + (double)(stack + 1) * (double)stackStep;
-			double lon1_d = 2.0 * M_PI * (double)slice / (double)slices;
-			double lon2_d = 2.0 * M_PI * (double)(slice + 1) / (double)slices;
+	for (int stack = 0; stack <= stacks; ++stack) {
+		for (int slice = 0; slice <= slices; ++slice) {
+			// Calculate latitude and longitude with higher precision
+			double lat_d = (double)baseLatRad + (double)stack * (double)stackStep;
+			double lon_d = 2.0 * M_PI * (double)slice / (double)slices;
 
-			float lat1 = (float)lat1_d;
-			float lat2 = (float)lat2_d;
-			float lon1 = (float)lon1_d;
-			float lon2 = (float)lon2_d;
+			float lat = (float)lat_d;
+			float lon = (float)lon_d;
 
-			// Avoid degenerate triangles when lat1 ≈ lat2
-			if (std::fabs(lat2 - lat1) < 0.001f) continue;
+			// Calculate vertex position
+			Vec3f pos;
+			pos[0] = radius * cosf(lat) * cosf(lon);
+			pos[1] = radius * cosf(lat) * sinf(lon);
+			pos[2] = radius * sinf(lat);
 
-			// Calculate positions and texture coordinates for the 4 vertices
-			Vec3f v1, v2, v3, v4;
-			Vec2f t1, t2, t3, t4;
-
-			// Calculate texture coordinates based on current altitude range with higher precision
-			// Map the current altitude range [baseLatRad, topLatRad] to the full texture [0, 1]
-			// This ensures the entire image is visible on the generated sphere portion
-			// Convention: U = horizontal (longitude), V = vertical (latitude)
-
-			// V coordinates (vertical/latitude) with higher precision
-			// Map the current latitude range to [0, 1] so the entire image fits on the sphere portion
-			double texV1_d = (lat1_d - baseLatRad) / (topLatRad - baseLatRad); // texV1 = lower latitude
-			double texV2_d = (lat2_d - baseLatRad) / (topLatRad - baseLatRad); // texV2 = upper latitude
+			// Calculate texture coordinates with higher precision
+			// V coordinate (vertical/latitude) - map current latitude range to [0, 1]
+			double texV_d = (lat_d - baseLatRad) / (topLatRad - baseLatRad);
 
 			// If texture is YUV or YUVA (video), flip V coordinates
 			if (imageTexture->isYUV() || imageTexture->isYUVA()) {
-				texV1_d = 1.0 - texV1_d;
-				texV2_d = 1.0 - texV2_d;
+				texV_d = 1.0 - texV_d;
 			}
 
 			// Clamp texture coordinates to ensure they're within valid [0,1] range
-			texV1_d = std::max(0.0, std::min(1.0, texV1_d));
-			texV2_d = std::max(0.0, std::min(1.0, texV2_d));
+			texV_d = std::max(0.0, std::min(1.0, texV_d));
+			float texV = (float)texV_d;
 
-			float texV1 = (float)texV1_d;
-			float texV2 = (float)texV2_d;
+			// U coordinate (horizontal/longitude) - inverted for horizontal flip
+			double texU_d = 1.0 - (double)slice / (double)slices;
+			float texU = (float)texU_d;
 
-			// U coordinates (horizontal/longitude) with higher precision - inverted for horizontal flip
-			double texU1_d = 1.0 - (double)slice / (double)slices;       // texU1 = left longitude (inverted)
-			double texU2_d = 1.0 - (double)(slice + 1) / (double)slices; // texU2 = right longitude (inverted)
-			float texU1 = (float)texU1_d;
-			float texU2 = (float)texU2_d;
+			// Store vertex data: position (3) + texture (2) = 5 floats
+			// The shader imageUnified.vert expects: location=0 position (vec3), location=1 texCoord (vec2)
+			*(currentData++) = pos[0];
+			*(currentData++) = pos[1];
+			*(currentData++) = pos[2];
+			*(currentData++) = texU;
+			*(currentData++) = texV;
+		}
+	}
 
-			// Vertex 1 (bottom-left)
-			v1[0] = radius * cosf(lat1) * cosf(lon1);
-			v1[1] = radius * cosf(lat1) * sinf(lon1);
-			v1[2] = radius * sinf(lat1);
-			t1[0] = texU1;
-			t1[1] = texV1;
+	// Prepare index data in local memory first
+	std::vector<uint16_t> indexData(numIndices);
+	uint16_t *currentIndex = indexData.data();
+	int actualIndices = 0;
 
-			// Vertex 2 (bottom-right)
-			v2[0] = radius * cosf(lat1) * cosf(lon2);
-			v2[1] = radius * cosf(lat1) * sinf(lon2);
-			v2[2] = radius * sinf(lat1);
-			t2[0] = texU2;
-			t2[1] = texV1;
+	for (int stack = 0; stack < stacks; ++stack) {
+		for (int slice = 0; slice < slices; ++slice) {
+			// Skip degenerate triangles
+			double lat1_d = (double)baseLatRad + (double)stack * (double)stackStep;
+			double lat2_d = (double)baseLatRad + (double)(stack + 1) * (double)stackStep;
+			if (std::fabs(lat2_d - lat1_d) < 0.001f) continue;
 
-			// Vertex 3 (top-right)
-			v3[0] = radius * cosf(lat2) * cosf(lon2);
-			v3[1] = radius * cosf(lat2) * sinf(lon2);
-			v3[2] = radius * sinf(lat2);
-			t3[0] = texU2;
-			t3[1] = texV2;
+			// Calculate vertex indices for the current quad
+			uint16_t v1 = stack * (slices + 1) + slice;             // bottom-left
+			uint16_t v2 = stack * (slices + 1) + (slice + 1);       // bottom-right
+			uint16_t v3 = (stack + 1) * (slices + 1) + (slice + 1); // top-right
+			uint16_t v4 = (stack + 1) * (slices + 1) + slice;       // top-left
 
-			// Vertex 4 (top-left)
-			v4[0] = radius * cosf(lat2) * cosf(lon1);
-			v4[1] = radius * cosf(lat2) * sinf(lon1);
-			v4[2] = radius * sinf(lat2);
-			t4[0] = texU1;
-			t4[1] = texV2;
-
-			// Calculate normals (for a sphere, vertex normal is the normalized vertex direction)
-			Vec3f n1 = v1; n1.normalize();
-			Vec3f n2 = v2; n2.normalize();
-			Vec3f n3 = v3; n3.normalize();
-			Vec3f n4 = v4; n4.normalize();
+			// Check for index overflow
+			if (v1 >= 65535 || v2 >= 65535 || v3 >= 65535 || v4 >= 65535) {
+				// Should never happen if (slices*stacks < 65535/6)
+				continue;
+			}
 
 			// First triangle (v1, v2, v3)
-			*(currentData++) = v1[0]; *(currentData++) = v1[1]; *(currentData++) = v1[2];
-			*(currentData++) = t1[0]; *(currentData++) = t1[1];
-			*(currentData++) = n1[0]; *(currentData++) = n1[1]; *(currentData++) = n1[2];
-			actualVertices++;
-
-			*(currentData++) = v2[0]; *(currentData++) = v2[1]; *(currentData++) = v2[2];
-			*(currentData++) = t2[0]; *(currentData++) = t2[1];
-			*(currentData++) = n2[0]; *(currentData++) = n2[1]; *(currentData++) = n2[2];
-			actualVertices++;
-
-			*(currentData++) = v3[0]; *(currentData++) = v3[1]; *(currentData++) = v3[2];
-			*(currentData++) = t3[0]; *(currentData++) = t3[1];
-			*(currentData++) = n3[0]; *(currentData++) = n3[1]; *(currentData++) = n3[2];
-			actualVertices++;
+			*(currentIndex++) = v1;
+			*(currentIndex++) = v2;
+			*(currentIndex++) = v3;
+			actualIndices += 3;
 
 			// Second triangle (v1, v3, v4)
-			*(currentData++) = v1[0]; *(currentData++) = v1[1]; *(currentData++) = v1[2];
-			*(currentData++) = t1[0]; *(currentData++) = t1[1];
-			*(currentData++) = n1[0]; *(currentData++) = n1[1]; *(currentData++) = n1[2];
-			actualVertices++;
-
-			*(currentData++) = v3[0]; *(currentData++) = v3[1]; *(currentData++) = v3[2];
-			*(currentData++) = t3[0]; *(currentData++) = t3[1];
-			*(currentData++) = n3[0]; *(currentData++) = n3[1]; *(currentData++) = n3[2];
-			actualVertices++;
-
-			*(currentData++) = v4[0]; *(currentData++) = v4[1]; *(currentData++) = v4[2];
-			*(currentData++) = t4[0]; *(currentData++) = t4[1];
-			*(currentData++) = n4[0]; *(currentData++) = n4[1]; *(currentData++) = n4[2];
-			actualVertices++;
+			*(currentIndex++) = v1;
+			*(currentIndex++) = v3;
+			*(currentIndex++) = v4;
+			actualIndices += 3;
 		}
 	}
 
-	// Create or update vertex buffer
-	if (vertexSize != actualVertices || !vertex) {
-		vertexSize = actualVertices;
+	// Create or update vertex buffer only if size changed
+	bool vertexBufferChanged = false;
+	if (vertexSize != numVertices || !vertex) {
+		vertexSize = numVertices;
 		vertex.reset();
-		if (actualVertices > 0) {
-			vertex = m_imageSphereGL->createBuffer(0, actualVertices, Context::instance->globalBuffer.get());
+		if (numVertices > 0) {
+			vertex = m_imageSphereGL->createBuffer(0, numVertices, Context::instance->globalBuffer.get());
+			vertexBufferChanged = true;
 		}
 	}
 
-	if (actualVertices > 0) {
-		context.transfer->endPlanCopy(vertex->get(), actualVertices * 8 * sizeof(float));
+	// Create or update index buffer only if size changed
+	bool indexBufferChanged = false;
+	if (indexCount != actualIndices || !indexBuffer) {
+		if (indexBuffer) {
+			Context::instance->indexBufferMgr->releaseBuffer(*indexBuffer);
+		}
+		indexCount = actualIndices;
+		indexBuffer.reset();
+		if (actualIndices > 0) {
+			indexBuffer = std::make_unique<SubBuffer>(Context::instance->indexBufferMgr->acquireBuffer(actualIndices * sizeof(uint16_t)));
+			indexBufferChanged = true;
+		}
+	}
+
+	// Upload vertex and index data only if buffers were created/changed
+	if (numVertices > 0 && (vertexBufferChanged || vertex)) {
+		float *sphereData = (float *) context.transfer->beginPlanCopy(numVertices * 5 * sizeof(float));
+		memcpy(sphereData, vertexData.data(), numVertices * 5 * sizeof(float));
+		context.transfer->endPlanCopy(vertex->get(), numVertices * 5 * sizeof(float));
+	}
+	if (actualIndices > 0 && (indexBufferChanged || indexBuffer)) {
+		uint16_t *indexGpuData = (uint16_t *) context.transfer->beginPlanCopy(actualIndices * sizeof(uint16_t));
+		memcpy(indexGpuData, indexData.data(), actualIndices * sizeof(uint16_t));
+		context.transfer->endPlanCopy(*indexBuffer, actualIndices * sizeof(uint16_t));
 	}
 }
 
 void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 {
+	// Generate spherical geometry BEFORE setting up the pipeline
+	// This ensures buffers are ready and prevent setting up pipelines unnecessarily
+	generateSphericalGeometry();
+
+	// Only proceed with rendering if we have valid geometry
+	if (!vertex || vertexSize == 0 || !indexBuffer || indexCount == 0) {
+		return;
+	}
+
 	PipelineLayout *layout;
 	if (imageTexture->isYUVA()) {
 		setPipeline(m_pipelineYUVASphere);
@@ -991,14 +995,10 @@ void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 	} else
 		layout->pushConstant(cmd, 1, &image_alpha, 0, 4);
 
-	// Generate spherical geometry that respects altitude limits
-	generateSphericalGeometry();
-
-	// Use the generated geometry instead of the default object
-	if (vertex && vertexSize > 0) {
-		vertex->bind(cmd);
-		vkCmdDraw(cmd, vertexSize, 1, 0, 0);
-	}
+	// Render the geometry
+	vertex->bind(cmd);
+	vkCmdBindIndexBuffer(cmd, indexBuffer->buffer, indexBuffer->offset, VK_INDEX_TYPE_UINT16);
+	vkCmdDrawIndexed(cmd, indexCount, 1, 0, 0, 0);
 }
 
 static int decalages(int i, int howManyDisplay)

@@ -45,6 +45,7 @@ class Pipeline;
 class PipelineLayout;
 class VertexArray;
 class VertexBuffer;
+struct SubBuffer;
 class ImageTexture;
 class OjmL;
 
@@ -162,7 +163,9 @@ private:
 	static VkCommandBuffer cmd; // Currently recording command
 	static Pipeline *pipelineUsed;
 	std::unique_ptr<VertexBuffer> vertex;
+	std::unique_ptr<SubBuffer> indexBuffer;  // Index buffer for optimized sphere rendering
 	uint32_t vertexSize;
+	uint32_t indexCount;  // Number of indices in the index buffer
 
 	//enables transparency
 	bool transparency = false;
