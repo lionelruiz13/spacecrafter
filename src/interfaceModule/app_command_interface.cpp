@@ -3118,6 +3118,10 @@ int AppCommandInterface::commandMedia()
 			return executeCommandStatus();
 		}
 	}
+	std::string argSpeed = args[W_SPEED];
+	if (!argSpeed.empty()) {
+		media->playerSetSpeed(evalDouble(argSpeed));
+	}
 
 	debug_message = _("command 'media': unknown parameter");
 
