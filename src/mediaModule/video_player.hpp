@@ -150,6 +150,15 @@ public:
 		reloop = loopy;
 	}
 
+	//! Set video playback speed factor
+	//! \param factor Speed multiplier (1.0 = normal speed, 2.0 = double speed, 0.5 = half speed)
+	void setPlaybackSpeed(float factor);
+
+	//! Get current playback speed factor
+	float getPlaybackSpeed() const {
+		return playbackSpeedFactor;
+	}
+
 	static unsigned char *tracer_frameCache(void *data, unsigned char *buffer);
 	static unsigned char *tracer_atomic_bool(void *data, unsigned char *buffer);
 	static unsigned char *tracer_duration(void *data, unsigned char *buffer);
@@ -190,6 +199,7 @@ private:
 	std::chrono::steady_clock::duration latency; // Time behind the video which need to be reclaimed
 	std::chrono::steady_clock::duration deltaFrame; // Time between two frames
 	std::chrono::steady_clock::duration renderDeltaFrame; // Time between two rendered frames
+	float playbackSpeedFactor = 1.0f; // Video playback speed multiplier
 
 	//performance query
 	std::chrono::steady_clock::time_point sTime;

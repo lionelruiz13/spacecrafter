@@ -2989,12 +2989,22 @@ int AppCommandInterface::commandMedia()
 					media->setLoop(true);
 				else
 					media->setLoop(false);
+			} else {
+				media->setLoop(false); // default no loop
+			}
+
+			std::string argSpeed = args[W_SPEED];
+			double evaluatedSpeed = evalDouble(argSpeed);
+			if (!argSpeed.empty()) {
+				media->playerSetSpeed(evaluatedSpeed);
+			} else {
+				media->playerSetSpeed(1.0); // default speed
 			}
 
 			std::string type_string = args[W_TYPE];
 			VID_TYPE type = media->strToVideoType(type_string);
 			std::string audioName = args[W_AUDIONAME];
-			if (type==VID_TYPE::V_NONE && !audioName.empty())
+			if (type==VID_TYPE::V_NONE && !audioName.empty()) // audio only
 				return (executeCommand("audio filename " + args[W_AUDIONAME] + " action play loop " + args[W_LOOP]));
 			if (type==VID_TYPE::V_NONE) {
 				debug_message = "Command 'media' argument action need argument 'type'";
@@ -3025,7 +3035,7 @@ int AppCommandInterface::commandMedia()
 				tmpProject = IMG_PROJECT::THRICE;
 			}
 
-			if (!audioName.empty()) {
+			if (!audioName.empty() && (argSpeed.empty() || evaluatedSpeed == 1.0)) { // audio only if normal speed
 				if ( audioName ==W_AUTO) {
 					// We test if a file of language exists we take videoName and we add -fr for example in the place of its extention and we add after ogg
 					audioName = videoName;

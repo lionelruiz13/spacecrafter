@@ -47,11 +47,13 @@ VideoPlayer::VideoPlayer(Media *media, InitParser &conf) : media(media)
 	tracer.emplace(Trace::UCHAR, &adaptiveFramerate, "adaptive");
 	tracer.emplace(Trace::INT, &videoRes.w, "width");
 	tracer.emplace(Trace::INT, &videoRes.h, "height");
+	tracer.emplace(Trace::FLOAT, &playbackSpeedFactor, "speed");
 	m_isVideoPlayed = false;
 	m_isVideoInPause = false;
 	m_isVideoSeeking = false;
 	hasAlphaChannel = false;
 	targetFormat = AV_PIX_FMT_YUV420P;
+	playbackSpeedFactor = 1.0f;
 	skipFrame = conf.getBoolean(SCS_IO, SCK_VIDEO_FRAME_SKIP);
 	if (conf.getBoolean(SCS_DEBUG, SCK_PRINT_VIDEO_INFO)) {
 		if (conf.getBoolean(SCS_DEBUG, SCK_PRINT_LOG)) {
@@ -104,7 +106,7 @@ void VideoPlayer::pauseCurrentVideo()
 	if (m_isVideoInPause) {
 		m_isVideoInPause = false;
 		currentTime = std::chrono::steady_clock::now();
-		nextFrame = currentTime + deltaFrame;
+		nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
 		if (audio) {
 			audio->musicJump(std::chrono::duration_cast<std::chrono::duration<double>>(currentFrame * deltaFrame).count());
 			audio->musicResume();
@@ -119,6 +121,31 @@ void VideoPlayer::pauseCurrentVideo()
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PAUSE);
 	EventRecorder::getInstance()->queue(event);
+}
+
+void VideoPlayer::setPlaybackSpeed(float factor)
+{
+	if (factor <= 0.0f) {
+		cLog::get()->write("VideoPlayer: Invalid playback speed factor " + std::to_string(factor) + ", must be > 0", LOG_TYPE::L_WARNING);
+		cLog::get()->write("VideoPlayer: Playback speed default set to 1x", LOG_TYPE::L_INFO);
+		playbackSpeedFactor = 1.0f;
+		return;
+	}
+
+	// Add reasonable limits to prevent performance issues
+	const float MIN_SPEED = 0.1f;  // 10x slower
+	const float MAX_SPEED = 10.0f; // 10x faster
+
+	if (factor < MIN_SPEED) {
+		cLog::get()->write("VideoPlayer: Speed factor " + std::to_string(factor) + " too low, clamping to " + std::to_string(MIN_SPEED), LOG_TYPE::L_WARNING);
+		factor = MIN_SPEED;
+	} else if (factor > MAX_SPEED) {
+		cLog::get()->write("VideoPlayer: Speed factor " + std::to_string(factor) + " too high, clamping to " + std::to_string(MAX_SPEED), LOG_TYPE::L_WARNING);
+		factor = MAX_SPEED;
+	}
+
+	playbackSpeedFactor = factor;
+	cLog::get()->write("VideoPlayer: Playback speed set to " + std::to_string(factor) + "x", LOG_TYPE::L_INFO);
 }
 
 
@@ -714,30 +741,32 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		}
 		if (nextFrame <= currentTime) {
 			if (auto nbFrames = frameCached.load(std::memory_order_acquire) - frameUsed.load(std::memory_order_relaxed)) {
-				uint32_t frameIdx;
-				do { // Determine how many frames to load
+				// Calculate how many frames to skip for high speeds
+				static auto lastUpdateTime = std::chrono::steady_clock::now();
+				auto now = std::chrono::steady_clock::now();
+				auto timeElapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - lastUpdateTime);
+				lastUpdateTime = now;
+
+				// Calculate expected frames to advance based on elapsed time and speed
+				float expectedFramesToAdvance = (timeElapsed.count() / 1000000.0f) * frameRate * playbackSpeedFactor;
+				uint32_t framesToSkip = std::max(1u, static_cast<uint32_t>(expectedFramesToAdvance));
+
+				// Limit to available frames
+				framesToSkip = std::min(framesToSkip, nbFrames);
+
+				// Skip frames
+				for (uint32_t i = 0; i < framesToSkip; ++i) {
 					++currentFrame;
-					frameIdx = frameUsed.fetch_add(1, std::memory_order_relaxed);
-					latency -= deltaFrame;
-					if (adaptiveFramerate) {
-						if (--nbFrames) {
-							if (nbFrames < CACHE_STRESS || latency.count() > 0) {
-								nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(
-									deltaFrame.count() * std::min(MIN_VIDEO_SPEED + nbFrames * SPEED_INCREMENT_PER_CACHED_FRAME, MAX_VIDEO_SPEED)
-								));
-							} else {
-								nextFrame += deltaFrame;
-							}
-						} else {
-							nextFrame = currentTime + deltaFrame;
-						}
-					} else {
-						nextFrame += deltaFrame;
-						break;
-					}
-				} while (nextFrame <= currentTime && skipFrame);
-				cv.notify_all();
+				}
+
+				// Advance frame index by the number of skipped frames
+				auto frameIdx = frameUsed.fetch_add(framesToSkip, std::memory_order_relaxed);
 				frameIdx %= MAX_CACHED_FRAMES;
+
+				cv.notify_all();
+
+				// Update timing for next frame based on playback speed
+				nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
 				VkBufferImageCopy region;
 				region.bufferRowLength = region.bufferImageHeight = 0;
 				region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
@@ -812,7 +841,7 @@ void VideoPlayer::threadInterrupt()
 void VideoPlayer::threadPlay()
 {
 	currentTime = std::chrono::steady_clock::now();
-	nextFrame = currentTime + deltaFrame;
+	nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
 	latency = -deltaFrame;
 	drawNextFrame = true;
 	this->getNextVideoFrame(); // The first valid frame must be ready

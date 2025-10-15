@@ -421,6 +421,17 @@ public:
 		player->setRenderFramerate(framerate);
 	}
 
+	//! Set video playback speed
+	//! \param factor Speed multiplier (1.0 = normal speed, 2.0 = double speed, 0.5 = half speed)
+	void playerSetSpeed(float factor) {
+		player->setPlaybackSpeed(factor);
+	}
+
+	//! Get current video playback speed
+	float playerGetSpeed() const {
+		return player->getPlaybackSpeed();
+	}
+
 	//! Indicate that the player stopped playing video
 	void playerStopped();
 private:
