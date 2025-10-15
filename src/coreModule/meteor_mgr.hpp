@@ -54,6 +54,8 @@ public:
 	// set zenith hourly rate
 	void setZHR(int zhr){
 		ZHR = zhr;
+		if (currentDayOfYear < 0) return; // Skip if day of year not yet computed
+		Meteor::setRadiantZHR(currentDayOfYear, ZHR);
 	}
 	// get zenith hourly rate
 	int getZHR() const {
@@ -80,6 +82,7 @@ private:
 	int ZHR;
 	int max_velocity;
 	double zhr_to_wsr;  // factor to convert from zhr to whole earth per second rate
+	int currentDayOfYear = -1;
 
 	// a meteor = 3 positions, so 6 floats points
 	std::vector<float> vecPos;
