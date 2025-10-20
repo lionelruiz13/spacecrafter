@@ -152,18 +152,26 @@ void PlanetGrid::drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4
     pipeline->bind(cmd);
 
     struct {
-        Mat4f ModelViewMatrix;
+        Mat4f ModelViewMatrix; // Now includes all transformations
         Vec3f clipping_fov;
-        float bodyRadius;
-        float gridRadius;
-        float axisRotation;
     } matData;
 
-    matData.ModelViewMatrix = mat.convert();
+    // Pre-compute all transformations on CPU (once per mesh instead of once per vertex)
+
+    // 1. Create scaling matrix
+    float totalScale = body->radius * 1.05f; // bodyRadius * gridRadius
+    Mat4d scaleMatrix = Mat4d::scaling(Vec3d(totalScale, totalScale, totalScale));
+
+    // 2. Create rotation matrix around Z axis
+    double axisRotationRad = body->getAxisRotation() * M_PI / 180.0;
+    Mat4d rotationMatrix = Mat4d::zrotation(axisRotationRad);
+
+    // 3. Combine all transformations: ModelView * Rotation * Scale
+    // Order matters: we want to scale first, then rotate, then apply model-view
+    Mat4d completeTransform = mat * rotationMatrix * scaleMatrix;
+
+    matData.ModelViewMatrix = completeTransform.convert();
     matData.clipping_fov = prj->getClippingFov();
-    matData.bodyRadius = body->radius;
-    matData.gridRadius = 1.05f;
-    matData.axisRotation = body->getAxisRotation() * M_PI / 180.0f;
 
     layout->pushConstant(cmd, 0, &matData);
 
@@ -188,7 +196,7 @@ void PlanetGrid::createSC_context()
 
     layout = std::make_unique<PipelineLayout>(vkmgr);
     layout->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0,
-                           sizeof(Mat4f) + sizeof(Vec3f) + sizeof(float) + sizeof(float) + sizeof(float)); // Push constant 1: matrix + clipping + rotation + radii
+                           sizeof(Mat4f) + sizeof(Vec3f)); // Push constant: matrix + clipping_fov
     layout->buildLayout();
     layout->build();
 
