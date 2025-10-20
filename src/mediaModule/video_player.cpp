@@ -516,13 +516,7 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 	if (pFrameOut && pFrameOut->data[0]) {
 		// For VP9 with alpha, pFrameOut does not have allocated data
 		if (!(pCodecCtx && pCodecCtx->codec_id == AV_CODEC_ID_VP9 && hasAlphaChannel)) {
-			try {
-				av_freep(&pFrameOut->data[0]);
-			} catch (const std::exception& e) {
-				cLog::get()->write("stopCurrentVideo() - ERROR freeing pFrameOut data: " + std::string(e.what()), LOG_TYPE::L_ERROR);
-			} catch (...) {
-				cLog::get()->write("stopCurrentVideo() - UNKNOWN ERROR freeing pFrameOut data", LOG_TYPE::L_ERROR);
-			}
+			av_freep(&pFrameOut->data[0]);
 		}
 	}
 	if (pFrameOut) {
