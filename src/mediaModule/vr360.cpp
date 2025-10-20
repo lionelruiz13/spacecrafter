@@ -90,6 +90,15 @@ void VR360::createSC_context()
 	pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	pipeline->bindShader("vr360.frag.spv");
 	pipeline->build();
+	pipelineAlpha = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, layout.get());
+	pipelineAlpha->setDepthStencilMode();
+	pipelineAlpha->setCullMode(true);
+	sphere->bind(*pipelineAlpha); // bind Objl VertexBuffer to pipeline (common to every Obj/Ojm)
+	pipelineAlpha->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	pipelineAlpha->bindShader("vr360.vert.spv");
+	pipelineAlpha->setSpecializedConstant(7, context.isFloat64Supported);
+	pipelineAlpha->bindShader("vr360Alpha.frag.spv");
+	pipelineAlpha->build();
 	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
 	set->bindUniform(uniform, 4); // Binding 4 : uniform
 }
@@ -130,7 +139,13 @@ void VR360::build()
 	for (int i = 0; i < 3; ++i) {
 		VkCommandBuffer cmd = cmds[i];
 		context.frame[i]->begin(cmd, PASS_BACKGROUND);
-		pipeline->bind(cmd);
+		if (hasAlphaChannel) {
+			cLog::get()->write("VR360: Using alpha channel pipeline", LOG_TYPE::L_DEBUG);
+			pipelineAlpha->bind(cmd);
+		} else {
+			cLog::get()->write("VR360: Using standard pipeline", LOG_TYPE::L_DEBUG);
+			pipeline->bind(cmd);
+		}
 		layout->bindSets(cmd, {*context.uboSet, *set});
 		switch(typeVR360) {
 			case TYPE::V_CUBE:

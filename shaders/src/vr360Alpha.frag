@@ -7,11 +7,11 @@
 layout (binding=0, set=1) uniform sampler2D s_tex_y;
 layout (binding=1, set=1) uniform sampler2D s_tex_u;
 layout (binding=2, set=1) uniform sampler2D s_tex_v;
-// Binding 3 is for alpha texture in vr360Alpha shader
+layout (binding=3, set=1) uniform sampler2D s_tex_a; // Texture alpha
 layout (binding=4, set=1) uniform udata {
 	mat4 ModelViewMatrix;
 	float fader;
-	bool hasAlphaChannel; // Keep it since vr360Alpha shader uses the same udata block
+	bool hasAlphaChannel;
 };
 
 #include <convertToRGB.glsl>
@@ -23,5 +23,11 @@ layout (location=0)out vec4 FragColor;
 void main(void)
 {
     vec3 tex_color = convertToRGB(s_tex_y, s_tex_u, s_tex_v, TexCoord);
-    FragColor = vec4(tex_color, fader);
+
+    // Compute final alpha by combining fader and video alpha channel
+    float finalAlpha = fader;
+    float videoAlpha = texture(s_tex_a, TexCoord).r;
+    finalAlpha *= videoAlpha;
+
+    FragColor = vec4(tex_color, finalAlpha);
 }
