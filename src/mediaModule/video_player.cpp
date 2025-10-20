@@ -741,32 +741,34 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		}
 		if (nextFrame <= currentTime) {
 			if (auto nbFrames = frameCached.load(std::memory_order_acquire) - frameUsed.load(std::memory_order_relaxed)) {
-				// Calculate how many frames to skip for high speeds
-				static auto lastUpdateTime = std::chrono::steady_clock::now();
-				auto now = std::chrono::steady_clock::now();
-				auto timeElapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - lastUpdateTime);
-				lastUpdateTime = now;
-
-				// Calculate expected frames to advance based on elapsed time and speed
-				float expectedFramesToAdvance = (timeElapsed.count() / 1000000.0f) * frameRate * playbackSpeedFactor;
-				uint32_t framesToSkip = std::max(1u, static_cast<uint32_t>(expectedFramesToAdvance));
-
-				// Limit to available frames
-				framesToSkip = std::min(framesToSkip, nbFrames);
-
-				// Skip frames
-				for (uint32_t i = 0; i < framesToSkip; ++i) {
+				uint32_t frameIdx;
+				do { // Determine how many frames to load
 					++currentFrame;
-				}
-
-				// Advance frame index by the number of skipped frames
-				auto frameIdx = frameUsed.fetch_add(framesToSkip, std::memory_order_relaxed);
-				frameIdx %= MAX_CACHED_FRAMES;
-
+					frameIdx = frameUsed.fetch_add(1, std::memory_order_relaxed);
+					latency -= deltaFrame;
+					if (adaptiveFramerate) {
+						if (--nbFrames) {
+							if (nbFrames < CACHE_STRESS || latency.count() > 0) {
+								// Apply playback speed to adaptive framerate calculation
+								nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(
+									deltaFrame.count() * std::min(MIN_VIDEO_SPEED + nbFrames * SPEED_INCREMENT_PER_CACHED_FRAME, MAX_VIDEO_SPEED) / playbackSpeedFactor
+								));
+							} else {
+								// Apply playback speed to normal frame timing
+								nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
+							}
+						} else {
+							// Apply playback speed when resetting timing
+							nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
+						}
+					} else {
+						// Apply playback speed to non-adaptive mode
+						nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
+						break;
+					}
+				} while (nextFrame <= currentTime && skipFrame);
 				cv.notify_all();
-
-				// Update timing for next frame based on playback speed
-				nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
+				frameIdx %= MAX_CACHED_FRAMES;
 				VkBufferImageCopy region;
 				region.bufferRowLength = region.bufferImageHeight = 0;
 				region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
