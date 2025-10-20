@@ -350,6 +350,14 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 		}
 	}
 
+	// check if the pixel format is supported
+	if (pCodecCtx->pix_fmt != targetFormat) {
+		cLog::get()->write("Unsupported pixel format for video file. Expected " +
+		                   std::string(av_get_pix_fmt_name(targetFormat)) + ", got " +
+		                   std::string(av_get_pix_fmt_name(pCodecCtx->pix_fmt)), LOG_TYPE::L_ERROR);
+		return false;
+	}
+
 	if (hasAlphaChannel) {
 		cLog::get()->write("Video has alpha channel, using YUVA420P", LOG_TYPE::L_INFO);
 	} else {
@@ -426,21 +434,6 @@ bool VideoPlayer::getNextFrame()
 			now = std::chrono::steady_clock::now();
 			sDecode += now - sTime;
 			sTime = now;
-
-			// For VP9 with alpha, do not use sws_scale as alpha is already in the frame
-			if (pCodecCtx->codec_id == AV_CODEC_ID_VP9 && hasAlphaChannel) {
-				// VP9 with alpha: use pFrameIn directly, no conversion
-				// Do nothing
-			} else if (pCodecCtx->pix_fmt != targetFormat) {
-				// Convert format only if needed and not VP9 with alpha
-				sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0,
-				         pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
-				// Use pFrameOut instead of pFrameIn for the rest
-				AVFrame* temp = pFrameIn;
-				pFrameIn = pFrameOut;
-				pFrameOut = temp;
-			}
-
 			if (m_isVideoSeeking) {
 				if (pFrameIn->key_frame==1) {
 					m_isVideoSeeking=false;
