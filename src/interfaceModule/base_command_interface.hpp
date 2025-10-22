@@ -152,6 +152,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_FASTER                    "faster"
 #define W_SLOWER                    "slower"
 #define W_SPEED                     "speed"
+#define W_SPEED_INCREMENT           "speed_increment"
 #define W_SYNC                      "sync"
 #define W_RESUME                    "resume"
 #define W_LOOP                      "loop"

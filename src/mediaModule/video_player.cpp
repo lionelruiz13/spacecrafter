@@ -47,13 +47,11 @@ VideoPlayer::VideoPlayer(Media *media, InitParser &conf) : media(media)
 	tracer.emplace(Trace::UCHAR, &adaptiveFramerate, "adaptive");
 	tracer.emplace(Trace::INT, &videoRes.w, "width");
 	tracer.emplace(Trace::INT, &videoRes.h, "height");
-	tracer.emplace(Trace::FLOAT, &playbackSpeedFactor, "speed");
 	m_isVideoPlayed = false;
 	m_isVideoInPause = false;
 	m_isVideoSeeking = false;
 	hasAlphaChannel = false;
 	targetFormat = AV_PIX_FMT_YUV420P;
-	playbackSpeedFactor = 1.0f;
 	skipFrame = conf.getBoolean(SCS_IO, SCK_VIDEO_FRAME_SKIP);
 	if (conf.getBoolean(SCS_DEBUG, SCK_PRINT_VIDEO_INFO)) {
 		if (conf.getBoolean(SCS_DEBUG, SCK_PRINT_LOG)) {
@@ -106,7 +104,7 @@ void VideoPlayer::pauseCurrentVideo()
 	if (m_isVideoInPause) {
 		m_isVideoInPause = false;
 		currentTime = std::chrono::steady_clock::now();
-		nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
+		nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor.toDouble()));
 		if (audio) {
 			audio->musicJump(std::chrono::duration_cast<std::chrono::duration<double>>(currentFrame * deltaFrame).count());
 			audio->musicResume();
@@ -123,29 +121,29 @@ void VideoPlayer::pauseCurrentVideo()
 	EventRecorder::getInstance()->queue(event);
 }
 
-void VideoPlayer::setPlaybackSpeed(float factor)
+void VideoPlayer::setPlaybackSpeed(FixedPoint2 factor)
 {
 	if (factor <= 0.0f) {
-		cLog::get()->write("VideoPlayer: Invalid playback speed factor " + std::to_string(factor) + ", must be > 0", LOG_TYPE::L_WARNING);
+		cLog::get()->write("VideoPlayer: Invalid playback speed factor " + factor.toString() + ", must be > 0", LOG_TYPE::L_WARNING);
 		cLog::get()->write("VideoPlayer: Playback speed default set to 1x", LOG_TYPE::L_INFO);
 		playbackSpeedFactor = 1.0f;
 		return;
 	}
 
 	// Add reasonable limits to prevent performance issues
-	const float MIN_SPEED = 0.1f;  // 10x slower
-	const float MAX_SPEED = 10.0f; // 10x faster
+	static const FixedPoint2 MIN_SPEED(0.1f);  // 10x slower
+	static const FixedPoint2 MAX_SPEED(10.0f); // 10x faster
 
 	if (factor < MIN_SPEED) {
-		cLog::get()->write("VideoPlayer: Speed factor " + std::to_string(factor) + " too low, clamping to " + std::to_string(MIN_SPEED), LOG_TYPE::L_WARNING);
+		cLog::get()->write("VideoPlayer: Speed factor " + factor.toString() + " too low, clamping to " + MIN_SPEED.toString(), LOG_TYPE::L_WARNING);
 		factor = MIN_SPEED;
 	} else if (factor > MAX_SPEED) {
-		cLog::get()->write("VideoPlayer: Speed factor " + std::to_string(factor) + " too high, clamping to " + std::to_string(MAX_SPEED), LOG_TYPE::L_WARNING);
+		cLog::get()->write("VideoPlayer: Speed factor " + factor.toString() + " too high, clamping to " + MAX_SPEED.toString(), LOG_TYPE::L_WARNING);
 		factor = MAX_SPEED;
 	}
 
 	playbackSpeedFactor = factor;
-	cLog::get()->write("VideoPlayer: Playback speed set to " + std::to_string(factor) + "x", LOG_TYPE::L_INFO);
+	cLog::get()->write("VideoPlayer: Playback speed set to " + factor.toString() + "x", LOG_TYPE::L_INFO);
 }
 
 
@@ -738,22 +736,24 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 							if (nbFrames < CACHE_STRESS || latency.count() > 0) {
 								// Apply playback speed to adaptive framerate calculation
 								nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(
-									deltaFrame.count() * std::min(MIN_VIDEO_SPEED + nbFrames * SPEED_INCREMENT_PER_CACHED_FRAME, MAX_VIDEO_SPEED) / playbackSpeedFactor
+									deltaFrame.count() * std::min(MIN_VIDEO_SPEED + nbFrames * SPEED_INCREMENT_PER_CACHED_FRAME, MAX_VIDEO_SPEED) / playbackSpeedFactor.toDouble()
 								));
 							} else {
 								// Apply playback speed to normal frame timing
-								nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
+								nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor.toDouble()));
 							}
 						} else {
 							// Apply playback speed when resetting timing
-							nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
+							nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor.toDouble()));
 						}
 					} else {
 						// Apply playback speed to non-adaptive mode
-						nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
-						break;
+						nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor.toDouble()));
+						//! Don't break here, we want to skip as many frames as needed
+						//! to catch up with currentTime if we allow skipping or fast playback
+						// break;
 					}
-				} while (nextFrame <= currentTime && skipFrame);
+				} while (nextFrame <= currentTime && (skipFrame || playbackSpeedFactor.toDouble() > 1.0f));
 				cv.notify_all();
 				frameIdx %= MAX_CACHED_FRAMES;
 				VkBufferImageCopy region;
@@ -830,7 +830,7 @@ void VideoPlayer::threadInterrupt()
 void VideoPlayer::threadPlay()
 {
 	currentTime = std::chrono::steady_clock::now();
-	nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor));
+	nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor.toDouble()));
 	latency = -deltaFrame;
 	drawNextFrame = true;
 	this->getNextVideoFrame(); // The first valid frame must be ready

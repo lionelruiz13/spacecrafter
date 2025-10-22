@@ -40,6 +40,7 @@
 #include "tools/no_copy.hpp"
 #include "tools/context.hpp"
 #include <vulkan/vulkan.h>
+#include "tools/fixed_point.hpp"
 
 class Projector;
 class Navigator;
@@ -422,13 +423,25 @@ public:
 	}
 
 	//! Set video playback speed
-	//! \param factor Speed multiplier (1.0 = normal speed, 2.0 = double speed, 0.5 = half speed)
-	void playerSetSpeed(float factor) {
+	//! \param factor Set Speed multiplier (1.0 = normal speed, 2.0 = double speed, 0.5 = half speed)
+	void playerSetSpeed(FixedPoint2 factor) {
 		player->setPlaybackSpeed(factor);
+		if (factor != FixedPoint2::one()) { // Cut audio if speed is not 1
+			audio->musicHalt();
+		} else { // Resume and sync audio if speed is back to 1
+			audio->musicPlay();
+			audio->musicJump(player->getCurrentVideoTime());
+		}
+	}
+
+	//! Increment video playback speed
+	//! \param deltaFactor Speed multiplier increment (positive or negative)
+	void playerIncrementSpeed(FixedPoint2 deltaFactor) {
+		playerSetSpeed(playerGetSpeed() + deltaFactor);
 	}
 
 	//! Get current video playback speed
-	float playerGetSpeed() const {
+	FixedPoint2 playerGetSpeed() const {
 		return player->getPlaybackSpeed();
 	}
 

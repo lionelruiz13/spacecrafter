@@ -50,6 +50,7 @@
 #include "tools/app_settings.hpp"
 #include "tools/call_system.hpp"
 #include "tools/file_path.hpp"
+#include "tools/fixed_point.hpp"
 #include "tools/io.hpp"
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
@@ -2993,14 +2994,6 @@ int AppCommandInterface::commandMedia()
 				media->setLoop(false); // default no loop
 			}
 
-			std::string argSpeed = args[W_SPEED];
-			double evaluatedSpeed = evalDouble(argSpeed);
-			if (!argSpeed.empty()) {
-				media->playerSetSpeed(evaluatedSpeed);
-			} else {
-				media->playerSetSpeed(1.0); // default speed
-			}
-
 			std::string type_string = args[W_TYPE];
 			VID_TYPE type = media->strToVideoType(type_string);
 			std::string audioName = args[W_AUDIONAME];
@@ -3035,7 +3028,7 @@ int AppCommandInterface::commandMedia()
 				tmpProject = IMG_PROJECT::THRICE;
 			}
 
-			if (!audioName.empty() && (argSpeed.empty() || evaluatedSpeed == 1.0)) { // audio only if normal speed
+			if (!audioName.empty()) {
 				if ( audioName ==W_AUTO) {
 					// We test if a file of language exists we take videoName and we add -fr for example in the place of its extention and we add after ogg
 					audioName = videoName;
@@ -3076,6 +3069,13 @@ int AppCommandInterface::commandMedia()
 				}
 			} else {
 				media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject, paused);
+			}
+
+			std::string argSpeed = args[W_SPEED];
+			if (!argSpeed.empty()) {
+				media->playerSetSpeed(FixedPoint2::fromString(argSpeed)); // audio will be cut if the speed isn't 1.0
+			} else {
+				media->playerSetSpeed(FixedPoint2::one()); // default speed
 			}
 
 			Vec3f Vcolor;
@@ -3120,7 +3120,13 @@ int AppCommandInterface::commandMedia()
 	}
 	std::string argSpeed = args[W_SPEED];
 	if (!argSpeed.empty()) {
-		media->playerSetSpeed(evalDouble(argSpeed));
+		media->playerSetSpeed(FixedPoint2::fromString(argSpeed));
+		return executeCommandStatus();
+	}
+	std::string argSpeedIncr = args[W_SPEED_INCREMENT];
+	if (!argSpeedIncr.empty()) {
+		media->playerIncrementSpeed(FixedPoint2::fromString(argSpeedIncr));
+		return executeCommandStatus();
 	}
 
 	debug_message = _("command 'media': unknown parameter");

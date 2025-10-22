@@ -874,7 +874,7 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 			this->executeCommand("flag dual_viewport toggle");
 		    break;
 		case SDL_SCANCODE_J :
-			this->executeCommand("media speed 2");
+			this->executeCommand("media speed_increment -0.1");
 			break;
 		case SDL_SCANCODE_K :
 			if ( scriptInterface->isScriptPlaying() ) {
@@ -884,7 +884,7 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 				media->playerPause();
 			break;
 		case SDL_SCANCODE_L :
-			this->executeCommand("media speed 0.5");
+			this->executeCommand("media speed_increment 0.1");
 			break;
 		case SDL_SCANCODE_LEFT :
 			media->playerJump(-10.0);

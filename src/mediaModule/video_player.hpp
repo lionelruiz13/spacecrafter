@@ -30,6 +30,7 @@
 #include <thread>
 #include <mutex>
 #include "EntityCore/Tools/SafeQueue.hpp"
+#include "tools/fixed_point.hpp"
 
 extern "C"
 {
@@ -152,11 +153,19 @@ public:
 
 	//! Set video playback speed factor
 	//! \param factor Speed multiplier (1.0 = normal speed, 2.0 = double speed, 0.5 = half speed)
-	void setPlaybackSpeed(float factor);
+	void setPlaybackSpeed(FixedPoint2 factor);
 
 	//! Get current playback speed factor
-	float getPlaybackSpeed() const {
+	FixedPoint2 getPlaybackSpeed() const {
 		return playbackSpeedFactor;
+	}
+
+	//! Get current video time in seconds
+	float getCurrentVideoTime() const {
+		if (frameRate > 0.0)
+			return static_cast<float>(currentFrame) / static_cast<float>(frameRate);
+		else
+			return 0.0f;
 	}
 
 	static unsigned char *tracer_frameCache(void *data, unsigned char *buffer);
@@ -199,7 +208,7 @@ private:
 	std::chrono::steady_clock::duration latency; // Time behind the video which need to be reclaimed
 	std::chrono::steady_clock::duration deltaFrame; // Time between two frames
 	std::chrono::steady_clock::duration renderDeltaFrame; // Time between two rendered frames
-	float playbackSpeedFactor = 1.0f; // Video playback speed multiplier
+	FixedPoint2 playbackSpeedFactor = FixedPoint2(1); // Video playback speed multiplier (fixed-point representation)
 
 	//performance query
 	std::chrono::steady_clock::time_point sTime;
