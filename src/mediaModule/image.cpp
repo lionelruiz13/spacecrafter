@@ -852,6 +852,13 @@ void Image::generateSphericalGeometry()
 			pos[1] = radius * cosf(lat) * sinf(lon);
 			pos[2] = radius * sinf(lat);
 
+			// At the poles, set x and y to zero to avoid micro-holes
+			// due to single triangle on poles instead of quads
+			if (stack == 0 || stack == stacks) {
+				pos[0] = 0.0f;
+				pos[1] = 0.0f;
+			}
+
 			// Calculate texture coordinates with higher precision
 			// V coordinate (vertical/latitude) - map current latitude range to [0, 1]
 			double texV_d = (lat_d - baseLatRad) / (topLatRad - baseLatRad);
@@ -880,8 +887,8 @@ void Image::generateSphericalGeometry()
 	}
 
 	// Prepare index data in local memory first
-	std::vector<uint16_t> indexData(numIndices);
-	uint16_t *currentIndex = indexData.data();
+	std::vector<uint32_t> indexData(numIndices);
+	uint32_t *currentIndex = indexData.data();
 	int actualIndices = 0;
 
 	for (int stack = 0; stack < stacks; ++stack) {
@@ -892,28 +899,30 @@ void Image::generateSphericalGeometry()
 			if (std::fabs(lat2_d - lat1_d) < 0.001f) continue;
 
 			// Calculate vertex indices for the current quad
-			uint16_t v1 = stack * (slices + 1) + slice;             // bottom-left
-			uint16_t v2 = stack * (slices + 1) + (slice + 1);       // bottom-right
-			uint16_t v3 = (stack + 1) * (slices + 1) + (slice + 1); // top-right
-			uint16_t v4 = (stack + 1) * (slices + 1) + slice;       // top-left
+			uint32_t v1 = stack * (slices + 1) + slice;             // bottom-left
+			uint32_t v2 = stack * (slices + 1) + (slice + 1);       // bottom-right
+			uint32_t v3 = (stack + 1) * (slices + 1) + (slice + 1); // top-right
+			uint32_t v4 = (stack + 1) * (slices + 1) + slice;       // top-left
 
-			// Check for index overflow
-			if (v1 >= 65535 || v2 >= 65535 || v3 >= 65535 || v4 >= 65535) {
-				// Should never happen if (slices*stacks < 65535/6)
-				continue;
+			// Skip the first triangle of the bottom pole
+			// (prevent making a very small triangle with v1 and v2 being almost identical at the bottom pole)
+			if (stack != 0) {
+				// First triangle (v1, v2, v3)
+				*(currentIndex++) = v1;
+				*(currentIndex++) = v2;
+				*(currentIndex++) = v3;
+				actualIndices += 3;
 			}
 
-			// First triangle (v1, v2, v3)
-			*(currentIndex++) = v1;
-			*(currentIndex++) = v2;
-			*(currentIndex++) = v3;
-			actualIndices += 3;
-
-			// Second triangle (v1, v3, v4)
-			*(currentIndex++) = v1;
-			*(currentIndex++) = v3;
-			*(currentIndex++) = v4;
-			actualIndices += 3;
+			// Skip the second triangle of the top pole
+			// (prevent making a very small triangle with v3 and v4 being almost identical at the top pole)
+			if (stack != (stacks - 1)) {
+				// Second triangle (v1, v3, v4)
+				*(currentIndex++) = v1;
+				*(currentIndex++) = v3;
+				*(currentIndex++) = v4;
+				actualIndices += 3;
+			}
 		}
 	}
 
@@ -937,7 +946,7 @@ void Image::generateSphericalGeometry()
 		indexCount = actualIndices;
 		indexBuffer.reset();
 		if (actualIndices > 0) {
-			indexBuffer = std::make_unique<SubBuffer>(Context::instance->indexBufferMgr->acquireBuffer(actualIndices * sizeof(uint16_t)));
+			indexBuffer = std::make_unique<SubBuffer>(Context::instance->indexBufferMgr->acquireBuffer(actualIndices * sizeof(uint32_t)));
 			indexBufferChanged = true;
 		}
 	}
@@ -949,9 +958,9 @@ void Image::generateSphericalGeometry()
 		context.transfer->endPlanCopy(vertex->get(), numVertices * 5 * sizeof(float));
 	}
 	if (actualIndices > 0 && (indexBufferChanged || indexBuffer)) {
-		uint16_t *indexGpuData = (uint16_t *) context.transfer->beginPlanCopy(actualIndices * sizeof(uint16_t));
-		memcpy(indexGpuData, indexData.data(), actualIndices * sizeof(uint16_t));
-		context.transfer->endPlanCopy(*indexBuffer, actualIndices * sizeof(uint16_t));
+		uint32_t *indexGpuData = (uint32_t *) context.transfer->beginPlanCopy(actualIndices * sizeof(uint32_t));
+		memcpy(indexGpuData, indexData.data(), actualIndices * sizeof(uint32_t));
+		context.transfer->endPlanCopy(*indexBuffer, actualIndices * sizeof(uint32_t));
 	}
 }
 
@@ -997,7 +1006,7 @@ void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 
 	// Render the geometry
 	vertex->bind(cmd);
-	vkCmdBindIndexBuffer(cmd, indexBuffer->buffer, indexBuffer->offset, VK_INDEX_TYPE_UINT16);
+	vkCmdBindIndexBuffer(cmd, indexBuffer->buffer, indexBuffer->offset, VK_INDEX_TYPE_UINT32);
 	vkCmdDrawIndexed(cmd, indexCount, 1, 0, 0, 0);
 }
 
