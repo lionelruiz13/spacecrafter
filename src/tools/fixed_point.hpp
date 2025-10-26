@@ -423,7 +423,7 @@ public:
     // ============================================================================
     template<int OtherDecimalPlaces>
     bool operator==(const FixedPoint<OtherDecimalPlaces>& other) const {
-        int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces);
+        constexpr int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces);
 
         int64_t thisAdjusted = rescaleRaw<DecimalPlaces, MaxDecimalPlaces>(value);
         int64_t otherAdjusted = rescaleRaw<OtherDecimalPlaces, MaxDecimalPlaces>(other.getRawValue());
@@ -438,7 +438,7 @@ public:
 
     template<int OtherDecimalPlaces>
     bool operator<(const FixedPoint<OtherDecimalPlaces>& other) const {
-        int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces);
+        constexpr int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces);
 
         int64_t thisAdjusted = rescaleRaw<DecimalPlaces, MaxDecimalPlaces>(value);
         int64_t otherAdjusted = rescaleRaw<OtherDecimalPlaces, MaxDecimalPlaces>(other.getRawValue());
