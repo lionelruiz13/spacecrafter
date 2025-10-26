@@ -873,10 +873,14 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 		case SDL_SCANCODE_D :
 			this->executeCommand("flag dual_viewport toggle");
 		    break;
+		case SDL_SCANCODE_H :
+			media->playerPause();
+			break;
 		case SDL_SCANCODE_J :
 			this->executeCommand("media speed_increment -0.1");
 			break;
 		case SDL_SCANCODE_K :
+  		    this->executeCommand("media speed_increment 0");
 			if ( scriptInterface->isScriptPlaying() ) {
 				this->executeCommand("script action resume");
 				// coreLink->timeResetMultiplier();
