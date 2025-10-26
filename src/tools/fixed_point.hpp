@@ -170,7 +170,7 @@ public:
     // ============================================================================
     template<int OtherDecimalPlaces>
     FixedPoint<(DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces)> operator+(const FixedPoint<OtherDecimalPlaces>& other) const {
-        int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces);
+        constexpr int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces) ? DecimalPlaces : OtherDecimalPlaces;
         using ResultType = FixedPoint<MaxDecimalPlaces>;
 
         int64_t thisAdjusted = rescaleRaw<DecimalPlaces, MaxDecimalPlaces>(value);
@@ -181,7 +181,7 @@ public:
 
     template<int OtherDecimalPlaces>
     FixedPoint<(DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces)> operator-(const FixedPoint<OtherDecimalPlaces>& other) const {
-        int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces);
+        constexpr int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces) ? DecimalPlaces : OtherDecimalPlaces;
         using ResultType = FixedPoint<MaxDecimalPlaces>;
 
         int64_t thisAdjusted = rescaleRaw<DecimalPlaces, MaxDecimalPlaces>(value);
@@ -192,7 +192,7 @@ public:
 
     template<int OtherDecimalPlaces>
     FixedPoint<(DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces)> operator*(const FixedPoint<OtherDecimalPlaces>& other) const {
-        int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces);
+        constexpr int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces) ? DecimalPlaces : OtherDecimalPlaces;
         using ResultType = FixedPoint<MaxDecimalPlaces>;
 
         int64_t thisAdjusted = rescaleRaw<DecimalPlaces, MaxDecimalPlaces>(value);
@@ -205,7 +205,7 @@ public:
 
     template<int OtherDecimalPlaces>
     FixedPoint<(DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces)> operator/(const FixedPoint<OtherDecimalPlaces>& other) const {
-        int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces ? DecimalPlaces : OtherDecimalPlaces);
+        constexpr int MaxDecimalPlaces = (DecimalPlaces > OtherDecimalPlaces) ? DecimalPlaces : OtherDecimalPlaces;
         using ResultType = FixedPoint<MaxDecimalPlaces>;
 
         int64_t thisAdjusted = rescaleRaw<DecimalPlaces, MaxDecimalPlaces>(value);
