@@ -885,7 +885,7 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 				this->executeCommand("script action resume");
 				// coreLink->timeResetMultiplier();
 			} else
-				media->playerPause();
+				//media->playerPause();
 			break;
 		case SDL_SCANCODE_L :
 			this->executeCommand("media speed_increment 0.1");
