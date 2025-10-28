@@ -854,7 +854,8 @@ void Image::generateSphericalGeometry()
 
 			// At the poles, set x and y to zero to avoid micro-holes
 			// due to single triangle on poles instead of quads
-			if (stack == 0 || stack == stacks) {
+			// only if 90 or -90 degrees
+			if ((stack == 0 || stack == stacks) && (lat_d == -1.0f || lat_d == 1.0f)) {
 				pos[0] = 0.0f;
 				pos[1] = 0.0f;
 			}
@@ -906,7 +907,7 @@ void Image::generateSphericalGeometry()
 
 			// Skip the first triangle of the bottom pole
 			// (prevent making a very small triangle with v1 and v2 being almost identical at the bottom pole)
-			if (stack != 0) {
+			if (stack != 0 || (stack == 0 && (lat1_d > -float(M_PI_2) + 0.0001f))) {
 				// First triangle (v1, v2, v3)
 				*(currentIndex++) = v1;
 				*(currentIndex++) = v2;
@@ -916,7 +917,7 @@ void Image::generateSphericalGeometry()
 
 			// Skip the second triangle of the top pole
 			// (prevent making a very small triangle with v3 and v4 being almost identical at the top pole)
-			if (stack != (stacks - 1)) {
+			if (stack != (stacks - 1) || (stack == (stacks - 1) && (lat2_d < float(M_PI_2) - 0.0001f))) {
 				// Second triangle (v1, v3, v4)
 				*(currentIndex++) = v1;
 				*(currentIndex++) = v3;
