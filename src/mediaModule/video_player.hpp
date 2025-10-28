@@ -153,10 +153,10 @@ public:
 
 	//! Set video playback speed factor
 	//! \param factor Speed multiplier (1.0 = normal speed, 2.0 = double speed, 0.5 = half speed)
-	void setPlaybackSpeed(FixedPoint2 factor);
+	void setPlaybackSpeed(FixedPointI16_2 factor);
 
 	//! Get current playback speed factor
-	FixedPoint2 getPlaybackSpeed() const {
+	FixedPointI16_2 getPlaybackSpeed() const {
 		return playbackSpeedFactor;
 	}
 
@@ -208,7 +208,7 @@ private:
 	std::chrono::steady_clock::duration latency; // Time behind the video which need to be reclaimed
 	std::chrono::steady_clock::duration deltaFrame; // Time between two frames
 	std::chrono::steady_clock::duration renderDeltaFrame; // Time between two rendered frames
-	FixedPoint2 playbackSpeedFactor = FixedPoint2(1); // Video playback speed multiplier (fixed-point representation)
+	FixedPointI16_2 playbackSpeedFactor = FixedPointI16_2::one(); // Video playback speed multiplier (fixed-point representation)
 
 	//performance query
 	std::chrono::steady_clock::time_point sTime;

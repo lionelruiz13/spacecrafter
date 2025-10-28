@@ -424,9 +424,9 @@ public:
 
 	//! Set video playback speed
 	//! \param factor Set Speed multiplier (1.0 = normal speed, 2.0 = double speed, 0.5 = half speed)
-	void playerSetSpeed(FixedPoint2 factor) {
+	void playerSetSpeed(FixedPointI16_2 factor) {
 		player->setPlaybackSpeed(factor);
-		if (factor != FixedPoint2::one()) { // Cut audio if speed is not 1
+		if (player->getPlaybackSpeed() != FixedPointI16_2::one()) { // Cut audio if speed is not 1
 			audio->musicHalt();
 		} else { // Resume and sync audio if speed is back to 1
 			audio->musicPlay();
@@ -436,12 +436,12 @@ public:
 
 	//! Increment video playback speed
 	//! \param deltaFactor Speed multiplier increment (positive or negative)
-	void playerIncrementSpeed(FixedPoint2 deltaFactor) {
+	void playerIncrementSpeed(FixedPointI16_2 deltaFactor) {
 		playerSetSpeed(playerGetSpeed() + deltaFactor);
 	}
 
 	//! Get current video playback speed
-	FixedPoint2 playerGetSpeed() const {
+	FixedPointI16_2 playerGetSpeed() const {
 		return player->getPlaybackSpeed();
 	}
 

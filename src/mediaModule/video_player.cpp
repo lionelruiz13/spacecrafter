@@ -121,18 +121,16 @@ void VideoPlayer::pauseCurrentVideo()
 	EventRecorder::getInstance()->queue(event);
 }
 
-void VideoPlayer::setPlaybackSpeed(FixedPoint2 factor)
+void VideoPlayer::setPlaybackSpeed(FixedPointI16_2 factor)
 {
 	if (factor <= 0.0f) {
 		cLog::get()->write("VideoPlayer: Invalid playback speed factor " + factor.toString() + ", must be > 0", LOG_TYPE::L_WARNING);
-		cLog::get()->write("VideoPlayer: Playback speed default set to 1x", LOG_TYPE::L_INFO);
-		playbackSpeedFactor = 1.0f;
 		return;
 	}
 
 	// Add reasonable limits to prevent performance issues
-	static const FixedPoint2 MIN_SPEED(0.1f);  // 10x slower
-	static const FixedPoint2 MAX_SPEED(10.0f); // 10x faster
+	static const FixedPointI16_2 MIN_SPEED(0.1f);  // 10x slower
+	static const FixedPointI16_2 MAX_SPEED(10.0f); // 10x faster
 
 	if (factor < MIN_SPEED) {
 		cLog::get()->write("VideoPlayer: Speed factor " + factor.toString() + " too low, clamping to " + MIN_SPEED.toString(), LOG_TYPE::L_WARNING);

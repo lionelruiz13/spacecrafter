@@ -3073,9 +3073,9 @@ int AppCommandInterface::commandMedia()
 
 			std::string argSpeed = args[W_SPEED];
 			if (!argSpeed.empty()) {
-				media->playerSetSpeed(FixedPoint2::fromString(argSpeed)); // audio will be cut if the speed isn't 1.0
+				media->playerSetSpeed(FixedPointI16_2::fromString(argSpeed)); // audio will be cut if the speed isn't 1.0
 			} else {
-				media->playerSetSpeed(FixedPoint2::one()); // default speed
+				media->playerSetSpeed(FixedPointI16_2::one()); // default speed
 			}
 
 			Vec3f Vcolor;
@@ -3120,12 +3120,12 @@ int AppCommandInterface::commandMedia()
 	}
 	std::string argSpeed = args[W_SPEED];
 	if (!argSpeed.empty()) {
-		media->playerSetSpeed(FixedPoint2::fromString(argSpeed));
+		media->playerSetSpeed(FixedPointI16_2::fromString(argSpeed));
 		return executeCommandStatus();
 	}
 	std::string argSpeedIncr = args[W_SPEED_INCREMENT];
 	if (!argSpeedIncr.empty()) {
-		media->playerIncrementSpeed(FixedPoint2::fromString(argSpeedIncr));
+		media->playerIncrementSpeed(FixedPointI16_2::fromString(argSpeedIncr));
 		return executeCommandStatus();
 	}
 
