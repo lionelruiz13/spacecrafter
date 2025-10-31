@@ -32,7 +32,7 @@
 #include "eventModule/event.hpp"
 
 
-enum class FPS_ORDER : char {LOW_FPS, HIGH_FPS, AFTER_ONE_SECOND};
+enum class FPS_ORDER : char {LOW_FPS, HIGH_FPS};
 
 class FpsEvent : public Event {
 public:

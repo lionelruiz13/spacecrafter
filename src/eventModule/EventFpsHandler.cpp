@@ -42,9 +42,6 @@ void EventFpsHandler::handle(const Event* e, Executor *executor)
             clock->selectMaxFps();
             CoreLink::instance->setPredictibleRendering(false, clock->getTargetFps());
             break;
-        case FPS_ORDER::AFTER_ONE_SECOND :
-            clock->afterOneSecond();
-            break;
         default:
             break;
     }

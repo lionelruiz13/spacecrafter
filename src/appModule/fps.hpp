@@ -38,6 +38,7 @@
 * \file fps.hpp
 * \brief Framerate management
 * \author Olivier NIVOIX
+* \author Calvin RUIZ
 * \version 2
 */
 
@@ -45,15 +46,13 @@
 * @brief class dealing with framerate and FPS
 *
 * @description
-* The Fps class manages the framerate of the software. It uses two conditions for this
-* the wait function : it takes care of the duration of a frame compared to another one. (local view, subject to the imperfection of ms integer rounding)
-* the afterOneSecond function : it takes care of the duration of the frames over a period of one second in order to determine the FPS
-* afterOneSecond is launched via an SDL trigger in App.hpp every 1000 ms.
+* The Fps class manages the framerate of the software.
 */
 class Fps  : public NoCopy {
 public:
 	Fps() : watchdog(&Fps::watchdogMainloop, this)
 	{
+		selectMaxFps();
 	}
 	~Fps()
 	{
@@ -61,31 +60,18 @@ public:
 		watchdog.join();
 	}
 
-	//! Initializes the clock parameters
-	void init() {
-		initCount= SDL_GetTicks();
-		lastCount= SDL_GetTicks();
-	};
-
-	//! returns the number of frames displayed since the launch of the software
-	uint64_t getElapsedFrame() const {
-		return numberFrames.load(std::memory_order_relaxed);
+	//! returns the duration of the current frame (in seconds)
+	std::chrono::steady_clock::duration getPreciseDeltaTime() const noexcept {
+		return recVideoMode ? frameDuration : currentFrameDuration;
 	}
 
-	//! adds a frame
-	void addFrame();
-
-	//! returns the duration of a loop
-	unsigned int getDeltaTime() const;
-
-
 	//! indicates at what FPS the program should run in video capture mode
-	void setVideoFps(float fps) {
+	void setVideoFps(double fps) noexcept {
 		videoFPS = fps;
 	}
 
 	//! indicates at what FPS the program should run in normal mode
-	void setMaxFps(float fps) {
+	void setMaxFps(double fps) noexcept {
 		maxFPS = fps;
 	}
 
@@ -95,51 +81,38 @@ public:
 	//! switches to normal mode
 	void selectMaxFps();
 
-	//! Takes a time measurement
-	void setTickCount() {
-		tickCount = SDL_GetTicks();
-	}
+	//! Mark the beginning of a frame
+	//! Return the delta time in milliseconds, rounding error are accumulated internally so that the sum is not off by more than 0.5ms
+	uint32_t beginFrame();
 
-	//! Changes the reference time of the clock
-	void setLastCount() {
-		lastCount = tickCount;
-	}
+	//! Mark the end of a frame
+	//! Wait the time needed to stabilize at the target framerate
+	void endFrame();
 
 	//! indicates the current target FPS
-	int getTargetFps() const {
+	double getTargetFps() const {
 		return recVideoMode ? videoFPS : maxFPS;
 	}
 
 	//! indicates the current FPS
-	int getFps() const {
-		return fps;
+	uint32_t getFps() const {
+		return framerate;
 	}
-
-	// Determines how long to wait between two frames to get the theoretical FPS
-	void wait();
-
-	//! Calculates the FPS per second and corrects the differences
-	void afterOneSecond();
-
-	//! callback function launched by SDL2
-	static Uint32 callbackfunc(Uint32 interval, void *param);
 
 	void watchdogMainloop();
 private:
 	std::atomic<uint64_t> numberFrames=0;
-	int frame = 0;
-	int fps = 0;
-	float videoFPS=1.f;
-	float maxFPS=1.f;
-	uint64_t lastCount = 0;
-	uint64_t initCount = 0;
-	uint64_t tickCount = 0;
-	uint16_t frameDuration=0;
-	bool recVideoMode = false;
-
-	const float SECONDEDURATION=1000.0;
+	double videoFPS=30.;
+	double maxFPS=30.;
+	std::chrono::steady_clock::duration frameDuration;
+	std::chrono::steady_clock::duration currentFrameDuration;
+	std::chrono::steady_clock::time_point nextFrameEnd{}; // Expected time for the next frame end
+	std::chrono::steady_clock::duration durationRoundingError{std::chrono::microseconds{500}}; // Mitigate rounding error due to delta time being in milliseconds
 	std::thread watchdog;
+	uint32_t framerate;
+	bool recVideoMode = false;
 	bool active = true;
+	bool suspended = true;
 };
 
 #endif

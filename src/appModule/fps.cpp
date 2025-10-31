@@ -24,87 +24,71 @@
  */
 
 #include <cstdint>
+#include <cstdlib>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <chrono>
+#include <thread>
 
 #include "appModule/fps.hpp"
 #include "tools/log.hpp"
 
-
-//! add a frame
-void Fps::addFrame() {
-	numberFrames.fetch_add(1, std::memory_order_relaxed);
-	frame++;
-}
-
-void Fps::afterOneSecond()
-{
-	fps = frame;
-	frame = 0;
-}
-
-unsigned int Fps::getDeltaTime() const {
-	if (recVideoMode)
-		return frameDuration; //we don't want the software to lag at high resolution
-	else
-		return tickCount - lastCount;
-}
-
 //! switches to video recording mode
 void Fps::selectVideoFps() {
 	recVideoMode = true;
-	frameDuration= (unsigned int) (SECONDEDURATION/videoFPS);
+	frameDuration = std::chrono::steady_clock::duration(static_cast<uint64_t>(std::chrono::steady_clock::period::den / (std::chrono::steady_clock::period::num * static_cast<long double>(videoFPS))));
 }
 
 //! switches to normal mode
 void Fps::selectMaxFps() {
 	recVideoMode = false;
-	frameDuration= (unsigned int) (SECONDEDURATION/maxFPS);
+	frameDuration = std::chrono::steady_clock::duration(static_cast<uint64_t>(std::chrono::steady_clock::period::den / (std::chrono::steady_clock::period::num * static_cast<long double>(maxFPS))));
 }
 
-void Fps::wait()
+uint32_t Fps::beginFrame()
 {
-	// std::cout << "Dt: " << tickCount - lastCount << " Fd: " << frameDuration;
-	if (tickCount-lastCount < frameDuration) {
-		int delay = frameDuration - (tickCount-lastCount) ;
-		if (delay<0)
-			delay = 0;
-		SDL_Delay(delay);
-	} else {
-		SDL_Delay(1); // no full speed
+	currentFrameDuration = frameDuration;
+	if (!suspended) {
+		auto now = std::chrono::steady_clock::now();
+		if (now > nextFrameEnd) { // Skip any latency beyond the current frame's duration
+			currentFrameDuration += now - nextFrameEnd;
+			nextFrameEnd = now;
+		}
 	}
+	static_assert(std::chrono::steady_clock::period::den % (std::chrono::steady_clock::period::num * 1000ULL) == 0U, "Can't accurately convert to milliseconds with the current implementation.");
+	auto deltaTime = std::lldiv((durationRoundingError + currentFrameDuration).count(), std::chrono::steady_clock::period::den / (std::chrono::steady_clock::period::num * 1000ULL));
+	durationRoundingError = std::chrono::steady_clock::duration(deltaTime.rem);
+	return deltaTime.quot;
 }
 
-
-Uint32 Fps::callbackfunc(Uint32 interval, void *param)
+void Fps::endFrame()
 {
-    SDL_Event event;
-    SDL_UserEvent userevent;
-
-    userevent.type = SDL_USEREVENT;
-    userevent.code = 0;
-    userevent.data1 = NULL;
-    userevent.data2 = NULL;
-
-    event.type = SDL_USEREVENT;
-    event.user = userevent;
-
-    SDL_PushEvent(&event);
-    return(interval);
+	numberFrames.fetch_add(1, std::memory_order_relaxed);
+	if (suspended) {
+		suspended = false;
+		nextFrameEnd = std::chrono::steady_clock::now() + frameDuration;
+	} else {
+		std::this_thread::sleep_until(nextFrameEnd);
+		nextFrameEnd += frameDuration;
+	}
 }
 
 void Fps::watchdogMainloop()
 {
 	uint64_t lastFrame = 0;
 	uint32_t nbSameFrame = 0;
+	std::array<uint64_t, 20> lastFrameHistory{};
+	uint64_t i = 0;
+	auto lastCheck = std::chrono::steady_clock::now();
 	while (active) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		std::this_thread::sleep_until(lastCheck += std::chrono::milliseconds(50));
 		const uint64_t currentFrame = numberFrames.load(std::memory_order_relaxed);
+		framerate = currentFrame - lastFrameHistory[++i % 20U];
+		lastFrameHistory[i % 20U] = currentFrame;
 		if (lastFrame != currentFrame) {
 			lastFrame = currentFrame;
 			nbSameFrame = 0;
-		} else if (lastFrame > 10) {
+		} else if (!suspended) {
 			switch (++nbSameFrame) {
 				case 2:
 					cLog::get()->write("Frame stall detected", LOG_TYPE::L_WARNING);
