@@ -2186,6 +2186,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					RESET_MOD(SUPER);
 					break;
 				case KWIN:
+					this->executeCommand("date relative -1.035");
 					break;
 				case SHIFT :
 					break;
@@ -2210,6 +2211,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					RESET_MOD(SUPER);
 					break;
 				case KWIN:
+					this->executeCommand("date relative 1.035");
 					break;
 				case SHIFT :
 					break;
