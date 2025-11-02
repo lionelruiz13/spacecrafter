@@ -48,7 +48,7 @@ void Fps::selectMaxFps() {
 uint32_t Fps::beginFrame()
 {
 	currentFrameDuration = frameDuration;
-	if (!suspended) {
+	if (!(suspended | recVideoMode)) {
 		auto now = std::chrono::steady_clock::now();
 		if (now > nextFrameEnd) { // Skip any latency beyond the current frame's duration
 			currentFrameDuration += now - nextFrameEnd;
