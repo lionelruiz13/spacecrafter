@@ -23,6 +23,7 @@
  *
  */
 
+#include <array>
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
