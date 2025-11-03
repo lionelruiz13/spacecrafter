@@ -168,10 +168,15 @@ public:
 			return 0.0f;
 	}
 
+	//! Get timestamp (eg. 0:00:05 / 0:15:37)
+	std::string getTimeStatus() const;
+
 	static unsigned char *tracer_frameCache(void *data, unsigned char *buffer);
 	static unsigned char *tracer_atomic_bool(void *data, unsigned char *buffer);
 	static unsigned char *tracer_duration(void *data, unsigned char *buffer);
 private:
+	//! Format time in H:MM:SS format
+	std::string formatTime(double seconds) const;
 	// returns the new video frame and converts it in the CG memory.
 	void getNextVideoFrame();
 	// retrieves the new video frame before conversion

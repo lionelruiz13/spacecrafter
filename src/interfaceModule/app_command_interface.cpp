@@ -1125,6 +1125,11 @@ int AppCommandInterface::commandGet()
 			if (tmp.empty())
 				tmp = "EOL";
 			tcp->setOutput(tmp);
+		} else if (argStatus == W_MEDIA) {
+			std::string tmp = media->playerGetTimeStatus();
+			if (tmp.empty())
+				tmp = "NMF"; // No media file
+			tcp->setOutput(tmp);
 		} else
 			debug_message = _("command 'get': unknown status value");
 		return executeCommandStatus();

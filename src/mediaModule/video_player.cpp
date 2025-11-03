@@ -17,6 +17,7 @@
 #include <SDL2/SDL.h>
 #include <chrono>
 #include <sstream>
+#include <iomanip>
 
 //#include "spacecrafter.hpp"
 #include "mediaModule/video_player.hpp"
@@ -84,6 +85,29 @@ VideoPlayer::~VideoPlayer()
 	stopCurrentVideo(false);
 	for (int i = 0; i < 4; i++)
 		delete videoTexture.tex[i];
+}
+
+std::string VideoPlayer::formatTime(double seconds) const
+{
+	int hours = static_cast<int>(seconds / 3600);
+	int minutes = static_cast<int>((seconds - hours * 3600) / 60);
+	double remainingSeconds = seconds - hours * 3600 - minutes * 60;
+	int secs = static_cast<int>(remainingSeconds);
+
+	std::ostringstream oss;
+	oss << std::setfill('0') << hours << ":"
+		<< std::setw(2) << minutes << ":"
+		<< std::setw(2) << secs;
+	return oss.str();
+}
+
+std::string VideoPlayer::getTimeStatus() const
+{
+	double currentTimeSeconds = static_cast<double>(currentFrame) / frameRate;
+	double totalTimeSeconds = static_cast<double>(nbTotalFrame) / frameRate;
+	std::string currentTimeStr = formatTime(currentTimeSeconds);
+	std::string totalTimeStr = formatTime(totalTimeSeconds);
+	return currentTimeStr + " / " + totalTimeStr;
 }
 
 void VideoPlayer::createTextures()
@@ -754,6 +778,19 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 				} while (nextFrame <= currentTime && (skipFrame || playbackSpeedFactor.toDouble() > 1.0f));
 				cv.notify_all();
 				frameIdx %= MAX_CACHED_FRAMES;
+
+				if (currentFrame >= nbTotalFrame) {
+					// Reached end of video
+					if (reloop) {
+						restartCurrentVideo();
+					} else {
+						cLog::get()->write("end of file");
+						stopCurrentVideo(false);
+					}
+					videoTexture.sync->syncIn->placeBarrier(cmd);
+					return;
+				}
+
 				VkBufferImageCopy region;
 				region.bufferRowLength = region.bufferImageHeight = 0;
 				region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};

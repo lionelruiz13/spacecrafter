@@ -94,6 +94,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_PLANET_P                  "planets_position"
 #define W_CONSTELLATION             "constellation"
 #define W_OBJECT                    "object"
+#define W_MEDIA                     "media"
 #define W_MAX_OBJECT                "maxobject"
 #define W_SCALE                     "scale"
 #define W_DURATION                  "duration"

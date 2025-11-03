@@ -445,6 +445,11 @@ public:
 		return player->getPlaybackSpeed();
 	}
 
+	//! Get current state of timestamp overlay (hidden/shown)
+	std::string playerGetTimeStatus() const {
+		return player->getTimeStatus();
+	}
+
 	//! Indicate that the player stopped playing video
 	void playerStopped();
 private:
