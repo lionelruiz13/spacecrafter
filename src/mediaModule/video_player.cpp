@@ -48,6 +48,27 @@ VideoPlayer::VideoPlayer(Media *media, InitParser &conf) : media(media)
 	tracer.emplace(Trace::UCHAR, &adaptiveFramerate, "adaptive");
 	tracer.emplace(Trace::INT, &videoRes.w, "width");
 	tracer.emplace(Trace::INT, &videoRes.h, "height");
+
+	// Top Subtitle
+	textSubtitleTopParam.string = "";
+	textSubtitleTopParam.altitude = 10.0f;
+	textSubtitleTopParam.azimuth = 0.0f;
+	// textSubtitleTopParam.fontSize;
+	textSubtitleTopParam.textAlign = "CENTER";
+	textSubtitleTopParam.color = Vec3f(1.0f, 1.0f, 1.0f);
+	textSubtitleTopParam.useColor = true;
+	textSubtitleTopParam.fader = false;
+
+	// Bottom Subtitle
+	textSubtitleBottomParam.string = "";
+	textSubtitleBottomParam.altitude = 5.0f;
+	textSubtitleBottomParam.azimuth = 0.0f;
+	// textSubtitleBottomParam.fontSize;
+	textSubtitleBottomParam.textAlign = "CENTER";
+	textSubtitleBottomParam.color = Vec3f(1.0f, 1.0f, 1.0f);
+	textSubtitleBottomParam.useColor = true;
+	textSubtitleBottomParam.fader = false;
+
 	m_isVideoPlayed = false;
 	m_isVideoInPause = false;
 	m_isVideoSeeking = false;
@@ -514,6 +535,12 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 		return;
 
 	m_isVideoPlayed = false;
+	media->textDel("video_subtitle1t");
+	media->textDel("video_subtitle2t");
+	media->textDel("video_subtitle3t");
+	media->textDel("video_subtitle1b");
+	media->textDel("video_subtitle2b");
+	media->textDel("video_subtitle3b");
 	if (!newVideo) {
 		if (audio)
 			audio->musicDrop();
@@ -747,9 +774,12 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 			currentTime = now;
 		}
 		if (nextFrame <= currentTime) {
-			if (auto nbFrames = frameCached.load(std::memory_order_acquire) - frameUsed.load(std::memory_order_relaxed)) {
+			if (auto nbFrames = framesAvailable(frameCached, frameUsed)) {
 				uint32_t frameIdx;
 				do { // Determine how many frames to load
+					// No more frames available (even if we have to skip frame stop here to prevent "frame jump" when waiting for cache)
+					if (framesAvailable(frameCached, frameUsed) == 0)
+						break;
 					++currentFrame;
 					frameIdx = frameUsed.fetch_add(1, std::memory_order_relaxed);
 					latency -= deltaFrame;
@@ -778,6 +808,70 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 				} while (nextFrame <= currentTime && (skipFrame || playbackSpeedFactor.toDouble() > 1.0f));
 				cv.notify_all();
 				frameIdx %= MAX_CACHED_FRAMES;
+
+				// Update subtitle
+				if (showSubtitles) {
+					static std::string subtitleContent = "";
+					int currentTimeInMs = static_cast<int>(currentFrame * 1000.0 / frameRate);
+					std::string tmpSubtitle = media->subtitleGetSubtitleAt(currentTimeInMs);
+
+					// Prevent recreating the subtitle text object if the subtitle hasn't changed
+					if (subtitleContent != tmpSubtitle) {
+						subtitleContent = tmpSubtitle;
+
+						// Split subtitle into two lines if too long
+						if (subtitleContent.length() > 50) {
+							auto splitPos = subtitleContent.rfind(' ', subtitleContent.length() / 2);
+							textSubtitleTopParam.string = subtitleContent.substr(0, splitPos);
+							textSubtitleBottomParam.string = subtitleContent.substr(splitPos + 1);
+						} else {
+							textSubtitleTopParam.string = "";
+							textSubtitleBottomParam.string = subtitleContent;
+						}
+
+						// Top subtitles
+						textSubtitleTopParam.azimuth = 0.0f;
+						media->textAdd("video_subtitle1t", textSubtitleTopParam);
+						media->textDisplay("video_subtitle1t", true);
+
+						if (subtitleProject == IMG_PROJECT::TWICE) {
+							textSubtitleTopParam.azimuth = 180.0f;
+							media->textAdd("video_subtitle2t", textSubtitleTopParam);
+							media->textDisplay("video_subtitle2t", true);
+						}
+
+						if (subtitleProject == IMG_PROJECT::THRICE) {
+							textSubtitleTopParam.azimuth = 120.0f;
+							media->textAdd("video_subtitle2t", textSubtitleTopParam);
+							media->textDisplay("video_subtitle2t", true);
+
+							textSubtitleTopParam.azimuth = 240.0f;
+							media->textAdd("video_subtitle3t", textSubtitleTopParam);
+							media->textDisplay("video_subtitle3t", true);
+						}
+
+						// Bottom subtitles
+						textSubtitleBottomParam.azimuth = 0.0f;
+						media->textAdd("video_subtitle1b", textSubtitleBottomParam);
+						media->textDisplay("video_subtitle1b", true);
+
+						if (subtitleProject == IMG_PROJECT::TWICE) {
+							textSubtitleBottomParam.azimuth = 180.0f;
+							media->textAdd("video_subtitle2b", textSubtitleBottomParam);
+							media->textDisplay("video_subtitle2b", true);
+						}
+
+						if (subtitleProject == IMG_PROJECT::THRICE) {
+							textSubtitleBottomParam.azimuth = 120.0f;
+							media->textAdd("video_subtitle2b", textSubtitleBottomParam);
+							media->textDisplay("video_subtitle2b", true);
+
+							textSubtitleBottomParam.azimuth = 240.0f;
+							media->textAdd("video_subtitle3b", textSubtitleBottomParam);
+							media->textDisplay("video_subtitle3b", true);
+						}
+					}
+				}
 
 				if (currentFrame >= nbTotalFrame) {
 					// Reached end of video
@@ -834,7 +928,7 @@ void VideoPlayer::mainloop()
 	std::unique_lock<std::mutex> ulock(mtx);
 	while (decoding) {
 		getNextVideoFrame();
-		while (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= (MAX_CACHED_FRAMES-1) && decoding)
+		while (framesAvailable(frameCached, frameUsed) >= (MAX_CACHED_FRAMES-1) && decoding)
 			cv.wait(ulock);
 	}
 }

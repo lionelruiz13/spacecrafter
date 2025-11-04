@@ -34,6 +34,7 @@
 #include "mediaModule/image_mgr.hpp"
 #include "mediaModule/text_mgr.hpp"
 #include "mediaModule/video_player.hpp"
+#include "mediaModule/subtitle.hpp"
 #include "mediaModule/vr360.hpp"
 #include "mediaModule/viewport.hpp"
 //#include "tools/app_settings.hpp"
@@ -450,8 +451,43 @@ public:
 		return player->getTimeStatus();
 	}
 
+	//! set subtitle display state
+	void playerSetShowSubtitles(bool show) {
+		player->setShowSubtitles(show);
+	}
+
+	//! Get subtitle display state
+	bool playerGetShowSubtitles() const {
+		return player->getShowSubtitles();
+	}
+
+	//! set subtitle projection mode
+	void playerSubtitlesSetProject(IMG_PROJECT project) {
+		player->subtitlesSetProject(project);
+	}
+
 	//! Indicate that the player stopped playing video
 	void playerStopped();
+
+	////////////////////////////////////////////////////////////////////////////
+	//
+	//subtitle interface
+	//
+	////////////////////////////////////////////////////////////////////////////
+	//! Load subtitle file
+	void subtitlesLoadFile(const std::string& fileName) {
+		subtitle->loadFile(fileName);
+	}
+
+	//! Unload subtitle file
+	void subtitlesUnloadFile() {
+		subtitle->unloadFile();
+	}
+
+	//! Get subtitle text at given time in milliseconds
+	std::string subtitleGetSubtitleAt(int timeInMs) {
+		return subtitle->getSubtitleAt(timeInMs);
+	}
 private:
 	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload, bool withMusic);
 

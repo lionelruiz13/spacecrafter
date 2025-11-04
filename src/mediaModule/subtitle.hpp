@@ -49,10 +49,20 @@ public:
 	void loadFile(const std::string& fileName);
 
 	/**
+	*  Allows to unload the currently loaded file
+	*/
+	void unloadFile();
+
+	/**
 	* This function will display, according to the parameters read in the file, the subtitle at the last requested time.
 	* The subtitles are only displayed according to the user's request, with a boolean.
 	*/
 	void writeToConsole(bool &toDisplay);
+
+	/**
+    * Allows to get the subtitle message at a given time
+    */
+	std::string getSubtitleAt(int time);
 
 private:
 	/**

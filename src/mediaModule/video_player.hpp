@@ -25,6 +25,7 @@
 #include <SDL2/SDL.h>
 #include <array>
 #include "mediaModule/media_base.hpp"
+#include "mediaModule/text_mgr.hpp"
 #include "EntityCore/SubBuffer.hpp"
 #include <chrono>
 #include <thread>
@@ -122,11 +123,11 @@ public:
 	}
 
 	bool isVideoCacheFull() const {
-		return (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= (MAX_CACHED_FRAMES-1)) || !decoding;
+		return (framesAvailable(frameCached, frameUsed) >= (MAX_CACHED_FRAMES-1)) || !decoding;
 	}
 
 	bool isVideoCachePrefilled() const {
-		return (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= MAX_PRELOAD_FRAMES) || !decoding;
+		return (framesAvailable(frameCached, frameUsed) >= MAX_PRELOAD_FRAMES) || !decoding;
 	}
 
 	//! Returns the ID of the YUV textures in the GPU representing the frame read from the video file
@@ -171,6 +172,20 @@ public:
 	//! Get timestamp (eg. 0:00:05 / 0:15:37)
 	std::string getTimeStatus() const;
 
+	//! set subtitle display state
+	void setShowSubtitles(bool show) {
+		showSubtitles = show;
+	}
+
+	//! Get subtitle display state
+	bool getShowSubtitles() const {
+		return showSubtitles;
+	}
+
+	void subtitlesSetProject(IMG_PROJECT project) {
+		subtitleProject = project;
+	}
+
 	static unsigned char *tracer_frameCache(void *data, unsigned char *buffer);
 	static unsigned char *tracer_atomic_bool(void *data, unsigned char *buffer);
 	static unsigned char *tracer_duration(void *data, unsigned char *buffer);
@@ -187,6 +202,14 @@ private:
 	bool seekVideo(int64_t framesToSkip);
 	//! initialize a texture to the size of the video
 	void initTexture();
+	//! returns the number of frames available for playback (prevent overflow from pure cached - used (return 0 instead of a large value))
+	uint32_t framesAvailable(const std::atomic<uint32_t>& cached, const std::atomic<uint32_t>& used) const {
+		// Read once (avoid changing values between 2 loads)
+		const uint32_t fc = cached.load(std::memory_order_acquire);
+		const uint32_t fu = used.load(std::memory_order_acquire);
+		// Safe difference (never overflow)
+		return (fc >= fu) ? (fc - fu) : 0u;
+	}
 
 	Media *media=nullptr;
 	Audio *audio=nullptr;
@@ -205,6 +228,12 @@ private:
 	//time management
 	std::chrono::steady_clock::time_point nextFrame; // Time at which the next video frame should be rendered
 	std::chrono::steady_clock::time_point currentTime; // Time at which the last frame was rendered, regardless of the video frame used
+
+	//Subtitle management
+	bool showSubtitles = true;
+	IMG_PROJECT subtitleProject = IMG_PROJECT::ONCE;
+	TEXT_MGR_PARAM textSubtitleTopParam;
+	TEXT_MGR_PARAM textSubtitleBottomParam;
 
 	//frameRate management
 	int64_t currentFrame;	//!< number of the current frame

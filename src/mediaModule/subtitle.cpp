@@ -36,6 +36,10 @@ Subtitle::~Subtitle()
 
 void Subtitle::update(int time)
 {
+	if (_vSub.empty()) {
+		return;
+	}
+
 	int i = _numSub;
 	bool find = false;
 
@@ -73,8 +77,11 @@ int Subtitle::TimeToMs(std::string& time)
 //File management primitives
 void Subtitle::loadFile(const std::string& fileName)
 {
-	std::ifstream fichier( fileName.c_str() );
-	if( !fichier.fail() ) {
+	// Clear previous data
+	unloadFile();
+
+	std::ifstream file( fileName.c_str() );
+	if( !file.fail() ) {
 		_FILE = fileName.c_str();
 		readFile();
 		std::cout << "Existing file and load.\n";
@@ -86,47 +93,82 @@ void Subtitle::loadFile(const std::string& fileName)
 
 void Subtitle::readFile()
 {
-	std::ifstream monFlux(_FILE.c_str());
+	std::ifstream myStream(_FILE.c_str());
 
-	if(monFlux) { // if the file is open, we start the processing
-		std::string ligne;
-		int nbLigne = 1;
+	if(myStream) { // if the file is open, we start the processing
+		std::string line;
+		int nbLine = 1;
 		std::string str1;
 		std::string str2;
 		std::string str3;
 		std::string str4;
 
-		while(getline(monFlux, ligne)) {
-			switch(nbLigne) {
+		while(getline(myStream, line)) {
+			switch(nbLine) {
 				case 1: //line of the subtitle number, or the character
-					str1 = ligne.c_str();
-					nbLigne++;
+					str1 = line.c_str();
+					nbLine++;
 					break;
 				case 2: //line of time-codes
-					str2 = ligne.substr(0,12);
-					str3 = ligne.substr(17,12);
-					nbLigne++;
+					str2 = line.substr(0,12);
+					str3 = line.substr(17,12);
+					nbLine++;
 					break;
 				case 3: //message line
-					str4 = ligne.c_str();
+					str4 = line.c_str();
 					addSub(TimeToMs(str2), TimeToMs(str3), str1, str4);
-					nbLigne++;
+					nbLine++;
 					break;
 				default: //empty line, added in the vector
-					nbLigne = 1;
+					nbLine = 1;
 					break;
 			}
 		}
+
+		// add empty subtitle between every subtitle to avoid issues during display
+		std::vector<sub_Struct> vTemp;
+		for(size_t i = 0; i < _vSub.size(); i++) {
+			vTemp.push_back(_vSub[i]);
+			if (i < _vSub.size() - 1 && _vSub[i].Tcode2 < _vSub[i+1].Tcode1) {
+				vTemp.push_back({_vSub[i].Tcode2, _vSub[i+1].Tcode1, "", ""});
+			}
+		}
+		if (vTemp.size() > 0 && vTemp[0].Tcode1 > 0) {
+			vTemp.insert(vTemp.begin(), {0, vTemp[0].Tcode1, "", ""});
+		}
+		_vSub = vTemp;
 	}
 	else {
 		std::cout << "ERROR: Unable to open the file for reading." << std::endl;
 	}
 }
 
+void Subtitle::unloadFile()
+{
+	_FILE = "";
+	_vSub.clear();
+	_deltaTime = 0;
+	_numSub = 0;
+}
+
 void Subtitle::writeToConsole(bool &toDisplay)
 {
 	if(toDisplay) {
 		std::cout << "Msg : " << _deltaTime << " = " << _vSub[_numSub].msg << std::endl;
+	}
+}
+
+std::string Subtitle::getSubtitleAt(int time)
+{
+	if (_vSub.empty()) {
+		return "";
+	}
+
+	update(time);
+	if((_numSub < (int)_vSub.size()) && (_numSub >= 0)) { // check bounds
+		return _vSub[_numSub].msg;
+	} else {
+		return "";
 	}
 }
 

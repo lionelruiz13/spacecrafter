@@ -3033,48 +3033,145 @@ int AppCommandInterface::commandMedia()
 				tmpProject = IMG_PROJECT::THRICE;
 			}
 
-			if (!audioName.empty()) {
-				if ( audioName ==W_AUTO) {
-					// We test if a file of language exists we take videoName and we add -fr for example in the place of its extention and we add after ogg
-					audioName = videoName;
-					if (audioName.size()>5) {
-						audioName[audioName.size()-1]='.';
-						audioName[audioName.size()-2]=stcore->getSkyLanguage()[1];
-						audioName[audioName.size()-3]=stcore->getSkyLanguage()[0];
-						audioName[audioName.size()-4]='_';
-						audioName = audioName + W_OGG;
+			std::string languagedVideoName = videoName;
+			size_t lastdot = languagedVideoName.find_last_of(".");
+			if (lastdot != std::string::npos) {
+				languagedVideoName = languagedVideoName.substr(0, lastdot) + "-" + stcore->getSkyLanguage(); // VideoName_fr
+			} else {
+				languagedVideoName = "";
+				cLog::get()->write("command 'media':: video file has no extension to build language name " + languagedVideoName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+			}
 
+			// Subtitle management
+			std::string srtName = args[W_SUBTITLENAME];
+			std::string srtFileName = "";
+			if (!srtName.empty()) {
+				if (srtName == W_AUTO) {
+					// We test if a file of language exists
+					if (!languagedVideoName.empty()) {
+						srtName = languagedVideoName + "." + W_SRT; // VideoName-fr.srt
+						FilePath fileSrt = FilePath(srtName, FilePath::TFP::MEDIA);
+						if (fileSrt.exist()) {
+							srtFileName = fileSrt.toString();
+							cLog::get()->write("command 'media':: succesfull locale srt " + srtFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+						} else {
+							cLog::get()->write("command 'media':: locale srt not found", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+						}
+					} else {
+						cLog::get()->write("command 'media':: cannot build locale srt name as video file has no extension " + videoName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+					}
+				} else {
+					// if the srt exists as -en.srt then it is modified by applying the language of the sky_culture
+					if (srtName.size() > 8 && srtName[srtName.size() - 7] == '-') { // internationalization possible
+						FilePath fileSrt = FilePath(srtName, stcore->getSkyLanguage());
+						if (!fileSrt.exist()) {
+							cLog::get()->write("command 'media':: locale srt not found, trying " + srtName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+
+							// If the file is not found, default to the original srt name
+							FilePath fileSrt2 = FilePath(srtName, localRepertory);
+							if (!fileSrt2.exist()) {
+								cLog::get()->write("command 'media':: srt file not found " + srtName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+							} else {
+								srtFileName = fileSrt2.toString();
+								cLog::get()->write("command 'media':: succesfull srt " + srtFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+							}
+						} else {
+							srtFileName = fileSrt.toString();
+							cLog::get()->write("command 'media':: succesfull locale srt " + srtFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+						}
+					} else { //simple file without internationalization
+						FilePath fileSrt = FilePath(srtName, localRepertory);
+						if (!fileSrt.exist()) {
+							cLog::get()->write("command 'media':: srt file not found " + srtName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+						} else {
+							srtFileName = fileSrt.toString();
+							cLog::get()->write("command 'media':: succesfull srt " + srtFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+						}
+					}
+				}
+			}
+			if (!srtFileName.empty()) {
+				// Force flag subtitle on
+				cLog::get()->write("command 'media':: subtitles activated, to show " + srtFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+				stapp->flag(APP_FLAG::SUBTITLE, true);
+
+				media->subtitlesLoadFile(srtFileName);
+			} else {
+				media->subtitlesUnloadFile();
+			}
+
+			std::string argSubtitle = args[W_SUBTITLE];
+			if (!argSubtitle.empty()) {
+				if (argSubtitle == W_TOGGLE) {
+					media->playerSetShowSubtitles(!media->playerGetShowSubtitles());
+				} else if (Utility::isTrue(argSubtitle)) {
+					media->playerSetShowSubtitles(true);
+				} else {
+					media->playerSetShowSubtitles(false);
+				}
+			} else if (!srtFileName.empty()) {
+				// If not specified but srt exists, we show subtitles
+				media->playerSetShowSubtitles(true);
+			}
+
+			std::string argSubtitleProject = args[W_SUBTITLE_PROJECT];
+			IMG_PROJECT tmpSubtitleProject = IMG_PROJECT::ONCE;
+			if (argSubtitleProject==W_TWICE) {
+				tmpSubtitleProject = IMG_PROJECT::TWICE;
+			} else if (argSubtitleProject==W_THRICE) {
+				tmpSubtitleProject = IMG_PROJECT::THRICE;
+			}
+			media->playerSubtitlesSetProject(tmpSubtitleProject);
+
+			// Audio management
+			std::string audioFileName = "";
+			if (!audioName.empty()) {
+				if (audioName == W_AUTO) {
+					// We test if a file of language exists
+					if (!languagedVideoName.empty()) {
+						audioName = languagedVideoName + "." + W_OGG; // VideoName-fr.ogg
 						FilePath fileAudio = FilePath(audioName, FilePath::TFP::MEDIA);
 						if (fileAudio.exist()) {
-								cLog::get()->write("command 'media':: succesfull locale audio "+audioName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-								media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject , paused);
-							}
-						else {
-							cLog::get()->write("command 'media':: locale audio not found "+audioName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject , paused);
+							audioFileName = fileAudio.toString();
+							cLog::get()->write("command 'media':: succesfull locale audio " + audioFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+						} else {
+							cLog::get()->write("command 'media':: locale audio not found", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 						}
+					} else {
+						cLog::get()->write("command 'media':: cannot build locale audio name as video file has no extension " + videoName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 					}
 				} else {
 					// if the audio exists as -en.ogg then it is modified by applying the language of the sky_culture
-					if (audioName.size()>8 && audioName[audioName.size()-7]=='-') { // internationalization possible
-						FilePath fileAudio = FilePath(audioName, stcore->getSkyLanguage() );
+					if (audioName.size() > 8 && audioName[audioName.size() - 7] == '-') { // internationalization possible
+						FilePath fileAudio = FilePath(audioName, stcore->getSkyLanguage());
 						if (!fileAudio.exist()) {
-							cLog::get()->write("command 'media':: locale audio not found ", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject , paused);
-						} else
-							media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject , paused);
+							cLog::get()->write("command 'media':: locale audio not found, trying " + audioName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+
+							// If the file is not found, default to the original audio name
+							FilePath fileAudio2 = FilePath(audioName, localRepertory);
+							if (!fileAudio2.exist()) {
+								cLog::get()->write("command 'media':: audio file not found " + audioName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+							} else {
+								audioFileName = fileAudio2.toString();
+								cLog::get()->write("command 'media':: succesfull audio " + audioFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+							}
+						} else {
+							audioFileName = fileAudio.toString();
+							cLog::get()->write("command 'media':: succesfull locale audio " + audioFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+						}
 					} else { //simple file without internationalization
 						FilePath fileAudio = FilePath(audioName, localRepertory);
 						if (!fileAudio.exist()) {
-							cLog::get()->write("command 'media':: audio not found ", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject, paused);
-						} else
-							media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject, paused);
+							cLog::get()->write("command 'media':: audio not found " + audioName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+						} else {
+							audioFileName = fileAudio.toString();
+							cLog::get()->write("command 'media':: succesfull audio " + audioFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+						}
 					}
 				}
-			} else {
-				media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject, paused);
 			}
+			// Play media
+			media->playerPlay(type, fileVideo.toString(), audioFileName, argName, argPosition, tmpProject, paused);
 
 			std::string argSpeed = args[W_SPEED];
 			if (!argSpeed.empty()) {
@@ -3131,6 +3228,17 @@ int AppCommandInterface::commandMedia()
 	std::string argSpeedIncr = args[W_SPEED_INCREMENT];
 	if (!argSpeedIncr.empty()) {
 		media->playerIncrementSpeed(FixedPointI16_2::fromString(argSpeedIncr));
+		return executeCommandStatus();
+	}
+	std::string argSubtitle = args[W_SUBTITLE];
+	if (!argSubtitle.empty()) {
+		if (argAction == W_TOGGLE) {
+			media->playerSetShowSubtitles(!media->playerGetShowSubtitles());
+		} else if (Utility::isTrue(argSubtitle)) {
+			media->playerSetShowSubtitles(true);
+		} else {
+			media->playerSetShowSubtitles(false);
+		}
 		return executeCommandStatus();
 	}
 
