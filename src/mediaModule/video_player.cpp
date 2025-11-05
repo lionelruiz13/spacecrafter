@@ -209,7 +209,7 @@ bool VideoPlayer::restartCurrentVideo()
 		return false;
 	threadInterrupt();
 	auto result = av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD);
-	if (audio)
+	if (audio && playbackSpeedFactor == FixedPointI16_2::one()) // Only rewind audio if normal speed
 		audio->musicRewind();
 	threadPlay();
 	if (result < 0) {
