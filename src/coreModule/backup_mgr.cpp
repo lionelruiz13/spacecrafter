@@ -49,6 +49,7 @@ void CoreBackup::loadBackup()
 		core->observatory->moveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
 	}
 	core->setHomePlanet(mBackup.home_planet_name);
+	core->setFlagIngalaxy(mBackup.current_module);
 }
 
 void CoreBackup::saveBackup()
@@ -60,6 +61,7 @@ void CoreBackup::saveBackup()
 	// mBackup.pos_name=core->observatory->getName();
 	mBackup.fov = core->projection->getFov(); //getFov();
 	mBackup.home_planet_name=core->observatory->getHomePlanetEnglishName();
+	mBackup.current_module=core->getFlagIngalaxy();
 }
 
 void CoreBackup::saveGridState()

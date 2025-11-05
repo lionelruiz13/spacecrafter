@@ -32,6 +32,7 @@
 #include <string>
 #include <memory>
 #include "coreModule/core_common.hpp"
+#include "executorModule/executorModule.hpp"
 
 struct InitialValue {
 	std::string initial_skyCulture;
@@ -46,6 +47,7 @@ struct BackupWorkspace {
 	double altitude = 0.f;
 	float fov = 0.f;
 	std::string home_planet_name;
+	MODULE current_module = MODULE::SOLAR_SYSTEM;
 	// std::string pos_name;
 };
 
