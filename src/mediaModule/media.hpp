@@ -427,11 +427,13 @@ public:
 	//! \param factor Set Speed multiplier (1.0 = normal speed, 2.0 = double speed, 0.5 = half speed)
 	void playerSetSpeed(FixedPointI16_2 factor) {
 		player->setPlaybackSpeed(factor);
-		if (player->getPlaybackSpeed() != FixedPointI16_2::one()) { // Cut audio if speed is not 1
-			audio->musicHalt();
-		} else { // Resume and sync audio if speed is back to 1
-			audio->musicPlay();
-			audio->musicJump(player->getCurrentVideoTime());
+		if (audioRedirected) {
+			if (player->getPlaybackSpeed() != FixedPointI16_2::one()) { // Cut audio if speed is not 1
+				audio->musicHalt();
+			} else { // Resume and sync audio if speed is back to 1
+				audio->musicPlay();
+				audio->musicJump(player->getCurrentVideoTime());
+			}
 		}
 	}
 

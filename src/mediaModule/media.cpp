@@ -164,6 +164,12 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 			break;
 	}
 
+	// if a video was playing with audio and we now play a new video without audio
+	if (audioRedirected && !withMusic) {
+		// Stop the current audio
+		audio->musicHalt();
+	}
+
 	player->setAdaptiveFramerate(!withMusic);
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+filename, LOG_TYPE::L_DEBUG);
 	if (player->playNewVideo(filename, withMusic ? audio.get() : nullptr, preload) ==false) {
