@@ -108,12 +108,11 @@ VideoPlayer::~VideoPlayer()
 		delete videoTexture.tex[i];
 }
 
-std::string VideoPlayer::formatTime(double seconds) const
+std::string VideoPlayer::formatTime(int seconds) const
 {
-	int hours = static_cast<int>(seconds / 3600);
-	int minutes = static_cast<int>((seconds - hours * 3600) / 60);
-	double remainingSeconds = seconds - hours * 3600 - minutes * 60;
-	int secs = static_cast<int>(remainingSeconds);
+	int hours = seconds / 3600;
+	int minutes = (seconds - hours * 3600) / 60;
+	int secs = seconds - hours * 3600 - minutes * 60;
 
 	std::ostringstream oss;
 	oss << std::setfill('0') << hours << ":"
@@ -124,8 +123,8 @@ std::string VideoPlayer::formatTime(double seconds) const
 
 std::string VideoPlayer::getTimeStatus() const
 {
-	double currentTimeSeconds = static_cast<double>(currentFrame) / frameRate;
-	double totalTimeSeconds = static_cast<double>(nbTotalFrame) / frameRate;
+	int currentTimeSeconds = currentFrame / frameRate;
+	int totalTimeSeconds = nbTotalFrame / frameRate;
 	std::string currentTimeStr = formatTime(currentTimeSeconds);
 	std::string totalTimeStr = formatTime(totalTimeSeconds);
 	return currentTimeStr + " / " + totalTimeStr;
@@ -808,6 +807,9 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 				} while (nextFrame <= currentTime && (skipFrame || playbackSpeedFactor.toDouble() > 1.0f));
 				cv.notify_all();
 				frameIdx %= MAX_CACHED_FRAMES;
+
+				cLog::get()->write("Time: " + getTimeStatus() + " - Displaying frame " + std::to_string(currentFrame) + "/" + std::to_string(nbTotalFrame) +
+				                   " (cached: " + std::to_string(framesAvailable(frameCached, frameUsed)) + ")", LOG_TYPE::L_DEBUG);
 
 				// Update subtitle
 				if (showSubtitles) {

@@ -191,7 +191,7 @@ public:
 	static unsigned char *tracer_duration(void *data, unsigned char *buffer);
 private:
 	//! Format time in H:MM:SS format
-	std::string formatTime(double seconds) const;
+	std::string formatTime(int seconds) const;
 	// returns the new video frame and converts it in the CG memory.
 	void getNextVideoFrame();
 	// retrieves the new video frame before conversion
