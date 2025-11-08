@@ -808,9 +808,6 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 				cv.notify_all();
 				frameIdx %= MAX_CACHED_FRAMES;
 
-				cLog::get()->write("Time: " + getTimeStatus() + " - Displaying frame " + std::to_string(currentFrame) + "/" + std::to_string(nbTotalFrame) +
-				                   " (cached: " + std::to_string(framesAvailable(frameCached, frameUsed)) + ")", LOG_TYPE::L_DEBUG);
-
 				// Update subtitle
 				if (showSubtitles) {
 					static std::string subtitleContent = "";
