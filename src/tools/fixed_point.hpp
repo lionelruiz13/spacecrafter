@@ -313,9 +313,9 @@ private:
         #endif
     }
 
-    static constexpr StorageType SCALE = pow10_noexcept(DecimalPlaces);
-    static_assert(DecimalPlaces == 0 || (std::numeric_limits<StorageType>::max() / pow10_noexcept(DecimalPlaces - 1)) >= 10, "SCALE overflows StorageType");
 public:
+    static constexpr StorageType den = pow10_noexcept(DecimalPlaces); // Denominator of the internal value, like std::duration::period::den
+    static_assert(DecimalPlaces == 0 || (std::numeric_limits<StorageType>::max() / pow10_noexcept(DecimalPlaces - 1)) >= 10, "den overflows StorageType");
     // ============================================================================
     // Constructors
     // ============================================================================
@@ -332,7 +332,7 @@ public:
     */
     FixedPoint(int val) {
         StorageType v = CHECKED_CAST(int, val, "int Ctor");
-        value = CHECKED_MUL(v, SCALE, "int Ctor");
+        value = CHECKED_MUL(v, den, "int Ctor");
     }
 
     /*
@@ -342,7 +342,7 @@ public:
      * @note Implicit conversions from float are allowed for ease of use
     */
     FixedPoint(float val) {
-        value = CHECKED_CAST(float, val * SCALE, "float Ctor");
+        value = CHECKED_CAST(float, val * den, "float Ctor");
     }
 
     /*
@@ -352,7 +352,7 @@ public:
      * @note Implicit conversions from double are allowed for ease of use
     */
     FixedPoint(double val) {
-        value = CHECKED_CAST(double, val * SCALE, "double Ctor");
+        value = CHECKED_CAST(double, val * den, "double Ctor");
     }
 
     /*
@@ -517,7 +517,7 @@ public:
     */
     FixedPoint& operator=(int val) {
         StorageType v = CHECKED_CAST(int, val, "assignment from int");
-        value = CHECKED_MUL(v, SCALE, "assignment from int");
+        value = CHECKED_MUL(v, den, "assignment from int");
         return *this;
     }
 
@@ -528,7 +528,7 @@ public:
      * @note Implicit conversions from float are allowed for ease of use
     */
     FixedPoint& operator=(float val) {
-        value = CHECKED_CAST(float, val * SCALE, "assignment from float");
+        value = CHECKED_CAST(float, val * den, "assignment from float");
         return *this;
     }
 
@@ -539,7 +539,7 @@ public:
      * @note Implicit conversions from double are allowed for ease of use
     */
     FixedPoint& operator=(double val) {
-        value = CHECKED_CAST(double, val * SCALE, "assignment from double");
+        value = CHECKED_CAST(double, val * den, "assignment from double");
         return *this;
     }
 
@@ -568,7 +568,7 @@ public:
 
     /*
      * @brief Multiplication operator (safe, fast-path + fallback)
-     * (value * other.value) / SCALE without overflowing the intermediate product.
+     * (value * other.value) / den without overflowing the intermediate product.
      * @param other Other FixedPoint to multiply
      * @return Resulting FixedPoint
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
@@ -579,7 +579,7 @@ public:
 
         const StorageType a = value;
         const StorageType b = other.value;
-        const StorageType S = SCALE;
+        const StorageType S = den;
 
         if (a == 0 || b == 0) return FixedPoint::fromRaw(0);
 
@@ -673,7 +673,7 @@ public:
 
     /*
      * @brief Division operator (safe)
-     * (value * SCALE) / other.value without overflowing the intermediate product.
+     * (value * den) / other.value without overflowing the intermediate product.
      * @param other Other FixedPoint to divide
      * @return Resulting FixedPoint
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
@@ -685,7 +685,7 @@ public:
 
         const StorageType a = value;
         const StorageType b = other.value;
-        const StorageType S = SCALE;
+        const StorageType S = den;
 
         if (b == 0) {
             #if THROW_ON_FIXED_POINT_ERROR
@@ -914,7 +914,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint operator+(int val) const {
-        return FixedPoint::fromRaw(CHECKED_ADD(value, CHECKED_MUL(CHECKED_CAST(int, val, "addition with int"), SCALE, "addition with int"), "addition with int"));
+        return FixedPoint::fromRaw(CHECKED_ADD(value, CHECKED_MUL(CHECKED_CAST(int, val, "addition with int"), den, "addition with int"), "addition with int"));
     }
 
     /*
@@ -924,7 +924,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint operator-(int val) const {
-        return FixedPoint::fromRaw(CHECKED_SUB(value, CHECKED_MUL(CHECKED_CAST(int, val, "subtraction with int"), SCALE, "subtraction with int"), "subtraction with int"));
+        return FixedPoint::fromRaw(CHECKED_SUB(value, CHECKED_MUL(CHECKED_CAST(int, val, "subtraction with int"), den, "subtraction with int"), "subtraction with int"));
     }
 
     /*
@@ -954,7 +954,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint operator+(float val) const {
-        return FixedPoint::fromRaw(CHECKED_ADD(value, CHECKED_CAST(float, val * SCALE, "addition with float"), "addition with float"));
+        return FixedPoint::fromRaw(CHECKED_ADD(value, CHECKED_CAST(float, val * den, "addition with float"), "addition with float"));
     }
 
     /*
@@ -964,7 +964,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint operator-(float val) const {
-        return FixedPoint::fromRaw(CHECKED_SUB(value, CHECKED_CAST(float, val * SCALE, "subtraction with float"), "subtraction with float"));
+        return FixedPoint::fromRaw(CHECKED_SUB(value, CHECKED_CAST(float, val * den, "subtraction with float"), "subtraction with float"));
     }
 
     /*
@@ -994,7 +994,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint operator+(double val) const {
-        return FixedPoint::fromRaw(CHECKED_ADD(value, CHECKED_CAST(double, val * SCALE, "addition with double"), "addition with double"));
+        return FixedPoint::fromRaw(CHECKED_ADD(value, CHECKED_CAST(double, val * den, "addition with double"), "addition with double"));
     }
 
     /*
@@ -1004,7 +1004,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint operator-(double val) const {
-        return FixedPoint::fromRaw(CHECKED_SUB(value, CHECKED_CAST(double, val * SCALE, "subtraction with double"), "subtraction with double"));
+        return FixedPoint::fromRaw(CHECKED_SUB(value, CHECKED_CAST(double, val * den, "subtraction with double"), "subtraction with double"));
     }
 
     /*
@@ -1263,7 +1263,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint& operator+=(int val) {
-        value = CHECKED_ADD(value, CHECKED_MUL(CHECKED_CAST(int, val, "addition assignment with int"), SCALE, "addition assignment with int"), "addition assignment with int");
+        value = CHECKED_ADD(value, CHECKED_MUL(CHECKED_CAST(int, val, "addition assignment with int"), den, "addition assignment with int"), "addition assignment with int");
         return *this;
     }
 
@@ -1274,7 +1274,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint& operator-=(int val) {
-        value = CHECKED_SUB(value, CHECKED_MUL(CHECKED_CAST(int, val, "subtraction assignment with int"), SCALE, "subtraction assignment with int"), "subtraction assignment with int");
+        value = CHECKED_SUB(value, CHECKED_MUL(CHECKED_CAST(int, val, "subtraction assignment with int"), den, "subtraction assignment with int"), "subtraction assignment with int");
         return *this;
     }
 
@@ -1307,7 +1307,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint& operator+=(float val) {
-        value = CHECKED_ADD(value, CHECKED_CAST(float, val * SCALE, "addition assignment with float"), "addition assignment with float");
+        value = CHECKED_ADD(value, CHECKED_CAST(float, val * den, "addition assignment with float"), "addition assignment with float");
         return *this;
     }
 
@@ -1318,7 +1318,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint& operator-=(float val) {
-        value = CHECKED_SUB(value, CHECKED_CAST(float, val * SCALE, "subtraction assignment with float"), "subtraction assignment with float");
+        value = CHECKED_SUB(value, CHECKED_CAST(float, val * den, "subtraction assignment with float"), "subtraction assignment with float");
         return *this;
     }
 
@@ -1351,7 +1351,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint& operator+=(double val) {
-        value = CHECKED_ADD(value, CHECKED_CAST(double, val * SCALE, "addition assignment with double"), "addition assignment with double");
+        value = CHECKED_ADD(value, CHECKED_CAST(double, val * den, "addition assignment with double"), "addition assignment with double");
         return *this;
     }
 
@@ -1362,7 +1362,7 @@ public:
      * @throws std::overflow_error on overflow if THROW_ON_FIXED_POINT_OVERFLOW is defined
     */
     FixedPoint& operator-=(double val) {
-        value = CHECKED_SUB(value, CHECKED_CAST(double, val * SCALE, "subtraction assignment with double"), "subtraction assignment with double");
+        value = CHECKED_SUB(value, CHECKED_CAST(double, val * den, "subtraction assignment with double"), "subtraction assignment with double");
         return *this;
     }
 
@@ -1841,7 +1841,7 @@ public:
      * @return Reference to this FixedPoint after increment
     */
     FixedPoint& operator++() { // ++value
-        if (value > std::numeric_limits<StorageType>::max() - SCALE) {
+        if (value > std::numeric_limits<StorageType>::max() - den) {
             #if THROW_ON_FIXED_POINT_OVERFLOW
                 throw std::overflow_error("FixedPoint: prefix increment: overflow");
             #else
@@ -1849,7 +1849,7 @@ public:
                 return *this;
             #endif
         }
-        value += SCALE;
+        value += den;
         return *this;
     }
 
@@ -1859,7 +1859,7 @@ public:
     */
     FixedPoint operator++(int) { // value++
         FixedPoint temp = *this;
-        if (value > std::numeric_limits<StorageType>::max() - SCALE) {
+        if (value > std::numeric_limits<StorageType>::max() - den) {
             #if THROW_ON_FIXED_POINT_OVERFLOW
                 throw std::overflow_error("FixedPoint: postfix increment: overflow");
             #else
@@ -1867,7 +1867,7 @@ public:
                 return temp;
             #endif
         }
-        value += SCALE;
+        value += den;
         return temp;
     }
 
@@ -1876,7 +1876,7 @@ public:
      * @return Reference to this FixedPoint after decrement
     */
     FixedPoint& operator--() { // --value
-        if (value < std::numeric_limits<StorageType>::min() + SCALE) {
+        if (value < std::numeric_limits<StorageType>::min() + den) {
             #if THROW_ON_FIXED_POINT_OVERFLOW
                 throw std::overflow_error("FixedPoint: prefix decrement: overflow");
             #else
@@ -1884,7 +1884,7 @@ public:
                 return *this;
             #endif
         }
-        value -= SCALE;
+        value -= den;
         return *this;
     }
 
@@ -1894,7 +1894,7 @@ public:
     */
     FixedPoint operator--(int) { // value--
         FixedPoint temp = *this;
-        if (value < std::numeric_limits<StorageType>::min() + SCALE) {
+        if (value < std::numeric_limits<StorageType>::min() + den) {
             #if THROW_ON_FIXED_POINT_OVERFLOW
                 throw std::overflow_error("FixedPoint: postfix decrement: overflow");
             #else
@@ -1902,7 +1902,7 @@ public:
                 return temp;
             #endif
         }
-        value -= SCALE;
+        value -= den;
         return temp;
     }
 
@@ -1914,7 +1914,7 @@ public:
      * @return float representation
     */
     float toFloat() const {
-        return float(value) / SCALE;
+        return float(value) / den;
     }
 
     /*
@@ -1922,7 +1922,7 @@ public:
      * @return double representation
     */
     double toDouble() const {
-        return double(value) / SCALE;
+        return double(value) / den;
     }
 
     /*
@@ -1930,7 +1930,7 @@ public:
      * @return int representation
     */
     int toInt() const {
-        return int(value / SCALE);
+        return int(value / den);
     }
 
     /*
@@ -1939,7 +1939,7 @@ public:
     */
     std::string toString() const {
         if constexpr (DecimalPlaces == 0) {
-            return std::to_string(value / SCALE);
+            return std::to_string(value / den);
         }
 
         StorageType raw = value;
@@ -1947,8 +1947,8 @@ public:
         bool isNegative = (isSigned && raw < 0);
         UnsignedStorageType absoluteValue = isNegative ? UnsignedStorageType(-(raw + 1)) + 1 : UnsignedStorageType(raw);
 
-        UnsignedStorageType integerPart = absoluteValue / SCALE;
-        UnsignedStorageType fractionalPart = absoluteValue % SCALE;
+        UnsignedStorageType integerPart = absoluteValue / den;
+        UnsignedStorageType fractionalPart = absoluteValue % den;
 
         // sign + integer part + '.' + fractional part + null terminator
         static constexpr std::size_t BUF_SIZE = 1 + std::numeric_limits<UnsignedStorageType>::digits10 + 1 + DecimalPlaces + 1; // max sizes for each part
@@ -1963,7 +1963,7 @@ public:
         ptr = r1.ptr;
         *ptr++ = '.';
 
-        UnsignedStorageType padding = SCALE / 10;
+        UnsignedStorageType padding = den / 10;
         while (padding > 0) {
             *ptr++ = char('0' + int((fractionalPart / padding) % 10));
             padding /= 10;
@@ -2044,8 +2044,8 @@ public:
      * @return A FixedPoint representing the largest integer less than or equal to this FixedPoint
     */
     FixedPoint floor() const {
-        if (value >= 0) return fromRaw((value / SCALE) * SCALE);
-        return fromRaw(value % SCALE == 0 ? value : ((value / SCALE) - 1) * SCALE);
+        if (value >= 0) return fromRaw((value / den) * den);
+        return fromRaw(value % den == 0 ? value : ((value / den) - 1) * den);
     }
 
     /*
@@ -2053,8 +2053,8 @@ public:
      * @return A FixedPoint representing the smallest integer greater than or equal to this FixedPoint
     */
     FixedPoint ceil() const {
-        if (value <= 0) return fromRaw((value / SCALE) * SCALE);
-        return fromRaw(value % SCALE == 0 ? value : ((value / SCALE) + 1) * SCALE);
+        if (value <= 0) return fromRaw((value / den) * den);
+        return fromRaw(value % den == 0 ? value : ((value / den) + 1) * den);
     }
 
     /*
@@ -2062,9 +2062,9 @@ public:
      * @return A FixedPoint representing this FixedPoint rounded to the nearest integer
     */
     FixedPoint round() const {
-        const StorageType half = SCALE / 2;
+        const StorageType half = den / 2;
         const StorageType adj  = (value >= 0 ? half : -half);
-        return fromRaw(((value + adj) / SCALE) * SCALE);
+        return fromRaw(((value + adj) / den) * den);
     }
 
     /*
@@ -2073,8 +2073,8 @@ public:
     */
     FixedPoint frac() const {
         if constexpr (DecimalPlaces == 0) return zero();
-        StorageType fractionalPart = value % SCALE;
-        if (fractionalPart < 0) fractionalPart += SCALE;
+        StorageType fractionalPart = value % den;
+        if (fractionalPart < 0) fractionalPart += den;
         return fromRaw(fractionalPart);
     }
 
@@ -2108,7 +2108,7 @@ public:
      * @return FixedPoint representing one (1.0)
     */
     static constexpr FixedPoint one() noexcept {
-        return FixedPoint::fromRaw(SCALE);
+        return FixedPoint::fromRaw(den);
     }
 
     // ============================================================================
@@ -2127,7 +2127,7 @@ public:
      * @return Scale factor
     */
     static constexpr StorageType getScale() noexcept {
-        return SCALE;
+        return den;
     }
 };
 

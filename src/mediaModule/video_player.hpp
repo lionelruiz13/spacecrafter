@@ -123,11 +123,11 @@ public:
 	}
 
 	bool isVideoCacheFull() const {
-		return (framesAvailable(frameCached, frameUsed) >= (MAX_CACHED_FRAMES-1)) || !decoding;
+		return (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= (MAX_CACHED_FRAMES-1)) || !decoding;
 	}
 
 	bool isVideoCachePrefilled() const {
-		return (framesAvailable(frameCached, frameUsed) >= MAX_PRELOAD_FRAMES) || !decoding;
+		return (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= MAX_PRELOAD_FRAMES) || !decoding;
 	}
 
 	//! Returns the ID of the YUV textures in the GPU representing the frame read from the video file
@@ -191,7 +191,11 @@ public:
 	static unsigned char *tracer_duration(void *data, unsigned char *buffer);
 private:
 	//! Format time in H:MM:SS format
-	std::string formatTime(int seconds) const;
+	static std::string formatTime(std::chrono::seconds seconds);
+	template <typename RATIO>
+	static inline std::string formatTime(std::chrono::duration<int64_t, RATIO> duration) {
+		return formatTime(std::chrono::duration_cast<std::chrono::seconds>(duration));
+	}
 	// returns the new video frame and converts it in the CG memory.
 	void getNextVideoFrame();
 	// retrieves the new video frame before conversion
@@ -202,14 +206,8 @@ private:
 	bool seekVideo(int64_t framesToSkip);
 	//! initialize a texture to the size of the video
 	void initTexture();
-	//! returns the number of frames available for playback (prevent overflow from pure cached - used (return 0 instead of a large value))
-	uint32_t framesAvailable(const std::atomic<uint32_t>& cached, const std::atomic<uint32_t>& used) const {
-		// Read once (avoid changing values between 2 loads)
-		const uint32_t fc = cached.load(std::memory_order_acquire);
-		const uint32_t fu = used.load(std::memory_order_acquire);
-		// Safe difference (never overflow)
-		return (fc >= fu) ? (fc - fu) : 0u;
-	}
+	//! update subtitles
+	void updateSubtitles();
 
 	Media *media=nullptr;
 	Audio *audio=nullptr;
@@ -241,6 +239,7 @@ private:
 	double frameRate;
 	std::chrono::steady_clock::duration latency; // Time behind the video which need to be reclaimed
 	std::chrono::steady_clock::duration deltaFrame; // Time between two frames
+	std::chrono::steady_clock::duration baseDeltaFrame; // Base time between two frames, before applying playbackSpeedFactor
 	std::chrono::steady_clock::duration renderDeltaFrame; // Time between two rendered frames
 	FixedPointI16_2 playbackSpeedFactor = FixedPointI16_2::one(); // Video playback speed multiplier (fixed-point representation)
 

@@ -108,23 +108,22 @@ VideoPlayer::~VideoPlayer()
 		delete videoTexture.tex[i];
 }
 
-std::string VideoPlayer::formatTime(int seconds) const
+std::string VideoPlayer::formatTime(std::chrono::seconds seconds)
 {
-	int hours = seconds / 3600;
-	int minutes = (seconds - hours * 3600) / 60;
-	int secs = seconds - hours * 3600 - minutes * 60;
+	auto min_sec = std::div(seconds.count(), std::chrono::seconds::rep{60L});
+	auto hour_min = std::div(min_sec.quot, std::chrono::seconds::rep{60L});
 
 	std::ostringstream oss;
-	oss << std::setfill('0') << hours << ":"
-		<< std::setw(2) << minutes << ":"
-		<< std::setw(2) << secs;
+	oss << std::setfill('0') << hour_min.quot << ":"
+		<< std::setw(2) << hour_min.rem << ":"
+		<< std::setw(2) << min_sec.rem;
 	return oss.str();
 }
 
 std::string VideoPlayer::getTimeStatus() const
 {
-	int currentTimeSeconds = currentFrame / frameRate;
-	int totalTimeSeconds = nbTotalFrame / frameRate;
+	auto currentTimeSeconds = currentFrame * baseDeltaFrame;
+	auto totalTimeSeconds = nbTotalFrame * baseDeltaFrame;
 	std::string currentTimeStr = formatTime(currentTimeSeconds);
 	std::string totalTimeStr = formatTime(totalTimeSeconds);
 	return currentTimeStr + " / " + totalTimeStr;
@@ -148,7 +147,7 @@ void VideoPlayer::pauseCurrentVideo()
 	if (m_isVideoInPause) {
 		m_isVideoInPause = false;
 		currentTime = std::chrono::steady_clock::now();
-		nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor.toDouble()));
+		nextFrame = currentTime + deltaFrame;
 		if (audio) {
 			audio->musicJump(std::chrono::duration_cast<std::chrono::duration<double>>(currentFrame * deltaFrame).count());
 			audio->musicResume();
@@ -185,6 +184,7 @@ void VideoPlayer::setPlaybackSpeed(FixedPointI16_2 factor)
 	}
 
 	playbackSpeedFactor = factor;
+	deltaFrame = std::chrono::steady_clock::duration((baseDeltaFrame.count() * decltype(playbackSpeedFactor)::den) / playbackSpeedFactor.getRawValue());
 	cLog::get()->write("VideoPlayer: Playback speed set to " + factor.toString() + "x", LOG_TYPE::L_INFO);
 }
 
@@ -309,7 +309,8 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 
 	AVRational frame_rate = av_guess_frame_rate(pFormatCtx, video_st, NULL);
 	frameRate = frame_rate.num/(double)frame_rate.den;
-	deltaFrame = std::chrono::steady_clock::duration(std::chrono::steady_clock::period::den * frame_rate.den / (std::chrono::steady_clock::period::num * frame_rate.num));
+	baseDeltaFrame = std::chrono::steady_clock::duration(std::chrono::steady_clock::period::den * frame_rate.den / (std::chrono::steady_clock::period::num * frame_rate.num));
+	deltaFrame = std::chrono::steady_clock::duration((baseDeltaFrame.count() * decltype(playbackSpeedFactor)::den) / playbackSpeedFactor.getRawValue());
 	nbTotalFrame = static_cast<int>((pFormatCtx->duration+1) * frameRate / AV_TIME_BASE);
 
 	img_convert_ctx = NULL;
@@ -773,117 +774,26 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 			currentTime = now;
 		}
 		if (nextFrame <= currentTime) {
-			if (auto nbFrames = framesAvailable(frameCached, frameUsed)) {
+			if (auto nbFrames = frameCached.load(std::memory_order_acquire) - frameUsed.load(std::memory_order_relaxed)) {
 				uint32_t frameIdx;
 				do { // Determine how many frames to load
-					// No more frames available (even if we have to skip frame stop here to prevent "frame jump" when waiting for cache)
-					if (framesAvailable(frameCached, frameUsed) == 0)
-						break;
 					++currentFrame;
 					frameIdx = frameUsed.fetch_add(1, std::memory_order_relaxed);
 					latency -= deltaFrame;
-					if (adaptiveFramerate) {
-						if (--nbFrames) {
-							if (nbFrames < CACHE_STRESS || latency.count() > 0) {
-								// Apply playback speed to adaptive framerate calculation
-								nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(
-									deltaFrame.count() * std::min(MIN_VIDEO_SPEED + nbFrames * SPEED_INCREMENT_PER_CACHED_FRAME, MAX_VIDEO_SPEED) / playbackSpeedFactor.toDouble()
-								));
-							} else {
-								// Apply playback speed to normal frame timing
-								nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor.toDouble()));
-							}
-						} else {
-							// Apply playback speed when resetting timing
-							nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor.toDouble()));
-						}
-					} else {
-						// Apply playback speed to non-adaptive mode
-						nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor.toDouble()));
-						//! Don't break here, we want to skip as many frames as needed
-						//! to catch up with currentTime if we allow skipping or fast playback
-						// break;
+					if (--nbFrames == 0) {
+						nextFrame += deltaFrame;
+						break;
 					}
-				} while (nextFrame <= currentTime && (skipFrame || playbackSpeedFactor.toDouble() > 1.0f));
+					if (adaptiveFramerate && (nbFrames < CACHE_STRESS || latency.count() > 0)) {
+						nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(
+							deltaFrame.count() * std::min(MIN_VIDEO_SPEED + nbFrames * SPEED_INCREMENT_PER_CACHED_FRAME, MAX_VIDEO_SPEED)
+						));
+					} else {
+						nextFrame += deltaFrame;
+					}
+				} while (nextFrame <= currentTime && (skipFrame || playbackSpeedFactor > decltype(playbackSpeedFactor)::one()));
 				cv.notify_all();
 				frameIdx %= MAX_CACHED_FRAMES;
-
-				// Update subtitle
-				if (showSubtitles) {
-					static std::string subtitleContent = "";
-					int currentTimeInMs = static_cast<int>(currentFrame * 1000.0 / frameRate);
-					std::string tmpSubtitle = media->subtitleGetSubtitleAt(currentTimeInMs);
-
-					// Prevent recreating the subtitle text object if the subtitle hasn't changed
-					if (subtitleContent != tmpSubtitle) {
-						subtitleContent = tmpSubtitle;
-
-						// Split subtitle into two lines if too long
-						if (subtitleContent.length() > 50) {
-							auto splitPos = subtitleContent.rfind(' ', subtitleContent.length() / 2);
-							textSubtitleTopParam.string = subtitleContent.substr(0, splitPos);
-							textSubtitleBottomParam.string = subtitleContent.substr(splitPos + 1);
-						} else {
-							textSubtitleTopParam.string = "";
-							textSubtitleBottomParam.string = subtitleContent;
-						}
-
-						// Top subtitles
-						textSubtitleTopParam.azimuth = 0.0f;
-						media->textAdd("video_subtitle1t", textSubtitleTopParam);
-						media->textDisplay("video_subtitle1t", true);
-
-						if (subtitleProject == IMG_PROJECT::TWICE) {
-							textSubtitleTopParam.azimuth = 180.0f;
-							media->textAdd("video_subtitle2t", textSubtitleTopParam);
-							media->textDisplay("video_subtitle2t", true);
-						}
-
-						if (subtitleProject == IMG_PROJECT::THRICE) {
-							textSubtitleTopParam.azimuth = 120.0f;
-							media->textAdd("video_subtitle2t", textSubtitleTopParam);
-							media->textDisplay("video_subtitle2t", true);
-
-							textSubtitleTopParam.azimuth = 240.0f;
-							media->textAdd("video_subtitle3t", textSubtitleTopParam);
-							media->textDisplay("video_subtitle3t", true);
-						}
-
-						// Bottom subtitles
-						textSubtitleBottomParam.azimuth = 0.0f;
-						media->textAdd("video_subtitle1b", textSubtitleBottomParam);
-						media->textDisplay("video_subtitle1b", true);
-
-						if (subtitleProject == IMG_PROJECT::TWICE) {
-							textSubtitleBottomParam.azimuth = 180.0f;
-							media->textAdd("video_subtitle2b", textSubtitleBottomParam);
-							media->textDisplay("video_subtitle2b", true);
-						}
-
-						if (subtitleProject == IMG_PROJECT::THRICE) {
-							textSubtitleBottomParam.azimuth = 120.0f;
-							media->textAdd("video_subtitle2b", textSubtitleBottomParam);
-							media->textDisplay("video_subtitle2b", true);
-
-							textSubtitleBottomParam.azimuth = 240.0f;
-							media->textAdd("video_subtitle3b", textSubtitleBottomParam);
-							media->textDisplay("video_subtitle3b", true);
-						}
-					}
-				}
-
-				if (currentFrame >= nbTotalFrame) {
-					// Reached end of video
-					if (reloop) {
-						restartCurrentVideo();
-					} else {
-						cLog::get()->write("end of file");
-						stopCurrentVideo(false);
-					}
-					videoTexture.sync->syncIn->placeBarrier(cmd);
-					return;
-				}
-
 				VkBufferImageCopy region;
 				region.bufferRowLength = region.bufferImageHeight = 0;
 				region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
@@ -895,6 +805,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 					region.imageExtent.height = heights[i];
 					vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 				}
+				updateSubtitles();
 			} else if (m_isVideoPlayed) {
 				if (decoding) {
 					pauseCurrentVideo();
@@ -913,6 +824,72 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 	videoTexture.sync->syncIn->placeBarrier(cmd);
 }
 
+void VideoPlayer::updateSubtitles()
+{
+	if (showSubtitles) {
+		static std::string subtitleContent = "";
+		int currentTimeInMs = static_cast<int>(currentFrame * 1000.0 / frameRate);
+		std::string tmpSubtitle = media->subtitleGetSubtitleAt(currentTimeInMs);
+
+		// Prevent recreating the subtitle text object if the subtitle hasn't changed
+		if (subtitleContent != tmpSubtitle) {
+			subtitleContent = tmpSubtitle;
+
+			// Split subtitle into two lines if too long
+			if (subtitleContent.length() > 50) {
+				auto splitPos = subtitleContent.rfind(' ', subtitleContent.length() / 2);
+				textSubtitleTopParam.string = subtitleContent.substr(0, splitPos);
+				textSubtitleBottomParam.string = subtitleContent.substr(splitPos + 1);
+			} else {
+				textSubtitleTopParam.string = "";
+				textSubtitleBottomParam.string = subtitleContent;
+			}
+
+			// Top subtitles
+			textSubtitleTopParam.azimuth = 0.0f;
+			media->textAdd("video_subtitle1t", textSubtitleTopParam);
+			media->textDisplay("video_subtitle1t", true);
+
+			if (subtitleProject == IMG_PROJECT::TWICE) {
+				textSubtitleTopParam.azimuth = 180.0f;
+				media->textAdd("video_subtitle2t", textSubtitleTopParam);
+				media->textDisplay("video_subtitle2t", true);
+			}
+
+			if (subtitleProject == IMG_PROJECT::THRICE) {
+				textSubtitleTopParam.azimuth = 120.0f;
+				media->textAdd("video_subtitle2t", textSubtitleTopParam);
+				media->textDisplay("video_subtitle2t", true);
+
+				textSubtitleTopParam.azimuth = 240.0f;
+				media->textAdd("video_subtitle3t", textSubtitleTopParam);
+				media->textDisplay("video_subtitle3t", true);
+			}
+
+			// Bottom subtitles
+			textSubtitleBottomParam.azimuth = 0.0f;
+			media->textAdd("video_subtitle1b", textSubtitleBottomParam);
+			media->textDisplay("video_subtitle1b", true);
+
+			if (subtitleProject == IMG_PROJECT::TWICE) {
+				textSubtitleBottomParam.azimuth = 180.0f;
+				media->textAdd("video_subtitle2b", textSubtitleBottomParam);
+				media->textDisplay("video_subtitle2b", true);
+			}
+
+			if (subtitleProject == IMG_PROJECT::THRICE) {
+				textSubtitleBottomParam.azimuth = 120.0f;
+				media->textAdd("video_subtitle2b", textSubtitleBottomParam);
+				media->textDisplay("video_subtitle2b", true);
+
+				textSubtitleBottomParam.azimuth = 240.0f;
+				media->textAdd("video_subtitle3b", textSubtitleBottomParam);
+				media->textDisplay("video_subtitle3b", true);
+			}
+		}
+	}
+}
+
 void VideoPlayer::recordUpdateDependency(VkCommandBuffer cmd)
 {
 	if (!videoTexture.sync || !videoTexture.sync->inUse)
@@ -927,7 +904,7 @@ void VideoPlayer::mainloop()
 	std::unique_lock<std::mutex> ulock(mtx);
 	while (decoding) {
 		getNextVideoFrame();
-		while (framesAvailable(frameCached, frameUsed) >= (MAX_CACHED_FRAMES-1) && decoding)
+		while (frameCached.load(std::memory_order_relaxed) - frameUsed.load(std::memory_order_relaxed) >= (MAX_CACHED_FRAMES-1) && decoding)
 			cv.wait(ulock);
 	}
 }
@@ -939,8 +916,8 @@ void VideoPlayer::threadTerminate()
 		cv.notify_all();
 		thread.join();
 	}
-	frameCached = 0;
-	frameUsed = 0;
+	frameCached.store(0, std::memory_order_relaxed);
+	frameUsed.store(0, std::memory_order_relaxed);
 }
 
 void VideoPlayer::threadInterrupt()
@@ -951,14 +928,14 @@ void VideoPlayer::threadInterrupt()
 	} else if (thread.joinable()) {
 		thread.join();
 	}
-	frameCached = 0;
-	frameUsed = 0;
+	frameCached.store(0, std::memory_order_relaxed);
+	frameUsed.store(0, std::memory_order_relaxed);
 }
 
 void VideoPlayer::threadPlay()
 {
 	currentTime = std::chrono::steady_clock::now();
-	nextFrame = currentTime + std::chrono::steady_clock::duration(static_cast<int64_t>(deltaFrame.count() / playbackSpeedFactor.toDouble()));
+	nextFrame = currentTime + deltaFrame;
 	latency = -deltaFrame;
 	drawNextFrame = true;
 	this->getNextVideoFrame(); // The first valid frame must be ready
