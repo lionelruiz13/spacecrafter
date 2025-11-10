@@ -3046,48 +3046,12 @@ int AppCommandInterface::commandMedia()
 			std::string srtName = args[W_SUBTITLENAME];
 			std::string srtFileName = "";
 			if (!srtName.empty()) {
-				if (srtName == W_AUTO) {
-					// We test if a file of language exists
-					if (!languagedVideoName.empty()) {
-						srtName = languagedVideoName + "." + W_SRT; // VideoName-fr.srt
-						FilePath fileSrt = FilePath(srtName, FilePath::TFP::MEDIA);
-						if (fileSrt.exist()) {
-							srtFileName = fileSrt.toString();
-							cLog::get()->write("command 'media':: succesfull locale srt " + srtFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-						} else {
-							cLog::get()->write("command 'media':: locale srt not found", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-						}
-					} else {
-						cLog::get()->write("command 'media':: cannot build locale srt name as video file has no extension " + videoName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-					}
+				FilePath fileSrt = FilePath(srtName, localRepertory);
+				if (!fileSrt.exist()) {
+					cLog::get()->write("command 'media':: srt file not found " + srtName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 				} else {
-					// if the srt exists as -en.srt then it is modified by applying the language of the sky_culture
-					if (srtName.size() > 8 && srtName[srtName.size() - 7] == '-') { // internationalization possible
-						FilePath fileSrt = FilePath(srtName, stcore->getSkyLanguage());
-						if (!fileSrt.exist()) {
-							cLog::get()->write("command 'media':: locale srt not found, trying " + srtName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-
-							// If the file is not found, default to the original srt name
-							FilePath fileSrt2 = FilePath(srtName, localRepertory);
-							if (!fileSrt2.exist()) {
-								cLog::get()->write("command 'media':: srt file not found " + srtName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-							} else {
-								srtFileName = fileSrt2.toString();
-								cLog::get()->write("command 'media':: succesfull srt " + srtFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-							}
-						} else {
-							srtFileName = fileSrt.toString();
-							cLog::get()->write("command 'media':: succesfull locale srt " + srtFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-						}
-					} else { //simple file without internationalization
-						FilePath fileSrt = FilePath(srtName, localRepertory);
-						if (!fileSrt.exist()) {
-							cLog::get()->write("command 'media':: srt file not found " + srtName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-						} else {
-							srtFileName = fileSrt.toString();
-							cLog::get()->write("command 'media':: succesfull srt " + srtFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-						}
-					}
+					srtFileName = fileSrt.toString();
+					cLog::get()->write("command 'media':: succesfull srt " + srtFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 				}
 			}
 			if (!srtFileName.empty()) {
