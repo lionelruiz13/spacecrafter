@@ -456,7 +456,7 @@ int App::getFpsClock() const {
  	return internalFPS->getFps();
 }
 
-int App::getTargetFps() const {
+double App::getTargetFps() const {
 	return internalFPS->getTargetFps();
 }
 
@@ -530,6 +530,7 @@ void App::init()
 
 	internalFPS->setMaxFps(conf.getDouble (SCS_VIDEO,SCK_MAXIMUM_FPS));
 	internalFPS->setVideoFps(conf.getDouble(SCS_VIDEO,SCK_REC_VIDEO_FPS));
+	internalFPS->selectMaxFps();
 
 	std::string appLocaleName = conf.getStr(SCS_LOCALIZATION, SCK_APP_LOCALE); //, "system");
 	spaceDate->setTimeFormat(spaceDate->stringToSTimeFormat(conf.getStr(SCS_LOCALIZATION, SCK_TIME_DISPLAY_FORMAT)));
@@ -678,7 +679,6 @@ void App::updateFromSharedData()
 
 void App::update(int delta_time)
 {
-	internalFPS->addFrame();
 	// change time rate if needed to fast forward scripts
 	delta_time *= scriptMgr->getMuliplierRate();
 	// run command from a running script
@@ -718,7 +718,7 @@ void App::draw(int delta_time)
 		sender->acquireFrame(context.frameIdx);
 	} else {
 		context.helper->waitFrame(context.lastFrameIdx);
-		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 20000000, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx);
+		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 20000000, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx); // Timeout after 20ms, avoid rendering a frame which is out of date
 		switch (res) {
 			case VK_SUCCESS:
 				break;
@@ -886,11 +886,6 @@ void App::startMainLoop()
 	//center mouse in middle screen
 	mSdl->warpMouseInCenter();
 
-	internalFPS->init();
-	internalFPS->selectMaxFps();
-
-	SDL_TimerID my_timer_id = SDL_AddTimer(1000, internalFPS->callbackfunc, nullptr);
-
 	// Start the main loop
 	context.stat->capture(Capture::APP_MAINLOOP_START);
 	while (flagAlive) {
@@ -912,23 +907,17 @@ void App::startMainLoop()
 			// Leave the CPU alone, don't waste time, simply wait for an event
 			SDL_WaitEvent(NULL);
 		} else {
-			internalFPS->setTickCount();
-			// Wait a while if drawing a frame right now would exceed our preferred framerate.
-			internalFPS->wait();
-			internalFPS->setTickCount();
-
-			deltaTime = internalFPS->getDeltaTime();
+			deltaTime = internalFPS->beginFrame();
 
 			context.stat->capture(Capture::FRAME_START);
 			this->update(deltaTime);		// And update the motions and data
 			this->draw(deltaTime);			// Do the drawings!
 
-			internalFPS->setLastCount();
+			internalFPS->endFrame();
 		}
 	}
 	context.stat->capture(Capture::FRAME_START);
 
-	SDL_RemoveTimer(my_timer_id);
 	CallSystem::killAllPidFrom("vlc");
 	CallSystem::killAllPidFrom("mplayer");
 }

@@ -58,6 +58,7 @@
 class Trail;
 class Hints;
 class Axis;
+class PlanetGrid;
 class Orbit2D;
 class Orbit3D;
 class Halo;
@@ -74,7 +75,7 @@ class AtmExt;
 
 
 typedef struct body_flags {
-	bool flag_trail, flag_hints, flag_axis, flag_orbit, flag_halo;
+	bool flag_trail, flag_hints, flag_axis, flag_planet_grid, flag_orbit, flag_halo;
 } body_flags;
 
 
@@ -117,6 +118,7 @@ class Body : public ObjectBase, public std::enable_shared_from_this<Body> {
 	friend class Trail;
 	friend class Hints;
 	friend class Axis;
+	friend class PlanetGrid;
 	friend class Orbit2D;
 	friend class Orbit3D;
 	friend class OrbitPlot;
@@ -391,6 +393,10 @@ public:
 		return rot_local_to_parent;
 	}
 
+	float getAxisRotation() const {
+		return axis_rotation;
+	}
+
 	static bool setTexEclipseMap(const std::string &texMap) {
 		tex_eclipse_map = std::make_shared<s_texture>(texMap, TEX_LOAD_TYPE_PNG_SOLID);
 		if (tex_eclipse_map != nullptr)
@@ -547,6 +553,8 @@ protected:
 
 	virtual void drawAxis(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat);
 
+	virtual void drawPlanetGrid(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat);
+
 	void drawAtmExt(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, float screen_sz, bool depthTest);
 
 	// Draw the 3D body: pshere or model3d
@@ -645,6 +653,7 @@ protected:
 	std::unique_ptr<Trail> trail;
 	std::shared_ptr<Hints> hints;
 	std::shared_ptr<Axis> axis;
+	std::shared_ptr<PlanetGrid> planetGrid;
 	std::unique_ptr<OrbitPlot> orbitPlot;
 	std::shared_ptr<Halo> halo;
 	std::unique_ptr<AtmExt> atmExt;

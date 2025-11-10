@@ -25,6 +25,8 @@
  */
 
 #include <iostream>
+#include <cmath>
+#include <algorithm>
 #include "coreModule/projector.hpp"
 #include "mediaModule/image.hpp"
 #include "mediaModule/imageTexture.hpp"
@@ -32,6 +34,7 @@
 #include "tools/s_texture.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
+#include "EntityCore/SubBuffer.hpp"
 #include "tools/insert_all.hpp"
 #include "ojmModule/objl_mgr.hpp"
 #include "ojmModule/objl.hpp"
@@ -40,9 +43,15 @@ PipelineLayout *Image::m_layoutUnifiedRGB;
 PipelineLayout *Image::m_layoutUnifiedYUV;
 PipelineLayout *Image::m_layoutSphereRGB;
 PipelineLayout *Image::m_layoutSphereYUV;
+PipelineLayout *Image::m_layoutUnifiedYUVA; // Layout for YUVA unified
+PipelineLayout *Image::m_layoutSphereYUVA;  // Layout for YUVA sphere
 std::array<Pipeline *, 4> Image::m_pipelineViewport;
 std::array<Pipeline *, 4> Image::m_pipelineUnified;
 std::array<Pipeline *, 4> Image::m_pipelineSphere;
+// YUVA separate pipelines
+Pipeline *Image::m_pipelineYUVAViewport = nullptr;
+Pipeline *Image::m_pipelineYUVAUnified = nullptr;
+Pipeline *Image::m_pipelineYUVASphere = nullptr;
 std::unique_ptr<VertexArray> Image::m_imageViewportGL;
 std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
 std::unique_ptr<VertexArray> Image::m_imageSphereGL;
@@ -59,9 +68,16 @@ Image::Image(const std::string& filename, const std::string& name, IMG_POSITION 
 	initialise(name, pos_type,project, mipmap);
 }
 
-Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project)
+Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool hasAlphaChannel)
 {
-	imageTexture = new YUVImageTexture(imgTex.y, imgTex.u, imgTex.v, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereYUV : m_layoutUnifiedYUV);
+
+	if (hasAlphaChannel && imgTex.a) {
+		// Utiliser YUVAImageTexture pour les vidéos avec alpha
+		imageTexture = new YUVAImageTexture(imgTex.y, imgTex.u, imgTex.v, imgTex.a, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereYUVA : m_layoutUnifiedYUVA);
+	} else {
+		// Utiliser YUVImageTexture classique pour les vidéos sans alpha
+		imageTexture = new YUVImageTexture(imgTex.y, imgTex.u, imgTex.v, (pos_type == IMG_POSITION::POS_SPHERICAL) ? m_layoutSphereYUV : m_layoutUnifiedYUV);
+	}
 	imageTexture->setupSync(imgTex.sync);
 	needFlip = true;
 	isPersistent = true;
@@ -71,6 +87,7 @@ Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type
 void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap)
 {
 	flag_alpha = flag_scale = flag_location = flag_rotation = ratio.onTransition = 0;
+	spherical_base_altitude_transition.onTransition = spherical_top_altitude_transition.onTransition = 0;
 	image_pos_type = pos_type;
 	image_alpha = 0;  // begin not visible
 	image_rotation = 0;
@@ -113,9 +130,12 @@ void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJE
 			vertex->fillEntry(2, 4, vecImgTex.data(), imgData + 2);
 			break;
 		case IMG_POSITION::POS_SPHERICAL:
+			vertexSize = 0;
+			indexCount = 0;
 			break;
 		default:
 			vertexSize = 0;
+			indexCount = 0;
 	}
 }
 
@@ -158,6 +178,10 @@ Image::~Image()
 {
 	// if (image_RGB) delete image_RGB;
 	delete imageTexture;
+	// Release index buffer if allocated
+	if (indexBuffer) {
+		Context::instance->indexBufferMgr->releaseBuffer(*indexBuffer);
+	}
 	vecImgPos.clear();
 	vecImgTex.clear();
 }
@@ -171,8 +195,8 @@ void Image::createSC_context()
 	m_imageUnifiedGL->createBindingEntry(5 * sizeof(float));
 	m_imageUnifiedGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
 	m_imageUnifiedGL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
-	m_imageSphereGL = std::make_unique<VertexArray>(vkmgr, context.ojmAlignment);
-	m_imageSphereGL->createBindingEntry(8 * sizeof(float));
+	m_imageSphereGL = std::make_unique<VertexArray>(vkmgr);
+	m_imageSphereGL->createBindingEntry(5 * sizeof(float));
 	m_imageSphereGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
 	m_imageSphereGL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
 	m_imageViewportGL = std::make_unique<VertexArray>(vkmgr);
@@ -214,6 +238,29 @@ void Image::createSC_context()
 	m_layoutSphereYUV->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
 	m_layoutSphereYUV->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
 	m_layoutSphereYUV->build();
+
+	// Layouts for YUVA with alpha channel
+	m_layoutUnifiedYUVA = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(m_layoutUnifiedYUVA);
+	m_layoutUnifiedYUVA->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER); // Y
+	m_layoutUnifiedYUVA->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER); // U
+	m_layoutUnifiedYUVA->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER); // V
+	m_layoutUnifiedYUVA->setTextureLocation(3, &PipelineLayout::DEFAULT_SAMPLER); // A
+	m_layoutUnifiedYUVA->buildLayout();
+	m_layoutUnifiedYUVA->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
+	m_layoutUnifiedYUVA->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
+	m_layoutUnifiedYUVA->build();
+
+	m_layoutSphereYUVA = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(m_layoutSphereYUVA);
+	m_layoutSphereYUVA->setTextureLocation(0, &tmpSampler); // Y
+	m_layoutSphereYUVA->setTextureLocation(1, &tmpSampler); // U
+	m_layoutSphereYUVA->setTextureLocation(2, &tmpSampler); // V
+	m_layoutSphereYUVA->setTextureLocation(3, &tmpSampler); // A
+	m_layoutSphereYUVA->buildLayout();
+	m_layoutSphereYUVA->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
+	m_layoutSphereYUVA->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
+	m_layoutSphereYUVA->build();
 
 	// Pipeline
 	for (int i = 0; i < 4; ++i) {
@@ -261,6 +308,41 @@ void Image::createSC_context()
 		m_pipelineSphere[i]->build();
 		m_pipelineViewport[i]->build();
 	}
+
+	// YUVA separate pipelines
+	m_pipelineYUVAViewport = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, m_layoutUnifiedYUVA);
+	context.pipelines.emplace_back(m_pipelineYUVAViewport);
+	m_pipelineYUVAViewport->setDepthStencilMode();
+	m_pipelineYUVAViewport->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+	m_pipelineYUVAViewport->bindVertex(*m_imageViewportGL);
+	m_pipelineYUVAViewport->bindShader("imageViewport.vert.spv");
+	m_pipelineYUVAViewport->bindShader("imageViewportYUVA.frag.spv");
+	m_pipelineYUVAViewport->setSpecializedConstant(7, context.isFloat64Supported);
+	m_pipelineYUVAViewport->build();
+
+	m_pipelineYUVAUnified = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, m_layoutUnifiedYUVA);
+	context.pipelines.emplace_back(m_pipelineYUVAUnified);
+	m_pipelineYUVAUnified->setDepthStencilMode();
+	m_pipelineYUVAUnified->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+	m_pipelineYUVAUnified->setCullMode(true);
+	m_pipelineYUVAUnified->bindVertex(*m_imageUnifiedGL);
+	m_pipelineYUVAUnified->bindShader("imageUnified.vert.spv");
+	m_pipelineYUVAUnified->bindShader("imageUnifiedYUVA.frag.spv");
+	m_pipelineYUVAUnified->setSpecializedConstant(7, context.isFloat64Supported);
+	m_pipelineYUVAUnified->build();
+
+	m_pipelineYUVASphere = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, m_layoutSphereYUVA);
+	context.pipelines.emplace_back(m_pipelineYUVASphere);
+	m_pipelineYUVASphere->setDepthStencilMode();
+	m_pipelineYUVASphere->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	m_pipelineYUVASphere->setCullMode(true);
+	m_pipelineYUVASphere->setFrontFace();
+	m_pipelineYUVASphere->bindVertex(*m_imageSphereGL);
+	m_pipelineYUVASphere->bindShader("imageUnified.vert.spv");
+	m_pipelineYUVASphere->bindShader("imageUnifiedYUVA.frag.spv");
+	m_pipelineYUVASphere->setSpecializedConstant(7, context.isFloat64Supported);
+	m_pipelineYUVASphere->build();
+
 	// CommandBuffer
 	for (int i = 0; i < 3; ++i) {
 		cmds[i] = context.frame[i]->create(1);
@@ -397,6 +479,71 @@ void Image::setRatio(float new_ratio, float duration)
 	ratio.timer = 0; // count time elapsed from the beginning of the command
 }
 
+void Image::setSphericalBaseAltitude(float base_altitude, float duration)
+{
+	if (duration <= 0) {
+		spherical_base_altitude_transition.onTransition = 0;
+		spherical_base_altitude = (base_altitude >= -90.0f && base_altitude <= 90.0f) ? base_altitude : -90.0f;
+		// Ensure base_altitude <= top_altitude
+		if (spherical_base_altitude > spherical_top_altitude) {
+			spherical_base_altitude = spherical_top_altitude;
+		}
+		// If a top altitude transition is in progress, ensure the new base altitude does not violate the constraint
+		if (spherical_top_altitude_transition.onTransition && spherical_base_altitude > spherical_top_altitude_transition.end) {
+			spherical_base_altitude = spherical_top_altitude_transition.end;
+		}
+		spherical_geometry_dirty = true; // Mark geometry as dirty
+		return;
+	}
+
+	spherical_base_altitude_transition.onTransition = 1;
+	spherical_base_altitude_transition.duration = int(duration * 1000.f);
+	spherical_base_altitude_transition.start = spherical_base_altitude;
+	spherical_base_altitude_transition.end = (base_altitude >= -90.0f && base_altitude <= 90.0f) ? base_altitude : -90.0f;
+	// Ensure base_altitude <= top_altitude
+	if (spherical_base_altitude_transition.end > spherical_top_altitude) {
+		spherical_base_altitude_transition.end = spherical_top_altitude;
+	}
+	// If a top altitude transition is in progress, ensure the new base altitude does not violate the constraint
+	if (spherical_top_altitude_transition.onTransition && spherical_base_altitude_transition.end > spherical_top_altitude_transition.end) {
+		spherical_base_altitude_transition.end = spherical_top_altitude_transition.end;
+	}
+	spherical_base_altitude_transition.coef = (spherical_base_altitude_transition.end - spherical_base_altitude_transition.start) / spherical_base_altitude_transition.duration;
+	spherical_base_altitude_transition.timer = 0; // count time elapsed from the beginning of the command
+}
+
+void Image::setSphericalTopAltitude(float top_altitude, float duration)
+{
+	if (duration <= 0) {
+		spherical_top_altitude_transition.onTransition = 0;
+		spherical_top_altitude = (top_altitude >= -90.0f && top_altitude <= 90.0f) ? top_altitude : 90.0f;
+		// Ensure base_altitude <= top_altitude
+		if (spherical_top_altitude < spherical_base_altitude) {
+			spherical_top_altitude = spherical_base_altitude;
+		}
+		// If a base altitude transition is in progress, ensure the new top altitude does not violate the constraint
+		if (spherical_base_altitude_transition.onTransition && spherical_top_altitude < spherical_base_altitude_transition.end) {
+			spherical_top_altitude = spherical_base_altitude_transition.end;
+		}
+		spherical_geometry_dirty = true; // Mark geometry as dirty
+		return;
+	}
+
+	spherical_top_altitude_transition.onTransition = 1;
+	spherical_top_altitude_transition.duration = int(duration * 1000.f);
+	spherical_top_altitude_transition.start = spherical_top_altitude;
+	spherical_top_altitude_transition.end = (top_altitude >= -90.0f && top_altitude <= 90.0f) ? top_altitude : 90.0f;
+	// Ensure base_altitude <= top_altitude
+	if (spherical_top_altitude_transition.end < spherical_base_altitude) {
+		spherical_top_altitude_transition.end = spherical_base_altitude;
+	}
+	// If a base altitude transition is in progress, ensure the new top altitude does not violate the constraint
+	if (spherical_base_altitude_transition.onTransition && spherical_top_altitude_transition.end < spherical_base_altitude_transition.end) {
+		spherical_top_altitude_transition.end = spherical_base_altitude_transition.end;
+	}
+	spherical_top_altitude_transition.coef = (spherical_top_altitude_transition.end - spherical_top_altitude_transition.start) / spherical_top_altitude_transition.duration;
+	spherical_top_altitude_transition.timer = 0; // count time elapsed from the beginning of the command
+}
 
 bool Image::update(int delta_time)
 {
@@ -489,6 +636,30 @@ bool Image::update(int delta_time)
 			ratio.onTransition = 0;
 		}
 	}
+
+	if (spherical_base_altitude_transition.onTransition) {
+		spherical_base_altitude_transition.timer += delta_time; // update local timer
+		if (spherical_base_altitude_transition.timer < spherical_base_altitude_transition.duration) {
+			spherical_base_altitude = spherical_base_altitude_transition.start + spherical_base_altitude_transition.timer * spherical_base_altitude_transition.coef; // linear function
+			spherical_geometry_dirty = true;
+		} else {
+			spherical_base_altitude = spherical_base_altitude_transition.end;
+			spherical_base_altitude_transition.onTransition = 0;
+			spherical_geometry_dirty = true; // Mark geometry as dirty at the end of the transition
+		}
+	}
+
+	if (spherical_top_altitude_transition.onTransition) {
+		spherical_top_altitude_transition.timer += delta_time; // update local timer
+		if (spherical_top_altitude_transition.timer < spherical_top_altitude_transition.duration) {
+			spherical_top_altitude = spherical_top_altitude_transition.start + spherical_top_altitude_transition.timer * spherical_top_altitude_transition.coef; // linear function
+			spherical_geometry_dirty = true;
+		} else {
+			spherical_top_altitude = spherical_top_altitude_transition.end;
+			spherical_top_altitude_transition.onTransition = 0;
+			spherical_geometry_dirty = true; // Mark geometry as dirty at the end of the transition
+		}
+	}
 	return 1;
 }
 
@@ -568,7 +739,10 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 		h /= image_ratio;
 	}
 	PipelineLayout *layout;
-	if (imageTexture->isYUV()) {
+	if (imageTexture->isYUVA()) {
+		setPipeline(m_pipelineYUVAViewport);
+		layout = m_layoutUnifiedYUVA;  // Use unified layout like other viewport modes
+	} else if (imageTexture->isYUV()) {
 		setPipeline(m_pipelineViewport[transparency ? 3 : 2]);
 		layout = m_layoutUnifiedYUV;
 	} else {
@@ -603,10 +777,210 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	// imageTexture->unbindSet(cmd);
 }
 
+// Optimized sphere generation using index buffer to share vertices between triangles
+void Image::generateSphericalGeometry()
+{
+	// Use tolerance to avoid unnecessary regenerations due to float precision
+	const float tolerance = 0.01f; // Tolerance of 0.01 degree
+
+	// Check if we need to regenerate the geometry
+	if (!spherical_geometry_dirty &&
+		std::fabs(cached_base_altitude - spherical_base_altitude) < tolerance &&
+		std::fabs(cached_top_altitude - spherical_top_altitude) < tolerance) {
+		return; // Geometry is already up to date
+	}
+
+	// Mark geometry as clean only if no transition is in progress
+	if (!spherical_base_altitude_transition.onTransition && !spherical_top_altitude_transition.onTransition) {
+		spherical_geometry_dirty = false;
+	}
+	cached_base_altitude = spherical_base_altitude;
+	cached_top_altitude = spherical_top_altitude;
+
+	// Constants for sphere generation with adaptive density
+	const int slices = 48;  // Number of longitude divisions (increased to reduce artifacts)
+
+	// Calculate number of stacks based on altitude range to maintain uniform density
+	float altitudeRangeDeg = spherical_top_altitude - spherical_base_altitude;
+	int stacks = std::max(16, std::min(96, (int)(altitudeRangeDeg * 0.8f))); // Between 16 and 96 stacks
+
+	const float radius = 1.0f;
+
+	// Convert altitudes to radians and adjust them
+	float baseLatRad = (spherical_base_altitude) * M_PI / 180.0f;
+	float topLatRad = (spherical_top_altitude) * M_PI / 180.0f;
+
+	// Ensure values are within proper bounds
+	baseLatRad = std::max<float>(-float(M_PI_2), std::min<float>(float(M_PI_2), baseLatRad));
+	topLatRad = std::max<float>(-float(M_PI_2), std::min<float>(float(M_PI_2), topLatRad));
+
+	// Check that we have a valid range
+	if (baseLatRad >= topLatRad) {
+		vertexSize = 0;
+		indexCount = 0;
+		return; // No geometry to generate
+	}
+
+	// Calculate altitude range and step between stacks
+	float altitudeRange = topLatRad - baseLatRad;
+	float stackStep = altitudeRange / stacks;
+
+	// Calculate required size for vertices and indices
+	// Vertex grid: (stacks+1) x (slices+1) vertices
+	int numVertices = (stacks + 1) * (slices + 1);
+	// Index buffer: stacks x slices quads, each quad = 6 indices (2 triangles)
+	int numIndices = stacks * slices * 6;
+
+	Context &context = *Context::instance;
+
+	// Prepare vertex data in local memory first
+	std::vector<float> vertexData(numVertices * 5);
+	float *currentData = vertexData.data();
+
+	for (int stack = 0; stack <= stacks; ++stack) {
+		for (int slice = 0; slice <= slices; ++slice) {
+			// Calculate latitude and longitude with higher precision
+			double lat_d = (double)baseLatRad + (double)stack * (double)stackStep;
+			double lon_d = 2.0 * M_PI * (double)slice / (double)slices;
+
+			float lat = (float)lat_d;
+			float lon = (float)lon_d;
+
+			// Calculate vertex position
+			Vec3f pos;
+			pos[0] = radius * cosf(lat) * cosf(lon);
+			pos[1] = radius * cosf(lat) * sinf(lon);
+			pos[2] = radius * sinf(lat);
+
+			// At the poles, set x and y to zero to avoid micro-holes
+			// due to single triangle on poles instead of quads
+			// only if 90 or -90 degrees
+			if ((stack == 0 || stack == stacks) && (lat_d == -1.0f || lat_d == 1.0f)) {
+				pos[0] = 0.0f;
+				pos[1] = 0.0f;
+			}
+
+			// Calculate texture coordinates with higher precision
+			// V coordinate (vertical/latitude) - map current latitude range to [0, 1]
+			double texV_d = (lat_d - baseLatRad) / (topLatRad - baseLatRad);
+
+			// If texture is YUV or YUVA (video), flip V coordinates
+			if (imageTexture->isYUV() || imageTexture->isYUVA()) {
+				texV_d = 1.0 - texV_d;
+			}
+
+			// Clamp texture coordinates to ensure they're within valid [0,1] range
+			texV_d = std::max(0.0, std::min(1.0, texV_d));
+			float texV = (float)texV_d;
+
+			// U coordinate (horizontal/longitude) - inverted for horizontal flip
+			double texU_d = 1.0 - (double)slice / (double)slices;
+			float texU = (float)texU_d;
+
+			// Store vertex data: position (3) + texture (2) = 5 floats
+			// The shader imageUnified.vert expects: location=0 position (vec3), location=1 texCoord (vec2)
+			*(currentData++) = pos[0];
+			*(currentData++) = pos[1];
+			*(currentData++) = pos[2];
+			*(currentData++) = texU;
+			*(currentData++) = texV;
+		}
+	}
+
+	// Prepare index data in local memory first
+	std::vector<uint32_t> indexData(numIndices);
+	uint32_t *currentIndex = indexData.data();
+	int actualIndices = 0;
+
+	for (int stack = 0; stack < stacks; ++stack) {
+		for (int slice = 0; slice < slices; ++slice) {
+			// Skip degenerate triangles
+			double lat1_d = (double)baseLatRad + (double)stack * (double)stackStep;
+			double lat2_d = (double)baseLatRad + (double)(stack + 1) * (double)stackStep;
+			if (std::fabs(lat2_d - lat1_d) < 0.001f) continue;
+
+			// Calculate vertex indices for the current quad
+			uint32_t v1 = stack * (slices + 1) + slice;             // bottom-left
+			uint32_t v2 = stack * (slices + 1) + (slice + 1);       // bottom-right
+			uint32_t v3 = (stack + 1) * (slices + 1) + (slice + 1); // top-right
+			uint32_t v4 = (stack + 1) * (slices + 1) + slice;       // top-left
+
+			// Skip the first triangle of the bottom pole
+			// (prevent making a very small triangle with v1 and v2 being almost identical at the bottom pole)
+			if (stack != 0 || (stack == 0 && (lat1_d > -float(M_PI_2) + 0.0001f))) {
+				// First triangle (v1, v2, v3)
+				*(currentIndex++) = v1;
+				*(currentIndex++) = v2;
+				*(currentIndex++) = v3;
+				actualIndices += 3;
+			}
+
+			// Skip the second triangle of the top pole
+			// (prevent making a very small triangle with v3 and v4 being almost identical at the top pole)
+			if (stack != (stacks - 1) || (stack == (stacks - 1) && (lat2_d < float(M_PI_2) - 0.0001f))) {
+				// Second triangle (v1, v3, v4)
+				*(currentIndex++) = v1;
+				*(currentIndex++) = v3;
+				*(currentIndex++) = v4;
+				actualIndices += 3;
+			}
+		}
+	}
+
+	// Create or update vertex buffer only if size changed
+	bool vertexBufferChanged = false;
+	if (vertexSize != numVertices || !vertex) {
+		vertexSize = numVertices;
+		vertex.reset();
+		if (numVertices > 0) {
+			vertex = m_imageSphereGL->createBuffer(0, numVertices, Context::instance->globalBuffer.get());
+			vertexBufferChanged = true;
+		}
+	}
+
+	// Create or update index buffer only if size changed
+	bool indexBufferChanged = false;
+	if (indexCount != actualIndices || !indexBuffer) {
+		if (indexBuffer) {
+			Context::instance->indexBufferMgr->releaseBuffer(*indexBuffer);
+		}
+		indexCount = actualIndices;
+		indexBuffer.reset();
+		if (actualIndices > 0) {
+			indexBuffer = std::make_unique<SubBuffer>(Context::instance->indexBufferMgr->acquireBuffer(actualIndices * sizeof(uint32_t)));
+			indexBufferChanged = true;
+		}
+	}
+
+	// Upload vertex and index data only if buffers were created/changed
+	if (numVertices > 0 && (vertexBufferChanged || vertex)) {
+		float *sphereData = (float *) context.transfer->beginPlanCopy(numVertices * 5 * sizeof(float));
+		memcpy(sphereData, vertexData.data(), numVertices * 5 * sizeof(float));
+		context.transfer->endPlanCopy(vertex->get(), numVertices * 5 * sizeof(float));
+	}
+	if (actualIndices > 0 && (indexBufferChanged || indexBuffer)) {
+		uint32_t *indexGpuData = (uint32_t *) context.transfer->beginPlanCopy(actualIndices * sizeof(uint32_t));
+		memcpy(indexGpuData, indexData.data(), actualIndices * sizeof(uint32_t));
+		context.transfer->endPlanCopy(*indexBuffer, actualIndices * sizeof(uint32_t));
+	}
+}
+
 void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 {
+	// Generate spherical geometry BEFORE setting up the pipeline
+	// This ensures buffers are ready and prevent setting up pipelines unnecessarily
+	generateSphericalGeometry();
+
+	// Only proceed with rendering if we have valid geometry
+	if (!vertex || vertexSize == 0 || !indexBuffer || indexCount == 0) {
+		return;
+	}
+
 	PipelineLayout *layout;
-	if (imageTexture->isYUV()) {
+	if (imageTexture->isYUVA()) {
+		setPipeline(m_pipelineYUVASphere);
+		layout = m_layoutSphereYUVA;
+	} else if (imageTexture->isYUV()) {
 		setPipeline(m_pipelineSphere[transparency ? 3 : 2]);
 		layout = m_layoutSphereYUV;
 	} else {
@@ -618,7 +992,9 @@ void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 		Mat4f matrix;
 		Vec3f clipping_fov;
 	} uVert;
-	uVert.matrix = nav->getLocalToEyeMat().convert();
+	// Apply the rotation to the transformation matrix as a rotation around the Z axis
+	Mat4d rotationMatrix = Mat4d::zrotation(image_rotation * M_PI / 180.0f);
+	uVert.matrix = (nav->getLocalToEyeMat() * rotationMatrix).convert();
 	uVert.clipping_fov = prj->getClippingFov();
 	layout->pushConstant(cmd, 0, &uVert);
 	if (transparency) {
@@ -628,9 +1004,11 @@ void Image::drawSpherical(const Navigator *nav, const Projector *prj)
 		layout->pushConstant(cmd, 1, &tmpBuff, 0, 20);
 	} else
 		layout->pushConstant(cmd, 1, &image_alpha, 0, 4);
-	auto objl = ObjLMgr::instance->selectDefault();
-	objl->bind(cmd);
-	objl->draw(cmd, 1024);
+
+	// Render the geometry
+	vertex->bind(cmd);
+	vkCmdBindIndexBuffer(cmd, indexBuffer->buffer, indexBuffer->offset, VK_INDEX_TYPE_UINT32);
+	vkCmdDrawIndexed(cmd, indexCount, 1, 0, 0, 0);
 }
 
 static int decalages(int i, int howManyDisplay)
@@ -667,7 +1045,10 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 		uVert.clipping_fov[2] = M_PI_2;
 
 	PipelineLayout *layout;
-	if (imageTexture->isYUV()) {
+	if (imageTexture->isYUVA()) {
+		setPipeline(m_pipelineYUVAUnified);
+		layout = m_layoutUnifiedYUVA;
+	} else if (imageTexture->isYUV()) {
 		setPipeline(m_pipelineUnified[transparency ? 3 : 2]);
 		layout = m_layoutUnifiedYUV;
 	} else {

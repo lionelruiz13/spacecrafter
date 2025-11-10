@@ -338,6 +338,15 @@ public:
         currentSystem->selectSystem();
     }
 
+    /**
+     * @brief Reload body colors from ssystem.ini file.
+     * This function reads the color definitions (label_color, orbit_color, trail_color)
+     * from the specified ssystem.ini file and updates the colors of
+     * every body in the ssystem.ini file.
+     * @param planetfile Path to the ssystem.ini file
+    */
+    void reloadColors(const std::string& planetfile);
+
 	void computePositions(double date,const Observer *obs) {
         ssystemDisplay->computePositions(date, obs);
     }

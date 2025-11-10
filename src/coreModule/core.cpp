@@ -317,6 +317,7 @@ void Core::init(const InitParser& conf)
 		starNav->loadData("hip2007.txt", false);
 		starLines->loadCat("asterism.txt", false);
 	}
+	ssystemFactory->reloadColors(AppSettings::Instance()->getUserDir() + "ssystem.ini");
 
 	// Astro section
 	hip_stars->setFlagShow(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STARS));
@@ -1776,6 +1777,81 @@ void Core::setSelectedBodyName(const Object &selected_object)
 		selected_body_name = 999;
 }
 
+// -----------------------------------------------------------------------------
+// Same-object logic (module-agnostic): compare by type + J2000 position,
+// with optional magnitude tie-breaker.
+// -----------------------------------------------------------------------------
+
+// Angular separation (in radians) between two *normalized* vectors
+static inline double angularSeparationRadians(const Vec3d& a, const Vec3d& b) {
+	// Clamp dot product into [-1, 1] for numeric stability before acos
+    return std::acos(std::min(1.0, std::max(-1.0, a * b)));
+}
+
+// Per-type matching tolerances:
+// - pos_arcsec: angular tolerance in arcseconds (how close on the sky)
+// - mag:        magnitude tolerance (secondary tie-breaker)
+struct MatchTol { double pos_arcsec; float mag; };
+
+static inline MatchTol matchTolerancesFor(OBJECT_TYPE t) {
+    switch (t) {
+        case OBJECT_STAR:          return { 0.30, 0.15f }; // very tight for stars
+        case OBJECT_BODY:          return { 0.10, 0.50f }; // planets/satellites
+        case OBJECT_NEBULA:        return { 5.00, 0.50f }; // extended objects
+        case OBJECT_STAR_CLUSTER:  return { 5.00, 0.50f };
+        case OBJECT_CONSTELLATION: return { 30.0, 1.00f }; // very loose, if ever used
+        case OBJECT_UNINITIALIZED:
+        default:                   return { 1.00, 0.50f };
+    }
+}
+
+// Compare two Object instances for logical equality across modules.
+// Fast path: pointer equality (operator==). Otherwise: type + J2000 position,
+// with optional magnitude tie-breaker. No name comparison.
+static inline bool isSameLogicalObject(const Object& a,
+                                       const Object& b,
+                                       const Navigator* nav,
+                                       bool useMagnitudeTieBreaker = true)
+{
+    // 0) Fast path: identical underlying pointer → same object
+    if (a == b) return true;
+
+    // 1) Different types => different objects
+    const OBJECT_TYPE ta = a.getType();
+    const OBJECT_TYPE tb = b.getType();
+    if (ta != tb) return false;
+
+    // 2) Compare J2000 positions (observer-independent, stable across modules)
+    Vec3d ja = a.getObsJ2000Pos(nav);
+    Vec3d jb = b.getObsJ2000Pos(nav);
+
+    // Reject degenerate vectors (defensive)
+    if (ja.length() == 0.0 || jb.length() == 0.0) return false;
+
+    ja.normalize();
+    jb.normalize();
+
+    const MatchTol tol = matchTolerancesFor(ta);
+
+    // Convert arcseconds to radians inline:
+    // radians = arcseconds * (π / (180 * 3600))
+    const double tolRad = tol.pos_arcsec * (M_PI / (180.0 * 3600.0));
+
+    // If the angular separation is larger than tolerance, not the same object
+    if (angularSeparationRadians(ja, jb) > tolRad) return false;
+
+    // 3) Optional tie-breaker: compare magnitudes if both are finite
+    if (useMagnitudeTieBreaker) {
+        const float ma = a.getMag(nav);
+        const float mb = b.getMag(nav);
+        if (std::isfinite((double)ma) && std::isfinite((double)mb)) {
+            if (std::fabs(ma - mb) > tol.mag) return false;
+        }
+    }
+
+    return true;
+}
+
 //! Select passed object
 //! @return true if the object was selected (false if the same was already selected)
 bool Core::selectObject(const Object &obj)
@@ -1784,10 +1860,15 @@ bool Core::selectObject(const Object &obj)
 	if (!obj) {
 		unSelect();
 		return false;
-	} else if (selected_object==obj) {
-		unSelect();
+	} else if (selected_object && isSameLogicalObject(obj, selected_object, navigation)) {
+		// unSelect(); // Keep the object selected if it is already selected
+		// Toggle the pointer visibility
+		setFlagSelectedObjectPointer(!object_pointer_visibility);
 		return true;
 	}
+	// Make sure object pointer is turned on (script may have turned off)
+	// (if this is called from script pointer will be redefined after this function, if pointer isn't defined it will be turned on here)
+	setFlagSelectedObjectPointer(true);
 	switch (obj.getType()) {
 		case OBJECT_CONSTELLATION:
 			return selectObject(obj.getBrightestStarInConstellation().get());

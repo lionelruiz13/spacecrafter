@@ -17,6 +17,7 @@
 #include <SDL2/SDL.h>
 #include <chrono>
 #include <sstream>
+#include <iomanip>
 
 //#include "spacecrafter.hpp"
 #include "mediaModule/video_player.hpp"
@@ -47,9 +48,32 @@ VideoPlayer::VideoPlayer(Media *media, InitParser &conf) : media(media)
 	tracer.emplace(Trace::UCHAR, &adaptiveFramerate, "adaptive");
 	tracer.emplace(Trace::INT, &videoRes.w, "width");
 	tracer.emplace(Trace::INT, &videoRes.h, "height");
+
+	// Top Subtitle
+	textSubtitleTopParam.string = "";
+	textSubtitleTopParam.altitude = 10.0f;
+	textSubtitleTopParam.azimuth = 0.0f;
+	// textSubtitleTopParam.fontSize;
+	textSubtitleTopParam.textAlign = "CENTER";
+	textSubtitleTopParam.color = Vec3f(1.0f, 1.0f, 1.0f);
+	textSubtitleTopParam.useColor = true;
+	textSubtitleTopParam.fader = false;
+
+	// Bottom Subtitle
+	textSubtitleBottomParam.string = "";
+	textSubtitleBottomParam.altitude = 5.0f;
+	textSubtitleBottomParam.azimuth = 0.0f;
+	// textSubtitleBottomParam.fontSize;
+	textSubtitleBottomParam.textAlign = "CENTER";
+	textSubtitleBottomParam.color = Vec3f(1.0f, 1.0f, 1.0f);
+	textSubtitleBottomParam.useColor = true;
+	textSubtitleBottomParam.fader = false;
+
 	m_isVideoPlayed = false;
 	m_isVideoInPause = false;
 	m_isVideoSeeking = false;
+	hasAlphaChannel = false;
+	targetFormat = AV_PIX_FMT_YUV420P;
 	skipFrame = conf.getBoolean(SCS_IO, SCK_VIDEO_FRAME_SKIP);
 	if (conf.getBoolean(SCS_DEBUG, SCK_PRINT_VIDEO_INFO)) {
 		if (conf.getBoolean(SCS_DEBUG, SCK_PRINT_LOG)) {
@@ -80,8 +104,29 @@ VideoPlayer::~VideoPlayer()
 {
 	media = nullptr;
 	stopCurrentVideo(false);
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 4; i++)
 		delete videoTexture.tex[i];
+}
+
+std::string VideoPlayer::formatTime(std::chrono::seconds seconds)
+{
+	auto min_sec = std::div(seconds.count(), std::chrono::seconds::rep{60L});
+	auto hour_min = std::div(min_sec.quot, std::chrono::seconds::rep{60L});
+
+	std::ostringstream oss;
+	oss << std::setfill('0') << hour_min.quot << ":"
+		<< std::setw(2) << hour_min.rem << ":"
+		<< std::setw(2) << min_sec.rem;
+	return oss.str();
+}
+
+std::string VideoPlayer::getTimeStatus() const
+{
+	auto currentTimeSeconds = currentFrame * baseDeltaFrame;
+	auto totalTimeSeconds = nbTotalFrame * baseDeltaFrame;
+	std::string currentTimeStr = formatTime(currentTimeSeconds);
+	std::string totalTimeStr = formatTime(totalTimeSeconds);
+	return currentTimeStr + " / " + totalTimeStr;
 }
 
 void VideoPlayer::createTextures()
@@ -89,8 +134,9 @@ void VideoPlayer::createTextures()
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	const uint32_t widthMax = 4096;
 	const uint32_t heightMax = 2048;
-	stagingBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, widthMax*heightMax*1.5*MAX_CACHED_FRAMES, "Staging video buffer");
-	for (int i = 0; i < 3; i++)
+	// Increase buffer to include alpha channel (2.0 instead of 1.5 for YUVA420P)
+	stagingBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, widthMax*heightMax*2.0*MAX_CACHED_FRAMES, "Staging video buffer");
+	for (int i = 0; i < 4; i++)
 		videoTexture.tex[i] = new Texture(vkmgr, *stagingBuffer, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "Video texture", VK_FORMAT_R8_UNORM);
 }
 
@@ -118,6 +164,30 @@ void VideoPlayer::pauseCurrentVideo()
 	EventRecorder::getInstance()->queue(event);
 }
 
+void VideoPlayer::setPlaybackSpeed(FixedPointI16_2 factor)
+{
+	if (factor <= 0.0f) {
+		cLog::get()->write("VideoPlayer: Invalid playback speed factor " + factor.toString() + ", must be > 0", LOG_TYPE::L_WARNING);
+		return;
+	}
+
+	// Add reasonable limits to prevent performance issues
+	static const FixedPointI16_2 MIN_SPEED(0.1f);  // 10x slower
+	static const FixedPointI16_2 MAX_SPEED(10.0f); // 10x faster
+
+	if (factor < MIN_SPEED) {
+		cLog::get()->write("VideoPlayer: Speed factor " + factor.toString() + " too low, clamping to " + MIN_SPEED.toString(), LOG_TYPE::L_WARNING);
+		factor = MIN_SPEED;
+	} else if (factor > MAX_SPEED) {
+		cLog::get()->write("VideoPlayer: Speed factor " + factor.toString() + " too high, clamping to " + MAX_SPEED.toString(), LOG_TYPE::L_WARNING);
+		factor = MAX_SPEED;
+	}
+
+	playbackSpeedFactor = factor;
+	deltaFrame = std::chrono::steady_clock::duration((baseDeltaFrame.count() * decltype(playbackSpeedFactor)::den) / playbackSpeedFactor.getRawValue());
+	cLog::get()->write("VideoPlayer: Playback speed set to " + factor.toString() + "x", LOG_TYPE::L_INFO);
+}
+
 
 void VideoPlayer::init()
 {
@@ -138,7 +208,7 @@ bool VideoPlayer::restartCurrentVideo()
 		return false;
 	threadInterrupt();
 	auto result = av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD);
-	if (audio)
+	if (audio && playbackSpeedFactor == FixedPointI16_2::one()) // Only rewind audio if normal speed
 		audio->musicRewind();
 	threadPlay();
 	if (result < 0) {
@@ -205,46 +275,153 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 			break;
 		case DecodePolicy::ASYNC:;
 	}
-	pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
+	// For VP9 (WebM), use the specific decoder that can handle alpha
+	if (pCodecCtx->codec_id == AV_CODEC_ID_VP9) {
+		pCodec = avcodec_find_decoder_by_name("libvpx-vp9");
+		if (pCodec) {
+			cLog::get()->write("Using libvpx-vp9 decoder for VP9 video", LOG_TYPE::L_INFO);
+		} else {
+			cLog::get()->write("libvpx-vp9 decoder not found, using default VP9 decoder", LOG_TYPE::L_WARNING);
+			pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
+		}
+	} else {
+		pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
+	}
+
 	if(pCodec==NULL) {
 		cLog::get()->write("Unsupported pCodec for video file", LOG_TYPE::L_ERROR);
 		avformat_close_input(&pFormatCtx);
 		return false;
 	}
-	if(avcodec_open2(pCodecCtx, pCodec,NULL)<0) {
+	// Special configuration for VP9 with alpha - will be configured later after alpha detection
+	AVDictionary *opts = nullptr;
+
+	if(avcodec_open2(pCodecCtx, pCodec, &opts)<0) {
 		cLog::get()->write("Could not open codec.", LOG_TYPE::L_ERROR);
 		avformat_close_input(&pFormatCtx);
+		av_dict_free(&opts);
 		return false;
 	}
+	av_dict_free(&opts);
 
 	videoRes.w = pCodecCtx->width;
 	videoRes.h = pCodecCtx->height;
 
 	AVRational frame_rate = av_guess_frame_rate(pFormatCtx, video_st, NULL);
 	frameRate = frame_rate.num/(double)frame_rate.den;
-	deltaFrame = std::chrono::steady_clock::duration(std::chrono::steady_clock::period::den * frame_rate.den / (std::chrono::steady_clock::period::num * frame_rate.num));
+	baseDeltaFrame = std::chrono::steady_clock::duration(std::chrono::steady_clock::period::den * frame_rate.den / (std::chrono::steady_clock::period::num * frame_rate.num));
+	deltaFrame = std::chrono::steady_clock::duration((baseDeltaFrame.count() * decltype(playbackSpeedFactor)::den) / playbackSpeedFactor.getRawValue());
 	nbTotalFrame = static_cast<int>((pFormatCtx->duration+1) * frameRate / AV_TIME_BASE);
 
+	img_convert_ctx = NULL;
+
+	// Detect if the input format potentially has alpha
+	bool sourceHasAlpha = pCodecCtx->pix_fmt == AV_PIX_FMT_YUVA420P;
+
+	// For WebM VP9, check specific metadata after opening the codec
+	if (!sourceHasAlpha && pCodecCtx->codec_id == AV_CODEC_ID_VP9) {
+
+		// Method 1: Check stream metadata for alpha_mode or alpha
+		if (video_st->metadata) {
+			AVDictionaryEntry *alpha_entry = av_dict_get(video_st->metadata, "alpha_mode", NULL, 0);
+			if (!alpha_entry) {
+				alpha_entry = av_dict_get(video_st->metadata, "alpha", NULL, 0);
+			}
+			if (alpha_entry) {
+				sourceHasAlpha = true;
+				cLog::get()->write("VP9: Alpha detected in stream metadata: " + std::string(alpha_entry->key) + "=" + std::string(alpha_entry->value), LOG_TYPE::L_INFO);
+			}
+		}
+
+		// Method 2: Check format/container metadata
+		if (!sourceHasAlpha && pFormatCtx->metadata) {
+			AVDictionaryEntry *alpha_entry = av_dict_get(pFormatCtx->metadata, "alpha_mode", NULL, 0);
+			if (!alpha_entry) {
+				alpha_entry = av_dict_get(pFormatCtx->metadata, "alpha", NULL, 0);
+			}
+			if (alpha_entry) {
+				sourceHasAlpha = true;
+				cLog::get()->write("VP9: Alpha detected in format metadata: " + std::string(alpha_entry->key) + "=" + std::string(alpha_entry->value), LOG_TYPE::L_INFO);
+			}
+		}
+	}
+
+	// If the source has alpha, use YUVA420P as target format
+	if (sourceHasAlpha) {
+		hasAlphaChannel = true;
+		targetFormat = AV_PIX_FMT_YUVA420P;
+
+		// For VP9 with alpha, reconfigure the decoder to force YUVA420P
+		if (pCodecCtx->codec_id == AV_CODEC_ID_VP9) {
+			avcodec_close(pCodecCtx);
+
+			// Force output format to YUVA420P
+			pCodecCtx->pix_fmt = AV_PIX_FMT_YUVA420P;
+
+			// Reopen with special options for alpha
+			AVDictionary *alpha_opts = nullptr;
+			av_dict_set(&alpha_opts, "apply_cropping", "0", 0);
+
+			if(avcodec_open2(pCodecCtx, pCodec, &alpha_opts) < 0) {
+				cLog::get()->write("Could not reopen VP9 codec with alpha support.", LOG_TYPE::L_ERROR);
+				av_dict_free(&alpha_opts);
+				avformat_close_input(&pFormatCtx);
+				return false;
+			}
+			av_dict_free(&alpha_opts);
+		}
+	} else {
+		hasAlphaChannel = false;
+		targetFormat = AV_PIX_FMT_YUV420P;
+	}
+
+	// Now initialize textures with the correct alpha detection
 	initTexture();
 
-	img_convert_ctx = NULL;
-	unsigned char *out_buffer;
+	// For VP9 with alpha, do not create conversion context
+	if (pCodecCtx->codec_id == AV_CODEC_ID_VP9 && hasAlphaChannel) {
+		img_convert_ctx = nullptr; // No conversion needed for VP9 with alpha
+	} else {
+		img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt,
+		                                 pCodecCtx->width, pCodecCtx->height, targetFormat,
+		                                 SWS_BICUBIC, NULL, NULL, NULL);
+		if(img_convert_ctx==NULL) {
+			cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
+			return false;
+		}
+	}
 
-	img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
-	if(img_convert_ctx==NULL) {
-		cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
+	// check if the pixel format is supported
+	if (pCodecCtx->pix_fmt != targetFormat) {
+		cLog::get()->write("Unsupported pixel format for video file. Expected " +
+		                   std::string(av_get_pix_fmt_name(targetFormat)) + ", got " +
+		                   std::string(av_get_pix_fmt_name(pCodecCtx->pix_fmt)), LOG_TYPE::L_ERROR);
 		return false;
 	}
 
-	if(pCodecCtx->pix_fmt != AV_PIX_FMT_YUV420P) {
-		cLog::get()->write("Video codec isn't in AV_PIX_FMT_YUV420P format", LOG_TYPE::L_ERROR);
-		return false;
+	if (hasAlphaChannel) {
+		cLog::get()->write("Video has alpha channel, using YUVA420P", LOG_TYPE::L_INFO);
+	} else {
+		cLog::get()->write("Video has no alpha channel, using YUV420P", LOG_TYPE::L_INFO);
 	}
 	pFrameIn = av_frame_alloc();
-	pFrameOut=av_frame_alloc();
-	out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1));
-	av_image_fill_arrays(pFrameIn->data, pFrameIn->linesize,out_buffer, AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
-	av_image_fill_arrays(pFrameOut->data, pFrameOut->linesize,out_buffer, AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
+	pFrameOut = av_frame_alloc();
+
+	// For VP9 with alpha, no additional buffer needed
+	if (pCodecCtx->codec_id == AV_CODEC_ID_VP9 && hasAlphaChannel) {
+		// VP9 with alpha: use decoded data directly
+		cLog::get()->write("VP9 with alpha: using direct decoded frames", LOG_TYPE::L_INFO);
+	} else {
+		av_image_fill_arrays(pFrameIn->data, pFrameIn->linesize, NULL, targetFormat, pCodecCtx->width, pCodecCtx->height, 1);
+
+		// Initialize pFrameOut with its own data for conversion (only if conversion needed)
+		if (pCodecCtx->pix_fmt != targetFormat) {
+			if (av_image_alloc(pFrameOut->data, pFrameOut->linesize, pCodecCtx->width, pCodecCtx->height, targetFormat, 1) < 0) {
+				cLog::get()->write("Could not allocate frame buffer for conversion", LOG_TYPE::L_ERROR);
+				return false;
+			}
+		}
+	}
 
 	packet=(AVPacket *)av_malloc(sizeof(AVPacket));
 
@@ -318,14 +495,32 @@ bool VideoPlayer::getNextFrame()
 void VideoPlayer::getNextVideoFrame()
 {
 	if (getNextFrame()) {
-		for (int i = 0; i < 3; i++) {
+		// Number of textures to copy (3 for YUV, 4 for YUVA)
+		int numTextures = hasAlphaChannel ? 4 : 3;
+
+		for (int i = 0; i < numTextures; i++) {
 			char *dst = reinterpret_cast<char*>(pImageBuffer[i][frameCached % MAX_CACHED_FRAMES]);
 			char *src = reinterpret_cast<char*>(pFrameIn->data[i]);
-			for (int j = 0; j < heights[i]; ++j) {
-				memcpy(dst, src, widths[i]);
-				src += pFrameIn->linesize[i];
-				dst += widths[i];
+			if (src) { // Check if source data exists
+				for (int j = 0; j < heights[i]; ++j) {
+					memcpy(dst, src, widths[i]);
+					src += pFrameIn->linesize[i];
+					dst += widths[i];
+				}
+			} else {
+				// If no source data, fill with default values
+				if (i == 3) { // Alpha
+					memset(dst, 0xFF, widths[i] * heights[i]); // Opaque
+				} else {
+					memset(dst, 0, widths[i] * heights[i]); // Black
+				}
 			}
+		}
+
+		// If no alpha, fill the fake alpha texture with 0xFF (opaque)
+		if (!hasAlphaChannel) {
+			char *dst = reinterpret_cast<char*>(pImageBuffer[3][frameCached % MAX_CACHED_FRAMES]);
+			memset(dst, 0xFF, widths[3] * heights[3]); // 1x1 pixel at 255 (opaque)
 		}
 		frameCached.fetch_add(1, std::memory_order_release);
 		sWrite += std::chrono::steady_clock::now() - sTime;
@@ -340,16 +535,52 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 		return;
 
 	m_isVideoPlayed = false;
+	media->textDel("video_subtitle1t");
+	media->textDel("video_subtitle2t");
+	media->textDel("video_subtitle3t");
+	media->textDel("video_subtitle1b");
+	media->textDel("video_subtitle2b");
+	media->textDel("video_subtitle3b");
 	if (!newVideo) {
 		if (audio)
 			audio->musicDrop();
 	}
 	threadTerminate(); // Don't overlap av_* calls
 
-	sws_freeContext(img_convert_ctx);
-	av_frame_free(&pFrameOut);
-	av_frame_free(&pFrameIn);
-	avcodec_close(pCodecCtx);
+	if (img_convert_ctx) {
+		sws_freeContext(img_convert_ctx);
+		img_convert_ctx = nullptr;
+	}
+
+	// Free the allocated buffer for pFrameOut (only if it was allocated)
+	if (pFrameOut && pFrameOut->data[0]) {
+		// For VP9 with alpha, pFrameOut does not have allocated data
+		if (!(pCodecCtx && pCodecCtx->codec_id == AV_CODEC_ID_VP9 && hasAlphaChannel)) {
+			av_freep(&pFrameOut->data[0]);
+		}
+	}
+	if (pFrameOut) {
+		av_frame_free(&pFrameOut);
+		pFrameOut = nullptr;
+	}
+	if (pFrameIn) {
+		av_frame_free(&pFrameIn);
+		pFrameIn = nullptr;
+	}
+
+	// Free the packet
+	if (packet) {
+		av_packet_free(&packet);
+		packet = nullptr;
+	}
+	if (pCodecCtx) {
+		avcodec_close(pCodecCtx);
+	}
+
+	// Free the format context
+	if (pFormatCtx) {
+		avformat_close_input(&pFormatCtx);
+	}
 
 	std::ostringstream oss;
 	auto total = (sRead + sParse + sDecode + sWrite).count() / 100ULL;
@@ -368,25 +599,45 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 
 void VideoPlayer::initTexture()
 {
-	const int _widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };
-	const int _heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
-	for(int i=0; i<3; i++) {
+	// Define dimensions for YUV and potentially Alpha
+	const int _widths[4]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2, hasAlphaChannel ? videoRes.w : 1 };
+	const int _heights[4] = { videoRes.h, videoRes.h / 2, videoRes.h / 2, hasAlphaChannel ? videoRes.h : 1 };
+
+	// Always handle 4 textures, but the 4th can be a 1x1 dummy texture
+	int numTextures = 4;
+
+	for(int i=0; i<numTextures; i++) {
 		widths[i] = _widths[i];
 		heights[i] = _heights[i];
 	}
 
-	bool uninitialized = true;
-	for (int i = 0; i < 3; ++i) {
+	bool uninitialized = false;
+	// First pass: check if any texture needs reinitialization
+	for (int i = 0; i < numTextures; ++i) {
 		if (videoTexture.tex[i]->isOnGPU()) {
 			int width, height;
 			videoTexture.tex[i]->getDimensions(width, height);
-			if (width == widths[i] && height == heights[i]) {
-				uninitialized = false;
+			if (width != widths[i] || height != heights[i]) {
+				cLog::get()->write("Texture " + std::to_string(i) + " has wrong dimensions (" + std::to_string(width) + "x" + std::to_string(height) + " vs " + std::to_string(widths[i]) + "x" + std::to_string(heights[i]) + "), need reinit", LOG_TYPE::L_INFO);
+				uninitialized = true;
 			} else {
-				// The texture mustn't be in use while processing.
-				auto &context = *Context::instance;
-				context.helper->waitFrame(context.frameIdx);
-				vkQueueWaitIdle(context.graphicQueue);
+				cLog::get()->write("Texture " + std::to_string(i) + " already initialized with correct dimensions " + std::to_string(width) + "x" + std::to_string(height), LOG_TYPE::L_INFO);
+			}
+		} else {
+			cLog::get()->write("Texture " + std::to_string(i) + " not on GPU, need reinit", LOG_TYPE::L_INFO);
+			uninitialized = true;
+		}
+	}
+
+	// Second pass: if any texture needs reinit, destroy ALL textures
+	if (uninitialized) {
+		cLog::get()->write("Reinitializing all textures due to dimension mismatch", LOG_TYPE::L_INFO);
+		auto &context = *Context::instance;
+		context.helper->waitFrame(context.frameIdx);
+		vkQueueWaitIdle(context.graphicQueue);
+		for (int i = 0; i < numTextures; ++i) {
+			if (videoTexture.tex[i]->isOnGPU()) {
+				cLog::get()->write("Destroying texture " + std::to_string(i), LOG_TYPE::L_INFO);
 				videoTexture.tex[i]->unuse();
 			}
 		}
@@ -397,15 +648,37 @@ void VideoPlayer::initTexture()
 		videoTexture.sync = std::make_shared<VideoSync>();
 		videoTexture.sync->syncOut = std::make_unique<SyncEvent>();
 		videoTexture.sync->syncIn = std::make_unique<SyncEvent>();
-		for (int i = 0; i < 3; ++i) {
-			videoTexture.tex[i]->init(widths[i], heights[i], nullptr, false, 1);
-			for (int j = 0; j < MAX_CACHED_FRAMES; ++j) {
-				imageBuffers[i][j] = stagingBuffer->fastAcquireBuffer(widths[i] * heights[i]);
-				pImageBuffer[i][j] = stagingBuffer->getPtr(imageBuffers[i][j]);
+
+		// Always initialize 4 textures (the 4th can be a 1x1 dummy texture without alpha)
+		int numTextures = 4;
+
+		for (int i = 0; i < numTextures; ++i) {
+			// Try to initialize the texture with the requested dimensions
+			bool success = videoTexture.tex[i]->init(widths[i], heights[i], nullptr, false, 1);
+
+			// If initialization fails, retry with minimal dimensions
+			if (!success || !videoTexture.tex[i]->isOnGPU()) {
+				cLog::get()->write("Warning: Failed to initialize texture " + std::to_string(i) + " with dimensions " + std::to_string(widths[i]) + "x" + std::to_string(heights[i]) + ", trying 1x1", LOG_TYPE::L_WARNING);
+				videoTexture.tex[i]->init(1, 1, nullptr, false, 1);
+				widths[i] = 1;
+				heights[i] = 1;
 			}
-			videoTexture.sync->syncOut->imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR);
-			videoTexture.sync->syncOut->bufferBarrier(*stagingBuffer, VK_PIPELINE_STAGE_2_HOST_BIT_KHR, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_ACCESS_2_HOST_WRITE_BIT_KHR, VK_ACCESS_2_TRANSFER_READ_BIT_KHR);
-			videoTexture.sync->syncIn->imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR);
+
+			// Now all textures should be valid
+			if (videoTexture.tex[i]->isOnGPU()) {
+				for (int j = 0; j < MAX_CACHED_FRAMES; ++j) {
+					imageBuffers[i][j] = stagingBuffer->fastAcquireBuffer(widths[i] * heights[i]);
+					pImageBuffer[i][j] = stagingBuffer->getPtr(imageBuffers[i][j]);
+				}
+				videoTexture.sync->syncOut->imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR);
+				videoTexture.sync->syncOut->bufferBarrier(*stagingBuffer, VK_PIPELINE_STAGE_2_HOST_BIT_KHR, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_ACCESS_2_HOST_WRITE_BIT_KHR, VK_ACCESS_2_TRANSFER_READ_BIT_KHR);
+				videoTexture.sync->syncIn->imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR);
+			} else {
+				cLog::get()->write("Error: Critical failure to initialize texture " + std::to_string(i), LOG_TYPE::L_ERROR);
+				// In case of critical failure, initialize with default values to avoid crash
+				widths[i] = 1;
+				heights[i] = 1;
+			}
 		}
 		videoTexture.sync->syncOut->build();
 		videoTexture.sync->syncIn->build();
@@ -460,12 +733,14 @@ bool VideoPlayer::seekVideo(int64_t framesToSkip)
 
 void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 {
-	if (!videoTexture.sync || !videoTexture.sync->inUse)
+	if (!videoTexture.sync || !videoTexture.sync->inUse || !m_isVideoPlayed)
 		return;
 	if (firstUse) {
 		SyncEvent helper;
-		for (int i = 0; i < 3; ++i)
+		// Transition layout for the 4 textures (YUV + Alpha) - all guaranteed valid
+		for (int i = 0; i < 4; ++i) {
 			helper.imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 0, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, 0, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR);
+		}
 		helper.build();
 		helper.placeBarrier(cmd);
 		firstUse = false;
@@ -480,7 +755,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		region.imageOffset = VkOffset3D{};
 		region.imageExtent.depth = 1;
 		auto frameIdx = frameUsed.fetch_add(1, std::memory_order_relaxed);
-		for (int i = 0; i < 3; ++i) {
+		for (int i = 0; i < 4; ++i) {
 			region.bufferOffset = imageBuffers[i][frameIdx].offset;
 			region.imageExtent.width = widths[i];
 			region.imageExtent.height = heights[i];
@@ -505,23 +780,18 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 					++currentFrame;
 					frameIdx = frameUsed.fetch_add(1, std::memory_order_relaxed);
 					latency -= deltaFrame;
-					if (adaptiveFramerate) {
-						if (--nbFrames) {
-							if (nbFrames < CACHE_STRESS || latency.count() > 0) {
-								nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(
-									deltaFrame.count() * std::min(MIN_VIDEO_SPEED + nbFrames * SPEED_INCREMENT_PER_CACHED_FRAME, MAX_VIDEO_SPEED)
-								));
-							} else {
-								nextFrame += deltaFrame;
-							}
-						} else {
-							nextFrame = currentTime + deltaFrame;
-						}
-					} else {
+					if (--nbFrames == 0) {
 						nextFrame += deltaFrame;
 						break;
 					}
-				} while (nextFrame <= currentTime && skipFrame);
+					if (adaptiveFramerate && (nbFrames < CACHE_STRESS || latency.count() > 0)) {
+						nextFrame += std::chrono::steady_clock::duration(static_cast<int64_t>(
+							deltaFrame.count() * std::min(MIN_VIDEO_SPEED + nbFrames * SPEED_INCREMENT_PER_CACHED_FRAME, MAX_VIDEO_SPEED)
+						));
+					} else {
+						nextFrame += deltaFrame;
+					}
+				} while (nextFrame <= currentTime && (skipFrame || playbackSpeedFactor > decltype(playbackSpeedFactor)::one()));
 				cv.notify_all();
 				frameIdx %= MAX_CACHED_FRAMES;
 				VkBufferImageCopy region;
@@ -529,12 +799,13 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 				region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
 				region.imageOffset = VkOffset3D{};
 				region.imageExtent.depth = 1;
-				for (int i = 0; i < 3; ++i) {
+				for (int i = 0; i < 4; ++i) {
 					region.bufferOffset = imageBuffers[i][frameIdx].offset;
 					region.imageExtent.width = widths[i];
 					region.imageExtent.height = heights[i];
 					vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 				}
+				updateSubtitles();
 			} else if (m_isVideoPlayed) {
 				if (decoding) {
 					pauseCurrentVideo();
@@ -551,6 +822,72 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		}
 	}
 	videoTexture.sync->syncIn->placeBarrier(cmd);
+}
+
+void VideoPlayer::updateSubtitles()
+{
+	if (showSubtitles) {
+		static std::string subtitleContent = "";
+		int currentTimeInMs = static_cast<int>(currentFrame * 1000.0 / frameRate);
+		std::string tmpSubtitle = media->subtitleGetSubtitleAt(currentTimeInMs);
+
+		// Prevent recreating the subtitle text object if the subtitle hasn't changed
+		if (subtitleContent != tmpSubtitle) {
+			subtitleContent = tmpSubtitle;
+
+			// Split subtitle into two lines if too long
+			if (subtitleContent.length() > 50) {
+				auto splitPos = subtitleContent.rfind(' ', subtitleContent.length() / 2);
+				textSubtitleTopParam.string = subtitleContent.substr(0, splitPos);
+				textSubtitleBottomParam.string = subtitleContent.substr(splitPos + 1);
+			} else {
+				textSubtitleTopParam.string = "";
+				textSubtitleBottomParam.string = subtitleContent;
+			}
+
+			// Top subtitles
+			textSubtitleTopParam.azimuth = 0.0f;
+			media->textAdd("video_subtitle1t", textSubtitleTopParam);
+			media->textDisplay("video_subtitle1t", true);
+
+			if (subtitleProject == IMG_PROJECT::TWICE) {
+				textSubtitleTopParam.azimuth = 180.0f;
+				media->textAdd("video_subtitle2t", textSubtitleTopParam);
+				media->textDisplay("video_subtitle2t", true);
+			}
+
+			if (subtitleProject == IMG_PROJECT::THRICE) {
+				textSubtitleTopParam.azimuth = 120.0f;
+				media->textAdd("video_subtitle2t", textSubtitleTopParam);
+				media->textDisplay("video_subtitle2t", true);
+
+				textSubtitleTopParam.azimuth = 240.0f;
+				media->textAdd("video_subtitle3t", textSubtitleTopParam);
+				media->textDisplay("video_subtitle3t", true);
+			}
+
+			// Bottom subtitles
+			textSubtitleBottomParam.azimuth = 0.0f;
+			media->textAdd("video_subtitle1b", textSubtitleBottomParam);
+			media->textDisplay("video_subtitle1b", true);
+
+			if (subtitleProject == IMG_PROJECT::TWICE) {
+				textSubtitleBottomParam.azimuth = 180.0f;
+				media->textAdd("video_subtitle2b", textSubtitleBottomParam);
+				media->textDisplay("video_subtitle2b", true);
+			}
+
+			if (subtitleProject == IMG_PROJECT::THRICE) {
+				textSubtitleBottomParam.azimuth = 120.0f;
+				media->textAdd("video_subtitle2b", textSubtitleBottomParam);
+				media->textDisplay("video_subtitle2b", true);
+
+				textSubtitleBottomParam.azimuth = 240.0f;
+				media->textAdd("video_subtitle3b", textSubtitleBottomParam);
+				media->textDisplay("video_subtitle3b", true);
+			}
+		}
+	}
 }
 
 void VideoPlayer::recordUpdateDependency(VkCommandBuffer cmd)
@@ -579,8 +916,8 @@ void VideoPlayer::threadTerminate()
 		cv.notify_all();
 		thread.join();
 	}
-	frameCached = 0;
-	frameUsed = 0;
+	frameCached.store(0, std::memory_order_relaxed);
+	frameUsed.store(0, std::memory_order_relaxed);
 }
 
 void VideoPlayer::threadInterrupt()
@@ -591,8 +928,8 @@ void VideoPlayer::threadInterrupt()
 	} else if (thread.joinable()) {
 		thread.join();
 	}
-	frameCached = 0;
-	frameUsed = 0;
+	frameCached.store(0, std::memory_order_relaxed);
+	frameUsed.store(0, std::memory_order_relaxed);
 }
 
 void VideoPlayer::threadPlay()

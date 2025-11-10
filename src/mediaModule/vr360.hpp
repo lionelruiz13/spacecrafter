@@ -42,6 +42,7 @@ public:
 	void init();
 
 	void setTexture(VideoTexture _tex);
+	void setHasAlphaChannel(bool hasAlpha) { hasAlphaChannel = hasAlpha; }
 
 	void modeCube() {
 		typeVR360=TYPE::V_CUBE;
@@ -65,17 +66,20 @@ private:
 
 	OjmL* sphere = nullptr;
 	OjmL* cube = nullptr;
-	uint32_t videoTex[3];
+	uint32_t videoTex[4]; // Support pour YUVA (4 textures)
 	bool isAlive = false;
 	bool canDraw = false;
+	bool hasAlphaChannel = false; // Flag pour indiquer si la vidéo a un canal alpha
 
 	struct UniformData {
 		Mat4f mat;
 		float fading;
+		VkBool32 hasAlphaChannel;
 	};
 
 	//std::unique_ptr<shaderProgram> shaderVR360;
 	std::unique_ptr<Pipeline> pipeline;
+	std::unique_ptr<Pipeline> pipelineAlpha;
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Set> set;
 	std::shared_ptr<VideoSync> sync;

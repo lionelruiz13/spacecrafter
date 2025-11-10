@@ -321,9 +321,6 @@ int UI::handleClic(const std::pair<uint16_t, uint16_t> &pos, s_gui::S_GUI_VALUE 
 	// Do not allow use of mouse while script is playing otherwise script can get confused
 	if (scriptInterface->isScriptPlaying() && ! FlagMouseUsableInScript) return 0;
 
-	// Make sure object pointer is turned on (script may have turned off)
-	core->setFlagSelectedObjectPointer(true);
-
 	// Show cursor
 	SDL_ShowCursor(1);
 	MouseTimeLeft = MouseCursorTimeout*1000;
@@ -717,14 +714,6 @@ void UI::handleInputs()
 				app->flag(APP_FLAG::ALIVE, false);
 				break;
 
-	        case SDL_USEREVENT: {
-	            /* and now we can call the function we wanted to call in the timer but couldn't because of the multithreading problems */
-				//media->externalUpdate(0); // @TODO  cette valeur ne sert à rien
-				Event* event = new FpsEvent(FPS_ORDER::AFTER_ONE_SECOND);
-				EventRecorder::getInstance()->queue(event);
-	            break;
-	        }
-
 			case SDL_JOYDEVICEADDED:
 				handleJoyAddStick();
 				break;
@@ -870,18 +859,29 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 			handleKeyOnVideo = false;
 			media->playerStop(false);
 			break;
-		case SDL_SCANCODE_J :
+		case SDL_SCANCODE_R :
 			media->playerInvertflow();
 			break;
 		case SDL_SCANCODE_D :
 			this->executeCommand("flag dual_viewport toggle");
-		  break;
+		    break;
+		case SDL_SCANCODE_H :
+			media->playerPause();
+			break;
+		case SDL_SCANCODE_J :
+			this->executeCommand("media speed_increment -0.1");
+			break;
 		case SDL_SCANCODE_K :
+  		    this->executeCommand("media speed 1");
 			if ( scriptInterface->isScriptPlaying() ) {
 				this->executeCommand("script action resume");
 				// coreLink->timeResetMultiplier();
-			} else
-				media->playerPause();
+			} else {
+				//media->playerPause();
+			}
+			break;
+		case SDL_SCANCODE_L :
+			this->executeCommand("media speed_increment 0.1");
 			break;
 		case SDL_SCANCODE_LEFT :
 			media->playerJump(-10.0);
@@ -2187,6 +2187,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					RESET_MOD(SUPER);
 					break;
 				case KWIN:
+					this->executeCommand("date relative -1.0350563");
 					break;
 				case SHIFT :
 					break;
@@ -2211,6 +2212,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					RESET_MOD(SUPER);
 					break;
 				case KWIN:
+					this->executeCommand("date relative 1.0350563");
 					break;
 				case SHIFT :
 					break;

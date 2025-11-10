@@ -34,12 +34,14 @@
 #include "mediaModule/image_mgr.hpp"
 #include "mediaModule/text_mgr.hpp"
 #include "mediaModule/video_player.hpp"
+#include "mediaModule/subtitle.hpp"
 #include "mediaModule/vr360.hpp"
 #include "mediaModule/viewport.hpp"
 //#include "tools/app_settings.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/context.hpp"
 #include <vulkan/vulkan.h>
+#include "tools/fixed_point.hpp"
 
 class Projector;
 class Navigator;
@@ -263,6 +265,14 @@ public:
 		imageMgr->setRotation(rotation, duration);
 	}
 
+	void imageSetSphericalBaseAltitude(float base_altitude, float duration) {
+		imageMgr->setSphericalBaseAltitude(base_altitude, duration);
+	}
+
+	void imageSetSphericalTopAltitude(float top_altitude, float duration) {
+		imageMgr->setSphericalTopAltitude(top_altitude, duration);
+	}
+
 	void imageSetPersistent(bool value) {
 		imageMgr->setPersistent(value);
 	}
@@ -413,8 +423,73 @@ public:
 		player->setRenderFramerate(framerate);
 	}
 
+	//! Set video playback speed
+	//! \param factor Set Speed multiplier (1.0 = normal speed, 2.0 = double speed, 0.5 = half speed)
+	void playerSetSpeed(FixedPointI16_2 factor) {
+		player->setPlaybackSpeed(factor);
+		if (audioRedirected) {
+			if (player->getPlaybackSpeed() != FixedPointI16_2::one()) { // Cut audio if speed is not 1
+				audio->musicHalt();
+			} else { // Resume and sync audio if speed is back to 1
+				audio->musicPlay();
+				audio->musicJump(player->getCurrentVideoTime());
+			}
+		}
+	}
+
+	//! Increment video playback speed
+	//! \param deltaFactor Speed multiplier increment (positive or negative)
+	void playerIncrementSpeed(FixedPointI16_2 deltaFactor) {
+		playerSetSpeed(playerGetSpeed() + deltaFactor);
+	}
+
+	//! Get current video playback speed
+	FixedPointI16_2 playerGetSpeed() const {
+		return player->getPlaybackSpeed();
+	}
+
+	//! Get current state of timestamp overlay (hidden/shown)
+	std::string playerGetTimeStatus() const {
+		return player->getTimeStatus();
+	}
+
+	//! set subtitle display state
+	void playerSetShowSubtitles(bool show) {
+		player->setShowSubtitles(show);
+	}
+
+	//! Get subtitle display state
+	bool playerGetShowSubtitles() const {
+		return player->getShowSubtitles();
+	}
+
+	//! set subtitle projection mode
+	void playerSubtitlesSetProject(IMG_PROJECT project) {
+		player->subtitlesSetProject(project);
+	}
+
 	//! Indicate that the player stopped playing video
 	void playerStopped();
+
+	////////////////////////////////////////////////////////////////////////////
+	//
+	//subtitle interface
+	//
+	////////////////////////////////////////////////////////////////////////////
+	//! Load subtitle file
+	void subtitlesLoadFile(const std::string& fileName) {
+		subtitle->loadFile(fileName);
+	}
+
+	//! Unload subtitle file
+	void subtitlesUnloadFile() {
+		subtitle->unloadFile();
+	}
+
+	//! Get subtitle text at given time in milliseconds
+	std::string subtitleGetSubtitleAt(int timeInMs) {
+		return subtitle->getSubtitleAt(timeInMs);
+	}
 private:
 	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject, bool preload, bool withMusic);
 

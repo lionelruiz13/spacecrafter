@@ -620,6 +620,8 @@ int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, float radius, flo
 		if (mag_converter->computeRCMag(getVariableStarMag(variableStarIndex), radius, brightness) < 0) {
 			return 0;
 		}
+		// Apply fader to brightness once computeRCMag has set it (computeRCMag set the base brightness)
+		brightness *= fader;
 	}
 
 	// Roll off star size limit as fov decreases to match planet halo scale
@@ -808,6 +810,8 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		while ((i+=2) < end) {
 			mag += k;
 			mag_converter->computeRCMag(mag, eye, rcmag_table + i);
+			// Apply fader to brightness once computeRCMag has set it (computeRCMag set the base brightness)
+			rcmag_table[i+1] *= fader;
 		}
 		last_max_search_level = it->first;
 

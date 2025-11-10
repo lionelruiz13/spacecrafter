@@ -2,6 +2,7 @@
 #include "coreModule/coreLink.hpp"
 #include "tools/utility.hpp"
 #include "tools/log.hpp"
+#include <sstream>
 
 std::function<double(double,double)> f_add = [](double x, double y){return x+y;};
 std::function<double(double,double)> f_sub = [](double x, double y){return x-y;};
@@ -10,6 +11,19 @@ std::function<double(double,double)> f_div = [](double x, double y){return x/y;}
 std::function<double(double,double)> f_tan = [](double x, double y){return tan(y*3.1415926/180.0);};
 std::function<double(double,double)> f_trunc = [](double x, double y){return trunc(y);};
 std::function<double(double,double)> f_sin = [](double x, double y){return sin(y*3.1415926/180.0);};
+
+// Utility function to format numbers with significant digits only
+std::string formatNumber(double value) {
+	if (value == trunc(value)) {
+		// Integer value, return as integer
+		return std::to_string((long long)value);
+	} else {
+		// Float value, use adaptive precision
+		std::ostringstream oss;
+		oss << std::defaultfloat << value;
+		return oss.str();
+	}
+}
 
 AppCommandEval::AppCommandEval(std::shared_ptr<CoreLink> _coreLink)
 {
@@ -55,16 +69,53 @@ AppCommandEval::~AppCommandEval()
 
 std::string AppCommandEval::evalString(const std::string &var)
 {
+	// Check if this is a direct variable lookup (old behavior)
 	auto var_it = variables.find(var);
-	if (var_it == variables.end()) //not found so we return the value of the string
-		return var;
-	else {// found returns the value of what is stored in memory
+	if (var_it != variables.end()) {
+		// Found variable directly - return its value
 		double v = evalDouble(var_it->second);
 		if (v == trunc(v))
-			return std::to_string(evalInt(var_it->second));
+			return formatNumber(evalInt(var_it->second));
 		else
 			return var_it->second;
+	}
+
+	// Check if the string contains @{variable} patterns for interpolation
+	std::string result = var;
+	size_t pos = 0;
+
+	while ((pos = result.find("@{", pos)) != std::string::npos) {
+		size_t end_pos = result.find("}", pos + 2);
+		if (end_pos == std::string::npos) {
+			// No closing brace found, skip this @{
+			pos += 2;
+			continue;
 		}
+
+		// Extract variable name between @{ and }
+		std::string var_name = result.substr(pos + 2, end_pos - pos - 2);
+
+		// Look up the variable
+		auto lookup_it = variables.find(var_name);
+		if (lookup_it != variables.end()) {
+			// Variable found - evaluate it
+			double v = evalDouble(lookup_it->second);
+			std::string replacement;
+			if (v == trunc(v))
+				replacement = formatNumber(evalInt(lookup_it->second));
+			else
+				replacement = lookup_it->second;
+
+			// Replace @{variable} with its value
+			result.replace(pos, end_pos - pos + 1, replacement);
+			pos += replacement.length();
+		} else {
+			// Variable not found - leave @{variable} as is
+			pos = end_pos + 1;
+		}
+	}
+
+	return result;
 }
 
 double AppCommandEval::evalDouble(const std::string &var)
@@ -100,7 +151,7 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 		//std::cout << "C_define random: min " <<  min_random << " max " << max_random << std::endl;
 		float value = (float)rand()/RAND_MAX* (max_random-min_random)+ min_random;
 		//std::cout << "C_define random: value " <<  value  << std::endl;
-		variables[mArg] = std::to_string(value);
+		variables[mArg] = formatNumber(value);
 	} else {
 		//~ printf("mValue = %s\n", mValue.c_str());
 		// std::cout << "This value of mValue is " << evalDouble(mValue) << std::endl;
@@ -109,7 +160,7 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 		//if (v == trunc(v))
 		//	variables[mArg] = std::to_string(evalInt(mValue));
 		//else
-		variables[mArg] = std::to_string(v);
+		variables[mArg] = formatNumber(v);
 	//	this->printVar();
 	}
 }
@@ -169,7 +220,7 @@ void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue,
 		//if (v == trunc(v))
 		//	variables[mArg] = std::to_string(evalInt(mValue));
 		//else
-			variables[mArg] = std::to_string(v);
+			variables[mArg] = formatNumber(v);
 	}
 }
 

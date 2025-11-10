@@ -42,6 +42,7 @@
 #include "tools/file_path.hpp"
 #include "bodyModule/trail.hpp"
 #include "bodyModule/axis.hpp"
+#include "bodyModule/planet_grid.hpp"
 #include "bodyModule/halo.hpp"
 #include "bodyModule/orbit_plot.hpp"
 #include "bodyModule/atm_ext.hpp"
@@ -158,6 +159,7 @@ Body::Body(std::shared_ptr<Body> parent,
 	currentObj = _currentObj;
 
 	flags.flag_axis =false;
+	flags.flag_planet_grid =false;
 	flags.flag_trail =false;
 	flags.flag_hints =false;
 	flags.flag_orbit =false;
@@ -165,6 +167,7 @@ Body::Body(std::shared_ptr<Body> parent,
 
 	hints = std::make_shared<Hints>(this);
 	axis = std::make_shared<Axis>(this);
+	planetGrid = std::make_shared<PlanetGrid>(this);
 	halo = std::make_shared<Halo>(this);
 
 	tex_current = tex_map;
@@ -219,6 +222,7 @@ void Body::setFlagAxis(bool b)
 {
 	axis->setFlagAxis(b);
 	flags.flag_axis = b;
+	flags.flag_planet_grid = b;
 }
 
 void Body::setFlagTrail(bool b)
@@ -294,11 +298,13 @@ void Body::createShader()
 	Halo::createSC_context();
 	Hints::createSC_context();
 	Axis::createSC_context();
+	PlanetGrid::createSC_context();
 }
 
 void Body::deleteShader()
 {
     Axis::destroySC_context();
+    PlanetGrid::destroySC_context();
 }
 
 // Return the information std::string "ready to print" :)
@@ -1046,6 +1052,8 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
             drawAxis(cmd, prj,mat);
 			drawBody(cmd, prj, nav, mat, screen_sz, true);
 			drawRings(cmd, prj,observatory,mat,screen_sz,lightDirection,eye_planet,initialRadius);
+			// Draw the planet grid after the body and the rings
+            drawPlanetGrid(cmd, prj, mat);
 		} else {
             // depth test if drawAxis (drawAxis if depthTest and Axis::actualdrawaxis)
             // if(!depthTest)
@@ -1053,6 +1061,9 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
             if (depthTest)
                 drawAxis(cmd, prj,mat);
             drawBody(cmd, prj, nav, mat, screen_sz, depthTest);
+			// Draw the planet grid after the body (if depthTest)
+			if (depthTest)
+                drawPlanetGrid(cmd, prj, mat);
 		}
 		drawn = true;
 	} else {
@@ -1143,6 +1154,14 @@ void Body::drawHints(const Navigator* nav, const Projector* prj)
 void Body::drawAxis(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat)
 {
 	axis->drawAxis(cmd, prj, mat);
+}
+
+void Body::drawPlanetGrid(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat)
+{
+	// Draw the longitude/latitude grid if the options are enabled
+	if (flags.flag_planet_grid && planetGrid) {
+		planetGrid->drawGrid(cmd, prj, mat);
+	}
 }
 
 void Body::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)

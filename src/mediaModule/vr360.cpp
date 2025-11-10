@@ -74,10 +74,11 @@ void VR360::createSC_context()
     vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
 	layout = std::make_unique<PipelineLayout>(vkmgr);
 	layout->setGlobalPipelineLayout(context.layouts.front().get());
-	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	layout->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
-	layout->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER);
-	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 3);
+	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER); // Y
+	layout->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER); // U
+	layout->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER); // V
+	layout->setTextureLocation(3, &PipelineLayout::DEFAULT_SAMPLER); // A
+	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 4); // Binding 4 : uniform
 	layout->buildLayout();
 	layout->build();
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, layout.get());
@@ -89,8 +90,17 @@ void VR360::createSC_context()
 	pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	pipeline->bindShader("vr360.frag.spv");
 	pipeline->build();
+	pipelineAlpha = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, layout.get());
+	pipelineAlpha->setDepthStencilMode();
+	pipelineAlpha->setCullMode(true);
+	sphere->bind(*pipelineAlpha); // bind Objl VertexBuffer to pipeline (common to every Obj/Ojm)
+	pipelineAlpha->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	pipelineAlpha->bindShader("vr360.vert.spv");
+	pipelineAlpha->setSpecializedConstant(7, context.isFloat64Supported);
+	pipelineAlpha->bindShader("vr360Alpha.frag.spv");
+	pipelineAlpha->build();
 	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
-	set->bindUniform(uniform, 3);
+	set->bindUniform(uniform, 4); // Binding 4 : uniform
 }
 
 // void VR360::deleteShader()
@@ -129,7 +139,13 @@ void VR360::build()
 	for (int i = 0; i < 3; ++i) {
 		VkCommandBuffer cmd = cmds[i];
 		context.frame[i]->begin(cmd, PASS_BACKGROUND);
-		pipeline->bind(cmd);
+		if (hasAlphaChannel) {
+			cLog::get()->write("VR360: Using alpha channel pipeline", LOG_TYPE::L_DEBUG);
+			pipelineAlpha->bind(cmd);
+		} else {
+			cLog::get()->write("VR360: Using standard pipeline", LOG_TYPE::L_DEBUG);
+			pipeline->bind(cmd);
+		}
 		layout->bindSets(cmd, {*context.uboSet, *set});
 		switch(typeVR360) {
 			case TYPE::V_CUBE:
@@ -154,6 +170,7 @@ void VR360::setTexture(VideoTexture _tex)
 	set->bindTexture(*_tex.y, 0);
 	set->bindTexture(*_tex.u, 1);
 	set->bindTexture(*_tex.v, 2);
+	set->bindTexture(*_tex.a, 3);
 	sync = _tex.sync;
 }
 
@@ -168,6 +185,7 @@ void VR360::draw(const Projector* prj, const Navigator* nav)
 	                     Mat4d::yrotation(M_PI)*
 	                     Mat4d::zrotation(M_PI/180*270)).convert();
 	uniform->fading = showFader;
+	uniform->hasAlphaChannel = hasAlphaChannel ? VK_TRUE : VK_FALSE;
 
 	Context::instance->frame[Context::instance->frameIdx]->toExecute(cmds[Context::instance->frameIdx], PASS_BACKGROUND);
 }

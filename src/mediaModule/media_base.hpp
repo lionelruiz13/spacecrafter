@@ -29,10 +29,11 @@ struct VideoSync {
 };
 
 struct VideoTexture {
-	Texture *tex[3];
+	Texture *tex[4];
 	Texture *&y = tex[0];
 	Texture *&u = tex[1];
 	Texture *&v = tex[2];
+	Texture *&a = tex[3];
 	std::shared_ptr<VideoSync> sync;
 };
 

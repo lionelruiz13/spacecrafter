@@ -45,6 +45,7 @@ class Pipeline;
 class PipelineLayout;
 class VertexArray;
 class VertexBuffer;
+struct SubBuffer;
 class ImageTexture;
 class OjmL;
 
@@ -52,7 +53,7 @@ class Image : public NoCopy {
 public:
 	Image() = delete;
 	Image(const std::string& filename, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap);
-	Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project);
+	Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool hasAlphaChannel = false);
 	virtual ~Image();
 
 	void setAlpha(float alpha, float duration);
@@ -60,6 +61,8 @@ public:
 	void setRotation(float rotation, float duration);
 	void setLocation(float xpos, bool deltax, float ypos, bool deltay, float duration, bool accelerate_x = false, bool decelerate_x = false, bool accelerate_y = false, bool decelerate_y = false);
 	void setRatio(float ratio, float duration);
+	void setSphericalBaseAltitude(float base_altitude, float duration);
+	void setSphericalTopAltitude(float top_altitude, float duration);
 	void setPersistent(bool value) {
 		isPersistent = value;
 	}
@@ -98,6 +101,7 @@ private:
 	void setPipeline(Pipeline *pipeline);
 	void drawViewport(const Navigator * nav, const Projector * prj);
 	void drawUnified(bool drawUp, const Navigator * nav, const Projector * prj);
+	void generateSphericalGeometry();
 	void drawSpherical(const Navigator *nav, const Projector *prj);
 	void initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap = false);
 	void initCache(const Projector * prj);
@@ -147,16 +151,21 @@ private:
 	std::vector<float> vecImgPos, vecImgTex;
 	float *imgData;
 	static PipelineLayout *m_layoutUnifiedRGB, *m_layoutUnifiedYUV, *m_layoutSphereRGB, *m_layoutSphereYUV;
+	static PipelineLayout *m_layoutUnifiedYUVA, *m_layoutSphereYUVA; // Layouts for YUVA with alpha
 	// RGB, RBG with transparency, YUV, YUV with transparency
 	static std::array<Pipeline *, 4> m_pipelineViewport;
 	static std::array<Pipeline *, 4> m_pipelineUnified;
 	static std::array<Pipeline *, 4> m_pipelineSphere;
+	// YUVA separate pipelines
+	static Pipeline *m_pipelineYUVAViewport, *m_pipelineYUVAUnified, *m_pipelineYUVASphere;
 	static std::unique_ptr<VertexArray> m_imageViewportGL, m_imageUnifiedGL, m_imageSphereGL;
 	static int cmds[3];
 	static VkCommandBuffer cmd; // Currently recording command
 	static Pipeline *pipelineUsed;
 	std::unique_ptr<VertexBuffer> vertex;
+	std::unique_ptr<SubBuffer> indexBuffer;  // Index buffer for optimized sphere rendering
 	uint32_t vertexSize;
+	uint32_t indexCount;  // Number of indices in the index buffer
 
 	//enables transparency
 	bool transparency = false;
@@ -178,6 +187,17 @@ private:
 	Vec3d imagev, ortho1, ortho2;
 	int grid_size;
 	bool needFlip = false;
+
+	// For spherical images: altitude limits (as in landscape.cpp)
+	linearTransition spherical_base_altitude_transition;
+	float spherical_base_altitude = -90.0f;  // Lowest altitude in degrees
+	linearTransition spherical_top_altitude_transition;
+	float spherical_top_altitude = 90.0f;    // Highest altitude in degrees
+
+	// Cache for spherical geometry
+	float cached_base_altitude = -91.0f;  // Invalid value to force regeneration
+	float cached_top_altitude = -91.0f;   // Invalid value to force regeneration
+	bool spherical_geometry_dirty = true;
 };
 
 #endif // _IMAGE_H

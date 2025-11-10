@@ -19,6 +19,12 @@ Spacecrafter requires :
 - SDL2_ttf-dev
 - Vulkan libraries
 - FFMPEG (VCPKG => 5.1.2#10) (required => avcodec-59.dll, avformat-59.dll, avutil-57.dll, swscale-6.dll, swresample-4.dll) (higher versions crash)
+- libvpx (VCPKG => 1.15.2) (required => libvpx build with ffmpeg (no dll for that lib everything will be in ffmpeg dlls))
+
+FFMPEG and libvpx can be installed using VCPKG:
+.\vcpkg install ffmpeg[avcodec,avdevice,avfilter,avformat,swresample,swscale,vpx]:x64-windows libvpx:x64-windows --overlay-ports=$overlay --recurse
+(-overlay-ports is the path to the folder where you unzipped the portfiles to use to compile ffmpeg 5.1.2#10, if you don't use it you will get the last version of ffmpeg that crash with spacecrafter)
+(-recurse is used to rebuild ffmpeg with libvpx support in case you alredy had ffmpeg installed)
 
 Once they are installed you are ready to compile Spacecrafter sources:
 

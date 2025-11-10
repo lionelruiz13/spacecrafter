@@ -46,7 +46,7 @@ void ShadowData::init(VkImageView target)
 
 void ShadowData::compute(VkCommandBuffer cmd)
 {
-    Context::instance->shadowPipelines[static_cast<int32_t>(radius)].bind(cmd);
+    Context::instance->shadowPipelines[static_cast<int32_t>(radius)+1].bind(cmd);
     Context::instance->shadowLayout->bindSet(cmd, *set, 0, VK_PIPELINE_BIND_POINT_COMPUTE);
     vkCmdDispatch(cmd, Context::instance->shadowRes/SHADOW_LOCAL_SIZE, 1, 1);
 }
@@ -92,7 +92,7 @@ void Context::buildShadowPipeline(uint32_t begin, uint32_t end)
     do {
         auto pipeline = new (pipelines+begin) ComputePipeline(vkmgr, layout);
         pipeline->bindShader("shadow.comp.spv");
-        pipeline->setSpecializedConstant(0, begin);
+        pipeline->setSpecializedConstant(0, begin+1U);
         pipeline->setSpecializedConstant(1, res);
         pipeline->build();
     } while (++begin < end);

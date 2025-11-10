@@ -32,6 +32,27 @@
 
 #define MAX_METEOR 4096
 
+int getCurrentDayOfYear(Navigator* nav) {
+	// get current day of year (0-365) from navigator
+	// based on current date and time in navigator
+	// and the position of the sun in equatorial coordinates
+	// (day 0 = Jan 1)
+
+	double equ_rotation; // rotation needed to align with path of earth
+	Vec3d sun_dir = nav->helioToEarthEqu( Vec3d(0,0,0) );
+
+	Mat4d tmat = Mat4d::xrotation(-23.45f*M_PI/180.f);  // ecliptical tilt
+	sun_dir.transfo4d(tmat);  // convert to ecliptical coordinates
+	sun_dir.normalize();
+	equ_rotation = acos( sun_dir.dot( Vec3d(1,0,0) ) );
+	if ( sun_dir[1] < 0 ) equ_rotation = 2*M_PI - equ_rotation;
+
+	unsigned int day_of_year = 81+equ_rotation*365/(2*M_PI);
+	day_of_year %= 365;
+
+	return day_of_year;
+}
+
 MeteorMgr::MeteorMgr(int zhr, int maxv)
 {
 	ZHR = zhr;
@@ -51,6 +72,9 @@ MeteorMgr::~MeteorMgr()
 
 void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time)
 {
+	// get current day of year (0-365) from navigator
+	currentDayOfYear = getCurrentDayOfYear(nav);
+
 	// step through and update all active meteors and delete all inactive meteors too
 	for (auto iter = m_activeMeteor.begin(); iter != m_activeMeteor.end(); ++iter) {
 		if ( !( (*iter)->update(delta_time) ) ) {
@@ -70,6 +94,13 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 	// if application has been suspended, don't create huge number of meteors to make up for lost time!
 	if ( delta_time > 500 ) {
 		delta_time = 500;
+	}
+
+	// Get radiant for current day
+	Vec3f radiant = Meteor::getRadiant(currentDayOfYear);
+
+	if (radiant[2] != static_cast<float>(ZHR)) {
+		setZHR(static_cast<int>(radiant[2]));
 	}
 
 	// determine average meteors per frame needing to be created
@@ -156,14 +187,10 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 
 void MeteorMgr::createRadiant(int day, const Vec3f newRadiant)
 {
-	for (auto& iter : m_activeMeteor) {
-    	iter->createRadiant(day, newRadiant);
-	}
+	Meteor::createRadiant(day, newRadiant);
 }
 
 void MeteorMgr::clearRadiants()
 {
-	for (auto& iter : m_activeMeteor) {
-    	iter->clear();
-	}
+	Meteor::clear();
 }

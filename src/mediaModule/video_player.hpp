@@ -25,11 +25,13 @@
 #include <SDL2/SDL.h>
 #include <array>
 #include "mediaModule/media_base.hpp"
+#include "mediaModule/text_mgr.hpp"
 #include "EntityCore/SubBuffer.hpp"
 #include <chrono>
 #include <thread>
 #include <mutex>
 #include "EntityCore/Tools/SafeQueue.hpp"
+#include "tools/fixed_point.hpp"
 
 extern "C"
 {
@@ -133,6 +135,11 @@ public:
 		return videoTexture;
 	}
 
+	//! Returns true if the video has an alpha channel (YUVA format / YUV + Alpha_mode)
+	bool getHasAlphaChannel() const {
+		return hasAlphaChannel;
+	}
+
 	//! Record texture update to the transfer command executed in the graphic queue where the texture is used
 	void recordUpdate(VkCommandBuffer cmd);
 	//! Record event synchronization which can't be performed inside the renderPass
@@ -145,10 +152,50 @@ public:
 		reloop = loopy;
 	}
 
+	//! Set video playback speed factor
+	//! \param factor Speed multiplier (1.0 = normal speed, 2.0 = double speed, 0.5 = half speed)
+	void setPlaybackSpeed(FixedPointI16_2 factor);
+
+	//! Get current playback speed factor
+	FixedPointI16_2 getPlaybackSpeed() const {
+		return playbackSpeedFactor;
+	}
+
+	//! Get current video time in seconds
+	float getCurrentVideoTime() const {
+		if (frameRate > 0.0)
+			return static_cast<float>(currentFrame) / static_cast<float>(frameRate);
+		else
+			return 0.0f;
+	}
+
+	//! Get timestamp (eg. 0:00:05 / 0:15:37)
+	std::string getTimeStatus() const;
+
+	//! set subtitle display state
+	void setShowSubtitles(bool show) {
+		showSubtitles = show;
+	}
+
+	//! Get subtitle display state
+	bool getShowSubtitles() const {
+		return showSubtitles;
+	}
+
+	void subtitlesSetProject(IMG_PROJECT project) {
+		subtitleProject = project;
+	}
+
 	static unsigned char *tracer_frameCache(void *data, unsigned char *buffer);
 	static unsigned char *tracer_atomic_bool(void *data, unsigned char *buffer);
 	static unsigned char *tracer_duration(void *data, unsigned char *buffer);
 private:
+	//! Format time in H:MM:SS format
+	static std::string formatTime(std::chrono::seconds seconds);
+	template <typename RATIO>
+	static inline std::string formatTime(std::chrono::duration<int64_t, RATIO> duration) {
+		return formatTime(std::chrono::duration_cast<std::chrono::seconds>(duration));
+	}
 	// returns the new video frame and converts it in the CG memory.
 	void getNextVideoFrame();
 	// retrieves the new video frame before conversion
@@ -159,13 +206,15 @@ private:
 	bool seekVideo(int64_t framesToSkip);
 	//! initialize a texture to the size of the video
 	void initTexture();
+	//! update subtitles
+	void updateSubtitles();
 
 	Media *media=nullptr;
 	Audio *audio=nullptr;
 	VideoTexture videoTexture;	//!< returns the texture indices for the classes requiring
 	std::unique_ptr<BufferMgr> stagingBuffer;
-	SubBuffer imageBuffers[3][MAX_CACHED_FRAMES];
-	std::array<void *[MAX_CACHED_FRAMES], 3> pImageBuffer;
+	SubBuffer imageBuffers[4][MAX_CACHED_FRAMES];
+	std::array<void *[MAX_CACHED_FRAMES], 4> pImageBuffer;
 
 	std::string fileName; 	//!< video name
 	Resolution videoRes;	//!< int video_w, video_h;	//!< size w,h of the vidéo
@@ -178,13 +227,21 @@ private:
 	std::chrono::steady_clock::time_point nextFrame; // Time at which the next video frame should be rendered
 	std::chrono::steady_clock::time_point currentTime; // Time at which the last frame was rendered, regardless of the video frame used
 
+	//Subtitle management
+	bool showSubtitles = true;
+	IMG_PROJECT subtitleProject = IMG_PROJECT::ONCE;
+	TEXT_MGR_PARAM textSubtitleTopParam;
+	TEXT_MGR_PARAM textSubtitleBottomParam;
+
 	//frameRate management
 	int64_t currentFrame;	//!< number of the current frame
 	int64_t nbTotalFrame;	//!< number of frames in the video
 	double frameRate;
 	std::chrono::steady_clock::duration latency; // Time behind the video which need to be reclaimed
 	std::chrono::steady_clock::duration deltaFrame; // Time between two frames
+	std::chrono::steady_clock::duration baseDeltaFrame; // Base time between two frames, before applying playbackSpeedFactor
 	std::chrono::steady_clock::duration renderDeltaFrame; // Time between two rendered frames
+	FixedPointI16_2 playbackSpeedFactor = FixedPointI16_2::one(); // Video playback speed multiplier (fixed-point representation)
 
 	//performance query
 	std::chrono::steady_clock::time_point sTime;
@@ -194,8 +251,8 @@ private:
 	std::chrono::steady_clock::duration sWrite{};
 
 	// avoid recalculating each time
-	int widths[3];
-	int heights[3];
+	int widths[4];
+	int heights[4];
 
 	std::atomic<uint32_t> frameCached = 0; // Index of the last cached frame
 	std::atomic<bool> decoding = false; // Tell if the video have not been fully decoded yet
@@ -209,6 +266,7 @@ private:
 	AVStream		*video_st;
 	AVPacket		*packet;
 	struct SwsContext *img_convert_ctx;
+	AVPixelFormat targetFormat; // Target format for conversion (YUV420P or YUVA420P)
 
 	std::atomic<uint32_t> frameUsed = 0; // Index of the last rendered frame
 	int frameIdxSwap = 0;
@@ -220,6 +278,7 @@ private:
 	bool waitCacheFull = false;
 	bool reloop = false;
 	bool drawNextFrame = false; // Draw the next frame, unconditionnally
+	bool hasAlphaChannel = false; // Indicates if the video has an alpha channel (YUVA format / YUV + Alpha_mode)
 	void mainloop();
 	// Stop video thread and drop every pending frames
 	void threadTerminate();

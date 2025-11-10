@@ -255,6 +255,8 @@ bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observato
         if (depthTest)
 		      axis->drawAxis(cmd, prj, mat);
 		drawBody(cmd, prj, nav, mat, screen_sz, depthTest);
+        if (depthTest)
+			drawPlanetGrid(cmd, prj, mat);
         frame.compile(cmd);
         frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 		drawn = true;

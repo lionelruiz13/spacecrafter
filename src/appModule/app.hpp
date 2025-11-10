@@ -32,6 +32,7 @@
 #include <queue>
 #include <memory>
 #include <string>
+#include <chrono>
 
 #include "tools/no_copy.hpp"
 #include "tools/context.hpp"
@@ -105,7 +106,8 @@ public:
 	void recordCommand(const std::string& commandline);
 
 	int getFpsClock() const;
-	int getTargetFps() const;
+	double getTargetFps() const;
+	std::chrono::steady_clock::duration getPreciseDeltaTime() const noexcept;
 
 	void setPresetSkyTime(double _value) {
 		PresetSkyTime = _value;

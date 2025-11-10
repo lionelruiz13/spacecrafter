@@ -67,7 +67,8 @@ void ViewPort::createSC_context()
 	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER);
-	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 3);
+	layout->setTextureLocation(3, &PipelineLayout::DEFAULT_SAMPLER); // Texture alpha
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 4);
 	layout->buildLayout();
 	layout->build();
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, layout.get());
@@ -82,6 +83,7 @@ void ViewPort::createSC_context()
 	set->bindUniform(uFrag, 3);
 	uFrag->get().transparency = false;
 	uFrag->get().noColor = Vec4f::null();
+	uFrag->get().hasAlphaChannel = VK_FALSE;
 }
 
 void ViewPort::build(int frameIdx)
@@ -109,10 +111,11 @@ void ViewPort::setTexture(VideoTexture _tex)
 	set->bindTexture(*_tex.y, 0);
 	set->bindTexture(*_tex.u, 1);
 	set->bindTexture(*_tex.v, 2);
-	set->bindUniform(uFrag, 3);
+	set->bindTexture(*_tex.a, 3); // Always present (dummy if no alpha)
+	set->bindUniform(uFrag, 4);
 	set->update();
 	sync = _tex.sync;
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 4; ++i)
 		needUpdate[i] = true;
 }
 
@@ -162,6 +165,7 @@ void ViewPort::displayStop()
 	fader.reset(false);
 	uFrag->get().transparency = VK_FALSE;
 	uFrag->get().noColor = Vec4f::null();
+	uFrag->get().hasAlphaChannel = VK_FALSE;
 }
 
 void ViewPort::setTransparency(bool v)
@@ -172,4 +176,9 @@ void ViewPort::setTransparency(bool v)
 void ViewPort::setKeyColor(const Vec3f&color, float intensity)
 {
 	uFrag->get().noColor = Vec4f(color[0], color[1], color[2],intensity);
+}
+
+void ViewPort::setHasAlphaChannel(bool hasAlpha)
+{
+	uFrag->get().hasAlphaChannel = hasAlpha ? VK_TRUE : VK_FALSE;
 }

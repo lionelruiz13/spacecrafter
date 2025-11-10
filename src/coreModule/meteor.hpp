@@ -48,10 +48,19 @@ public:
 	bool update(int delta_time);  // update position
 	bool draw(Projector *proj, Navigator* nav, float *&data);		// Draw the meteor
 	bool isAlive(void);          // see if burned out yet
-	void createRadiant(int day, const Vec3f newRadiant) {
+	static void createRadiant(int day, const Vec3f newRadiant) {
 		radiant[(day-1) % 366] = newRadiant;
 	}
-	void clear();
+	static void clear();
+
+	static Vec3f getRadiant(int day) {
+		return radiant[(day-1) % 366];
+	}
+	static void setRadiantZHR(int day, int zhr) {
+		const int idx = (day-1) % 366;
+		if (radiant[idx][2] == static_cast<float>(zhr)) return; // Skip if ZHR is the same
+		radiant[idx][2] = static_cast<float>(zhr);
+	}
 
 private:
 	static std::array<Vec3f, 366> radiant;
