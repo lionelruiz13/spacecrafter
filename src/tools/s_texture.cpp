@@ -930,7 +930,7 @@ void s_texture::bigTextureLoader()
             currentAllocation += droppedTex->getTextureSize();
             droppedTex.reset();
         }
-        std::string shortName = tex->texName.substr(tex->texName.find(".spacecrafter/")+14);
+        std::string shortName = tex->texName;
         std::string texName = "big \"" + shortName + "\"";
         cLog::get()->write("Loading big " + shortName + "...", LOG_TYPE::L_DEBUG);
         unsigned int width = tex->width;
@@ -1088,7 +1088,7 @@ void s_texture::debugBigTexture()
         std::ostringstream desc;
         desc << "- " << bt.width << 'x' << bt.height;
         if (bt.acquired) {
-            desc << ((bt.ready) ? " <active> " : " <uploading> ") << bt.texName.substr(bt.texName.find(".spacecrafter/")+14);
+            desc << ((bt.ready) ? " <active> " : " <uploading> ") << bt.texName;
         } else
             desc << " <unused>";
         cLog::get()->write(desc, LOG_TYPE::L_DEBUG);
@@ -1111,7 +1111,9 @@ void s_texture::loadCache(const std::string &path, bool _cacheTexture)
 
 std::string s_texture::getCacheName(const std::string &name)
 {
-    const auto p1 = name.find(".spacecrafter/")+14;
+    auto p1 = name.find(".spacecrafter/")+14;
+    if (p1 == 13)
+        p1 = 0;
     const auto p2 = name.find_first_of('/', p1) - 1;
     std::string filename = name.substr();
     filename = name.substr(p2, name.size() - p2);
@@ -1126,7 +1128,9 @@ std::string s_texture::getCacheName(const std::string &name)
 
 std::string s_texture::getCacheEntryName(const std::string &name)
 {
-    const auto p1 = name.find(".spacecrafter/")+14;
+    auto p1 = name.find(".spacecrafter/")+14;
+    if (p1 == 13)
+        p1 = 0;
     const auto p2 = name.find_first_of('/', p1) - 1;
     std::string filename = name.substr();
     filename = name.substr(p2, name.size() - p2 - 4);
