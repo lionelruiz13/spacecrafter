@@ -158,6 +158,11 @@ App::App( SDLFacade* const sdl )
 
 	executor = std::make_unique<Executor>(core, observatory.get());
 
+	// Configuration du callback pour le changement de mode
+	coreBackup->setSwitchModeCallback([this](const std::string& mode) {
+		this->switchMode(mode);
+	});
+
 	// fixation interface
 	ui->initInterfaces(scriptInterface,spaceDate);
 	commander->initInterfaces(scriptInterface, spaceDate, saveScreenInterface);

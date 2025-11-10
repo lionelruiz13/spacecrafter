@@ -44,12 +44,43 @@ CoreBackup::~CoreBackup()
 void CoreBackup::loadBackup()
 {
 	if (mBackup.jday !=0) {
+		int moveDuration = 1;
+		if (core->getFlagIngalaxy() != mBackup.current_module) {
+			// Use the callback (set by App) to switch mode
+			if (switchModeCallback) {
+				std::string modeString;
+				switch (mBackup.current_module) {
+					case MODULE::SOLAR_SYSTEM:
+						modeString = "in_solarsystem";
+						break;
+					case MODULE::IN_GALAXY:
+						modeString = "in_galaxy";
+						break;
+					case MODULE::IN_UNIVERSE:
+						modeString = "in_universe";
+						break;
+					case MODULE::STELLAR_SYSTEM:
+						modeString = "in_stellarsystem";
+						break;
+					default:
+						modeString = "in_solarsystem"; // default fallback
+						break;
+				}
+				std::cout << "CoreBackup::loadBackup: switching mode to " << modeString << std::endl;
+				switchModeCallback(modeString);
+				// If we are switching mode, do not use move animation (instant move)
+				// or we may have issues due to Executor::updateMode (changing the mode due to the current altitude (before the final altitude is set))
+				moveDuration = 0;
+			} else {
+				// Should never happen but just in case
+				std::cout << "CoreBackup::loadBackup: switchModeCallback not set!" << std::endl;
+			}
+		}
 		core->timeMgr->setJDay(mBackup.jday);
 		core->projection->setFov(mBackup.fov); //setFov(mBackup.fov);
-		core->observatory->moveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
+		core->observatory->moveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, moveDuration);
 	}
 	core->setHomePlanet(mBackup.home_planet_name);
-	core->setFlagIngalaxy(mBackup.current_module);
 }
 
 void CoreBackup::saveBackup()
@@ -62,6 +93,36 @@ void CoreBackup::saveBackup()
 	mBackup.fov = core->projection->getFov(); //getFov();
 	mBackup.home_planet_name=core->observatory->getHomePlanetEnglishName();
 	mBackup.current_module=core->getFlagIngalaxy();
+
+	std::string modulestr = "";
+	switch (mBackup.current_module) {
+		case MODULE::SOLAR_SYSTEM:
+			modulestr = "Solar System";
+			break;
+		case MODULE::IN_GALAXY:
+			modulestr = "In Galaxy";
+			break;
+		case MODULE::IN_UNIVERSE:
+			modulestr = "In Universe";
+			break;
+		case MODULE::STELLAR_SYSTEM:
+			modulestr = "Stellar System";
+			break;
+		case MODULE::IN_SANDBOX:
+			modulestr = "In Sandbox";
+			break;
+		default:
+			modulestr = "Unknown Module";
+			break;
+	}
+
+	std::cout << "Backup saved: jday=" << std::to_string(mBackup.jday) <<
+	" lat=" << std::to_string(mBackup.latitude) <<
+	" lon=" << std::to_string(mBackup.longitude) <<
+	" alt=" << std::to_string(mBackup.altitude) <<
+	" fov=" << std::to_string(mBackup.fov) <<
+	" home_planet=" << mBackup.home_planet_name <<
+	" module=" << modulestr << std::endl;
 }
 
 void CoreBackup::saveGridState()

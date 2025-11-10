@@ -31,6 +31,7 @@
 
 #include <string>
 #include <memory>
+#include <functional>
 #include "coreModule/core_common.hpp"
 #include "executorModule/executorModule.hpp"
 
@@ -61,6 +62,11 @@ public:
 	void loadBackup();
 	void saveBackup();
 
+	// Setter pour le callback de switch de mode
+	void setSwitchModeCallback(std::function<void(const std::string&)> callback) {
+		switchModeCallback = callback;
+	}
+
 	//grid status management
 	void saveGridState();
 	void loadGridState();
@@ -79,6 +85,7 @@ private:
 	SkyDisplaySave skyDisplaySave;
 	SkyLineSave skyLineSave;
 	std::shared_ptr<Core> core;
+	std::function<void(const std::string&)> switchModeCallback;
 };
 
 #endif // _BACKUP_MGR_H_
