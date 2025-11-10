@@ -846,43 +846,43 @@ void VideoPlayer::updateSubtitles()
 			}
 
 			// Top subtitles
-			textSubtitleTopParam.azimuth = 0.0f;
+			textSubtitleTopParam.azimuth = 180.0f;
 			media->textAdd("video_subtitle1t", textSubtitleTopParam);
 			media->textDisplay("video_subtitle1t", true);
 
 			if (subtitleProject == IMG_PROJECT::TWICE) {
-				textSubtitleTopParam.azimuth = 180.0f;
+				textSubtitleTopParam.azimuth = 0.0f;
 				media->textAdd("video_subtitle2t", textSubtitleTopParam);
 				media->textDisplay("video_subtitle2t", true);
 			}
 
 			if (subtitleProject == IMG_PROJECT::THRICE) {
-				textSubtitleTopParam.azimuth = 120.0f;
+				textSubtitleTopParam.azimuth = 60.0f;
 				media->textAdd("video_subtitle2t", textSubtitleTopParam);
 				media->textDisplay("video_subtitle2t", true);
 
-				textSubtitleTopParam.azimuth = 240.0f;
+				textSubtitleTopParam.azimuth = 300.0f;
 				media->textAdd("video_subtitle3t", textSubtitleTopParam);
 				media->textDisplay("video_subtitle3t", true);
 			}
 
 			// Bottom subtitles
-			textSubtitleBottomParam.azimuth = 0.0f;
+			textSubtitleBottomParam.azimuth = 180.0f;
 			media->textAdd("video_subtitle1b", textSubtitleBottomParam);
 			media->textDisplay("video_subtitle1b", true);
 
 			if (subtitleProject == IMG_PROJECT::TWICE) {
-				textSubtitleBottomParam.azimuth = 180.0f;
+				textSubtitleBottomParam.azimuth = 0.0f;
 				media->textAdd("video_subtitle2b", textSubtitleBottomParam);
 				media->textDisplay("video_subtitle2b", true);
 			}
 
 			if (subtitleProject == IMG_PROJECT::THRICE) {
-				textSubtitleBottomParam.azimuth = 120.0f;
+				textSubtitleBottomParam.azimuth = 60.0f;
 				media->textAdd("video_subtitle2b", textSubtitleBottomParam);
 				media->textDisplay("video_subtitle2b", true);
 
-				textSubtitleBottomParam.azimuth = 240.0f;
+				textSubtitleBottomParam.azimuth = 300.0f;
 				media->textAdd("video_subtitle3b", textSubtitleBottomParam);
 				media->textDisplay("video_subtitle3b", true);
 			}
