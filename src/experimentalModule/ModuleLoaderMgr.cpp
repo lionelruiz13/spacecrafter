@@ -1,6 +1,22 @@
 #include "ModuleLoaderMgr.hpp"
 #include "ModuleLoader.hpp"
 #include "OrbitLoader.hpp"
+#include <array>
+
+std::array<std::string_view, static_cast<uint8_t>(BodyModuleType::NB_MODULE_TYPE)> defaultModuleName{
+    "CUSTOM",
+    "MESH",
+    "OJM",
+    "VOLUMETRIC",
+    "RING",
+    "HINT",
+    "POINTER",
+    "ORBIT",
+    "TRAIL",
+    "TAIL",
+    "ATMOSPHERE",
+    "AXIS"
+};
 
 ModuleLoaderMgr ModuleLoaderMgr::instance;
 
@@ -27,7 +43,7 @@ void ModuleLoaderMgr::registerModule(std::unique_ptr<OrbitLoader> loader)
     defaultOrbitLoader = std::move(loader);
 }
 
-void ModuleLoaderMgr::loadModule(BodyModuleType type, ModularBody *target, std::map<std::string, std::string> &params)
+void ModuleLoaderMgr::loadModule(BodyModuleType type, ModularBody *target, std::map<std::string, std::string> &params, const std::string &slot)
 {
     uint8_t i = 0;
     ModuleLoader *loader = nullptr;
@@ -41,7 +57,10 @@ void ModuleLoaderMgr::loadModule(BodyModuleType type, ModularBody *target, std::
         }
     }
     if (loader) {
-        loader->load(target, params);
+        if (slot.empty())
+            target->slot(ModularBody::slotID[defaultModuleName[static_cast<uint8_t>(type)]], loader->load(target, params));
+        else
+            target->slot(ModularBody::slotID[slot], loader->load(target, params));
     }
 }
 

@@ -19,7 +19,7 @@ public:
     void registerModule(BodyModuleType type, std::unique_ptr<ModuleLoader> loader);
     void registerModule(const std::string &key, std::unique_ptr<OrbitLoader> loader);
     void registerModule(std::unique_ptr<OrbitLoader> loader);
-    void loadModule(BodyModuleType type, ModularBody *target, std::map<std::string, std::string> &params);
+    void loadModule(BodyModuleType type, ModularBody *target, std::map<std::string, std::string> &params, const std::string &slot = {});
     std::unique_ptr<Orbit> loadOrbit(std::map<std::string, std::string> &params);
     static ModuleLoaderMgr instance;
 private:

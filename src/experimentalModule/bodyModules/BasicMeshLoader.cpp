@@ -21,7 +21,7 @@ uint8_t BasicMeshLoader::isLikely(ModularBody *target, std::map<std::string, std
 {
     if (params["tex_map"].empty())
         return 0;
-    return 16; // Leave enough lower and higher values to siplify adding module loaders
+    return 16; // Leave enough lower and higher values to simplify adding module loaders
 }
 
 bool BasicMeshLoader::isLoaderOf(BodyModule *module) const
@@ -29,7 +29,7 @@ bool BasicMeshLoader::isLoaderOf(BodyModule *module) const
     return dynamic_cast<BasicMesh*>(module); // dynamic_cast return nullptr if the module is not a BasicMesh
 }
 
-void BasicMeshLoader::load(ModularBody *target, std::map<std::string, std::string> &params)
+std::unique_ptr<BodyModule> BasicMeshLoader::load(ModularBody *target, std::map<std::string, std::string> &params)
 {
     ObjL *obj;
     {
@@ -41,6 +41,10 @@ void BasicMeshLoader::load(ModularBody *target, std::map<std::string, std::strin
             obj = ObjLMgr::instance->select(modelName);
         }
     }
-    if (obj)
-        getNearComponents(target).push_back(std::make_shared<BasicMesh>(obj, params["tex_map"]));
+    if (obj) {
+        auto mesh = std::make_unique<BasicMesh>(obj, params["tex_map"]);
+        addNearComponent(target, mesh.get());
+        return mesh;
+    }
+    return nullptr;
 }

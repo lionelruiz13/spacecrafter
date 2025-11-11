@@ -10,6 +10,7 @@
 #include "EnvironmentModule.hpp"
 #include "AsyncHub.hpp"
 #include "EntityCore/Executor/ASmooth.hpp"
+#include "tools/StringID.hpp"
 #include <memory>
 #include <list>
 #include <vector>
@@ -52,8 +53,6 @@ inline constexpr BodyType operator&(BodyType t1, BodyType t2)
 {
     return static_cast<BodyType>(static_cast<uint8_t>(t1) & static_cast<uint8_t>(t2));
 }
-
-#define UPDATE_CADENCY JD_SECOND
 
 class ModularSystem;
 class Translator;
@@ -190,7 +189,6 @@ public:
     }
     // Remove this body, return false on failure
     bool remove(bool recursive = false);
-    void updateEclipticPos(Vec3f eclipticPos, double jd, double targetJD);
     // Update this body and his childs bodies
     void recursiveUpdate(double jd, const Mat4f &matLocalToBody);
     // Update the cached values
@@ -282,8 +280,11 @@ public:
                             for (auto &module : nearComponents)
                                 module->draw(renderer, this, matrix);
                         } else {
-                            if (distance < scaledInnerRadius) {
+                            if (distance < scaledRadius) {
                                 for (auto &module : inComponents)
+                                    module->draw(renderer, this, matrix);
+                            } else if (distance < scaledRadius * BODY_SURFACE_HEIGHT) {
+                                for (auto &module : groundedComponents)
                                     module->draw(renderer, this, matrix);
                             } else {
                                 for (auto &module : nearComponents)
@@ -308,13 +309,15 @@ public:
     }
 
     inline void transformParentToBodyPos(double jd, Mat4f &mat_local_to_body) {
-        const double delta = jd - lastJD;
-        lastJD = jd;
-        if ((delta > 0) == (jd > computedJD)) {
-            eclipticPos = computedEclipticPos + deltaEclipticPos * (jd - computedJD);
-            updateEclipticPos(computedEclipticPos, computedJD, (delta > 0) ? (jd + UPDATE_CADENCY) : (jd - UPDATE_CADENCY));
-        } else {
-            eclipticPos += deltaEclipticPos * delta;
+        if (jd != lastJD) {
+            Vec3d tmp;
+            if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
+                (*oscFunc)(jd,jd,tmp);
+            } else {
+                orbit->positionAtTimevInVSOP87Coordinates(jd,jd,tmp);
+            }
+            eclipticPos = tmp;
+            lastJD = jd;
         }
         if (boundToSurface)
             mat_local_to_body = mat_local_to_body.multiplyFast(computeBodyToSurface());
@@ -340,13 +343,15 @@ public:
     }
 
     inline void transformBodyToParent(double jd, Mat4f &mat_local_to_body) {
-        const double delta = jd - lastJD;
-        lastJD = jd;
-        if ((delta > 0) == (jd > computedJD)) {
-            eclipticPos = computedEclipticPos + deltaEclipticPos * (jd - computedJD);
-            updateEclipticPos(computedEclipticPos, computedJD, (delta < 0) ? (jd + UPDATE_CADENCY) : (jd - UPDATE_CADENCY));
-        } else {
-            eclipticPos += deltaEclipticPos * delta;
+        if (jd != lastJD) {
+            Vec3d tmp;
+            if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
+                (*oscFunc)(jd,jd,tmp);
+            } else {
+                orbit->positionAtTimevInVSOP87Coordinates(jd,jd,tmp);
+            }
+            eclipticPos = tmp;
+            lastJD = jd;
         }
         mat_local_to_body = mat_local_to_body.multiplyFast(Mat4f::zxrotation(
             re.precessionRate*(jd-re.epoch) - re.ascendingNode,
@@ -559,7 +564,7 @@ public:
     inline bool isSystemCentered() const {
         const ModularBody *body = this;
         while (body->isNotIsolated) {
-            if (computedEclipticPos.v[0] || computedEclipticPos.v[1] || computedEclipticPos.v[2])
+            if (eclipticPos.v[0] || eclipticPos.v[1] || eclipticPos.v[2])
                 return false;
             body = body->parent;
         }
@@ -587,6 +592,33 @@ public:
             return get_apparent_sidereal_time(jd);
     	return fmod((jd - re.epoch) / re.period * 360. + re.offset, 360);
     }
+    //! get BodyModule by name
+    BodyModule *slot(StringID slot)
+    {
+        if (components.size() <= slot.id)
+            return nullptr;
+        return components[slot.id].get();
+    }
+    //! get BodyModule by name
+    const BodyModule *slot(StringID slot) const
+    {
+        if (components.size() <= slot.id)
+            return nullptr;
+        return components[slot.id].get();
+    }
+    void slot(StringID slotID, std::unique_ptr<BodyModule> &&module)
+    {
+        if (components.size() <= slotID.id) {
+            components.resize(slotID.id + 1);
+        } else if (auto *slot = components[slotID.id].get()) {
+            std::erase(farComponents, slot);
+            std::erase(nearComponents, slot);
+            std::erase(groundedComponents, slot);
+            std::erase(inComponents, slot);
+        }
+        components[slotID.id] = std::move(module);
+    }
+    static StringIDCluster slotID;
 private:
     // Deduce which modules are to be bound to this body from the parameters
     std::vector<BodyModuleType> deduceBodyModuleList(std::map<std::string, std::string> &param);
@@ -645,22 +677,21 @@ private:
     std::vector<std::unique_ptr<ModularBody>> groundedBodies;
     std::vector<std::unique_ptr<ModularBody>> orbitingBodies;
     std::vector<std::unique_ptr<ModularBody>> innerBodies;
-    std::vector<std::unique_ptr<BodyModule>> outerComponents;
-    std::vector<std::unique_ptr<BodyModule>> surfaceComponents;
-    std::vector<std::unique_ptr<BodyModule>> innerComponents;
+    std::vector<std::unique_ptr<ModularBody>> hiddenBodies;
     std::vector<std::unique_ptr<EnvironmentModule>> groundedEnvironment;
     std::vector<std::unique_ptr<EnvironmentModule>> environment;
     // std::vector<std::unique_ptr<ShadowProjection>> shadows;
 
-    // Resource manager only - may put out of this class
-    std::unique_ptr<BodyModule> genericComponents[static_cast<uint8_t>(DedicatedBodyModuleSlot::NB_SLOTS)];
-    std::map<std::string_view, std::unique_ptr<BodyModule>> extraComponents;
+    // TODO create an optimized std::string for limited set
+    std::vector<std::unique_ptr<BodyModule>> components; // Reference every BodyModule of this ModularBody by name
 
-    // Deprecated
+    // TODO replace by grounded/orbiting/inner body
     std::list<ModularBody> childs; // Drawn if screenSize >= 10%
-    std::list<std::shared_ptr<BodyModule>> farComponents; // 2D behind body, SKIP when screenSize > 20%, update NEVER called
-    std::list<std::shared_ptr<BodyModule>> nearComponents; // Drawn if screenSize >= 0.15% and distance > radius
-    std::list<std::shared_ptr<BodyModule>> inComponents; // Draw if distance <= radius
+
+    std::vector<BodyModule *> farComponents; // 2D behind body, SKIP when screenSize > 20%, update NEVER called
+    std::vector<BodyModule *> nearComponents; // Drawn if screenSize >= 0.15% and distance > scaledRadius * BODY_SURFACE_HEIGHT
+    std::vector<BodyModule *> groundedComponents; // Drawn if distance <= scaledRadius * BODY_SURFACE_HEIGHT
+    std::vector<BodyModule *> inComponents; // Draw if distance <= scaledRadius
     // std::list<std::shared_ptr<BodyOrbitModule>> orbitalComponents; // Components drawing lines between bodies
     // std::list<std::shared_ptr<EnvironmentModule>> environmentComponents; // Component defining the environment
 
@@ -677,15 +708,10 @@ private:
     float distance;
     float axisRotation;
     float scaledRadius;
-    float scaledInnerRadius;
+    //float scaledInnerRadius;
     float rmag;
     float cmag;
-
-    // Asynchronous internal datas, deprecated
-    double lastJD = 0; // Last JD
-    double computedJD = 0; // Computed JD
-    Vec3f computedEclipticPos; // computed position reached in the future, relative to the parent body
-    Vec3f deltaEclipticPos; // Displacement from the previous eclipticPos to the computedEclipticPos
+    double lastJD = 0;
 
     // Halo system
     Vec3f haloColor;
@@ -694,8 +720,8 @@ private:
     // Navigation and visibility
     ASmooth<AsyncHub, float, 5.f> scaling;
     float radius;
-    float boundingRadius; // Smallest radius including all nearComponents
-    float subsystemRadius; // Radius including all child bodies
+    float boundingRadius; // Smallest radius including all groundedComponents and nearComponents
+    float subsystemRadius; // Radius including all orbitingBodies
     float areaOfInfluence; // Area under the influence of this body
 
     // Internal datas, deprecated

@@ -12,16 +12,19 @@ public:
     // Return true if this BodyModule come from this object
     virtual bool isLoaderOf(BodyModule *module) const {return false;}
     // Load and install a BodyModule on this body
-    virtual void load(ModularBody *target, std::map<std::string, std::string> &params) = 0;
+    virtual std::unique_ptr<BodyModule> load(ModularBody *target, std::map<std::string, std::string> &params) = 0;
 protected:
-    static inline std::list<std::shared_ptr<BodyModule>> &getFarComponents(ModularBody *target) {
-        return target->farComponents;
+    static inline void addFarComponent(ModularBody *target, BodyModule *module) {
+        target->farComponents.push_back(module);
     }
-    static inline std::list<std::shared_ptr<BodyModule>> &getNearComponents(ModularBody *target) {
-        return target->nearComponents;
+    static inline void addNearComponent(ModularBody *target, BodyModule *module) {
+        target->nearComponents.push_back(module);
     }
-    static inline std::list<std::shared_ptr<BodyModule>> &getInComponents(ModularBody *target) {
-        return target->inComponents;
+    static inline void addGroundedComponent(ModularBody *target, BodyModule *module) {
+        target->groundedComponents.push_back(module);
+    }
+    static inline void addInComponent(ModularBody *target, BodyModule *module) {
+        target->inComponents.push_back(module);
     }
 };
 

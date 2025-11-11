@@ -16,6 +16,7 @@ float ModularBody::haloScale = 1;
 float ModularBody::haloSizeLimit = 9;
 std::vector<ModularBody *> ModularBody::notableBody;
 Translator *ModularBody::translator = nullptr;
+StringIDCluster ModularBody::slotID;
 
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), scaling(1), radius(info.radius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
@@ -37,14 +38,14 @@ ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
         ref = this;
     }
     if (parent) {
-        computedJD = parent->lastJD;
+        lastJD = parent->lastJD;
         Vec3d tmp;
         if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
-            (*oscFunc)(computedJD,computedJD,tmp);
+            (*oscFunc)(lastJD,lastJD,tmp);
         } else {
-            orbit->positionAtTimevInVSOP87Coordinates(computedJD,computedJD,tmp);
+            orbit->positionAtTimevInVSOP87Coordinates(lastJD,lastJD,tmp);
         }
-        computedEclipticPos = tmp;
+        eclipticPos = tmp;
     }
 }
 
@@ -68,7 +69,14 @@ ModularBody::~ModularBody()
         static_cast<ModularSystem *>(p)->removeBody(this);
     }
     childs.clear();
+    groundedBodies.clear();
+    orbitingBodies.clear();
+    innerBodies.clear();
+    components.clear();
+    groundedEnvironment.clear();
+    environment.clear();
     bodyReference.erase(englishName);
+    components.clear();
     if (lastFit == this)
         lastFit = nullptr;
     if (pointerCount)
@@ -91,19 +99,6 @@ bool ModularBody::remove(bool recursive)
     } else {
         return false;
     }
-}
-
-void ModularBody::updateEclipticPos(Vec3f eclipticPos, double jd, double targetJD)
-{
-   Vec3d tmp;
-   if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
-       (*oscFunc)(targetJD,targetJD,tmp);
-   } else {
-       orbit->positionAtTimevInVSOP87Coordinates(targetJD,targetJD,tmp);
-   }
-   computedEclipticPos = tmp;
-   deltaEclipticPos = (computedEclipticPos - eclipticPos) / (targetJD - jd);
-   computedJD = jd;
 }
 
 void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBody)
@@ -161,14 +156,14 @@ void ModularBody::updateCache()
         parent->invalidateCachedState();
     float squaredSubsystemRadius = boundingRadius*boundingRadius;
     for (auto &c : childs) {
-        const float tmp = c.computedEclipticPos.lengthSquared();
+        const float tmp = c.eclipticPos.lengthSquared();
         if (squaredSubsystemRadius < tmp)
             squaredSubsystemRadius = tmp;
     }
     // Take some extra margin for the system radius
     subsystemRadius = sqrt(squaredSubsystemRadius) * 1.1f;
     // The area of influence is an heuristic
-    areaOfInfluence = std::min(std::max(boundingRadius * 128 / scaling, subsystemRadius * 16), computedEclipticPos.length() * 0.6f);
+    areaOfInfluence = std::min(std::max(boundingRadius * 128 / scaling, subsystemRadius * 16), eclipticPos.length() * 0.6f);
     if (cached)
         uncached = false;
 }

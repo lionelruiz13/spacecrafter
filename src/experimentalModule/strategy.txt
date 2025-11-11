@@ -10,9 +10,15 @@ Taskable :
 ModularBody drawing :
 - Update position
 - Execute tasks
-- 
+-
 
 Loading :
 - ModularBody (Taskable )
 - Optionnal light lazy module loading (Load on background - LAZY , prioritize on activation, keep loaded)
 - Light lazy module loading (BACKGROUND priority on background,  keep loaded)
+
+
+TODO :
+- s_font not shown
+- draw pointer when isSelected
+- fix halo
