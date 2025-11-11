@@ -76,7 +76,7 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
         .isHaloEnabled = false,
         .altitudeRelativeToRadius = false,
     };
-    milkyway = std::make_unique<ModularSystem>(nullptr, createInfo);
+    milkyway = new ModularSystem(nullptr, createInfo); // TODO Add universe, to make this unique_ptr
     galacticSystem = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
     galacticAnchorMgr = galacticSystem->getAnchorManager();
     bodytrace= std::make_shared<BodyTrace>();
@@ -157,7 +157,7 @@ void SSystemFactory::reloadColors(const std::string& planetfile)
             // Parse the line for planet colors
             std::istringstream iss(line);
             std::string propertyName;
-            int equalPos = line.find('=');
+            auto equalPos = line.find('=');
             if (equalPos != std::string::npos) {
                 // Extract property name and trim whitespace
                 propertyName = line.substr(0, equalPos);
@@ -270,7 +270,7 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
         .isHaloEnabled = false,
         .altitudeRelativeToRadius = false,
     };
-    modularSystems.emplace_back(milkyway.get(), info);
+    modularSystems.emplace_back(&*milkyway, info);
     if (filename.empty()) {
         stringHash_t bodyParams;
         bodyParams["name"] = name.substr(0, name.size()-6); // Remove the 'System' suffix for the star

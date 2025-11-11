@@ -2200,7 +2200,7 @@ template<class T> constexpr const Vec4f Matrix4<T>::getVector(int column)const
 	return result;
 }
 
-#define APPLY_TO_LINE(x) result.r[x]=r[x]*(1.0-coef)+coef*other.r[x];
+#define APPLY_TO_LINE(x) r[x]*(1.0-coef)+coef*other.r[x]
 
 //! Makes a linear mix between two matrix.
 //! @param other the other matrix to mix with this matrix.
@@ -2209,24 +2209,24 @@ template<class T> constexpr const Vec4f Matrix4<T>::getVector(int column)const
 //! @return the mixed matrix.
 template<class T> constexpr Matrix4<T> Matrix4<T>::linearMix(const Matrix4<T> other,const T coef )const
 {
-	Matrix4<T> result;
-	APPLY_TO_LINE(0)
-	APPLY_TO_LINE(1)
-	APPLY_TO_LINE(2)
-	APPLY_TO_LINE(3)
-	APPLY_TO_LINE(4)
-	APPLY_TO_LINE(5)
-	APPLY_TO_LINE(6)
-	APPLY_TO_LINE(7)
-	APPLY_TO_LINE(8)
-	APPLY_TO_LINE(9)
-	APPLY_TO_LINE(10)
-	APPLY_TO_LINE(11)
-	APPLY_TO_LINE(12)
-	APPLY_TO_LINE(13)
-	APPLY_TO_LINE(14)
-	APPLY_TO_LINE(15)
-	return result;
+	return Matrix4<T>{
+		APPLY_TO_LINE(0),
+		APPLY_TO_LINE(1),
+		APPLY_TO_LINE(2),
+		APPLY_TO_LINE(3),
+		APPLY_TO_LINE(4),
+		APPLY_TO_LINE(5),
+		APPLY_TO_LINE(6),
+		APPLY_TO_LINE(7),
+		APPLY_TO_LINE(8),
+		APPLY_TO_LINE(9),
+		APPLY_TO_LINE(10),
+		APPLY_TO_LINE(11),
+		APPLY_TO_LINE(12),
+		APPLY_TO_LINE(13),
+		APPLY_TO_LINE(14),
+		APPLY_TO_LINE(15)
+	};
 }
 #undef APPLY_TO_LINE
 

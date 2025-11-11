@@ -31,7 +31,8 @@ template <typename T>
 class Tree {
 public:
 	Tree() {}
-	Tree(T &data) : value(data) {}
+	Tree(const T &data) : value(data) {}
+	Tree(T &&data) : value(std::move(data)) {}
 	//! return attached branch
 	Tree &operator[](int index) {return tree[index];}
 	auto begin() {return tree.begin();}

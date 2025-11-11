@@ -590,7 +590,7 @@ private:
     std::unique_ptr<SolarSystemSelected> ssystemSelected;
     std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
 
-    std::unique_ptr<ModularSystem> milkyway;
+    ModularSystem *milkyway; // Never destroyed, there is no parent to delegate remnant ModularBodyPtr to
     std::unique_ptr<ProtoSystem> galacticSystem;
     std::shared_ptr<AnchorManager> galacticAnchorMgr;
 
