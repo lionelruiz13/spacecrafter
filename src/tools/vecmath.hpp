@@ -245,7 +245,7 @@ public:
 
 	constexpr inline void transfo4d(const Mat4d&);
 	constexpr Vector4<float> convert() const;
-	alignas(16) T v[4]{};		// The 4 values
+	T v[4]{};		// The 4 values
 };
 
 // -------------------------------------------------------------------
@@ -325,7 +325,7 @@ public:
 
 	inline void print(void) const;
 
-	alignas(64) T r[16] {
+	T r[16] {
 		1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
