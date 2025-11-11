@@ -883,6 +883,33 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 		case SDL_SCANCODE_L :
 			this->executeCommand("media speed_increment 0.1");
 			break;
+
+		case SDL_SCANCODE_KP_1 :
+			switch(key_Modifier) {
+					case SHIFT:
+						coreLink->moveHeadingRelative(-0.2);
+						break;
+					case CTRL:
+						coreLink->moveHeadingRelative(-1);
+						break;
+					default:
+						break;
+			}
+		break;
+
+		case SDL_SCANCODE_KP_7 :
+			switch(key_Modifier) {
+					case SHIFT:
+						coreLink->moveHeadingRelative(0.2);
+						break;
+					case CTRL:
+						coreLink->moveHeadingRelative(1);
+						break;
+					default:
+						break;
+			}
+		break;
+
 		case SDL_SCANCODE_LEFT :
 			media->playerJump(-10.0);
 			break;
