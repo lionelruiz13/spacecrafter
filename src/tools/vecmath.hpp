@@ -80,47 +80,45 @@ typedef Matrix4<double>	Mat4d;
 // -------------------------------------------------------------------
 template<class T> class Vector2 {
 public:
-	inline Vector2();
-	inline Vector2(const Vector2<T>&);
-	inline Vector2(T, T);
-	inline Vector2(const T*);
+	constexpr inline Vector2() = default;
+	constexpr inline Vector2(const T*);
+	constexpr inline Vector2(T, T);
 
-	inline Vector2& operator=(const Vector2<T>&);
-	inline Vector2& operator=(const T*);
-	inline void set(T, T);
+	constexpr inline Vector2& operator=(const T*);
+	constexpr inline void set(T, T);
 
-	inline bool operator==(const Vector2<T>&) const;
-	inline bool operator!=(const Vector2<T>&) const;
+	constexpr inline bool operator==(const Vector2<T>&) const;
+	constexpr inline bool operator!=(const Vector2<T>&) const;
 
-	inline const T& operator[](int x) const;
-	inline T& operator[](int);
-	inline operator const T*() const;
-	inline operator T*();
+	constexpr inline const T& operator[](int x) const;
+	constexpr inline T& operator[](int);
+	constexpr inline operator const T*() const;
+	constexpr inline operator T*();
 
-	inline Vector2& operator+=(const Vector2<T>&);
-	inline Vector2& operator-=(const Vector2<T>&);
-	inline Vector2& operator*=(T);
-	inline Vector2& operator/=(T);
+	constexpr inline Vector2& operator+=(const Vector2<T>&);
+	constexpr inline Vector2& operator-=(const Vector2<T>&);
+	constexpr inline Vector2& operator*=(T);
+	constexpr inline Vector2& operator/=(T);
 
-	inline Vector2 operator-(const Vector2<T>&) const;
-	inline Vector2 operator+(const Vector2<T>&) const;
+	constexpr inline Vector2 operator-(const Vector2<T>&) const;
+	constexpr inline Vector2 operator+(const Vector2<T>&) const;
 
-	inline Vector2 operator-() const;
-	inline Vector2 operator+() const;
+	constexpr inline Vector2 operator-() const;
+	constexpr inline Vector2 operator+() const;
 
-	inline Vector2 operator^(const Vector2<T>&) const;
-	inline Vector2 operator*(T) const;
-	inline Vector2 operator/(T) const;
+	constexpr inline Vector2 operator^(const Vector2<T>&) const;
+	constexpr inline Vector2 operator*(T) const;
+	constexpr inline Vector2 operator/(T) const;
 
 
-	inline T dot(const Vector2<T>&) const;
-	inline T getSin(const Vector2<T>&)const;
+	constexpr inline T dot(const Vector2<T>&) const;
+	constexpr inline T getSin(const Vector2<T>&)const;
 
-	inline T length() const;
-	inline T lengthSquared() const;
-	inline void normalize();
+	constexpr inline T length() const;
+	constexpr inline T lengthSquared() const;
+	constexpr inline void normalize();
 
-	T v[2];
+	T v[2]{};
 };
 
 // -------------------------------------------------------------------
@@ -132,57 +130,55 @@ public:
 
 template<class T> class Vector3 {
 public:
-	inline Vector3();
-	inline Vector3(const Vector3&);
-	inline Vector3(const Vector4<T>&);
-	inline Vector3(const Vector2<T>&,const T&z=0);
-	template <class T2> inline Vector3(const Vector3<T2>&);
-	inline Vector3(T, T, T);
+	constexpr Vector3() = default;
+	constexpr inline Vector3(const Vector4<T>&);
+	constexpr inline Vector3(const Vector2<T>&,const T&z=0);
+	template <class T2> constexpr inline Vector3(const Vector3<T2>&);
+	constexpr inline Vector3(T, T, T);
 
-	inline Vector3& operator=(const Vector3&);
-	inline Vector3& operator=(const T*);
-	template <class T2> inline Vector3& operator=(const Vector3<T2>&);
-	inline void set(T, T, T);
+	constexpr inline Vector3& operator=(const T*);
+	template <class T2> constexpr inline Vector3& operator=(const Vector3<T2>&);
+	constexpr inline void set(T, T, T);
 
-	inline bool operator==(const Vector3<T>&) const;
-	inline bool operator!=(const Vector3<T>&) const;
+	constexpr inline bool operator==(const Vector3<T>&) const;
+	constexpr inline bool operator!=(const Vector3<T>&) const;
 
-	inline T& operator[](int);
-	inline const T& operator[](int) const;
-	inline operator const T*() const;
-	inline operator T*();
+	constexpr inline T& operator[](int);
+	constexpr inline const T& operator[](int) const;
+	constexpr inline operator const T*() const;
+	constexpr inline operator T*();
 
-	inline Vector3& operator+=(const Vector3<T>&);
-	inline Vector3& operator-=(const Vector3<T>&);
-	inline Vector3& operator*=(T);
-	inline Vector3& operator/=(T);
+	constexpr inline Vector3& operator+=(const Vector3<T>&);
+	constexpr inline Vector3& operator-=(const Vector3<T>&);
+	constexpr inline Vector3& operator*=(T);
+	constexpr inline Vector3& operator/=(T);
 
-	inline Vector3 operator-(const Vector3<T>&) const;
-	inline Vector3 operator+(const Vector3<T>&) const;
+	constexpr inline Vector3 operator-(const Vector3<T>&) const;
+	constexpr inline Vector3 operator+(const Vector3<T>&) const;
 
-	inline Vector3 operator-() const;
-	inline Vector3 operator+() const;
+	constexpr inline Vector3 operator-() const;
+	constexpr inline Vector3 operator+() const;
 
-	inline Vector3 operator*(T) const;
-	inline Vector3 operator/(T) const;
+	constexpr inline Vector3 operator*(T) const;
+	constexpr inline Vector3 operator/(T) const;
 
-	static Vector3 null();
+	constexpr static Vector3 null();
 
-	inline T dot(const Vector3<T>&) const;
-	inline Vector3 operator^(const Vector3<T>&) const;
-	Vector3<float> convert() const;
+	constexpr inline T dot(const Vector3<T>&) const;
+	constexpr inline Vector3 operator^(const Vector3<T>&) const;
+	constexpr Vector3<float> convert() const;
 	// Distance in radian between two
-	inline T angle(const Vector3<T>&) const;
+	constexpr inline T angle(const Vector3<T>&) const;
 
-	inline T length() const;
-	inline T lengthSquared() const;
-	inline void normalize();
-	inline void toPlane(const Vector4<T>&);
-	inline void toPlane(const Vector3<T>&);
+	constexpr inline T length() const;
+	constexpr inline T lengthSquared() const;
+	constexpr inline void normalize();
+	constexpr inline void toPlane(const Vector4<T>&);
+	constexpr inline void toPlane(const Vector3<T>&);
 
-	inline void transfo4d(const Mat4d&);
-	inline void transfo4d(const Mat4f&);
-	T v[3];		// The 3 values
+	constexpr inline void transfo4d(const Mat4d&);
+	constexpr inline void transfo4d(const Mat4f&);
+	T v[3]{};		// The 3 values
 };
 
 // -------------------------------------------------------------------
@@ -193,65 +189,63 @@ public:
 
 template<class T> class Vector4 {
 public:
-	inline Vector4();
-	inline Vector4(const T*);
-	inline Vector4(const Vector4<T>&);
-	inline Vector4(const Vector3<T>&);
-	inline Vector4(const Vector3<T>&, T);
+	constexpr Vector4() = default;
+	constexpr inline Vector4(const T*);
+	constexpr inline Vector4(const Vector3<T>&);
+	constexpr inline Vector4(const Vector3<T>&, T);
 	constexpr Vector4(T, T, T, T);
-	inline Vector4(T, T, T);
+	constexpr inline Vector4(T, T, T);
 
-	inline Vector4& operator=(const Vector4<T>&);
-	inline Vector4& operator=(const Vector3<T>&);
-	inline Vector4& operator=(const T*);
-	inline void set(T, T, T, T);
+	constexpr inline Vector4& operator=(const Vector3<T>&);
+	constexpr inline Vector4& operator=(const T*);
+	constexpr inline void set(T, T, T, T);
 
-	inline bool operator==(const Vector4<T>&) const;
-	inline bool operator!=(const Vector4<T>&) const;
+	constexpr inline bool operator==(const Vector4<T>&) const;
+	constexpr inline bool operator!=(const Vector4<T>&) const;
 
-	inline T& operator[](int);
-	inline const T& operator[](int) const;
-	inline operator T*();
-	inline operator const T*() const;
+	constexpr inline T& operator[](int);
+	constexpr inline const T& operator[](int) const;
+	constexpr inline operator T*();
+	constexpr inline operator const T*() const;
 
-	inline Vector4& operator+=(const Vector4<T>&);
-	inline Vector4& operator-=(const Vector4<T>&);
-	inline Vector4& operator*=(T);
-	inline Vector4& operator/=(T);
+	constexpr inline Vector4& operator+=(const Vector4<T>&);
+	constexpr inline Vector4& operator-=(const Vector4<T>&);
+	constexpr inline Vector4& operator*=(T);
+	constexpr inline Vector4& operator/=(T);
 
-	inline Vector4 operator-(const Vector4<T>&) const;
-	inline Vector4 operator+(const Vector4<T>&) const;
+	constexpr inline Vector4 operator-(const Vector4<T>&) const;
+	constexpr inline Vector4 operator+(const Vector4<T>&) const;
 
-	inline Vector4 operator-() const;
-	inline Vector4 operator+() const;
+	constexpr inline Vector4 operator-() const;
+	constexpr inline Vector4 operator+() const;
 
-	inline Vector4 operator*(T) const;
-	inline Vector4 operator/(T) const;
+	constexpr inline Vector4 operator*(T) const;
+	constexpr inline Vector4 operator/(T) const;
 
-	static Vector4 null();
-	static Vector4 nullW();
+	static constexpr Vector4 null();
+	static constexpr Vector4 nullW();
 	static constexpr Vector4 xrotation(T angle);
 	static constexpr Vector4 yrotation(T angle);
 	static constexpr Vector4 zrotation(T angle);
 	static constexpr Vector4 zyrotation(T zangle, T yangle);
 	static constexpr Vector4 yzrotation(T yangle, T zangle);
 
-	inline const T            dot     (const Vector4<T>&)const;
-	inline const Vector4<T>   cross   (const Vector4<T>&)const;
-	inline const T            getSin  (const Vector4<T>&)const;
-	inline constexpr const Vector4<T> combineQuaternions(const Vector4<T>&) const;
-	inline const Vector4<T> inverse() const;
-	inline void toPlane(const Vector3<T>&);
-	inline void toPlane(const Vector4<T>&);
+	constexpr inline const T            dot     (const Vector4<T>&)const;
+	constexpr inline const Vector4<T>   cross   (const Vector4<T>&)const;
+	constexpr inline const T            getSin  (const Vector4<T>&)const;
+	constexpr inline const Vector4<T> combineQuaternions(const Vector4<T>&) const;
+	constexpr inline Vector4<T> inverse() const;
+	constexpr inline void toPlane(const Vector3<T>&);
+	constexpr inline void toPlane(const Vector4<T>&);
 
-	inline T length() const;
-	inline T lengthSquared() const;
-	inline void normalize();
-	void correctW();
+	constexpr inline T length() const;
+	constexpr inline T lengthSquared() const;
+	constexpr inline void normalize();
+	constexpr void correctW();
 
-	inline void transfo4d(const Mat4d&);
-	Vector4<float> convert() const;
-	T v[4];		// The 4 values
+	constexpr inline void transfo4d(const Mat4d&);
+	constexpr Vector4<float> convert() const;
+	alignas(16) T v[4]{};		// The 4 values
 };
 
 // -------------------------------------------------------------------
@@ -263,77 +257,80 @@ public:
 // Column-major matrix compatible with openGL.
 template<class T> class Matrix4 {
 public:
-	Matrix4() = default;
-	Matrix4(const Matrix4<T>& m);
-	Matrix4(T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T);
-	Matrix4(const T*);
-	Matrix4(const Vector3<T>& v0, const Vector3<T>& v1, const Vector3<T>& v2, const Vector3<T>& v3);
-	Matrix4(const Vector4<T>& v0, const Vector4<T>& v1, const Vector4<T>& v2, const Vector4<T>& v3);
+	constexpr Matrix4() = default;
+	constexpr Matrix4(T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T);
+	constexpr Matrix4(const T*);
+	constexpr Matrix4(const Vector3<T>& v0, const Vector3<T>& v1, const Vector3<T>& v2, const Vector3<T>& v3);
+	constexpr Matrix4(const Vector4<T>& v0, const Vector4<T>& v1, const Vector4<T>& v2, const Vector4<T>& v3);
 
-	inline Matrix4& operator=(const Matrix4<T>&);
-	inline Matrix4& operator=(const T*);
-	inline void set(T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T);
+	constexpr inline Matrix4& operator=(const T*);
+	constexpr inline void set(T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T);
 
-	inline T* operator[](int);
-	inline operator T*();
-	inline operator const T*() const;
+	constexpr inline T* operator[](int);
+	constexpr inline operator T*();
+	constexpr inline operator const T*() const;
 
-	inline Matrix4 operator-(const Matrix4<T>&) const;
-	inline Matrix4 operator+(const Matrix4<T>&) const;
-	inline Matrix4 operator*(const Matrix4<T>&) const;
-	inline Matrix4<T> multiplyFast(const Matrix4<T>&) const;
-	inline Matrix4<T> multiplyInversed(const Matrix4<T>&) const;
-	inline void multiplyTranslation(const Vector3<T>&);
+	constexpr inline Matrix4 operator-(const Matrix4<T>&) const;
+	constexpr inline Matrix4 operator+(const Matrix4<T>&) const;
+	constexpr inline Matrix4 operator*(const Matrix4<T>&) const;
+	constexpr inline Matrix4<T> multiplyFast(const Matrix4<T>&) const;
+	constexpr inline Matrix4<T> multiplyInversed(const Matrix4<T>&) const;
+	constexpr inline void multiplyTranslation(const Vector3<T>&);
 
-	inline Vector3<T> operator*(const Vector3<T>&) const;
-	inline Vector3<T> multiplyWithoutTranslation(const Vector3<T>& a) const;
-	inline Vector4<T> operator*(const Vector4<T>&) const;
+	constexpr inline Vector3<T> operator*(const Vector3<T>&) const;
+	constexpr inline Vector3<T> multiplyWithoutTranslation(const Vector3<T>& a) const;
+	constexpr inline Vector4<T> operator*(const Vector4<T>&) const;
 
-	static Matrix4<T> identity();
-	static Matrix4<T> ortho(T, T, T, T, T, T);
-	static Matrix4<T> ortho2D(T, T, T, T);
-	static Matrix4<T> frustum( T, T, T, T, T, T);
-	static Matrix4<T> perspective(T, T, T, T );
-	static Matrix4<T> lookAt(T, T, T, T, T, T, T, T, T );
-	static Matrix4<T> lookAt(const Vector3<T>& , const Vector3<T>&, const Vector3<T>& );
-	static Matrix4<T> lookAtFromMatrix(const Matrix4<T>&m);
-	static Matrix4<T> getViewFromLookAt(const Matrix4<T>&m);
-	static Matrix4<T> yawPitchRoll(T const& ,T const& ,T const& );
-	static Matrix4<T> translation(const Vector3<T>&);
-	static constexpr Matrix4<T> fromQuaternion(const Vector4<T> &q);
+	constexpr static Matrix4<T> identity();
+	constexpr static Matrix4<T> ortho(T, T, T, T, T, T);
+	constexpr static Matrix4<T> ortho2D(T, T, T, T);
+	constexpr static Matrix4<T> frustum( T, T, T, T, T, T);
+	constexpr static Matrix4<T> perspective(T, T, T, T );
+	constexpr static Matrix4<T> lookAt(T, T, T, T, T, T, T, T, T );
+	constexpr static Matrix4<T> lookAt(const Vector3<T>& , const Vector3<T>&, const Vector3<T>& );
+	constexpr static Matrix4<T> lookAtFromMatrix(const Matrix4<T>&m);
+	constexpr static Matrix4<T> getViewFromLookAt(const Matrix4<T>&m);
+	constexpr static Matrix4<T> yawPitchRoll(T const& ,T const& ,T const& );
+	constexpr static Matrix4<T> translation(const Vector3<T>&);
+	constexpr static Matrix4<T> fromQuaternion(const Vector4<T> &q);
 
-	static const Matrix4<T> rotation(const Vector3<T>&a,const Vector3<T>&b);
-	static const Matrix4<T> rotation(const Vector3<T>&, T);
-	static const Matrix4<T> rotation(const T c,const T s,const Vector4<T>&axis);
-	static const Matrix4<T> xrotation(T);
-	static const Matrix4<T> yrotation(T);
-	static const Matrix4<T> zrotation(T);
-	static const Matrix4<T> zrotation(T cosinus,T sinus);
-	static const Matrix4<T> xzrotation(T, T);
-	static const Matrix4<T> zxrotation(T, T);
-	static const Matrix4<T> scaling(const Vector3<T>&);
-	static const Matrix4<T> scaling(T);
+	constexpr static const Matrix4<T> rotation(const Vector3<T>&a,const Vector3<T>&b);
+	constexpr static const Matrix4<T> rotation(const Vector3<T>&, T);
+	constexpr static const Matrix4<T> rotation(const T c,const T s,const Vector4<T>&axis);
+	constexpr static const Matrix4<T> xrotation(T);
+	constexpr static const Matrix4<T> yrotation(T);
+	constexpr static const Matrix4<T> zrotation(T);
+	constexpr static const Matrix4<T> zrotation(T cosinus,T sinus);
+	constexpr static const Matrix4<T> xzrotation(T, T);
+	constexpr static const Matrix4<T> zxrotation(T, T);
+	constexpr static const Matrix4<T> scaling(const Vector3<T>&);
+	constexpr static const Matrix4<T> scaling(T);
 
 
-	Matrix4<T> transpose() const;
-	Matrix4<T> inverse() const;
+	constexpr Matrix4<T> transpose() const;
+	constexpr Matrix4<T> inverse() const;
 	//! Inverse the matrix rotation and scaling, but not the translation
-	Matrix4<T> inverseUntranslated() const;
-	Matrix4<float> convert() const;
-	Matrix4<T> fastInverse() const;
-	Vector4<T> toQuaternion() const;
-	void setAsOrthonormalFromZ();
-	Vector3<T> getTranslation() const;
-	const Vec4f getVector(int column)const;
+	constexpr Matrix4<T> inverseUntranslated() const;
+	constexpr Matrix4<float> convert() const;
+	constexpr Matrix4<T> fastInverse() const;
+	constexpr Vector4<T> toQuaternion() const;
+	constexpr void setAsOrthonormalFromZ();
+	constexpr Vector3<T> getTranslation() const;
+	constexpr const Vec4f getVector(int column) const;
 
-	Matrix4<T> linearMix(const Matrix4<T> other,const T coef )const;
+	constexpr Matrix4<T> linearMix(const Matrix4<T> other,const T coef )const;
 
-	void setVector(const Vector4<T>&v, unsigned int ind);
-	void setMat3(float *dst) const;
+	constexpr void setVector(const Vector4<T>&v, unsigned int ind);
+	constexpr void setMat3(float *dst) const;
 
 	inline void print(void) const;
 
-	alignas(64) T r[16];
+	alignas(64) T r[16] {
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	};
 };
 
 
@@ -342,10 +339,6 @@ public:
 // Somme constantes and usefull functions
 //
 // ------------------------------------------------------------------
-
-
-const Vec3f v3fNull = Vec3f(0.0f, 0.0f, 0.0f);
-const Vec3f v3dNull = Vec3d(0.0, 0.0, 0.0);
 
 template <typename T, typename U>
 void insert_vec2(std::vector<T>& vecDest, const Vector2<U>& vecSrc, unsigned short howMush = 1)
@@ -377,33 +370,16 @@ void insert_vec4(std::vector<T>& vecDest, const Vector4<U>& vecSrc, unsigned sho
 //
 // -------------------------------------------------------------------
 
-//! default constructor. Set all to 0.
-template<class T> Vector2<T>::Vector2()
-{
-	v[0]=0;
-	v[1]=0;
-}
-
-//! Constructor from an array. Data are copied.
-//! @param a the array to copy data from.
-template<class T> Vector2<T>::Vector2(const Vector2<T>& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-}
-
 //! constructor from 2 values.
 //! x first value.
 //! y second value.
-template<class T> Vector2<T>::Vector2(T x, T y)
+template<class T> constexpr Vector2<T>::Vector2(T x, T y) : v{x, y}
 {
-	v[0]=x;
-	v[1]=y;
 }
 
 //! Constructor from an array. Data are copied.
 //! @param a the array to copy data from.
-template<class T> Vector2<T>::Vector2(const T*a)
+template<class T> constexpr Vector2<T>::Vector2(const T*a)
 {
 	v[0]=a[0];
 	v[1]=a[1];
@@ -412,17 +388,7 @@ template<class T> Vector2<T>::Vector2(const T*a)
 //! = operator.
 //! @param a the vector to copy.
 //! @return *this
-template<class T> Vector2<T>& Vector2<T>::operator=(const Vector2<T>& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	return *this;
-}
-
-//! = operator.
-//! @param a the vector to copy.
-//! @return *this
-template<class T> Vector2<T>& Vector2<T>::operator=(const T* a)
+template<class T> constexpr Vector2<T>& Vector2<T>::operator=(const T* a)
 {
 	v[0]=a[0];
 	v[1]=a[1];
@@ -432,7 +398,7 @@ template<class T> Vector2<T>& Vector2<T>::operator=(const T* a)
 //! whole vector setter.
 //! @param x the first component.
 //! @param y the second component.
-template<class T> void Vector2<T>::set(T x, T y)
+template<class T> constexpr void Vector2<T>::set(T x, T y)
 {
 	v[0]=x;
 	v[1]=y;
@@ -441,7 +407,7 @@ template<class T> void Vector2<T>::set(T x, T y)
 //! == operator
 //! @param a the vector to compare to.
 //! @return true if equals, false otherwise.
-template<class T> bool Vector2<T>::operator==(const Vector2<T>& a) const
+template<class T> constexpr bool Vector2<T>::operator==(const Vector2<T>& a) const
 {
 	return (v[0] == a.v[0] && v[1] == a.v[1]);
 }
@@ -449,7 +415,7 @@ template<class T> bool Vector2<T>::operator==(const Vector2<T>& a) const
 //! =! operator
 //! @param a the vector to compare to.
 //! @return false if equals, true otherwise.
-template<class T> bool Vector2<T>::operator!=(const Vector2<T>& a) const
+template<class T> constexpr bool Vector2<T>::operator!=(const Vector2<T>& a) const
 {
 	return (v[0] != a.v[0] || v[1] != a.v[1]);
 }
@@ -457,7 +423,7 @@ template<class T> bool Vector2<T>::operator!=(const Vector2<T>& a) const
 //! [] operator
 //! @param x index of the desired element.
 //! @return the element.
-template<class T> const T& Vector2<T>::operator[](int x) const
+template<class T> constexpr const T& Vector2<T>::operator[](int x) const
 {
 	return v[x];
 }
@@ -465,21 +431,21 @@ template<class T> const T& Vector2<T>::operator[](int x) const
 //! [] operator
 //! @param x index of the desired element.
 //! @return the element.
-template<class T> T& Vector2<T>::operator[](int x)
+template<class T> constexpr T& Vector2<T>::operator[](int x)
 {
 	return v[x];
 }
 
 //! *operator
 //! @return a pointer to the vector array.
-template<class T> Vector2<T>::operator const T*() const
+template<class T> constexpr Vector2<T>::operator const T*() const
 {
 	return v;
 }
 
 //! *operator
 //! @return a pointer to the vector array.
-template<class T> Vector2<T>::operator T*()
+template<class T> constexpr Vector2<T>::operator T*()
 {
 	return v;
 }
@@ -487,7 +453,7 @@ template<class T> Vector2<T>::operator T*()
 //!  += operator
 //! @param the other vector to addition.
 //! @return *this
-template<class T> Vector2<T>& Vector2<T>::operator+=(const Vector2<T>& a)
+template<class T> constexpr Vector2<T>& Vector2<T>::operator+=(const Vector2<T>& a)
 {
 	v[0] += a.v[0];
 	v[1] += a.v[1];
@@ -497,7 +463,7 @@ template<class T> Vector2<T>& Vector2<T>::operator+=(const Vector2<T>& a)
 //!  -= operator
 //! @param the other vector to subtract.
 //! @return *this
-template<class T> Vector2<T>& Vector2<T>::operator-=(const Vector2<T>& a)
+template<class T> constexpr Vector2<T>& Vector2<T>::operator-=(const Vector2<T>& a)
 {
 	v[0] -= a.v[0];
 	v[1] -= a.v[1];
@@ -507,7 +473,7 @@ template<class T> Vector2<T>& Vector2<T>::operator-=(const Vector2<T>& a)
 //!  *= operator
 //! @param the other vector to multiply.
 //! @return *this
-template<class T> Vector2<T>& Vector2<T>::operator*=(T s)
+template<class T> constexpr Vector2<T>& Vector2<T>::operator*=(T s)
 {
 	v[0] *= s;
 	v[1] *= s;
@@ -515,13 +481,13 @@ template<class T> Vector2<T>& Vector2<T>::operator*=(T s)
 }
 //!  -= operator
 //! @return - this vector.
-template<class T> Vector2<T> Vector2<T>::operator-() const
+template<class T> constexpr Vector2<T> Vector2<T>::operator-() const
 {
 	return Vector2<T>(-v[0], -v[1]);
 }
 //!  += operator
 //! @return this vector.
-template<class T> Vector2<T> Vector2<T>::operator+() const
+template<class T> constexpr Vector2<T> Vector2<T>::operator+() const
 {
 	return *this;
 }
@@ -529,7 +495,7 @@ template<class T> Vector2<T> Vector2<T>::operator+() const
 //!  + operator
 //! @param b the other vector to add
 //! @return this + b.
-template<class T> Vector2<T> Vector2<T>::operator+(const Vector2<T>& b) const
+template<class T> constexpr Vector2<T> Vector2<T>::operator+(const Vector2<T>& b) const
 {
 	return Vector2<T>(v[0] + b.v[0], v[1] + b.v[1]);
 }
@@ -537,28 +503,28 @@ template<class T> Vector2<T> Vector2<T>::operator+(const Vector2<T>& b) const
 //!  - operator
 //! @param b the other vector to subtract.
 //! @return this - b.
-template<class T> Vector2<T> Vector2<T>::operator-(const Vector2<T>& b) const
+template<class T> constexpr Vector2<T> Vector2<T>::operator-(const Vector2<T>& b) const
 {
 	return Vector2<T>(v[0] - b.v[0], v[1] - b.v[1]);
 }
 //! cross product
 //! @param b the other vector to calaculate the cross product.
 //!
-template<class T> Vector2<T> Vector2<T>::operator^(const Vector2<T>& b) const
+template<class T> constexpr Vector2<T> Vector2<T>::operator^(const Vector2<T>& b) const
 {
 	return Vector2<T>(v[0]*b.v[1]-v[1]*b.v[0]);
 }
 //!  * operator
 //! @param b the other vector to multiply
 //! @return this * b.
-template<class T> Vector2<T> Vector2<T>::operator*(T s) const
+template<class T> constexpr Vector2<T> Vector2<T>::operator*(T s) const
 {
 	return Vector2<T>(s * v[0], s * v[1]);
 }
 //!  / operator
 //! @param b the other vector to divide
 //! @return this / b.
-template<class T> Vector2<T> Vector2<T>::operator/(T s) const
+template<class T> constexpr Vector2<T> Vector2<T>::operator/(T s) const
 {
 	return Vector2<T>(v[0]/s, v[1]/s);
 }
@@ -566,14 +532,14 @@ template<class T> Vector2<T> Vector2<T>::operator/(T s) const
 //! dot product.
 //! @param b the other vector
 //! @return the dot product.
-template<class T> T Vector2<T>::dot(const Vector2<T>& b) const
+template<class T> constexpr T Vector2<T>::dot(const Vector2<T>& b) const
 {
 	return v[0] * b.v[0] + v[1] * b.v[1];
 }
 //! Gives the sinus of the angle between two NORMALIZED vectors.
 //! @param b the other vector
 //! @return the sinus.
-template<class T> T Vector2<T>::getSin(const Vector2<T>&b)const
+template<class T> constexpr T Vector2<T>::getSin(const Vector2<T>&b)const
 {
 	Vector2 cross= (*this)^b;
 	return cross.length();
@@ -581,19 +547,19 @@ template<class T> T Vector2<T>::getSin(const Vector2<T>&b)const
 
 //! Gives the length of a vector.
 //! @return the length.
-template<class T> T Vector2<T>::length() const
+template<class T> constexpr T Vector2<T>::length() const
 {
 	return (T) sqrt(v[0] * v[0] + v[1] * v[1]);
 }
 //! Gives the squared length of a vector.
 //! This is useful when you don't want to use sqrt to compare distances.
 //! @return the squared length.
-template<class T> T Vector2<T>::lengthSquared() const
+template<class T> constexpr T Vector2<T>::lengthSquared() const
 {
 	return v[0] * v[0] + v[1] * v[1];
 }
 //! normalize this vector.
-template<class T> void Vector2<T>::normalize()
+template<class T> constexpr void Vector2<T>::normalize()
 {
 	T s = (T) 1 / sqrt(v[0] * v[0] + v[1] * v[1]);
 	v[0] *= s;
@@ -605,7 +571,7 @@ template<class T> void Vector2<T>::normalize()
 //! @param a the first vector to use.
 //! @param b the second vector to use.
 //! @return a*b
-template<class T> inline
+template<class T> constexpr inline
 T operator*(const Vector2<T>&a,const Vector2<T>&b)
 {
 	return a.v[0] * b.v[0] + a.v[1] * b.v[1];
@@ -615,7 +581,7 @@ T operator*(const Vector2<T>&a,const Vector2<T>&b)
 //! @param s the scalar to use.
 //! @param v the vector to use.
 //! @return s*v
-template<class T> inline
+template<class T> constexpr inline
 Vector2<T> operator*(T s,const Vector2<T>&v)
 {
 	return Vector2<T>(s*v[0],s*v[1]);
@@ -631,23 +597,14 @@ Vector2<T> operator*(T s,const Vector2<T>&v)
 
 
 //! Convert to a float vector
-template<class T> Vector3<float> Vector3<T>::convert() const
+template<class T> constexpr Vector3<float> Vector3<T>::convert() const
 {
 	return Vector3<float>(v[0], v[1], v[2] );
 }
 
-
-//! default constructor. Set all to 0.
-template<class T> Vector3<T>::Vector3()
-{
-	v[0]=0;
-	v[1]=0;
-	v[2]=0;
-}
-
-//! Constructor from an array. Data are copied.
-//! @param a the array to copy data from.
-template<class T> Vector3<T>::Vector3(const Vector3& a)
+//! Copy constructor.
+//! @param a the vector to copy.
+template<class T> constexpr Vector3<T>::Vector3(const Vector4<T>&a)
 {
 	v[0]=a.v[0];
 	v[1]=a.v[1];
@@ -656,16 +613,7 @@ template<class T> Vector3<T>::Vector3(const Vector3& a)
 
 //! Copy constructor.
 //! @param a the vector to copy.
-template<class T> Vector3<T>::Vector3(const Vector4<T>&a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
-}
-
-//! Copy constructor.
-//! @param a the vector to copy.
-template<class T> template<class T2> Vector3<T>::Vector3(const Vector3<T2>& a)
+template<class T> template<class T2> constexpr Vector3<T>::Vector3(const Vector3<T2>& a)
 {
 	v[0]=(T) a.v[0];
 	v[1]=(T) a.v[1];
@@ -676,14 +624,11 @@ template<class T> template<class T2> Vector3<T>::Vector3(const Vector3<T2>& a)
 //! x first value.
 //! y second value.
 //! z third value.
-template<class T> Vector3<T>::Vector3(T x, T y, T z)
+template<class T> constexpr Vector3<T>::Vector3(T x, T y, T z) : v{x,y,z}
 {
-	v[0]=x;
-	v[1]=y;
-	v[2]=z;
 }
 
-template<class T> Vector3<T>::Vector3(const Vector2<T>&vec2,const T&z)
+template<class T> constexpr Vector3<T>::Vector3(const Vector2<T>&vec2,const T&z)
 {
     v[0]=vec2.v[0];
     v[1]=vec2.v[1];
@@ -693,18 +638,7 @@ template<class T> Vector3<T>::Vector3(const Vector2<T>&vec2,const T&z)
 //! = operator.
 //! @param a the vector to copy.
 //! @return *this
-template<class T> Vector3<T>& Vector3<T>::operator=(const Vector3& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
-	return *this;
-}
-
-//! = operator.
-//! @param a the vector to copy.
-//! @return *this
-template<class T> template <class T2> Vector3<T>& Vector3<T>::operator=(const Vector3<T2>& a)
+template<class T> template<class T2> constexpr Vector3<T>& Vector3<T>::operator=(const Vector3<T2>& a)
 {
 	v[0]=a.v[0];
 	v[1]=a.v[1];
@@ -715,7 +649,7 @@ template<class T> template <class T2> Vector3<T>& Vector3<T>::operator=(const Ve
 //! = operator from array.
 //! @param a the array to copy.
 //! @return *this
-template<class T> Vector3<T>& Vector3<T>::operator=(const T* a)
+template<class T> constexpr Vector3<T>& Vector3<T>::operator=(const T* a)
 {
 	v[0]=a[0];
 	v[1]=a[1];
@@ -727,7 +661,7 @@ template<class T> Vector3<T>& Vector3<T>::operator=(const T* a)
 //! @param x the first component.
 //! @param y the second component.
 //! @param z the third component.
-template<class T> void Vector3<T>::set(T x, T y, T z)
+template<class T> constexpr void Vector3<T>::set(T x, T y, T z)
 {
 	v[0]=x;
 	v[1]=y;
@@ -737,7 +671,7 @@ template<class T> void Vector3<T>::set(T x, T y, T z)
 //! == operator
 //! @param a the vector to compare to.
 //! @return true if equals, false otherwise.
-template<class T> bool Vector3<T>::operator==(const Vector3<T>& a) const
+template<class T> constexpr bool Vector3<T>::operator==(const Vector3<T>& a) const
 {
 	return (v[0] == a.v[0] && v[1] == a.v[1] && v[2] == a.v[2]);
 }
@@ -745,7 +679,7 @@ template<class T> bool Vector3<T>::operator==(const Vector3<T>& a) const
 //! =! operator
 //! @param a the vector to compare to.
 //! @return false if equals, true otherwise.
-template<class T> bool Vector3<T>::operator!=(const Vector3<T>& a) const
+template<class T> constexpr bool Vector3<T>::operator!=(const Vector3<T>& a) const
 {
 	return (v[0] != a.v[0] || v[1] != a.v[1] || v[2] != a.v[2]);
 }
@@ -753,7 +687,7 @@ template<class T> bool Vector3<T>::operator!=(const Vector3<T>& a) const
 //! [] operator
 //! @param x index of the desired element.
 //! @return the element.
-template<class T> T& Vector3<T>::operator[](int x)
+template<class T> constexpr T& Vector3<T>::operator[](int x)
 {
 	return v[x];
 }
@@ -761,21 +695,21 @@ template<class T> T& Vector3<T>::operator[](int x)
 //! [] operator
 //! @param x index of the desired element.
 //! @return the element.
-template<class T> const T& Vector3<T>::operator[](int x) const
+template<class T> constexpr const T& Vector3<T>::operator[](int x) const
 {
 	return v[x];
 }
 
 //! *operator
 //! @return a pointer to the vector array.
-template<class T> Vector3<T>::operator const T*() const
+template<class T> constexpr Vector3<T>::operator const T*() const
 {
 	return v;
 }
 
 //! *operator
 //! @return a pointer to the vector array.
-template<class T> Vector3<T>::operator T*()
+template<class T> constexpr Vector3<T>::operator T*()
 {
 	return v;
 }
@@ -783,7 +717,7 @@ template<class T> Vector3<T>::operator T*()
 //!  += operator
 //! @param the other vector to addition.
 //! @return *this
-template<class T> Vector3<T>& Vector3<T>::operator+=(const Vector3<T>& a)
+template<class T> constexpr Vector3<T>& Vector3<T>::operator+=(const Vector3<T>& a)
 {
 	v[0] += a.v[0];
 	v[1] += a.v[1];
@@ -794,7 +728,7 @@ template<class T> Vector3<T>& Vector3<T>::operator+=(const Vector3<T>& a)
 //!  -= operator
 //! @param the other vector to subtract.
 //! @return *this
-template<class T> Vector3<T>& Vector3<T>::operator-=(const Vector3<T>& a)
+template<class T> constexpr Vector3<T>& Vector3<T>::operator-=(const Vector3<T>& a)
 {
 	v[0] -= a.v[0];
 	v[1] -= a.v[1];
@@ -805,7 +739,7 @@ template<class T> Vector3<T>& Vector3<T>::operator-=(const Vector3<T>& a)
 //!  *= operator
 //! @param the other vector to multiply.
 //! @return *this
-template<class T> Vector3<T>& Vector3<T>::operator*=(T s)
+template<class T> constexpr Vector3<T>& Vector3<T>::operator*=(T s)
 {
 	v[0] *= s;
 	v[1] *= s;
@@ -816,7 +750,7 @@ template<class T> Vector3<T>& Vector3<T>::operator*=(T s)
 //!  /= operator
 //! @param the other vector to multiply.
 //! @return *this
-template<class T> Vector3<T>& Vector3<T>::operator/=(T s)
+template<class T> constexpr Vector3<T>& Vector3<T>::operator/=(T s)
 {
 	v[0] /= s;
 	v[1] /= s;
@@ -826,13 +760,13 @@ template<class T> Vector3<T>& Vector3<T>::operator/=(T s)
 
 //!  -= operator
 //! @return - this vector.
-template<class T> Vector3<T> Vector3<T>::operator-() const
+template<class T> constexpr Vector3<T> Vector3<T>::operator-() const
 {
 	return Vector3<T>(-v[0], -v[1], -v[2]);
 }
 //!  += operator
 //! @return this vector.
-template<class T> Vector3<T> Vector3<T>::operator+() const
+template<class T> constexpr Vector3<T> Vector3<T>::operator+() const
 {
 	return *this;
 }
@@ -840,7 +774,7 @@ template<class T> Vector3<T> Vector3<T>::operator+() const
 //!  + operator
 //! @param b the other vector to add
 //! @return this + b.
-template<class T> Vector3<T> Vector3<T>::operator+(const Vector3<T>& b) const
+template<class T> constexpr Vector3<T> Vector3<T>::operator+(const Vector3<T>& b) const
 {
 	return Vector3<T>(v[0] + b.v[0], v[1] + b.v[1], v[2] + b.v[2]);
 }
@@ -848,28 +782,28 @@ template<class T> Vector3<T> Vector3<T>::operator+(const Vector3<T>& b) const
 //!  - operator
 //! @param b the other vector to subtract.
 //! @return this - b.
-template<class T> Vector3<T> Vector3<T>::operator-(const Vector3<T>& b) const
+template<class T> constexpr Vector3<T> Vector3<T>::operator-(const Vector3<T>& b) const
 {
 	return Vector3<T>(v[0] - b.v[0], v[1] - b.v[1], v[2] - b.v[2]);
 }
 //!  * operator
 //! @param b the other vector to multiply
 //! @return this * b.
-template<class T> Vector3<T> Vector3<T>::operator*(T s) const
+template<class T> constexpr Vector3<T> Vector3<T>::operator*(T s) const
 {
 	return Vector3<T>(s * v[0], s * v[1], s * v[2]);
 }
 //!  / operator
 //! @param b the other vector to divide
 //! @return this / b.
-template<class T> Vector3<T> Vector3<T>::operator/(T s) const
+template<class T> constexpr Vector3<T> Vector3<T>::operator/(T s) const
 {
 	return Vector3<T>(v[0]/s, v[1]/s, v[2]/s);
 }
 
 //! Null vector getter.
 //! @return a nill vector (0.0,0.0,0.0).
-template<class T> Vector3<T> Vector3<T>::null()
+template<class T> constexpr Vector3<T> Vector3<T>::null()
 {
 	return Vector3<T>(0.0,0.0,0.0);
 }
@@ -877,14 +811,14 @@ template<class T> Vector3<T> Vector3<T>::null()
 //! Angle in radian between two normalized vectors.
 //! @param b the other vector to calculate the angle.
 //! @return Angle in radian between two normalized vectors.
-template<class T> T Vector3<T>::angle(const Vector3<T>& b) const
+template<class T> constexpr T Vector3<T>::angle(const Vector3<T>& b) const
 {
 	return std::acos(dot(b)/sqrt(lengthSquared()*b.lengthSquared()));
 }
 //! dot product.
 //! @param b the other vector
 //! @return the dot product.
-template<class T> T Vector3<T>::dot(const Vector3<T>& b) const
+template<class T> constexpr T Vector3<T>::dot(const Vector3<T>& b) const
 {
 	return v[0] * b.v[0] + v[1] * b.v[1] + v[2] * b.v[2];
 }
@@ -893,7 +827,7 @@ template<class T> T Vector3<T>::dot(const Vector3<T>& b) const
 //! cross product.
 //! @param b the other vector
 //! @return the cross product.
-template<class T> Vector3<T> Vector3<T>::operator^(const Vector3<T>& b) const
+template<class T> constexpr Vector3<T> Vector3<T>::operator^(const Vector3<T>& b) const
 {
 	Vector3<T> result(v[1] * b.v[2] - v[2] * b.v[1],
 	                  v[2] * b.v[0] - v[0] * b.v[2],
@@ -903,19 +837,19 @@ template<class T> Vector3<T> Vector3<T>::operator^(const Vector3<T>& b) const
 
 //! Gives the length of a vector.
 //! @return the length.
-template<class T> T Vector3<T>::length() const
+template<class T> constexpr T Vector3<T>::length() const
 {
 	return (T) sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 }
 //! Gives the squared length of a vector.
 //! This is useful when you don't want to use sqrt to compare distances.
 //! @return the squared length.
-template<class T> T Vector3<T>::lengthSquared() const
+template<class T> constexpr T Vector3<T>::lengthSquared() const
 {
 	return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
 }
 //! normalize this vector.
-template<class T> void Vector3<T>::normalize()
+template<class T> constexpr void Vector3<T>::normalize()
 {
 	T s = (T) (1. / sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]));
 	if(s!=0) {
@@ -926,35 +860,32 @@ template<class T> void Vector3<T>::normalize()
 }
 //! Puts this point to a 3D plane.
 //! @param a the 3D plane equation.
-template<class T> inline void Vector3<T>::toPlane(const Vector4<T>&a)
+template<class T> constexpr inline void Vector3<T>::toPlane(const Vector4<T>&a)
 {
-	static T distance;
-	distance= v[0]*a.v[0]+
-	          v[1]*a.v[1]+
-	          v[2]*a.v[2]+
-	          a.v[3];
+	const T distance{
+		v[0]*a.v[0]+
+		v[1]*a.v[1]+
+	    v[2]*a.v[2]+
+	    a.v[3]
+	};
 	this->operator-=(a*distance);
 }
 //! Puts this point to a 3D plane.
 //! @param a the 3D plane equation (without d, origin will belong to the plane.)
-template<class T> inline void Vector3<T>::toPlane(const Vector3<T>&a)
+template<class T> constexpr inline void Vector3<T>::toPlane(const Vector3<T>&a)
 {
-	static T distance;
-	distance= v[0]*a.v[0]+
-	          v[1]*a.v[1]+
-	          v[2]*a.v[2];
-	this->operator-=(a*distance);
+	*this -= a*dot(a);
 }
 
 //! apply a matrix to this vector.
 //! @param m the matrix to apply.
-template<class T> void Vector3<T>::transfo4d(const Mat4d& m)
+template<class T> constexpr void Vector3<T>::transfo4d(const Mat4d& m)
 {
 	(*this)=m*(*this);
 }
 
 
-template<class T> void Vector3<T>::transfo4d(const Mat4f& m)
+template<class T> constexpr void Vector3<T>::transfo4d(const Mat4f& m)
 {
 	(*this)=m*(*this);
 }
@@ -974,7 +905,7 @@ std::ostream& operator<<(std::ostream &o,const Vector3<T> &v)
 //! @param a the first vector to use.
 //! @param b the second vector to use.
 //! @return a*b
-template<class T> inline
+template<class T> constexpr inline
 T operator*(const Vector3<T>&a,const Vector3<T>&b)
 {
 	return a.v[0] * b.v[0] + a.v[1] * b.v[1] + a.v[2] * b.v[2];
@@ -984,7 +915,7 @@ T operator*(const Vector3<T>&a,const Vector3<T>&b)
 //! @param s the scalar to use.
 //! @param v the vector to use.
 //! @return s*v
-template<class T> inline
+template<class T> constexpr inline
 Vector3<T> operator*(T s,const Vector3<T>&v)
 {
 	return Vector3<T>(s*v[0],s*v[1],s*v[2]);
@@ -997,41 +928,22 @@ Vector3<T> operator*(T s,const Vector3<T>&v)
 // -------------------------------------------------------------------
 
 //! Convert to a float vector
-template<class T> Vector4<float> Vector4<T>::convert() const
+template<class T> constexpr Vector4<float> Vector4<T>::convert() const
 {
 	return Vector4<float>(v[0], v[1], v[2] , v[3]);
 }
 
 
-//! default constructor. Set all to 0.
-template<class T> Vector4<T>::Vector4()
-{
-	v[0]=0;
-	v[1]=0;
-	v[2]=0;
-	v[3]=0;
-}
-
 //! Constructor from an array. Data are copied.
 //! @param a the array to copy data from.
-template<class T> Vector4<T>::Vector4(const T*a)
+template<class T> constexpr Vector4<T>::Vector4(const T*a)
 {
 	this->operator=(a);
 }
 
-//! Copy constructor.
-//! @param a the vector to copy.
-template<class T> Vector4<T>::Vector4(const Vector4<T>& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
-	v[3]=a.v[3];
-}
-
 //! constructor from vector3. Automatically set w to 1.0.
 //! @param a the vector to copy.
-template<class T> Vector4<T>::Vector4(const Vector3<T>& a)
+template<class T> constexpr Vector4<T>::Vector4(const Vector3<T>& a)
 {
 	v[0]=a.v[0];
 	v[1]=a.v[1];
@@ -1042,7 +954,7 @@ template<class T> Vector4<T>::Vector4(const Vector3<T>& a)
 //! constructor from vector3 with value a.
 //! @param a the vector to copy.
 //! @param a value for w[3]
-template<class T> Vector4<T>::Vector4(const Vector3<T>& a, T b)
+template<class T> constexpr Vector4<T>::Vector4(const Vector3<T>& a, T b)
 {
 	v[0]=a.v[0];
 	v[1]=a.v[1];
@@ -1068,7 +980,7 @@ template<class T> constexpr Vector4<T>::Vector4(T x, T y, T z, T a)
 //! x first value.
 //! y second value.
 //! z third value.
-template<class T> Vector4<T>::Vector4(T x, T y, T z)
+template<class T> constexpr Vector4<T>::Vector4(T x, T y, T z)
 {
 	v[0]=x;
 	v[1]=y;
@@ -1077,22 +989,10 @@ template<class T> Vector4<T>::Vector4(T x, T y, T z)
 }
 
 //! = operator.
-//! @param a the vector to copy.
-//! @return *this
-template<class T> Vector4<T>& Vector4<T>::operator=(const Vector4<T>& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
-	v[3]=a.v[3];
-	return *this;
-}
-
-//! = operator.
 //! Automatically set w to 1.0.
 //! @param a the vector to copy.
 //! @return *this
-template<class T> Vector4<T>& Vector4<T>::operator=(const Vector3<T>& a)
+template<class T> constexpr Vector4<T>& Vector4<T>::operator=(const Vector3<T>& a)
 {
 	v[0]=a.v[0];
 	v[1]=a.v[1];
@@ -1104,7 +1004,7 @@ template<class T> Vector4<T>& Vector4<T>::operator=(const Vector3<T>& a)
 //! = operator.
 //! @param a the vector to copy.
 //! @return *this
-template<class T> Vector4<T>& Vector4<T>::operator=(const T* a)
+template<class T> constexpr Vector4<T>& Vector4<T>::operator=(const T* a)
 {
 	v[0]=a[0];
 	v[1]=a[1];
@@ -1117,7 +1017,7 @@ template<class T> Vector4<T>& Vector4<T>::operator=(const T* a)
 //! @param y the second component.
 //! @param z the third component.
 //! @param a the fourth component (w).
-template<class T> void Vector4<T>::set(T x, T y, T z, T a)
+template<class T> constexpr void Vector4<T>::set(T x, T y, T z, T a)
 {
 	v[0]=x;
 	v[1]=y;
@@ -1128,7 +1028,7 @@ template<class T> void Vector4<T>::set(T x, T y, T z, T a)
 //! == operator
 //! @param a the vector to compare to.
 //! @return true if equals, false otherwise.
-template<class T> bool Vector4<T>::operator==(const Vector4<T>& a) const
+template<class T> constexpr bool Vector4<T>::operator==(const Vector4<T>& a) const
 {
 	return (v[0] == a.v[0] && v[1] == a.v[1] && v[2] == a.v[2] && v[3] == a.v[3]);
 }
@@ -1136,7 +1036,7 @@ template<class T> bool Vector4<T>::operator==(const Vector4<T>& a) const
 //! =! operator
 //! @param a the vector to compare to.
 //! @return false if equals, true otherwise.
-template<class T> bool Vector4<T>::operator!=(const Vector4<T>& a) const
+template<class T> constexpr bool Vector4<T>::operator!=(const Vector4<T>& a) const
 {
 	return (v[0] != a.v[0] || v[1] != a.v[1] || v[2] != a.v[2] || v[3] != a.v[3]);
 }
@@ -1144,7 +1044,7 @@ template<class T> bool Vector4<T>::operator!=(const Vector4<T>& a) const
 //! [] operator
 //! @param x index of the desired element.
 //! @return the element.
-template<class T> T& Vector4<T>::operator[](int x)
+template<class T> constexpr T& Vector4<T>::operator[](int x)
 {
 	return v[x];
 }
@@ -1152,27 +1052,27 @@ template<class T> T& Vector4<T>::operator[](int x)
 //! [] operator
 //! @param x index of the desired element.
 //! @return the element.
-template<class T> const T& Vector4<T>::operator[](int x) const
+template<class T> constexpr const T& Vector4<T>::operator[](int x) const
 {
 	return v[x];
 }
 
 //! *operator
 //! @return a pointer to the vector array.
-template<class T> Vector4<T>::operator T*()
+template<class T> constexpr Vector4<T>::operator T*()
 {
 	return v;
 }
 //! *operator
 //! @return a pointer to the vector array.
-template<class T> Vector4<T>::operator const T*() const
+template<class T> constexpr Vector4<T>::operator const T*() const
 {
 	return v;
 }
 //!  += operator
 //! @param the other vector to addition.
 //! @return *this
-template<class T> Vector4<T>& Vector4<T>::operator+=(const Vector4<T>& a)
+template<class T> constexpr Vector4<T>& Vector4<T>::operator+=(const Vector4<T>& a)
 {
 	v[0] += a.v[0];
 	v[1] += a.v[1];
@@ -1184,7 +1084,7 @@ template<class T> Vector4<T>& Vector4<T>::operator+=(const Vector4<T>& a)
 //!  -= operator
 //! @param the other vector to subtract.
 //! @return *this
-template<class T> Vector4<T>& Vector4<T>::operator-=(const Vector4<T>& a)
+template<class T> constexpr Vector4<T>& Vector4<T>::operator-=(const Vector4<T>& a)
 {
 	v[0] -= a.v[0];
 	v[1] -= a.v[1];
@@ -1195,7 +1095,7 @@ template<class T> Vector4<T>& Vector4<T>::operator-=(const Vector4<T>& a)
 //!  *= operator
 //! @param the other vector to multiply.
 //! @return *this
-template<class T> Vector4<T>& Vector4<T>::operator*=(T s)
+template<class T> constexpr Vector4<T>& Vector4<T>::operator*=(T s)
 {
 	v[0] *= s;
 	v[1] *= s;
@@ -1206,7 +1106,7 @@ template<class T> Vector4<T>& Vector4<T>::operator*=(T s)
 //!  /= operator
 //! @param the other vector to divide.
 //! @return *this
-template<class T> Vector4<T>& Vector4<T>::operator/=(T s)
+template<class T> constexpr Vector4<T>& Vector4<T>::operator/=(T s)
 {
 	v[0] /= s;
 	v[1] /= s;
@@ -1216,13 +1116,13 @@ template<class T> Vector4<T>& Vector4<T>::operator/=(T s)
 }
 //!  -= operator
 //! @return - this vector.
-template<class T> Vector4<T> Vector4<T>::operator-() const
+template<class T> constexpr Vector4<T> Vector4<T>::operator-() const
 {
 	return Vector4<T>(-v[0], -v[1], -v[2], -v[3]);
 }
 //!  += operator
 //! @return this vector.
-template<class T> Vector4<T> Vector4<T>::operator+() const
+template<class T> constexpr Vector4<T> Vector4<T>::operator+() const
 {
 	return *this;
 }
@@ -1230,42 +1130,42 @@ template<class T> Vector4<T> Vector4<T>::operator+() const
 //!  + operator
 //! @param b the other vector to add
 //! @return this + b.
-template<class T> Vector4<T> Vector4<T>::operator+(const Vector4<T>& b) const
+template<class T> constexpr Vector4<T> Vector4<T>::operator+(const Vector4<T>& b) const
 {
 	return Vector4<T>(v[0] + b.v[0], v[1] + b.v[1], v[2] + b.v[2], v[3] + b.v[3]);
 }
 //!  - operator
 //! @param b the other vector to subtract.
 //! @return this - b.
-template<class T> Vector4<T> Vector4<T>::operator-(const Vector4<T>& b) const
+template<class T> constexpr Vector4<T> Vector4<T>::operator-(const Vector4<T>& b) const
 {
 	return Vector4<T>(v[0] - b.v[0], v[1] - b.v[1], v[2] - b.v[2], v[3] - b.v[3]);
 }
 //!  * operator
 //! @param b the other vector to multiply
 //! @return this * b.
-template<class T> Vector4<T> Vector4<T>::operator*(T s) const
+template<class T> constexpr Vector4<T> Vector4<T>::operator*(T s) const
 {
 	return Vector4<T>(s * v[0], s * v[1], s * v[2], s * v[3]);
 }
 //!  / operator
 //! @param b the other vector to divide
 //! @return this / b.
-template<class T> Vector4<T> Vector4<T>::operator/(T s) const
+template<class T> constexpr Vector4<T> Vector4<T>::operator/(T s) const
 {
 	return Vector4<T>(v[0]/s, v[1]/s, v[2]/s, v[3]/s);
 }
 
 //! null vector getter
 //! @return a null vector.
-template<class T> Vector4<T> Vector4<T>::null()
+template<class T> constexpr Vector4<T> Vector4<T>::null()
 {
 	return Vector4<T>(0.0,0.0,0.0,0.0);
 }
 
 //! null vector getter
 //! @return a null vector with w at 1.0.
-template<class T> Vector4<T> Vector4<T>::nullW()
+template<class T> constexpr Vector4<T> Vector4<T>::nullW()
 {
 	return Vector4<T>(0.0,0.0,0.0,1.0);
 }
@@ -1319,14 +1219,14 @@ template<class T> constexpr Vector4<T> Vector4<T>::yzrotation(T yangle, T zangle
 //! dot product.
 //! @param b the other vector
 //! @return the dot product.
-template<class T> const T Vector4<T>::dot(const Vector4<T>& b) const
+template<class T> constexpr const T Vector4<T>::dot(const Vector4<T>& b) const
 {
 	return v[0] * b.v[0] + v[1] * b.v[1] + v[2] * b.v[2] + v[3] * b.v[3];
 }
 //! cross product.
 //! @param b the other vector
 //! @return the cross product.
-template<class T> const Vector4<T>   Vector4<T>::cross   (const Vector4<T>&a)const
+template<class T> constexpr const Vector4<T>   Vector4<T>::cross   (const Vector4<T>&a)const
 {
 	Vector4<T> result(v[1]*a.v[2]-v[2]*a.v[1],
 	                  v[2]*a.v[0]-v[0]*a.v[2],
@@ -1337,7 +1237,7 @@ template<class T> const Vector4<T>   Vector4<T>::cross   (const Vector4<T>&a)con
 //! Gives the sinus of the angle between two NORMALIZED vectors.
 //! @param b the other vector
 //! @return the sinus.
-template<class T> const T            Vector4<T>::getSin  (const Vector4<T>&a)const
+template<class T> constexpr const T            Vector4<T>::getSin  (const Vector4<T>&a)const
 {
 	return this->cross(a).length();
 }
@@ -1354,29 +1254,33 @@ template<class T> constexpr const Vector4<T> Vector4<T>::combineQuaternions(cons
 }
 
 //! Inverse this quaternion
-template<class T> const Vector4<T> Vector4<T>::inverse() const
+template<class T> constexpr Vector4<T> Vector4<T>::inverse() const
 {
 	const T tmp = 1 / (v[0]*v[0] + v[1]*v[1] + v[2]*v[2] + v[3]*v[3]);
-	Vector4<T> result(v[0] * tmp, -v[1] * tmp, -v[2] * tmp, -v[3] * tmp);
-	return result;
+	return Vector4<T>{v[0] * tmp, -v[1] * tmp, -v[2] * tmp, -v[3] * tmp};
 }
 
 //! Puts this point to a 3D plane.
 //! @param a the 3D plane equation (without d, origin will belong to the plane.)
-template<class T> void Vector4<T>::toPlane(const Vector3<T>&a)
+template<class T> constexpr void Vector4<T>::toPlane(const Vector3<T>&a)
 {
-	static T distance;
-	distance= v[0]*a.v[0]+
-	          v[1]*a.v[1]+
-	          v[2]*a.v[2];
-	this->operator-=(a*distance);
+	const T distance{
+		v[0]*a.v[0]+
+		v[1]*a.v[1]+
+		v[2]*a.v[2]
+	};
+	*this -= a*distance;
 }
 
 //! Puts this point to a 3D plane.
 //! @param a the 3D plane equation.
-template<class T> void Vector4<T>::toPlane(const Vector4<T>&a)
+template<class T> constexpr void Vector4<T>::toPlane(const Vector4<T>&a)
 {
-	static T distance;
+	const T distance{
+		v[0]*a.v[0]+
+		v[1]*a.v[1]+
+		v[2]*a.v[2]
+	};
 	distance= v[0]*a.v[0]+
 	          v[1]*a.v[1]+
 	          v[2]*a.v[2]+
@@ -1386,20 +1290,20 @@ template<class T> void Vector4<T>::toPlane(const Vector4<T>&a)
 
 //! Gives the length of a vector.
 //! @return the length.
-template<class T> T Vector4<T>::length() const
+template<class T> constexpr T Vector4<T>::length() const
 {
 	return (T) sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2] + v[3] * v[3]);
 }
 //! Gives the squared length of a vector.
 //! This is useful when you don't want to use sqrt to compare distances.
 //! @return the squared length.
-template<class T> T Vector4<T>::lengthSquared() const
+template<class T> constexpr T Vector4<T>::lengthSquared() const
 {
 	return v[0] * v[0] + v[1] * v[1] + v[2] * v[2] + v[3] * v[3];
 }
 
 //! normalize this vector.
-template<class T> void Vector4<T>::normalize()
+template<class T> constexpr void Vector4<T>::normalize()
 {
 	T s = (T) (1. / sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2] + v[3] * v[3]));
 	if(s!=0.0) {
@@ -1412,14 +1316,14 @@ template<class T> void Vector4<T>::normalize()
 
 //! Set the fourth component of the vector at 1.0.
 //! This is useful after a true matrix multiplication.
-template<class T> void Vector4<T>::correctW()
+template<class T> constexpr void Vector4<T>::correctW()
 {
 	v[3]=1.0;
 }
 
 //! apply some matrix transformations to this vector.
 //! @param m the matrix which contains transformations.
-template<class T> void Vector4<T>::transfo4d(const Mat4d& m)
+template<class T> constexpr void Vector4<T>::transfo4d(const Mat4d& m)
 {
 	(*this)=m*(*this);
 }
@@ -1458,28 +1362,12 @@ Vector4<T> operator*(T s,const Vector4<T>&v)
 //
 // -------------------------------------------------------------------
 
-//! Copy constructor.
-//! @param m the matrix to copy.
-template<class T> Matrix4<T>::Matrix4(const Matrix4<T>& m)
-{
-	memcpy(r,m.r,sizeof(m.r));
-}
-
 //! Constructor from array.
 //! @param m an array to copy data from.
 //! make sure it is large enough.
-template<class T> Matrix4<T>::Matrix4(const T* m)
+template<class T> constexpr Matrix4<T>::Matrix4(const T* m)
 {
 	memcpy(r,m,sizeof(T)*16);
-}
-
-//! = operator.
-//! @param m the matrix to copy.
-//! @return *this
-template<class T> Matrix4<T>& Matrix4<T>::operator=(const Matrix4<T>& m)
-{
-	memcpy(r,m.r,sizeof(m.r));
-	return (*this);
 }
 
 //! Constructor from four 3 dimensions vectors.
@@ -1488,7 +1376,7 @@ template<class T> Matrix4<T>& Matrix4<T>::operator=(const Matrix4<T>& m)
 //! @param v1 the 2nd column
 //! @param v2 the 3rd column
 //! @param v3 the 4th column
-template<class T> Matrix4<T>::Matrix4(const Vector3<T>& v0,
+template<class T> constexpr Matrix4<T>::Matrix4(const Vector3<T>& v0,
                                       const Vector3<T>& v1,
                                       const Vector3<T>& v2,
                                       const Vector3<T>& v3)
@@ -1517,7 +1405,7 @@ template<class T> Matrix4<T>::Matrix4(const Vector3<T>& v0,
 //! @param v1 the 2nd column
 //! @param v2 the 3rd column
 //! @param v3 the 4th column
-template<class T> Matrix4<T>::Matrix4(const Vector4<T>& v0,
+template<class T> constexpr Matrix4<T>::Matrix4(const Vector4<T>& v0,
                                       const Vector4<T>& v1,
                                       const Vector4<T>& v2,
                                       const Vector4<T>& v3)
@@ -1541,7 +1429,7 @@ template<class T> Matrix4<T>::Matrix4(const Vector4<T>& v0,
 }
 
 //! Constructor from 16 values (column by column).
-template<class T> Matrix4<T>::Matrix4(T a, T b, T c, T d, T e, T f, T g, T h, T i, T j, T k, T l, T m, T n, T o, T p)
+template<class T> constexpr Matrix4<T>::Matrix4(T a, T b, T c, T d, T e, T f, T g, T h, T i, T j, T k, T l, T m, T n, T o, T p)
 {
 	r[0]=a;
 	r[1]=b;
@@ -1562,7 +1450,7 @@ template<class T> Matrix4<T>::Matrix4(T a, T b, T c, T d, T e, T f, T g, T h, T 
 }
 
 //! Set the matrix with the 16 given values (column by column).
-template<class T> void Matrix4<T>::set(T a, T b, T c, T d, T e, T f, T g, T h, T i, T j, T k, T l, T m, T n, T o, T p)
+template<class T> constexpr void Matrix4<T>::set(T a, T b, T c, T d, T e, T f, T g, T h, T i, T j, T k, T l, T m, T n, T o, T p)
 {
 	r[0]=a;
 	r[1]=b;
@@ -1584,28 +1472,28 @@ template<class T> void Matrix4<T>::set(T a, T b, T c, T d, T e, T f, T g, T h, T
 
 //! [] operator.
 //! n the index of the wanted column.
-template<class T> T* Matrix4<T>::operator[](int n)
+template<class T> constexpr T* Matrix4<T>::operator[](int n)
 {
 	return &(r[n*4]);
 }
 
 //! * operator
 //! @return the address of the 16 values array.
-template<class T> Matrix4<T>::operator T*()
+template<class T> constexpr Matrix4<T>::operator T*()
 {
 	return r;
 }
 
 //! const * operator
 //! @return the address of the 16 values array.
-template<class T> Matrix4<T>::operator const T*() const
+template<class T> constexpr Matrix4<T>::operator const T*() const
 {
 	return r;
 }
 
 //! Static function to get a identity matrix.
 //! @return a identity matrix.
-template<class T> Matrix4<T> Matrix4<T>::identity()
+template<class T> constexpr Matrix4<T> Matrix4<T>::identity()
 {
 	return Matrix4<T>(	1, 0, 0, 0,
 	                    0, 1, 0, 0,
@@ -1616,7 +1504,7 @@ template<class T> Matrix4<T> Matrix4<T>::identity()
 //! Static function to get a translation matrix.
 //! @param a the vector that describes the translation.
 //! @return the corresponding translation matrix.
-template<class T> Matrix4<T> Matrix4<T>::translation(const Vector3<T>& a)
+template<class T> constexpr Matrix4<T> Matrix4<T>::translation(const Vector3<T>& a)
 {
 	return Matrix4<T>(	1, 0, 0, 0,
 	                    0, 1, 0, 0,
@@ -1631,15 +1519,14 @@ template<class T> Matrix4<T> Matrix4<T>::translation(const Vector3<T>& a)
 //! @param a first vector.
 //! @param b second vector.
 //! @return the corresponding rotation matrix.
-template<class T>const Matrix4<T> Matrix4<T>::rotation(const Vector3<T>&a,const Vector3<T>&b)
+template<class T> constexpr const Matrix4<T> Matrix4<T>::rotation(const Vector3<T>&a,const Vector3<T>&b)
 {
-	static T c,s;
-	static Vector3<T> axis;
-	c= a.dot(b);
-	axis=a^b;
+	const T c = a.dot(b);
+	Vector3<T> axis{a^b};
 	//cout<<axis<<endl;
-	s=axis.length();
-	axis.normalize();
+	const T s=axis.length();
+	if (s)
+		axis /= s;
 	//cout<<axis<<endl;
 	//cout<<"cos: "<<c<<endl<<"sin: "<<s<<endl;
 	return Matrix4<T>::rotation(c,s,axis);
@@ -1650,7 +1537,7 @@ template<class T>const Matrix4<T> Matrix4<T>::rotation(const Vector3<T>&a,const 
 //! @param axis the axis vector.
 //! @param angle the rotation angle, in radians.
 //! @return the corresponding rotation matrix.
-template<class T> const Matrix4<T> Matrix4<T>::rotation(const Vector3<T>& axis,T angle)
+template<class T> constexpr const Matrix4<T> Matrix4<T>::rotation(const Vector3<T>& axis,T angle)
 {
 	T c = (T) cos(angle);
 	T s = (T) sin(angle);
@@ -1663,10 +1550,9 @@ template<class T> const Matrix4<T> Matrix4<T>::rotation(const Vector3<T>& axis,T
 //! @param s sinus of the angle.
 //! @param angle the rotation angle, in radians.
 //! @return the corresponding rotation matrix.
-template<class T> const Matrix4<T> Matrix4<T>::rotation(const T c,const T s,const Vector4<T>&axis)
+template<class T> constexpr const Matrix4<T> Matrix4<T>::rotation(const T c,const T s,const Vector4<T>&axis)
 {
-	static T t;
-	t = 1 - c;
+	const T t = 1 - c;
 	return Matrix4<T>(Vector4<T>(t * axis.v[0] * axis.v[0] + c,
 	                             t * axis.v[0] * axis.v[1] - s * axis.v[2],
 	                             t * axis.v[0] * axis.v[2] + s * axis.v[1],
@@ -1691,7 +1577,7 @@ template<class T> const Matrix4<T> Matrix4<T>::rotation(const T c,const T s,cons
 //! @param nearVal Specify the distances to the nearer depth clipping planes. Negative if the plane is to be behind the viewer.
 //! @param farVal Specify the distances to the farther depth clipping planes. Negative if the plane is to be behind the viewer.
 //! @return the projection matrix.
-template<class T> Matrix4<T> Matrix4<T>::ortho(T left, T right, T bottom, T top, T nearVal, T farVal)
+template<class T> constexpr Matrix4<T> Matrix4<T>::ortho(T left, T right, T bottom, T top, T nearVal, T farVal)
 {
 	// r_m_l that mean right_minus_left
 	T r_m_l = right-left;
@@ -1711,7 +1597,7 @@ template<class T> Matrix4<T> Matrix4<T>::ortho(T left, T right, T bottom, T top,
 //! @param bottom Specify the coordinates for the bottom horizontal clipping planes.
 //! @param top Specify the coordinates for the top horizontal clipping planes.
 //! @return the projection matrix.
-template<class T> Matrix4<T> Matrix4<T>::ortho2D(T left, T right, T bottom, T top)
+template<class T> constexpr Matrix4<T> Matrix4<T>::ortho2D(T left, T right, T bottom, T top)
 {
 	// r_m_l that mean right_minus_left
 	T r_m_l = right-left;
@@ -1731,7 +1617,7 @@ template<class T> Matrix4<T> Matrix4<T>::ortho2D(T left, T right, T bottom, T to
 //! @param nearVal Specify the distances to the nearer and farther depth clipping planes. Must be positive!
 //! @param farVal Specify the distances to the nearer and farther depth clipping planes. Must be positive!
 //! @return the projection matrix.
-template<class T> Matrix4<T> Matrix4<T>::frustum(T left, T right, T bottom, T top, T znear, T zfar)
+template<class T> constexpr Matrix4<T> Matrix4<T>::frustum(T left, T right, T bottom, T top, T znear, T zfar)
 {
 	T tmp1 = 2.0 * znear;
 	T tmp2 = right - left;
@@ -1750,7 +1636,7 @@ template<class T> Matrix4<T> Matrix4<T>::frustum(T left, T right, T bottom, T to
 //! @param aspectRation the ration y/x of the screen size.
 //! @param znear Nearest draw distance. Try to have the farthest as possible.
 //! @param zfar Farthest draw distance. Try to have the nearest as possible.
-template<class T> Matrix4<T> Matrix4<T>::perspective(T fovyInDegrees, T aspectRatio, T znear, T zfar)
+template<class T> constexpr Matrix4<T> Matrix4<T>::perspective(T fovyInDegrees, T aspectRatio, T znear, T zfar)
 {
 	T ymax, xmax;
 	ymax = znear * tanf(fovyInDegrees * M_PI / 360.0);
@@ -1762,7 +1648,7 @@ template<class T> Matrix4<T> Matrix4<T>::perspective(T fovyInDegrees, T aspectRa
 //! @param eyeXYZ the position of the camera.
 //! @param centerXYZ a point where the camera is looking at.
 //! @param upXYZ a vector which vertically point the top of your scene.
-template<class T> Matrix4<T> Matrix4<T>::lookAt(T eyeX, T eyeY, T eyeZ, T centerX, T centerY, T centerZ, T upX, T upY, T upZ)
+template<class T> constexpr Matrix4<T> Matrix4<T>::lookAt(T eyeX, T eyeY, T eyeZ, T centerX, T centerY, T centerZ, T upX, T upY, T upZ)
 {
 	Vector3<T> F= Vector3<T>(centerX - eyeX,centerY - eyeY, centerZ - eyeZ);
 	Vector3<T> UP= Vector3<T>(upX, upY, upZ);
@@ -1786,7 +1672,7 @@ template<class T> Matrix4<T> Matrix4<T>::lookAt(T eyeX, T eyeY, T eyeZ, T center
 	                    0,    0,    0 , 1 )*translation(Vector3<T>(-eyeX, -eyeY, -eyeZ));
 }
 
-template<class T> Matrix4<T> Matrix4<T>::lookAt(const Vector3<T> &eye , const Vector3<T> &center, const Vector3<T> &up)
+template<class T> constexpr Matrix4<T> Matrix4<T>::lookAt(const Vector3<T> &eye , const Vector3<T> &center, const Vector3<T> &up)
 {
 	return 	lookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2] );
 }
@@ -1796,7 +1682,7 @@ template<class T> Matrix4<T> Matrix4<T>::lookAt(const Vector3<T> &eye , const Ve
 //! WARNING this rotation is unconventionally clockwise!
 //! @param angle the angle in radians.
 //! @return the corresponding rotation matrix.
-template<class T> const Matrix4<T> Matrix4<T>::xrotation(T angle)
+template<class T> constexpr const Matrix4<T> Matrix4<T>::xrotation(T angle)
 {
 	T c = (T) cos(angle);
 	T s = (T) sin(angle);
@@ -1807,7 +1693,7 @@ template<class T> const Matrix4<T> Matrix4<T>::xrotation(T angle)
 	                  0, 0, 0, 1 );
 }
 
-template<class T> Matrix4<T> Matrix4<T>::yawPitchRoll(T const& _yaw, T const& _pitch, T const& _roll)
+template<class T> constexpr Matrix4<T> Matrix4<T>::yawPitchRoll(T const& _yaw, T const& _pitch, T const& _roll)
 {
 	T yaw = _yaw * M_PI /180.;
 	T pitch = _pitch * M_PI / 180.;
@@ -1843,7 +1729,7 @@ template<class T> Matrix4<T> Matrix4<T>::yawPitchRoll(T const& _yaw, T const& _p
 						0,0,0, 1);
 }
 
-template<class T> Matrix4<T> Matrix4<T>::lookAtFromMatrix(const Matrix4<T>&m)
+template<class T> constexpr Matrix4<T> Matrix4<T>::lookAtFromMatrix(const Matrix4<T>&m)
 {
 	return Matrix4<T> ( m.r[4], m.r[8], -m.r[0], 0, // Warning! It appears transposed!
 	                    m.r[5], m.r[9], -m.r[1], 0,
@@ -1854,7 +1740,7 @@ template<class T> Matrix4<T> Matrix4<T>::lookAtFromMatrix(const Matrix4<T>&m)
 }
 
 
-template<class T> Matrix4<T> Matrix4<T>::getViewFromLookAt(const Matrix4<T>&m)
+template<class T> constexpr Matrix4<T> Matrix4<T>::getViewFromLookAt(const Matrix4<T>&m)
 {
 	T rx, ry, rz, det;
 
@@ -1878,7 +1764,7 @@ template<class T> Matrix4<T> Matrix4<T>::getViewFromLookAt(const Matrix4<T>&m)
 //! WARNING this rotation is unconventionally clockwise!
 //! @param angle the angle in radians.
 //! @return the corresponding rotation matrix.
-template<class T> const Matrix4<T> Matrix4<T>::yrotation(T angle)
+template<class T> constexpr const Matrix4<T> Matrix4<T>::yrotation(T angle)
 {
 	T c = (T) cos(angle);
 	T s = (T) sin(angle);
@@ -1893,7 +1779,7 @@ template<class T> const Matrix4<T> Matrix4<T>::yrotation(T angle)
 //! WARNING this rotation is unconventionally clockwise!
 //! @param angle the angle in radians.
 //! @return the corresponding rotation matrix.
-template<class T> const Matrix4<T> Matrix4<T>::zrotation(T angle)
+template<class T> constexpr const Matrix4<T> Matrix4<T>::zrotation(T angle)
 {
 	T c = (T) cos(angle);
 	T s = (T) sin(angle);
@@ -1909,7 +1795,7 @@ template<class T> const Matrix4<T> Matrix4<T>::zrotation(T angle)
 //! @param cos the cosine in radians.
 //! @param sin the sinus in radians.
 //! @return the corresponding rotation matrix.
-template<class T> const Matrix4<T> Matrix4<T>::zrotation(T cos,T sin)
+template<class T> constexpr const Matrix4<T> Matrix4<T>::zrotation(T cos,T sin)
 {
 	// writted by Jerome LARTILLOT while zrotation is unconventionnally CW instead of CCW.
 
@@ -1923,7 +1809,7 @@ template<class T> const Matrix4<T> Matrix4<T>::zrotation(T cos,T sin)
 //! WARNING this rotation is unconventionally clockwise!
 //! @param angle the angle in radians.
 //! @return the corresponding rotation matrix.
-template<class T> const Matrix4<T> Matrix4<T>::xzrotation(T xangle, T zangle)
+template<class T> constexpr const Matrix4<T> Matrix4<T>::xzrotation(T xangle, T zangle)
 {
 	T cz = cos(zangle);
 	T sz = sin(zangle);
@@ -1941,7 +1827,7 @@ template<class T> const Matrix4<T> Matrix4<T>::xzrotation(T xangle, T zangle)
 //! WARNING this rotation is unconventionally clockwise!
 //! @param angle the angle in radians.
 //! @return the corresponding rotation matrix.
-template<class T> const Matrix4<T> Matrix4<T>::zxrotation(T zangle, T xangle)
+template<class T> constexpr const Matrix4<T> Matrix4<T>::zxrotation(T zangle, T xangle)
 {
 	T cz = cos(zangle);
 	T sz = sin(zangle);
@@ -1958,7 +1844,7 @@ template<class T> const Matrix4<T> Matrix4<T>::zxrotation(T zangle, T xangle)
 //! Gives a scaling matrix.
 //! @param s a vector which contains the 3 scale factors.
 //! @return the corresponding scaling matrix.
-template<class T> const Matrix4<T> Matrix4<T>::scaling(const Vector3<T>& s)
+template<class T> constexpr const Matrix4<T> Matrix4<T>::scaling(const Vector3<T>& s)
 {
 	return Matrix4<T>(s[0], 0  , 0  , 0,
 	                  0   ,s[1], 0  , 0,
@@ -1969,7 +1855,7 @@ template<class T> const Matrix4<T> Matrix4<T>::scaling(const Vector3<T>& s)
 //! Gives a scaling matrix.
 //! @param scale the scale amount for the 3 dimensions.
 //! @return the corresponding scaling matrix.
-template<class T> const Matrix4<T> Matrix4<T>::scaling(T scale)
+template<class T> constexpr const Matrix4<T> Matrix4<T>::scaling(T scale)
 {
 	return scaling(Vector3<T>(scale, scale, scale));
 }
@@ -1980,7 +1866,7 @@ template<class T> const Matrix4<T> Matrix4<T>::scaling(T scale)
 //! @param a the vector to multiply
 //! @return The result.
 // multiply column vector by a 4x4 matrix in homogeneous coordinate (use a[3]=1)
-template<class T> Vector3<T> Matrix4<T>::operator*(const Vector3<T>& a) const
+template<class T> constexpr Vector3<T> Matrix4<T>::operator*(const Vector3<T>& a) const
 {
 	return Vector3<T>(	r[0]*a.v[0] + r[4]*a.v[1] +  r[8]*a.v[2] + r[12],
 	                    r[1]*a.v[0] + r[5]*a.v[1] +  r[9]*a.v[2] + r[13],
@@ -1989,7 +1875,7 @@ template<class T> Vector3<T> Matrix4<T>::operator*(const Vector3<T>& a) const
 
 //! Multiply a vector by the 3x3 part of this matrix.
 //! This only apply rotation and scaling. Not translation nor projection effects.
-template<class T> Vector3<T> Matrix4<T>::multiplyWithoutTranslation(const Vector3<T>& a) const
+template<class T> constexpr Vector3<T> Matrix4<T>::multiplyWithoutTranslation(const Vector3<T>& a) const
 {
 	return Vector3<T>(	r[0]*a.v[0] + r[4]*a.v[1] +  r[8]*a.v[2],
 	                    r[1]*a.v[0] + r[5]*a.v[1] +  r[9]*a.v[2],
@@ -2004,7 +1890,7 @@ template<class T> Vector3<T> Matrix4<T>::multiplyWithoutTranslation(const Vector
 //! @param a the vector to multiply
 //! @return The result.
 // multiply column vector by a 4x4 matrix in homogeneous coordinate (considere a[3]=1)
-template<class T> Vector4<T> Matrix4<T>::operator*(const Vector4<T>& a) const
+template<class T> constexpr Vector4<T> Matrix4<T>::operator*(const Vector4<T>& a) const
 {
 	return Vector4<T>(	r[0]*a.v[0] + r[4]*a.v[1] +  r[8]*a.v[2] + r[12]*a.v[3],
 	                    r[1]*a.v[0] + r[5]*a.v[1] +  r[9]*a.v[2] + r[13]*a.v[3],
@@ -2013,7 +1899,7 @@ template<class T> Vector4<T> Matrix4<T>::operator*(const Vector4<T>& a) const
 
 //! Transpose this matrix.
 //! @return The transpose of this matrix.
-template<class T> Matrix4<T> Matrix4<T>::transpose() const
+template<class T> constexpr Matrix4<T> Matrix4<T>::transpose() const
 {
 	return Matrix4<T>(	r[0], r[4], r[8],  r[12],
 	                    r[1], r[5], r[9],  r[13],
@@ -2024,7 +1910,7 @@ template<class T> Matrix4<T> Matrix4<T>::transpose() const
 //! Multiplication of 2 matrix.
 //! @param a the right operand.
 //! @return this*a.
-template<class T> Matrix4<T> Matrix4<T>::operator*(const Matrix4<T>& a) const
+template<class T> constexpr Matrix4<T> Matrix4<T>::operator*(const Matrix4<T>& a) const
 {
 #define MATMUL(R, C) (r[R] * a.r[C] + r[R+4] * a.r[C+1] + r[R+8] * a.r[C+2] + r[R+12] * a.r[C+3])
 	return Matrix4<T>(	MATMUL(0,0), MATMUL(1,0), MATMUL(2,0), MATMUL(3,0),
@@ -2037,7 +1923,7 @@ template<class T> Matrix4<T> Matrix4<T>::operator*(const Matrix4<T>& a) const
 //! Multiplication of 2 matrix only defining rotation and translation.
 //! @param a the right operand.
 //! @return this*a.
-template<class T> Matrix4<T> Matrix4<T>::multiplyFast(const Matrix4<T> &a) const
+template<class T> constexpr Matrix4<T> Matrix4<T>::multiplyFast(const Matrix4<T> &a) const
 {
 	#define MATMUL(R, C) (r[R] * a.r[C] + r[R+4] * a.r[C+1] + r[R+8] * a.r[C+2])
 	#define MATMUL2(R) (r[R] * a.r[12] + r[R+4] * a.r[13] + r[R+8] * a.r[14] + r[R+12])
@@ -2055,7 +1941,7 @@ template<class T> Matrix4<T> Matrix4<T>::multiplyFast(const Matrix4<T> &a) const
 //! Multiplication of 2 matrix only defining rotation and translation, with the first matrix virtually transposed
 //! @param a the right operand.
 //! @return this.inverse()*a.
-template<class T> Matrix4<T> Matrix4<T>::multiplyInversed(const Matrix4<T> &a) const
+template<class T> constexpr Matrix4<T> Matrix4<T>::multiplyInversed(const Matrix4<T> &a) const
 {
 	#define MATMUL(R, C) (r[R] * a.r[C] + r[R+1] * a.r[C+1] + r[R+2] * a.r[C+2] + r[R+3] * a.r[C+3])
 	#define MATMUL2(R) (r[R] * tr[0] + r[R+1] * tr[1] + r[R+2] * tr[2])
@@ -2076,8 +1962,8 @@ template<class T> Matrix4<T> Matrix4<T>::multiplyInversed(const Matrix4<T> &a) c
 
 //! Apply pre-translation to this matrix
 //! @param a the right operand.
-//! @return this*Matrix4<T>::translation(pos).
-template<class T> void Matrix4<T>::multiplyTranslation(const Vector3<T> &a)
+//! @return this* constexprMatrix4<T>::translation(pos).
+template<class T> constexpr void Matrix4<T>::multiplyTranslation(const Vector3<T> &a)
 {
 	#define MATMUL(R) (r[R] * a.v[0] + r[R+4] * a.v[1] + r[R+8] * a.v[2])
 	float x = MATMUL(0);
@@ -2091,7 +1977,7 @@ template<class T> void Matrix4<T>::multiplyTranslation(const Vector3<T> &a)
 //! Matrix addition.
 //! @param a the matrix to addition.
 //! @return this+a.
-template<class T> Matrix4<T> Matrix4<T>::operator+(const Matrix4<T>& a) const
+template<class T> constexpr Matrix4<T> Matrix4<T>::operator+(const Matrix4<T>& a) const
 {
 	return Matrix4<T>(	r[0]+a.r[0], r[1]+a.r[1], r[2]+a.r[2], r[3]+a.r[3],
 	                    r[4]+a.r[4], r[5]+a.r[5], r[6]+a.r[6], r[7]+a.r[7],
@@ -2102,7 +1988,7 @@ template<class T> Matrix4<T> Matrix4<T>::operator+(const Matrix4<T>& a) const
 //! Matrix subtraction.
 //! @param a the matrix to subtract.
 //! @return this-a.
-template<class T> Matrix4<T> Matrix4<T>::operator-(const Matrix4<T>& a) const
+template<class T> constexpr Matrix4<T> Matrix4<T>::operator-(const Matrix4<T>& a) const
 {
 	return Matrix4<T>(	r[0]-a.r[0], r[1]-a.r[1], r[2]-a.r[2], r[3]-a.r[3],
 	                    r[4]-a.r[4], r[5]-a.r[5], r[6]-a.r[6], r[7]-a.r[7],
@@ -2123,7 +2009,7 @@ template<class T> Matrix4<T> Matrix4<T>::operator-(const Matrix4<T>& a) const
  * Code contributed by Jacques Leroy jle@star.be
  * Return zero matrix on failure (singular matrix)
  */
-template<class T> Matrix4<T> Matrix4<T>::inverse() const
+template<class T> constexpr Matrix4<T> Matrix4<T>::inverse() const
 {
 	const T * m = r;
 	T out[16];
@@ -2287,23 +2173,20 @@ template<class T> Matrix4<T> Matrix4<T>::inverse() const
 
 //! Makes a matrix orthonormal.
 //! Uses the z vector first, then the x vector, end finally retrieve y.
-template<class T> void Matrix4<T>::setAsOrthonormalFromZ()
+template<class T> constexpr void Matrix4<T>::setAsOrthonormalFromZ()
 {
-	static Vector4<T> f,s,t; // first second third, order.
-	f=r+2*4,
-	s=r+0*4,
-	t=r+1*4;
+	Vector4<T> f{r+2*4};
+	Vector4<T> s{r+0*4};
 
 	f.normalize();
 	s.toPlane(f.v);
 	s.normalize();
-	t=s.cross(f);
+	setVector(s.cross(f),1);
 	setVector(f,2);
 	setVector(s,0);
-	setVector(t,1);
 }
 
-template<class T> Vector3<T> Matrix4<T>::getTranslation() const
+template<class T> constexpr Vector3<T> Matrix4<T>::getTranslation() const
 {
 	return Vector3<T>(r[12], r[13], r[14]);
 }
@@ -2311,7 +2194,7 @@ template<class T> Vector3<T> Matrix4<T>::getTranslation() const
 //! Get a vector of the matrix.
 //! @param column the desired column in [0-3].
 //! @return the asked column as a 4 components vector.
-template<class T> const Vec4f Matrix4<T>::getVector(int column)const
+template<class T> constexpr const Vec4f Matrix4<T>::getVector(int column)const
 {
 	Vec4f result=r+column*4;
 	return result;
@@ -2324,7 +2207,7 @@ template<class T> const Vec4f Matrix4<T>::getVector(int column)const
 //! @param coef the mix amount. 0 will result in this, 1 will result in other.
 //! don't forget to clamp coef between 0 and 1.
 //! @return the mixed matrix.
-template<class T> Matrix4<T> Matrix4<T>::linearMix(const Matrix4<T> other,const T coef )const
+template<class T> constexpr Matrix4<T> Matrix4<T>::linearMix(const Matrix4<T> other,const T coef )const
 {
 	Matrix4<T> result;
 	APPLY_TO_LINE(0)
@@ -2350,7 +2233,7 @@ template<class T> Matrix4<T> Matrix4<T>::linearMix(const Matrix4<T> other,const 
 //! Set just one vector (column) of the matrix.
 //! @param v the vector to supply values.
 //! @param ind the index of the column to set.
-template<class T> void Matrix4<T>::setVector(const Vector4<T>&v,unsigned int ind)
+template<class T> constexpr void Matrix4<T>::setVector(const Vector4<T>&v,unsigned int ind)
 {
 	ind*=4;
 	r[ind+0]=v.v[0];
@@ -2370,7 +2253,7 @@ template<class T> void Matrix4<T>::print(void) const
 
 
 //! Convert to a float matrix
-template<class T> Matrix4<float> Matrix4<T>::convert() const
+template<class T> constexpr Matrix4<float> Matrix4<T>::convert() const
 {
 	return Matrix4<float>(	(float) r[0], (float) r[1], (float) r[2],  (float) r[3],
 	                        (float) r[4], (float) r[5], (float) r[6],  (float) r[7],
@@ -2379,7 +2262,7 @@ template<class T> Matrix4<float> Matrix4<T>::convert() const
 }
 
 
-template<class T> Matrix4<T> Matrix4<T>::fastInverse() const
+template<class T> constexpr Matrix4<T> Matrix4<T>::fastInverse() const
 {
 	return Matrix4<T>(	r[0], r[4], r[8],  -r[3],
 	                    r[1], r[5], r[9],  -r[7],
@@ -2388,7 +2271,7 @@ template<class T> Matrix4<T> Matrix4<T>::fastInverse() const
 }
 
 //! Inverse the rotation and scaling, but not the translation. Usefull to compute the ray direction in a volumetric 3D texture.
-template<class T> Matrix4<T> Matrix4<T>::inverseUntranslated() const
+template<class T> constexpr Matrix4<T> Matrix4<T>::inverseUntranslated() const
 {
 	T det = r[0] * (r[5]*r[10] - r[6]*r[9]) - r[4] * (r[1]*r[10] - r[2]*r[9]) + r[8] * (r[1]*r[6] - r[2]*r[5]);
 	Matrix4<T> ret(+(r[5]*r[10] - r[6]*r[9])/det, -(r[1]*r[10] - r[2]*r[9])/det, +(r[1]*r[6] - r[2]*r[5])/det, 0,
@@ -2409,7 +2292,7 @@ template<class T> constexpr Matrix4<T> Matrix4<T>::fromQuaternion(const Vector4<
 	return ret;
 }
 
-template<class T> void Matrix4<T>::setMat3(float *dst) const
+template<class T> constexpr void Matrix4<T>::setMat3(float *dst) const
 {
 	dst[0] = r[0]; dst[1] = r[1]; dst[2] = r[2];
 	dst[4] = r[4]; dst[5] = r[5]; dst[6] = r[6];
@@ -2418,11 +2301,14 @@ template<class T> void Matrix4<T>::setMat3(float *dst) const
 
 //! Construct quaternion from rotation matrix
 //! Warning : only work with pure rotation matrix
-template<class T> Vector4<T> Matrix4<T>::toQuaternion() const
+template<class T> constexpr Vector4<T> Matrix4<T>::toQuaternion() const
 {
 	// r4 is r*4, assume the r[0] is the biggest of the 3 values
 	T r4 = sqrt(1 + r[0] + r[5] + r[10]) * 2;
 	return Vector4<T>(r4/4, (r[2+1*4] - r[1+2*4])/r4, (r[0+2*4] - r[2+0*4])/r4, (r[1+0*4] - r[0+1*4])/r4);
 }
+
+constexpr Vec3f v3fNull{};
+constexpr Vec3f v3dNull{};
 
 #endif // _VECMATH_HPP_INCLUDED
