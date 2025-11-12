@@ -44,7 +44,6 @@ CoreBackup::~CoreBackup()
 void CoreBackup::loadBackup()
 {
 	if (mBackup.jday !=0) {
-		int moveDuration = 1;
 		if (core->getFlagIngalaxy() != mBackup.current_module) {
 			// Use the callback (set by App) to switch mode
 			if (switchModeCallback) {
@@ -68,9 +67,6 @@ void CoreBackup::loadBackup()
 				}
 				std::cout << "CoreBackup::loadBackup: switching mode to " << modeString << std::endl;
 				switchModeCallback(modeString);
-				// If we are switching mode, do not use move animation (instant move)
-				// or we may have issues due to Executor::updateMode (changing the mode due to the current altitude (before the final altitude is set))
-				moveDuration = 0;
 			} else {
 				// Should never happen but just in case
 				std::cout << "CoreBackup::loadBackup: switchModeCallback not set!" << std::endl;
@@ -78,7 +74,9 @@ void CoreBackup::loadBackup()
 		}
 		core->timeMgr->setJDay(mBackup.jday);
 		core->projection->setFov(mBackup.fov); //setFov(mBackup.fov);
-		core->observatory->moveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, moveDuration);
+		// Always move instantly to avoid issues with mode switching, landscape state, etc...
+		// (everything based on altitude)
+		core->observatory->moveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 0);
 	}
 	core->setHomePlanet(mBackup.home_planet_name);
 }
