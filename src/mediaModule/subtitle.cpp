@@ -142,7 +142,6 @@ void Subtitle::readFile()
 		auto finalizeSubtitleBlock = [&](){
 			if (timeStart != -1 && timeEnd != -1 && !subtitleContent.empty()) {
 				// We have finished reading a subtitle block
-				cLog::get()->write("Adding subtitle " + subtitleNumber + ": " + std::to_string(timeStart) + " --> " + std::to_string(timeEnd) + " | " + subtitleContent, LOG_TYPE::L_DEBUG);
 				addSub(timeStart, timeEnd, subtitleNumber, subtitleContent);
 			} else {
 				cLog::get()->write("Subtitle: Incomplete subtitle block before line " + std::to_string(lineNumber) + ". Skipping.", LOG_TYPE::L_WARNING);
@@ -155,7 +154,6 @@ void Subtitle::readFile()
 
 		while(getline(myStream, line)) {
 			lineNumber++;
-			cLog::get()->write("Reading line " + std::to_string(lineNumber) + ": " + line, LOG_TYPE::L_DEBUG);
 			// If we are on the first line, check for BOM (Byte Order Mark) and remove it
 			if (lineNumber == 1 && line.size() >= 3 &&
 				static_cast<unsigned char>(line[0]) == 0xEF &&
