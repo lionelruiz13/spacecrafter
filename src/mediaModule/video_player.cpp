@@ -835,14 +835,25 @@ void VideoPlayer::updateSubtitles()
 		if (subtitleContent != tmpSubtitle) {
 			subtitleContent = tmpSubtitle;
 
-			// Split subtitle into two lines if too long
-			if (subtitleContent.length() > 50) {
-				auto splitPos = subtitleContent.rfind(' ', subtitleContent.length() / 2);
-				textSubtitleTopParam.string = subtitleContent.substr(0, splitPos);
-				textSubtitleBottomParam.string = subtitleContent.substr(splitPos + 1);
-			} else {
+			// Split subtitle by \n, create a vector of lines
+			std::vector<std::string> lines;
+			size_t start = 0;
+			size_t end = subtitleContent.find('\n');
+			while (end != std::string::npos) {
+				lines.push_back(subtitleContent.substr(start, end - start));
+				start = end + 1;
+				end = subtitleContent.find('\n', start);
+			}
+			lines.push_back(subtitleContent.substr(start));
+			if (lines.size() == 0) {
 				textSubtitleTopParam.string = "";
-				textSubtitleBottomParam.string = subtitleContent;
+				textSubtitleBottomParam.string = "";
+			} else if (lines.size() == 1) {
+				textSubtitleTopParam.string = "";
+				textSubtitleBottomParam.string = lines[0];
+			} else {
+				textSubtitleTopParam.string = lines[0];
+				textSubtitleBottomParam.string = lines[1];
 			}
 
 			// Top subtitles

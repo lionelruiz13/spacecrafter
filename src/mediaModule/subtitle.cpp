@@ -23,6 +23,8 @@
  */
 
 
+#include <regex>
+#include "tools/log.hpp"
 #include "mediaModule/subtitle.hpp"
 
 Subtitle::Subtitle()
@@ -84,11 +86,38 @@ void Subtitle::loadFile(const std::string& fileName)
 	if( !file.fail() ) {
 		_FILE = fileName.c_str();
 		readFile();
-		std::cout << "Existing file and load.\n";
+		cLog::get()->write("Subtitle file "+ fileName + " loaded.", LOG_TYPE::L_INFO);
 	}
 	else {
-		std::cout << "File does not exist or is not readable.\n";
+		cLog::get()->write("Subtitle file "+ fileName + " does not exist or is not readable.", LOG_TYPE::L_ERROR);
 	}
+}
+
+bool Subtitle::parseTimeRange(const std::string& line, int& startMs, int& endMs) {
+	// Expected format: "00:00:20,000 --> 00:00:24,400" (, or . as millisecond separator) (there may be more spaces around -->)
+	static const std::regex timeRangeRegex(R"((\d{2}:[0-5]\d:[0-5]\d[,\.]\d{3})\s*-->\s*(\d{2}:[0-5]\d:[0-5]\d[,\.]\d{3}))");
+	std::smatch match;
+	if (!std::regex_match(line, match, timeRangeRegex) || match.size() != 3) {
+		return false;
+	}
+	std::string timecodePartStart = match[1]; // 2nd capture group
+	std::string timecodePartEnd = match[2]; // 3rd capture group
+	startMs = TimeToMs(timecodePartStart);
+	endMs = TimeToMs(timecodePartEnd);
+	if (endMs < startMs) {
+		cLog::get()->write("Subtitle parsing warning: End timecode is before start timecode. Skipping to next subtitle.", LOG_TYPE::L_WARNING);
+		return false;
+	}
+	return true;
+}
+
+static inline std::string trim(const std::string& str){
+	size_t firstNonSpace = str.find_first_not_of(" \t");
+	if (firstNonSpace == std::string::npos) {
+		return "";
+	}
+	size_t lastNonSpace = str.find_last_not_of(" \t");
+	return str.substr(firstNonSpace, lastNonSpace - firstNonSpace + 1);
 }
 
 void Subtitle::readFile()
@@ -96,33 +125,103 @@ void Subtitle::readFile()
 	std::ifstream myStream(_FILE.c_str());
 
 	if(myStream) { // if the file is open, we start the processing
-		std::string line;
-		int nbLine = 1;
-		std::string str1;
-		std::string str2;
-		std::string str3;
-		std::string str4;
+		std::string line = "";
+		std::string trimmedLine = "";
+		std::string subtitleNumber = "";
+		int timeStart = -1;
+		int timeEnd = -1;
+		std::string subtitleContent = "";
+		int lineNumber = 0;
+
+		enum State {
+			EXPECT_INDEX,
+			EXPECT_TIMECODE,
+			EXPECT_CONTENT
+		} state = EXPECT_INDEX;
+
+		auto finalizeSubtitleBlock = [&](){
+			if (timeStart != -1 && timeEnd != -1 && !subtitleContent.empty()) {
+				// We have finished reading a subtitle block
+				cLog::get()->write("Adding subtitle " + subtitleNumber + ": " + std::to_string(timeStart) + " --> " + std::to_string(timeEnd) + " | " + subtitleContent, LOG_TYPE::L_DEBUG);
+				addSub(timeStart, timeEnd, subtitleNumber, subtitleContent);
+			} else {
+				cLog::get()->write("Subtitle: Incomplete subtitle block before line " + std::to_string(lineNumber) + ". Skipping.", LOG_TYPE::L_WARNING);
+			}
+			subtitleNumber.clear(); subtitleContent.clear();
+			timeStart = timeEnd = -1;
+			state = EXPECT_INDEX;
+		};
+
 
 		while(getline(myStream, line)) {
-			switch(nbLine) {
-				case 1: //line of the subtitle number, or the character
-					str1 = line.c_str();
-					nbLine++;
+			lineNumber++;
+			cLog::get()->write("Reading line " + std::to_string(lineNumber) + ": " + line, LOG_TYPE::L_DEBUG);
+			// If we are on the first line, check for BOM (Byte Order Mark) and remove it
+			if (lineNumber == 1 && line.size() >= 3 &&
+				static_cast<unsigned char>(line[0]) == 0xEF &&
+				static_cast<unsigned char>(line[1]) == 0xBB &&
+				static_cast<unsigned char>(line[2]) == 0xBF) {
+				line = line.substr(3);
+				cLog::get()->write("Subtitle: BOM found and removed.", LOG_TYPE::L_INFO);
+			}
+			// When we get a line remove any trailing \r characters
+			while (!line.empty() && line.back() == '\r') {
+				line.pop_back();
+			}
+
+			// Trim leading and trailing whitespace
+			trimmedLine = trim(line);
+
+			if (trimmedLine.empty()) {
+				// Between two subtitles, we have an empty line
+				if (state == EXPECT_CONTENT) {
+					finalizeSubtitleBlock();
+				} else {
+					cLog::get()->write("Subtitle: Unexpected empty line at line " + std::to_string(lineNumber) + ". Skipping current subtitle block.", LOG_TYPE::L_WARNING);
+					// Reset for next subtitle
+					subtitleNumber = subtitleContent = "";
+					timeStart = timeEnd = -1;
+					state = EXPECT_INDEX;
+				}
+				continue; // skip empty lines
+			}
+
+			switch (state) {
+				case EXPECT_INDEX:
+					// This line contains subtitle number
+					if (trimmedLine.find_first_not_of("0123456789") == std::string::npos) {
+						subtitleNumber = trimmedLine;
+						state = EXPECT_TIMECODE;
+					} else if (parseTimeRange(trimmedLine, timeStart, timeEnd)) {
+						// some files may omit the index so we try to parse timecode directly
+						// Handle case where index is missing and we directly get timecode
+						subtitleNumber = "";
+						state = EXPECT_CONTENT;
+					} else {
+						cLog::get()->write("Subtitle: Expected subtitle index/timecode at line " + std::to_string(lineNumber) + ". Skipping line.", LOG_TYPE::L_WARNING);
+					}
 					break;
-				case 2: //line of time-codes
-					str2 = line.substr(0,12);
-					str3 = line.substr(17,12);
-					nbLine++;
+				case EXPECT_TIMECODE:
+					if (parseTimeRange(trimmedLine, timeStart, timeEnd)) {
+						state = EXPECT_CONTENT;
+					} else {
+						cLog::get()->write("Subtitle: Invalid subtitle timecode at line " + std::to_string(lineNumber) + ". Skipping to next subtitle.", LOG_TYPE::L_WARNING);
+						timeStart = timeEnd = -1;
+						state = EXPECT_INDEX;
+					}
 					break;
-				case 3: //message line
-					str4 = line.c_str();
-					addSub(TimeToMs(str2), TimeToMs(str3), str1, str4);
-					nbLine++;
+				case EXPECT_CONTENT:
+					// This line contains subtitle content
+					if (!subtitleContent.empty()) subtitleContent += "\n";
+					subtitleContent += line;
 					break;
-				default: //empty line, added in the vector
-					nbLine = 1;
+				default:
 					break;
 			}
+		}
+		// Handle last subtitle
+		if (state == EXPECT_CONTENT) {
+			finalizeSubtitleBlock();
 		}
 
 		// add empty subtitle between every subtitle to avoid issues during display
@@ -136,10 +235,13 @@ void Subtitle::readFile()
 		if (vTemp.size() > 0 && vTemp[0].Tcode1 > 0) {
 			vTemp.insert(vTemp.begin(), {0, vTemp[0].Tcode1, "", ""});
 		}
+		if (vTemp.size() > 0) {
+			vTemp.push_back({vTemp.back().Tcode2, INT32_MAX, "", ""});
+		}
 		_vSub = vTemp;
 	}
 	else {
-		std::cout << "ERROR: Unable to open the file for reading." << std::endl;
+		cLog::get()->write("Subtitle: Unable to open the file for reading.", LOG_TYPE::L_ERROR);
 	}
 }
 
