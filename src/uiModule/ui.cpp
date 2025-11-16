@@ -835,7 +835,6 @@ void UI::handleDeal()
 // odd extension to prevent compilation from makefile but inclusion in make dist
 int flag_compass = 0;
 int flag_triangle = 0;
-int flag_creu = 0;
 int flag_f9 = 0;
 
 bool antipodes = false;
@@ -1160,13 +1159,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
-					if (flag_creu != 1) {
-						event = new ScriptEvent( IDIR+"internal/windrose.sts");
-						EventRecorder::getInstance()->queue(event);
-					}
-					else
-						core->setLandscape(current_landscape);
-					flag_creu = (flag_creu+1)%2;
+					event = new ScriptEvent( IDIR+"internal/windrose.sts");
+					EventRecorder::getInstance()->queue(event);
 					RESET_MOD(SUPER);
 					break;
 				case KWIN:
