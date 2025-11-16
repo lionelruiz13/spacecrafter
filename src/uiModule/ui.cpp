@@ -1273,8 +1273,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
-					event = new ScriptEvent( IDIR+"internal/equator_poles.sts");
-					EventRecorder::getInstance()->queue(event);
+					this->executeCommand("flag polar_circle toggle");
 					break;
 				default:
 					break;
