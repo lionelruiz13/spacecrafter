@@ -85,7 +85,7 @@ void Audio::musicLoad(const std::string& filename, bool _loop)
 		this->musicDrop();
 		state = A_STATE::V_NONE;
 	}
-	if (track = Mix_LoadMUS(filename.c_str())) {
+	if ((track = Mix_LoadMUS(filename.c_str()))) {
 		music_loaded = true;
 		music_isPlaying = false;
 		music_name = filename;

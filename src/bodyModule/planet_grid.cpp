@@ -139,7 +139,7 @@ void PlanetGrid::drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4
 
         // Copy vertices (position + color) into the buffer with transfer
         GridVertex *pStaticVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(staticGridBuffer->get()));
-        memcpy(pStaticVertices, staticGridVertices.data(), staticGridVertices.size() * sizeof(GridVertex));
+        std::copy(staticGridVertices.begin(), staticGridVertices.end(), pStaticVertices);
 
         // Index buffer - use indexBufferMgr like the others
         staticIndexSubBuffer = Context::instance->indexBufferMgr->acquireBuffer(staticGridIndices.size() * sizeof(uint16_t));

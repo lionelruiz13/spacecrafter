@@ -101,7 +101,7 @@ App::App( SDLFacade* const sdl )
 	settings = AppSettings::Instance();
 	InitParser conf;
 	settings->loadAppSettings( &conf );
-	if (renderSize = std::max(conf.getInt(SCS_VIDEO, SCK_RENDER_SIZE), 0))
+	if ((renderSize = std::max(conf.getInt(SCS_VIDEO, SCK_RENDER_SIZE), 0)))
 		VulkanMgr::instance->dedicatedViewport(renderSize, -renderSize);
 	Texture::setTextureDir(settings->getTextureDir());
 	Pipeline::setShaderDir(settings->getShaderDir());

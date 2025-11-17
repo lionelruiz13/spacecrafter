@@ -116,7 +116,7 @@ void SSystemFactory::reloadColors(const std::string& planetfile) {
             // Parse the line for planet colors
             std::istringstream iss(line);
             std::string propertyName;
-            int equalPos = line.find('=');
+            size_t equalPos = line.find('=');
             if (equalPos != std::string::npos) {
                 // Extract property name and trim whitespace
                 propertyName = line.substr(0, equalPos);

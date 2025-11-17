@@ -827,7 +827,7 @@ void Image::generateSphericalGeometry()
 
 	// Calculate required size for vertices and indices
 	// Vertex grid: (stacks+1) x (slices+1) vertices
-	int numVertices = (stacks + 1) * (slices + 1);
+	uint32_t numVertices = (stacks + 1) * (slices + 1);
 	// Index buffer: stacks x slices quads, each quad = 6 indices (2 triangles)
 	int numIndices = stacks * slices * 6;
 
@@ -890,7 +890,7 @@ void Image::generateSphericalGeometry()
 	// Prepare index data in local memory first
 	std::vector<uint32_t> indexData(numIndices);
 	uint32_t *currentIndex = indexData.data();
-	int actualIndices = 0;
+	uint32_t actualIndices = 0;
 
 	for (int stack = 0; stack < stacks; ++stack) {
 		for (int slice = 0; slice < slices; ++slice) {
