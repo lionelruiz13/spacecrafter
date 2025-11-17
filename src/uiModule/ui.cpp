@@ -2338,9 +2338,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case SUPER:
 					app->init();
-					// Useless, everything is reinit in app->init()
-					// event = new ScriptEvent( IDIR+"internal/initial.sts");
-					// EventRecorder::getInstance()->queue(event);
+					event = new ScriptEvent( IDIR+"internal/initial.sts");
+					EventRecorder::getInstance()->queue(event);
 					RESET_MOD(SUPER);
 					break;
 				case SHIFT:
