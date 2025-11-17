@@ -47,6 +47,7 @@ struct BackupWorkspace {
 	double longitude = 0.0;
 	double altitude = 0.f;
 	float fov = 0.f;
+	Vec3d observer_vision;
 	std::string home_planet_name;
 	MODULE current_module = MODULE::SOLAR_SYSTEM;
 	// std::string pos_name;

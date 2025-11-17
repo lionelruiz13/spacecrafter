@@ -77,6 +77,8 @@ void CoreBackup::loadBackup()
 		// Always move instantly to avoid issues with mode switching, landscape state, etc...
 		// (everything based on altitude)
 		core->observatory->moveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 0);
+		// Set the local vision direction
+		core->navigation->setLocalVision(mBackup.observer_vision);
 	}
 	core->setHomePlanet(mBackup.home_planet_name);
 }
@@ -89,6 +91,7 @@ void CoreBackup::saveBackup()
 	mBackup.altitude=core->observatory->getAltitude();
 	// mBackup.pos_name=core->observatory->getName();
 	mBackup.fov = core->projection->getFov(); //getFov();
+	mBackup.observer_vision = core->navigation->getLocalVision();
 	mBackup.home_planet_name=core->observatory->getHomePlanetEnglishName();
 	mBackup.current_module=core->getFlagIngalaxy();
 
@@ -119,6 +122,9 @@ void CoreBackup::saveBackup()
 	" lon=" << std::to_string(mBackup.longitude) <<
 	" alt=" << std::to_string(mBackup.altitude) <<
 	" fov=" << std::to_string(mBackup.fov) <<
+	" vision=[" << std::to_string(mBackup.observer_vision[0]) << ", "
+		<< std::to_string(mBackup.observer_vision[1]) << ", "
+		<< std::to_string(mBackup.observer_vision[2]) << "]" <<
 	" home_planet=" << mBackup.home_planet_name <<
 	" module=" << modulestr << std::endl;
 }
