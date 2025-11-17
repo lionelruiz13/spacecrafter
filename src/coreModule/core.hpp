@@ -252,6 +252,15 @@ public:
 		return auto_move_duration;
 	}
 
+	//! Set initial field of view
+	void setInitFov(double f) {
+		InitFov = f;
+	}
+	//! Get initial field of view
+	double getInitFov(void) const {
+		return InitFov;
+	}
+
 	//! Go and zoom temporarily to the selected object.
 	void autoZoomIn(float move_duration = 1.f, bool allow_manual_zoom = 1);
 

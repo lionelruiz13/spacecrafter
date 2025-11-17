@@ -313,6 +313,7 @@ void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES>
 	//m_set[ACP_SC_TULLY_COLOR_MODE] = SCD_NAMES::APP_TULLY_COLOR_MODE;
 	m_set[ACP_SC_DATETIME_DISPLAY_POSITION] = SCD_NAMES::APP_DATETIME_DISPLAY_POSITION;
 	m_set[ACP_SC_DATETIME_DISPLAY_NUMBER] = SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER;
+	m_set[ACP_SC_INIT_FOV] = SCD_NAMES::APP_INIT_FOV;
 
 	for (auto it = m_set.begin(); it != m_set.end(); ++it) {
         m_setToString.emplace(it->second, it->first);

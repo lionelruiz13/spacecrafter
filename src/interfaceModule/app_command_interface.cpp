@@ -1748,6 +1748,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(setValue)); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER: ui->setDateDisplayNumber(evalInt(setValue)); break;
+		case SCD_NAMES::APP_INIT_FOV: stcore->setInitFov(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_FLAG_NONE:
 						debug_message = "command_'set': unknown argument";
 						//for (const auto&i : args )
