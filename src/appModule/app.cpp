@@ -577,6 +577,16 @@ void App::init()
 	//set all color
 	core->setColorScheme(settings->getConfigFile(), SCS_COLOR);
 
+	// timerate rate 1
+	coreLink->timeSetFlagPause(false);
+	coreLink->timeSetSpeed(JD_SECOND); // 1x
+	// flag subtitle off
+	flag(APP_FLAG::SUBTITLE, false);
+	// landscape landing 1
+	core->setLandingLandscape(true, 0);
+	// media action stop
+	media->playerStop(false);
+
 	// play startup script
 	// on sauvegarde ici l'état des composants du logiciel.
 	coreBackup->saveGridState();
