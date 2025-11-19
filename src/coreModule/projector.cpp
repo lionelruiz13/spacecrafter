@@ -30,6 +30,7 @@
 #include "coreModule/projector.hpp"
 #include "tools/s_font.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
+#include "tools/context.hpp"
 
 #include <fcntl.h>
 //#include "tools/fmath.hpp"
@@ -185,12 +186,14 @@ void Projector::changeFov(double deltaFov)
 
 bool Projector::projectCustom(const Vec3d &v,Vec3d &win, const Mat4d &mat) const
 {
+	// Apply ModelView transformation
 	win[0] = mat.r[0]*v[0] + mat.r[4]*v[1] +  mat.r[8]*v[2] + mat.r[12];
 	win[1] = mat.r[1]*v[0] + mat.r[5]*v[1] +  mat.r[9]*v[2] + mat.r[13];
 	win[2] = mat.r[2]*v[0] + mat.r[6]*v[1] + mat.r[10]*v[2] + mat.r[14];
 	const double depth = win.length();
 	const double rq1 = win[0]*win[0]+win[1]*win[1];
 
+	// Handle degenerate case (looking at center)
 	if (rq1 <= 0 ) {
 		if (win[2] < 0.0) {
 			win[0] = viewport_center[0];
@@ -204,18 +207,45 @@ bool Projector::projectCustom(const Vec3d &v,Vec3d &win, const Mat4d &mat) const
 		return false;
 	}
 
-	const double oneoverh = 1.0/sqrt(rq1);
+	const double rq = sqrt(rq1);
+	const double oneoverh = 1.0/rq;
 
-	const double a = M_PI_2 + atan(win[2]*oneoverh);
+	// Calculate angle: asin(min(rq/depth, 1))
+	double f = asin(std::min(rq/depth, 1.0));
+	if (win[2] > 0)
+		f = M_PI - f;
 
-	double f = a * fisheye_scale_factor;
-	f *= viewport_radius * oneoverh;
+	// Apply projection-specific distortion based on Context::projectionType
+	switch(Context::projectionType) {
+		case 1: // ALLSPHERE
+		{
+			// High precision polynomial distortion matching shader
+			f = f * 1200.0;
+			f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
+			f = f / 1200.0;
+			break;
+		}
+		case 2: // EKISOLID - TODO: implement proper formula
+			// For now, use FISHEYE
+			break;
+		case 3: // ASPHERIC - TODO: implement proper formula
+			// For now, use FISHEYE
+			break;
+		default: // FISHEYE (case 0)
+			// No additional distortion needed
+			break;
+	}
 
+	// Scale by FOV and viewport
+	f /= (rq * fov * (M_PI/360.0));
+	f *= viewport_radius;
+
+	// Final projection
 	win[0] = viewport_center[0] + win[0] * f;
 	win[1] = viewport_center[1] + win[1] * f;
 
 	win[2] = (fabs(depth) - zNear) / (zFar-zNear);
-	return (a<0.97*M_PI) ? true : false;
+	return (f < 0.97*M_PI*viewport_radius/(fov*(M_PI/360.0))) ? true : false;
 
 }
 
@@ -257,11 +287,53 @@ bool Projector::projectCustomFixedFov(const Vec3d &v,Vec3d &win, const Mat4d &ma
 }
 
 
+// Helper function to invert ALLSPHERE polynomial distortion using Newton-Raphson
+static double invertAllspherePolynomial(double f_distorted) {
+	// We need to solve: polynomial(f * 1200) / 1200 = f_distorted
+	// Using Newton-Raphson iteration: f_new = f_old - (P(f_old) - target) / P'(f_old)
+	
+	double f = f_distorted; // Initial guess
+	const int max_iterations = 10;
+	const double tolerance = 1e-10;
+	
+	for (int i = 0; i < max_iterations; i++) {
+		double x = f * 1200.0;
+		
+		// Evaluate polynomial P(x)
+		double p = (((((((((-1.553958085e-26*x + 1.430207232e-22)*x -4.958391394e-19)*x + 8.938737084e-16)*x -9.39081162e-13)*x + 5.979121144e-10)*x -2.293161246e-7)*x + 4.995598119e-5)*x -5.508786926e-3)*x + 1.665135788)*x + 6.526610628e-2;
+		p = p / 1200.0;
+		
+		// Evaluate derivative P'(x) * 1200 (chain rule)
+		double dp = ((((((((-1.553958085e-26*10*x + 1.430207232e-22*9)*x -4.958391394e-19*8)*x + 8.938737084e-16*7)*x -9.39081162e-13*6)*x + 5.979121144e-10*5)*x -2.293161246e-7*4)*x + 4.995598119e-5*3)*x -5.508786926e-3*2)*x + 1.665135788;
+		
+		double error = p - f_distorted;
+		if (fabs(error) < tolerance)
+			return f;
+		
+		f = f - error / dp;
+	}
+	
+	return f;
+}
+
 void Projector::unproject(double x, double y, const Mat4d& m, Vec3d& v) const
 {
 	const auto pos = VulkanMgr::instance->screenToRect({x, y});
 	double length = sqrt(pos.first*pos.first + pos.second*pos.second);
-	const double angle_center = length * fov * (M_PI/360.);
+	double angle_center;
+	
+	switch(Context::projectionType) {
+		case 1: { // ALLSPHERE
+			double f = length * fov * (M_PI/360.);
+			f = invertAllspherePolynomial(f);
+			angle_center = f;
+			break;
+		}
+		default: // FISHEYE, EKISOLID, ASPHERIC
+			angle_center = length * fov * (M_PI/360.);
+			break;
+	}
+	
 	const double r = sin(angle_center);
 
 	if (length) {
@@ -280,7 +352,20 @@ void Projector::unproject(double x, double y, const Mat4d& m, Vec3d& v) const
 void Projector::unprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const
 {
 	double length = sqrt(x*x + y*y);
-	const double angle_center = length * fov * (M_PI/360.);
+	double angle_center;
+	
+	switch(Context::projectionType) {
+		case 1: { // ALLSPHERE
+			double f = length * fov * (M_PI/360.);
+			f = invertAllspherePolynomial(f);
+			angle_center = f;
+			break;
+		}
+		default: // FISHEYE, EKISOLID, ASPHERIC
+			angle_center = length * fov * (M_PI/360.);
+			break;
+	}
+	
 	const double r = sin(angle_center);
 
 	if (length) {

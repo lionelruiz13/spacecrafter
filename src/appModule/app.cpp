@@ -39,6 +39,7 @@
 #include "appModule/appDraw.hpp"
 #include "appModule/fps.hpp"
 #include "tools/app_settings.hpp"
+#include "mainModule/define_key.hpp"
 #include "appModule/save_screen_interface.hpp"
 #include "appModule/space_date.hpp"
 #include "appModule/screenFader.hpp"
@@ -47,6 +48,7 @@
 #include "coreModule/callbacks.hpp"
 #include "coreModule/core.hpp"
 #include "coreModule/coreLink.hpp"
+#include "coreModule/projector.hpp"
 #include "executorModule/executor.hpp"
 #include "eventModule/event_handler.hpp"
 #include "eventModule/event_recorder.hpp"
@@ -129,6 +131,11 @@ App::App( SDLFacade* const sdl )
 	s_texture::loadCache(settings->getUserDir() + "cache/", conf.getBoolean(SCS_MAIN, SCK_TEX_CACHE));
 	s_texture::setLoadingStrategy(conf.getStr(SCS_MAIN, SCK_TEXTURE_LOADING));
 	fontFactory = std::make_unique<FontFactory>();
+
+	// Get the projection mode
+	std::string projectionStr = conf.getStr(SCS_VIDEO, SCK_PROJECTION, "FISHEYE");
+	Context::projectionType = static_cast<int>(stringToProjectionType(projectionStr));
+	cLog::get()->write("Projection mode: " + projectionStr + " (type=" + std::to_string(Context::projectionType) + ")", LOG_TYPE::L_INFO);
 
 	media = std::make_shared<Media>(conf);
 	if (renderSize) {

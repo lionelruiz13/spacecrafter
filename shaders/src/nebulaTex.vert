@@ -12,7 +12,7 @@ layout (binding=1) uniform ubo {
 };
 
 #include <cam_block_only.glsl>
-#include <custom_project.glsl>
+#include <custom_project_advanced.glsl>
 
 layout (location=0) out vec2 texCoord;
 

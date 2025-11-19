@@ -31,6 +31,33 @@
 #include "starModule/sphere_geometry.hpp"
 //#include "tools/fmath.hpp"
 #include "tools/no_copy.hpp"
+#include <string>
+
+// Enum for projection types
+enum class ProjectionType : int {
+	FISHEYE = 0,
+	ALLSPHERE = 1,
+	EKISOLID = 2,
+	ASPHERIC = 3
+};
+
+// Convert string to ProjectionType
+inline ProjectionType stringToProjectionType(const std::string& str) {
+	if (str == "ALLSPHERE") return ProjectionType::ALLSPHERE;
+	if (str == "EKISOLID") return ProjectionType::EKISOLID;
+	if (str == "ASPHERIC") return ProjectionType::ASPHERIC;
+	return ProjectionType::FISHEYE; // Default
+}
+
+// Convert ProjectionType to string
+inline std::string projectionTypeToString(ProjectionType type) {
+	switch (type) {
+		case ProjectionType::ALLSPHERE: return "ALLSPHERE";
+		case ProjectionType::EKISOLID: return "EKISOLID";
+		case ProjectionType::ASPHERIC: return "ASPHERIC";
+		default: return "FISHEYE";
+	}
+}
 
 
 class s_font;

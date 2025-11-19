@@ -19,10 +19,10 @@ layout (push_constant) uniform ubo {
 layout (location=0) out float indice;
 
 #include <cam_block_only.glsl>
-#include <fisheye2D.glsl>
+#include <custom_project.glsl>
 
 void main()
 {
-	gl_Position = fisheye2D(position, main_clipping_fov[2]);
+	gl_Position = custom_project2D(position, ModelViewMatrix, main_clipping_fov[2]);
 	indice = (1.0-0.9*gl_VertexIndex/nbPoints)*fader;
 }

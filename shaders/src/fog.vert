@@ -13,17 +13,15 @@ layout (location=1)in vec2 texcoord;
 layout (binding=1, set=1) uniform ubo {
 	mat4 ModelViewMatrix;
 };
-//fisheye projection inclusion
-#include <fisheye.glsl>
-
 // for main_clipping_fov
 #include <cam_block_only.glsl>
+#include <custom_project.glsl>
 
 //out
 layout (location=0) out vec2 TexCoord;
 
 void main()
 {
-	gl_Position = fisheyeProject(position, vec3(main_clipping_fov));
+	gl_Position = custom_project(position, ModelViewMatrix, vec3(main_clipping_fov));
     TexCoord = texcoord;
 }

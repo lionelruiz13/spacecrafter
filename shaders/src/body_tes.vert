@@ -21,7 +21,7 @@ layout (binding=0) uniform globalProj {
 };
 
 #include <cam_block.glsl>
-#include <fisheye2D.glsl>
+#include <custom_project.glsl>
 
 layout(location=0) out vec3 PositionOut;
 layout(location=1) out vec2 TexCoord;
@@ -39,8 +39,8 @@ void main()
 
 	PositionOut = Position;
 	Position *= planetScaledRadius;
-	glPosition = vec4(vec2(fisheye2D(vec4(Position, 1), clipping_fov[2])),
-		vec2(fisheye2D(vec4(Position * (1. + TesParam[2]), 1), clipping_fov[2])));
+	glPosition = vec4(vec2(custom_project2D(vec4(Position, 1), ModelViewMatrix, clipping_fov[2])),
+		vec2(custom_project2D(vec4(Position * (1. + TesParam[2]), 1), ModelViewMatrix, clipping_fov[2])));
 	TexCoord = texcoord;
 	Normal = normal;
 }

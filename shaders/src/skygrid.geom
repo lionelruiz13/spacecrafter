@@ -12,7 +12,7 @@ layout (binding=0, set=1) uniform ubo {
 };
 
 #include <cam_block_only.glsl>
-#include <custom_project.glsl>
+#include <custom_project_advanced.glsl>
 
 layout (location=0) in float intensityColor[2];
 

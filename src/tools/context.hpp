@@ -157,6 +157,7 @@ public:
     static bool shadow_ready;
     static bool experimental_shadows;
     static bool default_experimental_shadows;
+    static int projectionType; // Projection type : 0=FISHEYE, 1=ALLSPHERE, 2=EKISOLID, 3=ASPHERIC
 
 private:
     void buildShadowPipeline(uint32_t begin, uint32_t end);

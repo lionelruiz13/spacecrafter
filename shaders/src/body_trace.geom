@@ -12,7 +12,7 @@ layout (line_strip , max_vertices = 2) out;
 layout (push_constant) uniform uMat {mat4 Mat;};
 
 #include <cam_block_only.glsl>
-#include <custom_project.glsl>
+#include <custom_project_advanced.glsl>
 
 void main(void)
 {

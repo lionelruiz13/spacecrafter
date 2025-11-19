@@ -14,12 +14,12 @@ layout (binding=0, set=1) uniform ubo {
     float radius;
 };
 
-#include <fisheye.glsl>
 #include <cam_block_only.glsl>
+#include <custom_project.glsl>
 
 void main()
 {
     fragTime = time;
     fPosition = position;
-    gl_Position = fisheyeProject(position * radius, clipping_fov);
+    gl_Position = custom_project(position * radius, ModelViewMatrix, clipping_fov);
 }

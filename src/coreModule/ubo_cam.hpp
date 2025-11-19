@@ -13,7 +13,7 @@ layout (std140) uniform cam_block
 	mat4 MVP2D;
 	float ambient;
 	float time;
-	bool allsphere
+	int projectionType;
 };
 */
 
@@ -27,7 +27,7 @@ struct UBOData {
 	Mat4f MVP2D;
 	float ambient;
 	float time;
-	VkBool32 allsphere;
+	int32_t projectionType;
 };
 
 class UBOCam {
@@ -36,7 +36,7 @@ private:
 	PipelineLayout *globalLayout;
 	Set *globalSet;
 	float time = 0;
-	bool lastAllsphere = false;
+	int lastProjectionType = 0;
 public:
 	UBOCam();
 	~UBOCam();
@@ -73,10 +73,10 @@ public:
 		return UBOdata->ambient;
 	}
 
-	void setAllsphere(bool state) {
-		if (state != lastAllsphere) {
-			UBOdata->allsphere = state;
-			lastAllsphere = state;
+	void setProjectionType(int type) {
+		if (type != lastProjectionType) {
+			UBOdata->projectionType = type;
+			lastProjectionType = type;
 		}
 	}
 

@@ -21,7 +21,7 @@ layout (binding=2) uniform custom {
 };
 
 #include <cam_block.glsl>
-#include <fisheye.glsl>
+#include <custom_project.glsl>
 
 //layout
 layout (location=0)in vec3 position;
@@ -47,7 +47,7 @@ void main()
 	Position0.x =position.x * planetScaledRadius;
 	Position0.y =position.y * planetScaledRadius;
 	Position0.z =position.z * planetScaledRadius * planetOneMinusOblateness;
-	gl_Position = fisheyeProject(Position0, clipping_fov);
+	gl_Position = custom_project(Position0, ModelViewMatrix, clipping_fov);
 
     //Light
 	vec3 positionL = planetRadius * position ;

@@ -21,7 +21,8 @@ layout (location=7) in mat3 ModelViewMatrix;
 layout (location=0) out vec3 outColor;
 layout (location=1) out float outAlpha;
 
-#include <fisheye2DNoMV.glsl>
+#include <cam_block.glsl>
+#include <custom_project.glsl>
 
 void main()
 {
@@ -49,5 +50,5 @@ void main()
     // outViewDirection = pos;
     // Compensate deviation
     // Project final position
-    gl_Position = vec4(fisheye2DNoMV(pos, fov), 0, 1);
+    gl_Position = custom_project2DNoMV(pos, fov);
 }

@@ -11,7 +11,8 @@ layout (push_constant) uniform ubo {
 	vec3 clipping_fov;
 };
 
-#include <fisheye.glsl>
+#include <cam_block.glsl>
+#include <custom_project.glsl>
 
 //layout
 layout (lines) in;
@@ -38,7 +39,7 @@ void main(void)
 	vec3 shift = (position[1] - pos) / nbLines;
 	while (--nbLines > 0) {
 		pos += shift;
-		gl_Position = fisheyeProjectClamped(pos, clipping_fov);
+		gl_Position = custom_projectClamped(pos, ModelViewMatrix, clipping_fov);
 		EmitVertex();
 	}
 	gl_Position = pos2;

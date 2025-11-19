@@ -4,7 +4,8 @@ layout (location=0) in vec3 position;
 layout (location=0) out vec3 pos;
 layout (location=1) out vec2 eyePos;
 
-#include <fisheye2DNoMV.glsl>
+#include <cam_block.glsl>
+#include <custom_project.glsl>
 
 // All positions are relative to the camera (camPos is at origin) - without projection
 layout (binding=0) uniform ubo {
@@ -25,5 +26,5 @@ void main()
     Position.z *= planetOneMinusOblateness;
     Position = vec3(ModelViewMatrix * vec4(Position, 1));
     pos = Position;
-    eyePos = fisheye2DNoMV(Position, clipping_fov[2]);
+    eyePos = custom_project2DNoMV(Position, clipping_fov[2]).xy;
 }

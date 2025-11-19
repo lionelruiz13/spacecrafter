@@ -9,11 +9,12 @@ layout (push_constant) uniform depthTraceInfo {
 
 layout (location=0) in vec3 position;
 
-#include <fisheye.glsl>
+#include <cam_block.glsl>
+#include <custom_project.glsl>
 
 void main()
 {
 	vec3 pos = position * planetScaledRadius;
 	pos.z *= planetOneMinusOblateness;
-	gl_Position = fisheyeProject(pos, clipping_fov);
+	gl_Position = custom_project(pos, ModelViewMatrix, clipping_fov);
 }

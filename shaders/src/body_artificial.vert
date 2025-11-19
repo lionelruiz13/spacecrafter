@@ -39,7 +39,7 @@ layout (binding=0, set=2) uniform custom {
 //uniform mat4 MVP;
 
 #include <cam_block_only.glsl> // for ambient
-#include <fisheye.glsl>
+#include <custom_project.glsl>
 
 void main()
 {
@@ -47,7 +47,7 @@ void main()
     TexCoord = VertexTexCoord;
     Normal = normalize(NormalMatrix * VertexNormal);
     Position = VertexPosition;
-	glPosition = fisheyeProject(VertexPosition, clipping_fov);
+	glPosition = custom_project(VertexPosition, ModelViewMatrix, clipping_fov);
 
     //~ gl_Position = MVP * vec4(VertexPosition,1.0);
     // gl_Position = MVP * posToFisheye(VertexPosition);

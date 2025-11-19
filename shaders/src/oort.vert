@@ -10,11 +10,11 @@ layout (binding=0, set=1) uniform uMat {
 	mat4 ModelViewMatrix;
 };
 
-#include <fisheye2D.glsl>
 #include <cam_block_only.glsl>
+#include <custom_project.glsl>
 
 void main(void)
 {
-	gl_Position = fisheye2D(Position, main_clipping_fov[2]);
+	gl_Position = custom_project2D(Position, ModelViewMatrix, main_clipping_fov[2]);
 	gl_PointSize = 1.5;
 }

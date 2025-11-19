@@ -17,16 +17,15 @@ layout (binding=4, set=1) uniform udata {
 	float fader;
 	bool hasAlphaChannel;
 };
-#include <fisheye.glsl>
-
 // for main_clipping_fov
 #include <cam_block_only.glsl>
+#include <custom_project.glsl>
 
 //out
 layout (location=0) out vec2 TexCoord;
 
 void main()
 {
-	gl_Position = fisheyeProject(position, vec3(main_clipping_fov));
+	gl_Position = custom_project(position, ModelViewMatrix, vec3(main_clipping_fov));
     TexCoord = texcoord;
 }

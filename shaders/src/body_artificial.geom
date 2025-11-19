@@ -19,7 +19,8 @@ layout (binding=1, set=2) uniform artGeom {
 	vec3 clipping_fov;
 };
 
-#include <fisheye.glsl>
+#include <cam_block.glsl>
+#include <custom_project.glsl>
 
 //in-out
 layout (location=0) in vec3 Position[3];

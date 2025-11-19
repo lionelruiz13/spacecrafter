@@ -19,7 +19,8 @@ layout (push_constant) uniform uMat {
 	float fov;
 };
 
-#include <fisheye2D.glsl>
+#include <cam_block.glsl>
+#include <custom_project.glsl>
 
 void main(void)
 {
@@ -39,7 +40,7 @@ void main(void)
 	vec4 shift = (position[1] - pos) / nbLines;
 	while (--nbLines > 0) {
 		pos += shift;
-		gl_Position = fisheye2D(pos, fov);
+		gl_Position = custom_project2D(pos, ModelViewMatrix, fov);
 		EmitVertex();
 	}
 

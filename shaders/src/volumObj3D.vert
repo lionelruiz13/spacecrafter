@@ -9,7 +9,8 @@ layout (binding=0) uniform ubo {
     vec3 clipping_fov;
 };
 
-#include <fisheyeNoMV.glsl>
+#include <cam_block.glsl>
+#include <custom_project.glsl>
 
 layout (location=0) in vec3 position;
 
@@ -21,5 +22,5 @@ void main()
     texOut = (position + 1) / 2;
     vec3 pos = vec3(ModelViewMatrix * vec4(position, 1.f));
     posOut = pos;
-    gl_Position = fisheyeProjectNoMV(pos, vec3(clipping_fov.x, clipping_fov.y, M_PI/2));
+    gl_Position = custom_projectNoMV(pos, vec3(clipping_fov.x, clipping_fov.y, M_PI/2));
 }

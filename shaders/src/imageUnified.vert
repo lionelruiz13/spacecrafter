@@ -16,7 +16,8 @@ layout (push_constant) uniform uVert {
 	mat4 ModelViewMatrix;
 	layout (offset=64) vec3 clipping_fov;
 };
-#include <fisheye.glsl>
+#include <cam_block.glsl>
+#include <custom_project.glsl>
 
 layout (location=0) out vec2 TexCoord;
 
@@ -24,6 +25,6 @@ layout (location=0) out vec2 TexCoord;
 
 void main()
 {
-	gl_Position = fisheyeProject(position, clipping_fov);
+	gl_Position = custom_project(position, ModelViewMatrix, clipping_fov);
 	TexCoord = texCoord;
 }
