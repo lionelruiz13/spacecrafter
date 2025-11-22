@@ -204,7 +204,7 @@ int main(int argc, const char *argv[])
 
 	// Open log files
 	Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
-	Log->openLog(LOG_FILE::SCRIPT, "script", true);
+	Log->openLog(LOG_FILE::SCRIPT, "script", false);
 	Log->openLog(LOG_FILE::TCP, "tcp");
 	Log->openLog(LOG_FILE::SHADER,"shader");
 	Log->openLog(LOG_FILE::VULKAN,"vulkan");
@@ -310,8 +310,8 @@ int main(int argc, const char *argv[])
 	// For windowless usage (like NDI), don't create sdl window, sdl->getWindow() must then return nullptr.
 	VulkanMgrCreateInfo vkmgrInfo {.AppName=APP_LOWER_NAME, .appVersion=VK_MAKE_API_VERSION(0, GETV(0), GETV(3), GETV(6)),
 		.window=sdl->getWindow(), .vulkanVersion=VK_API_VERSION_1_1, .width=curMin, .height=-curMin, .queueRequest={2, 0, 0, 1, 1},
-		.requiredExtensions={"VK_KHR_timeline_semaphore"},
-		.redirectLog=cLog::writeECLog, .cachePath=ini->getUserDir()+"cache/", .logPath=appDir+"log/",
+		.requiredExtensions={"VK_KHR_timeline_semaphore"}, //.redirectLog=cLog::writeECLog,
+		.cachePath=ini->getUserDir()+"cache/", .logPath=appDir+"log/",
 		.swapchainUsage = static_cast<VkImageUsageFlags>((renderSize <= 0) ? VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT),
 		.chunkSize=256, .forceSwapchainCount=3,
 		.enableDebugLayers=conf.getBoolean(SCS_DEBUG, SCK_DEBUG_LAYER), .drawLogs=conf.getBoolean(SCS_DEBUG, SCK_PRINT_LOG),

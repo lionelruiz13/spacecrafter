@@ -115,7 +115,7 @@ FIND_PACKAGE(PNG REQUIRED)
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${FFmpeg_INCLUDE_DIR})
-target_link_libraries(stdc++exp)
+link_libraries(stdc++exp)
 else()
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
 link_directories(${PROJECT_SOURCE_DIR}/lib)

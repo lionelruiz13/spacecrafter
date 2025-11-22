@@ -109,7 +109,7 @@ void Fps::watchdogMainloop()
 			std::ostringstream oss;
 			oss << stacktrace;
 			stackDumped.store(false, std::memory_order_relaxed);
-			cLog::get()->write(oss, LOG_TYPE::L_OTHER);
+			cLog::get()->write(oss, LOG_TYPE::L_OTHER, LOG_FILE::VULKAN);
 		}
 		#endif
 		const uint64_t currentFrame = numberFrames.load(std::memory_order_relaxed);
@@ -124,10 +124,10 @@ void Fps::watchdogMainloop()
 					#ifdef __linux__
 					kill(pid, SIGUSR1);
 					#endif
-					cLog::get()->write("Frame stall detected", LOG_TYPE::L_WARNING);
+					cLog::get()->write("Frame stall detected", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
 					break;
 				case 20:
-					cLog::get()->write("This frame stall is very long", LOG_TYPE::L_WARNING);
+					cLog::get()->write("This frame stall is very long", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
 					break;
 			}
 		}

@@ -171,6 +171,7 @@ private:
 	bool enable_tcp;
 	bool enable_mkfifo;
 	bool flagMasterput;
+	bool timeoutacquire = false;
 
 
 	// External class

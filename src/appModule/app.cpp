@@ -739,13 +739,17 @@ void App::draw(int delta_time)
 				vkmgr.putLog("Suboptimal swapchain", LogType::WARNING);
 				break;
 			case VK_TIMEOUT:
-				vkmgr.putLog("Timeout for swapchain acquire", LogType::WARNING);
+				if (!timeoutacquire) {
+					vkmgr.putLog("Timeout for swapchain acquire", LogType::WARNING);
+					timeoutacquire = true;
+				}
 				return;
 			default:
 				vkmgr.putLog("Invalid swapchain", LogType::ERROR);
 				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 				return;
 		}
+		timeoutacquire = false;
 		res = vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, WAIT_TIME);
 		if (res != VK_SUCCESS) {
 			switch (res) {
