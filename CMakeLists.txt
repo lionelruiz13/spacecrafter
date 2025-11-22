@@ -26,7 +26,7 @@ CONFIGURE_FILE (
   "${CMAKE_CURRENT_SOURCE_DIR}/src/config.h"
   )
 
-set (CMAKE_CXX_STANDARD 20)
+set (CMAKE_CXX_STANDARD 23)
 
 ################# plateform configuration ############################
 
@@ -48,13 +48,13 @@ message("---------------------------------------------")
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
-  message("Build type empty, so it's fixed to debug mode. Use -DCMAKE_BUILD_TYPE=Release to activate release mode")
+  message("Build type empty, so it's fixed to debug mode. Use -DCMAKE_BUILD_TYPE=Release to activate release mode or -DCMAKE_BUILD_TYPE=LocalRelease to take advantage of the currently installed CPU's instructions")
   #set(CMAKE_BUILD_TYPE "Debug")
 endif(NOT CMAKE_BUILD_TYPE)
 
 if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-  SET(CMAKE_C_FLAGS "-ggdb3 -Wextra -Wall -Wfatal-errors -Wno-unused-parameter -Wunreachable-code")
-  SET(CMAKE_CXX_FLAGS "-ggdb3 -Wextra -Wall -Wno-unused-parameter -Wmissing-declarations -Wredundant-decls -Wunreachable-code -fconcepts")
+  SET(CMAKE_C_FLAGS "-ggdb3 -Og -Wextra -Wall -Wfatal-errors -Wno-unused-parameter -Wunreachable-code")
+  SET(CMAKE_CXX_FLAGS "-ggdb3 -Og -Wextra -Wall -Wno-unused-parameter -Wmissing-declarations -Wredundant-decls -Wunreachable-code -fconcepts")
   message("Build type Debug. Use -DCMAKE_BUILD_TYPE=Release to activate Release mode")
 endif()
 
@@ -66,17 +66,20 @@ endif()
 message("Build type Release. Use -DCMAKE_BUILD_TYPE=Debug to activate Debug mode")
 endif()
 
+if( CMAKE_BUILD_TYPE STREQUAL "LocalRelease" )
+if(UNIX)
+SET(CMAKE_C_FLAGS "-ggdb3 -Ofast -Wall -march=native")
+SET(CMAKE_CXX_FLAGS "-ggdb3 -Ofast -Wall -fconcepts -march=native")
+endif()
+message("Build type Release. Use -DCMAKE_BUILD_TYPE=Debug to activate Debug mode")
+endif()
+
 if( CMAKE_BUILD_TYPE STREQUAL "Coverage" )
 SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
 SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage -fconcepts")
 message("Build type Coverage. Use -DCMAKE_BUILD_TYPE=Release to activate Release mode")
 endif()
 
-###########  additional compile flags ###########
-if(UNIX)
-# SET(CMAKE_C_FLAGS "-g -Wextra -Wall -Wno-ignored-qualifiers -Wno-unused-parameter")
-# SET(CMAKE_CXX_FLAGS "-g -Wextra -Wall -Wno-ignored-qualifiers -Wno-unused-parameter")
-endif()
 
 ########### Find packages ###########
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
@@ -112,6 +115,7 @@ FIND_PACKAGE(PNG REQUIRED)
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${FFmpeg_INCLUDE_DIR})
+target_link_libraries(stdc++exp)
 else()
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
 link_directories(${PROJECT_SOURCE_DIR}/lib)

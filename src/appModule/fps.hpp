@@ -50,10 +50,7 @@
 */
 class Fps  : public NoCopy {
 public:
-	Fps() : watchdog(&Fps::watchdogMainloop, this)
-	{
-		selectMaxFps();
-	}
+	Fps();
 	~Fps()
 	{
 		active = false;
@@ -100,8 +97,11 @@ public:
 	}
 
 	void watchdogMainloop();
+
 private:
+	static void sigstacktrace(int);
 	std::atomic<uint64_t> numberFrames=0;
+	uint64_t pid=0U;
 	double videoFPS=30.;
 	double maxFPS=30.;
 	std::chrono::steady_clock::duration frameDuration;
