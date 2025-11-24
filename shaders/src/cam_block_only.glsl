@@ -7,5 +7,4 @@ layout (set = 0, binding = 0) uniform cam_block
 	mat4 MVP2D;
 	float ambient;
 	float time;
-	int projectionType;
 };

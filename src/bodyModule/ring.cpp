@@ -125,6 +125,8 @@ void Ring::createSC_context()
 	pipeline->bindVertex(*vertex);
 	pipeline->bindShader("ring_planet.vert.spv");
 	pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
 	pipeline->bindShader("ring_planet.frag.spv");
 	pipeline->build();
 
@@ -136,6 +138,8 @@ void Ring::createSC_context()
 	pipelineDepthTrace->removeVertexEntry(1);
 	pipelineDepthTrace->bindShader("body_depth_trace.vert.spv");
 	pipelineDepthTrace->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipelineDepthTrace->setSpecializedConstant(8, Context::projectionType);
 	pipelineDepthTrace->build("depthTraceRing");
 
 	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), -1, false, true);
@@ -170,6 +174,8 @@ void Ring::createSC_context()
 	pipelineAsteroid->bindShader("ring_test.vert.spv");
 	pipelineAsteroid->setSpecializedConstant(0, asteroid_radius);
 	pipelineAsteroid->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipelineAsteroid->setSpecializedConstant(8, Context::projectionType);
 	pipelineAsteroid->bindShader("ring_test.frag.spv");
 	pipelineAsteroid->build();
 

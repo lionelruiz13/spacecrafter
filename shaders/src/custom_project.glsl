@@ -1,5 +1,9 @@
 #define M_PI 3.14159265358979323846
 
+// Current projectionType, using specialization constant for better optimization ("compiled" at pipeline creation)
+// Fisheye = 0, Allsphere = 1, Ekisolid = 2, Aspheric = 3
+layout(constant_id = 8) const int projectionType = 0;
+
 // ================================ STANDARD =================================
 // FISHEYE PROJECTION
 vec4 fisheyeProjectCustom(vec3 invec, mat4 ModelViewMatrix, vec3 clipping_fov)

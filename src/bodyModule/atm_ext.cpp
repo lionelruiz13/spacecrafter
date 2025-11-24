@@ -34,6 +34,8 @@ public:
         pipeline.setBlendMode(tmp);
         pipeline.bindShader("atm.vert.spv");
         pipeline.setSpecializedConstant(7, Context::instance->isFloat64Supported);
+        // Set specialization constant for projection type (constant_id = 8)
+        pipeline.setSpecializedConstant(8, Context::projectionType);
         pipeline.bindShader("atm.tesc.spv");
         pipeline.bindShader("atm.tese.spv");
         pipeline.setSpecializedConstant(7, Context::instance->isFloat64Supported);
@@ -52,6 +54,8 @@ public:
         pipelineNoDepth.setBlendMode(tmp);
         pipelineNoDepth.bindShader("atm.vert.spv");
         pipelineNoDepth.setSpecializedConstant(7, Context::instance->isFloat64Supported);
+        // Set specialization constant for projection type (constant_id = 8)
+        pipelineNoDepth.setSpecializedConstant(8, Context::projectionType);
         pipelineNoDepth.bindShader("atm.tesc.spv");
         pipelineNoDepth.bindShader("atm.tese.spv");
         pipelineNoDepth.setSpecializedConstant(7, Context::instance->isFloat64Supported);

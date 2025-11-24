@@ -139,6 +139,8 @@ void Landscape::createSC_context()
 		pipeline[i].bindVertex(*vertexModel);
 		pipeline[i].bindShader("landscape.vert.spv");
 		pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+		// Set specialization constant for projection type (constant_id = 8)
+		pipeline[i].setSpecializedConstant(8, Context::projectionType);
 		pipeline[i].bindShader("landscape.geom.spv");
 		pipeline[i].bindShader((i == 0) ? "landscapeNightTexture.frag.spv" : "landscape.frag.spv");
 		pipeline[i].build();

@@ -204,6 +204,8 @@ void PlanetGrid::createSC_context()
     pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST); // Independent lines for index buffer
     pipeline->setLineWidth(1.5);
     pipeline->bindShader("planet_grid.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+    // Set specialization constant for projection type (constant_id = 8)
+    pipeline->setSpecializedConstant(8, Context::projectionType);
     pipeline->bindShader("planet_grid.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
     pipeline->bindVertex(*vertexModel);
     pipeline->build();

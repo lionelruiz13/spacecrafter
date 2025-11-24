@@ -21,7 +21,6 @@ layout (location=7) in mat3 ModelViewMatrix;
 layout (location=0) out vec3 outColor;
 layout (location=1) out float outAlpha;
 
-#include <cam_block.glsl>
 #include <custom_project.glsl>
 
 void main()

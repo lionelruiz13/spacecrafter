@@ -93,6 +93,8 @@ void Tully::createSC_context()
 		VkBool32 whiteColor = (i & 1);
 		pipelinePoints[i].setSpecializedConstant(0, &whiteColor, sizeof(whiteColor));
 		pipelinePoints[i].bindShader("tully.geom.spv");
+		// Set specialization constant for projection type (constant_id = 8)
+		pipelinePoints[i].setSpecializedConstant(8, Context::projectionType);
 		pipelinePoints[i].bindShader("tully.frag.spv");
 		pipelinePoints[i].build();
 	}
@@ -122,6 +124,8 @@ void Tully::createSC_context()
 		pipelineSquare[i].bindVertex(*m_squareGL);
 		pipelineSquare[i].bindShader("tullyH.vert.spv");
 		pipelineSquare[i].bindShader("tullyH.geom.spv");
+		// Set specialization constant for projection type (constant_id = 8)
+		pipelineSquare[i].setSpecializedConstant(8, Context::projectionType);
 		pipelineSquare[i].bindShader("tullyH.frag.spv");
 		pipelineSquare[i].build();
 	}

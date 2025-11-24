@@ -100,6 +100,8 @@ void SkyDisplay::createSC_context()
 	pipeline->bindVertex(*vertexModel);
 	pipeline->bindShader("person.vert.spv");
 	pipeline->bindShader("person.geom.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
 	pipeline->bindShader("person.frag.spv");
 	pipeline->build();
 	set = new Set(vkmgr, *context.setMgr, layout);

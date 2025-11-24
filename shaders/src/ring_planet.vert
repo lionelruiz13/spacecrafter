@@ -18,7 +18,6 @@ layout (binding=0, set=0) uniform ubo {
 	float fadingFactor;
 };
 
-#include <cam_block.glsl>
 #include <custom_project.glsl>
 
 //layout

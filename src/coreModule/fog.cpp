@@ -78,6 +78,8 @@ void Fog::createSC_context()
 	pipeline->bindVertex(*vertexModel);
 	pipeline->bindShader("fog.vert.spv");
 	pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
 	pipeline->bindShader("fog.frag.spv");
 	pipeline->build();
 	set = new Set(vkmgr, *context.setMgr, layout);

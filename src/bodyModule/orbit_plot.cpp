@@ -69,6 +69,8 @@ void OrbitPlot::createSC_context()
 	pipelineOrbit2d->setDepthStencilMode();
 	pipelineOrbit2d->bindVertex(*m_Orbit);
 	pipelineOrbit2d->bindShader("body_orbit2d.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipelineOrbit2d->setSpecializedConstant(8, Context::projectionType);
 	pipelineOrbit2d->bindShader("body_orbit2d.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
 	pipelineOrbit2d->bindShader("body_orbit2d.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	pipelineOrbit2d->build();
@@ -84,6 +86,8 @@ void OrbitPlot::createSC_context()
 	pipelineOrbit3d->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
 	pipelineOrbit3d->bindVertex(*m_Orbit);
 	pipelineOrbit3d->bindShader("body_orbit3d.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipelineOrbit3d->setSpecializedConstant(8, Context::projectionType);
 	pipelineOrbit3d->bindShader("body_orbit3d.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
 	pipelineOrbit3d->bindShader("body_orbit3d.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	pipelineOrbit3d->build();

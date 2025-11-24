@@ -1,8 +1,12 @@
 #define M_PI 3.14159265358979323846
 
 // Advanced custom projection for nebulaTex.vert
-// Requires: Mat (mat4), main_clipping_fov (vec4), viewport_center (ivec4), projectionType (int)
+// Requires: Mat (mat4), main_clipping_fov (vec4), viewport_center (ivec4)
 // These should be defined by including cam_block before this file
+
+// Current projectionType, using specialization constant for better optimization ("compiled" at pipeline creation)
+// Fisheye = 0, Allsphere = 1, Ekisolid = 2, Aspheric = 3
+layout(constant_id = 8) const int projectionType = 0;
 
 vec4 custom_project(vec4 invec)
 {

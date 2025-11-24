@@ -16,7 +16,6 @@ layout (push_constant) uniform uMat {
 	float fov;
 };
 
-#include <cam_block.glsl>
 #include <custom_project.glsl>
 
 void main()

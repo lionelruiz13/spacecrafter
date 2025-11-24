@@ -11,7 +11,6 @@ layout (push_constant) uniform ubo {
 	vec3 clipping_fov;
 };
 
-#include <cam_block.glsl>
 #include <custom_project.glsl>
 
 //layout

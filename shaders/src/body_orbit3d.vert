@@ -15,7 +15,6 @@ layout (push_constant) uniform uMat {
 layout (location=0) in vec3 position;
 layout (location=0) out vec3 pos;
 
-#include <cam_block.glsl>
 #include <custom_project.glsl>
 
 void main()

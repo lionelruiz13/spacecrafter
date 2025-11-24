@@ -92,6 +92,8 @@ void BodyTrace::createSC_context()
 	pipeline->bindVertex(*pattern);
 	pipeline->bindShader("body_trace.vert.spv");
 	pipeline->bindShader("body_trace.geom.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
 	pipeline->bindShader("body_trace.frag.spv");
 	pipeline->build();
 

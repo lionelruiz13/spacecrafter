@@ -218,6 +218,8 @@ void OjmMgr::createShader()
 		pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		pipeline[i].bindShader("shaderOJM_noSUN.vert.spv");
 		pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+		// Set specialization constant for projection type (constant_id = 8)
+		pipeline[i].setSpecializedConstant(8, Context::projectionType);
 		pipeline[i].bindShader((i == 0) ? "shaderOJM_noSUN_tex.frag.spv" : "shaderOJM_noSUN_notex.frag.spv");
 		pipeline[i].build();
 	}

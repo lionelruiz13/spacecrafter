@@ -272,6 +272,8 @@ void Image::createSC_context()
 		m_pipelineUnified[i]->bindVertex(*m_imageUnifiedGL);
 		m_pipelineUnified[i]->bindShader("imageUnified.vert.spv");
 		m_pipelineUnified[i]->setSpecializedConstant(7, context.isFloat64Supported);
+		// Set specialization constant for projection type (constant_id = 8)
+		m_pipelineUnified[i]->setSpecializedConstant(8, Context::projectionType);
 
 		m_pipelineViewport[i] = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
 		context.pipelines.emplace_back(m_pipelineViewport[i]);
@@ -290,6 +292,8 @@ void Image::createSC_context()
 		m_pipelineSphere[i]->bindVertex(*m_imageSphereGL);
 		m_pipelineSphere[i]->bindShader("imageUnified.vert.spv");
 		m_pipelineSphere[i]->setSpecializedConstant(7, context.isFloat64Supported);
+		// Set specialization constant for projection type (constant_id = 8)
+		m_pipelineSphere[i]->setSpecializedConstant(8, Context::projectionType);
 	}
 	m_pipelineUnified[0]->bindShader("imageUnifiedRGB.frag.spv");
 	m_pipelineUnified[1]->bindShader("imageUnifiedRGBTransparency.frag.spv");
@@ -327,6 +331,8 @@ void Image::createSC_context()
 	m_pipelineYUVAUnified->setCullMode(true);
 	m_pipelineYUVAUnified->bindVertex(*m_imageUnifiedGL);
 	m_pipelineYUVAUnified->bindShader("imageUnified.vert.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	m_pipelineYUVAUnified->setSpecializedConstant(8, Context::projectionType);
 	m_pipelineYUVAUnified->bindShader("imageUnifiedYUVA.frag.spv");
 	m_pipelineYUVAUnified->setSpecializedConstant(7, context.isFloat64Supported);
 	m_pipelineYUVAUnified->build();
@@ -339,6 +345,8 @@ void Image::createSC_context()
 	m_pipelineYUVASphere->setFrontFace();
 	m_pipelineYUVASphere->bindVertex(*m_imageSphereGL);
 	m_pipelineYUVASphere->bindShader("imageUnified.vert.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	m_pipelineYUVASphere->setSpecializedConstant(8, Context::projectionType);
 	m_pipelineYUVASphere->bindShader("imageUnifiedYUVA.frag.spv");
 	m_pipelineYUVASphere->setSpecializedConstant(7, context.isFloat64Supported);
 	m_pipelineYUVASphere->build();

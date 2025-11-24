@@ -107,6 +107,8 @@ struct TailContext {
         pipeline.bindLayout(layout);
         pipeline.bindVertex(pattern);
         pipeline.bindShader("body_tail.vert.spv");
+        // Set specialization constant for projection type (constant_id = 8)
+        pipeline.setSpecializedConstant(8, Context::projectionType);
         pipeline.bindShader("body_tail.frag.spv");
         pipeline.setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, true);
         pipeline.setCullMode(true);

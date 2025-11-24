@@ -324,6 +324,8 @@ void Nebula::createSC_context()
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 	pipeline->bindVertex(*m_texGL);
 	pipeline->bindShader("nebulaTex.vert.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
 	pipeline->bindShader("nebulaTex.geom.spv");
 	pipeline->bindShader("nebulaTex.frag.spv");
 	pipeline->build();

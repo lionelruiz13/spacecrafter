@@ -107,6 +107,8 @@ void SkyGrid::createShader()
     pipeline->bindVertex(*m_dataGL);
     pipeline->bindShader("skygrid.vert.spv");
     pipeline->bindShader("skygrid.geom.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
     pipeline->bindShader("skygrid.frag.spv");
     pipeline->build();
     set = new Set(vkmgr, *context.setMgr, layout);

@@ -4,7 +4,6 @@ layout (location=0) in vec3 position;
 layout (location=0) out vec3 pos;
 layout (location=1) out vec2 eyePos;
 
-#include <cam_block.glsl>
 #include <custom_project.glsl>
 
 // All positions are relative to the camera (camPos is at origin) - without projection

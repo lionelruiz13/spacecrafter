@@ -84,6 +84,8 @@ CloudNavigator::CloudNavigator(const std::string &filename)
     pipeline->bindVertex(*vertexArray);
     pipeline->bindShader("cloud3D.vert.spv");
     pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
     pipeline->bindShader("cloud3D.tesc.spv");
     pipeline->bindShader("cloud3D.tese.spv");
     pipeline->setSpecializedConstant(7, context.isFloat64Supported);

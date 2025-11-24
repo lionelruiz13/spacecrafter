@@ -12,7 +12,6 @@ layout (binding=1) uniform fov {
     vec3 clipping_fov;
 };
 
-#include <cam_block.glsl>
 #include <custom_project.glsl>
 
 layout (location=0) in vec3 position;

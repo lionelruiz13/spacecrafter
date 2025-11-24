@@ -200,6 +200,8 @@ void Trail::createSC_context()
     pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
     pipeline->bindVertex(*m_dataGL);
     pipeline->bindShader("body_trail.vert.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
     pipeline->bindShader("body_trail.geom.spv");
     pipeline->bindShader("body_trail.frag.spv");
     pipeline->build();

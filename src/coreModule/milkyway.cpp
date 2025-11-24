@@ -82,6 +82,8 @@ void MilkyWay::createSC_context()
 		pipelineMilky[i].removeVertexEntry(2);
 		pipelineMilky[i].bindShader("milkyway.vert.spv");
 		pipelineMilky[i].setSpecializedConstant(7, context.isFloat64Supported);
+		// Set specialization constant for projection type (constant_id = 8)
+		pipelineMilky[i].setSpecializedConstant(8, Context::projectionType);
 		pipelineMilky[i].bindShader("milkyway.geom.spv");
 		pipelineMilky[i].bindShader(i == 0 ? "milkywayTwoTex.frag.spv" : "milkywayOneTex.frag.spv");
 		pipelineMilky[i].build();
@@ -277,6 +279,8 @@ void MilkyWay::buildZodiacal()
 	sphere->bind(*pipelineZodiacal);
 	pipelineZodiacal->removeVertexEntry(2);
 	pipelineZodiacal->bindShader("milkyway.vert.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	pipelineZodiacal->setSpecializedConstant(8, Context::projectionType);
 	pipelineZodiacal->bindShader("milkyway.geom.spv");
 	pipelineZodiacal->bindShader("zodiacal.frag.spv");
 	pipelineZodiacal->build();

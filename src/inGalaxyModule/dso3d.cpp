@@ -71,6 +71,8 @@ void Dso3d::createSC_context()
 	pipeline->bindVertex(*sData);
 	pipeline->bindShader("dso3d.vert.spv");
 	pipeline->bindShader("dso3d.geom.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
 	pipeline->bindShader("dso3d.frag.spv");
 	pipeline->build();
 

@@ -13,7 +13,6 @@ layout (binding=0, set=0) uniform ubo {
 
 layout (constant_id = 0) const float scale = 1.;
 
-#include <cam_block.glsl>
 #include <custom_project.glsl>
 
 layout (location=0) in vec3 position;

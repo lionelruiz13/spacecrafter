@@ -13,7 +13,6 @@ layout (std140) uniform cam_block
 	mat4 MVP2D;
 	float ambient;
 	float time;
-	int projectionType;
 };
 */
 
@@ -21,13 +20,14 @@ layout (std140) uniform cam_block
 #include "EntityCore/Resource/SharedBuffer.hpp"
 
 struct UBOData {
-	Vec4i viewport;
-	Vec4i viewport_center;
-	Vec4f main_clipping_fov;
-	Mat4f MVP2D;
-	float ambient;
-	float time;
-	int32_t projectionType;
+	Vec4i viewport;				// offset 0 (16 bytes)
+	Vec4i viewport_center;		// offset 16 (16 bytes)
+	Vec4f main_clipping_fov;  	// offset 32 (16 bytes)
+	Mat4f MVP2D;				// offset 48 (64 bytes) (4 x 16 bytes)
+	float ambient; 				// offset 112 (4 bytes)
+	float time; 				// offset 116 (4 bytes)
+	float _pad1;				// offset 120 (4 bytes)
+	float _pad2;				// offset 124 (4 bytes)
 };
 
 class UBOCam {
@@ -36,7 +36,6 @@ private:
 	PipelineLayout *globalLayout;
 	Set *globalSet;
 	float time = 0;
-	int lastProjectionType = 0;
 public:
 	UBOCam();
 	~UBOCam();
@@ -71,13 +70,6 @@ public:
 
 	float getAmbientLight() {
 		return UBOdata->ambient;
-	}
-
-	void setProjectionType(int type) {
-		if (type != lastProjectionType) {
-			UBOdata->projectionType = type;
-			lastProjectionType = type;
-		}
 	}
 
 	static SharedBuffer<UBOData> *ubo;

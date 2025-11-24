@@ -207,6 +207,8 @@ void Sun::createSunShader()
     pipelineSun->removeVertexEntry(2);
     pipelineSun->bindShader("body_sun.vert.spv");
     pipelineSun->setSpecializedConstant(7, context.isFloat64Supported);
+    // Set specialization constant for projection type (constant_id = 8)
+    pipelineSun->setSpecializedConstant(8, Context::projectionType);
     pipelineSun->bindShader("body_sun.frag.spv");
     pipelineSunNoDepth = std::unique_ptr<Pipeline>(pipelineSun->clone("Body Sun noDepth"));
     pipelineSunNoDepth->setDepthStencilMode();
