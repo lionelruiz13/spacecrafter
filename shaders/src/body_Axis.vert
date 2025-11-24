@@ -7,11 +7,20 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-layout (location=0) in vec4 position;
+layout (location=0) in vec3 position; // 3D position in object space
 
-// layout (push_constant) uniform uMVP {mat4 MVP;};
+layout (push_constant) uniform pushConstants {
+    mat4 ModelViewMatrix;
+    vec3 clipping_fov;
+};
+
+#include <custom_project.glsl>
 
 void main()
 {
-	gl_Position = position;
+    // Transform to eye space first
+	vec4 eyePos = ModelViewMatrix * vec4(position, 1.0);
+
+	// Projection
+	gl_Position = custom_projectNoMV(eyePos.xyz, clipping_fov);
 }
