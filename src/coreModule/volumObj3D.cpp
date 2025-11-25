@@ -105,6 +105,8 @@ struct VolumObj3D::Shared {
             pipeline[i].bindShader("volumObj3D.tesc.spv");
             pipeline[i].bindShader("volumObj3D.tese.spv");
             pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+            // Set specialization constant for projection type (constant_id = 8)
+            pipeline[i].setSpecializedConstant(8, Context::projectionType);
             pipeline[i].bindShader((i & PS_PACKED) ? "volumObj3DPacked.frag.spv" : "volumObj3D.frag.spv");
         }
 

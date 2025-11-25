@@ -88,6 +88,8 @@ DsoNavigator::DsoNavigator()
     pipeline->bindShader("obj3D.tesc.spv");
     pipeline->bindShader("obj3D.tese.spv");
     pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
     pipeline->bindShader("obj3D.frag.spv");
     float maxLod = 0;
     pipeline->setSpecializedConstant(0, &maxLod, sizeof(maxLod));
