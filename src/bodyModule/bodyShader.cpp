@@ -244,6 +244,8 @@ void BodyShader::createShader()
 	shaderNormalTes.pipeline->bindShader("body_tes.tesc.spv");
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.tese.spv");
 	shaderNormalTes.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	shaderNormalTes.pipeline->setSpecializedConstant(8, Context::projectionType);
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.frag.spv");
 	shaderNormalTes.pipelineNoDepth = shaderNormalTes.pipeline->clone("shaderNormalTes noDepth");
 	shaderNormalTes.pipelineNoDepth->setDepthStencilMode();
