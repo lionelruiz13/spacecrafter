@@ -72,6 +72,8 @@ void OrbitPlot::createSC_context()
 	// Set specialization constant for projection type (constant_id = 8)
 	pipelineOrbit2d->setSpecializedConstant(8, Context::projectionType);
 	pipelineOrbit2d->bindShader("body_orbit2d.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipelineOrbit2d->setSpecializedConstant(8, Context::projectionType);
 	pipelineOrbit2d->bindShader("body_orbit2d.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	pipelineOrbit2d->build();
 
@@ -89,6 +91,8 @@ void OrbitPlot::createSC_context()
 	// Set specialization constant for projection type (constant_id = 8)
 	pipelineOrbit3d->setSpecializedConstant(8, Context::projectionType);
 	pipelineOrbit3d->bindShader("body_orbit3d.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipelineOrbit3d->setSpecializedConstant(8, Context::projectionType);
 	pipelineOrbit3d->bindShader("body_orbit3d.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	pipelineOrbit3d->build();
 }

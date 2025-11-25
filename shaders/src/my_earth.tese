@@ -23,7 +23,7 @@ layout (binding=0) uniform globalProj {
 };
 
 #include <cam_block.glsl>
-#include <fisheye.glsl>
+#include <custom_project.glsl>
 
 layout (binding=2) uniform globalTescGeom {
 	ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
@@ -51,7 +51,7 @@ void main()
     vec2 TexCoord = TexCoordIn[0]*gl_TessCoord.x+
                     TexCoordIn[1]*gl_TessCoord.y+
                     TexCoordIn[2]*gl_TessCoord.z;
-    gl_Position = fisheyeProject(position * planetScaledRadius * (1.0+texture(heightmapTexture,TexCoord).x * coeffHeightMap), clipping_fov);
+    gl_Position = custom_project(position * planetScaledRadius * (1.0+texture(heightmapTexture,TexCoord).x * coeffHeightMap), ModelViewMatrix, clipping_fov);
     position = vec3(ModelViewMatrix * vec4(position * planetRadius, 1));
     PositionOut = position;
     TexCoordOut = TexCoord;

@@ -39,6 +39,8 @@ public:
         pipeline.bindShader("atm.tesc.spv");
         pipeline.bindShader("atm.tese.spv");
         pipeline.setSpecializedConstant(7, Context::instance->isFloat64Supported);
+        // Set specialization constant for projection type (constant_id = 8)
+        pipeline.setSpecializedConstant(8, Context::projectionType);
         pipeline.bindShader("atm.frag.spv");
         pipeline.build("AtmExt");
 
@@ -59,6 +61,8 @@ public:
         pipelineNoDepth.bindShader("atm.tesc.spv");
         pipelineNoDepth.bindShader("atm.tese.spv");
         pipelineNoDepth.setSpecializedConstant(7, Context::instance->isFloat64Supported);
+        // Set specialization constant for projection type (constant_id = 8)
+        pipelineNoDepth.setSpecializedConstant(8, Context::projectionType);
         pipelineNoDepth.bindShader("atm.frag.spv");
         pipelineNoDepth.build("AtmExt noDepth");
     }
