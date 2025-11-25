@@ -11,7 +11,6 @@ layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
 layout (location=2)in vec3 normal;
 
-//fisheye projection inclusion
 layout (binding=4, set=1) uniform udata {
 	mat4 ModelViewMatrix;
 	float fader;
@@ -19,6 +18,7 @@ layout (binding=4, set=1) uniform udata {
 };
 // for main_clipping_fov
 #include <cam_block_only.glsl>
+//custom projection inclusion
 #include <custom_project.glsl>
 
 //out

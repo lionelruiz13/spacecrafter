@@ -42,7 +42,7 @@ layout (location=5) out vec3 ViewDirectionOut;
 
 float coeffHeightMap = 0.01 * TesParam[2];
 
-//////////////////// PROJECTION FISHEYE ////////////////////////////////
+//////////////////// PROJECTION CUSTOM ////////////////////////////////
 void main()
 {
     vec3 position=(gl_TessCoord.x * glPositionIn[0])+

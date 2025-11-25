@@ -9,10 +9,10 @@
 layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
 
-//fisheye projection inclusion
 layout (push_constant) uniform uModelViewMatrix {mat4 ModelViewMatrix;};
 // for main_clipping_fov
 #include <cam_block_only.glsl>
+//custom projection inclusion
 #include <custom_project.glsl>
 
 //out

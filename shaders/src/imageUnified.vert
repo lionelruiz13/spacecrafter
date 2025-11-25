@@ -20,7 +20,7 @@ layout (push_constant) uniform uVert {
 
 layout (location=0) out vec2 TexCoord;
 
-//////////////////// PROJECTION FISHEYE ////////////////////////////////
+//////////////////// PROJECTION CUSTOM ////////////////////////////////
 
 void main()
 {

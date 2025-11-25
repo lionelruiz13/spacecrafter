@@ -6,11 +6,11 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-//fisheye projection inclusion
 layout (binding=2, set=1) uniform uModelViewMatrix {mat4 ModelViewMatrix;};
 
 // for main_clipping_fov and projectionType
 #include <cam_block_only.glsl>
+//custom projection inclusion
 #include <custom_project.glsl>
 
 
