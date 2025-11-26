@@ -136,8 +136,11 @@ void VideoPlayer::createTextures()
 	const uint32_t heightMax = 2048;
 	// Increase buffer to include alpha channel (2.0 instead of 1.5 for YUVA420P)
 	stagingBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, widthMax*heightMax*2.0*MAX_CACHED_FRAMES, "Staging video buffer");
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++) {
 		videoTexture.tex[i] = new Texture(vkmgr, *stagingBuffer, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "Video texture", VK_FORMAT_R8_UNORM);
+		// Initialize with dummy 1x1 texture to ensure valid imageView exists before any video is loaded
+		videoTexture.tex[i]->init(1, 1, nullptr, false, 1);
+	}
 }
 
 void VideoPlayer::pauseCurrentVideo()

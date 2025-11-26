@@ -23,6 +23,7 @@
  */
 
 #include <memory>
+#include <algorithm>
 
 #include "ojmModule/objl_mgr.hpp"
 #include "bodyModule/ssystem_factory.hpp"
