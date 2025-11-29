@@ -112,6 +112,8 @@ public:
     void endDraw();
     void beginNebulaDraw(const Mat4f &mat);
     void endNebulaDraw();
+    void nextFrame();
+    VkResult acquireNextFrame();
     void waitFrame(unsigned char frameIdx);
     void submitFrame(unsigned char frameIdx, unsigned char lastFrameIdx);
     void setPlayer(VideoPlayer *_player) {player = _player;}
@@ -182,10 +184,9 @@ private:
         Body *selfShadow = nullptr;
         std::vector<ShadowingData> shadowers;
         std::list<s_sigpass> sigpass;
-        std::mutex waitMutex;
         // bool hasDraw; // Tell if the next command must be submitted on nextDraw/endDraw or not
         s_submit submitData {FRAME_SUBMIT, UINT8_MAX, UINT8_MAX};
-        bool hasCompleted = false; // Tell if every submitted commands were compiled
+        std::atomic<int> hasCompleted = 0; // Tell if every submitted commands were compiled
         unsigned char intCmdIdx;
         unsigned char realFrameIdx;
     } drawer[3];

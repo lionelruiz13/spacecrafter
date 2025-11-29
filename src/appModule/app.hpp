@@ -186,6 +186,7 @@ private:
 	std::unique_ptr<Texture> depthBuffer;
 	bool flushFrames = false; // Flush every frames, reduce framerates but potentially remove some graphical glitches
 	bool initialized = false;
+	std::mutex swapchainMutex;
 
 	// Main elements of the stel_app
 	AppSettings* settings = nullptr;		 			//! base for the software constants

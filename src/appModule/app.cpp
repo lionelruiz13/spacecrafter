@@ -731,7 +731,9 @@ void App::draw(int delta_time)
 		sender->acquireFrame(context.frameIdx);
 	} else {
 		context.helper->waitFrame(context.lastFrameIdx);
+		swapchainMutex.lock();
 		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 20000000, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx); // Timeout after 20ms, avoid rendering a frame which is out of date
+		swapchainMutex.unlock();
 		switch (res) {
 			case VK_SUCCESS:
 				break;
@@ -1074,7 +1076,9 @@ void App::submitFrame(App *self, int id)
 			vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		}
 		VkPresentInfoKHR presentInfo {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR, nullptr, 1, &self->context.semaphores[id+3], 1, &VulkanMgr::instance->getSwapchain(), (uint32_t *) &id, nullptr};
+		self->swapchainMutex.lock();
 		res = vkQueuePresentKHR(self->context.graphicQueue, &presentInfo);
+		self->swapchainMutex.unlock();
 		switch (res) {
 			case VK_SUCCESS:
 				break;
