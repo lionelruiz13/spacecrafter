@@ -121,6 +121,8 @@ struct VolumObj3D::Shared {
             pipeline[i].bindVertex(inVertexArray);
             pipeline[i].bindShader("inVolumObj3D.vert.spv");
             pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+            // Set specialization constant for projection type (constant_id = 8)
+            pipeline[i].setSpecializedConstant(8, Context::projectionType);
             pipeline[i].bindShader((i & PS_PACKED) ? "inVolumObj3DPacked.frag.spv" : "inVolumObj3D.frag.spv");
             pipeline[i].setSpecializedConstant(2, &radius2, sizeof(radius2));
             pipeline[i].setSpecializedConstant(3, center, sizeof(int));
