@@ -11,11 +11,11 @@
 layout(constant_id = 8) const int projectionType = 0;
 
 // ================================ FISHEYE =================================
-vec4 fisheyeProjectAdvanced(vec4 invec)
+vec4 fisheyeProjectAdvanced(vec4 invec, vec3 clipping_fov)
 {
-	float zNear=main_clipping_fov[0];
-	float zFar=main_clipping_fov[1];
-	float fov=main_clipping_fov[2];
+	float zNear=clipping_fov[0];
+	float zFar=clipping_fov[1];
+	float fov=clipping_fov[2];
 
 	vec4 win = Mat * invec;
     float rq1 = win.x*win.x+win.y*win.y;
@@ -45,11 +45,11 @@ vec4 fisheyeProjectAdvanced(vec4 invec)
 }
 
 // ================================ ALLSPHERE =================================
-vec4 allsphereProjectAdvanced(vec4 invec)
+vec4 allsphereProjectAdvanced(vec4 invec, vec3 clipping_fov)
 {
-	float zNear=main_clipping_fov[0];
-	float zFar=main_clipping_fov[1];
-	float fov=main_clipping_fov[2];
+	float zNear=clipping_fov[0];
+	float zFar=clipping_fov[1];
+	float fov=clipping_fov[2];
 
 	vec4 win = Mat * invec;
     float rq1 = win.x*win.x+win.y*win.y;
@@ -60,13 +60,13 @@ vec4 allsphereProjectAdvanced(vec4 invec)
         float f = asin(min(rq1/depth, 1));
         if (win.z > 0)
             f = M_PI - f;
-        win.w = mix(-1.0, 1.0, f<0.9*M_PI);
 
         // Allsphere distortion - high precision polynomial
         f = f * 1200.f;
         f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
         f = f / 1200.f;
 
+        win.w = mix(-1.0, 1.0, f<0.9*M_PI);
         f /= fov * rq1;
         f *= viewport_center[2];
 
@@ -84,28 +84,38 @@ vec4 allsphereProjectAdvanced(vec4 invec)
 }
 
 // ================================ EKISOLID =================================
-vec4 ekisolidProjectAdvanced(vec4 invec)
+vec4 ekisolidProjectAdvanced(vec4 invec, vec3 clipping_fov)
 {
 	// TODO: Implement EKISOLID projection
 	// For now, use fisheye
-	return fisheyeProjectAdvanced(invec);
+	return fisheyeProjectAdvanced(invec, clipping_fov);
 }
 
 // ================================ ASPHERIC =================================
-vec4 asphericProjectAdvanced(vec4 invec)
+vec4 asphericProjectAdvanced(vec4 invec, vec3 clipping_fov)
 {
 	// TODO: Implement ASPHERIC projection
 	// For now, use fisheye
-	return fisheyeProjectAdvanced(invec);
+	return fisheyeProjectAdvanced(invec, clipping_fov);
 }
 
 // ================================ MAIN DISPATCHER =================================
+vec4 custom_project(vec4 invec, vec3 clipping_fov)
+{
+	switch(projectionType) {
+		case 1: return allsphereProjectAdvanced(invec, clipping_fov);
+		case 2: return ekisolidProjectAdvanced(invec, clipping_fov);
+		case 3: return asphericProjectAdvanced(invec, clipping_fov);
+		default: return fisheyeProjectAdvanced(invec, clipping_fov);
+	}
+}
+
 vec4 custom_project(vec4 invec)
 {
 	switch(projectionType) {
-		case 1: return allsphereProjectAdvanced(invec);
-		case 2: return ekisolidProjectAdvanced(invec);
-		case 3: return asphericProjectAdvanced(invec);
-		default: return fisheyeProjectAdvanced(invec);
+		case 1: return allsphereProjectAdvanced(invec, main_clipping_fov.xyz);
+		case 2: return ekisolidProjectAdvanced(invec, main_clipping_fov.xyz);
+		case 3: return asphericProjectAdvanced(invec, main_clipping_fov.xyz);
+		default: return fisheyeProjectAdvanced(invec, main_clipping_fov.xyz);
 	}
 }
