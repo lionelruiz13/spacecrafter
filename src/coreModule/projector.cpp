@@ -220,7 +220,7 @@ bool Projector::projectCustom(const Vec3d &v,Vec3d &win, const Mat4d &mat) const
 		case 1: // ALLSPHERE
 		{
 			// High precision polynomial distortion matching shader
-			f = f * 1200.0;
+			f = (f / (fov * (M_PI/360.0))) * 1200.0;
 			f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
 			f = f / 1200.0;
 			break;
@@ -237,7 +237,7 @@ bool Projector::projectCustom(const Vec3d &v,Vec3d &win, const Mat4d &mat) const
 	}
 
 	// Scale by FOV and viewport
-	f /= (rq * fov * (M_PI/360.0));
+	f /= rq;
 	f *= viewport_radius;
 
 	// Final projection
@@ -316,6 +316,7 @@ static double invertAllspherePolynomial(double f_distorted) {
 	return f;
 }
 
+// TODO: ALSPHERE Fix the unprojection to match the ALLSPHERE distortion (see custom_project.glsl)
 void Projector::unproject(double x, double y, const Mat4d& m, Vec3d& v) const
 {
 	const auto pos = VulkanMgr::instance->screenToRect({x, y});
@@ -349,6 +350,7 @@ void Projector::unproject(double x, double y, const Mat4d& m, Vec3d& v) const
 	v.transfo4d(m);
 }
 
+// TODO: ALSPHERE Fix the unprojection to match the ALLSPHERE distortion (see custom_project.glsl)
 void Projector::unprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const
 {
 	double length = sqrt(x*x + y*y);

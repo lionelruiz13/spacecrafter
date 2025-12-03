@@ -62,12 +62,13 @@ vec4 allsphereProjectAdvanced(vec4 invec, vec3 clipping_fov)
             f = M_PI - f;
 
         // Allsphere distortion - high precision polynomial
-        f = f * 1200.f;
+		// Normalize input by FOV BEFORE polynomial
+		f = (f / fov) * 1200.0;
         f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
         f = f / 1200.f;
 
         win.w = mix(-1.0, 1.0, f<0.9*M_PI);
-        f /= fov * rq1;
+        f /= rq1;
         f *= viewport_center[2];
 
         win.x = win.x * f + viewport_center[0];

@@ -34,11 +34,12 @@ vec4 allsphereProjectCustom(vec3 invec, mat4 ModelViewMatrix, vec3 clipping_fov)
 		f = M_PI - f;
 
 	// Allsphere distortion - high precision polynomial from advanced version
-	f = f * 1200.0;
+	// Normalize input by FOV BEFORE polynomial
+	f = (f / clipping_fov.z) * 1200.0;
 	f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
 	f = f / 1200.0;
 
-	f /= rq * clipping_fov.z;
+	f /= rq;
     depth = (depth - clipping_fov.x) / (clipping_fov.y - clipping_fov.x);
     return vec4(win.x * f, win.y * f, depth, 1.);
 }
@@ -118,11 +119,12 @@ vec4 allsphereProjectCustomNoMV(vec3 win, vec3 clipping_fov)
 		f = M_PI - f;
 
 	// Allsphere distortion - high precision polynomial
-	f = f * 1200.0;
+	// Normalize input by FOV BEFORE polynomial
+	f = (f / clipping_fov.z) * 1200.0;
 	f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
 	f = f / 1200.0;
 
-	f /= rq * clipping_fov.z;
+	f /= rq;
     depth = (depth - clipping_fov.x) / (clipping_fov.y - clipping_fov.x);
     return vec4(win.x * f, win.y * f, depth, 1.);
 }
@@ -175,11 +177,12 @@ vec4 allsphere2DCustom(vec4 win, mat4 ModelViewMatrix, float fov)
 		f = M_PI - f;
 
 	// Allsphere distortion - high precision polynomial
-	f = f * 1200.0;
+	// Normalize input by FOV BEFORE polynomial
+	f = (f / fov) * 1200.0;
 	f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
 	f = f / 1200.0;
 
-	f /= rq * fov;
+	f /= rq;
     return vec4(win.x * f, win.y * f, 0, 1.);
 }
 
@@ -229,11 +232,12 @@ vec4 allsphere2DCustomNoMV(vec3 win, float fov)
 		f = M_PI - f;
 
 	// Allsphere distortion - high precision polynomial
-	f = f * 1200.0;
+	// Normalize input by FOV BEFORE polynomial
+	f = (f / fov) * 1200.0;
 	f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
 	f = f / 1200.0;
 
-	f /= rq * fov;
+	f /= rq;
     return vec4(win.x * f, win.y * f, 0, 1.);
 }
 

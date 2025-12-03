@@ -994,7 +994,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
             case 1: // ALLSPHERE
             {
                 // High precision polynomial distortion matching shader
-                f = f * 1200.0;
+                f = (f / halfFov) * 1200.0;
                 f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
                 f = f / 1200.0;
                 break;
@@ -1010,7 +1010,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
                 break;
         }
 
-        f /= rq * halfFov;
+        f /= rq;
     } else
         f = 1 / (distance * halfFov);
     screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
