@@ -245,7 +245,13 @@ public:
 
 	bool projectCustomFixedFov(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
 
-	// Same function but using a custom modelview matrix
+	// Projection functions - one per projection type
+	bool fisheyeProjectCustom(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
+	bool allsphereProjectCustom(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
+	bool ekisolidProjectCustom(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
+	bool asphericProjectCustom(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
+
+	// Dispatcher function that calls the appropriate projection based on Context::projectionType
 	bool projectCustom(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
 
 	bool projectCustomCheck(const Vec3f& v, Vec3d& win, const Mat4d& mat) const  {
@@ -338,6 +344,18 @@ protected:
 	Mat4d mat_dome_fixed;
 	Mat4d inv_mat_dome_fixed;
 
+	// Unproject functions - one per projection type
+	void fisheyeUnproject(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void allsphereUnproject(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void ekisolidUnproject(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void asphericUnproject(double x, double y, const Mat4d& m, Vec3d& v) const;
+
+	void fisheyeUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void allsphereUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void ekisolidUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void asphericUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const;
+
+	// Dispatcher functions that call the appropriate unprojection based on Context::projectionType
 	// transformation from screen 2D point x,y to object
 	// m is here the already inverted full tranfo matrix
 	void unproject(double x, double y, const Mat4d& m, Vec3d& v) const;
@@ -350,6 +368,6 @@ protected:
 private:
 	double viewport_fov_diameter;
 	double fisheye_scale_factor;
-};
+};;
 
 #endif // _PROJECTOR_H_

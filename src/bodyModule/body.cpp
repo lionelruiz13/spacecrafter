@@ -896,6 +896,71 @@ double Body::calculateBoundingRadius()
 	return boundingRadius;
 }
 
+// ================================ FISHEYE SCREEN POSITION =================================
+void Body::fisheyeComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance)
+{
+	const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
+	double f;
+	const double halfFov = prj->getFov() * (M_PI / 360);
+
+	if (rq > distance * 1e-5) {
+		f = asin(rq/distance);
+		if (eye_planet[2] > 0)
+			f = M_PI - f;
+
+		// Standard fisheye projection
+		f /= rq * halfFov;
+	} else {
+		f = 1 / (distance * halfFov);
+	}
+
+	screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
+}
+
+// ================================ ALLSPHERE SCREEN POSITION =================================
+void Body::allsphereComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance)
+{
+	const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
+	double f;
+	const double halfFov = prj->getFov() * (M_PI / 360);
+
+	if (rq > distance * 1e-5) {
+		f = asin(rq/distance);
+		if (eye_planet[2] > 0)
+			f = M_PI - f;
+
+		// Allsphere distortion - high precision polynomial
+		// Normalize angle by FOV BEFORE polynomial
+		f = (f / halfFov) * 1200.0;
+		f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
+		f = f / 1200.0;
+
+		// ALLSPHERE: divide only by rq, not by fov (already normalized)
+		f /= rq;
+	} else {
+		f = 1 / (distance * halfFov);
+	}
+
+	screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
+}
+
+// ================================ EKISOLID SCREEN POSITION =================================
+void Body::ekisolidComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance)
+{
+	// TODO: implement proper EKISOLID formula
+	// For now, use FISHEYE
+	fisheyeComputeScreenPos(prj, eye_planet, distance);
+}
+
+// ================================ ASPHERIC SCREEN POSITION =================================
+void Body::asphericComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance)
+{
+	// TODO: implement proper ASPHERIC formula
+	// For now, use FISHEYE
+	fisheyeComputeScreenPos(prj, eye_planet, distance);
+}
+
+
 void Body::computeDraw(const Projector* prj, const Navigator* nav)
 {
 	eye_sun = nav->getHelioToEyeMat().getTranslation();
@@ -982,38 +1047,13 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
     // Compute the 2D position and check if in the screen
 	screen_sz = getOnScreenSize(prj, nav);
 
-    const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
-    double f;
-    if (rq > distance * 1e-5) {
-        f = asin(rq/distance);
-        if (eye_planet[2] > 0)
-            f = M_PI - f;
-
-        // Apply projection-specific distortion based on Context::projectionType
-        switch(Context::projectionType) {
-            case 1: // ALLSPHERE
-            {
-                // High precision polynomial distortion matching shader
-                f = (f / halfFov) * 1200.0;
-                f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
-                f = f / 1200.0;
-                break;
-            }
-            case 2: // EKISOLID - TODO: implement proper formula
-                // For now, use FISHEYE
-                break;
-            case 3: // ASPHERIC - TODO: implement proper formula
-                // For now, use FISHEYE
-                break;
-            default: // FISHEYE (case 0)
-                // No additional distortion needed
-                break;
-        }
-
-        f /= rq;
-    } else
-        f = 1 / (distance * halfFov);
-    screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
+	// Call the appropriate projection function based on Context::projectionType
+	switch(Context::projectionType) {
+		case 1: allsphereComputeScreenPos(prj, eye_planet, distance); break;
+		case 2: ekisolidComputeScreenPos(prj, eye_planet, distance); break;
+		case 3: asphericComputeScreenPos(prj, eye_planet, distance); break;
+		default: fisheyeComputeScreenPos(prj, eye_planet, distance); break;
+	}
 }
 
 double Body::getAxisAngle() const {

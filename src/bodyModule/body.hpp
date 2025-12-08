@@ -195,6 +195,12 @@ public:
 	// calculates all the elements necessary to prepare the draw
 	virtual void computeDraw(const Projector* prj, const Navigator* nav);
 
+	// Screen position computation functions - one per projection type
+	void fisheyeComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance);
+	void allsphereComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance);
+	void ekisolidComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance);
+	void asphericComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance);
+
 	// Draw the Planet, if hint_ON is != 0 draw a circle and the name as well
 	// Return the squared distance in pixels between the current and the  previous position this Body was drawn at.
 	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool needClearDepthBuffer);
