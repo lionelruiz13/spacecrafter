@@ -26,7 +26,7 @@ vec4 fisheyeProjectAdvanced(vec4 invec, vec3 clipping_fov)
         float f = asin(min(rq1/depth, 1)); // min patch a driver bug were rq/depth > 1
         if (win.z > 0)
             f = M_PI - f;
-        win.w = mix(-1.0, 1.0, f<0.9*M_PI);
+        win.w = mix(-1.0, 1.0, f<M_PI);
         f /= fov * rq1;
 
         f *= viewport_center[2];
@@ -60,6 +60,7 @@ vec4 allsphereProjectAdvanced(vec4 invec, vec3 clipping_fov)
         float f = asin(min(rq1/depth, 1));
         if (win.z > 0)
             f = M_PI - f;
+        win.w = mix(-1.0, 1.0, f<M_PI);
 
         // Allsphere distortion - high precision polynomial
 		// Normalize input by FOV BEFORE polynomial
@@ -67,7 +68,6 @@ vec4 allsphereProjectAdvanced(vec4 invec, vec3 clipping_fov)
         f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
         f = f / 1200.f;
 
-        win.w = mix(-1.0, 1.0, f<0.9*M_PI);
         f /= rq1;
         f *= viewport_center[2];
 
@@ -95,9 +95,39 @@ vec4 ekisolidProjectAdvanced(vec4 invec, vec3 clipping_fov)
 // ================================ ASPHERIC =================================
 vec4 asphericProjectAdvanced(vec4 invec, vec3 clipping_fov)
 {
-	// TODO: Implement ASPHERIC projection
-	// For now, use fisheye
-	return fisheyeProjectAdvanced(invec, clipping_fov);
+	float zNear=clipping_fov[0];
+	float zFar=clipping_fov[1];
+	float fov=clipping_fov[2];
+
+	vec4 win = Mat * invec;
+    float rq1 = win.x*win.x+win.y*win.y;
+	float depth = sqrt(rq1 + win.z*win.z);
+	float tanHalfFovOver2 = tan(fov * 0.5); // fov already in radians / 2
+
+	if (rq1 > 0) {
+        rq1 = sqrt(rq1);
+        float f = asin(min(rq1/depth, 1));
+        if (win.z > 0)
+            f = M_PI - f;
+        win.w = mix(-1.0, 1.0, f<M_PI);
+
+		// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+		f = tan(f * 0.5) / tanHalfFovOver2;
+
+        f /= rq1;
+        f *= viewport_center[2];
+
+        win.x = win.x * f + viewport_center[0];
+        win.y = win.y * f + viewport_center[1];
+	} else {
+		win.x = viewport_center[0];
+		win.y = viewport_center[1];
+		win.w = mix(-1.0, 1.0, win.z < 0);
+	}
+	win.z = (abs(depth) - zNear) / (zFar-zNear);
+	if (win.z == 0.0)
+		win.z = -1e30;
+	return win;
 }
 
 // ================================ MAIN DISPATCHER =================================

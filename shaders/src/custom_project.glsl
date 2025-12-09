@@ -51,11 +51,25 @@ vec4 ekisolidProjectCustom(vec3 invec, mat4 ModelViewMatrix, vec3 clipping_fov)
 	return fisheyeProjectCustom(invec, ModelViewMatrix, clipping_fov);
 }
 
-// ASPHERIC PROJECTION - TODO: Remplacer par la vraie formule
+// ASPHERIC PROJECTION - Stereographic projection: r = 2 f tan(α/2)
 vec4 asphericProjectCustom(vec3 invec, mat4 ModelViewMatrix, vec3 clipping_fov)
 {
-	// Pour l'instant, identique à FISHEYE
-	return fisheyeProjectCustom(invec, ModelViewMatrix, clipping_fov);
+	vec4 win = ModelViewMatrix * vec4(invec, 1);
+	float rq = win.x*win.x+win.y*win.y;
+    float depth = sqrt(rq + win.z*win.z);
+	rq = sqrt(rq);
+	float tanHalfFovOver2 = tan(clipping_fov.z * 0.5); // fov already in radians / 2
+
+    float f = asin(min(rq/depth, 1)); // angle from center
+	if (win.z > 0)
+		f = M_PI - f;
+
+	// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+	f = tan(f * 0.5) / tanHalfFovOver2;
+	f /= rq;
+
+    depth = (depth - clipping_fov.x) / (clipping_fov.y - clipping_fov.x);
+    return vec4(win.x * f, win.y * f, depth, 1.);
 }
 
 // PROJECTION DISPATCHING based on projectionType uniform from cam_block
@@ -136,7 +150,21 @@ vec4 ekisolidProjectCustomNoMV(vec3 win, vec3 clipping_fov)
 
 vec4 asphericProjectCustomNoMV(vec3 win, vec3 clipping_fov)
 {
-	return fisheyeProjectCustomNoMV(win, clipping_fov);
+	float rq = win.x*win.x+win.y*win.y;
+    float depth = sqrt(rq + win.z*win.z);
+	rq = sqrt(rq);
+	float tanHalfFovOver2 = tan(clipping_fov.z * 0.5); // fov already in radians / 2
+
+	float f = asin(min(rq/depth, 1));
+	if (win.z > 0)
+		f = M_PI - f;
+
+	// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+	f = tan(f * 0.5) / tanHalfFovOver2;
+	f /= rq;
+
+    depth = (depth - clipping_fov.x) / (clipping_fov.y - clipping_fov.x);
+    return vec4(win.x * f, win.y * f, depth, 1.);
 }
 
 vec4 custom_projectNoMV(vec3 win, vec3 clipping_fov)
@@ -193,7 +221,21 @@ vec4 ekisolid2DCustom(vec4 win, mat4 ModelViewMatrix, float fov)
 
 vec4 aspheric2DCustom(vec4 win, mat4 ModelViewMatrix, float fov)
 {
-	return fisheye2DCustom(win, ModelViewMatrix, fov);
+	win = ModelViewMatrix * win;
+	float rq = win.x*win.x+win.y*win.y;
+    float depth = sqrt(rq + win.z*win.z);
+	rq = sqrt(rq);
+	float tanHalfFovOver2 = tan(fov * 0.5); // fov already in radians / 2
+
+	float f = asin(min(rq/depth, 1));
+	if (win.z > 0)
+		f = M_PI - f;
+
+	// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+	f = tan(f * 0.5) / tanHalfFovOver2;
+	f /= rq;
+
+    return vec4(win.x * f, win.y * f, 0, 1.);
 }
 
 vec4 custom_project2D(vec4 win, mat4 ModelViewMatrix, float fov)
@@ -248,7 +290,20 @@ vec4 ekisolid2DCustomNoMV(vec3 win, float fov)
 
 vec4 aspheric2DCustomNoMV(vec3 win, float fov)
 {
-	return fisheye2DCustomNoMV(win, fov);
+	float rq = win.x*win.x+win.y*win.y;
+    float depth = sqrt(rq + win.z*win.z);
+	rq = sqrt(rq);
+	float tanHalfFovOver2 = tan(fov * 0.5); // fov already in radians / 2
+
+	float f = asin(min(rq/depth, 1));
+	if (win.z > 0)
+		f = M_PI - f;
+
+	// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+	f = tan(f * 0.5) / tanHalfFovOver2;
+	f /= rq;
+
+    return vec4(win.x * f, win.y * f, 0, 1.);
 }
 
 vec4 custom_project2DNoMV(vec3 win, float fov)

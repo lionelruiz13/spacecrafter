@@ -955,9 +955,24 @@ void Body::ekisolidComputeScreenPos(const Projector* prj, const Vec3d &eye_plane
 // ================================ ASPHERIC SCREEN POSITION =================================
 void Body::asphericComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance)
 {
-	// TODO: implement proper ASPHERIC formula
-	// For now, use FISHEYE
-	fisheyeComputeScreenPos(prj, eye_planet, distance);
+	const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
+	double f;
+	const double halfFov = prj->getFov() * (M_PI / 360);
+	const double tanHalfFovOver2 = tan(halfFov * 0.5);
+
+	if (rq > distance * 1e-5) {
+		f = asin(rq/distance);
+		if (eye_planet[2] > 0)
+			f = M_PI - f;
+
+		// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+		f = tan(f * 0.5) / tanHalfFovOver2;
+		f /= rq;
+	} else {
+		f = 1 / (distance * halfFov);
+	}
+
+	screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
 }
 
 
