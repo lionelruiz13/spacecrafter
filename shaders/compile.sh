@@ -124,6 +124,8 @@ fi
 # One by one compilation
 for src in $@
 do
+    # Remove the path if any (enable using terminal path autocomplete)
+    src=$(basename $src)
     dst="../compiled/$src.spv"
     echo "compile $src"
     glslc $src -o $dst -I . --target-env="vulkan1.1"

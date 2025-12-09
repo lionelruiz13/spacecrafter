@@ -265,6 +265,8 @@ void IlluminateMgr::createSC_context()
 	m_pipelineIllum->setDepthStencilMode();
 	m_pipelineIllum->bindShader("illuminate.vert.spv");
 	m_pipelineIllum->bindShader("illuminate.geom.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	m_pipelineIllum->setSpecializedConstant(8, Context::projectionType);
 	m_pipelineIllum->bindShader("illuminate.frag.spv");
 	m_pipelineIllum->build();
 
