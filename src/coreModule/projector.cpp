@@ -44,6 +44,7 @@ Projector::Projector(const int width, const int height, double _fov)
 	 flag_auto_zoom(0)
 {
 	viewport_radius = -1;  // unset value DIGITALIS
+	viewport_radius_squared = 1;
 	//~ flip_horz = 1.0;
 	//~ flip_vert = 1.0;
 
@@ -74,6 +75,7 @@ void Projector::setViewportDisk( int w, int h)
 	viewport_fov_diameter = t;
 	viewport_center.set(w/2, h/2,0);
 	viewport_radius = viewport_fov_diameter/2;
+	viewport_radius_squared = viewport_radius * viewport_radius;
 
 	//glViewport(vec_viewport[0], vec_viewport[1], vec_viewport[2], vec_viewport[3]);
 	this->applyViewport();
@@ -219,12 +221,20 @@ bool Projector::fisheyeProjectCustom(const Vec3d &v, Vec3d &win, const Mat4d &ma
 	f /= rq * (fov * (M_PI/360.0));
 	f *= viewport_radius;
 
+	// Centered coordinates on the viewport
+	double dx = win[0] * f;
+	double dy = win[1] * f;
+
+	// Check if inside the viewport circle
+	bool visible = (dx*dx + dy*dy <= viewport_radius_squared);
+
 	// Final projection
-	win[0] = viewport_center[0] + win[0] * f;
-	win[1] = viewport_center[1] + win[1] * f;
+	win[0] = viewport_center[0] + dx;
+	win[1] = viewport_center[1] + dy;
 
 	win[2] = (fabs(depth) - zNear) / (zFar-zNear);
-	return (f < 0.97*M_PI*viewport_radius/(fov*(M_PI/360.0))) ? true : false;
+	// return (f < 0.97*M_PI*viewport_radius/(fov*(M_PI/360.0))) ? true : false;
+	return visible;
 }
 
 // ================================ ALLSPHERE PROJECTION =================================
@@ -268,12 +278,20 @@ bool Projector::allsphereProjectCustom(const Vec3d &v, Vec3d &win, const Mat4d &
 	f /= rq;
 	f *= viewport_radius;
 
+	// Centered coordinates on the viewport
+	double dx = win[0] * f;
+	double dy = win[1] * f;
+
+	// Check if inside the viewport circle
+	bool visible = (dx*dx + dy*dy <= viewport_radius_squared);
+
 	// Final projection
-	win[0] = viewport_center[0] + win[0] * f;
-	win[1] = viewport_center[1] + win[1] * f;
+	win[0] = viewport_center[0] + dx;
+	win[1] = viewport_center[1] + dy;
 
 	win[2] = (fabs(depth) - zNear) / (zFar-zNear);
-	return (f < 0.97*M_PI*viewport_radius/(fov*(M_PI/360.0))) ? true : false;
+	// return (f < 0.97*M_PI*viewport_radius/(fov*(M_PI/360.0))) ? true : false;
+	return visible;
 }
 
 // ================================ EKISOLID PROJECTION =================================

@@ -326,6 +326,7 @@ protected:
 
 	Vec3i viewport_center;				// Viewport center in screen pixel
 	int viewport_radius;  				// Viewport radius in screen pixels
+	int viewport_radius_squared;		// Viewport radius squared in screen pixels
 
 	Mat4d mat_earth_equ_to_eye;		// Modelview Matrix for earth equatorial projection
 	Mat4d mat_earth_equ_to_eye_fixed;		// Modelview Matrix for earth equatorial projection
