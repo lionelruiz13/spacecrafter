@@ -120,3 +120,4 @@ bool Context::shadow_ready = false;
 bool Context::experimental_shadows = false;
 bool Context::default_experimental_shadows = false;
 int Context::projectionType = 0; // Default FISHEYE
+int Context::rearProjection = 0; // Default no rear projection

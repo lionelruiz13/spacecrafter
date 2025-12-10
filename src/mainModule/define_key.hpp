@@ -86,6 +86,7 @@
 #define SCK_AUDIO_CHUNKSIZE                 "audio_chunksize"
 #define SCK_AUDIO_CHANNELS                  "audio_channels"
 #define SCK_PROJECTION                      "projection"
+#define SCK_REAR_PROJECTION                 "rear_projection"
 
 #define SCK_FLAG_ANTIALIAS_LINES            "flag_antialias_lines"
 #define SCK_ANTIALIASING                    "antialiasing"

@@ -599,6 +599,11 @@ bool Projector::projectCustomFixedFov(const Vec3d &v,Vec3d &win, const Mat4d &ma
 // ================================ UNPROJECT DISPATCHER =================================
 void Projector::unproject(double x, double y, const Mat4d& m, Vec3d& v) const
 {
+	// Invert x for rear projection here, this unproject is used for mouse picking
+	if (Context::rearProjection) {
+		// Invert x screen coordinate [0, viewport_width] for rear projection
+		x = 2.0 * viewport_center[0] - x;
+	}
 	switch(Context::projectionType) {
 		case 1: allsphereUnproject(x, y, m, v); break;
 		case 2: ekisolidUnproject(x, y, m, v); break;
@@ -610,6 +615,8 @@ void Projector::unproject(double x, double y, const Mat4d& m, Vec3d& v) const
 // ================================ UNPROJECT NORMALIZED DISPATCHER =================================
 void Projector::unprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const
 {
+	// Never invert x for rear projection here, this unproject is used to render things like
+	// sky textures that should not be inverted (it's inverted by the vulkan blit ("global" inversion))
 	switch(Context::projectionType) {
 		case 1: allsphereUnprojectNormalized(x, y, m, v); break;
 		case 2: ekisolidUnprojectNormalized(x, y, m, v); break;

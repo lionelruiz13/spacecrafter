@@ -117,6 +117,15 @@ App::App( SDLFacade* const sdl )
 	if (conf.getBoolean(SCS_DEBUG, SCK_STATISTICS))
 		context.stat->startCapture();
 
+	// Get the projection mode
+	std::string projectionStr = conf.getStr(SCS_VIDEO, SCK_PROJECTION, "FISHEYE");
+	Context::projectionType = static_cast<int>(stringToProjectionType(projectionStr));
+	cLog::get()->write("Projection mode: " + projectionStr + " (type=" + std::to_string(Context::projectionType) + ")", LOG_TYPE::L_INFO);
+	// Get the Rear projection mode
+	std::string rearProjectionStr = conf.getStr(SCS_VIDEO, SCK_REAR_PROJECTION, "false");
+	Context::rearProjection = (rearProjectionStr == "true");
+	cLog::get()->write("Rear projection: " + rearProjectionStr + " (enabled=" + std::to_string(Context::rearProjection) + ")", LOG_TYPE::L_INFO);
+
 	context.stat->capture(Capture::FRAME_START);
 	initVulkan(conf);
 	context.stat->capture(Capture::INIT_VULKAN);
@@ -131,11 +140,6 @@ App::App( SDLFacade* const sdl )
 	s_texture::loadCache(settings->getUserDir() + "cache/", conf.getBoolean(SCS_MAIN, SCK_TEX_CACHE));
 	s_texture::setLoadingStrategy(conf.getStr(SCS_MAIN, SCK_TEXTURE_LOADING));
 	fontFactory = std::make_unique<FontFactory>();
-
-	// Get the projection mode
-	std::string projectionStr = conf.getStr(SCS_VIDEO, SCK_PROJECTION, "FISHEYE");
-	Context::projectionType = static_cast<int>(stringToProjectionType(projectionStr));
-	cLog::get()->write("Projection mode: " + projectionStr + " (type=" + std::to_string(Context::projectionType) + ")", LOG_TYPE::L_INFO);
 
 	media = std::make_shared<Media>(conf);
 	if (renderSize) {
@@ -397,7 +401,8 @@ void App::initVulkan(InitParser &conf)
 	context.waitFrameSync[1].semaphore = context.signalFrameSync[1].semaphore = context.collector->createSemaphore(0, "Timeline");
 	for (int i = 0; i < 3; ++i) {
 		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
-		if (vkmgr.getSwapchainView().empty()) {
+		// Use offscreen rendering if no swapchain available OR if rear projection is enabled
+		if (vkmgr.getSwapchainView().empty() || Context::rearProjection) {
 			offscreenImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
 			context.frame.back()->bind(colorID, *offscreenImage.back());
 		} else {
@@ -973,7 +978,7 @@ void App::submitFrame(App *self, int id)
 				self->sender->setupReadback(mainCmd, id);
 		}
 	}
-	if (self->renderSize) { // Extra step needed : blit
+	if (self->renderSize || Context::rearProjection) { // Extra step needed : blit (for resize or rear projection flip)
 		VkImageMemoryBarrier imageBarrier[2]{{
 			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
 			.pNext = nullptr,
@@ -1008,6 +1013,12 @@ void App::submitFrame(App *self, int id)
 			.dstOffsets = {{screen0.first, screen0.second, 0}, {screen1.first, screen1.second, 1}},
 		};
 		self->offscreenImage[id]->getDimensions(blit.srcOffsets[1].x, blit.srcOffsets[1].y, blit.srcOffsets[1].z);
+
+		// For rear projection, flip horizontally by swapping X source coordinates
+		if (Context::rearProjection) {
+			std::swap(blit.srcOffsets[0].x, blit.srcOffsets[1].x);
+		}
+
 		vkCmdBlitImage(mainCmd, self->offscreenImage[id]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VulkanMgr::instance->getSwapchainImage()[id], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit, VK_FILTER_LINEAR);
 		imageBarrier[1].srcAccessMask = imageBarrier[1].dstAccessMask;
 		imageBarrier[1].dstAccessMask = 0;
