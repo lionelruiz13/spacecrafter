@@ -1004,17 +1004,29 @@ void App::submitFrame(App *self, int id)
 		}};
 		vkCmdPipelineBarrier(mainCmd, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 2, imageBarrier);
 
-		const auto screen0 = VulkanMgr::instance->rectToScreen({-1.f, -1.f});
-		const auto screen1 = VulkanMgr::instance->rectToScreen({1.f, 1.f});
 		VkImageBlit blit{
 			.srcSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
 			.srcOffsets = {},
 			.dstSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
-			.dstOffsets = {{screen0.first, screen0.second, 0}, {screen1.first, screen1.second, 1}},
+			.dstOffsets = {},
 		};
 		self->offscreenImage[id]->getDimensions(blit.srcOffsets[1].x, blit.srcOffsets[1].y, blit.srcOffsets[1].z);
 
-		// For rear projection, flip horizontally by swapping X source coordinates
+		// Determine destination coordinates
+		if (self->renderSize) {
+			// For renderSize: use rectToScreen to respect configured viewport
+			const auto screen0 = VulkanMgr::instance->rectToScreen({-1.f, -1.f});
+			const auto screen1 = VulkanMgr::instance->rectToScreen({1.f, 1.f});
+			blit.dstOffsets[0] = {screen0.first, screen0.second, 0};
+			blit.dstOffsets[1] = {screen1.first, screen1.second, 1};
+		} else {
+			// For rear projection only: use full swapchain extent to avoid distortion
+			const auto& swapchainExtent = VulkanMgr::instance->getSwapChainExtent();
+			blit.dstOffsets[0] = {0, 0, 0};
+			blit.dstOffsets[1] = {static_cast<int32_t>(swapchainExtent.width), static_cast<int32_t>(swapchainExtent.height), 1};
+		}
+
+		// Apply horizontal flip for rear projection (works with or without renderSize)
 		if (Context::rearProjection) {
 			std::swap(blit.srcOffsets[0].x, blit.srcOffsets[1].x);
 		}
