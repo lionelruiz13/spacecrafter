@@ -58,9 +58,11 @@ public :
 	static inline void push(VkCommandBuffer cmd, const Vec4f &color) {
 		layout->pushConstant(cmd, 0, &color);
 	}
+
+	// removed const + made public to allow modification when settings new body name font size
+	static float hintCircleRadius;
 private :
 	static const int nbrFacets;
-	static const int hintCircleRadius;
 
 	Body * body;
 

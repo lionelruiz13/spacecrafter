@@ -49,7 +49,7 @@
 #include "tools/scalable.hpp"
 #include "bodyModule/bodyShader.hpp"
 #include "rotation_elements.hpp"
-#include "tools/scalable.hpp"
+#include "tools/s_font.hpp"
 #include "atmosphereModule/atmosphere_commun.hpp"
 
 #define JD_MINUTE 0.00069444444444444444444
@@ -274,6 +274,8 @@ public:
 
 	static void setFont(s_font* f) {
 		planet_name_font = f;
+		// Update hint circle radius accordingly (for hints.cpp)
+		Hints::hintCircleRadius = planet_name_font->getFontSize() * 0.6f;
 	}
 
 	//it talks about magnitude with the stars

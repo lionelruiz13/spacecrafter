@@ -26,7 +26,7 @@ std::unique_ptr<VertexArray> Hints::m_HintsGL;
 Pipeline *Hints::pipeline;
 PipelineLayout *Hints::layout;
 const int Hints::nbrFacets = 24;
-const int Hints::hintCircleRadius = 8;
+float Hints::hintCircleRadius = 8.0f;
 
 Hints::Hints(Body * _body)
 {
@@ -66,7 +66,8 @@ void Hints::drawHints(const Navigator* nav, const Projector* prj)
 		return;
 
 	// Draw nameI18 + scaling if it's not == 1.
-	float tmp = 10.f + body->getOnScreenSize(prj, nav)/2.f; // Shift for nameI18 printing
+	// Print the text at offsetProportionalToFontSize + bodyScreenSizeRadius from the body screen position
+	float tmp = hintCircleRadius * 1.2f + body->getOnScreenSize(prj, nav)/2.f; // Shift for nameI18 printing
 
 	Vec4f Color( body->myColor->getLabel(),hint_fader.getInterstate());
 	prj->printGravity180(body->planet_name_font, body->screenPos.first, body->screenPos.second, body->getSkyLabel(nav), Color,/*1,*/ tmp, tmp);
