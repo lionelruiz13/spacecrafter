@@ -3153,21 +3153,42 @@ int AppCommandInterface::commandMedia()
 			AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG,argB);
 			if (testColor) {
 				std::string argIntensity = args[W_INTENSITY];
-				if (!argIntensity.empty())
-					media->setKeyColor(Vcolor,Utility::strToDouble(argIntensity)) ;
-				else
-					media->setKeyColor(Vcolor) ;
+				if (!argIntensity.empty()) {
+					if (type == VID_TYPE::V_IMAGE) {
+						media->imageSet(argName);
+						media->imageSetKeyColor(Vcolor, Utility::strToDouble(argIntensity));
+					} else {
+						media->setKeyColor(Vcolor, Utility::strToDouble(argIntensity));
+					}
+				} else {
+					if (type == VID_TYPE::V_IMAGE) {
+						media->imageSet(argName);
+						media->imageSetKeyColor(Vcolor);
+					} else {
+						media->setKeyColor(Vcolor);
+					}
+				}
 			} else
 				debug_message.clear();
 
 			std::string argKeyColor = args[W_KEYCOLOR];
 			if (!argKeyColor.empty()) {
 				if (Utility::isTrue(argKeyColor)) {
-					media->setKeyColor(true);
-					media->disableFader();
+					if (type == VID_TYPE::V_IMAGE) {
+						media->imageSet(argName);
+						media->imageSetKeyColor(true);
+					} else {
+						media->setKeyColor(true);
+						media->disableFader();
+					}
+				} else {
+					if (type == VID_TYPE::V_IMAGE) {
+						media->imageSet(argName);
+						media->imageSetKeyColor(false);
+					} else {
+						media->setKeyColor(false);
+					}
 				}
-				else
-					media->setKeyColor(false);
 			}
 			return executeCommandStatus();
 
