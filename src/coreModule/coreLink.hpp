@@ -926,8 +926,29 @@ public:
     CoreLink(std::shared_ptr<Core> _core) {
 		core = _core;
 		instance = this;
+		// Initialize to normal collections by default
+		currentSkyDisplayMgr = core->skyDisplayMgr.get();
+		currentStarLines = core->starLines.get();
+		currentSkyGridMgr = core->skyGridMgr.get();
+		currentSkyLineMgr = core->skyLineMgr.get();
+		currentMeteors = core->meteors.get();
+		currentNebulas = core->nebulas.get();
+		currentIlluminates = core->illuminates.get();
+		currentDso3d = core->dso3d.get();
+		currentStarNav = core->starNav.get();
+		currentSsystemFactory = core->ssystemFactory;
 	}
     ~CoreLink() {
+		currentSkyDisplayMgr = nullptr;
+		currentStarLines = nullptr;
+		currentSkyGridMgr = nullptr;
+		currentSkyLineMgr = nullptr;
+		currentMeteors = nullptr;
+		currentNebulas = nullptr;
+		currentIlluminates = nullptr;
+		currentDso3d = nullptr;
+		currentStarNav = nullptr;
+		currentSsystemFactory = nullptr;
 		instance = nullptr;
 	};
 
@@ -951,8 +972,36 @@ public:
 	bool isDrawingHipStarMgr;
 	bool isJoypadConnected = false;
 	static CoreLink *instance;
+
+	// Update all mode-specific pointers - call this when switching modes
+	void updateModePointers();
+
 private:
+	// Individual update functions for each collection
+	void updateSkyDisplayMgrPointer();
+	void updateStarLinesPointer();
+	void updateSkyGridMgrPointer();
+	void updateSkyLineMgrPointer();
+	void updateMeteorsPointer();
+	void updateNebulasPointer();
+	void updateIlluminatesPointer();
+	void updateDso3dPointer();
+	void updateStarNavPointer();
+	void updateSsystemFactoryPointer();
+
     std::shared_ptr<Core> core;
+
+	// Current pointers (updated on mode switch)
+	SkyDisplayMgr* currentSkyDisplayMgr;
+	StarLines* currentStarLines;
+	SkyGridMgr* currentSkyGridMgr;
+	SkyLineMgr* currentSkyLineMgr;
+	MeteorMgr* currentMeteors;
+	NebulaMgr* currentNebulas;
+	IlluminateMgr* currentIlluminates;
+	Dso3d* currentDso3d;
+	StarNavigator* currentStarNav;
+	SSystemFactory* currentSsystemFactory;
 };
 
 #endif

@@ -167,7 +167,7 @@ App::App( SDLFacade* const sdl )
 	internalFPS = std::make_unique<Fps>();
 	spaceDate = std::make_shared<SpaceDate>();
 
-	executor = std::make_unique<Executor>(core, observatory.get());
+	executor = std::make_unique<Executor>(core, coreLink.get(), observatory.get());
 
 	// Configuration du callback pour le changement de mode
 	coreBackup->setSwitchModeCallback([this](const std::string& mode) {

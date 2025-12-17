@@ -3408,7 +3408,7 @@ int AppCommandInterface::commandBody()
 	std::string argMode = args[ACP_SC_MODE];
 
 	// OJM processing
-	if ((argMode=="in_universe" || argMode=="in_galaxy") && !argAction.empty()) {
+	if ((argMode=="in_universe" || argMode=="in_galaxy" || argMode=="in_sandbox") && !argAction.empty()) {
 		if (argAction == W_LOAD) {
 			std::string argFileName = args[W_FILENAME];
 			argFileName = argFileName +"/"+argFileName +".ojm";

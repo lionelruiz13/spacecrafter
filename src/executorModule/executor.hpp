@@ -31,11 +31,14 @@
 
 #include "coreModule/core.hpp"
 #include "executorModule/executorModule.hpp"
+
+class CoreLink;
 #include "executorModule/solarSystemModule.hpp"
 #include "executorModule/stellarSystemModule.hpp"
 #include "executorModule/inGalaxyModule.hpp"
 #include "executorModule/inUniverseModule.hpp"
 #include "executorModule/inPauseModule.hpp"
+#include "executorModule/inSandBoxModule.hpp"
 
 /**
  * \file executor.hpp
@@ -52,7 +55,7 @@
 */
 class Executor {
 public:
-    Executor(std::shared_ptr<Core> _core, Observer *_observer);
+    Executor(std::shared_ptr<Core> _core, CoreLink *_coreLink, Observer *_observer);
 
     void draw(int delta_time);
     void update(int delta_time);
@@ -61,7 +64,7 @@ public:
 	void updateMode(double altitude);
 
     void switchMode(const std::string &mode);
-	
+
     void onAltitudeChange(double value) {
 		std::cout << "Altitude change received "<< value << std::endl;
 		core->setBodyDecor();
@@ -74,12 +77,14 @@ public:
 
 private:
     std::shared_ptr<Core> core;
+    CoreLink *coreLink;
     Observer *observer;
 
     std::unique_ptr<SolarSystemModule> ssystemModule;
     std::unique_ptr<StellarSystemModule> stellarSystemModule;
     std::unique_ptr<InGalaxyModule> inGalaxyModule;
     std::unique_ptr<InUniverseModule> inUniverseModule;
+    std::unique_ptr<InSandBoxModule> inSandBoxModule;
     //std::unique_ptr<InPauseModule> inPauseModule;
     ExecutorModule *currentMode;
 };

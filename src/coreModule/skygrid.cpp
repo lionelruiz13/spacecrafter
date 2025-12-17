@@ -119,9 +119,13 @@ void SkyGrid::createShader()
 void SkyGrid::destroyShader()
 {
     delete m_dataGL;
+	m_dataGL = nullptr;
     delete pipeline;
+	pipeline = nullptr;
     delete layout;
+	layout = nullptr;
     delete set;
+	set = nullptr;
 }
 
 void SkyGrid::createBuffer()

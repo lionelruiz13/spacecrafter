@@ -125,6 +125,7 @@ public:
 	friend class StellarSystemModule;
 	friend class InGalaxyModule;
 	friend class InUniverseModule;
+	friend class InSandBoxModule;
 
 	friend class CoreLink;
 	friend class CoreBackup;
@@ -559,33 +560,49 @@ private:
 	Object old_selected_object;		// The old selected object
 	std::shared_ptr<HipStarMgr> hip_stars;		// Manage the hipparcos stars
 	std::shared_ptr<ConstellationMgr> asterisms;		// Manage constellations (boundaries, names etc..)
-	std::unique_ptr<NebulaMgr> nebulas;				// Manage the nebulas
-	std::unique_ptr<IlluminateMgr> illuminates;		// Manage the illuminations
+	std::unique_ptr<NebulaMgr> nebulas;				// Manage the nebulas (normal modes)
+	std::unique_ptr<NebulaMgr> sandboxNebulas;		// Manage the nebulas (sandbox mode)
+	std::unique_ptr<IlluminateMgr> illuminates;		// Manage the illuminations (normal modes)
+	std::unique_ptr<IlluminateMgr> sandboxIlluminates; // Manage the illuminations (sandbox mode)
 	//TextMgr * text_usr;				// manage all user text in dome
 	//SolarSystem* ssystem;				// Manage the solar system
-	SSystemFactory* ssystemFactory;
+	SSystemFactory* ssystemFactory;			// Manage bodies (normal modes)
+	SSystemFactory* sandboxSsystemFactory;	// Manage bodies (sandbox mode)
 
 	std::shared_ptr<Atmosphere> atmosphere;			// Atmosphere
 
-	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! grid manager
-	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! line manager
-	std::unique_ptr<SkyDisplayMgr> skyDisplayMgr; 		//! skyDisplay manager
+	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! grid manager (normal modes)
+	std::unique_ptr<SkyGridMgr> sandboxSkyGridMgr;		//! grid manager (sandbox mode)
+	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! line manager (normal modes)
+	std::unique_ptr<SkyLineMgr> sandboxSkyLineMgr;		//! line manager (sandbox mode)
+	std::unique_ptr<SkyDisplayMgr> skyDisplayMgr; 		//! skyDisplay manager (normal modes)
+	std::unique_ptr<SkyDisplayMgr> sandboxSkyDisplayMgr; //! skyDisplay manager (sandbox mode)
 	std::unique_ptr<Oort> oort;			//! oort cloud
-	std::unique_ptr<Dso3d> dso3d;		//! dso catalog for in_galaxy
-	std::unique_ptr<Tully> tully;		//! tully galaxies
+	std::unique_ptr<Dso3d> dso3d;		//! dso catalog for in_galaxy (normal modes)
+	std::unique_ptr<Dso3d> sandboxDso3d;	//! dso catalog (sandbox mode)
+	std::unique_ptr<Tully> tully;				//! tully galaxies (normal modes)
+	std::unique_ptr<Tully> sandboxTully;		//! tully galaxies (sandbox mode)
 	std::unique_ptr<Cardinals> cardinals_points;	// Cardinals points
-	std::shared_ptr<MilkyWay> milky_way;			// Our galaxy
-	std::unique_ptr<MeteorMgr> meteors;				// Manage meteor showers
+	std::shared_ptr<MilkyWay> milky_way;			// Our galaxy (normal modes)
+	std::shared_ptr<MilkyWay> sandboxMilkyWay;		// Our galaxy (sandbox mode)
+	std::unique_ptr<MeteorMgr> meteors;				// Manage meteor showers (normal modes)
+	std::unique_ptr<MeteorMgr> sandboxMeteors;		// Manage meteor showers (sandbox mode)
 	Landscape * landscape;				// The landscape ie the fog, the ground and "decor"
 	ToneReproductor * tone_converter;	// Tones conversion between simulation world and display device
 	std::unique_ptr<SkyLocalizer> skyloc;				// for sky cultures and locales
-	std::unique_ptr<StarNavigator> starNav; 			// permet le voyage dans les étoiles
-	std::unique_ptr<CloudNavigator> cloudNav; 			// draw galaxy gaz clouds
+	std::unique_ptr<StarNavigator> starNav; 			// permet le voyage dans les étoiles (normal modes)
+	std::unique_ptr<StarNavigator> sandboxStarNav; 		// permet le voyage dans les étoiles (sandbox mode)
+	std::unique_ptr<CloudNavigator> cloudNav; 			// draw galaxy gaz clouds (normal modes)
+	std::unique_ptr<CloudNavigator> sandboxCloudNav; 	// draw galaxy gaz clouds (sandbox mode)
 	std::unique_ptr<CloudNavigator> universeCloudNav; 	// draw galaxy gaz clouds when in universe
-	std::unique_ptr<StarGalaxy> starGalaxy; 			// draw galaxy stars when in universe
-	std::unique_ptr<VolumObj3D> volumGalaxy; 			// draw volumetric galaxy
-	std::unique_ptr<DsoNavigator> dsoNav; 				// draw 3d dso when in galaxy
-	std::unique_ptr<StarLines> starLines;			// allows to draw lines in the galaxy
+	std::unique_ptr<StarGalaxy> starGalaxy; 			// draw galaxy stars when in universe (normal modes)
+	std::unique_ptr<StarGalaxy> sandboxStarGalaxy; 		// draw galaxy stars when in universe (sandbox mode)
+	std::unique_ptr<VolumObj3D> volumGalaxy; 			// draw volumetric galaxy (normal modes)
+	std::unique_ptr<VolumObj3D> sandboxVolumGalaxy;		// draw volumetric galaxy (sandbox mode)
+	std::unique_ptr<DsoNavigator> dsoNav; 				// draw 3d dso when in galaxy (normal modes)
+	std::unique_ptr<DsoNavigator> sandboxDsoNav; 		// draw 3d dso when in galaxy (sandbox mode)
+	std::unique_ptr<StarLines> starLines;			// allows to draw lines in the galaxy (normal modes)
+	std::unique_ptr<StarLines> sandboxStarLines;	// allows to draw lines in the galaxy (sandbox mode)
 	std::unique_ptr<OjmMgr> ojmMgr;					// represents obj3D
 	std::unique_ptr<UBOCam> uboCam;
 	std::list<Tickable<CoreLink> *> updateList;

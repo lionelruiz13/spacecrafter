@@ -29,6 +29,15 @@
 #include "coreModule/core.hpp"
 #include "mediaModule/media.hpp"
 
+/**
+ * \class InSandBoxModule
+ * \brief Module de mode "bac à sable" pour SpaceCrafter
+ * 
+ * Ce module fournit un environnement vide par défaut où l'utilisateur peut
+ * insérer n'importe quel contenu (bodies, étoiles 2D, objets OJM, etc.) via script.
+ * L'accès à ce mode se fait uniquement par script (pas de changement automatique par altitude).
+ * On ne peut en sortir que par script également.
+ */
 class InSandBoxModule : public ExecutorModule {
 public:
 
@@ -41,13 +50,9 @@ public:
 	virtual void draw(int delta_time) override;
     bool testValidAltitude(double altitude) override;
 
-    void defineDownModeAlt(ExecutorModule *_downModeAlt) {
-		downModeAlt = _downModeAlt;
-	}
 private:
     std::shared_ptr<Core> core;
     Observer *observer;
-    ExecutorModule *downModeAlt = nullptr;
 };
 
 #endif

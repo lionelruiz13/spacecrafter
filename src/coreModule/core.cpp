@@ -94,20 +94,30 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	navigation = new Navigator();
 	observatory = _observatory;
 	ssystemFactory = new SSystemFactory(observatory.get(), navigation, timeMgr.get());
+	sandboxSsystemFactory = new SSystemFactory(observatory.get(), navigation, timeMgr.get());  // Sandbox solar system
 	nebulas = std::make_unique<NebulaMgr>();
+	sandboxNebulas = std::make_unique<NebulaMgr>();  // Sandbox nebulas
 	milky_way = std::make_shared<MilkyWay>();
+	sandboxMilkyWay = std::make_shared<MilkyWay>();  // Sandbox milky way
 	starNav = std::make_unique<StarNavigator>();
+	sandboxStarNav = std::make_unique<StarNavigator>();  // Sandbox star navigator
 	cloudNav = std::make_unique<CloudNavigator>();
+	sandboxCloudNav = std::make_unique<CloudNavigator>();  // Sandbox cloud navigator
 	universeCloudNav = std::make_unique<CloudNavigator>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
 	starGalaxy = std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
+	sandboxStarGalaxy = std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");  // Sandbox star galaxy
 	if (std::filesystem::exists(s_texture::getTexDir() + "milkyway-vguerin-d128.png")) {
 		volumGalaxy = std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false);
+		sandboxVolumGalaxy = std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false);  // Sandbox volum galaxy
 	} else {
 		volumGalaxy = std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true);
+		sandboxVolumGalaxy = std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true);  // Sandbox volum galaxy
 	}
 	dsoNav = std::make_unique<DsoNavigator>();
+	sandboxDsoNav = std::make_unique<DsoNavigator>();  // Sandbox dso navigator
 	starLines = std::make_unique<StarLines>();
-	ojmMgr = std::make_unique<OjmMgr>();
+	sandboxStarLines = std::make_unique<StarLines>();  // Sandbox star lines
+	ojmMgr = std::make_unique<OjmMgr>();  // Manages mode internally
 	bodyDecor = new BodyDecor(milky_way, atmosphere);
 
 	skyGridMgr = std::make_unique<SkyGridMgr>();
@@ -115,6 +125,13 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_ECLIPTIC);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_GALACTIC);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
+
+	// Sandbox skyGridMgr (separate collection for sandbox mode)
+	sandboxSkyGridMgr = std::make_unique<SkyGridMgr>();
+	sandboxSkyGridMgr->Create(SKYGRID_TYPE::GRID_EQUATORIAL);
+	sandboxSkyGridMgr->Create(SKYGRID_TYPE::GRID_ECLIPTIC);
+	sandboxSkyGridMgr->Create(SKYGRID_TYPE::GRID_GALACTIC);
+	sandboxSkyGridMgr->Create(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
 
 	skyLineMgr = std::make_unique<SkyLineMgr>();
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
@@ -140,6 +157,29 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZODIAC);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZENITH);
 
+	// Sandbox skyLineMgr (separate collection for sandbox mode)
+	sandboxSkyLineMgr = std::make_unique<SkyLineMgr>();
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_POINT_POLAR);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_GALACTIC_POLE);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_ANALEMMA);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_ANALEMMALINE);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCUMPOLAR);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_VERNAL);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_GREENWICH);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_ARIES);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_EQUATOR);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_MERIDIAN);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_TROPIC);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_ECLIPTIC);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_PRECESSION);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_VERTICAL);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_ZODIAC);
+	sandboxSkyLineMgr->Create(SKYLINE_TYPE::LINE_ZENITH);
+
 	skyDisplayMgr = std::make_unique<SkyDisplayMgr>();
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONAL);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONEQ);
@@ -151,16 +191,32 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_LOXODROMY);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ORTHODROMY);
 
+	// Sandbox skyDisplayMgr (separate collection for sandbox mode)
+	sandboxSkyDisplayMgr = std::make_unique<SkyDisplayMgr>();
+	sandboxSkyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONAL);
+	sandboxSkyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONEQ);
+	sandboxSkyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_NAUTICAL);
+	sandboxSkyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_NAUTICEQ);
+	sandboxSkyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_OBJCOORDS);
+	sandboxSkyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
+	sandboxSkyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ANGDIST);
+	sandboxSkyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_LOXODROMY);
+	sandboxSkyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ORTHODROMY);
+
 	cardinals_points = std::make_unique<Cardinals>();
 	meteors = std::make_unique<MeteorMgr>(10, 60);
+	sandboxMeteors = std::make_unique<MeteorMgr>(10, 60);  // Sandbox meteors
 	landscape = new Landscape();
 	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = std::make_shared<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height);
 	asterisms = std::make_shared<ConstellationMgr>(hip_stars);
 	illuminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms);
+	sandboxIlluminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms);  // Sandbox illuminates
 	oort =  std::make_unique<Oort>();
 	dso3d = std::make_unique<Dso3d>();
+	sandboxDso3d = std::make_unique<Dso3d>();  // Sandbox dso3d
 	tully = std::make_unique<Tully>();
+	sandboxTully = std::make_unique<Tully>();  // Sandbox tully
 	object_pointer_visibility = 1;
 }
 
@@ -222,6 +278,7 @@ Core::~Core()
 	// s_font::deleteShader();
 	//delete ssystem;
 	delete ssystemFactory;
+	delete sandboxSsystemFactory;
 	//delete skyloc;
 	//skyloc = nullptr;
 	Object::deleteTextures(); // Unload the pointer textures
@@ -2053,12 +2110,19 @@ void Core::removeSupplementalNebulae()
 
 bool Core::loadDso2d(int typeDso, std::string name, float size, float alpha, float delta, float distance, int xyz)
 {
-	return dso3d->loadCommand(typeDso, name, size, alpha, delta, distance, xyz);
+	// Use the appropriate dso3d based on current mode (handled by coreLink pointer)
+	if (getFlagIngalaxy() == MODULE::IN_SANDBOX)
+		return sandboxDso3d->loadCommand(typeDso, name, size, alpha, delta, distance, xyz);
+	else
+		return dso3d->loadCommand(typeDso, name, size, alpha, delta, distance, xyz);
 }
 
 void Core::removeSupplementalDso()
 {
-	dso3d->removeSupplementalDso();
+	if (getFlagIngalaxy() == MODULE::IN_SANDBOX)
+		sandboxDso3d->removeSupplementalDso();
+	else
+		dso3d->removeSupplementalDso();
 }
 
 void Core::setJDayRelative(int year, int month)

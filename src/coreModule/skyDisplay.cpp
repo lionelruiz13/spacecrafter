@@ -112,8 +112,11 @@ void SkyDisplay::createSC_context()
 void SkyDisplay::destroySC_context()
 {
 	delete pipeline;
+	pipeline = nullptr;
 	delete layout;
+	layout = nullptr;
 	delete set;
+	set = nullptr;
 }
 
 void SkyDisplay::createLocalResources()

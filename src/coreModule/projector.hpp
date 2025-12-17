@@ -43,9 +43,11 @@ enum class ProjectionType : int {
 
 // Convert string to ProjectionType
 inline ProjectionType stringToProjectionType(const std::string& str) {
-	if (str == "ALLSPHERE") return ProjectionType::ALLSPHERE;
-	if (str == "EKISOLID") return ProjectionType::EKISOLID;
-	if (str == "ASPHERIC") return ProjectionType::ASPHERIC;
+	std::string upper_str;
+	transform(str.begin(), str.end(), std::back_inserter(upper_str), ::toupper);
+	if (upper_str == "ALLSPHERE") return ProjectionType::ALLSPHERE;
+	if (upper_str == "EKISOLID") return ProjectionType::EKISOLID;
+	if (upper_str == "ASPHERIC") return ProjectionType::ASPHERIC;
 	return ProjectionType::FISHEYE; // Default
 }
 

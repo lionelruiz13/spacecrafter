@@ -200,6 +200,7 @@ void UI::init(const InitParser& conf)
 	executeCommand(DESELECT);
 	coreLink->BodyOJMRemoveAll("in_universe");
 	coreLink->BodyOJMRemoveAll("in_galaxy");
+	coreLink->BodyOJMRemoveAll("in_sandbox");
 
 	coreLink->starLinesLoadData(AppSettings::Instance()->getScriptDir() + "internal/asterism_all.fab");
 

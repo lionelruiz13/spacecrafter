@@ -27,17 +27,31 @@
 #include "eventModule/event.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScreenFader.hpp"
+#include "tools/log.hpp"
 
 #include "coreModule/skygrid_mgr.hpp"
 #include "coreModule/skyline_mgr.hpp"
 #include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/milkyway.hpp"
+#include "coreModule/meteor_mgr.hpp"
+#include "coreModule/nebula_mgr.hpp"
+#include "coreModule/illuminate_mgr.hpp"
+#include "coreModule/cardinals.hpp"
+#include "atmosphereModule/atmosphere.hpp"
 #include "inGalaxyModule/dso3d.hpp"
 #include "inGalaxyModule/cloudNavigator.hpp"
 #include "inGalaxyModule/dsoNavigator.hpp"
 #include "coreModule/starLines.hpp"
 #include "ojmModule/ojm_mgr.hpp"
 #include "inGalaxyModule/starNavigator.hpp"
+#include "starModule/hip_star_mgr.hpp"
+#include "inGalaxyModule/starGalaxy.hpp"
+#include "coreModule/tully.hpp"
+#include "coreModule/volumObj3D.hpp"
+#include "bodyModule/ssystem_factory.hpp"
+#include "coreModule/constellation_mgr.hpp"
+#include "coreModule/oort.hpp"
+#include "coreModule/landscape.hpp"
 #include "tools/context.hpp"
 #include "tools/draw_helper.hpp"
 
@@ -52,102 +66,290 @@ InSandBoxModule::InSandBoxModule(std::shared_ptr<Core> _core, Observer *_observe
 void InSandBoxModule::onEnter()
 {
 	core->setFlagIngalaxy(MODULE::IN_SANDBOX);
-	std::cout << "->InSandBox" << std::endl;
-	//set altitude in CoreExecutorInGalaxy when enter
-	if (observer->getAltitude() < minAltToGoDown) {
-		std::cout << "too low -> altitude = min" << std::endl;
-		observer->setAltitude(maxAltToGoUp);
-	} else
-	if (observer->getAltitude() > maxAltToGoUp) {
-		std::cout << "too high -> altitude = max" << std::endl;
-		observer->setAltitude(minAltToGoDown);
-	}
-	else {
-		std::cout << "InSandBox mode" << std::endl;
-		// observer->setAltitude((minAltToGoDown+maxAltToGoUp/2.0));
-	}
-	// s_texture::willRead("MilkyWayRGBAVolume1024x1024x128.raw");
+	cLog::get()->write("====================================", LOG_TYPE::L_INFO);
+	cLog::get()->write("-> ENTREE EN MODE SANDBOX (BAC A SABLE)", LOG_TYPE::L_INFO);
+	cLog::get()->write("   Module actuel: " + std::to_string((int)core->getFlagIngalaxy()), LOG_TYPE::L_INFO);
+	cLog::get()->write("====================================", LOG_TYPE::L_INFO);
+	// Pas de gestion d'altitude spéciale en mode sandbox
+	// L'utilisateur peut définir l'altitude qu'il souhaite via script
 }
 
 void InSandBoxModule::onExit()
 {
-	std::cout << "InSandBox->" << std::endl;
+	cLog::get()->write("====================================", LOG_TYPE::L_INFO);
+	cLog::get()->write("SORTIE DU MODE SANDBOX", LOG_TYPE::L_INFO);
+	cLog::get()->write("====================================", LOG_TYPE::L_INFO);
 }
 
 void InSandBoxModule::update(int delta_time)
 {
-		// Update the position of observation and time etc...
+	//! InUniverse
+	// Update the position of observation and time etc...
 	observer->update(delta_time);
-//	core->timeMgr->update(delta_time);
-//	core->navigation->update(delta_time);
-
+	core->timeMgr->update(delta_time);
+	core->navigation->update(delta_time);
 	// Transform matrices between coordinates systems
-//	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
+	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
 	// Direction of vision
-//	core->navigation->updateVisionVector(delta_time, core->selected_object);
+	core->navigation->updateVisionVector(delta_time, core->selected_object);
 	// Field of view
-//	core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
+	core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
 	// Move the view direction and/or fov
-//	core->updateMove(delta_time);
+	core->updateMove(delta_time);
 	// Update faders
-//	core->update(delta_time);
-//	core->starLines->update(delta_time);
-//	core->milky_way->update(delta_time);
-//	core->dso3d->update(delta_time);
+	core->update(delta_time);
+
+	core->sandboxTully->update(delta_time);
+
+
+
+
+	//! InGalaxy
+	// Position of sun and all the satellites (ie planets)
+	core->sandboxSsystemFactory->computePositions(core->timeMgr->getJDay(), observer);
+	core->sandboxSsystemFactory->updateAnchorManager();
+
+	// Update faders
+	core->sandboxStarLines->update(delta_time);
+	core->sandboxMilkyWay->update(delta_time);
+	core->sandboxDso3d->update(delta_time);
+
+
+
+	//! solarSystem
+	// update faders and Planet trails (call after nav is updated)
+	core->sandboxSsystemFactory->update(delta_time, core->navigation, core->timeMgr.get());
 
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
-//	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
-//	                                    core->navigation->getEarthEquToEyeMatFixed(),
-//	                                    core->navigation->getHelioToEyeMat(),
-//	                                    core->navigation->getLocalToEyeMat(),
-//	                                    core->navigation->getJ2000ToEyeMat(),
-//	                                    core->navigation->geTdomeMat(),
-//	                                    core->navigation->getDomeFixedMat());
-	Event* event = new ScreenFaderInterludeEvent(
-		ScreenFaderInterludeEvent::UP, maxAltToGoUp/2.0,maxAltToGoUp, observer->getAltitude());
-	EventRecorder::getInstance()->queue(event);
+	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
+											core->navigation->getEarthEquToEyeMatFixed(),
+											core->navigation->getHelioToEyeMat(),
+											core->navigation->getLocalToEyeMat(),
+											core->navigation->getJ2000ToEyeMat(),
+											core->navigation->geTdomeMat(),
+											core->navigation->getDomeFixedMat());
+
+    // Update faders
+	core->sandboxSkyGridMgr->update(delta_time);
+	core->sandboxSkyLineMgr->update(delta_time);
+	core->asterisms->update(delta_time);
+	core->oort->update(delta_time);
+
+	core->tone_converter->setWorldAdaptationLuminance(core->atmosphere->getWorldAdaptationLuminance());
+
+	// TODO make this more generic for non-atmosphere planets
+	if (core->atmosphere->getFadeIntensity() == 1) {
+		// If the atmosphere is on, a solar eclipse might darken the sky otherwise we just use the sun position calculation above
+		core->sky_brightness *= (core->atmosphere->getIntensity()+0.1);
+	}
+	// TODO: should calculate dimming with solar eclipse even without atmosphere on
+	core->landscape->setSkyBrightness(core->sky_brightness+0.05);
+
+
+
+
+
+
+	// // Update the position of observation and time etc...
+	// observer->update(delta_time);
+	// core->timeMgr->update(delta_time);
+	// core->navigation->update(delta_time);
+
+	// // Calculer les positions des corps célestes (pour les bodies ajoutés par script)
+	// core->sandboxSsystemFactory->computePositions(core->timeMgr->getJDay(), observer);
+	// core->sandboxSsystemFactory->updateAnchorManager();
+
+	// // Transform matrices between coordinates systems
+	// core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
+	// // Direction of vision
+	// core->navigation->updateVisionVector(delta_time, core->selected_object);
+	// // Field of view
+	// core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
+	// // Move the view direction and/or fov
+	// core->updateMove(delta_time);
+	// // Update faders
+	// core->update(delta_time);
+	// core->sandboxStarLines->update(delta_time);
+	// core->sandboxMilkyWay->update(delta_time);
+	// // Update DSO 3D sandbox
+	// core->sandboxDso3d->update(delta_time);
+	// // Update meteors sandbox
+	// core->sandboxMeteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
+	// // Update tully sandbox
+	// core->sandboxTully->update(delta_time);
+
+	// // Give the updated standard projection matrices to the projector
+	// core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
+	// 										core->navigation->getEarthEquToEyeMatFixed(),
+	// 										core->navigation->getHelioToEyeMat(),
+	// 										core->navigation->getLocalToEyeMat(),
+	// 										core->navigation->getJ2000ToEyeMat(),
+	// 										core->navigation->geTdomeMat(),
+	// 										core->navigation->getDomeFixedMat());
 }
 
 void InSandBoxModule::draw(int delta_time)
 {
-//	core->applyClippingPlanes(0.01, 2000.01);
+	core->applyClippingPlanes(0.01, 2000.01);
 	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]);
-//	core->starNav->computePosition(core->navigation->getObserverHelioPos());
-//	core->cloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
-//	core->dsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+
+	// Sandbox Mode: Empty environment by default
+	// We only draw what has been explicitly added
+
+	//! InUniverse
+	core->sandboxDsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+	// core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 
 	//for VR360 drawing
-//	core->media->drawVR360(core->projection, core->navigation);
+	core->media->drawVR360(core->projection, core->navigation);
 
-	//core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
+	if (core->sandboxVolumGalaxy->loaded()) {
+		if (core->sandboxTully->mustBuild())
+			core->sandboxTully->build(core->sandboxVolumGalaxy.get());
+		core->sandboxTully->draw(observer->getAltitude(), core->navigation, core->projection);
+	} else {
+		if (core->sandboxTully->mustBuild())
+			core->sandboxTully->build();
+		core->sandboxTully->draw(observer->getAltitude(), core->navigation, core->projection);
+	}
 
-	//if (core->selected_object && core->object_pointer_visibility) core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
-	//set mode
-	//drawing lines without activating the depth buffer.
-	//core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
-	//core->starLines->draw(core->navigation);
+	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_SANDBOX);
+
+	core->sandboxSkyDisplayMgr->drawPerson(core->projection, core->navigation);
+	core->sandboxStarGalaxy->draw(core->navigation, core->projection);
+	if (core->selected_object && core->object_pointer_visibility)
+		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
+	core->sandboxDsoNav->draw(core->navigation, core->projection);
+
+
+
+
+
+	//! InGalaxy
+	core->sandboxStarNav->computePosition(core->navigation->getObserverHelioPos());
+	core->sandboxCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+
+	core->sandboxMilkyWay->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
+
+	core->sandboxStarLines->draw(core->navigation);
 
 	// transparency.
-	//core->dso3d->draw(observer->getAltitude(), core->projection, core->navigation);
-	//core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_GALAXY);
-	//core->starNav->draw(core->navigation, core->projection, false);
-	//core->dsoNav->draw(core->navigation, core->projection);
-	//core->cloudNav->draw(core->navigation, core->projection);
-	//core->postDraw();
+	core->sandboxDso3d->draw(observer->getAltitude(), core->projection, core->navigation);
+	core->sandboxStarNav->draw(core->navigation, core->projection, false);
+	core->sandboxCloudNav->draw(core->navigation, core->projection);
+
+
+
+
+	//! solarSystem
+	core->sandboxNebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
+	core->oort->draw(observer->getAltitude(), core->navigation);
+	core->sandboxIlluminates->draw(core->projection, core->navigation);
+	core->asterisms->draw(core->projection, core->navigation);
+	core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
+	core->sandboxSkyGridMgr->draw(core->projection);
+	core->sandboxSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
+	core->sandboxSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
+	core->sandboxSsystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
+
+	// Update meteors
+	core->sandboxMeteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
+
+	// removed the condition && atmosphere->getFlagShow() so that you can have some by atmosphere
+	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
+	if (core->bodyDecor->canDrawMeteor() && (core->sky_brightness<0.1))
+		core->sandboxMeteors->draw(core->projection, core->navigation);
+
+    Context::instance->helper->nextDraw(PASS_FOREGROUND);
+	core->atmosphere->draw();
+
+	// Draw the landscape
+	if (core->bodyDecor->canDrawLandscape()) {
+		core->landscape->draw(core->projection, core->navigation);
+	}
+
+	core->cardinals_points->draw(core->projection, observer->getLatitude());
+
+
+
+
+
+
+
+	// // Compute positions pour navigateurs sandbox
+	// core->sandboxStarNav->computePosition(core->navigation->getObserverHelioPos());
+	// core->sandboxCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+	// core->sandboxDsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+
+	// // Pour VR360 drawing
+	// core->media->drawVR360(core->projection, core->navigation);
+
+	// // Dessiner la Voie Lactée sandbox
+	// core->sandboxMilkyWay->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
+
+	// // Dessiner les étoiles (si flag stars activé)
+	// core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
+
+	// // Dessiner les grilles (si flags activés) - collections sandbox
+	// core->sandboxSkyGridMgr->draw(core->projection);
+	// core->sandboxSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
+
+	// // Dessiner les lignes personnalisées du SANDBOX (personal, personeq, etc.)
+	// Vec3d selectedPos(0,0,0);
+	// Vec3d oldSelectedPos(0,0,0);
+	// if (core->selected_object)
+	// 	selectedPos = core->selected_object.getEarthEquPos(core->navigation);
+	// if (core->old_selected_object)
+	// 	oldSelectedPos = core->old_selected_object.getEarthEquPos(core->navigation);
+	// core->sandboxSkyDisplayMgr->draw(core->projection, core->navigation, selectedPos, oldSelectedPos);
+
+	// // Dessiner les lignes d'étoiles du SANDBOX (si ajoutées via script)
+	// core->sandboxStarLines->draw(core->navigation);
+
+	// // Dessiner les nébuleuses sandbox
+	// core->sandboxNebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
+	// // Dessiner les DSO 3D sandbox
+	// core->sandboxDso3d->draw(observer->getAltitude(), core->projection, core->navigation);
+	// // Dessiner les illuminations sandbox
+	// core->sandboxIlluminates->draw(core->projection, core->navigation);
+	// // Dessiner les points cardinaux (partagés entre tous les modes)
+	// core->cardinals_points->draw(core->projection, observer->getLatitude());
+	// // Dessiner les météores sandbox
+	// core->sandboxMeteors->draw(core->projection, core->navigation);
+
+	// // Dessiner tully et volumGalaxy sandbox
+	// if (core->sandboxVolumGalaxy->loaded()) {
+	// 	if (core->sandboxTully->mustBuild()) {
+	// 		core->sandboxTully->build(core->sandboxVolumGalaxy.get());
+	// 	}
+	// 	core->sandboxTully->draw(observer->getAltitude(), core->navigation, core->projection);
+	// } else {
+	// 	if (core->sandboxTully->mustBuild())
+	// 		core->sandboxTully->build();
+	// 	core->sandboxTully->draw(observer->getAltitude(), core->navigation, core->projection);
+	// }
+
+	// // Dessiner starNavigator sandbox
+	// core->sandboxStarNav->draw(core->navigation, core->projection, false);
+	// // Dessiner dsoNavigator sandbox
+	// core->sandboxDsoNav->draw(core->navigation, core->projection);
+	// // Dessiner cloudNavigator sandbox
+	// core->sandboxCloudNav->draw(core->navigation, core->projection);
+	// // // Dessiner starGalaxy sandbox
+	// // core->sandboxStarGalaxy->draw(core->navigation, core->projection);
+
+	// // Dessiner les objets OJM (gère le mode en interne)
+	// core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_SANDBOX);
+
+	// // Afficher l'objet sélectionné s'il y en a un
+	// if (core->selected_object && core->object_pointer_visibility)
+	// 	core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 }
 
 bool InSandBoxModule::testValidAltitude(double altitude)
 {
-	if (altitude>maxAltToGoUp) {
-		nextMode = upMode;
-		Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
-		EventRecorder::getInstance()->queue(event);
-		return true;
-	}
-	if (altitude<minAltToGoDown) {
-//		nextMode = (core->ssystemFactory->querySelectedAnchorName() == "Sun") ? downMode : downModeAlt;
-		return true;
-	}
+	// Mode sandbox : on ne change JAMAIS de mode automatiquement par altitude
+	// Le changement de mode doit se faire uniquement via script
 	return false;
 }

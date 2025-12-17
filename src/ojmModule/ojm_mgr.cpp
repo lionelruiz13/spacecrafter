@@ -46,6 +46,8 @@ OjmMgr::STATE_POSITION OjmMgr::convert(const std::string & value)
 		return STATE_POSITION::IN_GALAXY;
 	if (value =="in_universe")
 		return STATE_POSITION::IN_UNIVERSE;
+	if (value =="in_sandbox")
+		return STATE_POSITION::IN_SANDBOX;
 	else
 		return STATE_POSITION::OTHER;
 }
