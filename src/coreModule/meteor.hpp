@@ -54,6 +54,8 @@ public:
 	static void clear();
 
 	static Vec3f getRadiant(int day) {
+		if (day < 1)
+			day = 1;
 		return radiant[(day-1) % 366];
 	}
 	static void setRadiantZHR(int day, int zhr) {
