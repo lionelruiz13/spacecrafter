@@ -47,6 +47,7 @@ SkyLineMgr::~SkyLineMgr()
 		//~ cout << "suppression of " << it->first << endl;
 		cLog::get()->write("SkyLineMgr : delete " + typeToString(it->first) , LOG_TYPE::L_INFO);
 		delete it->second;
+		it->second = nullptr;
 	}
 }
 

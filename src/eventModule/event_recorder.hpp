@@ -74,7 +74,7 @@ private:
     }
 
 	~EventRecorder() {
-		std::for_each(envents.begin(), envents.end(), [](const Event* e) { delete e; });
+		std::for_each(envents.begin(), envents.end(), [](const Event* e) { delete e; e = nullptr; });
 		envents.clear();
 	}
     //singleton to not change all the classes of the software

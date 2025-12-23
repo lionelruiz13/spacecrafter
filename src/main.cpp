@@ -359,6 +359,7 @@ int main(int argc, const char *argv[])
 
 	app.reset();
 	delete signalObj;
+	signalObj = nullptr;
 
 	// Log->write("EOF", LOG_TYPE::L_INFO);
 	// Log->write("EOF", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);

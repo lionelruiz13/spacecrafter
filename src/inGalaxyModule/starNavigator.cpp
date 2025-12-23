@@ -210,6 +210,7 @@ void StarNavigator::saveData(const std::string &fileName, bool binaryData) noexc
 StarNavigator::~StarNavigator()
 {
 	delete pool;
+	pool = nullptr;
 }
 
 void StarNavigator::clearBuffer()
@@ -387,6 +388,7 @@ void StarNavigator::computeRCMagTable()
 		mag=mag+0.05;
 	}
 	delete eye;
+	eye = nullptr;
 
 	needComputeRCMagTable = false;
 }

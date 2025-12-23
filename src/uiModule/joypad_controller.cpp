@@ -71,10 +71,15 @@ JoypadController::~JoypadController()
 	SDL_JoystickClose(joystick);
 	joystick = nullptr;
 	delete[] buttonActions;
+	buttonActions = nullptr;
 	delete[] buttonAltActions;
+	buttonAltActions = nullptr;
 	delete[] hatActions;
+	hatActions = nullptr;
 	delete[] hatAltActions;
+	hatAltActions = nullptr;
 	delete[] hatValues;
+	hatValues = nullptr;
 }
 
 /*

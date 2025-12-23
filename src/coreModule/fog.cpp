@@ -92,10 +92,15 @@ void Fog::createSC_context()
 void Fog::destroySC_context()
 {
 	delete vertexModel;
+	vertexModel = nullptr;
 	delete pipeline;
+	pipeline = nullptr;
 	delete layout;
+	layout = nullptr;
 	delete set;
+	set = nullptr;
 	delete fog_tex;
+	fog_tex = nullptr;
 }
 
 void Fog::initShader()

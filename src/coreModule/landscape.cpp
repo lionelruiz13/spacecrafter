@@ -287,7 +287,9 @@ void Landscape::draw(const Projector* prj, const Navigator* nav)
 void Landscape::destroySC_context()
 {
 	delete[] pipeline;
+	pipeline = nullptr;
 	delete layout;
+	layout = nullptr;
 	Fog::destroySC_context();
 }
 

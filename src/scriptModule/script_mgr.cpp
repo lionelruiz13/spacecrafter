@@ -55,6 +55,7 @@ ScriptMgr::ScriptMgr(std::shared_ptr<AppCommandInterface> command_interface,cons
 ScriptMgr::~ScriptMgr()
 {
 	delete script;
+	script = nullptr;
 }
 
 // path is used for loading script assets in one time

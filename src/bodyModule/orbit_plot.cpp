@@ -40,6 +40,7 @@ OrbitPlot::OrbitPlot(Body* _body, int segments, int nbAdditionnalPoints) : nbAdd
 OrbitPlot::~OrbitPlot()
 {
 	delete[] orbitPoint;
+	orbitPoint = nullptr;
 }
 
 void OrbitPlot::initDraw()

@@ -178,6 +178,7 @@ Image::~Image()
 {
 	// if (image_RGB) delete image_RGB;
 	delete imageTexture;
+	imageTexture = nullptr;
 	// Release index buffer if allocated
 	if (indexBuffer) {
 		Context::instance->indexBufferMgr->releaseBuffer(*indexBuffer);

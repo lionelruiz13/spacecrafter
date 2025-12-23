@@ -38,6 +38,7 @@ OjmMgr::OjmMgr()
 OjmMgr::~OjmMgr()
 {
 	delete[] pipeline;
+	pipeline = nullptr;
 }
 
 OjmMgr::STATE_POSITION OjmMgr::convert(const std::string & value)
@@ -77,6 +78,7 @@ bool OjmMgr::load(const std::string &mode, const std::string &name, const std::s
 
 	if (!tmp->Obj3D->getOk()) {
 		delete tmp;
+		tmp = nullptr;
 		cLog::get()->write("Error loading ojm "+ name, LOG_TYPE::L_ERROR);
 		return false;
 	} else {

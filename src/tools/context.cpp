@@ -103,12 +103,15 @@ Context::~Context()
 {
     instance = nullptr;
     helper.reset();
-    for (auto p : pipelineArray)
+    for (auto p : pipelineArray) {
         delete[] p;
+        p = nullptr;
+    }
     for (auto v : shadowView) {
         vkDestroyImageView(VulkanMgr::instance->refDevice, v, nullptr);
     }
     delete[] shadowData;
+    shadowData = nullptr;
     const uint32_t maxRadius = std::min(shadowRes / 2, MAX_RADIUS_HARD_LIMIT+2U) - 1U;
     for (uint32_t i = 0; i < maxRadius; ++i) {
         shadowPipelines[i].~ComputePipeline();

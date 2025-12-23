@@ -459,8 +459,10 @@ bool s_texture::load(stbi_uc *data, int realWidth, int realHeight)
         texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, texInfo);
         dispatchedLoadMutex.unlock();
     }
-	if (realWidth != texture->width && texture->depth == 1)
+	if (realWidth != texture->width && texture->depth == 1) {
 		delete[] data;
+        data = nullptr;
+    }
 	return true;
 }
 
@@ -539,6 +541,10 @@ void s_texture::forceUnload()
         delete pipelinePackedMipmap4;
         delete pipelinePackedMipmap1;
         layoutMipmap = nullptr;
+        pipelineMipmap4 = nullptr;
+        pipelineMipmap1 = nullptr;
+        pipelinePackedMipmap4 = nullptr;
+        pipelinePackedMipmap1 = nullptr;
     }
     cache.store();
     cLog::get()->write("Total blocking texture loading time : " + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(loadTime).count()) + "ms", LOG_TYPE::L_INFO);
@@ -1079,6 +1085,7 @@ void s_texture::bigTextureLoader()
     vkDestroyFence(vkmgr.refDevice, fence, nullptr);
     vkDestroyCommandPool(vkmgr.refDevice, pool, nullptr);
     delete[] stor;
+    stor = nullptr;
 }
 
 void s_texture::debugBigTexture()

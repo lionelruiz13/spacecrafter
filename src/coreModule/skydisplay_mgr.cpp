@@ -55,6 +55,7 @@ SkyDisplayMgr::~SkyDisplayMgr()
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		cLog::get()->write("SkyDisplayMgr : delete " + getSkyName(it->first), LOG_TYPE::L_INFO);
 		delete it->second;
+		it->second = nullptr;
 	}
 	SkyDisplay::destroySC_context();
 }

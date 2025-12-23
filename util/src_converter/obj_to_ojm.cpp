@@ -192,6 +192,7 @@ bool ObjToOjm::fusionMaterials()
 						Mesh* tmpToDelete = obj->meshes[j];
 						obj->meshes.erase(obj->meshes.begin()+j);
 						delete tmpToDelete;
+						tmpToDelete = nullptr;
 						//std::cout << " fusion " << i << " " << j << std::endl;
 						goto fin_de_la_boucle;
 					}

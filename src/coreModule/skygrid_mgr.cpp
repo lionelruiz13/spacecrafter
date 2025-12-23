@@ -46,6 +46,7 @@ SkyGridMgr::~SkyGridMgr()
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		cLog::get()->write("SkyGridMgr : delete " + typeToString(it->first), LOG_TYPE::L_INFO);
 		delete it->second;
+		it->second = nullptr;
 	}
 	SkyGrid::destroyShader();
 }

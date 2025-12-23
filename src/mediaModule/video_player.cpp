@@ -104,8 +104,10 @@ VideoPlayer::~VideoPlayer()
 {
 	media = nullptr;
 	stopCurrentVideo(false);
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++) {
 		delete videoTexture.tex[i];
+		videoTexture.tex[i] = nullptr;
+	}
 }
 
 std::string VideoPlayer::formatTime(std::chrono::seconds seconds)

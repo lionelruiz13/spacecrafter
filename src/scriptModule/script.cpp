@@ -41,6 +41,7 @@ Token::Token(const std::string &s, const std::string &p)
 Token::~Token()
 {
 	if (pNext != nullptr) delete pNext;
+	pNext=nullptr;
 }
 
 void Token::printToken()
@@ -60,6 +61,7 @@ Script::Script()
 Script::~Script()
 {
 	if (pFirst != nullptr) delete pFirst;
+	pFirst = nullptr;
 }
 
 void Script::printScript()
@@ -184,6 +186,7 @@ int Script::getFirst(std::string &command, std::string &dataDir)
 		pFirst=pFirst->pNext;
 		pMove->pNext=nullptr;
 		delete pMove;
+		pMove=nullptr;
 		return 1;
 	}
 }

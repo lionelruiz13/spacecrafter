@@ -168,6 +168,7 @@ void UI::initTui()
 {
 	// If already initialized before, delete existing objects
 	if (tui_root) delete tui_root;
+	tui_root = nullptr;
 	// if (tuiFont) delete tuiFont;
 
 	// Load standard font based on app locale

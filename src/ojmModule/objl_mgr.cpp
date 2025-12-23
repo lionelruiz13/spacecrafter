@@ -34,6 +34,7 @@ ObjLMgr::~ObjLMgr()
 	std::map<std::string, ObjL *>::iterator it;
 	for (it=objectMap.begin(); it!=objectMap.end(); ++it) {
 		delete (it->second);
+		it->second = nullptr;
 	}
 	objectMap.clear();
 }
@@ -104,6 +105,7 @@ bool ObjLMgr::insert(const std::string &name, bool _defaultObject)
 				cLog::get()->write("Error loading model3D "+ name, LOG_TYPE::L_ERROR);
 			//~ printf("Error loading model3D %s\n", name.c_str());
 			delete tmp;
+			tmp = nullptr;
 			return false;
 		}
 	} else {

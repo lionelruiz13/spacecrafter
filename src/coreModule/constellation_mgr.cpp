@@ -127,8 +127,10 @@ void ConstellationMgr::createSC_context()
 ConstellationMgr::~ConstellationMgr()
 {
 	std::vector<Constellation *>::iterator iter;
-	for (iter = asterisms.begin(); iter != asterisms.end(); iter++)
+	for (iter = asterisms.begin(); iter != asterisms.end(); iter++) {
 		delete(*iter);
+		*iter = nullptr;
+	}
 
 	// if (font) delete font;
 	// font = nullptr;
@@ -136,6 +138,7 @@ ConstellationMgr::~ConstellationMgr()
 	std::vector<std::vector<Vec3f> *>::iterator iter1;
 	for (iter1 = allBoundarySegments.begin(); iter1 != allBoundarySegments.end(); ++iter1) {
 		delete (*iter1);
+		*iter1 = nullptr;
 	}
 	allBoundarySegments.clear();
 }
@@ -212,6 +215,7 @@ int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
 	std::vector < Constellation * >::iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
 		delete(*iter);
+		*iter = nullptr;
 	}
 	asterisms.clear();
 	std::vector<std::string> tmpSelected;
@@ -234,6 +238,7 @@ int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
 		} else {
 			cLog::get()->write("ConstellationMgr::loadLinesAndArt on line " + std::to_string(line) + " of " + fileName, LOG_TYPE::L_ERROR);
 			delete cons;
+			cons = nullptr;
 		}
 	}
 	inf.close();
@@ -871,6 +876,7 @@ bool ConstellationMgr::loadBoundaries(const std::string& boundaryFile)
 	std::vector<std::vector<Vec3f> *>::iterator iter;
 	for (iter = allBoundarySegments.begin(); iter != allBoundarySegments.end(); ++iter) {
 		delete (*iter);
+		*iter = nullptr;
 	}
 	allBoundarySegments.clear();
 
@@ -931,6 +937,7 @@ bool ConstellationMgr::loadBoundaries(const std::string& boundaryFile)
 	dataFile.close();
 	cLog::get()->write("(" + std::to_string(i) + " segments loaded)", LOG_TYPE::L_INFO);
 	delete points;
+	points = nullptr;
 
 	return true;
 }

@@ -110,8 +110,12 @@ GeodesicGrid::GeodesicGrid(const int lev) : max_level(lev<0?0:lev), lastMaxSearc
 GeodesicGrid::~GeodesicGrid(void)
 {
 	if (max_level > 0) {
-		for (int i=max_level-1; i>=0; i--) delete[] triangles[i];
+		for (int i=max_level-1; i>=0; i--) {
+			delete[] triangles[i];
+			triangles[i] = nullptr;
+		}
 		delete[] triangles;
+		triangles = nullptr;
 	}
 	delete cacheSearchResult;
 	cacheSearchResult = nullptr;
@@ -322,7 +326,11 @@ void GeodesicGrid::searchZones(const StelGeom::ConvexS& convex,
 	}
 	#if defined __STRICT_ANSI__ || !defined __GNUC__
 	delete[] halfs_used;
-	for(int ci=0; ci < 12; ci++) delete[] corner_inside[ci];
+	halfs_used = nullptr;
+	for(int ci=0; ci < 12; ci++) {
+		delete[] corner_inside[ci];
+		corner_inside[ci] = nullptr;
+	}
 	#endif
 }
 
@@ -401,13 +409,17 @@ void GeodesicGrid::searchZones(int lev,int index,
 			            inside_list,border_list,max_search_level);
 			#if defined __STRICT_ANSI__ || !defined __GNUC__
 			delete[] edge0_inside;
+			edge0_inside = nullptr;
 			delete[] edge1_inside;
+			edge1_inside = nullptr;
 			delete[] edge2_inside;
+			edge2_inside = nullptr;
 			#endif
 		}
 	}
 	#if defined __STRICT_ANSI__ || !defined __GNUC__
 	delete[] halfs_used;
+	halfs_used = nullptr;
 	#endif
 }
 
@@ -453,6 +465,7 @@ GeodesicSearchResult::~GeodesicSearchResult(void)
 {
 	for (int i=grid.getMaxLevel(); i>=0; i--) {
 		delete[] zones[i];
+		zones[i] = nullptr;
 	}
 	delete[] border;
 	delete[] inside;

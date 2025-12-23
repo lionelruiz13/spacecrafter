@@ -41,6 +41,7 @@ void EventHandler::handleEvents(Executor *executor) {
 		const Event* e = eventRecorder->getEvent();
 		this->handle(e, executor);
 		delete e;
+		e = nullptr;
 	}
 }
 
@@ -66,5 +67,6 @@ void EventHandler::remove(Event::Event_Type et){
 		return;
 	if (it->second != nullptr)
 		delete it->second;
+	it->second = nullptr;
   	handlerMap.erase(it);
 }

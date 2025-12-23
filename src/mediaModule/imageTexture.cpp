@@ -62,6 +62,7 @@ RBGImageTexture::RBGImageTexture(s_texture* img, PipelineLayout *layout) : Image
 RBGImageTexture::~RBGImageTexture()
 {
 	if (image!=nullptr) delete image;
+	image = nullptr;
 }
 
 void RBGImageTexture::getDimensions(int &img_w, int &img_h)

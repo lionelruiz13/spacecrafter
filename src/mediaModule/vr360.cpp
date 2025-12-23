@@ -62,7 +62,9 @@ void VR360::init()
 VR360::~VR360()
 {
 	if (sphere) delete sphere;
+	sphere = nullptr;
 	if (cube) delete cube;
+	cube = nullptr;
 	// deleteShader();
 }
 

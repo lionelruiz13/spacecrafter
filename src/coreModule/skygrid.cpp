@@ -74,13 +74,17 @@ SkyGrid::~SkyGrid()
 {
 	for (unsigned int nm=0; nm<nb_meridian; ++nm) {
 		delete [] alt_points[nm];
+		alt_points[nm] = nullptr;
 	}
 	delete [] alt_points;
+	alt_points = nullptr;
 
 	for (unsigned int np=0; np<nb_parallel; ++np) {
 		delete [] azi_points[np];
+		azi_points[np] = nullptr;
 	}
 	delete [] azi_points;
+	azi_points = nullptr;
 
 	// if (font) delete font;
 	// font = nullptr;

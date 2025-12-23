@@ -54,8 +54,11 @@ Tully::~Tully()
 {
 	if (texGalaxy!=nullptr)
 		delete texGalaxy;
+	texGalaxy = nullptr;
 	delete[] pipelinePoints;
+	pipelinePoints = nullptr;
 	delete[] pipelineSquare;
+	pipelineSquare = nullptr;
 
 	posTully.clear();
 	colorTully.clear();

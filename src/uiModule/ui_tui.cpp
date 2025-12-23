@@ -678,11 +678,17 @@ s_tui::TimeItem::TimeItem(const std::string& _label, double _JD) :
 s_tui::TimeItem::~TimeItem()
 {
 	delete y;
+	y = nullptr;
 	delete m;
+	m = nullptr;
 	delete d;
+	d = nullptr;
 	delete h;
+	h = nullptr;
 	delete mn;
+	mn = nullptr;
 	delete s;
+	s = nullptr;
 }
 
 bool s_tui::TimeItem::onKey(SDL_Scancode k, S_TUI_VALUE v)
@@ -992,8 +998,11 @@ s_tui::VectorItem::VectorItem(const std::string& _label, Vec3d _init_vector) :
 s_tui::VectorItem::~VectorItem()
 {
 	delete a;
+	a = nullptr;
 	delete b;
+	b = nullptr;
 	delete c;
+	c = nullptr;
 }
 
 bool s_tui::VectorItem::onKey(SDL_Scancode k, S_TUI_VALUE v)

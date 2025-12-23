@@ -109,6 +109,7 @@ void MilkyWay::initModelMatrix()
 MilkyWay::~MilkyWay()
 {
 	if (pipelineMilky) delete[] pipelineMilky;
+	pipelineMilky = nullptr;
 }
 
 void MilkyWay::defineZodiacalState(const std::string& tex_file, float _intensity)
