@@ -27,10 +27,9 @@
 #include "tools/context.hpp"
 #include "tools/draw_helper.hpp"
 
-Executor::Executor(std::shared_ptr<Core> _core, CoreLink *_coreLink, Observer *_observer)
+Executor::Executor(std::shared_ptr<Core> _core, Observer *_observer)
 {
     core = _core;
-    coreLink = _coreLink;
     observer = _observer;
 
     ssystemModule = std::make_unique<SolarSystemModule>(core, observer);
@@ -101,7 +100,4 @@ void Executor::switchMode(const std::string &mode)
     // Don't select an object from a different mode
     core->selected_object = Object();
 	currentMode->onEnter();
-
-	// Update all CoreLink mode-specific pointers
-	coreLink->updateModePointers();
 }

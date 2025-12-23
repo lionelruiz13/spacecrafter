@@ -466,6 +466,7 @@ public:
 
 	void setFlagIngalaxy(MODULE a) {
 		currentModule = a;
+		updateCurrentModulePointers(a);
 	}
 
 	MODULE getFlagIngalaxy() {
@@ -540,6 +541,9 @@ private:
 	// check if the landsacpe is compatible with the auto mode
 	void testLandscapeCompatibleWithAutoMode();
 
+	// Update the current... module pointers
+	void updateCurrentModulePointers(MODULE newModule);
+
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
 
@@ -552,58 +556,103 @@ private:
 	Navigator * navigation;				// Manage all navigation parameters, coordinate transformations etc..
 	std::shared_ptr<TimeMgr> timeMgr;				// Manage date and time
 
-	Observer *obsSolarSystem;		// it's the historical Observer: so nothing to do with it now.
-	Observer *obsInGalaxy;			//observer that should be used in InGalaxy mode
-	Observer *ObsInUnivers;			//observer that should be used in InUnivers mode
-	Projector * projection;				// Manage the projection mode and matrix
-	Object selected_object;			// The selected object
-	Object old_selected_object;		// The old selected object
-	std::shared_ptr<HipStarMgr> hip_stars;		// Manage the hipparcos stars
-	std::shared_ptr<ConstellationMgr> asterisms;		// Manage constellations (boundaries, names etc..)
-	std::unique_ptr<NebulaMgr> nebulas;				// Manage the nebulas (normal modes)
-	std::unique_ptr<NebulaMgr> sandboxNebulas;		// Manage the nebulas (sandbox mode)
-	std::unique_ptr<IlluminateMgr> illuminates;		// Manage the illuminations (normal modes)
-	std::unique_ptr<IlluminateMgr> sandboxIlluminates; // Manage the illuminations (sandbox mode)
-	//TextMgr * text_usr;				// manage all user text in dome
-	//SolarSystem* ssystem;				// Manage the solar system
-	SSystemFactory* ssystemFactory;			// Manage bodies (normal modes)
-	SSystemFactory* sandboxSsystemFactory;	// Manage bodies (sandbox mode)
 
-	std::shared_ptr<Atmosphere> atmosphere;			// Atmosphere
+	Observer *obsSolarSystem;							// it's the historical Observer: so nothing to do with it now.
+	Observer *obsInGalaxy;								//observer that should be used in InGalaxy mode
+	Observer *ObsInUnivers;								//observer that should be used in InUnivers mode
+	Projector *projection;								// Manage the projection mode and matrix
+
+	Object selected_object;								// The selected object
+	Object old_selected_object;							// The old selected object
+
+	std::shared_ptr<HipStarMgr> hip_stars;				// Manage the hipparcos stars (normal modes)
+	std::shared_ptr<HipStarMgr> sandboxHipStars;		// Manage the hipparcos stars (sandbox mode)
+	HipStarMgr *currentHipStars = nullptr;				// Manage the hipparcos stars (current mode (normal/sandbox))
+
+	std::shared_ptr<ConstellationMgr> asterisms;		// Manage constellations (boundaries, names etc..) (normal modes)
+	std::shared_ptr<ConstellationMgr> sandboxAsterisms;	// Manage constellations (boundaries, names etc..) (sandbox mode)
+	ConstellationMgr *currentAsterisms = nullptr;		// Manage constellations (boundaries, names etc..) (current mode (normal/sandbox))
+
+	std::unique_ptr<NebulaMgr> nebulas;					// Manage the nebulas (normal modes)
+	std::unique_ptr<NebulaMgr> sandboxNebulas;			// Manage the nebulas (sandbox mode)
+	NebulaMgr *currentNebulas = nullptr;				// Manage the nebulas (current mode (normal/sandbox))
+
+	std::unique_ptr<IlluminateMgr> illuminates;			// Manage the illuminations (normal modes)
+	std::unique_ptr<IlluminateMgr> sandboxIlluminates; 	// Manage the illuminations (sandbox mode)
+	IlluminateMgr *currentIlluminates = nullptr;		// Manage the illuminations (current mode (normal/sandbox))
+
+	//TextMgr *text_usr;								// manage all user text in dome
+	//SolarSystem *ssystem;								// Manage the solar system
+
+	SSystemFactory *ssystemFactory;						// Manage bodies (normal modes)
+	SSystemFactory *sandboxSsystemFactory;				// Manage bodies (sandbox mode)
+	SSystemFactory *currentSsystemFactory = nullptr;	// Manage bodies (current mode (normal/sandbox))
+
+	std::shared_ptr<Atmosphere> atmosphere;				// Atmosphere
 
 	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! grid manager (normal modes)
 	std::unique_ptr<SkyGridMgr> sandboxSkyGridMgr;		//! grid manager (sandbox mode)
+	SkyGridMgr *currentSkyGridMgr = nullptr; 			//! grid manager (current mode (normal/sandbox))
+
 	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! line manager (normal modes)
 	std::unique_ptr<SkyLineMgr> sandboxSkyLineMgr;		//! line manager (sandbox mode)
+	SkyLineMgr *currentSkyLineMgr = nullptr;			//! line manager (current mode (normal/sandbox))
+
 	std::unique_ptr<SkyDisplayMgr> skyDisplayMgr; 		//! skyDisplay manager (normal modes)
 	std::unique_ptr<SkyDisplayMgr> sandboxSkyDisplayMgr; //! skyDisplay manager (sandbox mode)
-	std::unique_ptr<Oort> oort;			//! oort cloud
-	std::unique_ptr<Dso3d> dso3d;		//! dso catalog for in_galaxy (normal modes)
-	std::unique_ptr<Dso3d> sandboxDso3d;	//! dso catalog (sandbox mode)
-	std::unique_ptr<Tully> tully;				//! tully galaxies (normal modes)
-	std::unique_ptr<Tully> sandboxTully;		//! tully galaxies (sandbox mode)
-	std::unique_ptr<Cardinals> cardinals_points;	// Cardinals points
-	std::shared_ptr<MilkyWay> milky_way;			// Our galaxy (normal modes)
-	std::shared_ptr<MilkyWay> sandboxMilkyWay;		// Our galaxy (sandbox mode)
-	std::unique_ptr<MeteorMgr> meteors;				// Manage meteor showers (normal modes)
-	std::unique_ptr<MeteorMgr> sandboxMeteors;		// Manage meteor showers (sandbox mode)
-	Landscape * landscape;				// The landscape ie the fog, the ground and "decor"
-	ToneReproductor * tone_converter;	// Tones conversion between simulation world and display device
+	SkyDisplayMgr *currentSkyDisplayMgr = nullptr;		//! skyDisplay manager (current mode (normal/sandbox))
+
+	std::unique_ptr<Oort> oort;							//! oort cloud
+
+	std::unique_ptr<Dso3d> dso3d;						//! dso catalog for in_galaxy (normal modes)
+	std::unique_ptr<Dso3d> sandboxDso3d;				//! dso catalog (sandbox mode)
+	Dso3d *currentDso3d = nullptr;						//! dso catalog (current mode (normal/sandbox))
+
+	std::unique_ptr<Tully> tully;						//! tully galaxies (normal modes)
+	std::unique_ptr<Tully> sandboxTully;				//! tully galaxies (sandbox mode)
+	Tully *currentTully = nullptr;						//! tully galaxies (current mode (normal/sandbox))
+
+	std::unique_ptr<Cardinals> cardinals_points;		// Cardinals points
+
+	std::shared_ptr<MilkyWay> milky_way;				// Our galaxy (normal modes)
+	std::shared_ptr<MilkyWay> sandboxMilkyWay;			// Our galaxy (sandbox mode)
+	MilkyWay *currentMilkyWay = nullptr;				// Our galaxy (current mode (normal/sandbox))
+
+	std::unique_ptr<MeteorMgr> meteors;					// Manage meteor showers (normal modes)
+	std::unique_ptr<MeteorMgr> sandboxMeteors;			// Manage meteor showers (sandbox mode)
+	MeteorMgr *currentMeteors = nullptr; 				// Manage meteor showers (current mode (normal/sandbox))
+
+	Landscape * landscape;								// The landscape ie the fog, the ground and "decor"
+	ToneReproductor * tone_converter;					// Tones conversion between simulation world and display device
 	std::unique_ptr<SkyLocalizer> skyloc;				// for sky cultures and locales
+
 	std::unique_ptr<StarNavigator> starNav; 			// permet le voyage dans les étoiles (normal modes)
 	std::unique_ptr<StarNavigator> sandboxStarNav; 		// permet le voyage dans les étoiles (sandbox mode)
+	StarNavigator *currentStarNav = nullptr;			// permet le voyage dans les étoiles (current mode (normal/sandbox))
+
 	std::unique_ptr<CloudNavigator> cloudNav; 			// draw galaxy gaz clouds (normal modes)
 	std::unique_ptr<CloudNavigator> sandboxCloudNav; 	// draw galaxy gaz clouds (sandbox mode)
 	std::unique_ptr<CloudNavigator> universeCloudNav; 	// draw galaxy gaz clouds when in universe
+	CloudNavigator *currentCloudNav = nullptr;			// draw galaxy gaz clouds (current mode (normal/sandbox))
+
 	std::unique_ptr<StarGalaxy> starGalaxy; 			// draw galaxy stars when in universe (normal modes)
 	std::unique_ptr<StarGalaxy> sandboxStarGalaxy; 		// draw galaxy stars when in universe (sandbox mode)
+	StarGalaxy *currentStarGalaxy = nullptr;			// draw galaxy stars when in universe (current mode (normal/sandbox))
+
 	std::unique_ptr<VolumObj3D> volumGalaxy; 			// draw volumetric galaxy (normal modes)
 	std::unique_ptr<VolumObj3D> sandboxVolumGalaxy;		// draw volumetric galaxy (sandbox mode)
+	VolumObj3D *currentVolumGalaxy = nullptr;			// draw volumetric galaxy (current mode (normal/sandbox))
+
 	std::unique_ptr<DsoNavigator> dsoNav; 				// draw 3d dso when in galaxy (normal modes)
 	std::unique_ptr<DsoNavigator> sandboxDsoNav; 		// draw 3d dso when in galaxy (sandbox mode)
-	std::unique_ptr<StarLines> starLines;			// allows to draw lines in the galaxy (normal modes)
-	std::unique_ptr<StarLines> sandboxStarLines;	// allows to draw lines in the galaxy (sandbox mode)
-	std::unique_ptr<OjmMgr> ojmMgr;					// represents obj3D
+	DsoNavigator *currentDsoNav = nullptr;				// draw 3d dso when in galaxy (current mode (normal/sandbox))
+
+	std::unique_ptr<StarLines> starLines;				// allows to draw lines in the galaxy (normal modes)
+	std::unique_ptr<StarLines> sandboxStarLines;		// allows to draw lines in the galaxy (sandbox mode)
+	StarLines *currentStarLines = nullptr;				// allows to draw lines in the galaxy (current mode (normal/sandbox))
+
+	std::unique_ptr<OjmMgr> ojmMgr;						// represents obj3D
+
 	std::unique_ptr<UBOCam> uboCam;
 	std::list<Tickable<CoreLink> *> updateList;
 	GeodesicGrid* geodesic_grid;

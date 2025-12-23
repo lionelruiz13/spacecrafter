@@ -209,9 +209,11 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	landscape = new Landscape();
 	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = std::make_shared<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height);
+	sandboxHipStars = std::make_shared<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height); // Sandbox hip stars
 	asterisms = std::make_shared<ConstellationMgr>(hip_stars);
+	sandboxAsterisms = std::make_shared<ConstellationMgr>(sandboxHipStars);  // Sandbox asterisms
 	illuminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms);
-	sandboxIlluminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms);  // Sandbox illuminates
+	sandboxIlluminates= std::make_unique<IlluminateMgr>(sandboxHipStars, navigation, sandboxAsterisms);  // Sandbox illuminates
 	oort =  std::make_unique<Oort>();
 	dso3d = std::make_unique<Dso3d>();
 	sandboxDso3d = std::make_unique<Dso3d>();  // Sandbox dso3d
@@ -223,18 +225,24 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 void Core::registerCoreFont() const
 {
 	hip_stars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
+	sandboxHipStars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
+	sandboxNebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 	dso3d->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 	starNav->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 	tully->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 
 	ssystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
+	sandboxSsystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
 	skyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
 	skyLineMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYLINE));
 	skyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
+	sandboxSkyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
 
 	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
+	sandboxNebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 	asterisms->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_ASTERIMS));
+	sandboxAsterisms->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_ASTERIMS));
 	cardinals_points->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_CARDINALS));
 }
 
@@ -256,8 +264,11 @@ Core::~Core()
 	selected_object = Object();
 	old_selected_object = Object();
 	delete bodyDecor;
+	bodyDecor = nullptr;
 	delete navigation;
+	navigation = nullptr;
 	delete projection;
+	projection = nullptr;
 	// delete asterisms;
 	// delete hip_stars;
 	//delete nebulas;
@@ -269,16 +280,20 @@ Core::~Core()
 	// delete cardinals_points;
 	landscape = nullptr;
 	delete geodesic_grid;
+	geodesic_grid = nullptr;
 	// delete milky_way;
 	//delete timeMgr;
 	// delete meteors;
 	meteors = nullptr;
 	//delete atmosphere;
 	delete tone_converter;
+	tone_converter = nullptr;
 	// s_font::deleteShader();
 	//delete ssystem;
 	delete ssystemFactory;
+	ssystemFactory = nullptr;
 	delete sandboxSsystemFactory;
+	sandboxSsystemFactory = nullptr;
 	//delete skyloc;
 	//skyloc = nullptr;
 	Object::deleteTextures(); // Unload the pointer textures
@@ -330,6 +345,7 @@ void Core::init(const InitParser& conf)
 
 	initialvalue.initial_landscapeName=conf.getStr(SCS_INIT_LOCATION,SCK_LANDSCAPE_NAME);
 	illuminates->setDefaultSize(conf.getDouble(SCS_STARS, SCK_ILLUMINATE_SIZE));
+	sandboxIlluminates->setDefaultSize(conf.getDouble(SCS_STARS, SCK_ILLUMINATE_SIZE));
 
 	// Start splash with no fonts due to font collection delays
 	if (firstTime) {
@@ -390,6 +406,21 @@ void Core::init(const InitParser& conf)
 	hip_stars->setStarSizeLimit(conf.getDouble(SCS_ASTRO,SCK_STAR_SIZE_LIMIT));
 	hip_stars->setMagConverterMaxScaled60DegMag(conf.getDouble(SCS_STARS,SCK_STAR_LIMITING_MAG));
 
+	sandboxHipStars->setFlagShow(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STARS));
+	sandboxHipStars->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
+	sandboxHipStars->setScale(conf.getDouble (SCS_STARS, SCK_STAR_SCALE));
+	sandboxHipStars->setFlagTwinkle(conf.getBoolean(SCS_STARS, SCK_FLAG_STAR_TWINKLE));
+	sandboxHipStars->setTwinkleAmount(conf.getDouble (SCS_STARS, SCK_STAR_TWINKLE_AMOUNT));
+	sandboxHipStars->setMaxMagName(conf.getDouble (SCS_STARS, SCK_MAX_MAG_STAR_NAME));
+	sandboxHipStars->setMagScale(conf.getDouble (SCS_STARS, SCK_STAR_MAG_SCALE));
+
+	sandboxHipStars->setMagConverterMaxFov(conf.getDouble(SCS_STARS, SCK_MAG_CONVERTER_MAX_FOV));
+	sandboxHipStars->setMagConverterMinFov(conf.getDouble(SCS_STARS, SCK_MAG_CONVERTER_MIN_FOV));
+	sandboxHipStars->setMagConverterMagShift(conf.getDouble(SCS_STARS, SCK_MAG_CONVERTER_MAG_SHIFT));
+	sandboxHipStars->setMagConverterMaxMag(conf.getDouble(SCS_STARS, SCK_MAG_CONVERTER_MAX_MAG));
+	sandboxHipStars->setStarSizeLimit(conf.getDouble(SCS_ASTRO,SCK_STAR_SIZE_LIMIT));
+	sandboxHipStars->setMagConverterMaxScaled60DegMag(conf.getDouble(SCS_STARS,SCK_STAR_LIMITING_MAG));
+
 	starNav->setFlagShow(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STARS));
 	starNav->setMagConverterMagShift(conf.getDouble(SCS_STARS,SCK_MAG_CONVERTER_MAG_SHIFT));
 	starNav->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
@@ -406,10 +437,20 @@ void Core::init(const InitParser& conf)
 	ssystemFactory->setFlagLightTravelTime(conf.getBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME));
 	ssystemFactory->setFlagTrails(conf.getBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS));
 	ssystemFactory->startTrails(conf.getBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS));
+	sandboxSsystemFactory->setFlagPlanets(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS));
+	sandboxSsystemFactory->setFlagHints(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS));
+	sandboxSsystemFactory->setFlagPlanetsOrbits(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS));
+	sandboxSsystemFactory->setFlagLightTravelTime(conf.getBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME));
+	sandboxSsystemFactory->setFlagTrails(conf.getBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS));
+	sandboxSsystemFactory->startTrails(conf.getBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS));
 	nebulas->setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA));
 	nebulas->setFlagHints(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA_HINTS));
 	nebulas->setNebulaNames(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA_NAMES));
 	nebulas->setMaxMagHints(conf.getDouble(SCS_ASTRO, SCK_MAX_MAG_NEBULA_NAME));
+	sandboxNebulas->setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA));
+	sandboxNebulas->setFlagHints(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA_HINTS));
+	sandboxNebulas->setNebulaNames(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA_NAMES));
+	sandboxNebulas->setMaxMagHints(conf.getDouble(SCS_ASTRO, SCK_MAX_MAG_NEBULA_NAME));
 
 	milky_way->setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_MILKY_WAY));
 	milky_way->setFlagZodiacal(conf.getBoolean(SCS_ASTRO,SCK_FLAG_ZODIACAL_LIGHT));
@@ -417,10 +458,14 @@ void Core::init(const InitParser& conf)
 
 	nebulas->setPictoSize(conf.getInt(SCS_VIEWING,SCK_NEBULA_PICTO_SIZE));
 	nebulas->setFlagBright(conf.getBoolean(SCS_ASTRO,SCK_FLAG_BRIGHT_NEBULAE));
+	sandboxNebulas->setPictoSize(conf.getInt(SCS_VIEWING,SCK_NEBULA_PICTO_SIZE));
+	sandboxNebulas->setFlagBright(conf.getBoolean(SCS_ASTRO,SCK_FLAG_BRIGHT_NEBULAE));
 
 	ssystemFactory->setScale(hip_stars->getScale());
+	sandboxSsystemFactory->setScale(sandboxHipStars->getScale());
 	setPlanetsSizeLimit(conf.getDouble(SCS_ASTRO, SCK_PLANET_SIZE_MARGINAL_LIMIT));
 	ssystemFactory->setFlagClouds(true);
+	sandboxSsystemFactory->setFlagClouds(true);
 
 	observatory->load(conf, SCS_INIT_LOCATION);
 	observatory->setEyeRelativeMode(false);
@@ -482,12 +527,14 @@ void Core::init(const InitParser& conf)
 
 	// Compute planets data and init viewing position position of sun and all the satellites (ie planets)
 	ssystemFactory->computePositions(timeMgr->getJDay(), observatory.get());
+	sandboxSsystemFactory->computePositions(timeMgr->getJDay(), observatory.get());
 
 	// Compute transform matrices between coordinates systems
 	navigation->updateTransformMatrices(observatory.get(), timeMgr->getJDay());
 	navigation->updateViewMat(projection->getFov());
 
 	ssystemFactory->setSelected(""); //setPlanetsSelected("");	// Fix a bug on macosX! Thanks Fumio!
+	sandboxSsystemFactory->setSelected("");
 
 	std::string skyLocaleName = conf.getStr(SCS_LOCALIZATION, SCK_SKY_LOCALE);
 	initialvalue.initial_skyLocale=skyLocaleName;
@@ -496,6 +543,7 @@ void Core::init(const InitParser& conf)
 	int grid_level = hip_stars->getMaxGridLevel();
 	geodesic_grid = new GeodesicGrid(grid_level);
 	hip_stars->setGrid(geodesic_grid);
+	sandboxHipStars->setGrid(geodesic_grid);
 
 	FlagEnableZoomKeys	= conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_ENABLE_ZOOM_KEYS);
 	FlagEnableMoveKeys  = conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_ENABLE_MOVE_KEYS);
@@ -547,6 +595,7 @@ void Core::init(const InitParser& conf)
 	atmosphere->setDefaultFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
 	atmosphere->setDefaultMoonBrightness(conf.getDouble(SCS_VIEWING,SCK_MOON_BRIGHTNESS));
 	ssystemFactory->setDefaultSunBrightness(conf.getDouble(SCS_VIEWING,SCK_SUN_BRIGHTNESS));
+	// sandboxSsystemFactory->setDefaultSunBrightness(conf.getDouble(SCS_VIEWING,SCK_SUN_BRIGHTNESS)); // we don't have anything in sandbox at init
 
 	// Viewing section
 	asterisms->setFlagLines( conf.getBoolean(SCS_VIEWING,SCK_FLAG_CONSTELLATION_DRAWING));
@@ -556,6 +605,13 @@ void Core::init(const InitParser& conf)
 	asterisms->setFlagIsolateSelected(conf.getBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_PICK));
 	asterisms->setArtIntensity(conf.getDouble(SCS_VIEWING,SCK_CONSTELLATION_ART_INTENSITY));
 	asterisms->setArtFadeDuration(conf.getDouble(SCS_VIEWING,SCK_CONSTELLATION_ART_FADE_DURATION));
+	sandboxAsterisms->setFlagLines( conf.getBoolean(SCS_VIEWING,SCK_FLAG_CONSTELLATION_DRAWING));
+	sandboxAsterisms->setFlagNames(conf.getBoolean(SCS_VIEWING,SCK_FLAG_CONSTELLATION_NAME));
+	sandboxAsterisms->setFlagBoundaries(conf.getBoolean(SCS_VIEWING,SCK_FLAG_CONSTELLATION_BOUNDARIES));
+	sandboxAsterisms->setFlagArt(conf.getBoolean(SCS_VIEWING,SCK_FLAG_CONSTELLATION_ART));
+	sandboxAsterisms->setFlagIsolateSelected(conf.getBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_PICK));
+	sandboxAsterisms->setArtIntensity(conf.getDouble(SCS_VIEWING,SCK_CONSTELLATION_ART_INTENSITY));
+	sandboxAsterisms->setArtFadeDuration(conf.getDouble(SCS_VIEWING,SCK_CONSTELLATION_ART_FADE_DURATION));
 
 	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL,conf.getBoolean(SCS_VIEWING,SCK_FLAG_AZIMUTAL_GRID));
 	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL,conf.getBoolean(SCS_VIEWING,SCK_FLAG_EQUATORIAL_GRID));
@@ -585,12 +641,21 @@ void Core::init(const InitParser& conf)
 	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_PERSONEQ, conf.getBoolean(SCS_VIEWING,SCK_FLAG_PERSONEQ) );
 	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_NAUTICAL, conf.getBoolean(SCS_VIEWING,SCK_FLAG_NAUTICAL_ALT) );
 	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_NAUTICEQ, conf.getBoolean(SCS_VIEWING,SCK_FLAG_NAUTICAL_RA) );
+	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_PERSONAL, conf.getBoolean(SCS_VIEWING,SCK_FLAG_PERSONAL) );
+	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_PERSONEQ, conf.getBoolean(SCS_VIEWING,SCK_FLAG_PERSONEQ) );
+	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_NAUTICAL, conf.getBoolean(SCS_VIEWING,SCK_FLAG_NAUTICAL_ALT) );
+	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_NAUTICEQ, conf.getBoolean(SCS_VIEWING,SCK_FLAG_NAUTICAL_RA) );
 
 	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_OBJCOORDS, conf.getBoolean(SCS_VIEWING,SCK_FLAG_OBJECT_COORDINATES) );
 	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_MOUSECOORDS, conf.getBoolean(SCS_VIEWING,SCK_FLAG_MOUSE_COORDINATES) );
 	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_ANGDIST, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ANGULAR_DISTANCE) );
 	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_LOXODROMY, conf.getBoolean(SCS_VIEWING,SCK_FLAG_LOXODROMY) );
 	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_ORTHODROMY, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ORTHODROMY) );
+	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_OBJCOORDS, conf.getBoolean(SCS_VIEWING,SCK_FLAG_OBJECT_COORDINATES) );
+	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_MOUSECOORDS, conf.getBoolean(SCS_VIEWING,SCK_FLAG_MOUSE_COORDINATES) );
+	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_ANGDIST, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ANGULAR_DISTANCE) );
+	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_LOXODROMY, conf.getBoolean(SCS_VIEWING,SCK_FLAG_LOXODROMY) );
+	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_ORTHODROMY, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ORTHODROMY) );
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GREENWICH, conf.getBoolean(SCS_VIEWING,SCK_FLAG_GREENWICH_LINE));
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, conf.getBoolean(SCS_VIEWING,SCK_FLAG_VERTICAL_LINE));
 	cardinals_points->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_CARDINAL_POINTS));
@@ -599,6 +664,11 @@ void Core::init(const InitParser& conf)
 	ssystemFactory->setMoonScale(conf.getDouble (SCS_VIEWING,SCK_MOON_SCALE), true); //? always true TODO
 	ssystemFactory->setFlagSunScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED));
 	ssystemFactory->setSunScale(conf.getDouble (SCS_VIEWING,SCK_SUN_SCALE), true); //? always true TODO
+	// we don't have anything in sandbox at init
+	// sandboxSsystemFactory->setFlagMoonScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED));
+	// sandboxSsystemFactory->setMoonScale(conf.getDouble (SCS_VIEWING,SCK_MOON_SCALE), true); //? always true TODO
+	// sandboxSsystemFactory->setFlagSunScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED));
+	// sandboxSsystemFactory->setSunScale(conf.getDouble (SCS_VIEWING,SCK_SUN_SCALE), true); //? always true TODO
 
 	oort->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
 
@@ -611,6 +681,7 @@ void Core::init(const InitParser& conf)
 	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
 	ssystemFactory->initialSolarSystemBodies();
+	// sandboxSsystemFactory->initialSolarSystemBodies(); // sandbox we don't want to create bodies at init (user will add them manually)
 	setBodyDecor();
 	firstTime = 0;
 }
@@ -638,11 +709,11 @@ std::string Core::getSkyCultureHash() const {
 
 //! set flag to display generic Hint or specific DSO type
 void Core::setDsoPictograms (bool value) {
-	nebulas->setDisplaySpecificHint(value);
-	}
+	currentNebulas->setDisplaySpecificHint(value);
+}
 //! get flag to display generic Hint or specific DSO type
 bool Core::getDsoPictograms () {
-	return nebulas->getDisplaySpecificHint();
+	return currentNebulas->getDisplaySpecificHint();
 }
 
 //! Execute commun first drawing functions
@@ -780,7 +851,7 @@ bool Core::loadLandscape(stringHash_t& param, int landing)
 //! Load a solar system body based on a hash of parameters mirroring the ssystem.ini file
 void Core::addSolarSystemBody(stringHash_t& param)
 {
-	ssystemFactory->addBody(param);
+	currentSsystemFactory->addBody(param);
 }
 
 void Core::preloadSolarSystemBody(stringHash_t& param)
@@ -790,7 +861,7 @@ void Core::preloadSolarSystemBody(stringHash_t& param)
 		name = getSelectedPlanetEnglishName();
 	} else if (name == "home_planet")
 		name = getHomePlanetEnglishName();
-	ssystemFactory->preloadBody(param);
+	currentSsystemFactory->preloadBody(param);
 }
 
 void Core::removeSolarSystemBody(const std::string& name)
@@ -805,7 +876,7 @@ void Core::removeSolarSystemBody(const std::string& name)
 		cLog::get()->write("Can not delete current home planet " + name);
 		return;
 	}
-	ssystemFactory->removeBody(name);
+	currentSsystemFactory->removeBody(name);
 }
 
 void Core::removeSupplementalSolarSystemBodies()
@@ -815,7 +886,7 @@ void Core::removeSupplementalSolarSystemBodies()
 	if (selected_object.getType()==OBJECT_BODY /*&& selected_object.isDeleteable() */) {
 		unSelect();
 	}
-	ssystemFactory->removeSupplementalBodies(observatory->getHomePlanetEnglishName());
+	currentSsystemFactory->removeSupplementalBodies(observatory->getHomePlanetEnglishName());
 }
 
 
@@ -836,13 +907,13 @@ std::string Core::getHomePlanetEnglishName() const
 Object Core::searchByNameI18n(const std::string &name) const
 {
 	Object rval;
-	rval = ssystemFactory->searchByNamesI18(name);
+	rval = currentSsystemFactory->searchByNamesI18(name);
 	if (rval) return rval;
-	rval = nebulas->searchByNameI18n(name);
+	rval = currentNebulas->searchByNameI18n(name);
 	if (rval) return rval;
-	rval = hip_stars->searchByNameI18n(name).get();
+	rval = currentHipStars->searchByNameI18n(name).get();
 	if (rval) return rval;
-	rval = asterisms->searchByNameI18n(name);
+	rval = currentAsterisms->searchByNameI18n(name);
 	return rval;
 }
 
@@ -866,47 +937,47 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		unsigned int hpnum;
 		std::istringstream istr(id);
 		istr >> hpnum;
-		selectObject(hip_stars->searchHP(hpnum).get());
-		// asterisms->setSelected(selected_object);
-		// hip_stars->setSelected(selected_object);
-		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
+		selectObject(currentHipStars->searchHP(hpnum).get());
+		// currentAsterisms->setSelected(selected_object);
+		// currentHipStars->setSelected(selected_object);
+		// currentSsystemFactory->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="star") {
-		selectObject(hip_stars->search(id).get());
-		// asterisms->setSelected(selected_object);
-		// hip_stars->setSelected(selected_object);
-		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
+		selectObject(currentHipStars->search(id).get());
+		// currentAsterisms->setSelected(selected_object);
+		// currentHipStars->setSelected(selected_object);
+		// currentSsystemFactory->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="planet") {
-		selectObject(ssystemFactory->searchByEnglishName(id).get());
+		selectObject(currentSsystemFactory->searchByEnglishName(id).get());
 
 	} else if (type=="nebula") {
-		selectObject(nebulas->search(id));
-		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
-		// asterisms->setSelected(Object());
+		selectObject(currentNebulas->search(id));
+		// currentSsystemFactory->setSelected(""); //setPlanetsSelected("");
+		// currentAsterisms->setSelected(Object());
 
 	} else if (type=="constellation") {
 
 		// Select only constellation, nothing else
-		asterisms->setSelected(id);
+		currentAsterisms->setSelected(id);
 
 		selected_object = nullptr;
-		ssystemFactory->setSelected(""); //setPlanetsSelected("");
+		currentSsystemFactory->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="constellation_star") {
 		// For Find capability, select a star in constellation so can center view on constellation
-		asterisms->setSelected(id);
-		selectObject(asterisms->getSelected().getBrightestStarInConstellation().get());
+		currentAsterisms->setSelected(id);
+		selectObject(currentAsterisms->getSelected().getBrightestStarInConstellation().get());
 		// what is this?
 		// 1) Find the hp-number of the 1st star in the selected constellation,
 		// 2) find the star of this hpnumber
 		// 3) select the constellation of this star ???
-		//		const unsigned int hpnum = asterisms->getFirstSelectedHP();
-		//		selected_object = hip_stars->searchHP(hpnum);
-		//		asterisms->setSelected(selected_object);
-		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
+		//		const unsigned int hpnum = currentAsterisms->getFirstSelectedHP();
+		//		selected_object = currentHipStars->searchHP(hpnum);
+		//		currentAsterisms->setSelected(selected_object);
+		// currentSsystemFactory->setSelected(""); //setPlanetsSelected("");
 		//		// Some stars are shared, so now force constellation
-		//		asterisms->setSelected(id);
+		//		currentAsterisms->setSelected(id);
 	} else {
 		std::cerr << "Invalid selection type specified: " << type << std::endl;
 		std::cout << "Invalid selection type specified: " << type << std::endl;
@@ -935,21 +1006,21 @@ void Core::setBodyDecor()
 
 void Core::selectZodiac()
 {
-	asterisms->deselect();
-	asterisms->setSelected("Ari");
-	asterisms->setSelected("Tau");
-	asterisms->setSelected("Gem");
-	asterisms->setSelected("Cnc");
-	asterisms->setSelected("Leo");
-	asterisms->setSelected("Vir");
-	asterisms->setSelected("Sco");
-	asterisms->setSelected("Sgr");
-	asterisms->setSelected("Cap");
-	asterisms->setSelected("Aqr");
-	asterisms->setSelected("Psc");
-	asterisms->setSelected("Lib");
+	currentAsterisms->deselect();
+	currentAsterisms->setSelected("Ari");
+	currentAsterisms->setSelected("Tau");
+	currentAsterisms->setSelected("Gem");
+	currentAsterisms->setSelected("Cnc");
+	currentAsterisms->setSelected("Leo");
+	currentAsterisms->setSelected("Vir");
+	currentAsterisms->setSelected("Sco");
+	currentAsterisms->setSelected("Sgr");
+	currentAsterisms->setSelected("Cap");
+	currentAsterisms->setSelected("Aqr");
+	currentAsterisms->setSelected("Psc");
+	currentAsterisms->setSelected("Lib");
 	selected_object = nullptr;
-	ssystemFactory->setSelected(""); //setPlanetsSelected("");
+	currentSsystemFactory->setSelected(""); //setPlanetsSelected("");
 }
 
 //! Find and select an object near given equatorial position
@@ -972,18 +1043,18 @@ bool Core::findAndSelect(int x, int y)
 void Core::deselect(void)
 {
 	unSelect();
-	asterisms->deselect();
-	hip_stars->deselect();
-	nebulas->deselect();
+	currentAsterisms->deselect();
+	currentHipStars->deselect();
+	currentNebulas->deselect();
 }
 
 void Core::unsetSelectedConstellation(std::string constellation) {
-	asterisms->unsetSelected(constellation);
+	currentAsterisms->unsetSelected(constellation);
 }
 
 
 bool Core::getStarEarthEquPosition(int HP, double &az, double &alt) {
-	Object star = hip_stars->searchHP(HP).get();
+	Object star = currentHipStars->searchHP(HP).get();
 	if (star) {
 		Vec3d earthEqu = star.getEarthEquPos(navigation);
 		Utility::rectToSphe(&az, &alt, earthEqu);
@@ -1013,8 +1084,8 @@ Object Core::cleverFind(const Vec3d& v) const
 	ypos = winpos[1];
 
 	// Collect the planets inside the range
-	if (ssystemFactory->getFlagShow() && (currentModule == MODULE::SOLAR_SYSTEM || currentModule == MODULE::STELLAR_SYSTEM)) {
-		temp = ssystemFactory->searchAround(v, fov_around, navigation, observatory.get(), projection, &is_default_object, bodyDecor->canDrawBody()); //aboveHomePlanet);
+	if (currentSsystemFactory->getFlagShow() && (currentModule == MODULE::SOLAR_SYSTEM || currentModule == MODULE::STELLAR_SYSTEM)) {
+		temp = currentSsystemFactory->searchAround(v, fov_around, navigation, observatory.get(), projection, &is_default_object, bodyDecor->canDrawBody()); //aboveHomePlanet);
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 
 		if (is_default_object && temp.begin() != temp.end()) {
@@ -1031,14 +1102,14 @@ Object Core::cleverFind(const Vec3d& v) const
 	Vec3d p = navigation->earthEquToJ2000(v);
 
 	// The nebulas inside the range
-	if (nebulas->getFlagShow() && (currentModule == MODULE::SOLAR_SYSTEM || currentModule == MODULE::STELLAR_SYSTEM)) {
-		temp = nebulas->searchAround(p, fov_around);
+	if (currentNebulas->getFlagShow() && (currentModule == MODULE::SOLAR_SYSTEM || currentModule == MODULE::STELLAR_SYSTEM)) {
+		temp = currentNebulas->searchAround(p, fov_around);
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 	}
 
 	// And the stars inside the range
-	if (hip_stars->getFlagShow() && currentModule == MODULE::SOLAR_SYSTEM) {
-		std::vector<ObjectBaseP > tmp = hip_stars->searchAround(p, fov_around, geodesic_grid);
+	if (currentHipStars->getFlagShow() && currentModule == MODULE::SOLAR_SYSTEM) {
+		std::vector<ObjectBaseP > tmp = currentHipStars->searchAround(p, fov_around, geodesic_grid);
 		for( std::vector<ObjectBaseP >::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 			candidates.push_back( Object(itr->get()) );
 		}
@@ -1069,14 +1140,14 @@ Object Core::cleverFind(const Vec3d& v) const
 		float mag = (*iter).getMag(navigation);
 
 		if ((*iter).getType()==OBJECT_NEBULA) {
-			if ( nebulas->getFlagHints() ) {
+			if ( currentNebulas->getFlagHints() ) {
 				// make very easy to select IF LABELED
 				mag = -1;
 
 			}
 		}
 		if ((*iter).getType()==OBJECT_BODY) {
-			if ( ssystemFactory->getFlag(BODY_FLAG::F_HINTS)) {
+			if ( currentSsystemFactory->getFlag(BODY_FLAG::F_HINTS)) {
 				// easy to select, especially pluto
 				mag -= 15.f;
 			} else {
@@ -1212,29 +1283,29 @@ bool Core::setSkyCultureDir(const std::string& cultureDir)
 		return 0;
 	}
 	skyCultureDir = cultureDir;
-	if (!asterisms) return 0;
+	if (!currentAsterisms) return 0;
 
-	asterisms->loadLinesAndArt(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir);
-	asterisms->loadNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/constellation_names.eng.fab");
+	currentAsterisms->loadLinesAndArt(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir);
+	currentAsterisms->loadNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/constellation_names.eng.fab");
 	// Re-translated constellation names
-	asterisms->translateNames(skyTranslator);
+	currentAsterisms->translateNames(skyTranslator);
 
 	// as constellations have changed, clear out any selection and retest for match!
 	if (selected_object && selected_object.getType()==OBJECT_STAR) {
-		asterisms->setSelected(selected_object);
+		currentAsterisms->setSelected(selected_object);
 	}
 	// else {
-		// asterisms->setSelected(Object());
+		// currentAsterisms->setSelected(Object());
 	// }
 
 	// Load culture star names in english
-	hip_stars->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
+	currentHipStars->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
 	starNav->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
 	// Turn on sci names for western culture only
-	hip_stars->setFlagSciNames( skyCultureDir.compare(0, 7, "western") ==0 );
+	currentHipStars->setFlagSciNames( skyCultureDir.compare(0, 7, "western") ==0 );
 
 	// translate
-	hip_stars->updateI18n(skyTranslator);
+	currentHipStars->updateI18n(skyTranslator);
 	starNav->updateI18n(skyTranslator);
 
 	return 1;
@@ -1247,27 +1318,27 @@ bool Core::loadSkyCulture(const std::string& culturePath)
 {
 	// TODO: how to deal with culture hash and current value
 	skyCultureDir = "Custom";  // This allows reloading defaults correctly
-	if (!asterisms) return 0;
+	if (!currentAsterisms) return 0;
 
-	asterisms->loadLinesAndArt(culturePath);
-	asterisms->loadNames(culturePath + "/constellation_names.eng.fab");
+	currentAsterisms->loadLinesAndArt(culturePath);
+	currentAsterisms->loadNames(culturePath + "/constellation_names.eng.fab");
 
 	// Re-translated constellation names
-	asterisms->translateNames(skyTranslator);
+	currentAsterisms->translateNames(skyTranslator);
 
 	// as constellations have changed, clear out any selection and retest for match!
 	if (selected_object && selected_object.getType()==/*ObjectRecord::*/OBJECT_STAR) {
-		asterisms->setSelected(selected_object);
+		currentAsterisms->setSelected(selected_object);
 	} else {
-		asterisms->setSelected(Object());
+		currentAsterisms->setSelected(Object());
 	}
 
 	// Load culture star names in english
-	hip_stars->loadCommonNames(culturePath + "/star_names.fab");
+	currentHipStars->loadCommonNames(culturePath + "/star_names.fab");
 	starNav->loadCommonNames(culturePath + "/star_names.fab");
 
 	// translate
-	hip_stars->updateI18n(skyTranslator);
+	currentHipStars->updateI18n(skyTranslator);
 	starNav->updateI18n(skyTranslator);
 
 	return 1;
@@ -1278,7 +1349,7 @@ bool Core::loadSkyCulture(const std::string& culturePath)
 //! @brief Set the sky locale and reload the sky objects names for gettext translation
 void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 {
-	if ( !hip_stars || !cardinals_points || !asterisms || ! skyLineMgr->isExist(SKYLINE_TYPE::LINE_ECLIPTIC)) return; // objects not initialized yet
+	if ( !currentHipStars || !cardinals_points || !currentAsterisms || ! skyLineMgr->isExist(SKYLINE_TYPE::LINE_ECLIPTIC)) return; // objects not initialized yet
 
 	std::string oldLocale = getSkyLanguage();
 	InitParser conf;
@@ -1309,10 +1380,10 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	// Translate all labels with the new language
 	cardinals_points->translateLabels(skyTranslator);
 	skyLineMgr->translateLabels(skyTranslator); //ecliptic_line
-	asterisms->translateNames(skyTranslator);
-	ssystemFactory->translateNames(skyTranslator);
-	nebulas->translateNames(skyTranslator);
-	hip_stars->updateI18n(skyTranslator);
+	currentAsterisms->translateNames(skyTranslator);
+	currentSsystemFactory->translateNames(skyTranslator);
+	currentNebulas->translateNames(skyTranslator);
+	currentHipStars->updateI18n(skyTranslator);
 	starNav->updateI18n(skyTranslator);
 	setLanguage();
 }
@@ -1334,8 +1405,8 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_CENTER_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_POLE,Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_POLE_COLOR)));
 
-	nebulas->setLabelColor(Utility::strToVec3f(conf.getStr(section,SCK_NEBULA_LABEL_COLOR)));
-	nebulas->setCircleColor(Utility::strToVec3f(conf.getStr(section,SCK_NEBULA_CIRCLE_COLOR)));
+	currentNebulas->setLabelColor(Utility::strToVec3f(conf.getStr(section,SCK_NEBULA_LABEL_COLOR)));
+	currentNebulas->setCircleColor(Utility::strToVec3f(conf.getStr(section,SCK_NEBULA_CIRCLE_COLOR)));
 	dso3d->setLabelColor(Utility::strToVec3f(conf.getStr(section,SCK_NEBULA_LABEL_COLOR)));
 
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_PRECESSION, Utility::strToVec3f(conf.getStr(section,SCK_PRECESSION_CIRCLE_COLOR)));
@@ -1345,15 +1416,15 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_EQUATOR, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_TROPIC, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
 
-	ssystemFactory->setDefaultBodyColor(conf.getStr(section,SCK_PLANET_NAMES_COLOR), conf.getStr(section,SCK_PLANET_NAMES_COLOR),
+	currentSsystemFactory->setDefaultBodyColor(conf.getStr(section,SCK_PLANET_NAMES_COLOR), conf.getStr(section,SCK_PLANET_NAMES_COLOR),
 								conf.getStr(section,SCK_PLANET_ORBITS_COLOR), conf.getStr(section,SCK_OBJECT_TRAILS_COLOR));
 
 	// default color override
-	asterisms->setLineColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_LINES_COLOR)));
+	currentAsterisms->setLineColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_LINES_COLOR)));
 	starLines-> setColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_LINES3D_COLOR)));
-	asterisms->setBoundaryColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_BOUNDARY_COLOR)));
-	asterisms->setLabelColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_NAMES_COLOR)));
-	asterisms->setArtColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_ART_COLOR)));
+	currentAsterisms->setBoundaryColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_BOUNDARY_COLOR)));
+	currentAsterisms->setLabelColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_NAMES_COLOR)));
+	currentAsterisms->setArtColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_ART_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ANALEMMALINE, Utility::strToVec3f(conf.getStr(section,SCK_CONST_BOUNDARY_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ANALEMMA, Utility::strToVec3f(conf.getStr(section,SCK_CONST_NAMES_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ARIES,Utility::strToVec3f(conf.getStr(section,SCK_CONST_ART_COLOR)));
@@ -1372,6 +1443,15 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_ANGDIST,Utility::strToVec3f(conf.getStr(section,SCK_ANGULAR_DISTANCE_COLOR)));
 	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_LOXODROMY,Utility::strToVec3f(conf.getStr(section,SCK_LOXODROMY_COLOR)));
 	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_ORTHODROMY,Utility::strToVec3f(conf.getStr(section,SCK_ORTHODROMY_COLOR)));
+	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_PERSONAL,Utility::strToVec3f(conf.getStr(section,SCK_PERSONAL_COLOR)));
+	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_PERSONEQ,Utility::strToVec3f(conf.getStr(section,SCK_PERSONEQ_COLOR)));
+	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_NAUTICAL,Utility::strToVec3f(conf.getStr(section,SCK_NAUTICAL_ALT_COLOR)));
+	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_NAUTICEQ,Utility::strToVec3f(conf.getStr(section,SCK_NAUTICAL_RA_COLOR)));
+	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_OBJCOORDS,Utility::strToVec3f(conf.getStr(section,SCK_OBJECT_COORDINATES_COLOR)));
+	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS,Utility::strToVec3f(conf.getStr(section,SCK_MOUSE_COORDINATES_COLOR)));
+	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_ANGDIST,Utility::strToVec3f(conf.getStr(section,SCK_ANGULAR_DISTANCE_COLOR)));
+	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_LOXODROMY,Utility::strToVec3f(conf.getStr(section,SCK_LOXODROMY_COLOR)));
+	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_ORTHODROMY,Utility::strToVec3f(conf.getStr(section,SCK_ORTHODROMY_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR, Utility::strToVec3f(conf.getStr(section,SCK_POLAR_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_POINT_POLAR, Utility::strToVec3f(conf.getStr(section,SCK_POLAR_COLOR)));
 	media->setTextColor(Utility::strToVec3f(conf.getStr(section,SCK_TEXT_USR_COLOR)));
@@ -1390,13 +1470,13 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr(SCS_LOCALIZATION, SCK_SKY_CULTURE, getSkyCultureDir());
 	conf.setStr(SCS_LOCALIZATION, SCK_SKY_LOCALE, getSkyLanguage());
 	// viewing section
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_DRAWING, asterisms->getFlagLines());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_NAME, asterisms->getFlagNames());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_ART, asterisms->getFlagArt());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_BOUNDARIES, asterisms->getFlagBoundaries());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_PICK, asterisms->getFlagIsolateSelected());
-	conf.setDouble(SCS_VIEWING, SCK_MOON_SCALE, ssystemFactory->getMoonScale());
-	conf.setDouble(SCS_VIEWING, SCK_SUN_SCALE, ssystemFactory->getSunScale());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_DRAWING, currentAsterisms->getFlagLines());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_NAME, currentAsterisms->getFlagNames());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_ART, currentAsterisms->getFlagArt());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_BOUNDARIES, currentAsterisms->getFlagBoundaries());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_PICK, currentAsterisms->getFlagIsolateSelected());
+	conf.setDouble(SCS_VIEWING, SCK_MOON_SCALE, currentSsystemFactory->getMoonScale());
+	conf.setDouble(SCS_VIEWING, SCK_SUN_SCALE, currentSsystemFactory->getSunScale());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_EQUATORIAL_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ECLIPTIC_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GALACTIC_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_GALACTIC));
@@ -1421,23 +1501,23 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_PRECESSION_CIRCLE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_PRECESSION));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CIRCUMPOLAR_CIRCLE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_TROPIC_LINES, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_TROPIC));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED, ssystemFactory->getFlagMoonScale());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED, ssystemFactory->getFlagSunScale());
-	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_INTENSITY, asterisms->getArtIntensity());
-	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_FADE_DURATION, asterisms->getArtFadeDuration());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED, currentSsystemFactory->getFlagMoonScale());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED, currentSsystemFactory->getFlagSunScale());
+	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_INTENSITY, currentAsterisms->getArtIntensity());
+	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_FADE_DURATION, currentAsterisms->getArtFadeDuration());
 	conf.setDouble(SCS_VIEWING, SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE, getLightPollutionLimitingMagnitude());
 	// Landscape section
 	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_LANDSCAPE, landscape->getFlagShow());
 	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_ATMOSPHERE, bodyDecor->getAtmosphereState());
 	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_FOG, landscape->fogGetFlagShow());
 	// Star section
-	conf.setDouble (SCS_STARS , SCK_STAR_SCALE, hip_stars->getScale());
-	conf.setDouble (SCS_STARS , SCK_STAR_MAG_SCALE, hip_stars->getMagScale());
-	conf.setDouble(SCS_STARS , SCK_MAX_MAG_STAR_NAME, hip_stars->getMaxMagName());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, hip_stars->getFlagIsolateSelected());
-	conf.setBoolean(SCS_STARS , SCK_FLAG_STAR_TWINKLE, hip_stars->getFlagTwinkle());
-	conf.setDouble(SCS_STARS , SCK_STAR_TWINKLE_AMOUNT, hip_stars->getTwinkleAmount());
-	conf.setDouble(SCS_STARS , SCK_STAR_LIMITING_MAG, hip_stars->getMagConverterMaxScaled60DegMag());
+	conf.setDouble (SCS_STARS , SCK_STAR_SCALE, currentHipStars->getScale());
+	conf.setDouble (SCS_STARS , SCK_STAR_MAG_SCALE, currentHipStars->getMagScale());
+	conf.setDouble(SCS_STARS , SCK_MAX_MAG_STAR_NAME, currentHipStars->getMaxMagName());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, currentHipStars->getFlagIsolateSelected());
+	conf.setBoolean(SCS_STARS , SCK_FLAG_STAR_TWINKLE, currentHipStars->getFlagTwinkle());
+	conf.setDouble(SCS_STARS , SCK_STAR_TWINKLE_AMOUNT, currentHipStars->getTwinkleAmount());
+	conf.setDouble(SCS_STARS , SCK_STAR_LIMITING_MAG, currentHipStars->getMagConverterMaxScaled60DegMag());
 	// Color section
 	conf.setStr    (SCS_COLOR, SCK_AZIMUTHAL_COLOR, Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL)));
 	conf.setStr    (SCS_COLOR, SCK_EQUATORIAL_COLOR, Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_EQUATORIAL)));
@@ -1467,12 +1547,12 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr    (SCS_COLOR, SCK_ORTHODROMY,         Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ORTHODROMY)));
 	conf.setStr    (SCS_COLOR, SCK_GREENWICH_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_GREENWICH)));
 	conf.setStr    (SCS_COLOR, SCK_VERTICAL_LINE, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_VERTICAL)));
-	conf.setStr    (SCS_COLOR, SCK_CONST_LINES_COLOR, Utility::vec3fToStr(asterisms->getLineColor()));
-	conf.setStr    (SCS_COLOR, SCK_CONST_NAMES_COLOR, Utility::vec3fToStr(asterisms->getLabelColor()));
-	conf.setStr    (SCS_COLOR, SCK_CONST_ART_COLOR, Utility::vec3fToStr(asterisms->getArtColor()));
-	conf.setStr    (SCS_COLOR, SCK_CONST_BOUNDARY_COLOR, Utility::vec3fToStr(asterisms->getBoundaryColor()));
-	conf.setStr	   (SCS_COLOR, SCK_NEBULA_LABEL_COLOR, Utility::vec3fToStr(nebulas->getLabelColor()));
-	conf.setStr	   (SCS_COLOR, SCK_NEBULA_CIRCLE_COLOR, Utility::vec3fToStr(nebulas->getCircleColor()));
+	conf.setStr    (SCS_COLOR, SCK_CONST_LINES_COLOR, Utility::vec3fToStr(currentAsterisms->getLineColor()));
+	conf.setStr    (SCS_COLOR, SCK_CONST_NAMES_COLOR, Utility::vec3fToStr(currentAsterisms->getLabelColor()));
+	conf.setStr    (SCS_COLOR, SCK_CONST_ART_COLOR, Utility::vec3fToStr(currentAsterisms->getArtColor()));
+	conf.setStr    (SCS_COLOR, SCK_CONST_BOUNDARY_COLOR, Utility::vec3fToStr(currentAsterisms->getBoundaryColor()));
+	conf.setStr	   (SCS_COLOR, SCK_NEBULA_LABEL_COLOR, Utility::vec3fToStr(currentNebulas->getLabelColor()));
+	conf.setStr	   (SCS_COLOR, SCK_NEBULA_CIRCLE_COLOR, Utility::vec3fToStr(currentNebulas->getCircleColor()));
 	conf.setStr	   (SCS_COLOR, SCK_PRECESSION_CIRCLE_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_PRECESSION)));
 	conf.setStr    (SCS_COLOR, SCK_CARDINAL_COLOR, Utility::vec3fToStr(cardinals_points->getColor()));
 	// Navigation section
@@ -1481,19 +1561,19 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble (SCS_NAVIGATION, SCK_ZOOM_SPEED, vzm.zoom_speed);
 	conf.setDouble (SCS_NAVIGATION, SCK_HEADING, navigation->getHeading());
 	// Astro section
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS, ssystemFactory->getFlag(BODY_FLAG::F_TRAIL));
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_BRIGHT_NEBULAE, nebulas->getFlagBright());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STARS, hip_stars->getFlagShow());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME, hip_stars->getFlagNames());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, hip_stars->getFlagIsolateSelected());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA, nebulas->getFlagShow());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_NAMES, nebulas->getNebulaNames());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_HINTS, nebulas->getFlagHints());
-	conf.setDouble(SCS_ASTRO, SCK_MAX_MAG_NEBULA_NAME, nebulas->getMaxMagHints());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS, ssystemFactory->getFlagShow());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS, ssystemFactory->getFlag(BODY_FLAG::F_HINTS));
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS, ssystemFactory->getFlagPlanetsOrbits());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME, ssystemFactory->getFlagLightTravelTime());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS, currentSsystemFactory->getFlag(BODY_FLAG::F_TRAIL));
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_BRIGHT_NEBULAE, currentNebulas->getFlagBright());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STARS, currentHipStars->getFlagShow());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME, currentHipStars->getFlagNames());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, currentHipStars->getFlagIsolateSelected());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA, currentNebulas->getFlagShow());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_NAMES, currentNebulas->getNebulaNames());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_HINTS, currentNebulas->getFlagHints());
+	conf.setDouble(SCS_ASTRO, SCK_MAX_MAG_NEBULA_NAME, currentNebulas->getMaxMagHints());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS, currentSsystemFactory->getFlagShow());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS, currentSsystemFactory->getFlag(BODY_FLAG::F_HINTS));
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS, currentSsystemFactory->getFlagPlanetsOrbits());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME, currentSsystemFactory->getFlagLightTravelTime());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_MILKY_WAY, milky_way->getFlagShow());
 	conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_INTENSITY, milky_way->getIntensity());
 	conf.setDouble(SCS_ASTRO, SCK_STAR_SIZE_LIMIT, starGetSizeLimit());
@@ -1511,8 +1591,8 @@ Vec3f Core::getSelectedObjectInfoColor(void) const
 		std::cerr << "WARNING: Core::getSelectedObjectInfoColor was called while no object is currently selected!!" << std::endl;
 		return Vec3f(1, 1, 1);
 	}
-	if (selected_object.getType()==OBJECT_NEBULA) return nebulas->getLabelColor();
-	if (selected_object.getType()==OBJECT_BODY) return ssystemFactory->getDefaultBodyColor("label");
+	if (selected_object.getType()==OBJECT_NEBULA) return currentNebulas->getLabelColor();
+	if (selected_object.getType()==OBJECT_BODY) return currentSsystemFactory->getDefaultBodyColor("label");
 	if (selected_object.getType()==OBJECT_STAR) return selected_object.getRGB();
 	return Vec3f(1, 1, 1);
 }
@@ -1706,14 +1786,14 @@ void Core::updateMove(int delta_time)
 void Core::setHomePlanet(const std::string &planet)
 {
 	// reset planet trails due to changed perspective
-	ssystemFactory->startTrails( ssystemFactory->getFlag(BODY_FLAG::F_TRAIL));
+	currentSsystemFactory->startTrails( currentSsystemFactory->getFlag(BODY_FLAG::F_TRAIL));
 	Event* event= new ObserverEvent(planet);
 	EventRecorder::getInstance()->queue(event);
 	bool result = false;
 	if (planet=="selected")
-		result =  ssystemFactory->switchToAnchor(selected_object);
+		result =  currentSsystemFactory->switchToAnchor(selected_object);
 	else
-		result =  ssystemFactory->switchToAnchor(planet);
+		result =  currentSsystemFactory->switchToAnchor(planet);
 	if (result)
 		bindHomePlanet();
 }
@@ -1739,7 +1819,7 @@ void Core::setLightPollutionLimitingMagnitude(float mag) {
 // For use by TUI
 std::string Core::getPlanetHashString()
 {
-	return ssystemFactory->getPlanetHashString();
+	return currentSsystemFactory->getPlanetHashString();
 }
 
 //! Set simulation time to current real world time
@@ -1925,7 +2005,7 @@ bool Core::selectObject(const Object &obj)
 		case OBJECT_STAR:
 			break;
 		default:
-			asterisms->setSelected(Object());
+			currentAsterisms->setSelected(Object());
 	}
 	if (obj.getType() == OBJECT_CONSTELLATION)
 		return selectObject(obj.getBrightestStarInConstellation().get());
@@ -1940,13 +2020,13 @@ bool Core::selectObject(const Object &obj)
 
 	switch (obj.getType()) {
 		case OBJECT_STAR:
-			ssystemFactory->setSelectedObject(selected_object);
-			asterisms->setSelected(selected_object);
-			hip_stars->setSelected(selected_object);
+			currentSsystemFactory->setSelectedObject(selected_object);
+			currentAsterisms->setSelected(selected_object);
+			currentHipStars->setSelected(selected_object);
 
 			// Build a constellation with the currently selected stars
 			if (starLines->getFlagSelected()) {
-				auto selected_stars = hip_stars->getSelected();
+				auto selected_stars = currentHipStars->getSelected();
 				std::string starLinesCommand = "customConst " + std::to_string(selected_stars.size()-1);
 				for (std::size_t i = 0; i + 1 < selected_stars.size(); i++) {
 					starLinesCommand += " " + std::to_string(selected_stars[i]);
@@ -1960,13 +2040,13 @@ bool Core::selectObject(const Object &obj)
 				recordActionCallback("select " + selected_object.getEnglishName());
 			break;
 		case OBJECT_BODY:
-			ssystemFactory->setSelected(selected_object);
+			currentSsystemFactory->setSelected(selected_object);
 			// potentially record this action
 			if (!recordActionCallback.empty())
 				recordActionCallback("select planet " + selected_object.getEnglishName());
 			break;
 		case OBJECT_NEBULA:
-			nebulas->setSelected(selected_object);
+			currentNebulas->setSelected(selected_object);
 			// potentially record this action
 			if (!recordActionCallback.empty())
 				recordActionCallback("select nebula \"" + selected_object.getEnglishName() + "\"");
@@ -1991,25 +2071,25 @@ std::vector<std::string> Core::listMatchingObjectsI18n(const std::string& objPre
 	std::vector <std::string>::const_iterator iter;
 
 	// Get matching planets
-	std::vector<std::string> matchingPlanets = ssystemFactory->listMatchingObjectsI18n(objPrefix, maxNbItem);
+	std::vector<std::string> matchingPlanets = currentSsystemFactory->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter)
 		withType ? result.push_back(*iter+"(P)") : result.push_back(*iter);
 	maxNbItem-=matchingPlanets.size();
 
 	// Get matching constellations
-	std::vector<std::string> matchingConstellations = asterisms->listMatchingObjectsI18n(objPrefix, maxNbItem);
+	std::vector<std::string> matchingConstellations = currentAsterisms->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingConstellations.begin(); iter != matchingConstellations.end(); ++iter)
 		withType ? result.push_back(*iter+"(C)") : result.push_back(*iter);
 	maxNbItem-=matchingConstellations.size();
 
 	// Get matching nebulae
-	std::vector<std::string> matchingNebulae = nebulas->listMatchingObjectsI18n(objPrefix, maxNbItem);
+	std::vector<std::string> matchingNebulae = currentNebulas->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingNebulae.begin(); iter != matchingNebulae.end(); ++iter)
 		withType ? result.push_back(*iter+"(N)") : result.push_back(*iter);
 	maxNbItem-=matchingNebulae.size();
 
 	// Get matching stars
-	std::vector<std::string> matchingStars = hip_stars->listMatchingObjectsI18n(objPrefix, maxNbItem);
+	std::vector<std::string> matchingStars = currentHipStars->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingStars.begin(); iter != matchingStars.end(); ++iter)
 		withType ? result.push_back(*iter+"(S)") : result.push_back(*iter);
 	maxNbItem-=matchingStars.size();
@@ -2031,13 +2111,13 @@ void Core::setFlagTracking(bool b)
 
 float Core::starGetSizeLimit(void) const
 {
-	return hip_stars->getStarSizeLimit();
+	return currentHipStars->getStarSizeLimit();
 }
 
 void Core::setStarSizeLimit(float f)
 {
 	float planet_limit = getPlanetsSizeLimit();
-	hip_stars->setStarSizeLimit(f);
+	currentHipStars->setStarSizeLimit(f);
 	setPlanetsSizeLimit(planet_limit);
 }
 
@@ -2047,8 +2127,8 @@ void Core::setStarSizeLimit(float f)
 //! ONLY SET THROUGH THIS METHOD
 void Core::setPlanetsSizeLimit(float f)
 {
-	ssystemFactory->setSizeLimit(f + starGetSizeLimit());
-	hip_stars->setObjectSizeLimit(f);
+	currentSsystemFactory->setSizeLimit(f + starGetSizeLimit());
+	currentHipStars->setObjectSizeLimit(f);
 }
 
 // set zoom/center offset (percent of fov radius)
@@ -2079,7 +2159,7 @@ bool Core::loadNebula(double ra, double de, double magnitude, double angular_siz
 	std::string tmp_type= type;
 	if (tmp_type == "")
 		tmp_type = "GENRC";
-	return nebulas->loadDeepskyObject(name, tmp_type, constellation, ra,de, magnitude, angular_size, "-", distance, filename, true,
+	return currentNebulas->loadDeepskyObject(name, tmp_type, constellation, ra,de, magnitude, angular_size, "-", distance, filename, true,
 	                                  angular_size, rotation, credit, texture_luminance_adjust, true);
 }
 
@@ -2093,9 +2173,9 @@ void Core::removeNebula(const std::string& name)
 		selected_object=nullptr;
 	}
 
-	nebulas->removeNebula(name, true);
+	currentNebulas->removeNebula(name, true);
 	// Try to find original version, if any
-	if( updateSelection ) selected_object = nebulas->search(name);
+	if( updateSelection ) selected_object = currentNebulas->search(name);
 }
 
 void Core::removeSupplementalNebulae()
@@ -2105,7 +2185,7 @@ void Core::removeSupplementalNebulae()
 	if (selected_object.getType()==OBJECT_NEBULA /*&& selected_object.isDeleteable()*/ ) {
 		unSelect();
 	}
-	nebulas->removeSupplementalNebulae();
+	currentNebulas->removeSupplementalNebulae();
 }
 
 bool Core::loadDso2d(int typeDso, std::string name, float size, float alpha, float delta, float distance, int xyz)
@@ -2136,11 +2216,11 @@ void Core::setJDayRelative(int year, int month)
 void Core::unSelect(void) {
 	selected_object=nullptr;
 	old_selected_object=nullptr;
-	ssystemFactory->setSelected(Object());
+	currentSsystemFactory->setSelected(Object());
 }
 
 float Core::getPlanetsSizeLimit(void) const {
-	return (ssystemFactory->getSizeLimit()-starGetSizeLimit());
+	return (currentSsystemFactory->getSizeLimit()-starGetSizeLimit());
 }
 
 void Core::update(int delta_time) {
@@ -2155,7 +2235,7 @@ void Core::lookAnchor(const std::string &name, double duration)
 	// if (name == "observatory") {
 	navigation->moveTo(navigation->helioToEarthPosEqu(observatory->getObserverCenterPoint()), duration);
 	// } else {
-	// 	navigation->moveTo(ssystemFactory->, duration);
+	// 	navigation->moveTo(currentSsystemFactory->, duration);
 	// }
 }
 
@@ -2163,4 +2243,52 @@ void Core::setPredictibleRendering(bool enable, int framerate)
 {
 	predictibleRendering = enable;
 	media->setRenderFramerate(framerate);
+}
+
+void Core::updateCurrentModulePointers(MODULE newModule)
+{
+	if (newModule == MODULE::IN_SANDBOX) {
+		currentHipStars = sandboxHipStars.get();
+		currentAsterisms = sandboxAsterisms.get();
+		currentNebulas = sandboxNebulas.get();
+		currentIlluminates = sandboxIlluminates.get();
+		currentSsystemFactory = sandboxSsystemFactory;
+		currentSkyGridMgr = sandboxSkyGridMgr.get();
+		currentSkyLineMgr = sandboxSkyLineMgr.get();
+		currentSkyDisplayMgr = sandboxSkyDisplayMgr.get();
+		currentDso3d = sandboxDso3d.get();
+		currentTully = sandboxTully.get();
+		currentMilkyWay = sandboxMilkyWay.get();
+		currentMeteors = sandboxMeteors.get();
+		currentStarNav = sandboxStarNav.get();
+		currentCloudNav = sandboxCloudNav.get();
+		currentStarGalaxy = sandboxStarGalaxy.get();
+		currentVolumGalaxy = sandboxVolumGalaxy.get();
+		currentDsoNav = sandboxDsoNav.get();
+		currentStarLines = sandboxStarLines.get();
+	} else {
+		// TODO: Remove all non-currentXXX usage in core.cpp (except init (should use XXX and sandboxXXX there to init both versions))
+		// TODO: Once all done, check the init section to correctly init sandboxXXX pointers too
+		// TODO: Check if there is some other "pointer to duplicate" for the sandbox module
+		// Done
+		currentHipStars = hip_stars.get();
+		currentAsterisms = asterisms.get();
+		currentNebulas = nebulas.get();
+		currentIlluminates = illuminates.get();
+		currentSsystemFactory = ssystemFactory;
+		// TODO
+		currentSkyGridMgr = skyGridMgr.get();
+		currentSkyLineMgr = skyLineMgr.get();
+		currentSkyDisplayMgr = skyDisplayMgr.get();
+		currentDso3d = dso3d.get();
+		currentTully = tully.get();
+		currentMilkyWay = milky_way.get();
+		currentMeteors = meteors.get();
+		currentStarNav = starNav.get();
+		currentCloudNav = cloudNav.get();
+		currentStarGalaxy = starGalaxy.get();
+		currentVolumGalaxy = volumGalaxy.get();
+		currentDsoNav = dsoNav.get();
+		currentStarLines = starLines.get();
+	}
 }

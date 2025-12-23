@@ -52,12 +52,12 @@ CoreLink *CoreLink::instance = nullptr;
 
 bool CoreLink::cameraSave(const std::string& name)
 {
-	return currentSsystemFactory->cameraSave(AppSettings::Instance()->getUserDir() + "anchors/" + name);
+	return core->currentSsystemFactory->cameraSave(AppSettings::Instance()->getUserDir() + "anchors/" + name);
 }
 
 bool CoreLink::loadCameraPosition(const std::string& filename)
 {
-	return currentSsystemFactory->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
+	return core->currentSsystemFactory->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
 }
 
 // void CoreLink::fontUpdateFont(const std::string& _targetName, const std::string& _fontName, const std::string& _sizeValue)
@@ -130,43 +130,43 @@ double CoreLink::getDateSecond() const
 ////////////////////////////////////////////////////////////////////////////////
 
 void CoreLink::skyLineMgrSetColor(SKYLINE_TYPE name, Vec3f a) {
-    currentSkyLineMgr->setColor(name, a);
+    core->currentSkyLineMgr->setColor(name, a);
 };
 
 void CoreLink::skyGridMgrSetColor(SKYGRID_TYPE name, Vec3f a) {
-	currentSkyGridMgr->setColor(name, a);
+	core->currentSkyGridMgr->setColor(name, a);
 }
 
 const Vec3f& CoreLink::skyLineMgrGetColor(SKYLINE_TYPE name) {
-	return currentSkyLineMgr->getColor(name);
+	return core->currentSkyLineMgr->getColor(name);
 }
 
 const Vec3f& CoreLink::skyGridMgrGetColor(SKYGRID_TYPE name) {
-	return currentSkyGridMgr->getColor(name);
+	return core->currentSkyGridMgr->getColor(name);
 }
 
 void CoreLink::skyLineMgrFlipFlagShow(SKYLINE_TYPE name) {
-	currentSkyLineMgr->flipFlagShow(name);
+	core->currentSkyLineMgr->flipFlagShow(name);
 }
 
 void CoreLink::skyGridMgrFlipFlagShow(SKYGRID_TYPE name) {
-	currentSkyGridMgr->flipFlagShow(name);
+	core->currentSkyGridMgr->flipFlagShow(name);
 }
 
 void CoreLink::skyLineMgrSetFlagShow(SKYLINE_TYPE name, bool value) {
-	currentSkyLineMgr->setFlagShow(name, value);
+	core->currentSkyLineMgr->setFlagShow(name, value);
 }
 
 void CoreLink::skyGridMgrSetFlagShow(SKYGRID_TYPE name, bool value) {
-	currentSkyGridMgr->setFlagShow(name, value);
+	core->currentSkyGridMgr->setFlagShow(name, value);
 }
 
 bool CoreLink::skyLineMgrGetFlagShow(SKYLINE_TYPE name) {
-	return currentSkyLineMgr->getFlagShow(name);
+	return core->currentSkyLineMgr->getFlagShow(name);
 }
 
 bool CoreLink::skyGridMgrGetFlagShow(SKYGRID_TYPE name) {
-	return currentSkyGridMgr->getFlagShow(name);
+	return core->currentSkyGridMgr->getFlagShow(name);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -184,51 +184,51 @@ void CoreLink::oortSetFlagShow(bool b) {
 // Milky Way---------------------------
 ////////////////////////////////////////////////////////////////////////////////
 void CoreLink::milkyWaySetFlag(bool b) {
-	core->milky_way->setFlagShow(b);
+	core->currentMilkyWay->setFlagShow(b);
 }
 
 bool CoreLink::milkyWayGetFlag() const {
-	return core->milky_way->getFlagShow();
+	return core->currentMilkyWay->getFlagShow();
 }
 
 void CoreLink::milkyWaySetFlagZodiacal(bool b) {
-	core->milky_way->setFlagZodiacal(b);
+	core->currentMilkyWay->setFlagZodiacal(b);
 }
 
 bool CoreLink::milkyWayGetFlagZodiacal() const {
-	return core->milky_way->getFlagZodiacal();
+	return core->currentMilkyWay->getFlagZodiacal();
 }
 
 void CoreLink::milkyWaySetIntensity(float f) {
-	core->milky_way->setIntensity(f);
+	core->currentMilkyWay->setIntensity(f);
 }
 
 void CoreLink::milkyWaySetZodiacalIntensity(float f) {
-	core->milky_way->setZodiacalIntensity(f);
+	core->currentMilkyWay->setZodiacalIntensity(f);
 }
 
 float CoreLink::milkyWayGetIntensity() const {
-	return core->milky_way->getIntensity();
+	return core->currentMilkyWay->getIntensity();
 }
 
 void CoreLink::milkyWayRestoreDefault() {
-	core->milky_way->restoreDefaultMilky();
+	core->currentMilkyWay->restoreDefaultMilky();
 }
 
 void CoreLink::milkyWaySetDuration(float f) {
-	core->milky_way->setFaderDuration(f);
+	core->currentMilkyWay->setFaderDuration(f);
 }
 
 void CoreLink::milkyWayRestoreIntensity() {
-	core->milky_way->restoreIntensity();
+	core->currentMilkyWay->restoreIntensity();
 }
 
 void CoreLink::milkyWayChangeState(const std::string& mdir, float _intensity) {
-	core->milky_way->changeMilkywayState(mdir, _intensity);
+	core->currentMilkyWay->changeMilkywayState(mdir, _intensity);
 }
 
 void CoreLink::milkyWayChangeStateWithoutIntensity(const std::string& mdir) {
-	core->milky_way->changeMilkywayStateWithoutIntensity(mdir);
+	core->currentMilkyWay->changeMilkywayStateWithoutIntensity(mdir);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -237,20 +237,20 @@ void CoreLink::milkyWayChangeStateWithoutIntensity(const std::string& mdir) {
 
 //! Set Meteor Rate in number per hour
 void CoreLink::setMeteorsRate(int f) {
-	currentMeteors->setZHR(f);
+	core->currentMeteors->setZHR(f);
 }
 
 //! Get Meteor Rate in number per hour
 int CoreLink::getMeteorsRate() const {
-	return currentMeteors->getZHR();
+	return core->currentMeteors->getZHR();
 }
 
 void CoreLink::createRadiant(int day, const Vec3f newRadiant) {
-	currentMeteors->createRadiant(day, newRadiant);
+	core->currentMeteors->createRadiant(day, newRadiant);
 }
 
 void CoreLink::clearRadiants() {
-	currentMeteors->clearRadiants();
+	core->currentMeteors->clearRadiants();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -274,111 +274,34 @@ Vec3f CoreLink::cardinalsPointsGetColor() const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Mode Pointers Update    ---------------------------
-////////////////////////////////////////////////////////////////////////////////
-void CoreLink::updateModePointers() {
-	// Update all mode-specific collection pointers
-	updateSkyDisplayMgrPointer();
-	updateStarLinesPointer();
-	updateSkyGridMgrPointer();
-	updateSkyLineMgrPointer();
-	updateMeteorsPointer();
-	updateNebulasPointer();
-	updateIlluminatesPointer();
-	updateDso3dPointer();
-	updateStarNavPointer();
-	updateSsystemFactoryPointer();
-}
-
-void CoreLink::updateSkyGridMgrPointer() {
-	currentSkyGridMgr = (core->getFlagIngalaxy() == MODULE::IN_SANDBOX) 
-		? core->sandboxSkyGridMgr.get() 
-		: core->skyGridMgr.get();
-}
-
-void CoreLink::updateSkyLineMgrPointer() {
-	currentSkyLineMgr = (core->getFlagIngalaxy() == MODULE::IN_SANDBOX) 
-		? core->sandboxSkyLineMgr.get() 
-		: core->skyLineMgr.get();
-}
-
-void CoreLink::updateSkyDisplayMgrPointer() {
-	currentSkyDisplayMgr = (core->getFlagIngalaxy() == MODULE::IN_SANDBOX) 
-		? core->sandboxSkyDisplayMgr.get() 
-		: core->skyDisplayMgr.get();
-}
-
-void CoreLink::updateStarLinesPointer() {
-	currentStarLines = (core->getFlagIngalaxy() == MODULE::IN_SANDBOX) 
-		? core->sandboxStarLines.get() 
-		: core->starLines.get();
-}
-
-void CoreLink::updateMeteorsPointer() {
-	currentMeteors = (core->getFlagIngalaxy() == MODULE::IN_SANDBOX) 
-		? core->sandboxMeteors.get() 
-		: core->meteors.get();
-}
-
-void CoreLink::updateNebulasPointer() {
-	currentNebulas = (core->getFlagIngalaxy() == MODULE::IN_SANDBOX) 
-		? core->sandboxNebulas.get() 
-		: core->nebulas.get();
-}
-
-void CoreLink::updateIlluminatesPointer() {
-	currentIlluminates = (core->getFlagIngalaxy() == MODULE::IN_SANDBOX) 
-		? core->sandboxIlluminates.get() 
-		: core->illuminates.get();
-}
-
-void CoreLink::updateDso3dPointer() {
-	currentDso3d = (core->getFlagIngalaxy() == MODULE::IN_SANDBOX) 
-		? core->sandboxDso3d.get() 
-		: core->dso3d.get();
-}
-
-void CoreLink::updateStarNavPointer() {
-	currentStarNav = (core->getFlagIngalaxy() == MODULE::IN_SANDBOX) 
-		? core->sandboxStarNav.get() 
-		: core->starNav.get();
-}
-
-void CoreLink::updateSsystemFactoryPointer() {
-	currentSsystemFactory = (core->getFlagIngalaxy() == MODULE::IN_SANDBOX) 
-		? core->sandboxSsystemFactory 
-		: core->ssystemFactory;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // SkyDisplayMgr    ---------------------------
 ////////////////////////////////////////////////////////////////////////////////
 bool CoreLink::skyDisplayMgrGetFlag(SKYDISPLAY_NAME nameObj) {
-	return currentSkyDisplayMgr->getFlagShow(nameObj);
+	return core->currentSkyDisplayMgr->getFlagShow(nameObj);
 }
 
 void CoreLink::skyDisplayMgrSetFlag(SKYDISPLAY_NAME nameObj, bool v) {
-	currentSkyDisplayMgr->setFlagShow(nameObj,v);
+	core->currentSkyDisplayMgr->setFlagShow(nameObj,v);
 }
 
 void CoreLink::skyDisplayMgrFlipFlag(SKYDISPLAY_NAME nameObj) {
-	currentSkyDisplayMgr->flipFlagShow(nameObj);
+	core->currentSkyDisplayMgr->flipFlagShow(nameObj);
 }
 
 void CoreLink::skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v) {
-	currentSkyDisplayMgr->setColor(nameObj,v);
+	core->currentSkyDisplayMgr->setColor(nameObj,v);
 }
 
 void CoreLink::skyDisplayMgrClear(SKYDISPLAY_NAME nameObj) {
-	currentSkyDisplayMgr->clear(nameObj);
+	core->currentSkyDisplayMgr->clear(nameObj);
 }
 
 void CoreLink::skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string& fileName) {
-	currentSkyDisplayMgr->loadData(nameObj,fileName);
+	core->currentSkyDisplayMgr->loadData(nameObj,fileName);
 }
 
 void CoreLink::skyDisplayMgrLoadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr) {
-	currentSkyDisplayMgr->loadString(nameObj,dataStr);
+	core->currentSkyDisplayMgr->loadString(nameObj,dataStr);
 }
 
 bool CoreLink::skyDisplayMgrCheckDraw(){
@@ -393,108 +316,107 @@ bool CoreLink::skyDisplayMgrCheckDraw(){
 
 //! Set flag for displaying
 void CoreLink::starLinesSetFlag(bool b) {
-	currentStarLines->setFlagShow(b);
+	core->currentStarLines->setFlagShow(b);
 }
 
 void CoreLink::starLinesSelectedSetFlag(bool b) {
-	currentStarLines->setFlagSelected(b);
+	core->currentStarLines->setFlagSelected(b);
 }
 
 bool CoreLink::starLinesSelectedGetFlag() const {
-	return currentStarLines->getFlagSelected();
+	return core->currentStarLines->getFlagSelected();
 }
 
 //! Get flag for displaying
 bool CoreLink::starLinesGetFlag() const {
-	return currentStarLines->getFlagShow();
+	return core->currentStarLines->getFlagShow();
 }
 
 //! Empty all plot buffers
 void CoreLink::starLinesDrop() const {
-	currentStarLines->drop();
+	core->currentStarLines->drop();
 }
 
 //! Loads a set of asterisms from a file
 void CoreLink::starLinesLoadData(const std::string &fileName) {
-	currentStarLines->loadData(fileName);
+	core->currentStarLines->loadData(fileName);
 }
 
 //! Loads an asterism from a line
 void CoreLink::starLinesLoadAsterism(std::string record) const {
-	currentStarLines->loadStringData(record);
+	core->currentStarLines->loadStringData(record);
 }
 
 //! deletes the complete catalog of asterisms
 void CoreLink::starLinesClear() {
-	currentStarLines->clear();
+	core->currentStarLines->clear();
 }
 
 void CoreLink::starLinesSaveCat(const std::string &fileName, bool binaryMode){
-	currentStarLines->saveCat(fileName, binaryMode);
+	core->currentStarLines->saveCat(fileName, binaryMode);
 }
 
 void CoreLink::starLinesLoadCat(const std::string &fileName, bool binaryMode){
-	currentStarLines->loadCat(fileName, binaryMode);
+	core->currentStarLines->loadCat(fileName, binaryMode);
 }
 
 void CoreLink::starLinesLoadHipStar(int name, Vec3f position) {
-	currentStarLines->loadHipStar(name, position);
+	core->currentStarLines->loadHipStar(name, position);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Illuminate---------------------------
 ////////////////////////////////////////////////////////////////////////////////
 void CoreLink::illuminateSetSize (double value) {
-	currentIlluminates->setDefaultSize(value);
+	core->currentIlluminates->setDefaultSize(value);
 }
 
 void CoreLink::illuminateLoadConstellation(const std::string& abbreviation, double size, double rotation) {
-	currentIlluminates->loadConstellation(abbreviation, size, rotation);
+	core->currentIlluminates->loadConstellation(abbreviation, size, rotation);
 }
 void CoreLink::illuminateLoadConstellation(const std::string& abbreviation,const Vec3f& color, double size, double rotation) {
-	currentIlluminates->loadConstellation(abbreviation, color, size, rotation);
+	core->currentIlluminates->loadConstellation(abbreviation, color, size, rotation);
 }
 void CoreLink::illuminateLoadAllConstellation(double size, double rotation) {
-	currentIlluminates->loadAllConstellation(size, rotation);
+	core->currentIlluminates->loadAllConstellation(size, rotation);
 }
 
 void CoreLink::illuminateLoad(int number, double size, double rotation) {
-	currentIlluminates->load(number, size, rotation);
+	core->currentIlluminates->load(number, size, rotation);
 }
 
 void CoreLink::illuminateLoad(int number, const Vec3f& _color, double size, double rotation) {
-	currentIlluminates->load(number, _color, size, rotation);
+	core->currentIlluminates->load(number, _color, size, rotation);
 }
 
 void CoreLink::illuminateRemove(unsigned int name) 	{
-	currentIlluminates->remove(name);
+	core->currentIlluminates->remove(name);
 }
 
 void CoreLink::illuminateRemoveConstellation(const std::string abbreviation) 	{
-	currentIlluminates->removeConstellation(abbreviation);
+	core->currentIlluminates->removeConstellation(abbreviation);
 }
 
 void CoreLink::illuminateRemoveAllConstellation() 	{
-	currentIlluminates->removeAllConstellation();
+	core->currentIlluminates->removeAllConstellation();
 }
 
 void CoreLink::illuminateRemoveAll()
 {
-	currentIlluminates->removeAll();
+	core->currentIlluminates->removeAll();
 }
 
 void CoreLink::illuminateChangeTex(const std::string& _fileName)	{
-	currentIlluminates->changeTex(_fileName);
+	core->currentIlluminates->changeTex(_fileName);
 }
 
 void CoreLink::illuminateRemoveTex()	{
-	currentIlluminates->removeTex();
+	core->currentIlluminates->removeTex();
 }
 
-
-	////////////////////////////////////////////////////////////////////////////////
-	// Atmosphere---------------------------
-	////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// Atmosphere---------------------------
+////////////////////////////////////////////////////////////////////////////////
 
 //! Set flag for displaying Atmosphere
 void CoreLink::atmosphereSetFlag(bool b) {
@@ -528,12 +450,12 @@ void CoreLink::moonSetDefaultBrightness() {
 
 //! Set sun brightness
 void CoreLink::sunSetBrightness(double f) {
-	currentSsystemFactory->setSunBrightness(f);
+	core->currentSsystemFactory->setSunBrightness(f);
 }
 
 //! Set default sun brightness
 void CoreLink::sunSetDefaultBrightness() {
-	currentSsystemFactory->setDefaultSunBrightness();
+	core->currentSsystemFactory->setDefaultSunBrightness();
 }
 
 //! Set flag for activating atmospheric refraction correction
@@ -611,11 +533,11 @@ double CoreLink::dateSunMeridian(double _jd, double _longitude, double _latitude
 ////////////////////////////////////////////////////////////////////////////////
 
 std::string CoreLink::getConstellationSelectedShortName() const {
-	return core->asterisms->getSelectedShortName();
+	return core->currentAsterisms->getSelectedShortName();
 }
 
 std::string CoreLink::getPlanetsPosition() const {
-	return currentSsystemFactory->getPlanetsPosition();
+	return core->currentSsystemFactory->getPlanetsPosition();
 }
 
 std::string CoreLink::tcpGetPosition() const {
@@ -647,152 +569,152 @@ void CoreLink::BodyOJMRemoveAll(const std::string &mode){
 // Stars---------------------------
 ////////////////////////////////////////////////////////////////////////////////
 void CoreLink::starSetFlag(bool b) {
-	core->hip_stars->setFlagShow(b);
-	currentStarNav->setFlagStars(b);
+	core->currentHipStars->setFlagShow(b);
+	core->currentStarNav->setFlagStars(b);
 }
 
 bool CoreLink::starGetFlag() const {
-	return core->hip_stars->getFlagShow();
+	return core->currentHipStars->getFlagShow();
 }
 
 void CoreLink::starSetTraceFlag(bool b) {
-	core->hip_stars->setFlagTrace(b);
+	core->currentHipStars->setFlagTrace(b);
 }
 
 bool CoreLink::starGetTraceFlag() const {
-	return core->hip_stars->getFlagTrace();
+	return core->currentHipStars->getFlagTrace();
 }
 
 void CoreLink::starSetColorTable(int p, Vec3f a) {
-	core->hip_stars->setColorStarTable(p,a);
+	core->currentHipStars->setColorStarTable(p,a);
 }
 
 void CoreLink::starSetDuration(float f) {
-	return core->hip_stars->setFaderDuration(f);
+	return core->currentHipStars->setFaderDuration(f);
 }
 
 void CoreLink::starNavSetDuration(float f) {
-	return currentStarNav->setFaderDuration(f);
+	return core->currentStarNav->setFaderDuration(f);
 }
 
 void CoreLink::starSetFlagName(bool b) {
-	core->hip_stars->setFlagNames(b);
+	core->currentHipStars->setFlagNames(b);
 }
 bool CoreLink::starGetFlagName() const {
-	return core->hip_stars->getFlagNames();
+	return core->currentHipStars->getFlagNames();
 }
 
 void CoreLink::starNavSetFlagName(bool b) {
-	currentStarNav->setFlagNames(b);
+	core->currentStarNav->setFlagNames(b);
 }
 
 bool CoreLink::starNavGetFlagName() const {
-	return currentStarNav->getFlagNames();
+	return core->currentStarNav->getFlagNames();
 }
 
 void CoreLink::starSetLimitingMag(float f) {
-	core->hip_stars->setMagConverterMaxScaled60DegMag(f);
+	core->currentHipStars->setMagConverterMaxScaled60DegMag(f);
 }
 
 float CoreLink::starGetLimitingMag() const {
-	return core->hip_stars->getMagConverterMaxScaled60DegMag();
+	return core->currentHipStars->getMagConverterMaxScaled60DegMag();
 }
 
 void CoreLink::starSetFlagTwinkle(bool b) {
-	core->hip_stars->setFlagTwinkle(b);
+	core->currentHipStars->setFlagTwinkle(b);
 }
 bool CoreLink::starGetFlagTwinkle() const {
-	return core->hip_stars->getFlagTwinkle();
+	return core->currentHipStars->getFlagTwinkle();
 }
 
 void CoreLink::starSetMaxMagName(float f) {
-	core->hip_stars->setMaxMagName(f);
+	core->currentHipStars->setMaxMagName(f);
 }
 float CoreLink::starGetMaxMagName() const {
-	return core->hip_stars->getMaxMagName();
+	return core->currentHipStars->getMaxMagName();
 }
 
 void CoreLink::starNavSetMaxMagName(float f) {
-	currentStarNav->setMaxMagName(f);
+	core->currentStarNav->setMaxMagName(f);
 }
 float CoreLink::starNavGetMaxMagName() const {
-	return currentStarNav->getMaxMagName();
+	return core->currentStarNav->getMaxMagName();
 }
 
 void CoreLink::starSetSizeLimit(float f) {
-	currentStarNav->setStarSizeLimit(f);
+	core->currentStarNav->setStarSizeLimit(f);
 	core->setStarSizeLimit(f);
 }
 
 void CoreLink::starSetScale(float f) {
-	currentStarNav->setScale(f);
-	core->hip_stars->setScale(f);
+	core->currentStarNav->setScale(f);
+	core->currentHipStars->setScale(f);
 }
 
 float CoreLink::starGetScale() const {
-	return core->hip_stars->getScale();
+	return core->currentHipStars->getScale();
 }
 
 void CoreLink::starSetMagScale(float f) {
-	currentStarNav->setMagScale(f);
-	core->hip_stars->setMagScale(f);
+	core->currentStarNav->setMagScale(f);
+	core->currentHipStars->setMagScale(f);
 }
 
 float CoreLink::starGetMagScale() const {
-	return core->hip_stars->getMagScale();
+	return core->currentHipStars->getMagScale();
 }
 
 void CoreLink::starSetTwinkleAmount(float f) {
-	core->hip_stars->setTwinkleAmount(f);
+	core->currentHipStars->setTwinkleAmount(f);
 }
 
 float CoreLink::starGetTwinkleAmount() const {
-	return core->hip_stars->getTwinkleAmount();
+	return core->currentHipStars->getTwinkleAmount();
 }
 
 float CoreLink::getMag(int hip) {
-	return core->hip_stars->getMag(hip);
+	return core->currentHipStars->getMag(hip);
 }
 
 float CoreLink::getBaseMag(int hip) {
-	return core->hip_stars->getBaseMag(hip);
+	return core->currentHipStars->getBaseMag(hip);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // StarNavigator---------------------------
 ////////////////////////////////////////////////////////////////////////////////
 void CoreLink::starNavigatorClear(){
-	currentStarNav->clear();
+	core->currentStarNav->clear();
 }
 
 void CoreLink::starNavigatorLoad(const std::string &fileName, bool binaryMode){
-	currentStarNav->loadData(fileName, binaryMode);
+	core->currentStarNav->loadData(fileName, binaryMode);
 }
 
 void CoreLink::starNavigatorLoadRaw(const std::string &fileName){
-	currentStarNav->loadRawData(fileName);
+	core->currentStarNav->loadRawData(fileName);
 }
 
 void CoreLink::starNavigatorLoadOther(const std::string &fileName){
-	currentStarNav->loadOtherData(fileName);
+	core->currentStarNav->loadOtherData(fileName);
 }
 
 void CoreLink::starNavigatorSave(const std::string &fileName, bool binaryMode){
-	currentStarNav->saveData(fileName, binaryMode);
+	core->currentStarNav->saveData(fileName, binaryMode);
 }
 
 void CoreLink::starNavigatorHideStar(int hip){
 	if (!isDrawingHipStarMgr)
-		currentStarNav->hideStar(hip);
+		core->currentStarNav->hideStar(hip);
 }
 
 void CoreLink::starNavigatorShowStar(int hip){
 	if (!isDrawingHipStarMgr)
-		currentStarNav->showStar(hip);
+		core->currentStarNav->showStar(hip);
 }
 
 void CoreLink::starNavigatorShowAllStar(){
-	currentStarNav->showAllStar();
+	core->currentStarNav->showAllStar();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -812,42 +734,42 @@ float CoreLink::uboGetAmbientLight() {
 
 //! hide a particular DSO
 void CoreLink::dsoSelectName(std::string DSOName, bool hide) const {
-	return core->nebulas->selectName(hide, DSOName);
+	return core->currentNebulas->selectName(hide, DSOName);
 }
 
 //! hide all DSO
 void CoreLink::dsoHideAll() const {
-	core->nebulas->hideAll();
+	core->currentNebulas->hideAll();
 }
 
 //! show (unhide) all DSO
 void CoreLink::dsoShowAll() const {
-	core->nebulas->showAll();
+	core->currentNebulas->showAll();
 }
 
 //! select all DSO in constellationName to be hidden or showed
 void CoreLink::dsoSelectConstellation(bool hide, std::string constellationName) const {
-	core->nebulas->selectConstellation(hide, constellationName);
+	core->currentNebulas->selectConstellation(hide, constellationName);
 }
 
 //! select all DSO with typeName to be hidden or showed
 void CoreLink::dsoSelectType(bool hide, std::string typeName) const {
-	core->nebulas->selectType(hide, typeName);
+	core->currentNebulas->selectType(hide, typeName);
 }
 
 //! Insert a volumetric dso from script
 void CoreLink::dsoNavInsert(std::map<std::string, std::string> &args) {
-	core->dsoNav->insert(args);
+	core->currentDsoNav->insert(args);
 }
 
 //! Override dsoNavigator resources, allow loading another set of volumetric dso
 void CoreLink::dsoNavOverrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth) {
-	core->dsoNav->overrideCurrent(tex_file, tex3d_file, depth);
+	core->currentDsoNav->overrideCurrent(tex_file, tex3d_file, depth);
 }
 
 //! Define the main volumetric object to draw
 void CoreLink::dsoNavSetupVolumetric(std::map<std::string, std::string> &args, int defaultColorDepth) {
-	core->dsoNav->setupVolumetric(args, defaultColorDepth);
+	core->currentDsoNav->setupVolumetric(args, defaultColorDepth);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -855,87 +777,87 @@ void CoreLink::dsoNavSetupVolumetric(std::map<std::string, std::string> &args, i
 ////////////////////////////////////////////////////////////////////////////////
 //! Set flag for displaying Nebulae
 void CoreLink::nebulaSetFlag(bool b) {
-	currentNebulas->setFlagShow(b);
-	currentDso3d->setFlagShow(b);
+	core->currentNebulas->setFlagShow(b);
+	core->currentDso3d->setFlagShow(b);
 }
 
 void CoreLink::dso3dSetDuration(float f) {
-	return currentDso3d->setFaderDuration(f);
+	return core->currentDso3d->setFaderDuration(f);
 }
 
 void CoreLink::dso3dSetFlagName(bool b) {
-	currentDso3d->setFlagNames(b);
+	core->currentDso3d->setFlagNames(b);
 }
 
 bool CoreLink::dso3dGetFlagName() const {
-	return currentDso3d->getFlagNames();
+	return core->currentDso3d->getFlagNames();
 }
 
 //! Get flag for displaying Nebulae
 bool CoreLink::nebulaGetFlag() const {
-	return currentNebulas->getFlagShow();
+	return core->currentNebulas->getFlagShow();
 }
 
 //! Set flag for displaying Nebulae Hints
 void CoreLink::nebulaSetFlagHints(bool b) {
-	currentNebulas->setFlagHints(b);
+	core->currentNebulas->setFlagHints(b);
 }
 //! Get flag for displaying Nebulae Hints
 bool CoreLink::nebulaGetFlagHints() const {
-	return currentNebulas->getFlagHints();
+	return core->currentNebulas->getFlagHints();
 }
 
 //! Set flag for displaying Nebulae as bright
 void CoreLink::nebulaSetFlagBright(bool b) {
-	currentNebulas->setFlagBright(b);
+	core->currentNebulas->setFlagBright(b);
 }
 //! Get flag for displaying Nebulae as brigth
 bool CoreLink::nebulaGetFlagBright() const {
-	return currentNebulas->getFlagBright();
+	return core->currentNebulas->getFlagBright();
 }
 
 //! Set maximum magnitude at which nebulae hints are displayed
 void CoreLink::nebulaSetMaxMagHints(float f) {
-	currentNebulas->setMaxMagHints(f);
+	core->currentNebulas->setMaxMagHints(f);
 }
 //! Get maximum magnitude at which nebulae hints are displayed
 float CoreLink::nebulaGetMaxMagHints() const {
-	return currentNebulas->getMaxMagHints();
+	return core->currentNebulas->getMaxMagHints();
 }
 
 //! return the color for the DSO object
 Vec3f CoreLink::nebulaGetColorLabels() const {
-	return currentNebulas->getLabelColor();
+	return core->currentNebulas->getLabelColor();
 }
 
 //! return the color of the DSO circle
 Vec3f CoreLink::nebulaGetColorCircle() const {
-	return currentNebulas->getCircleColor();
+	return core->currentNebulas->getCircleColor();
 }
 
 //!set Flag DSO Name who display DSO name
 void CoreLink::nebulaSetFlagNames (bool value) {
-	currentNebulas->setNebulaNames(value);
+	core->currentNebulas->setNebulaNames(value);
 }
 
 //!get flag DSO Name who display DSO name
 bool CoreLink::nebulaGetFlagNames () {
-	return currentNebulas->getNebulaNames();
+	return core->currentNebulas->getNebulaNames();
 }
 
 void CoreLink::nebulaSetColorLabels(const Vec3f& v) {
-	currentNebulas->setLabelColor(v);
+	core->currentNebulas->setLabelColor(v);
 }
 void CoreLink::nebulaSetColorCircle(const Vec3f& v) {
-	currentNebulas->setCircleColor(v);
+	core->currentNebulas->setCircleColor(v);
 }
 
 void CoreLink::nebulaSetFlagIsolateSelected(bool b) {
-	return currentNebulas->setFlagIsolateSelected(b);
+	return core->currentNebulas->setFlagIsolateSelected(b);
 }
 
 bool CoreLink::nebulaGetFlagIsolateSelected() {
-	return currentNebulas->getFlagIsolateSelected();
+	return core->currentNebulas->getFlagIsolateSelected();
 }
 
 
@@ -943,32 +865,32 @@ bool CoreLink::nebulaGetFlagIsolateSelected() {
 // Tully---------------------------
 ////////////////////////////////////////////////////////////////////////////////
 void CoreLink::tullySetFlagShow(bool v) {
-	core->tully->setFlagShow(v);
+	core->currentTully->setFlagShow(v);
 }
 
 bool CoreLink::tullyGetFlagShow() {
-	return core->tully->getFlagShow();
+	return core->currentTully->getFlagShow();
 }
 
 void CoreLink::tullySetWhiteColor(bool value)
 {
-	core->tully->setWhiteColor(value);
+	core->currentTully->setWhiteColor(value);
 }
 
 bool CoreLink::tullyGetWhiteColor() {
-	return core->tully->getWhiteColor();
+	return core->currentTully->getWhiteColor();
 }
 
 void CoreLink::tullySetFlagName(bool b) {
-	core->tully->setFlagNames(b);
+	core->currentTully->setFlagNames(b);
 }
 
 bool CoreLink::tullyGetFlagName() const {
-	return core->tully->getFlagNames();
+	return core->currentTully->getFlagNames();
 }
 
 void CoreLink::tullySetDuration(float f) {
-	return core->tully->setFaderDuration(f);
+	return core->currentTully->setFaderDuration(f);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -976,35 +898,35 @@ void CoreLink::tullySetDuration(float f) {
 ////////////////////////////////////////////////////////////////////////////////
 
 void CoreLink::constellationSetFlagLines(bool b) {
-	core->asterisms->setFlagLines(b);
+	core->currentAsterisms->setFlagLines(b);
 }
 
 bool CoreLink::constellationGetFlagLines() {
-	return core->asterisms->getFlagLines();
+	return core->currentAsterisms->getFlagLines();
 }
 
 void CoreLink::constellationSetFlagArt(bool b) {
-	core->asterisms->setFlagArt(b);
+	core->currentAsterisms->setFlagArt(b);
 }
 
 bool CoreLink::constellationGetFlagArt() {
-	return core->asterisms->getFlagArt();
+	return core->currentAsterisms->getFlagArt();
 }
 
 void CoreLink::constellationSetFlagNames(bool b) {
-	core->asterisms->setFlagNames(b);
+	core->currentAsterisms->setFlagNames(b);
 }
 
 bool CoreLink::constellationGetFlagNames() {
-	return core->asterisms->getFlagNames();
+	return core->currentAsterisms->getFlagNames();
 }
 
 void CoreLink::constellationSetFlagBoundaries(bool b) {
-	core->asterisms->setFlagBoundaries(b);
+	core->currentAsterisms->setFlagBoundaries(b);
 }
 
 bool CoreLink::constellationGetFlagBoundaries() {
-	return core->asterisms->getFlagBoundaries();
+	return core->currentAsterisms->getFlagBoundaries();
 }
 
 void CoreLink::mediaSetFlagDualViewport(bool b) {
@@ -1016,389 +938,389 @@ bool CoreLink::mediaGetFlagDualViewport() {
 }
 
 Vec3f CoreLink::constellationGetColorBoundaries() const {
-	return core->asterisms->getBoundaryColor();
+	return core->currentAsterisms->getBoundaryColor();
 }
 
 void CoreLink::constellationSetArtIntensity(float f) {
-	core->asterisms->setArtIntensity(f);
+	core->currentAsterisms->setArtIntensity(f);
 }
 
 float CoreLink::constellationGetArtIntensity() const {
-	return core->asterisms->getArtIntensity();
+	return core->currentAsterisms->getArtIntensity();
 }
 
 void CoreLink::constellationSetArtFadeDuration(float f) {
-	core->asterisms->setArtFadeDuration(f);
+	core->currentAsterisms->setArtFadeDuration(f);
 }
 
 float CoreLink::constellationGetArtFadeDuration() const {
-	return core->asterisms->getArtFadeDuration();
+	return core->currentAsterisms->getArtFadeDuration();
 }
 
 void CoreLink::constellationSetFlagIsolateSelected(bool b) {
-	core->asterisms->setFlagIsolateSelected(b);
+	core->currentAsterisms->setFlagIsolateSelected(b);
 }
 
 bool CoreLink::constellationGetFlagIsolateSelected() {
-	return core->asterisms->getFlagIsolateSelected();
+	return core->currentAsterisms->getFlagIsolateSelected();
 }
 
 void CoreLink::starSetFlagIsolateSelected(bool b) {
-	return core->hip_stars->setFlagIsolateSelected(b);
+	return core->currentHipStars->setFlagIsolateSelected(b);
 }
 
 bool CoreLink::starGetFlagIsolateSelected() {
-	return core->hip_stars->getFlagIsolateSelected();
+	return core->currentHipStars->getFlagIsolateSelected();
 }
 
 Vec3f CoreLink::constellationGetColorLine() const {
-	return core->asterisms->getLineColor();
+	return core->currentAsterisms->getLineColor();
 }
 
 void CoreLink::constellationSetColorLine(const Vec3f& v) {
-	core->asterisms->setLineColor(v);
+	core->currentAsterisms->setLineColor(v);
 }
 
 void CoreLink::constellationSetColor(const Vec3f& v){
-	core->starLines->setColor(v);
+	core->currentStarLines->setColor(v);
 }
 
 Vec3f CoreLink::constellationGetColorNames() const {
-	return core->asterisms->getLabelColor();
+	return core->currentAsterisms->getLabelColor();
 }
 
 void CoreLink::constellationSetColorNames(const Vec3f& v) {
-	core->asterisms->setLabelColor(v);
+	core->currentAsterisms->setLabelColor(v);
 }
 
 void CoreLink::constellationSetColorNames(const std::string &argName, const Vec3f& v) {
-	core->asterisms->setLabelColor(argName, v);
+	core->currentAsterisms->setLabelColor(argName, v);
 }
 
 Vec3f CoreLink::constellationGetColorArt() const {
-	return core->asterisms->getArtColor();
+	return core->currentAsterisms->getArtColor();
 }
 
 void CoreLink::constellationSetColorArt(const Vec3f& v) {
-	core->asterisms->setArtColor(v);
+	core->currentAsterisms->setArtColor(v);
 }
 
 void CoreLink::constellationSetColorBoundaries(const Vec3f& v) {
-	core->asterisms->setBoundaryColor(v);
+	core->currentAsterisms->setBoundaryColor(v);
 }
 
 void CoreLink::constellationSetLineColor(const std::string &argName, const Vec3f& v) {
-	core->asterisms->setLineColor(argName, v);
+	core->currentAsterisms->setLineColor(argName, v);
 }
 
 void CoreLink::constellationSetArtIntensity(const std::string &argName, float intensity) {
-	core->asterisms->setArtIntensity(argName, intensity);
+	core->currentAsterisms->setArtIntensity(argName, intensity);
 }
 
 void CoreLink::bodyTraceSetFlag(bool b) const {
-	currentSsystemFactory->bodyTraceSetFlag(b);
+	core->currentSsystemFactory->bodyTraceSetFlag(b);
 }
 
 bool CoreLink::bodyTraceGetFlag() const {
-	return currentSsystemFactory->bodyTraceGetFlag();
+	return core->currentSsystemFactory->bodyTraceGetFlag();
 }
 
 void CoreLink::bodyPenUp() const {
-	currentSsystemFactory->upPen();
+	core->currentSsystemFactory->upPen();
 }
 
 void CoreLink::bodyPenDown() const {
-	currentSsystemFactory->downPen();
+	core->currentSsystemFactory->downPen();
 }
 
 void CoreLink::bodyPenToggle() const {
-	currentSsystemFactory->togglePen();
+	core->currentSsystemFactory->togglePen();
 }
 
 void CoreLink::bodyTraceClear () const {
-	currentSsystemFactory->clear();
+	core->currentSsystemFactory->clear();
 }
 
 void CoreLink::bodyTraceHide(std::string value) const {
 	if (value=="all")
-		currentSsystemFactory->hide(-1);
+		core->currentSsystemFactory->hide(-1);
 	else
-		currentSsystemFactory->hide(Utility::strToInt(value));
+		core->currentSsystemFactory->hide(Utility::strToInt(value));
 }
 
 void CoreLink::bodyTraceBodyChange(std::string bodyName) const {
 	if (bodyName=="selected")
-		currentSsystemFactory->bodyTraceBodyChange(core->selected_object.getEnglishName());
+		core->currentSsystemFactory->bodyTraceBodyChange(core->selected_object.getEnglishName());
 	else
-		currentSsystemFactory->bodyTraceBodyChange(bodyName);
+		core->currentSsystemFactory->bodyTraceBodyChange(bodyName);
 }
 
 void CoreLink::cameraDisplayAnchor() {
-	currentSsystemFactory->cameraDisplayAnchor();
+	core->currentSsystemFactory->cameraDisplayAnchor();
 }
 
 bool CoreLink::cameraAddAnchor(stringHash_t& param) {
-	return currentSsystemFactory->cameraAddAnchor(param);
+	return core->currentSsystemFactory->cameraAddAnchor(param);
 }
 
 bool CoreLink::cameraRemoveAnchor(const std::string &name) {
-	return currentSsystemFactory->cameraRemoveAnchor(name);
+	return core->currentSsystemFactory->cameraRemoveAnchor(name);
 }
 
 bool CoreLink::cameraSwitchToAnchor(const std::string &name) {
-	return currentSsystemFactory->cameraSwitchToAnchor(name);
+	return core->currentSsystemFactory->cameraSwitchToAnchor(name);
 }
 
 bool CoreLink::cameraMoveToPoint(double x, double y, double z){
-	return currentSsystemFactory->cameraMoveToPoint(x,y,z);
+	return core->currentSsystemFactory->cameraMoveToPoint(x,y,z);
 }
 
 bool CoreLink::cameraMoveToPoint(double x, double y, double z, double time){
-	return currentSsystemFactory->cameraMoveToPoint(x,y,z,time);
+	return core->currentSsystemFactory->cameraMoveToPoint(x,y,z,time);
 }
 
 bool CoreLink::cameraMoveToBody(const std::string& bodyName, double time, double alt){
 
 	if(bodyName == "selected"){
-		return currentSsystemFactory->cameraMoveToBody(core->getSelectedPlanetEnglishName(), time, alt);
+		return core->currentSsystemFactory->cameraMoveToBody(core->getSelectedPlanetEnglishName(), time, alt);
 	}
 
 	if(bodyName == "default"){
-		return currentSsystemFactory->cameraMoveToBody(currentSsystemFactory->getEarth()->getEnglishName(), time, alt);
+		return core->currentSsystemFactory->cameraMoveToBody(core->currentSsystemFactory->getEarth()->getEnglishName(), time, alt);
 	}
 
-	return currentSsystemFactory->cameraMoveToBody(bodyName,time, alt);
+	return core->currentSsystemFactory->cameraMoveToBody(bodyName,time, alt);
 }
 
 bool CoreLink::cameraMoveRelativeXYZ( double x, double y, double z) {
-	return currentSsystemFactory->cameraMoveRelativeXYZ(x,y,z);
+	return core->currentSsystemFactory->cameraMoveRelativeXYZ(x,y,z);
 }
 
 bool CoreLink::cameraTransitionToPoint(const std::string& name){
-	return currentSsystemFactory->cameraTransitionToPoint(name);
+	return core->currentSsystemFactory->cameraTransitionToPoint(name);
 }
 
 bool CoreLink::cameraTransitionToBody(const std::string& name){
 
 	if(name == "selected"){
-		return currentSsystemFactory->cameraTransitionToBody(core->getSelectedPlanetEnglishName());
+		return core->currentSsystemFactory->cameraTransitionToBody(core->getSelectedPlanetEnglishName());
 	}
 
-	return currentSsystemFactory->cameraTransitionToBody(name);
+	return core->currentSsystemFactory->cameraTransitionToBody(name);
 }
 
 bool CoreLink::cameraSetFollowRotation(const std::string& name, bool value){
-	return currentSsystemFactory->cameraSetFollowRotation(value);
+	return core->currentSsystemFactory->cameraSetFollowRotation(value);
 }
 
 void CoreLink::cameraSetRotationMultiplierCondition(float v) {
-	currentSsystemFactory->cameraSetRotationMultiplierCondition(v);
+	core->currentSsystemFactory->cameraSetRotationMultiplierCondition(v);
 }
 
 bool CoreLink::cameraAlignWithBody(const std::string& name, double duration){
-	return currentSsystemFactory->cameraAlignWithBody(name,duration);
+	return core->currentSsystemFactory->cameraAlignWithBody(name,duration);
 }
 
 void CoreLink::setFlagLightTravelTime(bool b) {
-	currentSsystemFactory->setFlagLightTravelTime(b);
+	core->currentSsystemFactory->setFlagLightTravelTime(b);
 }
 
 bool CoreLink::getFlagLightTravelTime() const {
-	return currentSsystemFactory->getFlagLightTravelTime();
+	return core->currentSsystemFactory->getFlagLightTravelTime();
 }
 
 void CoreLink::startPlanetsTrails(bool b) {
-	currentSsystemFactory->startTrails(b);
+	core->currentSsystemFactory->startTrails(b);
 }
 
 void CoreLink::setPlanetsSelected(const std::string& englishName) {
-	currentSsystemFactory->setSelected(englishName);
+	core->currentSsystemFactory->setSelected(englishName);
 }
 
 void CoreLink::setFlagMoonScaled(bool b) {
-	currentSsystemFactory->setFlagMoonScale(b);
+	core->currentSsystemFactory->setFlagMoonScale(b);
 }
 
 bool CoreLink::getFlagMoonScaled() const {
-	return currentSsystemFactory->getFlagMoonScale();
+	return core->currentSsystemFactory->getFlagMoonScale();
 }
 
 void CoreLink::setFlagSunScaled(bool b) {
-	currentSsystemFactory->setFlagSunScale(b);
+	core->currentSsystemFactory->setFlagSunScale(b);
 }
 
 bool CoreLink::getFlagSunScaled() const {
-	return currentSsystemFactory->getFlagSunScale();
+	return core->currentSsystemFactory->getFlagSunScale();
 }
 
 void CoreLink::setMoonScale(float f, bool resident) {
-	if (f<0) currentSsystemFactory->setMoonScale(1., false);
-	else currentSsystemFactory->setMoonScale(f, resident);
+	if (f<0) core->currentSsystemFactory->setMoonScale(1., false);
+	else core->currentSsystemFactory->setMoonScale(f, resident);
 }
 
 float CoreLink::getMoonScale() const {
-	return currentSsystemFactory->getMoonScale();
+	return core->currentSsystemFactory->getMoonScale();
 }
 
 void CoreLink::setSunScale(float f, bool resident) {
-	if (f<0) currentSsystemFactory->setSunScale(1., false);
-	else currentSsystemFactory->setSunScale(f, resident);
+	if (f<0) core->currentSsystemFactory->setSunScale(1., false);
+	else core->currentSsystemFactory->setSunScale(f, resident);
 }
 
 void CoreLink::setFlagClouds(bool b) {
-	currentSsystemFactory->setFlagClouds(b);
+	core->currentSsystemFactory->setFlagClouds(b);
 }
 
 bool CoreLink::getFlagClouds() const {
-	return currentSsystemFactory->getFlag(BODY_FLAG::F_CLOUDS);
+	return core->currentSsystemFactory->getFlag(BODY_FLAG::F_CLOUDS);
 }
 
 float CoreLink::getSunScale() const {
-	return currentSsystemFactory->getSunScale();
+	return core->currentSsystemFactory->getSunScale();
 }
 
 void CoreLink::initialSolarSystemBodies() {
-	return currentSsystemFactory->initialSolarSystemBodies();
+	return core->currentSsystemFactory->initialSolarSystemBodies();
 }
 
 void CoreLink::setPlanetHidden(std::string name, bool planethidden) {
-	currentSsystemFactory->setPlanetHidden(name, planethidden);
+	core->currentSsystemFactory->setPlanetHidden(name, planethidden);
 }
 
 bool CoreLink::getPlanetHidden(std::string name) {
-	return currentSsystemFactory->getPlanetHidden(name);
+	return core->currentSsystemFactory->getPlanetHidden(name);
 }
 
 void CoreLink::planetsSetFlag(bool b) {
-	currentSsystemFactory->setFlagPlanets(b);
+	core->currentSsystemFactory->setFlagPlanets(b);
 }
 
 bool CoreLink::planetsGetFlag() const {
-	return currentSsystemFactory->getFlagShow();
+	return core->currentSsystemFactory->getFlagShow();
 }
 
 void CoreLink::planetsSetFlagTrails(bool b) {
-	currentSsystemFactory->setFlagTrails(b);
+	core->currentSsystemFactory->setFlagTrails(b);
 }
 
 bool CoreLink::planetsGetFlagTrails() const {
-	return currentSsystemFactory->getFlag(BODY_FLAG::F_TRAIL);
+	return core->currentSsystemFactory->getFlag(BODY_FLAG::F_TRAIL);
 }
 
 void CoreLink::planetsSetFlagAxis(bool b) {
-	currentSsystemFactory->setFlagAxis(b);
+	core->currentSsystemFactory->setFlagAxis(b);
 }
 
 bool CoreLink::planetsGetFlagAxis() const {
-	return currentSsystemFactory->getFlag(BODY_FLAG::F_AXIS);
+	return core->currentSsystemFactory->getFlag(BODY_FLAG::F_AXIS);
 }
 
 void CoreLink::planetsSetFlagHints(bool b) {
-	currentSsystemFactory->setFlagHints(b);
+	core->currentSsystemFactory->setFlagHints(b);
 }
 
 bool CoreLink::planetsGetFlagHints() const {
-	return currentSsystemFactory->getFlag(BODY_FLAG::F_HINTS);
+	return core->currentSsystemFactory->getFlag(BODY_FLAG::F_HINTS);
 }
 
 void CoreLink::planetsSetFlagOrbits(bool b) {
-	currentSsystemFactory->setFlagPlanetsOrbits(b);
+	core->currentSsystemFactory->setFlagPlanetsOrbits(b);
 }
 
 void CoreLink::planetsSetFlagOrbits(const std::string &_name, bool b) {
-	currentSsystemFactory->setFlagPlanetsOrbits(_name, b);
+	core->currentSsystemFactory->setFlagPlanetsOrbits(_name, b);
 }
 
 void CoreLink::planetSwitchTexMap(const std::string &_name, bool b) {
-	if (_name=="selected") currentSsystemFactory->switchPlanetTexMap(core->selected_object.getEnglishName(), b);
-	else currentSsystemFactory->switchPlanetTexMap(_name, b);
+	if (_name=="selected") core->currentSsystemFactory->switchPlanetTexMap(core->selected_object.getEnglishName(), b);
+	else core->currentSsystemFactory->switchPlanetTexMap(_name, b);
 }
 
 bool CoreLink::planetGetSwitchTexMap(const std::string &_name) {
-	if (_name=="selected") return currentSsystemFactory->getSwitchPlanetTexMap(core->selected_object.getEnglishName());
-	else return currentSsystemFactory->getSwitchPlanetTexMap(_name);
+	if (_name=="selected") return core->currentSsystemFactory->getSwitchPlanetTexMap(core->selected_object.getEnglishName());
+	else return core->currentSsystemFactory->getSwitchPlanetTexMap(_name);
 }
 
 void CoreLink::planetCreateTexSkin(const std::string &name, const std::string &texName){
-	currentSsystemFactory->createTexSkin(name, texName);
+	core->currentSsystemFactory->createTexSkin(name, texName);
 }
 
 bool CoreLink::planetsGetFlagOrbits() const {
-	return currentSsystemFactory->getFlagPlanetsOrbits();
+	return core->currentSsystemFactory->getFlagPlanetsOrbits();
 }
 
 void CoreLink::satellitesSetFlagOrbits(bool b) {
-	currentSsystemFactory->setFlagSatellitesOrbits(b);
+	core->currentSsystemFactory->setFlagSatellitesOrbits(b);
 }
 
 bool CoreLink::satellitesGetFlagOrbits() const {
-	return currentSsystemFactory->getFlagSatellitesOrbits();
+	return core->currentSsystemFactory->getFlagSatellitesOrbits();
 }
 
 void CoreLink::planetSetFlagOrbits(bool b) {
-	currentSsystemFactory->setFlagSatellitesOrbits(b);
-	currentSsystemFactory->setFlagPlanetsOrbits(b);
+	core->currentSsystemFactory->setFlagSatellitesOrbits(b);
+	core->currentSsystemFactory->setFlagPlanetsOrbits(b);
 	//ssystem->setFlagOrbits(b);
 }
 
 void CoreLink::planetSetColor(const std::string& englishName, const std::string& color, Vec3f c) const {
-	currentSsystemFactory->setBodyColor(englishName, color, c);
+	core->currentSsystemFactory->setBodyColor(englishName, color, c);
 }
 
 Vec3f CoreLink::planetGetColor(const std::string& englishName, const std::string& color) const {
-	return currentSsystemFactory->getBodyColor(englishName, color);
+	return core->currentSsystemFactory->getBodyColor(englishName, color);
 }
 
 void CoreLink::planetSetDefaultColor(const std::string& color, Vec3f c) const {
-	currentSsystemFactory->setDefaultBodyColor(color, c);
+	core->currentSsystemFactory->setDefaultBodyColor(color, c);
 }
 
 Vec3f CoreLink::planetGetDefaultColor(const std::string& colorName) const {
-	return currentSsystemFactory->getDefaultBodyColor(colorName);
+	return core->currentSsystemFactory->getDefaultBodyColor(colorName);
 }
 
 bool CoreLink::hideSatellitesFlag(){
-	return currentSsystemFactory->getHideSatellitesFlag();
+	return core->currentSsystemFactory->getHideSatellitesFlag();
 }
 
 void CoreLink::setHideSatellites(bool val){
-	currentSsystemFactory->toggleHideSatellites(val);
+	core->currentSsystemFactory->toggleHideSatellites(val);
 }
 
 void CoreLink::planetsSetScale(float f) {
-	currentSsystemFactory->setScale(f);
+	core->currentSsystemFactory->setScale(f);
 }
 
 double CoreLink::getSunAltitude() const {
-	return currentSsystemFactory->getSunAltitude(core->navigation);
+	return core->currentSsystemFactory->getSunAltitude(core->navigation);
 }
 
 double CoreLink::getSunAzimuth() const {
-	return currentSsystemFactory->getSunAzimuth(core->navigation);
+	return core->currentSsystemFactory->getSunAzimuth(core->navigation);
 }
 
 double CoreLink::getSelectedAZ() const {
-	return currentSsystemFactory->getSelectedAZ(core->navigation);
+	return core->currentSsystemFactory->getSelectedAZ(core->navigation);
 }
 
 double CoreLink::getSelectedALT() const {
-	return currentSsystemFactory->getSelectedALT(core->navigation);
+	return core->currentSsystemFactory->getSelectedALT(core->navigation);
 }
 
 double CoreLink::getSelectedRA() const {
-	return currentSsystemFactory->getSelectedRA(core->navigation);
+	return core->currentSsystemFactory->getSelectedRA(core->navigation);
 }
 
 double CoreLink::getSelectedDE() const {
-	return currentSsystemFactory->getSelectedDE(core->navigation);
+	return core->currentSsystemFactory->getSelectedDE(core->navigation);
 }
 
 double CoreLink::getSelectedStarRA() const {
-	return currentSsystemFactory->getSelectedStarRA(core->navigation);
+	return core->currentSsystemFactory->getSelectedStarRA(core->navigation);
 }
 
 double CoreLink::getSelectedStarDE() const {
-	return currentSsystemFactory->getSelectedStarDE(core->navigation);
+	return core->currentSsystemFactory->getSelectedStarDE(core->navigation);
 }
 
 int CoreLink::getLanguage() const {
@@ -1410,19 +1332,19 @@ double CoreLink::getBodySelected() const {
 }
 
 void CoreLink::bodySetFlagIsolateSelected(bool b) {
-	currentSsystemFactory->setFlagIsolateSelected(b);
+	core->currentSsystemFactory->setFlagIsolateSelected(b);
 }
 
 bool CoreLink::bodyGetFlagIsolateSelected() {
-	return currentSsystemFactory->getFlagIsolateSelected();
+	return core->currentSsystemFactory->getFlagIsolateSelected();
 }
 
 void CoreLink::planetSetSizeScale(std::string name, float f) {
-	currentSsystemFactory->setPlanetSizeScale(name, f);
+	core->currentSsystemFactory->setPlanetSizeScale(name, f);
 }
 
 void CoreLink::planetTesselation(std::string name, int value) {
-	currentSsystemFactory->planetTesselation(name,value);
+	core->currentSsystemFactory->planetTesselation(name,value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1456,5 +1378,5 @@ void CoreLink::rotateLandscape(double rotation) {
 }
 
 std::string CoreLink::landscapeGetName() {
- 	return core->landscape->getName();
+	return core->landscape->getName();
 }

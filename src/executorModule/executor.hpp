@@ -31,8 +31,6 @@
 
 #include "coreModule/core.hpp"
 #include "executorModule/executorModule.hpp"
-
-class CoreLink;
 #include "executorModule/solarSystemModule.hpp"
 #include "executorModule/stellarSystemModule.hpp"
 #include "executorModule/inGalaxyModule.hpp"
@@ -55,7 +53,7 @@ class CoreLink;
 */
 class Executor {
 public:
-    Executor(std::shared_ptr<Core> _core, CoreLink *_coreLink, Observer *_observer);
+    Executor(std::shared_ptr<Core> _core, Observer *_observer);
 
     void draw(int delta_time);
     void update(int delta_time);
@@ -77,7 +75,6 @@ public:
 
 private:
     std::shared_ptr<Core> core;
-    CoreLink *coreLink;
     Observer *observer;
 
     std::unique_ptr<SolarSystemModule> ssystemModule;
