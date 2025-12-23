@@ -26,7 +26,7 @@ vec4 fisheyeProjectAdvanced(vec4 invec, vec3 clipping_fov)
         float f = asin(min(rq1/depth, 1)); // min patch a driver bug were rq/depth > 1
         if (win.z > 0)
             f = M_PI - f;
-        win.w = mix(-1.0, 1.0, f<M_PI);
+        win.w = mix(-1.0, 1.0, f<0.9*M_PI);
         f /= fov * rq1;
 
         f *= viewport_center[2];
@@ -60,7 +60,7 @@ vec4 allsphereProjectAdvanced(vec4 invec, vec3 clipping_fov)
         float f = asin(min(rq1/depth, 1));
         if (win.z > 0)
             f = M_PI - f;
-        win.w = mix(-1.0, 1.0, f<M_PI);
+        win.w = mix(-1.0, 1.0, f<0.9*M_PI);
 
         // Allsphere distortion - high precision polynomial
 		// Normalize input by FOV BEFORE polynomial
@@ -109,7 +109,7 @@ vec4 asphericProjectAdvanced(vec4 invec, vec3 clipping_fov)
         float f = asin(min(rq1/depth, 1));
         if (win.z > 0)
             f = M_PI - f;
-        win.w = mix(-1.0, 1.0, f<M_PI);
+        win.w = mix(-1.0, 1.0, f<0.9*M_PI);
 
 		// Stereographic projection: r = tan(α/2) / tan(α_max/2)
 		f = tan(f * 0.5) / tanHalfFovOver2;
