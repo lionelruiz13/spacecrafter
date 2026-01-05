@@ -614,8 +614,8 @@ private:
 
 	std::unique_ptr<Cardinals> cardinals_points;		// Cardinals points
 
-	std::shared_ptr<MilkyWay> milky_way;				// Our galaxy (normal modes)
-	std::shared_ptr<MilkyWay> sandboxMilkyWay;			// Our galaxy (sandbox mode)
+	std::unique_ptr<MilkyWay> milky_way;				// Our galaxy (normal modes)
+	std::unique_ptr<MilkyWay> sandboxMilkyWay;			// Our galaxy (sandbox mode)
 	MilkyWay *currentMilkyWay = nullptr;				// Our galaxy (current mode (normal/sandbox))
 
 	std::unique_ptr<MeteorMgr> meteors;					// Manage meteor showers (normal modes)
@@ -656,7 +656,11 @@ private:
 	std::unique_ptr<UBOCam> uboCam;
 	std::list<Tickable<CoreLink> *> updateList;
 	GeodesicGrid* geodesic_grid;
-	BodyDecor* bodyDecor = nullptr;
+
+	std::unique_ptr<BodyDecor> bodyDecor;				// Manage body scenery decorations (normal modes)
+	std::unique_ptr<BodyDecor> sandboxBodyDecor;		// Manage body scenery decorations (sandbox mode)
+	BodyDecor *currentBodyDecor = nullptr;				// Manage body scenery decorations (current mode (normal/sandbox))
+
 	MODULE currentModule = MODULE::SOLAR_SYSTEM;
 
 	float sky_brightness;				// Current sky Brightness in ?

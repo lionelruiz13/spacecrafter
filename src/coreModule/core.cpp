@@ -93,19 +93,27 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	timeMgr = std::make_shared<TimeMgr>();
 	navigation = new Navigator();
 	observatory = _observatory;
+
 	ssystemFactory = new SSystemFactory(observatory.get(), navigation, timeMgr.get());
 	sandboxSsystemFactory = new SSystemFactory(observatory.get(), navigation, timeMgr.get());  // Sandbox solar system
+
 	nebulas = std::make_unique<NebulaMgr>();
 	sandboxNebulas = std::make_unique<NebulaMgr>();  // Sandbox nebulas
-	milky_way = std::make_shared<MilkyWay>();
-	sandboxMilkyWay = std::make_shared<MilkyWay>();  // Sandbox milky way
+
+	milky_way = std::make_unique<MilkyWay>();
+	sandboxMilkyWay = std::make_unique<MilkyWay>();  // Sandbox milky way
+
 	starNav = std::make_unique<StarNavigator>();
 	sandboxStarNav = std::make_unique<StarNavigator>();  // Sandbox star navigator
+
 	cloudNav = std::make_unique<CloudNavigator>();
 	sandboxCloudNav = std::make_unique<CloudNavigator>();  // Sandbox cloud navigator
+
 	universeCloudNav = std::make_unique<CloudNavigator>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
+
 	starGalaxy = std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
 	sandboxStarGalaxy = std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");  // Sandbox star galaxy
+
 	if (std::filesystem::exists(s_texture::getTexDir() + "milkyway-vguerin-d128.png")) {
 		volumGalaxy = std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false);
 		sandboxVolumGalaxy = std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false);  // Sandbox volum galaxy
@@ -113,12 +121,17 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 		volumGalaxy = std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true);
 		sandboxVolumGalaxy = std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true);  // Sandbox volum galaxy
 	}
+
 	dsoNav = std::make_unique<DsoNavigator>();
 	sandboxDsoNav = std::make_unique<DsoNavigator>();  // Sandbox dso navigator
+
 	starLines = std::make_unique<StarLines>();
 	sandboxStarLines = std::make_unique<StarLines>();  // Sandbox star lines
+
 	ojmMgr = std::make_unique<OjmMgr>();  // Manages mode internally
-	bodyDecor = new BodyDecor(milky_way, atmosphere);
+
+	bodyDecor = std::make_unique<BodyDecor>(milky_way.get(), atmosphere); // Body decor only use milky_way so get raw pointer
+	sandboxBodyDecor = std::make_unique<BodyDecor>(sandboxMilkyWay.get(), atmosphere); // Sandbox body decor
 
 	skyGridMgr = std::make_unique<SkyGridMgr>();
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_EQUATORIAL);
@@ -276,8 +289,8 @@ Core::~Core()
 	// release the previous Object:
 	selected_object = Object();
 	old_selected_object = Object();
-	delete bodyDecor;
-	bodyDecor = nullptr;
+	// delete bodyDecor;
+	// bodyDecor = nullptr;
 	delete navigation;
 	navigation = nullptr;
 	delete projection;
@@ -2354,6 +2367,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentDso3d = sandboxDso3d.get();
 		currentTully = sandboxTully.get();
 		currentMilkyWay = sandboxMilkyWay.get();
+		currentBodyDecor = sandboxBodyDecor.get();
 		currentMeteors = sandboxMeteors.get();
 		currentStarNav = sandboxStarNav.get();
 		currentCloudNav = sandboxCloudNav.get();
@@ -2378,6 +2392,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentTully = tully.get();
 		// TODO
 		currentMilkyWay = milky_way.get();
+		currentBodyDecor = bodyDecor.get();
 		currentMeteors = meteors.get();
 		currentStarNav = starNav.get();
 		currentCloudNav = cloudNav.get();
