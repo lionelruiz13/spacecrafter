@@ -226,25 +226,34 @@ void Core::registerCoreFont() const
 {
 	hip_stars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 	sandboxHipStars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
+
 	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 	sandboxNebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
+
 	dso3d->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
+	sandboxDso3d->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
+
 	starNav->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 	tully->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 
 	ssystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
 	sandboxSsystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
+
 	skyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
 	sandboxSkyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
+
 	skyLineMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYLINE));
 	sandboxSkyLineMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYLINE));
+
 	skyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
 	sandboxSkyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
 
 	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 	sandboxNebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
+
 	asterisms->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_ASTERIMS));
 	sandboxAsterisms->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_ASTERIMS));
+
 	cardinals_points->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_CARDINALS));
 }
 
@@ -431,7 +440,9 @@ void Core::init(const InitParser& conf)
 	starNav->setScale(conf.getDouble (SCS_STARS, SCK_STAR_SCALE));
 	starNav->setMaxMagName(conf.getDouble (SCS_STARS, SCK_MAX_MAG_STAR_NAME));
 	starNav->setMagScale(conf.getDouble (SCS_STARS, SCK_STAR_MAG_SCALE));
+
 	dso3d->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
+	sandboxDso3d->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
 
 	ssystemFactory->setFlagPlanets(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS));
 	ssystemFactory->setFlagHints(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS));
@@ -502,6 +513,9 @@ void Core::init(const InitParser& conf)
 		dso3d->setTexture("dsocat.png");
 		if (dso3d->loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat"))
 			dso3d->build();
+		sandboxDso3d->setTexture("dsocat.png");
+		if (sandboxDso3d->loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat"))
+			sandboxDso3d->build();
 
 		ojmMgr->init();
 		// 3D object integration test
@@ -1448,6 +1462,7 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	sandboxNebulas->setCircleColor(Utility::strToVec3f(conf.getStr(section,SCK_NEBULA_CIRCLE_COLOR)));
 
 	dso3d->setLabelColor(Utility::strToVec3f(conf.getStr(section,SCK_NEBULA_LABEL_COLOR)));
+	sandboxDso3d->setLabelColor(Utility::strToVec3f(conf.getStr(section,SCK_NEBULA_LABEL_COLOR)));
 
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_PRECESSION, Utility::strToVec3f(conf.getStr(section,SCK_PRECESSION_CIRCLE_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR, Utility::strToVec3f(conf.getStr(section,SCK_CIRCUMPOLAR_CIRCLE_COLOR)));
@@ -2351,8 +2366,8 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentSkyGridMgr = skyGridMgr.get();
 		currentSkyLineMgr = skyLineMgr.get();
 		currentSkyDisplayMgr = skyDisplayMgr.get();
-		// TODO
 		currentDso3d = dso3d.get();
+		// TODO
 		currentTully = tully.get();
 		currentMilkyWay = milky_way.get();
 		currentMeteors = meteors.get();
