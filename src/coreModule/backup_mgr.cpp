@@ -131,12 +131,12 @@ void CoreBackup::saveBackup()
 
 void CoreBackup::saveGridState()
 {
-	core->skyGridMgr->saveState(skyGridSave);
+	core->currentSkyGridMgr->saveState(skyGridSave);
 }
 
 void CoreBackup::loadGridState()
 {
-	core->skyGridMgr->loadState(skyGridSave);
+	core->currentSkyGridMgr->loadState(skyGridSave);
 }
 
 void CoreBackup::saveDisplayState()

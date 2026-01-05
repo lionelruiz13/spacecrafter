@@ -235,6 +235,7 @@ void Core::registerCoreFont() const
 	ssystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
 	sandboxSsystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
 	skyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
+	sandboxSkyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
 	skyLineMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYLINE));
 	skyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
 	sandboxSkyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
@@ -316,7 +317,7 @@ void Core::setFlagNav(bool a)
 {
 	flagNav=a;
 	cardinals_points->setInternalNav(a);
-	skyGridMgr->setInternalNav(a);
+	currentSkyGridMgr->setInternalNav(a);
 	skyLineMgr->setInternalNav(a);
 }
 
@@ -324,7 +325,7 @@ void Core::setFlagAstronomical(bool a)
 {
 	flagAstronomical = a;
 	cardinals_points->setInternalAstronomical(a);
-	skyGridMgr->setInternalAstronomical(a);
+	currentSkyGridMgr->setInternalAstronomical(a);
 	skyLineMgr->setInternalAstronomical(a);
 }
 
@@ -617,6 +618,10 @@ void Core::init(const InitParser& conf)
 	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL,conf.getBoolean(SCS_VIEWING,SCK_FLAG_EQUATORIAL_GRID));
 	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC,conf.getBoolean(SCS_VIEWING,SCK_FLAG_ECLIPTIC_GRID));
 	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_GALACTIC,conf.getBoolean(SCS_VIEWING,SCK_FLAG_GALACTIC_GRID));
+	sandboxSkyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL,conf.getBoolean(SCS_VIEWING,SCK_FLAG_AZIMUTAL_GRID));
+	sandboxSkyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL,conf.getBoolean(SCS_VIEWING,SCK_FLAG_EQUATORIAL_GRID));
+	sandboxSkyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC,conf.getBoolean(SCS_VIEWING,SCK_FLAG_ECLIPTIC_GRID));
+	sandboxSkyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_GALACTIC,conf.getBoolean(SCS_VIEWING,SCK_FLAG_GALACTIC_GRID));
 
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_EQUATOR, conf.getBoolean(SCS_VIEWING,SCK_FLAG_EQUATOR_LINE));
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, conf.getBoolean(SCS_VIEWING,SCK_FLAG_GALACTIC_LINE));
@@ -1396,10 +1401,10 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	conf.load(skinFile);
 	// simple default color, rather than black which doesn't show up
 	// Load colors from config file
-	skyGridMgr->setColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Utility::strToVec3f(conf.getStr(section,SCK_AZIMUTHAL_COLOR)));
-	skyGridMgr->setColor(SKYGRID_TYPE::GRID_EQUATORIAL, Utility::strToVec3f(conf.getStr(section,SCK_EQUATORIAL_COLOR)));
-	skyGridMgr->setColor(SKYGRID_TYPE::GRID_ECLIPTIC, Utility::strToVec3f(conf.getStr(section,SCK_ECLIPTIC_COLOR)));
-	skyGridMgr->setColor(SKYGRID_TYPE::GRID_GALACTIC, Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_COLOR)));
+	currentSkyGridMgr->setColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Utility::strToVec3f(conf.getStr(section,SCK_AZIMUTHAL_COLOR)));
+	currentSkyGridMgr->setColor(SKYGRID_TYPE::GRID_EQUATORIAL, Utility::strToVec3f(conf.getStr(section,SCK_EQUATORIAL_COLOR)));
+	currentSkyGridMgr->setColor(SKYGRID_TYPE::GRID_ECLIPTIC, Utility::strToVec3f(conf.getStr(section,SCK_ECLIPTIC_COLOR)));
+	currentSkyGridMgr->setColor(SKYGRID_TYPE::GRID_GALACTIC, Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC, Utility::strToVec3f(conf.getStr(section,SCK_ECLIPTIC_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE,Utility::strToVec3f(conf.getStr(section,SCK_ECLIPTIC_CENTER_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_CENTER_COLOR)));
@@ -1477,10 +1482,10 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_PICK, currentAsterisms->getFlagIsolateSelected());
 	conf.setDouble(SCS_VIEWING, SCK_MOON_SCALE, currentSsystemFactory->getMoonScale());
 	conf.setDouble(SCS_VIEWING, SCK_SUN_SCALE, currentSsystemFactory->getSunScale());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_EQUATORIAL_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ECLIPTIC_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GALACTIC_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_GALACTIC));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_AZIMUTAL_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_EQUATORIAL_GRID, currentSkyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ECLIPTIC_GRID, currentSkyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GALACTIC_GRID, currentSkyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_GALACTIC));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_AZIMUTAL_GRID, currentSkyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_EQUATOR_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_EQUATOR));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ECLIPTIC_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CARDINAL_POINTS, cardinals_points->getFlagShow());
@@ -1519,9 +1524,9 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble(SCS_STARS , SCK_STAR_TWINKLE_AMOUNT, currentHipStars->getTwinkleAmount());
 	conf.setDouble(SCS_STARS , SCK_STAR_LIMITING_MAG, currentHipStars->getMagConverterMaxScaled60DegMag());
 	// Color section
-	conf.setStr    (SCS_COLOR, SCK_AZIMUTHAL_COLOR, Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL)));
-	conf.setStr    (SCS_COLOR, SCK_EQUATORIAL_COLOR, Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_EQUATORIAL)));
-	conf.setStr    (SCS_COLOR, SCK_ECLIPTIC_COLOR, Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_ECLIPTIC)));
+	conf.setStr    (SCS_COLOR, SCK_AZIMUTHAL_COLOR, Utility::vec3fToStr(currentSkyGridMgr->getColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL)));
+	conf.setStr    (SCS_COLOR, SCK_EQUATORIAL_COLOR, Utility::vec3fToStr(currentSkyGridMgr->getColor(SKYGRID_TYPE::GRID_EQUATORIAL)));
+	conf.setStr    (SCS_COLOR, SCK_ECLIPTIC_COLOR, Utility::vec3fToStr(currentSkyGridMgr->getColor(SKYGRID_TYPE::GRID_ECLIPTIC)));
 	conf.setStr    (SCS_COLOR, SCK_EQUATOR_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_EQUATOR)));
 	conf.setStr    (SCS_COLOR, SCK_ECLIPTIC_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ECLIPTIC)));
 	conf.setStr    (SCS_COLOR, SCK_MERIDIAN_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_MERIDIAN)));
@@ -2276,8 +2281,8 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentNebulas = nebulas.get();
 		currentIlluminates = illuminates.get();
 		currentSsystemFactory = ssystemFactory;
-		// TODO
 		currentSkyGridMgr = skyGridMgr.get();
+		// TODO
 		currentSkyLineMgr = skyLineMgr.get();
 		currentSkyDisplayMgr = skyDisplayMgr.get();
 		currentDso3d = dso3d.get();
