@@ -151,10 +151,10 @@ void CoreBackup::loadDisplayState()
 
 void CoreBackup::saveLineState()
 {
-	core->skyLineMgr->saveState(skyLineSave);
+	core->currentSkyLineMgr->saveState(skyLineSave);
 }
 
 void CoreBackup::loadLineState()
 {
-	core->skyLineMgr->loadState(skyLineSave);
+	core->currentSkyLineMgr->loadState(skyLineSave);
 }

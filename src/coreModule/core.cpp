@@ -237,6 +237,7 @@ void Core::registerCoreFont() const
 	skyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
 	sandboxSkyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
 	skyLineMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYLINE));
+	sandboxSkyLineMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYLINE));
 	skyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
 	sandboxSkyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
 
@@ -318,7 +319,7 @@ void Core::setFlagNav(bool a)
 	flagNav=a;
 	cardinals_points->setInternalNav(a);
 	currentSkyGridMgr->setInternalNav(a);
-	skyLineMgr->setInternalNav(a);
+	currentSkyLineMgr->setInternalNav(a);
 }
 
 void Core::setFlagAstronomical(bool a)
@@ -326,7 +327,7 @@ void Core::setFlagAstronomical(bool a)
 	flagAstronomical = a;
 	cardinals_points->setInternalAstronomical(a);
 	currentSkyGridMgr->setInternalAstronomical(a);
-	skyLineMgr->setInternalAstronomical(a);
+	currentSkyLineMgr->setInternalAstronomical(a);
 }
 
 //! Load core data and initialize with default values
@@ -641,6 +642,24 @@ void Core::init(const InitParser& conf)
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ANALEMMA, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ANALEMMA));
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ARIES, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ARIES_LINE));
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ZODIAC, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ZODIAC));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_EQUATOR, conf.getBoolean(SCS_VIEWING,SCK_FLAG_EQUATOR_LINE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, conf.getBoolean(SCS_VIEWING,SCK_FLAG_GALACTIC_LINE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ECLIPTIC_LINE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_PRECESSION, conf.getBoolean(SCS_VIEWING,SCK_FLAG_PRECESSION_CIRCLE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR, conf.getBoolean(SCS_VIEWING,SCK_FLAG_CIRCUMPOLAR_CIRCLE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_TROPIC, conf.getBoolean(SCS_VIEWING,SCK_FLAG_TROPIC_LINES));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_MERIDIAN, conf.getBoolean(SCS_VIEWING,SCK_FLAG_MERIDIAN_LINE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ZENITH, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ZENITH_LINE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR, conf.getBoolean(SCS_VIEWING,SCK_FLAG_POLAR_CIRCLE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR, conf.getBoolean(SCS_VIEWING,SCK_FLAG_POLAR_POINT));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ECLIPTIC_CENTER));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE, conf.getBoolean(SCS_VIEWING,SCK_FLAG_GALACTIC_POLE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER, conf.getBoolean(SCS_VIEWING,SCK_FLAG_GALACTIC_CENTER));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERNAL, conf.getBoolean(SCS_VIEWING,SCK_FLAG_VERNAL_POINTS));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ANALEMMA_LINE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ANALEMMA, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ANALEMMA));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ARIES, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ARIES_LINE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ZODIAC, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ZODIAC));
 
 	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_PERSONAL, conf.getBoolean(SCS_VIEWING,SCK_FLAG_PERSONAL) );
 	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_PERSONEQ, conf.getBoolean(SCS_VIEWING,SCK_FLAG_PERSONEQ) );
@@ -661,8 +680,12 @@ void Core::init(const InitParser& conf)
 	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_ANGDIST, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ANGULAR_DISTANCE) );
 	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_LOXODROMY, conf.getBoolean(SCS_VIEWING,SCK_FLAG_LOXODROMY) );
 	sandboxSkyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_ORTHODROMY, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ORTHODROMY) );
+
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GREENWICH, conf.getBoolean(SCS_VIEWING,SCK_FLAG_GREENWICH_LINE));
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, conf.getBoolean(SCS_VIEWING,SCK_FLAG_VERTICAL_LINE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GREENWICH, conf.getBoolean(SCS_VIEWING,SCK_FLAG_GREENWICH_LINE));
+	sandboxSkyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, conf.getBoolean(SCS_VIEWING,SCK_FLAG_VERTICAL_LINE));
+
 	cardinals_points->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_CARDINAL_POINTS));
 
 	ssystemFactory->setFlagMoonScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED));
@@ -1354,7 +1377,7 @@ bool Core::loadSkyCulture(const std::string& culturePath)
 //! @brief Set the sky locale and reload the sky objects names for gettext translation
 void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 {
-	if ( !currentHipStars || !cardinals_points || !currentAsterisms || ! skyLineMgr->isExist(SKYLINE_TYPE::LINE_ECLIPTIC)) return; // objects not initialized yet
+	if ( !currentHipStars || !cardinals_points || !currentAsterisms || ! currentSkyLineMgr->isExist(SKYLINE_TYPE::LINE_ECLIPTIC)) return; // objects not initialized yet
 
 	std::string oldLocale = getSkyLanguage();
 	InitParser conf;
@@ -1384,7 +1407,7 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 
 	// Translate all labels with the new language
 	cardinals_points->translateLabels(skyTranslator);
-	skyLineMgr->translateLabels(skyTranslator); //ecliptic_line
+	currentSkyLineMgr->translateLabels(skyTranslator); //ecliptic_line
 	currentAsterisms->translateNames(skyTranslator);
 	currentSsystemFactory->translateNames(skyTranslator);
 	currentNebulas->translateNames(skyTranslator);
@@ -1405,21 +1428,21 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	currentSkyGridMgr->setColor(SKYGRID_TYPE::GRID_EQUATORIAL, Utility::strToVec3f(conf.getStr(section,SCK_EQUATORIAL_COLOR)));
 	currentSkyGridMgr->setColor(SKYGRID_TYPE::GRID_ECLIPTIC, Utility::strToVec3f(conf.getStr(section,SCK_ECLIPTIC_COLOR)));
 	currentSkyGridMgr->setColor(SKYGRID_TYPE::GRID_GALACTIC, Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC, Utility::strToVec3f(conf.getStr(section,SCK_ECLIPTIC_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE,Utility::strToVec3f(conf.getStr(section,SCK_ECLIPTIC_CENTER_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_CENTER_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_POLE,Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_POLE_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC, Utility::strToVec3f(conf.getStr(section,SCK_ECLIPTIC_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE,Utility::strToVec3f(conf.getStr(section,SCK_ECLIPTIC_CENTER_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_CENTER_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_POLE,Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_POLE_COLOR)));
 
 	currentNebulas->setLabelColor(Utility::strToVec3f(conf.getStr(section,SCK_NEBULA_LABEL_COLOR)));
 	currentNebulas->setCircleColor(Utility::strToVec3f(conf.getStr(section,SCK_NEBULA_CIRCLE_COLOR)));
 	dso3d->setLabelColor(Utility::strToVec3f(conf.getStr(section,SCK_NEBULA_LABEL_COLOR)));
 
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_PRECESSION, Utility::strToVec3f(conf.getStr(section,SCK_PRECESSION_CIRCLE_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR, Utility::strToVec3f(conf.getStr(section,SCK_CIRCUMPOLAR_CIRCLE_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_VERNAL, Utility::strToVec3f(conf.getStr(section,SCK_VERNAL_POINTS_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_EQUATOR, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_TROPIC, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_PRECESSION, Utility::strToVec3f(conf.getStr(section,SCK_PRECESSION_CIRCLE_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR, Utility::strToVec3f(conf.getStr(section,SCK_CIRCUMPOLAR_CIRCLE_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_VERNAL, Utility::strToVec3f(conf.getStr(section,SCK_VERNAL_POINTS_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_EQUATOR, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_TROPIC, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
 
 	currentSsystemFactory->setDefaultBodyColor(conf.getStr(section,SCK_PLANET_NAMES_COLOR), conf.getStr(section,SCK_PLANET_NAMES_COLOR),
 								conf.getStr(section,SCK_PLANET_ORBITS_COLOR), conf.getStr(section,SCK_OBJECT_TRAILS_COLOR));
@@ -1430,15 +1453,15 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	currentAsterisms->setBoundaryColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_BOUNDARY_COLOR)));
 	currentAsterisms->setLabelColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_NAMES_COLOR)));
 	currentAsterisms->setArtColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_ART_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ANALEMMALINE, Utility::strToVec3f(conf.getStr(section,SCK_CONST_BOUNDARY_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ANALEMMA, Utility::strToVec3f(conf.getStr(section,SCK_CONST_NAMES_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ARIES,Utility::strToVec3f(conf.getStr(section,SCK_CONST_ART_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_ANALEMMALINE, Utility::strToVec3f(conf.getStr(section,SCK_CONST_BOUNDARY_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_ANALEMMA, Utility::strToVec3f(conf.getStr(section,SCK_CONST_NAMES_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_ARIES,Utility::strToVec3f(conf.getStr(section,SCK_CONST_ART_COLOR)));
 	cardinals_points->setColor(Utility::strToVec3f(conf.getStr(section,SCK_CARDINAL_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE,Utility::strToVec3f(conf.getStr(section,SCK_ECLIPTIC_CENTER_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_POLE,Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_POLE_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_CENTER_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GREENWICH,Utility::strToVec3f(conf.getStr(section,SCK_GREENWICH_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_MERIDIAN,Utility::strToVec3f(conf.getStr(section,SCK_MERIDIAN_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE,Utility::strToVec3f(conf.getStr(section,SCK_ECLIPTIC_CENTER_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_POLE,Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_POLE_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,SCK_GALACTIC_CENTER_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_GREENWICH,Utility::strToVec3f(conf.getStr(section,SCK_GREENWICH_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_MERIDIAN,Utility::strToVec3f(conf.getStr(section,SCK_MERIDIAN_COLOR)));
 	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_PERSONAL,Utility::strToVec3f(conf.getStr(section,SCK_PERSONAL_COLOR)));
 	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_PERSONEQ,Utility::strToVec3f(conf.getStr(section,SCK_PERSONEQ_COLOR)));
 	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_NAUTICAL,Utility::strToVec3f(conf.getStr(section,SCK_NAUTICAL_ALT_COLOR)));
@@ -1457,13 +1480,13 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_ANGDIST,Utility::strToVec3f(conf.getStr(section,SCK_ANGULAR_DISTANCE_COLOR)));
 	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_LOXODROMY,Utility::strToVec3f(conf.getStr(section,SCK_LOXODROMY_COLOR)));
 	sandboxSkyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_ORTHODROMY,Utility::strToVec3f(conf.getStr(section,SCK_ORTHODROMY_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR, Utility::strToVec3f(conf.getStr(section,SCK_POLAR_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_POINT_POLAR, Utility::strToVec3f(conf.getStr(section,SCK_POLAR_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR, Utility::strToVec3f(conf.getStr(section,SCK_POLAR_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_POINT_POLAR, Utility::strToVec3f(conf.getStr(section,SCK_POLAR_COLOR)));
 	media->setTextColor(Utility::strToVec3f(conf.getStr(section,SCK_TEXT_USR_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_VERNAL,Utility::strToVec3f(conf.getStr(section,SCK_VERNAL_POINTS_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_VERTICAL,Utility::strToVec3f(conf.getStr(section,SCK_VERTICAL_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ZENITH,Utility::strToVec3f(conf.getStr(section,SCK_ZENITH_COLOR)));
-	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ZODIAC,Utility::strToVec3f(conf.getStr(section,SCK_ZODIAC_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_VERNAL,Utility::strToVec3f(conf.getStr(section,SCK_VERNAL_POINTS_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_VERTICAL,Utility::strToVec3f(conf.getStr(section,SCK_VERTICAL_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_ZENITH,Utility::strToVec3f(conf.getStr(section,SCK_ZENITH_COLOR)));
+	currentSkyLineMgr->setColor(SKYLINE_TYPE::LINE_ZODIAC,Utility::strToVec3f(conf.getStr(section,SCK_ZODIAC_COLOR)));
 
 	oort->setColor(Utility::strToVec3f(conf.getStr(section,SCK_OORT_COLOR)));
 }
@@ -1486,26 +1509,26 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ECLIPTIC_GRID, currentSkyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GALACTIC_GRID, currentSkyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_GALACTIC));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_AZIMUTAL_GRID, currentSkyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_EQUATOR_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_EQUATOR));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ECLIPTIC_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_EQUATOR_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_EQUATOR));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ECLIPTIC_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CARDINAL_POINTS, cardinals_points->getFlagShow());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ZENITH_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ZENITH));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_POLAR_CIRCLE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_POLAR_POINT, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ECLIPTIC_CENTER, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GALACTIC_POLE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GALACTIC_CENTER, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_VERNAL_POINTS, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_VERNAL));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ANALEMMA, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ANALEMMA));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ANALEMMA_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ARIES_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ARIES));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ZODIAC, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ZODIAC));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GREENWICH_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_GREENWICH));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_VERTICAL_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_VERTICAL));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MERIDIAN_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_MERIDIAN));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_PRECESSION_CIRCLE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_PRECESSION));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CIRCUMPOLAR_CIRCLE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_TROPIC_LINES, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_TROPIC));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ZENITH_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ZENITH));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_POLAR_CIRCLE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_POLAR_POINT, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ECLIPTIC_CENTER, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GALACTIC_POLE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GALACTIC_CENTER, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_VERNAL_POINTS, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_VERNAL));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ANALEMMA, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ANALEMMA));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ANALEMMA_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ARIES_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ARIES));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ZODIAC, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ZODIAC));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GREENWICH_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_GREENWICH));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_VERTICAL_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_VERTICAL));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MERIDIAN_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_MERIDIAN));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_PRECESSION_CIRCLE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_PRECESSION));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CIRCUMPOLAR_CIRCLE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_TROPIC_LINES, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_TROPIC));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED, currentSsystemFactory->getFlagMoonScale());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED, currentSsystemFactory->getFlagSunScale());
 	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_INTENSITY, currentAsterisms->getArtIntensity());
@@ -1527,20 +1550,20 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr    (SCS_COLOR, SCK_AZIMUTHAL_COLOR, Utility::vec3fToStr(currentSkyGridMgr->getColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL)));
 	conf.setStr    (SCS_COLOR, SCK_EQUATORIAL_COLOR, Utility::vec3fToStr(currentSkyGridMgr->getColor(SKYGRID_TYPE::GRID_EQUATORIAL)));
 	conf.setStr    (SCS_COLOR, SCK_ECLIPTIC_COLOR, Utility::vec3fToStr(currentSkyGridMgr->getColor(SKYGRID_TYPE::GRID_ECLIPTIC)));
-	conf.setStr    (SCS_COLOR, SCK_EQUATOR_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_EQUATOR)));
-	conf.setStr    (SCS_COLOR, SCK_ECLIPTIC_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ECLIPTIC)));
-	conf.setStr    (SCS_COLOR, SCK_MERIDIAN_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_MERIDIAN)));
-	conf.setStr    (SCS_COLOR, SCK_ZENITH_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ZENITH)));
-	conf.setStr    (SCS_COLOR, SCK_POLAR_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR)));
-	conf.setStr    (SCS_COLOR, SCK_POLAR_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_POINT_POLAR)));
-	conf.setStr    (SCS_COLOR, SCK_ECLIPTIC_CENTER_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE)));
-	conf.setStr    (SCS_COLOR, SCK_GALACTIC_POLE_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_GALACTIC_POLE)));
-	conf.setStr    (SCS_COLOR, SCK_GALACTIC_CENTER_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER)));
-	conf.setStr    (SCS_COLOR, SCK_VERNAL_POINTS_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_VERNAL)));
-	conf.setStr    (SCS_COLOR, SCK_ANALEMMA_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ANALEMMA)));
-	conf.setStr    (SCS_COLOR, SCK_ANALEMMA_LINE_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ANALEMMALINE)));
-	conf.setStr    (SCS_COLOR, SCK_ARIES_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ARIES)));
-	conf.setStr    (SCS_COLOR, SCK_ZODIAC_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ZODIAC)));
+	conf.setStr    (SCS_COLOR, SCK_EQUATOR_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_EQUATOR)));
+	conf.setStr    (SCS_COLOR, SCK_ECLIPTIC_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ECLIPTIC)));
+	conf.setStr    (SCS_COLOR, SCK_MERIDIAN_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_MERIDIAN)));
+	conf.setStr    (SCS_COLOR, SCK_ZENITH_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ZENITH)));
+	conf.setStr    (SCS_COLOR, SCK_POLAR_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR)));
+	conf.setStr    (SCS_COLOR, SCK_POLAR_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_POINT_POLAR)));
+	conf.setStr    (SCS_COLOR, SCK_ECLIPTIC_CENTER_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE)));
+	conf.setStr    (SCS_COLOR, SCK_GALACTIC_POLE_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_GALACTIC_POLE)));
+	conf.setStr    (SCS_COLOR, SCK_GALACTIC_CENTER_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER)));
+	conf.setStr    (SCS_COLOR, SCK_VERNAL_POINTS_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_VERNAL)));
+	conf.setStr    (SCS_COLOR, SCK_ANALEMMA_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ANALEMMA)));
+	conf.setStr    (SCS_COLOR, SCK_ANALEMMA_LINE_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ANALEMMALINE)));
+	conf.setStr    (SCS_COLOR, SCK_ARIES_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ARIES)));
+	conf.setStr    (SCS_COLOR, SCK_ZODIAC_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ZODIAC)));
 	conf.setStr    (SCS_COLOR, SCK_PERSONAL_COLOR,     Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONAL)));
 	conf.setStr    (SCS_COLOR, SCK_PERSONEQ_COLOR,     Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONEQ)));
 	conf.setStr    (SCS_COLOR, SCK_NAUTICAL_ALT,       Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_NAUTICAL)));
@@ -1550,15 +1573,15 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr    (SCS_COLOR, SCK_ANGULAR_DISTANCE,   Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ANGDIST)));
 	conf.setStr    (SCS_COLOR, SCK_LOXODROMY,          Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_LOXODROMY)));
 	conf.setStr    (SCS_COLOR, SCK_ORTHODROMY,         Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ORTHODROMY)));
-	conf.setStr    (SCS_COLOR, SCK_GREENWICH_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_GREENWICH)));
-	conf.setStr    (SCS_COLOR, SCK_VERTICAL_LINE, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_VERTICAL)));
+	conf.setStr    (SCS_COLOR, SCK_GREENWICH_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_GREENWICH)));
+	conf.setStr    (SCS_COLOR, SCK_VERTICAL_LINE, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_VERTICAL)));
 	conf.setStr    (SCS_COLOR, SCK_CONST_LINES_COLOR, Utility::vec3fToStr(currentAsterisms->getLineColor()));
 	conf.setStr    (SCS_COLOR, SCK_CONST_NAMES_COLOR, Utility::vec3fToStr(currentAsterisms->getLabelColor()));
 	conf.setStr    (SCS_COLOR, SCK_CONST_ART_COLOR, Utility::vec3fToStr(currentAsterisms->getArtColor()));
 	conf.setStr    (SCS_COLOR, SCK_CONST_BOUNDARY_COLOR, Utility::vec3fToStr(currentAsterisms->getBoundaryColor()));
 	conf.setStr	   (SCS_COLOR, SCK_NEBULA_LABEL_COLOR, Utility::vec3fToStr(currentNebulas->getLabelColor()));
 	conf.setStr	   (SCS_COLOR, SCK_NEBULA_CIRCLE_COLOR, Utility::vec3fToStr(currentNebulas->getCircleColor()));
-	conf.setStr	   (SCS_COLOR, SCK_PRECESSION_CIRCLE_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_PRECESSION)));
+	conf.setStr	   (SCS_COLOR, SCK_PRECESSION_CIRCLE_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_PRECESSION)));
 	conf.setStr    (SCS_COLOR, SCK_CARDINAL_COLOR, Utility::vec3fToStr(cardinals_points->getColor()));
 	// Navigation section
 	conf.setBoolean(SCS_NAVIGATION, SCK_FLAG_MANUAL_ZOOM, getFlagManualAutoZoom());
@@ -2282,8 +2305,8 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentIlluminates = illuminates.get();
 		currentSsystemFactory = ssystemFactory;
 		currentSkyGridMgr = skyGridMgr.get();
-		// TODO
 		currentSkyLineMgr = skyLineMgr.get();
+		// TODO
 		currentSkyDisplayMgr = skyDisplayMgr.get();
 		currentDso3d = dso3d.get();
 		currentTully = tully.get();
