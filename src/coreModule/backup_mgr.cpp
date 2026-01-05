@@ -141,12 +141,12 @@ void CoreBackup::loadGridState()
 
 void CoreBackup::saveDisplayState()
 {
-	core->skyDisplayMgr->saveState(skyDisplaySave);
+	core->currentSkyDisplayMgr->saveState(skyDisplaySave);
 }
 
 void CoreBackup::loadDisplayState()
 {
-	core->skyDisplayMgr->loadState(skyDisplaySave);
+	core->currentSkyDisplayMgr->loadState(skyDisplaySave);
 }
 
 void CoreBackup::saveLineState()

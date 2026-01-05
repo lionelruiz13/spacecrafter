@@ -1564,15 +1564,15 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr    (SCS_COLOR, SCK_ANALEMMA_LINE_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ANALEMMALINE)));
 	conf.setStr    (SCS_COLOR, SCK_ARIES_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ARIES)));
 	conf.setStr    (SCS_COLOR, SCK_ZODIAC_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ZODIAC)));
-	conf.setStr    (SCS_COLOR, SCK_PERSONAL_COLOR,     Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONAL)));
-	conf.setStr    (SCS_COLOR, SCK_PERSONEQ_COLOR,     Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONEQ)));
-	conf.setStr    (SCS_COLOR, SCK_NAUTICAL_ALT,       Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_NAUTICAL)));
-	conf.setStr    (SCS_COLOR, SCK_NAUTICAL_RA,        Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_NAUTICEQ)));
-	conf.setStr    (SCS_COLOR, SCK_OBJECT_COORDINATES, Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_OBJCOORDS)));
-	conf.setStr    (SCS_COLOR, SCK_MOUSE_COORDINATES,  Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS)));
-	conf.setStr    (SCS_COLOR, SCK_ANGULAR_DISTANCE,   Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ANGDIST)));
-	conf.setStr    (SCS_COLOR, SCK_LOXODROMY,          Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_LOXODROMY)));
-	conf.setStr    (SCS_COLOR, SCK_ORTHODROMY,         Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ORTHODROMY)));
+	conf.setStr    (SCS_COLOR, SCK_PERSONAL_COLOR,     Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONAL)));
+	conf.setStr    (SCS_COLOR, SCK_PERSONEQ_COLOR,     Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONEQ)));
+	conf.setStr    (SCS_COLOR, SCK_NAUTICAL_ALT,       Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_NAUTICAL)));
+	conf.setStr    (SCS_COLOR, SCK_NAUTICAL_RA,        Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_NAUTICEQ)));
+	conf.setStr    (SCS_COLOR, SCK_OBJECT_COORDINATES, Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_OBJCOORDS)));
+	conf.setStr    (SCS_COLOR, SCK_MOUSE_COORDINATES,  Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS)));
+	conf.setStr    (SCS_COLOR, SCK_ANGULAR_DISTANCE,   Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ANGDIST)));
+	conf.setStr    (SCS_COLOR, SCK_LOXODROMY,          Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_LOXODROMY)));
+	conf.setStr    (SCS_COLOR, SCK_ORTHODROMY,         Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ORTHODROMY)));
 	conf.setStr    (SCS_COLOR, SCK_GREENWICH_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_GREENWICH)));
 	conf.setStr    (SCS_COLOR, SCK_VERTICAL_LINE, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_VERTICAL)));
 	conf.setStr    (SCS_COLOR, SCK_CONST_LINES_COLOR, Utility::vec3fToStr(currentAsterisms->getLineColor()));
@@ -2306,8 +2306,8 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentSsystemFactory = ssystemFactory;
 		currentSkyGridMgr = skyGridMgr.get();
 		currentSkyLineMgr = skyLineMgr.get();
-		// TODO
 		currentSkyDisplayMgr = skyDisplayMgr.get();
+		// TODO
 		currentDso3d = dso3d.get();
 		currentTully = tully.get();
 		currentMilkyWay = milky_way.get();
