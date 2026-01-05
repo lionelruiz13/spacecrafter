@@ -61,6 +61,9 @@ void CoreBackup::loadBackup()
 					case MODULE::STELLAR_SYSTEM:
 						modeString = "in_stellarsystem";
 						break;
+					case MODULE::IN_SANDBOX:
+						modeString = "in_sandbox";
+						break;
 					default:
 						modeString = "in_solarsystem"; // default fallback
 						break;
