@@ -76,10 +76,12 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 	currentDayOfYear = getCurrentDayOfYear(nav);
 
 	// step through and update all active meteors and delete all inactive meteors too
-	for (auto iter = m_activeMeteor.begin(); iter != m_activeMeteor.end(); ++iter) {
+	for (auto iter = m_activeMeteor.begin(); iter != m_activeMeteor.end(); ) {
 		if ( !( (*iter)->update(delta_time) ) ) {
 			//printf("Meteor \tdied\n");
 			iter=m_activeMeteor.erase(iter);
+		} else {
+			++iter; // only increment if not erased since erase returns next iterator
 		}
 	}
 
