@@ -234,7 +234,9 @@ void Core::registerCoreFont() const
 	sandboxDso3d->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 
 	starNav->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
+
 	tully->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
+	sandboxTully->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 
 	ssystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
 	sandboxSsystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
@@ -506,10 +508,16 @@ void Core::init(const InitParser& conf)
 
 		oort->populate(conf.getInt("rendering","oort_elements"));
 		oort->build();
+
 		tully->setTexture("typegals.png");
 		tully->loadCatalog(AppSettings::Instance()->getUserDir() + "tully.dat");
 		tully->loadBigCatalog(AppSettings::Instance()->getUserDir() + "6df.dat", 5e+12);
 		tully->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
+		sandboxTully->setTexture("typegals.png");
+		// sandboxTully->loadCatalog(AppSettings::Instance()->getUserDir() + "tully.dat"); // We are in sandbox mode, we don't load data
+		// sandboxTully->loadBigCatalog(AppSettings::Instance()->getUserDir() + "6df.dat", 5e+12); // We are in sandbox mode, we don't load data
+		sandboxTully->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
+
 		dso3d->setTexture("dsocat.png");
 		if (dso3d->loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat"))
 			dso3d->build();
@@ -1163,8 +1171,8 @@ Object Core::cleverFind(const Vec3d& v) const
 		}
 	}
 
-	if (tully->getFlagShow() && currentModule == MODULE::IN_UNIVERSE) {
-		std::vector<ObjectBaseP > tmp = tully->searchAround(v, fov_around, navigation);
+	if (currentTully->getFlagShow() && currentModule == MODULE::IN_UNIVERSE) {
+		std::vector<ObjectBaseP > tmp = currentTully->searchAround(v, fov_around, navigation);
 		for( std::vector<ObjectBaseP >::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 			candidates.push_back( Object(itr->get()) );
 		}
@@ -2367,8 +2375,8 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentSkyLineMgr = skyLineMgr.get();
 		currentSkyDisplayMgr = skyDisplayMgr.get();
 		currentDso3d = dso3d.get();
-		// TODO
 		currentTully = tully.get();
+		// TODO
 		currentMilkyWay = milky_way.get();
 		currentMeteors = meteors.get();
 		currentStarNav = starNav.get();
