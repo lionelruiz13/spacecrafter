@@ -1386,7 +1386,7 @@ bool Core::setSkyCultureDir(const std::string& cultureDir, bool fromCoreInit)
 
 		asterisms->loadLinesAndArt(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir);
 		asterisms->loadNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/constellation_names.eng.fab");
-		sandboxAsterisms->loadLinesAndArt(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir);
+		// sandboxAsterisms->loadLinesAndArt(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir); // don't load data for sandbox at init
 		sandboxAsterisms->loadNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/constellation_names.eng.fab");
 
 		// Re-translated constellation names
