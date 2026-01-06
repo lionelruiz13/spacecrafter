@@ -247,6 +247,7 @@ void Core::registerCoreFont() const
 	sandboxDso3d->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 
 	starNav->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
+	sandboxStarNav->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 
 	tully->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 	sandboxTully->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
@@ -455,6 +456,14 @@ void Core::init(const InitParser& conf)
 	starNav->setScale(conf.getDouble (SCS_STARS, SCK_STAR_SCALE));
 	starNav->setMaxMagName(conf.getDouble (SCS_STARS, SCK_MAX_MAG_STAR_NAME));
 	starNav->setMagScale(conf.getDouble (SCS_STARS, SCK_STAR_MAG_SCALE));
+	sandboxStarNav->setFlagShow(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STARS));
+	sandboxStarNav->setMagConverterMagShift(conf.getDouble(SCS_STARS,SCK_MAG_CONVERTER_MAG_SHIFT));
+	sandboxStarNav->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
+	sandboxStarNav->setMagConverterMaxMag(conf.getDouble(SCS_STARS,SCK_MAG_CONVERTER_MAX_MAG));
+	sandboxStarNav->setStarSizeLimit(conf.getDouble(SCS_ASTRO,SCK_STAR_SIZE_LIMIT));
+	sandboxStarNav->setScale(conf.getDouble (SCS_STARS, SCK_STAR_SCALE));
+	sandboxStarNav->setMaxMagName(conf.getDouble (SCS_STARS, SCK_MAX_MAG_STAR_NAME));
+	sandboxStarNav->setMagScale(conf.getDouble (SCS_STARS, SCK_STAR_MAG_SCALE));
 
 	dso3d->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
 	sandboxDso3d->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
@@ -584,7 +593,7 @@ void Core::init(const InitParser& conf)
 
 	std::string skyLocaleName = conf.getStr(SCS_LOCALIZATION, SCK_SKY_LOCALE);
 	initialvalue.initial_skyLocale=skyLocaleName;
-	setSkyLanguage(skyLocaleName);
+	setSkyLanguage(skyLocaleName, true);
 
 	int grid_level = hip_stars->getMaxGridLevel();
 	geodesic_grid = new GeodesicGrid(grid_level);
@@ -629,7 +638,7 @@ void Core::init(const InitParser& conf)
 	// Load constellations from the correct sky culture
 	std::string tmp = conf.getStr(SCS_LOCALIZATION, SCK_SKY_CULTURE);
 	initialvalue.initial_skyCulture=tmp;
-	setSkyCultureDir(tmp);
+	setSkyCultureDir(tmp, true);
 	skyCultureDir = tmp;
 
 	// Landscape section
@@ -1071,9 +1080,9 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 	return 0;
 }
 
-void Core::setBodyDecor(bool init)
+void Core::setBodyDecor(bool fromCoreInit)
 {
-	if (init) {
+	if (fromCoreInit) {
 		if (!observatory->isOnBody()) {
 			bodyDecor->anchorAssign();
 			sandboxBodyDecor->anchorAssign();
@@ -1199,8 +1208,8 @@ Object Core::cleverFind(const Vec3d& v) const
 			candidates.push_back( Object(itr->get()) );
 		}
 	}
-	if (starNav->getFlagStars() && (currentModule == MODULE::IN_GALAXY || currentModule == MODULE::STELLAR_SYSTEM)) {
-		std::vector<ObjectBaseP > tmp = starNav->searchAround(v, fov_around, navigation);
+	if (currentStarNav->getFlagStars() && (currentModule == MODULE::IN_GALAXY || currentModule == MODULE::STELLAR_SYSTEM)) {
+		std::vector<ObjectBaseP > tmp = currentStarNav->searchAround(v, fov_around, navigation);
 		for( std::vector<ObjectBaseP >::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 			candidates.push_back( Object(itr->get()) );
 		}
@@ -1358,7 +1367,7 @@ bool Core::setSkyCulture(const std::string& cultureName)
 }
 
 //! Set the current sky culture from the passed directory
-bool Core::setSkyCultureDir(const std::string& cultureDir)
+bool Core::setSkyCultureDir(const std::string& cultureDir, bool fromCoreInit)
 {
 	if (skyCultureDir == cultureDir) return 1;
 	// make sure culture definition exists before attempting or will die
@@ -1368,6 +1377,51 @@ bool Core::setSkyCultureDir(const std::string& cultureDir)
 		return 0;
 	}
 	skyCultureDir = cultureDir;
+
+	if (fromCoreInit) {
+		if (!asterisms || !sandboxAsterisms) {
+			// objects not initialized yet
+			return 0;
+		}
+
+		asterisms->loadLinesAndArt(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir);
+		asterisms->loadNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/constellation_names.eng.fab");
+		sandboxAsterisms->loadLinesAndArt(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir);
+		sandboxAsterisms->loadNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/constellation_names.eng.fab");
+
+		// Re-translated constellation names
+		asterisms->translateNames(skyTranslator);
+		sandboxAsterisms->translateNames(skyTranslator);
+
+		// // as constellations have changed, clear out any selection and retest for match!
+		// if (selected_object && selected_object.getType()==OBJECT_STAR) {
+		// 	asterisms->setSelected(selected_object);
+		// 	sandboxAsterisms->setSelected(selected_object);
+		// }
+		// // else {
+		// 	// asterisms->setSelected(Object());
+		// 	// sandboxAsterisms->setSelected(Object());
+		// // }
+
+		// Load culture star names in english
+		hip_stars->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
+		sandboxHipStars->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
+		starNav->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
+		sandboxStarNav->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
+
+		// Turn on sci names for western culture only
+		hip_stars->setFlagSciNames( skyCultureDir.compare(0, 7, "western") ==0 );
+		sandboxHipStars->setFlagSciNames( skyCultureDir.compare(0, 7, "western") ==0 );
+
+		// translate
+		hip_stars->updateI18n(skyTranslator);
+		sandboxHipStars->updateI18n(skyTranslator);
+		starNav->updateI18n(skyTranslator);
+		sandboxStarNav->updateI18n(skyTranslator);
+
+		return 1;
+	}
+
 	if (!currentAsterisms) return 0;
 
 	currentAsterisms->loadLinesAndArt(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir);
@@ -1385,13 +1439,13 @@ bool Core::setSkyCultureDir(const std::string& cultureDir)
 
 	// Load culture star names in english
 	currentHipStars->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
-	starNav->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
+	currentStarNav->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
 	// Turn on sci names for western culture only
 	currentHipStars->setFlagSciNames( skyCultureDir.compare(0, 7, "western") ==0 );
 
 	// translate
 	currentHipStars->updateI18n(skyTranslator);
-	starNav->updateI18n(skyTranslator);
+	currentStarNav->updateI18n(skyTranslator);
 
 	return 1;
 }
@@ -1420,11 +1474,11 @@ bool Core::loadSkyCulture(const std::string& culturePath)
 
 	// Load culture star names in english
 	currentHipStars->loadCommonNames(culturePath + "/star_names.fab");
-	starNav->loadCommonNames(culturePath + "/star_names.fab");
+	currentStarNav->loadCommonNames(culturePath + "/star_names.fab");
 
 	// translate
 	currentHipStars->updateI18n(skyTranslator);
-	starNav->updateI18n(skyTranslator);
+	currentStarNav->updateI18n(skyTranslator);
 
 	return 1;
 }
@@ -1432,7 +1486,7 @@ bool Core::loadSkyCulture(const std::string& culturePath)
 
 
 //! @brief Set the sky locale and reload the sky objects names for gettext translation
-void Core::setSkyLanguage(const std::string& newSkyLocaleName)
+void Core::setSkyLanguage(const std::string& newSkyLocaleName, bool fromCoreInit)
 {
 	if ( !currentHipStars || !cardinals_points || !currentAsterisms || ! currentSkyLineMgr->isExist(SKYLINE_TYPE::LINE_ECLIPTIC)) return; // objects not initialized yet
 
@@ -1464,12 +1518,27 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 
 	// Translate all labels with the new language
 	cardinals_points->translateLabels(skyTranslator);
-	currentSkyLineMgr->translateLabels(skyTranslator); //ecliptic_line
-	currentAsterisms->translateNames(skyTranslator);
-	currentSsystemFactory->translateNames(skyTranslator);
-	currentNebulas->translateNames(skyTranslator);
-	currentHipStars->updateI18n(skyTranslator);
-	starNav->updateI18n(skyTranslator);
+	if (fromCoreInit) {
+		skyLineMgr->translateLabels(skyTranslator); //ecliptic_line
+		asterisms->translateNames(skyTranslator);
+		ssystemFactory->translateNames(skyTranslator);
+		nebulas->translateNames(skyTranslator);
+		hip_stars->updateI18n(skyTranslator);
+		starNav->updateI18n(skyTranslator);
+		sandboxSkyLineMgr->translateLabels(skyTranslator); //ecliptic_line
+		sandboxAsterisms->translateNames(skyTranslator);
+		sandboxSsystemFactory->translateNames(skyTranslator);
+		sandboxNebulas->translateNames(skyTranslator);
+		sandboxHipStars->updateI18n(skyTranslator);
+		sandboxStarNav->updateI18n(skyTranslator);
+	} else {
+		currentSkyLineMgr->translateLabels(skyTranslator); //ecliptic_line
+		currentAsterisms->translateNames(skyTranslator);
+		currentSsystemFactory->translateNames(skyTranslator);
+		currentNebulas->translateNames(skyTranslator);
+		currentHipStars->updateI18n(skyTranslator);
+		currentStarNav->updateI18n(skyTranslator);
+	}
 	setLanguage();
 }
 
@@ -1933,7 +2002,7 @@ void Core::bindHomePlanet()
 	setLandscapeToBody();
 }
 
-void Core::setLightPollutionLimitingMagnitude(float mag, bool init) {
+void Core::setLightPollutionLimitingMagnitude(float mag, bool fromCoreInit) {
 	lightPollutionLimitingMagnitude = mag;
 	float ln = log(mag);
 	float lum = 30.0842967491175 -19.9408790405749*ln +2.12969160094949*ln*ln - .2206;
@@ -1941,7 +2010,7 @@ void Core::setLightPollutionLimitingMagnitude(float mag, bool init) {
 	float pollum = (5.0-mag)*0.1;
 
 	// This function is called by Core::init and by sts script command (set)
-	if (init) {
+	if (fromCoreInit) {
 		// If we are being called by Core::init, set both normal and sandbox milky way
 		milky_way->setPollum((pollum < 0) ? 0 : pollum);
 		sandboxMilkyWay->setPollum((pollum < 0) ? 0 : pollum);
@@ -2418,8 +2487,8 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentMilkyWay = milky_way.get();
 		currentBodyDecor = bodyDecor.get();
 		currentMeteors = meteors.get();
-		// TODO
 		currentStarNav = starNav.get();
+		// TODO
 		currentCloudNav = cloudNav.get();
 		currentStarGalaxy = starGalaxy.get();
 		currentVolumGalaxy = volumGalaxy.get();

@@ -145,7 +145,7 @@ public:
 	bool setSkyCulture(const std::string& cultureName);
 
 	//! Set the current sky culture from the passed directory
-	bool setSkyCultureDir(const std::string& culturedir);
+	bool setSkyCultureDir(const std::string& culturedir, bool fromCoreInit = false);
 
 	std::string getSkyCultureDir() {
 		return skyCultureDir;
@@ -182,7 +182,7 @@ public:
 	//! @brief Set the sky language and reload the sky objects names with the new translation
 	//! This function has no permanent effect on the global locale
 	//!@param newSkyLocaleName The name of the locale (e.g fr) to use for sky object labels
-	void setSkyLanguage(const std::string& newSkyLocaleName);
+	void setSkyLanguage(const std::string& newSkyLocaleName, bool fromCoreInit = false);
 
 	//! Get the current sky language used for sky object labels
 	//! @return The name of the locale (e.g fr)
@@ -436,7 +436,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Atmosphere
 	//! Set light pollution limiting magnitude (naked eye)
-	void setLightPollutionLimitingMagnitude(float mag, bool init = false);
+	void setLightPollutionLimitingMagnitude(float mag, bool fromCoreInit = false);
 	//! Get light pollution limiting magnitude
 	float getLightPollutionLimitingMagnitude(void) const {
 		return lightPollutionLimitingMagnitude;
@@ -536,7 +536,7 @@ private:
 	void setLandscapeToBody();
 
 	//validates the display decisions of the body's scenery
-	void setBodyDecor(bool init = false);
+	void setBodyDecor(bool fromCoreInit = false);
 
 	// check if the landsacpe is compatible with the auto mode
 	void testLandscapeCompatibleWithAutoMode();
