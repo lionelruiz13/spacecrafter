@@ -420,12 +420,12 @@ void CoreLink::illuminateRemoveTex()	{
 
 //! Set flag for displaying Atmosphere
 void CoreLink::atmosphereSetFlag(bool b) {
-	core->bodyDecor->setAtmosphereState(b);
+	core->currentBodyDecor->setAtmosphereState(b);
 	core->setBodyDecor();
 }
 //! Get flag for displaying Atmosphere
 bool CoreLink::atmosphereGetFlag() const {
-	return core->bodyDecor->getAtmosphereState();
+	return core->currentBodyDecor->getAtmosphereState();
 }
 
 //! Set atmosphere fade duration in s

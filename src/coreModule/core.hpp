@@ -536,7 +536,7 @@ private:
 	void setLandscapeToBody();
 
 	//validates the display decisions of the body's scenery
-	void setBodyDecor();
+	void setBodyDecor(bool init = false);
 
 	// check if the landsacpe is compatible with the auto mode
 	void testLandscapeCompatibleWithAutoMode();

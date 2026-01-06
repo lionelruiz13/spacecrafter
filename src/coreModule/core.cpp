@@ -636,6 +636,8 @@ void Core::init(const InitParser& conf)
 	landscape->fogSetFlagShow(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_FOG));
 
 	bodyDecor->setAtmosphereState(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
+	sandboxBodyDecor->setAtmosphereState(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
+
 	atmosphere->setFlagShow(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
 	atmosphere->setFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
 	atmosphere->setDefaultFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
@@ -754,7 +756,7 @@ void Core::init(const InitParser& conf)
 
 	ssystemFactory->initialSolarSystemBodies();
 	// sandboxSsystemFactory->initialSolarSystemBodies(); // sandbox we don't want to create bodies at init (user will add them manually)
-	setBodyDecor();
+	setBodyDecor(true);
 	firstTime = 0;
 }
 
@@ -820,7 +822,7 @@ void Core::setLandscapeToBody()
 	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite()){
 		setLandscape(observatory->getHomeBody()->getEnglishName());
 		atmosphere->setFlagShow(true);
-		bodyDecor->setAtmosphereState(true);
+		currentBodyDecor->setAtmosphereState(true);
 	}
 
 	//case of satellites of planets
@@ -831,7 +833,7 @@ void Core::setLandscapeToBody()
 	if (observatory->isEarth())
 		setLandscape(initialvalue.initial_landscapeName);
 
-	bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams()); //, observatory->getSpacecraft());
+	currentBodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams()); //, observatory->getSpacecraft());
 	std::cout << "Body : " << observatory->getHomeBody()->getEnglishName() << " Landscape : " << landscape->getName() << std::endl;
 }
 
@@ -1068,12 +1070,22 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 	return 0;
 }
 
-void Core::setBodyDecor()
+void Core::setBodyDecor(bool init)
 {
-	if (!observatory->isOnBody())
-		bodyDecor->anchorAssign();
-	else
-		bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
+	if (init) {
+		if (!observatory->isOnBody()) {
+			bodyDecor->anchorAssign();
+			sandboxBodyDecor->anchorAssign();
+		} else {
+			bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
+			sandboxBodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
+		}
+	} else {
+		if (!observatory->isOnBody())
+			currentBodyDecor->anchorAssign();
+		else
+			currentBodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
+	}
 }
 
 void Core::selectZodiac()
@@ -1157,7 +1169,7 @@ Object Core::cleverFind(const Vec3d& v) const
 
 	// Collect the planets inside the range
 	if (currentSsystemFactory->getFlagShow() && (currentModule == MODULE::SOLAR_SYSTEM || currentModule == MODULE::STELLAR_SYSTEM)) {
-		temp = currentSsystemFactory->searchAround(v, fov_around, navigation, observatory.get(), projection, &is_default_object, bodyDecor->canDrawBody()); //aboveHomePlanet);
+		temp = currentSsystemFactory->searchAround(v, fov_around, navigation, observatory.get(), projection, &is_default_object, currentBodyDecor->canDrawBody()); //aboveHomePlanet);
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 
 		if (is_default_object && temp.begin() != temp.end()) {
@@ -1625,7 +1637,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble(SCS_VIEWING, SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE, getLightPollutionLimitingMagnitude());
 	// Landscape section
 	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_LANDSCAPE, landscape->getFlagShow());
-	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_ATMOSPHERE, bodyDecor->getAtmosphereState());
+	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_ATMOSPHERE, currentBodyDecor->getAtmosphereState());
 	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_FOG, landscape->fogGetFlagShow());
 	// Star section
 	conf.setDouble (SCS_STARS , SCK_STAR_SCALE, currentHipStars->getScale());
@@ -2403,8 +2415,8 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentDso3d = dso3d.get();
 		currentTully = tully.get();
 		currentMilkyWay = milky_way.get();
-		// TODO
 		currentBodyDecor = bodyDecor.get();
+		// TODO
 		currentMeteors = meteors.get();
 		currentStarNav = starNav.get();
 		currentCloudNav = cloudNav.get();

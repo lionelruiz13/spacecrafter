@@ -840,7 +840,7 @@ public:
 	void setEyeRelativeMode(bool mode) {
 		core->observatory->setEyeRelativeMode(mode);
 		if (mode) {
-			core->bodyDecor->anchorAssign();
+			core->currentBodyDecor->anchorAssign();
 		} else {
 			core->bindHomePlanet();
 		}

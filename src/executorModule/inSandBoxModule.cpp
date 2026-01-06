@@ -210,21 +210,21 @@ void InSandBoxModule::draw(int delta_time)
 	core->sandboxSkyGridMgr->draw(core->projection);
 	core->sandboxSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->sandboxSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
-	core->sandboxSsystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
+	core->sandboxSsystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->sandboxBodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	// Update meteors
 	core->sandboxMeteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
 
 	// removed the condition && atmosphere->getFlagShow() so that you can have some by atmosphere
 	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
-	if (core->bodyDecor->canDrawMeteor() && (core->sky_brightness<0.1))
+	if (core->sandboxBodyDecor->canDrawMeteor() && (core->sky_brightness<0.1))
 		core->sandboxMeteors->draw(core->projection, core->navigation);
 
     Context::instance->helper->nextDraw(PASS_FOREGROUND);
 	core->atmosphere->draw();
 
 	// Draw the landscape
-	if (core->bodyDecor->canDrawLandscape()) {
+	if (core->sandboxBodyDecor->canDrawLandscape()) {
 		core->landscape->draw(core->projection, core->navigation);
 	}
 
