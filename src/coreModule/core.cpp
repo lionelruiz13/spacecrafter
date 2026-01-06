@@ -310,7 +310,7 @@ Core::~Core()
 	// delete milky_way;
 	//delete timeMgr;
 	// delete meteors;
-	meteors = nullptr;
+	// meteors = nullptr;
 	//delete atmosphere;
 	delete tone_converter;
 	tone_converter = nullptr;
@@ -618,6 +618,7 @@ void Core::init(const InitParser& conf)
 	navigation->setDefaultHeading(heading);
 
 	meteors->setZHR(conf.getInt(SCS_ASTRO,SCK_METEOR_RATE));
+	sandboxMeteors->setZHR(conf.getInt(SCS_ASTRO,SCK_METEOR_RATE));
 
 	InitViewPos = Utility::strToVec3f(conf.getStr(SCS_NAVIGATION,SCK_INIT_VIEW_POS).c_str());
 
@@ -2416,8 +2417,8 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentTully = tully.get();
 		currentMilkyWay = milky_way.get();
 		currentBodyDecor = bodyDecor.get();
-		// TODO
 		currentMeteors = meteors.get();
+		// TODO
 		currentStarNav = starNav.get();
 		currentCloudNav = cloudNav.get();
 		currentStarGalaxy = starGalaxy.get();
