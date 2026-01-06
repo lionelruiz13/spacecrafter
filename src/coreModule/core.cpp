@@ -482,6 +482,9 @@ void Core::init(const InitParser& conf)
 
 	milky_way->setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_MILKY_WAY));
 	milky_way->setFlagZodiacal(conf.getBoolean(SCS_ASTRO,SCK_FLAG_ZODIACAL_LIGHT));
+	sandboxMilkyWay->setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_MILKY_WAY));
+	sandboxMilkyWay->setFlagZodiacal(conf.getBoolean(SCS_ASTRO,SCK_FLAG_ZODIACAL_LIGHT));
+
 	starLines->setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_STAR_LINES));
 
 	nebulas->setPictoSize(conf.getInt(SCS_VIEWING,SCK_NEBULA_PICTO_SIZE));
@@ -515,6 +518,11 @@ void Core::init(const InitParser& conf)
 				conf.getStr(SCS_ASTRO,SCK_MILKY_WAY_IRIS_TEXTURE), conf.getDouble(SCS_ASTRO,SCK_MILKY_WAY_INTENSITY));
 		milky_way->defineZodiacalState(AppSettings::Instance()->getTextureDir() + conf.getStr(SCS_ASTRO,SCK_ZODIACAL_LIGHT_TEXTURE), conf.getDouble(SCS_ASTRO,SCK_ZODIACAL_INTENSITY));
 		milky_way->setFaderDuration(conf.getInt(SCS_ASTRO,SCK_MILKY_WAY_FADER_DURATION));
+		sandboxMilkyWay->needToUseIris(conf.getBoolean(SCS_MAIN, SCK_MILKYWAY_IRIS));
+		sandboxMilkyWay->defineInitialMilkywayState(AppSettings::Instance()->getTextureDir() , conf.getStr(SCS_ASTRO,SCK_MILKY_WAY_TEXTURE),
+				conf.getStr(SCS_ASTRO,SCK_MILKY_WAY_IRIS_TEXTURE), conf.getDouble(SCS_ASTRO,SCK_MILKY_WAY_INTENSITY));
+		sandboxMilkyWay->defineZodiacalState(AppSettings::Instance()->getTextureDir() + conf.getStr(SCS_ASTRO,SCK_ZODIACAL_LIGHT_TEXTURE), conf.getDouble(SCS_ASTRO,SCK_ZODIACAL_INTENSITY));
+		sandboxMilkyWay->setFaderDuration(conf.getInt(SCS_ASTRO,SCK_MILKY_WAY_FADER_DURATION));
 
 		atmosphere->initGridViewport(projection);
 		atmosphere->initGridPos();
@@ -558,6 +566,7 @@ void Core::init(const InitParser& conf)
 		s_font::createSC_context();
 	} else {
 		milky_way->restoreDefaultMilky();
+		sandboxMilkyWay->restoreDefaultMilky();
 	}
 
 	tone_converter->setWorldAdaptationLuminance(3.75f + atmosphere->getIntensity()*40000.f);
@@ -735,7 +744,7 @@ void Core::init(const InitParser& conf)
 
 	oort->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
 
-	setLightPollutionLimitingMagnitude(conf.getDouble(SCS_VIEWING,SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE));
+	setLightPollutionLimitingMagnitude(conf.getDouble(SCS_VIEWING,SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE), true);
 
 	//atmosphere->setFlagOptoma(conf.getBoolean(SCS_MAIN, SCK_FLAG_OPTOMA));
 
@@ -1682,8 +1691,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS, currentSsystemFactory->getFlag(BODY_FLAG::F_HINTS));
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS, currentSsystemFactory->getFlagPlanetsOrbits());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME, currentSsystemFactory->getFlagLightTravelTime());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_MILKY_WAY, milky_way->getFlagShow());
-	conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_INTENSITY, milky_way->getIntensity());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_MILKY_WAY, currentMilkyWay->getFlagShow());
+	conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_INTENSITY, currentMilkyWay->getIntensity());
 	conf.setDouble(SCS_ASTRO, SCK_STAR_SIZE_LIMIT, starGetSizeLimit());
 	conf.setDouble(SCS_ASTRO, SCK_PLANET_SIZE_MARGINAL_LIMIT, getPlanetsSizeLimit());
 	conf.setStr(SCS_INIT_LOCATION , SCK_LANDSCAPE_NAME, landscape->getName() );
@@ -1911,13 +1920,23 @@ void Core::bindHomePlanet()
 	setLandscapeToBody();
 }
 
-void Core::setLightPollutionLimitingMagnitude(float mag) {
+void Core::setLightPollutionLimitingMagnitude(float mag, bool init) {
 	lightPollutionLimitingMagnitude = mag;
 	float ln = log(mag);
 	float lum = 30.0842967491175 -19.9408790405749*ln +2.12969160094949*ln*ln - .2206;
 	atmosphere->setLightPollutionLuminance(lum);
 	float pollum = (5.0-mag)*0.1;
-	milky_way->setPollum((pollum < 0) ? 0 : pollum);
+
+	// This function is called by Core::init and by sts script command (set)
+	if (init) {
+		// If we are being called by Core::init, set both normal and sandbox milky way
+		milky_way->setPollum((pollum < 0) ? 0 : pollum);
+		sandboxMilkyWay->setPollum((pollum < 0) ? 0 : pollum);
+	} else {
+		// Otherwise only set the current milky way
+		currentMilkyWay->setPollum((pollum < 0) ? 0 : pollum);
+	}
+
 	//int nb = int(mag);
 	//if (nb == 0) nb = 1;
 	//milky_way->changeMilkywayStateWithoutIntensity(AppSettings::Instance()->getTextureDir() + "milkyway" + std::to_string(nb) + ".png");
@@ -2390,8 +2409,8 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentSkyDisplayMgr = skyDisplayMgr.get();
 		currentDso3d = dso3d.get();
 		currentTully = tully.get();
-		// TODO
 		currentMilkyWay = milky_way.get();
+		// TODO
 		currentBodyDecor = bodyDecor.get();
 		currentMeteors = meteors.get();
 		currentStarNav = starNav.get();

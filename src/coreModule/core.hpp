@@ -436,7 +436,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Atmosphere
 	//! Set light pollution limiting magnitude (naked eye)
-	void setLightPollutionLimitingMagnitude(float mag);
+	void setLightPollutionLimitingMagnitude(float mag, bool init = false);
 	//! Get light pollution limiting magnitude
 	float getLightPollutionLimitingMagnitude(void) const {
 		return lightPollutionLimitingMagnitude;
