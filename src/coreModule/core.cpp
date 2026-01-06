@@ -495,6 +495,7 @@ void Core::init(const InitParser& conf)
 	sandboxMilkyWay->setFlagZodiacal(conf.getBoolean(SCS_ASTRO,SCK_FLAG_ZODIACAL_LIGHT));
 
 	starLines->setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_STAR_LINES));
+	sandboxStarLines->setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_STAR_LINES));
 
 	nebulas->setPictoSize(conf.getInt(SCS_VIEWING,SCK_NEBULA_PICTO_SIZE));
 	nebulas->setFlagBright(conf.getBoolean(SCS_ASTRO,SCK_FLAG_BRIGHT_NEBULAE));
@@ -1596,6 +1597,7 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 
 	// default color override
 	starLines-> setColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_LINES3D_COLOR)));
+	sandboxStarLines-> setColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_LINES3D_COLOR)));
 
 	asterisms->setLineColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_LINES_COLOR)));
 	asterisms->setBoundaryColor(Utility::strToVec3f(conf.getStr(section,SCK_CONST_BOUNDARY_COLOR)));
@@ -2234,14 +2236,14 @@ bool Core::selectObject(const Object &obj)
 			currentHipStars->setSelected(selected_object);
 
 			// Build a constellation with the currently selected stars
-			if (starLines->getFlagSelected()) {
+			if (currentStarLines->getFlagSelected()) {
 				auto selected_stars = currentHipStars->getSelected();
 				std::string starLinesCommand = "customConst " + std::to_string(selected_stars.size()-1);
 				for (std::size_t i = 0; i + 1 < selected_stars.size(); i++) {
 					starLinesCommand += " " + std::to_string(selected_stars[i]);
 					starLinesCommand += " " + std::to_string(selected_stars[i+1]);
 				}
-				starLines->loadStringData(starLinesCommand);
+				currentStarLines->loadStringData(starLinesCommand);
 			}
 
 			// potentially record this action
@@ -2488,11 +2490,16 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentBodyDecor = bodyDecor.get();
 		currentMeteors = meteors.get();
 		currentStarNav = starNav.get();
-		// TODO
 		currentCloudNav = cloudNav.get();
 		currentStarGalaxy = starGalaxy.get();
 		currentVolumGalaxy = volumGalaxy.get();
 		currentDsoNav = dsoNav.get();
 		currentStarLines = starLines.get();
+		// TODO
+		// All Done, next:
+		// Checking init section
+		// Creating helper class to manage unique_ptr (XXX / sandboxXXX) + raw pointer (currentXXX):
+		//     - Easier to manage active pointer
+		//     - Easier to init both versions (one function to init both XXX and sandboxXXX)
 	}
 }
