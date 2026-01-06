@@ -2317,19 +2317,12 @@ void Core::removeSupplementalNebulae()
 
 bool Core::loadDso2d(int typeDso, std::string name, float size, float alpha, float delta, float distance, int xyz)
 {
-	// Use the appropriate dso3d based on current mode (handled by coreLink pointer)
-	if (getFlagIngalaxy() == MODULE::IN_SANDBOX)
-		return sandboxDso3d->loadCommand(typeDso, name, size, alpha, delta, distance, xyz);
-	else
-		return dso3d->loadCommand(typeDso, name, size, alpha, delta, distance, xyz);
+	return currentDso3d->loadCommand(typeDso, name, size, alpha, delta, distance, xyz);
 }
 
 void Core::removeSupplementalDso()
 {
-	if (getFlagIngalaxy() == MODULE::IN_SANDBOX)
-		sandboxDso3d->removeSupplementalDso();
-	else
-		dso3d->removeSupplementalDso();
+	currentDso3d->removeSupplementalDso();
 }
 
 void Core::setJDayRelative(int year, int month)
