@@ -61,7 +61,7 @@ class Set;
   */
 class IlluminateMgr: public NoCopy {
 public:
-	IlluminateMgr(std::shared_ptr<HipStarMgr> _hip_stars, Navigator *_navigator, std::shared_ptr<ConstellationMgr> _asterism);
+	IlluminateMgr(HipStarMgr *_hip_stars, Navigator *_navigator, ConstellationMgr *_asterism);
 	virtual ~IlluminateMgr();
 
 	// indicates the default size of the illuminates
@@ -114,9 +114,9 @@ private:
 	double defaultSize;							//!< defautl Size from illuninate if not precised
 
 
-	std::shared_ptr<HipStarMgr> hip_stars;			//!< provide acces point to HipStarMgr
-	Navigator* navigator = nullptr;				//!< provide acces point to Navigator
-	std::shared_ptr<ConstellationMgr> asterism;		//!< provide acces point to ConstellationMgr
+	HipStarMgr *hip_stars;						//!< provide acces point to HipStarMgr
+	Navigator *navigator = nullptr;				//!< provide acces point to Navigator
+	ConstellationMgr *asterism;					//!< provide acces point to ConstellationMgr
 
 	int cmds[3];
 	std::unique_ptr<PipelineLayout> m_layoutIllum;

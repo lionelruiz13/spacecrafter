@@ -76,7 +76,7 @@
 Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback<void, std::string>& recordCallback, std::shared_ptr<Observer> _observatory) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
-	illuminates(nullptr), ssystemFactory(NULL), milky_way(nullptr)
+	illuminates(nullptr), ssystemFactory(nullptr), milky_way(nullptr)
 {
 	vzm={0.,0.,0.,0.,0.,0.00025};
 	recordActionCallback = recordCallback;
@@ -94,8 +94,8 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	navigation = new Navigator();
 	observatory = _observatory;
 
-	ssystemFactory = new SSystemFactory(observatory.get(), navigation, timeMgr.get());
-	sandboxSsystemFactory = new SSystemFactory(observatory.get(), navigation, timeMgr.get());  // Sandbox solar system
+	ssystemFactory = std::make_unique<SSystemFactory>(observatory.get(), navigation, timeMgr.get());
+	sandboxSsystemFactory = std::make_unique<SSystemFactory>(observatory.get(), navigation, timeMgr.get());	 // Sandbox solar system
 
 	nebulas = std::make_unique<NebulaMgr>();
 	sandboxNebulas = std::make_unique<NebulaMgr>();  // Sandbox nebulas
@@ -217,21 +217,31 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	sandboxSkyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ORTHODROMY);
 
 	cardinals_points = std::make_unique<Cardinals>();
+
 	meteors = std::make_unique<MeteorMgr>(10, 60);
 	sandboxMeteors = std::make_unique<MeteorMgr>(10, 60);  // Sandbox meteors
+
 	landscape = new Landscape();
+
 	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
-	hip_stars = std::make_shared<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height);
-	sandboxHipStars = std::make_shared<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height); // Sandbox hip stars
-	asterisms = std::make_shared<ConstellationMgr>(hip_stars);
-	sandboxAsterisms = std::make_shared<ConstellationMgr>(sandboxHipStars);  // Sandbox asterisms
-	illuminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms);
-	sandboxIlluminates= std::make_unique<IlluminateMgr>(sandboxHipStars, navigation, sandboxAsterisms);  // Sandbox illuminates
+
+	hip_stars = std::make_unique<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height);
+	sandboxHipStars = std::make_unique<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height); // Sandbox hip stars
+
+	asterisms = std::make_unique<ConstellationMgr>(hip_stars.get());
+	sandboxAsterisms = std::make_unique<ConstellationMgr>(sandboxHipStars.get());  // Sandbox asterisms
+
+	illuminates= std::make_unique<IlluminateMgr>(hip_stars.get(), navigation, asterisms.get());
+	sandboxIlluminates= std::make_unique<IlluminateMgr>(sandboxHipStars.get(), navigation, sandboxAsterisms.get());  // Sandbox illuminates
+
 	oort =  std::make_unique<Oort>();
+
 	dso3d = std::make_unique<Dso3d>();
 	sandboxDso3d = std::make_unique<Dso3d>();  // Sandbox dso3d
+
 	tully = std::make_unique<Tully>();
 	sandboxTully = std::make_unique<Tully>();  // Sandbox tully
+
 	object_pointer_visibility = 1;
 }
 
@@ -317,10 +327,10 @@ Core::~Core()
 	tone_converter = nullptr;
 	// s_font::deleteShader();
 	//delete ssystem;
-	delete ssystemFactory;
-	ssystemFactory = nullptr;
-	delete sandboxSsystemFactory;
-	sandboxSsystemFactory = nullptr;
+	// delete ssystemFactory;
+	// ssystemFactory = nullptr;
+	// delete sandboxSsystemFactory;
+	// sandboxSsystemFactory = nullptr;
 	//delete skyloc;
 	//skyloc = nullptr;
 	Object::deleteTextures(); // Unload the pointer textures
@@ -2456,7 +2466,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentAsterisms = sandboxAsterisms.get();
 		currentNebulas = sandboxNebulas.get();
 		currentIlluminates = sandboxIlluminates.get();
-		currentSsystemFactory = sandboxSsystemFactory;
+		currentSsystemFactory = sandboxSsystemFactory.get();
 		currentSkyGridMgr = sandboxSkyGridMgr.get();
 		currentSkyLineMgr = sandboxSkyLineMgr.get();
 		currentSkyDisplayMgr = sandboxSkyDisplayMgr.get();
@@ -2480,7 +2490,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentAsterisms = asterisms.get();
 		currentNebulas = nebulas.get();
 		currentIlluminates = illuminates.get();
-		currentSsystemFactory = ssystemFactory;
+		currentSsystemFactory = ssystemFactory.get();
 		currentSkyGridMgr = skyGridMgr.get();
 		currentSkyLineMgr = skyLineMgr.get();
 		currentSkyDisplayMgr = skyDisplayMgr.get();

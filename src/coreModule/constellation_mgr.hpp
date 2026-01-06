@@ -51,7 +51,7 @@ class PipelineLayout;
 
 class ConstellationMgr: public NoCopy , public ModuleFont {
 public:
-	ConstellationMgr(std::shared_ptr<HipStarMgr> _hip_stars);
+	ConstellationMgr(HipStarMgr *_hip_stars);
 	~ConstellationMgr();
 
 	//! Draw constellation lines, art, names and boundaries if activated
@@ -214,7 +214,7 @@ private:
 	Constellation* isStarIn(const Object &s) const;
 	Constellation* findFromAbbreviation(const std::string& abbreviation) const;
 	std::vector<Constellation*> asterisms;
-	std::shared_ptr<HipStarMgr> hipStarMgr;
+	HipStarMgr *hipStarMgr;
 	std::vector<Constellation*> selected;
 	bool isolateSelected = false;
 	std::vector<std::vector<Vec3f> *> allBoundarySegments;

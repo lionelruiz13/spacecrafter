@@ -43,7 +43,7 @@
 #include "EntityCore/EntityCore.hpp"
 
 //! constructor which loads all data from appropriate files
-ConstellationMgr::ConstellationMgr(std::shared_ptr<HipStarMgr> _hip_stars) :
+ConstellationMgr::ConstellationMgr(HipStarMgr *_hip_stars) :
 	hipStarMgr(_hip_stars)
 {
 	assert(hipStarMgr);
@@ -233,7 +233,7 @@ int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
 			continue;
 		cons = new Constellation;
 
-		if (cons->read(record, hipStarMgr.get())) {
+		if (cons->read(record, hipStarMgr)) {
 			asterisms.push_back(cons);
 		} else {
 			cLog::get()->write("ConstellationMgr::loadLinesAndArt on line " + std::to_string(line) + " of " + fileName, LOG_TYPE::L_ERROR);

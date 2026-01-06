@@ -565,12 +565,12 @@ private:
 	Object selected_object;								// The selected object
 	Object old_selected_object;							// The old selected object
 
-	std::shared_ptr<HipStarMgr> hip_stars;				// Manage the hipparcos stars (normal modes)
-	std::shared_ptr<HipStarMgr> sandboxHipStars;		// Manage the hipparcos stars (sandbox mode)
+	std::unique_ptr<HipStarMgr> hip_stars;				// Manage the hipparcos stars (normal modes)
+	std::unique_ptr<HipStarMgr> sandboxHipStars;		// Manage the hipparcos stars (sandbox mode)
 	HipStarMgr *currentHipStars = nullptr;				// Manage the hipparcos stars (current mode (normal/sandbox))
 
-	std::shared_ptr<ConstellationMgr> asterisms;		// Manage constellations (boundaries, names etc..) (normal modes)
-	std::shared_ptr<ConstellationMgr> sandboxAsterisms;	// Manage constellations (boundaries, names etc..) (sandbox mode)
+	std::unique_ptr<ConstellationMgr> asterisms;		// Manage constellations (boundaries, names etc..) (normal modes)
+	std::unique_ptr<ConstellationMgr> sandboxAsterisms;	// Manage constellations (boundaries, names etc..) (sandbox mode)
 	ConstellationMgr *currentAsterisms = nullptr;		// Manage constellations (boundaries, names etc..) (current mode (normal/sandbox))
 
 	std::unique_ptr<NebulaMgr> nebulas;					// Manage the nebulas (normal modes)
@@ -584,9 +584,9 @@ private:
 	//TextMgr *text_usr;								// manage all user text in dome
 	//SolarSystem *ssystem;								// Manage the solar system
 
-	SSystemFactory *ssystemFactory;						// Manage bodies (normal modes)
-	SSystemFactory *sandboxSsystemFactory;				// Manage bodies (sandbox mode)
-	SSystemFactory *currentSsystemFactory = nullptr;	// Manage bodies (current mode (normal/sandbox))
+	std::unique_ptr<SSystemFactory> ssystemFactory;			// Manage bodies (normal modes)
+	std::unique_ptr<SSystemFactory> sandboxSsystemFactory;	// Manage bodies (sandbox mode)
+	SSystemFactory *currentSsystemFactory = nullptr;		// Manage bodies (current mode (normal/sandbox))
 
 	std::shared_ptr<Atmosphere> atmosphere;				// Atmosphere
 
