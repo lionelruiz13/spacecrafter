@@ -99,26 +99,26 @@ void InSandBoxModule::update(int delta_time)
 	// Update faders
 	core->update(delta_time);
 
-	core->sandboxTully->update(delta_time);
+	core->currentTully->update(delta_time);
 
 
 
 
 	//! InGalaxy
 	// Position of sun and all the satellites (ie planets)
-	core->sandboxSsystemFactory->computePositions(core->timeMgr->getJDay(), observer);
-	core->sandboxSsystemFactory->updateAnchorManager();
+	core->currentSsystemFactory->computePositions(core->timeMgr->getJDay(), observer);
+	core->currentSsystemFactory->updateAnchorManager();
 
 	// Update faders
-	core->sandboxStarLines->update(delta_time);
-	core->sandboxMilkyWay->update(delta_time);
-	core->sandboxDso3d->update(delta_time);
+	core->currentStarLines->update(delta_time);
+	core->currentMilkyWay->update(delta_time);
+	core->currentDso3d->update(delta_time);
 
 
 
 	//! solarSystem
 	// update faders and Planet trails (call after nav is updated)
-	core->sandboxSsystemFactory->update(delta_time, core->navigation, core->timeMgr.get());
+	core->currentSsystemFactory->update(delta_time, core->navigation, core->timeMgr.get());
 
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
@@ -131,9 +131,9 @@ void InSandBoxModule::update(int delta_time)
 											core->navigation->getDomeFixedMat());
 
     // Update faders
-	core->sandboxSkyGridMgr->update(delta_time);
-	core->sandboxSkyLineMgr->update(delta_time);
-	core->sandboxAsterisms->update(delta_time);
+	core->currentSkyGridMgr->update(delta_time);
+	core->currentSkyLineMgr->update(delta_time);
+	core->currentAsterisms->update(delta_time);
 	core->oort->update(delta_time);
 
 	core->tone_converter->setWorldAdaptationLuminance(core->atmosphere->getWorldAdaptationLuminance());
@@ -156,75 +156,75 @@ void InSandBoxModule::draw(int delta_time)
 	// We only draw what has been explicitly added
 
 	//! InUniverse
-	core->sandboxDsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+	core->currentDsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 	// core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 
-	if (core->sandboxVolumGalaxy->loaded()) {
-		if (core->sandboxTully->mustBuild())
-			core->sandboxTully->build(core->sandboxVolumGalaxy.get());
-		core->sandboxTully->draw(observer->getAltitude(), core->navigation, core->projection);
+	if (core->currentVolumGalaxy->loaded()) {
+		if (core->currentTully->mustBuild())
+			core->currentTully->build(core->currentVolumGalaxy.get());
+		core->currentTully->draw(observer->getAltitude(), core->navigation, core->projection);
 	} else {
-		if (core->sandboxTully->mustBuild())
-			core->sandboxTully->build();
-		core->sandboxTully->draw(observer->getAltitude(), core->navigation, core->projection);
+		if (core->currentTully->mustBuild())
+			core->currentTully->build();
+		core->currentTully->draw(observer->getAltitude(), core->navigation, core->projection);
 	}
 
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_SANDBOX);
 
-	core->sandboxSkyDisplayMgr->drawPerson(core->projection, core->navigation);
-	core->sandboxStarGalaxy->draw(core->navigation, core->projection);
+	core->currentSkyDisplayMgr->drawPerson(core->projection, core->navigation);
+	core->currentStarGalaxy->draw(core->navigation, core->projection);
 	if (core->selected_object && core->object_pointer_visibility)
 		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
-	core->sandboxDsoNav->draw(core->navigation, core->projection);
+	core->currentDsoNav->draw(core->navigation, core->projection);
 
 
 
 
 
 	//! InGalaxy
-	core->sandboxStarNav->computePosition(core->navigation->getObserverHelioPos());
-	core->sandboxCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+	core->currentStarNav->computePosition(core->navigation->getObserverHelioPos());
+	core->currentCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 
-	core->sandboxMilkyWay->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
+	core->currentMilkyWay->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 
-	core->sandboxStarLines->draw(core->navigation);
+	core->currentStarLines->draw(core->navigation);
 
 	// transparency.
-	core->sandboxDso3d->draw(observer->getAltitude(), core->projection, core->navigation);
-	core->sandboxStarNav->draw(core->navigation, core->projection, false);
-	core->sandboxCloudNav->draw(core->navigation, core->projection);
+	core->currentDso3d->draw(observer->getAltitude(), core->projection, core->navigation);
+	core->currentStarNav->draw(core->navigation, core->projection, false);
+	core->currentCloudNav->draw(core->navigation, core->projection);
 
 
 
 
 	//! solarSystem
-	core->sandboxNebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
+	core->currentNebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
 	core->oort->draw(observer->getAltitude(), core->navigation);
-	core->sandboxIlluminates->draw(core->projection, core->navigation);
-	core->sandboxAsterisms->draw(core->projection, core->navigation);
-	// TODO: Use the sandboxHipStars (cause a crash for now (error with vulkan))
-	core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
-	core->sandboxSkyGridMgr->draw(core->projection);
-	core->sandboxSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
-	core->sandboxSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
-	core->sandboxSsystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->sandboxBodyDecor->canDrawBody() /*aboveHomePlanet*/ );
+	core->currentIlluminates->draw(core->projection, core->navigation);
+	core->currentAsterisms->draw(core->projection, core->navigation);
+	// TODO: Use the real current instead of forcing the use of normal mode (cause a crash for now (error with vulkan) (missing predraw call cause the crash?))
+	core->currentHipStars.get(NORMAL_MODE)->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
+	core->currentSkyGridMgr->draw(core->projection);
+	core->currentSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
+	core->currentSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
+	core->currentSsystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->currentBodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	// Update meteors
-	core->sandboxMeteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
+	core->currentMeteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
 
 	// removed the condition && atmosphere->getFlagShow() so that you can have some by atmosphere
 	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
-	if (core->sandboxBodyDecor->canDrawMeteor() && (core->sky_brightness<0.1))
-		core->sandboxMeteors->draw(core->projection, core->navigation);
+	if (core->currentBodyDecor->canDrawMeteor() && (core->sky_brightness<0.1))
+		core->currentMeteors->draw(core->projection, core->navigation);
 
     Context::instance->helper->nextDraw(PASS_FOREGROUND);
 	core->atmosphere->draw();
 
 	// Draw the landscape
-	if (core->sandboxBodyDecor->canDrawLandscape()) {
+	if (core->currentBodyDecor->canDrawLandscape()) {
 		core->landscape->draw(core->projection, core->navigation);
 	}
 

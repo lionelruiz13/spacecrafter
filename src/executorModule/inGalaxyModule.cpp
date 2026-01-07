@@ -82,9 +82,9 @@ void InGalaxyModule::update(int delta_time)
 	core->navigation->update(delta_time);
 
 	// Position of sun and all the satellites (ie planets)
-	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), observer);
+	core->currentSsystemFactory->computePositions(core->timeMgr->getJDay(), observer);
 
-	core->ssystemFactory->updateAnchorManager();
+	core->currentSsystemFactory->updateAnchorManager();
 
 	// Transform matrices between coordinates systems
 	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
@@ -96,9 +96,9 @@ void InGalaxyModule::update(int delta_time)
 	core->updateMove(delta_time);
 	// Update faders
 	core->update(delta_time);
-	core->starLines->update(delta_time);
-	core->milky_way->update(delta_time);
-	core->dso3d->update(delta_time);
+	core->currentStarLines->update(delta_time);
+	core->currentMilkyWay->update(delta_time);
+	core->currentDso3d->update(delta_time);
 
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
@@ -118,27 +118,27 @@ void InGalaxyModule::draw(int delta_time)
 {
 	core->applyClippingPlanes(0.01, 2000.01);
 	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]);
-	core->starNav->computePosition(core->navigation->getObserverHelioPos());
-	core->cloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
-	core->dsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+	core->currentStarNav->computePosition(core->navigation->getObserverHelioPos());
+	core->currentCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+	core->currentDsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 
-	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
+	core->currentMilkyWay->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 
 	if (core->selected_object && core->object_pointer_visibility) core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 
 	//drawing lines without activating the depth buffer.
-	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
-	core->starLines->draw(core->navigation);
+	core->currentSkyDisplayMgr->drawPerson(core->projection, core->navigation);
+	core->currentStarLines->draw(core->navigation);
 
 	// transparency.
-	core->dso3d->draw(observer->getAltitude(), core->projection, core->navigation);
+	core->currentDso3d->draw(observer->getAltitude(), core->projection, core->navigation);
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_GALAXY);
-	core->starNav->draw(core->navigation, core->projection, false);
-	core->dsoNav->draw(core->navigation, core->projection);
-	core->cloudNav->draw(core->navigation, core->projection);
+	core->currentStarNav->draw(core->navigation, core->projection, false);
+	core->currentDsoNav->draw(core->navigation, core->projection);
+	core->currentCloudNav->draw(core->navigation, core->projection);
 	//core->postDraw();
 }
 
@@ -151,7 +151,7 @@ bool InGalaxyModule::testValidAltitude(double altitude)
 		return true;
 	}
 	if (altitude<minAltToGoDown) {
-		nextMode = (core->ssystemFactory->querySelectedAnchorName() == "Sun") ? downMode : downModeAlt;
+		nextMode = (core->currentSsystemFactory->querySelectedAnchorName() == "Sun") ? downMode : downModeAlt;
 		return true;
 	}
 	return false;

@@ -73,11 +73,11 @@ void StellarSystemModule::onEnter()
 	EventRecorder::getInstance()->queue(event);
     thread = std::thread(&StellarSystemModule::asyncUpdateLoop, this);
     center = observer->getObserverCenterPoint();
-    core->starNav->computePosition(center);
+    core->currentStarNav->computePosition(center);
     // We should inject the starNav stars into the hip_star_mgr
-    core->ssystemFactory->enterSystem();
+    core->currentSsystemFactory->enterSystem();
     core->setFlagTracking(false); // Just in case
-    core->selectObject(core->ssystemFactory->getSelected());
+    core->selectObject(core->currentSsystemFactory->getSelected());
 }
 
 void StellarSystemModule::onExit()
@@ -85,7 +85,7 @@ void StellarSystemModule::onExit()
 	std::cout << "InStellarSystem->" << std::endl;
     threadQueue.close();
     thread.join();
-    core->ssystemFactory->leaveSystem();
+    core->currentSsystemFactory->leaveSystem();
 }
 
 
@@ -103,25 +103,25 @@ void StellarSystemModule::update(int delta_time)
 	core->navigation->update(delta_time);
 
     if (core->selected_object && core->observatory->getAltitude() <= 7.91706e+08){
-        int hip = core->hip_stars->getHPFromStarName(core->selected_object.getNameI18n());
+        int hip = core->currentHipStars->getHPFromStarName(core->selected_object.getNameI18n());
         if (hip != -1)
-            core->starNav->hideStar(hip);
+            core->currentStarNav->hideStar(hip);
     }
 
     if (core->selected_object && core->observatory->getAltitude() >= 7.91706e+08){
         int hip = 0;
-        hip = core->hip_stars->getHPFromStarName(core->selected_object.getNameI18n());
+        hip = core->currentHipStars->getHPFromStarName(core->selected_object.getNameI18n());
         if (hip != -1){
-            core->starNav->showStar(hip);
+            core->currentStarNav->showStar(hip);
         }
     }
 
-    core->starNav->computePosition(center);
+    core->currentStarNav->computePosition(center);
 
 	// Position of sun and all the satellites (ie planets)
-	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), observer);
+	core->currentSsystemFactory->computePositions(core->timeMgr->getJDay(), observer);
 
-	core->ssystemFactory->updateAnchorManager();
+	core->currentSsystemFactory->updateAnchorManager();
 	// Transform matrices between coordinates systems
 	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
 	// Direction of vision
@@ -129,7 +129,7 @@ void StellarSystemModule::update(int delta_time)
 	// Field of view
 	core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
 	// update faders and Planet trails (call after nav is updated)
-	core->ssystemFactory->update(delta_time, core->navigation, core->timeMgr.get());
+	core->currentSsystemFactory->update(delta_time, core->navigation, core->timeMgr.get());
 
 	// Move the view direction and/or fov
 	core->updateMove(delta_time);
@@ -138,7 +138,7 @@ void StellarSystemModule::update(int delta_time)
 	Vec3d sunPos = core->navigation->helioToLocal(ProtoSystem::getCenterPos());
 
 	// Compute the moon position in local coordinate
-	Vec3d moon = core->ssystemFactory->getMoon()->get_heliocentric_ecliptic_pos();
+	Vec3d moon = core->currentSsystemFactory->getMoon()->get_heliocentric_ecliptic_pos();
 	Vec3d moonPos = core->navigation->helioToLocal(moon);
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
@@ -153,11 +153,11 @@ void StellarSystemModule::update(int delta_time)
     asyncUpdateBegin({sunPos, moonPos});
 
     // Update faders
-	core->skyGridMgr->update(delta_time);
-	core->skyLineMgr->update(delta_time);
-	core->asterisms->update(delta_time);
-	core->milky_way->update(delta_time);
-	core->starLines->update(delta_time);
+	core->currentSkyGridMgr->update(delta_time);
+	core->currentSkyLineMgr->update(delta_time);
+	core->currentAsterisms->update(delta_time);
+	core->currentMilkyWay->update(delta_time);
+	core->currentStarLines->update(delta_time);
 
 	core->tone_converter->setWorldAdaptationLuminance(core->atmosphere->getWorldAdaptationLuminance());
 
@@ -182,36 +182,36 @@ void StellarSystemModule::draw(int delta_time)
     Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]); // multisample print
     asyncUpdateEnd();
 	core->applyClippingPlanes(0.000001 ,200);
-	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
+	core->currentMilkyWay->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
-	core->nebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
-	core->illuminates->draw(core->projection, core->navigation);
-	core->asterisms->draw(core->projection, core->navigation);
-	core->starLines->draw(core->navigation);
-    core->starNav->draw(core->navigation, core->projection, true);
-	core->skyGridMgr->draw(core->projection);
-	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
-	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
-	core->ssystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
+	core->currentNebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
+	core->currentIlluminates->draw(core->projection, core->navigation);
+	core->currentAsterisms->draw(core->projection, core->navigation);
+	core->currentStarLines->draw(core->navigation);
+    core->currentStarNav->draw(core->navigation, core->projection, true);
+	core->currentSkyGridMgr->draw(core->projection);
+	core->currentSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
+	core->currentSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
+	core->currentSsystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->currentBodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	// Draw the pointer on the currently selected object
 	// TODO: this would be improved if pointer was drawn at same time as object for correct depth in scene
 	if (core->selected_object && core->object_pointer_visibility) core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 
 	// Update meteors
-	core->meteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
+	core->currentMeteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
 
 	// retiré la condition && atmosphere->getFlagShow() de sorte à pouvoir en avoir par atmosphère ténue
 	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
-	if (core->bodyDecor->canDrawMeteor() && (core->sky_brightness<0.1))
-		core->meteors->draw(core->projection, core->navigation);
+	if (core->currentBodyDecor->canDrawMeteor() && (core->sky_brightness<0.1))
+		core->currentMeteors->draw(core->projection, core->navigation);
 
     Context::instance->helper->nextDraw(PASS_FOREGROUND);
 	core->atmosphere->draw();
 
 	// Draw the landscape
-	if (core->bodyDecor->canDrawLandscape()) {
+	if (core->currentBodyDecor->canDrawLandscape()) {
 		core->landscape->draw(core->projection, core->navigation);
 	}
 
@@ -250,13 +250,13 @@ void StellarSystemModule::asyncUpdateLoop()
     std::pair<Vec3d, Vec3d> data;
     threadQueue.acquire();
     while (threadQueue.pop(data)) {
-        core->ssystemFactory->computePreDraw(core->projection, core->navigation);
+        core->currentSsystemFactory->computePreDraw(core->projection, core->navigation);
         core->atmosphere->computeColor(core->timeMgr->getJDay(), data.first, data.second,
-    	                          core->ssystemFactory->getMoon()->get_phase(core->ssystemFactory->getEarth()->get_heliocentric_ecliptic_pos()),
+    	                          core->currentSsystemFactory->getMoon()->get_phase(core->currentSsystemFactory->getEarth()->get_heliocentric_ecliptic_pos()),
     	                          core->tone_converter, core->projection, observer->getLatitude(), observer->getAltitude(),
     	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
-        core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
-        core->ssystemFactory->bodyTrace(core->navigation);
+        core->currentHipStars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+        core->currentSsystemFactory->bodyTrace(core->navigation);
         asyncWorkState = false;
     }
     threadQueue.release();

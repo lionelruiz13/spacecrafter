@@ -51,12 +51,12 @@ void InUniverseModule::onEnter()
 	core->setFlagIngalaxy(MODULE::IN_UNIVERSE);
     std::cout << "->InUniverse" << std::endl;
 	//set altitude in CoreExecutorInUniverse when enter
-	core->dsoNav->drop();
+	core->currentDsoNav->drop();
 	observer->setAltitude(minAltToGoDown);
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
 	EventRecorder::getInstance()->queue(event);
-	// core->volumGalaxy->reconstruct("MilkyWayRGBAVolume1024x1024x128.raw", "\0", 1024, false);
-	// core->volumGalaxy->setModel(Mat4f::translation(Vec3f( -0.0001, -0.0001, -0.005)) * Mat4f::yawPitchRoll(90, 0, 0) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
+	// core->currentVolumGalaxy->reconstruct("MilkyWayRGBAVolume1024x1024x128.raw", "\0", 1024, false);
+	// core->currentVolumGalaxy->setModel(Mat4f::translation(Vec3f( -0.0001, -0.0001, -0.005)) * Mat4f::yawPitchRoll(90, 0, 0) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
 }
 
 void InUniverseModule::onExit()
@@ -64,7 +64,7 @@ void InUniverseModule::onExit()
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
 	EventRecorder::getInstance()->queue(event);
 	std::cout << "InUniverse->" << std::endl;
-	core->dsoNav->drop();
+	core->currentDsoNav->drop();
 }
 
 void InUniverseModule::update(int delta_time)
@@ -83,7 +83,7 @@ void InUniverseModule::update(int delta_time)
 	// Update faders
 	core->update(delta_time);
 
-	core->tully->update(delta_time);
+	core->currentTully->update(delta_time);
 
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
@@ -103,27 +103,27 @@ void InUniverseModule::draw(int delta_time)
 {
 	core->applyClippingPlanes(0.0001, 10);
 	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]);
-	core->dsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+	core->currentDsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 	// core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
-	if (core->volumGalaxy->loaded()) {
-		if (core->tully->mustBuild()) {
-			core->tully->build(core->volumGalaxy.get());
+	if (core->currentVolumGalaxy->loaded()) {
+		if (core->currentTully->mustBuild()) {
+			core->currentTully->build(core->currentVolumGalaxy.get());
 			minAltToGoDown = 1.e8; // Reduce min altitude so we can go inside the volumetric galaxy
 		}
-		core->tully->draw(observer->getAltitude(), core->navigation, core->projection);
+		core->currentTully->draw(observer->getAltitude(), core->navigation, core->projection);
 	} else {
-		if (core->tully->mustBuild())
-			core->tully->build();
-		core->tully->draw(observer->getAltitude(), core->navigation, core->projection);
+		if (core->currentTully->mustBuild())
+			core->currentTully->build();
+		core->currentTully->draw(observer->getAltitude(), core->navigation, core->projection);
 	}
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
-	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
-	core->starGalaxy->draw(core->navigation, core->projection);
+	core->currentSkyDisplayMgr->drawPerson(core->projection, core->navigation);
+	core->currentStarGalaxy->draw(core->navigation, core->projection);
 	if (core->selected_object && core->object_pointer_visibility)
 		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
-	core->dsoNav->draw(core->navigation, core->projection);
+	core->currentDsoNav->draw(core->navigation, core->projection);
 	//core->postDraw();
 }
 
