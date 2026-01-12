@@ -32,6 +32,13 @@ public:
         items_[id] = std::move(p);
     }
 
+    // Set the active object
+    void set(std::unique_ptr<T> p) {
+        const auto id = idx(active_);
+        assert(id < N);
+        items_[id] = std::move(p);
+    }
+
     //! ///////////////////////////////////////////////////////////////////////
 
     // Define the active object

@@ -149,25 +149,25 @@ void Landscape::createSC_context()
 }
 
 
-Landscape* Landscape::createFromFile(const std::string& landscape_file, const std::string& section_name)
+std::unique_ptr<Landscape> Landscape::createFromFile(const std::string& landscape_file, const std::string& section_name)
 {
 	InitParser pd;	// The landscape data ini file parser
 	pd.load(landscape_file);
 	std::string s;
 	s = pd.getStr(section_name, L_TYPE);
-	Landscape* ldscp = nullptr;
+	std::unique_ptr<Landscape> ldscp;
 	if (s==L_SPHERICAL) {
-		ldscp = new LandscapeSpherical();
+		ldscp = std::make_unique<LandscapeSpherical>();
 		ldscp->format = pd.getStr(section_name, L_TYPE);
 	}
 	else if (s==L_FISHEYE) {
-		ldscp = new LandscapeFisheye();
+		ldscp = std::make_unique<LandscapeFisheye>();
 		ldscp->format = pd.getStr(section_name, L_TYPE);
 	}
 	else {
 		cLog::get()->write( "Unknown landscape type: " + s, LOG_TYPE::L_ERROR);
 		// to avoid making this a fatal error, will load as a basic Landscape
-		ldscp = new Landscape();
+		ldscp = std::make_unique<Landscape>();
 	}
 	ldscp->load(landscape_file, section_name);
 	return ldscp;
@@ -175,7 +175,7 @@ Landscape* Landscape::createFromFile(const std::string& landscape_file, const st
 
 
 // create landscape from parameters passed in a hash (same keys as with ini file)
-Landscape* Landscape::createFromHash(stringHash_t & param, int landing)
+std::unique_ptr<Landscape> Landscape::createFromHash(stringHash_t & param, int landing)
 {
 	// night landscape textures for spherical and fisheye landscape types or possibility to have limitedShare
 	std::string night_tex="";
@@ -197,21 +197,21 @@ Landscape* Landscape::createFromHash(stringHash_t & param, int landing)
 
 	// NOTE: textures should be full filename (and path)
 	if (param[L_TYPE]==L_FISHEYE) {
-		LandscapeFisheye* ldscp = new LandscapeFisheye();
+		std::unique_ptr<LandscapeFisheye> ldscp = std::make_unique<LandscapeFisheye>();
 		ldscp->format = param[L_TYPE];
 		ldscp->create(param[L_NAME], texture, Utility::strToDouble(param["fov"], Utility::strToDouble(param["texturefov"], 180)),
 		              Utility::strToDouble(param["rotate_z"], 0.), night_tex, limitedShadeValue, mipmap);
 		return ldscp;
 	}
 	else if (param[L_TYPE]==L_SPHERICAL) {
-		LandscapeSpherical* ldscp = new LandscapeSpherical();
+		std::unique_ptr<LandscapeSpherical> ldscp = std::make_unique<LandscapeSpherical>();
 		ldscp->format = param[L_TYPE];
 		ldscp->create(param[L_NAME], texture, Utility::strToDouble(param["base_altitude"], -90),
 		              Utility::strToDouble(param["top_altitude"], 90), Utility::strToDouble(param["rotate_z"], 0.),  night_tex, limitedShadeValue, mipmap, landing);
 		return ldscp;
 	}
 	else {    //wrong Landscape
-		Landscape* ldscp = new Landscape();
+		std::unique_ptr<Landscape> ldscp = std::make_unique<Landscape>();
 		cLog::get()->write( "Unknown landscape type in createFromHash: " + param[L_NAME], LOG_TYPE::L_ERROR);
 		return ldscp;
 	}

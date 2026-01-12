@@ -203,7 +203,9 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	currentMeteors.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<MeteorMgr>(10, 60));
 	currentMeteors.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	landscape = new Landscape();
+	currentLandscape.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<Landscape>());
+	currentLandscape.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<Landscape>());
+	currentLandscape.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
 
@@ -272,8 +274,6 @@ Core::~Core()
 	navigation = nullptr;
 	delete projection;
 	projection = nullptr;
-	delete landscape;
-	landscape = nullptr;
 	delete geodesic_grid;
 	geodesic_grid = nullptr;
 	delete tone_converter;
@@ -364,8 +364,8 @@ void Core::init(const InitParser& conf)
 		currentNebulas.get(CURRENT_MODE::NORMAL_MODE)->loadDeepskyObject(AppSettings::Instance()->getUserDir() + "deepsky_objects.fab");
 
 		Landscape::createSC_context();
-		landscape->setSlices(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_SLICES));
-		landscape->setStacks(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_STACKS));
+		Landscape::setSlices(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_SLICES));
+		Landscape::setStacks(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_STACKS));
 		setLandscape(initialvalue.initial_landscapeName);
 
 		currentStarNav.get(CURRENT_MODE::NORMAL_MODE)->loadData(AppSettings::Instance()->getUserDir() + "hip2007.txt", false);
@@ -585,8 +585,10 @@ void Core::init(const InitParser& conf)
 	skyCultureDir = tmp;
 
 	// Landscape section
-	landscape->setFlagShow(conf.getBoolean(SCS_LANDSCAPE, SCK_FLAG_LANDSCAPE));
-	landscape->fogSetFlagShow(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_FOG));
+	currentLandscape.applyToAll([&conf](Landscape &mgr) {
+		mgr.setFlagShow(conf.getBoolean(SCS_LANDSCAPE, SCK_FLAG_LANDSCAPE));
+		mgr.fogSetFlagShow(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_FOG));
+	});
 
 	currentBodyDecor.applyToAll([&conf](BodyDecor &mgr) {
 		mgr.setAtmosphereState(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
@@ -759,25 +761,24 @@ void Core::setLandscapeToBody()
 		setLandscape(initialvalue.initial_landscapeName);
 
 	currentBodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams()); //, observatory->getSpacecraft());
-	std::cout << "Body : " << observatory->getHomeBody()->getEnglishName() << " Landscape : " << landscape->getName() << std::endl;
+	std::cout << "Body : " << observatory->getHomeBody()->getEnglishName() << " Landscape : " << currentLandscape->getName() << std::endl;
 }
 
 bool Core::setLandscape(const std::string& new_landscape_name)
 {
 	if (new_landscape_name.empty()) return 0;
-	std::string l_min = landscape->getName();
+	std::string l_min = currentLandscape->getName();
 	transform(l_min.begin(), l_min.end(), l_min.begin(), ::tolower);
 	if (new_landscape_name == l_min) return 0;
 
-	Landscape* newLandscape = Landscape::createFromFile(AppSettings::Instance()->getUserDir() + "landscapes.ini", new_landscape_name);
+	std::unique_ptr<Landscape> newLandscape = Landscape::createFromFile(AppSettings::Instance()->getUserDir() + "landscapes.ini", new_landscape_name);
 	if (!newLandscape) return 0;
 
-	if (landscape) {
+	if (currentLandscape) {
 		// Copy parameters from previous landscape to new one
-		newLandscape->setFlagShow(landscape->getFlagShow());
-		newLandscape->fogSetFlagShow(landscape->fogGetFlagShow());
-		delete landscape;
-		landscape = newLandscape;
+		newLandscape->setFlagShow(currentLandscape->getFlagShow());
+		newLandscape->fogSetFlagShow(currentLandscape->fogGetFlagShow());
+		currentLandscape.set(std::move(newLandscape));
 	}
 	testLandscapeCompatibleWithAutoMode();
 	return 1;
@@ -786,35 +787,35 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 void Core::testLandscapeCompatibleWithAutoMode()
 {
 	//std::cout << "testLandscape :" << std::endl;
-	if (landscape->getName().empty())	return;
-	if (!observatory->isOnBody())		return;
+	if (currentLandscape->getName().empty())	return;
+	if (!observatory->isOnBody())				return;
 
 	// by default the user is not trusted
 	autoLandscapeMode = false;
 
 	// a satellite must have Moon as its base landscape
-	if (observatory->getHomeBody()->isSatellite() && landscape->getName() == "moon") {
+	if (observatory->getHomeBody()->isSatellite() && currentLandscape->getName() == "moon") {
 		autoLandscapeMode = true;
 		//std::cout << ": automode moon" << std::endl;
 		return;
 	}
 
 	// case of the sun
-	if (observatory->isSun() &&  landscape->getName() == "sun") {
+	if (observatory->isSun() &&  currentLandscape->getName() == "sun") {
 		autoLandscapeMode = true;
 		//std::cout << ": automode sun" << std::endl;
 		return;
 	}
 
 	//case of planets except Earth
-	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite() && landscape->getName() == observatory->getHomeBody()->getEnglishName()) {
+	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite() && currentLandscape->getName() == observatory->getHomeBody()->getEnglishName()) {
 		autoLandscapeMode = true;
 		//std::cout << ": automode planet" << std::endl;
 		return;
 	}
 
 	//special case Earth
-	if (observatory->isEarth() && landscape->getName() == initialvalue.initial_landscapeName) {
+	if (observatory->isEarth() && currentLandscape->getName() == initialvalue.initial_landscapeName) {
 		//std::cout << ": automode earth" << std::endl;
 		autoLandscapeMode = true;
 		return;
@@ -823,8 +824,8 @@ void Core::testLandscapeCompatibleWithAutoMode()
 
 void Core::setLandingLandscape(bool landing, float speed)
 {
-	if (landscape->getFormat() == "spherical")
-		landscape->setLanding(landing, speed);
+	if (currentLandscape->getFormat() == "spherical")
+		currentLandscape->setLanding(landing, speed);
 }
 
 //! Load a landscape based on a hash of parameters mirroring the landscape.ini file
@@ -832,15 +833,14 @@ void Core::setLandingLandscape(bool landing, float speed)
 bool Core::loadLandscape(stringHash_t& param, int landing)
 {
 
-	Landscape* newLandscape = Landscape::createFromHash(param, landing);
+	std::unique_ptr<Landscape> newLandscape = Landscape::createFromHash(param, landing);
 	if (!newLandscape) return 0;
 
-	if (landscape) {
+	if (currentLandscape) {
 		// Copy parameters from previous landscape to new one
-		newLandscape->setFlagShow(landscape->getFlagShow());
-		newLandscape->fogSetFlagShow(landscape->fogGetFlagShow());
-		delete landscape;
-		landscape = newLandscape;
+		newLandscape->setFlagShow(currentLandscape->getFlagShow());
+		newLandscape->fogSetFlagShow(currentLandscape->fogGetFlagShow());
+		currentLandscape.set(std::move(newLandscape));
 	}
 	//std::cout << "Core::loadLandscape(stringHash_t& param)" << std::endl;
 	autoLandscapeMode = false;
@@ -1585,9 +1585,9 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_FADE_DURATION, currentAsterisms->getArtFadeDuration());
 	conf.setDouble(SCS_VIEWING, SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE, getLightPollutionLimitingMagnitude());
 	// Landscape section
-	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_LANDSCAPE, landscape->getFlagShow());
+	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_LANDSCAPE, currentLandscape->getFlagShow());
 	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_ATMOSPHERE, currentBodyDecor->getAtmosphereState());
-	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_FOG, landscape->fogGetFlagShow());
+	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_FOG, currentLandscape->fogGetFlagShow());
 	// Star section
 	conf.setDouble (SCS_STARS , SCK_STAR_SCALE, currentHipStars->getScale());
 	conf.setDouble (SCS_STARS , SCK_STAR_MAG_SCALE, currentHipStars->getMagScale());
@@ -1656,7 +1656,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_INTENSITY, currentMilkyWay->getIntensity());
 	conf.setDouble(SCS_ASTRO, SCK_STAR_SIZE_LIMIT, starGetSizeLimit());
 	conf.setDouble(SCS_ASTRO, SCK_PLANET_SIZE_MARGINAL_LIMIT, getPlanetsSizeLimit());
-	conf.setStr(SCS_INIT_LOCATION , SCK_LANDSCAPE_NAME, landscape->getName() );
+	conf.setStr(SCS_INIT_LOCATION , SCK_LANDSCAPE_NAME, currentLandscape->getName() );
 	conf.setStr(SCS_INIT_LOCATION , SCK_HOME_PLANET, observatory->getHomeBody()->getEnglishName());
 }
 
@@ -2342,6 +2342,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentBodyDecor.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentMeteors.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentStarNav.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentLandscape.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentCloudNav.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentStarGalaxy.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentVolumGalaxy.setActive(CURRENT_MODE::SANDBOX_MODE);
@@ -2366,6 +2367,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentBodyDecor.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentMeteors.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentStarNav.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentLandscape.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentCloudNav.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentStarGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentVolumGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);

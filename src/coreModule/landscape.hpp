@@ -105,8 +105,8 @@ public:
 
 	virtual void draw(const Projector* prj, const Navigator* nav);
 
-	static Landscape* createFromFile(const std::string& landscape_file, const std::string& section_name);
-	static Landscape* createFromHash(stringHash_t & param, int landscape);
+	static std::unique_ptr<Landscape> createFromFile(const std::string& landscape_file, const std::string& section_name);
+	static std::unique_ptr<Landscape> createFromHash(stringHash_t & param, int landscape);
 	static std::string getFileContent(const std::string& landscape_file);
 	static std::string getLandscapeNames(const std::string& landscape_file);
 	static void createSC_context();

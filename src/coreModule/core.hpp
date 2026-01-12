@@ -592,7 +592,8 @@ private:
 	Indexed<MilkyWay,         CURRENT_MODE> currentMilkyWay;		// Our galaxy (current mode (normal/sandbox))
 	Indexed<MeteorMgr,        CURRENT_MODE> currentMeteors;			// Manage meteor showers (current mode (normal/sandbox))
 
-	Landscape * landscape;								// The landscape ie the fog, the ground and "decor"
+	// Landscape * landscape;								// The landscape ie the fog, the ground and "decor"
+	Indexed<Landscape,        CURRENT_MODE> currentLandscape;		// The landscape (current mode (normal/sandbox))
 	ToneReproductor * tone_converter;					// Tones conversion between simulation world and display device
 	std::unique_ptr<SkyLocalizer> skyloc;				// for sky cultures and locales
 

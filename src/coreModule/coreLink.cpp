@@ -1353,11 +1353,11 @@ void CoreLink::planetTesselation(std::string name, int value) {
 
 //! Set flag for displaying Fog
 void CoreLink::fogSetFlag(bool b) {
-	core->landscape->fogSetFlagShow(b);
+	core->currentLandscape->fogSetFlagShow(b);
 }
 //! Get flag for displaying Fog
 bool CoreLink::fogGetFlag() const {
-	return core->landscape->fogGetFlagShow();
+	return core->currentLandscape->fogGetFlagShow();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1366,17 +1366,17 @@ bool CoreLink::fogGetFlag() const {
 
 //! Get flag for displaying Landscape
 void CoreLink::landscapeSetFlag(bool b) {
-	core->landscape->setFlagShow(b);
+	core->currentLandscape->setFlagShow(b);
 }
 //! Get flag for displaying Landscape
 bool CoreLink::landscapeGetFlag() const {
-	return core->landscape->getFlagShow();
+	return core->currentLandscape->getFlagShow();
 }
 
 void CoreLink::rotateLandscape(double rotation) {
-	core->landscape->setRotation(rotation);
+	core->currentLandscape->setRotation(rotation);
 }
 
 std::string CoreLink::landscapeGetName() {
-	return core->landscape->getName();
+	return core->currentLandscape->getName();
 }

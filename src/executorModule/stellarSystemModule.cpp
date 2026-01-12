@@ -174,7 +174,7 @@ void StellarSystemModule::update(int delta_time)
 		core->sky_brightness *= (core->atmosphere->getIntensity()+0.1);
 	}
 	// TODO: should calculate dimming with solar eclipse even without atmosphere on
-	core->landscape->setSkyBrightness(core->sky_brightness+0.05);
+	core->currentLandscape->setSkyBrightness(core->sky_brightness+0.05);
 }
 
 void StellarSystemModule::draw(int delta_time)
@@ -212,7 +212,7 @@ void StellarSystemModule::draw(int delta_time)
 
 	// Draw the landscape
 	if (core->currentBodyDecor->canDrawLandscape()) {
-		core->landscape->draw(core->projection, core->navigation);
+		core->currentLandscape->draw(core->projection, core->navigation);
 	}
 
 	core->cardinals_points->draw(core->projection, observer->getLatitude());
