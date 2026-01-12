@@ -94,59 +94,59 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	navigation = new Navigator();
 	observatory = _observatory;
 
-	currentSsystemFactory.set(NORMAL_MODE,  std::make_unique<SSystemFactory>(observatory.get(), navigation, timeMgr.get()));
-	currentSsystemFactory.set(SANDBOX_MODE, std::make_unique<SSystemFactory>(observatory.get(), navigation, timeMgr.get()));
-	currentSsystemFactory.setActive(NORMAL_MODE);
+	currentSsystemFactory.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<SSystemFactory>(observatory.get(), navigation, timeMgr.get()));
+	currentSsystemFactory.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<SSystemFactory>(observatory.get(), navigation, timeMgr.get()));
+	currentSsystemFactory.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	currentNebulas.set(NORMAL_MODE,  std::make_unique<NebulaMgr>());
-	currentNebulas.set(SANDBOX_MODE, std::make_unique<NebulaMgr>());
-	currentNebulas.setActive(NORMAL_MODE);
+	currentNebulas.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<NebulaMgr>());
+	currentNebulas.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<NebulaMgr>());
+	currentNebulas.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	currentMilkyWay.set(NORMAL_MODE,  std::make_unique<MilkyWay>());
-	currentMilkyWay.set(SANDBOX_MODE, std::make_unique<MilkyWay>());
-	currentMilkyWay.setActive(NORMAL_MODE);
+	currentMilkyWay.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<MilkyWay>());
+	currentMilkyWay.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<MilkyWay>());
+	currentMilkyWay.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	currentStarNav.set(NORMAL_MODE,  std::make_unique<StarNavigator>());
-	currentStarNav.set(SANDBOX_MODE, std::make_unique<StarNavigator>());
-	currentStarNav.setActive(NORMAL_MODE);
+	currentStarNav.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<StarNavigator>());
+	currentStarNav.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<StarNavigator>());
+	currentStarNav.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	currentCloudNav.set(NORMAL_MODE,  std::make_unique<CloudNavigator>());
-	currentCloudNav.set(SANDBOX_MODE, std::make_unique<CloudNavigator>());
-	currentCloudNav.setActive(NORMAL_MODE);
+	currentCloudNav.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<CloudNavigator>());
+	currentCloudNav.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<CloudNavigator>());
+	currentCloudNav.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	universeCloudNav = std::make_unique<CloudNavigator>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
 
-	currentStarGalaxy.set(NORMAL_MODE,  std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat"));
-	currentStarGalaxy.set(SANDBOX_MODE, std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat"));
-	currentStarGalaxy.setActive(NORMAL_MODE);
+	currentStarGalaxy.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat"));
+	currentStarGalaxy.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat"));
+	currentStarGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	if (std::filesystem::exists(s_texture::getTexDir() + "milkyway-vguerin-d128.png")) {
-		currentVolumGalaxy.set(NORMAL_MODE,  std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false));
-		currentVolumGalaxy.set(SANDBOX_MODE, std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false));
-		currentVolumGalaxy.setActive(NORMAL_MODE);
+		currentVolumGalaxy.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false));
+		currentVolumGalaxy.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false));
+		currentVolumGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
 	} else {
-		currentVolumGalaxy.set(NORMAL_MODE,  std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true));
-		currentVolumGalaxy.set(SANDBOX_MODE, std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true));
-		currentVolumGalaxy.setActive(NORMAL_MODE);
+		currentVolumGalaxy.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true));
+		currentVolumGalaxy.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true));
+		currentVolumGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
 	}
 
-	currentDsoNav.set(NORMAL_MODE,  std::make_unique<DsoNavigator>());
-	currentDsoNav.set(SANDBOX_MODE, std::make_unique<DsoNavigator>());
-	currentDsoNav.setActive(NORMAL_MODE);
+	currentDsoNav.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<DsoNavigator>());
+	currentDsoNav.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<DsoNavigator>());
+	currentDsoNav.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	currentStarLines.set(NORMAL_MODE,  std::make_unique<StarLines>());
-	currentStarLines.set(SANDBOX_MODE, std::make_unique<StarLines>());
-	currentStarLines.setActive(NORMAL_MODE);
+	currentStarLines.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<StarLines>());
+	currentStarLines.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<StarLines>());
+	currentStarLines.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	ojmMgr = std::make_unique<OjmMgr>();  // Manages mode internally
 
-	currentBodyDecor.set(NORMAL_MODE,  std::make_unique<BodyDecor>(currentMilkyWay.get(NORMAL_MODE),  atmosphere));
-	currentBodyDecor.set(SANDBOX_MODE, std::make_unique<BodyDecor>(currentMilkyWay.get(SANDBOX_MODE), atmosphere));
-	currentBodyDecor.setActive(NORMAL_MODE);
+	currentBodyDecor.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<BodyDecor>(currentMilkyWay.get(CURRENT_MODE::NORMAL_MODE),  atmosphere));
+	currentBodyDecor.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<BodyDecor>(currentMilkyWay.get(CURRENT_MODE::SANDBOX_MODE), atmosphere));
+	currentBodyDecor.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	currentSkyGridMgr.set(NORMAL_MODE,  std::make_unique<SkyGridMgr>());
-	currentSkyGridMgr.set(SANDBOX_MODE, std::make_unique<SkyGridMgr>());
-	currentSkyGridMgr.setActive(NORMAL_MODE);
+	currentSkyGridMgr.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<SkyGridMgr>());
+	currentSkyGridMgr.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<SkyGridMgr>());
+	currentSkyGridMgr.setActive(CURRENT_MODE::NORMAL_MODE);
 	currentSkyGridMgr.applyToAll([](SkyGridMgr &mgr) {
 		mgr.Create(SKYGRID_TYPE::GRID_EQUATORIAL);
 		mgr.Create(SKYGRID_TYPE::GRID_ECLIPTIC);
@@ -154,9 +154,9 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 		mgr.Create(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
 	});
 
-	currentSkyLineMgr.set(NORMAL_MODE,  std::make_unique<SkyLineMgr>());
-	currentSkyLineMgr.set(SANDBOX_MODE, std::make_unique<SkyLineMgr>());
-	currentSkyLineMgr.setActive(NORMAL_MODE);
+	currentSkyLineMgr.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<SkyLineMgr>());
+	currentSkyLineMgr.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<SkyLineMgr>());
+	currentSkyLineMgr.setActive(CURRENT_MODE::NORMAL_MODE);
 	currentSkyLineMgr.applyToAll([](SkyLineMgr &mgr) {
 		mgr.Create(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
 		mgr.Create(SKYLINE_TYPE::LINE_POINT_POLAR);
@@ -182,9 +182,9 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 		mgr.Create(SKYLINE_TYPE::LINE_ZENITH);
 	});
 
-	currentSkyDisplayMgr.set(NORMAL_MODE,  std::make_unique<SkyDisplayMgr>());
-	currentSkyDisplayMgr.set(SANDBOX_MODE, std::make_unique<SkyDisplayMgr>());
-	currentSkyDisplayMgr.setActive(NORMAL_MODE);
+	currentSkyDisplayMgr.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<SkyDisplayMgr>());
+	currentSkyDisplayMgr.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<SkyDisplayMgr>());
+	currentSkyDisplayMgr.setActive(CURRENT_MODE::NORMAL_MODE);
 	currentSkyDisplayMgr.applyToAll([](SkyDisplayMgr &mgr) {
 		mgr.Create(SKYDISPLAY_NAME::SKY_PERSONAL);
 		mgr.Create(SKYDISPLAY_NAME::SKY_PERSONEQ);
@@ -199,35 +199,35 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 
 	cardinals_points = std::make_unique<Cardinals>();
 
-	currentMeteors.set(NORMAL_MODE,  std::make_unique<MeteorMgr>(10, 60));
-	currentMeteors.set(SANDBOX_MODE, std::make_unique<MeteorMgr>(10, 60));
-	currentMeteors.setActive(NORMAL_MODE);
+	currentMeteors.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<MeteorMgr>(10, 60));
+	currentMeteors.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<MeteorMgr>(10, 60));
+	currentMeteors.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	landscape = new Landscape();
 
 	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
 
-	currentHipStars.set(NORMAL_MODE,  std::make_unique<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height));
-	currentHipStars.set(SANDBOX_MODE, std::make_unique<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height));
-	currentHipStars.setActive(NORMAL_MODE);
+	currentHipStars.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height));
+	currentHipStars.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height));
+	currentHipStars.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	currentAsterisms.set(NORMAL_MODE,  std::make_unique<ConstellationMgr>(currentHipStars.get(NORMAL_MODE)));
-	currentAsterisms.set(SANDBOX_MODE, std::make_unique<ConstellationMgr>(currentHipStars.get(SANDBOX_MODE)));
-	currentAsterisms.setActive(NORMAL_MODE);
+	currentAsterisms.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<ConstellationMgr>(currentHipStars.get(CURRENT_MODE::NORMAL_MODE)));
+	currentAsterisms.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<ConstellationMgr>(currentHipStars.get(CURRENT_MODE::SANDBOX_MODE)));
+	currentAsterisms.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	currentIlluminates.set(NORMAL_MODE,  std::make_unique<IlluminateMgr>(currentHipStars.get(NORMAL_MODE),  navigation, currentAsterisms.get(NORMAL_MODE)));
-	currentIlluminates.set(SANDBOX_MODE, std::make_unique<IlluminateMgr>(currentHipStars.get(SANDBOX_MODE), navigation, currentAsterisms.get(SANDBOX_MODE)));
-	currentIlluminates.setActive(NORMAL_MODE);
+	currentIlluminates.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<IlluminateMgr>(currentHipStars.get(CURRENT_MODE::NORMAL_MODE),  navigation, currentAsterisms.get(CURRENT_MODE::NORMAL_MODE)));
+	currentIlluminates.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<IlluminateMgr>(currentHipStars.get(CURRENT_MODE::SANDBOX_MODE), navigation, currentAsterisms.get(CURRENT_MODE::SANDBOX_MODE)));
+	currentIlluminates.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	oort =  std::make_unique<Oort>();
 
-	currentDso3d.set(NORMAL_MODE,  std::make_unique<Dso3d>());
-	currentDso3d.set(SANDBOX_MODE, std::make_unique<Dso3d>());
-	currentDso3d.setActive(NORMAL_MODE);
+	currentDso3d.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<Dso3d>());
+	currentDso3d.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<Dso3d>());
+	currentDso3d.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	currentTully.set(NORMAL_MODE,  std::make_unique<Tully>());
-	currentTully.set(SANDBOX_MODE, std::make_unique<Tully>());
-	currentTully.setActive(NORMAL_MODE);
+	currentTully.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<Tully>());
+	currentTully.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<Tully>());
+	currentTully.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	object_pointer_visibility = 1;
 }
@@ -326,7 +326,7 @@ void Core::init(const InitParser& conf)
 	// Start splash with no fonts due to font collection delays
 	if (firstTime) {
 		// Init the solar system first
-		currentSsystemFactory.applyTo(NORMAL_MODE, [&conf](SSystemFactory &factory) {
+		currentSsystemFactory.applyTo(CURRENT_MODE::NORMAL_MODE, [&conf](SSystemFactory &factory) {
 			factory.iniColor(conf.getStr(SCS_COLOR, SCK_PLANET_HALO_COLOR),
 									conf.getStr(SCS_COLOR, SCK_PLANET_NAMES_COLOR),
 									conf.getStr(SCS_COLOR, SCK_PLANET_ORBITS_COLOR),
@@ -356,20 +356,20 @@ void Core::init(const InitParser& conf)
 			mgr.iniColorTable();
 			mgr.readColorTable();
 		});// Set color table for all modes
-		currentHipStars.applyTo(NORMAL_MODE, [&conf](HipStarMgr &mgr) {
+		currentHipStars.applyTo(CURRENT_MODE::NORMAL_MODE, [&conf](HipStarMgr &mgr) {
 			mgr.init(conf);
 		}); // Initialize (get data) only for normal mode
 
 		// Init nebulas
-		currentNebulas.get(NORMAL_MODE)->loadDeepskyObject(AppSettings::Instance()->getUserDir() + "deepsky_objects.fab");
+		currentNebulas.get(CURRENT_MODE::NORMAL_MODE)->loadDeepskyObject(AppSettings::Instance()->getUserDir() + "deepsky_objects.fab");
 
 		Landscape::createSC_context();
 		landscape->setSlices(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_SLICES));
 		landscape->setStacks(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_STACKS));
 		setLandscape(initialvalue.initial_landscapeName);
 
-		currentStarNav.get(NORMAL_MODE)->loadData(AppSettings::Instance()->getUserDir() + "hip2007.txt", false);
-		currentStarLines.get(NORMAL_MODE)->loadCat(AppSettings::Instance()->getUserDir() + "asterism.txt", false);
+		currentStarNav.get(CURRENT_MODE::NORMAL_MODE)->loadData(AppSettings::Instance()->getUserDir() + "hip2007.txt", false);
+		currentStarLines.get(CURRENT_MODE::NORMAL_MODE)->loadCat(AppSettings::Instance()->getUserDir() + "asterism.txt", false);
 	}
 	currentSsystemFactory.applyToAll(&SSystemFactory::reloadColors, AppSettings::Instance()->getUserDir() + "ssystem.ini");
 
@@ -436,8 +436,8 @@ void Core::init(const InitParser& conf)
 		mgr.setFlagBright(conf.getBoolean(SCS_ASTRO,SCK_FLAG_BRIGHT_NEBULAE));
 	});
 
-	currentSsystemFactory.applyTo(NORMAL_MODE,  &SSystemFactory::setScale, currentHipStars.get(NORMAL_MODE)->getScale());
-	currentSsystemFactory.applyTo(SANDBOX_MODE, &SSystemFactory::setScale, currentHipStars.get(SANDBOX_MODE)->getScale());
+	currentSsystemFactory.applyTo(CURRENT_MODE::NORMAL_MODE,  &SSystemFactory::setScale, currentHipStars.get(CURRENT_MODE::NORMAL_MODE)->getScale());
+	currentSsystemFactory.applyTo(CURRENT_MODE::SANDBOX_MODE, &SSystemFactory::setScale, currentHipStars.get(CURRENT_MODE::SANDBOX_MODE)->getScale());
 
 	setPlanetsSizeLimit(conf.getDouble(SCS_ASTRO, SCK_PLANET_SIZE_MARGINAL_LIMIT));
 
@@ -477,7 +477,7 @@ void Core::init(const InitParser& conf)
 		currentTully.applyToAll([&conf](Tully &mgr) {
 			mgr.setTexture("typegals.png");
 		});
-		currentTully.applyTo(NORMAL_MODE, [&conf](Tully &mgr) {
+		currentTully.applyTo(CURRENT_MODE::NORMAL_MODE, [&conf](Tully &mgr) {
 			mgr.loadCatalog(AppSettings::Instance()->getUserDir() + "tully.dat");
 			mgr.loadBigCatalog(AppSettings::Instance()->getUserDir() + "6df.dat", 5e+12);
 		}); // Load data only in normal mode
@@ -488,18 +488,18 @@ void Core::init(const InitParser& conf)
 		currentDso3d.applyToAll([](Dso3d &mgr) {
 			mgr.setTexture("dsocat.png");
 		});
-		currentDso3d.applyTo(NORMAL_MODE, [](Dso3d &mgr) {
+		currentDso3d.applyTo(CURRENT_MODE::NORMAL_MODE, [](Dso3d &mgr) {
 			if (mgr.loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat"))
 				mgr.build();
 		}); // Load data only in normal mode
 
 		ojmMgr->init();
 		// 3D object integration test
-		if (currentVolumGalaxy.get(NORMAL_MODE)->loaded()) {
+		if (currentVolumGalaxy.get(CURRENT_MODE::NORMAL_MODE)->loaded()) {
 			if (std::filesystem::exists(s_texture::getTexDir() + "milkyway-vguerin-d128.png")) {
-				currentVolumGalaxy.get(NORMAL_MODE)->setModel(Mat4f::translation(Vec3f( -0.002, 0.0001, -0.005)) * Mat4f::yawPitchRoll(112, 0, 90) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
+				currentVolumGalaxy.get(CURRENT_MODE::NORMAL_MODE)->setModel(Mat4f::translation(Vec3f( -0.002, 0.0001, -0.005)) * Mat4f::yawPitchRoll(112, 0, 90) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
 			} else {
-				currentVolumGalaxy.get(NORMAL_MODE)->setModel(Mat4f::translation(Vec3f( -0.002, 0.0001, -0.005)) * Mat4f::yawPitchRoll(112, 0, 0) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
+				currentVolumGalaxy.get(CURRENT_MODE::NORMAL_MODE)->setModel(Mat4f::translation(Vec3f( -0.002, 0.0001, -0.005)) * Mat4f::yawPitchRoll(112, 0, 0) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
 			}
 		} else
 			ojmMgr->load("in_universe", "Milkyway", AppSettings::Instance()->getModel3DDir() + "Milkyway/Milkyway.ojm",AppSettings::Instance()->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01);
@@ -536,7 +536,7 @@ void Core::init(const InitParser& conf)
 	initialvalue.initial_skyLocale=skyLocaleName;
 	setSkyLanguage(skyLocaleName, true);
 
-	int grid_level = currentHipStars.get(NORMAL_MODE)->getMaxGridLevel();
+	int grid_level = currentHipStars.get(CURRENT_MODE::NORMAL_MODE)->getMaxGridLevel();
 	geodesic_grid = new GeodesicGrid(grid_level);
 	currentHipStars.applyToAll([this](HipStarMgr &mgr) {
 		mgr.setGrid(geodesic_grid);
@@ -597,7 +597,7 @@ void Core::init(const InitParser& conf)
 	atmosphere->setDefaultFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
 	atmosphere->setDefaultMoonBrightness(conf.getDouble(SCS_VIEWING,SCK_MOON_BRIGHTNESS));
 	// Sandbox mode has no sun at init, so we can't set its brightness, so only normal mode
-	currentSsystemFactory.applyTo(NORMAL_MODE,
+	currentSsystemFactory.applyTo(CURRENT_MODE::NORMAL_MODE,
 		static_cast<void (SSystemFactory::*)(double)>(&SSystemFactory::setDefaultSunBrightness),
 		conf.getDouble(SCS_VIEWING,SCK_SUN_BRIGHTNESS));
 
@@ -660,7 +660,7 @@ void Core::init(const InitParser& conf)
 
 	cardinals_points->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_CARDINAL_POINTS));
 
-	currentSsystemFactory.applyTo(NORMAL_MODE, [&conf](SSystemFactory &mgr) {
+	currentSsystemFactory.applyTo(CURRENT_MODE::NORMAL_MODE, [&conf](SSystemFactory &mgr) {
 		mgr.setFlagMoonScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED));
 		mgr.setMoonScale(conf.getDouble (SCS_VIEWING,SCK_MOON_SCALE), true); //? always true TODO
 		mgr.setFlagSunScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED));
@@ -678,7 +678,7 @@ void Core::init(const InitParser& conf)
 	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
 	// Load bodies only in normal mode only (sandbox has nothing at init)
-	currentSsystemFactory.applyTo(NORMAL_MODE, [](SSystemFactory &mgr) {
+	currentSsystemFactory.applyTo(CURRENT_MODE::NORMAL_MODE, [](SSystemFactory &mgr) {
 		mgr.initialSolarSystemBodies();
 	});
 	setBodyDecor(true);
@@ -1296,13 +1296,13 @@ bool Core::setSkyCultureDir(const std::string& cultureDir, bool fromCoreInit)
 	skyCultureDir = cultureDir;
 
 	if (fromCoreInit) {
-		if (!currentAsterisms.get(NORMAL_MODE) || !currentAsterisms.get(SANDBOX_MODE)) {
+		if (!currentAsterisms.get(CURRENT_MODE::NORMAL_MODE) || !currentAsterisms.get(CURRENT_MODE::SANDBOX_MODE)) {
 			// objects not initialized yet
 			return 0;
 		}
 
 		// Only load lines and art for normal mode at init
-		currentAsterisms.applyTo(NORMAL_MODE, &ConstellationMgr::loadLinesAndArt, AppSettings::Instance()->getSkyCultureDir() + cultureDir);
+		currentAsterisms.applyTo(CURRENT_MODE::NORMAL_MODE, &ConstellationMgr::loadLinesAndArt, AppSettings::Instance()->getSkyCultureDir() + cultureDir);
 		currentAsterisms.applyToAll([this, &cultureDir](ConstellationMgr &mgr) {
 			mgr.loadNames(AppSettings::Instance()->getSkyCultureDir() + cultureDir + "/constellation_names.eng.fab");
 
@@ -2328,49 +2328,49 @@ void Core::setPredictibleRendering(bool enable, int framerate)
 void Core::updateCurrentModulePointers(MODULE newModule)
 {
 	if (newModule == MODULE::IN_SANDBOX) {
-		currentHipStars.setActive(SANDBOX_MODE);
-		currentAsterisms.setActive(SANDBOX_MODE);
-		currentNebulas.setActive(SANDBOX_MODE);
-		currentIlluminates.setActive(SANDBOX_MODE);
-		currentSsystemFactory.setActive(SANDBOX_MODE);
-		currentSkyGridMgr.setActive(SANDBOX_MODE);
-		currentSkyLineMgr.setActive(SANDBOX_MODE);
-		currentSkyDisplayMgr.setActive(SANDBOX_MODE);
-		currentDso3d.setActive(SANDBOX_MODE);
-		currentTully.setActive(SANDBOX_MODE);
-		currentMilkyWay.setActive(SANDBOX_MODE);
-		currentBodyDecor.setActive(SANDBOX_MODE);
-		currentMeteors.setActive(SANDBOX_MODE);
-		currentStarNav.setActive(SANDBOX_MODE);
-		currentCloudNav.setActive(SANDBOX_MODE);
-		currentStarGalaxy.setActive(SANDBOX_MODE);
-		currentVolumGalaxy.setActive(SANDBOX_MODE);
-		currentDsoNav.setActive(SANDBOX_MODE);
-		currentStarLines.setActive(SANDBOX_MODE);
+		currentHipStars.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentAsterisms.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentNebulas.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentIlluminates.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentSsystemFactory.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentSkyGridMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentSkyLineMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentSkyDisplayMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentDso3d.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentTully.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentMilkyWay.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentBodyDecor.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentMeteors.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentStarNav.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentCloudNav.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentStarGalaxy.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentVolumGalaxy.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentDsoNav.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentStarLines.setActive(CURRENT_MODE::SANDBOX_MODE);
 	} else {
 		// TODO: Remove all non-currentXXX usage in core.cpp (except init (should use XXX and sandboxXXX there to init both versions))
 		// TODO: Once all done, check the init section to correctly init sandboxXXX pointers too
 		// TODO: Check if there is some other "pointer to duplicate" for the sandbox module
 		// Done
-		currentHipStars.setActive(NORMAL_MODE);
-		currentAsterisms.setActive(NORMAL_MODE);
-		currentNebulas.setActive(NORMAL_MODE);
-		currentIlluminates.setActive(NORMAL_MODE);
-		currentSsystemFactory.setActive(NORMAL_MODE);
-		currentSkyGridMgr.setActive(NORMAL_MODE);
-		currentSkyLineMgr.setActive(NORMAL_MODE);
-		currentSkyDisplayMgr.setActive(NORMAL_MODE);
-		currentDso3d.setActive(NORMAL_MODE);
-		currentTully.setActive(NORMAL_MODE);
-		currentMilkyWay.setActive(NORMAL_MODE);
-		currentBodyDecor.setActive(NORMAL_MODE);
-		currentMeteors.setActive(NORMAL_MODE);
-		currentStarNav.setActive(NORMAL_MODE);
-		currentCloudNav.setActive(NORMAL_MODE);
-		currentStarGalaxy.setActive(NORMAL_MODE);
-		currentVolumGalaxy.setActive(NORMAL_MODE);
-		currentDsoNav.setActive(NORMAL_MODE);
-		currentStarLines.setActive(NORMAL_MODE);
+		currentHipStars.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentAsterisms.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentNebulas.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentIlluminates.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentSsystemFactory.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentSkyGridMgr.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentSkyLineMgr.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentSkyDisplayMgr.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentDso3d.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentTully.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentMilkyWay.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentBodyDecor.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentMeteors.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentStarNav.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentCloudNav.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentStarGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentVolumGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentDsoNav.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentStarLines.setActive(CURRENT_MODE::NORMAL_MODE);
 		// TODO
 		// All Done, next:
 		// Checking init section

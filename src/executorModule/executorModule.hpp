@@ -28,7 +28,7 @@
 #define _EXECUTOR_MODULE_
 
 enum MODULE {SOLAR_SYSTEM, IN_GALAXY, IN_UNIVERSE, STELLAR_SYSTEM, IN_SANDBOX};
-enum CURRENT_MODE: std::size_t { NORMAL_MODE = 0, SANDBOX_MODE, Count };
+enum class CURRENT_MODE: std::size_t { NORMAL_MODE = 0, SANDBOX_MODE, Count };
 
 class ExecutorModule {
 public:
