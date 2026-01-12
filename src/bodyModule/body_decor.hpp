@@ -32,7 +32,7 @@ struct  AtmosphereParams;
 
 class BodyDecor {
 public:
-	BodyDecor(MilkyWay *_milky, std::shared_ptr<Atmosphere> _atmosphere);
+	BodyDecor(MilkyWay *_milky, Atmosphere *_atmosphere);
 	~BodyDecor() {}
 
 	//! indicates if we are in conditions that allow us to trace the landscape
@@ -69,7 +69,7 @@ private:
 	bool drawBody = false;
 
 	MilkyWay *milky;
-	std::shared_ptr<Atmosphere> atmosphere;
+	Atmosphere *atmosphere;
 };
 
 

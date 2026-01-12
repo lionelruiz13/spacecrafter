@@ -576,7 +576,7 @@ private:
 
 	Indexed<SSystemFactory,   CURRENT_MODE> currentSsystemFactory;	// Manage bodies (current mode (normal/sandbox))
 
-	std::shared_ptr<Atmosphere> atmosphere;				// Atmosphere
+	Indexed<Atmosphere,       CURRENT_MODE> currentAtmosphere;		// Atmosphere (current mode (normal/sandbox))
 
 	Indexed<SkyGridMgr,       CURRENT_MODE> currentSkyGridMgr;		//! grid manager (current mode (normal/sandbox))
 	Indexed<SkyLineMgr,       CURRENT_MODE> currentSkyLineMgr;		//! line manager (current mode (normal/sandbox))
@@ -592,9 +592,8 @@ private:
 	Indexed<MilkyWay,         CURRENT_MODE> currentMilkyWay;		// Our galaxy (current mode (normal/sandbox))
 	Indexed<MeteorMgr,        CURRENT_MODE> currentMeteors;			// Manage meteor showers (current mode (normal/sandbox))
 
-	// Landscape * landscape;								// The landscape ie the fog, the ground and "decor"
 	Indexed<Landscape,        CURRENT_MODE> currentLandscape;		// The landscape (current mode (normal/sandbox))
-	ToneReproductor * tone_converter;					// Tones conversion between simulation world and display device
+	Indexed<ToneReproductor,  CURRENT_MODE> currentToneConverter;	// Tones conversion between simulation world and display device (current mode (normal/sandbox))
 	std::unique_ptr<SkyLocalizer> skyloc;				// for sky cultures and locales
 
 	Indexed<StarNavigator,    CURRENT_MODE> currentStarNav;			// permet le voyage dans les étoiles (current mode (normal/sandbox))

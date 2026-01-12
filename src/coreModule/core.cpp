@@ -88,11 +88,17 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	s_texture::setTexDir(AppSettings::Instance()->getTextureDir() );
 	//set Shaders directory and suffix
 	uboCam = std::make_unique<UBOCam>();
-	tone_converter = new ToneReproductor();
-	atmosphere = std::make_shared<Atmosphere>();
 	timeMgr = std::make_shared<TimeMgr>();
 	navigation = new Navigator();
 	observatory = _observatory;
+
+	currentToneConverter.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<ToneReproductor>());
+	currentToneConverter.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<ToneReproductor>());
+	currentToneConverter.setActive(CURRENT_MODE::NORMAL_MODE);
+
+	currentAtmosphere.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<Atmosphere>());
+	currentAtmosphere.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<Atmosphere>());
+	currentAtmosphere.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	currentSsystemFactory.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<SSystemFactory>(observatory.get(), navigation, timeMgr.get()));
 	currentSsystemFactory.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<SSystemFactory>(observatory.get(), navigation, timeMgr.get()));
@@ -140,8 +146,8 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 
 	ojmMgr = std::make_unique<OjmMgr>();  // Manages mode internally
 
-	currentBodyDecor.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<BodyDecor>(currentMilkyWay.get(CURRENT_MODE::NORMAL_MODE),  atmosphere));
-	currentBodyDecor.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<BodyDecor>(currentMilkyWay.get(CURRENT_MODE::SANDBOX_MODE), atmosphere));
+	currentBodyDecor.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<BodyDecor>(currentMilkyWay.get(CURRENT_MODE::NORMAL_MODE),  currentAtmosphere.get(CURRENT_MODE::NORMAL_MODE)));
+	currentBodyDecor.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<BodyDecor>(currentMilkyWay.get(CURRENT_MODE::SANDBOX_MODE), currentAtmosphere.get(CURRENT_MODE::SANDBOX_MODE)));
 	currentBodyDecor.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	currentSkyGridMgr.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<SkyGridMgr>());
@@ -276,8 +282,6 @@ Core::~Core()
 	projection = nullptr;
 	delete geodesic_grid;
 	geodesic_grid = nullptr;
-	delete tone_converter;
-	tone_converter = nullptr;
 	// s_font::deleteShader();
 	//delete ssystem;
 	//delete skyloc;
@@ -468,8 +472,10 @@ void Core::init(const InitParser& conf)
 			mgr.setFaderDuration(conf.getInt(SCS_ASTRO,SCK_MILKY_WAY_FADER_DURATION));
 		});
 
-		atmosphere->initGridViewport(projection);
-		atmosphere->initGridPos();
+		currentAtmosphere.applyToAll([this, &conf](Atmosphere &mgr) {
+			mgr.initGridViewport(projection);
+			mgr.initGridPos();
+		});
 
 		oort->populate(conf.getInt("rendering","oort_elements"));
 		oort->build();
@@ -517,7 +523,8 @@ void Core::init(const InitParser& conf)
 		});
 	}
 
-	tone_converter->setWorldAdaptationLuminance(3.75f + atmosphere->getIntensity()*40000.f);
+	currentToneConverter.applyTo(CURRENT_MODE::NORMAL_MODE,  &ToneReproductor::setWorldAdaptationLuminance, 3.75f + currentAtmosphere.get(CURRENT_MODE::NORMAL_MODE )->getIntensity()*40000.f);
+	currentToneConverter.applyTo(CURRENT_MODE::SANDBOX_MODE, &ToneReproductor::setWorldAdaptationLuminance, 3.75f + currentAtmosphere.get(CURRENT_MODE::SANDBOX_MODE)->getIntensity()*40000.f);
 
 	// Compute planets data and init viewing position position of sun and all the satellites (ie planets)
 	currentSsystemFactory.applyToAll([this](SSystemFactory &mgr) {
@@ -594,10 +601,13 @@ void Core::init(const InitParser& conf)
 		mgr.setAtmosphereState(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
 	});
 
-	atmosphere->setFlagShow(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
-	atmosphere->setFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
-	atmosphere->setDefaultFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
-	atmosphere->setDefaultMoonBrightness(conf.getDouble(SCS_VIEWING,SCK_MOON_BRIGHTNESS));
+	currentAtmosphere.applyToAll([&conf](Atmosphere &mgr) {
+		mgr.setFlagShow(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
+		mgr.setFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
+		mgr.setDefaultFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
+		mgr.setDefaultMoonBrightness(conf.getDouble(SCS_VIEWING,SCK_MOON_BRIGHTNESS));
+	});
+
 	// Sandbox mode has no sun at init, so we can't set its brightness, so only normal mode
 	currentSsystemFactory.applyTo(CURRENT_MODE::NORMAL_MODE,
 		static_cast<void (SSystemFactory::*)(double)>(&SSystemFactory::setDefaultSunBrightness),
@@ -673,7 +683,9 @@ void Core::init(const InitParser& conf)
 
 	setLightPollutionLimitingMagnitude(conf.getDouble(SCS_VIEWING,SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE), true);
 
-	//atmosphere->setFlagOptoma(conf.getBoolean(SCS_MAIN, SCK_FLAG_OPTOMA));
+	// currentAtmosphere.applyToAll([&conf](Atmosphere &mgr) {
+	// 	mgr.setFlagOptoma(conf.getBoolean(SCS_MAIN, SCK_FLAG_OPTOMA));
+	// });
 
 	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
@@ -732,7 +744,7 @@ void Core::setLandscapeToBody()
 		return;
 
 	// here you have to get the planet you are on to access the modelAtmosphere field in AtmosphereParams of the body in question
-	atmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
+	currentAtmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
 
 	//std::cout << "Core::setLandscapeToBody()" << std::endl;
 	if (!autoLandscapeMode)
@@ -748,7 +760,7 @@ void Core::setLandscapeToBody()
 	//case of the planets except the Earth
 	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite()){
 		setLandscape(observatory->getHomeBody()->getEnglishName());
-		atmosphere->setFlagShow(true);
+		currentAtmosphere->setFlagShow(true);
 		currentBodyDecor->setAtmosphereState(true);
 	}
 
@@ -1885,7 +1897,7 @@ void Core::setLightPollutionLimitingMagnitude(float mag, bool fromCoreInit) {
 	lightPollutionLimitingMagnitude = mag;
 	float ln = log(mag);
 	float lum = 30.0842967491175 -19.9408790405749*ln +2.12969160094949*ln*ln - .2206;
-	atmosphere->setLightPollutionLuminance(lum);
+	currentAtmosphere->setLightPollutionLuminance(lum);
 	float pollum = (5.0-mag)*0.1;
 
 	if (fromCoreInit) {
@@ -2333,6 +2345,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentNebulas.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentIlluminates.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentSsystemFactory.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentAtmosphere.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentSkyGridMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentSkyLineMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentSkyDisplayMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
@@ -2343,6 +2356,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentMeteors.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentStarNav.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentLandscape.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentToneConverter.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentCloudNav.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentStarGalaxy.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentVolumGalaxy.setActive(CURRENT_MODE::SANDBOX_MODE);
@@ -2358,6 +2372,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentNebulas.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentIlluminates.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentSsystemFactory.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentAtmosphere.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentSkyGridMgr.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentSkyLineMgr.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentSkyDisplayMgr.setActive(CURRENT_MODE::NORMAL_MODE);
@@ -2368,6 +2383,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentMeteors.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentStarNav.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentLandscape.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentToneConverter.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentCloudNav.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentStarGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentVolumGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);

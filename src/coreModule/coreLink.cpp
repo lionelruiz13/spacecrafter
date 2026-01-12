@@ -430,22 +430,22 @@ bool CoreLink::atmosphereGetFlag() const {
 
 //! Set atmosphere fade duration in s
 void CoreLink::atmosphereSetFadeDuration(float f) {
-	core->atmosphere->setFaderDuration(f);
+	core->currentAtmosphere->setFaderDuration(f);
 }
 
 //! Set default atmosphere fade duration
 void CoreLink::atmosphereSetDefaultFadeDuration() {
-	core->atmosphere->setDefaultFaderDuration();
+	core->currentAtmosphere->setDefaultFaderDuration();
 }
 
 //! Set moon brightness
 void CoreLink::moonSetBrightness(double f) {
-	core->atmosphere->setMoonBrightness(f);
+	core->currentAtmosphere->setMoonBrightness(f);
 }
 
 //! Set default moon brightness
 void CoreLink::moonSetDefaultBrightness() {
-	core->atmosphere->setDefaultMoonBrightness();
+	core->currentAtmosphere->setDefaultMoonBrightness();
 }
 
 //! Set sun brightness

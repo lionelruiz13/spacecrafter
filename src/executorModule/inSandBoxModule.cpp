@@ -136,12 +136,12 @@ void InSandBoxModule::update(int delta_time)
 	core->currentAsterisms->update(delta_time);
 	core->oort->update(delta_time);
 
-	core->tone_converter->setWorldAdaptationLuminance(core->atmosphere->getWorldAdaptationLuminance());
+	core->currentToneConverter->setWorldAdaptationLuminance(core->currentAtmosphere->getWorldAdaptationLuminance());
 
 	// TODO make this more generic for non-atmosphere planets
-	if (core->atmosphere->getFadeIntensity() == 1) {
+	if (core->currentAtmosphere->getFadeIntensity() == 1) {
 		// If the atmosphere is on, a solar eclipse might darken the sky otherwise we just use the sun position calculation above
-		core->sky_brightness *= (core->atmosphere->getIntensity()+0.1);
+		core->sky_brightness *= (core->currentAtmosphere->getIntensity()+0.1);
 	}
 	// TODO: should calculate dimming with solar eclipse even without atmosphere on
 	core->currentLandscape->setSkyBrightness(core->sky_brightness+0.05);
@@ -188,7 +188,7 @@ void InSandBoxModule::draw(int delta_time)
 	core->currentStarNav->computePosition(core->navigation->getObserverHelioPos());
 	core->currentCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 
-	core->currentMilkyWay->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
+	core->currentMilkyWay->draw(core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr->getJulian());
 
 	core->currentStarLines->draw(core->navigation);
 
@@ -201,19 +201,19 @@ void InSandBoxModule::draw(int delta_time)
 
 
 	//! solarSystem
-	core->currentNebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
+	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0);
 	core->oort->draw(observer->getAltitude(), core->navigation);
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);
 	// TODO: Use the real current instead of forcing the use of normal mode (cause a crash for now (error with vulkan) (missing predraw call cause the crash?))
-	core->currentHipStars.get(CURRENT_MODE::NORMAL_MODE)->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
+	core->currentHipStars.get(CURRENT_MODE::NORMAL_MODE)->draw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->timeMgr.get(), core->observatory->getAltitude());
 	core->currentSkyGridMgr->draw(core->projection);
 	core->currentSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->currentSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
-	core->currentSsystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->currentBodyDecor->canDrawBody() /*aboveHomePlanet*/ );
+	core->currentSsystemFactory->draw(core->projection, core->navigation, observer, core->currentToneConverter.get(), core->currentBodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	// Update meteors
-	core->currentMeteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
+	core->currentMeteors->update(core->projection, core->navigation, core->timeMgr.get(), core->currentToneConverter.get(), delta_time);
 
 	// removed the condition && atmosphere->getFlagShow() so that you can have some by atmosphere
 	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
@@ -221,7 +221,7 @@ void InSandBoxModule::draw(int delta_time)
 		core->currentMeteors->draw(core->projection, core->navigation);
 
     Context::instance->helper->nextDraw(PASS_FOREGROUND);
-	core->atmosphere->draw();
+	core->currentAtmosphere->draw();
 
 	// Draw the landscape
 	if (core->currentBodyDecor->canDrawLandscape()) {
