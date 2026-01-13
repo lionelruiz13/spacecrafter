@@ -173,11 +173,11 @@ bool CoreLink::skyGridMgrGetFlagShow(SKYGRID_TYPE name) {
 // Oort    ---------------------------
 ////////////////////////////////////////////////////////////////////////////////
 bool CoreLink::oortGetFlagShow() const {
-	return core->oort->getFlagShow();
+	return core->currentOort->getFlagShow();
 }
 
 void CoreLink::oortSetFlagShow(bool b) {
-	core->oort->setFlagShow(b);
+	core->currentOort->setFlagShow(b);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

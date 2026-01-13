@@ -575,15 +575,11 @@ private:
 	//SolarSystem *ssystem;								// Manage the solar system
 
 	Indexed<SSystemFactory,   CURRENT_MODE> currentSsystemFactory;	// Manage bodies (current mode (normal/sandbox))
-
 	Indexed<Atmosphere,       CURRENT_MODE> currentAtmosphere;		// Atmosphere (current mode (normal/sandbox))
-
 	Indexed<SkyGridMgr,       CURRENT_MODE> currentSkyGridMgr;		//! grid manager (current mode (normal/sandbox))
 	Indexed<SkyLineMgr,       CURRENT_MODE> currentSkyLineMgr;		//! line manager (current mode (normal/sandbox))
 	Indexed<SkyDisplayMgr,    CURRENT_MODE> currentSkyDisplayMgr;	//! skyDisplay manager (current mode (normal/sandbox))
-
-	std::unique_ptr<Oort> oort;							//! oort cloud
-
+	Indexed<Oort,             CURRENT_MODE> currentOort;			//! oort cloud (current mode (normal/sandbox))
 	Indexed<Dso3d,            CURRENT_MODE> currentDso3d;			//! dso catalog (current mode (normal/sandbox))
 	Indexed<Tully,            CURRENT_MODE> currentTully;			//! tully galaxies (current mode (normal/sandbox))
 
@@ -591,7 +587,6 @@ private:
 
 	Indexed<MilkyWay,         CURRENT_MODE> currentMilkyWay;		// Our galaxy (current mode (normal/sandbox))
 	Indexed<MeteorMgr,        CURRENT_MODE> currentMeteors;			// Manage meteor showers (current mode (normal/sandbox))
-
 	Indexed<Landscape,        CURRENT_MODE> currentLandscape;		// The landscape (current mode (normal/sandbox))
 	Indexed<ToneReproductor,  CURRENT_MODE> currentToneConverter;	// Tones conversion between simulation world and display device (current mode (normal/sandbox))
 	std::unique_ptr<SkyLocalizer> skyloc;				// for sky cultures and locales

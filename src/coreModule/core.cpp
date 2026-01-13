@@ -227,7 +227,9 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	currentIlluminates.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<IlluminateMgr>(currentHipStars.get(CURRENT_MODE::SANDBOX_MODE), navigation, currentAsterisms.get(CURRENT_MODE::SANDBOX_MODE)));
 	currentIlluminates.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	oort =  std::make_unique<Oort>();
+	currentOort.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<Oort>());
+	currentOort.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<Oort>());
+	currentOort.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	currentDso3d.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<Dso3d>());
 	currentDso3d.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<Dso3d>());
@@ -479,8 +481,13 @@ void Core::init(const InitParser& conf)
 			mgr.initGridPos();
 		});
 
-		oort->populate(conf.getInt("rendering","oort_elements"));
-		oort->build();
+		// Create a oort cloud in both modes
+		// sandbox separated to allow different settings in future
+		// (for now only used for the show/hide flag without altering normal mode)
+		currentOort.applyToAll([&conf](Oort &mgr) {
+			mgr.populate(conf.getInt("rendering","oort_elements"));
+			mgr.build();
+		});
 
 		currentTully.applyToAll([&conf](Tully &mgr) {
 			mgr.setTexture("typegals.png");
@@ -681,7 +688,9 @@ void Core::init(const InitParser& conf)
 		mgr.setSunScale(conf.getDouble (SCS_VIEWING,SCK_SUN_SCALE), true); //? always true TODO
 	}); // Sandbox mode has no sun and moon at init, so we can't set their scale
 
-	oort->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
+	currentOort.applyToAll([&conf](Oort &mgr) {
+		mgr.setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
+	});
 
 	setLightPollutionLimitingMagnitude(conf.getDouble(SCS_VIEWING,SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE), true);
 
@@ -1552,7 +1561,9 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 		mgr.setColor(SKYLINE_TYPE::LINE_ZODIAC,Utility::strToVec3f(conf.getStr(section,SCK_ZODIAC_COLOR)));
 	});
 
-	oort->setColor(Utility::strToVec3f(conf.getStr(section,SCK_OORT_COLOR)));
+	currentOort.applyToAll([&conf, &section](Oort &mgr) {
+		mgr.setColor(Utility::strToVec3f(conf.getStr(section,SCK_OORT_COLOR)));
+	});
 }
 
 //! For use by TUI - saves all current AppSettings::Instance()
@@ -2351,6 +2362,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentSkyGridMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentSkyLineMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentSkyDisplayMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
+		currentOort.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentDso3d.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentTully.setActive(CURRENT_MODE::SANDBOX_MODE);
 		currentMilkyWay.setActive(CURRENT_MODE::SANDBOX_MODE);
@@ -2378,6 +2390,7 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 		currentSkyGridMgr.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentSkyLineMgr.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentSkyDisplayMgr.setActive(CURRENT_MODE::NORMAL_MODE);
+		currentOort.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentDso3d.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentTully.setActive(CURRENT_MODE::NORMAL_MODE);
 		currentMilkyWay.setActive(CURRENT_MODE::NORMAL_MODE);

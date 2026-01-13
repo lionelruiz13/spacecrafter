@@ -173,7 +173,7 @@ void InSandBoxModule::update(int delta_time)
 	core->currentSkyGridMgr->update(delta_time);
 	core->currentSkyLineMgr->update(delta_time);
 	core->currentAsterisms->update(delta_time);
-	core->oort->update(delta_time);
+	core->currentOort->update(delta_time);
 
 	core->currentToneConverter->setWorldAdaptationLuminance(core->currentAtmosphere->getWorldAdaptationLuminance());
 
@@ -258,7 +258,7 @@ void InSandBoxModule::draw(int delta_time)
 
 	//! solarSystem
 	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0);
-	core->oort->draw(observer->getAltitude(), core->navigation);
+	core->currentOort->draw(observer->getAltitude(), core->navigation);
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);
 	core->currentHipStars->draw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->timeMgr.get(), core->observatory->getAltitude());

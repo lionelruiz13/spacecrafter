@@ -151,7 +151,7 @@ void SolarSystemModule::update(int delta_time)
 	core->currentAsterisms->update(delta_time);
 	core->currentMilkyWay->update(delta_time);
 	core->currentStarLines->update(delta_time);
-	core->oort->update(delta_time);
+	core->currentOort->update(delta_time);
 
 	core->currentToneConverter->setWorldAdaptationLuminance(core->currentAtmosphere->getWorldAdaptationLuminance());
 
@@ -180,7 +180,7 @@ void SolarSystemModule::draw(int delta_time)
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 	core->currentNebulas->draw(core->projection, core->navigation, core->currentToneConverter.get(), core->currentAtmosphere->getFlagShow() ? core->sky_brightness : 0);
-	core->oort->draw(observer->getAltitude(), core->navigation);
+	core->currentOort->draw(observer->getAltitude(), core->navigation);
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);
 	core->currentStarLines->draw(core->projection);
