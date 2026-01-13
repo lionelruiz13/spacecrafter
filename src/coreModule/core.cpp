@@ -616,6 +616,8 @@ void Core::init(const InitParser& conf)
 		mgr.setDefaultFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
 		mgr.setDefaultMoonBrightness(conf.getDouble(SCS_VIEWING,SCK_MOON_BRIGHTNESS));
 	});
+	// Always disable atmosphere in sandbox mode at init since there is nothing at all
+	currentAtmosphere.applyTo(CURRENT_MODE::SANDBOX_MODE, &Atmosphere::setFlagShow, false);
 
 	// Sandbox mode has no sun at init, so we can't set its brightness, so only normal mode
 	currentSsystemFactory.applyTo(CURRENT_MODE::NORMAL_MODE,
@@ -1020,22 +1022,10 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 
 void Core::setBodyDecor(bool fromCoreInit)
 {
-	if (fromCoreInit) {
-		if (!observatory->isOnBody()) {
-			currentBodyDecor.applyToAll([](BodyDecor &decor) {
-				decor.anchorAssign();
-			});
-		} else {
-			currentBodyDecor.applyToAll([this](BodyDecor &decor) {
-				decor.bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
-			});
-		}
-	} else {
-		if (!observatory->isOnBody())
-			currentBodyDecor->anchorAssign();
-		else
-			currentBodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
-	}
+	if (!observatory->isOnBody())
+		currentBodyDecor->anchorAssign();
+	else
+		currentBodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
 }
 
 void Core::selectZodiac()
