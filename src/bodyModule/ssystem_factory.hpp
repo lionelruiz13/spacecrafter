@@ -100,8 +100,13 @@ public:
 	}
 
 	std::shared_ptr<Moon> getMoon(void) const {
-        return ssystem->getMoon();
+		return ssystem->getMoon();
     }
+
+	//! Get Sun object (works in both solar system and sandbox mode)
+	std::shared_ptr<Sun> getSun(void) const {
+		return ssystem->getSun();
+	}
 
     void setFlagLightTravelTime(bool b) {
 		ssystemDisplay->setFlagLightTravelTime(b);

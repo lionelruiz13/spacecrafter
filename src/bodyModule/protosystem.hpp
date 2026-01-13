@@ -82,7 +82,7 @@ public:
     }
 
 	//removes a body and its satellites
-	bool removeBody(const std::string &name);
+	virtual bool removeBody(const std::string &name);
 
 	void removeBodyNoSatellite(std::map<std::string, BodyContainer>::iterator it);
 

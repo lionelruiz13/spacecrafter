@@ -77,6 +77,32 @@ void SolarSystem::registerFont(s_font* _font)
 	Body::setFont(font);
 }
 
+
+bool SolarSystem::removeBody(const std::string &name)
+{
+	// Get the body type before removal
+	auto it = systemBodies.find(name);
+	if (it != systemBodies.end()) {
+		BODY_TYPE typePlanet = it->second.body->getBodyType();
+		if (typePlanet == SUN && name == "Sun") {
+			sun = nullptr;
+		} else if (typePlanet == MOON && name == "Moon") {
+			moon = nullptr;
+			if (earth) {
+				BinaryOrbit *earthOrbit = dynamic_cast<BinaryOrbit *>(earth->getOrbit());
+				if (earthOrbit) {
+					cLog::get()->write("Removing Moon from Earth binary orbit.", LOG_TYPE::L_INFO);
+					earthOrbit->setSecondaryOrbit(nullptr);
+				}
+			}
+		} else if (typePlanet == PLANET && name == "Earth") {
+			earth = nullptr;
+		}
+	}
+
+	return ProtoSystem::removeBody(name);
+}
+
 // Init and load one solar system object
 // This is a the private method
 void SolarSystem::addBody(stringHash_t param, bool deletable)
@@ -108,6 +134,9 @@ void SolarSystem::addBody(stringHash_t param, bool deletable)
 // is a lunar eclipse close at hand?
 bool SolarSystem::nearLunarEclipse(const Navigator * nav, Projector *prj)
 {
+	// No lunar eclipse without Earth and Moon (sandbox mode doesn't have them by default)
+	if (!earth || !moon) return false;
+
 	// TODO: could replace with simpler test
 	Vec3d e = getEarth()->get_ecliptic_pos();
 	Vec3d m = getMoon()->get_ecliptic_pos();  // relative to earth
@@ -130,14 +159,23 @@ bool SolarSystem::nearLunarEclipse(const Navigator * nav, Projector *prj)
 
 void SolarSystem::bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const
 {
- 	bodyTrace->getAltAz(nav,alt,az);
+	if (bodyTrace) {
+		bodyTrace->getAltAz(nav,alt,az);
+	} else {
+		*alt = 0.0;
+		*az = 0.0;
+	}
 }
 
 double SolarSystem::getSunAltitude(const Navigator * nav) const
 {
 	double alt, az;
-	sun->getAltAz(nav, &alt, &az);
-	return alt*180.0/M_PI;
+	if (sun) {
+		sun->getAltAz(nav, &alt, &az);
+		return alt*180.0/M_PI;
+	}
+	// Maybe no sun (in sandbox mode by default)
+	return 0.0;
 }
 
 // UNUSED ?
@@ -159,6 +197,10 @@ double SolarSystem::getSunAltitude(const Navigator * nav) const
 double SolarSystem::getSunAzimuth(const Navigator * nav) const
 {
 	double alt, az;
-	sun->getAltAz(nav, &alt, &az);
-	return az*180.0/M_PI;
+	if (sun) {
+		sun->getAltAz(nav, &alt, &az);
+		return az*180.0/M_PI;
+	}
+	// Maybe no sun (in sandbox mode by default)
+	return 0.0;
 }

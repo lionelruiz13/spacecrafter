@@ -739,6 +739,11 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 			                  deletable,
 			                  orbit_bounding_radius,
 							  bodyTexture);
+
+			if (!parent && !centerObject) {
+				centerObject = p;
+				bodyTrace = p;
+			}
 			break;
 		case MOON:
 			p = std::make_shared<Moon>(std::move(parent),
@@ -755,6 +760,11 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 			                  orbit_bounding_radius,
 							  bodyTexture
 			                 );
+
+			if (!parent && !centerObject) {
+				centerObject = p;
+				bodyTrace = p;
+			}
 			break;
 		case DWARF:
 		case PLANET: {
@@ -778,6 +788,11 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 				const double r_min = Utility::strToDouble(param["ring_inner_size"])/AU;
 				const double r_max = Utility::strToDouble(param["ring_outer_size"])/AU;
 				p_big->setRings(std::make_unique<Ring>(r_min,r_max,param["tex_ring"],ringsInit));
+			}
+
+			if (!parent && !centerObject) {
+				centerObject = p;
+				bodyTrace = p;
 			}
 			p = std::move(p_big);
 		}
@@ -852,6 +867,11 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 				if (!param["halo_alpha_override"].empty() && !param["halo_scale_override"].empty()) {
 					b.overrideHalo(Utility::strToFloat(param["halo_alpha_override"]), Utility::strToFloat(param["halo_scale_override"]));
 				}
+			}
+
+			if (!parent && !centerObject) {
+				centerObject = p;
+				bodyTrace = p;
 			}
 			break;
 		default:

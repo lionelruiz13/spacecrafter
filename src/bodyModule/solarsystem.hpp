@@ -47,6 +47,9 @@ public:
 	// virtual void setFont(float font_size, const std::string& font_name) override;
 	virtual void registerFont(s_font* _font) override;
 
+	//removes a body and its satellites
+	virtual bool removeBody(const std::string &name) override;
+
 	//! get the position Alt Az for Sun
 	void bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const;
 

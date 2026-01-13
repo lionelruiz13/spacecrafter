@@ -63,6 +63,14 @@ InSandBoxModule::InSandBoxModule(std::shared_ptr<Core> _core, Observer *_observe
     maxAltToGoUp = 1.E14;
 }
 
+InSandBoxModule::~InSandBoxModule()
+{
+    if (thread.joinable()) {
+        threadQueue.close();
+        thread.join();
+    }
+}
+
 void InSandBoxModule::onEnter()
 {
 	core->setFlagIngalaxy(MODULE::IN_SANDBOX);
@@ -70,6 +78,7 @@ void InSandBoxModule::onEnter()
 	cLog::get()->write("-> ENTREE EN MODE SANDBOX (BAC A SABLE)", LOG_TYPE::L_INFO);
 	cLog::get()->write("   Module actuel: " + std::to_string((int)core->getFlagIngalaxy()), LOG_TYPE::L_INFO);
 	cLog::get()->write("====================================", LOG_TYPE::L_INFO);
+    thread = std::thread(&InSandBoxModule::asyncUpdateLoop, this);
 	// Pas de gestion d'altitude spéciale en mode sandbox
 	// L'utilisateur peut définir l'altitude qu'il souhaite via script
 }
@@ -79,6 +88,8 @@ void InSandBoxModule::onExit()
 	cLog::get()->write("====================================", LOG_TYPE::L_INFO);
 	cLog::get()->write("SORTIE DU MODE SANDBOX", LOG_TYPE::L_INFO);
 	cLog::get()->write("====================================", LOG_TYPE::L_INFO);
+    threadQueue.close();
+    thread.join();
 }
 
 void InSandBoxModule::update(int delta_time)
@@ -120,6 +131,28 @@ void InSandBoxModule::update(int delta_time)
 	// update faders and Planet trails (call after nav is updated)
 	core->currentSsystemFactory->update(delta_time, core->navigation, core->timeMgr.get());
 
+	// Compute the sun position in local coordinate (use default if no sun in sandbox)
+	Vec3d sunPos;
+	auto sun = core->currentSsystemFactory->getSun();
+	if (sun != nullptr) {
+		Vec3d temp(0.,0.,0.);
+		sunPos = core->navigation->helioToLocal(temp);
+	} else {
+		// Fictive position under the horizon to avoid illumination
+		sunPos = Vec3d(0., 0., -1.);
+	}
+
+	// Compute the moon position in local coordinate (use default if no moon in sandbox)
+	Vec3d moonPos;
+	auto moon = core->currentSsystemFactory->getMoon();
+	if (moon != nullptr) {
+		Vec3d moonHelio = moon->get_heliocentric_ecliptic_pos();
+		moonPos = core->navigation->helioToLocal(moonHelio);
+	} else {
+		// Fictive position under the horizon
+		moonPos = Vec3d(0., 0., -1.);
+	}
+
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
 	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
@@ -130,6 +163,8 @@ void InSandBoxModule::update(int delta_time)
 											core->navigation->geTdomeMat(),
 											core->navigation->getDomeFixedMat());
 
+    asyncUpdateBegin({sunPos, moonPos});
+
     // Update faders
 	core->currentSkyGridMgr->update(delta_time);
 	core->currentSkyLineMgr->update(delta_time);
@@ -138,6 +173,23 @@ void InSandBoxModule::update(int delta_time)
 
 	core->currentToneConverter->setWorldAdaptationLuminance(core->currentAtmosphere->getWorldAdaptationLuminance());
 
+	// Normalize sun and moon position vectors only if they are valid
+	if (sunPos.length() > 0.)
+		sunPos.normalize();
+	if (moonPos.length() > 0.)
+		moonPos.normalize();
+
+	// compute global sky brightness TODO : make this more "scientifically"
+	// TODO: also add moonlight illumination
+	// In sandbox mode without sun, use ambient illumination (unlit)
+	if (sun == nullptr) {
+		// Ambient illumination in sandbox mode without sun (unlit)
+		core->sky_brightness = 0.5;
+	} else if (sunPos[2] < -0.1/1.5 ) {
+		core->sky_brightness = 0.01;
+	} else {
+		core->sky_brightness = (0.01 + 1.5*(sunPos[2]+0.1/1.5));
+	}
 	// TODO make this more generic for non-atmosphere planets
 	if (core->currentAtmosphere->getFadeIntensity() == 1) {
 		// If the atmosphere is on, a solar eclipse might darken the sky otherwise we just use the sun position calculation above
@@ -236,4 +288,43 @@ bool InSandBoxModule::testValidAltitude(double altitude)
 	// Mode sandbox : on ne change JAMAIS de mode automatiquement par altitude
 	// Le changement de mode doit se faire uniquement via script
 	return false;
+}
+
+void InSandBoxModule::asyncUpdateBegin(std::pair<Vec3d, Vec3d> data)
+{
+    asyncWorkState = true;
+    threadQueue.push(data);
+}
+
+void InSandBoxModule::asyncUpdateEnd()
+{
+    while (asyncWorkState)
+        threadQueue.waitIdle();
+}
+
+void InSandBoxModule::asyncUpdateLoop()
+{
+    // std::pair<sunPos, moonMos>
+    std::pair<Vec3d, Vec3d> data;
+    threadQueue.acquire();
+    while (threadQueue.pop(data)) {
+        core->currentSsystemFactory->computePreDraw(core->projection, core->navigation);
+
+		// Compute the moon phase only if it exists
+        float moonPhase = 0.0f;
+        auto moon = core->currentSsystemFactory->getMoon();
+        auto earth = core->currentSsystemFactory->getEarth();
+        if (moon != nullptr && earth != nullptr) {
+            moonPhase = moon->get_phase(earth->get_heliocentric_ecliptic_pos());
+        }
+
+        core->currentAtmosphere->computeColor(core->timeMgr->getJDay(), data.first, data.second,
+    	                          moonPhase,
+    	                          core->currentToneConverter.get(), core->projection, observer->getLatitude(), observer->getAltitude(),
+    	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
+        core->currentHipStars->preDraw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->currentAtmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+        core->currentSsystemFactory->bodyTrace(core->navigation);
+        asyncWorkState = false;
+    }
+    threadQueue.release();
 }

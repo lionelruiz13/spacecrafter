@@ -330,7 +330,7 @@ void Core::init(const InitParser& conf)
 	// Start splash with no fonts due to font collection delays
 	if (firstTime) {
 		// Init the solar system first
-		currentSsystemFactory.applyTo(CURRENT_MODE::NORMAL_MODE, [&conf](SSystemFactory &factory) {
+		currentSsystemFactory.applyToAll([&conf](SSystemFactory &factory) {
 			factory.iniColor(conf.getStr(SCS_COLOR, SCK_PLANET_HALO_COLOR),
 									conf.getStr(SCS_COLOR, SCK_PLANET_NAMES_COLOR),
 									conf.getStr(SCS_COLOR, SCK_PLANET_ORBITS_COLOR),
@@ -347,7 +347,9 @@ void Core::init(const InitParser& conf)
 										conf.getInt(SCS_RENDERING, SCK_RINGS_HIGH));
 
 			factory.iniTextures();
+		});
 
+		currentSsystemFactory.applyTo(CURRENT_MODE::NORMAL_MODE, [&conf](SSystemFactory &factory) {
 			factory.load(AppSettings::Instance()->getUserDir() + "ssystem.ini");
 
 			factory.anchorManagerInit(conf);

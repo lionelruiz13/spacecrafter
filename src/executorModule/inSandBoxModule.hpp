@@ -42,7 +42,7 @@ class InSandBoxModule : public ExecutorModule {
 public:
 
     InSandBoxModule(std::shared_ptr<Core> _core, Observer *_observer);
-    ~InSandBoxModule() {};
+    ~InSandBoxModule();
 
     virtual void onEnter() override;
 	virtual void onExit() override;
@@ -51,8 +51,16 @@ public:
     bool testValidAltitude(double altitude) override;
 
 private:
+    // Start async update
+    void asyncUpdateBegin(std::pair<Vec3d, Vec3d> data);
+    // Ensure async update has completed before continue
+    void asyncUpdateEnd();
+    void asyncUpdateLoop();
+    bool asyncWorkState = false; // used by asycnUpdateBegin and asyncUpdateEnd
     std::shared_ptr<Core> core;
     Observer *observer;
+    std::thread thread;
+    WorkQueue<std::pair<Vec3d, Vec3d>, 3> threadQueue;
 };
 
 #endif
