@@ -257,8 +257,7 @@ void InSandBoxModule::draw(int delta_time)
 	core->oort->draw(observer->getAltitude(), core->navigation);
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);
-	// TODO: Use the real current instead of forcing the use of normal mode (cause a crash for now (error with vulkan) (missing predraw call cause the crash?))
-	core->currentHipStars.get(CURRENT_MODE::NORMAL_MODE)->draw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->timeMgr.get(), core->observatory->getAltitude());
+	core->currentHipStars->draw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->timeMgr.get(), core->observatory->getAltitude());
 	core->currentSkyGridMgr->draw(core->projection);
 	core->currentSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->currentSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
