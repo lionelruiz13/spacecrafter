@@ -79,8 +79,10 @@ void InSandBoxModule::onEnter()
 	cLog::get()->write("   Module actuel: " + std::to_string((int)core->getFlagIngalaxy()), LOG_TYPE::L_INFO);
 	cLog::get()->write("====================================", LOG_TYPE::L_INFO);
     thread = std::thread(&InSandBoxModule::asyncUpdateLoop, this);
-	// Pas de gestion d'altitude spéciale en mode sandbox
-	// L'utilisateur peut définir l'altitude qu'il souhaite via script
+	// We enter sandbox mode don't keep any selected object from previous mode
+	core->unSelect();
+	// No special altitude management in sandbox mode
+	// The user can set the altitude he wants via script
 }
 
 void InSandBoxModule::onExit()
@@ -88,6 +90,8 @@ void InSandBoxModule::onExit()
 	cLog::get()->write("====================================", LOG_TYPE::L_INFO);
 	cLog::get()->write("SORTIE DU MODE SANDBOX", LOG_TYPE::L_INFO);
 	cLog::get()->write("====================================", LOG_TYPE::L_INFO);
+	// We leave sandbox mode, doon't keep any selected object for next mode
+	core->unSelect();
     threadQueue.close();
     thread.join();
 }
