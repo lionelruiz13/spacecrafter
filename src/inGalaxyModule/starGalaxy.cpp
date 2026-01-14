@@ -205,6 +205,8 @@ StarGalaxy::~StarGalaxy() {}
 
 void StarGalaxy::draw(const Navigator * nav, const Projector* prj)
 {
+	if (nbStars == 0)
+		return;
 	FrameMgr &frame = *Context::instance->frame[Context::instance->frameIdx];
 	Mat4f mat = nav->getHelioToEyeMat().convert();
     global->MV = mat;
