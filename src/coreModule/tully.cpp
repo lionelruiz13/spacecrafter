@@ -403,8 +403,9 @@ void Tully::setTexture(const std::string& tex_file)
 
 bool Tully::compTmpTully(const tmpTully &a,const tmpTully &b)
 {
-	if (a.planeSide < b.planeSide)
-		return true;
+	// Useless to sort on planeSide because we do it during the insertion (filtering to add one side then the other)
+	// if (a.planeSide < b.planeSide)
+	// 	return true;
 	return (a.distance > b.distance);
 }
 
