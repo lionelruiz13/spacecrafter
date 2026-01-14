@@ -230,7 +230,7 @@ void InSandBoxModule::draw(int delta_time)
 
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_SANDBOX);
 
-	core->currentSkyDisplayMgr->drawPerson(core->projection, core->navigation);
+	// core->currentSkyDisplayMgr->drawPerson(core->projection, core->navigation); // See line core->currentSkyDisplayMgr->draw
 	core->currentStarGalaxy->draw(core->navigation, core->projection);
 	if (core->selected_object && core->object_pointer_visibility)
 		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
@@ -264,6 +264,7 @@ void InSandBoxModule::draw(int delta_time)
 	core->currentHipStars->draw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->timeMgr.get(), core->observatory->getAltitude());
 	core->currentSkyGridMgr->draw(core->projection);
 	core->currentSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
+	// Draw everything related to sky display (the drawPerson content too, drawPerson is just a restricted draw)
 	core->currentSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
 	core->currentSsystemFactory->draw(core->projection, core->navigation, observer, core->currentToneConverter.get(), core->currentBodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
