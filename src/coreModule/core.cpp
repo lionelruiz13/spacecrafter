@@ -434,6 +434,8 @@ void Core::init(const InitParser& conf)
 		mgr.setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_MILKY_WAY));
 		mgr.setFlagZodiacal(conf.getBoolean(SCS_ASTRO,SCK_FLAG_ZODIACAL_LIGHT));
 	});
+	// Always disable milkyway in sandbox mode at init since there is nothing at all
+	currentMilkyWay.applyTo(CURRENT_MODE::SANDBOX_MODE, &MilkyWay::setFlagShow, false);
 
 	currentStarLines.applyToAll([&conf](StarLines &mgr) {
 		mgr.setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_STAR_LINES));
