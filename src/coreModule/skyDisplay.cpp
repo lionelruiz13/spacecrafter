@@ -133,6 +133,12 @@ void SkyDisplay::clear()
 	dataSkySize = 0;
 }
 
+void SkyDisplay::endClear()
+{
+	Context::instance->transfer->endPlanCopy(vertex->get(), dataSkySize * 3 * sizeof(float));
+	m_dataSize = dataSkySize;
+}
+
 void SkyDisplay::build()
 {
 	Context &context = *Context::instance;
