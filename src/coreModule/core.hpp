@@ -594,8 +594,14 @@ private:
 	Indexed<StarNavigator,    CURRENT_MODE> currentStarNav;			// permet le voyage dans les étoiles (current mode (normal/sandbox))
 
 	std::unique_ptr<CloudNavigator> universeCloudNav; 	// draw galaxy gaz clouds when in universe
+	// Can load a file for data (at class construction or with a method) (currently no data file loaded)
+	// No way to use the method right now (add a script command ?)
 	Indexed<CloudNavigator,   CURRENT_MODE> currentCloudNav;		// draw galaxy gaz clouds (current mode (normal/sandbox))
+	// Can load a file for data (at class construction or with a method) (currently file loaded at construction for normal mode only)
+	// No way to use the method right now (add a script command ?)
 	Indexed<StarGalaxy,       CURRENT_MODE> currentStarGalaxy;		// draw galaxy stars when in universe (current mode (normal/sandbox))
+	// Can load a file for data (at class construction or with a method) (currently file loaded at construction for normal mode only)
+	// No way to use the method right now (add a script command ?)
 	Indexed<VolumObj3D,       CURRENT_MODE> currentVolumGalaxy;		// draw volumetric galaxy (current mode (normal/sandbox))
 	Indexed<DsoNavigator,     CURRENT_MODE> currentDsoNav;			// draw 3d dso when in galaxy (current mode (normal/sandbox))
 	Indexed<StarLines,        CURRENT_MODE> currentStarLines;		// allows to draw lines in the galaxy (current mode (normal/sandbox))

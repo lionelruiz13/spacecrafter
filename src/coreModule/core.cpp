@@ -123,18 +123,16 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	universeCloudNav = std::make_unique<CloudNavigator>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
 
 	currentStarGalaxy.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat"));
-	currentStarGalaxy.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat"));
+	currentStarGalaxy.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<StarGalaxy>()); // Can load data later using loadCatalog method
 	currentStarGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	if (std::filesystem::exists(s_texture::getTexDir() + "milkyway-vguerin-d128.png")) {
 		currentVolumGalaxy.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false));
-		currentVolumGalaxy.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false));
-		currentVolumGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
 	} else {
 		currentVolumGalaxy.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true));
-		currentVolumGalaxy.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true));
-		currentVolumGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
 	}
+	currentVolumGalaxy.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<VolumObj3D>("", "", false)); // Can load data later using reconstruct method
+	currentVolumGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	currentDsoNav.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<DsoNavigator>());
 	currentDsoNav.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<DsoNavigator>());
