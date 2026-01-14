@@ -50,6 +50,9 @@ public:
 	//removes a body and its satellites
 	virtual bool removeBody(const std::string &name) override;
 
+	//removes all bodies that do not come from ssystem.ini
+	virtual bool removeSupplementalBodies(const std::string &name) override;
+
 	//! get the position Alt Az for Sun
 	void bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const;
 

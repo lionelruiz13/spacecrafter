@@ -87,7 +87,7 @@ public:
 	void removeBodyNoSatellite(std::map<std::string, BodyContainer>::iterator it);
 
 	//removes all bodies that do not come from ssystem.ini
-	bool removeSupplementalBodies(const std::string &name);
+	virtual bool removeSupplementalBodies(const std::string &name);
 
 	//! @brief Update i18 names from english names according to passed translator
 	//! The translation is done using gettext with translated strings defined in translations.h
