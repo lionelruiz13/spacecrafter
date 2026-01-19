@@ -2342,63 +2342,36 @@ void Core::setPredictibleRendering(bool enable, int framerate)
 
 void Core::updateCurrentModulePointers(MODULE newModule)
 {
+	CURRENT_MODE mode;
 	if (newModule == MODULE::IN_SANDBOX) {
-		currentHipStars.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentAsterisms.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentNebulas.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentIlluminates.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentSsystemFactory.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentAtmosphere.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentSkyGridMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentSkyLineMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentSkyDisplayMgr.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentOort.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentDso3d.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentTully.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentMilkyWay.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentBodyDecor.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentMeteors.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentStarNav.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentLandscape.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentToneConverter.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentCloudNav.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentStarGalaxy.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentVolumGalaxy.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentDsoNav.setActive(CURRENT_MODE::SANDBOX_MODE);
-		currentStarLines.setActive(CURRENT_MODE::SANDBOX_MODE);
+		mode = CURRENT_MODE::SANDBOX_MODE;
 	} else {
-		// TODO: Remove all non-currentXXX usage in core.cpp (except init (should use XXX and sandboxXXX there to init both versions))
-		// TODO: Once all done, check the init section to correctly init sandboxXXX pointers too
-		// TODO: Check if there is some other "pointer to duplicate" for the sandbox module
-		// Done
-		currentHipStars.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentAsterisms.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentNebulas.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentIlluminates.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentSsystemFactory.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentAtmosphere.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentSkyGridMgr.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentSkyLineMgr.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentSkyDisplayMgr.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentOort.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentDso3d.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentTully.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentMilkyWay.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentBodyDecor.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentMeteors.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentStarNav.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentLandscape.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentToneConverter.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentCloudNav.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentStarGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentVolumGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentDsoNav.setActive(CURRENT_MODE::NORMAL_MODE);
-		currentStarLines.setActive(CURRENT_MODE::NORMAL_MODE);
-		// TODO
-		// All Done, next:
-		// Checking init section
-		// Creating helper class to manage unique_ptr (XXX / sandboxXXX) + raw pointer (currentXXX) (Done):
-		//     - Easier to manage active pointer
-		//     - Easier to init both versions (one function to init both XXX and sandboxXXX)
+		mode = CURRENT_MODE::NORMAL_MODE;
 	}
+	currentHipStars      .setActive(mode);
+	currentAsterisms     .setActive(mode);
+	currentNebulas       .setActive(mode);
+	currentIlluminates   .setActive(mode);
+	currentSsystemFactory.setActive(mode);
+	currentAtmosphere    .setActive(mode);
+	currentSkyGridMgr    .setActive(mode);
+	currentSkyLineMgr    .setActive(mode);
+	currentSkyDisplayMgr .setActive(mode);
+	currentOort          .setActive(mode);
+	currentDso3d         .setActive(mode);
+	currentTully         .setActive(mode);
+	currentMilkyWay      .setActive(mode);
+	currentBodyDecor     .setActive(mode);
+	currentMeteors       .setActive(mode);
+	currentStarNav       .setActive(mode);
+	currentLandscape     .setActive(mode);
+	currentToneConverter .setActive(mode);
+	currentCloudNav      .setActive(mode);
+	currentStarGalaxy    .setActive(mode);
+	currentVolumGalaxy   .setActive(mode);
+	currentDsoNav        .setActive(mode);
+	currentStarLines     .setActive(mode);
+	// TODO: Check the init section to correctly init sandboxXXX pointers too (should be good)
+	// TODO: Check if there is some other "pointer to duplicate" for the sandbox module
+	// TODO: Update functions like Core::cleverFind to work in sandbox mode too
 }
