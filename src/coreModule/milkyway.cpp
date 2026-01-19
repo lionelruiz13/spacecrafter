@@ -39,9 +39,9 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 
-MilkyWay::MilkyWay()
+MilkyWay::MilkyWay(ObjLMgr *objLMgr)
 {
-	sphere = ObjLMgr::instance->selectDefault();
+	sphere = objLMgr ? objLMgr->selectDefault() : nullptr;
 	switchTexFader = false;
 	intensityMilky.set(0.f);
 	pollum.set(0.f);

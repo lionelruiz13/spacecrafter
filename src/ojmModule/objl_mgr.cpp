@@ -15,13 +15,8 @@
 // https://space.frieger.com/asteroids/asteroids/
 
 
-ObjLMgr *ObjLMgr::instance = nullptr;
-
 ObjLMgr::ObjLMgr()
 {
-	// There must be one and only one instance of this class to avoid ObjL duplication
-	assert(!instance);
-	instance = this;
 	defaultObject = new SphereObjL();
 	objectMap["EquiSphere"] = defaultObject;
 }
@@ -29,7 +24,6 @@ ObjLMgr::ObjLMgr()
 
 ObjLMgr::~ObjLMgr()
 {
-	instance = nullptr;
 	defaultObject = nullptr;
 	std::map<std::string, ObjL *>::iterator it;
 	for (it=objectMap.begin(); it!=objectMap.end(); ++it) {
@@ -91,7 +85,7 @@ bool ObjLMgr::insert(const std::string &name, bool _defaultObject)
 	std::string fullDirectory=defaultDirectory+name;
 	if ( CallSystem::dirExist(fullDirectory) ) {
 		tmp = new ObjL();
-		if (tmp->init(fullDirectory, name))  {
+		if (tmp->init(fullDirectory, name, this))  {
 			objectMap.insert(std::pair<std::string,ObjL*>(name, tmp));
 			//~ printf("ObjL insert %s\n", name.c_str());
 			cLog::get()->write("Succesfull loading model3D "+ name, LOG_TYPE::L_INFO);

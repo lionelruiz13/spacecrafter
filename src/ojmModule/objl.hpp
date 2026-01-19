@@ -32,12 +32,14 @@ class LazyOjmL;
  *
  */
 
+class ObjLMgr;
+
 class ObjL {
 public:
 	ObjL();
 	virtual ~ObjL();
 	void draw(VkCommandBuffer cmd, const float screenSize);
-	bool init(const std::string &repertory, const std::string &name);
+	bool init(const std::string &repertory, const std::string &name, ObjLMgr *objLMgr = nullptr);
 	void bind(VkCommandBuffer cmd);
 	void bind(Pipeline &pipeline);
 

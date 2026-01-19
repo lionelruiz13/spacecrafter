@@ -57,7 +57,7 @@ ObjL::~ObjL()
 	}
 }
 
-bool ObjL::init(const std::string &repertory, const std::string &_name)
+bool ObjL::init(const std::string &repertory, const std::string &_name, ObjLMgr *objLMgrPtr)
 {
 	std::string nameL = repertory+"/"+ _name +"_1L.ojm";
 	std::filesystem::path nameM = repertory+"/"+ _name +"_2M.ojm";
@@ -88,8 +88,8 @@ bool ObjL::init(const std::string &repertory, const std::string &_name)
 		if (low->getVertexCount() > 4000) {
 			if (low->getVertexCount() > 40000) {
 				cLog::get()->write("Major Performance Issue : Up to 10x over limit for '" + nameL + "'(Keep Below 4 000) - Fallback to EquiSphere", LOG_TYPE::L_ERROR);
-				if (ObjLMgr::instance)
-					low = ObjLMgr::instance->select("EquiSphere")->low->makeLink();
+				if (objLMgrPtr)
+					low = objLMgrPtr->select("EquiSphere")->low->makeLink();
 				else
 					cLog::get()->write("FALLBACK FAILURE : Can't fallback to EquiSphere without ObjLMgr instance", LOG_TYPE::L_ERROR);
 			} else

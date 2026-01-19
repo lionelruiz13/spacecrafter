@@ -32,12 +32,13 @@ class Navigator;
 class Projector;
 class s_texture;
 class ObjL;
+class ObjLMgr;
 
 // Volumetric 3D object
 class VolumObj3D {
 public:
     //! @param tex_absorbtion_file Texture decrivant la composante alpha ou "" pour utiliser tex_color_file
-    VolumObj3D(const std::string& tex_color_file, const std::string &tex_absorbtion_file, bool z_reflection);
+    VolumObj3D(ObjLMgr *objLMgr, const std::string& tex_color_file, const std::string &tex_absorbtion_file, bool z_reflection);
     ~VolumObj3D();
     void setModel(const Mat4f &model, const Vec3f &scale);
     Mat4f getModel() const {

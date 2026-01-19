@@ -39,10 +39,11 @@ class PipelineLayout;
 class Set;
 class s_texture;
 class VolumObj3D;
+class ObjLMgr;
 
 class DsoNavigator: public NoCopy {
 public:
-    DsoNavigator();
+    DsoNavigator(ObjLMgr *objLMgr = nullptr);
     ~DsoNavigator();
     void computePosition(Vec3f posI, const Projector *prj);
     void draw(const Navigator *nav, const Projector *prj);
@@ -88,6 +89,7 @@ private:
     float texScale;
     bool needRebuild[3];
     bool instanced = false;
+    ObjLMgr *objLMgr;
 };
 
 #endif /* end of include guard: DSO_NAVIGATOR_HPP */

@@ -53,7 +53,7 @@ const char *_names[] = {
 };
 
 struct VolumObj3D::Shared {
-    Shared() :
+    Shared(ObjLMgr *objLMgr) :
         vertexArray(vkmgr), inVertexArray(vkmgr, context.ojmAlignment),
         layout{{vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}},
         pipeline{PCA, PCA, PCA, PCA, PCA, PCA, PCA, PCA}
@@ -72,7 +72,7 @@ struct VolumObj3D::Shared {
         sampler.anisotropyEnable = VK_FALSE;
 
         // Internal Shape
-        obj = ObjLMgr::instance->select("EquiSphere");
+        obj = objLMgr ? objLMgr->select("EquiSphere") : nullptr;
 
         // External Shape
         vertex = vertexArray.createBuffer(0, 8, context.globalBuffer.get());
@@ -164,10 +164,10 @@ struct VolumObj3D::Shared {
 
 std::weak_ptr<VolumObj3D::Shared> VolumObj3D::refShared;
 
-VolumObj3D::VolumObj3D(const std::string& tex_color_file, const std::string &tex_absorbtion_file, bool z_reflection) : transform(*Context::instance->uniformMgr), ray(*Context::instance->uniformMgr), inTransform(*Context::instance->uniformMgr), inCamCoord(*Context::instance->uniformMgr), shared(refShared.lock())
+VolumObj3D::VolumObj3D(ObjLMgr *objLMgr, const std::string& tex_color_file, const std::string &tex_absorbtion_file, bool z_reflection) : transform(*Context::instance->uniformMgr), ray(*Context::instance->uniformMgr), inTransform(*Context::instance->uniformMgr), inCamCoord(*Context::instance->uniformMgr), shared(refShared.lock())
 {
     if (!shared)
-        refShared = shared = std::make_shared<Shared>();
+        refShared = shared = std::make_shared<Shared>(objLMgr);
 
     for (int i = 0; i < 3; ++i) {
         cmds[i] = context.frame[i]->create(1);

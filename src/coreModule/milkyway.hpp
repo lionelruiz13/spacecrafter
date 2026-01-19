@@ -53,6 +53,7 @@
  */
 
 class ObjL;
+class ObjLMgr;
 class Projector;
 class Navigator;
 class ToneReproductor;
@@ -64,7 +65,7 @@ class Set;
 class MilkyWay: public NoCopy {
 
 public:
-	MilkyWay();
+	MilkyWay(ObjLMgr *objLMgr);
 	virtual ~MilkyWay();
 
 	//! draws the sphere and the texture associated to the Milkyway.

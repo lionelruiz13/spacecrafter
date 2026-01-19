@@ -108,8 +108,8 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	currentNebulas.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<NebulaMgr>());
 	currentNebulas.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	currentMilkyWay.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<MilkyWay>());
-	currentMilkyWay.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<MilkyWay>());
+	currentMilkyWay.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<MilkyWay>(currentSsystemFactory.get(CURRENT_MODE::NORMAL_MODE)->getObjLMgr()));
+	currentMilkyWay.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<MilkyWay>(currentSsystemFactory.get(CURRENT_MODE::SANDBOX_MODE)->getObjLMgr()));
 	currentMilkyWay.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	currentStarNav.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<StarNavigator>());
@@ -127,15 +127,15 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	currentStarGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	if (std::filesystem::exists(s_texture::getTexDir() + "milkyway-vguerin-d128.png")) {
-		currentVolumGalaxy.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<VolumObj3D>("milkyway-vguerin-d128.png", "", false));
+		currentVolumGalaxy.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<VolumObj3D>(currentSsystemFactory.get(CURRENT_MODE::NORMAL_MODE)->getObjLMgr(), "milkyway-vguerin-d128.png", "", false));
 	} else {
-		currentVolumGalaxy.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<VolumObj3D>("mw_rgb_d8.jpg", "mw_d32.png", true));
+		currentVolumGalaxy.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<VolumObj3D>(currentSsystemFactory.get(CURRENT_MODE::NORMAL_MODE)->getObjLMgr(), "mw_rgb_d8.jpg", "mw_d32.png", true));
 	}
-	currentVolumGalaxy.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<VolumObj3D>("", "", false)); // Can load data later using reconstruct method
+	currentVolumGalaxy.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<VolumObj3D>(currentSsystemFactory.get(CURRENT_MODE::SANDBOX_MODE)->getObjLMgr(), "", "", false)); // Can load data later using reconstruct method
 	currentVolumGalaxy.setActive(CURRENT_MODE::NORMAL_MODE);
 
-	currentDsoNav.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<DsoNavigator>());
-	currentDsoNav.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<DsoNavigator>());
+	currentDsoNav.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<DsoNavigator>(currentSsystemFactory.get(CURRENT_MODE::NORMAL_MODE)->getObjLMgr()));
+	currentDsoNav.set(CURRENT_MODE::SANDBOX_MODE, std::make_unique<DsoNavigator>(currentSsystemFactory.get(CURRENT_MODE::SANDBOX_MODE)->getObjLMgr()));
 	currentDsoNav.setActive(CURRENT_MODE::NORMAL_MODE);
 
 	currentStarLines.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<StarLines>());

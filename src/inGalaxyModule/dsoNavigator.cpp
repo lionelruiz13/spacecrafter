@@ -39,7 +39,8 @@
 #include "tools/context.hpp"
 #include <cassert>
 
-DsoNavigator::DsoNavigator()
+DsoNavigator::DsoNavigator(ObjLMgr *objLMgr)
+    : objLMgr(objLMgr)
 {
     VulkanMgr &vkmgr = *VulkanMgr::instance;
     Context &context = *Context::instance;
@@ -289,7 +290,7 @@ void DsoNavigator::insert(std::map<std::string, std::string> &args)
 void DsoNavigator::setupVolumetric(std::map<std::string, std::string> &args, int colorDepth)
 {
     if (!volum3D)
-        volum3D = std::make_unique<VolumObj3D>("\0", "\0", false);
+        volum3D = std::make_unique<VolumObj3D>(objLMgr, "\0", "\0", false);
     Vec3f position;
     Vec3f yawPitchRoll(0, 0, 0);
     Vec3f shaping(1, 1, 1);

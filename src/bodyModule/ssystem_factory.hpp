@@ -585,6 +585,11 @@ public:
         ssystem->setHaloSize(f);
     }
 
+	//! Get the object manager
+	ObjLMgr* getObjLMgr() const {
+		return objLMgr.get();
+	}
+
 private:
     //! Select current system
     void selectSystem();
