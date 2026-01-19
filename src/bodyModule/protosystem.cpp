@@ -882,6 +882,9 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 		return;
 	}
 
+	if (solarSystemDisplay)
+		p->setSolarSystemDisplay(solarSystemDisplay);
+
 	if (!param["has_atmosphere"].empty() || !param["atmosphere_lim_landscape"].empty()) {
 		AtmosphereParams* tmp = nullptr;
 		tmp = new(AtmosphereParams);
@@ -983,6 +986,14 @@ void ProtoSystem::initialSolarSystemBodies()
 			hideBody(v.second.body.get());
 		} else
 			showBody(v.second.body.get());
+	}
+}
+
+void ProtoSystem::setSolarSystemDisplay(SolarSystemDisplay *display)
+{
+	solarSystemDisplay = display;
+	for (auto &elem : systemBodies) {
+		elem.second.body->setSolarSystemDisplay(display);
 	}
 }
 

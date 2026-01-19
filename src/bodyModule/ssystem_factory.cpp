@@ -53,6 +53,7 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
     ssystemSelected = std::make_unique<SolarSystemSelected>(ssystem.get());
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
+    ssystem->setSolarSystemDisplay(ssystemDisplay.get());
 
     stellarSystem = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
 

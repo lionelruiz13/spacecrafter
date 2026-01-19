@@ -51,13 +51,9 @@ class Body;
 class SolarSystemDisplay {
 public:
     SolarSystemDisplay(ProtoSystem * _ssystem);
-    ~SolarSystemDisplay() {
-        instance = nullptr;
-    }
+    ~SolarSystemDisplay();
 
-    void changeSystem(ProtoSystem * _ssystem) {
-		ssystem = _ssystem;
-	}
+    void changeSystem(ProtoSystem * _ssystem);
 
 	void computePreDraw(const Projector * prj, const Navigator * nav);
 
@@ -97,7 +93,6 @@ public:
 
     void invalidateCenterOfInterest();
 
-    static SolarSystemDisplay *instance;
 private:
     ProtoSystem * ssystem;
     Body *mainBody = nullptr;

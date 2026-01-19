@@ -42,6 +42,7 @@ class Observer;
 class TimeMgr;
 class Body;
 class Translator;
+class SolarSystemDisplay;
 
 class ProtoSystem: public NoCopy, public ModuleFont {
     friend class SSystemIterator;
@@ -192,6 +193,8 @@ public:
     inline Body *getCenterOfInterest() const {
         return mainBody;
     }
+
+    void setSolarSystemDisplay(SolarSystemDisplay *display);
 protected:
     inline void hideBody(Body *body) {
         if (renderedBodies.erase(body))
@@ -203,6 +206,7 @@ protected:
     }
     static Vec3d currentCenterPos;
     Body *mainBody = nullptr; // This is the dominant body on screen, higher quality is expected for this body.
+	SolarSystemDisplay *solarSystemDisplay = nullptr;
 	ObjLMgr *objLMgr=nullptr;					// represents the light objects of the ss
 	std::shared_ptr<Body> bodyTrace; //returns the body that is selected by bodyTrace
 	std::shared_ptr<OrbitCreator> orbitCreator;

@@ -35,13 +35,32 @@
 #include "EntityCore/Core/FrameMgr.hpp"
 #include "EntityCore/Resource/Pipeline.hpp"
 
-SolarSystemDisplay *SolarSystemDisplay::instance = nullptr;
-
 SolarSystemDisplay::SolarSystemDisplay(ProtoSystem * _ssystem)
 {
-    assert(!instance);
-    instance = this;
     ssystem = _ssystem;
+}
+
+SolarSystemDisplay::~SolarSystemDisplay() {
+    // Unset system display link
+    if (ssystem)
+        ssystem->setSolarSystemDisplay(nullptr);
+}
+
+void SolarSystemDisplay::changeSystem(ProtoSystem * _ssystem) {
+    // Don't do anything if the system is the same
+    if (ssystem == _ssystem)
+        return;
+
+    // Unset previous system display link
+    if (ssystem)
+        ssystem->setSolarSystemDisplay(nullptr);
+
+    // Set new system
+    ssystem = _ssystem;
+
+    // Set new system display link
+    if (ssystem)
+        ssystem->setSolarSystemDisplay(this);
 }
 
 void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator * nav)

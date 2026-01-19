@@ -177,8 +177,8 @@ Body::~Body()
 {
     if (parent)
         parent->satellites.remove(this);
-    if (isCenterOfInterest && SolarSystemDisplay::instance)
-        SolarSystemDisplay::instance->invalidateCenterOfInterest();
+    if (isCenterOfInterest && solarSystemDisplay)
+        solarSystemDisplay->invalidateCenterOfInterest();
 }
 
 void Body::switchMapSkin(bool a) {

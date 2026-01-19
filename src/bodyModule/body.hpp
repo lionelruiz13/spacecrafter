@@ -72,6 +72,7 @@ class Observer;
 class Set;
 class BodyColor;
 class AtmExt;
+class SolarSystemDisplay;
 
 
 typedef struct body_flags {
@@ -141,6 +142,10 @@ public:
 	     double orbit_bounding_radius,
 	     const BodyTexture &_bodyTexture);
 	virtual ~Body();
+
+	void setSolarSystemDisplay(class SolarSystemDisplay *display) {
+		solarSystemDisplay = display;
+	}
 
 	double getRadius(void) const {
 		return radius;
@@ -569,6 +574,8 @@ protected:
 	virtual void drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest) = 0;
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
+
+	SolarSystemDisplay *solarSystemDisplay = nullptr;
 
 	std::string englishName; 			// english Body name
 	std::string nameI18;					// International translated name
