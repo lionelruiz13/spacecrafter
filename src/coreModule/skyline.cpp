@@ -61,9 +61,10 @@ SkyLine::~SkyLine()
 
 void SkyLine::createSC_context()
 {
+	if (vertexModel) return; // Context already created
+
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
-	assert(!vertexModel);
 	vertexModel = std::make_unique<VertexArray>(vkmgr, 2 * sizeof(float));
 	vertexModel->createBindingEntry(2 * sizeof(float));
 	vertexModel->addInput(VK_FORMAT_R32G32_SFLOAT);
