@@ -598,7 +598,6 @@ private:
     std::unique_ptr<SolarSystemTex> ssystemTex;
     std::unique_ptr<SolarSystemScale> ssystemScale;
     std::unique_ptr<SolarSystemSelected> ssystemSelected;
-    std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
     std::unique_ptr<ProtoSystem> stellarSystem;
 
     std::unique_ptr<ProtoSystem> galacticSystem;
@@ -606,6 +605,10 @@ private:
 
     std::map<std::string, std::unique_ptr<ProtoSystem>> systems;
     std::map<std::string, Vec3d> systemOffsets;
+
+    // SolarSystemDisplay object defined after every ProtoSystem to
+    // avoid ProtoSystem destruction before SolarSystemDisplay (causing crash)
+    std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
 
 	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// represents the light objects of the ss
 
