@@ -690,9 +690,9 @@ void Core::init(const InitParser& conf)
 		mgr.setSunScale(conf.getDouble (SCS_VIEWING,SCK_SUN_SCALE), true); //? always true TODO
 	}); // Sandbox mode has no sun and moon at init, so we can't set their scale
 
-	currentOort.applyToAll([&conf](Oort &mgr) {
-		mgr.setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
-	});
+	currentOort.applyTo(CURRENT_MODE::NORMAL_MODE,  &Oort::setFlagShow, conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
+	// Disable oort in sandbox mode at init since there is nothing at all
+	currentOort.applyTo(CURRENT_MODE::SANDBOX_MODE, &Oort::setFlagShow, false); // no oort in sandbox at init
 
 	setLightPollutionLimitingMagnitude(conf.getDouble(SCS_VIEWING,SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE), true);
 
