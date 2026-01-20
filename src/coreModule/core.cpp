@@ -1108,7 +1108,7 @@ Object Core::cleverFind(const Vec3d& v) const
 	ypos = winpos[1];
 
 	// Collect the planets inside the range
-	if (currentSsystemFactory->getFlagShow() && (currentModule == MODULE::SOLAR_SYSTEM || currentModule == MODULE::STELLAR_SYSTEM)) {
+	if (currentSsystemFactory->getFlagShow() && (currentModule == MODULE::SOLAR_SYSTEM || currentModule == MODULE::STELLAR_SYSTEM || currentModule == MODULE::IN_SANDBOX)) {
 		temp = currentSsystemFactory->searchAround(v, fov_around, navigation, observatory.get(), projection, &is_default_object, currentBodyDecor->canDrawBody()); //aboveHomePlanet);
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 
@@ -1126,26 +1126,26 @@ Object Core::cleverFind(const Vec3d& v) const
 	Vec3d p = navigation->earthEquToJ2000(v);
 
 	// The nebulas inside the range
-	if (currentNebulas->getFlagShow() && (currentModule == MODULE::SOLAR_SYSTEM || currentModule == MODULE::STELLAR_SYSTEM)) {
+	if (currentNebulas->getFlagShow() && (currentModule == MODULE::SOLAR_SYSTEM || currentModule == MODULE::STELLAR_SYSTEM || currentModule == MODULE::IN_SANDBOX)) {
 		temp = currentNebulas->searchAround(p, fov_around);
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 	}
 
 	// And the stars inside the range
-	if (currentHipStars->getFlagShow() && currentModule == MODULE::SOLAR_SYSTEM) {
+	if (currentHipStars->getFlagShow() && (currentModule == MODULE::SOLAR_SYSTEM || currentModule == MODULE::IN_SANDBOX)) {
 		std::vector<ObjectBaseP > tmp = currentHipStars->searchAround(p, fov_around, geodesic_grid);
 		for( std::vector<ObjectBaseP >::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 			candidates.push_back( Object(itr->get()) );
 		}
 	}
-	if (currentStarNav->getFlagStars() && (currentModule == MODULE::IN_GALAXY || currentModule == MODULE::STELLAR_SYSTEM)) {
+	if (currentStarNav->getFlagStars() && (currentModule == MODULE::IN_GALAXY || currentModule == MODULE::STELLAR_SYSTEM || currentModule == MODULE::IN_SANDBOX)) {
 		std::vector<ObjectBaseP > tmp = currentStarNav->searchAround(v, fov_around, navigation);
 		for( std::vector<ObjectBaseP >::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 			candidates.push_back( Object(itr->get()) );
 		}
 	}
 
-	if (currentTully->getFlagShow() && currentModule == MODULE::IN_UNIVERSE) {
+	if (currentTully->getFlagShow() && (currentModule == MODULE::IN_UNIVERSE || currentModule == MODULE::IN_SANDBOX)) {
 		std::vector<ObjectBaseP > tmp = currentTully->searchAround(v, fov_around, navigation);
 		for( std::vector<ObjectBaseP >::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 			candidates.push_back( Object(itr->get()) );
@@ -2371,7 +2371,4 @@ void Core::updateCurrentModulePointers(MODULE newModule)
 	currentVolumGalaxy   .setActive(mode);
 	currentDsoNav        .setActive(mode);
 	currentStarLines     .setActive(mode);
-	// TODO: Check the init section to correctly init sandboxXXX pointers too (should be good)
-	// TODO: Check if there is some other "pointer to duplicate" for the sandbox module
-	// TODO: Update functions like Core::cleverFind to work in sandbox mode too
 }
