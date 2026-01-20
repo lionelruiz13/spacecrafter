@@ -284,6 +284,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 		case SC_COMMAND::SC_SHUTDOWN :	return commandShutdown(); break;
 		case SC_COMMAND::SC_SKY_CULTURE :	return commandSkyCulture(); break;
 		case SC_COMMAND::SC_STAR_LINES :	return commandStarLines(); break;
+		case SC_COMMAND::SC_GALAXY_STARS :	return commandGalaxyStars(); break;
 		case SC_COMMAND::SC_SUB : 	return commandSub(); break;
 		case SC_COMMAND::SC_SUNTRACE :	return commandSuntrace(); break;
 		case SC_COMMAND::SC_TEXT :	return commandText(); break;
@@ -2742,6 +2743,34 @@ int AppCommandInterface::commandStarLines()
 		return executeCommandStatus();
 	}
 	debug_message = _("Command 'star_lines': wrong argument");
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandGalaxyStars()
+{
+	std::string argLoad = args[W_LOAD];
+
+	if (!argLoad.empty()) {
+		// Test if file exists
+		std::string fullPath;
+		if (CallSystem::fileExist(argLoad)) {
+			// Absolute path or relative to current working directory
+			fullPath = argLoad;
+		} else if (CallSystem::fileExist(scriptInterface->getScriptPath() + argLoad)) {
+			// Relative to script path
+			fullPath = scriptInterface->getScriptPath() + argLoad;
+		} else if (CallSystem::fileExist(AppSettings::Instance()->getConfigDir() + argLoad)) {
+			// Relative to config path
+			fullPath = AppSettings::Instance()->getConfigDir() + argLoad;
+		} else {
+			debug_message = _("Command 'galaxy_stars': file not found: ") + argLoad;
+			return executeCommandStatus();
+		}
+		coreLink->starGalaxyLoadCatalog(fullPath);
+		return executeCommandStatus();
+	}
+
+	debug_message = _("Command 'galaxy_stars': wrong argument. Use load filename");
 	return executeCommandStatus();
 }
 

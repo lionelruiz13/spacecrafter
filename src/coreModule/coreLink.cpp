@@ -44,6 +44,7 @@
 #include "coreModule/starLines.hpp"
 #include "ojmModule/ojm_mgr.hpp"
 #include "inGalaxyModule/starNavigator.hpp"
+#include "inGalaxyModule/starGalaxy.hpp"
 #include "coreModule/ubo_cam.hpp"
 #include "coreModule/tully.hpp"
 #include "mediaModule/media.hpp"
@@ -1379,4 +1380,16 @@ void CoreLink::rotateLandscape(double rotation) {
 
 std::string CoreLink::landscapeGetName() {
 	return core->currentLandscape->getName();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// StarGalaxy---------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+void CoreLink::starGalaxyLoadCatalog(const std::string &filename) {
+	core->currentStarGalaxy->loadCatalog(filename);
+}
+
+bool CoreLink::starGalaxyIsLoaded() const {
+	return core->currentStarGalaxy->isLoaded();
 }

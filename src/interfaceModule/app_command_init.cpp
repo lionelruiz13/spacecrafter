@@ -85,6 +85,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_SHUTDOWN] = SC_COMMAND::SC_SHUTDOWN;
 	m_commands[ACP_CN_SKY_CULTURE] = SC_COMMAND::SC_SKY_CULTURE;
 	m_commands[ACP_CN_STAR_LINES] = SC_COMMAND::SC_STAR_LINES;
+	m_commands[ACP_CN_GALAXY_STARS] = SC_COMMAND::SC_GALAXY_STARS;
 	m_commands[ACP_CN_STRUCT] = SC_COMMAND::SC_STRUCT;
 	m_commands[ACP_CN_SUB] = SC_COMMAND::SC_SUB;
 	m_commands[ACP_CN_SUNTRACE] = SC_COMMAND::SC_SUNTRACE;

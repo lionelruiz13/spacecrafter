@@ -597,8 +597,6 @@ private:
 	// Can load a file for data (at class construction or with a method) (currently no data file loaded)
 	// No way to use the method right now (add a script command ?)
 	Indexed<CloudNavigator,   CURRENT_MODE> currentCloudNav;		// draw galaxy gaz clouds (current mode (normal/sandbox))
-	// Can load a file for data (at class construction or with a method) (currently file loaded at construction for normal mode only)
-	// No way to use the method right now (add a script command ?)
 	Indexed<StarGalaxy,       CURRENT_MODE> currentStarGalaxy;		// draw galaxy stars when in universe (current mode (normal/sandbox))
 	// Can load a file for data (at class construction or with a method) (currently file loaded at construction for normal mode only)
 	// No way to use the method right now (add a script command ?)

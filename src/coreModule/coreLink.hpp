@@ -923,6 +923,15 @@ public:
 		return (core->getFlagTracking());
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// StarGalaxy---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	//! Load a catalog for currentStarGalaxy
+	void starGalaxyLoadCatalog(const std::string &filename);
+
+	//! Check if currentStarGalaxy has loaded data
+	bool starGalaxyIsLoaded() const;
+
     CoreLink(std::shared_ptr<Core> _core) {
 		core = _core;
 		instance = this;
