@@ -69,6 +69,15 @@ public:
 		return event; 
 	}
 
+	bool peekEventType(Event::Event_Type et) const {
+		for (const Event* e : envents) {
+			if (e->getEventType() == et) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 private:
     EventRecorder(){
     }

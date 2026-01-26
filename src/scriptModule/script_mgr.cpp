@@ -39,6 +39,7 @@
 #include "tools/app_settings.hpp"
 #include "tools/call_system.hpp"
 #include "coreModule/coreLink.hpp"
+#include "eventModule/event_recorder.hpp"
 #include <chrono>
 
 
@@ -336,6 +337,10 @@ void ScriptMgr::update(int delta_time)
 			}
 			if (global_lock_count == 0 && deadline < std::chrono::steady_clock::now())
 				break;
+			// Check event queue, if there is any script event to process, we exit the loop to handle it
+			// (avoid to stay in this loop for 400ms if, for example, a command emits a script event to load another script, eg. VR360)
+			if (EventRecorder::getInstance()->peekEventType(Event::Event_Type::E_SCRIPT))
+				return;
 		}
 	}
 }
