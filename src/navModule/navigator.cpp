@@ -379,6 +379,12 @@ void Navigator::setViewingMode(VIEWING_MODE_TYPE view_mode)
 // move gradually to a new heading
 void Navigator::changeHeading(double _heading, int duration)
 {
+	if (duration <= 0) {
+		heading = _heading;
+		flag_change_heading = 0;
+		return;
+	}
+
 	flag_change_heading = 1;
 
 	start_heading = heading;

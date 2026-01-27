@@ -923,6 +923,22 @@ public:
 		return (core->getFlagTracking());
 	}
 
+	const Mat4d& getHelioToEyeMat() {
+		return core->navigation->getHelioToEyeMat();
+	}
+
+	const Mat4d& getLocalToHelioMat() {
+		return core->navigation->getLocalToHelioMat();
+	}
+
+	void navigationUpdateTransformMatrices(Observer* position, double _JDay) {
+		core->navigation->updateTransformMatrices(position, _JDay);
+	}
+
+	void navigationUpdateViewMat() {
+		core->navigation->updateViewMat(core->projection->getFov());
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	// StarGalaxy---------------------------
 	////////////////////////////////////////////////////////////////////////////////

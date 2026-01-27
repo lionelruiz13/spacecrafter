@@ -419,24 +419,87 @@ void Observer::setQuaternionMode(bool mode)
 	}
 }
 
+// Helpers: extract 3x3 rotation from a Mat4d and apply it to a Vec3d
+static Vec3d rotateNoTranslation(const Mat4d& m, const Vec3d& v) {
+    return Vec3d(
+        m.r[0]*v[0] + m.r[4]*v[1] + m.r[8]*v[2],
+        m.r[1]*v[0] + m.r[5]*v[1] + m.r[9]*v[2],
+        m.r[2]*v[0] + m.r[6]*v[1] + m.r[10]*v[2]
+    );
+}
+
 void Observer::setEyeRelativeMode(bool mode)
 {
 	if (flag_eye_relative_mode == mode)
 		return;
 	const double JD = CoreLink::instance->getJDay();
-	Mat4d viewCorrection; // Correction to apply to the view in order to keep it visually unchanged
+
+	// 1) Ensure the navigator has his matrices updated BEFORE capture
+	CoreLink::instance->navigationUpdateTransformMatrices(this, JD);
+	CoreLink::instance->navigationUpdateViewMat();
+
+	// 2) CAPTURE in world (VSOP/helio)
+	// mat_helio_to_eye : world -> eye
+	// so eye -> world = transpose( rotation )
+	Mat4d H2E_old = CoreLink::instance->getHelioToEyeMat();
+	Mat4d E2H_old = H2E_old.transpose(); // Inverse rotation (world -> eye => eye -> world)
+
+	// Get forward and up vectors in world coordinates
+	// Up is +Y
+	// Forward is -Z
+	Vec3d f_world = rotateNoTranslation(E2H_old, Vec3d(0,0,-1));
+	Vec3d u_world = rotateNoTranslation(E2H_old, Vec3d(0,1,0));
+	f_world.normalize();
+	u_world.normalize();
+
+	// 3) SWITCH
 	if (mode) { // Enter eye relative mode
 		CoreLink::instance->timeLock();
 		anchorAlt->setHeliocentricEclipticPos(getHeliocentricPosition(JD));
-		viewCorrection = anchor->getRotEquatorialToVsop87() * anchor->getRotLocalToEquatorial(JD, latitude, longitude, altitude);
 	} else { // Leave eye relative mode
 		CoreLink::instance->timeUnlock();
-		viewCorrection = (anchorAlt->getRotEquatorialToVsop87() * anchorAlt->getRotLocalToEquatorial(JD, latitude, longitude, altitude)).transpose();
 	}
-	CoreLink::instance->setLocalVision(viewCorrection * CoreLink::instance->getLocalVision());
 	flag_eye_relative_mode = mode;
 	anchor.swap(anchorAlt);
 
+	// 4) Re-update matrices AFTER switch (to get the matrices for the new anchor)
+	CoreLink::instance->navigationUpdateTransformMatrices(this, JD);
+
+	// 5) Reproject forward world -> local_vision
+	// We want a local vector such that (local -> helio) * local_vision points to f_world
+	// Navigator has mat_local_to_helio (local -> helio)
+	Mat4d L2H = CoreLink::instance->getLocalToHelioMat();
+	Mat4d H2L = L2H.transpose(); // Inverse rotation (local -> helio => helio -> local)
+
+	Vec3d localVisionNew = rotateNoTranslation(H2L, f_world);
+	localVisionNew.normalize();
+
+	// 6) Set this direction in Navigator (without heading for now)
+	// auto newAnchorHeading = CoreLink::instance->getHeading(); // Get the current heading to reapply later
+	CoreLink::instance->setHeading(0.0);
+	CoreLink::instance->setLocalVision(localVisionNew);
+	CoreLink::instance->navigationUpdateViewMat();
+
+	// 7) Now correct ROLL (heading) to match u_world
+	Mat4d H2E_tmp = CoreLink::instance->getHelioToEyeMat();
+	Mat4d E2H_tmp = H2E_tmp.transpose();
+
+	Vec3d u0_world = rotateNoTranslation(E2H_tmp, Vec3d(0,1,0));
+	u0_world.normalize();
+
+	// Angle around f_world axis to bring u0_world -> u_world
+	// angle = atan2( f · (u0 x u), u0 · u )
+	double sinA = f_world.dot(u0_world ^ u_world);
+	double cosA = u0_world.dot(u_world);
+	double angleRad = atan2(sinA, cosA);
+	double angleDeg = angleRad * 180.0 / M_PI;
+
+	// Apply heading (snap or transition)
+	CoreLink::instance->setHeading(angleDeg, 0);
+	CoreLink::instance->navigationUpdateViewMat();
+
+	// // 8) Finally remove the heading to obtain the original view with a smooth transition
+	// CoreLink::instance->setHeading(newAnchorHeading, 1000); // If we want a transition from eye_relative to normal and vice-versa
 }
 
 void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)

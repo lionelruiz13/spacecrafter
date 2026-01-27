@@ -148,6 +148,9 @@ public:
 	const Mat4d& getLocalToEyeMat() const {
 		return mat_local_to_eye;
 	}
+	const Mat4d& getLocalToHelioMat() const {
+		return mat_local_to_helio;
+	}
 	const Mat4d& getJ2000ToEyeMat() const {
 		return mat_j2000_to_eye;
 	}
