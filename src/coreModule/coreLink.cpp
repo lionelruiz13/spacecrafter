@@ -1332,6 +1332,10 @@ double CoreLink::getBodySelected() const {
 	return double(core->getSelectedBodyName());
 }
 
+double CoreLink::getCurrentModule() const {
+	return double(core->getFlagIngalaxy());
+}
+
 void CoreLink::bodySetFlagIsolateSelected(bool b) {
 	core->currentSsystemFactory->setFlagIsolateSelected(b);
 }

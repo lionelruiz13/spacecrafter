@@ -612,6 +612,9 @@ public:
 	//return body selected
 	double getBodySelected() const;
 
+	// get the current module
+	double getCurrentModule() const;
+
 	//! Set whether to draw the names for the selected planet or every planet
 	void bodySetFlagIsolateSelected(bool b);
 	//! Get whether to draw the names for the selected planet or every planet

@@ -56,6 +56,7 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_BODY_SELECTED]=SC_RESERVED_VAR::BODY_SELECTED;
 	m_reservedVar[ACI_RW_LANGUAGE]=SC_RESERVED_VAR::LANGUAGE;
 	m_reservedVar[ACI_RW_JOYPAD]=SC_RESERVED_VAR::JOYPAD;
+	m_reservedVar[ACI_RW_CURRENT_MODE]=SC_RESERVED_VAR::CURRENT_MODE;
 
 	// for conivence, the map inverse
 	for (const auto& [key, val] : m_reservedVar)
@@ -69,6 +70,14 @@ AppCommandEval::~AppCommandEval()
 
 std::string AppCommandEval::evalString(const std::string &var)
 {
+	// Check if this is a reserved variable
+	auto reservedVar = m_reservedVar.find(var);
+	if (reservedVar != m_reservedVar.end()) {
+		// Reserved variable found - evaluate and return its value
+		double v = evalReservedVariable(var);
+		return formatNumber(v);
+	}
+
 	// Check if this is a direct variable lookup (old behavior)
 	auto var_it = variables.find(var);
 	if (var_it != variables.end()) {
@@ -95,23 +104,35 @@ std::string AppCommandEval::evalString(const std::string &var)
 		// Extract variable name between @{ and }
 		std::string var_name = result.substr(pos + 2, end_pos - pos - 2);
 
-		// Look up the variable
-		auto lookup_it = variables.find(var_name);
-		if (lookup_it != variables.end()) {
-			// Variable found - evaluate it
-			double v = evalDouble(lookup_it->second);
-			std::string replacement;
-			if (v == trunc(v))
-				replacement = formatNumber(evalInt(lookup_it->second));
-			else
-				replacement = lookup_it->second;
+		// Check if it's a reserved variable
+		auto reservedLookup = m_reservedVar.find(var_name);
+		if (reservedLookup != m_reservedVar.end()) {
+			// Reserved variable found - evaluate it
+			double v = evalReservedVariable(var_name);
+			std::string replacement = formatNumber(v);
 
 			// Replace @{variable} with its value
 			result.replace(pos, end_pos - pos + 1, replacement);
 			pos += replacement.length();
 		} else {
-			// Variable not found - leave @{variable} as is
-			pos = end_pos + 1;
+			// Look up in regular variables
+			auto lookup_it = variables.find(var_name);
+			if (lookup_it != variables.end()) {
+				// Variable found - evaluate it
+				double v = evalDouble(lookup_it->second);
+				std::string replacement;
+				if (v == trunc(v))
+					replacement = formatNumber(evalInt(lookup_it->second));
+				else
+					replacement = lookup_it->second;
+
+				// Replace @{variable} with its value
+				result.replace(pos, end_pos - pos + 1, replacement);
+				pos += replacement.length();
+			} else {
+				// Variable not found - leave @{variable} as is
+				pos = end_pos + 1;
+			}
 		}
 	}
 
@@ -336,6 +357,8 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			return coreLink->getLanguage();
 		case SC_RESERVED_VAR::JOYPAD:
 			return coreLink->isJoypadConnected;
+		case SC_RESERVED_VAR::CURRENT_MODE:
+			return coreLink->getCurrentModule();
 		default:
 			//std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
 			cLog::get()->write("Unknown reserved variable " + var +". Default 0.0 is returned.", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);
