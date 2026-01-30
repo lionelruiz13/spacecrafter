@@ -35,6 +35,8 @@
 #include "tools/log.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
+#include "coreModule/coreLink.hpp"
+#include "bodyModule/body.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
@@ -234,13 +236,66 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 	sphere->draw(cmd, 4096);
 	//nextZodiacalLight
 	if (zodiacal.tex != nullptr && zodiacalFader.getInterstate() && allowZodiacal) {
+		// Get the body on which the observer is located
+		auto body = CoreLink::instance->getObserverHomeBody();
+		if (!body) {
+			// No Body, we do not display the zodiacal light
+			context.frame[context.frameIdx]->compile(cmd);
+			context.frame[context.frameIdx]->toExecute(cmd, PASS_BACKGROUND);
+			return;
+		}
+
 		pipelineZodiacal->bind(cmd);
 		frag.cmag = ad_lum * zodiacal.intensity * zodiacalFader.getInterstate();
 
-		//	365.2422 c'est la période de révolution terrestre
-		//	27.5 c'est le shift de la texture ça n'a aucun sens
-		matrix = (nav->getJ2000ToEyeMat() * modelZodiacal *
-		          Mat4d::zrotation(2*M_PI*(-julianDay+27.5)/365.2422)).convert();
+		// Compute the eclipticNormal vector
+		double dt = 10.0 / 1440.0; // 10 minutes
+		Vec3d r0 = body->getPositionAtDate(julianDay);
+		Vec3d rM = body->getPositionAtDate(julianDay - dt);
+		Vec3d rP = body->getPositionAtDate(julianDay + dt);
+		Vec3d vel = rP - rM;
+		Vec3d eclipticNormal = r0 ^ vel;
+		if (eclipticNormal.length() > 1e-12) {
+			eclipticNormal.normalize();
+		} else {
+			eclipticNormal = Vec3d(0,0,1); // fallback
+		}
+
+		// forward = -observerHelioPos
+		Vec3d forward = (-nav->getObserverHelioPos());
+		forward.normalize();
+
+		// up = Projection of the ecliptic normal in the plane ⟂ forward
+		Vec3d up = eclipticNormal - forward * forward.dot(eclipticNormal);
+		if (up.length() < 1e-8) up = Vec3d(0,1,0);
+		up.normalize();
+
+		// Orthonormal basis (right-handed)
+		Vec3d right = (forward ^ up);
+		right.normalize();
+		up = (right ^ forward);
+		up.normalize();
+
+		// Build rotation matrix from this basis
+		Mat4d rotMatrix(
+			right[0],    right[1],    right[2],    0.0,   // Column 0
+			up[0],       up[1],       up[2],       0.0,   // Column 1
+			-forward[0], -forward[1], -forward[2], 0.0,   // Column 2
+			0.0,         0.0,         0.0,         1.0    // Column 3 (translation)
+		);
+
+		Mat4d H2E = nav->getHelioToEyeMat();
+		// Remove translation part of H2E
+		H2E.r[12] = 0.0;
+		H2E.r[13] = 0.0;
+		H2E.r[14] = 0.0;
+
+		// Generate final matrix (Helio to Eye) * rotation to align the zodiacal light * adjust for sphere orientation
+		matrix = (H2E * rotMatrix * Mat4d::xrotation(M_PI / 2) * Mat4d::yrotation(M_PI)).convert();
+
+		// // Adjust brightness based on distance to Sun
+		// frag.cmag *= 1 / nav->getObserverHelioPos().length();
+
 		layout->pushConstant(cmd, 0, &matrix);
 		layout->pushConstant(cmd, 1, &frag);
 		layout->bindSet(cmd, *setZodiacal, 1);
