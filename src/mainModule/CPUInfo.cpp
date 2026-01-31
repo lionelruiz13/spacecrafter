@@ -154,11 +154,10 @@ void CPUInfo::mainFunc()
 	this -> getCPUstate();
 
 	while (this->isActived) {
-		std::this_thread::sleep_for(std::chrono::seconds(1));
 		this -> getCPUstate();
 		this -> archivingData();
-
 		this -> getGPUstate();
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 	this->saveToFile();
 }

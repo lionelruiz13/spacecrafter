@@ -346,16 +346,12 @@ int main(int argc, const char *argv[])
 	loader.stop();
 	//SC logical software end here
 
-	// Close all
-	#ifdef __linux__
-	signal(SIGPIPE, SIG_IGN);
-	#endif
-	executor.close();
-	remove_lock_file(lock_file);
 	// close cpu information
 	if (cpuInfo != nullptr) {
 		cpuInfo->stop();
 	}
+	executor.close();
+	remove_lock_file(lock_file);
 
 	app.reset();
 	delete signalObj;
