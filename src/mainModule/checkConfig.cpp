@@ -42,7 +42,7 @@ CheckConfig::~CheckConfig()
 void CheckConfig::checkMainSettings()
 {
 	tmpSettings[SCK_TEX_CACHE]="false";
-	tmpSettings[SCK_TEXTURE_LOADING]="legacy";
+	tmpSettings[SCK_TEXTURE_LOADING]="dispatched";
 	tmpSettings[SCK_LOW_MEMORY]="false";
 	tmpSettings[SCK_BUILDER_THREADS]="3";
 	// mainSettings["debug_opengl"]="false";
