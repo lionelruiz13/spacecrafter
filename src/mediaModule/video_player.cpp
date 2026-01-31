@@ -23,6 +23,7 @@
 #include "mediaModule/video_player.hpp"
 #include "tools/log.hpp"
 #include "tools/s_texture.hpp"
+#include "tools/call_system.hpp"
 #include "mediaModule/media.hpp"
 
 #include "eventModule/event_recorder.hpp"
@@ -33,8 +34,17 @@
 
 Tracer tracer{80, 24};
 
+static inline uint32_t computeTextureResolutionLimit() noexcept
+{
+	size_t total = CallSystem::getRamInfo2().total / GIBI;
+	if (total < 7)
+		return 8*MIBI+MAX_CACHED_FRAMES;
+	if (total < 15)
+		return 16*MIBI+MAX_CACHED_FRAMES;
+	return 32*MIBI+MAX_CACHED_FRAMES;
+}
 
-VideoPlayer::VideoPlayer(Media *media, InitParser &conf) : media(media)
+VideoPlayer::VideoPlayer(Media *media, InitParser &conf) : media(media), maxTextureSize(computeTextureResolutionLimit())
 {
 	tracer.emplace(Trace::CUSTOM, this, "cache", &VideoPlayer::tracer_frameCache);
 	tracer.emplace(Trace::CUSTOM, &decoding, "decoding", &VideoPlayer::tracer_atomic_bool);
@@ -82,7 +92,6 @@ VideoPlayer::VideoPlayer(Media *media, InitParser &conf) : media(media)
 			debugMode = true;
 		}
 	}
-	img_convert_ctx = NULL;
 	std::string videoPlayerCodecThreadConfig = conf.getStr(SCS_IO, SCK_VIDEO_CODEC_THREADS);
 	if (videoPlayerCodecThreadConfig.empty()) {
 		cLog::get()->write("Videoplayer: missing '" SCK_VIDEO_CODEC_THREADS "' value, expected number or percentage of threads to use. Default to 50%", LOG_TYPE::L_WARNING);
@@ -134,10 +143,8 @@ std::string VideoPlayer::getTimeStatus() const
 void VideoPlayer::createTextures()
 {
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
-	const uint32_t widthMax = 4096;
-	const uint32_t heightMax = 2048;
 	// Increase buffer to include alpha channel (2.0 instead of 1.5 for YUVA420P)
-	stagingBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, widthMax*heightMax*2.0*MAX_CACHED_FRAMES, "Staging video buffer");
+	stagingBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, maxTextureSize*MAX_CACHED_FRAMES, "Staging video buffer");
 	for (int i = 0; i < 4; i++) {
 		videoTexture.tex[i] = new Texture(vkmgr, *stagingBuffer, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "Video texture", VK_FORMAT_R8_UNORM);
 		// Initialize with dummy 1x1 texture to ensure valid imageView exists before any video is loaded
@@ -194,7 +201,7 @@ void VideoPlayer::setPlaybackSpeed(FixedPointI16_2 factor)
 }
 
 
-void VideoPlayer::init()
+bool VideoPlayer::init()
 {
 	m_isVideoPlayed = false;
 	m_isVideoInPause= false;
@@ -203,7 +210,11 @@ void VideoPlayer::init()
 	av_register_all();
 	#endif
 	avformat_network_init();
-	pFormatCtx = avformat_alloc_context();
+	if (!pFormatCtx)
+		pFormatCtx = avformat_alloc_context();
+	if (!pCodecCtx)
+		pCodecCtx = avcodec_alloc_context3(NULL);
+	return pFormatCtx && pCodecCtx;
 }
 
 
@@ -242,7 +253,8 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 		return false;
 	}
 
-	init();
+	if (!init())
+		return false;
 
 	//internal tests at ffmpeg
 	if(avformat_open_input(&pFormatCtx,fileName.c_str(),NULL,NULL)!=0) {
@@ -269,7 +281,6 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 
 	video_st = pFormatCtx->streams[videoindex];
 
-	pCodecCtx= avcodec_alloc_context3(NULL);
 	avcodec_parameters_to_context(pCodecCtx, pFormatCtx->streams[videoindex]->codecpar);
 	if (pCodecCtx->width > 1024) // Only enforce threaded policy for lage videos, as smaller ones doesn't need it.
 		policy = DecodePolicy::THREADED;
@@ -293,19 +304,18 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 		pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
 	}
 
+	{
 	if(pCodec==NULL) {
 		cLog::get()->write("Unsupported pCodec for video file", LOG_TYPE::L_ERROR);
-		avformat_close_input(&pFormatCtx);
-		return false;
+		goto fail;
 	}
 	// Special configuration for VP9 with alpha - will be configured later after alpha detection
 	AVDictionary *opts = nullptr;
 
 	if(avcodec_open2(pCodecCtx, pCodec, &opts)<0) {
 		cLog::get()->write("Could not open codec.", LOG_TYPE::L_ERROR);
-		avformat_close_input(&pFormatCtx);
 		av_dict_free(&opts);
-		return false;
+		goto fail;
 	}
 	av_dict_free(&opts);
 
@@ -317,8 +327,6 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 	baseDeltaFrame = std::chrono::steady_clock::duration(std::chrono::steady_clock::period::den * frame_rate.den / (std::chrono::steady_clock::period::num * frame_rate.num));
 	deltaFrame = std::chrono::steady_clock::duration((baseDeltaFrame.count() * decltype(playbackSpeedFactor)::den) / playbackSpeedFactor.getRawValue());
 	nbTotalFrame = static_cast<int>((pFormatCtx->duration+1) * frameRate / AV_TIME_BASE);
-
-	img_convert_ctx = NULL;
 
 	// Detect if the input format potentially has alpha
 	bool sourceHasAlpha = pCodecCtx->pix_fmt == AV_PIX_FMT_YUVA420P;
@@ -370,8 +378,7 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 			if(avcodec_open2(pCodecCtx, pCodec, &alpha_opts) < 0) {
 				cLog::get()->write("Could not reopen VP9 codec with alpha support.", LOG_TYPE::L_ERROR);
 				av_dict_free(&alpha_opts);
-				avformat_close_input(&pFormatCtx);
-				return false;
+				goto fail;
 			}
 			av_dict_free(&alpha_opts);
 		}
@@ -380,29 +387,17 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 		targetFormat = AV_PIX_FMT_YUV420P;
 	}
 
-	// Now initialize textures with the correct alpha detection
-	initTexture();
-
-	// For VP9 with alpha, do not create conversion context
-	if (pCodecCtx->codec_id == AV_CODEC_ID_VP9 && hasAlphaChannel) {
-		img_convert_ctx = nullptr; // No conversion needed for VP9 with alpha
-	} else {
-		img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt,
-		                                 pCodecCtx->width, pCodecCtx->height, targetFormat,
-		                                 SWS_BICUBIC, NULL, NULL, NULL);
-		if(img_convert_ctx==NULL) {
-			cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
-			return false;
-		}
-	}
-
 	// check if the pixel format is supported
 	if (pCodecCtx->pix_fmt != targetFormat) {
 		cLog::get()->write("Unsupported pixel format for video file. Expected " +
 		                   std::string(av_get_pix_fmt_name(targetFormat)) + ", got " +
 		                   std::string(av_get_pix_fmt_name(pCodecCtx->pix_fmt)), LOG_TYPE::L_ERROR);
-		return false;
+		goto fail;
 	}
+
+	// Now initialize textures with the correct alpha detection
+	if (!initTexture())
+		goto fail;
 
 	if (hasAlphaChannel) {
 		cLog::get()->write("Video has alpha channel, using YUVA420P", LOG_TYPE::L_INFO);
@@ -410,7 +405,6 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 		cLog::get()->write("Video has no alpha channel, using YUV420P", LOG_TYPE::L_INFO);
 	}
 	pFrameIn = av_frame_alloc();
-	pFrameOut = av_frame_alloc();
 
 	// For VP9 with alpha, no additional buffer needed
 	if (pCodecCtx->codec_id == AV_CODEC_ID_VP9 && hasAlphaChannel) {
@@ -418,14 +412,6 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 		cLog::get()->write("VP9 with alpha: using direct decoded frames", LOG_TYPE::L_INFO);
 	} else {
 		av_image_fill_arrays(pFrameIn->data, pFrameIn->linesize, NULL, targetFormat, pCodecCtx->width, pCodecCtx->height, 1);
-
-		// Initialize pFrameOut with its own data for conversion (only if conversion needed)
-		if (pCodecCtx->pix_fmt != targetFormat) {
-			if (av_image_alloc(pFrameOut->data, pFrameOut->linesize, pCodecCtx->width, pCodecCtx->height, targetFormat, 1) < 0) {
-				cLog::get()->write("Could not allocate frame buffer for conversion", LOG_TYPE::L_ERROR);
-				return false;
-			}
-		}
 	}
 
 	packet=(AVPacket *)av_malloc(sizeof(AVPacket));
@@ -446,6 +432,11 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
 	EventRecorder::getInstance()->queue(event);
 	return true;
+	}
+fail:
+	avcodec_close(pCodecCtx);
+	avformat_close_input(&pFormatCtx);
+	return false;
 }
 
 void VideoPlayer::update()
@@ -552,22 +543,6 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 	}
 	threadTerminate(); // Don't overlap av_* calls
 
-	if (img_convert_ctx) {
-		sws_freeContext(img_convert_ctx);
-		img_convert_ctx = nullptr;
-	}
-
-	// Free the allocated buffer for pFrameOut (only if it was allocated)
-	if (pFrameOut && pFrameOut->data[0]) {
-		// For VP9 with alpha, pFrameOut does not have allocated data
-		if (!(pCodecCtx && pCodecCtx->codec_id == AV_CODEC_ID_VP9 && hasAlphaChannel)) {
-			av_freep(&pFrameOut->data[0]);
-		}
-	}
-	if (pFrameOut) {
-		av_frame_free(&pFrameOut);
-		pFrameOut = nullptr;
-	}
 	if (pFrameIn) {
 		av_frame_free(&pFrameIn);
 		pFrameIn = nullptr;
@@ -602,7 +577,7 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 	tracer.stop();
 }
 
-void VideoPlayer::initTexture()
+bool VideoPlayer::initTexture()
 {
 	// Define dimensions for YUV and potentially Alpha
 	const int _widths[4]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2, hasAlphaChannel ? videoRes.w : 1 };
@@ -610,11 +585,16 @@ void VideoPlayer::initTexture()
 
 	// Always handle 4 textures, but the 4th can be a 1x1 dummy texture
 	int numTextures = 4;
+	uint32_t textureSize = 0U;
 
 	for(int i=0; i<numTextures; i++) {
 		widths[i] = _widths[i];
 		heights[i] = _heights[i];
+		textureSize += _widths[i] * _heights[i];
 	}
+
+	if (textureSize > maxTextureSize)
+		return false;
 
 	bool uninitialized = false;
 	// First pass: check if any texture needs reinitialization
@@ -688,6 +668,7 @@ void VideoPlayer::initTexture()
 		videoTexture.sync->syncOut->build();
 		videoTexture.sync->syncIn->build();
 	}
+	return true;
 }
 
 
