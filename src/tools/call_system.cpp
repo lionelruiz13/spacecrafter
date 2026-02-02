@@ -235,9 +235,9 @@ CallSystem::RamInfo CallSystem::getRamInfo2()
         };
     #else
         return RamInfo{
-            .total = 16ULL*GIGA,
-            .available = 4ULL*GIGA,
-            .swapsize = 16ULL*GIGA
+            .total = 16ULL*GIBI,
+            .available = 4ULL*GIBI,
+            .swapsize = 16ULL*GIBI
         };
     #endif
 }
