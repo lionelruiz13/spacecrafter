@@ -475,7 +475,7 @@ void Observer::setEyeRelativeMode(bool mode)
 	localVisionNew.normalize();
 
 	// 6) Set this direction in Navigator (without heading for now)
-	// auto newAnchorHeading = CoreLink::instance->getHeading(); // Get the current heading to reapply later
+	auto newAnchorHeading = CoreLink::instance->getHeading(); // Get the current heading to reapply later
 	CoreLink::instance->setHeading(0.0);
 	CoreLink::instance->setLocalVision(localVisionNew);
 	CoreLink::instance->navigationUpdateViewMat();
@@ -498,8 +498,8 @@ void Observer::setEyeRelativeMode(bool mode)
 	CoreLink::instance->setHeading(angleDeg, 0);
 	CoreLink::instance->navigationUpdateViewMat();
 
-	// // 8) Finally remove the heading to obtain the original view with a smooth transition
-	// CoreLink::instance->setHeading(newAnchorHeading, 1000); // If we want a transition from eye_relative to normal and vice-versa
+	// 8) Finally remove the heading to obtain the original view with a smooth transition
+	CoreLink::instance->setHeading(newAnchorHeading, 3000); // If we want a transition from eye_relative to normal and vice-versa
 }
 
 void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
