@@ -1316,6 +1316,14 @@ double CoreLink::getSelectedDE() const {
 	return core->currentSsystemFactory->getSelectedDE(core->navigation);
 }
 
+double CoreLink::getSelectedDistance() const {
+	return core->currentSsystemFactory->getSelectedDistance(core->navigation);
+}
+
+double CoreLink::getSelectedMagnitude() const {
+	return core->currentSsystemFactory->getSelectedMagnitude(core->navigation);
+}
+
 double CoreLink::getSelectedStarRA() const {
 	return core->currentSsystemFactory->getSelectedStarRA(core->navigation);
 }

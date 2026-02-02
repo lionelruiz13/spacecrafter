@@ -594,6 +594,12 @@ public:
 	//return the Selected body DE
 	double getSelectedDE() const;
 
+	//return the Selected body Distance
+	double getSelectedDistance() const;
+
+	//return the Selected body Magnitude
+	double getSelectedMagnitude() const;
+
 	//return the Sected star RA
 	double getSelectedStarRA() const;
 

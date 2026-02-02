@@ -303,6 +303,15 @@ public:
     	return de*180.0/M_PI;
     }
 
+    double getSelectedDistance(const Navigator * nav) const {
+        Vec3d pos = ssystemSelected->getSelected().getObsJ2000Pos(nav);
+        return pos.length();
+    }
+
+    double getSelectedMagnitude(const Navigator * nav) const {
+        return ssystemSelected->getSelected().getMag(nav);
+    }
+
 	void setPlanetSizeScale(const std::string &name, float s) {
         ssystemScale->setPlanetSizeScale(name, s);
     }
