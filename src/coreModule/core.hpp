@@ -165,6 +165,11 @@ public:
 		setSkyLanguage(initialvalue.initial_skyLocale);
 	}
 
+	void setInitialSrtLocale() {
+		//printf("Locale %s\n",initialvalue.initial_srtLocale.c_str());
+		setSrtLanguage(initialvalue.initial_srtLocale);
+	}
+
 	//! Get the I18 available sky culture names
 	std::string getSkyCultureListI18() const;
 	std::string getSkyCultureHash() const;
@@ -188,6 +193,19 @@ public:
 	//! Get the current sky language used for sky object labels
 	//! @return The name of the locale (e.g fr)
 	std::string getSkyLanguage();
+
+	//! @brief Set the srt language and reload the srt objects names with the new translation
+	//! This function has no permanent effect on the global locale
+	//!@param newSrtLocaleName The name of the locale (e.g fr) to use for srt object labels
+	void setSrtLanguage(const std::string& newSrtLocaleName) {
+		srtLanguage = newSrtLocaleName;
+	}
+
+	//! Get the current srt language used for srt object labels
+	//! @return The name of the locale (e.g fr)
+	std::string getSrtLanguage() {
+		return srtLanguage;
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Navigation
@@ -546,6 +564,7 @@ private:
 	void updateCurrentModulePointers(MODULE newModule);
 
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
+	std::string srtLanguage;			// The locale name used for srt
 	Translator skyTranslator;			// The translator used for astronomical object naming
 
 	// external class

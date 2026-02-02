@@ -551,6 +551,9 @@ void Core::init(const InitParser& conf)
 	std::string skyLocaleName = conf.getStr(SCS_LOCALIZATION, SCK_SKY_LOCALE);
 	initialvalue.initial_skyLocale=skyLocaleName;
 	setSkyLanguage(skyLocaleName, true);
+	initialvalue.initial_srtLocale=skyLocaleName; // SRT doesn't have conf for now so default == sky locale config
+	srtLanguage = skyTranslator.getLocaleName();
+	cLog::get()->write("Srt language is " + srtLanguage, LOG_TYPE::L_INFO);
 
 	int grid_level = currentHipStars.get(CURRENT_MODE::NORMAL_MODE)->getMaxGridLevel();
 	geodesic_grid = new GeodesicGrid(grid_level);

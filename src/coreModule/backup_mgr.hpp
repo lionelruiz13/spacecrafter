@@ -38,6 +38,7 @@
 struct InitialValue {
 	std::string initial_skyCulture;
 	std::string initial_skyLocale;
+	std::string initial_srtLocale;
 	std::string initial_landscapeName;
 };
 
