@@ -434,7 +434,7 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 	return true;
 	}
 fail:
-	avcodec_close(pCodecCtx);
+	avcodec_free_context(pCodecCtx);
 	avformat_close_input(&pFormatCtx);
 	return false;
 }
@@ -553,14 +553,12 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 		av_packet_free(&packet);
 		packet = nullptr;
 	}
-	if (pCodecCtx) {
-		avcodec_close(pCodecCtx);
-	}
+	if (pCodecCtx)
+		avcodec_free_context(&pCodecCtx);
 
 	// Free the format context
-	if (pFormatCtx) {
+	if (pFormatCtx)
 		avformat_close_input(&pFormatCtx);
-	}
 
 	std::ostringstream oss;
 	auto total = (sRead + sParse + sDecode + sWrite).count() / 100ULL;
