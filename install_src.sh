@@ -18,9 +18,11 @@ else
 	JOBS=$1
 fi
 
+[ "$BUILD_MODE" = "" ] &&BUILD_MODE=Release
+
 cd build
 git submodule update --init || (cd ../src && git clone https://github.com/Calvin-Ruiz/EntityCore.git)
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=$BUILD_MODE || exit $?
 if [ "$JOBS" = "" ]
 then
 	NPROC=$(nproc)
@@ -34,8 +36,8 @@ then
 		JOBS="-j$NPROC"
 	fi
 fi
-chrt --batch 0 cmake --build . $JOBS --config Release
-sudo cmake --install . --config Release
+chrt --batch 0 cmake --build . $JOBS --config $BUILD_MODE || exit $?
+sudo cmake --install . --config $BUILD_MODE || exit $?
 cd ..
 
 echo -e "\033[32mScript completed.\033[0m"
