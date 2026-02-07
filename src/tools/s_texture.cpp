@@ -102,6 +102,8 @@ const int formatSizes[] = {1, 2, 3, 4, 2, 4, 6, 8, 4};
 
 texRecap::~texRecap()
 {
+    if (loader && loader->useCount.fetch_sub(1U, std::memory_order_relaxed) == 1U)
+        delete loader;
     if (texture)
         s_texture::releaseTexture[s_texture::releaseTexIdx].push_back(std::move(texture));
 }
@@ -242,8 +244,7 @@ void TextureLoader::postLoad()
 {
     cache.width = texture->width;
 	cache.height = texture->height;
-    texture->loader = nullptr;
-    autodelete = true;
+    texture.reset();
 }
 
 s_texture::s_texture(const s_texture *t)
@@ -609,11 +610,12 @@ Texture &s_texture::getTexture()
     if (texture->loader) {
         auto now = std::chrono::steady_clock::now();
         auto &priority = texture->loader->priority;
-        if (priority > LoadPriority::LOADING) {
-            priority = LoadPriority::NOW;
+        if (priority.load(std::memory_order_relaxed) > LoadPriority::LOADING) {
+            priority.store(LoadPriority::NOW, std::memory_order_relaxed);
         }
-        while (priority != LoadPriority::COMPLETED)
-            std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for loaded
+        while (priority.load(std::memory_order_acquire) > LoadPriority::COMPLETED)
+            std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Wait for loaded
+        texture->loader->detach();
         texture->loader = nullptr;
         loadTime += std::chrono::steady_clock::now() - now;
     }
@@ -918,7 +920,7 @@ void s_texture::bindTexture(VkCommandBuffer cmd, PipelineLayout *layout)
 {
     if (!texture->ojmSet) {
         texture->ojmSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, layout, 1, true, true);
-        texture->ojmSet->bindTexture(*texture->texture, 0);
+        texture->ojmSet->bindTexture(getTexture(), 0); // Texture* isn't defined if not already loaded
     }
     layout->bindSet(cmd, *texture->ojmSet, 1);
 }

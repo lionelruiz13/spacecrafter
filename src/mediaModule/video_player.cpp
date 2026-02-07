@@ -434,7 +434,7 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 	return true;
 	}
 fail:
-	avcodec_free_context(pCodecCtx);
+	avcodec_free_context(&pCodecCtx);
 	avformat_close_input(&pFormatCtx);
 	return false;
 }
