@@ -92,32 +92,34 @@ SkyGrid::~SkyGrid()
 
 void SkyGrid::createShader()
 {
-    VulkanMgr &vkmgr = *VulkanMgr::instance;
-    Context &context = *Context::instance;
+    if (!layout) {
+        VulkanMgr &vkmgr = *VulkanMgr::instance;
+        Context &context = *Context::instance;
 
-	m_dataGL = new VertexArray(vkmgr);
-    m_dataGL->createBindingEntry(4 * sizeof(float));
-    m_dataGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
-    m_dataGL->addInput(VK_FORMAT_R32_SFLOAT); // MAG
-    layout = new PipelineLayout(vkmgr);
-    layout->setGlobalPipelineLayout(context.layouts.front().get());
-    layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0, 1, true);
-    layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1, true);
-    layout->buildLayout();
-    layout->build();
-    pipeline = new Pipeline(vkmgr, *context.render, PASS_BACKGROUND, layout);
-    pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
-    pipeline->setDepthStencilMode();
-    pipeline->bindVertex(*m_dataGL);
-    pipeline->bindShader("skygrid.vert.spv");
-    pipeline->bindShader("skygrid.geom.spv");
-	// Set specialization constant for projection type (constant_id = 8)
-	pipeline->setSpecializedConstant(8, Context::projectionType);
-    pipeline->bindShader("skygrid.frag.spv");
-    pipeline->build();
-    set = new Set(vkmgr, *context.setMgr, layout);
-    vUniformID0 = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 0, sizeof(Mat4f));
-    vUniformID1 = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 1, sizeof(frag));
+    	m_dataGL = new VertexArray(vkmgr);
+        m_dataGL->createBindingEntry(4 * sizeof(float));
+        m_dataGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
+        m_dataGL->addInput(VK_FORMAT_R32_SFLOAT); // MAG
+        layout = new PipelineLayout(vkmgr);
+        layout->setGlobalPipelineLayout(context.layouts.front().get());
+        layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0, 1, true);
+        layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1, true);
+        layout->buildLayout();
+        layout->build();
+        pipeline = new Pipeline(vkmgr, *context.render, PASS_BACKGROUND, layout);
+        pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
+        pipeline->setDepthStencilMode();
+        pipeline->bindVertex(*m_dataGL);
+        pipeline->bindShader("skygrid.vert.spv");
+        pipeline->bindShader("skygrid.geom.spv");
+    	// Set specialization constant for projection type (constant_id = 8)
+    	pipeline->setSpecializedConstant(8, Context::projectionType);
+        pipeline->bindShader("skygrid.frag.spv");
+        pipeline->build();
+        set = new Set(vkmgr, *context.setMgr, layout);
+        vUniformID0 = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 0, sizeof(Mat4f));
+        vUniformID1 = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 1, sizeof(frag));
+    }
 }
 
 void SkyGrid::destroyShader()
