@@ -435,7 +435,8 @@ bool s_texture::preload(const std::string& fullName, int _loadType, bool mipmap,
                 auto texloader = texture->loader;
                 texloader->asyncLoad();
                 texloader->postLoad();
-                delete texloader;
+                texloader->detach();
+                texture->loader = nullptr;
             }
             return true;
         } catch (...) {
