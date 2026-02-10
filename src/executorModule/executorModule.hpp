@@ -30,6 +30,13 @@
 enum MODULE {SOLAR_SYSTEM, IN_GALAXY, IN_UNIVERSE, STELLAR_SYSTEM, IN_SANDBOX};
 enum class CURRENT_MODE: std::size_t { NORMAL_MODE = 0, SANDBOX_MODE, Count };
 
+struct AsyncUpdateData {
+    Vec3d sunPos;
+    Vec3d moonPos;
+    Vec3d earthPos_helio;
+    Vec3d moonPos_helio;
+};
+
 class ExecutorModule {
 public:
 

@@ -46,7 +46,7 @@ public:
 
 private:
     // Start async update
-    void asyncUpdateBegin(std::pair<Vec3d, Vec3d> data);
+    void asyncUpdateBegin(AsyncUpdateData data);
     // Ensure async update has completed before continue
     void asyncUpdateEnd();
     void asyncUpdateLoop();
@@ -55,7 +55,7 @@ private:
     Observer *observer;
     Vec3d center;
     std::thread thread;
-    WorkQueue<std::pair<Vec3d, Vec3d>, 3> threadQueue;
+    WorkQueue<AsyncUpdateData, 3> threadQueue;
 };
 
 #endif

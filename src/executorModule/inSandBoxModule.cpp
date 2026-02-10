@@ -146,15 +146,27 @@ void InSandBoxModule::update(int delta_time)
 		sunPos = Vec3d(0., 0., -1.);
 	}
 
+	// Compute the Earth position in heliocentric coordinate (use default if no earth in sandbox)
+	Vec3d earthPos_helio;
+	auto earth = core->currentSsystemFactory->getEarth();
+	if (earth != nullptr) {
+		earthPos_helio = earth->get_heliocentric_ecliptic_pos();
+	} else {
+		// Fictive position to avoid lunar eclipse calculation
+		earthPos_helio = Vec3d(1., 0., 0.);
+	}
+
 	// Compute the moon position in local coordinate (use default if no moon in sandbox)
 	Vec3d moonPos;
+	Vec3d moonPos_helio;
 	auto moon = core->currentSsystemFactory->getMoon();
 	if (moon != nullptr) {
-		Vec3d moonHelio = moon->get_heliocentric_ecliptic_pos();
-		moonPos = core->navigation->helioToLocal(moonHelio);
+		moonPos_helio = moon->get_heliocentric_ecliptic_pos();
+		moonPos = core->navigation->helioToLocal(moonPos_helio);
 	} else {
 		// Fictive position under the horizon
 		moonPos = Vec3d(0., 0., -1.);
+		moonPos_helio = Vec3d(0., 0., -1.);
 	}
 
 	// Give the updated standard projection matrices to the projector
@@ -167,7 +179,7 @@ void InSandBoxModule::update(int delta_time)
 											core->navigation->geTdomeMat(),
 											core->navigation->getDomeFixedMat());
 
-    asyncUpdateBegin({sunPos, moonPos});
+    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio});
 
     // Update faders
 	core->currentSkyGridMgr->update(delta_time);
@@ -294,7 +306,7 @@ bool InSandBoxModule::testValidAltitude(double altitude)
 	return false;
 }
 
-void InSandBoxModule::asyncUpdateBegin(std::pair<Vec3d, Vec3d> data)
+void InSandBoxModule::asyncUpdateBegin(AsyncUpdateData data)
 {
     asyncWorkState = true;
     threadQueue.push(data);
@@ -308,8 +320,7 @@ void InSandBoxModule::asyncUpdateEnd()
 
 void InSandBoxModule::asyncUpdateLoop()
 {
-    // std::pair<sunPos, moonMos>
-    std::pair<Vec3d, Vec3d> data;
+    AsyncUpdateData data;
     threadQueue.acquire();
     while (threadQueue.pop(data)) {
         core->currentSsystemFactory->computePreDraw(core->projection, core->navigation);
@@ -319,12 +330,14 @@ void InSandBoxModule::asyncUpdateLoop()
         auto moon = core->currentSsystemFactory->getMoon();
         auto earth = core->currentSsystemFactory->getEarth();
         if (moon != nullptr && earth != nullptr) {
-            moonPhase = moon->get_phase(earth->get_heliocentric_ecliptic_pos());
+            moonPhase = moon->get_phase(data.earthPos_helio);
         }
 
-        core->currentAtmosphere->computeColor(core->timeMgr->getJDay(), data.first, data.second,
+        core->currentAtmosphere->computeColor(core->timeMgr->getJDay(), data.sunPos, data.moonPos,
     	                          moonPhase,
-    	                          core->currentToneConverter.get(), core->projection, observer->getLatitude(), observer->getAltitude(),
+    	                          core->currentToneConverter.get(), core->projection,
+								  data.earthPos_helio, data.moonPos_helio,
+								  observer->getLatitude(), observer->getAltitude(),
     	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
         core->currentHipStars->preDraw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->currentAtmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
         core->currentSsystemFactory->bodyTrace(core->navigation);

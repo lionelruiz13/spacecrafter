@@ -36,6 +36,7 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/sc_const.hpp"
+#include "tools/scoped_value.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
 #include "tools/context.hpp"
@@ -136,6 +137,7 @@ void Atmosphere::createSC_context()
 
 void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase,
                                const ToneReproductor * eye, const Projector* prj,
+	                   		   Vec3d earthPos_helio, Vec3d moonPos_helio,
                                float latitude, float altitude, float temperature, float relative_humidity)
 {
 	float min_mw_lum = 0.13;
@@ -192,6 +194,72 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 	moon_pos[1] = moonPos[1];
 	moon_pos[2] = moonPos[2];
 
+	// Use GEOCENTRIC positions for lunar eclipse calculation
+	// (Earth's shadow is projected from Earth's center, not from observer position)
+	// In heliocentric coords: Sun=(0,0,0), Earth=earthPos_helio, Moon=moonPos_helio
+	// Convert to geocentric (Earth-centered):
+	Vec3d sunPos_geo = -earthPos_helio;  // Sun seen from Earth
+	Vec3d moonPos_geo = moonPos_helio - earthPos_helio;  // Moon seen from Earth
+	double sun_distance_geo = sunPos_geo.length();
+	double moon_distance_geo = moonPos_geo.length();
+	sunPos_geo.normalize();
+	moonPos_geo.normalize();
+
+	// Calculate the anti-sun direction (direction of Earth's shadow from Earth center)
+	Vec3d anti_sun = -sunPos_geo;
+
+	// Calculate angular distance between moon center and shadow center (geocentric)
+	double shadow_alignment = acos(moonPos_geo.dot(anti_sun));
+
+	// Calculate Earth's umbra angular radius at moon distance (real-time calculation)
+	// Based on geometry: umbra radius decreases with distance from Earth
+	const double earth_radius_km = 6371.0;
+	const double sun_radius_km = 696000.0;
+	double sun_distance_km = sun_distance_geo * AU;
+	double moon_distance_km = moon_distance_geo * AU;
+
+	// At typical moon distance (384,400 km), this should give ~4600-4700 km
+	// For a more accurate formula, we can recalculate:
+	// Using similar triangles: umbra_radius / d_moon = (R_earth - R_sun) / d_sun
+	// But since R_sun >> R_earth, the shadow cone angle is atan((R_sun - R_earth) / d_sun)
+	double shadow_cone_half_angle = atan((sun_radius_km - earth_radius_km) / sun_distance_km);
+	double umbra_radius_km = earth_radius_km - moon_distance_km * tan(shadow_cone_half_angle);
+
+	// Convert to angular radius as seen from Earth
+	double umbra_angle = atan(umbra_radius_km / moon_distance_km);
+	// Moon's angular radius: already calculated
+	double moon_radius = moon_angular_size;
+
+	// Calculate what percentage of the moon's disk is covered by Earth's shadow
+	// This is a linear approximation based on how far the moon has entered the umbra
+	// When moon center is at this distance or more from shadow center: moon is completely outside
+	double moon_fully_outside = umbra_angle + moon_radius;
+	// When moon center is at this distance or less from shadow center: moon is completely inside
+	double moon_fully_inside = umbra_angle - moon_radius;
+
+	float moon_coverage_percent = 0.0f;
+	if (shadow_alignment <= moon_fully_inside) {
+		// Moon is completely engulfed by shadow
+		moon_coverage_percent = 1.0f;
+	} else if (shadow_alignment < moon_fully_outside) {
+		// Moon is partially in shadow - calculate percentage linearly
+		// As moon moves from fully outside to fully inside, coverage goes from 0% to 100%
+		moon_coverage_percent = (moon_fully_outside - shadow_alignment) / (2.0 * moon_radius);
+	}
+	// else: moon is completely outside shadow, coverage stays 0%
+
+	// ScopedValue to temporarily reduce moon brightness during eclipse based on coverage (and automatically restore after scope exit (exit of this function))
+	auto moon_brightness_scoped = ScopedValue(
+		[this]() { return this->skyb->getMoonBrightness(); },
+		[this](double brightness) { this->skyb->setMoonBrightness(brightness); }
+	);
+	// Fade atmosphere proportionally to moon coverage
+	// 0% moon coverage = 100% atmosphere, 100% moon coverage = 0% atmosphere
+	if (moon_coverage_percent > 0.0f) {
+		float lunar_eclipse_fader = 1.0f - moon_coverage_percent;
+		moon_brightness_scoped.set(skyb->getMoonBrightness() * lunar_eclipse_fader); // Reduce moon brightness proportionally to coverage to avoid bright moon during eclipse
+	}
+
 	sky->setParamsv(sun_pos, 5.f);
 
 	skyb->setLoc(latitude * M_PI/180., altitude, temperature, relative_humidity);
@@ -207,6 +275,87 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 
 	// Variables used to compute the average sky luminance
 	double sum_lum = 0.;
+
+	// Calculate sun transition factor (0 = full night, 1 = day/twilight)
+	// Transition zoone: sun_pos[2] from -0.2 (deep night) to -0.05 (twilight starts)
+	float sun_transition = 0.0f;
+	if (sun_pos[2] < -0.2f) {
+		sun_transition = 0.0f; // Deep night - blue correction active
+	} else if (sun_pos[2] > -0.05f) {
+		sun_transition = 1.0f; // Twilight/day - natural coolors from Skylight model
+	} else {
+		// Smooth transition - faster fade to preserve warm twilight colors
+		float t = (sun_pos[2] + 0.2f) / 0.15f; // Normalize to [0,1]
+		sun_transition = (sun_pos[2] + 0.2f) / 0.15f; // Linear transition
+	}
+
+	// Pre-calculate moon-related factors
+	bool apply_blue = (sun_transition < 1.0f && moon_pos[2] > -0.25f);
+	float total_blue_factor = 0.0f;
+	const float target_x = 0.25f;
+	const float target_y = 0.25f;
+
+	// At night (sun well below horizon), apply blue correction ONLY if moon is present
+	if (apply_blue) {
+		// Calculate moon presence factor
+		float moon_presence = 0.0f;
+		if (moon_pos[2] >= 0.0f) {
+			moon_presence = 1.0f;
+		} else if (moon_pos[2] > -0.25f) {
+			// Fade in as moon approaches horizon
+			moon_presence = (moon_pos[2] + 0.25f) / 0.25f;
+		}
+
+		// Pre-calculate normalized moon brightness
+		// Use the original moon brightness setting (before eclipse dimming) to determine how much blue to add,
+		// so that the blue effect is stronger for higher moon brightness settings.
+		// The division by 10 is arbitrary to scale it to a reasonable range for blue factor calculation.
+		float normalized_moon_brightness = moon_brightness_scoped.saved() / 10.0f;
+
+		// Base night blue color - only when moon is present
+		// Scale with moon presence AND moon_brightness setting to avoid blue without moon
+		// If moon_brightness is 0, no blue effect at all
+		float night_factor = (1.0f - sun_transition) * moon_presence * normalized_moon_brightness * 0.7f;
+
+		// Calculate moon altitude transition
+		float moon_altitude_transition = 0.0f;
+		if (moon_pos[2] < -0.25f) {
+			moon_altitude_transition = 0.0f;
+		} else if (moon_pos[2] > 0.15f) {
+			moon_altitude_transition = 1.0f;
+		} else {
+			float t = (moon_pos[2] + 0.25f) / 0.4f;
+			moon_altitude_transition = t * t * (3.0f - 2.0f * t);
+		}
+
+		// When both below horizon, scale moon effect based on its relative height to sun to avoid blue when moon is much lower than sun
+		float relative_height_factor = 1.0f;
+		if (sun_pos[2] < -0.05f && moon_pos[2] < -0.05f) {
+			// Both below: blend based on who's higher
+			float altitude_diff = moon_pos[2] - sun_pos[2];
+			if (altitude_diff > 0.0f) {
+				// Moon higher than sun - full moon effect
+				relative_height_factor = std::min(1.0f, altitude_diff / 0.15f);
+			} else {
+				// Sun higher - reduce moon effect smoothly
+				relative_height_factor = std::max(0.0f, 1.0f + altitude_diff / 0.15f);
+			}
+		}
+
+		// Moon influence based on altitude and brightness setting
+		// Use the original moon brightness setting to determine influence, so that the blue effect is stronger for higher moon brightness settings
+		float moon_influence = std::max(0.0f, moon_pos[2]) * moon_brightness_scoped.saved();
+		float moon_factor = std::min(1.0f, moon_influence * 2.0f);
+		moon_factor *= moon_altitude_transition;
+		moon_factor *= relative_height_factor; // Apply relative height scaling
+		moon_factor *= (1.0f - sun_transition);
+
+		// Moon adds up to 30% extra blue on top of base night blue
+		float moon_bonus = moon_factor * 0.3f;
+
+		// Total blue shift = base night (scaled by moon presence) + moon bonus
+		total_blue_factor = std::min(1.0f, night_factor + moon_bonus);
+	}
 
 	// Compute the sky color for every point above the ground
 	float x_val = -1.f;
@@ -234,6 +383,12 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 			b2.color[2] = skyb->getLuminance(moon_pos[0]*b2.pos[0]+moon_pos[1]*b2.pos[1]+
 			                                 moon_pos[2]*b2.pos[2], sun_pos[0]*b2.pos[0]+sun_pos[1]*b2.pos[1]+
 			                                 sun_pos[2]*b2.pos[2], b2.pos[2]); //,cor_optoma);
+
+			// Apply blue correction if needed (pre-calculated values)
+			if (total_blue_factor > 0.01f) {
+				b2.color[0] = b2.color[0] * (1.0f - total_blue_factor) + target_x * total_blue_factor;
+				b2.color[1] = b2.color[1] * (1.0f - total_blue_factor) + target_y * total_blue_factor;
+			}
 
 			sum_lum+=b2.color[2];
 			eye->xyY_to_RGB(b2.color);

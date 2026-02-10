@@ -60,6 +60,7 @@ public:
 	virtual ~Atmosphere();
 
 	void computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase, const ToneReproductor * eye, const Projector* prj,
+	                   Vec3d earthPos_helio, Vec3d moonPos_helio,
 	                   float latitude = 45.f, float altitude = 200.f,
 	                   float temperature = 15.f, float relative_humidity = 40.f);
 

@@ -130,6 +130,10 @@ void SolarSystemModule::update(int delta_time)
 	Vec3d moon = core->currentSsystemFactory->getMoon()->get_heliocentric_ecliptic_pos();
 	Vec3d moonPos = core->navigation->helioToLocal(moon);
 
+	// Get heliocentric positions for lunar eclipse calculation
+	Vec3d earthPos_helio = core->currentSsystemFactory->getEarth()->get_heliocentric_ecliptic_pos();
+	Vec3d moonPos_helio = moon;
+
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
 	core->projection->setModelViewMatrices( core->navigation->getEarthEquToEyeMat(),
@@ -140,7 +144,7 @@ void SolarSystemModule::update(int delta_time)
 	                                    core->navigation->geTdomeMat(),
 	                                    core->navigation->getDomeFixedMat());
 
-    asyncUpdateBegin({sunPos, moonPos});
+    asyncUpdateBegin({sunPos, moonPos, earthPos_helio, moonPos_helio});
 	// std::future<void> a = std::async(std::launch::async, &SolarSystemModule::ssystemComputePreDraw, this);
 	// std::future<void> b = std::async(std::launch::async, &SolarSystemModule::atmosphereComputeColor, this, sunPos, moonPos);
 	// std::future<void> c = std::async(std::launch::async, &SolarSystemModule::hipStarMgrPreDraw, this);
@@ -227,7 +231,7 @@ bool SolarSystemModule::testValidAltitude(double altitude)
 	return false;
 }
 
-void SolarSystemModule::asyncUpdateBegin(std::pair<Vec3d, Vec3d> data)
+void SolarSystemModule::asyncUpdateBegin(AsyncUpdateData data)
 {
     asyncWorkState = true;
     threadQueue.push(data);
@@ -241,14 +245,15 @@ void SolarSystemModule::asyncUpdateEnd()
 
 void SolarSystemModule::asyncUpdateLoop()
 {
-    // std::pair<sunPos, moonMos>
-    std::pair<Vec3d, Vec3d> data;
+    AsyncUpdateData data;
     threadQueue.acquire();
     while (threadQueue.pop(data)) {
         core->currentSsystemFactory->computePreDraw(core->projection, core->navigation);
-        core->currentAtmosphere->computeColor(core->timeMgr->getJDay(), data.first, data.second,
-    	                          core->currentSsystemFactory->getMoon()->get_phase(core->currentSsystemFactory->getEarth()->get_heliocentric_ecliptic_pos()),
-    	                          core->currentToneConverter.get(), core->projection, observer->getLatitude(), observer->getAltitude(),
+        core->currentAtmosphere->computeColor(core->timeMgr->getJDay(), data.sunPos, data.moonPos,
+    	                          core->currentSsystemFactory->getMoon()->get_phase(data.earthPos_helio),
+    	                          core->currentToneConverter.get(), core->projection,
+								  data.earthPos_helio, data.moonPos_helio,
+								  observer->getLatitude(), observer->getAltitude(),
     	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
         core->currentHipStars->preDraw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->currentAtmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
         core->currentSsystemFactory->bodyTrace(core->navigation);
