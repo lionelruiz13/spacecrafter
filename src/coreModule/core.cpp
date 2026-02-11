@@ -918,7 +918,7 @@ void Core::removeSupplementalSolarSystemBodies()
 	if (selected_object.getType()==OBJECT_BODY /*&& selected_object.isDeleteable() */) {
 		unSelect();
 	}
-	currentSsystemFactory->removeSupplementalBodies(observatory->getHomePlanetEnglishName());
+	currentSsystemFactory->removeSupplementalBodies(observatory->getHomePlanetEnglishName(), currentModule == MODULE::IN_SANDBOX);
 }
 
 

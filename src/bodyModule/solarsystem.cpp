@@ -107,33 +107,36 @@ bool SolarSystem::removeBody(const std::string &name)
 	return ProtoSystem::removeBody(name);
 }
 
-bool SolarSystem::removeSupplementalBodies(const std::string &name)
+bool SolarSystem::removeSupplementalBodies(const std::string &name, bool sandbox)
 {
-	// Get the body type before removal
-	auto it = systemBodies.find(name);
-	if (it != systemBodies.end()) {
-		if (!it->second.isDeleteable) {
-			cLog::get()->write("SolarSystem::removeSupplementalBodies: Body " + name + " is not deleteable.", LOG_TYPE::L_WARNING);
-			return false;
-		}
-		BODY_TYPE typePlanet = it->second.body->getBodyType();
-		if (typePlanet == SUN && name == "Sun") {
-			sun = nullptr;
-		} else if (typePlanet == MOON && name == "Moon") {
-			moon = nullptr;
-			if (earth) {
-				BinaryOrbit *earthOrbit = dynamic_cast<BinaryOrbit *>(earth->getOrbit());
-				if (earthOrbit) {
-					cLog::get()->write("Removing Moon from Earth binary orbit.", LOG_TYPE::L_INFO);
-					earthOrbit->setSecondaryOrbit(nullptr);
-				}
+	// Only if we are in sandbox since sun, moon and earth are not deletable in the solar system, but they can be in the sandbox
+	if (sandbox) {
+		// Get the body type before removal
+		auto it = systemBodies.find(name);
+		if (it != systemBodies.end()) {
+			if (!it->second.isDeleteable) {
+				cLog::get()->write("SolarSystem::removeSupplementalBodies: Body " + name + " is not deleteable.", LOG_TYPE::L_WARNING);
+				return false;
 			}
-		} else if (typePlanet == PLANET && name == "Earth") {
-			earth = nullptr;
+			BODY_TYPE typePlanet = it->second.body->getBodyType();
+			if (typePlanet == SUN && name == "Sun") {
+				sun = nullptr;
+			} else if (typePlanet == MOON && name == "Moon") {
+				moon = nullptr;
+				if (earth) {
+					BinaryOrbit *earthOrbit = dynamic_cast<BinaryOrbit *>(earth->getOrbit());
+					if (earthOrbit) {
+						cLog::get()->write("Removing Moon from Earth binary orbit.", LOG_TYPE::L_INFO);
+						earthOrbit->setSecondaryOrbit(nullptr);
+					}
+				}
+			} else if (typePlanet == PLANET && name == "Earth") {
+				earth = nullptr;
+			}
 		}
 	}
 
-	return ProtoSystem::removeSupplementalBodies(name);
+	return ProtoSystem::removeSupplementalBodies(name, sandbox);
 }
 
 // Init and load one solar system object

@@ -192,7 +192,7 @@ void ProtoSystem::removeBodyNoSatellite(std::map<std::string, BodyContainer>::it
 	systemBodies.erase(it);
 }
 
-bool ProtoSystem::removeSupplementalBodies(const std::string &name)
+bool ProtoSystem::removeSupplementalBodies(const std::string &name, bool sandbox)
 {
 	auto bc = systemBodies.find(name);
 

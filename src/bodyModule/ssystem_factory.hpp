@@ -395,8 +395,8 @@ public:
         return currentSystem->removeBody(name);
     }
 
-	bool removeSupplementalBodies(const std::string &name) {
-        return currentSystem->removeSupplementalBodies(name);
+	bool removeSupplementalBodies(const std::string &name, bool sandbox) {
+        return currentSystem->removeSupplementalBodies(name, sandbox);
     }
 
 	Object searchByNamesI18(const std::string &planetNameI18n) const {
