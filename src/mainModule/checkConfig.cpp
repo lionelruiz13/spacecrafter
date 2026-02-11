@@ -317,6 +317,8 @@ void CheckConfig::checkColorSettings()
 	tmpSettings[SCK_VERTICAL_COLOR] = "0.0,0.8,1.0";
 	tmpSettings[SCK_ZENITH_COLOR] = "0.0,1.0,0.0";
 	tmpSettings[SCK_ZODIAC_COLOR] = "1.0,0,1.0";
+	tmpSettings[SCK_LUNAR_ECLIPSE_UMBRA_COLOR] = "0.3,0.3,0.3";
+	tmpSettings[SCK_LUNAR_ECLIPSE_PENUMBRA_COLOR] = "0.5,0.5,0.5";
 
 	sectionSettings.push_back(SCS_COLOR);
 	insertKeyFromTmpSettings(SCS_COLOR);

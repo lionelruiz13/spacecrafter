@@ -632,6 +632,22 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ZODIAC, newval);
 			break;
 
+		case FLAG_NAMES::FN_LUNAR_ECLIPSE_UMBRA :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA);
+			} else
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA, newval);
+			break;
+
+		case FLAG_NAMES::FN_LUNAR_ECLIPSE_PENUMBRA :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA);
+			} else
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA, newval);
+			break;
+
 		case FLAG_NAMES::FN_GREENWICH_LINE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
 				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GREENWICH);
@@ -1524,6 +1540,8 @@ int AppCommandInterface::commandColor()
 		case COLORCOMMAND_NAMES::CC_GREENWICH_LINE:			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GREENWICH, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_ARIES_LINE:				coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ARIES, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_ZODIAC:					coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ZODIAC, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_LUNAR_ECLIPSE_UMBRA:	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_LUNAR_ECLIPSE_PENUMBRA:	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_PERSONAL:				coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONAL, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_PERSONEQ:				coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONEQ, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_NAUTICAL_ALT:			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_NAUTICAL, Vcolor ); break;

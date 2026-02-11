@@ -188,6 +188,8 @@ std::string SkyLineMgr::typeToString(SKYLINE_TYPE typeObj)
 		case SKYLINE_TYPE::LINE_VERTICAL : return "LINE_VERTICAL"; break;
 		case SKYLINE_TYPE::LINE_ZODIAC : return "LINE_ZODIAC"; break;
 		case SKYLINE_TYPE::LINE_ZENITH : return "LINE_ZENITH"; break;
+		case SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA : return "LINE_LUNAR_ECLIPSE_UMBRA"; break;
+		case SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA : return "LINE_LUNAR_ECLIPSE_PENUMBRA"; break;
 		case SKYLINE_TYPE::LINE_UNKNOWN : return "LINE_UNKNOWN"; break;
 		default : return "LINE_UNKNOWN"; break;
 	}
@@ -260,6 +262,12 @@ SKYLINE_TYPE SkyLineMgr::stringToType(const std::string& typeObj)
 
 	if (typeObj == "LINE_ZODIAC")
 		return SKYLINE_TYPE::LINE_ZODIAC;
+
+	if (typeObj == "LINE_LUNAR_ECLIPSE_UMBRA")
+		return SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA;
+
+	if (typeObj == "LINE_LUNAR_ECLIPSE_PENUMBRA")
+		return SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA;
 
 	return SKYLINE_TYPE::LINE_UNKNOWN;
 }
@@ -416,6 +424,20 @@ void SkyLineMgr::Create(SKYLINE_TYPE type_obj)
 			return;
 			break;
 
+		case SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA :
+			cLog::get()->write("SkyLineMgr creating LINE_LUNAR_ECLIPSE_UMBRA" , LOG_TYPE::L_INFO);
+			tmp=new SkyLine_LunarEclipse(SkyLine_LunarEclipse::UMBRA, 1.0, 45);
+			m_map[type_obj]= tmp;
+			return;
+			break;
+
+		case SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA :
+			cLog::get()->write("SkyLineMgr creating LINE_LUNAR_ECLIPSE_PENUMBRA" , LOG_TYPE::L_INFO);
+			tmp=new SkyLine_LunarEclipse(SkyLine_LunarEclipse::PENUMBRA, 1.0, 45);
+			m_map[type_obj]= tmp;
+			return;
+			break;
+
 		default:
 			cLog::get()->write("SkyLineMgr SkyGrid unknown " + typeToString(type_obj) , LOG_TYPE::L_ERROR);
 			break;
@@ -444,6 +466,8 @@ void SkyLineMgr::saveState(SkyLineSave &obj)
 	obj.vertical = getFlagShow(SKYLINE_TYPE::LINE_VERTICAL);
 	obj.zodiac = getFlagShow(SKYLINE_TYPE::LINE_ZODIAC);
 	obj.zenith = getFlagShow(SKYLINE_TYPE::LINE_ZENITH);
+	obj.lunar_eclipse_umbra = getFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA);
+	obj.lunar_eclipse_penumbra = getFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA);
 }
 
 void SkyLineMgr::loadState(SkyLineSave &obj)
@@ -468,4 +492,6 @@ void SkyLineMgr::loadState(SkyLineSave &obj)
 	setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, obj.vertical);
 	setFlagShow(SKYLINE_TYPE::LINE_ZODIAC, obj.zodiac);
 	setFlagShow(SKYLINE_TYPE::LINE_ZENITH, obj.zenith);
+	setFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA, obj.lunar_eclipse_umbra);
+	setFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA, obj.lunar_eclipse_penumbra);
 }

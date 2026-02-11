@@ -218,6 +218,8 @@
 #define SCK_VERTICAL_COLOR                  "vertical_color"
 #define SCK_ZENITH_COLOR                    "zenith_color"
 #define SCK_ZODIAC_COLOR                    "zodiac_color"
+#define SCK_LUNAR_ECLIPSE_UMBRA_COLOR       "lunar_eclipse_umbra_color"
+#define SCK_LUNAR_ECLIPSE_PENUMBRA_COLOR    "lunar_eclipse_penumbra_color"
 
 #define SCK_NEBULA_PICTO_SIZE               "nebula_picto_size"
 #define SCK_ATMOSPHERE_FADE_DURATION        "atmosphere_fade_duration"
@@ -252,6 +254,8 @@
 #define SCK_FLAG_ANALEMMA                   "flag_analemma"
 #define SCK_FLAG_ARIES_LINE                 "flag_aries_line"
 #define SCK_FLAG_ZODIAC                     "flag_zodiac"
+#define SCK_FLAG_LUNAR_ECLIPSE_UMBRA        "flag_lunar_eclipse_umbra"
+#define SCK_FLAG_LUNAR_ECLIPSE_PENUMBRA     "flag_lunar_eclipse_penumbra"
 #define SCK_FLAG_CARDINAL_POINTS            "flag_cardinal_points"
 #define SCK_FLAG_VERTICAL_LINE              "flag_vertical_line"
 #define SCK_FLAG_GREENWICH_LINE             "flag_greenwich_line"

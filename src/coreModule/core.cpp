@@ -184,6 +184,9 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 		mgr.Create(SKYLINE_TYPE::LINE_VERTICAL);
 		mgr.Create(SKYLINE_TYPE::LINE_ZODIAC);
 		mgr.Create(SKYLINE_TYPE::LINE_ZENITH);
+
+		mgr.Create(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA);
+		mgr.Create(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA);
 	});
 
 	currentSkyDisplayMgr.set(CURRENT_MODE::NORMAL_MODE,  std::make_unique<SkyDisplayMgr>());
@@ -664,6 +667,8 @@ void Core::init(const InitParser& conf)
 		mgr.setFlagShow(SKYLINE_TYPE::LINE_ANALEMMA, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ANALEMMA));
 		mgr.setFlagShow(SKYLINE_TYPE::LINE_ARIES, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ARIES_LINE));
 		mgr.setFlagShow(SKYLINE_TYPE::LINE_ZODIAC, conf.getBoolean(SCS_VIEWING,SCK_FLAG_ZODIAC));
+		mgr.setFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA, conf.getBoolean(SCS_VIEWING,SCK_FLAG_LUNAR_ECLIPSE_UMBRA));
+		mgr.setFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA, conf.getBoolean(SCS_VIEWING,SCK_FLAG_LUNAR_ECLIPSE_PENUMBRA));
 	});
 
 	currentSkyDisplayMgr.applyToAll([&conf](SkyDisplayMgr &mgr) {
@@ -1552,6 +1557,8 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 		mgr.setColor(SKYLINE_TYPE::LINE_VERTICAL,Utility::strToVec3f(conf.getStr(section,SCK_VERTICAL_COLOR)));
 		mgr.setColor(SKYLINE_TYPE::LINE_ZENITH,Utility::strToVec3f(conf.getStr(section,SCK_ZENITH_COLOR)));
 		mgr.setColor(SKYLINE_TYPE::LINE_ZODIAC,Utility::strToVec3f(conf.getStr(section,SCK_ZODIAC_COLOR)));
+		mgr.setColor(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA,Utility::strToVec3f(conf.getStr(section,SCK_LUNAR_ECLIPSE_UMBRA_COLOR)));
+		mgr.setColor(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA,Utility::strToVec3f(conf.getStr(section,SCK_LUNAR_ECLIPSE_PENUMBRA_COLOR)));
 	});
 
 	currentOort.applyToAll([&conf, &section](Oort &mgr) {
@@ -1591,6 +1598,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ANALEMMA_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ARIES_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ARIES));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ZODIAC, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ZODIAC));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_LUNAR_ECLIPSE_UMBRA, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA));
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_LUNAR_ECLIPSE_PENUMBRA, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GREENWICH_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_GREENWICH));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_VERTICAL_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_VERTICAL));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MERIDIAN_LINE, currentSkyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_MERIDIAN));
@@ -1632,6 +1641,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr    (SCS_COLOR, SCK_ANALEMMA_LINE_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ANALEMMALINE)));
 	conf.setStr    (SCS_COLOR, SCK_ARIES_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ARIES)));
 	conf.setStr    (SCS_COLOR, SCK_ZODIAC_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_ZODIAC)));
+	conf.setStr    (SCS_COLOR, SCK_LUNAR_ECLIPSE_UMBRA_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA)));
+	conf.setStr    (SCS_COLOR, SCK_LUNAR_ECLIPSE_PENUMBRA_COLOR, Utility::vec3fToStr(currentSkyLineMgr->getColor(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA)));
 	conf.setStr    (SCS_COLOR, SCK_PERSONAL_COLOR,     Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONAL)));
 	conf.setStr    (SCS_COLOR, SCK_PERSONEQ_COLOR,     Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONEQ)));
 	conf.setStr    (SCS_COLOR, SCK_NAUTICAL_ALT,       Utility::vec3fToStr(currentSkyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_NAUTICAL)));

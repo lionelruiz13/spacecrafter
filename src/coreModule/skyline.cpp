@@ -35,6 +35,8 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 #include "tools/insert_all.hpp"
+#include "tools/sc_const.hpp"
+#include "coreModule/coreLink.hpp"
 
 //2346 lines before
 //2479 lines after
@@ -1608,5 +1610,149 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	drawSkylineGL(Color);
 
+	vecDrawPos.clear();
+}
+
+// -------------------- SKYLINE_LUNAR_ECLIPSE  ---------------------------------------------
+
+SkyLine_LunarEclipse::SkyLine_LunarEclipse(SKY_LINE_LUNAR_ECLIPSE_TYPE _eclipse_type, double _radius, unsigned int _nb_segment) :
+	SkyLine(_radius, _nb_segment), eclipse_type(_eclipse_type)
+{
+	// Use local projection since we calculate in local coordinates
+	proj_func = &Projector::projectLocal;
+}
+
+SkyLine_LunarEclipse::~SkyLine_LunarEclipse()
+{
+}
+
+void SkyLine_LunarEclipse::draw(const Projector *prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
+{
+	if (!fader.getInterstate()) return;
+
+	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
+
+	// Compute the Earth position in heliocentric coordinate (use default if no earth in sandbox)
+	Vec3d earthPos_helio;
+	auto earth = CoreLink::instance->ssystemFactoryGetEarth();
+	if (earth != nullptr) {
+		earthPos_helio = earth->get_heliocentric_ecliptic_pos();
+	} else {
+		// Fictive position to avoid lunar eclipse calculation
+		earthPos_helio = Vec3d(0., 0., 0.);
+	}
+	// Compute the moon position in local coordinate (use default if no moon in sandbox)
+	Vec3d moonPos_helio;
+	auto moon = CoreLink::instance->ssystemFactoryGetMoon();
+	if (moon != nullptr) {
+		moonPos_helio = moon->get_heliocentric_ecliptic_pos();
+	} else {
+		// Fictive position to avoid lunar eclipse calculation
+		moonPos_helio = Vec3d(0., 0., 0.);
+	}
+
+	// Calculate the anti-sun direction (direction of Earth's shadow cone)
+	Vec3d sunPos = -earthPos_helio;  // Sun position in heliocentric coordinates
+	Vec3d moonPos = moonPos_helio - earthPos_helio;  // Moon position relative to Earth
+	double sun_distance = sunPos.length();
+	double moon_distance = moonPos.length();
+	// Check if sun and moon positions are valid
+	if (sun_distance < 1e-10 || moon_distance < 1e-10) {
+		vecDrawPos.clear();
+		return;
+	}
+	sunPos.normalize();
+	moonPos.normalize();
+
+	// Calculate shadow direction in geocentric coordinates (anti-sun)
+	Vec3d shadow_dir_geo = -sunPos;  // Opposite to sun = direction of Earth's shadow
+
+	// Create a fictive position for the shadow at the Moon's distance in geocentric coords
+	// This represents where the center of the shadow cone would be if projected at Moon's distance
+	Vec3d shadow_pos_geo = shadow_dir_geo * moon_distance;
+
+	// Convert to heliocentric by adding Earth's position
+	Vec3d shadow_pos_helio = shadow_pos_geo + earthPos_helio;
+
+	// Transform shadow position to local coordinates (with same parallax effect as Moon)
+	Vec3d shadow_local = nav->helioToLocal(shadow_pos_helio);
+	double shadow_local_len = shadow_local.length();
+	if (shadow_local_len < 1e-10) {
+		vecDrawPos.clear();
+		return;
+	}
+	Vec3d shadow_center = shadow_local / shadow_local_len;
+
+	// Constants for Earth and Sun sizes and distances (in km)
+	const double earth_radius_km = 6371.0;
+	const double sun_radius_km = 696000.0;
+	const double sun_distance_km = sun_distance * AU;
+	const double moon_distance_km = moon_distance * AU;
+
+	// Angular radius of shadow at Moon's distance
+	double angular_radius = 0.0;
+	if (eclipse_type == SKY_LINE_LUNAR_ECLIPSE_TYPE::UMBRA) {
+		// R_umbra = R_earth - d_moon * ((R_sun - R_earth) / d_sun)
+		double umbra_radius_km = earth_radius_km - moon_distance_km * ((sun_radius_km - earth_radius_km) / sun_distance_km);
+
+		// Convert to angular radius as seen from Earth
+		angular_radius = atan(umbra_radius_km / moon_distance_km);
+	} else {
+		// For penumbra, the radius is larger:
+		// R_penumbra = R_earth + d_moon * ((R_sun + R_earth) / d_sun)
+		double penumbra_radius_km = earth_radius_km + moon_distance_km * ((sun_radius_km + earth_radius_km) / sun_distance_km);
+
+		// Convert to angular radius as seen from Earth
+		angular_radius = atan(penumbra_radius_km / moon_distance_km);
+	}
+
+	// Create perpendicular vectors to shadow_center (for circle basis)
+	// perp1 and perp2 let us create points around shadow_center
+	Vec3d perp1;
+	if (fabs(shadow_center[2]) < 0.9) {
+		perp1 = Vec3d(0., 0., 1.) ^ shadow_center;  // Cross product with Z
+	} else {
+		perp1 = Vec3d(1., 0., 0.) ^ shadow_center;  // Cross product with X
+	}
+	double perp1_len = perp1.length();
+	if (perp1_len < 1e-10) {
+		vecDrawPos.clear();
+		return;
+	}
+	perp1 = perp1 / perp1_len;  // Normalize
+
+	// Second perpendicular vector
+	Vec3d perp2 = shadow_center ^ perp1;
+	perp2.normalize();
+
+	// Draw circle: create points at angular distance from shadow_center
+	double cos_radius = cos(angular_radius);
+	double sin_radius = sin(angular_radius);
+
+	bool prev_valid = false;  // Track if previous point was successfully projected
+	for (unsigned int i = 0; i <= nb_segment; ++i) {
+		double angle = (double)i / (double)nb_segment * 2.0 * M_PI;
+
+		// Point on circle: rotate around shadow_center
+		Vec3d offset = perp1 * cos(angle) + perp2 * sin(angle);
+		Vec3d circle_point = shadow_center * cos_radius + offset * sin_radius;
+
+		// Project the point
+		bool current_valid = (prj->*proj_func)(circle_point, pt1);
+		// Draw line if one of the points is valid (to avoid gaps)
+		// but only if it's not the first point (since the first point has no previous point to connect to)
+		if (i > 0 && (current_valid || prev_valid)) {
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
+		}
+		pt2 = pt1;
+		prev_valid = current_valid;
+	}
+
+	// Safety check: only draw if we have points
+	if (vecDrawPos.empty()) {
+		return;
+	}
+
+	drawSkylineGL(Color);
 	vecDrawPos.clear();
 }

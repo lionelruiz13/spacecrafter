@@ -202,6 +202,8 @@ void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES>
 	m_flags[ACP_FN_EXPERIMENTAL_SHADOWS] = FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS;
 	m_flags[ACP_FN_SKIP_PAUSE] = FLAG_NAMES::FN_SKIP_PAUSE;
 	m_flags[ACP_FN_IMAGE_COMPRESSION_LOSS] = FLAG_NAMES::FN_IMAGE_COMPRESSION_LOSS;
+	m_flags[ACP_FN_LUNAR_ECLIPSE_UMBRA] = FLAG_NAMES::FN_LUNAR_ECLIPSE_UMBRA;
+	m_flags[ACP_FN_LUNAR_ECLIPSE_PENUMBRA] = FLAG_NAMES::FN_LUNAR_ECLIPSE_PENUMBRA;
 
 	for (auto it = m_flags.begin(); it != m_flags.end(); ++it) {
         m_flagsToString.emplace(it->second, it->first);
@@ -259,6 +261,8 @@ void AppCommandInit::initialiseColorCommand(std::map<const std::string, COLORCOM
 	m_color[ACP_CC_PRECESSION_CIRCLE] = COLORCOMMAND_NAMES::CC_PRECESSION_CIRCLE;
 	m_color[ACP_CC_TEXT_USR_COLOR] = COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR;
 	m_color[ACP_CC_STAR_TABLE] = COLORCOMMAND_NAMES::CC_STAR_TABLE;
+	m_color[ACP_CC_LUNAR_ECLIPSE_UMBRA] = COLORCOMMAND_NAMES::CC_LUNAR_ECLIPSE_UMBRA;
+	m_color[ACP_CC_LUNAR_ECLIPSE_PENUMBRA] = COLORCOMMAND_NAMES::CC_LUNAR_ECLIPSE_PENUMBRA;
 
 	for (auto it = m_color.begin(); it != m_color.end(); ++it) {
         m_colorToString.emplace(it->second, it->first);

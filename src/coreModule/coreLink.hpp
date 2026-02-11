@@ -949,6 +949,29 @@ public:
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
+	// SSystemFactory---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	//! Get a body from SSystemFactory by its english name
+	std::shared_ptr<Body> ssystemFactorySearchByEnglishName(const std::string& englishName) const {
+		return core->currentSsystemFactory->searchByEnglishName(englishName);
+	}
+
+	//! Get the sun from SSystemFactory
+	std::shared_ptr<Sun> ssystemFactoryGetSun() const {
+		return core->currentSsystemFactory->getSun();
+	}
+
+	//! Get the moon from SSystemFactory
+	std::shared_ptr<Moon> ssystemFactoryGetMoon() const {
+		return core->currentSsystemFactory->getMoon();
+	}
+
+	//! Get the earth from SSystemFactory
+	std::shared_ptr<Body> ssystemFactoryGetEarth() const {
+		return core->currentSsystemFactory->getEarth();
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
 	// StarGalaxy---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	//! Load a catalog for currentStarGalaxy
