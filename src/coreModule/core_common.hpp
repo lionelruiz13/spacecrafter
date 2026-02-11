@@ -22,6 +22,8 @@ enum class SKYLINE_TYPE : char {
 		LINE_VERTICAL,
 		LINE_ZODIAC,
 		LINE_ZENITH,
+		LINE_LUNAR_ECLIPSE_UMBRA,
+		LINE_LUNAR_ECLIPSE_PENUMBRA,
 		LINE_UNKNOWN
 	};
 
@@ -47,6 +49,8 @@ struct SkyLineSave {
 	bool vertical;
 	bool zodiac;
 	bool zenith;
+	bool lunar_eclipse_umbra;
+	bool lunar_eclipse_penumbra;
 };
 
 enum class SKYGRID_TYPE : char {
