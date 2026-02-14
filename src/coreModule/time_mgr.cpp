@@ -149,6 +149,8 @@ double TimeMgr::dateSunRise (double jd, double longitude, double latitude)
 		double nova = jrise-(2.0*diferencia);
 		//if (longitude >= 60) nova += 1;
 		//if (abs(nova-jd)<1.0) return nova; else return J;
+		if ((nova-jd)>=0.99) {nova--;}
+		if ((jd-nova)>=0.99) {nova++;}
 		return nova;
 	} else return J-0.5;
 }
@@ -240,8 +242,12 @@ double TimeMgr::dateSunSet (double jd, double longitude, double latitude)
 		//~ cout << "HORA DIFERENCIA: " << jset << " " << diferencia << " " << jset-diferencia;
 
 		double nova = jset-(2.0*diferencia);
+		if ((nova-jd)>=0.99) {nova--;}
+		if ((jd-nova)>=0.99) {nova++;}
 		return nova;
-	} else return J+0.5;
+	} else {
+		return J+0.5;
+	}
 }
 
 double TimeMgr::dateSunMeridian (double jd, double longitude, double latitude)
@@ -259,10 +265,10 @@ double TimeMgr::dateSunMeridian (double jd, double longitude, double latitude)
 	Le = longitude; //getObservatory()->getLongitude();
 	/* calc mean angle */
 	sidereal = 280.46061837 + (360.98564736629 * (jd - 2451545.0)) + (0.000387933 * T * T) - (T * T * T / 38710000.0);
-	while (sidereal>=360) sidereal-=360;
-	while (sidereal<0)    sidereal+=360;
-	LST=sidereal+Le;
-	while (LST>=360) LST-=360;
+	//while (sidereal>=360) sidereal-=360;
+	//while (sidereal<0)    sidereal+=360;
+	LST=fmod(sidereal+Le+180, 360.f)-180;
+	//while (LST>=360) LST-=360;
 	while (LST<0)    LST+=360;
 	m=357.5291+0.98560028*(jd-2451545);
 	c=1.9148*sin(m*3.1415926/180)+0.02*sin(2*m*3.1415926/180)+0.0003*sin(3*m*3.1415926/180)/12;
@@ -318,18 +324,26 @@ double TimeMgr::dateSunMeridian (double jd, double longitude, double latitude)
 	//Hour Angle
 	double Ho = (sin(-0.83*d2r)-(sin(d2r*latitude)*sin(d2r*s)))/(cos(d2r*latitude)*cos(d2r*s));
 	if (abs(Ho)<=1) {
-		double w = r2d*acos(Ho);
+		double w = fmod(r2d*acos(Ho)+longitude, 360.);
+		if (w < 0)
+			w += 360.;
 		//~ cout << "w: " << w << endl;
 
-		double jset = 2451545.0009+double((w+longitude)/360.0)+n+(0.0053*sin(d2r*M))-(0.0069*sin(d2r*2.0*el));
+		double jset = 2451545.0009+w/360.0+n+(0.0053*sin(d2r*M))-(0.0069*sin(d2r*2.0*el));
 		double jrise = jt-(jset-jt);
 		//~ cout << "HORA SORTIDA: " << jrise << "HORA POSTA: " << jset;
 		//core->setJDay(jset);
 		double diferencia = ((1./24.0)*(longitude/15.));
 
-		//~ cout << "HORA DIFERENCIA: " << jset << " " << diferencia << " " << jset-diferencia;
 
 		double nova = (jset+jrise-(4.0*diferencia))/2.0;
+		std::cout.precision(15);
+		//std::cout << "nova: " << nova << " J: " << J << " jd: " << jd << std::endl;
+		if ((nova-jd)>=0.99) {nova--;}
+		if ((jd-nova)>=0.99) {nova++;}
 		return nova;
-	} else return J;
+	} else {
+		//std::cout << " J: " << J;
+		return J;
+	}
 }
