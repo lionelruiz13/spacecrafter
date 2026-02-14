@@ -105,6 +105,7 @@ Mat4d Observer::getRotLocalToEquatorial(double jd) const
 Mat4d Observer::getRotLocalToEquatorialFixed(double jd) const
 {
 	double lat = latitude;
+	// To be cancelled once refactoring Body
 	if ( lat > 89.5 )  lat = 89.5;
 	if ( lat < -89.5 ) lat = -89.5;
 	return Mat4d::zrotation((-longitude)*(M_PI/180.)) * Mat4d::yrotation((90.-lat)*(M_PI/180.));

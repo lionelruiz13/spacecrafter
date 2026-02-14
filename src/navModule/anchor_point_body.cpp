@@ -31,6 +31,8 @@ Mat4d AnchorPointBody::getRotLocalToEquatorial(double jd, double lat, double lon
 	// TODO: Figure out how to keep continuity in sky as reach poles
 	// otherwise sky jumps in rotation when reach poles in equatorial mode
 	// This is a kludge
+
+	// To be cancelled once refactoring Body
 	if ( lat > 89.5 )  lat = 89.5;
 	if ( lat < -89.5 ) lat = -89.5;
 
