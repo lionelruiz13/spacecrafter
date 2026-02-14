@@ -57,6 +57,7 @@
 #define SCK_MILKYWAY_IRIS                   "milkyway_iris"
 // #define SCK_FLAG_OPTOMA                     "flag_optoma"
 #define SCK_CPU_INFO                        "cpu_info"
+#define SCK_GPU_INFO                        "gpu_info"
 #define SCK_FLAG_ALWAYS_VISIBLE             "flag_always_visible"
 #define SCK_STATISTICS                      "query_statistics"
 #define SCK_BUILDER_THREADS                 "builder_threads"

@@ -261,7 +261,7 @@ int main(int argc, const char *argv[])
 
 	std::unique_ptr<CPUInfo> cpuInfo =  nullptr;
 	if (conf.getBoolean(SCS_DEBUG,SCK_CPU_INFO)) {
-		cpuInfo = std::make_unique<CPUInfo>();
+		cpuInfo = std::make_unique<CPUInfo>(conf.getBoolean(SCS_DEBUG,SCK_GPU_INFO));
 		cpuInfo -> init(ini->getLogDir()+"CPUlog.csv",ini->getLogDir()+"GPUlog.csv");
 		cpuInfo -> start();
 		Log->write("CPUInfo actived",LOG_TYPE::L_DEBUG);

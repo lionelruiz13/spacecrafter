@@ -60,6 +60,7 @@ void CheckConfig::checkMainSettings()
 void CheckConfig::checkDebugSettings()
 {
 	tmpSettings[SCK_CPU_INFO]="false";
+	tmpSettings[SCK_GPU_INFO]="false";
 	tmpSettings[SCK_DEBUG_LAYER]="false";
 	tmpSettings[SCK_STATISTICS]="false";
 	tmpSettings[SCK_WRITE_LOG]="true";

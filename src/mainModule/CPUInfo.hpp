@@ -39,45 +39,45 @@ const int TAMPON_SIZE = 10;
  * \brief Creation of CPU cores usage logs
  * \author Olivier NIVOIX
  * \date 16 juin 2018
- * 
+ *
  * The purpose of this class is to regularly record the activities of the processor cores in a file
- * 
+ *
  * @section DESCRIPTION
- * 
- * The class uses the reading of the system file /proc/stat that it parses 
- * 
+ *
+ * The class uses the reading of the system file /proc/stat that it parses
+ *
  * start() creates a thread that periodically records information from /proc/stat
- * 
+ *
  * stop() stops the thread and closes the records.
- * 
+ *
  * @section part thread
- * 
+ *
  * When starting() is launched, the function creates a thread that loops in this way:
- * 
+ *
  * std::this_thread::sleep_for(std::chrono::seconds(1));
  * this -> getCPUstate();
  * this -> archivingData();
- * 
+ *
  * archivingData() empties the information table thanks to the variable nbDiff which varies from 0 to BUFFER_SIZE
- * 
+ *
  * @section OPERATION
- * 
+ *
  * The class has few methods.
- * 
+ *
  * CPUInfo cpuInfo;
  * cpuInfo.init("destination_file");
  * cpuInfo.start();
- * 
+ *
  * ... various instructions ...
- * 
+ *
  * cpuInfo.stop();
- * 
+ *
  */
- 
+
 class CPUInfo
 {
 public:
-	CPUInfo();
+	CPUInfo(bool gpuInfo);
 	~CPUInfo();
 
 	//! starts the analysis of CPU logs
@@ -134,6 +134,7 @@ private:
 	uint64_t frame=0;	// Number of the analyzed frame
 	unsigned char diff = 0;		// Difference counter before saving in CPUfileLog
 	bool isActived = true;		// Flag to close the thread
+	bool gpuInfo = false;
 	std::thread t;				// thread
 	std::ofstream CPUfileLog;	// file for CPU information
 	std::ofstream GPUfileLog;	// file for GPU information

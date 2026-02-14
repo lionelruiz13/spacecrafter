@@ -26,7 +26,7 @@
 #include "mainModule/CPUInfo.hpp"
 #include "EntityCore/Tools/LinuxExecutor.hpp"
 
-CPUInfo::CPUInfo()
+CPUInfo::CPUInfo(bool gpuInfo) : gpuInfo(gpuInfo)
 {
 	this->nbThread = std::thread::hardware_concurrency();
 	//~ std::cout << "The CPU has " << this->nbThread << " threads" << std::endl;
@@ -151,15 +151,17 @@ void CPUInfo::mainFunc()
 {
 	CPUfileLog << "frame, cpu,user, nice,system, idle, iowait, irq, softirq,steal, guest, guest_nice" << std::endl;
 	GPUfileLog << "frame, gpu.usage, memory.usage,memory.free,power.state,fan.speed,temperature" << std::endl;
-	this -> getCPUstate();
+	getCPUstate();
 
-	while (this->isActived) {
-		this -> getCPUstate();
-		this -> archivingData();
-		this -> getGPUstate();
+	while (isActived) {
+		getCPUstate();
+		archivingData();
+		if (gpuInfo) {
+			getGPUstate();
+		}
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
-	this->saveToFile();
+	saveToFile();
 }
 
 void CPUInfo::start()
