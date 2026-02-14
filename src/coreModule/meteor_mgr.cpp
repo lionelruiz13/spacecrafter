@@ -32,7 +32,7 @@
 
 #define MAX_METEOR 4096
 
-int getCurrentDayOfYear(Navigator* nav) {
+static int getCurrentDayOfYear(Navigator* nav) {
 	// get current day of year (0-365) from navigator
 	// based on current date and time in navigator
 	// and the position of the sun in equatorial coordinates

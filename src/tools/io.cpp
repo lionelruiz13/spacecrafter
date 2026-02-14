@@ -498,7 +498,7 @@ void ServerSocket::computeNewData(unsigned int client)
 	debugOut("DATA_AS_STRING "+ data, LOG_TYPE::L_DEBUG); //Debug
 	unsigned int begin = 0; //Start of the string
 	unsigned int end; //End of the string
-	bool continues;
+	bool continues=true;
 	do {
 		end = data.find('\n', begin); //Finds the line break
 		if(begin < data.size() && (end - begin >= 1))
@@ -569,7 +569,7 @@ bool ServerSocket::computeHttp(unsigned int client, std::string string)
 				else if(extension == "js" || extension == "JS") type = "application/x-javascript;charset=UTF-8";
 				else if(extension == "jpeg" || extension == "JPEG" || extension == "jpg" || extension == "JPEG") type = "image/jpeg";
 				else if(extension == "png" || extension == "PNG") type = "image/png";
-				else if(extension == "gif" || extension == "GIF") type == "image/gif";
+				else if(extension == "gif" || extension == "GIF") type = "image/gif";
 				else type = "text/plain";
 
 				strcpy(buffer, ("HTTP/1.0 200 OK\r\nServer: SpaceCrafter (HTTP/BETA)\r\nContent-Length: " + toString(filestat.st_size) + "\nContent-Type: " + type + "\r\n\r\n").c_str());

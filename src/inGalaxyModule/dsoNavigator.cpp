@@ -299,10 +299,7 @@ void DsoNavigator::setupVolumetric(std::map<std::string, std::string> &args, int
     int colorDepthColumn = 0;
     int rayPoints = 0;
     bool z_reflection = false;
-    auto it = args.find("z_reflection");
-    if (it != args.end())
-        it->second == "true";
-    IEXTRACT(rayPoints, "rate");
+    auto IEXTRACT(rayPoints, "rate");
     EXTRACT(position[0], "pos_x");
     EXTRACT(position[1], "pos_y");
     EXTRACT(position[2], "pos_z");

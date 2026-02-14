@@ -13,7 +13,7 @@ std::function<double(double,double)> f_trunc = [](double x, double y){return tru
 std::function<double(double,double)> f_sin = [](double x, double y){return sin(y*3.1415926/180.0);};
 
 // Utility function to format numbers with significant digits only
-std::string formatNumber(double value) {
+static std::string formatNumber(double value) {
 	if (value == trunc(value)) {
 		// Integer value, return as integer
 		return std::to_string((long long)value);
