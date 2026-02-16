@@ -61,7 +61,7 @@ VideoPlayer::VideoPlayer(Media *media, InitParser &conf) : media(media), maxText
 
 	// Top Subtitle
 	textSubtitleTopParam.string = "";
-	textSubtitleTopParam.altitude = 10.0f;
+	textSubtitleTopParam.altitude = 8.0f;
 	textSubtitleTopParam.azimuth = 0.0f;
 	// textSubtitleTopParam.fontSize;
 	textSubtitleTopParam.textAlign = "CENTER";
