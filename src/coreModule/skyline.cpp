@@ -1102,6 +1102,7 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 			}
 		}
 
+		// Draw North tropic
 		if((prj->*proj_func)(points[nb_segment+1+i], pt1) && (prj->*proj_func)(points[nb_segment+1+i+1], pt2)) {
 
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
@@ -1127,11 +1128,12 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 				tmp = TRANSFO * Vec4f( 3.0,0.0,0.0,1.0);
 				insert_all(vecDrawPos, tmp[0], tmp[1]);
 			}
+		}
 
-			if( (prj->*proj_func)(points[2*nb_segment+2+i], pt1) && (prj->*proj_func)(points[2*nb_segment+2+i+1], pt2)) {
+		// Draw South tropic
+		if( (prj->*proj_func)(points[2*nb_segment+2+i], pt1) && (prj->*proj_func)(points[2*nb_segment+2+i+1], pt2)) {
 
-				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
-			}
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			// Draw hour ticks
 			if ((i+1) % 4 == 0) {
