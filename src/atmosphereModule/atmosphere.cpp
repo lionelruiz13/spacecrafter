@@ -285,7 +285,6 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 		sun_transition = 1.0f; // Twilight/day - natural coolors from Skylight model
 	} else {
 		// Smooth transition - faster fade to preserve warm twilight colors
-		//float t = (sun_pos[2] + 0.2f) / 0.15f; // Normalize to [0,1]
 		sun_transition = (sun_pos[2] + 0.2f) / 0.15f; // Linear transition
 	}
 
