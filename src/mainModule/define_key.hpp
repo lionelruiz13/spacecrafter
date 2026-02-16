@@ -131,6 +131,7 @@
 #define SCK_FLAG_SHOW_FOV                   "flag_show_fov"
 #define SCK_FLAG_SHOW_LATLON                "flag_show_latlon"
 #define SCK_FLAG_NUMBER_PRINT               "flag_number_print"
+#define SCK_FLAG_SHOW_SCRIPT_STATUS         "flag_show_script_status"
 #define SCK_DATETIME_DISPLAY_POSITION       "datetime_display_position"
 #define SCK_OBJECT_INFO_DISPLAY_POSITION    "object_info_display_position"
 #define SCK_FLAG_SHOW_PLANETNAME            "flag_show_planetname"

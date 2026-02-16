@@ -48,6 +48,7 @@ enum S_GUI_VALUE {
 #include <memory>
 #include "uiModule/ui_tui.hpp"
 #include "executorModule/executorModule.hpp"
+#include "tools/draw_helper.hpp"
 //#include "tools/app_settings.hpp"
 #include "tools/file_path.hpp"
 
@@ -58,6 +59,8 @@ class Core;
 class Media;
 class CoreLink;
 class s_font;
+class s_texture;
+struct SubTexture;
 class ScriptInterface;
 class AppCommandInterface;
 class JoypadController;
@@ -100,6 +103,7 @@ public:
 	void saveCurrentConfig(InitParser &conf);
 
 	void drawGravityUi(MODULE module);	// Draw simple gravity text ui.
+	void drawScriptStatusIcon();		// Draw script status indicator (play/pause icon)
 	// Handle mouse clics
 	int handleClic(const std::pair<uint16_t, uint16_t> &pos, s_gui::S_GUI_VALUE button, s_gui::S_GUI_VALUE state);
 	// Handle mouse move
@@ -223,11 +227,19 @@ private:
 	Event* event;
 	std::shared_ptr<SpaceDate> spaceDate;
 
+	// Script status indicator textures
+	std::shared_ptr<s_texture> texScriptPlay;
+	std::shared_ptr<s_texture> texScriptPause;
+	SubTexture *subTexPlay = nullptr;
+	SubTexture *subTexPause = nullptr;
+	s_print iconPrintData;  // Persistent storage for s_print structure
+
 	// Flags and variables
 	bool FlagShowFps;			// no access between outand
 	bool FlagShowLatLon;
 	bool FlagShowFov;			//no access between outland
 	bool FlagShowPlanetname;
+	bool FlagShowScriptStatus;	// Show script play/pause indicator
 	int FlagNumberPrint;
 	int PosDateTime;
 	int PosObjectInfo;
