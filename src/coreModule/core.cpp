@@ -1619,7 +1619,6 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble (SCS_STARS , SCK_STAR_SCALE, currentHipStars->getScale());
 	conf.setDouble (SCS_STARS , SCK_STAR_MAG_SCALE, currentHipStars->getMagScale());
 	conf.setDouble(SCS_STARS , SCK_MAX_MAG_STAR_NAME, currentHipStars->getMaxMagName());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, currentHipStars->getFlagIsolateSelected());
 	conf.setBoolean(SCS_STARS , SCK_FLAG_STAR_TWINKLE, currentHipStars->getFlagTwinkle());
 	conf.setDouble(SCS_STARS , SCK_STAR_TWINKLE_AMOUNT, currentHipStars->getTwinkleAmount());
 	conf.setDouble(SCS_STARS , SCK_STAR_LIMITING_MAG, currentHipStars->getMagConverterMaxScaled60DegMag());
@@ -1672,7 +1671,6 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_BRIGHT_NEBULAE, currentNebulas->getFlagBright());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STARS, currentHipStars->getFlagShow());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME, currentHipStars->getFlagNames());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, currentHipStars->getFlagIsolateSelected());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA, currentNebulas->getFlagShow());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_NAMES, currentNebulas->getNebulaNames());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_HINTS, currentNebulas->getFlagHints());
