@@ -488,7 +488,7 @@ void Core::init(const InitParser& conf)
 		// sandbox separated to allow different settings in future
 		// (for now only used for the show/hide flag without altering normal mode)
 		currentOort.applyToAll([&conf](Oort &mgr) {
-			mgr.populate(conf.getInt("rendering","oort_elements"));
+			mgr.populate(conf.getInt(SCS_RENDERING,SCK_OORT_ELEMENTS));
 			mgr.build();
 		});
 
