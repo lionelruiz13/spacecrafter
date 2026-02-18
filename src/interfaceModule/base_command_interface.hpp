@@ -489,7 +489,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_CC_EQUATOR_GRID                         "equator_grid"
 #define ACP_CC_ECLIPTIC_GRID                        "ecliptic_grid"
 #define ACP_CC_GALACTIC_GRID                        "galactic_grid"
-#define ACP_CC_GALACTIC_GRID                        "galactic_grid"
+#define ACP_CC_EQUATOR_LINE                         "equator_line"
 #define ACP_CC_GALACTIC_LINE                        "galactic_line"
 #define ACP_CC_ECLIPTIC_LINE                        "ecliptic_line"
 #define ACP_CC_MERIDIAN_LINE                        "meridian_line"
