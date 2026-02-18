@@ -92,6 +92,7 @@ public:
 	std::string getSecname(int n) const;			// Get name for section n.
 	std::list<std::string> getKeyFromSection(int i) const; 	//get all key for section i
 	int findEntry(const std::string& entry) const;	// Return 1 if the entry exists, 0 otherwise
+	bool removeEntry(const std::string& entry);		// Remove the given entry, return false if the entry was not found, true if the entry was removed
 
 private:
 	// Check if the key is in the form section:key and if yes create the section in the dictionnary

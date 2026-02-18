@@ -88,7 +88,7 @@ void CheckConfig::checkIoSettings()
 	tmpSettings[SCK_VIDEO_CODEC_THREADS]="50%";
 	tmpSettings[SCK_VIDEO_FRAME_SKIP]="true";
 	// ioSettings["mplayer_name"]="/usr/bin/mplayer";
-	// ioSettings["mplayer_mkfifo_name"]="/tmp/mplayer_mkfifo_name.fifo";
+	tmpSettings[SCK_MPLAYER_MKFIFO_NAME]="/tmp/mplayer_mkfifo_name.fifo";
 
 	sectionSettings.push_back(SCS_IO);
 	insertKeyFromTmpSettings(SCS_IO);
@@ -112,6 +112,8 @@ void CheckConfig::checkVideoSettings()
 	tmpSettings[SCK_AUDIO_FREQUENCY]="44100";
 	tmpSettings[SCK_AUDIO_CHUNKSIZE]="2048";
 	tmpSettings[SCK_AUDIO_CHANNELS]="2";
+	tmpSettings[SCK_PROJECTION]="FISHEYE";
+	tmpSettings[SCK_REAR_PROJECTION]="false";
 
 	sectionSettings.push_back(SCS_VIDEO);
 	insertKeyFromTmpSettings(SCS_VIDEO);
@@ -200,6 +202,7 @@ void CheckConfig::checkGuiSettings()
 	tmpSettings[SCK_MOUSE_CURSOR_TIMEOUT]="1";
 	tmpSettings[SCK_MENU_DISPLAY_POSITION]="-150";
 	tmpSettings[SCK_FLAG_MOUSE_USABLE_IN_SCRIPT]="true";
+	tmpSettings[SCK_FLAG_SHOW_SCRIPT_STATUS]="false";
 
 	sectionSettings.push_back(SCS_GUI);
 	insertKeyFromTmpSettings(SCS_GUI);
@@ -232,8 +235,8 @@ void CheckConfig::checkFontSettings()
 	tmpSettings[SCK_FONT_HIPSTARS_SIZE]="12";
 	tmpSettings[SCK_FONT_NEBULAS_NAME] = "DejaVuSans-Bold.ttf";
 	tmpSettings[SCK_FONT_NEBULAS_SIZE]="12";
+	// tmpSettings[SCK_FONT_MENUGUI_SIZE]="12.5"; // Unused
 
-	tmpSettings[SCK_FONT_MENUGUI_SIZE]="12.5";
 	sectionSettings.push_back(SCS_FONT);
 	insertKeyFromTmpSettings(SCS_FONT);
 	tmpSettings.clear();
@@ -273,7 +276,6 @@ void CheckConfig::checkColorSettings()
 	tmpSettings[SCK_EQUATORIAL_COLOR] = "0.5,1,0.5";
 	tmpSettings[SCK_ECLIPTIC_COLOR] = "1,0.2,0.2";
 	tmpSettings[SCK_GALACTIC_COLOR] = "0.8,0.8,0.8";
-	tmpSettings[SCK_ECLIPTIC_COLOR] = "1,0.2,0.2";
 	tmpSettings[SCK_ECLIPTIC_CENTER_COLOR] = "0.8,0.8,0.8";
 	tmpSettings[SCK_GALACTIC_CENTER_COLOR] = "0.8,0.8,0.8";
 	tmpSettings[SCK_GALACTIC_POLE_COLOR] = "0.8,0.8,0.8";
@@ -282,7 +284,6 @@ void CheckConfig::checkColorSettings()
 	tmpSettings[SCK_PRECESSION_CIRCLE_COLOR] = "0.6,0.4,0";
 	tmpSettings[SCK_CIRCUMPOLAR_CIRCLE_COLOR] = "0.8,0.8,0.8";
 	tmpSettings[SCK_OORT_COLOR] = "0.0,0.5,1.0";
-	tmpSettings[SCK_GALACTIC_COLOR] = "0.8,0.8,0.8";
 	tmpSettings[SCK_VERNAL_POINTS_COLOR] = "0.8,0.8,0.8";
 	tmpSettings[SCK_PLANET_HALO_COLOR] = "1.0,1.0,1.0";
 	tmpSettings[SCK_PLANET_NAMES_COLOR] = "0.3,0.7,1";
@@ -298,9 +299,6 @@ void CheckConfig::checkColorSettings()
 	tmpSettings[SCK_ANALEMMA_COLOR] = "1,1,0.5";
 	tmpSettings[SCK_ARIES_COLOR] = "0.8,0.8,0.8";
 	tmpSettings[SCK_CARDINAL_COLOR] = "1,1,0.6";
-	tmpSettings[SCK_ECLIPTIC_CENTER_COLOR] = "0.8,0.8,0.8";
-	tmpSettings[SCK_GALACTIC_POLE_COLOR] = "0.8,0.8,0.8";
-	tmpSettings[SCK_GALACTIC_CENTER_COLOR] = "0.8,0.8,0.8";
 	tmpSettings[SCK_GREENWICH_COLOR] = "1,0,0";
 	tmpSettings[SCK_MERIDIAN_COLOR] = "0,0.8,1";
 	tmpSettings[SCK_PERSONAL_COLOR] = "0.8,0.8,0";
@@ -314,7 +312,6 @@ void CheckConfig::checkColorSettings()
 	tmpSettings[SCK_ORTHODROMY_COLOR] = "0.4,0.4,0.9";
 	tmpSettings[SCK_POLAR_COLOR] = "0.5,0.3,0";
 	tmpSettings[SCK_TEXT_USR_COLOR] = "0.8,0.8,0.8";
-	tmpSettings[SCK_VERNAL_POINTS_COLOR] = "0.8,0.8,0.8";
 	tmpSettings[SCK_VERTICAL_COLOR] = "0.0,0.8,1.0";
 	tmpSettings[SCK_ZENITH_COLOR] = "0.0,1.0,0.0";
 	tmpSettings[SCK_ZODIAC_COLOR] = "1.0,0,1.0";
@@ -362,6 +359,8 @@ void CheckConfig::checkViewingSettings()
 	tmpSettings[SCK_FLAG_ANALEMMA] = "false";
 	tmpSettings[SCK_FLAG_ARIES_LINE] = "false";
 	tmpSettings[SCK_FLAG_ZODIAC] = "false";
+	tmpSettings[SCK_FLAG_LUNAR_ECLIPSE_UMBRA] = "false";
+	tmpSettings[SCK_FLAG_LUNAR_ECLIPSE_PENUMBRA] = "false";
 	tmpSettings[SCK_FLAG_CARDINAL_POINTS] = "false";
 	tmpSettings[SCK_FLAG_VERTICAL_LINE] = "false";
 	tmpSettings[SCK_FLAG_GREENWICH_LINE] = "false";
@@ -391,7 +390,7 @@ void CheckConfig::checkViewingSettings()
 void CheckConfig::checkNavigationSettings()
 {
 	tmpSettings[SCK_FLAG_NAVIGATION]="false";
-	tmpSettings[SCK_FLAG_ASTRONOMICAL]="false";
+	// tmpSettings[SCK_FLAG_ASTRONOMICAL]="false"; // Unused
 	tmpSettings[SCK_FLAG_SKIP_PAUSE] = "false";
 	tmpSettings[SCK_PRESET_SKY_TIME]="2453065.333344907";
 	tmpSettings[SCK_AUTO_MOVE_DURATION]="5";
@@ -453,7 +452,7 @@ void CheckConfig::checkAstroSettings()
 void CheckConfig::checkLocationSettings()
 {
 	tmpSettings[SCK_LANDSCAPE_NAME]="forest";
-	tmpSettings[SCK_NAME]="guereins";
+	// tmpSettings[SCK_NAME]="guereins"; // Unused
 	tmpSettings[SCK_HOME_PLANET]="Earth";
 	tmpSettings[SCK_ALTITUDE]="230";
 	tmpSettings[SCK_LATITUDE]="+46d6'29.0\"";
@@ -538,7 +537,7 @@ void CheckConfig::insertKeyFromTmpSettings(const std::string& nameSection)
 	for (auto it=tmpSettings.begin(); it!=tmpSettings.end(); ++it) {
 		//important to keep a track  name:key
 		sectionKeySettings.push_back(nameSection+":"+it->first);
-		if (!user_conf.findEntry(nameSection+":"+it->first))
+		if (!user_conf.findEntry(nameSection+":"+it->first)) // Case-insensitive check
 			user_conf.setStr(nameSection+":"+it->first, it->second);
 	}
 }
@@ -546,20 +545,43 @@ void CheckConfig::insertKeyFromTmpSettings(const std::string& nameSection)
 
 void CheckConfig::checkUselessSection()
 {
+	// Lowercase all section names in sectionSettings to avoid case sensitivity issues, as some sections might have been added with a different case in the past
+	for (auto it=sectionSettings.begin(); it != sectionSettings.end(); ++it) {
+		std::transform(it->begin(), it->end(), it->begin(), ::tolower);
+	}
+
 	for (auto i =0; i<user_conf.getNsec(); i++) {
 		std::string test = user_conf.getSecname(i);
+		std::transform(test.begin(), test.end(), test.begin(), ::tolower);
 		auto it = std::find(sectionSettings.begin(), sectionSettings.end(), test);
-		if(it == sectionSettings.end())
-			// std::cout << "section [" << test << "] doesn't exist, you can safely discard it" << std::endl;
-			cLog::get()->write("section [" + test + "] doesn't exist, you can safely discard it", LOG_TYPE::L_WARNING);
+		if(it == sectionSettings.end()) {
+			std::list<std::string> listCandidateKey = user_conf.getKeyFromSection(i);
+			for (auto itKey=listCandidateKey.begin(); itKey != listCandidateKey.end(); ++itKey) {
+				user_conf.removeEntry(*itKey);
+				cLog::get()->write("key " + *itKey + " has been removed from config.ini", LOG_TYPE::L_WARNING);
+			}
+			user_conf.removeEntry(test);
+			cLog::get()->write("section [" + test + "] has been removed from config.ini", LOG_TYPE::L_WARNING);
+		}
 	}
 }
 
 
 void CheckConfig::checkUselessKey()
 {
+	// Lowercase all section:key in sectionKeySettings to avoid case sensitivity issues, as some keys might have been added with a different case in the past
+	for (auto it=sectionKeySettings.begin(); it != sectionKeySettings.end(); ++it) {
+		std::transform(it->begin(), it->end(), it->begin(), ::tolower);
+	}
+	// Lowercase all section names in sectionSettings to avoid case sensitivity issues, as some sections might have been added with a different case in the past
+	for (auto it=sectionSettings.begin(); it != sectionSettings.end(); ++it) {
+		std::transform(it->begin(), it->end(), it->begin(), ::tolower);
+	}
+
 	for (auto i =0; i<user_conf.getNsec(); i++) {
 		std::string test = user_conf.getSecname(i);
+		// Lowercase the section name to avoid case sensitivity issues, as some keys might have been added with a different case in the past
+		std::transform(test.begin(), test.end(), test.begin(), ::tolower);
 		// we search if the section exists
 		auto itSec = std::find(sectionSettings.begin(), sectionSettings.end(), test);
 		if(itSec != sectionSettings.end()) {
@@ -567,12 +589,14 @@ void CheckConfig::checkUselessKey()
 			std::list<std::string> listCandidateKey = user_conf.getKeyFromSection(i);
 			//std::cout << "tmp " << tmp << std::endl;
 			for (auto itKey=listCandidateKey.begin(); itKey != listCandidateKey.end(); ++itKey) {
+				// Lowercase the key name to avoid case sensitivity issues, as some keys might have been added with a different case in the past
+				std::transform(itKey->begin(), itKey->end(), itKey->begin(), ::tolower);
 				// std::cout << "clef candidate " << *itKey << std::endl;
 				auto it3 = std::find(sectionKeySettings.begin(), sectionKeySettings.end(), *itKey);
 				// If the key does not fit, we notify it
 				if(it3 == sectionKeySettings.end()) {
-					//std::cout << "key " << *itKey << std::endl;/*" doesn't exist, you can safely discard it" << std::endl;*/
-					cLog::get()->write("key " + *itKey + " doesn't exist, you can safely discard it", LOG_TYPE::L_WARNING);
+					user_conf.removeEntry(*itKey);
+					cLog::get()->write("key " + *itKey + " has been removed from config.ini", LOG_TYPE::L_WARNING);
 				}
 			}
 		}
