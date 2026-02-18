@@ -37,10 +37,8 @@ void PlanetGrid::computeGridVertices()
     polarCirclesVertices.clear();
     polarCirclesIndices.clear();
 
-    Vec3f meridianColor(0.0f, 1.0f, 0.0f);      // Green for meridians
-    Vec3f equatorColor(1.0f, 0.0f, 0.0f);       // Red for equator
-    Vec3f tropicColor(1.0f, 1.0f, 0.0f);        // Yellow for tropics
-    Vec3f arcticColor(0.0f, 1.0f, 1.0f);        // Cyan for arctic circles
+    // Use white color for all vertices - actual color will be updated dynamically in updateVertexColors()
+    Vec3f whiteColor(1.0f, 1.0f, 1.0f);
 
     // Get body's axial tilt (in degrees) and convert to radians
     double axialTilt = body->getAxialTilt() * M_PI / 180.0;
@@ -61,7 +59,7 @@ void PlanetGrid::computeGridVertices()
             vertex.position[0] = cos(latitude) * cos(longitude);
             vertex.position[1] = cos(latitude) * sin(longitude);
             vertex.position[2] = sin(latitude);
-            vertex.color = meridianColor;
+            vertex.color = whiteColor;
 
             uint16_t vertexIndex = meridianVertices.size();
             if (vertexIndex >= 65535) {
@@ -91,7 +89,7 @@ void PlanetGrid::computeGridVertices()
         vertex.position[0] = cos(latitude) * cos(longitude);
         vertex.position[1] = cos(latitude) * sin(longitude);
         vertex.position[2] = sin(latitude);
-        vertex.color = equatorColor;
+        vertex.color = whiteColor;
 
         equatorVertices.push_back(vertex);
     }
@@ -116,7 +114,7 @@ void PlanetGrid::computeGridVertices()
             vertex.position[0] = cos(latitude) * cos(longitude);
             vertex.position[1] = cos(latitude) * sin(longitude);
             vertex.position[2] = sin(latitude);
-            vertex.color = tropicColor;
+            vertex.color = whiteColor;
 
             tropicsVertices.push_back(vertex);
         }
@@ -130,7 +128,7 @@ void PlanetGrid::computeGridVertices()
             vertex.position[0] = cos(latitude) * cos(longitude);
             vertex.position[1] = cos(latitude) * sin(longitude);
             vertex.position[2] = sin(latitude);
-            vertex.color = tropicColor;
+            vertex.color = whiteColor;
 
             tropicsVertices.push_back(vertex);
         }
@@ -161,7 +159,7 @@ void PlanetGrid::computeGridVertices()
         vertex.position[0] = cos(latitude) * cos(longitude);
         vertex.position[1] = cos(latitude) * sin(longitude);
         vertex.position[2] = sin(latitude);
-        vertex.color = arcticColor;
+        vertex.color = whiteColor;
 
         polarCirclesVertices.push_back(vertex);
     }
@@ -175,7 +173,7 @@ void PlanetGrid::computeGridVertices()
         vertex.position[0] = cos(latitude) * cos(longitude);
         vertex.position[1] = cos(latitude) * sin(longitude);
         vertex.position[2] = sin(latitude);
-        vertex.color = arcticColor;
+        vertex.color = whiteColor;
 
         polarCirclesVertices.push_back(vertex);
     }
@@ -194,12 +192,62 @@ void PlanetGrid::computeGridVertices()
     }
 }
 
-void PlanetGrid::drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat, double observerAltitude, bool showMeridians, bool showEquator, bool showTropics, bool showPolarCircles)
+void PlanetGrid::updateVertexColors(const Vec3f& meridianColor, const Vec3f& equatorColor, const Vec3f& tropicColor, const Vec3f& polarCircleColor)
+{
+    // Update meridian vertices colors
+    for (auto& vertex : meridianVertices) {
+        vertex.color = meridianColor;
+    }
+
+    // Update equator vertices colors
+    for (auto& vertex : equatorVertices) {
+        vertex.color = equatorColor;
+    }
+
+    // Update tropics vertices colors
+    for (auto& vertex : tropicsVertices) {
+        vertex.color = tropicColor;
+    }
+
+    // Update polar circles vertices colors
+    for (auto& vertex : polarCirclesVertices) {
+        vertex.color = polarCircleColor;
+    }
+
+    // Force buffer recreation to upload new colors
+    meridianBuffer.reset();
+    equatorBuffer.reset();
+    tropicsBuffer.reset();
+    polarCirclesBuffer.reset();
+    meridianIndexSubBuffer = SubBuffer();
+    equatorIndexSubBuffer = SubBuffer();
+    tropicsIndexSubBuffer = SubBuffer();
+    polarCirclesIndexSubBuffer = SubBuffer();
+}
+
+void PlanetGrid::drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat, double observerAltitude,
+                          bool showMeridians, bool showEquator, bool showTropics, bool showPolarCircles,
+                          const Vec3f& meridianColor, const Vec3f& equatorColor, const Vec3f& tropicColor, const Vec3f& polarCircleColor)
 {
     // Lazy initialization: compute vertices on first draw
     if (!initialized) {
         computeGridVertices();
         initialized = true;
+    }
+
+    // Check if colors have changed and update vertex colors if needed
+    if (cachedMeridianColor != meridianColor ||
+        cachedEquatorColor != equatorColor ||
+        cachedTropicColor != tropicColor ||
+        cachedPolarCircleColor != polarCircleColor) {
+
+        updateVertexColors(meridianColor, equatorColor, tropicColor, polarCircleColor);
+
+        // Update cached colors
+        cachedMeridianColor = meridianColor;
+        cachedEquatorColor = equatorColor;
+        cachedTropicColor = tropicColor;
+        cachedPolarCircleColor = polarCircleColor;
     }
 
     // Only draw if altitude > 10km

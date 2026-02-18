@@ -23,13 +23,16 @@ public:
     PlanetGrid(Body *body);
     ~PlanetGrid();
 
-    void drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat, double observerAltitude, bool showMeridians, bool showEquator, bool showTropics, bool showPolarCircles);
+    void drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat, double observerAltitude, 
+                  bool showMeridians, bool showEquator, bool showTropics, bool showPolarCircles,
+                  const Vec3f& meridianColor, const Vec3f& equatorColor, const Vec3f& tropicColor, const Vec3f& polarCircleColor);
 
     static void createSC_context();
     static void destroySC_context();
 
 private:
     void computeGridVertices();
+    void updateVertexColors(const Vec3f& meridianColor, const Vec3f& equatorColor, const Vec3f& tropicColor, const Vec3f& polarCircleColor);
 
     Body *body;
 
@@ -72,9 +75,12 @@ private:
     // Lazy initialization flag
     bool initialized = false;
 
-    static inline float grid_radius = 1.05f; // Radius for displaying the grid (multiples of body radius)
-    static inline Vec4f meridian_color = Vec4f(0.0f, 1.0f, 0.0f, 1.0f); // Green
-    static inline Vec4f parallel_color = Vec4f(0.0f, 0.0f, 1.0f, 1.0f); // Blue
+    // Cached colors to detect changes
+    Vec3f cachedMeridianColor = Vec3f(1.0f, 1.0f, 1.0f);
+    Vec3f cachedEquatorColor = Vec3f(1.0f, 1.0f, 1.0f);
+    Vec3f cachedTropicColor = Vec3f(1.0f, 1.0f, 1.0f);
+    Vec3f cachedPolarCircleColor = Vec3f(1.0f, 1.0f, 1.0f);
+
     static const unsigned int SEGMENTS_PER_LINE = 64; // Segments per grid line
     static const unsigned int DEFAULT_NB_MERIDIAN = 24;
 };

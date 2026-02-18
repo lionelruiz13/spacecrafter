@@ -1254,7 +1254,14 @@ void Body::drawPlanetGrid(VkCommandBuffer cmd, const Projector* prj, const Mat4d
 		bool showTropics = CoreLink::instance->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_TROPIC);
 		bool showPolarCircles = CoreLink::instance->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
 
-		planetGrid->drawGrid(cmd, prj, mat, altitudeFromThisBody, showMeridians, showEquator, showTropics, showPolarCircles);
+		// Get colors from config.ini via CoreLink (can change dynamically)
+		Vec3f meridianColor = CoreLink::instance->skyGridMgrGetColor(SKYGRID_TYPE::GRID_EQUATORIAL);
+		Vec3f equatorColor = CoreLink::instance->skyLineMgrGetColor(SKYLINE_TYPE::LINE_EQUATOR);
+		Vec3f tropicColor = CoreLink::instance->skyLineMgrGetColor(SKYLINE_TYPE::LINE_TROPIC);
+		Vec3f polarCircleColor = CoreLink::instance->skyLineMgrGetColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+
+		planetGrid->drawGrid(cmd, prj, mat, altitudeFromThisBody, showMeridians, showEquator, showTropics, showPolarCircles,
+		                     meridianColor, equatorColor, tropicColor, polarCircleColor);
 	}
 }
 
