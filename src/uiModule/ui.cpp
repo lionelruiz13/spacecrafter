@@ -2031,6 +2031,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					RESET_MOD(SUPER);
 					break;
 				case KWIN:
+					this->executeCommand("flag lunar_eclipse_umbra toggle");
+					this->executeCommand("flag lunar_eclipse_penumbra toggle");
 					break;
 				case SHIFT :
 					event = new ScriptEvent( SDIR+"fscripts/K0.sts");
