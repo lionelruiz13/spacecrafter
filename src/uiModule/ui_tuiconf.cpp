@@ -126,7 +126,7 @@ void UI::drawGravityUi(MODULE module)
 		std::string info = core->getSelectedObjectShortInfo();
 		Vec3f tmpColor = Vec3f(core->getSelectedObjectInfoColor());
 
-		if (core->getFlagNav()) {
+		if (core->getFlagNav() || core->getFlagAstronomical()) {
 			std::string info2 = core->getSelectedObjectShortInfoNav();
 			std::string s_1, s_2;
 			s_1= info2.substr(0, info2.find("@"));
