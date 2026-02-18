@@ -31,6 +31,7 @@
 #include "bodyModule/body.hpp"
 #include "navModule/observer.hpp"
 #include "coreModule/projector.hpp"
+#include "coreModule/coreLink.hpp"
 #include "tools/s_font.hpp"
 #include "../planetsephems/sideral_time.h"
 #include "tools/log.hpp"
@@ -216,6 +217,11 @@ bool Body::getFlagHints(void) const
 bool Body::getFlagAxis(void) const
 {
 	return flags.flag_axis;
+}
+
+bool Body::getFlagPlanetGrid(void) const
+{
+	return flags.flag_planet_grid;
 }
 
 void Body::setFlagAxis(bool b)
@@ -1237,7 +1243,18 @@ void Body::drawPlanetGrid(VkCommandBuffer cmd, const Projector* prj, const Mat4d
 {
 	// Draw the longitude/latitude grid if the options are enabled
 	if (flags.flag_planet_grid && planetGrid) {
-		planetGrid->drawGrid(cmd, prj, mat);
+		// Calculate altitude relative to THIS body's surface
+		// distance is observer's distance from body center, radius is body's radius
+		double altitudeFromThisBody = (distance - radius) * AU * 1000.0; // Convert from AU to meters
+
+		// Get flags from SkyLine - for now we use simple defaults based on altitude
+		// TODO: integrate with SkyLineMgr flags if needed
+		bool showMeridians = CoreLink::instance->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
+		bool showEquator = CoreLink::instance->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_EQUATOR);
+		bool showTropics = CoreLink::instance->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_TROPIC);
+		bool showPolarCircles = CoreLink::instance->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+
+		planetGrid->drawGrid(cmd, prj, mat, altitudeFromThisBody, showMeridians, showEquator, showTropics, showPolarCircles);
 	}
 }
 

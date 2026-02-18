@@ -286,14 +286,14 @@ void SkyLineMgr::Create(SKYLINE_TYPE type_obj)
 	switch (type_obj) {
 		case SKYLINE_TYPE::LINE_CIRCLE_POLAR :
 			cLog::get()->write("SkyLineMgr creating LINE_CIRCLE_POLAR" , LOG_TYPE::L_INFO);
-			tmp=new SkyLine_Pole(SkyLine_Pole::POLE,66.5,72);
+			tmp=new SkyLine_Pole(SkyLine_Pole::CIRCLE_POLE,66.5,72);
 			m_map[type_obj]= tmp;
 			return;
 			break;
 
 		case SKYLINE_TYPE::LINE_POINT_POLAR :
 			cLog::get()->write("SkyLineMgr creating LINE_POINT_POLAR" , LOG_TYPE::L_INFO);
-			tmp=new SkyLine_Pole(SkyLine_Pole::POLE,89,72);
+			tmp=new SkyLine_Pole(SkyLine_Pole::POINT_POLE,89,72);
 			m_map[type_obj]= tmp;
 			return;
 			break;

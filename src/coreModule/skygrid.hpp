@@ -35,6 +35,7 @@
 
 #include "tools/s_font.hpp"
 #include "coreModule/projector.hpp"
+#include "navModule/observer.hpp"
 #include "tools/fader.hpp"
 #include "tools/ScModule.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
@@ -53,7 +54,7 @@ class SkyGrid {
 public:
 	virtual ~SkyGrid();
 
-	void draw(const Projector* prj);
+	void draw(const Projector* prj, const Observer* observatory);
 
 	void setColor(const Vec3f& c) {
 		color = c;

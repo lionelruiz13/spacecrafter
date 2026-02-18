@@ -56,7 +56,7 @@ public:
 	};
 	//The one that will create the objects
 	void Create(SKYGRID_TYPE type_obj);
-	void draw(const Projector* prj);
+	void draw(const Projector* prj, const Observer* observatory);
 	void update(int delta_time);
 
 	//void setFont(float font_size, const std::string& font_name);

@@ -274,7 +274,7 @@ void InSandBoxModule::draw(int delta_time)
 	core->currentIlluminates->draw(core->projection, core->navigation);
 	core->currentAsterisms->draw(core->projection, core->navigation);
 	core->currentHipStars->draw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->timeMgr.get(), core->observatory->getAltitude());
-	core->currentSkyGridMgr->draw(core->projection);
+	core->currentSkyGridMgr->draw(core->projection, core->observatory.get());
 	core->currentSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	// Draw everything related to sky display (the drawPerson content too, drawPerson is just a restricted draw)
 	core->currentSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));

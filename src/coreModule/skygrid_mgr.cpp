@@ -34,10 +34,10 @@ SkyGridMgr::SkyGridMgr()
 	SkyGrid::createShader();
 }
 
-void SkyGridMgr::draw(const Projector* prj)
+void SkyGridMgr::draw(const Projector* prj, const Observer* observatory)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
-		it->second->draw(prj);
+		it->second->draw(prj, observatory);
 	}
 }
 

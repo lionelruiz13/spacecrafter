@@ -138,7 +138,8 @@ protected:
 class SkyLine_Pole : public SkyLine {
 public:
 	enum SKY_LINE_POLE_TYPE {
-		POLE,
+		CIRCLE_POLE,
+		POINT_POLE,
 		ECLIPTIC_POLE,
 		GALACTIC_POLE
 	};

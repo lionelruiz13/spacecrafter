@@ -173,7 +173,8 @@ SkyLine_Pole::SkyLine_Pole(SKY_LINE_POLE_TYPE _line_pole_type, double _radius = 
 {
 	line_pole_type = _line_pole_type;
 	switch (line_pole_type) {
-		case POLE:
+		case CIRCLE_POLE:
+		case POINT_POLE:
 			proj_func = &Projector::projectEarthEqu;
 			break;
 		case ECLIPTIC_POLE:
@@ -194,6 +195,12 @@ SkyLine_Pole::~SkyLine_Pole()
 void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
+
+	if (line_pole_type == CIRCLE_POLE) {
+		// Do not render if altitude > 10km AND we activated the planetGrid (shif+x)
+		if (observatory->getAltitude() > 10000 && observatory->getHomeBody()->getFlagPlanetGrid())
+			return;
+	}
 
 	Vec4f Color (color[0], color[1], color[2], fader.getInterstate());
 
@@ -915,6 +922,12 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 {
 	if (!fader.getInterstate()) return;
 
+	if (line_equator_type == EQUATOR) {
+		// Do not render if altitude > 10km AND we activated the planetGrid (shif+x)
+		if (observatory->getAltitude() > 10000 && observatory->getHomeBody()->getFlagPlanetGrid())
+			return;
+	}
+
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
 	// StateGL::enable(GL_BLEND);
@@ -1088,6 +1101,10 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	// Not valid on non-planets
 	if ( (observatory->getHomeBody()->isSatellite()) || observatory->isSun()) return;
+
+	// Do not render if altitude > 10km AND we activated the planetGrid (shif+x)
+	if (observatory->getAltitude() > 10000 && observatory->getHomeBody()->getFlagPlanetGrid())
+		return;
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 

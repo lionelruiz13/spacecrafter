@@ -189,7 +189,7 @@ void SolarSystemModule::draw(int delta_time)
 	core->currentAsterisms->draw(core->projection, core->navigation);
 	core->currentStarLines->draw(core->projection);
 	core->currentHipStars->draw(core->geodesic_grid, core->currentToneConverter.get(), core->projection, core->timeMgr.get(), core->observatory->getAltitude());
-	core->currentSkyGridMgr->draw(core->projection);
+	core->currentSkyGridMgr->draw(core->projection, core->observatory.get());
 	core->currentSkyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->currentSkyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
 	core->currentSsystemFactory->draw(core->projection, core->navigation, observer, core->currentToneConverter.get(), core->currentBodyDecor->canDrawBody() /*aboveHomePlanet*/ );

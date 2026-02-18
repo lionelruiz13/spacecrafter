@@ -326,6 +326,8 @@ public:
 
 	bool getFlagAxis(void) const;
 
+	bool getFlagPlanetGrid(void) const;
+
 	void setFlagAxis(bool b);
 
 	void setFlagOrbit(bool b);

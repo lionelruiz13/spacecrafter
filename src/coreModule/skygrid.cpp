@@ -216,9 +216,15 @@ void SkyGrid::recordDraw()
 	}
 }
 
-void SkyGrid::draw(const Projector* prj)
+void SkyGrid::draw(const Projector* prj, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
+
+	if (gtype == EQUATORIAL) {
+		// Do not render if altitude > 10km AND we activated the planetGrid (shif+x)
+		if (observatory->getAltitude() > 10000 && observatory->getHomeBody()->getFlagPlanetGrid())
+			return;
+	}
 
     if (!vertex) {
         vertex = pVertex.lock();
