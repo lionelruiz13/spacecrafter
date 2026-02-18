@@ -286,7 +286,7 @@ void SkyGrid::draw(const Projector* prj, const Observer* observatory)
 					}
 
 					if ( gtype == EQUATORIAL ) {
-						if (internalNav)
+						if (internalNav && !internalAstronomical)
 							sprintf( str, "%d°E", (24-nm)*15);
 						else
 							sprintf( str, "%dh", nm);
