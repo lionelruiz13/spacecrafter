@@ -47,6 +47,7 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
+#include <type_traits>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -81,11 +82,9 @@ typedef Matrix4<double>	Mat4d;
 template<class T> class Vector2 {
 public:
 	inline Vector2();
-	inline Vector2(const Vector2<T>&);
 	inline Vector2(T, T);
 	inline Vector2(const T*);
 
-	inline Vector2& operator=(const Vector2<T>&);
 	inline Vector2& operator=(const T*);
 	inline void set(T, T);
 
@@ -133,15 +132,24 @@ public:
 template<class T> class Vector3 {
 public:
 	inline Vector3();
-	inline Vector3(const Vector3&);
 	inline Vector3(const Vector4<T>&);
 	inline Vector3(const Vector2<T>&,const T&z=0);
-	template <class T2> inline Vector3(const Vector3<T2>&);
+	template <class T2> requires (!std::is_same<T,T2>::value)
+	inline Vector3(const Vector3<T2>&a) {
+		v[0] = a.v[0];
+		v[1] = a.v[1];
+		v[2] = a.v[2];
+	}
 	inline Vector3(T, T, T);
 
-	inline Vector3& operator=(const Vector3&);
 	inline Vector3& operator=(const T*);
-	template <class T2> inline Vector3& operator=(const Vector3<T2>&);
+	template <class T2> requires (!std::is_same<T,T2>::value)
+	inline Vector3& operator=(const Vector3<T2>&a) {
+		v[0] = a.v[0];
+		v[1] = a.v[1];
+		v[2] = a.v[2];
+		return *this;
+	}
 	inline void set(T, T, T);
 
 	inline bool operator==(const Vector3<T>&) const;
@@ -195,13 +203,11 @@ template<class T> class Vector4 {
 public:
 	inline Vector4();
 	inline Vector4(const T*);
-	inline Vector4(const Vector4<T>&);
 	inline Vector4(const Vector3<T>&);
 	inline Vector4(const Vector3<T>&, T);
 	constexpr Vector4(T, T, T, T);
 	inline Vector4(T, T, T);
 
-	inline Vector4& operator=(const Vector4<T>&);
 	inline Vector4& operator=(const Vector3<T>&);
 	inline Vector4& operator=(const T*);
 	inline void set(T, T, T, T);
@@ -264,13 +270,11 @@ public:
 template<class T> class Matrix4 {
 public:
 	Matrix4();
-	Matrix4(const Matrix4<T>& m);
 	Matrix4(T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T);
 	Matrix4(const T*);
 	Matrix4(const Vector3<T>& v0, const Vector3<T>& v1, const Vector3<T>& v2, const Vector3<T>& v3);
 	Matrix4(const Vector4<T>& v0, const Vector4<T>& v1, const Vector4<T>& v2, const Vector4<T>& v3);
 
-	inline Matrix4& operator=(const Matrix4<T>&);
 	inline Matrix4& operator=(const T*);
 	inline void set(T,T,T,T,T,T,T,T,T,T,T,T,T,T,T,T);
 
@@ -379,14 +383,6 @@ template<class T> Vector2<T>::Vector2()
 	v[1]=0;
 }
 
-//! Constructor from an array. Data are copied.
-//! @param a the array to copy data from.
-template<class T> Vector2<T>::Vector2(const Vector2<T>& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-}
-
 //! constructor from 2 values.
 //! x first value.
 //! y second value.
@@ -402,16 +398,6 @@ template<class T> Vector2<T>::Vector2(const T*a)
 {
 	v[0]=a[0];
 	v[1]=a[1];
-}
-
-//! = operator.
-//! @param a the vector to copy.
-//! @return *this
-template<class T> Vector2<T>& Vector2<T>::operator=(const Vector2<T>& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	return *this;
 }
 
 //! = operator.
@@ -640,15 +626,6 @@ template<class T> Vector3<T>::Vector3()
 	v[2]=0;
 }
 
-//! Constructor from an array. Data are copied.
-//! @param a the array to copy data from.
-template<class T> Vector3<T>::Vector3(const Vector3& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
-}
-
 //! Copy constructor.
 //! @param a the vector to copy.
 template<class T> Vector3<T>::Vector3(const Vector4<T>&a)
@@ -656,15 +633,6 @@ template<class T> Vector3<T>::Vector3(const Vector4<T>&a)
 	v[0]=a.v[0];
 	v[1]=a.v[1];
 	v[2]=a.v[2];
-}
-
-//! Copy constructor.
-//! @param a the vector to copy.
-template<class T> template<class T2> Vector3<T>::Vector3(const Vector3<T2>& a)
-{
-	v[0]=(T) a.v[0];
-	v[1]=(T) a.v[1];
-	v[2]=(T) a.v[2];
 }
 
 //! constructor from 3 values.
@@ -683,28 +651,6 @@ template<class T> Vector3<T>::Vector3(const Vector2<T>&vec2,const T&z)
     v[0]=vec2.v[0];
     v[1]=vec2.v[1];
     v[2]=z;
-}
-
-//! = operator.
-//! @param a the vector to copy.
-//! @return *this
-template<class T> Vector3<T>& Vector3<T>::operator=(const Vector3& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
-	return *this;
-}
-
-//! = operator.
-//! @param a the vector to copy.
-//! @return *this
-template<class T> template <class T2> Vector3<T>& Vector3<T>::operator=(const Vector3<T2>& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
-	return *this;
 }
 
 //! = operator from array.
@@ -1014,16 +960,6 @@ template<class T> Vector4<T>::Vector4(const T*a)
 	this->operator=(a);
 }
 
-//! Copy constructor.
-//! @param a the vector to copy.
-template<class T> Vector4<T>::Vector4(const Vector4<T>& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
-	v[3]=a.v[3];
-}
-
 //! constructor from vector3. Automatically set w to 1.0.
 //! @param a the vector to copy.
 template<class T> Vector4<T>::Vector4(const Vector3<T>& a)
@@ -1069,18 +1005,6 @@ template<class T> Vector4<T>::Vector4(T x, T y, T z)
 	v[1]=y;
 	v[2]=z;
 	v[3]=1;
-}
-
-//! = operator.
-//! @param a the vector to copy.
-//! @return *this
-template<class T> Vector4<T>& Vector4<T>::operator=(const Vector4<T>& a)
-{
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
-	v[3]=a.v[3];
-	return *this;
 }
 
 //! = operator.
@@ -1475,28 +1399,12 @@ template<class T> Matrix4<T>::Matrix4()
 	r[15]=0;
 }
 
-//! Copy constructor.
-//! @param m the matrix to copy.
-template<class T> Matrix4<T>::Matrix4(const Matrix4<T>& m)
-{
-	memcpy(r,m.r,sizeof(m.r));
-}
-
 //! Constructor from array.
 //! @param m an array to copy data from.
 //! make sure it is large enough.
 template<class T> Matrix4<T>::Matrix4(const T* m)
 {
 	memcpy(r,m,sizeof(T)*16);
-}
-
-//! = operator.
-//! @param m the matrix to copy.
-//! @return *this
-template<class T> Matrix4<T>& Matrix4<T>::operator=(const Matrix4<T>& m)
-{
-	memcpy(r,m.r,sizeof(m.r));
-	return (*this);
 }
 
 //! Constructor from four 3 dimensions vectors.
