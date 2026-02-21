@@ -304,8 +304,8 @@ void UI::drawScriptStatusIcon()
 	int screenW = m_sdl->getDisplayWidth();
 	int screenH = m_sdl->getDisplayHeight();
 
-	const float iconSizeX = currentIcon->width  / 8.f; // Size of the icon X
-	const float iconSizeY = currentIcon->height / 8.f; // Size of the icon Y
+	const float iconSizeX = currentIcon->width  / 6.f; // Size of the icon X
+	const float iconSizeY = currentIcon->height / 6.f; // Size of the icon Y
 
 	float x = (screenW - iconSizeX) / 2.0f;  // Center horizontally
 	float y = 0; // y == 0 is the bottom of the screen
