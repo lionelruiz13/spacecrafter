@@ -200,7 +200,7 @@ void PlanetGrid::updateVertexColors(const Vec3f& meridianColor, const Vec3f& equ
     }
     if (meridianBuffer) {
         GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(meridianBuffer->get()));
-        std::copy(meridianVertices.begin(), meridianVertices.end(), pVertices);
+        memcpy(pVertices, meridianVertices.data(), meridianVertices.size() * sizeof(*pVertices));
     }
 
     // Update equator vertices colors
@@ -209,7 +209,7 @@ void PlanetGrid::updateVertexColors(const Vec3f& meridianColor, const Vec3f& equ
     }
     if (equatorBuffer) {
         GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(equatorBuffer->get()));
-        std::copy(equatorVertices.begin(), equatorVertices.end(), pVertices);
+        memcpy(pVertices, equatorVertices.data(), equatorVertices.size() * sizeof(*pVertices));
     }
 
     // Update tropics vertices colors
@@ -218,7 +218,7 @@ void PlanetGrid::updateVertexColors(const Vec3f& meridianColor, const Vec3f& equ
     }
     if (tropicsBuffer) {
         GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(tropicsBuffer->get()));
-        std::copy(tropicsVertices.begin(), tropicsVertices.end(), pVertices);
+        memcpy(pVertices, tropicsVertices.data(), tropicsVertices.size() * sizeof(*pVertices));
     }
 
     // Update polar circles vertices colors
@@ -227,7 +227,7 @@ void PlanetGrid::updateVertexColors(const Vec3f& meridianColor, const Vec3f& equ
     }
     if (polarCirclesBuffer) {
         GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(polarCirclesBuffer->get()));
-        std::copy(polarCirclesVertices.begin(), polarCirclesVertices.end(), pVertices);
+        memcpy(pVertices, polarCirclesVertices.data(), polarCirclesVertices.size() * sizeof(*pVertices));
     }
 }
 
@@ -290,7 +290,7 @@ void PlanetGrid::drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4
             meridianBuffer = vertexModel->createBuffer(0, meridianVertices.size(), Context::instance->globalBuffer.get());
 
             GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(meridianBuffer->get()));
-            std::copy(meridianVertices.begin(), meridianVertices.end(), pVertices);
+            memcpy(pVertices, meridianVertices.data(), meridianVertices.size() * sizeof(*pVertices));
 
             meridianIndexSubBuffer = Context::instance->indexBufferMgr->acquireBuffer(meridianIndices.size() * sizeof(uint16_t));
 
@@ -309,7 +309,7 @@ void PlanetGrid::drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4
             equatorBuffer = vertexModel->createBuffer(0, equatorVertices.size(), Context::instance->globalBuffer.get());
 
             GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(equatorBuffer->get()));
-            std::copy(equatorVertices.begin(), equatorVertices.end(), pVertices);
+            memcpy(pVertices, equatorVertices.data(), equatorVertices.size() * sizeof(*pVertices));
 
             equatorIndexSubBuffer = Context::instance->indexBufferMgr->acquireBuffer(equatorIndices.size() * sizeof(uint16_t));
 
@@ -328,7 +328,7 @@ void PlanetGrid::drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4
             tropicsBuffer = vertexModel->createBuffer(0, tropicsVertices.size(), Context::instance->globalBuffer.get());
 
             GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(tropicsBuffer->get()));
-            std::copy(tropicsVertices.begin(), tropicsVertices.end(), pVertices);
+            memcpy(pVertices, tropicsVertices.data(), tropicsVertices.size() * sizeof(*pVertices));
 
             tropicsIndexSubBuffer = Context::instance->indexBufferMgr->acquireBuffer(tropicsIndices.size() * sizeof(uint16_t));
 
@@ -347,7 +347,7 @@ void PlanetGrid::drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4
             polarCirclesBuffer = vertexModel->createBuffer(0, polarCirclesVertices.size(), Context::instance->globalBuffer.get());
 
             GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(polarCirclesBuffer->get()));
-            std::copy(polarCirclesVertices.begin(), polarCirclesVertices.end(), pVertices);
+            memcpy(pVertices, polarCirclesVertices.data(), polarCirclesVertices.size() * sizeof(*pVertices));
 
             polarCirclesIndexSubBuffer = Context::instance->indexBufferMgr->acquireBuffer(polarCirclesIndices.size() * sizeof(uint16_t));
 
