@@ -198,31 +198,37 @@ void PlanetGrid::updateVertexColors(const Vec3f& meridianColor, const Vec3f& equ
     for (auto& vertex : meridianVertices) {
         vertex.color = meridianColor;
     }
+    if (meridianBuffer) {
+        GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(meridianBuffer->get()));
+        std::copy(meridianVertices.begin(), meridianVertices.end(), pVertices);
+    }
 
     // Update equator vertices colors
     for (auto& vertex : equatorVertices) {
         vertex.color = equatorColor;
+    }
+    if (equatorBuffer) {
+        GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(equatorBuffer->get()));
+        std::copy(equatorVertices.begin(), equatorVertices.end(), pVertices);
     }
 
     // Update tropics vertices colors
     for (auto& vertex : tropicsVertices) {
         vertex.color = tropicColor;
     }
+    if (tropicsBuffer) {
+        GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(tropicsBuffer->get()));
+        std::copy(tropicsVertices.begin(), tropicsVertices.end(), pVertices);
+    }
 
     // Update polar circles vertices colors
     for (auto& vertex : polarCirclesVertices) {
         vertex.color = polarCircleColor;
     }
-
-    // Force buffer recreation to upload new colors
-    meridianBuffer.reset();
-    equatorBuffer.reset();
-    tropicsBuffer.reset();
-    polarCirclesBuffer.reset();
-    meridianIndexSubBuffer = SubBuffer();
-    equatorIndexSubBuffer = SubBuffer();
-    tropicsIndexSubBuffer = SubBuffer();
-    polarCirclesIndexSubBuffer = SubBuffer();
+    if (polarCirclesBuffer) {
+        GridVertex *pVertices = static_cast<GridVertex *>(Context::instance->transfer->planCopy(polarCirclesBuffer->get()));
+        std::copy(polarCirclesVertices.begin(), polarCirclesVertices.end(), pVertices);
+    }
 }
 
 void PlanetGrid::drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat, double observerAltitude,
