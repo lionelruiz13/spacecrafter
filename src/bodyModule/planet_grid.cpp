@@ -270,7 +270,7 @@ void PlanetGrid::drawGrid(VkCommandBuffer &cmd, const Projector* prj, const Mat4
     } matData;
 
     // Pre-compute all transformations on CPU
-    float totalScale = body->radius * 1.05f;
+    float totalScale = body->radius * 1.03f;
     Mat4d scaleMatrix = Mat4d::scaling(Vec3d(totalScale, totalScale, totalScale));
 
     double axisRotationRad = body->getAxisRotation() * M_PI / 180.0;
