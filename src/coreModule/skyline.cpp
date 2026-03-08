@@ -1644,8 +1644,8 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
 
-	p1_valid = (prj->*proj_func)(circlen[25], pt1);
-	p2_valid = (prj->*proj_func)(circlen[0], pt2);
+	p1_valid = (prj->*proj_func)(circlep[25], pt1);
+	p2_valid = (prj->*proj_func)(circlep[0], pt2);
 	if (p1_valid || p2_valid) {
 		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
