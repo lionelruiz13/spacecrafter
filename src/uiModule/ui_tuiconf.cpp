@@ -568,16 +568,16 @@ void UI::localizeTui()
 	tui_colors_planet_names_color->setLabel(std::string("5.7 ") + _("Body Labels") + ": ");
 	tui_colors_planet_orbits_color->setLabel(std::string("5.8 ") + _("Body Orbits") + ": ");
 
-	tui_colors_object_trails_color->setLabel(std::string("5.10 ") + _("Body Trails") + ": ");  // TODO: Should be Body Trails
-	tui_colors_meridian_color->setLabel(std::string("5.11 ") + _("Meridian Line") + ": ");
-	tui_colors_azimuthal_color->setLabel(std::string("5.12 ") + _("Azimuthal Grid") + ": ");
-	tui_colors_equatorial_color->setLabel(std::string("5.13 ") + _("Equatorial Grid") + ": ");
-	tui_colors_equator_color->setLabel(std::string("5.14 ") + _("Equator Line") + ": ");
-	tui_colors_ecliptic_color->setLabel(std::string("5.15 ") + _("Ecliptic Line") + ": ");
-	tui_colors_nebula_label_color->setLabel(std::string("5.16 ") + _("Nebula Labels") + ": ");
-	tui_colors_nebula_circle_color->setLabel(std::string("5.17 ") + _("Nebula Circles") + ": ");
-	tui_colors_precession_circle_color->setLabel(std::string("5.18 ") + _("Precession Circle") + ": ");
-	tui_colors_circumpolar_circle_color->setLabel(std::string("5.19 ") + _("Circumpolar Circle") + ": ");
+	tui_colors_object_trails_color->setLabel(std::string("5.9 ") + _("Body Trails") + ": ");  // TODO: Should be Body Trails
+	tui_colors_meridian_color->setLabel(std::string("5.10 ") + _("Meridian Line") + ": ");
+	tui_colors_azimuthal_color->setLabel(std::string("5.11 ") + _("Azimuthal Grid") + ": ");
+	tui_colors_equatorial_color->setLabel(std::string("5.12 ") + _("Equatorial Grid") + ": ");
+	tui_colors_equator_color->setLabel(std::string("5.13 ") + _("Equator Line") + ": ");
+	tui_colors_ecliptic_color->setLabel(std::string("5.14 ") + _("Ecliptic Line") + ": ");
+	tui_colors_nebula_label_color->setLabel(std::string("5.15 ") + _("Nebula Labels") + ": ");
+	tui_colors_nebula_circle_color->setLabel(std::string("5.16 ") + _("Nebula Circles") + ": ");
+	tui_colors_precession_circle_color->setLabel(std::string("5.17 ") + _("Precession Circle") + ": ");
+	tui_colors_circumpolar_circle_color->setLabel(std::string("5.18 ") + _("Circumpolar Circle") + ": ");
 
 
 	// 6. Effects
@@ -593,10 +593,10 @@ void UI::localizeTui()
 	tui_effect_nebulae_label_magnitude->setLabel(std::string("6.8 ") + _("Maximum Nebula Magnitude to Label: "));
 	tui_effect_view_offset->setLabel(std::string("6.9 ") + _("Zoom Offset: "));
 	tui_effect_zoom_duration->setLabel(std::string("6.10 ") + _("Zoom Duration: "));
-	tui_effect_cursor_timeout->setLabel(std::string("6.12 ") + _("Cursor Timeout: "));
-	tui_effect_light_travel->setLabel(std::string("6.13 ") + _("Correct for light travel time: "), _("Yes"),_("No"));
-	tui_effect_antialias->setLabel(std::string("6.14 ") + _("Antialias Lines: "), _("Yes"),_("No"));
-	tui_effect_line_width->setLabel(std::string("6.15 ") + _("Line Width: "));
+	tui_effect_cursor_timeout->setLabel(std::string("6.11 ") + _("Cursor Timeout: "));
+	tui_effect_light_travel->setLabel(std::string("6.12 ") + _("Correct for light travel time: "), _("Yes"),_("No"));
+	tui_effect_antialias->setLabel(std::string("6.13 ") + _("Antialias Lines: "), _("Yes"),_("No"));
+	tui_effect_line_width->setLabel(std::string("6.14 ") + _("Line Width: "));
 
 
 	// 7. Scripts
