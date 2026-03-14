@@ -465,30 +465,30 @@ void UI::initTui()
 	// 8. Administration
 	tui_admin_loaddefault = new s_tui::ActionConfirmItem(std::string("8.1 ") );
 	tui_admin_loaddefault->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbAdminLoadDefault));
+	tui_menu_administration->addComponent(tui_admin_loaddefault);
 	tui_admin_savedefault = new s_tui::ActionConfirmItem(std::string("8.2 ") );
 	tui_admin_savedefault->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbAdminSaveDefault));
+	tui_menu_administration->addComponent(tui_admin_savedefault);
 	tui_admin_shutdown = new s_tui::ActionConfirmItem(std::string("8.3 ") );
 	tui_admin_shutdown->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbAdminShutdown));
-	tui_menu_administration->addComponent(tui_admin_loaddefault);
-	tui_menu_administration->addComponent(tui_admin_savedefault);
 	tui_menu_administration->addComponent(tui_admin_shutdown);
 
 	// get system info
 	std::string systemInfo=std::string(APP_NAME)+" "+std::string(USER_EDITION);
 	tui_admin_info = new s_tui::Display(std::string("Label: "),std::string(systemInfo));
 	tui_menu_administration->addComponent(tui_admin_info);
-	tui_admin_resolution = new s_tui::Display(std::string("Label: "),m_sdl->getStrResolution());
-	tui_menu_administration->addComponent(tui_admin_resolution);
 	// get user info
-	std::string userInfo=std::string(USER_NAME)+" "+std::string(USER_EDITION);
-	tui_admin_user = new s_tui::Display(std::string("Label: "),std::string(userInfo));
-	tui_menu_administration->addComponent(tui_admin_user);
+	//std::string userInfo=std::string(USER_NAME)+" "+std::string(USER_EDITION);
+	//tui_admin_user = new s_tui::Display(std::string("Label: "),std::string(userInfo));
+	//tui_menu_administration->addComponent(tui_admin_user);
 
 	tui_admin_setlocale = new s_tui::MultiSetItem<std::string>("8.5 ");
 	tui_admin_setlocale->addItemList(std::string(Translator::getAvailableLanguagesCodes(AppSettings::Instance()->getLanguageDir())));
 	tui_admin_setlocale->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbAdminSetLocale));
 	tui_menu_administration->addComponent(tui_admin_setlocale);
 
+	tui_admin_resolution = new s_tui::Display(std::string("8.6 "),m_sdl->getStrResolution());
+	tui_menu_administration->addComponent(tui_admin_resolution);
 	// Now add in translated labels
 	localizeTui();
 }
@@ -627,9 +627,12 @@ void UI::localizeTui()
 	tui_admin_shutdown->setLabel(std::string("8.3 ") + _("Shut Down: "));
 	tui_admin_shutdown->translateActions();
 	tui_admin_info->setLabel(std::string("8.4 ") + _("Info: "));
-	tui_admin_user->setLabel(std::string("8.5 ") + _("User: "));
-	tui_admin_setlocale->setLabel(std::string("8.6 ") + _("Set UI Locale: "));
-	tui_admin_resolution->setLabel(std::string("8.7 ") + _("Resolution: "));
+	//tui_admin_info->translateActions();
+	//tui_admin_user->setLabel(std::string("8.5 ") + _("User: "));
+	tui_admin_setlocale->setLabel(std::string("8.5 ") + _("Set UI Locale: "));
+	//tui_admin_setlocale->translateActions();
+	tui_admin_resolution->setLabel(std::string("8.6 ") + _("Resolution: "));
+	//tui_admin_resolution->translateActions();
 
 }
 
