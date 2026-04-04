@@ -349,7 +349,7 @@ void SpaceDate::DateTimeFromJulianDay(double jd, int *year, int *month, int *day
 		--(*year);
 
 	// Calculate Hours, minutes, seconds
-	int ms  = floor(dayfract * 8640000);
+	int ms  = floor(dayfract * 8640000); // centiseconds
 	*second  = ms % 6000;
 	ms = (ms - *second) / 6000;
 	*second /= 100;
@@ -366,11 +366,18 @@ std::string SpaceDate::ISO8601TimeUTC(double jd, bool dateOnly)
 
 	char isotime[255];
 
-	if( dateOnly )
-		sprintf( isotime, "%d/%d/%d", year, month, day );
-	else
-		sprintf( isotime, "%d-%d-%dT%d:%d:%d", year, month, day, hour, minute, (int)floor(second) );
-
+	if (year > 0) {
+		if (dateOnly)
+			sprintf(isotime, "%d/%d/%d", year, month, day);
+		else
+			sprintf(isotime, "%d-%d-%dT%d:%d:%d", year, month, day, hour, minute, (int)floor(second));
+	} else {
+		year = 1-year;
+		if (dateOnly)
+			sprintf(isotime, "BC %d/%d/%d", year, month, day);
+		else
+			sprintf(isotime, "BC %d-%d-%dT%d:%d:%d", year, month, day, hour, minute, (int)floor(second));
+	}
 	return isotime;
 }
 
@@ -446,51 +453,58 @@ std::string SpaceDate::getPrintableDateUTC(double JD) const
 	struct tm time_utc;
 	SpaceDate::TimeTmFromJulian(JD, &time_utc);
 
-	static char date[255];
+	const bool date_bc = (time_utc.tm_year < -1899);
+	if (date_bc)
+		time_utc.tm_year = -(1900+1899) - time_utc.tm_year;
+
+	static char date[255] = "BC ";
 	switch (dateFormat) {
 		case S_DATE_SYSTEM_DEFAULT :
-			SpaceDate::myStrftime(date, 254, "%x", &time_utc);
+			SpaceDate::myStrftime(date+3, 254, "%x", &time_utc);
 			break;
 		case S_DATE_MMDDYYYY :
-			SpaceDate::myStrftime(date, 254, "%m/%d/%Y", &time_utc);
+			SpaceDate::myStrftime(date+3, 254, "%m/%d/%Y", &time_utc);
 			break;
 		case S_DATE_DDMMYYYY :
-			SpaceDate::myStrftime(date, 254, "%d/%m/%Y", &time_utc);
+			SpaceDate::myStrftime(date+3, 254, "%d/%m/%Y", &time_utc);
 			break;
 		case S_DATE_YYYYMMDD :
-			SpaceDate::myStrftime(date, 254, "%Y-%m-%d", &time_utc);
+			SpaceDate::myStrftime(date+3, 254, "%Y-%m-%d", &time_utc);
 			break;
 	}
-	return date;
+	return (date_bc) ? (date) : (date+3);
 }
 
 //! Return a string with the local date formated according to the dateFormat variable
 std::string SpaceDate::getPrintableDateLocal(double JD) const
 {
 	struct tm time_local;
-
 	if (timeZoneMode == S_TZ_GMT_SHIFT)
 		SpaceDate::TimeTmFromJulian(JD + GMTShift, &time_local);
 	else
 		SpaceDate::TimeTmFromJulian(JD + SpaceDate::GMTShiftFromSystem(JD)*0.041666666666, &time_local);
 
-	static char date[255];
+	const bool date_bc = (time_local.tm_year < -1899);
+	if (date_bc)
+		time_local.tm_year = -(1900+1899) - time_local.tm_year;
+
+	static char date[255] = "BC ";
 	switch (dateFormat) {
 		case S_DATE_SYSTEM_DEFAULT :
-			SpaceDate::myStrftime(date, 254, "%x", &time_local);
+			SpaceDate::myStrftime(date+3, 254, "%x", &time_local);
 			break;
 		case S_DATE_MMDDYYYY :
-			SpaceDate::myStrftime(date, 254, "%m/%d/%Y", &time_local);
+			SpaceDate::myStrftime(date+3, 254, "%m/%d/%Y", &time_local);
 			break;
 		case S_DATE_DDMMYYYY :
-			SpaceDate::myStrftime(date, 254, "%d/%m/%Y", &time_local);
+			SpaceDate::myStrftime(date+3, 254, "%d/%m/%Y", &time_local);
 			break;
 		case S_DATE_YYYYMMDD :
-			SpaceDate::myStrftime(date, 254, "%Y-%m-%d", &time_local);
+			SpaceDate::myStrftime(date+3, 254, "%Y-%m-%d", &time_local);
 			break;
 	}
 
-	return date;
+	return (date_bc) ? (date) : (date+3);
 }
 
 //! Return a string with the UTC time formated according to the timeFormat variable
@@ -543,8 +557,7 @@ std::string SpaceDate::getPrintableTimeLocal(double JD) const
 
 float SpaceDate::getGMTShift(double JD, bool _local) const
 {
-	if (timeZoneMode == S_TZ_GMT_SHIFT) return GMTShift;
-	else return SpaceDate::GMTShiftFromSystem(JD,_local);
+	return (timeZoneMode == S_TZ_GMT_SHIFT) ? GMTShift : SpaceDate::GMTShiftFromSystem(JD,_local);
 }
 
 void SpaceDate::setCustomTzName(const std::string& tzname)
@@ -571,9 +584,13 @@ std::string SpaceDate::getISO8601TimeLocal(double JD) const
 	else
 		SpaceDate::TimeTmFromJulian(JD + SpaceDate::GMTShiftFromSystem(JD)*0.041666666666, &time_local);
 
-	static char isotime[255];
-	SpaceDate::myStrftime(isotime, 254, "%Y-%m-%d %H:%M:%S", &time_local);
-	return isotime;
+	const bool date_bc = (time_local.tm_year < -1899);
+	if (date_bc)
+		time_local.tm_year = -(1900+1899) - time_local.tm_year;
+
+	static char isotime[255] = "BC ";
+	SpaceDate::myStrftime(isotime + 3, 254, "%Y-%m-%d %H:%M:%S", &time_local);
+	return date_bc ? (isotime) : (isotime + 3);
 }
 
 
