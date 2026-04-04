@@ -75,17 +75,21 @@ void Camera::update(double jd, float deltaTime)
             distance += deltaPosition[2] * deltaTime;
         }
     }
-    Mat4f mat;
+    // Z body_axis
+    // X statique, Y et Z bougent avec alt/az
+    // az : NO-OP
+    // Moon : Got [0.000140552,-0.00214147,0.00136387], expected [-0.00245077,-0.000102607,-0.000535762]
+    // Distance : Got 0.002542791773327891, expected 0.002510745449063485
+    // Shift approximation : [-Y, X, Z]
+    Mat4f mat{Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az-M_PI_2))};
     if (freeMode) {
         if (auto newRef = reference->findBetterReference()) {
             switchToBody(newRef);
         }
         // mat = view.getMatrix();
-        mat = Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az));
         mat.multiplyTranslation(position);
     } else {
         // mat = view.getMatrix();
-        mat = Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az));
         mat.multiplyTranslation(Vec3f(0, 0, -distance));
         mat = mat.multiplyFast(Mat4f::xrotation(latitude-M_PI_2)).multiplyFast(Mat4f::zrotation(longitude));
     }

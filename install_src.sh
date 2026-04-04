@@ -20,7 +20,8 @@ fi
 
 cd build
 git submodule update --init || (cd ../src && git clone https://github.com/Calvin-Ruiz/EntityCore.git)
-cmake .. -DCMAKE_BUILD_TYPE=Release
+[ -n "$BUILD" ] &&BUILD=Release # Use "BUILD=LocalRelease ./install_src.sh" for optimisation specifics to currently installed CPU (in which case it should be recompiled again when replacing the CPU)
+cmake .. -DCMAKE_BUILD_TYPE=$BUILD
 if [ "$JOBS" = "" ]
 then
 	NPROC=$(nproc)

@@ -120,12 +120,10 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
     }
     cLog::get()->write("Loading body " + englishName, LOG_TYPE::L_INFO);
 
-    ModularBody *parent;
+    ModularBody *parent = this;
     if (parentName.empty()) {
         cLog::get()->write("No parent specified for " + englishName + ", assume parent is " + this->englishName + " (Specify 'none' to suppress this warning)", LOG_TYPE::L_WARNING);
-    } else if (parentName == "none") {
-        parent = this;
-    } else {
+    } else if (parentName != "none") {
         parent = findBody(parentName);
         if (parent == nullptr) {
             cLog::get()->write("Can't find parent " + parentName + " for " + englishName, LOG_TYPE::L_WARNING);

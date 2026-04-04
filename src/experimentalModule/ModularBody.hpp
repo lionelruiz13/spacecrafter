@@ -3,6 +3,7 @@
 
 #include "BodyModule.hpp"
 #include "Renderer.hpp"
+#include "EntityCore/Tools/Tracer.hpp"
 #include "../planetsephems/sideral_time.h"
 #include "coreModule/time_mgr.hpp"
 #include "bodyModule/rotation_elements.hpp"
@@ -197,6 +198,10 @@ public:
     void setChildNoLongerVisible();
     // Minimal updates required to determine if full update is required
     inline void preUpdate(double jd, const Mat4f &preUpdate) {
+        if (bodyType == BodyType::EARTH_MOON)
+        {
+            std::cout << "\rGOT : " << preUpdate.getTranslation() << std::flush;
+        }
         const float squaredDistance = preUpdate.r[12] * preUpdate.r[12] + preUpdate.r[13] * preUpdate.r[13] + preUpdate.r[14] * preUpdate.r[14];
         distance = sqrt(squaredDistance);
         if (childs.empty()) {
@@ -309,19 +314,17 @@ public:
     }
 
     inline void transformParentToBodyPos(double jd, Mat4f &mat_local_to_body) {
-        if (jd != lastJD) {
-            Vec3d tmp;
-            if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
-                (*oscFunc)(jd,jd,tmp);
-            } else {
-                orbit->positionAtTimevInVSOP87Coordinates(jd,jd,tmp);
-            }
-            eclipticPos = tmp;
-            lastJD = jd;
+        Vec3d tmp;
+        if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
+            (*oscFunc)(jd,jd,tmp);
+        } else {
+            orbit->positionAtTimevInVSOP87Coordinates(jd,jd,tmp);
         }
+        eclipticPos = tmp;
+        lastJD = jd;
         if (boundToSurface)
             mat_local_to_body = mat_local_to_body.multiplyFast(computeBodyToSurface());
-        mat_local_to_body.multiplyTranslation(eclipticPos);
+        mat_local_to_body.multiplyTranslation(-eclipticPos);
     }
 
     inline Mat4f computeBodyPosToBody(double jd) {
@@ -335,7 +338,7 @@ public:
     inline void transformParentToBody(Mat4f &mat_local_to_body) const {
         if (boundToSurface)
             mat_local_to_body = mat_local_to_body.multiplyFast(computeBodyToSurface());
-        mat_local_to_body.multiplyTranslation(eclipticPos);
+        mat_local_to_body.multiplyTranslation(-eclipticPos);
         mat_local_to_body.multiplyFast(Mat4f::xzrotation(
             re.obliquity,
             re.ascendingNode -re.precessionRate*(lastJD-re.epoch)
@@ -343,16 +346,14 @@ public:
     }
 
     inline void transformBodyToParent(double jd, Mat4f &mat_local_to_body) {
-        if (jd != lastJD) {
-            Vec3d tmp;
-            if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
-                (*oscFunc)(jd,jd,tmp);
-            } else {
-                orbit->positionAtTimevInVSOP87Coordinates(jd,jd,tmp);
-            }
-            eclipticPos = tmp;
-            lastJD = jd;
+        Vec3d tmp;
+        if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
+            (*oscFunc)(jd,jd,tmp);
+        } else {
+            orbit->positionAtTimevInVSOP87Coordinates(jd,jd,tmp);
         }
+        eclipticPos = tmp;
+        lastJD = jd;
         mat_local_to_body = mat_local_to_body.multiplyFast(Mat4f::zxrotation(
             re.precessionRate*(jd-re.epoch) - re.ascendingNode,
             -re.obliquity
@@ -360,12 +361,12 @@ public:
         if (boundToSurface) {
             // Maybe don't inline this unfrequent case
             auto tmp = Mat4f::zrotation(-M_PI_2 - axisRotation);
-            tmp.r[12] -= eclipticPos[0];
-            tmp.r[13] -= eclipticPos[1];
-            tmp.r[14] -= eclipticPos[2];
+            tmp.r[12] += eclipticPos[0];
+            tmp.r[13] += eclipticPos[1];
+            tmp.r[14] += eclipticPos[2];
             mat_local_to_body = mat_local_to_body.multiplyFast(tmp);
         } else {
-            mat_local_to_body.multiplyTranslation(-eclipticPos);
+            mat_local_to_body.multiplyTranslation(eclipticPos);
         }
     }
 
@@ -378,18 +379,19 @@ public:
         if (boundToSurface) {
             // Maybe don't inline this unfrequent case
             auto tmp = Mat4f::zrotation(-M_PI_2 - axisRotation);
-            tmp.r[12] -= eclipticPos[0];
-            tmp.r[13] -= eclipticPos[1];
-            tmp.r[14] -= eclipticPos[2];
+            tmp.r[12] += eclipticPos[0];
+            tmp.r[13] += eclipticPos[1];
+            tmp.r[14] += eclipticPos[2];
             mat_local_to_body = mat_local_to_body.multiplyFast(tmp);
         } else {
-            mat_local_to_body.multiplyTranslation(-eclipticPos);
+            mat_local_to_body.multiplyTranslation(eclipticPos);
         }
     }
 
     inline void selectiveUpdate(double jd, Mat4f mat_local_to_parent) {
         transformParentToBodyPos(jd, mat_local_to_parent);
         preUpdate(jd, mat_local_to_parent);
+        // std::cout << englishName << " : " << isVisible << " : " << mat_local_to_parent.getTranslation() << std::endl;
         if (isVisible) {
             recursiveUpdate(jd, mat_local_to_parent.multiplyFast(computeBodyPosToBody(jd)));
         } else {
@@ -619,6 +621,7 @@ public:
         components[slotID.id] = std::move(module);
     }
     static StringIDCluster slotID;
+    static Tracer tracer;
 private:
     // Deduce which modules are to be bound to this body from the parameters
     std::vector<BodyModuleType> deduceBodyModuleList(std::map<std::string, std::string> &param);
@@ -628,9 +631,9 @@ private:
         const float fov_q = std::min(halfFov, static_cast<float>(M_PI)/6.f);
         const float mag = computeMagnitude();
 
-        rmag = sqrtf(renderer.adaptLuminance((expf(-0.92103f*(mag + 12.12331f)) * 8.2295998f) / (fov_q * fov_q))) * 30.f * ModularBody::haloScale;
-        if (!isStar())
-            rmag /= (halfFov >= (M_PI/6)) ? 25 : 5;
+        rmag = sqrtf(renderer.adaptLuminance(expf(-0.92103f*mag)*1.5289075617276093f / (fov_q * fov_q))) * 6.f * ModularBody::haloScale;
+        if (!isStar() && (halfFov >= (M_PI/6)))
+            rmag /= 5;
         if (rmag < 1.2f) {
             cmag = (mag > 0) ? (rmag*rmag/1.44f) : (rmag/1.2f);
             if (mag > 6.5f)
@@ -685,7 +688,7 @@ private:
     // TODO create an optimized std::string for limited set
     std::vector<std::unique_ptr<BodyModule>> components; // Reference every BodyModule of this ModularBody by name
 
-    // TODO replace by grounded/orbiting/inner body
+    // TODO use *Bodies instead
     std::list<ModularBody> childs; // Drawn if screenSize >= 10%
 
     std::vector<BodyModule *> farComponents; // 2D behind body, SKIP when screenSize > 20%, update NEVER called
