@@ -41,8 +41,8 @@ sudo apt install -y mplayer
 
 sudo apt install -y vulkan-tools
 sudo apt install -y libvulkan-dev
-sudo apt install -y vulkan-headers
-sudo apt install -y vulkan-validationlayers-dev
+#sudo apt install -y vulkan-headers
+#sudo apt install -y vulkan-validationlayers-dev
 sudo apt install -y vulkan-utility-libraries-dev
 
 #wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
