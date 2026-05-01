@@ -366,8 +366,6 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName, Audio *_audio, bool
 
 		// For VP9 with alpha, reconfigure the decoder to force YUVA420P
 		if (pCodecCtx->codec_id == AV_CODEC_ID_VP9) {
-			avcodec_close(pCodecCtx);
-
 			// Force output format to YUVA420P
 			pCodecCtx->pix_fmt = AV_PIX_FMT_YUVA420P;
 
@@ -472,7 +470,7 @@ bool VideoPlayer::getNextFrame()
 			sDecode += now - sTime;
 			sTime = now;
 			if (m_isVideoSeeking) {
-				if (pFrameIn->key_frame==1) {
+				if (packet->flags & AV_PKT_FLAG_KEY) {
 					m_isVideoSeeking=false;
 					currentFrame = (frameRate * (pFrameIn->pts) * video_st->time_base.num) / video_st->time_base.den + 0.5;
 				} else {
@@ -697,11 +695,12 @@ bool VideoPlayer::seekVideo(int64_t framesToSkip)
 	}
 	if(currentFrame < nbTotalFrame) { // we check that we don't jump out of the video
 		threadInterrupt();
-		if (avformat_seek_file(pFormatCtx, -1, INT64_MIN, static_cast<int64_t>(currentFrame / frameRate * AV_TIME_BASE), INT64_MAX, 0) < 0) {
+		if (avformat_seek_file(pFormatCtx, -1, INT64_MIN, static_cast<int64_t>(currentFrame / frameRate * AV_TIME_BASE), INT64_MAX, AVSEEK_FLAG_BACKWARD) < 0) {
 			printf("av_seek_frame forward failed. \n");
 			threadPlay();
 			return false;
 		}
+		avcodec_flush_buffers(pCodecCtx);
 		if (!m_isVideoInPause) {
 			pauseCurrentVideo();
 			waitCacheFull = true;
