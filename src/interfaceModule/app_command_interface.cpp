@@ -268,6 +268,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 		case SC_COMMAND::SC_MOVETO :	return commandMoveto(); break;
 		case SC_COMMAND::SC_MULTIPLY :	return commandMultiply(); break;
 		case SC_COMMAND::SC_DIVIDE :	return commandDivide(); break;
+		case SC_COMMAND::SC_MODULO :	return commandModulo(); break;
 		case SC_COMMAND::SC_TANGENT :	return commandTangent(); break;
 		case SC_COMMAND::SC_TRUNC :	return commandTrunc(); break;
 		case SC_COMMAND::SC_SINUS :	return commandSinus(); break;
@@ -3987,6 +3988,19 @@ int AppCommandInterface::commandDivide()
 		appEval->commandDiv(mArg,mValue);
 	} else {
 		debug_message = "unexpected error in command__divide";
+	}
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandModulo()
+{
+	// could loop if want to allow that syntax
+	if (args.begin() != args.end()) {
+		std::string mArg = args.begin()->first;
+		std::string mValue = args.begin()->second;
+		appEval->commandMod(mArg,mValue);
+	} else {
+		debug_message = "unexpected error in command__modulo";
 	}
 	return executeCommandStatus();
 }
