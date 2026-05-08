@@ -32,7 +32,7 @@
 enum class SC_COMMAND : char {SC_ADD = 30, SC_AUDIO, SC_MODE, SC_BODY_TRACE, SC_BODY, SC_CAMERA, SC_CLEAR, SC_COLOR, SC_CONFIGURATION, SC_CONSTELLATION, SC_DATE, SC_DEFINE, SC_DESELECT,
 							  SC_DOMEMASTERS,
                               SC_DSO, SC_DSO3D, SC_DSO2D, SC_EXTERNASC_VIEWER, SC_FONT, SC_FLAG, SC_GET, SC_HEADING, SC_ILLUMINATE, SC_IMAGE, SC_LANDSCAPE, SC_SCREEN_FADER, SC_LOOK, SC_MEDIA, SC_METEORS,
-                              SC_MOVETO, SC_MULTIPLY, SC_DIVIDE, SC_TANGENT, SC_TRUNC, SC_SINUS, SC_PERSONAL, SC_PERSONEQ, SC_PLANET_SCALE, SC_POSITION, SC_PRINT, SC_RANDOM,
+							  SC_MOVETO, SC_MULTIPLY, SC_DIVIDE, SC_MODULO, SC_TANGENT, SC_TRUNC, SC_SINUS, SC_PERSONAL, SC_PERSONEQ, SC_PLANET_SCALE, SC_POSITION, SC_PRINT, SC_RANDOM,
                               SC_SCRIPT, SC_SEARCH, SC_SELECT, SC_SET, SC_SHUTDOWN, SC_SKY_CULTURE, SC_STAR_LINES, SC_GALAXY_STARS, SC_STRUCT, SC_SUNTRACE, SC_SUB, SC_TEXT,
                               SC_TIMERATE, SC_TRANSITION, SC_WAIT, SC_ZOOMR
                              };
@@ -348,6 +348,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_CN_MOVETOCITY                           "movetocity"
 #define ACP_CN_MULTIPLY                             "multiply"
 #define ACP_CN_DIVIDE                             	"divide"
+#define ACP_CN_MODULO                             	"modulo"
 #define ACP_CN_TANGENT                             	"tangent"
 #define ACP_CN_TRUNC                             	"trunc"
 #define ACP_CN_SINUS                             	"sinus"

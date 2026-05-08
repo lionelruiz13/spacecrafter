@@ -68,6 +68,8 @@ public:
 	void commandMul(const std::string& mArg, const std::string& mValue);
 	//! first becomes first divided by the second
 	void commandDiv(const std::string& mArg, const std::string& mValue);
+    //! first becomes first modulo by the second
+    void commandMod(const std::string& mArg, const std::string& mValue);
 	//! first becomes tangent of the second
 	void commandTan(const std::string& mArg, const std::string& mValue);
 	//! first becomes trunc of the second
