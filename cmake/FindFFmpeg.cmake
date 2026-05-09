@@ -3,12 +3,10 @@
 # Finds FFmpeg libraries
 #
 # This module will first look for the required library versions on the system.
-# If they are not found, it will fall back to downloading and building kodi's own version
+# If they are not found, it will emit a fatal error with install instructions.
 #
 # --------
 # the following variables influence behaviour:
-# ENABLE_INTERNAL_FFmpeg - if enabled, kodi's own version will always be built
-#
 # FFmpeg_PATH - use external ffmpeg not found in system paths
 #               usage: -DFFmpeg_PATH=/path/to/ffmpeg_install_prefix
 #
@@ -40,7 +38,6 @@ set(_avformat_ver ">=57.71.100")
 set(_avutil_ver ">=55.58.100")
 set(_swscale_ver ">=4.6.100")
 set(_swresample_ver ">=2.7.100")
-set(_postproc_ver ">=54.5.100")
 
 
 # Allows building with external ffmpeg not found in system paths,
@@ -55,29 +52,21 @@ if(WITH_FFmpeg)
   unset(_avutil_ver)
   unset(_swscale_ver)
   unset(_swresample_ver)
-  unset(_postproc_ver)
 endif()
 
 # Allows building with external ffmpeg not found in system paths,
 # with library version checks
 if(FFmpeg_PATH)
-  set(ENABLE_INTERNAL_FFmpeg OFF)
+  set(ENV{PKG_CONFIG_PATH} "${FFmpeg_PATH}/lib/pkgconfig")
+  list(APPEND CMAKE_PREFIX_PATH ${FFmpeg_PATH})
 endif()
 
-# external FFmpeg
-if(NOT ENABLE_INTERNAL_FFmpeg OR KODI_DEPENDSBUILD)
-  if(FFmpeg_PATH)
-    set(ENV{PKG_CONFIG_PATH} "${FFmpeg_PATH}/lib/pkgconfig")
-    list(APPEND CMAKE_PREFIX_PATH ${FFmpeg_PATH})
-  endif()
-
-  set(FFmpeg_PKGS libavcodec${_avcodec_ver}
+set(FFmpeg_PKGS libavcodec${_avcodec_ver}
                   libavfilter${_avfilter_ver}
                   libavformat${_avformat_ver}
                   libavutil${_avutil_ver}
                   libswscale${_swscale_ver}
-                  libswresample${_swresample_ver}
-                  libpostproc${_postproc_ver})
+                  libswresample${_swresample_ver})
 
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_FFmpeg ${FFmpeg_PKGS} QUIET)
@@ -85,12 +74,12 @@ if(NOT ENABLE_INTERNAL_FFmpeg OR KODI_DEPENDSBUILD)
   endif()
 
   find_path(FFmpeg_INCLUDE_DIRS libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h
-                                libavutil/avutil.h libswscale/swscale.h libpostproc/postprocess.h
+                                libavutil/avutil.h libswscale/swscale.h
             PATH_SUFFIXES ffmpeg
             PATHS ${PC_FFmpeg_INCLUDE_DIRS}
             NO_DEFAULT_PATH)
   find_path(FFmpeg_INCLUDE_DIRS libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h
-                                libavutil/avutil.h libswscale/swscale.h libpostproc/postprocess.h)
+                                libavutil/avutil.h libswscale/swscale.h)
 
   find_library(FFmpeg_LIBAVCODEC
                NAMES avcodec libavcodec
@@ -134,12 +123,21 @@ if(NOT ENABLE_INTERNAL_FFmpeg OR KODI_DEPENDSBUILD)
                NO_DEFAULT_PATH)
   find_library(FFmpeg_LIBSWRESAMPLE NAMES NAMES swresample libswresample PATH_SUFFIXES ffmpeg/libswresample)
 
+  # libpostproc is optional: present in FFmpeg <=7, removed in FFmpeg 8
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_FFmpeg_POSTPROC libpostproc QUIET)
+  endif()
   find_library(FFmpeg_LIBPOSTPROC
                NAMES postproc libpostproc
                PATH_SUFFIXES ffmpeg/libpostproc
-               PATHS ${PC_FFmpeg_libpostproc_LIBDIR}
+               PATHS ${PC_FFmpeg_POSTPROC_LIBDIR}
                NO_DEFAULT_PATH)
   find_library(FFmpeg_LIBPOSTPROC NAMES postproc libpostproc PATH_SUFFIXES ffmpeg/libpostproc)
+  if(FFmpeg_LIBPOSTPROC)
+    message(STATUS "FFmpeg: libpostproc found, enabling")
+  else()
+    message(STATUS "FFmpeg: libpostproc not found (FFmpeg 8+), building without it")
+  endif()
 
   if((PC_FFmpeg_FOUND
       AND PC_FFmpeg_libavcodec_VERSION
@@ -147,8 +145,7 @@ if(NOT ENABLE_INTERNAL_FFmpeg OR KODI_DEPENDSBUILD)
       AND PC_FFmpeg_libavformat_VERSION
       AND PC_FFmpeg_libavutil_VERSION
       AND PC_FFmpeg_libswscale_VERSION
-      AND PC_FFmpeg_libswresample_VERSION
-      AND PC_FFmpeg_libpostproc_VERSION)
+      AND PC_FFmpeg_libswresample_VERSION)
      OR WIN32)
     set(FFmpeg_VERSION ${REQUIRED_FFmpeg_VERSION})
 
@@ -163,12 +160,11 @@ if(NOT ENABLE_INTERNAL_FFmpeg OR KODI_DEPENDSBUILD)
                                                     FFmpeg_LIBAVUTIL
                                                     FFmpeg_LIBSWSCALE
                                                     FFmpeg_LIBSWRESAMPLE
-                                                    FFmpeg_LIBPOSTPROC
                                                     FFmpeg_VERSION
-                                      FAIL_MESSAGE "FFmpeg ${REQUIRED_FFmpeg_VERSION} not found, please consider using -DENABLE_INTERNAL_FFmpeg=ON")
+                                      FAIL_MESSAGE "FFmpeg ${REQUIRED_FFmpeg_VERSION} not found, install system packages or use -DFFmpeg_PATH")
 
   else()
-    message(STATUS "FFmpeg ${REQUIRED_FFmpeg_VERSION} not found, falling back to internal build")
+    message(STATUS "FFmpeg ${REQUIRED_FFmpeg_VERSION} not found via pkg-config")
     unset(FFmpeg_INCLUDE_DIRS)
     unset(FFmpeg_INCLUDE_DIRS CACHE)
     unset(FFmpeg_LIBRARIES)
@@ -193,7 +189,11 @@ if(NOT ENABLE_INTERNAL_FFmpeg OR KODI_DEPENDSBUILD)
     set(FFmpeg_LIBRARIES ${FFmpeg_LIBAVCODEC} ${FFmpeg_LIBAVFILTER}
                          ${FFmpeg_LIBAVFORMAT} ${FFmpeg_LIBAVUTIL}
                          ${FFmpeg_LIBSWSCALE} ${FFmpeg_LIBSWRESAMPLE}
-                         ${FFmpeg_LIBPOSTPROC} ${FFmpeg_LDFLAGS})
+                         ${FFmpeg_LDFLAGS})
+    if(FFmpeg_LIBPOSTPROC)
+      list(APPEND FFmpeg_LIBRARIES ${FFmpeg_LIBPOSTPROC})
+      list(APPEND FFmpeg_DEFINITIONS -DHAVE_LIBPOSTPROC=1)
+    endif()
     list(APPEND FFmpeg_DEFINITIONS -DFFmpeg_VER_SHA=\"${FFmpeg_VERSION}\")
 
     if(NOT TARGET ffmpeg)
@@ -206,89 +206,17 @@ if(NOT ENABLE_INTERNAL_FFmpeg OR KODI_DEPENDSBUILD)
                                    INTERFACE_COMPILE_DEFINITIONS "${FFmpeg_DEFINITIONS}")
     endif()
   endif()
-endif()
 
-# Internal FFmpeg
+# No internal FFmpeg fallback — tools/depends no longer exists in spacecrafter.
 if(NOT FFmpeg_FOUND)
-  include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/FFmpeg-VERSION VER)
-  string(REGEX MATCH "VERSION=[^ ]*$.*" FFmpeg_VER "${VER}")
-  list(GET FFmpeg_VER 0 FFmpeg_VER)
-  string(SUBSTRING "${FFmpeg_VER}" 8 -1 FFmpeg_VER)
-  string(REGEX MATCH "BASE_URL=([^ ]*)" FFmpeg_BASE_URL "${VER}")
-  list(GET FFmpeg_BASE_URL 0 FFmpeg_BASE_URL)
-  string(SUBSTRING "${FFmpeg_BASE_URL}" 9 -1 FFmpeg_BASE_URL)
-
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(FFmpeg_URL)
-    get_filename_component(FFmpeg_URL "${FFmpeg_URL}" ABSOLUTE)
-  else()
-    set(FFmpeg_URL ${FFmpeg_BASE_URL}/archive/${FFmpeg_VER}.tar.gz)
-  endif()
-  if(VERBOSE)
-    message(STATUS "FFmpeg_URL: ${FFmpeg_URL}")
-  endif()
-
-  if(KODI_DEPENDSBUILD)
-    set(CROSS_ARGS -DDEPENDS_PATH=${DEPENDS_PATH}
-                   -DPKG_CONFIG_EXECUTABLE=${PKG_CONFIG_EXECUTABLE}
-                   -DCROSSCOMPILING=${CMAKE_CROSSCOMPILING}
-                   -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                   -DOS=${OS}
-                   -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-                   -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
-                   -DCMAKE_AR=${CMAKE_AR})
-  endif()
-
-  externalproject_add(ffmpeg
-                      URL ${FFmpeg_URL}
-                      DOWNLOAD_NAME ffmpeg-${FFmpeg_VER}.tar.gz
-                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
-                      PREFIX ${CORE_BUILD_DIR}/ffmpeg
-                      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-                                 -DFFmpeg_VER=${FFmpeg_VER}
-                                 -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
-                                 -DCORE_PLATFORM_NAME=${CORE_PLATFORM_NAME_LC}
-                                 -DCPU=${CPU}
-                                 -DENABLE_NEON=${ENABLE_NEON}
-                                 -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
-                                 -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
-                                 -DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}
-                                 ${CROSS_ARGS}
-                      PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
-                                    <SOURCE_DIR> &&
-                                    ${CMAKE_COMMAND} -E copy
-                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/FindGnuTls.cmake
-                                    <SOURCE_DIR>)
-
-  file(WRITE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper
-"#!/bin/bash
-if [[ $@ == *${APP_NAME_LC}.bin* || $@ == *${APP_NAME_LC}.so* || $@ == *${APP_NAME_LC}-test* ]]
-then
-  avformat=`PKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavcodec`
-  avcodec=`PKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavformat`
-  avfilter=`PKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavfilter`
-  avutil=`PKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavutil`
-  swscale=`PKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswscale`
-  swresample=`PKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswresample`
-  gnutls=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig/ ${PKG_CONFIG_EXECUTABLE}  --libs-only-l --static --silence-errors gnutls`
-  $@ $avcodec $avformat $avcodec $avfilter $swscale $swresample -lpostproc $gnutls
-else
-  $@
-fi")
-  file(COPY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper
-       DESTINATION ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-       FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE)
-  set(FFmpeg_LINK_EXECUTABLE "${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg-link-wrapper <CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>" PARENT_SCOPE)
-  set(FFmpeg_CREATE_SHARED_LIBRARY "${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg-link-wrapper <CMAKE_CXX_COMPILER> <CMAKE_SHARED_LIBRARY_CXX_FLAGS> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> <CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS> <SONAME_FLAG><TARGET_SONAME> -o <TARGET> <OBJECTS> <LINK_LIBRARIES>" PARENT_SCOPE)
-  set(FFmpeg_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-  list(APPEND FFmpeg_DEFINITIONS -DFFmpeg_VER_SHA=\"${FFmpeg_VER}\"
-                                 -DUSE_STATIC_FFmpeg=1)
-  set(FFmpeg_FOUND 1)
-  set_target_properties(ffmpeg PROPERTIES FOLDER "External Projects")
+  message(FATAL_ERROR
+    "FFmpeg ${REQUIRED_FFmpeg_VERSION} was not found on the system.\n"
+    "Install the required development packages:\n"
+    "  sudo apt install libavcodec-dev libavformat-dev libavutil-dev"
+    " libswscale-dev libavfilter-dev libswresample-dev\n"
+    "Then re-run CMake. Alternatively, point CMake at a custom FFmpeg prefix:\n"
+    "  -DFFmpeg_PATH=/path/to/ffmpeg   (keeps version checks)\n"
+    "  -DWITH_FFmpeg=/path/to/ffmpeg   (skips version checks)")
 endif()
 
 mark_as_advanced(FFmpeg_INCLUDE_DIRS FFmpeg_LIBRARIES FFmpeg_LDFLAGS FFmpeg_DEFINITIONS FFmpeg_FOUND)
