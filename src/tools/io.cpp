@@ -353,7 +353,7 @@ void ServerSocket::setOutput(std::string data)
 
 void ServerSocket::debugOut(std::string msg, LOG_TYPE log)
 {
-	cLog::get()->write("TCP : " + msg, log, LOG_FILE::TCP);
+	//cLog::get()->write("TCP : " + msg, log, LOG_FILE::TCP);
 }
 
 /* thread */
