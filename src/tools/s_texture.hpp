@@ -63,31 +63,124 @@ class PipelineLayout;
 
 class s_texture;
 
-struct TextureCache {
-	uint8_t timestamp[sizeof(uint64_t)];
-	float averageLuminance; // Average luminance, -1 if not computed
-	int width;
-	int height;
-};
+namespace txcache {
+	struct TextureCache {
+		uint8_t timestamp[sizeof(uint64_t)];
+		float averageLuminance; // Average luminance, -1 if not computed
+		int width;
+		int height;
+	};
 
-class TextureLoader : public AsyncBuilder {
-public:
-	TextureLoader(s_texture *tex, TextureCache &cache, const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn);
-	~TextureLoader();
-	virtual void asyncLoad() override;
-    virtual void postLoad() override;
-	s_texture *tex;
-	TextureCache &cache;
-	unsigned char *data = nullptr;
-	const std::string fullName;
-	int depth;
-	int depthColumn;
-	bool resolution;
-	bool force3D;
-};
+	enum class Loading : unsigned char {
+		LEGACY,
+		DISPATCHED, // Blocking multi-thread loading
+	};
+
+	enum Section { // Sections of the cache
+		BIG_TEXTURE = 0, // string map
+		CACHE_VERSION = 1, // Single int
+	};
+
+	struct TextureLoader;
+
+	struct BigTextureCache {
+		int64_t datetime;
+		int width;
+		int height;
+		unsigned int jpegSize; // Size of the jpeg portion of the image
+		unsigned int rawSize; // Size of the raw portion of the image
+		unsigned char jpegLayers; // Number of jpeg layers
+		unsigned char rawLayers; // Number of raw layers
+		bool cached;
+	};
+
+	struct bigTexRecap {
+		unsigned int binding; // Binding id, increased by 1 when getting unused
+		unsigned short width;
+		unsigned short height;
+		std::unique_ptr<Texture> texture;
+		std::string texName; // Name of the texture to load
+		unsigned char lifetime = 0; // Number of frames before releasing this bigTexture
+		unsigned char formatIdx;
+		int quickLoader = -1; // Used to optimize loading
+		bool ready = false; // Is this texture ready for use
+		bool acquired = false; // Is this texture currently acquired
+	};
+
+	struct CacheSaveData {
+		std::ofstream file;
+		bigTexRecap *tex;
+		BigTextureCache *cache;
+	};
+
+	struct texRecap {
+		~texRecap();
+		uint64_t size;
+		float averageLuminance;
+		int width;
+		int height;
+		int depth;
+		TextureLoader *loader;
+		std::unique_ptr<Texture> texture;
+		std::vector<VkImageView> imageViews;
+		std::vector<std::unique_ptr<Set>> sets;
+		std::unique_ptr<Set> ojmSet;
+		unsigned int bigTextureBinding = 0;
+		unsigned short bigWidth = 0;
+		unsigned short bigHeight = 0;
+		unsigned short bigDepth = 1; // Not implemented yet
+		int nbChannels;
+		int channelSize;
+		bool mipmap = false;
+		bool quickloadable = false;
+		bool blendMipmap = false;
+		bool blendPacked = false;
+		bigTexRecap *bigTexture = nullptr;
+	};
+
+	class TextureLoader : public AsyncBuilder {
+	public:
+		TextureLoader(std::shared_ptr<texRecap> tex, TextureCache &cache, const std::string &fullName, int _loadType, bool mipmap, bool resolution, int depth, bool useBlendMipmap, bool force3D, int depthColumn, Loading strategy);
+		~TextureLoader();
+		virtual void asyncLoad() override;
+	    virtual void postLoad() override;
+		static std::mutex dispatchedLoadMutex;
+
+		// Indicates if we must load the textures in low resolution or not.
+		static void setLoadInLowResolution(bool value, int _maxRes) {
+			loadInLowResolution = value;
+			lowResMax = _maxRes*_maxRes*2;
+		}
+
+		// Exposed for BigTexture loader
+		static unsigned int minifyMax; // Maximal size of texture preview
+		static std::mutex cacheMutex;
+	private:
+		void blend( const int, unsigned char* const, const unsigned int );
+		bool load(unsigned char *data, int realWidth, int realHeight);
+
+		TextureCache &cache;
+		unsigned char *data = nullptr;
+		const std::string fullName;
+		std::shared_ptr<texRecap> texture;
+		int depth;
+		int depthColumn;
+		int loadType;
+		int loadWrapping;
+		VkImageUsageFlags usage;
+		VkImageType imgType;
+		VkFormat formatOverride = VK_FORMAT_UNDEFINED;
+		bool resolution;
+		bool force3D;
+		Loading strategy;
+
+		static bool loadInLowResolution;
+		static unsigned int lowResMax;
+	};
+}
 
 class s_texture {
-	friend class TextureLoader; // Because TextureLoader handle internal s_texture loading, it need internal access
+	friend class txcache::TextureLoader; // Because TextureLoader handle internal s_texture loading, it need internal access
 public:
 	// If resolution is true, use texture with -preview suffix, or downscale original texture
 	// In this case, the full resolution texture can be dynamically loaded and querried with getBigTexture()
@@ -116,12 +209,12 @@ public:
 	Texture &getTexture();
 	// Return true if the texture is currently loading
 	inline bool isLoading() {
-		return (texture->loader && texture->loader->priority != LoadPriority::DONE);
+		return (texture->loader && texture->loader->priority.load(std::memory_order_relaxed) != LoadPriority::DONE);
 	}
 	// Modify the level of priority
 	inline void prioritize(LoadPriority level) {
-		if (texture->loader && texture->loader->priority > LoadPriority::LOADING)
-			texture->loader->priority = level;
+		if (texture->loader && texture->loader->priority.load(std::memory_order_relaxed) > LoadPriority::LOADING)
+			texture->loader->priority.store(level, std::memory_order_relaxed);
 	}
 
 	// Return the average texture luminance : 0 is black, 1 is white
@@ -147,12 +240,6 @@ public:
 	}
 	static const std::string& getTexDir() {
 		return texDir;
-	}
-
-	// Indicates if we must load the textures in low resolution or not.
-	static void setLoadInLowResolution(bool value, int _maxRes) {
-		s_texture::loadInLowResolution = value;
-		s_texture::lowResMax = _maxRes*_maxRes*2;
 	}
 
 	// creates a red texture in case of not loaded textures
@@ -185,121 +272,52 @@ public:
 		return ret;
 	}
 	static void setLoadingStrategy(const std::string &strategy);
+
+	/// Exposed for TextureLoader
+	static std::string getCacheEntryName(const std::string &name);
+	static BigSave cache;
+	static std::vector<std::unique_ptr<Texture>> releaseTexture[3];
+	static PushQueue<std::shared_ptr<txcache::texRecap>, 2047> textureQueue;
+	static short releaseTexIdx;
 private:
 	void unload();
-	bool preload(const std::string& fullName, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1, bool useBlendMipmap = false, bool force3D = false, int depthColumn = 0);
-	bool loadInternal(const std::string &fullName, bool resolution, int depth, bool force3D, int depthColumn);
+	bool preload(const std::string& fullName, int _loadType, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1, bool useBlendMipmap = false, bool force3D = false, int depthColumn = 0);
 	bool load();
-	bool load(unsigned char *data, int realWidth, int realHeight);
-	struct bigTexRecap {
-		unsigned int binding; // Binding id, increased by 1 when getting unused
-		unsigned short width;
-		unsigned short height;
-		std::unique_ptr<Texture> texture;
-		std::string texName; // Name of the texture to load
-		unsigned char lifetime = 0; // Number of frames before releasing this bigTexture
-		unsigned char formatIdx;
-		int quickLoader = -1; // Used to optimize loading
-		bool ready = false; // Is this texture ready for use
-		bool acquired = false; // Is this texture currently acquired
-	};
-	bigTexRecap *acquireBigTexture();
-	bigTexRecap *acquireBigTexture(int width, int height);
+
+	txcache::bigTexRecap *acquireBigTexture();
+	txcache::bigTexRecap *acquireBigTexture(int width, int height);
 	static void bigTextureLoader();
 
-	struct texRecap {
-		~texRecap();
-		uint64_t size;
-		float averageLuminance;
-		int width;
-		int height;
-		int depth;
-		std::unique_ptr<TextureLoader> loader;
-		std::unique_ptr<Texture> texture;
-		std::vector<VkImageView> imageViews;
-		std::vector<std::unique_ptr<Set>> sets;
-		std::unique_ptr<Set> ojmSet;
-		unsigned int bigTextureBinding = 0;
-		unsigned short bigWidth = 0;
-		unsigned short bigHeight = 0;
-		unsigned short bigDepth = 1; // Not implemented yet
-		bool mipmap = false;
-		bool quickloadable = false;
-		bool blendMipmap = false;
-		bool blendPacked = false;
-		bigTexRecap *bigTexture = nullptr;
-	};
-
 	//! Initialize resources required to build 3D mipmap
-	static void init3DBuild(texRecap &tex);
-	void blend( const int, unsigned char* const, const unsigned int );
-
-	// If an index have been used and is no longer used, don't reuse it for something else
-	enum Section { // Sections of the cache
-		BIG_TEXTURE = 0, // string map
-		CACHE_VERSION = 1, // Single int
-	};
-
-	enum class Loading : unsigned char {
-		LEGACY,
-		DISPATCHED, // Blocking multi-thread loading
-	};
-
-	struct BigTextureCache {
-		int64_t datetime;
-		int width;
-		int height;
-		unsigned int jpegSize; // Size of the jpeg portion of the image
-		unsigned int rawSize; // Size of the raw portion of the image
-		unsigned char jpegLayers; // Number of jpeg layers
-		unsigned char rawLayers; // Number of raw layers
-		bool cached;
-	};
-
-	struct CacheSaveData {
-		std::ofstream file;
-		bigTexRecap *tex;
-		BigTextureCache *cache;
-	};
+	static void init3DBuild(txcache::texRecap &tex);
 
 	//! Optimized texture cache loader
-	static void preQuickLoadCache(bigTexRecap *tex);
-	static bool quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, void *stor, void *data, int width);
-	static void abortQuickLoadCache(bigTexRecap *tex);
-	static void quickSaveCache(CacheSaveData &info, void *firstLayer, void *mipmaps);
-	static void subQuickSaveCache(CacheSaveData *info, char *data, int size);
-	static std::string getCacheName(bigTexRecap *tex);
+	static void preQuickLoadCache(txcache::bigTexRecap *tex);
+	static bool quickLoadCache(txcache::bigTexRecap *tex, const txcache::BigTextureCache &cache, void *stor, void *data, int width);
+	static void abortQuickLoadCache(txcache::bigTexRecap *tex);
+	static void quickSaveCache(txcache::CacheSaveData &info, void *firstLayer, void *mipmaps);
+	static void subQuickSaveCache(txcache::CacheSaveData *info, char *data, int size);
+	static std::string getCacheName(txcache::bigTexRecap *tex);
 	static std::string getCacheName(const std::string &name);
-	static std::string getCacheEntryName(const std::string &name);
 
 	std::string textureName;
-	std::shared_ptr<texRecap> texture;
+	std::shared_ptr<txcache::texRecap> texture;
 	int loadType;
 	int loadWrapping;
-	int nbChannels;
-	int channelSize;
-	VkImageUsageFlags usage;
-	VkImageType imgType;
 	VkFormat formatOverride = VK_FORMAT_UNDEFINED;
 
 	static std::string texDir;
-	static bool loadInLowResolution;
-	static unsigned int lowResMax;
-	static unsigned int minifyMax; // Maximal size of texture preview
 	static bool releaseThisFrame; // Tell if releaseUnusedMemory have been called in this frame
 	static int wantReleaseAllMemory; // Tell the Big texture loader to release all memory
-	static std::map<std::string, std::weak_ptr<texRecap>> texCache;
-	static std::list<bigTexRecap> bigTextures;
-	static std::list<bigTexRecap> droppedBigTextures; // Big texture which have been freed
-	static WorkQueue<bigTexRecap *, 31> bigTextureQueue;
-	static PushQueue<std::shared_ptr<texRecap>, 2047> textureQueue;
+	static std::map<std::string, std::weak_ptr<txcache::texRecap>> texCache;
+	static std::list<txcache::bigTexRecap> bigTextures;
+	static std::list<txcache::bigTexRecap> droppedBigTextures; // Big texture which have been freed
+	static WorkQueue<txcache::bigTexRecap *, 31> bigTextureQueue;
 	static PushQueue<std::unique_ptr<Texture>, 2047> droppedTextureQueue;
 	static PushQueue<VkImage, 2047> bigTextureReady; // Read textures ready for use
 	static std::atomic<int64_t> currentAllocation; // Allocations/frees planned but not done yet
-	static std::vector<std::shared_ptr<texRecap>> releaseMemory[3];
-	static std::vector<std::unique_ptr<Texture>> releaseTexture[3];
+	static std::vector<std::shared_ptr<txcache::texRecap>> releaseMemory[3];
 	static short releaseIdx;
-	static short releaseTexIdx;
 	static PipelineLayout *layoutMipmap;
 	static ComputePipeline *pipelineMipmap4;
 	static ComputePipeline *pipelineMipmap1;
@@ -309,13 +327,11 @@ private:
 	static VkFence uploadFence;
 	static bool asyncUpload;
 	static VkImageMemoryBarrier bigBarrier;
-	static BigSave cache;
 	static std::string cacheDir;
 	static bool cacheTexture;
-	static Loading strategy;
+	static txcache::Loading strategy;
 	static int bigTextureLifetime;
 	static std::atomic<int16_t> textureQueueSize; // Expected number of elements in textureQueue
-	static std::mutex dispatchedLoadMutex;
 };
 
 #endif // _S_TEXTURE_H_

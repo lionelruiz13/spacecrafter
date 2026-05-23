@@ -3,6 +3,7 @@
 #include "ModularSystem.hpp"
 #include "tools/log.hpp"
 #include "tools/translator.hpp"
+#include "EntityCore/Core/VulkanMgr.hpp"
 
 Vec3f ModularBody::lightPosition;
 float ModularBody::lightDistance;
@@ -14,9 +15,11 @@ float ModularBody::halfFov = M_PI_2;
 Vec3f ModularBody::defaultHaloColor{};
 float ModularBody::haloScale = 1;
 float ModularBody::haloSizeLimit = 9;
+float ModularBody::viewportRadius = 1;
 std::vector<ModularBody *> ModularBody::notableBody;
 Translator *ModularBody::translator = nullptr;
 StringIDCluster ModularBody::slotID;
+Tracer ModularBody::tracer{80, 24};
 
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), scaling(1), radius(info.radius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
@@ -292,6 +295,7 @@ void ModularBody::setTranslator(Translator &_translator)
     translator = &_translator;
     for (auto &ref : bodyReference)
         ref.second->nameI18 = _translator.translateUTF8(ref.second->englishName);
+    viewportRadius = VulkanMgr::instance->getScreenRect().extent.width/2;
 }
 
 std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::string, std::string> &param)

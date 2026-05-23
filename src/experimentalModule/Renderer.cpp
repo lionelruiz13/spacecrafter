@@ -57,7 +57,7 @@ void Renderer::clearDepth(float zCenter, float boundingRadius)
 void Renderer::drawHalo(const std::pair<float, float> &pos, const Vec3f &color, float rmag)
 {
     auto &data = Halo::global->pData[Halo::global->offset + Halo::global->size++];
-    data.pos = VulkanMgr::instance->rectToScreenf(pos);
+    data.pos = VulkanMgr::instance->rectToRender(pos);
     data.Color = color;
     data.rmag = rmag;
 }

@@ -548,7 +548,7 @@ public:
             const float phase = ((M_PI - acos(cos_chi)) * cos_chi + sqrt(1.0 - cos_chi*cos_chi)) / M_PI;
             factor = 2 * albedo * scaledRadius * scaledRadius * phase / (3 * pq * Rq);
         }
-        return -26.73f + 2.5f*log10f(factor);
+        return -26.73f - 2.5f*log10f(factor);
     }
     static void setTranslator(Translator &_translator);
     inline float getDistanceToObserver() const {
@@ -648,7 +648,7 @@ private:
     		}
             cmag = 1.f;
         }
-        const float screen_r = screenSize * 1024;
+        const float screen_r = screenSize * viewportRadius; // ScreenRect is render space (scissor), screenSize is rect space [-1, 1]
         cmag *= 0.5*rmag/screen_r;
         if (cmag > 1)
             cmag = 1;
@@ -757,6 +757,7 @@ private:
     static Vec3f defaultHaloColor;
     static float haloScale;
     static float haloSizeLimit;
+    static float viewportRadius;
 };
 
 #endif /* end of include guard: MODULAR_BODY_HPP_ */
