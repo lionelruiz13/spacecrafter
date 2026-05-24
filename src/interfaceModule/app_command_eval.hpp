@@ -5,6 +5,7 @@
 #include <string>
 #include <functional>
 #include <memory>
+#include <random>
 #include "interfaceModule/base_command_interface.hpp"
 #include "tools/no_copy.hpp"
 
@@ -104,6 +105,7 @@ private:
 	double max_random;
 	double min_random;
 	std::shared_ptr<CoreLink> coreLink;
+    std::random_device rdevice;
 };
 
 #endif

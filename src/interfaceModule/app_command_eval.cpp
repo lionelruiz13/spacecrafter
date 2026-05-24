@@ -60,6 +60,7 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_LANGUAGE]=SC_RESERVED_VAR::LANGUAGE;
 	m_reservedVar[ACI_RW_JOYPAD]=SC_RESERVED_VAR::JOYPAD;
 	m_reservedVar[ACI_RW_CURRENT_MODE]=SC_RESERVED_VAR::CURRENT_MODE;
+	m_reservedVar[ACI_RW_RANDOM]=SC_RESERVED_VAR::RANDOM;
 
 	// for conivence, the map inverse
 	for (const auto& [key, val] : m_reservedVar)
@@ -334,6 +335,8 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			return coreLink->isJoypadConnected;
 		case SC_RESERVED_VAR::CURRENT_MODE:
 			return coreLink->getCurrentModule();
+		case SC_RESERVED_VAR::RANDOM:
+			return std::uniform_real_distribution(min_random, max_random)(rdevice);
 		default:
 			//std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
 			cLog::get()->write("Unknown reserved variable " + var +". Default 0.0 is returned.", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);
