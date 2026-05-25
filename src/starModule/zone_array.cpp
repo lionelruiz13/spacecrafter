@@ -167,7 +167,7 @@ ZoneArray *ZoneArray::create(const HipStarMgr &hip_star_mgr, const std::string& 
 			} else {
 				// When this assertion fails you must redefine Star1 for your compiler.
 				// Because your compiler does not pack the data, which is crucial for this application.
-				assert(sizeof(Star1) == 28);
+				static_assert(sizeof(Star1) == 28, "Star1 struct not packed, breaking binary compatibility with file describing those stars");
 				rval = new ZoneArray1(f,byte_swap,use_mmap,hip_star_mgr,level, mag_min,mag_range,mag_steps);
 				if (rval == 0) {
 					printf("no memory, ");
@@ -180,7 +180,7 @@ ZoneArray *ZoneArray::create(const HipStarMgr &hip_star_mgr, const std::string& 
 			} else {
 				// When this assertion fails you must redefine Star2 for your compiler.
 				// Because your compiler does not pack the data, which is crucial for this application.
-				assert(sizeof(Star2) == 10);
+				static_assert(sizeof(Star2) == 10, "Star2 struct not packed, breaking binary compatibility with file describing those stars");
 				rval = new SpecialZoneArray<Star2>(f,byte_swap,use_mmap,hip_star_mgr, level, mag_min,mag_range,mag_steps);
 				if (rval == 0) {
 					printf("no memory, ");
@@ -193,7 +193,7 @@ ZoneArray *ZoneArray::create(const HipStarMgr &hip_star_mgr, const std::string& 
 			} else {
 				// When this assertion fails you must redefine Star3 for your compiler.
 				// Because your compiler does not pack the data, which is crucial for this application.
-				assert(sizeof(Star3) == 6);
+				static_assert(sizeof(Star3) == 6, "Star3 struct not packed, breaking binary compatibility with file describing those stars");
 				rval = new SpecialZoneArray<Star3>(f,byte_swap,use_mmap,hip_star_mgr, level, mag_min,mag_range,mag_steps);
 				if (rval == 0) {
 					printf("no memory, ");
