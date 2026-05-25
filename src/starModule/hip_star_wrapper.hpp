@@ -93,12 +93,7 @@ protected:
 		return HipStarMgr::color_table[s->getBVIndex()];
 	}
 	float getMag(const Navigator *nav) const {
-		int hip = s->getHip();
-		if (hip != -1) {
-			return CoreLink::instance->getMag(hip);
-		} else {
-			return 0.001f*a->mag_min + s->getMag()*(0.001f*a->mag_range)/a->mag_steps;
-		}
+		return 0.001f*a->mag_min + s->getMag()*(0.001f*a->mag_range)/a->mag_steps;
 	}
 	float getSelectPriority(const Navigator *nav) const {
 		return getMag(nav);
@@ -129,6 +124,13 @@ public:
 	std::string getShortInfoNavString(const Navigator *nav, const TimeMgr * timeMgr, const Observer* observatory) const;
 	std::string getEnglishName(void) const;
 	float getStarDistance( void );
+	float getMag(const Navigator *nav) const {
+		if (int hip = s->getHip()) {
+			return CoreLink::instance->getMag(hip);
+		} else {
+			return StarWrapper<Star1>::getMag(nav); // hip=0 means sun OR star without hip number affected
+		}
+	}
 };
 
 class StarWrapper2 : public StarWrapper<Star2> {
