@@ -7,8 +7,17 @@ cd build
 @REM Initialize git submodules
 git submodule update --init
 
+@REM Check if VCPKG_ROOT is set
+if defined VCPKG_ROOT (
+    echo VCPKG_ROOT is set to %VCPKG_ROOT%
+) else (
+    echo VCPKG_ROOT is not set. Please set it to the root of your vcpkg installation.
+    pause
+    exit /b 1
+)
+
 @REM Configure cmake
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.10
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.10 -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake
 @REM If cmake configuration fail exit with error message
 if errorlevel 1 (
     echo CMake configuration failed. Exiting.

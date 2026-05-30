@@ -5,6 +5,7 @@
 *.cbp
 *.depend
 *.layout
+vcpkg_installed
 
 
 #cmake
