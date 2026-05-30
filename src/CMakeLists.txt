@@ -4,14 +4,26 @@ file(GLOB_RECURSE all_SRCS ${PROJECT_SOURCE_DIR} *.h *.hpp *.cpp )
 
 # creation of spacecrafter
 add_executable(spacecrafter ${all_SRCS})
-target_link_libraries(spacecrafter iniparser planetsephems ${Vulkan_LIBRARIES})
+target_link_libraries(spacecrafter PRIVATE iniparser planetsephems ${Vulkan_LIBRARIES})
 
 if (UNIX)
-target_link_libraries(spacecrafter ${SDL2_LIBRARY} ${SDL2_MIXER_LIBRARY} ${SDL2_ttf_LIBRARY} ${SDL2_NET_LIBRARY} ${FFmpeg_LIBRARIES})
+target_link_libraries(spacecrafter PRIVATE ${SDL2_LIBRARY} ${SDL2_MIXER_LIBRARY} ${SDL2_ttf_LIBRARY} ${SDL2_NET_LIBRARY} ${FFmpeg_LIBRARIES})
 else()
-target_link_libraries(spacecrafter SDL2 SDL2_mixer SDL2_ttf SDL2_net avdevice avfilter avformat avcodec avutil swscale)
-file(GLOB CARRIED_DLL ${PROJECT_SOURCE_DIR}/lib/*.dll)
-INSTALL(FILES ${CARRIED_DLL} DESTINATION bin)
+# target_link_libraries(spacecrafter PRIVATE SDL2::SDL2 SDL2_mixer::SDL2_mixer SDL2_ttf::SDL2_ttf SDL2_net::SDL2_net)
+
+target_link_libraries(spacecrafter PRIVATE $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main> $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>)
+target_link_libraries(spacecrafter PRIVATE $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>)
+target_link_libraries(spacecrafter PRIVATE $<IF:$<TARGET_EXISTS:SDL2_net::SDL2_net>,SDL2_net::SDL2_net,SDL2_net::SDL2_net-static>)
+target_link_libraries(spacecrafter PRIVATE $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>)
+
+target_include_directories(spacecrafter PRIVATE ${FFMPEG_INCLUDE_DIRS})
+target_link_directories(spacecrafter PRIVATE ${FFMPEG_LIBRARY_DIRS})
+target_link_libraries(spacecrafter PRIVATE ${FFMPEG_LIBRARIES})
+
+# target_include_directories(spacecrafter PRIVATE "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include")
+# target_link_libraries(spacecrafter SDL2 SDL2_mixer SDL2_ttf SDL2_net avdevice avfilter avformat avcodec avutil swscale)
+# file(GLOB CARRIED_DLL ${PROJECT_SOURCE_DIR}/lib/*.dll)
+# INSTALL(FILES ${CARRIED_DLL} DESTINATION bin)
 endif()
 INSTALL(TARGETS spacecrafter DESTINATION bin)
 

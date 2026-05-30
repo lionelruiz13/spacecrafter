@@ -53,8 +53,19 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 
 if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+if (UNIX)
   SET(CMAKE_C_FLAGS "-ggdb3 -Og -Wextra -Wall -Wfatal-errors -Wno-unused-parameter -Wunreachable-code")
   SET(CMAKE_CXX_FLAGS "-ggdb3 -Og -Wextra -Wall -Wno-unused-parameter -Wmissing-declarations -Wredundant-decls -Wunreachable-code -fconcepts")
+endif()
+if (MSVC)
+    add_compile_options(/fsanitize=address /Zi)
+    # C4244: conversion from 'type1' to 'type2', possible loss of data
+    # C4267: conversion from 'size_t' to 'type', possible loss of data
+    # C4305: truncation from 'type1' to 'type2'
+    # C4200: nonstandard extension used : zero-sized array in struct/union
+    # C4005: 'macro' : macro redefinition (M_PI_2)
+    add_compile_options(/wd4244 /wd4267 /wd4305 /wd4200 /wd4005) # disable warning C4244 and C4267 and C4305 and C4200 and C4005
+endif()
   message("Build type Debug. Use -DCMAKE_BUILD_TYPE=Release to activate Release mode")
 endif()
 
@@ -62,6 +73,14 @@ if( CMAKE_BUILD_TYPE STREQUAL "Release" )
 if(UNIX)
 SET(CMAKE_C_FLAGS "-ggdb3 -Ofast -Wall")
 SET(CMAKE_CXX_FLAGS "-ggdb3 -Ofast -Wall -fconcepts")
+endif()
+if (MSVC)
+    # C4244: conversion from 'type1' to 'type2', possible loss of data
+    # C4267: conversion from 'size_t' to 'type', possible loss of data
+    # C4305: truncation from 'type1' to 'type2'
+    # C4200: nonstandard extension used : zero-sized array in struct/union
+    # C4005: 'macro' : macro redefinition (M_PI_2)
+    add_compile_options(/wd4244 /wd4267 /wd4305 /wd4200 /wd4005) # disable warning C4244 and C4267 and C4305 and C4200 and C4005
 endif()
 message("Build type Release. Use -DCMAKE_BUILD_TYPE=Debug to activate Debug mode")
 endif()
@@ -82,7 +101,9 @@ endif()
 
 
 ########### Find packages ###########
+if (UNIX)
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+endif()
 
 if(UNIX)
 # search for pkg-config
@@ -117,8 +138,17 @@ INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${FFmpeg_INCLUDE_DIR})
 link_libraries(stdc++exp)
 else()
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
-link_directories(${PROJECT_SOURCE_DIR}/lib)
+FIND_PACKAGE(SDL2 CONFIG REQUIRED)
+FIND_PACKAGE(SDL2_mixer CONFIG REQUIRED)
+FIND_PACKAGE(SDL2_ttf CONFIG REQUIRED)
+FIND_PACKAGE(SDL2_net CONFIG REQUIRED)
+FIND_PACKAGE(FFmpeg REQUIRED)
+# INCLUDE_DIRECTORIES("${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include")
+# link_directories("${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib")
+
+
+# INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
+# link_directories(${PROJECT_SOURCE_DIR}/lib)
 INCLUDE_DIRECTORIES($ENV{VULKAN_SDK}/Include)
 link_directories($ENV{VULKAN_SDK}/Lib)
 endif()
