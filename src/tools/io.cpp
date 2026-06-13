@@ -597,7 +597,9 @@ bool ServerSocket::computeHttp(unsigned int client, std::string string)
 	} else
 		return false;
 	#else
-	return true;
+	// Return false on non-Linux platforms, as HTTP handling is not implemented
+	// (so the string is treated as a normal command).
+	return false;
 	#endif
 }
 
