@@ -137,7 +137,7 @@ std::string VideoPlayer::getTimeStatus() const
 	auto totalTimeSeconds = nbTotalFrame * baseDeltaFrame;
 	std::string currentTimeStr = formatTime(currentTimeSeconds);
 	std::string totalTimeStr = formatTime(totalTimeSeconds);
-	return currentTimeStr + " / " + totalTimeStr;
+	return currentTimeStr + " / " + totalTimeStr + " speed " + playbackSpeedFactor.toString();
 }
 
 void VideoPlayer::createTextures()
