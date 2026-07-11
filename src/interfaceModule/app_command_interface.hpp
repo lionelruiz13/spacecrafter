@@ -168,7 +168,7 @@ private:
 	bool swapCommand;					// boolean which indicates if the instruction must be executed or not
 	bool unskippable = false;			// set to true to force execution of the next command
 	bool waitVideoCache = false;
-	LoadPriority waitPriority = LoadPriority::NOW;
+	LoadPriority waitPriority = LoadPriority::ACTIVE;
 	std::unique_ptr<IfSwap> ifSwap; 	// management of multiple if statements
 	std::string debug_message;			//!< for 'executeCommand' error details
 

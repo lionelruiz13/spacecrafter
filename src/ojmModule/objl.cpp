@@ -23,13 +23,13 @@ void ObjL::draw(VkCommandBuffer cmd, const float screenSize)
 	} else if (high->priority != LoadPriority::DONE) {
 		if (medium->priority != LoadPriority::DONE) {
 			if (medium->priority >= LoadPriority::LAZY) {
-				medium->priority = LoadPriority::NOW;
+				medium->priority = LoadPriority::ACTIVE;
 				high->priority = LoadPriority::PRELOAD;
 			}
 			low->draw(cmd);
 		} else {
 			if (high->priority == LoadPriority::LAZY)
-				high->priority = LoadPriority::NOW;
+				high->priority = LoadPriority::ACTIVE;
 			medium->draw(cmd);
 		}
 	} else if (screenSize > 180) {

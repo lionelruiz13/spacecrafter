@@ -612,7 +612,7 @@ Texture &s_texture::getTexture()
         auto now = std::chrono::steady_clock::now();
         auto &priority = texture->loader->priority;
         if (priority.load(std::memory_order_relaxed) > LoadPriority::LOADING) {
-            priority.store(LoadPriority::NOW, std::memory_order_relaxed);
+            priority.store(LoadPriority::ACTIVE, std::memory_order_relaxed);
         }
         while (priority.load(std::memory_order_acquire) > LoadPriority::COMPLETED)
             std::this_thread::sleep_for(std::chrono::milliseconds(20)); // Wait for loaded

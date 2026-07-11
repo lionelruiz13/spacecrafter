@@ -1196,7 +1196,7 @@ int AppCommandInterface::commandWait(uint64_t &wait)
 			return executeCommandStatus();
 		}
 	} else {
-		waitPriority = LoadPriority::NOW;
+		waitPriority = LoadPriority::ACTIVE;
 		if (level == W_PRELOAD) {
 			waitPriority = LoadPriority::PRELOAD;
 		} else if (level == W_BACKGROUND) {
