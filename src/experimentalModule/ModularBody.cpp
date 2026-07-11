@@ -121,6 +121,11 @@ void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBody)
 
 ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f mat_local_to_body)
 {
+    // Produce/consume boundary of notableBody: cleared at update start (runs
+    // every frame, whichever path draws - the dual-path bridge made a
+    // draw-side-only drain unbounded during old-path phases), refilled by
+    // update(), read by the Renderer between this update and the next.
+    notableBody.clear();
     body->preUpdate(jd, mat_local_to_body);
     if (body->isVisible)
         body->recursiveUpdate(jd, mat_local_to_body);

@@ -513,6 +513,13 @@ public:
     }
     // Slow (O(n) complexity over body count)
     static ModularBody *findBodyNameI18n(const std::string &nameI18);
+    // Read access to the per-frame notableBody list (contract below) for the
+    // Renderer's depth-bucket partitioning. Lifecycle: cleared at update
+    // start (dispatchUpdate - every frame, whichever path draws), filled by
+    // update(), read between this update and the next.
+    static inline std::vector<ModularBody *> &drainNotableBodies() {
+        return notableBody;
+    }
     // PRECONDITION of every update/preUpdate in the frame: halfFov must hold
     // the current half field-of-view BEFORE the update pass runs - visibility
     // classification and screenSize derive from it. Set by the frame task

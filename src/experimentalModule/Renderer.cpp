@@ -20,6 +20,10 @@ void Renderer::init(ToneReproductor *_eye)
 
 void Renderer::beginDraw(uint8_t _frameIdx)
 {
+    // Depth-bucket input READ point: the partitioning consumer takes
+    // ModularBody::drainNotableBodies() here (filled by this frame's update;
+    // cleared at the next update start - see dispatchUpdate). Bucket math
+    // lands with the partitioning implementation.
     cmdIdx = 0;
     frameIdx = _frameIdx;
     frame = Context::instance->frame[frameIdx].get();
