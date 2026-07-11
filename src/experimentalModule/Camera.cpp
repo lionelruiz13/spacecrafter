@@ -1,5 +1,6 @@
 #include "Camera.hpp"
 #include "ModularSystem.hpp"
+#include "RenderChain.hpp"
 #include <cmath>
 
 // Remark : neutral is (1, 0, 0), up is (0, 0, 1)
@@ -101,7 +102,22 @@ void Camera::update(double jd, float deltaTime)
 
 void Camera::draw(Renderer &renderer)
 {
-    system->drawSystem(renderer);
+    frameDrawTask.renderer = &renderer;
+    frameDrawTask.camera = this;
+    frameDrawTask.done.store(false, std::memory_order_relaxed);
+    RenderChain::instance.execute(&frameDrawTask);
+    // Common case: the chain was idle, the task ran inplace above and done is
+    // already true. Chained case (in-flight publish): wait - see the BRIDGE
+    // note in Camera.hpp.
+    while (!frameDrawTask.done.load(std::memory_order_acquire))
+        ;
+}
+
+void Camera::FrameDrawTask::start(Taskable *target)
+{
+    camera->system->drawSystem(*renderer);
+    done.store(true, std::memory_order_release);
+    target->endTask(this);
 }
 
 void Camera::setFreeMode(bool b)

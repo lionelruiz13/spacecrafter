@@ -6,7 +6,9 @@
 #include "tools/rotator.hpp"
 #include "tools/utility.hpp"
 #include "tools/sc_const.hpp"
+#include "EntityCore/Executor/Task.hpp"
 #include <cmath>
+#include <atomic>
 
 class Renderer;
 class ModularBody;
@@ -158,6 +160,23 @@ private:
         return coef / zoomDuration;
     }
     void recomputeAltAzHeading();
+    // D1: the frame draw rides the render chain (RenderChain.hpp) - THE
+    // serialization point all publish tasks order against. Full update+draw
+    // fusion (main-thread-as-cadencer inversion) is second-pass; until then
+    // the existing App loop calls draw(), which executes the task inplace
+    // when the chain is idle (the common case - zero behavior change).
+    // BRIDGE: if the frame task gets chained behind an in-flight publish,
+    // draw() waits for completion on `done` - the App flow needs the command
+    // buffers recorded before it submits. Bounded-tiny wait (publishes are
+    // O(small) by contract); disappears entirely at the inversion, where
+    // submission itself becomes part of the frame task.
+    class FrameDrawTask : public Task {
+    public:
+        virtual void start(Taskable *target) override;
+        Renderer *renderer = nullptr;
+        Camera *camera = nullptr;
+        std::atomic<bool> done{true};
+    } frameDrawTask;
     ModularBodyPtr reference;
     ModularBodyPtr target;
     ModularSystem *system; // Determined on construction and update
