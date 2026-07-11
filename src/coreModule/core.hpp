@@ -393,6 +393,8 @@ public:
 	void preloadSolarSystemBody(stringHash_t& param);
 	void removeSolarSystemBody(const std::string& name);
 	void removeSupplementalSolarSystemBodies();
+	// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
+	void ssystemDualDump(const std::string& file);
 
 	//! set flag to display generic Hint or specific DSO type
 	void setDsoPictograms (bool value);

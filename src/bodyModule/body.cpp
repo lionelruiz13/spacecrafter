@@ -992,6 +992,11 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
         } else
             f = 1 / (distance * halfFov);
     screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
+
+    if (englishName == "Moon")
+    {
+        std::cout << "\r\t\t\t\t\t\tWANT: " << mat.getTranslation() << std::flush;
+    }
 }
 
 double Body::getAxisAngle() const {
@@ -1231,4 +1236,28 @@ void Body::drawShadow(VkCommandBuffer drawCmd, int idx)
     BodyShader::getShaderShadowShape()->layout->bindSet(drawCmd, *Context::instance->shadowData[idx].traceSet);
     currentObj->bind(drawCmd);
     currentObj->draw(drawCmd, Context::instance->shadowRes);
+}
+
+// Dual-path trace harness (experimentalModule/INTENT.md 11.14).
+// One JSON object with the full OLD-path per-body transform state:
+// parent-relative position (ecl), body-local->parent matrix, body-local->eye
+// matrix (double, pre-convert), eye-space position, distance, screen
+// position, axis rotation. Precision 17 = round-trip-exact double.
+void Body::dumpTrace(std::ostream &out) const
+{
+	out << std::setprecision(17) << "{\"parent\":\""
+	    << (parent ? parent->getEnglishName() : "") << "\",\"ecl\":["
+	    << ecliptic_pos[0] << ',' << ecliptic_pos[1] << ',' << ecliptic_pos[2]
+	    << "],\"matLocalToParent\":[";
+	for (int i = 0; i < 16; ++i)
+		out << mat_local_to_parent.r[i] << ((i < 15) ? "," : "");
+	out << "],\"mat\":[";
+	for (int i = 0; i < 16; ++i)
+		out << mat.r[i] << ((i < 15) ? "," : "");
+	out << "],\"eye\":[" << eye_planet[0] << ',' << eye_planet[1] << ',' << eye_planet[2]
+	    << "],\"dist\":" << distance
+	    << ",\"screen\":[" << screenPos.first << ',' << screenPos.second
+	    << "],\"axisRot\":" << axis_rotation
+	    << ",\"visible\":" << (isVisible ? "true" : "false")
+	    << ",\"screenSz\":" << screen_sz << '}';
 }

@@ -13,6 +13,7 @@
 #include "EntityCore/Executor/ASmooth.hpp"
 #include "tools/StringID.hpp"
 #include <memory>
+#include <iosfwd>
 #include <list>
 #include <vector>
 
@@ -441,6 +442,9 @@ public:
     inline const std::pair<float, float> &getScreenPos() const {
         return screenPos;
     }
+    // Dual-path trace harness (INTENT.md 11.14): serialize this body's
+    // NEW-path transform state as one JSON object (no newline). Read-only.
+    void dumpTrace(std::ostream &out) const;
     inline const Vec3f &getHaloColor() const {
         return haloColor;
     }

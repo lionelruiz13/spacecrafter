@@ -38,6 +38,7 @@
 #include "bodyModule/orbit.hpp"
 #include <list>
 #include <string>
+#include <iosfwd>
 
 
 #include "ojmModule/objl.hpp"
@@ -257,6 +258,11 @@ public:
 	std::string getNameI18n(void) const override {
 		return nameI18;
 	}
+
+	// Dual-path trace harness (experimentalModule/INTENT.md 11.14): serialize
+	// this body's OLD-path transform state as one JSON object (no newline).
+	// Read-only; meaningful after the old path has drawn at the frozen jd.
+	void dumpTrace(std::ostream &out) const;
 
 	const std::shared_ptr<Body> get_parent(void) const {
 		return parent;

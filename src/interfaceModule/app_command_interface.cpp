@@ -3476,6 +3476,9 @@ int AppCommandInterface::commandBody()
 			auto &kt = args[W_KEEPTIME];
 			kt = std::to_string(Utility::strToInt(kt, 10) * stapp->getTargetFps());
 			stcore->preloadSolarSystemBody(args);
+		} else if (argAction == "dual_dump") {
+			// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
+			stcore->ssystemDualDump(args[W_FILENAME]);
 		} else {
 			debug_message = "command 'body' : unknown action argument";
 		}

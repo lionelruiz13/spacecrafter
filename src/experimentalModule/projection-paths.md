@@ -167,10 +167,14 @@ discontinuity because there is no common-parent route, only the absolute frame.
   (x′=−y, y′=x). Check against the numbers: predicted from expected = [+0.000103, −0.002451, −0.000536];
   Got = [+0.000141, −0.002141, +0.001364] — xy agrees in sign and order (hence "approximation"),
   **z disagrees in sign**: the discrepancy is NOT a pure z-rotation; a second component exists.
-- `|Got| − |expected| = 3.21e-5 AU ≈ 4 800 km` — Earth-radius order (4.26e-5 AU ≈ 6 371 km):
-  consistent with a topocentric-vs-geocentric (observer surface offset) difference contributing;
-  suggests one path measures from Earth's center where the other measures from the surface
-  observer. Hint, not proof (factor ≈ 0.75 could be latitude/geometry).
+- `|Got| − |expected| = 3.21e-5 AU ≈ 4 800 km` — Earth-radius order: initially read as a
+  topocentric-vs-geocentric hint. **SUPERSEDED by harness run (2026-07-11): the component is
+  the Earth–Moon barycenter offset, CONFIRMED** — the Earth position difference between paths
+  points exactly along the Moon direction (cos = +1.0000 at two dates 88 days apart, Moon
+  direction rotated ~150° between them) with magnitude/lunar-distance = 0.01213 vs lunar mass
+  fraction 1/82.3 = 0.01215 (4-digit match). New path's Earth is displaced toward the Moon
+  relative to old ⇒ one path evaluates Earth at the EMB, the other corrects to Earth's center.
+  [harness/analyze.py on /tmp/dual_trace{,_2}.json]
 - ±90° z-rotation convention sites, candidates for the xy part: old draw applies
   `zrotation(axis_rotation + 90°)` [body_bigbody.cpp:318-319] where new `computeBodyToSurface`
   uses raw `axisRotation` [ModularBody.hpp:242-244]; new Camera builds `zrotation(az − π/2)`

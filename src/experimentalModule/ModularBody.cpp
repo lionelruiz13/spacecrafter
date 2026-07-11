@@ -1,4 +1,6 @@
 #include "ModularBody.hpp"
+#include <iomanip>
+#include <ostream>
 #include "ModularBodyPtr.hpp"
 #include "ModularSystem.hpp"
 #include "RenderChain.hpp"
@@ -320,4 +322,26 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
     if (param.count("model_name"))
         ret.push_back(BodyModuleType::OJM);
     return ret;
+}
+
+// Dual-path trace harness (INTENT.md 11.14).
+// One JSON object with the NEW-path per-body transform state: parent-relative
+// position (ecl, float - the post-downcast value actually used), observer
+// matrix, distance, screen position, axis rotation, last evaluation jd.
+// Precision 9 = round-trip-exact float; lastJD at 17 (double).
+void ModularBody::dumpTrace(std::ostream &out) const
+{
+    out << std::setprecision(9) << "{\"parent\":\""
+        << (parent ? parent->englishName : "") << "\",\"ecl\":["
+        << eclipticPos[0] << ',' << eclipticPos[1] << ',' << eclipticPos[2]
+        << "],\"mat\":[";
+    for (int i = 0; i < 16; ++i)
+        out << mat.r[i] << ((i < 15) ? "," : "");
+    out << "],\"dist\":" << distance
+        << ",\"screen\":[" << screenPos.first << ',' << screenPos.second
+        << "],\"axisRot\":" << axisRotation
+        << ",\"boundingRadius\":" << boundingRadius
+        << ",\"visible\":" << ((isVisible & isBodyVisible) ? "true" : "false")
+        << ",\"screenSize\":" << screenSize
+        << ",\"lastJD\":" << std::setprecision(17) << lastJD << '}';
 }

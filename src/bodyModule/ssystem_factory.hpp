@@ -67,6 +67,14 @@ public:
 
     void loadCamera(const InitParser &conf);
 
+    // Dual-path trace harness (experimentalModule/INTENT.md 11.14): dump the
+    // same-frame transform state of BOTH paths (old per-body state + new
+    // per-body state matched by english name + camera header) as JSON lines.
+    // Script-callable via 'body action dual_dump filename ...'.
+    // Precondition: freeze time (timerate rate 0) so the 1s A/B draw toggle
+    // cannot make one path's draw-side state stale relative to the other.
+    void dumpTracePaths(const std::string &file);
+
     SolarSystem * getSolarSystem(void) {
         return ssystem.get();
     }

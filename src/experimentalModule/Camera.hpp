@@ -9,6 +9,7 @@
 #include "EntityCore/Executor/Task.hpp"
 #include <cmath>
 #include <atomic>
+#include <iosfwd>
 
 class Renderer;
 class ModularBody;
@@ -19,6 +20,9 @@ public:
     Camera(ModularBody *reference, float longitude, float latitude, float altitude);
     // Return the distance to the reference in AU
     float distanceToReference() const;
+    // Dual-path trace harness (INTENT.md 11.14): serialize the full observer
+    // state (reference, pose, modes, halfFov) as one JSON object.
+    void dumpTrace(std::ostream &out) const;
     // Change the reference body without moving
     void switchToBody(ModularBody *dst);
     // Change the reference body

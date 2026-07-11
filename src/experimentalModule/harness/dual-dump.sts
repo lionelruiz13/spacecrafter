@@ -1,0 +1,35 @@
+# Dual-path projection trace harness (INTENT.md 11.14)
+# Install as <scriptDir>/fscripts/startup.sts (played by ScriptMgr::playStartupScript,
+# app.cpp:589) or play manually. Purpose: freeze a deterministic scene and dump the
+# same-frame transform state of BOTH body paths for numeric comparison
+# (harness/analyze.py). Reproduces the Moon-investigation context: observer on
+# Earth's surface, Paris coordinates.
+
+# Deterministic time: fixed jd, then freeze (the 1s A/B draw toggle makes each
+# path's draw-side state settle at the same frozen jd - staleness dissolved).
+date jday 2461233.5
+timerate rate 0
+
+# Deterministic observer (topocentric context of the Moon divergence).
+moveto lat 48.85 lon 2.35 alt 100 duration 0
+
+# Aim at the Moon: guarantees the interesting bodies are fresh/visible in
+# BOTH paths (old computes eye state in draw; new fully updates visible
+# subtrees only - freshness flags in the dump record it).
+select planet Moon
+flag track_object on
+
+# Let both paths draw at least one full toggle cycle each (toggle = 1000 ms).
+wait duration 3
+
+body action dual_dump filename /tmp/dual_trace.json
+
+# Second sample at another date - discriminates time-dependent errors
+# (ephemeris/jd handling) from constant convention errors (E2/E3).
+timerate rate 1
+date jday 2461321.25
+timerate rate 0
+wait duration 3
+body action dual_dump filename /tmp/dual_trace_2.json
+
+shutdown action now

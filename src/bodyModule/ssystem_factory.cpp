@@ -23,9 +23,12 @@
  */
 
 #include <memory>
+#include <fstream>
+#include <iomanip>
 
 #include "ojmModule/objl_mgr.hpp"
 #include "bodyModule/ssystem_factory.hpp"
+#include "experimentalModule/Camera.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 #include "tools/context.hpp"
@@ -394,18 +397,39 @@ void SSystemFactory::update(int delta_time, const Navigator* nav, const TimeMgr*
     bodytrace->update(delta_time);
     camera->update(timeMgr->getJDay(), delta_time/1000.f);
 
-    #ifndef NDEBUG // For switching between modes in debug build
     static int downCounter = 1000;
     downCounter -= delta_time;
     if (downCounter < 0) {
         downCounter = 1000;
         drawModularSystem = !drawModularSystem;
     }
-    #endif
 }
 
 void SSystemFactory::addBody(stringHash_t &param)
 {
     currentSystem->addBody(param);
     camera->getCurrentSystem()->loadBody(param);
+}
+
+// Dual-path trace harness (experimentalModule/INTENT.md 11.14).
+// JSON lines: one header (jd, camera state), then one line per old-path body
+// of the CURRENT system with the matching new-path body (by english name,
+// null when absent - itself a finding, cf INTENT 11.3 hardcoded-flag case).
+void SSystemFactory::dumpTracePaths(const std::string &file)
+{
+    std::ofstream out(file.empty() ? "/tmp/dual_trace.json" : file);
+    out << std::setprecision(17) << "{\"type\":\"header\",\"jd\":"
+        << timeMgr->getJDay() << ",\"camera\":";
+    camera->dumpTrace(out);
+    out << "}\n";
+    for (auto it = currentSystem->begin(); it != currentSystem->end(); ++it) {
+        out << "{\"type\":\"body\",\"name\":\"" << it->first << "\",\"old\":";
+        it->second.body->dumpTrace(out);
+        out << ",\"new\":";
+        if (ModularBody *nb = ModularBody::findBodyOnce(it->first))
+            nb->dumpTrace(out);
+        else
+            out << "null";
+        out << "}\n";
+    }
 }

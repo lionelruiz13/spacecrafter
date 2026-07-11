@@ -731,6 +731,12 @@ void Core::addSolarSystemBody(stringHash_t& param)
 	ssystemFactory->addBody(param);
 }
 
+// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
+void Core::ssystemDualDump(const std::string& file)
+{
+	ssystemFactory->dumpTracePaths(file);
+}
+
 void Core::preloadSolarSystemBody(stringHash_t& param)
 {
 	auto &name = param["name"];

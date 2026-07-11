@@ -2,6 +2,8 @@
 #include "ModularSystem.hpp"
 #include "RenderChain.hpp"
 #include <cmath>
+#include <iomanip>
+#include <ostream>
 
 // Remark : neutral is (1, 0, 0), up is (0, 0, 1)
 // In spheToRect/rectToSphe, xyz is xzy
@@ -287,4 +289,18 @@ void Camera::setHalfFov(float halfFov, float duration)
 void Camera::setAltitude(double altitude)
 {
     distance = altitude/(1000*AU)+reference->getAltitudeReference();
+}
+
+// Dual-path trace harness (INTENT.md 11.14).
+void Camera::dumpTrace(std::ostream &out) const
+{
+    out << std::setprecision(9) << "{\"reference\":\""
+        << (reference ? reference->getEnglishName() : "") << "\",\"freeMode\":"
+        << (freeMode ? "true" : "false") << ",\"boundToSurface\":"
+        << (boundToSurface ? "true" : "false")
+        << ",\"longitude\":" << longitude << ",\"latitude\":" << latitude
+        << ",\"distance\":" << distance
+        << ",\"alt\":" << alt << ",\"az\":" << az << ",\"heading\":" << heading
+        << ",\"position\":[" << position[0] << ',' << position[1] << ',' << position[2]
+        << "],\"halfFov\":" << ModularBody::halfFov << '}';
 }
