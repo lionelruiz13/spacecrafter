@@ -74,6 +74,10 @@ public:
     void endBodyDraw();
     // Prepare the depth buffer for drawing in the given depth range - one
     // slice of the partitioned depth range (see partitioning contract above).
+    // boundingRadius is inclusive by definition (smallest sphere enclosing the
+    // whole traced body, BodyModule.hpp) - the slice [zCenter-r, zCenter+r]
+    // needs no extra margin; the old path's 1.1 factor compensated a radius
+    // that wasn't defined as inclusive.
     void clearDepth(float zCenter, float boundingRadius);
     void drawHalo(const std::pair<float, float> &pos, const Vec3f &color, float rmag);
     float adaptLuminance(float world_luminance) const;

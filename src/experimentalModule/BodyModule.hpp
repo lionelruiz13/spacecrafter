@@ -117,7 +117,12 @@ public:
         return boundingRadius;
     }
 protected:
-    float boundingRadius = 0; // Defined by update(); 0 = never updated yet
+    // The smallest radius of a sphere enclosing the WHOLE body to be traced
+    // [vixy: 2026-07-11]. This single definition is what makes one value valid
+    // for BOTH the visibility cone test and the depth-slice bounds - inclusive
+    // by definition, so no margin factor is ever needed on top of it.
+    // Defined by update(); 0 = never updated yet.
+    float boundingRadius = 0;
     BodyModuleType type;
 };
 

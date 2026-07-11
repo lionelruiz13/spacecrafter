@@ -120,10 +120,12 @@ through TRACE/COLOR families instead).
 [solarsystem_display.cpp:147-148]; new `clearDepth` uses exact `±boundingRadius`
 [ModularBody.hpp:259]. With `w=1`, depth outside [0,1] is clipped — geometry exceeding the
 bounding sphere (oblateness is inside, but terrain, atmosphere shells, rings later) will clip at
-the slice boundary. The 1.1 was the old path's guard. **Flag for Vixy**: margin policy belongs
-in the notableBody partitioning consumer's contract (§3.6) — either a factor, or boundingRadius
-must be defined as already-inclusive (BasicMesh currently sets it = scaledRadius exactly
-[BasicMesh.cpp update]).
+the slice boundary. The 1.1 was the old path's guard. **RESOLVED [vixy: 2026-07-11]**: boundingRadius is
+DEFINED as the smallest sphere enclosing the whole traced body — inclusive by definition
+(exactly why one value serves both the cone test and the depth bounds); no margin factor.
+The contract carries the safety: a module drawing beyond its mesh radius (terrain, shell,
+ring) must return the larger radius from update(). Documented in BodyModule.hpp +
+Renderer.hpp clearDepth.
 
 **C6 — Hierarchy.** Old composition is structurally two-level [body.cpp:914-927]; new is
 arbitrary-depth with systems-as-bodies. This is what makes G2/G3 (galaxy ⊃ systems ⊃ …,
