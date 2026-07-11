@@ -8,8 +8,6 @@
 
 class ToneReproductor;
 class FrameMgr;
-class Projector;
-class Navigator;
 class Set;
 
 // ============================================================================
@@ -124,29 +122,20 @@ public:
         return passKind;
     }
 
-    // ---- Frame context (text delegation channel, INTENT §10.2) ------------
-    // Set by the frame task before beginDraw. Label-drawing modules reach the
-    // gravity-text path (Projector::printGravity180 + s_font) through these
-    // instead of widened hook signatures; text is a delegation, never a
-    // family.
-    inline void setFrameContext(Projector *_prj, Navigator *_nav) {
-        prj = _prj;
-        nav = _nav;
-    }
-    inline Projector *getProjector() const {
-        return prj;
-    }
-    inline Navigator *getNavigator() const {
-        return nav;
-    }
+    // ---- Text/label channel: OPEN (INTENT §10.3 open #3, reworked) --------
+    // The first design carried Projector/Navigator here; INVALIDATED
+    // [vixy: 2026-07-11]: those are old-path projection machinery (system-
+    // center reference), the new path projects through the parent<->child
+    // matrix chain routed via the closest common parent. The gravity-text
+    // path must be partially rewritten against the new chain; the channel
+    // modules use to reach it will be defined by the projection-path
+    // investigation (INTENT §11).
 private:
     void allocateCommands();
     void nextCommandBuffer();
     VkCommandBuffer cmd = VK_NULL_HANDLE;
     ToneReproductor *eye;
     FrameMgr *frame;
-    Projector *prj = nullptr;
-    Navigator *nav = nullptr;
     PassKind passKind = PassKind::COLOR;
     std::vector<VkCommandBuffer> cmds[3];
     Vec3f clippingFov;
