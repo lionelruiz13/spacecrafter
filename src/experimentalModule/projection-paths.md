@@ -149,18 +149,21 @@ discontinuity because there is no common-parent route, only the absolute frame.
 - **By construction at the GPU stage: equivalent** (C1).
 - **By intent at the chain stage: equivalent** — both produce eye→body-local; same ephemeris
   sources (`positionAtTimevInVSOP87Coordinates` both paths), same rotation elements.
-- **In fact, currently: NOT equivalent** — the live Moon divergence is precisely a chain-stage
-  disagreement [Camera.cpp:79-84, committed note; INTENT §1.3].
-- **Equivalence conditions** (each must hold; unverified ones marked):
-  E1 same orbit evaluation inputs (jd timing, element sets) — unverified;
-  E2 same rotation-composition conventions per hop (old `rot_local_to_parent`
-     [body.cpp:531-539] vs new `xzrotation`/`zxrotation` [ModularBody.hpp:308-367]) — unverified,
-     prime suspect;
-  E3 same observer pose conventions (az origin, heading sign; old alt-az local frame vs new
-     `zrotation(az−π/2)` [Camera.cpp:85]) — unverified, prime suspect ("az : NO-OP" note);
+- ~~In fact, currently: NOT equivalent~~ → **RESOLVED (2026-07-11, INTENT §11.15): positions
+  now IDENTICAL to float epsilon; every rotation difference exactly modeled.** Condition
+  outcomes, measured:
+  E1 — VIOLATED, fixed: light-travel-time retardation applied only by old
+     (solarsystem_display.cpp) → `ModularBody::flagLightTravelTime`;
+  E2 — VIOLATED, fixed: per-hop tilts + inverted translation signs + non-inverse up-hop
+     (INTENT §5.10–5.12) → flat chain, frame contract in ModularBody.hpp;
+  E3 — position part VIOLATED, fixed (camera longitude sign + Earth spin via absent
+     `hardcoded`, INTENT §5.15); view part REMAINS by design: camera view state vs old
+     navigator view differ (D_common in predict.py P5) — both self-consistent, tracking
+     centers its own target;
   E4 halfFov semantics — VERIFIED equivalent;
   E5 depth-range policy — differs (C5), affects clipping not coordinates;
-  E6 same body data (ssystem.ini parse deltas, e.g. INTENT §5.2/§11.3 hardcoded-flag absence).
+  E6 — VIOLATED, fixed: hardcoded-flag absence (INTENT §11.3) + BinaryOrbit secondary
+     unwired (EMB, INTENT §5.13).
 
 **C9 — Moon-divergence analysis `[derived from the committed numbers, Camera.cpp:82-84]`.**
 - Vixy's shift approximation `[-Y, X, Z]` is, on the xy-plane, exactly `zrotation(+90°)`
@@ -181,8 +184,11 @@ discontinuity because there is no common-parent route, only the absolute frame.
   [Camera.cpp:85]; new surface-bound `transformBodyToParent` merges `zrotation(−π/2 −
   axisRotation)` [ModularBody.hpp:352-367]. (Axis-rotation sites affect orientation, not the
   Moon's observed position — they matter only through the Camera's surface/boundToSurface fold.)
-- Status: analysis only — Vixy's active investigation, code untouched (INTENT §11.10
-  do-not-disturb respected). These are discriminating observations, not a conclusion.
+- Status: ~~analysis only~~ **CLOSED (2026-07-11)** — the `[-Y,X,Z]` signature's real ancestor
+  was the chain's inverted translation signs (point reflection through the reference:
+  angle(−a,−b)=angle(a,b) preserved non-reference inter-body angles, which is what made it
+  approximate a rotation), stacked with the tilt/longitude/EMB contributors. Full causal
+  decomposition + measurements: INTENT §11.15, harness/predict.py.
 
 ---
 

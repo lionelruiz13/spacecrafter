@@ -993,10 +993,6 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
             f = 1 / (distance * halfFov);
     screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
 
-    if (englishName == "Moon")
-    {
-        std::cout << "\r\t\t\t\t\t\tWANT: " << mat.getTranslation() << std::flush;
-    }
 }
 
 double Body::getAxisAngle() const {

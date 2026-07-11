@@ -67,3 +67,23 @@ early-return skips the store); SolarSystem root spin = 90 deg about -z
 (matches the [-Y,X,Z] note signature - orientation-layer lead); no single
 rotation maps fresh positions (12-36 deg residuals) => per-branch
 composition differences, not a camera-only error.
+
+## Triplet resolution (predict.py + fix-validation.sts) - INTENT 11.15
+
+predict.py supersedes quad.py's discovery role once the composition is known:
+it PREDICTS both paths' matrices from dumped inputs and accepts only float-eps
+residuals. Sections: P1 old model, P2 new model, P3 relative geometry (THE
+promise), P4 observer parity, P5 rotation differentials with named causes.
+
+fix-validation.sts is the validation scene (dual-dump derivative): requires
+`init_fov = 340` in config.ini - `zoom fov` does NOT reach Camera::setHalfFov
+(seam gap, INTENT 11.15c), only config init does; the wide fov keeps
+Sun/Moon/Mars inside the new path's visibility cone so their rotations are
+fresh (not chimera).
+
+Final measurements (2026-07-11, two dates): predicted==observed ~5e-8 both
+paths; relative positions old==new <= 7e-6 deg / 2.3e-7 distances; observer
+parity 6-23 km (float-ulp on AU chain); all rotation differentials modeled at
+~1e-7 (causes: view-state D_common, old's parent-rot accumulation on the Moon,
+old's skipped rotation elements on parentless bodies). Structural causes and
+fixes: INTENT.md 5.10-5.16.

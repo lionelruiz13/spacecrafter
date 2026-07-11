@@ -185,16 +185,38 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
 
         .bodyType=strToBodyType(param["type"]),
         .isHaloEnabled=Utility::isTrue(param["halo"]),
-		.altitudeRelativeToRadius=Utility::isFalse("solid")
+    .altitudeRelativeToRadius=Utility::isFalse(param["solid"])
     };
 	if (!createInfo.orbit) {
 		cLog::get()->write("Invalid orbit '" + param["coord_func"] + "' for body '" + englishName + "', skip loading this body.", LOG_TYPE::L_ERROR);
 		return;
 	}
 
-    if (Utility::isTrue(param["hardcoded"]))
-        applyHardcodedContent(createInfo, param);
+    // Old-path parity: the old path applies Earth/Moon specificities keyed on
+    // (type, name) with no data gate (solarsystem.cpp SolarSystem::addBody), and
+    // standard ssystem.ini carries no "hardcoded" key. Key absent -> parity
+    // default (apply); key present -> explicit data wins (false blocks).
+    // Position-layer consequence when skipped: Earth falls back to the generic
+    // rot formula instead of apparent sidereal time -> observer placed ~49 deg
+    // off in longitude (measured, harness 2026-07-11). Name-keying remains the
+    // acknowledged quarantine (INTENT.md 5.5).
+    {
+        const auto hardcodedIt = param.find("hardcoded");
+        if (hardcodedIt == param.end() || Utility::isTrue(hardcodedIt->second))
+            applyHardcodedContent(createInfo, param);
+    }
     ModularBody *body = parent->createChild(createInfo);
+    // Binary-orbit completion (EMB class): if this body is the declared
+    // secondary of its parent's BinaryOrbit, wire its orbit in - without this
+    // the primary sits at the BARYCENTER (old/new Earth delta confirmed as
+    // exactly -ratio*moon_ecl, harness 2026-07-11). Generic: any body pair, the
+    // pairing is declared by the primary's orbit loader/data, not hardcoded here.
+    if (auto *binary = dynamic_cast<BinaryOrbit *>(parent->orbit.get())) {
+        if (!binary->hasSecondaryOrbit() && binary->getSecondaryName() == englishName) {
+            cLog::get()->write("Adding " + englishName + " to " + parent->getEnglishName() + " binary orbit.", LOG_TYPE::L_INFO);
+            binary->setSecondaryOrbit(body->orbit.get());
+        }
+    }
     if (Utility::isTrue(param["bound_to_surface"]))
         body->boundToSurface = true;
     if (Utility::isTrue(param["hidden"]))

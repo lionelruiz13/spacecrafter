@@ -15,6 +15,7 @@ ModularBody *ModularBody::lastFit = nullptr;
 std::map<std::string, ModularBody *> ModularBody::bodyReference;
 std::list<ModularBody> ModularBody::hidden;
 float ModularBody::halfFov = M_PI_2;
+bool ModularBody::flagLightTravelTime = false; // set from config via SSystemFactory
 Vec3f ModularBody::defaultHaloColor{};
 float ModularBody::haloScale = 1;
 float ModularBody::haloSizeLimit = 9;
@@ -74,6 +75,13 @@ ModularBody *ModularBody::createChild(ModularBodyCreateInfo &info)
 
 ModularBody::~ModularBody()
 {
+    // I5 guard: if this body's orbit is wired as the secondary of the parent's
+    // BinaryOrbit (EMB class, see ModularSystem::loadBody), unwire before the
+    // orbit is destroyed - the BinaryOrbit references it without ownership.
+    if (parent && orbit) {
+        if (auto *binary = dynamic_cast<BinaryOrbit *>(parent->orbit.get()))
+            binary->clearSecondaryOrbit(orbit.get());
+    }
     if (isNotIsolated) {
         auto p = parent;
         while (p->isNotIsolated)
@@ -113,12 +121,15 @@ bool ModularBody::remove(bool recursive)
     }
 }
 
-void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBody)
+// Receives this body's POSITION frame (root-aligned - frame contract in the
+// header): the tilt goes into `mat` only, children receive the flat frame
+// (bound children the tilted one, their offsets live in the surface frame).
+void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBodyPos)
 {
-    mat = matLocalToBody;
-    update(jd, matLocalToBody);
+    mat = matLocalToBodyPos.multiplyFast(computeBodyPosToBody(jd));
+    update(jd, mat);
     for (auto &c : childs)
-        c.selectiveUpdate(jd, matLocalToBody);
+        c.selectiveUpdate(jd, c.boundToSurface ? mat : matLocalToBodyPos);
 }
 
 ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f mat_local_to_body)
@@ -129,19 +140,29 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
     // update(), read by the Renderer between this update and the next.
     notableBody.clear();
     body->preUpdate(jd, mat_local_to_body);
-    if (body->isVisible)
-        body->recursiveUpdate(jd, mat_local_to_body);
+    // The camera mat is the reference's EQUATORIAL frame (its surface/spin
+    // composition requires it); the chain works in root-aligned frames - leave
+    // the tilted frame exactly once, here (frame contract in the header).
+    Mat4f flat = mat_local_to_body.multiplyFast(body->computeBodyToBodyPos(jd));
+    if (body->isVisible) {
+        body->recursiveUpdate(jd, flat);
+    } else {
+        body->mat = mat_local_to_body;
+        for (auto &c : body->childs)
+            c.recursiveTranslationUpdate(jd, c.boundToSurface ? mat_local_to_body : flat);
+    }
     while (body->isNotIsolated) {
-        body->transformBodyToParent(jd, mat_local_to_body);
+        body->transformBodyToParent(jd, flat);
         ModularBody *parent = body->parent;
+        const Mat4f parentTilted = flat.multiplyFast(parent->computeBodyPosToBody(jd));
         for (auto &b : parent->childs) {
             if (&b != body)
-                b.selectiveUpdate(jd, mat_local_to_body);
+                b.selectiveUpdate(jd, b.boundToSurface ? parentTilted : flat);
         }
         body = parent;
-        body->preUpdate(jd, mat_local_to_body);
-        body->update(jd, mat_local_to_body);
-        body->mat = mat_local_to_body;
+        body->mat = parentTilted; // assign BEFORE update: update() reads the member
+        body->preUpdate(jd, flat);
+        body->update(jd, parentTilted);
     }
     return static_cast<ModularSystem *>(body);
 }
@@ -243,6 +264,10 @@ void ModularBody::setChildNoLongerVisible()
         if (c.isChildVisible)
             c.setChildNoLongerVisible();
         c.distance = 0;
+        // Clear the visibility flag too: with the translation-only subtree
+        // refresh, distance becomes non-zero again next frame, so a stale
+        // isVisible=true would let drawSystem draw a chimera state.
+        c.isVisible = false;
     }
     isChildVisible = false;
 }
@@ -260,6 +285,8 @@ bool ModularBody::hide()
 {
     const auto end = parent->childs.end();
     for (auto it = parent->childs.begin(); it != end; ++it) {
+        if (&*it != this) // was missing: hide() used to hide the parent's FIRST
+            continue;     // child instead of this one (show() had the test)
         isVisible = false;
         if (isChildVisible)
             setChildNoLongerVisible();
@@ -287,21 +314,24 @@ bool ModularBody::show()
 
 Mat4f ModularBody::calculateSwitchCompensation(const ModularBody *to) const
 {
-    Mat4f diff(Mat4f::identity());
-    auto common = findCommonParent(to);
-    // Start from target body
-    for (auto body = to; body != common; body = body->parent)
-        body->transformBodyToParent(diff);
-    // Find dependency chain from the common body to this body
-    std::vector<const ModularBody *> travel;
+    // Maps `to`-equatorial coordinates to this-equatorial coordinates (both
+    // references hold their tilted frame - frame contract in the header):
+    // comp = tilt(this)^-1 . [flat translations via the common parent] . tilt(to)
+    // Left-to-right build = reverse of right-to-left application order.
+    const ModularBody *common = findCommonParent(to);
+    Mat4f diff = computeBodyToBodyPos(lastJD);
+    // this -> common (applied last: common -> this descent, -ecl each)
     for (auto body = this; body != common; body = body->parent)
+        body->transformParentToBody(diff);
+    // common -> to (applied first: to -> common climb, +ecl each), reversed
+    std::vector<const ModularBody *> travel;
+    for (auto body = to; body != common; body = body->parent)
         travel.push_back(body);
-    // Go to this body
     while (travel.size()) {
-        travel.back()->transformParentToBody(diff);
+        travel.back()->transformBodyToParent(diff);
         travel.pop_back();
     }
-    return diff;
+    return diff.multiplyFast(to->computeBodyPosToBody(to->lastJD));
 }
 
 void ModularBody::setTranslator(Translator &_translator)
@@ -347,6 +377,8 @@ void ModularBody::dumpTrace(std::ostream &out) const
 }
 
 // Harness (INTENT.md 11.14a): per-hop construction pieces, this body -> root.
+// Since the flat-chain rework, up/down are pure-translation hops (+ bound
+// folds); tilt/spin are dumped separately and exact mutual inverses hold.
 void ModularBody::dumpHops(std::ostream &out) const
 {
     out << '[';

@@ -1025,10 +1025,11 @@ bool MixedOrbit::useParentPrecession(double jd) const
 }
 
 
-BinaryOrbit::BinaryOrbit(std::unique_ptr<Orbit> barycenter, double ratio) :
+BinaryOrbit::BinaryOrbit(std::unique_ptr<Orbit> barycenter, double ratio, const std::string &secondaryName) :
 	barycenter(std::move(barycenter)),
 	secondary(nullptr),
-	ratio(ratio)
+	ratio(ratio),
+	secondaryName(secondaryName)
 {
 
 }

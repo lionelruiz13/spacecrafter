@@ -80,10 +80,9 @@ void Camera::update(double jd, float deltaTime)
     }
     // Z body_axis
     // X statique, Y et Z bougent avec alt/az
-    // az : NO-OP
-    // Moon : Got [0.000140552,-0.00214147,0.00136387], expected [-0.00245077,-0.000102607,-0.000535762]
-    // Distance : Got 0.002542791773327891, expected 0.002510745449063485
-    // Shift approximation : [-Y, X, Z]
+    // (The 2026 Moon-divergence note that lived here is resolved: the delta was
+    //  EMB wiring + per-hop tilts + this longitude sign - INTENT.md 11.14,
+    //  harness/predict.py carries the measurements.)
     Mat4f mat{Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az-M_PI_2))};
     if (freeMode) {
         if (auto newRef = reference->findBetterReference()) {
@@ -94,7 +93,12 @@ void Camera::update(double jd, float deltaTime)
     } else {
         // mat = view.getMatrix();
         mat.multiplyTranslation(Vec3f(0, 0, -distance));
-        mat = mat.multiplyFast(Mat4f::xrotation(latitude-M_PI_2)).multiplyFast(Mat4f::zrotation(longitude));
+        // -longitude: longitude is east-positive (data/UI convention). Measured
+        // against the old path (harness 2026-07-11): with +longitude the
+        // observer azimuth in the Earth frame was axisRot - lon, old (exact by
+        // its own composition) is sidereal + lon. The setBoundToSurface
+        // transitions were already consistent with the negative sign.
+        mat = mat.multiplyFast(Mat4f::xrotation(latitude-M_PI_2)).multiplyFast(Mat4f::zrotation(-longitude));
     }
     if (boundToSurface)
         mat = mat.multiplyFast(reference->computeSurfaceToBody());
@@ -128,21 +132,27 @@ void Camera::setFreeMode(bool b)
     if (b == freeMode)
         return;
 
+    // Longitude sign flipped together with Camera::update's surface placement
+    // (east-positive convention, see there). PENDING RUNTIME VERIFICATION: the
+    // harness only exercises surface mode; free<->surface continuity (and the
+    // yrotation-vs-xrotation asymmetry with update()) still needs a dedicated
+    // run before being trusted.
     if (b) {
         view.setRotation(view.getMatrix()
             .multiplyFast(Mat4f::yrotation(latitude-M_PI_2))
-            .multiplyFast(Mat4f::zrotation(longitude))
+            .multiplyFast(Mat4f::zrotation(-longitude))
             .toQuaternion()
         );
-        Utility::spheToRect(longitude, latitude, position);
+        Utility::spheToRect(-longitude, latitude, position);
         position *= distance;
     } else {
         view.setRotation(view.getMatrix()
-            .multiplyFast(Mat4f::zrotation(-longitude))
+            .multiplyFast(Mat4f::zrotation(longitude))
             .multiplyFast(Mat4f::yrotation(M_PI_2-latitude))
             .toQuaternion()
         );
         Utility::rectToSphe(&longitude, &latitude, position);
+        longitude = -longitude;
         distance = position.length();
     }
     freeMode = b;

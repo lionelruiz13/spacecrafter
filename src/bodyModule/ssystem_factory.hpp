@@ -120,6 +120,7 @@ public:
 
     void setFlagLightTravelTime(bool b) {
 		ssystemDisplay->setFlagLightTravelTime(b);
+		ModularBody::flagLightTravelTime = b; // dual-path: both paths must model the same light
 	}
 
     bool getFlagLightTravelTime(void) const {

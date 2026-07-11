@@ -177,10 +177,6 @@ public:
     void setChildNoLongerVisible();
     // Minimal updates required to determine if full update is required
     inline void preUpdate(double jd, const Mat4f &preUpdate) {
-        if (bodyType == BodyType::EARTH_MOON)
-        {
-            std::cout << "\rGOT : " << preUpdate.getTranslation() << std::flush;
-        }
         const float squaredDistance = preUpdate.r[12] * preUpdate.r[12] + preUpdate.r[13] * preUpdate.r[13] + preUpdate.r[14] * preUpdate.r[14];
         distance = sqrt(squaredDistance);
         if (childs.empty()) {
@@ -292,7 +288,26 @@ public:
         }
     }
 
+    // ---- Frame convention of the transform chain (measured against the old
+    // path, harness 2026-07-11 - old composition validated exactly) ----------
+    // Every ephemeris output (VSOP87, ELP82, ell_orbit with parent rotation
+    // BAKED IN at load - see ElipticOrbitLoader) is a vector in the ROOT
+    // (ecliptic VSOP87) orientation. Therefore the chain's translation frames
+    // are all root-aligned ("flat"): hops between bodies are PURE TRANSLATIONS
+    // (plus the surface fold for boundToSurface bodies), and a body's tilt
+    // (computeBodyPosToBody) decorates ONLY its own `mat` - it is never
+    // propagated to children. The camera holds the reference body's EQUATORIAL
+    // (tilted) frame; dispatchUpdate leaves it exactly once via
+    // computeBodyToBodyPos(reference). Violating this (per-hop tilts) rotates
+    // every child offset by the parent's obliquity - the confirmed E2 class of
+    // the Moon divergence (projection-paths.md C8/C9).
     inline void transformParentToBodyPos(double jd, Mat4f &mat_local_to_body) {
+        // Light travel time (old-path parity, solarsystem_display.cpp
+        // computePositions): the body is seen where it WAS one light-trip ago.
+        // Uses the cached observer distance (previous frame) exactly like the
+        // old path uses the previous heliocentric positions.
+        if (flagLightTravelTime)
+            jd -= distance * (149597870000.0 / (299792458.0 * 86400));
         Vec3d tmp;
         if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
             (*oscFunc)(jd,jd,tmp);
@@ -303,9 +318,17 @@ public:
         lastJD = jd;
         if (boundToSurface)
             mat_local_to_body = mat_local_to_body.multiplyFast(computeBodyToSurface());
-        mat_local_to_body.multiplyTranslation(-eclipticPos);
+        // +ecl: the child sits at +eclipticPos in the parent frame. The chain
+        // historically subtracted here (and added on the way up), point-
+        // reflecting every body through the reference - measured as
+        // eye_root_new == -eye_root_old, the deepest layer of the Moon
+        // divergence (harness 2026-07-11).
+        mat_local_to_body.multiplyTranslation(eclipticPos);
     }
 
+    // Rotation from this body's position-frame (root-aligned) to its own
+    // equatorial frame. Matches the old path's rot_local_to_parent exactly
+    // (measured: |delta| ~ 4e-8).
     inline Mat4f computeBodyPosToBody(double jd) const {
         return Mat4f::xzrotation(
             re.obliquity,
@@ -313,18 +336,29 @@ public:
         );
     }
 
-    // Use cached informations from last update
+    // Exact inverse of computeBodyPosToBody (zxrotation(z,x) is the transpose
+    // of xzrotation(x,z) at identical angles - verified numerically; negating
+    // the angles as the previous code did yields the FORWARD tilt in swapped
+    // order, not the inverse).
+    inline Mat4f computeBodyToBodyPos(double jd) const {
+        return Mat4f::zxrotation(
+            re.ascendingNode -re.precessionRate*(jd-re.epoch),
+            re.obliquity
+        );
+    }
+
+    // Use cached informations from last update. Flat hop: translation only
+    // (surface fold for bound bodies) - exact inverse of the cached
+    // transformBodyToParent below.
     inline void transformParentToBody(Mat4f &mat_local_to_body) const {
         if (boundToSurface)
             mat_local_to_body = mat_local_to_body.multiplyFast(computeBodyToSurface());
-        mat_local_to_body.multiplyTranslation(-eclipticPos);
-        mat_local_to_body.multiplyFast(Mat4f::xzrotation(
-            re.obliquity,
-            re.ascendingNode -re.precessionRate*(lastJD-re.epoch)
-        ));
+        mat_local_to_body.multiplyTranslation(eclipticPos);
     }
 
     inline void transformBodyToParent(double jd, Mat4f &mat_local_to_body) {
+        if (flagLightTravelTime) // same retardation as transformParentToBodyPos
+            jd -= distance * (149597870000.0 / (299792458.0 * 86400));
         Vec3d tmp;
         if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
             (*oscFunc)(jd,jd,tmp);
@@ -333,51 +367,64 @@ public:
         }
         eclipticPos = tmp;
         lastJD = jd;
-        mat_local_to_body = mat_local_to_body.multiplyFast(Mat4f::zxrotation(
-            re.precessionRate*(jd-re.epoch) - re.ascendingNode,
-            -re.obliquity
-        ));
         if (boundToSurface) {
             // Maybe don't inline this unfrequent case
+            // Exact inverse of the fold in transformParentToBodyPos:
+            // [spin | spin*ecl]^-1 = [spin^-1 | -ecl]
             auto tmp = Mat4f::zrotation(-M_PI_2 - axisRotation);
-            tmp.r[12] += eclipticPos[0];
-            tmp.r[13] += eclipticPos[1];
-            tmp.r[14] += eclipticPos[2];
+            tmp.r[12] -= eclipticPos[0];
+            tmp.r[13] -= eclipticPos[1];
+            tmp.r[14] -= eclipticPos[2];
             mat_local_to_body = mat_local_to_body.multiplyFast(tmp);
         } else {
-            mat_local_to_body.multiplyTranslation(eclipticPos);
+            mat_local_to_body.multiplyTranslation(-eclipticPos);
         }
     }
 
     // Use cached informations from last update
     inline void transformBodyToParent(Mat4f &mat_local_to_body) const {
-        mat_local_to_body = mat_local_to_body.multiplyFast(Mat4f::zxrotation(
-            re.precessionRate*(lastJD-re.epoch) - re.ascendingNode,
-            -re.obliquity
-        ));
         if (boundToSurface) {
             // Maybe don't inline this unfrequent case
             auto tmp = Mat4f::zrotation(-M_PI_2 - axisRotation);
-            tmp.r[12] += eclipticPos[0];
-            tmp.r[13] += eclipticPos[1];
-            tmp.r[14] += eclipticPos[2];
+            tmp.r[12] -= eclipticPos[0];
+            tmp.r[13] -= eclipticPos[1];
+            tmp.r[14] -= eclipticPos[2];
             mat_local_to_body = mat_local_to_body.multiplyFast(tmp);
         } else {
-            mat_local_to_body.multiplyTranslation(eclipticPos);
+            mat_local_to_body.multiplyTranslation(-eclipticPos);
         }
     }
 
     inline void selectiveUpdate(double jd, Mat4f mat_local_to_parent) {
         transformParentToBodyPos(jd, mat_local_to_parent);
         preUpdate(jd, mat_local_to_parent);
-        // std::cout << englishName << " : " << isVisible << " : " << mat_local_to_parent.getTranslation() << std::endl;
         if (isVisible) {
-            recursiveUpdate(jd, mat_local_to_parent.multiplyFast(computeBodyPosToBody(jd)));
+            // mat_local_to_parent is now this body's position-frame (flat);
+            // recursiveUpdate applies the tilt to `mat` only (frame contract above).
+            recursiveUpdate(jd, mat_local_to_parent);
         } else {
             mat.r[12] = mat_local_to_parent.r[12];
             mat.r[13] = mat_local_to_parent.r[13];
             mat.r[14] = mat_local_to_parent.r[14];
+            // Old-path parity: positions of non-drawn bodies stay queryable and
+            // sortable (the old path updates every body every frame). Refresh
+            // the subtree's translations; rotations/visibility stay gated (G4).
+            for (auto &c : childs)
+                c.recursiveTranslationUpdate(jd, c.boundToSurface ? mat_local_to_parent.multiplyFast(computeBodyPosToBody(jd)) : mat_local_to_parent);
         }
+    }
+
+    // Translation-only refresh (invisible subtrees): keeps eclipticPos, mat
+    // translation and distance current without paying rotations, visibility
+    // classification or module updates. See selectiveUpdate else-branch.
+    inline void recursiveTranslationUpdate(double jd, Mat4f frame) {
+        transformParentToBodyPos(jd, frame);
+        mat.r[12] = frame.r[12];
+        mat.r[13] = frame.r[13];
+        mat.r[14] = frame.r[14];
+        distance = frame.getTranslation().length();
+        for (auto &c : childs)
+            c.recursiveTranslationUpdate(jd, c.boundToSurface ? frame.multiplyFast(computeBodyPosToBody(jd)) : frame);
     }
 
     // Update the body system from a given body, return the active system
@@ -537,6 +584,10 @@ public:
     // classification and screenSize derive from it. Set by the frame task
     // (Camera), read everywhere; stale halfFov = silently wrong culling.
     static float halfFov;
+    // Apply light-travel-time retardation to orbit evaluation (old-path
+    // parity). Routed from config/scripts through
+    // SSystemFactory::setFlagLightTravelTime, which sets BOTH paths.
+    static bool flagLightTravelTime;
     // --- Work-domain pin (C2) -----------------------------------------------
     // Pins keep this body's memory alive while work-domain tasks (loading,
     // building) reference it. Plain non-atomic int BY DESIGN: pin() and
@@ -736,7 +787,11 @@ private:
     std::pair<float, float> screenPos;
     float halfAngularSize;
     float screenSize; // Ratio of the screen taken by this body
-    float distance;
+    // = 0 until first evaluated: uninitialized, it fed garbage into the
+    // light-travel retardation (jd - garbage -> non-converging Kepler solve,
+    // frozen main loop) - first-frame value 0 matches the old path's
+    // zero-initialized previous positions.
+    float distance = 0;
     float axisRotation;
     float scaledRadius;
     //float scaledInnerRadius;
