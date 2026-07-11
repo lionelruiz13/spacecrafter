@@ -502,6 +502,9 @@ public:
     static inline bool exists(const std::string &englishName) {
         return bodyReference.count(englishName);
     }
+    // Find a body by name, nullptr if it doesn't exist.
+    // Misses are exceptional by design: callers are expected to look up names which exist
+    // (scripts, UI selection), so the miss path may pay the exception cost.
     static inline ModularBody *findBody(const std::string &englishName) {
         if (!(lastFit && lastFit->englishName == englishName)) {
             try {
@@ -608,6 +611,9 @@ public:
             return nullptr;
         return components[slot.id].get();
     }
+    // Install a module into a slot, taking ownership.
+    // Erases the *replaced* module's routing (far/near/grounded/in) only - the new module
+    // is expected to have routed itself during load (see ModuleLoader loading contract).
     void slot(StringID slotID, std::unique_ptr<BodyModule> &&module)
     {
         if (components.size() <= slotID.id) {
