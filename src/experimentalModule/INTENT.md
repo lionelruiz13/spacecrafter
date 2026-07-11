@@ -303,3 +303,45 @@ The external world reaches the body system exclusively through `SSystemFactory` 
 | System transitions | enterSystem/leaveSystem, changeSystem | `Camera::switchToBody`/`warpToBody` + `ModularSystem::systemOf` |
 | Tools | bodyTrace pen (upPen/downPen/togglePen) | stays a coreModule-level tool (not a body-render concern) |
 | Fonts | registerFont | `HintModule::setFont` at the seam |
+
+---
+
+## 10. Renderer pipeline-family API — requirements (pre-design, 2026-07-11)
+
+D2's blocker. Everything below is observed need, not invented design; the API itself is a convergence step with Vixy. B3's contract already fixes the frame: modules DESCRIBE (traits + descriptor contract), the Renderer EXECUTES (owns every drawState); this section enumerates what that API must manage to be complete.
+
+### 10.1 What it must manage
+- **Pipeline families** replacing `SHADER_USE`/`selectShader` [observed: bodyShader.hpp:41-60]: mesh-layered (the hard one: night/clouds/specular/bump/tesselation feature COMBINATIONS — the old encoded them as enum entries + `pipelineOffset` variants [observed: body_bigbody.hpp:92]), OJM/model (± shadowed), ring (+ instanced-asteroid + depth-trace variants), lines (orbit/trail/axis/grid — depth-tested and depth-free variants), screen-space 2D (hint circle, pointer), big-halo/star, translucent shell (AtmExt), tail.
+- **Per-pass variants**: a family must provide its variant per pass kind it participates in — COLOR, NO-DEPTH, SELF-SHADOW, SHADOW-STENCIL, TRACE [BodyModule.hpp hooks] — keyed at least by (family, pass, feature-variant). Old path had explicit SHADOW/DEPTH_TRACE drawStates [observed: bodyShader.hpp].
+- **Render-pass compatibility**: pipelines are bound to FrameMgr passes (`PASS_MULTISAMPLE_DEPTH` etc. [observed: Renderer.cpp beginDraw; body.cpp:1036-1068]); self-shadow targets variable-size attachments (8192 main / 2048 secondary [ModularBody.hpp constants]) → dynamic viewport or per-resolution builds.
+- **Descriptor machinery**: set layouts per family; set allocation for modules (BasicMesh owns an EntityCore `Set` [observed: BasicMesh.hpp]); big-texture rebind generations (`bigTexRecap::binding` [observed: s_texture.hpp:97-108], old `bigSet` lazy rebuild [observed: body_bigbody.cpp:445-478]); **descriptor POOL sizing per family needs** — live evidence this is currently broken: one `vkAllocateDescriptorSets` validation error per run, pool created without `VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE` (§11.2).
+- **Batching as a Renderer service**, dissolving the global batchers (`Halo::global` beginDraw/nextDraw/endDraw [observed: halo.hpp:66-70], `Tail::global` [observed: tail.hpp:43-46]): begin/submit/flush per family at pass boundaries; `BMT_REPLICATED` is the declared hint.
+- **Global config → specialization**: tesselation levels (`BodyTesselation`, shared static [observed: body_tesselation.hpp]) and dynamic-resolution (`BMT_DYNAMIC`) parameterize pipeline builds → config changes trigger REBUILDS (work-domain) with publish-swap, never in-frame stalls.
+- **The two existing old-path borrows to absorb first** (the API's first clients): `Renderer.cpp` includes `bodyModule/halo.hpp` and calls `Halo::beginDraw` in `beginBodyDraw` [observed]; `BasicMesh` includes `bodyModule/bodyShader.hpp` and uses its drawStates [observed]. The new path currently RUNS ON old-path pipelines — dissolving these is the API's acceptance test.
+
+### 10.2 Constraints it must satisfy
+- **C1/effective-thread**: registry mutation (new pipeline published, variant swapped) = chain task; pipeline USE within the frame task is read-only. Creation is heavy (old path: static init + 4 dedicated shadow-pipeline build threads [observed: context.cpp:79-83]) → creation is WORK-DOMAIN (AsyncBuilder fits), publication is a publish task.
+- **C3**: never build-on-first-use synchronously in the frame. Corollary — **base-variant-always-ready**: each family keeps one variant resident from init, mirroring D6's lowest-LoD-always-resident (something drawable always exists; a missing fancy variant degrades, never stalls). Same ladder philosophy, pipelines instead of textures.
+- **D5 budget**: do NOT precompile the feature-combination cross-product (2 GiB floor); lazy variant builds via work domain + the EntityCore pipelineCache for fast rebuild [observed: "No changes in the pipelineCache" shutdown log].
+- **Trait-driven routing**: the Renderer routes a module through exactly the passes its BMT_* traits declare (a trait not declared = a pass never received [BodyModule.hpp contract]); MINOR_BODY exemption applies at body level above module traits.
+- **Frame structure**: per-frameIdx command buffers, 3 frames in flight [observed: Context, app.cpp:373-408]; teardown order deterministic (old `deleteShader` pattern).
+- **Text is a delegation, not a family**: labels go through the Projector gravity-text path + shared s_font [observed: hints.cpp:72] — the API must expose access to that path (or the frame task's Projector), not reimplement text.
+
+---
+
+## 11. Open investigation log (post-context-clear continuation)
+
+Ordered by priority-to-the-refactoring; each entry = observation + where to look.
+
+1. **Descriptor-pool validation error (D2-relevant defect)**: exactly one per run, both logs — `vkAllocateDescriptorSets: pSetLayouts[0] binding 1 SAMPLED_IMAGE but pool lacks VkDescriptorPoolSize with SAMPLED_IMAGE`. Locate the pool the new path allocates Sets from (BasicMesh's `Set`? Context global pool?) and its size table. First concrete bug for the §10 API to fix structurally (pool sizing per family).
+2. **Earth requests an OJM loader** [live run, B6 warning]: `model_name` present on Earth in ssystem.ini? Intended (3D Earth model) or data quirk? Also Vesta OJM + pre-existing "Too many vertices for Vesta_1L.ojm (keep below 4000)" perf warning.
+3. **Vixy's GOT probe is silent**: Moon is not `EARTH_MOON`-typed in this data — `hardcoded=true` apparently absent for Moon → `applyHardcodedContent` skipped → the Moon-divergence instrumentation observes only the old path's WANT side. Check ssystem.ini Moon section; the investigation may be mis-instrumented. (WANT fired; GOT never did; "Earth moon created" never printed — verified via tr'd logs.)
+4. **Azimuth convention + label order**: old `Body::getAltAz` applies `az = 3π − az (mod 2π)` [body.cpp:366-376]; new `ModularObject::getAltAz` returns Camera-frame raw (flagged in-code). AND pre-existing inconsistency: `getInfoString` reads `observedPosToAltAz` pair as (Alt, Az) while `getShortInfoNavString` labels the same pair "Az/Alt" [ModularObject.cpp] — one mislabels; derivation says first=alt (rectToSphe arg order). Verify both at D2 with the pointer visuals.
+5. **"Frame stall detected" + "CRITICAL [LinuxExecutor]: FAILED TO SUBMIT REQUEST"**: pre-existing (revert-A/B attributed, fire once around startup) but UNLOCATED — grep of src/ and src/EntityCore found neither string, yet the binary prints them. Find the source (EntityCore Tools? generated?); unattributed messages are unexplained deviations.
+6. **isFalse("solid") behavioral fix still pending** (INTENT 5.2) — deferred because it shifts altitude semantics mid-Moon-investigation; apply on Vixy's go.
+7. **AsyncLoaderMgr pre-existing races** (§8.6 list) — fix at D3 when the file is open anyway.
+8. **ModularObject TODO** [ModularObject.cpp:68]: englishName=="Sun" execution path — Vixy's in-code question ("isStar()? system star?") awaits their answer; same class of hardcode as §5.5.
+9. **strategy.txt TODOs**: fix halo (note: halo currently rides the OLD-path `Halo::global` through Renderer.cpp's borrow — the halo bug may live in that borrow's integration, look there first), s_font not shown (D2), pointer when selected (D2).
+10. **Camera.cpp in-code Moon notes** [committed, update()]: "Moon: Got [...], expected [...]; Shift approximation: [-Y, X, Z]" — Vixy's active divergence hypothesis; do not disturb, context for #3.
+11. **Tooling note (process, not code)**: `git stash push -- <paths>` failed silently in this tree ("did you forget git add?" while diff showed changes) — cause unidentified (submodule? locale? pathspec). Use diff-to-patch + checkout for reverts here. Also: exit codes through pipes need `set -o pipefail` — two maskings occurred this session.
+12. **CMake GLOB caveat**: new .cpp files need a manual `cmake .` re-run (no CONFIGURE_DEPENDS) — D2/D3 will add files.
