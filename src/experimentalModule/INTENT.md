@@ -178,7 +178,7 @@ Headers are the specification (programmation-principles I1) — doubly so here, 
 | Mesh drawing | G1 | One family only: `BasicMesh` (MESH) [vixy] | meshModules/, bodyModules/ |
 | Surface-segment drawing (near-ground substitution) | G4/D4 | **Missing** — whole-body only; no segment module, no VRAM-bounded streaming | [vixy: 2026-07-11]; relation reserved at ModularBody.hpp:104 |
 | Ring/Hint/Pointer/Orbit/Trail/Axis/Tail/Atmosphere modules | G1 | **Missing** (deduce handles only tex_ring/tex_map/model_name; only MESH loader registered) | ModularBody.cpp:301-312, modules.cpp:40 |
-| OJM/RING load path | G6 | Deduced but no loader registered → silently skipped | modules.cpp:40 vs ModularBody.cpp:304-310 |
+| OJM/RING load path | G6 | Missing loader now logs a warning (Phase B); registration lands with the module implementations | ModuleLoaderMgr.cpp loadModule |
 | Shadows: 4 drawing types | G7 | Hooks + traits + doc; no implementation, no stencil/self-shadow buffers in Renderer | BodyModule.hpp defaults empty, Renderer.hpp |
 | Depth-range partitioning | G9/D1-D3 | `clearDepth` exists; bucket-splitting consumer of `notableBody` unwritten | Renderer.hpp:18-19, §5.3 |
 | Environment (milkyway 2D/3D, atmosphere, landscape) | §3.8 | Empty stub; scope now defined | EnvironmentModule.hpp |
@@ -198,9 +198,9 @@ Headers are the specification (programmation-principles I1) — doubly so here, 
 4. **Debug artifacts in hot/committed paths** — **OPEN (deliberate, temporary)**. `std::cout` in inline `preUpdate` (header), in `Body::computeDraw`, in `applyHardcodedContent`; `#ifndef NDEBUG` removed from the auto-toggle [observed: git diff]. Instruments of the active investigation; must be reverted or gated before commit.
 5. **Hardcoding keyed on `englishName`** — **OPEN (acknowledged)**. Any body named "Moon"/"Earth" with `hardcoded=true` becomes EARTH/EARTH_MOON; TODO exists [stated: ModularObject.cpp:68].
 6. **`findBody` exception on miss** — **RECLASSIFIED: not a defect — undocumented expectation (now documented)**. Misses are exceptional *by design*: callers look up names they expect to exist; the exception fires only for absent bodies [vixy: 2026-07-11]. Header comment added 2026-07-11 per I1. Residual nit: `catch (...)` could be `catch (std::out_of_range)` for precision; equivalent in practice here.
-7. **`DedicatedBodyModuleSlot` is dead** — **OPEN**. Declared, never referenced [observed: grep]; superseded by `StringID` slots. Removal candidate.
-8. **`BodyModule::loaded` declared, "may be used internally", unused by the base contract** — **OPEN**: either part of the contract (then specify) or per-module internals (then it doesn't belong in the base) [observed: BodyModule.hpp:61-64,102].
-9. **`boundingRadius` read-before-write hazard** — **CONTRACT NOW STATED** (update-before-compare ordering written into BodyModule.hpp, 2026-07-11). The member remains uninitialized; a debug-mode guard or initializer is still worth considering [observed: BodyModule.hpp:83-100].
+7. **`DedicatedBodyModuleSlot` is dead** — **RESOLVED** (removed, Phase B 2026-07-11; StringID slots are the slot identity, BodyModuleType the loader-family selector — both documented).
+8. **`BodyModule::loaded`** — **RESOLVED** (removed from the base, Phase B 2026-07-11: module-internal state, moved into BasicMesh; `isLoaded()` is the contract).
+9. **`boundingRadius` read-before-write hazard** — **RESOLVED** (ordering contract + zero-initialization, Phase B 2026-07-11).
 
 ---
 
@@ -212,7 +212,7 @@ Headers are the specification (programmation-principles I1) — doubly so here, 
 4. **Taskable / cross-thread handoff** — **PROPOSAL v2 (§8, 2026-07-11), pending Vixy convergence**. Constraints C1–C4 + ordering + burst/sharing (D7) recorded. v2 = synthesis of Vixy's in-progress `Taskable` primitive (strict per-body ordering, marker-exchange continuation) with v1's ready-list drain (starvation-freedom, render affinity, O(1) idle cost).
 5. **EnvironmentModule scope** — **RESOLVED** [vixy: 2026-07-11]: everything camera-location-relative "outside" — milkyway 2D(earth-centered)/3D, atmosphere, landscape, etc. (§3.8). Open remainder: the module's interface (the class is still empty).
 6. **Milkyway root lifetime** — **OPEN**: "Never destroyed, there is no parent to delegate remnant ModularBodyPtr to" [stated: ssystem_factory.hpp:593] — rule of the model or temporary simplification?
-7. **`deduceBodyModuleList` coverage** — **OPEN**: grow deduction per ported family, or move to explicit `slot=` declarations (the `slot` parameter of `loadModule` already half-plans this [observed: ModuleLoaderMgr.hpp:22])?
+7. **`deduceBodyModuleList` coverage** — **RESOLVED** [vixy, plan phase 2026-07-11]: deduction extended per ported family (existing .ini files keep working) PLUS explicit module/slot declaration params for overrides and customs; param syntax lands with the first multi-module body (D2). Contract documented on `loadModule`.
 
 ---
 
@@ -282,3 +282,24 @@ Pool sizing policy over 4–64 cores · VRAM budget detection + degradation ladd
 - (e) `delete this` on releasing thread: **RESOLVED BY STRUCTURE** [vixy: 2026-07-11] — see §8.2.5: lightweight render-chain finalization tasks carry the releases, so the last release lands on the render thread by construction; the checkable hand-off rule is `[inferred — pending convergence]`.
 - (f) `TASKABLE_TASK_KEEP_REFERENCE` acquire/release asymmetry (found 2026-07-11, second pass): `execute()`'s empty-chain branch acquires but `scheduleExecution()`'s does not, while `endTask`'s CAS-success releases unconditionally → scheduled-mode chain start with both ifdefs on underflows the refcount → premature delete. **MOOT under the chosen granularity** [vixy: 2026-07-11]: single-chain synchronization, all Taskables application-lifetime, flags off. Remains **latent** — must be fixed before any per-body-chain split enables the flag (reopening trigger in §8.2.5).
 **Defects in existing `AsyncLoaderMgr` (pre-dating, lower priority — the port supersedes them)**: `addLoad`/`addBuild` `push_front` without holding the list spinlock while workers iterate under it (list-head data race); `AsyncLoader::priority` is plain (non-atomic) but written by worker and main threads (`AsyncBuilder::priority` is atomic — the asymmetry looks unintended); `update()`'s lock-busy branch iterates the list without the lock while a worker may scan it.
+
+---
+
+## 9. SSystemFactory seam table (Phase C, 2026-07-11)
+
+The external world reaches the body system exclusively through `SSystemFactory` (callers: coreLink.cpp, core.cpp, executorModule). Per category, where each call routes when the new path is active (`drawModularSystem`). "dual" = already routed to both paths today.
+
+| Category | Old-surface examples | New-path route |
+|---|---|---|
+| Selection/search | setSelected, searchByNamesI18, searchAround, listMatchingObjectsI18n | `ModularBody::findBody*` + `ModularBodySelector` + `ModularObject` (B7 surface); pointer draw via ObjectBase::drawPointer over ModularObject (D2) |
+| Queries | getSelectedAZ/ALT/RA/DE, getPlanetsPosition, getSunAltitude/Azimuth | `ModularObject::getAltAz/getRaDeValue` (Camera-conversion idiom); az convention verify at D2 |
+| Scale/size | setScale, setPlanetSizeScale, set/getMoonScale, setSizeLimit | `ModularBody::setScaling` (ASmooth) + global params; moon/sun scale = hardcoded-body scaling |
+| Color | setBodyColor/getBodyColor, setDefaultBodyColor | per-module color members (Hint/Orbit/Trail modules) + defaults; haloColor already on body |
+| Flags | setFlagHints/Axis/Trails/Orbits/Clouds, setPlanetHidden, toggleHideSatellites | module static `show` flags (HintModule etc.) + `ModularBody::hide/show`; per-name orbit flag = per-body module toggle |
+| Textures | switchPlanetTexMap, createTexSkin, planetTesselation | BODY-module texture variants + global tesselation param (Renderer/config) — second pass |
+| Body add/remove | addBody, preloadBody, removeBody, removeSupplementalBodies | `ModularSystem::loadBody` (dual for removeBody already); preload = `ModularBody::preload` |
+| Anchors/camera | cameraMoveToPoint/Body, transitionTo*, alignCameraToBody, saveCameraPosition, switchToAnchor | `Camera` (motion/reference layer, live) + `CameraAnchors` sketch (named/persistence/scripted layer — second pass) |
+| Per-frame | computePositions, computePreDraw, draw, update | frame task on the render chain (D1): update+draw fused; computePreDraw's buckets → Renderer depth partitioning (D4) |
+| System transitions | enterSystem/leaveSystem, changeSystem | `Camera::switchToBody`/`warpToBody` + `ModularSystem::systemOf` |
+| Tools | bodyTrace pen (upPen/downPen/togglePen) | stays a coreModule-level tool (not a body-render concern) |
+| Fonts | registerFont | `HintModule::setFont` at the seam |

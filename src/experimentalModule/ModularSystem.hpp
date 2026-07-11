@@ -4,6 +4,17 @@
 #include "ModularBodyPtr.hpp"
 #include "ModularBody.hpp"
 
+// Shadow orchestration (SKETCH - contract only, implementation second-pass,
+// G7): the system level decides WHICH bodies shadow which - per-module hooks
+// (drawShadow/drawSelfShadow) only say HOW. Successor of the old
+// SolarSystemDisplay::computePreDraw shadowingBody ranking + bindShadows
+// plumbing (ShadowRenderData/UShadowingBody). Selection inputs: distance to
+// the light source vs the shadow receiver, angular overlap, and the shadow
+// traits of the candidates' modules. MINOR_BODY bodies never participate
+// (D3 border case). The center of interest gets the high-resolution
+// self-shadow buffer (MAIN_SELF_SHADOWING_RESOLUTION), others the small one -
+// buffer ownership is the Renderer's (Renderer.hpp), bucket selection is
+// this system's.
 class ModularSystem : public ModularBody {
 public:
     ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info);
