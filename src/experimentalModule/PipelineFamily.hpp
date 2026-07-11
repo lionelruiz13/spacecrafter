@@ -1,38 +1,62 @@
 #ifndef PIPELINE_FAMILY_HPP_
 #define PIPELINE_FAMILY_HPP_
 
+#include "EntityCore/Resource/Pipeline.hpp" // BLEND_NONE (single authority for blend presets)
 #include <vulkan/vulkan.h>
 #include <cstdint>
+#include <string>
+#include <vector>
+#include <optional>
+#include <utility>
 
 class VertexArray;
 class PipelineLayout;
+class Renderer;
 
 // ============================================================================
 // Pipeline-family contract (INTENT.md §10.3) - the descriptive half of
 // "modules DESCRIBE, the Renderer EXECUTES" (Renderer.hpp).
 //
+// Paradigm [vixy: 2026-07-11]: describe once, then refer by descriptor. A
+// resource (set contract, pipeline family) is ALLOCATED from its description
+// exactly once - a cold, one-time cost, which is why descriptions freely use
+// owning types (std::string, std::vector): correctness by construction
+// instead of externally-asserted lifetimes, at a cost that never recurs.
+// What comes back is a descriptor - an integer index under the hood, wrapped
+// in a handle that manages lifetime implicitly (copies share, destruction
+// releases). Hot paths only ever carry the index. Descriptions moved into the
+// registry stay available for lazy variant builds with no lifetime clause.
+//
 // A pipeline family is the named contract between a module kind and the
-// Renderer: vertex format, descriptor contract, push-constant blocks and, per
-// supported pass kind, a shader set + fixed-state profile, plus variant axes
-// (feature bits). The Renderer owns the registry and every Pipeline object;
-// modules hold a PipelineFamilyID and call Renderer::bind() inside their draw
-// hooks, then record their own geometry (bind-and-record). This replaces
-// SHADER_USE/selectShader and the drawState_t bank (bodyShader.hpp): what was
-// enum arithmetic (pipelineOffset, pipelineNoDepth = pipeline+2) becomes
-// declared variant bits.
+// Renderer: vertex format, referenced set contracts, push-constant blocks
+// and, per supported pass kind, a shader set + fixed-state profile, plus
+// variant axes (feature bits). The Renderer owns the registry and every
+// Pipeline object; modules hold a PipelineFamily handle and call
+// Renderer::bind() inside their draw hooks, then record their own geometry
+// (bind-and-record). This replaces SHADER_USE/selectShader and the
+// drawState_t bank (bodyShader.hpp): what was enum arithmetic
+// (pipelineOffset, pipelineNoDepth = pipeline+2) becomes declared variant
+// bits.
 //
 // Residency ladder (mirrors the texture LoD ladder, D6 - something drawable
 // always exists):
 // - the base variant (VariantKey 0) of every declared pass kind is built
-//   synchronously at registration - base-always-ready (C3 corollary);
+//   synchronously at allocation - base-always-ready (C3 corollary);
 // - non-base variants are built lazily in the work domain and published to
 //   the registry as a render-chain task (C1); never the cross-product (D5).
 // - bind() never blocks: it binds the best RESIDENT variant covered by the
 //   wanted key (greedy bit-drop by VariantAxis::dropPriority) and enqueues
 //   the missing build; FamilyBound::got reports what actually bound.
-// Config-driven rebuilds (tesselation level, dynamic resolution) follow the
-// same path: rebuild in the work domain, publish swap; EntityCore defers old
-// pipeline destruction by 3 VulkanMgr::update() - frames in flight covered.
+// Config-driven rebuilds (tesselation level, dynamic resolution, the
+// SpecConstant values) follow the same path: rebuild in the work domain,
+// publish swap; EntityCore defers old pipeline destruction by 3
+// VulkanMgr::update() - frames in flight covered.
+//
+// Domains: allocation and handle release belong to the registration domain
+// (module-loader registration path / events thread) - never the frame task;
+// registry refcounts are plain integers under that domain's serialization
+// (same reasoning as the §8.2.5 pin counters). bind()/batchPush() inside the
+// frame task are registry-read-only.
 // ============================================================================
 
 // The four drawing types (BodyModule.hpp hooks), 1:1. NO-DEPTH is NOT a pass
@@ -70,29 +94,32 @@ enum class PassKind : uint8_t {
 using VariantKey = uint16_t;
 constexpr VariantKey VARIANT_NO_DEPTH = 0x8000; // depth test+write off; COLOR pass only (drawNoDepth hook)
 
-// One declared feature bit and what setting it does to the build.
-struct VariantAxis {
-    const char *name;   // debug + pipelineCache naming ("clouds", "notex", ...)
-    VariantKey bit;     // the single non-reserved bit this axis owns
-    enum Effect : uint8_t {
-        SPEC_CONSTANT,  // boolean specialization constant = bit state
-        SHADER_SWAP,    // selects the ShaderVariant table entry (see PassDesc)
-        STATE_OVERRIDE  // FixedState delta - payload [open]: defined with its
-                        // first client (today's only state variant, no-depth,
-                        // is the reserved bit above)
-    } effect;
-    uint8_t dropPriority;   // fallback order: HIGHER drops first when the
-                            // combination is non-resident or non-providable
-    uint8_t specConstantId; // SPEC_CONSTANT only
+// What setting an axis bit does to the build.
+enum class VariantEffect : uint8_t {
+    SPEC_CONSTANT,  // boolean specialization constant = bit state
+    SHADER_SWAP,    // selects the ShaderVariant table entry (see PassDesc)
+    STATE_OVERRIDE  // FixedState delta - payload [open]: defined with its
+                    // first client (today's only state variant, no-depth, is
+                    // the reserved bit above)
 };
 
-// Shader stage set; nullptr = stage absent.
+// One declared feature bit of a family.
+struct VariantAxis {
+    std::string name;       // debug + pipelineCache naming ("clouds", ...)
+    VariantKey bit;         // the single non-reserved bit this axis owns
+    VariantEffect effect;
+    uint8_t dropPriority;   // fallback order: HIGHER drops first when the
+                            // combination is non-resident or non-providable
+    uint8_t specConstantId = 0; // SPEC_CONSTANT only
+};
+
+// Shader stage set; empty = stage absent.
 struct ShaderSet {
-    const char *vert = nullptr;
-    const char *tesc = nullptr;
-    const char *tese = nullptr;
-    const char *geom = nullptr;
-    const char *frag = nullptr;
+    std::string vert;
+    std::string tesc;
+    std::string tese;
+    std::string geom;
+    std::string frag;
 };
 
 // One entry of a pass's shader table: the shaders used when the requested
@@ -110,7 +137,7 @@ struct ShaderVariant {
 // Fixed pipeline state of one pass of a family (the subset the old path
 // actually exercises; extend only when a client forces it).
 struct FixedState {
-    const VkPipelineColorBlendAttachmentState *blend = nullptr; // nullptr = opaque (BLEND_NONE)
+    VkPipelineColorBlendAttachmentState blend = BLEND_NONE;
     VkPrimitiveTopology topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     bool stripBreaks = false;       // primitive restart (Tail-style strips)
     bool cull = true;
@@ -127,38 +154,36 @@ struct FixedState {
 // A pass kind this family participates in.
 struct PassDesc {
     PassKind pass;
-    const ShaderVariant *shaderTable; // entry 0 = base (shaderBits == 0)
-    uint8_t shaderTableSize;
+    std::vector<ShaderVariant> shaderTable; // entry 0 = base (shaderBits == 0)
     FixedState state;
 };
 
-// One binding of a FAMILY_OWNED set - declarative, so the same data that
-// builds the layout also sizes the descriptor pools: a pool is always sized
-// from the layouts it serves, which structurally closes the class of error
-// where a pool lacks a type its layouts use (INTENT §11.1: shadowLayout's
+// One binding of a set contract - declarative, so the same data that builds
+// the layout also sizes the descriptor pools: a pool is always sized from the
+// layouts it serves, which structurally closes the class of error where a
+// pool lacks a type its layouts use (INTENT §11.1: shadowLayout's
 // SAMPLED_IMAGE vs SetMgr's hardcoded table).
 struct SetBindingDesc {
     uint8_t binding;
     VkDescriptorType type;
     VkShaderStageFlags stages;
     uint16_t arraySize = 1;
-    const VkSamplerCreateInfo *sampler = nullptr; // COMBINED_IMAGE_SAMPLER: nullptr = default sampler
+    std::optional<VkSamplerCreateInfo> sampler; // COMBINED_IMAGE_SAMPLER:
+                                                // nullopt = default sampler
 };
 
-// Set roles:
-// - FAMILY_OWNED: bindings declared here; Sets allocated via
-//   Renderer::allocSet from the family-aggregated pool.
-// - GLOBAL_UBO: appends the app-wide UBO set (context.uboSet) - the declared
-//   form of the setGlobalPipelineLayout idiom.
-// - EXTERNAL: reuses another component's set emplacement (the traceLayout
-//   sharing pattern: ring depth-trace rides the body trace contract).
-struct SetDesc {
-    enum Role : uint8_t { FAMILY_OWNED, GLOBAL_UBO, EXTERNAL } role;
-    const SetBindingDesc *bindings = nullptr; // FAMILY_OWNED
-    uint8_t bindingCount = 0;
-    PipelineLayout *external = nullptr;       // EXTERNAL: donor layout
-    uint16_t expectedSets = 0; // FAMILY_OWNED pool-sizing input: expected live
-                               // Set count (D5-scaled parameter, not a budget)
+// A descriptor-set contract, allocated once via
+// Renderer::allocateSetContract and referenced by descriptor from any number
+// of families. This single mechanism covers what would otherwise be three
+// cases: a family's own sets, the app-wide global UBO set
+// (Renderer::globalUboContract()), and cross-family sharing (the old
+// traceLayout pattern: ring depth-trace rides the body trace contract by
+// holding the same SetContract).
+struct SetContractDesc {
+    std::string name;                     // debug + dedup identity
+    std::vector<SetBindingDesc> bindings;
+    uint16_t expectedSets = 0; // pool-sizing input: expected live Set count
+                               // (D5-scaled parameter, not a budget)
 };
 
 struct PushConstantDesc {
@@ -168,7 +193,7 @@ struct PushConstantDesc {
 };
 
 // Device- or config-derived specialization values, distinct from variant
-// bits: the registrant supplies them at registration (isFloat64Supported,
+// bits: the registrant supplies them at allocation (isFloat64Supported,
 // viewport height, self-shadow resolution, ...). A config change re-supplies
 // them and triggers the work-domain rebuild + publish swap of the family's
 // built pipelines - never an in-frame stall.
@@ -195,13 +220,50 @@ struct BatchDesc {
                                // and logs (old Halo::endDraw behavior)
 };
 
-using PipelineFamilyID = uint8_t;
-constexpr PipelineFamilyID PIPELINE_FAMILY_NONE = UINT8_MAX;
+// A registry descriptor: an integer index under the hood, wrapped so that
+// lifetime is implicit - copies share (registry refcount), destruction
+// releases, a description holding handles keeps what it references alive by
+// construction. Default-constructed = null. acquire()/release() are defined
+// with the registry (registration domain only - see the domain note above).
+template <class Tag>
+class RegistryHandle {
+public:
+    static constexpr uint8_t NONE = UINT8_MAX;
+    RegistryHandle() = default;
+    RegistryHandle(const RegistryHandle &other) : idx(other.idx) {
+        acquire();
+    }
+    RegistryHandle(RegistryHandle &&other) noexcept : idx(other.idx) {
+        other.idx = NONE;
+    }
+    RegistryHandle &operator=(RegistryHandle other) noexcept {
+        std::swap(idx, other.idx);
+        return *this;
+    }
+    ~RegistryHandle() {
+        release();
+    }
+    explicit operator bool() const {
+        return idx != NONE;
+    }
+    inline uint8_t id() const {
+        return idx;
+    }
+private:
+    friend class Renderer;
+    explicit RegistryHandle(uint8_t idx) : idx(idx) {} // registry-issued
+    void acquire(); // no-op on NONE; defined with the registry
+    void release(); // no-op on NONE; defined with the registry
+    uint8_t idx = NONE;
+};
 
-// The full family description. Registered once (registerFamily dedups by
-// name - per-instance builders like Sun/Ring dissolve into one family plus
-// per-instance Sets); the desc and everything it points to must stay valid
-// until registration returns (the registry copies what it keeps).
+using SetContract = RegistryHandle<struct SetContractTag>;
+using PipelineFamily = RegistryHandle<struct PipelineFamilyTag>;
+
+// The full family description, moved into the registry at allocation
+// (Renderer::allocateFamily). Same name = same underlying family (dedup:
+// per-instance builders like Sun/Ring dissolve into one family plus
+// per-instance Sets).
 //
 // HARD RULE - layout invariance: a variant axis must not change the
 // descriptor contract. (family, pass) -> layout is constant across variants;
@@ -209,31 +271,32 @@ constexpr PipelineFamilyID PIPELINE_FAMILY_NONE = UINT8_MAX;
 // vs artificialShadowed pair). This keeps Sets reusable across variants and
 // pool aggregation valid.
 struct PipelineFamilyDesc {
-    const char *name;
-    enum Kind : uint8_t { GRAPHICS, COMPUTE } kind = GRAPHICS;
-    enum BuildPolicy : uint8_t {
-        BASE_SYNC_LAZY_VARIANTS, // default: base at registration, variants on demand
+    std::string name;
+    enum class Kind : uint8_t { GRAPHICS, COMPUTE };
+    Kind kind = Kind::GRAPHICS;
+    enum class BuildPolicy : uint8_t {
+        BASE_SYNC_LAZY_VARIANTS, // default: base at allocation, variants on demand
         EAGER_ASYNC_ALL          // whole bank built in the work domain (the
                                  // shadow-blur bank: radius = variant key)
-    } buildPolicy = BASE_SYNC_LAZY_VARIANTS;
+    };
+    BuildPolicy buildPolicy = BuildPolicy::BASE_SYNC_LAZY_VARIANTS;
+    // Referenced, not owned (I5: must outlive the family - VertexArray is
+    // itself an allocated description, application-lifetime by convention).
     VertexArray *vertex = nullptr;  // nullptr = vertex-less, or COMPUTE
-    const SetDesc *sets = nullptr;
-    uint8_t setCount = 0;
-    const PushConstantDesc *pushConstants = nullptr;
-    uint8_t pushConstantCount = 0;
-    const SpecConstant *specValues = nullptr; // device/config-derived; see SpecConstant
-    uint8_t specValueCount = 0;
-    const PassDesc *passes = nullptr; // GRAPHICS only
-    uint8_t passCount = 0;
-    const VariantAxis *axes = nullptr;
-    uint8_t axisCount = 0;
-    const BatchDesc *batch = nullptr; // non-null = batched family
-    const char *computeShader = nullptr; // COMPUTE only; variants = spec constant
+    // Set index in the shaders = position in this vector.
+    std::vector<SetContract> sets;
+    std::vector<PushConstantDesc> pushConstants;
+    std::vector<SpecConstant> specValues;
+    std::vector<PassDesc> passes;   // GRAPHICS only
+    std::vector<VariantAxis> axes;
+    std::optional<BatchDesc> batch; // engaged = batched family
+    std::string computeShader;      // COMPUTE only; variants = spec constant
 };
 
 // bind() result: what to record against, and what actually bound.
 struct FamilyBound {
     PipelineLayout *layout; // bind Sets / push constants against this
+                            // (frame-scoped raw pointer - I5(a))
     VariantKey got;         // wanted minus dropped bits; got != wanted means a
                             // fallback drew this frame and builds are enqueued
 };

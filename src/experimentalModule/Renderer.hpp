@@ -87,30 +87,37 @@ public:
     }
 
     // ---- Pipeline-family registry (contract: PipelineFamily.hpp) ----------
-    // Registration happens at module-loader registration (modules.cpp path)
-    // or Renderer init (service families: trace, halo, lines). Pipeline
+    // Describe once, refer by descriptor: descriptions are moved in at
+    // allocation (one-time cold cost), handles manage lifetime implicitly.
+    // Allocation/release ride the registration domain (module-loader
+    // registration path / events thread), never the frame task. Pipeline
     // builds run in the work domain (pipelineCache use is concurrency-legal;
     // precedent: Context::initShadowStructures); publication of a built
-    // variant into the registry is a render-chain task (C1). Dedup by
-    // desc.name: re-registering returns the existing ID.
-    PipelineFamilyID registerFamily(const PipelineFamilyDesc &desc);
+    // variant into the registry is a render-chain task (C1).
+    // Allocate a descriptor-set contract, shareable across families.
+    SetContract allocateSetContract(SetContractDesc &&desc);
+    // The pre-allocated app-wide UBO set contract (context.uboSet).
+    SetContract globalUboContract() const;
+    // Allocate a family; dedup by desc.name (same name = same underlying
+    // family, lifetime = union of live handles).
+    PipelineFamily allocateFamily(PipelineFamilyDesc &&desc);
     // Bind the best resident variant of `family` for the CURRENT pass kind
     // into the frame command buffer, then record your geometry against the
     // returned layout (bind-and-record). Registry-read-only, never blocks
     // (C3): non-resident variant bits are dropped for this frame (by
     // dropPriority) and their build is enqueued - FamilyBound::got reports
     // what actually bound. Only callable inside a draw hook (frame task).
-    FamilyBound bind(PipelineFamilyID family, VariantKey wanted = 0);
-    // Allocate a Set of the family's FAMILY_OWNED set `setIndex`, from pools
-    // sized by the aggregate of registered contracts (a pool always covers
+    FamilyBound bind(const PipelineFamily &family, VariantKey wanted = 0);
+    // Allocate a Set of the family's set contract `setIndex`, from pools
+    // sized by the aggregate of allocated contracts (a pool always covers
     // the layouts it serves - INTENT §11.1 structural fix). The big-texture
     // generation rebind idiom (set.uninit() + rebind on texmap change) is
     // legal on these Sets: frees are deferred by the SetMgr.
-    Set *allocSet(PipelineFamilyID family, uint8_t setIndex);
+    Set *allocSet(const PipelineFamily &family, uint8_t setIndex);
     // Append one instance to a batched family. Flush cadence carries the
     // occlusion contract (PipelineFamily.hpp BatchDesc): as-if
     // farthest->closest against bodies; batch-vs-batch order free.
-    void batchPush(PipelineFamilyID family, const void *instance);
+    void batchPush(const PipelineFamily &family, const void *instance);
     // The pass kind currently recording; bind() resolves against it, hooks
     // are only invoked within their matching pass kind (trait-routed).
     inline PassKind currentPassKind() const {
