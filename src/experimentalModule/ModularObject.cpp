@@ -1,6 +1,7 @@
 #include "ModularObject.hpp"
 #include "ModularBody.hpp"
 #include "Camera.hpp"
+#include "EntityCore/Core/VulkanMgr.hpp"
 #include <sstream>
 
 std::string ModularObject::getInfoString(const Navigator *nav) const
@@ -110,4 +111,65 @@ Vec3d ModularObject::getObsJ2000Pos(const Navigator *nav) const
 float ModularObject::getMag(const Navigator *nav) const
 {
     return body->computeMagnitude();
+}
+
+void ModularObject::getAltAz(const Navigator *nav, double *alt, double *az) const
+{
+    // observedPosToAltAz returns (alt, az) - see Camera::observedPosToAltAz:
+    // rectToSphe(&ret.second, &ret.first, ...) puts latitude(alt) in .first.
+    // NOTE: azimuth convention (old path applied az = 3PI - az mod 2PI) to be
+    // verified against the old path at D2 (pointer/UI verification slice).
+    const auto tmp = Camera::instance->observedPosToAltAz(body->getObservedPosition());
+    *alt = tmp.first;
+    *az = tmp.second;
+}
+
+void ModularObject::getRaDeValue(const Navigator *nav, double *ra, double *de) const
+{
+    const auto tmp = Camera::instance->observedPosToRaDe(body->getObservedPosition());
+    *ra = tmp.first;
+    *de = tmp.second;
+}
+
+Vec3f ModularObject::getRGB() const
+{
+    return body->getHaloColor();
+}
+
+double ModularObject::getCloseFov(const Navigator *nav) const
+{
+    // Same semantic as the old path: fov fitting 4x the body diameter angle
+    return atanf(body->getRadius()*2.f/body->getDistanceToObserver())*(180./M_PI)*4;
+}
+
+double ModularObject::getSatellitesFov(const Navigator *nav) const
+{
+    // Old path excluded the Sun by name; the structural equivalent is
+    // excluding stars (their "satellites" span the whole system).
+    if (body->hasChildren() && !body->isStar()) {
+        const float rad = body->getSubsystemRadius();
+        if (rad > 0)
+            return atanf(rad/body->getDistanceToObserver())*(180./M_PI)*4;
+    }
+    return -1.;
+}
+
+double ModularObject::getParentSatellitesFov(const Navigator *nav) const
+{
+    if (ModularBody *parent = body->getParent()) {
+        if (parent->hasChildren() && !parent->isStar()) {
+            const float rad = parent->getSubsystemRadius();
+            if (rad > 0)
+                return atanf(rad/parent->getDistanceToObserver())*(180./M_PI)*4;
+        }
+    }
+    return -1.;
+}
+
+float ModularObject::getOnScreenSize(const Projector *prj, const Navigator *nav, bool orb_only)
+{
+    // screenSize is the ratio of the screen taken by the body; the pointer
+    // path wants pixels. Viewport radius matches ModularBody::setTranslator's
+    // definition (screen width / 2).
+    return body->getScreenSize() * (VulkanMgr::instance->getScreenRect().extent.width/2);
 }

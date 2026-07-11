@@ -22,6 +22,7 @@ public:
     virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     void invalidate();
 private:
+    bool loaded = false;
     uint16_t bigTextureMapping = 0;
     ObjL *mesh;
     s_texture mapTexture;

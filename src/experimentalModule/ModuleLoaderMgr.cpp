@@ -1,6 +1,7 @@
 #include "ModuleLoaderMgr.hpp"
 #include "ModuleLoader.hpp"
 #include "OrbitLoader.hpp"
+#include "tools/log.hpp"
 #include <array>
 
 std::array<std::string_view, static_cast<uint8_t>(BodyModuleType::NB_MODULE_TYPE)> defaultModuleName{
@@ -61,6 +62,11 @@ void ModuleLoaderMgr::loadModule(BodyModuleType type, ModularBody *target, std::
             target->slot(ModularBody::slotID[defaultModuleName[static_cast<uint8_t>(type)]], loader->load(target, params));
         else
             target->slot(ModularBody::slotID[slot], loader->load(target, params));
+    } else {
+        // A deduced/requested module with no capable loader must be VISIBLE:
+        // silently skipping was defect INTENT.md 5.4 (OJM/RING deduced but
+        // unregistered - bodies quietly lost their mesh).
+        cLog::get()->write("No loader available for module type '" + std::string(defaultModuleName[static_cast<uint8_t>(type)]) + "' requested by body '" + target->getEnglishName() + "'", LOG_TYPE::L_WARNING);
     }
 }
 

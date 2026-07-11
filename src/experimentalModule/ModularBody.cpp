@@ -1,6 +1,7 @@
 #include "ModularBody.hpp"
 #include "ModularBodyPtr.hpp"
 #include "ModularSystem.hpp"
+#include "RenderChain.hpp"
 #include "tools/log.hpp"
 #include "tools/translator.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
@@ -20,6 +21,12 @@ std::vector<ModularBody *> ModularBody::notableBody;
 Translator *ModularBody::translator = nullptr;
 StringIDCluster ModularBody::slotID;
 Tracer ModularBody::tracer{80, 24};
+
+void ModularBody::unpin()
+{
+    if (--pins == 0 && parked)
+        RenderChain::instance.onPinDrained(this);
+}
 
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), scaling(1), radius(info.radius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)

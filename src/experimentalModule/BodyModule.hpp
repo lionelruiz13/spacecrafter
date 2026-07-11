@@ -7,18 +7,10 @@
 class ModularBody;
 class Renderer;
 
-enum class DedicatedBodyModuleSlot : uint8_t {
-    BODY,
-    RING,
-    HINT,
-    ORBIT,
-    POINTER,
-    TRAIL,
-    AXIS,
-    ATMOSPHERE,
-    NB_SLOTS
-};
-
+// The loader-family selector: which competing loader pool handles this module
+// kind (ModuleLoaderMgr keys its loader arrays on it). Slot IDENTITY on a body
+// is a separate concept, carried by StringID (ModularBody::slotID) - one type
+// may fill several named slots.
 enum class BodyModuleType : uint8_t {
     CUSTOM, // For modules without a specific role
     MESH,
@@ -42,6 +34,12 @@ enum class RelativePosition : uint8_t {
     BACK = 0x4,
 };
 
+// Declarative rendering-pipeline needs of a module. The Renderer reads traits
+// to gate passes and select pipeline families - modules never touch the
+// pipeline directly. A trait a module doesn't declare is a pass it never
+// receives. Note: bodies of BodyType::MINOR_BODY (mass-instanced, e.g. an
+// upscaled asteroid ring) are exempt from inter-body shadowing regardless of
+// their modules' shadow traits - in reality too small for it to be observable.
 enum BodyModuleTraits {
     BMT_REPLICATED =            0x00000001, // Heavily used, some batching or similar strategy is recommended
     BMT_CACHED =                0x00000002, // Some state should be cached for performance, maybe a bad idea ?
@@ -49,12 +47,22 @@ enum BodyModuleTraits {
     BMT_DEPTH_TRACE =           0x00000008, // Affect the depth buffer
     BMT_USE_DEPTH =             0x00000010, // Use the depth buffer (pointer/halo doesn't)
     BMT_BASIC_SELF_SHADOW =     0x00000020, // Project monochrome self-shadowing
-    BMT_RGBA8_SELF_SHADOW =     0x00000020, // Project RGBA8 self-shadowing
-    BMT_PROJECT_G1_SHADOW =     0x00000040, // Project monochrome shadow
-    BMT_PROJECT_G8_SHADOW =     0x00000080, // Project greyscale shadow (up to 10 is possible)
-    BMT_PROJECT_BISHADOW =      0x00000100, // Project bicolor shadow - ONLY WORKS WHEN 10 TIMES CLOSER
+    BMT_RGBA8_SELF_SHADOW =     0x00000040, // Project RGBA8 self-shadowing
+    BMT_PROJECT_G1_SHADOW =     0x00000080, // Project monochrome shadow
+    BMT_PROJECT_G8_SHADOW =     0x00000100, // Project greyscale shadow (up to 10 is possible)
+    BMT_PROJECT_BISHADOW =      0x00000200, // Project bicolor shadow - ONLY WORKS WHEN 10 TIMES CLOSER
 };
 
+// The unit of feature composition: a drawable/loadable feature attached to a
+// ModularBody slot. A module knows HOW to draw itself in a given regime, never
+// WHEN - regime selection (far/near/grounded/in, by screen size and distance)
+// belongs to ModularBody. Modules read body state through the public interface
+// only; a module needing privileged body access signals a missing accessor,
+// not a friend candidate.
+// Lifecycle: isLoaded() is a non-blocking query; preload() is a hint, never a
+// stall; draw*() must be callable with partial resources (the drawLoaded path
+// draws whatever is resident - together with the always-resident lowest LoD,
+// something drawable always exists).
 class BodyModule {
 public:
     BodyModule(BodyModuleType type = BodyModuleType::CUSTOM) : type(type) {}
@@ -65,21 +73,33 @@ public:
     // Preload content for use in a near future
     virtual void preload(ModularBody *body) {}
     // Update this body module, return true when update is no longer required for this body
+    // Ordering guarantee: update() must have run at least once before compare() or
+    // getBoundingRadius() - boundingRadius is undefined until then.
     virtual bool update(ModularBody *body, float scaledRadius) {
         boundingRadius = scaledRadius;
         return true;
     }
-    // Draw this Body Module
+    // The four drawing types (each hook = one pass kind, gated by traits):
+    // 1. COLOR - the visible image.
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) = 0;
-    // Draw a minimalist representation of this Body Module, without depth buffer
+    // 1b. COLOR, minimalist depth-less variant - used at small screen sizes
+    //     where depth-correct drawing is indistinguishable.
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
-    // Draw a shadow to project onto another body
+    // 2. SHADOW - stencil map of the shadow this body projects onto OTHER
+    //    bodies (idx = shadow bucket). Gated by BMT_PROJECT_* traits.
     virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx) {}
-    // Draw a shadow for self-shadowing
+    // 3. SELF-SHADOW - dual purpose: (a) fill the self-shadow depth buffer;
+    //    (b) prefill the depth-buffer slice of grounded bodies with this
+    //    parent body - a grounded body's whole depth slice is negligible at
+    //    parent scale (D1), so parent-vs-grounded occlusion is wrong without
+    //    the prefill. Gated by BMT_*_SELF_SHADOW traits.
     virtual void drawSelfShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
-    // Draw a trace for orbit tracing
+    // 4. TRACE - depth-like pass cutting a hole where the orbit line must be
+    //    hidden by the body (old-path analog: drawOrbit into cmdBodyDepth).
+    //    Gated by BMT_DEPTH_TRACE.
     virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
     // Compare an object position and radius with this ModularBody
+    // Precondition: update() has run at least once for this module (see update)
     virtual RelativePosition compare(const Vec3f &localPos, const Vec3f &zAxis, float radius) {
         const float distance = localPos.lengthSquared();
         radius += boundingRadius;
@@ -97,9 +117,8 @@ public:
         return boundingRadius;
     }
 protected:
-    float boundingRadius;
+    float boundingRadius = 0; // Defined by update(); 0 = never updated yet
     BodyModuleType type;
-    bool loaded = false; // May be used internally
 };
 
 #endif /* end of include guard: BODY_MODULE_HPP_ */

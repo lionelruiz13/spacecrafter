@@ -16,19 +16,18 @@
 #include <list>
 #include <vector>
 
-#define TM(num, name) auto tex##num = name.getBigTexture()
-#define TB(num) ((tex##num != nullptr) << num)
+// (TEXMAP*/TEX big-texture mapping macros moved to tools/s_texture.hpp -
+//  they are texture utilities, not body concepts.)
 
-// Big texture mapping
-#define TEXMAP1(t0) TM(0, t0); const uint16_t texmap = TB(0)
-#define TEXMAP2(t0, t1) TM(0, t0); TM(1, t1); const uint16_t texmap = TB(0) | TB(1)
-#define TEXMAP3(t0, t1, t2) TM(0, t0); TM(1, t1); TM(2, t2); const uint16_t texmap = TB(0) | TB(1) | TB(2)
-#define TEXMAP4(t0, t1, t2, t3) TM(0, t0); TM(1, t1); TM(2, t2); TM(3, t3); const uint16_t texmap = TB(0) | TB(1) | TB(2) | TB(3)
-#define TEXMAP5(t0, t1, t2, t3, t4) TM(0, t0); TM(1, t1); TM(2, t2); TM(3, t3); TM(4, t4); const uint16_t texmap = TB(0) | TB(1) | TB(2) | TB(3) | TB(4)
-
-// Get the Texture at the 'num' parameter of TEXMAP which is 'name'
-#define TEX(num, name) (tex##num ? *tex##num : name.getTexture())
-
+// Structural nature of a body. NOT a feature taxonomy (features live in
+// BodyModule slots - G1): what remains here is only what modules cannot
+// express: STAR = emits light (bit-tested via isStar()); EARTH/EARTH_MOON =
+// hard-coded specificities, applied only through applyHardcodedContent when
+// the data says hardcoded=true; MINOR_BODY = mass-instanced small bodies
+// (e.g. upscaled asteroid ring): many visible at once, exempt from
+// inter-body shadowing, cluster-optimizable.
+// SPHERICAL_BODY/SINGLE_BODY/CUSTOM_BODY: pre-composition remnants - fate
+// decided in the second pass (INTENT.md 6.3).
 enum class BodyType : unsigned char {
     VOID,
     ANCHOR, // Simplest type, just an anchor
@@ -117,33 +116,12 @@ constexpr int SECONDARY_SELF_SHADOWING_RESOLUTION = 2048;
 // - Brightness (only if it's a star)
 // - Projected shadow absorbtion (ex : earth's projected shadow is {0.0, 1.0, 1.0})
 
-// Shadow projection :
-// - With outer orbiting ModularBody
-// - Outer : DepthBuffer shared with grounded ModularBody for drawing and shadowing
-// - Surface : DepthBuffer split between grounded ModularBody, parent's depth trace is drawn in each DepthBuffer, project shadow with and between grounded ModularBody
+// Shadow-projection and depth-buffer strategy: owned by the Renderer - the
+// normative blocks moved to Renderer.hpp (they describe render-side buffers,
+// not body state). Thread model: see RenderChain.hpp (supersedes the draft
+// thread list that lived here).
 
-// Depth buffers :
-// - Orbit depth buffer : Depth bounds calibrated for the smallest system visible [only update bound values] - It may go wrong though
-// - Body depth buffer : Cleared for each significant bodies
-// - Self-shadowing depth buffer : Large depth buffer for main body, 2k for others
-// - Shadow casting stencil buffer
-
-// Requests threads :
-// - Main thread (Event + render while updating)
-// - Resource loader
-// - GPU computing (ex : shadow tracing)
-// - Script
-// - Texture/resource async loaders
-// - Video stream
-
-//! @brief The level of prioritisation of the resources of this body
-enum class ResourcePriority {
-    UNLOADED, // No resources acquired, either because it was either explicitly unloaded or because it is an inner ModularBody or a child of it and the camera is outside of his area of influence
-    LAZY, // Only minimal ressources shall be loaded on background (default)
-    BACKGROUND, // High resolution of this ressource will probably been needed (lower resolution in use)
-    PRELOAD, // High resolution of this ressource is needed in the near future (preload request)
-    ACTIVE, // This ressource is currently needed (ex : missing resolution expected, ressource currently used)
-};
+// ResourcePriority moved to ResourceHub.hpp (resource-layer concept, I2).
 
 enum class BodyRelation {
     HIDDEN_GROUNDED,
@@ -463,6 +441,16 @@ public:
     inline const std::pair<float, float> &getScreenPos() const {
         return screenPos;
     }
+    inline const Vec3f &getHaloColor() const {
+        return haloColor;
+    }
+    // Radius including all orbiting bodies; meaningful only when hasChildren()
+    inline float getSubsystemRadius() const {
+        return subsystemRadius;
+    }
+    inline bool hasChildren() const {
+        return !childs.empty();
+    }
     inline float getScreenSize() const {
         return screenSize;
     }
@@ -525,8 +513,23 @@ public:
     }
     // Slow (O(n) complexity over body count)
     static ModularBody *findBodyNameI18n(const std::string &nameI18);
-    // This value should be set before calling update
+    // PRECONDITION of every update/preUpdate in the frame: halfFov must hold
+    // the current half field-of-view BEFORE the update pass runs - visibility
+    // classification and screenSize derive from it. Set by the frame task
+    // (Camera), read everywhere; stale halfFov = silently wrong culling.
     static float halfFov;
+    // --- Work-domain pin (C2) -----------------------------------------------
+    // Pins keep this body's memory alive while work-domain tasks (loading,
+    // building) reference it. Plain non-atomic int BY DESIGN: pin() and
+    // unpin() are legal ONLY inside render-chain tasks (see RenderChain.hpp) -
+    // the chain serializes them. Worker code cannot release: it transfers its
+    // hold into the publish task, which unpins on the chain.
+    inline void pin() {
+        ++pins;
+    }
+    // Unpin; if this body was parked for destruction (removed from the tree
+    // while pinned) and this was the last pin, destruction happens now.
+    void unpin();
     inline bool isInAreaOfInfluence() const {
         return distance <= areaOfInfluence;
     }
@@ -737,6 +740,12 @@ private:
     float one_minus_oblateness;
     float solLocalDay;			//time of a sideral day in this planet
     uint8_t pointerCount = 0; // Number of pointer pointing this object
+    // Work-domain pin count (C2). Deliberately separate from pointerCount:
+    // pointerCount is a render-local UI concept (ModularBodyPtr), pins guard
+    // memory against in-flight work tasks. Both are chain/render-serialized,
+    // neither needs atomics. (I2: one info, one domain.)
+    int pins = 0;
+    bool parked = false; // Removed from tree while pinned; destroyed at last unpin
     BodyType bodyType;
     bool isHaloEnabled;
     bool isVisible = false;
@@ -759,7 +768,14 @@ private:
     static Translator *translator;
     static std::map<std::string, ModularBody *> bodyReference;
     static std::list<ModularBody> hidden;
-    static std::vector<ModularBody *> notableBody; // List of bodies sufficiently large to need a depth bucket
+    // Bodies sufficiently large on screen to need a depth bucket this frame.
+    // Producer: update() (pushes when screenSize > threshold). Consumer: the
+    // Renderer's depth-range partitioning (splits the full depth range between
+    // these bodies according to their needs - no single range can hold both
+    // parent-scale distances and child-scale detail, D1/D2). CONTRACT: the
+    // consumer drains (clears) this list every frame - an undrained frame
+    // leaks entries and corrupts the next frame's partitioning.
+    static std::vector<ModularBody *> notableBody;
     static Vec3f defaultHaloColor;
     static float haloScale;
     static float haloSizeLimit;
