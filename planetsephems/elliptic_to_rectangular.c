@@ -91,7 +91,9 @@ EllipticToRectangular(const double a,const double n,
     const double dLe = (L - Le + elem[2]*sLe - elem[3]*cLe)
                      / (1.0    - elem[2]*cLe - elem[3]*sLe);
     Le += dLe;
-    if (fabs(dLe) <= 1e-14) break; /* L1: <1e-12 */
+    /* negated form: also terminates on NaN (NaN > x is false), where the
+       positive form loops forever - a NaN date froze the whole process here */
+    if (!(fabs(dLe) > 1e-14)) break; /* L1: <1e-12 */
   }
 
   {

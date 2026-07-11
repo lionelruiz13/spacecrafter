@@ -95,14 +95,23 @@ def main(path):
     print("\n== P2 NEW predictions (fixed model)")
     ref_chain = hops[ref]
     ref_names = [h["name"] for h in ref_chain]
-    tiltRef = M(hopm[ref][ref]["tilt"])
-    flat0 = C @ np.linalg.inv(tiltRef)
+    # camera frame = the reference's ACCUMULATED equatorial frame
+    # (accumulatedBodyToBodyPos): product of inverse tilts up the chain,
+    # skipping system-centered nodes (ecl == 0 - their coordinates are
+    # ecliptic by definition; matches old getRotEquatorialToVsop87).
+    acc = np.eye(4)
+    for h in ref_chain[:-1]:
+        if np.linalg.norm(np.array(h["ecl"])) > 0:
+            acc = acc @ np.linalg.inv(M(h["tilt"]))
+    flat0 = C @ acc
     new_pred = {}
     for n in QUAD:
         if n not in bodies or bodies[n]["new"] is None: continue
         w = bodies[n]["new"]
         if n == ref:
-            pred = C.copy()
+            # reference mat = flat . tilt(ref) (== C only when the accumulated
+            # frame reduces to the single tilt, i.e. Earth-like references)
+            pred = flat0 @ M(hopm[ref][ref]["tilt"])
         else:
             chain = hops[n]
             names = [h["name"] for h in chain]
@@ -144,38 +153,37 @@ def main(path):
     d = np.linalg.norm(eye_new - eye_old)
     print(f"\n== P4 eye in root frame: |old-new| = {d:.3e} AU ({d*1.496e8:.2f} km)")
 
-    # -- P5: rotation differential model
-    print("\n== P5 rotation differential D = R_new.R_old^T (cause must be named)")
-    Ds = {}
+    # -- P5: rotation differential model (anchor-free, generalizes to any reference)
+    # D(body) = R_new.R_old^T factorizes as Dc . H . A(body) . H^T with
+    #   Dc = rot(flat0).H^T           : the view-state term (camera vs navigator)
+    #   A  = tilt_self . oldRoot^T    : orientation surplus in the root frame
+    # Named A models: I (parity: tilt==old rot, parent rot = I);
+    # satellite: tilt.(rot_self.rot_parent[unprec flag])^T (old accumulates the
+    # parent's rotation into satellite orientation); parentless: tilt (old skips
+    # rotation elements for parentless bodies - the "solar equator" comment).
+    print("\n== P5 rotation differential (view term + named per-body surplus)")
+    Dc = rot(flat0) @ rot(H).T
+    a, ax = ang_axis(Dc)
+    print(f"  view term Dc: {a:8.4f} deg about [{ax[0]:+.3f},{ax[1]:+.3f},{ax[2]:+.3f}]  (camera view state vs old navigator - E3 view layer)")
     for n in names:
         w, o = bodies[n]["new"], bodies[n]["old"]
         if not (w["visible"] or n == ref): continue
         D = rot(M(w["mat"])) @ rot(M(o["mat"])).T
-        Ds[n] = D
-        a, ax = ang_axis(D)
-        print(f"  {n:<6} D: {a:8.4f} deg about [{ax[0]:+.3f},{ax[1]:+.3f},{ax[2]:+.3f}]")
-    if "Earth" in Ds:
-        Dc = Ds["Earth"]
-        for n in names:
-            if n in ("Earth",) or n not in Ds: continue
-            o = bodies[n]["old"]
-            if n == "Moon":
-                # old: R_old = H.rot_m.rot_e_unprec ; new: R_new = R_flat.tilt_m
-                # => D_moon = Dc @ (H R) (rot_e_unprec^T) (H R)^T-ish; exact form:
-                rm = rot(M(o["rotLocalToParent"]))  # == tilt_m (measured)
-                re_u = rot(M(bodies["Earth"]["old"]["rotLocalToParentUnprecessed"]))
-                pred = Dc @ rot(H) @ rm @ re_u.T @ rm.T @ rot(H).T
-            elif o["parent"] not in bodies:
-                # parentless in the old path: compute_trans_matrix skips
-                # rot_local_to_parent ("heliocentric coordinates are on ecliptic,
-                # not solar equator") => R_old carries NO body rotation while the
-                # new path applies the data's elements (Sun: rot_obliquity=7.25).
-                # Named cause; the new path honors the data here.
-                pred = Dc @ rot(H) @ rot(M(hopm[n][n]["tilt"])) @ rot(H).T
-            else:
-                pred = Dc
-            dev = np.linalg.norm(Ds[n] - pred)
-            print(f"  {n:<6} |D - D_model| = {dev:.2e}" + ("" if dev < 1e-4 else "  <-- unmodeled rotation component"))
+        tilt_self = rot(M(hopm[n][n]["tilt"]))
+        cands = {"parity (A=I)": np.eye(3)}
+        if o["parent"] in bodies:
+            p = bodies[o["parent"]]["old"]
+            prot = rot(M(p["rotLocalToParentUnprecessed"] if not o.get("useParentPrecession")
+                         else p["rotLocalToParent"]))
+            cands["old parent-rot accumulation"] = tilt_self @ (rot(M(o["rotLocalToParent"])) @ prot).T
+        else:
+            cands["old skips parentless rot"] = tilt_self
+        best, dev = None, 1e9
+        for tag, A in cands.items():
+            d = np.linalg.norm(D - Dc @ rot(H) @ A @ rot(H).T)
+            if d < dev: best, dev = tag, d
+        print(f"  {n:<6} |D - D_model| = {dev:.2e}  cause: {best}"
+              + ("" if dev < 1e-4 else "  <-- UNMODELED rotation component"))
 
 if __name__ == "__main__":
     main(sys.argv[1] if len(sys.argv) > 1 else "/tmp/dual_trace.json")

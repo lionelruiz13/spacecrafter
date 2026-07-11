@@ -87,3 +87,21 @@ parity 6-23 km (float-ulp on AU chain); all rotation differentials modeled at
 ~1e-7 (causes: view-state D_common, old's parent-rot accumulation on the Moon,
 old's skipped rotation elements on parentless bodies). Structural causes and
 fixes: INTENT.md 5.10-5.16.
+
+## Non-surface generalization (drive_scenes.py) - INTENT 11.16
+
+Three scenes: Earth surface 100 m (baseline) / Earth 50 km / observer ON the
+Moon (satellite reference). Driven over the TCP command interface (port 7805,
+enable_tcp) because startup.sts autoplay proved racy (the app's default init
+chain can preempt it); launch the app, wait for init, then run
+harness/drive_scenes.py. Still requires init_fov = 340 in config.ini.
+
+Scene C exposed and led to fixing (INTENT 11.16): the observer-body seam
+(switchToAnchor never reached the new Camera), the moon/sun scale seam (5x
+altitude-reference divergence), the rotation-offset unit bug (degrees added
+to a radian formula: 20.76 deg spin lag on the Moon), the ACCUMULATED
+equatorial frame for observer placement (old parity: pol==lat and
+az==sidereal+lon hold exactly in rot_earth.rot_moon, not in rot_moon alone),
+an ASmooth 0/0 (double set in one tick -> permanent NaN), and the NaN-date
+freeze in the shared Kepler solver (elliptic_to_rectangular.c infinite
+Newton loop). Final: all three scenes at float epsilon on P1-P5.

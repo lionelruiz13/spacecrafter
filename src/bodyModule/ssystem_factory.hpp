@@ -74,6 +74,11 @@ public:
     // Precondition: freeze time (timerate rate 0) so the 1s A/B draw toggle
     // cannot make one path's draw-side state stale relative to the other.
     void dumpTracePaths(const std::string &file);
+    // Dual-path seam: re-reference the new-path Camera onto the body the old
+    // path's anchor just switched to (warp semantics - the observer keeps its
+    // lat/lon/alt meaning on the new body, like the old anchor switch). No-op
+    // when the body doesn't exist in the new path.
+    void syncCameraReference(const std::string &name);
 
     SolarSystem * getSolarSystem(void) {
         return ssystem.get();
@@ -131,8 +136,15 @@ public:
         currentSystem->startTrails(b);
     }
 
+    // Moon/Sun scale: dual-path (I2, one seam) - the new path carries it as
+    // per-body scaling (ModularBody::setScaling -> scaledRadius), which feeds
+    // both the drawn size and the observer's altitude reference. Without the
+    // mirror, an observer on the scaled body sits at radius instead of
+    // scale*radius (measured: 5x |eye->Moon| divergence, scene C 2026-07-11).
     void setFlagMoonScale(bool b) {
         ssystem->setFlagMoonScale(b);
+        if (ModularBody *moon = ModularBody::findBody("Moon"))
+            moon->setScaling(b ? ssystem->getMoonScale() : 1.f);
     }
 
     bool getFlagMoonScale(void) const {
@@ -141,6 +153,8 @@ public:
 
 	void setFlagSunScale(bool b) {
         ssystem->setFlagSunScale(b);
+        if (ModularBody *sun = ModularBody::findBody("Sun"))
+            sun->setScaling(b ? ssystem->getSunScale() : 1.f);
     }
 
 	bool getFlagSunScale(void) const {
@@ -149,6 +163,10 @@ public:
 
 	void setMoonScale(float f, bool resident = false) {
         ssystem->setMoonScale(f, resident);
+        if (ssystem->getFlagMoonScale()) {
+            if (ModularBody *moon = ModularBody::findBody("Moon"))
+                moon->setScaling(f);
+        }
     }
 
 	float getMoonScale(void) const {
@@ -157,6 +175,10 @@ public:
 
 	void setSunScale(float f, bool resident = false) {
         ssystem->setSunScale(f, resident);
+        if (ssystem->getFlagSunScale()) {
+            if (ModularBody *sun = ModularBody::findBody("Sun"))
+                sun->setScaling(f);
+        }
     }
 
 	float getSunScale(void) const {
@@ -486,7 +508,10 @@ public:
 	}
 
     bool cameraSwitchToAnchor(const std::string &name) {
-		return currentSystem->getAnchorManager()->switchToAnchor(name);
+		bool ret = currentSystem->getAnchorManager()->switchToAnchor(name);
+		if (ret)
+			syncCameraReference(name); // dual-path: observer body change must reach the new Camera
+		return ret;
 	}
 
     bool cameraMoveToPoint(double x, double y, double z){
@@ -536,11 +561,15 @@ public:
     }
 
     bool switchToAnchor(const std::string& anchorName) {
-        return currentSystem->getAnchorManager()->switchToAnchor(anchorName);
+        bool ret = currentSystem->getAnchorManager()->switchToAnchor(anchorName);
+        if (ret)
+            syncCameraReference(anchorName); // dual-path: observer body change must reach the new Camera
+        return ret;
     }
 
     bool switchToAnchor(const Object &selection) {
         currentSystem->getAnchorManager()->switchToAnchor(selection);
+        syncCameraReference(selection.getEnglishName());
         return true;
     }
 

@@ -224,7 +224,11 @@ public:
         if (bodyType == BodyType::EARTH) {
             axisRotation = get_apparent_sidereal_time(jd) * (M_PI / 180);
         } else {
-            axisRotation = fmod((jd - re.epoch) / re.period * (2 * M_PI) + re.offset, (2 * M_PI));
+            // re.offset is stored in DEGREES (shared RotationElements convention,
+            // cf old getSiderealTime's degree formula); adding it raw to a radian
+            // formula lagged every non-Earth spin by offset*(1 - pi/180)
+            // (measured on the Moon: 20.7604 deg, exactly 38 deg - 38 rad mod 2pi).
+            axisRotation = fmod((jd - re.epoch) / re.period * (2 * M_PI) + re.offset * (M_PI / 180), (2 * M_PI));
         }
         if (uncached)
             updateCache();
@@ -306,7 +310,10 @@ public:
         // computePositions): the body is seen where it WAS one light-trip ago.
         // Uses the cached observer distance (previous frame) exactly like the
         // old path uses the previous heliocentric positions.
-        if (flagLightTravelTime)
+        // distance==distance rejects NaN: a corrupted spatial state must not
+        // cross into the time domain - a NaN jd freezes the Kepler solver
+        // (elliptic_to_rectangular.c) and with it the whole main loop.
+        if (flagLightTravelTime && distance == distance)
             jd -= distance * (149597870000.0 / (299792458.0 * 86400));
         Vec3d tmp;
         if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
@@ -347,6 +354,38 @@ public:
         );
     }
 
+    // ---- Accumulated equatorial frame (observer/camera semantics) ----------
+    // A body's lat/lon grid is defined in the frame accumulating the parent
+    // rotations (old-path parity: getRotEquatorialToVsop87 left-multiplies
+    // every ancestor's rot_local_to_parent; measured on the Moon observer:
+    // pol==latitude and az==sidereal+lon hold EXACTLY in rot_e.rot_m, not in
+    // rot_m alone). System-centered bodies contribute nothing - their
+    // coordinates are ecliptic by definition (the old path never computes a
+    // rotation for parentless bodies: "heliocentric coordinates are on
+    // ecliptic, not solar equator"). For a body orbiting a system-centered
+    // parent the accumulation therefore reduces to its own tilt, which is why
+    // Earth-reference scenes are insensitive to this distinction.
+    // Exit: camera(accumulated frame) -> root-aligned. Product self-first:
+    // C . tilt_self^-1 . tilt_parent^-1 ...
+    inline Mat4f accumulatedBodyToBodyPos(double jd) const {
+        Mat4f ret = Mat4f::identity();
+        for (const ModularBody *b = this; b && b->isNotIsolated; b = b->parent) {
+            if (!b->isSystemCentered())
+                ret = ret.multiplyFast(b->computeBodyToBodyPos(jd));
+        }
+        return ret;
+    }
+    // Entry: root-aligned -> accumulated frame. Product parents-first:
+    // ... tilt_parent . tilt_self (cached lastJD per node, compensation use).
+    inline Mat4f accumulatedBodyPosToBody() const {
+        Mat4f ret = Mat4f::identity();
+        for (const ModularBody *b = this; b && b->isNotIsolated; b = b->parent) {
+            if (!b->isSystemCentered())
+                ret = b->computeBodyPosToBody(b->lastJD).multiplyFast(ret);
+        }
+        return ret;
+    }
+
     // Use cached informations from last update. Flat hop: translation only
     // (surface fold for bound bodies) - exact inverse of the cached
     // transformBodyToParent below.
@@ -357,7 +396,7 @@ public:
     }
 
     inline void transformBodyToParent(double jd, Mat4f &mat_local_to_body) {
-        if (flagLightTravelTime) // same retardation as transformParentToBodyPos
+        if (flagLightTravelTime && distance == distance) // same retardation + NaN barrier as transformParentToBodyPos
             jd -= distance * (149597870000.0 / (299792458.0 * 86400));
         Vec3d tmp;
         if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {

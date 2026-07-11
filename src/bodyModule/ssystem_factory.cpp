@@ -415,6 +415,16 @@ void SSystemFactory::addBody(stringHash_t &param)
 // JSON lines: one header (jd, camera state), then one line per old-path body
 // of the CURRENT system with the matching new-path body (by english name,
 // null when absent - itself a finding, cf INTENT 11.3 hardcoded-flag case).
+void SSystemFactory::syncCameraReference(const std::string &name)
+{
+    if (ModularBody *body = ModularBody::findBody(name)) {
+        if (camera)
+            camera->warpToBody(body);
+    } else {
+        cLog::get()->write("New path has no body '" + name + "' to re-reference the camera on", LOG_TYPE::L_WARNING);
+    }
+}
+
 void SSystemFactory::dumpTracePaths(const std::string &file)
 {
     std::ofstream out(file.empty() ? "/tmp/dual_trace.json" : file);

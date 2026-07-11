@@ -140,10 +140,11 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
     // update(), read by the Renderer between this update and the next.
     notableBody.clear();
     body->preUpdate(jd, mat_local_to_body);
-    // The camera mat is the reference's EQUATORIAL frame (its surface/spin
-    // composition requires it); the chain works in root-aligned frames - leave
-    // the tilted frame exactly once, here (frame contract in the header).
-    Mat4f flat = mat_local_to_body.multiplyFast(body->computeBodyToBodyPos(jd));
+    // The camera mat is the reference's ACCUMULATED equatorial frame (its
+    // surface/spin composition and the body's lat/lon grid are defined there -
+    // see accumulatedBodyToBodyPos); the chain works in root-aligned frames -
+    // leave the accumulated frame exactly once, here (frame contract above).
+    Mat4f flat = mat_local_to_body.multiplyFast(body->accumulatedBodyToBodyPos(jd));
     if (body->isVisible) {
         body->recursiveUpdate(jd, flat);
     } else {
@@ -315,11 +316,12 @@ bool ModularBody::show()
 Mat4f ModularBody::calculateSwitchCompensation(const ModularBody *to) const
 {
     // Maps `to`-equatorial coordinates to this-equatorial coordinates (both
-    // references hold their tilted frame - frame contract in the header):
-    // comp = tilt(this)^-1 . [flat translations via the common parent] . tilt(to)
+    // references hold their ACCUMULATED equatorial frame - see
+    // accumulatedBodyToBodyPos): comp = acc(this)^-1 . [flat translations via
+    // the common parent] . acc(to).
     // Left-to-right build = reverse of right-to-left application order.
     const ModularBody *common = findCommonParent(to);
-    Mat4f diff = computeBodyToBodyPos(lastJD);
+    Mat4f diff = accumulatedBodyToBodyPos(lastJD);
     // this -> common (applied last: common -> this descent, -ecl each)
     for (auto body = this; body != common; body = body->parent)
         body->transformParentToBody(diff);
@@ -331,7 +333,7 @@ Mat4f ModularBody::calculateSwitchCompensation(const ModularBody *to) const
         travel.back()->transformBodyToParent(diff);
         travel.pop_back();
     }
-    return diff.multiplyFast(to->computeBodyPosToBody(to->lastJD));
+    return diff.multiplyFast(to->accumulatedBodyPosToBody());
 }
 
 void ModularBody::setTranslator(Translator &_translator)
