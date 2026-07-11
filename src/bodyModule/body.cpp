@@ -1251,7 +1251,14 @@ void Body::dumpTrace(std::ostream &out) const
 	    << "],\"matLocalToParent\":[";
 	for (int i = 0; i < 16; ++i)
 		out << mat_local_to_parent.r[i] << ((i < 15) ? "," : "");
-	out << "],\"mat\":[";
+	out << "],\"rotLocalToParent\":[";
+	for (int i = 0; i < 16; ++i)
+		out << rot_local_to_parent.r[i] << ((i < 15) ? "," : "");
+	out << "],\"rotLocalToParentUnprecessed\":[";
+	for (int i = 0; i < 16; ++i)
+		out << rot_local_to_parent_unprecessed.r[i] << ((i < 15) ? "," : "");
+	out << "],\"useParentPrecession\":" << (useParentPrecession(lastJD) ? "true" : "false")
+	    << ",\"mat\":[";
 	for (int i = 0; i < 16; ++i)
 		out << mat.r[i] << ((i < 15) ? "," : "");
 	out << "],\"eye\":[" << eye_planet[0] << ',' << eye_planet[1] << ',' << eye_planet[2]

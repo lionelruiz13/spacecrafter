@@ -191,6 +191,7 @@ private:
     Vec3f position;
     Vec3f deltaPosition;
     float moveDuration = 0;
+    Mat4f lastDispatchedMat; // harness: the mat handed to dispatchUpdate (INTENT 11.14a)
     float longitude;
     float latitude;
     float distance; // In AU

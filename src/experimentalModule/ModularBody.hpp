@@ -306,7 +306,7 @@ public:
         mat_local_to_body.multiplyTranslation(-eclipticPos);
     }
 
-    inline Mat4f computeBodyPosToBody(double jd) {
+    inline Mat4f computeBodyPosToBody(double jd) const {
         return Mat4f::xzrotation(
             re.obliquity,
             re.ascendingNode -re.precessionRate*(jd-re.epoch)
@@ -445,6 +445,14 @@ public:
     // Dual-path trace harness (INTENT.md 11.14): serialize this body's
     // NEW-path transform state as one JSON object (no newline). Read-only.
     void dumpTrace(std::ostream &out) const;
+    // Harness: emit the per-hop construction pieces from this body up to the
+    // isolated root - for each node: cached ecl/lastJD and the four matrices
+    // the chain composes (up = transformBodyToParent, down =
+    // transformParentToBody, tilt = computeBodyPosToBody(lastJD), spin =
+    // computeBodyToSurface), each applied to identity. Uses the same cached
+    // state and the same const methods the real update composes with -
+    // reconstruction, labeled as such (fresh regardless of visibility).
+    void dumpHops(std::ostream &out) const;
     inline const Vec3f &getHaloColor() const {
         return haloColor;
     }

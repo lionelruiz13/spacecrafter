@@ -98,6 +98,7 @@ void Camera::update(double jd, float deltaTime)
     }
     if (boundToSurface)
         mat = mat.multiplyFast(reference->computeSurfaceToBody());
+    lastDispatchedMat = mat; // harness: dump what actually ran (INTENT 11.14a)
     system = ModularBody::dispatchUpdate(reference, jd, mat);
     system->updateSystem();
 }
@@ -302,5 +303,8 @@ void Camera::dumpTrace(std::ostream &out) const
         << ",\"distance\":" << distance
         << ",\"alt\":" << alt << ",\"az\":" << az << ",\"heading\":" << heading
         << ",\"position\":[" << position[0] << ',' << position[1] << ',' << position[2]
-        << "],\"halfFov\":" << ModularBody::halfFov << '}';
+        << "],\"halfFov\":" << ModularBody::halfFov << ",\"mat\":[";
+    for (int i = 0; i < 16; ++i)
+        out << lastDispatchedMat.r[i] << ((i < 15) ? "," : "");
+    out << "]}";
 }

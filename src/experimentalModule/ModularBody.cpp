@@ -345,3 +345,33 @@ void ModularBody::dumpTrace(std::ostream &out) const
         << ",\"screenSize\":" << screenSize
         << ",\"lastJD\":" << std::setprecision(17) << lastJD << '}';
 }
+
+// Harness (INTENT.md 11.14a): per-hop construction pieces, this body -> root.
+void ModularBody::dumpHops(std::ostream &out) const
+{
+    out << '[';
+    for (const ModularBody *b = this; b; b = b->parent) {
+        if (b != this)
+            out << ',';
+        Mat4f up = Mat4f::identity(), down = Mat4f::identity();
+        b->transformBodyToParent(up);
+        b->transformParentToBody(down);
+        const Mat4f tilt = b->computeBodyPosToBody(b->lastJD);
+        const Mat4f spin = b->computeBodyToSurface();
+        out << std::setprecision(9) << "{\"name\":\"" << b->englishName
+            << "\",\"ecl\":[" << b->eclipticPos[0] << ',' << b->eclipticPos[1] << ',' << b->eclipticPos[2]
+            << "],\"lastJD\":" << std::setprecision(17) << b->lastJD << std::setprecision(9);
+        const char *names[4] = {"up", "down", "tilt", "spin"};
+        const Mat4f *mats[4] = {&up, &down, &tilt, &spin};
+        for (int m = 0; m < 4; ++m) {
+            out << ",\"" << names[m] << "\":[";
+            for (int i = 0; i < 16; ++i)
+                out << mats[m]->r[i] << ((i < 15) ? "," : "");
+            out << ']';
+        }
+        out << '}';
+        if (!b->isNotIsolated)
+            break;
+    }
+    out << ']';
+}

@@ -419,7 +419,13 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
 {
     std::ofstream out(file.empty() ? "/tmp/dual_trace.json" : file);
     out << std::setprecision(17) << "{\"type\":\"header\",\"jd\":"
-        << timeMgr->getJDay() << ",\"camera\":";
+        << timeMgr->getJDay() << ",\"helioToEye\":[";
+    {
+        const Mat4d &h = navigation->getHelioToEyeMat();
+        for (int i = 0; i < 16; ++i)
+            out << h.r[i] << ((i < 15) ? "," : "");
+    }
+    out << "],\"camera\":";
     camera->dumpTrace(out);
     out << "}\n";
     for (auto it = currentSystem->begin(); it != currentSystem->end(); ++it) {
@@ -431,5 +437,14 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
         else
             out << "null";
         out << "}\n";
+    }
+    // Quadruplet (minimal set separating translation / common rotation /
+    // hop-accumulated rotation): identity, down-hop, up-hop, up-then-down.
+    for (const char *name : {"Earth", "Moon", "Sun", "Mars"}) {
+        if (ModularBody *nb = ModularBody::findBodyOnce(name)) {
+            out << "{\"type\":\"hops\",\"name\":\"" << name << "\",\"new\":";
+            nb->dumpHops(out);
+            out << "}\n";
+        }
     }
 }

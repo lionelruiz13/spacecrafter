@@ -54,3 +54,16 @@ cannot make one path's draw-side state stale - both settle at the same jd.
 Known caveats: dScreen column mixes units (old pixels vs new NDC) -
 indicative only; exit segfault after 'shutdown action now' (post-dump,
 unattributed, possibly pre-existing).
+
+## Quadruplet mode (quad.py) - INTENT 11.14b
+Earth/Moon/Sun/Mars [vixy]: identity / down-hop / up-hop / up-then-down -
+minimal set separating translation, common rotation, hop accumulation.
+quad.py DISCOVERS each path's effective composition (tests hop-grammars
+against dumped finals). Run findings: old composition validated exactly
+(parent-rotation post-multiply, Moon unprecessed/ELP82); new reference =
+raw camera mat, up-chain exact, Moon/Mars mats are chimeras (invisible =>
+translation-only; invisible WITH children => nothing, t=0 - preUpdate
+early-return skips the store); SolarSystem root spin = 90 deg about -z
+(matches the [-Y,X,Z] note signature - orientation-layer lead); no single
+rotation maps fresh positions (12-36 deg residuals) => per-branch
+composition differences, not a camera-only error.

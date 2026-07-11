@@ -528,7 +528,7 @@ public:
 		return mat.inverseUntranslated().multiplyWithoutTranslation(lightDirection);
 	}
 protected:
-	bool useParentPrecession(double jd) {
+	bool useParentPrecession(double jd) const {
 		return getOrbit()->useParentPrecession(jd);
 	}
 
