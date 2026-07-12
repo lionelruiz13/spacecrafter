@@ -334,4 +334,20 @@ private:
 	static std::atomic<int16_t> textureQueueSize; // Expected number of elements in textureQueue
 };
 
+// Big-texture mapping helpers (moved from experimentalModule/ModularBody.hpp -
+// they are s_texture utilities, not body concepts). Build a bitfield of which
+// big textures are ready, then TEX(num, name) picks big-or-base per texture.
+#define TM(num, name) auto tex##num = name.getBigTexture()
+#define TB(num) ((tex##num != nullptr) << num)
+
+// Big texture mapping
+#define TEXMAP1(t0) TM(0, t0); const uint16_t texmap = TB(0)
+#define TEXMAP2(t0, t1) TM(0, t0); TM(1, t1); const uint16_t texmap = TB(0) | TB(1)
+#define TEXMAP3(t0, t1, t2) TM(0, t0); TM(1, t1); TM(2, t2); const uint16_t texmap = TB(0) | TB(1) | TB(2)
+#define TEXMAP4(t0, t1, t2, t3) TM(0, t0); TM(1, t1); TM(2, t2); TM(3, t3); const uint16_t texmap = TB(0) | TB(1) | TB(2) | TB(3)
+#define TEXMAP5(t0, t1, t2, t3, t4) TM(0, t0); TM(1, t1); TM(2, t2); TM(3, t3); TM(4, t4); const uint16_t texmap = TB(0) | TB(1) | TB(2) | TB(3) | TB(4)
+
+// Get the Texture at the 'num' parameter of TEXMAP which is 'name'
+#define TEX(num, name) (tex##num ? *tex##num : name.getTexture())
+
 #endif // _S_TEXTURE_H_

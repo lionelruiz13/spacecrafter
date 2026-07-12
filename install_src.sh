@@ -36,7 +36,7 @@ then
 	fi
 fi
 chrt --batch 0 cmake --build . $JOBS --config Release
-sudo cmake --install . --config Release
+#sudo cmake --install . --config Release
 cd ..
 
 echo -e "\033[32mScript completed.\033[0m"
