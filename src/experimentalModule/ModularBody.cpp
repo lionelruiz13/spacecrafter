@@ -213,10 +213,11 @@ void ModularBody::drawLoaded(Renderer &renderer)
     loaded = true;
     const auto matrix = mat.multiplyFast(computeBodyToSurface()); // TODO Fix ojml ?
     if (screenSize > 0.008) {
-        renderer.clearDepth(distance, boundingRadius);
         if (screenSize < 0.2) {
+            // far BEFORE clearDepth - hint behind the disc (see draw())
             for (auto &module : farComponents)
                 module->draw(renderer, this, mat);
+            renderer.clearDepth(distance, boundingRadius);
             for (auto &module : nearComponents) {
                 if (module->isLoaded()) {
                     module->draw(renderer, this, matrix);
@@ -224,6 +225,7 @@ void ModularBody::drawLoaded(Renderer &renderer)
                     loaded = false;
             }
         } else {
+            renderer.clearDepth(distance, boundingRadius);
             for (auto &module : farComponents)
                 module->draw(renderer, this, mat);
             if (distance < scaledRadius) {

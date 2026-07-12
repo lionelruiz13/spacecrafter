@@ -26,20 +26,191 @@ float Camera::distanceToReference() const
    return distance - reference->getAltitudeReference();
 }
 
+// ---- View composition authority (see Camera.hpp) ---------------------------
+
+Mat4f Camera::fold() const
+{
+    // EQUATORIAL anchored: map the zenith frame so that z -> polar axis (the
+    // pole sits at (0, cos lat, sin lat) in the zenith frame). In freeMode the
+    // acting frame is the body frame - already polar-aligned - so the fold is
+    // identity for both mounts (free-mode parameters are DE/RA-like).
+    // foldLat, not latitude: old-mount semantics keep the view LOCAL-frame
+    // locked under observer moves (sky-locking is old flag_lock_equ_pos, a
+    // separate feature); update() re-derives the params when latitude moves
+    // (measured before the interception: a 5.55° moveto latitude change
+    // pitched the whole sky by exactly that angle vs old).
+    if (mount == CameraMount::EQUATORIAL && !freeMode)
+        return Mat4f::xrotation(M_PI_2 - foldLat);
+    return Mat4f::identity();
+}
+
+Mat4f Camera::viewRotation() const
+{
+    // heading+π: without it the camera frame is rolled 180° about the view
+    // axis relative to the old path (measured 179.994° on every body,
+    // INTENT 11.19b). This composition is the SINGLE AUTHORITY on the
+    // alt/az/heading convention; observedToLocalPos is its exact transpose
+    // and lookTo/recoverParams are its exact inverses.
+    return Mat4f::zrotation(heading+M_PI)
+        .multiplyFast(Mat4f::xrotation(M_PI_2-alt))
+        .multiplyFast(Mat4f::zrotation(az-M_PI_2))
+        .multiplyFast(fold());
+}
+
+Mat4f Camera::placementRotation() const
+{
+    Mat4f m = freeMode ? Mat4f::identity()
+        : Mat4f::xrotation(latitude-M_PI_2).multiplyFast(Mat4f::zrotation(-longitude));
+    if (boundToSurface)
+        m = m.multiplyFast(reference->computeSurfaceToBody());
+    return m;
+}
+
+Vec3f Camera::paramForward() const
+{
+    // Inverse of lookTo's parameter derivation (az=−lng, alt=−lat):
+    // d = (cos az·cos alt, −sin az·cos alt, −sin alt)
+    const float ca = cosf(alt);
+    return Vec3f(cosf(az)*ca, -sinf(az)*ca, -sinf(alt));
+}
+
+// Deduce the (heading, alt, az) configuration providing the visually
+// identical view [vixy: 2026-07-12] - ZXZ Euler extraction, validated
+// standalone against 50k random rotations (worst 2.8e-7, pole cases
+// included with the keep-az policy).
+void Camera::recoverParams(const Mat4f &totalRot)
+{
+    const Mat4f core = totalRot
+        .multiplyFast(placementRotation().transpose())
+        .multiplyFast(fold().transpose());
+    // core = Z(g1)·X(g2)·Z(g3), column-major element (i,j) = r[j*4+i]
+    float c2 = core.r[10];
+    if (c2 > 1.f) c2 = 1.f;
+    if (c2 < -1.f) c2 = -1.f;
+    const float g2 = acosf(c2);
+    float g1, g3;
+    if (fabsf(c2) > 0.999999f) {
+        // Pole singularity: only g1±g3 is defined - keep the current az
+        g3 = az - M_PI_2;
+        const float base = atan2f(core.r[1], core.r[0]);
+        g1 = (c2 > 0.f) ? (base - g3) : (base + g3);
+    } else {
+        g1 = atan2f(core.r[8], -core.r[9]);
+        g3 = atan2f(core.r[2], core.r[6]);
+    }
+    heading = g1 - M_PI;
+    alt = M_PI_2 - g2;
+    az = g3 + M_PI_2;
+    foldLat = latitude; // params are now derived against the current fold
+    // The in-flight plans were expressed in the previous param frame
+    viewT = 0;
+    hdgT = 0;
+}
+
+// ---- Constant-minimal-acceleration smoothing --------------------------------
+// Law [vixy: 2026-07-12: smallest motion sickness in a dome]: two quadratic
+// phases with equal |a| (accel until t1, decel until T), zero end velocity,
+// velocity-continuous retargets. Closed form validated standalone (20k random
+// (v0,d,T): exact landing, zero end velocity, minimal-|a| root).
+static bool solvePlan(float v0, float d, float T, float &t1, float &a)
+{
+    if (T <= 0.f)
+        return false;
+    if (fabsf(v0) < 1e-9f) {
+        t1 = T * 0.5f;
+        a = 4.f*d/(T*T);
+        return true;
+    }
+    // t1 = (2d ∓ √(2·(T²v0² − 2Tdv0 + 2d²)))/(2v0); a = v0/(T − 2t1)
+    const float disc = T*T*v0*v0 - 2.f*T*d*v0 + 2.f*d*d; // = (Tv0−d)² + d² ≥ 0
+    const float s = sqrtf(2.f*disc);
+    bool found = false;
+    for (const float cand : {(2.f*d - s)/(2.f*v0), (2.f*d + s)/(2.f*v0)}) {
+        if (cand >= 0.f && cand <= T && fabsf(T - 2.f*cand) > 1e-9f) {
+            const float ca = v0/(T - 2.f*cand);
+            if (!found || fabsf(ca) < fabsf(a)) { // prefer minimal |a|
+                t1 = cand;
+                a = ca;
+                found = true;
+            }
+        }
+    }
+    if (!found) { // measured zero occurrences over the tested domain; degrade
+        t1 = T * 0.5f; // to a fresh plan (small velocity discontinuity) rather
+        a = 4.f*d/(T*T); // than a NaN view
+    }
+    return true;
+}
+
+// s(t) and v(t) of the two-phase profile
+static inline float planPos(float v0, float a, float t1, float t)
+{
+    if (t <= t1)
+        return v0*t + 0.5f*a*t*t;
+    const float v1 = v0 + a*t1;
+    const float dt = t - t1;
+    return v0*t1 + 0.5f*a*t1*t1 + v1*dt - 0.5f*a*dt*dt;
+}
+
+static inline float planVel(float v0, float a, float t1, float t)
+{
+    return (t <= t1) ? (v0 + a*t) : (v0 + a*t1 - a*(t - t1));
+}
+
+// Rodrigues rotation of v about unit axis k by angle
+static inline Vec3f rotateAbout(const Vec3f &v, const Vec3f &k, float angle)
+{
+    const float c = cosf(angle), s = sinf(angle);
+    return v*c + (k^v)*s + k*(k.dot(v))*(1.f-c);
+}
+
+void Camera::advanceView(float deltaTime)
+{
+    if (viewT > 0.f) {
+        viewTimer += deltaTime;
+        float s;
+        if (viewTimer >= viewT) {
+            s = viewAngle; // exact landing (end velocity 0 by construction)
+            viewT = 0.f;
+        } else {
+            s = planPos(viewV0, viewA, viewT1, viewTimer);
+        }
+        const Vec3f dir = rotateAbout(viewFrom, viewAxis, s);
+        // derive (alt, az) from the smoothed direction - authority inversion
+        const float r = dir.length();
+        if (dir[0] == 0.f && dir[1] == 0.f) {
+            alt = -std::copysign(M_PI_2, dir[2]); // pole: az kept
+        } else {
+            az = -atan2f(dir[1], dir[0]);
+            alt = -asinf(dir[2]/r);
+        }
+    }
+    if (hdgT > 0.f) {
+        hdgTimer += deltaTime;
+        if (hdgTimer >= hdgT) {
+            heading = hdgTarget;
+            hdgT = 0.f;
+        } else {
+            heading = hdgFrom + planPos(hdgV0, hdgA, hdgT1, hdgTimer);
+        }
+    }
+}
+
 void Camera::switchToBody(ModularBody *dst)
 {
     bool oldFreeMode = freeMode;
     bool oldBoundToSurface = boundToSurface;
     setBoundToSurface(false);
-    setFreeMode(true);
-    view.setRotation(view.getMatrix().multiplyFast(reference->calculateSwitchCompensation(dst)).toQuaternion());
+    setFreeMode(true); // placement is now identity: total rotation == viewRotation()
+    // The compensation maps dst-local coordinates to current-reference-local
+    // coordinates - the same view over the new chain (visual continuity).
+    const Mat4f R = viewRotation().multiplyFast(reference->calculateSwitchCompensation(dst));
     reference->leaveEnvironment();
     reference = dst;
     reference->enterEnvironment();
+    recoverParams(R);
     setFreeMode(oldFreeMode);
     setBoundToSurface(oldBoundToSurface);
-    if (oldFreeMode)
-        recomputeAltAzHeading();
 }
 
 void Camera::warpToBody(ModularBody *dst)
@@ -51,9 +222,29 @@ void Camera::warpToBody(ModularBody *dst)
 
 void Camera::update(double jd, float deltaTime)
 {
+    // Latitude interception (see fold()): keep the zenith-frame view
+    // direction across observer latitude moves - old-mount parity. The
+    // in-flight view plan lives in the param frame; re-express its endpoints.
+    if (latitude != foldLat && mount == CameraMount::EQUATORIAL && !freeMode) {
+        const Mat4f refold = Mat4f::xrotation(M_PI_2 - latitude)
+            .multiplyFast(Mat4f::xrotation(foldLat - M_PI_2));
+        const Vec3f dir = refold.multiplyWithoutTranslation(paramForward());
+        if (dir[0] == 0.f && dir[1] == 0.f) {
+            alt = -std::copysign(M_PI_2, dir[2]);
+        } else {
+            az = -atan2f(dir[1], dir[0]);
+            alt = -asinf(dir[2]/dir.length());
+        }
+        if (viewT > 0.f) {
+            viewFrom = refold.multiplyWithoutTranslation(viewFrom);
+            viewAxis = refold.multiplyWithoutTranslation(viewAxis);
+        }
+    }
+    foldLat = latitude;
     if (target) { // Note : the tracked position is from the last update
         lookTo(observedToLocalPos(target->getObservedPosition()), 5, true);
     }
+    advanceView(deltaTime);
     if (zoomDuration) {
         zoomTimer += deltaTime;
         if (zoomTimer > zoomDuration) {
@@ -63,7 +254,6 @@ void Camera::update(double jd, float deltaTime)
             ModularBody::halfFov = srcHalfFov * std::pow(dstHalfFov/srcHalfFov, calculateZoomCoef());
         }
     }
-    view.update(deltaTime);
     if (moveDuration) {
         moveDuration -= deltaTime;
         if (moveDuration < 0) {
@@ -83,25 +273,13 @@ void Camera::update(double jd, float deltaTime)
     // (The 2026 Moon-divergence note that lived here is resolved: the delta was
     //  EMB wiring + per-hop tilts + this longitude sign - INTENT.md 11.14,
     //  harness/predict.py carries the measurements.)
-    // heading+π: without it the camera frame is rolled 180° about the view
-    // axis relative to the old path - the whole sky point-reflected on screen
-    // (measured 2026-07-12, horizon-mount A/B: constant 179.994° roll on every
-    // body, radii equal to 0.05 px; the halo/hint position divergence). A roll
-    // about the view axis leaves the tracked direction invariant, which is why
-    // the position-layer harness (P1-P5) never saw it - it was absorbed into
-    // P5's D_common. This composition is the SINGLE AUTHORITY on the
-    // alt/az/heading convention: observedToLocalPos (Camera.hpp) must remain
-    // its exact rotational inverse, and lookTo's az=-lng/alt=-lat inversion is
-    // derived from it (roll-invariant, so unaffected by the +π).
-    Mat4f mat{Mat4f::zrotation(heading+M_PI).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az-M_PI_2))};
+    Mat4f mat{viewRotation()};
     if (freeMode) {
         if (auto newRef = reference->findBetterReference()) {
             switchToBody(newRef);
         }
-        // mat = view.getMatrix();
         mat.multiplyTranslation(position);
     } else {
-        // mat = view.getMatrix();
         mat.multiplyTranslation(Vec3f(0, 0, -distance));
         // -longitude: longitude is east-positive (data/UI convention). Measured
         // against the old path (harness 2026-07-11): with +longitude the
@@ -141,56 +319,28 @@ void Camera::setFreeMode(bool b)
 {
     if (b == freeMode)
         return;
-
-    // Longitude sign flipped together with Camera::update's surface placement
-    // (east-positive convention, see there). PENDING RUNTIME VERIFICATION: the
-    // harness only exercises surface mode; free<->surface continuity (and the
-    // yrotation-vs-xrotation asymmetry with update()) still needs a dedicated
-    // run before being trusted.
+    // Deduce-identical-view transition [vixy: 2026-07-12] - replaces the
+    // half-disabled Rotator machinery (removed): capture the total view
+    // rotation in the OLD decomposition, convert the position state, then
+    // recover the parameters under the NEW decomposition.
+    const Mat4f R = viewRotation().multiplyFast(placementRotation());
     if (b) {
-        view.setRotation(view.getMatrix()
-            .multiplyFast(Mat4f::yrotation(latitude-M_PI_2))
-            .multiplyFast(Mat4f::zrotation(-longitude))
-            .toQuaternion()
-        );
         Utility::spheToRect(-longitude, latitude, position);
         position *= distance;
     } else {
-        view.setRotation(view.getMatrix()
-            .multiplyFast(Mat4f::zrotation(longitude))
-            .multiplyFast(Mat4f::yrotation(M_PI_2-latitude))
-            .toQuaternion()
-        );
         Utility::rectToSphe(&longitude, &latitude, position);
         longitude = -longitude;
         distance = position.length();
     }
     freeMode = b;
-    recomputeAltAzHeading();
-}
-
-void Camera::recomputeAltAzHeading()
-{
-    Vec3f direction = view.getMatrix().multiplyWithoutTranslation({1, 0, 0});
-    if (direction[0] == 0 && direction[1] == 0) { // was x+y==0: misrouted every x==−y direction
-        if (std::signbit(direction[2])) {
-            alt = M_PI_2;
-            direction = view.getMatrix().multiplyWithoutTranslation({0, 0, 1});
-        } else {
-            alt = -M_PI_2;
-            direction = view.getMatrix().multiplyWithoutTranslation({0, 0, -1});
-        }
-        az = atan2(direction[1], direction[0]) - heading;
-    } else {
-        Utility::rectToSphe(&az, &alt, direction);
-        alt = -alt;
-    }
+    recoverParams(R);
 }
 
 void Camera::setBoundToSurface(bool b)
 {
     if (b == boundToSurface)
         return;
+    const Mat4f R = viewRotation().multiplyFast(placementRotation()); // deduce-identical-view
     if (b) {
         if (freeMode) {
             position = reference->computeSurfaceToBody().multiplyWithoutTranslation(position);
@@ -205,41 +355,90 @@ void Camera::setBoundToSurface(bool b)
         }
     }
     boundToSurface = b;
+    recoverParams(R);
+}
+
+void Camera::setMount(CameraMount m)
+{
+    if (m == mount)
+        return;
+    const Mat4f R = viewRotation().multiplyFast(placementRotation()); // deduce-identical-view
+    mount = m;
+    recoverParams(R);
 }
 
 void Camera::lookTo(const Vec3f &direction, float duration, bool isMaxDuration)
 {
-    // Inverse of update()'s view build Z(heading)·X(π/2−alt)·Z(az−π/2):
-    // centering `direction` (local frame, spheToRect convention) requires
-    // az = −lng(direction), alt = −lat(direction). Was az = +lng: together
-    // with observedToLocalPos's missing −π/2 the tracking fixed point sat
-    // 2·lng−π/2 away from the target in azimuth (see observedToLocalPos).
-    if (direction[0] == 0 && direction[1] == 0) {
-        // Pole singularity: alt fully determined, az free — keep the current
-        // az rather than snapping it. (The previous test x+y==0 also
-        // misrouted every x==−y direction here.)
-        alt = -std::copysign(M_PI_2, direction[2]);
-    } else {
-        Utility::rectToSphe(&az, &alt, direction);
-        az = -az;
-        alt = -alt;
+    // Parameter derivation is the exact inverse of viewRotation() (authority):
+    // centering `direction` (acting frame) requires az=−lng, alt=−lat of the
+    // FOLDED direction (param frame). Smoothed per the dome-comfort law.
+    Vec3f dirP = fold().multiplyWithoutTranslation(direction);
+    const float len = dirP.length();
+    if (!(len > 0.f))
+        return;
+    dirP /= len;
+    const Vec3f cur = paramForward();
+    float cosA = cur.dot(dirP);
+    if (cosA > 1.f) cosA = 1.f;
+    if (cosA < -1.f) cosA = -1.f;
+    const float angle = acosf(cosA);
+    if (duration <= 0.f || angle < 1e-6f) { // snap
+        viewT = 0.f;
+        if (dirP[0] == 0.f && dirP[1] == 0.f) {
+            alt = -std::copysign(M_PI_2, dirP[2]); // pole: az kept (see recoverParams)
+        } else {
+            az = -atan2f(dirP[1], dirP[0]);
+            alt = -asinf(dirP[2]);
+        }
+        return;
     }
-    // view.setRotation(((Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az))).toQuaternion()));
-    // view.moveTo(((Mat4f::zrotation(heading).multiplyFast(Mat4f::zxrotation(az, alt))).toQuaternion()), duration, isMaxDuration);
+    Vec3f axis = cur^dirP;
+    const float axisLen = axis.length();
+    if (axisLen < 1e-6f) {
+        // Antipodal: any axis orthogonal to cur - prefer the one keeping the
+        // move in the azimuthal plane (rotate about the param-frame pole
+        // projected out of cur)
+        axis = Vec3f(0,0,1) - cur*cur[2];
+        if (axis.length() < 1e-6f)
+            axis = Vec3f(1,0,0);
+        axis.normalize();
+    } else {
+        axis /= axisLen;
+    }
+    // Velocity continuity across retargets (tracking re-plans every frame):
+    // carry the along-path speed projected on the new axis.
+    float v0 = 0.f;
+    if (viewT > 0.f)
+        v0 = planVel(viewV0, viewA, viewT1, viewTimer) * viewAxis.dot(axis);
+    float T = isMaxDuration ? duration * (angle / M_PI) : duration;
+    if (T < 0.2f)
+        T = 0.2f; // lower bound: keeps retarget accelerations finite
+    float t1, a;
+    if (!solvePlan(v0, angle, T, t1, a))
+        return;
+    viewFrom = cur;
+    viewAxis = axis;
+    viewAngle = angle;
+    viewT1 = t1;
+    viewT = T;
+    viewTimer = 0.f;
+    viewV0 = v0;
+    viewA = a;
 }
 
 void Camera::lookTo(float _alt, float _az, float duration, bool isMaxDuration)
 {
-    alt = _alt;
-    az = _az;
-    // view.moveTo(Vec4f::zrotation(heading).combineQuaternions(Vec4f::zyrotation(-az, M_PI_2-alt)), duration, isMaxDuration);
+    // Convert the parameter target to a direction and ride the same smoothed
+    // great-circle path (paramForward's formula at the target parameters).
+    const float ca = cosf(_alt);
+    const Vec3f dirP(cosf(_az)*ca, -sinf(_az)*ca, -sinf(_alt));
+    // dirP is already in the param frame: undo the fold lookTo will re-apply
+    lookTo(fold().transpose().multiplyWithoutTranslation(dirP), duration, isMaxDuration);
 }
 
 void Camera::lookRel(float deltaAlt, float deltaAz, float duration, bool isMaxDuration)
 {
-    alt = std::fmod(alt+deltaAlt, M_PI*2);
-    az = std::fmod(az+deltaAz, M_PI*2);
-    // view.moveTo(Vec4f::zrotation(heading).combineQuaternions(Vec4f::zyrotation(-az, -alt)), duration, isMaxDuration);
+    lookTo(alt + deltaAlt, az + deltaAz, duration, isMaxDuration);
 }
 
 void Camera::moveRel(const Vec3f &deltaPos, float duration, bool calculateDuration)
@@ -262,13 +461,26 @@ void Camera::moveRel(const Vec3f &deltaPos, float duration, bool calculateDurati
 
 void Camera::moveHeading(float deltaHeading)
 {
-    view.setRelRotation(Vec4f::zrotation(deltaHeading));
     heading += deltaHeading;
+    if (hdgT > 0.f) // keep an in-flight heading plan consistent
+        hdgTarget += deltaHeading;
 }
 
-void Camera::setHeading(float _heading)
+void Camera::setHeading(float _heading, float duration)
 {
-    moveHeading(_heading - heading);
+    if (duration <= 0.f) {
+        heading = _heading;
+        hdgT = 0.f;
+        return;
+    }
+    // 1-D constant-min-acceleration plan, velocity-continuous retarget
+    const float v0 = (hdgT > 0.f) ? planVel(hdgV0, hdgA, hdgT1, hdgTimer) : 0.f;
+    hdgFrom = heading;
+    hdgTarget = _heading;
+    hdgV0 = v0;
+    hdgTimer = 0.f;
+    if (solvePlan(v0, _heading - heading, duration, hdgT1, hdgA))
+        hdgT = duration;
 }
 
 void Camera::setHalfFov(float halfFov, float duration)
@@ -327,7 +539,8 @@ void Camera::dumpTrace(std::ostream &out) const
         << (reference ? reference->getEnglishName() : "") << "\",\"freeMode\":"
         << (freeMode ? "true" : "false") << ",\"boundToSurface\":"
         << (boundToSurface ? "true" : "false")
-        << ",\"longitude\":" << longitude << ",\"latitude\":" << latitude
+        << ",\"mount\":\"" << (mount == CameraMount::EQUATORIAL ? "equatorial" : "altaz")
+        << "\",\"longitude\":" << longitude << ",\"latitude\":" << latitude
         << ",\"distance\":" << distance
         << ",\"alt\":" << alt << ",\"az\":" << az << ",\"heading\":" << heading
         << ",\"position\":[" << position[0] << ',' << position[1] << ',' << position[2]

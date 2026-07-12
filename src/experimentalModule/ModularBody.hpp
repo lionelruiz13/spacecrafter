@@ -267,13 +267,21 @@ public:
                 if (loaded) {
                     const auto matrix = mat.multiplyFast(computeBodyToSurface());
                     if (screenSize > 0.008) {
-                        renderer.clearDepth(distance, boundingRadius);
                         if (screenSize < 0.2) {
+                            // far (2D behind body) BEFORE clearDepth: the
+                            // helper segment carrying them is positioned at
+                            // the clearDepth boundary, ahead of this body's
+                            // own command buffer - hint circle BEHIND the
+                            // disc (old-path parity; measured: the Moon's
+                            // hint drew on top of the disc when queued after
+                            // the boundary [vixy: 2026-07-12]).
                             for (auto &module : farComponents)
                                 module->draw(renderer, this, mat);
+                            renderer.clearDepth(distance, boundingRadius);
                             for (auto &module : nearComponents)
                                 module->draw(renderer, this, matrix);
                         } else {
+                            renderer.clearDepth(distance, boundingRadius);
                             if (distance < scaledRadius) {
                                 for (auto &module : inComponents)
                                     module->draw(renderer, this, matrix);

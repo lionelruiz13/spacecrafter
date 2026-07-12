@@ -912,7 +912,9 @@ public:
 	//! set environment rotation around observer
 	void setHeading(double heading, int duration=0) {
 		core->navigation->changeHeading(heading, duration);
-		Camera::instance->setHeading(heading*M_PI/180);
+		// duration is ms here; the camera plans in seconds (smoothed with the
+		// constant-min-acceleration law)
+		Camera::instance->setHeading(heading*M_PI/180, duration*0.001f);
 	}
 
 	void setDefaultHeading() {

@@ -3,7 +3,6 @@
 
 #include "ModularBodyPtr.hpp"
 #include "tools/vecmath.hpp"
-#include "tools/rotator.hpp"
 #include "tools/utility.hpp"
 #include "tools/sc_const.hpp"
 #include "EntityCore/Executor/Task.hpp"
@@ -14,6 +13,20 @@
 class Renderer;
 class ModularBody;
 class ModularSystem;
+
+// Two complementary viewing systems [vixy: 2026-07-12]: both are the SAME
+// parametrization family around a different trust axis - ALTAZ references the
+// zenith (center-of-body -> observer, lat/lon dependent), EQUATORIAL
+// references the axis orthogonal to the equatorial circle (astronomical
+// relevance). Implementation: one mount fold F in the view composition
+// (identity vs X(π/2−lat)); under EQUATORIAL the placement's latitude term
+// cancels algebraically (F·X(lat−π/2)=I), so latitude moves leave the sky
+// fixed and longitude acts as hour-angle - the astronomically correct
+// behavior falls out of the composition.
+enum class CameraMount : uint8_t {
+    ALTAZ,
+    EQUATORIAL,
+};
 
 class Camera {
 public:
@@ -32,12 +45,24 @@ public:
     void setBoundToSurface(bool b);
     void setFreeMode(bool b);
 
+    // View moves are SMOOTHED with constant minimal acceleration (two
+    // quadratic phases, equal |a|, velocity-continuous retarget) - the
+    // dome-comfort law [vixy: 2026-07-12: smallest motion sickness projected
+    // into a half-sphere dome viewed from inside]. duration <= 0 snaps.
+    // isMaxDuration scales the duration with angle/π (old Rotator semantics).
     void lookTo(const Vec3f &direction, float duration = 1, bool isMaxDuration = false);
     void lookTo(float _alt, float _az, float duration = 1, bool isMaxDuration = false);
     void lookRel(float deltaAlt, float deltaAz, float duration = 1, bool isMaxDuration = false);
 
+    // Change the mount, keeping the current view exactly (deduce-identical-
+    // view primitive). ALTAZ params are alt/az; EQUATORIAL params are DE/HA.
+    void setMount(CameraMount m);
+    inline CameraMount getMount() const {
+        return mount;
+    }
+
     void moveHeading(float deltaHeading);
-    void setHeading(float heading);
+    void setHeading(float heading, float duration = 0);
     inline float getHeading() const {
         return heading;
     }
@@ -83,19 +108,24 @@ public:
         moveRel(pos - (freeMode ? position : Vec3f(longitude, latitude, distanceToReference())), duration, calculateDuration);
     }
 
-    // Exact rotational inverse of the view build in Camera::update
-    // (Z(heading+π)·X(π/2−alt)·Z(az−π/2)) — that composition is the single
-    // authority on the alt/az/heading convention; this must stay its
-    // transpose. Was Z(az) (missing −π/2, then missing the roll π): combined
-    // with lookTo's az sign error it left the tracking fixed point 2·lng−π/2
-    // off-target in azimuth — measured as the tracked Moon 0.3939 rad
-    // off-center (halo/hint position divergence vs old path, 2026-07-12;
-    // predicted from the dump to 5e-5).
-    // NOTE: observedPosToRaDe/AltAz below inherit this frame correction (their
-    // az-family outputs shift accordingly) — their absolute calibration
-    // against the old path is the still-open INTENT §11.4 caveat.
+    // ---- View composition: THE single authority on conventions ------------
+    // viewRotation() = Z(heading+π)·X(π/2−alt)·Z(az−π/2)·F  with F the mount
+    // fold (see CameraMount). Everything else (inverse transforms, lookTo's
+    // parameter derivation, transition deduction) is DERIVED from it - the
+    // §11.19 divergences (missing −π/2, az sign, missing roll π) were exactly
+    // independent re-statements of this composition drifting apart.
+    Mat4f fold() const;
+    Mat4f viewRotation() const;
+    // Rotation applied downstream of the view (placement + surface fold)
+    Mat4f placementRotation() const;
+
+    // Exact rotational inverse of viewRotation(): camera(observed) frame ->
+    // the frame the view acts on (zenith frame when anchored, body frame when
+    // free). NOTE: observedPosToRaDe/AltAz below inherit the §11.19 frame
+    // corrections — their absolute calibration against the old path is the
+    // still-open INTENT §11.4 caveat.
     inline Vec3f observedToLocalPos(const Vec3f &observedPos) const {
-        return Mat4f::zrotation(heading+M_PI).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az-M_PI_2)).transpose().multiplyWithoutTranslation(observedPos);
+        return viewRotation().transpose().multiplyWithoutTranslation(observedPos);
     }
     inline Vec3f observedToBodyLocalPos(const Vec3f &observedPos) const {
         Vec3f ret = observedToLocalPos(observedPos);
@@ -176,7 +206,18 @@ private:
         coef = (coef > 0.5) ? 4*(1-coef) : 4*coef;
         return coef / zoomDuration;
     }
-    void recomputeAltAzHeading();
+    // Deduce (heading, alt, az) reproducing `totalRot` under the CURRENT
+    // modes/mount/placement - "the configuration which provides the visually
+    // identical view" [vixy: 2026-07-12], the ONE primitive behind every
+    // transition (freeMode, boundToSurface, mount, reference switch). ZXZ
+    // Euler extraction of totalRot·placement⁻¹·F⁻¹; pole-degenerate case
+    // keeps the current az (same policy as lookTo). Drops any in-flight view
+    // plan (the plan's frame changed); tracking re-plans next frame.
+    void recoverParams(const Mat4f &totalRot);
+    // Advance the view/heading smoothing plans (constant-min-acceleration law)
+    void advanceView(float deltaTime);
+    // Current forward direction in the PARAM frame (post-fold), from alt/az
+    Vec3f paramForward() const;
     // D1: the frame draw rides the render chain (RenderChain.hpp) - THE
     // serialization point all publish tasks order against. Full update+draw
     // fusion (main-thread-as-cadencer inversion) is second-pass; until then
@@ -197,10 +238,33 @@ private:
     ModularBodyPtr reference;
     ModularBodyPtr target;
     ModularSystem *system; // Determined on construction and update
-    Rotator<float> view;
+    // ---- View smoothing plan (constant minimal acceleration) --------------
+    // Great-circle move of the forward direction in the param frame: rotate
+    // viewFrom about viewAxis by s(t), where s follows the two-phase profile
+    // (accel a until t1, decel -a until T, end velocity 0). Velocity carries
+    // across retargets (tracking re-plans every frame). Solver validated
+    // standalone: 20k random (v0,d,T) plans, exact landing, minimal-|a| root.
+    Vec3f viewFrom;        // path start direction (unit, param frame)
+    Vec3f viewAxis;        // rotation axis (unit, param frame)
+    float viewAngle = 0;   // total planned angle from viewFrom (signed = 0..)
+    float viewT1 = 0;      // acceleration phase end
+    float viewT = 0;       // plan duration; 0 = no plan
+    float viewTimer = 0;
+    float viewV0 = 0;      // velocity at plan start (rad/s along the path)
+    float viewA = 0;       // phase-1 acceleration (signed)
+    // Heading 1-D plan, same law
+    float hdgTarget = 0, hdgT1 = 0, hdgT = 0, hdgTimer = 0, hdgV0 = 0, hdgA = 0, hdgFrom = 0;
     float alt = 0;
     float az = 0;
     float heading = 0;
+    // Latitude baked into the EQUATORIAL fold when the params were last
+    // derived. Old-path mount semantics: the view direction is LOCAL-frame
+    // locked under observer moves regardless of mount (sky-locking is a
+    // separate feature, old flag_lock_equ_pos); the mount only sets the
+    // up-reference. update() re-derives the params across latitude changes to
+    // preserve the zenith-frame direction (ALTAZ: fold=I, nothing to do).
+    float foldLat = 0;
+    CameraMount mount = CameraMount::ALTAZ;
     Vec3f position;
     Vec3f deltaPosition;
     float moveDuration = 0;

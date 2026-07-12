@@ -108,6 +108,10 @@ void SSystemFactory::loadCamera(const InitParser &conf)
         camera = std::make_unique<Camera>(home, lonLatAlt[0], lonLatAlt[1], lonLatAlt[2]);
     }
     camera->trackBody(nullptr);
+    // Mount: same config key as the old navigator (viewing_mode) - the two
+    // complementary viewing systems (Camera.hpp CameraMount).
+    camera->setMount(conf.getStr(SCS_NAVIGATION, SCK_VIEWING_MODE) == "equator"
+                     ? CameraMount::EQUATORIAL : CameraMount::ALTAZ);
     camera->setHeading(conf.getDouble(SCS_NAVIGATION, SCK_HEADING) * (M_PI/180));
     camera->setHalfFov(conf.getDouble(SCS_NAVIGATION, SCK_INIT_FOV) * (M_PI/360), 0);
     {
