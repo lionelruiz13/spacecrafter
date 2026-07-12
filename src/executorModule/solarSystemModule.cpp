@@ -192,7 +192,13 @@ void SolarSystemModule::draw(int delta_time)
 
 	// Draw the pointer on the currently selected object
 	// TODO: this would be improved if pointer was drawn at same time as object for correct depth in scene
-	if (core->selected_object && core->object_pointer_visibility) core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
+	// Dual-path (S2b): in the modular phase, BODY pointers are drawn by the
+	// new path's pointer service (Renderer::drawPointer, on top of the frame);
+	// the old pointer would double-draw at the old path's projected position.
+	// Non-body pointers (star/nebula) have no new-path counterpart and stay.
+	if (core->selected_object && core->object_pointer_visibility
+	    && !(core->ssystemFactory->drawModularSystem && core->selected_object.getType() == OBJECT_BODY))
+		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 
 	// Update meteors
 	core->meteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);

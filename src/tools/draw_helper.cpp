@@ -71,10 +71,6 @@ void DrawHelper::mainloop()
                 drawHint(data->hint);
                 lastFlag = DRAW_HINT;
                 break;
-            case DRAW_HINT_POS:
-                drawHintPos(data->hintPos);
-                lastFlag = DRAW_HINT_POS;
-                break;
             case SIGNAL_PASS:
                 endDrawCommand(subpass);
                 subpass = data->sigPass.subpass;
@@ -357,7 +353,7 @@ void DrawHelper::drawPrintH(s_printh &data)
 void DrawHelper::drawHint(DrawData::s_hint &data)
 {
     auto cmd = getCmd();
-    if (lastFlag != DRAW_HINT && lastFlag != DRAW_HINT_POS) {
+    if (lastFlag != DRAW_HINT) {
         hintColor = data.color;
         Hints::bind(cmd, hintColor);
     } else if (hintColor != data.color) {
@@ -372,29 +368,9 @@ void DrawHelper::drawHint(DrawData::s_hint &data)
     vkCmdDraw(cmd, drawCount, 1, drawIdx * 3, 0);
     drawIdx += (drawCount + 2) / 3;
 }
-
-// New-path variant: same pipeline/batch state as drawHint, circle vertices
-// generated from the explicit position (Hints::computeHintsAt = the single
-// authority on the circle shape). Dissolves together with the DrawHelper hint
-// batch into the Renderer batching service (experimentalModule/INTENT.md 10.4.6).
-void DrawHelper::drawHintPos(DrawData::s_hintPos &data)
-{
-    auto cmd = getCmd();
-    if (lastFlag != DRAW_HINT && lastFlag != DRAW_HINT_POS) {
-        hintColor = data.color;
-        Hints::bind(cmd, hintColor);
-    } else if (hintColor != data.color) {
-        hintColor = data.color;
-        Hints::push(cmd, hintColor);
-    }
-    if (drawIdx + MAX_HINT_IDX_ > MAX_IDX)
-        drawIdx = 0;
-    float *ptr = ((float *) Context::instance->multiVertexMgr->getPtr()) + drawIdx * 6;
-    const int drawCount = Hints::computeHintsAt(data.pos, ptr);
-    assert(drawCount / 3 < MAX_HINT_IDX_);
-    vkCmdDraw(cmd, drawCount, 1, drawIdx * 3, 0);
-    drawIdx += (drawCount + 2) / 3;
-}
+// The DRAW_HINT_POS variant (new-path seam borrow) is dissolved: the new
+// path's hint circles ride the Renderer HINT batched service family
+// (experimentalModule/PipelineRegistry.cpp, 2026-07-12 row 6 completion).
 
 void DrawHelper::drawNebula(DrawData::s_nebula &data)
 {

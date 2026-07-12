@@ -6,29 +6,40 @@
 
 class s_font;
 
-// HINT slot - circle marker + name label around a body (landing zone of the
-// old Hints collaborator; hints.cpp read Body privates as a friend, this
-// module reads only the public ModularBody interface: getScreenPos,
-// getScreenSize, getNameI18n).
-// Circle: drawn through Renderer::drawHint (DrawHelper hint-batch seam borrow,
-// same class as the halo's Halo::global poke - both dissolve into the
-// Renderer batching service, INTENT 10.4.6). Position source = the SAME
-// screenPos as the halo, so hint/halo/body coincide by construction.
-// Label: PENDING - the Projector gravity-text channel was invalidated
-// [vixy: 2026-07-11, INTENT 10.3.7]; the replacement (Renderer text service,
-// pure function of screenPos + viewport + font - projection-paths.md C7) is
-// an open convergence point (INTENT open #3). The font seam (setFont, wired
-// from SSystemFactory::registerFont) is kept for that landing.
+// HINT slot - circle marker + name label around a body (replaces the old
+// Hints collaborator; hints.cpp read Body privates as a friend, this module
+// reads only the public ModularBody interface: getScreenPos, getScreenSize,
+// getNameI18n).
+// Circle: Renderer::drawHint -> HINT batched service family (the DrawHelper
+// DRAW_HINT_POS seam borrow is dissolved, 2026-07-12). Position source = the
+// SAME screenPos as the halo, so hint/halo/body coincide by construction.
+// Label: Renderer::printGravity (text service - pure function of screenPos +
+// viewport + font, projection-paths.md C7; INTENT open #3 accepted). String =
+// getNameI18n (old getSkyLabel returned nameI18 - its "+ scaling" comment was
+// stale); shift = 10 + onScreenSizePx/2 both axes (old drawHints); color =
+// labelColor with the fader interstate as alpha (old Color(label, fader)).
+// Font: setFont, wired at the SSystemFactory::registerFont seam - the SAME
+// s_font object as the old path (shared render cache).
+// Fading: per-body LinearFader (default 2000 ms, old hint_fader), target =
+// the global show flag, assigned per draw (idempotent on unchanged target).
+// TICK-AT-DRAW divergence, deliberate: far-routed modules receive no update()
+// calls (updateCache iterates near/in only), so the fader advances by
+// ModularBody::deltaTime at draw time. Consequence: a fade freezes while the
+// body is not drawn - invisible then by definition; on re-entry the ramp
+// resumes instead of being settled (sub-second transient; the old path
+// ticked faders in wall time regardless of visibility).
 // Regime: far components (2D screen-space, no depth - drawn behind the body).
-// KNOWN DELTA vs old path: farComponents are skipped at screenSize > 20%
-// (ModularBody::draw contract); the old path drew hints on arbitrarily large
-// discs. Accepted: at >20% the circle is buried in the disc; revisit with the
-// label port if name-on-disc matters.
+// KNOWN DELTA vs old path (unchanged by the label port, Vixy decision
+// pending): farComponents are skipped at screenSize > 20% - the old path
+// drew hint labels on arbitrarily large discs, so a zoomed-in planet shows
+// its name in the old phase only. Escalated with the label port (was
+// circle-only before): INTENT 11.19 residual.
+// Old isolate-selected interplay (SolarSystemSelected: selected body keeps /
+// inverts hints) is seam-level policy - lands with the per-body flag seam
+// (S6), not here.
 // Deduction rule: every named body receives a HINT module by default;
 // param hint=false suppresses it (ModularBody::deduceBodyModuleList). Global
 // toggle via show (SSystemFactory::setFlagHints seam - sets BOTH paths).
-// Fading: old per-body LinearFader not yet ported (binary show for now); the
-// fader member is the landing slot.
 class HintModule : public BodyModule {
 public:
     HintModule(const Vec3f &labelColor) :
@@ -43,7 +54,7 @@ public:
     // SSystemFactory::setDefaultBodyColor seam, like the old BodyColor default.
     static Vec3f defaultLabelColor;
 protected:
-    LinearFader fader;
+    LinearFader fader; // per-body, 2000 ms default = old hint_fader
     Vec3f labelColor; // Per-body label color (old BodyColor::getLabel)
     static s_font *hintFont;
 };

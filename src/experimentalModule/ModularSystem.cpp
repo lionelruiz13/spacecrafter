@@ -99,6 +99,24 @@ void ModularSystem::drawSystem(Renderer &renderer)
             break; // Skip bodies not evaluated on update
         (**pos).draw(renderer);
     }
+    // Selection pointer (S2b): queued here, recorded by endBodyDraw on top of
+    // everything (old path drew it after the whole system). Independent of the
+    // body draw loop by design - the pointer's purpose is exactly the bodies
+    // too small to reach their own draw call (halo-only). Gates here: the
+    // selected body belongs to THIS system; screen state fresh (visible =>
+    // update ran this frame); center inside the viewport disk (the old
+    // projectEarthEqu screen test). Policy rules (visibility flag, 10%
+    // suppression, breathing, resolution scale) live in the service.
+    if (ModularBody *sel = ModularBody::getSelected()) {
+        if (systemOf(sel) == this && *sel) {
+            const auto &p = sel->getScreenPos();
+            if (p.first*p.first + p.second*p.second <= 1.f) {
+                // px full diameter = screenSize * 2 * viewportRadius (the old
+                // getOnScreenSize form - drawHalo screen_r note)
+                renderer.drawPointer(p, sel->getScreenSize() * 2.f * ModularBody::viewportRadius);
+            }
+        }
+    }
     renderer.endBodyDraw();
     for (auto &module : nearComponents)
         module->draw(renderer, this, mat);

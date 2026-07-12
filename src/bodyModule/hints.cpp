@@ -25,8 +25,10 @@
 std::unique_ptr<VertexArray> Hints::m_HintsGL;
 Pipeline *Hints::pipeline;
 PipelineLayout *Hints::layout;
-const int Hints::nbrFacets = 24;
-const int Hints::hintCircleRadius = 8;
+// Values live in the header (compile-time authority); these are the ODR
+// definitions (pre-C++17 style kept for consistency with the file's age).
+const int Hints::nbrFacets;
+const int Hints::hintCircleRadius;
 
 Hints::Hints(Body * _body)
 {

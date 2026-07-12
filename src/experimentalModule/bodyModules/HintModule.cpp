@@ -9,7 +9,12 @@ s_font *HintModule::hintFont = nullptr;
 
 void HintModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    if (!show)
+    // Per-body fader toward the global flag; tick-at-draw (see header:
+    // far-routed modules have no update() channel). Assignment is idempotent
+    // while the target is unchanged (LinearFader::operator= early-outs).
+    fader = show;
+    fader.update(ModularBody::deltaTime);
+    if (!fader.getInterstate())
         return;
     // Angular-separation gate (old path: ang_dist = 300·atan(|ecl|/dist)/fov°,
     // drawn only when > 0.25 - body.cpp:961 + drawHints) - suppresses the hint
@@ -27,6 +32,14 @@ void HintModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
                 return;
         }
     }
-    renderer.drawHint(body->getScreenPos(), Vec4f(labelColor[0], labelColor[1], labelColor[2], 1.f));
-    // Label: pending the Renderer text service (INTENT open #3) - see header.
+    // Old drawHints: ONE color for label and circle - label RGB with the
+    // fader interstate as alpha (hints.cpp:71-74).
+    const Vec4f color(labelColor[0], labelColor[1], labelColor[2], fader.getInterstate());
+    renderer.drawHint(body->getScreenPos(), color);
+    // Label through the text service (C7): same anchor as the circle; shift =
+    // 10 + onScreenSizePx/2 on both axes (old drawHints tmp), px full
+    // diameter = screenSize * 2 * viewportRadius (drawHalo screen_r form).
+    const float shift = 10.f + body->getScreenSize() * ModularBody::viewportRadius;
+    renderer.printGravity(hintFont, body->getScreenPos(), body->getNameI18n(),
+                          color, shift, shift);
 }

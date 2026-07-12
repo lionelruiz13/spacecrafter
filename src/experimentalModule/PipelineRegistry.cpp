@@ -11,8 +11,14 @@
 #include "EntityCore/Core/BufferMgr.hpp"
 #include "EntityCore/Resource/TransferMgr.hpp"
 #include "tools/s_texture.hpp"
+#include "tools/object_base.hpp" // pointer service: getFontResolution (the
+                                 // SCK_FONT_RESOLUTION_SIZE config authority)
+#include "bodyModule/hints.hpp"  // hint service: computeHintsAt + nbrFacets
+                                 // (single authority on the circle shape)
+#include "ModularBody.hpp"       // pointer service: viewportRadius, deltaTime
 #include <algorithm>
 #include <atomic>
+#include <cmath>
 #include <condition_variable>
 #include <cstdio>
 #include <cstring>
@@ -764,13 +770,177 @@ void Renderer::setHaloTexture(const std::string &texName)
     b.boundTex = nullptr; // rebind at next batchBegin
 }
 
+void Renderer::ensureHintFamily()
+{
+    if (hintFamily)
+        return;
+    auto &r = registry();
+    // Hint circle as a batched service family - the dissolution of the
+    // DrawHelper DRAW_HINT_POS seam entry (the last Renderer borrow of that
+    // class; the halo half was dissolved at S1). Same occlusion contract,
+    // same mechanism as the halo now: flush at the per-body boundaries.
+    // LINE_LIST instead of the old LINE_STRIP: strips of separate circles
+    // would connect across circles in one batched draw; segments batch
+    // freely. Per-vertex color replaces the old per-draw push constant
+    // (colors vary per body - a push constant cannot batch them).
+    auto pattern = std::make_unique<VertexArray>(*VulkanMgr::instance, Context::instance->ojmAlignment);
+    pattern->createBindingEntry(6 * sizeof(float));
+    pattern->addInput(VK_FORMAT_R32G32_SFLOAT);       // pos (render px)
+    pattern->addInput(VK_FORMAT_R32G32B32A32_SFLOAT); // color (fader in alpha)
+    PipelineFamilyDesc desc;
+    desc.name = "HINT";
+    desc.vertex = pattern.get();
+    desc.sets.push_back(globalUboContract());
+    PassDesc color;
+    color.pass = PassKind::COLOR;
+    color.shaderTable = {{0, {.vert = "bodyHintsBatch.vert.spv", .frag = "bodyHintsBatch.frag.spv"}}};
+    color.state.blend = BLEND_SRC_ALPHA; // old hints pipeline: ctor default
+    color.state.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+    color.state.cull = false;
+    color.state.depthTest = false;  // old setDepthStencilMode(FALSE, FALSE)
+    color.state.depthWrite = false;
+    desc.passes.push_back(std::move(color));
+    // 48 segment-vertices per circle; D3: few bodies visible at a time -
+    // 128 circles per half is ample (overflow logs, old endDraw behavior).
+    desc.batch = BatchDesc{6 * sizeof(float), 48 * 128};
+    r.servicePatterns.push_back(std::move(pattern));
+    hintFamily = allocateFamily(std::move(desc));
+}
+
+void Renderer::drawHint(const std::pair<float, float> &pos, const Vec4f &color)
+{
+    ensureHintFamily(); // first-use fallback; normally built at init()
+    if (!hintFamily)
+        return;
+    // Circle shape: Hints::computeHintsAt stays the single authority
+    // (radius/facets identical to the old path by construction) - it dies
+    // with the old path by moving into this service then.
+    float strip[(Hints::nbrFacets + 1) * 2];
+    float *stripPtr = strip;
+    const int points = Hints::computeHintsAt(VulkanMgr::instance->rectToRender(pos), stripPtr);
+    struct Vtx {
+        float x, y;
+        Vec4f color;
+    } v;
+    static_assert(sizeof(Vtx) == 6 * sizeof(float), "hint instance layout must match bodyHintsBatch.vert");
+    v.color = color;
+    // Strip -> segment expansion (LINE_LIST): {p0,p1},{p1,p2},...
+    for (int i = 0; i < points - 1; ++i) {
+        v.x = strip[i*2];
+        v.y = strip[i*2+1];
+        batchPush(hintFamily, &v);
+        v.x = strip[i*2+2];
+        v.y = strip[i*2+3];
+        batchPush(hintFamily, &v);
+    }
+}
+
+void Renderer::ensurePointerFamily()
+{
+    if (pointerFamily)
+        return;
+    auto &r = registry();
+    // Old ObjectBase pointer, OBJECT_BODY case, ported verbatim: 4 POINT_LIST
+    // vertices {vec2 corner pos (render px), float motif index 1..4}; the
+    // geometry shader expands each into a 20x20 px textured bracket
+    // (object_base_pointer.geom - shaders REUSED, visual parity by
+    // construction). States = the old pipeline's effective states:
+    // blend SRC_ALPHA (EntityCore ctor default, never overridden), cull off
+    // (default cullMode 0), depth off (setDepthStencilMode() defaults).
+    auto pattern = std::make_unique<VertexArray>(*VulkanMgr::instance, Context::instance->ojmAlignment);
+    pattern->createBindingEntry(3 * sizeof(float));
+    pattern->addInput(VK_FORMAT_R32G32_SFLOAT); // corner position (render px)
+    pattern->addInput(VK_FORMAT_R32_SFLOAT);    // motif index 1..4
+    SetContractDesc texContract;
+    texContract.name = "pointerTex";
+    texContract.bindings = {{0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT}};
+    texContract.expectedSets = 1;
+    PipelineFamilyDesc desc;
+    desc.name = "POINTER";
+    desc.vertex = pattern.get();
+    desc.sets.push_back(globalUboContract());
+    desc.sets.push_back(allocateSetContract(std::move(texContract)));
+    desc.pushConstants.push_back({VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Vec3f)});
+    PassDesc color;
+    color.pass = PassKind::COLOR;
+    color.shaderTable = {{0, {.vert = "object_base_pointer.vert.spv", .geom = "object_base_pointer.geom.spv", .frag = "object_base_pointer.frag.spv"}}};
+    color.state.blend = BLEND_SRC_ALPHA;
+    color.state.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+    color.state.cull = false;
+    color.state.depthTest = false;
+    color.state.depthWrite = false;
+    desc.passes.push_back(std::move(color));
+    r.servicePatterns.push_back(std::move(pattern));
+    pointerFamily = allocateFamily(std::move(desc));
+    if (pointerFamily) {
+        Context &context = *Context::instance;
+        pointerVertex = r.servicePatterns.back()->createBuffer(0, 4, context.globalBuffer.get());
+        pointerTex = std::make_unique<s_texture>("pointer_planet.png");
+        pointerSet.reset(allocSet(pointerFamily, 1));
+        pointerSet->bindTexture(pointerTex->getTexture(), 0);
+    }
+}
+
+void Renderer::drawPointer(const std::pair<float, float> &pos, float sizePx)
+{
+    if (!showPointer)
+        return;
+    ensurePointerFamily(); // first-use fallback; normally built at init()
+    if (!pointerFamily)
+        return;
+    // Old suppression rule: a disc above 10% of the viewport radius is
+    // distracting to point at (object_base.cpp:221).
+    if (sizePx > ModularBody::viewportRadius * 0.1f)
+        return;
+    // Breathing animation; the clock only ticks while a pointer is drawn,
+    // like the old static local_time (phase origin is arbitrary either way).
+    pointerTimeMs += ModularBody::deltaTime;
+    float size = sizePx + 20.f + 10.f * sinf(0.002f * pointerTimeMs);
+    // Resolution scale: old sqrt(viewportHeight / fontResolution) - same
+    // config authority (SCK_FONT_RESOLUTION_SIZE via ObjectBase).
+    size *= sqrtf(VulkanMgr::instance->getScreenRect().extent.height
+                  / ObjectBase::getFontResolution());
+    const auto px = VulkanMgr::instance->rectToRender(pos);
+    pointerData = {px.first, px.second, size};
+    pointerQueued = true;
+}
+
+void Renderer::recordPointer()
+{
+    if (!pointerQueued)
+        return;
+    pointerQueued = false;
+    const FamilyBound bound = resolveAndBind(*reg, reg->families[pointerFamily.id()], passKind, cmd, 0);
+    if (!bound.layout)
+        return;
+    // Corner layout ported verbatim (object_base.cpp:228-242).
+    float *data = (float *) Context::instance->transfer->planCopy(pointerVertex->get());
+    if (!data)
+        return;
+    const float h = pointerData.size * 0.5f;
+    *(data++) = pointerData.x - h; *(data++) = pointerData.y + h; *(data++) = 1.f;
+    *(data++) = pointerData.x + h; *(data++) = pointerData.y + h; *(data++) = 2.f;
+    *(data++) = pointerData.x + h; *(data++) = pointerData.y - h; *(data++) = 3.f;
+    *(data++) = pointerData.x - h; *(data++) = pointerData.y - h; *(data++) = 4.f;
+    bound.layout->bindSets(cmd, {*Context::instance->uboSet->get(), *pointerSet->get()});
+    // Old fixed body-pointer color (object_base.cpp:98).
+    static const Vec3f bodyColor(1.f, 0.3f, 0.3f);
+    bound.layout->pushConstant(cmd, 0, &bodyColor);
+    pointerVertex->bind(cmd);
+    vkCmdDraw(cmd, 4, 1, 0, 0);
+}
+
 void Renderer::releaseRegistry()
 {
     if (!reg)
         return;
     // Called from the START of Context::~Context - every manager is alive:
     // release the staging SubBuffers properly, then drop the whole registry
-    // (pipelines, layouts, pools, service patterns, builder thread).
+    // (pipelines, layouts, pools, service patterns, builder thread), and the
+    // Renderer-owned service resources (pointer) that depend on the managers.
+    pointerSet.reset();
+    pointerTex.reset();
+    pointerVertex.reset();
     for (auto &f : reg->families) {
         if (f.batch && f.batch->pData)
             Context::instance->stagingMgr->releaseBuffer(f.batch->staging);

@@ -3,14 +3,16 @@
 
 #include "tools/vecmath.hpp"
 #include "PipelineFamily.hpp"
-#include "tools/draw_helper.hpp"
 #include <vulkan/vulkan.h>
 #include <vector>
-#include <deque>
+#include <memory>
 
 class ToneReproductor;
 class FrameMgr;
 class Set;
+class s_font;
+class s_texture;
+class VertexBuffer;
 
 // ============================================================================
 // The Renderer is the ONLY Vulkan surface of the experimental module: bodies
@@ -96,11 +98,30 @@ public:
     // (texCache dedups by name); rebind happens at the next batchBegin.
     void setHaloTexture(const std::string &texName);
     // Queue a hint circle at a body's screen position (rect space [-1,1], i.e.
-    // ModularBody::getScreenPos) through the DrawHelper hint batch - the
-    // remaining seam borrow of this class (the halo half is dissolved);
-    // dissolves into a HINT batched family with the label/fader work
-    // (INTENT.md 12 row 6). Occlusion contract identical.
+    // ModularBody::getScreenPos) through the HINT batched service family -
+    // the DrawHelper DRAW_HINT_POS seam entry is dissolved (2026-07-12, row 6
+    // completion; the halo half was dissolved at S1). Occlusion contract:
+    // flush at the per-body boundaries (PipelineFamily.hpp BatchDesc).
+    // color.a carries the per-body fader interstate (per-vertex color - the
+    // reason the batched shader variant exists: push constants cannot batch
+    // per-body colors).
     void drawHint(const std::pair<float, float> &pos, const Vec4f &color);
+    // Selection pointer (old ObjectBase::drawPointer, OBJECT_BODY case -
+    // same shaders, POINTER service family): four animated corner brackets
+    // around the selected body. pos is rect space [-1,1]; sizePx is the
+    // body's on-screen FULL diameter in render pixels (screenSize * 2 *
+    // viewportRadius - the old getOnScreenSize form). Old rules carried
+    // here, not by the caller: visibility flag, the 10%-of-viewport
+    // suppression (a large disc needs no pointer), breathing animation
+    // (20 + 10*sin(0.002 t), t advanced by ModularBody::deltaTime), and the
+    // sqrt(viewportHeight/fontResolution) resolution scale. Queued content
+    // records at endBodyDraw AFTER every body and batch flush = always on
+    // top, old draw order (pointer drew after the whole system).
+    // Call once per frame at most (single selected body by construction).
+    void drawPointer(const std::pair<float, float> &pos, float sizePx);
+    // Old Core::object_pointer_visibility mirror (set through
+    // Core::setFlagSelectedObjectPointer - the single choke point).
+    static bool showPointer;
     float adaptLuminance(float world_luminance) const;
     inline operator VkCommandBuffer() {
         return cmd;
@@ -147,14 +168,31 @@ public:
         return passKind;
     }
 
-    // ---- Text/label channel: OPEN (INTENT §10.3 open #3, reworked) --------
-    // The first design carried Projector/Navigator here; INVALIDATED
-    // [vixy: 2026-07-11]: those are old-path projection machinery (system-
-    // center reference), the new path projects through the parent<->child
-    // matrix chain routed via the closest common parent. The gravity-text
-    // path must be partially rewritten against the new chain; the channel
-    // modules use to reach it will be defined by the projection-path
-    // investigation (INTENT §11).
+    // ---- Text service (INTENT §10.3 open #3 RESOLVED - projection-paths C7,
+    // accepted at plan approval 2026-07-12) ------------------------------------
+    // Gravity-oriented label at an already-projected anchor. Pure function of
+    // (anchor, viewport geometry, font, string): NO Projector, NO Navigator,
+    // no frame context - printGravity180's frame-matrix dependency was
+    // apparent, not real (verified: its math consumes only the pixel anchor,
+    // viewport center/radius and the font - projector.cpp:393-415).
+    // - pos is rect space [-1,1] (ModularBody::getScreenPos - the same anchor
+    //   the halo and hint circle use, so label/circle/halo coincide by
+    //   construction).
+    // - Viewport geometry = the VulkanMgr scissor rect: the SAME rect
+    //   rectToRender maps into and the fisheye projection is centered on -
+    //   one geometry authority (I2). Old-path equivalence by construction:
+    //   Projector::setViewportDisk builds the centered square t=min(w,h),
+    //   so its center (w/2,h/2) and radius t/2 equal the scissor's.
+    // - shifts are pixels, applied in the rotated (gravity) frame; the old
+    //   hint label passes (10 + onScreenSize/2) for both.
+    // Drawing is a delegation to s_font::print -> DrawHelper (text is not a
+    // pipeline family - §10.2); legal from any draw hook, same channel and
+    // segment semantics as drawHint. NOT batched by this class: DrawHelper
+    // segments already carry the occlusion contract for screen-space content.
+    void printGravity(s_font *font, const std::pair<float, float> &pos,
+                      const std::string &str, const Vec4f &color,
+                      float xshift, float yshift);
+
     // Explicit registry teardown - called FIRST in Context::~Context (all
     // Context members still alive: staging release, s_texture destruction
     // and pipeline destruction all need live managers). ~Renderer keeps a
@@ -174,20 +212,31 @@ private:
     // ping-pong the buffer halves (portage of Halo::endDraw bookkeeping).
     void batchEnd();
     void ensureHaloFamily();
+    void ensureHintFamily();
+    // Built at init() (base-sync at startup, C3-clean; the in-frame ensure
+    // calls are first-use fallbacks only, like the halo's).
+    void ensurePointerFamily();
+    // Record the queued pointer (if any) into the current cmd - called by
+    // endBodyDraw after the trailing batchFlush: on top of everything.
+    void recordPointer();
     void allocateCommands();
     void nextCommandBuffer();
     PipelineFamily haloFamily;
+    PipelineFamily hintFamily;
+    PipelineFamily pointerFamily;
+    // Pointer service resources (old ObjectBase statics, Renderer-owned;
+    // released by releaseRegistry() while the managers are alive).
+    std::unique_ptr<VertexBuffer> pointerVertex; // 4 corners, planCopy'd per use
+    std::unique_ptr<s_texture> pointerTex;       // pointer_planet.png
+    std::unique_ptr<Set> pointerSet;
+    float pointerTimeMs = 0;   // breathing clock (old ObjectBase::local_time)
+    bool pointerQueued = false;
+    struct { float x, y, size; } pointerData; // render px, resolved size
     VkCommandBuffer cmd = VK_NULL_HANDLE;
     ToneReproductor *eye;
     FrameMgr *frame;
     PassKind passKind = PassKind::COLOR;
     std::vector<VkCommandBuffer> cmds[3];
-    // DrawHelper consumes DrawData by POINTER (old-path precedent: Hints keeps
-    // its drawData as a member and draw(T*) reinterpret-casts). deque = stable
-    // addresses under push_back; cleared at beginDraw - entries of frame N are
-    // consumed by the helper within frame N (helper->nextDraw/endDraw
-    // boundaries), long before the same frameIdx comes around again.
-    std::deque<DrawData::s_hintPos> hintQueue;
     Vec3f clippingFov;
     uint16_t cmdIdx;
     uint8_t frameIdx;

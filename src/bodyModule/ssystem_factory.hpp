@@ -87,6 +87,10 @@ public:
 
     void registerFont(s_font* _font) {
         ssystem->registerFont(_font);
+        // Dual-path seam (INTENT §9 fonts row): the new path's label font.
+        // Same font object - the s_font render cache is shared, so a string
+        // rendered by either path is a cache hit for the other.
+        HintModule::setFont(_font);
     }
 
     void setSelectedObject(Object &obj) {
@@ -96,11 +100,22 @@ public:
 	//! Set selected planet by english name or "" to select none
 	void setSelected(const std::string& englishName) {
         ssystemSelected->setSelected((englishName));
+        // Dual-path seam (INTENT §9 selection row): mirror into the new
+        // path's selection state (ModularBody::isSelected + the selected-body
+        // aggregate consumed by the pointer service). Tolerates bodies the
+        // new path doesn't carry (findBodyOnce: nullptr on miss).
+        newSelectedBody = englishName.empty() ? nullptr
+                        : ModularBody::findBodyOnce(englishName);
 	}
 
     //! Set selected object from its pointer
 	void setSelected(const Object &obj) {
         ssystemSelected->setSelected(obj);
+        // Old rule mirrored: only bodies carry a body selection; selecting
+        // any other object type clears it (SolarSystemSelected::setSelected).
+        newSelectedBody = (obj.getType() == OBJECT_BODY)
+                        ? ModularBody::findBodyOnce(obj.getEnglishName())
+                        : nullptr;
     }
 
     //! Get base planets display limit in pixels
@@ -653,6 +668,10 @@ private:
     ProtoSystem * currentSystem;
     bool inSystem = true;
     Object selected_object;
+    // New-path body selection (dual-path seam, INTENT §9 selection row):
+    // the ModularBodySelector maintains ModularBody::isSelected and the
+    // getSelected() aggregate; redirect-safe across body replacement (I5).
+    ModularBodySelector newSelectedBody;
 };
 
 #endif

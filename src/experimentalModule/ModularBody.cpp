@@ -22,6 +22,8 @@ float ModularBody::haloScale = 1;
 float ModularBody::haloSizeLimit = 9;
 float ModularBody::viewportRadius = 1;
 std::vector<ModularBody *> ModularBody::notableBody;
+float ModularBody::deltaTime = 0;
+ModularBody *ModularBody::selectedBody = nullptr;
 Translator *ModularBody::translator = nullptr;
 StringIDCluster ModularBody::slotID;
 Tracer ModularBody::tracer{80, 24};
@@ -172,11 +174,14 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
 void ModularBody::select()
 {
     isSelected = true;
+    selectedBody = this;
 }
 
 void ModularBody::deselect()
 {
     isSelected = false;
+    if (selectedBody == this)
+        selectedBody = nullptr;
 }
 
 void ModularBody::updateCache()

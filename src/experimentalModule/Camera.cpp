@@ -222,6 +222,11 @@ void Camera::warpToBody(ModularBody *dst)
 
 void Camera::update(double jd, float deltaTime)
 {
+    // Frame clock for per-frame animations (module faders, pointer breathing):
+    // MILLISECONDS, the old-path LinearFader convention. Written here - the
+    // single per-frame entry point of the new path - before any body update
+    // runs (ModularBody::deltaTime contract).
+    ModularBody::deltaTime = deltaTime * 1000.f;
     // Latitude interception (see fold()): keep the zenith-frame view
     // direction across observer latitude moves - old-mount parity. The
     // in-flight view plan lives in the param frame; re-express its endpoints.

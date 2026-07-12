@@ -51,6 +51,7 @@
 #include "coreModule/starLines.hpp"
 #include "bodyModule/ssystem_factory.hpp"
 #include "bodyModule/body_trace.hpp"
+#include "experimentalModule/Renderer.hpp" // dual-path pointer flag mirror
 #include "eventModule/CoreEvent.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "coreModule/meteor_mgr.hpp"
@@ -163,7 +164,14 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	dso3d = std::make_unique<Dso3d>();
 	tully = std::make_unique<Tully>();
 	Context::instance->renderer.init(tone_converter);
-	object_pointer_visibility = 1;
+	setFlagSelectedObjectPointer(true); // through the choke point: mirrors the
+	                                    // new path's pointer service too
+}
+
+void Core::setFlagSelectedObjectPointer(bool b)
+{
+	object_pointer_visibility = b;
+	Renderer::showPointer = b; // dual-path mirror (new-path pointer service)
 }
 
 void Core::registerCoreFont() const

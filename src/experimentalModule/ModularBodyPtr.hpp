@@ -49,8 +49,12 @@ protected:
 class ModularBodySelector : public ModularBodyPtr {
 public:
     ~ModularBodySelector();
-    inline void operator=(nullptr_t);
-    inline void operator=(ModularBody *body);
+    // NOT inline: defined in ModularBodyPtr.cpp - the previous inline
+    // specifiers on out-of-line definitions were an ODR trap that stayed
+    // latent only because no TU assigned a selector until the SSystemFactory
+    // selection seam (first user, 2026-07-12).
+    void operator=(nullptr_t);
+    void operator=(ModularBody *body);
 };
 
 #endif /* end of include guard: MODULAR_BODY_PTR_HPP_ */

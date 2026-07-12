@@ -54,8 +54,8 @@ public :
 
 	//! Fill the hint circle vertices around an arbitrary render-space position.
 	//! Single authority on the circle shape - computeHints delegates here, and
-	//! the new-path HintModule (DRAW_HINT_POS) draws the same circle without a
-	//! Body. Returns the vertex count.
+	//! the new-path HINT service family (Renderer::drawHint) draws the same
+	//! circle without a Body. Returns the vertex count (nbrFacets + 1).
 	static int computeHintsAt(const std::pair<float, float> &pos, float *&data);
 
 	static void createSC_context();
@@ -64,9 +64,12 @@ public :
 	static inline void push(VkCommandBuffer cmd, const Vec4f &color) {
 		layout->pushConstant(cmd, 0, &color);
 	}
+	// In-class values: compile-time visible for the new-path service's fixed
+	// buffers (the previous cpp-only initializers made them runtime constants
+	// in every other TU). Public: shape constants, part of the authority.
+	static const int nbrFacets = 24;
+	static const int hintCircleRadius = 8;
 private :
-	static const int nbrFacets;
-	static const int hintCircleRadius;
 
 	Body * body;
 

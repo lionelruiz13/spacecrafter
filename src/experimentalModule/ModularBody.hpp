@@ -935,7 +935,27 @@ private:
     // leaks entries and corrupts the next frame's partitioning.
     static std::vector<ModularBody *> notableBody;
     static Vec3f defaultHaloColor;
+public:
+    // Frame geometry, same public-precondition class as halfFov (set by
+    // dispatchUpdate from the VulkanMgr scissor; consumed by drawHalo's px
+    // conversion, the pointer service and drawSystem's px conversion).
     static float viewportRadius;
+    // Frame clock in MILLISECONDS (the old-path fader/animation convention -
+    // LinearFader::update takes ms ticks). Same precondition class as halfFov:
+    // written ONCE per frame by Camera::update before any body update runs;
+    // consumers are per-frame animations (module faders, pointer breathing).
+    // NOT a physics/simulation dt - orbital time comes from jd only.
+    static float deltaTime;
+
+    // The selected body, nullptr when none - the aggregate view of the
+    // per-body isSelected flag (single authority: maintained by
+    // select()/deselect(), which only ModularBodySelector may call; redirect()
+    // keeps it valid across body replacement like every ModularBodyPtr).
+    static inline ModularBody *getSelected() {
+        return selectedBody;
+    }
+private:
+    static ModularBody *selectedBody;
 };
 
 #endif /* end of include guard: MODULAR_BODY_HPP_ */

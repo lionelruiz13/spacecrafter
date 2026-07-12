@@ -124,6 +124,11 @@ public:
 	static void createShaderPointeur();
 	static void uninit();
 	static void setFontResolution(int fontResolution);
+	//! Config font-resolution authority (SCK_FONT_RESOLUTION_SIZE) - read by
+	//! the new-path pointer service for the same sqrt(height/res) scaling.
+	static float getFontResolution() {
+		return m_fontResolution;
+	}
 
 protected:
 	static int local_time;

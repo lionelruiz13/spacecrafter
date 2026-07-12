@@ -331,10 +331,10 @@ public:
 	void unsetSelectedConstellation(std::string constellation);
 	void deselect(void);
 
-	//! Set whether a pointer is to be drawn over selected object
-	void setFlagSelectedObjectPointer(bool b) {
-		object_pointer_visibility = b;
-	}
+	//! Set whether a pointer is to be drawn over selected object.
+	//! Single choke point for the flag - mirrors to the new path's pointer
+	//! service (Renderer::showPointer); defined in core.cpp for that reason.
+	void setFlagSelectedObjectPointer(bool b);
 
 	std::string getSelectedPlanetEnglishName() const;
 
