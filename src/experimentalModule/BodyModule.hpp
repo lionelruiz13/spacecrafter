@@ -79,14 +79,25 @@ public:
         boundingRadius = scaledRadius;
         return true;
     }
+    // Declarative trait bits (BodyModuleTraits): read by the Renderer for
+    // pass routing and by the ModularSystem shadow orchestration for caster
+    // selection (a module never declares = a pass never received).
+    virtual uint32_t getTraits() const {
+        return 0;
+    }
     // The four drawing types (each hook = one pass kind, gated by traits):
     // 1. COLOR - the visible image.
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) = 0;
     // 1b. COLOR, minimalist depth-less variant - used at small screen sizes
     //     where depth-correct drawing is indistinguishable.
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
-    // 2. SHADOW - stencil map of the shadow this body projects onto OTHER
-    //    bodies (idx = shadow bucket). Gated by BMT_PROJECT_* traits.
+    // 2. SHADOW - the silhouette this body projects onto OTHER bodies
+    //    (idx = layer in the ShadowService pool; mat = the silhouette matrix
+    //    computed by the orchestration - shadow-paths.md B2). Gated by
+    //    BMT_PROJECT_* traits. Sync-interim contract [S5]: called on the
+    //    frame path; the module DECLARES its geometry to the service
+    //    (ShadowService::produce), which records it in the pre-color window
+    //    - the jobs-as-data shape the S4 compute thread consumes unchanged.
     virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx) {}
     // 3. SELF-SHADOW - dual purpose: (a) fill the self-shadow depth buffer;
     //    (b) prefill the depth-buffer slice of grounded bodies with this

@@ -3,6 +3,7 @@
 
 #include "tools/vecmath.hpp"
 #include "PipelineFamily.hpp"
+#include "ShadowService.hpp"
 #include <vulkan/vulkan.h>
 #include <vector>
 #include <memory>
@@ -162,6 +163,27 @@ public:
     // occlusion contract (PipelineFamily.hpp BatchDesc): as-if
     // farthest->closest against bodies; batch-vs-batch order free.
     void batchPush(const PipelineFamily &family, const void *instance);
+    // ---- Service-window binds (S5/G7) -------------------------------------
+    // bind() is frame-task API (current pass kind, frame cmd). Shadow
+    // production records in the PRE-COLOR window on the helper thread
+    // (DrawHelper::submit - where the old path records its shadow passes),
+    // with its own cmd: these entries take pass and cmd explicitly. Registry
+    // access is read-only there (slots are write-once + atomic ready flag) -
+    // legal off the frame task by construction.
+    FamilyBound bindIn(const PipelineFamily &family, PassKind pass, VkCommandBuffer cmd, VariantKey wanted = 0);
+    // COMPUTE bank bind: key = integer variant (spec constant 0, see
+    // PipelineFamilyDesc). Returns nullptr layout if that key's pipeline is
+    // not resident yet - the caller skips the dispatch (C3), never waits.
+    FamilyBound bindCompute(const PipelineFamily &family, VariantKey key, VkCommandBuffer cmd);
+    // Non-binding residency query for a COMPUTE bank key (acquire-time gate:
+    // don't hand out a layer whose blur cannot run this frame).
+    bool computeReady(const PipelineFamily &family, VariantKey key) const;
+
+    // ---- Shadow service (S5/G7 - contract in ShadowService.hpp) -----------
+    // Renderer-owned per the normative buffer/projection block above; the
+    // ModularSystem orchestration produces into it, receiver modules sample
+    // its layer array. released by releaseRegistry() (managers alive).
+    ShadowService shadow;
     // The pass kind currently recording; bind() resolves against it, hooks
     // are only invoked within their matching pass kind (trait-routed).
     inline PassKind currentPassKind() const {

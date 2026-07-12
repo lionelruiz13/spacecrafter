@@ -15,9 +15,9 @@ const PipelineFamily &MeshFamilies::meshNormal()
         contract.name = "bodyNormal";
         contract.bindings = {
             {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT},           // globalVertProj
-            {1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT},         // globalFrag
+            {1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT},         // meshFrag (Gen-2 receiver block)
             {2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1, mapSampler}, // mapTexture
-            {3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT}, // eclipse map, default sampler
+            {3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT}, // ShadowService layer array (was: eclipse LUT, retired - shadow-paths.md B4)
         };
         contract.expectedSets = 64; // D5 parameter: live MESH modules; pools grow by aggregate if exceeded
         PipelineFamilyDesc desc;
@@ -28,7 +28,11 @@ const PipelineFamily &MeshFamilies::meshNormal()
         desc.specValues = {{7, Context::instance->isFloat64Supported}};
         PassDesc color;
         color.pass = PassKind::COLOR;
-        color.shaderTable = {{0, {.vert = "body_normal.vert.spv", .frag = "body_normal.frag.spv"}}};
+        // Vertex REUSED (its outputs are shadow-sufficient: Position is the
+        // eye-space surface point the projection rows consume); fragment is
+        // the Gen-2 receiver port - LUT loop replaced by projected-shadow
+        // sampling with per-caster absorbtion (shadow-paths.md B4).
+        color.shaderTable = {{0, {.vert = "body_normal.vert.spv", .frag = "bodyMesh.frag.spv"}}};
         // color.state: FixedState defaults == old shaderNormal (cull on,
         // BLEND_NONE, triangle list, depth test+write on).
         desc.passes.push_back(std::move(color));

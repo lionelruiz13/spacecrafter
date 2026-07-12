@@ -6,6 +6,7 @@
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "ojmModule/objl.hpp"
 #include "experimentalModule/Renderer.hpp"
+#include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/bodyModules/BasicMeshLoader.hpp"
 
 BasicMesh::BasicMesh(ObjL *mesh, const std::string &texturePath) : BodyModule(BodyModuleType::MESH),
@@ -14,6 +15,7 @@ BasicMesh::BasicMesh(ObjL *mesh, const std::string &texturePath) : BodyModule(Bo
     set(Context::instance->renderer.allocSet(family, 0)),
     vert(*Context::instance->uniformMgr), frag(*Context::instance->uniformMgr)
 {
+    frag->nbShadowingBodies = 0;
 }
 
 BasicMesh::~BasicMesh()
@@ -24,12 +26,15 @@ bool BasicMesh::isLoaded()
 {
     if (loaded)
         return true;
-    if (BasicMeshLoader::instance->texEclipseMap.isLoading() || mapTexture.isLoading())
+    if (mapTexture.isLoading())
         return false;
     set->bindUniform(vert, 0);
     set->bindUniform(frag, 1);
     set->bindTexture(mapTexture.getTexture(), 2);
-    set->bindTexture(BasicMeshLoader::instance->texEclipseMap.getTexture(), 3);
+    // Binding 3 = the ShadowService blurred-layer array (always allocated at
+    // Renderer::init, independent of the enabled flag - a valid descriptor
+    // must exist even when shadows are off).
+    set->bindTexture(*Context::instance->renderer.shadow.layerArray(), 3);
     loaded = true;
     return true;
 }
@@ -40,6 +45,29 @@ void BasicMesh::preload(ModularBody *body)
     mapTexture.prioritize(LoadPriority::PRELOAD);
     mapTexture.getBigTexture();
     s_texture::setBigTextureLifetime(tmp);
+}
+
+// Fill the Gen-2 receiver block from the body's received-shadow state
+// (produced by ModularSystem::computeShadows - contract: ShadowProjection.hpp).
+// Gate on the service flag too: entries may be stale from the frame the flag
+// switched off.
+static void fillShadows(SharedBuffer<meshFrag> &frag, ModularBody *body)
+{
+    const ReceivedShadows &received = body->getReceivedShadows();
+    if (ShadowService::enabled && received) {
+        auto &f = *frag;
+        f.shadowRow0 = received.row0;
+        f.shadowRow1 = received.row1;
+        int nb = 0;
+        for (const auto &e : received.entries) {
+            f.shadowingBodies[nb].posRadius = Vec4f(e.pos.first, e.pos.second, e.size, 0);
+            f.shadowingBodies[nb].absorbtionIdx = Vec4f(e.absorbtion[0], e.absorbtion[1], e.absorbtion[2], e.layerIdx);
+            ++nb;
+        }
+        f.nbShadowingBodies = nb;
+    } else {
+        frag->nbShadowingBodies = 0;
+    }
 }
 
 void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
@@ -53,7 +81,7 @@ void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
     vert->LightPosition = ModularBody::getLightPosition();
     vert->planetScaledRadius = boundingRadius;
     vert->planetOneMinusOblateness = body->getOneMinusOblateness();
-    frag->SunHalfAngle = body->getLightHalfAngle();
+    fillShadows(frag, body);
     const auto screenSize = body->getScreenSize();
     if (screenSize > 0.2) {
         TEXMAP1(mapTexture);
@@ -62,7 +90,7 @@ void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
             set->bindUniform(vert, 0);
             set->bindUniform(frag, 1);
             set->bindTexture(TEX(0, mapTexture), 2);
-            set->bindTexture(BasicMeshLoader::instance->texEclipseMap.getTexture(), 3); // No big texture for the eclipse map
+            set->bindTexture(*Context::instance->renderer.shadow.layerArray(), 3);
             bigTextureMapping = texmap;
         }
     } else if (bigTextureMapping) {
@@ -70,7 +98,7 @@ void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
         set->bindUniform(vert, 0);
         set->bindUniform(frag, 1);
         set->bindTexture(mapTexture.getTexture(), 2);
-        set->bindTexture(BasicMeshLoader::instance->texEclipseMap.getTexture(), 3);
+        set->bindTexture(*Context::instance->renderer.shadow.layerArray(), 3);
         bigTextureMapping = 0;
     }
     bound.layout->bindSets(renderer, {*set, *Context::instance->uboSet});
@@ -90,13 +118,13 @@ void BasicMesh::drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &
     vert->LightPosition = ModularBody::getLightPosition();
     vert->planetScaledRadius = boundingRadius;
     vert->planetOneMinusOblateness = body->getOneMinusOblateness();
-    frag->SunHalfAngle = body->getLightHalfAngle();
+    fillShadows(frag, body);
     if (bigTextureMapping) {
         set->uninit();
         set->bindUniform(vert, 0);
         set->bindUniform(frag, 1);
         set->bindTexture(mapTexture.getTexture(), 2);
-        set->bindTexture(BasicMeshLoader::instance->texEclipseMap.getTexture(), 3);
+        set->bindTexture(*Context::instance->renderer.shadow.layerArray(), 3);
         bigTextureMapping = 0;
     }
     bound.layout->bindSets(renderer, {*set, *Context::instance->uboSet});
@@ -105,21 +133,23 @@ void BasicMesh::drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &
 
 void BasicMesh::drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx)
 {
-    // Lands with G7 (S5): SHADOW_STENCIL service family bound by the Renderer
-    // per stream; this hook then only pushes constants and draws (the old
-    // body bound old-path shadowShape state - zero call sites in the new
-    // path, INTENT.md 11.13; removed with the bodyShader borrow, 2026-07-12).
+    // Declares this mesh's silhouette for layer idx; the service records it
+    // in the pre-color window (sync-interim contract, BodyModule.hpp hook 2;
+    // mat = the silhouette matrix from the orchestration).
+    renderer.shadow.produce(idx, mat, mesh);
 }
 
 void BasicMesh::drawSelfShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // Lands with G7 (S5): SELF_SHADOW service family - same shape as
-    // drawShadow (was already fully commented out before the re-home).
+    // Lands with the first self-shadow client (OJM/terrain, INTENT.md 12
+    // rows 2-3): the SELF_SHADOW pass profile exists in the registry; no
+    // MESH-sphere client needs it (a sphere's self-shadow is its lit
+    // hemisphere, already analytic in the lighting).
 }
 
 void BasicMesh::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // Lands with S3/S5: TRACE service family bound once per stream by the
+    // Lands with S3: TRACE service family bound once per stream by the
     // Renderer; this hook pushes {mat, clipping_fov, boundingRadius,
     // oneMinusOblateness} and draws low-LOD (the pre-rework body already had
     // that shape but pushed against the old depthTrace layout without any

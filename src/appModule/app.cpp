@@ -531,6 +531,9 @@ void App::init()
 
 	appDraw->setFlagAntialiasLines(conf.getBoolean(SCS_RENDERING, SCK_FLAG_ANTIALIAS_LINES));
 	Context::experimental_shadows = Context::default_experimental_shadows = conf.getBoolean(SCS_RENDERING, SCK_EXPERIMENTAL_SHADOWS);
+	// New-path shadow switch: same config authority, A/B parity at init
+	// (plain-toggle semantics at the flag command - shadow-paths.md B1/D3).
+	ShadowService::enabled = Context::experimental_shadows;
 
 	internalFPS->setMaxFps(conf.getDouble (SCS_VIDEO,SCK_MAXIMUM_FPS));
 	internalFPS->setVideoFps(conf.getDouble(SCS_VIDEO,SCK_REC_VIDEO_FPS));

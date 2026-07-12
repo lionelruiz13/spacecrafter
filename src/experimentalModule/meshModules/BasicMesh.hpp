@@ -15,6 +15,9 @@ class BasicMesh : public BodyModule {
 public:
     BasicMesh(ObjL *mesh, const std::string &texturePath);
     virtual ~BasicMesh();
+    virtual uint32_t getTraits() const override {
+        return BMT_USE_DEPTH | BMT_DEPTH_TRACE | BMT_PROJECT_G1_SHADOW;
+    }
     virtual bool isLoaded() override;
     virtual void preload(ModularBody *body) override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
@@ -31,7 +34,8 @@ private:
     PipelineFamily family; // MESH family handle (MeshFamilies::meshNormal)
     std::unique_ptr<Set> set; // allocated from the family's contract pools (Renderer::allocSet)
     SharedBuffer<globalVertProj> vert;
-    SharedBuffer<globalFrag> frag;
+    SharedBuffer<meshFrag> frag; // Gen-2 receiver data (was globalFrag - the
+                                 // retired Gen-1 LUT feed, shadow-paths.md B4)
 };
 
 #endif /* end of include guard: BASIC_MESH_HPP_ */

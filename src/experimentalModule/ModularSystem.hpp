@@ -4,17 +4,19 @@
 #include "ModularBodyPtr.hpp"
 #include "ModularBody.hpp"
 
-// Shadow orchestration (SKETCH - contract only, implementation second-pass,
-// G7): the system level decides WHICH bodies shadow which - per-module hooks
+// Shadow orchestration (LIVE, S5/G7 - design: shadow-paths.md B2): the
+// system level decides WHICH bodies shadow which - per-module hooks
 // (drawShadow/drawSelfShadow) only say HOW. Successor of the old
 // SolarSystemDisplay::computePreDraw shadowingBody ranking + bindShadows
-// plumbing (ShadowRenderData/UShadowingBody). Selection inputs: distance to
-// the light source vs the shadow receiver, angular overlap, and the shadow
-// traits of the candidates' modules. MINOR_BODY bodies never participate
-// (D3 border case). The center of interest gets the high-resolution
-// self-shadow buffer (MAIN_SELF_SHADOWING_RESOLUTION), others the small one -
-// buffer ownership is the Renderer's (Renderer.hpp), bucket selection is
-// this system's.
+// plumbing, generalized past the center-of-interest restriction: EVERY drawn
+// body is a receiver candidate; casters are bodies whose modules declare
+// BMT_PROJECT_* traits. Selection = the ported light-cylinder test + the
+// peak-occlusion >= 1/16 gate [vixy: 2026-07-12] (the old "4%" comment's
+// exact form); ranking by occlusion, so pool exhaustion drops the least
+// significant shadows. MINOR_BODY bodies never participate (D3 border case).
+// Self-shadow bucket selection (MAIN vs SECONDARY resolution) remains
+// second-pass: no self-shadow client exists before the OJM/terrain ports
+// (shadow-paths.md C3).
 class ModularSystem : public ModularBody {
 public:
     ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info);
@@ -64,6 +66,10 @@ public:
         return static_cast<ModularSystem *>(body);
     }
 private:
+    // Shadow orchestration (see class comment): fills each drawn receiver's
+    // receivedShadows and drives ShadowService production. Runs at drawSystem
+    // start - positions updated, renderer frame begun (frameIdx known).
+    void computeShadows(Renderer &renderer);
     // Apply some hardcoded content
     void applyHardcodedContent(ModularBodyCreateInfo &createInfo, std::map<std::string, std::string> &param);
     // Clean the list when it is dirty

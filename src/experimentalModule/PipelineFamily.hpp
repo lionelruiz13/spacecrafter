@@ -298,7 +298,19 @@ struct PipelineFamilyDesc {
     std::vector<PassDesc> passes;   // GRAPHICS only
     std::vector<VariantAxis> axes;
     std::optional<BatchDesc> batch; // engaged = batched family
-    std::string computeShader;      // COMPUTE only; variants = spec constant
+    // ---- COMPUTE families (S5/G7) ----
+    // A COMPUTE family is a BANK of compute pipelines keyed by an INTEGER
+    // VariantKey VALUE - not bit-axes: the key is passed verbatim as
+    // specialization constant id 0 (desc.specValues must therefore not use
+    // id 0). The shadow-blur bank is the client: key = blur radius in pixels.
+    // With EAGER_ASYNC_ALL, keys 1..eagerVariants are enqueued to the build
+    // domain at allocation (the old path built its bank on 4 startup threads
+    // - context.cpp:76-99; the interim builder thread replaces them).
+    // Renderer::bindCompute() never blocks: a not-yet-built key reports
+    // failure and the caller skips that dispatch (C3) - the old global
+    // shadow_ready gate becomes per-key readiness, strictly finer.
+    std::string computeShader;      // COMPUTE only
+    uint16_t eagerVariants = 0;     // COMPUTE + EAGER_ASYNC_ALL: build keys 1..N
 };
 
 // bind() result: what to record against, and what actually bound.

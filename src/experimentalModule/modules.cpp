@@ -38,6 +38,6 @@ void ModuleLoaderMgr::init()
     registerModule("still_orbit", std::make_unique<StillOrbitLoader>());
     registerModule(std::make_unique<SpecialOrbitLoader>());
 
-    registerModule(BodyModuleType::MESH, std::make_unique<BasicMeshLoader>("bodies/eclipse_map.png"));
+    registerModule(BodyModuleType::MESH, std::make_unique<BasicMeshLoader>()); // eclipse LUT retired at S5 (shadow-paths.md B4)
     registerModule(BodyModuleType::HINT, std::make_unique<HintLoader>());
 }

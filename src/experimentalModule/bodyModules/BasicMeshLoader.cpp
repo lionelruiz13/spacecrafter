@@ -6,8 +6,9 @@
 
 BasicMeshLoader *BasicMeshLoader::instance = nullptr;
 
-BasicMeshLoader::BasicMeshLoader(const std::string &eclipseMap) :
-    texEclipseMap(eclipseMap, TEX_LOAD_TYPE_PNG_SOLID)
+// (eclipse-map LUT retired at S5 - Gen-2 projected shadows replace it
+//  outright [vixy: 2026-07-12], shadow-paths.md B4)
+BasicMeshLoader::BasicMeshLoader()
 {
     instance = this;
 }

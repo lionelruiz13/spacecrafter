@@ -6,6 +6,7 @@
 #include <thread>
 #include <chrono>
 #include <list>
+#include <functional>
 #include "EntityCore/Forward.hpp"
 #include "EntityCore/SubTexture.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
@@ -131,6 +132,14 @@ public:
     }
     //! Sumbit shadowing body
     uint8_t drawShadower(Body *target, float radius);
+    //! Pre-color recording hook (new-path ShadowService): invoked in submit()
+    //! right after the old-path shadow recording, on the helper thread, with
+    //! the frame's primary cmd outside any render pass - the same window the
+    //! old shadow passes record in. One consumer by design (the service);
+    //! nullptr clears. Set from the registration domain before first use.
+    void setPreFrameRecorder(std::function<void(VkCommandBuffer, unsigned char)> recorder) {
+        preFrameRecorder = std::move(recorder);
+    }
 private:
     void beginDraw(unsigned char subpass);
     void beginDrawCommand(unsigned char subpass); // Start draw command recording
@@ -168,6 +177,7 @@ private:
     unsigned char externalSubpass;
     unsigned char lastFlag = SIGNAL_PASS;
     float halfShadowRes;
+    std::function<void(VkCommandBuffer, unsigned char)> preFrameRecorder;
     unsigned short drawIdx = 0;
     unsigned char currentLastFrameIdx = 2;
     bool notInitialized = true;

@@ -3,6 +3,7 @@
 
 #include "BodyModule.hpp"
 #include "Renderer.hpp"
+#include "ShadowProjection.hpp"
 #include "EntityCore/Tools/Tracer.hpp"
 #include "../planetsephems/sideral_time.h"
 #include "coreModule/time_mgr.hpp"
@@ -501,6 +502,19 @@ public:
     inline float getScaledRadius() const {
         return scaledRadius;
     }
+    // Smallest radius including all groundedComponents and nearComponents
+    inline float getBoundingRadius() const {
+        return boundingRadius;
+    }
+    inline const Vec3f &getShadowAbsorbtion() const {
+        return shadowAbsorbtion;
+    }
+    // Received-shadow state of this frame (empty when not a receiver).
+    // Consumers must also gate on ShadowService::enabled - entries may be
+    // stale from the frame the flag was switched off.
+    inline const ReceivedShadows &getReceivedShadows() const {
+        return receivedShadows;
+    }
     inline void setRadius(float _radius) {
         radius = _radius;
         uncached = true;
@@ -846,7 +860,10 @@ private:
     std::vector<std::unique_ptr<ModularBody>> hiddenBodies;
     std::vector<std::unique_ptr<EnvironmentModule>> groundedEnvironment;
     std::vector<std::unique_ptr<EnvironmentModule>> environment;
-    // std::vector<std::unique_ptr<ShadowProjection>> shadows;
+    // The "Received shadows" relation realized (S5/G7): per-frame received-
+    // shadow state, produced by the ModularSystem orchestration, consumed by
+    // drawing modules (contract: ShadowProjection.hpp).
+    ReceivedShadows receivedShadows;
 
     // TODO create an optimized std::string for limited set
     std::vector<std::unique_ptr<BodyModule>> components; // Reference every BodyModule of this ModularBody by name
@@ -886,6 +903,12 @@ private:
     // Halo system
     Vec3f haloColor;
     float albedo;					// Body albedo
+
+    // Per-channel absorption of the shadow this body PROJECTS (shadow_color
+    // param; Earth {0,1,1}: absorbs G/B, not R -> red umbra - the atmosphere
+    // diffraction emulation [vixy: 2026-07-12], shadow-paths.md B5). Applied
+    // at receive time by the receiver's shader.
+    Vec3f shadowAbsorbtion;
 
     // Navigation and visibility
     ASmooth<AsyncHub, float, 5.f> scaling;

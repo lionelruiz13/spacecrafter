@@ -2,6 +2,9 @@
 #include "ModuleLoaderMgr.hpp"
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp"
+#include "tools/context.hpp"
+#include "meshModules/bodyShaderInterface.hpp" // MAX_SHADOW_CASTERS_PER_RECEIVER
+#include <algorithm>
 
 const Mat4f mat_j2000_to_vsop87(
     Mat4f::xrotation(-23.4392803055555555556*(M_PI/180)) *
@@ -88,8 +91,146 @@ void ModularSystem::updateSystem()
     }
 }
 
+// Shadow orchestration - the WHICH half of G7 (class comment + shadow-paths.md
+// B2; every ported formula carries its old-path line reference).
+void ModularSystem::computeShadows(Renderer &renderer)
+{
+    ShadowService &service = renderer.shadow;
+    if (!ShadowService::enabled || !star || star->distance == 0)
+        return;
+    service.ensureInit(renderer);
+    if (!service)
+        return;
+    const Vec3f L = ModularBody::getLightPosition();
+    const float sunRadius = star->getRadius();
+    // Caster candidates: one pass over the system (bodies whose modules
+    // declare a PROJECT trait; MINOR_BODY and light sources exempt).
+    constexpr uint32_t PROJECT_MASK = BMT_PROJECT_G1_SHADOW | BMT_PROJECT_G8_SHADOW | BMT_PROJECT_BISHADOW;
+    static std::vector<ModularBody *> casters; // scratch, system-draw scoped
+    casters.clear();
+    for (ModularBody *body : sortedSystemBodies) {
+        if (!body || body->distance == 0 || body->isStar() || body->bodyType == BodyType::MINOR_BODY)
+            continue;
+        uint32_t traits = 0;
+        for (auto *m : body->nearComponents)
+            traits |= m->getTraits();
+        if (traits & PROJECT_MASK)
+            casters.push_back(body);
+    }
+    if (casters.empty())
+        return;
+    struct Pair {
+        ModularBody *caster;
+        float smooth;   // penumbra growth radius at the receiver (AU)
+        float rank;     // casterRadius / smooth - occlusion ordering key
+    };
+    static std::vector<Pair> pairs; // scratch
+    for (ModularBody *body : sortedSystemBodies) {
+        if (!body || body->distance == 0)
+            break; // sorted: unevaluated bodies are at the tail (drawSystem rule)
+        // Receiver gate: drawn this frame (the ModularBody::draw entry test),
+        // not MINOR/light-source. NOT gated by screen size beyond drawing:
+        // the occlusion criterion below is the shadow-relevance gate [vixy].
+        if (!(*body && body->screenSize > 0.0015f) || body->isStar() || body->bodyType == BodyType::MINOR_BODY)
+            continue;
+        body->receivedShadows.clear();
+        const Vec3f rpos = body->getObservedPosition();
+        const Vec3f v1 = rpos - L;
+        const float sd1 = v1.lengthSquared();
+        const float r1 = body->getRadius();
+        // Light-cylinder corridor test, ported (solarsystem_display.cpp:85-134).
+        const float cst1 = r1 + sunRadius;
+        const float cst2 = -sunRadius / sd1;
+        pairs.clear();
+        for (ModularBody *caster : casters) {
+            if (caster == body)
+                continue;
+            const Vec3f v2 = caster->getObservedPosition() - L;
+            const float d = v1.dot(v2);
+            if (d > 0 && d < sd1) {
+                const float corridor = cst1 + d * cst2 + caster->getRadius();
+                if (((v2 - v1 * (d / sd1)) / corridor).lengthSquared() < 1) {
+                    // Penumbra growth radius (solarsystem_display.cpp:189-194):
+                    // sunRadius * axialDist / |v1| == sunCoef * distToMainBody.
+                    const float smooth = sunRadius * (sd1 - d) / sd1;
+                    // Peak-occlusion >= 1/16 gate [vixy]: penumbra within 4x
+                    // caster radius (the old `smoothRadius < bounding*4`).
+                    if (smooth < caster->getRadius() * 4)
+                        pairs.push_back({caster, smooth, caster->getRadius() / smooth});
+                }
+            }
+        }
+        if (pairs.empty())
+            continue;
+        // Occlusion-ordered: what the pool/shader caps drop is least visible.
+        std::sort(pairs.begin(), pairs.end(), [](const Pair &a, const Pair &b) {
+            return a.rank > b.rank;
+        });
+        // Receiver sun frame - world-tied basis (camera-independence:
+        // ShadowProjection.hpp header): z along light->receiver, x from the
+        // receiver's spin axis (mat column 2; column 1 fallback near
+        // degeneracy), y completing.
+        const Vec3f z = v1 / sqrtf(sd1);
+        Vec3f axis(body->mat.r[8], body->mat.r[9], body->mat.r[10]);
+        Vec3f x = axis ^ z;
+        if (x.lengthSquared() < 1e-8f) {
+            axis = Vec3f(body->mat.r[4], body->mat.r[5], body->mat.r[6]);
+            x = axis ^ z;
+        }
+        x.normalize();
+        const Vec3f y = z ^ x;
+        body->receivedShadows.row0 = Vec4f(x[0], x[1], x[2], -x.dot(rpos));
+        body->receivedShadows.row1 = Vec4f(y[0], y[1], y[2], -y.dot(rpos));
+        for (const Pair &p : pairs) {
+            if (body->receivedShadows.entries.size() >= MAX_SHADOW_CASTERS_PER_RECEIVER)
+                break; // receiver shader array cap - aligned with the budget
+            ModularBody *caster = p.caster;
+            const Vec3f cpos = caster->getObservedPosition();
+            // Cache key: CASTER-LOCAL light direction (columns of the
+            // orthonormal rotation part dot the vector = transpose apply) -
+            // the old heliocentric getLocalSunDirection equivalent,
+            // camera-independent by construction.
+            const Vec3f toLight = L - cpos;
+            const Vec3f lightDirLocal(
+                caster->mat.r[0] * toLight[0] + caster->mat.r[1] * toLight[1] + caster->mat.r[2] * toLight[2],
+                caster->mat.r[4] * toLight[0] + caster->mat.r[5] * toLight[1] + caster->mat.r[6] * toLight[2],
+                caster->mat.r[8] * toLight[0] + caster->mat.r[9] * toLight[1] + caster->mat.r[10] * toLight[2]);
+            const float size = caster->getRadius() + p.smooth;
+            // Blur radius in shadow-map pixels (body.cpp:1227 + the
+            // drawShadower *halfShadowRes fold).
+            const float radiusPx = p.smooth / size * Context::instance->shadowRes * 0.5f;
+            bool reused = false;
+            const int idx = service.acquire(caster, radiusPx, lightDirLocal, &reused);
+            if (idx < 0)
+                continue; // pool exhausted or blur bank still building (both logged/transient)
+            if (!reused) {
+                // Silhouette matrix: rows(x,y,z) . rot3(caster->mat) .
+                // diag(r, r, r*(1-oblateness)) / size - maps the caster mesh
+                // into shadow-map NDC (old: lookAt*model*scaling mat3,
+                // body.cpp:1222-1230, same algebra in the eye frame).
+                Mat4f frame = Mat4f::identity(); // off-cells MUST be zero
+                frame.r[0] = x[0]; frame.r[4] = x[1]; frame.r[8] = x[2];
+                frame.r[1] = y[0]; frame.r[5] = y[1]; frame.r[9] = y[2];
+                frame.r[2] = z[0]; frame.r[6] = z[1]; frame.r[10] = z[2];
+                Mat4f rot = caster->mat;
+                rot.r[12] = rot.r[13] = rot.r[14] = 0;
+                const float s = caster->getRadius() / size;
+                const Mat4f sil = frame * rot * Mat4f::scaling(Vec3f(s, s, s * caster->getOneMinusOblateness()));
+                for (auto *m : caster->nearComponents) {
+                    if (m->getTraits() & PROJECT_MASK)
+                        m->drawShadow(renderer, caster, sil, idx);
+                }
+            }
+            body->receivedShadows.entries.push_back({caster,
+                {x.dot(cpos - rpos), y.dot(cpos - rpos)},
+                size, static_cast<uint8_t>(idx), caster->getShadowAbsorbtion()});
+        }
+    }
+}
+
 void ModularSystem::drawSystem(Renderer &renderer)
 {
+    computeShadows(renderer);
     for (auto &module : inComponents)
         module->draw(renderer, this, mat);
     renderer.beginBodyDraw();
@@ -313,6 +454,13 @@ void ModularSystem::applyHardcodedContent(ModularBodyCreateInfo &createInfo, std
 {
     if (createInfo.englishName == "Earth") {
         createInfo.bodyType = BodyType::EARTH;
+        // The header's own example (ModularBody.hpp shadowAbsorbtion): Earth's
+        // shadow absorbs G/B, not R - red light diffracted by the atmosphere
+        // reaches the umbra (lunar-eclipse color, replaces the old my_moon
+        // UmbraColor hardcode - shadow-paths.md B4/B5). Explicit shadow_color
+        // in the data still wins (loadBody reads it after this call).
+        if (param.find("shadow_color") == param.end())
+            createInfo.shadowAbsorbtion = Vec3f(0.f, 1.f, 1.f);
     } else if (createInfo.englishName == "Moon") {
         createInfo.bodyType = BodyType::EARTH_MOON;
     }

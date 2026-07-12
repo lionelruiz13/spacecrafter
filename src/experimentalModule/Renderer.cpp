@@ -27,6 +27,10 @@ void Renderer::init(ToneReproductor *_eye)
     // first-use fallbacks only).
     ensurePointerFamily();
     ensureHintFamily();
+    // Shadow service: UNCONDITIONAL init (independent of the enabled flag) -
+    // every MESH Set binds the layer array at slot 3, so the texture must
+    // exist even when shadows are off (ShadowService.hpp).
+    shadow.ensureInit(*this);
 }
 
 void Renderer::beginDraw(uint8_t _frameIdx)
@@ -39,6 +43,8 @@ void Renderer::beginDraw(uint8_t _frameIdx)
     frameIdx = _frameIdx;
     frame = Context::instance->frame[frameIdx].get();
     clippingFov.v[2] = ModularBody::halfFov;
+    if (shadow)
+        shadow.beginFrame(frameIdx); // slot aging + this frame's job list
     cmd = cmds[frameIdx].front();
     frame->begin(cmd, PASS_MULTISAMPLE_DEPTH);
     frame->toExecute(cmd, PASS_MULTISAMPLE_DEPTH);

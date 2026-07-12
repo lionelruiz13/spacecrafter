@@ -3,6 +3,7 @@
 #include "tools/context.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
 #include "EntityCore/Resource/Pipeline.hpp"
+#include "EntityCore/Resource/ComputePipeline.hpp"
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "EntityCore/Resource/Set.hpp"
 #include "EntityCore/Resource/SetMgr.hpp"
@@ -70,6 +71,7 @@ struct VariantSlot {
     VariantSlot(VariantKey key) : key(key) {}
     VariantKey key;
     std::unique_ptr<Pipeline> pipeline;
+    std::unique_ptr<ComputePipeline> compute; // COMPUTE families (integer-keyed)
     std::atomic<bool> ready{false}; // interim publish - see file header
 };
 
@@ -147,6 +149,13 @@ struct Registry {
     uint32_t aggStorageBuf = 0, aggStorageImg = 0, aggSampledImg = 0;
     std::vector<std::unique_ptr<SetMgr>> pools;
     uint32_t poolRemaining = 0; // set-count budget left on pools.back()
+    // Descriptor types pools.back() was CREATED with. The aggregate grows as
+    // contracts are allocated - a pool made before a contract introduced a
+    // type cannot serve that contract (found live: the S1-era pool had no
+    // SAMPLED_IMAGE; the S5 blur contract added it; allocSet handed out the
+    // old pool -> AllocateDescriptorSets-WrongType). Coverage is re-checked
+    // per allocSet, not assumed from creation order.
+    uint32_t poolTypeMask = 0;
     // Interim work domain (see file header).
     std::mutex mtx;
     std::condition_variable cv;
@@ -209,13 +218,21 @@ std::unique_ptr<Pipeline> buildVariant(FamilyEntry &f, PassKind pass, VariantKey
             break;
         case PassKind::SELF_SHADOW:
             // Header profile: depth GREATER, dynamic viewport (variable-size
-            // targets). S5 (G7 port) validates this against the old shadow
-            // pipelines before first use - no family declares this pass yet.
+            // targets). Validated against the old shadowTrace pipeline
+            // (bodyShader.cpp:410-426) at S5 - state profile matches; old
+            // additionally set setFrontFace(), carried by the family's
+            // reverseFrontFace when its first client lands.
             render = context.renderSelfShadow.get();
             dynamicStates = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
             break;
         case PassKind::SHADOW_STENCIL:
+            // Dynamic viewport: the old shadowShape pipeline baked
+            // frameShadow->makeViewport() (shadowRes^2) - a fixed viewport at
+            // SCREEN size here would rasterize the silhouette wrong. The
+            // recording service sets viewport/scissor at pass begin
+            // (resolution is a D5 parameter, not a bake-time constant).
             render = context.renderShadow.get();
+            dynamicStates = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
             break;
         default:
             return nullptr;
@@ -242,6 +259,10 @@ std::unique_ptr<Pipeline> buildVariant(FamilyEntry &f, PassKind pass, VariantKey
             p->setDepthStencilMode(VK_TRUE, VK_TRUE, VK_COMPARE_OP_GREATER);
             break;
         case PassKind::SHADOW_STENCIL: {
+            // Depth explicitly off (old shadowShape: setDepthStencilMode() then
+            // stencil). Write-1-per-fragment: the old NEVER+failOp-REPLACE and
+            // this ALWAYS+passOp-REPLACE are equivalent on a cleared buffer.
+            p->setDepthStencilMode();
             const VkStencilOpState op {VK_STENCIL_OP_KEEP, VK_STENCIL_OP_REPLACE, VK_STENCIL_OP_KEEP, VK_COMPARE_OP_ALWAYS, 0xff, 0xff, 1};
             p->setStencilMode(op, op);
             break;
@@ -302,6 +323,20 @@ std::unique_ptr<Pipeline> buildVariant(FamilyEntry &f, PassKind pass, VariantKey
     return p;
 }
 
+// COMPUTE bank variant: the integer key rides specialization constant 0
+// (PipelineFamilyDesc contract); desc.specValues supplies the rest.
+std::unique_ptr<ComputePipeline> buildComputeVariant(FamilyEntry &f, VariantKey key)
+{
+    auto p = std::make_unique<ComputePipeline>(*VulkanMgr::instance, f.layout.get());
+    p->bindShader(f.desc.computeShader);
+    const uint32_t keyValue = key;
+    p->setSpecializedConstant(0, keyValue);
+    for (const auto &sv : f.desc.specValues)
+        p->setSpecializedConstant(sv.constantId, &sv.value, sizeof(sv.value));
+    p->build();
+    return p;
+}
+
 void Registry::builderLoop()
 {
     std::unique_lock<std::mutex> lock(mtx);
@@ -312,12 +347,21 @@ void Registry::builderLoop()
         BuildJob job = jobs.front();
         jobs.pop_front();
         lock.unlock();
-        auto pipeline = buildVariant(*job.family, job.pass, job.slot->key);
-        if (pipeline && pipeline->get() != VK_NULL_HANDLE) {
-            job.slot->pipeline = std::move(pipeline);
-            job.slot->ready.store(true, std::memory_order_release);
-        } // failure stays non-resident: bind() keeps falling back to base,
-          // the build error is already logged at its definition site.
+        if (job.family->desc.kind == PipelineFamilyDesc::Kind::COMPUTE) {
+            auto pipeline = buildComputeVariant(*job.family, job.slot->key);
+            if (pipeline && pipeline->get() != VK_NULL_HANDLE) {
+                job.slot->compute = std::move(pipeline);
+                job.slot->ready.store(true, std::memory_order_release);
+            }
+        } else {
+            auto pipeline = buildVariant(*job.family, job.pass, job.slot->key);
+            if (pipeline && pipeline->get() != VK_NULL_HANDLE) {
+                job.slot->pipeline = std::move(pipeline);
+                job.slot->ready.store(true, std::memory_order_release);
+            }
+        } // failure stays non-resident: bind() keeps falling back to base
+          // (graphics) or the dispatch is skipped (compute); the build error
+          // is already logged at its definition site.
         lock.lock();
     }
 }
@@ -400,18 +444,37 @@ FamilyBound resolveAndBind(Registry &r, FamilyEntry &f, PassKind pass, VkCommand
     return {f.layout.get(), bound->key};
 }
 
+// Bit per supported descriptor type (pool-coverage tracking).
+uint32_t typeBit(VkDescriptorType type)
+{
+    switch (type) {
+        case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER: return 0x01;
+        case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC: return 0x02;
+        case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER: return 0x04;
+        case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER: return 0x08;
+        case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE: return 0x10;
+        case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE: return 0x20;
+        default: return 0;
+    }
+}
+
 void createPool(Registry &r)
 {
     // Each pool is sized from the CURRENT aggregate of allocated contracts -
     // it always covers the layouts it serves (INTENT 10.3 decision 5 /
-    // 11.1 structural fix). Growth = one more aggregate-sized pool.
-    // expectedSets is the sizing contract: a client exceeding it exhausts the
-    // budget visibly (allocation failure at a named site), never silently.
+    // 11.1 structural fix; coverage re-checked per allocSet since the
+    // aggregate grows - see poolTypeMask). Growth = one more aggregate-sized
+    // pool. expectedSets is the sizing contract: a client exceeding it
+    // exhausts the budget visibly (allocation failure at a named site),
+    // never silently.
     const uint32_t sets = std::max(r.aggSets, 16u);
     r.pools.push_back(std::make_unique<SetMgr>(*VulkanMgr::instance, sets,
         r.aggUniform, r.aggTexture, r.aggStorageBuf, r.aggStorageImg,
         true, r.aggDynUniform, r.aggSampledImg));
     r.poolRemaining = sets;
+    r.poolTypeMask = (r.aggUniform ? 0x01 : 0) | (r.aggDynUniform ? 0x02 : 0)
+                   | (r.aggTexture ? 0x04 : 0) | (r.aggStorageBuf ? 0x08 : 0)
+                   | (r.aggStorageImg ? 0x10 : 0) | (r.aggSampledImg ? 0x20 : 0);
 }
 
 } // namespace
@@ -553,10 +616,32 @@ PipelineFamily Renderer::allocateFamily(PipelineFamilyDesc &&desc)
         return {};
     }
     if (desc.kind == PipelineFamilyDesc::Kind::COMPUTE) {
-        // Compute families land with G7's shadow implementation (S5) -
-        // deferral accepted at plan approval (INTENT 10.3 open 4).
-        VulkanMgr::instance->putLog("PipelineRegistry: COMPUTE family '" + desc.name + "' not implemented yet (lands with G7/S5)", LogType::ERROR);
-        return {};
+        // COMPUTE bank (S5/G7, INTENT 10.3 open 4): integer-keyed variants,
+        // key = spec constant 0. The bank lives in passes[0] (no PassKind
+        // applies to compute; slot 0 is the container, desc stays null so
+        // graphics bind() misroutes loudly if pointed here).
+        r.families.emplace_back();
+        FamilyEntry &f = r.families.back();
+        f.desc = std::move(desc);
+        f.refs = 1;
+        f.layout = std::make_unique<PipelineLayout>(*VulkanMgr::instance);
+        for (const auto &sc : f.desc.sets) {
+            if (sc)
+                f.layout->setGlobalPipelineLayout(r.contracts[sc.id()].layout);
+            else
+                VulkanMgr::instance->putLog("PipelineRegistry: null SetContract in family '" + f.desc.name + "'", LogType::ERROR);
+        }
+        for (const auto &pc : f.desc.pushConstants)
+            f.layout->setPushConstant(pc.stages, pc.offset, pc.size);
+        f.layout->build();
+        if (f.desc.buildPolicy == PipelineFamilyDesc::BuildPolicy::EAGER_ASYNC_ALL) {
+            PassEntry &pe = f.passes[0];
+            for (VariantKey key = 1; key <= f.desc.eagerVariants; ++key) {
+                pe.variants.emplace_back(key);
+                r.enqueue({&f, PassKind::COLOR, &pe.variants.back()});
+            }
+        }
+        return PipelineFamily(static_cast<uint8_t>(r.families.size() - 1));
     }
     r.families.emplace_back();
     FamilyEntry &f = r.families.back();
@@ -937,7 +1022,9 @@ void Renderer::releaseRegistry()
     // Called from the START of Context::~Context - every manager is alive:
     // release the staging SubBuffers properly, then drop the whole registry
     // (pipelines, layouts, pools, service patterns, builder thread), and the
-    // Renderer-owned service resources (pointer) that depend on the managers.
+    // Renderer-owned service resources (pointer, shadow) that depend on the
+    // managers (shadow Sets live in registry pools - release BEFORE reg).
+    shadow.release();
     pointerSet.reset();
     pointerTex.reset();
     pointerVertex.reset();
@@ -956,6 +1043,43 @@ FamilyBound Renderer::bind(const PipelineFamily &family, VariantKey wanted)
     return resolveAndBind(r, r.families[family.id()], passKind, cmd, wanted);
 }
 
+FamilyBound Renderer::bindIn(const PipelineFamily &family, PassKind pass, VkCommandBuffer extCmd, VariantKey wanted)
+{
+    if (!family)
+        return {nullptr, 0};
+    auto &r = *reg;
+    return resolveAndBind(r, r.families[family.id()], pass, extCmd, wanted);
+}
+
+bool Renderer::computeReady(const PipelineFamily &family, VariantKey key) const
+{
+    if (!family)
+        return false;
+    VariantSlot *slot = findSlot(reg->families[family.id()].passes[0], key);
+    return slot && slot->ready.load(std::memory_order_acquire);
+}
+
+FamilyBound Renderer::bindCompute(const PipelineFamily &family, VariantKey key, VkCommandBuffer extCmd)
+{
+    if (!family)
+        return {nullptr, 0};
+    auto &r = *reg;
+    FamilyEntry &f = r.families[family.id()];
+    // The bank container is passes[0] (see the COMPUTE allocation branch).
+    VariantSlot *slot = findSlot(f.passes[0], key);
+    if (!slot) {
+        // Outside the eager range: lazy-build it (same policy shape as
+        // graphics variants) and skip this dispatch.
+        f.passes[0].variants.emplace_back(key);
+        r.enqueue({&f, PassKind::COLOR, &f.passes[0].variants.back()});
+        return {nullptr, 0};
+    }
+    if (!slot->ready.load(std::memory_order_acquire))
+        return {nullptr, 0}; // not resident: caller skips the dispatch (C3)
+    slot->compute->bind(extCmd);
+    return {f.layout.get(), key};
+}
+
 Set *Renderer::allocSet(const PipelineFamily &family, uint8_t setIndex)
 {
     auto &r = registry();
@@ -969,8 +1093,12 @@ Set *Renderer::allocSet(const PipelineFamily &family, uint8_t setIndex)
         VulkanMgr::instance->putLog("PipelineRegistry: allocSet on external contract '" + e.desc.name + "' (the Set pre-exists, e.g. context.uboSet)", LogType::ERROR);
         return nullptr;
     }
-    if (!r.poolRemaining)
-        createPool(r);
+    uint32_t needed = 0;
+    for (const auto &b : e.desc.bindings)
+        needed |= typeBit(b.type);
+    if (!r.poolRemaining || (needed & ~r.poolTypeMask))
+        createPool(r); // budget exhausted OR the contract uses a type this
+                       // pool predates (poolTypeMask note above)
     --r.poolRemaining;
     // Caller owns (store in a unique_ptr); pools are registry-lifetime, which
     // outlives every module (modules die with the body tree, before Context).

@@ -23,6 +23,10 @@ struct globalVertProj {
 	float planetOneMinusOblateness;
 };
 
+// OLD-PATH-ONLY since S5: the analytic eclipse-map occluder feed (Gen-1,
+// shadow-paths.md A1) - the new path draws with bodyMesh.frag/meshFrag below
+// (Gen-2 projected shadows replace the LUT outright [vixy: 2026-07-12]).
+// Dies with the old path (INTENT.md 12 retirement map).
 struct globalFrag {
 	Vec3f MoonPosition1;
 	float MoonRadius1;
@@ -33,6 +37,28 @@ struct globalFrag {
 	Vec3f MoonPosition4;
 	float MoonRadius4;
 	float SunHalfAngle;
+};
+
+// Receiver-side cap on simultaneous casters = the shader UBO array size
+// (bodyMesh.frag MAX_SHADOW_CASTERS). Single authority for both sides: the
+// orchestration truncates its occlusion-ordered list here, so - unlike the
+// old shadowingBodies[4]-vs-max_shadow_cast-8 silent mismatch - overflow
+// drops the LEAST significant shadows, deterministically.
+#define MAX_SHADOW_CASTERS_PER_RECEIVER 8
+
+// std140 mirror of bodyMesh.frag binding 1 (new path, S5). Field order and
+// types are the GPU-visible layout - never reorder without the shader.
+struct meshFrag {
+	// Sun-frame projection rows, receiver-folded (ShadowProjection.hpp):
+	// shadowPos = (dot(row0.xyz, PositionEye) + row0.w, ... row1 ...).
+	Vec4f shadowRow0;
+	Vec4f shadowRow1;
+	int nbShadowingBodies;
+	int _pad[3];
+	struct ShadowingBody {
+		Vec4f posRadius;      // xy = caster center in sun-frame (rel. receiver), z = disc radius, w unused
+		Vec4f absorbtionIdx;  // rgb = caster shadowAbsorbtion, w = layer index (float for sampler2DArray)
+	} shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];
 };
 
 #endif /* end of include guard: BODY_SHADER_INTERFACE_HPP_ */

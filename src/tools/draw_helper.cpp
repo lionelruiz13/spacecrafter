@@ -477,6 +477,9 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
         vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &imageBarrier);
     }
     d.shadowers.clear();
+    if (preFrameRecorder)
+        preFrameRecorder(cmd, frameIdx); // new-path shadow production - same
+                                         // pre-color window as the old passes
     frame->postBegin();
     frame->submitInline();
     frame = nullptr;

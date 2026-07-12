@@ -1040,12 +1040,18 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			switch (flag_value) {
 				case FLAG_VALUES::FV_TOGGLE:
 					Context::instance->experimental_shadows ^= Context::instance->default_experimental_shadows;
+					// New path: PLAIN toggle - the old XOR-against-default is a
+					// defect (no-op when the config default is false), not
+					// reproduced (shadow-paths.md A3.2/B1).
+					ShadowService::enabled = !ShadowService::enabled;
 					break;
 				case FLAG_VALUES::FV_ON:
 					Context::instance->experimental_shadows = Context::instance->default_experimental_shadows;
+					ShadowService::enabled = true;
 					break;
 				case FLAG_VALUES::FV_OFF:
 					Context::instance->experimental_shadows = false;
+					ShadowService::enabled = false;
 			}
 			break;
 		default:
