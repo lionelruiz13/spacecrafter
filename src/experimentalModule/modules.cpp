@@ -25,6 +25,7 @@ extern const Mat4d mat_j2000_to_vsop87;
 #include "orbitModules/StillOrbitLoader.hpp"
 
 #include "bodyModules/BasicMeshLoader.hpp"
+#include "bodyModules/HintLoader.hpp"
 
 void ModuleLoaderMgr::init()
 {
@@ -38,4 +39,5 @@ void ModuleLoaderMgr::init()
     registerModule(std::make_unique<SpecialOrbitLoader>());
 
     registerModule(BodyModuleType::MESH, std::make_unique<BasicMeshLoader>("bodies/eclipse_map.png"));
+    registerModule(BodyModuleType::HINT, std::make_unique<HintLoader>());
 }

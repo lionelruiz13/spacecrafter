@@ -218,7 +218,17 @@ public:
     // Update this body
     inline void update(double jd, const Mat4f &matLocalToBody) {
         screenSize = halfAngularSize/halfFov;
-        const float f = acos(-mat.r[14]/distance) / (sqrt(mat.r[12]*mat.r[12] + mat.r[13]*mat.r[13]) * halfFov);
+        // Fisheye center singularity guard (old-path parity, body.cpp:987-993):
+        // at rq→0 the general form is 0/0 — and the TRACKED body sits exactly
+        // there once tracking centers it (its halo/hint would ride a NaN
+        // screenPos). Small-angle limit: θ/(rq·halfFov) → 1/(distance·halfFov).
+        // Same 1e-5 threshold as the old path; float-acos noise above it stays
+        // sub-pixel. (Behind-the-observer rq≈0 keeps the old path's behavior:
+        // wrong-but-culled.)
+        const float rq = sqrtf(mat.r[12]*mat.r[12] + mat.r[13]*mat.r[13]);
+        const float f = (rq > distance * 1e-5f)
+            ? acos(-mat.r[14]/distance) / (rq * halfFov)
+            : 1.f / (distance * halfFov);
         screenPos.first = mat.r[12] * f;
         screenPos.second = mat.r[13] * f;
         if (bodyType == BodyType::EARTH) {

@@ -110,7 +110,17 @@ void SSystemFactory::loadCamera(const InitParser &conf)
     camera->trackBody(nullptr);
     camera->setHeading(conf.getDouble(SCS_NAVIGATION, SCK_HEADING) * (M_PI/180));
     camera->setHalfFov(conf.getDouble(SCS_NAVIGATION, SCK_INIT_FOV) * (M_PI/360), 0);
-    camera->lookTo(Utility::strToVec3f(conf.getStr(SCS_NAVIGATION, SCK_INIT_VIEW_POS)), 0);
+    {
+        // init_view_pos is an OLD-path local-frame vector (x=South, y=East,
+        // z=Up: observer getRotLocalToEquatorialFixed = Z(-lon)·Y(90-lat)).
+        // The camera's local frame is x=East, y=North, z=Up (the placement
+        // fold in Camera::update puts the pole at +y). Same components in
+        // both frames = a 90° roll about the zenith - measured as the
+        // 89.9943° init-view differential (harness 2026-07-12). Convert at
+        // the seam, like the longitude sign: (x,y,z)_old -> (y,-x,z)_camera.
+        const Vec3f v = Utility::strToVec3f(conf.getStr(SCS_NAVIGATION, SCK_INIT_VIEW_POS));
+        camera->lookTo(Vec3f(v[1], -v[0], v[2]), 0);
+    }
 }
 
 void SSystemFactory::reloadColors(const std::string& planetfile)
@@ -434,6 +444,13 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
         const Mat4d &h = navigation->getHelioToEyeMat();
         for (int i = 0; i < 16; ++i)
             out << h.r[i] << ((i < 15) ? "," : "");
+    }
+    // Old-path view state (initial-view seam investigation, 2026-07-12):
+    // local_vision is what updateViewMat actually consumes - dumped to compare
+    // against the value the seams believe they set (init_view_pos & co).
+    {
+        const Vec3d &lv = navigation->getLocalVision();
+        out << "],\"oldLocalVision\":[" << lv[0] << ',' << lv[1] << ',' << lv[2];
     }
     out << "],\"camera\":";
     camera->dumpTrace(out);

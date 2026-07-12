@@ -52,6 +52,12 @@ public :
 
 	int computeHints(float *&data);
 
+	//! Fill the hint circle vertices around an arbitrary render-space position.
+	//! Single authority on the circle shape - computeHints delegates here, and
+	//! the new-path HintModule (DRAW_HINT_POS) draws the same circle without a
+	//! Body. Returns the vertex count.
+	static int computeHintsAt(const std::pair<float, float> &pos, float *&data);
+
 	static void createSC_context();
 
 	static void bind(VkCommandBuffer cmd, const Vec4f &color);

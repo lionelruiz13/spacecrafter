@@ -77,7 +77,11 @@ void Hints::drawHints(const Navigator* nav, const Projector* prj)
 
 int Hints::computeHints(float *&data)
 {
-	auto pos = body->screenPos;
+	return computeHintsAt(body->screenPos, data);
+}
+
+int Hints::computeHintsAt(const std::pair<float, float> &pos, float *&data)
+{
 	float angle;
 
 	for (int i = 0; i <= nbrFacets; i++) {

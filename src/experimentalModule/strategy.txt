@@ -2,7 +2,7 @@ Priority :
 - LAZY
 - BACKGROUND
 - PRELOAD
-- NOW
+- ACTIVE
 
 Taskable :
 - ModularBody
@@ -21,4 +21,9 @@ Loading :
 TODO :
 - s_font not shown
 - draw pointer when isSelected
-- fix halo
+- fix halo -> DONE (2026-07-12, INTENT 11.19): the halo code was right, the
+  VIEW was wrong (tracking az-convention + 180° roll + init-view frame seam);
+  screen parity now 0.09 px in horizon mount. Residual: equatorial mount
+  (parallactic field roll) pending Camera mount design [vixy].
+- hints -> circle DONE (HintModule via DRAW_HINT_POS, INTENT 11.19);
+  label pending the text channel (INTENT open #3), fader pending.

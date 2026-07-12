@@ -24,6 +24,7 @@ enum DrawFlag {
     DRAW_PRINT = 1,
     DRAW_PRINTH,
     DRAW_HINT,
+    DRAW_HINT_POS, // Hint circle at an explicit position (new-path HintModule; no Body/Hints instance)
     DRAW_NEBULA,
     SIGNAL_PASS,
     SIGNAL_NEBULA,
@@ -72,6 +73,11 @@ typedef union {
         Vec4f color;
         Hints *self;
     } hint;
+    struct s_hintPos {
+        unsigned char flag;
+        Vec4f color;
+        std::pair<float, float> pos; // render-space pixels (rectToRender output, same space as Body::screenPos)
+    } hintPos;
     struct s_nebula {
         unsigned char flag;
         float color;
@@ -138,6 +144,7 @@ private:
     void drawPrint(s_print &data);
     void drawPrintH(s_printh &data);
     void drawHint(DrawData::s_hint &data);
+    void drawHintPos(DrawData::s_hintPos &data);
     void drawNebula(DrawData::s_nebula &data);
     void bindPrint(VkCommandBuffer cmd);
     void bindPrintH(VkCommandBuffer cmd);

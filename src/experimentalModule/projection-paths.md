@@ -157,9 +157,12 @@ discontinuity because there is no common-parent route, only the absolute frame.
   E2 — VIOLATED, fixed: per-hop tilts + inverted translation signs + non-inverse up-hop
      (INTENT §5.10–5.12) → flat chain, frame contract in ModularBody.hpp;
   E3 — position part VIOLATED, fixed (camera longitude sign + Earth spin via absent
-     `hardcoded`, INTENT §5.15); view part REMAINS by design: camera view state vs old
-     navigator view differ (D_common in predict.py P5) — both self-consistent, tracking
-     centers its own target;
+     `hardcoded`, INTENT §5.15); view part ~~REMAINS by design~~ → **RESOLVED (2026-07-12,
+     INTENT §11.19): D_common was NOT design freedom** — it packed a tracking
+     az-convention error, a constant 180° camera roll, and a 90° init-view frame seam;
+     all fixed, view term now 0.0000° (horizon mount), screen parity 0.09 px. Remaining
+     BY DESIGN residual: equatorial-mount parallactic roll (mount not yet parametrized
+     in the new Camera — pending Vixy);
   E4 halfFov semantics — VERIFIED equivalent;
   E5 depth-range policy — differs (C5), affects clipping not coordinates;
   E6 — VIOLATED, fixed: hardcoded-flag absence (INTENT §11.3) + BinaryOrbit secondary

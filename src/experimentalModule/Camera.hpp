@@ -83,8 +83,19 @@ public:
         moveRel(pos - (freeMode ? position : Vec3f(longitude, latitude, distanceToReference())), duration, calculateDuration);
     }
 
+    // Exact rotational inverse of the view build in Camera::update
+    // (Z(heading+π)·X(π/2−alt)·Z(az−π/2)) — that composition is the single
+    // authority on the alt/az/heading convention; this must stay its
+    // transpose. Was Z(az) (missing −π/2, then missing the roll π): combined
+    // with lookTo's az sign error it left the tracking fixed point 2·lng−π/2
+    // off-target in azimuth — measured as the tracked Moon 0.3939 rad
+    // off-center (halo/hint position divergence vs old path, 2026-07-12;
+    // predicted from the dump to 5e-5).
+    // NOTE: observedPosToRaDe/AltAz below inherit this frame correction (their
+    // az-family outputs shift accordingly) — their absolute calibration
+    // against the old path is the still-open INTENT §11.4 caveat.
     inline Vec3f observedToLocalPos(const Vec3f &observedPos) const {
-        return Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az)).transpose().multiplyWithoutTranslation(observedPos);
+        return Mat4f::zrotation(heading+M_PI).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az-M_PI_2)).transpose().multiplyWithoutTranslation(observedPos);
     }
     inline Vec3f observedToBodyLocalPos(const Vec3f &observedPos) const {
         Vec3f ret = observedToLocalPos(observedPos);
@@ -100,7 +111,9 @@ public:
     inline std::pair<float, float> observedPosToRaDe(const Vec3f &observedPos) const {
         Vec3f direction = observedToBodyLocalPos(observedPos);
         std::pair<float, float> ret;
-        if ((direction[0] + direction[1]) == 0) {
+        // Pole test was (x + y) == 0, which also swallowed every x == −y
+        // direction (same defect class as the old lookTo branch).
+        if (direction[0] == 0 && direction[1] == 0) {
             ret.second = 0;
             ret.first = std::copysign(M_PI_2, direction[2]);
         } else {
@@ -111,7 +124,7 @@ public:
     inline std::pair<float, float> observedPosToAltAz(const Vec3f &observedPos) const {
         Vec3f direction = observedToLocalPos(observedPos);
         std::pair<float, float> ret;
-        if ((direction[0] + direction[1]) == 0) {
+        if (direction[0] == 0 && direction[1] == 0) { // was x+y==0, see RaDe
             ret.first = std::copysign(M_PI_2, direction[2]);
             ret.second = 0;
         } else {

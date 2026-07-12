@@ -52,8 +52,12 @@ cannot make one path's draw-side state stale - both settle at the same jd.
    (az/alt or tracking-sync) component present too; tracking propagation to
    the new Camera unverified.
 Known caveats: dScreen column mixes units (old pixels vs new NDC) -
-indicative only; exit segfault after 'shutdown action now' (post-dump,
-unattributed, possibly pre-existing).
+indicative only. Proper conversion (INTENT 11.19): old screen = render px on
+the scissor (render_size, e.g. 2048); new screen = rect [-1,1];
+px = (rect*0.5+0.5)*render_size. With that conversion the screen layer is a
+first-class comparison target - it caught the three view-layer roots the
+mat-layer P1-P5 could not see (all camera-frame rolls/offsets). Exit segfault
+after 'shutdown action now' (post-dump, unattributed, possibly pre-existing).
 
 ## Quadruplet mode (quad.py) - INTENT 11.14b
 Earth/Moon/Sun/Mars [vixy]: identity / down-hop / up-hop / up-then-down -

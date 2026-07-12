@@ -83,7 +83,17 @@ void Camera::update(double jd, float deltaTime)
     // (The 2026 Moon-divergence note that lived here is resolved: the delta was
     //  EMB wiring + per-hop tilts + this longitude sign - INTENT.md 11.14,
     //  harness/predict.py carries the measurements.)
-    Mat4f mat{Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az-M_PI_2))};
+    // heading+π: without it the camera frame is rolled 180° about the view
+    // axis relative to the old path - the whole sky point-reflected on screen
+    // (measured 2026-07-12, horizon-mount A/B: constant 179.994° roll on every
+    // body, radii equal to 0.05 px; the halo/hint position divergence). A roll
+    // about the view axis leaves the tracked direction invariant, which is why
+    // the position-layer harness (P1-P5) never saw it - it was absorbed into
+    // P5's D_common. This composition is the SINGLE AUTHORITY on the
+    // alt/az/heading convention: observedToLocalPos (Camera.hpp) must remain
+    // its exact rotational inverse, and lookTo's az=-lng/alt=-lat inversion is
+    // derived from it (roll-invariant, so unaffected by the +π).
+    Mat4f mat{Mat4f::zrotation(heading+M_PI).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az-M_PI_2))};
     if (freeMode) {
         if (auto newRef = reference->findBetterReference()) {
             switchToBody(newRef);
@@ -162,7 +172,7 @@ void Camera::setFreeMode(bool b)
 void Camera::recomputeAltAzHeading()
 {
     Vec3f direction = view.getMatrix().multiplyWithoutTranslation({1, 0, 0});
-    if ((direction[0] + direction[1]) == 0) {
+    if (direction[0] == 0 && direction[1] == 0) { // was x+y==0: misrouted every x==−y direction
         if (std::signbit(direction[2])) {
             alt = M_PI_2;
             direction = view.getMatrix().multiplyWithoutTranslation({0, 0, 1});
@@ -199,13 +209,21 @@ void Camera::setBoundToSurface(bool b)
 
 void Camera::lookTo(const Vec3f &direction, float duration, bool isMaxDuration)
 {
-    if ((direction[0] + direction[1]) == 0) {
-        alt = std::copysign(M_PI_2, direction[2]);
-        az = M_PI;
+    // Inverse of update()'s view build Z(heading)·X(π/2−alt)·Z(az−π/2):
+    // centering `direction` (local frame, spheToRect convention) requires
+    // az = −lng(direction), alt = −lat(direction). Was az = +lng: together
+    // with observedToLocalPos's missing −π/2 the tracking fixed point sat
+    // 2·lng−π/2 away from the target in azimuth (see observedToLocalPos).
+    if (direction[0] == 0 && direction[1] == 0) {
+        // Pole singularity: alt fully determined, az free — keep the current
+        // az rather than snapping it. (The previous test x+y==0 also
+        // misrouted every x==−y direction here.)
+        alt = -std::copysign(M_PI_2, direction[2]);
     } else {
         Utility::rectToSphe(&az, &alt, direction);
+        az = -az;
+        alt = -alt;
     }
-    alt = -alt;
     // view.setRotation(((Mat4f::zrotation(heading).multiplyFast(Mat4f::xrotation(M_PI_2-alt)).multiplyFast(Mat4f::zrotation(az))).toQuaternion()));
     // view.moveTo(((Mat4f::zrotation(heading).multiplyFast(Mat4f::zxrotation(az, alt))).toQuaternion()), duration, isMaxDuration);
 }

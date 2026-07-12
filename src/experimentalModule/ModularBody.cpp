@@ -6,6 +6,7 @@
 #include "RenderChain.hpp"
 #include "tools/log.hpp"
 #include "tools/translator.hpp"
+#include "tools/utility.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
 
 Vec3f ModularBody::lightPosition;
@@ -353,6 +354,11 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
         ret.push_back(BodyModuleType::MESH);
     if (param.count("model_name"))
         ret.push_back(BodyModuleType::OJM);
+    // Every named body gets a HINT module by default; hint=false suppresses it
+    // HERE (not in HintLoader::isLikely - a 0 there would fire the missing-
+    // loader warning for a deliberate suppression).
+    if (!englishName.empty() && !Utility::isFalse(param["hint"]))
+        ret.push_back(BodyModuleType::HINT);
     return ret;
 }
 

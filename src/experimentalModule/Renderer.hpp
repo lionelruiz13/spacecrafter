@@ -3,8 +3,10 @@
 
 #include "tools/vecmath.hpp"
 #include "PipelineFamily.hpp"
+#include "tools/draw_helper.hpp"
 #include <vulkan/vulkan.h>
 #include <vector>
+#include <deque>
 
 class ToneReproductor;
 class FrameMgr;
@@ -80,6 +82,13 @@ public:
     // that wasn't defined as inclusive.
     void clearDepth(float zCenter, float boundingRadius);
     void drawHalo(const std::pair<float, float> &pos, const Vec3f &color, float rmag);
+    // Queue a hint circle at a body's screen position (rect space [-1,1], i.e.
+    // ModularBody::getScreenPos) through the DrawHelper hint batch - the same
+    // seam borrow class as drawHalo's Halo::global poke; both dissolve into
+    // the Renderer batching service (INTENT §10.4.6). Occlusion follows the
+    // batched screen-space contract (PipelineFamily.hpp): flushed at the
+    // per-body command-buffer boundaries (clearDepth -> helper->nextDraw).
+    void drawHint(const std::pair<float, float> &pos, const Vec4f &color);
     float adaptLuminance(float world_luminance) const;
     inline operator VkCommandBuffer() {
         return cmd;
@@ -142,6 +151,12 @@ private:
     FrameMgr *frame;
     PassKind passKind = PassKind::COLOR;
     std::vector<VkCommandBuffer> cmds[3];
+    // DrawHelper consumes DrawData by POINTER (old-path precedent: Hints keeps
+    // its drawData as a member and draw(T*) reinterpret-casts). deque = stable
+    // addresses under push_back; cleared at beginDraw - entries of frame N are
+    // consumed by the helper within frame N (helper->nextDraw/endDraw
+    // boundaries), long before the same frameIdx comes around again.
+    std::deque<DrawData::s_hintPos> hintQueue;
     Vec3f clippingFov;
     uint16_t cmdIdx;
     uint8_t frameIdx;

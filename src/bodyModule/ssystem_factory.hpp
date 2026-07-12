@@ -42,6 +42,7 @@
 #include "navModule/anchor_manager.hpp"
 #include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/ModularBodyPtr.hpp"
+#include "experimentalModule/bodyModules/HintModule.hpp"
 
 class Camera;
 class ModularSystem;
@@ -227,6 +228,7 @@ public:
 
 	void setFlagHints(bool b) {
         ssystemSelected->setFlagHints(b);
+        HintModule::show = b; // both-paths seam, like setFlagLightTravelTime
     }
 
     void setFlagIsolateSelected(bool b) {ssystemSelected->setFlagIsolateSelected(b);}
@@ -438,6 +440,7 @@ public:
 
 	void setDefaultBodyColor(const std::string& halo, const std::string& label, const std::string& orbit, const std::string& trail) {
         ssystemColor->setDefaultBodyColor(halo, label, orbit, trail);
+        HintModule::defaultLabelColor = Utility::strToVec3f(label); // both-paths seam
     }
 
 	std::string getPlanetHashString() {

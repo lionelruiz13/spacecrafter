@@ -24,6 +24,7 @@ void Renderer::beginDraw(uint8_t _frameIdx)
     // ModularBody::drainNotableBodies() here (filled by this frame's update;
     // cleared at the next update start - see dispatchUpdate). Bucket math
     // lands with the partitioning implementation.
+    hintQueue.clear(); // previous frame's entries are consumed (see member note)
     cmdIdx = 0;
     frameIdx = _frameIdx;
     frame = Context::instance->frame[frameIdx].get();
@@ -64,6 +65,15 @@ void Renderer::drawHalo(const std::pair<float, float> &pos, const Vec3f &color, 
     data.pos = VulkanMgr::instance->rectToRender(pos);
     data.Color = color;
     data.rmag = rmag;
+}
+
+void Renderer::drawHint(const std::pair<float, float> &pos, const Vec4f &color)
+{
+    auto &data = hintQueue.emplace_back();
+    data.flag = DRAW_HINT_POS;
+    data.color = color;
+    data.pos = VulkanMgr::instance->rectToRender(pos); // same space as old Body::screenPos
+    Context::instance->helper->draw(&data);
 }
 
 float Renderer::adaptLuminance(float world_luminance) const
