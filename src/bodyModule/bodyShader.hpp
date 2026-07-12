@@ -37,6 +37,10 @@
 
 //
 #include "tools/vecmath.hpp"
+// globalVertProj/globalFrag moved to the new path (single authority - the
+// MESH family draws with the same shaders); this include edge dies with the
+// old path (INTENT.md 12 retirement map, re-home 2026-07-12).
+#include "experimentalModule/meshModules/bodyShaderInterface.hpp"
 
 enum SHADER_USE {
 	SHADER_SUN = 0,
@@ -171,15 +175,7 @@ struct depthTraceInfo {
 	float planetOneMinusOblateness;
 };
 
-typedef struct {
-	mat4 ModelViewMatrix;
-	mat4 NormalMatrix;
-	vec3 clipping_fov;
-	float planetRadius;
-	vec3 LightPosition;
-	float planetScaledRadius;
-	float planetOneMinusOblateness;
-} globalVertProj;
+// globalVertProj: moved to experimentalModule/meshModules/bodyShaderInterface.hpp
 
 typedef struct {
 	mat4 ModelViewMatrix;
@@ -203,17 +199,7 @@ typedef struct {
 	mat4 Model;
 } globalTesc;
 
-typedef struct {
-	vec3 MoonPosition1;
-	float MoonRadius1;
-	vec3 MoonPosition2;
-	float MoonRadius2;
-	vec3 MoonPosition3;
-	float MoonRadius3;
-	vec3 MoonPosition4;
-	float MoonRadius4;
-	float SunHalfAngle;
-} globalFrag;
+// globalFrag: moved to experimentalModule/meshModules/bodyShaderInterface.hpp
 
 typedef struct {
 	float RingInnerRadius;

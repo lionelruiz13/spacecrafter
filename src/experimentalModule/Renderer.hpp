@@ -69,6 +69,11 @@ class Set;
 class Renderer {
 public:
     Renderer();
+    // Tears down the pipeline-family registry (pipelines, layouts, pools,
+    // interim builder thread) - runs at Context destruction, i.e. while the
+    // Vulkan device is still alive (Renderer is Context's first member, hence
+    // destroyed last among Context members, before VulkanMgr).
+    ~Renderer();
     void init(ToneReproductor *eye);
     // Begin recording for this frame index. Called from the frame task only.
     void beginDraw(uint8_t frameIdx);
@@ -81,13 +86,20 @@ public:
     // needs no extra margin; the old path's 1.1 factor compensated a radius
     // that wasn't defined as inclusive.
     void clearDepth(float zCenter, float boundingRadius);
+    // Queue a halo through the Renderer batching service (HALO service
+    // family - the Halo::global borrow is dissolved, 2026-07-12 S1(c)).
+    // Occlusion follows the batched screen-space contract
+    // (PipelineFamily.hpp BatchDesc): flush at the per-body boundaries.
     void drawHalo(const std::pair<float, float> &pos, const Vec3f &color, float rmag);
+    // Halo texture seam: mirrors Body::setTexHaloMap (solarsystem_tex sets
+    // "planethalo.png" at init) - the service loads its own s_texture
+    // (texCache dedups by name); rebind happens at the next batchBegin.
+    void setHaloTexture(const std::string &texName);
     // Queue a hint circle at a body's screen position (rect space [-1,1], i.e.
-    // ModularBody::getScreenPos) through the DrawHelper hint batch - the same
-    // seam borrow class as drawHalo's Halo::global poke; both dissolve into
-    // the Renderer batching service (INTENT §10.4.6). Occlusion follows the
-    // batched screen-space contract (PipelineFamily.hpp): flushed at the
-    // per-body command-buffer boundaries (clearDepth -> helper->nextDraw).
+    // ModularBody::getScreenPos) through the DrawHelper hint batch - the
+    // remaining seam borrow of this class (the halo half is dissolved);
+    // dissolves into a HINT batched family with the label/fader work
+    // (INTENT.md 12 row 6). Occlusion contract identical.
     void drawHint(const std::pair<float, float> &pos, const Vec4f &color);
     float adaptLuminance(float world_luminance) const;
     inline operator VkCommandBuffer() {
@@ -143,9 +155,28 @@ public:
     // path must be partially rewritten against the new chain; the channel
     // modules use to reach it will be defined by the projection-path
     // investigation (INTENT §11).
+    // Explicit registry teardown - called FIRST in Context::~Context (all
+    // Context members still alive: staging release, s_texture destruction
+    // and pipeline destruction all need live managers). ~Renderer keeps a
+    // no-op safety net for the case Context::~Context changes.
+    void releaseRegistry();
+
 private:
+    // ---- Batching service internals (defined in PipelineRegistry.cpp) ----
+    // Rebind batch resources that changed (e.g. halo texture) - frame start.
+    void batchBegin();
+    // Record every batched family's pending instances into the current cmd
+    // (per-body boundary: portage of Halo::nextDraw semantics - the flush
+    // lands at the START of the next body's command buffer, so a body's own
+    // batched content draws over its disc and behind every nearer body).
+    void batchFlush();
+    // Frame end: plan the staging->vertex transfer of the drawn region and
+    // ping-pong the buffer halves (portage of Halo::endDraw bookkeeping).
+    void batchEnd();
+    void ensureHaloFamily();
     void allocateCommands();
     void nextCommandBuffer();
+    PipelineFamily haloFamily;
     VkCommandBuffer cmd = VK_NULL_HANDLE;
     ToneReproductor *eye;
     FrameMgr *frame;

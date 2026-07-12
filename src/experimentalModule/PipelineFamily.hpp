@@ -260,6 +260,14 @@ private:
 using SetContract = RegistryHandle<struct SetContractTag>;
 using PipelineFamily = RegistryHandle<struct PipelineFamilyTag>;
 
+// acquire()/release() are defined with the registry (PipelineRegistry.cpp);
+// declared here so every TU that copies/destroys a handle refers to the same
+// explicit specialization (required before use, [temp.expl.spec]).
+template <> void RegistryHandle<SetContractTag>::acquire();
+template <> void RegistryHandle<SetContractTag>::release();
+template <> void RegistryHandle<PipelineFamilyTag>::acquire();
+template <> void RegistryHandle<PipelineFamilyTag>::release();
+
 // The full family description, moved into the registry at allocation
 // (Renderer::allocateFamily). Same name = same underlying family (dedup:
 // per-instance builders like Sun/Ring dissolve into one family plus

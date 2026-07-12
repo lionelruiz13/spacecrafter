@@ -246,10 +246,14 @@ void App::initVulkan(InitParser &conf)
 	}
 	context.stagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 512*1024*1024, "Staging BufferMgr");
 	context.uniformMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "uniform BufferMgr", true);
+	// Last parameter (maxSampledImageSet=32): shadowLayout binding 1 is
+	// SAMPLED_IMAGE (ShadowData sets allocate here) - the pool table lacked
+	// the type entirely, one vkAllocateDescriptorSets validation error per
+	// run (INTENT.md 11.1; SetMgr fix authorized at plan approval 2026-07-12).
 	if (conf.getBoolean(SCS_MAIN, SCK_LOW_MEMORY))
-		context.setMgr = std::make_unique<SetMgr>(vkmgr, 1024, 512, 1024, 1, 64, true, 16);
+		context.setMgr = std::make_unique<SetMgr>(vkmgr, 1024, 512, 1024, 1, 64, true, 16, 32);
 	else
-		context.setMgr = std::make_unique<SetMgr>(vkmgr, 4096, 1024, 4096, 1, 64, true, 16);
+		context.setMgr = std::make_unique<SetMgr>(vkmgr, 4096, 1024, 4096, 1, 64, true, 16, 32);
 	context.graphicFamily = vkmgr.acquireQueue(context.graphicQueue, VulkanMgr::QueueType::GRAPHIC_COMPUTE, "main");
 	if (context.graphicFamily) {
 		context.computeQueue = context.graphicQueue;

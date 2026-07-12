@@ -254,6 +254,9 @@ bool Body::getFlagHalo(void) const
 
 bool Body::setTexHaloMap(const std::string &texMap)
 {
+	// Seam mirror (INTENT.md 12): the new path's halo batch service loads the
+	// same texture (s_texture texCache dedups by name across both paths).
+	Context::instance->renderer.setHaloTexture(texMap);
 	return Halo::setTexHaloMap(texMap);
 }
 

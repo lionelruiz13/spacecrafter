@@ -101,6 +101,8 @@ void Context::buildShadowPipeline(uint32_t begin, uint32_t end)
 
 Context::~Context()
 {
+    renderer.releaseRegistry(); // FIRST: pipeline-family registry teardown
+                                // needs live managers (stagingMgr, device)
     instance = nullptr;
     helper.reset();
     for (auto p : pipelineArray)

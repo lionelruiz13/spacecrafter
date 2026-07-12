@@ -1,6 +1,5 @@
 #include "Renderer.hpp"
 #include "ModularBody.hpp"
-#include "bodyModule/halo.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "EntityCore/Core/FrameMgr.hpp"
 #include "tools/context.hpp"
@@ -36,15 +35,19 @@ void Renderer::beginDraw(uint8_t _frameIdx)
 
 void Renderer::beginBodyDraw()
 {
-    Halo::beginDraw();
+    batchBegin(); // batching service (was Halo::beginDraw - borrow dissolved)
     clippingFov.v[2] = ModularBody::halfFov;
     Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
 }
 
 void Renderer::endBodyDraw()
 {
-    Halo::endDraw();
+    batchFlush(); // trailing batched content into the last cmd: drawn after
+                  // every body = on top, per the occlusion contract (the old
+                  // path needed a dedicated trailing command buffer for this;
+                  // recording before ending the frame cmd replaces it)
     vkEndCommandBuffer(cmd);
+    batchEnd(); // transfer plan + half ping-pong (was Halo::endDraw)
 }
 
 void Renderer::clearDepth(float zCenter, float boundingRadius)
@@ -56,7 +59,9 @@ void Renderer::clearDepth(float zCenter, float boundingRadius)
     // in FRONT of the disc with the previous order [vixy: 2026-07-12]).
     Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
     nextCommandBuffer();
-    Halo::nextDraw(cmd);
+    batchFlush(); // per-body boundary: previous bodies' batched content lands
+                  // at the START of this body's cmd (Halo::nextDraw parity -
+                  // over its own body's disc, behind this nearer body's)
     VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
     VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
     vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
@@ -64,13 +69,7 @@ void Renderer::clearDepth(float zCenter, float boundingRadius)
     clippingFov.v[1] = zCenter + boundingRadius;
 }
 
-void Renderer::drawHalo(const std::pair<float, float> &pos, const Vec3f &color, float rmag)
-{
-    auto &data = Halo::global->pData[Halo::global->offset + Halo::global->size++];
-    data.pos = VulkanMgr::instance->rectToRender(pos);
-    data.Color = color;
-    data.rmag = rmag;
-}
+// drawHalo lives with the batching service (PipelineRegistry.cpp).
 
 void Renderer::drawHint(const std::pair<float, float> &pos, const Vec4f &color)
 {

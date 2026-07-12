@@ -2,11 +2,13 @@
 #define BASIC_MESH_HPP_
 
 #include "experimentalModule/BodyModule.hpp"
+#include "experimentalModule/meshModules/MeshFamilies.hpp"
+#include "experimentalModule/meshModules/bodyShaderInterface.hpp"
 #include "tools/s_texture.hpp"
 #include "EntityCore/Forward.hpp"
 #include "EntityCore/Resource/Set.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
-#include "bodyModule/bodyShader.hpp"
+#include <memory>
 class ObjL;
 
 class BasicMesh : public BodyModule {
@@ -26,7 +28,8 @@ private:
     uint16_t bigTextureMapping = 0;
     ObjL *mesh;
     s_texture mapTexture;
-    Set set;
+    PipelineFamily family; // MESH family handle (MeshFamilies::meshNormal)
+    std::unique_ptr<Set> set; // allocated from the family's contract pools (Renderer::allocSet)
     SharedBuffer<globalVertProj> vert;
     SharedBuffer<globalFrag> frag;
 };
