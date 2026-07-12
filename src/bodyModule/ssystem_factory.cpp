@@ -415,7 +415,8 @@ void SSystemFactory::update(int delta_time, const Navigator* nav, const TimeMgr*
     downCounter -= delta_time;
     if (downCounter < 0) {
         downCounter = 1000;
-        drawModularSystem = !drawModularSystem;
+        if (!pathPinned) // flag experimental_path stops the A/B alternation
+            drawModularSystem = !drawModularSystem;
     }
 }
 

@@ -380,7 +380,11 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         body->boundToSurface = true;
     if (Utility::isTrue(param["hidden"]))
         body->hide();
-    if (Utility::isTrue(param["system_star"]) || (!star && body->isStar() && parent == this))
+    // star is initialized to the SYSTEM itself (valid light-position default
+    // for starless systems), so "unassigned" is star == this, NOT !star - the
+    // old !star test was dead and the Sun never became the star (its radius
+    // stayed 0 -> zero penumbra, found by the S5 fidelity probe).
+    if (Utility::isTrue(param["system_star"]) || (star == this && body->isStar() && parent == this))
         star = body;
     for (auto moduleType : body->deduceBodyModuleList(param))
         ModuleLoaderMgr::instance.loadModule(moduleType, body, param);
@@ -454,13 +458,18 @@ void ModularSystem::applyHardcodedContent(ModularBodyCreateInfo &createInfo, std
 {
     if (createInfo.englishName == "Earth") {
         createInfo.bodyType = BodyType::EARTH;
-        // The header's own example (ModularBody.hpp shadowAbsorbtion): Earth's
-        // shadow absorbs G/B, not R - red light diffracted by the atmosphere
-        // reaches the umbra (lunar-eclipse color, replaces the old my_moon
-        // UmbraColor hardcode - shadow-paths.md B4/B5). Explicit shadow_color
-        // in the data still wins (loadBody reads it after this call).
+        // Earth's shadow absorbs G/B more than R - red light diffracted by
+        // the atmosphere reaches the umbra (lunar-eclipse color; replaces the
+        // old my_moon UmbraColor hardcode). VALUE IS DERIVED, not tuned
+        // [visual-fidelity mandate, vixy 2026-07-12]: old composition
+        // diffuse*(s + U*(1-s)) with U = UmbraColor(0.4, 0.12, 0) equals the
+        // new diffuse*(1 - cov*a) EXACTLY under a = 1-U, cov = 1-s - so
+        // {0.6, 0.88, 1.0} reproduces the old model across the whole
+        // penumbra; the only residual is coverage-profile shape
+        // (shadow-paths.md D2). Explicit shadow_color in the data still wins
+        // (loadBody reads it after this call).
         if (param.find("shadow_color") == param.end())
-            createInfo.shadowAbsorbtion = Vec3f(0.f, 1.f, 1.f);
+            createInfo.shadowAbsorbtion = Vec3f(0.6f, 0.88f, 1.0f);
     } else if (createInfo.englishName == "Moon") {
         createInfo.bodyType = BodyType::EARTH_MOON;
     }

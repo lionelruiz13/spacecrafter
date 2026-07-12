@@ -745,6 +745,16 @@ void Core::ssystemDualDump(const std::string& file)
 	ssystemFactory->dumpTracePaths(file);
 }
 
+void Core::setExperimentalPath(bool newPath)
+{
+	ssystemFactory->setExperimentalPath(newPath);
+}
+
+bool Core::getExperimentalPath() const
+{
+	return ssystemFactory->getExperimentalPath();
+}
+
 void Core::preloadSolarSystemBody(stringHash_t& param)
 {
 	auto &name = param["name"];

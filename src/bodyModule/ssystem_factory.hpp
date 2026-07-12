@@ -75,6 +75,15 @@ public:
     // Precondition: freeze time (timerate rate 0) so the 1s A/B draw toggle
     // cannot make one path's draw-side state stale relative to the other.
     void dumpTracePaths(const std::string &file);
+    //! Script-settable rendered-path selection (flag experimental_path):
+    //! pins old (false) / new (true) path and stops the A/B auto-toggle.
+    void setExperimentalPath(bool newPath) {
+        drawModularSystem = newPath;
+        pathPinned = true;
+    }
+    bool getExperimentalPath() const {
+        return drawModularSystem;
+    }
     // Dual-path seam: re-reference the new-path Camera onto the body the old
     // path's anchor just switched to (warp semantics - the observer keeps its
     // lat/lon/alt meaning on the new body, like the old anchor switch). No-op
@@ -638,6 +647,10 @@ public:
 
     //! For debugging, should the modular system been drawn ?
     bool drawModularSystem = false;
+    // Path pinned by script (flag experimental_path): the 1s A/B auto-toggle
+    // stops once a script chose a path - deterministic captures [vixy:
+    // 2026-07-12, replaces phase-guessing on screenshots].
+    bool pathPinned = false;
 private:
     //! Select current system
     void selectSystem();

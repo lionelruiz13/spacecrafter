@@ -1036,6 +1036,20 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !saveScreenInterface->getImageCompressionLoss();
 			saveScreenInterface->setImageCompressionLoss(newval);
 			break;
+		case FLAG_NAMES::FN_EXPERIMENTAL_PATH:
+			// Rendered-path selection (old/new), replacing the A/B time-toggle
+			// once used [vixy: 2026-07-12] - plain semantics, script-driven.
+			switch (flag_value) {
+				case FLAG_VALUES::FV_TOGGLE:
+					stcore->setExperimentalPath(!stcore->getExperimentalPath());
+					break;
+				case FLAG_VALUES::FV_ON:
+					stcore->setExperimentalPath(true);
+					break;
+				case FLAG_VALUES::FV_OFF:
+					stcore->setExperimentalPath(false);
+			}
+			break;
 		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS:
 			switch (flag_value) {
 				case FLAG_VALUES::FV_TOGGLE:

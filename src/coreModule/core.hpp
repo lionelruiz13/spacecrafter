@@ -395,6 +395,10 @@ public:
 	void removeSupplementalSolarSystemBodies();
 	// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
 	void ssystemDualDump(const std::string& file);
+	//! Pin the rendered body path (flag experimental_path): old/new selection
+	//! replacing the A/B auto-toggle once used.
+	void setExperimentalPath(bool newPath);
+	bool getExperimentalPath() const;
 
 	//! set flag to display generic Hint or specific DSO type
 	void setDsoPictograms (bool value);

@@ -256,14 +256,26 @@ Measured (sandbox llvmpipe-class driver, 2048 render, config shadow_res 1280 / c
 - **Solar eclipse 2026-08-12 (jd 2461265.24), Earth from the Moon at fov 4** — alignment
   verified with the app's own ephemeris via dual_dump + the exact corridor test
   (miss/corridor 0.605 at minimum, occlusion gate passes, window jd 2461265.20–.32).
-  New phase: sharp blurred umbra spot over the Arctic, spot-region luminance 4.9 vs 95.4
-  unshadowed. Old phase: constant 16.4 at the same region in ALL states = its analytic LUT
-  gradient only — **the old experimental (Gen-2) contribution is INVISIBLE on this driver,
-  by its own A3.4 defect** (undefined blur values read as zero; its dispatches fired ×10 in
-  the log). The new path renders what the legacy generalized system fails to render here —
-  the "as well or better" criterion is met by construction on this axis; on drivers where
-  the old undefined read happens to work, profile-shape comparison remains (LUT gradient vs
-  disc convolution — same physical construct, C-diff accepted divergence 2).
+  New phase: blurred umbra spot over the Arctic. Old phase: its analytic LUT gradient only —
+  **the old experimental (Gen-2) contribution is INVISIBLE on this driver, by its own A3.4
+  defect** (undefined blur values read as zero; its dispatches fired ×10 in the log). The
+  new path renders what the legacy generalized system fails to render here.
+- **Profile fidelity (visual-fidelity mandate [vixy 2026-07-12])**: the first capture showed
+  a too-wide flat-black core; analytic lens profile + an exact offline simulation of the
+  blur algorithm both disagreed with the GPU output → inputs, not algorithm. Probe:
+  `radiusPx = 0` — `star->getRadius() == 0` because **ModularSystem init sets star = the
+  system itself and the `!star` assignment test was dead code: the Sun never became the
+  star** (latent since ModularSystem existed; invisible until S5 consumed the radius; the
+  light POSITION coincidentally matched, only the size was lost). Fixed (star == this is
+  the unassigned state). After the fix, deterministic captures (see the path flag below):
+  spot radial profile old `[5.5, 16.8, 24.7, 27.5, 31.3, 32.6, 36.5, 44.0, 50.7]` vs new
+  `[9.1, 19.3, 23.1, 26.7, 30.1, 31.7, 35.1, 42.2, 48.9]` per 30-px annulus — within ~1–4
+  units everywhere, both matching the analytic lens shape (LUT tabulation vs exact
+  convolution + the D7 base-brightness delta account for the residual).
+- **`flag experimental_path on/off/toggle` [vixy 2026-07-12]**: script-settable rendered-path
+  selection (new/old), replacing the 1s A/B auto-toggle once used — deterministic
+  single-path captures; retires phase-guessing (label-glyph/luminance clustering) for all
+  remaining A/B work. Chain: AppCommandInterface → Core → SSystemFactory (pathPinned).
 - **Flag cycle (reversible pair, 2nd entry)**: on→off→on — spot 4.9 → 75.8 (gone; and the
   new-phase eclipsed Moon goes full-bright [124,122,121] while old keeps its LUT umbra =
   the documented accepted divergence C1) → 4.9 (cache re-produces after invalidation).
@@ -290,9 +302,13 @@ Design deltas found while porting (both are classes the old path avoided by fram
 ## D. Convergence points (Vixy) + feeds
 
 1. BISHADOW semantics + RGBA8_SELF client — before their first use (B5).
-2. Earth `shadow_color` tuning: {0,1,1} (the stated example) shipped as the hardcoded
-   default; measured parity-match with the old LUT umbra peaks ≈ {0.58, 0.85, 0.96}
-   (E section numbers). One data value either way — pick on visual judgment.
+2. ~~Earth `shadow_color` tuning~~ **RESOLVED [vixy 2026-07-12: visual fidelity is the
+   goal]**: the shipped default is DERIVED, not tuned — old `diffuse·(s + U·(1−s))` equals
+   new `diffuse·(1−cov·a)` exactly under `a = 1−UmbraColor = {0.6, 0.88, 1.0}`, `cov = 1−s`
+   — the old composition under a change of variable, penumbra-wide. Measured after: umbra
+   means old [59.8, 20.6, 4.2] vs new [52.8, 18.1, 3.6], peaks [98,34,10] vs [100,35,9].
+   "Better" = smoother penumbra + cases legacy never covered (arbitrary receivers, G8) —
+   never a different look where legacy had one [vixy].
 3. Flag semantics AS IMPLEMENTED: initialized from the `experimental_shadows` config key
    (A/B parity at init — the sandbox config ships true), plain toggle at the command (the
    XOR quirk not reproduced). Overrule here if different shipping semantics are wanted at
