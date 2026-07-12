@@ -314,6 +314,12 @@ struct PipelineFamilyDesc {
 };
 
 // bind() result: what to record against, and what actually bound.
+// CALLER CONTRACT: layout == nullptr means the pass is unavailable for this
+// family (never declared, or DISABLED because its base build failed - e.g. a
+// shader file absent from the runtime tree). Nothing was bound; the caller
+// must record nothing and return - drawing degrades to the body's other
+// content (C3 ladder), it never dereferences. The cause is already logged at
+// its definition site (allocation or first bind).
 struct FamilyBound {
     PipelineLayout *layout; // bind Sets / push constants against this
                             // (frame-scoped raw pointer - I5(a))

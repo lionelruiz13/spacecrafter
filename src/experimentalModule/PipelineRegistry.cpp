@@ -117,6 +117,12 @@ struct FamilyEntry {
                                    // providable - masked out of every request
     uint16_t refs = 0;
     bool misroutedLogged[static_cast<size_t>(PassKind::NB_PASS_KIND)] = {};
+    // Pass declared but disabled at allocation (base build failed - shader
+    // absent/broken). Distinguished so the first-bind log names the REAL
+    // cause instead of a phantom trait-routing defect (the failure must
+    // self-name - a "bound in undeclared pass" message sent the diagnosis
+    // toward trait routing when the cause was an undeployed shader file).
+    bool disabled[static_cast<size_t>(PassKind::NB_PASS_KIND)] = {};
 };
 
 struct SetContractEntry {
@@ -411,11 +417,15 @@ FamilyBound resolveAndBind(Registry &r, FamilyEntry &f, PassKind pass, VkCommand
 {
     PassEntry &pe = f.passes[static_cast<size_t>(pass)];
     if (!pe.desc) {
-        // Trait-routing defect: hooks are only invoked within their matching
-        // pass kind - log once per (family, pass), then no-op.
+        // Either a trait-routing defect (hooks are only invoked within their
+        // matching pass kind) or a pass disabled at allocation (base build
+        // failed). Log once per (family, pass) with the real cause, no-op.
         if (!f.misroutedLogged[static_cast<size_t>(pass)]) {
             f.misroutedLogged[static_cast<size_t>(pass)] = true;
-            VulkanMgr::instance->putLog("PipelineRegistry: family '" + f.desc.name + "' bound in undeclared pass " + passName(pass), LogType::ERROR);
+            if (f.disabled[static_cast<size_t>(pass)])
+                VulkanMgr::instance->putLog("PipelineRegistry: family '" + f.desc.name + "' pass " + passName(pass) + " is DISABLED (base build failed - check the shader files named at allocation); drawing skipped", LogType::ERROR);
+            else
+                VulkanMgr::instance->putLog("PipelineRegistry: family '" + f.desc.name + "' bound in undeclared pass " + passName(pass), LogType::ERROR);
         }
         return {nullptr, 0};
     }
@@ -685,9 +695,10 @@ PipelineFamily Renderer::allocateFamily(PipelineFamilyDesc &&desc)
             // Base MUST be resident (base-always-ready, C3) - a family whose
             // base fails to build cannot honor bind(); disable the pass so
             // bind() reports the misroute instead of binding a null pipeline.
-            VulkanMgr::instance->putLog("PipelineRegistry: BASE build failed for family '" + f.desc.name + "' pass " + passName(pd.pass) + " - pass disabled", LogType::ERROR);
+            VulkanMgr::instance->putLog("PipelineRegistry: BASE build failed for family '" + f.desc.name + "' pass " + passName(pd.pass) + " (shader '" + pd.shaderTable.front().shaders.vert + "'/'" + pd.shaderTable.front().shaders.frag + "') - pass disabled", LogType::ERROR);
             pe.desc = nullptr;
             pe.variants.clear();
+            f.disabled[static_cast<size_t>(pd.pass)] = true;
             continue;
         }
         pe.variants.back().ready.store(true, std::memory_order_release);

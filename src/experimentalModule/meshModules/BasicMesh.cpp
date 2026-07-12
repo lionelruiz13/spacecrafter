@@ -73,6 +73,11 @@ static void fillShadows(SharedBuffer<meshFrag> &frag, ModularBody *body)
 void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
     const FamilyBound bound = renderer.bind(family);
+    if (!bound.layout)
+        return; // pass unavailable (base build failed, e.g. shader file not
+                // deployed) - already logged at its definition site; drawing
+                // degrades to the body's other content instead of null-deref
+                // (latent since S1, materialized by the first absent shader)
     mesh->bind(renderer);
     vert->ModelViewMatrix = mat;
     vert->NormalMatrix = mat.inverseUntranslated().transpose();
@@ -110,6 +115,8 @@ void BasicMesh::drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &
     // Reserved NO_DEPTH variant; until its lazy build is resident, bind falls
     // back to the depth-on base (got reports it) - transient, first frames only.
     const FamilyBound bound = renderer.bind(family, VARIANT_NO_DEPTH);
+    if (!bound.layout)
+        return; // same degradation as draw()
     mesh->bind(renderer);
     vert->ModelViewMatrix = mat;
     vert->NormalMatrix = mat.inverseUntranslated().transpose();
