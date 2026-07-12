@@ -292,6 +292,7 @@ public:
     }
 
 	void setScale(float scale) {
+        ModularBody::haloScale = scale; // both-paths seam (old Body::object_scale)
         ssystemScale->setScale(scale);
     }
 
@@ -452,6 +453,7 @@ public:
     }
 
 	void setSizeLimit(float scale) {
+        ModularBody::haloSizeLimit = scale; // both-paths seam (old Body::object_size_limit)
         ssystemScale->setSizeLimit(scale);
     }
 

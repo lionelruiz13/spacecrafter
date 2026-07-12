@@ -141,6 +141,11 @@ public:
 
 	void switchMode(const std::string setValue);
 
+	//! Script/TCP-triggered screenshot (harness A/B visual comparison,
+	//! experimentalModule/INTENT.md 11.19a): same readback as the UI key,
+	//! but filename-addressable. Written asynchronously ~1 frame later.
+	void takeScreenshot(const std::string &filename);
+
 private:
 	//! run any incoming command from shared memory interface
 	void updateFromSharedData();

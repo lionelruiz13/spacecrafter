@@ -3479,6 +3479,12 @@ int AppCommandInterface::commandBody()
 		} else if (argAction == "dual_dump") {
 			// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
 			stcore->ssystemDualDump(args[W_FILENAME]);
+		} else if (argAction == "screenshot") {
+			// Harness A/B visual comparison (INTENT.md 11.19a): the offscreen
+			// render (render_size) never reaches the window on headless X
+			// (swapchain acquire timeout) - external grabs see black; this
+			// rides the app's own readback. Written ~1 frame later, async.
+			stapp->takeScreenshot(args[W_FILENAME]);
 		} else {
 			debug_message = "command 'body' : unknown action argument";
 		}

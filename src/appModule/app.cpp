@@ -927,6 +927,12 @@ void App::switchMode(const std::string setValue) {
 		coreLink->isDrawingHipStarMgr = (executor->getExecutorModule() == SOLAR_SYSTEM);
 }
 
+void App::takeScreenshot(const std::string &filename)
+{
+	if (saveScreenInterface)
+		saveScreenInterface->takeScreenShot(filename);
+}
+
 void App::submitFrame(App *self, int id)
 {
 	VkCommandBuffer mainCmd = self->context.frame[id]->getMainHandle();

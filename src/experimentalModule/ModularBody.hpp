@@ -637,6 +637,11 @@ public:
     // parity). Routed from config/scripts through
     // SSystemFactory::setFlagLightTravelTime, which sets BOTH paths.
     static bool flagLightTravelTime;
+    // Halo photometry inputs, old-path parity (Body::object_scale /
+    // object_size_limit). Set through SSystemFactory::setScale/setSizeLimit -
+    // both-paths seams, like flagLightTravelTime.
+    static float haloScale;
+    static float haloSizeLimit;
     // --- Work-domain pin (C2) -----------------------------------------------
     // Pins keep this body's memory alive while work-domain tasks (loading,
     // building) reference it. Plain non-atomic int BY DESIGN: pin() and
@@ -755,48 +760,70 @@ private:
     std::vector<BodyModuleType> deduceBodyModuleList(std::map<std::string, std::string> &param);
     void select();
     void deselect();
+    // Old-path satellite classification (body.cpp:107-124: parent of type
+    // CENTER/SUN/STAR => not a satellite; new: SYSTEM/STAR-bit parents).
+    inline bool isSatellite() const {
+        return parent && !(parent->isStar() || parent->isSystem());
+    }
+    // FAITHFUL PORT of the old Halo::computeHalo + drawHalo (halo.cpp:82-167):
+    // identical adaptLuminance ARGUMENT and identical outer multiplier - NOT a
+    // re-derivation. adaptLuminance is a state-dependent power law
+    // (pow(w·π·1e-4, alpha_wa/alpha_da) - tone_reproductor.hpp:93), so
+    // re-derived constants can only agree at ONE adaptation state: the
+    // previous form drew Saturn's halo visibly bigger and Neptune's brighter
+    // than the old path (A/B captures, 2026-07-12, INTENT 11.19a). Every rule
+    // below carries its old-path line reference; divergences here are visual
+    // divergences between paths by construction.
     inline void drawHalo(Renderer &renderer) {
-        const float fov_q = std::min(halfFov, static_cast<float>(M_PI)/6.f);
         const float mag = computeMagnitude();
-
-        rmag = sqrtf(renderer.adaptLuminance(expf(-0.92103f*mag)*1.5289075617276093f / (fov_q * fov_q))) * 6.f * ModularBody::haloScale;
-        if (!isStar() && (halfFov >= (M_PI/6)))
-            rmag /= 5;
-        if (rmag < 1.2f) {
-            cmag = (mag > 0) ? (rmag*rmag/1.44f) : (rmag/1.2f);
+        const float fov_deg = halfFov * (360.f / M_PI); // = old prj->getFov()
+        float fov_q = (fov_deg > 60.f) ? 60.f : fov_deg; // halo.cpp:111-113
+        fov_q = 1.f / (fov_q * fov_q);
+        rmag = sqrtf(renderer.adaptLuminance((expf(-0.92103f*(mag + 12.12331f)) * 108064.73f) * fov_q)) * 30.f * ModularBody::haloScale;
+        if (isSatellite()) { // halo.cpp:117-120 (satellites only, NOT all non-stars)
+            rmag /= (fov_deg > 60.f) ? 25.f : 5.f;
+        }
+        cmag = 1.f;
+        if (rmag < 1.2f) { // halo.cpp:125-131 (anti-blink)
+            cmag = (mag > 0.f) ? (rmag*rmag/1.44f) : (rmag/1.2f);
             if (mag > 6.5f)
                 cmag *= rmag*rmag/1.44f;
             rmag = 1.2f;
-        } else {
-            float limit = ModularBody::haloSizeLimit/1.8;
+        } else { // halo.cpp:134-141 (size-limit compression)
+            const float limit = ModularBody::haloSizeLimit/1.8f;
     		if (rmag > limit) {
-    			rmag = limit + sqrt(rmag-limit)/(limit + 1);
+    			rmag = limit + sqrtf(rmag-limit)/(limit + 1);
     			if (rmag > ModularBody::haloSizeLimit)
     				rmag = ModularBody::haloSizeLimit;
     		}
-            cmag = 1.f;
         }
-        const float screen_r = screenSize * viewportRadius; // ScreenRect is render space (scissor), screenSize is rect space [-1, 1]
-        cmag *= 0.5*rmag/screen_r;
-        if (cmag > 1)
-            cmag = 1;
+        // old getOnScreenSize (body.cpp:668-671) = FULL angular diameter over
+        // the viewport HEIGHT = screenSize·2·viewportRadius (the previous
+        // ·viewportRadius halved every disc-floored halo).
+        const float screen_r = screenSize * 2.f * viewportRadius;
+        cmag *= 0.5f*rmag/screen_r; // halo.cpp:144-151
+        if (cmag > 1.f)
+            cmag = 1.f;
         if (rmag < screen_r) {
     		cmag *= rmag/screen_r;
     		rmag = screen_r;
     	}
-
-        if (!isStar()) {
+        if (isSatellite()) {
+            // Eclipse-behind-parent rule, satellites ONLY (halo.cpp:153-163).
+            // For planets the parent IS the light source: OP=0 -> 0/0 (the
+            // previous all-non-star form survived on NaN-compares-false).
             const Vec3f _planet = parent->mat.getTranslation() - lightPosition;
             const Vec3f _satellite = mat.getTranslation() - lightPosition;
-            double OP = _planet.length();
-    		double OS = _satellite.length();
-            if (OP < OS && fabs(acos(_planet.dot(_satellite)/(OP*OS))) < atan(parent->radius/OP)) {
+            const double c = _planet.dot(_satellite);
+            const double OP = _planet.length();
+    		const double OS = _satellite.length();
+            if (c > 0 && OP < OS && fabs(acos(c/(OP*OS))) < atan(parent->radius/OP)) {
                 cmag = 0.0;
             }
         }
-
-        if (cmag > 0.05)
-            renderer.drawHalo(screenPos, haloColor * cmag, rmag);
+        if (rmag < 1.21f && cmag < 0.05f) // halo.cpp:86 skip rule (old draws
+            return; // big-but-dim halos; the previous cmag-only gate dropped them)
+        renderer.drawHalo(screenPos, haloColor * cmag, rmag);
     }
     // Identity
     std::string englishName;
@@ -900,8 +927,6 @@ private:
     // leaks entries and corrupts the next frame's partitioning.
     static std::vector<ModularBody *> notableBody;
     static Vec3f defaultHaloColor;
-    static float haloScale;
-    static float haloSizeLimit;
     static float viewportRadius;
 };
 
