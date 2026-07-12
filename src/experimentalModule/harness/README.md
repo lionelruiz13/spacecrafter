@@ -105,3 +105,22 @@ az==sidereal+lon hold exactly in rot_earth.rot_moon, not in rot_moon alone),
 an ASmooth 0/0 (double set in one tick -> permanent NaN), and the NaN-date
 freeze in the shared Kepler solver (elliptic_to_rectangular.c infinite
 Newton loop). Final: all three scenes at float epsilon on P1-P5.
+
+## Mars generalization (scene D, 2026-07-12) - INTENT 11.17
+
+Observer ON Mars (100 m), tracking Earth's Moon, quadruplet at two dates
+88 days apart (appended to drive_scenes.py). Two firsts: cross-branch
+reference (common parent = Sun: up-hop + two down-hops) and fully generic
+reference body (pole-RA/DE elements, no hardcoded content, generic spin +
+offset-degrees fix). Result: ZERO new defects - first scene passing on
+first attempt; P1-P5 at float epsilon both dates (P4 = 39/11 km on a ~2 AU
+chain = the same 1.4-ulp class as 10-18 km on 1 AU chains). Scenes A-C
+re-run as regression: unchanged.
+
+Environment note: this machine has a live X server (DISPLAY=:2), no xvfb -
+launch `DISPLAY=:2 ./build-claude/src/spacecrafter` directly; the xvfb-run
+line above is the generic recipe.
+
+`asmooth_sim.py` - off-domain but homed here for traceability: exact-formula
+replay behind the EntityCore ASmooth analysis (INTENT 11.18); not a
+body-path tool.

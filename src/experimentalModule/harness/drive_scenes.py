@@ -25,5 +25,17 @@ send(s, "moveto lat 10 lon 30 alt 100 duration 0", 2)
 send(s, "select planet Earth", 1)
 send(s, "flag track_object on", 3)
 send(s, "body action dual_dump filename /tmp/gen_moon.json", 3)
+# Scene D [vixy 2026-07-12]: observer ON Mars, view tracking Earth's Moon -
+# quadruplet (Mars, Sun, Earth, Moon). First CROSS-BRANCH reference scenario:
+# ref chain Mars->Sun, target chain Moon->Earth->Sun, common parent = Sun
+# (up-hop then two down-hops - never composed from the reference side before).
+# Two dates, 88 days apart, to separate time-dependent from constant errors.
+send(s, "set home_planet Mars", 5)
+send(s, "moveto lat 10 lon 30 alt 100 duration 0", 2)
+send(s, "select planet Moon", 1)
+send(s, "flag track_object on", 3)
+send(s, "body action dual_dump filename /tmp/gen_mars.json", 3)
+send(s, "date jday 2461321.5", 3)
+send(s, "body action dual_dump filename /tmp/gen_mars_2.json", 3)
 s.close()
 print("scenes done", flush=True)
