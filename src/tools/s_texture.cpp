@@ -1081,12 +1081,19 @@ void s_texture::bigTextureLoader()
             vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
             vkCmdCopyBufferToImage(cmd, buffer.buffer, tex->texture->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, regions.size(), regions.data());
             barrier.srcAccessMask = barrier.dstAccessMask;
-            barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            // QFOT RELEASE half (acquire = bigBarrier in recordTransfer, same
+            // family pair + layout transition). A release's second scope has
+            // no practical effect (spec 7.7.4) but must still be valid for
+            // THIS queue: FRAGMENT_SHADER dst on a transfer-only family was
+            // the VUID-06462 validation error (INTENT.md 11.20). BOTTOM_OF_PIPE
+            // + access 0 is the canonical release form; visibility to the
+            // fragment shader is carried by the acquire half.
+            barrier.dstAccessMask = 0;
             barrier.oldLayout = barrier.newLayout;
             barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             barrier.srcQueueFamilyIndex = queueFamily->id;
             barrier.dstQueueFamilyIndex = context.graphicFamily->id;
-            vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+            vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
             vkEndCommandBuffer(cmd);
             vkQueueSubmit(queue, 1, &submit, fence);
             auto res = vkWaitForFences(vkmgr.refDevice, 1, &fence, VK_TRUE, 60L*1000*1000*1000); // 60 seconds
