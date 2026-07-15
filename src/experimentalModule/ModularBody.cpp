@@ -23,6 +23,7 @@ float ModularBody::haloSizeLimit = 9;
 float ModularBody::viewportRadius = 1;
 std::vector<ModularBody *> ModularBody::notableBody;
 float ModularBody::deltaTime = 0;
+std::shared_ptr<BodyTesselation> ModularBody::bodyTesselation; // both-paths seam
 ModularBody *ModularBody::selectedBody = nullptr;
 Translator *ModularBody::translator = nullptr;
 StringIDCluster ModularBody::slotID;
@@ -361,6 +362,15 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
         ret.push_back(BodyModuleType::MESH);
     if (param.count("model_name"))
         ret.push_back(BodyModuleType::OJM);
+    // From-space atmosphere shell (row 13). The compound gate mirrors the old
+    // parse precondition EXACTLY (protosystem.cpp:865-871): the params block
+    // is only read when has_atmosphere or atmosphere_lim_landscape is
+    // present, and the shell exists iff atmosphere_ext_model is non-empty.
+    // Positioned after MESH/OJM: nearComponent order = record order, the
+    // shell draws AFTER the disc (old same-command-buffer parity).
+    if ((param.count("has_atmosphere") || param.count("atmosphere_lim_landscape"))
+        && !param["atmosphere_ext_model"].empty())
+        ret.push_back(BodyModuleType::ATMOSPHERE);
     // Every named body gets a HINT module by default; hint=false suppresses it
     // HERE (not in HintLoader::isLikely - a 0 there would fire the missing-
     // loader warning for a deliberate suppression).

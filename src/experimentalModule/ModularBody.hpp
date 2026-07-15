@@ -21,6 +21,8 @@
 // (TEXMAP*/TEX big-texture mapping macros moved to tools/s_texture.hpp -
 //  they are texture utilities, not body concepts.)
 
+class BodyTesselation; // both-paths tesselation seam (see setTesselation)
+
 // Structural nature of a body. NOT a feature taxonomy (features live in
 // BodyModule slots - G1): what remains here is only what modules cannot
 // express: STAR = emits light (bit-tested via isStar()); EARTH/EARTH_MOON =
@@ -958,6 +960,7 @@ private:
     // leaks entries and corrupts the next frame's partitioning.
     static std::vector<ModularBody *> notableBody;
     static Vec3f defaultHaloColor;
+    static std::shared_ptr<BodyTesselation> bodyTesselation; // both-paths seam (setTesselation)
 public:
     // Frame geometry, same public-precondition class as halfFov (set by
     // dispatchUpdate from the VulkanMgr scissor; consumed by drawHalo's px
@@ -969,6 +972,21 @@ public:
     // consumers are per-frame animations (module faders, pointer breathing).
     // NOT a physics/simulation dt - orbital time comes from jd only.
     static float deltaTime;
+
+    // Both-paths tesselation seam (row 2/13, 2026-07-15): the SAME shared
+    // BodyTesselation object the old path reads, injected where the old path
+    // injects its own (SolarSystemTex ctor -> Body::setTesselation mirror).
+    // Sharing the OBJECT (not copying values) makes animated `body
+    // tesselation` transitions identical by construction (values are
+    // Scalable, ticked by the old-path update - relocate that tick when the
+    // old path is retired, INTENT retirement map). Consumers: LayeredMesh
+    // (TesParam + altimetry level), AtmExtModule (min/max TesParam).
+    static void setTesselation(std::shared_ptr<BodyTesselation> t) {
+        bodyTesselation = std::move(t);
+    }
+    static const std::shared_ptr<BodyTesselation> &getTesselation() {
+        return bodyTesselation;
+    }
 
     // The selected body, nullptr when none - the aggregate view of the
     // per-body isSelected flag (single authority: maintained by

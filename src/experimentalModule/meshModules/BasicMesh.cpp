@@ -8,6 +8,9 @@
 #include "experimentalModule/Renderer.hpp"
 #include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/bodyModules/BasicMeshLoader.hpp"
+// (fillShadows lifted to meshShadowFill.hpp when row 2 added more receiver
+//  families - single authority, I2.)
+#include "experimentalModule/meshModules/meshShadowFill.hpp"
 
 BasicMesh::BasicMesh(ObjL *mesh, const std::string &texturePath) : BodyModule(BodyModuleType::MESH),
     mesh(mesh), mapTexture(FilePath(texturePath,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true),
@@ -47,29 +50,6 @@ void BasicMesh::preload(ModularBody *body)
     s_texture::setBigTextureLifetime(tmp);
 }
 
-// Fill the Gen-2 receiver block from the body's received-shadow state
-// (produced by ModularSystem::computeShadows - contract: ShadowProjection.hpp).
-// Gate on the service flag too: entries may be stale from the frame the flag
-// switched off.
-static void fillShadows(SharedBuffer<meshFrag> &frag, ModularBody *body)
-{
-    const ReceivedShadows &received = body->getReceivedShadows();
-    if (ShadowService::enabled && received) {
-        auto &f = *frag;
-        f.shadowRow0 = received.row0;
-        f.shadowRow1 = received.row1;
-        int nb = 0;
-        for (const auto &e : received.entries) {
-            f.shadowingBodies[nb].posRadius = Vec4f(e.pos.first, e.pos.second, e.size, 0);
-            f.shadowingBodies[nb].absorbtionIdx = Vec4f(e.absorbtion[0], e.absorbtion[1], e.absorbtion[2], e.layerIdx);
-            ++nb;
-        }
-        f.nbShadowingBodies = nb;
-    } else {
-        frag->nbShadowingBodies = 0;
-    }
-}
-
 void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
     const FamilyBound bound = renderer.bind(family);
@@ -86,7 +66,7 @@ void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
     vert->LightPosition = ModularBody::getLightPosition();
     vert->planetScaledRadius = boundingRadius;
     vert->planetOneMinusOblateness = body->getOneMinusOblateness();
-    fillShadows(frag, body);
+    fillMeshShadows(frag, body);
     const auto screenSize = body->getScreenSize();
     if (screenSize > 0.2) {
         TEXMAP1(mapTexture);
@@ -125,7 +105,7 @@ void BasicMesh::drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &
     vert->LightPosition = ModularBody::getLightPosition();
     vert->planetScaledRadius = boundingRadius;
     vert->planetOneMinusOblateness = body->getOneMinusOblateness();
-    fillShadows(frag, body);
+    fillMeshShadows(frag, body);
     if (bigTextureMapping) {
         set->uninit();
         set->bindUniform(vert, 0);

@@ -25,7 +25,9 @@ extern const Mat4d mat_j2000_to_vsop87;
 #include "orbitModules/StillOrbitLoader.hpp"
 
 #include "bodyModules/BasicMeshLoader.hpp"
+#include "bodyModules/LayeredMeshLoader.hpp"
 #include "bodyModules/HintLoader.hpp"
+#include "bodyModules/AtmExtLoader.hpp"
 
 void ModuleLoaderMgr::init()
 {
@@ -39,5 +41,7 @@ void ModuleLoaderMgr::init()
     registerModule(std::make_unique<SpecialOrbitLoader>());
 
     registerModule(BodyModuleType::MESH, std::make_unique<BasicMeshLoader>()); // eclipse LUT retired at S5 (shadow-paths.md B4)
+    registerModule(BodyModuleType::MESH, std::make_unique<LayeredMeshLoader>()); // row 2: layered discs (outbids BasicMesh on layered texture keys)
     registerModule(BodyModuleType::HINT, std::make_unique<HintLoader>());
+    registerModule(BodyModuleType::ATMOSPHERE, std::make_unique<AtmExtLoader>()); // from-space rim shell (row 13)
 }

@@ -27,6 +27,7 @@
 #include "tools/log.hpp"
 #include "bodyModule/body.hpp"
 #include "bodyModule/solarsystem.hpp"
+#include "experimentalModule/ModularBody.hpp"
 
 SolarSystemTex::SolarSystemTex(ProtoSystem * _ssystem)
 {
@@ -36,6 +37,9 @@ SolarSystemTex::SolarSystemTex(ProtoSystem * _ssystem)
 	assert(bodyTesselation != nullptr);
 	bodyTesselation->createTesselationParams();
 	Body::setTesselation(bodyTesselation);
+	// Both-paths seam (row 2/13): the new path reads the SAME object -
+	// tesselation commands and Scalable transitions identical by construction.
+	ModularBody::setTesselation(bodyTesselation);
 }
 
 SolarSystemTex::~SolarSystemTex()
