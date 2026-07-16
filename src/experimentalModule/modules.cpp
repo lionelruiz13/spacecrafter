@@ -30,6 +30,7 @@ extern const Mat4d mat_j2000_to_vsop87;
 #include "bodyModules/AtmExtLoader.hpp"
 #include "bodyModules/RingLoader.hpp"
 #include "bodyModules/OjmLoader.hpp"
+#include "bodyModules/AxisLoader.hpp"
 
 void ModuleLoaderMgr::init()
 {
@@ -48,4 +49,5 @@ void ModuleLoaderMgr::init()
     registerModule(BodyModuleType::ATMOSPHERE, std::make_unique<AtmExtLoader>()); // from-space rim shell (row 13)
     registerModule(BodyModuleType::RING, std::make_unique<RingLoader>()); // G8 caster half (shadow-composition wave); color/trace = row 4
     registerModule(BodyModuleType::OJM, std::make_unique<OjmLoader>()); // row 3: artificial 3D-model bodies (OJM wave)
+    registerModule(BodyModuleType::AXIS, std::make_unique<AxisLoader>()); // row 10: rotation-axis line (first line-class family)
 }

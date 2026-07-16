@@ -43,6 +43,7 @@
 #include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/ModularBodyPtr.hpp"
 #include "experimentalModule/bodyModules/HintModule.hpp"
+#include "experimentalModule/bodyModules/AxisModule.hpp"
 
 class Camera;
 class ModularSystem;
@@ -279,6 +280,7 @@ public:
 
 	void setFlagAxis(bool b) {
         currentSystem->setFlagAxis(b);
+        AxisModule::show = b; // both-paths seam, like setFlagHints
     }
 
 	void setFlagHints(bool b) {

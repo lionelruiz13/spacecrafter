@@ -398,6 +398,13 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
     if ((param.count("has_atmosphere") || param.count("atmosphere_lim_landscape"))
         && !param["atmosphere_ext_model"].empty())
         ret.push_back(BodyModuleType::ATMOSPHERE);
+    // Rotation-axis line (row 10): default for every body with a mesh (the
+    // landing-zone rule; the old path carried an Axis member on EVERY body -
+    // model-only artificial bodies losing theirs is a documented divergence,
+    // visible only under `flag axis on`). Positioned after MESH: record order
+    // = near-list order, the depth test resolves axis-vs-disc either way.
+    if (param.count("tex_map"))
+        ret.push_back(BodyModuleType::AXIS);
     // Every named body gets a HINT module by default; hint=false suppresses it
     // HERE (not in HintLoader::isLikely - a 0 there would fire the missing-
     // loader warning for a deliberate suppression).
