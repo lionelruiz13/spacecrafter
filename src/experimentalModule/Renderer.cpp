@@ -9,6 +9,7 @@
 #include "tools/s_texture.hpp"
 #include "EntityCore/Resource/Set.hpp"
 #include "EntityCore/Resource/VertexBuffer.hpp"
+#include <algorithm> // depth-bucket merge sort (beginDraw)
 
 #define CMD_BATCH_SIZE 8
 
@@ -35,10 +36,71 @@ void Renderer::init(ToneReproductor *_eye)
 
 void Renderer::beginDraw(uint8_t _frameIdx)
 {
-    // Depth-bucket input READ point: the partitioning consumer takes
-    // ModularBody::drainNotableBodies() here (filled by this frame's update;
-    // cleared at the next update start - see dispatchUpdate). Bucket math
-    // lands with the partitioning implementation.
+    // ---- Depth-range partitioning build (S3) --------------------------------
+    // Input: ModularBody::drainNotableBodies() - filled by this frame's update
+    // (which runs before draw, SSystemFactory::update/draw), cleared at the
+    // next update start. Old-path parity: computePreDraw's bucket merge
+    // (solarsystem_display.cpp:136-176), with two resolved differences:
+    // - no 1.1 margin (boundingRadius is inclusive by definition, decision 6);
+    // - no znear clamp at build (the old 1e-10 fed a Projector needing
+    //   positive planes; the new shaders consume the raw range - landed
+    //   scenes run znear < 0 today, measured parity §11.27).
+    sliceScratch.clear();
+    orbitBucket = {0, 0};
+    // Old needOrbitDepth gate is 10 px full diameter (absolute); px =
+    // screenSize * 2 * viewportRadius (the drawHalo screen_r form).
+    const float orbitScreenSize = 5.f / ModularBody::viewportRadius;
+    for (ModularBody *body : ModularBody::drainNotableBodies()) {
+        if (!*body)
+            continue; // old gate: only bodies visible ON SCREEN reserve a slice
+        const float r = body->getBoundingRadius();
+        if (r <= 0)
+            continue; // old guard (a body without extent needs no slice)
+        const float dist = body->getDistanceToObserver();
+        sliceScratch.emplace_back(dist, r);
+        if (body->getScreenSize() > orbitScreenSize) {
+            // Orbit union range (consumer: ORBIT port, see getOrbitDepthBucket)
+            if (orbitBucket.znear == 0 && orbitBucket.zfar == 0) {
+                orbitBucket = {dist - r, dist + r};
+            } else {
+                if (orbitBucket.znear > dist - r)
+                    orbitBucket.znear = dist - r;
+                if (orbitBucket.zfar < dist + r)
+                    orbitBucket.zfar = dist + r;
+            }
+        }
+    }
+    // Merge in draw order (far->near): notableBody is in tree-update order,
+    // the merge needs distance order.
+    std::sort(sliceScratch.begin(), sliceScratch.end(),
+              [](const auto &a, const auto &b) { return a.first > b.first; });
+    depthBuckets.clear();
+    bool open = false;
+    DepthBucket db;
+    for (const auto &e : sliceScratch) {
+        const float znear = e.first - e.second;
+        const float zfar = e.first + e.second;
+        if (open && db.znear < zfar) {
+            // Overlaps the current (farther) bucket: merge. Both edges may
+            // extend - "artificial planets may cover real planets" (old
+            // comment): a nearer body's range can still reach farther out.
+            if (db.znear > znear)
+                db.znear = znear;
+            if (db.zfar < zfar)
+                db.zfar = zfar;
+        } else {
+            if (open)
+                depthBuckets.push_back(db);
+            db = {znear, zfar};
+            open = true;
+        }
+    }
+    if (open)
+        depthBuckets.push_back(db);
+    bucketIdx = 0;
+    enteredBucket = -1;
+    bucketMissLogged = false;
+    // ------------------------------------------------------------------------
     cmdIdx = 0;
     frameIdx = _frameIdx;
     frame = Context::instance->frame[frameIdx].get();
@@ -82,11 +144,53 @@ void Renderer::clearDepth(float zCenter, float boundingRadius)
     batchFlush(); // per-body boundary: previous bodies' batched content lands
                   // at the START of this body's cmd (Halo::nextDraw parity -
                   // over its own body's disc, behind this nearer body's)
-    VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
-    VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
-    vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
-    clippingFov.v[0] = zCenter - boundingRadius;
-    clippingFov.v[1] = zCenter + boundingRadius;
+    // ---- Bucket-entry actions (S3 partitioning - contract in the header) ---
+    // Locate this body's bucket: draw order (far->near) equals build order,
+    // so the cursor only ever advances - O(buckets) per frame total.
+    while (bucketIdx + 1 < depthBuckets.size() && zCenter < depthBuckets[bucketIdx].znear)
+        ++bucketIdx;
+    if (bucketIdx < depthBuckets.size()
+        && zCenter >= depthBuckets[bucketIdx].znear
+        && zCenter <= depthBuckets[bucketIdx].zfar) {
+        if (static_cast<int32_t>(bucketIdx) != enteredBucket) {
+            // First body of this bucket: clear, and set the SHARED depth
+            // mapping - same-bucket bodies must write comparable depth values,
+            // which is why the range is the bucket's, never per-body.
+            enteredBucket = static_cast<int32_t>(bucketIdx);
+            VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
+            VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
+            vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
+            clippingFov.v[0] = depthBuckets[bucketIdx].znear;
+            clippingFov.v[1] = depthBuckets[bucketIdx].zfar;
+        }
+        // Same bucket: keep the depth content of the previous same-bucket
+        // bodies (per-pixel mutual occlusion) and the already-set range.
+    } else {
+        // Out-of-coverage slice. Two known producers:
+        // - out-of-ORDER: a body attached between this frame's sort and its
+        //   draw (events-thread interim, INTENT §8.4.1 precondition; the S4
+        //   publish-task handoff closes it structurally) draws at the sorted
+        //   tail - its range may lie in an already-passed bucket. Measured
+        //   live at every `body action load` (INTENT §11.30): one frame,
+        //   self-healing.
+        // - out-of-LIST: a body drawing without a notable entry (a real
+        //   contract breach - no known producer).
+        // Both degrade to the per-body clear + range: correct in isolation,
+        // and optimal even for the in-passed-bucket case - that bucket's
+        // depth content was already wiped by later buckets' clears, so there
+        // is nothing left to merge with. Self-names once per frame with the
+        // values needed to attribute the producer.
+        if (!bucketMissLogged) {
+            bucketMissLogged = true;
+            VulkanMgr::instance->putLog("Renderer: depth slice outside bucket coverage - per-body fallback (out-of-order attach or notable-list breach): zCenter=" + std::to_string(zCenter) + " r=" + std::to_string(boundingRadius) + " buckets=" + std::to_string(depthBuckets.size()) + " idx=" + std::to_string(bucketIdx) + (depthBuckets.empty() ? "" : " cur=[" + std::to_string(depthBuckets[bucketIdx].znear) + "," + std::to_string(depthBuckets[bucketIdx].zfar) + "]"), LogType::WARNING);
+        }
+        enteredBucket = -1; // don't suppress the next real bucket's clear
+        VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
+        VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
+        vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
+        clippingFov.v[0] = zCenter - boundingRadius;
+        clippingFov.v[1] = zCenter + boundingRadius;
+    }
 }
 
 // drawHalo, drawHint and the pointer live with the batching/service side

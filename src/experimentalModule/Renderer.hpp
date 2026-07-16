@@ -36,8 +36,17 @@ class VertexBuffer;
 // bucket, according to their needs. Only a handful of bodies are large enough
 // on screen at any time (D3); notableBody lists exactly those, per frame, and
 // must be drained every frame (see its contract in ModularBody.hpp).
-// clearDepth(zCenter, boundingRadius) prepares the depth slice of one such
-// body. The partitioning consumer is not implemented yet (INTENT.md 5.3/D4).
+// Implemented (S3, 2026-07-16): beginDraw drains the list and MERGES
+// overlapping [dist-r, dist+r] ranges into disjoint buckets (old-path
+// computePreDraw parity, solarsystem_display.cpp:136-176; no 1.1 margin -
+// boundingRadius is inclusive by definition, INTENT §10.3 decision 6).
+// clearDepth(zCenter, boundingRadius) enters one body's slice: the depth
+// clear and the clipping range are BUCKET-ENTRY actions - bodies sharing a
+// bucket share one cleared buffer and ONE depth mapping, so they occlude
+// each other per-pixel (a station in front of a ring arc but behind the
+// planet disc; painter's order alone is wrong exactly there). With no
+// overlap (the common case, D3) every bucket holds one body and the
+// behavior is identical to per-body clearing.
 //
 // The four pass kinds a module can receive (see BodyModule.hpp - gated by
 // the module's BMT_* traits):
@@ -53,8 +62,9 @@ class VertexBuffer;
 // Buffers (normative, moved from ModularBody.hpp):
 // - Orbit depth buffer: depth bounds calibrated for the smallest system
 //   visible [only update bound values] - it may go wrong though
+//   (realized as getOrbitDepthBucket() below - consumer is the ORBIT port)
 // - Body depth buffer: cleared for each significant body (one slice per
-//   notableBody entry - see partitioning above)
+//   MERGED bucket of notableBody entries - see partitioning above)
 // - Self-shadowing depth buffer: large for the main body
 //   (MAIN_SELF_SHADOWING_RESOLUTION), small for others (SECONDARY_...)
 // - Shadow casting stencil buffer
@@ -82,13 +92,46 @@ public:
     void beginDraw(uint8_t frameIdx);
     void beginBodyDraw();
     void endBodyDraw();
-    // Prepare the depth buffer for drawing in the given depth range - one
-    // slice of the partitioned depth range (see partitioning contract above).
-    // boundingRadius is inclusive by definition (smallest sphere enclosing the
-    // whole traced body, BodyModule.hpp) - the slice [zCenter-r, zCenter+r]
-    // needs no extra margin; the old path's 1.1 factor compensated a radius
-    // that wasn't defined as inclusive.
+    // Enter one body's depth slice (caller: ModularBody::draw/drawLoaded,
+    // once per body drawing with depth, in far->near order). Guarantees to
+    // the caller: after this call the depth buffer holds only content of
+    // bodies sharing this body's bucket, and the clipping range covers
+    // [zCenter-boundingRadius, zCenter+boundingRadius]. The clear and the
+    // range-set happen at BUCKET entry (first body of the bucket); same-
+    // bucket successors keep the depth content - per-pixel mutual occlusion
+    // is the point of merging (partitioning contract above). Also carries
+    // the per-body boundary work regardless of bucket state: helper segment
+    // (hint behind the disc), command-buffer boundary, batch flush.
+    // boundingRadius is inclusive by definition (smallest sphere enclosing
+    // the whole traced body, BodyModule.hpp) - no extra margin; the old
+    // path's 1.1 factor compensated a radius that wasn't defined inclusive.
+    // PRECONDITION: the body was in this frame's notableBody list (true by
+    // construction: the draw threshold 0.008 > the notable threshold 0.004,
+    // same-frame values) AND draws in the far->near sorted order the buckets
+    // were built in. A slice outside coverage degrades to per-body clear +
+    // range and self-names (WARNING, once per frame). Known interim producer:
+    // a body attached between sort and draw (events-thread bridge, §8.4.1)
+    // draws once at the sorted tail - S4's publish-task handoff closes it.
     void clearDepth(float zCenter, float boundingRadius);
+    // One partitioned depth range (see partitioning contract above).
+    struct DepthBucket {
+        float znear, zfar;
+    };
+    // Union depth range of every body needing orbit occlusion this frame
+    // (old needOrbitDepth, body.hpp:493: on-screen body over 10 px full
+    // diameter - its orbit line must vanish behind its disc). {0,0} = no
+    // body qualifies: draw orbits depth-free (old fallback used the backup
+    // scene planes). Consumer: the ORBIT module port (§12 row 8) - the
+    // TRACE prepass and the orbit lines share this single range so orbit
+    // fragments depth-test against the body trace holes. znear may be <= 0
+    // with the camera inside the range - clamp at use (old: max(znear,1e-8)).
+    // Known divergence class (documented at build site): the notable
+    // threshold is relative (0.004 screenSize) while the old 10 px gate is
+    // absolute - on very large viewports, 10-16 px bodies escape the union.
+    // Revisit at the row-8 port if orbit-behind-disc gaps show there.
+    inline const DepthBucket &getOrbitDepthBucket() const {
+        return orbitBucket;
+    }
     // Queue a halo through the Renderer batching service (HALO service
     // family - the Halo::global borrow is dissolved, 2026-07-12 S1(c)).
     // Occlusion follows the batched screen-space contract
@@ -270,6 +313,14 @@ private:
     PassKind passKind = PassKind::COLOR;
     std::vector<VkCommandBuffer> cmds[3];
     Vec3f clippingFov;
+    // ---- Depth-range partitioning state (built by beginDraw, walked by
+    // clearDepth - same effective-thread serialization as cmdIdx/frameIdx).
+    std::vector<DepthBucket> depthBuckets; // disjoint, far->near (build = draw order)
+    std::vector<std::pair<float, float>> sliceScratch; // (distance, radius) build scratch
+    DepthBucket orbitBucket {0, 0};
+    uint32_t bucketIdx = 0;     // advance-only cursor (draw order == build order)
+    int32_t enteredBucket = -1; // last bucket cleared this frame (-1 = none)
+    bool bucketMissLogged = false; // rate-limit the contract-breach log (per frame)
     uint16_t cmdIdx;
     uint8_t frameIdx;
 };
