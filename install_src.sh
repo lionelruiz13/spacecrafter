@@ -26,9 +26,10 @@ if [ "$JOBS" = "" ]
 then
 	NPROC=$(nproc)
 	JOBS=$(free --giga | grep Mem | grep -E --only-matching '[0-9]+$')
+	JOBS=$((JOBS*2/3))
 	if [ $JOBS -lt $NPROC ]
 	then
-		echo "Using $JOBS logical cores to leave 1Go per job"
+		echo "Using $JOBS logical cores to leave 1.5Go per job"
 		JOBS="-j$JOBS"
 	else
 		echo "Using all $NPROC logical cores"
@@ -36,7 +37,7 @@ then
 	fi
 fi
 chrt --batch 0 cmake --build . $JOBS --config Release
-#sudo cmake --install . --config Release
+sudo cmake --install . --config Release
 cd ..
 
 echo -e "\033[32mScript completed.\033[0m"

@@ -9,6 +9,7 @@
 
 #cmake
 build
+build-claude
 src/config.h
 
 #vscode
