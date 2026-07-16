@@ -171,6 +171,16 @@ public:
     // access is read-only there (slots are write-once + atomic ready flag) -
     // legal off the frame task by construction.
     FamilyBound bindIn(const PipelineFamily &family, PassKind pass, VkCommandBuffer cmd, VariantKey wanted = 0);
+    // Raw resident pipeline of ONE exact variant, or nullptr if not resident
+    // (build enqueued; caller skips that geometry this frame - C3, the
+    // drawLoaded semantics). For layout-invariant per-shape multi-pipeline
+    // recording ONLY (INTENT §10.3 rule 4 - the OJM tex/notex per-shape
+    // switch, where Ojm::record binds pipelines mid-draw against ONE layout):
+    // the caller must have bound the family's layout via bind()/bindIn()
+    // first and must not touch sets between switches. No fallback bit-drop
+    // here - an exact variant or nothing (mixing fallback rows mid-record
+    // would switch shaders invisibly per shape). Frame-scoped pointer (I5a).
+    Pipeline *peek(const PipelineFamily &family, PassKind pass, VariantKey wanted = 0);
     // COMPUTE bank bind: key = integer variant (spec constant 0, see
     // PipelineFamilyDesc). Returns nullptr layout if that key's pipeline is
     // not resident yet - the caller skips the dispatch (C3), never waits.

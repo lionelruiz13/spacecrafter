@@ -9,6 +9,7 @@
 #include "EntityCore/Resource/SharedBuffer.hpp"
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "ojmModule/objl.hpp"
+#include "ojmModule/ojm.hpp"
 #include <cstring>
 
 // Shadow constants (SHADOW_LOCAL_SIZE, SHADOW_RADIUS_TOLERANCE,
@@ -113,6 +114,27 @@ void ShadowService::ensureInit(Renderer &_renderer)
     ring.passes.push_back(std::move(ringPass));
     ringFamily = renderer->allocateFamily(std::move(ring));
 
+    // SELF_DEPTH pass (OJM wave, 2026-07-16): depth-only render of the
+    // nominated body's geometry into context.shadowBuffer through
+    // renderSelfShadow - the old shadowTrace pipeline (bodyShader.cpp:410-426)
+    // as a registry family: same vert (the mat3 trace contract - traceHandle
+    // SHARED, one matrix contract for every geometry word), cull with
+    // reversed front face (the old setFrontFace note: "prefer culling the
+    // back face, this doesn't work for thin surface"), depth GREATER via the
+    // registry's SELF_SHADOW profile, no fragment stage.
+    PipelineFamilyDesc self;
+    self.name = "SHADOW_SELF";
+    self.vertex = context.ojmVertexArray.get();
+    self.sets.push_back(traceHandle);
+    PassDesc selfPass;
+    selfPass.pass = PassKind::SELF_SHADOW;
+    selfPass.shaderTable = {{0, {.vert = "shadow_trace.vert.spv"}}}; // depth-only
+    selfPass.state.cull = true;
+    selfPass.state.reverseFrontFace = true;
+    selfPass.state.removedVertexEntries = 0b110; // position only
+    self.passes.push_back(std::move(selfPass));
+    selfFamily = renderer->allocateFamily(std::move(self));
+
     PipelineFamilyDesc blur;
     blur.name = "SHADOW_BLUR";
     blur.kind = PipelineFamilyDesc::Kind::COMPUTE;
@@ -122,11 +144,15 @@ void ShadowService::ensureInit(Renderer &_renderer)
     blur.specValues = {{1, res}};   // border; constant 0 = radius (the key)
     blur.eagerVariants = static_cast<uint16_t>(maxRadius);
     blurFamily = renderer->allocateFamily(std::move(blur));
-    if (!shapeFamily || !ringFamily || !blurFamily) {
+    if (!shapeFamily || !ringFamily || !selfFamily || !blurFamily) {
         VulkanMgr::instance->putLog("ShadowService: family allocation failed - shadows disabled", LogType::ERROR);
         enabled = false;
         return;
     }
+    // SELF_DEPTH matrix (single MAIN target today - header block).
+    selfMat = std::make_unique<SharedBuffer<float[12]>>(*context.uniformMgr);
+    selfSet.reset(renderer->allocSet(selfFamily, 0));
+    selfSet->bindUniform(selfMat, 0);
 
     slots.resize(budget);
     layerViews.reserve(budget);
@@ -166,8 +192,11 @@ void ShadowService::release()
         vkDestroyImageView(VulkanMgr::instance->refDevice, v, nullptr);
     layerViews.clear();
     layers.reset();
+    selfSet.reset();
+    selfMat.reset();
     shapeFamily = {};
     ringFamily = {};
+    selfFamily = {};
     blurFamily = {};
     inited = false;
 }
@@ -287,13 +316,27 @@ int ShadowService::acquire(ModularBody *caster, const BodyModule *source, float 
 void ShadowService::produce(int idx, const Mat4f &silhouetteMat, ObjL *mesh)
 {
     silhouetteMat.setMat3(*slots[idx].traceMat);
-    jobs[curFrame].push_back({static_cast<uint8_t>(idx), Job::Kind::OPAQUE_MESH, mesh, nullptr, 0});
+    jobs[curFrame].push_back({static_cast<uint8_t>(idx), Job::Kind::OPAQUE_MESH, mesh, nullptr, nullptr, 0});
 }
 
 void ShadowService::produceAnnulus(int idx, const Mat4f &silhouetteMat, Set *texSet, float innerRatio)
 {
     silhouetteMat.setMat3(*slots[idx].traceMat);
-    jobs[curFrame].push_back({static_cast<uint8_t>(idx), Job::Kind::TEXTURED_ANNULUS, nullptr, texSet, innerRatio});
+    jobs[curFrame].push_back({static_cast<uint8_t>(idx), Job::Kind::TEXTURED_ANNULUS, nullptr, nullptr, texSet, innerRatio});
+}
+
+void ShadowService::produceOjm(int idx, const Mat4f &silhouetteMat, Ojm *model)
+{
+    silhouetteMat.setMat3(*slots[idx].traceMat);
+    jobs[curFrame].push_back({static_cast<uint8_t>(idx), Job::Kind::OPAQUE_OJM, nullptr, model, nullptr, 0});
+}
+
+void ShadowService::produceSelfDepth(const Mat4f &m, Ojm *model)
+{
+    if (!inited)
+        return; // header contract: no-op while uninitialized
+    m.setMat3(*selfMat);
+    jobs[curFrame].push_back({0, Job::Kind::SELF_DEPTH, nullptr, model, nullptr, 0});
 }
 
 std::unique_ptr<Set> ShadowService::makeAnnulusTexSet(Texture &tex)
@@ -315,6 +358,23 @@ void ShadowService::record(VkCommandBuffer cmd, uint8_t frameIdx)
     // first mesh draw, jobs or not.
     if (!layersInitialized) {
         layers->use(cmd, Implicit::LAYOUT);
+        // Same first-record obligation for the self-shadow depth: the OJM
+        // shadowed row statically samples it (binding 3) even on frames
+        // where only RECEIVING is active (selfShadowOn = 0) - an
+        // UNDEFINED-layout image behind that descriptor is a validation
+        // error at the first such draw. The old path never hit this: its
+        // CoI coupled receiving and self-shadowing, so the pass had always
+        // rendered (and transitioned) before any sampling. Explicit barrier
+        // (not Texture::use): the texture's own aspect is DEPTH-only, but a
+        // barrier on a D24S8 image must name BOTH aspects
+        // (VUID-VkImageMemoryBarrier-image-03320).
+        VkImageMemoryBarrier depthInit {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr,
+            0, VK_ACCESS_SHADER_READ_BIT,
+            VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+            VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED,
+            Context::instance->shadowBuffer->getImage(),
+            {VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1}};
+        vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &depthInit);
         layersInitialized = true;
     }
     auto &pending = jobs[frameIdx];
@@ -324,7 +384,28 @@ void ShadowService::record(VkCommandBuffer cmd, uint8_t frameIdx)
     const uint32_t res = context.shadowRes;
     const VkViewport viewport {0, 0, (float) res, (float) res, 0.f, 1.f};
     const VkRect2D scissor {{0, 0}, {res, res}};
+    // SELF_DEPTH jobs FIRST (old DrawHelper::submit order: transfers ->
+    // self-shadow -> per-caster passes -> color; draw_helper.cpp:449-453).
     for (const auto &job : pending) {
+        if (job.kind != Job::Kind::SELF_DEPTH)
+            continue;
+        int selfRes, tmp;
+        context.shadowBuffer->getDimensions(selfRes, tmp);
+        const VkViewport selfViewport {0, 0, (float) selfRes, (float) selfRes, 0.f, 1.f};
+        const VkRect2D selfScissor {{0, 0}, {(uint32_t) selfRes, (uint32_t) selfRes}};
+        context.renderSelfShadow->begin(0, cmd);
+        vkCmdSetViewport(cmd, 0, 1, &selfViewport);
+        vkCmdSetScissor(cmd, 0, 1, &selfScissor);
+        const FamilyBound bound = renderer->bindIn(selfFamily, PassKind::SELF_SHADOW, cmd);
+        if (bound.layout) {
+            bound.layout->bindSet(cmd, *selfSet);
+            job.ojm->drawShadow(cmd);
+        }
+        vkCmdEndRenderPass(cmd);
+    }
+    for (const auto &job : pending) {
+        if (job.kind == Job::Kind::SELF_DEPTH)
+            continue;
         Slot &s = slots[job.slot];
         // Typed silhouette pass into the shared R8 scratch (cleared to 0 by
         // the pass; word selects the family, the target/blur are shared).
@@ -351,6 +432,19 @@ void ShadowService::record(VkCommandBuffer cmd, uint8_t frameIdx)
                 }
                 break;
             }
+            case Job::Kind::OPAQUE_OJM: {
+                // Same family and matrix contract as OPAQUE_MESH (Ojm and
+                // ObjL share the vertex layout); only the geometry supplier
+                // differs - Ojm::drawShadow binds its own buffers.
+                const FamilyBound bound = renderer->bindIn(shapeFamily, PassKind::SHADOW_SHAPE, cmd);
+                if (bound.layout) {
+                    bound.layout->bindSet(cmd, *s.traceSet);
+                    job.ojm->drawShadow(cmd);
+                }
+                break;
+            }
+            case Job::Kind::SELF_DEPTH:
+                break; // recorded in the first loop
         }
         vkCmdEndRenderPass(cmd);
         // Blur: barriers ported verbatim (draw_helper.cpp:455-478), on the

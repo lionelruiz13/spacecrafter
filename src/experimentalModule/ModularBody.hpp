@@ -523,6 +523,13 @@ public:
         radius = _radius;
         uncached = true;
     }
+    // Halo emission is body state (create-info flagHalo); modules/loaders
+    // adjust it through this accessor, never by friendship (BodyModule.hpp
+    // rule). First client: OjmLoader - the old Artificial suppressed its
+    // halo by overriding drawHalo to nothing (body_artificial.hpp:70-72).
+    inline void setHaloEnabled(bool enabled) {
+        isHaloEnabled = enabled;
+    }
     inline void setScaling(float _scale) {
         scaling = _scale;
         uncached = true;

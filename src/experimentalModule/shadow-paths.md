@@ -410,6 +410,135 @@ Measured (2048², shadow_res 1280, casters 8, NVIDIA):
   overflow (>10 — log-once + drop), pool exhaustion with mixed kinds, caster-module
   removal while its layer is held.
 
+## G. OJM wave (2026-07-16, same day as F) — self-shadow axis live + third word
+
+Mandate continuation (the F mandate's residual): the analysis located the remaining
+actionable bottleneck at the SELF-SHADOW AXIS (the only composition machinery with
+zero executed clients) + receiver universality beyond the mesh family; both land
+with the row-3 OjmModule port, the only unblocked path (ring receive = row 4, S3
+recorded gate; BISHADOW/RGBA8_SELF stay suspended for Vixy - D1). Structural rule
+followed: self-shadow production enters the SAME jobs-as-data seam as F (S4
+singularity - producing it ad-hoc at draw time would hand S4 a second mechanism
+to re-plumb, the exact class F removed).
+
+Authoritative contracts (headers, I1): ShadowService.hpp (SELF-SHADOW PRODUCTION
+block + OPAQUE_OJM/SELF_DEPTH words), BodyModule.hpp (drawSelfShadow nomination
+contract), OjmModule.hpp (full row-3 contract), Renderer.hpp (peek - the §10.3
+rule-4 layout-invariant per-shape switch), receivedShadows{Decl,}.glsl (the
+receiver block single authority). Structure landed:
+
+- **OPAQUE_OJM word**: Ojm and ObjL share the vertex layout and the unit-geometry
+  convention (Ojm normalizes vertices at load, ojm.cpp readOJM - the model radius
+  survives in getRadius(), consumed by the LOADER's body-radius scaling, old
+  initialRadius parity), so the word = a Job kind + a record case on the SAME
+  SHADOW_SHAPE family. The vocabulary's "nothing else moves" claim passed its
+  first real test.
+- **SELF_DEPTH word + nomination**: computeShadows nominates the single
+  highest-importance body carrying a *_SELF_SHADOW module (importance =
+  screenSize/distance - old ProtoSystem CoI parity), computes the model->sun-NDC
+  matrix ONCE (third basis row TOWARD the sun = the old lookAt -f row; depth
+  GREATER + clear 0 keeps the most-sunward surface), and hands the SAME value to
+  production (SELF_DEPTH job -> renderSelfShadow depth pass, recorded FIRST in
+  the pre-color window = old submit order) and consumption (module-kept matrix ->
+  ojmShadowBlock; the old path guaranteed this by aliasing one buffer, the new by
+  single computation). One MAIN target today (context.shadowBuffer, serially
+  shared with the old path - the shadowShape precedent); the SECONDARY ladder
+  extends at the job's slot field when S3 lands (D5 feed).
+- **receivedShadows.glsl + Decl**: the per-entry application loop extracted to
+  one authority at the moment OJM would have been the 10th copy (the F1
+  textureLod x9 fix demonstrated the drift cost); 9 receiver frags converted,
+  scenes A-D unchanged after (P4 17-44 km, the 1.4-ulp class; P5 all modeled).
+- **OJM family**: ONE family/layout, 4 shader rows on TEXLESS x SHADOWED
+  SHADER_SWAP axes = the old 4 frags; plain rows reuse body_artificial.* verbatim;
+  shadowed rows = ojmShadow{Tex,Notex}.frag ports (old lighting kept EXACTLY;
+  receive = the include with rows/clip folded through the model->eye map -
+  fillOjmShadows, the fillRayMarchShadows fold; selfShadowOn gates PCF because
+  nomination is now state, not shader-row identity). Per-shape tex/notex switch =
+  Renderer::peek pair + the Ojm::record pointer-pair overload (nullptr skips
+  shapes, pushAttr delta-chain carried across skips - C3). Spec constants: 0 =
+  selfShadowRes float bits, 7 = float64 (the old SHADOWED pipelines omitted 7 -
+  an old oversight, not reproduced).
+- **Deduction gate**: model_name has TWO consumers in the old parse
+  (protosystem.cpp:634-641 vs 727-739) - type=Artificial (4-byte prefix, old
+  parity) -> OJM module; any other type -> named ObjL via the MESH family
+  (Phobos/Deimos class, BasicMeshLoader already carried it). Gate lives in
+  deduceBodyModuleList; OjmLoader mirrors it + halo suppression parity
+  (setHaloEnabled accessor - the old drawHalo-empty override) + load-failure
+  parity (radius 0, never drawn).
+
+### G1. Landing record + measurements (2026-07-16, NVIDIA RTX 5090)
+
+- **Validation: zero messages from all new machinery** across every run. One
+  defect found+fixed during the wave: my first-record shadowBuffer transition
+  rode Texture::use whose aspect is DEPTH-only - a D24S8 barrier must name
+  DEPTH|STENCIL (VUID-03320, fired once, explicit both-aspects barrier now).
+  The transition itself exists because the OJM shadowed row statically samples
+  binding 3 even when only RECEIVING (the old CoI coupled receive+self-shadow,
+  so its pass had always transitioned the image first - a decoupling
+  consequence, caught by validation at first shadowed-receive draw).
+- **Receive (station in Earth's umbra, lunar-eclipse jd, station parented to
+  the MOON)**: umbra R-dominant (R/B 1.64 vs 1.18 sunlit), counterfactual
+  umbra->sunlit->umbra deterministic (112 -> 137 -> 112 nonblack px).
+  BETTER-by-construction divergence documented: every drawn OJM body receives;
+  the old artificial received only as CoI.
+- **Self-shadow first light**: on/off differential localized on the station hub
+  under the panel plane (160 px changed, max 41); A/B brightness parity with the
+  old CoI machinery (means 27.7 vs 28.2). End-to-end: nomination -> SELF_DEPTH
+  job -> GREATER depth pass (16384 config honored) -> PCF (selfShadow.glsl
+  verbatim).
+- **Cast (OPAQUE_OJM) first light**: station shadow blob on the Moon at the
+  predicted sun-line parallax offset (~68 px from the caster, correct
+  sign/direction; 54-258 px coherent at the scene's exposure); flag cycle
+  BIT-restores (0 px, untracked scene). Depth note: the ISS lattice
+  legitimately transmits most light after the disc blur (sparse silhouette);
+  a solid-caster depth A/B was not obtainable (below) - depth otherwise rides
+  the same layer/blur/receiver chain F verified.
+- **Old-path findings (A3-class additions)**: (1) an artificial body parented
+  to a MOON gets its orbit origin ~1 AU wrong in the old path (position ~ at
+  the Sun; parent-relative ecl correct, world composition broken - the case was
+  never exercised: every old script parents artificials to planets). The new
+  path is correct (G2 arbitrary nesting) - measured old dist 0.99 AU vs new
+  5.9e-5 AU on identical elements. (2) In the cast scene (CoI = Moon, station
+  in corridor, occlusion >> 1/16) the old Gen-2 produced NO station shadow and
+  its blur never dispatched (zero Shadow-Stencil VUIDs in that run vs x8 in the
+  lunar scene where it does engage) - the legacy system fails a case the new
+  path renders. (3) Sphere.ojm fails to load in BOTH paths (defective model;
+  the C3 degradation held: radius 0, no crash, both loaders logged).
+- **Rare paths exercised live**: caster-module drop while its layer is held ->
+  clean slot recycling (the F "not staged live" case); load-failure module;
+  shadows-flag reversible pair (2nd entry) on three scenes; station drop+reload
+  x4 in one session.
+- **Scenes A-D regression (fresh launch)**: P3 <= 8.3e-6 deg / rel-d <= 6.5e-8;
+  P4 17.4-44.4 km (the 1.4-ulp class); P5 view term 0.0000 deg, every
+  differential named, NO unmodeled - the 9-frag include conversion is
+  output-preserving at the regression's resolution.
+- **Graceful shutdown**: zero leaked objects; the x8 Shadow-Stencil VUID
+  baseline is the OLD path's known class (F1 x7), unchanged.
+- Measurement caveats (exposure/tone): scene surfaces at 8-14/255 under the
+  flags-off tone state cap shadow deltas; F1's exact umbra magnitudes were not
+  reproduced (class reproduced: new peak [67,25,9] R-dominant); tracked-view
+  captures carry ~1e3 px of easing noise (measured same-state baseline 1273 px)
+  - bit-level checks belong on untracked scenes.
+
+### G2. Convergence points added (Vixy)
+
+11. Old-vs-new OJM ORIENTATION divergence (station drawn face-on vs 3/4 in the
+    self-shadow A/B): the known suspended orientation-convention class (P5
+    parent-rot/rotation-offset semantics, 11.26 escalation) now visible on
+    artificial bodies; pixelwise shadow A/B is blocked by it (behavioral parity
+    only).
+12. OJM shadowed-row lighting reconciled to eye-space (the old shadowed frag
+    mixed heliocentric ModelMatrix with eye-space normals - internally
+    inconsistent by a camera rotation); specular direction changes on
+    self-shadowed bodies. Old-look parity where legacy HAD a look is kept by
+    the verbatim plain rows; the CoI-lighting-switch class itself is old
+    behavior (carried, G note).
+13. The on/off cast scene exposed the row-swap lighting flip as a visible
+    delta on the stations themselves (shadowed row's direction lighting vs
+    plain phong under shadow-flag toggling) - same class as 12, now observable
+    per-flag; if a uniform look is wanted across the flag, the rows' lighting
+    models must converge (suspended with 12).
+
 ## D. Convergence points (Vixy) + feeds
 
 1. BISHADOW semantics + RGBA8_SELF client — before their first use (B5).

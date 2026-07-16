@@ -10,6 +10,7 @@
 #include <utility>
 
 class VertexArray;
+class Pipeline;
 class PipelineLayout;
 class Renderer;
 

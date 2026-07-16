@@ -14,13 +14,7 @@
 layout (binding=2) uniform sampler2D mapTexture;
 layout (binding=3) uniform sampler2DArray bodyShadows;
 
-#define MAX_SHADOW_CASTERS 8
-
-struct ShadowingBody {
-	vec4 posRadius;      // xy = caster center in sun-frame (rel. receiver), z = disc radius
-	vec4 absorbtionIdx;  // rgb = caster shadow absorption, w = layer index
-	vec4 clip;           // half-space gate: apply iff dot(P, xyz) + w <= 0 ((0,0,0,-1) = always; planar casters)
-};
+#include <receivedShadowsDecl.glsl>
 
 layout (binding=1) uniform meshFrag {
 	vec4 shadowRow0;     // xyz = sun-frame x row, w = -dot(x, receiverCenter)
@@ -28,6 +22,8 @@ layout (binding=1) uniform meshFrag {
 	int nbShadowingBodies;
 	ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS];
 };
+
+#include <receivedShadows.glsl>
 
 layout (location=0) in vec2 TexCoord;
 layout (location=1) in float Ambient;
@@ -43,14 +39,7 @@ void main(void)
 	if (diffuse != 0.0 && nbShadowingBodies > 0) {
 		vec2 shadowPos = vec2(dot(shadowRow0.xyz, Position) + shadowRow0.w,
 		                      dot(shadowRow1.xyz, Position) + shadowRow1.w);
-		vec3 shadowing = vec3(1.0);
-		for (int i = 0; i < nbShadowingBodies; ++i) {
-			vec2 tmp = (shadowPos - shadowingBodies[i].posRadius.xy) / shadowingBodies[i].posRadius.z;
-			if (dot(tmp, tmp) < 1.0 && dot(Position, shadowingBodies[i].clip.xyz) + shadowingBodies[i].clip.w <= 0.0) {
-				float coverage = textureLod(bodyShadows, vec3(tmp * 0.5 + 0.5, shadowingBodies[i].absorbtionIdx.w), 0.0).r; // explicit LOD: implicit derivatives are UNDEFINED in this non-uniform flow (zero reads on NVIDIA; layer is single-mip)
-				shadowing *= vec3(1.0) - coverage * shadowingBodies[i].absorbtionIdx.rgb;
-			}
-		}
+		vec3 shadowing = computeReceivedShadowing(shadowPos, Position);
 		shading = min(diffuse * shadowing + Ambient, vec3(1.0));
 	}
 	FragColor = vec4(color * shading, 1.0);

@@ -124,6 +124,62 @@ int Ojm::record(VkCommandBuffer cmd, Pipeline *pipelines, PipelineLayout *layout
 	return selectedPipeline;
 }
 
+int Ojm::record(VkCommandBuffer cmd, Pipeline *const *pipelines, PipelineLayout *layout, int selectedPipeline, bool firstRecorded)
+{
+	// Pointer-pair port of record() above (new-path registry pipelines are
+	// not contiguous). nullptr pipeline = skip those shapes (C3). Skipping
+	// breaks the pushAttr delta chain (pushAttr = "differs from previous
+	// SHAPE", not "from previous DRAW"), so the latest skipped attr is
+	// carried and pushed before the next drawn shape.
+	Texture *boundTex = nullptr;
+	const ShapeAttributes *pendingAttr = nullptr;
+
+	if (firstRecorded && selectedPipeline != -1) {
+		VertexArray::bindGlobal(cmd, cshapes[0].vertex->get());
+		vkCmdBindIndexBuffer(cmd, cshapes[0].index.buffer, 0, VK_INDEX_TYPE_UINT32);
+		firstRecorded = false;
+	}
+	for (auto &s : cshapes) {
+		if (s.map_Ka != nullptr) { // There is a texture
+			if (!pipelines[0]) {
+				if (s.pushAttr)
+					pendingAttr = &s.attr;
+				continue;
+			}
+			if (selectedPipeline != 0) {
+				pipelines[0]->bind(cmd);
+				selectedPipeline = 0;
+			}
+			if (&s.map_Ka->getTexture() != boundTex)
+				s.map_Ka->bindTexture(cmd, layout);
+		} else { // There is no texture
+			if (!pipelines[1]) {
+				if (s.pushAttr)
+					pendingAttr = &s.attr;
+				continue;
+			}
+			if (selectedPipeline != 1) {
+				pipelines[1]->bind(cmd);
+				selectedPipeline = 1;
+			}
+		}
+		if (firstRecorded) {
+			VertexArray::bindGlobal(cmd, s.vertex->get());
+			vkCmdBindIndexBuffer(cmd, s.index.buffer, 0, VK_INDEX_TYPE_UINT32);
+			firstRecorded = false;
+		}
+		if (s.pushAttr) {
+			layout->pushConstant(cmd, 0, &s.attr);
+			pendingAttr = nullptr;
+		} else if (pendingAttr) {
+			layout->pushConstant(cmd, 0, pendingAttr);
+			pendingAttr = nullptr;
+		}
+		vkCmdDrawIndexed(cmd, s.index.size / sizeof(int), 1, s.index.offset / sizeof(int), s.vertex->getOffset(), 0);
+	}
+	return selectedPipeline;
+}
+
 void Ojm::drawShadow(VkCommandBuffer cmd)
 {
 	VertexArray::bindGlobal(cmd, cshapes[0].vertex->get());

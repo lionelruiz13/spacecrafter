@@ -23,13 +23,7 @@ layout (binding=7) uniform sampler2DArray bodyShadows;
 
 #define M_PI 3.14159265358979323846
 
-#define MAX_SHADOW_CASTERS 8
-
-struct ShadowingBody {
-	vec4 posRadius;      // xy = caster center in sun-frame (rel. receiver), z = disc radius
-	vec4 absorbtionIdx;  // rgb = caster shadow absorption, w = layer index
-	vec4 clip;           // half-space gate: apply iff dot(P, xyz) + w <= 0 ((0,0,0,-1) = always; planar casters)
-};
+#include <receivedShadowsDecl.glsl>
 
 layout (binding=1) uniform rayMarchFrag {
 	vec4 shadowRow0;     // pre-folded: dot(row.xyz, samplePosUnit) + row.w = eye-space shadowPos
@@ -45,6 +39,8 @@ layout (binding=1) uniform rayMarchFrag {
 	int nbShadowingBodies;
 	ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS];
 };
+
+#include <receivedShadows.glsl>
 
 layout (location=0) in vec3 entryPos;
 layout (location=1) in vec3 viewDirection;
@@ -117,15 +113,7 @@ void main(void)
 		float atmosphere = clamp(atmDeviation - dot(lightDirection, samplePos), 0, 1);
 		samplePos *= textureLod(heightMap, texCoord, 0).r * heightMapDepth + heightMapDepthLevel;
 		if (NdotL + atmosphere > 0) {
-			vec3 shadowing = vec3(1);
-			// Process shadow of bodies
-			for (int i = 0; i < nbShadowingBodies; ++i) {
-				vec2 tmp = (shadowPos.xy - shadowingBodies[i].posRadius.xy) / shadowingBodies[i].posRadius.z;
-				if (dot(tmp, tmp) < 1 && dot(shadowSample, shadowingBodies[i].clip.xyz) + shadowingBodies[i].clip.w <= 0.0) {
-					float coverage = textureLod(bodyShadows, vec3(tmp * 0.5 + 0.5, shadowingBodies[i].absorbtionIdx.w), 0.0).r; // explicit LOD: implicit derivatives are UNDEFINED in this non-uniform flow (zero reads on NVIDIA; layer is single-mip)
-					shadowing *= vec3(1) - coverage * shadowingBodies[i].absorbtionIdx.rgb;
-				}
-			}
+			vec3 shadowing = computeReceivedShadowing(shadowPos.xy, shadowSample);
 			// shortly ray trace toward -lightDirection for self-shadowing
 			rayLength = SHADOW_STEP_INIT;
 			float maxOcclusion = 1;

@@ -9,6 +9,7 @@
 class ModularBody;
 class BodyModule;
 class ObjL;
+class Ojm;
 class Set;
 class Texture;
 template <typename T> class SharedBuffer;
@@ -44,10 +45,41 @@ template <typename T> class SharedBuffer;
 //     * TEXTURED_ANNULUS (BMT_PROJECT_G8_SHADOW): a vertex-less quad in the
 //       caster's equatorial plane through SHADOW_RING, frag = radial ring
 //       texture alpha (graded transmission).
+//     * OPAQUE_OJM (BMT_PROJECT_G1_SHADOW, Ojm-model bodies): the model
+//       geometry through the SAME SHADOW_SHAPE family - Ojm and ObjL share
+//       the vertex layout (context.ojmVertexArray) and the silhouette
+//       matrix contract; only the geometry supplier differs
+//       (Ojm::drawShadow binds its own buffers). Added 2026-07-16 with the
+//       OJM port - the first post-design word, landing exactly as the
+//       vocabulary promised: a Job kind + a record case, nothing else moved.
 //   Open axis, deliberately: BMT_PROJECT_BISHADOW gets its word (and, if
 //   bicolor requires it, a second layer channel) when its semantics converge
 //   (suspended for Vixy - shadow-paths.md D1); the vocabulary is where it
 //   lands, nothing else moves.
+// - SELF-SHADOW PRODUCTION (2026-07-16, first client = OJM): the per-frame
+//   depth render of the nominated body's own geometry into the self-shadow
+//   depth target (context.shadowBuffer / renderSelfShadow - path-neutral app
+//   infrastructure shared SERIALLY with the old path, the shadowShape
+//   precedent). Rides the SAME jobs-as-data shape and the SAME pre-color
+//   recording window as layer production - deliberately: this whole
+//   production side is the S4 seam (the dedicated compute thread consumes
+//   the job lists unchanged), and self-shadow recorded ad-hoc at draw time
+//   would be a second mechanism for S4 to re-plumb (the exact class the
+//   composition-typed rework removed). Recording order within the window:
+//   self-depth jobs FIRST, then layer jobs (old DrawHelper::submit order).
+//   Consumption stays with the receiving module (PCF in its COLOR frag);
+//   the production matrix and the consumption matrix are the SAME value,
+//   computed once by the nomination (ModularSystem::computeShadows) and
+//   handed to both sides - the old path guaranteed this consistency by
+//   aliasing one buffer (OjmShadowFrag's leading mat3 doubling as the
+//   shadow_trace binding); the new path guarantees it by single
+//   computation, structurally rather than incidentally.
+//   Targets: ONE MAIN target today (old parity: exactly one self-shadowed
+//   body, the highest-importance one). The MAIN/SECONDARY resolution ladder
+//   (ModularBody.hpp constants) extends HERE - a job carries its slot, so
+//   buckets land without re-plumbing; SECONDARY arrives with the S3
+//   depth-partitioning consumer (the grounded-slice-prefill dual purpose
+//   needs it; shadow-paths.md D5).
 //   All words render into the shared R8 scratch (context.shadowShape /
 //   renderShadowShape, PassKind::SHADOW_SHAPE) composited coverage-over
 //   (1 - T_total = c_src + c_dst(1 - c_src)), then one disc-blur dispatch
@@ -114,6 +146,24 @@ public:
     // (makeAnnulusTexSet), which must outlive the frame (module-owned - I5a).
     void produceAnnulus(int idx, const Mat4f &silhouetteMat, Set *texSet, float innerRatio);
 
+    // OPAQUE_OJM word (G1, Ojm-model bodies): same matrix contract as
+    // OPAQUE_MESH (the caller folds the model's own unit normalization into
+    // silhouetteMat - Ojm raw vertices span the model's own radius, ObjL's
+    // span the unit sphere); geometry recorded via Ojm::drawShadow. The Ojm
+    // is module-owned and must outlive the frame (I5a - Ojm lifetimes are
+    // application-long, D6 build-once).
+    void produceOjm(int idx, const Mat4f &silhouetteMat, Ojm *model);
+
+    // SELF-SHADOW production (header block). Called by the nomination
+    // (ModularSystem::computeShadows) at most once per frame today (single
+    // MAIN target - old parity). m = the model->sun-frame-NDC matrix (mat3
+    // semantics, same contract as the silhouette words - shadow_trace.vert
+    // consumes rows, z lands in [0,1] via the vert's *0.5+0.5); model = the
+    // nominated module's geometry. The SAME matrix value must be what the
+    // consuming fragment projects with (single-computation consistency,
+    // header block). No-op while the service is uninitialized.
+    void produceSelfDepth(const Mat4f &m, Ojm *model);
+
     // Allocate a SHADOW_RING set 1 holding the caster's ring texture
     // (COMBINED_IMAGE_SAMPLER binding 0; the sampler is the texture's own -
     // ring strips want the default CLAMP). Module-owned; create lazily at
@@ -163,20 +213,29 @@ private:
     };
     // The typed-job vocabulary (data-only - the S4 handoff shape).
     struct Job {
-        enum class Kind : uint8_t { OPAQUE_MESH, TEXTURED_ANNULUS };
-        uint8_t slot;
+        enum class Kind : uint8_t { OPAQUE_MESH, TEXTURED_ANNULUS, OPAQUE_OJM, SELF_DEPTH };
+        uint8_t slot;      // layer slot; unused for SELF_DEPTH (single MAIN target today)
         Kind kind;
         ObjL *mesh;        // OPAQUE_MESH
+        Ojm *ojm;          // OPAQUE_OJM / SELF_DEPTH (module-owned, application-long - D6)
         Set *texSet;       // TEXTURED_ANNULUS (module-owned, outlives the frame)
         float innerRatio;  // TEXTURED_ANNULUS: inner/outer radius
     };
     std::vector<Slot> slots;
     std::vector<Job> jobs[3];   // per Vulkan frameIdx; fencing guards reuse
+                                // (SELF_DEPTH jobs record FIRST - old submit order)
     std::vector<VkImageView> layerViews;
     std::unique_ptr<Texture> layers; // R8 array, service-owned
     PipelineFamily shapeFamily;
     PipelineFamily ringFamily;  // TEXTURED_ANNULUS silhouettes (SHADOW_RING)
+    PipelineFamily selfFamily;  // SELF_DEPTH pass (SELF_SHADOW PassKind; shares
+                                // the trace SetContract - one mat3 contract for
+                                // every geometry word)
     PipelineFamily blurFamily;
+    // SELF_DEPTH matrix buffer/set (single MAIN target today - header block;
+    // per-bucket when the SECONDARY ladder lands with S3).
+    std::unique_ptr<SharedBuffer<float[12]>> selfMat;
+    std::unique_ptr<Set> selfSet;
     Renderer *renderer = nullptr;
     uint32_t maxRadius = 0;
     uint8_t curFrame = 0;

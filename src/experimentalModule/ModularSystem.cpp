@@ -124,6 +124,64 @@ void ModularSystem::computeShadows(Renderer &renderer)
         return;
     const Vec3f L = ModularBody::getLightPosition();
     const float sunRadius = star->getRadius();
+    // ---- Self-shadow nomination (OJM wave, 2026-07-16) --------------------
+    // Old CoI parity: ProtoSystem::computeDraw nominated the single
+    // highest-importance rendered body (importance = screen_sz/distance,
+    // body.hpp:484-486), gated by the same experimental_shadows flag this
+    // function already gates on. ONE nomination per frame = the single MAIN
+    // depth target (ShadowService.hpp header; the SECONDARY ladder rides S3).
+    // Placed BEFORE the caster scan: a lone artificial body with no caster
+    // in the system still self-shadows (the empty-casters early return below
+    // must not skip it).
+    {
+        ModularBody *best = nullptr;
+        BodyModule *bestModule = nullptr;
+        float bestImportance = 0;
+        for (ModularBody *body : sortedSystemBodies) {
+            if (!body || body->distance == 0)
+                break; // sorted: unevaluated tail
+            if (!(*body && body->screenSize > 0.0015f) || body->isStar() || body->bodyType == BodyType::MINOR_BODY)
+                continue;
+            for (auto *m : body->nearComponents) {
+                if (m->getTraits() & (BMT_BASIC_SELF_SHADOW | BMT_RGBA8_SELF_SHADOW)) {
+                    const float importance = body->screenSize / body->distance;
+                    if (importance > bestImportance) {
+                        bestImportance = importance;
+                        best = body;
+                        bestModule = m;
+                    }
+                    break; // one nomination per body; first such module carries it
+                }
+            }
+        }
+        if (best) {
+            // model -> sun-frame-NDC matrix, rotation-only (unit geometry
+            // covers NDC; shadow_trace.vert maps z*0.5+0.5). Third row TOWARD
+            // the sun - the old lookAt(sun->body) convention (its -f row):
+            // depth GREATER + clear 0 keeps the most-sunward surface, and
+            // computeEnlightment's step() compares against that map.
+            Vec3f zs = L - best->getObservedPosition();
+            zs.normalize();
+            Vec3f axis(best->mat.r[8], best->mat.r[9], best->mat.r[10]);
+            Vec3f xs = axis ^ zs;
+            if (xs.lengthSquared() < 1e-8f) {
+                axis = Vec3f(best->mat.r[4], best->mat.r[5], best->mat.r[6]);
+                xs = axis ^ zs;
+            }
+            xs.normalize();
+            const Vec3f ys = zs ^ xs;
+            Mat4f frame = Mat4f::identity(); // off-cells MUST be zero
+            frame.r[0] = xs[0]; frame.r[4] = xs[1]; frame.r[8] = xs[2];
+            frame.r[1] = ys[0]; frame.r[5] = ys[1]; frame.r[9] = ys[2];
+            frame.r[2] = zs[0]; frame.r[6] = zs[1]; frame.r[10] = zs[2];
+            // The DRAWN orientation: near-component matrix (mat x
+            // bodyToSurface zrot) - production and consumption project the
+            // same raw model vertices, so the same composition must be used.
+            Mat4f rot = best->mat.multiplyFast(best->computeBodyToSurface());
+            rot.r[12] = rot.r[13] = rot.r[14] = 0;
+            bestModule->drawSelfShadow(renderer, best, frame * rot);
+        }
+    }
     // Caster candidates: one pass over the system (modules declaring a
     // PROJECT trait; MINOR_BODY and light sources exempt).
     constexpr uint32_t PROJECT_MASK = BMT_PROJECT_G1_SHADOW | BMT_PROJECT_G8_SHADOW | BMT_PROJECT_BISHADOW;

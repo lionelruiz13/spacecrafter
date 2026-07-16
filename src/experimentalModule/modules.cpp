@@ -29,6 +29,7 @@ extern const Mat4d mat_j2000_to_vsop87;
 #include "bodyModules/HintLoader.hpp"
 #include "bodyModules/AtmExtLoader.hpp"
 #include "bodyModules/RingLoader.hpp"
+#include "bodyModules/OjmLoader.hpp"
 
 void ModuleLoaderMgr::init()
 {
@@ -46,4 +47,5 @@ void ModuleLoaderMgr::init()
     registerModule(BodyModuleType::HINT, std::make_unique<HintLoader>());
     registerModule(BodyModuleType::ATMOSPHERE, std::make_unique<AtmExtLoader>()); // from-space rim shell (row 13)
     registerModule(BodyModuleType::RING, std::make_unique<RingLoader>()); // G8 caster half (shadow-composition wave); color/trace = row 4
+    registerModule(BodyModuleType::OJM, std::make_unique<OjmLoader>()); // row 3: artificial 3D-model bodies (OJM wave)
 }

@@ -59,6 +59,13 @@ public:
     //! @param pipelines {pipeline with texture, pipeline without texture}
     int record(VkCommandBuffer cmd, Pipeline *pipelines, PipelineLayout *layout, int selectedPipeline = -1, bool firstRecorded = true);
 
+    //! Pointer-pair variant of record() for pipelines that are not contiguous
+    //! in memory (the new-path pipeline-family registry, INTENT 10.3 rule 4:
+    //! layout-invariant per-shape switching). pipelines = {textured, texture-
+    //! less}; a nullptr entry SKIPS the shapes needing it (C3 degradation -
+    //! variant build not resident yet). Same semantics otherwise.
+    int record(VkCommandBuffer cmd, Pipeline *const *pipelines, PipelineLayout *layout, int selectedPipeline = -1, bool firstRecorded = true);
+
     // Record draws of the object, for shadow tracing
     void drawShadow(VkCommandBuffer cmd);
 

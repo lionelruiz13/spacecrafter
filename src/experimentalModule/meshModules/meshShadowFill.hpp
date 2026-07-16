@@ -88,4 +88,39 @@ inline void fillRayMarchShadows(SharedBuffer<rayMarchFrag> &frag, ModularBody *b
     }
 }
 
+// OJM variant (row 3): same entries, same fold as fillRayMarchShadows - the
+// OJM frag works in MODEL space (Position = raw unit-normalized vertex), so
+// rows and clip fold through the model->eye map MV = mat * scaling(radius).
+// Fills ONLY the receive part of ojmShadowBlock (rows + entries); the
+// self-shadow/lighting fields are the module's own (OjmModule::draw).
+inline void fillOjmShadows(SharedBuffer<ojmShadowBlock> &frag, ModularBody *body,
+                           const Mat4f &MV, float radius, const BodyModule *self)
+{
+    const ReceivedShadows &received = body->getReceivedShadows();
+    if (ShadowService::enabled && received) {
+        auto &f = *frag;
+        const auto foldRow = [&MV, radius](const Vec4f &row) -> Vec4f {
+            return Vec4f(
+                radius * (row.v[0]*MV.r[0] + row.v[1]*MV.r[1] + row.v[2]*MV.r[2]),
+                radius * (row.v[0]*MV.r[4] + row.v[1]*MV.r[5] + row.v[2]*MV.r[6]),
+                radius * (row.v[0]*MV.r[8] + row.v[1]*MV.r[9] + row.v[2]*MV.r[10]),
+                row.v[3] + row.v[0]*MV.r[12] + row.v[1]*MV.r[13] + row.v[2]*MV.r[14]);
+        };
+        f.shadowRow0 = foldRow(received.row0);
+        f.shadowRow1 = foldRow(received.row1);
+        int nb = 0;
+        for (const auto &e : received.entries) {
+            if (e.caster == body && e.source == self)
+                continue; // own silhouette (header block)
+            f.shadowingBodies[nb].posRadius = Vec4f(e.pos.first, e.pos.second, e.size, 0);
+            f.shadowingBodies[nb].absorbtionIdx = Vec4f(e.absorbtion[0], e.absorbtion[1], e.absorbtion[2], e.layerIdx);
+            f.shadowingBodies[nb].clip = foldRow(e.clip);
+            ++nb;
+        }
+        f.nbShadowingBodies = nb;
+    } else {
+        frag->nbShadowingBodies = 0;
+    }
+}
+
 #endif /* end of include guard: MESH_SHADOW_FILL_HPP_ */

@@ -1062,6 +1062,31 @@ FamilyBound Renderer::bindIn(const PipelineFamily &family, PassKind pass, VkComm
     return resolveAndBind(r, r.families[family.id()], pass, extCmd, wanted);
 }
 
+Pipeline *Renderer::peek(const PipelineFamily &family, PassKind pass, VariantKey wanted)
+{
+    if (!family)
+        return nullptr;
+    auto &r = *reg;
+    FamilyEntry &f = r.families[family.id()];
+    PassEntry &pe = f.passes[static_cast<size_t>(pass)];
+    if (!pe.desc)
+        return nullptr; // undeclared/disabled pass - bind()'s logging path owns the message
+    // Same normalization as resolveAndBind, then EXACT-or-nothing: peek is for
+    // layout-invariant per-shape multi-pipeline recording (Renderer.hpp), and
+    // a fallback row bound mid-record would switch shaders invisibly.
+    wanted &= (f.axisMask & ~f.undefinedMask)
+            | ((pass == PassKind::COLOR) ? VARIANT_NO_DEPTH : 0);
+    if (providableKey(f, *pe.desc, wanted) != wanted)
+        return nullptr; // combination absent from the shader table
+    VariantSlot *slot = findSlot(pe, wanted);
+    if (!slot) {
+        pe.variants.emplace_back(wanted);
+        r.enqueue({&f, pass, &pe.variants.back()});
+        return nullptr; // build enqueued; caller skips those shapes (C3)
+    }
+    return slot->ready.load(std::memory_order_acquire) ? slot->pipeline.get() : nullptr;
+}
+
 bool Renderer::computeReady(const PipelineFamily &family, VariantKey key) const
 {
     if (!family)

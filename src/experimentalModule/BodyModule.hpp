@@ -154,6 +154,21 @@ public:
     //    parent body - a grounded body's whole depth slice is negligible at
     //    parent scale (D1), so parent-vs-grounded occlusion is wrong without
     //    the prefill. Gated by BMT_*_SELF_SHADOW traits.
+    //    Contract (2026-07-16, first client = OJM): called by the shadow
+    //    NOMINATION (ModularSystem::computeShadows - old CoI parity: the
+    //    highest-importance drawn body with a *_SELF_SHADOW module), not by
+    //    a pass walk. mat = the model->sun-frame-NDC matrix (the same sun
+    //    basis as the received-shadow rows; unit-geometry convention like
+    //    drawShadow - the module folds its own geometry normalization). The
+    //    module (a) declares its depth job to the ShadowService
+    //    (produceSelfDepth - jobs-as-data, S4 seam) and (b) keeps {mat,
+    //    active-this-frame} for its COLOR fill: production and consumption
+    //    must project with the SAME matrix value (single-computation
+    //    consistency - ShadowService.hpp header). The active flag is
+    //    frame-scoped: set here, consumed and cleared by the module's own
+    //    draw() the same frame; a frame without nomination leaves it unset.
+    //    Dual purpose (b) arrives with the S3 depth-partitioning consumer
+    //    (shadow-paths.md D5) - the job shape already carries it.
     virtual void drawSelfShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
     // 4. TRACE - depth-like pass cutting a hole where the orbit line must be
     //    hidden by the body (old-path analog: drawOrbit into cmdBodyDepth).

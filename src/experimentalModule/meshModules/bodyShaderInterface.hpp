@@ -118,4 +118,56 @@ struct rayMarchFrag {
 	meshFrag::ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];
 };
 
+// ---- OJM family (row 3, 2026-07-16) ----------------------------------------
+// body_artificial.vert/geom REUSED VERBATIM; plain rows reuse
+// body_artificial_tex/notex.frag verbatim, shadowed rows are the
+// ojmShadowTex/Notex ports. One layout for all four rows (INTENT 10.3 rule
+// 4); binding 2 carries ojmLight on the plain rows and ojmShadowBlock on the
+// shadowed rows - same binding TYPE, different module-owned buffer, hence the
+// module's two Sets (the old set/ext->shadowSet pair, ported).
+
+// std140 mirror of body_artificial.vert binding 0 set 2 ("custom" block:
+// mat3 NormalMatrix). Fill via Mat4f::setMat3 of the eye-space model matrix
+// (rotation part - old drawBody matrix.setMat3(uVert->normal)).
+struct ojmVert {
+	float NormalMatrix[12]; // std140 mat3
+};
+
+// std140 mirror of body_artificial.vert/geom binding 1 set 2 (artGeom).
+struct ojmGeom {
+	Mat4f ModelViewMatrix;  // eye model matrix * scaling(radius) (old drawBody)
+	Vec3f clipping_fov;
+	float _pad;
+};
+
+// std140 mirror of body_artificial_tex/notex.frag binding 2 set 2 (LightInfo)
+// - the PLAIN rows' light block (old uLight; eye-space light position).
+struct ojmLight {
+	Vec3f Position;  // light position in eye coords (old eye_sun)
+	float _p0;
+	Vec3f Intensity; // A,D,S intensity (old hardcode {1,1,1})
+	float _p1;
+};
+
+// std140 mirror of ojmShadowTex/Notex.frag binding 2 set 2 (ojmShadowBlock)
+// - the SHADOWED rows' block. ShadowMatrix is the SAME value production used
+// for the SELF_DEPTH pass (single-computation consistency,
+// ShadowService.hpp); rows/clip are the S5 entries folded through the
+// model->eye map (ojmShadowFill.hpp, the fillRayMarchShadows fold).
+struct ojmShadowBlock {
+	float ShadowMatrix[12]; // std140 mat3: model -> sun-frame NDC
+	float ModelMatrix[12];  // std140 mat3: model -> eye (rotation+scale)
+	Vec3f ModelPosition;    // eye-space body center
+	float _p0;
+	Vec3f lightDirection;   // eye-space, direction light travels
+	float _p1;
+	Vec3f LightIntensity;
+	float selfShadowOn;     // 1 = self-shadow depth valid this frame
+	Vec4f shadowRow0;       // model-folded sun-frame rows
+	Vec4f shadowRow1;
+	int nbShadowingBodies;
+	int _pad[3];
+	meshFrag::ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];
+};
+
 #endif /* end of include guard: BODY_SHADER_INTERFACE_HPP_ */

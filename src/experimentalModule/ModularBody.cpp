@@ -1,4 +1,5 @@
 #include "ModularBody.hpp"
+#include <cstring>
 #include <iomanip>
 #include <ostream>
 #include "ModularBodyPtr.hpp"
@@ -375,8 +376,19 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
         ret.push_back(BodyModuleType::RING);
     if (param.count("tex_map"))
         ret.push_back(BodyModuleType::MESH);
-    if (param.count("model_name"))
-        ret.push_back(BodyModuleType::OJM);
+    // model_name has TWO consumers in the old parse (protosystem.cpp:634-641
+    // vs 727-739): type=artificial -> an Ojm model (materials, phong,
+    // self-shadow - the OJM module); any other type -> a NAMED ObjL drawn by
+    // the MESH family (Phobos/Deimos class - BasicMeshLoader carries it).
+    // Gating here keeps the deliberate non-OJM case out of the missing-loader
+    // warning channel (the rings/hint=false lesson above). Match = the old
+    // parse's exact discriminator: the 4-byte prefix switch on "Artificial"
+    // (protosystem.cpp:478-487 setBodyTypeFromString).
+    if (param.count("model_name")) {
+        const std::string &type = param["type"];
+        if (type.size() >= 4 && std::memcmp(type.data(), "Arti", 4) == 0)
+            ret.push_back(BodyModuleType::OJM);
+    }
     // From-space atmosphere shell (row 13). The compound gate mirrors the old
     // parse precondition EXACTLY (protosystem.cpp:865-871): the params block
     // is only read when has_atmosphere or atmosphere_lim_landscape is
