@@ -156,6 +156,12 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	cardinals_points = std::make_unique<Cardinals>();
 	meteors = std::make_unique<MeteorMgr>(10, 60);
 	landscape = new Landscape();
+	// Environment layer wiring (S8): the factory is constructed before the
+	// shared engines exist - wire them once all three are alive. The
+	// landscape engine is re-seated at every swap (setLandscape/
+	// loadLandscape), I5.
+	ssystemFactory->wireEnvironment(milky_way.get(), atmosphere.get(), tone_converter);
+	ssystemFactory->setEnvironmentLandscape(landscape);
 	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = std::make_shared<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height);
 	asterisms = std::make_shared<ConstellationMgr>(hip_stars);
@@ -498,6 +504,8 @@ void Core::init(const InitParser& conf)
 	landscape->fogSetFlagShow(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_FOG));
 
 	bodyDecor->setAtmosphereState(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
+	// Environment seam (S8): user-flag mirror (site 1/3 - config load).
+	ssystemFactory->setEnvironmentAtmosphereFlag(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
 	atmosphere->setFlagShow(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
 	atmosphere->setFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
 	atmosphere->setDefaultFaderDuration(conf.getDouble(SCS_VIEWING,SCK_ATMOSPHERE_FADE_DURATION));
@@ -634,6 +642,8 @@ void Core::setLandscapeToBody()
 		setLandscape(observatory->getHomeBody()->getEnglishName());
 		atmosphere->setFlagShow(true);
 		bodyDecor->setAtmosphereState(true);
+		// Environment seam (S8): user-flag mirror (site 2/3 - auto-rule).
+		ssystemFactory->setEnvironmentAtmosphereFlag(true);
 	}
 
 	//case of satellites of planets
@@ -665,6 +675,9 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 		delete landscape;
 		landscape = newLandscape;
 	}
+	// Environment seam (S8): re-seat the new path's engine pointer before
+	// the old one dangles (I5 - owner notifies dependents at replacement).
+	ssystemFactory->setEnvironmentLandscape(landscape);
 	testLandscapeCompatibleWithAutoMode();
 	return 1;
 }
@@ -728,6 +741,8 @@ bool Core::loadLandscape(stringHash_t& param, int landing)
 		delete landscape;
 		landscape = newLandscape;
 	}
+	// Environment seam (S8): re-seat the new path's engine pointer (I5).
+	ssystemFactory->setEnvironmentLandscape(landscape);
 	//std::cout << "Core::loadLandscape(stringHash_t& param)" << std::endl;
 	autoLandscapeMode = false;
 	return 1;
@@ -986,7 +1001,11 @@ Object Core::cleverFind(const Vec3d& v) const
 
 	// Collect the planets inside the range
 	if (ssystemFactory->getFlagShow() && (currentModule == MODULE::SOLAR_SYSTEM || currentModule == MODULE::STELLAR_SYSTEM)) {
-		temp = ssystemFactory->searchAround(v, fov_around, navigation, observatory.get(), projection, &is_default_object, bodyDecor->canDrawBody()); //aboveHomePlanet);
+		// Dual-path (S8): the home-body gate reads the active path's
+		// authority (EnvironmentState.drawBody replaces BodyDecor).
+		temp = ssystemFactory->searchAround(v, fov_around, navigation, observatory.get(), projection, &is_default_object,
+		                                    ssystemFactory->drawModularSystem ? ssystemFactory->getEnvironmentState().drawBody
+		                                                                      : bodyDecor->canDrawBody()); //aboveHomePlanet);
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 
 		if (is_default_object && temp.begin() != temp.end()) {

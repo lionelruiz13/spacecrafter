@@ -183,6 +183,11 @@ void MilkyWay::endTexTransition()
 
 void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay)
 {
+	drawEnv(eye, nav->getJ2000ToEyeMat(), julianDay);
+}
+
+void MilkyWay::drawEnv(ToneReproductor * eye, const Mat4d &j2000ToEye, double julianDay)
+{
 	if (showFader.getInterstate() <= 0)
 		return;
 
@@ -209,7 +214,7 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 	Context &context = *Context::instance;
 	VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_BACKGROUND);
 
-	Mat4f matrix = (nav->getJ2000ToEyeMat() * modelMilkyway ).convert();
+	Mat4f matrix = (j2000ToEye * modelMilkyway ).convert();
 
 	if (onTextureTransition) {
 		frag.texTransit = switchTexFader.getInterstate();
@@ -236,7 +241,7 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 
 		//	365.2422 c'est la période de révolution terrestre
 		//	27.5 c'est le shift de la texture ça n'a aucun sens
-		matrix = (nav->getJ2000ToEyeMat() * modelZodiacal *
+		matrix = (j2000ToEye * modelZodiacal *
 		          Mat4d::zrotation(2*M_PI*(-julianDay+27.5)/365.2422)).convert();
 		layout->pushConstant(cmd, 0, &matrix);
 		layout->pushConstant(cmd, 1, &frag);

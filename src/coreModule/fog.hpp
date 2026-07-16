@@ -67,7 +67,15 @@ public:
 	static void createSC_context();
 	static void destroySC_context();
 
+	//! Legacy entry: derives the matrix from the navigator (old path).
 	void draw(const Projector* prj, const Navigator* nav);
+
+	//! Path-neutral draw core (dual-path migration, 2026-07-16): same
+	//! localToEye as Landscape::drawEnv (the fog cylinder is z-symmetric, so
+	//! the old-local vs camera-local z-rotation is irrelevant, but one
+	//! convention is kept for the whole grounded layer). The angle-shift
+	//! translation stays internal.
+	void drawEnv(const Mat4f &localToEye);
 
 	void initShader();
 

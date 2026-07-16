@@ -1,10 +1,22 @@
 #include "ModularSystem.hpp"
 #include "ModuleLoaderMgr.hpp"
+#include "environmentModules/LandscapeEnv.hpp"
+#include "environmentModules/AtmosphereEnv.hpp"
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp"
 #include "tools/context.hpp"
 #include "meshModules/bodyShaderInterface.hpp" // MAX_SHADOW_CASTERS_PER_RECEIVER
 #include <algorithm>
+
+// Same mapping as the old parse (protosystem.cpp setAtmosphere) - retires
+// with the old path; kept local until then (two paths, one data format).
+static ATMOSPHERE_MODEL parseAtmosphereModel(const std::string &atmModel)
+{
+	if (atmModel=="earth_model") return ATMOSPHERE_MODEL::EARTH_MODEL;
+	if (atmModel=="venus_model") return ATMOSPHERE_MODEL::VENUS_MODEL;
+	if (atmModel=="mars_model") return ATMOSPHERE_MODEL::MARS_MODEL;
+	return ATMOSPHERE_MODEL::NONE_MODEL;
+}
 
 const Mat4f mat_j2000_to_vsop87(
     Mat4f::xrotation(-23.4392803055555555556*(M_PI/180)) *
@@ -386,6 +398,27 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
     // stayed 0 -> zero penumbra, found by the S5 fidelity probe).
     if (Utility::isTrue(param["system_star"]) || (star == this && body->isStar() && parent == this))
         star = body;
+    // Environment layer (S8, 2026-07-16): the old AtmosphereParams block
+    // becomes per-body data + environment members. Parse gate and defaults
+    // are protosystem.cpp:865-882 verbatim; absent block = the old
+    // Body::defaultAtmosphereParams (limLandscape 10000, no atmosphere).
+    if (!param["has_atmosphere"].empty() || !param["atmosphere_lim_landscape"].empty()) {
+        body->envParams.hasAtmosphere = Utility::strToBool(param["has_atmosphere"], false);
+        body->envParams.model = parseAtmosphereModel(param["atmosphere_model"]);
+        body->envParams.limInf = Utility::strToFloat(param["atmosphere_lim_inf"], 40000.f);
+        body->envParams.limSup = Utility::strToFloat(param["atmosphere_lim_sup"], 80000.f);
+        body->envParams.limLandscape = Utility::strToFloat(param["atmosphere_lim_landscape"], 10000.f);
+    }
+    // Grounded landscape on every landable body - the old path showed a
+    // landscape on ANY body below limLandscape (default params); which
+    // landscape stays Core's association rule during migration.
+    if (radius > 0)
+        body->addEnvironment(std::make_unique<LandscapeEnv>(), true);
+    // From-ground atmosphere iff the data declares one (bodies without it
+    // fall to the EnvironmentState defaults = bodyAssign's !hasAtmosphere
+    // branch).
+    if (body->envParams.hasAtmosphere)
+        body->addEnvironment(std::make_unique<AtmosphereEnv>(), false);
     for (auto moduleType : body->deduceBodyModuleList(param))
         ModuleLoaderMgr::instance.loadModule(moduleType, body, param);
     body->updateCache(); // Ensure bounding radius are properly set

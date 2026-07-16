@@ -265,6 +265,11 @@ std::string Landscape::getLandscapeNames(const std::string& landscape_file)
 
 void Landscape::draw(const Projector* prj, const Navigator* nav)
 {
+	drawEnv(nav->getLocalToEyeMat().convert());
+}
+
+void Landscape::drawEnv(const Mat4f &localToEye)
+{
 	Context &context = *Context::instance;
 	if (fader.isZero() || !valid_landscape) return;
 
@@ -277,9 +282,9 @@ void Landscape::draw(const Projector* prj, const Navigator* nav)
 	}
 	uFrag->get().sky_brightness = fmin(sky_brightness,1.0);
 	uFrag->get().fader = fader;
-	*uMV = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
+	*uMV = localToEye * Mat4f::zrotation(-rotate_z);
 
-	fog->draw(prj,nav);
+	fog->drawEnv(localToEye);
 }
 
 void Landscape::destroySC_context()
@@ -586,13 +591,13 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
 	fog->initShader();
 }
 
-void LandscapeSpherical::draw(const Projector* prj, const Navigator* nav)
+void LandscapeSpherical::drawEnv(const Mat4f &localToEye)
 {
 	if (top_altitude != landingFader) {
 		top_altitude = landingFader;
 		createSphericalMesh(radius, 1.0, slices,stacks, base_altitude, top_altitude, (float *) Context::instance->transfer->planCopy(vertex->get()));
 	}
-	Landscape::draw(prj, nav);
+	Landscape::drawEnv(localToEye);
 }
 
 void LandscapeSpherical::initShader()

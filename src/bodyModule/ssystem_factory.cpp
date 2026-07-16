@@ -39,6 +39,8 @@
 #include "experimentalModule/ModularSystem.hpp"
 #include "experimentalModule/Camera.hpp"
 #include "experimentalModule/ModuleLoaderMgr.hpp"
+#include "experimentalModule/EnvironmentManager.hpp"
+#include "experimentalModule/environmentModules/MilkyWayEnv.hpp"
 
 SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr) :
     observatory(observatory), navigation(navigation), timeMgr(timeMgr)
@@ -410,6 +412,10 @@ void SSystemFactory::update(int delta_time, const Navigator* nav, const TimeMgr*
     currentSystem->update(delta_time, nav, timeMgr);
     bodytrace->update(delta_time);
     camera->update(timeMgr->getJDay(), delta_time/1000.f);
+    // Environment aggregation - after the camera (chain state fresh);
+    // engine writes only when the modular phase is the drawing one.
+    if (environment)
+        environment->update(*camera, timeMgr->getJDay(), delta_time/1000.f, drawModularSystem);
 
     static int downCounter = 1000;
     downCounter -= delta_time;
@@ -430,6 +436,49 @@ void SSystemFactory::addBody(stringHash_t &param)
 // JSON lines: one header (jd, camera state), then one line per old-path body
 // of the CURRENT system with the matching new-path body (by english name,
 // null when absent - itself a finding, cf INTENT 11.3 hardcoded-flag case).
+void SSystemFactory::wireEnvironment(MilkyWay *milky, Atmosphere *atmosphere, ToneReproductor *eye)
+{
+    environment = std::make_unique<EnvironmentManager>(milky, atmosphere);
+    // The galaxy root's InAoI milkyway member: active from anywhere in the
+    // galaxy (the whole reference chain ends at this root). The 2D/3D regime
+    // switch is post-parity (EnvironmentModule.hpp convergence note).
+    milkyway->addEnvironment(std::make_unique<MilkyWayEnv>(milky, eye), false);
+}
+
+void SSystemFactory::setEnvironmentLandscape(Landscape *landscape)
+{
+    if (environment)
+        environment->setLandscape(landscape);
+}
+
+void SSystemFactory::setEnvironmentAtmosphereFlag(bool b)
+{
+    if (environment)
+        environment->setAtmosphereUserFlag(b);
+}
+
+const EnvironmentState &SSystemFactory::getEnvironmentState() const
+{
+    return environment->getState();
+}
+
+const AtmosphereComputeInput &SSystemFactory::getEnvironmentAtmosphereInput() const
+{
+    return environment->getAtmosphereInput();
+}
+
+void SSystemFactory::drawEnvironmentBackdrop()
+{
+    if (environment)
+        environment->drawBackdrop(Context::instance->renderer);
+}
+
+void SSystemFactory::drawEnvironmentSky()
+{
+    if (environment)
+        environment->drawSky(Context::instance->renderer);
+}
+
 void SSystemFactory::syncCameraReference(const std::string &name)
 {
     if (ModularBody *body = ModularBody::findBody(name)) {

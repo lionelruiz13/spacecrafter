@@ -423,6 +423,8 @@ void CoreLink::illuminateRemoveTex()	{
 //! Set flag for displaying Atmosphere
 void CoreLink::atmosphereSetFlag(bool b) {
 	core->bodyDecor->setAtmosphereState(b);
+	// Environment seam (S8): user-flag mirror (site 3/3 - command surface).
+	core->ssystemFactory->setEnvironmentAtmosphereFlag(b);
 	core->setBodyDecor();
 }
 //! Get flag for displaying Atmosphere

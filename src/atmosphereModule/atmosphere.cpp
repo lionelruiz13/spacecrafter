@@ -134,10 +134,30 @@ void Atmosphere::createSC_context()
 	}
 }
 
+// Legacy signature: old-path callers (navigator/projector inputs). Thin
+// wrapper over the path-neutral form - single computation authority.
 void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase,
                                const ToneReproductor * eye, const Projector* prj,
                                float latitude, float altitude, float temperature, float relative_humidity)
 {
+	AtmosphereComputeInput in;
+	in.jd = JD;
+	in.sunPos = sunPos;
+	in.moonPos = moonPos;
+	in.moonRadiusKm = 1738.; // the old hardcode, kept verbatim for parity
+	in.moonPhase = moon_phase;
+	in.latitudeDeg = latitude;
+	in.altitudeM = altitude;
+	in.temperatureC = temperature;
+	in.relativeHumidity = relative_humidity;
+	in.prj = prj;
+	computeColor(in, eye);
+}
+
+void Atmosphere::computeColor(const AtmosphereComputeInput &in, const ToneReproductor *eye)
+{
+	Vec3d sunPos = in.sunPos;
+	Vec3d moonPos = in.moonPos;
 	float min_mw_lum = 0.13;
 
 	// no need to calculate if not visible
@@ -154,7 +174,7 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 
 	// these are for radii
 	double sun_angular_size = atan(696000./AU/sunPos.length());
-	double moon_angular_size = atan(1738./AU/moonPos.length());
+	double moon_angular_size = atan(in.moonRadiusKm/AU/moonPos.length());
 
 	double touch_angle = sun_angular_size + moon_angular_size;
 	double dark_angle = moon_angular_size - sun_angular_size;
@@ -194,14 +214,14 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 
 	sky->setParamsv(sun_pos, 5.f);
 
-	skyb->setLoc(latitude * M_PI/180., altitude, temperature, relative_humidity);
+	skyb->setLoc(in.latitudeDeg * M_PI/180., in.altitudeM, in.temperatureC, in.relativeHumidity);
 	skyb->setSunMoon(moon_pos[2], sun_pos[2]);//, cor_optoma);
 
 	// Calculate the date from the julian day.
 	ln_date date;
-	SpaceDate::JulianToDate(JD, &date);
+	SpaceDate::JulianToDate(in.jd, &date);
 
-	skyb->setDate(date.years, date.months, moon_phase);
+	skyb->setDate(date.years, date.months, in.moonPhase);
 
 	Vec3d point(1., 0., 0.);
 
@@ -213,7 +233,29 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 	for (int x=0; x <= SKY_RESOLUTION; x++) {
 		float y_val = -1.f;
 		for (int y=0; y <= SKY_RESOLUTION; y++) {
-			prj->unprojectNormalizedLocal(x_val, y_val, point);
+			if (in.prj) {
+				in.prj->unprojectNormalizedLocal(x_val, y_val, point);
+			} else {
+				// New-path grid direction: the projector's inverse fisheye,
+				// derived once against projector.cpp unprojectNormalized +
+				// its mat_projection = diag(1,1,-1) z-mirror - the effective
+				// eye-frame direction of rect cell (x,y) is
+				// (x*sin(theta)/len, y*sin(theta)/len, -cos(theta)) with
+				// theta = len*halfFov (camera convention: -z forward, the
+				// same eye frame the measured 0.09 px screen parity ties to
+				// the old one), then rotated into the local (zenith) frame.
+				const double len = sqrt((double)x_val*x_val + (double)y_val*y_val);
+				const double theta = len * in.halfFov;
+				Vec3f dir;
+				if (len > 0) {
+					const double s = sin(theta) / len;
+					dir.set(x_val * s, y_val * s, -cos(theta));
+				} else {
+					dir.set(0, 0, -1);
+				}
+				dir = in.eyeToLocal.multiplyWithoutTranslation(dir);
+				point.set(dir[0], dir[1], dir[2]);
+			}
 			point.normalize();
 			y_val += (2.f / SKY_RESOLUTION);
 

@@ -103,7 +103,17 @@ public:
 		rotate_z = rotation;
 	}
 
+	//! Legacy entry: derives the matrix from the navigator (old path).
 	virtual void draw(const Projector* prj, const Navigator* nav);
+
+	//! Path-neutral draw core (dual-path migration, 2026-07-16):
+	//! localToEye maps the OLD local frame (x=South, y=East, z=Up - the
+	//! frame the mesh is built in) to the eye frame. Old path:
+	//! nav->getLocalToEyeMat(); new path: Camera::viewRotation() * Z(-pi/2)
+	//! (LandscapeEnv - the loadCamera frame-conversion seam). The data
+	//! rotation Z(-rotate_z) stays internal - single authority. Fog rides
+	//! the same matrix (its own translation composed internally).
+	virtual void drawEnv(const Mat4f &localToEye);
 
 	static Landscape* createFromFile(const std::string& landscape_file, const std::string& section_name);
 	static Landscape* createFromHash(stringHash_t & param, int landscape);
@@ -169,7 +179,10 @@ public:
 	virtual void load(const std::string& fileName, const std::string& section_name);
 	void create(const std::string _name, const std::string _maptex, const float _base_altitude,
 	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, const bool _mipmap, int landing);
-	virtual void draw(const Projector* prj, const Navigator* nav) override;
+	// Landing-animation mesh regeneration lives on the path-neutral entry so
+	// both paths (legacy wrapper + LandscapeEnv) get it - the base
+	// draw(prj,nav) dispatches here virtually.
+	virtual void drawEnv(const Mat4f &localToEye) override;
 	virtual void setLanding(bool isLanding, float speed) override;
 private:
 	void createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,

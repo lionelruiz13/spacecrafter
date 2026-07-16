@@ -164,6 +164,11 @@ void StellarSystemModule::update(int delta_time)
 	sunPos.normalize();
 	moonPos.normalize();
 
+	if (core->ssystemFactory->drawModularSystem) {
+		// Modular phase: camera-chain value (EnvironmentManager step 3 -
+		// see solarSystemModule.cpp, same seam).
+		core->sky_brightness = core->ssystemFactory->getEnvironmentState().skyBrightness;
+	} else {
 	// compute global sky brightness TODO : make this more "scientifically"
 	// TODO: also add moonlight illumination
 	if (sunPos[2] < -0.1/1.5 ) core->sky_brightness = 0.01;
@@ -174,6 +179,7 @@ void StellarSystemModule::update(int delta_time)
 		core->sky_brightness *= (core->atmosphere->getIntensity()+0.1);
 	}
 	// TODO: should calculate dimming with solar eclipse even without atmosphere on
+	}
 	core->landscape->setSkyBrightness(core->sky_brightness+0.05);
 }
 
@@ -182,7 +188,11 @@ void StellarSystemModule::draw(int delta_time)
     Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]); // multisample print
     asyncUpdateEnd();
 	core->applyClippingPlanes(0.000001 ,200);
-	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
+	// Dual-path (S8): see solarSystemModule.cpp - same seam.
+	if (core->ssystemFactory->drawModularSystem)
+		core->ssystemFactory->drawEnvironmentBackdrop();
+	else
+		core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 	core->nebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
@@ -210,15 +220,23 @@ void StellarSystemModule::draw(int delta_time)
 
 	// retiré la condition && atmosphere->getFlagShow() de sorte à pouvoir en avoir par atmosphère ténue
 	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
-	if (core->bodyDecor->canDrawMeteor() && (core->sky_brightness<0.1))
+	// Dual-path (S8): see solarSystemModule.cpp - same seams.
+	if ((core->ssystemFactory->drawModularSystem
+	         ? core->ssystemFactory->getEnvironmentState().allowMeteors
+	         : core->bodyDecor->canDrawMeteor())
+	    && (core->sky_brightness<0.1))
 		core->meteors->draw(core->projection, core->navigation);
 
     Context::instance->helper->nextDraw(PASS_FOREGROUND);
+	if (core->ssystemFactory->drawModularSystem) {
+		core->ssystemFactory->drawEnvironmentSky();
+	} else {
 	core->atmosphere->draw();
 
 	// Draw the landscape
 	if (core->bodyDecor->canDrawLandscape()) {
 		core->landscape->draw(core->projection, core->navigation);
+	}
 	}
 
 	core->cardinals_points->draw(core->projection, observer->getLatitude());
@@ -257,6 +275,10 @@ void StellarSystemModule::asyncUpdateLoop()
     threadQueue.acquire();
     while (threadQueue.pop(data)) {
         core->ssystemFactory->computePreDraw(core->projection, core->navigation);
+        // Dual-path (S8): see solarSystemModule.cpp - same seam.
+        if (core->ssystemFactory->drawModularSystem)
+            core->atmosphere->computeColor(core->ssystemFactory->getEnvironmentAtmosphereInput(), core->tone_converter);
+        else
         core->atmosphere->computeColor(core->timeMgr->getJDay(), data.first, data.second,
     	                          core->ssystemFactory->getMoon()->get_phase(core->ssystemFactory->getEarth()->get_heliocentric_ecliptic_pos()),
     	                          core->tone_converter, core->projection, observer->getLatitude(), observer->getAltitude(),

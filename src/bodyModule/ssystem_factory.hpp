@@ -46,6 +46,13 @@
 
 class Camera;
 class ModularSystem;
+class EnvironmentManager;
+class MilkyWay;
+class Atmosphere;
+class Landscape;
+class ToneReproductor;
+struct EnvironmentState;       // experimentalModule/EnvironmentModule.hpp
+struct AtmosphereComputeInput; // atmosphereModule/atmosphere.hpp
 
 /**
  * \file ssystem_factory.hpp
@@ -89,6 +96,30 @@ public:
     // lat/lon/alt meaning on the new body, like the old anchor switch). No-op
     // when the body doesn't exist in the new path.
     void syncCameraReference(const std::string &name);
+
+    // ---- Environment seams (S8 wave, 2026-07-16 - EnvironmentManager.hpp
+    // is the aggregation authority; EnvironmentModule.hpp the contract) ----
+    // Engine wiring: called once by Core after it creates the shared engines
+    // (the factory is constructed before them). Instantiates the manager and
+    // the galaxy root's milkyway member.
+    void wireEnvironment(MilkyWay *milky, Atmosphere *atmosphere, ToneReproductor *eye);
+    // Landscape engine re-seat - called by Core at every landscape swap
+    // (setLandscape/loadLandscape; I5).
+    void setEnvironmentLandscape(Landscape *landscape);
+    // Atmosphere user-flag mirror (old BodyDecor::setAtmosphereState sites).
+    void setEnvironmentAtmosphereFlag(bool b);
+    // Aggregated per-frame state (valid after update()) - the BodyDecor
+    // gate replacement for modular-phase consumers (searchAround, meteors).
+    const EnvironmentState &getEnvironmentState() const;
+    // New-path input snapshot for Atmosphere::computeColor (built in
+    // update(), consumed by the executor's async job - ordered by the work
+    // queue push/pop).
+    const AtmosphereComputeInput &getEnvironmentAtmosphereInput() const;
+    // Frame-positioned environment draws (modular phase; same call
+    // positions as the old milky_way->draw / atmosphere->draw+landscape
+    // block in the executors - frame-sequencing carrier during migration).
+    void drawEnvironmentBackdrop();
+    void drawEnvironmentSky();
 
     SolarSystem * getSolarSystem(void) {
         return ssystem.get();
@@ -677,6 +708,9 @@ private:
     Navigator *navigation;
     TimeMgr *timeMgr;
     std::unique_ptr<Camera> camera;
+    // Environment aggregation authority (created by wireEnvironment - the
+    // shared engines don't exist yet at factory construction).
+    std::unique_ptr<EnvironmentManager> environment;
 
     ProtoSystem * currentSystem;
     bool inSystem = true;

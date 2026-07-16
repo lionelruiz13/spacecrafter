@@ -68,7 +68,16 @@ public:
 	virtual ~MilkyWay();
 
 	//! draws the sphere and the texture associated to the Milkyway.
+	//! Legacy entry: derives the matrix from the navigator (old path).
 	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay);
+
+	//! Path-neutral draw core (dual-path migration, 2026-07-16): j2000ToEye
+	//! is the rotation mapping J2000 (equatorial) directions to the eye
+	//! frame - old path: nav->getJ2000ToEyeMat() (rotation-only by
+	//! construction); new path: system chain rotation * mat_j2000_to_vsop87
+	//! (MilkyWayEnv). The texture alignment matrices (modelMilkyway /
+	//! modelZodiacal) stay internal - single authority.
+	void drawEnv(ToneReproductor * eye, const Mat4d &j2000ToEye, double julianDay);
 
 	//! update the faders of the class
 	void update(int delta_time) {

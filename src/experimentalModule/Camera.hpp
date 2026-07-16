@@ -174,6 +174,9 @@ public:
     inline ModularSystem *getCurrentSystem() const {
         return system;
     }
+    inline bool isFreeMode() const {
+        return freeMode;
+    }
     void setHalfFov(float halfFov, float duration = 0.5);
 
     // Compatibility methods, only work while not in freeMode

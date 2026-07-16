@@ -146,6 +146,8 @@ class ModularBody {
     friend class ModuleLoader;
     // For some ModularBody management
     friend class ModularSystem;
+    // For environment chain aggregation (member lists, satellite selection)
+    friend class EnvironmentManager;
 public:
     ~ModularBody();
     // For emplace_back
@@ -727,10 +729,31 @@ public:
         return (body->bodyType == BodyType::SYSTEM);
     }
 
+    // Camera reference transition wiring points (Camera ctor/switchToBody/
+    // warpToBody). The edge SEMANTICS (enter/leave on the environment
+    // members) are owned by EnvironmentManager's per-frame chain diff -
+    // single authority, so endpoint switches and deep warps produce
+    // identical edges and shared ancestors never see spurious leave/enter
+    // pairs. These hooks stay as the structural wiring for a future
+    // edge-driven (non-polled) form.
     inline void enterEnvironment() {
     }
     inline void leaveEnvironment() {
     }
+    // Install an environment member (EnvironmentModule.hpp). grounded =
+    // active only while the camera is anchored on this body (landscape
+    // class); otherwise active whenever this body is on the camera's
+    // reference chain (InAoI class: atmosphere, milkyway).
+    inline void addEnvironment(std::unique_ptr<EnvironmentModule> &&module, bool grounded) {
+        (grounded ? groundedEnvironment : environment).push_back(std::move(module));
+    }
+    inline const Mat4f &getMat() const {
+        return mat;
+    }
+    // Per-body environment data (old AtmosphereParams thresholds - see
+    // BodyEnvironmentParams; parsed by ModularSystem::loadBody from the
+    // same ssystem.ini keys, same defaults).
+    BodyEnvironmentParams envParams;
     static inline const Vec3f &getLightPosition() {
         return lightPosition;
     }

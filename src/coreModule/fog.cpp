@@ -123,11 +123,16 @@ void Fog::initShader()
 // Draw the horizon fog
 void Fog::draw(const Projector* prj, const Navigator* nav)
 {
+	drawEnv(nav->getLocalToEyeMat().convert());
+}
+
+void Fog::drawEnv(const Mat4f &localToEye)
+{
 	if (fader.isZero()) return;
 
 	uFrag->get().fader = fader;
 	uFrag->get().sky_brightness = sky_brightness;
-	*uMV = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(angle_shift*M_PI/180.)))).convert();
+	*uMV = localToEye * Mat4f::translation(Vec3f(0.f,0.f,radius*sinf(angle_shift*M_PI/180.f)));
 
 	const int frameIdx = Context::instance->frameIdx;
 	Context::instance->frame[frameIdx]->toExecute(cmds[frameIdx], PASS_FOREGROUND);

@@ -54,10 +54,38 @@ class Pipeline;
 #define NB_LUM ((SKY_RESOLUTION+1) * (SKY_RESOLUTION+1))
 #define NB_INDEX (((SKY_RESOLUTION+1) * 2 + 1) * SKY_RESOLUTION)
 
+//! Path-neutral input of the sky-table computation (dual-path migration,
+//! 2026-07-16). The skylight/skybright models consume only angles between
+//! (view direction, sun, moon, zenith), so any right-handed local frame with
+//! z = zenith is valid: the old path fills this from navigator/projector
+//! (helioToLocal positions + unprojectNormalizedLocal grid), the new path
+//! from the camera chain (observed positions rotated by eyeToLocal + the
+//! same inverse-fisheye formula the projector applies).
+//! Grid direction source selection: prj != nullptr -> old projector
+//! unproject; otherwise eyeToLocal/halfFov (Camera::viewRotation transpose).
+struct AtmosphereComputeInput {
+	double jd = 0;
+	Vec3d sunPos;         //!< sun position, observer-local frame, AU (length used for angular size)
+	Vec3d moonPos;        //!< moon position, observer-local frame, AU
+	double moonRadiusKm = 1738.; //!< angular-size source (old hardcode: 1738)
+	float moonPhase = 0;  //!< illuminated fraction (old Body::get_phase)
+	float latitudeDeg = 45.f;
+	float altitudeM = 200.f;
+	float temperatureC = 15.f;
+	float relativeHumidity = 40.f;
+	const Projector *prj = nullptr; //!< old-path grid directions
+	Mat4f eyeToLocal;     //!< new-path grid directions: eye -> local rotation
+	float halfFov = 0;    //!< new-path grid directions: radians
+};
+
 class Atmosphere: public NoCopy {
 public:
 	Atmosphere();
 	virtual ~Atmosphere();
+
+	//! Path-neutral sky-table computation (single authority; the legacy
+	//! signature below wraps it).
+	void computeColor(const AtmosphereComputeInput &in, const ToneReproductor *eye);
 
 	void computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase, const ToneReproductor * eye, const Projector* prj,
 	                   float latitude = 45.f, float altitude = 200.f,
