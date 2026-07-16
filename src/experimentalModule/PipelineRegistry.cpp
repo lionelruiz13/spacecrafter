@@ -61,7 +61,7 @@ const char *passName(PassKind pass) {
     switch (pass) {
         case PassKind::COLOR: return "COLOR";
         case PassKind::SELF_SHADOW: return "SELF_SHADOW";
-        case PassKind::SHADOW_STENCIL: return "SHADOW_STENCIL";
+        case PassKind::SHADOW_SHAPE: return "SHADOW_SHAPE";
         case PassKind::TRACE: return "TRACE";
         default: return "?";
     }
@@ -231,13 +231,16 @@ std::unique_ptr<Pipeline> buildVariant(FamilyEntry &f, PassKind pass, VariantKey
             render = context.renderSelfShadow.get();
             dynamicStates = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
             break;
-        case PassKind::SHADOW_STENCIL:
+        case PassKind::SHADOW_SHAPE:
             // Dynamic viewport: the old shadowShape pipeline baked
             // frameShadow->makeViewport() (shadowRes^2) - a fixed viewport at
             // SCREEN size here would rasterize the silhouette wrong. The
             // recording service sets viewport/scissor at pass begin
             // (resolution is a D5 parameter, not a bake-time constant).
-            render = context.renderShadow.get();
+            // Target: the R8 coverage pass (typed silhouettes - the family's
+            // FixedState carries the coverage-over blend; the old stencil
+            // REPLACE ops are gone with the binary target).
+            render = context.renderShadowShape.get();
             dynamicStates = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
             break;
         default:
@@ -264,15 +267,12 @@ std::unique_ptr<Pipeline> buildVariant(FamilyEntry &f, PassKind pass, VariantKey
         case PassKind::SELF_SHADOW:
             p->setDepthStencilMode(VK_TRUE, VK_TRUE, VK_COMPARE_OP_GREATER);
             break;
-        case PassKind::SHADOW_STENCIL: {
-            // Depth explicitly off (old shadowShape: setDepthStencilMode() then
-            // stencil). Write-1-per-fragment: the old NEVER+failOp-REPLACE and
-            // this ALWAYS+passOp-REPLACE are equivalent on a cleared buffer.
+        case PassKind::SHADOW_SHAPE:
+            // Depth explicitly off; coverage is written as COLOR (the
+            // family's frag + blend state), not stencil - the typed R8
+            // target carries graded transmission, which a stencil cannot.
             p->setDepthStencilMode();
-            const VkStencilOpState op {VK_STENCIL_OP_KEEP, VK_STENCIL_OP_REPLACE, VK_STENCIL_OP_KEEP, VK_COMPARE_OP_ALWAYS, 0xff, 0xff, 1};
-            p->setStencilMode(op, op);
             break;
-        }
         default:
             if (!depthTest || !depthWrite)
                 p->setDepthStencilMode(depthTest ? VK_TRUE : VK_FALSE, depthWrite ? VK_TRUE : VK_FALSE);

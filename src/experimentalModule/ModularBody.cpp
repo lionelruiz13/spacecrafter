@@ -35,6 +35,17 @@ void ModularBody::unpin()
         RenderChain::instance.onPinDrained(this);
 }
 
+// BodyModule's default caster descriptor (BodyModule.hpp hook 2b) - defined
+// here because it needs the ModularBody definition: a solid whole-body caster
+// (the G1 mesh case). radius = body radius, NOT the module's boundingRadius:
+// a shell-inflated bounding radius would shrink the silhouette in its layer
+// for no coverage gain. Clip: degenerate (always applies) - selection's
+// light-corridor test already carries a solid caster's z-order.
+ShadowCaster BodyModule::getShadowCaster(ModularBody *body, const Vec3f &) const
+{
+    return {body->getRadius(), body->getShadowAbsorbtion(), Vec4f(0, 0, 0, -1)};
+}
+
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
 {
@@ -356,7 +367,11 @@ void ModularBody::setTranslator(Translator &_translator)
 std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::string, std::string> &param)
 {
     std::vector<BodyModuleType> ret;
-    if (param.count("tex_ring"))
+    // rings gate = old parse parity (protosystem.cpp:777 strToBool(rings, 0)):
+    // tex_ring alone doesn't create rings. Deliberate suppression lives HERE,
+    // not in RingLoader::isLikely - a 0 bid on a deduced module fires the
+    // missing-loader warning (the hint=false lesson, 11.19).
+    if (param.count("tex_ring") && Utility::strToBool(param["rings"], false))
         ret.push_back(BodyModuleType::RING);
     if (param.count("tex_map"))
         ret.push_back(BodyModuleType::MESH);

@@ -27,6 +27,7 @@ layout (binding=7) uniform sampler2DArray bodyShadows;
 struct ShadowingBody {
 	vec4 posRadius;      // xy = caster center in sun-frame (rel. receiver), z = disc radius
 	vec4 absorbtionIdx;  // rgb = caster shadow absorption, w = layer index
+	vec4 clip;           // half-space gate: apply iff dot(P, xyz) + w <= 0 ((0,0,0,-1) = always; planar casters)
 };
 
 layout (binding=1) uniform rayMarchFrag {
@@ -103,6 +104,7 @@ void main(void)
 		vec2 texCoord = vec2(tmp, acos(-samplePos.z/depth) / M_PI);
 		vec2 shadowPos = vec2(dot(shadowRow0.xyz, samplePos) + shadowRow0.w,
 		                      dot(shadowRow1.xyz, samplePos) + shadowRow1.w); // For shadow projection
+		vec3 shadowSample = samplePos; // clip planes are folded through the same map as the rows
 		vec3 xAxis = normalize(vec3(-samplePos.y, samplePos.x, 0));
 		samplePos /= depth;
 		vec3 yAxis = normalize(cross(xAxis, samplePos));
@@ -118,8 +120,8 @@ void main(void)
 			// Process shadow of bodies
 			for (int i = 0; i < nbShadowingBodies; ++i) {
 				vec2 tmp = (shadowPos.xy - shadowingBodies[i].posRadius.xy) / shadowingBodies[i].posRadius.z;
-				if (dot(tmp, tmp) < 1) {
-					float coverage = texture(bodyShadows, vec3(tmp * 0.5 + 0.5, shadowingBodies[i].absorbtionIdx.w)).r;
+				if (dot(tmp, tmp) < 1 && dot(shadowSample, shadowingBodies[i].clip.xyz) + shadowingBodies[i].clip.w <= 0.0) {
+					float coverage = textureLod(bodyShadows, vec3(tmp * 0.5 + 0.5, shadowingBodies[i].absorbtionIdx.w), 0.0).r; // explicit LOD: implicit derivatives are UNDEFINED in this non-uniform flow (zero reads on NVIDIA; layer is single-mip)
 					shadowing *= vec3(1) - coverage * shadowingBodies[i].absorbtionIdx.rgb;
 				}
 			}

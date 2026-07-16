@@ -59,7 +59,9 @@ struct meshFrag {
 	int _pad[3];
 	struct ShadowingBody {
 		Vec4f posRadius;      // xy = caster center in sun-frame (rel. receiver), z = disc radius, w unused
-		Vec4f absorbtionIdx;  // rgb = caster shadowAbsorbtion, w = layer index (float for sampler2DArray)
+		Vec4f absorbtionIdx;  // rgb = entry shadowAbsorbtion, w = layer index (float for sampler2DArray)
+		Vec4f clip;           // eye-space half-space gate: apply iff dot(P, xyz) + w <= 0
+		                      // ((0,0,0,-1) = always; planar casters - ShadowProjection.hpp)
 	} shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];
 };
 

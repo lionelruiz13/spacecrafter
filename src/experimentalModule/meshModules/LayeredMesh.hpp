@@ -54,7 +54,7 @@ public:
     LayeredMesh(ObjL *mesh, Config &&cfg);
     virtual ~LayeredMesh();
     virtual uint32_t getTraits() const override {
-        return BMT_USE_DEPTH | BMT_DEPTH_TRACE | BMT_PROJECT_G1_SHADOW;
+        return BMT_USE_DEPTH | BMT_DEPTH_TRACE | BMT_PROJECT_G1_SHADOW | BMT_RECEIVE_SHADOW;
     }
     virtual bool isLoaded() override;
     virtual void preload(ModularBody *body) override;

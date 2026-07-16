@@ -28,6 +28,7 @@ extern const Mat4d mat_j2000_to_vsop87;
 #include "bodyModules/LayeredMeshLoader.hpp"
 #include "bodyModules/HintLoader.hpp"
 #include "bodyModules/AtmExtLoader.hpp"
+#include "bodyModules/RingLoader.hpp"
 
 void ModuleLoaderMgr::init()
 {
@@ -44,4 +45,5 @@ void ModuleLoaderMgr::init()
     registerModule(BodyModuleType::MESH, std::make_unique<LayeredMeshLoader>()); // row 2: layered discs (outbids BasicMesh on layered texture keys)
     registerModule(BodyModuleType::HINT, std::make_unique<HintLoader>());
     registerModule(BodyModuleType::ATMOSPHERE, std::make_unique<AtmExtLoader>()); // from-space rim shell (row 13)
+    registerModule(BodyModuleType::RING, std::make_unique<RingLoader>()); // G8 caster half (shadow-composition wave); color/trace = row 4
 }

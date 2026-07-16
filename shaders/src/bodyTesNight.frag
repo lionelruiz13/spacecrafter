@@ -21,6 +21,7 @@ layout (binding=8) uniform sampler2DArray bodyShadows;
 struct ShadowingBody {
 	vec4 posRadius;
 	vec4 absorbtionIdx;
+	vec4 clip;           // half-space gate: apply iff dot(P, xyz) + w <= 0 ((0,0,0,-1) = always; planar casters)
 };
 
 layout (binding=1) uniform meshFrag {
@@ -57,8 +58,8 @@ void main(void)
 		                      dot(shadowRow1.xyz, Position) + shadowRow1.w);
 		for (int i = 0; i < nbShadowingBodies; ++i) {
 			vec2 tmp = (shadowPos - shadowingBodies[i].posRadius.xy) / shadowingBodies[i].posRadius.z;
-			if (dot(tmp, tmp) < 1.0) {
-				float coverage = texture(bodyShadows, vec3(tmp * 0.5 + 0.5, shadowingBodies[i].absorbtionIdx.w)).r;
+			if (dot(tmp, tmp) < 1.0 && dot(Position, shadowingBodies[i].clip.xyz) + shadowingBodies[i].clip.w <= 0.0) {
+				float coverage = textureLod(bodyShadows, vec3(tmp * 0.5 + 0.5, shadowingBodies[i].absorbtionIdx.w), 0.0).r; // explicit LOD: implicit derivatives are UNDEFINED in this non-uniform flow (zero reads on NVIDIA; layer is single-mip)
 				shadowing *= vec3(1.0) - coverage * shadowingBodies[i].absorbtionIdx.rgb;
 			}
 		}

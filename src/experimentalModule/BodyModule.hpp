@@ -51,6 +51,47 @@ enum BodyModuleTraits {
     BMT_PROJECT_G1_SHADOW =     0x00000080, // Project monochrome shadow
     BMT_PROJECT_G8_SHADOW =     0x00000100, // Project greyscale shadow (up to 10 is possible)
     BMT_PROJECT_BISHADOW =      0x00000200, // Project bicolor shadow - ONLY WORKS WHEN 10 TIMES CLOSER
+    BMT_RECEIVE_SHADOW =        0x00000400, // Samples the body's receivedShadows in its COLOR
+                                            // draw (ShadowProjection.hpp). Declared so the
+                                            // orchestration knows WHO receives: bodies with no
+                                            // receiving module get no entries (no dead fills),
+                                            // and within-body projection (ring<->planet, one
+                                            // ModularBody) pairs a projecting module with the
+                                            // OTHER receiving modules - never with itself (a
+                                            // surface never samples a layer containing its own
+                                            // silhouette; see ModularSystem::computeShadows).
+};
+
+// What a projecting module casts - the per-MODULE half of the shadow-caster
+// vocabulary (the per-BODY half - position, light corridor - stays in the
+// orchestration). One caster layer is produced per (body, projecting module):
+// per-entry application multiplies (1 - cov_i * absorbtion_i) over entries,
+// and products commute, so per-module layers compose EXACTLY like one
+// combined transmission map ((1-c_mesh)(1-c_ring) = T_mesh * T_ring) while
+// keeping per-module absorbtion and within-body exclusion expressible.
+struct ShadowCaster {
+    // Silhouette extent (AU, scaled): the disc the layer maps. Mesh modules:
+    // the body radius (NOT boundingRadius - a shell-inflated bounding radius
+    // would shrink the silhouette in its layer for no coverage gain).
+    // Ring modules: the OUTER ring radius.
+    float radius;
+    // Per-channel shadow absorption of THIS module's casting (1 = channel
+    // fully absorbed under full coverage). Mesh modules default to the body's
+    // shadowAbsorbtion (Earth {0,1,1} -> red umbra). Rings: the transparency
+    // grading lives in the layer COVERAGE; absorbtion carries the old-parity
+    // darkening depth (mix(1.0, 0.3, alpha) == 1 - alpha*0.7 -> {0.7,0.7,0.7}).
+    Vec3f absorbtion;
+    // Receiver-side half-space gate, eye-space plane (xyz, w): the entry
+    // applies only where dot(P, xyz) + w <= 0. Solid casters: the DEGENERATE
+    // plane (0,0,0,-1) - always applies (selection's light-corridor test
+    // already carries their z-order). PLANAR casters (rings) need it because
+    // the blurred layer is z-less: a ray crossing the ring plane BEHIND the
+    // surface it hits must not shade it. The exact rule for any receiver
+    // point P: shade iff P lies on the anti-sun side of the caster's plane
+    // (crossing-before-hit <=> hit beyond the plane), i.e. xyz = plane normal
+    // oriented toward the sun, w = -dot(xyz, casterCenter). Derivation +
+    // the sphere no-false-band proof: ShadowProjection.hpp.
+    Vec4f clip;
 };
 
 // The unit of feature composition: a drawable/loadable feature attached to a
@@ -91,14 +132,23 @@ public:
     // 1b. COLOR, minimalist depth-less variant - used at small screen sizes
     //     where depth-correct drawing is indistinguishable.
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
-    // 2. SHADOW - the silhouette this body projects onto OTHER bodies
+    // 2. SHADOW - the silhouette this module projects onto OTHER surfaces
     //    (idx = layer in the ShadowService pool; mat = the silhouette matrix
     //    computed by the orchestration - shadow-paths.md B2). Gated by
     //    BMT_PROJECT_* traits. Sync-interim contract [S5]: called on the
     //    frame path; the module DECLARES its geometry to the service
-    //    (ShadowService::produce), which records it in the pre-color window
+    //    (ShadowService::produce/produceAnnulus - the typed-job vocabulary;
+    //    each composition type is a vocabulary word, the pool/blur/receiver
+    //    machinery is shared), which records it in the pre-color window
     //    - the jobs-as-data shape the S4 compute thread consumes unchanged.
     virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx) {}
+    // 2b. Caster descriptor consumed by the selection (one layer + one
+    //     receiver entry per (body, projecting module) - see ShadowCaster).
+    //     Only called on modules declaring a BMT_PROJECT_* trait. The default
+    //     covers solid whole-body casters (G1 mesh): body radius, body
+    //     shadowAbsorbtion, no clip. Defined in ModularBody.cpp (needs the
+    //     ModularBody definition).
+    virtual ShadowCaster getShadowCaster(ModularBody *body, const Vec3f &lightPos) const;
     // 3. SELF-SHADOW - dual purpose: (a) fill the self-shadow depth buffer;
     //    (b) prefill the depth-buffer slice of grounded bodies with this
     //    parent body - a grounded body's whole depth slice is negligible at

@@ -7,6 +7,8 @@
 #include "tools/context.hpp"
 #include "meshModules/bodyShaderInterface.hpp" // MAX_SHADOW_CASTERS_PER_RECEIVER
 #include <algorithm>
+#include <cfloat> // FLT_MAX (within-body pair rank)
+#include "EntityCore/Core/VulkanMgr.hpp" // G8-budget overflow log
 
 // Same mapping as the old parse (protosystem.cpp setAtmosphere) - retires
 // with the old path; kept local until then (two paths, one data format).
@@ -105,6 +107,13 @@ void ModularSystem::updateSystem()
 
 // Shadow orchestration - the WHICH half of G7 (class comment + shadow-paths.md
 // B2; every ported formula carries its old-path line reference).
+// MODULE-GRANULAR since the composition-typed rework (2026-07-16): a caster
+// candidate is a (body, projecting module) pair and each pair gets its own
+// layer + receiver entry. Per-entry application multiplies transmissions and
+// products commute, so per-module layers compose exactly like one combined
+// caster map (ShadowProjection.hpp) - while making per-module absorbtion and
+// WITHIN-BODY pairs (ring<->planet on one ModularBody) expressible, which
+// body-granular selection excluded by construction (caster == body skip).
 void ModularSystem::computeShadows(Renderer &renderer)
 {
     ShadowService &service = renderer.shadow;
@@ -115,24 +124,37 @@ void ModularSystem::computeShadows(Renderer &renderer)
         return;
     const Vec3f L = ModularBody::getLightPosition();
     const float sunRadius = star->getRadius();
-    // Caster candidates: one pass over the system (bodies whose modules
-    // declare a PROJECT trait; MINOR_BODY and light sources exempt).
+    // Caster candidates: one pass over the system (modules declaring a
+    // PROJECT trait; MINOR_BODY and light sources exempt).
     constexpr uint32_t PROJECT_MASK = BMT_PROJECT_G1_SHADOW | BMT_PROJECT_G8_SHADOW | BMT_PROJECT_BISHADOW;
-    static std::vector<ModularBody *> casters; // scratch, system-draw scoped
+    struct Caster {
+        ModularBody *body;
+        BodyModule *module;
+        uint32_t traits;   // this module's PROJECT_* bit(s) - selects budget/word
+        ShadowCaster info; // module vocabulary: silhouette radius, absorbtion, clip
+    };
+    static std::vector<Caster> casters; // scratch, system-draw scoped
     casters.clear();
     for (ModularBody *body : sortedSystemBodies) {
         if (!body || body->distance == 0 || body->isStar() || body->bodyType == BodyType::MINOR_BODY)
             continue;
-        uint32_t traits = 0;
-        for (auto *m : body->nearComponents)
-            traits |= m->getTraits();
-        if (traits & PROJECT_MASK)
-            casters.push_back(body);
+        for (auto *m : body->nearComponents) {
+            const uint32_t traits = m->getTraits();
+            if (traits & PROJECT_MASK)
+                casters.push_back({body, m, traits, m->getShadowCaster(body, L)});
+        }
     }
     if (casters.empty())
         return;
+    // G8 budget [vixy: 2026-07-12]: up to 10 simultaneous greyscale
+    // projections per frame is the sizing budget (shadow-paths.md B5).
+    // Enforcement lives here (selection owns significance ordering); overflow
+    // drops the least significant G8 entries, logged once per frame.
+    constexpr int MAX_G8_PROJECTIONS = 10;
+    int g8Remaining = MAX_G8_PROJECTIONS;
+    bool g8Logged = false;
     struct Pair {
-        ModularBody *caster;
+        const Caster *caster;
         float smooth;   // penumbra growth radius at the receiver (AU)
         float rank;     // casterRadius / smooth - occlusion ordering key
     };
@@ -146,6 +168,13 @@ void ModularSystem::computeShadows(Renderer &renderer)
         if (!(*body && body->screenSize > 0.0015f) || body->isStar() || body->bodyType == BodyType::MINOR_BODY)
             continue;
         body->receivedShadows.clear();
+        // ... and only surfaces that SAMPLE: a body with no BMT_RECEIVE_SHADOW
+        // module would get entries nothing consumes (dead fills).
+        uint32_t recvTraits = 0;
+        for (auto *m : body->nearComponents)
+            recvTraits |= m->getTraits();
+        if (!(recvTraits & BMT_RECEIVE_SHADOW))
+            continue;
         const Vec3f rpos = body->getObservedPosition();
         const Vec3f v1 = rpos - L;
         const float sd1 = v1.lengthSquared();
@@ -154,21 +183,37 @@ void ModularSystem::computeShadows(Renderer &renderer)
         const float cst1 = r1 + sunRadius;
         const float cst2 = -sunRadius / sd1;
         pairs.clear();
-        for (ModularBody *caster : casters) {
-            if (caster == body)
+        for (const Caster &c : casters) {
+            if (c.body == body) {
+                // WITHIN-BODY pair (ring->planet / planet->ring). No corridor
+                // test - the caster is AT the receiver, always in its own
+                // light cylinder; penumbra growth over the body's own extent
+                // is negligible (the old analytic ring shadows were sharp -
+                // parity), so smooth = 0. Rank FLT_MAX: the closest possible
+                // shadow is never the one to drop. Emitted only when ANOTHER
+                // module of this body can sample it - the projecting module
+                // never samples its own layer (meshShadowFill self-filter),
+                // so without a second receiver the layer feeds nobody.
+                for (auto *m : body->nearComponents) {
+                    if (m != c.module && (m->getTraits() & BMT_RECEIVE_SHADOW)) {
+                        pairs.push_back({&c, 0.f, FLT_MAX});
+                        break;
+                    }
+                }
                 continue;
-            const Vec3f v2 = caster->getObservedPosition() - L;
+            }
+            const Vec3f v2 = c.body->getObservedPosition() - L;
             const float d = v1.dot(v2);
             if (d > 0 && d < sd1) {
-                const float corridor = cst1 + d * cst2 + caster->getRadius();
+                const float corridor = cst1 + d * cst2 + c.info.radius;
                 if (((v2 - v1 * (d / sd1)) / corridor).lengthSquared() < 1) {
                     // Penumbra growth radius (solarsystem_display.cpp:189-194):
                     // sunRadius * axialDist / |v1| == sunCoef * distToMainBody.
                     const float smooth = sunRadius * (sd1 - d) / sd1;
                     // Peak-occlusion >= 1/16 gate [vixy]: penumbra within 4x
                     // caster radius (the old `smoothRadius < bounding*4`).
-                    if (smooth < caster->getRadius() * 4)
-                        pairs.push_back({caster, smooth, caster->getRadius() / smooth});
+                    if (smooth < c.info.radius * 4)
+                        pairs.push_back({&c, smooth, c.info.radius / smooth});
                 }
             }
         }
@@ -196,7 +241,15 @@ void ModularSystem::computeShadows(Renderer &renderer)
         for (const Pair &p : pairs) {
             if (body->receivedShadows.entries.size() >= MAX_SHADOW_CASTERS_PER_RECEIVER)
                 break; // receiver shader array cap - aligned with the budget
-            ModularBody *caster = p.caster;
+            const Caster &c = *p.caster;
+            if ((c.traits & BMT_PROJECT_G8_SHADOW) && g8Remaining == 0) {
+                if (!g8Logged) {
+                    g8Logged = true;
+                    VulkanMgr::instance->putLog("ModularSystem: G8 projection budget (10) exhausted - least significant greyscale shadows dropped this frame", LogType::WARNING);
+                }
+                continue;
+            }
+            ModularBody *caster = c.body;
             const Vec3f cpos = caster->getObservedPosition();
             // Cache key: CASTER-LOCAL light direction (columns of the
             // orthonormal rotation part dot the vector = transpose apply) -
@@ -207,35 +260,36 @@ void ModularSystem::computeShadows(Renderer &renderer)
                 caster->mat.r[0] * toLight[0] + caster->mat.r[1] * toLight[1] + caster->mat.r[2] * toLight[2],
                 caster->mat.r[4] * toLight[0] + caster->mat.r[5] * toLight[1] + caster->mat.r[6] * toLight[2],
                 caster->mat.r[8] * toLight[0] + caster->mat.r[9] * toLight[1] + caster->mat.r[10] * toLight[2]);
-            const float size = caster->getRadius() + p.smooth;
+            const float size = c.info.radius + p.smooth;
             // Blur radius in shadow-map pixels (body.cpp:1227 + the
             // drawShadower *halfShadowRes fold).
             const float radiusPx = p.smooth / size * Context::instance->shadowRes * 0.5f;
             bool reused = false;
-            const int idx = service.acquire(caster, radiusPx, lightDirLocal, &reused);
+            const int idx = service.acquire(caster, c.module, radiusPx, lightDirLocal, &reused);
             if (idx < 0)
                 continue; // pool exhausted or blur bank still building (both logged/transient)
             if (!reused) {
                 // Silhouette matrix: rows(x,y,z) . rot3(caster->mat) .
-                // diag(r, r, r*(1-oblateness)) / size - maps the caster mesh
-                // into shadow-map NDC (old: lookAt*model*scaling mat3,
-                // body.cpp:1222-1230, same algebra in the eye frame).
+                // diag(r, r, r*(1-oblateness)) / size - maps the module's
+                // silhouette geometry into shadow-map NDC (old:
+                // lookAt*model*scaling mat3, body.cpp:1222-1230, same algebra
+                // in the eye frame; r = the MODULE's silhouette radius -
+                // outer ring radius for an annulus).
                 Mat4f frame = Mat4f::identity(); // off-cells MUST be zero
                 frame.r[0] = x[0]; frame.r[4] = x[1]; frame.r[8] = x[2];
                 frame.r[1] = y[0]; frame.r[5] = y[1]; frame.r[9] = y[2];
                 frame.r[2] = z[0]; frame.r[6] = z[1]; frame.r[10] = z[2];
                 Mat4f rot = caster->mat;
                 rot.r[12] = rot.r[13] = rot.r[14] = 0;
-                const float s = caster->getRadius() / size;
+                const float s = c.info.radius / size;
                 const Mat4f sil = frame * rot * Mat4f::scaling(Vec3f(s, s, s * caster->getOneMinusOblateness()));
-                for (auto *m : caster->nearComponents) {
-                    if (m->getTraits() & PROJECT_MASK)
-                        m->drawShadow(renderer, caster, sil, idx);
-                }
+                c.module->drawShadow(renderer, caster, sil, idx); // ONLY this module - one layer per (body, module)
             }
-            body->receivedShadows.entries.push_back({caster,
+            if (c.traits & BMT_PROJECT_G8_SHADOW)
+                --g8Remaining;
+            body->receivedShadows.entries.push_back({caster, c.module,
                 {x.dot(cpos - rpos), y.dot(cpos - rpos)},
-                size, static_cast<uint8_t>(idx), caster->getShadowAbsorbtion()});
+                size, static_cast<uint8_t>(idx), c.info.absorbtion, c.info.clip});
         }
     }
 }

@@ -68,7 +68,16 @@ class Renderer;
 //   SELF_SHADOW    -> (renderSelfShadow, 0), depth GREATER, dynamic viewport
 //                     (variable-size targets: MAIN/SECONDARY self-shadow
 //                     resolutions, ModularBody.hpp constants)
-//   SHADOW_STENCIL -> (renderShadow, 0), stencil REPLACE
+//   SHADOW_SHAPE   -> (renderShadowShape, 0), R8 coverage color target:
+//                     casters WRITE their light transmission (opaque mesh
+//                     frag = 1.0, ring frag = texture alpha) composited
+//                     coverage-over - the typed generalization that carries
+//                     G1 AND G8 through one target (the S5 stencil target
+//                     was binary by construction; per app.cpp's own notes it
+//                     was already a fallback for missing R8-storage support,
+//                     so with G8 forcing a float target the fallback's
+//                     reason inverts - B3's candidate-B preconditions
+//                     shifted, recorded in shadow-paths.md)
 //   TRACE          -> (render, 0), vertex-only depth stream (the orbit-hole
 //                     analog of the old cmdBodyDepth buffer)
 // bind() resolves against the CURRENT pass kind - a module structurally
@@ -81,7 +90,7 @@ class Renderer;
 enum class PassKind : uint8_t {
     COLOR,
     SELF_SHADOW,
-    SHADOW_STENCIL,
+    SHADOW_SHAPE,
     TRACE,
     NB_PASS_KIND
 };

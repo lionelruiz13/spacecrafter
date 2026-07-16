@@ -109,7 +109,10 @@ public:
     std::unique_ptr<Texture> starColorAttachment;
     std::unique_ptr<Texture> shadow;
     std::unique_ptr<Texture> shadowBuffer; // For self-shadowing
-    std::unique_ptr<Texture> shadowTrace; // For shadow projection
+    std::unique_ptr<Texture> shadowTrace; // For shadow projection (old path: binary stencil)
+    std::unique_ptr<Texture> shadowShape; // New-path typed silhouette target: R8 coverage
+                                          // (graded light TRANSMISSION - opaque mesh writes 1,
+                                          // ring writes texture alpha; ShadowService)
     std::vector<VkImageView> shadowView;
     ShadowData *shadowData;
     ComputePipeline *shadowPipelines;
@@ -117,9 +120,9 @@ public:
     std::vector<HipStarMgr *> starUsed; // nullptr if not used at this frame, otherwise a pointer to a HipStarMgr which operate a draw
     std::vector<std::unique_ptr<SyncEvent>> starSync; // synchronize access to starColorAttachment
     std::unique_ptr<SyncEvent> transferSync; // synchronize transfers
-    std::unique_ptr<RenderMgr> render, renderSelfShadow, renderShadow;
+    std::unique_ptr<RenderMgr> render, renderSelfShadow, renderShadow, renderShadowShape;
     std::vector<std::unique_ptr<FrameMgr>> frame;
-    std::unique_ptr<FrameMgr> frameSelfShadow, frameShadow;
+    std::unique_ptr<FrameMgr> frameSelfShadow, frameShadow, frameShadowShape;
     // std::unique_ptr<RenderMgr> renderAlone; // Single-pass rendering without depth buffer
     // std::vector<std::unique_ptr<FrameMgr>> frameAlone;
     std::vector<VkFence> fences;

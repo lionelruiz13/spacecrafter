@@ -158,7 +158,7 @@ void LayeredMesh::drawMid(Renderer &renderer, ModularBody *body, const Mat4f &ma
                     cfg.moonClass ? tes->getMoonAltimetryFactor() : tes->getPlanetAltimetryFactor())
             : Vec3i(1, 1, 1);
     }
-    fillMeshShadows(frag, body);
+    fillMeshShadows(frag, body, this);
     const auto screenSize = body->getScreenSize();
     if (screenSize > 0.2f && !low) {
         Texture *big[5] = {};
@@ -236,7 +236,7 @@ void LayeredMesh::drawRay(Renderer &renderer, ModularBody *body, const Mat4f &ma
     rf.sunDeviation = cfg.sunDeviation;
     rf.atmColor = cfg.atmColor;
     rf.atmDeviation = cfg.atmDeviation;
-    fillRayMarchShadows(*rayFrag, body, rv.ModelViewMatrix, finalRadius);
+    fillRayMarchShadows(*rayFrag, body, rv.ModelViewMatrix, finalRadius, this);
     // Big textures: the close-range regime is exactly where they engage
     // (old getSet >= 180px; the ray gate's 0.025 floor ~ 51px keeps the
     // 0.2 threshold check meaningful).

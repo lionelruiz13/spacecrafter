@@ -11,13 +11,20 @@
 // authority (I2) for every disc fragment family (MESH, MESH_TES,
 // MESH_LAYERED via meshFrag; MESH_RAYMARCH via rayMarchFrag). Lifted from
 // BasicMesh.cpp's file-local fillShadows when row 2 added more receivers.
+//
+// `self` = the RECEIVING module (pass `this`): entries are per (caster body,
+// PROJECTING module) since the composition-typed rework, and a surface must
+// skip the entries it produced itself (caster == its own body && source ==
+// itself) - the mesh layer of a planet is exactly its own disc centered on
+// itself; sampling it would darken the whole surface. Cross-body entries and
+// the OTHER modules' within-body entries (ring -> planet) pass through.
 // ============================================================================
 
 // Fill the Gen-2 receiver block from the body's received-shadow state
 // (produced by ModularSystem::computeShadows - contract: ShadowProjection.hpp).
 // Gate on the service flag too: entries may be stale from the frame the flag
 // switched off.
-inline void fillMeshShadows(SharedBuffer<meshFrag> &frag, ModularBody *body)
+inline void fillMeshShadows(SharedBuffer<meshFrag> &frag, ModularBody *body, const BodyModule *self)
 {
     const ReceivedShadows &received = body->getReceivedShadows();
     if (ShadowService::enabled && received) {
@@ -26,8 +33,11 @@ inline void fillMeshShadows(SharedBuffer<meshFrag> &frag, ModularBody *body)
         f.shadowRow1 = received.row1;
         int nb = 0;
         for (const auto &e : received.entries) {
+            if (e.caster == body && e.source == self)
+                continue; // own silhouette (header block)
             f.shadowingBodies[nb].posRadius = Vec4f(e.pos.first, e.pos.second, e.size, 0);
             f.shadowingBodies[nb].absorbtionIdx = Vec4f(e.absorbtion[0], e.absorbtion[1], e.absorbtion[2], e.layerIdx);
+            f.shadowingBodies[nb].clip = e.clip;
             ++nb;
         }
         f.nbShadowingBodies = nb;
@@ -45,8 +55,11 @@ inline void fillMeshShadows(SharedBuffer<meshFrag> &frag, ModularBody *body)
 //   rowL.w      = row.w + dot(row.xyz, MV.translation)
 // MV = the ray-march ModelViewMatrix (incl. the oblateness scale), radius =
 // finalRadius (the fragment's unit sphere spans finalRadius in body space).
+// The clip plane is an affine form over eye-space P exactly like the rows,
+// so it folds through the SAME map (degenerate planes stay degenerate:
+// xyz = 0 folds to 0, w unchanged).
 inline void fillRayMarchShadows(SharedBuffer<rayMarchFrag> &frag, ModularBody *body,
-                                const Mat4f &MV, float radius)
+                                const Mat4f &MV, float radius, const BodyModule *self)
 {
     const ReceivedShadows &received = body->getReceivedShadows();
     if (ShadowService::enabled && received) {
@@ -62,8 +75,11 @@ inline void fillRayMarchShadows(SharedBuffer<rayMarchFrag> &frag, ModularBody *b
         f.shadowRow1 = foldRow(received.row1);
         int nb = 0;
         for (const auto &e : received.entries) {
+            if (e.caster == body && e.source == self)
+                continue; // own silhouette (header block)
             f.shadowingBodies[nb].posRadius = Vec4f(e.pos.first, e.pos.second, e.size, 0);
             f.shadowingBodies[nb].absorbtionIdx = Vec4f(e.absorbtion[0], e.absorbtion[1], e.absorbtion[2], e.layerIdx);
+            f.shadowingBodies[nb].clip = foldRow(e.clip);
             ++nb;
         }
         f.nbShadowingBodies = nb;

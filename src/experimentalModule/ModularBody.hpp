@@ -918,7 +918,11 @@ private:
     // frozen main loop) - first-frame value 0 matches the old path's
     // zero-initialized previous positions.
     float distance = 0;
-    float axisRotation;
+    // = 0 until first update for the same reason as distance (the sibling of
+    // that class): never-updated bodies (invisible, dist == 0) dump/read raw
+    // heap garbage otherwise - surfaced 2026-07-16 as a heap-layout-dependent
+    // "-nan" in dual_dump JSON (invalid token, predict.py hard-stop).
+    float axisRotation = 0;
     float scaledRadius;
     //float scaledInnerRadius;
     float rmag;

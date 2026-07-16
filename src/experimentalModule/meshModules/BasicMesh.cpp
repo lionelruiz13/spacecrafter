@@ -66,7 +66,7 @@ void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
     vert->LightPosition = ModularBody::getLightPosition();
     vert->planetScaledRadius = boundingRadius;
     vert->planetOneMinusOblateness = body->getOneMinusOblateness();
-    fillMeshShadows(frag, body);
+    fillMeshShadows(frag, body, this);
     const auto screenSize = body->getScreenSize();
     if (screenSize > 0.2) {
         TEXMAP1(mapTexture);
@@ -105,7 +105,7 @@ void BasicMesh::drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &
     vert->LightPosition = ModularBody::getLightPosition();
     vert->planetScaledRadius = boundingRadius;
     vert->planetOneMinusOblateness = body->getOneMinusOblateness();
-    fillMeshShadows(frag, body);
+    fillMeshShadows(frag, body, this);
     if (bigTextureMapping) {
         set->uninit();
         set->bindUniform(vert, 0);

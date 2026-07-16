@@ -299,6 +299,117 @@ Design deltas found while porting (both are classes the old path avoided by fram
 - **Units**: everything in observer-local AU (no initialRadius normalization) — the old
   normalization existed because its frames mixed unit systems.
 
+## F. Composition-typed rework (2026-07-16) — every shadow composition type through one seam
+
+Mandate: manage every shadow composition type and cast any composition onto any body
+object. Analysis located the structural bottleneck at the PRODUCTION SEAM + CASTER
+GRANULARITY: S5 hardwired "one opaque mesh per caster body" at three mutually-reinforcing
+places — produce(idx, mat, ObjL*) had a one-word vocabulary; the D24S8 stencil target was
+binary by construction (graded G8 transmission inexpressible); computeShadows excluded
+caster==body, making BOTH flagship G8 directions (ring<->planet: ONE ModularBody under G1
+composition) unreachable, and OR-ed module traits into a single layer per body (silently
+wrong the moment mesh+ring coexist). This seam is also the S4 seam (jobs-as-data is the
+compute-thread handoff), so reworking it after the RING/OJM ports would re-plumb the
+handoff (I6). Receiver application needed NOTHING: (1 - cov·absorbtion) per entry carries
+G8 unchanged — old ring mix(1.0, 0.3, a) == coverage=a x absorbtion {0.7,0.7,0.7} exactly.
+
+Authoritative contracts (headers, I1): ShadowService.hpp (typed vocabulary + pool),
+ShadowProjection.hpp (per-module entries, self-exclusion, clip half-space + derivation),
+BodyModule.hpp (ShadowCaster descriptor, getShadowCaster hook, BMT_RECEIVE_SHADOW),
+RingModule.hpp (first G8 client, caster half). Structure landed:
+
+- **Layer = transmission silhouette of one (caster body, projecting MODULE)**. Products
+  commute, so per-module layers applied as per-entry multiplications compose EXACTLY like
+  one combined caster map — while making per-module absorbtion and within-body exclusion
+  expressible. ShadowProjection gains `source` (self-exclusion key: a surface never
+  samples a layer containing its own silhouette) and `clip` (below).
+- **One production mechanism, typed words**: all silhouettes render into an R8 coverage
+  COLOR target (context.shadowShape/renderShadowShape, PassKind renamed SHADOW_SHAPE),
+  composited coverage-over (1-T1·T2), then the shared disc blur. Words: OPAQUE_MESH
+  (shadow_trace.vert REUSED + shadow_shape.frag writing 1) and TEXTURED_ANNULUS
+  (vertex-less quad, frag = radial ring alpha; SHADOW_RING family sharing the trace
+  SetContract). BISHADOW = a future word (+ layer channel if bicolor requires it) —
+  semantics stay suspended (D1); nothing else moves when it lands.
+- **B3 addendum — the stencil retired**: candidate B's precondition space was G1-only.
+  G8 forces a float target to exist, and the stencil was itself the fallback for
+  unsupported R8-storage (app.cpp's own notes) — one float path now serves all types.
+  The blur reads the R8 as float QUANTIZED to integer 0..255 (pixelCount carries the
+  x255), keeping the sliding-window accumulator exact: G1 layers bit-identical to the
+  stencil-era output, G8 at the layer's own 8-bit precision.
+- **Selection module-granular + within-body pairs** (ModularSystem::computeShadows):
+  casters = (body, module) with per-module ShadowCaster {radius, absorbtion, clip};
+  receivers gated by BMT_RECEIVE_SHADOW (no dead fills); within-body pairs skip the
+  corridor (always in it), smooth=0 (sharp — old analytic parity), rank FLT_MAX (never
+  dropped), and are emitted only when another RECEIVE module exists on the body. G8
+  budget = 10/frame [vixy] enforced here (occlusion-ordered drop + log-once).
+- **The clip half-space (planar casters)**: the blurred layer is Z-LESS, so a ray
+  crossing the ring plane BEHIND the surface it lights would still read coverage — false
+  ring bands on the caster's summer hemisphere. Exact receiver-side rule (derivation in
+  ShadowProjection.hpp, replaces body_ringed.frag:50's analytic dot-test): apply the
+  entry iff dot(P, n_sunward) + w <= 0, n = ring normal toward the sun, w = -n·center;
+  for the own-planet sphere no band can straddle (an annulus crossing inside the disc
+  footprint satisfies x²+y²+z² >= inner² > R²); cross-body receivers keep the whole far
+  ring correctly. Solid casters carry the degenerate plane (0,0,0,-1). Verified live:
+  band on the winter hemisphere only (Iapetus scene).
+- **RingModule caster half** (RingLoader, deduction gated on rings=true — old parse
+  parity, the hint=false lesson): traits PROJECT_G8, outer-radius silhouette, absorbtion
+  {0.7,0.7,0.7} = the old composition constant, plane clip from the spin axis;
+  boundingRadius stays 0 until the COLOR port (a caster half has no drawn extent —
+  setting outer radius would inflate Saturn's screenSize ~x2.3, the 11.26(2) class, to
+  escalate WITH row 4 where 10.3(6) makes it mandatory). COLOR/TRACE/receive = row 4.
+
+### F1. Landing record + measurements (2026-07-16; first verification on REAL GPU)
+
+Environment note (load-bearing): this pass ran on an NVIDIA RTX 5090 — the first
+hardware-GPU verification of the whole new path (every prior record: llvmpipe-class
+sandbox). Two classes the software driver had masked surfaced immediately:
+
+1. **Implicit-LOD sampling UB (fixed across all 9 receiver frags)**: `texture()` uses
+   implicit derivatives, UNDEFINED in non-uniform control flow; the ray-march receiver's
+   deeply divergent flow made NVIDIA read ZERO from the layers (the S5 umbra spot was
+   invisible on this hardware — bisected via layered probes: selection/fill/gates all
+   correct, textureLod read the coverage, texture() read 0). Fix: explicit
+   `textureLod(..., 0)` everywhere (the layer is single-mip; defined in any flow). The
+   mid-family receivers had the same UB latent — they merely happened to survive this
+   driver's derivative handling.
+2. **Old-path A3 inventory addition — severity upgrade**: the 11.26 fov-0.05 distant-CoI
+   defect ("black disc" on llvmpipe) WEDGES the GPU on NVIDIA (frozen frame loop, app
+   alive but frameless). Reproduced with shadows fully disabled; absent with the new path
+   pinned from launch. Pre-existing, old-path-only, retires with it.
+
+Also found and closed en route: `axisRotation` uninitialized (the 5.16 `distance`
+sibling: heap-layout-dependent NaN into dual_dump JSON — surfaced as a predict.py
+hard-stop); `layerViews` leaked 8 ImageViews at shutdown (createView returns RAW views;
+the S5 "views die with the Texture" comment was wrong — vkDestroyDevice object-tracking
+caught it on the first pinned-path graceful shutdown); disc-filter `sqrtf(negative)` NaN
+when radiusPx < 1 (latent in the old drawShadower math, unreachable until within-body
+smooth=0 — radiusPx now floored at 1 before keying).
+
+Measured (2048², shadow_res 1280, casters 8, NVIDIA):
+- **Lunar eclipse 2026-03-03** (fov 0.5, tracked): umbra old [54.7,16.1,0.3] vs new
+  [48.3,14.2,0.2], peaks [91,27,3]/[91,28,3] — the D2 composition class (ratio ~0.88),
+  G1 through the R8 target value-preserving. Within-phase captures bit-identical.
+- **Solar eclipse 2026-08-12** (Earth from Moon, fov 4, ray-march receiver): umbra spot
+  over the Arctic restored (100432 px on/off, radial profile 39.6 core -> 85 ambient =
+  the lens shape); experimental_shadows off->on bit-restores (max 0).
+- **G8 first light — Saturn ring shadow** (jd 2462654): from Titan (edge-on, crescent)
+  378 px band; from 40000 km above Iapetus (inclined vantage): the graded band across
+  the winter hemisphere, 14133 px, min transmission 0.335 ≈ the derived 0.30 floor
+  (1 - 0.7·a_max), radial grading (Cassini-class structure) visible, old-phase band same
+  geometry + grading (old base-lighting delta = the known row-2 class); NO false band on
+  the summer hemisphere (clip verified); from Earth at fov 0.05 (new path pinned): band
+  visible through the atmosphere. Flag cycle bit-restores; within-phase bit-identical.
+- **Scenes A–D regression (final binary, fresh launch)**: P1 exact; P2 ≤ 9.5e-8; P3
+  ≤ 1.5e-5 deg; P4 13.3–44.4 km = the 1.4-ulp class; P5 view ≤ 0.0208° z-only ease
+  tail, all differentials named, NO unmodeled.
+- **Validation**: zero messages from all new machinery (SHADOW_SHAPE/SHADOW_RING/blur/
+  layer pool); the old path's Shadow-Stencil-Buffer VUID baseline unchanged (x7); zero
+  leaked objects at graceful shutdown (was 8). Loader contract: RING resolves for
+  Saturn/Uranus, no missing-loader warnings beyond the known OJM class.
+- Not staged live (visible-by-construction when hit, 11.22 precedent): G8 budget
+  overflow (>10 — log-once + drop), pool exhaustion with mixed kinds, caster-module
+  removal while its layer is held.
+
 ## D. Convergence points (Vixy) + feeds
 
 1. BISHADOW semantics + RGBA8_SELF client — before their first use (B5).
@@ -313,10 +424,28 @@ Design deltas found while porting (both are classes the old path avoided by fram
    (A/B parity at init — the sandbox config ships true), plain toggle at the command (the
    XOR quirk not reproduced). Overrule here if different shipping semantics are wanted at
    switchover (with the LUT retired, flag-off = no eclipse rendering at all).
-4. ~~Silhouette format decision~~ RESOLVED — B3 (candidate B, measured).
+4. ~~Silhouette format decision~~ RESOLVED — B3 candidate B (measured), then SUPERSEDED
+   by the F rework (2026-07-16): its preconditions shifted when G8 forced a float target
+   to exist — one R8 color path now serves every composition word (F, B3 addendum);
+   G1 layer content verified bit-preserving through the quantized-exact blur.
 5. Feed to S3: self-shadow's grounded-slice-prefill dual purpose (D1) needs the depth
    partitioning consumer; stated, not blocked.
-6. Feed to RING port: G8 budget sizing (10) + both-direction projection contracts.
+6. Feed to RING port: ~~G8 budget sizing (10) + both-direction projection contracts~~
+   both landed with F (budget enforced in selection; ring->planet live, planet->ring
+   entry already emitted — the ring COLOR draw consumes it at row 4). Remaining for the
+   row-4 port: ring COLOR/TRACE + BMT_RECEIVE_SHADOW on the ring + boundingRadius
+   escalation (F: the ~x2.3 screenSize coupling, decide WITH the color port).
 7. Pre-existing, surfaced by the eclipse A/B (row-2 scope, not S5): the unshadowed Earth
    disc differs ~10% in brightness between paths (old my_earth layered lighting vs
    bodyMesh base lighting — E section, solar scene ref 104–107 vs 95.4).
+8. (F, 2026-07-16) Per-ring shadow-color data key: the caster-half ships the derived
+   old-parity constant {0.7,0.7,0.7}; a `ring_shadow_color` ssystem key (and whether the
+   dead `ring_shadow` key of A3.7 should gate casting) is a data-model decision.
+9. (F) Within-body penumbra: smooth = 0 (sharp, old-parity). Physically the ring shadow
+   has a small penumbra (~sun angular radius x ring-to-surface distance); if visual
+   fidelity ever wants it, the within-body pair needs a per-pair smooth estimate instead
+   of the corridor formula's degenerate 0.
+10. (F) The old path's fov-0.05 distant-CoI freeze on real GPUs (F1.2) — pre-existing
+   A3 class, but it now BLOCKS old-path A/B verification of any zoomed-distant scene on
+   this hardware; worth knowing before any further old-path-referenced measurement
+   campaigns on NVIDIA.
