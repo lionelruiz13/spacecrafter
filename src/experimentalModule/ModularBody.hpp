@@ -500,6 +500,12 @@ public:
     inline ModularBody *getParent() {
         return parent;
     }
+    //! Read access to the orbit for ephemeris-at-date queries (client:
+    //! EnvironmentManager's zodiacal ecliptic-normal sampling, the old
+    //! Body::getPositionAtDate form). Null for system-centered bodies.
+    inline const Orbit *getOrbit() const {
+        return orbit.get();
+    }
     inline float getRadius() const {
         return radius;
     }
@@ -918,8 +924,11 @@ private:
     Mat4f mat; // Matrix defining this body regarding to the observer
     Vec3f eclipticPos;
     std::pair<float, float> screenPos;
-    float halfAngularSize;
-    float screenSize; // Ratio of the screen taken by this body
+    float halfAngularSize = 0; // 0 until first update (uninit class, INTENT 5.16/11.28c/11.32)
+    float screenSize = 0; // Ratio of the screen taken by this body; 0 until
+                          // first update - hidden/frozen bodies never update
+                          // and dumped garbage otherwise (-nan broke the
+                          // harness JSON, INTENT 11.32)
     // = 0 until first evaluated: uninitialized, it fed garbage into the
     // light-travel retardation (jd - garbage -> non-converging Kepler solve,
     // frozen main loop) - first-frame value 0 matches the old path's

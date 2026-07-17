@@ -71,12 +71,33 @@ public:
 	//! Legacy entry: derives the matrix from the navigator (old path).
 	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay);
 
+	//! Zodiacal placement inputs (D5 ecliptic-normal formula, re-fixed
+	//! 2026-07-17): pure DATA, supplied by each path from its own authority
+	//! - old path: navigator + home-body ephemeris (draw() wrapper); new
+	//! path: chain-sourced (EnvironmentManager). Eye-frame vectors: the
+	//! basis construction below is rotation-equivariant (normalize/cross/
+	//! projection commute with rigid rotation), so building it in the eye
+	//! frame equals theirs' helio-frame construction rotated - no
+	//! helio-to-eye matrix input, hence no navigator reaches the shared
+	//! core. valid=false -> simple time-rotation placement (pre-merge
+	//! experimental behavior, also the no-home-body fallback).
+	struct ZodiacalInput {
+		Vec3d sunDirEye;         // unit, observer->sun direction, eye frame
+		Vec3d eclipticNormalEye; // unit, home-body orbit-plane normal, eye frame
+		bool valid = false;
+	};
+
 	//! Path-neutral draw core (dual-path migration, 2026-07-16): j2000ToEye
 	//! is the rotation mapping J2000 (equatorial) directions to the eye
 	//! frame - old path: nav->getJ2000ToEyeMat() (rotation-only by
 	//! construction); new path: system chain rotation * mat_j2000_to_vsop87
 	//! (MilkyWayEnv). The texture alignment matrices (modelMilkyway /
 	//! modelZodiacal) stay internal - single authority.
+	void drawEnv(ToneReproductor * eye, const Mat4d &j2000ToEye, double julianDay,
+	             const ZodiacalInput &zodiacalIn);
+	//! No-input overload (forwards an invalid ZodiacalInput -> simple
+	//! placement); a default argument can't name the member struct inside
+	//! the enclosing class (complete-class-context rule).
 	void drawEnv(ToneReproductor * eye, const Mat4d &j2000ToEye, double julianDay);
 
 	//! update the faders of the class

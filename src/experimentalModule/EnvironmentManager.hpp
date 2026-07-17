@@ -81,6 +81,16 @@ public:
     }
     // Frame clock for members needing absolute time (zodiacal rotation).
     double julianDay = 0;
+    // Zodiacal placement inputs (MilkyWay::ZodiacalInput supplier, new-path
+    // authority - INTENT 11.32): sun direction already in the eye frame
+    // (star observed position); the home-body orbit-plane normal stays in
+    // the ROOT-ALIGNED frame - MilkyWayEnv rotates it with its own chain
+    // rotation at draw (flat-chain contract: all root-aligned frames share
+    // one orientation). valid=false -> engine falls back to the simple
+    // time-rotation placement.
+    Vec3d zodiacalSunDirEye;
+    Vec3d zodiacalEclipticNormalRoot;
+    bool zodiacalValid = false;
     static EnvironmentManager *instance;
 private:
     void buildAtmosphereInput(Camera &camera, ModularBody *reference);

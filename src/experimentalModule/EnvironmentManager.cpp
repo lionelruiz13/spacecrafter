@@ -96,6 +96,40 @@ void EnvironmentManager::update(Camera &camera, double jd, float deltaTime, bool
     // 4. Atmosphere compute input snapshot (new-path sources).
     buildAtmosphereInput(camera, reference);
 
+    // 4b. Zodiacal placement inputs (theirs' D5 ecliptic-normal formula,
+    // chain-sourced - INTENT 11.32): heliocentric trajectory of the
+    // reference body sampled at jd +- 10 min by summing orbit positions up
+    // the chain (the old Body::getPositionAtDate form; stop at system-
+    // centered bodies, the 11.16 accumulation precedent), normal = r0 x
+    // (rP - rM) in the root-aligned frame; sun direction = the star's
+    // observed (eye-frame) position. Same inputs the old wrapper derives
+    // from navigator+ephemeris - parity by same-formula, not same-instance.
+    zodiacalValid = false;
+    if (ModularBody *star = system->getSystemStar()) {
+        Vec3f sunEye = star->getObservedPosition();
+        if (reference && sunEye.length() > 0) {
+            const double dt = 10.0 / 1440.0; // 10 minutes (old formula)
+            Vec3d r0(0,0,0), rM(0,0,0), rP(0,0,0);
+            Vec3d tmp;
+            for (ModularBody *b = reference; b && !b->isSystemCentered() && b->getOrbit(); b = b->getParent()) {
+                b->getOrbit()->positionAtTimevInVSOP87Coordinates(julianDay, tmp);
+                r0 += tmp;
+                b->getOrbit()->positionAtTimevInVSOP87Coordinates(julianDay - dt, tmp);
+                rM += tmp;
+                b->getOrbit()->positionAtTimevInVSOP87Coordinates(julianDay + dt, tmp);
+                rP += tmp;
+            }
+            Vec3d normal = r0 ^ (rP - rM);
+            if (normal.length() > 1e-12) {
+                normal.normalize();
+                sunEye.normalize();
+                zodiacalSunDirEye = Vec3d(sunEye[0], sunEye[1], sunEye[2]);
+                zodiacalEclipticNormalRoot = normal;
+                zodiacalValid = true;
+            }
+        }
+    }
+
     // 5. Engine drive - modular phase only; the exact BodyDecor write set.
     if (driveEngines) {
         if (onBody) {

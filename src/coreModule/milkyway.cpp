@@ -185,10 +185,41 @@ void MilkyWay::endTexTransition()
 
 void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay)
 {
-	drawEnv(eye, nav->getJ2000ToEyeMat(), julianDay);
+	// Old-path zodiacal inputs (theirs' D5 formula, navigator+ephemeris
+	// authority - this wrapper IS old-path surface, so CoreLink/nav belong
+	// here, never in drawEnv): ecliptic normal from the home body's
+	// heliocentric trajectory sampled at jd +- 10 min, sun direction from
+	// the observer's heliocentric position; both rotated helio->eye here so
+	// the shared core stays frame-local.
+	ZodiacalInput zi;
+	auto body = CoreLink::instance ? CoreLink::instance->getObserverHomeBody() : nullptr;
+	if (body) {
+		const double dt = 10.0 / 1440.0; // 10 minutes
+		Vec3d r0 = body->getPositionAtDate(julianDay);
+		Vec3d rM = body->getPositionAtDate(julianDay - dt);
+		Vec3d rP = body->getPositionAtDate(julianDay + dt);
+		Vec3d eclipticNormal = r0 ^ (rP - rM);
+		Vec3d forward = -nav->getObserverHelioPos();
+		if (eclipticNormal.length() > 1e-12 && forward.length() > 0) {
+			eclipticNormal.normalize();
+			forward.normalize();
+			Mat4d h2e = nav->getHelioToEyeMat();
+			h2e.r[12] = 0.0; h2e.r[13] = 0.0; h2e.r[14] = 0.0; // rotation only
+			zi.sunDirEye = h2e * forward;
+			zi.eclipticNormalEye = h2e * eclipticNormal;
+			zi.valid = true;
+		}
+	}
+	drawEnv(eye, nav->getJ2000ToEyeMat(), julianDay, zi);
 }
 
 void MilkyWay::drawEnv(ToneReproductor * eye, const Mat4d &j2000ToEye, double julianDay)
+{
+	drawEnv(eye, j2000ToEye, julianDay, ZodiacalInput());
+}
+
+void MilkyWay::drawEnv(ToneReproductor * eye, const Mat4d &j2000ToEye, double julianDay,
+                       const ZodiacalInput &zodiacalIn)
 {
 	if (showFader.getInterstate() <= 0)
 		return;
@@ -241,24 +272,18 @@ void MilkyWay::drawEnv(ToneReproductor * eye, const Mat4d &j2000ToEye, double ju
 		pipelineZodiacal->bind(cmd);
 		frag.cmag = ad_lum * zodiacal.intensity * zodiacalFader.getInterstate();
 
-		// [merge D5] Ecliptic-normal zodiacal (theirs' physically-correct placement),
-		// adapted to experimental's old-path drawEnv: observer/helio data via
-		// CoreLink::instance (drawEnv is old-path-only, so this is the old-path nav).
-		auto body = CoreLink::instance ? CoreLink::instance->getObserverHomeBody() : nullptr;
-		if (body) {
-			const double dt = 10.0 / 1440.0; // 10 minutes
-			Vec3d r0 = body->getPositionAtDate(julianDay);
-			Vec3d rM = body->getPositionAtDate(julianDay - dt);
-			Vec3d rP = body->getPositionAtDate(julianDay + dt);
-			Vec3d eclipticNormal = r0 ^ (rP - rM);
-			if (eclipticNormal.length() > 1e-12)
-				eclipticNormal.normalize();
-			else
-				eclipticNormal = Vec3d(0,0,1); // fallback
-
-			Vec3d forward = -CoreLink::instance->getObserverHelioPos();
-			forward.normalize();
-			Vec3d up = eclipticNormal - forward * forward.dot(eclipticNormal);
+		// [D5 re-fix 2026-07-17] Ecliptic-normal zodiacal (theirs' physically-
+		// correct placement), on path-supplied DATA only: the first D5 form
+		// read CoreLink/navigator state here, which put old-path frames
+		// inside the shared core the new path draws through (MilkyWayEnv
+		// calls this same function - the borrow class INTENT 10.3(7)
+		// dissolved) and broke at old-path retirement. The basis is built
+		// directly in the eye frame: rotation-equivariance makes it equal to
+		// theirs' helio-frame construction rotated by helioToEye.
+		if (zodiacalIn.valid) {
+			const Vec3d &forward = zodiacalIn.sunDirEye;
+			Vec3d up = zodiacalIn.eclipticNormalEye
+			         - forward * forward.dot(zodiacalIn.eclipticNormalEye);
 			if (up.length() < 1e-8) up = Vec3d(0,1,0);
 			up.normalize();
 			Vec3d right = (forward ^ up);
@@ -272,11 +297,9 @@ void MilkyWay::drawEnv(ToneReproductor * eye, const Mat4d &j2000ToEye, double ju
 				-forward[0], -forward[1], -forward[2], 0.0,
 				0.0,         0.0,         0.0,         1.0
 			);
-			Mat4d H2E = CoreLink::instance->getHelioToEyeMat();
-			H2E.r[12] = 0.0; H2E.r[13] = 0.0; H2E.r[14] = 0.0; // remove translation
-			matrix = (H2E * rotMatrix * Mat4d::xrotation(M_PI / 2) * Mat4d::yrotation(M_PI)).convert();
+			matrix = (rotMatrix * Mat4d::xrotation(M_PI / 2) * Mat4d::yrotation(M_PI)).convert();
 		} else {
-			// Fallback (e.g. no home body in sandbox): experimental's simple placement.
+			// No placement data (no home body): simple time-rotation placement.
 			matrix = (j2000ToEye * modelZodiacal *
 			          Mat4d::zrotation(2*M_PI*(-julianDay+27.5)/365.2422)).convert();
 		}

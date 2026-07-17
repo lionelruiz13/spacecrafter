@@ -56,6 +56,16 @@ AxisFamilyData &axisFamily()
         color.state.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
         color.state.lineWidth = 3.f;
         desc.passes.push_back(std::move(color));
+        // 2023-master merge (INTENT 11.32): body_Axis.vert projects
+        // IN-SHADER now (custom_project.glsl multi-mode dispatch) - the
+        // interface is {ModelViewMatrix, clipping_fov} push constants +
+        // object-space vec3 endpoints (old axis.cpp:118 layout mirror).
+        // Spec constant 8 = Context::projectionType (old pipeline parity;
+        // the OTHER reused-shader families still ride the default-0 fisheye
+        // - registered follow-up, INTENT 11.32).
+        desc.pushConstants = {{VK_SHADER_STAGE_VERTEX_BIT, 0,
+                               static_cast<uint16_t>(sizeof(Mat4f) + sizeof(Vec3f))}};
+        desc.specValues = {{8, static_cast<uint32_t>(Context::projectionType)}};
         d.family = renderer.allocateFamily(std::move(desc));
         d.uColor = std::make_unique<SharedBuffer<Vec3f>>(*Context::instance->uniformMgr);
         **d.uColor = Vec3f(1.f, 0.f, 0.f); // old fixed red (axis.cpp:137)
@@ -82,23 +92,26 @@ void AxisModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
         line = data.vertexModel->createBuffer(0, 2, Context::instance->tinyMgr.get());
         pPos = static_cast<Vec3f *>(Context::instance->tinyMgr->getPtr(line->get()));
     }
-    // CPU fisheye, old Axis::computeAxis VERBATIM in float (axis.cpp:62-80):
-    // endpoints at body-frame (0,0,+-1.4*scaledRadius) - the passed mat folds
-    // the surface spin (z-rotation), which leaves +-z invariant, so this
-    // equals the old body mat exactly. clipping = the CURRENT depth slice
-    // (bucket range, S3): the SAME mapping the disc's own draw used, so the
-    // z-test axis-vs-disc is exact by construction. Old used the scale-
-    // mutated radius member -> getScaledRadius() here (moon_scale parity).
-    const Vec3f &clip = renderer.getClippingFov();
+    // Post-merge interface (INTENT 11.32; old computeAxis, axis.cpp:71-77):
+    // OBJECT-SPACE endpoints (0,0,+-1.4*scaledRadius); projection runs
+    // in-shader (custom_project - the old CPU atan-form fisheye this module
+    // first ported was retired by 2023-master along with the CPU path).
+    // The passed mat folds only the surface spin (z-rotation), which leaves
+    // +-z invariant, so pushing it as ModelViewMatrix equals the old body
+    // mat exactly. clipping_fov = the CURRENT depth slice (bucket range,
+    // S3): the SAME mapping the disc's own draw used, so the z-test
+    // axis-vs-disc stays exact by construction. Old used the scale-mutated
+    // radius member -> getScaledRadius() here (moon_scale parity).
     const float len = 1.4f * body->getScaledRadius();
-    for (int i = 0; i < 2; ++i) {
-        Vec3f pos = mat * Vec3f(0.f, 0.f, i ? -len : len);
-        const float rq1 = pos[0]*pos[0] + pos[1]*pos[1];
-        const float depth = (sqrtf(rq1 + pos[2]*pos[2]) - clip[0]) / (clip[1] - clip[0]);
-        pos /= sqrtf(rq1) + 1e-30f; // don't divide by zero (old comment kept)
-        const float f = (atanf(pos[2]) / static_cast<float>(M_PI) + 0.5f) * static_cast<float>(M_PI) / clip[2];
-        pPos[i] = Vec3f(pos[0] * f, pos[1] * f, depth);
-    }
+    pPos[0] = Vec3f(0.f, 0.f, len);
+    pPos[1] = Vec3f(0.f, 0.f, -len);
+    struct {
+        Mat4f ModelViewMatrix;
+        Vec3f clipping_fov;
+    } pushData;
+    pushData.ModelViewMatrix = mat;
+    pushData.clipping_fov = renderer.getClippingFov();
+    bound.layout->pushConstant(renderer, 0, &pushData);
     bound.layout->bindSet(renderer, *data.set);
     VertexArray::bind(renderer, line->get());
     vkCmdDraw(renderer, 2, 1, 0, 0);

@@ -46,9 +46,7 @@ public:
         BodyModule(BodyModuleType::HINT), labelColor(labelColor) {}
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
 
-    static void setFont(s_font *font) {
-        hintFont = font;
-    }
+    static void setFont(s_font *font);
     static bool show; // Global hint visibility (old setFlagHints)
     // Default label color (config planet_names_color) - wired at the
     // SSystemFactory::setDefaultBodyColor seam, like the old BodyColor default.
