@@ -133,3 +133,26 @@ line above is the generic recipe.
 `asmooth_sim.py` - off-domain but homed here for traceability: exact-formula
 replay behind the EntityCore ASmooth analysis (INTENT 11.18); not a
 body-path tool.
+
+## Orientation consolidation (2026-07-17) - INTENT 11.34/11.35
+
+`orientation_check.py <dump>` - convention checker, the predictive GATE of
+the 6.8 implementation: transcribes old observer (getRotEquatorialToVsop87),
+old render (one-hop wrong-side), new current, and the accumulated fix from
+dumped pieces; prints the divergence table + the planet-moon commutator
+spectrum + P-d (live render/observer contradiction at the reference: was
+23.4422 deg at a Moon reference, 0.0000 post-fix). Metric note: angle() uses
+the Frobenius small-angle form near identity - acos((tr-1)/2) turns float-ulp
+matrix noise into ~0.014 deg phantom rows.
+
+`ab_orientation.py` - terminal-observable A/B (verification height): scaled
+tracked Moon + axis, and Charon from Pluto's surface; clusters screenshots
+into path phases and measures disc diffs. Pair with the instrument-
+sensitivity counterfactual (rotate one phase's disc by the class angle):
+measured x163 (Moon, 23.44 deg) / x1212 (Charon, 115.6 deg) headroom over
+the observed AA/pointer floor. Uses `set moon_scale` (mirrored seam);
+`planet_scale` is OLD-PATH-ONLY (seam gap, INTENT 11.35) - do not use in
+A/B scenes.
+
+Dump extension: dumpTracePaths hops set is Earth/Moon/Sun/Mars/Pluto/Charon
+(tilt pieces stay fresh through recursiveTranslationUpdate even invisible).

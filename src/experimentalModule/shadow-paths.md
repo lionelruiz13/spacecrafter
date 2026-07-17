@@ -570,6 +570,19 @@ receiver block single authority). Structure landed:
 8. (F, 2026-07-16) Per-ring shadow-color data key: the caster-half ships the derived
    old-parity constant {0.7,0.7,0.7}; a `ring_shadow_color` ssystem key (and whether the
    dead `ring_shadow` key of A3.7 should gate casting) is a data-model decision.
+   **RESOLVED** [vixy 2026-07-17]: "the dead ring_shadow should be replaced with visual
+   fidelity to properly generalize with other bodies (otherwise it doesn't cast on child
+   bodies)". So: the dead `ring_shadow` key does NOT come back as a cast gate — gating
+   casting on a per-ring boolean is exactly what breaks generalization (a ring that does
+   not cast cannot cast on the planet's MOONS either, and G8 exists to make ring->any
+   receiver work). Direction: visual fidelity decides whether a ring casts, not a data
+   flag; the key is retired, not revived. `ring_shadow_color` remains a live data-model
+   question but is now decoupled from the gate — a color key is additive (default = the
+   derived old-parity {0.7}), a gate key is subtractive. Applies at the row-4 COLOR port.
+   Re-derive at implementation: the criterion is the shadow's physical presence, so the
+   selection budget (G8 budget 10) is the only legitimate limiter — confirm that budget
+   selection cannot silently drop a child-body receiver (that would reintroduce the same
+   non-generalization through the back door).
 9. (F) Within-body penumbra: smooth = 0 (sharp, old-parity). Physically the ring shadow
    has a small penumbra (~sun angular radius x ring-to-surface distance); if visual
    fidelity ever wants it, the within-body pair needs a per-pair smooth estimate instead

@@ -88,30 +88,31 @@ def main(path):
             pred = H @ MLP
         print(f"  {n:<6} mat-residual={res(pred, M(o['mat'])):.2e}")
 
-    # -- P2: new model (fixed flat chain, +ecl = child position in parent frame)
-    # reference: mat = C ; flat = C.tilt(ref)^-1
-    # descent: frame .= T(+ecl) ; mat(body) = frame.tilt(body)
-    # walk-up: flat .= T(-ecl(body)) ; ancestor mat = flat.tilt(ancestor)
-    print("\n== P2 NEW predictions (fixed model)")
+    # -- P2: new model (flat translations + ACCUMULATED orientations - the
+    # 2026-07-17 single-authority rework, INTENT 11.34/6.8)
+    # reference: mat = C exactly (flat = C.A(ref)^-1, mat = flat.A(ref))
+    # descent: frame .= T(+ecl) ; mat(body) = frame.A(body)
+    # walk-up: flat .= T(-ecl(body)) ; ancestor mat = flat.A(ancestor)
+    # A(b) = accumulatedBodyPosToBody: ancestors (skip system-centered,
+    # ecl==0 proxy) parents-first, SELF UNCONDITIONAL.
+    print("\n== P2 NEW predictions (accumulated-orientation model)")
     ref_chain = hops[ref]
     ref_names = [h["name"] for h in ref_chain]
-    # camera frame = the reference's ACCUMULATED equatorial frame
-    # (accumulatedBodyToBodyPos): product of inverse tilts up the chain,
-    # skipping system-centered nodes (ecl == 0 - their coordinates are
-    # ecliptic by definition; matches old getRotEquatorialToVsop87).
-    acc = np.eye(4)
-    for h in ref_chain[:-1]:
-        if np.linalg.norm(np.array(h["ecl"])) > 0:
-            acc = acc @ np.linalg.inv(M(h["tilt"]))
-    flat0 = C @ acc
+    def A_of(chain, name):
+        names = [h["name"] for h in chain]
+        i = names.index(name)
+        acc = M(chain[i]["tilt"])                            # self, unconditional
+        for h in chain[i+1:]:
+            if np.linalg.norm(np.array(h["ecl"])) > 0:       # system-centered skip
+                acc = M(h["tilt"]) @ acc
+        return acc
+    flat0 = C @ np.linalg.inv(A_of(ref_chain, ref))
     new_pred = {}
     for n in QUAD:
         if n not in bodies or bodies[n]["new"] is None: continue
         w = bodies[n]["new"]
         if n == ref:
-            # reference mat = flat . tilt(ref) (== C only when the accumulated
-            # frame reduces to the single tilt, i.e. Earth-like references)
-            pred = flat0 @ M(hopm[ref][ref]["tilt"])
+            pred = flat0 @ A_of(ref_chain, ref)              # == C by construction
         else:
             chain = hops[n]
             names = [h["name"] for h in chain]
@@ -123,7 +124,7 @@ def main(path):
             pred = base
             for h in reversed(down):
                 pred = pred @ T(np.array(h["ecl"]))          # flat down-hop
-            pred = pred @ M(hopm[n][n]["tilt"])              # own tilt into mat
+            pred = pred @ A_of(chain, n)                     # accumulated frame into mat
         new_pred[n] = pred
         obs = M(w["mat"])
         fresh = w["visible"] or n == ref
@@ -169,15 +170,18 @@ def main(path):
         w, o = bodies[n]["new"], bodies[n]["old"]
         if not (w["visible"] or n == ref): continue
         D = rot(M(w["mat"])) @ rot(M(o["mat"])).T
-        tilt_self = rot(M(hopm[n][n]["tilt"]))
-        cands = {"parity (A=I)": np.eye(3)}
+        # New orientation = the accumulated frame (single authority,
+        # 2026-07-17); surplus A = A_acc . (old render composition)^T.
+        A_acc = rot(A_of(hops[n], n))
+        cands = {"parity (accumulated == old render)": A_acc @ A_acc.T}
         if o["parent"] in bodies:
             p = bodies[o["parent"]]["old"]
             prot = rot(M(p["rotLocalToParentUnprecessed"] if not o.get("useParentPrecession")
                          else p["rotLocalToParent"]))
-            cands["old parent-rot accumulation"] = tilt_self @ (rot(M(o["rotLocalToParent"])) @ prot).T
+            cands["acc(prec) vs old one-hop wrong-side"] = \
+                A_acc @ (rot(M(o["rotLocalToParent"])) @ prot).T
         else:
-            cands["old skips parentless rot"] = tilt_self
+            cands["old skips parentless rot"] = A_acc
         best, dev = None, 1e9
         for tag, A in cands.items():
             d = np.linalg.norm(D - Dc @ rot(H) @ A @ rot(H).T)

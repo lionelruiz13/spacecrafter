@@ -143,11 +143,17 @@ bool ModularBody::remove(bool recursive)
 }
 
 // Receives this body's POSITION frame (root-aligned - frame contract in the
-// header): the tilt goes into `mat` only, children receive the flat frame
-// (bound children the tilted one, their offsets live in the surface frame).
+// header): the ACCUMULATED equatorial frame goes into `mat` only, children
+// receive the flat frame (bound children `mat`, their offsets live in the
+// surface frame = accumulated + spin). Single authority (I2): this is the
+// same frame the camera declares the observer in - routing the render
+// through the own tilt instead was the 23.44deg Moon render/observer
+// contradiction (INTENT 11.34; measured live, orientation_check.py P-d).
+// For the reference body the fold cancels the dispatchUpdate exit exactly:
+// mat = C . A^-1 . A = C (same uniform jd both sides).
 void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBodyPos)
 {
-    mat = matLocalToBodyPos.multiplyFast(computeBodyPosToBody(jd));
+    mat = matLocalToBodyPos.multiplyFast(accumulatedBodyPosToBody(jd));
     update(jd, mat);
     for (auto &c : childs)
         c.selectiveUpdate(jd, c.boundToSurface ? mat : matLocalToBodyPos);
@@ -176,7 +182,11 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
     while (body->isNotIsolated) {
         body->transformBodyToParent(jd, flat);
         ModularBody *parent = body->parent;
-        const Mat4f parentTilted = flat.multiplyFast(parent->computeBodyPosToBody(jd));
+        // Accumulated, not own tilt (I2 single authority): the up-chain
+        // ancestors' `mat` and their bound children's surface frame follow
+        // the same convention as the descent - an own-tilt fold here would
+        // desynchronize a moon-referenced camera's ancestor orientations.
+        const Mat4f parentTilted = flat.multiplyFast(parent->accumulatedBodyPosToBody(jd));
         for (auto &b : parent->childs) {
             if (&b != body)
                 b.selectiveUpdate(jd, b.boundToSurface ? parentTilted : flat);

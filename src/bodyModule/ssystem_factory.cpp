@@ -527,7 +527,11 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
     }
     // Quadruplet (minimal set separating translation / common rotation /
     // hop-accumulated rotation): identity, down-hop, up-hop, up-then-down.
-    for (const char *name : {"Earth", "Moon", "Sun", "Mars"}) {
+    // + Pluto/Charon (INTENT 11.34 orientation set: the loudest declared
+    // parent-obliquity case, 115.60deg - tilt pieces needed for the
+    // convention checker even while the branch is invisible; lastJD stays
+    // fresh through recursiveTranslationUpdate).
+    for (const char *name : {"Earth", "Moon", "Sun", "Mars", "Pluto", "Charon"}) {
         if (ModularBody *nb = ModularBody::findBodyOnce(name)) {
             out << "{\"type\":\"hops\",\"name\":\"" << name << "\",\"new\":";
             nb->dumpHops(out);

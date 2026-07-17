@@ -336,15 +336,21 @@ public:
     // path, harness 2026-07-11 - old composition validated exactly) ----------
     // Every ephemeris output (VSOP87, ELP82, ell_orbit with parent rotation
     // BAKED IN at load - see ElipticOrbitLoader) is a vector in the ROOT
-    // (ecliptic VSOP87) orientation. Therefore the chain's translation frames
+    // (ecliptic VSOP87) orientation. Therefore the chain's TRANSLATION frames
     // are all root-aligned ("flat"): hops between bodies are PURE TRANSLATIONS
-    // (plus the surface fold for boundToSurface bodies), and a body's tilt
-    // (computeBodyPosToBody) decorates ONLY its own `mat` - it is never
-    // propagated to children. The camera holds the reference body's EQUATORIAL
-    // (tilted) frame; dispatchUpdate leaves it exactly once via
-    // computeBodyToBodyPos(reference). Violating this (per-hop tilts) rotates
-    // every child offset by the parent's obliquity - the confirmed E2 class of
-    // the Moon divergence (projection-paths.md C8/C9).
+    // (plus the surface fold for boundToSurface bodies). Violating this
+    // (per-hop tilts on translations) rotates every child offset by the
+    // parent's obliquity - the confirmed E2 class of the Moon divergence
+    // (projection-paths.md C8/C9).
+    // ORIENTATIONS are the dual half of the contract (2026-07-17, INTENT
+    // 11.34/6.8): a body's `mat` carries its ACCUMULATED equatorial frame
+    // (accumulatedBodyPosToBody - the single authority below), NOT its own
+    // tilt alone; the camera holds the reference's accumulated frame and
+    // dispatchUpdate leaves it exactly once via accumulatedBodyToBodyPos.
+    // Translations flat + orientations accumulated is NOT a contradiction:
+    // translations are ephemeris vectors (root-aligned by data), orientations
+    // are declared rotation elements (nested in the primary's equator by
+    // data - the Charon proof). The two halves ride the same chain walk.
     inline void transformParentToBodyPos(double jd, Mat4f &mat_local_to_body) {
         // Light travel time (old-path parity, solarsystem_display.cpp
         // computePositions): the body is seen where it WAS one light-trip ago.
@@ -394,34 +400,78 @@ public:
         );
     }
 
-    // ---- Accumulated equatorial frame (observer/camera semantics) ----------
-    // A body's lat/lon grid is defined in the frame accumulating the parent
-    // rotations (old-path parity: getRotEquatorialToVsop87 left-multiplies
-    // every ancestor's rot_local_to_parent; measured on the Moon observer:
-    // pol==latitude and az==sidereal+lon hold EXACTLY in rot_e.rot_m, not in
-    // rot_m alone). System-centered bodies contribute nothing - their
-    // coordinates are ecliptic by definition (the old path never computes a
-    // rotation for parentless bodies: "heliocentric coordinates are on
-    // ecliptic, not solar equator"). For a body orbiting a system-centered
-    // parent the accumulation therefore reduces to its own tilt, which is why
-    // Earth-reference scenes are insensitive to this distinction.
-    // Exit: camera(accumulated frame) -> root-aligned. Product self-first:
-    // C . tilt_self^-1 . tilt_parent^-1 ...
+    // ---- Accumulated equatorial frame - THE single authority (I2) ----------
+    // The body's equatorial (lat/lon) frame is ONE concept with TWO consumers
+    // - the camera/observer declaration frame and the mesh render frame - and
+    // they MUST be identical: the mesh is lat/lon-textured and the observer
+    // stands on it (an observer at (lat,lon) is above the mesh point at
+    // (lat,lon)). Both consumers route through this pair; composing a body
+    // orientation from computeBodyPosToBody directly re-splits the concept
+    // (the 23.44deg Moon render/observer contradiction, INTENT 11.34/6.8).
+    //
+    // Semantics (each clause carries its reason):
+    // - SELF tilt is UNCONDITIONAL: the mesh is drawn tilted wherever data
+    //   declares it (2(a) honors the Sun's 7.25deg), so the observer frame
+    //   must tilt with it - even at system center. (The old path is untilted
+    //   at BOTH consumers there - self-consistent, but a model-layer
+    //   foreclosure; divergence named, 11.34.)
+    // - ANCESTOR tilts participate iff the ancestor is NOT system-centered:
+    //   satellite rotation data is authored relative to the primary's equator
+    //   (the Charon 1.0deg = "1deg from Pluto's equator" proof, 11.34), but
+    //   planets' data is ecliptic-referenced because the old path's parentless
+    //   guard kept the Sun out of every accumulation ("heliocentric
+    //   coordinates are on ecliptic, not solar equator").
+    // - The walk STOPS at a boundToSurface seam: a bound body's position
+    //   frame is its parent's SURFACE frame, which already carries every
+    //   ancestor orientation (plus spin) - continuing the walk would
+    //   double-apply them. The seam ancestor's own tilt still participates
+    //   (its satellites nest in its equator like any other primary's).
+    // Measured (harness/orientation_check.py, 2026-07-17): matches old's
+    // observer EXACTLY (getRotEquatorialToVsop87 parity, 0.0000deg incl. the
+    // Moon); per-hop pieces match old to float eps (~4e-8).
+    //
+    // Exit: equatorial frame -> root-aligned. Product self-first:
+    // tilt_self^-1 . tilt_parent^-1 ... (exact inverse of the entry walk).
     inline Mat4f accumulatedBodyToBodyPos(double jd) const {
-        Mat4f ret = Mat4f::identity();
-        for (const ModularBody *b = this; b && b->isNotIsolated; b = b->parent) {
-            if (!b->isSystemCentered())
-                ret = ret.multiplyFast(b->computeBodyToBodyPos(jd));
+        Mat4f ret = computeBodyToBodyPos(jd);
+        if (!boundToSurface) {
+            for (const ModularBody *b = parent; b && b->isNotIsolated; b = b->parent) {
+                if (!b->isSystemCentered())
+                    ret = ret.multiplyFast(b->computeBodyToBodyPos(jd));
+                if (b->boundToSurface)
+                    break;
+            }
         }
         return ret;
     }
-    // Entry: root-aligned -> accumulated frame. Product parents-first:
-    // ... tilt_parent . tilt_self (cached lastJD per node, compensation use).
+    // Entry: root-aligned -> equatorial frame. Product parents-first:
+    // ... tilt_parent . tilt_self (correct nesting order - the old path's
+    // one-hop right-multiply is the wrong side, survived only where the
+    // factors commute; 11.34(iii)).
+    inline Mat4f accumulatedBodyPosToBody(double jd) const {
+        Mat4f ret = computeBodyPosToBody(jd);
+        if (!boundToSurface) {
+            for (const ModularBody *b = parent; b && b->isNotIsolated; b = b->parent) {
+                if (!b->isSystemCentered())
+                    ret = b->computeBodyPosToBody(jd).multiplyFast(ret);
+                if (b->boundToSurface)
+                    break;
+            }
+        }
+        return ret;
+    }
+    // Cached variant (per-node lastJD): for use OUTSIDE the update walk, where
+    // no uniform frame jd exists (reference-switch compensation). Differential
+    // vs the jd form = precession over light-travel deltas (~1e-9 rad).
     inline Mat4f accumulatedBodyPosToBody() const {
-        Mat4f ret = Mat4f::identity();
-        for (const ModularBody *b = this; b && b->isNotIsolated; b = b->parent) {
-            if (!b->isSystemCentered())
-                ret = b->computeBodyPosToBody(b->lastJD).multiplyFast(ret);
+        Mat4f ret = computeBodyPosToBody(lastJD);
+        if (!boundToSurface) {
+            for (const ModularBody *b = parent; b && b->isNotIsolated; b = b->parent) {
+                if (!b->isSystemCentered())
+                    ret = b->computeBodyPosToBody(b->lastJD).multiplyFast(ret);
+                if (b->boundToSurface)
+                    break;
+            }
         }
         return ret;
     }
@@ -479,7 +529,8 @@ public:
         preUpdate(jd, mat_local_to_parent);
         if (isVisible) {
             // mat_local_to_parent is now this body's position-frame (flat);
-            // recursiveUpdate applies the tilt to `mat` only (frame contract above).
+            // recursiveUpdate folds the ACCUMULATED equatorial frame into
+            // `mat` only (frame contract above), children keep the flat frame.
             recursiveUpdate(jd, mat_local_to_parent);
         } else {
             mat.r[12] = mat_local_to_parent.r[12];
@@ -488,8 +539,11 @@ public:
             // Old-path parity: positions of non-drawn bodies stay queryable and
             // sortable (the old path updates every body every frame). Refresh
             // the subtree's translations; rotations/visibility stay gated (G4).
+            // Bound children live in the surface frame: fold the ACCUMULATED
+            // equatorial frame (single authority - same frame the visible
+            // branch passes via `mat`), never the own tilt alone.
             for (auto &c : childs)
-                c.recursiveTranslationUpdate(jd, c.boundToSurface ? mat_local_to_parent.multiplyFast(computeBodyPosToBody(jd)) : mat_local_to_parent);
+                c.recursiveTranslationUpdate(jd, c.boundToSurface ? mat_local_to_parent.multiplyFast(accumulatedBodyPosToBody(jd)) : mat_local_to_parent);
         }
     }
 
@@ -503,7 +557,7 @@ public:
         mat.r[14] = frame.r[14];
         distance = frame.getTranslation().length();
         for (auto &c : childs)
-            c.recursiveTranslationUpdate(jd, c.boundToSurface ? frame.multiplyFast(computeBodyPosToBody(jd)) : frame);
+            c.recursiveTranslationUpdate(jd, c.boundToSurface ? frame.multiplyFast(accumulatedBodyPosToBody(jd)) : frame);
     }
 
     // Update the body system from a given body, return the active system
@@ -768,10 +822,15 @@ public:
         return bodyType == BodyType::SYSTEM;
     }
     // Return true if this body is at the center of his system
+    // (2026-07-17 fix: the loop tested THIS body's eclipticPos at every
+    // level - loop-invariant, ancestors never examined - so an ecl==0 body
+    // parented to an OFF-CENTER parent (script-reachable: a pedagogical
+    // construct parked at a planet center, the R1 generality 2 relies on)
+    // read as system-centered and lost its ancestors' tilt participation.)
     inline bool isSystemCentered() const {
         const ModularBody *body = this;
         while (body->isNotIsolated) {
-            if (eclipticPos.v[0] || eclipticPos.v[1] || eclipticPos.v[2])
+            if (body->eclipticPos.v[0] || body->eclipticPos.v[1] || body->eclipticPos.v[2])
                 return false;
             body = body->parent;
         }
