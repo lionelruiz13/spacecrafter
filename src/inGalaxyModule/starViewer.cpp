@@ -70,6 +70,8 @@ void StarViewer::createSC_context()
     pipeline->removeVertexEntry(2);
     pipeline->bindShader("big_star.vert.spv");
     pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
     pipeline->bindShader("big_star.frag.spv");
     pipeline->build();
 

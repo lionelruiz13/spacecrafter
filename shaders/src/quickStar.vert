@@ -10,11 +10,11 @@ layout (binding=0, set=0) uniform uMat {
 	float fading;
 };
 
-#include <fisheye.glsl>
+#include <custom_project.glsl>
 
 void main()
 {
-	vec4 pos = fisheyeProjectClamped(position, clipping_fov);
+	vec4 pos = custom_projectClamped(position, ModelViewMatrix, clipping_fov);
 	colorOut = vec4(color, fading);
 	gl_Position = pos;
 	gl_PointSize = 1.5;

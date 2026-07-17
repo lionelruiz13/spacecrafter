@@ -16,11 +16,11 @@ layout (push_constant) uniform uMat {
 	float fov;
 };
 
-#include <fisheye2D.glsl>
+#include <custom_project.glsl>
 
 void main()
 {
 	pos = position;
-	gl_Position = fisheye2D(position, fov);
+	gl_Position = custom_project2D(position, ModelViewMatrix, fov);
 }
 

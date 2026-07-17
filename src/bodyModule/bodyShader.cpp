@@ -79,6 +79,8 @@ void BodyShader::createShader()
 	shaderNight.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderNight.pipeline->bindShader("body_night.vert.spv");
 	shaderNight.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	shaderNight.pipeline->setSpecializedConstant(8, Context::projectionType);
 	shaderNight.pipeline->bindShader("body_night.frag.spv");
 	shaderNight.pipelineNoDepth = shaderNight.pipeline->clone("shaderNight noDepth");
 	shaderNight.pipelineNoDepth->setDepthStencilMode();
@@ -113,9 +115,13 @@ void BodyShader::createShader()
 		myEarth.pipeline[i].setTessellationState(3);
 		myEarth.pipeline[i].bindShader("body_tes.vert.spv");
 		myEarth.pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+		// Set specialization constant for projection type (constant_id = 8)
+		myEarth.pipeline[i].setSpecializedConstant(8, Context::projectionType);
 		myEarth.pipeline[i].bindShader("body_tes.tesc.spv");
 		myEarth.pipeline[i].bindShader("my_earth.tese.spv");
 		myEarth.pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+		// Set specialization constant for projection type (constant_id = 8)
+		myEarth.pipeline[i].setSpecializedConstant(8, Context::projectionType);
 		myEarth.pipeline[i].bindShader("my_earth.frag.spv");
 		VkBool32 Clouds = (i & 1);
 		myEarth.pipeline[i].setSpecializedConstant(1, &Clouds, sizeof(Clouds));
@@ -148,6 +154,8 @@ void BodyShader::createShader()
 	shaderBump.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderBump.pipeline->bindShader("body_bump.vert.spv");
 	shaderBump.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	shaderBump.pipeline->setSpecializedConstant(8, Context::projectionType);
 	shaderBump.pipeline->bindShader("body_bump.frag.spv");
 	shaderBump.pipelineNoDepth = shaderBump.pipeline->clone("shaderBump noDepth");
 	shaderBump.pipelineNoDepth->setDepthStencilMode();
@@ -176,6 +184,8 @@ void BodyShader::createShader()
 	shaderRinged.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderRinged.pipeline->bindShader("body_ringed.vert.spv");
 	shaderRinged.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	shaderRinged.pipeline->setSpecializedConstant(8, Context::projectionType);
 	shaderRinged.pipeline->bindShader("body_ringed.frag.spv");
 	shaderRinged.pipeline->build("shaderRinged");
 
@@ -198,6 +208,8 @@ void BodyShader::createShader()
 	shaderNormal.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderNormal.pipeline->bindShader("body_normal.vert.spv");
 	shaderNormal.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	shaderNormal.pipeline->setSpecializedConstant(8, Context::projectionType);
 	shaderNormal.pipeline->bindShader("body_normal.frag.spv");
 	shaderNormal.pipelineNoDepth = shaderNormal.pipeline->clone("shaderNormal noDepth");
 	shaderNormal.pipelineNoDepth->setDepthStencilMode();
@@ -227,9 +239,13 @@ void BodyShader::createShader()
 	shaderNormalTes.pipeline->setTessellationState(3);
 	shaderNormalTes.pipeline->bindShader("body_tes.vert.spv");
 	shaderNormalTes.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	shaderNormalTes.pipeline->setSpecializedConstant(8, Context::projectionType);
 	shaderNormalTes.pipeline->bindShader("body_tes.tesc.spv");
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.tese.spv");
 	shaderNormalTes.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	shaderNormalTes.pipeline->setSpecializedConstant(8, Context::projectionType);
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.frag.spv");
 	shaderNormalTes.pipelineNoDepth = shaderNormalTes.pipeline->clone("shaderNormalTes noDepth");
 	shaderNormalTes.pipelineNoDepth->setDepthStencilMode();
@@ -258,7 +274,11 @@ void BodyShader::createShader()
 		shaderArtificial.pipeline[i].bindVertex(*context.ojmVertexArray);
 		shaderArtificial.pipeline[i].bindShader("body_artificial.vert.spv");
 		shaderArtificial.pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+		// Set specialization constant for projection type (constant_id = 8)
+		shaderArtificial.pipeline[i].setSpecializedConstant(8, Context::projectionType);
 		shaderArtificial.pipeline[i].bindShader("body_artificial.geom.spv");
+		// Set specialization constant for projection type (constant_id = 8)
+		shaderArtificial.pipeline[i].setSpecializedConstant(8, Context::projectionType);
 		shaderArtificial.pipeline[i].bindShader((i & 1) ? "body_artificial_notex.frag.spv" : "body_artificial_tex.frag.spv");
 		if (i & 2)
 			shaderArtificial.pipeline[i].setDepthStencilMode();
@@ -298,7 +318,11 @@ void BodyShader::createShader()
 		shaderArtificialShadowed.pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		shaderArtificialShadowed.pipeline[i].bindVertex(*context.ojmVertexArray);
 		shaderArtificialShadowed.pipeline[i].bindShader("body_artificial.vert.spv");
+		// Set specialization constant for projection type (constant_id = 8)
+		shaderArtificialShadowed.pipeline[i].setSpecializedConstant(8, Context::projectionType);
 		shaderArtificialShadowed.pipeline[i].bindShader("body_artificial.geom.spv");
+		// Set specialization constant for projection type (constant_id = 8)
+		shaderArtificialShadowed.pipeline[i].setSpecializedConstant(8, Context::projectionType);
 		shaderArtificialShadowed.pipeline[i].bindShader((i & 1) ? "body_artificial_shadow_notex.frag.spv" : "body_artificial_shadow_tex.frag.spv");
 		shaderArtificialShadowed.pipeline[i].setSpecializedConstant(0, selfShadowRes);
 		shaderArtificialShadowed.pipeline[i].build((i & 1) ? "shaderArtificialShadowed colored" : "shaderArtificialShadowed textured");
@@ -328,9 +352,13 @@ void BodyShader::createShader()
 	myMoon.pipeline->setTessellationState(3);
 	myMoon.pipeline->bindShader("body_tes.vert.spv");
 	myMoon.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	myMoon.pipeline->setSpecializedConstant(8, Context::projectionType);
 	myMoon.pipeline->bindShader("body_tes.tesc.spv");
 	myMoon.pipeline->bindShader("my_moon.tese.spv");
 	myMoon.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	myMoon.pipeline->setSpecializedConstant(8, Context::projectionType);
 	myMoon.pipeline->bindShader("my_moon.frag.spv");
 	myMoon.pipelineNoDepth = myMoon.pipeline->clone("myMoon noDepth");
 	myMoon.pipelineNoDepth->setDepthStencilMode();
@@ -353,6 +381,8 @@ void BodyShader::createShader()
 	depthTrace.pipeline->removeVertexEntry(2);
 	depthTrace.pipeline->bindShader("body_depth_trace.vert.spv");
 	depthTrace.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	depthTrace.pipeline->setSpecializedConstant(8, Context::projectionType);
 	depthTrace.pipeline->build("depthTrace");
 
 	// ========== myEarthShadowed ========== //
@@ -378,6 +408,8 @@ void BodyShader::createShader()
 	myEarthShadowed.pipeline->removeVertexEntry(2);
 	myEarthShadowed.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	myEarthShadowed.pipeline->bindShader("body_tes_shadow.vert.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	myEarthShadowed.pipeline->setSpecializedConstant(8, Context::projectionType);
 	myEarthShadowed.pipeline->bindShader("my_earth_shadow.frag.spv");
 	myEarthShadowed.pipeline->build("myEarthShadowed");
 
@@ -403,6 +435,8 @@ void BodyShader::createShader()
 	shaderShadowedTes.pipeline->removeVertexEntry(2);
 	shaderShadowedTes.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	shaderShadowedTes.pipeline->bindShader("body_tes_shadow.vert.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	shaderShadowedTes.pipeline->setSpecializedConstant(8, Context::projectionType);
 	shaderShadowedTes.pipeline->bindShader("my_moon_shadow.frag.spv");
 	shaderShadowedTes.pipeline->build("shaderShadowedTes");
 

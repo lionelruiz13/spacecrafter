@@ -24,7 +24,7 @@
  */
 
 #ifndef _METEOR_MGR_H_
-#define _METEOR__MGR_H_
+#define _METEOR_MGR_H_
 
 #include <vector>
 #include <list>
@@ -54,7 +54,7 @@ public:
 	// set zenith hourly rate
 	void setZHR(int zhr){
 		ZHR = zhr;
-		if (currentDayOfYear < 0) return; // Skip if day of year not yet computed
+		if (currentDayOfYear < 1) return; // Skip if day of year not yet computed or invalid (< 1 (no sun gives 0))
 		Meteor::setRadiantZHR(currentDayOfYear, ZHR);
 	}
 	// get zenith hourly rate

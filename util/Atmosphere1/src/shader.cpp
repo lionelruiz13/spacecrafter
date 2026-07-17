@@ -129,6 +129,7 @@ void shaderProgram::printActiveAttribs()
 		glGetProgramResourceName(program, GL_PROGRAM_INPUT, i, nameBufSize, NULL, name);
 		printf("%-5d %s (%s)\n", results[2], name, getTypeString(results[1]));
 		delete [] name;
+		name = nullptr;
 	}
 }
 
@@ -150,6 +151,7 @@ void shaderProgram::printActiveUniforms()
 		glGetProgramResourceName(program, GL_UNIFORM, i, nameBufSize, NULL, name);
 		printf("%-5d %s (%s)\n", results[2], name, getTypeString(results[1]));
 		delete [] name;
+		name = nullptr;
 	}
 }
 
@@ -172,6 +174,7 @@ void shaderProgram::printActiveUniformBlocks()
 		glGetProgramResourceName(program, GL_UNIFORM_BLOCK, block, blockInfo[1]+1, NULL, blockName);
 		printf("%i: uniform block \"%s\":\n", program, blockName);
 		delete [] blockName;
+		blockName = nullptr;
 
 		GLint * unifIndexes = new GLint[numUnis];
 		glGetProgramResourceiv(program, GL_UNIFORM_BLOCK, block, 1, blockIndex, numUnis, NULL, unifIndexes);
@@ -186,9 +189,11 @@ void shaderProgram::printActiveUniformBlocks()
 			glGetProgramResourceName(program, GL_UNIFORM, uniIndex, nameBufSize, NULL, name);
 			printf("    %s (%s)\n", name, getTypeString(results[1]));
 			delete [] name;
+			name = nullptr;
 		}
 
 		delete [] unifIndexes;
+		unifIndexes = nullptr;
 	}
 }
 

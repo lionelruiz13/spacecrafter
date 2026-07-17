@@ -39,6 +39,7 @@
 #include "appModule/appDraw.hpp"
 #include "appModule/fps.hpp"
 #include "tools/app_settings.hpp"
+#include "mainModule/define_key.hpp"
 #include "appModule/save_screen_interface.hpp"
 #include "appModule/space_date.hpp"
 #include "appModule/screenFader.hpp"
@@ -47,6 +48,7 @@
 #include "coreModule/callbacks.hpp"
 #include "coreModule/core.hpp"
 #include "coreModule/coreLink.hpp"
+#include "coreModule/projector.hpp"
 #include "executorModule/executor.hpp"
 #include "eventModule/event_handler.hpp"
 #include "eventModule/event_recorder.hpp"
@@ -102,7 +104,7 @@ App::App( SDLFacade* const sdl )
 	settings = AppSettings::Instance();
 	InitParser conf;
 	settings->loadAppSettings( &conf );
-	if (renderSize = std::max(conf.getInt(SCS_VIDEO, SCK_RENDER_SIZE), 0))
+	if ((renderSize = std::max(conf.getInt(SCS_VIDEO, SCK_RENDER_SIZE), 0)))
 		VulkanMgr::instance->dedicatedViewport(renderSize, -renderSize);
 	Texture::setTextureDir(settings->getTextureDir());
 	Pipeline::setShaderDir(settings->getShaderDir());
@@ -115,6 +117,15 @@ App::App( SDLFacade* const sdl )
 	context.stat = std::make_unique<CaptureMetrics>("log/statistics.dat", CAPTURE_FLAG_NAMES);
 	if (conf.getBoolean(SCS_DEBUG, SCK_STATISTICS))
 		context.stat->startCapture();
+
+	// Get the projection mode
+	std::string projectionStr = conf.getStr(SCS_VIDEO, SCK_PROJECTION, "FISHEYE");
+	Context::projectionType = static_cast<int>(stringToProjectionType(projectionStr));
+	cLog::get()->write("Projection mode: " + projectionStr + " (type=" + std::to_string(Context::projectionType) + ")", LOG_TYPE::L_INFO);
+	// Get the Rear projection mode
+	std::string rearProjectionStr = conf.getStr(SCS_VIDEO, SCK_REAR_PROJECTION, "false");
+	Context::rearProjection = (rearProjectionStr == "true");
+	cLog::get()->write("Rear projection: " + rearProjectionStr + " (enabled=" + std::to_string(Context::rearProjection) + ")", LOG_TYPE::L_INFO);
 
 	context.stat->capture(Capture::FRAME_START);
 	initVulkan(conf);
@@ -159,6 +170,11 @@ App::App( SDLFacade* const sdl )
 	spaceDate = std::make_shared<SpaceDate>();
 
 	executor = std::make_unique<Executor>(core, observatory.get());
+
+	// Configuration du callback pour le changement de mode
+	coreBackup->setSwitchModeCallback([this](const std::string& mode) {
+		this->switchMode(mode);
+	});
 
 	// fixation interface
 	ui->initInterfaces(scriptInterface,spaceDate);
@@ -421,7 +437,8 @@ void App::initVulkan(InitParser &conf)
 	context.waitFrameSync[1].semaphore = context.signalFrameSync[1].semaphore = context.collector->createSemaphore(0, "Timeline");
 	for (int i = 0; i < 3; ++i) {
 		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
-		if (vkmgr.getSwapchainView().empty()) {
+		// Use offscreen rendering if no swapchain available OR if rear projection is enabled
+		if (vkmgr.getSwapchainView().empty() || Context::rearProjection) {
 			offscreenImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
 			context.frame.back()->bind(colorID, *offscreenImage.back());
 		} else {
@@ -611,6 +628,16 @@ void App::init()
 	//set all color
 	core->setColorScheme(settings->getConfigFile(), SCS_COLOR);
 
+	// timerate rate 1
+	coreLink->timeSetFlagPause(false);
+	coreLink->timeSetSpeed(JD_SECOND); // 1x
+	// flag subtitle off
+	flag(APP_FLAG::SUBTITLE, false);
+	// landscape landing 1
+	core->setLandingLandscape(true, 0);
+	// media action stop
+	media->playerStop(false);
+
 	// play startup script
 	// on sauvegarde ici l'état des composants du logiciel.
 	coreBackup->saveGridState();
@@ -755,7 +782,9 @@ void App::draw(int delta_time)
 		sender->acquireFrame(context.frameIdx);
 	} else {
 		context.helper->waitFrame(context.lastFrameIdx);
+		swapchainMutex.lock();
 		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 20000000, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx); // Timeout after 20ms, avoid rendering a frame which is out of date
+		swapchainMutex.unlock();
 		switch (res) {
 			case VK_SUCCESS:
 				break;
@@ -763,13 +792,17 @@ void App::draw(int delta_time)
 				vkmgr.putLog("Suboptimal swapchain", LogType::WARNING);
 				break;
 			case VK_TIMEOUT:
-				vkmgr.putLog("Timeout for swapchain acquire", LogType::WARNING);
+				if (!timeoutacquire) {
+					vkmgr.putLog("Timeout for swapchain acquire", LogType::WARNING);
+					timeoutacquire = true;
+				}
 				return;
 			default:
 				vkmgr.putLog("Invalid swapchain", LogType::ERROR);
 				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 				return;
 		}
+		timeoutacquire = false;
 		res = vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, WAIT_TIME);
 		if (res != VK_SUCCESS) {
 			switch (res) {
@@ -990,7 +1023,7 @@ void App::submitFrame(App *self, int id)
 				self->sender->setupReadback(mainCmd, id);
 		}
 	}
-	if (self->renderSize) { // Extra step needed : blit
+	if (self->renderSize || Context::rearProjection) { // Extra step needed : blit (for resize or rear projection flip)
 		VkImageMemoryBarrier imageBarrier[2]{{
 			.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
 			.pNext = nullptr,
@@ -1016,15 +1049,33 @@ void App::submitFrame(App *self, int id)
 		}};
 		vkCmdPipelineBarrier(mainCmd, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 2, imageBarrier);
 
-		const auto screen0 = VulkanMgr::instance->rectToScreen({-1.f, -1.f});
-		const auto screen1 = VulkanMgr::instance->rectToScreen({1.f, 1.f});
 		VkImageBlit blit{
 			.srcSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
 			.srcOffsets = {},
 			.dstSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
-			.dstOffsets = {{screen0.first, screen0.second, 0}, {screen1.first, screen1.second, 1}},
+			.dstOffsets = {},
 		};
 		self->offscreenImage[id]->getDimensions(blit.srcOffsets[1].x, blit.srcOffsets[1].y, blit.srcOffsets[1].z);
+
+		// Determine destination coordinates
+		if (self->renderSize) {
+			// For renderSize: use rectToScreen to respect configured viewport
+			const auto screen0 = VulkanMgr::instance->rectToScreen({-1.f, -1.f});
+			const auto screen1 = VulkanMgr::instance->rectToScreen({1.f, 1.f});
+			blit.dstOffsets[0] = {screen0.first, screen0.second, 0};
+			blit.dstOffsets[1] = {screen1.first, screen1.second, 1};
+		} else {
+			// For rear projection only: use full swapchain extent to avoid distortion
+			const auto& swapchainExtent = VulkanMgr::instance->getSwapChainExtent();
+			blit.dstOffsets[0] = {0, 0, 0};
+			blit.dstOffsets[1] = {static_cast<int32_t>(swapchainExtent.width), static_cast<int32_t>(swapchainExtent.height), 1};
+		}
+
+		// Apply horizontal flip for rear projection (works with or without renderSize)
+		if (Context::rearProjection) {
+			std::swap(blit.srcOffsets[0].x, blit.srcOffsets[1].x);
+		}
+
 		vkCmdBlitImage(mainCmd, self->offscreenImage[id]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VulkanMgr::instance->getSwapchainImage()[id], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit, VK_FILTER_LINEAR);
 		imageBarrier[1].srcAccessMask = imageBarrier[1].dstAccessMask;
 		imageBarrier[1].dstAccessMask = 0;
@@ -1100,7 +1151,9 @@ void App::submitFrame(App *self, int id)
 			vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		}
 		VkPresentInfoKHR presentInfo {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR, nullptr, 1, &self->context.semaphores[id+3], 1, &VulkanMgr::instance->getSwapchain(), (uint32_t *) &id, nullptr};
+		self->swapchainMutex.lock();
 		res = vkQueuePresentKHR(self->context.graphicQueue, &presentInfo);
+		self->swapchainMutex.unlock();
 		switch (res) {
 			case VK_SUCCESS:
 				break;

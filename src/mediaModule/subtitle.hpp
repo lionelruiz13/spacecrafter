@@ -71,6 +71,11 @@ private:
 	int TimeToMs(std::string& time);
 
 	/**
+	 * Allows to parse a time range line and extract start and end times in milliseconds
+	 */
+	bool parseTimeRange(const std::string& line, int& startMs, int& endMs);
+
+	/**
 	*   Function that reads and initializes the subtitle vector
 	*/
 	void readFile();

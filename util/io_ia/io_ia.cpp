@@ -147,6 +147,7 @@ void ReadBinary::readString(std::string &s)
 	tmp[size]='\0';
 	s = std::string(tmp);
 	delete tmp;
+	tmp = nullptr;
 	//~ std::cout << s << " size : " << s.length() << std::endl;
 }
 

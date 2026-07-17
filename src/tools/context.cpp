@@ -105,12 +105,15 @@ Context::~Context()
                                 // needs live managers (stagingMgr, device)
     instance = nullptr;
     helper.reset();
-    for (auto p : pipelineArray)
+    for (auto p : pipelineArray) {
         delete[] p;
+        p = nullptr;
+    }
     for (auto v : shadowView) {
         vkDestroyImageView(VulkanMgr::instance->refDevice, v, nullptr);
     }
     delete[] shadowData;
+    shadowData = nullptr;
     const uint32_t maxRadius = std::min(shadowRes / 2, MAX_RADIUS_HARD_LIMIT+2U) - 1U;
     for (size_t i = 0; i < maxRadius; ++i) {
         shadowPipelines[i].~ComputePipeline();
@@ -121,3 +124,5 @@ Context::~Context()
 bool Context::shadow_ready = false;
 bool Context::experimental_shadows = false;
 bool Context::default_experimental_shadows = false;
+int Context::projectionType = 0; // Default FISHEYE
+int Context::rearProjection = 0; // Default no rear projection

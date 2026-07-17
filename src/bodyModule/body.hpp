@@ -50,7 +50,7 @@
 #include "tools/scalable.hpp"
 #include "bodyModule/bodyShader.hpp"
 #include "rotation_elements.hpp"
-#include "tools/scalable.hpp"
+#include "tools/s_font.hpp"
 #include "atmosphereModule/atmosphere_commun.hpp"
 
 #define JD_MINUTE 0.00069444444444444444444
@@ -73,6 +73,7 @@ class Observer;
 class Set;
 class BodyColor;
 class AtmExt;
+class SolarSystemDisplay;
 
 
 typedef struct body_flags {
@@ -143,6 +144,10 @@ public:
 	     const BodyTexture &_bodyTexture);
 	virtual ~Body();
 
+	void setSolarSystemDisplay(class SolarSystemDisplay *display) {
+		solarSystemDisplay = display;
+	}
+
 	double getRadius(void) const {
 		return radius;
 	}
@@ -195,6 +200,12 @@ public:
 
 	// calculates all the elements necessary to prepare the draw
 	virtual void computeDraw(const Projector* prj, const Navigator* nav);
+
+	// Screen position computation functions - one per projection type
+	void fisheyeComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance);
+	void allsphereComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance);
+	void ekisolidComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance);
+	void asphericComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance);
 
 	// Draw the Planet, if hint_ON is != 0 draw a circle and the name as well
 	// Return the squared distance in pixels between the current and the  previous position this Body was drawn at.
@@ -274,6 +285,8 @@ public:
 
 	static void setFont(s_font* f) {
 		planet_name_font = f;
+		// Update hint circle radius accordingly (for hints.cpp)
+		Hints::hintCircleRadius = planet_name_font->getFontSize() * 0.6f;
 	}
 
 	//it talks about magnitude with the stars
@@ -318,6 +331,8 @@ public:
 	bool getFlagHints(void) const;
 
 	bool getFlagAxis(void) const;
+
+	bool getFlagPlanetGrid(void) const;
 
 	void setFlagAxis(bool b);
 
@@ -567,6 +582,8 @@ protected:
 	virtual void drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest) = 0;
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
+
+	SolarSystemDisplay *solarSystemDisplay = nullptr;
 
 	std::string englishName; 			// english Body name
 	std::string nameI18;					// International translated name

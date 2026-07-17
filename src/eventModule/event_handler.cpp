@@ -41,6 +41,18 @@ void EventHandler::handleEvents(Executor *executor) {
 		const Event* e = eventRecorder->getEvent();
 		this->handle(e, executor);
 		delete e;
+		e = nullptr;
+	}
+	// Notify all handlers that the event loop is complete
+	notifyLoopDone();
+}
+
+void EventHandler::notifyLoopDone() {
+	// Call loopDone on handlers that need it (like EventScriptHandler)
+	for (auto& pair : handlerMap) {
+		if (pair.second != nullptr) {
+			pair.second->loopDone();
+		}
 	}
 }
 
@@ -66,5 +78,6 @@ void EventHandler::remove(Event::Event_Type et){
 		return;
 	if (it->second != nullptr)
 		delete it->second;
+	it->second = nullptr;
   	handlerMap.erase(it);
 }

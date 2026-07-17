@@ -23,19 +23,18 @@ layout (location=1) out vec3 texColorOut;
 layout (push_constant) uniform ubo {
     mat4 Mat; // ModelViewMatrix
 };
-#include <custom_project_nocheck.glsl>
+#include <custom_project_advanced.glsl>
 
 // maximal squared distance accepted
 #define TOLERANCE 60000.0
-//////////////////// PROJECTION FISHEYE ////////////////////////////////
 
 
 void main(void)
 {
 	vec4 pos1, pos2, pos3;
-	pos1 = custom_project(position[0]);
-	pos2 = custom_project(position[1]);
-	pos3 = custom_project(position[2]);
+	pos1 = custom_project(vec4(position[0], 1.0));
+	pos2 = custom_project(vec4(position[1], 1.0));
+	pos3 = custom_project(vec4(position[2], 1.0));
 	vec2 dist1 = pos1.xy;
 	vec2 dist2 = dist1 - pos3.xy;
 	dist1 -= pos2.xy;

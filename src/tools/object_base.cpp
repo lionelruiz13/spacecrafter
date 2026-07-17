@@ -171,18 +171,31 @@ void ObjectBase::createShaderStarPointeur()
 void ObjectBase::uninit()
 {
 	delete pointerGL;
+	pointerGL = nullptr;
 	delete starPointerGL;
+	starPointerGL = nullptr;
 	delete vertexPointer;
+	vertexPointer = nullptr;
 	delete vertexStarPointer;
+	vertexStarPointer = nullptr;
 	delete pipelinePointer;
+	pipelinePointer = nullptr;
 	delete pipelineStarPointer;
+	pipelineStarPointer = nullptr;
 	delete layoutPointer;
+	layoutPointer = nullptr;
 	delete layoutStarPointer;
+	layoutStarPointer = nullptr;
 	delete setPlanetPointer;
+	setPlanetPointer = nullptr;
 	delete setNebulaPointer;
+	setNebulaPointer = nullptr;
 	delete setStarPointer;
+	setStarPointer = nullptr;
 	delete uColor;
+	uColor = nullptr;
 	delete uGeom;
+	uGeom = nullptr;
 }
 
 void ObjectBase::setFontResolution(int fontResolution)

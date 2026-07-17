@@ -282,5 +282,6 @@ int main(int argc,char**argv)
 
 	SDL_Quit();
 	delete data;
+	data = nullptr;
 	return 0;
 }

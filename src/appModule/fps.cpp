@@ -30,9 +30,31 @@
 #include <SDL2/SDL.h>
 #include <chrono>
 #include <thread>
+#include <stacktrace>
+#include "EntityCore/Core/VulkanMgr.hpp"
 
 #include "appModule/fps.hpp"
 #include "tools/log.hpp"
+#include "tools/deported_linear_allocator.hpp"
+
+#ifdef __linux__
+#include <signal.h>
+alignas(std::stacktrace_entry) static std::array<std::byte, 65536> buffer;
+static std::basic_stacktrace<DeportedLinearAllocator<std::stacktrace_entry>> stacktrace(DeportedLinearAllocator<std::stacktrace_entry>{buffer.data(), buffer.size()});
+static std::atomic<bool> stackDumped{false};
+#endif
+
+Fps::Fps() :
+	#ifdef __linux__
+	pid(getpid()),
+	#endif
+	watchdog(&Fps::watchdogMainloop, this)
+{
+	selectMaxFps();
+	#ifdef __linux__
+	signal(SIGUSR1, &Fps::sigstacktrace);
+	#endif
+}
 
 //! switches to video recording mode
 void Fps::selectVideoFps() {
@@ -83,6 +105,14 @@ void Fps::watchdogMainloop()
 	auto lastCheck = std::chrono::steady_clock::now();
 	while (active) {
 		std::this_thread::sleep_until(lastCheck += std::chrono::milliseconds(50));
+		#ifdef __linux__
+		if (stackDumped.load(std::memory_order_acquire)) {
+			std::ostringstream oss;
+			oss << stacktrace;
+			stackDumped.store(false, std::memory_order_relaxed);
+			VulkanMgr::instance->putLog(oss.str(), LogType::LAYER);
+		}
+		#endif
 		const uint64_t currentFrame = numberFrames.load(std::memory_order_relaxed);
 		framerate = currentFrame - lastFrameHistory[++i % 20U];
 		lastFrameHistory[i % 20U] = currentFrame;
@@ -92,12 +122,23 @@ void Fps::watchdogMainloop()
 		} else if (!suspended) {
 			switch (++nbSameFrame) {
 				case 2:
-					cLog::get()->write("Frame stall detected", LOG_TYPE::L_WARNING);
+					#ifdef __linux__
+					kill(pid, SIGUSR1);
+					#endif
+					VulkanMgr::instance->putLog("Frame stall detected", LogType::WARNING);
 					break;
 				case 20:
-					cLog::get()->write("This frame stall is very long", LOG_TYPE::L_WARNING);
+					VulkanMgr::instance->putLog("This frame stall is very long", LogType::WARNING);
 					break;
 			}
 		}
 	}
+}
+
+void Fps::sigstacktrace(int)
+{
+	#ifdef __linux__
+	stacktrace = stacktrace.current(DeportedLinearAllocator<std::stacktrace_entry>{buffer.data(), buffer.size()});
+	stackDumped.store(true, std::memory_order_release);
+	#endif
 }

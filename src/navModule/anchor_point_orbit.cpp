@@ -44,6 +44,7 @@ void AnchorPointOrbit::update() noexcept
 	orbit->positionAtTimevInVSOP87Coordinates(timeMgr->getJDay(), v);
 	Vec3d pos(v[0], v[1], v[2]);
 	delete[] v;
+	v = nullptr;
 
 	Mat4d rotVsop87toJ2000 = (
 	                             Mat4d::xrotation(-23.4392803055555555556*(M_PI/180)) *

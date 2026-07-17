@@ -185,6 +185,7 @@ CameraDefaultListener::~CameraDefaultListener()
 		if (SDL_JoystickGetAttached(joy))
 			SDL_JoystickClose(joy);
 	delete joy;
+	joy=nullptr;
 }
 
 /**
@@ -563,6 +564,7 @@ Camera::Camera(const std::string& configFileName , CameraListener*l ):
 Camera::~Camera()
 {
 	delete listener;
+	listener=nullptr;
 }
 
 /**

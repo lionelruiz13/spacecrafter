@@ -11,12 +11,13 @@ layout (binding=0) uniform ubo {
     float fov; // fov*M_PI/360
 };
 
+#include <custom_project.glsl>
+
 void main()
 {
     vec3 pos = position * shape; // Undo scaling
     direction = pos;
     pos = ModelViewMatrix * pos;
-    pos /= sqrt(pos.x*pos.x + pos.y*pos.y) + 1e-30;
-    const float f = (atan(pos.z) + M_PI_2) / fov;
-    gl_Position = vec4(pos.x * f, pos.y * f, 0, 1);
+    vec4 projected = custom_project2D(vec4(pos, 1.0), mat4(1.0), fov);
+    gl_Position = vec4(projected.xy, 0, 1);
 }

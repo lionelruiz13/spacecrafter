@@ -222,3 +222,22 @@ const std::string CallSystem::getRamInfo()
 		return {};
 	#endif
 }
+
+CallSystem::RamInfo CallSystem::getRamInfo2()
+{
+    #ifdef __linux__
+        struct sysinfo info;
+        sysinfo(&info);
+        return RamInfo{
+            .total = (size_t)info.totalram * (size_t)info.mem_unit,
+            .available = ((size_t)info.freeram + (size_t)info.bufferram) * (size_t)info.mem_unit,
+            .swapsize =(size_t)info.totalswap * (size_t)info.mem_unit
+        };
+    #else
+        return RamInfo{
+            .total = 16ULL*GIBI,
+            .available = 4ULL*GIBI,
+            .swapsize = 16ULL*GIBI
+        };
+    #endif
+}

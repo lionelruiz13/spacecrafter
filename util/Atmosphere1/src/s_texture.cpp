@@ -139,6 +139,7 @@ void s_texture::unload()
 			glDeleteTextures(1, &texID);	// Delete The Texture
 			texID = 0;
 			delete tmp;
+			tmp = nullptr;
 			texCache.erase(it);
 		} else {
 			//~ std::cout << "virtual deletion " << textureName<< std::endl;

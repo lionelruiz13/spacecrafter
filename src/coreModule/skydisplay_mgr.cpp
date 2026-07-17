@@ -55,6 +55,7 @@ SkyDisplayMgr::~SkyDisplayMgr()
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		cLog::get()->write("SkyDisplayMgr : delete " + getSkyName(it->first), LOG_TYPE::L_INFO);
 		delete it->second;
+		it->second = nullptr;
 	}
 	SkyDisplay::destroySC_context();
 }
@@ -64,6 +65,7 @@ void SkyDisplayMgr::clear(SKYDISPLAY_NAME nameObj)
 	auto it=m_map.find(nameObj);
 	if(it!=m_map.end()) {
 		it->second->clear();
+		it->second->endClear();
 		return;
 	}
 	cLog::get()->write("SkyDisplayMgr error : clear not found " + getSkyName(nameObj), LOG_TYPE::L_WARNING);

@@ -989,8 +989,10 @@ MixedOrbit::~MixedOrbit()
 	//	delete primary;
 	if (beforeApprox != nullptr)
 		delete beforeApprox;
+	beforeApprox = nullptr;
 	if (afterApprox != nullptr)
 		delete afterApprox;
+	afterApprox = nullptr;
 }
 
 

@@ -18,10 +18,12 @@ else
 	JOBS=$1
 fi
 
+[ "$BUILD_MODE" = "" ] &&BUILD_MODE=Release
+
 cd build
 git submodule update --init || (cd ../src && git clone https://github.com/Calvin-Ruiz/EntityCore.git)
 [ -n "$BUILD" ] &&BUILD=Release # Use "BUILD=LocalRelease ./install_src.sh" for optimisation specifics to currently installed CPU (in which case it should be recompiled again when replacing the CPU)
-cmake .. -DCMAKE_BUILD_TYPE=$BUILD
+cmake .. -DCMAKE_BUILD_TYPE=$BUILD || exit $?
 if [ "$JOBS" = "" ]
 then
 	NPROC=$(nproc)
@@ -36,8 +38,8 @@ then
 		JOBS="-j$NPROC"
 	fi
 fi
-chrt --batch 0 cmake --build . $JOBS --config Release
-sudo cmake --install . --config Release
+chrt --batch 0 cmake --build . $JOBS --config $BUILD_MODE || exit $?
+sudo cmake --install . --config $BUILD_MODE || exit $?
 cd ..
 
 echo -e "\033[32mScript completed.\033[0m"

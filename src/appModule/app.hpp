@@ -176,6 +176,7 @@ private:
 	bool enable_tcp;
 	bool enable_mkfifo;
 	bool flagMasterput;
+	bool timeoutacquire = false;
 
 
 	// External class
@@ -190,6 +191,7 @@ private:
 	std::unique_ptr<Texture> depthBuffer;
 	bool flushFrames = false; // Flush every frames, reduce framerates but potentially remove some graphical glitches
 	bool initialized = false;
+	std::mutex swapchainMutex;
 
 	// Main elements of the stel_app
 	AppSettings* settings = nullptr;		 			//! base for the software constants

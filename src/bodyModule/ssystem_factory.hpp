@@ -180,6 +180,15 @@ public:
         return ssystem->getMoon();
     }
 
+	// [merge] script-variable helpers (theirs' feature): distance/magnitude of the selected object.
+	double getSelectedDistance(const Navigator * nav) const {
+		Vec3d pos = ssystemSelected->getSelected().getObsJ2000Pos(nav);
+		return pos.length();
+	}
+	double getSelectedMagnitude(const Navigator * nav) const {
+		return ssystemSelected->getSelected().getMag(nav);
+	}
+
     void setFlagLightTravelTime(bool b) {
 		ssystemDisplay->setFlagLightTravelTime(b);
 		ModularBody::flagLightTravelTime = b; // dual-path: both paths must model the same light

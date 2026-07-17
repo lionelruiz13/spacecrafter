@@ -64,6 +64,8 @@ public:
 
 	//! Execute all Events stored by EventRecorder
 	void handleEvents(Executor *executor);
+	//! Notify handlers that event loop is complete
+	void notifyLoopDone();
 	//! Add an EventType to execution task
 	void add(EventHandlerCanvas *sE, Event::Event_Type et);
 	//! Remove an EventType from the execution task

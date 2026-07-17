@@ -30,6 +30,7 @@
 #include "coreModule/projector.hpp"
 #include "tools/s_font.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
+#include "tools/context.hpp"
 
 #include <fcntl.h>
 //#include "tools/fmath.hpp"
@@ -43,6 +44,7 @@ Projector::Projector(const int width, const int height, double _fov)
 	 flag_auto_zoom(0)
 {
 	viewport_radius = -1;  // unset value DIGITALIS
+	viewport_radius_squared = 1;
 	//~ flip_horz = 1.0;
 	//~ flip_vert = 1.0;
 
@@ -73,6 +75,7 @@ void Projector::setViewportDisk( int w, int h)
 	viewport_fov_diameter = t;
 	viewport_center.set(w/2, h/2,0);
 	viewport_radius = viewport_fov_diameter/2;
+	viewport_radius_squared = viewport_radius * viewport_radius;
 
 	//glViewport(vec_viewport[0], vec_viewport[1], vec_viewport[2], vec_viewport[3]);
 	this->applyViewport();
@@ -183,14 +186,17 @@ void Projector::changeFov(double deltaFov)
 }
 
 
-bool Projector::projectCustom(const Vec3d &v,Vec3d &win, const Mat4d &mat) const
+// ================================ FISHEYE PROJECTION =================================
+bool Projector::fisheyeProjectCustom(const Vec3d &v, Vec3d &win, const Mat4d &mat) const
 {
+	// Apply ModelView transformation
 	win[0] = mat.r[0]*v[0] + mat.r[4]*v[1] +  mat.r[8]*v[2] + mat.r[12];
 	win[1] = mat.r[1]*v[0] + mat.r[5]*v[1] +  mat.r[9]*v[2] + mat.r[13];
 	win[2] = mat.r[2]*v[0] + mat.r[6]*v[1] + mat.r[10]*v[2] + mat.r[14];
 	const double depth = win.length();
 	const double rq1 = win[0]*win[0]+win[1]*win[1];
 
+	// Handle degenerate case (looking at center)
 	if (rq1 <= 0 ) {
 		if (win[2] < 0.0) {
 			win[0] = viewport_center[0];
@@ -204,19 +210,353 @@ bool Projector::projectCustom(const Vec3d &v,Vec3d &win, const Mat4d &mat) const
 		return false;
 	}
 
-	const double oneoverh = 1.0/sqrt(rq1);
+	const double rq = sqrt(rq1);
 
-	const double a = M_PI_2 + atan(win[2]*oneoverh);
+	// Calculate angle: asin(min(rq/depth, 1))
+	double f = asin(std::min(rq/depth, 1.0));
+	if (win[2] > 0)
+		f = M_PI - f;
 
-	double f = a * fisheye_scale_factor;
-	f *= viewport_radius * oneoverh;
+	// Standard fisheye projection
+	f /= rq * (fov * (M_PI/360.0));
+	f *= viewport_radius;
 
-	win[0] = viewport_center[0] + win[0] * f;
-	win[1] = viewport_center[1] + win[1] * f;
+	// Centered coordinates on the viewport
+	double dx = win[0] * f;
+	double dy = win[1] * f;
+
+	// Check if inside the viewport circle
+	bool visible = (dx*dx + dy*dy <= viewport_radius_squared);
+
+	// Final projection
+	win[0] = viewport_center[0] + dx;
+	win[1] = viewport_center[1] + dy;
 
 	win[2] = (fabs(depth) - zNear) / (zFar-zNear);
-	return (a<0.97*M_PI) ? true : false;
+	// return (f < 0.97*M_PI*viewport_radius/(fov*(M_PI/360.0))) ? true : false;
+	return visible;
+}
 
+// ================================ ALLSPHERE PROJECTION =================================
+bool Projector::allsphereProjectCustom(const Vec3d &v, Vec3d &win, const Mat4d &mat) const
+{
+	// Apply ModelView transformation
+	win[0] = mat.r[0]*v[0] + mat.r[4]*v[1] +  mat.r[8]*v[2] + mat.r[12];
+	win[1] = mat.r[1]*v[0] + mat.r[5]*v[1] +  mat.r[9]*v[2] + mat.r[13];
+	win[2] = mat.r[2]*v[0] + mat.r[6]*v[1] + mat.r[10]*v[2] + mat.r[14];
+	const double depth = win.length();
+	const double rq1 = win[0]*win[0]+win[1]*win[1];
+
+	// Handle degenerate case (looking at center)
+	if (rq1 <= 0 ) {
+		if (win[2] < 0.0) {
+			win[0] = viewport_center[0];
+			win[1] = viewport_center[1];
+			win[2] = 1.0;
+			return true;
+		}
+		win[0] = viewport_center[0];
+		win[1] = viewport_center[1];
+		win[2] = -1e99;
+		return false;
+	}
+
+	const double rq = sqrt(rq1);
+
+	// Calculate angle: asin(min(rq/depth, 1))
+	double f = asin(std::min(rq/depth, 1.0));
+	if (win[2] > 0)
+		f = M_PI - f;
+
+	// Allsphere distortion - high precision polynomial
+	// Normalize angle by FOV BEFORE polynomial
+	f = (f / (fov * (M_PI/360.0))) * 1200.0;
+	f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
+	f = f / 1200.0;
+
+	// ALLSPHERE: divide only by rq, not by fov (already normalized)
+	f /= rq;
+	f *= viewport_radius;
+
+	// Centered coordinates on the viewport
+	double dx = win[0] * f;
+	double dy = win[1] * f;
+
+	// Check if inside the viewport circle
+	bool visible = (dx*dx + dy*dy <= viewport_radius_squared);
+
+	// Final projection
+	win[0] = viewport_center[0] + dx;
+	win[1] = viewport_center[1] + dy;
+
+	win[2] = (fabs(depth) - zNear) / (zFar-zNear);
+	// return (f < 0.97*M_PI*viewport_radius/(fov*(M_PI/360.0))) ? true : false;
+	return visible;
+}
+
+// ================================ EKISOLID PROJECTION =================================
+bool Projector::ekisolidProjectCustom(const Vec3d &v, Vec3d &win, const Mat4d &mat) const
+{
+	// TODO: implement proper EKISOLID formula
+	// For now, use FISHEYE
+	return fisheyeProjectCustom(v, win, mat);
+}
+
+// ================================ ASPHERIC PROJECTION =================================
+bool Projector::asphericProjectCustom(const Vec3d &v, Vec3d &win, const Mat4d &mat) const
+{
+	// Apply ModelView transformation
+	win[0] = mat.r[0]*v[0] + mat.r[4]*v[1] +  mat.r[8]*v[2] + mat.r[12];
+	win[1] = mat.r[1]*v[0] + mat.r[5]*v[1] +  mat.r[9]*v[2] + mat.r[13];
+	win[2] = mat.r[2]*v[0] + mat.r[6]*v[1] + mat.r[10]*v[2] + mat.r[14];
+	const double depth = win.length();
+	const double rq1 = win[0]*win[0]+win[1]*win[1];
+
+	// Handle degenerate case (looking at center)
+	if (rq1 <= 0 ) {
+		if (win[2] < 0.0) {
+			win[0] = viewport_center[0];
+			win[1] = viewport_center[1];
+			win[2] = 1.0;
+			return true;
+		}
+		win[0] = viewport_center[0];
+		win[1] = viewport_center[1];
+		win[2] = -1e99;
+		return false;
+	}
+
+	const double rq = sqrt(rq1);
+
+	// Calculate angle: asin(min(rq/depth, 1))
+	double f = asin(std::min(rq/depth, 1.0));
+	if (win[2] > 0)
+		f = M_PI - f;
+
+	// halfFov = FOV / 2 in rad
+	double halfFov = fov * (M_PI/360.);
+	const double tanHalfFovOver2 = tan(halfFov * 0.5);
+	// Aspheric projection: r = tan(α/2) / tan(FOV/2)
+	f = tan(f * 0.5) / tanHalfFovOver2;
+
+	// Scale factor -> r = f * viewport_radius
+	f = (f * viewport_radius) / rq;
+
+	// Centered coordinates on the viewport
+	double dx = win[0] * f;
+	double dy = win[1] * f;
+
+	// Check if inside the viewport circle
+	bool visible = (dx*dx + dy*dy <= viewport_radius_squared);
+
+	// Final projection
+	win[0] = viewport_center[0] + dx;
+	win[1] = viewport_center[1] + dy;
+
+	win[2] = (fabs(depth) - zNear) / (zFar-zNear);
+	// return (f < 0.97*M_PI*viewport_radius/(fov*(M_PI/360.0))) ? true : false;
+	return visible;
+}
+
+// ================================ DISPATCHER =================================
+bool Projector::projectCustom(const Vec3d &v, Vec3d &win, const Mat4d &mat) const
+{
+	switch(Context::projectionType) {
+		case 1: return allsphereProjectCustom(v, win, mat);
+		case 2: return ekisolidProjectCustom(v, win, mat);
+		case 3: return asphericProjectCustom(v, win, mat);
+		default: return fisheyeProjectCustom(v, win, mat);
+	}
+}
+
+// Helper function to invert ALLSPHERE polynomial distortion using Newton-Raphson
+static double invertAllspherePolynomial(double f_distorted) {
+	// We need to solve: polynomial(f * 1200) / 1200 = f_distorted
+	// Using Newton-Raphson iteration: f_new = f_old - (P(f_old) - target) / P'(f_old)
+
+	double f = f_distorted; // Initial guess
+	const int max_iterations = 10;
+	const double tolerance = 1e-10;
+
+	for (int i = 0; i < max_iterations; i++) {
+		double x = f * 1200.0;
+
+		// Evaluate polynomial P(x)
+		double p = (((((((((-1.553958085e-26*x + 1.430207232e-22)*x -4.958391394e-19)*x + 8.938737084e-16)*x -9.39081162e-13)*x + 5.979121144e-10)*x -2.293161246e-7)*x + 4.995598119e-5)*x -5.508786926e-3)*x + 1.665135788)*x + 6.526610628e-2;
+		p = p / 1200.0;
+
+		// Evaluate derivative P'(x) * 1200 (chain rule)
+		double dp = ((((((((-1.553958085e-26*10*x + 1.430207232e-22*9)*x -4.958391394e-19*8)*x + 8.938737084e-16*7)*x -9.39081162e-13*6)*x + 5.979121144e-10*5)*x -2.293161246e-7*4)*x + 4.995598119e-5*3)*x -5.508786926e-3*2)*x + 1.665135788;
+
+		double error = p - f_distorted;
+		if (fabs(error) < tolerance)
+			return f;
+
+		f = f - error / dp;
+	}
+
+	return f;
+}
+
+// ================================ FISHEYE UNPROJECT =================================
+void Projector::fisheyeUnproject(double x, double y, const Mat4d& m, Vec3d& v) const
+{
+	const auto pos = VulkanMgr::instance->screenToRect({x, y});
+	double length = sqrt(pos.first*pos.first + pos.second*pos.second);
+	const double angle_center = length * fov * (M_PI/360.);
+	const double r = sin(angle_center);
+
+	if (length) {
+		length = r / length;
+		v.set(pos.first * length, -pos.second * length, sqrt(1.-r*r));
+	} else {
+		v.set(0, 0, 1);
+	}
+
+	if (angle_center>M_PI_2)
+		v[2] = -v[2];
+
+	v.transfo4d(m);
+}
+
+// ================================ ALLSPHERE UNPROJECT =================================
+void Projector::allsphereUnproject(double x, double y, const Mat4d& m, Vec3d& v) const
+{
+	const auto pos = VulkanMgr::instance->screenToRect({x, y});
+	double length = sqrt(pos.first*pos.first + pos.second*pos.second);
+
+	// Apply inverse ALLSPHERE distortion
+	// In projection: angle_normalized = (angle / fov) -> polynomial -> result
+	// In unprojection: we have length which represents the projected radius
+	// We need to: invert polynomial -> multiply by fov to get angle
+	const double halfFov = fov * (M_PI/360.);
+	double f_normalized = invertAllspherePolynomial(length);  // Invert polynomial
+	const double angle_center = f_normalized * halfFov;  // Multiply by fov to get angle
+	const double r = sin(angle_center);
+
+	if (length) {
+		length = r / length;
+		v.set(pos.first * length, -pos.second * length, sqrt(1.-r*r));
+	} else {
+		v.set(0, 0, 1);
+	}
+
+	if (angle_center>M_PI_2)
+		v[2] = -v[2];
+
+	v.transfo4d(m);
+}
+
+// ================================ EKISOLID UNPROJECT =================================
+void Projector::ekisolidUnproject(double x, double y, const Mat4d& m, Vec3d& v) const
+{
+	// TODO: implement proper EKISOLID formula
+	// For now, use FISHEYE
+	fisheyeUnproject(x, y, m, v);
+}
+
+// ================================ ASPHERIC UNPROJECT =================================
+void Projector::asphericUnproject(double x, double y, const Mat4d& m, Vec3d& v) const
+{
+	const auto pos = VulkanMgr::instance->screenToRect({x, y});
+	double length = sqrt(pos.first*pos.first + pos.second*pos.second);
+
+	// Inverse aspheric projection: from r = tan(α/2) / tan(FOV/2), get α = 2 * atan(r * tan(FOV/2))
+	const double halfFov = fov * (M_PI/360.);
+	const double tanHalfFovOver2 = tan(halfFov * 0.5);
+	const double angle_center = 2.0 * atan(length * tanHalfFovOver2);
+	const double r = sin(angle_center);
+
+	if (length) {
+		length = r / length;
+		v.set(pos.first * length, -pos.second * length, sqrt(1.-r*r));
+	} else {
+		v.set(0, 0, 1);
+	}
+
+	if (angle_center>M_PI_2)
+		v[2] = -v[2];
+
+	v.transfo4d(m);
+}
+
+// ================================ FISHEYE UNPROJECT NORMALIZED =================================
+void Projector::fisheyeUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const
+{
+	double length = sqrt(x*x + y*y);
+	const double angle_center = length * fov * (M_PI/360.);
+	const double r = sin(angle_center);
+
+	if (length) {
+		length = r / length;
+		v.set(x * length, y * length, sqrt(1.-r*r));
+	} else {
+		v.set(0, 0, 1);
+	}
+
+	if (angle_center>M_PI_2)
+		v[2] = -v[2];
+
+	v.transfo4d(m);
+}
+
+// ================================ ALLSPHERE UNPROJECT NORMALIZED =================================
+void Projector::allsphereUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const
+{
+	double length = sqrt(x*x + y*y);
+
+	// Apply inverse ALLSPHERE distortion
+	// In projection: angle_normalized = (angle / fov) -> polynomial -> result
+	// In unprojection: we have length which represents the projected radius
+	// We need to: invert polynomial -> multiply by fov to get angle
+	const double halfFov = fov * (M_PI/360.);
+	double f_normalized = invertAllspherePolynomial(length);  // Invert polynomial
+	const double angle_center = f_normalized * halfFov;  // Multiply by fov to get angle
+	const double r = sin(angle_center);
+
+	if (length) {
+		length = r / length;
+		v.set(x * length, y * length, sqrt(1.-r*r));
+	} else {
+		v.set(0, 0, 1);
+	}
+
+	if (angle_center>M_PI_2)
+		v[2] = -v[2];
+
+	v.transfo4d(m);
+}
+
+// ================================ EKISOLID UNPROJECT NORMALIZED =================================
+void Projector::ekisolidUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const
+{
+	// TODO: implement proper EKISOLID formula
+	// For now, use FISHEYE
+	fisheyeUnprojectNormalized(x, y, m, v);
+}
+
+// ================================ ASPHERIC UNPROJECT NORMALIZED =================================
+void Projector::asphericUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const
+{
+	double length = sqrt(x*x + y*y);
+
+	// Inverse aspheric projection: from r = tan(α/2) / tan(FOV/2), get α = 2 * atan(r * tan(FOV/2))
+	const double halfFov = fov * (M_PI/360.);
+	const double tanHalfFovOver2 = tan(halfFov * 0.5);
+	const double angle_center = 2.0 * atan(length * tanHalfFovOver2);
+	const double r = sin(angle_center);
+
+	if (length) {
+		length = r / length;
+		v.set(x * length, y * length, sqrt(1.-r*r));
+	} else {
+		v.set(0, 0, 1);
+	}
+
+	if (angle_center>M_PI_2)
+		v[2] = -v[2];
+
+	v.transfo4d(m);
 }
 
 bool Projector::projectCustomFixedFov(const Vec3d &v,Vec3d &win, const Mat4d &mat) const
@@ -256,44 +596,33 @@ bool Projector::projectCustomFixedFov(const Vec3d &v,Vec3d &win, const Mat4d &ma
 
 }
 
-
+// ================================ UNPROJECT DISPATCHER =================================
 void Projector::unproject(double x, double y, const Mat4d& m, Vec3d& v) const
 {
-	const auto pos = VulkanMgr::instance->screenToRect({x, y});
-	double length = sqrt(pos.first*pos.first + pos.second*pos.second);
-	const double angle_center = length * fov * (M_PI/360.);
-	const double r = sin(angle_center);
-
-	if (length) {
-		length = r / length;
-		v.set(pos.first * length, -pos.second * length, sqrt(1.-r*r));
-	} else {
-		v.set(0, 0, 1);
+	// Invert x for rear projection here, this unproject is used for mouse picking
+	if (Context::rearProjection) {
+		// Invert x screen coordinate [0, viewport_width] for rear projection
+		x = 2.0 * viewport_center[0] - x;
 	}
-
-	if (angle_center>M_PI_2)
-		v[2] = -v[2];
-
-	v.transfo4d(m);
+	switch(Context::projectionType) {
+		case 1: allsphereUnproject(x, y, m, v); break;
+		case 2: ekisolidUnproject(x, y, m, v); break;
+		case 3: asphericUnproject(x, y, m, v); break;
+		default: fisheyeUnproject(x, y, m, v); break;
+	}
 }
 
+// ================================ UNPROJECT NORMALIZED DISPATCHER =================================
 void Projector::unprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const
 {
-	double length = sqrt(x*x + y*y);
-	const double angle_center = length * fov * (M_PI/360.);
-	const double r = sin(angle_center);
-
-	if (length) {
-		length = r / length;
-		v.set(x * length, y * length, sqrt(1.-r*r));
-	} else {
-		v.set(0, 0, 1);
+	// Never invert x for rear projection here, this unproject is used to render things like
+	// sky textures that should not be inverted (it's inverted by the vulkan blit ("global" inversion))
+	switch(Context::projectionType) {
+		case 1: allsphereUnprojectNormalized(x, y, m, v); break;
+		case 2: ekisolidUnprojectNormalized(x, y, m, v); break;
+		case 3: asphericUnprojectNormalized(x, y, m, v); break;
+		default: fisheyeUnprojectNormalized(x, y, m, v); break;
 	}
-
-	if (angle_center>M_PI_2)
-		v[2] = -v[2];
-
-	v.transfo4d(m);
 }
 
 // Set the standard modelview matrices used for projection

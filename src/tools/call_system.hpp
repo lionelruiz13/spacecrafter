@@ -31,6 +31,8 @@
 #include <stdlib.h>
 #include <stdlib.h>
 
+static constexpr size_t MIBI = 1024*1024;
+static constexpr size_t GIBI = 1024*1024*1024;
 
 /**
  * @file call_system.hpp
@@ -44,6 +46,11 @@
 class CallSystem
 {
 public:
+    struct RamInfo {
+        size_t total;
+        size_t available;
+        size_t swapsize;
+    };
     // test if the file exists and is accessible
     static bool isReadable(const std::string& fileName);
     // test if the file exists
@@ -70,6 +77,8 @@ public:
     static bool killAllPidFrom(const std::string& prgm);
     //! Gives information about the amount of RAM available on the machine
     static const std::string getRamInfo();
+    //! Gives information about the amount of RAM available on the machine in usable form
+    static RamInfo getRamInfo2();
 };
 
 #endif

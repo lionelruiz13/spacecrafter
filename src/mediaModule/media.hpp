@@ -381,9 +381,9 @@ public:
 	void setDualViewport(bool _dualViewport) {
 		dualViewport = _dualViewport;
 		viewPort->displayFullScreen(!dualViewport);
+		viewPort->setTexture(player->getYUV_VideoTexture());
 		const int frameIdx = Context::instance->frameIdx;
 		viewPort->build(frameIdx);
-		viewPort->setTexture(player->getYUV_VideoTexture());
 	}
 
 	void playerUpdate() {

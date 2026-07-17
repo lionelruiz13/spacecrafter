@@ -165,6 +165,11 @@ public:
 		setSkyLanguage(initialvalue.initial_skyLocale);
 	}
 
+	// [merge] theirs' subtitle SRT-locale feature (command side).
+	void setInitialSrtLocale() {
+		setSrtLanguage(initialvalue.initial_srtLocale);
+	}
+
 	//! Get the I18 available sky culture names
 	std::string getSkyCultureListI18() const;
 	std::string getSkyCultureHash() const;
@@ -188,6 +193,13 @@ public:
 	//! Get the current sky language used for sky object labels
 	//! @return The name of the locale (e.g fr)
 	std::string getSkyLanguage();
+
+	// [merge] theirs' SRT (subtitle) language, command side; stores/returns the locale.
+	void setSrtLanguage(const std::string& newSrtLocaleName) { srtLanguage = newSrtLocaleName; }
+	std::string getSrtLanguage() { return srtLanguage; }
+
+	// [merge] theirs' init_fov script command support.
+	void setInitFov(double f) { InitFov = f; }
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Navigation
@@ -608,6 +620,7 @@ private:
 	bool predictibleRendering = false;  // Whether the rendered frames must be strictly reproductible (ex : recording sequence) or not (ex : realtime use)
 	ViewZoomMove vzm;					// var for ViewZoomMove
 	float InitFov;						// Default viewing FOV
+	std::string srtLanguage;			// [merge] current SRT (subtitle) locale (theirs' feature)
 	Vec3d InitViewPos;					// Default viewing direction
 	float auto_move_duration;			// Duration of movement for the auto move to a selected objectin seconds
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)

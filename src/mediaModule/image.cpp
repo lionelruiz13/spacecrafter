@@ -178,6 +178,7 @@ Image::~Image()
 {
 	// if (image_RGB) delete image_RGB;
 	delete imageTexture;
+	imageTexture = nullptr;
 	// Release index buffer if allocated
 	if (indexBuffer) {
 		Context::instance->indexBufferMgr->releaseBuffer(*indexBuffer);
@@ -272,6 +273,8 @@ void Image::createSC_context()
 		m_pipelineUnified[i]->bindVertex(*m_imageUnifiedGL);
 		m_pipelineUnified[i]->bindShader("imageUnified.vert.spv");
 		m_pipelineUnified[i]->setSpecializedConstant(7, context.isFloat64Supported);
+		// Set specialization constant for projection type (constant_id = 8)
+		m_pipelineUnified[i]->setSpecializedConstant(8, Context::projectionType);
 
 		m_pipelineViewport[i] = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
 		context.pipelines.emplace_back(m_pipelineViewport[i]);
@@ -290,6 +293,8 @@ void Image::createSC_context()
 		m_pipelineSphere[i]->bindVertex(*m_imageSphereGL);
 		m_pipelineSphere[i]->bindShader("imageUnified.vert.spv");
 		m_pipelineSphere[i]->setSpecializedConstant(7, context.isFloat64Supported);
+		// Set specialization constant for projection type (constant_id = 8)
+		m_pipelineSphere[i]->setSpecializedConstant(8, Context::projectionType);
 	}
 	m_pipelineUnified[0]->bindShader("imageUnifiedRGB.frag.spv");
 	m_pipelineUnified[1]->bindShader("imageUnifiedRGBTransparency.frag.spv");
@@ -327,6 +332,8 @@ void Image::createSC_context()
 	m_pipelineYUVAUnified->setCullMode(true);
 	m_pipelineYUVAUnified->bindVertex(*m_imageUnifiedGL);
 	m_pipelineYUVAUnified->bindShader("imageUnified.vert.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	m_pipelineYUVAUnified->setSpecializedConstant(8, Context::projectionType);
 	m_pipelineYUVAUnified->bindShader("imageUnifiedYUVA.frag.spv");
 	m_pipelineYUVAUnified->setSpecializedConstant(7, context.isFloat64Supported);
 	m_pipelineYUVAUnified->build();
@@ -339,6 +346,8 @@ void Image::createSC_context()
 	m_pipelineYUVASphere->setFrontFace();
 	m_pipelineYUVASphere->bindVertex(*m_imageSphereGL);
 	m_pipelineYUVASphere->bindShader("imageUnified.vert.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	m_pipelineYUVASphere->setSpecializedConstant(8, Context::projectionType);
 	m_pipelineYUVASphere->bindShader("imageUnifiedYUVA.frag.spv");
 	m_pipelineYUVASphere->setSpecializedConstant(7, context.isFloat64Supported);
 	m_pipelineYUVASphere->build();
@@ -827,7 +836,7 @@ void Image::generateSphericalGeometry()
 
 	// Calculate required size for vertices and indices
 	// Vertex grid: (stacks+1) x (slices+1) vertices
-	int numVertices = (stacks + 1) * (slices + 1);
+	uint32_t numVertices = (stacks + 1) * (slices + 1);
 	// Index buffer: stacks x slices quads, each quad = 6 indices (2 triangles)
 	int numIndices = stacks * slices * 6;
 
@@ -890,7 +899,7 @@ void Image::generateSphericalGeometry()
 	// Prepare index data in local memory first
 	std::vector<uint32_t> indexData(numIndices);
 	uint32_t *currentIndex = indexData.data();
-	int actualIndices = 0;
+	uint32_t actualIndices = 0;
 
 	for (int stack = 0; stack < stacks; ++stack) {
 		for (int slice = 0; slice < slices; ++slice) {

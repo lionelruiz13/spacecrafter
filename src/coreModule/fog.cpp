@@ -78,6 +78,8 @@ void Fog::createSC_context()
 	pipeline->bindVertex(*vertexModel);
 	pipeline->bindShader("fog.vert.spv");
 	pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
 	pipeline->bindShader("fog.frag.spv");
 	pipeline->build();
 	set = new Set(vkmgr, *context.setMgr, layout);
@@ -90,10 +92,15 @@ void Fog::createSC_context()
 void Fog::destroySC_context()
 {
 	delete vertexModel;
+	vertexModel = nullptr;
 	delete pipeline;
+	pipeline = nullptr;
 	delete layout;
+	layout = nullptr;
 	delete set;
+	set = nullptr;
 	delete fog_tex;
+	fog_tex = nullptr;
 }
 
 void Fog::initShader()

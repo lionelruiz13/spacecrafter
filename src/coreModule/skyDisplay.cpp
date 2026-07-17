@@ -82,36 +82,43 @@ SkyDisplay::~SkyDisplay()
 
 void SkyDisplay::createSC_context()
 {
-	VulkanMgr &vkmgr = *VulkanMgr::instance;
-	Context &context = *Context::instance;
+	if (!layout) {
+		VulkanMgr &vkmgr = *VulkanMgr::instance;
+		Context &context = *Context::instance;
 
-	vertexModel = std::make_unique<VertexArray>(vkmgr);
-	vertexModel->createBindingEntry(3 * sizeof(float));
-	vertexModel->addInput(VK_FORMAT_R32G32B32_SFLOAT);
-	layout = new PipelineLayout(vkmgr);
-	layout->setGlobalPipelineLayout(context.layouts.front().get());
-	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0, 1, true);
-	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1, true);
-	layout->buildLayout();
-	layout->build();
-	pipeline = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout);
-	pipeline->setDepthStencilMode();
-	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
-	pipeline->bindVertex(*vertexModel);
-	pipeline->bindShader("person.vert.spv");
-	pipeline->bindShader("person.geom.spv");
-	pipeline->bindShader("person.frag.spv");
-	pipeline->build();
-	set = new Set(vkmgr, *context.setMgr, layout);
-	virtualMatID = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 0, sizeof(Mat4f));
-	virtualFragID = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 1, sizeof(frag));
+		vertexModel = std::make_unique<VertexArray>(vkmgr);
+		vertexModel->createBindingEntry(3 * sizeof(float));
+		vertexModel->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+		layout = new PipelineLayout(vkmgr);
+		layout->setGlobalPipelineLayout(context.layouts.front().get());
+		layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0, 1, true);
+		layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1, true);
+		layout->buildLayout();
+		layout->build();
+		pipeline = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout);
+		pipeline->setDepthStencilMode();
+		pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
+		pipeline->bindVertex(*vertexModel);
+		pipeline->bindShader("person.vert.spv");
+		pipeline->bindShader("person.geom.spv");
+		// Set specialization constant for projection type (constant_id = 8)
+		pipeline->setSpecializedConstant(8, Context::projectionType);
+		pipeline->bindShader("person.frag.spv");
+		pipeline->build();
+		set = new Set(vkmgr, *context.setMgr, layout);
+		virtualMatID = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 0, sizeof(Mat4f));
+		virtualFragID = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 1, sizeof(frag));
+	}
 }
 
 void SkyDisplay::destroySC_context()
 {
 	delete pipeline;
+	pipeline = nullptr;
 	delete layout;
+	layout = nullptr;
 	delete set;
+	set = nullptr;
 }
 
 void SkyDisplay::createLocalResources()
@@ -126,6 +133,12 @@ void SkyDisplay::clear()
 {
 	dataSky = (Vec3f *) Context::instance->transfer->beginPlanCopy(NB_MAX_POINTS * 3 * sizeof(float));
 	dataSkySize = 0;
+}
+
+void SkyDisplay::endClear()
+{
+	Context::instance->transfer->endPlanCopy(vertex->get(), dataSkySize * 3 * sizeof(float));
+	m_dataSize = dataSkySize;
 }
 
 void SkyDisplay::build()

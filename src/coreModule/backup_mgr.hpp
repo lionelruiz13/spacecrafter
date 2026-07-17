@@ -31,12 +31,14 @@
 
 #include <string>
 #include <memory>
+#include <functional>
 #include "coreModule/core_common.hpp"
 #include "executorModule/executorModule.hpp"
 
 struct InitialValue {
 	std::string initial_skyCulture;
 	std::string initial_skyLocale;
+	std::string initial_srtLocale;
 	std::string initial_landscapeName;
 };
 
@@ -46,6 +48,8 @@ struct BackupWorkspace {
 	double longitude = 0.0;
 	double altitude = 0.f;
 	float fov = 0.f;
+	Vec3d observer_vision;
+	double heading = 0.0;
 	std::string home_planet_name;
 	MODULE current_module = MODULE::SOLAR_SYSTEM;
 	// std::string pos_name;
@@ -60,6 +64,11 @@ public:
 	~CoreBackup();
 	void loadBackup();
 	void saveBackup();
+
+	// Setter pour le callback de switch de mode
+	void setSwitchModeCallback(std::function<void(const std::string&)> callback) {
+		switchModeCallback = callback;
+	}
 
 	//grid status management
 	void saveGridState();
@@ -79,6 +88,7 @@ private:
 	SkyDisplaySave skyDisplaySave;
 	SkyLineSave skyLineSave;
 	std::shared_ptr<Core> core;
+	std::function<void(const std::string&)> switchModeCallback;
 };
 
 #endif // _BACKUP_MGR_H_

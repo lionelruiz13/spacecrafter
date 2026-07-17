@@ -13,7 +13,7 @@ layout (binding=0, set=0) uniform ubo {
 
 layout (constant_id = 0) const float scale = 1.;
 
-#include <fisheye.glsl>
+#include <custom_project.glsl>
 
 layout (location=0) in vec3 position;
 
@@ -38,5 +38,5 @@ void main(void)
 	vec3 modelLight = vec3(ModelViewMatrixInverse * vec4(LightDirection,1.0));
 	NdotL = clamp(16.0*dot(vec3(0.0, 0.0, fma(SunnySideUp, -2.0, 1.0)), modelLight), -1.0, 1.0);
 
-	gl_Position = fisheyeProject(Position3D*RingScale, clipping_fov);
+	gl_Position = custom_project(Position3D*RingScale, ModelViewMatrix, clipping_fov);
 }

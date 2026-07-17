@@ -193,6 +193,7 @@ void shaderProgram::printActiveAttribs()
 			writeToLog(out.str() );	
 		}
 		delete [] name;
+		name = nullptr;
 	}
 }
 
@@ -222,6 +223,7 @@ void shaderProgram::printActiveUniforms()
 			writeToLog(out.str() );	
 		}
 		delete [] name;
+		name = nullptr;
 	}
 }
 
@@ -249,6 +251,7 @@ void shaderProgram::printActiveUniformBlocks()
 			writeToLog(out.str() );	
 		}
 		delete [] blockName;
+		blockName = nullptr;
 
 		GLint * unifIndexes = new GLint[numUnis];
 		glGetProgramResourceiv(program, GL_UNIFORM_BLOCK, block, 1, blockIndex, numUnis, NULL, unifIndexes);
@@ -268,9 +271,11 @@ void shaderProgram::printActiveUniformBlocks()
 				writeToLog(out.str() );	
 			}
 			delete [] name;
+			name = nullptr;
 		}
 
 		delete [] unifIndexes;
+		unifIndexes = nullptr;
 	}
 }
 

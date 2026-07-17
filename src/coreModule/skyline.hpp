@@ -138,7 +138,8 @@ protected:
 class SkyLine_Pole : public SkyLine {
 public:
 	enum SKY_LINE_POLE_TYPE {
-		POLE,
+		CIRCLE_POLE,
+		POINT_POLE,
 		ECLIPTIC_POLE,
 		GALACTIC_POLE
 	};
@@ -380,6 +381,25 @@ private:
 	mutable Vec3f circlep[51];
 	mutable Vec3f circlen[51];
 	mutable Vec3f punts[3];
+};
+
+//--------------------------------------------------------------------------
+
+//! Draws Earth's shadow circles for lunar eclipses (umbra and penumbra)
+class SkyLine_LunarEclipse : public SkyLine {
+public:
+	enum SKY_LINE_LUNAR_ECLIPSE_TYPE {
+		UMBRA,
+		PENUMBRA
+	};
+	//! Create and precompute positions of a SkyLine
+	SkyLine_LunarEclipse(SKY_LINE_LUNAR_ECLIPSE_TYPE _eclipse_type, double _radius, unsigned int _nb_segment);
+	virtual ~SkyLine_LunarEclipse();
+	void draw(const Projector *prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
+
+private:
+	SKY_LINE_LUNAR_ECLIPSE_TYPE eclipse_type;
+	mutable Vec3d circle_points[181]; // Circle points
 };
 
 #endif // __SKYLINE_H__

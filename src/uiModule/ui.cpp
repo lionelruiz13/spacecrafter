@@ -48,6 +48,13 @@
 #include "uiModule/ui.hpp"
 #include "mainModule/define_key.hpp"
 #include "tools/app_settings.hpp"
+#include "tools/s_texture.hpp"
+#include "tools/s_font.hpp"
+#include "tools/context.hpp"
+#include "tools/draw_helper.hpp"
+#include "EntityCore/EntityCore.hpp"
+#include "EntityCore/Resource/TileMap.hpp"
+#include "EntityCore/SubTexture.hpp"
 
 static const double CoeffMultAltitude = 0.02;
 static const double DURATION_COMMAND = 0.1;
@@ -105,6 +112,7 @@ void UI::init(const InitParser& conf)
 	FlagShowLatLon      = conf.getBoolean(SCS_GUI, SCK_FLAG_SHOW_LATLON);
 	FlagShowFov			= conf.getBoolean(SCS_GUI, SCK_FLAG_SHOW_FOV);
 	FlagNumberPrint		= conf.getInt(SCS_GUI, SCK_FLAG_NUMBER_PRINT);
+	FlagShowScriptStatus = conf.getBoolean(SCS_GUI, SCK_FLAG_SHOW_SCRIPT_STATUS);
 
 	// FontSizeGeneral		= conf.getDouble (SCS_FONT, SCK_FONT_GENERAL_SIZE);
 	// FontNameGeneral     = AppSettings::Instance()->getUserFontDir() +conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
@@ -132,6 +140,42 @@ void UI::init(const InitParser& conf)
 
 	// set up mouse cursor timeout
 	MouseTimeLeft = MouseCursorTimeout*1000;
+
+	// Load script status indicator textures
+	texScriptPlay = std::make_shared<s_texture>("play.png", TEX_LOAD_TYPE_PNG_BLEND3);
+	texScriptPause = std::make_shared<s_texture>("pause.png", TEX_LOAD_TYPE_PNG_BLEND3);
+
+	// Create SubTextures from loaded images
+	int playW, playH, pauseW, pauseH;
+	texScriptPlay->getDimensions(playW, playH);
+	texScriptPause->getDimensions(pauseW, pauseH);
+
+	SubTexture tempPlay = s_font::tileMap->acquireSurface(playW, playH);
+	SubTexture tempPause = s_font::tileMap->acquireSurface(pauseW, pauseH);
+
+	if (tempPlay.width && tempPause.width) {
+		// Copy texture data to TileMap
+		bool nonPersistantPlay = false, nonPersistantPause = false;
+		void *playData = texScriptPlay->acquireContent(nonPersistantPlay);
+		void *pauseData = texScriptPause->acquireContent(nonPersistantPause);
+
+		if (playData && pauseData) {
+			s_font::tileMap->writeSurface(tempPlay, playData);
+			s_font::tileMap->writeSurface(tempPause, pauseData);
+
+			if (!nonPersistantPlay) texScriptPlay->releaseContent(playData);
+			if (!nonPersistantPause) texScriptPause->releaseContent(pauseData);
+
+			// Allocate permanent SubTexture storage
+			subTexPlay = new SubTexture(tempPlay);
+			subTexPause = new SubTexture(tempPause);
+			cLog::get()->write("UI: Script status icons loaded successfully (" + std::to_string(playW) + "x" + std::to_string(playH) + ", " + std::to_string(pauseW) + "x" + std::to_string(pauseH) + ")", LOG_TYPE::L_INFO);
+		} else {
+			cLog::get()->write("UI: ERROR - Failed to acquire texture data for icons", LOG_TYPE::L_ERROR);
+		}
+	} else {
+		cLog::get()->write("UI: ERROR - Failed to acquire surface from TileMap (tempPlay.width=" + std::to_string(tempPlay.width) + ", tempPause.width=" + std::to_string(tempPause.width) + ")", LOG_TYPE::L_ERROR);
+	}
 
 	default_landscape = coreLink->landscapeGetName();
 	current_landscape = coreLink->landscapeGetName();
@@ -200,6 +244,7 @@ void UI::init(const InitParser& conf)
 	executeCommand(DESELECT);
 	coreLink->BodyOJMRemoveAll("in_universe");
 	coreLink->BodyOJMRemoveAll("in_galaxy");
+	coreLink->BodyOJMRemoveAll("in_sandbox");
 
 	coreLink->starLinesLoadData(AppSettings::Instance()->getScriptDir() + "internal/asterism_all.fab");
 
@@ -231,7 +276,56 @@ void UI::initInterfaces(std::shared_ptr<ScriptInterface> _scriptInterface, std::
 void UI::draw(MODULE module)
 {
 	if (FlagShowGravityUi) drawGravityUi(module);
+	if (FlagShowScriptStatus) drawScriptStatusIcon();
 	if (FlagShowTuiMenu) drawTui();
+}
+
+/*******************************************************************/
+void UI::drawScriptStatusIcon()
+{
+	// Check if textures are loaded
+	if (!subTexPlay || !subTexPause) return;
+
+	// Determine which icon to display based on script status
+	bool isScriptActive = scriptInterface->isScriptPlaying();
+	bool isScriptPaused = scriptInterface->isScriptPaused();
+
+	// Select the correct icon based on script status
+	SubTexture *currentIcon = nullptr;
+	if (isScriptActive && !isScriptPaused) {
+		currentIcon = subTexPlay;
+	} else if (isScriptPaused) {
+		currentIcon = subTexPause;
+	} else {
+		return;
+	}
+
+	// Position et taille de l'icône en pixels (centre de l'écran pour test)
+	int screenW = m_sdl->getDisplayWidth();
+	int screenH = m_sdl->getDisplayHeight();
+
+	const float iconSizeX = currentIcon->width  / 6.f; // Size of the icon X
+	const float iconSizeY = currentIcon->height / 6.f; // Size of the icon Y
+
+	float x = (screenW - iconSizeX) / 2.0f;  // Center horizontally
+	float y = 0; // y == 0 is the bottom of the screen
+
+	// Create a 2D orthographic MVP matrix for rendering the icon
+	Mat4f MVP = Mat4f::ortho2D(0, screenW, 0, screenH);
+	// White color with slight transparency for the icon
+	Vec4f iconColor(1.0f, 1.0f, 1.0f, 0.8f);
+	// Prepare data for rendering (stored as member for persistence)
+	iconPrintData.flag = DRAW_PRINT;
+	iconPrintData.x = x;
+	iconPrintData.y = y;
+	iconPrintData.w = iconSizeX;
+	iconPrintData.h = iconSizeY;
+	iconPrintData.Color = iconColor;
+	iconPrintData.texture = currentIcon;
+	iconPrintData.MVP = MVP;
+
+	// Send the data to the rendering system (persistent storage for s_print structure)
+	Context::instance->helper->draw(&iconPrintData);
 }
 
 /*******************************************************************/
@@ -239,6 +333,7 @@ void UI::saveCurrentConfig(InitParser &conf)
 {
 	// gui section
 	conf.setDouble("gui:mouse_cursor_timeout",MouseCursorTimeout);
+	conf.setBoolean("gui:flag_show_script_status", FlagShowScriptStatus);
 	// Text ui section
 	conf.setBoolean("tui:flag_show_gravity_ui", FlagShowGravityUi);
 	conf.setBoolean("tui:flag_show_tui_datetime", FlagShowTuiDateTime);
@@ -835,7 +930,6 @@ void UI::handleDeal()
 // odd extension to prevent compilation from makefile but inclusion in make dist
 int flag_compass = 0;
 int flag_triangle = 0;
-int flag_creu = 0;
 int flag_f9 = 0;
 
 bool antipodes = false;
@@ -883,6 +977,33 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 		case SDL_SCANCODE_L :
 			this->executeCommand("media speed_increment 0.1");
 			break;
+
+		case SDL_SCANCODE_KP_1 :
+			switch(key_Modifier) {
+					case SHIFT:
+						coreLink->moveHeadingRelative(-0.2);
+						break;
+					case CTRL:
+						coreLink->moveHeadingRelative(-1);
+						break;
+					default:
+						break;
+			}
+		break;
+
+		case SDL_SCANCODE_KP_7 :
+			switch(key_Modifier) {
+					case SHIFT:
+						coreLink->moveHeadingRelative(0.2);
+						break;
+					case CTRL:
+						coreLink->moveHeadingRelative(1);
+						break;
+					default:
+						break;
+			}
+		break;
+
 		case SDL_SCANCODE_LEFT :
 			media->playerJump(-10.0);
 			break;
@@ -1133,13 +1254,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
-					if (flag_creu != 1) {
-						event = new ScriptEvent( IDIR+"internal/windrose.sts");
-						EventRecorder::getInstance()->queue(event);
-					}
-					else
-						core->setLandscape(current_landscape);
-					flag_creu = (flag_creu+1)%2;
+					event = new ScriptEvent( IDIR+"internal/windrose.sts");
+					EventRecorder::getInstance()->queue(event);
 					RESET_MOD(SUPER);
 					break;
 				case KWIN:
@@ -1246,8 +1362,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
-					event = new ScriptEvent( IDIR+"internal/equator_poles.sts");
-					EventRecorder::getInstance()->queue(event);
+					this->executeCommand("flag polar_circle toggle");
 					break;
 				default:
 					break;
@@ -1466,6 +1581,9 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN :
+					// Toggle script status indicator display
+					FlagShowScriptStatus = !FlagShowScriptStatus;
+					cLog::get()->write("Toggle script status indicator : "+std::string(FlagShowScriptStatus ? "ON" : "OFF"), LOG_TYPE::L_INFO);
 					break;
 				case SHIFT:
 					event = new CommandEvent("date sun meridian");
@@ -1913,6 +2031,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					RESET_MOD(SUPER);
 					break;
 				case KWIN:
+					this->executeCommand("flag lunar_eclipse_umbra toggle");
+					this->executeCommand("flag lunar_eclipse_penumbra toggle");
 					break;
 				case SHIFT :
 					event = new ScriptEvent( SDIR+"fscripts/K0.sts");

@@ -291,10 +291,15 @@ Model3D::~Model3D()
 	glDeleteVertexArrays(1,&vao);
 
 	delete positionsBuffer;
+	positionsBuffer=nullptr;
 	delete texcoordsBuffer;
+	texcoordsBuffer=nullptr;
 	delete normalsBuffer;
+	normalsBuffer=nullptr;
 	delete tangentsBuffer;
+	tangentsBuffer=nullptr;
 	delete bitangentBuffer;
+	bitangentBuffer=nullptr;
 }
 
 //! This function intends to feed two layouts called position and texcoord

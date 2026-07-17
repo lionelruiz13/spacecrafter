@@ -62,7 +62,9 @@ void VR360::init()
 VR360::~VR360()
 {
 	if (sphere) delete sphere;
+	sphere = nullptr;
 	if (cube) delete cube;
+	cube = nullptr;
 	// deleteShader();
 }
 
@@ -88,6 +90,8 @@ void VR360::createSC_context()
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	pipeline->bindShader("vr360.vert.spv");
 	pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
 	pipeline->bindShader("vr360.frag.spv");
 	pipeline->build();
 	pipelineAlpha = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, layout.get());
@@ -97,6 +101,8 @@ void VR360::createSC_context()
 	pipelineAlpha->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	pipelineAlpha->bindShader("vr360.vert.spv");
 	pipelineAlpha->setSpecializedConstant(7, context.isFloat64Supported);
+	// Set specialization constant for projection type (constant_id = 8)
+	pipelineAlpha->setSpecializedConstant(8, Context::projectionType);
 	pipelineAlpha->bindShader("vr360Alpha.frag.spv");
 	pipelineAlpha->build();
 	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());

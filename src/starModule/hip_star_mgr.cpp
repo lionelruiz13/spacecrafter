@@ -367,10 +367,12 @@ HipStarMgr::~HipStarMgr(void)
 	zone_arrays.clear();
 	if (mag_converter) {
 		delete mag_converter;
-		mag_converter = 0;
+		mag_converter = nullptr;
 	}
 	if (hip_index) delete[] hip_index;
+	hip_index = nullptr;
 	if (starTexture) delete starTexture;
+	starTexture = nullptr;
 	// if (font) delete font;
 
 	// dataColor.clear();

@@ -15,11 +15,11 @@ layout (push_constant) uniform uMat {
 layout (location=0) in vec3 position;
 layout (location=0) out vec3 pos;
 
-#include <fisheye.glsl>
+#include <custom_project.glsl>
 
 void main()
 {
 	pos = position;
-	gl_Position = fisheyeProjectClamped(position, clipping_fov);
+	gl_Position = custom_projectClamped(position, ModelViewMatrix, clipping_fov);
 }
 

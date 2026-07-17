@@ -64,11 +64,12 @@ public :
 	static inline void push(VkCommandBuffer cmd, const Vec4f &color) {
 		layout->pushConstant(cmd, 0, &color);
 	}
-	// In-class values: compile-time visible for the new-path service's fixed
-	// buffers (the previous cpp-only initializers made them runtime constants
-	// in every other TU). Public: shape constants, part of the authority.
+	// [merge D3] nbrFacets stays an in-class compile-time constant: the new-path
+	// service sizes fixed buffers with it (e.g. PipelineRegistry strip[]), which
+	// needs a constant expression in every TU. hintCircleRadius is theirs' form:
+	// non-const + public so it can be set from the planet_name_font size (body.hpp).
 	static const int nbrFacets = 24;
-	static const int hintCircleRadius = 8;
+	static float hintCircleRadius;
 private :
 
 	Body * body;

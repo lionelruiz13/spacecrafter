@@ -31,6 +31,35 @@
 #include "starModule/sphere_geometry.hpp"
 //#include "tools/fmath.hpp"
 #include "tools/no_copy.hpp"
+#include <string>
+
+// Enum for projection types
+enum class ProjectionType : int {
+	FISHEYE = 0,
+	ALLSPHERE = 1,
+	EKISOLID = 2,
+	ASPHERIC = 3
+};
+
+// Convert string to ProjectionType
+inline ProjectionType stringToProjectionType(const std::string& str) {
+	std::string upper_str;
+	transform(str.begin(), str.end(), std::back_inserter(upper_str), ::toupper);
+	if (upper_str == "ALLSPHERE") return ProjectionType::ALLSPHERE;
+	if (upper_str == "EKISOLID") return ProjectionType::EKISOLID;
+	if (upper_str == "ASPHERIC") return ProjectionType::ASPHERIC;
+	return ProjectionType::FISHEYE; // Default
+}
+
+// Convert ProjectionType to string
+inline std::string projectionTypeToString(ProjectionType type) {
+	switch (type) {
+		case ProjectionType::ALLSPHERE: return "ALLSPHERE";
+		case ProjectionType::EKISOLID: return "EKISOLID";
+		case ProjectionType::ASPHERIC: return "ASPHERIC";
+		default: return "FISHEYE";
+	}
+}
 
 
 class s_font;
@@ -218,7 +247,13 @@ public:
 
 	bool projectCustomFixedFov(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
 
-	// Same function but using a custom modelview matrix
+	// Projection functions - one per projection type
+	bool fisheyeProjectCustom(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
+	bool allsphereProjectCustom(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
+	bool ekisolidProjectCustom(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
+	bool asphericProjectCustom(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
+
+	// Dispatcher function that calls the appropriate projection based on Context::projectionType
 	bool projectCustom(const Vec3d& v, Vec3d& win, const Mat4d& mat) const;
 
 	bool projectCustomCheck(const Vec3f& v, Vec3d& win, const Mat4d& mat) const  {
@@ -293,6 +328,7 @@ protected:
 
 	Vec3i viewport_center;				// Viewport center in screen pixel
 	int viewport_radius;  				// Viewport radius in screen pixels
+	int viewport_radius_squared;		// Viewport radius squared in screen pixels
 
 	Mat4d mat_earth_equ_to_eye;		// Modelview Matrix for earth equatorial projection
 	Mat4d mat_earth_equ_to_eye_fixed;		// Modelview Matrix for earth equatorial projection
@@ -311,6 +347,18 @@ protected:
 	Mat4d mat_dome_fixed;
 	Mat4d inv_mat_dome_fixed;
 
+	// Unproject functions - one per projection type
+	void fisheyeUnproject(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void allsphereUnproject(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void ekisolidUnproject(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void asphericUnproject(double x, double y, const Mat4d& m, Vec3d& v) const;
+
+	void fisheyeUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void allsphereUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void ekisolidUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const;
+	void asphericUnprojectNormalized(double x, double y, const Mat4d& m, Vec3d& v) const;
+
+	// Dispatcher functions that call the appropriate unprojection based on Context::projectionType
 	// transformation from screen 2D point x,y to object
 	// m is here the already inverted full tranfo matrix
 	void unproject(double x, double y, const Mat4d& m, Vec3d& v) const;
@@ -323,6 +371,6 @@ protected:
 private:
 	double viewport_fov_diameter;
 	double fisheye_scale_factor;
-};
+};;
 
 #endif // _PROJECTOR_H_

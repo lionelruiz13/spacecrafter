@@ -23,7 +23,7 @@ layout (binding=0, set=1) uniform uGeom {
 };
 
 #include <cam_block_only.glsl>
-#include <custom_project.glsl>
+#include <custom_project_advanced.glsl>
 
 void main()
 {

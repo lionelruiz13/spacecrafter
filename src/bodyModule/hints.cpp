@@ -25,10 +25,11 @@
 std::unique_ptr<VertexArray> Hints::m_HintsGL;
 Pipeline *Hints::pipeline;
 PipelineLayout *Hints::layout;
-// Values live in the header (compile-time authority); these are the ODR
-// definitions (pre-C++17 style kept for consistency with the file's age).
+// [merge D3] nbrFacets: ODR definition only (value lives in the header, so it stays
+// a constant expression for the new-path service's fixed buffers).
+// hintCircleRadius: theirs' mutable float, defined here with its default value.
 const int Hints::nbrFacets;
-const int Hints::hintCircleRadius;
+float Hints::hintCircleRadius = 8.0f;
 
 Hints::Hints(Body * _body)
 {
@@ -68,7 +69,8 @@ void Hints::drawHints(const Navigator* nav, const Projector* prj)
 		return;
 
 	// Draw nameI18 + scaling if it's not == 1.
-	float tmp = 10.f + body->getOnScreenSize(prj, nav)/2.f; // Shift for nameI18 printing
+	// Print the text at offsetProportionalToFontSize + bodyScreenSizeRadius from the body screen position
+	float tmp = hintCircleRadius * 1.2f + body->getOnScreenSize(prj, nav)/2.f; // Shift for nameI18 printing
 
 	Vec4f Color( body->myColor->getLabel(),hint_fader.getInterstate());
 	prj->printGravity180(body->planet_name_font, body->screenPos.first, body->screenPos.second, body->getSkyLabel(nav), Color,/*1,*/ tmp, tmp);

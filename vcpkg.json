@@ -1,0 +1,36 @@
+{
+    "name": "spacecrafter",
+    "version-string": "2026.02.18",
+    "dependencies": [
+        {
+            "name": "ffmpeg",
+            "default-features": false,
+            "features": [
+                "avcodec",
+                "avdevice",
+                "avfilter",
+                "avformat",
+                "swresample",
+                "swscale",
+                "vpx"
+            ]
+        },
+        {
+            "name": "sdl2",
+            "features": [
+                "vulkan"
+            ]
+        },
+        "sdl2-mixer",
+        "sdl2-ttf",
+        "sdl2-net",
+        "libpng"
+    ],
+    "builtin-baseline": "05442024c3fda64320bd25d2251cc9807b84fb6f",
+    "overrides": [
+        {
+            "name": "ffmpeg",
+            "version": "6.1.1#11"
+        }
+    ]
+}

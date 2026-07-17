@@ -31,5 +31,17 @@
 void EventScriptHandler::handle(const Event* e, Executor *executor)
 {
 	ScriptEvent * event = (ScriptEvent *)e;
-	scriptInterface->playScript(event->getFileName());
+	// Accumulate in temporary queue instead of adding immediately
+	pendingScripts.push_back(event->getFileName());
+}
+
+void EventScriptHandler::loopDone()
+{
+	// If there are pending scripts, add them now from last to first to preserve execution order
+	if (!pendingScripts.empty()) {
+		for (auto it = pendingScripts.rbegin(); it != pendingScripts.rend(); ++it) {
+			scriptInterface->playScript(*it);
+		}
+		pendingScripts.clear();
+	}
 }

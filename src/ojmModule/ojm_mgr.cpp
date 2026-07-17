@@ -38,6 +38,7 @@ OjmMgr::OjmMgr()
 OjmMgr::~OjmMgr()
 {
 	delete[] pipeline;
+	pipeline = nullptr;
 }
 
 OjmMgr::STATE_POSITION OjmMgr::convert(const std::string & value)
@@ -46,6 +47,8 @@ OjmMgr::STATE_POSITION OjmMgr::convert(const std::string & value)
 		return STATE_POSITION::IN_GALAXY;
 	if (value =="in_universe")
 		return STATE_POSITION::IN_UNIVERSE;
+	if (value =="in_sandbox")
+		return STATE_POSITION::IN_SANDBOX;
 	else
 		return STATE_POSITION::OTHER;
 }
@@ -75,6 +78,7 @@ bool OjmMgr::load(const std::string &mode, const std::string &name, const std::s
 
 	if (!tmp->Obj3D->getOk()) {
 		delete tmp;
+		tmp = nullptr;
 		cLog::get()->write("Error loading ojm "+ name, LOG_TYPE::L_ERROR);
 		return false;
 	} else {
@@ -218,6 +222,8 @@ void OjmMgr::createShader()
 		pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		pipeline[i].bindShader("shaderOJM_noSUN.vert.spv");
 		pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+		// Set specialization constant for projection type (constant_id = 8)
+		pipeline[i].setSpecializedConstant(8, Context::projectionType);
 		pipeline[i].bindShader((i == 0) ? "shaderOJM_noSUN_tex.frag.spv" : "shaderOJM_noSUN_notex.frag.spv");
 		pipeline[i].build();
 	}

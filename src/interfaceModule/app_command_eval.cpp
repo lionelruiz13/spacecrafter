@@ -8,15 +8,16 @@ std::function<double(double,double)> f_add = [](double x, double y){return x+y;}
 std::function<double(double,double)> f_sub = [](double x, double y){return x-y;};
 std::function<double(double,double)> f_mul = [](double x, double y){return x*y;};
 std::function<double(double,double)> f_div = [](double x, double y){return x/y;};
+std::function<double(double,double)> f_mod = [](double x, double y){return std::fmod(x,y);};
 std::function<double(double,double)> f_tan = [](double x, double y){return tan(y*3.1415926/180.0);};
 std::function<double(double,double)> f_trunc = [](double x, double y){return trunc(y);};
 std::function<double(double,double)> f_sin = [](double x, double y){return sin(y*3.1415926/180.0);};
 
 // Utility function to format numbers with significant digits only
-std::string formatNumber(double value) {
-	if (value == trunc(value)) {
-		// Integer value, return as integer
-		return std::to_string((long long)value);
+static std::string formatNumber(double value) {
+	const int64_t intVal = static_cast<int64_t>(value);
+	if (value == static_cast<double>(intVal)) { // Representable as integer, return as integer
+		return std::to_string(intVal);
 	} else {
 		// Float value, use adaptive precision
 		std::ostringstream oss;
@@ -45,6 +46,8 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_SELECTED_ALT]=SC_RESERVED_VAR::SELECTED_ALT;
 	m_reservedVar[ACI_RW_SELECTED_RA]=SC_RESERVED_VAR::SELECTED_RA;
 	m_reservedVar[ACI_RW_SELECTED_DE]=SC_RESERVED_VAR::SELECTED_DE;
+	m_reservedVar[ACI_RW_SELECTED_DISTANCE]=SC_RESERVED_VAR::SELECTED_DISTANCE;
+	m_reservedVar[ACI_RW_SELECTED_MAGNITUDE]=SC_RESERVED_VAR::SELECTED_MAGNITUDE;
 	m_reservedVar[ACI_RW_SELECTED_STAR_RA]=SC_RESERVED_VAR::SELECTED_STAR_RA;
 	m_reservedVar[ACI_RW_SELECTED_STAR_DE]=SC_RESERVED_VAR::SELECTED_STAR_DE;
 	m_reservedVar[ACI_RW_DATE_YEAR]=SC_RESERVED_VAR::DATE_YEAR;
@@ -56,6 +59,8 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_BODY_SELECTED]=SC_RESERVED_VAR::BODY_SELECTED;
 	m_reservedVar[ACI_RW_LANGUAGE]=SC_RESERVED_VAR::LANGUAGE;
 	m_reservedVar[ACI_RW_JOYPAD]=SC_RESERVED_VAR::JOYPAD;
+	m_reservedVar[ACI_RW_CURRENT_MODE]=SC_RESERVED_VAR::CURRENT_MODE;
+	m_reservedVar[ACI_RW_RANDOM]=SC_RESERVED_VAR::RANDOM;
 
 	// for conivence, the map inverse
 	for (const auto& [key, val] : m_reservedVar)
@@ -69,52 +74,42 @@ AppCommandEval::~AppCommandEval()
 
 std::string AppCommandEval::evalString(const std::string &var)
 {
+	// Check if this is a reserved variable
+	auto reservedVar = m_reservedVar.find(var);
+	if (reservedVar != m_reservedVar.end()) {
+		// Reserved variable found - evaluate and return its value
+		return formatNumber(evalReservedVariable(var));
+	}
+
 	// Check if this is a direct variable lookup (old behavior)
 	auto var_it = variables.find(var);
 	if (var_it != variables.end()) {
-		// Found variable directly - return its value
-		double v = evalDouble(var_it->second);
-		if (v == trunc(v))
-			return formatNumber(evalInt(var_it->second));
-		else
-			return var_it->second;
+		return var_it->second.first;
 	}
 
 	// Check if the string contains @{variable} patterns for interpolation
 	std::string result = var;
 	size_t pos = 0;
-
 	while ((pos = result.find("@{", pos)) != std::string::npos) {
-		size_t end_pos = result.find("}", pos + 2);
-		if (end_pos == std::string::npos) {
-			// No closing brace found, skip this @{
-			pos += 2;
-			continue;
+		size_t depth = 1;
+		size_t pos2 = pos + 1;
+		while (depth) {
+			switch (result[++pos2]) {
+				case '\0':
+					return result; // Mismatching {}
+				case '{':
+					if (result[pos2-2U] == '@')
+						++depth;
+					break;
+				case '}':
+					--depth;
+					break;
+			}
 		}
-
-		// Extract variable name between @{ and }
-		std::string var_name = result.substr(pos + 2, end_pos - pos - 2);
-
-		// Look up the variable
-		auto lookup_it = variables.find(var_name);
-		if (lookup_it != variables.end()) {
-			// Variable found - evaluate it
-			double v = evalDouble(lookup_it->second);
-			std::string replacement;
-			if (v == trunc(v))
-				replacement = formatNumber(evalInt(lookup_it->second));
-			else
-				replacement = lookup_it->second;
-
-			// Replace @{variable} with its value
-			result.replace(pos, end_pos - pos + 1, replacement);
-			pos += replacement.length();
-		} else {
-			// Variable not found - leave @{variable} as is
-			pos = end_pos + 1;
-		}
+		std::string replacement = evalString(result.substr(pos + 2, pos2 - (pos + 2)));
+		result.replace(pos, pos2 - pos + 1, replacement);
+		pos += replacement.length();
 	}
-
 	return result;
 }
 
@@ -129,13 +124,12 @@ double AppCommandEval::evalDouble(const std::string &var)
 	if (var_it == variables.end()) //not found so we return the value of the string
 		return Utility::strToDouble(var);
 	else // found returns the value of what is stored in memory
-		return Utility::strToDouble(var_it->second);
+		return var_it->second.second;
 }
 
 int AppCommandEval::evalInt(const std::string &var)
 {
-	double tmp=this->evalDouble(var);
-	return (int) tmp;
+	return static_cast<int>(evalDouble(var));
 }
 
 void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
@@ -143,25 +137,24 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 	auto reservedVar = m_reservedVar.find(mArg);
 	if (reservedVar != m_reservedVar.end()) {
 		std::cout << mArg << " is a reservedVar so you can't define it" << std::endl;
-
 		return;
 	}
-	//std::cout << "C_define : " <<  mArg.c_str() << " => " << mValue.c_str() << std::endl;
-	if (mValue == "random") {
-		//std::cout << "C_define random: min " <<  min_random << " max " << max_random << std::endl;
-		float value = (float)rand()/RAND_MAX* (max_random-min_random)+ min_random;
-		//std::cout << "C_define random: value " <<  value  << std::endl;
-		variables[mArg] = formatNumber(value);
+	auto &var = variables[mArg];
+	reservedVar = m_reservedVar.find(mValue);
+	if (reservedVar != m_reservedVar.end()) {
+		var.first = formatNumber(var.second = evalReservedVariable(mValue));
 	} else {
-		//~ printf("mValue = %s\n", mValue.c_str());
-		// std::cout << "This value of mValue is " << evalDouble(mValue) << std::endl;
-		//std::cout << "C_define : " <<  mArg.c_str() << " => " << evalDouble(mValue) << std::endl;
-		double v = evalDouble(mValue);
-		//if (v == trunc(v))
-		//	variables[mArg] = std::to_string(evalInt(mValue));
-		//else
-		variables[mArg] = formatNumber(v);
-	//	this->printVar();
+		auto var_it = variables.find(mValue);
+		if (var_it == variables.end()) { //not found so we return the value of the string
+			try {
+				var.first = formatNumber(var.second = std::stod(mValue));
+			} catch (...) {
+				var.second = 0.;
+				var.first = mValue;
+			}
+		} else { // found returns the value of what is stored in memory
+			var = var_it->second;
+		}
 	}
 }
 
@@ -185,6 +178,11 @@ void AppCommandEval::commandDiv(const std::string& mArg, const std::string& mVal
 	this->evalOps(mArg,mValue, f_div);
 }
 
+void AppCommandEval::commandMod(const std::string& mArg, const std::string& mValue)
+{
+	this->evalOps(mArg,mValue, f_mod);
+}
+
 void AppCommandEval::commandTan(const std::string& mArg, const std::string& mValue)
 {
 	this->evalOps(mArg,mValue, f_tan);
@@ -206,21 +204,16 @@ void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue,
 	// capture context with reservedVariables Elitit-40
 	auto reservedVar = m_reservedVar.find(mArg);
 	if (reservedVar != m_reservedVar.end()) {
-		double tmp = f( evalReservedVariable(mArg), this->evalDouble(mValue));
+		double tmp = f( evalReservedVariable(mArg), evalDouble(mValue));
 		setReservedVariable(mArg,tmp);
 	}
 
 	auto var_it = variables.find(mArg);
 	if (var_it == variables.end()) { //not found so we return the value of the string
-		//std::cout << "not possible to operate with undefined variable so define to null from ops" << std::endl;
 		cLog::get()->write("Not possible to operate with undefined variable so define to null from ops", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);
-		variables[mArg] = Utility::strToDouble (mValue);
+		define(mArg, mValue);
 	} else { // trouvé on renvoie la valeur de ce qui est stocké en mémoire
-		double v = f( Utility::strToDouble( variables[mArg] ) , this->evalDouble(mValue));
-		//if (v == trunc(v))
-		//	variables[mArg] = std::to_string(evalInt(mValue));
-		//else
-			variables[mArg] = formatNumber(v);
+		var_it->second.first = formatNumber(var_it->second.second = f(var_it->second.second , evalDouble(mValue)));
 	}
 }
 
@@ -268,7 +261,7 @@ void AppCommandEval::printVar()
 	else {
 		for (auto var_it = variables.begin(); var_it != variables.end(); ++var_it)	{
 			//std::cout << var_it->first << " => " << var_it->second << '\n';
-			cLog::get()->write(var_it->first + " => " + var_it->second, LOG_TYPE::L_INFO , LOG_FILE::SCRIPT);
+			cLog::get()->write(var_it->first + " => " + var_it->second.first, LOG_TYPE::L_INFO , LOG_FILE::SCRIPT);
 		}
 	}
 	//std::cout << "-----------------" << std::endl;
@@ -316,6 +309,10 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			return coreLink->getSelectedRA();
 		case SC_RESERVED_VAR::SELECTED_DE:
 			return coreLink->getSelectedDE();
+		case SC_RESERVED_VAR::SELECTED_DISTANCE:
+			return coreLink->getSelectedDistance();
+		case SC_RESERVED_VAR::SELECTED_MAGNITUDE:
+			return coreLink->getSelectedMagnitude();
 		case SC_RESERVED_VAR::SELECTED_STAR_RA:
 			return coreLink->getSelectedStarRA();
 		case SC_RESERVED_VAR::SELECTED_STAR_DE:
@@ -336,6 +333,10 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			return coreLink->getLanguage();
 		case SC_RESERVED_VAR::JOYPAD:
 			return coreLink->isJoypadConnected;
+		case SC_RESERVED_VAR::CURRENT_MODE:
+			return coreLink->getCurrentModule();
+		case SC_RESERVED_VAR::RANDOM:
+			return std::uniform_real_distribution(min_random, max_random)(rdevice);
 		default:
 			//std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
 			cLog::get()->write("Unknown reserved variable " + var +". Default 0.0 is returned.", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);

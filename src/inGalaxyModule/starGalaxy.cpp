@@ -185,6 +185,8 @@ StarGalaxy::StarGalaxy(const std::string &filename) : global(*Context::instance-
     pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
     pipeline->bindVertex(*vertexArray);
     pipeline->bindShader("quickStar.vert.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
     pipeline->bindShader("quickStar.frag.spv");
     pipeline->build();
 
@@ -203,6 +205,8 @@ StarGalaxy::~StarGalaxy() {}
 
 void StarGalaxy::draw(const Navigator * nav, const Projector* prj)
 {
+	if (nbStars == 0)
+		return;
 	FrameMgr &frame = *Context::instance->frame[Context::instance->frameIdx];
 	Mat4f mat = nav->getHelioToEyeMat().convert();
     global->MV = mat;

@@ -8,7 +8,7 @@
 
 layout (binding=0) uniform uModelViewMatrix {mat4 ModelViewMatrix;};
 #include <cam_block.glsl>
-#include <fisheye.glsl>
+#include <custom_project.glsl>
 
 //layout
 layout (location=0)in vec3 position;
@@ -26,6 +26,6 @@ void main()
 {
 	//~ gl_Position = ModelViewProjectionMatrix * vec4(position, 1.0);
 	vec3 Position =position * planetScaledRadius;
-	gl_Position = fisheyeProject(Position, clipping_fov);
+	gl_Position = custom_project(Position, ModelViewMatrix, clipping_fov);
     TexCoord = texcoord;
 }

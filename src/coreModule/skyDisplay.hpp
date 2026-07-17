@@ -87,6 +87,7 @@ public:
 	virtual void loadString(const std::string& message){};
 
 	void clear() ;
+	void endClear();
 
 	static void setFont(s_font* _font){
 		skydisplay_font = _font;

@@ -685,9 +685,12 @@ bool StarManager::loadStarRaw(const std::string &catPath)
 	cube_Initial->addStar(StarInfo{ // Sun
 		.HIP = 0,
 		.posXYZ = {0.00001, 0.00001, 0.00001},
+		.pmRA=0,
+		.pmDE=0,
 		.mag = 4.52649,
 		.pc = 1.32484,
 		.B_V = 38,
+		.show=true,
 	});
 
 	if (file) { // Fails if can't open the file

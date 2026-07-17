@@ -53,6 +53,9 @@ public:
 
 	// the function : performs the processing of a particular Event
 	virtual void handle(const Event* e, Executor *executor) = 0;
+
+	//! Called after all events in current loop are processed (optional override)
+	virtual void loopDone() {}
 };
 
 #endif // SUB_EVENT_HANDLER_HPP

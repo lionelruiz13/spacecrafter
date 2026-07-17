@@ -69,12 +69,21 @@ public:
 		return event; 
 	}
 
+	bool peekEventType(Event::Event_Type et) const {
+		for (const Event* e : envents) {
+			if (e->getEventType() == et) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 private:
     EventRecorder(){
     }
 
 	~EventRecorder() {
-		std::for_each(envents.begin(), envents.end(), [](const Event* e) { delete e; });
+		std::for_each(envents.begin(), envents.end(), [](const Event* e) { delete e; e = nullptr; });
 		envents.clear();
 	}
     //singleton to not change all the classes of the software

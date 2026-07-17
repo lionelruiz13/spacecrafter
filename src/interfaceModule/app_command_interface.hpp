@@ -106,6 +106,7 @@ protected:
 	int commandMoveto();
 	int commandMultiply();
 	int commandDivide();
+	int commandModulo();
 	int commandTangent();
 	int commandTrunc();
 	int commandSinus();
@@ -122,6 +123,7 @@ protected:
 	int commandShutdown();
 	int commandSkyCulture();
 	int commandStarLines();
+	int commandGalaxyStars();
 	int commandStruct();
 	int commandSub();
 	int commandSuntrace();

@@ -810,6 +810,27 @@ public:
 		return core->observatory->getHomeBody();
 	}
 
+	// [merge] Wrappers kept for theirs' lunar-eclipse skyline feature: experimental's
+	// D1=ours CoreLink lacks them, so forward to experimental's ssystemFactory getters.
+	std::shared_ptr<Body> ssystemFactoryGetEarth() const {
+		return core->ssystemFactory->getEarth();
+	}
+	std::shared_ptr<Moon> ssystemFactoryGetMoon() const {
+		return core->ssystemFactory->getMoon();
+	}
+
+	// [merge] script-variable getters (theirs' feature); adapted current* -> experimental's direct pointers.
+	double getSelectedDistance() const {
+		return core->ssystemFactory->getSelectedDistance(core->navigation);
+	}
+	double getSelectedMagnitude() const {
+		return core->ssystemFactory->getSelectedMagnitude(core->navigation);
+	}
+	double getCurrentModule() const {
+		return double(core->getFlagIngalaxy());
+	}
+	void starGalaxyLoadCatalog(const std::string &filename); // defined in coreLink.cpp (StarGalaxy incomplete in this header)
+
 	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration=0) {
 		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
 		Camera::instance->moveTo({static_cast<float>(lon*M_PI/180), static_cast<float>(lat*M_PI/180), static_cast<float>(alt/(1000*AU))}, duration/1000.f, calculate_duration);

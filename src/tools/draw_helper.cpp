@@ -175,18 +175,15 @@ void DrawHelper::endDrawCommand(unsigned char subpass)
     auto &d = drawer[internalVFrameIdx];
     if (subpass == UINT8_MAX) {
         // Start of frame
-        d.waitMutex.lock();
         vkResetCommandPool(VulkanMgr::instance->refDevice, d.cmdPool, 0);
         d.cancelledCmds.clear();
         d.intCmdIdx = 0;
         frame = d.frame;
+    } else if (hasRecorded) {
+        vkEndCommandBuffer(d.cmds[d.intCmdIdx++]);
+        hasRecorded = false;
     } else {
-        if (hasRecorded) {
-            vkEndCommandBuffer(d.cmds[d.intCmdIdx++]);
-            hasRecorded = false;
-        } else {
-            d.cancelledCmds.push_back(d.cmds[d.intCmdIdx++]);
-        }
+        d.cancelledCmds.push_back(d.cmds[d.intCmdIdx++]);
     }
 }
 
@@ -403,13 +400,12 @@ void DrawHelper::waitFrame(unsigned char frameIdx)
 {
     for (uint8_t i = 0; i < 3; ++i) {
         if (drawer[i].submitData.frameIdx == frameIdx) {
-            while (!drawer[i].hasCompleted) {
+            if (drawer[i].hasCompleted.load(std::memory_order_acquire) == 0) {
                 queue.flush();
-                drawer[i].waitMutex.lock();
-                drawer[i].waitMutex.unlock();
+                drawer[i].hasCompleted.wait(0, std::memory_order_acquire);
             }
             drawer[i].submitData.frameIdx = UINT8_MAX;
-            drawer[i].hasCompleted = false;
+            drawer[i].hasCompleted.store(false, std::memory_order_release);
             return;
         }
     }
@@ -484,8 +480,8 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
     frame->submitInline();
     frame = nullptr;
     d.sigpass.clear();
-    d.hasCompleted = true;
-    d.waitMutex.unlock();
+    d.hasCompleted.store(1, std::memory_order_release);
+    d.hasCompleted.notify_all();
     internalVFrameIdx %= 3;
     Context::instance->nextTick();
 }

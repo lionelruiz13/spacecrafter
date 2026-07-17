@@ -12,7 +12,7 @@ layout (binding=1) uniform fov {
     vec3 clipping_fov;
 };
 
-#include <fisheyeNoMV.glsl>
+#include <custom_project.glsl>
 
 layout (location=0) in vec3 position;
 layout (location=1) in vec4 color;
@@ -34,7 +34,7 @@ void main()
     positionOut = pos;
     colorOut = color;
     invmodelOut = invmodel;
-    gl_Position = fisheyeProjectNoMV(pos, vec3(clipping_fov.x, clipping_fov.y, 3.1415926));
+    gl_Position = custom_projectNoMV(pos, vec3(clipping_fov.x, clipping_fov.y, 3.1415926));
     visible = int(gl_Position.z >= 0.);
     outLodFactor = lodFactor;
 }

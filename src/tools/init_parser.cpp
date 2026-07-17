@@ -265,6 +265,13 @@ int InitParser::findEntry(const std::string& entry) const
 	return iniparser_find_entry(dico, entry.c_str());
 }
 
+bool InitParser::removeEntry(const std::string& entry)
+{
+	if (!findEntry(entry)) return false; // Entry not found
+	iniparser_unset(dico, entry.c_str());
+	return true; // Entry removed
+}
+
 void InitParser::freeDico()
 {
 	iniparser_freedict(dico);

@@ -68,6 +68,8 @@ void Oort::createSC_context()
 	pipeline->setDepthStencilMode();
 	pipeline->bindVertex(*m_dataGL);
 	pipeline->bindShader("oort.vert.spv");
+	// Set specialization constant for projection type (constant_id = 8)
+	pipeline->setSpecializedConstant(8, Context::projectionType);
 	pipeline->bindShader("oort.frag.spv");
 	pipeline->build();
 	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());

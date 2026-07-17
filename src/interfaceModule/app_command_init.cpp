@@ -69,6 +69,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_MOVETO] = SC_COMMAND::SC_MOVETO;
 	m_commands[ACP_CN_MULTIPLY] = SC_COMMAND::SC_MULTIPLY;
 	m_commands[ACP_CN_DIVIDE] = SC_COMMAND::SC_DIVIDE;
+	m_commands[ACP_CN_MODULO] = SC_COMMAND::SC_MODULO;
 	m_commands[ACP_CN_TANGENT] = SC_COMMAND::SC_TANGENT;
 	m_commands[ACP_CN_TRUNC] = SC_COMMAND::SC_TRUNC;
 	m_commands[ACP_CN_SINUS] = SC_COMMAND::SC_SINUS;
@@ -85,6 +86,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_SHUTDOWN] = SC_COMMAND::SC_SHUTDOWN;
 	m_commands[ACP_CN_SKY_CULTURE] = SC_COMMAND::SC_SKY_CULTURE;
 	m_commands[ACP_CN_STAR_LINES] = SC_COMMAND::SC_STAR_LINES;
+	m_commands[ACP_CN_GALAXY_STARS] = SC_COMMAND::SC_GALAXY_STARS;
 	m_commands[ACP_CN_STRUCT] = SC_COMMAND::SC_STRUCT;
 	m_commands[ACP_CN_SUB] = SC_COMMAND::SC_SUB;
 	m_commands[ACP_CN_SUNTRACE] = SC_COMMAND::SC_SUNTRACE;
@@ -202,6 +204,8 @@ void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES>
 	m_flags[ACP_FN_EXPERIMENTAL_PATH] = FLAG_NAMES::FN_EXPERIMENTAL_PATH;
 	m_flags[ACP_FN_SKIP_PAUSE] = FLAG_NAMES::FN_SKIP_PAUSE;
 	m_flags[ACP_FN_IMAGE_COMPRESSION_LOSS] = FLAG_NAMES::FN_IMAGE_COMPRESSION_LOSS;
+	m_flags[ACP_FN_LUNAR_ECLIPSE_UMBRA] = FLAG_NAMES::FN_LUNAR_ECLIPSE_UMBRA;
+	m_flags[ACP_FN_LUNAR_ECLIPSE_PENUMBRA] = FLAG_NAMES::FN_LUNAR_ECLIPSE_PENUMBRA;
 
 	for (auto it = m_flags.begin(); it != m_flags.end(); ++it) {
         m_flagsToString.emplace(it->second, it->first);
@@ -228,7 +232,7 @@ void AppCommandInit::initialiseColorCommand(std::map<const std::string, COLORCOM
 	m_color[ACP_CC_EQUATOR_GRID] = COLORCOMMAND_NAMES::CC_EQUATOR_GRID;
 	m_color[ACP_CC_ECLIPTIC_GRID] = COLORCOMMAND_NAMES::CC_ECLIPTIC_GRID;
 	m_color[ACP_CC_GALACTIC_GRID] = COLORCOMMAND_NAMES::CC_GALACTIC_GRID;
-	m_color[ACP_CC_GALACTIC_GRID] = COLORCOMMAND_NAMES::CC_EQUATOR_LINE;
+	m_color[ACP_CC_EQUATOR_LINE] = COLORCOMMAND_NAMES::CC_EQUATOR_LINE;
 	m_color[ACP_CC_GALACTIC_LINE] = COLORCOMMAND_NAMES::CC_GALACTIC_LINE;
 	m_color[ACP_CC_ECLIPTIC_LINE] = COLORCOMMAND_NAMES::CC_ECLIPTIC_LINE;
 	m_color[ACP_CC_MERIDIAN_LINE] = COLORCOMMAND_NAMES::CC_MERIDIAN_LINE;
@@ -259,6 +263,8 @@ void AppCommandInit::initialiseColorCommand(std::map<const std::string, COLORCOM
 	m_color[ACP_CC_PRECESSION_CIRCLE] = COLORCOMMAND_NAMES::CC_PRECESSION_CIRCLE;
 	m_color[ACP_CC_TEXT_USR_COLOR] = COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR;
 	m_color[ACP_CC_STAR_TABLE] = COLORCOMMAND_NAMES::CC_STAR_TABLE;
+	m_color[ACP_CC_LUNAR_ECLIPSE_UMBRA] = COLORCOMMAND_NAMES::CC_LUNAR_ECLIPSE_UMBRA;
+	m_color[ACP_CC_LUNAR_ECLIPSE_PENUMBRA] = COLORCOMMAND_NAMES::CC_LUNAR_ECLIPSE_PENUMBRA;
 
 	for (auto it = m_color.begin(); it != m_color.end(); ++it) {
         m_colorToString.emplace(it->second, it->first);
@@ -290,6 +296,7 @@ void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES>
 	m_set[ACP_SC_MILKY_WAY_TEXTURE] = SCD_NAMES::APP_MILKY_WAY_TEXTURE;
 	m_set[ACP_SC_SKY_CULTURE] = SCD_NAMES::APP_SKY_CULTURE;
 	m_set[ACP_SC_SKY_LOCALE] = SCD_NAMES::APP_SKY_LOCALE;
+	m_set[ACP_SC_SRT_LOCALE] = SCD_NAMES::APP_SRT_LOCALE;
 	m_set[ACP_SC_UI_LOCALE] = SCD_NAMES::APP_UI_LOCALE;
 	m_set[ACP_SC_STAR_MAG_SCALE] = SCD_NAMES::APP_STAR_MAG_SCALE;
 	m_set[ACP_SC_STAR_SIZE_LIMIT] = SCD_NAMES::APP_STAR_SIZE_LIMIT;
@@ -314,6 +321,7 @@ void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES>
 	//m_set[ACP_SC_TULLY_COLOR_MODE] = SCD_NAMES::APP_TULLY_COLOR_MODE;
 	m_set[ACP_SC_DATETIME_DISPLAY_POSITION] = SCD_NAMES::APP_DATETIME_DISPLAY_POSITION;
 	m_set[ACP_SC_DATETIME_DISPLAY_NUMBER] = SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER;
+	m_set[ACP_SC_INIT_FOV] = SCD_NAMES::APP_INIT_FOV;
 
 	for (auto it = m_set.begin(); it != m_set.end(); ++it) {
         m_setToString.emplace(it->second, it->first);

@@ -32,7 +32,7 @@ public:
 	SpecialArray(const SpecialArray<T> &sa) = delete; //TODO
 
 	SpecialArray(const unsigned int size) : asize(size), begin(0) { array = new T[size]; } //Constructeur
-	~SpecialArray() { delete array; } //Destructeur TODO delete[]
+	~SpecialArray() { delete array; array = nullptr; } //Destructeur TODO delete[]
 
 	const unsigned int size() const { return asize; }; //Getter de la taille du tableau
 	

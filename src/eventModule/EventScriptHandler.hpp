@@ -30,6 +30,8 @@
 
 #include "event_handler_canvas.hpp"
 #include "event.hpp"
+#include <vector>
+#include <string>
 
 class ScriptInterface;
 
@@ -41,8 +43,14 @@ public:
 	~EventScriptHandler(){
 	}
     void handle(const Event* e, Executor *executor) override;
+    
+    //! Called after all events in the current loop are processed
+    void loopDone();
+    
 protected :
 	ScriptInterface* scriptInterface = nullptr;
+	// Temporary queue to accumulate scripts during event loop
+	std::vector<std::string> pendingScripts;
 };
 
 #endif // EVENT_SCRIPT_HANDLER_HPP

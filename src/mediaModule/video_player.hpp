@@ -201,11 +201,11 @@ private:
 	// retrieves the new video frame before conversion
 	bool getNextFrame();
 	// initialization of the class
-	void init();
+	bool init();
 	// internal jump function in the video
 	bool seekVideo(int64_t framesToSkip);
 	//! initialize a texture to the size of the video
-	void initTexture();
+	bool initTexture();
 	//! update subtitles
 	void updateSubtitles();
 
@@ -236,6 +236,7 @@ private:
 	//frameRate management
 	int64_t currentFrame;	//!< number of the current frame
 	int64_t nbTotalFrame;	//!< number of frames in the video
+	const uint32_t maxTextureSize;
 	double frameRate;
 	std::chrono::steady_clock::duration latency; // Time behind the video which need to be reclaimed
 	std::chrono::steady_clock::duration deltaFrame; // Time between two frames
@@ -258,14 +259,13 @@ private:
 	std::atomic<bool> decoding = false; // Tell if the video have not been fully decoded yet
 
 	//parameters related to ffmpeg
-	AVFormatContext	*pFormatCtx;
+	AVFormatContext	*pFormatCtx = nullptr;
 	int				videoindex;
-	AVCodecContext	*pCodecCtx;
+	AVCodecContext	*pCodecCtx = nullptr;
 	const AVCodec	*pCodec;
-	AVFrame			*pFrameIn,*pFrameOut;
+	AVFrame			*pFrameIn;
 	AVStream		*video_st;
 	AVPacket		*packet;
-	struct SwsContext *img_convert_ctx;
 	AVPixelFormat targetFormat; // Target format for conversion (YUV420P or YUVA420P)
 
 	std::atomic<uint32_t> frameUsed = 0; // Index of the last rendered frame

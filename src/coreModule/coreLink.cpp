@@ -37,6 +37,7 @@
 #include "bodyModule/ssystem_factory.hpp"
 #include "inGalaxyModule/dsoNavigator.hpp"
 #include "inGalaxyModule/dso3d.hpp"
+#include "inGalaxyModule/starGalaxy.hpp"
 #include "coreModule/cardinals.hpp"
 #include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/meteor_mgr.hpp"
@@ -1383,4 +1384,9 @@ void CoreLink::rotateLandscape(double rotation) {
 
 std::string CoreLink::landscapeGetName() {
  	return core->landscape->getName();
+}
+
+// [merge] theirs' galaxy_stars command support; defined here since StarGalaxy is incomplete in coreLink.hpp.
+void CoreLink::starGalaxyLoadCatalog(const std::string &filename) {
+	core->starGalaxy->loadCatalog(filename);
 }

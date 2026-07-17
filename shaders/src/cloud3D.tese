@@ -24,7 +24,7 @@ layout (binding=2) uniform uproj {
     mat4 camRotToLocal; // Inverse rotation of ModelViewMatrix
 };
 
-#include <fisheyeNoMV.glsl>
+#include <custom_project.glsl>
 
 void main(void)
 {
@@ -32,6 +32,6 @@ void main(void)
     texCoordOut = texCoord[0]*gl_TessCoord[0] + texCoord[1]*gl_TessCoord[1] + texCoord[2]*gl_TessCoord[2];
     colorOut = color;
     lodFactorOut = lodFactor;
-    gl_Position = fisheyeProjectNoMV(Position, clipping_fov);
+    gl_Position = custom_projectNoMV(Position, clipping_fov);
     direction = vec3(invModel * vec4(normalize(vec3(camRotToLocal * vec4(Position, 0.))), 0.)); // Use of mat4 as mat3 due to the nvidia bug of mat3 in the vulkan implementation
 }

@@ -167,7 +167,7 @@ ZoneArray *ZoneArray::create(const HipStarMgr &hip_star_mgr, const std::string& 
 			} else {
 				// When this assertion fails you must redefine Star1 for your compiler.
 				// Because your compiler does not pack the data, which is crucial for this application.
-				assert(sizeof(Star1) == 28);
+				static_assert(sizeof(Star1) == 28, "Star1 struct not packed, breaking binary compatibility with file describing those stars");
 				rval = new ZoneArray1(f,byte_swap,use_mmap,hip_star_mgr,level, mag_min,mag_range,mag_steps);
 				if (rval == 0) {
 					printf("no memory, ");
@@ -180,7 +180,7 @@ ZoneArray *ZoneArray::create(const HipStarMgr &hip_star_mgr, const std::string& 
 			} else {
 				// When this assertion fails you must redefine Star2 for your compiler.
 				// Because your compiler does not pack the data, which is crucial for this application.
-				assert(sizeof(Star2) == 10);
+				static_assert(sizeof(Star2) == 10, "Star2 struct not packed, breaking binary compatibility with file describing those stars");
 				rval = new SpecialZoneArray<Star2>(f,byte_swap,use_mmap,hip_star_mgr, level, mag_min,mag_range,mag_steps);
 				if (rval == 0) {
 					printf("no memory, ");
@@ -193,7 +193,7 @@ ZoneArray *ZoneArray::create(const HipStarMgr &hip_star_mgr, const std::string& 
 			} else {
 				// When this assertion fails you must redefine Star3 for your compiler.
 				// Because your compiler does not pack the data, which is crucial for this application.
-				assert(sizeof(Star3) == 6);
+				static_assert(sizeof(Star3) == 6, "Star3 struct not packed, breaking binary compatibility with file describing those stars");
 				rval = new SpecialZoneArray<Star3>(f,byte_swap,use_mmap,hip_star_mgr, level, mag_min,mag_range,mag_steps);
 				if (rval == 0) {
 					printf("no memory, ");
@@ -212,7 +212,7 @@ ZoneArray *ZoneArray::create(const HipStarMgr &hip_star_mgr, const std::string& 
 		printf("initialization failed\n");
 		if (rval) {
 			delete rval;
-			rval = 0;
+			rval = nullptr;
 		}
 	}
 	fclose(f);
@@ -338,11 +338,11 @@ template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 			delete[] stars;
 		}
 		#endif /* LINUX */
-		stars = 0;
+		stars = nullptr;
 	}
 	if (zones) {
 		delete[] getZones();
-		zones = NULL;
+		zones = nullptr;
 	}
 	nr_of_zones = 0;
 	nr_of_stars = 0;
@@ -450,7 +450,7 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 			}
 			if (nr_of_zones != fread(zone_size,sizeof(unsigned int),nr_of_zones,f)) {
 				delete[] getZones();
-				zones = 0;
+				zones = nullptr;
 				nr_of_zones = 0;
 			} else {
 				const unsigned int *tmp = zone_size;
@@ -462,12 +462,13 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 			}
 			// delete zone_size before allocating stars in order to avoid memory fragmentation:
 			delete[] zone_size;
+			zone_size = nullptr;
 		}
 
 		if (nr_of_stars == 0) {
 			// no stars ?
 			if (zones) delete[] getZones();
-			zones = 0;
+			zones = nullptr;
 			nr_of_zones = 0;
 		} else {
 			if (use_mmap) {
@@ -488,7 +489,7 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 					stars = 0;
 					nr_of_stars = 0;
 					delete[] getZones();
-					zones = 0;
+					zones = nullptr;
 					nr_of_zones = 0;
 				} else {
 					stars = (Star*)(((char*)mmap_start)+mmap_offset);
@@ -521,7 +522,7 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 							stars = 0;
 							nr_of_stars = 0;
 							delete[] getZones();
-							zones = 0;
+							zones = nullptr;
 							nr_of_zones = 0;
 						} else {
 							stars = (Star*)(((char*)mmap_start)+mmap_offset);
@@ -542,10 +543,10 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 				}
 				if (!readStarFile(f,stars,sizeof(Star)*nr_of_stars)) {
 					delete[] stars;
-					stars = 0;
+					stars = nullptr;
 					nr_of_stars = 0;
 					delete[] getZones();
-					zones = 0;
+					zones = nullptr;
 					nr_of_zones = 0;
 				} else {
 					Star *s = stars;

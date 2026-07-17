@@ -18,7 +18,7 @@ layout (binding=0) uniform ubo {
     float atmAlpha;     // 1.0  ; // this value is a scale for atmosphere transparency
 };
 
-#include <fisheyeNoMV.glsl>
+#include <custom_project.glsl>
 
 void main()
 {
@@ -27,5 +27,5 @@ void main()
                   (gl_TessCoord.z * position[2]);
 
     eyePos = pos;
-    gl_Position = fisheyeProjectNoMV(pos, clipping_fov);
+    gl_Position = custom_projectNoMV(pos, clipping_fov);
 }

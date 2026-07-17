@@ -19,7 +19,7 @@ layout (binding=0, set=2) uniform custom {
 	mat4 NormalMatrix;
 };
 
-#include <fisheye.glsl>
+#include <custom_project.glsl>
 
 //uniform vec3 clipping_fov;
 //uniform mat4 ProjectionMatrix;
@@ -36,5 +36,5 @@ void main()
     Normal = normalize( mat3(NormalMatrix) * VertexNormal);
     Position = vec3( ModelViewMatrix * vec4(VertexPosition,1.0) );
 
-    gl_Position = fisheyeProject(VertexPosition, vec3(main_clipping_fov));
+    gl_Position = custom_project(VertexPosition, ModelViewMatrix, vec3(main_clipping_fov));
 }

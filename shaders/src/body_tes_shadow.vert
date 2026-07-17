@@ -22,6 +22,8 @@ layout (binding=0) uniform globalProj {
 	// float heightmapDepth;
 };
 
+#include <custom_project.glsl>
+
 layout (location=0) out vec3 entryPos;
 layout (location=1) out vec3 viewDirection;
 layout (location=2) out float side;
@@ -39,30 +41,11 @@ void main()
 {
 	entryPos = position;
 	vec4 pos = ModelViewMatrix * vec4(position * radius, 1);
-	float rq = pos.x*pos.x + pos.y*pos.y;
-	float depth = sqrt(rq + pos.z*pos.z);
-	rq = sqrt(rq);
-	float f = asin(min(rq/depth, 1)); // min patch a driver bug were rq/depth > 1
-	if (pos.z > 0)
-		f = M_PI - f;
-
-	// shadowViewDirection = ShadowMatrix * worldToNormalMatrix;
 
 	viewDirection = normalize(WorldToModelMatrix * pos.xyz);
-	// float tmp = sqrt(1 - normal.z);
-	// float tmp2 = normal.z / tmp;
-	// dir = mat3(
-	// 	normal.y, normal.x*tmp2, normal.x,
-	// 	-normal.x, normal.y*tmp2, normal.y,
-	// 	0, tmp, normal.z
-	// ) * viewDirection;
-	// viewTexRay = dir.xy / (heightmapDepth * max(0.01, dir.z));
-	// outLightDirection = normalize(worldToNormalMatrix * lightDirection);
-	// outNormal = normal;
 
-	f /= rq * fov;
-	// depth = (depth - zNear) / zRange;
+	// Use custom projection with specialization constant
+	vec4 projected = custom_projectNoMV(pos.xyz, vec3(zNear, zNear + zRange, fov));
 	side = mix(-1, -0.2, (texcoord < 0.5));
-	float depth_ndc = clamp((depth - zNear) / zRange, 0.0, 1.0); // NDC depth
-	gl_Position = vec4(pos.x*f, pos.y*f, depth_ndc, 1);
+	gl_Position = projected;
 }

@@ -268,6 +268,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 		case SC_COMMAND::SC_MOVETO :	return commandMoveto(); break;
 		case SC_COMMAND::SC_MULTIPLY :	return commandMultiply(); break;
 		case SC_COMMAND::SC_DIVIDE :	return commandDivide(); break;
+		case SC_COMMAND::SC_MODULO :	return commandModulo(); break;
 		case SC_COMMAND::SC_TANGENT :	return commandTangent(); break;
 		case SC_COMMAND::SC_TRUNC :	return commandTrunc(); break;
 		case SC_COMMAND::SC_SINUS :	return commandSinus(); break;
@@ -284,6 +285,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 		case SC_COMMAND::SC_SHUTDOWN :	return commandShutdown(); break;
 		case SC_COMMAND::SC_SKY_CULTURE :	return commandSkyCulture(); break;
 		case SC_COMMAND::SC_STAR_LINES :	return commandStarLines(); break;
+		case SC_COMMAND::SC_GALAXY_STARS :	return commandGalaxyStars(); break;
 		case SC_COMMAND::SC_SUB : 	return commandSub(); break;
 		case SC_COMMAND::SC_SUNTRACE :	return commandSuntrace(); break;
 		case SC_COMMAND::SC_TEXT :	return commandText(); break;
@@ -629,6 +631,22 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ZODIAC);
 			} else
 				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ZODIAC, newval);
+			break;
+
+		case FLAG_NAMES::FN_LUNAR_ECLIPSE_UMBRA :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA);
+			} else
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA, newval);
+			break;
+
+		case FLAG_NAMES::FN_LUNAR_ECLIPSE_PENUMBRA :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA);
+			} else
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA, newval);
 			break;
 
 		case FLAG_NAMES::FN_GREENWICH_LINE :
@@ -1543,6 +1561,8 @@ int AppCommandInterface::commandColor()
 		case COLORCOMMAND_NAMES::CC_GREENWICH_LINE:			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GREENWICH, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_ARIES_LINE:				coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ARIES, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_ZODIAC:					coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ZODIAC, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_LUNAR_ECLIPSE_UMBRA:	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_LUNAR_ECLIPSE_PENUMBRA:	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_PERSONAL:				coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONAL, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_PERSONEQ:				coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONEQ, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_NAUTICAL_ALT:			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_NAUTICAL, Vcolor ); break;
@@ -1736,6 +1756,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 						break;
 		case SCD_NAMES::APP_SKY_CULTURE: if (setValue==W_DEFAULT) stcore->setInitialSkyCulture(); else stcore->setSkyCultureDir(setValue); break;
 		case SCD_NAMES::APP_SKY_LOCALE:  if ( setValue==W_DEFAULT) stcore->setInitialSkyLocale(); else stcore->setSkyLanguage(setValue); break;
+		case SCD_NAMES::APP_SRT_LOCALE:  if ( setValue==W_DEFAULT) stcore->setInitialSrtLocale(); else stcore->setSrtLanguage(setValue); break;
 		case SCD_NAMES::APP_UI_LOCALE: stapp->setAppLanguage(setValue); break;
 		case SCD_NAMES::APP_STAR_MAG_SCALE: coreLink->starSetMagScale(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_STAR_SIZE_LIMIT: coreLink->starSetSizeLimit(evalDouble(setValue)); break;
@@ -1768,6 +1789,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(setValue)); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER: ui->setDateDisplayNumber(evalInt(setValue)); break;
+		case SCD_NAMES::APP_INIT_FOV: stcore->setInitFov(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_FLAG_NONE:
 						debug_message = "command_'set': unknown argument";
 						//for (const auto&i : args )
@@ -2764,6 +2786,34 @@ int AppCommandInterface::commandStarLines()
 	return executeCommandStatus();
 }
 
+int AppCommandInterface::commandGalaxyStars()
+{
+	std::string argLoad = args[W_LOAD];
+
+	if (!argLoad.empty()) {
+		// Test if file exists
+		std::string fullPath;
+		if (CallSystem::fileExist(argLoad)) {
+			// Absolute path or relative to current working directory
+			fullPath = argLoad;
+		} else if (CallSystem::fileExist(scriptInterface->getScriptPath() + argLoad)) {
+			// Relative to script path
+			fullPath = scriptInterface->getScriptPath() + argLoad;
+		} else if (CallSystem::fileExist(AppSettings::Instance()->getConfigDir() + argLoad)) {
+			// Relative to config path
+			fullPath = AppSettings::Instance()->getConfigDir() + argLoad;
+		} else {
+			debug_message = _("Command 'galaxy_stars': file not found: ") + argLoad;
+			return executeCommandStatus();
+		}
+		coreLink->starGalaxyLoadCatalog(fullPath);
+		return executeCommandStatus();
+	}
+
+	debug_message = _("Command 'galaxy_stars': wrong argument. Use load filename");
+	return executeCommandStatus();
+}
+
 
 int AppCommandInterface::commandPosition()
 {
@@ -3053,11 +3103,14 @@ int AppCommandInterface::commandMedia()
 				tmpProject = IMG_PROJECT::THRICE;
 			}
 
+			std::string languagedSrtName = videoName;
 			std::string languagedVideoName = videoName;
 			size_t lastdot = languagedVideoName.find_last_of(".");
 			if (lastdot != std::string::npos) {
-				languagedVideoName = languagedVideoName.substr(0, lastdot) + "-" + stcore->getSkyLanguage(); // VideoName_fr
+				languagedSrtName = languagedSrtName.substr(0, lastdot) + "-" + stcore->getSrtLanguage(); // VideoName-fr
+				languagedVideoName = languagedVideoName.substr(0, lastdot) + "-" + stcore->getSkyLanguage(); // VideoName-fr
 			} else {
+				languagedSrtName = "";
 				languagedVideoName = "";
 				cLog::get()->write("command 'media':: video file has no extension to build language name " + languagedVideoName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 			}
@@ -3068,8 +3121,8 @@ int AppCommandInterface::commandMedia()
 			if (!srtName.empty()) {
 				if (srtName == W_AUTO) {
 					// We test if a file of language exists
-					if (!languagedVideoName.empty()) {
-						srtName = languagedVideoName + "." + W_SRT; // VideoName-fr.srt
+					if (!languagedSrtName.empty()) {
+						srtName = languagedSrtName + "." + W_SRT; // VideoName-fr.srt
 						FilePath fileSrt = FilePath(srtName, FilePath::TFP::MEDIA);
 						if (fileSrt.exist()) {
 							srtFileName = fileSrt.toString();
@@ -3083,7 +3136,7 @@ int AppCommandInterface::commandMedia()
 				} else {
 					// if the srt exists as -en.srt then it is modified by applying the language of the sky_culture
 					if (srtName.size() > 8 && srtName[srtName.size() - 7] == '-') { // internationalization possible
-						FilePath fileSrt = FilePath(srtName, stcore->getSkyLanguage());
+						FilePath fileSrt = FilePath(srtName, stcore->getSrtLanguage());
 						if (!fileSrt.exist()) {
 							cLog::get()->write("command 'media':: locale srt not found, trying " + srtName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 
@@ -3208,21 +3261,42 @@ int AppCommandInterface::commandMedia()
 			AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG,argB);
 			if (testColor) {
 				std::string argIntensity = args[W_INTENSITY];
-				if (!argIntensity.empty())
-					media->setKeyColor(Vcolor,Utility::strToDouble(argIntensity)) ;
-				else
-					media->setKeyColor(Vcolor) ;
+				if (!argIntensity.empty()) {
+					if (type == VID_TYPE::V_IMAGE) {
+						media->imageSet(argName);
+						media->imageSetKeyColor(Vcolor, Utility::strToDouble(argIntensity));
+					} else {
+						media->setKeyColor(Vcolor, Utility::strToDouble(argIntensity));
+					}
+				} else {
+					if (type == VID_TYPE::V_IMAGE) {
+						media->imageSet(argName);
+						media->imageSetKeyColor(Vcolor);
+					} else {
+						media->setKeyColor(Vcolor);
+					}
+				}
 			} else
 				debug_message.clear();
 
 			std::string argKeyColor = args[W_KEYCOLOR];
 			if (!argKeyColor.empty()) {
 				if (Utility::isTrue(argKeyColor)) {
-					media->setKeyColor(true);
-					media->disableFader();
+					if (type == VID_TYPE::V_IMAGE) {
+						media->imageSet(argName);
+						media->imageSetKeyColor(true);
+					} else {
+						media->setKeyColor(true);
+						media->disableFader();
+					}
+				} else {
+					if (type == VID_TYPE::V_IMAGE) {
+						media->imageSet(argName);
+						media->imageSetKeyColor(false);
+					} else {
+						media->setKeyColor(false);
+					}
 				}
-				else
-					media->setKeyColor(false);
 			}
 			return executeCommandStatus();
 
@@ -3442,7 +3516,7 @@ int AppCommandInterface::commandBody()
 	std::string argMode = args[ACP_SC_MODE];
 
 	// OJM processing
-	if ((argMode=="in_universe" || argMode=="in_galaxy") && !argAction.empty()) {
+	if ((argMode=="in_universe" || argMode=="in_galaxy" || argMode=="in_sandbox") && !argAction.empty()) {
 		if (argAction == W_LOAD) {
 			std::string argFileName = args[W_FILENAME];
 			argFileName = argFileName +"/"+argFileName +".ojm";
@@ -3942,6 +4016,19 @@ int AppCommandInterface::commandDivide()
 		appEval->commandDiv(mArg,mValue);
 	} else {
 		debug_message = "unexpected error in command__divide";
+	}
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandModulo()
+{
+	// could loop if want to allow that syntax
+	if (args.begin() != args.end()) {
+		std::string mArg = args.begin()->first;
+		std::string mValue = args.begin()->second;
+		appEval->commandMod(mArg,mValue);
+	} else {
+		debug_message = "unexpected error in command__modulo";
 	}
 	return executeCommandStatus();
 }

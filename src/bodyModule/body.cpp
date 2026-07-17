@@ -31,6 +31,7 @@
 #include "bodyModule/body.hpp"
 #include "navModule/observer.hpp"
 #include "coreModule/projector.hpp"
+#include "coreModule/coreLink.hpp"
 #include "tools/s_font.hpp"
 #include "../planetsephems/sideral_time.h"
 #include "tools/log.hpp"
@@ -177,8 +178,8 @@ Body::~Body()
 {
     if (parent)
         parent->satellites.remove(this);
-    if (isCenterOfInterest && SolarSystemDisplay::instance)
-        SolarSystemDisplay::instance->invalidateCenterOfInterest();
+    if (isCenterOfInterest && solarSystemDisplay)
+        solarSystemDisplay->invalidateCenterOfInterest();
 }
 
 void Body::switchMapSkin(bool a) {
@@ -216,6 +217,11 @@ bool Body::getFlagHints(void) const
 bool Body::getFlagAxis(void) const
 {
 	return flags.flag_axis;
+}
+
+bool Body::getFlagPlanetGrid(void) const
+{
+	return flags.flag_planet_grid;
 }
 
 void Body::setFlagAxis(bool b)
@@ -899,6 +905,86 @@ double Body::calculateBoundingRadius()
 	return boundingRadius;
 }
 
+// ================================ FISHEYE SCREEN POSITION =================================
+void Body::fisheyeComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance)
+{
+	const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
+	double f;
+	const double halfFov = prj->getFov() * (M_PI / 360);
+
+	if (rq > distance * 1e-5) {
+		f = asin(rq/distance);
+		if (eye_planet[2] > 0)
+			f = M_PI - f;
+
+		// Standard fisheye projection
+		f /= rq * halfFov;
+	} else {
+		f = 1 / (distance * halfFov);
+	}
+
+	screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
+}
+
+// ================================ ALLSPHERE SCREEN POSITION =================================
+void Body::allsphereComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance)
+{
+	const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
+	double f;
+	const double halfFov = prj->getFov() * (M_PI / 360);
+
+	if (rq > distance * 1e-5) {
+		f = asin(rq/distance);
+		if (eye_planet[2] > 0)
+			f = M_PI - f;
+
+		// Allsphere distortion - high precision polynomial
+		// Normalize angle by FOV BEFORE polynomial
+		f = (f / halfFov) * 1200.0;
+		f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
+		f = f / 1200.0;
+
+		// ALLSPHERE: divide only by rq, not by fov (already normalized)
+		f /= rq;
+	} else {
+		f = 1 / (distance * halfFov);
+	}
+
+	screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
+}
+
+// ================================ EKISOLID SCREEN POSITION =================================
+void Body::ekisolidComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance)
+{
+	// TODO: implement proper EKISOLID formula
+	// For now, use FISHEYE
+	fisheyeComputeScreenPos(prj, eye_planet, distance);
+}
+
+// ================================ ASPHERIC SCREEN POSITION =================================
+void Body::asphericComputeScreenPos(const Projector* prj, const Vec3d &eye_planet, double distance)
+{
+	const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
+	double f;
+	const double halfFov = prj->getFov() * (M_PI / 360);
+	const double tanHalfFovOver2 = tan(halfFov * 0.5);
+
+	if (rq > distance * 1e-5) {
+		f = asin(rq/distance);
+		if (eye_planet[2] > 0)
+			f = M_PI - f;
+
+		// Stereographic projection: r = tan(α/2) / tan(α_max/2)
+		f = tan(f * 0.5) / tanHalfFovOver2;
+		f /= rq;
+	} else {
+		f = 1 / (distance * halfFov);
+	}
+
+	screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
+}
+
+
 void Body::computeDraw(const Projector* prj, const Navigator* nav)
 {
 	eye_sun = nav->getHelioToEyeMat().getTranslation();
@@ -985,17 +1071,13 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
     // Compute the 2D position and check if in the screen
 	screen_sz = getOnScreenSize(prj, nav);
 
-    const double rq = sqrt(eye_planet[0] * eye_planet[0] + eye_planet[1] * eye_planet[1]);
-    double f;
-        if (rq > distance * 1e-5) {
-            f = asin(rq/distance);
-            if (eye_planet[2] > 0)
-                f = M_PI - f;
-            f /= rq * halfFov;
-        } else
-            f = 1 / (distance * halfFov);
-    screenPos = VulkanMgr::instance->rectToRender({eye_planet[0] * f, eye_planet[1] * f});
-
+	// Call the appropriate projection function based on Context::projectionType
+	switch(Context::projectionType) {
+		case 1: allsphereComputeScreenPos(prj, eye_planet, distance); break;
+		case 2: ekisolidComputeScreenPos(prj, eye_planet, distance); break;
+		case 3: asphericComputeScreenPos(prj, eye_planet, distance); break;
+		default: fisheyeComputeScreenPos(prj, eye_planet, distance); break;
+	}
 }
 
 double Body::getAxisAngle() const {
@@ -1164,7 +1246,25 @@ void Body::drawPlanetGrid(VkCommandBuffer cmd, const Projector* prj, const Mat4d
 {
 	// Draw the longitude/latitude grid if the options are enabled
 	if (flags.flag_planet_grid && planetGrid) {
-		planetGrid->drawGrid(cmd, prj, mat);
+		// Calculate altitude relative to THIS body's surface
+		// distance is observer's distance from body center, radius is body's radius
+		double altitudeFromThisBody = (distance - radius) * AU * 1000.0; // Convert from AU to meters
+
+		// Get flags from SkyLine - for now we use simple defaults based on altitude
+		// TODO: integrate with SkyLineMgr flags if needed
+		bool showMeridians = CoreLink::instance->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
+		bool showEquator = CoreLink::instance->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_EQUATOR);
+		bool showTropics = CoreLink::instance->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_TROPIC);
+		bool showPolarCircles = CoreLink::instance->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+
+		// Get colors from config.ini via CoreLink (can change dynamically)
+		Vec3f meridianColor = CoreLink::instance->skyGridMgrGetColor(SKYGRID_TYPE::GRID_EQUATORIAL);
+		Vec3f equatorColor = CoreLink::instance->skyLineMgrGetColor(SKYLINE_TYPE::LINE_EQUATOR);
+		Vec3f tropicColor = CoreLink::instance->skyLineMgrGetColor(SKYLINE_TYPE::LINE_TROPIC);
+		Vec3f polarCircleColor = CoreLink::instance->skyLineMgrGetColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+
+		planetGrid->drawGrid(cmd, prj, mat, altitudeFromThisBody, showMeridians, showEquator, showTropics, showPolarCircles,
+		                     meridianColor, equatorColor, tropicColor, polarCircleColor);
 	}
 }
 

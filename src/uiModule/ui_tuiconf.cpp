@@ -126,7 +126,7 @@ void UI::drawGravityUi(MODULE module)
 		std::string info = core->getSelectedObjectShortInfo();
 		Vec3f tmpColor = Vec3f(core->getSelectedObjectInfoColor());
 
-		if (core->getFlagNav()) {
+		if (core->getFlagNav() || core->getFlagAstronomical()) {
 			std::string info2 = core->getSelectedObjectShortInfoNav();
 			std::string s_1, s_2;
 			s_1= info2.substr(0, info2.find("@"));
@@ -168,6 +168,7 @@ void UI::initTui()
 {
 	// If already initialized before, delete existing objects
 	if (tui_root) delete tui_root;
+	tui_root = nullptr;
 	// if (tuiFont) delete tuiFont;
 
 	// Load standard font based on app locale
@@ -464,30 +465,30 @@ void UI::initTui()
 	// 8. Administration
 	tui_admin_loaddefault = new s_tui::ActionConfirmItem(std::string("8.1 ") );
 	tui_admin_loaddefault->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbAdminLoadDefault));
+	tui_menu_administration->addComponent(tui_admin_loaddefault);
 	tui_admin_savedefault = new s_tui::ActionConfirmItem(std::string("8.2 ") );
 	tui_admin_savedefault->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbAdminSaveDefault));
+	tui_menu_administration->addComponent(tui_admin_savedefault);
 	tui_admin_shutdown = new s_tui::ActionConfirmItem(std::string("8.3 ") );
 	tui_admin_shutdown->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbAdminShutdown));
-	tui_menu_administration->addComponent(tui_admin_loaddefault);
-	tui_menu_administration->addComponent(tui_admin_savedefault);
 	tui_menu_administration->addComponent(tui_admin_shutdown);
 
 	// get system info
 	std::string systemInfo=std::string(APP_NAME)+" "+std::string(USER_EDITION);
 	tui_admin_info = new s_tui::Display(std::string("Label: "),std::string(systemInfo));
 	tui_menu_administration->addComponent(tui_admin_info);
-	tui_admin_resolution = new s_tui::Display(std::string("Label: "),m_sdl->getStrResolution());
-	tui_menu_administration->addComponent(tui_admin_resolution);
 	// get user info
-	std::string userInfo=std::string(USER_NAME)+" "+std::string(USER_EDITION);
-	tui_admin_user = new s_tui::Display(std::string("Label: "),std::string(userInfo));
-	tui_menu_administration->addComponent(tui_admin_user);
+	//std::string userInfo=std::string(USER_NAME)+" "+std::string(USER_EDITION);
+	//tui_admin_user = new s_tui::Display(std::string("Label: "),std::string(userInfo));
+	//tui_menu_administration->addComponent(tui_admin_user);
 
 	tui_admin_setlocale = new s_tui::MultiSetItem<std::string>("8.5 ");
 	tui_admin_setlocale->addItemList(std::string(Translator::getAvailableLanguagesCodes(AppSettings::Instance()->getLanguageDir())));
 	tui_admin_setlocale->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbAdminSetLocale));
 	tui_menu_administration->addComponent(tui_admin_setlocale);
 
+	tui_admin_resolution = new s_tui::Display(std::string("8.6 "),m_sdl->getStrResolution());
+	tui_menu_administration->addComponent(tui_admin_resolution);
 	// Now add in translated labels
 	localizeTui();
 }
@@ -567,16 +568,16 @@ void UI::localizeTui()
 	tui_colors_planet_names_color->setLabel(std::string("5.7 ") + _("Body Labels") + ": ");
 	tui_colors_planet_orbits_color->setLabel(std::string("5.8 ") + _("Body Orbits") + ": ");
 
-	tui_colors_object_trails_color->setLabel(std::string("5.10 ") + _("Body Trails") + ": ");  // TODO: Should be Body Trails
-	tui_colors_meridian_color->setLabel(std::string("5.11 ") + _("Meridian Line") + ": ");
-	tui_colors_azimuthal_color->setLabel(std::string("5.12 ") + _("Azimuthal Grid") + ": ");
-	tui_colors_equatorial_color->setLabel(std::string("5.13 ") + _("Equatorial Grid") + ": ");
-	tui_colors_equator_color->setLabel(std::string("5.14 ") + _("Equator Line") + ": ");
-	tui_colors_ecliptic_color->setLabel(std::string("5.15 ") + _("Ecliptic Line") + ": ");
-	tui_colors_nebula_label_color->setLabel(std::string("5.16 ") + _("Nebula Labels") + ": ");
-	tui_colors_nebula_circle_color->setLabel(std::string("5.17 ") + _("Nebula Circles") + ": ");
-	tui_colors_precession_circle_color->setLabel(std::string("5.18 ") + _("Precession Circle") + ": ");
-	tui_colors_circumpolar_circle_color->setLabel(std::string("5.19 ") + _("Circumpolar Circle") + ": ");
+	tui_colors_object_trails_color->setLabel(std::string("5.9 ") + _("Body Trails") + ": ");  // TODO: Should be Body Trails
+	tui_colors_meridian_color->setLabel(std::string("5.10 ") + _("Meridian Line") + ": ");
+	tui_colors_azimuthal_color->setLabel(std::string("5.11 ") + _("Azimuthal Grid") + ": ");
+	tui_colors_equatorial_color->setLabel(std::string("5.12 ") + _("Equatorial Grid") + ": ");
+	tui_colors_equator_color->setLabel(std::string("5.13 ") + _("Equator Line") + ": ");
+	tui_colors_ecliptic_color->setLabel(std::string("5.14 ") + _("Ecliptic Line") + ": ");
+	tui_colors_nebula_label_color->setLabel(std::string("5.15 ") + _("Nebula Labels") + ": ");
+	tui_colors_nebula_circle_color->setLabel(std::string("5.16 ") + _("Nebula Circles") + ": ");
+	tui_colors_precession_circle_color->setLabel(std::string("5.17 ") + _("Precession Circle") + ": ");
+	tui_colors_circumpolar_circle_color->setLabel(std::string("5.18 ") + _("Circumpolar Circle") + ": ");
 
 
 	// 6. Effects
@@ -592,10 +593,10 @@ void UI::localizeTui()
 	tui_effect_nebulae_label_magnitude->setLabel(std::string("6.8 ") + _("Maximum Nebula Magnitude to Label: "));
 	tui_effect_view_offset->setLabel(std::string("6.9 ") + _("Zoom Offset: "));
 	tui_effect_zoom_duration->setLabel(std::string("6.10 ") + _("Zoom Duration: "));
-	tui_effect_cursor_timeout->setLabel(std::string("6.12 ") + _("Cursor Timeout: "));
-	tui_effect_light_travel->setLabel(std::string("6.13 ") + _("Correct for light travel time: "), _("Yes"),_("No"));
-	tui_effect_antialias->setLabel(std::string("6.14 ") + _("Antialias Lines: "), _("Yes"),_("No"));
-	tui_effect_line_width->setLabel(std::string("6.15 ") + _("Line Width: "));
+	tui_effect_cursor_timeout->setLabel(std::string("6.11 ") + _("Cursor Timeout: "));
+	tui_effect_light_travel->setLabel(std::string("6.12 ") + _("Correct for light travel time: "), _("Yes"),_("No"));
+	tui_effect_antialias->setLabel(std::string("6.13 ") + _("Antialias Lines: "), _("Yes"),_("No"));
+	tui_effect_line_width->setLabel(std::string("6.14 ") + _("Line Width: "));
 
 
 	// 7. Scripts
@@ -626,9 +627,12 @@ void UI::localizeTui()
 	tui_admin_shutdown->setLabel(std::string("8.3 ") + _("Shut Down: "));
 	tui_admin_shutdown->translateActions();
 	tui_admin_info->setLabel(std::string("8.4 ") + _("Info: "));
-	tui_admin_user->setLabel(std::string("8.5 ") + _("User: "));
-	tui_admin_setlocale->setLabel(std::string("8.6 ") + _("Set UI Locale: "));
-	tui_admin_resolution->setLabel(std::string("8.7 ") + _("Resolution: "));
+	//tui_admin_info->translateActions();
+	//tui_admin_user->setLabel(std::string("8.5 ") + _("User: "));
+	tui_admin_setlocale->setLabel(std::string("8.5 ") + _("Set UI Locale: "));
+	//tui_admin_setlocale->translateActions();
+	tui_admin_resolution->setLabel(std::string("8.6 ") + _("Resolution: "));
+	//tui_admin_resolution->translateActions();
 
 }
 

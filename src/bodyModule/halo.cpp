@@ -209,6 +209,7 @@ void Halo::destroySC_context()
 	if (global) {
 		Context::instance->stagingMgr->releaseBuffer(global->staging);
 		delete global;
+		global = nullptr;
 	}
 }
 
@@ -224,5 +225,7 @@ bool Halo::setTexHaloMap(const std::string &texMap)
 
 void Halo::deleteDefaultTexMap()
 {
+	if (!global)
+		return;
 	global->tex_halo = nullptr;
 }

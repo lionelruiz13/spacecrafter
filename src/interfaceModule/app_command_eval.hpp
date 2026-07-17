@@ -5,6 +5,7 @@
 #include <string>
 #include <functional>
 #include <memory>
+#include <random>
 #include "interfaceModule/base_command_interface.hpp"
 #include "tools/no_copy.hpp"
 
@@ -21,8 +22,8 @@ class CoreLink;
 *
 * \brief Processes script engine variables.
 *
-* Variables from the scripting engine are treated in this class. 
-* 
+* Variables from the scripting engine are treated in this class.
+*
 * @section Description
 *
 * A variable is simply defined by a character string associated in a map with its value represented by a character string.
@@ -30,22 +31,22 @@ class CoreLink;
 * The script engine only processes strings.
 *
 * All character strings are analyzed: if the character string represents a variable saved in the map, its saved value is returned.
-* Otherwise, it is a numeric value. 
+* Otherwise, it is a numeric value.
 *
 * All the variables declared by the user are managed in the map variables.
 * However there are pre-declared variables which bypass the map variables.
 * These variables are directly related to CoreLink, stocked in map m_reservedVar.
-* 
+*
 * @section Working
 *
 * In order, analyze:
 * - Is this a reserved variable?
 * - Is this a predefined variable?
-* - Otherwise, it is a number. 
+* - Otherwise, it is a number.
 *
 */
 class AppCommandEval : public NoCopy{
-public: 
+public:
 	// constructor
     AppCommandEval(std::shared_ptr<CoreLink> _coreLink);
     // destructor ?
@@ -58,7 +59,7 @@ public:
 	//! transform as possible the parameter to int
 	int evalInt(const std::string &var);
 
-	//! create a string variable with value 
+	//! create a string variable with value
 	void define(const std::string& mArg, const std::string& mValue);
 	//! first becomes first added by the second
 	void commandAdd(const std::string& mArg, const std::string& mValue);
@@ -68,13 +69,15 @@ public:
 	void commandMul(const std::string& mArg, const std::string& mValue);
 	//! first becomes first divided by the second
 	void commandDiv(const std::string& mArg, const std::string& mValue);
+    //! first becomes first modulo by the second
+    void commandMod(const std::string& mArg, const std::string& mValue);
 	//! first becomes tangent of the second
 	void commandTan(const std::string& mArg, const std::string& mValue);
 	//! first becomes trunc of the second
 	void commandTrunc(const std::string& mArg, const std::string& mValue);
 	//! first becomes sine of the second
 	void commandSin(const std::string& mArg, const std::string& mValue);
-	//! fix the minimum random value for the internal random generator 
+	//! fix the minimum random value for the internal random generator
 	void commandRandomMin(const std::string& mValue);
 	//! fix the maximum random value for the internal random generator
 	void commandRandomMax(const std::string& mValue);
@@ -92,9 +95,9 @@ private:
 	void setReservedVariable(const std::string &var, double value);
 	//! fonction operator to avoid code duplication
 	void evalOps(const std::string& mArg, const std::string& mValue, std::function<double(double,double)> f);
-	
+
 	//variables used in the scripting engine
-	std::map<const std::string, std::string> variables;
+    std::map<const std::string, std::pair<std::string, double> > variables;
 	// map of system variables accessible through CoreLink
 	std::map<const std::string, SC_RESERVED_VAR> m_reservedVar;
 	// reverse map to avoid no reseach time
@@ -102,6 +105,7 @@ private:
 	double max_random;
 	double min_random;
 	std::shared_ptr<CoreLink> coreLink;
+    std::random_device rdevice;
 };
 
 #endif

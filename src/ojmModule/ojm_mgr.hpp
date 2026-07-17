@@ -45,6 +45,7 @@ public:
 	enum STATE_POSITION {
 		IN_UNIVERSE,
 		IN_GALAXY,
+		IN_SANDBOX,
 		OTHER
 	};
 

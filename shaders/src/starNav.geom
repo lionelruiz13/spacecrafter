@@ -22,56 +22,44 @@ layout (binding=1, set=1) uniform uMat {
 };
 
 #include <cam_block_only.glsl>
-
-vec4 custom_project(vec4 invec)
-{
-	float zNear=main_clipping_fov[0]; // 1.f
-	float zFar=main_clipping_fov[1] * 8.f; // 16000.f
-	float fov=main_clipping_fov[2];
-
-	float fisheye_scale_factor = 1.0/fov;
-	float viewport_center_x=viewport_center[0];
-	float viewport_center_y=viewport_center[1];
-	float viewport_radius=viewport_center[2];
-
-	vec4 win = invec;
-    win = Mat * win;
-
-	float rq1 = win.x*win.x+win.y*win.y;
-	float depth = sqrt(rq1 + win.z*win.z);
-
-	if (rq1 <= 0.0 ) {
-		if (win.z < 0.0) {
-			win.x = viewport_center_x;
-			win.y = viewport_center_y;
-			win.z = (abs(depth) - zNear) / (zFar-zNear);
-			win.w = 1.0;
-			return win;
-		}
-		win.x = viewport_center_x;
-		win.y = viewport_center_y;
-		win.z = -1e30;
-		win.w = -1.0;
-		return win;
-	}
-	rq1 = sqrt(rq1);
-	float f = asin(min(rq1/depth, 1)); // min patch a driver bug were rq/depth > 1
-	if (win.z > 0)
-		f = M_PI - f;
-	win.w = (f<0.9*M_PI) ? 1.0 : -1.0;
-    f *= fisheye_scale_factor * viewport_radius / rq1;
-
-    win.x = viewport_center_x + win.x * f;
-    win.y = viewport_center_y + win.y * f;
-
-    win.z = (abs(depth) - zNear) / (zFar-zNear);
-    return win;
-}
+#include <custom_project_advanced.glsl>
 
 void main()
 {
+	vec4 pos = custom_project(gl_in[0].gl_Position, vec3(main_clipping_fov.x, main_clipping_fov.y * 8.0, main_clipping_fov.z));
+	// float zNear=main_clipping_fov[0]; // 1.f
+	// float zFar=main_clipping_fov[1] * 8.f; // 16000.f
+	// float fov=main_clipping_fov[2];
+	// float viewport_center_x=viewport_center[0];
+	// float viewport_center_y=viewport_center[1];
+	// float viewport_radius=viewport_center[2];
+
+	// // Transform position
+	// vec4 win = Mat * gl_in[0].gl_Position;
+
+	// // Project using custom_project2D (handles all projection types)
+	// vec4 projected = custom_project2D(win, mat4(1.0), fov);
+
+	// // Calculate depth and visibility
+	// float rq1 = win.x*win.x+win.y*win.y;
+	// float depth = sqrt(rq1 + win.z*win.z);
+
+	// // Check visibility (w = 1.0 if visible, -1.0 if behind camera)
+	// rq1 = sqrt(rq1);
+	// float f = asin(min(rq1/depth, 1));
+	// if (win.z > 0)
+	// 	f = M_PI - f;
+	// float visible = (f<0.9*M_PI) ? 1.0 : -1.0;
+
+	// // Scale to viewport
+	// vec4 pos = vec4(
+	// 	viewport_center_x + projected.x * viewport_radius,
+	// 	viewport_center_y + projected.y * viewport_radius,
+	// 	(abs(depth) - zNear) / (zFar-zNear),
+	// 	visible
+	// );
+
 	//test sur le centre afin d'écarter les stars invisibles ou hors caméra
-	vec4 pos = custom_project( gl_in[0].gl_Position );
 	if (pos.w == 1.0) {
 		// en Bas à droite
 		gl_Position   = MVP2D * ( pos +vec4( mag[0], -mag[0], 0.0, 0.0) );

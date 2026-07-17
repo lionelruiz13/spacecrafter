@@ -32,6 +32,7 @@
 #include "navModule/navigator.hpp"
 #include "bodyModule/body_color.hpp"
 #include "navModule/observer.hpp"
+#include "tools/call_system.hpp"
 #include "tools/sc_const.hpp"
 #include "tools/s_font.hpp"
 #include "tools/context.hpp"
@@ -107,7 +108,14 @@ void Sun::buildHaloCmd()
 
 void Sun::setBigHalo(const std::string& halotexfile, const std::string &path)
 {
-	tex_big_halo = std::make_unique<s_texture>( path + halotexfile, TEX_LOAD_TYPE_PNG_SOLID);
+    std::string fullpath = path + halotexfile;
+    if (CallSystem::fileExist(fullpath)) {
+        // If we have an existing file, load it
+        tex_big_halo = std::make_unique<s_texture>( fullpath, TEX_LOAD_TYPE_PNG_SOLID);
+    } else {
+        // else let s_texture try to find it in the standard paths (textures/...)
+        tex_big_halo = std::make_unique<s_texture>( halotexfile, TEX_LOAD_TYPE_PNG_SOLID);
+    }
     if (descriptorSetBigHalo) {
         buildHaloCmd();
     }
@@ -207,6 +215,8 @@ void Sun::createSunShader()
     pipelineSun->removeVertexEntry(2);
     pipelineSun->bindShader("body_sun.vert.spv");
     pipelineSun->setSpecializedConstant(7, context.isFloat64Supported);
+    // Set specialization constant for projection type (constant_id = 8)
+    pipelineSun->setSpecializedConstant(8, Context::projectionType);
     pipelineSun->bindShader("body_sun.frag.spv");
     pipelineSunNoDepth = std::unique_ptr<Pipeline>(pipelineSun->clone("Body Sun noDepth"));
     pipelineSunNoDepth->setDepthStencilMode();
