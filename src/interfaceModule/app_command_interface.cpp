@@ -3860,6 +3860,19 @@ int AppCommandInterface::commandCamera(uint64_t &wait)
 		return executeCommandStatus();
 	}
 
+	if (argAction == W_FREE_MODE) {
+		// camera action free_mode state on|off - new-path free flight
+		// (INTENT §2(c): every capability dynamically reachable; the
+		// reference-transition layer rides on it).
+		std::string argState = args[W_STATE];
+		if (argState.empty()) {
+			debug_message = "command 'camera free_mode' : missing state";
+			return executeCommandStatus();
+		}
+		coreLink->cameraSetFreeMode(Utility::isTrue(argState));
+		return executeCommandStatus();
+	}
+
 	if(argAction == W_LIFT_OFF){
 
 		std::string altStr = args[W_ALTITUDE];

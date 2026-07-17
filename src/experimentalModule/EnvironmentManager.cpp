@@ -180,10 +180,13 @@ void EnvironmentManager::buildAtmosphereInput(Camera &camera, ModularBody *refer
     // getMoon() hardcode dissolves - INTENT 11.23). Earth: the Moon, same
     // by construction; bodies without satellites get a below-horizon null
     // moon (no skybright contribution, no eclipse term).
+    // Satellites = the ORBITING list (grounded/inner children are not moon
+    // candidates; hidden excluded by construction). Behavior-equal on shipped
+    // data - no shipped body has grounded or inner children below system level.
     ModularBody *moon = nullptr;
-    for (auto &c : reference->childs) {
-        if (!moon || c.getRadius() > moon->getRadius())
-            moon = &c;
+    for (auto &c : reference->orbitingBodies) {
+        if (!moon || c->getRadius() > moon->getRadius())
+            moon = c.get();
     }
     if (moon) {
         const Vec3f moonEye = moon->getObservedPosition();

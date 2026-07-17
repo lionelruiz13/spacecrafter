@@ -128,6 +128,12 @@ constexpr int SECONDARY_SELF_SHADOWING_RESOLUTION = 2048;
 
 // ResourcePriority moved to ResourceHub.hpp (resource-layer concept, I2).
 
+// Which of the parent's ownership lists holds a body (the relations block
+// above, made live 2026-07-17 - INTENT 11.36): GROUNDED = bound to the
+// parent's surface (rover class), ORBITING = standard satellite, INNER =
+// inside the parent's volume, shown only while the camera is inside the
+// parent's AoI (systems nested in a galaxy). HIDDEN_* = same body parked by
+// hide(), still parent-owned, outside every update/draw walk by construction.
 enum class BodyRelation {
     HIDDEN_GROUNDED,
     HIDDEN_ORBITING,
@@ -136,6 +142,12 @@ enum class BodyRelation {
     ORBITING,
     INNER,
 };
+
+// hide()/show() translate between a relation and its hidden variant by +-3.
+static_assert(static_cast<int>(BodyRelation::GROUNDED) == static_cast<int>(BodyRelation::HIDDEN_GROUNDED) + 3 &&
+              static_cast<int>(BodyRelation::ORBITING) == static_cast<int>(BodyRelation::HIDDEN_ORBITING) + 3 &&
+              static_cast<int>(BodyRelation::INNER) == static_cast<int>(BodyRelation::HIDDEN_INNER) + 3,
+              "hide()/show() map relations by +-3 - keep the enum halves aligned");
 
 enum class BodyModuleType : unsigned char;
 
@@ -150,7 +162,11 @@ class ModularBody {
     // For environment chain aggregation (member lists, satellite selection)
     friend class EnvironmentManager;
 public:
-    ~ModularBody();
+    // Virtual: children are owned polymorphically (unique_ptr<ModularBody>
+    // may hold a nested ModularSystem - G2); destruction through the base
+    // pointer requires it. No virtual call sits on any hot walk (draw/update
+    // dispatch stays non-virtual) - the cost is one vptr per body.
+    virtual ~ModularBody();
     // For emplace_back
     ModularBody(ModularBody *parent, ModularBodyCreateInfo &info);
     // Prevent copy
@@ -159,8 +175,17 @@ public:
     ModularBody &operator=(const ModularBody &) = delete;
     ModularBody &operator=(ModularBody &&) = delete;
 
-    // Create a new child body. If a body with the same englishName exists, it is replaced by this one.
-    ModularBody *createChild(ModularBodyCreateInfo &info);
+    // Create a new child body under the given relation (ownership list).
+    // If a body with the same englishName exists, it is replaced by this one.
+    // THE registration path (with createChildSystem): pushes into the relation
+    // list AND registers into the parent-side owning system's sorted list;
+    // ~ModularBody deregisters symmetrically. Only visible relations here -
+    // hidden is entered through hide().
+    ModularBody *createChild(ModularBodyCreateInfo &info, BodyRelation rel = BodyRelation::ORBITING);
+    // Same, constructing a nested ModularSystem (G2: systems are bodies).
+    // Default relation INNER: a system lives inside its host's volume and is
+    // shown while the camera is inside the host's AoI.
+    ModularSystem *createChildSystem(ModularBodyCreateInfo &info, BodyRelation rel = BodyRelation::INNER);
     // The boolean representation of this body is whether it is visible or not
     inline operator bool() const {
         return isVisible & isBodyVisible;
@@ -185,7 +210,7 @@ public:
     inline void preUpdate(double jd, const Mat4f &preUpdate) {
         const float squaredDistance = preUpdate.r[12] * preUpdate.r[12] + preUpdate.r[13] * preUpdate.r[13] + preUpdate.r[14] * preUpdate.r[14];
         distance = sqrt(squaredDistance);
-        if (childs.empty()) {
+        if (!hasChildren()) {
             if (distance > boundingRadius) {
                 halfAngularSize = atanf(boundingRadius / sqrt(squaredDistance - boundingRadius*boundingRadius));
                 const float tmp = cullHalfFov + halfAngularSize;
@@ -359,8 +384,18 @@ public:
         // distance==distance rejects NaN: a corrupted spatial state must not
         // cross into the time domain - a NaN jd freezes the Kepler solver
         // (elliptic_to_rectangular.c) and with it the whole main loop.
-        if (flagLightTravelTime && distance == distance)
-            jd -= distance * (149597870000.0 / (299792458.0 * 86400));
+        // The retardation is CLAMPED to its domain of meaning (INTENT 11.36):
+        // a galactic-distance observer (reference switched up the hierarchy)
+        // retarded solar ephemerides by ~1e9 days - finite, so the NaN
+        // barrier passed, but Kepler at absurd dates crawls (measured: the
+        // main loop at seconds per frame, bit-identical dumps 150 ms apart).
+        // 32 days of light ≈ 5500 AU: beyond that viewing distance the
+        // residual retardation error is sub-pixel by construction.
+        if (flagLightTravelTime && distance == distance) {
+            constexpr double MAX_RETARDATION_DAYS = 32;
+            const double retard = distance * (149597870000.0 / (299792458.0 * 86400));
+            jd -= (retard < MAX_RETARDATION_DAYS) ? retard : MAX_RETARDATION_DAYS;
+        }
         Vec3d tmp;
         if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
             (*oscFunc)(jd,jd,tmp);
@@ -486,8 +521,13 @@ public:
     }
 
     inline void transformBodyToParent(double jd, Mat4f &mat_local_to_body) {
-        if (flagLightTravelTime && distance == distance) // same retardation + NaN barrier as transformParentToBodyPos
-            jd -= distance * (149597870000.0 / (299792458.0 * 86400));
+        // Same retardation + NaN barrier + absurd-date clamp as
+        // transformParentToBodyPos (the up-hop must mirror the down-hop).
+        if (flagLightTravelTime && distance == distance) {
+            constexpr double MAX_RETARDATION_DAYS = 32;
+            const double retard = distance * (149597870000.0 / (299792458.0 * 86400));
+            jd -= (retard < MAX_RETARDATION_DAYS) ? retard : MAX_RETARDATION_DAYS;
+        }
         Vec3d tmp;
         if (OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction()) {
             (*oscFunc)(jd,jd,tmp);
@@ -542,8 +582,15 @@ public:
             // Bound children live in the surface frame: fold the ACCUMULATED
             // equatorial frame (single authority - same frame the visible
             // branch passes via `mat`), never the own tilt alone.
-            for (auto &c : childs)
-                c.recursiveTranslationUpdate(jd, c.boundToSurface ? mat_local_to_parent.multiplyFast(accumulatedBodyPosToBody(jd)) : mat_local_to_parent);
+            if (!groundedBodies.empty()) {
+                const Mat4f surfaceFrame = mat_local_to_parent.multiplyFast(accumulatedBodyPosToBody(jd));
+                for (auto &c : groundedBodies)
+                    c->recursiveTranslationUpdate(jd, surfaceFrame);
+            }
+            for (auto &c : orbitingBodies)
+                c->recursiveTranslationUpdate(jd, mat_local_to_parent);
+            for (auto &c : innerBodies)
+                c->recursiveTranslationUpdate(jd, mat_local_to_parent);
         }
     }
 
@@ -556,8 +603,15 @@ public:
         mat.r[13] = frame.r[13];
         mat.r[14] = frame.r[14];
         distance = frame.getTranslation().length();
-        for (auto &c : childs)
-            c.recursiveTranslationUpdate(jd, c.boundToSurface ? frame.multiplyFast(accumulatedBodyPosToBody(jd)) : frame);
+        if (!groundedBodies.empty()) {
+            const Mat4f surfaceFrame = frame.multiplyFast(accumulatedBodyPosToBody(jd));
+            for (auto &c : groundedBodies)
+                c->recursiveTranslationUpdate(jd, surfaceFrame);
+        }
+        for (auto &c : orbitingBodies)
+            c->recursiveTranslationUpdate(jd, frame);
+        for (auto &c : innerBodies)
+            c->recursiveTranslationUpdate(jd, frame);
     }
 
     // Update the body system from a given body, return the active system
@@ -666,8 +720,14 @@ public:
     inline float getSubsystemRadius() const {
         return subsystemRadius;
     }
+    // Visible (non-hidden) children exist - the update/draw walks' predicate.
     inline bool hasChildren() const {
-        return !childs.empty();
+        return !(groundedBodies.empty() && orbitingBodies.empty() && innerBodies.empty());
+    }
+    // ANY owned child incl. hidden - the removal-safety predicate (destroying
+    // a body destroys its hidden children too; non-recursive remove refuses).
+    inline bool ownsAnyChild() const {
+        return hasChildren() || !hiddenBodies.empty();
     }
     inline float getScreenSize() const {
         return screenSize;
@@ -694,13 +754,34 @@ public:
             fn(*b.second);
         }
     }
-    // Find a better reference body, return nullptr if this body is the best one
-    inline ModularBody *findBetterReference() {
-        if (distance > areaOfInfluence)
+    // Find a better reference body, return nullptr if this body is the best
+    // one. `observerDistance` is the CALLER's (camera's) own distance to this
+    // body - the decision must NOT read this->distance: that member belongs
+    // to the visibility bookkeeping, which legitimately zeroes it through
+    // ancestor transitions (setChildNoLongerVisible) in the same dispatch
+    // that precedes the decision - measured as a reference pinned at
+    // refDist==0 while the camera sat 5e11 AU out (INTENT 11.36 scene E).
+    // The child-capture scan below still reads the children's members
+    // (sentinel-guarded): a clobbered frame just retries next frame.
+    // Guard: an uncached body (updateCache never ran) has areaOfInfluence 0 -
+    // deciding a transition on it would escalate every reference on its first
+    // frame; stale cache never drives a switch.
+    inline ModularBody *findBetterReference(const float observerDistance) {
+        if (uncached)
+            return nullptr;
+        if (observerDistance > areaOfInfluence)
             return parent;
-        for (auto &c : childs) {
-            if (c.isInAreaOfInfluence())
-                return &c;
+        for (auto &c : groundedBodies) {
+            if (c->isInAreaOfInfluence())
+                return c.get();
+        }
+        for (auto &c : orbitingBodies) {
+            if (c->isInAreaOfInfluence())
+                return c.get();
+        }
+        for (auto &c : innerBodies) {
+            if (c->isInAreaOfInfluence())
+                return c.get();
         }
         return nullptr;
     }
@@ -783,8 +864,14 @@ public:
     // Unpin; if this body was parked for destruction (removed from the tree
     // while pinned) and this was the last pin, destruction happens now.
     void unpin();
+    // distance == 0 is the NOT-EVALUATED sentinel (setChildNoLongerVisible
+    // zeroes it on visibility transitions; drawSystem's break rule reads it) -
+    // it must never read as "at zero distance": an unevaluated child captured
+    // the camera reference through 0 <= AoI (measured: the Moon captured from
+    // 2.4e-3 AU away; Sun<->SolarSystem reference livelock after a transition
+    // zeroed the ex-reference - INTENT 11.36 scene E probes).
     inline bool isInAreaOfInfluence() const {
-        return distance <= areaOfInfluence;
+        return distance > 0 && distance <= areaOfInfluence;
     }
     // Must be called after update as it depends on updated values
     inline float getPhase() const {
@@ -813,13 +900,24 @@ public:
     inline float getDistanceToObserver() const {
         return distance;
     }
+    // Harness/diagnostic accessors (INTENT 11.36 scene E instrument): the
+    // reference-transition inputs, observable from the camera dump.
+    inline float getAreaOfInfluence() const {
+        return areaOfInfluence;
+    }
+    inline bool isCacheFresh() const {
+        return !uncached;
+    }
     // Return true if this body has the STAR bit set, meaning it emit light
     inline bool isStar() const {
         return (bodyType & BodyType::STAR) == BodyType::STAR;
     }
-    // Return true if this body is a system
+    // Return true if this body is a system - STRUCTURAL test (isolation
+    // root), not the enum: a ModularSystem is a system whatever its bodyType
+    // says (SYSTEM, GALAXY milkyway, future protosystem types). Asking the
+    // capability instead of the name (the enum stays descriptive data).
     inline bool isSystem() const {
-        return bodyType == BodyType::SYSTEM;
+        return !isNotIsolated;
     }
     // Return true if this body is at the center of his system
     // (2026-07-17 fix: the loop tested THIS body's eclipticPos at every
@@ -834,7 +932,11 @@ public:
                 return false;
             body = body->parent;
         }
-        return (body->bodyType == BodyType::SYSTEM);
+        // Structural top test (matches isSystem): the loop exits at the
+        // isolated root, which IS a system whatever its enum (the previous
+        // enum==SYSTEM test read GALAXY/universe roots as false - a star at
+        // a galaxy's center would have lost its ancestors' participation).
+        return !body->isNotIsolated;
     }
 
     // Camera reference transition wiring points (Camera ctor/switchToBody/
@@ -929,13 +1031,17 @@ private:
     // than the old path (A/B captures, 2026-07-12, INTENT 11.19a). Every rule
     // below carries its old-path line reference; divergences here are visual
     // divergences between paths by construction.
-    inline void drawHalo(Renderer &renderer) {
-        const float mag = computeMagnitude();
+    // Core of the faithful port with the INPUTS parameterized (magnitude,
+    // px disc floor, color, satellite rules): self-draw passes its own state
+    // (drawHalo below - values byte-identical to the pre-factoring form);
+    // the far-system star proxy (ModularSystem::drawStarProxy) passes its
+    // star's photometry at the system node's position (INTENT 11.36).
+    inline void drawHaloCore(Renderer &renderer, const float mag, const float screen_r, const Vec3f &color, const bool satelliteRules) {
         const float fov_deg = halfFov * (360.f / M_PI); // = old prj->getFov()
         float fov_q = (fov_deg > 60.f) ? 60.f : fov_deg; // halo.cpp:111-113
         fov_q = 1.f / (fov_q * fov_q);
         rmag = sqrtf(renderer.adaptLuminance((expf(-0.92103f*(mag + 12.12331f)) * 108064.73f) * fov_q)) * 30.f * ModularBody::haloScale;
-        if (isSatellite()) { // halo.cpp:117-120 (satellites only, NOT all non-stars)
+        if (satelliteRules) { // halo.cpp:117-120 (satellites only, NOT all non-stars)
             rmag /= (fov_deg > 60.f) ? 25.f : 5.f;
         }
         cmag = 1.f;
@@ -952,10 +1058,6 @@ private:
     				rmag = ModularBody::haloSizeLimit;
     		}
         }
-        // old getOnScreenSize (body.cpp:668-671) = FULL angular diameter over
-        // the viewport HEIGHT = screenSize·2·viewportRadius (the previous
-        // ·viewportRadius halved every disc-floored halo).
-        const float screen_r = screenSize * 2.f * viewportRadius;
         cmag *= 0.5f*rmag/screen_r; // halo.cpp:144-151
         if (cmag > 1.f)
             cmag = 1.f;
@@ -963,7 +1065,7 @@ private:
     		cmag *= rmag/screen_r;
     		rmag = screen_r;
     	}
-        if (isSatellite()) {
+        if (satelliteRules) {
             // Eclipse-behind-parent rule, satellites ONLY (halo.cpp:153-163).
             // For planets the parent IS the light source: OP=0 -> 0/0 (the
             // previous all-non-star form survived on NaN-compares-false).
@@ -978,19 +1080,62 @@ private:
         }
         if (rmag < 1.21f && cmag < 0.05f) // halo.cpp:86 skip rule (old draws
             return; // big-but-dim halos; the previous cmag-only gate dropped them)
-        renderer.drawHalo(screenPos, haloColor * cmag, rmag);
+        renderer.drawHalo(screenPos, color * cmag, rmag);
+    }
+    inline void drawHalo(Renderer &renderer) {
+        // screen_r: old getOnScreenSize (body.cpp:668-671) = FULL angular
+        // diameter over the viewport HEIGHT = screenSize·2·viewportRadius
+        // (the ·viewportRadius form halved every disc-floored halo).
+        drawHaloCore(renderer, computeMagnitude(), screenSize * 2.f * viewportRadius,
+                     haloColor, isSatellite());
     }
     // Identity
     std::string englishName;
     std::string nameI18;
 
-    // Relations
+    // Relations - ownership by relation (single authority: `relation` says
+    // which list of the parent owns this body; boundToSurface is its hot-path
+    // cache, written only at createChild*). Children are polymorphic
+    // (unique_ptr): a ModularSystem nests in a system like any body (G2).
+    // Registration contract: the base ctor does NOT register anywhere -
+    // createChild/createChildSystem are the only entry (list push + owning-
+    // system addBody); ~ModularBody deregisters symmetrically.
     ModularBody *parent;
-    BodyRelation relation;
+    BodyRelation relation = BodyRelation::ORBITING; // meaningless for parentless roots
     std::vector<std::unique_ptr<ModularBody>> groundedBodies;
     std::vector<std::unique_ptr<ModularBody>> orbitingBodies;
     std::vector<std::unique_ptr<ModularBody>> innerBodies;
-    std::vector<std::unique_ptr<ModularBody>> hiddenBodies;
+    std::vector<std::unique_ptr<ModularBody>> hiddenBodies; // parked by hide(), still owned
+
+    // The ownership list a relation designates (hidden variants -> hiddenBodies).
+    inline std::vector<std::unique_ptr<ModularBody>> &listOf(BodyRelation r) {
+        switch (r) {
+        case BodyRelation::GROUNDED: return groundedBodies;
+        case BodyRelation::ORBITING: return orbitingBodies;
+        case BodyRelation::INNER:    return innerBodies;
+        default:                     return hiddenBodies;
+        }
+    }
+    // Iterate the visible children (grounded+orbiting+inner; hidden excluded
+    // by construction). Frame-sensitive walks iterate the lists directly
+    // (grounded receive the surface frame per-list); this helper serves the
+    // frame-insensitive sites.
+    template<class F>
+    inline void forEachVisibleChild(F &&fn) {
+        for (auto &c : groundedBodies) fn(*c);
+        for (auto &c : orbitingBodies) fn(*c);
+        for (auto &c : innerBodies) fn(*c);
+    }
+    inline void clearChildren() {
+        groundedBodies.clear();
+        orbitingBodies.clear();
+        innerBodies.clear();
+        hiddenBodies.clear();
+    }
+    // Register a freshly-created child into the owning system's sorted list
+    // (walk from THIS body: the parent side - a nested system registers in
+    // its host's system, its own content registers in itself).
+    void registerToSystem(ModularBody *child);
     std::vector<std::unique_ptr<EnvironmentModule>> groundedEnvironment;
     std::vector<std::unique_ptr<EnvironmentModule>> environment;
     // The "Received shadows" relation realized (S5/G7): per-frame received-
@@ -1000,9 +1145,6 @@ private:
 
     // TODO create an optimized std::string for limited set
     std::vector<std::unique_ptr<BodyModule>> components; // Reference every BodyModule of this ModularBody by name
-
-    // TODO use *Bodies instead
-    std::list<ModularBody> childs; // Drawn if screenSize >= 10%
 
     std::vector<BodyModule *> farComponents; // 2D behind body, SKIP when screenSize > 20%, update NEVER called
     std::vector<BodyModule *> nearComponents; // Drawn if screenSize >= 0.15% and distance > scaledRadius * BODY_SURFACE_HEIGHT
@@ -1078,17 +1220,21 @@ private:
     bool inParent = false; // Determine whether this body is potentially inside his parent
     bool uncached = true; // Determine whether this body require any update
     bool loaded = false; // Determine whether all nearComponents and inComponents are fully loaded
-    bool boundToSurface = false; // Determine whether this body is bound to the surface of his parent
+    bool boundToSurface = false; // Hot-path cache of (relation == GROUNDED) - written by createChild* only
     bool altitudeRelativeToRadius = true; // Determine whether observer's altitude on this body is relative to the radius
 
     // Global datas
+    // Light state is CURRENT-SYSTEM-scoped: updateSystem writes the system's
+    // star; a nested system draw (ModularSystem::drawNested) saves it, runs
+    // with ITS star, and restores before the enclosing system's remaining
+    // bodies. Starless systems leave it untouched (their bodies don't read it
+    // outside the delegation path).
     static Vec3f lightPosition; // Observer-local light source position
     static float lightDistance; // Observer-local light source distance
     static float lightSize;     // Light source radius
     static ModularBody *lastFit;
     static Translator *translator;
     static std::map<std::string, ModularBody *> bodyReference;
-    static std::list<ModularBody> hidden;
     // Bodies sufficiently large on screen to need a depth bucket this frame.
     // Producer: update() (pushes when screenSize > threshold). Consumer: the
     // Renderer's depth-range partitioning (splits the full depth range between

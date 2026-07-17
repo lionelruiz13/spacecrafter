@@ -81,7 +81,12 @@ void ModularSystem::cleanUp()
 
 void ModularSystem::updateSystem()
 {
-    star->updateAsLightSource();
+    // Starless systems (galaxy/universe level) leave the light state alone -
+    // lightPosition is CURRENT-SYSTEM-scoped (nested draws save/restore it,
+    // drawSystem dispatch), and no body of a starless system consumes it
+    // outside the delegation path.
+    if (ModularBody *s = getSystemStar())
+        s->updateAsLightSource();
     if (needCleanUp)
         cleanUp();
     if (sortedSystemBodies.size() > 1) { // SORT
@@ -117,13 +122,16 @@ void ModularSystem::updateSystem()
 void ModularSystem::computeShadows(Renderer &renderer)
 {
     ShadowService &service = renderer.shadow;
-    if (!ShadowService::enabled || !star || star->distance == 0)
+    // getSystemStar: the star==this unassigned sentinel must not act as a
+    // light source (starless galaxy/universe systems have no shadows).
+    ModularBody *systemStar = getSystemStar();
+    if (!ShadowService::enabled || !systemStar || systemStar->distance == 0)
         return;
     service.ensureInit(renderer);
     if (!service)
         return;
     const Vec3f L = ModularBody::getLightPosition();
-    const float sunRadius = star->getRadius();
+    const float sunRadius = systemStar->getRadius();
     // ---- Self-shadow nomination (OJM wave, 2026-07-16) --------------------
     // Old CoI parity: ProtoSystem::computeDraw nominated the single
     // highest-importance rendered body (importance = screen_sz/distance,
@@ -352,18 +360,66 @@ void ModularSystem::computeShadows(Renderer &renderer)
     }
 }
 
+void ModularSystem::drawSystemBodies(Renderer &renderer)
+{
+    ModularBody ** const end = sortedSystemBodies.data() + sortedSystemBodies.size();
+    for (ModularBody **pos = sortedSystemBodies.data(); pos < end; ++pos) {
+        ModularBody &body = **pos;
+        if (body.distance == 0)
+            break; // Skip bodies not evaluated on update
+        if (body.isSystem()) {
+            // A nested system draws its content (or its star point) at its
+            // own sort position - G2's systems-as-bodies at draw time.
+            static_cast<ModularSystem &>(body).drawNested(renderer);
+        } else {
+            body.draw(renderer);
+        }
+    }
+}
+
+void ModularSystem::drawNested(Renderer &renderer)
+{
+    if (!(isVisible & isBodyVisible))
+        return;
+    // px full diameter of the subsystem on screen - the drawHalo/pointer px
+    // idiom. At/above the constant: the interior is content (per-child
+    // visibility gating does the rest - D3); below: one point of light.
+    if (screenSize * 2.f * viewportRadius >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) {
+        const Vec3f savedLightPos = lightPosition;
+        const float savedLightDist = lightDistance;
+        const float savedLightSize = lightSize;
+        updateSystem(); // sort OUR list + set OUR star as light source
+        drawSystemBodies(renderer);
+        lightPosition = savedLightPos;
+        lightDistance = savedLightDist;
+        lightSize = savedLightSize;
+    } else {
+        drawStarProxy(renderer);
+    }
+}
+
+void ModularSystem::drawStarProxy(Renderer &renderer)
+{
+    ModularBody *s = getSystemStar();
+    if (!s || !s->isHaloEnabled)
+        return;
+    // Star branch of computeMagnitude (factor = distance^2) at the NODE's
+    // fresh distance - the star's own cached distance is stale while its
+    // system isn't current. Disc floor = the STAR's disc at that distance
+    // (small angle), never the subsystem extent (which would inflate the
+    // halo floor up to the nested-draw threshold).
+    const float mag = -26.73f - 2.5f * log10f(distance * distance);
+    const float starScreenR = (s->getScaledRadius() / (distance * halfFov)) * 2.f * viewportRadius;
+    drawHaloCore(renderer, mag, starScreenR, s->getHaloColor(), false);
+}
+
 void ModularSystem::drawSystem(Renderer &renderer)
 {
     computeShadows(renderer);
     for (auto &module : inComponents)
         module->draw(renderer, this, mat);
     renderer.beginBodyDraw();
-    ModularBody ** const end = sortedSystemBodies.data() + sortedSystemBodies.size();
-    for (ModularBody **pos = sortedSystemBodies.data(); pos < end; ++pos) {
-        if ((**pos).distance == 0)
-            break; // Skip bodies not evaluated on update
-        (**pos).draw(renderer);
-    }
+    drawSystemBodies(renderer);
     // Selection pointer (S2b): queued here, recorded by endBodyDraw on top of
     // everything (old path drew it after the whole system). Independent of the
     // body draw loop by design - the pointer's purpose is exactly the bodies
@@ -488,7 +544,11 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         if (hardcodedIt == param.end() || Utility::isTrue(hardcodedIt->second))
             applyHardcodedContent(createInfo, param);
     }
-    ModularBody *body = parent->createChild(createInfo);
+    // Relation from data BEFORE creation - relation is the ownership
+    // authority (boundToSurface is its cache, written by createChild only).
+    ModularBody *body = parent->createChild(createInfo,
+        Utility::isTrue(param["bound_to_surface"]) ? BodyRelation::GROUNDED
+                                                   : BodyRelation::ORBITING);
     // Binary-orbit completion (EMB class): if this body is the declared
     // secondary of its parent's BinaryOrbit, wire its orbit in - without this
     // the primary sits at the BARYCENTER (old/new Earth delta confirmed as
@@ -500,8 +560,6 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
             binary->setSecondaryOrbit(body->orbit.get());
         }
     }
-    if (Utility::isTrue(param["bound_to_surface"]))
-        body->boundToSurface = true;
     if (Utility::isTrue(param["hidden"]))
         body->hide();
     // star is initialized to the SYSTEM itself (valid light-position default

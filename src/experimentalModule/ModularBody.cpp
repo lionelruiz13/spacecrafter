@@ -15,7 +15,6 @@ float ModularBody::lightDistance;
 float ModularBody::lightSize;
 ModularBody *ModularBody::lastFit = nullptr;
 std::map<std::string, ModularBody *> ModularBody::bodyReference;
-std::list<ModularBody> ModularBody::hidden;
 float ModularBody::halfFov = M_PI_2;
 // Projection transfer (INTENT 11.33): FISHEYE default matches the config
 // default; SSystemFactory ctor mirrors Context::projectionType (post-config).
@@ -59,15 +58,21 @@ ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
         nameI18 = translator->translateUTF8(englishName);
     auto &ref = bodyReference[englishName];
     if (ref && !englishName.empty()) {
-        // It is too late to abort the body creation, so we replace it
+        // It is too late to abort the body creation, so we replace it.
+        // Children transfer by list move (unique_ptr - no slicing: nested
+        // ModularSystem children survive the transfer intact).
         cLog::get()->write("Body with name '" + englishName + "' already exists, replacing it", LOG_TYPE::L_INFO);
-        childs = std::move(ref->childs);
-        for (auto &child : childs)
-            child.parent = this;
+        groundedBodies = std::move(ref->groundedBodies);
+        orbitingBodies = std::move(ref->orbitingBodies);
+        innerBodies = std::move(ref->innerBodies);
+        hiddenBodies = std::move(ref->hiddenBodies);
+        forEachVisibleChild([this](ModularBody &child) { child.parent = this; });
+        for (auto &child : hiddenBodies)
+            child->parent = this;
         if (ref->pointerCount)
             ModularBodyPtr::redirect(ref, this);
-        ref->remove(true);
-        bodyReference[englishName] = this;
+        ref->remove(true); // runs BEFORE the map reassignment below - the old
+        bodyReference[englishName] = this; // dtor erases the slot, recreate it
     } else {
         ref = this;
     }
@@ -83,15 +88,34 @@ ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     }
 }
 
-ModularBody *ModularBody::createChild(ModularBodyCreateInfo &info)
+ModularBody *ModularBody::createChild(ModularBodyCreateInfo &info, BodyRelation rel)
 {
-    childs.emplace_back(this, info);
-    auto ret = &childs.back();
+    auto owned = std::make_unique<ModularBody>(this, info);
+    ModularBody *ret = owned.get();
+    ret->relation = rel;
+    ret->boundToSurface = (rel == BodyRelation::GROUNDED); // the cache's single write site
+    listOf(rel).push_back(std::move(owned));
+    registerToSystem(ret);
+    return ret;
+}
+
+ModularSystem *ModularBody::createChildSystem(ModularBodyCreateInfo &info, BodyRelation rel)
+{
+    auto owned = std::make_unique<ModularSystem>(this, info);
+    ModularSystem *ret = owned.get();
+    ret->relation = rel;
+    ret->boundToSurface = (rel == BodyRelation::GROUNDED);
+    listOf(rel).push_back(std::move(owned));
+    registerToSystem(ret);
+    return ret;
+}
+
+void ModularBody::registerToSystem(ModularBody *child)
+{
     auto p = this;
     while (p->isNotIsolated)
         p = p->parent;
-    static_cast<ModularSystem *>(p)->addBody(ret);
-    return ret;
+    static_cast<ModularSystem *>(p)->addBody(child);
 }
 
 ModularBody::~ModularBody()
@@ -103,21 +127,24 @@ ModularBody::~ModularBody()
         if (auto *binary = dynamic_cast<BinaryOrbit *>(parent->orbit.get()))
             binary->clearSecondaryOrbit(orbit.get());
     }
-    if (isNotIsolated) {
+    // Deregistration symmetric with createChild's registerToSystem: every
+    // PARENTED body was registered in the parent-side owning system, whatever
+    // its OWN isolation - the previous isNotIsolated gate skipped nested
+    // ModularSystem children, dangling their sorted-list entry (INTENT 5.22).
+    // Parentless roots (universe) were never registered.
+    if (parent) {
         auto p = parent;
         while (p->isNotIsolated)
             p = p->parent; // Search for system center
         static_cast<ModularSystem *>(p)->removeBody(this);
     }
-    childs.clear();
-    groundedBodies.clear();
-    orbitingBodies.clear();
-    innerBodies.clear();
+    clearChildren(); // children (incl. hidden - parent-owned) destroyed BEFORE
+                     // our own redirect: their remnant pointers redirect to us,
+                     // then ours (theirs included) redirect to our parent
     components.clear();
     groundedEnvironment.clear();
     environment.clear();
     bodyReference.erase(englishName);
-    components.clear();
     if (lastFit == this)
         lastFit = nullptr;
     if (pointerCount)
@@ -126,17 +153,20 @@ ModularBody::~ModularBody()
 
 bool ModularBody::remove(bool recursive)
 {
-    if (recursive || childs.empty()) {
-        const auto end = hidden.end();
-        for (auto it = hidden.begin(); it != end; ++it) {
-            if (&*it == this) {
-                ModularBodyPtr::rawUntrack(parent);
-                hidden.erase(it);
+    // Non-recursive removal refuses while ANY child is owned, hidden included
+    // (hidden children are parent-owned now - destroying them silently on a
+    // non-recursive remove would be an unasked cascade; old-path removeBody
+    // refuses on satellites, same class).
+    if (recursive || !ownsAnyChild()) {
+        auto &src = parent->listOf(relation);
+        const auto end = src.end();
+        for (auto it = src.begin(); it != end; ++it) {
+            if (it->get() == this) {
+                src.erase(it); // destroys this
                 return true;
             }
         }
-        parent->childs.remove(*this);
-        return true;
+        return false; // registration invariant broken - do not pretend removal
     } else {
         return false;
     }
@@ -155,8 +185,14 @@ void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBodyPos)
 {
     mat = matLocalToBodyPos.multiplyFast(accumulatedBodyPosToBody(jd));
     update(jd, mat);
-    for (auto &c : childs)
-        c.selectiveUpdate(jd, c.boundToSurface ? mat : matLocalToBodyPos);
+    // Grounded children live in the surface frame (`mat` - the accumulated
+    // equatorial frame); orbiting/inner ride the flat chain (frame contract).
+    for (auto &c : groundedBodies)
+        c->selectiveUpdate(jd, mat);
+    for (auto &c : orbitingBodies)
+        c->selectiveUpdate(jd, matLocalToBodyPos);
+    for (auto &c : innerBodies)
+        c->selectiveUpdate(jd, matLocalToBodyPos);
 }
 
 ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f mat_local_to_body)
@@ -176,8 +212,12 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
         body->recursiveUpdate(jd, flat);
     } else {
         body->mat = mat_local_to_body;
-        for (auto &c : body->childs)
-            c.recursiveTranslationUpdate(jd, c.boundToSurface ? mat_local_to_body : flat);
+        for (auto &c : body->groundedBodies)
+            c->recursiveTranslationUpdate(jd, mat_local_to_body);
+        for (auto &c : body->orbitingBodies)
+            c->recursiveTranslationUpdate(jd, flat);
+        for (auto &c : body->innerBodies)
+            c->recursiveTranslationUpdate(jd, flat);
     }
     while (body->isNotIsolated) {
         body->transformBodyToParent(jd, flat);
@@ -187,9 +227,17 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
         // the same convention as the descent - an own-tilt fold here would
         // desynchronize a moon-referenced camera's ancestor orientations.
         const Mat4f parentTilted = flat.multiplyFast(parent->accumulatedBodyPosToBody(jd));
-        for (auto &b : parent->childs) {
-            if (&b != body)
-                b.selectiveUpdate(jd, b.boundToSurface ? parentTilted : flat);
+        for (auto &b : parent->groundedBodies) {
+            if (b.get() != body)
+                b->selectiveUpdate(jd, parentTilted);
+        }
+        for (auto &b : parent->orbitingBodies) {
+            if (b.get() != body)
+                b->selectiveUpdate(jd, flat);
+        }
+        for (auto &b : parent->innerBodies) {
+            if (b.get() != body)
+                b->selectiveUpdate(jd, flat);
         }
         body = parent;
         body->mat = parentTilted; // assign BEFORE update: update() reads the member
@@ -227,16 +275,30 @@ void ModularBody::updateCache()
     }
     if (parent)
         parent->invalidateCachedState();
-    float squaredSubsystemRadius = boundingRadius*boundingRadius;
-    for (auto &c : childs) {
-        const float tmp = c.eclipticPos.lengthSquared();
-        if (squaredSubsystemRadius < tmp)
-            squaredSubsystemRadius = tmp;
-    }
+    // Subtree extent = |child offset| + the child's OWN subsystem reach.
+    // Direct |ecl| alone collapsed nested systems to zero extent (a system
+    // node's only direct child can sit at its center - the whole subsystem
+    // was invisible to the AoI heuristic; INTENT 5.19).
+    float subsystem = boundingRadius;
+    forEachVisibleChild([&subsystem](ModularBody &c) {
+        const float tmp = c.eclipticPos.length() + c.subsystemRadius;
+        if (subsystem < tmp)
+            subsystem = tmp;
+    });
     // Take some extra margin for the system radius
-    subsystemRadius = sqrt(squaredSubsystemRadius) * 1.1f;
-    // The area of influence is an heuristic
-    areaOfInfluence = std::min(std::max(boundingRadius * 128 / scaling, subsystemRadius * 16), eclipticPos.length() * 0.6f);
+    subsystemRadius = subsystem * 1.1f;
+    // The area of influence is an heuristic. The sibling-separation cap
+    // (|ecl|*0.6) only applies off-center: a system-centered or parentless
+    // body's influence IS its system's space - at ecl==0 the cap collapsed
+    // AoI to zero (the Sun, system nodes at their host's origin; INTENT 5.18),
+    // making every reference transition escalate and none descend.
+    {
+        float aoi = std::max(boundingRadius * 128 / scaling, subsystemRadius * 16);
+        const float sibCap = eclipticPos.length() * 0.6f;
+        if (sibCap > 0)
+            aoi = std::min(aoi, sibCap);
+        areaOfInfluence = aoi;
+    }
     if (cached)
         uncached = false;
 }
@@ -297,7 +359,7 @@ void ModularBody::drawLoaded(Renderer &renderer)
 
 void ModularBody::setChildNoLongerVisible()
 {
-    for (auto &c : childs) {
+    forEachVisibleChild([](ModularBody &c) {
         if (c.isChildVisible)
             c.setChildNoLongerVisible();
         c.distance = 0;
@@ -305,7 +367,7 @@ void ModularBody::setChildNoLongerVisible()
         // refresh, distance becomes non-zero again next frame, so a stale
         // isVisible=true would let drawSystem draw a chimera state.
         c.isVisible = false;
-    }
+    });
     isChildVisible = false;
 }
 
@@ -318,17 +380,24 @@ ModularBody *ModularBody::findBodyNameI18n(const std::string &nameI18)
     return nullptr;
 }
 
+// Hide = move ownership to the parent's hiddenBodies (still parent-owned -
+// no global list, no parent-tracking workaround; the relation remembers the
+// origin list so show() restores exactly). Return true iff it was shown.
 bool ModularBody::hide()
 {
-    const auto end = parent->childs.end();
-    for (auto it = parent->childs.begin(); it != end; ++it) {
-        if (&*it != this) // was missing: hide() used to hide the parent's FIRST
-            continue;     // child instead of this one (show() had the test)
+    if (!parent || relation < BodyRelation::GROUNDED)
+        return false; // roots can't hide; already hidden
+    auto &src = parent->listOf(relation);
+    const auto end = src.end();
+    for (auto it = src.begin(); it != end; ++it) {
+        if (it->get() != this)
+            continue;
         isVisible = false;
         if (isChildVisible)
             setChildNoLongerVisible();
-        hidden.splice(hidden.begin(), parent->childs, it);
-        ModularBodyPtr::rawTrack(parent);
+        parent->hiddenBodies.push_back(std::move(*it));
+        src.erase(it);
+        relation = static_cast<BodyRelation>(static_cast<int>(relation) - 3); // -> HIDDEN_*
         parent->invalidateCachedState();
         return true;
     }
@@ -337,11 +406,15 @@ bool ModularBody::hide()
 
 bool ModularBody::show()
 {
-    const auto end = hidden.end();
-    for (auto it = hidden.begin(); it != end; ++it) {
-        if (&*it == this) {
-            parent->childs.splice(parent->childs.begin(), hidden, it);
-            ModularBodyPtr::rawUntrack(parent);
+    if (!parent || relation >= BodyRelation::GROUNDED)
+        return false; // not hidden
+    auto &hid = parent->hiddenBodies;
+    const auto end = hid.end();
+    for (auto it = hid.begin(); it != end; ++it) {
+        if (it->get() == this) {
+            relation = static_cast<BodyRelation>(static_cast<int>(relation) + 3); // -> origin list
+            parent->listOf(relation).push_back(std::move(*it));
+            hid.erase(it);
             parent->invalidateCachedState();
             return true;
         }
@@ -447,6 +520,11 @@ void ModularBody::dumpTrace(std::ostream &out) const
         << ",\"boundingRadius\":" << boundingRadius
         << ",\"visible\":" << ((isVisible & isBodyVisible) ? "true" : "false")
         << ",\"screenSize\":" << screenSize
+        // relation = the membership authority (which parent list owns this
+        // body); makes hide/show structurally observable from the harness -
+        // dump PRESENCE never tracks it (the dump iterates the name registry,
+        // which includes hidden bodies). INTENT 11.36 rare-path instrument.
+        << ",\"relation\":" << static_cast<int>(relation)
         << ",\"lastJD\":" << std::setprecision(17) << lastJD << '}';
 }
 

@@ -211,13 +211,28 @@ void Camera::switchToBody(ModularBody *dst)
     recoverParams(R);
     setFreeMode(oldFreeMode);
     setBoundToSurface(oldBoundToSurface);
+    // A system node has no surface to bind to (its spin state is not surface
+    // semantics) - a system reference drops the bind; it re-arms on the next
+    // body reference through the normal setBoundToSurface route.
+    if (dst->isSystem())
+        setBoundToSurface(false);
 }
 
 void Camera::warpToBody(ModularBody *dst)
 {
+    if (!freeMode) {
+        // Anchored warp = old home-planet semantics: same lat/lon/ALTITUDE
+        // over the new body (altitude preserved, never the center distance -
+        // a stale center distance can sit inside the new body or far above
+        // it, and it desynchronizes every consumer until the next moveto).
+        distance = dst->getAltitudeReference()
+                 + (distance - reference->getAltitudeReference());
+    }
     reference->leaveEnvironment();
     reference = dst;
     reference->enterEnvironment();
+    if (dst->isSystem()) // same no-surface rule as switchToBody
+        setBoundToSurface(false);
 }
 
 void Camera::update(double jd, float deltaTime)
@@ -280,9 +295,6 @@ void Camera::update(double jd, float deltaTime)
     //  harness/predict.py carries the measurements.)
     Mat4f mat{viewRotation()};
     if (freeMode) {
-        if (auto newRef = reference->findBetterReference()) {
-            switchToBody(newRef);
-        }
         mat.multiplyTranslation(position);
     } else {
         mat.multiplyTranslation(Vec3f(0, 0, -distance));
@@ -298,6 +310,30 @@ void Camera::update(double jd, float deltaTime)
     lastDispatchedMat = mat; // harness: dump what actually ran (INTENT 11.14a)
     system = ModularBody::dispatchUpdate(reference, jd, mat);
     system->updateSystem();
+    // Reference transitions AFTER the dispatch (INTENT 11.36): the decision
+    // reads THIS frame's fresh distances. Deciding before the walk read the
+    // PREVIOUS frame's - right in steady state, wrong across discontinuities:
+    // a warped-to reference still carried its distance-as-a-far-body, and the
+    // escalation undid the explicit warp on the next frame (measured, scene C/D
+    // regression). The switch itself lands on the next frame's mat;
+    // calculateSwitchCompensation (which reads the caches this dispatch just
+    // refreshed) makes the transition seamless at the switch instant.
+    // Auto-transitions are FREE-FLIGHT-ONLY, both directions (INTENT 11.36
+    // scene-E finding): an anchored reference is an EXPLICIT declaration -
+    // legacy scripts (immutable, 2(b)) rely on `set home_planet X` +
+    // `moveto altitude small` with any prior altitude, and an anchored
+    // escalation in the frames between the two commands cascades the
+    // reference away and races the moveto (measured: reference landed on
+    // SolarSystem at solar-radius distance). The old path never re-references
+    // an explicit anchor either - its altitude-driven executor dispatch is a
+    // DISPLAY regime, not a reference change (that display question at
+    // anchored galactic altitudes is suspended for Vixy).
+    if (freeMode) {
+        // The camera's own distance to the reference - never the body's
+        // cached member (findBetterReference contract).
+        if (auto newRef = reference->findBetterReference(position.length()))
+            switchToBody(newRef);
+    }
 }
 
 void Camera::draw(Renderer &renderer)
@@ -318,6 +354,34 @@ void Camera::FrameDrawTask::start(Taskable *target)
     camera->system->drawSystem(*renderer);
     done.store(true, std::memory_order_release);
     target->endTask(this);
+}
+
+void Camera::moveTo(const Vec3f &pos, float duration, bool calculateDuration)
+{
+    if (freeMode) {
+        // Legacy spherical target converted to a free position - the
+        // setFreeMode(true) convention (spheToRect(-lon, lat) * center
+        // distance); altitude counts from the reference's altitude reference,
+        // matching the anchored branch's distanceToReference() semantics.
+        Vec3f dst;
+        Utility::spheToRect(-pos[0], pos[1], dst);
+        dst *= reference->getAltitudeReference() + pos[2];
+        if (duration > 0) {
+            moveRel(dst - position, duration, calculateDuration);
+        } else {
+            position = dst; // absolute snap: += (dst - position) cancels
+        }
+    } else if (duration > 0) {
+        moveRel(pos - Vec3f(longitude, latitude, distanceToReference()), duration, calculateDuration);
+    } else {
+        // Absolute snap by ASSIGNMENT: moveTo is absolute by meaning, and the
+        // delta form dies on float cancellation across scales - a 552 AU ->
+        // 2.3e-5 AU move has its target below the ulp of the start value
+        // (measured: distance landed on 0.0 exactly, INTENT 11.36 scene E).
+        longitude = pos[0];
+        latitude = pos[1];
+        distance = reference->getAltitudeReference() + pos[2];
+    }
 }
 
 void Camera::setFreeMode(bool b)
@@ -549,7 +613,11 @@ void Camera::dumpTrace(std::ostream &out) const
         << ",\"distance\":" << distance
         << ",\"alt\":" << alt << ",\"az\":" << az << ",\"heading\":" << heading
         << ",\"position\":[" << position[0] << ',' << position[1] << ',' << position[2]
-        << "],\"halfFov\":" << ModularBody::halfFov << ",\"mat\":[";
+        << "],\"refAoI\":" << (reference ? reference->getAreaOfInfluence() : 0)
+        << ",\"refDist\":" << (reference ? reference->getDistanceToObserver() : 0)
+        << ",\"refCached\":" << ((reference && reference->isCacheFresh()) ? "true" : "false")
+        << ",\"refParent\":\"" << ((reference && reference->getParent()) ? reference->getParent()->getEnglishName() : "") << '"'
+        << ",\"halfFov\":" << ModularBody::halfFov << ",\"mat\":[";
     for (int i = 0; i < 16; ++i)
         out << lastDispatchedMat.r[i] << ((i < 15) ? "," : "");
     out << "]}";

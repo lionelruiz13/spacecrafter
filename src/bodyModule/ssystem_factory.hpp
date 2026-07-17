@@ -269,6 +269,15 @@ public:
 
 	void setPlanetHidden(const std::string &name, bool planethidden) {
         currentSystem->setPlanetHidden(name, planethidden);
+        // Dual-path mirror (was old-path-only - the 11.15c seam class):
+        // new-path hide/show move ownership between the parent's relation
+        // lists (ModularBody, INTENT 11.36).
+        if (ModularBody *body = ModularBody::findBody(name)) {
+            if (planethidden)
+                body->hide();
+            else
+                body->show();
+        }
     }
 
 	bool getPlanetHidden(const std::string &name) {
@@ -452,6 +461,15 @@ public:
     }
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
+
+	//! New-path frame entry (camera + environment aggregation), called from
+	//! Executor::update in EVERY executor mode - never from the mode modules.
+	//! The new path's "in galaxy / in universe" is reference-chain state (G2),
+	//! not an executor mode: gating this behind the solar/stellar modules froze
+	//! the camera's multi-shell reference cascades mid-flight the moment the
+	//! dual-routed moveto flipped the OLD executor's altitude mode
+	//! (INTENT 11.36, scene-E mw_out2). Retires with the executors (frame task).
+	void updateExperimental(int delta_time, const TimeMgr* timeMgr);
 
 	void bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const {
         ssystem->bodyTraceGetAltAz(nav, alt, az);
@@ -703,12 +721,19 @@ private:
     std::unique_ptr<SolarSystemSelected> ssystemSelected;
     std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
 
-    ModularSystem *milkyway; // Never destroyed, there is no parent to delegate remnant ModularBodyPtr to
+    // The tree root and single eternal node (INTENT 6.6 resolved): the
+    // universe owns everything; every other node has a parent to delegate
+    // remnant ModularBodyPtr to on destruction. Destroyed only at factory
+    // teardown (declared BEFORE camera/environment: members destruct in
+    // reverse order, so every ModularBodyPtr holder releases first).
+    std::unique_ptr<ModularSystem> universe;
+    ModularSystem *milkyway; // handle into the tree (universe's INNER child)
     std::unique_ptr<ProtoSystem> galacticSystem;
     std::shared_ptr<AnchorManager> galacticAnchorMgr;
 
-    // At least for now, systems are stored here
-    std::list<ModularSystem> modularSystems;
+    // Modular systems live IN the tree (milkyway's INNER children - G2);
+    // handles by name for the factory's system surface.
+    std::map<std::string, ModularSystem *> modularSystemOf;
     std::map<std::string, std::unique_ptr<ProtoSystem>> systems;
     std::map<std::string, Vec3d> systemOffsets;
 

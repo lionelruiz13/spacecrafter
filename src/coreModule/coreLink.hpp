@@ -831,6 +831,15 @@ public:
 	}
 	void starGalaxyLoadCatalog(const std::string &filename); // defined in coreLink.cpp (StarGalaxy incomplete in this header)
 
+	//! New-path camera free-flight mode. Closes the INTENT §2(c)/§11.19c
+	//! reachability defect (setFreeMode had no command route - the whole
+	//! reference-transition layer was unreachable dynamically). New-path
+	//! capability: the old path's free navigation is the anchor-point
+	//! observatory, there is nothing to mirror.
+	void cameraSetFreeMode(bool b) {
+		Camera::instance->setFreeMode(b);
+	}
+
 	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration=0) {
 		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
 		Camera::instance->moveTo({static_cast<float>(lon*M_PI/180), static_cast<float>(lat*M_PI/180), static_cast<float>(alt/(1000*AU))}, duration/1000.f, calculate_duration);

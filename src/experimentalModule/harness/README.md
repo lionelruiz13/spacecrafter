@@ -156,3 +156,22 @@ A/B scenes.
 
 Dump extension: dumpTracePaths hops set is Earth/Moon/Sun/Mars/Pluto/Charon
 (tilt pieces stay fresh through recursiveTranslationUpdate even invisible).
+
+## Hierarchy spine (scene E, 2026-07-17) - INTENT 11.36
+
+`scene_e_spine.py` - reference-transition ladder over the nested tree
+(universe > milkyway > SolarSystem > Sun > Earth): AoI thresholds computed
+OFFLINE from the updateCache formulas transcribed on a baseline dump, then
+the reference sequence asserted at bracketing altitudes; multi-shell
+escalation AND capture cascades, second entry of both; anchored legacy legs
+(reference pinned, home_planet+moveto race-free). Requires init_fov=340 +
+fresh launch. Auto-transitions are FREE-FLIGHT-ONLY (11.36 policy).
+Camera dump fields refAoI/refDist/refCached/refParent = the transition
+inputs; per-body `relation` = the membership authority (BodyRelation:
+<3 hidden, >=3 visible) - the ONLY valid hide/show observable: dump
+PRESENCE iterates the name registry, which includes hidden bodies.
+Instrument caveat learned on mw_out2: dumps ride the events thread - a
+healthy dumped snapshot does not prove the decision path runs; discriminate
+with call-time prints, screenshot-materialization (draw liveness), and
+per-thread CPU accumulation. Bit-identical dumps under timerate 0 are NOT
+frozen-loop evidence.

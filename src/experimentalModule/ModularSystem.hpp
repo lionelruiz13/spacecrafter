@@ -20,10 +20,17 @@
 class ModularSystem : public ModularBody {
 public:
     ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info);
+    // Children must be destroyed while THIS class's members still exist:
+    // every content body's dtor deregisters from sortedSystemBodies - the
+    // implicit order (members die before the base dtor's clearChildren)
+    // made that a use-after-free on every system teardown (INTENT 5.23).
+    ~ModularSystem() override {
+        clearChildren();
+    }
 
     // Reload a system
     void reloadSystem() {
-        childs.clear();
+        clearChildren();
         loadSystem(systemFilename);
     }
     // Load a system
@@ -32,8 +39,27 @@ public:
     void loadBody(std::map<std::string, std::string> &param);
     // Update this system
     void updateSystem();
-    // Draw this system
+    // Draw this system - the FRAME entry (shadow orchestration, body-draw
+    // begin/end, selection pointer). Nested systems inside the loop dispatch
+    // through drawNested, never through this.
     void drawSystem(Renderer &renderer);
+    // The sorted body loop alone (no begin/end, no pointer) - shared by the
+    // frame entry and nested draws.
+    void drawSystemBodies(Renderer &renderer);
+    // Draw THIS system as an entry of an enclosing system's loop (camera
+    // outside): >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE px on screen -> nested
+    // content draw at this node's sort position (correct by D1/D2: subtree
+    // extent << inter-system distance; light state saved/restored around it -
+    // lightPosition scope note in ModularBody.hpp). Below -> star-halo proxy.
+    // Nested shadows deliberately absent: they engage when the camera enters
+    // the system (it becomes current); a foreign system's casters at these
+    // distances are sub-pixel (INTENT 11.36).
+    void drawNested(Renderer &renderer);
+    // The far-system point visual (D3's halo-only common case at system
+    // scale): the system IS its star visually - star photometry (magnitude
+    // at the NODE's fresh distance, star disc floor, star halo color) through
+    // the shared drawHaloCore. Starless or halo-suppressed star: nothing.
+    void drawStarProxy(Renderer &renderer);
     // Internally used by ModularBody to inform the creation of body in this system
     inline void addBody(ModularBody *body) {
         sortedSystemBodies.push_back(body);
@@ -55,9 +81,13 @@ public:
     }
     // Find the body at the given normalized screen position (in range [-1, 1])
     ModularBody *findBodyAt(const std::pair<float, float> &screenPos) const;
-    // Return the star of this system
+    // Return the star of this system, nullptr while unassigned. The member
+    // sentinel for "unassigned" is star == this (loadBody note: a valid
+    // light-position default) - that sentinel must never leak to callers as
+    // a fake star (galaxy/universe systems are legitimately starless; the
+    // sentinel leaked the SYSTEM NODE itself as light source/sky input).
     inline ModularBody *getSystemStar() const {
-        return star;
+        return (star == this) ? nullptr : static_cast<ModularBody *>(star);
     }
     // Find the system in which the given body is
     static inline ModularSystem *systemOf(ModularBody *body) {

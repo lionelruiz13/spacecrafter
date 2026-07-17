@@ -33,12 +33,14 @@ void ModularBodyPtr::redirect(ModularBody *from, ModularBody *to)
 {
     if (from->isSelected) {
         from->deselect();
-        to->select();
+        if (to)
+            to->select();
     }
     for (auto &r : ref) {
         if (r->ptr == from) {
             r->ptr = to;
-            ++(to->pointerCount);
+            if (to)
+                ++(to->pointerCount);
         }
     }
 }
@@ -56,18 +58,6 @@ void ModularBodyPtr::operator=(ModularBody *body)
         --(ptr->pointerCount);
     if ((ptr = body))
         ++(ptr->pointerCount);
-}
-
-void ModularBodyPtr::rawTrack(ModularBody *&toTrack)
-{
-    ++toTrack->pointerCount;
-    auto self = reinterpret_cast<ModularBodyPtr *>(&toTrack);
-    ref.push_back(self);
-}
-
-void ModularBodyPtr::rawUntrack(ModularBody *&toTrack)
-{
-    reinterpret_cast<ModularBodyPtr&>(toTrack).~ModularBodyPtr();
 }
 
 void ModularBodySelector::operator=(nullptr_t)

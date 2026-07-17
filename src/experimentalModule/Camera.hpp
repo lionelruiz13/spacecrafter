@@ -104,9 +104,14 @@ public:
             moveRel({0, 0, coef});
         }
     }
-    inline void moveTo(const Vec3f &pos, float duration = 0, bool calculateDuration = false) {
-        moveRel(pos - (freeMode ? position : Vec3f(longitude, latitude, distanceToReference())), duration, calculateDuration);
-    }
+    // Target is the legacy spherical triple (lon, lat, altitude-in-AU) in
+    // BOTH modes - moveto is the legacy positioning surface and must stay
+    // meaningful in free flight (2(c): one control surface, both modes).
+    // The previous freeMode branch subtracted `position` (a cartesian
+    // vector) from the spherical triple - a frame mismatch that made every
+    // legacy move garbage in free flight (INTENT 11.36). Defined in
+    // Camera.cpp (needs the complete ModularBody for the altitude reference).
+    void moveTo(const Vec3f &pos, float duration = 0, bool calculateDuration = false);
 
     // ---- View composition: THE single authority on conventions ------------
     // viewRotation() = Z(heading+π)·X(π/2−alt)·Z(az−π/2)·F  with F the mount

@@ -58,6 +58,12 @@ void Executor::draw(int delta_time)
 void Executor::update(int delta_time)
 {
     currentMode->update(delta_time);
+    // The experimental path updates in EVERY executor mode: its "in galaxy /
+    // in universe" is reference-chain state (G2), not an executor mode. When
+    // this ran only through the solar/stellar modules, an altitude-driven
+    // mode flip (the dual-routed moveto) froze the new camera mid-cascade
+    // (INTENT 11.36 scene-E mw_out2). Retires with the executors.
+    core->ssystemFactory->updateExperimental(delta_time, core->timeMgr.get());
 }
 
 void Executor::updateMode(double altitude)

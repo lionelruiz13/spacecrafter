@@ -237,6 +237,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_TRUE                      "true"
 #define W_FALSE                     "false"
 #define W_FOLLOW_ROTATION           "follow_rotation"
+#define W_FREE_MODE                 "free_mode"
 #define W_LIFT_OFF                  "lift_off"
 #define W_MOVE_TO                   "move_to"
 #define W_TRANSITION_TO             "transition_to"

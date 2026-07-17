@@ -69,25 +69,50 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
 
+    // The nesting spine (G2, INTENT 11.36): universe ⊃ milkyway ⊃ systems.
+    // The universe is the tree root and only eternal node (INTENT 6.6);
+    // the milkyway is its INNER child - a galaxy is a body like any other,
+    // and its 2D backdrop (MilkyWayEnv, wired in wireEnvironment) shows only
+    // while the camera's reference chain includes it: leaving the galaxy
+    // drops the backdrop as a natural consequence of chain membership.
     std::map<std::string, std::string> params;
     params["coord_func"] = "still_orbit";
     params["orbit_x"] = "0";
     params["orbit_y"] = "0";
     params["orbit_z"] = "0";
-    ModularBodyCreateInfo createInfo{
+    ModularBodyCreateInfo universeInfo{
         .orbit = ModuleLoaderMgr::instance.loadOrbit(params),
-        .englishName = "MilkyWay",
+        .englishName = "Universe",
         .re = {},
         .haloColor = {},
         .albedo = 0,
         .radius = 0,
         .oblateness = 0,
         .solLocalDay = 0,
+        .bodyType = BodyType::SYSTEM,
+        .isHaloEnabled = false,
+        .altitudeRelativeToRadius = false,
+    };
+    universe = std::make_unique<ModularSystem>(nullptr, universeInfo);
+    // Galactic disc radius ~15.5 kpc in AU - placeholder constant until the
+    // galaxy gets a data home (suspended: galaxy data model). Bounds the
+    // galaxy body (bounding/screen size from outside) and feeds the AoI
+    // heuristic; AoI tuning at galaxy scale is suspended with it.
+    constexpr float MILKYWAY_RADIUS_AU = 3.2e9f;
+    ModularBodyCreateInfo milkywayInfo{
+        .orbit = ModuleLoaderMgr::instance.loadOrbit(params),
+        .englishName = "MilkyWay",
+        .re = {},
+        .haloColor = {},
+        .albedo = 0,
+        .radius = MILKYWAY_RADIUS_AU,
+        .oblateness = 0,
+        .solLocalDay = 0,
         .bodyType = BodyType::GALAXY,
         .isHaloEnabled = false,
         .altitudeRelativeToRadius = false,
     };
-    milkyway = new ModularSystem(nullptr, createInfo); // TODO Add universe, to make this unique_ptr
+    milkyway = universe->createChildSystem(milkywayInfo, BodyRelation::INNER);
     galacticSystem = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
     galacticAnchorMgr = galacticSystem->getAnchorManager();
     bodytrace= std::make_shared<BodyTrace>();
@@ -295,7 +320,11 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
         .isHaloEnabled = false,
         .altitudeRelativeToRadius = false,
     };
-    modularSystems.emplace_back(&*milkyway, info);
+    // Systems nest IN the tree as the milkyway's INNER children (G2):
+    // shown while the camera is inside the galaxy, isolated roots for their
+    // own content, registered in the milkyway's sorted body list.
+    ModularSystem *system = milkyway->createChildSystem(info, BodyRelation::INNER);
+    modularSystemOf[name] = system;
     if (filename.empty()) {
         stringHash_t bodyParams;
         bodyParams["name"] = name.substr(0, name.size()-6); // Remove the 'System' suffix for the star
@@ -314,9 +343,9 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
     	bodyParams["albedo"] = "-1.";
     	bodyParams["coord_func"] = "sun_special";
         bodyParams["system_star"] = "true";
-        modularSystems.back().loadBody(bodyParams);
+        system->loadBody(bodyParams);
     } else {
-        modularSystems.back().loadSystem(filename);
+        system->loadSystem(filename);
     }
 }
 
@@ -417,11 +446,9 @@ void SSystemFactory::update(int delta_time, const Navigator* nav, const TimeMgr*
     ssystemTex->updateTesselation(delta_time);
     currentSystem->update(delta_time, nav, timeMgr);
     bodytrace->update(delta_time);
-    camera->update(timeMgr->getJDay(), delta_time/1000.f);
-    // Environment aggregation - after the camera (chain state fresh);
-    // engine writes only when the modular phase is the drawing one.
-    if (environment)
-        environment->update(*camera, timeMgr->getJDay(), delta_time/1000.f, drawModularSystem);
+    // camera/environment updates live in updateExperimental (executor-mode
+    // independent - see the header note); this method remains the OLD-path
+    // update, reached only through the solar/stellar executor modules.
 
     static int downCounter = 1000;
     downCounter -= delta_time;
@@ -430,6 +457,15 @@ void SSystemFactory::update(int delta_time, const Navigator* nav, const TimeMgr*
         if (!pathPinned) // flag experimental_path stops the A/B alternation
             drawModularSystem = !drawModularSystem;
     }
+}
+
+void SSystemFactory::updateExperimental(int delta_time, const TimeMgr* timeMgr)
+{
+    camera->update(timeMgr->getJDay(), delta_time/1000.f);
+    // Environment aggregation - after the camera (chain state fresh);
+    // engine writes only when the modular phase is the drawing one.
+    if (environment)
+        environment->update(*camera, timeMgr->getJDay(), delta_time/1000.f, drawModularSystem);
 }
 
 void SSystemFactory::addBody(stringHash_t &param)
@@ -445,8 +481,11 @@ void SSystemFactory::addBody(stringHash_t &param)
 void SSystemFactory::wireEnvironment(MilkyWay *milky, Atmosphere *atmosphere, ToneReproductor *eye)
 {
     environment = std::make_unique<EnvironmentManager>(milky, atmosphere);
-    // The galaxy root's InAoI milkyway member: active from anywhere in the
-    // galaxy (the whole reference chain ends at this root). The 2D/3D regime
+    // The galaxy node's InAoI milkyway member: active from anywhere IN the
+    // galaxy - i.e. while the camera's reference chain includes the milkyway.
+    // With the universe above it (INTENT 11.36), leaving the galaxy drops the
+    // backdrop as a natural consequence of the chain diff - the mandate's
+    // "outer milkyway only shown while in the milkyway". The 2D/3D regime
     // switch is post-parity (EnvironmentModule.hpp convergence note).
     milkyway->addEnvironment(std::make_unique<MilkyWayEnv>(milky, eye), false);
 }

@@ -36,11 +36,13 @@ public:
     void operator=(nullptr_t);
     void operator=(ModularBody *body);
 
+    // Redirect every tracked pointer from `from` to `to`. `to == nullptr` is
+    // legal only at final teardown (the parentless universe root): pointers
+    // are nulled, selection just drops. (rawTrack/rawUntrack removed
+    // 2026-07-17: they existed solely to keep a hidden body's parent alive
+    // while the body sat in the retired global hidden list - hidden bodies
+    // are parent-owned now, INTENT 11.36.)
     static void redirect(ModularBody *from, ModularBody *to);
-
-    // Allow ModularBody to keep track of their parent body while hidden (thus not considered as a child)
-    static void rawTrack(ModularBody *&toTrack);
-    static void rawUntrack(ModularBody *&toTrack);
 protected:
     ModularBody *ptr;
     static std::vector<ModularBodyPtr *> ref;
