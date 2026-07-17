@@ -47,6 +47,7 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
+#include <type_traits>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -133,11 +134,11 @@ public:
 	constexpr Vector3() = default;
 	constexpr inline Vector3(const Vector4<T>&);
 	constexpr inline Vector3(const Vector2<T>&,const T&z=0);
-	template <class T2> constexpr inline Vector3(const Vector3<T2>&);
+	template <class T2> requires (!std::is_same_v<T,T2>) constexpr inline Vector3(const Vector3<T2>&);
 	constexpr inline Vector3(T, T, T);
 
 	constexpr inline Vector3& operator=(const T*);
-	template <class T2> constexpr inline Vector3& operator=(const Vector3<T2>&);
+	template <class T2> requires (!std::is_same_v<T,T2>) constexpr inline Vector3& operator=(const Vector3<T2>&);
 	constexpr inline void set(T, T, T);
 
 	constexpr inline bool operator==(const Vector3<T>&) const;
@@ -613,7 +614,7 @@ template<class T> constexpr Vector3<T>::Vector3(const Vector4<T>&a)
 
 //! Copy constructor.
 //! @param a the vector to copy.
-template<class T> template<class T2> constexpr Vector3<T>::Vector3(const Vector3<T2>& a)
+template<class T> template<class T2> requires (!std::is_same_v<T,T2>) constexpr Vector3<T>::Vector3(const Vector3<T2>& a)
 {
 	v[0]=(T) a.v[0];
 	v[1]=(T) a.v[1];
@@ -638,7 +639,7 @@ template<class T> constexpr Vector3<T>::Vector3(const Vector2<T>&vec2,const T&z)
 //! = operator.
 //! @param a the vector to copy.
 //! @return *this
-template<class T> template<class T2> constexpr Vector3<T>& Vector3<T>::operator=(const Vector3<T2>& a)
+template<class T> template<class T2> requires (!std::is_same_v<T,T2>) constexpr Vector3<T>& Vector3<T>::operator=(const Vector3<T2>& a)
 {
 	v[0]=a.v[0];
 	v[1]=a.v[1];
@@ -2310,5 +2311,13 @@ template<class T> constexpr Vector4<T> Matrix4<T>::toQuaternion() const
 
 constexpr Vec3f v3fNull{};
 constexpr Vec3f v3dNull{};
+
+// [merge D6] The combine, build-verified: experimental's constexpr + theirs'
+// requires(!is_same) constraints on the templated converters keep the vector/
+// matrix types trivially copyable (theirs' memcpy optimization depends on it).
+static_assert(std::is_trivially_copyable_v<Vec2f> && std::is_trivially_copyable_v<Vec2d> && std::is_trivially_copyable_v<Vec2i>, "Vector2 must remain trivially copyable");
+static_assert(std::is_trivially_copyable_v<Vec3f> && std::is_trivially_copyable_v<Vec3d> && std::is_trivially_copyable_v<Vec3i>, "Vector3 must remain trivially copyable");
+static_assert(std::is_trivially_copyable_v<Vec4f> && std::is_trivially_copyable_v<Vec4d> && std::is_trivially_copyable_v<Vec4i>, "Vector4 must remain trivially copyable");
+static_assert(std::is_trivially_copyable_v<Mat4f> && std::is_trivially_copyable_v<Mat4d>, "Matrix4 must remain trivially copyable");
 
 #endif // _VECMATH_HPP_INCLUDED
