@@ -39,6 +39,7 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
 #include "tools/context.hpp"
+#include "experimentalModule/ProjectionTransfer.hpp" // per-mode inverse (INTENT 11.33)
 #include "EntityCore/EntityCore.hpp"
 
 Atmosphere::Atmosphere()
@@ -236,16 +237,20 @@ void Atmosphere::computeColor(const AtmosphereComputeInput &in, const ToneReprod
 			if (in.prj) {
 				in.prj->unprojectNormalizedLocal(x_val, y_val, point);
 			} else {
-				// New-path grid direction: the projector's inverse fisheye,
+				// New-path grid direction: the projector's inverse transfer,
 				// derived once against projector.cpp unprojectNormalized +
 				// its mat_projection = diag(1,1,-1) z-mirror - the effective
 				// eye-frame direction of rect cell (x,y) is
 				// (x*sin(theta)/len, y*sin(theta)/len, -cos(theta)) with
-				// theta = len*halfFov (camera convention: -z forward, the
-				// same eye frame the measured 0.09 px screen parity ties to
-				// the old one), then rotated into the local (zenith) frame.
+				// theta from the cell's NDC radius through the PER-MODE
+				// inverse (INTENT 11.33 - mirrors the prj branch's own
+				// unproject dispatch; fisheye: theta = len*halfFov; camera
+				// convention: -z forward, the same eye frame the measured
+				// 0.09 px screen parity ties to the old one), then rotated
+				// into the local (zenith) frame.
 				const double len = sqrt((double)x_val*x_val + (double)y_val*y_val);
-				const double theta = len * in.halfFov;
+				const double theta = ProjectionTransfer::angleNorm(
+					Context::projectionType, len, in.halfFov) * in.halfFov;
 				Vec3f dir;
 				if (len > 0) {
 					const double s = sin(theta) / len;

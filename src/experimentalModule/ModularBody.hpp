@@ -9,6 +9,7 @@
 #include "coreModule/time_mgr.hpp"
 #include "bodyModule/rotation_elements.hpp"
 #include "bodyModule/orbit.hpp"
+#include "ProjectionTransfer.hpp"
 #include "EnvironmentModule.hpp"
 #include "AsyncHub.hpp"
 #include "EntityCore/Executor/ASmooth.hpp"
@@ -187,7 +188,7 @@ public:
         if (childs.empty()) {
             if (distance > boundingRadius) {
                 halfAngularSize = atanf(boundingRadius / sqrt(squaredDistance - boundingRadius*boundingRadius));
-                const float tmp = halfFov + halfAngularSize;
+                const float tmp = cullHalfFov + halfAngularSize;
                 isVisible = (tmp > M_PI || (-preUpdate.r[14] >= cos(tmp) * distance));
             } else {
                 halfAngularSize = M_PI;
@@ -198,7 +199,7 @@ public:
                 bool wasChildVisible = isChildVisible;
                 isChildVisible = (halfAngularSize > 0.3*halfFov);
                 halfAngularSize = atanf(subsystemRadius / sqrt(squaredDistance - subsystemRadius*subsystemRadius));
-                const float tmp = halfFov + halfAngularSize;
+                const float tmp = cullHalfFov + halfAngularSize;
                 if (tmp <= M_PI && (-preUpdate.r[14] < cos(tmp) * distance)) {
                     isVisible = false;
                     if (wasChildVisible)
@@ -211,7 +212,7 @@ public:
             }
             if (distance > boundingRadius) {
                 halfAngularSize = atanf(boundingRadius / sqrt(squaredDistance - boundingRadius*boundingRadius));
-                const float tmp = halfFov + halfAngularSize;
+                const float tmp = cullHalfFov + halfAngularSize;
                 isBodyVisible = ((tmp > M_PI) || (-preUpdate.r[14] >= cos(tmp) * distance));
             } else {
                 halfAngularSize = M_PI;
@@ -223,17 +224,33 @@ public:
     // Update this body
     inline void update(double jd, const Mat4f &matLocalToBody) {
         screenSize = halfAngularSize/halfFov;
-        // Fisheye center singularity guard (old-path parity, body.cpp:987-993):
+        // Center singularity guard (old-path parity, body.cpp:987-993):
         // at rq→0 the general form is 0/0 — and the TRACKED body sits exactly
         // there once tracking centers it (its halo/hint would ride a NaN
-        // screenPos). Small-angle limit: θ/(rq·halfFov) → 1/(distance·halfFov).
-        // Same 1e-5 threshold as the old path; float-acos noise above it stays
-        // sub-pixel. (Behind-the-observer rq≈0 keeps the old path's behavior:
-        // wrong-but-culled.)
+        // screenPos). Small-angle limit: slope0/(distance·halfFov) — 1 for
+        // fisheye. Same 1e-5 threshold as the old path; float-acos noise
+        // above it stays sub-pixel. (Behind-the-observer rq≈0 keeps the old
+        // path's behavior: wrong-but-culled.)
         const float rq = sqrtf(mat.r[12]*mat.r[12] + mat.r[13]*mat.r[13]);
-        const float f = (rq > distance * 1e-5f)
-            ? acos(-mat.r[14]/distance) / (rq * halfFov)
-            : 1.f / (distance * halfFov);
+        float f;
+        if (projectionMode == ProjectionTransfer::FISHEYE) {
+            // The main case (INTENT 11.33): byte-for-byte the historical
+            // fast path — non-fisheye modes must not tax it.
+            f = (rq > distance * 1e-5f)
+                ? acos(-mat.r[14]/distance) / (rq * halfFov)
+                : 1.f / (distance * halfFov);
+        } else {
+            // General radial transfer, same guard structure. CPU must land
+            // on the GPU's mapping (custom_project.glsl, spec-const 8) —
+            // ProjectionTransfer is the shared authority. The guard branch
+            // drops ALLSPHERE's 5.4e-5-NDC constant term (sub-0.1 px,
+            // within-guard only; the GPU keeps it).
+            f = (rq > distance * 1e-5f)
+                ? ProjectionTransfer::radius(projectionMode,
+                      acosf(-mat.r[14]/distance) / halfFov, halfFov) / rq
+                : ProjectionTransfer::slope0(projectionMode, halfFov)
+                      / (distance * halfFov);
+        }
         screenPos.first = mat.r[12] * f;
         screenPos.second = mat.r[13] * f;
         if (bodyType == BodyType::EARTH) {
@@ -670,8 +687,27 @@ public:
     // PRECONDITION of every update/preUpdate in the frame: halfFov must hold
     // the current half field-of-view BEFORE the update pass runs - visibility
     // classification and screenSize derive from it. Set by the frame task
-    // (Camera), read everywhere; stale halfFov = silently wrong culling.
+    // (Camera) THROUGH setHalfFov (which maintains cullHalfFov), read
+    // everywhere; stale halfFov = silently wrong culling.
     static float halfFov;
+    // Projection transfer mode (INTENT 11.33): mirror of the launch-constant
+    // Context::projectionType, set once at SSystemFactory construction
+    // (post-config). FISHEYE (0) keeps the historical fast path in update();
+    // preUpdate's cone tests cull against cullHalfFov = halfFov *
+    // edgeAngleNorm(mode) - the angle whose PROJECTED radius is the screen-
+    // disc edge: equal to halfFov for FISHEYE/EKISOLID/ASPHERIC, 3.3%
+    // tighter for ALLSPHERE. screenSize and screenPos normalization stay on
+    // halfFov (angular semantics - regime thresholds keep their meaning).
+    static int projectionMode;
+    static float cullHalfFov;
+    static void setHalfFov(float hf) {
+        halfFov = hf;
+        cullHalfFov = hf * ProjectionTransfer::edgeAngleNorm(projectionMode, hf);
+    }
+    static void setProjectionMode(int mode) {
+        projectionMode = mode;
+        setHalfFov(halfFov);
+    }
     // Apply light-travel-time retardation to orbit evaluation (old-path
     // parity). Routed from config/scripts through
     // SSystemFactory::setFlagLightTravelTime, which sets BOTH paths.

@@ -84,6 +84,11 @@ void MilkyWay::createSC_context()
 		pipelineMilky[i].removeVertexEntry(2);
 		pipelineMilky[i].bindShader("milkyway.vert.spv");
 		pipelineMilky[i].setSpecializedConstant(7, context.isFloat64Supported);
+		// milkyway.vert projects through custom_project (spec-const 8) since
+		// the 2023-master merge, but this build never set the mode: the sky
+		// sphere rendered FISHEYE under every projection_type (INTENT 11.33
+		// mainline-gap inventory; shared engine - fix serves both paths).
+		pipelineMilky[i].setSpecializedConstant(8, Context::projectionType);
 		pipelineMilky[i].bindShader("milkyway.geom.spv");
 		pipelineMilky[i].bindShader(i == 0 ? "milkywayTwoTex.frag.spv" : "milkywayOneTex.frag.spv");
 		pipelineMilky[i].build();
@@ -342,6 +347,10 @@ void MilkyWay::buildZodiacal()
 	sphere->bind(*pipelineZodiacal);
 	pipelineZodiacal->removeVertexEntry(2);
 	pipelineZodiacal->bindShader("milkyway.vert.spv");
+	// Same 11.33 gap as pipelineMilky (note: this build also never set spec
+	// 7/float64 - my_atan.glsl defaults usingDouble=true; pre-existing,
+	// recorded in the mainline-gap inventory, not changed here).
+	pipelineZodiacal->setSpecializedConstant(8, Context::projectionType);
 	pipelineZodiacal->bindShader("milkyway.geom.spv");
 	pipelineZodiacal->bindShader("zodiacal.frag.spv");
 	pipelineZodiacal->build();

@@ -666,10 +666,15 @@ protected:
 	Mat4d mat;
 	Mat4d parent_mat;
 	Vec3f lightDirection;
-	float screen_sz;
+	// screen_sz/isVisible: = 0/false until first computeDraw - both are
+	// DUMPED (dumpTrace), and never-drawn bodies otherwise emit build-
+	// layout garbage (-nan broke the harness JSON twice: new-path
+	// screenSize INTENT 11.32, then this old-path sibling 11.33 - the
+	// uninitialized-dumped-member class, 5.16 pattern).
+	float screen_sz = 0;
 	float angularSize;
 	float ang_dist;
-	bool isVisible;
+	bool isVisible = false;
 
 	body_flags flags;
 

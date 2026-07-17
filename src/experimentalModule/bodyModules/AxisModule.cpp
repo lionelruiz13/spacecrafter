@@ -60,12 +60,10 @@ AxisFamilyData &axisFamily()
         // IN-SHADER now (custom_project.glsl multi-mode dispatch) - the
         // interface is {ModelViewMatrix, clipping_fov} push constants +
         // object-space vec3 endpoints (old axis.cpp:118 layout mirror).
-        // Spec constant 8 = Context::projectionType (old pipeline parity;
-        // the OTHER reused-shader families still ride the default-0 fisheye
-        // - registered follow-up, INTENT 11.32).
+        // Spec constant 8 (projection mode) is REGISTRY-INJECTED on every
+        // family since INTENT 11.33 - no per-family declaration needed.
         desc.pushConstants = {{VK_SHADER_STAGE_VERTEX_BIT, 0,
                                static_cast<uint16_t>(sizeof(Mat4f) + sizeof(Vec3f))}};
-        desc.specValues = {{8, static_cast<uint32_t>(Context::projectionType)}};
         d.family = renderer.allocateFamily(std::move(desc));
         d.uColor = std::make_unique<SharedBuffer<Vec3f>>(*Context::instance->uniformMgr);
         **d.uColor = Vec3f(1.f, 0.f, 0.f); // old fixed red (axis.cpp:137)

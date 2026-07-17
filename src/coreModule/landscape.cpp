@@ -139,6 +139,9 @@ void Landscape::createSC_context()
 		pipeline[i].bindVertex(*vertexModel);
 		pipeline[i].bindShader("landscape.vert.spv");
 		pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+		// landscape.vert projects through custom_project (spec-const 8) since
+		// the 2023-master merge - same 11.33 gap as milkyway; shared engine.
+		pipeline[i].setSpecializedConstant(8, Context::projectionType);
 		pipeline[i].bindShader("landscape.geom.spv");
 		pipeline[i].bindShader((i == 0) ? "landscapeNightTexture.frag.spv" : "landscape.frag.spv");
 		pipeline[i].build();

@@ -22,7 +22,7 @@ layout (binding=0) uniform globalVertProj {
 };
 
 #include <cam_block.glsl>
-#include <fisheye.glsl>
+#include <custom_project.glsl> // multi-mode (spec-const 8), INTENT 11.33 - mainline my_earth.tese template
 
 layout (binding=2) uniform meshTescGeom {
 	ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, altimetry_level]
@@ -48,7 +48,7 @@ void main()
     vec2 TexCoord = TexCoordIn[0]*gl_TessCoord.x+
                     TexCoordIn[1]*gl_TessCoord.y+
                     TexCoordIn[2]*gl_TessCoord.z;
-    gl_Position = fisheyeProject(position * planetScaledRadius * (1.0+texture(heightmapTexture,TexCoord).x * coeffHeightMap), clipping_fov);
+    gl_Position = custom_project(position * planetScaledRadius * (1.0+texture(heightmapTexture,TexCoord).x * coeffHeightMap), ModelViewMatrix, clipping_fov);
     position = vec3(ModelViewMatrix * vec4(position * planetRadius, 1));
 
     vec3 Light = normalize(LightPosition - position);

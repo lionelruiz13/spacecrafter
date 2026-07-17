@@ -31,6 +31,11 @@ cannot make one path's draw-side state stale - both settle at the same jd.
     ./analyze.py /tmp/dual_trace.json
     ./analyze.py /tmp/dual_trace_2.json   # second date: time-dependent vs constant error
 
+PRECONDITION (INTENT 11.33): the analyzers' px conversions assume the FISHEYE
+transfer (r = theta/halfFov). Run scenes with config projection = FISHEYE;
+under other modes, apply ProjectionTransfer::radius at the conversion points
+before trusting screen-layer numbers (mat-layer P1-P5 are projection-free).
+
 ## Reading the output against projection-paths.md C9
 - Common nonzero R_rel angle ~90 deg around z across all bodies -> the
   [-Y,X,Z] xy-signature; check the axis.

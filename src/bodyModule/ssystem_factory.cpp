@@ -45,6 +45,12 @@
 SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr) :
     observatory(observatory), navigation(navigation), timeMgr(timeMgr)
 {
+    // Projection mode mirror (INTENT 11.33): Context::projectionType is
+    // parsed from config at App init, before Core builds this factory -
+    // launch-constant, same precondition as the old path's per-pipeline
+    // spec constants.
+    ModularBody::setProjectionMode(Context::projectionType);
+
     // creation of 3D models for planets
     objLMgr = std::make_unique<ObjLMgr>();
 	objLMgr -> setDirectoryPath(AppSettings::Instance()->getModel3DDir() );

@@ -308,6 +308,18 @@ std::unique_ptr<Pipeline> buildVariant(FamilyEntry &f, PassKind pass, VariantKey
         if (file.empty())
             return;
         p->bindShader(file);
+        // Global projection mode (INTENT 11.33): spec-const 8 is the
+        // custom_project.glsl dispatch - registry-injected so EVERY family
+        // inherits the mainline multi-mode mechanism without declaring it
+        // (single authority; a family supplying id 8 itself wins - skip).
+        // Launch-constant (Context::projectionType, config-parsed at App
+        // init - the old path's 52 per-pipeline sites share the precondition);
+        // stages whose SPIR-V doesn't declare id 8 ignore the entry.
+        if (std::none_of(f.desc.specValues.begin(), f.desc.specValues.end(),
+                         [](const SpecConstant &sv) { return sv.constantId == 8; })) {
+            const uint32_t mode = static_cast<uint32_t>(Context::projectionType);
+            p->setSpecializedConstant(8, &mode, sizeof(mode)); // copied (memcpy) at call
+        }
         for (const auto &sv : f.desc.specValues)
             p->setSpecializedConstant(sv.constantId, &sv.value, sizeof(sv.value));
         for (const auto &axis : f.desc.axes) {

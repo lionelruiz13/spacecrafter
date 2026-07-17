@@ -254,9 +254,9 @@ void Camera::update(double jd, float deltaTime)
         zoomTimer += deltaTime;
         if (zoomTimer > zoomDuration) {
             zoomDuration = 0;
-            ModularBody::halfFov = dstHalfFov;
+            ModularBody::setHalfFov(dstHalfFov); // maintains cullHalfFov (INTENT 11.33)
         } else {
-            ModularBody::halfFov = srcHalfFov * std::pow(dstHalfFov/srcHalfFov, calculateZoomCoef());
+            ModularBody::setHalfFov(srcHalfFov * std::pow(dstHalfFov/srcHalfFov, calculateZoomCoef()));
         }
     }
     if (moveDuration) {
@@ -528,7 +528,7 @@ void Camera::setHalfFov(float halfFov, float duration)
             }
         }
     } else { // No transition, apply the change immediately
-        ModularBody::halfFov = halfFov;
+        ModularBody::setHalfFov(halfFov); // maintains cullHalfFov (INTENT 11.33)
     }
 }
 

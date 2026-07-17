@@ -17,6 +17,11 @@ ModularBody *ModularBody::lastFit = nullptr;
 std::map<std::string, ModularBody *> ModularBody::bodyReference;
 std::list<ModularBody> ModularBody::hidden;
 float ModularBody::halfFov = M_PI_2;
+// Projection transfer (INTENT 11.33): FISHEYE default matches the config
+// default; SSystemFactory ctor mirrors Context::projectionType (post-config).
+// cullHalfFov init == halfFov init (edgeAngleNorm(FISHEYE) == 1).
+int ModularBody::projectionMode = ProjectionTransfer::FISHEYE;
+float ModularBody::cullHalfFov = M_PI_2;
 bool ModularBody::flagLightTravelTime = false; // set from config via SSystemFactory
 Vec3f ModularBody::defaultHaloColor{};
 float ModularBody::haloScale = 1;
