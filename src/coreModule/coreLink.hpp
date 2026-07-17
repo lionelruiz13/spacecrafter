@@ -830,6 +830,9 @@ public:
 		return double(core->getFlagIngalaxy());
 	}
 	void starGalaxyLoadCatalog(const std::string &filename); // defined in coreLink.cpp (StarGalaxy incomplete in this header)
+	// [merge D5] helio/eye accessors for the old-path ecliptic-normal zodiacal (milkyway).
+	Vec3d getObserverHelioPos() const;
+	Mat4d getHelioToEyeMat() const;
 
 	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration=0) {
 		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);

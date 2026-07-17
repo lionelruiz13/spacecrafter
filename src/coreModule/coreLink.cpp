@@ -38,6 +38,7 @@
 #include "inGalaxyModule/dsoNavigator.hpp"
 #include "inGalaxyModule/dso3d.hpp"
 #include "inGalaxyModule/starGalaxy.hpp"
+#include "navModule/navigator.hpp"
 #include "coreModule/cardinals.hpp"
 #include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/meteor_mgr.hpp"
@@ -1389,4 +1390,12 @@ std::string CoreLink::landscapeGetName() {
 // [merge] theirs' galaxy_stars command support; defined here since StarGalaxy is incomplete in coreLink.hpp.
 void CoreLink::starGalaxyLoadCatalog(const std::string &filename) {
 	core->starGalaxy->loadCatalog(filename);
+}
+
+// [merge D5] helio/eye accessors for milkyway's old-path ecliptic-normal zodiacal.
+Vec3d CoreLink::getObserverHelioPos() const {
+	return core->navigation->getObserverHelioPos();
+}
+Mat4d CoreLink::getHelioToEyeMat() const {
+	return core->navigation->getHelioToEyeMat();
 }
