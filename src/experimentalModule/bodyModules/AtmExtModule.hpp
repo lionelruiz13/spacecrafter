@@ -42,7 +42,11 @@ public:
     AtmExtModule(ObjL *mesh, const std::string &gradientPath, float radiusFactor);
     virtual ~AtmExtModule();
     virtual uint32_t getTraits() const override {
-        return BMT_USE_DEPTH; // no shadow projection, no depth trace
+        // TRANSLUCENT: the shell blends (SRC_ALPHA + MAX) over the disc - the
+        // after-opaque ordering was previously implicit in deduction order
+        // ("Positioned after MESH/OJM" comment), now declared (routing
+        // partition, ModuleLoader::addNearComponent).
+        return BMT_USE_DEPTH | BMT_TRANSLUCENT;
     }
     virtual bool isLoaded() override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;

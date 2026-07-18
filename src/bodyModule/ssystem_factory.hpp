@@ -44,6 +44,7 @@
 #include "experimentalModule/ModularBodyPtr.hpp"
 #include "experimentalModule/bodyModules/HintModule.hpp"
 #include "experimentalModule/bodyModules/AxisModule.hpp"
+#include "experimentalModule/bodyModules/RingModule.hpp"
 
 class Camera;
 class ModularSystem;
@@ -435,6 +436,9 @@ public:
     }
 
 	void modelRingInit(int low, int medium, int high) {
+        // Both-paths seam (setFlagHints idiom): the new-path RingModule LOD
+        // slice counts mirror the same config values the old Ring gets.
+        RingModule::setLodSlices(low, medium, high);
         currentSystem->modelRingInit(low, medium, high);
     }
 

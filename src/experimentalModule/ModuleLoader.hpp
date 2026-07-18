@@ -25,7 +25,24 @@ protected:
         target->farComponents.push_back(module);
     }
     static inline void addNearComponent(ModularBody *target, BodyModule *module) {
-        target->nearComponents.push_back(module);
+        // Stable opaque-first partition (2026-07-18): TRANSLUCENT modules
+        // (BMT_TRANSLUCENT) draw AFTER every opaque sibling - blending needs
+        // the opaque content beneath it, and a translucent module drawn first
+        // also depth-blocks the opaque fill behind it (found live at the
+        // row-4 ring port: RING deduces before MESH, the inner ring went
+        // opaque-black over the never-drawn planet limb; the old path encoded
+        // this ordering in its explicit drawBody-then-drawRings calls,
+        // body.cpp:1139-1140). Enforced HERE at routing time - the draw loops
+        // stay untouched (zero hot-path cost) and deduction order stops being
+        // load-bearing for correctness.
+        if (module->getTraits() & BMT_TRANSLUCENT) {
+            target->nearComponents.push_back(module);
+        } else {
+            auto it = target->nearComponents.begin();
+            while (it != target->nearComponents.end() && !((*it)->getTraits() & BMT_TRANSLUCENT))
+                ++it;
+            target->nearComponents.insert(it, module);
+        }
     }
     static inline void addGroundedComponent(ModularBody *target, BodyModule *module) {
         target->groundedComponents.push_back(module);

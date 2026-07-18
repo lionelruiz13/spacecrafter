@@ -60,6 +60,13 @@ enum BodyModuleTraits {
     // sharp composition in receivedShadows.glsl). A capability every G1
     // caster now has is not a distinct trait; the bit value stays reserved
     // so old logs remain readable.
+    BMT_TRANSLUCENT =           0x00000800, // COLOR output blends over sibling content: the
+                                            // routing layer orders this module AFTER every
+                                            // opaque module of the same regime list
+                                            // (ModuleLoader::addNearComponent - the structural
+                                            // form of the old explicit drawBody-then-drawRings
+                                            // ordering). Declare on every blended module (RING,
+                                            // ATMOSPHERE shell, future TAIL).
     BMT_RECEIVE_SHADOW =        0x00000400, // Samples the body's receivedShadows in its COLOR
                                             // draw (ShadowProjection.hpp). Declared so the
                                             // orchestration knows WHO receives: bodies with no

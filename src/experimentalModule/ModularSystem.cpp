@@ -370,9 +370,25 @@ void ModularSystem::computeShadows(Renderer &renderer)
                                     : Vec3f(1.f - c.info.absorbtion[0],
                                             1.f - c.info.absorbtion[1],
                                             1.f - c.info.absorbtion[2]);
+            Vec4f clip = c.info.clip;
+            if (caster == body && clip[0] == 0 && clip[1] == 0 && clip[2] == 0) {
+                // WITHIN-BODY solid caster (planet -> its own rings): the
+                // degenerate clip is only valid where the corridor test
+                // carries the z-order - and within-body pairs skip it while
+                // their ANNULUS receiver spans BOTH sides of the caster.
+                // Without a gate the z-less layer falsely shadows the
+                // SUNWARD ring half (found live at the row-4 port: the lit
+                // ring strip went black in the Iapetus A/B). Gate = the
+                // plane through the caster center perpendicular to the
+                // light axis, normal toward the sun (the ring-clip
+                // convention): only the anti-sun half shadows - exactly the
+                // z-order the old analytic SeparationAngle test carried
+                // (ring_planet.frag).
+                clip = Vec4f(-z[0], -z[1], -z[2], z.dot(rpos));
+            }
             body->receivedShadows.entries.push_back({caster, c.module,
                 {x.dot(cpos - rpos), y.dot(cpos - rpos)},
-                size, static_cast<uint8_t>(idx), aT, gR, c.info.clip,
+                size, static_cast<uint8_t>(idx), aT, gR, clip,
                 row0, row1});
         }
     }

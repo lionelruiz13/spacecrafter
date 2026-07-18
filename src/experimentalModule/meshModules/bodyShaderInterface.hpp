@@ -122,6 +122,30 @@ struct rayMarchFrag {
 	meshFrag::ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];
 };
 
+// ---- RING family (row 4, 2026-07-18) ---------------------------------------
+// bodyRing.vert/.frag - the ring_planet.* port with generalized receive
+// (RingModule.hpp is the module contract; this block is the GPU interface).
+
+// std140 mirror of bodyRing.vert binding 0. Field order/types = GPU layout.
+struct bodyRingVert {
+	Mat4f ModelViewMatrix;         // near-list matrix (spin-folded; ring is axisymmetric)
+	Mat4f ModelViewMatrixInverse;
+	Vec3f clipping_fov;
+	float RingScale;               // body scaling factor mc (old rings->multiplyRadius analog)
+	Vec3f PlanetPosition;          // eye-space body center (planet-shine input)
+	float SunnySideUp;             // observer above/below ring plane (h test, ring.cpp:252)
+	Vec3f LightDirection;          // eye-space, body -> sun, normalized (old computeDraw:1034)
+	float fadingFactor;            // asteroid cross-fade; 100000 until row 5 (old else-branch)
+};
+
+// std140 mirror of bodyRing.frag binding 1 - the receive block (disc-receiver
+// idiom: entries unfolded, eye-space P).
+struct bodyRingFrag {
+	int nbShadowingBodies;
+	int _pad[3];
+	meshFrag::ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];
+};
+
 // ---- OJM family (row 3, 2026-07-16) ----------------------------------------
 // body_artificial.vert/geom REUSED VERBATIM; plain rows reuse
 // body_artificial_tex/notex.frag verbatim, shadowed rows are the
