@@ -193,6 +193,17 @@ struct Registry {
     }
     ~Registry() {
         stop();
+        // FamilyEntry batch Sets are pool-allocated temporaries (allocSet:
+        // new Set(..., *pools.back(), ..., temporary=true)); ~Set -> uninit ->
+        // mgr.destroySet() dereferences that SetMgr. `pools` is declared AFTER
+        // `families`, so reverse-declaration member teardown destroys the pools
+        // FIRST -> the batch Sets then call destroySet() on a dead SetMgr
+        // (found live: shutdown SIGSEGV in SetMgr::destroySet, garbage handle).
+        // Tear families down here, while their pools are still alive - the same
+        // invariant releaseRegistry() already keeps for the Renderer-owned pool
+        // Sets (pointerSet/shadow), applied to the batch Sets it cannot reach
+        // because they live inside `families`.
+        families.clear();
     }
 };
 
