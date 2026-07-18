@@ -360,6 +360,13 @@ int main(int argc, const char *argv[])
 		cpuInfo->stop();
 	}
 
+	// Quiesce the async big-texture loader BEFORE tearing down App: its final
+	// upload copies into Context staging buffers that app.reset() destroys, so
+	// joining it only at forceUnload() (below, after app.reset) races the loader
+	// against freed memory (shutdown SIGSEGV in s_texture::bigTextureLoader).
+	// Idempotent with the forceUnload() join.
+	s_texture::stopBigTextureLoader();
+
 	app.reset();
 	delete signalObj;
 

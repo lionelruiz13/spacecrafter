@@ -555,6 +555,13 @@ float s_texture::getAverageLuminance() const
 	return texture->averageLuminance;
 }
 
+void s_texture::stopBigTextureLoader()
+{
+	bigTextureQueue.close();
+	if (bigTextureThread.joinable())
+		bigTextureThread.join();
+}
+
 void s_texture::forceUnload()
 {
 	releaseMemory[0].clear();
@@ -570,9 +577,7 @@ void s_texture::forceUnload()
 			tex->texture = nullptr;
 		}
 	}
-    bigTextureQueue.close();
-    if (bigTextureThread.joinable())
-        bigTextureThread.join();
+    stopBigTextureLoader();
     bigTextures.clear();
     if (layoutMipmap) {
         delete layoutMipmap;

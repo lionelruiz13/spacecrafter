@@ -255,6 +255,14 @@ public:
 	static void update();
 	// Unload every big textures
 	static void forceUnload();
+
+	//! Stop and join the asynchronous big-texture loader thread. MUST run while
+	//! the Context buffer managers it writes into are still alive (before app
+	//! teardown): the loader's final quickLoadCache copy targets Context staging
+	//! memory, so joining only after app.reset() (as forceUnload does) races the
+	//! loader against freed buffers (shutdown SIGSEGV in bigTextureLoader).
+	//! Idempotent - forceUnload() calls it again harmlessly.
+	static void stopBigTextureLoader();
 	// Release memory of every unused big textures, might have side effect
 	static void releaseUnusedMemory();
 	// Release as many memory as possible, including actively used big textures. Can have side effect.
