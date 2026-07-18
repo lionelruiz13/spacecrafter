@@ -19,7 +19,8 @@ layout (constant_id=0) const int radius = 64;
 layout (constant_id=1) const int border = 256;
 
 layout(binding=0) uniform descriptor {
-    float pixelCount; // Number of pixels fetched per output pixel
+    float pixelCount; // Number of pixels fetched per output pixel (x255)
+    int fullCount;    // exact integer saturation of the accumulator - umbra test
     int offsets[radius];
 };
 
@@ -30,7 +31,18 @@ uint fetch(ivec2 pos)
 {
     return uint(texelFetch(bodyShadow, pos, 0).r * 255.0 + 0.5);
 }
-layout(binding=2, r8) uniform writeonly image2D groundShadow;
+layout(binding=2, rg8) uniform writeonly image2D groundShadow;
+
+// Two-channel store (2026-07-18 [vixy: umbra/antumbra]): R = mean coverage
+// (fraction of the sun disc occluded - the historical channel, value
+// unchanged), G = exact umbra indicator (sum saturates iff EVERY disc
+// texel reads 255 - the sun is entirely behind the silhouette). Exact for
+// binary content; graded (G8) content triggers only in fully-opaque cores.
+void store(ivec2 coord, uint sum)
+{
+    imageStore(groundShadow, coord, vec4(float(sum) / pixelCount,
+                                         sum >= uint(fullCount) ? 1.0 : 0.0, 0, 0));
+}
 
 // WARNING : Require radius < border/2
 void main()
@@ -70,7 +82,7 @@ void main()
                     sum -= fetch(ivec2(baseX, baseY2));
                 }
             }
-            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+            store(ivec2(i, baseY), sum);
         }
         int safeEnd = border - radius;
         // Start tracing
@@ -87,7 +99,7 @@ void main()
                 sum -= fetch(ivec2(baseX, baseY1));
                 sum -= fetch(ivec2(baseX, baseY2));
             }
-            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+            store(ivec2(i, baseY), sum);
         }
         // Start late tracing
         for (; i < border; ++i) {
@@ -107,7 +119,7 @@ void main()
                 sum -= fetch(ivec2(baseX, baseY1));
                 sum -= fetch(ivec2(baseX, baseY2));
             }
-            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+            store(ivec2(i, baseY), sum);
         }
     } else { // Y-Unsafe tracing (slower)
         int minRelY = (baseY >= radius) ? radius : baseY;
@@ -143,7 +155,7 @@ void main()
                 if ((coord.x = i-offsets[j]-1) >= 0)
                     sum -= fetch(coord);
             }
-            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+            store(ivec2(i, baseY), sum);
         }
         // Start tracing
         for (int safeEnd = border - radius; i < safeEnd; ++i) {
@@ -163,7 +175,7 @@ void main()
                 coord.x = i-offsets[j]-1;
                 sum -= fetch(coord);
             }
-            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+            store(ivec2(i, baseY), sum);
         }
         // Start late tracing
         for (; i < border; ++i) {
@@ -183,7 +195,7 @@ void main()
                 if ((coord.x = i+offsets[j]) < border)
                     sum += fetch(coord);
             }
-            imageStore(groundShadow, ivec2(i, baseY), vec4(float(sum) / pixelCount, 0, 0, 0));
+            store(ivec2(i, baseY), sum);
         }
     }
 }

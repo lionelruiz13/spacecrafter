@@ -48,9 +48,18 @@ enum BodyModuleTraits {
     BMT_USE_DEPTH =             0x00000010, // Use the depth buffer (pointer/halo doesn't)
     BMT_BASIC_SELF_SHADOW =     0x00000020, // Project monochrome self-shadowing
     BMT_RGBA8_SELF_SHADOW =     0x00000040, // Project RGBA8 self-shadowing
-    BMT_PROJECT_G1_SHADOW =     0x00000080, // Project monochrome shadow
-    BMT_PROJECT_G8_SHADOW =     0x00000100, // Project greyscale shadow (up to 10 is possible)
-    BMT_PROJECT_BISHADOW =      0x00000200, // Project bicolor shadow - ONLY WORKS WHEN 10 TIMES CLOSER
+    BMT_PROJECT_G1_SHADOW =     0x00000080, // Project opaque-silhouette shadow (solid casters;
+                                            // umbra/antumbra structure carried by the layer's
+                                            // two channels - ShadowService.hpp)
+    BMT_PROJECT_G8_SHADOW =     0x00000100, // Project greyscale TRANSMISSION shadow (graded
+                                            // casters - rings; up to 10 simultaneous)
+    // 0x00000200 (BMT_PROJECT_BISHADOW) RETIRED 2026-07-18: its semantics -
+    // umbra/antumbra ("bicolor") zone structure resolving at close range
+    // [vixy: 2026-07-18] - became UNIVERSAL for every solid caster with the
+    // two-channel layer (R = mean coverage, G = true umbra; the physical-
+    // sharp composition in receivedShadows.glsl). A capability every G1
+    // caster now has is not a distinct trait; the bit value stays reserved
+    // so old logs remain readable.
     BMT_RECEIVE_SHADOW =        0x00000400, // Samples the body's receivedShadows in its COLOR
                                             // draw (ShadowProjection.hpp). Declared so the
                                             // orchestration knows WHO receives: bodies with no
@@ -77,9 +86,13 @@ struct ShadowCaster {
     float radius;
     // Per-channel shadow absorption of THIS module's casting (1 = channel
     // fully absorbed under full coverage). Mesh modules default to the body's
-    // shadowAbsorbtion (Earth {0,1,1} -> red umbra). Rings: the transparency
-    // grading lives in the layer COVERAGE; absorbtion carries the old-parity
-    // darkening depth (mix(1.0, 0.3, alpha) == 1 - alpha*0.7 -> {0.7,0.7,0.7}).
+    // shadowAbsorbtion (Earth {0.6,0.88,1} - its complement is the red umbra).
+    // Rings: the transparency grading lives in the layer COVERAGE; absorbtion
+    // carries the material darkening depth (mix(1.0, 0.3, alpha) ==
+    // 1 - alpha*0.7 -> {0.7,0.7,0.7}).
+    // The SELECTION maps this declared value per word semantics into the
+    // entry's (aT transmission, gR refraction-glow) pair - physical-sharp
+    // composition, 2026-07-18 [vixy]; derivation: ShadowProjection.hpp.
     Vec3f absorbtion;
     // Receiver-side half-space gate, eye-space plane (xyz, w): the entry
     // applies only where dot(P, xyz) + w <= 0. Solid casters: the DEGENERATE

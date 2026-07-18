@@ -192,7 +192,7 @@ void ModularSystem::computeShadows(Renderer &renderer)
     }
     // Caster candidates: one pass over the system (modules declaring a
     // PROJECT trait; MINOR_BODY and light sources exempt).
-    constexpr uint32_t PROJECT_MASK = BMT_PROJECT_G1_SHADOW | BMT_PROJECT_G8_SHADOW | BMT_PROJECT_BISHADOW;
+    constexpr uint32_t PROJECT_MASK = BMT_PROJECT_G1_SHADOW | BMT_PROJECT_G8_SHADOW;
     struct Caster {
         ModularBody *body;
         BodyModule *module;
@@ -356,9 +356,23 @@ void ModularSystem::computeShadows(Renderer &renderer)
             }
             if (c.traits & BMT_PROJECT_G8_SHADOW)
                 --g8Remaining;
+            // Physical-sharp role split (2026-07-18 [vixy] - the derivation
+            // lives at ShadowProjection.hpp): the module's declared absorbtion
+            // maps per WORD SEMANTICS. Graded casters (G8 rings): material
+            // TRANSMISSION - aT = declared, no refraction glow. Solid casters:
+            // opaque to direct light (aT = 1) and the declared absorbtion's
+            // complement is the atmospheric REFRACTION glow lighting the true
+            // umbra (Earth {0.6,0.88,1} -> gR {0.4,0.12,0}; airless default
+            // {1,1,1} -> gR 0, black umbra, formula reduces exactly).
+            const bool graded = (c.traits & BMT_PROJECT_G8_SHADOW) != 0;
+            const Vec3f aT = graded ? c.info.absorbtion : Vec3f(1.f, 1.f, 1.f);
+            const Vec3f gR = graded ? Vec3f(0.f, 0.f, 0.f)
+                                    : Vec3f(1.f - c.info.absorbtion[0],
+                                            1.f - c.info.absorbtion[1],
+                                            1.f - c.info.absorbtion[2]);
             body->receivedShadows.entries.push_back({caster, c.module,
                 {x.dot(cpos - rpos), y.dot(cpos - rpos)},
-                size, static_cast<uint8_t>(idx), c.info.absorbtion, c.info.clip,
+                size, static_cast<uint8_t>(idx), aT, gR, c.info.clip,
                 row0, row1});
         }
     }

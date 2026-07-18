@@ -20,6 +20,20 @@
 #ifndef RECEIVED_SHADOWS_FN
 #define RECEIVED_SHADOWS_FN
 
+// Physical-sharp composition (2026-07-18 [vixy]): per entry, with c = layer R
+// (mean sun-occlusion) and u = layer G (true-umbra fraction, u <= c):
+//   T = 1 - c*aT + u*gR
+// - direct light scales by the UNOCCLUDED sun fraction through the caster's
+//   material transmission (solid: aT=1 -> neutral (1-c) ramp across penumbra
+//   AND antumbra - no chromatic tint where direct sunlight remains; rings:
+//   aT = material absorption, the legacy 1-c*a transmission physics);
+// - the chromatic term is the caster's atmospheric REFRACTION glow gR,
+//   present only where the sun is fully occluded (u): Earth's red umbra,
+//   physically the light bent around the limb - absent in penumbra/antumbra
+//   where it is drowned by direct light.
+// Bounds: u <= c and gR <= 1 give 0 <= T <= 1 per entry; products commute.
+// Umbra floor = gR exactly (== the legacy 1-a at c=1: umbra look unchanged);
+// airless casters (gR=0) reduce EXACTLY to the previous formula.
 vec3 computeReceivedShadowing(vec3 P)
 {
 	vec3 shadowing = vec3(1.0);
@@ -28,8 +42,9 @@ vec3 computeReceivedShadowing(vec3 P)
 		                      dot(shadowingBodies[i].row1.xyz, P) + shadowingBodies[i].row1.w);
 		vec2 tmp = (shadowPos - shadowingBodies[i].posRadius.xy) / shadowingBodies[i].posRadius.z;
 		if (dot(tmp, tmp) < 1.0 && dot(P, shadowingBodies[i].clip.xyz) + shadowingBodies[i].clip.w <= 0.0) {
-			float coverage = textureLod(bodyShadows, vec3(tmp * 0.5 + 0.5, shadowingBodies[i].absorbtionIdx.w), 0.0).r;
-			shadowing *= vec3(1.0) - coverage * shadowingBodies[i].absorbtionIdx.rgb;
+			vec2 cov = textureLod(bodyShadows, vec3(tmp * 0.5 + 0.5, shadowingBodies[i].absorbtionIdx.w), 0.0).rg;
+			shadowing *= vec3(1.0) - cov.r * shadowingBodies[i].absorbtionIdx.rgb
+			                       + cov.g * shadowingBodies[i].glow.rgb;
 		}
 	}
 	return shadowing;

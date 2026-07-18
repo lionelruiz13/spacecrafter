@@ -56,6 +56,7 @@ inline void fillPlainShadows(SharedBuffer<Block> &frag, ModularBody *body, const
             f.shadowingBodies[nb].clip = e.clip;
             f.shadowingBodies[nb].row0 = e.row0;
             f.shadowingBodies[nb].row1 = e.row1;
+            f.shadowingBodies[nb].glow = Vec4f(e.glow[0], e.glow[1], e.glow[2], 0);
             ++nb;
         }
         f.nbShadowingBodies = nb;
@@ -96,6 +97,7 @@ inline void fillFoldedShadows(SharedBuffer<Block> &frag, ModularBody *body,
             f.shadowingBodies[nb].clip = foldRow(e.clip);
             f.shadowingBodies[nb].row0 = foldRow(e.row0);
             f.shadowingBodies[nb].row1 = foldRow(e.row1);
+            f.shadowingBodies[nb].glow = Vec4f(e.glow[0], e.glow[1], e.glow[2], 0);
             ++nb;
         }
         f.nbShadowingBodies = nb;

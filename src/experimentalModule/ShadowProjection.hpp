@@ -71,8 +71,25 @@ struct ShadowProjection {
     std::pair<float, float> pos; // caster center in the entry's sun-frame xy, relative to the receiver center (eye-space units)
     float size;                 // module castRadius + smoothRadius (penumbra growth) - the shadow-map disc radius, same units
     uint8_t layerIdx;           // layer in the ShadowService layer array
-    Vec3f absorbtion;           // module's per-channel shadow absorption
-                                // (ShadowCaster; Earth mesh {0,1,1} -> red umbra)
+    // Physical-sharp split (2026-07-18 [vixy]) - the module's declared
+    // absorbtion (ShadowCaster) is MAPPED by the selection into two roles,
+    // because it conflates two physical mechanisms:
+    //  - absorbtion here = TRANSMISSION absorption aT: how much of the
+    //    covered direct light the caster's MATERIAL blocks. Solid casters:
+    //    {1,1,1} (opaque - direct light fully blocked, giving the neutral
+    //    (1-c) penumbra/antumbra ramp). Graded casters (rings): the declared
+    //    material absorption (legacy 1 - c*a transmission physics).
+    //  - glow = REFRACTION glow gR = 1 - declared absorbtion for solid
+    //    atmosphere-bearing casters (Earth {0.4,0.12,0} - light bent around
+    //    the limb into the TRUE UMBRA only; matches the umbra floor legacy
+    //    had at c=1, so the umbra look is unchanged). Zero for rings and
+    //    airless bodies. Calibration criterion: real-eclipse photography at
+    //    the same timestamp [vixy: 2026-07-18].
+    // Receiver formula (receivedShadows.glsl): T = 1 - c*aT + u*gR, with
+    // u = layer G (true umbra) <= c = layer R (mean coverage) keeping T in
+    // [0,1] by construction.
+    Vec3f absorbtion;
+    Vec3f glow;
     Vec4f clip;                 // eye-space half-space gate (header block);
                                 // (0,0,0,-1) for solid casters
     // The folded projection rows of THIS entry (see the geometry convention

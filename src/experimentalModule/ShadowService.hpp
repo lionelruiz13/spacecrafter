@@ -52,10 +52,13 @@ template <typename T> class SharedBuffer;
 //       (Ojm::drawShadow binds its own buffers). Added 2026-07-16 with the
 //       OJM port - the first post-design word, landing exactly as the
 //       vocabulary promised: a Job kind + a record case, nothing else moved.
-//   Open axis, deliberately: BMT_PROJECT_BISHADOW gets its word (and, if
-//   bicolor requires it, a second layer channel) when its semantics converge
-//   (suspended for Vixy - shadow-paths.md D1); the vocabulary is where it
-//   lands, nothing else moves.
+//   The former open axis (BMT_PROJECT_BISHADOW) RESOLVED + DISSOLVED
+//   2026-07-18 [vixy: umbra/antumbra zones]: the layer is R8G8 - R = mean
+//   sun-occlusion coverage (the historical channel, value-preserved), G =
+//   exact true-umbra fraction (integer-accumulator saturation test, exact
+//   for binary silhouettes; graded content triggers in fully-opaque cores
+//   only). Every solid caster carries the structure - no separate word.
+//   Composition: receivedShadows.glsl (physical-sharp, T = 1 - c*aT + u*gR).
 // - SELF-SHADOW PRODUCTION (2026-07-16, first client = OJM): the per-frame
 //   depth render of the nominated body's own geometry into the self-shadow
 //   depth target (context.shadowBuffer / renderSelfShadow - path-neutral app
@@ -193,7 +196,14 @@ private:
     // std140 mirror of shadowBlur.comp binding 0 (scalar array stride 16).
     struct BlurUniform {
         float pixelCount;
-        float _pad[3];
+        // Integer saturation value of the blur's quantized accumulator
+        // ((4*sum(offsets)+1)*255): sum == fullCount iff EVERY texel of the
+        // disc reads 255 - the exact full-occlusion (umbra) test feeding the
+        // layer's G channel (2026-07-18 two-channel rework [vixy]). Exact for
+        // binary silhouettes; for graded (G8) content it detects only the
+        // fully-opaque core - true umbra by definition there too.
+        int fullCount;
+        float _pad[2];
         struct PaddedInt {
             int v;
             int _pad[3];

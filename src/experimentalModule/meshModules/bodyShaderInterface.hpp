@@ -55,7 +55,7 @@ struct meshFrag {
 	int _pad[3];
 	struct ShadowingBody {
 		Vec4f posRadius;      // xy = caster center in sun-frame (rel. receiver), z = disc radius, w unused
-		Vec4f absorbtionIdx;  // rgb = entry shadowAbsorbtion, w = layer index (float for sampler2DArray)
+		Vec4f absorbtionIdx;  // rgb = TRANSMISSION absorption aT (solid 1; rings = material), w = layer index
 		Vec4f clip;           // eye-space half-space gate: apply iff dot(P, xyz) + w <= 0
 		                      // ((0,0,0,-1) = always; planar casters - ShadowProjection.hpp)
 		// Sun-frame projection rows of THIS entry, receiver-folded
@@ -65,6 +65,9 @@ struct meshFrag {
 		// multiple light sources land in the selection alone, receivers
 		// untouched. Folded receivers fold rows and clip through the SAME map.
 		Vec4f row0, row1;
+		Vec4f glow;           // rgb = refraction glow gR (umbra-only chroma,
+		                      // physical-sharp composition [vixy: 2026-07-18]
+		                      // - receivedShadows.glsl derivation), w unused
 	} shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];
 };
 

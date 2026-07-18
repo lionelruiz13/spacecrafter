@@ -47,12 +47,17 @@ void ShadowService::ensureInit(Renderer &_renderer)
     // Service-owned blurred-layer array (R8; layers = caster budget). The
     // silhouette scratch reuses context.shadowShape/renderShadowShape (shared
     // serially within the recording window - never concurrently).
+    // R8G8 since the two-channel rework (2026-07-18 [vixy: umbra/antumbra]):
+    // R = mean sun-occlusion coverage (the historical channel, bit-preserved),
+    // G = exact full-occlusion fraction (true umbra: sun entirely behind the
+    // silhouette). u <= c always (min <= mean), which is what keeps the
+    // receiver composition bounded (receivedShadows.glsl).
     const uint8_t budget = context.maxShadowCast;
     layers = std::make_unique<Texture>(vkmgr, TextureInfo{
-        .width=(int) res, .height=(int) res, .nbChannels=1,
+        .width=(int) res, .height=(int) res, .nbChannels=2,
         .arrayLayers=budget,
         .usage=VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT,
-        .format=VK_FORMAT_R8_UNORM,
+        .format=VK_FORMAT_R8G8_UNORM,
         .name="New-path projected shadows"});
     layers->use();
 
@@ -309,7 +314,12 @@ int ShadowService::acquire(ModularBody *caster, const BodyModule *source, float 
         pixelCount += tmp;
         u.offsets[i].v = tmp;
     }
-    u.pixelCount = (pixelCount * 4 + 1) * 255.f;
+    // fullCount as exact INTEGER (the float pixelCount loses ulps above 2^24
+    // at large radii - fine for the mean division, fatal for the equality
+    // test the umbra channel rides on).
+    const int full = (pixelCount * 4 + 1) * 255;
+    u.pixelCount = static_cast<float>(full);
+    u.fullCount = full;
     return idx;
 }
 
