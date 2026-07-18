@@ -28,8 +28,6 @@ layout (binding=2, set=2) uniform ojmShadowBlock {
     vec3 lightDirection;    // eye-space, direction light travels
     vec3 LightIntensity;    // A,D,S intensity
     float selfShadowOn;     // 1 = self-shadow depth valid this frame (nominated)
-    vec4 shadowRow0;        // model-folded sun-frame rows (receivedShadows.glsl)
-    vec4 shadowRow1;
     int nbShadowingBodies;
     ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS];
 };
@@ -54,8 +52,6 @@ void main()
         specular = pow(max(dot(lightDirection + Normal * (2 * sDotN), -v), 0), Material.Ns);
     }
     float selfShadowing = (selfShadowOn != 0.0) ? computeEnlightment(ShadowMatrix * Position, sDotN) : 1.0;
-    vec2 shadowPos = vec2(dot(shadowRow0.xyz, Position) + shadowRow0.w,
-                          dot(shadowRow1.xyz, Position) + shadowRow1.w);
-    vec3 shadowing = computeReceivedShadowing(shadowPos, Position) * selfShadowing;
+    vec3 shadowing = computeReceivedShadowing(Position) * selfShadowing;
     FragColor = LightIntensity * (Material.Ka * ((Material.Kd * shadowing + Material.Ka) * sDotN) + Material.Ks * (shadowing * specular));
 }

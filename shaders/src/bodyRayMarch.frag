@@ -25,8 +25,6 @@ layout (binding=7) uniform sampler2DArray bodyShadows;
 #include <receivedShadowsDecl.glsl>
 
 layout (binding=1) uniform rayMarchFrag {
-	vec4 shadowRow0;     // pre-folded: dot(row.xyz, samplePosUnit) + row.w = eye-space shadowPos
-	vec4 shadowRow1;
 	vec3 lightDirection; // In body-local coordinates
 	float sinSunAngle;
 	float heightMapDepthLevel; // 0.9
@@ -98,8 +96,6 @@ void main(void)
 		tmp += mix(0.5, 1.5, tmp < side);
 		float depth = length(samplePos);
 		vec2 texCoord = vec2(tmp, acos(-samplePos.z/depth) / M_PI);
-		vec2 shadowPos = vec2(dot(shadowRow0.xyz, samplePos) + shadowRow0.w,
-		                      dot(shadowRow1.xyz, samplePos) + shadowRow1.w); // For shadow projection
 		vec3 shadowSample = samplePos; // clip planes are folded through the same map as the rows
 		vec3 xAxis = normalize(vec3(-samplePos.y, samplePos.x, 0));
 		samplePos /= depth;
@@ -112,7 +108,7 @@ void main(void)
 		float atmosphere = clamp(atmDeviation - dot(lightDirection, samplePos), 0, 1);
 		samplePos *= textureLod(heightMap, texCoord, 0).r * heightMapDepth + heightMapDepthLevel;
 		if (NdotL + atmosphere > ambient) {
-			vec3 shadowing = computeReceivedShadowing(shadowPos.xy, shadowSample);
+			vec3 shadowing = computeReceivedShadowing(shadowSample);
 			// shortly ray trace toward -lightDirection for self-shadowing
 			rayLength = SHADOW_STEP_INIT;
 			float maxOcclusion = 1;

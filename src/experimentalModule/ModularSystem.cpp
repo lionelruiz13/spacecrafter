@@ -302,8 +302,11 @@ void ModularSystem::computeShadows(Renderer &renderer)
         }
         x.normalize();
         const Vec3f y = z ^ x;
-        body->receivedShadows.row0 = Vec4f(x[0], x[1], x[2], -x.dot(rpos));
-        body->receivedShadows.row1 = Vec4f(y[0], y[1], y[2], -y.dot(rpos));
+        // Entry rows: per-(receiver, LIGHT) fold - stored per ENTRY (self-
+        // contained; multi-light readiness [vixy: 2026-07-18], see
+        // ShadowProjection.hpp). Single light today: one fold, every entry.
+        const Vec4f row0(x[0], x[1], x[2], -x.dot(rpos));
+        const Vec4f row1(y[0], y[1], y[2], -y.dot(rpos));
         for (const Pair &p : pairs) {
             if (body->receivedShadows.entries.size() >= MAX_SHADOW_CASTERS_PER_RECEIVER)
                 break; // receiver shader array cap - aligned with the budget
@@ -355,7 +358,8 @@ void ModularSystem::computeShadows(Renderer &renderer)
                 --g8Remaining;
             body->receivedShadows.entries.push_back({caster, c.module,
                 {x.dot(cpos - rpos), y.dot(cpos - rpos)},
-                size, static_cast<uint8_t>(idx), c.info.absorbtion, c.info.clip});
+                size, static_cast<uint8_t>(idx), c.info.absorbtion, c.info.clip,
+                row0, row1});
         }
     }
 }

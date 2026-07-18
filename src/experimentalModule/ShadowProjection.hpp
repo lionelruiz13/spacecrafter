@@ -68,18 +68,25 @@ class BodyModule;
 struct ShadowProjection {
     ModularBody *caster;        // caster BODY - receiving modules of the same body test it for self-exclusion
     const BodyModule *source;   // the PROJECTING module - the other half of the self-exclusion key
-    std::pair<float, float> pos; // caster center in the receiver's sun-frame xy, relative to the receiver center (eye-space units)
+    std::pair<float, float> pos; // caster center in the entry's sun-frame xy, relative to the receiver center (eye-space units)
     float size;                 // module castRadius + smoothRadius (penumbra growth) - the shadow-map disc radius, same units
-    uint8_t layerIdx;           // layer in the ShadowService R8 array
+    uint8_t layerIdx;           // layer in the ShadowService layer array
     Vec3f absorbtion;           // module's per-channel shadow absorption
                                 // (ShadowCaster; Earth mesh {0,1,1} -> red umbra)
     Vec4f clip;                 // eye-space half-space gate (header block);
                                 // (0,0,0,-1) for solid casters
+    // The folded projection rows of THIS entry (see the geometry convention
+    // above). PER-ENTRY, not per-receiver [vixy: 2026-07-18]: an entry's sun
+    // frame depends on the LIGHT that casts it - carrying the rows here makes
+    // every entry self-contained, so multiple light sources (binary systems)
+    // land later purely in the selection (one entry per (caster module,
+    // light)), with zero rework of any receiver family. Today's single-light
+    // selection fills the same receiver-frame value into every entry.
+    Vec4f row0, row1;
 };
 
 struct ReceivedShadows {
-    Vec4f row0, row1;           // the folded projection rows (see above)
-    std::vector<ShadowProjection> entries;
+    std::vector<ShadowProjection> entries; // each self-contained (rows included)
     inline void clear() {
         entries.clear();
     }

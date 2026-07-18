@@ -18,8 +18,6 @@ layout (binding=8) uniform sampler2DArray bodyShadows;
 #include <receivedShadowsDecl.glsl>
 
 layout (binding=1) uniform meshFrag {
-	vec4 shadowRow0;
-	vec4 shadowRow1;
 	int nbShadowingBodies;
 	ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS];
 };
@@ -40,9 +38,7 @@ void main(void)
 	float diffuse = max(dot(normal_b, light_b), 0.0);
 	vec3 shadowing = vec3(1.0);
 	if (diffuse != 0.0 && nbShadowingBodies > 0) {
-		vec2 shadowPos = vec2(dot(shadowRow0.xyz, Position) + shadowRow0.w,
-		                      dot(shadowRow1.xyz, Position) + shadowRow1.w);
-		shadowing = computeReceivedShadowing(shadowPos, Position);
+		shadowing = computeReceivedShadowing(Position);
 	}
 	FragColor = vec4(color.rgb * min(diffuse * shadowing + ambient, 1.0), color.a);
 }

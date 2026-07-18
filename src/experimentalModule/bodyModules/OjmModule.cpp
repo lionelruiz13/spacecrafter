@@ -165,7 +165,7 @@ void OjmModule::drawInternal(Renderer &renderer, ModularBody *body, const Mat4f 
         f.lightDirection.normalize();
         f.LightIntensity = Vec3f(1.f, 1.f, 1.f); // old hardcode
         f.selfShadowOn = selfShadowActive ? 1.f : 0.f;
-        fillOjmShadows(uShadow, body, mat, radius, this);
+        fillFoldedShadows(uShadow, body, mat, radius, this);
         bnd.layout->bindSet(renderer, *Context::instance->uboSet);
         bnd.layout->bindSet(renderer, *setShadow, 2);
     } else {

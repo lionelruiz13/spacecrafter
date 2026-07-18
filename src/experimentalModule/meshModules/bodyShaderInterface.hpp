@@ -51,10 +51,6 @@ struct globalFrag {
 // Also binding 1 of the row-2 mid families (bodyTes*.frag, bodyLayered*.frag)
 // - the S5 receive block is shared verbatim across every disc fragment.
 struct meshFrag {
-	// Sun-frame projection rows, receiver-folded (ShadowProjection.hpp):
-	// shadowPos = (dot(row0.xyz, PositionEye) + row0.w, ... row1 ...).
-	Vec4f shadowRow0;
-	Vec4f shadowRow1;
 	int nbShadowingBodies;
 	int _pad[3];
 	struct ShadowingBody {
@@ -62,6 +58,13 @@ struct meshFrag {
 		Vec4f absorbtionIdx;  // rgb = entry shadowAbsorbtion, w = layer index (float for sampler2DArray)
 		Vec4f clip;           // eye-space half-space gate: apply iff dot(P, xyz) + w <= 0
 		                      // ((0,0,0,-1) = always; planar casters - ShadowProjection.hpp)
+		// Sun-frame projection rows of THIS entry, receiver-folded
+		// (ShadowProjection.hpp): shadowPos = (dot(row0.xyz, P) + row0.w,
+		// dot(row1.xyz, P) + row1.w). PER-ENTRY [vixy: 2026-07-18] - the fold
+		// depends on the entry's LIGHT; self-contained entries are what let
+		// multiple light sources land in the selection alone, receivers
+		// untouched. Folded receivers fold rows and clip through the SAME map.
+		Vec4f row0, row1;
 	} shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];
 };
 
@@ -93,18 +96,16 @@ struct rayMarchVert {
 };
 
 // std140 mirror of binding 1 of the MESH_RAYMARCH family (bodyRayMarch*.frag;
-// old ShadowFrag with the mat3 ShadowMatrix REPLACED by the two S5 sun-frame
-// rows, pre-folded through the model matrix so shadowPos lands in eye-space
-// AU and caster posRadius entries are consumed unchanged (no initialRadius
-// normalization - it existed because the old frames mixed unit systems,
-// shadow-paths.md E "Units").
+// old ShadowFrag with the mat3 ShadowMatrix REPLACED by the S5 sun-frame
+// rows, per-entry and pre-folded through the model matrix so shadowPos lands
+// in eye-space AU and caster posRadius entries are consumed unchanged (no
+// initialRadius normalization - it existed because the old frames mixed unit
+// systems, shadow-paths.md E "Units").
+// Entry-row fold (fillFoldedShadows): rowL.xyz = finalRadius *
+// (row.xyz . linearColumns(MV)), rowL.w = row.w + dot(row.xyz,
+// MV.translation), so dot(rowL.xyz, samplePosUnit) + rowL.w == S5 shadowPos
+// of the eye-space ground point (height term neglected, old-parity class).
 struct rayMarchFrag {
-	// rowL.xyz = finalRadius * (row.xyz . linearColumns(MV)),
-	// rowL.w = row.w + dot(row.xyz, MV.translation)
-	// so dot(rowL.xyz, samplePosUnit) + rowL.w == S5 shadowPos of the
-	// eye-space ground point (height term neglected, old-parity class).
-	Vec4f shadowRow0;
-	Vec4f shadowRow1;
 	Vec3f lightDirection;        // body-local, sun -> body: normalize(m^T * (bodyPos - lightPos))
 	float sinSunAngle;           // 2*starRadius/|bodyPos - lightPos|, guard max(x, 1e-6)
 	float heightMapDepthLevel;   // altimetryCoef = radius/finalRadius
@@ -152,8 +153,8 @@ struct ojmLight {
 // std140 mirror of ojmShadowTex/Notex.frag binding 2 set 2 (ojmShadowBlock)
 // - the SHADOWED rows' block. ShadowMatrix is the SAME value production used
 // for the SELF_DEPTH pass (single-computation consistency,
-// ShadowService.hpp); rows/clip are the S5 entries folded through the
-// model->eye map (ojmShadowFill.hpp, the fillRayMarchShadows fold).
+// ShadowService.hpp); per-entry rows/clip fold through the model->eye map
+// (meshShadowFill.hpp, fillFoldedShadows).
 struct ojmShadowBlock {
 	float ShadowMatrix[12]; // std140 mat3: model -> sun-frame NDC
 	float ModelMatrix[12];  // std140 mat3: model -> eye (rotation+scale)
@@ -163,8 +164,6 @@ struct ojmShadowBlock {
 	float _p1;
 	Vec3f LightIntensity;
 	float selfShadowOn;     // 1 = self-shadow depth valid this frame
-	Vec4f shadowRow0;       // model-folded sun-frame rows
-	Vec4f shadowRow1;
 	int nbShadowingBodies;
 	int _pad[3];
 	meshFrag::ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS_PER_RECEIVER];

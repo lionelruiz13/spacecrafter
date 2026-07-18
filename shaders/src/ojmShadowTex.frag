@@ -2,8 +2,8 @@
 // ojmShadowTex - new-path OJM shadowed COLOR row (textured shapes). Port of
 // body_artificial_shadow_tex.frag (lighting kept EXACTLY - the old CoI
 // lighting model) with the S5/G7 receive convention: entries are per (caster
-// body, projecting module), projected by the model-FOLDED sun-frame rows
-// (fill: ojmShadowFill.hpp - rows and clip folded through the model->eye map,
+// body, projecting module), projected by the model-FOLDED per-entry sun-frame rows
+// (fill: meshShadowFill.hpp fillFoldedShadows - rows and clip folded through the model->eye map,
 // so this model-space Position projects directly), applied per channel
 // through the caster's shadowAbsorbtion. Self-shadow PCF (selfShadow.glsl,
 // unchanged) is gated by selfShadowOn: nomination is per-frame state now,
@@ -34,8 +34,6 @@ layout (binding=2, set=2) uniform ojmShadowBlock {
     vec3 lightDirection;    // eye-space, direction light travels
     vec3 LightIntensity;    // A,D,S intensity
     float selfShadowOn;     // 1 = self-shadow depth valid this frame (nominated)
-    vec4 shadowRow0;        // model-folded sun-frame rows (receivedShadows.glsl)
-    vec4 shadowRow1;
     int nbShadowingBodies;
     ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS];
 };
@@ -60,9 +58,7 @@ void main()
         specular = pow(max(dot(lightDirection + Normal * (2 * sDotN), -v), 0), Material.Ns);
     }
     float selfShadowing = (selfShadowOn != 0.0) ? computeEnlightment(ShadowMatrix * Position, sDotN) : 1.0;
-    vec2 shadowPos = vec2(dot(shadowRow0.xyz, Position) + shadowRow0.w,
-                          dot(shadowRow1.xyz, Position) + shadowRow1.w);
-    vec3 shadowing = computeReceivedShadowing(shadowPos, Position) * selfShadowing;
+    vec3 shadowing = computeReceivedShadowing(Position) * selfShadowing;
     FragColor = LightIntensity * (
         texture(mapTexture, TexCoord).xyz * ((Material.Kd * shadowing + Material.Ka) * sDotN) // Diffuse + ambient
         + (Material.Ks * (shadowing * specular)) // Specular
