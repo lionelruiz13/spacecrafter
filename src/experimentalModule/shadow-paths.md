@@ -541,7 +541,18 @@ receiver block single authority). Structure landed:
 
 ## D. Convergence points (Vixy) + feeds
 
-1. BISHADOW semantics + RGBA8_SELF client — before their first use (B5).
+1. ~~BISHADOW semantics + RGBA8_SELF client — before their first use (B5)~~
+   **RESOLVED [vixy: 2026-07-18, wave-H AskUserQuestion]**:
+   - BISHADOW = **umbra/antumbra zone structure** — realized as the
+     two-channel layer (section H1): the structure became UNIVERSAL for every
+     solid caster, so the separate trait bit is RETIRED (a capability every
+     G1 caster has is not a trait; bit value 0x200 reserved for log
+     readability).
+   - RGBA8_SELF = **colored self-occlusion** (translucent own-geometry tints
+     light on the body's own surfaces — RGBA8 target beside the depth path,
+     multiplicative tint, consumer scales the PCF-unoccluded fraction).
+     Implementation = the H4 work item (SELF_COLOR word; the jobs-as-data
+     vocabulary lands it without moving anything else — proven twice).
 2. ~~Earth `shadow_color` tuning~~ **RESOLVED [vixy 2026-07-12: visual fidelity is the
    goal]**: the shipped default is DERIVED, not tuned — old `diffuse·(s + U·(1−s))` equals
    new `diffuse·(1−cov·a)` exactly under `a = 1−UmbraColor = {0.6, 0.88, 1.0}`, `cov = 1−s`
@@ -583,11 +594,167 @@ receiver block single authority). Structure landed:
    selection budget (G8 budget 10) is the only legitimate limiter — confirm that budget
    selection cannot silently drop a child-body receiver (that would reintroduce the same
    non-generalization through the back door).
-9. (F) Within-body penumbra: smooth = 0 (sharp, old-parity). Physically the ring shadow
-   has a small penumbra (~sun angular radius x ring-to-surface distance); if visual
-   fidelity ever wants it, the within-body pair needs a per-pair smooth estimate instead
-   of the corridor formula's degenerate 0.
+9. ~~(F) Within-body penumbra: smooth = 0 (sharp, old-parity)~~ **CLOSED BY
+   DERIVATION (2026-07-18)**: the physical penumbra = sun angular radius x
+   ring-to-surface distance ≈ 5e-4 rad x 80000 km ≈ **40 km at Saturn**, while
+   the shadow map spans ~2.4e5 km over 1280 px ≈ **190 km/px** — the physical
+   penumbra is SUB-PIXEL at every achievable layer resolution. smooth = 0
+   (sharp) IS the physically-exact answer, not an approximation; nothing to
+   implement. Reopens only if shadow_resolution grows ~10x.
 10. (F) The old path's fov-0.05 distant-CoI freeze on real GPUs (F1.2) — pre-existing
    A3 class, but it now BLOCKS old-path A/B verification of any zoomed-distant scene on
    this hardware; worth knowing before any further old-path-referenced measurement
    campaigns on NVIDIA.
+
+## H. Complete-system wave (2026-07-18) — every casting type, terminal structure
+
+Mandate [vixy]: "manage every shadow casting, even those not present in the
+old path, so that the shadow system could be complete and not need further
+rework" — completeness > parity scope. Three suspended decisions resolved at
+plan time [vixy: 2026-07-18]: BISHADOW = umbra/antumbra zones; RGBA8_SELF =
+colored self-occlusion; light model = rows per-entry now (D1 above). Three
+steps landed (commits 90cfcd74, 87a485cb, 4fdebceb + the H5 wiring); H4 is
+the recorded next item. Headers are the contracts (I1): ShadowProjection.hpp
+(role split + rows), ShadowService.hpp (two-channel layers), BodyModule.hpp
+(trait semantics incl. BMT_TRANSLUCENT), receivedShadows{Decl,}.glsl,
+RingModule.hpp.
+
+### H1. Rows per-entry (step 1, output-preserving)
+
+Sun-frame rows moved from per-receiver (ReceivedShadows.row0/row1) to PER
+ENTRY — every entry self-contained, so multiple light sources (binary
+systems) land later purely in computeShadows with ZERO rework of any
+receiver family (the "no further rework" criterion applied to the one axis
+that would have forced a receiver-block relayout). The GLSL include
+simplified: computeReceivedShadowing(vec3 P) — one P serves rows and clip
+(affine forms over the same point; bodyRayMarch's apparent two-point usage
+was one value captured pre-mutation). CPU fills consolidated to TWO
+templates (fillPlainShadows eye-space / fillFoldedShadows model-space) when
+the restructure touched every fill at once — fillRayMarchShadows and
+fillOjmShadows had byte-identical bodies (the GLSL-include lesson applied
+CPU-side before the ring made a 4th copy).
+Gate: scenes A–E green ×2, lunar/solar/Iapetus class relationships
+preserved (solar spot 104415 px vs F1 100432; ring band restore 414 px;
+untracked shadows off→on max delta 3 = tone-adaptation tail), zero
+non-stencil validation.
+Open observation (unattributed): ONE run showed a settled 134.67° view-term
+roll on scene D date 2 (near-zenith tracked Moon; az-degeneracy suspect
+class; Moon P5 unmodeled 1.85) — not reproduced on the same binary nor
+baseline (n=5 runs total this wave, 1 hit). Evidence:
+harness/artifacts/flake_sceneD_view134_20260718.json. NOT shadow-related;
+carried for the camera layer.
+
+### H2. Two-channel layers + physical-sharp composition (step 2)
+
+**Structure**: layer array R8 → **R8G8**. R = mean sun-occlusion coverage
+(the historical channel, value-preserved). G = EXACT true-umbra fraction:
+the blur's integer accumulator saturates (sum == fullCount) iff EVERY disc
+texel reads 255 — exact for binary silhouettes; graded (G8) content
+triggers only in fully-opaque cores (true umbra there by definition). One
+dispatch, two outputs; fullCount carried as exact int (float pixelCount
+loses ulps above 2^24 at large radii — fine for the mean division, fatal
+for an equality test).
+
+**Composition** [vixy: full physical-sharp; "the umbra red is Earth
+atmosphere refraction and shall ideally match photography taken from the
+real moon at the same timestamp" — the CALIBRATION CRITERION, recorded]:
+the declared module absorbtion conflated two physical mechanisms, split per
+word semantics at selection (ShadowProjection.hpp derivation):
+- material TRANSMISSION aT — how much covered direct light the caster's
+  material blocks (rings: the declared value, legacy 1−c·a physics; solid:
+  1 — opaque);
+- atmospheric REFRACTION glow gR = 1 − declared, solid casters only —
+  light bent around the limb into the TRUE umbra (Earth {0.4,0.12,0} ==
+  the old UmbraColor, physically the refracted radiance).
+Receiver: **T = 1 − c·aT + u·gR** (u ≤ c and gR ≤ 1 keep T ∈ [0,1];
+products commute). Consequences, each verified:
+- umbra floor == legacy c=1 value → totality look unchanged (measured:
+  umbra means 60.2/59.0, R/G 2.91/2.90 old-vs-new);
+- airless casters and rings reduce EXACTLY (Iapetus band 0 px vs step-1
+  reference; solar spot count in class);
+- atmosphere-caster penumbra/antumbra become the physically-correct
+  NEUTRAL ramp — the Vixy-chosen divergence, OBSERVED at partial phase jd
+  2461102.92: NEW lit-region R/G 1.01–1.02 vs OLD 1.42–1.64 (legacy warm
+  tint), red confined to the true-umbra region (u never false-fires);
+- the false-red ANTUMBRA of the old formula (annular configs saturating
+  c<1 with heavy chroma) is structurally gone — a case legacy Gen-2 never
+  rendered correctly anywhere (invisible on sandbox, wedged on NVIDIA).
+BMT_PROJECT_BISHADOW retired (bit reserved); B5 superseded accordingly.
+Refinement slot (named, not scheduled): u is binary per pixel — a smooth
+erosion measure could ramp the glow across the last percents of coverage
+if photography comparison ever demands it.
+
+### H3. Ring COLOR + receive + extent (step 3 = row 4 core)
+
+The within-body planet→ring entry — emitted since F, consumed by nothing —
+got its receiver: every composition direction of the typed seam now has a
+live client. bodyRing.vert/.frag = ring_planet.* port with the analytic
+planet-shadow test replaced by the receive include (any corridor caster
+shades the ring — moons onto rings, no old-path counterpart); shadowing
+multiplies diffuse ONLY (old parity: reflected planet-shine survives in
+shadow); named divergence: eye-space Position now includes RingScale (old
+scaled only the projection — benign at scale 1, inconsistent under body
+scaling). Extent contract: drawn extent = scaled outer radius → ring-
+inclusive screenSize == OLD behavior (BigBody::getOnScreenSize
+body_bigbody.cpp:270-279, calculateBoundingRadius :283-296) — the row-4
+escalation DISSOLVED on evidence, no decision was needed. Defect closures:
+unscaled caster silhouette; near+far double-draw routing (near-only; near
+covers drawNoDepth to ~3 px < the old 5-px cutoff); ring_shadow_color
+additive key (D8, default = derived {0.7}).
+
+**Two structural defects found live by the port** (the port as instrument —
+both invisible until a translucent annulus receiver existed):
+1. **Within-body solid-caster clip**: the degenerate clip is only valid
+   where the corridor test carries the z-order — and within-body pairs skip
+   the corridor while their ANNULUS receiver spans BOTH sides of the
+   caster. The sunward ring half went black (false shadow). Fix at
+   selection: substitute the caster-center sun-plane clip — the z-order the
+   old analytic SeparationAngle test carried (ModularSystem.cpp, in-code
+   derivation).
+2. **Translucency ordering had no semantics**: RING deduces before MESH,
+   drew first, depth-blocked the planet fill and blended over background
+   black. The old path encoded the order in explicit
+   drawBody-then-drawRings calls (body.cpp:1139-1140); the new path's
+   nearComponents order was positional folklore (AtmExt's "positioned
+   after MESH" comment). Fix: **BMT_TRANSLUCENT** trait + stable
+   opaque-first partition at ROUTING time (ModuleLoader::addNearComponent)
+   — zero hot-path cost, deduction order stops being load-bearing; AtmExt
+   declares it too (its implicit dependence made explicit).
+Measurements (NVIDIA, 2048): Titan vantage A/B 4223 px max 18; Iapetus
+vantage A/B 6539 px max 23 (599k before the fixes — same class as Titan
+after); shadows on/off 179829 px legit content; restore + hide/show ×2 +
+shadows-flag ×2 all BIT-EXACT (0 px); scenes A–D green; zero non-stencil
+validation. Instrument sediment: the probe-frag method (encode lighting
+terms as color, one capture) localized defect 2 to the texture-sample layer
+in one step after two wrong analytic guesses — cheaper than deriving.
+
+### H4. Self-shadow completion — RECORDED NEXT ITEM (structure guaranteed)
+
+Remaining scope, deferred with structural safety (the jobs-as-data
+vocabulary lands new words with nothing else moving — proven at OPAQUE_OJM
+and TEXTURED_ANNULUS): (a) SECONDARY self-shadow ladder — Job.slot consumed,
+2048-target pool beside MAIN (ShadowService header already reserves the
+extension point); (b) grounded-slice depth prefill (D1 dual purpose (b)) —
+consumer at the S3 bucket-entry actions; first observable needs a
+counterfactual grounded-station scene (no shipped boundToSurface content);
+(c) RGBA8 colored self-occlusion [vixy: D1 resolution] — SELF_COLOR word +
+RGBA8 target, translucent OJM shapes as client (counterfactual model if
+shipped models lack translucency).
+
+### H5. Completeness residue (step 5)
+
+- **Nested-system shadows WIRED**: drawNested now runs computeShadows under
+  its own light (inside the existing save/restore) — closing the 11.36
+  "nested-draw shadows absent" suspension structurally. Runtime-unexercised
+  BY CONSTRUCTION until 6.9 gives drawNested its first live surface (same
+  status as drawNested itself); scene E 13/13 green on the wired binary.
+  Cross-SYSTEM shadows stay excluded as a documented model precondition
+  (physically negligible at inter-system distances).
+- **A3.8 (eclipse dimming without atmosphere)**: verified ABSENT for the
+  airless case — EnvironmentState carries eclipse dimming only through the
+  atmosphere engine's own term (atmosphereIntensity, old parity). Producer
+  design recorded, not shipped (no dead fills — the receiver-gate
+  principle): the observer as pseudo-receiver in computeShadows (corridor
+  test on the camera position) → an EnvironmentState sun-occlusion field →
+  landscape/ground shading consumes it. Lands with its consumer.
+- **D9 penumbra**: closed by derivation (sub-pixel — D9 entry above).

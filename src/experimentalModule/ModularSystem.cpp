@@ -423,6 +423,19 @@ void ModularSystem::drawNested(Renderer &renderer)
         const float savedLightDist = lightDistance;
         const float savedLightSize = lightSize;
         updateSystem(); // sort OUR list + set OUR star as light source
+        // Shadow selection under OUR light (2026-07-18, closing the 11.36
+        // "nested-draw shadows absent" suspension): without this call a
+        // visibly-resolved nested system drew shadowless - drawSystem's
+        // computeShadows only serves the CURRENT system. Rides the same
+        // light save/restore; jobs land in the same frame's pre-color
+        // recording window (the helper records at frame assembly, after all
+        // queueing). Runtime-unexercised BY CONSTRUCTION until the executor
+        // dissolution (6.9) gives drawNested its first live surface - the
+        // same status as drawNested itself (11.36 named limitation).
+        // Cross-SYSTEM shadows (a body of system A onto a body of B) stay
+        // excluded as a documented model precondition: physically negligible
+        // at inter-system distances.
+        computeShadows(renderer);
         drawSystemBodies(renderer);
         lightPosition = savedLightPos;
         lightDistance = savedLightDist;
