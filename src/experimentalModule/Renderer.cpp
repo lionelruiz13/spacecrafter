@@ -223,6 +223,19 @@ void Renderer::beginOrbitLines()
     passKind = PassKind::COLOR;
 }
 
+void Renderer::beginTrailDraw()
+{
+    // Fresh command buffer for the trail pass. Mirrors beginOrbitTrace MINUS the
+    // depth clear/range: the trail is depthless (its pipelines have depth
+    // test+write off), so no bucket is needed and the depth buffer is left
+    // untouched. Flush pending batched content (the last body's halos) BEFORE
+    // the trails, matching the old body-pass order.
+    Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
+    nextCommandBuffer();
+    batchFlush();
+    passKind = PassKind::COLOR;
+}
+
 // drawHalo, drawHint and the pointer live with the batching/service side
 // (PipelineRegistry.cpp).
 

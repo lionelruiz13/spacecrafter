@@ -579,6 +579,16 @@ public:
             mat.r[12] = mat_local_to_parent.r[12];
             mat.r[13] = mat_local_to_parent.r[13];
             mat.r[14] = mat_local_to_parent.r[14];
+            // Fulfill the matLocalToBodyPos contract (member doc: "Set on EVERY
+            // position update, visible or not"): mat_local_to_parent IS this
+            // body's flat position frame here (transformParentToBodyPos ran
+            // above) - the same value recursiveUpdate would cache. Without this,
+            // an off-screen body's cached frame stayed stale, so the system-level
+            // ORBIT/TRAIL passes (which draw every evaluated body, incl. the
+            // off-screen ones - row 9 invisible-tick) projected them at their
+            // last-visible frame (§11.39's "fully off-screen cache is stale"
+            // limitation). Render-frame cache only - zero position-parity impact.
+            matLocalToBodyPos = mat_local_to_parent;
             // Old-path parity: positions of non-drawn bodies stay queryable and
             // sortable (the old path updates every body every frame). Refresh
             // the subtree's translations; rotations/visibility stay gated (G4).
@@ -605,6 +615,11 @@ public:
         mat.r[12] = frame.r[12];
         mat.r[13] = frame.r[13];
         mat.r[14] = frame.r[14];
+        // matLocalToBodyPos contract (visible or not): `frame` is this body's
+        // flat position frame post-transform - keep the render-frame cache fresh
+        // for the system ORBIT/TRAIL passes on deep invisible subtrees. See the
+        // selectiveUpdate else-branch note. Render cache only, no parity impact.
+        matLocalToBodyPos = frame;
         distance = frame.getTranslation().length();
         if (!groundedBodies.empty()) {
             const Mat4f surfaceFrame = frame.multiplyFast(accumulatedBodyPosToBody(jd));
@@ -698,6 +713,13 @@ public:
     // no-op for every other module type, so no type knowledge leaks here.
     inline void setFlagOrbit(bool b) {
         for (auto *m : orbitComponents)
+            m->setShown(b);
+    }
+    // Per-name trail toggle seam (old Body::setFlagTrail). Routes to this body's
+    // TRAIL module(s) via the dedicated list; setShown is a no-op for every
+    // other module type (no name/type sniffing).
+    inline void setFlagTrail(bool b) {
+        for (auto *m : trailComponents)
             m->setShown(b);
     }
     inline float getRotAscendingnode(void) const {
@@ -1043,6 +1065,7 @@ public:
             std::erase(groundedComponents, slot);
             std::erase(inComponents, slot);
             std::erase(orbitComponents, slot);
+            std::erase(trailComponents, slot);
         }
         components[slotID.id] = std::move(module);
     }
@@ -1182,6 +1205,7 @@ private:
     std::vector<BodyModule *> groundedComponents; // Drawn if distance <= scaledRadius * BODY_SURFACE_HEIGHT
     std::vector<BodyModule *> inComponents; // Draw if distance <= scaledRadius
     std::vector<BodyModule *> orbitComponents; // Orbit lines (row 8): drawn in the system-level orbit pass (ModularSystem::drawOrbits), not a screen-size regime
+    std::vector<BodyModule *> trailComponents; // Trail lines (row 9): swept every frame by the system-level trail pass (ModularSystem::drawTrails) so accumulation continues while invisible, not a screen-size regime
     // std::list<std::shared_ptr<BodyOrbitModule>> orbitalComponents; // Components drawing lines between bodies
     // std::list<std::shared_ptr<EnvironmentModule>> environmentComponents; // Component defining the environment
 

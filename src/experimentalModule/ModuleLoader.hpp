@@ -56,6 +56,13 @@ protected:
     static inline void addOrbitComponent(ModularBody *target, BodyModule *module) {
         target->orbitComponents.push_back(module);
     }
+    // Trail-line modules (row 9). NOT a screen-size regime: the trail pass
+    // (accumulation + line) is system-driven every frame so accumulation
+    // continues while the body is invisible (ModularSystem::drawTrails), so
+    // trail modules live in their own list.
+    static inline void addTrailComponent(ModularBody *target, BodyModule *module) {
+        target->trailComponents.push_back(module);
+    }
 };
 
 #endif /* end of include guard: MODULE_LOADER_HPP_ */

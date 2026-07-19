@@ -46,6 +46,7 @@
 #include "experimentalModule/bodyModules/AxisModule.hpp"
 #include "experimentalModule/bodyModules/RingModule.hpp"
 #include "experimentalModule/bodyModules/OrbitModule.hpp"
+#include "experimentalModule/bodyModules/TrailModule.hpp"
 
 class Camera;
 class ModularSystem;
@@ -296,6 +297,21 @@ public:
 
 	void setFlagTrails(bool b) {
         ssystemSelected->setFlagTrails(b);
+        // Both-paths mirror (solarsystem_selected.cpp:62): TrailModule::show is
+        // the global display master (new bodies + the anyActive phase gate); the
+        // per-body faders follow it unless a live per-name override. The
+        // selected-body FOCUS filter (old else-branch): when a NON-star body is
+        // selected and trails are on, only the selected body + its children keep
+        // the master; every other body's trail is overridden off. The star
+        // (isStar - old getCenterObject) selected => global, like old.
+        TrailModule::setGlobalShow(b);
+        ModularBody *selected = ModularBody::getSelected();
+        if (b && selected && !selected->isStar()) {
+            ModularBody::forEach([&](ModularBody &body) {
+                if (!(&body == selected || body.getParent() == selected))
+                    body.setFlagTrail(false);
+            });
+        }
     }
 
 	void setFlagAxis(bool b) {
@@ -540,6 +556,7 @@ public:
         ssystemColor->setDefaultBodyColor(halo, label, orbit, trail);
         HintModule::defaultLabelColor = Utility::strToVec3f(label); // both-paths seam
         OrbitModule::defaultColor = Utility::strToVec3f(orbit);     // both-paths seam
+        TrailModule::defaultColor = Utility::strToVec3f(trail);     // both-paths seam
     }
 
 	std::string getPlanetHashString() {

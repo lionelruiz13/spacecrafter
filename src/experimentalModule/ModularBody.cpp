@@ -510,6 +510,23 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
     if (Utility::strToDouble(param["orbit_visualization_period"], 0.0) > 0.0
         && !Utility::isFalse(param["orbit"]))
         ret.push_back(BodyModuleType::ORBIT);
+    // Trail line (row 9): position accumulation over sim time. The old trail set
+    // was the CLASS dispatch BigBody+SmallBody (types Planet/Dwarf/Asteroid/KBO/
+    // Comet); Moon/Sun/Star/Center/Artificial carry NO Trail (Moon has no Trail
+    // member + a no-op drawTrail; the others never construct one -
+    // protosystem.cpp:645-801). Gate = a non-still orbit (the same "moving" gate
+    // as ORBIT, orbit_visualization_period>0) AND not a satellite (Moon
+    // exclusion, isSatellite) AND type != Artificial (the new BodyType enum
+    // lumps Planet/Moon/Artificial as CUSTOM_BODY, so the discriminators are the
+    // parent relation + the raw type string, same "Arti" 4-byte prefix as OJM
+    // above). MaxTrail per class is set by the loader from the type.
+    {
+        const std::string &type = param["type"];
+        const bool artificial = type.size() >= 4 && std::memcmp(type.data(), "Arti", 4) == 0;
+        if (Utility::strToDouble(param["orbit_visualization_period"], 0.0) > 0.0
+            && !isSatellite() && !artificial)
+            ret.push_back(BodyModuleType::TRAIL);
+    }
     return ret;
 }
 

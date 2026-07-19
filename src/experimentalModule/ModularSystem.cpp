@@ -7,6 +7,7 @@
 #include "tools/context.hpp"
 #include "meshModules/bodyShaderInterface.hpp" // MAX_SHADOW_CASTERS_PER_RECEIVER
 #include "bodyModules/OrbitModule.hpp" // orbit-pass activity gate (row 8)
+#include "bodyModules/TrailModule.hpp" // trail-pass activity gate (row 9)
 #include <algorithm>
 #include <cfloat> // FLT_MAX (within-body pair rank)
 #include "EntityCore/Core/VulkanMgr.hpp" // G8-budget overflow log
@@ -469,6 +470,47 @@ void ModularSystem::drawOrbits(Renderer &renderer)
     }
 }
 
+void ModularSystem::drawTrails(Renderer &renderer)
+{
+    // Skip the whole pass (accumulation + draw) when no trail is shown or
+    // fading - the default (trails off) pays nothing. The always-run sweep hung
+    // scene E (the drawOrbits precedent) - the gate is mandatory.
+    if (!TrailModule::anyActive())
+        return;
+    ModularBody ** const end = sortedSystemBodies.data() + sortedSystemBodies.size();
+    renderer.beginTrailDraw();
+    // ONE sweep: for every EVALUATED body (distance != 0), update() its trail
+    // (accumulate the current parent-relative position at sim time + advance the
+    // fader) then draw the polyline. update() ticks regardless of the body's
+    // visibility, so accumulation continues while it is off-screen - the row-9
+    // invisible-tick contract (old drew AND accumulated the trail in both the
+    // visible and off-screen branch, body.cpp:1131/1163 + updateTrail on every
+    // body every frame). No `!body` on-screen skip: an off-screen body's trail
+    // is drawn (its on-screen segments show; the geom shader wrap-culls the rest)
+    // exactly like the old off-screen branch.
+    for (ModularBody **pos = sortedSystemBodies.data(); pos < end; ++pos) {
+        ModularBody &body = **pos;
+        if (body.distance == 0)
+            break; // unevaluated tail (drawSystem rule; a G4-culled subsystem)
+        if (body.trailComponents.empty())
+            continue;
+        if (!body.getParent())
+            continue; // parentless: no parent frame to draw the trail in
+        // Parent POSITION frame (matLocalToBodyPos . translation(-ecl)) - the
+        // frame the parent-relative trail points live in, identical to the
+        // ORBIT pass (§11.39: the cached flat frame carries the correct rotation
+        // for a body that is at least halo-visible; a fully off-screen body's
+        // cache is stale, same shared limitation as ORBIT - the accumulation is
+        // unaffected, and the frame refreshes the instant the body returns).
+        Mat4f parentFrame = body.getMatLocalToBodyPos();
+        parentFrame.multiplyTranslation(-body.getEclipticPos());
+        for (auto *m : body.trailComponents) {
+            m->update(&body, body.getScaledRadius());
+            m->draw(renderer, &body, parentFrame);
+        }
+    }
+}
+
 void ModularSystem::drawNested(Renderer &renderer)
 {
     if (!(isVisible & isBodyVisible))
@@ -525,6 +567,12 @@ void ModularSystem::drawSystem(Renderer &renderer)
         module->draw(renderer, this, mat);
     renderer.beginBodyDraw();
     drawSystemBodies(renderer);
+    // Trail pass (row 9): accumulate + draw the fading path polylines, after the
+    // body draw (old drew each trail in its body's command buffer, body.cpp:
+    // 1131/1163) and BEFORE the orbit lines so a crossing orbit draws on top
+    // (old order: bodies+trails in the body pass, then the orbit phase). No-depth
+    // COLOR; its own command buffer (beginTrailDraw), gated on anyActive().
+    drawTrails(renderer);
     // Orbit pass (row 8): trace holes + orbit lines, after the body draw and
     // before the pointer (old solarsystem_display.cpp order: bodies, halos,
     // orbits, then the pointer on top). Nested systems' orbits are deliberately

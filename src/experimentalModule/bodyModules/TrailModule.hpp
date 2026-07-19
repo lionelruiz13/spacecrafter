@@ -4,6 +4,9 @@
 #include "experimentalModule/BodyModule.hpp"
 #include "tools/fader.hpp"
 #include <vector>
+#include <memory>
+
+class VertexBuffer;
 
 // TRAIL slot - historical path polyline of a body (landing zone of the old
 // Trail friend). Accumulates positions over simulated time in update(),
@@ -15,24 +18,101 @@
 // is active (it needs the per-frame tick even when nothing draws).
 // Deduction rule: default for moving bodies, created inert; recording starts
 // via the seam (startTrails / setFlagTrail).
+//
+// PORT (INTENT §11.41; row 9) - reconciliation of the landing zone with the
+// established line-family shape (ORBIT §11.39 / AXIS §11.31):
+// - Frame & accumulation: the accumulation buffer holds PARENT-RELATIVE
+//   positions (body->getEclipticPos, root-aligned VSOP87 - old
+//   get_heliocentric_ecliptic_pos maps to this for the trail set, whose parent
+//   is the ~fixed system root), sampled at the body's SIM time (getLastJD).
+//   Both ride recursiveTranslationUpdate, refreshed for EVERY evaluated body
+//   even when invisible (§3.2/G4) - the row-9 invisible-tick contract. The
+//   trail is NOT in a screen-size regime list (far-components never get
+//   update()): it lives in a dedicated trailComponents list swept every frame
+//   by ModularSystem::drawTrails (the OrbitModule system-phase precedent), so
+//   accumulation continues while the body is off-screen (old drew the trail in
+//   both the visible AND off-screen branch, body.cpp:1131/1163).
+// - Draw: body_trail.{vert,geom,frag} REUSED VERBATIM (parity by
+//   construction). They read main_clipping_fov from cam_block (context.uboSet)
+//   - the SAME camera-block authority the new-path body shaders use (I2) - so
+//   the family binds the global UBO set; own push contract (frag Vec3f color @0,
+//   vert {int nbPoints, mat4, float fader} @12 = old layoutTrail,
+//   trail.cpp:192-193). LINE_STRIP + geometry subdivision, BLEND_SRC_ALPHA for
+//   the per-vertex fade, NO depth (old setDepthStencilMode() = test+write off).
+// - Flags (master model, ORBIT precedent): `show` is the global display master
+//   (old setFlagTrails); a module's fader targets it unless a per-name override
+//   (setShown) is live at the current generation. The accumulation gate is the
+//   fader interstate (old updateTrail's ONLY gate; trail_on was DEAD - the
+//   display/recording separation is the old TODO, SUSPENDED for Vixy, §11.41).
+// - Deduce: TRAIL for a non-still orbit (orbit_visualization_period>0) that is
+//   NOT a satellite and NOT type=Artificial (old BigBody+SmallBody set:
+//   Planet/Dwarf 1460, Comet 2920, Asteroid/KBO 60; Moon/Sun/Star/Center/
+//   Artificial carry no Trail). DeltaTrail is always 1 day (old never data-set).
 class TrailModule : public BodyModule {
 public:
-    TrailModule() : BodyModule(BodyModuleType::TRAIL) {}
+    // Ctor out-of-line: unique_ptr<VertexBuffer> needs the complete type
+    // (ORBIT/AXIS precedent). Reconciles the landing zone's inline default ctor
+    // with the per-body parameters the old Trail carried (color + MaxTrail +
+    // DeltaTrail; the loader supplies them).
+    TrailModule(const Vec3f &color, int maxTrail, double deltaTrail);
+    ~TrailModule();
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual bool update(ModularBody *body, float scaledRadius) override;
 
+    // Old Trail::startTrail: enable => fresh restart (first_point set - the next
+    // accumulate clears + starts over); disable => stop (recording, mirrored not
+    // relied on - the fader is the accumulation gate). Seam: startTrails (init +
+    // perspective reset, core.cpp:369/1720).
     void startTrail(bool record);
-    static bool show; // old setFlagTrails
+
+    // Per-name override (old Body::setFlagTrail -> Trail::setFlagTrail): forces
+    // this body's trail regardless of the master, until the next global toggle
+    // (generation stamp = old bulk-set clobber parity). Enabling resets the
+    // trail (old startTrail(true)) and kicks the system phase.
+    virtual void setShown(bool b) override;
+
+    // Global master + generation (seam entry - both-paths mirror). A global
+    // toggle bumps the generation, staling every per-name override.
+    static void setGlobalShow(bool b) { show = b; ++flagGeneration; }
+    // The trail pass (ModularSystem::drawTrails) is skipped entirely when this
+    // is false - the default (trails off) pays nothing (no sweep, no
+    // accumulation). Mirrors OrbitModule::anyActive (the always-run sweep hung
+    // scene E - the gate is mandatory).
+    static bool anyActive() { return show || activeCount > 0; }
+
+    static bool show; // old setFlagTrails (global display master)
+    static uint32_t flagGeneration; // bumped by every global toggle
+    static int activeCount; // modules with a live fader (phase-gate input)
+    // Config default trail color (object_trails_color), wired at the
+    // setDefaultBodyColor seam like OrbitModule::defaultColor.
+    static Vec3f defaultColor;
 protected:
+    // Effective visibility target for THIS body this frame (per-name override
+    // while live, else the global master).
+    bool wantShown(ModularBody *body) const;
+    // Append the body's current parent-relative position at its sim time, with
+    // the old updateTrail cadence/cap/prune semantics (trail.cpp:120-163).
+    void accumulate(ModularBody *body);
+
     struct TrailPoint {
-        Vec3f pos;
-        double jd;
+        Vec3f pos;   // parent-relative (root-aligned), drawn in the parent frame
+        double jd;   // sim time of the sample
     };
-    std::vector<TrailPoint> points;
+    std::vector<TrailPoint> points; // NEWEST FIRST (index 0 = brightest - old push_front)
     LinearFader fader;
     Vec3f color;
-    double lastJD = 0;
-    bool recording = false;
+    double lastJD = 0;      // sim time of the last appended point
+    bool recording = false; // fader-driven accumulation-active mirror (old trail_on)
+    bool firstPoint = true; // pending fresh start (old first_point)
+    int maxTrail = 1460;    // old MaxTrail (point cap + time window in DeltaTrail units)
+    double deltaTrail = 1;  // old DeltaTrail (sim-day sampling period)
+
+    bool live = false;         // this module currently counts in activeCount
+    int8_t nameOverride = -1;  // -1 follow master, 0/1 forced
+    uint32_t overrideGen = 0;  // flagGeneration at which the override was set
+
+    // GPU line buffer (maxTrail vec3), refilled each drawn frame from `points`.
+    std::unique_ptr<VertexBuffer> line;
 };
 
 #endif /* end of include guard: TRAIL_MODULE_HPP_ */

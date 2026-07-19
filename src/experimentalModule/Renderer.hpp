@@ -128,6 +128,14 @@ public:
     // Leaves the command buffer OPEN for endBodyDraw (trailing flush + pointer).
     void beginOrbitTrace();
     void beginOrbitLines();
+    // The TRAIL LINE is a SYSTEM-level phase after the body draw (row 9, old
+    // per-body drawTrail in the body command buffer). beginTrailDraw(): fresh
+    // command buffer, flush pending batched content (the last body's halos),
+    // enter PassKind::COLOR with NO depth clear/range - the trail is depthless
+    // (old setDepthStencilMode() = test+write off), so it needs no bucket. The
+    // caller records every trail body's polyline. Leaves the command buffer OPEN
+    // for the following orbit phase / endBodyDraw.
+    void beginTrailDraw();
     // One partitioned depth range (see partitioning contract above).
     struct DepthBucket {
         float znear, zfar;

@@ -52,6 +52,14 @@ public:
     // sorted list (all traces, then all lines - a nearer body's disc must hide
     // a farther body's orbit, so every trace precedes every line).
     void drawOrbits(Renderer &renderer);
+    // The trail pass (row 9): after the body draw, sweep every EVALUATED body's
+    // trail module - accumulate its current position at sim time (ticks even
+    // while the body is off-screen: the row-9 invisible-tick contract) and draw
+    // the fading polyline (COLOR, no depth). System-driven, not a regime list,
+    // for the same reason as drawOrbits (accumulation must run every frame). One
+    // command buffer (beginTrailDraw), gated on TrailModule::anyActive() (an
+    // always-run sweep hangs scene E - the mandatory ORBIT-precedent gate).
+    void drawTrails(Renderer &renderer);
     // Draw THIS system as an entry of an enclosing system's loop (camera
     // outside): >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE px on screen -> nested
     // content draw at this node's sort position (correct by D1/D2: subtree

@@ -32,6 +32,7 @@ extern const Mat4d mat_j2000_to_vsop87;
 #include "bodyModules/OjmLoader.hpp"
 #include "bodyModules/AxisLoader.hpp"
 #include "bodyModules/OrbitLineLoader.hpp"
+#include "bodyModules/TrailLoader.hpp"
 
 void ModuleLoaderMgr::init()
 {
@@ -52,4 +53,5 @@ void ModuleLoaderMgr::init()
     registerModule(BodyModuleType::OJM, std::make_unique<OjmLoader>()); // row 3: artificial 3D-model bodies (OJM wave)
     registerModule(BodyModuleType::AXIS, std::make_unique<AxisLoader>()); // row 10: rotation-axis line (first line-class family)
     registerModule(BodyModuleType::ORBIT, std::make_unique<OrbitLineLoader>()); // row 8: orbit line (second line-class family; TRACE prepass consumer)
+    registerModule(BodyModuleType::TRAIL, std::make_unique<TrailLoader>()); // row 9: trail line (position accumulation over sim time; invisible-tick)
 }
