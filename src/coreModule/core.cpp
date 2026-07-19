@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include "coreModule/core.hpp"
+#include "coreModule/coreLink.hpp" // Core::update ticks the CoreLink TickMgr
 #include "tools/utility.hpp"
 #include "tools/init_parser.hpp"
 #include "starModule/hip_star_mgr.hpp"
@@ -2135,8 +2136,8 @@ float Core::getPlanetsSizeLimit(void) const {
 void Core::update(int delta_time) {
 	if (flagEnableTransition) {
 		const float deltaSeconds = delta_time / 1000.f;
-	   	updateList.remove_if([deltaSeconds](auto *obj){return obj->update(deltaSeconds);});
-		transitions.update(deltaSeconds);
+	   	CoreLink::instance->update(deltaSeconds); // old-path faders (TickMgr<CoreLink>)
+		transitions.update(deltaSeconds);         // new-path smooths (TickMgr<AsyncHub>)
 	}
 }
 

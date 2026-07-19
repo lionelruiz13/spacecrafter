@@ -1,27 +1,16 @@
 #ifndef ASYNC_HUB_HPP_
 #define ASYNC_HUB_HPP_
 
-#include "EntityCore/Executor/Tickable.hpp"
-#include <list>
+#include "EntityCore/Executor/TickMgr.hpp"
 
-// Used to reduce constraints
-class AsyncHub {
+// Used to reduce constraints. The new-path tick manager: the registry, the
+// tick and the mid-transition teardown all come from TickMgr<AsyncHub>.
+class AsyncHub : public TickMgr<AsyncHub> {
 public:
     AsyncHub();
     ~AsyncHub();
 
-    void update(float deltaTime) {
-        updateList.remove_if([deltaTime](auto *obj){return obj->update(deltaTime);});
-    }
-    void startTicking(Tickable<AsyncHub> *arg) {
-        updateList.push_back(arg);
-    }
-    void stopTicking(Tickable<AsyncHub> *arg) {
-        updateList.remove(arg);
-    }
     static AsyncHub *instance;
-private:
-    std::list<Tickable<AsyncHub> *> updateList;
 };
 
 #endif /* end of include guard: ASYNC_HUB_HPP_ */

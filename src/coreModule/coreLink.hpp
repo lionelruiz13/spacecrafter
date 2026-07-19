@@ -27,8 +27,9 @@
 #include <memory>
 #include "coreModule/core.hpp"
 #include "experimentalModule/Camera.hpp"
+#include "EntityCore/Executor/TickMgr.hpp"
 
-class CoreLink {
+class CoreLink : public TickMgr<CoreLink> {
 public:
 
 //	static void DateTimeFromJulianDay(double jd, int *year, int *month, int *day, int *hour, int *minute, double *second);
@@ -975,13 +976,6 @@ public:
     ~CoreLink() {
 		instance = nullptr;
 	};
-
-	void startTicking(Tickable<CoreLink> *arg) {
-		core->updateList.push_back(arg);
-	}
-	void stopTicking(Tickable<CoreLink> *arg) {
-		core->updateList.remove(arg);
-	}
 
 	//! Whether the rendered frame must be predictible (at the expense of framerate) or not
 	inline bool predictibleRendering() const {

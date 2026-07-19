@@ -600,7 +600,6 @@ private:
 	std::unique_ptr<StarLines> starLines;			// allows to draw lines in the galaxy
 	std::unique_ptr<OjmMgr> ojmMgr;					// represents obj3D
 	std::unique_ptr<UBOCam> uboCam;
-	std::list<Tickable<CoreLink> *> updateList;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
 	AsyncHub transitions;
