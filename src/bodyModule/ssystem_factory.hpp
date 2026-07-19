@@ -461,6 +461,15 @@ public:
 
 	void setPlanetSizeScale(const std::string &name, float s) {
         ssystemScale->setPlanetSizeScale(name, s);
+        // New-path mirror of the planet_scale seam (§11.35 gap, closed T7 §11.45).
+        // Old setPlanetSizeScale -> Body::setSphereScale sets radius=initialRadius*s;
+        // the new path carries it as per-body scaling (scaledRadius=radius*scaling),
+        // which feeds both the drawn size AND the observer altitude reference - the
+        // identical mechanism as moon_scale/sun_scale above (setSphereScale is the
+        // very same old sink, solarsystem.hpp:118). Without this, planet_scale was
+        // old-path-only (harness ab_orientation.py used moon_scale for exactly this).
+        if (ModularBody *body = ModularBody::findBody(name))
+            body->setScaling(s);
     }
 
 	void planetTesselation(std::string name, int value) {

@@ -4,7 +4,8 @@
 parity must compose to pixels).
 
 Scene M: Earth observer, tracked Moon, moon_scale 30 (the mirrored seam,
-11.16 - planet_scale is NOT mirrored, seam gap recorded), planets_axis on.
+11.16 - planet_scale is now mirrored too, 11.45 closed the 11.35 gap),
+planets_axis on.
 Scene P: observer on Pluto, tracked Charon (real geometry, ~3.5 deg disc).
 
 Channel: `body action screenshot` (app-side readback, 11.19a); the 1000 ms

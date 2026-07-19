@@ -32,6 +32,7 @@
 #include "coreModule/skyline_mgr.hpp"
 #include "coreModule/milkyway.hpp"
 #include "coreModule/skydisplay_mgr.hpp"
+#include "experimentalModule/Camera.hpp"
 
 CoreBackup::CoreBackup(std::shared_ptr<Core> _core)
 {
@@ -46,6 +47,13 @@ void CoreBackup::loadBackup()
 	if (mBackup.jday !=0) {
 		core->timeMgr->setJDay(mBackup.jday);
 		core->projection->setFov(mBackup.fov); //setFov(mBackup.fov);
+		// New-path fov mirror (§11.15c residual, closed T7 §11.45): bookmark
+		// restore reached only the old projection fov; the new path carries fov
+		// on the Camera. Same surface + unit convention as coreLink::setFov
+		// (mBackup.fov is degrees, saved from projection->getFov()). loadBackup
+		// is a runtime bookmark restore, so Camera::instance is always live.
+		if (Camera::instance)
+			Camera::instance->setHalfFov(mBackup.fov * M_PI / 360);
 		core->observatory->moveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
 	}
 	core->setHomePlanet(mBackup.home_planet_name);

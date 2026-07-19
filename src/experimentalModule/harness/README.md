@@ -85,10 +85,11 @@ residuals. Sections: P1 old model, P2 new model, P3 relative geometry (THE
 promise), P4 observer parity, P5 rotation differentials with named causes.
 
 fix-validation.sts is the validation scene (dual-dump derivative): requires
-`init_fov = 340` in config.ini - `zoom fov` does NOT reach Camera::setHalfFov
-(seam gap, INTENT 11.15c), only config init does; the wide fov keeps
-Sun/Moon/Mars inside the new path's visibility cone so their rotations are
-fresh (not chimera).
+`init_fov = 340` in config.ini. (Historical note: an earlier revision claimed
+`zoom fov` does NOT reach Camera::setHalfFov - CORRECTED, INTENT 11.40: it
+always did; `zoom fov X duration 0` reaches the new path immediately.) The
+wide config init_fov keeps Sun/Moon/Mars inside the new path's visibility
+cone so their rotations are fresh (not chimera) from the first frame.
 
 Final measurements (2026-07-11, two dates): predicted==observed ~5e-8 both
 paths; relative positions old==new <= 7e-6 deg / 2.3e-7 distances; observer
@@ -150,9 +151,12 @@ tracked Moon + axis, and Charon from Pluto's surface; clusters screenshots
 into path phases and measures disc diffs. Pair with the instrument-
 sensitivity counterfactual (rotate one phase's disc by the class angle):
 measured x163 (Moon, 23.44 deg) / x1212 (Charon, 115.6 deg) headroom over
-the observed AA/pointer floor. Uses `set moon_scale` (mirrored seam);
-`planet_scale` is OLD-PATH-ONLY (seam gap, INTENT 11.35) - do not use in
-A/B scenes.
+the observed AA/pointer floor. Uses `set moon_scale` (mirrored seam).
+`planet_scale name X scale N` is now DUAL too (INTENT 11.45 closed the
+11.35 seam gap - new-path scaledRadius scales exactly with the command);
+usable in A/B scenes. NOTE: setScaling is an ASmooth ease - settle it
+(~6-8 s) before dumping, and the command syntax is keyword-based
+(`planet_scale name X scale N`, not positional).
 
 Dump extension: dumpTracePaths hops set is Earth/Moon/Sun/Mars/Pluto/Charon
 (tilt pieces stay fresh through recursiveTranslationUpdate even invisible).
