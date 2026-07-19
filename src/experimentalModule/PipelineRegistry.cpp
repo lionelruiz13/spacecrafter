@@ -9,9 +9,11 @@
 #include "EntityCore/Resource/SetMgr.hpp"
 #include "EntityCore/Resource/VertexArray.hpp"
 #include "EntityCore/Resource/VertexBuffer.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp" // SUN_HALO service uniforms (row 14)
 #include "EntityCore/Core/BufferMgr.hpp"
 #include "EntityCore/Resource/TransferMgr.hpp"
 #include "tools/s_texture.hpp"
+#include "tools/call_system.hpp" // SUN_HALO: setBigHalo path-existence probe
 #include "tools/draw_helper.hpp" // tail pass: helper->nextDraw segment boundary
 #include "tools/object_base.hpp" // pointer service: getFontResolution (the
                                  // SCK_FONT_RESOLUTION_SIZE config authority)
@@ -812,6 +814,14 @@ void Renderer::batchBegin()
             b.boundTex = b.tex.get();
         }
     }
+    // SUN_HALO (row 14) is a non-batch family: bind its big-halo texture here,
+    // at frame start (after recordTransfer's upload), exactly once - same
+    // deferral as the batched halo above. getTexture() in the frame task is the
+    // established pattern (the halo binds the same way).
+    if (sunHaloSet && sunHaloTex && !sunHaloTexBound) {
+        sunHaloSet->bindTexture(sunHaloTex->getTexture(), 0);
+        sunHaloTexBound = true;
+    }
 }
 
 void Renderer::batchFlush()
@@ -1221,6 +1231,124 @@ void Renderer::recordPointer()
     vkCmdDraw(cmd, 4, 1, 0, 0);
 }
 
+// ---- SUN_HALO service (row 14): the old Sun big halo -----------------------
+// The old Sun owned pipelineBigHalo + descriptorSetBigHalo + haloCmds[3]
+// (static secondary command buffers). Here the pipeline is a registry family,
+// the uniforms/set/vertex are Renderer-owned, and the draw is RECORDED live
+// into the frame command buffer (the S1 note: "static cmd buffers dissolve
+// into frame-task recording"). sun_big_halo.{vert,geom,frag}.spv reused
+// VERBATIM. cam_block.glsl puts the global UBO at set 1, so globalUboContract
+// goes SECOND in desc.sets (the old bindSets({descriptorSetBigHalo, uboSet})
+// order); the local set (tex + 4 uniforms) is set 0.
+void Renderer::ensureSunHaloFamily()
+{
+    if (sunHaloFamily)
+        return;
+    auto &r = registry();
+    Context &context = *Context::instance;
+    // 1-point vertex {vec2 screen pos (render px)} - old m_bigHaloGL
+    // (body_sun.cpp:129-131).
+    auto pattern = std::make_unique<VertexArray>(*VulkanMgr::instance, context.ojmAlignment);
+    pattern->createBindingEntry(sizeof(Vec2f));
+    pattern->addInput(VK_FORMAT_R32G32_SFLOAT);
+    // Local set (set 0): old layoutBigHalo bindings (body_sun.cpp:135-141).
+    SetContractDesc local;
+    local.name = "sunHalo";
+    local.bindings = {
+        {0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT}, // tex_big_halo
+        {1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_GEOMETRY_BIT},          // Rmag
+        {2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT},          // cmag
+        {3, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT},          // radius
+        {4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT},          // color
+    };
+    local.expectedSets = 1;
+    PipelineFamilyDesc desc;
+    desc.name = "SUN_HALO";
+    desc.vertex = pattern.get();
+    desc.sets.push_back(allocateSetContract(std::move(local))); // set 0 (local)
+    desc.sets.push_back(globalUboContract());                   // set 1 (cam_block)
+    // viewportY spec constant (id 0, float) = screen height px - old
+    // createHaloShader(getScreenRect().extent.height) (body_sun.cpp:74).
+    const float viewportY = static_cast<float>(VulkanMgr::instance->getScreenRect().extent.height);
+    SpecConstant vy{0, 0};
+    memcpy(&vy.value, &viewportY, sizeof(float));
+    desc.specValues.push_back(vy);
+    PassDesc color;
+    color.pass = PassKind::COLOR;
+    color.shaderTable = {{0, {.vert = "sun_big_halo.vert.spv", .geom = "sun_big_halo.geom.spv", .frag = "sun_big_halo.frag.spv"}}};
+    color.state.blend = BLEND_ADD; // old setBlendMode(BLEND_ADD)
+    color.state.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+    color.state.cull = false;       // POINT_LIST: no faces (halo/hint parity)
+    color.state.depthTest = false;  // old setDepthStencilMode(VK_FALSE, VK_FALSE)
+    color.state.depthWrite = false;
+    desc.passes.push_back(std::move(color));
+    r.servicePatterns.push_back(std::move(pattern)); // registry-owned (I5)
+    sunHaloFamily = allocateFamily(std::move(desc));
+    if (sunHaloFamily) {
+        sunHaloVertex = r.servicePatterns.back()->createBuffer(0, 1, context.globalBuffer.get());
+        uSunRmag = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
+        uSunCmag = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
+        uSunRadius = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
+        uSunColor = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
+        sunHaloSet.reset(allocSet(sunHaloFamily, 0)); // set index 0 (the local contract)
+        sunHaloSet->bindUniform(uSunRmag, 1);
+        sunHaloSet->bindUniform(uSunCmag, 2);
+        sunHaloSet->bindUniform(uSunRadius, 3);
+        sunHaloSet->bindUniform(uSunColor, 4);
+        // binding 0 (texture) is bound by setSunHaloTexture.
+    }
+}
+
+void Renderer::setSunHaloTexture(const std::string &texName, const std::string &path)
+{
+    ensureSunHaloFamily();
+    if (!sunHaloFamily || texName.empty())
+        return;
+    // Old Sun::setBigHalo (body_sun.cpp:109-121): existing path+file, else let
+    // s_texture resolve it against the standard texture paths. PNG_SOLID like
+    // the old load type.
+    const std::string full = path + texName;
+    if (CallSystem::fileExist(full))
+        sunHaloTex = std::make_unique<s_texture>(full, TEX_LOAD_TYPE_PNG_SOLID);
+    else
+        sunHaloTex = std::make_unique<s_texture>(texName, TEX_LOAD_TYPE_PNG_SOLID);
+    // Bind DEFERRED to frame start (batchBegin), NOT here: getTexture() at
+    // load time creates the image UNINITIALIZED (no transfer cmd) and captures
+    // a black view that never refreshes (the halo service has the same deferral
+    // - setHaloTexture stashes, batchBegin rebinds after recordTransfer's
+    // upload). Binding here left farHalo black (measured, INTENT §11.44).
+    sunHaloTexBound = false;
+}
+
+void Renderer::drawSunHalo(const std::pair<float, float> &pos, const Vec3f &color,
+                           float rmag, float cmag, float radius)
+{
+    ensureSunHaloFamily();
+    if (!sunHaloFamily || !sunHaloTex || !sunHaloTexBound)
+        return; // no texture, or not yet bound+uploaded (bound at frame start,
+                // batchBegin) - old: if (isVisible && tex_big_halo)
+    // Per-frame vertex (screenPos in render px - old screenPosF = screenPos,
+    // MVP2D maps px->NDC). planCopy is staging: skip the frame if it's full (C3).
+    auto *v = static_cast<std::pair<float, float> *>(
+        Context::instance->transfer->planCopy(sunHaloVertex->get()));
+    if (!v)
+        return;
+    *v = VulkanMgr::instance->rectToRender(pos);
+    // Per-body uniforms (old drawBigHalo). Single-region SharedBuffer, updated
+    // each frame like the old path - identical cross-frame behavior (parity).
+    *uSunRmag = rmag;
+    *uSunCmag = cmag;
+    *uSunRadius = radius;
+    *uSunColor = color;
+    const FamilyBound bound = bind(sunHaloFamily); // resolves against passKind (COLOR)
+    if (!bound.layout)
+        return; // base build failed (shader absent) - C3 degrade
+    // set 0 = local (tex+uniforms), set 1 = cam_block (old bindSets order).
+    bound.layout->bindSets(cmd, {*sunHaloSet->get(), *Context::instance->uboSet->get()});
+    sunHaloVertex->bind(cmd);
+    vkCmdDraw(cmd, 1, 1, 0, 0);
+}
+
 void Renderer::releaseRegistry()
 {
     if (!reg)
@@ -1234,6 +1362,17 @@ void Renderer::releaseRegistry()
     pointerSet.reset();
     pointerTex.reset();
     pointerVertex.reset();
+    // SUN_HALO service (row 14): Set lives in a registry pool (release before
+    // reg); uniforms/vertex/texture depend on live managers (uniformMgr,
+    // globalBuffer, texture cache). Family handle decremented while reg alive.
+    sunHaloSet.reset();
+    sunHaloTex.reset();
+    sunHaloVertex.reset();
+    uSunRmag.reset();
+    uSunCmag.reset();
+    uSunRadius.reset();
+    uSunColor.reset();
+    sunHaloFamily = {};
     for (auto &f : reg->families) {
         if (f.batch && f.batch->pData)
             Context::instance->stagingMgr->releaseBuffer(f.batch->staging);

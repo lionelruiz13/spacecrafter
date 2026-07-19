@@ -14,6 +14,7 @@ class Set;
 class s_font;
 class s_texture;
 class VertexBuffer;
+template<typename> class SharedBuffer;
 
 // ============================================================================
 // The Renderer is the ONLY Vulkan surface of the experimental module: bodies
@@ -199,6 +200,20 @@ public:
     // "planethalo.png" at init) - the service loads its own s_texture
     // (texCache dedups by name); rebind happens at the next batchBegin.
     void setHaloTexture(const std::string &texName);
+    // Star BIG-halo glow (INTENT §12 row 14 / §11.44): the old Sun::drawBigHalo
+    // (sun_big_halo.{vert,geom,frag}, additive POINT->quad, no depth) dissolved
+    // off its static command buffers into frame-task recording (the S1 note).
+    // A Renderer-owned service like the pointer (single instance: only the Sun
+    // is a reachable big-halo star). pos = rect space [-1,1] (getScreenPos);
+    // color = getHaloColor(); rmag/cmag/radius = the ported drawBigHalo scalars
+    // (StarModule). Records into the CURRENT cmd (called from the FAR draw hook,
+    // before the near disc). No-op until setSunHaloTexture supplied a texture.
+    void drawSunHalo(const std::pair<float, float> &pos, const Vec3f &color,
+                     float rmag, float cmag, float radius);
+    // Big-halo texture seam (old Sun::setBigHalo, body_sun.cpp:109-121): try
+    // path+file, else the standard texture paths. Load-time only (§9: no
+    // runtime big-halo command). Builds the SUN_HALO family on first call.
+    void setSunHaloTexture(const std::string &texName, const std::string &path);
     // Queue a hint circle at a body's screen position (rect space [-1,1], i.e.
     // ModularBody::getScreenPos) through the HINT batched service family -
     // the DrawHelper DRAW_HINT_POS seam entry is dissolved (2026-07-12, row 6
@@ -346,6 +361,10 @@ private:
     void batchEnd();
     void ensureHaloFamily();
     void ensureHintFamily();
+    // Lazy build of the SUN_HALO service (row 14): 1-point vertex + local set
+    // (tex + 4 uniforms, old layoutBigHalo) + the sun_big_halo family. Built on
+    // first setSunHaloTexture / drawSunHalo (registry available at load time).
+    void ensureSunHaloFamily();
     // Lazy build of the TAIL instanced batch (row 12): shared geometry + index
     // + instance buffer + pipeline family, built once on first submit/flush.
     void ensureTailFamily();
@@ -368,6 +387,16 @@ private:
     float pointerTimeMs = 0;   // breathing clock (old ObjectBase::local_time)
     bool pointerQueued = false;
     struct { float x, y, size; } pointerData; // render px, resolved size
+    // SUN_HALO service resources (old Sun members, Renderer-owned; released by
+    // releaseRegistry() while the managers are alive). Single instance: only
+    // the Sun is a reachable big-halo star (STAR_VIEWER/CORONA suspended).
+    PipelineFamily sunHaloFamily;
+    std::unique_ptr<VertexBuffer> sunHaloVertex; // 1 screen point, planCopy'd per draw
+    std::unique_ptr<s_texture> sunHaloTex;       // tex_big_halo (big_halo.png)
+    std::unique_ptr<Set> sunHaloSet;
+    std::unique_ptr<SharedBuffer<float>> uSunRmag, uSunCmag, uSunRadius;
+    std::unique_ptr<SharedBuffer<Vec3f>> uSunColor;
+    bool sunHaloTexBound = false; // deferred texture bind (frame start, post-upload)
     VkCommandBuffer cmd = VK_NULL_HANDLE;
     ToneReproductor *eye;
     FrameMgr *frame;

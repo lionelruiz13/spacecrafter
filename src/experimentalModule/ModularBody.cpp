@@ -545,6 +545,16 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
             && (Utility::isTrue(param["tail"]) || (comet && hasMag)))
             ret.push_back(BodyModuleType::TAIL);
     }
+    // Star big-halo glow (row 14): the old Sun/BodyStar bound a tex_big_halo
+    // (protosystem.cpp:687-691) only on STAR-typed bodies. Gate = STAR bit
+    // (strToBodyType maps type=Sun/Star -> STAR) AND a non-empty tex_big_halo -
+    // exactly the old setBigHalo precondition. Deduced as CUSTOM: StarLoader
+    // (co-registered with GridLoader) outbids on stars, so it lands in the
+    // default "CUSTOM" slot; the Sun carries no planet_grid, so no slot clash
+    // (INTENT §11.44). The disc itself stays MESH (§11.19a "bare disc"); this
+    // module is only the additive screen-space halo.
+    if (isStar() && !param["tex_big_halo"].empty())
+        ret.push_back(BodyModuleType::CUSTOM);
     return ret;
 }
 

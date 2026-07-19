@@ -42,6 +42,7 @@
 #include "navModule/anchor_manager.hpp"
 #include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/ModularBodyPtr.hpp"
+#include "experimentalModule/bodyModules/StarModule.hpp" // sun-scale halo seam (§11.44)
 #include "experimentalModule/bodyModules/HintModule.hpp"
 #include "experimentalModule/bodyModules/AxisModule.hpp"
 #include "experimentalModule/bodyModules/RingModule.hpp"
@@ -225,6 +226,10 @@ public:
         ssystem->setFlagSunScale(b);
         if (ModularBody *sun = ModularBody::findBody("Sun"))
             sun->setScaling(b ? ssystem->getSunScale() : 1.f);
+        // New-path mirror of old setHaloSize(200)/(200+SunScale*40)
+        // (solarsystem.hpp:100/103) - the STAR module's big-halo size; the
+        // ssystem.ini big_halo_size is dead for the Sun (INTENT §11.44).
+        StarModule::setSunHaloSize(b ? 200.f + ssystem->getSunScale() * 40.f : 200.f);
     }
 
 	bool getFlagSunScale(void) const {

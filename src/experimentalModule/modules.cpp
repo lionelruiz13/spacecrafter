@@ -35,6 +35,7 @@ extern const Mat4d mat_j2000_to_vsop87;
 #include "bodyModules/TrailLoader.hpp"
 #include "bodyModules/TailLoader.hpp"
 #include "bodyModules/GridLoader.hpp"
+#include "bodyModules/StarLoader.hpp"
 
 void ModuleLoaderMgr::init()
 {
@@ -58,4 +59,5 @@ void ModuleLoaderMgr::init()
     registerModule(BodyModuleType::TRAIL, std::make_unique<TrailLoader>()); // row 9: trail line (position accumulation over sim time; invisible-tick)
     registerModule(BodyModuleType::TAIL, std::make_unique<TailLoader>()); // row 12: comet gas/dust tail (instanced batch, Renderer-owned; Tail::global dissolved)
     registerModule(BodyModuleType::CUSTOM, std::make_unique<GridLoader>()); // row 11: lat/lon grid (explicit-slot only, §6.7 declaration half)
+    registerModule(BodyModuleType::CUSTOM, std::make_unique<StarLoader>()); // row 14: star big-halo glow (deduced; wins CUSTOM over Grid on stars, 0 on planets)
 }
