@@ -750,6 +750,16 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         body->addEnvironment(std::make_unique<AtmosphereEnv>(), false);
     for (auto moduleType : body->deduceBodyModuleList(param))
         ModuleLoaderMgr::instance.loadModule(moduleType, body, param);
+    // Explicit-slot declaration (§6.7 declaration half, INTENT §11.42): the GRID
+    // slot is NOT deduced - deduceBodyModuleList returns a bare BodyModuleType
+    // and cannot name a slot, and CUSTOM's default slot name ("CUSTOM") would
+    // collide. A body opts in with planet_grid=true, installed through
+    // loadModule's explicit `slot` argument into the named "GRID" slot. This is
+    // the first and only user of that argument - the concrete, minimal form of
+    // the D2 explicit-declaration mechanism (the general param syntax is still
+    // under-specified, suspended for Vixy).
+    if (Utility::isTrue(param["planet_grid"]))
+        ModuleLoaderMgr::instance.loadModule(BodyModuleType::CUSTOM, body, param, "GRID");
     body->updateCache(); // Ensure bounding radius are properly set
 }
 

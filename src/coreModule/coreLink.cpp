@@ -1221,6 +1221,12 @@ bool CoreLink::planetsGetFlagAxis() const {
 	return core->ssystemFactory->getFlag(BODY_FLAG::F_AXIS);
 }
 
+void CoreLink::planetsSyncGridColor() {
+	core->ssystemFactory->setPlanetGridColor(
+		skyGridMgrGetColor(SKYGRID_TYPE::GRID_EQUATORIAL),
+		skyLineMgrGetColor(SKYLINE_TYPE::LINE_EQUATOR));
+}
+
 void CoreLink::planetsSetFlagHints(bool b) {
 	core->ssystemFactory->setFlagHints(b);
 }

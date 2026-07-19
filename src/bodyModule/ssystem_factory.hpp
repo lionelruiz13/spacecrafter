@@ -47,6 +47,7 @@
 #include "experimentalModule/bodyModules/RingModule.hpp"
 #include "experimentalModule/bodyModules/OrbitModule.hpp"
 #include "experimentalModule/bodyModules/TrailModule.hpp"
+#include "experimentalModule/bodyModules/PlanetGridModule.hpp"
 
 class Camera;
 class ModularSystem;
@@ -317,6 +318,19 @@ public:
 	void setFlagAxis(bool b) {
         currentSystem->setFlagAxis(b);
         AxisModule::show = b; // both-paths seam, like setFlagHints
+        // The planet grid rides the axis flag: old Body::setFlagAxis sets BOTH
+        // flag_axis AND flag_planet_grid=b (body.cpp:229-234) - there is no
+        // independent setFlagPlanetGrid. Mirror it on the new path (INTENT §11.42).
+        PlanetGridModule::show = b;
+    }
+
+    // Grid color seam (INTENT §11.42): sets the GLOBAL grid colors (old
+    // observable: sky-manager colors shared by every body). NEW-path only for
+    // now - old's grid colors stay sky-manager-driven (body.cpp:1261-1264); the
+    // color-authority unification (should the new path read the sky managers?
+    // should the old path gain this seam?) is the SUSPENDED structural choice.
+    void setPlanetGridColor(const Vec3f &meridian, const Vec3f &parallel) {
+        PlanetGridModule::setColors(meridian, parallel);
     }
 
 	void setFlagHints(bool b) {

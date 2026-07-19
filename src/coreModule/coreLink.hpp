@@ -532,6 +532,13 @@ public:
 	//! Get flag for displaying Planets Axis
 	bool planetsGetFlagAxis() const;
 
+	//! Mirror the planet-grid colors onto the new path from the sky-manager
+	//! sources the OLD planet grid reads every draw (GRID_EQUATORIAL = meridian,
+	//! LINE_EQUATOR = parallel; body.cpp:1261-1264). Both-paths grid COLOR seam
+	//! (INTENT §11.42): keeps the new grid's colors identical to what the old
+	//! grid renders. The color-authority structural choice is suspended for Vixy.
+	void planetsSyncGridColor();
+
 
 	//! Set flag for displaying Planets Hints
 	void planetsSetFlagHints(bool b);
