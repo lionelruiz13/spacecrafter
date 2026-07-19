@@ -101,6 +101,13 @@ public:
     DrawHelper();
     ~DrawHelper();
 
+    //! Stop and join the worker thread, draining any queued draws while their
+    //! resources are still alive. MUST run before the registry pipelines those
+    //! queued draws bind (and the ShadowService preFrameRecorder they invoke)
+    //! are destroyed: ~Context calls it before releaseRegistry(), ~DrawHelper
+    //! calls it again (idempotent) before freeing the helper's own resources.
+    void stop();
+
     template <typename T>
     inline void draw(T *data) {
         while (!queue.emplace(reinterpret_cast<DrawData *>(data))) {

@@ -101,8 +101,16 @@ void Context::buildShadowPipeline(uint32_t begin, uint32_t end)
 
 Context::~Context()
 {
-    renderer.releaseRegistry(); // FIRST: pipeline-family registry teardown
-                                // needs live managers (stagingMgr, device)
+    // Stop the DrawHelper worker FIRST: its queued draws bind registry
+    // pipelines and run the ShadowService preFrameRecorder, both of which
+    // releaseRegistry() destroys. Draining it here, while every resource it
+    // touches is still alive, closes the teardown race (worker mid-submit vs a
+    // freed pipeline). helper.reset() below only frees the helper's own
+    // resources - stop() is idempotent.
+    if (helper)
+        helper->stop();
+    renderer.releaseRegistry(); // pipeline-family registry teardown needs live
+                                // managers (stagingMgr, device)
     instance = nullptr;
     helper.reset();
     for (auto p : pipelineArray) {

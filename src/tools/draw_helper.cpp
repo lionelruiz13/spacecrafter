@@ -42,10 +42,16 @@ DrawHelper::DrawHelper() : nebulaMat(*Context::instance->uniformMgr)
     setPrints = std::make_unique<Set>(vkmgr, *context.setMgr, layoutPrint.get());
 }
 
-DrawHelper::~DrawHelper()
+void DrawHelper::stop()
 {
     queue.close();
-    thread.join();
+    if (thread.joinable())
+        thread.join();
+}
+
+DrawHelper::~DrawHelper()
+{
+    stop();
     for (int i = 0; i < 3; ++i) {
         vkDestroyCommandPool(VulkanMgr::instance->refDevice, drawer[i].cmdPool, nullptr);
     }
