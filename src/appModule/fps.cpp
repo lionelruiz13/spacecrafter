@@ -52,6 +52,15 @@ Fps::Fps() :
 {
 	selectMaxFps();
 	#ifdef __linux__
+	// Warm the unwinder OFF the signal path. The first stack capture may dlopen
+	// libgcc_s / initialise libbacktrace (malloc + loader lock); the handler
+	// already stores into a static buffer (DeportedLinearAllocator) to stay
+	// heap-free, but that one-time init would otherwise run INSIDE the handler on
+	// the first stall - reentering malloc / the loader lock against the very
+	// thread it interrupted, which may hold them. The stall tracer must not
+	// itself stall: do the init here, then drop the warm-up capture.
+	sigstacktrace(0);
+	stackDumped.store(false, std::memory_order_relaxed);
 	signal(SIGUSR1, &Fps::sigstacktrace);
 	#endif
 }
