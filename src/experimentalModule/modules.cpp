@@ -33,6 +33,7 @@ extern const Mat4d mat_j2000_to_vsop87;
 #include "bodyModules/AxisLoader.hpp"
 #include "bodyModules/OrbitLineLoader.hpp"
 #include "bodyModules/TrailLoader.hpp"
+#include "bodyModules/TailLoader.hpp"
 #include "bodyModules/GridLoader.hpp"
 
 void ModuleLoaderMgr::init()
@@ -55,5 +56,6 @@ void ModuleLoaderMgr::init()
     registerModule(BodyModuleType::AXIS, std::make_unique<AxisLoader>()); // row 10: rotation-axis line (first line-class family)
     registerModule(BodyModuleType::ORBIT, std::make_unique<OrbitLineLoader>()); // row 8: orbit line (second line-class family; TRACE prepass consumer)
     registerModule(BodyModuleType::TRAIL, std::make_unique<TrailLoader>()); // row 9: trail line (position accumulation over sim time; invisible-tick)
+    registerModule(BodyModuleType::TAIL, std::make_unique<TailLoader>()); // row 12: comet gas/dust tail (instanced batch, Renderer-owned; Tail::global dissolved)
     registerModule(BodyModuleType::CUSTOM, std::make_unique<GridLoader>()); // row 11: lat/lon grid (explicit-slot only, §6.7 declaration half)
 }

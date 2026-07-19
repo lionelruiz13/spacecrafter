@@ -12,6 +12,7 @@
 #include "EntityCore/Core/BufferMgr.hpp"
 #include "EntityCore/Resource/TransferMgr.hpp"
 #include "tools/s_texture.hpp"
+#include "tools/draw_helper.hpp" // tail pass: helper->nextDraw segment boundary
 #include "tools/object_base.hpp" // pointer service: getFontResolution (the
                                  // SCK_FONT_RESOLUTION_SIZE config authority)
 #include "bodyModule/hints.hpp"  // hint service: computeHintsAt + nbrFacets
@@ -215,6 +216,44 @@ Registry &registry()
         reg = std::make_unique<Registry>();
     return *reg;
 }
+
+// ---- TAIL instanced batch (row 12) --------------------------------------
+// Renderer-owned replacement for the old Tail::global singleton (tail.cpp):
+// shared cone/strip geometry + a primitive-restart index built once, per-tail
+// instances (Renderer::TailInstance) accumulated per frame and drawn with ONE
+// vkCmdDrawIndexed. The PIPELINE lives in the registry (a normal family, so
+// the C3 degradation + spec-8 injection are free); only the batch RESOURCES
+// are file-static here - the same division the halo/hint families keep (handle
+// on the Renderer, buffers off the frame path). The GPU buffers are released
+// in Renderer::releaseRegistry() (managers still alive), NOT at static
+// teardown (that is the shutdown-SIGSEGV class, §11.15d). Geometry constants
+// are the old tail.cpp macros verbatim.
+namespace {
+constexpr int NB_MAX_TAILS = 1024;
+constexpr int NB_TAIL_LINES = 16;
+constexpr int NB_TAIL_LENGTH = Renderer::TAIL_TIME_SEGMENTS; // 16
+constexpr int NB_TAIL_HEAD = 1 + NB_TAIL_LINES * NB_TAIL_LINES / 4; // 65
+constexpr int NB_TAIL_LINE_INDICES = (1 + NB_TAIL_LINES / 4 + NB_TAIL_LENGTH) * 2; // 42
+constexpr int NB_TAIL_VERTICES = NB_TAIL_HEAD + NB_TAIL_LINES * NB_TAIL_LENGTH; // 321
+constexpr int NB_TAIL_INDICES = NB_TAIL_LINES * NB_TAIL_LINE_INDICES; // 672
+static_assert(sizeof(Renderer::TailInstance) == 24 * sizeof(float),
+              "TailInstance must match body_tail.vert instance inputs (8 vec3)");
+
+struct TailVertex { Vec3f normal; float timeOffset; };
+
+struct TailBatch {
+    PipelineFamily family;                  // registry-owned pipeline
+    std::unique_ptr<VertexBuffer> geometry; // binding 0 (vertex rate), built once
+    std::unique_ptr<VertexBuffer> instance; // binding 1 (instance rate), per-frame
+    SubBuffer index {};                     // shared primitive-restart index
+    std::vector<Renderer::TailInstance> data; // this frame's instances
+    float fov = 0;                          // push constant (half-fov radians)
+    bool built = false;                     // family + buffers created
+    bool geometryUploaded = false;          // static geometry/index copied
+    bool overflowLogged = false;
+};
+TailBatch tailBatch;
+} // namespace
 
 // Build one pipeline variant of a family pass. Runs on the registration
 // path (base variants, synchronous) or the builder thread (lazy variants) -
@@ -954,6 +993,139 @@ void Renderer::drawHint(const std::pair<float, float> &pos, const Vec4f &color)
     }
 }
 
+void Renderer::ensureTailFamily()
+{
+    TailBatch &t = tailBatch;
+    Context &context = *Context::instance;
+    if (!t.built) {
+        // Vertex format = the old TailContext pattern verbatim (tail.cpp:60-71):
+        // binding 0 = shared geometry {vec3 normal, float timeOffset} at vertex
+        // rate; binding 1 = the per-tail instance (8 vec3) at instance rate.
+        auto pattern = std::make_unique<VertexArray>(*VulkanMgr::instance);
+        pattern->createBindingEntry(4 * sizeof(float));
+        pattern->addInput(VK_FORMAT_R32G32B32_SFLOAT); // normal
+        pattern->addInput(VK_FORMAT_R32_SFLOAT);       // timeOffset
+        pattern->createBindingEntry(24 * sizeof(float), VK_VERTEX_INPUT_RATE_INSTANCE);
+        for (int i = 0; i < 8; ++i) // offset, expandDir, expandCorr, coefRadius, color, mat3(x3)
+            pattern->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+        t.geometry = pattern->createBuffer(0, NB_TAIL_VERTICES, context.globalBuffer.get());
+        t.instance = pattern->createBuffer(1, NB_MAX_TAILS, context.globalBuffer.get());
+        t.index = context.indexBufferMgr->acquireBuffer(NB_TAIL_INDICES * sizeof(uint16_t));
+        // Pipeline family = the old TailContext pipeline (tail.cpp:104-116):
+        // push fov, spec-8 projection type (registry-injected, §11.33),
+        // TRIANGLE_STRIP + primitive restart (stripBreaks), cull, NO depth
+        // (setDepthStencilMode()), blend SRC_ALPHA (EntityCore ctor default).
+        // NO descriptor set - the tail shader has none. body_tail.{vert,frag}.spv
+        // reused VERBATIM.
+        PipelineFamilyDesc desc;
+        desc.name = "TAIL";
+        desc.vertex = pattern.get();
+        desc.pushConstants = {{VK_SHADER_STAGE_VERTEX_BIT, 0, static_cast<uint16_t>(sizeof(float))}};
+        PassDesc color;
+        color.pass = PassKind::COLOR;
+        color.shaderTable = {{0, {.vert = "body_tail.vert.spv", .frag = "body_tail.frag.spv"}}};
+        color.state.blend = BLEND_SRC_ALPHA;
+        color.state.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+        color.state.stripBreaks = true;
+        color.state.cull = true;
+        color.state.depthTest = false;
+        color.state.depthWrite = false;
+        desc.passes.push_back(std::move(color));
+        registry().servicePatterns.push_back(std::move(pattern)); // registry-owned (I5)
+        t.family = allocateFamily(std::move(desc));
+        t.data.reserve(NB_MAX_TAILS);
+        t.built = true;
+    }
+    if (t.built && !t.geometryUploaded) {
+        // Shared geometry + index built ONCE (old TailContext ctor, tail.cpp:
+        // 74-102). Retried until the staging has room (tiny: 321 verts + 672
+        // idx); flushTails gates on geometryUploaded so nothing draws meanwhile.
+        auto *vptr = context.transfer->planCopy<TailVertex>(t.geometry->get());
+        auto *iptr = context.transfer->planCopy<uint16_t>(t.index);
+        if (!vptr || !iptr)
+            return; // staging full this frame - retry next
+        Vec2f angles[NB_TAIL_LINES];
+        for (int i = 0; i < NB_TAIL_LINES; ++i)
+            angles[i] = Vec2f(cos(i * (2 * M_PI / NB_TAIL_LINES)), sin(i * (2 * M_PI / NB_TAIL_LINES)));
+        *(vptr++) = TailVertex{{0, 0, 1}, 0}; // head tip
+        for (int i = 0; i++ < NB_TAIL_LINES / 4;) { // coma-head rings
+            const Vec2f angle = angles[i];
+            for (int j = 0; j < NB_TAIL_LINES; ++j)
+                *(vptr++) = {{angles[j][0] * angle[1], angles[j][1] * angle[1], angle[0]}, 0};
+        }
+        for (int i = 0; i++ < NB_TAIL_LENGTH;) { // tail-length rings
+            const float timeOffset = i / float(NB_TAIL_LENGTH);
+            for (int j = 0; j < NB_TAIL_LINES; ++j)
+                *(vptr++) = {{angles[j][0], angles[j][1], 0}, timeOffset};
+        }
+        for (int i = 0; i < NB_TAIL_LINES; ++i) { // per-line primitive-restart strips
+            *(iptr++) = 0;
+            for (int j = 1; j < NB_TAIL_LINES * (NB_TAIL_LINES / 4 + NB_TAIL_LENGTH); j += NB_TAIL_LINES) {
+                *(iptr++) = j + i;
+                *(iptr++) = j + (i + 1) % NB_TAIL_LINES;
+            }
+            *(iptr++) = UINT16_MAX;
+        }
+        t.geometryUploaded = true;
+    }
+}
+
+void Renderer::beginTailDraw()
+{
+    // Fresh command buffer, depth-less COLOR (mirrors beginTrailDraw): the tail
+    // is depth-less (old setDepthStencilMode() off), no bucket. Flush pending
+    // batched content (the last body's halos) before the tails.
+    Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
+    nextCommandBuffer();
+    batchFlush();
+    passKind = PassKind::COLOR;
+    tailBatch.data.clear();
+    tailBatch.overflowLogged = false;
+    // fov push = half-fov radians (old prj->getFov() * pi/360; ModularBody::
+    // halfFov is already the half field-of-view in radians).
+    tailBatch.fov = ModularBody::halfFov;
+}
+
+void Renderer::submitTail(const TailInstance &inst)
+{
+    ensureTailFamily();
+    if (!tailBatch.family)
+        return;
+    if (static_cast<int>(tailBatch.data.size()) >= NB_MAX_TAILS) {
+        if (!tailBatch.overflowLogged) {
+            tailBatch.overflowLogged = true;
+            VulkanMgr::instance->putLog("Renderer TAIL batch overflow (capacity "
+                + std::to_string(NB_MAX_TAILS) + ") - tails dropped this frame", LogType::WARNING);
+        }
+        return;
+    }
+    tailBatch.data.push_back(inst);
+}
+
+void Renderer::flushTails()
+{
+    TailBatch &t = tailBatch;
+    if (t.data.empty())
+        return;
+    ensureTailFamily();
+    if (!t.geometryUploaded)
+        return; // geometry not resident yet (staging was full) - skip this frame
+    const FamilyBound bound = bind(t.family); // resolves against passKind COLOR
+    if (!bound.layout)
+        return; // base build failed (shader absent) - C3 degrade
+    const int n = static_cast<int>(t.data.size());
+    const int bytes = n * static_cast<int>(sizeof(TailInstance));
+    void *dst = Context::instance->transfer->planCopy(t.instance->get(), 0, bytes);
+    if (!dst)
+        return; // staging full this frame - skip (C3, no stall)
+    memcpy(dst, t.data.data(), bytes);
+    bound.layout->pushConstant(cmd, 0, &t.fov);
+    t.geometry->bind(cmd);    // binding 0 (shared geometry)
+    t.instance->bind(cmd, 0); // binding 1 (this frame's instances)
+    vkCmdBindIndexBuffer(cmd, t.index.buffer, t.index.offset, VK_INDEX_TYPE_UINT16);
+    vkCmdDrawIndexed(cmd, NB_TAIL_INDICES, n, 0, 0, 0);
+}
+
 void Renderer::ensurePointerFamily()
 {
     if (pointerFamily)
@@ -1066,6 +1238,19 @@ void Renderer::releaseRegistry()
         if (f.batch && f.batch->pData)
             Context::instance->stagingMgr->releaseBuffer(f.batch->staging);
     }
+    // TAIL batch buffers (Renderer-owned, off the registry): release to their
+    // BufferMgrs HERE, while every manager is alive - a static teardown would
+    // touch a dead globalBuffer/indexBufferMgr (the shutdown-SIGSEGV class).
+    if (tailBatch.index.buffer != VK_NULL_HANDLE)
+        Context::instance->indexBufferMgr->releaseBuffer(tailBatch.index);
+    tailBatch.geometry.reset();  // ~VertexBuffer releases to globalBuffer
+    tailBatch.instance.reset();
+    tailBatch.index = {};
+    tailBatch.data.clear();
+    tailBatch.data.shrink_to_fit();
+    tailBatch.family = {};       // decrement family refcount (registry alive)
+    tailBatch.built = false;
+    tailBatch.geometryUploaded = false;
     reg.reset();
 }
 

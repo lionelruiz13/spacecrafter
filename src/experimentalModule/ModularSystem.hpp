@@ -60,6 +60,14 @@ public:
     // command buffer (beginTrailDraw), gated on TrailModule::anyActive() (an
     // always-run sweep hangs scene E - the mandatory ORBIT-precedent gate).
     void drawTrails(Renderer &renderer);
+    // The tail pass (row 12): after the body draw, sweep every EVALUATED body's
+    // TAIL module - update() (coma/tail size + parent-frame expansion, JD-cached)
+    // then draw() (submit the eye-space instance to the Renderer batch), and
+    // flush the whole batch with ONE instanced draw (COLOR, no depth). Renderer-
+    // owned batch (the old Tail::global singleton dissolved). System-driven like
+    // drawTrails, gated on TailModule::anyActive() (the mandatory ORBIT-precedent
+    // gate) so a comet-free system pays nothing.
+    void drawTails(Renderer &renderer);
     // Draw THIS system as an entry of an enclosing system's loop (camera
     // outside): >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE px on screen -> nested
     // content draw at this node's sort position (correct by D1/D2: subtree

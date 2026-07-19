@@ -63,6 +63,12 @@ protected:
     static inline void addTrailComponent(ModularBody *target, BodyModule *module) {
         target->trailComponents.push_back(module);
     }
+    // Tail modules (row 12). NOT a screen-size regime: the tail is an instanced
+    // batch swept as a system phase (ModularSystem::drawTails, so update() runs
+    // and the batch flushes once), like the trail. Own list.
+    static inline void addTailComponent(ModularBody *target, BodyModule *module) {
+        target->tailComponents.push_back(module);
+    }
 };
 
 #endif /* end of include guard: MODULE_LOADER_HPP_ */

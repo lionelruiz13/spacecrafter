@@ -8,6 +8,7 @@
 #include "meshModules/bodyShaderInterface.hpp" // MAX_SHADOW_CASTERS_PER_RECEIVER
 #include "bodyModules/OrbitModule.hpp" // orbit-pass activity gate (row 8)
 #include "bodyModules/TrailModule.hpp" // trail-pass activity gate (row 9)
+#include "bodyModules/TailModule.hpp"  // tail-pass activity gate (row 12)
 #include <algorithm>
 #include <cfloat> // FLT_MAX (within-body pair rank)
 #include "EntityCore/Core/VulkanMgr.hpp" // G8-budget overflow log
@@ -511,6 +512,42 @@ void ModularSystem::drawTrails(Renderer &renderer)
     }
 }
 
+void ModularSystem::drawTails(Renderer &renderer)
+{
+    // Skip the whole pass when no comet with a tail is loaded - the default (no
+    // comets) pays nothing. The always-run sweep hung scene E (the drawOrbits/
+    // drawTrails precedent) - the gate is mandatory.
+    if (!TailModule::anyActive())
+        return;
+    ModularBody ** const end = sortedSystemBodies.data() + sortedSystemBodies.size();
+    renderer.beginTailDraw();
+    // ONE sweep: for every EVALUATED body (distance != 0) with a TAIL module,
+    // update() (coma/tail size + parent-frame expansion vectors) then draw()
+    // (submit the eye-space instance to the Renderer batch). Handed the PARENT
+    // POSITION frame (matLocalToBodyPos . translation(-ecl)), identical to the
+    // ORBIT/TRAIL passes: the root-aligned VSOP87 -> eye rotation the tail's
+    // parent-frame expansion vectors need (the old nav->getHelioToEyeMat()). No
+    // on-screen skip: an off-screen comet's tail projects outside the viewport
+    // and is clipped (like TRAIL), matching the old draw-whenever-evaluated.
+    for (ModularBody **pos = sortedSystemBodies.data(); pos < end; ++pos) {
+        ModularBody &body = **pos;
+        if (body.distance == 0)
+            break; // unevaluated tail (drawSystem rule)
+        if (body.tailComponents.empty())
+            continue;
+        if (!body.getParent())
+            continue; // parentless: no parent frame to place the tail in
+        Mat4f parentFrame = body.getMatLocalToBodyPos();
+        parentFrame.multiplyTranslation(-body.getEclipticPos());
+        for (auto *m : body.tailComponents) {
+            m->update(&body, body.getScaledRadius());
+            m->draw(renderer, &body, parentFrame);
+        }
+    }
+    // One instanced draw of every submitted tail (old Tail::endDraw + drawBatch).
+    renderer.flushTails();
+}
+
 void ModularSystem::drawNested(Renderer &renderer)
 {
     if (!(isVisible & isBodyVisible))
@@ -567,6 +604,13 @@ void ModularSystem::drawSystem(Renderer &renderer)
         module->draw(renderer, this, mat);
     renderer.beginBodyDraw();
     drawSystemBodies(renderer);
+    // Tail pass (row 12): the comet gas/dust tails, right after the body draw -
+    // the old path batched them WITH the halos in the body pass (halo.cpp:55).
+    // Depth-less instanced overlay in its own command buffer (beginTailDraw),
+    // gated on anyActive(). Placed before the trails/orbits so the comet's tail
+    // sits closest to the body/halo pass it belonged to (the exact z-order among
+    // these depth-less overlays is a documented, immaterial divergence, §11.43).
+    drawTails(renderer);
     // Trail pass (row 9): accumulate + draw the fading path polylines, after the
     // body draw (old drew each trail in its body's command buffer, body.cpp:
     // 1131/1163) and BEFORE the orbit lines so a crossing orbit draws on top

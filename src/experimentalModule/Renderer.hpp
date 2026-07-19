@@ -136,6 +136,41 @@ public:
     // caller records every trail body's polyline. Leaves the command buffer OPEN
     // for the following orbit phase / endBodyDraw.
     void beginTrailDraw();
+    // ---- Tail pass (row 12) -------------------------------------------------
+    // The TAIL is an instanced batch: the comet gas/dust tail. Renderer-owned -
+    // the old Tail::global singleton is dissolved (§10.3 batching-as-a-service):
+    // shared cone/strip geometry via an instance-rate VertexArray + a
+    // primitive-restart index built once, per-tail instances submitted during
+    // the tail sweep and rendered with ONE vkCmdDrawIndexed.
+    // - beginTailDraw(): fresh command buffer, flush pending batched content (the
+    //   last body's halos), enter depth-less COLOR (old setDepthStencilMode() off)
+    //   with NO depth clear/range - like beginTrailDraw; reset the instance
+    //   accumulation and capture the fov push (ModularBody::halfFov, the old
+    //   prj->getFov()*pi/360 half-angle). Leaves the cmd OPEN for the following
+    //   orbit phase / endBodyDraw.
+    void beginTailDraw();
+    // One tail instance (matches body_tail.vert instance inputs, location 2-7).
+    // Every vector is EYE-space: the submitter applies the parent position frame
+    // the tail sweep hands it (the old nav->getHelioToEyeMat() equivalent).
+    struct TailInstance {
+        Vec3f offset;             // comet eye-space position (old eye_planet)
+        Vec3f expandDirection;    // eye-space initial expansion (parentFrame-applied)
+        Vec3f expandCorrection;   // eye-space expansion correction
+        Vec3f coefRadius;         // radius profile {xx,x,base} * comaDiameter (AU)
+        Vec3f color;              // tail RGB
+        Vec3f modelViewMatrix[3]; // 3x3 orienting rotation
+    };
+    // NB_TAIL_LENGTH of the shared geometry (old tail.cpp): the submitter needs
+    // it for the directionCorrection/NB_TAIL_LENGTH orientation term.
+    static constexpr int TAIL_TIME_SEGMENTS = 16;
+    // Append one tail instance to this frame's batch (clamped at the geometry
+    // capacity, overflow logged once - old Tail::draw push_back). Called from
+    // the tail sweep (ModularSystem::drawTails).
+    void submitTail(const TailInstance &inst);
+    // Upload the accumulated instances and draw them in one instanced pass (old
+    // Tail::endDraw + drawBatch, collapsed). No-op when nothing was submitted.
+    // Leaves the command buffer open.
+    void flushTails();
     // One partitioned depth range (see partitioning contract above).
     struct DepthBucket {
         float znear, zfar;
@@ -311,6 +346,9 @@ private:
     void batchEnd();
     void ensureHaloFamily();
     void ensureHintFamily();
+    // Lazy build of the TAIL instanced batch (row 12): shared geometry + index
+    // + instance buffer + pipeline family, built once on first submit/flush.
+    void ensureTailFamily();
     // Built at init() (base-sync at startup, C3-clean; the in-frame ensure
     // calls are first-use fallbacks only, like the halo's).
     void ensurePointerFamily();

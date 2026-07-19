@@ -1066,6 +1066,7 @@ public:
             std::erase(inComponents, slot);
             std::erase(orbitComponents, slot);
             std::erase(trailComponents, slot);
+            std::erase(tailComponents, slot);
         }
         components[slotID.id] = std::move(module);
     }
@@ -1206,6 +1207,7 @@ private:
     std::vector<BodyModule *> inComponents; // Draw if distance <= scaledRadius
     std::vector<BodyModule *> orbitComponents; // Orbit lines (row 8): drawn in the system-level orbit pass (ModularSystem::drawOrbits), not a screen-size regime
     std::vector<BodyModule *> trailComponents; // Trail lines (row 9): swept every frame by the system-level trail pass (ModularSystem::drawTrails) so accumulation continues while invisible, not a screen-size regime
+    std::vector<BodyModule *> tailComponents; // Comet tails (row 12): instanced batch swept as a system phase (ModularSystem::drawTails) so update() ticks and the batch flushes once, not a screen-size regime
     // std::list<std::shared_ptr<BodyOrbitModule>> orbitalComponents; // Components drawing lines between bodies
     // std::list<std::shared_ptr<EnvironmentModule>> environmentComponents; // Component defining the environment
 

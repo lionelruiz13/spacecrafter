@@ -527,6 +527,24 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
             && !isSatellite() && !artificial)
             ret.push_back(BodyModuleType::TRAIL);
     }
+    // Comet tail (row 12): the old SmallBody bound tails ONLY for a comet
+    // carrying an apparent_magnitude AND slope (protosystem.cpp:802) - the
+    // coma/tail-size formula needs the absolute magnitude H + activity slope G.
+    // Deduce for type=Comet with apparent_magnitude present (the "type=Comet"
+    // landing-zone rule, gated by the old data precondition - a comet without
+    // photometry drew no tail, so the module would draw nothing/garbage), OR an
+    // explicit tail=true (the "or explicit" half). tail=false suppresses HERE
+    // (deduce gate, not a runtime flag - a 0 bid on a deduced module fires the
+    // missing-loader warning, the hint=false lesson §11.19). Magnitude coupling
+    // (the landing zone's albedo/radius vs the old H/G) SUSPENDED for Vixy, §11.43.
+    {
+        const std::string &type = param["type"];
+        const bool comet = type.size() >= 4 && std::memcmp(type.data(), "Come", 4) == 0;
+        const bool hasMag = !param["apparent_magnitude"].empty();
+        if (!Utility::isFalse(param["tail"])
+            && (Utility::isTrue(param["tail"]) || (comet && hasMag)))
+            ret.push_back(BodyModuleType::TAIL);
+    }
     return ret;
 }
 
