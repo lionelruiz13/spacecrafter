@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Spacecrafter
+Comment=Planetarium engine for small interactive planetariums
+Exec=spacecrafter
+Terminal=false
+Categories=Education;Astronomy;
