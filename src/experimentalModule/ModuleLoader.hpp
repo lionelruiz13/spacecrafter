@@ -50,6 +50,12 @@ protected:
     static inline void addInComponent(ModularBody *target, BodyModule *module) {
         target->inComponents.push_back(module);
     }
+    // Orbit-line modules (row 8). NOT a screen-size regime: the orbit pass
+    // (trace + line) is system-driven under the orbit-union depth range
+    // (ModularSystem::drawOrbits), so orbit modules live in their own list.
+    static inline void addOrbitComponent(ModularBody *target, BodyModule *module) {
+        target->orbitComponents.push_back(module);
+    }
 };
 
 #endif /* end of include guard: MODULE_LOADER_HPP_ */

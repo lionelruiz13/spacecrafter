@@ -194,6 +194,10 @@ public:
     //    hidden by the body (old-path analog: drawOrbit into cmdBodyDepth).
     //    Gated by BMT_DEPTH_TRACE.
     virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) {}
+    // Per-body visibility override (old Body::setFlagOrbit -> orbit_fader).
+    // Base no-op; ORBIT (and later TRAIL) route a per-name seam toggle here
+    // via ModularBody's dedicated component list. NOT the four drawing types.
+    virtual void setShown(bool shown) {}
     // Compare an object position and radius with this ModularBody
     // Precondition: update() has run at least once for this module (see update)
     virtual RelativePosition compare(const Vec3f &localPos, const Vec3f &zAxis, float radius) {

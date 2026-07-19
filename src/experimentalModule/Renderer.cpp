@@ -193,6 +193,36 @@ void Renderer::clearDepth(float zCenter, float boundingRadius)
     }
 }
 
+void Renderer::beginOrbitTrace()
+{
+    // Fresh command buffer for the orbit pass (its own depth ownership, distinct
+    // from the per-body buckets - old cmdBodyDepth was a dedicated buffer too).
+    Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
+    nextCommandBuffer();
+    // Flush any pending batched content (the last body's halos) BEFORE the
+    // orbit lines - old Halo::endDraw ran before the orbit phase.
+    batchFlush();
+    // Orbit-union range: clear + set only when a body reserved a slice; {0,0}
+    // means nothing on-screen is large enough (old backup-plane path) and the
+    // orbit modules draw depth-free (they read the same {0,0} and drop depth).
+    if (orbitBucket.znear != 0.f || orbitBucket.zfar != 0.f) {
+        VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
+        VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
+        vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
+        // Old clamp: max(orbitBucket.znear, 1e-8) (solarsystem_display.cpp:303).
+        clippingFov.v[0] = (orbitBucket.znear > 1e-8f) ? orbitBucket.znear : 1e-8f;
+        clippingFov.v[1] = orbitBucket.zfar;
+    }
+    passKind = PassKind::TRACE;
+}
+
+void Renderer::beginOrbitLines()
+{
+    // Same command buffer, same depth content and range: the orbit COLOR
+    // pipelines depth-test (LEQUAL) against the traces just written.
+    passKind = PassKind::COLOR;
+}
+
 // drawHalo, drawHint and the pointer live with the batching/service side
 // (PipelineRegistry.cpp).
 

@@ -46,6 +46,12 @@ public:
     // The sorted body loop alone (no begin/end, no pointer) - shared by the
     // frame entry and nested draws.
     void drawSystemBodies(Renderer &renderer);
+    // The orbit pass (row 8): after the body draw, cut the trace holes then
+    // draw the orbit lines depth-tested against them, under the orbit-union
+    // depth range (old solarsystem_display.cpp orbit phase). Two sweeps of the
+    // sorted list (all traces, then all lines - a nearer body's disc must hide
+    // a farther body's orbit, so every trace precedes every line).
+    void drawOrbits(Renderer &renderer);
     // Draw THIS system as an entry of an enclosing system's loop (camera
     // outside): >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE px on screen -> nested
     // content draw at this node's sort position (correct by D1/D2: subtree

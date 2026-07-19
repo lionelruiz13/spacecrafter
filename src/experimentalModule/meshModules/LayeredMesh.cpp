@@ -10,6 +10,7 @@
 #include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/ModularSystem.hpp"
 #include "experimentalModule/meshModules/meshShadowFill.hpp"
+#include "experimentalModule/bodyModules/TraceFamily.hpp"
 #include <cmath>
 
 // Regime gate constants (header comment carries the derivation; convergence
@@ -282,4 +283,22 @@ void LayeredMesh::drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f
 void LayeredMesh::drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx)
 {
     renderer.shadow.produce(idx, mat, mesh);
+}
+
+void LayeredMesh::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat)
+{
+    // Row-8 TRACE prepass: identical shape to BasicMesh::drawTrace (the shared
+    // sphere-trace family). The heightmap headroom in boundingRadius is <1% -
+    // the base scaled radius is the parity value with the old sphere trace.
+    const FamilyBound bound = renderer.bind(TraceFamily::sphere());
+    if (!bound.layout)
+        return;
+    TraceInfo info;
+    info.ModelViewMatrix = mat;
+    info.clipping_fov = renderer.getClippingFov();
+    info.planetScaledRadius = body->getScaledRadius();
+    info.planetOneMinusOblateness = body->getOneMinusOblateness();
+    bound.layout->pushConstant(renderer, 0, &info);
+    mesh->bind(renderer);
+    mesh->draw(renderer, body->getScreenSize() * 1024);
 }

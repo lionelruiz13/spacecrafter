@@ -412,6 +412,9 @@ public:
         // eye_root_new == -eye_root_old, the deepest layer of the Moon
         // divergence (harness 2026-07-11).
         mat_local_to_body.multiplyTranslation(eclipticPos);
+        // Cache the position frame for the ORBIT pass (row 8): correct for
+        // every body regardless of visibility (see the member comment).
+        matLocalToBodyPos = mat_local_to_body;
     }
 
     // Rotation from this body's position-frame (root-aligned) to its own
@@ -625,11 +628,36 @@ public:
     inline ModularBody *getParent() {
         return parent;
     }
+    // Old-path satellite classification (body.cpp:107-124: parent of type
+    // CENTER/SUN/STAR => not a satellite; new: SYSTEM/STAR-bit parents).
+    // Client: the ORBIT module (planet vs satellite master-flag routing).
+    inline bool isSatellite() const {
+        return parent && !(parent->isStar() || parent->isSystem());
+    }
     //! Read access to the orbit for ephemeris-at-date queries (client:
     //! EnvironmentManager's zodiacal ecliptic-normal sampling, the old
     //! Body::getPositionAtDate form). Null for system-centered bodies.
     inline const Orbit *getOrbit() const {
         return orbit.get();
+    }
+    //! Current parent-relative position (root-aligned VSOP87). Client: the
+    //! ORBIT module's center-notch (old Body::get_ecliptic_pos()).
+    inline const Vec3f &getEclipticPos() const {
+        return eclipticPos;
+    }
+    //! Orbit visualization period in days (old re.sidereal_period, the
+    //! orbit-line draw gate); 0 = still orbit (no orbit line).
+    inline double getSiderealPeriod() const {
+        return re.sidereal_period;
+    }
+    //! Last evaluation jd of this body (client: ORBIT sampling epoch).
+    inline double getLastJD() const {
+        return lastJD;
+    }
+    //! This body's POSITION frame (root-aligned; see member). Client: the
+    //! ORBIT pass, to reconstruct the PARENT frame the orbit points live in.
+    inline const Mat4f &getMatLocalToBodyPos() const {
+        return matLocalToBodyPos;
     }
     inline float getRadius() const {
         return radius;
@@ -664,6 +692,13 @@ public:
     inline void setScaling(float _scale) {
         scaling = _scale;
         uncached = true;
+    }
+    // Per-name orbit toggle seam (old Body::setFlagOrbit). Routes to this
+    // body's ORBIT module(s) via the dedicated list; setShown is the base
+    // no-op for every other module type, so no type knowledge leaks here.
+    inline void setFlagOrbit(bool b) {
+        for (auto *m : orbitComponents)
+            m->setShown(b);
     }
     inline float getRotAscendingnode(void) const {
 		return re.ascendingNode;
@@ -1007,6 +1042,7 @@ public:
             std::erase(nearComponents, slot);
             std::erase(groundedComponents, slot);
             std::erase(inComponents, slot);
+            std::erase(orbitComponents, slot);
         }
         components[slotID.id] = std::move(module);
     }
@@ -1017,11 +1053,6 @@ private:
     std::vector<BodyModuleType> deduceBodyModuleList(std::map<std::string, std::string> &param);
     void select();
     void deselect();
-    // Old-path satellite classification (body.cpp:107-124: parent of type
-    // CENTER/SUN/STAR => not a satellite; new: SYSTEM/STAR-bit parents).
-    inline bool isSatellite() const {
-        return parent && !(parent->isStar() || parent->isSystem());
-    }
     // FAITHFUL PORT of the old Halo::computeHalo + drawHalo (halo.cpp:82-167):
     // identical adaptLuminance ARGUMENT and identical outer multiplier - NOT a
     // re-derivation. adaptLuminance is a state-dependent power law
@@ -1150,6 +1181,7 @@ private:
     std::vector<BodyModule *> nearComponents; // Drawn if screenSize >= 0.15% and distance > scaledRadius * BODY_SURFACE_HEIGHT
     std::vector<BodyModule *> groundedComponents; // Drawn if distance <= scaledRadius * BODY_SURFACE_HEIGHT
     std::vector<BodyModule *> inComponents; // Draw if distance <= scaledRadius
+    std::vector<BodyModule *> orbitComponents; // Orbit lines (row 8): drawn in the system-level orbit pass (ModularSystem::drawOrbits), not a screen-size regime
     // std::list<std::shared_ptr<BodyOrbitModule>> orbitalComponents; // Components drawing lines between bodies
     // std::list<std::shared_ptr<EnvironmentModule>> environmentComponents; // Component defining the environment
 
@@ -1159,6 +1191,14 @@ private:
 
     // Cached data (may deprecate)
     Mat4f mat; // Matrix defining this body regarding to the observer
+    // This body's POSITION frame (root-aligned, "flat"): parent position frame
+    // . translation(eclipticPos). Its ROTATION is the reference eye frame
+    // (identical for every body), its TRANSLATION is this body's eye position.
+    // Set on EVERY position update (visible or not - unlike `mat`, whose
+    // rotation is stale for out-of-cone bodies), so the ORBIT pass can place a
+    // child's orbit in its parent's frame reliably (row 8). Identity until the
+    // first update.
+    Mat4f matLocalToBodyPos = Mat4f::identity();
     Vec3f eclipticPos;
     std::pair<float, float> screenPos;
     float halfAngularSize = 0; // 0 until first update (uninit class, INTENT 5.16/11.28c/11.32)

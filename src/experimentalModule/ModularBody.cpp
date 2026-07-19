@@ -183,6 +183,9 @@ bool ModularBody::remove(bool recursive)
 // mat = C . A^-1 . A = C (same uniform jd both sides).
 void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBodyPos)
 {
+    // Cache the position frame (the reference-body path reaches here directly
+    // from dispatchUpdate, not through transformParentToBodyPos - ORBIT row 8).
+    this->matLocalToBodyPos = matLocalToBodyPos;
     mat = matLocalToBodyPos.multiplyFast(accumulatedBodyPosToBody(jd));
     update(jd, mat);
     // Grounded children live in the surface frame (`mat` - the accumulated
@@ -498,6 +501,15 @@ std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::stri
     // loader warning for a deliberate suppression).
     if (!englishName.empty() && !Utility::isFalse(param["hint"]))
         ret.push_back(BodyModuleType::HINT);
+    // Orbit line (row 8): default for a body with a NON-STILL orbit. The gate
+    // is orbit_visualization_period > 0 - EXACTLY the old draw gate
+    // (re.sidereal_period, OrbitPlot::doDraw): the Sun/anchors carry no such
+    // key and get no orbit, planets/moons do. param orbit=false suppresses the
+    // module entirely (deduce gate, not a runtime flag - the hint=false lesson,
+    // 11.19: a 0 bid on a deduced module fires the missing-loader warning).
+    if (Utility::strToDouble(param["orbit_visualization_period"], 0.0) > 0.0
+        && !Utility::isFalse(param["orbit"]))
+        ret.push_back(BodyModuleType::ORBIT);
     return ret;
 }
 

@@ -68,6 +68,9 @@ public:
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx) override;
+    // Row-8 TRACE prepass: the layered disc cuts its orbit-hole exactly like
+    // BasicMesh (shared sphere-trace family, TraceFamily.hpp).
+    virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
 private:
     float altimetryLevel() const; // moonClass? moon : planet level (shared BodyTesselation seam)
     void fillVert(Renderer &renderer, ModularBody *body, const Mat4f &mat);

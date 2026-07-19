@@ -6,6 +6,7 @@
 #include "tools/sc_const.hpp"
 #include "tools/context.hpp"
 #include "meshModules/bodyShaderInterface.hpp" // MAX_SHADOW_CASTERS_PER_RECEIVER
+#include "bodyModules/OrbitModule.hpp" // orbit-pass activity gate (row 8)
 #include <algorithm>
 #include <cfloat> // FLT_MAX (within-body pair rank)
 #include "EntityCore/Core/VulkanMgr.hpp" // G8-budget overflow log
@@ -411,6 +412,55 @@ void ModularSystem::drawSystemBodies(Renderer &renderer)
     }
 }
 
+void ModularSystem::drawOrbits(Renderer &renderer)
+{
+    // Skip the whole pass (trace sweep + depth clear + line sweep) when no
+    // orbit is shown or fading - the default (orbits off) pays nothing.
+    if (!OrbitModule::anyActive())
+        return;
+    ModularBody ** const end = sortedSystemBodies.data() + sortedSystemBodies.size();
+    renderer.beginOrbitTrace();
+    // Trace sweep: every ON-SCREEN body with a DEPTH_TRACE module writes its
+    // disc into the orbit depth buffer (old drawOrbit -> cmdBodyDepth, gated on
+    // isVisibleOnScreen). ALL traces precede ALL lines so a nearer body's disc
+    // can hide a farther body's orbit (the two-buffer reason old split them).
+    for (ModularBody **pos = sortedSystemBodies.data(); pos < end; ++pos) {
+        ModularBody &body = **pos;
+        if (body.distance == 0)
+            break; // unevaluated tail (drawSystem rule)
+        if (!body)
+            continue; // operator bool = on-screen (old isVisibleOnScreen)
+        for (auto *m : body.nearComponents)
+            if (m->getTraits() & BMT_DEPTH_TRACE)
+                m->drawTrace(renderer, &body, body.getMat());
+    }
+    renderer.beginOrbitLines();
+    // Line sweep: each orbit module draws in its parent's POSITION frame (the
+    // frame the parent-relative orbit points live in - old parent_mat). That
+    // frame is parent->mat with the parent's own accumulated tilt undone
+    // (matLocalToBodyPos = mat . accumulatedBodyPosToBody^-1).
+    for (ModularBody **pos = sortedSystemBodies.data(); pos < end; ++pos) {
+        ModularBody &body = **pos;
+        if (body.distance == 0)
+            break;
+        if (body.orbitComponents.empty())
+            continue;
+        if (!body.getParent())
+            continue; // a parentless body has no orbit to draw around
+        // Parent POSITION frame = the body's own cached position frame
+        // (matLocalToBodyPos = P_frame . translation(B.ecl)) with B's own
+        // offset undone. The cached frame is correct for EVERY body, visible or
+        // not (unlike `mat`, whose rotation goes stale out of the view cone -
+        // the halo-only planets whose orbits were misplaced pre-fix).
+        Mat4f parentFrame = body.getMatLocalToBodyPos();
+        parentFrame.multiplyTranslation(-body.getEclipticPos());
+        for (auto *m : body.orbitComponents) {
+            m->update(&body, body.getScaledRadius());
+            m->draw(renderer, &body, parentFrame);
+        }
+    }
+}
+
 void ModularSystem::drawNested(Renderer &renderer)
 {
     if (!(isVisible & isBodyVisible))
@@ -467,6 +517,12 @@ void ModularSystem::drawSystem(Renderer &renderer)
         module->draw(renderer, this, mat);
     renderer.beginBodyDraw();
     drawSystemBodies(renderer);
+    // Orbit pass (row 8): trace holes + orbit lines, after the body draw and
+    // before the pointer (old solarsystem_display.cpp order: bodies, halos,
+    // orbits, then the pointer on top). Nested systems' orbits are deliberately
+    // absent (drawNested is runtime-unexercised, INTENT 11.36; the orbit phase
+    // owns a command buffer, which drawNested cannot open mid-parent-loop).
+    drawOrbits(renderer);
     // Selection pointer (S2b): queued here, recorded by endBodyDraw on top of
     // everything (old path drew it after the whole system). Independent of the
     // body draw loop by design - the pointer's purpose is exactly the bodies

@@ -113,6 +113,21 @@ public:
     // a body attached between sort and draw (events-thread bridge, §8.4.1)
     // draws once at the sorted tail - S4's publish-task handoff closes it.
     void clearDepth(float zCenter, float boundingRadius);
+    // ---- Orbit pass (row 8) -------------------------------------------------
+    // The orbit LINE + its TRACE holes are a SYSTEM-level phase after the body
+    // draw (old solarsystem_display.cpp:305-338), sharing ONE depth mapping =
+    // the orbit-union range (getOrbitDepthBucket). Two calls bracket it:
+    // - beginOrbitTrace(): fresh command buffer, flush pending batched content
+    //   (halos, old Halo::endDraw before orbits), CLEAR the depth buffer and
+    //   set the orbit range (old cmdBodyDepth clear + max(znear,1e-8)), enter
+    //   PassKind::TRACE. The caller then records every trace-capable body's
+    //   disc (drawTrace). Degenerate range ({0,0}, no resolved body) skips the
+    //   clear: the orbit modules draw depth-free (VARIANT_NO_DEPTH).
+    // - beginOrbitLines(): switch to PassKind::COLOR (same cmd, same depth
+    //   content + range) - the orbit lines depth-test against the traces.
+    // Leaves the command buffer OPEN for endBodyDraw (trailing flush + pointer).
+    void beginOrbitTrace();
+    void beginOrbitLines();
     // One partitioned depth range (see partitioning contract above).
     struct DepthBucket {
         float znear, zfar;

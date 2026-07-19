@@ -45,6 +45,7 @@
 #include "experimentalModule/bodyModules/HintModule.hpp"
 #include "experimentalModule/bodyModules/AxisModule.hpp"
 #include "experimentalModule/bodyModules/RingModule.hpp"
+#include "experimentalModule/bodyModules/OrbitModule.hpp"
 
 class Camera;
 class ModularSystem;
@@ -313,10 +314,17 @@ public:
 
 	void setFlagPlanetsOrbits(bool b) {
         ssystemSelected->setFlagPlanetsOrbits(b);
+        OrbitModule::setGlobalPlanets(b); // both-paths seam (bumps the override generation)
     }
 
 	void setFlagPlanetsOrbits(const std::string &_name, bool b) {
         ssystemSelected->setFlagPlanetsOrbits(_name, b);
+        // New-path per-name (findBody is static; exception-on-miss, tolerate it
+        // like the old searchByEnglishName null return).
+        try {
+            if (ModularBody *body = ModularBody::findBody(_name))
+                body->setFlagOrbit(b);
+        } catch (...) {}
     }
 
 	void switchPlanetTexMap(const std::string &name, bool a) {
@@ -337,6 +345,7 @@ public:
 
 	void setFlagSatellitesOrbits(bool b) {
         ssystemSelected->setFlagSatellitesOrbits(b);
+        OrbitModule::setGlobalSatellites(b); // both-paths seam
     }
 
 	bool getFlagSatellitesOrbits(void) const {
@@ -530,6 +539,7 @@ public:
 	void setDefaultBodyColor(const std::string& halo, const std::string& label, const std::string& orbit, const std::string& trail) {
         ssystemColor->setDefaultBodyColor(halo, label, orbit, trail);
         HintModule::defaultLabelColor = Utility::strToVec3f(label); // both-paths seam
+        OrbitModule::defaultColor = Utility::strToVec3f(orbit);     // both-paths seam
     }
 
 	std::string getPlanetHashString() {
