@@ -722,6 +722,19 @@ public:
         for (auto *m : trailComponents)
             m->setShown(b);
     }
+    // Skin-texture seam (old SolarSystemTex -> Body::createTexSkin/switchMapSkin;
+    // S6 Textures row, INTENT 9). Broadcast to every module slot; consumers
+    // self-select (BodyModule default no-op - no type sniffing here).
+    inline void createTexSkin(const std::string &texName) {
+        for (auto &m : components)
+            if (m)
+                m->createTexSkin(texName);
+    }
+    inline void switchTexSkin(bool use) {
+        for (auto &m : components)
+            if (m)
+                m->switchTexSkin(use);
+    }
     inline float getRotAscendingnode(void) const {
 		return re.ascendingNode;
 	}

@@ -71,8 +71,21 @@ public:
     // Row-8 TRACE prepass: the layered disc cuts its orbit-hole exactly like
     // BasicMesh (shared sphere-trace family, TraceFamily.hpp).
     virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
+    // Skin seam (contract at BodyModule.hpp): swaps the DAY layer only - old
+    // tex_current feeds exactly the day/base bindings of the layered shaders
+    // (body_bigbody/body_moon bind tex_current at their map slots); night/
+    // normal/heightmap layers keep their own textures.
+    virtual void createTexSkin(const std::string &texName) override;
+    virtual void switchTexSkin(bool use) override;
 private:
     float altimetryLevel() const; // moonClass? moon : planet level (shared BodyTesselation seam)
+    // The bound day-layer texture (old tex_current): the skin when active AND
+    // resident (a loading s_texture is an uninitialized descriptor), else day.
+    s_texture &dayTex() { return skinBound ? *skinTexture : day; }
+    // Re-evaluate the skin state at a draw entry; on any transition (on/off,
+    // load completion, replace) force both Sets' rebind through the big-
+    // mapping sentinel (0xFFFF != any real mapping <= 0x1F).
+    void refreshSkinState();
     void fillVert(Renderer &renderer, ModularBody *body, const Mat4f &mat);
     // Rebind a whole Set (descriptor generation change / initial bind).
     // slots = texture bindings in contract order; big = per-slot big texture
@@ -82,11 +95,14 @@ private:
     void drawRay(Renderer &renderer, ModularBody *body, const Mat4f &mat);
 
     bool loaded = false;
+    bool skinUse = false;   // commanded state (skin_use on with a skin present)
+    bool skinBound = false; // drawn state (skinUse AND skin resident)
     uint16_t midBigMapping = 0;
     uint16_t rayBigMapping = 0;
     ObjL *mesh;
     Config cfg;
     s_texture day;
+    std::unique_ptr<s_texture> skinTexture;
     std::unique_ptr<s_texture> night, specular, normal, heightmap;
     // Texture pointers in CONTRACT ORDER per family (null = slot absent ->
     // day bound as the valid never-sampled placeholder). Mid: TES bindings

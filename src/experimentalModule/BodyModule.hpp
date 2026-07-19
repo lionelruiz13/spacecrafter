@@ -198,6 +198,15 @@ public:
     // Base no-op; ORBIT (and later TRAIL) route a per-name seam toggle here
     // via ModularBody's dedicated component list. NOT the four drawing types.
     virtual void setShown(bool shown) {}
+    // Runtime skin-texture seam (old Body::createTexSkin/switchMapSkin;
+    // commands `body name X skin_tex <file>` / `body name X skin_use on|off`).
+    // Contract mirrors old exactly: creating (or REPLACING) a skin never
+    // activates it (old resets tex_current to the map on replace); activation
+    // requires an existing skin (switch(true) with no skin is a no-op).
+    // Modules drawing the body color map override (MESH family); every other
+    // module ignores (same default-no-op contract as setShown).
+    virtual void createTexSkin(const std::string &texName) {}
+    virtual void switchTexSkin(bool use) {}
     // Compare an object position and radius with this ModularBody
     // Precondition: update() has run at least once for this module (see update)
     virtual RelativePosition compare(const Vec3f &localPos, const Vec3f &zAxis, float radius) {

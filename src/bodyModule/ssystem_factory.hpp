@@ -364,14 +364,32 @@ public:
 
 	void switchPlanetTexMap(const std::string &name, bool a) {
         ssystemTex->switchPlanetTexMap(name, a);
+        // New-path mirror (S6 Textures seam, INTENT 9/11.46): old routes to
+        // Body::switchMapSkin (tex_current swap); new = per-module skin state
+        // (BodyModule::switchTexSkin, MESH modules consume). Same findBody
+        // guard as the orbit per-name seam (exception-on-miss tolerated like
+        // the old searchByEnglishName null return).
+        try {
+            if (ModularBody *body = ModularBody::findBody(name))
+                body->switchTexSkin(a);
+        } catch (...) {}
     }
 
 	bool getSwitchPlanetTexMap(const std::string &name) {
+        // Old stays the getter authority pre-switchover: both paths are
+        // driven by the same commands, so the states agree by construction
+        // (the new-path state lives per-module; give it a getter at removal).
         return ssystemTex->getSwitchPlanetTexMap(name);
     }
 
 	void createTexSkin(const std::string &name, const std::string &texName) {
         ssystemTex->createTexSkin(name, texName);
+        // New-path mirror (S6 Textures seam): contract parity with old
+        // Body::createTexSkin - creating/replacing never activates.
+        try {
+            if (ModularBody *body = ModularBody::findBody(name))
+                body->createTexSkin(texName);
+        } catch (...) {}
     }
 
 	bool getFlagPlanetsOrbits(void) const {

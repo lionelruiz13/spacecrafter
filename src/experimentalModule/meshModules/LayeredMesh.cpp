@@ -73,12 +73,17 @@ float LayeredMesh::altimetryLevel() const
 
 void LayeredMesh::rebind(bool ray, Texture *const *big)
 {
+    // Slot resolution: absent slots AND the day slot itself route through
+    // dayTex() - old binds tex_current at exactly those bindings (the skin
+    // replaces day everywhere day would be sampled or placeheld).
     if (ray) {
         raySet->uninit();
         raySet->bindUniform(rayVert, 0);
         raySet->bindUniform(rayFrag, 1);
         for (int i = 0; i < 5; ++i) {
-            s_texture *slot = raySlots[i] ? raySlots[i] : &day;
+            s_texture *slot = raySlots[i];
+            if (!slot || slot == &day)
+                slot = &dayTex();
             raySet->bindTexture((big && big[i]) ? *big[i] : slot->getTexture(), 2 + i);
         }
         raySet->bindTexture(*Context::instance->renderer.shadow.layerArray(), 7);
@@ -89,11 +94,37 @@ void LayeredMesh::rebind(bool ray, Texture *const *big)
         if (tescGeom)
             midSet->bindUniform(*tescGeom, 2);
         for (int i = 0; i < midSlotCount; ++i) {
-            s_texture *slot = midSlots[i] ? midSlots[i] : &day;
+            s_texture *slot = midSlots[i];
+            if (!slot || slot == &day)
+                slot = &dayTex();
             midSet->bindTexture((big && big[i]) ? *big[i] : slot->getTexture(), midFirstBinding + i);
         }
         midSet->bindTexture(*Context::instance->renderer.shadow.layerArray(), midShadowBinding);
     }
+}
+
+void LayeredMesh::refreshSkinState()
+{
+    const bool ready = skinUse && skinTexture && !skinTexture->isLoading();
+    if (ready != skinBound) {
+        skinBound = ready;
+        midBigMapping = rayBigMapping = 0xFFFF; // force both rebinds (sentinel)
+    }
+}
+
+void LayeredMesh::createTexSkin(const std::string &texName)
+{
+    // Old parity (Body::createTexSkin): creating/replacing never activates;
+    // load flags mirror old exactly (PNG_SOLID_REPEAT, mipmap, resolution).
+    skinUse = false;
+    skinTexture = std::make_unique<s_texture>(FilePath(texName, FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true, true);
+}
+
+void LayeredMesh::switchTexSkin(bool use)
+{
+    if (use && !skinTexture)
+        return; // old parity: activation requires an existing skin
+    skinUse = use;
 }
 
 bool LayeredMesh::isLoaded()
@@ -150,6 +181,7 @@ void LayeredMesh::drawMid(Renderer &renderer, ModularBody *body, const Mat4f &ma
     const FamilyBound bound = renderer.bind(midFamily, wanted);
     if (!bound.layout)
         return; // pass unavailable - logged at its definition site (C3)
+    refreshSkinState();
     mesh->bind(renderer);
     fillVert(renderer, body, mat);
     if (tescGeom) {
@@ -165,8 +197,11 @@ void LayeredMesh::drawMid(Renderer &renderer, ModularBody *body, const Mat4f &ma
         Texture *big[5] = {};
         uint16_t map = 0;
         for (int i = 0; i < midSlotCount; ++i) {
-            if (midSlots[i]) {
-                big[i] = midSlots[i]->getBigTexture();
+            // Day slot resolves through the skin (which has no big texture ->
+            // bit drops, and the mapping change itself triggers the rebind).
+            s_texture *slot = (midSlots[i] == &day) ? &dayTex() : midSlots[i];
+            if (slot) {
+                big[i] = slot->getBigTexture();
                 map |= (big[i] != nullptr) << i;
             }
         }
@@ -195,6 +230,7 @@ void LayeredMesh::drawRay(Renderer &renderer, ModularBody *body, const Mat4f &ma
     const FamilyBound bound = renderer.bind(rayFamily, wanted);
     if (!bound.layout)
         return; // pass unavailable - logged at its definition site (C3)
+    refreshSkinState();
     mesh->bind(renderer);
     const float altimetryFactor = 0.01f * altimetryLevel();
     const float scaledRadius = body->getScaledRadius();
@@ -245,8 +281,10 @@ void LayeredMesh::drawRay(Renderer &renderer, ModularBody *body, const Mat4f &ma
         Texture *big[5] = {};
         uint16_t map = 0;
         for (int i = 0; i < 5; ++i) {
-            if (raySlots[i]) {
-                big[i] = raySlots[i]->getBigTexture();
+            // Day slot resolves through the skin (no big texture -> bit drops).
+            s_texture *slot = (raySlots[i] == &day) ? &dayTex() : raySlots[i];
+            if (slot) {
+                big[i] = slot->getBigTexture();
                 map |= (big[i] != nullptr) << i;
             }
         }
