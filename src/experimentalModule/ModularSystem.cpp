@@ -430,9 +430,17 @@ void ModularSystem::drawOrbits(Renderer &renderer)
             break; // unevaluated tail (drawSystem rule)
         if (!body)
             continue; // operator bool = on-screen (old isVisibleOnScreen)
+        // Same matrix the COLOR draw hands its near-components
+        // (drawLoaded: mat . computeBodyToSurface()) so the depth silhouette
+        // matches the drawn body EXACTLY. computeBodyToSurface is the pole
+        // spin (zrotation(axisRotation)): a sphere/ring is invariant under it
+        // (azimuthally symmetric - BasicMesh/LayeredMesh/RING output
+        // bit-identical to the raw-mat form), but a non-spherical OJM model's
+        // silhouette depends on the spin, so it MUST ride the surface matrix.
+        const Mat4f traceMat = body.getMat().multiplyFast(body.computeBodyToSurface());
         for (auto *m : body.nearComponents)
             if (m->getTraits() & BMT_DEPTH_TRACE)
-                m->drawTrace(renderer, &body, body.getMat());
+                m->drawTrace(renderer, &body, traceMat);
     }
     renderer.beginOrbitLines();
     // Line sweep: each orbit module draws in its parent's POSITION frame (the

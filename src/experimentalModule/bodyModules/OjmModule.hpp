@@ -78,6 +78,13 @@ public:
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx) override;
     virtual void drawSelfShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
+    // TRACE: writes the OJM model's own silhouette into the orbit-union depth
+    // range so an artificial body's orbit line vanishes behind it (old
+    // Artificial::drawOrbit -> obj3D->drawShadow(cmdBodyDepth)). Reuses the
+    // shared sphere-trace family (same ojmVertexArray format + depthTrace
+    // pipeline the old path shared between sphere and OJM); the geometry drawn
+    // is the model, not the sphere. Gated by BMT_DEPTH_TRACE.
+    virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual bool isLoaded() override;
 protected:
     // Shared draw body of draw/drawNoDepth (variant bit is the only delta).

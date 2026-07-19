@@ -2,6 +2,7 @@
 #include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/Renderer.hpp"
 #include "experimentalModule/meshModules/meshShadowFill.hpp"
+#include "experimentalModule/bodyModules/TraceFamily.hpp"
 #include "bodyModule/ring.hpp" // Ring2D geometry (old->new include, dies with the old path)
 #include "tools/context.hpp"
 #include "tools/s_texture.hpp"
@@ -151,6 +152,33 @@ void RingModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
     Ring2D *strip = strips[lod * 2 + (h > 0.f ? 0 : 1)].get();
     if (strip)
         strip->draw(renderer);
+}
+
+void RingModule::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat)
+{
+    // Row-8 TRACE consumer (INTENT §11.40): the ring annulus into the orbit-
+    // union depth range so an orbit line is cut behind the ring. Old
+    // Ring::drawDepthTrace (ring.cpp:300-304): push mc into the depthTrace
+    // ModelViewMatrix's radius slot, draw lowUP. The new-path ring-trace
+    // family is a distinct pipeline+layout (not the body's), so push the FULL
+    // TraceInfo here (the old path shared one layout across sphere+ring, hence
+    // it re-pushed only mc). Geometry: the LOW-LOD up half (old lowUP) - a
+    // coarse silhouette suffices for a depth cut.
+    if (!loaded)
+        return; // strips not built yet (C3; the color draw guards the same way)
+    Ring2D *strip = strips[0].get(); // low, up half (buildGeometry: lod0 h=true)
+    if (!strip)
+        return;
+    const FamilyBound bound = renderer.bind(TraceFamily::ring(ringVertexArray.get()));
+    if (!bound.layout)
+        return; // trace shader not deployed - C3 degrade (orbits draw depth-free)
+    TraceInfo info;
+    info.ModelViewMatrix = mat;                    // body mat (same as the COLOR ring draw)
+    info.clipping_fov = renderer.getClippingFov(); // the ORBIT range this frame
+    info.planetScaledRadius = mc;                  // RingScale (old drawDepthTrace push)
+    info.planetOneMinusOblateness = 1.f;           // ring is flat (z=0) - no effect
+    bound.layout->pushConstant(renderer, 0, &info);
+    strip->draw(renderer);
 }
 
 void RingModule::drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx)

@@ -82,10 +82,12 @@ public:
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) override {
         draw(renderer, body, mat);
     }
-    // TRACE (ring depth for orbit-line holes, old pipelineDepthTrace):
-    // recording is row-8 scope with its ORBIT consumer (verification height -
-    // holes have no observable without lines); the trait is declared, the
-    // hook stays empty until then (BasicMesh precedent).
+    // TRACE (ring depth for orbit-line holes, old Ring::drawDepthTrace):
+    // writes the ring annulus into the orbit-union depth range so an orbit
+    // line is cut behind the ring (LIVE 2026-07-19, INTENT §11.40, with its
+    // ORBIT consumer - holes have no observable without lines). Uses the
+    // dedicated ring-trace family (TRIANGLE_STRIP, position-only).
+    virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx) override;
     virtual ShadowCaster getShadowCaster(ModularBody *body, const Vec3f &lightPos) const override;
 

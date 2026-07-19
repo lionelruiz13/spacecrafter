@@ -502,6 +502,10 @@ public:
 
 	void setPredictibleRendering(bool enable, int framerate);
 private:
+	//! Zoom the OLD projection to aim_fov AND mirror it to the new-path
+	//! Camera (ModularBody::halfFov -> Renderer clipping_fov.z). Both-paths
+	//! seam for the auto-zoom fov targets (INTENT 11.40 / 11.15c residual).
+	void zoomToBothPaths(double aim_fov, float move_duration);
 	struct ViewZoomMove {
 		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
 		double move_speed, zoom_speed;		// Speed of movement and zooming

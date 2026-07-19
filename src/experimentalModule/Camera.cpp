@@ -617,7 +617,8 @@ void Camera::dumpTrace(std::ostream &out) const
         << ",\"refDist\":" << (reference ? reference->getDistanceToObserver() : 0)
         << ",\"refCached\":" << ((reference && reference->isCacheFresh()) ? "true" : "false")
         << ",\"refParent\":\"" << ((reference && reference->getParent()) ? reference->getParent()->getEnglishName() : "") << '"'
-        << ",\"halfFov\":" << ModularBody::halfFov << ",\"mat\":[";
+        << ",\"halfFov\":" << ModularBody::halfFov
+        << ",\"cullHalfFov\":" << ModularBody::cullHalfFov << ",\"mat\":[";
     for (int i = 0; i < 16; ++i)
         out << lastDispatchedMat.r[i] << ((i < 15) ? "," : "");
     out << "]}";

@@ -53,6 +53,7 @@
 #include "bodyModule/ssystem_factory.hpp"
 #include "bodyModule/body_trace.hpp"
 #include "experimentalModule/Renderer.hpp" // dual-path pointer flag mirror
+#include "experimentalModule/Camera.hpp" // both-paths fov mirror (INTENT 11.40)
 #include "eventModule/CoreEvent.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "coreModule/meteor_mgr.hpp"
@@ -1103,6 +1104,22 @@ Object Core::cleverFind(int x, int y) const
 	return cleverFind(v);
 }
 
+// Both-paths fov mirror (INTENT §11.40 / §11.15c residual). The OLD projection
+// eases its own fov; the NEW-path fov authority is ModularBody::halfFov, driven
+// through Camera::setHalfFov and read as Renderer clipping_fov.z
+// (Renderer.cpp:107/118). coreLink::zoomTo already mirrors scripted/UI `zoom
+// fov` (verified reaching the setter, §11.40); auto-zoom drove projection->zoomTo
+// DIRECTLY, so `zoom auto in/out` desynced the two paths (the §11.19 A/B
+// confound). Mirror at the target: same fov, same duration - the OLD path is
+// unchanged (the projection call below), the Camera eases to the same target.
+// AXIS/moon_scale seam precedent (both-paths, old behavior untouched).
+void Core::zoomToBothPaths(double aim_fov, float move_duration)
+{
+	projection->zoomTo(aim_fov, move_duration);
+	if (Camera::instance)
+		Camera::instance->setHalfFov(aim_fov * M_PI / 360, move_duration);
+}
+
 //! Go and zoom to the selected object.
 void Core::autoZoomIn(float move_duration, bool allow_manual_zoom)
 {
@@ -1122,17 +1139,17 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom)
 	if ( allow_manual_zoom && FlagManualZoom ) {
 		// if manual zoom mode, user can zoom in incrementally
 		float newfov = projection->getFov()*0.5f;
-		projection->zoomTo(newfov, manual_move_duration);
+		zoomToBothPaths(newfov, manual_move_duration);
 
 	} else {
 		float satfov = selected_object.getSatellitesFov(navigation);
 
 		if (satfov>0.0 && projection->getFov()*0.9>satfov)
-			projection->zoomTo(satfov, move_duration);
+			zoomToBothPaths(satfov, move_duration);
 		else {
 			float closefov = selected_object.getCloseFov(navigation);
 			if (projection->getFov()>closefov)
-				projection->zoomTo(closefov, move_duration);
+				zoomToBothPaths(closefov, move_duration);
 		}
 	}
 }
@@ -1148,7 +1165,7 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 			float newfov = projection->getFov()*2.f;
 			if (newfov >= InitFov ) {
 				// Need to go to init fov/direction
-				projection->zoomTo(InitFov, move_duration);
+				zoomToBothPaths(InitFov, move_duration);
 				navigation->moveTo(InitViewPos, move_duration, true, -1);
 				navigation->setFlagTraking(false);
 				navigation->setFlagLockEquPos(0);
@@ -1156,7 +1173,7 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 			} else {
 				// faster zoom in manual zoom with object centered
 				float manual_move_duration = move_duration*.66f;
-				projection->zoomTo(newfov, manual_move_duration);
+				zoomToBothPaths(newfov, manual_move_duration);
 				return;
 			}
 		}
@@ -1166,7 +1183,7 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 
 		// Saturn wasn't untracking from moon issue
 		if (satfov>0.0 && projection->getFov()<=satfov*0.9 && satfov < .9*InitFov) {
-			projection->zoomTo(satfov, move_duration);
+			zoomToBothPaths(satfov, move_duration);
 			return;
 		}
 
@@ -1176,12 +1193,12 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 
 		// Charon wasn't untracking from Pluto issue
 		if (satfov>0.0 && projection->getFov()<=satfov*0.9 && satfov < .9*InitFov) {
-			projection->zoomTo(satfov, move_duration);
+			zoomToBothPaths(satfov, move_duration);
 			return;
 		}
 	}
 	//  cout << "Unzoom to initfov\n";
-	projection->zoomTo(InitFov, move_duration);
+	zoomToBothPaths(InitFov, move_duration);
 	navigation->moveTo(InitViewPos, move_duration, true, -1);
 	navigation->setFlagTraking(false);
 	navigation->setFlagLockEquPos(0);

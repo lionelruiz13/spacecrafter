@@ -2,6 +2,7 @@
 #include "experimentalModule/Renderer.hpp"
 #include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/meshModules/meshShadowFill.hpp"
+#include "experimentalModule/bodyModules/TraceFamily.hpp"
 #include "ojmModule/ojm.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
@@ -210,4 +211,33 @@ void OjmModule::drawSelfShadow(Renderer &renderer, ModularBody *body, const Mat4
     selfShadowMat = mat;
     selfShadowActive = true;
     renderer.shadow.produceSelfDepth(mat, model.get());
+}
+
+void OjmModule::drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat)
+{
+    // Row-8 TRACE consumer (INTENT §11.40): the OJM model's own silhouette
+    // into the orbit-union depth range so an artificial body's orbit line is
+    // cut where the body hides it. Old Artificial::drawOrbit(cmdBodyDepth,...):
+    // push depthTraceInfo(mat.convert, clippingFov, radius, oblateness), then
+    // obj3D->drawShadow(cmdBodyDepth) (body_artificial.cpp:186-191). The shared
+    // sphere-trace family is the SAME depth pipeline the old path used for both
+    // sphere and OJM (getShaderDepthTrace: ojmVertexArray, TRIANGLE_LIST,
+    // position-only) - only the geometry drawn differs (the model, not the
+    // sphere).
+    if (!model || !model->getOk())
+        return; // load failed - never drawable (old radius-zeroed parity)
+    const FamilyBound bound = renderer.bind(TraceFamily::sphere());
+    if (!bound.layout)
+        return; // trace shader not deployed - C3 degrade (orbits draw depth-free)
+    TraceInfo info;
+    // mat = the surface matrix (drawOrbits passes mat . computeBodyToSurface,
+    // the same the OJM COLOR draw receives), so the depth silhouette matches
+    // the drawn model INCLUDING its spin. The shader scales unit geometry by
+    // planetScaledRadius, exactly as drawInternal scales by getScaledRadius().
+    info.ModelViewMatrix = mat;
+    info.clipping_fov = renderer.getClippingFov();      // the ORBIT range this frame
+    info.planetScaledRadius = body->getScaledRadius();  // == the COLOR draw's radius
+    info.planetOneMinusOblateness = body->getOneMinusOblateness();
+    bound.layout->pushConstant(renderer, 0, &info);
+    model->drawShadow(renderer); // position-only model geometry (old obj3D->drawShadow)
 }
