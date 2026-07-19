@@ -83,9 +83,16 @@ DsoNavigator::DsoNavigator()
     pipeline->bindVertex(*vertexArray);
     pipeline->bindShader("obj3D.vert.spv");
     pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+    // obj3D.vert + obj3D.tese both project through custom_project (spec-const 8,
+    // custom_projectNoMV) but this build never set the mode: the DSO objects
+    // rendered FISHEYE under every projection_type. Old-only sky layer, not in
+    // the retirement map (INTENT 11.33 mainline-gap inventory, RESOLVED: FIX
+    // [vixy 2026-07-17] / 11.38). Set on both stages (mirrors spec 7).
+    pipeline->setSpecializedConstant(8, Context::projectionType);
     pipeline->bindShader("obj3D.tesc.spv");
     pipeline->bindShader("obj3D.tese.spv");
     pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+    pipeline->setSpecializedConstant(8, Context::projectionType);
     pipeline->bindShader("obj3D.frag.spv");
     float maxLod = 0;
     pipeline->setSpecializedConstant(0, &maxLod, sizeof(maxLod));

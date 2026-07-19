@@ -107,6 +107,11 @@ void SkyGrid::createShader()
     pipeline->bindVertex(*m_dataGL);
     pipeline->bindShader("skygrid.vert.spv");
     pipeline->bindShader("skygrid.geom.spv");
+    // skygrid.geom projects through custom_project_advanced (spec-const 8) but
+    // this build never set the mode: the grid rendered FISHEYE under every
+    // projection_type. Old-only sky layer, not in the retirement map (INTENT
+    // 11.33 mainline-gap inventory, RESOLVED: FIX [vixy 2026-07-17] / 11.38).
+    pipeline->setSpecializedConstant(8, Context::projectionType);
     pipeline->bindShader("skygrid.frag.spv");
     pipeline->build();
     set = new Set(vkmgr, *context.setMgr, layout);

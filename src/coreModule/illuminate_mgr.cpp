@@ -265,6 +265,12 @@ void IlluminateMgr::createSC_context()
 	m_pipelineIllum->setDepthStencilMode();
 	m_pipelineIllum->bindShader("illuminate.vert.spv");
 	m_pipelineIllum->bindShader("illuminate.geom.spv");
+	// illuminate.geom projects through custom_project_advanced (spec-const 8)
+	// but this build never set the mode: the layer rendered FISHEYE under every
+	// projection_type. Old-only sky layer, not in the retirement map (INTENT
+	// 11.33 mainline-gap inventory, RESOLVED: FIX [vixy 2026-07-17] / 11.38).
+	// Launch-constant: Context::projectionType is config-parsed at App init.
+	m_pipelineIllum->setSpecializedConstant(8, Context::projectionType);
 	m_pipelineIllum->bindShader("illuminate.frag.spv");
 	m_pipelineIllum->build();
 

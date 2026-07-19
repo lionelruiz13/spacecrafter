@@ -93,6 +93,11 @@ void Tully::createSC_context()
 		VkBool32 whiteColor = (i & 1);
 		pipelinePoints[i].setSpecializedConstant(0, &whiteColor, sizeof(whiteColor));
 		pipelinePoints[i].bindShader("tully.geom.spv");
+		// tully.geom projects through custom_project_advanced (spec-const 8) but
+		// this build never set the mode: rendered FISHEYE under every
+		// projection_type. Old-only sky layer, not in the retirement map (INTENT
+		// 11.33 mainline-gap inventory, RESOLVED: FIX [vixy 2026-07-17] / 11.38).
+		pipelinePoints[i].setSpecializedConstant(8, Context::projectionType);
 		pipelinePoints[i].bindShader("tully.frag.spv");
 		pipelinePoints[i].build();
 	}
@@ -122,6 +127,9 @@ void Tully::createSC_context()
 		pipelineSquare[i].bindVertex(*m_squareGL);
 		pipelineSquare[i].bindShader("tullyH.vert.spv");
 		pipelineSquare[i].bindShader("tullyH.geom.spv");
+		// tullyH.geom projects through custom_project_advanced (spec-const 8);
+		// same 11.33 gap as tully.geom above (INTENT 11.38).
+		pipelineSquare[i].setSpecializedConstant(8, Context::projectionType);
 		pipelineSquare[i].bindShader("tullyH.frag.spv");
 		pipelineSquare[i].build();
 	}

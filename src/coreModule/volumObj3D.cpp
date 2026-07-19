@@ -100,9 +100,16 @@ struct VolumObj3D::Shared {
             pipeline[i].bindVertex(vertexArray);
             pipeline[i].bindShader("volumObj3D.vert.spv");
             pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+            // volumObj3D.vert + .tese project through custom_project (spec-const
+            // 8, custom_projectNoMV) but this build never set the mode: the
+            // external-view volume rendered FISHEYE under every projection_type.
+            // Old-only sky layer, not in the retirement map (INTENT 11.33
+            // mainline-gap inventory, RESOLVED: FIX [vixy 2026-07-17] / 11.38).
+            pipeline[i].setSpecializedConstant(8, Context::projectionType);
             pipeline[i].bindShader("volumObj3D.tesc.spv");
             pipeline[i].bindShader("volumObj3D.tese.spv");
             pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+            pipeline[i].setSpecializedConstant(8, Context::projectionType);
             pipeline[i].bindShader((i & PS_PACKED) ? "volumObj3DPacked.frag.spv" : "volumObj3D.frag.spv");
         }
 
@@ -117,6 +124,10 @@ struct VolumObj3D::Shared {
             pipeline[i].bindVertex(inVertexArray);
             pipeline[i].bindShader("inVolumObj3D.vert.spv");
             pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
+            // inVolumObj3D.vert projects through custom_project (spec-const 8,
+            // custom_project2D); same 11.33 gap for the internal (immersed) view
+            // as the external view above (INTENT 11.38).
+            pipeline[i].setSpecializedConstant(8, Context::projectionType);
             pipeline[i].bindShader((i & PS_PACKED) ? "inVolumObj3DPacked.frag.spv" : "inVolumObj3D.frag.spv");
             pipeline[i].setSpecializedConstant(2, &radius2, sizeof(radius2));
             pipeline[i].setSpecializedConstant(3, center, sizeof(int));
