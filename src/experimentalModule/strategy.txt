@@ -19,11 +19,15 @@ Loading :
 
 
 TODO :
-- s_font not shown
-- draw pointer when isSelected
+- s_font not shown -> DONE (2026-07-12, INTENT 11.24): Renderer text service
+  (printGravity, pure function of screenPos+viewport+font); HINT label rides it.
+- draw pointer when isSelected -> DONE (2026-07-12, INTENT 11.24): POINTER
+  service family, selection seam via ModularBodySelector.
 - fix halo -> DONE (2026-07-12, INTENT 11.19): the halo code was right, the
   VIEW was wrong (tracking az-convention + 180° roll + init-view frame seam);
   screen parity now 0.09 px in horizon mount. Residual: equatorial mount
   (parallactic field roll) pending Camera mount design [vixy].
 - hints -> circle DONE (HintModule via DRAW_HINT_POS, INTENT 11.19);
   label pending the text channel (INTENT open #3), fader pending.
+  -> FULLY DONE (2026-07-12, INTENT 11.24): label + fader landed, DRAW_HINT_POS
+  seam dissolved (HINT batched family).
