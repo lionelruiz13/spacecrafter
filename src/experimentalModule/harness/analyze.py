@@ -45,6 +45,8 @@ def main(path):
         rec = json.loads(line)
         if rec["type"] == "header":
             header = rec
+        elif rec["type"] != "body":
+            continue  # skip non-body records (e.g. type=="hops": has no "old"/"new" body pair)
         elif rec["new"] is None:
             missing.append(rec["name"])
         else:
