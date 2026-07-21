@@ -30,7 +30,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 | Row | Task | Spec / recorded at | Notes for execution |
 |---|---|---|---|
 | B9 | Az-convention divergence: old `getAltAz` applies 3π−az, new returns Camera-frame raw — probe, then fix at the `ModularObject` surface | §11.4 | Probe first (confirm the delta is exactly the convention), then one conversion authority, not per-caller patches |
-| B11 | Trail recording gate: `flag trails off` STOPS accumulation; re-enable starts FRESH | §11.41, §11.48(a) | Distinct gate from B19 (hidden body ⇒ still updating ⇒ still recording). Reading the two as one gate produces a wrong implementation — the row says so explicitly |
+| B11 | ~~Trail recording gate: `flag trails off` STOPS accumulation; re-enable starts FRESH~~ **DONE 2026-07-22 → §11.56, §7 below** | §11.41, §11.48(a), **§11.56** | Display flag now gates recording (`want`, not the fader — the prior port gated on the fade animation). **2×2 matrix measured**: hidden Mars records identically to visible Venus (both +6 pts / +1080 accumulate calls flag-on, both 0 flag-off) — the two gates are orthogonal, §11.54's boundary closed in the affirmative. "Work stopped" proven 2 ways (`accumulateCount` frozen + gdb accumulate breakpoint silent while off). Resolved inside I2/I6 — no second walk, no scheduling change (B1/S4 untouched). Real command spelling = `flag object_trails on|off` (the row's `flag trails` is swallowed silently). 94/94 harness, 0 VUID, config byte-identical |
 | B13 | Reference-change view continuity: preserve absolute sky direction across reference switch and free-mode entry/exit; no re-centring | §11.19c, §11.48(a) | Mechanism (revive `view` smoothing quaternion vs derive from alt/az) is the executor's engineering choice and owns the inverse formulas either way. DoD includes adding a view-continuity assertion to scene E (currently silent on exactly this) |
 | B15 | AoI re-derivation on date change: the launch-jd latch is a defect (dates are jumped mid-navigation) | §11.36, §11.48(a) | Recompute cadence (date-jump event vs continuous) is an engineering call bounded by constraint C3. Should close the ~10% seasonal drift and the scene-E `e_in` first-run miss — verify both |
 | B16 | ~~Expose `reloadSystem` as a command; keep current state (camera + date), no reset~~ **DONE 2026-07-21 → §11.55, §6 below** | §11.36, §11.45(d), §11.48(a), **§11.55** | Landed as **`body action reload`**; both §2(c) channels exercised live. **Scope grew by one structural fix**: the reload's first live use exposed an I5 violation (EnvironmentManager's cross-frame raw-pointer chain cache dereferences freed bodies) — fixed at the class by destruction notification. **One question suspended**: does "keep current state" cover body-scoped runtime overrides (today the file wins, and the old path desyncs) |
@@ -462,3 +462,121 @@ and arbitrary about where it stops.
 The channel-2 `.sts` was removed from `~/.spacecrafter/scripts/` and lives in
 the harness directory instead. `supervised-by.sh` left untracked. No harness
 task list touched.
+
+---
+
+## 7. Execution log — B11 (Claude Opus 4.8, 2026-07-22)
+
+**Task**: wave §1 task 4 — implement the trail recording gate. Vixy Q14 /
+§11.48(a) A1: the display flag gates recording — `flag object_trails off`
+STOPS accumulation, and re-enabling starts FRESH (stated reason: the cost of
+accumulating a trail nobody sees). Closes the §11.41 display/recording
+suspension. The row's core warning: this is a SECOND gate, INDEPENDENT of the
+B19/A10 hidden-visible gate — reading the two as one produces a wrong
+implementation.
+
+**No behavior change beyond the row.** The gate is exactly what the row
+anticipated; the only judgement call was where the fresh-start discard fires
+(recorded as design edge (h) in §11.56 — an unreachable same-frame double-
+toggle case, documented not guarded). The prior port (§11.41) had gated
+accumulation on the DISPLAY FADER interstate, which is neither of the two gates
+Vixy named — the fix moves the gate to the flag (`want`), leaving the fader as
+the display gate `draw()` reads.
+
+**The interaction the task flagged, resolved and stated.** B19 made hidden
+bodies tick translation-only, with NO module update — so if trail recording
+lived in a per-body module-update walk, "hidden ⇒ still recording" would not
+hold. It does not live there: recording rides `ModularSystem::drawTrails`, a
+system-level phase that sweeps every evaluated body in `sortedSystemBodies`
+(hidden bodies are still in that list; B19 keeps their position current). So
+one authority (I2), no second walk, no scheduling change (B1/S4 never
+approached). Verified in the 2×2 matrix: hidden Mars records identically to
+visible Venus.
+
+**Full measurements**: INTENT.md §11.56 (a)–(i).
+**Instruments committed**: `harness/b11_{run.sh,probe.gdb,trail_gate.py}`.
+**Artifacts**: `harness/artifacts/b11/` (gitignored).
+
+**The command, verbatim**: `flag object_trails on|off` (NOT `flag trails` — the
+row's shorthand does not exist and is swallowed silently, verified live).
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Both gates measured independently on a 2×2 matrix {flag on,off}×{visible,hidden}, values not adjectives | **met** | `b11_trail_gate.py`, deltas over 6 jumps of 15 sim-days: ON/visible +6 pts +1080 acc; ON/hidden(Mars rel=1) +6 pts +1080 acc; OFF/visible 0/0; OFF/hidden 0/0. Within a flag column hidden==visible (visibility inert on recording); across columns the same body differs (flag is the gate). Independence asserted, not assumed |
+| 2 | "Starts FRESH" measured — no pre-off history after off→on | **met** | Per cycle/body: pre-off ≥2 pts → off **points=0, recording=false** → reon **points=1**, first point at **|head−ecl|=0.000000 km**, `head.jd`==body `lastJD` (light-time-corrected; ≠ header jd by the body's light-travel offset) and > pre-off head jd. Regrows to 1+6 |
+| 3 | Both entries of the reversible pair, twice (on→off→on→off→on, cycle 2 from cycle 1's produced state) | **met** | Phase 4/5 loop c∈{1,2}, cycle 2 with no re-setup between; all fresh-start asserts green both cycles. Plus the sub-fade re-enable (off, on 0.5 s later): still points=1 — the assert that separates the fixed design from a fader-gated one |
+| 4 | The WORK stops when off (not just the drawing) — running-process evidence | **met** | (1) `TrailModule::accumulateCount` (dump) **frozen** across every OFF interval while sim time advanced 2 jumps (dAcc=0). (2) gdb breakpoint on `TrailModule::accumulate` (armed on each flag-ON) fired **6 `PROBE accumulate RAN`, each after a `planetsSetFlagTrails b=1`, none during OFF**. `resetTrail()` empties the buffer (frees the memory too) |
+| 5 | Terminal observable on the composed screen, calibrated px>N + noise floor | **met** | Noise floor (same-state pair 1.5 s apart): **max\|Δ\|=0, 0 px at every threshold** (frozen tracked scene bit-stable — measured, not assumed vs B30). Trail present vs absent same date: **25 274 px>32, max\|Δ\|=101** (off frame 2.7M nonblack px — content, not masked fiction). Fresh reon vs off: **0 px** (1-pt buffer draws nothing, `n<2`) — re-enable flashes no grown trail |
+| 6 | Command spelling verified from the running process | **met** | `flag object_trails on|off` → `CoreLink::planetsSetFlagTrails`: **11 probe hits / 11 commands, 1:1**. Bogus `flag trails off`: **0 probe hits**, state unchanged (+2 pts over 2 jumps, recording stayed true) — §11.54(j) silent-swallow class |
+| 7 | Build green, mtime advanced | **met** | `make -C build-claude -j$(nproc)` exit 0; binary mtime 2026-07-21 23:57 → 2026-07-22 00:31; `accumulate` confirmed out-of-line-called from `update` (`objdump`: `call <…TrailModule10accumulate…>`) |
+| 8 | No regression A–D + E, numbers vs recorded classes; config byte-identical | **met** | A–D `predict.py` mat-residual ≤1.09e-07 (deterministic witness); P4 settle-noise class (run1 14.36/13.30/27.24/55.04/25.94, run2 2.86/44.47/41.87/46.01/25.94 km — varies run-to-run, B16's class). Scene E 13/13 exit 0. Orientation **17 restored/48 divergent, P-d 0.0000** (exact §11.54/§11.55 match). 0 VUID, layer positively confirmed. config.ini md5 **03fbee59…** in and out |
+| 9 | Trackers | **met** | INTENT §11.56 (entry), §13.B B11 → DONE, §12 row 9 suspension closed; this dispatch row + §7 |
+| 10 | Committed on master-beta, correct author/co-author, no push | **met** | see commit hash below |
+
+### Findings recorded, not fixed (out of scope)
+
+- **`flag trails` is not the code's spelling** — the B11 row, §11.41's header,
+  and this wave file all wrote `flag trails`; the real flag is
+  `flag object_trails` (`FN_OBJECT_TRAILS`, define_key `flag_object_trails`).
+  Corrected in the new INTENT §11.56 and §13.B rows; historical mentions left
+  as written per the do-not-rewrite-history rule.
+- **Design edge (h)**: the rising-edge fresh-start relies on an OFF-frame's
+  `update()` clearing `recording`; a zero-frame-gap off→on would not restart.
+  Unreachable through any command channel — documented, not guarded.
+
+### Suspended for Vixy
+
+None. Q14 fully specified the gate; every decision traces to it or to the old
+port's shape. (The per-name enable was made to start fresh too, by the same
+Q14 rule — a per-name enable is a re-enable; stated in the header, not a new
+policy.)
+
+### What I did NOT verify
+
+- The gate under `render_path = old` (old path unchanged by construction; the
+  new path is the pinned default per §11.53).
+- Trail behavior across a `body action reload` (B16 territory; §11.55(i)'s
+  override-reset question is open and would reset trail flags too).
+- Perceptual A/B against the OLD path's trail recording gate — not required
+  here (this is a new-path semantics decision Vixy specified, not a parity
+  port), and the old `trail_on` was DEAD (§11.41), so there is no old coupled
+  observable to match.
+
+### Reproduction (verbatim)
+
+    # the deliverable run — 2×2 matrix, fresh-start ×2, spelling, screen A/B
+    cd /home/claude/spacecrafter
+    DISPLAY=:2 ./src/experimentalModule/harness/b11_run.sh \
+        b11_trail_gate.py                        # driver exit=0, 94/94
+    #  -> artifacts/b11/{b11_result.json, drive.log, gdb.log, *.png}
+    #  probe counts: planetsSetFlagTrails 11, setPlanetHidden 2, accumulate RAN 6
+
+    # terminal observable (in artifacts/b11/):
+    #   b11_screen_on_a vs b11_screen_off   = 25274 px>32 (trail present/absent)
+    #   b11_screen_reon vs b11_screen_off   = 0 px        (fresh reveals nothing)
+    #   b11_screen_on_a vs b11_screen_on_b  = 0 px        (noise floor)
+
+    # no-regression (needs init_fov=340; restored to 180 by md5 afterwards)
+    DISPLAY=:2 ./build-claude/src/spacecrafter &   # wait :7805, +10 s
+    cd src/experimentalModule/harness && python3 ./drive_scenes.py
+    for f in gen_a gen_b gen_moon gen_mars gen_mars_2; do \
+        python3 ./predict.py /tmp/$f.json; done
+    python3 ./orientation_check.py /tmp/orient_b11.json   # 17/48, P-d 0.0000
+    #  fresh launch, then:
+    python3 ./scene_e_spine.py                             # exit 0, 13/13
+
+    # validation sweep (layer confirmed + 0 VUID)
+    DISPLAY=:2 VK_LOADER_DEBUG=layer ./build-claude/src/spacecrafter 2>&1 \
+        | grep -E "Insert instance layer|VUID"
+
+### Hygiene
+
+`~/.spacecrafter/config.ini` restored byte-identical [md5
+`03fbee59bc3ec506c58f0a3f1e1d73df` before and after the temporary
+`init_fov 180 → 340`; the app rewrites config on shutdown, so restore is from
+the pre-run backup]. `~/.spacecrafter/ssystem.ini` untouched.
+`~/.spacecrafter/beta_features.ini` absent throughout. No temporary `.sts`
+installed. `supervised-by.sh` and the root-level `USER_QUESTIONS*.md` /
+`FEATURE_REQUESTS.md` left untracked. No harness task list touched.

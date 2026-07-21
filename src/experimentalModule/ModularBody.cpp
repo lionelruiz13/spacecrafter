@@ -52,6 +52,12 @@ ShadowCaster BodyModule::getShadowCaster(ModularBody *body, const Vec3f &) const
     return {body->getRadius(), body->getShadowAbsorbtion(), Vec4f(0, 0, 0, -1)};
 }
 
+// Default module state dump: nothing externally observable (INTENT 11.56).
+void BodyModule::dumpState(std::ostream &out) const
+{
+    out << "null";
+}
+
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
 {
@@ -599,7 +605,21 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // dump PRESENCE never tracks it (the dump iterates the name registry,
         // which includes hidden bodies). INTENT 11.36 rare-path instrument.
         << ",\"relation\":" << static_cast<int>(relation)
-        << ",\"lastJD\":" << std::setprecision(17) << lastJD << '}';
+        // Trail recording state (B11 instrument, INTENT 11.56): the ONLY
+        // externally observable of the recording gate. Written by the module
+        // itself (BodyModule::dumpState - no type sniffing here, I4). An
+        // ARRAY because trailComponents is a list; empty list -> `[]`, which
+        // is itself the finding "this body has no trail module".
+        << ",\"trail\":[";
+    {
+        const char *sep = "";
+        for (const BodyModule *m : trailComponents) {
+            out << sep;
+            m->dumpState(out);
+            sep = ",";
+        }
+    }
+    out << "],\"lastJD\":" << std::setprecision(17) << lastJD << '}';
 }
 
 // Harness (INTENT.md 11.14a): per-hop construction pieces, this body -> root.

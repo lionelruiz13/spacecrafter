@@ -40,10 +40,21 @@ class VertexBuffer;
 //   trail.cpp:192-193). LINE_STRIP + geometry subdivision, BLEND_SRC_ALPHA for
 //   the per-vertex fade, NO depth (old setDepthStencilMode() = test+write off).
 // - Flags (master model, ORBIT precedent): `show` is the global display master
-//   (old setFlagTrails); a module's fader targets it unless a per-name override
-//   (setShown) is live at the current generation. The accumulation gate is the
-//   fader interstate (old updateTrail's ONLY gate; trail_on was DEAD - the
-//   display/recording separation is the old TODO, SUSPENDED for Vixy, §11.41).
+//   (old setFlagTrails, command `flag object_trails on|off`); a module's fader
+//   targets it unless a per-name override (setShown) is live at the current
+//   generation.
+// - THE RECORDING GATE (§11.56, closes the §11.41 suspension) [vixy Q14
+//   2026-07-21]: the DISPLAY FLAG gates RECORDING. Flag off => accumulation
+//   STOPS at once and the recorded history is DISCARDED; flag on => recording
+//   restarts FRESH from the body's current position. Stated reason: nobody
+//   pays for accumulating a trail nobody sees. The gate is the FLAG, not the
+//   fader interstate (a toggle inside the fade window is still a re-enable),
+//   while the fader stays the DISPLAY gate so the fade-out is unchanged.
+// - THE TWO GATES ARE INDEPENDENT, and that is a requirement, not a detail.
+//   Trail flag off => not recording, whatever the body's visibility.
+//   Body HIDDEN (or merely off-screen) => STILL recording [vixy Q13 / A10,
+//   §11.54]: drawTrails sweeps every EVALUATED body, hidden ones included.
+//   Reading the two as one gate produces a wrong implementation (§13.B B11).
 // - Deduce: TRAIL for a non-still orbit (orbit_visualization_period>0) that is
 //   NOT a satellite and NOT type=Artificial (old BigBody+SmallBody set:
 //   Planet/Dwarf 1460, Comet 2920, Asteroid/KBO 60; Moon/Sun/Star/Center/
@@ -58,6 +69,11 @@ public:
     ~TrailModule();
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual bool update(ModularBody *body, float scaledRadius) override;
+    // Harness instrument (INTENT 11.56): the recording gate's observable -
+    // point count, recording/fader (the TWO gates, side by side) and
+    // accumulateCount (entries into accumulate(): a frozen counter over
+    // advancing simulated time is the "the work stopped" evidence).
+    virtual void dumpState(std::ostream &out) const override;
 
     // Old Trail::startTrail: enable => fresh restart (first_point set - the next
     // accumulate clears + starts over); disable => stop (recording, mirrored not
@@ -93,6 +109,10 @@ protected:
     // Append the body's current parent-relative position at its sim time, with
     // the old updateTrail cadence/cap/prune semantics (trail.cpp:120-163).
     void accumulate(ModularBody *body);
+    // THE fresh start (Q14): DISCARD the recorded history and arm a restart at
+    // the body's current position. Single authority for every re-enable path
+    // (global flag rising edge, per-name setShown, old-path startTrail).
+    void resetTrail();
 
     struct TrailPoint {
         Vec3f pos;   // parent-relative (root-aligned), drawn in the parent frame
@@ -102,8 +122,14 @@ protected:
     LinearFader fader;
     Vec3f color;
     double lastJD = 0;      // sim time of the last appended point
-    bool recording = false; // fader-driven accumulation-active mirror (old trail_on)
+    // THE recording gate's state: true = this module is accumulating. Driven by
+    // the DISPLAY flag (wantShown), not by the fader - see update()'s gate
+    // comment and INTENT 11.56. Independent of the body's visibility.
+    bool recording = false;
     bool firstPoint = true; // pending fresh start (old first_point)
+    // Instrument (INTENT 11.56): entries into accumulate() since construction.
+    // Frozen counter + advancing sim time = the accumulation code did not run.
+    uint64_t accumulateCount = 0;
     int maxTrail = 1460;    // old MaxTrail (point cap + time window in DeltaTrail units)
     double deltaTrail = 1;  // old DeltaTrail (sim-day sampling period)
 

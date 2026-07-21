@@ -9,6 +9,8 @@
 #include "experimentalModule/ModularBody.hpp"
 #include <cmath>
 #include <cstdlib>
+#include <ostream>
+#include <iomanip>
 
 bool TrailModule::show = false;           // config flag_object_trails default (setFlagTrails seam)
 uint32_t TrailModule::flagGeneration = 0; // bumped by every global toggle
@@ -89,23 +91,37 @@ bool TrailModule::wantShown(ModularBody *body) const
     return show;
 }
 
+void TrailModule::resetTrail()
+{
+    // THE fresh start, single authority (I2) for every path that re-enables
+    // recording. Vixy Q14 [2026-07-21, INTENT 11.48(a) A1 -> 11.56] is explicit
+    // that re-enabling starts FRESH, so a fresh start DISCARDS the recorded
+    // history outright: the buffer is emptied (not merely marked stale), which
+    // makes it impossible for pre-off history to be revealed later and frees
+    // the memory the gate stopped paying CPU for.
+    points.clear();
+    firstPoint = true;
+}
+
 void TrailModule::startTrail(bool record)
 {
     // Old Trail::startTrail (trail.cpp:165-174): enable => fresh restart;
-    // disable => stop (recording mirrors the dead trail_on, not a gate).
+    // disable => stop. Old-path seam only (startTrails, INTENT 11.41(d)); the
+    // new path drives the gate from the display flag through update().
     recording = record;
     if (record)
-        firstPoint = true;
+        resetTrail();
 }
 
 void TrailModule::setShown(bool b)
 {
     // Old Body::setFlagTrail -> Trail::setFlagTrail (fader target + startTrail):
-    // set the override AND reset on enable (first_point).
+    // set the override AND reset on enable (first_point). Same Q14 rule as the
+    // global flag - a per-name enable is a re-enable, so it starts fresh too.
     nameOverride = b ? 1 : 0;
     overrideGen = flagGeneration;
     if (b)
-        firstPoint = true;
+        resetTrail();
     // Kick the system-level trail phase so this module's update() runs and its
     // fader can rise even when the global master is off (the phase is gated on
     // anyActive() - OrbitModule precedent).
@@ -114,6 +130,7 @@ void TrailModule::setShown(bool b)
 
 void TrailModule::accumulate(ModularBody *body)
 {
+    ++accumulateCount; // instrument (INTENT 11.56): "the work actually ran"
     // Faithful port of Trail::updateTrail (trail.cpp:120-163). Sampled at the
     // body's SIM time (getLastJD - fresh even when invisible), parent-relative
     // position (getEclipticPos - old get_heliocentric_ecliptic_pos for the trail
@@ -158,22 +175,72 @@ bool TrailModule::update(ModularBody *body, float scaledRadius)
         live = nowLive;
         activeCount += nowLive ? 1 : -1;
     }
-    // Accumulation gate = the display fader (old updateTrail's ONLY gate,
-    // trail.cpp:122; trail_on was DEAD). The display/recording separation (old
-    // TODO, header intent) is SUSPENDED for Vixy (§11.41). Ticks every frame
-    // for every EVALUATED body (drawTrails sweeps all), so accumulation
-    // continues while the body is invisible - the row-9 invisible-tick contract.
-    if (interstate >= 0.001f) {
-        if (!recording) { recording = true; firstPoint = true; } // rising edge = old startTrail(true)
+    // ---- THE RECORDING GATE (INTENT 11.56; closes the 11.41 suspension) ----
+    // Vixy Q14 [2026-07-21, INTENT 11.48(a) A1]: the DISPLAY FLAG gates
+    // RECORDING - `flag object_trails off` STOPS the accumulation, and
+    // re-enabling starts FRESH. The stated reason is cost: nobody should pay
+    // for accumulating a trail nobody sees.
+    // The gate is `want` (the flag / per-name override), NOT the fader
+    // interstate: a toggle inside the ~1 s fade window is still a re-enable and
+    // must still start fresh, and an `off` must stop the work AT ONCE rather
+    // than one fade-length later. (The fader remains the DISPLAY gate - draw()
+    // reads it - so the fade-out is unchanged.)
+    // This gate is INDEPENDENT of the body's visibility. A HIDDEN body keeps
+    // recording [vixy Q13 / A10, INTENT 11.54]: drawTrails sweeps every
+    // EVALUATED body, hidden ones included (their eclipticPos/lastJD/distance
+    // ride recursiveTranslationUpdate), so `want` is the only thing that can
+    // stop accumulation. Two conditions, two observables - reading them as one
+    // gate produces a wrong implementation (§13.B B11).
+    if (want) {
+        if (!recording) { // rising edge of the flag = fresh restart
+            recording = true;
+            resetTrail();
+        }
         accumulate(body);
     } else {
-        recording = false; // fader down: accumulation stops (points retained)
+        recording = false; // falling edge: the work stops on this very frame
+        // The points are kept while the fader is still up so the fade-out
+        // draws the trail it was showing (old fade parity), then DISCARDED the
+        // moment nothing can display them any more - after which this module
+        // holds no history at all until the next re-enable.
+        if (!live)
+            resetTrail();
     }
     // TRAIL never inflates the body's boundingRadius (it is not in a regime
     // list): this return is consumed by nobody - kept for the interface. The
     // trail needs the per-frame tick, so it never self-deregisters (returns false).
     boundingRadius = scaledRadius;
     return false;
+}
+
+// Harness instrument (INTENT 11.56) - the recording gate's observable.
+// `accumulateCount` is what separates "the gate stopped the WORK" from "the
+// gate only stopped the DRAWING": it counts entries into accumulate(), so a
+// frozen counter over an interval in which simulated time advanced is direct
+// evidence from the running process that the accumulation code did not run.
+// `points`/`head` carry the discard evidence (0 while off, and the first point
+// after a re-enable sits at the body's CURRENT position, not at pre-off
+// history). `fader` is the DISPLAY state, deliberately dumped next to
+// `recording` so the two gates can be read apart.
+void TrailModule::dumpState(std::ostream &out) const
+{
+    out << std::setprecision(9)
+        << "{\"points\":" << points.size()
+        << ",\"recording\":" << (recording ? "true" : "false")
+        << ",\"firstPoint\":" << (firstPoint ? "true" : "false")
+        << ",\"fader\":" << fader.getInterstate()
+        << ",\"accumulateCount\":" << accumulateCount
+        << ",\"maxTrail\":" << maxTrail
+        << ",\"deltaTrail\":" << deltaTrail
+        << ",\"head\":";
+    if (points.empty()) {
+        out << "null,\"headJD\":null";
+    } else {
+        out << '[' << points.front().pos[0] << ',' << points.front().pos[1]
+            << ',' << points.front().pos[2] << "],\"headJD\":"
+            << std::setprecision(17) << points.front().jd << std::setprecision(9);
+    }
+    out << '}';
 }
 
 void TrailModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)

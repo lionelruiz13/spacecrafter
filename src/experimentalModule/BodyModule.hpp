@@ -3,6 +3,7 @@
 
 #include "tools/vecmath.hpp"
 #include <cstdint>
+#include <iosfwd>
 
 class ModularBody;
 class Renderer;
@@ -225,6 +226,13 @@ public:
     inline float getBoundingRadius() const {
         return boundingRadius;
     }
+    // Harness instrument (INTENT 11.56): write THIS module's own state as one
+    // JSON value into the dual-path trace (ModularBody::dumpTrace). The module
+    // owns its state, so the module writes it - the dump site never sniffs a
+    // module's type to reach inside it (I4). Default = `null` (a module with
+    // no externally-observable state contributes nothing to observe).
+    // Defined in ModularBody.cpp (keeps <ostream> out of every module TU).
+    virtual void dumpState(std::ostream &out) const;
 protected:
     // The smallest radius of a sphere enclosing the WHOLE body to be traced
     // [vixy: 2026-07-11]. This single definition is what makes one value valid
