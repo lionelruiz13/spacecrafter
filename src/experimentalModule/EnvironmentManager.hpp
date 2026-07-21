@@ -79,6 +79,16 @@ public:
     inline Atmosphere *getAtmosphereEngine() const {
         return atmosphere;
     }
+    // I5 - destruction notification for the two NON-OWNING body references
+    // this class keeps ACROSS frames (activeChain, lastReference). Pushed by
+    // ModularBody's destructor (I3: the owner notifies, this side never
+    // polls). Without it any body destruction between two frames leaves a
+    // freed pointer in the diff base, and the next update dereferences it to
+    // fire leave() edges - which is what a system reload (every content body
+    // destroyed and rebuilt) does to the whole chain at once. A destroyed
+    // body's members die with it, so dropping the entry IS the correct edge:
+    // there is nothing left to leave().
+    static void notifyBodyDestroyed(ModularBody *body);
     // Frame clock for members needing absolute time (zodiacal rotation).
     double julianDay = 0;
     // Zodiacal placement inputs (MilkyWay::ZodiacalInput supplier, new-path

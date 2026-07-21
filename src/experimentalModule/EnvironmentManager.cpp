@@ -20,6 +20,18 @@ void EnvironmentManager::setLandscape(Landscape *landscape)
     LandscapeEnv::engine = landscape;
 }
 
+void EnvironmentManager::notifyBodyDestroyed(ModularBody *body)
+{
+    if (!instance)
+        return; // bodies exist before wireEnvironment (factory ctor order)
+    auto &chain = instance->activeChain;
+    chain.erase(std::remove(chain.begin(), chain.end(), body), chain.end());
+    if (instance->lastReference == body)
+        instance->lastReference = nullptr; // else a recycled address reads as
+                                           // "same reference" and swallows the
+                                           // landscape/atmosphere-model edge
+}
+
 void EnvironmentManager::update(Camera &camera, double jd, float deltaTime, bool driveEngines)
 {
     julianDay = jd;

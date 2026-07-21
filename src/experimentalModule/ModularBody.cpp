@@ -4,6 +4,7 @@
 #include <ostream>
 #include "ModularBodyPtr.hpp"
 #include "ModularSystem.hpp"
+#include "EnvironmentManager.hpp"
 #include "RenderChain.hpp"
 #include "tools/log.hpp"
 #include "tools/translator.hpp"
@@ -147,6 +148,11 @@ ModularBody::~ModularBody()
     bodyReference.erase(englishName);
     if (lastFit == this)
         lastFit = nullptr;
+    // I5: every cross-frame NON-OWNING holder of this body is either a
+    // ModularBodyPtr (redirected below) or destruction-notified here. The
+    // environment aggregation caches the previous frame's reference chain as
+    // raw pointers to compute enter/leave edges - it is the second kind.
+    EnvironmentManager::notifyBodyDestroyed(this);
     if (pointerCount)
         ModularBodyPtr::redirect(this, parent);
 }
