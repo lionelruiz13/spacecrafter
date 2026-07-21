@@ -767,6 +767,20 @@ void Core::setExperimentalPath(bool newPath)
 	ssystemFactory->setExperimentalPath(newPath);
 }
 
+void Core::setRenderPathMode(const std::string &mode)
+{
+	if (mode == "new")
+		ssystemFactory->setRenderPathMode(SSystemFactory::RenderPathMode::NEW);
+	else if (mode == "old")
+		ssystemFactory->setRenderPathMode(SSystemFactory::RenderPathMode::OLD);
+	else if (mode == "alternate")
+		ssystemFactory->setRenderPathMode(SSystemFactory::RenderPathMode::ALTERNATE);
+	else
+		cLog::get()->write("beta_features.ini: unknown render_path '" + mode
+			+ "' (expected new|old|alternate) - keeping the default (new)",
+			LOG_TYPE::L_WARNING);
+}
+
 bool Core::getExperimentalPath() const
 {
 	return ssystemFactory->getExperimentalPath();

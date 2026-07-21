@@ -54,6 +54,21 @@ public:
 	//! Obtains config.ini settings. Caller must allocate InitParser.
 	void loadAppSettings( InitParser* const ) const;
 
+	//! Obtains beta_features.ini settings if that file exists.
+	//! Returns false when it does not, leaving the parser untouched: absence
+	//! of the file means "every experimental setting at its default", which is
+	//! why this cannot go through loadAppSettings (InitParser::load exits the
+	//! process on a missing file - correct for config.ini, fatal for an
+	//! optional one). Deliberately NOT part of config.ini: that file is a
+	//! migration contract (CheckConfig rewrites user configs and injects every
+	//! schema key on a version bump), and experimental flags must not enter a
+	//! contract they are expected to leave. Retiring an experiment here is
+	//! deleting a line; in config.ini it would orphan a key in every user file.
+	bool loadBetaFeatures( InitParser* const ) const;
+
+	//! returns the optional experimental-settings file (may not exist)
+	const std::string getBetaFeaturesFile() const;
+
 	//! returns the software configuration file
 	const std::string getConfigFile() const;
 

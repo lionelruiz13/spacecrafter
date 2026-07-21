@@ -411,6 +411,11 @@ public:
 	//! replacing the A/B auto-toggle once used.
 	void setExperimentalPath(bool newPath);
 	bool getExperimentalPath() const;
+	//! Startup path selection from beta_features.ini (see SSystemFactory).
+	//! Call once at init; "new"/"old"/"alternate", anything else is refused
+	//! with a log line rather than silently falling back - an unrecognised
+	//! value is a user error that must be visible, not absorbed.
+	void setRenderPathMode(const std::string &mode);
 
 	//! set flag to display generic Hint or specific DSO type
 	void setDsoPictograms (bool value);

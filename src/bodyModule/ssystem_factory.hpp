@@ -88,6 +88,18 @@ public:
     // Precondition: freeze time (timerate rate 0) so the 1s A/B draw toggle
     // cannot make one path's draw-side state stale relative to the other.
     void dumpTracePaths(const std::string &file);
+    //! Startup selection of the rendered body path (beta_features.ini,
+    //! [dual_path] render_path). The DEFAULT is NEW+pinned: the new path is
+    //! what a user gets with no configuration at all, and nothing alternates
+    //! on its own. ALTERNATE is the A/B comparison harness (1 s swap) and is
+    //! opt-in only - it exists to make divergence visible, not to be run in.
+    //! Caller responsibility: call once at init, before the first draw; the
+    //! script command (setExperimentalPath) overrides it at any later time.
+    enum class RenderPathMode { NEW, OLD, ALTERNATE };
+    void setRenderPathMode(RenderPathMode mode) {
+        drawModularSystem = (mode != RenderPathMode::OLD);
+        pathPinned = (mode != RenderPathMode::ALTERNATE);
+    }
     //! Script-settable rendered-path selection (flag experimental_path):
     //! pins old (false) / new (true) path and stops the A/B auto-toggle.
     void setExperimentalPath(bool newPath) {
@@ -782,12 +794,18 @@ public:
         ssystem->setHaloSize(f);
     }
 
-    //! For debugging, should the modular system been drawn ?
-    bool drawModularSystem = false;
-    // Path pinned by script (flag experimental_path): the 1s A/B auto-toggle
-    // stops once a script chose a path - deterministic captures [vixy:
-    // 2026-07-12, replaces phase-guessing on screenshots].
-    bool pathPinned = false;
+    //! Which path draws the bodies. DEFAULT = new path [vixy 2026-07-21:
+    //! "we should change from auto-switching to defaulting to the new mode"].
+    //! These two defaults are the no-configuration behaviour and must stay
+    //! consistent with setRenderPathMode(NEW).
+    bool drawModularSystem = true;
+    // Path pinned: the 1s A/B auto-toggle runs ONLY when this is false, which
+    // now requires an explicit opt-in (beta_features.ini ALTERNATE) or the
+    // script command. Alternation was the default until 2026-07-21 - it made
+    // every unconfigured run flicker between two paths, which is a comparison
+    // harness being used as a product default [vixy: 2026-07-12 for the script
+    // pin, 2026-07-21 for the default].
+    bool pathPinned = true;
 private:
     //! Select current system
     void selectSystem();

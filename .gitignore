@@ -10,7 +10,6 @@ vcpkg_installed
 
 #cmake
 build
-build-claude
 src/config.h
 
 #vscode
@@ -71,3 +70,7 @@ po/*
 *.app
 util/new_parser_scripts/main
 util/server_standalone/sender_client
+
+# claude
+build-claude
+.claude

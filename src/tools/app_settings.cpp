@@ -24,6 +24,7 @@
  *
  */
 
+#include <cstdio>
 #include "spacecrafter.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/utility.hpp"
@@ -105,6 +106,25 @@ void AppSettings::close() {
 void AppSettings::loadAppSettings( InitParser* const conf ) const
 {
 	conf->load(m_configDir + "config.ini");
+}
+
+bool AppSettings::loadBetaFeatures( InitParser* const conf ) const
+{
+	const std::string file = getBetaFeaturesFile();
+	// Presence check BEFORE load: InitParser::load exits(-1) when the file is
+	// missing, and this one is optional by design (absence == all defaults).
+	FILE *fp = fopen(file.c_str(), "rt");
+	if (!fp)
+		return false;
+	fclose(fp);
+	conf->load(file);
+	cLog::get()->write("Loaded experimental settings from " + file);
+	return true;
+}
+
+const std::string AppSettings::getBetaFeaturesFile() const
+{
+	return getConfigDir() + "beta_features.ini";
 }
 
 const std::string AppSettings::getConfigDir() const

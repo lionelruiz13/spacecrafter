@@ -44,6 +44,16 @@
 #define SCS_ASTRO                            "astro"
 #define SCS_INIT_LOCATION                    "init_location"
 
+// Sections/keys of beta_features.ini ONLY - the optional experimental-settings
+// file. Kept apart from the SCS_/SCK_ blocks above on purpose: those belong to
+// config.ini, whose key set is a migration contract (CheckConfig injects every
+// schema key into user configs on a version bump). A key below is expected to
+// DISAPPEAR when its experiment ends, so it must never enter that contract.
+// A flag lands here only when the choice is actually relevant to someone
+// [vixy 2026-07-21] - not one flag per experiment by reflex.
+#define SCS_BETA_DUAL_PATH                   "dual_path"
+#define SCK_BETA_RENDER_PATH                 "render_path"
+
 // SCK_Y mean Spacecfrater Key Y
 #define SCK_VERSION                         "version"
 #define SCK_DEBUG                           "debug"

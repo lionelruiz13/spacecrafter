@@ -564,6 +564,17 @@ receiver block single authority). Structure landed:
    (A/B parity at init — the sandbox config ships true), plain toggle at the command (the
    XOR quirk not reproduced). Overrule here if different shipping semantics are wanted at
    switchover (with the LUT retired, flag-off = no eclipse rendering at all).
+   **2026-07-21 (INTENT §11.48(d)/§11.49(d), ledger A28)**: tester input on this item
+   is PARTIAL and its ring half is UNUSABLE — the question was asked in flag vocabulary
+   (`ring_shadow`), the tester's guess at what a ring shadow is was wrong (they read it
+   as Earth's umbra at Moon distance), so only *"the two must be separated"* and
+   *"eclipse defaults on"* survive; the ring default rests on a wrong referent. Asked a
+   second time and unclear a second time (vixy) — the item is now being restated as an
+   OBSERVABLE (Saturn's ring band on the globe / the globe's shadow across the rings),
+   not as a flag. Live question = whether this ONE runtime flag splits into two, and the
+   defaults. Note the distinction D8 does not cover: a runtime **display** toggle is
+   operator control, not the foreclosing **data gate** D8 retired — §2(a2) separates them,
+   so "ring shadows can be switched off live" does not revive `ring_shadow`.
 4. ~~Silhouette format decision~~ RESOLVED — B3 candidate B (measured), then SUPERSEDED
    by the F rework (2026-07-16): its preconditions shifted when G8 forced a float target
    to exist — one R8 color path now serves every composition word (F, B3 addendum);

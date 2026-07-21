@@ -582,6 +582,17 @@ void App::init()
 	// (plain-toggle semantics at the flag command - shadow-paths.md B1/D3).
 	ShadowService::enabled = Context::experimental_shadows;
 
+	// Experimental settings (optional file; absent == every default).
+	// Read here, with the rest of the configuration, so there is ONE place
+	// where the app's startup state comes from files.
+	{
+		InitParser betaConf;
+		if (AppSettings::Instance()->loadBetaFeatures(&betaConf)) {
+			core->setRenderPathMode(betaConf.getStr(SCS_BETA_DUAL_PATH,
+				SCK_BETA_RENDER_PATH, "new"));
+		}
+	}
+
 	internalFPS->setMaxFps(conf.getDouble (SCS_VIDEO,SCK_MAXIMUM_FPS));
 	internalFPS->setVideoFps(conf.getDouble(SCS_VIDEO,SCK_REC_VIDEO_FPS));
 	internalFPS->selectMaxFps();
