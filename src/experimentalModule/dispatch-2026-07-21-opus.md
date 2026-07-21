@@ -40,7 +40,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 | B20 | Anchored galactic display: at galactic distances while anchored, show the solar-system view from very far, anchor kept — no altitude-driven mode switch | §11.36, §11.48(a) | A13 ratified anchored-stays-anchored in the same answer set — no escalation-policy change |
 | B22 | System-collapse cross-fade at the ~16 px resolved↔dot threshold, "if not too costly" | §11.36, §11.48(b) | The COST BOUND is the decision input: deliver the cross-fade + its measured cost. The threshold constants themselves stay open (A15 — Vixy/tester) — do not tune them here |
 | B23 | Restore planet-grid tropics + polar circles, keyed to the corresponding sky-line flags | §11.42, §11.48(b) | The old coupling is deliberate (they show obliquity directly). Independent-toggle + near-surface-regime halves stay in A4 — out of scope |
-| B26 | Run the two-screenshot observable check for the dual-path default flip (landed, build green, observable unverified) | §11.50(c) | Requires a display: identical ≥2.5 s apart under default, differing under `alternate`. Pure verification — no code expected |
+| B26 | ~~Run the two-screenshot observable check for the dual-path default flip~~ **DONE 2026-07-21 → §11.53, §4 below** | §11.50(c), §11.53 | **VERIFIED on `DISPLAY=:2`, 6 fresh launches, no product code changed.** The stated criterion was itself defective (≥2.5 s = quarter of the 2 s toggle period ⇒ 50 % test; corrected to odd multiples of 1.0 s, discriminator px>32). New finding spun out: **B30** (new path not bit-stable on a frozen scene) |
 | B29 | Runtime COLOR seam port: MEASURE old's reload behavior for runtime per-body colors, then reproduce it | §11.51(f), §11.42, §11.45(d) | Observation task, no design freedom — old's observable IS the spec (parity unconditional here: semantic surface, no physical referent). Per-instance storage + broadcast override stands. Closes the last OLD-ONLY S6 seam class |
 | B28 | Loader frame declaration + conversion: data declares its coordinate system, loader converts — one conversion authority | §11.51(d), §11.52(a), §11.49(e) | Fully specified incl. write-back contract (only-when-needed, atomic sibling-temp-then-rename, whole-file clean precondition; text-preserving insertion). Regression criterion = bit-identical for the 7 existing `rot_pole_ra` planets. Actionable diagnostics per §2(f). Larger than the other rows but decision-complete; B14 sequences after it |
 | B6 | §11.37 view-roll 134.67° — investigation only | §11.37 | Non-reproducing; one settled observation; artifact preserved. Low priority — attempt reproduction from the artifact, record outcome either way |
@@ -74,3 +74,107 @@ Suggested order: B26 (pure verification) → small ratified rows (B19, B16, B11,
 
 ---
 *Handoff protocol: the executor updates §13.B rows on completion (per the ledger's own rule) and this file's row state; findings that change any row's premises go to INTENT.md first, this file second.*
+
+---
+
+## 4. Execution log — B26 (Claude Opus 4.8, 2026-07-21)
+
+**Task**: wave §1 task 1 — run the two-screenshot observable check for the
+dual-path default flip (§11.50(c)). Pure verification; no product code
+changed, and none turned out to be needed.
+
+**Full measurements**: INTENT.md §11.53 (a)–(g).
+**Artifacts**: `harness/artifacts/b26/` (168 PNG + 6 gdb logs + 6 driver logs —
+gitignored, on disk) and `harness/artifacts/b26_measurements.json` (committed).
+**Instruments committed**: `harness/b26_run_case.sh`, `b26_default_flip.py`,
+`b26_analyze.py`, `b26_probe.gdb`, README section.
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1a | Screenshot channel named + implementation + written + content is the rendered frame | **met** | `body action screenshot` → `App::takeScreenshot` → `SaveScreenInterface::takeScreenShot` [app_command_interface.cpp:3576-3581; app.cpp:1011-1014; save_screen_interface.cpp:146-172]. 28 files/run, distinct mtimes at the commanded 0.25 s cadence (22:42:46.718651888 … 22:42:48.966626079). Live content: mean RGB [0.744,0.734,0.717], max 255, 602 890/4 194 304 non-zero px; tracks commanded state (pin-old vs pin-new = 47 955 px) |
+| 1b | Noise floor MEASURED | **met** | same-state pair 3 s apart: max\|Δ\| = 0 (c1,c2,c3,c5) / 4 (c4) / 12 (c6); **px>32 = 0 in all six**. Same-path worst over a 6 s burst: max\|Δ\| ≤ 31, px>8 ≤ 5, px>32 = 0 |
+| 1c | Counterfactual sensitivity | **met** | pinned old vs pinned new, same camera: max\|Δ\| = **71/255**, px>0 = 47 843…47 964, px>8 = 1 153…1 156, **px>32 = 133…136**, mean\|Δ\| = 1.93e-2. Side by side with 1b: px>32 **0 vs 133…136**, no overlap |
+| 1d | Confounders controlled and named | **met** | time frozen AND proven (two `dual_dump` headers ~12 s apart, identical jd 2461233.500013901, every run); ASmooth settled 15 s + a 120 s-settle control run; auto-play `scripts/fscripts/startup.sts` (sets `timerate rate 1`) overridden after it; focus/compositing excluded by the channel (app-side readback, not an X grab); landscape+atmosphere off (they mask) |
+| 2 | Default run, file absent | **met** | `ls ~/.spacecrafter/beta_features.ini` → ENOENT; lookup site `getConfigDir()+"beta_features.ini"` [app_settings.cpp:125-128]; no "Loaded experimental settings" log line. 24/24 shots NEW; **0/14 pairs at 2.5 s and 0/20 at 1.0 s differ** (px>32 = 0) |
+| 3 | Alternate run | **met** | file verbatim `[dual_path]\nrender_path                    = alternate\n` at `/home/claude/.spacecrafter/beta_features.ini`. **20/20 pairs at 1.0 s differ** (px>32 = 135); nominal 2.5 s pair (stab00,stab10) differs: max\|Δ\| = 71, px>8 = 1 154, px>32 = 135. Phase string `ONNNNOOOONNNNOOOONNNNOOO` |
+| 4 | File present with the DEFAULT value | **met** | `render_path = new` → identical to case 2 at every lag; log proves the file WAS read. Third and fourth directions added beyond the DoD: `render_path = old` (24/24 shots bit-identical to the pinned-old reference) and `render_path = bogus_typo` (refusal log line fires, default kept) — together these exclude "read but ignored" from all sides |
+| 5 | Which path runs, established NOT by the screenshot pair | **met** | gdb probe on `App::takeScreenshot` reading `core._M_ptr->ssystemFactory->{drawModularSystem,pathPinned}` **from process memory at every capture**; app launched UNDER gdb (ptrace_scope = 1). Default/`new`: `draw=1 pinned=1` ×27 of 28 (28th = the deliberate pinned-old reference). `old`: `draw=0 pinned=1`. `alternate`: `pinned=0`, `draw` flipping in runs of four 0.25 s shots. **Agrees 24/24 with the pixel classification** |
+| 6 | Trackers | **met** | INTENT.md §11.53 (new entry, 2026-07-21), §13.B B26 row → CLOSED, new §13.B row **B30**, §11.50(c) verification-state paragraph closed in place with its two corrections; this file's row + this section |
+| 7 | Committed on master-beta, tree buildable | **met** | see commit list below; no product source touched ⇒ the tree is the verified-green d343f6c4 build plus docs/harness |
+
+### Deviations from the task spec (each with its reason)
+
+1. **The DoD's "two screenshots ≥2.5 s apart" was replaced by a 24-shot /
+   0.25 s burst with a lag sweep, and the nominal 2.5 s pair is reported
+   inside it.** Reason: the 2.5 s criterion is *unsound* — the toggle is a
+   1000 ms square wave (period 2.0 s), so 2.5 s is a quarter-period offset
+   and differs only 50 % of the time. Measured: 1.0 s → 20/20 differ,
+   2.0 s → 0/16, 2.5 s → **7/14**, 3.0 s → 12/12. My run's nominal pair
+   happened to land on the differing half; on the other half a correct build
+   would have been recorded as broken. Raising the sampling density is not
+   lowering the bar — the reported verdict is strictly stronger than the one
+   asked for. §11.53(d).
+2. **Two extra cases run beyond the four required** (`render_path = old`,
+   `render_path = bogus_typo`) and **one control run** (120 s settle).
+   Reason: "new" is indistinguishable from ignoring the file, so DoD item 4
+   alone cannot exclude a read-but-ignored value; `old` closes that from the
+   other side, `bogus_typo` exercises §11.50(c)'s "refused, not absorbed"
+   clause observably, and the settle control converted the residual's
+   "still converging?" assumption into a measurement (refuted).
+3. **Four harness documentation sites corrected in place** (README.md,
+   `ab_orientation.py`, `dual-dump.sts` ×2). Documentation only, no logic.
+   Reason: they assert the 1 s auto-toggle as the *default*, which the very
+   change under verification made false; `ab_orientation.py` silently
+   degrades to a one-phase clustering without the opt-in file. Recorded at
+   §11.53(f).
+
+### Findings recorded, not fixed
+
+- **B30 (new ledger row)** — the new path is **not bit-stable on a frozen
+  scene**: discrete state steps persisting seconds, max\|Δ\| ≤ 31/255 on
+  ≤ 3 898 px of 4 194 304 (0.09 %), px>32 = 0, whole-frame low-brightness
+  both-sign shift (total luminance 0.003 %). The **old path measures
+  max\|Δ\| = 0** under the identical protocol ⇒ mechanism is inside the new
+  path. Settling refuted (120 s settle no quieter than 15 s). Below the
+  §11.52(b) perceptual bar, so not a parity blocker — but it invalidates
+  bit-level A/B assertions on the new path, which is a harness-wide
+  constraint. §11.53(e).
+- **`InitParser::getStr` logs a WARNING on every successful read**
+  [init_parser.cpp:104-108] — a warning with no problem behind it, the
+  inverse of the §2(f) actionable-diagnostics directive. §11.53(f).
+
+### Suspended for Vixy
+
+**None.** Every decision taken was traceable to the task spec, §11.50(c), or
+a measurement; the one judgement call (replacing an unsound sampling interval
+with a denser one that strictly contains it) is recorded as deviation 1 with
+its measured justification rather than absorbed.
+
+### Reproduction (verbatim)
+
+    cd /home/claude/spacecrafter/src/experimentalModule/harness
+    rm -f ~/.spacecrafter/beta_features.ini
+    ./b26_run_case.sh c1_default                       # exit 0
+    printf '[dual_path]\nrender_path                    = alternate\n' > ~/.spacecrafter/beta_features.ini
+    ./b26_run_case.sh c2_alternate                     # exit 0
+    printf '[dual_path]\nrender_path                    = new\n'       > ~/.spacecrafter/beta_features.ini
+    ./b26_run_case.sh c3_new                           # exit 0
+    printf '[dual_path]\nrender_path                    = old\n'       > ~/.spacecrafter/beta_features.ini
+    ./b26_run_case.sh c4_old                           # exit 0
+    printf '[dual_path]\nrender_path                    = bogus_typo\n'> ~/.spacecrafter/beta_features.ini
+    ./b26_run_case.sh c5_bogus                         # exit 0
+    rm -f ~/.spacecrafter/beta_features.ini
+    SETTLE_EXTRA=120 ./b26_run_case.sh c6_longsettle   # exit 0
+    for t in c1_default c2_alternate c3_new c4_old c5_bogus c6_longsettle; do ./b26_analyze.py $t; done
+
+### Hygiene
+
+`~/.spacecrafter/beta_features.ini` removed at the end (absence == every
+default; a leftover file silently re-specifies the next run) [`ls` → ENOENT].
+`config.ini` md5 `03fbee59bc3ec506c58f0a3f1e1d73df`, `ssystem.ini` md5
+`fb87a774e728706e9d4e1959c386bb23` — unchanged from the §11.47 values. Six
+clean `shutdown action now`, `[Inferior 1 … exited normally]` in all six gdb
+logs: **no §11.15d fire** (data point for B7, binary d343f6c4, mtime
+2026-07-21 15:44).

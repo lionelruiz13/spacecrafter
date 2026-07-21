@@ -9,6 +9,18 @@ paths from the same `timeMgr->getJDay()` every frame [ssystem_factory.cpp],
 and the script freezes time (`timerate rate 0`), so the 1s A/B draw toggle
 cannot make one path's draw-side state stale - both settle at the same jd.
 
+ALTERNATION IS OPT-IN SINCE 2026-07-21 (INTENT 11.50(c), verified 11.53).
+The default is now the NEW path, PINNED - nothing alternates on its own. Any
+recipe below that assumes the 1 s auto-toggle needs
+`~/.spacecrafter/beta_features.ini` containing:
+
+    [dual_path]
+    render_path = alternate
+
+Remove that file afterwards: absence == every experimental default, and a
+leftover file silently re-specifies the next run.  `flag experimental_path
+on|off` pins a path at any time (and stops the alternation) either way.
+
 ## Parts
 - `dual-dump.sts` - deterministic scene script (fixed jd, frozen time, surface
   observer, two samples at different dates). Install as
@@ -179,3 +191,40 @@ healthy dumped snapshot does not prove the decision path runs; discriminate
 with call-time prints, screenshot-materialization (draw liveness), and
 per-thread CPU accumulation. Bit-identical dumps under timerate 0 are NOT
 frozen-loop evidence.
+
+## Dual-path default flip (B26, 2026-07-21) - INTENT 11.50(c) / 11.53
+
+`b26_run_case.sh <tag>` + `b26_default_flip.py` + `b26_analyze.py` +
+`b26_probe.gdb`. Verifies what an unconfigured launch actually draws, and
+that `beta_features.ini` is honoured. One case per invocation; **the caller
+places or removes `~/.spacecrafter/beta_features.ini`** - the file's state IS
+the case, so the runner never writes it.
+
+    rm -f ~/.spacecrafter/beta_features.ini
+    ./b26_run_case.sh c1_default
+    printf '[dual_path]\nrender_path = alternate\n' > ~/.spacecrafter/beta_features.ini
+    ./b26_run_case.sh c2_alternate
+    rm -f ~/.spacecrafter/beta_features.ini          # restore the shipped state
+    ./b26_analyze.py c1_default ; ./b26_analyze.py c2_alternate
+
+Two instruments, deliberately independent:
+- **pixels** - `body action screenshot`, 24 shots at 0.25 s, each classified
+  against two in-run pinned references (`flag experimental_path off|on`).
+- **memory** - the app runs UNDER gdb (ptrace_scope=1 blocks attach) and
+  `b26_probe.gdb` prints `drawModularSystem`/`pathPinned` at every capture.
+  They agreed 24/24 on the alternate burst; a disagreement is the finding.
+
+Criterion, corrected at 11.53 (the 11.50(c) wording is unsafe):
+- discriminator = **px>32**; measured 0 for every same-path pair, 133..136
+  for every cross-path pair. `max|d|` and `px>8` do NOT separate cleanly and
+  "byte-identical" is false even for a correct build (11.53(e)/B30: the new
+  path is not bit-stable on a frozen scene - <=31/255 on <=0.09% of pixels).
+- separation = an **odd multiple of 1.0 s**. The toggle is a 1000 ms square
+  wave, so 2.0 s always lands in the SAME phase and 2.5 s differs only 50%
+  of the time (7/14 measured) - "two shots >= 2.5 s apart must differ" is a
+  coin flip, not a test.
+
+Freeze witness: two `dual_dump` headers bracket the burst; equal jd is the
+proof `timerate rate 0` took effect (the auto-playing
+`scripts/fscripts/startup.sts` sets `timerate rate 1` and must be overridden
+after it, not before).

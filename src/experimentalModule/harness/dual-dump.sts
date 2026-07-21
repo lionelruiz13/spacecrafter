@@ -5,8 +5,10 @@
 # (harness/analyze.py). Reproduces the Moon-investigation context: observer on
 # Earth's surface, Paris coordinates.
 
-# Deterministic time: fixed jd, then freeze (the 1s A/B draw toggle makes each
-# path's draw-side state settle at the same frozen jd - staleness dissolved).
+# Deterministic time: fixed jd, then freeze (with the 1s A/B draw toggle
+# enabled, each path's draw-side state settles at the same frozen jd -
+# staleness dissolved; see the toggle note below, it is opt-in since
+# 2026-07-21).
 date jday 2461233.5
 timerate rate 0
 
@@ -20,6 +22,10 @@ select planet Moon
 flag track_object on
 
 # Let both paths draw at least one full toggle cycle each (toggle = 1000 ms).
+# NOTE 2026-07-21 (INTENT 11.50(c)/11.53): the toggle is opt-in now - set
+# [dual_path] render_path = alternate in ~/.spacecrafter/beta_features.ini if
+# the scene needs BOTH paths to have drawn.  The dump itself is unaffected:
+# dumpTracePaths emits both paths' state regardless of which one draws.
 wait duration 3
 
 body action dual_dump filename /tmp/dual_trace.json

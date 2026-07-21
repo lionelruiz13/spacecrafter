@@ -11,6 +11,16 @@ Scene P: observer on Pluto, tracked Charon (real geometry, ~3.5 deg disc).
 Channel: `body action screenshot` (app-side readback, 11.19a); the 1000 ms
 auto-toggle alternates paths, shots every ~0.45 s, clustered into two phases
 by pairwise distance; report within/between-phase disc diffs.
+
+PRECONDITION SINCE 2026-07-21 (INTENT 11.50(c), verified 11.53): the toggle
+is NO LONGER the default - the new path is pinned unless you opt in with
+`~/.spacecrafter/beta_features.ini`:
+
+    [dual_path]
+    render_path = alternate
+
+Without it every shot lands in ONE phase and the clustering below reports a
+meaningless "between" distance on a 24/0 split.  Delete the file afterwards.
 """
 import socket, time, sys, glob
 import numpy as np
