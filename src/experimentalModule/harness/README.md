@@ -228,3 +228,37 @@ Freeze witness: two `dual_dump` headers bracket the burst; equal jd is the
 proof `timerate rate 0` took effect (the auto-playing
 `scripts/fscripts/startup.sts` sets `timerate rate 1` and must be overridden
 after it, not before).
+
+## Hidden-body ticking (B19, 2026-07-21) - INTENT 11.54 / 13.B B19
+
+`b19_hidden_tick.py` - regression lock on the Vixy-ratified semantics
+(USER_QUESTIONS Q13 / INTENT 11.48(a) A10, verbatim: *"It should be where it
+is now"*).  Fresh launch, `enable_tcp`, no init_fov requirement (mat-layer
+position state only - no screen-layer px):
+
+    DISPLAY=:2 ./build-claude/src/spacecrafter &     # wait for port 7805
+    ./b19_hidden_tick.py [outdir]                    # default artifacts/b19
+    # exit 0 = all pass; artifacts/b19/b19_result.json = machine-readable
+
+Observable = `ecl` (ModularBody::eclipticPos), written only by
+transformParentToBodyPos/transformBodyToParent right after the orbit is
+evaluated: a freeze optimisation stops calling them, so `ecl` keeps its
+hide-time value.  `lastJD` is a corroborating witness, never the criterion.
+Four assertion families - membership (`relation` actually flipped: the
+instrument-chain check, without which a mistyped hide passes vacuously),
+time control (every header jd == commanded; `timerate rate 0` goes FIRST,
+before the epoch, or the gap after startup.sts's `timerate rate 1` leaks
+~1.4e-05 d into the first dump - measured), advance (new-path |dEcl| vs the
+OLD path's own advance over the same 20 simulated minutes - old is the
+reference implementation, solarsystem_display.cpp:343-357 computes every body
+hidden or not), and "where it is now" (|ecl_new - ecl_old| at t1, tolerance
+CALIBRATED in-run from never-hidden control bodies).  Both entries of the
+reversible pair (hide->show->hide->show, entry 2 starting from entry 1's
+show state).
+
+Discrimination is measured, not assumed - the same script, same binary:
+hidden legs FAIL / shown legs PASS on a build without the fix (2026-07-21:
+moved_new = 0.00 km vs moved_old = 1306.81 km Moon / 2576.26 km Phobos), all
+32 assertions pass with it.  Subjects are Moon (direct child of the camera
+reference) and Phobos (grandchild under the HIDDEN parent Mars - it proves
+the whole hidden subtree ticks, not just the hidden node).

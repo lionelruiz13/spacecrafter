@@ -36,7 +36,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 | B16 | Expose `reloadSystem` as a command; keep current state (camera + date), no reset | §11.36, §11.45(d), §11.48(a) | Both channels per §2(c) where applicable |
 | B17 | Port `view_offset` / `zoom_offset` as a Camera parametrization, config + command channels | §11.19a, §11.45(d), §11.48(a) | In use for tilted dome geometry ⇒ it is a projection-space offset — must NOT be re-derived as a camera rotation |
 | B18 | Port `flag_lock_equ_pos` (equatorial-mount sky-lock) | §11.19c, §11.48(a) | The "unexercised legacy feature" premise was wrong — it is exercised, just not by our harness |
-| B19 | Hidden-body ticking: current behavior (hidden ⇒ keeps updating) is ratified — lock it with a regression assert | §11.15b, §11.36, §11.48(a) | Small; exists so a later perf optimisation cannot silently freeze hidden bodies |
+| B19 | ~~Hidden-body ticking: current behavior (hidden ⇒ keeps updating) is ratified — lock it with a regression assert~~ **DONE 2026-07-21 → §11.54, §5 below** | §11.15b, §11.36, §11.48(a), **§11.54** | **The row's premise was FALSE**: the new path froze hidden bodies (0.00 km advance over 20 simulated min vs old's 1306.81 km), and the 14 bodies shipped `hidden = true` had never been positioned (`lastJD = 0`; Pluto 5.75e9 km off). So it WAS a behavior change — scope expanded from "assert only" to "implement the ratified semantics + assert", traceable to Q13/A10. Locked by `harness/b19_hidden_tick.py` |
 | B20 | Anchored galactic display: at galactic distances while anchored, show the solar-system view from very far, anchor kept — no altitude-driven mode switch | §11.36, §11.48(a) | A13 ratified anchored-stays-anchored in the same answer set — no escalation-policy change |
 | B22 | System-collapse cross-fade at the ~16 px resolved↔dot threshold, "if not too costly" | §11.36, §11.48(b) | The COST BOUND is the decision input: deliver the cross-fade + its measured cost. The threshold constants themselves stay open (A15 — Vixy/tester) — do not tune them here |
 | B23 | Restore planet-grid tropics + polar circles, keyed to the corresponding sky-line flags | §11.42, §11.48(b) | The old coupling is deliberate (they show obliquity directly). Independent-toggle + near-surface-regime halves stay in A4 — out of scope |
@@ -178,3 +178,135 @@ default; a leftover file silently re-specifies the next run) [`ls` → ENOENT].
 clean `shutdown action now`, `[Inferior 1 … exited normally]` in all six gdb
 logs: **no §11.15d fire** (data point for B7, binary d343f6c4, mtime
 2026-07-21 15:44).
+
+## 5. Execution log — B19 (Claude Opus 4.8, 2026-07-21)
+
+**Task**: wave §1 task 2 — lock the ratified hidden-body ticking behavior with
+a regression assertion.
+
+**Headline: the row's premise did not hold.** The row said *"current behavior
+ratified ⇒ this is not a behavior change"*. Measured on the wave baseline
+binary: the new path **froze** hidden bodies completely, and 14 bodies that
+ship `hidden = true` had **never been positioned at all**. The task spec
+anticipated exactly this (*"If you find the current behavior does NOT match the
+ratified statement, that is a finding"*), so the finding is reported and the
+scope expansion is named rather than performed silently.
+
+**Full measurements**: INTENT.md §11.54 (a)–(j).
+**Instrument committed**: `harness/b19_hidden_tick.py` + README section.
+**Artifacts**: `harness/artifacts/b19/` (9 dumps + `b19_result.json`).
+
+### Scope expansion, stated (this is the one judgement call in the task)
+
+Delivering only an assertion would have delivered a permanently-red test and
+left the ratified semantics unimplemented — the row's own stated purpose
+(*"so a later perf optimisation cannot silently freeze hidden bodies"*) is
+unreachable if they are already frozen. I implemented the semantics. It is
+**traceable, not improvised**: Vixy answered Q13 verbatim *"It should be where
+it is now"* (§11.48(a) A10), and the mechanism used is the one already in the
+tree for the same class — the `selectiveUpdate` else-branch's own comment
+states the requirement (*"positions of non-drawn bodies stay queryable and
+sortable"*) and a hidden body is a non-drawn body (I6: fix the class).
+
+**Where I stopped, per the scope bound**: I did not touch update
+*scheduling* (B1/S4). `updateHiddenBodies` adds the missing list to the walks
+that already exist, using the existing translation-only refresh; no cadence,
+ordering or budget was changed. The per-frame cost this restores is recorded
+in §11.54(h) as the thing the ratified answer bought.
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Assertion exists inside a runnable harness scene; entry point + command line stated | **met** | `src/experimentalModule/harness/b19_hidden_tick.py`. `DISPLAY=:2 /home/claude/spacecrafter/build-claude/src/spacecrafter &` (wait for port 7805, +10 s), then `cd /home/claude/spacecrafter/src/experimentalModule/harness && python3 ./b19_hidden_tick.py [outdir]`. Exit 0/1; machine-readable `artifacts/b19/b19_result.json`; README section "Hidden-body ticking (B19…)" |
+| 2 | Discriminating — PROVEN to fail when the guarded behavior is removed, then reverted | **met, twice** | (i) baseline binary (pre-fix, tree `047f2d7e`): **18 red** — hidden legs `moved_new = 0.00 km` vs `moved_old = 1306.81 km` (Moon) / `2576.26 km` (Phobos), `ΔlastJD = 0.000000000 d`. (ii) temporary one-line mutation on the FIXED code (`return;` at the head of `updateHiddenBodies`) → rebuild (exit 0, binary mtime 23:35) → **16 red, exit 1**, shown legs green. Revert → rebuild (exit 0, mtime 23:37) → **59/59 green, exit 0**; `git diff` on product source = exactly the 54 added lines of this change, nothing else. Logs: `b19_mut.log`, `b19_final.log` |
+| 3 | Observable = the body's actual state advance, not a freeze-survivable proxy | **met** | `ecl` = `ModularBody::eclipticPos` [dumped ModularBody.cpp:569-570], written ONLY by `transformParentToBodyPos`/`transformBodyToParent` immediately after the orbit evaluation [ModularBody.hpp:404-405, 539-540]. A freeze stops calling exactly those ⇒ `ecl` keeps its hide-time value; it is the position a re-shown body is drawn at. `lastJD` dumped as corroboration only. Membership family A (`relation` 4→1→4) makes a vacuous pass impossible |
+| 4 | Both entries of the reversible pair, second hide from the state the first show produced | **met** | one uninterrupted run: hide→show→hide→show, no restart. Entry 1 hidden: Moon 1308.12 km / err 0.004 km, Phobos 2578.82 km / 0.000 km. Entry 2 hidden: Moon 1307.92 km / 0.011 km, Phobos 2593.16 km / 0.000 km. Shown legs between and after them also asserted. Extra: hiding the **camera reference itself** (`body name Earth hidden true` while standing on Earth) — advances correctly (err 1.943 km), child Moon keeps ticking, reference preserved, no crash |
+| 5 | Time control stated and proven (positive evidence, B26 class) | **met** | `timerate rate 0` sent BEFORE the epoch (first run put it after and leaked **+1.390e-05 d = 1.20 s** from the auto-played `startup.sts`'s `timerate rate 1` — measured, then corrected). All 9 dump header jd == commanded at **0.0e+00 d**; the only jd movement is the four commanded 20-minute jumps; per-body `ΔlastJD` = 0.0138889 d ± 2.6e-07 (residual = light-travel retardation changing, a correct term) |
+| 6 | Build green; binary mtime advanced | **met** | `make -C /home/claude/spacecrafter/build-claude -j$(nproc)` exit **0** three times (fix 23:22, mutation 23:35, revert 23:37); mtime advanced each time from 15:44 |
+| 7 | Trackers | **met** | INTENT.md **§11.54** (new, 2026-07-21, (a)–(j)); §13.B **B19 → DONE**; §11.15b(b) suspension struck + closed, and its three other pointers (§11.15 residual (a), §11.36 suspended list, §11 "Suspended for Vixy" history) updated in place; §9 seam table hide/show row **corrected** (wrong command spelling); this file's row + this section |
+| 8 | Committed on master-beta, correct author/co-author, never pushed | **met** | see commit list below |
+
+### No-regression, at the heights this could plausibly move
+
+- Scenes A–D (`drive_scenes.py` + `predict.py`, fresh launch, `init_fov = 340`):
+  P2 mat-residuals ≤ **1.7e-07**; P3 old-vs-new angles ≤ **2.4e-05 deg**,
+  relative distances ≤ **2.2e-07**; P4 observer parity **12.55 / 21.29 /
+  21.10 / 55.07 / 25.94 km**; P5 ≤ **1.74e-07** with the same named causes.
+  The §11.16/§11.17 recorded class, unchanged.
+- Scene E (`scene_e_spine.py`, fresh launch): **13/13 OK**, both second
+  entries included, Mars landing 2.270821e-05 AU.
+- `orientation_check.py /tmp/gen_a.json`: **17 parity-restored / 48
+  named-divergent**, P-d **0.0000 deg** — the §11.35 spectrum, unchanged.
+- Zero VUID on every launch (`debug_layer = true`, config.ini:307). Clean
+  `shutdown action now` exits, **no §11.15d fire** (data point for ledger B7,
+  on the post-fix binary, mtime 2026-07-21 23:37).
+- Side effect that is an improvement, not a regression: the 14 ship-hidden
+  bodies became live. New-vs-old error, before → after: Pluto
+  **5 751 229 598.7 → 94.7 km**, Eris **2 362 129 737.1 → 219.0 km**, Vesta
+  **595 634 826.8 → 19.3 km**, Ceres **264 080 024.3 → 1.9 km**, Charon
+  **22 616.2 → 0.000 km**.
+
+### Findings recorded, not fixed (out of scope)
+
+1. **`body … action hide` / `action show` do not exist.** The `body` action
+   dispatch is `load|remove|clear|drop|initial|preload|dual_dump|screenshot`
+   [app_command_interface.cpp:3554-3577]; the working spelling is
+   `body name <X> hidden true|false` [same file, 3592-3600]. Verified live:
+   `body Sun action hide` leaves `relation = 4`; `body name Sun hidden true`
+   gives `relation = 1`. Consequence: **§11.44's rare-path evidence "hide/show
+   Sun (`body Sun action hide/show`) ×2" traversed nothing** — the "app
+   survived" claim is true and empty. §9's row corrected; §11.44 left as
+   written with a pointer.
+2. **`dumpTracePaths`'s comment is false for Pluto** — it claims *"lastJD
+   stays fresh through recursiveTranslationUpdate"* [ssystem_factory.cpp:
+   569-572], but Pluto is *hidden*, not merely invisible, and read
+   `lastJD = 0` until this change. Every `dumpHops` spin term for
+   Pluto/Charon in the §11.34/§11.35 record was evaluated at JD 0 (tilt and
+   commutator terms are pole-constant and unaffected — which is why 115.60°
+   re-measures identically today). Flagged for whoever reopens that spectrum.
+3. `pkill -f 'build-claude/src/spacecrafter'` and `pgrep -f` on the same
+   pattern **self-match the issuing shell** — a "STILL ALIVE" reading that is
+   the instrument seeing itself. Liveness was confirmed by port 7805 absence
+   instead. (Same class as the agent-brief warning; recorded because it fired
+   here.)
+
+### Suspended for Vixy
+
+None. The one semantic question this row could have raised — freeze vs tick —
+was already answered verbatim (Q13/A10), which is why implementing was not an
+improvisation. The adjacent question that is **NOT** answered here and must not
+be read into §11.54: whether a hidden body's *modules* tick (trail recording
+in particular). `recursiveTranslationUpdate` runs no module update, so today a
+hidden body's trail does not accumulate. That is **B11's** row.
+
+### Reproduction (verbatim)
+
+    # regression assertion (the deliverable)
+    DISPLAY=:2 /home/claude/spacecrafter/build-claude/src/spacecrafter &
+    #  wait for `ss -ltn | grep :7805`, then +10 s for async texture loads
+    cd /home/claude/spacecrafter/src/experimentalModule/harness
+    python3 ./b19_hidden_tick.py            # exit 0; artifacts/b19/b19_result.json
+
+    # discrimination (temporary, revert afterwards)
+    #  insert `return;` as the first statement of ModularBody.hpp
+    #  updateHiddenBodies(), then:
+    make -C /home/claude/spacecrafter/build-claude -j$(nproc)   # exit 0
+    #  relaunch fresh, rerun the script      -> exit 1, 16 red, shown legs green
+    #  revert, rebuild, relaunch, rerun      -> exit 0, 59 green
+
+    # no-regression (needs init_fov = 340 in ~/.spacecrafter/config.ini,
+    # restored to 180 afterwards - verified byte-identical by diff)
+    python3 ./drive_scenes.py
+    for f in /tmp/gen_a.json /tmp/gen_b.json /tmp/gen_moon.json \
+             /tmp/gen_mars.json /tmp/gen_mars_2.json; do python3 ./predict.py $f; done
+    python3 ./orientation_check.py /tmp/gen_a.json
+    #  fresh launch, then:
+    python3 ./scene_e_spine.py              # exit 0, 13/13
+
+### Hygiene
+
+`~/.spacecrafter/config.ini` restored byte-identical after the temporary
+`init_fov 180 → 340` change [`diff` → empty; `init_fov = 180` re-read].
+`~/.spacecrafter/beta_features.ini` absent throughout (shipped state).
+`~/.spacecrafter/ssystem.ini` untouched. No harness task list touched.

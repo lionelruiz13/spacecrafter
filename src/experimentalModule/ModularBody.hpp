@@ -604,6 +604,7 @@ public:
                 c->recursiveTranslationUpdate(jd, mat_local_to_parent);
             for (auto &c : innerBodies)
                 c->recursiveTranslationUpdate(jd, mat_local_to_parent);
+            updateHiddenBodies(jd, mat_local_to_parent);
         }
     }
 
@@ -630,6 +631,48 @@ public:
             c->recursiveTranslationUpdate(jd, frame);
         for (auto &c : innerBodies)
             c->recursiveTranslationUpdate(jd, frame);
+        updateHiddenBodies(jd, frame);
+    }
+
+    // Hidden bodies are NOT frozen [vixy 2026-07-21, USER_QUESTIONS Q13
+    // verbatim: "It should be where it is now"; INTENT 11.48(a) A10 -> 11.54,
+    // which closes the 11.15b(b) suspension]. hide() parks a body in
+    // hiddenBodies, a list NO walk visited, so the body kept whatever
+    // eclipticPos it last had - for the bodies shipped `hidden = true` that is
+    // the position the CONSTRUCTOR evaluated at the parent's then-lastJD.
+    // A hidden body is just another NON-DRAWN body, and the requirement for
+    // that class was already stated in the selectiveUpdate else-branch
+    // ("positions of non-drawn bodies stay queryable and sortable") - so it
+    // gets the same mechanism, translation-only: eclipticPos / mat translation
+    // / distance stay current, no rotations, no visibility classification, no
+    // module updates (a hidden body draws nothing; trail RECORDING while
+    // hidden is B11's question, not this one).
+    // The relation still names the origin list, hence the per-relation frame -
+    // identical to the visible dispatch: HIDDEN_GROUNDED rides the accumulated
+    // surface frame, HIDDEN_ORBITING/HIDDEN_INNER the flat position frame.
+    // `surface` may be null: it is then derived on demand, i.e. only when a
+    // hidden GROUNDED child actually exists. `skip` excludes the body the
+    // dispatch came up from (a hidden body can still be the camera reference,
+    // and it has already been updated as the walk's root).
+    inline void updateHiddenBodies(double jd, const Mat4f &flat,
+                                   const Mat4f *surface = nullptr,
+                                   const ModularBody *skip = nullptr) {
+        if (hiddenBodies.empty())
+            return;
+        Mat4f derivedSurface;
+        for (auto &c : hiddenBodies) {
+            if (c.get() == skip)
+                continue;
+            if (c->relation == BodyRelation::HIDDEN_GROUNDED) {
+                if (!surface) {
+                    derivedSurface = flat.multiplyFast(accumulatedBodyPosToBody(jd));
+                    surface = &derivedSurface;
+                }
+                c->recursiveTranslationUpdate(jd, *surface);
+            } else {
+                c->recursiveTranslationUpdate(jd, flat);
+            }
+        }
     }
 
     // Update the body system from a given body, return the active system

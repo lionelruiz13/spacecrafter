@@ -1,0 +1,252 @@
+{
+ "dt_minutes": 20.0,
+ "intervals": [
+  {
+   "interval": "hidden entry 1",
+   "body": "Moon",
+   "state": "hidden",
+   "moved_old_km": 1308.1234091727576,
+   "moved_new_km": 1308.1220047793774,
+   "err_new_vs_old_at_t1_km": 0.004085644198312393,
+   "tol_km": 337.0639023656846,
+   "dlastJD_days": 0.013888898305594921
+  },
+  {
+   "interval": "hidden entry 1",
+   "body": "Phobos",
+   "state": "hidden",
+   "moved_old_km": 2578.8216667972506,
+   "moved_new_km": 2578.82176735434,
+   "err_new_vs_old_at_t1_km": 0.0003952903145637314,
+   "tol_km": 337.0639023656846,
+   "dlastJD_days": 0.013889143709093332
+  },
+  {
+   "interval": "shown  entry 1",
+   "body": "Moon",
+   "state": "shown",
+   "moved_old_km": 1308.0228662200996,
+   "moved_new_km": 1308.0255833428382,
+   "err_new_vs_old_at_t1_km": 0.006540123159027533,
+   "tol_km": 337.0639023656846,
+   "dlastJD_days": 0.013888898771256208
+  },
+  {
+   "interval": "shown  entry 1",
+   "body": "Phobos",
+   "state": "shown",
+   "moved_old_km": 2587.0586871212436,
+   "moved_new_km": 2587.058630948785,
+   "err_new_vs_old_at_t1_km": 0.0002877846972077787,
+   "tol_km": 337.0639023656846,
+   "dlastJD_days": 0.013889119029045105
+  },
+  {
+   "interval": "hidden entry 2",
+   "body": "Moon",
+   "state": "hidden",
+   "moved_old_km": 1307.921614015111,
+   "moved_new_km": 1307.921452339633,
+   "err_new_vs_old_at_t1_km": 0.010941401937768644,
+   "tol_km": 337.0639023656846,
+   "dlastJD_days": 0.013888899236917496
+  },
+  {
+   "interval": "hidden entry 2",
+   "body": "Phobos",
+   "state": "hidden",
+   "moved_old_km": 2593.1623492671356,
+   "moved_new_km": 2593.162312041801,
+   "err_new_vs_old_at_t1_km": 0.00012773290389054255,
+   "tol_km": 337.0639023656846,
+   "dlastJD_days": 0.013889098074287176
+  },
+  {
+   "interval": "shown  entry 2",
+   "body": "Moon",
+   "state": "shown",
+   "moved_old_km": 1308.5096554255463,
+   "moved_new_km": 1308.5099522714693,
+   "err_new_vs_old_at_t1_km": 0.008332588577663015,
+   "tol_km": 337.0639023656846,
+   "dlastJD_days": 0.01388890016824007
+  },
+  {
+   "interval": "shown  entry 2",
+   "body": "Phobos",
+   "state": "shown",
+   "moved_old_km": 2596.6288685776185,
+   "moved_new_km": 2596.6290422179854,
+   "err_new_vs_old_at_t1_km": 0.000275302790671492,
+   "tol_km": 337.0639023656846,
+   "dlastJD_days": 0.01388908177614212
+  }
+ ],
+ "membership": [
+  {
+   "tag": "base",
+   "body": "Moon",
+   "relation": 4,
+   "expected": "shown"
+  },
+  {
+   "tag": "base",
+   "body": "Mars",
+   "relation": 4,
+   "expected": "shown"
+  },
+  {
+   "tag": "h1_t0",
+   "body": "Moon",
+   "relation": 1,
+   "expected": "hidden"
+  },
+  {
+   "tag": "h1_t0",
+   "body": "Mars",
+   "relation": 1,
+   "expected": "hidden"
+  },
+  {
+   "tag": "h1_t1",
+   "body": "Moon",
+   "relation": 1,
+   "expected": "hidden"
+  },
+  {
+   "tag": "h1_t1",
+   "body": "Mars",
+   "relation": 1,
+   "expected": "hidden"
+  },
+  {
+   "tag": "s1_t0",
+   "body": "Moon",
+   "relation": 4,
+   "expected": "shown"
+  },
+  {
+   "tag": "s1_t0",
+   "body": "Mars",
+   "relation": 4,
+   "expected": "shown"
+  },
+  {
+   "tag": "s1_t1",
+   "body": "Moon",
+   "relation": 4,
+   "expected": "shown"
+  },
+  {
+   "tag": "s1_t1",
+   "body": "Mars",
+   "relation": 4,
+   "expected": "shown"
+  },
+  {
+   "tag": "h2_t0",
+   "body": "Moon",
+   "relation": 1,
+   "expected": "hidden"
+  },
+  {
+   "tag": "h2_t0",
+   "body": "Mars",
+   "relation": 1,
+   "expected": "hidden"
+  },
+  {
+   "tag": "h2_t1",
+   "body": "Moon",
+   "relation": 1,
+   "expected": "hidden"
+  },
+  {
+   "tag": "h2_t1",
+   "body": "Mars",
+   "relation": 1,
+   "expected": "hidden"
+  },
+  {
+   "tag": "s2_t0",
+   "body": "Moon",
+   "relation": 4,
+   "expected": "shown"
+  },
+  {
+   "tag": "s2_t0",
+   "body": "Mars",
+   "relation": 4,
+   "expected": "shown"
+  },
+  {
+   "tag": "s2_t1",
+   "body": "Moon",
+   "relation": 4,
+   "expected": "shown"
+  },
+  {
+   "tag": "s2_t1",
+   "body": "Mars",
+   "relation": 4,
+   "expected": "shown"
+  }
+ ],
+ "time": [
+  {
+   "tag": "base",
+   "jd": 2461233.5,
+   "commanded": 2461233.5
+  },
+  {
+   "tag": "h1_t0",
+   "jd": 2461233.5,
+   "commanded": 2461233.5
+  },
+  {
+   "tag": "h1_t1",
+   "jd": 2461233.513888889,
+   "commanded": 2461233.513888889
+  },
+  {
+   "tag": "s1_t0",
+   "jd": 2461233.513888889,
+   "commanded": 2461233.513888889
+  },
+  {
+   "tag": "s1_t1",
+   "jd": 2461233.527777778,
+   "commanded": 2461233.527777778
+  },
+  {
+   "tag": "h2_t0",
+   "jd": 2461233.527777778,
+   "commanded": 2461233.527777778
+  },
+  {
+   "tag": "h2_t1",
+   "jd": 2461233.541666667,
+   "commanded": 2461233.541666667
+  },
+  {
+   "tag": "s2_t0",
+   "jd": 2461233.541666667,
+   "commanded": 2461233.541666667
+  },
+  {
+   "tag": "s2_t1",
+   "jd": 2461233.555555556,
+   "commanded": 2461233.555555556
+  }
+ ],
+ "tolerance": {
+  "control_bodies": [
+   "Venus",
+   "Jupiter",
+   "Io"
+  ],
+  "control_max_km": 33.70639023656846,
+  "tol_km": 337.0639023656846
+ },
+ "fail": 0
+}

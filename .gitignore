@@ -74,3 +74,5 @@ util/server_standalone/sender_client
 # claude
 build-claude
 .claude
+src/experimentalModule/harness/artifacts/b19/
+src/experimentalModule/harness/artifacts/b26/

@@ -196,6 +196,9 @@ void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBodyPos)
         c->selectiveUpdate(jd, matLocalToBodyPos);
     for (auto &c : innerBodies)
         c->selectiveUpdate(jd, matLocalToBodyPos);
+    // Hidden children keep ticking (translation-only) - see updateHiddenBodies.
+    // `mat` IS the accumulated surface frame the grounded loop above uses.
+    updateHiddenBodies(jd, matLocalToBodyPos, &mat);
 }
 
 ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f mat_local_to_body)
@@ -221,6 +224,10 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
             c->recursiveTranslationUpdate(jd, flat);
         for (auto &c : body->innerBodies)
             c->recursiveTranslationUpdate(jd, flat);
+        // mat_local_to_body == flat . accumulatedBodyPosToBody(jd) exactly
+        // (flat was built as its inverse fold above) - the surface frame the
+        // grounded loop uses, handed over instead of recomputed.
+        body->updateHiddenBodies(jd, flat, &mat_local_to_body);
     }
     while (body->isNotIsolated) {
         body->transformBodyToParent(jd, flat);
@@ -242,6 +249,10 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
             if (b.get() != body)
                 b->selectiveUpdate(jd, flat);
         }
+        // Same exclusion as the three loops above: `body` is the node the walk
+        // came up from and is already updated - and it CAN be hidden (nothing
+        // forbids hiding the camera reference).
+        parent->updateHiddenBodies(jd, flat, &parentTilted, body);
         body = parent;
         body->mat = parentTilted; // assign BEFORE update: update() reads the member
         body->preUpdate(jd, flat);
