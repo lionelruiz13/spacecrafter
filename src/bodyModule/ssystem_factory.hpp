@@ -572,6 +572,25 @@ public:
 
 	void addBody(stringHash_t &param);
 
+    //! Re-read the camera's current system from its data file, KEEPING the
+    //! current observation state [vixy 2026-07-21, Q27: "keep current state
+    //! (camera + date), do not reset to start-up"]. What survives: the
+    //! simulated date (untouched - a reload never speaks to the clock), the
+    //! camera pose (longitude/latitude/altitude or free-flight position,
+    //! view direction, heading, fov), the reference body, the tracked body
+    //! and the new-path selection. What changes: the bodies themselves, which
+    //! are the point - edits to the file take effect, bodies removed from it
+    //! disappear, bodies added to it appear.
+    //! Identity across the rebuild is BY NAME: the body OBJECTS are destroyed
+    //! and recreated, so every camera-side reference is re-seated here (I5 -
+    //! this class owns those references; ModularBodyPtr keeps them merely
+    //! valid, pointing at the surviving ancestor, which is not the same thing
+    //! as keeping the state). A name that the reloaded file no longer defines
+    //! cannot be re-seated: the reference then stays where ModularBodyPtr
+    //! redirected it (the system node) and the loss is traced as an error.
+    //! Returns false when the current system has no data file to reload from.
+    bool reloadCurrentSystem();
+
     void preloadBody(stringHash_t & param) {
         currentSystem->preloadBody(param);
     }

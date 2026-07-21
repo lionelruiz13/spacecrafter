@@ -76,3 +76,7 @@ build-claude
 .claude
 src/experimentalModule/harness/artifacts/b19/
 src/experimentalModule/harness/artifacts/b26/
+src/experimentalModule/harness/artifacts/b16/
+src/experimentalModule/harness/artifacts/b16ovr/
+src/experimentalModule/harness/artifacts/b16ch/
+src/experimentalModule/harness/artifacts/b16_run1/

@@ -262,3 +262,38 @@ moved_new = 0.00 km vs moved_old = 1306.81 km Moon / 2576.26 km Phobos), all
 32 assertions pass with it.  Subjects are Moon (direct child of the camera
 reference) and Phobos (grandchild under the HIDDEN parent Mars - it proves
 the whole hidden subtree ticks, not just the hidden node).
+
+## System reload (B16, 2026-07-21) - INTENT 11.55 / 13.B B16
+
+`body action reload` - rebuild the current system from its data file, keeping
+the observation state (camera + date).  Three drivers, one entry point; every
+run is a FRESH launch under gdb, whose breakpoint on
+`SSystemFactory::reloadCurrentSystem` is the "the command reached its handler"
+evidence that does NOT come from the handler's own log (the 11.54(j)
+silently-swallowed-command class: count the breakpoint hits against the
+commands issued, 1:1 or the spelling is fiction):
+
+    DISPLAY=:2 ./b16_run.sh b16_reload.py    [outdir]   # default artifacts/b16
+    DISPLAY=:2 ./b16_run.sh b16_overrides.py <outdir>
+    cp b16_reload_check.sts ~/.spacecrafter/scripts/    # channel-2 input
+    DISPLAY=:2 ./b16_run.sh b16_channels.py  <outdir>
+    rm ~/.spacecrafter/scripts/b16_reload_check.sts
+
+`b16_reload.py` is the main assertion run: no-reload CONTROL pair (the
+instrument floor - tracking never exactly settles and the new path is not
+bit-stable on a frozen scene, B30), then MUTATE `~/.spacecrafter/ssystem.ini`
+(`[moon] radius` x2) -> reload -> RESTORE byte-identically (md5 asserted
+in-driver) -> reload -> reload.  Without the mutation the run proves nothing:
+a no-op reload passes every state-preservation check trivially.  Observables:
+new-path `boundingRadius`/`screenSize` from `dual_dump` (the live tree, not
+the file), the composed 2048^2 screen at px>8, and `Camera::dumpTrace`
+(`reference`, `tracked`, lon/lat/distance, mount, fov) + the header `jd`.
+Selection pointer OFF (`select planet Moon pointer off`): its bracket radius
+eases toward the object's apparent size for seconds after any size change and
+would dominate the screen A/B with something that is not the reload.
+
+`b16_overrides.py` characterises what the reload does NOT keep: body-scoped
+runtime overrides (`moon_scale`, `body name X hidden true`) are reset to the
+file values while the old path keeps its own - the suspended question in
+11.55(i).  `b16_channels.py` exercises both 2(c) channels in one launch (live
+TCP command, then a script whose single line is the command).

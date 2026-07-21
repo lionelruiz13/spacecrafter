@@ -1189,6 +1189,10 @@ void CoreLink::initialSolarSystemBodies() {
 	return core->ssystemFactory->initialSolarSystemBodies();
 }
 
+bool CoreLink::reloadSolarSystem() {
+	return core->ssystemFactory->reloadCurrentSystem();
+}
+
 void CoreLink::setPlanetHidden(std::string name, bool planethidden) {
 	core->ssystemFactory->setPlanetHidden(name, planethidden);
 }

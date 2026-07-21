@@ -505,6 +505,12 @@ public:
 
 	void initialSolarSystemBodies();
 
+	//! Re-read the observer's current system from its data file, keeping the
+	//! current observation state (camera + date). Contract and what "keeping
+	//! state" covers: SSystemFactory::reloadCurrentSystem.
+	//! \return false when the current system has no data file behind it.
+	bool reloadSolarSystem();
+
 	//hides a planet
 	void setPlanetHidden(std::string name, bool planethidden);
 

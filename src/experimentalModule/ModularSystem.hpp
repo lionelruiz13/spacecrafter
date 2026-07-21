@@ -28,10 +28,30 @@ public:
         clearChildren();
     }
 
-    // Reload a system
-    void reloadSystem() {
+    // Re-read this system's content from the data file it was loaded from:
+    // every content body is destroyed and rebuilt from the file, so the FILE
+    // is the authority (bodies deleted from it disappear, edited values take
+    // effect). Recreated bodies are positioned at the CURRENT simulated date,
+    // not at launch (the ctor seeds lastJD from the parent, and this node is
+    // on the camera's chain) - a reload is not a restart.
+    // Observation state (camera pose/reference, tracked body, selection) is
+    // NOT this node's concern: identity across the rebuild is by NAME, and
+    // the holder of each reference re-seats it - SSystemFactory::
+    // reloadCurrentSystem is that authority for the camera-side references.
+    // Returns false when this node has no source file (systems created empty:
+    // the universe/milkyway spine nodes, and the anchor-only systems built by
+    // createSystem) - there is nothing to reload FROM, and clearing the
+    // children would destroy the spine instead.
+    bool reloadSystem() {
+        if (systemFilename.empty())
+            return false;
         clearChildren();
         loadSystem(systemFilename);
+        return true;
+    }
+    // Whether this system has a data file behind it (see reloadSystem).
+    inline bool hasSystemFile() const {
+        return !systemFilename.empty();
     }
     // Load a system
     void loadSystem(const std::string &filename);

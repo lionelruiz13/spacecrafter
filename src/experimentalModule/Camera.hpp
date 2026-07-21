@@ -176,6 +176,22 @@ public:
     inline ModularBody *getReferenceBody() const {
         return reference;
     }
+    inline ModularBody *getTrackedBody() const {
+        return target;
+    }
+    // Re-seat the reference on the object that REPLACED the current reference
+    // (same body by identity, new C++ object - system reload). Deliberately
+    // NOT switchToBody/warpToBody: nothing moved and nothing changed frame,
+    // so no compensation and no altitude re-basing may be applied - the pose
+    // parameters (lon/lat/distance or free position, view, heading) describe
+    // an observer that did not move. Callers own the identity claim (by name).
+    inline void rebindReference(ModularBody *dst) {
+        reference = dst;
+    }
+    // Same for the tracked body (nullptr = stop tracking).
+    inline void rebindTarget(ModularBody *dst) {
+        target = dst;
+    }
     inline ModularSystem *getCurrentSystem() const {
         return system;
     }

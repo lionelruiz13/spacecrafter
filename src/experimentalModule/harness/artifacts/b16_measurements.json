@@ -1,0 +1,220 @@
+{
+ "task": "B16 - body action reload (INTENT 11.55)",
+ "binary_mtime": "2026-07-21T23:57:28+02:00",
+ "scene": {
+  "jd_commanded": 2461233.5,
+  "home": "Earth",
+  "lat": 48.85,
+  "lon": 2.35,
+  "alt_m": 100,
+  "tracked": "Moon",
+  "projection": "FISHEYE",
+  "init_fov_b16_runs": 180,
+  "init_fov_regression_runs": 340,
+  "capture": "2048x2048 RGB"
+ },
+ "camera_and_bodies": {
+  "b16_ctrl": {
+   "jd": 2461233.500013901,
+   "reference": "Earth",
+   "tracked": "Moon",
+   "freeMode": false,
+   "boundToSurface": true,
+   "mount": "equatorial",
+   "longitude": 0.0410152376,
+   "latitude": 0.852593362,
+   "distance": 4.26359038e-05,
+   "alt": -0.465941191,
+   "az": -0.908481479,
+   "heading": 0,
+   "halfFov": 1.57079637,
+   "moon_boundingRadius_AU": 1.18460794e-05,
+   "moon_screenSize": 0.00312182284,
+   "body_count": 90,
+   "null_new": 0
+  },
+  "b16_pre": {
+   "jd": 2461233.500013901,
+   "reference": "Earth",
+   "tracked": "Moon",
+   "freeMode": false,
+   "boundToSurface": true,
+   "mount": "equatorial",
+   "longitude": 0.0410152376,
+   "latitude": 0.852593362,
+   "distance": 4.26359038e-05,
+   "alt": -0.46594128,
+   "az": -0.908481359,
+   "heading": 0,
+   "halfFov": 1.57079637,
+   "moon_boundingRadius_AU": 1.18460794e-05,
+   "moon_screenSize": 0.00312182261,
+   "body_count": 90,
+   "null_new": 0
+  },
+  "b16_post1": {
+   "jd": 2461233.500013901,
+   "reference": "Earth",
+   "tracked": "Moon",
+   "freeMode": false,
+   "boundToSurface": true,
+   "mount": "equatorial",
+   "longitude": 0.0410152376,
+   "latitude": 0.852593362,
+   "distance": 4.26359038e-05,
+   "alt": -0.465941191,
+   "az": -0.908481479,
+   "heading": 0,
+   "halfFov": 1.57079637,
+   "moon_boundingRadius_AU": 2.36921551e-05,
+   "moon_screenSize": 0.00624371925,
+   "body_count": 90,
+   "null_new": 0
+  },
+  "b16_post2": {
+   "jd": 2461233.500013901,
+   "reference": "Earth",
+   "tracked": "Moon",
+   "freeMode": false,
+   "boundToSurface": true,
+   "mount": "equatorial",
+   "longitude": 0.0410152376,
+   "latitude": 0.852593362,
+   "distance": 4.26359038e-05,
+   "alt": -0.46594131,
+   "az": -0.908482909,
+   "heading": 0,
+   "halfFov": 1.57079637,
+   "moon_boundingRadius_AU": 1.18460775e-05,
+   "moon_screenSize": 0.00312182214,
+   "body_count": 90,
+   "null_new": 0
+  },
+  "b16_post3": {
+   "jd": 2461233.500013901,
+   "reference": "Earth",
+   "tracked": "Moon",
+   "freeMode": false,
+   "boundToSurface": true,
+   "mount": "equatorial",
+   "longitude": 0.0410152376,
+   "latitude": 0.852593362,
+   "distance": 4.26359038e-05,
+   "alt": -0.46594128,
+   "az": -0.908481538,
+   "heading": 0,
+   "halfFov": 1.57079637,
+   "moon_boundingRadius_AU": 1.18460775e-05,
+   "moon_screenSize": 0.00312182237,
+   "body_count": 90,
+   "null_new": 0
+  }
+ },
+ "screen_ab_px_gt_8": {
+  "control_ctrl_vs_pre_no_reload": 0,
+  "pre_vs_post1_data_mutated_x2": 160,
+  "pre_vs_post2_data_restored": 0,
+  "post1_vs_post2": 160
+ },
+ "screen_ab_px_gt_32": {
+  "control_ctrl_vs_pre_no_reload": 0,
+  "pre_vs_post1_data_mutated_x2": 0,
+  "pre_vs_post2_data_restored": 0
+ },
+ "data_file": {
+  "path": "~/.spacecrafter/ssystem.ini",
+  "resolution": "relative to process cwd, set to ~/.spacecrafter/ by main.cpp:194",
+  "md5_original": "fb87a774e728706e9d4e1959c386bb23",
+  "md5_mutated": "894a0ccdc5a78728d6c3e635808aeb1c",
+  "md5_after_restore": "fb87a774e728706e9d4e1959c386bb23",
+  "mutation": "[moon] radius = 1737.4 -> 3474.8"
+ },
+ "runtime_overrides_dropped": {
+  "moon_boundingRadius_AU_before": 5.92303877e-05,
+  "moon_boundingRadius_AU_after": 1.18460775e-05,
+  "moon_scaling_ratio_before": 5.0000000168832255,
+  "mars_relation_before": 1,
+  "mars_relation_after": 4,
+  "note": "relation 1 = hidden(orbiting-3), 4 = orbiting; the hide is undone by the reload while the old path keeps it"
+ },
+ "channels_2c": {
+  "probe_hits": 2,
+  "invocations": 2,
+  "dumps": {
+   "ch_pre": {
+    "jd": 2461233.500013901,
+    "reference": "Earth",
+    "longitude": 0.0410152376,
+    "latitude": 0.852593362,
+    "distance": 4.26359038e-05
+   },
+   "ch_live": {
+    "jd": 2461233.500013901,
+    "reference": "Earth",
+    "longitude": 0.0410152376,
+    "latitude": 0.852593362,
+    "distance": 4.26359038e-05
+   },
+   "ch_script": {
+    "jd": 2461233.500013901,
+    "reference": "Earth",
+    "longitude": 0.0410152376,
+    "latitude": 0.852593362,
+    "distance": 4.26359038e-05
+   }
+  },
+  "channel1": "live/scriptless: TCP -> AppCommandInterface::executeCommand",
+  "channel2": "script: script action play filename b16_reload_check.sts"
+ },
+ "probe_hits_vs_commands": {
+  "run1_reload": [
+   3,
+   3
+  ],
+  "run2_overrides": [
+   1,
+   1
+  ],
+  "run3_channels": [
+   2,
+   2
+  ]
+ },
+ "negative_case": {
+  "reference": "Universe",
+  "result": "refused",
+  "log": "Cannot reload the system 'Universe': it was not loaded from a data file ...",
+  "tree_after": {
+   "bodies": 90,
+   "null_new": 0
+  }
+ },
+ "regression": {
+  "scenes_AD": {
+   "P1_max": 8.48e-17,
+   "P2_mat_residual_max": 1.09e-07,
+   "P3_angle_max_deg": 1.32e-05,
+   "P3_reldist_max": 2.2e-07,
+   "P4_km": [
+    16.32,
+    13.44,
+    27.14,
+    55.06,
+    14.17
+   ],
+   "P5_max": 2.06e-07
+  },
+  "orientation_check": {
+   "parity_restored": 17,
+   "named_divergent": 48,
+   "P_d_deg": 0.0
+  },
+  "scene_E": {
+   "ok": 13,
+   "total": 13,
+   "mars_landing_AU": 2.270821e-05
+  },
+  "VUID": 0,
+  "config_ini_md5_in_out": "03fbee59bc3ec506c58f0a3f1e1d73df"
+ }
+}

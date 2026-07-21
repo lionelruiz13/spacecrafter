@@ -474,6 +474,48 @@ void SSystemFactory::addBody(stringHash_t &param)
     camera->getCurrentSystem()->loadBody(param);
 }
 
+// Contract + rationale: ssystem_factory.hpp (reloadCurrentSystem).
+bool SSystemFactory::reloadCurrentSystem()
+{
+    ModularSystem *system = camera->getCurrentSystem();
+    // Names, captured BEFORE the rebuild - the objects will not survive it.
+    // Empty name = no such reference to restore (never a body).
+    const std::string referenceName = camera->getReferenceBody()->getEnglishName();
+    ModularBody *tracked = camera->getTrackedBody();
+    const std::string trackedName = tracked ? tracked->getEnglishName() : std::string();
+    ModularBody *selected = ModularBody::getSelected();
+    const std::string selectedName = selected ? selected->getEnglishName() : std::string();
+
+    if (!system->reloadSystem()) {
+        cLog::get()->write("Cannot reload the system '" + system->getEnglishName()
+            + "': it was not loaded from a data file (it is a container level of the "
+              "hierarchy, not a system description). Move the observer into a system "
+              "loaded from a file (e.g. 'set home_planet Earth') and reload from there.",
+            LOG_TYPE::L_ERROR);
+        return false;
+    }
+
+    // Re-seat the camera-side references by name (see the header: valid is
+    // not the same as preserved). Losing one is a data-content change, so it
+    // is traced as an error naming what was lost and what it fell back to.
+    if (ModularBody *body = ModularBody::findBodyOnce(referenceName)) {
+        camera->rebindReference(body);
+    } else {
+        cLog::get()->write("System reload: the observer's reference body '" + referenceName
+            + "' is not defined by the reloaded data - the observer now references '"
+            + camera->getReferenceBody()->getEnglishName()
+            + "'. Restore that body in the data file, or move the observer with "
+              "'set home_planet <body>'.", LOG_TYPE::L_ERROR);
+    }
+    if (!trackedName.empty())
+        camera->rebindTarget(ModularBody::findBodyOnce(trackedName));
+    if (!selectedName.empty())
+        newSelectedBody = ModularBody::findBodyOnce(selectedName);
+    cLog::get()->write("System '" + system->getEnglishName() + "' reloaded (observer state kept)",
+        LOG_TYPE::L_INFO);
+    return true;
+}
+
 // Dual-path trace harness (experimentalModule/INTENT.md 11.14).
 // JSON lines: one header (jd, camera state), then one line per old-path body
 // of the CURRENT system with the matching new-path body (by english name,

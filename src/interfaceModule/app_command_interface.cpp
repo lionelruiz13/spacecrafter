@@ -3566,6 +3566,15 @@ int AppCommandInterface::commandBody()
 			stcore->removeSupplementalSolarSystemBodies();
 		} else if (argAction == W_INITIAL  ) {
 			coreLink->initialSolarSystemBodies();
+		} else if (argAction == W_RELOAD) {
+			// Re-read the observer's current system from its data file,
+			// keeping the observation state (camera + date) - the system-scope
+			// sibling of `initial` (per-body parameter reset) and `clear`
+			// (drop the script-added bodies), which already live in this slot.
+			// CoreLink::reloadSolarSystem -> SSystemFactory::reloadCurrentSystem
+			// carries the contract and traces its own failures.
+			if (!coreLink->reloadSolarSystem())
+				debug_message = _("Command 'body': the current system has no data file to reload");
 		} else if (argAction == W_PRELOAD) {
 			auto &kt = args[W_KEEPTIME];
 			kt = std::to_string(Utility::strToInt(kt, 10) * stapp->getTargetFps());

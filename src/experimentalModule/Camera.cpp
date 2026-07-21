@@ -605,7 +605,12 @@ void Camera::setAltitude(double altitude)
 void Camera::dumpTrace(std::ostream &out) const
 {
     out << std::setprecision(9) << "{\"reference\":\""
-        << (reference ? reference->getEnglishName() : "") << "\",\"freeMode\":"
+        << (reference ? reference->getEnglishName() : "")
+        // Tracked body by name ("" = not tracking): the only camera-side body
+        // reference that was invisible to the harness, and the one a system
+        // reload must re-seat (INTENT 11.55).
+        << "\",\"tracked\":\"" << (target ? target->getEnglishName() : "")
+        << "\",\"freeMode\":"
         << (freeMode ? "true" : "false") << ",\"boundToSurface\":"
         << (boundToSurface ? "true" : "false")
         << ",\"mount\":\"" << (mount == CameraMount::EQUATORIAL ? "equatorial" : "altaz")
