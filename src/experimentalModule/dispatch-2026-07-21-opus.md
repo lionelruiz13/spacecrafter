@@ -43,8 +43,8 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 | B26 | ~~Run the two-screenshot observable check for the dual-path default flip~~ **DONE 2026-07-21 → §11.53, §4 below** | §11.50(c), §11.53 | **VERIFIED on `DISPLAY=:2`, 6 fresh launches, no product code changed.** The stated criterion was itself defective (≥2.5 s = quarter of the 2 s toggle period ⇒ 50 % test; corrected to odd multiples of 1.0 s, discriminator px>32). New finding spun out: **B30** (new path not bit-stable on a frozen scene) |
 | B29 | ~~Runtime COLOR seam port: MEASURE old's reload behavior for runtime per-body colors, then reproduce it~~ **LIVE SEAM DUAL + reload-persistence SUSPENDED → §11.65, §16 below** | §11.65, §11.42, §11.45(d), §11.55(i) | Runtime per-body colour (halo=body, label/orbit/trail=modules, self-select I4) + `"all"` broadcast + runtime DEFAULT now DUAL (numeric: Venus halo [1,1,0.9]→[1,0,0], trail→[0,1,0]; all→[0,0,1]; precedence broadcast-over-instance; default leaves existing bodies unchanged; screen px>32=1379 vs **0** floor, old 1268). **Old reload MEASURED: OLD HAS NO RELOAD** (`body action reload` new-only; `initial`→reinitParam resets radius not colour) ⇒ old PERSISTS; NEW reload RESETS to file. **The reload-persistence closure = B16 §11.55(i)'s option-2 ledger — old has no observable to reproduce, do-not-decide-B16 ⇒ SUSPENDED for Vixy.** §11.42 colour-authority DISSOLVED. Closes the last OLD-ONLY S6 command seam (live). No regression (P4 13.93 km, orient 17/48, P-d 0.0000, scene E 26/26, 0 VUID) |
 | B28 | ~~Loader frame declaration + conversion: data declares its coordinate system, loader converts — one conversion authority~~ **DONE (frame half, DESCOPED) 2026-07-22 → §11.67, §17 below** | §11.67, §11.51(d), §11.66, §11.49(e) | `rot_frame` (`absolute_pole`\|`parent_relative`) + ONE authority `resolveRotationFrame()`; absolute_pole = declarable root-aligned converted frame (accumulation skips ancestors for it, inert today). **Bit-identical ULP=0 for all 7 planets** (obliq/ascNode/tilt, before-vs-after + pristine-HEAD Mars anchor). Default derived from key presence, in-memory only, never written (write-back = B31). Invalid value → §2(f) L_ERROR. No regression (17/48, P-d 0.0000, scene E 26/26). **Vixy sign-off pending** on the `rot_frame` spelling/domain + the frame-aware accumulation touch. B14 inherits `rot_frame=absolute_pole` for the 28 moon poles |
-| B6 | §11.37 view-roll 134.67° — investigation only | §11.37 | Non-reproducing; one settled observation; artifact preserved. Low priority — attempt reproduction from the artifact, record outcome either way |
-| B7 | §11.15d shutdown segfault — probe-log watch | §11.15d, §11.47 | Intermittent, no fire across recent sessions after the structural fixes. Task = check/extend the §11.47 probes when touching shutdown paths; not an active hunt |
+| B6 | ~~§11.37 view-roll 134.67° — investigation only~~ **NOT REPRODUCED 2026-07-22 → §11.74, §23 below** | §11.37, **§11.74** | Artifact measured (Dc **134.6668°/+y**, Moon UNMODELED). 3 fresh scene-D-date-2 runs → stable/deterministic/MODELED **20.53°/z** (the known equatorial-mount roll §11.19(i)), NOT the flake. B13's `recoverParams` transition rework plausibly closed the non-deterministic capture window. No fix (non-reproducing) — negative recorded |
+| B7 | ~~§11.15d shutdown segfault — probe-log watch~~ **CONSOLIDATED 2026-07-22 → §11.74, §23 below (STAYS OPEN)** | §11.15d, §11.47, **§11.74** | Wave sample = **1 true fire** (B23, teardown-race after driver exit); B17 draw-stall is a mis-filed §11.5 gdb-watchdog. +7 clean this task (fc46f2d7). Probe audit: exit-code POSITIVE, core-file DEAD (ulimit 0 + apport), context needs gdb (`b7_probe.gdb`, armed). Intersection HYPOTHESIS: sample-size race. Active hunt scoped, not started |
 
 Suggested order: B26 (pure verification) → small ratified rows (B19, B16, B11, B23, B18, B20) → B9/B13/B15/B17 (each owns a small design-free mechanism) → B22, B29 → B28 (largest) → B6/B7 opportunistic.
 
@@ -2119,3 +2119,113 @@ binary mtime is unchanged (2026-07-22 13:05, the B21 build). The tree is buildab
 No data files touched (config.ini/ssystem.ini untouched — audit only, no app launch needed:
 the deliverable is a code-read inventory, verifiable by re-running the greps). `supervised-by.sh`
 left untracked. No harness task list touched.
+
+---
+
+## 23. Execution log — B6 + B7 (Claude Opus 4.8, 2026-07-22) — wave task 20 of 20
+
+**Tasks**: wave §1 tasks 19 (B6, §11.37 view-roll 134.67° reproduction) + 20 (B7,
+§11.15d shutdown-segfault probe-watch + wave consolidation). Both LOW-priority,
+record-outcome, no-active-hunt. **Outcome: B6 NOT REPRODUCED (negative recorded);
+B7 CONSOLIDATED (1 true fire) + probe instrument-chain audited; ledger B7 stays
+OPEN. NO product code changed.** Full record: **INTENT §11.74**; §13.B B6/B7 rows.
+
+### B6 — DoD item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Read §11.37: what the roll was, conditions, artifact, why non-reproducing | **met** | §11.37 "open observation (NOT shadow): one non-reproducing settled 134.67° view-roll on scene D date 2 (near-zenith az-degeneracy suspect; artifact preserved, harness/artifacts/)". Artifact = `flake_sceneD_view134_20260718.json` (jd 2461321.5, scene D date 2 = `gen_mars_2`, mount equatorial, ref Mars tracking Moon, halfFov 1.5708/fov 180) |
+| 2 | Attempt reproduction from the artifact/conditions | **met** | Artifact measured [`predict.py`]: **Dc = 134.6668° about [+0.084,+0.992,−0.091]≈+y**, Moon \|D−D_model\| **1.85 UNMODELED**, Mars 6.7e-08, P3 old==new ≤1e-5°, P4 32.47 km ⇒ pure view roll. 3 fresh `drive_scenes.py` runs (FISHEYE, init_fov 180, HEAD fc46f2d7), scene D date 2 each: **all 3 → Dc 20.5321° about z**, Moon MODELED (1.1–1.4e-07), Mars MODELED (1.1–1.8e-07), P4 10–32 km; roll bit-stable 20.5321° ×3 [`harness/artifacts/b6b7/run{1,2,3}_mars2.json`] |
+| 3 | Record outcome + whether a wave landing plausibly resolved/masked | **met — NOT REPRODUCED** | The 134.67°/+y/UNMODELED flake is absent; the settled roll is a stable/deterministic/MODELED **20.53°/z = the known equatorial-mount view-roll residual (§11.19(i))**, a separate suspended-for-Vixy mount item, not a defect. Only **B13 (§11.61)** touches a scene-D path (`set home_planet Mars` → `recoverParams`, the same ZXZ-Euler primitive §11.37 suspected); it made the settle deterministic, plausibly closing the flake's non-deterministic capture window (the flake was already non-reproducing pre-wave). B9/B18 do not touch the scene-D roll. **No fix manufactured** (non-reproducing) |
+
+### B7 — DoD item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Read §11.15d + §11.47; confirm the structural fixes | **met** | §11.15d = §11.15 residual (d)/§11.5 class = post-`shutdown action now` teardown segv. Four fixes verified present AT SOURCE (not just history): main.cpp:368 `stopBigTextureLoader`, context.cpp:111 `helper->stop()`, PipelineRegistry.cpp pool-order, TickMgr collapse (commits 4130edb3/092008ad/9368828d/e3d0f4e1). Teardown unified: SIGINT→`NSSigTERM`→`ALIVE=false` [signals.cpp:66] == `shutdown action now` [app_command_interface.cpp:1809] |
+| 2 | Consolidate the wave's fire/clean reports with context; state intersection as a HYPOTHESIS | **met** | Table below. **1 true fire (B23)**; B17's is a mis-filed §11.5 gdb-draw-stall; 12+ clean tasks. Intersection hypothesis (labeled): sample-size-driven teardown race |
+| 3 | Check the §11.47 probes present + firing (positive instrument-chain) | **met** | exit-code channel POSITIVE (caught exit=0 on 7/7 cycles); **core-file channel DEAD** (`ulimit -c`=0 + `core_pattern=\|apport` ⇒ no local core ever — a silent no-op; §11.47's "no cores" proves nothing here); context channel = gdb only (no in-app SIGSEGV handler — signals.cpp registers only TSTP/CONT/TERM) |
+| 4 | Probe extension (only if cheap + shutdown path touched) OR record what's missing | **met — harness extension, no product code** | Added `harness/b7_probe.gdb` + `b7_gdb_shutdown.sh` (gdb `handle SIGSEGV stop print` → `bt` on a fire). Verified ARMED: "POST-RUN STACK" marker prints + `bt` runs each clean cycle ("No stack" on clean; crash stack on a fire). A NON-gdb catch would need main.cpp teardown-stage markers OR a SIGSEGV backtrace handler = product code, out of scope |
+| 5 | Do NOT chase as an active hunt | **met** | 7 clean cycles (reasonable attempt) + consolidation; future active hunt SCOPED not started (§11.74(f)) |
+
+### B7 — wave shutdown consolidation table [observed: per-task dispatch §§4–22]
+
+Teardown path unified (SIGINT == `shutdown action now` → main.cpp teardown).
+
+| § | Task | teardown | shutdown report |
+|---|------|----------|-----------------|
+| 4 | B26 | gdb, `shutdown now` ×6 | CLEAN ×6 (`[Inferior … exited normally]`), d343f6c4 |
+| 5 | B19 | `shutdown now` | CLEAN, no fire |
+| 6 | B16 | `shutdown now` ×2 | CLEAN, no fire |
+| 7 | B11 | gdb bkpts / pkill | not stated |
+| 8 | **B23** | kill -INT (post-driver) | **FIRE — §11.15d "fired on some run teardowns AFTER the driver exited 0; did not affect any artifact"** |
+| 9 | B18 | kill -INT | not stated |
+| 10 | B20 | kill -INT | not stated |
+| 11 | B9 | `shutdown now` | CLEAN, no fire (final 05:51:16) |
+| 12 | B13 | pkill | not stated |
+| 13 | B15 | `shutdown now` | CLEAN, no fire (§11.62(f)) |
+| 14 | **B17** | gdb, kill -INT | **STALL — App::draw:795 `__platform_wait` "Frame stall detected" ~2/6 launches UNDER GDB = §11.5 watchdog, NOT a teardown segv (mis-filed §11.15d class)** |
+| 15 | B22 | (suspended, unexercised) | not stated |
+| 16 | B29 | `shutdown now` | CLEAN, no fire |
+| 17 | B28 | `shutdown now` | CLEAN, no fire |
+| 18 | B14 prep | (web/audit, no live app) | n/a |
+| 19 | B14 land | `shutdown now` | CLEAN, no fire |
+| 20 | B10 | `shutdown now` | CLEAN, no fire |
+| 21 | B21 | `shutdown now` | CLEAN, no fire |
+| 22 | B27 | (audit, no live app) | n/a |
+| 23 | **B7 (this)** | `shutdown now` ×3 plain + ×4 gdb | **CLEAN ×7, exit=0 / [Inferior exited normally], fc46f2d7** |
+
+**TRUE §11.15d shutdown-segfault fires this wave: 1 (B23).** Draw-stall mis-filed: 1
+(B17, gdb-induced §11.5). Clean-shutdown tasks: 12 (+ pre-wave §11.40/45/46/47 = 13/13).
+
+**Intersection HYPOTHESIS (labeled, single-fire ⇒ single-point):** the one true fire
+(B23) fired at FINAL process teardown after the TCP driver disconnected (the teardown-race
+location); its only correlate vs the 12 clean tasks is that B23 ran the MOST launch/teardown
+cycles of the wave (25 grid-gate + old↔new A/B path toggles + scene E + drive) ⇒ more
+samples of a low-probability race. Weak secondary (NOT asserted): B23 live-toggled the OLD
+render path, re-exercising old-path teardown the four fixes did not cover — but §11.37 fired
+on baseline too, so not necessary.
+
+### What I did NOT verify
+
+- Whether the 20.53°/z scene-D roll is the exact pre-wave value (would need checking out
+  pre-B13 code — beyond investigation scope); established only that it is the §11.19(i)
+  equatorial-roll CLASS and NOT the flake.
+- I did NOT catch a live §11.15d fire (0/7 this task; B23's fire is the wave's evidence).
+  Root-causing it is the scoped-not-started active hunt (§11.74(f)).
+- Scene E not run (no code change to regress); scenes A–D confirmed incidentally via
+  drive_scenes (P4 10–32 km, Moon/Mars modeled ~1e-7).
+
+### Reproduction (verbatim)
+
+    cd /home/claude/spacecrafter/src/experimentalModule/harness
+    # B6 artifact measurement:
+    python3 predict.py artifacts/flake_sceneD_view134_20260718.json   # -> Dc 134.6668° +y
+    # B6 + B7 combined (3 fresh drive_scenes + clean shutdown, exit-code instrument):
+    DISPLAY=:2 ./b6b7_run.sh 3
+    for r in 1 2 3; do python3 predict.py artifacts/b6b7/run${r}_mars2.json | grep "view term"; done
+    #   -> 20.5321° about z, all 3;  APP EXIT CODE = 0 all 3
+    # B7 gdb context probe (armed backtrace channel):
+    DISPLAY=:2 ./b7_gdb_shutdown.sh 4     # -> CLEAN ×4 [Inferior exited normally]
+
+### Hygiene
+
+INVESTIGATION ONLY — NO product code changed (`git diff` on src/ excluding INTENT.md +
+this dispatch = empty). `make -C build-claude -j$(nproc)` exit **0**, binary mtime UNCHANGED
+(2026-07-22 13:05, HEAD fc46f2d7 — investigation-only, mtime does not advance). `config.ini`
+md5 **03fbee59bc3ec506c58f0a3f1e1d73df** in/out (restored byte-identical after each of the 7
+clean-shutdown cycles that rewrite it; verified final). `ssystem.ini`/`beta_features.ini`
+untouched (beta_features absent throughout — default/new path). Harness committed:
+`b6b7_run.sh`, `b7_probe.gdb`, `b7_gdb_shutdown.sh`; artifacts `b6b7/`, `b7_gdb/` gitignored.
+`supervised-by.sh` + root `USER_QUESTIONS*.md`/`FEATURE_REQUESTS.md` left untracked. No
+harness task list touched.
+
+### Wave-level note (this is the LAST task of the wave)
+
+- §11.15d is **NOT closed**: 1 true fire this wave confirms the intermittent class is live.
+  A future task should run the scoped active hunt (`b7_probe.gdb` + high-cycle-count harness,
+  ASan/TSan, old-path teardown toggled) — see §11.74(f).
+- The §11.47 probe's "no cores" clause is a FICTION channel in this sandbox (ulimit 0 +
+  apport) — future shutdown probes must rely on the exit code or gdb, never on a local core.
+- B17's "§11.15d class" draw-stall (§11.63) is actually the §11.5 gdb-watchdog — the two
+  classes are lineage-linked in the tracker but mechanically distinct; re-filing noted here.

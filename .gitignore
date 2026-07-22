@@ -108,4 +108,8 @@ src/experimentalModule/harness/artifacts/b21f/
 src/experimentalModule/harness/artifacts/b21p/
 src/experimentalModule/harness/artifacts/b21_sceneE/
 src/experimentalModule/harness/artifacts/b21_AD/
+src/experimentalModule/harness/artifacts/b6b7/
+src/experimentalModule/harness/artifacts/b6b7_master.log
+src/experimentalModule/harness/artifacts/b7_gdb/
+src/experimentalModule/harness/artifacts/b7_gdb_master.log
 src/experimentalModule/harness/__pycache__/
