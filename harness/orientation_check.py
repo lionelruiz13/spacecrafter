@@ -100,6 +100,7 @@ def main(path):
     targets = [n for n in ("Moon", "Charon", "Sun", "Mars", "Earth", "Pluto") if n in bodies]
     controls = [n for n in bodies
                 if n not in targets and bodies[n]["new"] is not None
+                and bodies[n]["old"] is not None  # new-path-only bodies (B24 "old":null sweep) have no old convention to compare
                 and bodies[n]["old"]["parent"] in ("Jupiter", "Saturn", "Uranus", "Neptune", "Mars")]
 
     def conventions(n):
@@ -153,6 +154,8 @@ def main(path):
     rows = []
     for n in bodies:
         o = bodies[n]["old"]
+        if o is None:  # new-path-only body (B24 "old":null sweep) - no old convention exists
+            continue
         p = o["parent"]
         if p not in bodies or p in ("Sun", "") or bodies[p]["old"]["parent"] != "Sun":
             continue

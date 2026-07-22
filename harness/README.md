@@ -331,6 +331,40 @@ temporarily disabling `recoverParams(R)` in warpToBody - the 3 ref-switch assert
 flip to FAIL, the rest stay green.  App rewrites config.ini on shutdown, so any
 `cp`-restore of an init_fov edit must run AFTER the process is fully dead.
 
+## Composed-system authoring (B24/B25, 2026-07-22) - INTENT 11.78 / 13.B B24/B25
+
+`b24_equivalence.py` - the corpus-wide legacy-vs-composed gate. Owns its app
+lifecycle (launches BOTH phases itself; do NOT pre-launch):
+
+    cd claude/harness && DISPLAY=:2 python3 ./b24_equivalence.py
+
+Phase A = shipped state (asserts no enabled file; the launch itself
+regenerates the machine-owned twin ~/.spacecrafter/modularSystem/
+SolarSystem.ini.disabled - generation-at-load is product behavior). Phase B =
+twin copied to SolarSystem.ini (the documented adoption workflow), fresh
+launch, SAME frozen scene; enabled file ALWAYS removed afterwards (a leftover
+silently re-specifies every next run - B26 hygiene class). Compares the
+new-path tree by name: parent/relation/modules/routing/boundingRadius/lastJD
++ ecl as EXACT STRINGS. `axisRot` is deliberately NOT compared cross-launch:
+an A-vs-A control measured the same scatter on the same ~20 pole-bearing
+moons (launch-wall-clock spin staleness, INTENT 5.24 / B32). Discrimination
+proven by deleting [Moon:MESH] from the enabled copy (drops exactly the MESH
+slot + one near-routing entry). Twin values carry the source's ISO-8859
+bytes - read with latin-1, copy with read_bytes.
+
+`b24_compose.py` - the composition-mandate scene (rover on the Moon + rover
+on Earth grounded, orbiting controls, rocket on an ascent ramp), authored
+through the REAL adoption workflow (twin + appended composed sections).
+Numeric layer, default observer, frame-proof gates - READ THE DOCSTRING
+before touching the assertions: the dual_dump eclRoot base is
+camera-composed and rotates with the observer's reference surface; the
+docstring carries the three-iteration attribution record (a physically-fixed
+control "rotating" by exactly the Moon spin was the instrument, not the
+fold). Gates: Earth grounded pair net rotation 0.0000 deg (pre-fix
+child-spin fold reads ~90.2 deg - measured on the real pre-fix binary);
+orbiting control == full spin advance; Moon pair chord length point-predicted
+from the dumped spin (9 m vs 2849 km frozen); rocket |ecl| exact lerp replay.
+
 ## View-directed free descent (B21, 2026-07-22) - INTENT 11.72 / 13.B B21
 
 `b21_descent.py` (full) + `b21_far.py` (fast far-only) + `b21_probe.py`
