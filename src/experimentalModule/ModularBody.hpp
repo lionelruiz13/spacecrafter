@@ -69,6 +69,17 @@ struct ModularBodyCreateInfo {
     Vec3f haloColor;
     float albedo;
     float radius;
+    // Navigation radii, both in AU, both defaulting to `radius` (B10, §5.2).
+    // datumRadius = the radius the observer's ALTITUDE is measured FROM (the
+    // nominal surface: altitude/landscape/atmosphere zero-point). groundRadius
+    // = the radius the observer cannot descend past in free flight (the ground
+    // / floor). Split so an enterable body (datum=ground=0, transparent/fly-into
+    // per R4 §11.70) reads altitude-from-centre and descends to the centre,
+    // while a terrain-clearance body (datum=radius, ground=radius·1.002) keeps
+    // legacy-exact altitudes but stops free descent above the surface. Both
+    // equal to `radius` ⇒ bit-identical to a single-reference body.
+    float datumRadius;
+    float groundRadius;
     float oblateness; // Not universal - only for pure spherical body modules (so, single-shape body ?) - may provide immense optimisation and quality
     float solLocalDay;
     // New
@@ -78,7 +89,6 @@ struct ModularBodyCreateInfo {
     // Deprecated
     BodyType bodyType; // Deprecated
     bool isHaloEnabled; // May deprecate
-    bool altitudeRelativeToRadius; // Deprecated
 };
 
 //! Minimal size of the system on screen for showing orbiting bodies, in pixels
@@ -99,6 +109,22 @@ constexpr int BODY_EARLY_VISIBILITY_BOUNDING_SIZE = 2;
 constexpr int BODY_FULL_VISIBILITY_BOUNDING_SIZE = 16;
 //! Minimal speed while under the area of influence of a body, in body_radius/s
 constexpr double MIN_MOVEMENT_SPEED = 0.125;
+//! Anti-stuck escape floor for the interactive proximity factor (§5.18 defect,
+//! B10 scope iv-b), as a FRACTION OF BODY RADIUS. Radius-relative on purpose:
+//! it stays defined when ground_radius == 0 (an enterable body's centre), where
+//! a ground_radius-relative epsilon would vanish. Floors the OUTWARD interactive
+//! step (Camera::proximityFactor) so height 0 is never a fixed point in any
+//! direction (multAlt / moveRelLon / moveRelLat) — the reported "stuck at the
+//! surface, can't take off" defect.
+//! ---- VALUE SUSPENDED FOR VIXY (B10 carve-out (a)) ----
+//! 1e-6·radius ≈ 6.4 m on Earth is a DEFENSIBLE PLACEHOLDER, not a chosen
+//! value: it escapes geometrically within ~1-2 s of held input without making
+//! surface navigation unusable. It is deliberately NOT MIN_MOVEMENT_SPEED's
+//! 0.125 (≈797 km on Earth — an AoI-traversal floor, a different concept and a
+//! different unit: a speed, body_radius/s). Open question for Vixy: is the
+//! anti-stuck floor the same constant as MIN_MOVEMENT_SPEED (then re-unit and
+//! re-value it) or a distinct one (as landed here)? Do not treat 1e-6 as final.
+constexpr double ANTISTUCK_ESCAPE_FLOOR = 1e-6;
 //! Minimal distance to the center of the body for showing surface BodyModule, in multiple of body radius
 constexpr double BODY_SURFACE_HEIGHT = 2;
 //! Maximal sizeof a texture to be considered negligible (lazy)
@@ -912,9 +938,17 @@ public:
         lightDistance = lightPosition.length();
         lightSize = scaledRadius;
     }
-    // Get the distance reference for the altitude
+    // Get the distance reference for the altitude (datum_radius, scaled). ONE
+    // value, no branch (B10 §5.2): feeds `moveto altitude`, the altitude
+    // readout, and the landscape/atmosphere thresholds. == scaledRadius for
+    // every default (datum_radius == radius) body.
     inline float getAltitudeReference() const {
-        return altitudeRelativeToRadius ? scaledRadius : 0;
+        return scaledDatumRadius;
+    }
+    // The radius the observer cannot descend past in free flight (ground_radius,
+    // scaled). == scaledRadius for every default body; 0 for an enterable body.
+    inline float getScaledGroundRadius() const {
+        return scaledGroundRadius;
     }
     template<class Function>
     static inline void forEach(Function fn) {
@@ -1369,7 +1403,11 @@ private:
     // "-nan" in dual_dump JSON (invalid token, predict.py hard-stop).
     float axisRotation = 0;
     float scaledRadius;
-    //float scaledInnerRadius;
+    // Scaled navigation radii (raw datum/ground * scaling, recomputed with
+    // scaledRadius in updateCache — B10 §5.2). scaledDatumRadius is the
+    // successor of the commented-out `scaledInnerRadius` drafting residue.
+    float scaledDatumRadius;
+    float scaledGroundRadius;
     float rmag;
     float cmag;
     double lastJD = 0;
@@ -1387,6 +1425,10 @@ private:
     // Navigation and visibility
     ASmooth<AsyncHub, float, 5.f> scaling;
     float radius;
+    // Raw (unscaled) navigation radii, both defaulting to `radius` (B10 §5.2).
+    // See ModularBodyCreateInfo for the datum/ground roles.
+    float datumRadius;
+    float groundRadius;
     float boundingRadius; // Smallest radius including all groundedComponents and nearComponents
     float subsystemRadius; // Radius including all orbitingBodies
     float areaOfInfluence; // Area under the influence of this body
@@ -1413,7 +1455,6 @@ private:
     bool uncached = true; // Determine whether this body require any update
     bool loaded = false; // Determine whether all nearComponents and inComponents are fully loaded
     bool boundToSurface = false; // Hot-path cache of (relation == GROUNDED) - written by createChild* only
-    bool altitudeRelativeToRadius = true; // Determine whether observer's altitude on this body is relative to the radius
 
     // Global datas
     // Light state is CURRENT-SYSTEM-scoped: updateSystem writes the system's

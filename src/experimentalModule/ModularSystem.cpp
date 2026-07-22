@@ -813,7 +813,14 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         .haloColor=param["color"].empty() ? defaultHaloColor : Utility::strToVec3f(param["color"]),
         .albedo=Utility::strToFloat(param["albedo"]),
         .radius=radius/static_cast<float>(AU),
-        //.innerRadius=Utility::strToFloat(param["min_distance"], radius*1.002f)/static_cast<float>(AU),
+        // Navigation radii (B10 §5.2), both in km in the data (like `radius`),
+        // both DEFAULTING TO `radius` ⇒ absent keys reproduce today exactly.
+        // datum_radius = altitude/landscape/atmosphere zero-point; ground_radius
+        // = free-flight descent floor. Set datum_radius=ground_radius=0 for an
+        // enterable / transparent body (the two-body-patch replacement, R4);
+        // set ground_radius=radius*1.002 for terrain clearance.
+        .datumRadius=Utility::strToFloat(param["datum_radius"], radius)/static_cast<float>(AU),
+        .groundRadius=Utility::strToFloat(param["ground_radius"], radius)/static_cast<float>(AU),
         .oblateness=Utility::strToFloat(param["oblateness"], 0.0),
         .solLocalDay=Utility::strToFloat(param["sol_local_day"],1.0),
 
@@ -822,7 +829,6 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
 
         .bodyType=strToBodyType(param["type"]),
         .isHaloEnabled=Utility::isTrue(param["halo"]),
-    .altitudeRelativeToRadius=Utility::isFalse(param["solid"])
     };
 	if (!createInfo.orbit) {
 		cLog::get()->write("Invalid orbit '" + param["coord_func"] + "' for body '" + englishName + "', skip loading this body.", LOG_TYPE::L_ERROR);

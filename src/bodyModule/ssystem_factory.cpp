@@ -88,11 +88,16 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
         .haloColor = {},
         .albedo = 0,
         .radius = 0,
+        // datum/ground = radius (B10): preserves today's runtime bit-identically
+        // (radius 0 ⇒ getAltitudeReference 0 either way). NB this node authored
+        // altitudeRelativeToRadius=false (center-relative INTENT) which the ctor
+        // never realized — moot here (radius 0), SUSPENDED for MilkyWay below.
+        .datumRadius = 0,
+        .groundRadius = 0,
         .oblateness = 0,
         .solLocalDay = 0,
         .bodyType = BodyType::SYSTEM,
         .isHaloEnabled = false,
-        .altitudeRelativeToRadius = false,
     };
     universe = std::make_unique<ModularSystem>(nullptr, universeInfo);
     // Galactic disc radius ~15.5 kpc in AU - placeholder constant until the
@@ -107,11 +112,21 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
         .haloColor = {},
         .albedo = 0,
         .radius = MILKYWAY_RADIUS_AU,
+        // datum/ground = radius (B10) PRESERVES TODAY'S RUNTIME bit-identically:
+        // the inert altitudeRelativeToRadius left getAltitudeReference() ==
+        // scaledRadius (== 3.2e9 AU here). This node AUTHORED
+        // altitudeRelativeToRadius=false (measure galaxy-scale altitude from the
+        // galactic CENTRE, datum=0) but the ctor never copied it, so that intent
+        // never ran. Realizing it (datum_radius=ground_radius=0) would change
+        // free-mode position magnitude when MilkyWay is the reference — a
+        // user-visible galaxy-scale navigation change. SUSPENDED FOR VIXY
+        // (INTENT 11.71): keep 3.2e9 (bit-identical) or honour the =false intent (0)?
+        .datumRadius = MILKYWAY_RADIUS_AU,
+        .groundRadius = MILKYWAY_RADIUS_AU,
         .oblateness = 0,
         .solLocalDay = 0,
         .bodyType = BodyType::GALAXY,
         .isHaloEnabled = false,
-        .altitudeRelativeToRadius = false,
     };
     milkyway = universe->createChildSystem(milkywayInfo, BodyRelation::INNER);
     galacticSystem = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
@@ -315,11 +330,14 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
         .haloColor = {},
         .albedo = 0,
         .radius = 0,
+        // datum/ground = radius (B10): bit-identical (radius 0). Same authored
+        // center-relative intent as Universe/MilkyWay, moot here (radius 0).
+        .datumRadius = 0,
+        .groundRadius = 0,
         .oblateness = 0,
         .solLocalDay = 0,
         .bodyType = BodyType::SYSTEM,
         .isHaloEnabled = false,
-        .altitudeRelativeToRadius = false,
     };
     // Systems nest IN the tree as the milkyway's INNER children (G2):
     // shown while the camera is inside the galaxy, isolated roots for their

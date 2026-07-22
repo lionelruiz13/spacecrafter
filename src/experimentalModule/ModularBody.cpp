@@ -66,7 +66,7 @@ void BodyModule::dumpState(std::ostream &out) const
 }
 
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
-    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
+    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), datumRadius(info.datumRadius), groundRadius(info.groundRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
 {
     if (translator)
         nameI18 = translator->translateUTF8(englishName);
@@ -297,6 +297,11 @@ void ModularBody::updateCache()
 {
     bool cached = !scaling.isTransiting();
     scaledRadius = radius * scaling;
+    // Navigation radii scale with the same visual scaling as the render radius
+    // (B10 §5.2): datum defaults to radius ⇒ scaledDatumRadius == scaledRadius
+    // for every shipped body, bit-identical.
+    scaledDatumRadius = datumRadius * scaling;
+    scaledGroundRadius = groundRadius * scaling;
     boundingRadius = scaledRadius;
     for (auto &module : nearComponents) {
         cached &= module->update(this, scaledRadius);

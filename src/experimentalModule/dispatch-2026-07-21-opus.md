@@ -52,7 +52,7 @@ Suggested order: B26 (pure verification) → small ratified rows (B19, B16, B11,
 
 | Row | Dispatchable part | Carved out (NOT yours) | Recorded |
 |---|---|---|---|
-| B10 | `datum_radius` + `ground_radius` full scope (i)–(vi) as written, incl. the shared `proximityFactor()` authority and the outward-only anti-stuck floor direction | (a) the FLOOR VALUE — "value is a decision, not a wiring step" (`MIN_MOVEMENT_SPEED` 0.125 reads wrong-scale); propose, don't fix; (b) Q12 round-2 re-ask (what the two-body patch is used for; stop-and-hold vs asymptotic; `radius ground`/`radius datum` re-spelling) — pending tester/Vixy | §5.2, §11.6, §11.48(c) |
+| B10 | ~~`datum_radius` + `ground_radius` full scope (i)–(vi)~~ **DONE 2026-07-22 → §11.71, §20 below** | (a) FLOOR VALUE — landed `ANTISTUCK_ESCAPE_FLOOR=1e-6` as a DEFENSIBLE PLACEHOLDER (≈6.4 m Earth), flagged not-final; (b) Q12 word-order — data keys kept `datum_radius`/`ground_radius`, NO runtime command added (spelling undecided); (c) NEW — MilkyWay's authored `=false` center-relative intent (kept 3.2e9 AU bit-identical vs honour datum=0) | §5.2, §11.6, §11.48(c), **§11.71** |
 | B21 | View-directed free descent ("down" = surface point under the view ray), riding B10's `proximityFactor()` — sequence after B10 | The far/galactic-distance case (A18 residual) — the row itself says it must not be improvised into this work | §11.36, §11.48(a) |
 | B27 | Steps (1) site inventory completion (grep is not exhaustive yet — seed list §11.51(c)) and (2) per-site §2(a2) test → declarable capability key | Step (3) generator emission — belongs to B25 (critical/authoring chain); special ORBITS exempt (`*_special` stays) | §11.51(c), §5.5, §11.48(b) |
 | B14 | ~~Preparation only: collect IAU/WGCCRE values~~ **PREP DONE §18/§11.68; LAND HALF DONE 2026-07-22 (§19 below, §11.69).** Vixy authorized cited web-fetch. **14 of 28 shipped cluster moons landed** with 3-source-agreed IAU-2015 poles (pck00011+pck00010+Archinal report text); Iapetus pilot verified (axis 8e-6°, 2 dates 0°, commutator 30.87→21.36); 14 STOPPED-for-no-pole (irregular/chaotic). BOTH files edited. Zero `[knowledge]` values. | Remaining suspended-for-Vixy: **W0 write** (referential mismatch, fetched not written), **6 loaded-only Jupiter moons** (shipped divergence), **Hyperion** (chaotic), **pole-drift/nutation** unrepresentable | §11.69, §11.68, §11.35, §11.48(a), §11.49(e), §11.51(d) |
@@ -1843,3 +1843,120 @@ live data is now fixed), backup `.b14bak` (fb87a774) kept. `config.ini` restored
 byte-identical (03fbee59, init_fov 180→340→180 after process death). Build tree
 clean except the committed shipped data file + trackers; `supervised-by.sh` left
 untracked. No harness task list touched. No §11.15d shutdown fire observed.
+
+## 20. Execution log — B10 (Claude Opus 4.8, 2026-07-22)
+
+`datum_radius` + `ground_radius` supersede the `solid` flag. Full record §11.71.
+Two per-body scalars, both defaulting to `radius` ⇒ bit-identical for every
+shipped body; the split expresses the enterable body (datum=ground=0) and the
+terrain-clearance body (datum=radius, ground=radius·1.002).
+
+Files touched: `src/experimentalModule/ModularBody.hpp` (createInfo fields
+datumRadius/groundRadius; ANTISTUCK_ESCAPE_FLOOR; getAltitudeReference→
+scaledDatumRadius no-branch + getScaledGroundRadius; scaled+raw members; deleted
+altitudeRelativeToRadius), `ModularBody.cpp` (ctor copy + updateCache scaling),
+`ModularSystem.cpp` (createInfo datum/ground keys, deleted solid line +
+commented innerRadius), `Camera.hpp`/`Camera.cpp` (proximityFactor authority,
+three movers rewired, free-mode descent clamp), `src/bodyModule/ssystem_factory.cpp`
+(3 system/galaxy node createInfos migrated). Harness: `harness/b10_run.sh`,
+`harness/b10_nav.py`.
+
+### DoD, item by item
+1. **Bit-identical regression (primary gate) — MET** [measured: b10_nav.py,
+   baseline@HEAD 449e40fe vs post]. Earth `moveto altitude {100,50000,0}`
+   distances IDENTICAL to 10 sig figs (a0 4.263523440e-05 AU both); DefaultTest
+   (radius 6000, no keys) IDENTICAL; ClearTest anchored altitudes IDENTICAL
+   (datum=radius ⇒ legacy-exact). Scene E 26/26 (exact mars-landing assert
+   2.270821e-05 AU passes). config.ini byte-identical (md5 03fbee59).
+2. **Discriminating cases — MET** [measured: b10_nav.py]. Enterable
+   (datum=ground=0): `moveto altitude 0` distance 6000.000→**0.000 km (CENTRE)**;
+   100 m→0.100 km; 100 km→100.000 km (from centre). Clearance (datum=6000,
+   ground=6012): free-mode `moveto altitude 0` |pos| 6000.000→**6012.000 km =
+   ground_radius EXACTLY** (hard stop, not asymptote — baseline had no clamp);
+   anchored altitudes legacy-exact (clear_a0 6000.000 km both). Landscape/
+   atmosphere thresholds key off datum [observed: LandscapeEnv.cpp:14-19,
+   AtmosphereEnv.cpp:11, EnvironmentManager.cpp:73 subtract getAltitudeReference
+   = scaledDatumRadius].
+3. **Anti-stuck escapability — MET (argued from measured mechanism, per the row's
+   fallback)**. Earth height 0: `proximityFactor(false)=0` (old stuck point),
+   `proximityFactor(true)=1e-6·scaledR=6.38 m`; multAlt(1.1) step 0.638 m/call
+   vs 0. Live demonstration BLOCKED — Camera::multAlt has 0 callers, moveRelLon/
+   Lat reach only UI keys (not TCP-scriptable).
+4. **`altitudeRelativeToRadius` fully deleted — MET** [observed: grep over src =
+   0 code hits for altitudeRelativeToRadius / param["solid"] / scaledInnerRadius].
+5. **Both entries of reversible pairs — MET** [measured]. Free-mode descent:
+   desc1→6012 (hold) → asc1→6100 (escape) → desc2→6012 (hold, 2nd entry from
+   asc1's state) → asc2→6100 (escape). Enterable enter→exit: enter_a0 centre →
+   enter_a100k 100 km.
+6. **Build green — MET**. `make -C build-claude -j$(nproc)` exit 0; binary mtime
+   09:39→11:40.
+7. **No regression — MET**. Scene E 26/26; A–D P4 dDist ≤35.2 km (Mars; inner
+   0.001–35 km, scales with distance), orientation 17/48 (MEASURED post-B14),
+   P-d 0.0000; 0 validation errors. config.ini + ssystem.ini byte-identical
+   (md5 03fbee59 / 62239656).
+8. **Trackers — MET**. §11.71 + §13.B B10 (state + 3 suspensions) + §13.A A23 +
+   §5.18 + this section.
+9. **Committed on master-beta — MET** (hashes below).
+
+### Deviations / judgement calls (each with its reason)
+- **No runtime command surface added.** The command word order is SUSPENDED
+  (carve-out b), so there is nothing to spell yet; the data keys reach the new
+  path through the existing `body action load` param map (verified: addBody →
+  camera->getCurrentSystem()->loadBody). The (vi) "script recipe" is satisfied
+  by the data keys alone.
+- **Free-mode descent clamp gated `!isSystem()`** [derived: EnvironmentManager
+  onBody = !isFreeMode && !isSystem; a system has no landable surface, I4] — a
+  system's ground_radius (its subsystem radius) would otherwise block flying
+  INTO a galaxy/solar-system. Verified inert in scene E's free-flight ladder.
+- **proximityFactor uses the `distance` member (not position.length()) in free
+  mode** — preserves the legacy free-mode velocity exactly (bit-identical); the
+  geometric barrier is the separate `position`-based clamp.
+
+### Findings recorded, not fixed (out of scope)
+- `Camera::multAlt` UNWIRED (0 callers; new-path keyboard altitude control not
+  dual-routed — old core.cpp:1737 has no Camera sibling).
+- Free-mode `distance` member is STALE (not updated per-frame in free mode);
+  pre-existing, kept for parity.
+
+### Suspended for Vixy (decisions, not mine)
+- **(a) FLOOR VALUE** — `ANTISTUCK_ESCAPE_FLOOR = 1e-6` (radius-fraction) is a
+  DEFENSIBLE PLACEHOLDER, not final. Reasoning: ≈6.4 m on Earth escapes in
+  ~1-2 s without wrecking surface nav; deliberately NOT MIN_MOVEMENT_SPEED's
+  0.125 (≈797 km, an AoI-traversal SPEED, different unit). Open: one constant
+  with MIN_MOVEMENT_SPEED (re-unit it) or two (as landed)?
+- **(b) DATA-KEY vs COMMAND word order** — kept `datum_radius`/`ground_radius`;
+  the command was requested `radius datum`/`radius ground` (Q12). Re-spell the
+  data keys to match, or keep as landed?
+- **(c) MilkyWay center-relative intent** — the 3 factory nodes authored the
+  now-deleted `altitudeRelativeToRadius=false` (measure altitude from the
+  galactic CENTRE). The inert ctor never ran it, so I migrated to
+  datum=ground=radius = today's runtime bit-identical (MilkyWay keeps 3.2e9 AU).
+  Keep that, or honour the authored intent (datum_radius=ground_radius=0 for
+  MilkyWay — a user-visible galaxy-scale free-mode navigation change)?
+
+### What I did NOT verify
+- Live multAlt/moveRelLon escapability (unwired/UI-only — argued from formula).
+- Composed-screen landscape/atmosphere render at a datum≠radius body (numeric/
+  threshold layer only, per B30's guidance to use the numeric layer for B10).
+- drive_scenes A–D vs a pre-B10 baseline byte-for-byte (no HEAD drive_scenes
+  baseline captured; positions are provably orthogonal to datum/ground and
+  scene E's exact mars-landing assert covers position invariance).
+
+### Reproduction (verbatim)
+    make -C /home/claude/spacecrafter/build-claude -j$(nproc)   # exit 0
+    cd /home/claude/spacecrafter
+    # baseline was captured at HEAD 449e40fe before the change:
+    bash src/experimentalModule/harness/b10_run.sh b10_nav.py \
+      "$PWD/src/experimentalModule/harness/artifacts/b10_post"        # regression + discriminating
+    bash src/experimentalModule/harness/b15_run.sh scene_e_spine.py \
+      "$PWD/src/experimentalModule/harness/artifacts/b10_sceneE"      # 26/26
+    bash src/experimentalModule/harness/b15_run.sh drive_scenes.py \
+      "$PWD/src/experimentalModule/harness/artifacts/b10_AD"          # A-D
+    python3 src/experimentalModule/harness/analyze.py /tmp/gen_a.json
+    python3 src/experimentalModule/harness/orientation_check.py /tmp/gen_mars.json  # 17/48, P-d 0
+
+### Hygiene
+config.ini restored byte-identical (03fbee59, init_fov 180→340→180). ssystem.ini
+untouched (62239656 — test bodies created via runtime `body action load`, no file
+edits). `supervised-by.sh` / `data/spacecrafter.desktop` left untracked. No
+harness task list touched. No §11.15d shutdown fire observed.

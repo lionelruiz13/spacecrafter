@@ -26,6 +26,25 @@ float Camera::distanceToReference() const
    return distance - reference->getAltitudeReference();
 }
 
+// Shared proximity-factor authority (B10 iv-b, §5.2). Base measured to the
+// ground (ground_radius), NOT the datum: == distanceToReference() for every
+// default (ground==datum) body, so bit-identical to today until the two radii
+// differ. Uses the SAME `distance` member as distanceToReference (legacy
+// free-mode velocity parity); the geometric ground barrier is enforced
+// separately by update()'s free-mode descent clamp on `position`. The floor is
+// radius-relative (stays defined at an enterable body's centre) and applies to
+// the outward/escape step only (§5.18).
+float Camera::proximityFactor(bool escaping) const
+{
+    float p = distance - reference->getScaledGroundRadius();
+    if (escaping) {
+        const float floor = static_cast<float>(ANTISTUCK_ESCAPE_FLOOR) * reference->getScaledRadius();
+        if (p < floor)
+            p = floor;
+    }
+    return p;
+}
+
 // ---- View composition authority (see Camera.hpp) ---------------------------
 
 Mat4f Camera::fold() const
@@ -307,6 +326,24 @@ void Camera::update(double jd, float deltaTime)
             latitude += deltaPosition[1] * deltaTime;
             distance += deltaPosition[2] * deltaTime;
         }
+    }
+    // Free-mode descent clamp (B10 iii, R4 STOP-AND-HOLD): the observer cannot
+    // descend past ground_radius. Enforced on `position` (the actual free-mode
+    // geometry) every frame, so integrated glides AND instant interactive
+    // descents settle-and-HOLD at the ground rather than crossing it or
+    // asymptoting toward it. A SYSTEM reference has no landable surface (the
+    // EnvironmentManager onBody rule, I4) so it carries no ground clamp —
+    // flying INTO a galaxy / solar system stays free. ground_radius == 0
+    // (enterable body) ⇒ no clamp, descent to the centre allowed. Anchored
+    // mode has no clamp by design (moveto altitude -X is an explicit
+    // declaration). This is the ONLY descent floor in Camera — there was none
+    // before (§5.2 finding ii), so it is inert for every default body until
+    // the observer would cross its ground in free flight.
+    if (freeMode && !reference->isSystem()) {
+        const float ground = reference->getScaledGroundRadius();
+        const float len = position.length();
+        if (len < ground && len > 0.f)
+            position *= ground / len;
     }
     // Sky-lock (old flag_lock_equ_pos): hold the equatorial-frame orientation
     // fixed as the body spins under the anchored observer. Re-derive the params

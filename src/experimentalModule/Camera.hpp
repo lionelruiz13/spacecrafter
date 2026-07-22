@@ -31,8 +31,18 @@ enum class CameraMount : uint8_t {
 class Camera {
 public:
     Camera(ModularBody *reference, float longitude, float latitude, float altitude);
-    // Return the distance to the reference in AU
+    // Return the distance to the reference in AU (relative to datum_radius, the
+    // altitude zero-point). Feeds the altitude readout and `moveto altitude`.
     float distanceToReference() const;
+    // The shared PROXIMITY-FACTOR authority (B10 iv-b, §5.2): the base the
+    // interactive movers (multAlt / moveRelLon / moveRelLat) multiply, measured
+    // to the CLOSEST REACHABLE position (ground_radius), NOT the datum. When
+    // `escaping` (an OUTWARD/lateral step, i.e. away from the ground) the result
+    // is floored to ANTISTUCK_ESCAPE_FLOOR·radius so height 0 is never a fixed
+    // point in any direction — the §5.18 "stuck at the surface" defect. Inward
+    // steps are NOT floored (the free-mode descent clamp in update() stops them
+    // at ground_radius, R4 stop-and-hold).
+    float proximityFactor(bool escaping) const;
     // Dual-path trace harness (INTENT.md 11.14): serialize the full observer
     // state (reference, pose, modes, halfFov) as one JSON object.
     void dumpTrace(std::ostream &out) const;
@@ -94,7 +104,10 @@ public:
     }
     inline void moveRelLon(float lon, float delay = 0) {
         if (freeMode) {
-            lon *= distanceToReference() * 5.f;
+            // Lateral free-flight velocity ∝ proximity to the ground (§5.2);
+            // floored (escaping=true) — lateral is never descent, so it must
+            // stay escapable at height 0.
+            lon *= proximityFactor(true) * 5.f;
             moveEyeRel({lon, 0, 0}, delay);
         } else {
             moveRel({lon, 0, 0}, delay);
@@ -102,7 +115,7 @@ public:
     }
     inline void moveRelLat(float lat, float delay = 0) {
         if (freeMode) {
-            lat *= distanceToReference() * 5.f;
+            lat *= proximityFactor(true) * 5.f;
             moveEyeRel({0, lat, 0}, delay);
         } else {
             moveRel({0, lat, 0}, delay);
@@ -118,7 +131,12 @@ public:
         }
     }
     inline void multAlt(float coef) {
-        coef = distanceToReference()*(coef-1);
+        // Natural/anchored altitude control: a multiplier on the proximity to
+        // the ground (§5.2 iv). Floored only when moving OUTWARD (coef>1) so
+        // takeoff from height 0 is always possible; inward (coef<1) is left
+        // unfloored — it degenerates to no move at the ground, which is the
+        // soft floor (moveto altitude -X can still cross it).
+        coef = proximityFactor(coef > 1.f)*(coef-1);
         if (freeMode) {
             moveEyeRel({0, 0, coef});
         } else {
