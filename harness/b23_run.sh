@@ -10,7 +10,7 @@
 # Uranus, Moon, Sun (test-only; the dispatch restores it byte-identically).
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 DRIVER=${1:-b23_grid.py}
 OUT=${2:-$HERE/artifacts/b23}
 mkdir -p "$OUT"

@@ -13,7 +13,7 @@
 # rewrites config.ini on clean exit).
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 OUT="$HERE/artifacts/b6b7"
 CFG=~/.spacecrafter/config.ini
 NRUNS=${1:-3}

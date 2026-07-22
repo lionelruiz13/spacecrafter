@@ -4,7 +4,7 @@
 # byte-identically (md5 asserted). Same pattern as b15_run.sh.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 DRIVER=${1:-b10_nav.py}
 OUT=${2:-$HERE/artifacts/b10}
 CFG=~/.spacecrafter/config.ini

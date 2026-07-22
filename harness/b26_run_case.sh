@@ -14,7 +14,7 @@
 # from the pixels.  Requires a display (DISPLAY=:2 here) and enable_tcp.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 TAG=$1
 OUT=${2:-$HERE/artifacts/b26}
 mkdir -p "$OUT"

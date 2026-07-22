@@ -3,7 +3,7 @@
 # blocks attach); the probe counts setBodyColor / setDefaultBodyColor hits.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 DRIVER=${1:-b29_color.py}
 OUT=${2:-$HERE/artifacts/b29}
 mkdir -p "$OUT"

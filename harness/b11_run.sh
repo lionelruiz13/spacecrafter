@@ -6,7 +6,7 @@
 # code run at all after the flag went off" (the DoD-4 work-stopped question).
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 DRIVER=${1:-b11_trail_gate.py}
 OUT=${2:-$HERE/artifacts/b11}
 mkdir -p "$OUT"

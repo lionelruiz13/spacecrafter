@@ -8,7 +8,7 @@
 # N minimal launch+shutdown cycles (the §11.47 canonical probe shape).
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 OUT="$HERE/artifacts/b7_gdb"
 CFG=~/.spacecrafter/config.ini
 N=${1:-4}

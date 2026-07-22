@@ -5,7 +5,7 @@
 # commands, but home_planet/date are runtime); md5 asserted in/out.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 DRIVER=${1:-b9_azconv.py}
 OUT=${2:-$HERE/artifacts/b9}
 mkdir -p "$OUT"

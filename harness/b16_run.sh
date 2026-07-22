@@ -5,7 +5,7 @@
 # reached its handler" evidence that does not come from the handler's own log.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 DRIVER=${1:-b16_reload.py}
 OUT=${2:-$HERE/artifacts/b16}
 mkdir -p "$OUT"

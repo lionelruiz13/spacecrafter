@@ -6,7 +6,7 @@
 # Config.ini is not touched (settings are sent as commands); md5 asserted.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 DRIVER=${1:-b18_skylock.py}
 OUT=${2:-$HERE/artifacts/b18}
 mkdir -p "$OUT"

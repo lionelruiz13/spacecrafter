@@ -3,7 +3,7 @@
 # the breakpoint on Core::setViewOffset is the "reached its handler" evidence.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 OUT="$HERE/artifacts/b17"
 mkdir -p "$OUT"
 rm -f "$OUT/gdb.log" "$OUT/drive.log"

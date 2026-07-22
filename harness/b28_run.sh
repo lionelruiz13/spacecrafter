@@ -5,7 +5,7 @@
 # (tilt pieces are projection/fov-independent).
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 DRIVER=${1:-b28_frame.py}
 OUT=${2:-$HERE/artifacts/b28}
 mkdir -p "$OUT"

@@ -4,7 +4,7 @@
 # harness, restores byte-identically afterward (md5 asserted).
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 DRIVER=${1:-b15_aoi_stale.py}
 OUT=${2:-$HERE/artifacts/b15}
 CFG=~/.spacecrafter/config.ini

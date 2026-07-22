@@ -7,7 +7,7 @@
 #   DISPLAY=:2 ./b14_run.sh <tag> [outdir]
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 TAG=${1:-baseline}
 OUT=${2:-$HERE/artifacts/b14}
 mkdir -p "$OUT"

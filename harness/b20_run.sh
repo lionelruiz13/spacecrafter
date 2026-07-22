@@ -6,7 +6,7 @@
 # state invalidates the run - harness posture).
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
-BIN="${SC_BIN:-$HERE/../../../build-claude/src/spacecrafter}"
+BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 DRIVER=${1:-b20_anchored_galactic.py}
 OUT=${2:-$HERE/artifacts/b20g}
 mkdir -p "$OUT"
