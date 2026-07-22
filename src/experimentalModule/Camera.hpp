@@ -130,19 +130,26 @@ public:
             moveRel({0, 0, static_cast<float>(alt)}, delay);
         }
     }
+    // Natural altitude control (§5.2 iv): a multiplier on the proximity to the
+    // vertical the observer descends along. Free-flight geometry (view ray near
+    // / last-selected far) lives in descend() (Camera.cpp, needs the complete
+    // ModularBody); anchored stays the legacy radial altitude there. coef<1
+    // descends, coef>1 ascends; floored only OUTWARD (coef>1) so takeoff from
+    // height 0 is always possible.
     inline void multAlt(float coef) {
-        // Natural/anchored altitude control: a multiplier on the proximity to
-        // the ground (§5.2 iv). Floored only when moving OUTWARD (coef>1) so
-        // takeoff from height 0 is always possible; inward (coef<1) is left
-        // unfloored — it degenerates to no move at the ground, which is the
-        // soft floor (moveto altitude -X can still cross it).
-        coef = proximityFactor(coef > 1.f)*(coef-1);
-        if (freeMode) {
-            moveEyeRel({0, 0, coef});
-        } else {
-            moveRel({0, 0, coef});
-        }
+        descend(coef);
     }
+    // View-directed free descent (B21, §11.72), the single altitude-geometry
+    // authority behind multAlt and the `camera action descend` command. In
+    // free flight "down" points along the VIEW RAY when the reference is a body
+    // (toward the surface point under the screen centre, Q6/A18) and toward the
+    // LAST SELECTED body when the reference is a system (far/galactic, R6
+    // §11.70(e)); anchored keeps the legacy radial altitude. Rides B10's
+    // proximityFactor() and composes with update()'s R4 ground clamp — it
+    // changes only the descent DIRECTION, never when a reference transition
+    // fires (dispatch §2 carve-out). Defined in Camera.cpp (complete
+    // ModularBody: getObservedPosition/getSelected/isSystem).
+    void descend(float coef);
     // Target is the legacy spherical triple (lon, lat, altitude-in-AU) in
     // BOTH modes - moveto is the legacy positioning surface and must stay
     // meaningful in free flight (2(c): one control surface, both modes).

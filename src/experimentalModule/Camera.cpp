@@ -695,6 +695,94 @@ void Camera::setAltitude(double altitude)
     distance = altitude/(1000*AU)+reference->getAltitudeReference();
 }
 
+// View-directed free descent authority (B21, §11.72). The vertical the observer
+// moves along in free flight depends on the regime, riding B10's
+// proximityFactor() (I2):
+//   * NEAR a body (reference is NOT a system): the VIEW RAY — descend toward
+//     the surface point under the screen centre (eye forward, -z). Q6/A18
+//     (§11.48). update()'s free-mode clamp holds the floor at ground_radius
+//     (R4 stop-and-hold) — this composes with it, it does not fight it.
+//   * FAR / galactic (reference IS a system, no landable surface underfoot):
+//     aim at the LAST SELECTED body (R6 §11.70(e)). The existing distance-
+//     driven reference transition (findBetterReference, update()) then captures
+//     the body and the near-field view-ray descent takes over. B21 changes only
+//     the descent DIRECTION here, never WHEN a transition fires (dispatch §2
+//     carve-out — the escalation/anchor policy is B20/§6.9 territory).
+// `coef` is the altitude multiplier (multAlt semantics): coef<1 descends,
+// coef>1 ascends. The along-axis step is multiplicative on the vertical's
+// length (ground proximity near, distance-to-selected far), so it mirrors the
+// legacy natural altitude control on both ends.
+void Camera::descend(float coef)
+{
+    if (!freeMode) {
+        // Anchored: legacy proximity-scaled radial altitude (unchanged).
+        moveRel({0, 0, proximityFactor(coef > 1.f) * (coef - 1)});
+        return;
+    }
+    // FAR / galactic: the reference is a system (no landable surface
+    // underfoot) ⇒ aim at the LAST SELECTED body (R6 §11.70(e)). d is sel's
+    // centre in the eye frame; moveEyeRel maps it so the observer steps by
+    // (1-coef)·|d| TOWARD sel for coef<1 (descend) and away for coef>1
+    // (ascend) — multiplicative on the distance to sel, mirroring the near
+    // case's multiplicative-on-altitude feel. The existing distance-driven
+    // reference transition (findBetterReference, update()) then captures the
+    // body and the near-field view-ray descent takes over — B21 changes only
+    // the descent DIRECTION, never WHEN a transition fires (dispatch §2).
+    if (reference->isSystem()) {
+        if (ModularBody *sel = ModularBody::getSelected()) {
+            const Vec3f d = sel->getObservedPosition();
+            if (d.lengthSquared() > 0.f) {
+                moveEyeRel(d * (coef - 1));
+                return;
+            }
+        }
+        // No selection / degenerate: fall through to the view-ray step.
+    }
+    // NEAR field: descend toward the surface point under the view ray. Work in
+    // the EYE frame — observer at the origin, forward = −z, the ground sphere
+    // centred at the reference centre C (= reference->getObservedPosition(),
+    // |C| == the live observer distance) with radius g. This is LIVE geometry:
+    // it must NOT read the free-mode-stale `distance` member (B10 §11.71 —
+    // proximityFactor/distanceToReference keep that stale value for lateral-
+    // velocity parity, but a descent that has to reach the ground needs the
+    // live position). Cast origin + s·(0,0,−1), take the near hit, and move a
+    // (1−coef) fraction of the way to it; update()'s R4 clamp holds the floor.
+    const Vec3f C = reference->getObservedPosition();
+    const float g = reference->getScaledGroundRadius();
+    const float len = C.length();
+    float alt = len - g;                  // live radial altitude above the ground
+    if (alt < 0.f) alt = 0.f;
+    if (coef >= 1.f) {
+        // ASCEND: back off along the view ray (reverse of the descent). The step
+        // is proportional to the LIVE altitude and FLOORED to
+        // ANTISTUCK_ESCAPE_FLOOR·radius so takeoff from height 0 is ALWAYS
+        // possible — the §5.18 anti-stuck rule B10 enforces on every OUTWARD
+        // step (proximityFactor's escape floor), restored here on live geometry.
+        float step = (coef - 1.f) * alt;
+        const float floor = static_cast<float>(ANTISTUCK_ESCAPE_FLOOR)
+                          * reference->getScaledRadius();
+        if (step < floor)
+            step = floor;
+        moveEyeRel({0, 0, -step});        // eye +z = backward along the ray = up
+        return;
+    }
+    // DESCEND toward the surface point under the view ray. Cast origin +
+    // s·(0,0,−1), take the near hit, move (1−coef) of the way there.
+    const float Cz = C[2];
+    const float disc = Cz * Cz - (C.dot(C) - g * g);
+    float s = -1.f;
+    if (disc >= 0.f)
+        s = -Cz - sqrtf(disc);            // nearest ray∩sphere ahead of the eye
+    if (s > 0.f) {
+        moveEyeRel({0, 0, (1.f - coef) * s}); // forward toward S; (1−coef)>0
+    } else if (len > 0.f) {
+        // The view ray misses the ground OR the sphere sits entirely behind the
+        // eye (looking away): descend RADIALLY toward the reference centre so
+        // "down" still lowers the observer.
+        moveEyeRel(C * ((coef - 1.f) * alt / len)); // observer Δ = (1−coef)·alt·Ĉ
+    }
+}
+
 // Dual-path trace harness (INTENT.md 11.14).
 void Camera::dumpTrace(std::ostream &out) const
 {
@@ -720,6 +808,14 @@ void Camera::dumpTrace(std::ostream &out) const
         << ",\"refDist\":" << (reference ? reference->getDistanceToObserver() : 0)
         << ",\"refCached\":" << ((reference && reference->isCacheFresh()) ? "true" : "false")
         << ",\"refParent\":\"" << ((reference && reference->getParent()) ? reference->getParent()->getEnglishName() : "") << '"'
+        // Selected body + the observer's distance to it (== the far-mode
+        // descent target, B21 §11.72): getObservedPosition() is what
+        // Camera::descend aims at when the reference is a system. "" / 0 when
+        // nothing is selected. Frame-independent scalar — the far-case metric a
+        // system-distance dump cannot read off the (old-system-driven) per-body
+        // list for a runtime-loaded target.
+        << ",\"selected\":\"" << (ModularBody::getSelected() ? ModularBody::getSelected()->getEnglishName() : "")
+        << "\",\"selDist\":" << (ModularBody::getSelected() ? ModularBody::getSelected()->getObservedPosition().length() : 0.f)
         << ",\"halfFov\":" << ModularBody::halfFov
         << ",\"cullHalfFov\":" << ModularBody::cullHalfFov << ",\"mat\":[";
     for (int i = 0; i < 16; ++i)

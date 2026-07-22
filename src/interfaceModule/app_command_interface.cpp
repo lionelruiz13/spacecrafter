@@ -3882,6 +3882,20 @@ int AppCommandInterface::commandCamera(uint64_t &wait)
 		return executeCommandStatus();
 	}
 
+	if (argAction == W_DESCEND) {
+		// camera action descend coef <c> - view-directed free descent (B21,
+		// INTENT §11.72). coef<1 descends, coef>1 ascends (multAlt semantics).
+		// Sole command-reachable driver of the view-ray / last-selected descent
+		// geometry (multAlt/moveRelAlt are UI-key-only, B10 §11.71).
+		std::string argCoef = args[W_COEF];
+		if (argCoef.empty()) {
+			debug_message = "command 'camera descend' : missing coef";
+			return executeCommandStatus();
+		}
+		coreLink->cameraDescend(evalDouble(argCoef));
+		return executeCommandStatus();
+	}
+
 	if(argAction == W_LIFT_OFF){
 
 		std::string altStr = args[W_ALTITUDE];

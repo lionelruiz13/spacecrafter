@@ -330,3 +330,33 @@ moved on the switch, a switchToBody positive control).  Discrimination proven by
 temporarily disabling `recoverParams(R)` in warpToBody - the 3 ref-switch asserts
 flip to FAIL, the rest stay green.  App rewrites config.ini on shutdown, so any
 `cp`-restore of an init_fov edit must run AFTER the process is fully dead.
+
+## View-directed free descent (B21, 2026-07-22) - INTENT 11.72 / 13.B B21
+
+`b21_descent.py` (full) + `b21_far.py` (fast far-only) + `b21_probe.py`
+(selection sanity).  Numeric/vector layer, FISHEYE, run via `./b10_run.sh
+b21_descent.py <out>` (reuses B10's config/init_fov + md5 restore).
+
+Driver = the NEW command `camera action descend coef <c>` (coef<1 descends,
+coef>1 ascends).  The view-directed descent geometry was UI-key-only before
+(multAlt/moveRelAlt, B10 finding), so a command had to be routed to test it.
+
+Four parts: (1) near SIGN - |pos| drops toward the ground; (2) VIEW-DIRECTED
+discriminator - two views ±35deg apart land at DIFFERENT surface points (280 km)
+while `moveto altitude` lands at the SAME sub-observer point (0 km); (3) R4 CLAMP
+- hold at ground_radius, reversible x2, enter->centre; (4) FAR - at a SYSTEM
+reference (`sun_aoi*1.07`) descend aims at `getSelected()`.
+
+FAR-case gotchas learned here:
+- the observed distance to a runtime-loaded body is NOT in the per-body dump
+  list (that iterates the OLD current system, which COLLAPSES at galactic
+  distance).  Read it from the camera dump's `selDist` (= obs->selected, added
+  this row) - frame-independent, and it IS the quantity the descent moves along.
+- `select planet X` searches the OLD current system, so SELECT WHILE NEAR (the
+  selection persists through the fly-out + escalation).
+- real planets sit ~1 AU from the system centre => ~0deg apart from a
+  system-distance observer (float-noise discriminator); use OFF-CENTRE synthetic
+  targets (FarA +y, FarB +z, 12000/20000 AU).
+- a big step (coef 0.5) de-escalates SolarSystem->Sun mid-measurement (the
+  transition machinery re-bases the frame); a SMALL step (coef 0.96) keeps
+  ref=SolarSystem and selDist ratio is EXACTLY coef == exact-aim proof.

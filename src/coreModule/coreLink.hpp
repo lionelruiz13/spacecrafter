@@ -854,6 +854,17 @@ public:
 		Camera::instance->setFreeMode(b);
 	}
 
+	//! View-directed free descent (B21, §11.72): drive Camera::descend, the
+	//! altitude-geometry authority (view ray near / last-selected body far).
+	//! coef<1 descends, coef>1 ascends. New-path only — the old-path free
+	//! navigation is the anchor-point observatory, there is nothing to mirror
+	//! (same seam as cameraSetFreeMode). This is the ONLY command-reachable
+	//! driver of the view-directed descent: multAlt/moveRelAlt are UI-key-only
+	//! (B10 finding, §11.71).
+	void cameraDescend(float coef) {
+		Camera::instance->descend(coef);
+	}
+
 	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration=0) {
 		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
 		Camera::instance->moveTo({static_cast<float>(lon*M_PI/180), static_cast<float>(lat*M_PI/180), static_cast<float>(alt/(1000*AU))}, duration/1000.f, calculate_duration);

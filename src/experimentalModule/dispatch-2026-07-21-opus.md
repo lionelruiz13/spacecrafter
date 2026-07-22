@@ -53,7 +53,7 @@ Suggested order: B26 (pure verification) → small ratified rows (B19, B16, B11,
 | Row | Dispatchable part | Carved out (NOT yours) | Recorded |
 |---|---|---|---|
 | B10 | ~~`datum_radius` + `ground_radius` full scope (i)–(vi)~~ **DONE 2026-07-22 → §11.71, §20 below** | (a) FLOOR VALUE — landed `ANTISTUCK_ESCAPE_FLOOR=1e-6` as a DEFENSIBLE PLACEHOLDER (≈6.4 m Earth), flagged not-final; (b) Q12 word-order — data keys kept `datum_radius`/`ground_radius`, NO runtime command added (spelling undecided); (c) NEW — MilkyWay's authored `=false` center-relative intent (kept 3.2e9 AU bit-identical vs honour datum=0) | §5.2, §11.6, §11.48(c), **§11.71** |
-| B21 | View-directed free descent ("down" = surface point under the view ray), riding B10's `proximityFactor()` — sequence after B10 | The far/galactic-distance case (A18 residual) — the row itself says it must not be improvised into this work | §11.36, §11.48(a) |
+| B21 | ~~View-directed free descent ("down" = surface point under the view ray), riding B10's `proximityFactor()` — sequence after B10~~ **DONE 2026-07-22 → §11.72, §21 below** | ~~The far/galactic-distance case (A18 residual)~~ **now IN scope [R6 §11.70(e): aim at the LAST SELECTED body]** — carve-out held: did NOT change the escalation/anchor policy (B20/§6.9); far-case is descent DIRECTION only, the existing transition captures the body | §11.36, §11.48(a), §11.70, **§11.72** |
 | B27 | Steps (1) site inventory completion (grep is not exhaustive yet — seed list §11.51(c)) and (2) per-site §2(a2) test → declarable capability key | Step (3) generator emission — belongs to B25 (critical/authoring chain); special ORBITS exempt (`*_special` stays) | §11.51(c), §5.5, §11.48(b) |
 | B14 | ~~Preparation only: collect IAU/WGCCRE values~~ **PREP DONE §18/§11.68; LAND HALF DONE 2026-07-22 (§19 below, §11.69).** Vixy authorized cited web-fetch. **14 of 28 shipped cluster moons landed** with 3-source-agreed IAU-2015 poles (pck00011+pck00010+Archinal report text); Iapetus pilot verified (axis 8e-6°, 2 dates 0°, commutator 30.87→21.36); 14 STOPPED-for-no-pole (irregular/chaotic). BOTH files edited. Zero `[knowledge]` values. | Remaining suspended-for-Vixy: **W0 write** (referential mismatch, fetched not written), **6 loaded-only Jupiter moons** (shipped divergence), **Hyperion** (chaotic), **pole-drift/nutation** unrepresentable | §11.69, §11.68, §11.35, §11.48(a), §11.49(e), §11.51(d) |
 
@@ -1960,3 +1960,73 @@ config.ini restored byte-identical (03fbee59, init_fov 180→340→180). ssystem
 untouched (62239656 — test bodies created via runtime `body action load`, no file
 edits). `supervised-by.sh` / `data/spacecrafter.desktop` left untracked. No
 harness task list touched. No §11.15d shutdown fire observed.
+
+---
+
+## 21. Execution log — B21 (Claude Opus 4.8, 2026-07-22)
+
+**Task:** View-directed free descent — in free flight "down" = the surface point
+under the view ray (near); the LAST SELECTED body (far, R6 §11.70(e)). Full
+record: INTENT §11.72 + §13.B B21 row. Wave §2 carve-out (far-case now in scope).
+
+**Product change beyond the row:** minimal and disclosed — one new command
+(`camera action descend`), one new dump field (`selDist`, analogous to
+`refDist`), and a SIGN + STALENESS correction to the never-called `Camera::multAlt`
+free-mode branch (0 callers ⇒ no runtime behaviour changed by the correction).
+
+### DoD checklist
+1. **Near-field descent under the view ray, measured** — MET. Off-centre views
+   (±35° az) land at DIFFERENT surface points (5999.6, ±140.4, 0) km: **|ΔE|=280.70
+   km, 2.680° surface, 140.4 km / 1.34° off the sub-observer point**. Centre-directed
+   control (`moveto altitude`) lands at (6060,0,0) for BOTH → **0.0000 km / 0°**,
+   view-independent. Discriminator proven. Evidence: `artifacts/b21/b21_near_view{P,M}.json`,
+   `near_ctrl{P,M}.json`; report in `scratchpad/b21run6.log`.
+2. **Far case aims at the last-selected body, measured** — MET. ref=SolarSystem
+   (isSystem verified). `selDist` (=obs→selected) FOLLOWS the selection (FarA
+   3.809e5 ≠ FarB 3.772e5 AU); descend coef 0.96 → **selDist ×0.960000 EXACTLY for
+   BOTH** (moves exactly toward the selected body; a centre-directed step would not
+   hit coef for an off-centre body). Changing the selection changes the target.
+   Evidence: `b21_far0{a,b}.json`/`far1{a,b}.json`, `b21_far.py` (coef-0.96 exact +
+   coef-0.5 approach).
+3. **Composes with B10's clamp** — MET. R4 hold at |pos|=6012.0004 km (does not
+   cross), reversible pair ×2 (escapes 6065.5/6061.0, 2nd entry from 1st exit),
+   enter (ground 0) → 0.0000 km. Ascend floored (§5.18 restored on live geometry).
+   Evidence: `b21_clear_{desc,asc}{1,2}.json`, `enter_desc.json`.
+4. **Driver reachability** — MET + disclosed. The view-directed descent geometry
+   was UI-key-only (B10 §11.71 finding on multAlt/moveRelAlt); routed a new
+   command `camera action descend coef <c>` (coreLink→Camera::descend). Dispatched
+   (coef 0.96 → ×0.96); bogus `camera action descend` (no coef) → 0 effect
+   (ratio 1.0). Selection probe `b21_probe.py` confirmed `select planet <new body>`
+   reaches `getSelected()` and `selDist`.
+5. **Build green** — MET. `make -C build-claude -j$(nproc)` exit 0; mtime 11:40→13:05.
+6. **No regression** — MET. Scene E **26/26 OK** (`scene_e_spine.py`); A–D P4
+   **4.16/14.87/17.17/50.01/31.83 km** (recorded ~3–55 km); orientation **17/48**,
+   P-d **0.0000°** (`predict.py`/`orientation_check.py` on `/tmp/gen_*.json`);
+   config.ini md5 **03fbee59 in==out** every run; ssystem.ini untouched.
+7. **Trackers** — MET. INTENT §11.72 + §13.B B21 row; this section + the §2 row.
+8. **Committed on master-beta** — see commit hash below.
+
+### Deviations / findings
+- The command spelling (`camera action descend coef`), the descent step feel, and
+  whether the UI keyboard descent should also route through `descend()` for the
+  far-case are SUSPENDED FOR VIXY (surface details, non-blocking) — §11.72.
+- `multAlt`'s pre-existing free-mode branch was SIGN-INVERTED and used the stale
+  `distance` (both dead: 0 callers). `descend()` supersedes it on live geometry.
+- The far-case at coef 0.5 shows the SolarSystem→Sun de-escalation (transition
+  machinery, not the descent geometry) — measured, attributed, not touched
+  (carve-out: I do not change WHEN a transition fires).
+- The old-path `select planet X` searches the current old-path system, which
+  collapses at galactic distance — so far-case selection must be set while near
+  (it persists). Recorded as a harness constraint, not a defect to fix here.
+
+### Files touched
+`src/experimentalModule/Camera.{hpp,cpp}` · `src/coreModule/coreLink.hpp` ·
+`src/interfaceModule/app_command_interface.cpp` · `src/interfaceModule/base_command_interface.hpp` ·
+`src/experimentalModule/INTENT.md` · this dispatch file ·
+harness `b21_{descent,far,probe}.py` (new) · `.gitignore` (+artifacts/b21{,f,p}).
+Artifacts (gitignored): `harness/artifacts/b21{,f,p}`.
+
+### Hygiene
+config.ini restored byte-identical (03fbee59) every run. ssystem.ini untouched
+(runtime `body action load`, no file edits). `supervised-by.sh` / `data/spacecrafter.desktop`
+left untracked. No harness task list touched. No §11.15d shutdown fire observed.

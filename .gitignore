@@ -103,4 +103,9 @@ src/experimentalModule/harness/artifacts/b28_before/
 src/experimentalModule/harness/artifacts/b28_after/
 src/experimentalModule/harness/artifacts/b28_declared/
 src/experimentalModule/harness/artifacts/b14/
+src/experimentalModule/harness/artifacts/b21/
+src/experimentalModule/harness/artifacts/b21f/
+src/experimentalModule/harness/artifacts/b21p/
+src/experimentalModule/harness/artifacts/b21_sceneE/
+src/experimentalModule/harness/artifacts/b21_AD/
 src/experimentalModule/harness/__pycache__/
