@@ -61,6 +61,27 @@ public:
         return mount;
     }
 
+    // Sky-lock (old flag_lock_equ_pos, the "equatorial-mount sky-lock"): hold
+    // the eye orientation FIXED in the reference body's EQUATORIAL frame as
+    // sidereal time advances, instead of the default LOCAL-horizon lock. ON
+    // captures the current body->eye rotation (viewRotation*placementRotation);
+    // update() then re-derives (alt,az,heading) against the sidereal-advanced
+    // placement every frame so the composed rotation stays == the captured one
+    // -> same RA/DE, drifting alt/az (the old-path `equ_vision` held while
+    // `local_vision = earthEquToLocal(equ_vision)` is recomputed, navigator.cpp
+    // :128-130). Reproduces the shipped-config observable (VIEW_EQUATOR +
+    // flag_lock_equ_pos = frozen equatorial sky) EXACTLY, mount-independently,
+    // since the whole composed rotation is held. DORMANT under tracking
+    // (`target`) and in-flight view plans (viewT>0) — the old precedence
+    // auto_move > tracking > lock — and in freeMode. SUSPENDED for Vixy
+    // (INTENT 11.58): (i) how a VIEW_HORIZON mount composes (old rolls with the
+    // zenith holding direction-only; this holds the full orientation), (ii) the
+    // free-mode composition, (iii) the old select-while-tracking auto-enable.
+    void setSkyLock(bool b);
+    inline bool getSkyLock() const {
+        return skyLocked;
+    }
+
     void moveHeading(float deltaHeading);
     void setHeading(float heading, float duration = 0);
     inline float getHeading() const {
@@ -289,6 +310,12 @@ private:
     // preserve the zenith-frame direction (ALTAZ: fold=I, nothing to do).
     float foldLat = 0;
     CameraMount mount = CameraMount::ALTAZ;
+    // Sky-lock state (old flag_lock_equ_pos). lockedSkyRot is the body->eye
+    // rotation (viewRotation*placementRotation) captured when the lock engaged
+    // and held every frame while skyLocked — the new-path analog of the old
+    // path's held `equ_vision`.
+    bool skyLocked = false;
+    Mat4f lockedSkyRot;
     Vec3f position;
     Vec3f deltaPosition;
     float moveDuration = 0;

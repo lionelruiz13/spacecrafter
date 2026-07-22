@@ -219,10 +219,9 @@ public:
 		return navigation->getFlagTraking();
 	}
 
-	//! Set whether sky position is to be locked
-	void setFlagLockSkyPosition(bool b) {
-		navigation->setFlagLockEquPos(b);
-	}
+	//! Set whether sky position is to be locked. Both-paths mirror (defined in
+	//! core.cpp): old navigation flag + new-path Camera sky-lock (INTENT 11.58).
+	void setFlagLockSkyPosition(bool b);
 	//! Set whether sky position is locked
 	bool getFlagLockSkyPosition(void) {
 		return navigation->getFlagLockEquPos();

@@ -778,6 +778,18 @@ void Core::ssystemDualDump(const std::string& file)
 	ssystemFactory->dumpTracePaths(file);
 }
 
+//! Both-paths mirror of the equatorial-mount sky-lock (old flag_lock_equ_pos).
+//! Single source for `flag lock_sky_position` AND the turn/drag unlock sites
+//! (all route Core::setFlagLockSkyPosition): old navigation flag + new-path
+//! Camera sky-lock, kept in lockstep by construction (INTENT 11.58, the
+//! zoomToBothPaths/dragView both-paths precedent).
+void Core::setFlagLockSkyPosition(bool b)
+{
+	navigation->setFlagLockEquPos(b);
+	if (Camera::instance)
+		Camera::instance->setSkyLock(b);
+}
+
 void Core::setExperimentalPath(bool newPath)
 {
 	ssystemFactory->setExperimentalPath(newPath);

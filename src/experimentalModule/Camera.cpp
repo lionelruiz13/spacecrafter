@@ -288,6 +288,20 @@ void Camera::update(double jd, float deltaTime)
             distance += deltaPosition[2] * deltaTime;
         }
     }
+    // Sky-lock (old flag_lock_equ_pos): hold the equatorial-frame orientation
+    // fixed as the body spins under the anchored observer. Re-derive the params
+    // against the CURRENT placement (computeSurfaceToBody has advanced with jd)
+    // so viewRotation()*placementRotation() stays == lockedSkyRot: the RA/DE is
+    // held, the alt/az drift. Dormant under tracking / in-flight view plans /
+    // freeMode (old precedence auto_move > tracking > lock); those frames
+    // re-capture, so a resumed hold starts from the present view. Runs AFTER
+    // the observer-move block so it also holds the sky when the observer moves.
+    if (skyLocked) {
+        if (!freeMode && !target && viewT <= 0.f)
+            recoverParams(lockedSkyRot);
+        else
+            lockedSkyRot = viewRotation().multiplyFast(placementRotation());
+    }
     // Z body_axis
     // X statique, Y et Z bougent avec alt/az
     // (The 2026 Moon-divergence note that lived here is resolved: the delta was
@@ -434,6 +448,20 @@ void Camera::setMount(CameraMount m)
     const Mat4f R = viewRotation().multiplyFast(placementRotation()); // deduce-identical-view
     mount = m;
     recoverParams(R);
+}
+
+void Camera::setSkyLock(bool b)
+{
+    if (b == skyLocked)
+        return;
+    skyLocked = b;
+    // Freeze the CURRENT equatorial-frame orientation (body->eye) to hold. The
+    // held value is captured against the current placement, so update()'s per-
+    // frame recoverParams against the sidereal-advanced placement keeps the
+    // composed rotation on it. Off just releases: update() re-captures each
+    // non-holding frame so a later re-lock starts from the present view.
+    if (b)
+        lockedSkyRot = viewRotation().multiplyFast(placementRotation());
 }
 
 void Camera::lookTo(const Vec3f &direction, float duration, bool isMaxDuration)
@@ -614,7 +642,8 @@ void Camera::dumpTrace(std::ostream &out) const
         << (freeMode ? "true" : "false") << ",\"boundToSurface\":"
         << (boundToSurface ? "true" : "false")
         << ",\"mount\":\"" << (mount == CameraMount::EQUATORIAL ? "equatorial" : "altaz")
-        << "\",\"longitude\":" << longitude << ",\"latitude\":" << latitude
+        << "\",\"skyLocked\":" << (skyLocked ? "true" : "false")
+        << ",\"longitude\":" << longitude << ",\"latitude\":" << latitude
         << ",\"distance\":" << distance
         << ",\"alt\":" << alt << ",\"az\":" << az << ",\"heading\":" << heading
         << ",\"position\":[" << position[0] << ',' << position[1] << ',' << position[2]

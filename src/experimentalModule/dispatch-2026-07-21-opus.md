@@ -674,3 +674,104 @@ gitignored like b11/b16/b19/b26; the summary `artifacts/b23_measurements.json` i
 `supervised-by.sh` and the root `USER_QUESTIONS*.md` / `FEATURE_REQUESTS.md` left
 untracked. No harness task list touched. Known intermittent shutdown segfault (§11.15d)
 fired on some run teardowns AFTER the driver exited 0 — did not affect any artifact.
+
+---
+
+## 9. Execution log — B18 (Claude Opus 4.8, 2026-07-22)
+
+**Task:** port `flag_lock_equ_pos` (the equatorial-mount sky-lock) to the new-path
+Camera. Full record: **INTENT §11.58**; row **§13.B B18** flipped to DONE; §12 seam row
+flipped OLD-ONLY→BOTH. HEAD before: `fb613431`.
+
+**One-paragraph scope statement (report contract):** this change adds new-path behavior
+ONLY on the sky-lock path (`Camera::setSkyLock`), which is OFF by default and dormant in
+every scene that does not issue `flag lock_sky_position`. It changes no default behavior:
+scenes A–D + E reproduce the recorded baseline exactly and every camera dump reports
+`skyLocked=false`. It does NOT wire the mount to the new Camera and does NOT add a config
+key (neither exists to port — see below).
+
+### DoD, item by item
+1. **Old behavior characterized + named** — MET. [observed: navigator.cpp:123-135] lock ON
+   holds `equ_vision` (earth-equatorial direction, fixed to the sky) and recomputes
+   `local_vision` each frame; default is the mirror. Roll/up is set separately by the MOUNT
+   (navigator.cpp:267-288), so shipped `viewing_mode=equator`+lock = whole orientation frozen
+   in the equatorial frame. Spec stated in §11.58(a) before implementing.
+2. **Observable reproduced + measured** — MET. Δjd=0.05 day (18.0493° sidereal). ON: new
+   equ-frame delta **0.0000°**, alt-az **11.8504°**; OFF: equ **18.0493°**, alt-az **0.0000°**
+   — the discriminator (both-nonzero would be a no-op) holds. Cross-path: old `helioToEye`
+   equ-delta == new `mat` equ-delta to all digits in both states. Units: degrees of
+   view-direction change. [measured: b18_analyze.py]
+3. **Both channels reach the code** — command MET, config **n/a (does not exist in old)**.
+   `flag lock_sky_position` → gdb breakpoint on `Camera::setSkyLock` fired **4× (b=1,0,1,0)**
+   for 4 real commands, **0** for bogus `flag lock_sky_positionX` (dump `skyLocked=false`).
+   Config: `flag_lock_equ_pos` has no config reader in the old path (reset to 0 every init,
+   core.cpp:396) — §2(c)'s config half does not apply; not invented (§11.58(e), corrects the
+   §11.48(h) expectation that conflated it with the separate `viewing_mode` mount).
+4. **Both reversible entries** — MET. on→off→on→off; second `on` from the first `off`'s state
+   re-froze equ (0.0000°), each `off` restored the horizon lock (equ 18.049x, alt-az 0). [b18]
+5. **Terminal observable** — MET. Composed screen (2048² FISHEYE): locked pair **0 px>32**
+   (max|d|=4), unlocked pair **142 566 px>32**, noise floor (same state twice) **0 px>0**.
+6. **Build green** — MET. `make -C build-claude -j$(nproc)` exit 0; binary mtime → 02:35:38.
+7. **No regression** — MET. Scenes A–D: P4 **13.25–55.04 km**, orientation **17/48**, P-d
+   **0.0000°**, per-body deltas = recorded classes; scene E **13/13**, Mars landing
+   **2.270821e-05 AU**. `config.ini` md5 **03fbee59…** in==out on both runs (byte-identical).
+8. **Trackers** — MET. INTENT §11.58 + §12 row + §13.B B18 + this section.
+9. **Committed on master-beta** — see the commit hash at the end of this section.
+
+### Deviations / judgement calls (each with its reason)
+- **`Core::setFlagLockSkyPosition` de-inlined** (header → core.cpp) so the both-paths mirror
+  has ONE source (I2) reachable by the command AND the turn/drag unlock sites, without a
+  Camera include in core.hpp. The internal `navigation->setFlagLockEquPos` calls that BYPASS
+  this method (core.cpp:938,1979 select-while-tracking) are deliberately NOT mirrored — that
+  is a tracking-composition decision, suspended.
+- **Design choice: hold the WHOLE composed rotation** (recoverParams(lockedSkyRot)) rather
+  than direction-only. Exactly reproduces the shipped VIEW_EQUATOR+lock observable and reuses
+  the existing deduce-identical-view authority; the VIEW_HORIZON roll difference this implies
+  is suspended (below), not a shipped configuration.
+
+### Findings recorded, not fixed (out of scope)
+- **The mount (`viewing_mode`) is not wired to the new Camera** — `Camera::setMount` has no
+  caller; the shipped `viewing_mode=equator` reaches only the old path. Pre-existing; the
+  sky-lock's drift observable is mount-independent, so parity holds regardless (§11.58(g)).
+- **§11.48(h)'s "B18 needs config+command" was based on a conflation** of the sky-lock with
+  the `viewing_mode` mount — the sky-lock has no config channel in the old path (§11.58(e)).
+
+### Suspended for Vixy
+- **VIEW_HORIZON mount + sky-lock roll**: old rolls with the local zenith (direction-only
+  hold); this port holds the whole orientation (no roll). Coincident for the shipped
+  EQUATORIAL mount; the split needs a decision once the mount is wired.
+- **free-mode + sky-lock composition** (hold dormant in freeMode today).
+- **select-while-tracking auto-enable** (old auto-sets the flag on select-while-tracking):
+  whether the new path should auto-engage sky-lock depends on Camera `target`-tracking
+  composition, structurally unlike old `flag_traking`.
+- **A startup config default for the sky-lock** — would be a new user-visible key the old
+  path never had.
+
+### What I did NOT verify
+- **Reference switch WHILE locked**: `switchToBody`/`warpToBody` do not re-capture
+  `lockedSkyRot`, so a switch under lock would hold the OLD body's equatorial orientation.
+  Not exercised. **B13 (view continuity) inherits `skyLocked`/`lockedSkyRot` as Camera
+  orientation state to carry across reference switches** — flagged for that task.
+- Sky-lock under a live `moveto` observer motion (only static-observer sidereal advance and
+  discrete date jumps were measured; the hold runs after the move block, so it should hold,
+  but it was not A/B'd).
+
+### Reproduction (verbatim)
+    cd /home/claude/spacecrafter
+    make -C build-claude -j$(nproc)                                  # exit 0
+    DISPLAY=:2 bash src/experimentalModule/harness/b18_run.sh        # -> probe 4×(1,0,1,0), md5 match
+    python3 src/experimentalModule/harness/b18_analyze.py            # -> OFF equ 18.05/altaz 0; ON equ 0/altaz 11.85
+    # no-regression (A-D at init_fov 180; E edits init_fov 180→340 then restores by cp)
+    cd src/experimentalModule/harness
+    DISPLAY=:2 <fresh spacecrafter> & ; python3 ./drive_scenes.py
+    python3 ./orientation_check.py /tmp/gen_a.json   # 17/48, P-d 0.0000
+    python3 ./predict.py /tmp/gen_a.json             # P4 15.06 km (13.25–55.04 across A-D)
+    DISPLAY=:2 <fresh spacecrafter, init_fov=340> & ; python3 ./scene_e_spine.py   # 13/13, exit 0
+
+### Hygiene
+`config.ini` restored byte-identical [md5 `03fbee59bc3ec506c58f0a3f1e1d73df`; the B18 run
+sends settings as COMMANDS and never edits the file; the scene-E run edited `init_fov 180→340`
+and restored by `cp` of a backup, md5 asserted]. `ssystem.ini` untouched. `beta_features.ini`
+absent throughout (new path is the pinned default). Per-run artifacts `artifacts/b18/`
+gitignored like b11/b16/b19/b23/b26. `supervised-by.sh` and the root `USER_QUESTIONS*.md` /
+`FEATURE_REQUESTS.md` left untracked. No harness task list touched.
