@@ -1,4 +1,6 @@
 #include "ModularSystem.hpp"
+#include "ModularSystemFormat.hpp"
+#include "ModuleLoader.hpp" // reroute (composed relation= override)
 #include "ModuleLoaderMgr.hpp"
 #include "environmentModules/LandscapeEnv.hpp"
 #include "environmentModules/AtmosphereEnv.hpp"
@@ -850,9 +852,42 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
     }
     // Relation from data BEFORE creation - relation is the ownership
     // authority (boundToSurface is its cache, written by createChild only).
-    ModularBody *body = parent->createChild(createInfo,
-        Utility::isTrue(param["bound_to_surface"]) ? BodyRelation::GROUNDED
-                                                   : BodyRelation::ORBITING);
+    // B24 (INTENT §11.78(d)): `relation = orbiting|grounded|inner` is the
+    // declared form and the ONLY data route to INNER; the legacy
+    // `bound_to_surface` boolean stays as an alias. One resolution authority,
+    // both formats (legacy files simply never carry `relation`).
+    BodyRelation rel;
+    {
+        const std::string &relDecl = param["relation"];
+        const BodyRelation legacyRel = Utility::isTrue(param["bound_to_surface"])
+            ? BodyRelation::GROUNDED : BodyRelation::ORBITING;
+        if (relDecl.empty()) {
+            rel = legacyRel;
+        } else if (relDecl == "orbiting") {
+            rel = BodyRelation::ORBITING;
+        } else if (relDecl == "grounded") {
+            rel = BodyRelation::GROUNDED;
+        } else if (relDecl == "inner") {
+            rel = BodyRelation::INNER;
+        } else {
+            rel = legacyRel;
+            cLog::get()->write("Body '" + englishName + "': invalid relation = '" + relDecl
+                + "'. Valid values are 'orbiting' (standard satellite), 'grounded' (bound to the "
+                "parent's surface - rover class) or 'inner' (inside the parent's volume, shown "
+                "while the camera is inside the parent's AoI). Falling back to '"
+                + (legacyRel == BodyRelation::GROUNDED ? "grounded" : "orbiting")
+                + "' (from bound_to_surface). To fix: set relation to one of the valid values, "
+                "or remove it to keep the bound_to_surface-derived default.", LOG_TYPE::L_ERROR);
+        }
+        if (!relDecl.empty() && !param["bound_to_surface"].empty()
+                && (legacyRel == BodyRelation::GROUNDED) != (rel == BodyRelation::GROUNDED)) {
+            cLog::get()->write("Body '" + englishName + "': relation = '" + relDecl
+                + "' disagrees with bound_to_surface = '" + param["bound_to_surface"]
+                + "'. The explicit relation wins; remove bound_to_surface to silence this "
+                "(the two keys declare the same thing - keep one).", LOG_TYPE::L_ERROR);
+        }
+    }
+    ModularBody *body = parent->createChild(createInfo, rel);
     // Binary-orbit completion (EMB class): if this body is the declared
     // secondary of its parent's BinaryOrbit, wire its orbit in - without this
     // the primary sits at the BARYCENTER (old/new Earth delta confirmed as
@@ -893,18 +928,39 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
     // branch).
     if (body->envParams.hasAtmosphere)
         body->addEnvironment(std::make_unique<AtmosphereEnv>(), false);
-    for (auto moduleType : body->deduceBodyModuleList(param))
-        ModuleLoaderMgr::instance.loadModule(moduleType, body, param);
-    // Explicit-slot declaration (§6.7 declaration half, INTENT §11.42): the GRID
-    // slot is NOT deduced - deduceBodyModuleList returns a bare BodyModuleType
-    // and cannot name a slot, and CUSTOM's default slot name ("CUSTOM") would
-    // collide. A body opts in with planet_grid=true, installed through
-    // loadModule's explicit `slot` argument into the named "GRID" slot. This is
-    // the first and only user of that argument - the concrete, minimal form of
-    // the D2 explicit-declaration mechanism (the general param syntax is still
-    // under-specified, suspended for Vixy).
-    if (Utility::isTrue(param["planet_grid"]))
-        ModuleLoaderMgr::instance.loadModule(BodyModuleType::CUSTOM, body, param, "GRID");
+    // B24 compose gate (INTENT §11.78(d)): `compose = explicit` turns
+    // deduction OFF for this body - its module list comes ONLY from the
+    // file's BodyModule declarations (the generated twins emit this, so the
+    // corpus equivalence test exercises the declaration path per slot).
+    // Default `deduced` = legacy behavior; declarations then add/replace
+    // per slot on top of deduction.
+    bool deduce = true;
+    {
+        const std::string &compose = param["compose"];
+        if (compose == "explicit") {
+            deduce = false;
+        } else if (!compose.empty() && compose != "deduced") {
+            cLog::get()->write("Body '" + englishName + "': invalid compose = '" + compose
+                + "'. Valid values are 'deduced' (modules deduced from this body's keys, the "
+                "default) or 'explicit' (modules come only from BodyModule declarations). "
+                "Falling back to 'deduced'. To fix: set compose to one of the valid values, "
+                "or remove it.", LOG_TYPE::L_ERROR);
+        }
+    }
+    if (deduce) {
+        for (auto moduleType : body->deduceBodyModuleList(param))
+            ModuleLoaderMgr::instance.loadModule(moduleType, body, param);
+        // Explicit-slot declaration (§6.7 declaration half, INTENT §11.42): the GRID
+        // slot is NOT deduced - deduceBodyModuleList returns a bare BodyModuleType
+        // and cannot name a slot, and CUSTOM's default slot name ("CUSTOM") would
+        // collide. A body opts in with planet_grid=true, installed through
+        // loadModule's explicit `slot` argument into the named "GRID" slot. This
+        // was the first user of that argument; the general declaration mechanism
+        // is now the composed format's BodyModule sections (loadComposedSystem,
+        // B24 - under compose=explicit a grid is one of those declarations).
+        if (Utility::isTrue(param["planet_grid"]))
+            ModuleLoaderMgr::instance.loadModule(BodyModuleType::CUSTOM, body, param, "GRID");
+    }
     body->updateCache(); // Ensure bounding radius are properly set
 }
 
@@ -969,6 +1025,155 @@ void ModularSystem::loadSystem(const std::string &filename)
     }
     cLog::get()->write("(system " + englishName + " loaded)", LOG_TYPE::L_INFO);
 	cLog::get()->mark();
+}
+
+void ModularSystem::loadComposedSystem(const std::string &filename)
+{
+    std::vector<ModularSystemFormat::Section> sections;
+    if (!ModularSystemFormat::parse(filename, sections)) {
+        cLog::get()->write("Unable to open file " + filename, LOG_TYPE::L_ERROR);
+        return;
+    }
+    systemFilename = filename;
+    composedFile = true;
+    // This file's node sections by body name - the overlay base for module
+    // declarations (a module's effective params = its node's params overlaid
+    // by the module section's own keys).
+    std::map<std::string, stringHash_t> nodeParams;
+    for (auto &section : sections) {
+        const std::string declare = section.params["declare"];
+        if (declare.empty() || declare == "ModularBody") {
+            loadBody(section.params);
+            const std::string &name = section.params["name"];
+            if (!name.empty())
+                nodeParams[name] = section.params;
+        } else if (declare == "BodyModule") {
+            loadDeclaredModule(section.params, section.header, nodeParams);
+        } else {
+            cLog::get()->write("Section '[" + section.header + "]' of " + filename
+                + ": invalid declare = '" + declare + "'. Valid values are 'ModularBody' (a body "
+                "node; also the default when the key is absent) or 'BodyModule' (an explicit "
+                "module bound to a node by body= and relation=). Section skipped. To fix: set "
+                "declare to one of the valid values, or remove it to declare a body.",
+                LOG_TYPE::L_ERROR);
+        }
+    }
+    cLog::get()->write("(system " + englishName + " loaded, composed format)", LOG_TYPE::L_INFO);
+    cLog::get()->mark();
+}
+
+void ModularSystem::loadDeclaredModule(std::map<std::string, std::string> &params, const std::string &header,
+                                       const std::map<std::string, std::map<std::string, std::string>> &nodeParams)
+{
+    const std::string &bodyName = params["body"];
+    ModularBody *body = bodyName.empty() ? nullptr : findBodyOnce(bodyName);
+    if (!body) {
+        cLog::get()->write("BodyModule declaration '[" + header + "]': body = '" + bodyName
+            + "' names no loaded body. A module's body must be declared EARLIER in the same file "
+            "(or already exist). Declaration skipped. To fix: check the name, or move this "
+            "section below its body's section.", LOG_TYPE::L_ERROR);
+        return;
+    }
+    bool ok;
+    const std::string &moduleName = params["module"];
+    const BodyModuleType type = ModuleLoaderMgr::moduleTypeFromName(moduleName, ok);
+    if (!ok) {
+        cLog::get()->write("BodyModule declaration '[" + header + "]': "
+            + (moduleName.empty() ? std::string("missing the module key")
+                                  : "invalid module = '" + moduleName + "'")
+            + ". Valid values are: " + ModuleLoaderMgr::moduleTypeNames()
+            + ". Declaration skipped. To fix: set module to the family to instantiate.",
+            LOG_TYPE::L_ERROR);
+        return;
+    }
+    // Effective params: the node's params overlaid by this section's own keys
+    // (module key wins); the grammar's own keys are not data.
+    stringHash_t effective;
+    {
+        const auto it = nodeParams.find(bodyName);
+        if (it != nodeParams.end())
+            effective = it->second;
+    }
+    for (const auto &kv : params) {
+        if (kv.first == "declare" || kv.first == "body" || kv.first == "module"
+         || kv.first == "slot" || kv.first == "relation" || kv.first == "compose")
+            continue;
+        effective[kv.first] = kv.second;
+    }
+    const std::string &slotName = params["slot"];
+    ModuleLoaderMgr::instance.loadModule(type, body, effective, slotName);
+    const std::string &relation = params["relation"];
+    if (!relation.empty()) {
+        BodyModule *module = body->slot(ModularBody::slotID[
+            slotName.empty() ? std::string(ModuleLoaderMgr::moduleTypeName(type)) : slotName]);
+        // loadModule's no-capable-loader case already logged; only re-route
+        // what was actually installed.
+        if (module && !ModuleLoader::reroute(body, module, relation)) {
+            cLog::get()->write("BodyModule declaration '[" + header + "]': invalid relation = '"
+                + relation + "'. Valid values are far, near, grounded, in, orbit, trail, tail "
+                "(the routing lists - see ModuleLoader.hpp). The loader's own routing is kept. "
+                "To fix: set relation to one of the valid values, or remove it.",
+                LOG_TYPE::L_ERROR);
+        }
+    }
+    body->updateCache(); // module set changed - bounding radius may have too
+}
+
+void ModularSystem::generateComposedTwin(const std::string &legacyFilename, const std::string &outPath)
+{
+    std::vector<ModularSystemFormat::Section> sections;
+    if (!ModularSystemFormat::parse(legacyFilename, sections))
+        return; // the legacy load already logged the unreadable file
+    std::vector<ModularSystemFormat::Section> out;
+    for (auto &section : sections) {
+        const std::string &name = section.params["name"];
+        if (name.empty())
+            continue; // the legacy load skipped it too ("Can't load unnamed body")
+        ModularBody *body = ModularBody::findBodyOnce(name);
+        if (!body)
+            continue; // not loaded (duplicate/orphan/invalid orbit) - not part of the semantic content
+        // Node section: legacy keys preserved verbatim, grammar made explicit.
+        ModularSystemFormat::Section node;
+        node.header = name;
+        node.params = section.params;
+        node.params["declare"] = "ModularBody";
+        node.params["compose"] = "explicit";
+        if (Utility::isTrue(section.params["bound_to_surface"])) {
+            node.params.erase("bound_to_surface"); // translated, not duplicated -
+            node.params["relation"] = "grounded";  // one relation authority per generated file
+        }
+        out.push_back(std::move(node));
+        // One BodyModule declaration per family the live body deduces - the
+        // decomposition the twin exists to make visible [vixy, §11.50(b)].
+        for (BodyModuleType type : body->deduceBodyModuleList(section.params)) {
+            ModularSystemFormat::Section mod;
+            const std::string typeName{ModuleLoaderMgr::moduleTypeName(type)};
+            mod.header = name + ":" + typeName;
+            mod.params["declare"] = "BodyModule";
+            mod.params["body"] = name;
+            mod.params["module"] = typeName;
+            out.push_back(std::move(mod));
+        }
+        if (Utility::isTrue(section.params["planet_grid"])) {
+            ModularSystemFormat::Section mod;
+            mod.header = name + ":GRID";
+            mod.params["declare"] = "BodyModule";
+            mod.params["body"] = name;
+            mod.params["module"] = "CUSTOM";
+            mod.params["slot"] = "GRID";
+            out.push_back(std::move(mod));
+        }
+    }
+    const std::vector<std::string> banner{
+        "Generated by spacecrafter from " + legacyFilename + " - semantically equivalent (B24/B25).",
+        "MACHINE-OWNED: regenerated at every legacy load of this system; edits HERE are lost.",
+        "To adopt the composed format: copy this file dropping the .disabled extension",
+        "(same directory). The composed file then wins over the legacy one, which stops",
+        "being read; your copy is user-owned and never touched by the generator.",
+    };
+    if (ModularSystemFormat::write(outPath, out, banner))
+        cLog::get()->write("Composed twin of " + legacyFilename + " generated at " + outPath,
+            LOG_TYPE::L_INFO);
 }
 
 void ModularSystem::applyHardcodedContent(ModularBodyCreateInfo &createInfo, std::map<std::string, std::string> &param)

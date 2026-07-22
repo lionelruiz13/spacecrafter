@@ -46,7 +46,10 @@ public:
         if (systemFilename.empty())
             return false;
         clearChildren();
-        loadSystem(systemFilename);
+        if (composedFile)
+            loadComposedSystem(systemFilename);
+        else
+            loadSystem(systemFilename);
         return true;
     }
     // Whether this system has a data file behind it (see reloadSystem).
@@ -55,6 +58,44 @@ public:
     }
     // Load a system
     void loadSystem(const std::string &filename);
+    // B24 composed-system format (INTENT §11.78(d); grammar spellings pending
+    // Vixy sign-off, §11.78(e)). Same capability authorities as the legacy
+    // path (loadBody / ModuleLoaderMgr::loadModule) behind a different, thin
+    // parser (ModularSystemFormat) - a section is a DECLARATION:
+    //   declare = ModularBody (default when absent, so every legacy section
+    //     is a valid node declaration) -> loadBody, which honors the node
+    //     keys: relation = orbiting|grounded|inner (supersedes the legacy
+    //     bound_to_surface alias; the only data route to INNER) and
+    //     compose = deduced|explicit (explicit -> the body's module list
+    //     comes ONLY from its BodyModule declarations, deduction off).
+    //   declare = BodyModule -> an explicit module: body= names the target
+    //     node (declared EARLIER in the file - the findBody forward-reference
+    //     rule, same as parent=), module= names the family
+    //     (ModuleLoaderMgr::moduleTypeName vocabulary), optional slot=
+    //     (multi-instance, the GRID precedent), optional relation= re-routes
+    //     (far|near|grounded|in|orbit|trail|tail via ModuleLoader::reroute);
+    //     every other key OVERLAYS the node's params for this one load
+    //     (module key wins - per-module customization; params stay homed on
+    //     the node because loaders read body params, the capability model's
+    //     actual shape).
+    // Sets systemFilename + composedFile, so reloadSystem() re-reads THIS
+    // file (a composed system reloads like a legacy one, B16 parity).
+    void loadComposedSystem(const std::string &filename);
+    // Generate the machine-owned `.ini.disabled` twin of a legacy system file
+    // (the B25 generation half, INTENT §11.51(a)): parse `legacyFilename`
+    // (section order preserved - parent-before-child is load-bearing),
+    // re-express every LOADED body as an explicit composition
+    // (compose = explicit + one BodyModule declaration per family
+    // deduceBodyModuleList selects on the live body; bound_to_surface
+    // translated to relation=grounded, one authority per generated file) and
+    // write through the one atomic writer (ModularSystemFormat::write).
+    // Must run AFTER the legacy load - deduction queries live body state.
+    // The semantic-equivalence promise [vixy, §11.50(b)]: loading the twin
+    // must reproduce the legacy load exactly; that makes generation a
+    // corpus-wide coverage test of the composition grammar
+    // (harness/b24_equivalence.py). applyHardcodedContent capability keys are
+    // NOT emitted yet (B27 step 3 - key spellings pending sign-off).
+    void generateComposedTwin(const std::string &legacyFilename, const std::string &outPath);
     // Load a body
     void loadBody(std::map<std::string, std::string> &param);
     // Update this system
@@ -142,6 +183,11 @@ private:
     // receivedShadows and drives ShadowService production. Runs at drawSystem
     // start - positions updated, renderer frame begun (frameIdx known).
     void computeShadows(Renderer &renderer);
+    // One BodyModule declaration of the composed format (loadComposedSystem's
+    // module half). `nodeParams` = this file's node sections by body name,
+    // the overlay base.
+    void loadDeclaredModule(std::map<std::string, std::string> &params, const std::string &header,
+                            const std::map<std::string, std::map<std::string, std::string>> &nodeParams);
     // Apply some hardcoded content
     void applyHardcodedContent(ModularBodyCreateInfo &createInfo, std::map<std::string, std::string> &param);
     // Clean the list when it is dirty
@@ -150,6 +196,9 @@ private:
     std::vector<ModularBody *> sortedSystemBodies;
     ModularBodyPtr star; // Star of the system
     std::string systemFilename;
+    // Which reader systemFilename belongs to (reloadSystem dispatch):
+    // false = legacy loadSystem, true = composed loadComposedSystem.
+    bool composedFile = false;
     bool needCleanUp = false;
 };
 

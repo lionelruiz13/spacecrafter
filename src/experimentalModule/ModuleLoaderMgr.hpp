@@ -30,6 +30,15 @@ public:
     // the param syntax lands with the first multi-module body (D2).
     void loadModule(BodyModuleType type, ModularBody *target, std::map<std::string, std::string> &params, const std::string &slot = {});
     std::unique_ptr<Orbit> loadOrbit(std::map<std::string, std::string> &params);
+    // The module-family vocabulary (defaultModuleName), exposed for the B24
+    // composed format: `module =` values ARE these names (I2 - the grammar
+    // reuses the capability model's own enumeration, never a parallel one).
+    static std::string_view moduleTypeName(BodyModuleType type);
+    // Reverse lookup for the `module =` key; ok=false on an unknown name
+    // (caller logs the valid values, §2(f) - see moduleTypeNames()).
+    static BodyModuleType moduleTypeFromName(const std::string &name, bool &ok);
+    // Every valid `module =` value, comma-separated - for actionable logs.
+    static std::string moduleTypeNames();
     static ModuleLoaderMgr instance;
 private:
     std::vector<std::unique_ptr<ModuleLoader>> loaders[static_cast<uint8_t>(BodyModuleType::NB_MODULE_TYPE)];

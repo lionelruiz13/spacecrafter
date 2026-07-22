@@ -1,0 +1,141 @@
+#ifndef SURFACE_POINT_ORBIT_LOADER_HPP_
+#define SURFACE_POINT_ORBIT_LOADER_HPP_
+
+#include "experimentalModule/OrbitLoader.hpp"
+#include "experimentalModule/ModularBody.hpp"
+#include "bodyModule/orbit.hpp"
+#include "tools/utility.hpp"
+#include "tools/log.hpp"
+#include "tools/sc_const.hpp"
+
+// B24 composition provider (INTENT §11.78; spelling `surface_point` +
+// ramp keys pending Vixy sign-off, the B28 protocol): a point ON a body's
+// surface, expressed in the parent's SURFACE frame - the co-rotation comes
+// from the GROUNDED fold (ModularBody::computeBodyToSurface, the parent's
+// exact spin state: epoch, offset, precession - one authority), never from
+// this provider. This is the structural rover/launchpad form; the legacy
+// `location_orbit` instead self-rotates with a degraded approximation (raw
+// JD, no epoch, offset frozen at construction) and silently DOUBLE-applies
+// spin if combined with a grounded body (the §11.78(c) trap).
+//
+// Keys (data, degrees/km like every legacy key):
+//   orbit_lon, orbit_lat        - planetographic position on the parent
+//   orbit_alt                   - km above the parent's DATUM surface (B10:
+//                                 datum_radius is the altitude zero-point)
+// Optional linear ascent ramp (the "rocket going up" of the mandate) - all
+// three required together:
+//   orbit_alt_end               - km, altitude at the end of the ramp
+//   orbit_ascent_start          - JD at which the ascent begins
+//   orbit_ascent_duration       - days; alt ramps orbit_alt -> orbit_alt_end
+//                                 over [start, start+duration], clamped both
+//                                 sides. (The dead legacy `linearOrbit` has
+//                                 its lerp weights SWAPPED - defect recorded,
+//                                 NOT reproduced here, §11.52(b).)
+class SurfacePointOrbit : public Orbit {
+public:
+    SurfacePointOrbit(Vec3d direction, double altStart, double altEnd,
+                      double tStart, double tDuration,
+                      double lonDeg, double latDeg, double altKm, double altEndKm) :
+        direction(direction), altStart(altStart), altEnd(altEnd),
+        tStart(tStart), tDuration(tDuration),
+        lonDeg(lonDeg), latDeg(latDeg), altKm(altKm), altEndKm(altEndKm)
+    {
+    }
+
+    // Round-trips the DATA keys (degrees/km), not the derived AU state -
+    // the save is a data-surface serialization (ell_orbit precedent).
+    virtual std::string saveOrbit() const override
+    {
+        std::ostringstream os;
+        os << "coord_func = surface_point" << std::endl;
+        os << "orbit_lon = " << lonDeg << std::endl;
+        os << "orbit_lat = " << latDeg << std::endl;
+        os << "orbit_alt = " << altKm << std::endl;
+        if (tDuration > 0) {
+            os << "orbit_alt_end = " << altEndKm << std::endl;
+            os << "orbit_ascent_start = " << tStart << std::endl;
+            os << "orbit_ascent_duration = " << tDuration << std::endl;
+        }
+        return os.str();
+    }
+
+    virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const override
+    {
+        double alt = altStart;
+        if (tDuration > 0) {
+            const double f = (JD - tStart) / tDuration;
+            if (f >= 1)
+                alt = altEnd;
+            else if (f > 0)
+                alt = altStart * (1 - f) + altEnd * f;
+        }
+        v[0] = direction[0] * alt;
+        v[1] = direction[1] * alt;
+        v[2] = direction[2] * alt;
+    }
+private:
+    const Vec3d direction; // unit vector in the parent's surface frame
+    const double altStart; // AU from the parent's center
+    const double altEnd;   // AU from the parent's center
+    const double tStart;   // JD
+    const double tDuration; // days
+    const double lonDeg, latDeg, altKm, altEndKm; // data keys, for saveOrbit
+};
+
+class SurfacePointOrbitLoader : public OrbitLoader {
+    virtual std::unique_ptr<Orbit> load(std::map<std::string, std::string> &params) override {
+        ModularBody *parent = ModularBody::findBodyOnce(params["parent"]);
+        const double datum = parent ? parent->getAltitudeReference() : 0;
+        if (!parent) {
+            cLog::get()->write("surface_point orbit of '" + params["name"]
+                + "': parent '" + params["parent"] + "' not found - altitude is measured from "
+                "0 instead of the parent's datum surface. Declare the parent before this body.",
+                LOG_TYPE::L_WARNING);
+        }
+        // The co-rotation precondition, checked at the one place that knows
+        // both sides (§2(f)): this provider emits a surface-frame point, so a
+        // body that is NOT grounded would sit frozen in the parent's
+        // non-spinning frame - the inverse of the location_orbit double-spin
+        // trap. Load proceeds (the position is still well-defined); the log
+        // names the fix.
+        if (!(params["relation"] == "grounded" || Utility::isTrue(params["bound_to_surface"]))) {
+            cLog::get()->write("Body '" + params["name"] + "' uses coord_func=surface_point "
+                "without the grounded relation: the point will NOT co-rotate with the parent's "
+                "surface. To fix: add relation = grounded (or bound_to_surface = true).",
+                LOG_TYPE::L_WARNING);
+        }
+        const double lonDeg = Utility::strToDouble(params["orbit_lon"]);
+        const double latDeg = Utility::strToDouble(params["orbit_lat"]);
+        Vec3d direction;
+        Utility::spheToRect(lonDeg * (M_PI / 180), latDeg * (M_PI / 180), direction);
+        const double altKm = Utility::strToDouble(params["orbit_alt"]);
+        const double altStart = datum + altKm / AU;
+        double altEndKm = altKm, altEnd = altStart, tStart = 0, tDuration = 0;
+        const bool haveEnd = !params["orbit_alt_end"].empty();
+        const bool haveStart = !params["orbit_ascent_start"].empty();
+        const bool haveDuration = !params["orbit_ascent_duration"].empty();
+        if (haveEnd && haveStart && haveDuration) {
+            altEndKm = Utility::strToDouble(params["orbit_alt_end"]);
+            altEnd = datum + altEndKm / AU;
+            tStart = Utility::strToDouble(params["orbit_ascent_start"]);
+            tDuration = Utility::strToDouble(params["orbit_ascent_duration"]);
+            if (tDuration <= 0) {
+                cLog::get()->write("Body '" + params["name"] + "': orbit_ascent_duration must be "
+                    "> 0 (days). The ascent is disabled, altitude stays at orbit_alt.",
+                    LOG_TYPE::L_ERROR);
+                altEndKm = altKm;
+                altEnd = altStart;
+                tDuration = 0;
+            }
+        } else if (haveEnd || haveStart || haveDuration) {
+            cLog::get()->write("Body '" + params["name"] + "': incomplete ascent ramp - "
+                "orbit_alt_end, orbit_ascent_start and orbit_ascent_duration are required "
+                "together. The ascent is disabled, altitude stays at orbit_alt. To fix: "
+                "declare all three, or none.", LOG_TYPE::L_ERROR);
+        }
+        return std::make_unique<SurfacePointOrbit>(direction, altStart, altEnd, tStart, tDuration,
+                                                   lonDeg, latDeg, altKm, altEndKm);
+    }
+};
+
+#endif /* end of include guard: SURFACE_POINT_ORBIT_LOADER_HPP_ */

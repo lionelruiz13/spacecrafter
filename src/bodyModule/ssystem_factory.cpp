@@ -25,6 +25,8 @@
 #include <memory>
 #include <fstream>
 #include <iomanip>
+#include <filesystem> // B24 composed-file candidacy + twin directory
+#include <set> // B24 new-only dump sweep
 
 #include "ojmModule/objl_mgr.hpp"
 #include "bodyModule/ssystem_factory.hpp"
@@ -344,6 +346,26 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
     // own content, registered in the milkyway's sorted body list.
     ModularSystem *system = milkyway->createChildSystem(info, BodyRelation::INNER);
     modularSystemOf[name] = system;
+    // B24 candidacy (INTENT §11.51(a), §11.78(d)): an enabled composed file
+    // (~/.spacecrafter/modularSystem/<node>.ini - cwd is ~/.spacecrafter,
+    // main.cpp chdir, same convention as the legacy "ssystem.ini") always
+    // wins over the legacy source. Shadowing self-names on every launch so a
+    // user editing the legacy file never gets silence [§11.51(a) derived].
+    // The .ini.disabled twin below is machine-owned and regenerated at every
+    // legacy load; the extension-dropped copy is user-owned, never touched.
+    // NB: keyed on the node name expression, NOT info.englishName - the
+    // createChildSystem ctor above moved that string out (fired live: the
+    // twin generated as ".ini.disabled", INTENT §11.78(f)).
+    const std::string composedPath = "modularSystem/" + name + "System.ini";
+    if (std::filesystem::exists(composedPath)) {
+        cLog::get()->write("Composed system file " + composedPath + " wins over "
+            + (filename.empty() ? "the built-in " + name + " system content"
+                                : "the legacy file " + filename)
+            + " (shadowed, NOT read). To fall back, rename or remove " + composedPath + ".",
+            LOG_TYPE::L_INFO);
+        system->loadComposedSystem(composedPath);
+        return;
+    }
     if (filename.empty()) {
         stringHash_t bodyParams;
         bodyParams["name"] = name.substr(0, name.size()-6); // Remove the 'System' suffix for the star
@@ -365,6 +387,17 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
         system->loadBody(bodyParams);
     } else {
         system->loadSystem(filename);
+        // B25 generation half: the machine-owned twin, written through the one
+        // atomic writer (failure leaves any previous twin untouched, logged).
+        std::error_code ec;
+        std::filesystem::create_directories("modularSystem", ec);
+        if (ec) {
+            cLog::get()->write("Can't create the modularSystem directory ("
+                + ec.message() + ") - composed twin of " + filename + " not generated.",
+                LOG_TYPE::L_WARNING);
+        } else {
+            system->generateComposedTwin(filename, composedPath + ".disabled");
+        }
     }
 }
 
@@ -653,6 +686,23 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
             out << std::setprecision(9);
         }
         out << "}\n";
+    }
+    // B24 (INTENT 11.78): bodies that exist ONLY in the new path - composed
+    // declarations (rover class) have no old-path twin, so the old-system
+    // loop above never reaches them. Emitted with "old":null - the mirror of
+    // the "new":null finding channel (11.3 class, both directions observable).
+    {
+        std::set<std::string> dumped;
+        for (auto it = currentSystem->begin(); it != currentSystem->end(); ++it)
+            dumped.insert(it->first);
+        ModularBody::forEach([&out, &dumped](ModularBody &nb) {
+            if (dumped.count(nb.getEnglishName()))
+                return;
+            out << "{\"type\":\"body\",\"name\":\"" << nb.getEnglishName()
+                << "\",\"old\":null,\"new\":";
+            nb.dumpTrace(out);
+            out << "}\n";
+        });
     }
     // Quadruplet (minimal set separating translation / common rotation /
     // hop-accumulated rotation): identity, down-hop, up-hop, up-then-down.

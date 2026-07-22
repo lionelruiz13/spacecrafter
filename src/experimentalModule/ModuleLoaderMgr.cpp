@@ -21,6 +21,34 @@ std::array<std::string_view, static_cast<uint8_t>(BodyModuleType::NB_MODULE_TYPE
 
 ModuleLoaderMgr ModuleLoaderMgr::instance;
 
+std::string_view ModuleLoaderMgr::moduleTypeName(BodyModuleType type)
+{
+    return defaultModuleName[static_cast<uint8_t>(type)];
+}
+
+BodyModuleType ModuleLoaderMgr::moduleTypeFromName(const std::string &name, bool &ok)
+{
+    for (uint8_t i = 0; i < static_cast<uint8_t>(BodyModuleType::NB_MODULE_TYPE); ++i) {
+        if (defaultModuleName[i] == name) {
+            ok = true;
+            return static_cast<BodyModuleType>(i);
+        }
+    }
+    ok = false;
+    return BodyModuleType::CUSTOM;
+}
+
+std::string ModuleLoaderMgr::moduleTypeNames()
+{
+    std::string ret;
+    for (const auto &name : defaultModuleName) {
+        if (!ret.empty())
+            ret += ", ";
+        ret += name;
+    }
+    return ret;
+}
+
 ModuleLoaderMgr::ModuleLoaderMgr()
 {
 }

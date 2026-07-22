@@ -662,7 +662,39 @@ void ModularBody::dumpTrace(std::ostream &out) const
             sep = ",";
         }
     }
-    out << "],\"lastJD\":" << std::setprecision(17) << lastJD << '}';
+    // eclRoot (B24 grounded instrument, INTENT §11.78): the parent-relative
+    // position AFTER the surface fold - matLocalToBodyPos's translation, the
+    // offset actually composed into the world. For orbiting bodies == ecl;
+    // for grounded bodies it exposes what the fold DID (ecl is the fold's
+    // INPUT, constant in the surface frame, and cannot show co-rotation).
+    // Kept fresh for every body by the translation tick (B19 mechanism) -
+    // unlike `mat`, which is chimeric on invisible bodies (INTENT 11.14b);
+    // spin freshness is the parent's (stale-spin finding, §11.78).
+    out << "],\"eclRoot\":[" << matLocalToBodyPos.r[12] << ','
+        << matLocalToBodyPos.r[13] << ',' << matLocalToBodyPos.r[14] << "]";
+    // Slot inventory + routing counts (B24 equivalence instrument, INTENT
+    // §11.78): `modules` = the filled slot names (module-set identity per
+    // body - what the legacy-vs-composed equivalence compares); `routing` =
+    // per-list module counts (the relation= override's observable: a reroute
+    // moves a module between lists without changing the slot inventory).
+    out << ",\"modules\":[";
+    {
+        const char *sep = "";
+        for (uint32_t i = 0; i < components.size(); ++i) {
+            if (components[i]) {
+                out << sep << '"' << slotID.nameOf(i) << '"';
+                sep = ",";
+            }
+        }
+    }
+    out << "],\"routing\":{\"far\":" << farComponents.size()
+        << ",\"near\":" << nearComponents.size()
+        << ",\"grounded\":" << groundedComponents.size()
+        << ",\"in\":" << inComponents.size()
+        << ",\"orbit\":" << orbitComponents.size()
+        << ",\"trail\":" << trailComponents.size()
+        << ",\"tail\":" << tailComponents.size()
+        << "},\"lastJD\":" << std::setprecision(17) << lastJD << '}';
 }
 
 // Harness (INTENT.md 11.14a): per-hop construction pieces, this body -> root.

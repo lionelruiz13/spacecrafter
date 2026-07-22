@@ -23,6 +23,7 @@ extern const Mat4d mat_j2000_to_vsop87;
 #include "orbitModules/LunarOrbitLoader.hpp"
 #include "orbitModules/SpecialOrbitLoader.hpp"
 #include "orbitModules/StillOrbitLoader.hpp"
+#include "orbitModules/SurfacePointOrbitLoader.hpp"
 
 #include "bodyModules/BasicMeshLoader.hpp"
 #include "bodyModules/LayeredMeshLoader.hpp"
@@ -46,6 +47,7 @@ void ModuleLoaderMgr::init()
     registerModule("location_orbit", std::make_unique<LocationOrbitLoader>());
     registerModule("lunar_custom", std::make_unique<LunarOrbitLoader>());
     registerModule("still_orbit", std::make_unique<StillOrbitLoader>());
+    registerModule("surface_point", std::make_unique<SurfacePointOrbitLoader>()); // B24 grounded/launchpad provider (INTENT 11.78; spelling pending sign-off)
     registerModule(std::make_unique<SpecialOrbitLoader>());
 
     registerModule(BodyModuleType::MESH, std::make_unique<BasicMeshLoader>()); // eclipse LUT retired at S5 (shadow-paths.md B4)

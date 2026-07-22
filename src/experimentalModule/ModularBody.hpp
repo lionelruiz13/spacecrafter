@@ -450,8 +450,22 @@ public:
         }
         eclipticPos = tmp;
         lastJD = jd;
+        // Surface fold (B24 grounded composition, INTENT 11.78): the PARENT's
+        // spin - the walk already hands grounded children the parent's
+        // ACCUMULATED equatorial frame (recursiveUpdate frame contract), so
+        // composing the parent's axisRotation here completes the parent's
+        // SURFACE frame the walk-stop comment above describes ("already
+        // carries every ancestor orientation (plus spin)"). The original fold
+        // spun by THIS body's own axisRotation - unexercised until the first
+        // grounded content, and wrong twice: wrong authority (the camera, the
+        // proven surface-standing case, uses the stood-on body's spin -
+        // placementRotation), and stale-prone (a grounded child is usually
+        // invisible, its own spin state frozen at launch; the parent's spin is
+        // fresh whenever this walk runs - its update precedes its children).
+        // The child's own rotation elements govern its ATTITUDE only (draw
+        // fold) - attitude-default-for-grounded is a recorded design residual.
         if (boundToSurface)
-            mat_local_to_body = mat_local_to_body.multiplyFast(computeBodyToSurface());
+            mat_local_to_body = mat_local_to_body.multiplyFast(parent->computeBodyToSurface());
         // +ecl: the child sits at +eclipticPos in the parent frame. The chain
         // historically subtracted here (and added on the way up), point-
         // reflecting every body through the reference - measured as
@@ -573,8 +587,8 @@ public:
     // (surface fold for bound bodies) - exact inverse of the cached
     // transformBodyToParent below.
     inline void transformParentToBody(Mat4f &mat_local_to_body) const {
-        if (boundToSurface)
-            mat_local_to_body = mat_local_to_body.multiplyFast(computeBodyToSurface());
+        if (boundToSurface) // PARENT spin - see transformParentToBodyPos
+            mat_local_to_body = mat_local_to_body.multiplyFast(parent->computeBodyToSurface());
         mat_local_to_body.multiplyTranslation(eclipticPos);
     }
 
@@ -596,9 +610,9 @@ public:
         lastJD = jd;
         if (boundToSurface) {
             // Maybe don't inline this unfrequent case
-            // Exact inverse of the fold in transformParentToBodyPos:
-            // [spin | spin*ecl]^-1 = [spin^-1 | -ecl]
-            auto tmp = Mat4f::zrotation(-M_PI_2 - axisRotation);
+            // Exact inverse of the fold in transformParentToBodyPos
+            // (PARENT spin, see there): [spin | spin*ecl]^-1 = [spin^-1 | -ecl]
+            auto tmp = parent->computeSurfaceToBody();
             tmp.r[12] -= eclipticPos[0];
             tmp.r[13] -= eclipticPos[1];
             tmp.r[14] -= eclipticPos[2];
@@ -612,7 +626,8 @@ public:
     inline void transformBodyToParent(Mat4f &mat_local_to_body) const {
         if (boundToSurface) {
             // Maybe don't inline this unfrequent case
-            auto tmp = Mat4f::zrotation(-M_PI_2 - axisRotation);
+            // PARENT spin - see transformParentToBodyPos (B24 fold fix)
+            auto tmp = parent->computeSurfaceToBody();
             tmp.r[12] -= eclipticPos[0];
             tmp.r[13] -= eclipticPos[1];
             tmp.r[14] -= eclipticPos[2];
