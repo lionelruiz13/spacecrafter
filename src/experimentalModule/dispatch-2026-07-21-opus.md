@@ -55,7 +55,7 @@ Suggested order: B26 (pure verification) → small ratified rows (B19, B16, B11,
 | B10 | `datum_radius` + `ground_radius` full scope (i)–(vi) as written, incl. the shared `proximityFactor()` authority and the outward-only anti-stuck floor direction | (a) the FLOOR VALUE — "value is a decision, not a wiring step" (`MIN_MOVEMENT_SPEED` 0.125 reads wrong-scale); propose, don't fix; (b) Q12 round-2 re-ask (what the two-body patch is used for; stop-and-hold vs asymptotic; `radius ground`/`radius datum` re-spelling) — pending tester/Vixy | §5.2, §11.6, §11.48(c) |
 | B21 | View-directed free descent ("down" = surface point under the view ray), riding B10's `proximityFactor()` — sequence after B10 | The far/galactic-distance case (A18 residual) — the row itself says it must not be improvised into this work | §11.36, §11.48(a) |
 | B27 | Steps (1) site inventory completion (grep is not exhaustive yet — seed list §11.51(c)) and (2) per-site §2(a2) test → declarable capability key | Step (3) generator emission — belongs to B25 (critical/authoring chain); special ORBITS exempt (`*_special` stays) | §11.51(c), §5.5, §11.48(b) |
-| B14 | Preparation only: collect IAU/WGCCRE values for the 28-body cluster (Iapetus first) FROM THE REPORT — "never from recall; a confabulated pole is indistinguishable from a measured one" **→ PREP DONE 2026-07-22 (§18 below, §11.68). Cluster=34 (loaded file; "28"=repo default). Harness proven on Iapetus (closes B28 gap). Template ready with placeholders. THE REPORT IS ABSENT → values suspended for Vixy.** | Landing the corrections — sequenced strictly after B28 (frame declaration must exist so values are declared in the absolute frame); **AND blocked on the report values, which are NOT present** | §11.68, §11.35, §11.48(a), §11.49(e), §11.51(d) |
+| B14 | ~~Preparation only: collect IAU/WGCCRE values~~ **PREP DONE §18/§11.68; LAND HALF DONE 2026-07-22 (§19 below, §11.69).** Vixy authorized cited web-fetch. **14 of 28 shipped cluster moons landed** with 3-source-agreed IAU-2015 poles (pck00011+pck00010+Archinal report text); Iapetus pilot verified (axis 8e-6°, 2 dates 0°, commutator 30.87→21.36); 14 STOPPED-for-no-pole (irregular/chaotic). BOTH files edited. Zero `[knowledge]` values. | Remaining suspended-for-Vixy: **W0 write** (referential mismatch, fetched not written), **6 loaded-only Jupiter moons** (shipped divergence), **Hyperion** (chaotic), **pole-drift/nutation** unrepresentable | §11.69, §11.68, §11.35, §11.48(a), §11.49(e), §11.51(d) |
 
 ## 3. Excluded (reason stated so the exclusion is challengeable)
 
@@ -1724,3 +1724,122 @@ every mutation). `config.ini` restored byte-identical (`03fbee59…`, init_fov c
 `beta_features.ini` absent throughout. Harness `b14_*` committed; `artifacts/b14/` +
 `__pycache__/` gitignored. `supervised-by.sh` left untracked. No harness task list
 touched. No §11.15d shutdown fire observed.
+
+---
+
+## 19. Execution log — B14 LAND HALF (Claude Opus 4.8, 2026-07-22)
+
+**Task**: wave task 16 — land the pole corrections, Iapetus first, under Vixy's
+**authorized cited web-fetch** (the §11.68 "report absent" blocker lifted). The
+whole point of the task is the **provenance red line**: a confabulated pole is
+indistinguishable from a measured one once in ssystem.ini. Full record:
+INTENT §11.69. **No product code changed — data-only.**
+
+**Headline**: 14 of the 28-body shipped cluster landed with 3-source-agreed
+IAU-2015 poles (Iapetus pilot verified end to end); the other 14 STOPPED because
+they are irregular/chaotic satellites with **NO defined pole in any authoritative
+source** — writing a pole for them would be the exact confabulation the task
+exists to prevent. **ZERO `[knowledge]`/`[hallucinated]` values written.**
+
+### Provenance protocol executed (the red line)
+
+Web-fetch WAS available (curl + WebFetch/WebSearch). Three authoritative sources,
+all agreeing to published precision:
+- **A** `pck00011.tpc` — NAIF/JPL generic PCK (curl'd), header cites *Archinal et
+  al., "Report of the IAU WG on Cartographic Coordinates and Rotational Elements:
+  2015," CMDA 130:22 (2018)* — the exact report named.
+- **B** `pck00010.tpc` — NAIF/JPL prior cycle (IAU-2009): every target pole
+  constant AND periodic (NUT_PREC) coefficient **byte-identical** to A.
+- **C** Archinal report TEXT (2009 report PDF, `aa.usno.navy.mil`, pdftotext) —
+  every α₀/δ₀/W and J/U/N nutation angle transcribed and confirmed verbatim.
+
+The harness verifies the FRAME CONVERSION, not value-correctness — correctness
+comes ONLY from this cross-source agreement (stated, not assumed).
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | **Iapetus landed + verified + cited** | **met** | α₀=**318.16**/δ₀=**75.03** [fetched: pck00011+pck00010+report → verbatim J2000 constant, no periodic]. Loaded ⇒ `absoluteTiltFrame=True`, obliq 17.276199°/ascN 139.607939°; axis == declared pole **0.000008°**, **0.000000° across 2 dates** (Saturn ~122° of orbit); parent_relative discriminator 19.62°. Commutator **30.87°→21.36°** (real Iapetus inclination; clean named divergence). `b14_run.sh`+`b14_analyze.py axis` |
+| 2 | Additional cluster moons: count landed vs stopped, each cited | **met (partial, honest)** | **14 landed** (Iapetus + Amalthea,Thebe + Juliet,Portia,Rosalind,Belinda,Puck + Naiad,Thalassa,Despina,Galatea,Larissa,Proteus), each 3-source cited. **14 stopped** (irregular/chaotic, cited-absent). 14+14 = 28 shipped |
+| 3 | Every value ≥2-source cited; ZERO `[knowledge]`/`[hallucinated]` | **met** | 3 sources agree; the 13 inner regulars = fetched-formula EVALUATED at J2000 (`eval_poles.py`, reproducible arithmetic on the fetched coefficients — `[fetched-formula → derived]`, hand-verified Amalthea/Naiad). Self-audit: **0** knowledge/hallucinated values written |
+| 4 | Both files edited; loaded backed up; ISO-8859 + text-preserving | **met** | `data/default_ssystem.ini` (ASCII) committed; loaded `~/.spacecrafter/ssystem.ini` (ISO-8859, French byte preserved) backed up `.b14bak` (fb87a774) then edited (62239656); diff = ONLY the 14 per-body line-sets (42 ins/27 del shipped, verified) |
+| 5 | Build green | **met (data-only)** | `make -C build-claude -j$(nproc)` exit **0**; binary mtime stays 09:39 — nothing to recompile (no C++ touched), stated not hidden |
+| 6 | No regression on scenes; orientation spectrum moves = the corrected moons | **met** | Scenes A–D P1≤1.67e-16, P2≤8.47e-08, P3 old==new ≤1.08e-05°, P4 **3.07/3.71/13.58 km**, P5≤9.64e-08; scene E **26/26**; 0 VUID; config md5 `03fbee59` in==out. orientation_check **17/48 → 17/48** (count inert: "restored" needs commutator<1e-3=zero own tilt, landed moons have real tilts) — the movement is the per-moon VALUE drop on **exactly 14 moons, 75 unchanged** (Uranus 154.75→0.03–0.21°, Neptune 54.31→0.08–3.13°, Jupiter 5.47→0.18/0.30°) |
+| 7 | Trackers | **met** | INTENT §11.69 (per-value citation list, W₀ table, measurements) + §13.B B14 row (LAND HALF); this file's §2 row + this §19 |
+| 8 | Committed on master-beta (author/co-author, no push); commit tracked shipped file, loaded not committed | **met** | see commit below; loaded file updated on disk, not committed (untracked) |
+
+### The written 14 poles (α₀, δ₀ J2000 equatorial deg)
+
+Iapetus 318.16/75.03 · Amalthea 267.2508/64.3867 · Thebe 267.2013/63.6693 ·
+Juliet 257.2684/−15.1367 · Portia 257.2221/−15.1608 · Rosalind 257.1984/−15.4384 ·
+Belinda 257.2806/−15.1861 · Puck 257.0919/−15.4127 · Naiad 302.9178/39.0390 ·
+Thalassa 299.5156/43.1000 · Despina 299.3427/42.8707 · Galatea 299.2660/42.9077 ·
+Larissa 299.1775/42.7373 · Proteus 299.2134/42.4321.
+
+### SUSPENDED FOR VIXY (explicit)
+
+1. **W0 write** — `rot_rotation_offset` referential (meridian from the ecliptic
+   node) ≠ IAU W₀ (from the ICRF-equator node); the file's own planets confirm it
+   (Mars 136.005 vs IAU 176.630, Jupiter 107 vs 284.95). Writing raw IAU W₀ = the
+   "good values → invalid measurement" trap. **Not written** — fetched W₀ recorded
+   for Vixy (§11.69(e)): Iapetus 355.2, Amalthea 231.67, Thebe 8.56, Juliet 302.56,
+   Portia 25.03, Rosalind 314.90, Belinda 297.46, Puck 91.24, Naiad 254.06,
+   Thalassa 102.06, Despina 306.51, Galatea 258.09, Larissa 179.41, Proteus 93.38.
+   Harness/commutator verify the pole axis, NOT the meridian ⇒ leaving it is inert.
+2. **6 loaded-only Jupiter moons** — the loaded file diverges from shipped by
+   Adrastea, Ananke, Leda, Lysithea, Metis, Sinope. Metis/Adrastea HAVE poles
+   (268.05/64.49, no periodic); Ananke/Leda/Lysithea/Sinope are irregular (no pole).
+   Neither corrected. **Should the shipped default gain these 6?**
+3. **Hyperion** — chaotic tumbler, no defined pole (absent from all 3 sources).
+   Non-cluster garbage-tilt Saturn moon (§11.68 §5). Cannot take a static pole.
+4. **Pole-drift/nutation unrepresentable** — Iapetus secular (−3.949/−1.143 °/cy)
+   and inner-satellite periodic nutation (Naiad ±6.5°, ~210 d) do NOT map onto the
+   single scalar `rot_precession_rate`; written poles are the J2000 snapshot only.
+5. **7 non-cluster garbage-tilt Saturn moons** (Telesto/Pandora/Janus/Helene/
+   Epimetheus 150, Prometheus 50) — outside B14's 15.5/213.7 scope; widen scope?
+   (These DO have poles in the report; not touched — scope boundary.)
+
+### STOPPED-for-no-pole (14, cited absent from all 3 sources)
+
+Jupiter: Himalia, Elara, Carme, Pasiphae · Uranus: Caliban, Sycorax, Prospero,
+Setebos · Neptune: Nereid(Neried), Halimede, Sao, Laomedeia, Psamathe, Neso
+(irregular satellites; Nereid explicitly chaotic). Left templated with garbage
+tilt — writing any pole WOULD be confabulation.
+
+### What I did NOT verify
+
+- A REAL moon's disc orientation on the terminal screen (mat-layer axis proven for
+  Iapetus; the other 13 verified via the commutator garbage→physical drop, since
+  only Iapetus is in the debug dump-hop list — adding the others = a C++ instrument
+  change, out of scope).
+- The loader's meridian convention against a reference sub-observer longitude
+  (the W0 suspension — not needed for the pole/commutator DoD).
+- The old path's separate handling of a moon absolute pole beyond the commutator
+  A/B (which shows old ALSO picks up rot_pole_ra/de — removing rot_obliquity did
+  not break it).
+
+### Reproduction (verbatim)
+
+    # values (reproducible arithmetic on fetched pck coefficients)
+    cd <scratchpad>; curl -sS -o pck00011.tpc \
+      https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/pck00011.tpc
+    python3 eval_poles.py            # J2000 poles from the fetched coefficients
+    # apply (text-preserving, per-body, latin-1)
+    python3 b14_apply.py /home/claude/spacecrafter/data/default_ssystem.ini
+    python3 b14_apply.py ~/.spacecrafter/ssystem.ini   # backed up .b14bak first
+    # verify Iapetus + commutator A/B
+    cd src/experimentalModule/harness
+    DISPLAY=:2 ./b14_run.sh land
+    python3 b14_analyze.py axis Iapetus Saturn \
+      land_d1:artifacts/b14/b14_land_d1.json land_d2:artifacts/b14/b14_land_d2.json \
+      --ra 318.16 --de 75.03
+    python3 orientation_check.py artifacts/b14/b14_land_d1.json   # 17/48, P-d 0
+
+### Hygiene
+
+Loaded `~/.spacecrafter/ssystem.ini` = the edited version (md5 62239656, the user's
+live data is now fixed), backup `.b14bak` (fb87a774) kept. `config.ini` restored
+byte-identical (03fbee59, init_fov 180→340→180 after process death). Build tree
+clean except the committed shipped data file + trackers; `supervised-by.sh` left
+untracked. No harness task list touched. No §11.15d shutdown fire observed.
