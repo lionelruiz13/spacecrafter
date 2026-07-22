@@ -301,6 +301,20 @@ void ModularBody::updateCache()
     }
     if (parent)
         parent->invalidateCachedState();
+    // Position-derived reach (subsystemRadius + areaOfInfluence) is computed
+    // here for the first-cache / load-time path (ModularSystem.cpp:807), AND
+    // recomputed every frame from update() (INTENT 11.62, B15): it tracks jd
+    // because eclipticPos moves, whereas the module/radius part above only
+    // changes on a radius/scaling/module event. Splitting it out is what stops
+    // the AoI freezing at the launch-jd cache (stale transition thresholds
+    // after a date jump - measured 10.28% at the scene jd).
+    updateReach();
+    if (cached)
+        uncached = false;
+}
+
+void ModularBody::updateReach()
+{
     // Subtree extent = |child offset| + the child's OWN subsystem reach.
     // Direct |ecl| alone collapsed nested systems to zero extent (a system
     // node's only direct child can sit at its center - the whole subsystem
@@ -318,15 +332,11 @@ void ModularBody::updateCache()
     // body's influence IS its system's space - at ecl==0 the cap collapsed
     // AoI to zero (the Sun, system nodes at their host's origin; INTENT 5.18),
     // making every reference transition escalate and none descend.
-    {
-        float aoi = std::max(boundingRadius * 128 / scaling, subsystemRadius * 16);
-        const float sibCap = eclipticPos.length() * 0.6f;
-        if (sibCap > 0)
-            aoi = std::min(aoi, sibCap);
-        areaOfInfluence = aoi;
-    }
-    if (cached)
-        uncached = false;
+    float aoi = std::max(boundingRadius * 128 / scaling, subsystemRadius * 16);
+    const float sibCap = eclipticPos.length() * 0.6f;
+    if (sibCap > 0)
+        aoi = std::min(aoi, sibCap);
+    areaOfInfluence = aoi;
 }
 
 void ModularBody::drawLoaded(Renderer &renderer)

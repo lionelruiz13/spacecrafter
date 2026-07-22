@@ -32,7 +32,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 | B9 | ~~Az-convention divergence: old `getAltAz` applies 3π−az, new returns Camera-frame raw — probe, then fix at the `ModularObject` surface~~ **DONE 2026-07-22 → §11.60, §11 below** | §11.4, **§11.60** | **Probe REFUTED `3π−az`**: the surface delta is `az_old = π/2 − az_new` (the `3π−az` was old's internal raw→report step; the new raw frame is −π/2 off — the §11.4 line-753 caveat, measured). ONE authority `ModularObject::altAz()` (`az = π/2−raw`) feeds getAltAz + getInfoString + getShortInfoNavString (single `observedPosToAltAz` call site). 234/234 bodies ≤0.00003° pre-fix convention; post-fix parity ≤0.00002°, alt untouched; nav/info strings arcsec-identical to old; also closed the §11.4 label-order swap. **Findings**: ModularObject uninstantiated in production (fix readies the D2 bridge, no user-visible change yet); RA/DE sibling diverges (§5.19, out-of-scope). Locked by `harness/b9_azconv.py` (FAIL pre-fix, PASS post-fix). No regression |
 | B11 | ~~Trail recording gate: `flag trails off` STOPS accumulation; re-enable starts FRESH~~ **DONE 2026-07-22 → §11.56, §7 below** | §11.41, §11.48(a), **§11.56** | Display flag now gates recording (`want`, not the fader — the prior port gated on the fade animation). **2×2 matrix measured**: hidden Mars records identically to visible Venus (both +6 pts / +1080 accumulate calls flag-on, both 0 flag-off) — the two gates are orthogonal, §11.54's boundary closed in the affirmative. "Work stopped" proven 2 ways (`accumulateCount` frozen + gdb accumulate breakpoint silent while off). Resolved inside I2/I6 — no second walk, no scheduling change (B1/S4 untouched). Real command spelling = `flag object_trails on|off` (the row's `flag trails` is swallowed silently). 94/94 harness, 0 VUID, config byte-identical |
 | B13 | ~~Reference-change view continuity: preserve absolute sky direction across reference switch and free-mode entry/exit; no re-centring~~ **DONE 2026-07-22 → §11.61, §12 below** | §11.19c, §11.48(a), **§11.61** | **`warpToBody` (`set home_planet`) was the ONLY re-centring path** — it held (alt,az,heading) frame-relative and jumped the sky **78.60°** (measured); `switchToBody`/`setFreeMode` already preserved absolute since §11.36. Mechanism = the EXISTING `recoverParams` deduce-identical-view primitive (the `view` quaternion stays retired per §11.19c); inverse formula = `R = viewRotation·placement·calculateSwitchCompensation(dst)`, ONE recoverParams (not switchToBody's freeMode round-trip — that corrupts longitude across a ref change). **Post-fix absDelta ≤6e-6°** (recoverParams Euler floor, = switchToBody's 8e-6°; B30 adds ≤5e-3° fresh-launch), **alt/az delta 78–90° = discriminator** (the two SWAP). Sky-lock composition HANDLED (`lockedSkyRot·comp`, locked switch 6e-6°). Scene E **13→21 OK**, discrimination proven by a recoverParams-disabled mutation (3 ref-switch asserts FLIP to FAIL). **Conflict logged**: B18 §11.58(g)'s "setMount has no caller / runs ALTAZ" is wrong — runtime `mount:equatorial`. No regression (P4 17–51 km, orient 17/48, P-d 0.0000°), config byte-identical |
-| B15 | AoI re-derivation on date change: the launch-jd latch is a defect (dates are jumped mid-navigation) | §11.36, §11.48(a) | Recompute cadence (date-jump event vs continuous) is an engineering call bounded by constraint C3. Should close the ~10% seasonal drift and the scene-E `e_in` first-run miss — verify both |
+| B15 | ~~AoI re-derivation on date change: the launch-jd latch is a defect (dates are jumped mid-navigation)~~ **DONE 2026-07-22 → §11.62, §13 below** | §11.36, §11.48(a), **§11.62** | **Latch located + measured 10.281% drift** at the scene jd (frozen `areaOfInfluence` gated by `uncached`, which no date change raises). Fixed by splitting `updateReach()` out of `updateCache()` and calling it EVERY frame — **cadence = continuous** (threshold-free, inside C3; cost ≤2.4 µs/frame upper bound). Post-fix 0.000% at every date; AoI differs with season (11.47%). Scene E **21→26 OK** (5 discriminating B15 asserts; re-latch mutation re-fails them, 21 pre-existing stay green). No regression (P4 9.58–49.87 km, orient 17/48, P-d 0.0000, 0 VUID, config byte-identical). Formula/policy untouched (threshold semantics stay A15/A17) |
 | B16 | ~~Expose `reloadSystem` as a command; keep current state (camera + date), no reset~~ **DONE 2026-07-21 → §11.55, §6 below** | §11.36, §11.45(d), §11.48(a), **§11.55** | Landed as **`body action reload`**; both §2(c) channels exercised live. **Scope grew by one structural fix**: the reload's first live use exposed an I5 violation (EnvironmentManager's cross-frame raw-pointer chain cache dereferences freed bodies) — fixed at the class by destruction notification. **One question suspended**: does "keep current state" cover body-scoped runtime overrides (today the file wins, and the old path desyncs) |
 | B17 | Port `view_offset` / `zoom_offset` as a Camera parametrization, config + command channels | §11.19a, §11.45(d), §11.48(a) | In use for tilted dome geometry ⇒ it is a projection-space offset — must NOT be re-derived as a camera rotation |
 | B18 | Port `flag_lock_equ_pos` (equatorial-mount sky-lock) | §11.19c, §11.48(a) | The "unexercised legacy feature" premise was wrong — it is exercised, just not by our harness |
@@ -1083,3 +1083,110 @@ Claude Fable 5. Single logical commit (fix + instrument + scene-E asserts +
 trackers). This hash-recording line is inside that commit, so the authoritative
 hash is the post-amend value in `git log` (pre-amend was `03e2b963`).
 `supervised-by.sh` left untracked.
+
+---
+
+## 13. Execution log — B15 (Claude Opus 4.8, 2026-07-22)
+
+**Task**: wave §1 task 10 — fix AoI re-derivation on date change. Vixy A19/Q10
+(§11.48(a)): *"Yes, I sometimes do jump dates while navigating"* ⇒ the launch-jd
+`areaOfInfluence` latch is a **defect**, not an accepted approximation. Fix the
+STALENESS of the input only — the AoI formula and the transition policy are NOT
+mine (threshold semantics = A15/A17). Recompute cadence is my call, bounded by C3.
+
+**No behavior change beyond the row.** The fix writes only the
+`areaOfInfluence`/`subsystemRadius` scalars, and only makes them track the
+current jd where they used to freeze; positions, orientations, and the transition
+policy are untouched (verified: scenes A–D parity unchanged).
+
+**Full measurements**: INTENT.md §11.62 (a)–(f).
+**Instruments committed**: `harness/b15_{run.sh,aoi_stale.py}`, `harness/scene_e_spine.py` (+5 B15 asserts).
+**Artifacts**: `harness/artifacts/b15*/` (gitignored, on disk).
+
+**The defect (one sentence)**: `areaOfInfluence` was computed only inside
+`updateCache()`, which `update()` calls solely `if (uncached)`, and `uncached`
+is raised only by radius/scaling/module events — **never by a date change** — so
+the AoI froze at the first cache (launch jd) while the positions it derives from
+were refreshed every frame.
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Latch located + staleness measured (~10%) | **met** | `updateCache` gated by `uncached` [observed: ModularBody.cpp:289-330, hpp:290]; `uncached` raised only by setRadius/setScaling/invalidateCachedState [hpp:741,752,798], not by date. Frozen refAoI **4.805605e-02 AU** (launch jd) vs current-jd pred **4.357605e-02 AU** at the scene jd = **10.281%** [measured: b15_aoi_stale.py]. Launch-leg err **0.000%** validates the offline transcription. Frozen value BYTE-IDENTICAL across 5 date jumps = latch signature. Matches the recorded ~10% (no source conflict) |
+| 2 | Fix recomputes on current jd; error ≈0; cadence stated + inside C3 | **met** | `updateReach()` split out, called every frame from `update()`'s `else` branch. **Cadence = continuous** (threshold-free; inside **C3** *"draw thread never blocks"* [§2.0:116] / *"never build-on-first-use in-frame"* [§10.2:399] — a few float ops/body in the per-frame walk, no block). Post-fix err **0.000%** at every date [b15_aoi_stale.py, all 5 legs] |
+| 3 | Scene-E `e_in` latch closed; discriminating (re-latch re-introduces miss); count | **met** | Scene E **21→26 OK** on the final binary. The 0.7 bracket masks the latch (e_in=Earth pre- and post-fix — a ±11% drift can't trip a 30% bracket), so I added 5 DETERMINISTIC formula-layer asserts. Re-latch mutation (remove per-frame `updateReach`, rebuild exit 0): the 3 launch-independent B15 asserts FAIL — `season-differs` **0.00000%** (appAoI[D1]==appAoI[D2]==4.8062e-02 frozen = latch reproduced), `tracks D1` **10.29511%**, live ref **Earth/Earth** — while all **21 pre-existing asserts stay GREEN** (localized). Reverted → 26/26 restored |
+| 4 | Date-jump exercised directly; ½-yr apart, transition altitude differs with season | **met** | `date jday` verified dispatched (the app moves — dumps change). AoI (= the Earth→Sun escalation threshold) tracks the date: scene jd **4.357605e-02** vs +½yr **4.858009e-02** = **11.47%**. LIVE transition: at a fixed altitude in the season window, the lower-AoI date escalates (ref=Sun), the higher stays (ref=Earth) — season-dependent, launch-independent (scene E `live ref season-switch loAoI=Sun hiAoI=Earth`) |
+| 5 | Both entries of the reversible pair; second from the first's end | **met** | b15_aoi_stale.py: back-to-scene **4.357605e-02** == scene, +½yr-from-back **4.858009e-02** == +½yr (second jump starts from the back state) — path-independent. Scene E `reversible D1` 0.00008% |
+| 6 | Build green; mtime advanced | **met** | `make -C build-claude -j$(nproc)` exit **0** ×5 (fix / cost-probe / clean / mutation / final); final binary mtime **2026-07-22 05:51:16** (advanced from 05:03:56) |
+| 7 | No regression A–D+E; continuous-recompute cost measured; config byte-identical | **met** | A–D P1 ≤9.17e-17, P2 mat ≤1.13e-07, P3 ≤2.09e-05 deg, **P4 13.69/15.16/9.58/49.87/10.34 km**, **orientation 17/48, P-d 0.0000**. Scene E 26/26, Mars 2.270821e-05 AU. **Cost [measured, temp probe removed before commit]: ~50 calls/frame, ≤46 ns/call, ≤2.4 µs/frame** (conservative upper bound; ~0.014% of a 16.7ms frame). Layer POSITIVELY confirmed [*Insert instance layer "VK_LAYER_KHRONOS_validation"*], **0 VUID**. config.ini md5 **03fbee59…** in/out |
+| 8 | Trackers | **met** | INTENT §11.62 (new, (a)–(f)); §13.B B15 → DONE; §11.36 scene-E bracket line + suspended-list `AoI cache-freeze` item CLOSED (the AoI *heuristic-tuning* constants left suspended — threshold semantics); this dispatch row + §13 |
+| 9 | Committed on master-beta, correct author/co-author, not pushed | **met** | see commit below |
+
+### Findings / notes
+
+- **The `e_in` flap mechanism, clarified**: the recorded "first-run e_in miss
+  (ref=Sun)" is the SAME latch, but the current 0.7/1.5 scene-E brackets cannot
+  express it — a ±11% lunar-distance drift never trips a 30% bracket (e_in came
+  out Earth both pre- and post-fix on my launches). The historical flap was the
+  latch catching a launch-jd that happened to differ enough (`startup_time_mode
+  = Actual` ⇒ launch = real now, varying each run). The fix removes the drift at
+  the source; the 5 new deterministic asserts are the discriminating instrument
+  the wide bracket never was.
+- **Clean `shutdown action now`** on the final binary (mtime 05:51:16) — **no
+  §11.15d fire** (data point for B7).
+
+### Suspended for Vixy
+
+**None.** Every decision traces to the spec or a measurement. The cadence
+choice (continuous vs date-jump-event) was explicitly delegated to me within C3
+(§13.B B15) and is recorded with its C3 quotation. The AoI FORMULA and
+transition POLICY were left untouched by construction (the task's stop boundary:
+threshold semantics = A15/A17, Vixy's); the AoI *heuristic-tuning* constants
+(128/16/0.6) stay suspended in §11.36 as they were.
+
+### What I did NOT verify
+
+- The fix under `render_path = old` (old path unchanged by construction; new
+  path is the pinned default, §11.53).
+- AoI tracking for HIDDEN bodies: hidden bodies tick position (B19) via
+  `recursiveTranslationUpdate`, which does NOT call `update()`, so `updateReach`
+  does not run on them — their AoI is not refreshed. Not a defect for reference
+  transitions (an unevaluated/hidden child has `distance==0` ⇒ `isInAreaOfInfluence`
+  false), and it matches the pre-existing evaluation boundary; flagged for
+  completeness, not fixed (out of row — it would be an update-scheduling change,
+  B1/S4 territory).
+- Perceptual A/B: this is a formula-layer computed scalar (B30 does not apply);
+  verification is at the formula layer by design, per the task.
+
+### Reproduction (verbatim)
+
+    # AoI staleness (formula layer) — pre/post fix
+    cd /home/claude/spacecrafter/src/experimentalModule/harness
+    DISPLAY=:2 ./b15_run.sh b15_aoi_stale.py            # driver exit 0
+    #  -> artifacts/b15/b15_stale.json; err 0.000% (post-fix) at every leg
+
+    # scene E (26/26 post-fix; needs a FRESH launch, init_fov=340, fisheye)
+    DISPLAY=:2 ./b15_run.sh scene_e_spine.py            # driver exit 0, 26/26
+
+    # discrimination (temporary, revert afterwards): in ModularBody.hpp update(),
+    #   remove the `else updateReach();` line, then:
+    make -C /home/claude/spacecrafter/build-claude -j$(nproc)   # exit 0
+    #  relaunch fresh, rerun scene_e_spine.py  -> exit 1, 3 B15 asserts FAIL,
+    #                                             21 pre-existing green
+    #  revert, rebuild, relaunch, rerun         -> exit 0, 26/26
+
+    # no-regression (needs init_fov=340; restored to 180 by md5 afterwards)
+    DISPLAY=:2 ./b15_run.sh drive_scenes.py
+    for f in gen_a gen_b gen_moon gen_mars gen_mars_2; do python3 ./predict.py /tmp/$f.json; done
+    python3 ./orientation_check.py /tmp/gen_a.json      # 17/48, P-d 0.0000
+
+### Hygiene
+
+`config.ini` restored byte-identical [md5 `03fbee59bc3ec506c58f0a3f1e1d73df`
+in/out; the app rewrites config on shutdown, so the restore `cp` runs AFTER the
+process is dead, per §11.61(g)]. `ssystem.ini` untouched. `beta_features.ini`
+absent throughout. Cost-probe instrumentation (ModularBody.cpp + Camera.cpp)
+added then REMOVED before commit — `git diff` on Camera.cpp is empty; product
+diff = ModularBody.{cpp,hpp} only. `supervised-by.sh` left untracked. No harness
+task list touched.

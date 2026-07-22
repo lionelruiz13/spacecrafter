@@ -88,3 +88,8 @@ src/experimentalModule/harness/artifacts/b9_prefix/
 src/experimentalModule/harness/artifacts/b9_postfix/
 src/experimentalModule/harness/artifacts/b9_horizon/
 src/experimentalModule/harness/artifacts/b13/
+src/experimentalModule/harness/artifacts/b15/
+src/experimentalModule/harness/artifacts/b15_sceneE_prefix/
+src/experimentalModule/harness/artifacts/b15_sceneE_postfix/
+src/experimentalModule/harness/artifacts/b15_sceneE_mutation/
+src/experimentalModule/harness/artifacts/b15_scenesAD/

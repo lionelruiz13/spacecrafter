@@ -204,6 +204,14 @@ public:
     void recursiveUpdate(double jd, const Mat4f &matLocalToBody);
     // Update the cached values
     void updateCache();
+    // Recompute the position-derived reach (subsystemRadius + areaOfInfluence)
+    // from the CURRENT eclipticPos. Split from updateCache (INTENT 11.62, B15):
+    // these track jd EVERY frame (positions move), whereas the module/radius
+    // part in updateCache only changes on a radius/scaling/module-load event
+    // (the `uncached` latch). Before the split the AoI froze at the first cache
+    // (launch jd) -> the reference-transition threshold was stale after any
+    // date jump (measured 10.28% drift at the scene jd, §11.62).
+    void updateReach();
     // Inform that all childs are no longer visible
     void setChildNoLongerVisible();
     // Minimal updates required to determine if full update is required
@@ -288,7 +296,9 @@ public:
             axisRotation = fmod((jd - re.epoch) / re.period * (2 * M_PI) + re.offset * (M_PI / 180), (2 * M_PI));
         }
         if (uncached)
-            updateCache();
+            updateCache();       // module/radius part + a fresh updateReach()
+        else
+            updateReach();       // AoI tracks the current jd every frame (§11.62, B15)
         if (screenSize > 0.004)
             notableBody.push_back(this);
     }
