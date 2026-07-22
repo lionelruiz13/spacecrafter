@@ -37,7 +37,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 | B17 | Port `view_offset` / `zoom_offset` as a Camera parametrization, config + command channels | §11.19a, §11.45(d), §11.48(a) | In use for tilted dome geometry ⇒ it is a projection-space offset — must NOT be re-derived as a camera rotation |
 | B18 | Port `flag_lock_equ_pos` (equatorial-mount sky-lock) | §11.19c, §11.48(a) | The "unexercised legacy feature" premise was wrong — it is exercised, just not by our harness |
 | B19 | ~~Hidden-body ticking: current behavior (hidden ⇒ keeps updating) is ratified — lock it with a regression assert~~ **DONE 2026-07-21 → §11.54, §5 below** | §11.15b, §11.36, §11.48(a), **§11.54** | **The row's premise was FALSE**: the new path froze hidden bodies (0.00 km advance over 20 simulated min vs old's 1306.81 km), and the 14 bodies shipped `hidden = true` had never been positioned (`lastJD = 0`; Pluto 5.75e9 km off). So it WAS a behavior change — scope expanded from "assert only" to "implement the ratified semantics + assert", traceable to Q13/A10. Locked by `harness/b19_hidden_tick.py` |
-| B20 | Anchored galactic display: at galactic distances while anchored, show the solar-system view from very far, anchor kept — no altitude-driven mode switch | §11.36, §11.48(a) | A13 ratified anchored-stays-anchored in the same answer set — no escalation-policy change |
+| B20 | ~~Anchored galactic display: at galactic distances while anchored, show the solar-system view from very far, anchor kept — no altitude-driven mode switch~~ **DONE 2026-07-22 → §11.59, §10 below** | §11.36, §11.48(a), **§11.59** | **VERIFY-ONLY, no product code** (A13 "no code change" ratifies the current impl). Anchor kept at 4.9e11 AU (ref=Earth, distance ≫ refAoI ⇒ switch suppressed by the `if(freeMode)` guard); free-flight same-move escalates to Universe (the discriminator). Locked by `harness/b20_anchored_galactic.py`, counterfactual proven. **Finding SUSPENDED**: round-trip anchor does NOT survive — OLD executor re-anchors Earth→SolarSystem on descent (§11.36 "anchored-mode descent"); fix is §6.9/escalation-policy = Vixy's |
 | B22 | System-collapse cross-fade at the ~16 px resolved↔dot threshold, "if not too costly" | §11.36, §11.48(b) | The COST BOUND is the decision input: deliver the cross-fade + its measured cost. The threshold constants themselves stay open (A15 — Vixy/tester) — do not tune them here |
 | B23 | ~~Restore planet-grid tropics + polar circles, keyed to the corresponding sky-line flags~~ **DONE 2026-07-22 → §11.57, §8 below** | §11.42, §11.48(b), **§11.57** | Tropics ride **LINE_TROPIC** (`flag tropic_lines`), polar circles **LINE_CIRCLE_POLAR** (`flag polar_circle`), at ±axial_tilt / ±(90−axial_tilt). **§11.42's "no axial-tilt scalar" was a cached conclusion, false at source** — `axial_tilt` has loaded into `re.axialTilt` since the port; only a getter was missing. Measured latitudes track obliquity (Earth 23.44/66.56, Jupiter 3.13/86.87, Uranus 97.77/−7.77); screen gating px>32 vs a **0** noise floor, Earth↔Uranus ring reversal on the frame; name-sniff `!="Sun"` → `!isStar()` (I4). Carve-out kept (no independent toggle, no >10 km regime). 25/25 harness, 0 VUID, config+ssystem byte-identical. Finding: the Sun installs no grid at all (out of scope) |
 | B26 | ~~Run the two-screenshot observable check for the dual-path default flip~~ **DONE 2026-07-21 → §11.53, §4 below** | §11.50(c), §11.53 | **VERIFIED on `DISPLAY=:2`, 6 fresh launches, no product code changed.** The stated criterion was itself defective (≥2.5 s = quarter of the 2 s toggle period ⇒ 50 % test; corrected to odd multiples of 1.0 s, discriminator px>32). New finding spun out: **B30** (new path not bit-stable on a frozen scene) |
@@ -775,3 +775,93 @@ and restored by `cp` of a backup, md5 asserted]. `ssystem.ini` untouched. `beta_
 absent throughout (new path is the pinned default). Per-run artifacts `artifacts/b18/`
 gitignored like b11/b16/b19/b23/b26. `supervised-by.sh` and the root `USER_QUESTIONS*.md` /
 `FEATURE_REQUESTS.md` left untracked. No harness task list touched.
+
+## 10. Execution log — B20 (Claude Opus 4.8, 2026-07-22)
+
+**Anchored galactic display (ex-A14 / Q8).** VERIFY-ONLY: no product code changed; the
+ratified behavior (A13/Q7 "stay anchored WHATEVER your altitude", A14/Q8 "solar-system view
+from very far, anchor kept") is ALREADY implemented by the `if (freeMode)` guard on the
+escalation call [Camera.cpp:345-350]. Deliverable = a discriminating regression assert +
+its counterfactual proof, plus the precise recording of one negative finding.
+
+### DoD, item by item
+1. **Current behavior measured at galactic distance while anchored — MET.** Anchored Earth,
+   `moveto altitude 7.353e22 m` (= 4.9152e11 AU = scene-E MW-AoI×1.2): ref=**Earth** UNCHANGED,
+   freeMode=false, distance=4.9152e11 AU, refAoI=0.0436, refParent=Sun, refCached=true. No
+   auto-transition fired (the escalation call is freeMode-gated). Distance ≫ refAoI ⇒ the switch
+   WOULD fire in free flight; suppressed by the anchor. [measured: artifacts/b20g/b20_result.json]
+2. **The assertion is discriminating — MET, proven not assumed.** Counterfactual mutation at
+   Camera.cpp:345 (drop `freeMode` gate, feed anchored `distance`) → rebuild exit 0 → anchored
+   outward move ESCALATES (entry1 ref=MilkyWay≠Earth, refParent=Universe, refCached=false) ⇒
+   family B+E FAIL (3 asserts); freeMode instrument-chain + free-flight leg stay green. Reverted
+   (git diff Camera.cpp empty) → rebuild exit 0 → ALL PASS restored. [measured: /tmp/b20g_cf]
+3. **Reversible pair ×2 — traversed; anchor survives OUTWARD both entries, NOT the round trip.**
+   near→out1→back1→out2→back2 (second outward from the first round trip's end state). Outward
+   invariant (ref_after==ref_before) holds both entries. **BACK legs re-anchor Earth→SolarSystem**
+   — the SUSPENDED §11.36 "anchored-mode descent" (see Findings). Round-trip anchor survival =
+   **NOT met**, by a distinct pre-existing old-executor defect, not by the escalation policy.
+4. **Contrast with free flight — MET.** Same outward move, freeMode ON → ref=Universe (matches
+   scene-E mw_out). The only difference between the two runs is `freeMode`; therefore the ANCHOR
+   is what suppresses the switch, not the distance.
+5. **Anchor semantics — MET.** At galactic distance ref resolves to its body (Earth), refParent=Sun,
+   refCached=true, distance=4.9152e11 AU ⇒ solar-system-from-afar, NOT a recentred galactic view
+   (the counterfactual's refParent=Universe/refCached=false IS the recentred view, and it fails).
+6. **Build green — MET (verify-only).** No product change; final binary = reverted source
+   (mtime advanced 2026-07-22 03:18:01 after the revert rebuild, exit 0). Camera.cpp git-clean.
+7. **No regression — MET.** A–D P4 13.48–55.06 km (recorded 13–55 class); scene E 13/13, Mars
+   landing 2.270821e-05 AU. config.ini restored byte-identically (md5 03fbee59… in==out).
+8. **Trackers — MET.** INTENT §11.59 + §13.B B20 row + §11.36 anchored-mode-descent annotation.
+9. **Committed on master-beta — see hashes below.**
+
+### Findings recorded, not fixed (SUSPENDED for Vixy)
+- **Round-trip anchor does NOT survive: the anchored descent re-anchors Earth→SolarSystem.**
+  [measured: gdb backtrace] `EventHandler::handleEvents` → `SolarSystemModule::onEnter`
+  [solarSystemModule.cpp:79] → `SSystemFactory::enterSystem` [ssystem_factory.cpp:419] →
+  `changeSystem("Sun")` [ssystem_factory.cpp:271] → `Camera::switchToBody(SolarSystem)`. The
+  OLD executor's altitude-driven mode transition drives the new camera's reference, UNGATED by
+  freeMode — a second auto-transition mechanism the free-flight-only policy never covered. This
+  is §11.36's DISTINCT "anchored-mode descent (unchanged from plan)" suspended item, NOT closed
+  by A13/A14, and the same "landed on SolarSystem at solar-radius distance" §11.36 line 611
+  measured (my back leg: distance 4.6525e-03 AU ≈ 1 R_sun).
+  **CONFLICT for Vixy**: Q7 ("stay anchored WHATEVER your altitude") + A14 ("in case we go back
+  afterward") read as requiring the descent to keep the Earth anchor. But suppressing the
+  old-executor→new-camera coupling is an escalation-policy / §6.9 mode-dissolution decision, and
+  A13 explicitly said "no code change". NOT decision-free ⇒ suspended, not improvised.
+  **Question**: at anchored galactic altitude, should the DOWNWARD mode crossing be allowed to
+  re-anchor the new camera (old-executor coupling), or must the explicit anchor be held across
+  the descent too (requires gating the old executor's `changeSystem→switchToBody` against the
+  new-path anchored reference — a §6.9-adjacent change)?
+
+### What I did NOT verify
+- The DRAWN screen at anchored galactic distance (whether the solar system actually renders as a
+  far dot): the new path UPDATES in every executor mode (§11.36 updateExperimental) but `ssystemFactory->draw`
+  is not called in inGalaxy/inUniverse modes until the §6.9 executor-mode dissolution — so the
+  reference/anchor is measured from the camera dump (mat layer), the pixel view is not. Same
+  §11.36 confound named for spine_mw/spine_uni. B20's claim is the reference/anchor, which the
+  dump proves; the pixel composition awaits §6.9.
+- Anchors other than Earth going out (the outward invariant is body-agnostic and entry 2 exercises
+  a SolarSystem anchor, but not, e.g., a moon or a script-created body).
+
+### Reproduction (verbatim)
+    cd /home/claude/spacecrafter
+    make -C build-claude -j$(nproc)                                        # exit 0
+    DISPLAY=:2 bash src/experimentalModule/harness/b20_run.sh              # ALL PASS, md5 match
+    # counterfactual (discrimination proof):
+    #   edit Camera.cpp:345  if(freeMode){...position.length()...}
+    #     -> { float od = freeMode?position.length():distance; if(auto n=reference->findBetterReference(od)) switchToBody(n); }
+    make -C build-claude -j$(nproc)                                        # exit 0
+    DISPLAY=:2 bash src/experimentalModule/harness/b20_run.sh b20_anchored_galactic.py /tmp/b20g_cf  # 3 FAIL (family B+E)
+    git checkout src/experimentalModule/Camera.cpp ; make -C build-claude -j$(nproc)   # revert, exit 0
+    DISPLAY=:2 bash src/experimentalModule/harness/b20_run.sh              # ALL PASS restored
+    # no-regression (A-D + E; config init_fov 180->340 by cp of a backup, then restored):
+    DISPLAY=:2 <fresh spacecrafter, init_fov=340> & ; python3 src/experimentalModule/harness/drive_scenes.py
+    for f in gen_a gen_b gen_moon gen_mars gen_mars_2; do python3 .../predict.py /tmp/$f.json | grep P4; done  # 13.48-55.06 km
+    DISPLAY=:2 <fresh spacecrafter, init_fov=340> & ; python3 src/experimentalModule/harness/scene_e_spine.py   # 13/13, exit 0
+
+### Hygiene
+`config.ini` restored byte-identical [md5 `03fbee59bc3ec506c58f0a3f1e1d73df` in and out; the b20
+run sends settings as COMMANDS and never edits the file; the A-D/E runs edited `init_fov 180->340`
+and restored by `cp` of a backup, md5 asserted]. No data files touched. `.gitignore` +1 line
+(`artifacts/b20g/`). Per-run artifacts `artifacts/b20g/` gitignored like b11/b16/b18/b19/b23/b26.
+`supervised-by.sh` and the root `USER_QUESTIONS*.md` / `FEATURE_REQUESTS.md` left untracked. No
+harness task list touched. Camera.cpp git-clean (verify-only — the counterfactual was reverted).
