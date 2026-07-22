@@ -77,3 +77,4 @@ build-claude
 claude
 artifacts
 __pycache__
+/CLAUDE.md
