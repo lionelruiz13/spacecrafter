@@ -128,6 +128,22 @@ answer no longer changes the design. It still tells us which usage to
 test hardest, which is why the question stays.)*
 *(ref: A24 → B17)*
 
+**R13. Anchored, then out to the galaxy and back — should the anchor
+survive the round trip?** When you lock the view onto a body (anchor) and
+fly outward, the anchor is kept and you see the solar system shrink to a
+point — that part works and stays. The open question is the way *back*:
+today, as you descend again, the view quietly re-anchors to the solar
+system as a whole rather than staying locked to the body you left from.
+So if you anchored on Earth, flew out, and came straight back, you would
+*not* return to being anchored on Earth. Is that acceptable, or do you
+expect the anchor to hold the whole way out and back (so "go out and
+return" always lands you exactly where you started)? If it should hold,
+does that apply to every anchored body, or only some? (This one is finer
+than the others — it only matters if you actually fly anchored out to
+galactic distance and back during a show; if you never do, say so and we
+stop worrying about it.)
+*(ref: A14 → B20 — deferred here from the B20 investigation, INTENT §11.66(e))*
+
 ## No longer questions
 
 **R2. A body is removed from the simulation while the camera is involved
