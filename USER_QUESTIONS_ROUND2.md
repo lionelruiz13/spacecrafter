@@ -6,7 +6,7 @@ Round 1 (Q1–Q27, answered, your answers kept inline) lives in
 `USER_QUESTIONS.md`. Round 2 now has its own file so the live questions
 aren't buried under a few hundred lines of answered history.
 
-**Status: ANSWERED 2026-07-22 (tester, relayed by Vixy) — propagated to the ledger `src/experimentalModule/INTENT.md` §11.70 + §13 rows.** The live items (R1, R3–R11, R13) were answered inline below and the no-longer-questions (R2, R12) confirmed; the answers here are the raw record, the ledger is what each answer decides (§11.70). Originally: ten+ items live (R1, R3–R11, R13).
+**Status: ANSWERED 2026-07-22 (tester, relayed by Vixy) — propagated to the ledger `INTENT.md` §11.70 + §13 rows (same folder since the 2026-07-22 repo split).** The live items (R1, R3–R11, R13) were answered inline below and the no-longer-questions (R2, R12) confirmed; the answers here are the raw record, the ledger is what each answer decides (§11.70). Originally: ten+ items live (R1, R3–R11, R13).
 Two are no longer questions — R2 and R12, kept at the bottom: worth a
 skim, because one of them states a behavior you can still veto, and the
 other tells you what your earlier answer produced.
@@ -194,6 +194,6 @@ Ok.
 ---
 
 *Traceability note: this document is derived, not authoritative — the live
-decision ledger is `src/experimentalModule/INTENT.md` §13. If that file
+decision ledger is `INTENT.md` §13 (same folder). If that file
 and this one ever disagree (e.g. an item gets resolved in one but not
 updated here), the ledger wins; tell us and we'll reconcile.*

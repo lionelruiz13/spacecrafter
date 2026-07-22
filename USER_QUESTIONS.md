@@ -19,7 +19,7 @@ engine rework — not a hypothetical or a wish-list item. Each one is blocking
 something concrete from being finalized (a behavior, a command, or the
 retirement of an older code path). Nothing here was invented for this
 document; each question traces back to a row in the internal tracker
-(`src/experimentalModule/INTENT.md`, §13), given here in parentheses as
+(`INTENT.md`, §13 — same folder since the 2026-07-22 repo split), given here in parentheses as
 `(ref: Axx)` / `(ref: Bxx)` purely so an answer can be matched back to the
 right item without ambiguity — you don't need to read that file to answer.
 
@@ -234,6 +234,6 @@ R12). Nothing was dropped in the move; the `(ref: …)` keys are unchanged.
 ---
 
 *Traceability note: this document is derived, not authoritative — the live
-decision ledger is `src/experimentalModule/INTENT.md` §13. If that file
+decision ledger is `INTENT.md` §13 (same folder). If that file
 and this one ever disagree (e.g. an item gets resolved in one but not
 updated here), the ledger wins; tell us and we'll reconcile.*
