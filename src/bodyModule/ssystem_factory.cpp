@@ -642,7 +642,12 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
     // parent-obliquity case, 115.60deg - tilt pieces needed for the
     // convention checker even while the branch is invisible; lastJD stays
     // fresh through recursiveTranslationUpdate).
-    for (const char *name : {"Earth", "Moon", "Sun", "Mars", "Pluto", "Charon"}) {
+    // Earth/Moon/Sun/Pluto/Charon = the 11.34 orientation set; the 7
+    // rot_pole_ra planets (Mercury..Neptune) added for the B28 bit-identical
+    // gate (INTENT 11.67): their self-hop `tilt` + raw obliquity/ascendingNode
+    // are the projection-free, B30-immune readout of the frame conversion.
+    for (const char *name : {"Earth", "Moon", "Sun", "Mercury", "Venus", "Mars",
+                             "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Charon"}) {
         if (ModularBody *nb = ModularBody::findBodyOnce(name)) {
             out << "{\"type\":\"hops\",\"name\":\"" << name << "\",\"new\":";
             nb->dumpHops(out);

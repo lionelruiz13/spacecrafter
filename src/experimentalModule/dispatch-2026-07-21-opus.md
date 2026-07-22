@@ -42,7 +42,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 | B23 | ~~Restore planet-grid tropics + polar circles, keyed to the corresponding sky-line flags~~ **DONE 2026-07-22 → §11.57, §8 below** | §11.42, §11.48(b), **§11.57** | Tropics ride **LINE_TROPIC** (`flag tropic_lines`), polar circles **LINE_CIRCLE_POLAR** (`flag polar_circle`), at ±axial_tilt / ±(90−axial_tilt). **§11.42's "no axial-tilt scalar" was a cached conclusion, false at source** — `axial_tilt` has loaded into `re.axialTilt` since the port; only a getter was missing. Measured latitudes track obliquity (Earth 23.44/66.56, Jupiter 3.13/86.87, Uranus 97.77/−7.77); screen gating px>32 vs a **0** noise floor, Earth↔Uranus ring reversal on the frame; name-sniff `!="Sun"` → `!isStar()` (I4). Carve-out kept (no independent toggle, no >10 km regime). 25/25 harness, 0 VUID, config+ssystem byte-identical. Finding: the Sun installs no grid at all (out of scope) |
 | B26 | ~~Run the two-screenshot observable check for the dual-path default flip~~ **DONE 2026-07-21 → §11.53, §4 below** | §11.50(c), §11.53 | **VERIFIED on `DISPLAY=:2`, 6 fresh launches, no product code changed.** The stated criterion was itself defective (≥2.5 s = quarter of the 2 s toggle period ⇒ 50 % test; corrected to odd multiples of 1.0 s, discriminator px>32). New finding spun out: **B30** (new path not bit-stable on a frozen scene) |
 | B29 | ~~Runtime COLOR seam port: MEASURE old's reload behavior for runtime per-body colors, then reproduce it~~ **LIVE SEAM DUAL + reload-persistence SUSPENDED → §11.65, §16 below** | §11.65, §11.42, §11.45(d), §11.55(i) | Runtime per-body colour (halo=body, label/orbit/trail=modules, self-select I4) + `"all"` broadcast + runtime DEFAULT now DUAL (numeric: Venus halo [1,1,0.9]→[1,0,0], trail→[0,1,0]; all→[0,0,1]; precedence broadcast-over-instance; default leaves existing bodies unchanged; screen px>32=1379 vs **0** floor, old 1268). **Old reload MEASURED: OLD HAS NO RELOAD** (`body action reload` new-only; `initial`→reinitParam resets radius not colour) ⇒ old PERSISTS; NEW reload RESETS to file. **The reload-persistence closure = B16 §11.55(i)'s option-2 ledger — old has no observable to reproduce, do-not-decide-B16 ⇒ SUSPENDED for Vixy.** §11.42 colour-authority DISSOLVED. Closes the last OLD-ONLY S6 command seam (live). No regression (P4 13.93 km, orient 17/48, P-d 0.0000, scene E 26/26, 0 VUID) |
-| B28 | Loader frame declaration + conversion: data declares its coordinate system, loader converts — one conversion authority | §11.51(d), §11.52(a), §11.49(e) | Fully specified incl. write-back contract (only-when-needed, atomic sibling-temp-then-rename, whole-file clean precondition; text-preserving insertion). Regression criterion = bit-identical for the 7 existing `rot_pole_ra` planets. Actionable diagnostics per §2(f). Larger than the other rows but decision-complete; B14 sequences after it |
+| B28 | ~~Loader frame declaration + conversion: data declares its coordinate system, loader converts — one conversion authority~~ **DONE (frame half, DESCOPED) 2026-07-22 → §11.67, §17 below** | §11.67, §11.51(d), §11.66, §11.49(e) | `rot_frame` (`absolute_pole`\|`parent_relative`) + ONE authority `resolveRotationFrame()`; absolute_pole = declarable root-aligned converted frame (accumulation skips ancestors for it, inert today). **Bit-identical ULP=0 for all 7 planets** (obliq/ascNode/tilt, before-vs-after + pristine-HEAD Mars anchor). Default derived from key presence, in-memory only, never written (write-back = B31). Invalid value → §2(f) L_ERROR. No regression (17/48, P-d 0.0000, scene E 26/26). **Vixy sign-off pending** on the `rot_frame` spelling/domain + the frame-aware accumulation touch. B14 inherits `rot_frame=absolute_pole` for the 28 moon poles |
 | B6 | §11.37 view-roll 134.67° — investigation only | §11.37 | Non-reproducing; one settled observation; artifact preserved. Low priority — attempt reproduction from the artifact, record outcome either way |
 | B7 | §11.15d shutdown segfault — probe-log watch | §11.15d, §11.47 | Intermittent, no fire across recent sessions after the structural fixes. Task = check/extend the §11.47 probes when touching shutdown paths; not an active hunt |
 
@@ -1507,3 +1507,109 @@ throughout. Product change = BodyModule.hpp + ModularBody.{hpp,cpp} +
 gitignored (+1 line), `artifacts/b29_measurements.json` committed (the
 convention). `supervised-by.sh` left untracked. No harness task list touched.
 No §11.15d shutdown fire observed this session (data point for B7).
+
+## 17. Execution log — B28 (DESCOPED) (Claude Opus 4.8, 2026-07-22)
+
+**Task**: wave §1 task 14 (re-dispatched, DESCOPED per §11.66(c)) — loader
+rotation-FRAME declaration + ONE conversion authority; write-back stays out
+(moved to B31). Full record: INTENT.md **§11.67 (a)–(g)**.
+
+**Behavior scope, stated first.** No shipped body's orientation moves — the
+entire change is **inert/bit-identical on all current data** (proven ULP=0 for
+the 7 `rot_pole_ra` planets; no-regression suite unchanged). It arms **B14**
+(absolute moon poles) and closes the §11.49(e) referential hazard by making the
+frame explicit.
+
+**Files touched (product)**: `src/bodyModule/rotation_elements.hpp` (shared
+struct: `bool absoluteTiltFrame=false`), `src/experimentalModule/ModularSystem.cpp`
+(`resolveRotationFrame()` authority + loadBody wiring), `src/experimentalModule/ModularBody.hpp`
+(3 accumulation loops guarded `!re.absoluteTiltFrame`). **Instrument**:
+`src/experimentalModule/ModularBody.cpp` (dumpHops raw obliquity/ascendingNode/
+absoluteTiltFrame), `src/bodyModule/ssystem_factory.cpp` (dumpHops name list →
+7 planets). **Harness**: `b28_run.sh`, `b28_frame.py`.
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Current dual-read characterised | **met** | §11.67(a). Loader SILENTLY MIXED: obliquity/asc_node read parent-relative [ModularSystem.cpp:710-711 pre], pole read absolute J2000→ecliptic and stored in the SAME parent-relative-consumed slot [pre :718-732], correct today only because the 7 pole-planets parent the system-centered Sun (parent factor identity, ModularBody.hpp:513). Frame was IMPLICIT (key presence) |
+| 2 | Frame declaration + single conversion authority; absolute_pole a converted frame | **met** | `resolveRotationFrame()` [ModularSystem.cpp:706-758], one call site (:796). Grep-verified single conversion site (:744-748); other `mat_j2000_to_vsop87` new-path hits = milkyway/orbit, unrelated. absolute_pole → root-aligned obliquity/asc_node + `absoluteTiltFrame` ⇒ accumulation skips ancestors (ModularBody.hpp ×3). Geometric proof it must be consumption-side not loader-decompose: pole tilt is 2-DOF, `parent⁻¹·absolute` is 3-DOF (§11.67(b)) |
+| 3 | Bit-identical PROVEN for all 7 planets | **met** | ULP=0 for obliquity, ascendingNode, and all 16 `tilt` floats, before(instrument-only, stash-isolated) vs after; pristine-HEAD Mars `tilt` anchor ULP=0. tilt piece is B30-immune (measured: mat jitters ~1e-6 across reload, tilt does not). Numbers in §11.67(d) |
+| 4 | Actionable LOG diagnostic verified; no file written | **met** | Verbatim L_ERROR quoted below; md5 unchanged after the run |
+| 5 | Both reversible-pair entries; declared + defaulted body | **met** | load1(startup)==load2(reload) ULP=0 all bodies; Mars `rot_frame=absolute_pole`==derived; invalid Venus falls back==derived; Jupiter `rot_frame=parent_relative` discriminator forces obliq=asc=0 (declaration honored). Default L_DEBUG-diagnosed (180 lines), md5 preserved |
+| 6 | Build green, mtime advanced | **met** | `make -C build-claude -j$(nproc)` exit 0 (×2: instrument 08:58:17, full 08:59:46) |
+| 7 | No regression | **met** | P1 ≤1.30e-16; P2 ≤8.72e-08 (gen_mars 8.43e-02 = pre-existing "rot gated, not visible" annotation, t-only); P3 identical; P4 14.14/16.01/3.18/14.70/10.34 km; P5 ≤1.13e-07; orient 17/48, P-d 0.0000; scene E 26/26; 0 VUID; config md5 `03fbee59…` in==out; ssystem.ini `fb87a774…` untouched |
+| 8 | Trackers | **met** | INTENT §11.67 (new), §13.B B28 → DONE (frame half); this file row + §17 |
+| 9 | Committed on master-beta | **met** | see commit hash below |
+
+### The L_ERROR diagnostic, verbatim (DoD 4)
+
+    (Error): Body 'Venus': invalid rot_frame = 'bogus_typo'. Valid values are
+    'absolute_pole' (an absolute J2000-equatorial north pole in
+    rot_pole_ra/rot_pole_de) or 'parent_relative'
+    (rot_obliquity/rot_equator_ascending_node relative to the parent's equator).
+    Falling back to the derived default 'absolute_pole' (from the rotation keys
+    present). To fix: set rot_frame to one of the valid values, or remove it to
+    keep the derived default.
+
+### SUSPENDED FOR VIXY
+
+1. **The `rot_frame` key spelling + value domain** (`rot_frame` = `absolute_pole`
+   | `parent_relative`). Proposed, implemented, flagged per task §3 — NOT settled.
+   B14 inherits it exactly. Derivation in §11.67(f).
+2. **The frame-aware accumulation generalization** (ancestor-tilt loop guarded
+   by `absoluteTiltFrame`). Required for absolute_pole to be a *correct* converted
+   frame for non-system-centered parents (B14's moons); inert on all current data
+   (no-regression unchanged); traceable to §11.51(d)/§11.66(c)/§11.49(e). Flagged
+   so Vixy can veto in favour of a different consumption mechanism.
+
+### What B14 inherits (explicit)
+
+- **Frame key**: `rot_frame`; **absolute value**: `absolute_pole`.
+- **Where to declare the 28 corrected poles**: in `~/.spacecrafter/ssystem.ini`,
+  add `rot_pole_ra`/`rot_pole_de` (IAU/WGCCRE) per moon. The derived default
+  already yields `absolute_pole` for any pole-bearing body, so an explicit
+  `rot_frame = absolute_pole` is optional-but-recommended (self-documenting;
+  closes the "looks-right-in-the-file" hazard by declaration).
+- The loader + accumulation deliver the correct root-aligned orientation with
+  no further code. B14's remaining work is the pole VALUES (from the report,
+  never recall) + each moon's `rot_rotation_offset` (prime meridian, orthogonal
+  to the frame — out of B28's scope).
+
+### What I did NOT verify
+
+- The absolute_pole path on a body with a **non-system-centered parent** (no such
+  body ships; B14 creates the first). The mechanism is proven inert + geometrically
+  argued, not exercised end-to-end on a real moon — that is B14's discriminating check.
+- The gate under `render_path = old` (old path has its own separate frame parse,
+  `protosystem.cpp:900`, untouched by construction).
+
+### Reproduction (verbatim)
+
+    # bit-identical gate (two builds isolate the frame refactor)
+    #   git stash push src/experimentalModule/ModularSystem.cpp \
+    #                  src/experimentalModule/ModularBody.hpp   # instrument-only
+    #   make -C build-claude -j$(nproc)                          # exit 0
+    cd /home/claude/spacecrafter/src/experimentalModule/harness
+    DISPLAY=:2 ./b28_run.sh b28_frame.py "$PWD/artifacts/b28_before"
+    #   git stash pop ; make -C build-claude -j$(nproc)          # exit 0
+    DISPLAY=:2 ./b28_run.sh b28_frame.py "$PWD/artifacts/b28_after"
+    #   python compare: obliquity/ascendingNode/16 tilt floats, all ULP=0
+
+    # DoD 4/5 (temp data edit, restored byte-identically):
+    #   insert rot_frame into [mars]=absolute_pole [venus]=bogus_typo
+    #   [jupiter]=parent_relative ; run ; grep "invalid rot_frame" spacecrafter.log
+    #   ; restore ssystem.ini (md5 fb87a774…)
+
+    # no-regression (init_fov=340, restored to 180 by md5):
+    #   drive_scenes.py ; predict.py gen_{a,b,moon,mars,mars_2}.json ;
+    #   orientation_check.py gen_a.json ; fresh launch ; scene_e_spine.py
+
+### Hygiene
+
+`~/.spacecrafter/ssystem.ini` restored byte-identical (md5 `fb87a774…`, asserted
+after every temp edit). `config.ini` restored byte-identical (md5 `03fbee59…`
+in==out across the init_fov 180→340→180 cycle). `beta_features.ini` absent
+throughout. Harness `b28_run.sh`/`b28_frame.py` committed; `artifacts/b28*/`
+gitignored. `supervised-by.sh` left untracked. No harness task list touched. No
+§11.15d shutdown fire observed this session (data point for B7).

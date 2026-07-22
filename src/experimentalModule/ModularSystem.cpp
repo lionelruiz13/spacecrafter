@@ -675,6 +675,82 @@ void ModularSystem::drawSystem(Renderer &renderer)
         module->draw(renderer, this, mat);
 }
 
+namespace {
+// Rotation-frame declaration (B28, INTENT §11.67). The data declares which
+// coordinate system its axial orientation is authored in; the loader converts
+// through this ONE authority (grep: the mat_j2000_to_vsop87 pole conversion
+// lives nowhere else in the new path).
+enum class RotFrame { PARENT_RELATIVE, ABSOLUTE_POLE };
+
+// Resolve a body's rotation frame and produce the (obliquity, ascendingNode)
+// the rotation model consumes:
+//   PARENT_RELATIVE  rot_obliquity / rot_equator_ascending_node, relative to
+//                    the parent's equatorial frame (accumulated by
+//                    ModularBody's ancestor-tilt walk).
+//   ABSOLUTE_POLE    rot_pole_ra / rot_pole_de, a J2000-equatorial north pole,
+//                    converted to the ecliptic (VSOP87) ROOT frame here; the
+//                    result is root-aligned, so the caller marks the body
+//                    absoluteTiltFrame and the accumulation skips ancestors
+//                    (§11.49(e): a parent-relative slot filled with an absolute
+//                    published pole is an invalid orientation that looks right
+//                    in the file - making the frame explicit closes it, and
+//                    lets B14 declare the 28 moon poles in the absolute frame).
+// Frame source: the explicit `rot_frame` key wins; when absent it is DERIVED
+// from which rotation keys are present (pole keys => absolute, else
+// parent-relative), reproducing every legacy file bit-for-bit (the 7 existing
+// rot_pole_ra planets derive to absolute_pole, and the pole conversion below is
+// byte-for-byte the legacy arithmetic). A DEFAULT is applied in memory only and
+// NEVER written back (write-back is B31, §11.66(c)). An invalid `rot_frame`
+// value gets a §2(f) actionable diagnostic (valid states + error trace +
+// fallback + fix action) and falls back to the derived default.
+RotFrame resolveRotationFrame(std::map<std::string, std::string> &param,
+                              const std::string &englishName,
+                              float &rot_obliquity, float &rot_asc_node)
+{
+    rot_obliquity = Utility::strToFloat(param["rot_obliquity"], 0.) * M_PI / 180.;
+    rot_asc_node  = Utility::strToFloat(param["rot_equator_ascending_node"], 0.) * M_PI / 180.;
+
+    const std::string &decl = param["rot_frame"];
+    const bool hasPole = (param["rot_pole_ra"] != "" || param["rot_pole_de"] != "");
+    const RotFrame derived = hasPole ? RotFrame::ABSOLUTE_POLE : RotFrame::PARENT_RELATIVE;
+    const char *derivedName = (derived == RotFrame::ABSOLUTE_POLE) ? "absolute_pole" : "parent_relative";
+
+    RotFrame frame;
+    if (decl.empty()) {
+        frame = derived;
+        cLog::get()->write("Body '" + englishName + "': rot_frame not declared, using derived default '"
+            + derivedName + "' (in memory; not written - file write-back is B31).", LOG_TYPE::L_DEBUG);
+    } else if (decl == "absolute_pole") {
+        frame = RotFrame::ABSOLUTE_POLE;
+    } else if (decl == "parent_relative") {
+        frame = RotFrame::PARENT_RELATIVE;
+    } else {
+        frame = derived;
+        cLog::get()->write("Body '" + englishName + "': invalid rot_frame = '" + decl
+            + "'. Valid values are 'absolute_pole' (an absolute J2000-equatorial north pole in "
+            "rot_pole_ra/rot_pole_de) or 'parent_relative' (rot_obliquity/rot_equator_ascending_node "
+            "relative to the parent's equator). Falling back to the derived default '" + derivedName
+            + "' (from the rotation keys present). To fix: set rot_frame to one of the valid values, "
+            "or remove it to keep the derived default.", LOG_TYPE::L_ERROR);
+    }
+
+    if (frame == RotFrame::ABSOLUTE_POLE) {
+        // J2000 equatorial pole -> ecliptic (VSOP87) obliquity/ascending node.
+        // NB: north pole needs to be defined by right hand rotation rule.
+        float J2000_npole_ra = Utility::strToFloat(param["rot_pole_ra"], 0.) * M_PI / 180.;
+        float J2000_npole_de = Utility::strToFloat(param["rot_pole_de"], 0.) * M_PI / 180.;
+        Vec3f J2000_npole;
+        Utility::spheToRect(J2000_npole_ra, J2000_npole_de, J2000_npole);
+        Vec3f vsop87_pole(mat_j2000_to_vsop87.multiplyWithoutTranslation(J2000_npole));
+        float ra, de;
+        Utility::rectToSphe(&ra, &de, vsop87_pole);
+        rot_obliquity = (M_PI_2 - de);
+        rot_asc_node = (ra + M_PI_2);
+    }
+    return frame;
+}
+} // namespace
+
 void ModularSystem::loadBody(std::map<std::string, std::string> &param)
 {
     // Avoid string copy and map search
@@ -706,30 +782,19 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
     // float orbit_bounding_radius = Utility::strToFloat(param["orbit_bounding_radius"], -1);
     float radius = Utility::strToFloat(param["radius"]);
 
-    // Use J2000 N pole data if available
-	float rot_obliquity = Utility::strToFloat(param["rot_obliquity"],0.)*M_PI/180.;
-	float rot_asc_node  = Utility::strToFloat(param["rot_equator_ascending_node"],0.)*M_PI/180.;
-
-	// In J2000 coordinates
-	float J2000_npole_ra = Utility::strToFloat(param["rot_pole_ra"],0.)*M_PI/180.;
-	float J2000_npole_de = Utility::strToFloat(param["rot_pole_de"],0.)*M_PI/180.;
-
-	// NB: north pole needs to be defined by right hand rotation rule
-	if (param["rot_pole_ra"] != "" || param["rot_pole_de"] != "") {
-		// cout << "Using north pole data for " << englishName << endl;
-		Vec3f J2000_npole;
-		Utility::spheToRect(J2000_npole_ra,J2000_npole_de,J2000_npole);
-
-		Vec3f vsop87_pole(mat_j2000_to_vsop87.multiplyWithoutTranslation(J2000_npole));
-
-		float ra, de;
-		Utility::rectToSphe(&ra, &de, vsop87_pole);
-
-		rot_obliquity = (M_PI_2 - de);
-		rot_asc_node = (ra + M_PI_2);
-		//cout << "\tCalculated rotational obliquity: " << rot_obliquity*180./M_PI << endl;
-		//cout << "\tCalculated rotational ascending node: " << rot_asc_node*180./M_PI << endl;
-	}
+    // Rotation-frame declaration + conversion (B28, INTENT §11.67). The frame in
+    // which the axial orientation is authored is now DECLARED, not inferred:
+    // resolveRotationFrame() is the ONE authority that reads the declaration,
+    // validates it (§2(f) actionable log), converts an absolute J2000 pole into
+    // the internal obliquity/ascendingNode, and reports whether the tilt is
+    // root-aligned (absolute) so the orientation accumulation does not re-apply
+    // ancestor tilts to it. Bit-identical for the 7 rot_pole_ra planets (frame
+    // derives to absolute_pole, byte-for-byte the legacy pole arithmetic, and
+    // their Sun parent is system-centered so the accumulation was already inert).
+	float rot_obliquity, rot_asc_node;
+	const bool absoluteTiltFrame =
+		(resolveRotationFrame(param, englishName, rot_obliquity, rot_asc_node)
+			== RotFrame::ABSOLUTE_POLE);
 
     ModularBodyCreateInfo createInfo {
         .orbit=ModuleLoaderMgr::instance.loadOrbit(param),
@@ -742,7 +807,8 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
             .ascendingNode=rot_asc_node,
             .precessionRate=Utility::strToFloat(param["rot_precession_rate"],0.)*static_cast<float>(M_PI/(180*36525)),
             .sidereal_period=Utility::strToDouble(param["orbit_visualization_period"],0.),
-            .axialTilt=Utility::strToFloat(param["axial_tilt"], 0.)
+            .axialTilt=Utility::strToFloat(param["axial_tilt"], 0.),
+            .absoluteTiltFrame=absoluteTiltFrame
         },
         .haloColor=param["color"].empty() ? defaultHaloColor : Utility::strToVec3f(param["color"]),
         .albedo=Utility::strToFloat(param["albedo"]),

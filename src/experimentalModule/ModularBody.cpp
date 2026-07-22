@@ -676,7 +676,15 @@ void ModularBody::dumpHops(std::ostream &out) const
         const Mat4f spin = b->computeBodyToSurface();
         out << std::setprecision(9) << "{\"name\":\"" << b->englishName
             << "\",\"ecl\":[" << b->eclipticPos[0] << ',' << b->eclipticPos[1] << ',' << b->eclipticPos[2]
-            << "],\"lastJD\":" << std::setprecision(17) << b->lastJD << std::setprecision(9);
+            << "],\"lastJD\":" << std::setprecision(17) << b->lastJD << std::setprecision(9)
+            // Raw rotation-frame readout (B28 bit-identical gate, INTENT 11.67):
+            // the loader-resolved obliquity/ascendingNode and the declared frame
+            // flag. These are projection-free and jd-only-through-precession, so
+            // the frame conversion is measurable to float-ulp independent of the
+            // B30 render jitter that perturbs the composed `mat`.
+            << ",\"obliquity\":" << b->re.obliquity
+            << ",\"ascendingNode\":" << b->re.ascendingNode
+            << ",\"absoluteTiltFrame\":" << (b->re.absoluteTiltFrame ? "true" : "false");
         const char *names[4] = {"up", "down", "tilt", "spin"};
         const Mat4f *mats[4] = {&up, &down, &tilt, &spin};
         for (int m = 0; m < 4; ++m) {

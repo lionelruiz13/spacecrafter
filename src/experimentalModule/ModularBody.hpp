@@ -492,7 +492,12 @@ public:
     // tilt_self^-1 . tilt_parent^-1 ... (exact inverse of the entry walk).
     inline Mat4f accumulatedBodyToBodyPos(double jd) const {
         Mat4f ret = computeBodyToBodyPos(jd);
-        if (!boundToSurface) {
+        // absoluteTiltFrame (B28, §11.67): this body's tilt is authored in the
+        // ecliptic ROOT frame (converted from an absolute J2000 pole), so no
+        // ancestor tilt participates. Inert on all current data - the 7
+        // absolute_pole planets have a system-centered (Sun) parent, whose tilt
+        // this walk already skipped, so ret is unchanged either way.
+        if (!boundToSurface && !re.absoluteTiltFrame) {
             for (const ModularBody *b = parent; b && b->isNotIsolated; b = b->parent) {
                 if (!b->isSystemCentered())
                     ret = ret.multiplyFast(b->computeBodyToBodyPos(jd));
@@ -508,7 +513,9 @@ public:
     // factors commute; 11.34(iii)).
     inline Mat4f accumulatedBodyPosToBody(double jd) const {
         Mat4f ret = computeBodyPosToBody(jd);
-        if (!boundToSurface) {
+        // absoluteTiltFrame (B28, §11.67): see accumulatedBodyToBodyPos above -
+        // root-aligned tilt takes no ancestor factor; inert on current data.
+        if (!boundToSurface && !re.absoluteTiltFrame) {
             for (const ModularBody *b = parent; b && b->isNotIsolated; b = b->parent) {
                 if (!b->isSystemCentered())
                     ret = b->computeBodyPosToBody(jd).multiplyFast(ret);
@@ -523,7 +530,9 @@ public:
     // vs the jd form = precession over light-travel deltas (~1e-9 rad).
     inline Mat4f accumulatedBodyPosToBody() const {
         Mat4f ret = computeBodyPosToBody(lastJD);
-        if (!boundToSurface) {
+        // absoluteTiltFrame (B28, §11.67): root-aligned tilt, no ancestor
+        // factor; inert on current data (see accumulatedBodyToBodyPos).
+        if (!boundToSurface && !re.absoluteTiltFrame) {
             for (const ModularBody *b = parent; b && b->isNotIsolated; b = b->parent) {
                 if (!b->isSystemCentered())
                     ret = b->computeBodyPosToBody(b->lastJD).multiplyFast(ret);
