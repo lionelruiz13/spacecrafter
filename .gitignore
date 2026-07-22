@@ -102,3 +102,5 @@ src/experimentalModule/harness/artifacts/b28_headbase/
 src/experimentalModule/harness/artifacts/b28_before/
 src/experimentalModule/harness/artifacts/b28_after/
 src/experimentalModule/harness/artifacts/b28_declared/
+src/experimentalModule/harness/artifacts/b14/
+src/experimentalModule/harness/__pycache__/

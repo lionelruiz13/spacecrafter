@@ -646,8 +646,14 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
     // rot_pole_ra planets (Mercury..Neptune) added for the B28 bit-identical
     // gate (INTENT 11.67): their self-hop `tilt` + raw obliquity/ascendingNode
     // are the projection-free, B30-immune readout of the frame conversion.
+    // Iapetus (B14 pilot, INTENT 11.68): the first candidate for an
+    // absolute_pole declaration on a NON-system-centered parent (Saturn). Its
+    // self-hop `tilt` + the Saturn parent hop in the same chain are the
+    // pieces the moon-absolute-pole harness composes; measuring it directly
+    // closes B28's untested non-system-centered-parent case (§11.67 item 2).
     for (const char *name : {"Earth", "Moon", "Sun", "Mercury", "Venus", "Mars",
-                             "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Charon"}) {
+                             "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Charon",
+                             "Iapetus"}) {
         if (ModularBody *nb = ModularBody::findBodyOnce(name)) {
             out << "{\"type\":\"hops\",\"name\":\"" << name << "\",\"new\":";
             nb->dumpHops(out);

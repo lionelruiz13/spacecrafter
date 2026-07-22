@@ -55,7 +55,7 @@ Suggested order: B26 (pure verification) → small ratified rows (B19, B16, B11,
 | B10 | `datum_radius` + `ground_radius` full scope (i)–(vi) as written, incl. the shared `proximityFactor()` authority and the outward-only anti-stuck floor direction | (a) the FLOOR VALUE — "value is a decision, not a wiring step" (`MIN_MOVEMENT_SPEED` 0.125 reads wrong-scale); propose, don't fix; (b) Q12 round-2 re-ask (what the two-body patch is used for; stop-and-hold vs asymptotic; `radius ground`/`radius datum` re-spelling) — pending tester/Vixy | §5.2, §11.6, §11.48(c) |
 | B21 | View-directed free descent ("down" = surface point under the view ray), riding B10's `proximityFactor()` — sequence after B10 | The far/galactic-distance case (A18 residual) — the row itself says it must not be improvised into this work | §11.36, §11.48(a) |
 | B27 | Steps (1) site inventory completion (grep is not exhaustive yet — seed list §11.51(c)) and (2) per-site §2(a2) test → declarable capability key | Step (3) generator emission — belongs to B25 (critical/authoring chain); special ORBITS exempt (`*_special` stays) | §11.51(c), §5.5, §11.48(b) |
-| B14 | Preparation only: collect IAU/WGCCRE values for the 28-body cluster (Iapetus first) FROM THE REPORT — "never from recall; a confabulated pole is indistinguishable from a measured one" | Landing the corrections — sequenced strictly after B28 (frame declaration must exist so values are declared in the absolute frame) | §11.35, §11.48(a), §11.49(e), §11.51(d) |
+| B14 | Preparation only: collect IAU/WGCCRE values for the 28-body cluster (Iapetus first) FROM THE REPORT — "never from recall; a confabulated pole is indistinguishable from a measured one" **→ PREP DONE 2026-07-22 (§18 below, §11.68). Cluster=34 (loaded file; "28"=repo default). Harness proven on Iapetus (closes B28 gap). Template ready with placeholders. THE REPORT IS ABSENT → values suspended for Vixy.** | Landing the corrections — sequenced strictly after B28 (frame declaration must exist so values are declared in the absolute frame); **AND blocked on the report values, which are NOT present** | §11.68, §11.35, §11.48(a), §11.49(e), §11.51(d) |
 
 ## 3. Excluded (reason stated so the exclusion is challengeable)
 
@@ -1613,3 +1613,114 @@ in==out across the init_fov 180→340→180 cycle). `beta_features.ini` absent
 throughout. Harness `b28_run.sh`/`b28_frame.py` committed; `artifacts/b28*/`
 gitignored. `supervised-by.sh` left untracked. No harness task list touched. No
 §11.15d shutdown fire observed this session (data point for B7).
+
+## 18. Execution log — B14 PREP HALF (Claude Opus 4.8, 2026-07-22)
+
+Prep + the moon-absolute-pole verification. **Zero real pole values written** —
+the values are SUSPENDED FOR VIXY (no IAU/WGCCRE report present). Full record:
+INTENT §11.68. HEAD at start cf9ba0ae; one instrument C++ change (dumpHops name
+list gains `"Iapetus"` — same category as B28's; changes only what
+`body action dual_dump` emits, no product/render behaviour).
+
+### DoD, item by item
+
+1. **Cluster body list + count reconciliation — MET.** `/usr/bin/grep`/awk on the
+   LOADED `~/.spacecrafter/ssystem.ini`: **34** bodies `rot_obliquity = 15.5`, **33**
+   also `rot_equator_ascending_node = 213.7` (Iapetus is 15.5-only, uses
+   `coord_func=iapetus_special`). The row's **28** = the repo `data/default_ssystem.ini`
+   (79 sections vs 91); loaded file = superset by 6 Jupiter moons (Adrastea, Ananke,
+   Leda, Lysithea, Metis, Sinope). Bodies+line numbers: `harness/b14_edit_template.txt`.
+2. **Commutator subclass consequence — MET, with a first-class REFINEMENT (negative
+   finding).** `orientation_check.py`/`b14_analyze.py spectrum` reproduce §11.35 (67
+   moons: 17 restored / 48 divergent). All 34 cluster moons carry a commutator
+   (5.47°…154.75°), so the DATA fix moves every row. BUT "63–155° sit EXACTLY on the
+   15.5-cluster" is FALSE: Jupiter cluster moons = 5.47° (small parent tilt); non-cluster
+   Saturn moons Hyperion(61→121°)/Prometheus(50→99°)/Telesto,Pandora,Janus,Helene,
+   Epimetheus(150→63°) also large. Mechanism = commutator≈f(own tilt, parent tilt).
+   Per-moon prediction stated for B14-land (absoluteTiltFrame=true → walk skips parent →
+   axis=published pole → clean named divergence).
+3. **Moon-absolute-pole harness built + proven discriminating — MET (core deliverable).**
+   Iapetus/Saturn (non-system-centered parent = B28's untested case, §11.67 item 2 →
+   CLOSED). SYNTHETIC test pole RA=100/DE=50 on a byte-restored copy; two dates (J2000,
+   +10yr, Saturn ~122° of orbit). ABS: absoluteTiltFrame=**True**, obliq 63.190185°/
+   ascN 187.184355° (=offline conv, ~1e-6°), axis==declared **0.000002°**, cross-date
+   **0.0°**. REL (same numbers, parent_relative): absoluteTiltFrame=**False**, axis
+   **98.46°** off. Discriminator = the flag (measured True/False on identical numbers) +
+   the 98.46° delta. Files `b14_run.sh`+`b14_moon_pole.py`+`b14_analyze.py`.
+4. **Per-body edit template + obliquity-key removal decision — MET.**
+   `b14_edit_template.txt` (34 bodies, exact line numbers, REMOVE/REPLACE/ADD,
+   `<FROM REPORT — body X>` placeholders). Removal verified at source: keys read
+   (ModularSystem.cpp:710-711) then OVERWRITTEN when absolute_pole (737-748); empirically
+   ABS Iapetus kept `rot_obliquity=15.5` yet dumped 63.19°. Decision: **REMOVE** (I2).
+5. **Zero real pole values — MET (self-audited).** Only pole numbers in the tree ever
+   = the labelled SYNTHETIC (RA100/DE50, `# TEST … NOT A REAL POLE`) on a
+   backup-restored copy. `ssystem.ini` md5 `fb87a774e728706e9d4e1959c386bb23` restored
+   byte-identical after each mutation (asserted 3×). No pole in any committed file.
+6. **Build green — MET.** `make -C build-claude -j$(nproc)` exit 0; binary mtime
+   08:59→**09:39:58**. One instrument C++ change (justified para 1).
+7. **No regression — MET.** Scenes A–D (predict.py): P3 old==new ~1e-6°, P4
+   14.26/16.21/3.12/49.95/10.34 km (gen_mars 49.95 = ~2 AU tracking-settle ulp class,
+   rel-d −2.3e-7, cf §11.17's 39 km), P5 ≤1.9e-7. orientation 17/48, P-d 0.0000° at
+   Moon+Mars. scene E **26/26 OK / 0 FAIL**. 0 VUID (debug_layer=true). `ssystem.ini`
+   `fb87a774…` unchanged; `config.ini` `03fbee59…` in==out (init_fov 180→340→180,
+   restored post-death).
+8. **Trackers — MET.** INTENT §11.68 + §13.B B14 row (PREP DONE, VALUES SUSPENDED);
+   this section + the §2 B14 row.
+9. **Committed on master-beta** (never pushed).
+
+### The one open input B14-land inherits (SUSPENDED FOR VIXY)
+
+The IAU/WGCCRE report is **absent** (dispatcher-confirmed; only keyboard-command PDFs
+exist). Landing the 34 corrections needs, PER MOON, from the report — **never recall**:
+pole RA (α₀), pole DE (δ₀) in J2000 deg; W0 (→ `rot_rotation_offset`; the shipped 14.9
+is copy-paste garbage on all 34); rotation rate/period (→ `rot_periode`); epoch (default
+J2000). The pole-drift rates (dα/dt, dδ/dt) do NOT map onto the loader's single scalar
+`rot_precession_rate` — a static pole is correct at one epoch only (§11.49(e)). **Ask
+Vixy: supply the report, or authorize a sourced acquisition.**
+
+### Findings recorded, not fixed (out of scope)
+
+- 7 additional garbage-tilt Saturn moons outside B14's 15.5/213.7 scope: Telesto,
+  Pandora, Janus, Helene, Epimetheus (`rot_obliquity=150`), Hyperion (61.), Prometheus
+  (50) — carry 63–121° commutators from their own garbage tilts. Hyperion tumbles
+  chaotically (no well-defined pole). B14-land/Vixy should decide whether the "cluster"
+  scope widens to the whole garbage-tilt class.
+- The shipped `default_ssystem.ini` (28-body subset) also needs correcting, but a user
+  file already present WINS over it on this machine — writing only the default would not
+  take effect. B14-land must edit the LOADED file (and the default for fresh installs).
+
+### What I did NOT verify
+
+- A REAL moon's pole rendered against reality (no report → no real values; that IS the
+  suspension). The absolute-frame MECHANISM is proven on a synthetic pole.
+- The old path's handling of a moon absolute pole (separate parse, `protosystem.cpp`,
+  untouched) — B14-land's A/B will observe old as a named divergence, per (b).
+- Terminal screen A/B of Iapetus's disc orientation (mat-layer axis proven; a Saturn
+  scene screenshot pends real values + a visible-scale setup).
+
+### Reproduction (verbatim)
+
+    cd /home/claude/spacecrafter/src/experimentalModule/harness
+    md5sum ~/.spacecrafter/ssystem.ini            # fb87a774…  (baseline)
+    DISPLAY=:2 ./b14_run.sh baseline              # DoD 2 + Iapetus current frame
+    python3 b14_analyze.py spectrum artifacts/b14/b14_baseline_d1.json
+    # ABS/REL: mutate [iapetus] on a BACKUP-restored copy (synthetic pole), run, RESTORE
+    #   abs: rot_pole_ra=100 rot_pole_de=50 rot_frame=absolute_pole
+    #   rel: rot_obliquity=63.190184549 rot_equator_ascending_node=187.184355289 parent_relative
+    DISPLAY=:2 ./b14_run.sh abs ; DISPLAY=:2 ./b14_run.sh rel
+    #   restore ssystem.ini ; assert md5 fb87a774…
+    python3 b14_analyze.py axis Iapetus Saturn \
+        abs_d1:artifacts/b14/b14_abs_d1.json abs_d2:artifacts/b14/b14_abs_d2.json \
+        rel_d1:artifacts/b14/b14_rel_d1.json rel_d2:artifacts/b14/b14_rel_d2.json --ra 100 --de 50
+    # no-regression (init_fov 340, restored to 180 by md5 after death):
+    #   drive_scenes.py ; predict.py gen_{a,b,moon,mars,mars_2}.json ;
+    #   orientation_check.py gen_moon.json ; fresh launch ; scene_e_spine.py (26/26)
+    python3 b14_gen_template.py > b14_edit_template.txt   # regenerate from live file
+
+### Hygiene
+
+`~/.spacecrafter/ssystem.ini` restored byte-identical (md5 `fb87a774…`, asserted after
+every mutation). `config.ini` restored byte-identical (`03fbee59…`, init_fov cycle).
+`beta_features.ini` absent throughout. Harness `b14_*` committed; `artifacts/b14/` +
+`__pycache__/` gitignored. `supervised-by.sh` left untracked. No harness task list
+touched. No §11.15d shutdown fire observed.
