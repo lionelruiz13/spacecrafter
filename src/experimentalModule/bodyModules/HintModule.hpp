@@ -45,6 +45,12 @@ public:
     HintModule(const Vec3f &labelColor) :
         BodyModule(BodyModuleType::HINT), labelColor(labelColor) {}
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
+    // Runtime label-color seam (old Body::setColor "label"). Self-selects on
+    // the LABEL channel; the base no-op handles every other channel.
+    void setColor(BodyColorType type, const Vec3f &c) override {
+        if (type == BodyColorType::LABEL || type == BodyColorType::ALL)
+            labelColor = c;
+    }
 
     static void setFont(s_font *font);
     static bool show; // Global hint visibility (old setFlagHints)

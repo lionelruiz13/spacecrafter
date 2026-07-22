@@ -69,6 +69,12 @@ public:
     ~TrailModule();
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual bool update(ModularBody *body, float scaledRadius) override;
+    // Runtime trail-color seam (old Body::setColor "trail"). Self-selects on
+    // the TRAIL channel; every other channel hits the base no-op.
+    virtual void setColor(BodyColorType type, const Vec3f &c) override {
+        if (type == BodyColorType::TRAIL || type == BodyColorType::ALL)
+            color = c;
+    }
     // Harness instrument (INTENT 11.56): the recording gate's observable -
     // point count, recording/fader (the TWO gates, side by side) and
     // accumulateCount (entries into accumulate(): a frozen counter over

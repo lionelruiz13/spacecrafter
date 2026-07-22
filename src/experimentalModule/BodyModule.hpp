@@ -4,6 +4,7 @@
 #include "tools/vecmath.hpp"
 #include <cstdint>
 #include <iosfwd>
+#include <string>
 
 class ModularBody;
 class Renderer;
@@ -34,6 +35,26 @@ enum class RelativePosition : uint8_t {
     OVERLAP = 0x2,
     BACK = 0x4,
 };
+
+// The runtime per-body color channels (old BodyColor::TYPE_COLOR). Each channel
+// is owned by exactly one place: HALO by the body (ModularBody::haloColor,
+// consumed by drawHalo), LABEL/ORBIT/TRAIL by the HINT/ORBIT/TRAIL modules. ALL
+// sets every channel; NONE = the token did not name a channel (no-op, old
+// searched the same set and warned - the warning still fires on the old side).
+enum class BodyColorType : uint8_t { HALO, LABEL, ORBIT, TRAIL, ALL, NONE };
+
+// String -> channel, the SEAM's translation (old BodyColor::translate, minus
+// its warning: the old path still emits it on the dual-write, so the new side
+// stays silent to avoid a double log). The command surface is the same strings
+// (`body name X color <halo|label|orbit|trail|all> value r,g,b`).
+inline BodyColorType parseBodyColorType(const std::string &name) {
+    if (name == "halo")  return BodyColorType::HALO;
+    if (name == "label") return BodyColorType::LABEL;
+    if (name == "orbit") return BodyColorType::ORBIT;
+    if (name == "trail") return BodyColorType::TRAIL;
+    if (name == "all")   return BodyColorType::ALL;
+    return BodyColorType::NONE;
+}
 
 // Declarative rendering-pipeline needs of a module. The Renderer reads traits
 // to gate passes and select pipeline families - modules never touch the
@@ -208,6 +229,13 @@ public:
     // module ignores (same default-no-op contract as setShown).
     virtual void createTexSkin(const std::string &texName) {}
     virtual void switchTexSkin(bool use) {}
+    // Runtime per-body color seam (old BodyColor / Body::setColor; command
+    // `body name X color <label|orbit|trail|all> value r,g,b`). Each color
+    // module self-selects on the channel it owns (LABEL=Hint, ORBIT=Orbit,
+    // TRAIL=Trail); every other module ignores it (default no-op, the
+    // createTexSkin/setShown contract - no type sniffing at the broadcast).
+    // HALO is body-owned and handled by ModularBody, not by any module.
+    virtual void setColor(BodyColorType type, const Vec3f &c) {}
     // Compare an object position and radius with this ModularBody
     // Precondition: update() has run at least once for this module (see update)
     virtual RelativePosition compare(const Vec3f &localPos, const Vec3f &zAxis, float radius) {

@@ -41,7 +41,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 | B22 | ~~System-collapse cross-fade at the ~16 px resolved↔dot threshold, "if not too costly"~~ **MECHANISM DONE + COST BOUNDED → §11.64, §15 below** | §11.36, §11.48(b), **§11.64** | Cross-fade landed in `ModularSystem::drawNested` over a band [T, T+B): interior fades IN (`drawAlpha`→halo `cmag`) while the star-proxy dot fades OUT; **cost measured = ~22.6 ns/frame (one halo) + 0 added GPU draw calls, inert outside the band ⇒ "not too costly", verdict Vixy's**. Band width = named TUNABLE constant (A15, default T/2, NOT tuned). Ramp verified 11/11 (`b22_crossfade.py`: endpoints/monotonic/reversible). **SUSPENDED for §6.9**: the pixel render / live-ms / live reversible-pair — `drawNested` is runtime-unexercised (same §11.36 wall as drawNested itself). No regression (Scene E 26/26, P4 7–32 km, orient 17/48, P-d 0.0000, config+ssystem byte-identical) |
 | B23 | ~~Restore planet-grid tropics + polar circles, keyed to the corresponding sky-line flags~~ **DONE 2026-07-22 → §11.57, §8 below** | §11.42, §11.48(b), **§11.57** | Tropics ride **LINE_TROPIC** (`flag tropic_lines`), polar circles **LINE_CIRCLE_POLAR** (`flag polar_circle`), at ±axial_tilt / ±(90−axial_tilt). **§11.42's "no axial-tilt scalar" was a cached conclusion, false at source** — `axial_tilt` has loaded into `re.axialTilt` since the port; only a getter was missing. Measured latitudes track obliquity (Earth 23.44/66.56, Jupiter 3.13/86.87, Uranus 97.77/−7.77); screen gating px>32 vs a **0** noise floor, Earth↔Uranus ring reversal on the frame; name-sniff `!="Sun"` → `!isStar()` (I4). Carve-out kept (no independent toggle, no >10 km regime). 25/25 harness, 0 VUID, config+ssystem byte-identical. Finding: the Sun installs no grid at all (out of scope) |
 | B26 | ~~Run the two-screenshot observable check for the dual-path default flip~~ **DONE 2026-07-21 → §11.53, §4 below** | §11.50(c), §11.53 | **VERIFIED on `DISPLAY=:2`, 6 fresh launches, no product code changed.** The stated criterion was itself defective (≥2.5 s = quarter of the 2 s toggle period ⇒ 50 % test; corrected to odd multiples of 1.0 s, discriminator px>32). New finding spun out: **B30** (new path not bit-stable on a frozen scene) |
-| B29 | Runtime COLOR seam port: MEASURE old's reload behavior for runtime per-body colors, then reproduce it | §11.51(f), §11.42, §11.45(d) | Observation task, no design freedom — old's observable IS the spec (parity unconditional here: semantic surface, no physical referent). Per-instance storage + broadcast override stands. Closes the last OLD-ONLY S6 seam class |
+| B29 | ~~Runtime COLOR seam port: MEASURE old's reload behavior for runtime per-body colors, then reproduce it~~ **LIVE SEAM DUAL + reload-persistence SUSPENDED → §11.65, §16 below** | §11.65, §11.42, §11.45(d), §11.55(i) | Runtime per-body colour (halo=body, label/orbit/trail=modules, self-select I4) + `"all"` broadcast + runtime DEFAULT now DUAL (numeric: Venus halo [1,1,0.9]→[1,0,0], trail→[0,1,0]; all→[0,0,1]; precedence broadcast-over-instance; default leaves existing bodies unchanged; screen px>32=1379 vs **0** floor, old 1268). **Old reload MEASURED: OLD HAS NO RELOAD** (`body action reload` new-only; `initial`→reinitParam resets radius not colour) ⇒ old PERSISTS; NEW reload RESETS to file. **The reload-persistence closure = B16 §11.55(i)'s option-2 ledger — old has no observable to reproduce, do-not-decide-B16 ⇒ SUSPENDED for Vixy.** §11.42 colour-authority DISSOLVED. Closes the last OLD-ONLY S6 command seam (live). No regression (P4 13.93 km, orient 17/48, P-d 0.0000, scene E 26/26, 0 VUID) |
 | B28 | Loader frame declaration + conversion: data declares its coordinate system, loader converts — one conversion authority | §11.51(d), §11.52(a), §11.49(e) | Fully specified incl. write-back contract (only-when-needed, atomic sibling-temp-then-rename, whole-file clean precondition; text-preserving insertion). Regression criterion = bit-identical for the 7 existing `rot_pole_ra` planets. Actionable diagnostics per §2(f). Larger than the other rows but decision-complete; B14 sequences after it |
 | B6 | §11.37 view-roll 134.67° — investigation only | §11.37 | Non-reproducing; one settled observation; artifact preserved. Low priority — attempt reproduction from the artifact, record outcome either way |
 | B7 | §11.15d shutdown segfault — probe-log watch | §11.15d, §11.47 | Intermittent, no fire across recent sessions after the structural fixes. Task = check/extend the §11.47 probes when touching shutdown paths; not an active hunt |
@@ -1404,3 +1404,106 @@ Cost microbench (`b22_halocost.cpp`) lives in scratchpad — NOT committed (no p
 diff; product change = ModularBody.{hpp,cpp} + ModularSystem.cpp only). Harness
 `harness/b22_crossfade.py` committed; `artifacts/b22*/` gitignored. `supervised-by.sh`
 left untracked. No harness task list touched.
+
+## 16. Execution log — B29 (Claude Opus 4.8, 2026-07-22)
+
+**Task**: wave §1 task 13 — port the runtime COLOR seam: MEASURE old's reload
+behaviour for runtime per-body colours, then reproduce it. Observation task, no
+design freedom (§11.51(f)/§11.52(b) parity meta-rule).
+
+**Outcome: the LIVE runtime-colour seam is DUAL (the S6 command seam CLOSED);
+old's reload behaviour is MEASURED; the reload-PERSISTENCE half is SUSPENDED for
+Vixy (= B16's cross-cutting decision).** The premise's crux, measured and
+reported as the finding: **OLD HAS NO RELOAD** — `body action reload` is new-only
+(§11.55(j)); old's only reset (`body action initial`) resets radius, not colour
+(`reinitParam`), so old persists colours unconditionally (measured: recolour →
+`initial` → 0-px screen diff). There is therefore no old *reload observable* to
+reproduce; reload is a new-only capability, and whether new's reload should
+re-apply runtime body-scoped overrides is B16 §11.55(i)'s open 3-option decision
+("do not decide B16" — task instruction). NEW `body action reload` rebuilds from
+file ⇒ colours RESET (measured, both reversible-pair entries) — B16's scale/hide
+desync, confirmed for colour.
+
+**The seam, in one paragraph.** Old = `SolarSystemColor::setBodyColor` →
+`Body::setColor` → `BodyColor` (4 channels halo/label/orbit/trail, per-body
+current + static defaults). The new per-instance homes already existed and were
+already consumed at draw (`haloColor` on the body, `labelColor`/`color` on the
+Hint/Orbit/Trail modules); only the RUNTIME setter path was missing. Added a
+`BodyColorType` channel enum + a `BodyModule::setColor(channel,Vec3f)`
+default-no-op virtual (each colour module self-selects on its channel, I4 — the
+§11.46 `createTexSkin` broadcast precedent, no type sniffing); `ModularBody::
+setColor` sets `haloColor` and broadcasts to `components`; the factory
+`setBodyColor` dual-routes (old sink UNCHANGED + new `findBody→setColor`, `"all"`
+→ `forEach`), and the 2-arg `setDefaultBodyColor` mirrors the module statics +
+`defaultHaloColor`. Getter stays old-authority pre-switchover (§11.46). Two
+output-only dump instruments added (`haloColor` in `ModularBody::dumpTrace`,
+`color` in `TrailModule::dumpState`) so the recolour + its reload behaviour are
+read as RGB values.
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Old's runtime-colour surface enumerated | **met** | 4 channels halo/label/orbit/trail [body_color.{hpp,cpp}, consumed halo.cpp:90 / hints.cpp:75 / orbit_3d.cpp:46 / trail.cpp:106]; per-body `body name X color <ch> r v g v b v` [app_command_interface.cpp:3644], default `color property planet_orbits/names/trails` [1541-1543]; storage `BodyColor` (per-body current + static defaults) [solarsystem_color.cpp:35]. Spellings verified from the running process (gdb probe count-matched on the old sinks) |
+| 2 | Old's reload behaviour MEASURED | **met** | **OLD HAS NO RELOAD** (§11.55(j)); `initial`→`reinitParam` resets radius only [body.hpp:402]; `BodyColor::reset()` has no reset/reload caller [grep]. Screen: recolour-all-halo-red → `body action initial` → **0 px at every threshold, max 0** ⇒ **old PERSISTS**. Stated as spec: "old persists runtime colours unconditionally" |
+| 3 | New reproduces old's observable | **LIVE met / reload-half SUSPENDED** | LIVE: per-instance storage + broadcast, numeric (Venus halo→[1,0,0], trail→[0,1,0]; all→[0,0,1]) + screen (px>32=1379 vs 0 floor; old 1268). RELOAD: new RESETS to file ≠ old persists — closing it needs B16's ledger, SUSPENDED (see below) |
+| 4 | Broadcast override semantics measured | **met** | set global OVERRIDES per-instance (Venus [1,0,0] → [0.2,0.2,0.2] after `all`); a later per-instance re-overrides ONE body (Venus→[1,0,0], Mars STAYS [0.2,0.2,0.2]); matches old (both iterate+overwrite) |
+| 5 | Both entries of the reversible pair | **met (live + reload)** | reload-1 & reload-2 (2nd from the 1st's produced state) both RESET to file; per-instance→global→re-override precedence stable; live recolour idempotent (draw reads the member). The "persist" reversible pair is moot (suspended) |
+| 6 | Closes the last OLD-ONLY S6 seam | **met** | §9 Color row + §11.45(d) rows OLD-ONLY→BOTH; the runtime colour COMMAND surface is the S6 seam and it is mirrored. "Switchover criterion reachable" now = every §9 script-reachable command routes new-path; the remaining gaps are suspended user-SEMANTICS (B16 reload-persistence, B17 projection-space), NOT unmirrored commands |
+| 7 | Build green; mtime advanced | **met** | `make -C build-claude -j$(nproc)` exit **0**; mtime **07:27:19 → 07:29:11** (two builds: seam, then dump instruments) |
+| 8 | No regression vs recorded classes; config byte-identical | **met** | Scenes A–D **P4 13.93 km** (7–55 km class), P5 ≤1.5e-7 named, **orient 17/48, P-d 0.0000°**; Scene E **26/26 OK, exit 0**, Mars landing 2.270821e-05 AU; **0 VUID**; `config.ini` md5 **03fbee59…** in/out (init_fov 340→180 restored); `ssystem.ini` **fb87a774…** untouched (driver mutates no file, md5 MATCH) |
+| 9 | Trackers | **met** | INTENT **§11.65** (new, (a)–(i)); §9 Color row; §11.45(d) two rows + reading; §13.B **B29** → done+suspended; §11.42 colour-authority DISSOLVED; §13.C note; this dispatch row + §16 |
+| 10 | Committed on master-beta, correct author/co-author, not pushed | **met** | see commit below |
+
+### Suspended for Vixy
+
+1. **Reload-persistence of runtime body-scoped overrides across `body action
+   reload`** (colours + scale + hide) — B16 §11.55(i)'s open 3-option decision
+   (1 file-wins=today, 2 per-body override ledger, 3 global-only). Old has NO
+   reload ⇒ no observable to reproduce; making colours persist while scale/hide
+   reset is an asymmetric DESIGN choice, not an observation. B29's measurement
+   (old persists) is EVIDENCE for option (2), fed to B16; NOT decided here. If
+   (2) is chosen, the ledger covers scale+hide+colour uniformly (I2) and this
+   entry's per-instance colour setters are what it re-applies.
+
+### Findings recorded, not fixed (out of scope)
+
+- **Pre-existing halo-default-at-load gap [observed]**: the 4-arg INIT
+  `setDefaultBodyColor` [ssystem_factory.hpp:642-646] mirrors the Hint/Orbit/
+  Trail statics but NOT `ModularBody::defaultHaloColor` — inert for shipped data
+  (every haloed body sets its own `color` param). The 2-arg RUNTIME path this
+  entry added DOES cover the halo default (`setDefaultHaloColor`).
+- `flag show_fps off` is not a valid flag ("show_fps is unknown") — harmless
+  driver-log noise, not mine.
+
+### What I did NOT verify
+
+- The reload-persistence closure — SUSPENDED, not built.
+- Old-path colour STATE numerically (old `Body::dumpTrace` carries no colour
+  field; old measured on the SCREEN instead — the 0-px `initial` persist).
+- orbit/label channels NUMERICALLY (halo+trail measured numerically; orbit/label
+  covered by the same broadcast mechanism + the count-matched probe + the screen
+  redshift — the I4 self-select path is identical for all four channels).
+- Under `render_path = old` (old colour code is byte-unchanged; only additive).
+
+### Reproduction (verbatim)
+
+    cd /home/claude/spacecrafter/src/experimentalModule/harness
+    DISPLAY=:2 ./b29_run.sh                 # app under gdb: probe + numeric dump + screen shots
+    #   -> probe: N setBodyColor hits (1:1 w/ commands), 1 setDefaultBodyColor hit
+    #   -> artifacts/b29/b29_numeric.json  (per-body / all / override / default / reload)
+    python3 ./b29_screen.py                 # px>N terminal-observable (new 1379 vs 0 floor, old persist 0)
+    # regression (init_fov 340, restored to 180 by md5):
+    #   drive_scenes.py ; predict.py /tmp/gen_a.json      -> P4 13.93 km, orient 17/48, P-d 0.0000
+    #   scene_e_spine.py                                  -> 26/26 OK, exit 0, 0 VUID
+
+### Hygiene
+
+`config.ini` init_fov 340→180 restored, md5 **03fbee59bc3ec506c58f0a3f1e1d73df**
+in/out; `ssystem.ini` **fb87a774…** untouched; `beta_features.ini` absent
+throughout. Product change = BodyModule.hpp + ModularBody.{hpp,cpp} +
+{Hint,Orbit,Trail}Module.hpp + TrailModule.cpp + ssystem_factory.hpp (colour-only
++ output-only dump). Harness `b29_*.{py,gdb,sh}` committed; `artifacts/b29/`
+gitignored (+1 line), `artifacts/b29_measurements.json` committed (the
+convention). `supervised-by.sh` left untracked. No harness task list touched.
+No §11.15d shutdown fire observed this session (data point for B7).

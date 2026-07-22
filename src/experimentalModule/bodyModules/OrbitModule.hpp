@@ -52,6 +52,12 @@ public:
     // Advances the fader toward the effective target and (re)samples the orbit
     // points when visible. Called by ModularSystem::drawOrbits per frame.
     virtual bool update(ModularBody *body, float scaledRadius) override;
+    // Runtime orbit-color seam (old Body::setColor "orbit"). Self-selects on
+    // the ORBIT channel; every other channel hits the base no-op.
+    virtual void setColor(BodyColorType type, const Vec3f &c) override {
+        if (type == BodyColorType::ORBIT || type == BodyColorType::ALL)
+            color = c;
+    }
 
     // Per-name override (old body->setFlagOrbit): forces this body's orbit
     // regardless of the master, but only until the NEXT global toggle - the

@@ -232,6 +232,10 @@ void TrailModule::dumpState(std::ostream &out) const
         << ",\"accumulateCount\":" << accumulateCount
         << ",\"maxTrail\":" << maxTrail
         << ",\"deltaTrail\":" << deltaTrail
+        // Trail color (B29 runtime-color instrument, INTENT §11.65): the
+        // per-instance TRAIL channel drawn by this module (old BodyColor::trail).
+        // Lets the harness read the runtime recolor + reload behaviour.
+        << ",\"color\":[" << color[0] << ',' << color[1] << ',' << color[2] << "]"
         << ",\"head\":";
     if (points.empty()) {
         out << "null,\"headJD\":null";

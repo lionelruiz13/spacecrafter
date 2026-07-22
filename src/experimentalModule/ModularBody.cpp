@@ -617,6 +617,13 @@ void ModularBody::dumpTrace(std::ostream &out) const
         << ",\"boundingRadius\":" << boundingRadius
         << ",\"visible\":" << ((isVisible & isBodyVisible) ? "true" : "false")
         << ",\"screenSize\":" << screenSize
+        // Halo color (B29 runtime-color instrument, INTENT §11.65): the
+        // body-owned color channel (haloColor, consumed by drawHalo). The
+        // LABEL/ORBIT/TRAIL channels live on their modules; trail's is in its
+        // dumpState below, orbit/label are measured on screen. Lets the harness
+        // read the runtime recolor + its reload behaviour numerically.
+        << ",\"haloColor\":[" << haloColor[0] << ',' << haloColor[1] << ','
+        << haloColor[2] << "]"
         // relation = the membership authority (which parent list owns this
         // body); makes hide/show structurally observable from the harness -
         // dump PRESENCE never tracks it (the dump iterates the name registry,

@@ -798,6 +798,23 @@ public:
             if (m)
                 m->switchTexSkin(use);
     }
+    // Runtime per-body color seam (old SolarSystemColor::setBodyColor ->
+    // Body::setColor; command `body name X color <channel> value r,g,b`, INTENT
+    // §11.65). HALO is body-owned (haloColor, consumed by drawHalo); the
+    // LABEL/ORBIT/TRAIL channels live on the HINT/ORBIT/TRAIL modules, which
+    // self-select on the channel (BodyModule default no-op - the createTexSkin
+    // broadcast precedent, no type sniffing). Takes effect on the next drawn
+    // frame (draw reads the per-instance member), exactly like old.
+    inline void setColor(BodyColorType type, const Vec3f &c) {
+        if (type == BodyColorType::HALO || type == BodyColorType::ALL)
+            haloColor = c;
+        for (auto &m : components)
+            if (m)
+                m->setColor(type, c);
+    }
+    // Default halo color seam (old BodyColor::defaultHalo). The LABEL/ORBIT/
+    // TRAIL module defaults are module statics set at the same factory seam.
+    static inline void setDefaultHaloColor(const Vec3f &c) { defaultHaloColor = c; }
     inline float getRotAscendingnode(void) const {
 		return re.ascendingNode;
 	}

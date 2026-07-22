@@ -429,14 +429,44 @@ public:
 
 	void setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c) {
         ssystemColor->setBodyColor(englishName, colorName, c);
+        // Both-paths seam (INTENT §11.65): route the same runtime recolor to
+        // the new path's per-instance storage - HALO on the body, LABEL/ORBIT/
+        // TRAIL on the modules (self-select on the channel, I4). "all"
+        // broadcasts (old SolarSystemColor::setBodyColor "all" iterates the
+        // body map); findBody is nullptr-on-miss, so a bogus name is a no-op
+        // on both paths.
+        const BodyColorType t = parseBodyColorType(colorName);
+        if (t != BodyColorType::NONE) {
+            if (englishName == "all")
+                ModularBody::forEach([&](ModularBody &b){ b.setColor(t, c); });
+            else if (ModularBody *body = ModularBody::findBody(englishName))
+                body->setColor(t, c);
+        }
     }
 
 	const Vec3f getBodyColor(const std::string &englishName, const std::string& colorName) const {
+        // Getter stays old-authority pre-switchover (§11.46 precedent): the
+        // dual-write above keeps both paths' values in lock-step, so old's
+        // value IS the new value; a new-path getter lands at old-path removal.
         return ssystemColor->getBodyColor(englishName, colorName);
     }
 
 	void setDefaultBodyColor(const std::string& colorName, const Vec3f& c) {
         ssystemColor->setDefaultBodyColor(colorName, c);
+        // Both-paths seam (INTENT §11.65): mirror the runtime default to the
+        // new module statics (the loaders read them for FUTURE body_action_load
+        // bodies) + the body-owned halo default. Matches old EXACTLY: setting a
+        // default recolors NO existing body (draw reads the per-instance
+        // member), only bodies created afterwards - the 4-arg iniColor twin.
+        const BodyColorType t = parseBodyColorType(colorName);
+        if (t == BodyColorType::LABEL || t == BodyColorType::ALL)
+            HintModule::defaultLabelColor = c;
+        if (t == BodyColorType::ORBIT || t == BodyColorType::ALL)
+            OrbitModule::defaultColor = c;
+        if (t == BodyColorType::TRAIL || t == BodyColorType::ALL)
+            TrailModule::defaultColor = c;
+        if (t == BodyColorType::HALO || t == BodyColorType::ALL)
+            ModularBody::setDefaultHaloColor(c);
     }
 
 	const Vec3f getDefaultBodyColor(const std::string& colorName) const {

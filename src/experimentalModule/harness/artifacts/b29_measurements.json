@@ -1,0 +1,47 @@
+{
+  "task": "B29 runtime per-body COLOR seam (INTENT 11.65)",
+  "date": "2026-07-22",
+  "channels": ["halo(body)", "label(HintModule)", "orbit(OrbitModule)", "trail(TrailModule)"],
+  "command_spellings_verified_from_process": {
+    "per_body": "body name <X> color <halo|label|orbit|trail|all> r <0-1> g <0-1> b <0-1>",
+    "runtime_default": "color property planet_orbits|planet_names|planet_trails r <0-1> g <0-1> b <0-1>",
+    "probe_counts": {"setBodyColor_hits": "1:1 with commands", "setDefaultBodyColor_hits": 1}
+  },
+  "live_per_body_numeric_RGB": {
+    "venus_file_halo": [1.0, 1.0, 0.9],
+    "venus_file_trail": [0.4, 0.4, 0.3],
+    "venus_halo_after_set_1_0_0": [1.0, 0.0, 0.0],
+    "venus_trail_after_set_0_1_0": [0.0, 1.0, 0.0]
+  },
+  "broadcast_all_halo_0_0_1": {"Venus": [0,0,1], "Mars": [0,0,1], "Jupiter": [0,0,1], "Saturn": [0,0,1]},
+  "override_precedence": {
+    "ov1_venus_perbody_red": [1,0,0],
+    "ov2_venus_after_all_grey_BROADCAST_OVERRODE": [0.2,0.2,0.2],
+    "ov3_venus_reoverride_red": [1,0,0],
+    "ov3_mars_stays_broadcast_grey": [0.2,0.2,0.2]
+  },
+  "runtime_default_existing_body_UNCHANGED": {
+    "venus_trail_after_default_blue": [0.0,1.0,0.0],
+    "note": "stayed at its runtime [0,1,0], NOT the new [0,0,1] default -> default hits future bodies only, old parity"
+  },
+  "reload_behaviour": {
+    "OLD_has_no_reload": "body action reload is new-only (11.55(j)); initial->reinitParam resets RADIUS not colour",
+    "old_persists_screen_after_initial_pxdiff": {"px>0": 0, "max": 0},
+    "new_reload1_venus_pre": [0.9,0.1,0.05], "new_reload1_venus_post_FILE": [1.0,1.0,0.9],
+    "new_reload2_venus_pre": [0.05,0.1,0.9], "new_reload2_venus_post_FILE": [1.0,1.0,0.9],
+    "conclusion": "old PERSISTS unconditionally; new RESETS to file (both reversible-pair entries)"
+  },
+  "screen_terminal_observable_px": {
+    "noise_floor_new_pxgt32": 0,
+    "new_all_halo_red_base_to_after_pxgt32": 1379,
+    "old_all_halo_red_base_to_after_pxgt32": 1268,
+    "old_persist_after_vs_initial_pxgt0": 0
+  },
+  "reload_persistence_SUSPENDED_for_vixy": "requires the B16 11.55(i) per-body override ledger (option 2 of 3); old has no reload => no observable to reproduce; do-not-decide-B16",
+  "regression": {
+    "scenes_AD_P4_km": 13.93, "orientation": "17 restored / 48 divergent", "P_d_deg": 0.0,
+    "scene_E": "26/26 OK exit 0", "VUID": 0,
+    "config_md5_in_out": "03fbee59bc3ec506c58f0a3f1e1d73df",
+    "ssystem_md5": "fb87a774e728706e9d4e1959c386bb23 (untouched)"
+  }
+}
