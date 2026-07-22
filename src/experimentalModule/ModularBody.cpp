@@ -26,6 +26,13 @@ bool ModularBody::flagLightTravelTime = false; // set from config via SSystemFac
 Vec3f ModularBody::defaultHaloColor{};
 float ModularBody::haloScale = 1;
 float ModularBody::haloSizeLimit = 9;
+// System-collapse cross-fade brightness multiplier (B22, INTENT 11.64). 1.0
+// everywhere except INSIDE ModularSystem::drawNested's transition band, where
+// it ramps a nested system's halo output resolved<->dot. Default 1.0 makes
+// every EXERCISED halo (drawHalo/drawStarProxy) byte-identical (x1.0f is an
+// exact IEEE-754 identity): the collapse path itself is runtime-unexercised
+// until the executor dissolution (§6.9), so in every shipped scene this stays 1.
+float ModularBody::drawAlpha = 1.f;
 float ModularBody::viewportRadius = 1;
 std::vector<ModularBody *> ModularBody::notableBody;
 float ModularBody::deltaTime = 0;

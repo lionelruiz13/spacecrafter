@@ -38,7 +38,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 | B18 | Port `flag_lock_equ_pos` (equatorial-mount sky-lock) | §11.19c, §11.48(a) | The "unexercised legacy feature" premise was wrong — it is exercised, just not by our harness |
 | B19 | ~~Hidden-body ticking: current behavior (hidden ⇒ keeps updating) is ratified — lock it with a regression assert~~ **DONE 2026-07-21 → §11.54, §5 below** | §11.15b, §11.36, §11.48(a), **§11.54** | **The row's premise was FALSE**: the new path froze hidden bodies (0.00 km advance over 20 simulated min vs old's 1306.81 km), and the 14 bodies shipped `hidden = true` had never been positioned (`lastJD = 0`; Pluto 5.75e9 km off). So it WAS a behavior change — scope expanded from "assert only" to "implement the ratified semantics + assert", traceable to Q13/A10. Locked by `harness/b19_hidden_tick.py` |
 | B20 | ~~Anchored galactic display: at galactic distances while anchored, show the solar-system view from very far, anchor kept — no altitude-driven mode switch~~ **DONE 2026-07-22 → §11.59, §10 below** | §11.36, §11.48(a), **§11.59** | **VERIFY-ONLY, no product code** (A13 "no code change" ratifies the current impl). Anchor kept at 4.9e11 AU (ref=Earth, distance ≫ refAoI ⇒ switch suppressed by the `if(freeMode)` guard); free-flight same-move escalates to Universe (the discriminator). Locked by `harness/b20_anchored_galactic.py`, counterfactual proven. **Finding SUSPENDED**: round-trip anchor does NOT survive — OLD executor re-anchors Earth→SolarSystem on descent (§11.36 "anchored-mode descent"); fix is §6.9/escalation-policy = Vixy's |
-| B22 | System-collapse cross-fade at the ~16 px resolved↔dot threshold, "if not too costly" | §11.36, §11.48(b) | The COST BOUND is the decision input: deliver the cross-fade + its measured cost. The threshold constants themselves stay open (A15 — Vixy/tester) — do not tune them here |
+| B22 | ~~System-collapse cross-fade at the ~16 px resolved↔dot threshold, "if not too costly"~~ **MECHANISM DONE + COST BOUNDED → §11.64, §15 below** | §11.36, §11.48(b), **§11.64** | Cross-fade landed in `ModularSystem::drawNested` over a band [T, T+B): interior fades IN (`drawAlpha`→halo `cmag`) while the star-proxy dot fades OUT; **cost measured = ~22.6 ns/frame (one halo) + 0 added GPU draw calls, inert outside the band ⇒ "not too costly", verdict Vixy's**. Band width = named TUNABLE constant (A15, default T/2, NOT tuned). Ramp verified 11/11 (`b22_crossfade.py`: endpoints/monotonic/reversible). **SUSPENDED for §6.9**: the pixel render / live-ms / live reversible-pair — `drawNested` is runtime-unexercised (same §11.36 wall as drawNested itself). No regression (Scene E 26/26, P4 7–32 km, orient 17/48, P-d 0.0000, config+ssystem byte-identical) |
 | B23 | ~~Restore planet-grid tropics + polar circles, keyed to the corresponding sky-line flags~~ **DONE 2026-07-22 → §11.57, §8 below** | §11.42, §11.48(b), **§11.57** | Tropics ride **LINE_TROPIC** (`flag tropic_lines`), polar circles **LINE_CIRCLE_POLAR** (`flag polar_circle`), at ±axial_tilt / ±(90−axial_tilt). **§11.42's "no axial-tilt scalar" was a cached conclusion, false at source** — `axial_tilt` has loaded into `re.axialTilt` since the port; only a getter was missing. Measured latitudes track obliquity (Earth 23.44/66.56, Jupiter 3.13/86.87, Uranus 97.77/−7.77); screen gating px>32 vs a **0** noise floor, Earth↔Uranus ring reversal on the frame; name-sniff `!="Sun"` → `!isStar()` (I4). Carve-out kept (no independent toggle, no >10 km regime). 25/25 harness, 0 VUID, config+ssystem byte-identical. Finding: the Sun installs no grid at all (out of scope) |
 | B26 | ~~Run the two-screenshot observable check for the dual-path default flip~~ **DONE 2026-07-21 → §11.53, §4 below** | §11.50(c), §11.53 | **VERIFIED on `DISPLAY=:2`, 6 fresh launches, no product code changed.** The stated criterion was itself defective (≥2.5 s = quarter of the 2 s toggle period ⇒ 50 % test; corrected to odd multiples of 1.0 s, discriminator px>32). New finding spun out: **B30** (new path not bit-stable on a frozen scene) |
 | B29 | Runtime COLOR seam port: MEASURE old's reload behavior for runtime per-body colors, then reproduce it | §11.51(f), §11.42, §11.45(d) | Observation task, no design freedom — old's observable IS the spec (parity unconditional here: semantic surface, no physical referent). Per-instance storage + broadcast override stands. Closes the last OLD-ONLY S6 seam class |
@@ -1318,3 +1318,89 @@ gitignored. `supervised-by.sh` left untracked. No harness task list touched.
 The app **stalled under gdb in the draw path** (`App::draw:795` __platform_wait,
 "Frame stall detected") on ~2 of 6 launches — the §11.15d class. It did not block
 the run (retry served TCP within 12 s); recorded here as a data point, not chased.
+
+## 15. Execution log — B22 (Claude Opus 4.8, 2026-07-22)
+
+**Task**: wave §1 task 12 — add the system-collapse cross-fade at the ~16 px
+resolved↔dot threshold, *"if not too costly"*; **the cost bound is the decision
+input**. Do NOT tune the threshold/band constants (A15, Vixy/tester).
+
+**Outcome: MECHANISM IMPLEMENTED + COST BOUNDED; the composed-screen render is
+SUSPENDED for §6.9.** The collapse path (`ModularSystem::drawNested`/`drawStarProxy`)
+is runtime-unexercised by construction (re-verified from source) — the SAME §11.36
+wall as `drawNested` itself — so DoD 3 (pixels), the live-ms half of DoD 4, and
+DoD 5's live traversal cannot be driven today. The parts that ARE decidable are
+verified: the ramp CORRECTNESS at the formula layer, the cost at the arithmetic +
+draw-call layer, the inert guarantee as a ×1.0f identity proof, and the
+no-regression on the exercised halo path.
+
+**The mechanism, in one paragraph.** `drawNested` hard-switched at
+`screenSize·2·viewportRadius >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE` (16px): resolved
+interior (`updateSystem`+`computeShadows`+`drawSystemBodies`) above, one
+`drawStarProxy` halo below — the interior popped in at full while the dot vanished
+in one frame. Softened over a band **[T, T+B)**: a new `ModularBody::drawAlpha`
+static (default 1.0) is multiplied into every halo's `cmag` in `drawHaloCore`;
+`drawNested` runs the resolved interior for px≥T **exactly as before** (its
+expensive region UNCHANGED ⇒ no resolved cost added), scaling its halos by
+`t=(px−T)/B` so they fade IN, and ALSO runs `drawStarProxy` scaled by `(1−t)` so
+the dot fades OUT. The only added work is one `drawStarProxy` per band frame.
+`B = SYSTEM_COLLAPSE_CROSSFADE_BAND` is a named TUNABLE constant (A15's set,
+default `T/2`=8px derived from the threshold, NOT tuned).
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Hard switch located + characterised; the pop | **met (source); pop on-screen NOT measurable (§6.9)** | `ModularSystem.cpp:558` pre-fix. Resolved = full nested draw; dot = one `drawStarProxy`→`drawHaloCore` halo. Pop [derived]: halo mag nearly continuous across T (node≈star, same `-26.73−2.5·log10(d²)`), discontinuity = interior appearing at full + dot vanishing + a small `screen_r` step. Screen-diff of the crossing frame is blocked by (5)/§11.64(e) |
+| 2 | Cross-fade over a band; band width a named tunable constant, defaulted | **met** | `drawNested` [ModularSystem.cpp:573-609]; `drawAlpha` [ModularBody.hpp:1003, .cpp:35]; `cmag *= drawAlpha` [ModularBody.hpp:1235]; **`SYSTEM_COLLAPSE_CROSSFADE_BAND` [ModularBody.hpp:96]** flagged tunable/A15/defaulted-not-tuned in-source |
+| 3 | Visible + correct on the composed screen (endpoints match, mid-band blend, monotonic) | **partial: correctness verified at the formula layer; PIXEL RENDER SUSPENDED (§6.9)** | `b22_crossfade.py` 11/11 exit 0: endpoints match pure dot / pure resolved (pixel-exact by construction — BLEND_ADD zeroes an α=0 halo, sub-pixel children ⇒ no disc), continuous at both boundaries, monotonic, α_res+α_dot=1. The mid-band *appearance* needs the render — §6.9-gated (5) |
+| 4 | Cost measured (band both-rep cost; ~0 added outside; against a budget) | **met (arithmetic + draw calls); live-ms SUSPENDED (§6.9)** | `b22_halocost.cpp` -O2: added = ONE `drawHaloCore` = **22.4–22.8 ns/frame** = **0.00014% of a 16.7 ms frame**; **0 added GPU draw calls** (batched); +1 mul/resolved halo. Outside band: 2 float compares ⇒ inert. Resolved region [T,∞) unchanged ⇒ no resolved cost added. **Not too costly [verdict Vixy's]** |
+| 5 | Both entries of the reversible pair on live renders | **partial: formula-layer verified; LIVE traversal SUSPENDED (§6.9)** | `b22_crossfade.py`: α is a PURE function of px (no hysteresis) ⇒ outward==inward, second crossing bit-identical. The live composed-screen traversal is §6.9-gated |
+| 6 | Default-off-or-inert; scenes A–D unaffected | **met** | Always-on at the threshold (no flag); the only change is within the band, which never executes today. `cmag *= drawAlpha` with `drawAlpha==1.0` on every exercised path = exact ×1.0f identity ⇒ every shipped halo byte-identical [derived] + confirmed by the no-regression runs (8) |
+| 7 | Build green; mtime advanced | **met** | `make -C build-claude -j$(nproc)` exit **0**; binary mtime **1784692276→1784696062** |
+| 8 | No regression vs recorded classes; config byte-identical | **met** | Scene E **26/26 OK**; Scenes A–D **P4 7.26/13.84/15.46/14.69/31.83 km**, 0 UNMODELED/FAIL, **orient 17/48, P-d 0.0000°**; `config.ini` md5 **03fbee59…** in/out; `ssystem.ini` **fb87a774…** untouched |
+| 9 | Trackers | **met** | INTENT **§11.64** (new, (a)–(f)); §13.B **B22** → done+suspended; §13.A **A15** (fade now exists, band added to the constant set); §11.44 drawHaloCore "untouched" qualified (I2); this dispatch row + §15 |
+| 10 | Committed on master-beta, correct author/co-author, not pushed | **met** | see commit below |
+
+### Suspended for Vixy
+
+1. **The composed-screen pixel render / live-ms / live reversible-pair (§11.64(e))** — the collapse path is runtime-unexercised until the executor dissolution (§6.9): `ssystemFactory->draw` is solar/stellar-mode only, `camera->system` there has no nested-system children, the loader makes only plain children, and the galactic view runs `inGalaxy`/`inUniverse` (never calls the draw). Not my decision to force (§6.9 is Vixy/architecture; B20 already surfaced a §6.9 conflict as suspended). The fade's first live surface arrives with §6.9.
+2. **The cost verdict** — measured (~22.6 ns/frame, 0 draw calls, inert outside band); "if not too costly" means the cost decides, and the decision is Vixy's once measured. My derived read: not too costly.
+3. **The threshold + band CONSTANTS** — `SYSTEM_VISIBILITY_SUBSYSTEM_SIZE` (16px) and `SYSTEM_COLLAPSE_CROSSFADE_BAND` (default T/2) are A15's; defaulted, not tuned. A15's re-ask precondition ("a tester can judge them once the fade exists") is now met in code — but the *pixel* judgement still waits on §6.9's live surface.
+
+### Findings recorded, not fixed (out of scope)
+
+- **Disc-fade residual [derived, flagged]**: `drawAlpha` fades HALOS (the resolved content near threshold, which is halo-dominated because children are sub-pixel at 16–24px system size). A resolved DISC within the band would NOT fade (discs are not α-scaled) — a pop. It cannot arise for shipped data (no system is compact enough) and only matters for pathologically compact AUTHORED systems (A30). Full disc-fade needs per-module alpha (a larger change); flagged, not built.
+
+### Reproduction (verbatim)
+
+    # ramp verification (pure formula layer; reads constants from the header)
+    cd /home/claude/spacecrafter/src/experimentalModule/harness
+    python3 ./b22_crossfade.py            # 11/11, exit 0 -> artifacts/b22/b22_ramp.json
+
+    # cost microbench (the ONE added halo per band frame)
+    g++ -O2 /tmp/.../scratchpad/b22_halocost.cpp -o /tmp/.../b22_halocost && /tmp/.../b22_halocost
+    #  -> 22.4-22.8 ns/call ; 0.00014 % of a 16.7 ms frame
+
+    # no-regression (needs init_fov=340; restored byte-identically by md5)
+    DISPLAY=:2 ./b15_run.sh scene_e_spine.py artifacts/b22_sceneE   # 26/26 OK
+    DISPLAY=:2 ./b15_run.sh drive_scenes.py   artifacts/b22_drive   # driver exit 0
+    for f in gen_a gen_b gen_moon gen_mars gen_mars_2; do python3 ./predict.py /tmp/$f.json; done
+    python3 ./orientation_check.py /tmp/gen_a.json     # 17/48, P-d 0.0000
+
+### What I did NOT verify
+
+- The cross-fade on ACTUAL pixels (mid-band blend appearance, the crossing-frame
+  screen-diff, live cost) — blocked by §6.9 (runtime-unexercised), stated above.
+- The disc-fade edge (no shipped/authored compact system exists to exercise it).
+- Under `render_path = old` (old path unchanged; new path is the pinned default).
+
+### Hygiene
+
+`config.ini` restored byte-identical [md5 **03fbee59bc3ec506c58f0a3f1e1d73df** in/out;
+b15_run.sh edits init_fov 180→340 and restores by `cp` AFTER the process is dead].
+`ssystem.ini` untouched (**fb87a774…**). `beta_features.ini` absent throughout.
+Cost microbench (`b22_halocost.cpp`) lives in scratchpad — NOT committed (no product
+diff; product change = ModularBody.{hpp,cpp} + ModularSystem.cpp only). Harness
+`harness/b22_crossfade.py` committed; `artifacts/b22*/` gitignored. `supervised-by.sh`
+left untracked. No harness task list touched.

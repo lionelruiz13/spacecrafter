@@ -83,6 +83,16 @@ struct ModularBodyCreateInfo {
 
 //! Minimal size of the system on screen for showing orbiting bodies, in pixels
 constexpr int SYSTEM_VISIBILITY_SUBSYSTEM_SIZE = 16;
+//! Width (in the same on-screen px units as SYSTEM_VISIBILITY_SUBSYSTEM_SIZE)
+//! of the resolved<->dot cross-fade band above the collapse threshold: over
+//! [T, T+band) the nested system's interior fades IN while its star-proxy dot
+//! fades OUT (B22, INTENT 11.64). TUNABLE — this is in A15's constant set
+//! (the collapse threshold family 128/16/0.6/16px), Vixy/tester territory: a
+//! tester cannot judge the width without seeing the fade, so this is a
+//! DEFENSIBLE DEFAULT (half the threshold ⇒ the fade completes over +50%
+//! apparent size, a narrow transition derived from the threshold rather than
+//! an independent magic number), NOT a tuned value. Do not tune it here.
+constexpr float SYSTEM_COLLAPSE_CROSSFADE_BAND = SYSTEM_VISIBILITY_SUBSYSTEM_SIZE / 2.f;
 //! Minimal size of the body (bounding) on screen for showing the outer BodyModule without shadows nor Grounded ModularBody, in pixels
 constexpr int BODY_EARLY_VISIBILITY_BOUNDING_SIZE = 2;
 //! Minimal size of the body (bounding) on screen for showing the body normally in pixels
@@ -984,6 +994,13 @@ public:
     // both-paths seams, like flagLightTravelTime.
     static float haloScale;
     static float haloSizeLimit;
+    // System-collapse cross-fade brightness multiplier (B22, INTENT 11.64):
+    // 1.0 everywhere except inside ModularSystem::drawNested's transition band.
+    // Multiplied into every halo's cmag (drawHaloCore) so the resolved subtree
+    // and the star-proxy dot cross-fade instead of hard-switching at the ~16px
+    // collapse threshold. Owned/scoped by drawNested (save/set/restore, like
+    // lightPosition); default 1.0 ⇒ x1.0f identity for every exercised halo.
+    static float drawAlpha;
     // --- Work-domain pin (C2) -----------------------------------------------
     // Pins keep this body's memory alive while work-domain tasks (loading,
     // building) reference it. Plain non-atomic int BY DESIGN: pin() and
@@ -1208,6 +1225,14 @@ private:
                 cmag = 0.0;
             }
         }
+        // System-collapse cross-fade (B22): scale brightness by the active
+        // fade alpha. 1.0 in every exercised path (x1.0f is exact), non-1 only
+        // inside ModularSystem::drawNested's band. Applied to cmag (brightness),
+        // not rmag (size): the halo dims to nothing rather than shrinking, so a
+        // fading dot and a fading-in interior cross-dissolve at the same screen
+        // position. Placed before the skip rule so a fully-faded halo (alpha→0)
+        // drops out consistently.
+        cmag *= drawAlpha;
         if (rmag < 1.21f && cmag < 0.05f) // halo.cpp:86 skip rule (old draws
             return; // big-but-dim halos; the previous cmag-only gate dropped them)
         renderer.drawHalo(screenPos, color * cmag, rmag);

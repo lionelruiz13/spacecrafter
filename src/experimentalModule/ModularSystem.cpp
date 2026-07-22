@@ -553,30 +553,59 @@ void ModularSystem::drawNested(Renderer &renderer)
     if (!(isVisible & isBodyVisible))
         return;
     // px full diameter of the subsystem on screen - the drawHalo/pointer px
-    // idiom. At/above the constant: the interior is content (per-child
-    // visibility gating does the rest - D3); below: one point of light.
-    if (screenSize * 2.f * viewportRadius >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) {
-        const Vec3f savedLightPos = lightPosition;
-        const float savedLightDist = lightDistance;
-        const float savedLightSize = lightSize;
-        updateSystem(); // sort OUR list + set OUR star as light source
-        // Shadow selection under OUR light (2026-07-18, closing the 11.36
-        // "nested-draw shadows absent" suspension): without this call a
-        // visibly-resolved nested system drew shadowless - drawSystem's
-        // computeShadows only serves the CURRENT system. Rides the same
-        // light save/restore; jobs land in the same frame's pre-color
-        // recording window (the helper records at frame assembly, after all
-        // queueing). Runtime-unexercised BY CONSTRUCTION until the executor
-        // dissolution (6.9) gives drawNested its first live surface - the
-        // same status as drawNested itself (11.36 named limitation).
-        // Cross-SYSTEM shadows (a body of system A onto a body of B) stay
-        // excluded as a documented model precondition: physically negligible
-        // at inter-system distances.
-        computeShadows(renderer);
-        drawSystemBodies(renderer);
-        lightPosition = savedLightPos;
-        lightDistance = savedLightDist;
-        lightSize = savedLightSize;
+    // idiom. At/above the collapse threshold T the interior is content
+    // (per-child visibility gating does the rest - D3); below T, one point of
+    // light (the star-proxy dot).
+    //
+    // B22 cross-fade (INTENT 11.64): the hard switch at T
+    // (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) POPPED - the whole interior appeared,
+    // and the proxy dot vanished, in one frame. Softened over a band [T, T+B):
+    //   - RESOLVED interior runs for px >= T EXACTLY as before (its expensive
+    //     draw region is UNCHANGED, so the cross-fade adds NO resolved cost),
+    //     but its halos are scaled by t = (px-T)/B in the band ⇒ they fade IN.
+    //   - The DOT also runs across the band, scaled by (1-t) ⇒ it fades OUT.
+    //     This is the ONLY added cost: one drawStarProxy (one drawHaloCore /
+    //     halo instance) per frame, and only while px is inside the band.
+    // Endpoints match by construction: at px=T, t=0 ⇒ interior invisible + dot
+    // full (== pure dot); at px=T+B, t=1 ⇒ interior full + no dot (== pure
+    // resolved). drawAlpha carries the ramp into every halo via drawHaloCore;
+    // it is saved/restored here (nested-in-band compounds multiplicatively).
+    const float px = screenSize * 2.f * viewportRadius;
+    if (px >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) {
+        const float savedAlpha = drawAlpha;
+        const bool inBand = px < (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE + SYSTEM_COLLAPSE_CROSSFADE_BAND);
+        const float t = inBand
+            ? (px - SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) / SYSTEM_COLLAPSE_CROSSFADE_BAND
+            : 1.f; // above the band: full resolved, drawAlpha stays savedAlpha
+        drawAlpha = savedAlpha * t; // fade the interior IN (1.0 outside the band)
+        {
+            const Vec3f savedLightPos = lightPosition;
+            const float savedLightDist = lightDistance;
+            const float savedLightSize = lightSize;
+            updateSystem(); // sort OUR list + set OUR star as light source
+            // Shadow selection under OUR light (2026-07-18, closing the 11.36
+            // "nested-draw shadows absent" suspension): without this call a
+            // visibly-resolved nested system drew shadowless - drawSystem's
+            // computeShadows only serves the CURRENT system. Rides the same
+            // light save/restore; jobs land in the same frame's pre-color
+            // recording window (the helper records at frame assembly, after all
+            // queueing). Runtime-unexercised BY CONSTRUCTION until the executor
+            // dissolution (6.9) gives drawNested its first live surface - the
+            // same status as drawNested itself (11.36 named limitation).
+            // Cross-SYSTEM shadows (a body of system A onto a body of B) stay
+            // excluded as a documented model precondition: physically negligible
+            // at inter-system distances.
+            computeShadows(renderer);
+            drawSystemBodies(renderer);
+            lightPosition = savedLightPos;
+            lightDistance = savedLightDist;
+            lightSize = savedLightSize;
+        }
+        if (inBand) {
+            drawAlpha = savedAlpha * (1.f - t); // fade the proxy dot OUT
+            drawStarProxy(renderer);
+        }
+        drawAlpha = savedAlpha;
     } else {
         drawStarProxy(renderer);
     }
