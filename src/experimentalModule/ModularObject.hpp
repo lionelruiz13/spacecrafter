@@ -3,6 +3,7 @@
 
 #include "ModularBodyPtr.hpp"
 #include "tools/object_base.hpp"
+#include <utility>
 
 class ModularObject : public ObjectBase {
 public:
@@ -34,6 +35,22 @@ public:
     virtual float getOnScreenSize(const Projector *prj, const Navigator *nav = NULL, bool orb_only = false) override;
 
     ModularBodyPtr body;
+
+private:
+    // Single authority (I2) for the alt/az REPORTING convention at this object
+    // surface. The old path exposed azimuth in the "N=0, E=90" convention and
+    // applied the conversion at EACH reporting site (Body::getAltAz body.cpp:381,
+    // getInfoString body.cpp:341, getShortInfoNavString body.cpp:431 - the old
+    // path itself duplicated it). Camera::observedPosToAltAz returns the RAW
+    // Camera-frame az, whose zero differs from the old raw frame by -π/2
+    // [measured: harness/b9_azconv.py -> az_old = π/2 − az_raw over 234/234
+    // non-degenerate bodies at ≤3e-5°], so the conversion that reproduces the
+    // old report is az = π/2 − az_raw (mod 2π) - NOT the 3π−az of the old raw→
+    // report step (that constant is frame-specific to the old raw frame; §11.4
+    // flagged exactly this, §11.60). getAltAz / getInfoString /
+    // getShortInfoNavString all route here so the convention cannot desync.
+    // Returns (alt, az) with az in the old-path convention.
+    std::pair<double, double> altAz() const;
 };
 
 #endif /* end of include guard: MODULAR_OBJECT_HPP_ */

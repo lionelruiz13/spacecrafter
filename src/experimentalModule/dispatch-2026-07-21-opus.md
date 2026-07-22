@@ -29,7 +29,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 
 | Row | Task | Spec / recorded at | Notes for execution |
 |---|---|---|---|
-| B9 | Az-convention divergence: old `getAltAz` applies 3π−az, new returns Camera-frame raw — probe, then fix at the `ModularObject` surface | §11.4 | Probe first (confirm the delta is exactly the convention), then one conversion authority, not per-caller patches |
+| B9 | ~~Az-convention divergence: old `getAltAz` applies 3π−az, new returns Camera-frame raw — probe, then fix at the `ModularObject` surface~~ **DONE 2026-07-22 → §11.60, §11 below** | §11.4, **§11.60** | **Probe REFUTED `3π−az`**: the surface delta is `az_old = π/2 − az_new` (the `3π−az` was old's internal raw→report step; the new raw frame is −π/2 off — the §11.4 line-753 caveat, measured). ONE authority `ModularObject::altAz()` (`az = π/2−raw`) feeds getAltAz + getInfoString + getShortInfoNavString (single `observedPosToAltAz` call site). 234/234 bodies ≤0.00003° pre-fix convention; post-fix parity ≤0.00002°, alt untouched; nav/info strings arcsec-identical to old; also closed the §11.4 label-order swap. **Findings**: ModularObject uninstantiated in production (fix readies the D2 bridge, no user-visible change yet); RA/DE sibling diverges (§5.19, out-of-scope). Locked by `harness/b9_azconv.py` (FAIL pre-fix, PASS post-fix). No regression |
 | B11 | ~~Trail recording gate: `flag trails off` STOPS accumulation; re-enable starts FRESH~~ **DONE 2026-07-22 → §11.56, §7 below** | §11.41, §11.48(a), **§11.56** | Display flag now gates recording (`want`, not the fader — the prior port gated on the fade animation). **2×2 matrix measured**: hidden Mars records identically to visible Venus (both +6 pts / +1080 accumulate calls flag-on, both 0 flag-off) — the two gates are orthogonal, §11.54's boundary closed in the affirmative. "Work stopped" proven 2 ways (`accumulateCount` frozen + gdb accumulate breakpoint silent while off). Resolved inside I2/I6 — no second walk, no scheduling change (B1/S4 untouched). Real command spelling = `flag object_trails on|off` (the row's `flag trails` is swallowed silently). 94/94 harness, 0 VUID, config byte-identical |
 | B13 | Reference-change view continuity: preserve absolute sky direction across reference switch and free-mode entry/exit; no re-centring | §11.19c, §11.48(a) | Mechanism (revive `view` smoothing quaternion vs derive from alt/az) is the executor's engineering choice and owns the inverse formulas either way. DoD includes adding a view-continuity assertion to scene E (currently silent on exactly this) |
 | B15 | AoI re-derivation on date change: the launch-jd latch is a defect (dates are jumped mid-navigation) | §11.36, §11.48(a) | Recompute cadence (date-jump event vs continuous) is an engineering call bounded by constraint C3. Should close the ~10% seasonal drift and the scene-E `e_in` first-run miss — verify both |
@@ -865,3 +865,113 @@ and restored by `cp` of a backup, md5 asserted]. No data files touched. `.gitign
 (`artifacts/b20g/`). Per-run artifacts `artifacts/b20g/` gitignored like b11/b16/b18/b19/b23/b26.
 `supervised-by.sh` and the root `USER_QUESTIONS*.md` / `FEATURE_REQUESTS.md` left untracked. No
 harness task list touched. Camera.cpp git-clean (verify-only — the counterfactual was reverted).
+
+## 11. Execution log — B9 (Claude Opus 4.8, 2026-07-22)
+
+**Task**: wave §1 task 8 — fix the azimuth-convention divergence at the
+`ModularObject` surface. Probe first, then install ONE conversion authority
+(not per-caller patches, I2/I6). Full record: **INTENT §11.60**.
+
+**FIRST PARAGRAPH / behavior beyond the row.** Two things the row did not say:
+(1) **The probe REFUTED the recorded formula.** §11.4/§13.B recorded the delta
+as `3π−az`; measured, the surface-to-surface delta is **`az_old = π/2 − az_new`**
+— a different constant. The `3π−az` is the OLD path's INTERNAL raw→report step
+(body.cpp:381, re-confirmed at source); the NEW raw az sits in a frame −π/2 from
+it, which is EXACTLY the risk §11.4's own probe note (line 753) flagged. This is
+NOT the "dirty delta → suspend" case the task reserved: the delta is a CLEAN
+single convention (234/234 non-degenerate bodies, no per-body/per-hop/per-state
+residual), just a different constant, determined by measurement (traceable, not
+a design choice). (2) The fix also **corrects the §11.4 label-order swap** in
+`getShortInfoNavString` (it had printed alt↔az swapped under the "Az/Alt" label)
+— unavoidable, because routing the az through the single authority forces
+confronting the order, and old is the parity spec.
+
+**Also a structural FINDING**: `ModularObject` is **uninstantiated in production**
+today (referenced only in its own files; selection returns an old `Body`-backed
+`Object`). So `getSelectedAZ` already shows the old convention and this fix
+changes NO user-visible behavior YET — it readies the D2 bridge to be
+parity-correct before it is wired. The harness dump instantiates ModularObject
+directly (the only live path to the surface today).
+
+**Instruments committed**: `harness/b9_{run.sh,azconv.py}`; the permanent az
+observability added to `SSystemFactory::dumpTracePaths` (per-body `altaz_old`/
+`altaz_new` from Body::getAltAz and the REAL ModularObject::getAltAz, + a
+`<file>.navstr` sidecar with the caller-visible nav/info strings).
+**Artifacts**: `harness/artifacts/b9_{prefix,postfix,horizon}/` (gitignored).
+
+**Files touched (product)**: `src/experimentalModule/ModularObject.{hpp,cpp}`
+(the `altAz()` authority + 3 exits routed through it), `src/bodyModule/
+ssystem_factory.cpp` (dump observability + include).
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Probe [measured]: az delta old-vs-new ≥3–4 bodies AND ≥2 observer states, is exactly the convention with NO per-body/per-hop residual | **met (result differs from recorded)** | `harness/b9_azconv.py`, one fresh launch, FISHEYE, 4 samples = 2 dates (jd 2461233.5/2461321.25) × 3 observers (Paris/Sydney/North) × tracking ON+OFF. **`az_old = π/2 − az_new (mod 2π)` over 234/234 non-degenerate bodies, max 0.00003°, mean 0.000009°** (float32 class). NOT `3π−az` (that lands 90° off). Only outliers = 4× Earth (observer's home body at nadir, az undefined, alt matches exactly). **Conflict with §11.4 reported, resolved via the layer confusion, not silently** |
+| 2 | ONE conversion authority at the ModularObject surface, every consumer through it (grep + reasoning) | **met** | `ModularObject::altAz()` [ModularObject.cpp:119-131] = the single site calling `Camera::observedPosToAltAz` (grep-confirmed: 1 call site). Consumed by `getAltAz` (:133), `getInfoString` (:22), `getShortInfoNavString` (:69). `getSelectedAZ/ALT → getSelected().getAltAz → ModularObject::getAltAz` once the bridge is wired. No uncovered path (the old path DUPLICATED `3π−az` at body.cpp:381+:431; this removes that) |
+| 3 | Post-fix parity measured, alt unaffected (measured not assumed) | **met** | fixed binary, same bodies/states: **max \|Δaz\| = 0.00002°**, **max \|Δalt\| = 0.00001°** (equator) / **0.00002°** (altaz). Float32 floor. The `b9_azconv.py` lock flips: pre-fix direct \|Δaz\| ≤179.8° (FAIL) / π/2-hyp ~0; post-fix direct ~0 (PASS) / π/2-hyp 179.8° |
+| 4 | Both entries of the reversible pair, else state unconditional | **met** | The conversion has NO state branch ⇒ unconditional. Exercised anyway under tracking ON (S1,S2) and OFF (S3,S4), and under BOTH camera mounts — shipped `EQUATORIAL` and `ALTAZ` (config `viewing_mode` temporarily `horizon`, restored byte-identical; dump header `"mount"` = equatorial then altaz) — identical 0.00002° parity. Mount-independent because `observedPosToAltAz` recovers the horizon frame regardless of the fold (alt matches old EXACTLY even under equatorial). Free mode: different regime (body-frame "local", Camera.hpp:148-149), no old-path az counterpart ⇒ parity undefined, stated not tested |
+| 5 | Caller-visible check shows old-convention value after the fix | **met** | The REAL `ModularObject::getShortInfoNavString` + `getInfoString` (captured in `b9_postfix/*.navstr`) print `Az/Alt/coA` **arcsecond-identical to old Body**: Moon `+33°37'16"/-07°11'59"/+97°11'59"`, Sun `+00°55'44"/-19°09'22"/+109°09'22"`, Mars `+41°20'57"/-09°02'56"/+99°02'56"`; getInfoString "Alt/Az" Moon `-07°11'59" / +33°37'16"` both paths |
+| 6 | Build green, mtime advanced | **met** | `make -C build-claude -j$(nproc)` exit **0** twice (probe 03:45:54, fix 03:56:46); mtime advanced from 03:18 |
+| 7 | No regression A–D + E; config restored byte-identical | **met** | **P1 ≤5.77e-17, P2 ≤6.52e-8, P3 angles ≤1.01e-5°, P4 9.22–55.08 km, P5 view-term 0.0000° / residuals ≤1.11e-7; orientation 17 restored / 48 divergent, P-d 0.0000°; scene E 13/13, Mars landing 2.270821e-05 AU**. All recorded classes matched. `config.ini` md5 **03fbee59bc3ec506c58f0a3f1e1d73df** in and out (the horizon-mount test edited `viewing_mode` then restored by `cp` of a backup). My change is provably inert on the pipeline (ModularObject uninstantiated; render/mat path untouched) |
+| 8 | Trackers | **met** | INTENT §11.60 (new, (a)–(i)); §13.B B9 → DONE; §11.4 item 4 → RESOLVED; §5 new item 19 (RA/DE sibling, out-of-scope); this dispatch row + this §11 section |
+| 9 | Committed on master-beta, correct author/co-author, no push | **met** | see commit hash below |
+
+### Findings recorded, not fixed (out of scope)
+
+1. **RA/DE sibling divergence (§5 item 19).** `ModularObject`'s `getRaDeValue`/
+   info strings read `Camera::observedPosToRaDe`, which disagrees with old's
+   `Body::getRaDeValue` — Moon old `RA 04h57m15s/+26°41'47"` vs new
+   `03h44m18s/+14°40'05"` (~18°). A frame/convention delta (J2000-vs-of-date
+   candidate), the RA/DE analog of B9, invisible today for the same reason
+   (ModularObject uninstantiated). B9 is azimuth only — not touched; needs its
+   own probe + single-authority fix.
+2. **ModularObject uninstantiated in production** (finding, not a defect to fix
+   here) — the D2 bridge is staged but not wired into selection; documented so
+   the D2 worker knows the surface is already parity-correct.
+
+### Suspended for Vixy
+
+**None.** Every decision traces to the task spec or a measurement. The one place
+the outcome departs from the written row (the constant is `π/2−az`, not `3π−az`)
+is a MEASUREMENT superseding a recorded conclusion, exactly what the traceability
+rule prescribes (re-verify cached conclusions against source) — not a decision.
+The label-order correction in `getShortInfoNavString` is a parity port (old is
+the spec, §11.52(b)), not a user-visible-semantics choice.
+
+### What I did NOT verify
+
+- The surface under `render_path = old` (old path unchanged by construction).
+- Free-mode az parity (no old-path counterpart — regime stated, not a gap).
+- The RA/DE sibling's cleanness (deferred with the out-of-scope finding).
+- Live `getSelectedAZ` through a wired ModularObject (it is uninstantiated;
+  verified via the real methods in the dump instead).
+
+### Reproduction (verbatim)
+
+    cd /home/claude/spacecrafter
+    # probe (pre-fix): revert the ModularObject fix, keep the dump, build, run
+    DISPLAY=:2 bash src/experimentalModule/harness/b9_run.sh b9_azconv.py \
+        src/experimentalModule/harness/artifacts/b9_prefix    # RESULT FAIL (raw az)
+    # fixed binary:
+    DISPLAY=:2 bash src/experimentalModule/harness/b9_run.sh b9_azconv.py \
+        src/experimentalModule/harness/artifacts/b9_postfix   # RESULT PASS, md5 match
+    #   -> altaz_old/altaz_new per body + <file>.navstr caller-visible strings
+    # mount-independence (edit viewing_mode=horizon, restore by cp of a backup):
+    #   sed 's/= equator/= horizon/' config.ini ; run to b9_horizon ; cp backup back
+    # no-regression (A-D + E), FISHEYE, no config edit needed (mat-layer is fov-free):
+    DISPLAY=:2 bash src/experimentalModule/harness/b9_run.sh drive_scenes.py <out>
+    for f in gen_a gen_b gen_moon gen_mars gen_mars_2; do \
+        python3 src/experimentalModule/harness/predict.py /tmp/$f.json | grep P4; done
+    python3 src/experimentalModule/harness/orientation_check.py /tmp/gen_moon.json  # 17/48, P-d 0.0000
+    DISPLAY=:2 bash src/experimentalModule/harness/b9_run.sh scene_e_spine.py <out> # 13/13
+
+### Hygiene
+
+`config.ini` restored byte-identical [md5 `03fbee59bc3ec506c58f0a3f1e1d73df` in
+and out — every run sends settings as commands; the horizon-mount test edited
+`viewing_mode` then restored by `cp` of a backup, md5 re-asserted].
+`ssystem.ini` and `beta_features.ini` untouched (beta_features absent).
+Per-run artifacts `artifacts/b9_{prefix,postfix,horizon}/` gitignored like the
+other B rows. `supervised-by.sh` and the root `USER_QUESTIONS*.md` /
+`FEATURE_REQUESTS.md` left untracked. No harness task list touched.

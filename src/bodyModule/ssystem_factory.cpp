@@ -38,6 +38,7 @@
 #include "navModule/observer.hpp"
 #include "experimentalModule/ModularSystem.hpp"
 #include "experimentalModule/Camera.hpp"
+#include "experimentalModule/ModularObject.hpp"
 #include "experimentalModule/ModuleLoaderMgr.hpp"
 #include "experimentalModule/EnvironmentManager.hpp"
 #include "experimentalModule/environmentModules/MilkyWayEnv.hpp"
@@ -596,14 +597,43 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
     out << "],\"camera\":";
     camera->dumpTrace(out);
     out << "}\n";
+    // B9 az-convention observability (INTENT §11.4/§11.60): the alt/az the two
+    // paths expose to the UI/scripting surface, per body, at the SAME frame.
+    // altaz_old = Body::getAltAz (old convention, az = 3π−az); altaz_new = the
+    // REAL ModularObject::getAltAz (the D2 bridge method getSelectedAZ would
+    // call once wired). The nav-string sidecar (<file>.navstr) captures the
+    // caller-visible strings both paths print. Locked by harness/b9_azconv.py.
+    std::ofstream navout(file.empty() ? "/tmp/dual_trace.json.navstr"
+                                      : (file + ".navstr"));
     for (auto it = currentSystem->begin(); it != currentSystem->end(); ++it) {
         out << "{\"type\":\"body\",\"name\":\"" << it->first << "\",\"old\":";
         it->second.body->dumpTrace(out);
         out << ",\"new\":";
-        if (ModularBody *nb = ModularBody::findBodyOnce(it->first))
+        ModularBody *nb = ModularBody::findBodyOnce(it->first);
+        if (nb)
             nb->dumpTrace(out);
         else
             out << "null";
+        {
+            double oalt = 0, oaz = 0;
+            it->second.body->getAltAz(navigation, &oalt, &oaz);
+            out << std::setprecision(17) << ",\"altaz_old\":[" << oalt << ',' << oaz << ']';
+            if (nb) {
+                ModularObject mo;
+                mo.body = nb;
+                double nalt = 0, naz = 0;
+                mo.getAltAz(navigation, &nalt, &naz);
+                out << ",\"altaz_new\":[" << nalt << ',' << naz << ']';
+                navout << it->first
+                       << "\n  OLD nav: " << it->second.body->getShortInfoNavString(navigation, timeMgr, observatory)
+                       << "\n  NEW nav: " << mo.getShortInfoNavString(navigation, timeMgr, observatory)
+                       << "\n  OLD inf: " << it->second.body->getInfoString(navigation)
+                       << "\n  NEW inf: " << mo.getInfoString(navigation) << "\n";
+            } else {
+                out << ",\"altaz_new\":null";
+            }
+            out << std::setprecision(9);
+        }
         out << "}\n";
     }
     // Quadruplet (minimal set separating translation / common rotation /

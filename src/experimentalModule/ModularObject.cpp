@@ -19,8 +19,8 @@ std::string ModularObject::getInfoString(const Navigator *nav) const
     auto tmp = Camera::instance->observedPosToRaDe(body->getObservedPosition());
 	oss << ("RA/DE: ") << Utility::printAngleHMS(tmp.first) << " / " << Utility::printAngleDMS(tmp.second) << std::endl;
 
-    tmp = Camera::instance->observedPosToAltAz(body->getObservedPosition());
-	oss << ("Alt/Az: ") << Utility::printAngleDMS(tmp.first) << " / " << Utility::printAngleDMS(tmp.second) << std::endl;
+    const auto aa = altAz();  // (alt, az) in the old-path convention (I2)
+	oss << ("Alt/Az: ") << Utility::printAngleDMS(aa.first) << " / " << Utility::printAngleDMS(aa.second) << std::endl;
 
 	oss.precision(8);
 	oss << ("Distance: ") << body->getDistanceToObserver() << " " << ("AU");
@@ -62,9 +62,12 @@ std::string ModularObject::getShortInfoNavString(const Navigator *nav, const Tim
     oss << ("SA ") << Utility::printAngleDMS(2*M_PI-tmp.first)
 	    << (" GHA ") << Utility::printAngleDMS(GHA)
 	    << (" LHA ") << Utility::printAngleDMS(HA);
-	// calculate alt az
-    tmp = Camera::instance->observedPosToAltAz(body->getObservedPosition());
-	oss << "@" << (" Az/Alt/coA: ") << Utility::printAngleDMS(tmp.first) << "/" << Utility::printAngleDMS(tmp.second) << "/" << Utility::printAngleDMS(M_PI_2-tmp.second) << " LPA " << Utility::printAngleDMS(PA);
+	// calculate alt az. Old path prints az/alt/coAlt (coAlt = 90°−alt) under
+	// the "Az/Alt/coA" label [body.cpp:433]; the new path had swapped alt↔az
+	// (raw az too) - a port defect flagged at §11.4. Reproduce the old order +
+	// convention exactly via the single authority (I2/parity, §11.60).
+    const auto aa = altAz();  // (alt, az) in the old-path convention
+	oss << "@" << (" Az/Alt/coA: ") << Utility::printAngleDMS(aa.second) << "/" << Utility::printAngleDMS(aa.first) << "/" << Utility::printAngleDMS(M_PI_2-aa.first) << " LPA " << Utility::printAngleDMS(PA);
 
     // TODO don't rely on englishName for execution path.
     // Do you mean body->isStar(), body == Camera::instance->getCurrentSystem()->getSystemStar() or something else ?
@@ -113,15 +116,25 @@ float ModularObject::getMag(const Navigator *nav) const
     return body->computeMagnitude();
 }
 
+std::pair<double, double> ModularObject::altAz() const
+{
+    // observedPosToAltAz returns (alt, az_raw): rectToSphe(&ret.second,
+    // &ret.first, ...) puts latitude(alt) in .first, longitude(az) in .second.
+    const auto tmp = Camera::instance->observedPosToAltAz(body->getObservedPosition());
+    // Old-path azimuth convention (N=0, E=90). The new raw az zero is offset
+    // -π/2 from the old raw frame [measured, §11.60], so π/2 − az_raw
+    // reproduces Body::getAltAz's az exactly (float32 residual ≤3e-5°).
+    double az = std::fmod(M_PI_2 - tmp.second, 2 * M_PI);
+    if (az < 0)
+        az += 2 * M_PI;
+    return { tmp.first, az };
+}
+
 void ModularObject::getAltAz(const Navigator *nav, double *alt, double *az) const
 {
-    // observedPosToAltAz returns (alt, az) - see Camera::observedPosToAltAz:
-    // rectToSphe(&ret.second, &ret.first, ...) puts latitude(alt) in .first.
-    // NOTE: azimuth convention (old path applied az = 3PI - az mod 2PI) to be
-    // verified against the old path at D2 (pointer/UI verification slice).
-    const auto tmp = Camera::instance->observedPosToAltAz(body->getObservedPosition());
-    *alt = tmp.first;
-    *az = tmp.second;
+    const auto aa = altAz();
+    *alt = aa.first;
+    *az = aa.second;
 }
 
 void ModularObject::getRaDeValue(const Navigator *nav, double *ra, double *de) const
