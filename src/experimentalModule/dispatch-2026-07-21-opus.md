@@ -54,7 +54,7 @@ Suggested order: B26 (pure verification) → small ratified rows (B19, B16, B11,
 |---|---|---|---|
 | B10 | ~~`datum_radius` + `ground_radius` full scope (i)–(vi)~~ **DONE 2026-07-22 → §11.71, §20 below** | (a) FLOOR VALUE — landed `ANTISTUCK_ESCAPE_FLOOR=1e-6` as a DEFENSIBLE PLACEHOLDER (≈6.4 m Earth), flagged not-final; (b) Q12 word-order — data keys kept `datum_radius`/`ground_radius`, NO runtime command added (spelling undecided); (c) NEW — MilkyWay's authored `=false` center-relative intent (kept 3.2e9 AU bit-identical vs honour datum=0) | §5.2, §11.6, §11.48(c), **§11.71** |
 | B21 | ~~View-directed free descent ("down" = surface point under the view ray), riding B10's `proximityFactor()` — sequence after B10~~ **DONE 2026-07-22 → §11.72, §21 below** | ~~The far/galactic-distance case (A18 residual)~~ **now IN scope [R6 §11.70(e): aim at the LAST SELECTED body]** — carve-out held: did NOT change the escalation/anchor policy (B20/§6.9); far-case is descent DIRECTION only, the existing transition captures the body | §11.36, §11.48(a), §11.70, **§11.72** |
-| B27 | Steps (1) site inventory completion (grep is not exhaustive yet — seed list §11.51(c)) and (2) per-site §2(a2) test → declarable capability key | Step (3) generator emission — belongs to B25 (critical/authoring chain); special ORBITS exempt (`*_special` stays) | §11.51(c), §5.5, §11.48(b) |
+| B27 | ~~Steps (1) site inventory completion (grep is not exhaustive yet — seed list §11.51(c)) and (2) per-site §2(a2) test → declarable capability key~~ **DONE 2026-07-22 → §11.73, §22 below** | Step (3) generator emission — belongs to B25 (critical/authoring chain); special ORBITS exempt (`*_special` stays) | §11.51(c), §5.5, §11.48(b), **§11.73** |
 | B14 | ~~Preparation only: collect IAU/WGCCRE values~~ **PREP DONE §18/§11.68; LAND HALF DONE 2026-07-22 (§19 below, §11.69).** Vixy authorized cited web-fetch. **14 of 28 shipped cluster moons landed** with 3-source-agreed IAU-2015 poles (pck00011+pck00010+Archinal report text); Iapetus pilot verified (axis 8e-6°, 2 dates 0°, commutator 30.87→21.36); 14 STOPPED-for-no-pole (irregular/chaotic). BOTH files edited. Zero `[knowledge]` values. | Remaining suspended-for-Vixy: **W0 write** (referential mismatch, fetched not written), **6 loaded-only Jupiter moons** (shipped divergence), **Hyperion** (chaotic), **pole-drift/nutation** unrepresentable | §11.69, §11.68, §11.35, §11.48(a), §11.49(e), §11.51(d) |
 
 ## 3. Excluded (reason stated so the exclusion is challengeable)
@@ -2030,3 +2030,92 @@ Artifacts (gitignored): `harness/artifacts/b21{,f,p}`.
 config.ini restored byte-identical (03fbee59) every run. ssystem.ini untouched
 (runtime `body action load`, no file edits). `supervised-by.sh` / `data/spacecrafter.desktop`
 left untracked. No harness task list touched. No §11.15d shutdown fire observed.
+
+---
+
+## 22. Execution log — B27 (Claude Opus 4.8, 2026-07-22)
+
+**Task**: wave §2 carve-out task 19 — the hardcode-retirement **AUDIT + capability-key
+DESIGN** (steps 1–2). Step 3 (generator emission) belongs to B25; special `*_special`
+orbits are the explicit exemption. **DESIGN + INVENTORY ONLY — no product code changed**
+(the reason is a hard dependency, DoD item 5 below). Full inventory + key table live in
+**INTENT.md §11.73** (the deliverable); this section is the DoD ledger.
+
+### The one judgement call, stated first: why no code change
+
+Every Tier-A consume-change is **coupled to B25's emit**. If A1's consume (read a
+`sidereal_time` key, drop the `BodyType::EARTH` branch at ModularBody.hpp:325/1189) landed
+BEFORE B25 emits the key, shipped Earth (which carries no such key) would fall through to
+the generic rotation formula → the **−49° longitude / §11.15** regression for the entire
+window between the two commits. A2 (drop the name-keyed `shadow_color` default) likewise
+needs the `.disabled` to already carry the value. A5 is the uninstantiated bridge (§11.60)
+so no live A/B is even possible. Correct order = **emit-then-consume, in B25/B24**.
+De-hardcoding here would leave the tree behaviorally wrong. So B27 = keys + site map;
+B25 emits; B24/B25 consume. This is spec-aligned (dispatch §2 carve-out: "the code change
+is B25/B24's … unless decision-free + low-risk + verified bit-identical").
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Complete site inventory + completeness argument; reconcile vs seed | **met** | §11.73(a)-(f). Six hardcoding CLASSES searched whole-tree (name-literal EN+FR, BodyType-enum, `type`-string/memcmp, RTTI, `is<X>()`, `findBody("X")`), argued exhaustive. **Seed reconciled: every seed site exists at source; the seed MISSED 5** — the first new-path grep was NON-RECURSIVE and skipped `bodyModules/`+`orbitModules/`; the recursive re-grep surfaced LayeredMeshLoader `type=="Moon"` (A6), TrailLoader type→maxTrail (A7), ModularBody.cpp Arti/Comet ×2 (A8/A9). The `sun_special` exemption line drifted :344→:363 |
+| 2 | Per-site capability-key design (name+domain+§2(a2) arg+bodies+consume sketch) | **met** | §11.73(b) table, 9 Tier-A sites: A1 NEW `sidereal_time={generic\|earth_apparent}`; A2 EXISTING `shadow_color`; A3 RETIRE EARTH_MOON (0 consumers, measured); A4 delete dead `CASE("Moon",CUSTOM)`; A5 `isStar()`; A6 `surface_model`; A7 `trail_length`; A8/A9 G6 heuristics. Each with its §2(a2) parameterises-not-identity argument + file:line consume site + bodies-now |
+| 3 | Exemption boundary stated with file:line + reason | **met** | §11.73(e). `*_special` = `SpecialOrbit(name)` analytic dispatch [orbit.cpp:770-896], new path via LunarOrbitLoader.hpp:4 + EarthOrbitLoader.hpp:9. Re-verified: earth orbit.cpp:794, lunar/emb protosystem.cpp:569/557, sun ssystem_factory.cpp:363 (seed :344 drifted), stellar :107. Selector IS data; ephemeris is analytic → stays |
+| 4 | Completeness vs R10 ("nothing changes if we go back") | **met** | §11.73(h). Earth = A1+A2; Moon = `type`(moonClass)+A3-retire; Sun = `type`(STAR)+A5. Nothing a name-sniff grants is left un-keyable in the new path. Behaviors NOT captured by a body-data key are all OUT-of-new-path (F1 catalog number, F2 old-path sky-lines/landscape→S8, F3 executor descent→B5) — none a modular-body property a `.disabled` carries |
+| 5 | Consume-code change proven bit-identical, OR "no code change — design only" + why | **met (design-only)** | No product source touched. Justification = the emit-then-consume coupling above (§11.73(g)). The consume changes are B24/B25's |
+| 6 | Build green | **met (unchanged)** | HEAD 1b1da3f7 already green; only `.md` trackers edited ⇒ build unaffected, binary mtime does NOT advance (2026-07-22 13:05, pre-existing). Confirmed the tree stays buildable — see build note below |
+| 7 | No regression | **n/a** | No code changed ⇒ nothing to regress. Scenes not re-run (would measure the unchanged 1b1da3f7 binary). config.ini/ssystem.ini untouched |
+| 8 | Trackers | **met** | INTENT.md **§11.73** (new, 2026-07-22, full inventory + key table + provenance); §13.B **B27 row** → steps 1–2 DONE, step 3→B25; §5.5 item 5 + §11-log-8 pointers updated to §11.73; this file's §2 row + this §22 section |
+| 9 | Committed on master-beta, correct author/co-author, never pushed | **met** | see commit below (trackers-only commit, per "trackers/harness commit even if no product code changed") |
+
+### Conflicts between sources, recorded (I2)
+
+- **Seed vs actual code**: the §11.51(c) seed inventory is NOT exhaustive (its own caveat)
+  — it missed the entire `experimentalModule/bodyModules/` + `orbitModules/` subtrees
+  because the seed's grep was non-recursive. All seed sites DO exist at source (no phantom
+  entries). The `sun_special` file:line drifted (:344 → :363), same file/mechanism.
+- **EARTH_MOON is DEAD in the new path** [measured: grep `EARTH_MOON` = enum def +
+  one assignment, zero reads]. The old-path behaviors it named (moon UmbraColor(0.4,0.12,0),
+  moon shadow-shader selection) were already generalized into the caster-side `shadow_color`
+  + trait shadows (§11.25). So A3 is a pure retirement, not a key.
+
+### Suspended for Vixy
+
+1. **Key spellings / value-domains** for the two NEW keys `sidereal_time` (A1) and
+   `surface_model`/`trail_length` (A6/A7) — same sign-off class as B28's `rot_frame`
+   (§11.67(f)). The behavior is the spec; the exact word is Vixy's.
+2. **Whether to retire `type`-as-identity** into direct capability keys (`light_source`,
+   `shadow_exempt`/`instanced`) — Tier B / §5.5. A G6-deduction + script-compat (§2(b))
+   design, larger than B27, not required for R10 completeness.
+3. **F1** catalog-number (core.cpp:setSelectedBodyName), **F2** landscape/geographic-line
+   association (→ S8 landscape-association data model, §11 entry 21), **F3** executor
+   descent anchor sniff (→ B5 executor dissolution). Recorded, not this row.
+
+### What B25 inherits (the KEY SET it must emit)
+
+- Earth: `sidereal_time = earth_apparent` (A1) + `shadow_color = 0.6 0.88 1.0` (A2).
+- Moon: nothing new — `type = Moon` already carries moonClass (A6); EARTH_MOON is retired
+  (A3, emit nothing); `CASE("Moon",CUSTOM)` deleted (A4).
+- Sun: nothing new — `type = Sun` carries STAR/big-halo/magnitude; day-length becomes a
+  consume-side `isStar()` swap (A5).
+- Optional §2(a2) refinements (not required for parity): `surface_model` (A6),
+  `trail_length` (A7).
+
+### What B24/B25 inherit (the consume-code sites, file:line)
+
+ModularSystem.cpp:976-991 (applyHardcodedContent — retire), ModularBody.hpp:325 + :1189
+(BodyType::EARTH branches → read A1 key), ModularSystem.cpp:48 (delete A4 dead case),
+ModularObject.cpp:74 (A5 name→isStar), LayeredMeshLoader.cpp:48 (A6), TrailLoader.cpp:26-31
+(A7), the EARTH/EARTH_MOON enum values ModularBody.hpp:47-48 (retire with A3).
+
+### Build note
+
+No product source edited; only `INTENT.md` + this dispatch file (both `.md`). `make -C
+build-claude` was NOT invoked (it would rebuild nothing — no `.cpp`/`.hpp` changed) and the
+binary mtime is unchanged (2026-07-22 13:05, the B21 build). The tree is buildable at
+1b1da3f7 by construction (green HEAD + doc-only edits).
+
+### Hygiene
+No data files touched (config.ini/ssystem.ini untouched — audit only, no app launch needed:
+the deliverable is a code-read inventory, verifiable by re-running the greps). `supervised-by.sh`
+left untracked. No harness task list touched.
