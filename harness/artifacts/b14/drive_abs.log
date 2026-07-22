@@ -1,0 +1,10 @@
+>> flag experimental_path on
+>> timerate rate 0
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> date jday 2451545.000000000
+>> wait duration 2
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b14/b14_abs_d1.json
+>> date jday 2455197.000000000
+>> wait duration 2
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b14/b14_abs_d2.json
+DRIVER OK

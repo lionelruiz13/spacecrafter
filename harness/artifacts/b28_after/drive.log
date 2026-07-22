@@ -1,0 +1,12 @@
+>> flag experimental_path on
+>> timerate rate 0
+>> date jday 2461233.500000000
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> select planet Moon
+>> flag track_object on
+>> wait duration 3
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b28_after/b28_load1.json
+>> body action reload
+>> wait duration 2
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b28_after/b28_load2.json
+DRIVER OK

@@ -1,0 +1,21 @@
+>> date jday 2461233.5
+>> timerate rate 0
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> select planet Moon
+>> flag track_object on
+>> body action dual_dump filename /tmp/gen_a.json
+>> moveto lat 48.85 lon 2.35 alt 50000 duration 0
+>> body action dual_dump filename /tmp/gen_b.json
+>> set home_planet Moon
+>> moveto lat 10 lon 30 alt 100 duration 0
+>> select planet Earth
+>> flag track_object on
+>> body action dual_dump filename /tmp/gen_moon.json
+>> set home_planet Mars
+>> moveto lat 10 lon 30 alt 100 duration 0
+>> select planet Moon
+>> flag track_object on
+>> body action dual_dump filename /tmp/gen_mars.json
+>> date jday 2461321.5
+>> body action dual_dump filename /tmp/gen_mars_2.json
+scenes done

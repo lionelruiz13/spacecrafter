@@ -1,0 +1,57 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> set home_planet Earth
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_earth_a100.json
+>> moveto altitude 50000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_earth_a50k.json
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_earth_a0.json
+>> body action load name EnterTest radius 6000 datum_radius 0 ground_radius 0 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 900 orbit_y 0 orbit_z 0
+>> body action load name ClearTest radius 6000 datum_radius 6000 ground_radius 6012 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 0 orbit_y 900 orbit_z 0
+>> body action load name DefaultTest radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 0 orbit_y 0 orbit_z 900
+>> set home_planet DefaultTest
+>> moveto lat 0 lon 0 alt 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_def_a100.json
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_def_a0.json
+>> set home_planet EnterTest
+>> moveto lat 0 lon 0 alt 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_enter_a100.json
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_enter_a0.json
+>> moveto altitude 100000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_enter_a100k.json
+>> set home_planet ClearTest
+>> moveto lat 0 lon 0 alt 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_clear_a100.json
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_clear_a0.json
+>> camera action free_mode state on
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_clear_f_desc1.json
+>> moveto altitude 100000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_clear_f_asc1.json
+>> moveto altitude 0 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_clear_f_desc2.json
+>> moveto altitude 100000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b10_baseline/b10_clear_f_asc2.json
+>> camera action free_mode state off
+
+==== B10 numeric layer ====
+earth_a100       ref=Earth        free=False distance=4.263590380e-05 |pos|=4.652473111e-03  dist_km=6378.240 pos_km=696000.071
+earth_a50k       ref=Earth        free=False distance=4.296946280e-05 |pos|=4.652473111e-03  dist_km=6428.140 pos_km=696000.071
+earth_a0         ref=Earth        free=False distance=4.263523440e-05 |pos|=4.652473111e-03  dist_km=6378.140 pos_km=696000.071
+def_a100         ref=DefaultTest  free=False distance=4.010819250e-05 |pos|=4.652473111e-03  dist_km=6000.100 pos_km=696000.071
+def_a0           ref=DefaultTest  free=False distance=4.010752310e-05 |pos|=4.652473111e-03  dist_km=6000.000 pos_km=696000.071
+enter_a100       ref=EnterTest    free=False distance=4.010819250e-05 |pos|=4.652473111e-03  dist_km=6000.100 pos_km=696000.071
+enter_a0         ref=EnterTest    free=False distance=4.010752310e-05 |pos|=4.652473111e-03  dist_km=6000.000 pos_km=696000.071
+enter_a100k      ref=EnterTest    free=False distance=4.077598350e-05 |pos|=4.652473111e-03  dist_km=6100.000 pos_km=696000.071
+clear_a100       ref=ClearTest    free=False distance=4.010819250e-05 |pos|=4.652473111e-03  dist_km=6000.100 pos_km=696000.071
+clear_a0         ref=ClearTest    free=False distance=4.010752310e-05 |pos|=4.652473111e-03  dist_km=6000.000 pos_km=696000.071
+clear_f_desc1    ref=ClearTest    free=True  distance=4.010752310e-05 |pos|=4.010752310e-05  dist_km=6000.000 pos_km=6000.000
+clear_f_asc1     ref=ClearTest    free=True  distance=4.010752310e-05 |pos|=4.077598350e-05  dist_km=6000.000 pos_km=6100.000
+clear_f_desc2    ref=ClearTest    free=True  distance=4.010752310e-05 |pos|=4.010752310e-05  dist_km=6000.000 pos_km=6000.000
+clear_f_asc2     ref=ClearTest    free=True  distance=4.010752310e-05 |pos|=4.077598350e-05  dist_km=6000.000 pos_km=6100.000
+done

@@ -1,0 +1,16 @@
+ssystem.ini md5 in  = fb87a774e728706e9d4e1959c386bb23
+1784671594.994 >> date jday 2461233.5
+1784671596.194 >> timerate rate 0
+1784671596.894 >> flag landscape off
+1784671597.594 >> flag atmosphere off
+1784671600.795 >> set home_planet Earth
+1784671602.995 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1784671605.196 >> timerate rate 0
+1784671606.396 >> flag moon_scaled on
+1784671621.596 >> set moon_scale 30
+1784671624.797 >> body name Mars hidden true
+1784671627.997 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16ovr/ovr_pre.json
+1784671633.197 >> body action reload
+1784671636.398 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16ovr/ovr_post.json
+ssystem.ini md5 out = fb87a774e728706e9d4e1959c386bb23  MATCH= True
+b16 overrides done

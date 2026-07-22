@@ -1,0 +1,21 @@
+>> flag experimental_path on
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> timerate rate 0
+>> body action dual_dump filename /tmp/b15_launch.json
+>> date jday 2461233.5
+>> body action dual_dump filename /tmp/b15_scene.json
+>> date jday 2461416.12
+>> body action dual_dump filename /tmp/b15_half.json
+>> date jday 2461233.5
+>> body action dual_dump filename /tmp/b15_back.json
+>> date jday 2461416.12
+>> body action dual_dump filename /tmp/b15_fwd2.json
+
+== AoI staleness (Earth reference) ==
+launch   ref=Earth  appAoI=4.805850e-02  pred=4.805850e-02  moonDist=2.665443e-03  err= 0.000%
+scene    ref=Earth  appAoI=4.357605e-02  pred=4.357605e-02  moonDist=2.410758e-03  err= 0.000%
+half     ref=Earth  appAoI=4.858009e-02  pred=4.858009e-02  moonDist=2.695079e-03  err= 0.000%
+back     ref=Earth  appAoI=4.357605e-02  pred=4.357605e-02  moonDist=2.410758e-03  err= 0.000%
+fwd2     ref=Earth  appAoI=4.858009e-02  pred=4.858009e-02  moonDist=2.695079e-03  err= 0.000%
+
+wrote /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b15/b15_stale.json

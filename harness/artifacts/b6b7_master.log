@@ -1,0 +1,24 @@
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   binary mtime=2026-07-22 13:05:04.158064839 +0200   HEAD=fc46f2d7
+================ RUN 1 ================
+app pid=150381
+tcp up after 6x2s
+driver exit=0
+sent shutdown action now
+run 1: APP EXIT CODE = 0  (clean)
+config restored md5=03fbee59bc3ec506c58f0a3f1e1d73df (ref=03fbee59bc3ec506c58f0a3f1e1d73df)
+================ RUN 2 ================
+app pid=150693
+tcp up after 6x2s
+driver exit=0
+sent shutdown action now
+run 2: APP EXIT CODE = 0  (clean)
+config restored md5=03fbee59bc3ec506c58f0a3f1e1d73df (ref=03fbee59bc3ec506c58f0a3f1e1d73df)
+================ RUN 3 ================
+app pid=151052
+tcp up after 6x2s
+driver exit=0
+sent shutdown action now
+run 3: APP EXIT CODE = 0  (clean)
+config restored md5=03fbee59bc3ec506c58f0a3f1e1d73df (ref=03fbee59bc3ec506c58f0a3f1e1d73df)
+================ DONE ================
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df ref=03fbee59bc3ec506c58f0a3f1e1d73df

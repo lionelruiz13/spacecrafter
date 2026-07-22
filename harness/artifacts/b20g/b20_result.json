@@ -1,0 +1,122 @@
+{
+ "gal_au": 491520000000.0,
+ "gal_m": 73530345406464000000000,
+ "anchor": "Earth",
+ "legs": {
+  "near": {
+   "reference": "Earth",
+   "freeMode": false,
+   "boundToSurface": true,
+   "distance": 4.26359038e-05,
+   "refAoI": 0.0435760505,
+   "refDist": 4.26359038e-05,
+   "refCached": true,
+   "refParent": "Sun"
+  },
+  "out1": {
+   "reference": "Earth",
+   "freeMode": false,
+   "boundToSurface": true,
+   "distance": 491520000000.0,
+   "refAoI": 0.0435760505,
+   "refDist": 491520000000.0,
+   "refCached": true,
+   "refParent": "Sun"
+  },
+  "back1": {
+   "reference": "SolarSystem",
+   "freeMode": false,
+   "boundToSurface": false,
+   "distance": 0.00465247314,
+   "refAoI": 587.054504,
+   "refDist": 0.00465247314,
+   "refCached": true,
+   "refParent": "MilkyWay"
+  },
+  "out2": {
+   "reference": "SolarSystem",
+   "freeMode": false,
+   "boundToSurface": false,
+   "distance": 491520000000.0,
+   "refAoI": 587.054504,
+   "refDist": 491520066000.0,
+   "refCached": true,
+   "refParent": "MilkyWay"
+  },
+  "back2": {
+   "reference": "SolarSystem",
+   "freeMode": false,
+   "boundToSurface": false,
+   "distance": 0.00465247314,
+   "refAoI": 587.06958,
+   "refDist": 0.00465247361,
+   "refCached": true,
+   "refParent": "MilkyWay"
+  },
+  "fpre": {
+   "reference": "Earth",
+   "freeMode": false,
+   "boundToSurface": false,
+   "distance": 4.26359038e-05,
+   "refAoI": 0.0435760505,
+   "refDist": 4.26359074e-05,
+   "refCached": true,
+   "refParent": "Sun"
+  },
+  "fout": {
+   "reference": "Universe",
+   "freeMode": true,
+   "boundToSurface": false,
+   "distance": 4.26359038e-05,
+   "refAoI": 61952000000.0,
+   "refDist": 491520033000.0,
+   "refCached": true,
+   "refParent": ""
+  }
+ },
+ "pairs": [
+  {
+   "entry": 1,
+   "pre_ref": "Earth",
+   "out_ref": "Earth",
+   "out_dist": 491520000000.0,
+   "out_refAoI": 0.0435760505,
+   "back_ref": "SolarSystem",
+   "back_refParent": "MilkyWay",
+   "back_dist": 0.00465247314
+  },
+  {
+   "entry": 2,
+   "pre_ref": "SolarSystem",
+   "out_ref": "SolarSystem",
+   "out_dist": 491520000000.0,
+   "out_refAoI": 587.054504,
+   "back_ref": "SolarSystem",
+   "back_refParent": "MilkyWay",
+   "back_dist": 0.00465247314
+  }
+ ],
+ "free": {
+  "pre": {
+   "reference": "Earth",
+   "freeMode": false,
+   "boundToSurface": false,
+   "distance": 4.26359038e-05,
+   "refAoI": 0.0435760505,
+   "refDist": 4.26359074e-05,
+   "refCached": true,
+   "refParent": "Sun"
+  },
+  "out": {
+   "reference": "Universe",
+   "freeMode": true,
+   "boundToSurface": false,
+   "distance": 4.26359038e-05,
+   "refAoI": 61952000000.0,
+   "refDist": 491520033000.0,
+   "refCached": true,
+   "refParent": ""
+  }
+ },
+ "fail": 0
+}

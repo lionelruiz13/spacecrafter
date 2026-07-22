@@ -1,0 +1,62 @@
+ssystem.ini md5 in = fb87a774e728706e9d4e1959c386bb23
+config.ini  md5 in = 03fbee59bc3ec506c58f0a3f1e1d73df
+1784698743.975 >> date jday 2461233.5
+1784698745.175 >> timerate rate 0
+1784698745.876 >> flag landscape off
+1784698746.576 >> flag atmosphere off
+1784698747.276 >> flag star_twinkle off
+1784698747.976 >> flag show_fps off
+1784698748.677 >> flag planet_names off
+1784698751.877 >> set home_planet Earth
+1784698754.077 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1784698755.278 >> select planet Moon pointer off
+1784698767.478 >> flag track_object on
+1784698769.678 >> flag experimental_path on
+1784698771.879 >> timerate rate 0
+1784698775.079 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/b29_base.json
+1784698776.280 >> body name Venus color halo r 1 g 0 b 0
+1784698777.480 >> body name Venus color trail r 0 g 1 b 0
+1784698780.680 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/b29_perbody.json
+1784698781.881 >> body name all color halo r 0 g 0 b 1
+1784698785.081 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/b29_all.json
+1784698786.282 >> body name Venus color halo r 1 g 0 b 0
+1784698789.482 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/b29_ov1.json
+1784698790.682 >> body name all color halo r 0.2 g 0.2 b 0.2
+1784698793.883 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/b29_ov2.json
+1784698795.083 >> body name Venus color halo r 1 g 0 b 0
+1784698798.283 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/b29_ov3.json
+1784698799.484 >> color property planet_trails r 0 g 0 b 1
+1784698802.684 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/b29_default.json
+1784698803.885 >> body name Venus color halo r 0.9 g 0.1 b 0.05
+1784698805.085 >> body name Mars  color halo r 0.1 g 0.9 b 0.05
+1784698808.285 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/b29_reload_pre1.json
+1784698813.486 >> body action reload
+1784698816.686 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/b29_reload_post1.json
+1784698817.887 >> body name Venus color halo r 0.05 g 0.1 b 0.9
+1784698819.087 >> body name Mars  color halo r 0.9 g 0.05 b 0.1
+1784698822.288 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/b29_reload_pre2.json
+1784698827.488 >> body action reload
+1784698830.688 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/b29_reload_post2.json
+1784698832.889 >> flag track_object on
+1784698835.089 >> flag experimental_path off
+1784698838.289 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/g_base_old.png
+1784698840.490 >> flag experimental_path on
+1784698843.690 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/g_ctrl_new.png
+1784698846.891 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/g_base_new.png
+1784698848.091 >> body name all color halo r 1 g 0 b 0
+1784698851.291 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/g_after_new.png
+1784698853.492 >> flag experimental_path off
+1784698856.692 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/g_after_old.png
+1784698859.892 >> body action initial
+1784698863.093 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b29/h_initial_old.png
+1784698865.293 >> flag experimental_path on
+ssystem.ini md5 out = fb87a774e728706e9d4e1959c386bb23 MATCH= True
+config.ini  md5 out = 03fbee59bc3ec506c58f0a3f1e1d73df MATCH= True
+Traceback (most recent call last):
+  File "/home/claude/spacecrafter/src/experimentalModule/harness/b29_color.py", line 195, in <module>
+    R["C_mars_all"] = close(halo(allc, "Mars"), [0, 0, 1])
+                            ~~~~^^^^^^^^^^^^^^
+  File "/home/claude/spacecrafter/src/experimentalModule/harness/b29_color.py", line 171, in halo
+    return bodies[name]["haloColor"]
+           ~~~~~~~~~~~~^^^^^^^^^^^^^
+TypeError: list indices must be integers or slices, not str

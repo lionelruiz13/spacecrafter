@@ -1,0 +1,77 @@
+1784680763.670 >> timerate rate 0
+1784680764.471 >> flag atmosphere off
+1784680765.271 >> flag fog off
+1784680766.071 >> flag landscape off
+1784680766.872 >> flag show_fps off
+1784680770.072 >> set home_planet Earth
+1784680772.273 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1784680773.073 >> flag stars on
+1784680773.873 >> flag star_names off
+1784680774.674 >> flag constellation_drawing on
+1784680775.474 >> flag constellation_art off
+1784680776.275 >> flag equatorial_grid on
+1784680777.075 >> flag planet_names off
+1784680777.575 >> timerate rate 1
+1784680778.775 >> date jday 2461233.500000
+1784680780.976 >> timerate rate 0
+1784680783.676 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/ctrl_a.png
+1784680786.377 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/ctrl_a.json
+1784680789.077 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/ctrl_b.png
+1784680791.777 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/ctrl_b.json
+1784680792.278 >> timerate rate 1
+1784680793.478 >> date jday 2461233.500000
+1784680795.678 >> timerate rate 0
+1784680798.379 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off_t0.png
+1784680801.079 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off_t0.json
+1784680801.579 >> timerate rate 1
+1784680802.780 >> date jday 2461233.550000
+1784680804.980 >> timerate rate 0
+1784680807.681 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off_t1.png
+1784680810.381 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off_t1.json
+1784680810.881 >> timerate rate 1
+1784680812.082 >> date jday 2461233.500000
+1784680814.282 >> timerate rate 0
+1784680815.483 >> flag lock_sky_positionX on
+1784680818.183 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/bogus.json
+1784680819.383 >> flag lock_sky_position on
+1784680822.084 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/on_t0.png
+1784680824.784 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/on_t0.json
+1784680825.284 >> timerate rate 1
+1784680826.485 >> date jday 2461233.550000
+1784680828.685 >> timerate rate 0
+1784680831.386 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/on_t1.png
+1784680834.086 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/on_t1.json
+1784680835.286 >> flag lock_sky_position off
+1784680835.786 >> timerate rate 1
+1784680836.987 >> date jday 2461233.500000
+1784680839.187 >> timerate rate 0
+1784680841.888 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off2_t0.png
+1784680844.588 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off2_t0.json
+1784680845.088 >> timerate rate 1
+1784680846.289 >> date jday 2461233.550000
+1784680848.489 >> timerate rate 0
+1784680851.190 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off2_t1.png
+1784680853.890 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off2_t1.json
+1784680854.391 >> timerate rate 1
+1784680855.591 >> date jday 2461233.500000
+1784680857.791 >> timerate rate 0
+1784680858.992 >> flag lock_sky_position on
+1784680861.692 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/on2_t0.png
+1784680864.393 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/on2_t0.json
+1784680864.893 >> timerate rate 1
+1784680866.093 >> date jday 2461233.550000
+1784680868.293 >> timerate rate 0
+1784680870.994 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/on2_t1.png
+1784680873.694 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/on2_t1.json
+1784680874.895 >> flag lock_sky_position off
+1784680875.395 >> timerate rate 1
+1784680876.595 >> date jday 2461233.500000
+1784680878.796 >> timerate rate 0
+1784680881.496 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off3_t0.png
+1784680884.196 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off3_t0.json
+1784680884.697 >> timerate rate 1
+1784680885.897 >> date jday 2461233.550000
+1784680888.098 >> timerate rate 0
+1784680890.798 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off3_t1.png
+1784680893.498 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b18/off3_t1.json
+b18 done

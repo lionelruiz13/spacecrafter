@@ -1,0 +1,48 @@
+>> flag experimental_path on
+>> timerate rate 0
+>> date jday 2461233.500000000
+>> set home_planet Earth
+>> camera action free_mode state off
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b20g/b20_near.json
+>> moveto altitude 73530345406464000000000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b20g/b20_out1.json
+>> moveto altitude 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b20g/b20_back1.json
+>> moveto altitude 73530345406464000000000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b20g/b20_out2.json
+>> moveto altitude 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b20g/b20_back2.json
+>> set home_planet Earth
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b20g/b20_fpre.json
+>> camera action free_mode state on
+>> moveto altitude 73530345406464000000000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b20g/b20_fout.json
+>> camera action free_mode state off
+
+--- A: instrument-chain + baseline anchor ---
+OK   near freeMode=False (anchored precondition)
+OK   near reference=Earth == Earth
+
+--- B: anchored OUTWARD to galactic keeps the reference (x2) ---
+OK   entry1 OUT ref=Earth == pre ref=Earth (no altitude switch while anchored)
+OK   entry1 OUT freeMode=False (still anchored)
+OK   entry1 OUT distance=4.9152e+11 AU >= 2.4576e+11 (galactic)
+OK   entry1 OUT distance=4.9152e+11 > refAoI=4.3576e-02 (switch WOULD fire in free flight; suppressed)
+     entry1 BACK (descent) ref=SolarSystem  refParent=MilkyWay  dist=4.6525e-03  [WITNESS - suspended anchored-mode-descent, INTENT 11.36]
+OK   entry2 OUT ref=SolarSystem == pre ref=SolarSystem (no altitude switch while anchored)
+OK   entry2 OUT freeMode=False (still anchored)
+OK   entry2 OUT distance=4.9152e+11 AU >= 2.4576e+11 (galactic)
+OK   entry2 OUT distance=4.9152e+11 > refAoI=5.8705e+02 (switch WOULD fire in free flight; suppressed)
+     entry2 BACK (descent) ref=SolarSystem  refParent=MilkyWay  dist=4.6525e-03  [WITNESS - suspended anchored-mode-descent, INTENT 11.36]
+
+--- E: anchor semantics at galactic (Earth kept, parent Sun, resolves) ---
+OK   out1 reference=Earth refParent=Sun refCached=True (anchor resolves to its body, solar-system-from-afar not recentred)
+
+--- C: free-flight contrast (same move DOES auto-transition) ---
+OK   fout freeMode=True (free-mode command took - instrument-chain; else the contrast is vacuous)
+OK   fout reference=Universe != Earth (free flight auto-transitioned away from the anchor)
+OK   fout reference=Universe == Universe (escalated to the top, matching scene-E mw_out)
+
+ALL PASS - /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b20g/b20_result.json

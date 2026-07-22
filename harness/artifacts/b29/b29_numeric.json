@@ -1,0 +1,148 @@
+{
+  "venus_file_halo": [
+    1,
+    1,
+    0.899999976
+  ],
+  "venus_file_trail": [
+    0.400000006,
+    0.400000006,
+    0.300000012
+  ],
+  "B_venus_halo_set(1,0,0)": [
+    [
+      1,
+      0,
+      0
+    ],
+    true
+  ],
+  "B_venus_trail_set(0,1,0)": [
+    [
+      0,
+      1,
+      0
+    ],
+    true
+  ],
+  "C_all_halo(0,0,1)": {
+    "Venus": [
+      [
+        0,
+        0,
+        1
+      ],
+      true
+    ],
+    "Mars": [
+      [
+        0,
+        0,
+        1
+      ],
+      true
+    ],
+    "Jupiter": [
+      [
+        0,
+        0,
+        1
+      ],
+      true
+    ],
+    "Saturn": [
+      [
+        0,
+        0,
+        1
+      ],
+      true
+    ]
+  },
+  "D_ov1_venus_red": [
+    [
+      1,
+      0,
+      0
+    ],
+    true
+  ],
+  "D_ov2_venus_grey(broadcast_override)": [
+    [
+      0.200000003,
+      0.200000003,
+      0.200000003
+    ],
+    true
+  ],
+  "D_ov2_mars_grey": [
+    [
+      0.200000003,
+      0.200000003,
+      0.200000003
+    ],
+    true
+  ],
+  "D_ov3_venus_red(reoverride)": [
+    [
+      1,
+      0,
+      0
+    ],
+    true
+  ],
+  "D_ov3_mars_stays_grey": [
+    [
+      0.200000003,
+      0.200000003,
+      0.200000003
+    ],
+    true
+  ],
+  "E_default_venus_trail_UNCHANGED": [
+    [
+      0,
+      1,
+      0
+    ],
+    false
+  ],
+  "F_reload1_pre_venus": [
+    0.899999976,
+    0.100000001,
+    0.0500000007
+  ],
+  "F_reload1_post_venus": [
+    1,
+    1,
+    0.899999976
+  ],
+  "F_reload1_RESET_to_file": true,
+  "F_reload1_pre_mars": [
+    0.100000001,
+    0.899999976,
+    0.0500000007
+  ],
+  "F_reload1_post_mars": [
+    1.20000005,
+    0.699999988,
+    0.699999988
+  ],
+  "F_reload2_pre_venus": [
+    0.0500000007,
+    0.100000001,
+    0.899999976
+  ],
+  "F_reload2_post_venus": [
+    1,
+    1,
+    0.899999976
+  ],
+  "F_reload2_RESET_to_file": true,
+  "jd_all_equal": [
+    true,
+    [
+      2461233.500014
+    ]
+  ]
+}

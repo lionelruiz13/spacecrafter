@@ -1,0 +1,26 @@
+{
+  "switch_A_to_B": {
+    "absDelta": 78.60224884514734,
+    "altazDelta": 0.0
+  },
+  "switch_B_to_A": {
+    "absDelta": 78.60224884514734,
+    "altazDelta": 0.0
+  },
+  "free_enter": {
+    "absDelta": 2.699869328381916e-06,
+    "altazDelta": 2.0351256657672163
+  },
+  "free_exit": {
+    "absDelta": 1.079947731352768e-05,
+    "altazDelta": 2.0351256305228103
+  },
+  "free_enter2": {
+    "absDelta": 3.1945284701301985e-06,
+    "altazDelta": 2.0351255605923275
+  },
+  "free_exit2": {
+    "absDelta": 3.1945284701301985e-06,
+    "altazDelta": 2.0351255605923275
+  }
+}

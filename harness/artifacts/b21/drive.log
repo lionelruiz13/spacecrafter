@@ -1,0 +1,240 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> body action load name DescB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 1200 orbit_y 0 orbit_z 0
+>> body action load name DescClear radius 6000 datum_radius 6000 ground_radius 6012 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 0 orbit_y 1200 orbit_z 0
+>> body action load name DescEnter radius 6000 datum_radius 0 ground_radius 0 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 0 orbit_y 0 orbit_z 1200
+>> body action load name FarA radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 0 orbit_y 12000 orbit_z 0
+>> body action load name FarB radius 6000 parent Sun type Planet oblateness 0.0 albedo 0.3 halo false color 0.6,0.6,0.9 tex_map bodies/moon.png coord_func still_orbit orbit_x 0 orbit_y 0 orbit_z 20000
+>> set home_planet DescB
+>> camera action free_mode state on
+>> select planet DescB
+>> flag track_object on
+>> moveto lat 0 lon 0 alt 200000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_near_sign_0.json
+>> camera action descend coef 0.6
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_near_sign_1.json
+>> camera action descend coef 0.6
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_near_sign_2.json
+>> camera action descend coef 0.6
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_near_sign_3.json
+>> camera action descend coef 0.6
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_near_sign_4.json
+>> camera action descend coef 0.6
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_near_sign_5.json
+>> moveto lat 0 lon 0 alt 200000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_p2_center.json
+# tracked centre view: az0=0.000 alt0=-0.000 deg
+>> flag track_object off
+>> moveto lat 0 lon 0 alt 200000 duration 0
+>> look_at azimuth 35.0 altitude -2.9977584424379995e-13 duration 0
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_near_viewP.json
+>> moveto lat 0 lon 0 alt 200000 duration 0
+>> look_at azimuth -35.0 altitude -2.9977584424379995e-13 duration 0
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> camera action descend coef 0.6
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_near_viewM.json
+>> moveto lat 0 lon 0 alt 200000 duration 0
+>> look_at azimuth 35.0 altitude -2.9977584424379995e-13 duration 0
+>> moveto altitude 60000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_near_ctrlP.json
+>> moveto lat 0 lon 0 alt 200000 duration 0
+>> look_at azimuth -35.0 altitude -2.9977584424379995e-13 duration 0
+>> moveto altitude 60000 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_near_ctrlM.json
+>> set home_planet DescClear
+>> select planet DescClear
+>> flag track_object on
+>> moveto lat 0 lon 0 alt 200000 duration 0
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_clear_desc1.json
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_clear_asc1.json
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_clear_desc2.json
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> camera action descend coef 2.0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_clear_asc2.json
+>> set home_planet DescEnter
+>> select planet DescEnter
+>> flag track_object on
+>> moveto lat 0 lon 0 alt 200000 duration 0
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> camera action descend coef 0.4
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_enter_desc.json
+>> flag track_object off
+>> camera action free_mode state off
+>> set home_planet Earth
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_far_base.json
+# sun_aoi=352000.0 AU  sys_aoi=387200.0 AU  fly_to=376640.0 AU
+>> camera action free_mode state off
+>> set home_planet Earth
+>> moveto lat 0 lon 0 alt 100 duration 0
+>> select planet FarA
+>> camera action free_mode state on
+>> moveto altitude 56344542144739200 duration 0
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_far0a.json
+>> camera action descend coef 0.96
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_far1a.json
+>> camera action free_mode state off
+>> set home_planet Earth
+>> moveto lat 0 lon 0 alt 100 duration 0
+>> select planet FarB
+>> camera action free_mode state on
+>> moveto altitude 56344542144739200 duration 0
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_far0b.json
+>> camera action descend coef 0.96
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_far1b.json
+>> camera action free_mode state off
+>> set home_planet Earth
+>> moveto lat 0 lon 0 alt 100 duration 0
+>> select planet FarA
+>> camera action free_mode state on
+>> moveto altitude 56344542144739200 duration 0
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action screenshot dummy_b21_esc
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_far0z.json
+>> camera action descend
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21/b21_far1z.json
+>> camera action free_mode state off
+
+==== B21 numeric/vector layer ====
+
+-- PART 1: near sign (|pos| must DECREASE monotonically toward ground 6000) --
+near_sign_0 ref=DescB      |pos|_km=6200.0000
+near_sign_1 ref=DescB      |pos|_km=6119.9998
+near_sign_2 ref=DescB      |pos|_km=6072.0000
+near_sign_3 ref=DescB      |pos|_km=6043.2003
+near_sign_4 ref=DescB      |pos|_km=6025.9203
+near_sign_5 ref=DescB      |pos|_km=6015.5521
+
+-- PART 2: view-directed discriminator --
+near_viewP  pos_km=(5999.6,140.4,-0.0) |pos|=6001.20
+near_viewM  pos_km=(5999.6,-140.4,-0.0) |pos|=6001.20
+near_ctrlP  pos_km=(6060.0,0.0,0.0) |pos|=6060.00
+near_ctrlM  pos_km=(6060.0,0.0,0.0) |pos|=6060.00
+  DESCEND +DAZ vs -DAZ: |ΔE|=280.70 km, surface-angle=2.680 deg  (view-directed => LARGE)
+  CONTROL +DAZ vs -DAZ: |ΔE|=0.0000 km, surface-angle=0.00000 deg  (centre-directed => ~0)
+
+-- PART 3: clamp (hold@6012; enter->0) --
+clear_desc1 ref=DescClear  |pos|_km=6012.0004
+clear_asc1  ref=DescClear  |pos|_km=6065.5002
+clear_desc2 ref=DescClear  |pos|_km=6011.9999
+clear_asc2  ref=DescClear  |pos|_km=6061.0419
+enter_desc  ref=DescEnter  |pos|_km=0.0000
+
+-- PART 4: far case (descend aims at LAST SELECTED; selDist = obs->selected AU) --
+far0a  ref=SolarSystem  selected=FarA     selDist=3.808942e+05 AU
+far1a  ref=SolarSystem  selected=FarA     selDist=3.656584e+05 AU
+far0b  ref=SolarSystem  selected=FarB     selDist=3.771707e+05 AU
+far1b  ref=SolarSystem  selected=FarB     selDist=3.620838e+05 AU
+far0z  ref=SolarSystem  selected=FarA     selDist=3.653803e+05 AU
+far1z  ref=SolarSystem  selected=FarA     selDist=3.653803e+05 AU
+
+  selection drives target: FarA-selected selDist=3.8089e+05 vs FarB-selected selDist=3.7717e+05 (DIFFER by 3.723e+03 AU => selDist follows the SELECTED body)
+  FarA SELECTED (coef 0.96): selDist ratio=0.960000 (== coef 0.96)
+  FarB SELECTED (coef 0.96): selDist ratio=0.960000 (== coef 0.96)
+  BOGUS (no coef):           selDist ratio=1.000000 (expect 1.0 = no move)
+done

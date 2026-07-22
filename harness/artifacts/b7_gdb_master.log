@@ -1,0 +1,17 @@
+======== GDB CYCLE 1 ========
+cycle 1: tcp up 6x2s
+sent shutdown
+cycle 1: CLEAN  [Inferior exited normally]
+======== GDB CYCLE 2 ========
+cycle 2: tcp up 6x2s
+sent shutdown
+cycle 2: CLEAN  [Inferior exited normally]
+======== GDB CYCLE 3 ========
+cycle 3: tcp up 6x2s
+sent shutdown
+cycle 3: CLEAN  [Inferior exited normally]
+======== GDB CYCLE 4 ========
+cycle 4: tcp up 6x2s
+sent shutdown
+cycle 4: CLEAN  [Inferior exited normally]
+======== DONE (config md5 03fbee59bc3ec506c58f0a3f1e1d73df ref=03fbee59bc3ec506c58f0a3f1e1d73df) ========

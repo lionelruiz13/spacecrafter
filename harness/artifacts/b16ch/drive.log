@@ -1,0 +1,12 @@
+1784672130.420 >> date jday 2461233.5
+1784672131.621 >> timerate rate 0
+1784672134.821 >> set home_planet Earth
+1784672137.021 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1784672140.221 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16ch/ch_pre.json
+--- channel 1: live command (TCP) ---
+1784672145.422 >> body action reload
+1784672148.622 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16ch/ch_live.json
+--- channel 2: script ---
+1784672156.822 >> script action play filename b16_reload_check.sts
+1784672160.023 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16ch/ch_script.json
+b16 channels done

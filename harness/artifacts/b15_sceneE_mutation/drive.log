@@ -1,0 +1,100 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> body action dual_dump filename /tmp/spine_base.json
+predicted AoI [AU]: Earth 4.3576e-02  Sun 525.9  SolarSystem 578.5  MilkyWay 4.096e+11
+>> camera action free_mode state on
+>> moveto altitude 4563218657 duration 0
+>> body action dual_dump filename /tmp/spine_e_in.json
+>> moveto altitude 9778325694 duration 0
+>> body action dual_dump filename /tmp/spine_e_out.json
+>> moveto altitude 70805534133550 duration 0
+>> body action dual_dump filename /tmp/spine_sun_in.json
+>> moveto altitude 82606456489142 duration 0
+>> body action dual_dump filename /tmp/spine_sun_out.json
+>> moveto altitude 103848116729207 duration 0
+>> body action dual_dump filename /tmp/spine_sys_out.json
+>> body action screenshot filename /tmp/spine_mw.jpg
+>> moveto altitude 73530345406464000000000 duration 0
+>> body action dual_dump filename /tmp/spine_mw_out.json
+>> body action screenshot filename /tmp/spine_uni.jpg
+>> moveto altitude 3259441898 duration 0
+>> body action dual_dump filename /tmp/spine_descend.json
+>> moveto altitude 73530345406464000000000 duration 0
+>> body action dual_dump filename /tmp/spine_mw_out2.json
+>> moveto altitude 3259441898 duration 0
+>> body action dual_dump filename /tmp/spine_descend2.json
+>> camera action free_mode state off
+>> body action dual_dump filename /tmp/spine_unfree.json
+>> moveto altitude 82606456489142 duration 0
+>> body action dual_dump filename /tmp/spine_anchor_high.json
+>> set home_planet Mars
+>> moveto lat 10 lon 30 alt 100 duration 0
+>> body action dual_dump filename /tmp/spine_mars.json
+>> set home_planet Earth
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> look_at azimuth 60 altitude 30 duration 0
+>> body action dual_dump filename /tmp/spine_vc0.json
+>> set home_planet Mars
+>> body action dual_dump filename /tmp/spine_vc1.json
+>> set home_planet Earth
+>> body action dual_dump filename /tmp/spine_vc2.json
+>> camera action free_mode state on
+>> body action dual_dump filename /tmp/spine_vc3.json
+>> camera action free_mode state off
+>> body action dual_dump filename /tmp/spine_vc4.json
+>> camera action free_mode state on
+>> body action dual_dump filename /tmp/spine_vc5.json
+>> camera action free_mode state off
+>> body action dual_dump filename /tmp/spine_vc6.json
+>> camera action free_mode state off
+>> set home_planet Earth
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> date jday 2461233.5
+>> body action dual_dump filename /tmp/spine_aoi_d1.json
+>> date jday 2461416.12
+>> body action dual_dump filename /tmp/spine_aoi_d2.json
+>> date jday 2461233.5
+>> body action dual_dump filename /tmp/spine_aoi_d1b.json
+>> camera action free_mode state off
+>> set home_planet Earth
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> camera action free_mode state on
+>> date jday 2461233.5
+>> moveto altitude 6893183664 duration 0
+>> body action dual_dump filename /tmp/spine_aoi_live1.json
+>> camera action free_mode state off
+>> set home_planet Earth
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> camera action free_mode state on
+>> date jday 2461416.12
+>> moveto altitude 6893183664 duration 0
+>> body action dual_dump filename /tmp/spine_aoi_live2.json
+>> camera action free_mode state off
+OK  e_in         ref=Earth        dist=4.2636e-05 free=True
+OK  e_out        ref=Sun          dist=4.2636e-05 free=True
+OK  sun_in       ref=Sun          dist=4.2636e-05 free=True
+OK  sun_out      ref=SolarSystem  dist=4.2636e-05 free=True
+OK  sys_out      ref=MilkyWay     dist=4.2636e-05 free=True
+OK  mw_out       ref=Universe     dist=4.2636e-05 free=True
+OK  descend      ref=Sun          dist=4.2636e-05 free=True
+OK  mw_out2      ref=Universe     dist=4.2636e-05 free=True
+OK  descend2     ref=Sun          dist=4.2636e-05 free=True
+OK  unfree       ref=Sun          dist=2.1788e-02 free=False
+OK  anchor_high  ref=Sun          dist=5.5219e+02 free=False
+OK  mars         ref=Mars         dist=2.2708e-05 free=False
+OK  mars landing dist 2.270821e-05 vs Rmars+100m
+OK  vc ref-switch E->M abs held   0.00001 deg < 0.05
+OK  vc ref-switch M->E abs held   0.00001 deg < 0.05
+OK  vc ref-switch E->M discrim   90.23565 deg > 10.0
+OK  vc free enter abs held        0.00000 deg < 0.05
+OK  vc free exit  abs held        0.00001 deg < 0.05
+OK  vc free enter#2 abs held      0.00000 deg < 0.05
+OK  vc free exit#2  abs held      0.00000 deg < 0.05
+OK  vc auto-switch e_in->e_out    0.00001 deg < 0.05
+FAIL b15 AoI tracks jd D1 (<2%)    10.29511% < 2.0
+OK  b15 AoI tracks jd D2 (<2%)     1.06588% < 2.0
+FAIL b15 AoI season-differs (>5%)   0.00000% > 5.0
+OK  b15 AoI reversible D1 (<0.5%)   0.00000% < 0.5
+FAIL b15 live ref season-switch loAoI=Earth hiAoI=Earth (want Sun/Earth) appAoI[D1=4.8062e-02 D2=4.8062e-02]

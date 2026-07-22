@@ -1,0 +1,27 @@
+ssystem.ini md5 (original) = fb87a774e728706e9d4e1959c386bb23
+1784671125.212 >> date jday 2461233.5
+1784671126.412 >> timerate rate 0
+1784671127.113 >> flag landscape off
+1784671127.813 >> flag atmosphere off
+1784671128.513 >> flag star_twinkle off
+1784671129.214 >> flag show_fps off
+1784671129.914 >> flag planet_names off
+1784671133.115 >> set home_planet Earth
+1784671135.315 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1784671136.516 >> select planet Moon
+1784671151.716 >> flag track_object on
+1784671152.916 >> flag moon_scaled off
+1784671155.117 >> timerate rate 0
+1784671158.317 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_pre.png
+1784671161.517 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_pre.json
+ssystem.ini md5 (mutated)  = 894a0ccdc5a78728d6c3e635808aeb1c
+1784671166.718 >> body action reload
+1784671169.918 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post1.png
+1784671173.119 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post1.json
+ssystem.ini md5 (restored) = fb87a774e728706e9d4e1959c386bb23  MATCH=True
+1784671178.320 >> body action reload
+1784671181.520 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post2.png
+1784671184.720 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post2.json
+1784671189.921 >> body action reload
+1784671193.121 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post3.json
+b16 done

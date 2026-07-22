@@ -1,0 +1,11 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> body action load name FarA radius 6000 parent Sun type Planet coord_func still_orbit tex_map bodies/moon.png orbit_x 0 orbit_y 12000 orbit_z 0
+>> select planet Earth
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21p/selEarth.json
+after select Earth: selected='Earth' selDist=4.26357328e-05 ref=Earth
+>> select planet FarA
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21p/selFarA.json
+after select FarA:  selected='FarA' selDist=12000.958 ref=Earth
+probe done

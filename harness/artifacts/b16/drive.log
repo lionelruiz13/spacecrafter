@@ -1,0 +1,29 @@
+ssystem.ini md5 (original) = fb87a774e728706e9d4e1959c386bb23
+1784671382.150 >> date jday 2461233.5
+1784671383.350 >> timerate rate 0
+1784671384.051 >> flag landscape off
+1784671384.751 >> flag atmosphere off
+1784671385.452 >> flag star_twinkle off
+1784671386.152 >> flag show_fps off
+1784671386.852 >> flag planet_names off
+1784671390.053 >> set home_planet Earth
+1784671392.253 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1784671393.453 >> select planet Moon pointer off
+1784671408.654 >> flag track_object on
+1784671409.854 >> flag moon_scaled off
+1784671412.054 >> timerate rate 0
+1784671415.255 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_ctrl.png
+1784671418.455 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_ctrl.json
+1784671421.655 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_pre.png
+1784671424.856 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_pre.json
+ssystem.ini md5 (mutated)  = 894a0ccdc5a78728d6c3e635808aeb1c
+1784671430.057 >> body action reload
+1784671433.257 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post1.png
+1784671436.457 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post1.json
+ssystem.ini md5 (restored) = fb87a774e728706e9d4e1959c386bb23  MATCH=True
+1784671441.658 >> body action reload
+1784671444.858 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post2.png
+1784671448.059 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post2.json
+1784671453.259 >> body action reload
+1784671456.459 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post3.json
+b16 done

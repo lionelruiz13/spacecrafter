@@ -1,0 +1,362 @@
+# Dual-path projection trace harness (INTENT.md 11.14)
+
+Purpose: replace eye-based A/B comparison of the two body paths with numeric,
+scriptable comparison - the Moon-divergence investigation is the first client;
+every future port keeps it as regression infrastructure.
+
+Why it is trustworthy by construction: `SSystemFactory::update` feeds BOTH
+paths from the same `timeMgr->getJDay()` every frame [ssystem_factory.cpp],
+and the script freezes time (`timerate rate 0`), so the 1s A/B draw toggle
+cannot make one path's draw-side state stale - both settle at the same jd.
+
+ALTERNATION IS OPT-IN SINCE 2026-07-21 (INTENT 11.50(c), verified 11.53).
+The default is now the NEW path, PINNED - nothing alternates on its own. Any
+recipe below that assumes the 1 s auto-toggle needs
+`~/.spacecrafter/beta_features.ini` containing:
+
+    [dual_path]
+    render_path = alternate
+
+Remove that file afterwards: absence == every experimental default, and a
+leftover file silently re-specifies the next run.  `flag experimental_path
+on|off` pins a path at any time (and stops the alternation) either way.
+
+## Parts
+- `dual-dump.sts` - deterministic scene script (fixed jd, frozen time, surface
+  observer, two samples at different dates). Install as
+  `<scriptDir>/fscripts/startup.sts` (played automatically at launch,
+  app.cpp:589) or play it manually.
+- `body action dual_dump filename <path>` - the command (commandBody ->
+  Core::ssystemDualDump -> SSystemFactory::dumpTracePaths). Emits JSON lines:
+  header (jd + Camera::dumpTrace) then per old-path body: `Body::dumpTrace`
+  (double mat, pre-convert) + matching `ModularBody::dumpTrace` by english
+  name (`null` when absent - a finding in itself, INTENT 11.3 class).
+- `analyze.py <file>` - per-body dEcl/dPos/dDist/relative-rotation table +
+  discrimination: identical R_rel across all bodies = E3 (observer-frame
+  convention); branch-localized divergence = E2 (per-hop element);
+  significant dEcl = E1/E6 (ephemeris/data inputs). See
+  projection-paths.md C8/C9 for the condition definitions.
+
+## Run
+    # headless
+    xvfb-run -a spacecrafter        # with dual-dump.sts installed as startup.sts
+    ./analyze.py /tmp/dual_trace.json
+    ./analyze.py /tmp/dual_trace_2.json   # second date: time-dependent vs constant error
+
+PRECONDITION (INTENT 11.33): the analyzers' px conversions assume the FISHEYE
+transfer (r = theta/halfFov). Run scenes with config projection = FISHEYE;
+under other modes, apply ProjectionTransfer::radius at the conversion points
+before trusting screen-layer numbers (mat-layer P1-P5 are projection-free).
+
+## Reading the output against projection-paths.md C9
+- Common nonzero R_rel angle ~90 deg around z across all bodies -> the
+  [-Y,X,Z] xy-signature; check the axis.
+- dDist ~ 4.26e-5 AU on Earth-branch bodies for a surface observer -> the
+  topocentric-vs-geocentric component; compare free-mode vs surface-mode runs.
+- Orientation-convention caveat: the two paths' matrices may map in opposite
+  directions by convention; a uniform R_rel pattern reveals that too -
+  measured, never assumed (analyze.py header note).
+
+## First-run findings (2026-07-11) - full trace in INTENT.md 11.14a
+1. EMB CONFIRMED: one path's Earth = Earth-Moon barycenter, the other = Earth
+   center (delta points along Moon direction, cos=+1.0000 at two dates;
+   magnitude = lunar mass fraction x Moon distance, 4-digit match).
+2. Non-rigid direction errors (Moon 41.5 deg vs Sun 67.2 deg from the same
+   observer, inter-body angle not preserved) => per-hop rotation component
+   (E2) exists; camera-only convention refuted as sole cause. Both paths read
+   IDENTICAL Moon eclipticPos - the frame interpreting it differs.
+3. Under Moon tracking, old = centered, new = behind the observer => E3
+   (az/alt or tracking-sync) component present too; tracking propagation to
+   the new Camera unverified.
+Known caveats: dScreen column mixes units (old pixels vs new NDC) -
+indicative only. Proper conversion (INTENT 11.19): old screen = render px on
+the scissor (render_size, e.g. 2048); new screen = rect [-1,1];
+px = (rect*0.5+0.5)*render_size. With that conversion the screen layer is a
+first-class comparison target - it caught the three view-layer roots the
+mat-layer P1-P5 could not see (all camera-frame rolls/offsets). Exit segfault
+after 'shutdown action now' (post-dump, unattributed, possibly pre-existing).
+
+## Quadruplet mode (quad.py) - INTENT 11.14b
+Earth/Moon/Sun/Mars [vixy]: identity / down-hop / up-hop / up-then-down -
+minimal set separating translation, common rotation, hop accumulation.
+quad.py DISCOVERS each path's effective composition (tests hop-grammars
+against dumped finals). Run findings: old composition validated exactly
+(parent-rotation post-multiply, Moon unprecessed/ELP82); new reference =
+raw camera mat, up-chain exact, Moon/Mars mats are chimeras (invisible =>
+translation-only; invisible WITH children => nothing, t=0 - preUpdate
+early-return skips the store); SolarSystem root spin = 90 deg about -z
+(matches the [-Y,X,Z] note signature - orientation-layer lead); no single
+rotation maps fresh positions (12-36 deg residuals) => per-branch
+composition differences, not a camera-only error.
+
+## Triplet resolution (predict.py + fix-validation.sts) - INTENT 11.15
+
+predict.py supersedes quad.py's discovery role once the composition is known:
+it PREDICTS both paths' matrices from dumped inputs and accepts only float-eps
+residuals. Sections: P1 old model, P2 new model, P3 relative geometry (THE
+promise), P4 observer parity, P5 rotation differentials with named causes.
+
+fix-validation.sts is the validation scene (dual-dump derivative): requires
+`init_fov = 340` in config.ini. (Historical note: an earlier revision claimed
+`zoom fov` does NOT reach Camera::setHalfFov - CORRECTED, INTENT 11.40: it
+always did; `zoom fov X duration 0` reaches the new path immediately.) The
+wide config init_fov keeps Sun/Moon/Mars inside the new path's visibility
+cone so their rotations are fresh (not chimera) from the first frame.
+
+Final measurements (2026-07-11, two dates): predicted==observed ~5e-8 both
+paths; relative positions old==new <= 7e-6 deg / 2.3e-7 distances; observer
+parity 6-23 km (float-ulp on AU chain); all rotation differentials modeled at
+~1e-7 (causes: view-state D_common, old's parent-rot accumulation on the Moon,
+old's skipped rotation elements on parentless bodies). Structural causes and
+fixes: INTENT.md 5.10-5.16.
+
+## Non-surface generalization (drive_scenes.py) - INTENT 11.16
+
+Three scenes: Earth surface 100 m (baseline) / Earth 50 km / observer ON the
+Moon (satellite reference). Driven over the TCP command interface (port 7805,
+enable_tcp) because startup.sts autoplay proved racy (the app's default init
+chain can preempt it); launch the app, wait for init, then run
+harness/drive_scenes.py. Still requires init_fov = 340 in config.ini.
+
+Scene C exposed and led to fixing (INTENT 11.16): the observer-body seam
+(switchToAnchor never reached the new Camera), the moon/sun scale seam (5x
+altitude-reference divergence), the rotation-offset unit bug (degrees added
+to a radian formula: 20.76 deg spin lag on the Moon), the ACCUMULATED
+equatorial frame for observer placement (old parity: pol==lat and
+az==sidereal+lon hold exactly in rot_earth.rot_moon, not in rot_moon alone),
+an ASmooth 0/0 (double set in one tick -> permanent NaN), and the NaN-date
+freeze in the shared Kepler solver (elliptic_to_rectangular.c infinite
+Newton loop). Final: all three scenes at float epsilon on P1-P5.
+
+## Mars generalization (scene D, 2026-07-12) - INTENT 11.17
+
+Observer ON Mars (100 m), tracking Earth's Moon, quadruplet at two dates
+88 days apart (appended to drive_scenes.py). Two firsts: cross-branch
+reference (common parent = Sun: up-hop + two down-hops) and fully generic
+reference body (pole-RA/DE elements, no hardcoded content, generic spin +
+offset-degrees fix). Result: ZERO new defects - first scene passing on
+first attempt; P1-P5 at float epsilon both dates (P4 = 39/11 km on a ~2 AU
+chain = the same 1.4-ulp class as 10-18 km on 1 AU chains). Scenes A-C
+re-run as regression: unchanged.
+
+Environment note: this machine has a live X server (DISPLAY=:2), no xvfb -
+launch `DISPLAY=:2 ./build-claude/src/spacecrafter` directly; the xvfb-run
+line above is the generic recipe.
+
+`asmooth_sim.py` - off-domain but homed here for traceability: exact-formula
+replay behind the EntityCore ASmooth analysis (INTENT 11.18); not a
+body-path tool.
+
+## Orientation consolidation (2026-07-17) - INTENT 11.34/11.35
+
+`orientation_check.py <dump>` - convention checker, the predictive GATE of
+the 6.8 implementation: transcribes old observer (getRotEquatorialToVsop87),
+old render (one-hop wrong-side), new current, and the accumulated fix from
+dumped pieces; prints the divergence table + the planet-moon commutator
+spectrum + P-d (live render/observer contradiction at the reference: was
+23.4422 deg at a Moon reference, 0.0000 post-fix). Metric note: angle() uses
+the Frobenius small-angle form near identity - acos((tr-1)/2) turns float-ulp
+matrix noise into ~0.014 deg phantom rows.
+
+`ab_orientation.py` - terminal-observable A/B (verification height): scaled
+tracked Moon + axis, and Charon from Pluto's surface; clusters screenshots
+into path phases and measures disc diffs. Pair with the instrument-
+sensitivity counterfactual (rotate one phase's disc by the class angle):
+measured x163 (Moon, 23.44 deg) / x1212 (Charon, 115.6 deg) headroom over
+the observed AA/pointer floor. Uses `set moon_scale` (mirrored seam).
+`planet_scale name X scale N` is now DUAL too (INTENT 11.45 closed the
+11.35 seam gap - new-path scaledRadius scales exactly with the command);
+usable in A/B scenes. NOTE: setScaling is an ASmooth ease - settle it
+(~6-8 s) before dumping, and the command syntax is keyword-based
+(`planet_scale name X scale N`, not positional).
+
+Dump extension: dumpTracePaths hops set is Earth/Moon/Sun/Mars/Pluto/Charon
+(tilt pieces stay fresh through recursiveTranslationUpdate even invisible).
+
+## Hierarchy spine (scene E, 2026-07-17) - INTENT 11.36
+
+`scene_e_spine.py` - reference-transition ladder over the nested tree
+(universe > milkyway > SolarSystem > Sun > Earth): AoI thresholds computed
+OFFLINE from the updateCache formulas transcribed on a baseline dump, then
+the reference sequence asserted at bracketing altitudes; multi-shell
+escalation AND capture cascades, second entry of both; anchored legacy legs
+(reference pinned, home_planet+moveto race-free). Requires init_fov=340 +
+fresh launch. Auto-transitions are FREE-FLIGHT-ONLY (11.36 policy).
+Camera dump fields refAoI/refDist/refCached/refParent = the transition
+inputs; per-body `relation` = the membership authority (BodyRelation:
+<3 hidden, >=3 visible) - the ONLY valid hide/show observable: dump
+PRESENCE iterates the name registry, which includes hidden bodies.
+Instrument caveat learned on mw_out2: dumps ride the events thread - a
+healthy dumped snapshot does not prove the decision path runs; discriminate
+with call-time prints, screenshot-materialization (draw liveness), and
+per-thread CPU accumulation. Bit-identical dumps under timerate 0 are NOT
+frozen-loop evidence.
+
+## Dual-path default flip (B26, 2026-07-21) - INTENT 11.50(c) / 11.53
+
+`b26_run_case.sh <tag>` + `b26_default_flip.py` + `b26_analyze.py` +
+`b26_probe.gdb`. Verifies what an unconfigured launch actually draws, and
+that `beta_features.ini` is honoured. One case per invocation; **the caller
+places or removes `~/.spacecrafter/beta_features.ini`** - the file's state IS
+the case, so the runner never writes it.
+
+    rm -f ~/.spacecrafter/beta_features.ini
+    ./b26_run_case.sh c1_default
+    printf '[dual_path]\nrender_path = alternate\n' > ~/.spacecrafter/beta_features.ini
+    ./b26_run_case.sh c2_alternate
+    rm -f ~/.spacecrafter/beta_features.ini          # restore the shipped state
+    ./b26_analyze.py c1_default ; ./b26_analyze.py c2_alternate
+
+Two instruments, deliberately independent:
+- **pixels** - `body action screenshot`, 24 shots at 0.25 s, each classified
+  against two in-run pinned references (`flag experimental_path off|on`).
+- **memory** - the app runs UNDER gdb (ptrace_scope=1 blocks attach) and
+  `b26_probe.gdb` prints `drawModularSystem`/`pathPinned` at every capture.
+  They agreed 24/24 on the alternate burst; a disagreement is the finding.
+
+Criterion, corrected at 11.53 (the 11.50(c) wording is unsafe):
+- discriminator = **px>32**; measured 0 for every same-path pair, 133..136
+  for every cross-path pair. `max|d|` and `px>8` do NOT separate cleanly and
+  "byte-identical" is false even for a correct build (11.53(e)/B30: the new
+  path is not bit-stable on a frozen scene - <=31/255 on <=0.09% of pixels).
+- separation = an **odd multiple of 1.0 s**. The toggle is a 1000 ms square
+  wave, so 2.0 s always lands in the SAME phase and 2.5 s differs only 50%
+  of the time (7/14 measured) - "two shots >= 2.5 s apart must differ" is a
+  coin flip, not a test.
+
+Freeze witness: two `dual_dump` headers bracket the burst; equal jd is the
+proof `timerate rate 0` took effect (the auto-playing
+`scripts/fscripts/startup.sts` sets `timerate rate 1` and must be overridden
+after it, not before).
+
+## Hidden-body ticking (B19, 2026-07-21) - INTENT 11.54 / 13.B B19
+
+`b19_hidden_tick.py` - regression lock on the Vixy-ratified semantics
+(USER_QUESTIONS Q13 / INTENT 11.48(a) A10, verbatim: *"It should be where it
+is now"*).  Fresh launch, `enable_tcp`, no init_fov requirement (mat-layer
+position state only - no screen-layer px):
+
+    DISPLAY=:2 ./build-claude/src/spacecrafter &     # wait for port 7805
+    ./b19_hidden_tick.py [outdir]                    # default artifacts/b19
+    # exit 0 = all pass; artifacts/b19/b19_result.json = machine-readable
+
+Observable = `ecl` (ModularBody::eclipticPos), written only by
+transformParentToBodyPos/transformBodyToParent right after the orbit is
+evaluated: a freeze optimisation stops calling them, so `ecl` keeps its
+hide-time value.  `lastJD` is a corroborating witness, never the criterion.
+Four assertion families - membership (`relation` actually flipped: the
+instrument-chain check, without which a mistyped hide passes vacuously),
+time control (every header jd == commanded; `timerate rate 0` goes FIRST,
+before the epoch, or the gap after startup.sts's `timerate rate 1` leaks
+~1.4e-05 d into the first dump - measured), advance (new-path |dEcl| vs the
+OLD path's own advance over the same 20 simulated minutes - old is the
+reference implementation, solarsystem_display.cpp:343-357 computes every body
+hidden or not), and "where it is now" (|ecl_new - ecl_old| at t1, tolerance
+CALIBRATED in-run from never-hidden control bodies).  Both entries of the
+reversible pair (hide->show->hide->show, entry 2 starting from entry 1's
+show state).
+
+Discrimination is measured, not assumed - the same script, same binary:
+hidden legs FAIL / shown legs PASS on a build without the fix (2026-07-21:
+moved_new = 0.00 km vs moved_old = 1306.81 km Moon / 2576.26 km Phobos), all
+32 assertions pass with it.  Subjects are Moon (direct child of the camera
+reference) and Phobos (grandchild under the HIDDEN parent Mars - it proves
+the whole hidden subtree ticks, not just the hidden node).
+
+## System reload (B16, 2026-07-21) - INTENT 11.55 / 13.B B16
+
+`body action reload` - rebuild the current system from its data file, keeping
+the observation state (camera + date).  Three drivers, one entry point; every
+run is a FRESH launch under gdb, whose breakpoint on
+`SSystemFactory::reloadCurrentSystem` is the "the command reached its handler"
+evidence that does NOT come from the handler's own log (the 11.54(j)
+silently-swallowed-command class: count the breakpoint hits against the
+commands issued, 1:1 or the spelling is fiction):
+
+    DISPLAY=:2 ./b16_run.sh b16_reload.py    [outdir]   # default artifacts/b16
+    DISPLAY=:2 ./b16_run.sh b16_overrides.py <outdir>
+    cp b16_reload_check.sts ~/.spacecrafter/scripts/    # channel-2 input
+    DISPLAY=:2 ./b16_run.sh b16_channels.py  <outdir>
+    rm ~/.spacecrafter/scripts/b16_reload_check.sts
+
+`b16_reload.py` is the main assertion run: no-reload CONTROL pair (the
+instrument floor - tracking never exactly settles and the new path is not
+bit-stable on a frozen scene, B30), then MUTATE `~/.spacecrafter/ssystem.ini`
+(`[moon] radius` x2) -> reload -> RESTORE byte-identically (md5 asserted
+in-driver) -> reload -> reload.  Without the mutation the run proves nothing:
+a no-op reload passes every state-preservation check trivially.  Observables:
+new-path `boundingRadius`/`screenSize` from `dual_dump` (the live tree, not
+the file), the composed 2048^2 screen at px>8, and `Camera::dumpTrace`
+(`reference`, `tracked`, lon/lat/distance, mount, fov) + the header `jd`.
+Selection pointer OFF (`select planet Moon pointer off`): its bracket radius
+eases toward the object's apparent size for seconds after any size change and
+would dominate the screen A/B with something that is not the reload.
+
+`b16_overrides.py` characterises what the reload does NOT keep: body-scoped
+runtime overrides (`moon_scale`, `body name X hidden true`) are reset to the
+file values while the old path keeps its own - the suspended question in
+11.55(i).  `b16_channels.py` exercises both 2(c) channels in one launch (live
+TCP command, then a script whose single line is the command).
+
+## Reference-change view continuity (B13, 2026-07-22) - INTENT 11.61 / 13.B B13
+
+`b13_viewcont.py [absOutPrefix]` - measures whether the ABSOLUTE sky direction
+is held across a reference switch (`set home_planet` = warpToBody) and free-mode
+entry/exit.  Fresh launch, `enable_tcp`, FISHEYE; no init_fov requirement
+(mat-layer only, no screen px).  Pass an ABSOLUTE dump prefix - the app writes
+`dual_dump` files relative to ITS cwd, not the harness dir.
+
+    DISPLAY=:2 ./build-claude/src/spacecrafter &        # wait for port 7805
+    ./b13_viewcont.py /abs/path/artifacts/b13/post      # -> *_result.json
+
+Observable = `absFwd` (added to `Camera::dumpTrace`): the eye-forward (-z) in the
+ROOT-aligned common-inertial frame = `(-r[2],-r[6],-r[10])` of
+`lastDispatchedMat . reference->accumulatedBodyToBodyPos(jd)` - the same `flat`
+dispatchUpdate builds, so it is directly comparable ACROSS a reference switch
+(the dump's `mat` is in the reference's own equatorial frame, body-specific).
+The DISCRIMINATOR is the alt/az delta: absolute-held => absFwd fixed, alt/az
+moves by the inter-frame rotation; frame-relative-held (the pre-B13 defect) =>
+alt/az fixed, absFwd jumps ~78 deg.  The two ALWAYS swap - that swap is the test.
+
+Two residual floors, both attributed: settled continuity is the `recoverParams`
+Euler floor (~6e-6 deg, shared with switchToBody); a fresh launch's FIRST switch
+can show up to ~5e-3 deg = B30 frame-reconstruction non-determinism (measured
+independently as the spread between two fresh-launch samples of the SAME state),
+not a compensation artifact.  Settle the app before trusting sub-0.01 deg.
+
+Scene E (`scene_e_spine.py`) carries the regression-locked version: 8 asserts
+(absFwd held across set_home_planet Earth<->Mars and free enter/exit/enter, alt/az
+moved on the switch, a switchToBody positive control).  Discrimination proven by
+temporarily disabling `recoverParams(R)` in warpToBody - the 3 ref-switch asserts
+flip to FAIL, the rest stay green.  App rewrites config.ini on shutdown, so any
+`cp`-restore of an init_fov edit must run AFTER the process is fully dead.
+
+## View-directed free descent (B21, 2026-07-22) - INTENT 11.72 / 13.B B21
+
+`b21_descent.py` (full) + `b21_far.py` (fast far-only) + `b21_probe.py`
+(selection sanity).  Numeric/vector layer, FISHEYE, run via `./b10_run.sh
+b21_descent.py <out>` (reuses B10's config/init_fov + md5 restore).
+
+Driver = the NEW command `camera action descend coef <c>` (coef<1 descends,
+coef>1 ascends).  The view-directed descent geometry was UI-key-only before
+(multAlt/moveRelAlt, B10 finding), so a command had to be routed to test it.
+
+Four parts: (1) near SIGN - |pos| drops toward the ground; (2) VIEW-DIRECTED
+discriminator - two views ±35deg apart land at DIFFERENT surface points (280 km)
+while `moveto altitude` lands at the SAME sub-observer point (0 km); (3) R4 CLAMP
+- hold at ground_radius, reversible x2, enter->centre; (4) FAR - at a SYSTEM
+reference (`sun_aoi*1.07`) descend aims at `getSelected()`.
+
+FAR-case gotchas learned here:
+- the observed distance to a runtime-loaded body is NOT in the per-body dump
+  list (that iterates the OLD current system, which COLLAPSES at galactic
+  distance).  Read it from the camera dump's `selDist` (= obs->selected, added
+  this row) - frame-independent, and it IS the quantity the descent moves along.
+- `select planet X` searches the OLD current system, so SELECT WHILE NEAR (the
+  selection persists through the fly-out + escalation).
+- real planets sit ~1 AU from the system centre => ~0deg apart from a
+  system-distance observer (float-noise discriminator); use OFF-CENTRE synthetic
+  targets (FarA +y, FarB +z, 12000/20000 AU).
+- a big step (coef 0.5) de-escalates SolarSystem->Sun mid-measurement (the
+  transition machinery re-bases the frame); a SMALL step (coef 0.96) keeps
+  ref=SolarSystem and selDist ratio is EXACTLY coef == exact-aim proof.

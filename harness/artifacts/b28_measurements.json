@@ -1,0 +1,94 @@
+{
+ "row": "B28",
+ "intent": "11.67",
+ "date": "2026-07-22",
+ "bit_identical_gate": {
+  "instrument": "dumpHops tilt + raw obliquity/ascendingNode (B30-immune)",
+  "planets": {
+   "Mercury": {
+    "obliquity": 0.122297838,
+    "ascendingNode": 0.844427347,
+    "absoluteTiltFrame": true,
+    "ulp_obliquity_before_vs_after": 0,
+    "ulp_ascendingNode_before_vs_after": 0,
+    "ulp_tilt_max_before_vs_after": 0
+   },
+   "Venus": {
+    "obliquity": 0.0216230918,
+    "ascendingNode": 2.09764767,
+    "absoluteTiltFrame": true,
+    "ulp_obliquity_before_vs_after": 0,
+    "ulp_ascendingNode_before_vs_after": 0,
+    "ulp_tilt_max_before_vs_after": 0
+   },
+   "Mars": {
+    "obliquity": 0.466312498,
+    "ascendingNode": 1.44674158,
+    "absoluteTiltFrame": true,
+    "ulp_obliquity_before_vs_after": 0,
+    "ulp_ascendingNode_before_vs_after": 0,
+    "ulp_tilt_max_before_vs_after": 0
+   },
+   "Jupiter": {
+    "obliquity": 0.0387893468,
+    "ascendingNode": -0.387515575,
+    "absoluteTiltFrame": true,
+    "ulp_obliquity_before_vs_after": 0,
+    "ulp_ascendingNode_before_vs_after": 0,
+    "ulp_tilt_max_before_vs_after": 0
+   },
+   "Saturn": {
+    "obliquity": 0.489604801,
+    "ascendingNode": 2.95881915,
+    "absoluteTiltFrame": true,
+    "ulp_obliquity_before_vs_after": 0,
+    "ulp_ascendingNode_before_vs_after": 0,
+    "ulp_tilt_max_before_vs_after": 0
+   },
+   "Uranus": {
+    "obliquity": 1.43602574,
+    "ascendingNode": -0.215605423,
+    "absoluteTiltFrame": true,
+    "ulp_obliquity_before_vs_after": 0,
+    "ulp_ascendingNode_before_vs_after": 0,
+    "ulp_tilt_max_before_vs_after": 0
+   },
+   "Neptune": {
+    "obliquity": 0.497106999,
+    "ascendingNode": 0.850835562,
+    "absoluteTiltFrame": true,
+    "ulp_obliquity_before_vs_after": 0,
+    "ulp_ascendingNode_before_vs_after": 0,
+    "ulp_tilt_max_before_vs_after": 0
+   }
+  },
+  "all7_ULP_zero": true,
+  "pristine_HEAD_Mars_tilt_ulp": 0
+ },
+ "reversible_pair_load1_vs_load2_ulp": {
+  "Earth": 0,
+  "Moon": 0,
+  "Sun": 0,
+  "Mercury": 0,
+  "Venus": 0,
+  "Mars": 0,
+  "Jupiter": 0,
+  "Saturn": 0,
+  "Uranus": 0,
+  "Neptune": 0,
+  "Pluto": 0,
+  "Charon": 0
+ },
+ "declaration_consumption": {
+  "Mars_declared_absolute_pole_vs_derived_ulp": 0,
+  "Venus_invalid_fallback_vs_derived_ulp": 0,
+  "Jupiter_declared_parent_relative_obliquity": 0,
+  "Jupiter_declared_parent_relative_ascendingNode": 0,
+  "Jupiter_absoluteTiltFrame": false
+ },
+ "notes": {
+  "ssystem_md5": "fb87a774e728706e9d4e1959c386bb23 (preserved, no write-back)",
+  "config_md5": "03fbee59bc3ec506c58f0a3f1e1d73df (restored in==out)",
+  "no_regression": "P1<=1.30e-16 P2<=8.72e-08 P3 identical P4 3.18-16.01km P5<=1.13e-07 orient 17/48 P-d 0.0000 sceneE 26/26 VUID 0"
+ }
+}

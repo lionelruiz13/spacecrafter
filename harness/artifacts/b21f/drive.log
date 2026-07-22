@@ -1,0 +1,61 @@
+>> flag experimental_path on
+>> date jday 2461233.5
+>> timerate rate 0
+>> body action load name FarA radius 6000 parent Sun type Planet coord_func still_orbit tex_map bodies/moon.png halo false orbit_x 0 orbit_y 12000 orbit_z 0
+>> body action load name FarB radius 6000 parent Sun type Planet coord_func still_orbit tex_map bodies/moon.png halo false orbit_x 0 orbit_y 0 orbit_z 20000
+>> set home_planet Earth
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21f/base.json
+# sun_aoi=352000.0 fly_to=376640.0 AU
+>> camera action free_mode state off
+>> set home_planet Earth
+>> moveto lat 0 lon 0 alt 100 duration 0
+>> select planet FarA
+>> camera action free_mode state on
+>> moveto altitude 56344542144739200 duration 0
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21f/far0a.json
+>> camera action descend coef 0.96
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21f/far1a.json
+>> camera action free_mode state off
+>> set home_planet Earth
+>> moveto lat 0 lon 0 alt 100 duration 0
+>> select planet FarB
+>> camera action free_mode state on
+>> moveto altitude 56344542144739200 duration 0
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21f/far0b.json
+>> camera action descend coef 0.96
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21f/far1b.json
+>> camera action free_mode state off
+>> set home_planet Earth
+>> moveto lat 0 lon 0 alt 100 duration 0
+>> select planet FarA
+>> camera action free_mode state on
+>> moveto altitude 56344542144739200 duration 0
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action screenshot d
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21f/far0z.json
+>> camera action descend
+>> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b21f/far1z.json
+
+==== FAR ====
+sel=FarA  ref0=SolarSystem  selDist0=3.808942e+05 ref1=SolarSystem  selDist1=3.656584e+05 ratio=0.960000
+sel=FarB  ref0=SolarSystem  selDist0=3.771706e+05 ref1=SolarSystem  selDist1=3.620838e+05 ratio=0.960000
+BOGUS sel=FarA  selDist0=3.6538e+05 ratio=1.000000 (expect 1.0)
+selDist follows selection: FarA=3.8089e+05 != FarB=3.7717e+05
+far done

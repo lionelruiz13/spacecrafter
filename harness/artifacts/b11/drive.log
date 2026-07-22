@@ -1,0 +1,269 @@
+1784673655.598 >> flag experimental_path on
+1784673656.799 >> timerate rate 0
+1784673657.999 >> date jday 2461233.500000000
+1784673660.199 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1784673660.899 >> flag landscape off
+1784673661.600 >> flag atmosphere off
+1784673662.300 >> flag star_twinkle off
+1784673663.001 >> flag show_fps off
+1784673663.701 >> flag planet_names off
+1784673664.401 >> flag subtitle off
+1784673665.602 >> select planet Sun pointer off
+1784673671.802 >> flag track_object on
+1784673675.002 >> zoom fov 26 duration 0
+1784673676.203 >> timerate rate 0
+1784673680.403 >> flag object_trails off
+1784673682.104 >> body name Mars hidden true
+1784673684.804 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_m_off_t0.json
+1784673685.604 >> date jday 2461248.500000000
+1784673686.405 >> date jday 2461263.500000000
+1784673687.205 >> date jday 2461278.500000000
+1784673688.006 >> date jday 2461293.500000000
+1784673688.806 >> date jday 2461308.500000000
+1784673689.607 >> date jday 2461323.500000000
+1784673692.307 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_m_off_t1.json
+1784673695.007 >> flag object_trails on
+1784673697.708 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_m_on_t0.json
+1784673698.508 >> date jday 2461338.500000000
+1784673699.309 >> date jday 2461353.500000000
+1784673700.109 >> date jday 2461368.500000000
+1784673700.909 >> date jday 2461383.500000000
+1784673701.710 >> date jday 2461398.500000000
+1784673702.510 >> date jday 2461413.500000000
+1784673705.211 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_m_on_t1.json
+1784673707.411 >> flag trails off
+1784673710.111 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_neg_spelling.json
+1784673710.912 >> date jday 2461428.500000000
+1784673711.712 >> date jday 2461443.500000000
+1784673714.413 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_neg_spelling_after.json
+1784673717.113 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_p1_pre_off.json
+1784673721.313 >> flag object_trails off
+1784673724.014 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_p1_off.json
+1784673724.814 >> date jday 2461458.500000000
+1784673725.615 >> date jday 2461473.500000000
+1784673728.315 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_p1_off_advanced.json
+1784673730.015 >> flag object_trails on
+1784673732.715 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_p1_reon.json
+1784673733.516 >> date jday 2461488.500000000
+1784673734.316 >> date jday 2461503.500000000
+1784673735.117 >> date jday 2461518.500000000
+1784673735.917 >> date jday 2461533.500000000
+1784673736.717 >> date jday 2461548.500000000
+1784673737.518 >> date jday 2461563.500000000
+1784673740.218 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_p1_grown.json
+1784673742.919 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_p2_pre_off.json
+1784673747.119 >> flag object_trails off
+1784673749.819 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_p2_off.json
+1784673750.620 >> date jday 2461578.500000000
+1784673751.420 >> date jday 2461593.500000000
+1784673754.121 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_p2_off_advanced.json
+1784673755.821 >> flag object_trails on
+1784673758.522 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_p2_reon.json
+1784673759.322 >> date jday 2461608.500000000
+1784673760.122 >> date jday 2461623.500000000
+1784673760.923 >> date jday 2461638.500000000
+1784673761.723 >> date jday 2461653.500000000
+1784673762.524 >> date jday 2461668.500000000
+1784673763.324 >> date jday 2461683.500000000
+1784673766.024 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_p2_grown.json
+1784673768.725 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_fast_pre.json
+1784673769.425 >> flag object_trails off
+1784673771.126 >> flag object_trails on
+1784673773.826 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_fast_reon.json
+1784673775.526 >> body name Mars hidden false
+1784673776.727 >> flag object_trails on
+1784673777.527 >> date jday 2461698.500000000
+1784673778.328 >> date jday 2461713.500000000
+1784673779.128 >> date jday 2461728.500000000
+1784673779.929 >> date jday 2461743.500000000
+1784673780.729 >> date jday 2461758.500000000
+1784673781.529 >> date jday 2461773.500000000
+1784673782.330 >> date jday 2461788.500000000
+1784673783.130 >> date jday 2461803.500000000
+1784673783.931 >> date jday 2461818.500000000
+1784673784.731 >> date jday 2461833.500000000
+1784673785.531 >> date jday 2461848.500000000
+1784673786.332 >> date jday 2461863.500000000
+1784673787.132 >> date jday 2461878.500000000
+1784673787.933 >> date jday 2461893.500000000
+1784673788.733 >> date jday 2461908.500000000
+1784673789.533 >> date jday 2461923.500000000
+1784673790.334 >> date jday 2461938.500000000
+1784673791.134 >> date jday 2461953.500000000
+1784673791.934 >> date jday 2461968.500000000
+1784673792.735 >> date jday 2461983.500000000
+1784673793.535 >> date jday 2461998.500000000
+1784673794.336 >> date jday 2462013.500000000
+1784673795.136 >> date jday 2462028.500000000
+1784673795.936 >> date jday 2462043.500000000
+1784673796.737 >> date jday 2462058.500000000
+1784673797.537 >> date jday 2462073.500000000
+1784673798.337 >> date jday 2462088.500000000
+1784673799.138 >> date jday 2462103.500000000
+1784673799.938 >> date jday 2462118.500000000
+1784673800.739 >> date jday 2462133.500000000
+1784673802.439 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_screen_on_a.png
+1784673804.139 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_screen_on_b.png
+1784673808.339 >> flag object_trails off
+1784673810.040 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_screen_off.png
+1784673812.240 >> flag object_trails on
+1784673813.941 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_screen_reon.png
+1784673814.741 >> date jday 2462148.500000000
+1784673815.541 >> date jday 2462163.500000000
+1784673816.342 >> date jday 2462178.500000000
+1784673817.142 >> date jday 2462193.500000000
+1784673817.943 >> date jday 2462208.500000000
+1784673818.743 >> date jday 2462223.500000000
+1784673819.543 >> date jday 2462238.500000000
+1784673820.344 >> date jday 2462253.500000000
+1784673821.144 >> date jday 2462268.500000000
+1784673821.945 >> date jday 2462283.500000000
+1784673822.745 >> date jday 2462298.500000000
+1784673823.545 >> date jday 2462313.500000000
+1784673824.346 >> date jday 2462328.500000000
+1784673825.146 >> date jday 2462343.500000000
+1784673825.947 >> date jday 2462358.500000000
+1784673826.747 >> date jday 2462373.500000000
+1784673827.547 >> date jday 2462388.500000000
+1784673828.347 >> date jday 2462403.500000000
+1784673829.148 >> date jday 2462418.500000000
+1784673829.948 >> date jday 2462433.500000000
+1784673830.748 >> date jday 2462448.500000000
+1784673831.549 >> date jday 2462463.500000000
+1784673832.349 >> date jday 2462478.500000000
+1784673833.149 >> date jday 2462493.500000000
+1784673833.950 >> date jday 2462508.500000000
+1784673834.750 >> date jday 2462523.500000000
+1784673835.550 >> date jday 2462538.500000000
+1784673836.351 >> date jday 2462553.500000000
+1784673837.151 >> date jday 2462568.500000000
+1784673837.952 >> date jday 2462583.500000000
+1784673839.652 >> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_screen_regrown.png
+1784673842.352 >> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_screen_final.json
+
+=== 0. instrument chain: the dump carries a trail module at all ===
+OK   Mars: dumped trail modules = 1 (expect 1)
+OK   Venus: dumped trail modules = 1 (expect 1)
+OK   Jupiter: dumped trail modules = 1 (expect 1)
+
+=== 1. THE 2x2 MATRIX  {flag on,off} x {body visible,hidden} ===
+    (deltas over 6 jumps of 15 sim-days)
+OK   time control: flag off interval djd=90.000000 d (commanded 90.000000)
+  [flag off | hidden ] Mars     points   0 ->   0 (d= +0)  accumulateCount d=    +0  recording=False  fader=0.000  relation=1
+OK   membership: Mars relation=1 expected hidden
+OK   [off|hidden] Mars: +0 points over 6 jumps (expect 0 - accumulation STOPPED)
+OK   [off|hidden] Mars: accumulate() ran 0 times (expect 0 - THE WORK stopped, not just the draw)
+OK   [off|hidden] Mars: recording=False
+OK   [off|hidden] Mars: buffer empty (0 points)
+  [flag off | visible] Venus    points   0 ->   0 (d= +0)  accumulateCount d=    +0  recording=False  fader=0.000  relation=4
+OK   membership: Venus relation=4 expected visible
+OK   [off|visible] Venus: +0 points over 6 jumps (expect 0 - accumulation STOPPED)
+OK   [off|visible] Venus: accumulate() ran 0 times (expect 0 - THE WORK stopped, not just the draw)
+OK   [off|visible] Venus: recording=False
+OK   [off|visible] Venus: buffer empty (0 points)
+  [flag off | visible] Jupiter  points   0 ->   0 (d= +0)  accumulateCount d=    +0  recording=False  fader=0.000  relation=4
+OK   membership: Jupiter relation=4 expected visible
+OK   [off|visible] Jupiter: +0 points over 6 jumps (expect 0 - accumulation STOPPED)
+OK   [off|visible] Jupiter: accumulate() ran 0 times (expect 0 - THE WORK stopped, not just the draw)
+OK   [off|visible] Jupiter: recording=False
+OK   [off|visible] Jupiter: buffer empty (0 points)
+OK   time control: flag on interval djd=90.000000 d (commanded 90.000000)
+  [flag on  | hidden ] Mars     points   1 ->   7 (d= +6)  accumulateCount d= +1080  recording=True  fader=1.000  relation=1
+OK   membership: Mars relation=1 expected hidden
+OK   [on|hidden] Mars: +6 points over 6 jumps (expect +6)
+OK   [on|hidden] Mars: accumulate() ran 1080 times
+OK   [on|hidden] Mars: recording=True
+  [flag on  | visible] Venus    points   1 ->   7 (d= +6)  accumulateCount d= +1080  recording=True  fader=1.000  relation=4
+OK   membership: Venus relation=4 expected visible
+OK   [on|visible] Venus: +6 points over 6 jumps (expect +6)
+OK   [on|visible] Venus: accumulate() ran 1080 times
+OK   [on|visible] Venus: recording=True
+  [flag on  | visible] Jupiter  points   1 ->   7 (d= +6)  accumulateCount d= +1080  recording=True  fader=1.000  relation=4
+OK   membership: Jupiter relation=4 expected visible
+OK   [on|visible] Jupiter: +6 points over 6 jumps (expect +6)
+OK   [on|visible] Jupiter: accumulate() ran 1080 times
+OK   [on|visible] Jupiter: recording=True
+
+--- independence of the two axes (the row's claim) ---
+OK   flag on: hidden Mars dpoints=6 == visible Venus dpoints=6 (visibility axis is inert)
+OK   flag on: hidden Mars dpoints=6 == visible Jupiter dpoints=6 (visibility axis is inert)
+OK   flag off: hidden Mars dpoints=0 == visible Venus dpoints=0 (visibility axis is inert)
+OK   flag off: hidden Mars dpoints=0 == visible Jupiter dpoints=0 (visibility axis is inert)
+OK   flag axis IS the gate: on +6 vs off +0 points over the same 6 jumps
+
+=== 2. command spelling (from the running process) ===
+OK   bogus `flag trails off` did not stop Mars (recording still True)
+OK   bogus `flag trails off` did not gate Mars (+2 points over 2 jumps)
+OK   bogus `flag trails off` did not stop Venus (recording still True)
+OK   bogus `flag trails off` did not gate Venus (+2 points over 2 jumps)
+OK   bogus `flag trails off` did not stop Jupiter (recording still True)
+OK   bogus `flag trails off` did not gate Jupiter (+2 points over 2 jumps)
+
+=== 3. FRESH restart, both entries of the pair, twice ===
+  -- cycle 1 --
+    Mars     pre_off=  9 off=  0 off_advanced=  0 reon=  1 grown=  7  accCount off->adv +0
+OK   c1 Mars: there WAS history to lose (9 points)
+OK   c1 Mars: off -> buffer DISCARDED (points=0, recording=False)
+OK   c1 Mars: no accumulate() call while off over 2 jumps
+OK   c1 Mars: re-enable -> buffer length 1 (expect 1 - starts from 0, not from 9)
+OK   c1 Mars: first point is at the body's CURRENT position (|head-ecl| = 0.000000 km)
+OK   c1 Mars: first point jd 2461473.495901432 == body eval time 2461473.495901432 (header jd 2461473.5, light-time offset)
+OK   c1 Mars: no pre-off history survived (head jd advanced 2461473.495901 > pre-off 2461443.495601)
+OK   c1 Mars: regrows from the fresh start (7 points after 6 jumps)
+    Venus    pre_off=  9 off=  0 off_advanced=  0 reon=  1 grown=  7  accCount off->adv +0
+OK   c1 Venus: there WAS history to lose (9 points)
+OK   c1 Venus: off -> buffer DISCARDED (points=0, recording=False)
+OK   c1 Venus: no accumulate() call while off over 2 jumps
+OK   c1 Venus: re-enable -> buffer length 1 (expect 1 - starts from 0, not from 9)
+OK   c1 Venus: first point is at the body's CURRENT position (|head-ecl| = 0.000000 km)
+OK   c1 Venus: first point jd 2461473.493410548 == body eval time 2461473.493410548 (header jd 2461473.5, light-time offset)
+OK   c1 Venus: no pre-off history survived (head jd advanced 2461473.493411 > pre-off 2461443.495265)
+OK   c1 Venus: regrows from the fresh start (7 points after 6 jumps)
+    Jupiter  pre_off=  9 off=  0 off_advanced=  0 reon=  1 grown=  7  accCount off->adv +0
+OK   c1 Jupiter: there WAS history to lose (9 points)
+OK   c1 Jupiter: off -> buffer DISCARDED (points=0, recording=False)
+OK   c1 Jupiter: no accumulate() call while off over 2 jumps
+OK   c1 Jupiter: re-enable -> buffer length 1 (expect 1 - starts from 0, not from 9)
+OK   c1 Jupiter: first point is at the body's CURRENT position (|head-ecl| = 0.000000 km)
+OK   c1 Jupiter: first point jd 2461473.474196328 == body eval time 2461473.474196328 (header jd 2461473.5, light-time offset)
+OK   c1 Jupiter: no pre-off history survived (head jd advanced 2461473.474196 > pre-off 2461443.474498)
+OK   c1 Jupiter: regrows from the fresh start (7 points after 6 jumps)
+  -- cycle 2 --
+    Mars     pre_off=  7 off=  0 off_advanced=  0 reon=  1 grown=  7  accCount off->adv +0
+OK   c2 Mars: there WAS history to lose (7 points)
+OK   c2 Mars: off -> buffer DISCARDED (points=0, recording=False)
+OK   c2 Mars: no accumulate() call while off over 2 jumps
+OK   c2 Mars: re-enable -> buffer length 1 (expect 1 - starts from 0, not from 7)
+OK   c2 Mars: first point is at the body's CURRENT position (|head-ecl| = 0.000000 km)
+OK   c2 Mars: first point jd 2461593.490702629 == body eval time 2461593.490702629 (header jd 2461593.5, light-time offset)
+OK   c2 Mars: no pre-off history survived (head jd advanced 2461593.490703 > pre-off 2461563.492741)
+OK   c2 Mars: regrows from the fresh start (7 points after 6 jumps)
+    Venus    pre_off=  7 off=  0 off_advanced=  0 reon=  1 grown=  7  accCount off->adv +0
+OK   c2 Venus: there WAS history to lose (7 points)
+OK   c2 Venus: off -> buffer DISCARDED (points=0, recording=False)
+OK   c2 Venus: no accumulate() call while off over 2 jumps
+OK   c2 Venus: re-enable -> buffer length 1 (expect 1 - starts from 0, not from 7)
+OK   c2 Venus: first point is at the body's CURRENT position (|head-ecl| = 0.000000 km)
+OK   c2 Venus: first point jd 2461593.490179808 == body eval time 2461593.490179808 (header jd 2461593.5, light-time offset)
+OK   c2 Venus: no pre-off history survived (head jd advanced 2461593.490180 > pre-off 2461563.490988)
+OK   c2 Venus: regrows from the fresh start (7 points after 6 jumps)
+    Jupiter  pre_off=  7 off=  0 off_advanced=  0 reon=  1 grown=  7  accCount off->adv +0
+OK   c2 Jupiter: there WAS history to lose (7 points)
+OK   c2 Jupiter: off -> buffer DISCARDED (points=0, recording=False)
+OK   c2 Jupiter: no accumulate() call while off over 2 jumps
+OK   c2 Jupiter: re-enable -> buffer length 1 (expect 1 - starts from 0, not from 7)
+OK   c2 Jupiter: first point is at the body's CURRENT position (|head-ecl| = 0.000000 km)
+OK   c2 Jupiter: first point jd 2461593.464739221 == body eval time 2461593.464739221 (header jd 2461593.5, light-time offset)
+OK   c2 Jupiter: no pre-off history survived (head jd advanced 2461593.464739 > pre-off 2461563.468234)
+OK   c2 Jupiter: regrows from the fresh start (7 points after 6 jumps)
+
+=== 4. re-enable INSIDE the fade window (still fresh) ===
+    Mars     pre=  7 -> after off+0.5s+on:   1  fader=1.000
+OK   fast toggle Mars: 1 points (expect 1 - a re-enable inside the fade is still a re-enable; was 7)
+    Venus    pre=  7 -> after off+0.5s+on:   1  fader=1.000
+OK   fast toggle Venus: 1 points (expect 1 - a re-enable inside the fade is still a re-enable; was 7)
+    Jupiter  pre=  7 -> after off+0.5s+on:   1  fader=1.000
+OK   fast toggle Jupiter: 1 points (expect 1 - a re-enable inside the fade is still a re-enable; was 7)
+
+ALL PASS - /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b11/b11_result.json
+flag object_trails commands sent: 11 (cross-check against PROBE planetsSetFlagTrails lines in gdb.log)
