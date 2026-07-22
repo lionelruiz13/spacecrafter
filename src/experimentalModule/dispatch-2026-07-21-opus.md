@@ -34,7 +34,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 | B13 | ~~Reference-change view continuity: preserve absolute sky direction across reference switch and free-mode entry/exit; no re-centring~~ **DONE 2026-07-22 → §11.61, §12 below** | §11.19c, §11.48(a), **§11.61** | **`warpToBody` (`set home_planet`) was the ONLY re-centring path** — it held (alt,az,heading) frame-relative and jumped the sky **78.60°** (measured); `switchToBody`/`setFreeMode` already preserved absolute since §11.36. Mechanism = the EXISTING `recoverParams` deduce-identical-view primitive (the `view` quaternion stays retired per §11.19c); inverse formula = `R = viewRotation·placement·calculateSwitchCompensation(dst)`, ONE recoverParams (not switchToBody's freeMode round-trip — that corrupts longitude across a ref change). **Post-fix absDelta ≤6e-6°** (recoverParams Euler floor, = switchToBody's 8e-6°; B30 adds ≤5e-3° fresh-launch), **alt/az delta 78–90° = discriminator** (the two SWAP). Sky-lock composition HANDLED (`lockedSkyRot·comp`, locked switch 6e-6°). Scene E **13→21 OK**, discrimination proven by a recoverParams-disabled mutation (3 ref-switch asserts FLIP to FAIL). **Conflict logged**: B18 §11.58(g)'s "setMount has no caller / runs ALTAZ" is wrong — runtime `mount:equatorial`. No regression (P4 17–51 km, orient 17/48, P-d 0.0000°), config byte-identical |
 | B15 | ~~AoI re-derivation on date change: the launch-jd latch is a defect (dates are jumped mid-navigation)~~ **DONE 2026-07-22 → §11.62, §13 below** | §11.36, §11.48(a), **§11.62** | **Latch located + measured 10.281% drift** at the scene jd (frozen `areaOfInfluence` gated by `uncached`, which no date change raises). Fixed by splitting `updateReach()` out of `updateCache()` and calling it EVERY frame — **cadence = continuous** (threshold-free, inside C3; cost ≤2.4 µs/frame upper bound). Post-fix 0.000% at every date; AoI differs with season (11.47%). Scene E **21→26 OK** (5 discriminating B15 asserts; re-latch mutation re-fails them, 21 pre-existing stay green). No regression (P4 9.58–49.87 km, orient 17/48, P-d 0.0000, 0 VUID, config byte-identical). Formula/policy untouched (threshold semantics stay A15/A17) |
 | B16 | ~~Expose `reloadSystem` as a command; keep current state (camera + date), no reset~~ **DONE 2026-07-21 → §11.55, §6 below** | §11.36, §11.45(d), §11.48(a), **§11.55** | Landed as **`body action reload`**; both §2(c) channels exercised live. **Scope grew by one structural fix**: the reload's first live use exposed an I5 violation (EnvironmentManager's cross-frame raw-pointer chain cache dereferences freed bodies) — fixed at the class by destruction notification. **One question suspended**: does "keep current state" cover body-scoped runtime overrides (today the file wins, and the old path desyncs) |
-| B17 | Port `view_offset` / `zoom_offset` as a Camera parametrization, config + command channels | §11.19a, §11.45(d), §11.48(a) | In use for tilted dome geometry ⇒ it is a projection-space offset — must NOT be re-derived as a camera rotation |
+| B17 | ~~Port `view_offset` / `zoom_offset` as a Camera parametrization, config + command channels~~ **CHARACTERISED + SUSPENDED 2026-07-22 → §11.63, §14 below** | §11.19a, §11.45(d), §11.48(a), **§11.63** | **The premise is FALSE at source**: old applies view_offset in the NAVIGATOR/VIEW stage as a fov-coupled ROTATION [navigator.cpp:159 yrotation(look), :309 xrotation(eye, ∝fov/2)], **never in projector.cpp**; both armed by a commanded move. Config `view_offset` + command `set zoom_offset <v>` are the §2(c) channels of ONE clamped [-0.5,0.5] scalar → `Core::setViewOffset` (measured live: config 2 startup hits, command 3 hits, `=`-syntax + bogus names 0). "Projection-space" holds IN EFFECT ONLY (fov-coupling ⇒ fov-independent fraction-of-dome shift on fisheye) — the MECHANISM re-aims the optical axis, i.e. it IS the camera rotation the row forbids. New pipeline has NO projection-stage offset hook. **SUSPENDED** — (1) reproduce old (view rotation, parity, but violates the DoD) / (2) shader NDC hook (matches DoD, touches old path + edge divergence) / (3) retire + `render_path=old` fallback. NO product code changed |
 | B18 | Port `flag_lock_equ_pos` (equatorial-mount sky-lock) | §11.19c, §11.48(a) | The "unexercised legacy feature" premise was wrong — it is exercised, just not by our harness |
 | B19 | ~~Hidden-body ticking: current behavior (hidden ⇒ keeps updating) is ratified — lock it with a regression assert~~ **DONE 2026-07-21 → §11.54, §5 below** | §11.15b, §11.36, §11.48(a), **§11.54** | **The row's premise was FALSE**: the new path froze hidden bodies (0.00 km advance over 20 simulated min vs old's 1306.81 km), and the 14 bodies shipped `hidden = true` had never been positioned (`lastJD = 0`; Pluto 5.75e9 km off). So it WAS a behavior change — scope expanded from "assert only" to "implement the ratified semantics + assert", traceable to Q13/A10. Locked by `harness/b19_hidden_tick.py` |
 | B20 | ~~Anchored galactic display: at galactic distances while anchored, show the solar-system view from very far, anchor kept — no altitude-driven mode switch~~ **DONE 2026-07-22 → §11.59, §10 below** | §11.36, §11.48(a), **§11.59** | **VERIFY-ONLY, no product code** (A13 "no code change" ratifies the current impl). Anchor kept at 4.9e11 AU (ref=Earth, distance ≫ refAoI ⇒ switch suppressed by the `if(freeMode)` guard); free-flight same-move escalates to Universe (the discriminator). Locked by `harness/b20_anchored_galactic.py`, counterfactual proven. **Finding SUSPENDED**: round-trip anchor does NOT survive — OLD executor re-anchors Earth→SolarSystem on descent (§11.36 "anchored-mode descent"); fix is §6.9/escalation-policy = Vixy's |
@@ -1190,3 +1190,131 @@ absent throughout. Cost-probe instrumentation (ModularBody.cpp + Camera.cpp)
 added then REMOVED before commit — `git diff` on Camera.cpp is empty; product
 diff = ModularBody.{cpp,hpp} only. `supervised-by.sh` left untracked. No harness
 task list touched.
+
+## 14. Execution log — B17 (Claude Opus 4.8, 2026-07-22)
+
+**Task**: wave §1 task 11 — port `view_offset` / `zoom_offset` as a Camera
+parametrization, both §2(c) channels. Recorded intent: "projection-space offset,
+not scene-space — the port must not re-derive it as a camera rotation"; "if the
+new path lacks the projection-center hook, that is a finding — suspend rather
+than approximate it as a rotation."
+
+**Outcome: CHARACTERISED + SUSPENDED. NO product code changed.** The row's
+premise is FALSE at source, and the two viable ports are each a decision I do not
+own (an improvised architectural / user-visible-semantics choice = failure).
+
+**The finding, in one paragraph.** view_offset does NOT apply "at the projection
+stage" — it applies in the **Navigator/VIEW** stage as a fov-coupled rotation of
+the eye matrix (`updateViewMat`, navigator.cpp:309) plus a fixed-angle rotation
+of the look vector (`setLocalVision`, navigator.cpp:159), both gated by
+`view_offset_transition` (armed by a commanded move, inert at rest); the Projector
+is untouched (`view_offset` never appears in projector.cpp). Its "projection-space"
+character is IN EFFECT ONLY: the fov-coupling makes the fisheye screen shift a
+fov-independent fraction of the dome radius. But the mechanism re-aims the optical
+axis — it IS the camera rotation the row forbids. The new pipeline has NO
+projection-stage offset hook (GPU fisheye driven by `ModelViewMatrix` +
+`clipping_fov=(zNear,zFar,halfFov)`, no NDC offset; Camera has no offset member).
+So "reproduce old" = a view rotation (violates the DoD); "true projection-space"
+= a new NDC-offset uniform in the SHARED GPU shaders (touches the old path, diverges
+from old at the dome edge). That contradiction between old-the-parity-spec and
+the-DoD is Vixy's to resolve.
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Old semantics characterised (where it applies, what it offsets, config key, command spelling) | **met** | Config `[navigation] view_offset` [define_key.hpp:43/309] → `Core::setViewOffset` [core.cpp:494-496]; command `set zoom_offset <v>` [base_command_interface.hpp:566; app_command_init.cpp:314; app_command_interface.cpp:1781] → SAME sink. Applies in Navigator: yrotation(look, −view_offset·π/2·transition) [navigator.cpp:159] + xrotation(eye, view_offset·(fov/2)·π/180·transition) [navigator.cpp:309], armed by `view_offset_transition` [navigator.cpp:73-78]; NEVER in projector.cpp (grep). Clamp [-0.5,0.5], "percent of fov radius" [core.cpp:2110-2117]. **Measured live** [b17_probe.gdb]: config 2 startup hits @0.000000; command hits @0.200000/0.350000/0.000000 |
+| 2 | Ported as projection-space, discriminator measured (optical axis unchanged) | **not met — NEGATIVE RESULT / SUSPENDED** | The new pipeline has NO projection-stage offset hook (custom_project.glsl / fisheye.glsl driven only by ModelViewMatrix + clipping_fov; ProjectionTransfer serves screenPos not render; Camera has no offset; Renderer clippingFov is Vec3f). A projection-space offset cannot be expressed in Camera matrices (any matrix offset IS a rotation ⇒ changes the look direction). Old's own mechanism IS a view rotation. The two candidate implementations are Vixy decisions (§13.B B17) — not approximated as a rotation, per the row's stop rule |
+| 3 | Both channels reach the code, spelling verified from the running process, bogus → 0 | **met for the OLD sink / N/A for a new-path port** | Both channels reach `Core::setViewOffset` — measured live (config startup + command runtime); bogus names (`zoom_ofset`, `zoomoffset`) → 0 hits; `=`-syntax → 0 args (the 8× trap; syntax is SPACE-separated `set NAME VALUE` [app_command_interface.cpp:144-166]). They reach the OLD navigator only; there is no new-path port for them to reach (that is the suspended seam). No config key invented |
+| 4 | zoom_offset semantics ported + distinguished from view_offset | **met as a finding** | There is NO separate zoom_offset: `view_offset` (config) and `zoom_offset` (command) are the two §2(c) channels of ONE clamped scalar → `Core::setViewOffset`. Both measured hitting the same sink. The DoD's "distinguish" premise (two offsets) is false |
+| 5 | Terminal observable of the PORT (px shift vs commanded offset, noise floor), reversible pair | **n/a — no port (suspended)** | Old's terminal effect derived: fisheye shift = view_offset × dome-radius px (fov-independent). Empirical px calibration + B30 noise floor deferred to the implementation task once the semantics decision is made (measuring old's screen shift additionally needs arming `view_offset_transition` via an auto_move — recorded for that task) |
+| 6 | Build green; mtime advanced | **met (no code change)** | `make -C build-claude -j$(nproc)` exit **0** (no-op — no product code touched; binary at HEAD, mtime 2026-07-22 05:51:16). Tree stays green at HEAD |
+| 7 | No regression; default-0 no-op; config byte-identical | **met trivially** | No product code changed ⇒ every scene byte-identical to pre-task; view_offset default stays 0 (true no-op, unchanged); NO config key added ⇒ CheckConfig migration contract untouched. config.ini md5 **03fbee59bc3ec506c58f0a3f1e1d73df** in/out (unchanged across 6 probe launches) |
+| 8 | Trackers | **met** | INTENT §11.63 (new, (a)–(e)); §13.B B17 → CHARACTERISED + SUSPENDED with the 3-option question; §9 capability line + §11.45(d) capability-audit row + §11.36 spine S6 note + §11.48(h) reading updated to §11.63 (I2 single-authority sweep); this dispatch row + §14 |
+| 9 | Committed on master-beta, correct author/co-author, not pushed | **met** | see commit below (trackers + harness instruments only; no product code) |
+
+### The conflict (SUSPENDED FOR VIXY — exact question + options)
+
+**Source A — old-path implementation (the parity spec):** view_offset is a
+**fov-coupled VIEW-matrix rotation** [navigator.cpp:159,309]. It changes the
+optical-axis world direction; the visible cone rotates in world; it is armed by a
+commanded view move; **and the tester's tilted-dome shows use exactly this today.**
+
+**Source B — this row's spec / §13.B B17 / the DoD:** view_offset is
+**projection-space**, "must NOT re-derive as a camera rotation", the optical axis
+must stay fixed (image slides on the dome).
+
+On flat FISHEYE they give the same center displacement; they diverge at the dome
+edge (A fills the disc with a re-aimed cone; B leaves a blank crescent + clips)
+and in the look-direction observable (Camera forward moves under A, fixed under B).
+
+**QUESTION for Vixy — which port?**
+- **Option 1 — reproduce old exactly (parity):** bake `xrotation(view_offset·halfFov)`
+  (fov-coupled) into `Camera::viewRotation`, gated by the new-path zoom transition.
+  Byte-for-byte identical to old on flat fisheye; the dome shift is view_offset
+  fraction of the radius, fov-independent. **Cost:** it is a view/camera rotation
+  — the sky re-aims on a tilted dome. **Contradicts the DoD's "not a camera
+  rotation."** (Also requires deciding how old's `view_offset_transition` maps to
+  the new Camera's zoom transition — itself a small semantics call.)
+- **Option 2 — true projection-space NDC shift:** add an NDC-offset uniform to the
+  SHARED GPU projection (`fisheyeProjectCustom` et al.) → `gl_Position.xy += offset·w`,
+  sourced from a Camera parameter, gated to the new path (default 0). Optical axis
+  fixed; image slides. **Cost:** touches shaders shared with the OLD path (which
+  already applies its own view rotation), and **diverges from old at the dome edge**
+  (blank crescent vs fill) — a user-visible-semantics change beyond old's surface,
+  and a new architectural hook the codebase does not have.
+- **Option 3 — retire on the new path:** leave view_offset/zoom_offset OLD-ONLY;
+  the `render_path = old` fallback (§11.48) remains the tilted-dome mitigation.
+  B17 closes as won't-port / fallback-served.
+
+**My read (not a decision):** the parity mandate ("old's shape is the spec") leans
+Option 1 — it is what the tester's tilted dome uses today, so Option 2 would change
+their working behavior. But the DoD explicitly forbids Option 1. That contradiction
+is precisely a user-visible-semantics call I do not own. The deciding fact is what
+the tilted-dome operator actually wants: the sky re-aimed (Option 1) or the image
+slid without re-aim (Option 2).
+
+### What I did NOT verify
+
+- Old's on-screen px shift magnitude (derived as view_offset × dome-radius, not
+  measured): measuring it needs `view_offset_transition` armed via an auto_move on
+  the old path (render_path=old) — deferred to the implementation task, which needs
+  the calibration anyway.
+- The exact per-frame composite of the two old sites (yrotation of the look vector
+  + xrotation of the eye matrix) — established as [observed] sites + [derived]
+  dominant xrotation effect; the full composite is subtle (another reason the port
+  is not a mechanical mirror). Not fully isolated on live renders.
+- Whether Option 2 would be gate-able to the new path only without regressing any
+  old-path pipeline (the shared-shader surface is large — a real cost of Option 2,
+  not surveyed exhaustively).
+
+### Reproduction (verbatim)
+
+    # command-spelling + channel probe (default/new path, under gdb)
+    cd /home/claude/spacecrafter/src/experimentalModule/harness
+    DISPLAY=:2 ./b17_run.sh
+    #   -> gdb pid=...; tcp up after 12s; driver exit=0
+    #   PROBE setViewOffset ENTERED offset=0.000000   (x2, config startup)
+    #   PROBE setViewOffset ENTERED offset=0.200000   (set zoom_offset 0.2)
+    #   PROBE setViewOffset ENTERED offset=0.350000   (set zoom_offset 0.35)
+    #   PROBE setViewOffset ENTERED offset=0.000000   (set zoom_offset 0)
+    #   (bogus `zoom_ofset`/`zoomoffset` and `=`-syntax: NO hit)
+
+    # build (no-op, no product code changed)
+    make -C /home/claude/spacecrafter/build-claude -j$(nproc)   # exit 0
+
+### Hygiene
+
+`config.ini` md5 **03fbee59bc3ec506c58f0a3f1e1d73df** in/out (unchanged across all
+6 probe launches — the app was SIGINT/KILL-terminated, no clean-shutdown rewrite;
+no key added). `ssystem.ini` / `beta_features.ini` untouched (no beta_features.ini
+present throughout — default/new path). NO product code changed — `git diff` on
+src/ (excluding INTENT.md + dispatch) is empty. Committed: the two trackers + the
+harness instruments `harness/b17_{probe.gdb,seam.py,run.sh}`; `artifacts/b17/`
+gitignored. `supervised-by.sh` left untracked. No harness task list touched.
+
+### Known-intermittent note (B7 data point)
+
+The app **stalled under gdb in the draw path** (`App::draw:795` __platform_wait,
+"Frame stall detected") on ~2 of 6 launches — the §11.15d class. It did not block
+the run (retry served TCP within 12 s); recorded here as a data point, not chased.
