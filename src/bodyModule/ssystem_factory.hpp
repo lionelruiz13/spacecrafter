@@ -350,6 +350,16 @@ public:
         PlanetGridModule::setColors(meridian, parallel);
     }
 
+    // Grid tropic/polar-circle seam (INTENT §11.57, B23 / Q16): the tropic
+    // circles ride the LINE_TROPIC sky-line flag, the polar circles the
+    // LINE_CIRCLE_POLAR flag - old body.cpp:1257-1258 polled show+color from the
+    // sky managers each draw. Pushed each frame by Core::syncPlanetGridSkyState
+    // (a per-frame poll of the current sky-line state, faithful to old's read).
+    void setPlanetGridTropicPolar(bool showTropics, bool showPolarCircles,
+                                  const Vec3f &tropic, const Vec3f &polarCircle) {
+        PlanetGridModule::setTropicPolar(showTropics, showPolarCircles, tropic, polarCircle);
+    }
+
 	void setFlagHints(bool b) {
         ssystemSelected->setFlagHints(b);
         HintModule::show = b; // both-paths seam, like setFlagLightTravelTime

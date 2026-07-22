@@ -620,6 +620,22 @@ void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 	projection->applyViewport();
 }
 
+void Core::syncPlanetGridSkyState()
+{
+	// New-path only: in the old phase Body::drawPlanetGrid does its own poll.
+	if (!ssystemFactory->drawModularSystem)
+		return;
+	// The planet-grid tropic/polar circles are keyed to the corresponding
+	// sky-line flags (deliberate: they show obliquity directly). Old read both
+	// the show flag AND the color from the sky manager each draw
+	// (body.cpp:1257-1258, 1263-1264); reproduce that read here, once per frame.
+	ssystemFactory->setPlanetGridTropicPolar(
+		skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_TROPIC),
+		skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR),
+		skyLineMgr->getColor(SKYLINE_TYPE::LINE_TROPIC),
+		skyLineMgr->getColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR));
+}
+
 void Core::setLandscapeToBody()
 {
 	if (!observatory->isOnBody())

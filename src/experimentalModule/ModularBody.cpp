@@ -619,6 +619,20 @@ void ModularBody::dumpTrace(std::ostream &out) const
             sep = ",";
         }
     }
+    // Near-component state (B23 GRID instrument, INTENT §11.57): the planet-grid
+    // module lives here (addNearComponent). Its dumpState reports the tropic/
+    // polar latitudes actually baked for this body (obliquity readout, DoD-2);
+    // every other near module keeps the "null" default, so the non-null entry
+    // is the grid.
+    out << "],\"near\":[";
+    {
+        const char *sep = "";
+        for (const BodyModule *m : nearComponents) {
+            out << sep;
+            m->dumpState(out);
+            sep = ",";
+        }
+    }
     out << "],\"lastJD\":" << std::setprecision(17) << lastJD << '}';
 }
 

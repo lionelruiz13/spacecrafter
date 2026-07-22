@@ -519,6 +519,13 @@ private:
 
 	void applyClippingPlanes(float clipping_min, float clipping_max);
 
+	//! Push the current sky-line tropic / polar-circle state (show flags +
+	//! colors) to the new-path planet grid, once per frame before the modular
+	//! system draws. Reproduces old Body::drawPlanetGrid's per-frame poll of the
+	//! sky managers (body.cpp:1257-1258): the planet-grid tropic circles ride
+	//! LINE_TROPIC, the polar circles LINE_CIRCLE_POLAR (INTENT §11.57, B23).
+	void syncPlanetGridSkyState();
+
 	//! Callback to record actions
 	mBoost::callback<void, std::string> recordActionCallback;
 

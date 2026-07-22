@@ -203,6 +203,9 @@ void StellarSystemModule::draw(int delta_time)
 	core->skyGridMgr->draw(core->projection);
 	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
+	// Key the new-path planet-grid tropic/polar circles to the sky-line flags
+	// (LINE_TROPIC / LINE_CIRCLE_POLAR) just read above (INTENT §11.57, B23).
+	core->syncPlanetGridSkyState();
 	core->ssystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	// Draw the pointer on the currently selected object

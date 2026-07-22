@@ -39,7 +39,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 | B19 | ~~Hidden-body ticking: current behavior (hidden ⇒ keeps updating) is ratified — lock it with a regression assert~~ **DONE 2026-07-21 → §11.54, §5 below** | §11.15b, §11.36, §11.48(a), **§11.54** | **The row's premise was FALSE**: the new path froze hidden bodies (0.00 km advance over 20 simulated min vs old's 1306.81 km), and the 14 bodies shipped `hidden = true` had never been positioned (`lastJD = 0`; Pluto 5.75e9 km off). So it WAS a behavior change — scope expanded from "assert only" to "implement the ratified semantics + assert", traceable to Q13/A10. Locked by `harness/b19_hidden_tick.py` |
 | B20 | Anchored galactic display: at galactic distances while anchored, show the solar-system view from very far, anchor kept — no altitude-driven mode switch | §11.36, §11.48(a) | A13 ratified anchored-stays-anchored in the same answer set — no escalation-policy change |
 | B22 | System-collapse cross-fade at the ~16 px resolved↔dot threshold, "if not too costly" | §11.36, §11.48(b) | The COST BOUND is the decision input: deliver the cross-fade + its measured cost. The threshold constants themselves stay open (A15 — Vixy/tester) — do not tune them here |
-| B23 | Restore planet-grid tropics + polar circles, keyed to the corresponding sky-line flags | §11.42, §11.48(b) | The old coupling is deliberate (they show obliquity directly). Independent-toggle + near-surface-regime halves stay in A4 — out of scope |
+| B23 | ~~Restore planet-grid tropics + polar circles, keyed to the corresponding sky-line flags~~ **DONE 2026-07-22 → §11.57, §8 below** | §11.42, §11.48(b), **§11.57** | Tropics ride **LINE_TROPIC** (`flag tropic_lines`), polar circles **LINE_CIRCLE_POLAR** (`flag polar_circle`), at ±axial_tilt / ±(90−axial_tilt). **§11.42's "no axial-tilt scalar" was a cached conclusion, false at source** — `axial_tilt` has loaded into `re.axialTilt` since the port; only a getter was missing. Measured latitudes track obliquity (Earth 23.44/66.56, Jupiter 3.13/86.87, Uranus 97.77/−7.77); screen gating px>32 vs a **0** noise floor, Earth↔Uranus ring reversal on the frame; name-sniff `!="Sun"` → `!isStar()` (I4). Carve-out kept (no independent toggle, no >10 km regime). 25/25 harness, 0 VUID, config+ssystem byte-identical. Finding: the Sun installs no grid at all (out of scope) |
 | B26 | ~~Run the two-screenshot observable check for the dual-path default flip~~ **DONE 2026-07-21 → §11.53, §4 below** | §11.50(c), §11.53 | **VERIFIED on `DISPLAY=:2`, 6 fresh launches, no product code changed.** The stated criterion was itself defective (≥2.5 s = quarter of the 2 s toggle period ⇒ 50 % test; corrected to odd multiples of 1.0 s, discriminator px>32). New finding spun out: **B30** (new path not bit-stable on a frozen scene) |
 | B29 | Runtime COLOR seam port: MEASURE old's reload behavior for runtime per-body colors, then reproduce it | §11.51(f), §11.42, §11.45(d) | Observation task, no design freedom — old's observable IS the spec (parity unconditional here: semantic surface, no physical referent). Per-instance storage + broadcast override stands. Closes the last OLD-ONLY S6 seam class |
 | B28 | Loader frame declaration + conversion: data declares its coordinate system, loader converts — one conversion authority | §11.51(d), §11.52(a), §11.49(e) | Fully specified incl. write-back contract (only-when-needed, atomic sibling-temp-then-rename, whole-file clean precondition; text-preserving insertion). Regression criterion = bit-identical for the 7 existing `rot_pole_ra` planets. Actionable diagnostics per §2(f). Larger than the other rows but decision-complete; B14 sequences after it |
@@ -580,3 +580,97 @@ the pre-run backup]. `~/.spacecrafter/ssystem.ini` untouched.
 `~/.spacecrafter/beta_features.ini` absent throughout. No temporary `.sts`
 installed. `supervised-by.sh` and the root-level `USER_QUESTIONS*.md` /
 `FEATURE_REQUESTS.md` left untracked. No harness task list touched.
+
+## 8. Execution log — B23 (Claude Opus 4.8, 2026-07-22)
+
+Full record: **INTENT §11.57**. Planet-grid tropic + polar circles restored on
+the body, keyed to the sky-line flags, at the body's own obliquity.
+
+**First paragraph / behavior beyond the row:** additive only. Tropic (±axial_tilt)
+and polar (±(90−axial_tilt)) circles were ADDED to the grid; nothing was removed
+(the §11.42 ±30/±60 generic parallels stay). A per-frame poll
+(`Core::syncPlanetGridSkyState`) was added at both modular-draw sites to push the
+`LINE_TROPIC`/`LINE_CIRCLE_POLAR` show+color state into the grid module. The dump
+(`body action dual_dump`) gained a `"near"` array (harness instrument, additive
+JSON). No A4-carve-out territory was crossed (no independent grid toggle, no >10 km
+near-surface regime).
+
+### DoD, item by item
+1. **Identify + name the coupling** — **met**. Old `Body::drawPlanetGrid` polls
+   `LINE_TROPIC` for tropics and `LINE_CIRCLE_POLAR` for polar circles under the
+   `flag_planet_grid` master gate [observed: body.cpp:1255-1258]; commands
+   `flag tropic_lines` / `flag polar_circle` [observed: base_command_interface.hpp:409,412].
+   Verified the flags exist and are dispatched from the running process (dump's
+   `showTropics`/`showPolarCircles` echo them; bogus `flag tropic off` → 0 hits).
+2. **Lines render at ±obliquity / ±(90−obliquity), move with obliquity** — **met**.
+   Measured from the process dump: Earth tropicLat **23.440**, polarLat **66.560**;
+   Jupiter **3.130 / 86.870**; Uranus **97.770 / −7.770** (`tropicLat==axial_tilt`,
+   `polarLat==90−axial_tilt`, all distinct). On screen the Earth↔Uranus ring
+   positions reverse (Earth tropic 459 px inside polar 662; Uranus tropic 695 px
+   outside polar 399).
+3. **Keyed to the flags, measured (px>N + noise floor)** — **met**. Noise floor
+   (base vs base2, frozen) = **0 px>0** all three planets. ON present / OFF→base-exact,
+   each reversible pair twice, px>32: Earth tropic **10 973** / polar **4 196**,
+   Jupiter **6 410 / 492**, Uranus **1 449 / 5 431**; OFF reverts at **0 px>0**.
+4. **Terminal observable, not pipeline state** — **met**. All px numbers are on the
+   composed 2048² FISHEYE frame; the obliquity reversal is asserted on the rendered
+   frame (radial-distance means), not on intermediate state.
+5. **Command spelling from the process** — **met**. Bogus `flag tropic off` →
+   `showTropics` stayed false, 0 px; real `flag tropic_lines on` → true, 10 973 px.
+6. **Build green** — **met**. `make -C build-claude -j$(nproc)` exit 0; binary
+   mtime advanced 00:31 → 01:28:53 across the two product-code builds (the trailing
+   confirmation build was a no-op — no source changed after 01:28:53).
+7. **No regression** — **met**. Fresh launches, init_fov=340, FISHEYE, debug_layer.
+   A–D: P4 observer parity **24.02 km** (13–55 km settle-noise class); orientation
+   **17 restored / 48 divergent, P-d 0.0000°**; position parity baseline. Scene E
+   **13/13**, Mars landing 2.270821e-05 AU. 0 VUID, layer positively confirmed.
+   `config.ini` md5 **03fbee59…** in and out; `ssystem.ini` md5 **fb87a774…** in and out.
+8. **Trackers** — **met**. INTENT §11.57 + §12 row 11 + §13.A A4 + §13.B B23; this section.
+9. **Committed on master-beta** — see commit hashes below.
+
+### Deviations / judgement calls (each with its reason)
+- **±30/±60 generic parallels kept** (not replaced with old's exact equator+tropic+polar
+  set). Additive was the minimal, carve-out-safe choice; the exact parallel set is part
+  of the still-open "full planet-grid observable parity" (A4). Recorded, not decided.
+- **Tropic/polar colors ARE plumbed** (LINE_TROPIC/LINE_CIRCLE_POLAR, via the same poll),
+  matching old; the meridian/parallel color seam (§11.42, command-push) left untouched —
+  the SUSPENDED color-authority stays Vixy's.
+- **Poll, not push**, for the flag coupling — a true I3 push would couple SkyLineMgr
+  (coreModule) to a body module (experimentalModule); rejected with that precondition.
+  The poll reproduces old's per-frame read exactly and lives where the coupling already is.
+
+### Findings recorded, not fixed (out of scope)
+- **§11.42's "ModularBody exposes no axial-tilt scalar" was FALSE at source** — the
+  cached-conclusion / §5.2 class. `axial_tilt` has loaded into `RotationElements::axialTilt`
+  since the port [ModularSystem.cpp:716]; only a getter was missing. Corrected in place.
+- **The Sun installs NO planet grid** even with `planet_grid=true` (`near`=[null,null]) —
+  the system-centre star loads through a path that does not reach the explicit-slot GRID
+  declaration. An A4/§11.42-territory grid-installation gap, distinct from B23's scope;
+  it makes the `!isStar()` tropic gate unexercisable on shipped data (the guard stands).
+
+### Suspended for Vixy
+None new. B23's own residuals (independent grid toggle, >10 km regime, ±30/±60-vs-old
+parallels, the Sun-grid gap) all fold into the pre-existing **A4 (c)** suspension.
+
+### Reproduction (verbatim)
+    # grid observable + gating (needs planet_grid=true on Earth/Jupiter/Uranus/Moon/Sun
+    # in ~/.spacecrafter/ssystem.ini — test-only, restored byte-identical after)
+    cd /home/claude/spacecrafter
+    DISPLAY=:2 bash src/experimentalModule/harness/b23_run.sh b23_grid.py \
+        "$(pwd)/src/experimentalModule/harness/artifacts/b23"   # -> ALL PASS 25/25, exit 0
+    # no-regression (init_fov=340 in config.ini, restored to 180 by md5 afterwards)
+    cd src/experimentalModule/harness
+    DISPLAY=:2 <fresh spacecrafter> & ; python3 ./drive_scenes.py
+    python3 ./orientation_check.py /tmp/gen_a.json   # 17/48, P-d 0.0000
+    python3 ./predict.py /tmp/gen_a.json             # P4 24.02 km
+    DISPLAY=:2 <fresh spacecrafter> & ; python3 ./scene_e_spine.py   # 13/13, exit 0
+
+### Hygiene
+`config.ini` restored byte-identical [md5 `03fbee59bc3ec506c58f0a3f1e1d73df`, temporary
+`init_fov 180→340`]. `ssystem.ini` restored byte-identical [md5
+`fb87a774e728706e9d4e1959c386bb23`, temporary `planet_grid=true` on 5 bodies].
+`beta_features.ini` absent throughout. Bulky per-run artifacts (`artifacts/b23/`)
+gitignored like b11/b16/b19/b26; the summary `artifacts/b23_measurements.json` is tracked.
+`supervised-by.sh` and the root `USER_QUESTIONS*.md` / `FEATURE_REQUESTS.md` left
+untracked. No harness task list touched. Known intermittent shutdown segfault (§11.15d)
+fired on some run teardowns AFTER the driver exited 0 — did not affect any artifact.

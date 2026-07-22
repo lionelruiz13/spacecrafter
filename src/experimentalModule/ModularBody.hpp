@@ -784,6 +784,15 @@ public:
 	inline float getRotObliquity(void) const {
 		return re.obliquity;
 	}
+	//! Axial tilt (obliquity of rotation axis w.r.t. the orbit), in DEGREES, from
+	//! the ssystem.ini `axial_tilt` key (RotationElements::axialTilt; unset -> 0).
+	//! It is the display-only value the old path drew the planet-grid tropic /
+	//! polar circles at: tropic latitude = +/-axialTilt, polar-circle latitude =
+	//! +/-(90 - axialTilt). Client: the GRID module (PlanetGridModule). Distinct
+	//! from getRotObliquity (that one is radians, pole-derived, drives rotation).
+	inline float getAxialTilt(void) const {
+		return re.axialTilt;
+	}
     // Invalidate the internal state cache
     inline void invalidateCachedState() {
         uncached = true;
