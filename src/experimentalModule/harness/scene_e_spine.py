@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-# Scene E - hierarchy-spine ladder (INTENT 11.36 verification).
+# Scene E - hierarchy-spine ladder (INTENT 11.36 verification) +
+# view-continuity assertions (INTENT 11.61, B13): the ladder asserts REFERENCE
+# IDENTITY across transitions; the appended block asserts the ABSOLUTE SKY
+# DIRECTION is held across a reference switch (set home_planet) and free-mode
+# entry/exit (absFwd fixed, alt/az moved by the inter-frame rotation).
 # Predictive validation (11.15 method): AoI thresholds COMPUTED offline from
 # a baseline dump (repaired updateCache formulas transcribed below), then the
 # reference-switch sequence asserted at bracketing altitudes. Brackets are
@@ -99,6 +103,29 @@ send(s, "moveto lat 10 lon 30 alt 100 duration 0", 2)
 send(s, "body action dual_dump filename /tmp/spine_mars.json", 2)
 expect.append(("mars", "Mars"))
 send(s, "set home_planet Earth", 3)            # restore
+
+# ---- B13 view-continuity (INTENT 11.61): absolute sky direction across a
+# reference switch (set home_planet = warpToBody) and free-mode entry/exit.
+# absFwd (Camera dump) is the ROOT-aligned look direction (frame-independent);
+# alt/az is frame-relative. Keeping the ABSOLUTE direction leaves absFwd fixed
+# while alt/az MOVES by the inter-frame rotation (the discriminator). Pre-B13
+# warpToBody held alt/az fixed and JUMPED absFwd ~78 deg -> these asserts FAIL
+# on that behavior (proven by temporary revert), PASS after.
+send(s, "moveto lat 48.85 lon 2.35 alt 100 duration 0", 2)
+send(s, "look_at azimuth 60 altitude 30 duration 0", 1.5)          # non-degenerate aim
+send(s, "body action dual_dump filename /tmp/spine_vc0.json", 2)   # Earth, aimed
+send(s, "set home_planet Mars", 2)
+send(s, "body action dual_dump filename /tmp/spine_vc1.json", 2)   # Mars (warpToBody A->B)
+send(s, "set home_planet Earth", 2)
+send(s, "body action dual_dump filename /tmp/spine_vc2.json", 2)   # Earth back (B->A)
+send(s, "camera action free_mode state on", 1.5)
+send(s, "body action dual_dump filename /tmp/spine_vc3.json", 2)   # free enter
+send(s, "camera action free_mode state off", 1.5)
+send(s, "body action dual_dump filename /tmp/spine_vc4.json", 2)   # free exit
+send(s, "camera action free_mode state on", 1.5)
+send(s, "body action dual_dump filename /tmp/spine_vc5.json", 2)   # free enter #2
+send(s, "camera action free_mode state off", 1.5)
+send(s, "body action dual_dump filename /tmp/spine_vc6.json", 2)   # free exit  #2
 s.close()
 
 fail = 0
@@ -112,4 +139,34 @@ mars = cam("/tmp/spine_mars.json")
 ok = abs(mars["distance"] - 2.270821e-05) < 3e-9  # R_mars + 100 m (11.17 value)
 print(f"{'OK ' if ok else 'FAIL'} mars landing dist {mars['distance']:.6e} vs Rmars+100m", flush=True)
 fail += not ok
+
+# ---- B13 view-continuity assertions (INTENT 11.61) -------------------------
+def _absfwd(tag): return cam(f"/tmp/spine_{tag}.json")["absFwd"]
+def _altaz(tag):
+    c = cam(f"/tmp/spine_{tag}.json"); al, az = c["alt"], c["az"]; ca = math.cos(al)
+    return (math.cos(az)*ca, -math.sin(az)*ca, -math.sin(al))
+def _ang(a, b):
+    na = math.sqrt(sum(x*x for x in a)); nb = math.sqrt(sum(x*x for x in b))
+    return math.degrees(math.acos(max(-1.0, min(1.0, sum(x*y for x, y in zip(a, b))/(na*nb)))))
+ABS_TOL = 0.05    # absolute sky direction HELD (deg): Euler(~6e-6)+B30(~5e-3)
+                  # floor << 0.05; pre-B13 warpToBody jumps ~78 deg -> discriminates.
+DISC_MIN = 10.0   # alt/az MUST move across a ref switch = proof the ABSOLUTE (not
+                  # frame-relative) direction was held. Pre-B13 alt/az delta = 0.
+vc = [
+    ("vc ref-switch E->M abs held", _ang(_absfwd("vc0"), _absfwd("vc1")), "<", ABS_TOL),
+    ("vc ref-switch M->E abs held", _ang(_absfwd("vc1"), _absfwd("vc2")), "<", ABS_TOL),
+    ("vc ref-switch E->M discrim ", _ang(_altaz("vc0"),  _altaz("vc1")),  ">", DISC_MIN),
+    ("vc free enter abs held     ", _ang(_absfwd("vc2"), _absfwd("vc3")), "<", ABS_TOL),
+    ("vc free exit  abs held     ", _ang(_absfwd("vc3"), _absfwd("vc4")), "<", ABS_TOL),
+    ("vc free enter#2 abs held   ", _ang(_absfwd("vc4"), _absfwd("vc5")), "<", ABS_TOL),
+    ("vc free exit#2  abs held   ", _ang(_absfwd("vc5"), _absfwd("vc6")), "<", ABS_TOL),
+    # switchToBody (free-flight auto-transition) continuity: the ladder's first
+    # escalation Earth->Sun keeps the absolute direction too (moveto altitude
+    # moves position, not the look rotation; switchToBody re-derives alt/az).
+    ("vc auto-switch e_in->e_out ", _ang(_absfwd("e_in"), _absfwd("e_out")), "<", ABS_TOL),
+]
+for name, val, op, thr in vc:
+    ok = (val < thr) if op == "<" else (val > thr)
+    print(f"{'OK ' if ok else 'FAIL'} {name} {val:9.5f} deg {op} {thr}", flush=True)
+    fail += not ok
 sys.exit(1 if fail else 0)

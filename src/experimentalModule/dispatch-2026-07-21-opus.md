@@ -31,7 +31,7 @@ carved-out residuals — stop at the carve-out boundary and record the stop.
 |---|---|---|---|
 | B9 | ~~Az-convention divergence: old `getAltAz` applies 3π−az, new returns Camera-frame raw — probe, then fix at the `ModularObject` surface~~ **DONE 2026-07-22 → §11.60, §11 below** | §11.4, **§11.60** | **Probe REFUTED `3π−az`**: the surface delta is `az_old = π/2 − az_new` (the `3π−az` was old's internal raw→report step; the new raw frame is −π/2 off — the §11.4 line-753 caveat, measured). ONE authority `ModularObject::altAz()` (`az = π/2−raw`) feeds getAltAz + getInfoString + getShortInfoNavString (single `observedPosToAltAz` call site). 234/234 bodies ≤0.00003° pre-fix convention; post-fix parity ≤0.00002°, alt untouched; nav/info strings arcsec-identical to old; also closed the §11.4 label-order swap. **Findings**: ModularObject uninstantiated in production (fix readies the D2 bridge, no user-visible change yet); RA/DE sibling diverges (§5.19, out-of-scope). Locked by `harness/b9_azconv.py` (FAIL pre-fix, PASS post-fix). No regression |
 | B11 | ~~Trail recording gate: `flag trails off` STOPS accumulation; re-enable starts FRESH~~ **DONE 2026-07-22 → §11.56, §7 below** | §11.41, §11.48(a), **§11.56** | Display flag now gates recording (`want`, not the fader — the prior port gated on the fade animation). **2×2 matrix measured**: hidden Mars records identically to visible Venus (both +6 pts / +1080 accumulate calls flag-on, both 0 flag-off) — the two gates are orthogonal, §11.54's boundary closed in the affirmative. "Work stopped" proven 2 ways (`accumulateCount` frozen + gdb accumulate breakpoint silent while off). Resolved inside I2/I6 — no second walk, no scheduling change (B1/S4 untouched). Real command spelling = `flag object_trails on|off` (the row's `flag trails` is swallowed silently). 94/94 harness, 0 VUID, config byte-identical |
-| B13 | Reference-change view continuity: preserve absolute sky direction across reference switch and free-mode entry/exit; no re-centring | §11.19c, §11.48(a) | Mechanism (revive `view` smoothing quaternion vs derive from alt/az) is the executor's engineering choice and owns the inverse formulas either way. DoD includes adding a view-continuity assertion to scene E (currently silent on exactly this) |
+| B13 | ~~Reference-change view continuity: preserve absolute sky direction across reference switch and free-mode entry/exit; no re-centring~~ **DONE 2026-07-22 → §11.61, §12 below** | §11.19c, §11.48(a), **§11.61** | **`warpToBody` (`set home_planet`) was the ONLY re-centring path** — it held (alt,az,heading) frame-relative and jumped the sky **78.60°** (measured); `switchToBody`/`setFreeMode` already preserved absolute since §11.36. Mechanism = the EXISTING `recoverParams` deduce-identical-view primitive (the `view` quaternion stays retired per §11.19c); inverse formula = `R = viewRotation·placement·calculateSwitchCompensation(dst)`, ONE recoverParams (not switchToBody's freeMode round-trip — that corrupts longitude across a ref change). **Post-fix absDelta ≤6e-6°** (recoverParams Euler floor, = switchToBody's 8e-6°; B30 adds ≤5e-3° fresh-launch), **alt/az delta 78–90° = discriminator** (the two SWAP). Sky-lock composition HANDLED (`lockedSkyRot·comp`, locked switch 6e-6°). Scene E **13→21 OK**, discrimination proven by a recoverParams-disabled mutation (3 ref-switch asserts FLIP to FAIL). **Conflict logged**: B18 §11.58(g)'s "setMount has no caller / runs ALTAZ" is wrong — runtime `mount:equatorial`. No regression (P4 17–51 km, orient 17/48, P-d 0.0000°), config byte-identical |
 | B15 | AoI re-derivation on date change: the launch-jd latch is a defect (dates are jumped mid-navigation) | §11.36, §11.48(a) | Recompute cadence (date-jump event vs continuous) is an engineering call bounded by constraint C3. Should close the ~10% seasonal drift and the scene-E `e_in` first-run miss — verify both |
 | B16 | ~~Expose `reloadSystem` as a command; keep current state (camera + date), no reset~~ **DONE 2026-07-21 → §11.55, §6 below** | §11.36, §11.45(d), §11.48(a), **§11.55** | Landed as **`body action reload`**; both §2(c) channels exercised live. **Scope grew by one structural fix**: the reload's first live use exposed an I5 violation (EnvironmentManager's cross-frame raw-pointer chain cache dereferences freed bodies) — fixed at the class by destruction notification. **One question suspended**: does "keep current state" cover body-scoped runtime overrides (today the file wins, and the old path desyncs) |
 | B17 | Port `view_offset` / `zoom_offset` as a Camera parametrization, config + command channels | §11.19a, §11.45(d), §11.48(a) | In use for tilted dome geometry ⇒ it is a projection-space offset — must NOT be re-derived as a camera rotation |
@@ -975,3 +975,111 @@ and out — every run sends settings as commands; the horizon-mount test edited
 Per-run artifacts `artifacts/b9_{prefix,postfix,horizon}/` gitignored like the
 other B rows. `supervised-by.sh` and the root `USER_QUESTIONS*.md` /
 `FEATURE_REQUESTS.md` left untracked. No harness task list touched.
+
+## 12. Execution log — B13 (Claude Opus 4.8, 2026-07-22)
+
+**Task**: wave §1 task 9 — reference-change view continuity: preserve the
+absolute sky direction across a reference switch and free-mode entry/exit; no
+re-centring. Add a view-continuity assertion to scene E. Full record: **INTENT
+§11.61**.
+
+**FIRST PARAGRAPH / behavior beyond the row.** The row framed the mechanism as
+an open choice ("revive `view` as a smoothing quaternion vs derive from alt/az").
+Neither was needed: **§11.19c had already retired the `view` quaternion and made
+`recoverParams` the one transition primitive**, and `switchToBody`/`setFreeMode`
+have preserved the absolute direction through it since §11.36 (measured here:
+free-mode entry/exit absDelta ≤1e-5°; a switchToBody auto-transition 8e-6°). So
+B13 is NOT a subsystem revival — it is closing the ONE remaining re-centring path,
+`warpToBody` (`set home_planet`), which held (alt,az,heading) in the new frame
+(the REJECTED Q2 option "same framing relative to the new body"). User-visible
+change is scoped to `set home_planet` / `syncCameraReference` view orientation:
+after a reference switch the eye now keeps looking at the same celestial point
+instead of the same local alt/az. Two spillovers beyond the row, both stated:
+(1) the sky-lock re-expression (B18 handoff, §11.61(e)) also changes locked-switch
+behavior; (2) a **source conflict** with B18 §11.58(g) surfaced (§11.61(f)).
+
+**Instruments committed**: `harness/b13_viewcont.py` (new); the permanent
+`absFwd` field added to `Camera::dumpTrace` (root-aligned look direction — the
+frame-independent continuity observable). **Artifacts**:
+`harness/artifacts/b13/` (gitignored).
+
+**Files touched (product)**: `src/experimentalModule/Camera.cpp`
+(`warpToBody` compensation; `switchToBody`/`warpToBody` sky-lock re-expression;
+`lastAbsFwd` compute + `absFwd` dump), `src/experimentalModule/Camera.hpp`
+(`lastAbsFwd` member). **Harness/docs**: `harness/scene_e_spine.py`
+(8 view-continuity asserts, 13→21), `harness/b13_viewcont.py`, `harness/README.md`,
+`.gitignore` (+`artifacts/b13/`).
+
+### DoD, item by item
+
+| # | Item | State | Evidence |
+|---|---|---|---|
+| 1 | Current behavior measured FIRST: does the view re-centre on ref switch today? Report absolute-frame delta (deg) | **met** | `harness/b13_viewcont.py`, fresh launch, FISHEYE, anchored Earth 48.85N/2.35E, look_at az60/alt30. **PRE-FIX ref switch Earth→Mars: absDelta 78.60°, altaz 0.00°** — the sky JUMPED, alt/az held frame-relative = the defect. Free-mode entry/exit absDelta ≤1e-5° = already correct (no defect there) |
+| 2 | After the change: absDelta≈0 across (a) ref switch, (b) free entry, (c) free exit; alt/az delta = inter-frame rotation (discriminator) | **met** | POST-FIX settled: **ref switch Earth→Mars absDelta ≤5e-6° / altazDelta 78.4–90.2°; free enter/exit ≤1e-5° / altaz 2.03°**. The absDelta and altazDelta SWAPPED exactly (78.60°↔0 → 0↔78.60°) = the discriminator that the ABSOLUTE (not frame-relative) direction was held. `artifacts/b13/{pre,post,settled}_result.json` |
+| 3 | Mechanism owns its inverse formula (state representation + transform) | **met** | Representation = the retired-quaternion-free (alt,az,heading) params, transition via `recoverParams` (ZXZ Euler). Inverse: `R = viewRotation()·placementRotation()·comp`, `comp = reference->calculateSwitchCompensation(dst)` (dst-eq→old-ref-eq); `recoverParams(R)` under `reference=dst` reproduces `eye←root` because `mat_new = mat_old·comp` and `comp == accBodyToBodyPos_old·accBodyPosToBody_dst` [Camera.cpp warpToBody; §11.61(a)]. Done directly (one recoverParams), NOT via the freeMode round-trip (corrupts longitude across a ref change) |
+| 4 | Scene E gains a DISCRIMINATING view-continuity assertion (fails pre-change, passes after) | **met** | Scene E **13→21 OK** (8 new asserts). Discrimination PROVEN by temporary mutation (recoverParams(R) disabled in warpToBody, rebuilt exit 0): the 3 ref-switch asserts FLIP to **FAIL** (abs held 90.24°>0.05, discrim 0.00°<10 — exact swap), free-mode + switchToBody asserts stay green (localized). Reverted, rebuilt, 21/21 restored |
+| 5 | Sky-lock composition stated (B18 handoff) — handled or suspended | **met (handled, measured)** | Both switches re-express `lockedSkyRot·comp` — DERIVED from Q2 (under an active lock the view IS the held orientation, so preserving absolute REQUIRES re-expressing it). Measured: `flag lock_sky_position on` + `set home_planet Mars` → absDelta **0.000006°** (absFwd identical), alt/az drift 78.6°. Alternative (re-lock to new body) noted as a 1-line change if Vixy prefers; Q2's literal reading is implemented [§11.61(e)] |
+| 6 | Both entries of the reversible pair | **met** | Ref switch A→B→A (Earth→Mars→Earth): each leg absDelta ≤5e-6°, second from the first's end. Free enter→exit→enter→exit: each ≤1e-5°. Locked A→B→A: 6e-6° each. Traversed in `b13_viewcont.py` and scene E |
+| 7 | Build green, mtime advanced | **met** | `make -C build-claude -j$(nproc)` exit **0** (instrument 04:38:04, fix 04:44:51, mutation 05:01:18, restore 05:03:56); final binary mtime **2026-07-22 05:03:56** |
+| 8 | No regression A–D + E vs recorded classes; config restored byte-identically | **met** | **P4 observer parity 17.35–50.89 km** (gen_a 24.34, gen_b 47.36, gen_moon 27.34, gen_mars 50.89, gen_mars_2 17.35 = the 9–55 km class), **0 UNMODELED/FAIL across all 5**, **orientation 17 restored / 48 divergent, P-d 0.0000°**. **Scene E 21/21, Mars landing 2.270821e-05 AU** (new count stated: 13→21). `config.ini` md5 **03fbee59bc3ec506c58f0a3f1e1d73df** in and out |
+| 9 | Trackers | **met** | INTENT §11.61 (new, (a)–(g)); §13.B B13 → DONE; this dispatch row + this §12 section; `harness/README.md` |
+| 10 | Committed on master-beta, correct author/co-author, no push | **met** | see commit hash below |
+
+### Findings recorded, not fixed (out of scope)
+
+1. **SOURCE CONFLICT — B18 §11.58(g) is wrong about the mount (§11.61(f)).**
+   §11.58(g): *"Camera::setMount has no caller [grep clean] ... runs ALTAZ."*
+   Refuted: `ssystem_factory.cpp:147` calls `setMount(EQUATORIAL)` for the
+   shipped `viewing_mode=equator`, present since commit 96a1b896 (§11.19c);
+   every B13 dump reads `mount:equatorial`. B18's DELTA conclusion still holds
+   (sky-lock is mount-independent); only its "runs ALTAZ" premise is a stale
+   grep. Logged, not fixed (out of row).
+2. **App rewrites config.ini on shutdown.** After a run with an edited
+   `init_fov`, the process persists the running value on exit — the `cp`-restore
+   of the pristine backup must run AFTER the app is fully dead (a `cp` racing the
+   shutdown write leaves init_fov=340). Same class as the B18/B20 backup+restore.
+
+### Suspended for Vixy
+
+None new. The sky-lock reference-switch composition (item 5) is HANDLED
+(Q2-derived, measured), with the alternative "re-lock to new body" noted as a
+trivial reversal if Vixy prefers it — flagged, not blocking. B18's other
+sky-lock compositions (free-mode+lock, VIEW_HORIZON+lock, select-while-tracking
+auto-enable) remain suspended there and are untouched here.
+
+### Reproduction (verbatim)
+
+    make -C build-claude -j$(nproc)                                 # exit 0
+    # defect + fix measurement (FISHEYE, any init_fov):
+    DISPLAY=:2 ./build-claude/src/spacecrafter &                    # wait port 7805
+    python3 src/experimentalModule/harness/b13_viewcont.py \
+        $(pwd)/src/experimentalModule/harness/artifacts/b13/post    # ref-switch 0 / free 0
+    # scene E (init_fov=340, edit then restore AFTER app dead):
+    cp ~/.spacecrafter/config.ini /tmp/cfg.bak
+    sed -i 's/^init_fov  *= 180/init_fov                       = 340/' ~/.spacecrafter/config.ini
+    DISPLAY=:2 ./build-claude/src/spacecrafter &                    # fresh launch
+    python3 src/experimentalModule/harness/scene_e_spine.py         # 21/21 OK
+    # A-D regression:
+    DISPLAY=:2 ./build-claude/src/spacecrafter &                    # fresh launch
+    python3 src/experimentalModule/harness/drive_scenes.py
+    for f in gen_a gen_b gen_moon gen_mars gen_mars_2; do \
+        python3 src/experimentalModule/harness/predict.py /tmp/$f.json | grep P4; done
+    python3 src/experimentalModule/harness/orientation_check.py /tmp/gen_mars.json  # 17/48, P-d 0.0000
+    pkill -f build-claude/src/spacecrafter ; sleep 2 ; cp /tmp/cfg.bak ~/.spacecrafter/config.ini
+    # discrimination: disable recoverParams(R) in Camera::warpToBody -> scene E ref-switch asserts FAIL
+
+### Hygiene
+
+`config.ini` restored byte-identical [md5 `03fbee59bc3ec506c58f0a3f1e1d73df` in
+and out]. The app persists config on shutdown, so the restore `cp` ran after the
+process was confirmed dead (`pgrep` empty). `ssystem.ini` / `beta_features.ini`
+untouched (beta_features absent). Per-run artifacts `artifacts/b13/` gitignored.
+`supervised-by.sh` and the root `USER_QUESTIONS*.md` / `FEATURE_REQUESTS.md`
+left untracked. No harness task list touched.
+
+**Commit** (master-beta, not pushed): "Keep the absolute sky direction across a
+reference switch (INTENT 11.61, B13)", author Claude Opus 4.8, Co-Authored-By
+Claude Fable 5. Single logical commit (fix + instrument + scene-E asserts +
+trackers). This hash-recording line is inside that commit, so the authoritative
+hash is the post-amend value in `git log` (pre-amend was `03e2b963`).
+`supervised-by.sh` left untracked.

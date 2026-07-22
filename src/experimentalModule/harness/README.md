@@ -297,3 +297,36 @@ runtime overrides (`moon_scale`, `body name X hidden true`) are reset to the
 file values while the old path keeps its own - the suspended question in
 11.55(i).  `b16_channels.py` exercises both 2(c) channels in one launch (live
 TCP command, then a script whose single line is the command).
+
+## Reference-change view continuity (B13, 2026-07-22) - INTENT 11.61 / 13.B B13
+
+`b13_viewcont.py [absOutPrefix]` - measures whether the ABSOLUTE sky direction
+is held across a reference switch (`set home_planet` = warpToBody) and free-mode
+entry/exit.  Fresh launch, `enable_tcp`, FISHEYE; no init_fov requirement
+(mat-layer only, no screen px).  Pass an ABSOLUTE dump prefix - the app writes
+`dual_dump` files relative to ITS cwd, not the harness dir.
+
+    DISPLAY=:2 ./build-claude/src/spacecrafter &        # wait for port 7805
+    ./b13_viewcont.py /abs/path/artifacts/b13/post      # -> *_result.json
+
+Observable = `absFwd` (added to `Camera::dumpTrace`): the eye-forward (-z) in the
+ROOT-aligned common-inertial frame = `(-r[2],-r[6],-r[10])` of
+`lastDispatchedMat . reference->accumulatedBodyToBodyPos(jd)` - the same `flat`
+dispatchUpdate builds, so it is directly comparable ACROSS a reference switch
+(the dump's `mat` is in the reference's own equatorial frame, body-specific).
+The DISCRIMINATOR is the alt/az delta: absolute-held => absFwd fixed, alt/az
+moves by the inter-frame rotation; frame-relative-held (the pre-B13 defect) =>
+alt/az fixed, absFwd jumps ~78 deg.  The two ALWAYS swap - that swap is the test.
+
+Two residual floors, both attributed: settled continuity is the `recoverParams`
+Euler floor (~6e-6 deg, shared with switchToBody); a fresh launch's FIRST switch
+can show up to ~5e-3 deg = B30 frame-reconstruction non-determinism (measured
+independently as the spread between two fresh-launch samples of the SAME state),
+not a compensation artifact.  Settle the app before trusting sub-0.01 deg.
+
+Scene E (`scene_e_spine.py`) carries the regression-locked version: 8 asserts
+(absFwd held across set_home_planet Earth<->Mars and free enter/exit/enter, alt/az
+moved on the switch, a switchToBody positive control).  Discrimination proven by
+temporarily disabling `recoverParams(R)` in warpToBody - the 3 ref-switch asserts
+flip to FAIL, the rest stay green.  App rewrites config.ini on shutdown, so any
+`cp`-restore of an init_fov edit must run AFTER the process is fully dead.

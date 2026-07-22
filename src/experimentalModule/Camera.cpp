@@ -204,7 +204,10 @@ void Camera::switchToBody(ModularBody *dst)
     setFreeMode(true); // placement is now identity: total rotation == viewRotation()
     // The compensation maps dst-local coordinates to current-reference-local
     // coordinates - the same view over the new chain (visual continuity).
-    const Mat4f R = viewRotation().multiplyFast(reference->calculateSwitchCompensation(dst));
+    const Mat4f comp = reference->calculateSwitchCompensation(dst);
+    const Mat4f R = viewRotation().multiplyFast(comp);
+    if (skyLocked) // hold the same ABSOLUTE equatorial orientation across the switch
+        lockedSkyRot = lockedSkyRot.multiplyFast(comp);
     reference->leaveEnvironment();
     reference = dst;
     reference->enterEnvironment();
@@ -228,9 +231,26 @@ void Camera::warpToBody(ModularBody *dst)
         distance = dst->getAltitudeReference()
                  + (distance - reference->getAltitudeReference());
     }
+    // Keep the same ABSOLUTE sky direction across the reference change (Q2/A11,
+    // INTENT 11.61): capture the eye orientation and the inter-frame rotation
+    // against the OLD reference, then recover (alt,az,heading) under dst so the
+    // composed view reproduces the SAME orientation in the common inertial frame
+    // as the reference frame rotates under it. Same `calculateSwitchCompensation`
+    // switchToBody uses; the difference is warpToBody ALSO teleports the observer
+    // (lat/lon/altitude re-based above) - position and look direction are
+    // orthogonal. Done DIRECTLY (recoverParams once), NOT through switchToBody's
+    // setFreeMode/setBoundToSurface round-trip: those toggles rewrite longitude
+    // by getAxisRotation and, with the reference changing mid-toggle, would
+    // subtract dst's axis rotation from a longitude that added the old body's -
+    // corrupting the observer's location warpToBody must keep exact.
+    const Mat4f comp = reference->calculateSwitchCompensation(dst);
+    const Mat4f R = viewRotation().multiplyFast(placementRotation()).multiplyFast(comp);
+    if (skyLocked) // hold the same ABSOLUTE equatorial orientation across the switch
+        lockedSkyRot = lockedSkyRot.multiplyFast(comp);
     reference->leaveEnvironment();
     reference = dst;
     reference->enterEnvironment();
+    recoverParams(R);
     if (dst->isSystem()) // same no-surface rule as switchToBody
         setBoundToSurface(false);
 }
@@ -322,6 +342,15 @@ void Camera::update(double jd, float deltaTime)
     if (boundToSurface)
         mat = mat.multiplyFast(reference->computeSurfaceToBody());
     lastDispatchedMat = mat; // harness: dump what actually ran (INTENT 11.14a)
+    // harness: absolute (root-aligned) look direction (INTENT 11.61, B13). `mat`
+    // is eye <- the reference's accumulated-equatorial frame; multiplying by the
+    // reference's accumulatedBodyToBodyPos(jd) is EXACTLY the `flat` dispatchUpdate
+    // computes (eye <- root), so the eye-forward (-z in eye space) expressed in
+    // root coords is frame-independent and comparable across a reference switch.
+    {
+        const Mat4f absMat = mat.multiplyFast(reference->accumulatedBodyToBodyPos(jd));
+        lastAbsFwd = Vec3f(-absMat.r[2], -absMat.r[6], -absMat.r[10]);
+    }
     system = ModularBody::dispatchUpdate(reference, jd, mat);
     system->updateSystem();
     // Reference transitions AFTER the dispatch (INTENT 11.36): the decision
@@ -646,6 +675,9 @@ void Camera::dumpTrace(std::ostream &out) const
         << ",\"longitude\":" << longitude << ",\"latitude\":" << latitude
         << ",\"distance\":" << distance
         << ",\"alt\":" << alt << ",\"az\":" << az << ",\"heading\":" << heading
+        // Absolute (root-aligned common-inertial) look direction - the B13
+        // reference-change / free-mode continuity observable (INTENT 11.61).
+        << ",\"absFwd\":[" << lastAbsFwd[0] << ',' << lastAbsFwd[1] << ',' << lastAbsFwd[2] << ']'
         << ",\"position\":[" << position[0] << ',' << position[1] << ',' << position[2]
         << "],\"refAoI\":" << (reference ? reference->getAreaOfInfluence() : 0)
         << ",\"refDist\":" << (reference ? reference->getDistanceToObserver() : 0)

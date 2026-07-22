@@ -320,6 +320,13 @@ private:
     Vec3f deltaPosition;
     float moveDuration = 0;
     Mat4f lastDispatchedMat; // harness: the mat handed to dispatchUpdate (INTENT 11.14a)
+    // harness: the eye's forward (screen-center) direction in the ROOT-aligned
+    // common-inertial frame (INTENT 11.61, B13). lastDispatchedMat is eye <-
+    // reference's accumulated-equatorial frame (body-specific); this is the same
+    // look direction re-expressed in the single root frame every body shares, so
+    // it is directly comparable ACROSS a reference switch - the absolute-sky-
+    // direction continuity observable Q2/A11 asks for (alt/az is frame-relative).
+    Vec3f lastAbsFwd;
     float longitude;
     float latitude;
     float distance; // In AU
