@@ -6,7 +6,7 @@ Round 1 (Q1–Q27, answered, your answers kept inline) lives in
 `USER_QUESTIONS.md`. Round 2 now has its own file so the live questions
 aren't buried under a few hundred lines of answered history.
 
-**Status: waiting for your answers.** Ten items are live (R1, R3–R11).
+**Status: ANSWERED 2026-07-22 (tester, relayed by Vixy) — propagated to the ledger `src/experimentalModule/INTENT.md` §11.70 + §13 rows.** The live items (R1, R3–R11, R13) were answered inline below and the no-longer-questions (R2, R12) confirmed; the answers here are the raw record, the ledger is what each answer decides (§11.70). Originally: ten+ items live (R1, R3–R11, R13).
 Two are no longer questions — R2 and R12, kept at the bottom: worth a
 skim, because one of them states a behavior you can still veto, and the
 other tells you what your earlier answer produced.
@@ -50,6 +50,7 @@ shadow the globe throws across the rings — nothing to do with Earth or the
 Moon. Eclipse shadows (a body's shadow falling on another body) will be on
 at start-up either way.
 *(ref: A28)*
+The shadow of the planet on the rings should be activated everytime. Only desactivated for test purpose.
 
 **R3. Of the three kinds of camera anchor, which do you actually use?**
 &nbsp;&nbsp;(1) a fixed point in space (x/y/z in AU),
@@ -58,6 +59,7 @@ at start-up either way.
 Any combination is a fine answer, including "only (2)". This decides how
 the anchor system is rebuilt, which is why it's worth a second ask.
 *(ref: B4)*
+We use mostly (3), but we are lacking (2), having an object attached to a body keeping its angle to the planet which is very important for future scripts. (1) has no real interest as it doesn't exist in the solar system. It is only useful in the "Universe" mode as nothing moves. For the "Galaxy" mode, the stars will move through time in the future.
 
 **R4. The two-body trick (Q12): you said your scripts do it — what for?**
 A shell or zone you fly into, a transparent/gaseous body, a cutaway view,
@@ -68,6 +70,8 @@ And the second half: **in free flight, when you reach the lowest allowed
 altitude, should you stop dead and hold there, or slow down more and more
 without ever quite arriving?**
 *(ref: B10)*
+A zone we fly into and also for transparent bodies, if the behavior change, we will adapt the scripts.
+We should stop if going to the lowest altitude. Slowing down will be annoying as it'll take time to go out. 
 
 **R5. Selection when several objects are almost on top of each other
 (Q11): you said "the brightest/biggest/main object".** Those three can
@@ -75,18 +79,22 @@ disagree — a large dim moon next to a small bright one, or a planet next
 to a moon that currently looks bigger. When they disagree, which one
 should win?
 *(ref: A17)*
+The biggest should win because it'll be the brightest in 99% of cases due to surface magnitude. 
 
 **R6. Descending from very far away (the other half of Q6).** Coming down
 from a galactic viewpoint, should the descent aim at whatever body you
 last selected, or just bring you into the general vicinity and let you fly
 the rest yourself?
 *(ref: A18)*
+Last selected.
 
 **R7. The planet grid (the lat/lon lines drawn on a body's surface).**
 Two leftovers from Q16:
 &nbsp;&nbsp;(a) today it appears/disappears together with the planet's rotation axis — should it get its own on/off instead?
 &nbsp;&nbsp;(b) in the old version it only appeared once you were more than ~10 km above the surface. Do you want that back, or should it be visible at any altitude?
 *(ref: A4)*
+Planet rotation axis is the toggle to make it appear onto the planet. It must stay associated.
+Visible at any altitude.
 
 **R8. Colors and reloading (leftover from Q15) — the stakes changed since
 we asked, so here is the honest framing.** If a script reloads a body
@@ -99,6 +107,7 @@ us what you'd *prefer*, and if that differs from what the software
 currently does, it becomes a logged change request for later instead of
 being lost.
 *(ref: A3 → B29)*
+It must reset to the body default or color asked in the script. The user must reload the rule to be applied to it as well.
 
 **R9. Landscapes (leftover from Q18).** You said the landscape changes to
 a specific one when you arrive, and stays on whatever the user picks
@@ -106,6 +115,8 @@ afterwards. Two things that decides:
 &nbsp;&nbsp;(a) should a body's data file be able to name its landscape (`landscape = moon_landscape` in the body's entry), or should the engine keep deciding by built-in rules?
 &nbsp;&nbsp;(b) after the user picks a landscape by hand, how long does that choice last — until they land somewhere else, until they pick another one, or until the end of the session?
 *(ref: A27)*
+Decide by built-in rules.
+Until they land somewhere else or if the user decide to change landscape by script.
 
 **R10. "Linked to Earth or Moon or Sun behavior" (Q24) — what do you
 expect to change?** Since asking, the plan changed in your favor: the
@@ -118,6 +129,7 @@ which body the "moon" in the sky is, day-length handling, anything else.
 We'll compare your expectations against the extracted list; anything you
 expect that we didn't extract is exactly the gap we can't find ourselves.
 *(ref: A29 → B27)*
+Nothing will have to change if we go back.
 
 **R11. The view offset for tilted domes (Q3).** Is it set once for your
 installation (in the config, never touched again), or do scripts change it
@@ -127,6 +139,7 @@ channels — config file and live command — get built either way, so your
 answer no longer changes the design. It still tells us which usage to
 test hardest, which is why the question stays.)*
 *(ref: A24 → B17)*
+Yes, it can change during a show.
 
 **R13. Anchored, then out to the galaxy and back — should the anchor
 survive the round trip?** When you lock the view onto a body (anchor) and
@@ -143,6 +156,7 @@ than the others — it only matters if you actually fly anchored out to
 galactic distance and back during a show; if you never do, say so and we
 stop worrying about it.)
 *(ref: A14 → B20 — deferred here from the B20 investigation, INTENT §11.66(e))*
+The anchor must hold when we get back to this mode. So memorize it for each mode.
 
 ## No longer questions
 
@@ -156,6 +170,7 @@ which is why it could be accepted without re-asking. If that is *not*
 what you meant, say so now — it costs nothing to revisit before release,
 and much more after.
 *(ref: A9 — resolved 2026-07-21)*
+Yes.
 
 **R12. Withdrawn — your Q26 answer was right, and it decided the design.**
 Not a question any more, but you should know what it produced: rather than
@@ -174,6 +189,7 @@ new model. Since then the details firmed up: these files live in the
 the original plus `.disabled` (e.g. `mysystem.ini.disabled`), and adopting
 one is literally just removing `.disabled` from the name.
 *(ref: A2 — resolved 2026-07-21)*
+Ok.
 
 ---
 
