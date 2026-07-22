@@ -1,3 +1,0 @@
-# B16 - proves `body action reload` is reachable from the SCRIPT channel
-# (INTENT 2(c): scriptable AND scriptless, neither foreclosing the other).
-body action reload
