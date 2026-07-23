@@ -1,0 +1,6 @@
+# B10-cmd channel 2 (script): proves the runtime datum_radius/ground_radius
+# command is reachable from the SCRIPT channel (INTENT 2(c): scriptable AND
+# scriptless, neither foreclosing the other). Word order per §11.79(e) D9key.
+# The body CmdScript is loaded (default radii) by the driver before this plays.
+body name CmdScript datum_radius 0
+body name CmdScript ground_radius 0
