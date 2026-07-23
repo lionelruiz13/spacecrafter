@@ -745,6 +745,15 @@ void ModularBody::dumpHops(std::ostream &out) const
             // W0-conversion discriminator reads (visibility-independent, unlike
             // the live axisRotation which only refreshes on visible bodies).
             << ",\"offset\":" << b->re.offset
+            // re.period (rot_periode/24, DAYS, float32 as loaded) - the sidereal
+            // rotation rate the spin formula (ModularBody.hpp:350) divides into.
+            // Projection-free, load-time, deterministic (no jd/visibility jitter,
+            // unlike the cached axisRotation/spin) => the DIRECT commutator-class
+            // observable of the rot_periode data channel (B14-periode, §11.86(d)/
+            // §11.87(e)): a body's row moves iff its rot_periode was edited. Sign
+            // encodes spin direction (negative = retrograde, the Venus -5832 h /
+            // Uranus-moon Ẇ<0 convention).
+            << ",\"period\":" << b->re.period
             << ",\"absoluteTiltFrame\":" << (b->re.absoluteTiltFrame ? "true" : "false");
         const char *names[4] = {"up", "down", "tilt", "spin"};
         const Mat4f *mats[4] = {&up, &down, &tilt, &spin};

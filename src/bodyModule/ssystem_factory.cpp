@@ -755,9 +755,16 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
     // meridian discriminators for the widened 6 non-cluster garbage-tilt moons -
     // Janus carries periodic pole+W nutation (S2 angle), Prometheus is pure
     // secular; both prograde. Instrument only (changes what dual_dump emits).
+    // B14-periode (§11.86(d)/§11.87(e)): the FULL 20 pole-landed moons are hopped
+    // so the dumped re.period rate observable covers the complete edited scope -
+    // every corrected rot_periode is verifiable to its IAU 8640/Wdot value, and
+    // Iapetus (unedited) + Venus/planets stay ULP-0 (the commutator control).
     for (const char *name : {"Earth", "Moon", "Sun", "Mercury", "Venus", "Mars",
                              "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Charon",
-                             "Iapetus", "Proteus", "Puck", "Janus", "Prometheus"}) {
+                             "Iapetus", "Proteus", "Puck", "Janus", "Prometheus",
+                             "Amalthea", "Thebe", "Telesto", "Pandora", "Helene",
+                             "Epimetheus", "Juliet", "Portia", "Rosalind", "Belinda",
+                             "Naiad", "Thalassa", "Despina", "Galatea", "Larissa"}) {
         if (ModularBody *nb = ModularBody::findBodyOnce(name)) {
             out << "{\"type\":\"hops\",\"name\":\"" << name << "\",\"new\":";
             nb->dumpHops(out);
