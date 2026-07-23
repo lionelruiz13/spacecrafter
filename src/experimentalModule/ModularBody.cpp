@@ -739,6 +739,12 @@ void ModularBody::dumpHops(std::ostream &out) const
             // B30 render jitter that perturbs the composed `mat`.
             << ",\"obliquity\":" << b->re.obliquity
             << ",\"ascendingNode\":" << b->re.ascendingNode
+            // re.offset (rot_rotation_offset, DEGREES) - the prime-meridian phase
+            // at epoch. Projection-free, load-time readout of the rot_pole_w0 ->
+            // offset conversion (B14-W0, §11.79(a)); the DIRECT observable the
+            // W0-conversion discriminator reads (visibility-independent, unlike
+            // the live axisRotation which only refreshes on visible bodies).
+            << ",\"offset\":" << b->re.offset
             << ",\"absoluteTiltFrame\":" << (b->re.absoluteTiltFrame ? "true" : "false");
         const char *names[4] = {"up", "down", "tilt", "spin"};
         const Mat4f *mats[4] = {&up, &down, &tilt, &spin};

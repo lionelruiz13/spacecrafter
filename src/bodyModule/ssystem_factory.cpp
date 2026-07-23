@@ -748,9 +748,12 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
     // self-hop `tilt` + the Saturn parent hop in the same chain are the
     // pieces the moon-absolute-pole harness composes; measuring it directly
     // closes B28's untested non-system-centered-parent case (§11.67 item 2).
+    // Iapetus (Saturn, prograde, no periodic W) is the clean B14-W0 discriminator;
+    // Proteus (Neptune, prograde) and Puck (Uranus, RETROGRADE Ẇ) exercise the
+    // rot_pole_w0 -> offset conversion across the sign conventions (§11.79(a)).
     for (const char *name : {"Earth", "Moon", "Sun", "Mercury", "Venus", "Mars",
                              "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Charon",
-                             "Iapetus"}) {
+                             "Iapetus", "Proteus", "Puck"}) {
         if (ModularBody *nb = ModularBody::findBodyOnce(name)) {
             out << "{\"type\":\"hops\",\"name\":\"" << name << "\",\"new\":";
             nb->dumpHops(out);

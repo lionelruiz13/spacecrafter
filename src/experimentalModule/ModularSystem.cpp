@@ -13,6 +13,7 @@
 #include "bodyModules/TailModule.hpp"  // tail-pass activity gate (row 12)
 #include <algorithm>
 #include <cfloat> // FLT_MAX (within-body pair rank)
+#include <cmath>  // std::sin/cos/atan2 (rot_pole_w0 -> offset conversion)
 #include "EntityCore/Core/VulkanMgr.hpp" // G8-budget overflow log
 
 // Same mapping as the old parse (protosystem.cpp setAtmosphere) - retires
@@ -758,10 +759,18 @@ enum class RotFrame { PARENT_RELATIVE, ABSOLUTE_POLE };
 // fallback + fix action) and falls back to the derived default.
 RotFrame resolveRotationFrame(std::map<std::string, std::string> &param,
                               const std::string &englishName,
-                              float &rot_obliquity, float &rot_asc_node)
+                              float &rot_obliquity, float &rot_asc_node,
+                              float &rot_offset)
 {
     rot_obliquity = Utility::strToFloat(param["rot_obliquity"], 0.) * M_PI / 180.;
     rot_asc_node  = Utility::strToFloat(param["rot_equator_ascending_node"], 0.) * M_PI / 180.;
+    // rot_rotation_offset (the prime-meridian offset, DEGREES) is consumed RAW by
+    // default - bit-identical for every legacy body. An absolute-pole body may
+    // instead declare the IAU prime meridian rot_pole_w0 (measured from the node
+    // of the body equator on the ICRF/J2000 equator), which the loader CONVERTS
+    // to this ecliptic-node referential below (D4 §11.79(a), the meridian twin of
+    // the pole conversion - ONE authority, B28/§11.67 class).
+    rot_offset = Utility::strToFloat(param["rot_rotation_offset"], 0.);
 
     const std::string &decl = param["rot_frame"];
     const bool hasPole = (param["rot_pole_ra"] != "" || param["rot_pole_de"] != "");
@@ -799,6 +808,50 @@ RotFrame resolveRotationFrame(std::map<std::string, std::string> &param,
         Utility::rectToSphe(&ra, &de, vsop87_pole);
         rot_obliquity = (M_PI_2 - de);
         rot_asc_node = (ra + M_PI_2);
+
+        // W0 (IAU prime-meridian) conversion - the meridian twin of the pole
+        // conversion above (D4 §11.79(a); ONE authority, B28/§11.67 class). The
+        // IAU W0 (rot_pole_w0) is measured from the ascending node of the body
+        // equator on the ICRF (J2000) equator; rot_rotation_offset is measured
+        // from that node on the ECLIPTIC (ascendingNode = ra_ecliptic+90°, the
+        // §11.69(e) referential mismatch) - a per-body node-difference. Convert
+        // ONLY when the body declares rot_pole_w0 (a fetched IAU value); absent
+        // => rot_rotation_offset raw (bit-identical; backward compat, D9/Q26).
+        if (!param["rot_pole_w0"].empty()) {
+            const float W0 = Utility::strToFloat(param["rot_pole_w0"], 0.) * M_PI / 180.;
+            // IAU prime-meridian direction at W0, in the ecliptic root frame.
+            // node = ascending node of the body equator on the ICRF equator
+            // (RA = pole_ra + 90°); perp = 90° east of it about the right-hand
+            // pole; the meridian is (cos W0)·node + (sin W0)·perp.
+            const Vec3f node(-std::sin(J2000_npole_ra), std::cos(J2000_npole_ra), 0.f);
+            const Vec3f perp(J2000_npole ^ node);
+            const Vec3f pm_icrf(node * std::cos(W0) + perp * std::sin(W0));
+            const Vec3f pm(mat_j2000_to_vsop87.multiplyWithoutTranslation(pm_icrf));
+            // Loader equatorial-frame x/y axes (in the ecliptic) at this tilt.
+            // The rendered meridian is xzrotation(obliquity,ascNode) · zrotation(
+            // axisRotation + π/2) · x̂; solving for the offset that lands it on pm
+            // gives atan2(-(pm·ex), pm·ey) (the getAxisRotation +π/2 folds x̂→ŷ).
+            const Mat4f eqframe(Mat4f::xzrotation(rot_obliquity, rot_asc_node));
+            const Vec3f ex(eqframe.multiplyWithoutTranslation(Vec3f(1, 0, 0)));
+            const Vec3f ey(eqframe.multiplyWithoutTranslation(Vec3f(0, 1, 0)));
+            rot_offset = std::atan2(-(pm * ex), (pm * ey)) * (180. / M_PI);
+            if (rot_offset < 0.f)
+                rot_offset += 360.f;
+            cLog::get()->write("Body '" + englishName + "': rot_pole_w0 (IAU W0="
+                + param["rot_pole_w0"] + " deg, from the ICRF-equator node) converted to "
+                "rot_rotation_offset " + std::to_string(rot_offset)
+                + " deg (ecliptic node).", LOG_TYPE::L_DEBUG);
+        }
+    } else if (!param["rot_pole_w0"].empty()) {
+        // rot_pole_w0 is meaningful only for an absolute pole (it is the IAU
+        // prime meridian measured in the ICRF-equatorial frame); a parent_relative
+        // body has no absolute pole to reference it to. §2(f) actionable log.
+        cLog::get()->write("Body '" + englishName + "': rot_pole_w0 is set but the "
+            "rotation frame is 'parent_relative' (no absolute pole). rot_pole_w0 is the "
+            "IAU prime meridian, measured from the ICRF-equator node, and needs an "
+            "absolute pole. Ignoring rot_pole_w0 and using rot_rotation_offset. To fix: "
+            "add rot_pole_ra/rot_pole_de (+ rot_frame = absolute_pole), or remove "
+            "rot_pole_w0.", LOG_TYPE::L_ERROR);
     }
     return frame;
 }
@@ -844,9 +897,9 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
     // ancestor tilts to it. Bit-identical for the 7 rot_pole_ra planets (frame
     // derives to absolute_pole, byte-for-byte the legacy pole arithmetic, and
     // their Sun parent is system-centered so the accumulation was already inert).
-	float rot_obliquity, rot_asc_node;
+	float rot_obliquity, rot_asc_node, rot_offset;
 	const bool absoluteTiltFrame =
-		(resolveRotationFrame(param, englishName, rot_obliquity, rot_asc_node)
+		(resolveRotationFrame(param, englishName, rot_obliquity, rot_asc_node, rot_offset)
 			== RotFrame::ABSOLUTE_POLE);
 
     ModularBodyCreateInfo createInfo {
@@ -854,7 +907,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         .englishName=englishName,
         .re={
             .period=Utility::strToFloat(param["rot_periode"], Utility::strToFloat(param["orbit_period"], 24.f))/24.f,
-            .offset=Utility::strToFloat(param["rot_rotation_offset"],0.),
+            .offset=rot_offset,   // raw rot_rotation_offset, or the rot_pole_w0 conversion (B28/§11.67 class)
             .epoch=Utility::strToDouble(param["rot_epoch"], J2000),
             .obliquity=rot_obliquity,
             .ascendingNode=rot_asc_node,
