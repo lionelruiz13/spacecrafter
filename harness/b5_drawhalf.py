@@ -15,11 +15,12 @@ Old-executor / camera facts this driver is built on (measured 2026-07-23):
     above 1e14 m flips inGalaxy -> inUniverse, which re-bases the OLD
     observer to 1e9 m and needs one more moveto to clear the fade band.
   * free-mode `moveto altitude X` counts from the reference's
-    getAltitudeReference() = datum_radius: at a MilkyWay reference every
-    moveto lands at 3.2e9 AU + X - the not-yet-landed B10(c) system-node
-    datum=0 default, confirmed live.  The NEW camera is therefore placed
-    with `camera action descend coef <c>` (new-path-only, exact selDist
-    scaling, B21) after each executor-steering moveto.
+    getAltitudeReference() = datum_radius.  B10-datum0 LANDED (INTENT
+    11.75(a)): a MilkyWay reference (a ModularSystem) now has datum=0, so a
+    moveto lands the new camera at X directly (was 3.2e9 AU + X, §11.80).
+    The galexec/uniband legs therefore place the new camera by a DIRECT
+    moveto (the new capability) AND still exercise `camera action descend
+    coef <c>` (new-path-only exact selDist scaling, B21) - both routes green.
   * the camera keeps the surface view direction across the fly-out: aim by
     selecting + tracking the Sun once, then track OFF (the old tracking
     easing never settles and pollutes same-phase floors - measured 278 px).
@@ -166,39 +167,59 @@ check("gal_floors", gf_n == 0,
       f"floor_new={gf_n} (old-phase floor RECORDED: {gf_o} px - old big-halo\n      re-entry easing at the view centre, old-path-only artifact)")
 check("gal_notblack", gnb > 0, f"lit px={gnb}")
 
-# ---- "galexec" leg: executor ->InGalaxy, dot regime ~8e4 AU ---------------
-send(s, "moveto altitude 12000000000000000 duration 0", 4)   # 1.2e16 m: solar->galaxy flip
-send(s, "camera action descend coef 0.005", 3)               # 3.2e9 -> 1.6e7 AU
-send(s, "camera action descend coef 0.005", 3)               # -> 8.0e4 AU
-send(s, f"body action dual_dump filename {OUT}/b5_galexec.json", 2)
-c = cam(f"{OUT}/b5_galexec.json")
-check("galexec_mode", log_has("->InGalaxy"), "app.log '->InGalaxy'")
-check("galexec_reference", c.get("reference") == "MilkyWay"
-      and 6e4 < (c.get("refDist") or 0) < 1e5,
-      f"reference={c.get('reference')!r} refDist={c.get('refDist')} (want ~8.0e4 AU)")
-x1, x2, xf_n, xf_o, xbb1, xbb2, xnb = phase_quad(s, "galexec")
-check("galexec_new_draws", x1 > 0 and x2 > 0,
-      f"cross-phase px32 {x1}@{xbb1} / {x2}@{xbb2} (pre-fix: 0)")
-check("galexec_floors", xf_n == 0, f"floor_new={xf_n} (old floor recorded: {xf_o})")
-check("galexec_notblack", xnb > 0, f"lit px={xnb}")
+# =====================================================================
+# B10-datum0 LANDED (INTENT 11.75(a)): at a MilkyWay reference free-mode
+# `moveto altitude X` now lands at X (getAltitudeReference()==scaledDatumRadius
+# ==0), so the executor-mode observation altitudes are reachable by a DIRECT
+# moveto - no longer only via the descend workaround. This driver keeps BOTH
+# placement routes green (the B10-datum0 regression the row asked for):
+#   * DIRECT moveto (the NEW leg): one moveto lands the new camera at the target
+#     altitude. The metre value is still dual-routed to the OLD observer, so it
+#     ALSO steers the executor (>1e16 solar->galaxy; >1e14 galaxy->universe).
+#   * DESCEND command (the KEPT workaround, B21): still scales the new camera's
+#     selDist exactly - exercised downward from the direct position (a moveto to
+#     a FARther altitude would re-cross the executor thresholds; the descend
+#     command's placement, not the target, is what stays under test).
+# Pre-datum0 both galexec/uniband REQUIRED the descend (moveto landed at 3.2e9
+# AU + X); that path is the b5_datumbase baseline artifact.
+def galactic_leg(tag, mode_str, lo, hi, want):
+    c = cam(f"{OUT}/b5_{tag}.json")
+    check(f"{tag}_mode", log_has(mode_str), f"app.log '{mode_str}'")
+    rd = c.get("refDist") or 0
+    check(f"{tag}_reference", c.get("reference") == "MilkyWay" and lo < rd < hi,
+          f"reference={c.get('reference')!r} refDist={rd} ({want})")
+    q1, q2, qf_n, qf_o, qb1, qb2, qnb = phase_quad(s, tag)
+    check(f"{tag}_new_draws", q1 > 0 and q2 > 0,
+          f"cross-phase px32 {q1}@{qb1} / {q2}@{qb2} (pre-fix: 0)")
+    check(f"{tag}_floors", qf_n == 0, f"floor_new={qf_n} (old floor recorded: {qf_o})")
+    check(f"{tag}_notblack", qnb > 0, f"lit px={qnb}")
 
-# ---- "uniband" leg: executor ->InUniverse, cross-fade band ~1340 AU -------
-send(s, "moveto altitude 185700000000000 duration 0", 4)     # galaxy->universe flip
-send(s, "moveto altitude 185700000000000 duration 0", 4)     # clear the entry fade band
-send(s, "camera action descend coef 0.005", 3)               # 3.2e9 -> 1.6e7 AU
-send(s, "camera action descend coef 0.005", 3)               # -> 8.0e4 AU
-send(s, "camera action descend coef 0.01675", 3)             # -> ~1.34e3 AU (band px~19)
+GALEXEC_M = 12000000000000000            # 1.2e16 m: >1e16 -> InGalaxy;
+                                         # datum 0 -> new cam ~8.02e4 AU (dot)
+UNIBAND_M = int(round(1340 * AU_M))      # 2.005e14 m: >1e14 -> InUniverse;
+                                         # datum 0 -> new cam ~1340 AU (band px~19)
+
+# ---- "galexec": executor ->InGalaxy, dot regime ~8e4 AU -------------------
+# DIRECT moveto route (new).
+send(s, f"moveto altitude {GALEXEC_M} duration 0", 4)
+send(s, f"body action dual_dump filename {OUT}/b5_galexec.json", 2)
+galactic_leg("galexec", "->InGalaxy", 6e4, 1e5, "want ~8.0e4 AU, DIRECT moveto")
+# DESCEND route (kept workaround): scale the new camera down, re-verify it draws.
+send(s, "camera action descend coef 0.5", 3)                 # ~8.0e4 -> ~4.0e4 AU
+send(s, f"body action dual_dump filename {OUT}/b5_galexec_desc.json", 2)
+galactic_leg("galexec_desc", "->InGalaxy", 3e4, 6e4, "want ~4.0e4 AU, DESCEND route")
+
+# ---- "uniband": executor ->InUniverse, cross-fade band ~1340 AU ----------
+# DIRECT moveto route (new): flip to InUniverse and land in-band with moveto.
+send(s, f"moveto altitude {UNIBAND_M} duration 0", 4)        # galaxy->universe flip + place
+send(s, f"moveto altitude {UNIBAND_M} duration 0", 4)        # clear the entry fade band
 send(s, f"body action dual_dump filename {OUT}/b5_uniband.json", 2)
-c = cam(f"{OUT}/b5_uniband.json")
-check("uniband_mode", log_has("->InUniverse"), "app.log '->InUniverse'")
-check("uniband_reference", c.get("reference") == "MilkyWay"
-      and 1100 < (c.get("refDist") or 0) < 1550,
-      f"reference={c.get('reference')!r} refDist={c.get('refDist')} (want in-band ~1340 AU)")
-u1, u2, uf_n, uf_o, ubb1, ubb2, unb = phase_quad(s, "uniband")
-check("uniband_new_draws", u1 > 0 and u2 > 0,
-      f"cross-phase px32 {u1}@{ubb1} / {u2}@{ubb2} (pre-fix: 0)")
-check("uniband_floors", uf_n == 0, f"floor_new={uf_n} (old floor recorded: {uf_o})")
-check("uniband_notblack", unb > 0, f"lit px={unb}")
+galactic_leg("uniband", "->InUniverse", 1100, 1550, "want in-band ~1340 AU, DIRECT moveto")
+# DESCEND route (kept): descend within InUniverse, re-verify it draws. Stay
+# clearly above the SolarSystem AoI (~634 AU) so the reference holds at MilkyWay.
+send(s, "camera action descend coef 0.7", 3)                 # ~1340 -> ~938 AU
+send(s, f"body action dual_dump filename {OUT}/b5_uniband_desc.json", 2)
+galactic_leg("uniband_desc", "->InUniverse", 800, 1100, "want ~938 AU, DESCEND route")
 
 json.dump({"results": results,
            "earth_recorded": {"cross": [c1, c2], "floors": [cf_n, cf_o]}},
