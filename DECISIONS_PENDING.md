@@ -107,7 +107,7 @@ Yes for the new star system format, no for the legacy star system format.
 - **B20/R13 anchor-per-mode memory** `[§11.66(e), §11.70(k)]` — you answered the intent (hold anchor per mode, restore on return); implementation is a §6.9/escalation-policy change (the old-executor→new-camera `changeSystem→switchToBody` coupling, ungated by freeMode). Schedule with §6.9/B5.
 - **B7 §11.15d active hunt** `[§11.74(f)]` — 1 true fire this wave (B23 teardown race); ledger open. Scoped-not-started: high-cycle teardown harness (`b7_probe.gdb` ready) under gdb or ASan/TSan, old render path toggled (uncovered teardown candidate).
 - **B10 multAlt unwired** `[§11.71]` — `Camera::multAlt` has 0 callers (keyboard altitude not dual-routed); B21 routed `descend()` for its need, but the keyboard path is a separate I2 unification for later.
-- **§6.9 executor dissolution (B5)** — gates live-pixel verification of B20 (anchored galactic draw) and B22 (cross-fade); both are mechanism-complete, pixel-unverified until it lands.
+- ~~**§6.9 executor dissolution (B5)** — gates live-pixel verification of B20 (anchored galactic draw) and B22 (cross-fade); both are mechanism-complete, pixel-unverified until it lands.~~ **DRAW-HALF LANDED 2026-07-23 (INTENT §11.80): the gate is lifted — B22's band renders live (verified in-band at 1340 AU); B20's anchored-galactic pixel check and B22's remaining live legs are now dispatchable. B5's residual = content migration / ojmMgr / per-floor efficiency (§6.9).**
 
 ---
 

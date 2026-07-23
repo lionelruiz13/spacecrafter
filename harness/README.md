@@ -365,6 +365,37 @@ child-spin fold reads ~90.2 deg - measured on the real pre-fix binary);
 orbiting control == full spin advance; Moon pair chord length point-predicted
 from the dumped spin (9 m vs 2849 km frozen); rocket |ecl| exact lerp replay.
 
+## Draw-half mode independence (B5, 2026-07-23) - INTENT 11.80 / 13.B B5
+
+`b5_run.sh b5_drawhalf.py [absOutdir]` - verifies the new path DRAWS in the
+inGalaxy/inUniverse executor modes (drawExperimental), that nested systems
+RESOLVE (subsystem-geometry px classification), and that the collapsed
+system shows its star-proxy dot.  Fresh launch, init_fov=340, FISHEYE;
+config restored byte-identically.  Pass an ABSOLUTE outdir (the app writes
+dumps relative to ITS cwd - b13 lesson).
+
+Discriminators (b26 px>32 class, in-run floors + counterfactual build):
+"galexec" (dot through the galaxy executor, '->InGalaxy' witnessed) and
+"uniband" (interior+dot inside the B22 cross-fade band at refDist 1340 AU,
+'->InUniverse' witnessed) - both collapse to exactly 0 on a pre-fix binary
+while every witness stays green.  "gal" (resolved interior at 694 AU) is
+the in-run flag-liveness control (>0 in every build).
+
+Facts the driver rests on (INTENT 11.80): solar executor mode reaches 1e16 m;
+inGalaxy entry clamps the OLD observer to 1e10 m; inUniverse needs a second
+moveto >1e14 m and re-bases to 1e9 m (+ entry fade, cleared by one more
+moveto).  Free-mode `moveto altitude X` at a MilkyWay reference lands at
+3.2e9 AU + X (the B10(c) datum, unimplemented) - the NEW camera is placed
+with `camera action descend coef <c>` instead.  Phase-toggle floors: assert
+the NEW phase only (old big-halo re-entry easing pollutes the old floor,
+278 px full-scale at the view centre, old-path-only); aim via select+track,
+then track OFF before shots.  At fov 340 the DAY-surface cross-phase px32
+is 0 - validate any cross-path control in-scene, never assume b26's 133 px.
+
+`b5_probe.gdb` + `b5_diag.py` - the attribution instruments (breakpoints on
+drawNested/drawStarProxy/Renderer::drawHalo with member prints; the
+proxy-entered-801x/drawHalo-0x measurement that located the halo-flag gate).
+
 ## View-directed free descent (B21, 2026-07-22) - INTENT 11.72 / 13.B B21
 
 `b21_descent.py` (full) + `b21_far.py` (fast far-only) + `b21_probe.py`
