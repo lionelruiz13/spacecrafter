@@ -751,9 +751,13 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
     // Iapetus (Saturn, prograde, no periodic W) is the clean B14-W0 discriminator;
     // Proteus (Neptune, prograde) and Puck (Uranus, RETROGRADE Ẇ) exercise the
     // rot_pole_w0 -> offset conversion across the sign conventions (§11.79(a)).
+    // Janus + Prometheus (Saturn, B14-sat6 §11.75(b)): the pole-axis + W0
+    // meridian discriminators for the widened 6 non-cluster garbage-tilt moons -
+    // Janus carries periodic pole+W nutation (S2 angle), Prometheus is pure
+    // secular; both prograde. Instrument only (changes what dual_dump emits).
     for (const char *name : {"Earth", "Moon", "Sun", "Mercury", "Venus", "Mars",
                              "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Charon",
-                             "Iapetus", "Proteus", "Puck"}) {
+                             "Iapetus", "Proteus", "Puck", "Janus", "Prometheus"}) {
         if (ModularBody *nb = ModularBody::findBodyOnce(name)) {
             out << "{\"type\":\"hops\",\"name\":\"" << name << "\",\"new\":";
             nb->dumpHops(out);
