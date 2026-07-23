@@ -810,6 +810,24 @@ public:
         radius = _radius;
         uncached = true;
     }
+    // Runtime navigation-radius seams (B10 §5.2 / §11.79(e) D9key). Both in AU
+    // (like the `radius` member), the SAME two scalars the ssystem.ini
+    // `datum_radius`/`ground_radius` keys land through the loader
+    // (ModularSystem.cpp:842-843) - this is the RUNTIME channel for them,
+    // reached by `body name <X> datum_radius|ground_radius <km>`. Only the raw
+    // member is written; scaling to scaledDatumRadius/scaledGroundRadius is
+    // deferred to updateCache (uncached=true) - the SINGLE scaling authority
+    // both the load path and this command share (I2, no parallel scaling logic).
+    // The scaled value refreshes on this body's next update() (it is the camera
+    // reference / a visible body wherever it matters), exactly like setRadius.
+    inline void setDatumRadius(float _datumRadius) {
+        datumRadius = _datumRadius;
+        uncached = true;
+    }
+    inline void setGroundRadius(float _groundRadius) {
+        groundRadius = _groundRadius;
+        uncached = true;
+    }
     // Halo emission is body state (create-info flagHalo); modules/loaders
     // adjust it through this accessor, never by friendship (BodyModule.hpp
     // rule). First client: OjmLoader - the old Artificial suppressed its

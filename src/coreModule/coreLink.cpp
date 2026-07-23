@@ -1283,6 +1283,14 @@ void CoreLink::planetSetColor(const std::string& englishName, const std::string&
 	core->ssystemFactory->setBodyColor(englishName, color, c);
 }
 
+bool CoreLink::planetSetDatumRadius(const std::string& englishName, double km) const {
+	return core->ssystemFactory->setBodyDatumRadius(englishName, km);
+}
+
+bool CoreLink::planetSetGroundRadius(const std::string& englishName, double km) const {
+	return core->ssystemFactory->setBodyGroundRadius(englishName, km);
+}
+
 Vec3f CoreLink::planetGetColor(const std::string& englishName, const std::string& color) const {
 	return core->ssystemFactory->getBodyColor(englishName, color);
 }

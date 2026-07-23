@@ -3644,6 +3644,46 @@ int AppCommandInterface::commandBody()
 			coreLink->planetSetColor(argName, argColor, Vcolor);
 			return executeCommandStatus();
 		}
+
+		// Runtime navigation-radius seam (B10 §5.2, §11.79(e) D9key): set a
+		// body's datum_radius / ground_radius scalar at runtime, in km (the
+		// data-key unit). The COMMAND word order matches the DATA keys
+		// (datum/ground FIRST) - Q12's `radius datum`/`radius ground` word order
+		// was rejected by D9key. Routes through the SAME per-body scalar the
+		// loader feeds (scaling stays the single updateCache authority, I2);
+		// new-path concept only, so no old-path mirror. §2(f) diagnostics: a
+		// negative value or an unknown body logs the valid domain + fallback
+		// (value unchanged) + fix action, and does NOT reach the setter.
+		std::string argDatumRadius = args[W_DATUM_RADIUS];
+		if (!argDatumRadius.empty()) {
+			double km = evalDouble(argDatumRadius);
+			if (km < 0.0) {
+				debug_message = _("Command 'body' datum_radius: value must be >= 0 km "
+					"(0 = enterable/transparent body, the body radius = solid surface, "
+					"radius*1.002 = terrain clearance). datum_radius unchanged; reissue "
+					"with a non-negative km value.");
+			} else if (!coreLink->planetSetDatumRadius(argName, km)) {
+				debug_message = _("Command 'body' datum_radius: no body named '") + argName
+					+ _("'. datum_radius unchanged; load the body first ('body action load').");
+			}
+			return executeCommandStatus();
+		}
+
+		std::string argGroundRadius = args[W_GROUND_RADIUS];
+		if (!argGroundRadius.empty()) {
+			double km = evalDouble(argGroundRadius);
+			if (km < 0.0) {
+				debug_message = _("Command 'body' ground_radius: value must be >= 0 km "
+					"(0 = enterable body, descend to the centre; the body radius = solid "
+					"floor; radius*1.002 = terrain clearance). ground_radius unchanged; "
+					"reissue with a non-negative km value.");
+			} else if (!coreLink->planetSetGroundRadius(argName, km)) {
+				debug_message = _("Command 'body' ground_radius: no body named '") + argName
+					+ _("'. ground_radius unchanged; load the body first ('body action load').");
+			}
+			return executeCommandStatus();
+		}
+
 		debug_message = _("Command 'body': case name unknown argument");
 		return executeCommandStatus();
 	}

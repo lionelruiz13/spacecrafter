@@ -636,6 +636,26 @@ void SSystemFactory::syncCameraReference(const std::string &name)
     }
 }
 
+bool SSystemFactory::setBodyDatumRadius(const std::string &englishName, double km)
+{
+    // km -> AU with the loader's own factor (ModularSystem.cpp:842); the raw
+    // ModularBody setter defers scaling to updateCache (single authority, I2).
+    if (ModularBody *body = ModularBody::findBody(englishName)) {
+        body->setDatumRadius(static_cast<float>(km / AU));
+        return true;
+    }
+    return false;
+}
+
+bool SSystemFactory::setBodyGroundRadius(const std::string &englishName, double km)
+{
+    if (ModularBody *body = ModularBody::findBody(englishName)) {
+        body->setGroundRadius(static_cast<float>(km / AU));
+        return true;
+    }
+    return false;
+}
+
 void SSystemFactory::dumpTracePaths(const std::string &file)
 {
     std::ofstream out(file.empty() ? "/tmp/dual_trace.json" : file);

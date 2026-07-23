@@ -620,6 +620,13 @@ void ModularBody::dumpTrace(std::ostream &out) const
         << ",\"screen\":[" << screenPos.first << ',' << screenPos.second
         << "],\"axisRot\":" << axisRotation
         << ",\"boundingRadius\":" << boundingRadius
+        // Navigation radii, scaled, in AU (B10 §5.2 / B10-cmd instrument): the
+        // ONLY numeric observable of the datum_radius/ground_radius scalars, so
+        // the harness can read the runtime `body name X datum_radius|ground_radius`
+        // command taking effect (the behavioral discriminators - moveto altitude
+        // 0 -> centre, free-descent hold at ground - ride these two values).
+        << ",\"scaledDatumRadius\":" << scaledDatumRadius
+        << ",\"scaledGroundRadius\":" << scaledGroundRadius
         << ",\"visible\":" << ((isVisible & isBodyVisible) ? "true" : "false")
         << ",\"screenSize\":" << screenSize
         // Halo color (B29 runtime-color instrument, INTENT §11.65): the

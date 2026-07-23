@@ -580,6 +580,12 @@ public:
 
 	void planetSetColor(const std::string& englishName, const std::string& color, Vec3f c) const;
 
+	//! Runtime navigation-radius seam (B10 §5.2, §11.79(e) D9key): set a body's
+	//! datum_radius / ground_radius (in km, the data-key unit) at runtime.
+	//! Returns false when no such body exists (the §2(f) diagnostic hook).
+	bool planetSetDatumRadius(const std::string& englishName, double km) const;
+	bool planetSetGroundRadius(const std::string& englishName, double km) const;
+
 	Vec3f planetGetColor(const std::string& englishName, const std::string& color) const;
 
 	void planetSetDefaultColor(const std::string& color, Vec3f c) const;

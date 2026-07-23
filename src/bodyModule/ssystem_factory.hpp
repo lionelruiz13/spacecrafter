@@ -444,6 +444,20 @@ public:
         }
     }
 
+    // Runtime per-body navigation-radius seam (B10 §5.2, §11.79(e) D9key):
+    // `body name <X> datum_radius|ground_radius <km>` sets, at runtime, the SAME
+    // two scalars the ssystem.ini keys carry. NEW-PATH ONLY - there is no
+    // old-path datum/ground concept (the split scalars replaced the retired
+    // `solid` flag, §11.71), so unlike setBodyColor there is nothing to mirror.
+    // Value in km (the data-key unit); converted to AU with the loader's own
+    // factor (ModularSystem.cpp:842) - the km->AU only, scaling stays the single
+    // updateCache authority (I2). Returns false when no such body exists
+    // (findBody is nullptr-on-miss) - the §2(f) diagnostic hook. Defined
+    // out-of-line (needs AU from sc_const.hpp; keeping it out of this header
+    // avoids pulling sc_const's pow10 into <cmath>-less translation units).
+    bool setBodyDatumRadius(const std::string &englishName, double km);
+    bool setBodyGroundRadius(const std::string &englishName, double km);
+
 	const Vec3f getBodyColor(const std::string &englishName, const std::string& colorName) const {
         // Getter stays old-authority pre-switchover (§11.46 precedent): the
         // dual-write above keeps both paths' values in lock-step, so old's

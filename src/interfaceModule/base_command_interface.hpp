@@ -132,6 +132,12 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_HP                        "hp"
 #define W_COLOR               		"color"
 #define W_COLOR_VALUE               "color_value"
+// B10 §5.2 / §11.79(e) D9key: the runtime command tokens for the two per-body
+// navigation scalars. The COMMAND matches the DATA word order (datum/ground
+// first, then radius) - the data keys stay datum_radius/ground_radius, and the
+// command uses the SAME word, NOT Q12's rejected `radius datum`/`radius ground`.
+#define W_DATUM_RADIUS              "datum_radius"
+#define W_GROUND_RADIUS             "ground_radius"
 #define W_FADER                     "fader"
 #define W_NONE                      "NONE" //??
 #define W_DEFAULT                   "default"
