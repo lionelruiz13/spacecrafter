@@ -7,7 +7,7 @@
 #include "ojmModule/objl.hpp"
 #include "experimentalModule/Renderer.hpp"
 #include "experimentalModule/ModularBody.hpp"
-#include "experimentalModule/bodyModules/BasicMeshLoader.hpp"
+#include "experimentalModule/moduleLoader/BasicMeshLoader.hpp"
 // (fillShadows lifted to meshShadowFill.hpp when row 2 added more receiver
 //  families - single authority, I2.)
 #include "experimentalModule/meshModules/meshShadowFill.hpp"

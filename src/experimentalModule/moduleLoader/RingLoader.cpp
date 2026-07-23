@@ -1,5 +1,5 @@
 #include "RingLoader.hpp"
-#include "RingModule.hpp"
+#include "experimentalModule/bodyModules/RingModule.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
 #include "tools/sc_const.hpp"

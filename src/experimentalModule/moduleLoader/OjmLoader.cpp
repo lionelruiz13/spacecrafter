@@ -1,5 +1,5 @@
 #include "OjmLoader.hpp"
-#include "OjmModule.hpp"
+#include "experimentalModule/bodyModules/OjmModule.hpp"
 #include "experimentalModule/ModularBody.hpp"
 #include "ojmModule/ojm.hpp"
 #include "tools/app_settings.hpp"

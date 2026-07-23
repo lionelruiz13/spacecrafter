@@ -1,5 +1,5 @@
 #include "OrbitLineLoader.hpp"
-#include "OrbitModule.hpp"
+#include "experimentalModule/bodyModules/OrbitModule.hpp"
 #include "tools/utility.hpp"
 
 uint8_t OrbitLineLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &params) const

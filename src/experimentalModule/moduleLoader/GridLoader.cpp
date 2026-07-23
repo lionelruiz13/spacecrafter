@@ -1,5 +1,5 @@
 #include "GridLoader.hpp"
-#include "PlanetGridModule.hpp"
+#include "experimentalModule/bodyModules/PlanetGridModule.hpp"
 
 uint8_t GridLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &params) const
 {

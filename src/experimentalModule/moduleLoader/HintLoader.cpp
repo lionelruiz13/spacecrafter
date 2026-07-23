@@ -1,5 +1,5 @@
 #include "HintLoader.hpp"
-#include "HintModule.hpp"
+#include "experimentalModule/bodyModules/HintModule.hpp"
 #include "tools/utility.hpp"
 
 uint8_t HintLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &params) const

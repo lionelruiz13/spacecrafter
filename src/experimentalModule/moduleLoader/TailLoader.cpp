@@ -1,5 +1,5 @@
 #include "TailLoader.hpp"
-#include "TailModule.hpp"
+#include "experimentalModule/bodyModules/TailModule.hpp"
 #include "tools/utility.hpp"
 
 uint8_t TailLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &params) const

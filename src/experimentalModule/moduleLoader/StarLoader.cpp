@@ -1,5 +1,5 @@
 #include "StarLoader.hpp"
-#include "StarModule.hpp"
+#include "experimentalModule/bodyModules/StarModule.hpp"
 #include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/Renderer.hpp"
 #include "tools/context.hpp"

@@ -1,5 +1,5 @@
 #include "TrailLoader.hpp"
-#include "TrailModule.hpp"
+#include "experimentalModule/bodyModules/TrailModule.hpp"
 #include "tools/utility.hpp"
 
 uint8_t TrailLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &params) const
