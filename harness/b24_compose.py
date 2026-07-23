@@ -44,6 +44,13 @@ ASCENT_DUR = 0.2
 T2 = 2461233.9   # mid-window: f = 0.5
 T3 = 2461234.1   # past the window
 ALT_END_KM = 2.0
+# B24-att attitude control: RoverMR is a GROUNDED body WITH an explicit
+# rot_periode (HOURS). Explicit rot keys OVERRIDE the surface-lock default
+# (D18 §11.79(l)), so RoverMR spins at the authored rate on BOTH the fix
+# binary and any pre-fix/counterfactual binary (identical control). 12 h ->
+# re.period 0.5 d -> +pi over the D0->D1 window (0.25 d), unambiguous (< 2pi).
+ROVMR_ROT_HOURS = 12.0
+ROVMR_PERIOD_D = ROVMR_ROT_HOURS / 24.0
 MOON_R_KM = 1737.4    # [observed: ~/.spacecrafter/ssystem.ini [moon] radius] - datum default
 AU_KM = 149597870.0   # sc_const AU in km
 
@@ -69,6 +76,25 @@ halo = false
 
 [RoverM:OJM]
 body = RoverM
+type = OJM
+
+[RoverMR]
+name = RoverMR
+parent = Moon
+relation = grounded
+compose = explicit
+type = Artificial
+coord_func = surface_point
+orbit_lon = 45
+orbit_lat = 0
+orbit_alt = 0
+radius = 0.01
+rot_periode = {ROVMR_ROT_HOURS}
+model_name = Curiosity
+halo = false
+
+[RoverMR:OJM]
+body = RoverMR
 type = OJM
 
 [RoverE]
@@ -265,7 +291,8 @@ def main():
     # ---- presence + composition structure ----
     d0 = dumps["D0"]
     for name, parent, rel in (("RoverM", "Moon", 3), ("RoverE", "Earth", 3),
-                              ("RoverC", "Moon", 4), ("RoverEC", "Earth", 4), ("RoverE2", "Earth", 3), ("Rocket", "Moon", 3)):
+                              ("RoverC", "Moon", 4), ("RoverEC", "Earth", 4), ("RoverE2", "Earth", 3), ("Rocket", "Moon", 3),
+                              ("RoverMR", "Moon", 3)):
         if name not in d0:
             fail(f"{name} absent from the dump (composed body not created?)")
             continue
@@ -339,6 +366,124 @@ def main():
             fail(f"Rocket |ecl| at {tag}: {got:.9e} AU vs expected {want:.9e} AU (err {err_m:.1f} m)")
         else:
             ok(f"Rocket altitude at {tag}: err {err_m:.3f} m (exact lerp replay)")
+
+    # ---- ATTITUDE DEFAULT GATE (B24-att, D18 §11.79(l) + D12) ---------------
+    # Channel = the FRESH `attitude` field (computeAxisRotation(lastJD), spin
+    # phase in rad, ROOT-fresh via the translation tick) when the binary carries
+    # it; falls back to the visibility-gated live `axisRot` on a pre-fix binary
+    # that predates the instrument. The mesh-attitude observable is DISJOINT from
+    # the §5.23 grounded FOLD (eclRoot, position, parent-spin) checked above: the
+    # fold moves the body's ORIGIN by the PARENT's spin; the attitude spins the
+    # MESH about the body's OWN axis. Surface-lock zeroes only the latter.
+    def attitude_of(bodies, name):
+        b = bodies.get(name, {})
+        if "attitude" in b:
+            return float(b["attitude"]), "fresh"
+        return float(b.get("axisRot", 0.0)), "live"
+
+    def wrapdiff(a, b):
+        d = (a - b) % (2 * math.pi)
+        return d - 2 * math.pi if d > math.pi else d
+
+    report["attitude"] = {}
+    all_dates = ("D0", "D1", "D2", "D3", "D4")
+    # (1) surface-locked subjects: GROUNDED + no rot keys -> attitude CONSTANT.
+    #     RoverE is INVISIBLE from the default observer (live axisRot stale at 0)
+    #     -> it is the visibility-independence proof of the fresh channel.
+    for name in ("RoverM", "RoverE"):
+        if not all(name in dumps[t] for t in all_dates):
+            fail(f"{name} missing from some date dump (attitude gate)")
+            continue
+        vals, chan = [], None
+        for t in all_dates:
+            v, chan = attitude_of(dumps[t], name)
+            vals.append(v)
+        spread = max(vals) - min(vals)
+        sl = dumps["D0"][name].get("surfaceLocked")
+        report["attitude"][name] = {"channel": chan, "spread_rad": spread,
+                                    "surfaceLocked": sl, "vals": vals}
+        if chan == "fresh":
+            if spread < 1e-6 and sl is True:
+                ok(f"{name} surface-locked: attitude CONSTANT over {all_dates[-1]} window "
+                   f"(spread {spread:.2e} rad; surfaceLocked=true) [{chan}]")
+            else:
+                fail(f"{name} surface-lock FAILED: attitude spread {spread:.3e} rad, "
+                     f"surfaceLocked={sl} (expected <1e-6 rad + true) [{chan}]")
+        else:
+            # pre-fix binary path (no instrument): the SAME body spins 24h -> a
+            # non-zero spread here IS the pre-change discriminator (measured).
+            if spread > 0.5:
+                ok(f"{name} PRE-FIX spins (24h default): live axisRot spread {spread:.3f} rad "
+                   f"over the window [{chan}] - discrimination witnessed")
+            else:
+                fail(f"{name} pre-fix live axisRot spread {spread:.3e} rad (expected >0.5; "
+                     f"body may be invisible/stale on this binary) [{chan}]")
+    # (2) explicit-rot control (RoverMR: grounded WITH rot_periode) rotates as
+    #     AUTHORED - override works; identical on fix & pre-fix binaries.
+    if all("RoverMR" in dumps[t] for t in ("D0", "D1")):
+        a0, chan = attitude_of(dumps["D0"], "RoverMR")
+        a1, _ = attitude_of(dumps["D1"], "RoverMR")
+        measured = abs(wrapdiff(a1, a0))
+        predicted = ((2 * math.pi) * (T1 - T0) / ROVMR_PERIOD_D) % (2 * math.pi)
+        err = abs(measured - predicted)
+        sl = dumps["D0"]["RoverMR"].get("surfaceLocked")
+        report["attitude"]["RoverMR"] = {"channel": chan, "measured_rad": measured,
+                                         "predicted_rad": predicted, "err_rad": err,
+                                         "surfaceLocked": sl, "rot_hours": ROVMR_ROT_HOURS}
+        if err < 0.02 and (sl in (False, None)):
+            ok(f"RoverMR explicit-rot control: |dAttitude| {measured:.4f} rad over 0.25 d == "
+               f"authored {ROVMR_ROT_HOURS} h rate {predicted:.4f} rad (err {err:.4f}; "
+               f"surfaceLocked={sl}) [{chan}]")
+        else:
+            fail(f"RoverMR control off: |dAttitude| {measured:.4f} vs authored {predicted:.4f} rad "
+                 f"(err {err:.4f}, surfaceLocked={sl}) [{chan}]")
+    # (3) 24h-default control (RoverC: ORBITING, no rot keys) rotates at 24h.
+    if all("RoverC" in dumps[t] for t in ("D0", "D1")):
+        a0, chan = attitude_of(dumps["D0"], "RoverC")
+        a1, _ = attitude_of(dumps["D1"], "RoverC")
+        measured = abs(wrapdiff(a1, a0))
+        predicted = ((2 * math.pi) * (T1 - T0) / 1.0) % (2 * math.pi)  # 24h -> period 1 d
+        err = abs(measured - predicted)
+        sl = dumps["D0"]["RoverC"].get("surfaceLocked")
+        report["attitude"]["RoverC"] = {"channel": chan, "measured_rad": measured,
+                                        "predicted_rad": predicted, "err_rad": err, "surfaceLocked": sl}
+        if err < 0.02 and (sl in (False, None)):
+            ok(f"RoverC 24h-default control (orbiting, no rot keys): |dAttitude| {measured:.4f} rad "
+               f"== 24h rate {predicted:.4f} (err {err:.4f}; surfaceLocked={sl}) [{chan}]")
+        else:
+            fail(f"RoverC 24h control off: |dAttitude| {measured:.4f} vs {predicted:.4f} rad "
+                 f"(err {err:.4f}, surfaceLocked={sl}) [{chan}]")
+
+    # ---- D12 ACTING-DEFAULT LOG GATE (fires where the 24h default ACTS) ------
+    # The legacy 24h rot_periode default is an ACTION on a NON-grounded body with
+    # neither rot_periode nor its orbit_period fallback -> LOGGED (D18/D12). A
+    # grounded body (surface-locked = inaction, D18 "inaction is no rotation") and
+    # any explicit-rot body are SILENT. Shipped hyperion/Juno/Vesta hit the 24h
+    # default in the composed twin (no rot_periode emitted) -> they log too.
+    def logged_24h(body):
+        return (f"Body '{body}': no rotation period in the data") in applog
+    should_fire = ["RoverC", "RoverEC", "Hyperion", "Juno", "Vesta"]
+    should_be_silent = ["RoverM", "RoverE", "RoverE2", "Rocket", "RoverMR"]
+    n_fire_ok = 0
+    for b in should_fire:
+        if logged_24h(b):
+            n_fire_ok += 1
+        else:
+            fail(f"D12 log: MISSING for {b} (24h default acts but no log line)")
+    if n_fire_ok == len(should_fire):
+        ok(f"D12 log: 24h-default ACTS logged for all {n_fire_ok} expected bodies "
+           f"({', '.join(should_fire)})")
+    spurious = [b for b in should_be_silent if logged_24h(b)]
+    if spurious:
+        fail(f"D12 log: SPURIOUS for {spurious} (grounded surface-lock / explicit rot -> must be silent)")
+    else:
+        ok(f"D12 log: silent for all grounded/explicit bodies ({', '.join(should_be_silent)}) - "
+           f"inaction stays silent")
+    # exact-count witness: the log line appears once per acting body, no more.
+    n_lines = applog.count("no rotation period in the data")
+    report["d12_log"] = {"fired": [b for b in should_fire if logged_24h(b)],
+                         "silent_ok": not spurious, "total_log_lines": n_lines}
+    ok(f"D12 log: {n_lines} total 24h-default log lines this load")
 
     (OUT / "b24_compose_result.json").write_text(json.dumps({"fails": FAILS, **report}, indent=1))
     print(f"\n{'COMPOSITION SCENE GREEN' if not FAILS else f'{len(FAILS)} FAILURES'} -> b24_compose_result.json", flush=True)

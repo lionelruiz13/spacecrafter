@@ -1,6 +1,6 @@
 {
- "bodies": 90,
- "ecl_exact": 90,
+ "bodies": 93,
+ "float_within_jitter": 93,
  "fails": [],
  "jd_a": 2461233.5,
  "jd_b": 2461233.5,
