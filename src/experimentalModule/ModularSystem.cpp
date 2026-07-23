@@ -64,6 +64,39 @@ ModularSystem::ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info) :
     ModularBody(parent, info), star(this)
 {
     isNotIsolated = false;
+    // Nav-radius CLASS DEFAULT (B10-datum0, §11.75(a) [vixy 2026-07-22]): a
+    // system node is something you navigate INTO, so an UNSET datum/ground
+    // defaults to 0 - its centre: free-mode altitude measured from the centre,
+    // free descent reaching the centre - instead of the plain-body `radius`.
+    // Keyed off system NATURE, not name: this ctor runs for EVERY ModularSystem
+    // whatever its bodyType/name (Universe, MilkyWay/GALAXY, every per-system
+    // node) - I4, never a per-name list. The base ModularBody ctor already
+    // resolved the sentinel to `radius`; the system default overrides it to 0.
+    // USER-OVERRIDABLE: an explicit datum_radius/ground_radius arrives as a
+    // non-sentinel (>= 0) value - via a data key, or the §11.84 runtime command
+    // which writes the member AFTER construction - and neither ctor's
+    // sentinel branch touches it, so it wins (and reverses trivially).
+    const bool datumDefaulted = (info.datumRadius < 0.f);
+    const bool groundDefaulted = (info.groundRadius < 0.f);
+    if (datumDefaulted)
+        datumRadius = 0.f;
+    if (groundDefaulted)
+        groundRadius = 0.f;
+    // D12 (§2.0 - acting defaults must be logged): the system class default
+    // DEVIATES from the universal `radius` default and, on a node with a
+    // non-zero render radius, causes navigation behaviour the node's author did
+    // not write - sharpest at a MilkyWay reference, where free-mode `moveto
+    // altitude X` now lands at X instead of radius + X (a 3.2e9 AU shift,
+    // §11.80). That is an ACTION -> logged (load-time, once per such node).
+    // When radius == 0 (Universe, per-system nodes) the default coincides with
+    // `radius` (centre == surface) -> no distinct behaviour -> inaction -> silent.
+    if ((datumDefaulted || groundDefaulted) && radius != 0.f) {
+        cLog::get()->write("System '" + englishName + "' uses centre-relative navigation "
+            "by class default (datum_radius = ground_radius = 0): free-mode altitude is "
+            "measured from its centre and free descent reaches the centre. To override, set "
+            "datum_radius/ground_radius in data or run 'body name " + englishName
+            + " datum_radius <km>'.", LOG_TYPE::L_INFO);
+    }
 }
 
 void ModularSystem::cleanUp()

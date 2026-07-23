@@ -68,6 +68,17 @@ void BodyModule::dumpState(std::ostream &out) const
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), datumRadius(info.datumRadius), groundRadius(info.groundRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
 {
+    // Nav-radius class default (B10-datum0, §11.75(a)): an UNSET (sentinel)
+    // datum/ground resolves to `radius` here - the plain-body default (altitude
+    // measured from the surface, free descent stopped at it), bit-identical to a
+    // single-reference body. A ModularSystem OVERRIDES this to 0 in its own ctor
+    // (a system is navigated INTO). An explicit value (>= 0, from a data key or a
+    // runtime command) is never the sentinel and is kept unchanged. The loader
+    // already defaults the key to `radius`, so this branch never fires for a
+    // scripted/shipped body; it is the type-level completion so no future
+    // omitting caller can silently leave a body at the negative sentinel.
+    if (datumRadius < 0.f) datumRadius = radius;
+    if (groundRadius < 0.f) groundRadius = radius;
     if (translator)
         nameI18 = translator->translateUTF8(englishName);
     auto &ref = bodyReference[englishName];

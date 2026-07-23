@@ -62,6 +62,19 @@ inline constexpr BodyType operator&(BodyType t1, BodyType t2)
 class ModularSystem;
 class Translator;
 
+//! Sentinel createInfo value for datumRadius/groundRadius meaning "UNSET -
+//! resolve to the type's class default": `radius` for a plain ModularBody,
+//! 0 for a ModularSystem (B10-datum0, §11.75(a) [vixy 2026-07-22] - a system
+//! node is navigated INTO, so its altitude/ground reference is its centre).
+//! Negative because a real navigation radius is >= 0, so an explicit value -
+//! a data key (`datum_radius`/`ground_radius`) or the §11.84 runtime command -
+//! is always >= 0 and WINS over the class default (the resolution branches only
+//! fire on the sentinel). The loader (ModularSystem::loadBody) never emits the
+//! sentinel: it defaults the key to `radius` at the createInfo seam, so plain
+//! shipped/scripted bodies stay bit-identical; only the factory system nodes
+//! omit the key and take the sentinel.
+constexpr float NAV_RADIUS_UNSET = -1.f;
+
 struct ModularBodyCreateInfo {
     std::unique_ptr<Orbit> orbit;
     std::string englishName;
@@ -77,9 +90,14 @@ struct ModularBodyCreateInfo {
     // per R4 §11.70) reads altitude-from-centre and descends to the centre,
     // while a terrain-clearance body (datum=radius, ground=radius·1.002) keeps
     // legacy-exact altitudes but stops free descent above the surface. Both
-    // equal to `radius` ⇒ bit-identical to a single-reference body.
-    float datumRadius;
-    float groundRadius;
+    // equal to `radius` ⇒ bit-identical to a single-reference body. The
+    // NAV_RADIUS_UNSET sentinel default means "not authored - resolve to the
+    // type's class default" (radius for a plain body, 0 for a ModularSystem):
+    // the loader overwrites it with the datum_radius/ground_radius key (default
+    // radius) so plain bodies never carry it; the factory system nodes leave it
+    // and the ctors resolve it (B10-datum0, §11.75(a)).
+    float datumRadius = NAV_RADIUS_UNSET;
+    float groundRadius = NAV_RADIUS_UNSET;
     float oblateness; // Not universal - only for pure spherical body modules (so, single-shape body ?) - may provide immense optimisation and quality
     float solLocalDay;
     // New

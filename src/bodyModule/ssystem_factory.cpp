@@ -90,12 +90,13 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
         .haloColor = {},
         .albedo = 0,
         .radius = 0,
-        // datum/ground = radius (B10): preserves today's runtime bit-identically
-        // (radius 0 ⇒ getAltitudeReference 0 either way). NB this node authored
-        // altitudeRelativeToRadius=false (center-relative INTENT) which the ctor
-        // never realized — moot here (radius 0), SUSPENDED for MilkyWay below.
-        .datumRadius = 0,
-        .groundRadius = 0,
+        // datum/ground OMITTED ⇒ the NAV_RADIUS_UNSET sentinel ⇒ the ModularSystem
+        // ctor's system class default (0) fires (B10-datum0, §11.75(a)). Realizes
+        // the node's authored altitudeRelativeToRadius=false (centre-relative)
+        // intent that the inert ctor never ran. Behaviourally moot here (radius 0
+        // ⇒ 0 either way), but expressed via the class rule keyed off system
+        // nature (I4), NOT a hardcoded value - MilkyWay (radius 3.2e9) is where it
+        // bites, and it must bite off the same rule, not a per-name edit.
         .oblateness = 0,
         .solLocalDay = 0,
         .bodyType = BodyType::SYSTEM,
@@ -114,17 +115,16 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
         .haloColor = {},
         .albedo = 0,
         .radius = MILKYWAY_RADIUS_AU,
-        // datum/ground = radius (B10) PRESERVES TODAY'S RUNTIME bit-identically:
-        // the inert altitudeRelativeToRadius left getAltitudeReference() ==
-        // scaledRadius (== 3.2e9 AU here). This node AUTHORED
-        // altitudeRelativeToRadius=false (measure galaxy-scale altitude from the
-        // galactic CENTRE, datum=0) but the ctor never copied it, so that intent
-        // never ran. Realizing it (datum_radius=ground_radius=0) would change
-        // free-mode position magnitude when MilkyWay is the reference — a
-        // user-visible galaxy-scale navigation change. SUSPENDED FOR VIXY
-        // (INTENT 11.71): keep 3.2e9 (bit-identical) or honour the =false intent (0)?
-        .datumRadius = MILKYWAY_RADIUS_AU,
-        .groundRadius = MILKYWAY_RADIUS_AU,
+        // datum/ground OMITTED ⇒ NAV_RADIUS_UNSET sentinel ⇒ system class default
+        // 0 (B10-datum0, §11.75(a) [vixy 2026-07-22], resolved off the node's
+        // SYSTEM nature in the ModularSystem ctor - never a per-name MilkyWay
+        // edit). This REALIZES the node's authored altitudeRelativeToRadius=false
+        // intent (measure galaxy-scale altitude from the galactic CENTRE) that the
+        // inert ctor never ran. USER-VISIBLE CHANGE, DECIDED knowingly: free-mode
+        // getAltitudeReference() drops 3.2e9 AU -> 0, so `moveto altitude X` at a
+        // MilkyWay reference lands at X, not 3.2e9 AU + X (§11.80 measured the old
+        // value live). Override with the datum_radius/ground_radius data key or
+        // the §11.84 runtime command if 3.2e9 is ever wanted back.
         .oblateness = 0,
         .solLocalDay = 0,
         .bodyType = BodyType::GALAXY,
@@ -332,10 +332,11 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
         .haloColor = {},
         .albedo = 0,
         .radius = 0,
-        // datum/ground = radius (B10): bit-identical (radius 0). Same authored
-        // center-relative intent as Universe/MilkyWay, moot here (radius 0).
-        .datumRadius = 0,
-        .groundRadius = 0,
+        // datum/ground OMITTED ⇒ NAV_RADIUS_UNSET sentinel ⇒ system class default
+        // 0 (B10-datum0, §11.75(a)), same class rule as Universe/MilkyWay. Moot
+        // here (radius 0 ⇒ 0 either way); expressed off system nature (I4), not a
+        // hardcoded value - a per-system node given a non-zero radius would take
+        // the same centre-relative default.
         .oblateness = 0,
         .solLocalDay = 0,
         .bodyType = BodyType::SYSTEM,
