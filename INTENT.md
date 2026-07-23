@@ -12,6 +12,8 @@ Document status: `experimentalModule` is halfway between a draft and a specifica
 
 Document maintenance invariant [verified 2026-07-22, not declared]: **no state is dropped without its transition being recorded** (supersession-with-record: strikethrough-not-delete, rename-trails `ex-Axx`/`was :N`, explicit supersession markers, dashboard flips citing their journal entry). §11 journal entries are append-only — corrections annotate and preserve the original text; §13-class tables and status lines mutate in place, their transitions journaled. What can be trusted and why: verified by exhaustive audit of every line ever deleted from this file across its full pre-split git history (238 deleted lines; matched exact → substring → token-overlap → per-line manual review; all classified information-preserving, zero orphaned). Trust boundary: **exhaustive through code-repo commit `c523e3b1`** (the 2026-07-22 repo split); after it, discipline-maintained — the CC-harness repo's own history is the re-verification instrument (same audit, re-runnable).
 
+Document structure [2026-07-23 granularity split; motive [vixy]: file neared 1 MiB, stressing editors and context windows]: the expanded form of large §5/§11 entries lives in `INTENT/<id>.md` (e.g. `INTENT/11.71.md` for §11.71); the in-place stub (`N. <label> […] → INTENT/<id>.md`) is a **derived index line — on divergence the entry file wins**. The maintenance invariant above applies unchanged across the whole set: an entry's file IS the entry (§11 append-only includes the files; supersession-with-record everywhere); new entries exceeding a summary line are born as file + stub; short entries stay inline. The relocation itself was verified byte-exact (CC-harness commit `832645b`, pure move — reconstruction against pre-split HEAD, md5 `78021c8565b868b8be6fd364cc489cf4`); §6/§8/§9/§10/§12 remain inline and take the same treatment when they grow.
+
 Comparison baseline: old path = `src/bodyModule` (`Body`, `ProtoSystem`, `SolarSystem*`), new path = `src/experimentalModule`. Both are alive simultaneously by design (§1.3).
 
 ---
@@ -239,6 +241,8 @@ Headers are the specification (programmation-principles I1) — doubly so here, 
 
 ## 5. Defects — status tracked, none silently dropped
 
+Expanded entries live in `INTENT/5.<n>.md` (header structure rule: the file is the entry; the line here is a derived stub carrying title + status).
+
 1. **`BMT_BASIC_SELF_SHADOW == BMT_RGBA8_SELF_SHADOW` bit collision** — **FIXED** by Vixy (renumbered 0x20/0x40/…/0x200); verified in tree 2026-07-11 [observed: BodyModule.hpp:51-56].
 2. **`altitudeRelativeToRadius = Utility::isFalse(param["solid"])`** — **LITERAL-STRING BUG FIXED by Vixy** [vixy 2026-07-17: "corrected already for long"]; **verified in source 2026-07-17** […] → INTENT/5.2.md
 3. **`notableBody` grows unboundedly** — **FULLY RESOLVED (consumer live 2026-07-16, §11.30; drain resolved D4 2026-07-11)**. Purpose: input to the Renderer's depth-range splitting (§3.6) [vixy]. Lifecycle: cleared at `dispatchUpdate` start (every frame, whichever path draws — a draw-side-only drain was unbounded during old-path toggle phases), filled by update(), consumed by `Renderer::beginDraw` (bucket merge + orbit union, §11.30).
@@ -437,7 +441,7 @@ Coverage check (every §10.1 family walked against the inventory; the walk itsel
 
 ## 11. Open investigation log (post-context-clear continuation)
 
-Ordered by priority-to-the-refactoring; each entry = observation + where to look.
+Ordered by priority-to-the-refactoring; each entry = observation + where to look. Expanded entries live in `INTENT/11.<n>.md` (header structure rule: the file is the entry — append-only applies there; the line here is a derived stub).
 
 1. **Descriptor-pool validation error** — **FIXED + VERIFIED (2026-07-12; authorized at plan approval)** […] → INTENT/11.1.md
 2. **Earth requests an OJM loader** — **RESOLVED (2026-07-19 probe): intended, and not a 3D model** [measured: live ssystem.ini]. `model_name` has TWO consumers (the §12 row-3 note): a **named ObjL mesh grid** […] → INTENT/11.2.md

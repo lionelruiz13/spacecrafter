@@ -20,7 +20,9 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
   append-only journal, §13 open-item ledger (13.A = suspended for Vixy — blocked by
   protocol; 13.B = Fable territory). Header carries the maintenance invariant
   (supersession-with-record) + provenance tag grammar (`[stated:]` `[observed:]`
-  `[measured]` `[derived]` `[vixy:]` …).
+  `[measured]` `[derived]` `[vixy:]` …). Expanded §5/§11 entries live in
+  `claude/INTENT/<id>.md` (2026-07-23 split); the in-file stub is a derived label —
+  the entry file wins.
 - `claude/DECISIONS_PENDING.md`, `claude/USER_QUESTIONS*.md`, `claude/FEATURE_REQUESTS.md`
   — derived views/channels; the ledger wins on divergence.
 - `claude/harness/` — verification scripts (`b*_run.sh`, `SC_BIN` overridable,
