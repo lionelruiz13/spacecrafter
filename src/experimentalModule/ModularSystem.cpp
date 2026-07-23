@@ -1145,21 +1145,36 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
     // by the module section's own keys).
     std::map<std::string, stringHash_t> nodeParams;
     for (auto &section : sections) {
-        const std::string declare = section.params["declare"];
-        if (declare.empty() || declare == "ModularBody") {
+        // D16 (INTENT §11.79(j)): ONE `type=` key carries the declaration kind.
+        // A value in the module-family vocabulary (ModuleLoaderMgr's own enum,
+        // I2) declares a BodyModule OF that family; anything else declares a
+        // ModularBody node - the value is then the body-type (`BODY`, a legacy
+        // Planet/Moon/Sun carried transitionally on the node until B27/B25-emit
+        // materializes capability keys, or absent), read by loadBody exactly as
+        // the legacy loader reads it. The two `type=` roles never collide: a
+        // module section names its node with `body=`, a node never does - the
+        // presence of that binding disambiguates a mistyped family (§2(f)),
+        // never a value guess across the composed/legacy namespaces (kept
+        // distinct by which loader runs, §11.79(j)).
+        bool isFamily;
+        const BodyModuleType famType =
+            ModuleLoaderMgr::moduleTypeFromName(section.params["type"], isFamily);
+        if (isFamily) {
+            loadDeclaredModule(section.params, section.header, nodeParams, famType);
+        } else if (section.params.count("body")) {
+            const std::string &badType = section.params["type"];
+            cLog::get()->write("Section '[" + section.header + "]' of " + filename + ": "
+                + (badType.empty() ? std::string("missing the type key")
+                                   : "invalid type = '" + badType + "'")
+                + " for a module (it binds a body with body = '" + section.params["body"]
+                + "'). Valid module families are: " + ModuleLoaderMgr::moduleTypeNames()
+                + ". Declaration skipped. To fix: set type to the family to instantiate, or "
+                "remove body= to declare a node instead.", LOG_TYPE::L_ERROR);
+        } else {
             loadBody(section.params);
             const std::string &name = section.params["name"];
             if (!name.empty())
                 nodeParams[name] = section.params;
-        } else if (declare == "BodyModule") {
-            loadDeclaredModule(section.params, section.header, nodeParams);
-        } else {
-            cLog::get()->write("Section '[" + section.header + "]' of " + filename
-                + ": invalid declare = '" + declare + "'. Valid values are 'ModularBody' (a body "
-                "node; also the default when the key is absent) or 'BodyModule' (an explicit "
-                "module bound to a node by body= and relation=). Section skipped. To fix: set "
-                "declare to one of the valid values, or remove it to declare a body.",
-                LOG_TYPE::L_ERROR);
         }
     }
     cLog::get()->write("(system " + englishName + " loaded, composed format)", LOG_TYPE::L_INFO);
@@ -1167,7 +1182,8 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
 }
 
 void ModularSystem::loadDeclaredModule(std::map<std::string, std::string> &params, const std::string &header,
-                                       const std::map<std::string, std::map<std::string, std::string>> &nodeParams)
+                                       const std::map<std::string, std::map<std::string, std::string>> &nodeParams,
+                                       BodyModuleType type)
 {
     const std::string &bodyName = params["body"];
     ModularBody *body = bodyName.empty() ? nullptr : findBodyOnce(bodyName);
@@ -1178,20 +1194,11 @@ void ModularSystem::loadDeclaredModule(std::map<std::string, std::string> &param
             "section below its body's section.", LOG_TYPE::L_ERROR);
         return;
     }
-    bool ok;
-    const std::string &moduleName = params["module"];
-    const BodyModuleType type = ModuleLoaderMgr::moduleTypeFromName(moduleName, ok);
-    if (!ok) {
-        cLog::get()->write("BodyModule declaration '[" + header + "]': "
-            + (moduleName.empty() ? std::string("missing the module key")
-                                  : "invalid module = '" + moduleName + "'")
-            + ". Valid values are: " + ModuleLoaderMgr::moduleTypeNames()
-            + ". Declaration skipped. To fix: set module to the family to instantiate.",
-            LOG_TYPE::L_ERROR);
-        return;
-    }
     // Effective params: the node's params overlaid by this section's own keys
-    // (module key wins); the grammar's own keys are not data.
+    // (module key wins); the grammar's own keys are not data. `type` is skipped
+    // deliberately - it names the module FAMILY here, and must NOT overwrite the
+    // node's own `type=` (its body-type, which loaders like OjmLoader read from
+    // the overlaid params, D16 §11.79(j)).
     stringHash_t effective;
     {
         const auto it = nodeParams.find(bodyName);
@@ -1199,7 +1206,7 @@ void ModularSystem::loadDeclaredModule(std::map<std::string, std::string> &param
             effective = it->second;
     }
     for (const auto &kv : params) {
-        if (kv.first == "declare" || kv.first == "body" || kv.first == "module"
+        if (kv.first == "type" || kv.first == "body"
          || kv.first == "slot" || kv.first == "relation" || kv.first == "compose")
             continue;
         effective[kv.first] = kv.second;
@@ -1236,11 +1243,14 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
         ModularBody *body = ModularBody::findBodyOnce(name);
         if (!body)
             continue; // not loaded (duplicate/orphan/invalid orbit) - not part of the semantic content
-        // Node section: legacy keys preserved verbatim, grammar made explicit.
+        // Node section: legacy keys preserved verbatim (D16 §11.79(j)): the
+        // node's own `type=` (its body-type, e.g. Planet/Moon/Sun) is a
+        // NON-family value, which is exactly what marks the section as a node -
+        // no separate declaration key is emitted. `compose=explicit` turns
+        // deduction off so the modules come from the declarations below.
         ModularSystemFormat::Section node;
         node.header = name;
         node.params = section.params;
-        node.params["declare"] = "ModularBody";
         node.params["compose"] = "explicit";
         if (Utility::isTrue(section.params["bound_to_surface"])) {
             node.params.erase("bound_to_surface"); // translated, not duplicated -
@@ -1249,21 +1259,21 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
         out.push_back(std::move(node));
         // One BodyModule declaration per family the live body deduces - the
         // decomposition the twin exists to make visible [vixy, §11.50(b)].
+        // `type=<family>` is the one declaration key (was declare=BodyModule +
+        // module=<family>, both retired by D16 §11.79(j)).
         for (BodyModuleType type : body->deduceBodyModuleList(section.params)) {
             ModularSystemFormat::Section mod;
             const std::string typeName{ModuleLoaderMgr::moduleTypeName(type)};
             mod.header = name + ":" + typeName;
-            mod.params["declare"] = "BodyModule";
+            mod.params["type"] = typeName;
             mod.params["body"] = name;
-            mod.params["module"] = typeName;
             out.push_back(std::move(mod));
         }
         if (Utility::isTrue(section.params["planet_grid"])) {
             ModularSystemFormat::Section mod;
             mod.header = name + ":GRID";
-            mod.params["declare"] = "BodyModule";
+            mod.params["type"] = "CUSTOM";
             mod.params["body"] = name;
-            mod.params["module"] = "CUSTOM";
             mod.params["slot"] = "GRID";
             out.push_back(std::move(mod));
         }

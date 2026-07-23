@@ -58,26 +58,32 @@ public:
     }
     // Load a system
     void loadSystem(const std::string &filename);
-    // B24 composed-system format (INTENT §11.78(d); grammar spellings pending
-    // Vixy sign-off, §11.78(e)). Same capability authorities as the legacy
-    // path (loadBody / ModuleLoaderMgr::loadModule) behind a different, thin
-    // parser (ModularSystemFormat) - a section is a DECLARATION:
-    //   declare = ModularBody (default when absent, so every legacy section
-    //     is a valid node declaration) -> loadBody, which honors the node
-    //     keys: relation = orbiting|grounded|inner (supersedes the legacy
-    //     bound_to_surface alias; the only data route to INNER) and
-    //     compose = deduced|explicit (explicit -> the body's module list
-    //     comes ONLY from its BodyModule declarations, deduction off).
-    //   declare = BodyModule -> an explicit module: body= names the target
-    //     node (declared EARLIER in the file - the findBody forward-reference
-    //     rule, same as parent=), module= names the family
-    //     (ModuleLoaderMgr::moduleTypeName vocabulary), optional slot=
+    // B24 composed-system format (INTENT §11.78(d); the `type=` respell is
+    // Vixy-signed-off, D16 §11.79(j)). Same capability authorities as the
+    // legacy path (loadBody / ModuleLoaderMgr::loadModule) behind a different,
+    // thin parser (ModularSystemFormat) - a section is a DECLARATION carried by
+    // ONE key, `type=`:
+    //   type = <family> (a value in ModuleLoaderMgr's family vocabulary:
+    //     CUSTOM/MESH/OJM/... - the code's own enum, I2) -> an explicit MODULE:
+    //     body= names the target node (declared EARLIER in the file - the
+    //     findBody forward-reference rule, same as parent=), optional slot=
     //     (multi-instance, the GRID precedent), optional relation= re-routes
     //     (far|near|grounded|in|orbit|trail|tail via ModuleLoader::reroute);
-    //     every other key OVERLAYS the node's params for this one load
-    //     (module key wins - per-module customization; params stay homed on
-    //     the node because loaders read body params, the capability model's
-    //     actual shape).
+    //     every other key OVERLAYS the node's params for this one load (module
+    //     key wins - per-module customization; params stay homed on the node
+    //     because loaders read body params, the capability model's shape).
+    //   type = anything else (the `BODY` sentinel, a legacy Planet/Moon/Sun
+    //     body-type carried transitionally on the node until B27/B25-emit
+    //     materializes capability keys, or absent) -> a NODE: loadBody, which
+    //     reads `type=` as the body-type exactly as the legacy loader does and
+    //     honors relation = orbiting|grounded|inner (supersedes the legacy
+    //     bound_to_surface alias; the only data route to INNER) and
+    //     compose = deduced|explicit (explicit -> module list comes ONLY from
+    //     the BodyModule declarations, deduction off).
+    // The two `type=` roles never collide: a module names its node with body=,
+    // a node never does (that binding, not a value guess, disambiguates a
+    // mistyped family, §2(f)); the composed vs legacy `type=` namespaces stay
+    // apart because a different loader reads each file (D16 §11.79(j)).
     // Sets systemFilename + composedFile, so reloadSystem() re-reads THIS
     // file (a composed system reloads like a legacy one, B16 parity).
     void loadComposedSystem(const std::string &filename);
@@ -94,7 +100,9 @@ public:
     // must reproduce the legacy load exactly; that makes generation a
     // corpus-wide coverage test of the composition grammar
     // (harness/b24_equivalence.py). applyHardcodedContent capability keys are
-    // NOT emitted yet (B27 step 3 - key spellings pending sign-off).
+    // NOT emitted yet (B27 step 3 / B25-emit - a separate task; spellings are
+    // ratified, D10key §11.79(e)). Until it lands, a node's legacy body-type
+    // stays under `type=` here (a non-family value = a valid node declaration).
     void generateComposedTwin(const std::string &legacyFilename, const std::string &outPath);
     // Load a body
     void loadBody(std::map<std::string, std::string> &param);
@@ -185,9 +193,12 @@ private:
     void computeShadows(Renderer &renderer);
     // One BodyModule declaration of the composed format (loadComposedSystem's
     // module half). `nodeParams` = this file's node sections by body name,
-    // the overlay base.
+    // the overlay base. `type` = the module family, already resolved from the
+    // section's `type=` value by the caller (D16 §11.79(j): the one `type=` key
+    // is BOTH the node/module selector AND the family name).
     void loadDeclaredModule(std::map<std::string, std::string> &params, const std::string &header,
-                            const std::map<std::string, std::map<std::string, std::string>> &nodeParams);
+                            const std::map<std::string, std::map<std::string, std::string>> &nodeParams,
+                            BodyModuleType type);
     // Apply some hardcoded content
     void applyHardcodedContent(ModularBodyCreateInfo &createInfo, std::map<std::string, std::string> &param);
     // Clean the list when it is dirty

@@ -19,13 +19,17 @@
 // tolerated (the legacy reader requires exactly "key = value"), and nothing
 // is interpreted.
 //
-// What the sections MEAN (declare=/body=/relation=/compose=...) is the
-// capability layer's contract: ModularSystem::loadComposedSystem.
+// What the sections MEAN (type=/body=/relation=/compose=...) is the
+// capability layer's contract: ModularSystem::loadComposedSystem. In
+// particular the ONE `type=` key selects the declaration kind AND, for a
+// module, its family (D16 §11.79(j): type=<family> declares a BodyModule,
+// anything else declares a ModularBody node).
 // File placement, candidacy and the .ini/.ini.disabled ownership split are
 // the SSystemFactory seam's contract (createModularSystem).
 //
-// Spelling status: the grammar keys are PRODUCT SURFACE (INTENT §2.0 D9),
-// proposed and pending Vixy sign-off (INTENT §11.78(e)) - the B28 protocol.
+// Spelling status: the grammar keys are PRODUCT SURFACE (INTENT §2.0 D9).
+// The `type=` respell (one key replacing declare=+module=) is Vixy-signed-off
+// (D16, INTENT §11.79(j)); the remaining keys were ratified in the same batch.
 namespace ModularSystemFormat {
 
 struct Section {
