@@ -12,15 +12,16 @@ sweep (artifacts dir) and reports, on the LIVE composed screen:
      by NEW-vs-OLD differencing (added intensity over a crop at the SolarSystem
      centre). Reversible pair confirms hysteresis-free.
 
- (C) BIG-HALO POP (found defect, INTENT 11.64(c) falsified live): decomposing the
-     in-band added intensity as addI = C0 + C1*aRes reveals a large ALPHA-
-     INDEPENDENT floor C0 that pops in at T. Root cause: StarModule::drawBigHalo
-     draws the resolved Sun's big-halo glow (renderer.drawSunHalo) with cmag NOT
-     scaled by ModularBody::drawAlpha, so ~80% of the dot->resolved swing is an
-     unfaded POP at T, not a cross-dissolve. The cross-fade smooths only the ~20%
-     drawHaloCore component. Proposed fix (SUSPENDED for Vixy - user-visible fade
-     appearance is A15/tester territory): `cmag *= ModularBody::drawAlpha;` in
-     StarModule::drawBigHalo (same inert x1.0 guarantee as drawHaloCore).
+ (C) BIG-HALO PARTICIPATION (INTENT 11.64/11.81 B22-fix): decomposing the in-band
+     added intensity as addI = C0 + C1*aRes measures how much of the dot->resolved
+     swing is a hard POP at T (the alpha-INDEPENDENT floor C0-pure_dot) vs a smooth
+     cross-dissolve (the alpha-linear C1). Pre-fix the big-halo glow (dominant
+     resolved visual) was UNFADED -> ~80% pop (11.64(c) 'endpoints pixel-exact'
+     falsified live). The B22-fix scales the big-halo on `color` (not cmag:
+     sun_big_halo.frag FLOORS cmag via max(1,cmag+0.1) and its procedural nearHalo
+     disc ignores cmag) so it fades linearly -> pop drops to ~10% (a genuine
+     cross-dissolve; the residual is the 11.64(a) small disc-floor/near-continuous
+     step). This script prints the pop% so any binary re-validates.
 
 Usage: b22_live_analyze.py <artifacts_dir>
 """
@@ -90,9 +91,13 @@ print(f"  pure-resolved addI (px>=T+B) mean={np.mean(above):.0f}")
 print(f"  IN-BAND fit: addI = {c0:.0f} + {c1:.0f}*aRes")
 swing = np.mean(above) - np.mean(below)
 pop = c0 - np.mean(below)
+poppct = 100*pop/swing
 print(f"  dot->resolved swing = {swing:.0f};  ALPHA-INDEPENDENT pop at T = {pop:.0f} "
-      f"= {100*pop/swing:.0f}% of the swing  (the unfaded StarModule big-halo)")
+      f"= {poppct:.0f}% of the swing")
 print(f"  cross-fade (alpha-linear) share = {100*c1/swing:.0f}% of the swing")
-print("\n  => (C) FINDING: the live cross-fade is INCOMPLETE - StarModule::drawBigHalo")
-print("     is not drawAlpha-scaled, so the dominant resolved glow POPS at T.")
-print("     §11.64(c) 'endpoints pixel-exact by construction' is FALSIFIED live.")
+if poppct <= 20:
+    print(f"\n  => (C) VERDICT: big-halo PARTICIPATES in the fade (pop {poppct:.0f}% <= 20%) -")
+    print("     the collapse is a genuine cross-dissolve; residual = 11.64(a) disc-floor step.")
+else:
+    print(f"\n  => (C) VERDICT: cross-fade INCOMPLETE (pop {poppct:.0f}% > 20%) - a dominant")
+    print("     resolved component is UNFADED (pre-B22-fix: the StarModule big-halo, cmag-floored).")

@@ -19,7 +19,12 @@
 # so a re-tune of the A15 band width re-validates automatically.
 import json, os, re, sys
 
-HDR = os.path.join(os.path.dirname(__file__), "..", "ModularBody.hpp")
+# Header moved to src/experimentalModule/ by the repo reorg (commits c523e3b1/
+# 4345e334); keep the old sibling path as a fallback so a re-tune still validates.
+_H = os.path.dirname(__file__)
+HDR = next((p for p in (
+    os.path.join(_H, "..", "..", "src", "experimentalModule", "ModularBody.hpp"),
+    os.path.join(_H, "..", "ModularBody.hpp")) if os.path.exists(p)), None)
 
 def read_constants():
     src = open(HDR).read()
