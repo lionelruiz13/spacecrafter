@@ -425,3 +425,23 @@ FAR-case gotchas learned here:
 - a big step (coef 0.5) de-escalates SolarSystem->Sun mid-measurement (the
   transition machinery re-bases the frame); a SMALL step (coef 0.96) keeps
   ref=SolarSystem and selDist ratio is EXACTLY coef == exact-aim proof.
+
+## Instruments — CaptureMetrics (EntityCore) [vixy: 2026-07-23] + environment note
+
+- `CaptureMetrics` (src/EntityCore/Tools/CaptureMetrics.hpp, MIT) is the sanctioned
+  realtime performance-capture tool: typed per-frame timepoints (type 0 = frame
+  delimiter, names from CAPTURE_FLAG_NAMES), lock-light (atomic ring, 2048-pt
+  batched writes), already wired as `context.stat` -> `log/statistics.dat`
+  (app.cpp:117).
+- Key property [vixy]: the RAW capture drops no structural data — per-frame,
+  per-point timing structure is fully preserved in statistics.dat; analyze()/
+  display() (and the query_statistics summary channel the B22 cost measurement
+  used) DEGRADE it to min/max/avg. When the signal is structural (state
+  persistence, stepping patterns, burst shapes — B30/B32 class), read the RAW
+  file, not the summary.
+- Environment note (session-scoped): from 2026-07-23 ~21:30 the host is quiet —
+  no CPU/RAM-heavy foreign process until end of session [vixy]. Timing
+  measurements taken under the earlier Minecraft-JVM contention (11.81 cost
+  noise bands, 11.82(d) launch crashes) should not be extrapolated; retry loops
+  stay (the 11.15d race predates the contention) but the "severe blocker"
+  framing is over.
