@@ -992,6 +992,36 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         }
     }
     ModularBody *body = parent->createChild(createInfo, rel);
+    // --- Attitude default resolution (B24-att; D18 §11.79(l) + D12 §2.0) ------
+    // The default's home is the loader - the one site that owns rotation-key
+    // resolution (I2/I4); no per-draw sniffing. `authoredSpin` = the author
+    // wrote rot_periode (the spin-rate key the default supplies): its presence
+    // retires every default below and wins as-authored on both relations.
+    //  (1) GROUNDED + no authored spin: the body is STATIC on the terrain it
+    //      stands on (a rover sits still, locked to the surface) -> surface-locked
+    //      attitude (computeAxisRotation drops the own spin). This is INACTION
+    //      (no rotation relative to the surface - D18: "inaction is no rotation")
+    //      -> SILENT (D12). The parent-surface FOLD (§5.23) is unaffected: it uses
+    //      the PARENT's spin on this body's POSITION, a different observable.
+    //  (2) NON-grounded + neither rot_periode NOR its orbit_period fallback: the
+    //      legacy default rot_periode = 24 h ACTS - the body spins once/24 h though
+    //      the author wrote no rotation. Kept for backward compat (D9, "likely the
+    //      legacy behavior") and now LOGGED (D12; §2(f): names what fired, why,
+    //      and the override). The orbit_period synchronous fallback is a distinct
+    //      default (out of this row's scope - a §11.79(l) general-D12 follow-up).
+    {
+        const bool authoredSpin = !param["rot_periode"].empty();
+        if (rel == BodyRelation::GROUNDED) {
+            if (!authoredSpin)
+                body->surfaceLockedAttitude = true;
+        } else if (!authoredSpin && param["orbit_period"].empty()) {
+            cLog::get()->write("Body '" + englishName + "': no rotation period in "
+                "the data (neither rot_periode nor orbit_period) - applying the "
+                "legacy default rot_periode = 24 h, so this body rotates once every "
+                "24 h. To author its rotation explicitly, set rot_periode = <hours> "
+                "(or orbit_period for synchronous rotation).", LOG_TYPE::L_WARNING);
+        }
+    }
     // Binary-orbit completion (EMB class): if this body is the declared
     // secondary of its parent's BinaryOrbit, wire its orbit in - without this
     // the primary sits at the BARYCENTER (old/new Earth delta confirmed as

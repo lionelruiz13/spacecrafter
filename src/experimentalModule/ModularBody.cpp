@@ -630,6 +630,16 @@ void ModularBody::dumpTrace(std::ostream &out) const
     out << "],\"dist\":" << distance
         << ",\"screen\":[" << screenPos.first << ',' << screenPos.second
         << "],\"axisRot\":" << axisRotation
+        // Fresh spin phase (B24-att instrument, INTENT §11.79(l)): recomputed
+        // from the ROOT-fresh lastJD (translation tick, B19) rather than read
+        // from the visibility-gated axisRotation cache - so the surface-locked
+        // attitude default (grounded, constant) vs an authored/legacy-24h spin
+        // (advancing) is discriminable on ANY body, visible or not, immune to
+        // the §5.24/B32 launch-wall-clock spin staleness that makes the cached
+        // axisRot unfit for this comparison. Surface-locked => constant across
+        // dates; spinning => advances at re.period (or the 24 h default).
+        << ",\"attitude\":" << computeAxisRotation(lastJD)
+        << ",\"surfaceLocked\":" << (surfaceLockedAttitude ? "true" : "false")
         << ",\"boundingRadius\":" << boundingRadius
         // Navigation radii, scaled, in AU (B10 §5.2 / B10-cmd instrument): the
         // ONLY numeric observable of the datum_radius/ground_radius scalars, so

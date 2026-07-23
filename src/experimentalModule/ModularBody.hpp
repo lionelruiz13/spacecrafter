@@ -340,21 +340,39 @@ public:
         }
         screenPos.first = mat.r[12] * f;
         screenPos.second = mat.r[13] * f;
-        if (bodyType == BodyType::EARTH) {
-            axisRotation = get_apparent_sidereal_time(jd) * (M_PI / 180);
-        } else {
-            // re.offset is stored in DEGREES (shared RotationElements convention,
-            // cf old getSiderealTime's degree formula); adding it raw to a radian
-            // formula lagged every non-Earth spin by offset*(1 - pi/180)
-            // (measured on the Moon: 20.7604 deg, exactly 38 deg - 38 rad mod 2pi).
-            axisRotation = fmod((jd - re.epoch) / re.period * (2 * M_PI) + re.offset * (M_PI / 180), (2 * M_PI));
-        }
+        axisRotation = computeAxisRotation(jd);
         if (uncached)
             updateCache();       // module/radius part + a fresh updateReach()
         else
             updateReach();       // AoI tracks the current jd every frame (§11.62, B15)
         if (screenSize > 0.004)
             notableBody.push_back(this);
+    }
+
+    // Spin phase (rotation about the polar axis) at date jd - THE single
+    // authority (I2): consumed both by the per-frame cache (update() above) and
+    // by any fresh use-site readout that must not depend on the cache's
+    // visibility-gated freshness (dumpTrace's `attitude`; takes jd, so it is
+    // recomputed, §5.24/B32 stale-spin-safe). Branches, each with its reason:
+    //   - surfaceLockedAttitude (B24-att, D18 §11.79(l)): a GROUNDED body with
+    //     no authored spin is STATIC on the terrain it stands on (a rover sits
+    //     still, locked to the surface). No time-varying own spin; only the
+    //     fixed rot_rotation_offset phase survives. This is INACTION (no rotation
+    //     relative to the surface - D18: "inaction is no rotation"), hence silent
+    //     (D12). Explicit rot_periode retires the flag at load and this branch.
+    //   - EARTH: apparent sidereal time (hard-coded specificity, A1/§5.5).
+    //   - default: the generic sidereal spin. re.offset is stored in DEGREES
+    //     (shared RotationElements convention, cf old getSiderealTime's degree
+    //     formula); adding it raw to a radian formula lagged every non-Earth spin
+    //     by offset*(1 - pi/180) (measured on the Moon: 20.7604 deg = 38 deg - 38
+    //     rad mod 2pi, §11.16). Absent rot_periode falls to the legacy 24 h
+    //     default at load (ModularSystem::loadBody, LOGGED there - D12).
+    inline double computeAxisRotation(double jd) const {
+        if (surfaceLockedAttitude)
+            return re.offset * (M_PI / 180);
+        if (bodyType == BodyType::EARTH)
+            return get_apparent_sidereal_time(jd) * (M_PI / 180);
+        return fmod((jd - re.epoch) / re.period * (2 * M_PI) + re.offset * (M_PI / 180), (2 * M_PI));
     }
 
     inline float getAxisRotation() const {
@@ -1512,6 +1530,14 @@ private:
     bool uncached = true; // Determine whether this body require any update
     bool loaded = false; // Determine whether all nearComponents and inComponents are fully loaded
     bool boundToSurface = false; // Hot-path cache of (relation == GROUNDED) - written by createChild* only
+    // Attitude default (B24-att, D18 §11.79(l)): when set, this body's mesh is
+    // STATIC in its (parent-surface) frame - computeAxisRotation drops the
+    // time-varying own spin, keeping only the fixed rot_rotation_offset phase.
+    // Resolved once at load (ModularSystem::loadBody: grounded AND no authored
+    // rot_periode); false everywhere else, so every non-grounded / explicit-spin
+    // body is bit-identical. Owner = the loader (attitude resolution site, I2/I4);
+    // no per-draw sniffing - all consumers ride computeAxisRotation's constant.
+    bool surfaceLockedAttitude = false;
 
     // Global datas
     // Light state is CURRENT-SYSTEM-scoped: updateSystem writes the system's
