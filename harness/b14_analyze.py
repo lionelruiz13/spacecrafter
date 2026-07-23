@@ -79,8 +79,12 @@ def spectrum(path):
     header, bodies, hops = load(path)
     rows = []
     for n in bodies:
-        o = bodies[n]["old"]; p = o["parent"]
-        if p not in bodies or p in ("Sun","") or bodies[p]["old"]["parent"] != "Sun":
+        o = bodies[n]["old"]
+        if o is None:            # new-path-only system nodes (MilkyWay/SolarSystem/
+            continue             # Universe): no old-path counterpart => no commutator
+        p = o["parent"]
+        if p not in bodies or p in ("Sun","") or bodies[p]["old"] is None \
+           or bodies[p]["old"]["parent"] != "Sun":
             continue
         if n in ("Moon","Charon","Sun","Mars","Earth","Pluto"): continue
         Rm = rot(M(o["rotLocalToParent"]))
