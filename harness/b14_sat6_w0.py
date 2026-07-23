@@ -17,9 +17,12 @@ import sys
 import b14_w0_analyze as W
 
 # name: (pole_ra_file, pole_de_file, W0_pck, Wdot_pck, period_hours_file[loaded])
+# period_hours_file updated to the B14-periode-corrected rot_periode (=8640/Wdot;
+# INTENT §11.88). Pre-periode garbage (Janus 0.1 placeholder, Prometheus
+# -14.711769912 wrong-sign) recorded in §11.87(e); merid_d2 now collapses to ~0.
 W.TEST = {
- "Janus":      (39.8195, 83.3601, 58.83,  518.2359876,  0.1),
- "Prometheus": (40.58,   83.53,   296.14, 587.2890000, -14.711769912),
+ "Janus":      (39.8195, 83.3601, 58.83,  518.2359876,  16.671941367894302),
+ "Prometheus": (40.58,   83.53,   296.14, 587.2890000,  14.711666658152971),
 }
 
 if __name__ == "__main__":

@@ -29,10 +29,14 @@ M = Ax(-23.4392803055555555556*d2r) @ Az(0.0000275*d2r)  # mat_j2000_to_vsop87
 def s2r(l,b): return np.array([math.cos(l)*math.cos(b), math.sin(l)*math.cos(b), math.sin(b)])
 
 # name: (pole_ra_file, pole_de_file, W0_pck, Wdot_pck, period_hours_file)
+# period_hours_file updated to the B14-periode-corrected rot_periode (=8640/Wdot,
+# signed; INTENT §11.88). The pre-periode garbage values that produced the §11.86(d)
+# residuals (Proteus 1.122852570617394 d-in-h, Puck +0.7625674771168559 d-in-h wrong
+# -sign) are recorded there; merid_d2 now collapses to ~0.
 TEST = {
  "Iapetus": (318.16,   75.03,   355.2,   4.5379572,     1903.940390),
- "Proteus": (299.2134, 42.4321, 93.38,   320.7654228,   1.122852570617394),
- "Puck":    (257.0919, -15.4127,91.24,  -472.5450690,   0.7625674771168559),
+ "Proteus": (299.2134, 42.4321, 93.38,   320.7654228,   26.935571560613983),
+ "Puck":    (257.0919, -15.4127,91.24,  -472.5450690,  -18.28397028517083),
 }
 J2000 = 2451545.0
 
