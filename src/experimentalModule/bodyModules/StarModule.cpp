@@ -38,7 +38,21 @@ void StarModule::drawBigHalo(Renderer &renderer, ModularBody *body)
     }
     if (rmag < 32.f)
         rmag = 32.f;
-    renderer.drawSunHalo(body->getScreenPos(), body->getHaloColor(), rmag, cmag, screenR);
+    // System-collapse cross-fade (B22, INTENT 11.64/11.81): the star's big-halo
+    // glow is the DOMINANT visual of a resolved nested system, so it MUST take
+    // the fade or the collapse POPS at the threshold (measured live: ~74% of the
+    // dot->resolved swing appeared unfaded - 11.64's own "the interior fades IN"
+    // contract, falsified at 11.80's surface).
+    // NB the fade rides `color`, NOT `cmag`: sun_big_halo.frag is
+    //   FragColor = color * (farHalo*max(1,cmag+0.1) + nearHalo)
+    // so cmag is FLOORED (max(1,..)) for the texture glow and IGNORED by the
+    // procedural nearHalo disc - scaling cmag barely dims it (measured ~2000 of
+    // ~28000). `color` multiplies the whole FragColor, so color*=drawAlpha fades
+    // BOTH the glow and the disc linearly. drawAlpha is 1.0 in every frame outside
+    // ModularSystem::drawNested's band (default 1.f; set to savedAlpha*t for the
+    // interior, restored after) => x1.0f EXACT IEEE identity everywhere the
+    // collapse is not mid-fade (the same inert guarantee as drawHaloCore).
+    renderer.drawSunHalo(body->getScreenPos(), body->getHaloColor() * ModularBody::drawAlpha, rmag, cmag, screenR);
 }
 
 // FAR component: the sole live hook (farComponents are drawn via draw(), in
