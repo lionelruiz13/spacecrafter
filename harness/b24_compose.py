@@ -47,9 +47,13 @@ ALT_END_KM = 2.0
 MOON_R_KM = 1737.4    # [observed: ~/.spacecrafter/ssystem.ini [moon] radius] - datum default
 AU_KM = 149597870.0   # sc_const AU in km
 
+# D16 respelled grammar (INTENT 11.79(j)): the ONE `type=` key is the
+# declaration kind. On a node it is the body-type (Artificial here - a
+# non-family value, which is what marks the section as a node, no separate
+# declare= key); on a module section it is the family (type=OJM, replacing the
+# retired declare=BodyModule + module=OJM pair).
 SECTIONS = f"""
 [RoverM]
-declare = ModularBody
 name = RoverM
 parent = Moon
 relation = grounded
@@ -64,12 +68,10 @@ model_name = Curiosity
 halo = false
 
 [RoverM:OJM]
-declare = BodyModule
 body = RoverM
-module = OJM
+type = OJM
 
 [RoverE]
-declare = ModularBody
 name = RoverE
 parent = Earth
 relation = grounded
@@ -84,12 +86,10 @@ model_name = Curiosity
 halo = false
 
 [RoverE:OJM]
-declare = BodyModule
 body = RoverE
-module = OJM
+type = OJM
 
 [RoverE2]
-declare = ModularBody
 name = RoverE2
 parent = Earth
 relation = grounded
@@ -104,12 +104,10 @@ model_name = Curiosity
 halo = false
 
 [RoverE2:OJM]
-declare = BodyModule
 body = RoverE2
-module = OJM
+type = OJM
 
 [RoverEC]
-declare = ModularBody
 name = RoverEC
 parent = Earth
 relation = orbiting
@@ -124,12 +122,10 @@ model_name = Curiosity
 halo = false
 
 [RoverEC:OJM]
-declare = BodyModule
 body = RoverEC
-module = OJM
+type = OJM
 
 [RoverC]
-declare = ModularBody
 name = RoverC
 parent = Moon
 relation = orbiting
@@ -144,12 +140,10 @@ model_name = Curiosity
 halo = false
 
 [RoverC:OJM]
-declare = BodyModule
 body = RoverC
-module = OJM
+type = OJM
 
 [Rocket]
-declare = ModularBody
 name = Rocket
 parent = Moon
 relation = grounded
@@ -167,9 +161,8 @@ model_name = Curiosity
 halo = false
 
 [Rocket:OJM]
-declare = BodyModule
 body = Rocket
-module = OJM
+type = OJM
 """
 
 FAILS = []

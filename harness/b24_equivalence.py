@@ -20,14 +20,23 @@ a leftover enabled file silently re-specifies every next run, B26 hygiene).
 
 Comparison (new-path fields of the dual_dump, matched by body name):
   - body set equality (a body lost or invented by the composed load = FAIL),
-  - per body EXACT match: parent, relation, modules (slot inventory),
-    routing (per-list counts), ecl (parent-relative position - orbit output,
-    deterministic at equal frozen jd, compared as exact strings), lastJD,
-    boundingRadius, axisRot,
+  - per body EXACT match on the STRUCTURAL fields: parent, relation,
+    modules (slot inventory), routing (per-list counts), lastJD - these carry
+    no float jitter and are where a broken respell shows (a dropped/added/
+    re-routed module, a lost/re-parented body); the [Moon:MESH]-deletion
+    discrimination lands here,
+  - ecl (parent-relative orbit output) and boundingRadius compared under a
+    FLOAT32-EPSILON tolerance, NOT exact strings: both are new-path float
+    fields and are not bit-stable across fresh launches (B30, INTENT 11.53(e)),
+    proven pre-existing (the MilkyWay/Universe boundingRadius denormal flake +
+    a one-off Mimas.ecl last-digit jitter reproduce on the pre-respell binary
+    and composed-vs-composed) - the tolerance admits that jitter and nothing
+    larger (see the comparison loop),
   - the shadowing log line fired in B and NOT in A (the self-naming
     precedence evidence, 11.51(a)).
 `mat`/`screen`/`dist` are observer-composed (camera state) and carry the B30
-fresh-launch variance - deliberately NOT part of this gate.
+fresh-launch variance - deliberately NOT part of this gate; axisRot excluded
+too (the B30/B32 spin-phase twin).
 
 Exit 0 = equivalence holds; 1 = any divergence (each named on stdout).
 """
@@ -47,6 +56,40 @@ SHADOW_MARK = "Composed system file modularSystem/SolarSystem.ini wins"
 TWIN_MARK = "Composed twin of ssystem.ini generated"
 
 FAILS = []
+
+# B30 float32-jitter tolerance (see the comparison loop): differ only when the
+# gap clears BOTH an absolute denormal floor and a relative float32 bound.
+TOL_ABS = 1e-18
+TOL_REL = 1e-6
+
+
+def _close(x, y):
+    d = abs(x - y)
+    return d <= TOL_ABS or d <= TOL_REL * max(abs(x), abs(y))
+
+
+def scalar_close(sa, sb):
+    if sa == sb:
+        return True
+    try:
+        return _close(float(sa), float(sb))
+    except (TypeError, ValueError):
+        return False
+
+
+def floats_close(sa, sb):
+    """Compare two 'x,y,z' ecl strings component-wise under the B30 tolerance."""
+    if sa == sb:
+        return True
+    if sa is None or sb is None:
+        return False
+    va, vb = sa.split(","), sb.split(",")
+    if len(va) != len(vb):
+        return False
+    try:
+        return all(_close(float(pa), float(pb)) for pa, pb in zip(va, vb))
+    except ValueError:
+        return False
 
 
 def fail(msg):
@@ -208,24 +251,37 @@ def main():
     for name in sorted(set(a) & set(b)):
         na, nb = a[name], b[name]
         checked += 1
-        for field in ("parent", "relation", "modules", "routing", "boundingRadius", "lastJD"):
+        # STRUCTURAL fields stay EXACT - a body lost/re-parented/re-related or a
+        # module added/dropped/re-routed is the class the respell could break,
+        # and the [Moon:MESH]-deletion discrimination lands here (modules +
+        # routing). These are integers / small enum strings, not float sums, so
+        # they carry no B30 jitter.
+        for field in ("parent", "relation", "modules", "routing", "lastJD"):
             if na.get(field) != nb.get(field):
                 fail(f"{name}.{field}: {na.get(field)!r} != {nb.get(field)!r}")
-        # axisRot is NOT a cross-launch field: an A-vs-A control (two legacy
-        # launches, same frozen scene) shows the same scatter on the same ~20
-        # pole-bearing moons (Belinda 8e-2, Caliban 9e-5, Phobos 7e-3 rad...)
-        # - spin phase leaks launch wall-clock state instead of recomputing
-        # from the frozen jd. Pre-existing, path-independent; recorded as the
-        # rotation twin of the B19 freshness class (INTENT 11.78(f), D8
-        # use-site concern). Gate fields stay the deterministic set.
-        if ecl_a.get(name) != ecl_b.get(name):
-            fail(f"{name}.ecl differs (exact-string): [{ecl_a.get(name)}] vs [{ecl_b.get(name)}]")
+        # ecl and boundingRadius are FLOAT fields of the NEW path and are NOT
+        # bit-stable across fresh launches (B30, INTENT 11.53(e)): exact-string
+        # equality on them is unsound. PROVEN pre-existing this task: the SAME
+        # MilkyWay/Universe boundingRadius denormal flake (0 <-> ~1e-40) and a
+        # one-off Mimas.ecl float32 last-digit jitter (~1.2e-11 AU on 1e-3)
+        # reproduce on the PRE-RESPELL binary and on a composed-vs-composed
+        # B-vs-B control - launch non-determinism, not a format difference (the
+        # respell only touches the composed LOAD, structurally). So these two
+        # fields get a float32-epsilon tolerance: a value differs only when it
+        # exceeds BOTH an absolute denormal floor (1e-18) AND a relative float32
+        # bound (1e-6) - orders below any real orbit/size error, orders above
+        # the jitter. axisRot stays fully EXCLUDED (the same B30/B32 spin twin).
+        if not floats_close(ecl_a.get(name), ecl_b.get(name)):
+            fail(f"{name}.ecl differs beyond float32 jitter: [{ecl_a.get(name)}] vs [{ecl_b.get(name)}]")
+        elif not scalar_close(na.get("boundingRadius"), nb.get("boundingRadius")):
+            fail(f"{name}.boundingRadius differs beyond float32 jitter: "
+                 f"{na.get('boundingRadius')!r} vs {nb.get('boundingRadius')!r}")
         else:
             n_exact += 1
-    ok(f"per-body fields checked on {checked} bodies; ecl exact-string identical on {n_exact}")
+    ok(f"per-body fields checked on {checked} bodies; ecl+boundingRadius within float32 jitter on {n_exact}")
 
     (OUT / "b24_result.json").write_text(json.dumps({
-        "bodies": len(a), "ecl_exact": n_exact, "fails": FAILS,
+        "bodies": len(a), "float_within_jitter": n_exact, "fails": FAILS,
         "jd_a": ha.get("jd"), "jd_b": hb.get("jd"),
         "exit_a": rc_a, "exit_b": rc_b,
     }, indent=1))
