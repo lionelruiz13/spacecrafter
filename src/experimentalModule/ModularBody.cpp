@@ -66,7 +66,7 @@ void BodyModule::dumpState(std::ostream &out) const
 }
 
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
-    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), datumRadius(info.datumRadius), groundRadius(info.groundRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), isHaloEnabled(info.isHaloEnabled)
+    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), datumRadius(info.datumRadius), groundRadius(info.groundRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), siderealTimeModel(info.siderealTimeModel), isHaloEnabled(info.isHaloEnabled)
 {
     // Nav-radius class default (B10-datum0, §11.75(a)): an UNSET (sentinel)
     // datum/ground resolves to `radius` here - the plain-body default (altitude

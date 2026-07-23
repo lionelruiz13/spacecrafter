@@ -26,13 +26,19 @@ class BodyTesselation; // both-paths tesselation seam (see setTesselation)
 
 // Structural nature of a body. NOT a feature taxonomy (features live in
 // BodyModule slots - G1): what remains here is only what modules cannot
-// express: STAR = emits light (bit-tested via isStar()); EARTH/EARTH_MOON =
-// hard-coded specificities, applied only through applyHardcodedContent when
-// the data says hardcoded=true; MINOR_BODY = mass-instanced small bodies
-// (e.g. upscaled asteroid ring): many visible at once, exempt from
-// inter-body shadowing, cluster-optimizable.
+// express: STAR = emits light (bit-tested via isStar()); MINOR_BODY =
+// mass-instanced small bodies (e.g. upscaled asteroid ring): many visible at
+// once, exempt from inter-body shadowing, cluster-optimizable.
 // SPHERICAL_BODY/SINGLE_BODY/CUSTOM_BODY: pre-composition remnants - fate
 // decided in the second pass (INTENT.md 6.3).
+// EARTH / EARTH_MOON RETIRED (B25-emit, §11.73 A3, 2026-07-23): the only
+// hard-coded specificity of BodyType::EARTH that still ACTED was apparent
+// sidereal time - now the SiderealTimeModel selector below (a capability key,
+// `sidereal_time`, A1) - plus Earth's shadow color, which was already the
+// existing `shadow_color` key with a name-keyed default (A2). BodyType::EARTH_MOON
+// had ZERO consumers [re-verified at delete time, whole-src grep 2026-07-23].
+// Both were set only via the applyHardcodedContent name sniff - the identity
+// sniff D14 retires for the composed format (§11.79(h)).
 enum class BodyType : unsigned char {
     VOID,
     ANCHOR, // Simplest type, just an anchor
@@ -43,9 +49,20 @@ enum class BodyType : unsigned char {
     SINGLE_BODY, // A body with a single shape
     CUSTOM_BODY, // A body with multiple shapes
     STAR = 0x40, // A body who emit light
-    // Bodies with hard-coded specificities
-    EARTH = 0x80,
-    EARTH_MOON,
+};
+
+// The analytic model for a body's spin phase about its polar axis - the
+// sidereal-time selector (B27 A1; D10key ratified spelling `sidereal_time`,
+// §11.79(e)). A SELECTABLE analytic kind, parallel to coord_func: the data
+// picks it, not the body's identity (which is exactly what retires the
+// englishName=="Earth" sniff, §5.5). GENERIC = the default (jd-epoch)/period
+// spin, every body; EARTH_APPARENT = apparent sidereal time (nutation), Earth's
+// model. Legacy loads still reach EARTH_APPARENT through the name sniff
+// (applyHardcodedContent, legacy format only - D14); the composed format
+// declares it explicitly as the key the twin emits (§11.73 A1).
+enum class SiderealTimeModel : unsigned char {
+    GENERIC,
+    EARTH_APPARENT,
 };
 
 enum ModularBodyTraits {
@@ -103,6 +120,12 @@ struct ModularBodyCreateInfo {
     // New
     Vec3f shadowAbsorbtion;
     float brightness;
+    // Spin-phase analytic model (B27 A1, the `sidereal_time` key). Default
+    // GENERIC ⇒ an absent key reproduces every body exactly; EARTH_APPARENT is
+    // set from the key (composed format) or by the legacy name sniff
+    // (applyHardcodedContent). Ordered before bodyType to match the ctor's
+    // member-init order.
+    SiderealTimeModel siderealTimeModel = SiderealTimeModel::GENERIC;
 
     // Deprecated
     BodyType bodyType; // Deprecated
@@ -360,7 +383,10 @@ public:
     //     fixed rot_rotation_offset phase survives. This is INACTION (no rotation
     //     relative to the surface - D18: "inaction is no rotation"), hence silent
     //     (D12). Explicit rot_periode retires the flag at load and this branch.
-    //   - EARTH: apparent sidereal time (hard-coded specificity, A1/§5.5).
+    //   - EARTH_APPARENT: apparent sidereal time (B27 A1; the sidereal_time
+    //     capability key, no longer englishName=="Earth" / BodyType::EARTH -
+    //     §5.5 identity sniff retired, §11.73). Set by the key (composed) or by
+    //     the legacy name sniff (applyHardcodedContent, legacy format only, D14).
     //   - default: the generic sidereal spin. re.offset is stored in DEGREES
     //     (shared RotationElements convention, cf old getSiderealTime's degree
     //     formula); adding it raw to a radian formula lagged every non-Earth spin
@@ -370,7 +396,7 @@ public:
     inline double computeAxisRotation(double jd) const {
         if (surfaceLockedAttitude)
             return re.offset * (M_PI / 180);
-        if (bodyType == BodyType::EARTH)
+        if (siderealTimeModel == SiderealTimeModel::EARTH_APPARENT)
             return get_apparent_sidereal_time(jd) * (M_PI / 180);
         return fmod((jd - re.epoch) / re.period * (2 * M_PI) + re.offset * (M_PI / 180), (2 * M_PI));
     }
@@ -836,6 +862,11 @@ public:
     inline const Vec3f &getShadowAbsorbtion() const {
         return shadowAbsorbtion;
     }
+    //! The body's spin-phase analytic model (B27 A1). Read by the twin generator
+    //! (generateComposedTwin) to materialize the sidereal_time capability key.
+    inline SiderealTimeModel getSiderealTimeModel() const {
+        return siderealTimeModel;
+    }
     // Received-shadow state of this frame (empty when not a receiver).
     // Consumers must also gate on ShadowService::enabled - entries may be
     // stale from the frame the flag was switched off.
@@ -1261,7 +1292,7 @@ public:
         return re.period;
     }
     double getSiderealTime(double jd) const {
-        if (bodyType==BodyType::EARTH)
+        if (siderealTimeModel == SiderealTimeModel::EARTH_APPARENT)
             return get_apparent_sidereal_time(jd);
     	return fmod((jd - re.epoch) / re.period * 360. + re.offset, 360);
     }
@@ -1519,6 +1550,10 @@ private:
     int pins = 0;
     bool parked = false; // Removed from tree while pinned; destroyed at last unpin
     BodyType bodyType;
+    // Spin-phase analytic model (B27 A1, `sidereal_time` key). GENERIC for every
+    // body except the apparent-sidereal-time model (Earth); consumed by
+    // computeAxisRotation / getSiderealTime. Copied from createInfo in the ctor.
+    SiderealTimeModel siderealTimeModel = SiderealTimeModel::GENERIC;
     bool isHaloEnabled;
     bool isVisible = false;
     bool isBodyVisible = true;

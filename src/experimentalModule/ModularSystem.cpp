@@ -48,7 +48,10 @@ static inline BodyType strToBodyType(const std::string &str)
         CASE("KBO", MINOR_BODY);
         CASE("Comet", MINOR_BODY);
 		CASE("Planet", CUSTOM_BODY);
-		CASE("Moon", CUSTOM_BODY);
+		// CASE("Moon", ...) DELETED (B25-emit, §11.73 A4, 2026-07-23): it mapped
+		// to CUSTOM_BODY, which IS the default (below) - a dead case. "Moon"
+		// falls through to the default and still resolves to CUSTOM_BODY, so this
+		// is bit-identical for legacy and composed loads [re-verified at delete].
 		CASE("Dwarf", CUSTOM_BODY);
 		CASE("Artificial", CUSTOM_BODY);
 		CASE("Observer", ANCHOR);
@@ -60,6 +63,26 @@ static inline BodyType strToBodyType(const std::string &str)
 }
 
 #undef CASE
+
+// Parse the `sidereal_time` capability key (B27 A1; D10key ratified spelling
+// §11.79(e)): the analytic spin-phase model, data-selected (not identity-keyed).
+// Absent / "generic" -> GENERIC (the default (jd-epoch)/period spin, every
+// body); "earth_apparent" -> EARTH_APPARENT (apparent sidereal time). §2(f):
+// an unknown value names the valid values, the fallback (generic), and the fix,
+// and never guesses (D12 - the fallback ACTS, so it is logged).
+static SiderealTimeModel parseSiderealTimeModel(const std::string &value, const std::string &bodyName)
+{
+    if (value.empty() || value == "generic")
+        return SiderealTimeModel::GENERIC;
+    if (value == "earth_apparent")
+        return SiderealTimeModel::EARTH_APPARENT;
+    cLog::get()->write("Body '" + bodyName + "': unknown sidereal_time = '" + value
+        + "'. Valid values are 'generic' (the analytic (jd - epoch)/period spin) and "
+        "'earth_apparent' (apparent sidereal time, with nutation - Earth's model). "
+        "Falling back to 'generic'. To fix: set sidereal_time to one of those, or "
+        "remove it.", LOG_TYPE::L_ERROR);
+    return SiderealTimeModel::GENERIC;
+}
 
 ModularSystem::ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info) :
     ModularBody(parent, info), star(this)
@@ -932,6 +955,11 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
 
         .shadowAbsorbtion=(param.find("shadow_color") != param.end()) ? Utility::strToVec3f(param["shadow_color"]) : Vec3f{1, 1, 1},
         .brightness=Utility::strToFloat(param["brightness"], 0.0),
+        // Spin-phase model (B27 A1, the `sidereal_time` key). Absent -> GENERIC
+        // (bit-identical to today for every legacy body); the legacy Earth reaches
+        // EARTH_APPARENT through applyHardcodedContent below (legacy format only,
+        // D14), the composed Earth through the key the twin emits (§11.73 A1).
+        .siderealTimeModel=parseSiderealTimeModel(param["sidereal_time"], englishName),
 
         .bodyType=strToBodyType(param["type"]),
         .isHaloEnabled=Utility::isTrue(param["halo"]),
@@ -949,9 +977,17 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
     // rot formula instead of apparent sidereal time -> observer placed ~49 deg
     // off in longitude (measured, harness 2026-07-11). Name-keying remains the
     // acknowledged quarantine (INTENT.md 5.5).
+    // D14 FORMAT SCOPE (§11.79(h), B25-emit): the name/type-identity sniff is
+    // LEGACY-FORMAT ONLY. The composed format expresses these capabilities as
+    // explicit keys (sidereal_time A1, shadow_color A2) that the twin generator
+    // materializes at the format boundary; running the sniff on a composed load
+    // would re-introduce the identity dependency D14 retires AND mask a missing
+    // key (the co-delivery counterfactual would stop discriminating - §11.73(g)).
+    // The composed Earth therefore gets apparent sidereal time and its shadow
+    // default from the KEYS, never from englishName.
     {
         const auto hardcodedIt = param.find("hardcoded");
-        if (hardcodedIt == param.end() || Utility::isTrue(hardcodedIt->second))
+        if (!composedFile && (hardcodedIt == param.end() || Utility::isTrue(hardcodedIt->second)))
             applyHardcodedContent(createInfo, param);
     }
     // Relation from data BEFORE creation - relation is the ownership
@@ -1286,6 +1322,20 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
             node.params.erase("bound_to_surface"); // translated, not duplicated -
             node.params["relation"] = "grounded";  // one relation authority per generated file
         }
+        // B25-emit / §11.73 A1+A2: materialize the capabilities the legacy name
+        // sniff (applyHardcodedContent) granted this LIVE body as explicit keys,
+        // so the composed load - which does NOT run that sniff (D14 §11.79(h)) -
+        // reproduces them. Read the body's actual capability, not its name (I4):
+        // the generator emits whatever the body IS. Only ADD when the legacy
+        // section did not already carry the key (explicit data is preserved
+        // verbatim above); the sniff only ever sets these for Earth, so this is
+        // the ONE node that gains them on the shipped corpus.
+        if (body->getSiderealTimeModel() == SiderealTimeModel::EARTH_APPARENT
+                && !node.params.count("sidereal_time"))
+            node.params["sidereal_time"] = "earth_apparent";
+        if (!node.params.count("shadow_color")
+                && body->getShadowAbsorbtion() != Vec3f{1, 1, 1})
+            node.params["shadow_color"] = Utility::vec3fToStr(body->getShadowAbsorbtion());
         out.push_back(std::move(node));
         // One BodyModule declaration per family the live body deduces - the
         // decomposition the twin exists to make visible [vixy, §11.50(b)].
@@ -1322,21 +1372,31 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
 
 void ModularSystem::applyHardcodedContent(ModularBodyCreateInfo &createInfo, std::map<std::string, std::string> &param)
 {
+    // LEGACY-FORMAT ONLY (gated on !composedFile at the call site, D14 §11.79(h)):
+    // the composed format declares these capabilities as keys (B25-emit, §11.73).
     if (createInfo.englishName == "Earth") {
-        createInfo.bodyType = BodyType::EARTH;
-        // Earth's shadow absorbs G/B more than R - red light diffracted by
-        // the atmosphere reaches the umbra (lunar-eclipse color; replaces the
-        // old my_moon UmbraColor hardcode). VALUE IS DERIVED, not tuned
-        // [visual-fidelity mandate, vixy 2026-07-12]: old composition
+        // A1 (§11.73): apparent sidereal time is now the sidereal_time capability
+        // (SiderealTimeModel::EARTH_APPARENT), set here for the legacy Earth (the
+        // twin emits sidereal_time=earth_apparent for the composed Earth). The old
+        // BodyType::EARTH tag is RETIRED - its two consumers (computeAxisRotation,
+        // getSiderealTime) now read this selector.
+        createInfo.siderealTimeModel = SiderealTimeModel::EARTH_APPARENT;
+        // A2 (§11.73): Earth's shadow absorbs G/B more than R - red light
+        // diffracted by the atmosphere reaches the umbra (lunar-eclipse color;
+        // replaces the old my_moon UmbraColor hardcode). VALUE IS DERIVED, not
+        // tuned [visual-fidelity mandate, vixy 2026-07-12]: old composition
         // diffuse*(s + U*(1-s)) with U = UmbraColor(0.4, 0.12, 0) equals the
         // new diffuse*(1 - cov*a) EXACTLY under a = 1-U, cov = 1-s - so
         // {0.6, 0.88, 1.0} reproduces the old model across the whole
         // penumbra; the only residual is coverage-profile shape
         // (shadow-paths.md D2). Explicit shadow_color in the data still wins
-        // (loadBody reads it after this call).
+        // (loadBody reads it after this call). The twin emits this as the
+        // shadow_color key so the composed Earth reproduces it without the sniff.
         if (param.find("shadow_color") == param.end())
             createInfo.shadowAbsorbtion = Vec3f(0.6f, 0.88f, 1.0f);
-    } else if (createInfo.englishName == "Moon") {
-        createInfo.bodyType = BodyType::EARTH_MOON;
     }
+    // The "Moon" -> BodyType::EARTH_MOON branch is RETIRED (B25-emit, §11.73 A3):
+    // EARTH_MOON had ZERO consumers, so it granted no behavior and needs no
+    // capability key. The Moon's surface-shader lineage rides its `type=Moon`
+    // (LayeredMeshLoader, A6 - a later Tier-B step, not this row).
 }
