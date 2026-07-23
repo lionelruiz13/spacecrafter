@@ -127,6 +127,10 @@ void InUniverseModule::draw(int delta_time)
 	    && !(core->ssystemFactory->drawModularSystem && core->selected_object.getType() == OBJECT_BODY))
 		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 	core->dsoNav->draw(core->navigation, core->projection);
+	// Draw twin of the Executor::update fix (6.9 draw-half): the new path
+	// draws in EVERY executor mode - see inGalaxyModule.cpp / the
+	// drawExperimental contract (ssystem_factory.hpp).
+	core->ssystemFactory->drawExperimental();
 	//core->postDraw();
 }
 

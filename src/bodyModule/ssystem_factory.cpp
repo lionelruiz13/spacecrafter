@@ -485,12 +485,20 @@ void SSystemFactory::leaveSystem()
 void SSystemFactory::draw(Projector *prj, const Navigator *nav, const Observer *observatory, const ToneReproductor *eye, bool drawHomePlanet)
 {
     if (drawModularSystem) {
-        Context::instance->renderer.beginDraw(Context::instance->frameIdx);
-        camera->draw(Context::instance->renderer);
+        drawExperimental();
     } else {
         bodytrace->draw(prj, nav);
         ssystemDisplay->draw(prj, nav, observatory, eye, drawHomePlanet);
     }
+}
+
+// Contract + rationale: ssystem_factory.hpp (drawExperimental).
+void SSystemFactory::drawExperimental()
+{
+    if (!drawModularSystem)
+        return;
+    Context::instance->renderer.beginDraw(Context::instance->frameIdx);
+    camera->draw(Context::instance->renderer);
 }
 
 void SSystemFactory::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)

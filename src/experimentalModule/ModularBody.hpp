@@ -1109,7 +1109,13 @@ public:
     inline float computeMagnitude() const {
         float factor;
         if (isStar()) {
-            factor = distance*distance;
+            // Dims with distance: old path body_sun.cpp:86 is
+            // -26.73 + 2.5*log10(d^2), i.e. factor = 1/d^2 in the shared
+            // -2.5*log10(factor) tail below. Was factor = d^2 - inverted,
+            // stars BRIGHTENED with distance; exact at 1 AU where the factor
+            // is 1, which is why every near-Earth parity scene passed over it
+            // (found at the first far-star live surface, INTENT 11.80).
+            factor = 1.f / (distance*distance);
         } else {
         	const Vec3f heliopos = mat.getTranslation() - lightPosition;
         	const float Rq = heliopos.lengthSquared();

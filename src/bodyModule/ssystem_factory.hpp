@@ -610,6 +610,20 @@ public:
 	          const ToneReproductor* eye,
 	          bool drawHomePlanet );
 
+	//! New-path frame draw (renderer + camera->draw), the draw twin of
+	//! updateExperimental: called from EVERY executor mode's draw - the
+	//! solar/stellar modules reach it through draw() above, the galaxy and
+	//! universe modules call it directly. Self-gated on the modular phase:
+	//! in the OLD phase it draws nothing outside the solar/stellar modules
+	//! (the old path has no system draw there - baseline unchanged by
+	//! construction). Before this call existed the new path UPDATED at
+	//! galactic references but never DREW (drawNested/drawStarProxy were
+	//! runtime-unexercised - INTENT 11.36 named limitation, 6.9 draw-half).
+	//! Must run inside the frame's PASS_BACKGROUND window (beginBodyDraw
+	//! advances to PASS_MULTISAMPLE_DEPTH == the same subpass).
+	//! Retires with the executors.
+	void drawExperimental();
+
 	void addBody(stringHash_t &param);
 
     //! Re-read the camera's current system from its data file, KEEPING the

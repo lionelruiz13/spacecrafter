@@ -145,6 +145,12 @@ void InGalaxyModule::draw(int delta_time)
 	core->starNav->draw(core->navigation, core->projection, false);
 	core->dsoNav->draw(core->navigation, core->projection);
 	core->cloudNav->draw(core->navigation, core->projection);
+	// Draw twin of the Executor::update fix (6.9 draw-half): the new path
+	// draws in EVERY executor mode - its "in galaxy" is reference-chain
+	// state (G2), not an executor mode. After all galaxy content, mirroring
+	// the solar module's bodies-after-sky order (self-gated on the modular
+	// phase; the old path draws no system content here).
+	core->ssystemFactory->drawExperimental();
 	//core->postDraw();
 }
 

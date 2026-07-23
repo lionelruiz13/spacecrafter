@@ -552,12 +552,20 @@ void ModularSystem::drawTails(Renderer &renderer)
 
 void ModularSystem::drawNested(Renderer &renderer)
 {
-    if (!(isVisible & isBodyVisible))
+    if (!isVisible)
         return;
     // px full diameter of the subsystem on screen - the drawHalo/pointer px
-    // idiom. At/above the collapse threshold T the interior is content
+    // idiom. NOT the node's own screenSize: preUpdate derives that from
+    // boundingRadius = the node's OWN body extent, which is 0 for a bare
+    // system node - its child-visibility branch computes exactly this angle
+    // from subsystemRadius and then overwrites it (found at the first live
+    // draw, INTENT 11.80: every nested system classified as 0 px, the
+    // collapse test could never resolve). Same geometric form; inside the
+    // subsystem the interior is resolved by construction.
+    // At/above the collapse threshold T the interior is content
     // (per-child visibility gating does the rest - D3); below T, one point of
-    // light (the star-proxy dot).
+    // light (the star-proxy dot, guarded by isBodyVisible: the dot sits at
+    // the node's centre, whose on-screen test is the own-body one).
     //
     // B22 cross-fade (INTENT 11.64): the hard switch at T
     // (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) POPPED - the whole interior appeared,
@@ -572,7 +580,10 @@ void ModularSystem::drawNested(Renderer &renderer)
     // full (== pure dot); at px=T+B, t=1 ⇒ interior full + no dot (== pure
     // resolved). drawAlpha carries the ramp into every halo via drawHaloCore;
     // it is saved/restored here (nested-in-band compounds multiplicatively).
-    const float px = screenSize * 2.f * viewportRadius;
+    const float px = (distance > subsystemRadius)
+        ? (atanf(subsystemRadius / sqrtf(distance*distance - subsystemRadius*subsystemRadius))
+           / halfFov) * 2.f * viewportRadius
+        : 2.f * viewportRadius;
     if (px >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) {
         const float savedAlpha = drawAlpha;
         const bool inBand = px < (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE + SYSTEM_COLLAPSE_CROSSFADE_BAND);
@@ -603,12 +614,12 @@ void ModularSystem::drawNested(Renderer &renderer)
             lightDistance = savedLightDist;
             lightSize = savedLightSize;
         }
-        if (inBand) {
+        if (inBand && isBodyVisible) {
             drawAlpha = savedAlpha * (1.f - t); // fade the proxy dot OUT
             drawStarProxy(renderer);
         }
         drawAlpha = savedAlpha;
-    } else {
+    } else if (isBodyVisible) {
         drawStarProxy(renderer);
     }
 }
@@ -616,14 +627,21 @@ void ModularSystem::drawNested(Renderer &renderer)
 void ModularSystem::drawStarProxy(Renderer &renderer)
 {
     ModularBody *s = getSystemStar();
-    if (!s || !s->isHaloEnabled)
+    // NOT gated on s->isHaloEnabled: that flag selects the star's CLOSE-RANGE
+    // halo channel (the shipped Sun authors halo=false because its self-draw
+    // is the big-halo texture), and gating the SYSTEM's collapsed
+    // representation on it left the shipped solar system with no far dot at
+    // all (found at the first live collapse, INTENT 11.80 - a 2(a2)-class
+    // foreclosure: an authoring flag for one regime gating another).
+    if (!s)
         return;
-    // Star branch of computeMagnitude (factor = distance^2) at the NODE's
-    // fresh distance - the star's own cached distance is stale while its
-    // system isn't current. Disc floor = the STAR's disc at that distance
+    // Star apparent magnitude at the NODE's fresh distance - the star's own
+    // cached distance is stale while its system isn't current. Dims with
+    // distance: old-path parity body_sun.cpp:86 (-26.73 + 2.5*log10(d^2)).
+    // Disc floor = the STAR's disc at that distance
     // (small angle), never the subsystem extent (which would inflate the
     // halo floor up to the nested-draw threshold).
-    const float mag = -26.73f - 2.5f * log10f(distance * distance);
+    const float mag = -26.73f + 2.5f * log10f(distance * distance);
     const float starScreenR = (s->getScaledRadius() / (distance * halfFov)) * 2.f * viewportRadius;
     drawHaloCore(renderer, mag, starScreenR, s->getHaloColor(), false);
 }
