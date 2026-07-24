@@ -8,29 +8,32 @@ Measures the two H4(b) observables with scene-present / scene-absent discriminat
 (the 11.80 method: two fresh launches, identical camera, diff isolates the rovers;
 tracking OFF before every shot per B30/11.94(e)).
 
-FINDINGS THIS SCENE ESTABLISHES (2026-07-24, code c0181da9):
+FINDINGS THIS SCENE ESTABLISHES (2026-07-24, code c0181da9; interpretation CORRECTED
+same day by the F1 root-cause chain, INTENT 11.99 -> 11.100 - the original (3) below
+attributed a depth-precision collapse; REFUTED):
   (1) SCREEN-LAYER DRAW: the grounded OJM rover renders as a full mesh (drawInternal
       executes; OJM loads synchronously at construction). Proven by BODYpx>0 in the
       CLOSE view.
   (2) SHADOW observable WORKS via the EXISTING jobs-as-data machinery (OPAQUE_OJM
       cast, shadow-paths G1): a lit grounded rover casts a SILHOUETTE shadow onto the
       parent Moon surface. Measured as darkened px in the present-vs-absent diff.
-  (3) OCCLUSION observable = the D1 grounded-slice depth-prefill GAP (BodyModule.hpp
-      195-213 "arrives with the S3 depth-partitioning consumer", UNIMPLEMENTED;
-      confirmed at source: ModularSystem::computeShadows nominates only the single
-      highest-importance body's OWN self-shadow - no grounded-slice PARENT-depth
-      prefill). The grounded child merges into the parent's coarse depth bucket
-      (Moon +/-1737 km over 24-bit depth); parent-vs-grounded occlusion is undefined:
-      the rover BODY is DISTANCE-DEPENDENT - it draws over the disc when the observer
-      is CLOSE (bucket depth precision sufficient) and is FULLY SUPPRESSED when the
-      observer is FAR (precision collapses; the child at ~surface depth cannot be
-      resolved against the parent), even when it is geometrically IN FRONT. This is
-      H4(b)'s first pixel observable / B3's next-step definition. STOP recorded; no
-      shadow-pipeline capability added (carved out).
+  (3) OCCLUSION [corrected, INTENT 11.100]: there is NO demonstrated depth defect.
+      The original far-suppression was the `moon_scale=5` display scaling: grounded
+      children do not ride parent display scaling (defect 5.27, decision D21) - the
+      rover sat ~7000 km under the DISPLAYED surface, CORRECTLY occluded by CORRECT
+      depth; the close-view "draw" was the scaled radius pulling the parent into the
+      empty-groundedComponents surface regime (11.97(e)) - parent absent, nothing to
+      occlude against. THIS HARNESS therefore runs `flag moon_scaled off` (the 5.27
+      instrument precondition) and asserts the REAL-geometry scene: the rover renders
+      in BOTH views with working merged-bucket occlusion (the 11.100(b) causal lever,
+      locked as a regression gate). The D1(b) grounded-slice prefill remains an
+      unimplemented capability for FINE grounded content (header-forced, B3), but no
+      scene here demonstrates wrong depth ordering.
 
-The asserts test the ACHIEVED capabilities (compose, screen draw, shadow) and the
-DISCRIMINATION that localises the gap (same rover draws close / suppressed far -> a
-depth-precision collapse, not a never-draws). The suppression magnitude is reported.
+Instrument-model notes (11.99(e)/11.100(f)): assert the PARENT's presence and the
+config levers (moon_scale!), never only the present-vs-absent diff - the diff cancels
+a missing parent; a "buried" probe body may legitimately protrude past the limb in
+projection (visible correctly), so buried!=0 px is NOT by itself a depth defect.
 """
 import json, math, os, socket, subprocess, sys, time
 from pathlib import Path
@@ -128,6 +131,10 @@ def run(tag, with_scene, dumps):
         send(s, "set home_planet Moon", 2)
         send(s, "camera action free_mode state on")
         send(s, "flag atmosphere off"); send(s, "flag landscape off")
+        # 5.27 instrument precondition (INTENT 11.100): the shipped moon_scale=5
+        # swallows grounded children (they don't ride display scaling, D21 pending);
+        # real-geometry scene requires scaling OFF.
+        send(s, "flag moon_scaled off", 2)
         send(s, "select planet Moon")
         for view, alt in (("far", ALT_FAR_M), ("close", ALT_CLOSE_M)):
             send(s, f"moveto lat 0 lon {OBS_LON} alt {alt} duration 0", 4)
@@ -224,23 +231,27 @@ def main():
     else:
         fail(f"A3 shadow: cast-shadow darkened px={dmax} (expected >2000)")
 
-    # ---- A4: OCCLUSION = D1 grounded-slice prefill GAP (recorded + discriminated) ----
+    # ---- A4: REAL occlusion scene (corrected model, INTENT 11.100) ----
+    # With moon_scaled OFF the far view is a real-geometry occlusion scene: the
+    # surface rover must RENDER (the 11.100(b) causal lever as a regression gate -
+    # a regression back to 0 px here = the scaling-swallow class returning, or a
+    # genuine new depth defect; both must fail loudly). Behind (9000 km buried) is
+    # REPORTED, softly bounded: mostly occluded, but limb protrusion in projection
+    # is legitimate (see header note), so no hard zero-assert.
     rf = report["far"]["rover_body"]
-    # discrimination: SAME rover draws CLOSE (rc) but is SUPPRESSED FAR (rf~0) -> the
-    # parent's coarse depth bucket collapses precision at distance (D1 gap), not a
-    # never-draws. A behind/buried rover drawing at all = broken depth ordering.
-    if rc and rc > 500 and (rf is not None and rf < rc // 10):
-        ok(f"A4 D1-gap (recorded): grounded rover BODY SUPPRESSED in the FAR view "
-           f"(body px {rf} vs {rc} close) while its SHADOW still casts - the D1 "
-           f"grounded-slice depth prefill (BodyModule.hpp:195-213) is UNIMPLEMENTED; "
-           f"parent-vs-grounded occlusion is distance-dependent/undefined. STOP = B3 next step")
+    if rf is not None and rf > 500:
+        ok(f"A4 occlusion (real geometry): far-view surface rover RENDERS {rf} body px "
+           f"over the unscaled Moon disc - merged-bucket parent-vs-grounded depth "
+           f"compare works at this scale (11.100(b) gate)")
     else:
-        # If the far body is NOT suppressed, the gap manifested differently - still
-        # report, do not vacuously pass.
-        print(f"note: A4 far-suppression not in the expected regime (close={rc} far={rf}); "
-              f"see report - occlusion still not depth-correct (behind body px "
-              f"far={report['far']['behind_body']} close={report['close']['behind_body']})", flush=True)
-        ok("A4 D1-gap (recorded): occlusion measured; numbers in b24_screen_result.json")
+        fail(f"A4 occlusion: far-view rover body px={rf} (expected >500 with "
+             f"moon_scaled off - scaling-swallow regression or new depth defect)")
+    for view in ("far", "close"):
+        bb, rb2 = report[view]["behind_body"], report[view]["rover_body"]
+        if bb is not None and rb2 and bb > rb2:
+            fail(f"A4b buried-vs-surface inversion in {view} view: Behind px={bb} > rover px={rb2}")
+    print(f"note: Behind(9000km-buried) px far={report['far']['behind_body']} "
+          f"close={report['close']['behind_body']} (soft-bounded; limb protrusion legitimate)", flush=True)
 
     (OUT / "b24_screen_result.json").write_text(json.dumps({"fails": FAILS, "report": report}, indent=1))
     print(f"\n{'SCREEN SCENE GREEN' if not FAILS else f'{len(FAILS)} FAILURES'} -> b24_screen_result.json", flush=True)
