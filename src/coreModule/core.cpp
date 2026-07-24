@@ -1172,6 +1172,14 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom)
 	if (!navigation->getFlagTraking()) {
 		navigation->setFlagTraking(true);
 		navigation->moveTo(selected_object.getEarthEquPos(navigation), move_duration, false, 1);
+		// NEW path (B17): a commanded view move arms the offset — mirror the old
+		// navigator->moveTo (zooming_mode != -1) that arms view_offset_transition
+		// (navigator.cpp:73-78). The Camera's per-frame tracking lookTo does NOT
+		// arm (old's per-frame tracking holds equ_vision without a moveTo), so
+		// the arm is these discrete moveTo sites only — the offset stays armed
+		// (sticky) until a zoom-out-to-init disarms it (autoZoomOut, below).
+		if (Camera::instance)
+			Camera::instance->armViewOffset(true);
 		manual_move_duration = move_duration;
 	} else {
 		// faster zoom in manual zoom mode once object is centered
@@ -1211,6 +1219,11 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 				navigation->moveTo(InitViewPos, move_duration, true, -1);
 				navigation->setFlagTraking(false);
 				navigation->setFlagLockEquPos(0);
+				// NEW path (B17): zoom-out-to-init disarms the view offset — the
+				// old view_offset_transition ramp-to-0 (navigator.cpp:76-77, the
+				// zooming_mode==-1 branch this -1 move sets).
+				if (Camera::instance)
+					Camera::instance->armViewOffset(false);
 				return;
 			} else {
 				// faster zoom in manual zoom with object centered
@@ -1244,6 +1257,10 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 	navigation->moveTo(InitViewPos, move_duration, true, -1);
 	navigation->setFlagTraking(false);
 	navigation->setFlagLockEquPos(0);
+	// NEW path (B17): zoom-out-to-init disarms the view offset (old
+	// view_offset_transition ramp-to-0, navigator.cpp:76-77).
+	if (Camera::instance)
+		Camera::instance->armViewOffset(false);
 }
 
 //! Set the current sky culture according to passed name
@@ -2082,6 +2099,9 @@ void Core::setFlagTracking(bool b)
 		navigation->moveTo(selected_object.getEarthEquPos(navigation), getAutoMoveDuration());
 		navigation->setFlagTraking(1);
 		Camera::instance->trackBody(ModularBody::findBody(selected_object.getEnglishName()));
+		// NEW path (B17): this commanded view move arms the offset (mirrors the
+		// old navigator->moveTo arming, navigator.cpp:73-78).
+		Camera::instance->armViewOffset(true);
 	}
 }
 
@@ -2116,12 +2136,29 @@ void Core::setViewOffset(double offset)
 	if (offset < -0.5) off = -0.5;
 	if (offset > 0.5)  off =  0.5;
 
-	// Update default view vector
+	// §2(f): view_offset is a fraction of the fov radius; values outside
+	// [-0.5,0.5] are rejected (clamped). Old clamped SILENTLY — report the
+	// rejection with the applied value + valid domain so the operator can fix
+	// the config/command. Screen-identical to old (the clamped value is the
+	// same), a diagnostic only.
+	if (off != offset)
+		cLog::get()->write("view_offset " + std::to_string(offset)
+			+ " out of range [-0.5,0.5] (fraction of fov radius); applied "
+			+ std::to_string(off), LOG_TYPE::L_WARNING);
+
+	// OLD path (comparison baseline, unchanged): store the offset + re-aim.
 	navigation->setViewOffset(off);
 
 	// adjust view direction (if tracking, should be corrected before render)
 	navigation->setLocalVision(InitViewPos);
 
+	// NEW path (B17, §11.79(c)): the SAME clamped scalar lands on the Camera.
+	// Core::setViewOffset is the ONE sink both §2(c) channels ([navigation]
+	// view_offset at startup + `set zoom_offset <v>` at runtime, R11) funnel
+	// into, so both reach the new path through this single authority (I2); the
+	// clamp above is that authority's, not duplicated in the Camera.
+	if (Camera::instance)
+		Camera::instance->setViewOffset(off);
 }
 
 std::string Core::getSkyLanguage() {
@@ -2204,6 +2241,9 @@ void Core::lookAnchor(const std::string &name, double duration)
 {
 	// if (name == "observatory") {
 	navigation->moveTo(navigation->helioToEarthPosEqu(observatory->getObserverCenterPoint()), duration);
+	// NEW path (B17): commanded view move arms the offset (mirror old moveTo).
+	if (Camera::instance)
+		Camera::instance->armViewOffset(true);
 	// } else {
 	// 	navigation->moveTo(ssystemFactory->, duration);
 	// }

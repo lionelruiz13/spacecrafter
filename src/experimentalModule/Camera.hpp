@@ -170,6 +170,41 @@ public:
     // Rotation applied downstream of the view (placement + surface fold)
     Mat4f placementRotation() const;
 
+    // ---- View offset (old zoom_offset / [navigation] view_offset) ----------
+    // Baked port of the old navigator's fov-coupled view rotation (B17,
+    // §11.63/§11.79(c) — reproduce old EXACTLY). The offset shifts the rendered
+    // dome centre by `viewOffset` FRACTION of the dome radius (the "percent of
+    // fov radius" the old comment names, core.cpp:2110), fov-INDEPENDENTLY: old
+    // rotated the eye view matrix by view_offset·(fov/2) and the fisheye
+    // transfer (r = θ/halfFov) turns that into a constant fractional shift
+    // (navigator.cpp:309; §11.63(c)). Reproduced here as a render-only pitch of
+    // `offset·halfFov` radians in the PHYSICAL eye/screen frame (see
+    // viewOffsetEyeRotation for why the eye frame, not old's pre-heading chain
+    // slot: the latter breaks the B13/B18 held-view composition the row
+    // mandates). RENDER-ONLY: viewRotation() (the param↔view authority consumed
+    // by lookTo/recoverParams/observedToLocalPos) stays offset-free, exactly as
+    // old applies the offset only to mat_local_to_eye, never to the vision math.
+    //
+    // setViewOffset is fed by Core::setViewOffset — the ONE sink both §2(c)
+    // channels ([navigation] view_offset at startup AND `set zoom_offset <v>` at
+    // runtime, R11 §11.70) funnel into (core.cpp) — so BOTH channels land here
+    // through a single authority (I2); the [-0.5,0.5] clamp stays in that sink.
+    // Value 0 (the default) is inaction: the offset path is byte-identical to
+    // the pre-B17 render (D12 — no silent acting default; offset 0 = no rotation).
+    void setViewOffset(double offset);
+    inline double getViewOffset() const {
+        return viewOffset;
+    }
+    // Arm/disarm the offset transition (old view_offset_transition,
+    // navigator.cpp:73-78): the offset is INERT at a fresh un-moved view and
+    // ARMS on a commanded view move, resetting on a zoom-out-to-init — hence
+    // "zoom_offset". Reproduced faithfully: lookTo (the new-path analog of the
+    // old navigator->moveTo that armed it) arms; Core::autoZoomOut disarms. The
+    // transition ramps smoothly toward the armed target each frame; its
+    // ENDPOINTS (0 fresh, 1 armed) are byte-exact against old, the ramp CURVE is
+    // perceptual-parity (the new move law differs from old's atan easing).
+    void armViewOffset(bool armed);
+
     // Exact rotational inverse of viewRotation(): camera(observed) frame ->
     // the frame the view acts on (zenith frame when anchored, body frame when
     // free). NOTE: observedPosToRaDe/AltAz below inherit the §11.19 frame
@@ -286,6 +321,22 @@ private:
     void recoverParams(const Mat4f &totalRot);
     // Advance the view/heading smoothing plans (constant-min-acceleration law)
     void advanceView(float deltaTime);
+    // The render view rotation = viewRotation() with the view offset pitch
+    // inserted at old's chain position (between the heading roll and the base
+    // view, navigator.cpp:309/314). Delegates to viewRotation() verbatim when
+    // the offset is inert (effective 0) so the no-offset render stays BYTE-
+    // identical to the pre-B17 path (I2: viewRotation() is the sole composition
+    // authority; this mirrors it with exactly one added factor).
+    Mat4f renderViewRotation() const;
+    // The view offset as an eye-space rotation R' (mat_render == R'·mat_free);
+    // identity when inert. Both the render composition and the tracking
+    // feedback-undo use it (Camera.cpp).
+    Mat4f viewOffsetEyeRotation() const;
+    // Advance the view-offset transition (old view_offset_transition ramp).
+    void advanceViewOffset(float deltaTime);
+    inline float effectiveViewOffset() const {
+        return static_cast<float>(viewOffset) * viewOffsetTransition;
+    }
     // Current forward direction in the PARAM frame (post-fold), from alt/az
     Vec3f paramForward() const;
     // D1: the frame draw rides the render chain (RenderChain.hpp) - THE
@@ -341,6 +392,15 @@ private:
     // path's held `equ_vision`.
     bool skyLocked = false;
     Mat4f lockedSkyRot;
+    // View offset (old navigator view_offset / view_offset_transition, B17).
+    // viewOffset: the clamped [-0.5,0.5] scalar fed by Core::setViewOffset (both
+    // channels). viewOffsetTransition: the arming ramp (0 inert .. 1 armed).
+    // viewOffsetArmed: the sticky latch a commanded move sets and a zoom-out
+    // clears. All default to the inert state ⇒ zero render effect until the
+    // operator sets a non-zero offset AND a commanded move arms it.
+    double viewOffset = 0;
+    float viewOffsetTransition = 0;
+    bool viewOffsetArmed = false;
     Vec3f position;
     Vec3f deltaPosition;
     float moveDuration = 0;

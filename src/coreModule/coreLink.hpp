@@ -372,6 +372,10 @@ public:
 
 	bool lookAt(double az, double alt, double time = 1.){
 		Camera::instance->lookTo(alt*M_PI/180, az*M_PI/180, time);
+		// NEW path (B17): the look_at command arms the view offset — mirrors old,
+		// where navigation->lookAt -> moveTo arms view_offset_transition
+		// (navigator.cpp:151,73-78). Discrete arm site (not the per-frame track).
+		Camera::instance->armViewOffset(true);
 		return core->navigation->lookAt(az, alt, time);
 	}
 

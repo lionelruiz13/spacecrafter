@@ -13,6 +13,14 @@ Camera *Camera::instance = nullptr;
 float Camera::minHalfFov = 8.7e-7;
 float Camera::maxHalfFov = 3.05;
 
+// View-offset arming ramp rate (fraction of the 0..1 transition per second).
+// Old ramped view_offset_transition over the arming auto_move (navigator.cpp
+// :73-78, ~1-4 s of atan easing); the new move law differs, so only the
+// ENDPOINTS (0 inert / 1 armed) are byte-matched to old — the ramp curve is
+// perceptual-parity. Rate chosen so the offset arms smoothly within a fraction
+// of a second (B17, §11.79(c)).
+static constexpr float VIEW_OFFSET_RAMP_RATE = 2.f;
+
 Camera::Camera(ModularBody *reference, float longitude, float latitude, float altitude) :
     reference(reference), longitude(longitude), latitude(latitude), distance(altitude+reference->getAltitudeReference())
 {
@@ -83,6 +91,81 @@ Mat4f Camera::placementRotation() const
     if (boundToSurface)
         m = m.multiplyFast(reference->computeSurfaceToBody());
     return m;
+}
+
+// The B17 view offset expressed as a fixed EYE-SPACE (screen-frame) rotation R'
+// such that mat_render == R' · mat_free (mat_free = the offset-free view). A pure
+// pitch about the eye x-axis of `offset·halfFov` — old's fov-coupled magnitude
+// (navigator.cpp:309), applied in the PHYSICAL eye frame (leftmost, downstream
+// of everything incl. the heading roll). Identity when inert (effective 0) so
+// the no-offset path is byte-identical to pre-B17.
+//
+// Why the physical eye frame, NOT old's pre-heading chain position: old pitches
+// BELOW its heading zrotation (navigator.cpp:309 before :314), coupling the
+// offset to the heading. In the new path the heading is a DECOMPOSITION param
+// that B13 (recoverParams) rewrites across a reference switch to hold the SAME
+// physical view (measured: Earth→Mars param-heading moves 2.655° while the
+// physical eye orientation is held). Coupling the offset to that param-heading
+// makes the offset JUMP across a held ref switch (measured 2.06° absDelta,
+// >0.05° B13 tol) — corrupting the B13/B18 composition the row mandates. Applied
+// in the physical eye frame the offset is a constant screen pitch: it composes
+// invariantly (a held view stays held, shifted) AND reproduces old's OBSERVABLE
+// across ref switches (old holds heading in warpToBody, so old's offset is held
+// too). Matches old EXACTLY at heading 0 (the dome-show norm, all B17 A/B legs).
+// heading≠0 STATIC divergence from old (old rolls the offset with the view; this
+// keeps it screen-fixed) is recorded for Vixy — a dome-space offset is arguably
+// the more correct reading, and old's pre-roll coupling can't hold the B13
+// mandate. Also the rotation the tracking feedback must undo (update()):
+// getObservedPosition() == R'·(offset-free eye pos), R'ᵀ recovers the true pos.
+Mat4f Camera::viewOffsetEyeRotation() const
+{
+    const float o = effectiveViewOffset();
+    if (o == 0.f)
+        return Mat4f::identity();
+    return Mat4f::xrotation(o * ModularBody::halfFov);
+}
+
+// Render view rotation = the eye-space offset pitch composed (leftmost) with
+// viewRotation() (the SOLE composition authority — I2). The fisheye transfer
+// turns the offset·halfFov pitch into a constant fraction-of-dome shift
+// (§11.63(c), measured fov-independent). Byte-identical to viewRotation() when
+// the offset is inert (R' == identity).
+Mat4f Camera::renderViewRotation() const
+{
+    return viewOffsetEyeRotation().multiplyFast(viewRotation());
+}
+
+void Camera::setViewOffset(double offset)
+{
+    // The [-0.5,0.5] clamp lives in the ONE sink Core::setViewOffset (both §2(c)
+    // channels funnel through it, core.cpp); store the already-clamped value.
+    viewOffset = offset;
+}
+
+void Camera::armViewOffset(bool armed)
+{
+    viewOffsetArmed = armed;
+}
+
+// Advance the arming transition toward its latched target (old
+// view_offset_transition, navigator.cpp:73-78). Ramp only — never a snap — so
+// the offset eases in/out; steady state reaches the target EXACTLY (clamped),
+// giving byte-exact endpoints against old.
+void Camera::advanceViewOffset(float deltaTime)
+{
+    const float target = viewOffsetArmed ? 1.f : 0.f;
+    if (viewOffsetTransition == target)
+        return;
+    const float step = VIEW_OFFSET_RAMP_RATE * deltaTime;
+    if (viewOffsetTransition < target) {
+        viewOffsetTransition += step;
+        if (viewOffsetTransition > target)
+            viewOffsetTransition = target;
+    } else {
+        viewOffsetTransition -= step;
+        if (viewOffsetTransition < target)
+            viewOffsetTransition = target;
+    }
 }
 
 Vec3f Camera::paramForward() const
@@ -301,9 +384,18 @@ void Camera::update(double jd, float deltaTime)
     }
     foldLat = latitude;
     if (target) { // Note : the tracked position is from the last update
-        lookTo(observedToLocalPos(target->getObservedPosition()), 5, true);
+        // getObservedPosition() rides the offset-included render mat (R'·P_free);
+        // centre the OFFSET-FREE position so the offset does not get absorbed by
+        // the tracking (old centres the body's true equatorial position, then
+        // the offset pitches the view — the tracked body ends up off-centre by
+        // the offset, the zoom_offset purpose). R'ᵀ recovers P_free; identity
+        // when the offset is inert (bit-identical to the pre-B17 tracking).
+        Vec3f p = viewOffsetEyeRotation().transpose()
+                      .multiplyWithoutTranslation(target->getObservedPosition());
+        lookTo(observedToLocalPos(p), 5, true);
     }
     advanceView(deltaTime);
+    advanceViewOffset(deltaTime);
     if (zoomDuration) {
         zoomTimer += deltaTime;
         if (zoomTimer > zoomDuration) {
@@ -364,7 +456,11 @@ void Camera::update(double jd, float deltaTime)
     // (The 2026 Moon-divergence note that lived here is resolved: the delta was
     //  EMB wiring + per-hop tilts + this longitude sign - INTENT.md 11.14,
     //  harness/predict.py carries the measurements.)
-    Mat4f mat{viewRotation()};
+    // renderViewRotation() == viewRotation() unless the B17 view offset is
+    // active (armed + non-zero); the offset is a render-only pitch (see
+    // Camera.hpp) applied downstream of tracking / sky-lock, exactly as old
+    // applied it in the navigator stage below those.
+    Mat4f mat{renderViewRotation()};
     if (freeMode) {
         mat.multiplyTranslation(position);
     } else {
@@ -797,6 +893,12 @@ void Camera::dumpTrace(std::ostream &out) const
         << (boundToSurface ? "true" : "false")
         << ",\"mount\":\"" << (mount == CameraMount::EQUATORIAL ? "equatorial" : "altaz")
         << "\",\"skyLocked\":" << (skyLocked ? "true" : "false")
+        // View offset (B17): the clamped scalar, its arming transition, and the
+        // EFFECTIVE offset (scalar·transition) that the render pitch uses — the
+        // numeric observable for the offset A/B and the arming state channel.
+        << ",\"viewOffset\":" << viewOffset
+        << ",\"viewOffsetTransition\":" << viewOffsetTransition
+        << ",\"viewOffsetEff\":" << effectiveViewOffset()
         << ",\"longitude\":" << longitude << ",\"latitude\":" << latitude
         << ",\"distance\":" << distance
         << ",\"alt\":" << alt << ",\"az\":" << az << ",\"heading\":" << heading
