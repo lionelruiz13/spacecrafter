@@ -24,12 +24,17 @@ OortModule::OortModule(unsigned int nbr, const Vec3f &color)
     vertexModel->addInput(VK_FORMAT_R32G32B32_SFLOAT);
 
     // Point cloud, materialized from the SHARED spatial law (I2, B5 §6.9):
-    // oortSamplePoint() is the single authority both paths draw from. Same
-    // upload path as the old Oort::populate (globalBuffer + planCopy staging).
+    // oortSamplePoint() is the single authority both paths draw from. A dedicated
+    // generator seeded from the frozen constant (oortRng, B5-oort-2 [vixy
+    // 2026-07-24]) makes this cloud POINT-identical to the old path's - both seed
+    // the SAME constant and consume it in the SAME order, so cross-path pixel A/B
+    // is a valid instrument. Same upload path as the old Oort::populate
+    // (globalBuffer + planCopy staging).
     vertex = vertexModel->createBuffer(0, nbPoints, Context::instance->globalBuffer.get());
     Vec3f *dst = (Vec3f *) Context::instance->transfer->planCopy(vertex->get());
+    std::mt19937 rng = oortRng();
     for (unsigned int i = 0; i < nbPoints; ++i) {
-        const Vec3f p = oortSamplePoint();
+        const Vec3f p = oortSamplePoint(rng);
         const float r = p.length();
         if (r > cloudExtent)
             cloudExtent = r;

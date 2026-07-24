@@ -30,6 +30,7 @@
 
 #include <string>
 #include <fstream>
+#include <random>
 
 #include "tools/fader.hpp"
 #include "tools/vecmath.hpp"
@@ -45,18 +46,33 @@ class Pipeline;
 class PipelineLayout;
 class Set;
 
+//! Frozen-seed PRNG factory for the oort point cloud - THE single seed authority
+//! (I2) that makes the two paths' clouds POINT-identical. Returns a FRESH,
+//! DEDICATED std::mt19937 seeded with the frozen constant (defined once in
+//! oort.cpp). Because every caller seeds its own generator from the same
+//! constant and consumes it in the same order, both paths draw the IDENTICAL
+//! point sequence - cross-path AND cross-launch deterministic - regardless of
+//! any other rand()/PRNG activity in the process (a dedicated instance is immune
+//! to global-rand interleaving, which is exactly what broke cross-path identity
+//! under the historical shared rand() stream). Seed a generator ONCE before the
+//! populate loop and pass it to every oortSamplePoint() call.
+std::mt19937 oortRng() noexcept;
+
 //! Spatial law of the oort point cloud - THE single authority (I2) for the
 //! cloud's geometry, shared between the old-path Oort (below) and the new-path
 //! OortModule (B5 §6.9 content-migration pilot). One call draws one point in
 //! heliocentric-ecliptic AU (spheToRect of the historical theta/phi/radius
-//! distribution, verbatim from the old populate loop): three rand() draws,
-//! azimuthally uniform in theta so the cloud is invariant under any z-rotation
-//! (why the new path's near-regime surface fold is visually inert). Both paths
-//! materialize their own buffer from this law - the old for its baseline draw,
-//! the new for its module - statistically identical, not bit-identical (the
-//! draw order / prior rand state differs); the old path retires, leaving the
-//! new module as the sole authority.
-Vec3f oortSamplePoint() noexcept;
+//! distribution, verbatim from the old populate loop) from the caller-supplied
+//! frozen-seed generator (oortRng above): three draws, azimuthally uniform in
+//! theta so the cloud is invariant under any z-rotation (why the new path's
+//! near-regime surface fold is visually inert). Both paths materialize their own
+//! buffer from this law, each seeding a dedicated generator from the SAME frozen
+//! constant, so the clouds are POINT-identical (B5-oort-2 [vixy 2026-07-24]:
+//! turns cross-path pixel A/B into a valid instrument). NB the point positions
+//! differ from the pre-2026-07-24 global-rand() cloud (the source of randomness
+//! changed rand()->mt19937; the distribution SHAPE is unchanged) - authorized by
+//! the directive; the OLD render path's gates/intensity/draw-order are untouched.
+Vec3f oortSamplePoint(std::mt19937 &rng) noexcept;
 
 class Oort {
 public:

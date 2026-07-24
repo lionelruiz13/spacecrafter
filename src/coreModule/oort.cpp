@@ -39,22 +39,36 @@
 
 #define NB_POINTS 200000
 
+// THE single seed authority (I2, B5-oort-2 [vixy 2026-07-24]). Any fixed 32-bit
+// value works; this one traces to the directive date. Making it a compile-time
+// constant (not a runtime choice) is why there is no acting default to log under
+// D12: both paths draw the identical cloud unconditionally, every launch.
+static constexpr std::mt19937::result_type OORT_SEED = 20260724u;
+
+std::mt19937 oortRng() noexcept
+{
+	return std::mt19937(OORT_SEED);
+}
+
 // Single authority for the oort cloud's spatial law (I2, B5 §6.9): the exact
-// per-point formula the old populate loop below used, extracted so the new-path
-// OortModule draws the SAME distribution without duplicating it. Kept as three
-// rand() draws in the historical order so a shared call inside the old loop
-// leaves that loop's rand() consumption - and therefore the baseline cloud -
-// bit-identical (old render path unchanged by construction).
-Vec3f oortSamplePoint() noexcept
+// per-point formula the old populate loop below used, extracted so BOTH paths
+// draw the SAME distribution without duplicating it. The distribution SHAPE is
+// verbatim from the historical loop; only the source of the three random draws
+// changed from the global rand() stream to the caller's dedicated frozen-seed
+// generator (B5-oort-2 [vixy 2026-07-24]) - so a caller that seeds from oortRng()
+// before the loop produces a cloud POINT-identical to the other path's, immune
+// to any interleaved rand() consumption. The pre-2026-07-24 cloud used
+// rand()%N; mt19937()%N keeps the same [0,N) uniform range, different values.
+Vec3f oortSamplePoint(std::mt19937 &rng) noexcept
 {
 	float radius, theta, phi, r_theta, r_phi;
 	Vec3f tmp;
-	r_theta = (float) (rand()%3600);
-	r_phi = (float) (rand()%1400);
+	r_theta = (float) (rng()%3600);
+	r_phi = (float) (rng()%1400);
 	theta = r_theta /10.;
 	phi   = -70. + r_phi /10.;
 	if (abs(phi)>60) phi = phi*(1+(abs(phi)-60)/35);
-	radius = 60. + (float) (rand()%5000);
+	radius = 60. + (float) (rng()%5000);
 	if (radius<2570) phi = phi*(radius-0)/2570;
 	if (radius>4000) radius = radius*(1+(radius-4000)/4000);
 	Utility::spheToRect(theta*M_PI/180,phi*M_PI/180, tmp);
@@ -105,11 +119,15 @@ void Oort::populate(unsigned int nbr) noexcept
 {
 	vertex = m_dataGL->createBuffer(0, nbr, Context::instance->globalBuffer.get());
 	Vec3f *dataOort = (Vec3f *) Context::instance->transfer->planCopy(vertex->get());
+	// Shared spatial law (I2, B5 §6.9 - oortSamplePoint above) drawn from a
+	// dedicated frozen-seed generator (B5-oort-2): this cloud is POINT-identical
+	// to the new-path OortModule's, which seeds its own generator from the SAME
+	// constant. The old render path's gates/intensity/draw-order are untouched;
+	// only the cloud's point positions changed vs the pre-2026-07-24 global-rand
+	// cloud (authorized by the directive).
+	std::mt19937 rng = oortRng();
 	for(unsigned int i=0; i<nbr ; i++) {
-		// Shared spatial law (I2, B5 §6.9 - oortSamplePoint above): identical
-		// rand() consumption to the historical inline loop, so this baseline
-		// cloud stays bit-identical (old path unchanged by construction).
-		*(dataOort++) = oortSamplePoint();
+		*(dataOort++) = oortSamplePoint(rng);
 	}
 	nbAsteroids = nbr;
 }
