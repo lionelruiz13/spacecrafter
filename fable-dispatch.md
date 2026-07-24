@@ -78,7 +78,13 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 - **Stop boundaries (NOT yours):** H4(a) SECONDARY ladder; H4(c) RGBA8 SELF_COLOR;
   the row-16/D4 surface module (the second bound on the FINE observable — §11.97(e);
   out of scope, the coarse capability is the deliverable).
-- **WIP:** —
+- **WIP (2026-07-24, Fable, C1 done → recorded §11.99):** mechanism investigation
+  COMPLETE-to-the-instrument-boundary; §11.97(b)'s attribution refuted (hard
+  depth-kill, close-works = regime-hole accident); scope redrawn §11.99(g). Code
+  HEAD untouched. **NEXT STEP (needs §11.99(h) authorization or alternative):**
+  depth-viz shader run to pin the near-depth writer; then design+implement the
+  split/prefill per §11.99(g). Re-read §11.99 IN FULL before resuming — do not
+  re-run the refuted-hypothesis probes (procedures recorded there).
 
 ### F2 — B24-select: composed bodies selectable  [M]
 - **Row / recorded:** B24 (§13.B) · §11.97(d) · §11.60 (ModularObject uninstantiated) · A17/R5 (§11.70: visibility is the selection domain; BIGGEST wins in-tolerance).
@@ -216,3 +222,7 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   Earth — which configuration produced it? (free mode / other anchor / other content).
 - **Decision batches waiting**: §11.96(e)(1–6) + §11.98(f)(i–iii) (oort/§6.9 plan);
   D15 (§11.79(i)); §11.92(d) heading-coupling; §11.94(d) latch-when-settled.
+- **F1 instrument authorization (§11.99(h))**: one depth-viz shader run needs write
+  access to `/usr/local/share/spacecrafter/shaders/` (claude-owned; backup/restore
+  trivial; sandbox classifier blocks it). A Bash permission rule for that path — or
+  a user-space `CONFIG_DATA_DIR` rebuild, or RenderDoc — unblocks F1's next step.
