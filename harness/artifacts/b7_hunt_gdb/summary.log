@@ -1,0 +1,120 @@
+==== B7 HUNT [gdb] batch start 2026-07-24T05:29:28+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_gdb append=0 cyc0=0 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 1..12)
+cyc 1 oldsig [old/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 2 qda [new/SIGINT] tcp=13s: CLEAN
+cyc 3 actsig [new/SIGINT] tcp=12s: CLEAN
+cyc 4 frsig [new/SIGINT] tcp=13s: CLEAN
+cyc 5 galsig [new/SIGINT] tcp=12s: CLEAN
+cyc 6 oldcmd [old/shutdown-cmd] tcp=12s: CLEAN
+cyc 7 qdaterm [new/SIGTERM] tcp=13s: CLEAN (frame-stall during run)
+cyc 8 frcmd [new/shutdown-cmd] tcp=12s: CLEAN
+cyc 9 oldsig [old/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 10 qda [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 11 actquit [new/SIGQUIT] tcp=12s: CLEAN (frame-stall during run)
+cyc 12 actsig [new/SIGINT] tcp=13s: CLEAN (frame-stall during run)
+==== B7 HUNT [gdb] batch done 2026-07-24T05:33:43+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     12 CLEAN
+==== B7 HUNT [gdb] batch start 2026-07-24T05:33:43+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_gdb append=1 cyc0=12 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 13..24)
+cyc 13 frsig [new/SIGINT] tcp=12s: CLEAN
+cyc 14 galsig [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 15 oldsig [old/SIGINT] tcp=12s: CLEAN
+cyc 16 qda [new/SIGINT] tcp=13s: CLEAN (frame-stall during run)
+cyc 17 actsig [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 18 oldcmd [old/shutdown-cmd] tcp=12s: CLEAN (frame-stall during run)
+cyc 19 qdaterm [new/SIGTERM] tcp=12s: CLEAN (frame-stall during run)
+cyc 20 frcmd [new/shutdown-cmd] tcp=12s: CLEAN (frame-stall during run)
+cyc 21 oldsig [old/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 22 qda [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 23 frsig [new/SIGINT] tcp=12s: CLEAN
+cyc 24 galsig [new/SIGINT] tcp=13s: CLEAN (frame-stall during run)
+==== B7 HUNT [gdb] batch done 2026-07-24T05:37:55+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     24 CLEAN
+==== B7 HUNT [gdb] batch start 2026-07-24T05:38:09+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_gdb append=1 cyc0=24 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 25..36)
+cyc 25 actsig [new/SIGINT] tcp=12s: CLEAN
+cyc 26 oldsig [old/SIGINT] tcp=12s: CLEAN
+cyc 27 qda [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 28 actquit [new/SIGQUIT] tcp=13s: CLEAN (frame-stall during run)
+cyc 29 oldcmd [old/shutdown-cmd] tcp=12s: CLEAN (frame-stall during run)
+cyc 30 qdaterm [new/SIGTERM] tcp=12s: CLEAN (frame-stall during run)
+cyc 31 frcmd [new/shutdown-cmd] tcp=12s: CLEAN
+cyc 32 frsig [new/SIGINT] tcp=13s: CLEAN
+cyc 33 galsig [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 34 actsig [new/SIGINT] tcp=12s: CLEAN
+cyc 35 oldsig [old/SIGINT] tcp=12s: CLEAN
+cyc 36 qda [new/SIGINT] tcp=13s: CLEAN (frame-stall during run)
+==== B7 HUNT [gdb] batch done 2026-07-24T05:42:24+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     36 CLEAN
+==== B7 HUNT [gdb] batch start 2026-07-24T05:42:24+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_gdb append=1 cyc0=36 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 37..48)
+cyc 37 oldsig [old/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 38 qda [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 39 actsig [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 40 frsig [new/SIGINT] tcp=13s: CLEAN (frame-stall during run)
+cyc 41 galsig [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 42 oldcmd [old/shutdown-cmd] tcp=12s: CLEAN (frame-stall during run)
+cyc 43 qdaterm [new/SIGTERM] tcp=12s: CLEAN
+cyc 44 frcmd [new/shutdown-cmd] tcp=12s: CLEAN (frame-stall during run)
+cyc 45 oldsig [old/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 46 qda [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 47 actquit [new/SIGQUIT] tcp=12s: CLEAN (frame-stall during run)
+cyc 48 actsig [new/SIGINT] tcp=12s: CLEAN
+==== B7 HUNT [gdb] batch done 2026-07-24T05:46:39+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     48 CLEAN
+==== B7 HUNT [gdb] batch start 2026-07-24T05:46:53+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_gdb append=1 cyc0=48 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 49..60)
+cyc 49 frsig [new/SIGINT] tcp=12s: CLEAN
+cyc 50 galsig [new/SIGINT] tcp=13s: CLEAN (frame-stall during run)
+cyc 51 oldsig [old/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 52 qda [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 53 oldcmd [old/shutdown-cmd] tcp=12s: CLEAN
+cyc 54 qdaterm [new/SIGTERM] tcp=13s: CLEAN (frame-stall during run)
+cyc 55 frcmd [new/shutdown-cmd] tcp=12s: CLEAN (frame-stall during run)
+cyc 56 actsig [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 57 oldsig [old/SIGINT] tcp=12s: CLEAN
+cyc 58 qda [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 59 frsig [new/SIGINT] tcp=13s: CLEAN
+cyc 60 galsig [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+==== B7 HUNT [gdb] batch done 2026-07-24T05:51:05+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     60 CLEAN
+==== B7 HUNT [gdb] batch start 2026-07-24T05:51:05+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_gdb append=1 cyc0=60 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 61..72)
+cyc 61 actsig [new/SIGINT] tcp=12s: CLEAN
+cyc 62 oldsig [old/SIGINT] tcp=13s: CLEAN (frame-stall during run)
+cyc 63 qda [new/SIGINT] tcp=13s: CLEAN (frame-stall during run)
+cyc 64 actquit [new/SIGQUIT] tcp=12s: CLEAN
+cyc 65 oldcmd [old/shutdown-cmd] tcp=12s: CLEAN
+cyc 66 qdaterm [new/SIGTERM] tcp=13s: CLEAN (frame-stall during run)
+cyc 67 frcmd [new/shutdown-cmd] tcp=12s: CLEAN (frame-stall during run)
+cyc 68 frsig [new/SIGINT] tcp=12s: CLEAN
+cyc 69 galsig [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+cyc 70 actsig [new/SIGINT] tcp=12s: CLEAN
+cyc 71 oldsig [old/SIGINT] tcp=12s: CLEAN
+cyc 72 qda [new/SIGINT] tcp=12s: CLEAN (frame-stall during run)
+==== B7 HUNT [gdb] batch done 2026-07-24T05:55:20+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     72 CLEAN

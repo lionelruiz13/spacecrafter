@@ -1,0 +1,120 @@
+==== B7 HUNT [plain] batch start 2026-07-24T05:03:48+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_plain append=0 cyc0=0 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 1..12)
+cyc 1 oldsig [old/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 2 qda [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 3 actsig [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 4 frsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 5 galsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 6 oldcmd [old/shutdown-cmd] tcp=12s: CLEAN (rc=0)
+cyc 7 qdaterm [new/SIGTERM] tcp=11s: CLEAN (rc=0)
+cyc 8 frcmd [new/shutdown-cmd] tcp=11s: CLEAN (rc=0)
+cyc 9 oldsig [old/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 10 qda [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 11 actquit [new/SIGQUIT] tcp=11s: CLEAN (rc=0)
+cyc 12 actsig [new/SIGINT] tcp=12s: CLEAN (rc=0)
+==== B7 HUNT [plain] batch done 2026-07-24T05:07:51+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     12 CLEAN
+==== B7 HUNT [plain] batch start 2026-07-24T05:08:09+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_plain append=1 cyc0=12 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 13..24)
+cyc 13 frsig [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 14 galsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 15 oldsig [old/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 16 qda [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 17 actsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 18 oldcmd [old/shutdown-cmd] tcp=11s: CLEAN (rc=0)
+cyc 19 qdaterm [new/SIGTERM] tcp=11s: CLEAN (rc=0)
+cyc 20 frcmd [new/shutdown-cmd] tcp=12s: CLEAN (rc=0)
+cyc 21 oldsig [old/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 22 qda [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 23 frsig [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 24 galsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+==== B7 HUNT [plain] batch done 2026-07-24T05:12:09+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     24 CLEAN
+==== B7 HUNT [plain] batch start 2026-07-24T05:12:09+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_plain append=1 cyc0=24 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 25..36)
+cyc 25 actsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 26 oldsig [old/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 27 qda [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 28 actquit [new/SIGQUIT] tcp=11s: CLEAN (rc=0)
+cyc 29 oldcmd [old/shutdown-cmd] tcp=11s: CLEAN (rc=0)
+cyc 30 qdaterm [new/SIGTERM] tcp=12s: CLEAN (rc=0)
+cyc 31 frcmd [new/shutdown-cmd] tcp=11s: CLEAN (rc=0)
+cyc 32 frsig [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 33 galsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 34 actsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 35 oldsig [old/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 36 qda [new/SIGINT] tcp=12s: CLEAN (rc=0)
+==== B7 HUNT [plain] batch done 2026-07-24T05:16:12+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     36 CLEAN
+==== B7 HUNT [plain] batch start 2026-07-24T05:16:23+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_plain append=1 cyc0=36 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 37..48)
+cyc 37 oldsig [old/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 38 qda [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 39 actsig [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 40 frsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 41 galsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 42 oldcmd [old/shutdown-cmd] tcp=12s: CLEAN (rc=0)
+cyc 43 qdaterm [new/SIGTERM] tcp=11s: CLEAN (rc=0)
+cyc 44 frcmd [new/shutdown-cmd] tcp=11s: CLEAN (rc=0)
+cyc 45 oldsig [old/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 46 qda [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 47 actquit [new/SIGQUIT] tcp=11s: CLEAN (rc=0)
+cyc 48 actsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+==== B7 HUNT [plain] batch done 2026-07-24T05:20:26+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     48 CLEAN
+==== B7 HUNT [plain] batch start 2026-07-24T05:20:26+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_plain append=1 cyc0=48 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 49..60)
+cyc 49 frsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 50 galsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 51 oldsig [old/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 52 qda [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 53 oldcmd [old/shutdown-cmd] tcp=11s: CLEAN (rc=0)
+cyc 54 qdaterm [new/SIGTERM] tcp=11s: CLEAN (rc=0)
+cyc 55 frcmd [new/shutdown-cmd] tcp=12s: CLEAN (rc=0)
+cyc 56 actsig [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 57 oldsig [old/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 58 qda [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 59 frsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 60 galsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+==== B7 HUNT [plain] batch done 2026-07-24T05:24:26+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     60 CLEAN
+==== B7 HUNT [plain] batch start 2026-07-24T05:24:39+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7_hunt_plain append=1 cyc0=60 ====
+BIN mtime=2026-07-24 04:24:59.716788304 +0200  code HEAD=2912d303  harness HEAD=8f5f7e6
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+batch teardowns: 12  (cycle ids 61..72)
+cyc 61 actsig [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 62 oldsig [old/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 63 qda [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 64 actquit [new/SIGQUIT] tcp=11s: CLEAN (rc=0)
+cyc 65 oldcmd [old/shutdown-cmd] tcp=12s: CLEAN (rc=0)
+cyc 66 qdaterm [new/SIGTERM] tcp=11s: CLEAN (rc=0)
+cyc 67 frcmd [new/shutdown-cmd] tcp=11s: CLEAN (rc=0)
+cyc 68 frsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 69 galsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 70 actsig [new/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 71 oldsig [old/SIGINT] tcp=11s: CLEAN (rc=0)
+cyc 72 qda [new/SIGINT] tcp=11s: CLEAN (rc=0)
+==== B7 HUNT [plain] batch done 2026-07-24T05:28:42+02:00 ====
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     72 CLEAN
