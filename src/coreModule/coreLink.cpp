@@ -26,6 +26,7 @@
 #include "appModule/fontFactory.hpp"
 #include "appModule/space_date.hpp"
 #include "coreModule/oort.hpp"
+#include "experimentalModule/bodyModules/OortModule.hpp" // B5 §6.9 pilot: mirror the show flag
 #include "coreModule/skyline_mgr.hpp"
 #include "coreModule/skygrid_mgr.hpp"
 #include "coreModule/milkyway.hpp"
@@ -181,6 +182,11 @@ bool CoreLink::oortGetFlagShow() const {
 
 void CoreLink::oortSetFlagShow(bool b) {
 	core->oort->setFlagShow(b);
+	// B5 §6.9 pilot: one operator concept "show the oort" drives BOTH cloud
+	// draws (I2 - the new modular oort mirrors the old cloud's flag through this
+	// single command choke point). Only meaningful when the modular oort exists
+	// (flag_experimental_oort); harmless otherwise.
+	OortModule::show = b;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

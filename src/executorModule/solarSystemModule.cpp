@@ -193,7 +193,14 @@ void SolarSystemModule::draw(int delta_time)
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 	core->nebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
-	core->oort->draw(observer->getAltitude(), core->navigation);
+	// Dual-path (S8, B5 §6.9): the OLD altitude-gated oort is REPLACED in the
+	// modular phase by the OortModule at the SolarSystem floor (regime-gated,
+	// ssystemFactory->draw below) - but ONLY when that modular oort was actually
+	// instantiated (the pilot flag). Without it the old oort still draws in both
+	// phases, so the DEFAULT tree is byte-unchanged by this seam (one oort per
+	// path, the I2 form of the milkyway/pointer seams above/below).
+	if (!(core->ssystemFactory->drawModularSystem && core->ssystemFactory->hasExperimentalOort()))
+		core->oort->draw(observer->getAltitude(), core->navigation);
 	core->illuminates->draw(core->projection, core->navigation);
 	core->asterisms->draw(core->projection, core->navigation);
 	core->starLines->draw(core->projection);

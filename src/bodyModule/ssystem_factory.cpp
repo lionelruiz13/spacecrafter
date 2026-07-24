@@ -402,6 +402,59 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
     }
 }
 
+void SSystemFactory::createExperimentalOort(unsigned int nbr, const Vec3f &color)
+{
+    // The oort belongs to the MAIN solar system only (its geometry is
+    // heliocentric); other created systems (createSystem) are foreign stars.
+    auto it = modularSystemOf.find("Solar");
+    if (it == modularSystemOf.end() || it->second == nullptr)
+        return;
+    ModularSystem *system = it->second;
+
+    // ---- Regime low-edge peg (PROVISIONAL, B5) -----------------------------
+    // scaledRadius·BODY_SURFACE_HEIGHT (=·2) is the near/grounded->near regime
+    // boundary in ModularBody::draw: the cloud (a NEAR component) is hidden for
+    // observer distance < this, shown beyond. The old altitude gate turns the
+    // cloud on around 1e13 m ≈ 67 AU (measured: off at refDist 66.8 AU, full by
+    // 133.7 AU). Radius 50 AU ⇒ boundary 100 AU, inside that ramp. This is a
+    // BODY-DATA value feeding the regime, NOT a distance test in the draw path
+    // (the §2(a2) foreclosure the pilot avoids). Value TUNED empirically, flagged.
+    constexpr float OORT_REGIME_RADIUS_AU = 50.f;
+
+    std::map<std::string, std::string> orbitParams;
+    orbitParams["coord_func"] = "still_orbit";
+    orbitParams["orbit_x"] = "0";
+    orbitParams["orbit_y"] = "0";
+    orbitParams["orbit_z"] = "0";
+    ModularBodyCreateInfo info {
+        .orbit = ModuleLoaderMgr::instance.loadOrbit(orbitParams),
+        .englishName = "Oort",
+        .re = {},          // identity rotation: no tilt; the surface-fold z-spin
+                           // the near regime applies is azimuthally inert on this
+                           // theta-uniform cloud (oortSamplePoint).
+        .haloColor = {},
+        .albedo = 0,
+        .radius = OORT_REGIME_RADIUS_AU, // AU (regime low-edge peg; NOT the extent)
+        .oblateness = 0,
+        .solLocalDay = 0,
+        .bodyType = BodyType::VOID,      // decoration, not a navigable body-type
+        .isHaloEnabled = false,
+    };
+    ModularBody *oortBody = system->createChild(info, BodyRelation::ORBITING);
+
+    std::map<std::string, std::string> modParams;
+    modParams["oort"] = "true"; // the OORT-slot opt-in (OortLoader::isLikely)
+    modParams["oort_elements"] = std::to_string(nbr);
+    modParams["oort_color"] = std::to_string(color[0]) + "," + std::to_string(color[1])
+                            + "," + std::to_string(color[2]);
+    ModuleLoaderMgr::instance.loadModule(BodyModuleType::CUSTOM, oortBody, modParams, "OORT");
+    oortBody->updateCache(); // bounding radius (cloud extent) now set
+    experimentalOortInstantiated = true;
+
+    cLog::get()->write("B5 §6.9 pilot: experimental oort modular body instantiated at the "
+        "SolarSystem floor (" + std::to_string(nbr) + " points).", LOG_TYPE::L_INFO);
+}
+
 void SSystemFactory::loadGalacticSystem(const std::string &path, const std::string &name)
 {
     stringHash_t params;

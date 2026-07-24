@@ -54,6 +54,7 @@
 #include "bodyModule/body_trace.hpp"
 #include "experimentalModule/Renderer.hpp" // dual-path pointer flag mirror
 #include "experimentalModule/Camera.hpp" // both-paths fov mirror (INTENT 11.40)
+#include "experimentalModule/bodyModules/OortModule.hpp" // B5 §6.9 pilot: modular oort show flag
 #include "eventModule/CoreEvent.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "coreModule/meteor_mgr.hpp"
@@ -412,6 +413,14 @@ void Core::init(const InitParser& conf)
 
 		oort->populate(conf.getInt("rendering","oort_elements"));
 		oort->build();
+		// B5 §6.9 content-migration PILOT: also instantiate the oort as a modular
+		// body at the SolarSystem floor (the [vixy] mapping rule). Gated OFF by
+		// default (flag_experimental_oort) so the shipped tree - and the b5
+		// collapse/AoI legs its cloud extent would perturb - stay unchanged;
+		// enabled only for the pilot A/B. Shares the old cloud's count + color.
+		if (conf.getBoolean("rendering", "flag_experimental_oort", false))
+			ssystemFactory->createExperimentalOort(conf.getInt("rendering","oort_elements"),
+				Utility::strToVec3f(conf.getStr(SCS_COLOR, SCK_OORT_COLOR)));
 		tully->setTexture("typegals.png");
 		tully->loadCatalog("tully.dat");
 		tully->loadBigCatalog("6df.dat", 5e+12);
@@ -567,6 +576,7 @@ void Core::init(const InitParser& conf)
 	ssystemFactory->setSunScale(conf.getDouble (SCS_VIEWING,SCK_SUN_SCALE), true); //? always true TODO
 
 	oort->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
+	OortModule::show = conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT); // B5 §6.9 pilot: mirror to the modular oort
 
 	setLightPollutionLimitingMagnitude(conf.getDouble(SCS_VIEWING,SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE));
 

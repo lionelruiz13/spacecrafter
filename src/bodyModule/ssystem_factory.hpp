@@ -638,6 +638,19 @@ public:
 	//! Retires with the executors.
 	void drawExperimental();
 
+	//! B5 §6.9 content-migration PILOT: instantiate the oort cloud as a modular
+	//! body at the SolarSystem floor (the [vixy] mapping rule). Gated OFF by
+	//! default at the call site (Core, config flag_experimental_oort=false) so
+	//! the default tree - and the b5 collapse/AoI legs it would perturb - stay
+	//! unchanged; enabled only for the pilot's A/B. `nbr`/`color` share the old
+	//! cloud's config (oort_elements / oort_color). No-op if the "Solar" node is
+	//! absent. See INTENT §6.9 for the node-reach coupling this surfaces.
+	void createExperimentalOort(unsigned int nbr, const Vec3f &color);
+	//! Whether the B5 pilot oort modular body was instantiated (the dual-path
+	//! seam suppresses the OLD oort in the modular phase ONLY when this is true,
+	//! so the default tree is byte-unchanged).
+	inline bool hasExperimentalOort() const { return experimentalOortInstantiated; }
+
 	void addBody(stringHash_t &param);
 
     //! Re-read the camera's current system from its data file, KEEPING the
@@ -886,6 +899,9 @@ public:
     //! These two defaults are the no-configuration behaviour and must stay
     //! consistent with setRenderPathMode(NEW).
     bool drawModularSystem = true;
+    // B5 §6.9 pilot: set true by createExperimentalOort (gated OFF by default);
+    // read by hasExperimentalOort() for the dual-path oort seam.
+    bool experimentalOortInstantiated = false;
     // Path pinned: the 1s A/B auto-toggle runs ONLY when this is false, which
     // now requires an explicit opt-in (beta_features.ini ALTERNATE) or the
     // script command. Alternation was the default until 2026-07-21 - it made

@@ -39,6 +39,28 @@
 
 #define NB_POINTS 200000
 
+// Single authority for the oort cloud's spatial law (I2, B5 §6.9): the exact
+// per-point formula the old populate loop below used, extracted so the new-path
+// OortModule draws the SAME distribution without duplicating it. Kept as three
+// rand() draws in the historical order so a shared call inside the old loop
+// leaves that loop's rand() consumption - and therefore the baseline cloud -
+// bit-identical (old render path unchanged by construction).
+Vec3f oortSamplePoint() noexcept
+{
+	float radius, theta, phi, r_theta, r_phi;
+	Vec3f tmp;
+	r_theta = (float) (rand()%3600);
+	r_phi = (float) (rand()%1400);
+	theta = r_theta /10.;
+	phi   = -70. + r_phi /10.;
+	if (abs(phi)>60) phi = phi*(1+(abs(phi)-60)/35);
+	radius = 60. + (float) (rand()%5000);
+	if (radius<2570) phi = phi*(radius-0)/2570;
+	if (radius>4000) radius = radius*(1+(radius-4000)/4000);
+	Utility::spheToRect(theta*M_PI/180,phi*M_PI/180, tmp);
+	return tmp * radius;
+}
+
 Oort::Oort()
 {
 	fader = false;
@@ -81,22 +103,13 @@ void Oort::createSC_context()
 
 void Oort::populate(unsigned int nbr) noexcept
 {
-	float radius, theta, phi, r_theta, r_phi;
-	Vec3f tmp;
 	vertex = m_dataGL->createBuffer(0, nbr, Context::instance->globalBuffer.get());
 	Vec3f *dataOort = (Vec3f *) Context::instance->transfer->planCopy(vertex->get());
 	for(unsigned int i=0; i<nbr ; i++) {
-		r_theta = (float) (rand()%3600);
-		r_phi = (float) (rand()%1400);
-		theta = r_theta /10.;
-		phi   = -70. + r_phi /10.;
-		if (abs(phi)>60) phi = phi*(1+(abs(phi)-60)/35);
-		radius = 60. + (float) (rand()%5000);
-		if (radius<2570) phi = phi*(radius-0)/2570;
-		if (radius>4000) radius = radius*(1+(radius-4000)/4000);
-
-		Utility::spheToRect(theta*M_PI/180,phi*M_PI/180, tmp);
-		*(dataOort++) = tmp * radius;
+		// Shared spatial law (I2, B5 §6.9 - oortSamplePoint above): identical
+		// rand() consumption to the historical inline loop, so this baseline
+		// cloud stays bit-identical (old path unchanged by construction).
+		*(dataOort++) = oortSamplePoint();
 	}
 	nbAsteroids = nbr;
 }

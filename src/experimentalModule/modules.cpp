@@ -37,6 +37,7 @@ extern const Mat4d mat_j2000_to_vsop87;
 #include "moduleLoader/TailLoader.hpp"
 #include "moduleLoader/GridLoader.hpp"
 #include "moduleLoader/StarLoader.hpp"
+#include "moduleLoader/OortLoader.hpp"
 
 void ModuleLoaderMgr::init()
 {
@@ -62,4 +63,5 @@ void ModuleLoaderMgr::init()
     registerModule(BodyModuleType::TAIL, std::make_unique<TailLoader>()); // row 12: comet gas/dust tail (instanced batch, Renderer-owned; Tail::global dissolved)
     registerModule(BodyModuleType::CUSTOM, std::make_unique<GridLoader>()); // row 11: lat/lon grid (explicit-slot only, §6.7 declaration half)
     registerModule(BodyModuleType::CUSTOM, std::make_unique<StarLoader>()); // row 14: star big-halo glow (deduced; wins CUSTOM over Grid on stars, 0 on planets)
+    registerModule(BodyModuleType::CUSTOM, std::make_unique<OortLoader>()); // B5 §6.9 pilot: oort point cloud (explicit slot OORT, oort=true opt-in, 0 on every other CUSTOM body)
 }

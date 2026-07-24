@@ -45,6 +45,19 @@ class Pipeline;
 class PipelineLayout;
 class Set;
 
+//! Spatial law of the oort point cloud - THE single authority (I2) for the
+//! cloud's geometry, shared between the old-path Oort (below) and the new-path
+//! OortModule (B5 §6.9 content-migration pilot). One call draws one point in
+//! heliocentric-ecliptic AU (spheToRect of the historical theta/phi/radius
+//! distribution, verbatim from the old populate loop): three rand() draws,
+//! azimuthally uniform in theta so the cloud is invariant under any z-rotation
+//! (why the new path's near-regime surface fold is visually inert). Both paths
+//! materialize their own buffer from this law - the old for its baseline draw,
+//! the new for its module - statistically identical, not bit-identical (the
+//! draw order / prior rand state differs); the old path retires, leaving the
+//! new module as the sole authority.
+Vec3f oortSamplePoint() noexcept;
+
 class Oort {
 public:
 	Oort();
