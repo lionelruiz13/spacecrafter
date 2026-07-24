@@ -396,6 +396,28 @@ is 0 - validate any cross-path control in-scene, never assume b26's 133 px.
 drawNested/drawStarProxy/Renderer::drawHalo with member prints; the
 proxy-entered-801x/drawHalo-0x measurement that located the halo-flag gate).
 
+### Oort content-migration PILOT (B5 partial, 2026-07-24) - INTENT 6.9 / 13.B B5
+
+`b5_oort_run.sh b5_oort.py [absOutdir]` - verifies the OORT cloud, migrated to a
+MODULAR BODY at the SolarSystem floor (OortModule, CUSTOM/OORT slot), reproduces
+the OLD altitude-gated draw through the new path's REGIME machinery. SEPARATE run
+from b5_drawhalf.py: the runner enables `flag_experimental_oort=true` (the default
+tree keeps it OFF, so b5_drawhalf stays 24/24 unperturbed - the pilot's node-reach
+coupling is exactly why it is gated). Fresh launch, init_fov=340, fisheye, config
+restored byte-identically.
+
+Method: in each render phase isolate that path's oort by `flag oort` on/off (the
+command drives BOTH clouds through one CoreLink choke point) - px32(on,off) = the
+oort ALONE, the rest of the frame (bodies) identical (discrimination by
+construction). Solar mode, ref=Sun (the clean regime-gated band). Legs: LOW-hide
+(refDist ~20 AU, both < 800 px), MID-show (refDist ~334 AU, NEW vs OLD within
+0.1%), discrimination (shown/hidden ratio 159x by the altitude gate, witnesses
+drawn in both). RECORDED coupling (not a pass leg): past refDist ~533 AU the
+reference becomes 'Oort' - the cloud's 6400 AU extent inflated its AoI and
+hijacked the camera reference from MilkyWay (why the b5 galactic legs break with
+it on). High-edge divergence: OLD hard-cuts at 1e16 m, NEW fades on angular size
+(NEW 3210 vs OLD 276 px at 1e16 m) - old arbitrary cut vs new physical fade.
+
 ## View-directed free descent (B21, 2026-07-22) - INTENT 11.72 / 13.B B21
 
 `b21_descent.py` (full) + `b21_far.py` (fast far-only) + `b21_probe.py`
