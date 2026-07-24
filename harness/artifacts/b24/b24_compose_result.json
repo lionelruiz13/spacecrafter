@@ -4,14 +4,66 @@
   "Earth": {
    "net_grounded": 1.7075472925031877e-06,
    "net_control": 90.2460851312561,
-   "d_spin": 90.2464733447729,
+   "d_spin": 90.24647529282942,
    "r_control_km": 6378.140331376124
   },
   "Moon": {
-   "L0_km": 3149.6226556782813,
+   "L0_km": 400.0116754017713,
    "L1_km": 300.643841967903,
-   "d_spin": 3.8404800869999995,
-   "pred_err_km": 0.009402753351743657
+   "d_spin": 0.0574927599999997,
+   "pred_err_km": 0.007615673739923751
   }
+ },
+ "attitude": {
+  "RoverM": {
+   "channel": "fresh",
+   "spread_rad": 0.0,
+   "surfaceLocked": true,
+   "vals": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "RoverE": {
+   "channel": "fresh",
+   "spread_rad": 0.0,
+   "surfaceLocked": true,
+   "vals": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "RoverMR": {
+   "channel": "fresh",
+   "measured_rad": 3.1415896700000006,
+   "predicted_rad": 3.141592653589793,
+   "err_rad": 2.983589792560082e-06,
+   "surfaceLocked": false,
+   "rot_hours": 12.0
+  },
+  "RoverC": {
+   "channel": "fresh",
+   "measured_rad": 1.57079784,
+   "predicted_rad": 1.5707963267948966,
+   "err_rad": 1.5132051034427718e-06,
+   "surfaceLocked": false
+  }
+ },
+ "d12_log": {
+  "fired": [
+   "RoverC",
+   "RoverEC",
+   "Hyperion",
+   "Juno",
+   "Vesta"
+  ],
+  "silent_ok": true,
+  "total_log_lines": 5
  }
 }

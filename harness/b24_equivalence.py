@@ -35,8 +35,11 @@ Comparison (new-path fields of the dual_dump, matched by body name):
   - the shadowing log line fired in B and NOT in A (the self-naming
     precedence evidence, 11.51(a)).
 `mat`/`screen`/`dist` are observer-composed (camera state) and carry the B30
-fresh-launch variance - deliberately NOT part of this gate; axisRot excluded
-too (the B30/B32 spin-phase twin).
+fresh-launch variance - deliberately NOT part of this gate. axisRot IS now
+compared (B32, D20 §11.79(n)): the recompute-at-use fix made the spin phase a
+deterministic function of the exact-compared lastJD, so the exclusion is LIFTED
+and the field is exact-string legacy-vs-composed (was excluded as the B30/B32
+spin-phase twin - the launch-wall-clock staleness that scattered it is gone).
 
 Exit 0 = equivalence holds; 1 = any divergence (each named on stdout).
 """
@@ -189,6 +192,29 @@ def raw_new_fields(path):
     return out
 
 
+def raw_axisrot(path):
+    """Exact-string axisRot per body (B32): the spin phase, byte-for-byte.
+
+    Since B32 (D20 §11.79(n)) `axisRot` recomputes at the dump USE from the
+    ROOT-fresh lastJD through computeAxisRotation (I2), so it is a deterministic
+    function of the (already exact-compared) lastJD - the launch-wall-clock spin
+    staleness (§5.24) that forced this field's exclusion is gone. Legacy and
+    composed loads carry identical rotation elements + lastJD, so the printed
+    doubles match exactly. On a PRE-B32 binary this comparison RED-flags the
+    invisible/frozen bodies (Moon/Deimos/Phobos/Mars/Mercury scatter up to
+    4.49 rad) - the discrimination that proves the field is now load-bearing."""
+    import re
+    out = {}
+    with open(path) as f:
+        for line in f:
+            m = re.search(r'"name":"([^"]+)".*?"new":(\{.*\})[,\s]*$', line.strip().rstrip(","))
+            if m:
+                e = re.search(r'"axisRot":([^,\}]+)', m.group(2))
+                if e:
+                    out[m.group(1)] = e.group(1)
+    return out
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
 
@@ -246,8 +272,10 @@ def main():
         ok(f"body set identical ({len(a)} bodies)")
 
     ecl_a, ecl_b = raw_new_fields(dump_a), raw_new_fields(dump_b)
+    axr_a, axr_b = raw_axisrot(dump_a), raw_axisrot(dump_b)
     n_exact = 0
     checked = 0
+    axr_checked = 0
     for name in sorted(set(a) & set(b)):
         na, nb = a[name], b[name]
         checked += 1
@@ -270,7 +298,7 @@ def main():
         # fields get a float32-epsilon tolerance: a value differs only when it
         # exceeds BOTH an absolute denormal floor (1e-18) AND a relative float32
         # bound (1e-6) - orders below any real orbit/size error, orders above
-        # the jitter. axisRot stays fully EXCLUDED (the same B30/B32 spin twin).
+        # the jitter. axisRot is compared EXACT-string below (B32 lifted it).
         if not floats_close(ecl_a.get(name), ecl_b.get(name)):
             fail(f"{name}.ecl differs beyond float32 jitter: [{ecl_a.get(name)}] vs [{ecl_b.get(name)}]")
         elif not scalar_close(na.get("boundingRadius"), nb.get("boundingRadius")):
@@ -278,10 +306,23 @@ def main():
                  f"{na.get('boundingRadius')!r} vs {nb.get('boundingRadius')!r}")
         else:
             n_exact += 1
+        # axisRot (B32, D20 §11.79(n)): the exclusion is LIFTED - the spin phase
+        # now recomputes at the dump USE from the ROOT-fresh lastJD (I2), so it
+        # is deterministic (a function of the exact-compared lastJD) and matches
+        # EXACT-string legacy-vs-composed. This gate RED-flagged 5 invisible/
+        # frozen bodies on the pre-B32 binary (Moon/Deimos/Phobos/Mars/Mercury,
+        # up to 4.49 rad) - the discrimination proving the field is load-bearing.
+        if name in axr_a and name in axr_b:
+            axr_checked += 1
+            if axr_a[name] != axr_b[name]:
+                fail(f"{name}.axisRot differs (B32 spin-freshness): "
+                     f"{axr_a[name]} vs {axr_b[name]}")
     ok(f"per-body fields checked on {checked} bodies; ecl+boundingRadius within float32 jitter on {n_exact}")
+    ok(f"axisRot exact-string (B32 lifted exclusion) compared on {axr_checked} bodies")
 
     (OUT / "b24_result.json").write_text(json.dumps({
-        "bodies": len(a), "float_within_jitter": n_exact, "fails": FAILS,
+        "bodies": len(a), "float_within_jitter": n_exact,
+        "axisRot_exact_checked": axr_checked, "fails": FAILS,
         "jd_a": ha.get("jd"), "jd_b": hb.get("jd"),
         "exit_a": rc_a, "exit_b": rc_b,
     }, indent=1))
