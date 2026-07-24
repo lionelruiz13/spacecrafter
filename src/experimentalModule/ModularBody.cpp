@@ -629,15 +629,30 @@ void ModularBody::dumpTrace(std::ostream &out) const
         out << mat.r[i] << ((i < 15) ? "," : "");
     out << "],\"dist\":" << distance
         << ",\"screen\":[" << screenPos.first << ',' << screenPos.second
-        << "],\"axisRot\":" << axisRotation
-        // Fresh spin phase (B24-att instrument, INTENT §11.79(l)): recomputed
-        // from the ROOT-fresh lastJD (translation tick, B19) rather than read
-        // from the visibility-gated axisRotation cache - so the surface-locked
-        // attitude default (grounded, constant) vs an authored/legacy-24h spin
-        // (advancing) is discriminable on ANY body, visible or not, immune to
-        // the §5.24/B32 launch-wall-clock spin staleness that makes the cached
-        // axisRot unfit for this comparison. Surface-locked => constant across
-        // dates; spinning => advances at re.period (or the 24 h default).
+        // B32 RECOMPUTE-AT-USE (D20 §11.79(n), the D8 §11.76 barrier): a dump is
+        // a USE, so the spin phase is recomputed here from the ROOT-fresh lastJD
+        // (translation tick keeps lastJD current on EVERY body, visible or not,
+        // B19) through the ONE authority computeAxisRotation (I2) - NOT read from
+        // the visibility-gated axisRotation cache. The cache is a per-frame
+        // memoization the tick maintains ONLY for visible bodies (update()); it
+        // is fresh-by-construction exactly where the draw path reads it (a body
+        // is drawn iff visible iff updated this frame), and STALE everywhere the
+        // tick genuinely froze the spin (invisible / frozen-under-invisible-
+        // parent). Reading the cache in the dump leaked the LAUNCH wall-clock
+        // spin phase of the last visible update - measured up to 4.49 rad of
+        // cross-launch scatter on Moon/Deimos/Phobos/Mars/Mercury (§5.24; the
+        // ~20 pole-bearing moons in a scene where they are invisible). The
+        // recompute is a closed-form evaluation (computeAxisRotation is a
+        // polynomial+fmod, or the finite nutation series for EARTH_APPARENT - no
+        // convergence loop), so the §11.76 +4-iterations restoration does NOT
+        // apply to spin (that clause is the ITERATIVE Kepler position solve,
+        // §11.76 territory, untouched here). Deterministic: a function of the
+        // bit-identical lastJD, so two fresh launches now agree exactly.
+        << "],\"axisRot\":" << computeAxisRotation(lastJD)
+        // `attitude` == axisRot since the B32 fix (both = computeAxisRotation
+        // (lastJD)); retained as the B24-att-named channel the b24_compose /
+        // b25 harnesses read (§11.90/§11.91) - not removed to avoid a dump-
+        // format break in landed evidence.
         << ",\"attitude\":" << computeAxisRotation(lastJD)
         << ",\"surfaceLocked\":" << (surfaceLockedAttitude ? "true" : "false")
         << ",\"boundingRadius\":" << boundingRadius
@@ -738,7 +753,14 @@ void ModularBody::dumpHops(std::ostream &out) const
         b->transformBodyToParent(up);
         b->transformParentToBody(down);
         const Mat4f tilt = b->computeBodyPosToBody(b->lastJD);
-        const Mat4f spin = b->computeBodyToSurface();
+        // B32 recompute-at-use (D20 §11.79(n)): the dumped spin matrix is a USE,
+        // recomputed from the fresh lastJD through the ONE authority (I2), not
+        // read from the visibility-gated axisRotation cache computeBodyToSurface
+        // reads. Fixes the §11.54(j) stale-spin: Pluto/Charon are hidden, so
+        // their cached spin was frozen at JD 0 and every dumpHops spin matrix for
+        // them was evaluated stale; now it tracks lastJD like `tilt` above. The
+        // +M_PI_2 mirrors getAxisRotation()'s convention exactly.
+        const Mat4f spin = Mat4f::zrotation(b->computeAxisRotation(b->lastJD) + M_PI_2);
         out << std::setprecision(9) << "{\"name\":\"" << b->englishName
             << "\",\"ecl\":[" << b->eclipticPos[0] << ',' << b->eclipticPos[1] << ',' << b->eclipticPos[2]
             << "],\"lastJD\":" << std::setprecision(17) << b->lastJD << std::setprecision(9)

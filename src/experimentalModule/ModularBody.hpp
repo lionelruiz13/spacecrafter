@@ -373,10 +373,15 @@ public:
     }
 
     // Spin phase (rotation about the polar axis) at date jd - THE single
-    // authority (I2): consumed both by the per-frame cache (update() above) and
-    // by any fresh use-site readout that must not depend on the cache's
-    // visibility-gated freshness (dumpTrace's `attitude`; takes jd, so it is
-    // recomputed, §5.24/B32 stale-spin-safe). Branches, each with its reason:
+    // authority (I2): consumed both by the per-frame cache (update() above, the
+    // visible-body memoization) and by every fresh USE-site readout under the
+    // B32 recompute-at-use barrier (D20 §11.79(n), D8 §11.76). Taking jd is what
+    // makes it stale-spin-safe (§5.24/B32): a use recomputes from the ROOT-fresh
+    // lastJD instead of the visibility-gated axisRotation cache. Use sites:
+    // dumpTrace's `axisRot`+`attitude` and dumpHops' `spin` (script-fetch /
+    // selection observables); the draw/show channel reads the cache, which is
+    // fresh-by-construction there (drawn iff visible iff updated this frame).
+    // Branches, each with its reason:
     //   - surfaceLockedAttitude (B24-att, D18 §11.79(l)): a GROUNDED body with
     //     no authored spin is STATIC on the terrain it stands on (a rover sits
     //     still, locked to the surface). No time-varying own spin; only the
