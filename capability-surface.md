@@ -69,8 +69,10 @@ a recorded open item (§11.55(i)).
 
 ## 2. Enumeration method, and its completeness argument
 
-Five independent bases, unioned — no single base is trusted to be complete, and the
-overlap between them is what bounds the residual (the §11.73(a) pattern):
+Six independent bases were planned and unioned — **four completed, two not** (B and F
+below). No single base is trusted to be complete, and the overlap between them is what
+bounds the residual (the §11.73(a) pattern); where a base is incomplete the rows that
+would have come from it are missing, not wrong, and that is said in its own row:
 
 | base | what it enumerates | how | state / residual |
 |---|---|---|---|
@@ -109,14 +111,14 @@ replace) · **DEAD** (no driver) · **OLD** (command lands on the old path only)
 | free mode on/off | `Camera::setFreeMode` | CMD `camera action free_mode state on\|off` | `app_command_interface.cpp:3911-3921` (§11.36) |
 | reference switch | `Camera::warpToBody` | CMD `set home_planet X` | `core.cpp:1818` → `ssystem_factory.cpp:744` |
 | look at alt/az | `Camera::lookTo` | CMD `look_at azimuth … altitude …` | `app_command_interface.cpp:2749-2752` → `coreLink.hpp:374` |
-| continuous pan (hold) | — | **UI** | `core.cpp:1817-1826` → `navigation->updateMove` (old) + no Camera mirror; keys `ui.cpp:1091-1109` |
+| continuous pan (hold) | — | **UI + OLD-ONLY** | `core.cpp:1817-1826` → `navigation->updateMove`; no Camera mirror (`Camera::lookRel`'s only caller is `dragView`). **MEASURED live** (xkey, Left 2500 ms): new camera az/alt bit-identical, new-path Moon screen |Δ| 0.000e+00 NDC vs old-path 872.79 px → **B34** |
 | mouse-drag look-around | `Camera::lookRel` | **UI** (dual) | `core.cpp:1739-1757` (`dragView` mirrors to Camera:1754) — *the only caller is `ui.cpp:364`* |
 | pixel pick (click-select) | `ModularSystem::findBodyAt` | **UI** | `ui.cpp:479` → `core.cpp:1015-1029` → `ssystem_factory.cpp:642`; no command (§11.106(a)) |
 | heading (absolute) | `Camera::setHeading` | CMD `set heading X` / `heading azimuth X [duration d]` | `coreLink.hpp:978-983` (dual) |
 | heading (relative) | `Camera::moveHeading` | CMD `heading delta_azimuth d` + UI | `app_command_interface.cpp:2125-2132`; `coreLink.hpp:931` ← `ui.cpp:2562,2569,2737,2744` |
 | sky lock | `Camera::setSkyLock` | CMD `flag lock_sky_position` | `app_command_interface.cpp:948-952` → `core.cpp:799-800` |
 | fov | `Camera::setHalfFov` | CMD `zoom fov …` / `set fov` | `coreLink.hpp:311,327` |
-| continuous zoom (hold) | — | **UI** | `core.cpp:1718-1726` → `projection->changeFov` (old only) |
+| continuous zoom (hold) | — | **UI + OLD-ONLY** | `core.cpp:1799-1801` → `Projector::changeFov` only; the new path's fov is `ModularBody::halfFov`, written only by `Camera::setHalfFov` (unprobed sibling of the pan ramp) → **B34** |
 | **mount ALTAZ↔EQUATORIAL** | `Camera::setMount` | **CFG** | `ssystem_factory.cpp:165` only; `Core::setMountMode`/`toggleMountMode` (`core.hpp:231,239`) have **zero callers in `src/`** ⇒ config-only on BOTH paths → **B35** |
 | bound-to-surface | `Camera::setBoundToSurface` | **CFG** | `ssystem_factory.cpp:155` only → **B35** |
 | fov clamp min/max | `Camera::minHalfFov/maxHalfFov` | **DEAD** (hard-coded) | `Camera.cpp:13-14`; `CoreLink::setMaxFov` reaches only `Projector` → **B35** |
