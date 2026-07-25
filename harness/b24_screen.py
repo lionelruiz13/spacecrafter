@@ -45,7 +45,14 @@ SC_BIN = os.environ.get("SC_BIN", str(Path(__file__).resolve().parents[2] / "bui
 USERDIR = HOME / ".spacecrafter"
 TWIN = USERDIR / "modularSystem/SolarSystem.ini.disabled"
 ENABLED = USERDIR / "modularSystem/SolarSystem.ini"
-OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / "artifacts/b24_screen"
+# ABSOLUTE (11.106): the app is launched with cwd = ~/.spacecrafter, so a
+# RELATIVE outdir makes it write every dump/screenshot somewhere that does not
+# exist - and the failure is SILENT, because the reader then finds the file
+# left by a PREVIOUS run and verifies stale artifacts. Measured: a relative
+# outdir here re-read 2.5-hour-old dumps and only the one leg asking for a
+# file that had never existed crashed. Same rule as b3_ladder.py.
+OUT = (Path(sys.argv[1]) if len(sys.argv) > 1
+       else Path(__file__).resolve().parent / "artifacts/b24_screen").resolve()
 AU_KM = 149597870.0
 JD = 2461234.0          # jd where observer lon 60 on the Moon is the LIT hemisphere
 OBS_LON = 60            # lit-side sub-observer longitude (calibrated, findlit)
@@ -146,6 +153,21 @@ def run(tag, with_scene, dumps):
                 send(s, f"body action dual_dump filename {p}", 2)
                 dumps[view] = load_new(p)
             imgs[view] = shot(s, f"{tag}_{view}")
+        # SELECTION-AIM CROSS-CHECK of the geometric aim (B24-select, INTENT
+        # 11.106).  Every measurement above aims at the rover GEOMETRICALLY -
+        # its dumped screenPos converted to pixels - which is a claim about
+        # which body the harness thinks it is looking at, taken from the same
+        # dump it then measures.  Selecting the rover BY NAME and letting the
+        # camera track it is an independent route to the same body: it comes
+        # from the selection resolver, not from the screen arithmetic.  Run
+        # LAST, after every shot, so the tracking move disturbs nothing.
+        if with_scene:
+            send(s, "select planet ScreenRover", 1)
+            send(s, "flag track_object on", 3)
+            p = OUT / f"{tag}_selaim.json"
+            send(s, f"body action dual_dump filename {p}", 2)
+            dumps["selaim"], dumps["selaim_cam"] = load_new(p)
+            send(s, "flag track_object off", 2)
         send(s, "shutdown action now", 1); s.close()
         try:
             proc.wait(timeout=30)
@@ -252,6 +274,32 @@ def main():
             fail(f"A4b buried-vs-surface inversion in {view} view: Behind px={bb} > rover px={rb2}")
     print(f"note: Behind(9000km-buried) px far={report['far']['behind_body']} "
           f"close={report['close']['behind_body']} (soft-bounded; limb protrusion legitimate)", flush=True)
+
+    # ---- A5: selection-aim cross-check of the geometric aim (11.106) ----
+    selaim = dumps.get("selaim", {})
+    selcam = dumps.get("selaim_cam") or {}
+    rov = selaim.get("ScreenRover", {})
+    sel, trk = selcam.get("selected", ""), selcam.get("tracked", "")
+    off = math.hypot(*rov["screen"]) if rov else None
+    seldist_km = selcam.get("selDist", 0) * AU_KM
+    rov_km = rov.get("dist", 0) * AU_KM if rov else 0
+    report["selaim"] = dict(selected=sel, tracked=trk, screen=rov.get("screen"),
+                            offset_ndc=off, selDist_km=seldist_km, rover_dist_km=rov_km)
+    if sel == "ScreenRover" and trk == "ScreenRover":
+        ok(f"A5 selection-aim: `select planet ScreenRover` -> selected='{sel}' tracked='{trk}' "
+           f"(the composed body is reachable from the command channel, 11.106)")
+        # the tracked body must be centred, and the selection's own distance must
+        # be the rover's dumped distance - the two routes agree on ONE body
+        if off is not None and off < 0.02 and abs(seldist_km - rov_km) < 1.0:
+            ok(f"A5 cross-check: the tracked rover sits at |screenPos| = {off:.5f} NDC of centre "
+               f"and selDist {seldist_km:.1f} km == the dumped rover distance {rov_km:.1f} km "
+               f"- the geometric aim and the selection resolve the SAME body")
+        else:
+            fail(f"A5 cross-check: offset {off} NDC, selDist {seldist_km:.1f} km vs dumped "
+                 f"{rov_km:.1f} km - geometric aim and selection disagree")
+    else:
+        fail(f"A5 selection-aim: `select planet ScreenRover` -> selected='{sel}' tracked='{trk}' "
+             f"(expected both 'ScreenRover' - 11.97(d)/11.106)")
 
     (OUT / "b24_screen_result.json").write_text(json.dumps({"fails": FAILS, "report": report}, indent=1))
     print(f"\n{'SCREEN SCENE GREEN' if not FAILS else f'{len(FAILS)} FAILURES'} -> b24_screen_result.json", flush=True)

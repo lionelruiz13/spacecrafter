@@ -53,7 +53,14 @@ USERDIR = HOME / ".spacecrafter"
 TWIN = USERDIR / "modularSystem/SolarSystem.ini.disabled"
 ENABLED = USERDIR / "modularSystem/SolarSystem.ini"
 LOG = USERDIR / "log/spacecrafter.log"
-OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / "artifacts/b24"
+# ABSOLUTE (11.106): the app is launched with cwd = ~/.spacecrafter, so a
+# RELATIVE outdir makes it write every dump/screenshot somewhere that does not
+# exist - and the failure is SILENT, because the reader then finds the file
+# left by a PREVIOUS run and verifies stale artifacts. Measured: a relative
+# outdir here re-read 2.5-hour-old dumps and only the one leg asking for a
+# file that had never existed crashed. Same rule as b3_ladder.py.
+OUT = (Path(sys.argv[1]) if len(sys.argv) > 1
+       else Path(__file__).resolve().parent / "artifacts/b24").resolve()
 JD = "2461233.5"
 SHADOW_MARK = "Composed system file modularSystem/SolarSystem.ini wins"
 TWIN_MARK = "Composed twin of ssystem.ini generated"
