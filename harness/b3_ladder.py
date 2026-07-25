@@ -564,7 +564,10 @@ def main():
     if "--families" in argv:
         i = argv.index("--families"); families = argv[i + 1].split(","); del argv[i:i + 2]
     S = SITES[site_key]; S["key"] = site_key
-    out = Path(argv[0]); out.mkdir(parents=True, exist_ok=True)
+    # ABSOLUTE: the app runs with cwd = the farm's .spacecrafter, so a relative
+    # outdir would make it write the dump/screenshots somewhere else (silently -
+    # the failure surfaces only as a missing dump).
+    out = Path(argv[0]).resolve(); out.mkdir(parents=True, exist_ok=True)
     pred = predictions()
     (out / "b3_ladder_predict.json").write_text(json.dumps(pred, indent=1))
     if len(argv) > 1 and argv[1] == "--predict":
