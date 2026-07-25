@@ -82,7 +82,16 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   b23_grid tracking release; b5_ladder header-comment bound fix.
 - **Discriminating check:** per item (each must be shown able to FAIL); battery
   subset green (b24_equivalence, b5_oort, b5_ladder, b23_grid); md5 pristine.
-- **WIP (2026-07-25, Fable supervising):** dispatched to opus-xhigh.
+- **WIP: DELIVERED 2026-07-25 → §11.103 (code `2600ca47`/`b87412b3`/`d006ee92`,
+  harness `2ee877c`/`cdb33d9`/`2940b71`). 9/9 met; supervisor-verified directly
+  (diffs, ledger discipline, mutation-residue, md5, tree state — harnesses NOT
+  re-run by supervisor; committed artifacts + both-ways discrimination records
+  accepted as evidence). Executor deviations all principled + flagged (item-1
+  operator[]-insertion trap caught by its own mandated counterfactual; item-5
+  root rework per I6). Out-of-scope finds recorded in §11.103(j)(k): drawLoaded
+  vs draw regime split (I2), §11.35 scene-P non-reproducibility at HEAD, 3×
+  §11.15d fires (→ B7 row annotated with the contention datum). Calibration
+  verdict on the Opus 5 operator model: POSITIVE.**
 
 ### F1 — B3: D1(b) grounded-slice parent-depth prefill  [L]
 - **Row / recorded:** B3 (§13.B) · §11.97(b)(e) · shadow-paths.md H4(b) · §3.1/§3.6 · §11.30 (S3 consumer landed).
