@@ -11,10 +11,12 @@
 #include "experimentalModule/ModularBody.hpp"
 
 bool OortModule::show = false;
+Vec3f OortModule::cloudColor{};
 
 OortModule::OortModule(unsigned int nbr, const Vec3f &color)
-    : BodyModule(BodyModuleType::CUSTOM), nbPoints(nbr), cloudColor(color)
+    : BodyModule(BodyModuleType::CUSTOM), nbPoints(nbr)
 {
+    cloudColor = color;
     VulkanMgr &vkmgr = *VulkanMgr::instance;
     Renderer &renderer = Context::instance->renderer;
 

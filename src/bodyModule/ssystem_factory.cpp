@@ -407,8 +407,15 @@ void SSystemFactory::createExperimentalOort(unsigned int nbr, const Vec3f &color
     // The oort belongs to the MAIN solar system only (its geometry is
     // heliocentric); other created systems (createSystem) are foreign stars.
     auto it = modularSystemOf.find("Solar");
-    if (it == modularSystemOf.end() || it->second == nullptr)
+    if (it == modularSystemOf.end() || it->second == nullptr) {
+        // D12 (F0, §11.102(e4)): the flag ACTS here - by failing - so it says so.
+        // Silence made an enabled pilot indistinguishable from a disabled one at
+        // the only place the difference is decided.
+        cLog::get()->write("B5 §6.9 pilot: flag_experimental_oort is set, but there is no "
+            "\"Solar\" modular system node to attach the cloud to - the experimental oort "
+            "was NOT instantiated (the old oort cloud is unaffected).", LOG_TYPE::L_WARNING);
         return;
+    }
     ModularSystem *system = it->second;
 
     // ---- Regime low-edge peg (PROVISIONAL, B5) -----------------------------

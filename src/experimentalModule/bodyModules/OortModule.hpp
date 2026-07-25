@@ -57,6 +57,19 @@ public:
     // the oort", one operator surface; the pilot's A/B toggles it to isolate the
     // cloud's pixel contribution in each render phase.
     static bool show;
+    // Same dual-seam rule for the cloud COLOUR (F0, §11.102(e3) -> §11.103): the
+    // colour has exactly one writer outside construction - Core::setColorScheme,
+    // which recolours the old cloud (`oort->setColor`) and now mirrors here, so
+    // one operator concept "the oort cloud's colour" drives BOTH draws (I2).
+    // Before F0 this seam was single: the module kept its construction-time
+    // colour while the old cloud followed the colour scheme.
+    // STATIC for the same reason `show` is: the pilot instantiates exactly ONE
+    // oort (createExperimentalOort, the "Solar" node) and the module carries no
+    // registry a colour setter could resolve an instance through. The ctor seeds
+    // it with the colour it is constructed with (config oort_color), which is
+    // also what the mirror later writes - so today the two agree by value; the
+    // mirror is what keeps them agreeing when they stop agreeing by accident.
+    static Vec3f cloudColor;
 private:
     void render(Renderer &renderer, const Mat4f &mat);
     PipelineFamily family;
@@ -67,7 +80,6 @@ private:
     std::unique_ptr<SharedBuffer<Mat4f>> uMat;
     std::unique_ptr<SharedBuffer<Frag>> uFrag;
     unsigned int nbPoints;
-    Vec3f cloudColor;
     float cloudExtent = 0.f; // max |point|, the reported bounding radius (AU)
 };
 

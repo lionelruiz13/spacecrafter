@@ -1458,7 +1458,16 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ZENITH,Utility::strToVec3f(conf.getStr(section,SCK_ZENITH_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ZODIAC,Utility::strToVec3f(conf.getStr(section,SCK_ZODIAC_COLOR)));
 
-	oort->setColor(Utility::strToVec3f(conf.getStr(section,SCK_OORT_COLOR)));
+	{
+		// B5 §6.9 pilot DUAL SEAM (F0, §11.102(e3)): the colour scheme's oort
+		// colour drives BOTH clouds, exactly as `flag oort` drives both shows
+		// (CoreLink::oortSetFlagShow, plus the init mirror above). One value,
+		// read once, delivered to the two draws. Only meaningful when the
+		// modular oort exists (flag_experimental_oort); harmless otherwise.
+		const Vec3f oortColor = Utility::strToVec3f(conf.getStr(section,SCK_OORT_COLOR));
+		oort->setColor(oortColor);
+		OortModule::cloudColor = oortColor;
+	}
 }
 
 //! For use by TUI - saves all current AppSettings::Instance()
