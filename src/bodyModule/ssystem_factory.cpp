@@ -132,6 +132,9 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
         .isHaloEnabled = false,
     };
     milkyway = universe->createChildSystem(milkywayInfo, BodyRelation::INNER);
+    // New-path named anchors (B4, §11.111). Built with the tree root: fixed-point
+    // anchors are read in the Universe frame (R3) and their bodies live there.
+    cameraAnchors = std::make_unique<CameraAnchors>(universe.get());
     galacticSystem = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
     galacticAnchorMgr = galacticSystem->getAnchorManager();
     bodytrace= std::make_shared<BodyTrace>();
@@ -786,6 +789,12 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
     }
     out << "],\"camera\":";
     camera->dumpTrace(out);
+    // New-path anchor state (B4 §11.111): which named anchor the camera is
+    // attached to, its kind and follow-rotation state, and the declared set.
+    // The anchor BODY's own position/frame is in the per-body section below
+    // (owned anchor bodies are new-path-only, so they come out with "old":null).
+    out << ",\"anchors\":";
+    cameraAnchors->dumpState(out);
     out << "}\n";
     // B9 az-convention observability (INTENT §11.4/§11.60): the alt/az the two
     // paths expose to the UI/scripting surface, per body, at the SAME frame.

@@ -1122,7 +1122,11 @@ bool CoreLink::cameraTransitionToBody(const std::string& name){
 }
 
 bool CoreLink::cameraSetFollowRotation(const std::string& name, bool value){
-	return core->ssystemFactory->cameraSetFollowRotation(value);
+	// The name is FORWARDED since B4 (§11.111): the old path still ignores it
+	// (its follow-rotation flag is manager-wide), the new path scopes it to the
+	// named anchor. Dropping it here was why the command's documented `name`
+	// argument had no effect anywhere.
+	return core->ssystemFactory->cameraSetFollowRotation(name, value);
 }
 
 void CoreLink::cameraSetRotationMultiplierCondition(float v) {

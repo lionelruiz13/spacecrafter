@@ -42,6 +42,7 @@
 #include "navModule/anchor_manager.hpp"
 #include "experimentalModule/ModularBody.hpp"
 #include "experimentalModule/ModularBodyPtr.hpp"
+#include "experimentalModule/CameraAnchors.hpp" // new-path named anchors (B4)
 #include "experimentalModule/bodyModules/StarModule.hpp" // sun-scale halo seam (§11.44)
 #include "experimentalModule/bodyModules/HintModule.hpp"
 #include "experimentalModule/bodyModules/AxisModule.hpp"
@@ -794,19 +795,33 @@ public:
         currentSystem->getAnchorManager()->displayAnchor();
     }
 
+    // ---- Anchor surface: DUAL since B4 (§11.111) ---------------------------
+    // Each of the four seams below drives BOTH registries from the same
+    // declaration: the old AnchorManager (unchanged - it keeps serving old-path
+    // scenes) and the new-path CameraAnchors. The return value is "did anything
+    // happen", so an anchor only one path can express still reports success to
+    // the script - the command's error message stays about real failures.
     bool cameraAddAnchor(stringHash_t& param) {
-        return currentSystem->getAnchorManager()->addAnchor(param);
+        const bool oldOk = currentSystem->getAnchorManager()->addAnchor(param);
+        const bool newOk = cameraAnchors->add(param);
+        return oldOk || newOk;
     }
 
     bool cameraRemoveAnchor(const std::string &name) {
-		return currentSystem->getAnchorManager()->removeAnchor(name);
+        const bool oldOk = currentSystem->getAnchorManager()->removeAnchor(name);
+        const bool newOk = cameraAnchors->remove(name);
+        return oldOk || newOk;
 	}
 
     bool cameraSwitchToAnchor(const std::string &name) {
-		bool ret = currentSystem->getAnchorManager()->switchToAnchor(name);
-		if (ret)
-			syncCameraReference(name); // dual-path: observer body change must reach the new Camera
-		return ret;
+		const bool oldOk = currentSystem->getAnchorManager()->switchToAnchor(name);
+		// The new path's own switch (kind semantics: surfaceless anchors drop the
+		// surface bind, `follow_rotation` applies) SUPERSEDES syncCameraReference
+		// for this seam - one authority moves the new camera, not two.
+		const bool newOk = camera ? cameraAnchors->switchTo(name, *camera) : false;
+		if (oldOk && !newOk)
+			syncCameraReference(name); // old-only anchor: keep the pre-B4 seam
+		return oldOk || newOk;
 	}
 
     bool cameraMoveToPoint(double x, double y, double z){
@@ -833,8 +848,14 @@ public:
         return currentSystem->getAnchorManager()->transitionToBody(name);
     }
 
-    bool cameraSetFollowRotation(bool value){
-		return currentSystem->getAnchorManager()->setFollowRotation(value);
+    //! `camera action follow_rotation name <X> value <v>`. The old path ignores
+    //! the name (its flag is manager-wide, anchor_manager.hpp:193); the new path
+    //! scopes it to the named anchor - the command's own documented argument
+    //! (§11.111 records the divergence).
+    bool cameraSetFollowRotation(const std::string &name, bool value){
+		const bool oldOk = currentSystem->getAnchorManager()->setFollowRotation(value);
+		const bool newOk = camera ? cameraAnchors->setFollowRotation(name, value, *camera) : false;
+		return oldOk || newOk;
 	}
 
     void cameraSetRotationMultiplierCondition(float v) {
@@ -846,8 +867,13 @@ public:
 	}
 
     void anchorManagerInit(const InitParser &conf) {
+        // ONE path literal for BOTH registries (I2): the authored anchor file is
+        // §2(c) channel 1 for the old AnchorManager and for the new-path
+        // CameraAnchors alike - they must never read different files.
+        const std::string anchorFile = "anchor.ini";
         currentSystem->getAnchorManager()->setRotationMultiplierCondition(conf.getDouble(SCS_NAVIGATION, SCK_STALL_RADIUS_UNIT));
-		currentSystem->getAnchorManager()->load("anchor.ini");
+		currentSystem->getAnchorManager()->load(anchorFile);
+		cameraAnchors->load(anchorFile);
 		currentSystem->getAnchorManager()->initFirstAnchor(conf.getStr(SCS_INIT_LOCATION, SCK_HOME_PLANET));
     }
 
@@ -959,6 +985,10 @@ private:
     Navigator *navigation;
     TimeMgr *timeMgr;
     std::unique_ptr<Camera> camera;
+    // New-path named-anchor layer (B4, §12 row 19). Declared AFTER `universe`
+    // (it holds ModularBodyPtr into that tree and owns hidden anchor bodies in
+    // it) so it releases before the tree is destroyed, like `camera`.
+    std::unique_ptr<CameraAnchors> cameraAnchors;
     // Environment aggregation authority (created by wireEnvironment - the
     // shared engines don't exist yet at factory construction).
     std::unique_ptr<EnvironmentManager> environment;
