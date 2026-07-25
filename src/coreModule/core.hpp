@@ -335,6 +335,24 @@ public:
 		return selected_object;
 	}
 
+	//! Whether the OLD path must draw the selection pointer this frame.
+	//! Dual-path rule (S2b), previously copy-pasted at the four executor draw
+	//! sites: in the modular phase BODY pointers are drawn by the new path's
+	//! pointer service (Renderer::drawPointer, ModularSystem::drawSystem) and
+	//! the old pointer would double-draw at the old path's projected position.
+	//! That holds for old-tree bodies (OBJECT_BODY) and for new-only composed
+	//! bodies (OBJECT_MODULAR) alike - both are driven by
+	//! ModularBody::getSelected() there (B24-select, INTENT §11.106).
+	//! Non-body pointers (star/nebula) have no new-path counterpart and stay.
+	bool needOldSelectionPointer() const {
+		if (!selected_object || !object_pointer_visibility)
+			return false;
+		if (!ssystemFactory->drawModularSystem)
+			return true;
+		const OBJECT_TYPE type = selected_object.getType();
+		return !(type == OBJECT_BODY || type == OBJECT_MODULAR);
+	}
+
 	//! Deselect selected object if any
 	//! Does not deselect selected constellation
 	void unSelect(void);

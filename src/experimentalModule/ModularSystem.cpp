@@ -1136,27 +1136,59 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
 
 ModularBody *ModularSystem::findBodyAt(const std::pair<float, float> &searchPos) const
 {
-    float mostLikely = 0;
-    ModularBody *ret = nullptr;
+    // Pick tolerance = the OLD path's own, expressed in this frame. cleverFind
+    // takes candidates inside a 30-pixel circle (core.cpp:1049: fov per pixel
+    // x 30), and screenPos is the angle over halfFov, so 30 px is
+    // 30/viewportRadius here - ONE tolerance for both picking channels
+    // (§11.52(b): old's observable is the spec).
+    const float tol = 30.f / ModularBody::viewportRadius;
+    const float tol2 = tol * tol;
+    // TWO TIERS, both from recorded resolutions, in the old path's own shape.
+    //
+    //  (1) candidates whose CENTRE is inside the pick tolerance - A17's
+    //      "candidates cluster inside the pick tolerance". BIGGEST WINS
+    //      [R5, vixy §11.70(d): "the biggest should win because it'll be the
+    //      brightest in 99% of cases due to surface magnitude"]. The size is
+    //      the APPARENT one (screenSize = halfAngularSize/halfFov): surface
+    //      magnitude is an apparent-area argument, and screenSize is what
+    //      this selection surface itself exposes (ModularObject::
+    //      getOnScreenSize is screenSize x viewportRadius, the pixels the
+    //      pointer draws). boundingRadius would rank a distant giant above
+    //      the moon filling the screen - the opposite of what R5 argues.
+    //
+    //  (2) nobody's centre in tolerance, but a body's DISC covers the pick:
+    //      NEAREST TO THE OBSERVER wins - old's own rule for exactly this
+    //      tier (searchAround stops at the first disc hit walking closest-
+    //      first: "do not want any planets behind this one!",
+    //      protosystem.cpp:344-355), and the body actually seen there.
+    //      Keeping (2) separate from (1) is what keeps A17's own criterion
+    //      ("if a body can be seen, we must be able to select it") true for
+    //      a small body in front of a large disc: one merged biggest-wins set
+    //      would make it permanently unselectable behind its parent.
+    ModularBody *inTolerance = nullptr;
+    float biggest = -1.f;
+    ModularBody *underDisc = nullptr;
+    float nearest = 0.f;
     for (auto child : sortedSystemBodies) {
-        if (*child) {
-            float squaredDistance = child->screenPos.first - searchPos.first;
-            squaredDistance *= squaredDistance;
-            {
-                float tmp = child->screenPos.second - searchPos.second;
-                tmp *= tmp;
-                squaredDistance += tmp;
+        // Entries are nulled by removeBody until the next cleanUp().
+        if (!child || !*child)
+            continue;
+        const float dx = child->screenPos.first - searchPos.first;
+        const float dy = child->screenPos.second - searchPos.second;
+        const float squaredDistance = dx * dx + dy * dy;
+        if (squaredDistance <= tol2) {
+            if (child->screenSize > biggest) {
+                biggest = child->screenSize;
+                inTolerance = child;
             }
-            if (squaredDistance < child->screenSize * child->screenSize + 0.0001f) {
-                const float likely = std::min(child->screenSize, 0.001f) / squaredDistance;
-                if (mostLikely <= likely) {
-                    mostLikely = likely;
-                    ret = child;
-                }
+        } else if (squaredDistance <= child->screenSize * child->screenSize) {
+            if (!underDisc || child->distance < nearest) {
+                nearest = child->distance;
+                underDisc = child;
             }
         }
     }
-    return ret;
+    return inTolerance ? inTolerance : underDisc;
 }
 
 void ModularSystem::loadSystem(const std::string &filename)

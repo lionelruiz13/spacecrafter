@@ -127,12 +127,10 @@ void InGalaxyModule::draw(int delta_time)
 
 	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 
-	// Dual-path (S2b): in the modular phase, BODY pointers are drawn by the
-	// new path's pointer service (Renderer::drawPointer, on top of the frame);
-	// the old pointer would double-draw at the old path's projected position.
-	// Non-body pointers (star/nebula) have no new-path counterpart and stay.
-	if (core->selected_object && core->object_pointer_visibility
-	    && !(core->ssystemFactory->drawModularSystem && core->selected_object.getType() == OBJECT_BODY))
+	// Dual-path (S2b): the rule (which selections the old pointer still owns
+	// in the modular phase) is Core::needOldSelectionPointer - one authority
+	// for the four executor draw sites (I2).
+	if (core->needOldSelectionPointer())
 		core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 
 	//drawing lines without activating the depth buffer.

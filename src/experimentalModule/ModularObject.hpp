@@ -7,6 +7,28 @@
 
 class ModularObject : public ObjectBase {
 public:
+    ModularObject() = default;
+    explicit ModularObject(ModularBody *b) : body(b) {}
+
+    // OWNERSHIP (I5), and why it is refcounted rather than borrowed.
+    // A selection outlives the call that made it, so the bridge cannot be a
+    // temporary; and no tree owns it (the old path's Object borrows a Body
+    // owned by ProtoSystem, the new path has no such per-body slot). It is
+    // therefore owned by the Object/ObjectBaseP refcount - the mechanism
+    // ObjectBase::retain/release exists for, with StarWrapperBase
+    // (hip_star_wrapper.hpp:67-73) as the in-tree precedent for the
+    // delete-at-zero form. The BODY is NOT owned: `body` is a ModularBodyPtr,
+    // i.e. destruction-NOTIFIED (redirected to the parent when its body is
+    // removed, nulled only at final teardown), which is what makes the bridge
+    // outlive its subject safely.
+    virtual void retain() override {
+        ++refCount;
+    }
+    virtual void release() override {
+        if (--refCount == 0)
+            delete this;
+    }
+
     virtual std::string getInfoString(const Navigator * nav) const override;
 	virtual std::string getShortInfoString(const Navigator *nav) const override;
     virtual std::string getShortInfoNavString(const Navigator *nav, const TimeMgr * timeMgr, const Observer* observatory) const override;
@@ -37,6 +59,10 @@ public:
     ModularBodyPtr body;
 
 private:
+    // Stack-allocated bridges (the dual_dump instrument builds one per body)
+    // never see retain/release, so this stays 0 and nothing is deleted.
+    int refCount = 0;
+
     // Single authority (I2) for the alt/az REPORTING convention at this object
     // surface. The old path exposed azimuth in the "N=0, E=90" convention and
     // applied the conversion at EACH reporting site (Body::getAltAz body.cpp:381,

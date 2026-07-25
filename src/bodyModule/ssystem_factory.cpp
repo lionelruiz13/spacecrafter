@@ -44,6 +44,7 @@
 #include "experimentalModule/ModuleLoaderMgr.hpp"
 #include "experimentalModule/EnvironmentManager.hpp"
 #include "experimentalModule/environmentModules/MilkyWayEnv.hpp"
+#include "EntityCore/Core/VulkanMgr.hpp" // screenToRect: the click-coordinate authority
 
 SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr) :
     observatory(observatory), navigation(navigation), timeMgr(timeMgr)
@@ -595,6 +596,55 @@ void SSystemFactory::addBody(stringHash_t &param)
     camera->getCurrentSystem()->loadBody(param);
 }
 
+// Contract: ssystem_factory.hpp (setSelected). Out of line because resolving
+// the new-path body from a ModularObject needs the bridge's complete type.
+void SSystemFactory::setSelected(const Object &obj)
+{
+    ssystemSelected->setSelected(obj);
+    // A ModularObject already HOLDS the body it was resolved from: use it
+    // instead of a second lookup by name (I2 - one resolution, so a name
+    // carried by two trees can never resolve to a different body here than
+    // the one the selection was actually made on).
+    if (ModularObject *bridge = obj.as<ModularObject>())
+        newSelectedBody = bridge->body;
+    else
+        newSelectedBody = (obj.getType() == OBJECT_BODY)
+                        ? ModularBody::findBodyOnce(obj.getEnglishName())
+                        : nullptr;
+}
+
+// Contract + rationale: ssystem_factory.hpp (searchObjectByEnglishName).
+Object SSystemFactory::searchObjectByEnglishName(const std::string &englishName) const
+{
+    if (auto body = currentSystem->searchByEnglishName(englishName))
+        return Object(body.get());          // old path, byte-for-byte as before
+    if (ModularBody *newOnly = ModularBody::findBodyOnce(englishName))
+        return Object(new ModularObject(newOnly));
+    return Object();
+}
+
+// Contract + rationale: ssystem_factory.hpp (searchNewOnlyObjectAt).
+Object SSystemFactory::searchNewOnlyObjectAt(int x, int y) const
+{
+    if (!camera)
+        return Object();
+    ModularSystem *system = camera->getCurrentSystem();
+    if (!system)
+        return Object();
+    // Window pixel -> ScreenRect, through the app's own authority (I2:
+    // VulkanMgr::screenToRect is what the UI already uses for the mouse).
+    // The rect's y grows DOWNWARD (window row 0 maps to -1) while
+    // ModularBody::screenPos is the view-space up component, +1 at the TOP,
+    // so the pick position is the rect with y negated. This is the only site
+    // where the two conventions meet.
+    auto rect = VulkanMgr::instance->screenToRect(
+        {static_cast<uint16_t>(x), static_cast<uint16_t>(y)});
+    ModularBody *hit = system->findBodyAt({rect.first, -rect.second});
+    if (!hit || currentSystem->searchByEnglishName(hit->getEnglishName()))
+        return Object();                    // nothing, or an old-tree body: old decides
+    return Object(new ModularObject(hit));
+}
+
 // Contract + rationale: ssystem_factory.hpp (reloadCurrentSystem).
 bool SSystemFactory::reloadCurrentSystem()
 {
@@ -784,13 +834,23 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
         std::set<std::string> dumped;
         for (auto it = currentSystem->begin(); it != currentSystem->end(); ++it)
             dumped.insert(it->first);
-        ModularBody::forEach([&out, &dumped](ModularBody &nb) {
+        ModularBody::forEach([&, this](ModularBody &nb) {
             if (dumped.count(nb.getEnglishName()))
                 return;
             out << "{\"type\":\"body\",\"name\":\"" << nb.getEnglishName()
                 << "\",\"old\":null,\"new\":";
             nb.dumpTrace(out);
             out << "}\n";
+            // The nav-string sidecar for new-only bodies too (B24-select,
+            // INTENT §11.106): the info/nav readouts of a COMPOSED body are
+            // now a product surface (it is selectable), and they had no
+            // observable at all - the loop above only reaches names the old
+            // tree carries. Same bridge, same methods, no OLD counterpart.
+            ModularObject bridge;
+            bridge.body = &nb;
+            navout << nb.getEnglishName()
+                   << "\n  NEW nav: " << bridge.getShortInfoNavString(navigation, timeMgr, observatory)
+                   << "\n  NEW inf: " << bridge.getInfoString(navigation) << "\n";
         });
     }
     // Quadruplet (minimal set separating translation / common rotation /

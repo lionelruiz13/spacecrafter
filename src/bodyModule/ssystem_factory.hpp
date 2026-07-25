@@ -166,15 +166,32 @@ public:
                         : ModularBody::findBodyOnce(englishName);
 	}
 
-    //! Set selected object from its pointer
-	void setSelected(const Object &obj) {
-        ssystemSelected->setSelected(obj);
-        // Old rule mirrored: only bodies carry a body selection; selecting
-        // any other object type clears it (SolarSystemSelected::setSelected).
-        newSelectedBody = (obj.getType() == OBJECT_BODY)
-                        ? ModularBody::findBodyOnce(obj.getEnglishName())
-                        : nullptr;
-    }
+    //! Set selected object from its pointer. Old rule mirrored: only bodies
+    //! carry a body selection; any other object type clears it
+    //! (SolarSystemSelected::setSelected). A new-path-only body arrives as a
+    //! ModularObject and carries its own body pointer - see the definition.
+	void setSelected(const Object &obj);
+
+    //! Resolve a body NAME to a selectable Object across BOTH body trees
+    //! (B24-select, INTENT §11.106). The OLD tree is asked first and wins
+    //! wherever it answers: old-body selection must stay bit-identical, so
+    //! the new route engages exactly where the old resolver fails. A name
+    //! only the new tree carries (composed bodies, B24) yields the
+    //! ModularObject bridge (§11.60), which is what makes such a body
+    //! selectable at all. Object() when neither tree knows the name.
+    //! Lookup scope on the new side is the whole body reference, not the
+    //! current system - A17 [vixy, §11.70(d) context]: "visibility is the
+    //! selection domain, not system membership".
+    Object searchObjectByEnglishName(const std::string &englishName) const;
+
+    //! Resolve a POINTER pick to a selectable Object, for bodies the old tree
+    //! cannot resolve (B24-select, INTENT §11.106). (x, y) are window pixels
+    //! as delivered by the UI click; the conversion into the new path's
+    //! screen frame lives here so callers keep the old path's vocabulary (I1).
+    //! Returns Object() when nothing is picked OR when the pick lands on a
+    //! body the old tree also carries - old picking decides every case it
+    //! can, and this route only runs after it declined (§11.52(b) parity).
+    Object searchNewOnlyObjectAt(int x, int y) const;
 
     //! Get base planets display limit in pixels
 	float getSizeLimit(void) const {

@@ -836,8 +836,14 @@ void Core::preloadSolarSystemBody(stringHash_t& param)
 
 void Core::removeSolarSystemBody(const std::string& name)
 {
-	// Make sure this object is not already selected so won't crash
-	if (selected_object.getType()==OBJECT_BODY && selected_object.getEnglishName() == name) {
+	// Make sure this object is not already selected so won't crash.
+	// OBJECT_MODULAR too (B24-select, §11.106): removeBody drops the body in
+	// BOTH trees (ssystem_factory.hpp), and a composed body must lose its
+	// selection on removal exactly like an old one - without this the
+	// selection would silently slide onto the parent (the ModularBodyPtr
+	// redirect contract) instead of clearing.
+	if ((selected_object.getType()==OBJECT_BODY || selected_object.getType()==OBJECT_MODULAR)
+	    && selected_object.getEnglishName() == name) {
 		unSelect();
 	}
 	// Make sure not standing on this object!
@@ -919,7 +925,12 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="planet") {
-		selectObject(ssystemFactory->searchByEnglishName(id).get());
+		// Both trees, old first (B24-select, INTENT §11.106): the old
+		// resolver still answers every name it knows, so old-body selection
+		// is unchanged by construction; a name only the new tree carries
+		// (composed bodies, B24) now resolves through the ModularObject
+		// bridge instead of selecting nothing (§11.97(d)).
+		selectObject(ssystemFactory->searchObjectByEnglishName(id));
 
 	} else if (type=="nebula") {
 		selectObject(nebulas->search(id));
@@ -1005,7 +1016,16 @@ bool Core::findAndSelect(int x, int y)
 {
 	Vec3d v;
 	projection->unprojectEarthEqu(x, y, v);
-	return findAndSelect(v);
+	Object obj = cleverFind(v);
+	// New route (B24-select, INTENT §11.106), engaged ONLY where the old
+	// picker declined: old picking is the parity baseline and keeps every
+	// case it can decide, while composed / new-only bodies are exactly the
+	// ones it cannot see (they are absent from ProtoSystem). The pick itself
+	// happens in the new path's screen frame, which is why the position goes
+	// down as window pixels rather than as the old equatorial ray.
+	if (!obj)
+		obj = ssystemFactory->searchNewOnlyObjectAt(x, y);
+	return selectObject(obj);
 }
 
 //! Deselect all selected objects if any
@@ -1599,7 +1619,10 @@ Vec3f Core::getSelectedObjectInfoColor(void) const
 		return Vec3f(1, 1, 1);
 	}
 	if (selected_object.getType()==OBJECT_NEBULA) return nebulas->getLabelColor();
-	if (selected_object.getType()==OBJECT_BODY) return ssystemFactory->getDefaultBodyColor("label");
+	// A composed/new-only body is a body here too (B24-select, §11.106) - the
+	// info colour is the body label colour, as for any other body.
+	if (selected_object.getType()==OBJECT_BODY
+	 || selected_object.getType()==OBJECT_MODULAR) return ssystemFactory->getDefaultBodyColor("label");
 	if (selected_object.getType()==OBJECT_STAR) return selected_object.getRGB();
 	return Vec3f(1, 1, 1);
 }
@@ -1936,6 +1959,10 @@ static inline MatchTol matchTolerancesFor(OBJECT_TYPE t) {
     switch (t) {
         case OBJECT_STAR:          return { 0.30, 0.15f }; // very tight for stars
         case OBJECT_BODY:          return { 0.10, 0.50f }; // planets/satellites
+        // A new-path-only body (composed, B24-select §11.106) is a body: same
+        // tolerance. Without this it fell to the 1 arcsec default, which would
+        // call two distinct composed bodies closer than that ONE object.
+        case OBJECT_MODULAR:       return { 0.10, 0.50f };
         case OBJECT_NEBULA:        return { 5.00, 0.50f }; // extended objects
         case OBJECT_STAR_CLUSTER:  return { 5.00, 0.50f };
         case OBJECT_CONSTELLATION: return { 30.0, 1.00f }; // very loose, if ever used
@@ -2049,6 +2076,10 @@ bool Core::selectObject(const Object &obj)
 				recordActionCallback("select " + selected_object.getEnglishName());
 			break;
 		case OBJECT_BODY:
+		// A new-path-only body (composed, B24) is a body in every user-visible
+		// sense: same selection semantics, same recorded command. The factory
+		// seam routes it to the tree that owns it (INTENT §11.106).
+		case OBJECT_MODULAR:
 			ssystemFactory->setSelected(selected_object);
 			// potentially record this action
 			if (!recordActionCallback.empty())
