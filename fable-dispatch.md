@@ -248,7 +248,21 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   corpus precedent; fix what is found within the writer's existing contract.
 - **Discriminating check:** an equivalence gate on a galactic corpus, green +
   discriminating (mutation caught), md5-pristine originals.
-- **WIP:** —
+- **WIP: DELIVERED 2026-07-25 → §11.109 (code `14bb627f`/`770ef38a`, harness
+  `cd1289d`..`73f8f6c`). HEADLINE: the galactic surface is DEAD on every
+  install — `.galactic.ini` path-concat regression (`da858612c`, 2025-09-20),
+  measured by T1/T2/T3 single-variable isolation + 0/66 applogs; repair
+  SUSPENDED → §5.37/D29 (rec (1) parse-first-in-one-commit, endorsed + empty-
+  system-suppression refinement offered) with the §5.38 rider (7 shipped
+  coordinates corrupted by the galactic parser — must fix WITH the path, never
+  after). Writer exercised anyway on an authored corpus: gate green 120 bodies/
+  17 systems, discriminating both directions; §5.40 FIXED (global-registry
+  membership → isInSubtreeOf; 4 foreign-content twins → banner-only); forced-
+  scope zero-init FINISHES §11.103(c) one member short of its own comment AND
+  ATTRIBUTES §11.89(e)(ii) (uninitialized read, not B30). §5.39 two-parsers
+  desync recorded (7 inert divergences). New B30-adjacent signal: solar-moon
+  ecl flake 1-in-6 runs at 9.5e-6 rel — gate floor now calibrated in-run with
+  a 1e-3 cap (can't silently widen). Supervisor-verified.**
 
 ### F6 — B31-design: exhaustive-save design pass (DESIGN ONLY)  [M]
 - **Row / recorded:** B31 (§13.B — "needs a design pass before dispatch, NOT
