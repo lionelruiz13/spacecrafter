@@ -1513,12 +1513,20 @@ private:
     // heap garbage otherwise - surfaced 2026-07-16 as a heap-layout-dependent
     // "-nan" in dual_dump JSON (invalid token, predict.py hard-stop).
     float axisRotation = 0;
-    float scaledRadius;
+    // = 0 until the first updateCache(), same read-before-write class as
+    // distance/axisRotation above and as §5.9's boundingRadius (§11.101(h)):
+    // written ONLY by updateCache(), so an uninitialized read returns heap
+    // garbage. Today no such read happens - loadBody runs updateCache() at the
+    // end of every body load, so a grounded child reading its parent's
+    // getAltitudeReference() finds it written - but that is protection by CALL
+    // ORDERING, held by callers; zero-init moves it to CONSTRUCTION, where the
+    // type holds it and no future caller order can lose it.
+    float scaledRadius = 0;
     // Scaled navigation radii (raw datum/ground * scaling, recomputed with
     // scaledRadius in updateCache — B10 §5.2). scaledDatumRadius is the
     // successor of the commented-out `scaledInnerRadius` drafting residue.
-    float scaledDatumRadius;
-    float scaledGroundRadius;
+    float scaledDatumRadius = 0;
+    float scaledGroundRadius = 0;
     float rmag;
     float cmag;
     double lastJD = 0;
