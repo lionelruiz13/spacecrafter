@@ -301,9 +301,21 @@ public:
     // Default relation INNER: a system lives inside its host's volume and is
     // shown while the camera is inside the host's AoI.
     ModularSystem *createChildSystem(ModularBodyCreateInfo &info, BodyRelation rel = BodyRelation::INNER);
-    // The boolean representation of this body is whether it is visible or not
+    // The boolean representation of this body is whether it is visible or not -
+    // i.e. whether it belongs to the drawn/pickable surface at all. HIDDEN is
+    // part of that answer (B4, §11.111): the BodyRelation block above states
+    // that a hidden body is "outside every update/draw walk by construction",
+    // and that held only through isVisible, which dispatchUpdate's preUpdate
+    // OVERWRITES for the camera's own reference body - a hidden body CAN be the
+    // reference (updateHiddenBodies' `skip`, INTENT 11.36), and then it re-
+    // entered both the draw sweep and the pick sweep. Unreachable before B4
+    // (nothing hid the reference); reachable now that an anchor point IS a
+    // hidden reference body - and a radius-0 reference produces a NaN halo
+    // (drawHaloCore's cmag *= 0.5*rmag/screen_r with screen_r == 0) and a
+    // zero-size pick candidate at the screen centre. Asking `relation` is asking
+    // the membership authority itself (the hide/show observable, §11.36).
     inline operator bool() const {
-        return isVisible & isBodyVisible;
+        return isVisible & isBodyVisible & (relation >= BodyRelation::GROUNDED);
     }
     // The < operator compare the distance to the observer
     inline bool operator<(const ModularBody &other) const {
