@@ -185,7 +185,20 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 - **Discriminating check:** per-site counterfactual (key absent ⇒ legacy behavior;
   key present ⇒ drives) as §11.91 did for A1/A2; b24_equivalence green +
   discriminating post-change; grep-clean on the retired literals in new-path code.
-- **WIP:** —
+- **WIP: DELIVERED 2026-07-25 → §11.107 (code `384f57b4`, harness `fdc89ac`..
+  `46ca3cf`). A5/A6/A7 + Tier-B landed on the D14 boundary; 9-leg counterfactual
+  table all predicted-then-matched; A6 verified at screen height (0-px A/B
+  explained from a config coincidence, then predicted away: 562k/2.28M px when
+  altimetry levels differ); D9 legacy parity 0 diffs on 93 bodies; co-delivery
+  hole closed at the instrument (b24_equivalence field list + composedDecl
+  assert); `authored()` = the one absent-or-empty authority (§11.103(b) trap
+  closed as a class). OjmLoader duplicated-authority veto fixed (§11.89(c)
+  blocker, two-binary discriminated). NOTE: this section's "A8/A9 → declared
+  keys" line was MY paraphrase drift — §11.73's own verdicts are "keep";
+  executor followed the authority (deduced-mode retirement suspended
+  §11.107(g2)). Suspensions → D27 (Tier-B spellings, rec ratify-as-is,
+  endorsed) + §11.89(c)'s type=BODY move (unblocked, still Vixy's).
+  Supervisor-verified.**
 
 ### F4 — S6-sweep: capability audit + §5.26 heading parity + B21 keyboard-descent  [L]
 - **Row / recorded:** spine item 7 (§ dependency spine) · §2(c) (bar: enumerate CAPABILITIES, not commands) · §5.26 · §11.92(e) · B21 residual (§11.72) · §11.97(d) note.
