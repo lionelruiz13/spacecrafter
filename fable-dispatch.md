@@ -133,12 +133,20 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   b250 left OPEN with criterion — not a metric leg). New instrument knowledge
   for part 2: cap ±0.2% systematic + ±1 px; wall meter sharp at r ≈ w·√2;
   `moveto lon L` ↔ `orbit_lon` differ by 180−L (§11.104(g)).**
-  **Part 2 [M–L], dispatched 2026-07-25**: §5.30 (Earth NIGHT depth — fix must
-  carry the same gl_FragDepth write into bodyRayMarchNight.frag SAME COMMIT,
-  §11.104(c) rider; understand WHY VARIANT_NO_DEPTH existed before changing it;
-  enumerate Earth-bucket depth consumers, stock-Earth A/B gate) + D1(b) prefill
-  (derive the REMAINING discriminating observable post-§5.29 FIRST; none
-  derivable ⇒ STOP and record, don't build unverifiable structure).
+  **PART 2 DELIVERED 2026-07-25 → §11.105 (code `d28e67d3`/`ded43e5a`, harness
+  `db4207f`..`a11ae3d`): §5.30 CLOSED (WHY-derivation from git archaeology —
+  the depthless requirement was named and had been retired at source twice;
+  NIGHT frag depth write same commit; rider discharged BY MEASUREMENT — shell
+  hypothesis predicts a0=0/a100=42.2, measured 53.00/53.25; wall 5.53 km vs DEM
+  5.50–6.01) + FORCED EXPANSION §5.33 CLOSED (atmosphere shell wrote depth by
+  inherited ctor default — 191.47 km wall measured vs 191.3442 derived,
+  counterfactually attributed, one-bool fix, stock byte-identical) + D1(b)
+  NOT BUILT — STOPPED on a measured derivation (no producer in Surface regime,
+  ~2800× over-resolved in Outer) → suspended as A35/D24; axis-occlusion
+  divergence → A36/D25. Old path measured unchanged (max|Δ|=0 on 379k lit px).
+  Supervisor-verified (entry, diffs, design clause at source, ladder tables);
+  DECISIONS_PENDING propagated (D24/D25). **F1 IS COMPLETE AS DISPATCHABLE** —
+  B3 residue = excluded pieces + D21/D24/D25.**
 
 ### F2 — B24-select: composed bodies selectable  [M]
 - **Row / recorded:** B24 (§13.B) · §11.97(d) · §11.60 (ModularObject uninstantiated) · A17/R5 (§11.70: visibility is the selection domain; BIGGEST wins in-tolerance).
