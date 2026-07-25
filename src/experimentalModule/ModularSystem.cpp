@@ -1380,7 +1380,22 @@ void ModularSystem::applyHardcodedContent(ModularBodyCreateInfo &createInfo, std
         // twin emits sidereal_time=earth_apparent for the composed Earth). The old
         // BodyType::EARTH tag is RETIRED - its two consumers (computeAxisRotation,
         // getSiderealTime) now read this selector.
-        createInfo.siderealTimeModel = SiderealTimeModel::EARTH_APPARENT;
+        // PRECEDENCE (§11.102(c) -> §11.103): explicit data WINS over the sniff,
+        // the rule this whole gate block states for itself above ("key present ->
+        // explicit data wins") and the shadow_color branch below already honors.
+        // Without the guard an authored `sidereal_time = generic` was silently
+        // overridden here, applyHardcodedContent being the LAST writer (createInfo
+        // is built first, this runs after).
+        // The EMPTINESS test is load-bearing, not defensive: the createInfo build
+        // above reads param["sidereal_time"] through std::map::operator[], which
+        // INSERTS an empty entry when the key is absent - so `find() == end()`
+        // alone is never true here and would retire the sniff outright (the legacy
+        // Earth would lose apparent sidereal time). Absent and present-but-empty
+        // are one case for parseSiderealTimeModel (both -> GENERIC), so testing
+        // both is testing "the data authored nothing".
+        const auto siderealIt = param.find("sidereal_time");
+        if (siderealIt == param.end() || siderealIt->second.empty())
+            createInfo.siderealTimeModel = SiderealTimeModel::EARTH_APPARENT;
         // A2 (§11.73): Earth's shadow absorbs G/B more than R - red light
         // diffracted by the atmosphere reaches the umbra (lunar-eclipse color;
         // replaces the old my_moon UmbraColor hardcode). VALUE IS DERIVED, not
