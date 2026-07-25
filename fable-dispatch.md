@@ -215,7 +215,21 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   active collapses to the ~132 px class measured at natural heading; (B21) keyboard
   and command descent produce identical trajectories; (audit) every capability row
   carries its reachability evidence or a minted gap row.
-- **WIP:** —
+- **WIP: DELIVERED 2026-07-25 → §11.108 + `capability-surface.md` (code
+  `f4dd61f9`, harness `83d0e65`..`dbf095d`). Audit: channel model enumerated
+  first (4 live command channels ⇒ "command-but-no-key" is not a gap); rows
+  minted B33–B37 + A38/D28 + §5.35; biggest find MEASURED — arrow keys turn
+  NOTHING under the new path (xkey positive-controlled). §5.26's recorded
+  observable REFUTED at HEAD (129 vs 130 px baseline; the 11k-px leg is
+  §11.92(d)'s suspended coupling, attributed to 0.09%); third divergence found
+  (reference-switch roll) → A38/D28 (rec (a) hold-orientation + B33 readout
+  fix, endorsed). B21 ramp unified — key vs command descent BIT-IDENTICAL,
+  real-null proven on pre-fix binary; joypad-axis route recorded (step-feel,
+  Vixy). §5.32 first measured observable (same-frame descents compound).
+  SUPERVISOR NOTE: the two "died mid-stream" delegated sweeps (bases B & F)
+  actually COMPLETED and bubbled to the supervisor — full results handed back
+  for integration (follow-up running); the audit's main declared residual is
+  closing with already-paid data. Supervisor-verified.**
 
 ### F5 — B25-galactic: galactic-corpus twin verification  [S–M]
 - **Row / recorded:** B25 (§13.B) · §11.78(f) · §11.52(a) writer contract.
