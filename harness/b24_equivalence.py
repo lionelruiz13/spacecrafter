@@ -278,6 +278,24 @@ def main():
     if not only_a and not only_b:
         ok(f"body set identical ({len(a)} bodies)")
 
+    # INSTRUMENT STATE (B27 tail, INTENT §11.107): the capability comparison
+    # below is only meaningful if the two legs really took DIFFERENT resolution
+    # paths - legacy `type`-derived vs composed key-derived (D14 §11.79(h)).
+    # `composedDecl` is that positive mapping, read from the process itself; a
+    # composed leg that silently fell back to the legacy loader would otherwise
+    # make every capability agree for the wrong reason (the b24 phase-B log check
+    # above proves the FILE was chosen, this proves the RESOLUTION was).
+    decl_a = {n for n, v in a.items() if v.get("composedDecl")}
+    decl_b = {n for n, v in b.items() if v.get("composedDecl")}
+    if decl_a:
+        fail(f"phase A (legacy) reports composedDecl on {len(decl_a)} bodies, e.g. {sorted(decl_a)[:3]}")
+    elif not decl_b:
+        fail("phase B (composed) reports composedDecl on NO body - the composed capability "
+             "resolution did not run, so the comparison below is vacuous")
+    else:
+        ok(f"D14 resolution path positively mapped: legacy 0 / composed {len(decl_b)} bodies "
+           f"carry composedDecl")
+
     ecl_a, ecl_b = raw_new_fields(dump_a), raw_new_fields(dump_b)
     axr_a, axr_b = raw_axisrot(dump_a), raw_axisrot(dump_b)
     n_exact = 0
@@ -291,7 +309,17 @@ def main():
         # and the [Moon:MESH]-deletion discrimination lands here (modules +
         # routing). These are integers / small enum strings, not float sums, so
         # they carry no B30 jitter.
-        for field in ("parent", "relation", "modules", "routing", "lastJD"):
+        # bodyType/surfaceModel/trailLength ADDED 2026-07-25 (B27 tail, INTENT
+        # §11.107): these are the capabilities the legacy `type` string used to
+        # carry and that the composed format now declares as keys (light_source,
+        # shadow_exempt, surface_model, trail_length). Legacy-vs-composed
+        # equality on them, body by body over the whole corpus, IS the
+        # co-delivery proof (§11.73(g)): a key consumed but not emitted shows up
+        # here as a per-body mismatch, on the exact bodies whose type granted
+        # something. NOT compared: `composedDecl` - it differs by construction
+        # (that is what makes the composed leg a composed leg).
+        for field in ("parent", "relation", "modules", "routing", "lastJD",
+                      "bodyType", "surfaceModel", "trailLength"):
             if na.get(field) != nb.get(field):
                 fail(f"{name}.{field}: {na.get(field)!r} != {nb.get(field)!r}")
         # ecl and boundingRadius are FLOAT fields of the NEW path and are NOT
