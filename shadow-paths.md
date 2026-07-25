@@ -748,6 +748,27 @@ and TEXTURED_ANNULUS): (a) SECONDARY self-shadow ladder — Job.slot consumed,
 extension point); (b) grounded-slice depth prefill (D1 dual purpose (b)) —
 consumer at the S3 bucket-entry actions; first observable needs a
 counterfactual grounded-station scene (no shipped boundToSurface content);
+**[DERIVED AND SUSPENDED 2026-07-25, INTENT §11.105(i) / A35. The
+counterfactual scenes now exist (`harness/b3_ladder.py`, four sites) and
+they close the question in the other direction: the design is
+REGIME-PARTITIONED — "Outer: DepthBuffer shared" is today's merged bucket,
+implemented and correct end-to-end since §5.29/§5.30/§5.33; "Surface:
+DepthBuffer split ... parent's depth trace drawn in each" is this item, and
+in the Surface regime the parent draws NOTHING (`draw` routes to the empty
+`groundedComponents` below 2·scaledRadius — measured: 357 px>32 of 4,194,304
+at 3000 km over Earth, every grounded leg whole including two buried below
+the datum), so the prefill has no producer; the only depth available there
+is the row-8 TRACE datum sphere, a §5.29-class wall up to 127.56 km off, in
+the exact regime whose point is sub-metre precision. And the D1 premise
+itself ("a grounded body's whole depth slice is negligible at parent scale,
+so parent-vs-grounded occlusion is wrong without the prefill") is measured
+FALSE in the Outer regime: D24 quantization is q = 2·boundingRadius/2^24 =
+0.783 m (Earth) / 0.211 m (Moon), and it becomes observable only within
+q·1024/halfFov = 4.60 / 1.24 km of the content at fov 20, against a
+parent-draws floor of 12756 / 3475 km — over-resolved by 2776× / 2803×,
+independent of the content's size. Blocked behind row 16/D4 or the
+§11.97(e)/§11.100(g)(ii) regime hole; not implemented, because an
+unverifiable structure is not a deliverable.]**
 (c) RGBA8 colored self-occlusion [vixy: D1 resolution] — SELF_COLOR word +
 RGBA8 target, translucent OJM shapes as client (counterfactual model if
 shipped models lack translucency).

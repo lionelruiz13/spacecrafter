@@ -678,11 +678,29 @@ def main():
     else:
         ok(f"P0 module set as declared ({mods}), ATMOSPHERE present={has_atm}")
 
-    # precondition: the parent is drawn and the ladder line is lit
+    # P1 is REGIME-DEPENDENT and both directions are assertions, not defaults.
+    # ray regime: the parent must be drawn and lit (else the wall it writes is
+    #   not the wall under test).
+    # surface regime: the parent must be ABSENT - draw routes to the empty
+    #   groundedComponents, so nothing of the parent reaches the frame. That is
+    #   the 11.97(e)/11.100(g)(ii) hole, and asserting it is the point of this
+    #   site: a parent that DID draw here would void the D1(b) finding.
     centre = base["wide"][RENDER//2-50:RENDER//2+50, RENDER//2-50:RENDER//2+50].max(axis=2)
+    lit = int((base["wide"].max(axis=2) > 32).sum())
     report["centre_luma"] = float(centre.mean())
-    if centre.mean() > 30:
-        ok(f"P1 parent present and lit at nadir: centre luma {centre.mean():.1f}")
+    report["frame_lit_px_gt32"] = lit
+    if regime == "surface":
+        if lit < RENDER * RENDER // 1000:
+            ok(f"P1 REGIME HOLE confirmed: parent absent from the frame - only "
+               f"{lit} px > 32 of {RENDER*RENDER} (centre luma {centre.mean():.1f}); "
+               f"the parent draws no colour and no depth below 2*scaledRadius")
+        else:
+            fail(f"P1 surface regime but the parent IS drawn ({lit} px > 32, centre "
+                 f"luma {centre.mean():.1f}) - the regime hole no longer holds and "
+                 f"the D1(b) finding built on it must be re-derived")
+    elif centre.mean() > 30:
+        ok(f"P1 parent present and lit at nadir: centre luma {centre.mean():.1f} "
+           f"({lit} px > 32 in frame)")
     else:
         fail(f"P1 nadir centre luma {centre.mean():.1f} - parent absent or unlit")
 
@@ -747,7 +765,7 @@ def main():
                 fail(f"A0dist {prefix+tag}: observer->body {L['dist_km']:.1f} km != predicted "
                      f"{pdist:.1f} km - the `moveto lon` <-> `orbit_lon` calibration "
                      f"(nadir = 180 - L) no longer holds; every geometric prediction is void")
-            if L["wide"]["site_luma"] < 30:
+            if regime != "surface" and L["wide"]["site_luma"] < 30:
                 fail(f"A0 {prefix+tag}: site not lit (baseline luma "
                      f"{L['wide']['site_luma']:.1f} < 30) - the ladder needs a lit site")
     if "sph" in scenes:
@@ -785,6 +803,8 @@ def check_sphere_ladder(report, pred, state):
     # the depth-independent witness: a depth-killed body must still cast its
     # shadow (the shadow pass is offscreen and does not depth-test the parent).
     # Applies to every leg this state predicts INVISIBLE.
+    if S.get("expect_regime") == "surface":
+        return res   # no parent surface is drawn, so no shadow can land on it
     for tag, r, alt, off in S["ladder"]:
         p = pred["legs"][tag]
         if max(p["px"][state][f"fov{int(FOV_ZOOM)}"]) > 1.0:
