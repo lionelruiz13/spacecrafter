@@ -525,3 +525,33 @@ WALL, and the cap radius inverts to the wall height.
   dark leg carries no wall information and must never be read as metric.
 - Runs under the temp-HOME farm (`b3_farm.sh`, 11.103(a)); the runner asserts
   the real `~/.spacecrafter` md5 in == out.
+
+## F4 — the capability-audit instruments (INTENT §11.108, 2026-07-25)
+
+- **`xkey.c`** — hold a REAL X11 key on the app window (XTEST), resolved to the
+  CLIENT window exactly as `xclick.c` does it. Built at run time by the driver:
+  `gcc -O1 -o xkey xkey.c -lX11 /usr/lib/x86_64-linux-gnu/libXtst.so.6`.
+  Usage `xkey spacecrafter Left 2500 1024x1024`. Exists because the interactive
+  navigation ramps have NO command entry: the only honest way to say what a key
+  reaches is to press it (§11.36's rule).
+- **`f4_keyprobe.py`** — presses Left and asks what moved. Carries its own
+  positive control (the OLD phase must move, or the key never arrived) and
+  asserts on the PER-PATH dump, not on the screenshot: in that scene the lit
+  content is path-independent (48 px>32 cross-path), so a screenshot cannot
+  attribute a camera. Result: the new path's camera and its drawn body position
+  are bit-identical across the keystroke while the old path's body moves 872 px.
+- **`b21_keypath.py` + `b21_keypath_run.sh`** — the interactive ALTITUDE ramp,
+  which has no key binding at all (joypad button only, and this host cannot
+  inject joystick events: `/dev/uinput` is ACL-denied, no `evdev`). The runner
+  gives gdb a FIFO for stdin so the driver can SIGINT the inferior, `call`
+  `Core::lowerHeight`/`Core::updateMove` — the exact functions the UI calls —
+  and resume. **Cadence matters**: one application per stop, real frames in
+  between, because `Camera::descend` reads the reference's CACHED matrix
+  (§5.32) and N applications inside one frame compound linearly, not
+  geometrically. Pass `SC_BIN=` to run the same script on a pre-fix binary (the
+  RED control).
+- **`s526_heading.py` / `s526_ref.py`** — `set heading` parity at the screen:
+  an offset × heading sweep, and a reference-switch scene whose sharpest probe
+  is `heading delta_azimuth 0` (a semantic no-op that writes the OLD path's
+  heading to BOTH — if the view moves, the two authorities disagree, and the
+  pixels say by how much).
