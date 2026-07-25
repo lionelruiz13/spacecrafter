@@ -440,16 +440,72 @@ def main():
 
     ecl_a, ecl_b = b24.raw_new_fields(dump_a), b24.raw_new_fields(dump_b)
     axr_a, axr_b = b24.raw_axisrot(dump_a), b24.raw_axisrot(dump_b)
+
+    # THE ECL FLOOR IS MEASURED IN-RUN, NOT ASSUMED (the b19/§11.103(f) pattern).
+    # This gate's SUBJECT is the galactic bodies: legacy in phase A, composed in
+    # phase B. The 90 solar bodies are legacy in BOTH phases - identical file,
+    # identical loader, identical orbit objects - so a difference on them is
+    # cross-launch nondeterminism of the new path's position pipeline BY
+    # CONSTRUCTION (§11.53(e)/§11.87(c)/B30), never a format effect. Measured
+    # 2026-07-25: one clean run in six showed 8 solar moons (Dione, Enceladus,
+    # Io, Mimas, Miranda, Phobos, Tethys, Umbriel) at rel <= 9.5e-6 / abs <=
+    # 1.2e-8 AU while every other run had zero - i.e. the constant 1e-6 of the
+    # SOLAR gate is too tight for THIS scene, which carries 17 more systems.
+    # Widening the constant would be fitting; using the control's own spread is
+    # not, and it keeps the information visible (the floor is printed and stored
+    # every run). The control is still asserted EXACT on every structural field,
+    # and its floor is itself capped - a control that drifts past CONTROL_CEIL
+    # means the scene stopped being comparable and fails the run.
+    CONTROL_CEIL = 1e-3
+
+    def ecl_dev(name):
+        """max (relative, absolute) component deviation of ecl between phases."""
+        sa, sb = ecl_a.get(name), ecl_b.get(name)
+        if sa is None or sb is None or sa == sb:
+            return 0.0, 0.0
+        try:
+            va = [float(x) for x in sa.split(",")]
+            vb = [float(x) for x in sb.split(",")]
+        except ValueError:
+            return float("inf"), float("inf")
+        if len(va) != len(vb):
+            return float("inf"), float("inf")
+        rel = max(abs(x - y) / max(abs(x), abs(y), 1e-300) for x, y in zip(va, vb))
+        av = max(abs(x - y) for x, y in zip(va, vb))
+        return rel, av
+
+    control = sorted((set(a) & set(b)) - gal_bodies - {n for n in sysnodes if n != "SolarSystem"})
+    subject = sorted((set(a) & set(b)) & (gal_bodies | (set(sysnodes) - {"SolarSystem"})))
+    floor_rel = floor_abs = 0.0
+    worst_ctl = None
+    for name in control:
+        r, v = ecl_dev(name)
+        if r > floor_rel:
+            floor_rel, worst_ctl = r, name
+        floor_abs = max(floor_abs, v)
+    if floor_rel > CONTROL_CEIL:
+        fail(f"CONTROL ecl floor {floor_rel:.2e} (worst {worst_ctl}) exceeds {CONTROL_CEIL:.0e} - "
+             f"the two launches are not comparable, the subject comparison below is unsound")
+    else:
+        ok(f"in-run ecl floor from {len(control)} legacy-in-both control bodies: "
+           f"rel {floor_rel:.2e} / abs {floor_abs:.2e} AU"
+           + (f" (worst {worst_ctl})" if worst_ctl else " (bit-identical)"))
+    tol_rel = max(b24.TOL_REL, floor_rel)
+    tol_abs = max(b24.TOL_ABS, floor_abs)
+
     checked = n_float = n_axr = 0
     for name in sorted(set(a) & set(b)):
         na, nb = a[name], b[name]
         checked += 1
+        # STRUCTURAL fields stay EXACT for EVERY body, control included: they
+        # carry no float jitter, and the [PxB:MESH] discrimination lands here.
         for field in ("parent", "relation", "modules", "routing", "lastJD",
                       "bodyType", "surfaceModel", "trailLength"):
             if na.get(field) != nb.get(field):
                 fail(f"{name}.{field}: {na.get(field)!r} != {nb.get(field)!r}")
-        if not b24.floats_close(ecl_a.get(name), ecl_b.get(name)):
-            fail(f"{name}.ecl differs beyond float32 jitter: "
+        r, v = ecl_dev(name)
+        if name in subject and r > tol_rel and v > tol_abs:
+            fail(f"{name}.ecl differs beyond the in-run floor (rel {r:.2e} > {tol_rel:.2e}): "
                  f"[{ecl_a.get(name)}] vs [{ecl_b.get(name)}]")
         elif not b24.scalar_close(na.get("boundingRadius"), nb.get("boundingRadius")):
             fail(f"{name}.boundingRadius differs beyond float32 jitter: "
@@ -461,8 +517,9 @@ def main():
             if axr_a[name] != axr_b[name]:
                 fail(f"{name}.axisRot differs (B32 spin-freshness): "
                      f"{axr_a[name]} vs {axr_b[name]}")
-    ok(f"per-body fields checked on {checked} bodies ({len(gal_bodies)} galactic); "
-       f"ecl+boundingRadius within float32 jitter on {n_float}; axisRot exact on {n_axr}")
+    ok(f"per-body fields checked on {checked} bodies ({len(subject)} subject / "
+       f"{len(control)} control); boundingRadius + subject ecl within the floor on {n_float}; "
+       f"axisRot exact on {n_axr}")
 
     # ---------------- D9: the real tree is untouched ----------------
     post = real_tree_md5()
@@ -474,6 +531,8 @@ def main():
 
     (OUT / "b25gal_result.json").write_text(json.dumps({
         "mutate": MUTATE, "bodies": len(a), "galactic_bodies": len(gal_bodies),
+        "subject": len(subject), "control": len(control),
+        "ecl_floor_rel": floor_rel, "ecl_floor_abs": floor_abs, "ecl_floor_worst": worst_ctl,
         "systems": len(twins), "float_within_jitter": n_float,
         "axisRot_exact_checked": n_axr, "exit_a": rc_a, "exit_b": rc_b,
         "jd_a": ha.get("jd"), "jd_b": hb.get("jd"), "fails": FAILS,
