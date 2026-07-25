@@ -227,9 +227,16 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   real-null proven on pre-fix binary; joypad-axis route recorded (step-feel,
   Vixy). §5.32 first measured observable (same-frame descents compound).
   SUPERVISOR NOTE: the two "died mid-stream" delegated sweeps (bases B & F)
-  actually COMPLETED and bubbled to the supervisor — full results handed back
-  for integration (follow-up running); the audit's main declared residual is
-  closing with already-paid data. Supervisor-verified.**
+  actually COMPLETED and bubbled to the supervisor — full results handed back;
+  **integration LANDED (code `e3a5b19c` = the script-speed S-class one-liner
+  red→green on the operator channel; harness `dd36a4b`): bases B/F closed,
+  B38 + §5.36 minted, B34 self-corrected (trail seam IS dual; the dead thing
+  is the CoreLink wrapper), the handed-back census itself re-verified and
+  corrected at source (sky_draw), and the reporting failure's rule extracted
+  to §11.108(g): a delegated result that does not arrive is an UNOBSERVED
+  state, not a negative one — chase the channel before writing the residual.
+  media-subtitle-toggle one-worder correctly NOT taken (counterfactual not
+  observable on this host — no video asset, no readout).** Supervisor-verified.**
 
 ### F5 — B25-galactic: galactic-corpus twin verification  [S–M]
 - **Row / recorded:** B25 (§13.B) · §11.78(f) · §11.52(a) writer contract.
