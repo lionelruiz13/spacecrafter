@@ -1,7 +1,7 @@
 {
- "bodies": 93,
- "float_within_jitter": 93,
- "axisRot_exact_checked": 93,
+ "bodies": 103,
+ "float_within_jitter": 103,
+ "axisRot_exact_checked": 103,
  "fails": [],
  "jd_a": 2461233.5,
  "jd_b": 2461233.5,

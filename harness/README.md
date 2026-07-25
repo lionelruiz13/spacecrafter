@@ -615,3 +615,56 @@ truncated mid-prefix.
 
 D9: the real `~/.spacecrafter` is never written — md5 asserted in == out on
 every top-level file plus `stellar_systems/` and `modularSystem/` (96 files).
+
+## F7 — the B4 anchor-kind gate (`b4_anchors.py`) — INTENT §11.111, 2026-07-25
+
+The three camera-anchor kinds R3 named, in both §2(c) channels.
+
+    cd claude/harness && DISPLAY=:2 ./b4_anchors_run.sh [absOutdir]
+
+The runner owns the app lifecycle (fresh launch, temp-HOME farm) and authors the
+farm's `anchor.ini` as **the shipped file byte-verbatim + `b4_anchors.ini`**, so
+every run also re-loads the whole FIELD grammar corpus through the production
+path — all 14 anchors must declare, and P6's count check is what makes a silent
+drop of the shipped 10 a failure rather than a quiet pass. Real `~/.spacecrafter`
+md5 asserted in == out (config, ssystem, anchor). No `init_fov` requirement:
+every observable is mat/position layer.
+
+Predictions are committed in the file header before the run, and the authored
+orbit is a CIRCLE (a = 200000 km, P = 0.5 d) precisely so each one is exact:
+`|ecl| = a`, chord over dt `= 2a sin(pi dt/P)`. Three of the checks discriminate
+IN-RUN, same binary and same instrument — keep-angle vs follow-rotation (a
+bit-identical camera frame vs one rotated by the body's whole 87.72 deg spin),
+orbit anchor vs fixed point (153073 km vs 0.000 km over the same date advance),
+and authored vs commanded vs differently-parametrized anchors.
+
+Two instrument lessons recorded here, both learned in this run:
+
+- **The per-switch float floor is MEASURED, never assumed.** Four consecutive
+  switches to the SAME anchor (physically no-ops) give F = 4.8e-07 rad =
+  2.75e-05 deg per switch, and the drift is LINEAR in the extraction count —
+  which is what attributes it to `Camera::recoverParams`' ZXZ Euler extraction
+  (§11.61's floor). The camera state is therefore split by observable: POSE
+  (lon/lat/distance/bind/mode/reference) is required EXACT and measured exact;
+  only the VIEW half (alt/az/heading, and `mat` with them) carries N x F, with N
+  counted from the scene (1 for the channel-parity pair, 5 for the reversible
+  pairs). Requiring bit-equality of the VIEW half is what an earlier revision
+  did, and it failed 8 checks on float noise.
+- **Never `acos((tr-1)/2)` on a dumped rotation.** At 9 printed digits it turns
+  ulp noise into ~0.026 deg of phantom rotation — measured here on a pair of
+  BIT-IDENTICAL matrices. Use the Frobenius small-angle form (same caveat
+  `orientation_check.py` carries).
+
+- **A screen witness must be aimed, and its floor derived.** P7's first version
+  asserted a frame-wide `px>32` above a GUESSED floor of 1000 and measured 534 —
+  because the Moon was outside the frame at both dates (dumped screenPos
+  x = 1.14, |NDC| > 1), so the shots differed only by the star field. It now
+  aims (select + track, tracking RELEASED before every shot — tracking would
+  re-centre the Moon at t1 and hide the motion under test) and tests a 2x2
+  contrast at the DUMPED screen positions with a window radius PREDICTED from
+  the dumped R/d/halfFov (28.3 px disc, 512 px separation). Measured 212/255 at
+  the Moon's own position vs 40/170 at the other date's.
+
+Also: with the observer on a far fixed point the OLD path emits bare `nan`
+screen coordinates in `dual_dump` (2 lines of 103; the NEW side has none), so
+the loader normalizes `nan` -> `NaN` rather than losing the file.

@@ -55,4 +55,16 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   of hand-computing the coordinates.
 - **Status:** under consideration — folded into `INTENT.md` §13.B **B4**
   (CameraAnchors port design); recorded here so it is not silently absorbed
-  into that row's scope without a decision
+  into that row's scope without a decision.
+  **NOT DELIVERED by B4's implementation wave (2026-07-25, §11.111(j))** — and
+  the reason is worth the request's own record: writing an anchor section is a
+  SERIALIZATION path, and the B31 design pass has already ruled that the one
+  existing "save my camera to a file" surface (`camera action save`, defective
+  as shipped — §5.41) *"must be re-expressed on the session serializer rather
+  than extended"* (`b31-design.md` §3.4(d)), under the §11.66(b) preserve-the-
+  file writer contract. Minting a second serialization path to save nine lines
+  would be exactly the duplication I2 forbids, and would pre-empt D30–D36. So
+  the request is ALIVE and now has a home: it lands with B31's writer, as one
+  more output format of the one serializer. Everything it needs already exists
+  on the new path — the runtime anchor carries its own declaration (kind,
+  parent/body, orbit or coordinates), which IS the anchor.ini section to write.
