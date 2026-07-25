@@ -65,6 +65,28 @@ enum class SiderealTimeModel : unsigned char {
     EARTH_APPARENT,
 };
 
+// The surface-lighting/tessellation lineage a layered mesh is built on (B27 A6;
+// D10key ratified spelling `surface_model`, §11.79(e)). A CAPABILITY, not an
+// identity: the old path selected the "moon class" shader family from the body
+// being type=Moon, which made the lunar lineage unreachable for any other body
+// (a composition capability - §11.73 A6 is the one that BLOCKS arbitrary-body
+// surface models). PLANET = the earth/planet row of LayeredMesh::selectShader
+// (night/specular/bump combinations); LUNAR = the lunar row (tessellated
+// heightmap displacement, no night side). Legacy loads still reach LUNAR through
+// the `type = Moon` data string (D9 - frozen forever); the composed format
+// declares it explicitly as the key the twin emits (D14 §11.79(h)).
+enum class SurfaceModel : unsigned char {
+    PLANET,
+    LUNAR,
+};
+
+// Trail length default when neither `trail_length` nor (legacy) `type` supplies
+// one: the old UNKNOWN->ASTEROID->SmallBody value (protosystem.cpp:531-532),
+// which is also what every Asteroid/KBO carries today. It is the neutral value
+// of the key's domain - the composed format's default when the key is absent
+// (type-as-identity retired, D14), and the legacy fallback for an unknown type.
+constexpr int TRAIL_LENGTH_DEFAULT = 60;
+
 enum ModularBodyTraits {
     MBT_REPLICATED, // This modular body is heavily replicated (ex : asteroid ring)
     MBT_HALO, // This modular body have a halo
@@ -126,6 +148,22 @@ struct ModularBodyCreateInfo {
     // (applyHardcodedContent). Ordered before bodyType to match the ctor's
     // member-init order.
     SiderealTimeModel siderealTimeModel = SiderealTimeModel::GENERIC;
+    // Surface-lighting lineage (B27 A6, the `surface_model` key). Default PLANET
+    // ⇒ an absent key reproduces every non-Moon body exactly; LUNAR comes from
+    // the key (composed format) or from `type = Moon` (legacy format only, D14).
+    SurfaceModel surfaceModel = SurfaceModel::PLANET;
+    // Trail sample count (B27 A7, the `trail_length` key). Default = the old
+    // unknown-type value; the legacy per-class values (Planet/Dwarf 1460, Comet
+    // 2920) come from `type` in the legacy format only (D14), from the key in
+    // the composed format.
+    int trailLength = TRAIL_LENGTH_DEFAULT;
+    // Which FORMAT declared this body (D14 §11.79(h) - the retirement of
+    // `type`-as-identity is FORMAT-SCOPED, not global). Set by the ONE loader
+    // authority (ModularSystem::loadBody) from the system's `composedFile`;
+    // false for the factory-built nodes, which carry no `type` data string at
+    // all. Consumers ask the body, never the file (I1: a module has no business
+    // knowing which parser ran).
+    bool composedDeclaration = false;
 
     // Deprecated
     BodyType bodyType; // Deprecated
@@ -1232,6 +1270,28 @@ public:
     inline bool isStar() const {
         return (bodyType & BodyType::STAR) == BodyType::STAR;
     }
+    // Return true if this body is a MINOR_BODY: mass-instanced small body,
+    // EXEMPT from inter-body shadowing (D3, §2.0). The capability the three
+    // shadow-caster/receiver sweeps actually ask for - asking it here instead of
+    // comparing the enum inline keeps ONE authority for "what MINOR_BODY means"
+    // (I2/I4) and is what the composed `shadow_exempt` key now sets (B27 Tier B).
+    inline bool isMinorBody() const {
+        return bodyType == BodyType::MINOR_BODY;
+    }
+    // The declared surface-lighting lineage (B27 A6, `surface_model`).
+    inline SurfaceModel getSurfaceModel() const {
+        return surfaceModel;
+    }
+    // The declared trail sample count (B27 A7, `trail_length`).
+    inline int getTrailLength() const {
+        return trailLength;
+    }
+    // True iff this body was declared in the COMPOSED format (D14 §11.79(h)):
+    // the format in which `type`-as-identity is retired. A module loader asks
+    // this - never which file was parsed (I1).
+    inline bool isComposedDeclared() const {
+        return composedDeclaration;
+    }
     // Return true if this body is a system - STRUCTURAL test (isolation
     // root), not the enum: a ModularSystem is a system whatever its bodyType
     // says (SYSTEM, GALAXY milkyway, future protosystem types). Asking the
@@ -1567,6 +1627,14 @@ private:
     // body except the apparent-sidereal-time model (Earth); consumed by
     // computeAxisRotation / getSiderealTime. Copied from createInfo in the ctor.
     SiderealTimeModel siderealTimeModel = SiderealTimeModel::GENERIC;
+    // Surface-lighting lineage (B27 A6, `surface_model` key), consumed by
+    // LayeredMeshLoader. Resolved once at load (ModularSystem::loadBody, the one
+    // data->capability authority) so no module ever re-reads the `type` string.
+    SurfaceModel surfaceModel = SurfaceModel::PLANET;
+    // Trail sample count (B27 A7, `trail_length` key), consumed by TrailLoader.
+    int trailLength = TRAIL_LENGTH_DEFAULT;
+    // Declaring format (D14 §11.79(h)). See ModularBodyCreateInfo.
+    bool composedDeclaration = false;
     bool isHaloEnabled;
     bool isVisible = false;
     bool isBodyVisible = true;

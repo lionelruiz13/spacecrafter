@@ -69,9 +69,19 @@ std::string ModularObject::getShortInfoNavString(const Navigator *nav, const Tim
     const auto aa = altAz();  // (alt, az) in the old-path convention
 	oss << "@" << (" Az/Alt/coA: ") << Utility::printAngleDMS(aa.second) << "/" << Utility::printAngleDMS(aa.first) << "/" << Utility::printAngleDMS(M_PI_2-aa.first) << " LPA " << Utility::printAngleDMS(PA);
 
-    // TODO don't rely on englishName for execution path.
-    // Do you mean body->isStar(), body == Camera::instance->getCurrentSystem()->getSystemStar() or something else ?
-	if (body->getEnglishName() == "Sun") {
+    // B27 A5 (§11.73(b), 2026-07-25): the day-length line was keyed on the name
+    // "Sun" (old body.cpp:434). RESOLVED to the CAPABILITY isStar(), not the
+    // system star: `daytime` above is computed from THIS body's declination and
+    // the observer's latitude, i.e. the length of the day this body makes when
+    // it is the one lighting the sky - a property of any light source, and the
+    // same structural answer getSatellitesFov() already gives ("the old path
+    // excluded the Sun by name; the structural equivalent is excluding stars",
+    // :162). `getSystemStar()` would have been the WRONG predicate twice over: it
+    // would print nothing for a star that is not its system's designated star,
+    // and it asks about the SYSTEM's state where the line is about the SELECTED
+    // body. Shipped corpus: `type = Sun` is the only STAR-tagged body, so the
+    // truth set is unchanged [measured: ssystem.ini, 1 star / 91 sections].
+	if (body->isStar()) {
 		oss << (" Day length: ");
 		if (daytime<-1) {
             oss << "00h00m00s";

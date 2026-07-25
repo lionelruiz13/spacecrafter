@@ -45,7 +45,14 @@ std::unique_ptr<BodyModule> LayeredMeshLoader::load(ModularBody *target, std::ma
     const bool normal = !cfg.normal.empty();
     const bool heightmap = !cfg.heightmap.empty();
     const bool specular = !cfg.specular.empty();
-    cfg.moonClass = (params["type"] == "Moon");
+    // B27 A6 (§11.73): the surface-lighting lineage is a DECLARED capability of
+    // the BODY (`surface_model`, D10key §11.79(e)), resolved once by the loader
+    // authority (ModularSystem::loadBody) - which is where the D14 format scope
+    // lives (legacy `type = Moon` still grants it, a composed file must declare
+    // it). Reading it from the body instead of re-reading `params["type"]` here
+    // is what unblocks a lunar-lineage surface on ANY body (I4: the behaviour is
+    // the body's capability, not its type string).
+    cfg.moonClass = (target->getSurfaceModel() == SurfaceModel::LUNAR);
     // Row/family selection - the old selectShader ORDER (header comment):
     if (cfg.moonClass) {
         if (heightmap) {

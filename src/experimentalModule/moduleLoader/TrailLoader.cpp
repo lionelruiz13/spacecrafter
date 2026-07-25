@@ -17,21 +17,16 @@ std::unique_ptr<BodyModule> TrailLoader::load(ModularBody *target, std::map<std:
     // Per-body trail color (old BodyColor: param trail_color, else the config
     // default object_trails_color wired at the setDefaultBodyColor seam).
     const std::string &trailColor = params["trail_color"];
-    // MaxTrail = old per-class value (protosystem.cpp:645-801 dispatch;
-    // trail.cpp constructor defaults). BigBody (Planet/Dwarf) = 1460, SmallBody
-    // Comet = 2920, SmallBody Asteroid/KBO = 60. Unknown type -> old
-    // UNKNOWN->ASTEROID->SmallBody 60 (protosystem.cpp:531-532).
-    const std::string &type = params["type"];
-    int maxTrail;
-    if (type == "Planet" || type == "Dwarf")
-        maxTrail = 1460;
-    else if (type == "Comet")
-        maxTrail = 2920;
-    else
-        maxTrail = 60; // Asteroid / KBO / unknown
+    // B27 A7 (§11.73): the trail sample count is a DECLARED capability of the
+    // body (`trail_length`, D10key §11.79(e)), resolved once by the loader
+    // authority (ModularSystem::loadBody) - which is where the D14 format scope
+    // lives. Legacy source, kept there and frozen (D9): the old per-class value
+    // (protosystem.cpp:645-801 dispatch; trail.cpp ctor defaults) BigBody
+    // (Planet/Dwarf) 1460, SmallBody Comet 2920, Asteroid/KBO/unknown 60
+    // (protosystem.cpp:531-532). No `type` read here any more (I4).
     auto module = std::make_unique<TrailModule>(
         trailColor.empty() ? TrailModule::defaultColor : Utility::strToVec3f(trailColor),
-        maxTrail, 1.0 /* DeltaTrail: always 1 sim-day (old never data-set) */);
+        target->getTrailLength(), 1.0 /* DeltaTrail: always 1 sim-day (old never data-set) */);
     addTrailComponent(target, module.get());
     return module;
 }

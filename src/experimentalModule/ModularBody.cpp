@@ -66,7 +66,7 @@ void BodyModule::dumpState(std::ostream &out) const
 }
 
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
-    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), datumRadius(info.datumRadius), groundRadius(info.groundRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), siderealTimeModel(info.siderealTimeModel), isHaloEnabled(info.isHaloEnabled)
+    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), datumRadius(info.datumRadius), groundRadius(info.groundRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), siderealTimeModel(info.siderealTimeModel), surfaceModel(info.surfaceModel), trailLength(info.trailLength), composedDeclaration(info.composedDeclaration), isHaloEnabled(info.isHaloEnabled)
 {
     // Nav-radius class default (B10-datum0, §11.75(a)): an UNSET (sentinel)
     // datum/ground resolves to `radius` here - the plain-body default (altitude
@@ -655,6 +655,21 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // format break in landed evidence.
         << ",\"attitude\":" << computeAxisRotation(lastJD)
         << ",\"surfaceLocked\":" << (surfaceLockedAttitude ? "true" : "false")
+        // B27-tail capability instrument (§11.107): the capabilities that used
+        // to be derived from the `type` data string, read at the body where they
+        // now live. `bodyType` as its integer so the STAR (0x40) / MINOR_BODY (4)
+        // / CUSTOM_BODY (7) distinction is exact-comparable - it is the ONLY
+        // externally observable of the Tier-B resolution, and legacy-vs-composed
+        // equality on it IS the co-delivery proof for `light_source` /
+        // `shadow_exempt`. `composedDecl` reports WHICH format declared the body
+        // (D14 scope), so a composed leg can be shown to have actually taken the
+        // composed resolution rather than silently re-running the legacy one -
+        // it is the one field here that legitimately DIFFERS between the two
+        // legs, and is therefore deliberately excluded from the equality gate.
+        << ",\"bodyType\":" << static_cast<int>(bodyType)
+        << ",\"surfaceModel\":" << static_cast<int>(surfaceModel)
+        << ",\"trailLength\":" << trailLength
+        << ",\"composedDecl\":" << (composedDeclaration ? "true" : "false")
         << ",\"boundingRadius\":" << boundingRadius
         // Navigation radii, scaled, in AU (B10 §5.2 / B10-cmd instrument): the
         // ONLY numeric observable of the datum_radius/ground_radius scalars, so

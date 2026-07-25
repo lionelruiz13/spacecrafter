@@ -84,6 +84,73 @@ static SiderealTimeModel parseSiderealTimeModel(const std::string &value, const 
     return SiderealTimeModel::GENERIC;
 }
 
+// --- Capability-key reading, D14 format boundary (B27 tail, §11.73/§11.79(h)) ---
+//
+// THE operator[] TRAP, once, structurally [§11.103(b), F0 2026-07-25]: loadBody
+// reads its keys through std::map::operator[], which INSERTS an empty entry for
+// an absent key - so `param.find(k) != param.end()` is TRUE for keys nobody
+// authored, and a naive key-absent guard silently inverts. "The data authored
+// nothing" is therefore ABSENT-OR-EMPTY, and this is the only place that test is
+// written: every capability key below goes through it, so the trap cannot be
+// re-stepped in by writing one more guard by hand (I6 - fix the class).
+// Returns nullptr when nothing was authored, the value otherwise.
+static const std::string *authored(std::map<std::string, std::string> &param, const char *key)
+{
+    const auto it = param.find(key);
+    return (it == param.end() || it->second.empty()) ? nullptr : &it->second;
+}
+
+// D14 (§11.79(h), [vixy 2026-07-23]) — "Yes for the new star system format, no
+// for the legacy star system format". A capability whose LEGACY source is the
+// `type` data string keeps that source FOREVER in a legacy file (D9: the field is
+// frozen); in the composed format `type` grants nothing and the capability KEY is
+// the only source. This log is what makes the boundary non-silent (D12: the
+// default ACTS): it fires only when a composed body's `type` WOULD have granted
+// something and no key is present - i.e. exactly on a composed file hand-written
+// from a legacy one without translating its `type`. It never fires on a generated
+// twin (the generator emits the keys), which makes its absence a co-delivery gate.
+static void logRetiredTypeCapability(const std::string &bodyName, const std::string &type,
+    const char *key, const std::string &legacyValue, const std::string &actingValue)
+{
+    cLog::get()->write("Body '" + bodyName + "': the composed format does not read capabilities "
+        "from type = '" + type + "' (type-as-identity is retired in this format - D14). A legacy "
+        "file would give " + std::string(key) + " = " + legacyValue + " here; no " + key
+        + " key is declared, so " + key + " = " + actingValue + " acts instead. To keep the legacy "
+        "behaviour, declare " + key + " = " + legacyValue + " on this body.", LOG_TYPE::L_WARNING);
+}
+
+// Parse the `surface_model` capability key (B27 A6; D10key ratified spelling
+// §11.79(e)). §2(f): an unknown value names the valid values, the fallback and
+// the fix, and never guesses.
+static SurfaceModel parseSurfaceModel(const std::string &value, const std::string &bodyName)
+{
+    if (value == "planet")
+        return SurfaceModel::PLANET;
+    if (value == "lunar")
+        return SurfaceModel::LUNAR;
+    cLog::get()->write("Body '" + bodyName + "': unknown surface_model = '" + value
+        + "'. Valid values are 'planet' (the earth/planet surface-shader lineage: night side, "
+        "specular, bump combinations) and 'lunar' (the lunar lineage: tessellated heightmap "
+        "displacement). Falling back to 'planet'. To fix: set surface_model to one of those, or "
+        "remove it.", LOG_TYPE::L_ERROR);
+    return SurfaceModel::PLANET;
+}
+
+// Parse a boolean capability key (B27 Tier B: `light_source`, `shadow_exempt`).
+// §2(f) on a non-boolean value; the caller has already established that the key
+// was authored (authored() above).
+static bool parseCapabilityFlag(const std::string &value, const std::string &bodyName, const char *key)
+{
+    if (Utility::isTrue(value))
+        return true;
+    if (Utility::isFalse(value))
+        return false;
+    cLog::get()->write("Body '" + bodyName + "': " + std::string(key) + " = '" + value
+        + "' is not a boolean. Valid values are true/on/1 and false/off/0. Falling back to false. "
+        "To fix: set " + key + " to a boolean, or remove it.", LOG_TYPE::L_ERROR);
+    return false;
+}
+
 ModularSystem::ModularSystem(ModularBody *parent, ModularBodyCreateInfo &info) :
     ModularBody(parent, info), star(this)
 {
@@ -210,7 +277,7 @@ void ModularSystem::computeShadows(Renderer &renderer)
         for (ModularBody *body : sortedSystemBodies) {
             if (!body || body->distance == 0)
                 break; // sorted: unevaluated tail
-            if (!(*body && body->screenSize > 0.0015f) || body->isStar() || body->bodyType == BodyType::MINOR_BODY)
+            if (!(*body && body->screenSize > 0.0015f) || body->isStar() || body->isMinorBody())
                 continue;
             for (auto *m : body->nearComponents) {
                 if (m->getTraits() & (BMT_BASIC_SELF_SHADOW | BMT_RGBA8_SELF_SHADOW)) {
@@ -264,7 +331,7 @@ void ModularSystem::computeShadows(Renderer &renderer)
     static std::vector<Caster> casters; // scratch, system-draw scoped
     casters.clear();
     for (ModularBody *body : sortedSystemBodies) {
-        if (!body || body->distance == 0 || body->isStar() || body->bodyType == BodyType::MINOR_BODY)
+        if (!body || body->distance == 0 || body->isStar() || body->isMinorBody())
             continue;
         for (auto *m : body->nearComponents) {
             const uint32_t traits = m->getTraits();
@@ -293,7 +360,7 @@ void ModularSystem::computeShadows(Renderer &renderer)
         // Receiver gate: drawn this frame (the ModularBody::draw entry test),
         // not MINOR/light-source. NOT gated by screen size beyond drawing:
         // the occlusion criterion below is the shadow-relevance gate [vixy].
-        if (!(*body && body->screenSize > 0.0015f) || body->isStar() || body->bodyType == BodyType::MINOR_BODY)
+        if (!(*body && body->screenSize > 0.0015f) || body->isStar() || body->isMinorBody())
             continue;
         body->receivedShadows.clear();
         // ... and only surfaces that SAMPLE: a body with no BMT_RECEIVE_SHADOW
@@ -925,6 +992,90 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
 		(resolveRotationFrame(param, englishName, rot_obliquity, rot_asc_node, rot_offset)
 			== RotFrame::ABSOLUTE_POLE);
 
+    // --- B27 tail: the capabilities the `type` data string used to carry ------
+    // ONE resolution site for all of them (I2): every consumer downstream asks
+    // the BODY for the capability, none re-reads `type`. Each follows the same
+    // three-legged rule, which is D9 and D14 written out:
+    //   key authored          -> the key drives, in BOTH formats (a legacy file
+    //                            has never carried these keys, so a legacy load
+    //                            is bit-identical unless its author adds one);
+    //   key absent, LEGACY    -> the `type`-derived value, frozen forever (D9);
+    //   key absent, COMPOSED  -> the neutral default; `type` grants nothing
+    //                            (D14 [vixy §11.79(h)]), and the divergence is
+    //                            logged when it would change something (D12).
+    const std::string &bodyTypeString = param["type"];
+    // A6 - surface-lighting lineage (`surface_model`), consumed by
+    // LayeredMeshLoader. Legacy source: type = Moon.
+    SurfaceModel surfaceModel = SurfaceModel::PLANET;
+    if (const std::string *v = authored(param, "surface_model")) {
+        surfaceModel = parseSurfaceModel(*v, englishName);
+    } else if (bodyTypeString == "Moon") {
+        if (composedFile)
+            logRetiredTypeCapability(englishName, bodyTypeString, "surface_model", "lunar", "planet");
+        else
+            surfaceModel = SurfaceModel::LUNAR;
+    }
+    // A7 - trail sample count (`trail_length`), consumed by TrailLoader. Legacy
+    // source: the old per-class dispatch (protosystem.cpp:645-801 + trail.cpp
+    // defaults) BigBody Planet/Dwarf 1460, SmallBody Comet 2920, everything else
+    // (Asteroid/KBO/unknown) TRAIL_LENGTH_DEFAULT.
+    int trailLength = TRAIL_LENGTH_DEFAULT;
+    if (const std::string *v = authored(param, "trail_length")) {
+        trailLength = Utility::strToInt(*v, TRAIL_LENGTH_DEFAULT);
+    } else {
+        const int legacyTrailLength =
+            (bodyTypeString == "Planet" || bodyTypeString == "Dwarf") ? 1460
+            : (bodyTypeString == "Comet") ? 2920
+            : TRAIL_LENGTH_DEFAULT;
+        if (legacyTrailLength != TRAIL_LENGTH_DEFAULT) {
+            if (composedFile)
+                logRetiredTypeCapability(englishName, bodyTypeString, "trail_length",
+                    std::to_string(legacyTrailLength), std::to_string(TRAIL_LENGTH_DEFAULT));
+            else
+                trailLength = legacyTrailLength;
+        }
+    }
+    // TIER B - the `type` -> BodyType CAPABILITY mapping (§11.73(c), D14 answered
+    // YES for the new format). The enum carries exactly TWO live capabilities:
+    // STAR (emits light - isStar(), 13 consumers) and MINOR_BODY (exempt from
+    // inter-body shadowing, D3 - isMinorBody(), 3 consumers). ANCHOR (type =
+    // Observer/Anchor/Center) has ZERO consumers [re-verified whole-src at edit
+    // time, 2026-07-25 - the A3/EARTH_MOON pattern], so a composed body that
+    // resolves to CUSTOM_BODY instead of ANCHOR is behaviourally identical and
+    // needs no key and no log. Every other legacy value already maps to
+    // CUSTOM_BODY, which IS the composed default - so the composed resolution
+    // below reproduces strToBodyType EXACTLY, value for value, on everything but
+    // Sun/Star and Asteroid/KBO/Comet, which is precisely §11.73(c)'s Tier-B set.
+    BodyType bodyType;
+    if (composedFile) {
+        const std::string *lightSourceKey = authored(param, "light_source");
+        const std::string *shadowExemptKey = authored(param, "shadow_exempt");
+        const bool lightSource = lightSourceKey && parseCapabilityFlag(*lightSourceKey, englishName, "light_source");
+        const bool shadowExempt = shadowExemptKey && parseCapabilityFlag(*shadowExemptKey, englishName, "shadow_exempt");
+        // Same enum VALUES strToBodyType produces (STAR = 0x40 alone, not
+        // CUSTOM_BODY|STAR): the two capabilities are not composable in this
+        // enum's shape, so declaring both is reported rather than silently
+        // half-applied (§2(f)); no shipped body is both.
+        if (lightSource && shadowExempt) {
+            cLog::get()->write("Body '" + englishName + "': light_source and shadow_exempt are both "
+                "declared, but a body cannot be both a light source and a shadow-exempt minor body "
+                "in this engine (one BodyType tag carries both). light_source wins; shadow_exempt is "
+                "ignored. To fix: remove one of the two keys.", LOG_TYPE::L_ERROR);
+        }
+        bodyType = lightSource ? BodyType::STAR
+                 : shadowExempt ? BodyType::MINOR_BODY
+                 : BodyType::CUSTOM_BODY;
+        if (!lightSourceKey && !shadowExemptKey) {
+            const BodyType legacyBodyType = strToBodyType(bodyTypeString);
+            if ((legacyBodyType & BodyType::STAR) == BodyType::STAR)
+                logRetiredTypeCapability(englishName, bodyTypeString, "light_source", "true", "false");
+            else if (legacyBodyType == BodyType::MINOR_BODY)
+                logRetiredTypeCapability(englishName, bodyTypeString, "shadow_exempt", "true", "false");
+        }
+    } else {
+        bodyType = strToBodyType(bodyTypeString);
+    }
+
     ModularBodyCreateInfo createInfo {
         .orbit=ModuleLoaderMgr::instance.loadOrbit(param),
         .englishName=englishName,
@@ -960,8 +1111,12 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         // EARTH_APPARENT through applyHardcodedContent below (legacy format only,
         // D14), the composed Earth through the key the twin emits (§11.73 A1).
         .siderealTimeModel=parseSiderealTimeModel(param["sidereal_time"], englishName),
+        // B27 tail (A6/A7 + D14 format scope) - resolved above, one site.
+        .surfaceModel=surfaceModel,
+        .trailLength=trailLength,
+        .composedDeclaration=composedFile,
 
-        .bodyType=strToBodyType(param["type"]),
+        .bodyType=bodyType,
         .isHaloEnabled=Utility::isTrue(param["halo"]),
     };
 	if (!createInfo.orbit) {
@@ -1368,6 +1523,24 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
         if (!node.params.count("shadow_color")
                 && body->getShadowAbsorbtion() != Vec3f{1, 1, 1})
             node.params["shadow_color"] = Utility::vec3fToStr(body->getShadowAbsorbtion());
+        // B27 tail / D14 (§11.79(h)): the capabilities the legacy `type` string
+        // carried are materialized as KEYS here - the format boundary is exactly
+        // where they must become explicit, because the composed load no longer
+        // reads `type` for any of them. Same rule as above: read what the body
+        // IS (I4), and only ADD where the legacy section did not already declare
+        // it. Emitted only when the value differs from the composed default, so
+        // a twin carries a key exactly where its absence would change something
+        // (the co-delivery contract, §11.73(g): every key consumed is emitted).
+        if (body->getSurfaceModel() == SurfaceModel::LUNAR
+                && !node.params.count("surface_model"))
+            node.params["surface_model"] = "lunar";
+        if (body->getTrailLength() != TRAIL_LENGTH_DEFAULT
+                && !node.params.count("trail_length"))
+            node.params["trail_length"] = std::to_string(body->getTrailLength());
+        if (body->isStar() && !node.params.count("light_source"))
+            node.params["light_source"] = "true";
+        if (body->isMinorBody() && !node.params.count("shadow_exempt"))
+            node.params["shadow_exempt"] = "true";
         out.push_back(std::move(node));
         // One BodyModule declaration per family the live body deduces - the
         // decomposition the twin exists to make visible [vixy, §11.50(b)].

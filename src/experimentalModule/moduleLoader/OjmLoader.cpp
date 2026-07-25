@@ -8,13 +8,26 @@
 
 uint8_t OjmLoader::isLikely(ModularBody *target, std::map<std::string, std::string> &params) const
 {
-    // The compound deduction key (ModularBody::deduceBodyModuleList): the
-    // 4-byte "Arti" prefix = the old parse's exact type discriminator.
+    // What this loader NEEDS is a model to load: `model_name`.
     if (params["model_name"].empty())
         return 0;
-    const std::string &type = params["type"];
-    if (type.size() < 4 || std::memcmp(type.data(), "Arti", 4) != 0)
-        return 0;
+    // The 4-byte "Arti" prefix (= the old parse's exact type discriminator) is
+    // the DEDUCTION key, owned by ModularBody::deduceBodyModuleList - repeating
+    // it here duplicated that authority (I2), and the duplicate VETOES an OJM
+    // module the composed format DECLARED (`type = OJM` section): loadModule
+    // runs isLikely for declared modules too, so a composed node that does not
+    // carry the legacy `type = Artificial` silently lost its model. That is the
+    // §11.89(c) blocker for body-type-less composed nodes. B27 Tier B / D14: the
+    // composed format does not read `type` here; the legacy format keeps the
+    // duplicate, because a legacy deduction never requests OJM without it and
+    // dropping the test would let a NON-artificial legacy body with a model_name
+    // (the Phobos-class named-ObjL case, drawn by the MESH family) be served an
+    // OJM module - a legacy behaviour change, which D9 forbids.
+    if (!target->isComposedDeclared()) {
+        const std::string &type = params["type"];
+        if (type.size() < 4 || std::memcmp(type.data(), "Arti", 4) != 0)
+            return 0;
+    }
     return 16; // slot-uncontested convention (RingLoader/AtmExtLoader)
 }
 
