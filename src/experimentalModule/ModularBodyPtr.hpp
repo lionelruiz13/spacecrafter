@@ -15,6 +15,16 @@ public:
         ref.push_back(this);
     }
     ModularBodyPtr(ModularBody *body);
+    // Copying MUST re-register (B4, §11.111 / §5.43): the implicitly generated
+    // copy constructor duplicated `ptr` without pushing the new object into
+    // `ref` and without incrementing pointerCount, so the copy's destructor ran
+    // `while (ref[++i] != this)` past the end of `ref` - a SIGSEGV, and before
+    // that a pointerCount too low to protect a pinned body. Latent until a
+    // ModularBodyPtr was stored in a value that a container RELOCATES (the B4
+    // anchor registry: measured, crash at ModularBodyPtr.cpp:19 on the first
+    // std::vector growth). Delegating to the raw-pointer constructor is the
+    // single registration authority (I2), so a copy is exactly a second holder.
+    inline ModularBodyPtr(const ModularBodyPtr &other) : ModularBodyPtr(other.ptr) {}
     ~ModularBodyPtr();
 
     inline ModularBody &operator*() const {
