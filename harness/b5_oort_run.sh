@@ -41,8 +41,15 @@ kill -0 $APPPID 2>/dev/null && { kill -INT $APPPID; sleep 4; kill -9 $APPPID 2>/
 
 cp "$OUT/config.ini.bak" "$CFG"
 MD5_OUT=$(md5sum "$CFG" | cut -d' ' -f1)
-echo "config md5 in=$MD5_IN out=$MD5_OUT $([ "$MD5_IN" = "$MD5_OUT" ] && echo OK || echo MISMATCH)"
+# ASSERT, not echo (F0, §11.102(e2)): a config.ini this runner edited and failed
+# to restore silently re-specifies every later run (the B26 leftover-file class),
+# so a mismatch must fail the run - it used to print MISMATCH and exit with the
+# driver's code, contradicting the header's own "md5 asserted".
+if [ "$MD5_IN" = "$MD5_OUT" ]; then MD5RC=0
+else MD5RC=3; fi
+echo "config md5 in=$MD5_IN out=$MD5_OUT $([ $MD5RC -eq 0 ] && echo OK || echo 'MISMATCH - config.ini NOT restored byte-identically')"
 echo "oort log:"; grep -i "experimental oort" "$OUT/app.log" | head
 echo "--- driver log ---"
 cat "$OUT/drive.log"
-exit $DRC
+[ $DRC -ne 0 ] && exit $DRC
+exit $MD5RC

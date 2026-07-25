@@ -24,9 +24,14 @@ THE TWO GATES the ladder probes (different quantities - the crux of the
   OLD path  : observer->getAltitude() in [1e13, 1e16] m  (altitude ABOVE EARTH)
               [solarSystemModule.cpp:203; oort.cpp:141]
   NEW path  : the oort BODY's regime - near component hidden only while
-              screenSize>=0.2 AND distance<scaledRadius (=oort body radius peg),
-              else drawn [ModularBody.cpp:369-409] - distance is HELIOCENTRIC
-              (observer -> oort body at the Sun).
+              screenSize>=0.2 AND distance < scaledRadius*BODY_SURFACE_HEIGHT
+              (= 2x the oort body radius peg = 100 AU), else drawn
+              [ModularBody.hpp:429-455, the loaded draw path; the bound is 2x,
+              corrected F0 §11.102(e5) - the pre-F0 text said "<scaledRadius",
+              which is the bound of the NOT-YET-LOADED variant drawLoaded
+              (ModularBody.cpp:385) and not the one a settled ladder rung
+              exercises] - distance is HELIOCENTRIC (observer -> oort body at
+              the Sun).
 
 MODES
   capture <new|old|preold> <outdir> <start> <stop> <step>

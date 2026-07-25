@@ -13,8 +13,11 @@ Method: in each render phase, isolate that path's oort by toggling `flag oort`
 on/off (the command routes to BOTH clouds through one CoreLink choke point). Only
 the oort changes, so px32(on,off) = that path's oort ALONE and the rest of the
 frame (bodies = the WITNESSES) is byte-identical in on/off (discrimination by
-construction). Solar mode, ref=Sun (the clean regime-gated regime; the far
-ref=Oort hijack is the RECORDED coupling, not a pass leg).
+construction). Solar mode, ref=Sun (the clean regime-gated regime). The far
+ref=Oort hijack - the node-reach coupling - is an ASSERTED leg since F0
+(§11.102(e1) -> §11.103): it is the ONLY check here that fails when the pilot
+flag silently does not apply, because every other leg is satisfied by the OLD
+cloud drawing in both phases.
 
 Gate, measured (see INTENT §11.<this>): the OLD cloud turns on ~1e13 m (~67 AU)
 and off ~1e16 m; the NEW cloud is a NEAR component whose body scaledRadius (50
@@ -136,15 +139,32 @@ check("discrimination", disc > 20,
       f"NEW oort shown/hidden ratio = {npx}/{low_new_px} = {disc:.0f}x (one regime gate, "
       f"witnesses drawn in both)")
 
-# ---- RECORD (not pass/fail): the node-reach coupling + high-edge divergence --
+# ---- PATH IDENTITY: the coupling leg, an ASSERT since F0 (INTENT §11.103) ---
+# WHY THIS IS THE INSTRUMENT'S OWN LOAD-BEARING CHECK (§11.102(e1)): every leg
+# above passes unchanged if the modular oort was never instantiated. The dual
+# seam (solarSystemModule.cpp:202) suppresses the OLD cloud in the modular phase
+# ONLY when hasExperimentalOort() - so a silently failed flag leaves the OLD
+# cloud drawing in BOTH phases and shown/hidden/parity/discrimination/witness
+# all stay green with the SUBJECT ABSENT. Until F0 the evidence that the subject
+# exists was printed, never asserted.
+# The witness: at refDist ~668 AU the camera reference becomes 'Oort' ONLY
+# because the modular body's ~6398 AU extent inflates its AoI past MilkyWay's -
+# a property of the LIVE TREE, not of a log line. Without the modular oort the
+# reference stays MilkyWay. DISCRIMINATION MEASURED (F0, 2026-07-25): same
+# binary, same driver, flag_experimental_oort OMITTED -> 10/11 with exactly this
+# check failing (reference='MilkyWay'), which is §11.102(e1) reproduced live.
 send(s, "moveto altitude 100000000000000 duration 0", 4)  # 1e14 m -> refDist ~668
 send(s, "flag track_object off", 2)
 cam = dump(s, "d_far")
-print(f"  [COUPLING] at refDist={cam.get('refDist'):.0f} AU reference={cam.get('reference')!r} "
-      f"(ref=Oort => the cloud's 6400 AU extent inflated its AoI and HIJACKED the camera "
-      f"reference from MilkyWay - the node-reach coupling; recorded, not a pass leg)", flush=True)
+coupling_ref = cam.get("reference")
+check("path_identity", coupling_ref == "Oort",
+      f"at refDist={cam.get('refDist'):.0f} AU reference={coupling_ref!r} (must be 'Oort': the "
+      f"modular cloud's ~6400 AU extent inflated its AoI and HIJACKED the camera reference from "
+      f"MilkyWay - the node-reach coupling, which ONLY the modular body can produce, so this is "
+      f"the proof the pilot subject is in the tree and the legs above are not measuring the OLD "
+      f"cloud twice)")
 
-json.dump({"results": results, "coupling_ref": cam.get("reference"),
+json.dump({"results": results, "coupling_ref": coupling_ref,
            "coupling_refDist": cam.get("refDist")},
           open(f"{OUT}/b5_oort_result.json", "w"), indent=1)
 bad = [r for r in results if not r["ok"]]

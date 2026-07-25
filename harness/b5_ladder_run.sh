@@ -46,6 +46,10 @@ kill -0 $APPPID 2>/dev/null && { kill -INT $APPPID; sleep 4; kill -9 $APPPID 2>/
 
 cp "$OUT/config.ini.bak.$PATHSEL" "$CFG"
 MD5_OUT=$(md5sum "$CFG" | cut -d' ' -f1)
-echo "config md5 in=$MD5_IN out=$MD5_OUT $([ "$MD5_IN" = "$MD5_OUT" ] && echo OK || echo MISMATCH)"
+# ASSERT, not echo (F0, §11.102(e2)) - see b5_oort_run.sh for the reason.
+if [ "$MD5_IN" = "$MD5_OUT" ]; then MD5RC=0
+else MD5RC=3; fi
+echo "config md5 in=$MD5_IN out=$MD5_OUT $([ $MD5RC -eq 0 ] && echo OK || echo 'MISMATCH - config.ini NOT restored byte-identically')"
 echo "--- driver tail ($PATHSEL) ---"; tail -20 "$OUT/drive_$PATHSEL.log"
-exit $DRC
+[ $DRC -ne 0 ] && exit $DRC
+exit $MD5RC
