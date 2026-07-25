@@ -206,6 +206,8 @@ Question: (1) repair path + parse together now (systems appear, empty on this in
 
 ## 12. F6 addition (2026-07-25, Opus 5 executor — B31 exhaustive-save DESIGN PASS; full record INTENT §11.110; design doc `b31-design.md`; ledger row §13.B B31)
 
+*(Supervisor, Fable 2026-07-25, on the batch: all seven executor recs endorsed as-argued; two with an independent structural argument added. **D30(3)**: the hybrid is forced, not chosen — D9's forward-propagation is only meaningful where an authored value exists to correct, so delta-over-data applies exactly there and nowhere else; a uniform rule in either direction fabricates or discards authority. **D31(c)**: verbs keeping their measured meanings is the D8 shape — session restore owns the ledger, the reload verb keeps meaning re-read-the-file, and no shipped script changes behavior; it is also the only option that dissolves the §11.66(a)-vs-R8 conflict instead of picking a loser between two of your own recorded answers. **D36** deserves your eye first among the rest: whether a running show is session state decides what "as-if we continued" even means for the majority use case.)*
+
 These seven come out of the design pass §11.66(d) demanded before B31 may be
 dispatched (*"needs a design pass before dispatch, NOT dispatched blind"*). The
 pass produced a state inventory (75 rows), a save format, an identity scheme and

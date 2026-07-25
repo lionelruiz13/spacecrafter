@@ -279,7 +279,24 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 - **Discriminating check:** n/a (design) — completeness check instead: every §11.66(d)
   clause + R8 + the B16/B29 measured behaviors appear in the inventory with a design
   answer or an explicit decision point. Nothing silently dropped.
-- **WIP:** —
+- **WIP: DELIVERED 2026-07-25 → §11.110 + `b31-design.md` (harness `e0126a7`;
+  code UNTOUCHED at `770ef38a` — design-only honored). 75-row/11-group state
+  inventory (39 MUST-SAVE / 8 DERIVED / 12 EXCLUDED / 16 DECISION-NEEDED);
+  one-serialization-authority format proposal (4 alternatives rejected, 2 by
+  measurement); A29 dissolved for persistent bodies (they become authored data
+  per §11.51(a) — the hazard moves to the override ledger, D34); as-if
+  operationalized as T1–T10 incl. the §11.101(f) latch prediction. D30–D36
+  opened (D31 = a genuine recorded-answer conflict §11.66(a) vs R8, surfaced
+  not picked, third reading offered). TWO defects found by measurement on the
+  EXISTING save surfaces: §5.41 (`camera action save` cannot succeed as
+  shipped — double `anchors/` prepend + 10-day JD round-trip precision) and
+  §5.42 (`configuration action save` destroys comments, materializes 9
+  unauthored keys, truncates in place). §11.101(i)(3) saveOrbit claim
+  corrected (one live old-path caller, unreachable only via §5.41).
+  Sequencing recorded: §5.39 → writer rework → persistent-body serialization
+  (completes B25's remaining half) → session file; T3 waits on D21; heading
+  waits on D28. All recs endorsed (D30(3)/D31(c) with added arguments).
+  Supervisor-verified. IMPLEMENTATION STAYS UNDISPATCHED until Vixy reviews.**
 
 ### F7 — B4: CameraAnchors implementation per R3  [M–L]
 - **Row / recorded:** B4 (§13.B) · R3 (§11.70: on-orbit PRIMARY; body-attached-keeping-angle NEEDED; fixed-point Universe-only) · Q5 (both channels; no cross-session persistence) · FEATURE_REQUESTS 2026-07-21-02 (save-to-anchor.ini command — folded, not promised).
