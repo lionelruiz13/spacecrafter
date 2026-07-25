@@ -555,3 +555,63 @@ WALL, and the cap radius inverts to the wall height.
   is `heading delta_azimuth 0` (a semantic no-op that writes the OLD path's
   heading to BOTH — if the view moves, the two authorities disagree, and the
   pixels say by how much).
+
+## F5 — the B25 GALACTIC gate (`b25_galactic.py`) — INTENT §11.109, 2026-07-25
+
+Legacy-vs-composed equivalence for **addSystem / galactic star systems** — the
+half of the B25 migration vehicle `b24_equivalence.py` never touched.
+
+    cd claude/harness && DISPLAY=:2 ./b25_galactic.py [absOutdir] [--mutate]
+
+**Read this before running it**: on a shipped install the galactic corpus is
+NEVER OPENED. `core.cpp:320` calls `loadGalacticSystem(".", "galactic.ini")` and
+the callee opens `path + name` — literally `.galactic.ini` — with the same
+missing separator one level down for `.stellar_systems/<file>` (§5.37 / D29,
+fix SUSPENDED because it would light up 17 systems + anchors on every install).
+The driver therefore builds a temp-HOME farm (§11.103(a)) carrying **dot-prefixed
+copies** of `galactic.ini` (byte-identical to the field file, md5 asserted) and of
+the corpus directory, so the PRODUCTION path runs unmodified:
+`loadGalacticSystem` → `loadSystem` → `addSystem` → `createModularSystem` →
+`loadSystem` + `generateComposedTwin`. Nothing in the app is patched to make the
+gate run.
+
+Phase A = legacy load (asserts a twin per galactic system). Phase B = every
+galactic twin adopted (`.disabled` dropped — the documented workflow) and
+reloaded. **SolarSystem is deliberately NOT adopted**: it stays legacy in both
+phases and is the in-run control (90 bodies, `composedDecl` false in both).
+
+Three assertion families the solar gate has no subject for, plus b24's:
+- **MEMBERSHIP** — a twin may declare only bodies of its OWN system. This is the
+  gate's headline: `generateComposedTwin` used to resolve sections through the
+  GLOBAL name registry, and the shipped `galactic.ini` points FIVE entries at one
+  `stellar_systems` file, so four systems that loaded NOTHING got a full twin
+  (§5.40, fixed `14bb627f`). Measured RED before the fix, GREEN after.
+- **ORDER** — the twin's node sequence is the legacy file's section sequence,
+  restricted to the sections that produced a body in this system.
+- **BYTES** — every legacy key/value verbatim (ISO-8859 included, unknown keys
+  included); `bound_to_surface` is the one translation (`relation = grounded`),
+  with no duplicate authority left behind.
+Per-body comparison is IMPORTED from `b24_equivalence` (I2), not copied.
+
+`b25_corpus/` is the authored input: one full-featured foreign system
+(`system_proxima.ini`), one SHARED file (`system_white_dwarf.ini` — five
+galactic entries point at it, which is what makes MEMBERSHIP load-bearing) and
+11 zero-byte files reproducing the shipped field state (every installed
+`stellar_systems/*.ini` is 0 bytes). It covers **TAIL, OJM and GRID
+declarations, which no shipped twin contains** (`ssystem.ini` has no Comet, no
+Artificial body, no `planet_grid`). Values are SYNTHETIC and labelled as such in
+the files — §11.51(d) forbids recalled physical constants, and none is claimed.
+
+`--mutate` deletes `[PxB:MESH]` from the ADOPTED `ProximaSystem.ini` before phase
+B: the discrimination run, which must fail with exactly two divergences
+(`PxB.modules` loses MESH, `PxB.routing.near` 4→3).
+
+Two instrument lessons recorded in the file: the order assertion must ask the
+MEMBERSHIP authority, not "is this name in the dump" (the writer's own defect is
+easy to re-commit in the checker); and the shadowing-log assertion matches the
+line's TAIL, because the app's stdout interleaves `cLog` with
+`SSystemFactory::loadSystem`'s raw `std::cout` and one line was measured
+truncated mid-prefix.
+
+D9: the real `~/.spacecrafter` is never written — md5 asserted in == out on
+every top-level file plus `stellar_systems/` and `modularSystem/` (96 files).

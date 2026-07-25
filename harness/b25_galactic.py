@@ -326,9 +326,12 @@ def main():
         comp = parse_composed(twins[name])
         nodes = [(h, p) for h, p in comp if b":" not in h]
         # order: the twin's node sequence is the legacy section sequence,
-        # restricted to the sections that produced a body
+        # restricted to the sections that produced a body IN THIS SYSTEM.
+        # `in bodies_a` alone is the writer's own §11.109(c) defect written into
+        # the instrument: a section skipped because another system already owns
+        # the name has its body in the global dump and must NOT be expected here.
         loaded = [s for s in legacy if s.get(b"name") and
-                  s[b"name"].decode("latin-1") in bodies_a]
+                  owner.get(s[b"name"].decode("latin-1")) == name + "System"]
         exp_order = [s[b"name"] for s in loaded]
         got_order = [p.get(b"name") for _, p in nodes]
         if exp_order != got_order:
@@ -384,7 +387,13 @@ def main():
 
     dump_b, log_b, rc_b = run_phase(dst, "composed")
 
-    shadowed = re.findall(r"Composed system file modularSystem/(\S+?)\.ini wins", log_b)
+    # Matched on the line's TAIL, not its head: the app's stdout interleaves the
+    # cLog stream with SSystemFactory::loadSystem's raw std::cout, and one
+    # shadowing line was measured truncated mid-prefix ("m/NGC2392DwarfSystem.ini
+    # wins over ...") - the statement was there, the line start was not. The
+    # distinctive "<X>System.ini wins over" is the evidence; the log-derived
+    # channel is corroborated by the independent composedDecl assertion below.
+    shadowed = re.findall(r"([A-Za-z0-9_]+System)\.ini wins over", log_b)
     if set(shadowed) == {n + "System" for n in twins}:
         ok(f"phase B: precedence log self-named for all {len(shadowed)} adopted systems")
     else:
