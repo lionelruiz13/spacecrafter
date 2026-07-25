@@ -123,10 +123,22 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   NON-DISCRIMINATING (painter's order) — replace with the §11.101(c) size ladder
   (20/45/90/250 km at alt 0, Moon, `flag moon_scaled off`, observer 8000 km) +
   lifted-20 km control. Mandate scenes under shipped config STILL blocked on D21.
-  Dispatch shape: **part 1 [M]** = ladder instrument (must be RED on current code
-  for 20/45 km) + §5.29 fix (D11 cost claim mandatory — gl_FragDepth ends early-z);
-  **part 2 [M]** = §5.30 + D1(b) prefill per ModularBody.hpp:120-129 + §3.6.
-  Re-read §11.100 + §11.101(c) IN FULL before resuming.
+  **PART 1 DELIVERED 2026-07-25 → §11.104 (code `922701c9`, harness
+  `8a294d8`/`c1ec7b8`/`d3343f1`): §5.29 CLOSED — wall inverted from render moved
+  from 34.77/34.93 km two-site-constant (shell) to 21.33/19.74/22.78 km
+  site-dependent (terrain); D11 |Δ| ≤ 0.06 ms/frame, null predicted from
+  mechanism; content-free scenes byte-identical; supervisor-verified, one
+  residual-closure amendment requested and delivered ((d2): all three
+  out-of-band readings closed by quantified bias+quantization propagation,
+  b250 left OPEN with criterion — not a metric leg). New instrument knowledge
+  for part 2: cap ±0.2% systematic + ±1 px; wall meter sharp at r ≈ w·√2;
+  `moveto lon L` ↔ `orbit_lon` differ by 180−L (§11.104(g)).**
+  **Part 2 [M–L], dispatched 2026-07-25**: §5.30 (Earth NIGHT depth — fix must
+  carry the same gl_FragDepth write into bodyRayMarchNight.frag SAME COMMIT,
+  §11.104(c) rider; understand WHY VARIANT_NO_DEPTH existed before changing it;
+  enumerate Earth-bucket depth consumers, stock-Earth A/B gate) + D1(b) prefill
+  (derive the REMAINING discriminating observable post-§5.29 FIRST; none
+  derivable ⇒ STOP and record, don't build unverifiable structure).
 
 ### F2 — B24-select: composed bodies selectable  [M]
 - **Row / recorded:** B24 (§13.B) · §11.97(d) · §11.60 (ModularObject uninstantiated) · A17/R5 (§11.70: visibility is the selection domain; BIGGEST wins in-tolerance).
