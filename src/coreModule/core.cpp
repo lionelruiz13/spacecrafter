@@ -1794,6 +1794,18 @@ void Core::updateMove(int delta_time)
 
 	if (vzm.deltaHeight!=0) {
 		observatory->multAltitude(vzm.deltaHeight);
+		// DUAL SEAM (B21 unification, INTENT §11.71 finding / §11.72(c) residual):
+		// the interactive altitude ramp reaches the new path through its ONE
+		// descent authority (Camera::multAlt -> Camera::descend, view-directed
+		// near / last-selected far / legacy radial when anchored) instead of a
+		// second altitude geometry (I2). Before this line the ramp was OLD-PATH
+		// ONLY - Camera::multAlt had zero callers, so holding the raise/lower
+		// input moved the old observer and left the rendered new-path camera
+		// exactly where it was. The COEFFICIENT is the caller's own
+		// (Core::raiseHeight/lowerHeight, 1.01/0.99): the step FEEL is untouched,
+		// only the mechanism is unified.
+		if (Camera::instance)
+			Camera::instance->multAlt(vzm.deltaHeight);
 	}
 
 	if (vzm.deltaFov != 0 ) {
