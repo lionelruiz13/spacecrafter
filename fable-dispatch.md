@@ -159,7 +159,19 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 - **Discriminating check:** `select planet <composed-name>` lands (tracked/selected
   populated — today measured empty); old-body selection bit-identical to before;
   b24_screen re-run using selection-aim as a cross-check of the geometric aim.
-- **WIP:** —
+- **WIP: DELIVERED 2026-07-25 → §11.106 (code `2c611b02`, harness `3361ecc`..
+  `e4eaee6`). Both channels land (command red→green on §11.97(d)'s own pair;
+  pointer via real XTEST clicks — new `xclick.c`, WM-frame trap caught with a
+  20 px-sensitive calibration pair); R5 two-tier in the NEW tree's findBodyAt
+  only (old picking untouched by construction — the route runs only where the
+  old picker declines); old-body parity 90/90 identical, selDist Δ=0, screen
+  below its own floor, readout ULP wobble attributed to -Ofast header codegen
+  by three-probe isolation (banked: cross-build float byte-compares unsound
+  here). ONE suspension → A37/D26 (child inside parent's disc — rec added by
+  supervisor); §5.34 minted (Object::operator= leak, pre-existing class).
+  Stale-artifact hazard in b24 gates fixed at root; earlier tasks' gate runs
+  checked fresh-by-evidence (measured values moved across tasks). Supervisor-
+  verified (entry, diffs, R5 locus, D26 propagation).**
 
 ### F3 — B27-tail: hardcode retirement A5–A9 + Tier-B (new format)  [M]
 - **Row / recorded:** B27 (§13.B) · §11.73 (site map, file:line) · §11.79(e)(h) (D10key spellings RATIFIED; D14 Tier-B format-scoped) · §11.89(c) · §11.91 (A1–A4 precedent, co-delivery pattern).
