@@ -1622,9 +1622,26 @@ private:
     // See ModularBodyCreateInfo for the datum/ground roles.
     float datumRadius;
     float groundRadius;
-    float boundingRadius; // Smallest radius including all groundedComponents and nearComponents
-    float subsystemRadius; // Radius including all orbitingBodies
-    float areaOfInfluence; // Area under the influence of this body
+    // = 0 until the first updateCache()/updateReach() - the SAME read-before-
+    // write class as scaledRadius above (§11.101(h) -> §11.103(c)), which
+    // stopped one member short: these three are written ONLY by updateCache()
+    // (boundingRadius) and updateReach() (the other two), and `preUpdate()`
+    // READS boundingRadius + subsystemRadius unconditionally, BEFORE any
+    // update() can run them. For a body loaded through loadBody the ordering
+    // saves it (updateCache runs at the end of every load); for a SYSTEM NODE
+    // that never had a body loaded into it - an empty galactic system, and
+    // MilkyWay/Universe, which are created by createChildSystem and never
+    // loaded into - nothing ever writes them and preUpdate decides visibility
+    // on heap garbage. MEASURED (F5, §11.109(d)): `51PegSystem.boundingRadius`
+    // dumped -2.12713861 in one launch and 3.2109353e-41 in another, and that
+    // is the mechanism behind §11.89(e)(ii)'s unattributed MilkyWay/Universe
+    // `boundingRadius 0 <-> ~1e-40` oscillation. Zero is what updateCache
+    // computes for a radius-0 extentless node, and it is the "no extent yet"
+    // semantics preUpdate needs; as in §11.103(c), the point is to move the
+    // protection from CALL ORDERING (held by callers) to CONSTRUCTION.
+    float boundingRadius = 0; // Smallest radius including all groundedComponents and nearComponents
+    float subsystemRadius = 0; // Radius including all orbitingBodies
+    float areaOfInfluence = 0; // Area under the influence of this body
 
     // Internal datas, deprecated
     float one_minus_oblateness;
