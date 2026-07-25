@@ -861,6 +861,20 @@ public:
     inline ModularBody *getParent() {
         return parent;
     }
+    //! Subtree membership: true when `ancestor` is this body or any of its
+    //! ancestors. The question "which system does this body belong to?" has no
+    //! other answer in this type - `bodyReference` is a GLOBAL name->body map
+    //! (findBody/findBodyOnce), so a name lookup alone cannot tell a body of
+    //! THIS system from a same-named body another system loaded first (I4: the
+    //! membership answer belongs to the tree, not to the name registry).
+    //! Client: ModularSystem::generateComposedTwin (INTENT §11.109(c)).
+    //! O(depth); the shipped trees are <= 5 deep.
+    inline bool isInSubtreeOf(const ModularBody *ancestor) const {
+        for (const ModularBody *b = this; b; b = b->parent)
+            if (b == ancestor)
+                return true;
+        return false;
+    }
     // Old-path satellite classification (body.cpp:107-124: parent of type
     // CENTER/SUN/STAR => not a satellite; new: SYSTEM/STAR-bit parents).
     // Client: the ORBIT module (planet vs satellite master-flag routing).

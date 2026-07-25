@@ -1495,7 +1495,28 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
             continue; // the legacy load skipped it too ("Can't load unnamed body")
         ModularBody *body = ModularBody::findBodyOnce(name);
         if (!body)
-            continue; // not loaded (duplicate/orphan/invalid orbit) - not part of the semantic content
+            continue; // not loaded (orphan/invalid orbit) - not part of the semantic content
+        // ... and it must be OUR body. findBodyOnce reads the GLOBAL name
+        // registry, which answers "does a body with this name exist anywhere",
+        // not "did THIS system load it" - and loadBody SKIPS a section whose
+        // name is already taken ("already exists and replace param isn't
+        // true"), so for a name another system loaded first the lookup succeeds
+        // and returns a FOREIGN body. Without this test the twin of system S
+        // declares bodies of system H, with H's live capabilities, and stops
+        // being the composed equivalent of S's own legacy load (§11.78(f)'s
+        // contract). Reachable on the SHIPPED galactic.ini, which points five
+        // entries (HelixDwarf/M57Dwarf/M1Pulsar/M27Dwarf/NGC2392Dwarf) at one
+        // stellar_systems file: measured 5 byte-identical twins for 4 empty
+        // systems + 1 real one (INTENT §11.109(c)). The solar twin is
+        // unaffected - every body of ssystem.ini is in SolarSystem's subtree.
+        if (!body->isInSubtreeOf(this)) {
+            cLog::get()->write("Composed twin of " + legacyFilename + ": section '" + name
+                + "' is NOT declared, because a body named '" + name + "' was already loaded by "
+                "another system and this system's section was skipped at load time. The twin "
+                "describes what THIS system contains. To fix: rename the body, or add "
+                "'replace = true' to the section that should win.", LOG_TYPE::L_WARNING);
+            continue;
+        }
         // Node section: legacy keys preserved verbatim (D16 §11.79(j)): the
         // node's own `type=` (its body-type, e.g. Planet/Moon/Sun) is a
         // NON-family value, which is exactly what marks the section as a node -
