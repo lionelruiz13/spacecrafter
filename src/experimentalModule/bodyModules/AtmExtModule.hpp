@@ -20,7 +20,15 @@ class ObjL;
 // gradient sampler, no cam_block - POINTER precedent: parity by
 // construction). Blend = SRC_ALPHA with colorBlendOp MAX (brighten-only
 // compositing over the disc). Drawn as nearComponent AFTER the disc in the
-// body's depth slice, depth-tested (old same-command-buffer order).
+// body's depth slice, depth-TESTED and depth-WRITE-FREE (INTENT 5.33): a
+// translucent brighten-only shell composites over whatever is behind it and
+// occludes nothing, so it must not leave its own surface in the bucket's
+// depth. It stands radiusFactor*scaledRadius up (191.34 km on Earth) and,
+// being the LAST thing drawn in the parent's near list, its depth write was
+// killing every grounded body below that height - taller than the proxy
+// shell (5.29) and than any terrain (5.30). The one deliberate divergence
+// from the old pipeline state, which wrote depth only by inheriting the
+// EntityCore default (atm_ext.cpp:16 never calls setDepthStencilMode).
 //
 // PARITY LANDMINES (verified on old source, do not "fix"):
 // - the shell receives NO shadow/eclipse input (atm.* have zero shadow

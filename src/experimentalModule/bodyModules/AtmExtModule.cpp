@@ -40,10 +40,22 @@ static const PipelineFamily &atmExtFamily()
                                   .tese = "atm.tese.spv", .frag = "atm.frag.spv"}}};
         // Old fixed state, verbatim (atm_ext.cpp:23-34): SRC_ALPHA blend with
         // MAX blend op (brighten-only), cull + reversed winding (tessellated),
-        // PATCH_LIST(3), vertex entries 1 (texcoord) + 2 (normal) stripped,
-        // depth test+write ON (the old default-depth pipeline).
+        // PATCH_LIST(3), vertex entries 1 (texcoord) + 2 (normal) stripped.
+        // DEPTH: test ON, WRITE OFF (INTENT 5.33 - the one divergence from the
+        // old pipeline state, which wrote depth only because it used the
+        // EntityCore default). This shell is a TRANSLUCENT brighten-only glow
+        // (BMT_TRANSLUCENT, MAX blend): it composites OVER what is behind it
+        // and occludes nothing, so writing its own depth can only be wrong.
+        // Measured consequence of the write: on Earth the shell stands at
+        // atmosphere_radius_factor * scaledRadius = 1.03 * 6378.14 km and its
+        // depth is the LAST thing written in the parent's merged bucket, so it
+        // was a 191.34 km wall killing every grounded body below it - taller
+        // than the proxy shell (5.29) and than any terrain (5.30) it was
+        // hiding. The module's own header always stated the contract as
+        // "depth-tested", never depth-writing (I1).
         color.state.blend = BLEND_SRC_ALPHA;
         color.state.blend.colorBlendOp = VK_BLEND_OP_MAX;
+        color.state.depthWrite = false;
         color.state.reverseFrontFace = true;
         color.state.patchControlPoints = 3;
         color.state.removedVertexEntries = 0b110;
