@@ -36,8 +36,11 @@
 // meshRayMarch() - close-range per-pixel relief (body_tes_shadow.vert reused
 //   verbatim; heightmap ray-march + terrain self-shadow in the frags). Rows:
 //   base = old my_moon_shadow class, NIGHT = old my_earth_shadow class.
-//   The old CoI depth quirk (myEarthShadowed depth OFF, shaderShadowedTes
-//   depth ON) is reproduced by binding NIGHT|VARIANT_NO_DEPTH.
+//   BOTH rows draw with depth ON and write the TRUE ray-hit depth from the
+//   fragment (INTENT 5.29 base row, 5.30 NIGHT row). The old CoI depth quirk
+//   (myEarthShadowed depth OFF) is NOT reproduced: it served a vertex stage
+//   that emitted a constant z, which no longer exists on either row - the
+//   derivation is at LayeredMesh::drawRay's bind site.
 //
 // All four frag rows receive shadows through the S5 generalized block
 // (meshFrag/rayMarchFrag, bodyShaderInterface.hpp); the Gen-1 LUT slots of

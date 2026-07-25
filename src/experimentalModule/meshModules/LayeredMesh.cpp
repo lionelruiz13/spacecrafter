@@ -222,11 +222,20 @@ void LayeredMesh::drawMid(Renderer &renderer, ModularBody *body, const Mat4f &ma
 
 void LayeredMesh::drawRay(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // Old myEarthShadowed depth-OFF quirk: the NIGHT (Earth) row binds its
-    // no-depth variant; the base (moon-class) row keeps depth on
-    // (shaderShadowedTes parity). Until the lazy no-depth build is resident,
-    // bind falls back to depth-on - transient, first frames only.
-    const uint16_t wanted = cfg.rayVariant | ((cfg.rayVariant & MeshFamilies::VARIANT_NIGHT) ? VARIANT_NO_DEPTH : 0);
+    // DEPTH ON for BOTH ray rows (INTENT 5.30). The old myEarthShadowed
+    // depth-OFF quirk this used to reproduce was never Earth-specific and its
+    // requirement is dead at source: `13d846c8` turned depth off on BOTH ray
+    // rows in the same commit that made body_tes_shadow.vert emit a CONSTANT
+    // gl_Position.z = 0 (the shell became a pure rasterization carrier, so a
+    // stage emitting no depth must not write depth); `39a8f235` restored depth
+    // to the moon-class row when planet_grid needed the disc to occlude its
+    // far-side lines, touching only that row; and `b323db09` gave the vertex
+    // stage a real projected depth again (custom_projectNoMV), retiring the
+    // premise for both rows - the Earth row simply never got the two updates.
+    // The fragment now overrides that depth with the TRUE ray hit anyway
+    // (bodyRayMarchNight.frag, same commit - without it this line would swap
+    // Earth's "no depth" for the SHELL depth, i.e. defect 5.29 on Earth).
+    const uint16_t wanted = cfg.rayVariant;
     const FamilyBound bound = renderer.bind(rayFamily, wanted);
     if (!bound.layout)
         return; // pass unavailable - logged at its definition site (C3)

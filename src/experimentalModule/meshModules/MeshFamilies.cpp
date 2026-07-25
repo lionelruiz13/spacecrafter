@@ -147,11 +147,10 @@ const PipelineFamily &MeshFamilies::meshRayMarch()
         contract.name = "bodyRayMarch";
         contract.bindings = {
             // rayMarchVert (old ShadowVert). FRAGMENT too since the 5.29 fix:
-            // bodyRayMarch.frag writes the TRUE ray-hit depth and needs the
-            // same ModelViewMatrix / zNear / zRange / radius the vertex stage
-            // projects with - read from the one block instead of duplicating
-            // them into rayMarchFrag (I2). The NIGHT row's frag doesn't
-            // declare it; an unread binding costs nothing.
+            // BOTH ray frags write the TRUE ray-hit depth (5.29 base row,
+            // 5.30 NIGHT row) and need the same ModelViewMatrix / zNear /
+            // zRange / radius the vertex stage projects with - read from the
+            // one block instead of duplicating them into rayMarchFrag (I2).
             {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT},
             {1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT},         // rayMarchFrag (old ShadowFrag, S5 rows)
             {2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1, mapSampler}, // heightMap
@@ -182,8 +181,9 @@ const PipelineFamily &MeshFamilies::meshRayMarch()
         };
         // Old state (bodyShader.cpp myEarthShadowed/shaderShadowedTes):
         // triangle, cull, BLEND_NONE, normal-attr entry stripped. Depth is ON
-        // in the base pass state (shaderShadowedTes); the old myEarthShadowed
-        // depth-OFF quirk is reproduced at bind time via NIGHT|VARIANT_NO_DEPTH.
+        // in the base pass state (shaderShadowedTes) and BOTH rows bind it
+        // (INTENT 5.30 - the old myEarthShadowed depth-OFF quirk is retired
+        // with its premise; derivation at LayeredMesh::drawRay's bind site).
         color.state.removedVertexEntries = 1 << 2;
         desc.passes.push_back(std::move(color));
         return renderer.allocateFamily(std::move(desc));

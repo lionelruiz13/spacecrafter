@@ -38,7 +38,31 @@ layout (binding=1) uniform rayMarchFrag {
 	ShadowingBody shadowingBodies[MAX_SHADOW_CASTERS];
 };
 
+// TRUE RAY-HIT DEPTH (INTENT 5.30, the 11.104(c) rider). Identical to the base
+// row's write (bodyRayMarch.frag, INTENT 5.29) and landed in the SAME commit
+// as clearing this row's VARIANT_NO_DEPTH: without it, retiring the row flag
+// would swap Earth's "no depth at all" for the SHELL depth - the exact defect
+// 5.29 just closed on the Moon, 127.56 km up on Earth at level 2.
+// The block below is binding 0 VERBATIM from body_tes_shadow.vert (declared
+// VERTEX|FRAGMENT by MeshFamilies::meshRayMarch, one declaration for both
+// rows): reading the SAME uniform the vertex stage projects with keeps ONE
+// authority for the model->eye matrix and the bucket depth range - no
+// CPU-side duplicate.
+layout (binding=0) uniform globalProj {
+	mat4 ModelViewMatrix;
+	mat3 WorldToModelMatrix;
+	float zNear;
+	float zRange;
+	float fov;
+	float radius;
+};
+
 #include <receivedShadows.glsl>
+// same projection authority as the vertex stage (specialization constant 8 is
+// injected per-STAGE by PipelineRegistry::bindStage, so the fragment's
+// projectionType matches the vertex's - the depth term is identical in all
+// four modes, but the dispatch is not assumed here).
+#include <custom_project.glsl>
 
 layout (location=0) in vec3 entryPos;
 layout (location=1) in vec3 viewDirection;
@@ -98,6 +122,11 @@ void main(void)
 		float depth = length(samplePos);
 		vec2 texCoord = vec2(tmp, acos(-samplePos.z/depth) / M_PI);
 		vec3 shadowSample = samplePos; // clip planes are folded through the same map as the rows
+		// 5.30: this is the terrain point being shaded - project IT, through
+		// the vertex stage's own expression (pos = MV * vec4(unit*radius, 1)
+		// then custom_projectNoMV), so the two stages cannot drift apart.
+		gl_FragDepth = custom_projectNoMV((ModelViewMatrix * vec4(samplePos * radius, 1)).xyz,
+		                                  vec3(zNear, zNear + zRange, fov)).z;
 		vec3 xAxis = normalize(vec3(-samplePos.y, samplePos.x, 0));
 		samplePos /= depth;
 		vec3 yAxis = normalize(cross(xAxis, samplePos));
