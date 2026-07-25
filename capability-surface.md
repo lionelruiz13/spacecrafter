@@ -77,11 +77,11 @@ would have come from it are missing, not wrong, and that is said in its own row:
 | base | what it enumerates | how | state / residual |
 |---|---|---|---|
 | **A** | the §9 seam table's 12 categories | read | DONE. §9 is itself a curated view (it names *examples* per row) ⇒ not a closed set |
-| **B** | `coreModule/coreLink.hpp` public methods (the engine's own control-surface API) | per-method caller census over `src/` | **PARTIAL — the largest open residual.** The exhaustive census was attempted and did not complete; every CoreLink row cited in §3 was verified individually at source instead. A full census (≈300 methods) would close the "capability the engine exposes but nothing calls" class from the OLD path's side, which this pass covers only where a new-path counterpart pointed at it |
+| **B** | `coreModule/coreLink.hpp` public methods (the engine's own control-surface API) | receiver-anchored grep (`coreLink->` / `CoreLink::instance->`) over 694 lines, comment-filtered by a column-before-`//` test, negative routes checked (line-broken calls, member pointers, macros, `#if 0` — all 0), every ZERO re-verified by an independent bare-name grep | ~~PARTIAL — the largest open residual~~ **CLOSED 2026-07-25 (same day, recovered delegation — see §3.7).** Coverage: the whole public section L34–L1026, **336 declaration lines / 330 names**, 6 overload pairs (all 12 overloads individually live, checked by arity). Buckets: **CMD 201 · BOTH 53 · UI 26 · OTHER 20 · CMD+OTHER 14 · ZERO 14 · BOTH+OTHER 6 · UI+OTHER 2**. Residual: methods reached through `core->` directly bypass this receiver anchor (they are covered by base C where a new-path counterpart exists) |
 | **C** | the new path's runtime-settable state: every public non-const method + every `static` flag under `src/experimentalModule/` (37+12+5+3+14+9 files) | header sweep + bare-symbol grep over `src/` for each claim | DONE (delegated, then re-grepped by the recorder for every "dead"/"only caller" row quoted here). Not covered: GLSL-side spec constants, `PipelineRegistry` internals, EntityCore |
 | **D** | data-authorable behaviour: every `param["…"]` key read by a loader | `grep -rhoE '(param\|params)\["[a-z_0-9]+"\]'` over `moduleLoader/ orbitModules/ ModularBody.cpp ModularSystem.cpp` | DONE for the new path; old-path-only keys (`bodyModule/`) not swept |
 | **E** | the input surfaces: every key/mouse/TUI/joypad binding | `ui.cpp` (3447 lines) + `ui_tuiconf.cpp` + `joypad_controller.cpp` + `mkfifo.cpp` + `io.cpp`'s server read end-to-end | DONE (delegated, channel-model claims re-verified by the recorder). TUI menus 7/8 line citations approximate |
-| **F** | the COMMAND side: every `flag <name>` / `set <name>` / sub-grammar key → its engine call, + tokens declared with no handler | — | **NOT DONE.** Attempted, did not complete. This is the *command-keyed* view the §11.55 bar says is the smaller surface, so its absence does not invalidate the capability-side rows above — but the "dead token" class (a keyword the parser declares and no branch handles) is invisible to this audit and stays open |
+| **F** | the COMMAND side: every `flag <name>` / `set <name>` / sub-grammar key → its engine call, + tokens declared with no handler | table-driven: every `m_commands` / `m_flags` / `m_set` / `m_color` registration parsed and joined to its case label + callee; `app_command_interface.cpp` read end-to-end (1–4298); all **366** `args[KEY]` occurrences reconciled | ~~NOT DONE~~ **CLOSED 2026-07-25 (same day, recovered delegation — see §3.8).** Counts cross-checked three ways: `m_commands` 59 keys / 58 handlers (+`comment`/`uncomment`/`struct` as pre-table literals), `m_flags` **97 = 97 cases = 97 enum**, `m_set` 43 keys / 44 cases (43 + NONE), `m_color` **46 = 46 = 46**. Residual, named by the census itself: five arg-hashes are passed through to key sets that live OUTSIDE the interface (`dsoNavInsert`/`dsoNavSetupVolumetric` `coreLink.cpp:773,783`; `loadLandscape` `core.cpp:759`; `addSolarSystemBody`/`preloadSolarSystemBody` `core.cpp:780,827` = the ssystem.ini grammar; `cameraAddAnchor` `anchor_manager.cpp:271`) — those grammars are base D's and the loaders', not this one's |
 
 **What the union does NOT cover, stated so the claim is falsifiable**: (i) capabilities
 that exist only as an *intention* (a header contract with no implementation — e.g. row-16
@@ -211,6 +211,91 @@ both (`app_command_interface.cpp:2125`), so it silently re-synchronises the two 
 
 ---
 
+### 3.7 CoreLink control-surface API — the ZERO set (base B, 14 of 330 names)
+
+Declared on the engine's own control-surface API, **no live caller anywhere in `src/`**.
+Each was re-verified by an independent bare-name grep; the "other hits" column is what a
+naive grep would have scored them as, and is the reason this class survived four earlier
+audits.
+
+| # | method | decl | what a naive grep sees |
+|---|---|---|---|
+| 1 | `tullySetDuration` | L134 | — |
+| 2 | `illuminateSetSize` | L139 | — |
+| 3 | `starNavGetMaxMagName` | L202 | — |
+| 4 | `setMaxFov` | L331 | 5 hits = `Projector`/`MagConverter` methods of the same name |
+| 5 | `cameraMoveRelativeXYZ` | L363 | 5 hits in `ui.cpp` (2599, 2628, 2659, 2718, 2774) — **all commented out**; a naive grep scores it UI |
+| 6 | `constellationGetArtFadeDuration` | L434 | — |
+| 7 | `startPlanetsTrails` | L474 | see the B34 reconciliation below |
+| 8 | `setPlanetsSelected` | L478 | 7 `core.cpp` hits = trailing comments on `ssystemFactory->setSelected` lines |
+| 9 | `getMoonScale` | L496 | `SSystemFactory`/`SolarSystem` methods |
+| 10 | `getSunScale` | L502 | same |
+| 11 | `planetSetFlagOrbits` | L583 | **one character** from the live plural `planetsSetFlagOrbits` |
+| 12 | `planetGetColor` | L593 | — |
+| 13 | `milkyWayChangeState` | L709 | 3 hits = the substring of the LIVE `…WithoutIntensity` |
+| 14 | `dso3dSetDuration` | L748 | — |
+
+**B34 RECONCILIATION (my own row was imprecise — corrected here and in the ledger):** the
+trail fresh-restart is NOT "a command that lands on the old path only". `flag object_trails`
+reaches `CoreLink::planetsSetFlagTrails` → `SSystemFactory::setFlagTrails`, which **is dual**
+(the `TrailModule::show` mirror, `ssystem_factory.hpp:333`). The restart semantic lives in
+`CoreLink::startPlanetsTrails` (`coreLink.cpp:1144`), and **that wrapper has zero callers** —
+the only live callers of `SSystemFactory::startTrails` are `core.cpp:370` (config init) and
+`core.cpp:1833` (`setHomePlanet`), both old-only. So the item is simultaneously ZERO-class
+(the control-surface entry) and OLD-ONLY (the two internal callers); the *command* claim was
+wrong.
+
+**Doc-rot traps recorded for future audits** (not defects, but they cost time): `ui.cpp`
+references `coreLink->timeResetMultiplier()` **six** times (L782, 972, 1086, 1438, 1472, 2354)
+and the method **does not exist on `CoreLink` at all** — every reference is inside a comment;
+and `coreLink.hpp:821-823`'s own marker `// Fonctions non utilisée ?` is **wrong** (all three
+methods under it are live). Ambiguous-name traps: `setMaxFov`/`getFov`/`setFov`/`zoomTo`/
+`getAimFov` (Projector, MagConverter) · `get/setMoonScale`, `get/setSunScale` (SSystemFactory,
+SolarSystem) · `lookAt`, `set/getHeading`, `set/getLocalVision`, `setDefaultHeading` (Navigator) ·
+`observatory*`, `observerMoveRel*` (Observer) · `getMag` (star wrappers).
+
+**Record-path-only methods** (their sole caller is the script-RECORDING path, so they are
+control-surface *queries* with no read channel): `getDateSecond` L635 (the only date getter
+with no `$var` route), `getSelectedPlanetEnglishName` L653, `getHomePlanetEnglishName` L657,
+`getFlagTracking` L1002. `timeLock`/`timeUnlock` are OTHER-bucket (only `observer.cpp:429,433`).
+
+### 3.8 Command grammar — dead tokens and the reachable-but-defective set (base F)
+
+**DEAD TOKENS** — declared keyword, no handler:
+
+| token | decl | verdict |
+|---|---|---|
+| `ACP_FN_SKY_DRAW "sky_draw"` | `base_command_interface.hpp:476` | **the one genuinely orphaned flag name**: not in `m_flags`, and not on the obsolete list (`app_command_init.cpp:14-23`), so `flag sky_draw on` takes the unknown-name path |
+| `external_mplayer` `:346`, `movetocity` `:360` | | covered by the obsolete list — deliberate, not a defect |
+| `W_FALSE` `:244`, `W_OFF` `:188`, `W_TERMINATION` `:311`, `W_MINIMAL` `:316`, `W_REPLACE` `:317`, `W_RECURSIVE` `:318` | | never referenced anywhere in `src/` |
+| duplicate `#define`s | `W_SIZE`(80,93), `W_INCREMENT`(86,145), `W_DECREMENT`(87,144), `W_LOOP`(169,284), `W_OGG`(266,280) | same spelling defined twice |
+
+Correction to the census on `sky_draw` [re-verified at source by the recorder]: it is **not**
+diagnostic-free. `AppCommandInterface::setFlag` (`:304-313`) misses in `m_flags`, runs
+`searchSimilarFlag(name)` (the did-you-mean), returns false, and `commandFlag` then sets
+*"Unrecognized or malformed flag argument"*. What IS defective there is one line: the
+name-specific message at `:309` is **commented out** while `:310` still logs `debug_message` —
+i.e. it prints an EMPTY (or stale, since the member is not cleared per command) string. A §2(f)
+actionable-diagnostics instance, recorded not fixed (writing the message the §2(f) bar wants is
+a small design act, not a one-liner).
+
+**REACHABLE-BUT-DEFECTIVE** — the class my own residual (iii) predicted (*a caller exists ≠ the
+callee does what its name says*). Each verified at source by the recorder:
+
+| item | site | behaviour |
+|---|---|---|
+| `script speed faster\|slower\|default` | `:2421-2434` | applied the effect, then fell into an unconditional *"missing action argument"* ⇒ reported failure AND was dropped from recordings (`executeCommandStatus` skips `recordCommand` on failure). **FIXED 2026-07-25**, measured both ways — see §4 |
+| `media subtitle toggle` | `:3329` | tests `argAction` where the correct sibling at `:3178` tests `argSubtitle` ⇒ `toggle` falls through `isTrue("toggle")==false` and turns subtitles **OFF**. One-word fix identified; **not taken** — no verification is available on this host (`~/.spacecrafter/videos` is empty and the subtitle state has no readout on the control surface) → **§5.36** |
+| `set mode <v>` | `:1801` | `case APP_MODE: break;` — parses, reports success, calls nothing |
+| `flag a on b on` | `:1122-1140` | reads only `args.begin()` of a `std::map` ⇒ silently applies the alphabetically FIRST pair only (the code's own comment: *"could loop if want to allow that syntax"*). Same single-pair restriction on `define`/`add`/`sub`/`multiply`/`divide`/`modulo`/`tangent`/`trunc`/`sinus` (`:4035-4149`) |
+| `comment` / `uncomment` | `:214,217` | literal-compared before the table ⇒ absent from `m_commands` ⇒ the Levenshtein did-you-mean can never suggest them |
+| command→string map | `m_commands_ToString` | built by `emplace(second, first)` ⇒ `"flyto"` is lost for the recording round-trip (`"camera"` wins the key) |
+| dead branches | `:297` (struct case, intercepted at `:220`), `:3463` (`==W_PRESET \|\| ==W_PRESET`, textually identical disjunct) | unreachable by construction |
+
+**Value-grammar note for every `flag` row above**: the value is `toggle | isTrue(v) | ELSE→OFF`
+(`:1096-1102`) — **any typo silently means off**. The universal `default` value is accepted by
+11 `set` names only.
+
 ## 4. Gap register (rows minted 2026-07-25, §11.108)
 
 | row | class | content |
@@ -218,7 +303,8 @@ both (`app_command_interface.cpp:2125`), so it silently re-synchronises the two 
 | **B33** | G-QUERY | the query half of the control surface reads the OLD path while setters are dual (§3.2); `heading delta_azimuth` computes from the wrong authority — measured |
 | **B34** | G-OLD-ONLY | S6 residual dual-seam set: `body action clear`, `body action preload`, trail fresh-restart |
 | **B35** | G-CONFIG-ONLY | capabilities with no runtime channel: mount switch (both paths, dead `toggleMountMode`), `boundToSurface`, new-path fov clamps, oort cloud colour |
-| **B36** | G-UNREACHABLE | declared-but-undriven new-path capabilities (§3.6) — each needs a driver or a retirement |
+| **B36** | G-UNREACHABLE | declared-but-undriven capabilities: the new-path set (§3.6) **plus the CoreLink ZERO set (14 of 330, §3.7)** — each needs a driver or a retirement |
+| **B38** | command-surface | dead tokens + the reachable-but-defective handlers (§3.8). One member fixed and measured (`script speed`); one blocked on verification (**§5.36**); the rest recorded |
 | **B37** | G-UI-ONLY | interactive-only, unscriptable: pixel pick, mouse-drag look, continuous pan/zoom ramps, relative lon/lat/alt steps, TUI-only setters, TUI open, cursor control, debug dumps |
 | **A38** | decision | reference-switch ROLL: new holds the whole orientation (B13/Q2), old re-derives the roll from its mount frame — measured 6.16°/6.49° divergence → DECISIONS_PENDING **D28** |
 | **§5.35** | defect | `day_key_mode` is inert end-to-end (shadowed-local setter + no behavioural consumer) |
