@@ -107,6 +107,13 @@ def frame(name):
     send("flag track_object on", 5)
     send(f"moveto lat 0 lon 0 alt {alt_m} duration 0", 4)
     send(f"zoom fov {FOV:.1f} duration 0", 3)
+    # RELEASE (F0, §11.101(g3) / §11.80(c)): tracking is the AIM, not the state to
+    # shoot in - it eases and never exactly settles, so every px floor measured
+    # under it is the tracking residual, not the instrument's. This arm had no
+    # matching off until F0, which left the flag set for the rest of the run and
+    # made the "noise floor 0" statements properties of the run, not of the
+    # instrument. Time is frozen, so releasing does not move the framing.
+    send("flag track_object off", 2)
 
 
 # ============================================================ drive =========

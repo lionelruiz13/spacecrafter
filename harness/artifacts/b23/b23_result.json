@@ -13,15 +13,15 @@
    "tropicCount": 256,
    "polarCount": 256,
    "tropic_px": [
-    10973,
-    10973
+    10972,
+    10972
    ],
    "polar_px": [
-    4196,
-    4196
+    4198,
+    4198
    ],
-   "screen_radial_tropic_mean": 458.8148206553764,
-   "screen_radial_polar_mean": 662.3612341927624
+   "screen_radial_tropic_mean": 458.836055920957,
+   "screen_radial_polar_mean": 662.376784728159
   },
   "Jupiter": {
    "noise_floor_px_gt0": 0,
@@ -33,12 +33,12 @@
    "tropicCount": 256,
    "polarCount": 256,
    "tropic_px": [
-    6410,
-    6410
+    6289,
+    6289
    ],
    "polar_px": [
-    492,
-    492
+    515,
+    515
    ]
   },
   "Uranus": {
@@ -51,15 +51,15 @@
    "tropicCount": 256,
    "polarCount": 256,
    "tropic_px": [
-    1449,
-    1449
+    1393,
+    1393
    ],
    "polar_px": [
-    5431,
-    5431
+    5465,
+    5465
    ],
-   "screen_radial_tropic_mean": 694.5610407751984,
-   "screen_radial_polar_mean": 398.5571864916395
+   "screen_radial_tropic_mean": 694.3770098507032,
+   "screen_radial_polar_mean": 400.2157708937685
   }
  },
  "gate": {
@@ -133,7 +133,7 @@
   },
   {
    "ok": true,
-   "text": "Earth tropic: ON present both entries (10973, 10973 px>32)"
+   "text": "Earth tropic: ON present both entries (10972, 10972 px>32)"
   },
   {
    "ok": true,
@@ -141,7 +141,7 @@
   },
   {
    "ok": true,
-   "text": "Earth polar: ON present both entries (4196, 4196 px>32)"
+   "text": "Earth polar: ON present both entries (4198, 4198 px>32)"
   },
   {
    "ok": true,
@@ -149,7 +149,7 @@
   },
   {
    "ok": true,
-   "text": "Jupiter tropic: ON present both entries (6410, 6410 px>32)"
+   "text": "Jupiter tropic: ON present both entries (6289, 6289 px>32)"
   },
   {
    "ok": true,
@@ -157,7 +157,7 @@
   },
   {
    "ok": true,
-   "text": "Jupiter polar: ON present both entries (492, 492 px>32)"
+   "text": "Jupiter polar: ON present both entries (515, 515 px>32)"
   },
   {
    "ok": true,
@@ -165,7 +165,7 @@
   },
   {
    "ok": true,
-   "text": "Uranus tropic: ON present both entries (1449, 1449 px>32)"
+   "text": "Uranus tropic: ON present both entries (1393, 1393 px>32)"
   },
   {
    "ok": true,
@@ -173,7 +173,7 @@
   },
   {
    "ok": true,
-   "text": "Uranus polar: ON present both entries (5431, 5431 px>32)"
+   "text": "Uranus polar: ON present both entries (5465, 5465 px>32)"
   },
   {
    "ok": true,
@@ -185,7 +185,7 @@
   },
   {
    "ok": true,
-   "text": "Uranus: tropic ring (695) OUTSIDE polar ring (399) - the obliquity reversal"
+   "text": "Uranus: tropic ring (694) OUTSIDE polar ring (400) - the obliquity reversal"
   },
   {
    "ok": true,
@@ -193,7 +193,7 @@
   },
   {
    "ok": true,
-   "text": "real `flag tropic_lines on` dispatched: showTropics=True, screen px>32=10973"
+   "text": "real `flag tropic_lines on` dispatched: showTropics=True, screen px>32=10977"
   },
   {
    "ok": true,
@@ -214,7 +214,7 @@
   "bogus_showTropics": false,
   "real_showTropics": true,
   "bogus_screen_px": 0,
-  "real_screen_px": 10973
+  "real_screen_px": 10977
  },
  "fail": 0
 }

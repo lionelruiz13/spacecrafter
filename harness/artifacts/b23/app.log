@@ -54,7 +54,7 @@ wideLines : [92;1menabled[0m
 samplerAnisotropy : [92;1menabled[0m
 shaderFloat64 : [92;1menabled[0m
 [0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30806 MiB	used : 12 MiB    	free : 30794 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28942 MiB	used : 12 MiB    	free : 28930 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5 MiB    	free : 45472 MiB[0m
 [1m[32m(Info ): [0m[37mAdvanced event enabled[0m
 Scaling : 0.5
@@ -67,25 +67,25 @@ Rect : (2048, 2048) offset=(0, 0)
 [1m[32m(Info ): [0m[37mRear projection: false (enabled=0)[0m
 [1m[32m(Info ): [0m[37mInitializing Vulkan...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 512 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30791 MiB	used : 12 MiB    	free : 30779 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28941 MiB	used : 12 MiB    	free : 28929 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 1 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30773 MiB	used : 13 MiB    	free : 30760 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28941 MiB	used : 13 MiB    	free : 28928 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 160 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30771 MiB	used : 173 MiB    	free : 30598 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28939 MiB	used : 173 MiB    	free : 28766 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'depth attachment'[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 1280 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30800 MiB	used : 1453 MiB    	free : 29347 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28936 MiB	used : 1453 MiB    	free : 27483 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'Shadow Depth Buffer'[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 7 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30800 MiB	used : 1461 MiB    	free : 29339 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28936 MiB	used : 1461 MiB    	free : 27475 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'Shadow Stencil Buffer'[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 256 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30800 MiB	used : 1717 MiB    	free : 29083 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28936 MiB	used : 1717 MiB    	free : 27219 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'Shadow Shape Buffer'[0m
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'self shadow' with size (16384, 16384)[0m
@@ -93,34 +93,34 @@ Rect : (2048, 2048) offset=(0, 0)
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'shadow shape' with size (1280, 1280)[0m
 [1m[32m(Info ): [0m[37mBinding of 'main color 0' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30800 MiB	used : 1733 MiB    	free : 29067 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28936 MiB	used : 1733 MiB    	free : 27203 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'main color 0'[0m
 [1m[32m(Info ): [0m[37mBinding of 'multisample color 0' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30800 MiB	used : 1861 MiB    	free : 28939 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28936 MiB	used : 1861 MiB    	free : 27075 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'multisample color 0'[0m
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'main 0' with size (2048, 2048)[0m
 [1m[32m(Info ): [0m[37mBinding of 'main color 1' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30800 MiB	used : 1877 MiB    	free : 28923 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28936 MiB	used : 1877 MiB    	free : 27059 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'main color 1'[0m
 [1m[32m(Info ): [0m[37mBinding of 'multisample color 1' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30800 MiB	used : 2005 MiB    	free : 28795 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28936 MiB	used : 2005 MiB    	free : 26931 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'multisample color 1'[0m
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'main 1' with size (2048, 2048)[0m
 [1m[32m(Info ): [0m[37mBinding of 'main color 2' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30800 MiB	used : 2021 MiB    	free : 28779 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28936 MiB	used : 2021 MiB    	free : 26915 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'main color 2'[0m
 [1m[32m(Info ): [0m[37mBinding of 'multisample color 2' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30800 MiB	used : 2149 MiB    	free : 28651 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28936 MiB	used : 2149 MiB    	free : 26787 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'multisample color 2'[0m
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'main 2' with size (2048, 2048)[0m
@@ -130,195 +130,290 @@ Rect : (2048, 2048) offset=(0, 0)
 [1m[36m(Debug): [0m[37mNo cmd given for 'splash/spacecrafter.png', creating uninitialized texture[0m
 [1m[32m(Info ): [0m[37mFinalizing Vulkan initialization...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 256 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30784 MiB	used : 2149 MiB    	free : 28635 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28932 MiB	used : 2149 MiB    	free : 26783 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 773 MiB    	free : 44704 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 1536 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30794 MiB	used : 2149 MiB    	free : 28645 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28926 MiB	used : 2149 MiB    	free : 26777 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 2309 MiB    	free : 43168 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 682 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30794 MiB	used : 2149 MiB    	free : 28645 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28924 MiB	used : 2149 MiB    	free : 26775 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 2991 MiB    	free : 42486 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 48 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30794 MiB	used : 2149 MiB    	free : 28645 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28920 MiB	used : 2149 MiB    	free : 26771 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 512 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30794 MiB	used : 2661 MiB    	free : 28133 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28920 MiB	used : 2661 MiB    	free : 26259 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 1 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30794 MiB	used : 2662 MiB    	free : 28132 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28920 MiB	used : 2662 MiB    	free : 26258 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30794 MiB	used : 2790 MiB    	free : 28004 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28920 MiB	used : 2790 MiB    	free : 26130 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 64 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30794 MiB	used : 2854 MiB    	free : 27940 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28920 MiB	used : 2854 MiB    	free : 26066 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 1 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30794 MiB	used : 2855 MiB    	free : 27939 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28920 MiB	used : 2855 MiB    	free : 26064 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30794 MiB	used : 2871 MiB    	free : 27923 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28920 MiB	used : 2871 MiB    	free : 26048 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'star FBO'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'Projected shadows'[0m
 [1m[32m(Info ): [0m[37mVulkan initialization completed[0m
 [1m[32m(Info ): [0m[37mAudio initialization successful[0m
-[1m[32m(Info ): [0m[37mGenerating EquiSphere took : 28ms[0m
+[1m[32m(Info ): [0m[37mGenerating EquiSphere took : 29ms[0m
+[1m[32m(Info ): [0m[37mSystem 'MilkyWay' uses centre-relative navigation by class default (datum_radius = ground_radius = 0): free-mode altitude is measured from its centre and free descent reaches the centre. To override, set datum_radius/ground_radius in data or run 'body name MilkyWay datum_radius <km>'.[0m
 [1m[32m(Info ): [0m[37mLoading body Sun[0m
+[1m[36m(Debug): [0m[37mBody 'Sun': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/big_halo.png[0m
 [1m[32m(Info ): [0m[37mLoading body Mercury[0m
+[1m[36m(Debug): [0m[37mBody 'Mercury': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Venus[0m
+[1m[36m(Debug): [0m[37mBody 'Venus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Earth[0m
+[1m[36m(Debug): [0m[37mBody 'Earth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Moon[0m
+[1m[36m(Debug): [0m[37mBody 'Moon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mAdding Moon to Earth binary orbit.[0m
 [1m[32m(Info ): [0m[37mLoading body Mars[0m
+[1m[36m(Debug): [0m[37mBody 'Mars': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Phobos[0m
+[1m[36m(Debug): [0m[37mBody 'Phobos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading object Phobos[0m
 [1m[32m(Info ): [0m[37mSuccesfull loading model3D Phobos[0m
 [1m[32m(Info ): [0m[37mLoading body Deimos[0m
+[1m[36m(Debug): [0m[37mBody 'Deimos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading object Deimos[0m
 [1m[32m(Info ): [0m[37mSuccesfull loading model3D Deimos[0m
 [1m[32m(Info ): [0m[37mLoading body Jupiter[0m
+[1m[36m(Debug): [0m[37mBody 'Jupiter': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Metis[0m
+[1m[36m(Debug): [0m[37mBody 'Metis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Adrastea[0m
+[1m[36m(Debug): [0m[37mBody 'Adrastea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Amalthea[0m
+[1m[36m(Debug): [0m[37mBody 'Amalthea': rot_pole_w0 (IAU W0=231.67 deg, from the ICRF-equator node) converted to rot_rotation_offset 168.121552 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37mLoading body Thebe[0m
+[1m[36m(Debug): [0m[37mBody 'Thebe': rot_pole_w0 (IAU W0=8.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 299.457397 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Io[0m
+[1m[36m(Debug): [0m[37mBody 'Io': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Europa[0m
+[1m[36m(Debug): [0m[37mBody 'Europa': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Ganymede[0m
+[1m[36m(Debug): [0m[37mBody 'Ganymede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Callisto[0m
+[1m[36m(Debug): [0m[37mBody 'Callisto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Himalia[0m
+[1m[36m(Debug): [0m[37mBody 'Himalia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Elara[0m
+[1m[36m(Debug): [0m[37mBody 'Elara': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Carme[0m
+[1m[36m(Debug): [0m[37mBody 'Carme': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Pasiphae[0m
+[1m[36m(Debug): [0m[37mBody 'Pasiphae': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Lysithea[0m
+[1m[36m(Debug): [0m[37mBody 'Lysithea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ananke[0m
+[1m[36m(Debug): [0m[37mBody 'Ananke': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sinope[0m
+[1m[36m(Debug): [0m[37mBody 'Sinope': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Leda[0m
+[1m[36m(Debug): [0m[37mBody 'Leda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Saturn[0m
+[1m[36m(Debug): [0m[37mBody 'Saturn': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Pan[0m
+[1m[36m(Debug): [0m[37mBody 'Pan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Daphnis[0m
+[1m[36m(Debug): [0m[37mBody 'Daphnis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Prometheus[0m
+[1m[36m(Debug): [0m[37mBody 'Prometheus': rot_pole_w0 (IAU W0=296.14 deg, from the ICRF-equator node) converted to rot_rotation_offset 166.175461 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Pandora[0m
+[1m[36m(Debug): [0m[37mBody 'Pandora': rot_pole_w0 (IAU W0=162.92 deg, from the ICRF-equator node) converted to rot_rotation_offset 32.955444 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37mLoading body Epimetheus[0m
+[1m[36m(Debug): [0m[37mBody 'Epimetheus': rot_pole_w0 (IAU W0=293.87 deg, from the ICRF-equator node) converted to rot_rotation_offset 164.618637 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
 [1m[32m(Info ): [0m[37mLoading body Janus[0m
+[1m[36m(Debug): [0m[37mBody 'Janus': rot_pole_w0 (IAU W0=58.83 deg, from the ICRF-equator node) converted to rot_rotation_offset 288.439484 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Titan[0m
+[1m[36m(Debug): [0m[37mBody 'Titan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient3.png[0m
 [1m[32m(Info ): [0m[37mLoading body Mimas[0m
+[1m[36m(Debug): [0m[37mBody 'Mimas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Enceladus[0m
+[1m[36m(Debug): [0m[37mBody 'Enceladus': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Dione[0m
+[1m[36m(Debug): [0m[37mBody 'Dione': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Tethys[0m
+[1m[36m(Debug): [0m[37mBody 'Tethys': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Rhea[0m
+[1m[36m(Debug): [0m[37mBody 'Rhea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Hyperion[0m
+[1m[36m(Debug): [0m[37mBody 'Hyperion': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Hyperion': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
 [1m[32m(Info ): [0m[37mLoading body Iapetus[0m
+[1m[36m(Debug): [0m[37mBody 'Iapetus': rot_pole_w0 (IAU W0=355.2 deg, from the ICRF-equator node) converted to rot_rotation_offset 171.467056 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37mLoading body Telesto[0m
+[1m[36m(Debug): [0m[37mBody 'Telesto': rot_pole_w0 (IAU W0=56.88 deg, from the ICRF-equator node) converted to rot_rotation_offset 294.588348 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Helene[0m
+[1m[36m(Debug): [0m[37mBody 'Helene': rot_pole_w0 (IAU W0=245.12 deg, from the ICRF-equator node) converted to rot_rotation_offset 115.606392 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Uranus[0m
+[1m[36m(Debug): [0m[37mBody 'Uranus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Juliet[0m
+[1m[36m(Debug): [0m[37mBody 'Juliet': rot_pole_w0 (IAU W0=302.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 217.635773 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Portia[0m
+[1m[36m(Debug): [0m[37mBody 'Portia': rot_pole_w0 (IAU W0=25.03 deg, from the ICRF-equator node) converted to rot_rotation_offset 300.123627 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Rosalind[0m
+[1m[36m(Debug): [0m[37mBody 'Rosalind': rot_pole_w0 (IAU W0=314.90 deg, from the ICRF-equator node) converted to rot_rotation_offset 229.999634 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Belinda[0m
+[1m[36m(Debug): [0m[37mBody 'Belinda': rot_pole_w0 (IAU W0=297.46 deg, from the ICRF-equator node) converted to rot_rotation_offset 212.530380 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Puck[0m
+[1m[36m(Debug): [0m[37mBody 'Puck': rot_pole_w0 (IAU W0=91.24 deg, from the ICRF-equator node) converted to rot_rotation_offset 6.381639 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Miranda[0m
+[1m[36m(Debug): [0m[37mBody 'Miranda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Ariel[0m
+[1m[36m(Debug): [0m[37mBody 'Ariel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Umbriel[0m
+[1m[36m(Debug): [0m[37mBody 'Umbriel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Titania[0m
+[1m[36m(Debug): [0m[37mBody 'Titania': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Oberon[0m
+[1m[36m(Debug): [0m[37mBody 'Oberon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Caliban[0m
+[1m[36m(Debug): [0m[37mBody 'Caliban': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sycorax[0m
+[1m[36m(Debug): [0m[37mBody 'Sycorax': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Prospero[0m
+[1m[36m(Debug): [0m[37mBody 'Prospero': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Setebos[0m
+[1m[36m(Debug): [0m[37mBody 'Setebos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Neptune[0m
+[1m[36m(Debug): [0m[37mBody 'Neptune': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Naiad[0m
+[1m[36m(Debug): [0m[37mBody 'Naiad': rot_pole_w0 (IAU W0=254.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 140.775604 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Thalassa[0m
+[1m[36m(Debug): [0m[37mBody 'Thalassa': rot_pole_w0 (IAU W0=102.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 347.728729 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Despina[0m
+[1m[36m(Debug): [0m[37mBody 'Despina': rot_pole_w0 (IAU W0=306.51 deg, from the ICRF-equator node) converted to rot_rotation_offset 192.446762 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Galatea[0m
+[1m[36m(Debug): [0m[37mBody 'Galatea': rot_pole_w0 (IAU W0=258.09 deg, from the ICRF-equator node) converted to rot_rotation_offset 144.041214 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Larissa[0m
+[1m[36m(Debug): [0m[37mBody 'Larissa': rot_pole_w0 (IAU W0=179.41 deg, from the ICRF-equator node) converted to rot_rotation_offset 65.537102 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Proteus[0m
+[1m[36m(Debug): [0m[37mBody 'Proteus': rot_pole_w0 (IAU W0=93.38 deg, from the ICRF-equator node) converted to rot_rotation_offset 339.711334 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37mLoading body Triton[0m
+[1m[36m(Debug): [0m[37mBody 'Triton': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Neried[0m
+[1m[36m(Debug): [0m[37mBody 'Neried': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Halimede[0m
+[1m[36m(Debug): [0m[37mBody 'Halimede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sao[0m
+[1m[36m(Debug): [0m[37mBody 'Sao': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Laomedeia[0m
+[1m[36m(Debug): [0m[37mBody 'Laomedeia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Psamathe[0m
+[1m[36m(Debug): [0m[37mBody 'Psamathe': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Neso[0m
+[1m[36m(Debug): [0m[37mBody 'Neso': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ceres[0m
+[1m[36m(Debug): [0m[37mBody 'Ceres': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Pallas[0m
+[1m[36m(Debug): [0m[37mBody 'Pallas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Juno[0m
+[1m[36m(Debug): [0m[37mBody 'Juno': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Juno': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Vesta[0m
+[1m[36m(Debug): [0m[37mBody 'Vesta': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Vesta': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
 [1m[32m(Info ): [0m[37mLoading object Vesta[0m
 [1m[33m(Warn.): [0m[1m[37mPerformance Issue : Too many vertices for 'model3D/Vesta/Vesta_1L.ojm' (Keep Below 4 000)[0m
 [1m[32m(Info ): [0m[37mSuccesfull loading model3D Vesta[0m
 [1m[32m(Info ): [0m[37mLoading body Pluto[0m
+[1m[36m(Debug): [0m[37mBody 'Pluto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Charon[0m
+[1m[36m(Debug): [0m[37mBody 'Charon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Nix[0m
+[1m[36m(Debug): [0m[37mBody 'Nix': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Hydra_[0m
+[1m[36m(Debug): [0m[37mBody 'Hydra_': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Styx[0m
+[1m[36m(Debug): [0m[37mBody 'Styx': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Kerberos[0m
+[1m[36m(Debug): [0m[37mBody 'Kerberos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Eris[0m
+[1m[36m(Debug): [0m[37mBody 'Eris': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Haumea[0m
+[1m[36m(Debug): [0m[37mBody 'Haumea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Namaka[0m
+[1m[36m(Debug): [0m[37mBody 'Namaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Hiiaka[0m
+[1m[36m(Debug): [0m[37mBody 'Hiiaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Makemake[0m
+[1m[36m(Debug): [0m[37mBody 'Makemake': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Sedna[0m
+[1m[36m(Debug): [0m[37mBody 'Sedna': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Arrokoth[0m
+[1m[36m(Debug): [0m[37mBody 'Arrokoth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading object Arrokoth[0m
 [1m[32m(Info ): [0m[37mSuccesfull loading model3D Arrokoth[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Solar_System[0m
+[1m[36m(Debug): [0m[37mBody 'Solar_System': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Goldilocks_Zone[0m
+[1m[36m(Debug): [0m[37mBody 'Goldilocks_Zone': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37m(system SolarSystem loaded)[0m
 [37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ssystem.ini generated at modularSystem/SolarSystem.ini.disabled[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/tex_nebulaes.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/tex_nebulaes.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/star16x16.png'[0m
@@ -327,7 +422,7 @@ Rect : (2048, 2048) offset=(0, 0)
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/volum_cloud.png', creating uninitialized texture[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/volum_cloud.png[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 512 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30786 MiB	used : 3415 MiB    	free : 27371 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28915 MiB	used : 3415 MiB    	free : 25500 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/milkyway-vguerin-d128.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/milkyway-vguerin-d128.png', creating uninitialized texture[0m
@@ -463,7 +558,7 @@ Rect : (2048, 2048) offset=(0, 0)
 [1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
 [1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 20 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30786 MiB	used : 3435 MiB    	free : 27351 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28915 MiB	used : 3435 MiB    	free : 25480 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'depth attachment'[0m
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'hip_star single' with size (2048, 2048)[0m
@@ -477,7 +572,7 @@ Rect : (2048, 2048) offset=(0, 0)
 ->InSolarSystem
 [1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 32 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30786 MiB	used : 3467 MiB    	free : 27319 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28915 MiB	used : 3467 MiB    	free : 25448 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
 [1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
@@ -869,7 +964,7 @@ ZoneArray::create(stars_3_1v0_4.cat): fopen failed
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m048-aca.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m048-aca.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 256 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30786 MiB	used : 3755 MiB    	free : 27031 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28903 MiB	used : 3755 MiB    	free : 25147 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m049-sdss2.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m049-sdss2.png', creating uninitialized texture[0m
@@ -1493,7 +1588,7 @@ ZoneArray::create(stars_3_1v0_4.cat): fopen failed
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/v838-hst.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/v838-hst.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 256 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30786 MiB	used : 4011 MiB    	free : 26774 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28919 MiB	used : 4011 MiB    	free : 24907 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/vela-sergio_eguivar.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/vela-sergio_eguivar.png', creating uninitialized texture[0m
@@ -1511,12 +1606,12 @@ ZoneArray::create(stars_3_1v0_4.cat): fopen failed
 [1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:base_altitude[0m
 [1m[32m(Info ): [0m[37mLandscape Spherical observatory created[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30786 MiB	used : 4055 MiB    	free : 26730 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28915 MiB	used : 4055 MiB    	free : 24860 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'landscapes/observatory-immersive_adventure.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/observatory-immersive_adventure.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30786 MiB	used : 4099 MiB    	free : 26686 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28915 MiB	used : 4099 MiB    	free : 24816 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'landscapes/observatory_night-immersive_adventure.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/observatory_night-immersive_adventure.png', creating uninitialized texture[0m
@@ -1530,23 +1625,24 @@ Body : Earth Landscape : observatory
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/milkyway.png[0m
 [1m[36m(Debug): [0m[37mMilkyway: no irisMilky define[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30786 MiB	used : 4143 MiB    	free : 26642 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28925 MiB	used : 4143 MiB    	free : 24782 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/milkyway.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/milkyway.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30786 MiB	used : 4187 MiB    	free : 26598 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28924 MiB	used : 4187 MiB    	free : 24736 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/zodiacale.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/zodiacale.png', creating uninitialized texture[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_bool rendering:flag_experimental_oort[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 32 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30786 MiB	used : 4219 MiB    	free : 26566 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28927 MiB	used : 4219 MiB    	free : 24707 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/typegals.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/typegals.png', creating uninitialized texture[0m
 [1m[32m(Info ): [0m[37mTully catalog successfully loaded: number of items 30432[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 32 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30786 MiB	used : 4251 MiB    	free : 26534 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28926 MiB	used : 4251 MiB    	free : 24674 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/dsocat.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/dsocat.png', creating uninitialized texture[0m
@@ -1585,14 +1681,14 @@ Invalid sky culture directory: western-spacecrafter
 [1m[32m(Info ): [0m[37mVR360 loading ojml cube[0m
 [1m[32m(Info ): [0m[37mVR360 actived[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 2560 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30745 MiB	used : 4251 MiB    	free : 26493 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28910 MiB	used : 4251 MiB    	free : 24659 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[32m(Info ): [0m[37mbuffer TCP size 1024[0m
 [1m[32m(Info ): [0m[37mMemory information
-Total ram 63582711808
-Free  ram 34417070080
-Shared ram 1300914176
-Buffer ram 598073344
+Total ram 63582703616
+Free  ram 13682270208
+Shared ram 913547264
+Buffer ram 514191360
 Total swap 0
 Free  swap 0[0m
 [37m=================================================================[0m
@@ -1654,12 +1750,13 @@ Altitude change received 75
 [1m[32m(Info ): [0m[37mEnd of script[0m
 [1m[32m(Info ): [0m[37mExecute_command script action end[0m
 [1m[32m(Info ): [0m[37mScriptMgr: script end[0m
+Statistics v168767 i188160
 [1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Arrokoth/Arrokoth_2M.ojm"[0m
 [1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Arrokoth/Arrokoth_3H.ojm"[0m
 [1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Vesta/Vesta_2M.ojm"[0m
+[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Vesta/Vesta_3H.ojm"[0m
 [1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Deimos/Deimos_2M.ojm"[0m
 [1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Phobos/Phobos_2M.ojm"[0m
-Statistics v168767 i188160
 Statistics v175091 i188160
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/planethalo.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/planethalo.png', creating uninitialized texture[0m
@@ -1674,31 +1771,37 @@ Statistics v175091 i188160
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/earth_alti.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/earth_alti.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_alti.png...[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient3.png'[0m
-[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/atm_gradient3.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_alti.png"'[0m
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_alti.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient2.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient3.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/atm_gradient3.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/sun.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient4.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/oberon.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/proteus.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/goldilocks_zone.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/makemake.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient2.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/venus.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/triton.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/charon.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient4.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/jupiter_rings.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/generic.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/amalthea.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/deimos.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/io_night.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/triton.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/makemake.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/phobos.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/goldilocks_zone.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/charon.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/proteus.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/pluto.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/oberon.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/titania.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/umbriel.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/ariel.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/neptune_rings.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/miranda.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/pluto.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/neptune_rings.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/uranusring.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/io.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/ceres.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/neptune.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/jupiter.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/hyperion.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/rhea.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/tethys.png'[0m
@@ -1709,20 +1812,14 @@ Statistics v175091 i188160
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/asteroid.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/uranus.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/saturn_rings_radial.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon_normal.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/callisto.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/ganymede.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/neptune.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/enceladus.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/iapetus.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/amalthea.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/generic.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/iapetus_alti.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/jupiter_rings.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/io_night.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon_normal.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/iapetus.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/europa.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/jupiter.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/io.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/phobos.jpg'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/saturn.jpg'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mars_alti.jpg'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon_alti.jpg'[0m
@@ -1735,15 +1832,17 @@ Statistics v175091 i188160
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/venus_surface.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/earth_grid.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mars.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'Fallback texture'[0m
 [1m[36m(Debug): [0m[37mbig "textures/bodies/earth_alti.png" is ready for use[0m
 [1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_normal.jpg...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 170 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30775 MiB	used : 4423 MiB    	free : 26352 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28888 MiB	used : 4423 MiB    	free : 24464 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_normal.jpg"'[0m
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_normal.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'Fallback texture'[0m
 [1m[33m(Warn.): [0m[1m[37mFrame stall detected[0m
+[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Deimos/Deimos_3H.ojm"[0m
+[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Phobos/Phobos_3H.ojm"[0m
 [37m   0# Fps::sigstacktrace(int) at /home/claude/spacecrafter/src/appModule/fps.cpp:150
    1#      at ./signal/../sysdeps/unix/sysv/linux/x86_64/libc_sigaction.c:0
    2# syscall at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:37
@@ -1756,27 +1855,49 @@ Statistics v175091 i188160
    9# _start at :0
   10# 
 [0m
-[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Vesta/Vesta_3H.ojm"[0m
-[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Deimos/Deimos_3H.ojm"[0m
-[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Phobos/Phobos_3H.ojm"[0m
+[1m[33m(Warn.): [0m[1m[37mFrame stall detected[0m
+[37m   0# Fps::sigstacktrace(int) at /home/claude/spacecrafter/src/appModule/fps.cpp:150
+   1#      at ./signal/../sysdeps/unix/sysv/linux/x86_64/libc_sigaction.c:0
+   2#      at :0
+   3#      at :0
+   4#      at :0
+   5#      at :0
+   6#      at :0
+   7#      at :0
+   8#      at :0
+   9#      at :0
+  10# LazyOjmL::draw(VkCommandBuffer_T*) at /home/claude/spacecrafter/src/ojmModule/LazyOjmL.hpp:15
+  11# MilkyWay::drawEnv(ToneReproductor*, Matrix4<double> const&, double, MilkyWay::ZodiacalInput const&) at /home/claude/spacecrafter/src/coreModule/milkyway.cpp:274
+  12# MilkyWayEnv::drawBackdrop(Renderer&, ModularBody*, Matrix4<float> const&) at /home/claude/spacecrafter/src/experimentalModule/environmentModules/MilkyWayEnv.cpp:27
+  13# EnvironmentManager::drawBackdrop(Renderer&) at /home/claude/spacecrafter/src/experimentalModule/EnvironmentManager.cpp:237
+  14# SolarSystemModule::draw(int) at /home/claude/spacecrafter/src/executorModule/solarSystemModule.cpp:190
+  15# Executor::draw(int) at /home/claude/spacecrafter/src/executorModule/executor.cpp:53
+  16# App::draw(int) at /home/claude/spacecrafter/src/appModule/app.cpp:854
+  17# App::startMainLoop() at /home/claude/spacecrafter/src/appModule/app.cpp:995
+  18# main at /home/claude/spacecrafter/src/main.cpp:348
+  19# __libc_start_call_main at ../sysdeps/nptl/libc_start_call_main.h:58
+  20# __libc_start_main_impl at ../csu/libc-start.c:360
+  21# _start at :0
+  22# 
+[0m
 [1m[36m(Debug): [0m[37mbig "textures/bodies/earth_normal.jpg" is ready for use[0m
 [1m[36m(Debug): [0m[37mLoading big textures/bodies/earth.jpg...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 682 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30775 MiB	used : 5107 MiB    	free : 25668 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28862 MiB	used : 5107 MiB    	free : 23755 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth.jpg"'[0m
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth.jpg'[0m
 [1m[36m(Debug): [0m[37mbig "textures/bodies/earth.jpg" is ready for use[0m
 [1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_night.jpg...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 170 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30776 MiB	used : 5279 MiB    	free : 25496 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28907 MiB	used : 5279 MiB    	free : 23627 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_night.jpg"'[0m
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_night.jpg'[0m
 [1m[36m(Debug): [0m[37mbig "textures/bodies/earth_night.jpg" is ready for use[0m
 [1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_specular.png...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30743 MiB	used : 5323 MiB    	free : 25419 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28875 MiB	used : 5323 MiB    	free : 23551 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_specular.png"'[0m
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_specular.png'[0m
@@ -1844,60 +1965,62 @@ Altitude change received 2.5484e+07
 Altitude change received 2.5484e+07
 [1m[32m(Info ): [0m[37mget tcp : zoom fov 35.0 duration 0[0m
 [1m[32m(Info ): [0m[37mExecute_command zoom fov 35.0 duration 0[0m
+[1m[32m(Info ): [0m[37mget tcp : flag track_object off[0m
+[1m[32m(Info ): [0m[37mExecute_command flag track_object off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_probe.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_probe.json[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_base.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_base.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_base2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_base2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_probe.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_probe.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_base.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_base.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_base2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_base2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_on1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_on1.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_on1.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_on1.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_on1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_on1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_on1.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_on1.json[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_off1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_off1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_off1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_off1.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_on2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_on2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_on2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_on2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_off2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_off2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_off2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_off2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_on1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_on1.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_on1.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_on1.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_on1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_on1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_on1.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_on1.json[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_off1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_off1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_off1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_off1.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_on2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_on2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_on2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_on2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_off2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_off2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_off2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_off2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_both.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_both.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_both.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_both.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_both.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_both.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_both.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_both.json[0m
 [1m[32m(Info ): [0m[37mget tcp : set home_planet Jupiter[0m
 [1m[32m(Info ): [0m[37mExecute_command set home_planet Jupiter[0m
 [1m[32m(Info ): [0m[37mLandscape generic created[0m
@@ -1911,7 +2034,7 @@ Altitude change received 2.5484e+07
 [1m[33m(Warn.): [0m[1m[37mInit_parser def_double Jupiter:base_altitude[0m
 [1m[32m(Info ): [0m[37mLandscape Spherical Jupiter created[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30776 MiB	used : 5367 MiB    	free : 25408 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28892 MiB	used : 5367 MiB    	free : 23524 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'landscapes/jupiter.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/jupiter.png', creating uninitialized texture[0m
@@ -1946,60 +2069,62 @@ Altitude change received 2.79644e+08
 [1m[36m(Debug): [0m[37mbig "textures/bodies/jupiter.png" is ready for use[0m
 [1m[32m(Info ): [0m[37mget tcp : zoom fov 35.0 duration 0[0m
 [1m[32m(Info ): [0m[37mExecute_command zoom fov 35.0 duration 0[0m
+[1m[32m(Info ): [0m[37mget tcp : flag track_object off[0m
+[1m[32m(Info ): [0m[37mExecute_command flag track_object off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_probe.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_probe.json[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_base.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_base.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_base2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_base2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_probe.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_probe.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_base.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_base.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_base2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_base2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_on1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_on1.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_on1.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_on1.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_on1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_on1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_on1.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_on1.json[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_off1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_off1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_off1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_off1.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_on2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_on2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_on2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_on2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_off2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_off2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_off2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_off2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_on1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_on1.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_on1.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_on1.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_on1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_on1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_on1.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_on1.json[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_off1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_off1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_off1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_off1.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_on2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_on2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_on2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_on2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_off2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_off2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_off2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_off2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_both.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_both.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_both.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_both.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_both.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_both.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_both.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_both.json[0m
 [1m[32m(Info ): [0m[37mget tcp : set home_planet Uranus[0m
 [1m[32m(Info ): [0m[37mExecute_command set home_planet Uranus[0m
 [1m[32m(Info ): [0m[37mLandscape generic created[0m
@@ -2013,13 +2138,11 @@ Altitude change received 2.79644e+08
 [1m[33m(Warn.): [0m[1m[37mInit_parser def_double Uranus:base_altitude[0m
 [1m[32m(Info ): [0m[37mLandscape Spherical Uranus created[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30774 MiB	used : 5323 MiB    	free : 25450 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28816 MiB	used : 5323 MiB    	free : 23492 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'landscapes/uranus.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/uranus.png', creating uninitialized texture[0m
 Body : Uranus Landscape : Uranus
-[1m[36m(Debug): [0m[37mLoading big textures/bodies/uranus.png...[0m
-[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/uranus.png'[0m
 Modification observer to Uranus
 [1m[32m(Info ): [0m[37mLandscape generic created[0m
 [1m[33m(Warn.): [0m[1m[37mInit_parser def_double Uranus:fog_alt_angle[0m
@@ -2033,7 +2156,6 @@ Modification observer to Uranus
 [1m[32m(Info ): [0m[37mLandscape Spherical Uranus created[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache landscapes/uranus.png[0m
 Body : Uranus Landscape : Uranus
-[1m[36m(Debug): [0m[37mbig "textures/bodies/uranus.png" is ready for use[0m
 [1m[32m(Info ): [0m[37mget tcp : select planet Uranus pointer off[0m
 [1m[32m(Info ): [0m[37mExecute_command select planet Uranus pointer off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag track_object on[0m
@@ -2047,60 +2169,62 @@ Altitude change received 1.01448e+08
 Altitude change received 1.01448e+08
 [1m[32m(Info ): [0m[37mget tcp : zoom fov 35.0 duration 0[0m
 [1m[32m(Info ): [0m[37mExecute_command zoom fov 35.0 duration 0[0m
+[1m[32m(Info ): [0m[37mget tcp : flag track_object off[0m
+[1m[32m(Info ): [0m[37mExecute_command flag track_object off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_probe.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_probe.json[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_base.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_base.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_base2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_base2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_probe.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_probe.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_base.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_base.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_base2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_base2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_on1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_on1.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_on1.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_on1.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_on1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_on1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_on1.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_on1.json[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_off1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_off1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_off1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_off1.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_on2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_on2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_on2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_on2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_off2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_off2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_off2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_off2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_on1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_on1.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_on1.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_on1.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_on1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_on1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_on1.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_on1.json[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_off1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_off1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_off1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_off1.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_on2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_on2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_on2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_on2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_off2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_off2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_off2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_off2.png[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_both.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_both.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_both.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_both.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_both.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_both.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_both.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_both.json[0m
 [1m[32m(Info ): [0m[37mget tcp : set home_planet Earth[0m
 [1m[32m(Info ): [0m[37mExecute_command set home_planet Earth[0m
 [1m[32m(Info ): [0m[37mLandscape generic created[0m
@@ -2114,58 +2238,57 @@ Altitude change received 1.01448e+08
 [1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:base_altitude[0m
 [1m[32m(Info ): [0m[37mLandscape Spherical observatory created[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30774 MiB	used : 5323 MiB    	free : 25450 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28831 MiB	used : 5323 MiB    	free : 23507 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'landscapes/observatory-immersive_adventure.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/observatory-immersive_adventure.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30774 MiB	used : 5367 MiB    	free : 25406 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28831 MiB	used : 5367 MiB    	free : 23463 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'landscapes/observatory_night-immersive_adventure.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/observatory_night-immersive_adventure.png', creating uninitialized texture[0m
 Body : Earth Landscape : observatory
-[1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_alti.png...[0m
-[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_alti.png'[0m
 Modification observer to Earth
 Body : Earth Landscape : observatory
-[1m[36m(Debug): [0m[37mbig "textures/bodies/earth_alti.png" is ready for use[0m
 [1m[32m(Info ): [0m[37mget tcp : select planet Earth pointer off[0m
 [1m[32m(Info ): [0m[37mExecute_command select planet Earth pointer off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag track_object on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag track_object on[0m
-[1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_alti.png...[0m
-[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_alti.png'[0m
-[1m[36m(Debug): [0m[37mbig "textures/bodies/earth_alti.png" is ready for use[0m
 [1m[32m(Info ): [0m[37mget tcp : moveto lat 0 lon 0 alt 25484000 duration 0[0m
 [1m[32m(Info ): [0m[37mExecute_command moveto lat 0 lon 0 alt 25484000 duration 0[0m
+[1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_alti.png...[0m
+[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_alti.png'[0m
 Altitude change received 2.5484e+07
 Altitude change received 2.5484e+07
+[1m[36m(Debug): [0m[37mbig "textures/bodies/earth_alti.png" is ready for use[0m
 [1m[32m(Info ): [0m[37mget tcp : zoom fov 35.0 duration 0[0m
 [1m[32m(Info ): [0m[37mExecute_command zoom fov 35.0 duration 0[0m
+[1m[32m(Info ): [0m[37mget tcp : flag track_object off[0m
+[1m[32m(Info ): [0m[37mExecute_command flag track_object off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle off[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_base.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_base.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_before.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_before.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_base.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_base.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_before.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_before.json[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic off[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic off[0m
 [1m[36m(Debug): [0m[37m[0m
 [1m[36m(Debug): [0m[37mtropic is unknown. Did you mean dso_pick ?[0m
 [1m[36m(Debug): [0m[37mCould not execute: flag tropic off[0m
 [1m[36m(Debug): [0m[37mUnrecognized or malformed flag argument[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_bogus.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_bogus.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_bogus.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_bogus.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_bogus.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_bogus.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_bogus.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_bogus.json[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_real.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_real.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_real.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_real.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_real.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_real.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_real.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_real.json[0m
 [1m[32m(Info ): [0m[37mget tcp : set home_planet Moon[0m
 [1m[32m(Info ): [0m[37mExecute_command set home_planet Moon[0m
 [1m[32m(Info ): [0m[37mLandscape generic created[0m
@@ -2179,34 +2302,13 @@ Altitude change received 2.5484e+07
 [1m[33m(Warn.): [0m[1m[37mInit_parser def_double moon:base_altitude[0m
 [1m[32m(Info ): [0m[37mLandscape Spherical moon created[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30774 MiB	used : 5367 MiB    	free : 25406 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28891 MiB	used : 5367 MiB    	free : 23523 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'landscapes/moon.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/moon.png', creating uninitialized texture[0m
 Body : Moon Landscape : moon
-[1m[36m(Debug): [0m[37mLoading big textures/bodies/moon_alti.jpg...[0m
 Modification observer to Moon
 Body : Moon Landscape : moon
-[1m[36m(Debug): [0m[37mDedicated allocation of 170 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30774 MiB	used : 5539 MiB    	free : 25234 MiB[0m
-[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/moon_alti.jpg"'[0m
-[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/moon_alti.jpg'[0m
-[1m[36m(Debug): [0m[37mbig "textures/bodies/moon_alti.jpg" is ready for use[0m
-[1m[36m(Debug): [0m[37mLoading big textures/bodies/moon_normal.jpg...[0m
-[1m[36m(Debug): [0m[37mDedicated allocation of 170 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30774 MiB	used : 5623 MiB    	free : 25150 MiB[0m
-[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/moon_normal.jpg"'[0m
-[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/moon_normal.jpg'[0m
-[1m[36m(Debug): [0m[37mbig "textures/bodies/moon_normal.jpg" is ready for use[0m
-[1m[36m(Debug): [0m[37mLoading big textures/bodies/moon.jpg...[0m
-[1m[36m(Debug): [0m[37mDedicated allocation of 170 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30774 MiB	used : 5795 MiB    	free : 24978 MiB[0m
-[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/moon.jpg"'[0m
-[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/moon.jpg'[0m
-[1m[36m(Debug): [0m[37mbig "textures/bodies/moon.jpg" is ready for use[0m
 [1m[32m(Info ): [0m[37mget tcp : select planet Moon pointer off[0m
 [1m[32m(Info ): [0m[37mExecute_command select planet Moon pointer off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag track_object on[0m
@@ -2218,6 +2320,10 @@ Body : Moon Landscape : moon
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/moon_normal.jpg'[0m
 [1m[36m(Debug): [0m[37mbig "textures/bodies/moon_normal.jpg" is ready for use[0m
 [1m[36m(Debug): [0m[37mLoading big textures/bodies/moon.jpg...[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 170 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28859 MiB	used : 5451 MiB    	free : 23407 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/moon.jpg"'[0m
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/moon.jpg'[0m
 [1m[36m(Debug): [0m[37mbig "textures/bodies/moon.jpg" is ready for use[0m
 [1m[32m(Info ): [0m[37mget tcp : moveto lat 0 lon 0 alt 6949600 duration 0[0m
@@ -2226,12 +2332,14 @@ Altitude change received 6.9496e+06
 Altitude change received 6.9496e+06
 [1m[32m(Info ): [0m[37mget tcp : zoom fov 35.0 duration 0[0m
 [1m[32m(Info ): [0m[37mExecute_command zoom fov 35.0 duration 0[0m
+[1m[32m(Info ): [0m[37mget tcp : flag track_object off[0m
+[1m[32m(Info ): [0m[37mExecute_command flag track_object off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Moon_gate.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Moon_gate.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Moon_gate.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Moon_gate.json[0m
 [1m[32m(Info ): [0m[37mget tcp : set home_planet Sun[0m
 [1m[32m(Info ): [0m[37mExecute_command set home_planet Sun[0m
 [1m[32m(Info ): [0m[37mLandscape generic created[0m
@@ -2247,7 +2355,7 @@ Altitude change received 6.9496e+06
 [1m[32m(Info ): [0m[37ms_texture: already in cache landscapes/sun.png[0m
 [1m[33m(Warn.): [0m[1m[37mFrame stall detected[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30774 MiB	used : 5839 MiB    	free : 24934 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 28890 MiB	used : 5495 MiB    	free : 23394 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'landscapes/sun.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/sun.png', creating uninitialized texture[0m
@@ -2289,8 +2397,8 @@ Body : Sun Landscape : Sun
    8# LandscapeSpherical::create(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, float, float, float, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, float, bool, int) at /home/claude/spacecrafter/src/coreModule/landscape.cpp:593
    9# LandscapeSpherical::load(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) at /home/claude/spacecrafter/src/coreModule/landscape.cpp:554
   10# Landscape::createFromFile(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) at /home/claude/spacecrafter/src/coreModule/landscape.cpp:173
-  11# Core::setLandscape(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) at /home/claude/spacecrafter/src/coreModule/core.cpp:686
-  12# Core::setLandscapeToBody() at /home/claude/spacecrafter/src/coreModule/core.cpp:655
+  11# Core::setLandscape(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) at /home/claude/spacecrafter/src/coreModule/core.cpp:696
+  12# Core::setLandscapeToBody() at /home/claude/spacecrafter/src/coreModule/core.cpp:665
   13# AppCommandInterface::evalCommandSet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) at /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:1737
   14# AppCommandInterface::commandSet() at /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:1693
   15# AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) at /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:186
@@ -2316,12 +2424,14 @@ Altitude change received 2.784e+09
 [1m[36m(Debug): [0m[37mbig "textures/bodies/sun.jpg" is ready for use[0m
 [1m[32m(Info ): [0m[37mget tcp : zoom fov 35.0 duration 0[0m
 [1m[32m(Info ): [0m[37mExecute_command zoom fov 35.0 duration 0[0m
+[1m[32m(Info ): [0m[37mget tcp : flag track_object off[0m
+[1m[32m(Info ): [0m[37mExecute_command flag track_object off[0m
 [1m[32m(Info ): [0m[37mget tcp : flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag tropic_lines on[0m
 [1m[32m(Info ): [0m[37mget tcp : flag polar_circle on[0m
 [1m[32m(Info ): [0m[37mExecute_command flag polar_circle on[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Sun_gate.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Sun_gate.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Sun_gate.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Sun_gate.json[0m
 [1m[32m(Info ): [0m[37mCaught SIGTERM, shutting down.[0m
 [1m[32m(Info ): [0m[37mFile file.lock successfully deleted[0m
 [1m[32m(Info ): [0m[37mStopping frame encoding stream[0m
@@ -2419,8 +2529,6 @@ Altitude change received 2.784e+09
 [1m[33m(Warn.): [0m[1m[37mForce unloading of textures/bodies/vesta.jpg used 1 times[0m
 [1m[33m(Warn.): [0m[1m[37mForce unloading of textures/star16x16.png used 1 times[0m
 [1m[33m(Warn.): [0m[1m[37mForce unloading of textures/tex_nebulaes.png used 1 times[0m
-[1m[32m(Info ): [0m[37mTotal blocking texture loading time : 9776ms[0m
+[1m[32m(Info ): [0m[37mTotal blocking texture loading time : 9777ms[0m
 [1m[32m(Info ): [0m[37mRelease resources[0m
 [1m[36m(Debug): [0m[37mNo changes in the pipelineCache[0m
-terminate called after throwing an instance of 'std::bad_alloc'
-  what():  std::bad_alloc

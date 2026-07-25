@@ -23,132 +23,138 @@
 >> flag track_object on
 >> moveto lat 0 lon 0 alt 25484000 duration 0
 >> zoom fov 35.0 duration 0
+>> flag track_object off
 >> flag tropic_lines off
 >> flag polar_circle off
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_probe.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_probe.json
   Earth: grid={'axialTilt': 23.4400005, 'hasTropics': True, 'tropicLat': 23.4400005, 'polarLat': 66.5599976, 'show': True, 'showTropics': False, 'showPolarCircles': False, 'built': True, 'vertexCount': 4224, 'tropicCount': 256, 'polarCount': 256}
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_base.png
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_base2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_base.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_base2.png
 >> flag tropic_lines on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_on1.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_on1.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_on1.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_on1.json
 >> flag tropic_lines off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_off1.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_off1.png
 >> flag tropic_lines on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_on2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_on2.png
 >> flag tropic_lines off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_tr_off2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_tr_off2.png
 >> flag polar_circle on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_on1.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_on1.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_on1.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_on1.json
 >> flag polar_circle off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_off1.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_off1.png
 >> flag polar_circle on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_on2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_on2.png
 >> flag polar_circle off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_pl_off2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_pl_off2.png
 >> flag tropic_lines on
 >> flag polar_circle on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_both.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Earth_both.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_both.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Earth_both.json
 >> set home_planet Jupiter
 >> select planet Jupiter pointer off
 >> flag track_object on
 >> moveto lat 0 lon 0 alt 279644000 duration 0
 >> zoom fov 35.0 duration 0
+>> flag track_object off
 >> flag tropic_lines off
 >> flag polar_circle off
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_probe.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_probe.json
   Jupiter: grid={'axialTilt': 3.13000011, 'hasTropics': True, 'tropicLat': 3.13000011, 'polarLat': 86.8700027, 'show': True, 'showTropics': False, 'showPolarCircles': False, 'built': True, 'vertexCount': 4224, 'tropicCount': 256, 'polarCount': 256}
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_base.png
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_base2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_base.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_base2.png
 >> flag tropic_lines on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_on1.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_on1.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_on1.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_on1.json
 >> flag tropic_lines off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_off1.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_off1.png
 >> flag tropic_lines on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_on2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_on2.png
 >> flag tropic_lines off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_tr_off2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_tr_off2.png
 >> flag polar_circle on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_on1.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_on1.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_on1.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_on1.json
 >> flag polar_circle off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_off1.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_off1.png
 >> flag polar_circle on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_on2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_on2.png
 >> flag polar_circle off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_pl_off2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_pl_off2.png
 >> flag tropic_lines on
 >> flag polar_circle on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_both.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Jupiter_both.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_both.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Jupiter_both.json
 >> set home_planet Uranus
 >> select planet Uranus pointer off
 >> flag track_object on
 >> moveto lat 0 lon 0 alt 101448000 duration 0
 >> zoom fov 35.0 duration 0
+>> flag track_object off
 >> flag tropic_lines off
 >> flag polar_circle off
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_probe.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_probe.json
   Uranus: grid={'axialTilt': 97.7699966, 'hasTropics': True, 'tropicLat': 97.7699966, 'polarLat': -7.76999664, 'show': True, 'showTropics': False, 'showPolarCircles': False, 'built': True, 'vertexCount': 4224, 'tropicCount': 256, 'polarCount': 256}
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_base.png
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_base2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_base.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_base2.png
 >> flag tropic_lines on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_on1.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_on1.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_on1.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_on1.json
 >> flag tropic_lines off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_off1.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_off1.png
 >> flag tropic_lines on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_on2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_on2.png
 >> flag tropic_lines off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_tr_off2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_tr_off2.png
 >> flag polar_circle on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_on1.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_on1.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_on1.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_on1.json
 >> flag polar_circle off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_off1.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_off1.png
 >> flag polar_circle on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_on2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_on2.png
 >> flag polar_circle off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_pl_off2.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_pl_off2.png
 >> flag tropic_lines on
 >> flag polar_circle on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_both.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Uranus_both.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_both.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Uranus_both.json
 >> set home_planet Earth
 >> select planet Earth pointer off
 >> flag track_object on
 >> moveto lat 0 lon 0 alt 25484000 duration 0
 >> zoom fov 35.0 duration 0
+>> flag track_object off
 >> flag tropic_lines off
 >> flag polar_circle off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_base.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_before.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_base.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_before.json
 >> flag tropic off
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_bogus.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_bogus.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_bogus.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_bogus.json
 >> flag tropic_lines on
->> body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_real.png
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_neg_real.json
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_real.png
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_neg_real.json
 >> set home_planet Moon
 >> select planet Moon pointer off
 >> flag track_object on
 >> moveto lat 0 lon 0 alt 6949600 duration 0
 >> zoom fov 35.0 duration 0
+>> flag track_object off
 >> flag tropic_lines on
 >> flag polar_circle on
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Moon_gate.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Moon_gate.json
   GATE Moon: grid={'axialTilt': 0, 'hasTropics': False, 'tropicLat': 0, 'polarLat': 90, 'show': True, 'showTropics': True, 'showPolarCircles': True, 'built': True, 'vertexCount': 3968, 'tropicCount': 0, 'polarCount': 256}
 >> set home_planet Sun
 >> select planet Sun pointer off
 >> flag track_object on
 >> moveto lat 0 lon 0 alt 2784000000 duration 0
 >> zoom fov 35.0 duration 0
+>> flag track_object off
 >> flag tropic_lines on
 >> flag polar_circle on
->> body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_Sun_gate.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_Sun_gate.json
   GATE Sun: grid=None
 
 === 0. noise floor (frozen scene, new path) ===
@@ -172,28 +178,28 @@ OK   Uranus: polarLat -7.770 == 90-obliquity -7.77
 OK   tropic latitudes are all distinct across bodies: [23.44, 3.13, 97.77]
 
 === 2. flag gating on the composed screen (px>32 vs 0 floor) ===
-OK   Earth tropic: ON present both entries (10973, 10973 px>32)
+OK   Earth tropic: ON present both entries (10972, 10972 px>32)
 OK   Earth tropic: OFF reverts to base both entries (0, 0 px>0)
-OK   Earth polar: ON present both entries (4196, 4196 px>32)
+OK   Earth polar: ON present both entries (4198, 4198 px>32)
 OK   Earth polar: OFF reverts to base both entries (0, 0 px>0)
-OK   Jupiter tropic: ON present both entries (6410, 6410 px>32)
+OK   Jupiter tropic: ON present both entries (6289, 6289 px>32)
 OK   Jupiter tropic: OFF reverts to base both entries (0, 0 px>0)
-OK   Jupiter polar: ON present both entries (492, 492 px>32)
+OK   Jupiter polar: ON present both entries (515, 515 px>32)
 OK   Jupiter polar: OFF reverts to base both entries (0, 0 px>0)
-OK   Uranus tropic: ON present both entries (1449, 1449 px>32)
+OK   Uranus tropic: ON present both entries (1393, 1393 px>32)
 OK   Uranus tropic: OFF reverts to base both entries (0, 0 px>0)
-OK   Uranus polar: ON present both entries (5431, 5431 px>32)
+OK   Uranus polar: ON present both entries (5465, 5465 px>32)
 OK   Uranus polar: OFF reverts to base both entries (0, 0 px>0)
 
 === 3. moves with obliquity ON SCREEN (ring radial position reverses) ===
   Earth: tropic ring mean radius 459px, polar ring mean radius 662px
-  Uranus: tropic ring mean radius 695px, polar ring mean radius 399px
+  Uranus: tropic ring mean radius 694px, polar ring mean radius 400px
 OK   Earth: tropic ring (459) INSIDE polar ring (662)
-OK   Uranus: tropic ring (695) OUTSIDE polar ring (399) - the obliquity reversal
+OK   Uranus: tropic ring (694) OUTSIDE polar ring (400) - the obliquity reversal
 
 === 4. command spelling (from the process) ===
 OK   bogus `flag tropic off` swallowed: showTropics=False, screen px>0=0
-OK   real `flag tropic_lines on` dispatched: showTropics=True, screen px>32=10973
+OK   real `flag tropic_lines on` dispatched: showTropics=True, screen px>32=10977
 
 === 5. tropic GATE: satellite carries polar circles but NO tropics ===
   Moon   hasTropics=False tropicCount=0 polarCount=256 axialTilt=0
@@ -202,4 +208,4 @@ OK   Moon: tropicCount=0 (no tropic geometry baked)
 OK   Moon: polarCount=256 (polar circles present - the old path draws them on every body)
   Sun    grid NOT installed (near has no grid module) - star gate not observable on shipped data, code guard stands
 
-ALL PASS - /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b23/b23_result.json
+ALL PASS - /home/claude/spacecrafter/claude/harness/artifacts/b23/b23_result.json

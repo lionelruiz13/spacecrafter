@@ -159,11 +159,26 @@ the Frobenius small-angle form near identity - acos((tr-1)/2) turns float-ulp
 matrix noise into ~0.014 deg phantom rows.
 
 `ab_orientation.py` - terminal-observable A/B (verification height): scaled
-tracked Moon + axis, and Charon from Pluto's surface; clusters screenshots
-into path phases and measures disc diffs. Pair with the instrument-
-sensitivity counterfactual (rotate one phase's disc by the class angle):
-measured x163 (Moon, 23.44 deg) / x1212 (Charon, 115.6 deg) headroom over
-the observed AA/pointer floor. Uses `set moon_scale` (mirrored seam).
+tracked Moon + axis (scene M), and Charon from Pluto's surface (scene P).
+REWRITTEN 2026-07-25 (F0, INTENT 11.101(g) -> 11.103): it no longer samples
+the 1000 ms toggle and no longer INFERS the path phases by clustering (that
+construction always emitted two clusters and never compared `between` to
+`within`, so it could not fail). Each half is now shot under its own
+`flag experimental_path off|on` PIN - the partition is commanded, so path
+identity is witnessed - tracking is released before capture (11.80(c)), and
+the run ASSERTS `between > 10 * max(within_old, within_new, 5)` on px>8,
+with the in-scene same-path floor measured in the same run (K and the floor
+clamp derived in the file header from 11.53(d)/11.35/11.80(b)). No
+`beta_features.ini` needed. A non-separating scene is reported INCONCLUSIVE
+and exits 1 - it is NOT reported as "the class is absent", because a
+swallowed pin produces the same pixels. Measured 2026-07-25 at code
+`d006ee92`: scene M within 0/0, between 1176 px>8 (235x the clamp); scene P
+within 338/336, between 315427 px>8 (933x) - and the same script with both
+halves pinned to the SAME path returns 0/2 SEPARATED, exit 1.
+Historic note: the pre-rewrite instrument-sensitivity counterfactual (rotate
+one phase's disc by the class angle) measured x163 (Moon, 23.44 deg) / x1212
+(Charon, 115.6 deg) headroom over the observed AA/pointer floor.
+Uses `set moon_scale` (mirrored seam).
 `planet_scale name X scale N` is now DUAL too (INTENT 11.45 closed the
 11.35 seam gap - new-path scaledRadius scales exactly with the command);
 usable in A/B scenes. NOTE: setScaling is an ASmooth ease - settle it
