@@ -72,13 +72,14 @@ a recorded open item (§11.55(i)).
 Five independent bases, unioned — no single base is trusted to be complete, and the
 overlap between them is what bounds the residual (the §11.73(a) pattern):
 
-| base | what it enumerates | how | residual |
+| base | what it enumerates | how | state / residual |
 |---|---|---|---|
-| **A** | the §9 seam table's 12 categories | read | §9 is itself a curated view (it names *examples* per row) ⇒ not a closed set |
-| **B** | `coreModule/coreLink.hpp` public methods (the engine's own control-surface API) | declaration sweep + whole-`src` caller grep per method | overloads/name collisions; methods reached through `core->` directly bypass it |
-| **C** | the new path's runtime-settable state: every public non-const method + every `static` flag under `src/experimentalModule/` (37+12+5+3+14+9 files) | header sweep + bare-symbol grep over `src/` | GLSL-side spec constants, `PipelineRegistry` internals, EntityCore |
-| **D** | data-authorable behaviour: every `param["…"]` key read by a loader | `grep -rhoE '(param\|params)\["[a-z_0-9]+"\]'` over `moduleLoader/ orbitModules/ ModularBody.cpp ModularSystem.cpp` | old-path-only keys (`bodyModule/`) not swept here |
-| **E** | the input surfaces: every key/mouse/TUI/joypad binding | `ui.cpp` (3447 lines) + `ui_tuiconf.cpp` + `joypad_controller.cpp` read end-to-end | TUI menus 7/8 line numbers approximate |
+| **A** | the §9 seam table's 12 categories | read | DONE. §9 is itself a curated view (it names *examples* per row) ⇒ not a closed set |
+| **B** | `coreModule/coreLink.hpp` public methods (the engine's own control-surface API) | per-method caller census over `src/` | **PARTIAL — the largest open residual.** The exhaustive census was attempted and did not complete; every CoreLink row cited in §3 was verified individually at source instead. A full census (≈300 methods) would close the "capability the engine exposes but nothing calls" class from the OLD path's side, which this pass covers only where a new-path counterpart pointed at it |
+| **C** | the new path's runtime-settable state: every public non-const method + every `static` flag under `src/experimentalModule/` (37+12+5+3+14+9 files) | header sweep + bare-symbol grep over `src/` for each claim | DONE (delegated, then re-grepped by the recorder for every "dead"/"only caller" row quoted here). Not covered: GLSL-side spec constants, `PipelineRegistry` internals, EntityCore |
+| **D** | data-authorable behaviour: every `param["…"]` key read by a loader | `grep -rhoE '(param\|params)\["[a-z_0-9]+"\]'` over `moduleLoader/ orbitModules/ ModularBody.cpp ModularSystem.cpp` | DONE for the new path; old-path-only keys (`bodyModule/`) not swept |
+| **E** | the input surfaces: every key/mouse/TUI/joypad binding | `ui.cpp` (3447 lines) + `ui_tuiconf.cpp` + `joypad_controller.cpp` + `mkfifo.cpp` + `io.cpp`'s server read end-to-end | DONE (delegated, channel-model claims re-verified by the recorder). TUI menus 7/8 line citations approximate |
+| **F** | the COMMAND side: every `flag <name>` / `set <name>` / sub-grammar key → its engine call, + tokens declared with no handler | — | **NOT DONE.** Attempted, did not complete. This is the *command-keyed* view the §11.55 bar says is the smaller surface, so its absence does not invalidate the capability-side rows above — but the "dead token" class (a keyword the parser declares and no branch handles) is invisible to this audit and stays open |
 
 **What the union does NOT cover, stated so the claim is falsifiable**: (i) capabilities
 that exist only as an *intention* (a header contract with no implementation — e.g. row-16
