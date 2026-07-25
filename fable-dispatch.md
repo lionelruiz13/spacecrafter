@@ -13,6 +13,16 @@ divergence is a staleness bug HERE. Before acting on any task, re-read its §13 
 every recording entry it cites (§5.2 class: cached conclusions re-verify against
 source, never recall). Compiled at code `master-beta @ ae3a218d`, harness `6b0189f`.
 
+**Mode change [vixy 2026-07-25, via Fable]:** tasks are now OPERATED by `opus-xhigh`
+executors (Opus 5) dispatched and supervised by Claude Fable 5 from a supervising
+session — one task per executor run, sequential, checkpoint discipline unchanged;
+Fable reviews each delivery against the ledger and escalates to a Fable-xhigh
+re-analysis agent on doubt. NB: the executor's standing definition
+(`.claude/agents/opus-xhigh.md`) carries STALE pre-move paths
+(`src/experimentalModule/INTENT.md`, `§12`, `dispatch-2026-07-19.md` — none exist);
+until Vixy resyncs it, every dispatch prompt carries a binding supersession block.
+De-staled against §11.101/§11.102 (2026-07-24 audits): F0 added, F1 spec revised.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -57,7 +67,24 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 
 ## 1. Dispatch order (load-bearing first; each task states why, so the order is challengeable)
 
-### F1 — B3: D1(b) grounded-slice parent-depth prefill  [L]  ← START HERE
+### F0 — audit-residuals batch: decision-free fixes from §11.101/§11.102  [S–M]  ← START HERE
+- **Row / recorded:** B5 residuals (§11.102(e1)–(e4)) · B25 (§11.102(c)) · §11.101(g)(g3)(h) · §11.102(g) ("all decision-free implementation residuals" except (b2)).
+- **Why first:** (i) instrument debt bites every future task (`b5_oort.py` vacuous
+  under flag-failure; `ab_orientation.py` cannot fail; runner md5 echo-not-assert);
+  (ii) every item is precisely source-located with a stated fix shape — ideal
+  calibration for the new operator model (bounded blast radius, high diagnostic
+  value on protocol compliance); (iii) B17(b2) EXCLUDED (interacts with suspended
+  §11.92(d)); B17(b1) deferred to its own dispatch (live commanded-channel
+  verification burden).
+- **Task:** B25 sidereal precedence guard; §11.101(h) zero-init; b5_oort
+  path-identity assert; runner md5 exit codes; ab_orientation discriminating
+  criterion; oort color-seam mirror; createExperimentalOort no-op logged (D12);
+  b23_grid tracking release; b5_ladder header-comment bound fix.
+- **Discriminating check:** per item (each must be shown able to FAIL); battery
+  subset green (b24_equivalence, b5_oort, b5_ladder, b23_grid); md5 pristine.
+- **WIP (2026-07-25, Fable supervising):** dispatched to opus-xhigh.
+
+### F1 — B3: D1(b) grounded-slice parent-depth prefill  [L]
 - **Row / recorded:** B3 (§13.B) · §11.97(b)(e) · shadow-paths.md H4(b) · §3.1/§3.6 · §11.30 (S3 consumer landed).
 - **Why most load-bearing:** it is the located, characterized missing capability of the
   §2.0 **D1** domain constraint (grounded child cannot occlude against a parent whose
@@ -78,16 +105,19 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 - **Stop boundaries (NOT yours):** H4(a) SECONDARY ladder; H4(c) RGBA8 SELF_COLOR;
   the row-16/D4 surface module (the second bound on the FINE observable — §11.97(e);
   out of scope, the coarse capability is the deliverable).
-- **WIP (2026-07-24, Fable, ROOT CLOSED → §11.100; §11.99's two attribution errors
-  corrected there):** NO depth defect — `moon_scale=5` display scaling swallows
-  grounded children (§5.27, decision D21 filed); the merged-bucket occlusion WORKS
-  with `flag moon_scaled off` (measured). Code HEAD untouched; b24_screen corrected
-  (scaling off + real-occlusion asserts). **REMAINING in-row, per §11.100(g):**
-  (i) D21 answer [Vixy] unblocks the mandate scenes under shipped config;
-  (ii) surface-regime content question (the §11.97(e) hole — row-16/D4-adjacent);
-  (iii) D1(b) prefill for FINE grounded content (header-forced; no measured defect
-  currently demonstrates it — build its discriminating scene on the clean
-  instrument first). Re-read §11.100 IN FULL before resuming.
+- **WIP (2026-07-25, Fable, SPEC REVISED by §11.101(c)+§11.102 — supersedes the
+  2026-07-24 WIP, whose "no measured defect" claim was falsified by the audit):**
+  D1(b)'s MEASURED-defect justification RESTORED — §5.29 (ray-march proxy shell
+  writes shell depth, never `gl_FragDepth`; Δ 34.75→~349 km on the Moon, whole
+  `<64·scaledRadius` band) + §5.30 (Earth NIGHT row writes NO depth — grounded
+  occlusion vs Earth impossible by construction). b24_screen occlusion asserts are
+  NON-DISCRIMINATING (painter's order) — replace with the §11.101(c) size ladder
+  (20/45/90/250 km at alt 0, Moon, `flag moon_scaled off`, observer 8000 km) +
+  lifted-20 km control. Mandate scenes under shipped config STILL blocked on D21.
+  Dispatch shape: **part 1 [M]** = ladder instrument (must be RED on current code
+  for 20/45 km) + §5.29 fix (D11 cost claim mandatory — gl_FragDepth ends early-z);
+  **part 2 [M]** = §5.30 + D1(b) prefill per ModularBody.hpp:120-129 + §3.6.
+  Re-read §11.100 + §11.101(c) IN FULL before resuming.
 
 ### F2 — B24-select: composed bodies selectable  [M]
 - **Row / recorded:** B24 (§13.B) · §11.97(d) · §11.60 (ModularObject uninstantiated) · A17/R5 (§11.70: visibility is the selection domain; BIGGEST wins in-tolerance).
