@@ -216,6 +216,19 @@ LADDER_EARTH = [
     ("a400", 45.0,  400.0,  640.0),   # the LIFTED CONTROL (clear of every wall)
 ]
 
+# SURFACE-REGIME ladder (F1-P2 step 3): the same Earth seen from INSIDE the
+# 2*scaledRadius boundary, where ModularBody::draw routes to groundedComponents
+# instead of nearComponents (ModularBody.hpp:448-453, BODY_SURFACE_HEIGHT = 2).
+# Compact because the observer is close: r = 20 km, +-140 km of lateral spread
+# keeps every leg inside the fov-10 half-field (max 2.7 deg off-axis).
+LADDER_EARTH_SURFACE = [
+    ("s80", 20.0, -80.0, -140.0),   # buried below the datum - GUARD
+    ("s20", 20.0, -20.0,  -70.0),
+    ("s0",  20.0,   0.0,    0.0),
+    ("p20", 20.0,  20.0,   70.0),
+    ("p80", 20.0,  80.0,  140.0),
+]
+
 SITES = {
     "moon": dict(
         parent="Moon", radius=1737.4,       # [observed: ~/.spacecrafter/ssystem.ini [moon] radius]
@@ -248,6 +261,22 @@ SITES = {
         jd=2461234.0, obs_lon=270.0, obs_lat=0.0, obs_alt_m=10000000,
         ladder=LADDER_EARTH, drop_sections=("Earth:ATMOSPHERE",),
         scale_off=("flag moon_scaled off",),
+    ),
+    # INSIDE the surface boundary: distance < 2*scaledRadius, so the parent
+    # draws groundedComponents - EMPTY for every shipped body (row 16 / D4
+    # surface module missing) - and therefore draws NOTHING: no colour, no
+    # depth, and not even its atmosphere shell (a nearComponent). The
+    # 11.97(e)/11.100(g)(ii) regime hole, re-measured here because it is the
+    # load-bearing premise of the D1(b) finding: the prefill's producer does
+    # not exist in the very regime the design assigns the prefill to.
+    "earth_surface": dict(
+        parent="Earth", radius=6378.14, altimetry=0.02,
+        dem="bodies/earth_alti.png", atm_factor=1.03,
+        jd=2461234.0, obs_lon=270.0, obs_lat=0.0,
+        obs_alt_m=3000000,                  # distance 9378.14 km < 2R = 12756.28
+        ladder=LADDER_EARTH_SURFACE, drop_sections=(),
+        scale_off=("flag moon_scaled off",),
+        expect_regime="surface",
     ),
 }
 
@@ -624,12 +653,26 @@ def main():
              f"{S['radius']} km - a display scaling is live; every prediction is void")
     else:
         ok(f"P0 {S['parent']} drawn unscaled: scaledDatumRadius {sdr:.2f} km")
-    if dist_km and not (2 * S["radius"] < dist_km < 64 * S["radius"]):
-        fail(f"P0 {S['parent']} distance {dist_km:.1f} km outside the ray band "
-             f"[{2*S['radius']:.0f}, {64*S['radius']:.0f}] km")
+    regime = S.get("expect_regime", "ray")
+    if regime == "surface":
+        band_ok = dist_km and S["radius"] < dist_km < 2 * S["radius"]
+        band = f"(R, 2R) = ({S['radius']:.0f}, {2*S['radius']:.0f}) km"
+    else:
+        band_ok = dist_km and 2 * S["radius"] < dist_km < 64 * S["radius"]
+        band = f"[2R, 64R] = [{2*S['radius']:.0f}, {64*S['radius']:.0f}] km"
+    if not band_ok:
+        fail(f"P0 {S['parent']} distance {dist_km:.1f} km outside the declared "
+             f"{regime} band {band}")
+    else:
+        ok(f"P0 {S['parent']} in the declared {regime} regime: distance "
+           f"{dist_km:.1f} km in {band}")
     mods = report["parent_modules"] or []
     has_atm = "ATMOSPHERE" in mods
-    if has_atm != (S["atm_factor"] is not None):
+    if regime == "surface":
+        ok(f"P0 module set {mods}; in the SURFACE regime the whole near list "
+           f"(MESH and ATMOSPHERE included) is skipped - groundedComponents "
+           f"is the only list drawn and it holds {report['parent_routing']}")
+    elif has_atm != (S["atm_factor"] is not None):
         fail(f"P0 {S['parent']} ATMOSPHERE module present={has_atm} but the site "
              f"declares atm_factor={S['atm_factor']} - counterfactual mismatch")
     else:
