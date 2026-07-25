@@ -482,3 +482,46 @@ FAR-case gotchas learned here:
   noise bands, 11.82(d) launch crashes) should not be extrapolated; retry loops
   stay (the 11.15d race predates the contention) but the "severe blocker"
   framing is over.
+
+## Grounded depth ladder (B3, `b3_ladder.py`) — INTENT 5.29 / 5.30 / 5.33, 11.104 / 11.105
+
+The discriminating instrument for the ray-regime depth defects. Grounded exact
+unit-sphere OJM bodies of known drawn radius and known altitude are composed on
+a parent, the observer sits at nadir inside the ray band, and the present-vs-
+absent diff against a scene-absent baseline launch gives each body's rendered
+cap radius in px. Whatever the parent leaves in the merged depth bucket is a
+WALL, and the cap radius inverts to the wall height.
+
+    b3_ladder_run.sh <state> [outdir] [--site moon|earth|earth_noatm] [--families sph,cur]
+    b3_ladder.py <outdir> --predict [--site ...]      # prediction file only
+
+- **States are wall HYPOTHESES**, each predicted from source arithmetic before
+  the run: `none` (no depth written — nothing is ever occluded), `shell` (the
+  ray-march proxy shell, `scaledRadius*(1+0.01*altimetryLevel)` — defect 5.29,
+  and the failure mode 11.104(c) warns about for Earth), `terrain` (the true
+  surface, the fixed state), `atm` (the ATMOSPHERE shell at
+  `scaledRadius*atmosphere_radius_factor` — defect 5.33). `pre`/`post` alias
+  `shell`/`terrain` for the F1-P1 moon invocations.
+- **Sites**: `moon` = F1-P1's SIZE ladder at alt 0 (11.104(b)/(d)); `earth` =
+  F1-P2's ALTITUDE ladder at fixed radius 45 km, alt −150…+400 km, which
+  separates all four states at several legs each without needing the heightmap
+  texture-u convention (the site is ocean under all four candidates);
+  `earth_noatm` = the same Earth with `[Earth:ATMOSPHERE]` removed from the
+  composed twin in the farm copy — the counterfactual that isolates the MESH
+  row's depth (5.30) from the atmosphere shell's (5.33).
+- **Preconditions asserted, not assumed** (a violation fails the run): parent
+  drawn UNSCALED (`scaledDatumRadius` == authored radius — 5.27), parent inside
+  the ray band [2R, 64R], the parent's module set == the one the site declares
+  (so a counterfactual that silently did not apply fails), per-leg drawn radius
+  == authored × model radius (`OjmLoader.cpp:42`), per-leg observer→body
+  distance == predicted (the `moveto lon L` ↔ `orbit_lon` = 180−L calibration,
+  11.104(g)), per-leg site lit, and a shadow witness on every leg the state
+  predicts invisible (the shadow pass is offscreen and does not depth-test, so
+  a depth-killed body still proves loaded/lit/placed).
+- **Instrument resolution** (11.104(d2), inherited): cap radius carries a
+  −2 % multiplicative bias (0.9770 ± 0.20 %) from the |Δ| > 16 diff threshold
+  eating the antialiased rim, plus ±1 px reading. `dwall/dpx = (cap/q0)·km/px`
+  and is reported **null** outside the strict band 0 < q0 < r — a saturated or
+  dark leg carries no wall information and must never be read as metric.
+- Runs under the temp-HOME farm (`b3_farm.sh`, 11.103(a)); the runner asserts
+  the real `~/.spacecrafter` md5 in == out.
