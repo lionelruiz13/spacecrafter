@@ -84,7 +84,10 @@ struct meshTescGeom {
 
 // std140 mirror of binding 0 of the MESH_RAYMARCH family
 // (body_tes_shadow.vert, REUSED VERBATIM - old ShadowVert,
-// bodyShader.hpp:232-241). ModelViewMatrix = m * scale(1,1,oneMinusOblateness)
+// bodyShader.hpp:232-241). ALSO read by bodyRayMarch.frag since the 5.29 fix
+// (true ray-hit gl_FragDepth): the frag re-declares this block verbatim, so
+// any field added here must be added there too - the binding is
+// VERTEX|FRAGMENT in the contract. ModelViewMatrix = m * scale(1,1,oneMinusOblateness)
 // where m = bodyMat * zrot(axisRotation) - i.e. the near-component matrix
 // with computeBodyToSurface()'s +PI/2 removed: the ray-march reconstructs
 // texture longitude from atan(y,x) instead of mesh texcoords (old CoI

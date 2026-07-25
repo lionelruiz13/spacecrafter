@@ -146,7 +146,13 @@ const PipelineFamily &MeshFamilies::meshRayMarch()
         SetContractDesc contract;
         contract.name = "bodyRayMarch";
         contract.bindings = {
-            {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT},           // rayMarchVert (old ShadowVert)
+            // rayMarchVert (old ShadowVert). FRAGMENT too since the 5.29 fix:
+            // bodyRayMarch.frag writes the TRUE ray-hit depth and needs the
+            // same ModelViewMatrix / zNear / zRange / radius the vertex stage
+            // projects with - read from the one block instead of duplicating
+            // them into rayMarchFrag (I2). The NIGHT row's frag doesn't
+            // declare it; an unread binding costs nothing.
+            {0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT},
             {1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT},         // rayMarchFrag (old ShadowFrag, S5 rows)
             {2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1, mapSampler}, // heightMap
             {3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1, mapSampler}, // normalMap
