@@ -1,0 +1,45 @@
+{
+ "tag": "post_earth",
+ "site": "earth",
+ "scene": "base",
+ "windows": [
+  {
+   "label": "close0",
+   "bytes": 540672,
+   "seconds": 20.000065326690674,
+   "bytes_per_s": 27033.51169950717
+  },
+  {
+   "label": "far0",
+   "bytes": 1376256,
+   "seconds": 20.000066995620728,
+   "bytes_per_s": 68812.56949295965
+  },
+  {
+   "label": "close1",
+   "bytes": 540672,
+   "seconds": 20.00006604194641,
+   "bytes_per_s": 27033.510732716644
+  },
+  {
+   "label": "far1",
+   "bytes": 1409024,
+   "seconds": 20.000065565109253,
+   "bytes_per_s": 70450.96904372588
+  },
+  {
+   "label": "close2",
+   "bytes": 524288,
+   "seconds": 20.0000638961792,
+   "bytes_per_s": 26214.316250267566
+  },
+  {
+   "label": "far2",
+   "bytes": 1409024,
+   "seconds": 20.000064373016357,
+   "bytes_per_s": 70450.97324291735
+  }
+ ],
+ "median_bytes_per_s": 68812.56949295965,
+ "ratio_tclose_over_tfar": 2.6122448282659203
+}

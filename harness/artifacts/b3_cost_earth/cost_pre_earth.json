@@ -1,0 +1,45 @@
+{
+ "tag": "pre_earth",
+ "site": "earth",
+ "scene": "base",
+ "windows": [
+  {
+   "label": "close0",
+   "bytes": 540672,
+   "seconds": 20.000067710876465,
+   "bytes_per_s": 27033.508476872357
+  },
+  {
+   "label": "far0",
+   "bytes": 1409024,
+   "seconds": 20.000067710876465,
+   "bytes_per_s": 70450.9614851825
+  },
+  {
+   "label": "close1",
+   "bytes": 557056,
+   "seconds": 20.00007390975952,
+   "bytes_per_s": 27852.697070692873
+  },
+  {
+   "label": "far1",
+   "bytes": 1392640,
+   "seconds": 20.00006604194641,
+   "bytes_per_s": 69631.77006911863
+  },
+  {
+   "label": "close2",
+   "bytes": 557056,
+   "seconds": 20.000065088272095,
+   "bytes_per_s": 27852.709355763745
+  },
+  {
+   "label": "far2",
+   "bytes": 1409024,
+   "seconds": 20.000069856643677,
+   "bytes_per_s": 70450.95392664074
+  }
+ ],
+ "median_bytes_per_s": 69631.77006911863,
+ "ratio_tclose_over_tfar": 2.5445545874867537
+}

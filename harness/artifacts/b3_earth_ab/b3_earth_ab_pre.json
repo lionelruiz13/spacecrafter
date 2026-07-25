@@ -1,0 +1,26 @@
+{
+ "state": "pre",
+ "sc_bin": "/tmp/claude-1003/-home-claude-spacecrafter/cd86efdc-b95f-4951-9f79-b6eb83acedb1/scratchpad/sc_pre",
+ "views": {
+  "O_disc": {
+   "lit_px_gt32": 379637,
+   "lit_px_gt8": 2890223,
+   "total_luma": 14.074776649475098
+  },
+  "O_limb": {
+   "lit_px_gt32": 275204,
+   "lit_px_gt8": 835686,
+   "total_luma": 6.631516218185425
+  },
+  "N_axis": {
+   "lit_px_gt32": 921806,
+   "lit_px_gt8": 1200338,
+   "total_luma": 27.235365629196167
+  },
+  "N_plain": {
+   "lit_px_gt32": 920854,
+   "lit_px_gt8": 1199423,
+   "total_luma": 27.117560625076294
+  }
+ }
+}
