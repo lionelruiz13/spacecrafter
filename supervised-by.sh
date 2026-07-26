@@ -388,7 +388,7 @@ fi
 # A bare positional used to mean "the range", back when there was one repo in
 # play. It now cannot mean one thing, so it is REFUSED rather than silently
 # reinterpreted -- a changed meaning that still runs is the worst outcome here.
-CODE_RANGE=""; HARNESS_RANGE=""; DRY_RUN=0; SUPERVISOR="${SUPERVISOR:-}"
+CODE_RANGE=""; HARNESS_RANGE=""; DRY_RUN=0; NO_COMMIT=0; SUPERVISOR="${SUPERVISOR:-}"
 AUTHOR_FIX_MAP=$(mktemp); export AUTHOR_FIX_MAP
 trap 'rm -f "${AUTHOR_FIX_MAP}"' EXIT
 for arg in "$@"; do
@@ -397,6 +397,7 @@ for arg in "$@"; do
         --harness=*)    HARNESS_RANGE="${arg#*=}" ;;
         --supervisor=*) SUPERVISOR="${arg#*=}" ;;
         --dry-run)      DRY_RUN=1 ;;
+        --no-commit)    NO_COMMIT=1 ;;
         # --author-fix=<sha>=<Claude Model Version> : the hand-repair channel for
         # a wildcard author the trailers cannot resolve. Repeatable.
         --author-fix=*) AF="${arg#*=}"
@@ -444,6 +445,51 @@ default_range() {
 [ -n "${CODE_RANGE}" ]    || CODE_RANGE=$(default_range "${CODE_REPO}")
 if [ -n "${HARNESS_REPO}" ]; then
     [ -n "${HARNESS_RANGE}" ] || HARNESS_RANGE=$(default_range "${HARNESS_REPO}")
+fi
+
+# ---------------------------------------------------------------------------
+# THE CLEAN-TREE PRECONDITION -- and why it is what makes `commit -a` sound
+# ---------------------------------------------------------------------------
+# Three things converge on the same requirement, which is why it is checked once
+# and hard:
+#
+#  1. filter-branch REFUSES to run against a dirty tree. Discovering that at
+#     step C, after the prompts, is discovering it late.
+#  2. The closing commit uses `-a`, which stages tracked modifications and
+#     SILENTLY IGNORES untracked files. Run against a tree that was already
+#     dirty, it would sweep up unrelated edits under this script's message and
+#     still leave new files behind -- committing the wrong set, twice over.
+#  3. This script is run at a CONSOLIDATION point. "Is everything committed?" is
+#     the question being asked at that moment anyway, so the check is not
+#     overhead here; it is the first thing worth knowing.
+#
+# Requiring a fully clean tree up front turns the closing commit from a hope into
+# a proof: if nothing was dirty before, then everything dirty afterwards was
+# written BY THIS SCRIPT, so `-a` is exactly the intended set -- and that is
+# asserted again before committing rather than assumed from this paragraph.
+#
+# --dry-run skips it: previewing is read-only, so a dirty tree is no reason to
+# refuse to LOOK. You can always see what a run would do.
+# ---------------------------------------------------------------------------
+if [ "${DRY_RUN}" = 0 ]; then
+    DIRTY_LIST=""
+    for r in "${CODE_REPO}" ${HARNESS_REPO:+"${HARNESS_REPO}"}; do
+        # -uall so untracked files inside untracked DIRECTORIES are named one by
+        # one; the default collapses them to `dir/`, which hides how much is there.
+        o=$(git -C "${r}" status --porcelain --untracked-files=all)
+        [ -n "${o}" ] && DIRTY_LIST+="  ${r}"$'\n'"$(printf '%s' "${o}" | sed 's/^/      /')"$'\n'
+    done
+    if [ -n "${DIRTY_LIST}" ]; then
+        echo "STOP: uncommitted work is present. Nothing has been touched." >&2
+        echo >&2
+        printf '%s' "${DIRTY_LIST}" >&2
+        echo >&2
+        echo "  Commit or stash it first. This runs at a consolidation point, so this" >&2
+        echo "  listing IS the consolidation check: '??' entries are files no commit" >&2
+        echo "  would have captured -- the closing 'commit -a' cannot see them either." >&2
+        echo "  (--dry-run still previews; it changes nothing.)" >&2
+        exit 1
+    fi
 fi
 
 # --- refuse to run on a repo that is mid-operation ---------------------------
@@ -572,11 +618,11 @@ preview() {                        # preview <label> <repo> <range>
 
 # --- A. preview both --------------------------------------------------------
 preview "CODE   " "${CODE_REPO}" "${CODE_RANGE}"
-N_CODE=${#SEL_SHAS[@]}; M_CODE=${#MANUAL_SHAS[@]}
+N_CODE=${#SEL_SHAS[@]}; M_CODE=${#MANUAL_SHAS[@]}; A_CODE=${N_AUTHORFIX}
 N_HARNESS=0
 if [ -n "${HARNESS_REPO}" ]; then
     preview "HARNESS" "${HARNESS_REPO}" "${HARNESS_RANGE}"
-    N_HARNESS=${#SEL_SHAS[@]}; M_HARNESS=${#MANUAL_SHAS[@]}
+    N_HARNESS=${#SEL_SHAS[@]}; M_HARNESS=${#MANUAL_SHAS[@]}; A_HARNESS=${N_AUTHORFIX}
 fi
 
 # The cross-repo consequence, stated BEFORE the confirmation rather than
@@ -845,16 +891,75 @@ else
     fi
     case "${APPLY}" in
         [yY]*)
+            declare -A TOUCHED_FILES=()
             for tok in "${!TOK_NEW[@]}"; do
                 new="${TOK_NEW[${tok}]}"
                 while IFS= read -r f; do
                     # \b so a token is never matched inside a longer hex run
                     sed -i -E "s/\\b${tok}\\b/${new}/g" "${MD_REPO}/${f}"
+                    TOUCHED_FILES["${f}"]=1
                 done < <(cd "${MD_REPO}" && grep -lwF "${tok}" "${MD_FILES[@]}" 2>/dev/null || true)
             done
             echo
-            echo "Repointed (UNCOMMITTED -- review, then commit):"
-            echo "    git -C ${MD_REPO} diff -- '*.md'"
+            echo "Repointed ${#TOK_NEW[@]} citation(s) across ${#TOUCHED_FILES[@]} file(s)."
+
+            # --- the closing commit ------------------------------------------
+            # `-a` is used as asked, but it is only CORRECT because the tree was
+            # verified clean at step 0: everything dirty now was written by this
+            # script. That is asserted here rather than inherited from the
+            # earlier check -- the gap between the two is the whole run, and an
+            # assumption that held at the start is not evidence about the end.
+            EXPECTED=$(printf '%s\n' "${!TOUCHED_FILES[@]}" | sort)
+            ACTUAL=$(git -C "${MD_REPO}" status --porcelain --untracked-files=all | cut -c4- | sort)
+            if [ "${NO_COMMIT}" = 1 ]; then
+                echo "(--no-commit: left uncommitted.)  git -C ${MD_REPO} diff -- '*.md'"
+            elif [ "${EXPECTED}" != "${ACTUAL}" ]; then
+                echo "NOT COMMITTED: the dirty set is not the set this script wrote." >&2
+                echo "  expected:" >&2; printf '%s\n' "${EXPECTED}" | sed 's/^/      /' >&2
+                echo "  actual:"   >&2; printf '%s\n' "${ACTUAL}"   | sed 's/^/      /' >&2
+                echo "  'commit -a' would capture the wrong set. Review and commit by hand." >&2
+            elif ! [[ ${SUPERVISOR} =~ ^.+\ \<[^\>]+\>$ ]]; then
+                # The commit is authored by the SUPERVISOR: this consolidation is
+                # their act, not a model's. It also sidesteps a trap -- committing
+                # under the bare `Claude` wildcard with no co-author to resolve it
+                # would produce a commit THIS SCRIPT flags as unrepairable on its
+                # next run. Refuse rather than create that.
+                echo "NOT COMMITTED: the Supervised-By string is not a git identity" >&2
+                echo "  ('Name <email>'), so it cannot author the commit, and the configured" >&2
+                echo "  identity may be the bare wildcard -- which this script would flag as" >&2
+                echo "  unrepairable next run. Commit by hand." >&2
+            else
+                CODE_TRAILER=""
+                if [ "${MD_REPO}" = "${HARNESS_REPO:-}" ]; then
+                    CODE_TRAILER="Code: $(git -C "${CODE_REPO}" branch --show-current) @ $(git -C "${CODE_REPO}" rev-parse --short=8 HEAD)"
+                fi
+                git -C "${MD_REPO}" commit -q -a --author="${SUPERVISOR}" -F - <<COMMITMSG
+Repoint tracker citations after the supervision-trailer rewrite
+
+${N_CODE} code and ${N_HARNESS} harness commit(s) were rewritten to record the
+supervision chain: Supervised-By recorded, redundant self co-authors dropped,
+$((A_CODE + A_HARNESS)) author field(s) resolved from the bare-Claude wildcard.
+Rewriting a message changes the commit's sha, so every tracker line citing one
+of them by sha was left pointing at an object no branch reaches.
+
+This commit carries ONLY that repoint: ${#TOK_NEW[@]} citation(s) across
+${#TOUCHED_FILES[@]} file(s), old sha -> new sha, no prose changed.
+
+The 'Code: <branch> @ <sha>' trailers in harness commit messages are NOT part of
+this commit -- they are remapped inside the rewrite pass itself, since they live
+in the messages being rewritten. ${REPAIRED_N:-0} of them were dangling before this run
+(damage from an earlier rewrite that had no cross-repo step) and were repaired
+in the same pass; ${UNREPAIRABLE_N:-0} could not be resolved automatically.
+
+Generated by claude/supervised-by.sh; the working tree was verified clean before
+the run and verified to contain only these files before this commit, which is
+what makes 'commit -a' equal to the intended set rather than merely close to it.
+
+${CODE_TRAILER}
+COMMITMSG
+                echo "Committed in ${MD_REPO}:"
+                git -C "${MD_REPO}" log -1 --format='    %h  %s  (author %an)'
+            fi
             ;;
         *)  echo "Not applied. Re-run and answer y, or repoint by hand from the list above." ;;
     esac
