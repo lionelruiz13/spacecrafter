@@ -307,7 +307,21 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 - **Discriminating check:** per-kind live scenes (on-orbit anchor holds through body
   motion; body-attached keeps angle; fixed-point in Universe mode), reversible;
   battery green.
-- **WIP:** —
+- **WIP: DELIVERED 2026-07-25 → §11.111 (code `2d1387b5`/`3949cf22`/`606d6b87`,
+  harness `b81a938`). All three R3 kinds MET with sharp discrimination (orbit
+  chord predicted to 2.5e-08 rel while the Moon moved 5886.7 km; frame
+  bit-identical vs 87.723° spin, both entries; fixed point bit-identical under
+  the same instrument). Both channels dump-identical. TWO class fixes en route:
+  §5.43 ModularBodyPtr copy-ctor SIGSEGV (measured, 6th anchor) + hidden-
+  reference re-entering draw/pick sweeps (NaN halo). Default tree +10 hidden
+  ANCHOR bodies (93→103) with the D9 story recorded (no reach coupling, no
+  draw/pick, no-file installs get none; b5_oort path_identity still fires).
+  save-to-anchor.ini correctly NOT built (defers to B31's serializer per I2);
+  §5.41 untouched (path not built upon); D28 dependency inherited-not-decided;
+  `follow_rotation` anchor.ini key spelling awaits sign-off (B28 protocol).
+  Supervisor: §11.107's ANCHOR zero-consumer claim annotated (F7 is now ONE
+  producer; zero consumers survives re-grep; composed no-key decision
+  unaffected). Supervisor-verified.**
 
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
 - **Row / recorded:** B7 (§13.B) · §11.95 (158/0, contention hypothesis, `b7_hunt.sh` ready) · §11.97(f) (NEW abort-path datum, composed-body-count axis).
