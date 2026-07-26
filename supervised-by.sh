@@ -524,6 +524,26 @@ preview() {                        # preview <label> <repo> <range>
     scan_range "$2" "$3"
     echo "=== $1: $2"
     echo "    range ${3}  --  $(git -C "$2" rev-list --count "$3") commit(s) in range"
+    # The identity NEW commits here would carry, and which file states it. This
+    # script only ever reads the author of commits already made -- but the value
+    # below is what the NEXT one gets, and a wrong one lands the inverted chain
+    # silently. It is printed here because this is the one screen where the
+    # reader's attention is already on authorship; knowing it elsewhere is
+    # knowing it outside the window where it is actionable.
+    # --show-origin, never the plain get: the plain get returns the EFFECTIVE
+    # value, so it reads as success whether the value came from the file you
+    # meant to write or from one shadowing it. It cannot discriminate the
+    # failure, so it cannot detect it.
+    local WHO WHENCE
+    WHO=$(git -C "$2" config user.name || true)
+    WHENCE=$(git -C "$2" config --show-origin user.name 2>/dev/null | cut -f1 || true)
+    if [ "${WHO}" = "${WILDCARD_AUTHOR}" ]; then
+        echo "    new commits authored: '${WHO}' -- wildcard, resolved from the co-author trailer  [${WHENCE}]"
+    elif [ -n "$(identity "${WHO}")" ]; then
+        echo "    new commits authored: '${WHO}' -- explicit identity, used as-is  [${WHENCE}]"
+    else
+        echo "    new commits authored: '${WHO}' -- NOT a Claude identity; such commits are not selected  [${WHENCE}]"
+    fi
     if [ "${#SEL_SHAS[@]}" -eq 0 ]; then
         echo "    nothing selected (${N_DONE} already carry Supervised-By, ${N_OTHER} not Claude-authored)"
     else
