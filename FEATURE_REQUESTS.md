@@ -68,3 +68,30 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   more output format of the one serializer. Everything it needs already exists
   on the new path — the runtime anchor carries its own declaration (kind,
   parent/body, orbit or coordinates), which IS the anchor.ini section to write.
+
+### [2026-07-29] Script-editor TUI: autocomplete, direct TCP, static analysis, inline key documentation with defaults
+- **From:** Vixy (side-note carried by the `DECISIONS_PENDING.md` D31 answer,
+  2026-07-26; recorded here at the §11.113 propagation pass)
+- **Request:** *"a side project, writing a tui with mouse support - a script
+  editor with autocomplete, direct tcp mode, static analysis to report errors
+  early and showing documentation of the currently edited call + attribute key
+  documentation corresppnding to the key/value the cursor is on with default
+  value shown greyed out and candidate for autocomplete when the value field is
+  empty"*. Not a request against spacecrafter itself — an external tool — but it
+  consumes three surfaces this project owns, which is why it is recorded rather
+  than left in a decision file.
+- **Status:** new — recorded as design INPUT, no commitment. Three consequences
+  worth carrying into the work that touches those surfaces:
+  (1) the **command grammar** and the **data-key vocabulary** become
+  MACHINE-consumed, not only human-read — B38's command census
+  (`capability-surface.md`) and B24/B25/B27's key inventory are the raw material,
+  and §2.0 D10's documentation gate acquires a consumer that cannot infer intent
+  from prose;
+  (2) the **TCP channel** becomes an editor-facing API (completion/validation
+  round-trips), a use case beyond running a show — its stability and error
+  reporting are judged against that too;
+  (3) *"default value shown greyed out"* wants **defaults to be declared data
+  rather than code constants** — the same authority question §2.0 D12's
+  acting-default logging raises from the other end (a default that must be
+  displayed and a default that must be logged both need a single place that
+  knows what it is).

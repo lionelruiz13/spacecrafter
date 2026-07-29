@@ -10,11 +10,37 @@ about a row's *state*, this file wins; on divergence about *what was measured on
 2026-07-25*, §11.110 wins. Every claim carries provenance; re-verify at source
 before acting (§5.2 class).
 
+**ALL SEVEN DECISION POINTS ANSWERED — 2026-07-26 [vixy], propagated 2026-07-29
+→ `INTENT/11.113.md` (i)–(o); B31 is now DISPATCHABLE.** The answers are recorded
+in `DECISIONS_PENDING.md` D30–D36 with their propagation marks; §11.113 is the
+record and **wins over this file** wherever the two differ (this file is derived).
+Summary, and the sections each answer changes: **D30** hybrid — delta where an
+authored value exists, snapshot where none does (*"for now"*, tester/user feedback
+being its stated invalidation trigger) · **D31** `body action reload` is a LOAD
+operation: it does NOT re-apply the ledger, the state-preserving route is
+save-then-reload, and the file may equally be a hand edit ⇒ the §11.66(a)-vs-R8
+conflict dissolves; the third verb of option (c) is not adopted (unneeded, cheap
+later) · **D32** transients snap to their settled target, carve-outs as proposed —
+and the file is also a DIAGNOSTIC artifact for user reports, so portability + the
+manifest become requirements, not conveniences [derived] · **D33 §3.5** EXPLICIT
+ONLY: no autosave, no autoload, no policy key — the operator's need is *recovery
+to an established clean state* between audiences, so the artifact is a PRESET and
+**load must be idempotent** (§10's first acting-default row RETIRES with it) ·
+**D34 §4.2** the key is plain `englishName`; the system-qualified path survives
+only inside the MISS REPORT; report-and-keep adopted; the non-body catalogue key
+is NOT answered and stays an in-row design item · **D35 §5.4** composed files +
+the session file ONLY — legacy `ssystem.ini` is read-only forever, and the
+answer's revert clause is elevated to a domain constraint (**§2.0 D13**,
+downgrade must stay possible) · **D36** declarative show state IN, time-bearing
+show state OUT.
+
 **Status: DESIGN ONLY — no product code was written or changed by the pass that
 produced it.** Seven product decisions it cannot take are listed in §7 and
-appended to `DECISIONS_PENDING.md` as **D30–D36**. Implementation dispatches
+appended to `DECISIONS_PENDING.md` as **D30–D36**. ~~Implementation dispatches
 only after Vixy reviews them; a dispatch taken before then would be improvising
-user-visible semantics.
+user-visible semantics.~~ **THAT GATE IS MET (2026-07-26 answers, §11.113): all
+seven are answered, so implementation may be dispatched — carrying the answers
+above, not this file's pre-answer options.**
 
 **Authority chain for everything below**: §11.66 (the mandate and the superseded
 write-back contract), §2.0 D8 (the as-if rule — this feature IS D8 applied to
@@ -375,6 +401,8 @@ the owning authority named in §2's "owning authority" column, never to a
 
 ### 3.5 Trigger
 
+**ANSWERED [vixy 2026-07-26, D33 → §11.113(l)]: EXPLICIT ONLY** — no autosave at quit, no autoload at start, no config key for the policy (*"user want control and especially the ability to recover to an established clean state, most often used between sessions each time with new public"*). The explicit commands below stand as designed; the opt-in autosave key and everything downstream of it are retired, and the artifact's role is a PRESET loaded repeatedly, not a resume point ⇒ **load must be idempotent**.
+
 * **Explicit command** `session action save [filename <name>]` /
   `session action load filename <name>` — one registration serves all of
   channels 1–5 (§11.55(h)), so §2(c) is satisfied without a second artefact.
@@ -429,6 +457,8 @@ carries it). Consequences, stated rather than discovered later:
   into user data ⇒ it is governed by §5 and by **D35**.
 
 ### 4.2 The override ledger DOES need a key — the A29 hazard
+
+**ANSWERED [vixy 2026-07-26, D34 → §11.113(m)]: option (i), plain `englishName`** — on the answer's own two grounds, the identifier users already know and uniqueness ENFORCED internally (global registry + duplicate-skip). Option (ii)'s single structural advantage (breaking DETECTABLY) is kept without its cost by putting the system-qualified tree path in the **miss report**, never in the key. Report-and-keep on an unresolved key is uncontradicted ⇒ adopted. The A29 hazard's residue under (i) is precisely §5.40's failure mode — a restore must REPORT a miss rather than bind to a same-named body another system loaded — and that report is a gate the implementation owes. [Veto point: if the answer described expectation rather than the choice, this reverses at near-zero cost — machine-written file, nothing fielded.] The folded **non-body selection key** (star/nebula catalogue identifier) is NOT answered and stays an in-row design item.
 
 The ledger (§2 group D) references bodies it does not own. Keying it by
 `englishName` re-imports exactly the hazard A29 was converted to close (§5.5,
@@ -552,7 +582,7 @@ struct Section { std::string header; std::string rawHeader; std::vector<Line> li
   This is testable directly (§6 T9) and is the check that a naive implementation
   fails.
 
-### 5.4 Which files may be rewritten — NOT decided here
+### 5.4 Which files may be rewritten — ~~NOT decided here~~ **DECIDED [vixy 2026-07-26, D35 → §11.113(n)]: option (1) — composed files and the session file ONLY; legacy `ssystem.ini` is READ-ONLY forever.** The mandate's *"dynamically rewriting the stellar system files"* is scoped to the composed format. The answer's second half is general and became **§2.0 D13** (*downgrade must stay possible*): a revert to an older build must not break an install that did not opt into new features/formats, so nothing may be written into a file an older parser reads — no comments, no new keys, no reformatting. Note the two contracts are distinct: §11.66(b) preservation protects the AUTHOR's content, D13 protects the OLD PARSER's grammar, and a writer can satisfy the first while breaking the second.
 
 The mandate's own words are *"dynamically rewriting the stellar system files"*,
 which reads as including the **legacy** `ssystem.ini`. That file is frozen paid
@@ -678,7 +708,9 @@ it was not asked to touch is the D9 destruction class, and it is cheap to assert
 
 ---
 
-## 7. Decision points (→ `DECISIONS_PENDING.md` D30–D36)
+## 7. Decision points (→ `DECISIONS_PENDING.md` D30–D36) — **ALL ANSWERED 2026-07-26, propagated §11.113(i)–(o)**
+
+*The table below is kept as the question set (traceability); each row's answer is in `DECISIONS_PENDING.md` under its key and in §11.113. The header note at the top of this file carries the summary.*
 
 Each is a genuine product choice: it changes user-visible semantics or the
 meaning of shipped data, and none is traceable to an existing recorded
@@ -748,8 +780,11 @@ follows:
 
 Listed so none is silent, per D12's own rule that a default which ACTS is logged:
 
-* **restoring anything at all at startup** — only under D33's opt-in; logged with
-  the session name every time.
+* ~~**restoring anything at all at startup** — only under D33's opt-in; logged with
+  the session name every time.~~ **RETIRED [vixy 2026-07-26, D33 → §11.113(l)]:
+  explicit only — nothing is restored at startup, so this acting default never
+  comes into existence. The remaining rows below stand (they attach to an
+  explicit load, which is an operator ACT and still owes its log lines).**
 * **a key that failed to resolve at restore** — logged once per entry AND
   annotated in the session file (§4.2). Not an inaction: the operator's override
   did not fire.
