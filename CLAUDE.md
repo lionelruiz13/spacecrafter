@@ -15,9 +15,9 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
 
 ## Where things are
 
-- `claude/INTENT.md` — single authority: §2.0 domain constraints D1–D12 (D8 as-if rule,
+- `claude/INTENT.md` — single authority: §2.0 domain constraints D1–D13 (D8 as-if rule,
   D9 data-is-the-product/frozen-field, D10 optimize-the-potential, D11 1 ms/frame
-  soft-realtime, D12 acting-defaults-logged), §5 defects, §11
+  soft-realtime, D12 acting-defaults-logged, D13 downgrade-must-stay-possible), §5 defects, §11
   append-only journal, §13 open-item ledger (13.A = suspended for Vixy — blocked by
   protocol; 13.B = Fable territory). Header carries the maintenance invariant
   (supersession-with-record) + provenance tag grammar (`[stated:]` `[observed:]`
