@@ -11,16 +11,18 @@ Duplicating the per-body comparison would be the I2 violation, so this file
 IMPORTS it from `b24_equivalence` (`floats_close` / `scalar_close` /
 `load_dump` / `raw_new_fields` / `raw_axisrot`) and adds only the delta.
 
-WHY THE FARM CARRIES DOT-PREFIXED COPIES (measured, §11.109(a)). `core.cpp:320`
-calls `loadGalacticSystem(".", "galactic.ini")` and the callee opens
-`path + name` — literally `.galactic.ini`, and per entry
-`.stellar_systems/<file>`. So on a shipped install the galactic corpus is never
-opened at all and no galactic twin has ever been generated. This driver feeds
-the code the names it actually opens, byte-identical to the field data, so the
-production path (`loadGalacticSystem` -> `loadSystem` -> `addSystem` ->
-`createModularSystem` -> `generateComposedTwin`) runs unchanged. Fixing the
-concatenation is a user-visible change (17 systems + anchors appear on every
-install) and is SUSPENDED, not taken here — see §5.37 / §13.
+THE FARM USES THE PRODUCTION NAMES, AND THAT IS ITSELF A DISCRIMINATOR (B40,
+§11.115). Until B40 this driver had to carry DOT-PREFIXED copies
+(`.galactic.ini`, `.stellar_systems/`), because `core.cpp:320` calls
+`loadGalacticSystem(".", "galactic.ini")` and the callee concatenated
+`path + name` with no separator (§5.37) — so those were the names the code
+actually opened, and no galactic twin had ever been generated on any install.
+B40 repaired the join; the farm now carries `galactic.ini` and
+`stellar_systems/` under their real names, which means a REGRESSION OF THE PATH
+REPAIR TAKES THIS GATE DOWN: with the pre-B40 binary the same farm yields 0
+twins and the run fails at "no twin generated for galactic system ..."
+(measured 2026-07-30, §11.115(f)). `--dotted` restores the old placement and is
+the mirror leg: post-B40 the dotted names are inert.
 
 THE CORPUS is `b25_corpus/` (committed next to this file): a full-featured
 foreign system (`system_proxima.ini`: light_source / surface_model /
@@ -58,6 +60,9 @@ MUTATE_SECTION = "PxB:MESH"
 
 args = [a for a in sys.argv[1:] if not a.startswith("--")]
 MUTATE = "--mutate" in sys.argv
+# Pre-B40 placement (the names the broken concatenation opened). Post-B40 they
+# are inert, which is the mirror half of the path-repair discrimination.
+DOTTED = "--dotted" in sys.argv
 OUT = (Path(args[0]) if args else HERE / "artifacts/b25gal").resolve()
 FARM = OUT / "farm"
 
@@ -96,93 +101,107 @@ def real_tree_md5():
     return out
 
 
+# ------------------------------------------------- the ONE line grammar (B40)
+# `tools/ini_line.hpp` is now the single authority every C++ reader of this file
+# family goes through (§5.38/§5.39, D29). The instrument mirrors that: ONE
+# function here too, used by all three readers below - the previous three
+# separate mirrors existed only because the code had three separate parsers.
+def ini_line(line):
+    """-> ('section', header) | ('entry', key, value) | None. bytes in, bytes
+    out. Mirrors IniLine::read: '#' to end-of-line is a comment wherever it
+    starts; blanks around the line and around '=' are insignificant."""
+    h = line.find(b"#")
+    if h != -1:
+        line = line[:h]
+    line = line.strip(b" \t\r\n")
+    if not line:
+        return None
+    if line[:1] == b"[":
+        close = line.find(b"]")
+        return ("section", line[1:] if close == -1 else line[1:close])
+    eq = line.find(b"=")
+    if eq == -1:
+        return None                       # MALFORMED: the reader warns, drops
+    k, v = line[:eq].strip(b" \t"), line[eq + 1:].strip(b" \t")
+    return ("entry", k, v) if k else None
+
+
 # ---------------------------------------------------------------- galactic.ini
 def read_galactic(path):
-    """Reproduce SSystemFactory::loadGalacticSystem's own section walk
-    (ssystem_factory.cpp:466-491) -> [(name, system_file_or_None)] in order."""
+    """SSystemFactory::loadGalacticSystem's section walk (ssystem_factory.cpp)
+    -> [(name, system_file_or_None)] in order."""
     entries, params = [], {}
-    raw = Path(path).read_bytes().decode("latin-1")
 
     def flush():
         if params:
             entries.append((params.get("name"), params.get("system")))
             params.clear()
 
-    for line in raw.split("\n"):
-        if not line or line.startswith("#"):
+    for raw in Path(path).read_bytes().split(b"\n"):
+        item = ini_line(raw)
+        if item is None:
             continue
-        if line.startswith("["):
+        if item[0] == "section":
             flush()
-            continue
-        line = line.rstrip("\r")
-        pos = line.find("=")
-        if pos != -1:
-            params[line[:pos - 1]] = line[pos + 2:]
+        else:
+            params[item[1].decode("latin-1")] = item[2].decode("latin-1")
     flush()
     return entries
 
 
 # ------------------------------------------------------------ legacy corpus IO
 def parse_legacy(path):
-    """The LOADER's own parse (ModularSystem::loadSystem, ModularSystem.cpp:1349
-    -1381) - byte-exact, including its substr arithmetic. Returns the ordered
-    list of per-section param dicts, values as bytes."""
+    """ModularSystem::loadSystem -> ordered list of per-section param dicts."""
     sections, cur = [], {}
-    for line in Path(path).read_bytes().split(b"\n"):
-        if len(line) < 2:
+    for raw in Path(path).read_bytes().split(b"\n"):
+        item = ini_line(raw)
+        if item is None:
             continue
-        if line[:1] == b"#":
-            continue
-        if line[:1] == b"[":
+        if item[0] == "section":
             if cur:
                 sections.append(cur)
                 cur = {}
-            continue
-        if line.endswith(b"\r"):
-            line = line[:-1]
-        pos = line.find(b"=", 2)
-        if pos == -1:                     # (int)npos == -1 in the C++ source
-            key, value = line, line[1:]
         else:
-            key, value = line[:pos - 1], line[pos + 2:]
-        cur[key] = value
+            cur[item[1]] = item[2]
     if cur:
         sections.append(cur)
     return sections
 
 
 def parse_composed(path):
-    """ModularSystemFormat::parse (ModularSystemFormat.cpp:23-58) -> ordered
-    [(header, {key: value})], bytes throughout."""
-    def trim(s):
-        return s.strip(b" \t").rstrip(b"\r").strip(b" \t")
-
+    """ModularSystemFormat::parse -> ordered [(header, {key: value})]."""
     out = []
-    for line in Path(path).read_bytes().split(b"\n"):
-        line = trim(line)
-        if not line or line[:1] == b"#":
+    for raw in Path(path).read_bytes().split(b"\n"):
+        item = ini_line(raw)
+        if item is None:
             continue
-        if line[:1] == b"[":
-            close = line.find(b"]")
-            out.append((line[1:] if close == -1 else line[1:close], {}))
-            continue
-        eq = line.find(b"=")
-        if eq == -1:
-            continue
-        k, v = trim(line[:eq]), trim(line[eq + 1:])
-        if k and out:
-            out[-1][1][k] = v
+        if item[0] == "section":
+            out.append((item[1], {}))
+        elif out:
+            out[-1][1][item[1]] = item[2]
     return out
 
 
 # ------------------------------------------------------------------- app cycle
-def build_farm(adopt=()):
-    """Temp-HOME farm (§11.103(a)) + the two dot-prefixed names the galactic
-    loader actually opens. `adopt` = twin stems to enable (the documented
-    adoption workflow: drop the .disabled extension)."""
-    dst = FARM / ".spacecrafter"
-    if FARM.exists():
-        shutil.rmtree(FARM)
+def build_farm(farm=None, dotted=None, corpus=CORPUS):
+    """Temp-HOME farm (§11.103(a)) carrying the galactic corpus under the names
+    `loadGalacticSystem` opens. THE FARM SHAPE IS THIS FUNCTION'S AUTHORITY —
+    `b40_tfarm.py` drives its own variants through it rather than re-deriving
+    which files are copied and which are symlinked (I2).
+
+      dotted=False (default, post-B40): `galactic.ini` + `stellar_systems/`,
+        i.e. what `core.cpp:320` -> `loadGalacticSystem("./", "galactic.ini")`
+        now resolves to.
+      dotted=True: `.galactic.ini` + `.stellar_systems/`, the names the pre-B40
+        concatenation opened (§5.37) — inert on a repaired binary.
+      corpus=None: no corpus placed at all (the shipped 0-byte
+        `stellar_systems/` symlink stands) — the field-state variant.
+    """
+    farm = FARM if farm is None else Path(farm)
+    dotted = DOTTED if dotted is None else dotted
+    dst = farm / ".spacecrafter"
+    if farm.exists():
+        shutil.rmtree(farm)
     dst.mkdir(parents=True)
     for e in sorted(SRC.iterdir()):
         n = e.name
@@ -191,15 +210,17 @@ def build_farm(adopt=()):
             os.chmod(dst / n, 0o644)
         elif n in ("log", "screenshot", "modularSystem"):
             continue
+        elif n in ("galactic.ini", "stellar_systems") and corpus is not None and not dotted:
+            continue  # placed below, as real files (never a symlink to the field data)
         else:
             (dst / n).symlink_to(e)
     for d in ("log", "screenshot", "modularSystem"):
         (dst / d).mkdir()
-    # the names loadGalacticSystem opens: "." + "galactic.ini",
-    # "." + "stellar_systems/<file>"  (ssystem_factory.cpp:470/503)
-    shutil.copy(SRC / "galactic.ini", dst / ".galactic.ini")
-    assert md5(dst / ".galactic.ini") == md5(SRC / "galactic.ini")
-    shutil.copytree(CORPUS, dst / ".stellar_systems")
+    if corpus is not None:
+        prefix = "." if dotted else ""
+        shutil.copy(SRC / "galactic.ini", dst / f"{prefix}galactic.ini")
+        assert md5(dst / f"{prefix}galactic.ini") == md5(SRC / "galactic.ini")
+        shutil.copytree(corpus, dst / f"{prefix}stellar_systems")
     return dst
 
 
@@ -358,18 +379,40 @@ def main():
         ok("order + bytes: every twin node reproduces its legacy section in file "
            "order, values byte-identical (bound_to_surface -> relation = grounded)")
 
-    # ---- ASSERTION 4: ISO-8859 values verbatim (the explicit high-byte leg) --
+    # ---- ASSERTION 4: ISO-8859 verbatim, SPLIT BY WHAT THE BYTES ARE (B40) --
+    # Re-pointed, never loosened (§11.115): the corpus carries high bytes in two
+    # places - inside a VALUE (the unknown `note` key) and inside a trailing
+    # COMMENT (`orbit_visualization_period = 1364.0 #### <0xE0> affiner`, the
+    # shipped `[mimas]` class). Before B40 the reader had no notion of a
+    # trailing comment, so the comment text was part of the value and the whole
+    # line reappeared in the twin; a comment is now a comment, so the twin must
+    # carry the VALUE bytes verbatim and must NOT carry the COMMENT bytes. The
+    # assertion tests both directions rather than dropping the leg.
     for name, f in corpus_present:
         if name not in twins:
             continue
-        src_hi = [l for l in (CORPUS / Path(f).name).read_bytes().split(b"\n")
-                  if any(b > 127 for b in l)]
-        twin_hi = [l for l in twins[name].read_bytes().split(b"\n")
-                   if any(b > 127 for b in l)]
-        if src_hi and sorted(src_hi) != sorted(twin_hi):
-            fail(f"iso8859: {name}System twin high-byte lines {twin_hi} != source {src_hi}")
-        elif src_hi:
-            ok(f"iso8859: {len(src_hi)} high-byte line(s) of {Path(f).name} verbatim in the twin")
+        src = (CORPUS / Path(f).name).read_bytes()
+        twin = twins[name].read_bytes()
+        hi_values, hi_comments = [], []
+        for raw in src.split(b"\n"):
+            if not any(b > 127 for b in raw):
+                continue
+            item = ini_line(raw)
+            if item and item[0] == "entry" and any(b > 127 for b in item[2]):
+                hi_values.append(item[2])
+            else:
+                h = raw.find(b"#")
+                hi_comments.append(raw[h:] if h != -1 else raw)
+        for v in hi_values:
+            if v not in twin:
+                fail(f"iso8859: {name}System twin lost the high-byte VALUE {v!r}")
+        for c in hi_comments:
+            if c in twin:
+                fail(f"iso8859: {name}System twin carries COMMENT bytes {c!r} - a "
+                     f"trailing comment is not part of the value (B40)")
+        if hi_values or hi_comments:
+            ok(f"iso8859: {len(hi_values)} high-byte value(s) of {Path(f).name} verbatim "
+               f"in the twin, {len(hi_comments)} high-byte comment(s) correctly absent")
 
     # ---------------- phase B: composed (adoption) ----------------
     # SolarSystem is deliberately NOT adopted: it stays legacy in both phases and

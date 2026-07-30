@@ -353,7 +353,14 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   before/after (never inherited — §11.113(h)'s own instruction); D9 legacy parity
   93 bodies 0 diffs; md5 pristine; gate-count interactions checked (F7 precedent
   93→103; `b5_oort` path_identity must still fire).
-- **WIP:** —
+- **WIP (2026-07-30, Opus 5 executor):** CODE LANDED — one commit `2e54be6f`
+  (`tools/ini_line.hpp` + 4 readers + the path join; old-path reader annotated,
+  not joined). Measured: shipped install 0→18 `Params :`, 0→17 nodes, 1→18
+  twins, 17/17 nodes at galactic.ini's own coordinates (path-only
+  counterfactual 6/17 WRONG), 103 pre-existing bodies 0 divergent fields,
+  frozen md5 in==out. `b25_galactic` green through the PRODUCTION names.
+  NEXT: discrimination legs (pre-binary on the new farm, `--dotted`,
+  `--mutate`), T-farm table, battery subset, ledger.
 
 ### F11 — B39: hidden = as-if-nonexistent (rendered universe only)  [M–L]
 - **Row / recorded:** B39 (§13.B, opened §11.113(b)) · D23 verbatim (§11.113(b) +
