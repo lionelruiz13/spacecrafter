@@ -485,6 +485,20 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   COPY differing only in its dead echo ⇒ collapsed to a wrapper (I2, zero callers);
   `harness/f12_runner_exit.sh` drives the verbatim-extracted tail, 7/7 exit codes.
   NEXT: item (i) B27 split, then (ii), then (iii); live battery legs at delivery.
+- **WIP (2026-07-30, run 2, checkpoint 2):** item **(i) B27 split DONE and committed**
+  (code `62b860d1`; harness this commit). `light_source` = illumination, `primary` =
+  the structural remainder (own member, not a BodyType bit — `isMinorBody()` is an
+  exact-equality test). ONE site moves against §11.113(f)'s provisional list after the
+  mandated second look: the HINT gate → `primary` (the skip exists because the body sits
+  at its parent's origin — structural; a dark primary would lose its hint forever under
+  a luminosity gate). `system_star` second look CONFIRMS §11.113(f) (`light_source`).
+  The recorded "two shadow-sweep exclusions" is **three** at HEAD. Verified:
+  `harness/f12_b27_split.py` 23/23 checks over 10 fresh launches + 4 rendered legs
+  (hint **545 px>8 / 0 px floor**; Moon orbit master flag **1183 px>8** == its own
+  positive control), cross-binary leg on the same corpus, D9 parity 120 bodies /
+  **0** divergent fields, twin delta **exactly one line** (`primary = true`),
+  `b24_equivalence` GREEN 120 and shown able to fail via the new `--strip Sun:primary`
+  (`Sun.primary: True != False`). NEXT: item (ii) B24 click, then (iii) B33.
 - **WIP (2026-07-30, session 4):** first executor run KILLED by host OOM mid-task —
   nothing committed, no checkpoint, verification artifacts lost. SURVIVING
   uncommitted diff at code HEAD `a62ad5d7` = item (iv)'s §5.45 guard

@@ -160,10 +160,22 @@ def compare(a, b):
         print(f"    only in {b['tag']}: {only_b}", flush=True)
     common = sorted(set(ba) & set(bb))
     diffs = []
+    # A field one binary does not emit AT ALL is a dump-FORMAT difference, not a
+    # per-body value difference: reporting it 120 times would bury the value
+    # comparison it is supposed to protect. Named once, then excluded. (Added
+    # 2026-07-30 with the `primary` field, §11.118.)
+    fields = ["parent", "relation", "modules", "routing", "lastJD",
+              "bodyType", "primary", "surfaceModel", "trailLength"]
+    for f in list(fields):
+        in_a = any(f in ba[n] for n in common)
+        in_b = any(f in bb[n] for n in common)
+        if in_a != in_b:
+            print(f"    FORMAT: `{f}` is emitted by {a['tag'] if in_a else b['tag']} "
+                  f"only - excluded from the value comparison", flush=True)
+            fields.remove(f)
     for name in common:
         na, nb = ba[name], bb[name]
-        for field in ("parent", "relation", "modules", "routing", "lastJD",
-                      "bodyType", "surfaceModel", "trailLength"):
+        for field in fields:
             if na.get(field) != nb.get(field):
                 diffs.append(f"{name}.{field}: {na.get(field)!r} != {nb.get(field)!r}")
         if not b24.floats_close(",".join(map(str, na.get("ecl", []))),

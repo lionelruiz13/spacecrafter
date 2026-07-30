@@ -44,7 +44,7 @@ spin-phase twin - the launch-wall-clock staleness that scattered it is gone).
 Exit 0 = equivalence holds; 1 = any divergence (each named on stdout).
 """
 
-import json, os, socket, subprocess, sys, time
+import json, os, re, socket, subprocess, sys, time
 from pathlib import Path
 
 HOME = Path.home()
@@ -59,9 +59,18 @@ LOG = USERDIR / "log/spacecrafter.log"
 # left by a PREVIOUS run and verifies stale artifacts. Measured: a relative
 # outdir here re-read 2.5-hour-old dumps and only the one leg asking for a
 # file that had never existed crashed. Same rule as b3_ladder.py.
-OUT = (Path(sys.argv[1]) if len(sys.argv) > 1
+_args = [a for a in sys.argv[1:] if not a.startswith("--")]
+OUT = (Path(_args[0]) if _args
        else Path(__file__).resolve().parent / "artifacts/b24").resolve()
 JD = "2461233.5"
+# `--strip SECTION:KEY` deletes ONE key from the enabled twin before phase B.
+# This is the gate's own able-to-FAIL demonstration for the capability fields:
+# a key that is consumed but not emitted (or emitted but not consumed) is
+# exactly what §11.73(g)'s co-delivery rule forbids, and stripping it is the
+# cheapest way to prove the field list would catch it. Added 2026-07-30 with
+# `primary` (§11.118); it works for any key.
+STRIP = next((a.split("=", 1)[1] if "=" in a else None
+              for a in sys.argv[1:] if a.startswith("--strip")), None)
 SHADOW_MARK = "Composed system file modularSystem/SolarSystem.ini wins"
 TWIN_MARK = "Composed twin of ssystem.ini generated"
 
@@ -161,6 +170,18 @@ def run_phase(tag):
     return dump, rc
 
 
+# C++ ostream prints non-finite floats as `nan` / `inf` / `-inf`; Python's json
+# accepts `NaN` / `Infinity` / `-Infinity` and REJECTS the lowercase spellings.
+# Without this substitution a single non-finite field made json.loads raise and
+# the `except` below dropped the WHOLE BODY silently - the body then reads as
+# absent to every gate built on this loader. Measured 2026-07-30 (§11.118): an
+# intermittent cold-launch ASmooth NaN on `scaling` (the §11.18 class, EntityCore
+# ASmooth.hpp's own comment records the same shape) makes the Moon or the Sun
+# vanish from a dump. A body carrying NaN must be VISIBLE and compared (it then
+# fails a value check loudly), never silently missing.
+_NONFINITE = re.compile(r'(?<=:)\s*(-?)(nan|inf)\b')
+
+
 def load_dump(path):
     """-> (header, {name: new_path_body_dict}) - new-path halves only."""
     bodies = {}
@@ -171,7 +192,9 @@ def load_dump(path):
             if not line or line in "[]{}":
                 continue
             try:
-                obj = json.loads(line)
+                obj = json.loads(_NONFINITE.sub(
+                    lambda m: m.group(1) + ("NaN" if m.group(2) == "nan" else "Infinity"),
+                    line))
             except json.JSONDecodeError:
                 continue
             if header is None and obj.get("type") == "header":
@@ -247,7 +270,24 @@ def main():
         raise RuntimeError("twin absent after legacy launch - nothing to enable")
 
     # ---- phase B: composed (the documented adoption workflow) ----
-    ENABLED.write_bytes(TWIN.read_bytes())
+    twin_bytes = TWIN.read_bytes()
+    if STRIP:
+        section, _, key = STRIP.partition(":")
+        text, out_lines, cur, dropped = twin_bytes.decode("latin-1"), [], None, 0
+        for ln in text.split("\n"):
+            s = ln.strip()
+            if s.startswith("[") and s.endswith("]"):
+                cur = s[1:-1]
+            elif cur == section and re.match(rf"^\s*{re.escape(key)}\s*=", ln):
+                dropped += 1
+                continue
+            out_lines.append(ln)
+        if dropped != 1:
+            raise RuntimeError(f"--strip {STRIP}: dropped {dropped} lines, expected 1")
+        twin_bytes = "\n".join(out_lines).encode("latin-1")
+        print(f"MUTATION: `{key}` removed from [{section}] of the enabled twin - "
+              f"this run is EXPECTED to fail", flush=True)
+    ENABLED.write_bytes(twin_bytes)
     try:
         dump_b, rc_b = run_phase("composed")
         log_b = (OUT / "b24_composed.applog").read_text(errors="replace")
@@ -318,8 +358,13 @@ def main():
         # here as a per-body mismatch, on the exact bodies whose type granted
         # something. NOT compared: `composedDecl` - it differs by construction
         # (that is what makes the composed leg a composed leg).
+        # `primary` ADDED 2026-07-30 (D27's split, INTENT §11.113(f)/§11.118):
+        # `light_source` no longer carries the whole bundle, so `bodyType` alone
+        # no longer witnesses the Tier-B resolution. A legacy star's twin must
+        # emit BOTH keys value-for-value, and this field is where emitting only
+        # one of them shows up - on the Sun, as `primary` true-vs-false.
         for field in ("parent", "relation", "modules", "routing", "lastJD",
-                      "bodyType", "surfaceModel", "trailLength"):
+                      "bodyType", "primary", "surfaceModel", "trailLength"):
             if na.get(field) != nb.get(field):
                 fail(f"{name}.{field}: {na.get(field)!r} != {nb.get(field)!r}")
         # ecl and boundingRadius are FLOAT fields of the NEW path and are NOT
