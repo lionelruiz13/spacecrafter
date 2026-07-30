@@ -835,3 +835,43 @@ against a pre-change snapshot) and `b24_equivalence` / `b25_galactic` /
 `b40_parity` / `b4_anchors` are the run that proves the four readers of the
 `.ini` grammar still read what they read — run them whenever `ini_line.hpp` or
 this layer changes.
+
+## F14 — where the IAU prime meridian lands ON THE TEXTURE (§5.28, INTENT §11.120, 2026-07-30)
+
+    cd claude/harness && DISPLAY=:2 ./f14_meridian.py <absOutdir> <tag> expect=0.50
+    ./f14_predict.py <absOutdir>            # before a change: write the predictions
+    ./f14_predict.py <absOutdir> --check    # after: score the post capture against them
+    DISPLAY=:2 ./f14_mercury.py <absOutdir> pre=/abs/bin post=/abs/bin
+    DISPLAY=:2 ./f14_placeholder.py <absOutdir> pre=/abs/bin post=/abs/bin
+
+`f14_meridian.py` is the gate D22 (§11.113(a)) required and `b14_w0_analyze.py`
+could not be: it never writes the expression the conversion solves against.
+It reads the render's own dumped `tilt`/`spin`, the mesh's own texcoord law
+(`u = θ/360 − 0.25`, SphereObjL.cpp:153) and the body's own texture FILE, and
+answers one question — which texture column the IAU meridian is drawn on.
+**0.50 is correct; 0.75 is §5.28.** `expect=` picks which, so the file is RED
+on a pre-fix binary instead of silent.
+
+Three things it does that any successor gate should copy:
+- **the observer is on the PRIMARY, never on the moon.** A surface-bound
+  observer co-rotates with its reference, so the sub-observer texture column
+  is invariant under the spin phase being measured — that scene is blind by
+  construction, which is the §5.28 shape one level up.
+- **it correlates ALBEDO, high-passed, not brightness.** Raw brightness scored
+  the ±90° alternatives at 0.91–0.97 against 0.99 at the truth: the shading is
+  the larger signal and does not move when the meridian convention does. After
+  dividing by the model's Lambert term and high-passing at ~0.065 disc radii,
+  the same scene reads 0.44 against 0.00/0.03/−0.07.
+- **it fails on an under-lit capture.** After a large `date jday` jump the
+  frame is black for several seconds (measured: max grey 10 at +3 s on a disc
+  that reads 209 at +11 s). Both screen scripts sleep 8 s and treat an empty
+  frame as a FAILURE, never as "unchanged".
+
+`f14_predict.py` is the prediction-before-the-fact artifact: predicted offsets
+for every hopped body, a SYNTHESISED post-fix image per moon, and the corpus
+anchor (the corrected conversion reproducing the four registration-bearing
+planets' shipped `rot_rotation_offset` from their fetched W0, to 0.014–2.788°).
+`f14_mercury.py` is D22's counterfactual in a temp-HOME farm; `f14_placeholder.py`
+answers "do the 17 placeholder-textured moons change?" with a measurement
+(they do — `generic.png` σ = 8.15, `asteroid.png` σ = 13.33: unregistered, not
+featureless).

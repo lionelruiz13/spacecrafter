@@ -586,19 +586,25 @@ corrected: it was written, then destroyed by the same edit.]*
   is available as the cheap counterfactual; old path untouched; battery green.
   Record-only, NOT yours: the Jupiter `rot_rotation_offset` 107-shipped-vs-60-loaded
   divergence (§11.101(b)).
-- **WIP: 2026-07-30 checkpoint 2 — THE FIX IS LANDED AND GREEN (code `f11f6a4e`,
-  harness `<this commit>`).** `ModularSystem.cpp` `atan2(-(pm·ex),pm·ey)` →
-  `atan2(pm·ey,pm·ex)`; both data files' md5 unchanged (`c4b426df` / `545a51ef`).
-  Measured: u_pm 0.75000/0.75002/0.75000 → 0.50000/0.50002/0.50000; screen margins
-  0.461/0.873/0.527 and the live post frames match the PRE-committed predicted
-  images (+0.42/+0.87/+0.47 vs null −0.00/−0.03/−0.02); only-movers exactly the 20
-  keyed bodies at +90.000000°±1.6e-5, 12 hopped controls bit-identical, obliquity/
-  ascNode/period ULP-0 on all 32; Mercury counterfactual −90.080° pre vs −0.080°
-  post (1 px>32), binaries pixel-identical on the unmutated corpus; §11.69 Iapetus
-  0.000008°/0.000000°/19.6174° intact. Harness `b14_w0_analyze.py` +
-  `b14_w0_planetscan.py` corrected off the same wrong axis (they carried it too).
-  NEXT: the standing battery (b24_equivalence + --strip RED, b25_galactic,
-  b40_parity, b4_anchors, scenes A–E, b10_cmd), then INTENT 11.120 + §13/§5 flips.**
+- **WIP: DELIVERED 2026-07-30 → §11.120 (code `f11f6a4e`; harness `df80f15` / `cc90444` /
+  this commit).** All DoD items met. The fix is one operand swap in `resolveRotationFrame`
+  (`atan2(-(pm·ex),pm·ey)` → `atan2(pm·ey,pm·ex)`), code-only, both data files' md5
+  unchanged (`c4b426df` / `545a51ef`). Texture-anchored gate `f14_meridian.py` (RED on the
+  pre-fix binary, `expect=` selects which): IAU-meridian texture column
+  0.75000/0.75002/0.75000 → 0.50000/0.50002/0.50000, pixels selecting that model over
+  ±90/180 by 0.461/0.873/0.527 and matching the image predicted BEFORE the fix
+  (`f14_predict.py`, committed at checkpoint 1). Only-movers: exactly the 20 keyed bodies at
+  +90.000000°±1.6e-5, 12 hopped controls bit-identical, obliquity/ascNode/period ULP-0 on 32.
+  Mercury counterfactual (`f14_mercury.py`, temp-HOME farm): −90.080° pre, −0.080° post,
+  binaries pixel-identical on the unmutated corpus. §11.69 Iapetus 0.000008°/0.000000°/
+  19.6174°. Battery green (b24 120 + `--strip` RED, b25 130/17, b40 17/17, b4 0 failures,
+  b10_cmd battery exit 0, scene E 26 OK / 0 FAIL). **Deviations/finds:** the task's
+  "placeholder textures are featureless" premise is MEASURABLY FALSE (σ 8.15/13.33 vs
+  Iapetus 51.51) — the 17 DO move pixels and that is correct, `f14_placeholder.py` measures
+  it; two harness instruments carried the same wrong axis and were corrected (scope
+  expansion, recorded §11.120(g)); NEW **§5.49** opened, not fixed — the observer's
+  longitude origin is the mesh x̂ column, 90° from the map's centre column
+  (derived-from-source, NOT measured at the render, veto point recorded).
 
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
 - **Row / recorded:** B7 (§13.B) · §11.95 (158/0, contention hypothesis, `b7_hunt.sh` ready) · §11.97(f) (NEW abort-path datum, composed-body-count axis).
