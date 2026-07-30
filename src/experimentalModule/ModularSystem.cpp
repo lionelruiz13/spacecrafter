@@ -932,19 +932,41 @@ RotFrame resolveRotationFrame(std::map<std::string, std::string> &param,
             const Vec3f pm_icrf(node * std::cos(W0) + perp * std::sin(W0));
             const Vec3f pm(mat_j2000_to_vsop87.multiplyWithoutTranslation(pm_icrf));
             // Loader equatorial-frame x/y axes (in the ecliptic) at this tilt.
-            // The rendered meridian is xzrotation(obliquity,ascNode) · zrotation(
-            // axisRotation + π/2) · x̂; solving for the offset that lands it on pm
-            // gives atan2(-(pm·ex), pm·ey) (the getAxisRotation +π/2 folds x̂→ŷ).
+            // WHERE THE MERIDIAN MUST LAND: on the texture's CENTRE column
+            // (u = 0.5), not on the mesh's x̂. The sphere is textured
+            // u = θ/360 − 0.25 [ojmModule/SphereObjL.cpp:153] and the draw spins
+            // it by getAxisRotation() = axisRotation + π/2 [ModularBody.hpp:487],
+            // so the two compose to: texture column u is drawn at azimuth
+            // axisRotation + 180° + 360°·u. The IMAGE CENTRE therefore draws at
+            // zrotation(axisRotation)·x̂ exactly - the +π/2 fudge and the −0.25
+            // texcoord cancel each other - while mesh x̂ is column u = 0.75.
+            // rot_rotation_offset is thus the azimuth of the image centre, which
+            // is the convention the shipped corpus is registered to: the four
+            // longitudinally registered planets' file offsets place the IAU
+            // meridian at u 0.5000 / 0.4998 / 0.4978 / 0.4923 (Saturn, Mercury,
+            // Mars, Neptune - §11.101(b2)), and Earth's Greenwich-centred map
+            // agrees independently (its spin bypasses the offset through
+            // apparent sidereal time, so GAST = 0 puts the image centre on the
+            // vernal equinox - the definition of sidereal time).
+            // Solve xzrotation(obliquity,ascNode) · zrotation(offset) · x̂ = pm:
+            //     offset = atan2(pm·ey, pm·ex).
+            // Targeting mesh x̂ instead put every rot_pole_w0 body 90° out
+            // (§5.28, decided in the CONVERSION by D22 §11.113(a) - never in the
+            // 20 bodies' data, and never by retiring the +π/2, which would move
+            // every body's meridian instead of the three that are wrong). The
+            // correction is exactly +90° for every body, whatever its pole,
+            // because atan2(pm·ey, pm·ex) ≡ atan2(−(pm·ex), pm·ey) + 90°.
             const Mat4f eqframe(Mat4f::xzrotation(rot_obliquity, rot_asc_node));
             const Vec3f ex(eqframe.multiplyWithoutTranslation(Vec3f(1, 0, 0)));
             const Vec3f ey(eqframe.multiplyWithoutTranslation(Vec3f(0, 1, 0)));
-            rot_offset = std::atan2(-(pm * ex), (pm * ey)) * (180. / M_PI);
+            rot_offset = std::atan2((pm * ey), (pm * ex)) * (180. / M_PI);
             if (rot_offset < 0.f)
                 rot_offset += 360.f;
             cLog::get()->write("Body '" + englishName + "': rot_pole_w0 (IAU W0="
                 + param["rot_pole_w0"] + " deg, from the ICRF-equator node) converted to "
                 "rot_rotation_offset " + std::to_string(rot_offset)
-                + " deg (ecliptic node).", LOG_TYPE::L_DEBUG);
+                + " deg (ecliptic node; the azimuth the texture's centre column "
+                "is drawn at).", LOG_TYPE::L_DEBUG);
         }
     } else if (!param["rot_pole_w0"].empty()) {
         // rot_pole_w0 is meaningful only for an absolute pole (it is the IAU
