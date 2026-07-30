@@ -16,11 +16,18 @@ def loader_pole(ra0,de0):
     return np.pi/2-de, ra+np.pi/2          # obliquity, ascendingNode (rad)
 
 def loader_surf2ecl(ra0,de0,offset_deg):
-    # Empirical: Axz(obl,node) operator* action maps body-eq -> ecl (its 3rd col = pole_ecl).
-    # draw: matrix = mat.multiplyFast(computeBodyToSurface) = Axz @ zrotation(getAxisRotation)
-    #   => surface -> ecl = Axz(obl,node) @ Az(W_ax)
+    # Axz(obl,node) operator* action maps body-eq -> ecl (its 3rd col = pole_ecl).
+    # draw: matrix = mat.multiplyFast(computeBodyToSurface) = Axz @ zrotation(getAxisRotation).
+    # CORRECTED 2026-07-30 (F14 §11.120): W_ax is offset*d2r, NOT offset*d2r+pi/2.
+    # The first column of this matrix is used below as "the loader's prime
+    # meridian", and the meridian a MAP shows is its centre column u = 0.5, drawn
+    # at Az(axisRot).x - the +pi/2 of getAxisRotation() cancels the mesh's -0.25
+    # texcoord [SphereObjL.cpp:153 / ModularBody.hpp:487]. Carrying the +pi/2 here
+    # made column 0 the mesh x axis (u = 0.75) and is why this scan reported a
+    # ~-90 deg spread on the four registered planets (§11.86(c), refuted by
+    # §11.101(b2)) instead of the near-zero agreement below.
     obl,node=loader_pole(ra0,de0)
-    W_ax=offset_deg*d2r + np.pi/2           # getAxisRotation at epoch (axisRotation+pi/2)
+    W_ax=offset_deg*d2r                     # axisRotation at epoch, image-centre column
     return Axz(obl,node) @ Az(W_ax)         # surface->ecl (columns = surface axes in ecl)
 
 def iau_bf2ecl(ra0,de0,W0_deg):
@@ -49,17 +56,28 @@ def solve_offset(ra0,de0,W0):
                                              iau_bf2ecl(ra0,de0,W0)[:,2]),-1,1)))
     return off, slope, dp
 
+# `diff` = (conversion of the fetched W0) - (the offset the file already carries).
+# The last column is what that difference MEANS for each body, restated after
+# §11.101(b2) refuted §11.86(c)'s "historical/texture-registered" reading:
+# four of the seven ARE IAU-registered in the u = 0.5 convention and their diff
+# is the registration error of the shipped map; the other three have nothing to
+# register longitudinally, so their diff carries no information about the code.
 val = [
-  ("Venus",    272.76,    67.16,     137.45,      160.20,   "EXACT"),
-  ("Uranus",   257.311,  -15.175,    331.18,      203.81,   "EXACT(retro)"),
-  ("Saturn",   40.5908,   83.537,    358.922,     38.90,    "~0.002"),
-  ("Jupiter",  268.05,    64.49,     107.0,       284.95,   "~0.006"),
-  ("Mercury",  281.001,   61.45,     291.20,      329.5988, "~0.03"),
-  ("Neptune",  299.33,    42.95,     228.65,      249.978,  "~0.5 old"),
-  ("Mars",     317.6725,  52.88212,  136.005,     176.049863,"~1.5 old"),
+  ("Saturn",   40.5908,   83.537,    358.922,     38.90,    "registered: u 0.5000"),
+  ("Mercury",  281.001,   61.45,     291.20,      329.5988, "registered: u 0.4998"),
+  ("Mars",     317.6725,  52.88212,  136.005,     176.049863,"registered: u 0.4978"),
+  ("Neptune",  299.33,    42.95,     228.65,      249.978,  "registered: u 0.4923"),
+  ("Venus",    272.76,    67.16,     137.45,      160.20,   "cloud map - unregistrable"),
+  ("Jupiter",  268.05,    64.49,     107.0,       284.95,   "cloud map - unregistrable"),
+  ("Uranus",   257.311,  -15.175,    331.18,      203.81,   "featureless - unregistrable"),
 ]
-print(f"{'body':<9}{'W0':>10}{'->offset':>10}{'file':>9}{'diff':>8}{'slope':>7}{'poleErr':>8}  match")
+# poleErr is DROPPED, not fixed: it fed the same ra0/de0 to both models, so its
+# 0.0000 was tautological and the attribution built on it was false (§11.101(b2)
+# (ii)). A real pole check needs an independent pole source, which this file has
+# no channel to; the rendered-vs-declared pole IS measured live, by
+# f14_meridian.py (`pole_err_deg`) and by §11.69's axis observable.
+print(f"{'body':<9}{'W0':>10}{'->offset':>10}{'file':>9}{'diff':>8}{'slope':>7}  reading")
 for name,ra0,de0,fo,w0,pm in val:
     off,sl,dp=solve_offset(ra0,de0,w0)
     diff=((off-fo+180)%360)-180
-    print(f"{name:<9}{w0:>10.4f}{off:>10.3f}{fo:>9.3f}{diff:>8.3f}{sl:>7.2f}{dp:>8.4f}  {pm}")
+    print(f"{name:<9}{w0:>10.4f}{off:>10.3f}{fo:>9.3f}{diff:>8.3f}{sl:>7.2f}  {pm}")

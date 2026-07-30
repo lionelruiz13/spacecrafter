@@ -186,23 +186,35 @@ def main(argv):
                                pre["cy"], pre["R"], pre["img"].shape, 0.0, True, -1.0)
         s_pred = score_against(post, aP, lamP, mP)
         s_null = score_against(post, a0, lam0, m0)
-        px = int((np.abs(post["img"] - pre["img"]) > 32).sum())
+        # px difference on the FULL-resolution frames - the terminal observable,
+        # not the 256-px working crop (a downsample halves the count).
+        fa = np.asarray(Image.open(out / f"f14_pre_{moon}.png").convert("L")).astype(int)
+        fb = np.asarray(Image.open(out / f"f14_post_{moon}.png").convert("L")).astype(int)
+        px = int((np.abs(fa - fb) > 32).sum())
+        px8 = int((np.abs(fa - fb) > 8).sum())
         off_pre = pre["hops"][0]["offset"]
         off_post = post["hops"][0]["offset"]
         d_off = ((off_post - off_pre) % 360.0)
         exp_off = pred["offsets"][moon]["post"]
         line = (f"{moon:9s} offset {off_pre:.6f} -> {off_post:.6f} (d {d_off:+.6f}, "
                 f"predicted {exp_off:.6f}) | live post vs PREDICTED image "
-                f"{s_pred:+.3f}, vs NULL {s_null:+.3f} | pre-vs-post px>32 {px}")
+                f"{s_pred:+.3f}, vs NULL {s_null:+.3f} | pre-vs-post full-frame "
+                f"px>32 {px}, px>8 {px8}")
         print(line)
         if abs(((off_post - exp_off + 180) % 360) - 180) > 2e-4:
             fails.append(f"{moon}: offset {off_post} != predicted {exp_off}")
         if not (s_pred > 0.25 and s_pred - s_null > 0.25):
             fails.append(f"{moon}: the live post-fix frame does not select the "
                          f"predicted image ({s_pred:.3f} vs null {s_null:.3f})")
-        if px < 10000:
-            fails.append(f"{moon}: only {px} px changed between the binaries - "
-                         f"a 90 deg turn of a {2*pre['R']:.0f}-px disc cannot be that small")
+        # A 90 deg turn of a ~450-px disc must move a large fraction of it. The
+        # floor is stated per body as a fraction of the DISC AREA, so a bland
+        # map (Proteus) is judged against its own scene rather than a constant.
+        area = math.pi*(pred["bodies"][moon].get("disc_radius_px",
+                        post["body"]["screenSize"]*1024.0))**2
+        if px8 < 0.20*area:
+            fails.append(f"{moon}: only {px8} px>8 changed between the binaries "
+                         f"({px8/area:.1%} of the {area:.0f}-px disc) - a 90 deg "
+                         f"turn cannot be that small")
     for m in fails:
         print("FAIL:", m)
     print("RESULT:", "ALL OK" if not fails else f"{len(fails)} FAILURE(S)")

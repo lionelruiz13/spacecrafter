@@ -14,6 +14,18 @@ Reads a dual_dump and, for each test moon (dumped in the hops list):
 The discriminator FAILS if raw (unconverted) W0 were written: reported as the
 node-difference C = converted - raw.
 
+CORRECTED 2026-07-30 (F14, §11.120; the fix this file could not see). Both
+models below used to say the rendered meridian is `zrotation(axisRot + pi/2).x`
+- the mesh's x axis, texture column u = 0.75. That is what `resolveRotationFrame`
+solved against, so leg 2 compared the conversion with ITSELF and read 0.0000 deg
+while every rot_pole_w0 body rendered 90 deg out (§5.28's recorded root: a gate
+inside the defect's own frame). The rendered meridian is the texture's CENTRE
+column, u = 0.5, drawn at `zrotation(axisRot).x` [ojmModule/SphereObjL.cpp:153
+u = theta/360 - 0.25, composed with ModularBody.hpp:487's +pi/2]; both functions
+now use that, so leg 2 is a real comparison and this file goes RED against the
+pre-F14 binary. `f14_meridian.py` is the gate that anchors on the TEXTURE and on
+the pixels; this one stays the numeric/2-date rate check.
+
 pck00011.tpc constants (fetched, md5 3c0bdc01) for the 3 dumped test moons; the
 file poles are the J2000-evaluated values actually loaded (what the app renders).
 
@@ -49,12 +61,16 @@ def convert_w0(ra0,de0,W0):     # closed form == resolveRotationFrame
     n=s2r(ra0*d2r,de0*d2r); Q0=np.array([-math.sin(ra0*d2r),math.cos(ra0*d2r),0.]); P0=np.cross(n,Q0)
     W=W0*d2r; pm=M@(math.cos(W)*Q0+math.sin(W)*P0)
     ex=Axz(obl,node)@np.array([1,0,0.]); ey=Axz(obl,node)@np.array([0,1,0.])
-    o=math.degrees(math.atan2(-(pm@ex),(pm@ey)))%360
+    o=math.degrees(math.atan2((pm@ey),(pm@ex)))%360   # F14: image centre (u 0.5)
     return o
 
 def loader_meridian(obl,ascN,offset_deg,jd,period_days):
+    # The direction the TEXTURE'S CENTRE COLUMN (u 0.5) is drawn at - which is
+    # where the map's zero meridian sits. NOT Az(axisRot+pi/2)@x (mesh x, column
+    # u 0.75): that is the expression resolveRotationFrame solves, so using it
+    # here made this comparison tautological (§5.28 / F14 §11.120).
     axisRot=math.fmod((jd-J2000)/period_days*2*math.pi + offset_deg*d2r, 2*math.pi)
-    return Axz(obl,ascN)@Az(axisRot+math.pi/2)@np.array([1,0,0.])
+    return Axz(obl,ascN)@Az(axisRot)@np.array([1,0,0.])
 
 def iau_meridian(ra0,de0,W0,Wdot,jd):
     n=s2r(ra0*d2r,de0*d2r); Q0=np.array([-math.sin(ra0*d2r),math.cos(ra0*d2r),0.]); P0=np.cross(n,Q0)

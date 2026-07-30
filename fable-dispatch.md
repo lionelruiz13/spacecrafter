@@ -586,19 +586,19 @@ corrected: it was written, then destroyed by the same edit.]*
   is available as the cheap counterfactual; old path untouched; battery green.
   Record-only, NOT yours: the Jupiter `rot_rotation_offset` 107-shipped-vs-60-loaded
   divergence (§11.101(b)).
-- **WIP: 2026-07-30 checkpoint 1 (harness `<this commit>`, code still `99685172` —
-  NO code change yet). Texture-anchored gate `f14_meridian.py` built and shown BOTH
-  ways: pre-fix binary reads `u_pm` = 0.75000/0.75002/0.75000 (Iapetus/Amalthea/
-  Proteus, i.e. the IAU meridian 90.001/90.007/90.001 deg off the u=0.5 convention)
-  and its screen leg selects the dumped model over the ±90/180 alternatives by
-  margins 0.407/0.900/0.779; `expect=0.50` is RED on the same capture. Prediction
-  artifact `f14_predict.py` + `artifacts/f14/f14_prediction.json` committed BEFORE
-  the fix (offset += 90.000 for exactly the 20 `rot_pole_w0` bodies, 12 hopped
-  controls unchanged; predicted post-fix images per moon; planet corpus anchor
-  residuals 0.014/-0.080/-0.806/-2.788 deg for Saturn/Mercury/Mars/Neptune).
-  NEXT: apply the conversion fix at `ModularSystem.cpp:941`, rebuild, run
-  `f14_meridian.py … post expect=0.50` + `f14_predict.py … --check`, then the
-  Mercury counterfactual farm and the battery.**
+- **WIP: 2026-07-30 checkpoint 2 — THE FIX IS LANDED AND GREEN (code `f11f6a4e`,
+  harness `<this commit>`).** `ModularSystem.cpp` `atan2(-(pm·ex),pm·ey)` →
+  `atan2(pm·ey,pm·ex)`; both data files' md5 unchanged (`c4b426df` / `545a51ef`).
+  Measured: u_pm 0.75000/0.75002/0.75000 → 0.50000/0.50002/0.50000; screen margins
+  0.461/0.873/0.527 and the live post frames match the PRE-committed predicted
+  images (+0.42/+0.87/+0.47 vs null −0.00/−0.03/−0.02); only-movers exactly the 20
+  keyed bodies at +90.000000°±1.6e-5, 12 hopped controls bit-identical, obliquity/
+  ascNode/period ULP-0 on all 32; Mercury counterfactual −90.080° pre vs −0.080°
+  post (1 px>32), binaries pixel-identical on the unmutated corpus; §11.69 Iapetus
+  0.000008°/0.000000°/19.6174° intact. Harness `b14_w0_analyze.py` +
+  `b14_w0_planetscan.py` corrected off the same wrong axis (they carried it too).
+  NEXT: the standing battery (b24_equivalence + --strip RED, b25_galactic,
+  b40_parity, b4_anchors, scenes A–E, b10_cmd), then INTENT 11.120 + §13/§5 flips.**
 
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
 - **Row / recorded:** B7 (§13.B) · §11.95 (158/0, contention hypothesis, `b7_hunt.sh` ready) · §11.97(f) (NEW abort-path datum, composed-body-count axis).
