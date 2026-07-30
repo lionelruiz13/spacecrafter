@@ -70,6 +70,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 # what that gate has no subject for - survival across a quit, and the bytes of a
 # file a save produced.
 from b24_equivalence import load_dump, floats_close, scalar_close, raw_axisrot
+# ... and the screen comparison is b24_screen's, for the same reason.
+from b24_screen import bright_dark
+import numpy as np
+from PIL import Image
 
 HOME = Path.home()
 USERDIR = HOME / ".spacecrafter"
@@ -89,9 +93,14 @@ SHADOW_MARK = "Composed system file modularSystem/SolarSystem.ini wins"
 
 # The body every T6 leg pushes. `parent Earth` puts it inside the subtree the
 # save walks; `still_orbit` keeps its position a data key rather than an
-# ephemeris (so a divergence would be the save's, not the orbit's).
-PUSH = ("body action load name F15Rover parent Earth type Artificial radius 0.01 "
-        "coord_func still_orbit orbit_x 0 orbit_y 0 orbit_z 6400 rot_periode 24")
+# ephemeris (so a divergence would be the save's, not the orbit's); the offset is
+# in AU, like every position in this tree (0.0003 AU = 44878 km, clear of Earth's
+# 6378 km) and the radius in km, like the data key - measured 1.5e-2 of the frame
+# with a texture on it, which is what makes the SCREEN leg possible: a body only
+# the dump can see would prove persistence at the model layer and nowhere else.
+PUSH = ("body action load name F15Rover parent Earth type Artificial radius 5000 "
+        "coord_func still_orbit orbit_x 0 orbit_y 0 orbit_z 0.0003 rot_periode 24 "
+        "tex_map bodies/generic.png halo false")
 ROVER = "F15Rover"
 
 # Structural fields: exact equality, no tolerance. These are what T6 is about -
@@ -177,6 +186,18 @@ class App:
         if not path.exists():
             raise RuntimeError(f"{self.tag}: dump {path} was not written")
         return path
+
+    def shot(self, name, pause=2.5):
+        """The composed screen. Written by the app's own readback (an external
+        grab sees black on this display - §11.19a)."""
+        p = OUT / f"f15_{name}.png"
+        p.unlink(missing_ok=True)
+        send(self.sock, f"body action screenshot filename {p}", pause)
+        for _ in range(25):
+            if p.exists() and p.stat().st_size > 0:
+                break
+            time.sleep(0.3)
+        return np.asarray(Image.open(p).convert("RGB"), dtype=np.int16)
 
     def quit(self):
         send(self.sock, "shutdown action now")
@@ -356,7 +377,9 @@ def main():
             fail("refusals: a refusal was silent")
 
         # The control leg's own subject: a pushed body, NOT saved.
+        shot_base_l1 = app.shot("base_l1")   # this scene WITHOUT the body
         app.cmd(PUSH, 2)
+        shot_live = app.shot("rover_live")   # ... and WITH it, same launch
         dump_ctl = app.dump("ctl_pre")
         # ... and the no-delta comparator measured against a save that DOES
         # differ: same tree, one body pushed. The comparator must see it, and
@@ -391,6 +414,7 @@ def main():
 
         # ---------------- L2: the control. No save -> no survival --------------
         app = App("l2")
+        shot_base_l2 = app.shot("base_l2")   # the same scene, a second launch
         dump_gone = app.dump("ctl_post")
         app.quit()
         _, gone = load_dump(dump_gone)
@@ -438,6 +462,7 @@ def main():
             ok("T6: it was read by the composed loader")
         else:
             fail("T6: the composed loader did not run")
+        shot_restored = app.shot("rover_restored")   # the body, from the file alone
         dump_post = app.dump("t6_post")
         # T4, second regime: re-saving what was just loaded, from the state the
         # first exit produced (the reversible pair, entered twice).
@@ -454,6 +479,72 @@ def main():
         else:
             fail(f"T6: {ROVER} did not survive the relaunch")
         compare_bodies(pre, post, "T6", ROVER)
+        # SCREEN, the terminal observable (the model layer does not compose
+        # upward on its own, §11.52(b)'s standing posture).
+        #
+        # The comparison that matters - live body vs restored body - is
+        # necessarily CROSS-LAUNCH, and a cross-launch pair of this scene differs
+        # by a few hundred pixels for reasons that have nothing to do with the
+        # body (B30 fresh-launch nondeterminism, §11.53(e); measured here as
+        # `floor`). So the floor is not the criterion: the criterion is measured
+        # ON THE PAIR ITSELF, by splitting the frame at the body's own footprint.
+        #   footprint = where the body changed the frame, WITHIN one launch
+        #               (rover shot vs pre-push shot: no launch noise in it at all)
+        #   inside    = how much the live-vs-restored pair differs THERE
+        #   outside   = how much the same pair differs everywhere else - the
+        #               launch noise of these two launches, self-calibrated
+        # A body that came back displaced, resized, differently textured or not at
+        # all moves a large fraction of its own footprint. Criterion: inside < 10 %
+        # of the footprint - AND the residual must be where its attributed cause
+        # puts it. A sub-pixel cross-launch jitter can only move the disc's EDGE
+        # (its interior is flat-textured), so the same count is taken again over
+        # the footprint ERODED by two pixels: a residual that survives erosion is
+        # not jitter, it is a body that came back different.
+        def mask_of(a, b):
+            bright, dark = bright_dark(a, b)
+            return bright | dark
+        footprint = mask_of(shot_live, shot_base_l1)
+        pair = mask_of(shot_live, shot_restored)
+        def erode(m):
+            e = m.copy()
+            for _ in range(2):
+                e &= np.roll(e, 1, 0) & np.roll(e, -1, 0) & np.roll(e, 1, 1) & np.roll(e, -1, 1)
+            return e
+        floor = int(mask_of(shot_base_l1, shot_base_l2).sum())
+        interior = erode(footprint)
+        nfoot, nint = int(footprint.sum()), int(interior.sum())
+        inside = int((pair & footprint).sum())
+        outside = int((pair & ~footprint).sum())
+        deep = int((pair & interior).sum())
+        print(f"      screen: footprint(rover, same launch)={nfoot} px  "
+              f"live-vs-restored inside={inside} px ({inside/max(nfoot,1)*100:.2f} % of it), "
+              f"of which {deep} px survive a 2 px erosion (interior {nint} px)  "
+              f"outside={outside} px  cross-launch floor (rover-free scene)={floor} px",
+              flush=True)
+        # What this leg reports when the body did NOT come back, on the very same
+        # frames: the pre-push shot of L1 against the restored shot of L4. No extra
+        # launch, and it is the number the assertion below has to be able to see.
+        counter = int((mask_of(shot_base_l1, shot_restored) & footprint).sum())
+        print(f"      screen counterfactual: the same comparison against a frame with "
+              f"NO rover in it reports {counter}/{nfoot} px inside the footprint "
+              f"({counter/max(nfoot,1)*100:.0f} %), vs {inside} px ("
+              f"{inside/max(nfoot,1)*100:.2f} %) for the restored one", flush=True)
+        if counter < 0.5 * nfoot:
+            fail(f"SCREEN: the leg cannot see a missing body ({counter}/{nfoot} px) - "
+                 f"it is not discriminating")
+        if nfoot < 1000:
+            fail(f"SCREEN: the pushed body only draws {nfoot} px - too small for the "
+                 f"leg to discriminate anything")
+        elif inside < 0.10 * nfoot and deep <= 0.005 * max(nint, 1):
+            ok(f"SCREEN: the restored body draws where and as the live one did - "
+               f"{inside}/{nfoot} px moved inside its footprint, and only {deep} of "
+               f"them ({deep/max(nint,1)*100:.2f} % of the {nint} px interior) survive "
+               f"erosion: the residual is the disc's own edge, which is what a "
+               f"cross-launch sub-pixel jitter can move and all it can move")
+        else:
+            fail(f"SCREEN: the restored body's disc differs from the live one - "
+                 f"{inside}/{nfoot} px inside its footprint, {deep} of them in the "
+                 f"eroded interior (not an edge effect)")
         rot_a, rot_b = raw_axisrot(dump_pre), raw_axisrot(dump_post)
         if rot_a.get(ROVER) == rot_b.get(ROVER):
             ok(f"T6: {ROVER}.axisRot exact across the quit ({rot_a.get(ROVER)})")

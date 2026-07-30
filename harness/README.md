@@ -907,13 +907,28 @@ annotations disappear. **D9** across the save command itself, of 8077 files
 under `~/.spacecrafter`, exactly the target changed. **REFUSE** a path and the
 machine-owned `.disabled` name write nothing and say why.
 
+**SCREEN** is the terminal observable and the leg is self-calibrating: the body's
+footprint is measured WITHIN one launch (rover shot vs pre-push shot, **8462 px**,
+no launch noise in it), then the live-vs-restored pair is split at it — **118 px**
+moved inside the footprint (1.39 %), of which **1** survives a 2 px erosion, i.e.
+the residual is the disc's own edge, which is what a cross-launch sub-pixel jitter
+can move and all it can move. Its own counterfactual runs on the same frames: the
+comparison against a rover-free frame reports **8308/8462 px (98 %)**.
+
 `--mutate` deletes the `[F15Rover:HINT]` declaration from the SAVED file between
 the save and the relaunch: that run is EXPECTED to fail and does, on
-`modules ['HINT'] != []` and `routing far 1 != 0` — F15Rover only, the other 120
-bodies still 0 divergent fields (plus T4's own consequence of the same deletion).
+`modules ['MESH','AXIS','HINT'] != ['MESH','AXIS']` and `routing far 1 != 0` —
+F15Rover only, the other 120 bodies still 0 divergent fields (plus T4's own
+consequence of the same deletion). The SCREEN leg stays green there, correctly:
+the deleted declaration is the hint marker, not what draws the disc.
 
 Standing note: three shipped bodies (**Hyperion, Juno, Vesta**) declare neither
 `rot_periode` nor `orbit_period`, so a COMPOSED load of them annotates the 24 h
 default that acts (D12). That is why a composed re-save of a file built from a
 legacy tree is 3 lines longer than the file it re-saves — predicted before the
 run, and the gate asserts the difference is exactly those 3 lines.
+
+**Instrument fix riding this task**: `b40_parity.py` run with no `<tag>=<binary>`
+argument used to launch nothing and print `OK` (exit 0). It now refuses with a
+usage line and exit 2 — the §11.101(g) vacuous-gate class, met again in the F15
+battery run and fixed at the instrument.

@@ -214,6 +214,14 @@ def check_coordinates(res):
 
 
 def main():
+    # A gate that launches nothing must not report OK (§11.101(g) class, found
+    # the hard way 2026-07-30: `b40_parity.py <outdir>` with no binary spec
+    # printed "OK" and exited 0 having measured nothing at all).
+    if len(sys.argv) < 3:
+        print("usage: b40_parity.py <absOutdir> <tag>=<binary> [<tag>=<binary> ...]\n"
+              "       at least one binary is required - this gate measures launches.",
+              file=sys.stderr)
+        return 2
     out = Path(sys.argv[1]).resolve()
     out.mkdir(parents=True, exist_ok=True)
     runs = []
