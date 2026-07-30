@@ -614,7 +614,46 @@ line's TAIL, because the app's stdout interleaves `cLog` with
 truncated mid-prefix.
 
 D9: the real `~/.spacecrafter` is never written — md5 asserted in == out on
-every top-level file plus `stellar_systems/` and `modularSystem/` (96 files).
+every top-level file plus `stellar_systems/` and `modularSystem/` (96 files
+before B40; **113** after it, the 17 new galactic twins included).
+
+**REWORKED 2026-07-30 by B40 (INTENT §11.115).** The farm now carries the corpus
+under the PRODUCTION names (`galactic.ini`, `stellar_systems/`), because
+`loadGalacticSystem` finally opens those: the gate exercises the shipped
+placement and **a regression of the path repair takes it down** — measured, the
+pre-B40 binary on this farm gives 18 divergences (17 × "no twin generated"). Two
+mirror legs: `--dotted` restores the pre-B40 placement (2 divergences: the
+corpus is invisible, only 17 EMPTY system nodes appear), `--mutate` is unchanged
+(exactly 2). The three mirrored parsers collapsed into ONE `ini_line()`, which
+is what the code did (`src/tools/ini_line.hpp`). The ISO-8859 leg was RE-POINTED
+rather than dropped: high bytes in a VALUE must still be verbatim in the twin,
+high bytes in a trailing COMMENT must now be ABSENT — a comment is a comment now.
+`build_farm(farm=, dotted=, corpus=)` is the farm-shape authority `b40_parity.py`
+and any future T-farm variant drive through.
+
+## B40 — cross-binary tree parity on the REAL install (`b40_parity.py`) — INTENT §11.115, 2026-07-30
+
+The D9 question for a LOAD-time change: what did the shipped data mean before,
+and what does it mean now — per body, per field.
+
+    cd claude/harness && DISPLAY=:2 ./b40_parity.py <absOutdir> tag=/abs/binary [tag2=/abs/binary2 ...]
+
+Each binary is launched fresh on the real `~/.spacecrafter` (the `b24_equivalence`
+phase-A protocol, whose comparison authority this file IMPORTS), driven to the
+same frozen scene, dumped; consecutive pairs are compared. What it reports:
+body-set delta by name (the AUTHORISED change is visible as itself — B40 adds 17
+`<X>System` nodes and nothing else), per-body structural fields exact plus
+`ecl`/`boundingRadius` under b24's own tolerance, every galactic system node
+checked against `galactic.ini`'s own x/y/z read correctly (this is §5.38's
+discriminator — a parse regression shows as a SIGN FLIP, and the path-only
+counterfactual binary measured 6 of 17 wrong), the app's own `Params :` block
+count, the new malformed-line warnings, and `config/ssystem/galactic/anchor` md5
+in == out around every launch. The machine-owned `modularSystem/` twins are
+EXPECTED to move and are reported, not asserted.
+
+Use it with a saved pre-change binary: staging binaries are what make a
+single-variable claim measurable (B40 kept three — pre-fix, parse-only,
+path-only — and every claim in §11.115 names which one it came from).
 
 ## F7 — the B4 anchor-kind gate (`b4_anchors.py`) — INTENT §11.111, 2026-07-25
 

@@ -78,7 +78,7 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 
 ## 1. Dispatch order (load-bearing first; each task states why, so the order is challengeable)
 
-### F0 — audit-residuals batch: decision-free fixes from §11.101/§11.102  [S–M]  ← START HERE
+### F0 — audit-residuals batch: decision-free fixes from §11.101/§11.102  [S–M]  — DELIVERED 2026-07-25
 - **Row / recorded:** B5 residuals (§11.102(e1)–(e4)) · B25 (§11.102(c)) · §11.101(g)(g3)(h) · §11.102(g) ("all decision-free implementation residuals" except (b2)).
 - **Why first:** (i) instrument debt bites every future task (`b5_oort.py` vacuous
   under flag-failure; `ab_orientation.py` cannot fail; runner md5 echo-not-assert);
@@ -334,7 +334,7 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   producer; zero consumers survives re-grep; composed no-key decision
   unaffected). Supervisor-verified.**
 
-### F10 — B40: galactic path+parse repair, one commit  [M]  ← START HERE (2026-07-30)
+### F10 — B40: galactic path+parse repair, one commit  [M]  — DELIVERED 2026-07-30
 - **Row / recorded:** B40 (§13.B, opened §11.113(h)) · §11.109 (T1/T2/T3 isolation,
   0/66 applogs) · §5.37/§5.38 (unsuspended, fix TOGETHER, never sequentially) ·
   §5.39 (parse half unblocked) · D29 answer verbatim (DECISIONS_PENDING §11 +
@@ -353,16 +353,29 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   before/after (never inherited — §11.113(h)'s own instruction); D9 legacy parity
   93 bodies 0 diffs; md5 pristine; gate-count interactions checked (F7 precedent
   93→103; `b5_oort` path_identity must still fire).
-- **WIP (2026-07-30, Opus 5 executor):** CODE LANDED — one commit `2e54be6f`
-  (`tools/ini_line.hpp` + 4 readers + the path join; old-path reader annotated,
-  not joined). Measured: shipped install 0→18 `Params :`, 0→17 nodes, 1→18
-  twins, 17/17 nodes at galactic.ini's own coordinates (path-only
-  counterfactual 6/17 WRONG), 103 pre-existing bodies 0 divergent fields,
-  frozen md5 in==out. `b25_galactic` green through the PRODUCTION names.
-  NEXT: discrimination legs (pre-binary on the new farm, `--dotted`,
-  `--mutate`), T-farm table, battery subset, ledger.
+- **WIP: DELIVERED 2026-07-30 → §11.115 (code `2e54be6f` — ONE commit, parse
+  first inside it; harness `84f745c` + the delivery commit). §5.37/§5.38/§5.39
+  ALL CLOSED. `src/tools/ini_line.hpp` is the family's one line grammar (`#`
+  comments anywhere, blanks around `=` insignificant, `=`-less line NAMED per
+  §2(f)); four readers on it, the OLD path's `ProtoSystem::load` deliberately
+  not, with the reason at the site. Real install: `Params :` **0→18**, nodes
+  **0→17**, twins **1→18**, **17/17** at galactic.ini's own coordinates —
+  against a path-only counterfactual binary measured at **6/17 WRONG**, exactly
+  as §5.38 predicted. Parse half BUILT AND MEASURED ALONE first: 103 bodies,
+  **0 divergent fields**, `Params :` still 0 (§11.113(h)'s derived D9 claim
+  re-measured, not inherited); nine shipped keys parse differently, **zero
+  leading numbers change**; only artifact delta = 2 of 2304 twin entries.
+  `b25_galactic` re-pointed to the PRODUCTION names, GREEN (130 bodies/17
+  systems) and discriminating THREE ways (pre-binary 18 divergences, `--dotted`
+  2, `--mutate` exactly 2); ISO-8859 leg re-pointed STRICTER, not dropped.
+  Battery: b24_equivalence 120, b5_oort 11/11 incl. `path_identity`,
+  b4_anchors 0 failures, b5_drawhalf 24/24, b24_select GREEN, scenes A–E green,
+  frozen md5 in==out on every launch. Anchor suppression NOT adopted (D29's own
+  veto), 18 galactic anchors accepted. NEW **§5.45** recorded not fixed and it
+  is the successor's first item: a galactic section missing x/y/z ABORTS the app
+  at startup (`stod("")`, SIGABRT measured) — reachable BECAUSE of this commit.**
 
-### F11 — B39: hidden = as-if-nonexistent (rendered universe only)  [M–L]
+### F11 — B39: hidden = as-if-nonexistent (rendered universe only)  [M–L]  ← START HERE
 - **Row / recorded:** B39 (§13.B, opened §11.113(b)) · D23 verbatim (§11.113(b) +
   DECISIONS_PENDING §6) · §11.76 barrier (its (c) anticipated exactly this) · B32
   precedent (§11.93, cross-launch 0 ULP) · §5.31 · §5.44 (old-path, record-only) ·
