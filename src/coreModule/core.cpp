@@ -1014,17 +1014,26 @@ bool Core::findAndSelect(const Vec3d& pos)
 //! Find and select an object near given screen position
 bool Core::findAndSelect(int x, int y)
 {
-	Vec3d v;
-	projection->unprojectEarthEqu(x, y, v);
-	Object obj = cleverFind(v);
-	// New route (B24-select, INTENT §11.106), engaged ONLY where the old
-	// picker declined: old picking is the parity baseline and keeps every
-	// case it can decide, while composed / new-only bodies are exactly the
-	// ones it cannot see (they are absent from ProtoSystem). The pick itself
-	// happens in the new path's screen frame, which is why the position goes
-	// down as window pixels rather than as the old equatorial ray.
-	if (!obj)
-		obj = ssystemFactory->searchNewOnlyObjectAt(x, y);
+	// New route (B24-select, INTENT §11.106) asked FIRST since D26
+	// (§11.113(e), [vixy]: "Fable rec option 1" - the visible composed child
+	// TAKES the click when it lands ON the child). It answers only for bodies
+	// the old tree cannot see, and only when the click is on the child's own
+	// drawn disc or within the pick tolerance of its centre - the §11.106(d)
+	// two-tier rule, now extended ACROSS the old/new seam instead of stopping
+	// at it. Everywhere else it returns nothing and old picking decides
+	// exactly as before, so the default-object UX (click anywhere on the
+	// parent's disc -> parent) is untouched off the child's pixels.
+	// Before D26 this ran only after cleverFind declined, which made a rover
+	// drawn on its moon's disc permanently unselectable by pointer
+	// (§11.106(e), measured). The pick happens in the new path's screen frame,
+	// which is why the position goes down as window pixels rather than as the
+	// old equatorial ray.
+	Object obj = ssystemFactory->searchNewOnlyObjectAt(x, y);
+	if (!obj) {
+		Vec3d v;
+		projection->unprojectEarthEqu(x, y, v);
+		obj = cleverFind(v);
+	}
 	return selectObject(obj);
 }
 

@@ -190,8 +190,14 @@ public:
     //! as delivered by the UI click; the conversion into the new path's
     //! screen frame lives here so callers keep the old path's vocabulary (I1).
     //! Returns Object() when nothing is picked OR when the pick lands on a
-    //! body the old tree also carries - old picking decides every case it
-    //! can, and this route only runs after it declined (§11.52(b) parity).
+    //! body the old tree also carries - old picking keeps every case that is
+    //! ITS OWN (§11.52(b) parity), and that filter is what confines this route
+    //! to bodies only the new tree has.
+    //! ASKED FIRST since D26 (§11.113(e)): a hit here PRE-EMPTS old picking.
+    //! The pre-emption is bounded by the pick test itself - the body's drawn
+    //! disc must cover the click, or its centre be within the pick tolerance
+    //! (ModularSystem::findBodyAt) - so it reaches only the child's own pixels
+    //! and the parent keeps every other pixel of its disc.
     Object searchNewOnlyObjectAt(int x, int y) const;
 
     //! Get base planets display limit in pixels
