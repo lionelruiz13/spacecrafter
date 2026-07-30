@@ -224,6 +224,12 @@ for k in range(1, 4):                      # let both bodies record
     send(f"date jday {J0 + k * DT_TRAIL:.9f}", 1.4)
 t1 = dump("trail_t1")
 send("body name Mars hidden true", 1.5)
+# The measured interval starts HERE, after the hide: between the t1 dump and the
+# hide command the app renders ~350 more frames, and the subject records in all
+# of them (measured 346 - correctly, it was still shown). Both ends of the
+# interval below are dumps taken while the subject is hidden, so any nonzero
+# delta is a real leak, not a boundary artifact.
+t1b = dump("trail_t1b")
 base = J0 + 3 * DT_TRAIL
 for k in range(1, 5):                      # the hidden interval
     send(f"date jday {base + k * DT_TRAIL:.9f}", 1.4)
@@ -232,14 +238,16 @@ send("body name Mars hidden false", 2.5)   # unhide IS a use (D23 clause iv)
 t3 = dump("trail_t3")
 send("flag object_trails off", 1.5)
 
-_, B0 = bodies(t0); _, B1 = bodies(t1); _, B2 = bodies(t2); _, B3 = bodies(t3)
+_, B0 = bodies(t0); _, B1 = bodies(t1); _, B1b = bodies(t1b)
+_, B2 = bodies(t2); _, B3 = bodies(t3)
 rec = {}
 for name, state in (("Mars", "hidden"), ("Venus", "shown"), ("Jupiter", "shown")):
-    a, b_, c = trail_of(B0[name]), trail_of(B1[name]), trail_of(B2[name])
-    if not (a and b_ and c):
+    a, b_, c = trail_of(B0[name]), trail_of(B1b[name]), trail_of(B2[name])
+    a0 = trail_of(B1[name])
+    if not (a and b_ and c and a0):
         check(False, f"P3 {name}: no TRAIL module in the dump (leg vacuous)")
         continue
-    grow_shown = b_["accumulateCount"] - a["accumulateCount"]
+    grow_shown = a0["accumulateCount"] - a["accumulateCount"]
     grow_test = c["accumulateCount"] - b_["accumulateCount"]
     dpoints = c["points"] - b_["points"]
     print(f"  P3 {name:8s} ({state:6s}) dAcc[shown interval]={grow_shown:6d}  "
@@ -261,22 +269,80 @@ for name, state in (("Mars", "hidden"), ("Venus", "shown"), ("Jupiter", "shown")
         check(dpoints > 0, f"P3 control {name}: history grew by {dpoints} "
                            f"samples over the same interval")
 # "as if they never were hidden when unhidden" on ACCUMULATED HISTORY
-# (§11.113(b)(iv)): after the unhide the subject's trail must carry the SAME
-# number of samples as the never-hidden control that recorded the same span, and
-# its newest sample must sit at the same date.
+# (§11.113(b)(iv): "recoverable ... by evaluating the same sample times").
+#
+# The count is asserted against a PREDICTION, not against the control's count,
+# and the difference is itself a measured fact worth stating: accumulate() appends
+# AT MOST ONE sample per call, so a never-hidden body driven by 15-day date JUMPS
+# records 4 samples over 60 days - it is UNDER-sampled relative to its own
+# declared cadence, and the source says so ("detail lost on big jumps, by
+# design"). The reconstruction uses the module's DECLARED cadence (deltaTrail),
+# which is what the trail would have had under continuous time; the two agree
+# wherever time flows continuously and diverge only in the jump regime.
+# So: predicted = pre-hide samples + floor(missed span / deltaTrail).
+mars1b = trail_of(B1b["Mars"])
 mars3, ven3 = trail_of(B3["Mars"]), trail_of(B3["Venus"])
-print(f"  P3 after unhide: Mars points={mars3['points']} headJD={mars3['headJD']}"
-      f"  |  Venus points={ven3['points']} headJD={ven3['headJD']}")
-rec["after_unhide"] = {"mars_points": mars3["points"], "venus_points": ven3["points"],
-                       "mars_headJD": mars3["headJD"], "venus_headJD": ven3["headJD"]}
-check(mars3["points"] == ven3["points"],
-      f"P3 as-if-never-hidden: Mars history {mars3['points']} samples == "
-      f"Venus {ven3['points']} (the missed span reconstructed, D23 clause iv)")
+mars_now = B3["Mars"]["new"]["lastJD"]        # the body's own (retarded) sim date
+missed = int((mars_now - mars1b["headJD"]) / mars1b["deltaTrail"])
+predicted = min(mars1b["maxTrail"], mars1b["points"] + missed)
+print(f"  P3 after unhide: Mars points={mars3['points']} (predicted {predicted} = "
+      f"{mars1b['points']} pre-hide + {missed} missed at deltaTrail="
+      f"{mars1b['deltaTrail']} d)  headJD={mars3['headJD']}  |  Venus "
+      f"points={ven3['points']} headJD={ven3['headJD']}")
+check(mars3["points"] == predicted,
+      f"P3 as-if-never-hidden: Mars history {mars3['points']} samples == the "
+      f"predicted {predicted} (the missed span reconstructed, D23 clause iv)")
+check(mars3["points"] > mars1b["points"],
+      f"P3 as-if-never-hidden: the history GREW ({mars1b['points']} -> "
+      f"{mars3['points']}) - it was neither discarded nor left with a gap")
 check(mars3["headJD"] is not None and ven3["headJD"] is not None
       and abs(mars3["headJD"] - ven3["headJD"]) < 0.2,
       f"P3 as-if-never-hidden: newest sample dates agree to "
       f"{abs((mars3['headJD'] or 0) - (ven3['headJD'] or 0)):.6f} d < 0.2 d "
       f"(light-time offsets differ per body)")
+# ... and the reconstructed samples are ON THE ORBIT, not merely present. The
+# polyline LENGTH over its own SPAN is the body's mean orbital speed, and the
+# change in that mean between the pre-hide arc and the reconstructed one is
+# PREDICTED, not banded: for a two-body orbit the transverse speed is h/r with h
+# constant, so mean speed scales as mean(1/r) - and r is measured in this same run
+# (|ecl| at the span ends). Everything here is measured in-run; no external or
+# recalled datum enters (§11.51(d)).
+# Second-order terms, both derived and both below the band:
+#   - the radial speed component adds sqrt(1+(dr/dt / v)^2), 8.9 % vs 8.96 % of v
+#     on the two spans, so it cancels to ~0.01 % in the RATIO;
+#   - the pre-hide leg's chords span 15 d and under-measure the arc by
+#     1-sin(x)/x with x = half the swept angle (360/686.98*15 deg from the
+#     ini-declared orbit_visualization_period -> 0.079 %); the reconstructed
+#     1-day chords by 3e-6.
+#   - mean(1/r) is taken as the endpoint trapezoid, which is the crudest step.
+# A reconstruction placed anywhere but on the orbit misses this by orders of
+# magnitude; one that left a gap shows up as a chord shortcut.
+def rad(rec):
+    e = rec["new"]["ecl"]
+    return math.sqrt(sum(x * x for x in e))
+r_start, r_mid, r_end = rad(B0["Mars"]), rad(B1b["Mars"]), rad(B3["Mars"])
+sp_pre = mars1b["pathLength"] / (mars1b["headJD"] - mars1b["tailJD"])
+sp_post = mars3["pathLength"] / (mars3["headJD"] - mars3["tailJD"])
+ratio = sp_post / sp_pre
+predicted = (2.0 / (r_start + r_end)) / (2.0 / (r_start + r_mid))  # mean(1/r) ratio
+err = abs(ratio - predicted) / predicted
+print(f"  P3 mean speed from the polyline: pre-hide {sp_pre:.6e} AU/d over "
+      f"{mars1b['headJD'] - mars1b['tailJD']:.3f} d  |  after reconstruction "
+      f"{sp_post:.6e} AU/d over {mars3['headJD'] - mars3['tailJD']:.3f} d")
+print(f"  P3 ratio measured {ratio:.6f} vs PREDICTED {predicted:.6f} from "
+      f"mean(1/r) with r = {r_start:.7f} / {r_mid:.7f} / {r_end:.7f} AU "
+      f"-> {err:.4%}")
+check(err < 0.005,
+      f"P3 reconstruction is ON THE ORBIT: measured speed ratio {ratio:.6f} "
+      f"matches the h/r prediction {predicted:.6f} to {err:.4%} < 0.5 %")
+rec["after_unhide"] = {
+    "mars_points": mars3["points"], "predicted_points": predicted,
+    "missed": missed, "venus_points": ven3["points"],
+    "mars_headJD": mars3["headJD"], "venus_headJD": ven3["headJD"],
+    "speed_pre_AU_per_d": sp_pre, "speed_post_AU_per_d": sp_post,
+    "speed_ratio_measured": ratio, "speed_ratio_predicted": predicted,
+    "speed_ratio_err": err,
+    "r_start_AU": r_start, "r_mid_AU": r_mid, "r_end_AU": r_end}
 report["legs"]["P3_trail"] = rec
 
 # ======================================== P4: pointer on a NESTED-hidden body

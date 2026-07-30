@@ -5,10 +5,24 @@
 #    re-enabling starts FRESH"  (stated reason: the cost of accumulating a
 #    trail nobody sees).
 #
-# AND for the fact that this gate is INDEPENDENT of the hidden/visible gate
-# (Q13 / A10 / INTENT 11.54): a HIDDEN body still updates, therefore its trail
-# still records.  Two conditions, two observables - reading them as one gate
-# produces a wrong implementation (INTENT 13.B B11 says so in those words).
+# The gate is INDEPENDENT of the OFF-SCREEN/visible axis (Q13 / A10 / INTENT
+# 11.54): an off-screen body still updates, therefore its trail still records.
+# Two conditions, two observables - reading them as one gate produces a wrong
+# implementation (INTENT 13.B B11 says so in those words).
+#
+# RE-POINTED 2026-07-30 (B39 / INTENT 11.117, from [vixy] D23 -> 11.113(b)(ii);
+# the marker at 11.56 named this inversion in advance and required it to land in
+# the SAME commit as the behaviour).  The HIDDEN column of the matrix below used
+# to assert that a hidden body records IDENTICALLY to a visible one - measured
+# +6 points / +1080 accumulate calls on both, 11.56(b).  Vixy has since decided
+# the other way: a hidden body is as-if-nonexistent in the rendered universe, so
+# it no longer records at all - hide() takes its subtree out of the drawTrails
+# sweep entirely.  The assertions are therefore INVERTED, not relaxed: the hidden
+# column now demands ZERO under BOTH flag states, and the ex-"independence" block
+# demands that the two axes DIFFER (which is what fails loudly if the hidden tick
+# ever comes back).  The DISPLAY-FLAG half - this gate's actual mandate (A1/Q14) -
+# is untouched, and the hidden subject is UNHIDDEN before the flag-gate phases so
+# it still carries every one of them.
 #
 # OBSERVABLES (all from the running process, via `body action dual_dump` ->
 # ModularBody::dumpTrace -> BodyModule::dumpState, INTENT 11.56):
@@ -38,7 +52,8 @@
 # SUBJECTS.  Both must carry a TRAIL module, which the deduce rule gives to
 # non-satellite, non-Artificial bodies with orbit_visualization_period>0 (so
 # NOT the Moon and NOT Phobos - B19's subjects have no trail):
-#   Mars  - HIDDEN for the whole matrix   -> the "hidden" column
+#   Mars  - HIDDEN for the 2x2 matrix (the "hidden" column), then UNHIDDEN for
+#           every flag-gate phase, where it is a third visible witness
 #   Venus - never hidden                  -> the "visible" column
 #   Jupiter - never hidden, second visible witness
 # The selection is pinned to the SUN because `setFlagTrails(true)` with a
@@ -160,6 +175,16 @@ dump("m_on_t0")           # also the FRESH-start witness of cycle 0
 advance()
 dump("m_on_t1")
 
+# --- the hidden column is complete: UNHIDE before the flag-gate phases -----
+# B39 (INTENT 11.117): the subject leaves the rendered universe while hidden, so
+# the phases below - which are about the DISPLAY FLAG, this gate's own mandate -
+# would have nothing to observe on it.  Unhiding here keeps Mars a full subject
+# of every one of them instead of dropping it from the assertion set.  The unhide
+# is itself a use: the trail's missed span reconstructs from the orbit
+# (TrailModule::resumeAfterHidden), which the phases below then treat as ordinary
+# history.
+send(f"body name {HIDDEN_SUBJ} hidden false", 2.5)
+
 # --- phase 3: command-spelling negative control ---------------------------
 # `flag trails off` does not exist.  If the interface swallows it silently the
 # trail state is unchanged AND no PROBE planetsSetFlagTrails line appears.
@@ -194,8 +219,8 @@ send("flag object_trails off", INFADE)
 send("flag object_trails on", 1.5)
 dump("fast_reon")
 
-# --- phase 7: unhide, terminal observable (screen) ------------------------
-send(f"body name {HIDDEN_SUBJ} hidden false", 1.5)
+# --- phase 7: terminal observable (screen) --------------------------------
+# (the unhide happened before phase 3 since B39 - see there)
 send("flag object_trails on", 1.0)
 advance(30)                     # 450 sim-days of arc on every trailed planet
 shot("screen_on_a")
@@ -264,7 +289,21 @@ for flag, t0tag, t1tag in (("off", "m_off_t0", "m_off_t1"),
         # without this a mistyped hide makes the whole column pass vacuously)
         check((rel < 3) == (vis == "hidden"),
               f"membership: {n} relation={rel} expected {vis}")
-        if flag == "on":
+        if vis == "hidden":
+            # B39 / INTENT 11.117 (INVERTED from 11.56, same strictness): a
+            # HIDDEN body is outside the drawTrails sweep, so it records NOTHING
+            # under EITHER flag state - and `recording`/`points` stay frozen at
+            # their pre-hide values (False / 0 here: the flag was off when the
+            # hide landed) because the module is not ticked at all.
+            check(dpts == 0, f"[{flag}|hidden] {n}: {dpts:+d} points over {K} "
+                             f"jumps (expect 0 - a hidden body does not record)")
+            check(dacc == 0, f"[{flag}|hidden] {n}: accumulate() ran {dacc} "
+                             f"times (expect 0 - THE WORK stopped)")
+            check(tb["recording"] is False, f"[{flag}|hidden] {n}: recording="
+                  f"{tb['recording']} (frozen at its pre-hide value)")
+            check(tb["points"] == 0, f"[{flag}|hidden] {n}: buffer empty "
+                                     f"({tb['points']} points)")
+        elif flag == "on":
             check(dpts == K, f"[on|{vis}] {n}: +{dpts} points over {K} jumps "
                              f"(expect +{K})")
             check(dacc > 0, f"[on|{vis}] {n}: accumulate() ran {dacc} times")
@@ -278,14 +317,25 @@ for flag, t0tag, t1tag in (("off", "m_off_t0", "m_off_t1"),
             check(tb["points"] == 0, f"[off|{vis}] {n}: buffer empty "
                                      f"({tb['points']} points)")
 
-print("\n--- independence of the two axes (the row's claim) ---")
+print("\n--- the two axes, since B39 (INTENT 11.117): BOTH are gates ---")
+# This block previously asserted the OPPOSITE (hidden == visible: "the visibility
+# axis is inert on recording", 11.56(b)).  D23 reversed the hidden half, so the
+# discriminating statement is now that the two axes DISAGREE where the flag is on:
+# if the hidden tick ever returns, hidden dpoints becomes K again and this fails.
 for flag in ("on", "off"):
     hv = report["matrix"][f"{flag}/hidden/{HIDDEN_SUBJ}"]
     for n in VISIBLE_SUBJ:
         vv = report["matrix"][f"{flag}/visible/{n}"]
-        check(hv["dpoints"] == vv["dpoints"],
-              f"flag {flag}: hidden {HIDDEN_SUBJ} dpoints={hv['dpoints']} == "
-              f"visible {n} dpoints={vv['dpoints']} (visibility axis is inert)")
+        if flag == "on":
+            check(hv["dpoints"] == 0 and vv["dpoints"] == K,
+                  f"flag on: hidden {HIDDEN_SUBJ} dpoints={hv['dpoints']} vs "
+                  f"visible {n} dpoints={vv['dpoints']} - the HIDDEN axis is a "
+                  f"gate of its own now")
+        else:
+            check(hv["dpoints"] == vv["dpoints"] == 0,
+                  f"flag off: hidden {HIDDEN_SUBJ} dpoints={hv['dpoints']} == "
+                  f"visible {n} dpoints={vv['dpoints']} == 0 (the flag alone "
+                  f"already stops both)")
 on_v = report["matrix"][f"on/visible/{VISIBLE_SUBJ[0]}"]["dpoints"]
 off_v = report["matrix"][f"off/visible/{VISIBLE_SUBJ[0]}"]["dpoints"]
 check(on_v != off_v, f"flag axis IS the gate: on {on_v:+d} vs off {off_v:+d} "

@@ -1,0 +1,104 @@
+{
+ "legs": {
+  "P0_floor": {
+   "px": 0,
+   "max": 0,
+   "nonblack": 79365
+  },
+  "P2_orbit": {
+   "control_px": 779,
+   "control_max": 155,
+   "subject_px": 0,
+   "subject_max": 0,
+   "floor_px": 0
+  },
+  "P3_trail": {
+   "Mars": {
+    "state": "hidden",
+    "dAcc_shown": 1037,
+    "dAcc_test": 0,
+    "dpoints_test": 0,
+    "points_t1": 4,
+    "points_t2": 4
+   },
+   "Venus": {
+    "state": "shown",
+    "dAcc_shown": 1037,
+    "dAcc_test": 1267,
+    "dpoints_test": 4,
+    "points_t1": 4,
+    "points_t2": 8
+   },
+   "Jupiter": {
+    "state": "shown",
+    "dAcc_shown": 1037,
+    "dAcc_test": 1267,
+    "dpoints_test": 4,
+    "points_t1": 4,
+    "points_t2": 8
+   },
+   "after_unhide": {
+    "mars_points": 64,
+    "predicted_points": 0.9754994127162013,
+    "missed": 60,
+    "venus_points": 8,
+    "mars_headJD": 2461338.488711459,
+    "venus_headJD": 2461338.4982416686,
+    "speed_pre_AU_per_d": 0.014301195185259801,
+    "speed_post_AU_per_d": 0.01395519558210621,
+    "speed_ratio_measured": 0.9758062456548938,
+    "speed_ratio_predicted": 0.9754994127162013,
+    "speed_ratio_err": 0.00031453933717718967,
+    "r_start_AU": 1.4548831070951203,
+    "r_mid_AU": 1.5121005721038085,
+    "r_end_AU": 1.5866191639699097
+   }
+  },
+  "P4_pointer": {
+   "io_visible": true,
+   "control_px": 136,
+   "subject_px": 0,
+   "floor_px": 0
+  },
+  "P5_notick": {
+   "delta": {
+    "Jupiter": 0,
+    "Io": 0,
+    "Venus": 2074,
+    "Mars": 2074
+   },
+   "barrier_evals": 5
+  },
+  "P6_reversible": {
+   "tol_km": 250.9865426206153,
+   "control_max_km": 25.09865426206153,
+   "entries": [
+    {
+     "tag": "rev1_hidden",
+     "state": "hidden",
+     "relation": 1,
+     "err_km": 2.384948165438538
+    },
+    {
+     "tag": "rev1_shown",
+     "state": "shown",
+     "relation": 4,
+     "err_km": 3.6632095310801787
+    },
+    {
+     "tag": "rev2_hidden",
+     "state": "hidden",
+     "relation": 1,
+     "err_km": 7.027039412241257
+    },
+    {
+     "tag": "rev2_shown",
+     "state": "shown",
+     "relation": 4,
+     "err_km": 4.618296326302278
+    }
+   ]
+  }
+ },
+ "fail": 0
+}
