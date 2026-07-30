@@ -875,3 +875,45 @@ planets' shipped `rot_rotation_offset` from their fetched W0, to 0.014–2.788°
 answers "do the 17 placeholder-textured moons change?" with a measurement
 (they do — `generic.png` σ = 8.15, `asteroid.png` σ = 13.33: unregistered, not
 featureless).
+
+## F15 — the persistent-body gate (`f15_persist.py`) — INTENT §11.121, 2026-07-30
+
+    cd claude/harness && DISPLAY=:2 ./f15_persist.py [absOutdir] [--mutate]
+
+Seven launches, ~4 min, on the real `~/.spacecrafter` (like `b24_equivalence`;
+the shipped state — no enabled composed file — is restored in a `finally`,
+whatever happens). It owns the app lifecycle; the caller launches nothing.
+
+What it measures (b31-design §6.2 T4/T6/T9, §6.3), each leg named on stdout:
+**T6** a body pushed with `body action load`, saved with `body action save`,
+survives quit + fresh relaunch with the same parent/relation/module set/routing
+— and so does every other body (**121 bodies, 0 divergent fields**); the
+per-body comparator is IMPORTED from `b24_equivalence` (I2). **T6-CONTROL** the
+same push WITHOUT the save leaves 120 bodies and no rover: the same assertion,
+measured in both directions in one run, so T6 cannot pass for another reason.
+**NO-DELTA** the live-tree save of the shipped tree equals the machine twin
+**line for line** (4160 declaration lines, banner excluded) — two sources, one
+answer; and the same comparison against a save WITH a body pushed shows exactly
+that body's 22-line block, 0 removals. **T4** a second save of unchanged state
+is byte-identical, in both regimes (built from a legacy tree; re-saved from the
+composed file the first save produced — the reversible pair entered twice).
+**PRESERVE** a save over an authored file gives back all 4169 of its lines
+byte-identically (human comment, malformed line, unknown ISO-8859 key, irregular
+spacing) and appends what it lacks. **ANNOTATE** a load leaves the file
+byte-identical (D33: no rewrite at load), a save puts each diagnosis on the line
+ABOVE its datum, a re-save is byte-identical, human comments are untouched; the
+**negative control** removes the two diagnosable data and exactly their two
+annotations disappear. **D9** across the save command itself, of 8077 files
+under `~/.spacecrafter`, exactly the target changed. **REFUSE** a path and the
+machine-owned `.disabled` name write nothing and say why.
+
+`--mutate` deletes the `[F15Rover:HINT]` declaration from the SAVED file between
+the save and the relaunch: that run is EXPECTED to fail and does, on
+`modules ['HINT'] != []` and `routing far 1 != 0` — F15Rover only, the other 120
+bodies still 0 divergent fields (plus T4's own consequence of the same deletion).
+
+Standing note: three shipped bodies (**Hyperion, Juno, Vesta**) declare neither
+`rot_periode` nor `orbit_period`, so a COMPOSED load of them annotates the 24 h
+default that acts (D12). That is why a composed re-save of a file built from a
+legacy tree is 3 lines longer than the file it re-saves — predicted before the
+run, and the gate asserts the difference is exactly those 3 lines.

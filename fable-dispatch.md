@@ -728,8 +728,13 @@ corrected: it was written, then destroyed by the same edit.]*
   tree is byte-identical to the twin EXCEPT the pushed body's own 24-line block (zero
   removals, zero changed lines); 91 declarations written, 2 engine-minted bodies
   (baryEarthMoon, the orbit_autour_lune anchor) correctly skipped; frozen md5 pristine.
-  NEXT: the `f15_persist.py` gate (T6 survive-relaunch + its no-save control, T4 fixed
-  point, save-over-authored, annotation leg, D9 md5 assert), then the battery.**
+  Checkpoint 2 — `f15_persist.py` GREEN, 26 legs, 0 failures: T6 (121 bodies, 0 divergent
+  fields, rover survives) against its own no-save control (120, gone); no-delta save ==
+  twin line for line (4160 lines) and, with a body pushed, exactly its 22-line block;
+  T4 byte-identical in both regimes; PRESERVE 4169 authored lines back verbatim;
+  ANNOTATE above the datum, only after a save, idempotent, with a negative control
+  (5 -> 3 annotations); D9 8077 files, 1 changed; refusals silent-free. `--mutate` RED
+  exactly on modules/routing. NEXT: the battery (b24, b25, b40, b4, scene E) + §11.121.**
 
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
 - **Row / recorded:** B7 (§13.B) · §11.95 (158/0, contention hypothesis, `b7_hunt.sh` ready) · §11.97(f) (NEW abort-path datum, composed-body-count axis).
