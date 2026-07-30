@@ -23,6 +23,17 @@ re-analysis agent on doubt. NB: the executor's standing definition
 until Vixy resyncs it, every dispatch prompt carries a binding supersession block.
 De-staled against §11.101/§11.102 (2026-07-24 audits): F0 added, F1 spec revised.
 
+**Update [Fable 2026-07-30, supervising session 3]:** the §11.113 propagation (D22–D36
+answered by Vixy 2026-07-26, propagated 2026-07-29) restructured the dispatchable set
+after this file's last de-stale: seven §13.A rows closed (A33–A39), rows **B39/B40**
+opened, **B27/B24/B33/B14** reopened-or-annotated, **B31 implementation UNBLOCKED**
+(D30–D36 = the review F6 waited on). **F10–F12 added below, in dispatch priority AHEAD
+of F8/F9** (numbering is by creation; file position = priority). Deferred with reasons:
+B31-impl (behind F10 per §11.110's own sequencing: §5.39 parse → writer rework →
+persistent-body serialization → session file — next session's headline), B14/D22
+conversion fix (decided, queued next session). DECISIONS_PENDING open set: **D15 + D21
+only**.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -323,6 +334,70 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   producer; zero consumers survives re-grep; composed no-key decision
   unaffected). Supervisor-verified.**
 
+### F10 — B40: galactic path+parse repair, one commit  [M]  ← START HERE (2026-07-30)
+- **Row / recorded:** B40 (§13.B, opened §11.113(h)) · §11.109 (T1/T2/T3 isolation,
+  0/66 applogs) · §5.37/§5.38 (unsuspended, fix TOGETHER, never sequentially) ·
+  §5.39 (parse half unblocked) · D29 answer verbatim (DECISIONS_PENDING §11 +
+  §11.113(h)).
+- **Why first:** dead product surface on every install (17 systems); the §5.38 rider
+  is D9-critical (shipped-coordinate corruption must be fixed WITH the path); fully
+  decided, bounded blast radius.
+- **Task:** path-concat repair + hardened whitespace-tolerant parse in ONE code
+  commit, parse fixed first inside it; ONE hardened parse shared by both parsers
+  (galactic factory + §5.39 legacy class — I2); comment support in the READERS,
+  never emitted into legacy (§2.0 D13); §5.38's 7 coordinates with it. NOT adopted
+  (recorded): empty-system anchor suppression — 17 ghost anchors accepted as benign
+  and self-explaining.
+- **Discriminating check:** §11.109 T1/T2/T3 re-run FLIPS (systems live, applog
+  evidence); galactic gate green + discriminating; §5.39's seven keys RE-MEASURED
+  before/after (never inherited — §11.113(h)'s own instruction); D9 legacy parity
+  93 bodies 0 diffs; md5 pristine; gate-count interactions checked (F7 precedent
+  93→103; `b5_oort` path_identity must still fire).
+- **WIP:** —
+
+### F11 — B39: hidden = as-if-nonexistent (rendered universe only)  [M–L]
+- **Row / recorded:** B39 (§13.B, opened §11.113(b)) · D23 verbatim (§11.113(b) +
+  DECISIONS_PENDING §6) · §11.76 barrier (its (c) anticipated exactly this) · B32
+  precedent (§11.93, cross-launch 0 ULP) · §5.31 · §5.44 (old-path, record-only) ·
+  §11.114 (B11 trail obligation + `b11_trail_gate.py` hidden-leg inversion) ·
+  §11.56 hidden-half SUPERSEDED (markers at the nodes).
+- **Task:** (i) every annotation/derived contribution of a hidden body leaves the
+  frame (orbit line, trail DRAWING, hints/labels, axis, grid, selection pointer,
+  shadow cast+receive, occlusion, click-pick); (ii) hidden bodies don't tick —
+  scope: HIDDEN only (merely-invisible bodies keep their current mechanism; the
+  B19/B32 migration is NOT this task); unhide is a USE under the D8 barrier;
+  unreconstructible history → resume fresh + LOG (D12); (iii) exposed `hidden` =
+  DECLARED value (readout + twin emit declared; render consults effective =
+  declared ∨ ancestor); (iv) boundary: command/structural surfaces survive —
+  S10.sts (hidden home_planet + select) and W17.sts (live toggle) are the
+  discriminators. Old path untouched (§5.44 recorded, never reproduced).
+- **Discriminating check:** orbit-line gate red→green (visibility test like its
+  TRACE sibling); `b19_hidden_tick.py` stays green through a use channel —
+  RE-VERIFIED, not inherited (§11.113(b)(iii)); `b11_trail_gate.py` hidden-leg
+  INVERTS in the same commit; S10/W17 scenes live before and after; battery green.
+- **WIP:** —
+
+### F12 — decision-implementation batch: B27-split + B24-click + B33 readout  [S–M]
+- **Row / recorded:** B27 (§11.113(f) — D27 OVERRIDES the ratify-as-is rec+endorsement:
+  split `light_source` + `primary`) · B24 (§11.113(e)/D26 — visible child takes the
+  click on its own pixels) · B33 (§11.113(g)/D28 rider — `CoreLink::getHeading` reads
+  the old path).
+- **Task:** (i) B27: per-site assignment by the derived dark-primary test (listed
+  §11.113(f); the two flagged for a second look: hint suppression, `system_star`);
+  legacy-star twin emits BOTH keys (value-for-value); `b24_equivalence.py` field
+  list carries the split; (ii) B24: D26 rule across the old/new seam — child takes
+  the click when it lands ON the child; `b24_select.py` P6 INVERTS in the same
+  commit, re-pointed never loosened; (iii) B33: heading readout reads the drawn
+  roll (`set heading 0` remedy stands).
+- **Stop boundaries (NOT yours):** A17 residual (i) (old candidate set waits for old
+  picker retirement); §11.92(d) heading-offset coupling (suspended, Vixy's);
+  `instanced` key (waits row 5/S4).
+- **Discriminating check:** (i) counterfactual table per moved consumer (§11.107's
+  9-leg pattern) + D9 legacy parity; (ii) P6 inversion + old-body parity legs stay
+  identical outside the child's pixels; (iii) readout matches drawn roll where the
+  paths diverge (§5.26/`s526_ref.py` instrument, 39 090 px case).
+- **WIP:** —
+
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
 - **Row / recorded:** B7 (§13.B) · §11.95 (158/0, contention hypothesis, `b7_hunt.sh` ready) · §11.97(f) (NEW abort-path datum, composed-body-count axis).
 - **Why load-bearing:** open crash-class defect; lowest rank because the negative
@@ -374,7 +449,10 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 - **§11.98(c) missing datum**: the "oort too early" observation refutes on anchored-
   Earth — which configuration produced it? (free mode / other anchor / other content).
 - **Decision batches waiting**: §11.96(e)(1–6) + §11.98(f)(i–iii) (oort/§6.9 plan);
-  D15 (§11.79(i)); §11.92(d) heading-coupling; §11.94(d) latch-when-settled.
+  D15 (expanded §11.112 — sub-item (c) mirror-all-four is recommended + mechanical);
+  D21 (corrected form §11.101(f)); §11.92(d) heading-coupling; §11.94(d)
+  latch-when-settled. D22–D36: ANSWERED + propagated (§11.113) — DECISIONS_PENDING
+  holds nothing else.
 - ~~**F1 instrument authorization (§11.99(h))**~~ **SERVED 2026-07-24 (manual
   approval) → root closed §11.100.** Replaced by: **D21** (DECISIONS_PENDING) —
   grounded children vs parent display scaling (`moon_scale=5` swallows the mandate
