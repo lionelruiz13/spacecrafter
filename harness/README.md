@@ -905,7 +905,10 @@ ABOVE its datum, a re-save is byte-identical, human comments are untouched; the
 **negative control** removes the two diagnosable data and exactly their two
 annotations disappear. **D9** across the save command itself, of 8077 files
 under `~/.spacecrafter`, exactly the target changed. **REFUSE** a path and the
-machine-owned `.disabled` name write nothing and say why.
+machine-owned `.disabled` name write nothing and say why. **§2(c) channel 2**: the
+same command played from an `.sts` file (installed and removed by the script)
+writes the same file — one registration serving both channels, measured rather
+than inherited from §11.55(h).
 
 **SCREEN** is the terminal observable and the leg is self-calibrating: the body's
 footprint is measured WITHIN one launch (rover shot vs pre-push shot, **8462 px**,

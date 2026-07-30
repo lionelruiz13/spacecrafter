@@ -83,6 +83,9 @@ TWIN = MODDIR / "SolarSystem.ini.disabled"
 ENABLED = MODDIR / "SolarSystem.ini"
 CTL = MODDIR / "f15_ctl.ini"
 CTL2 = MODDIR / "f15_ctl2.ini"
+FROM_SCRIPT = MODDIR / "f15_from_script.ini"
+# The .sts the §2(c) channel-2 leg plays; installed and removed by this script.
+SCRIPT = USERDIR / "scripts/f15_persist_save.sts"
 # The saved file is broken between the save and the relaunch: T6 then FAILS, and
 # where it fails is the measurement (b24/b25's `--strip`/`--mutate` shape).
 MUTATE = "--mutate" in sys.argv[1:]
@@ -362,6 +365,26 @@ def main():
             (OUT / "f15_nodelta.diff").write_text("\n".join(diff))
             fail(f"no-runtime-delta: {len(diff)} lines differ between the live-tree save "
                  f"and the twin (see {OUT}/f15_nodelta.diff)")
+
+        # §2(c) CHANNEL 2 (script): the same command reached from a played .sts
+        # file rather than from the socket this driver speaks. One registration is
+        # supposed to serve every command channel (§11.55(h)) - measured, not
+        # assumed, exactly as b10_cmd measures it for its own command.
+        SCRIPT.write_text(
+            "# F15 §2(c) channel 2: the system save from the SCRIPT channel.\n"
+            "body action save filename f15_from_script\n")
+        try:
+            app.cmd("script action play filename f15_persist_save.sts", 8)
+            if FROM_SCRIPT.exists() and declarations(FROM_SCRIPT) == d_twin:
+                ok(f"§2(c) channel 2: a played .sts saved the system too "
+                   f"({FROM_SCRIPT.stat().st_size} bytes, identical declarations)")
+            elif FROM_SCRIPT.exists():
+                fail("§2(c) channel 2: the script channel wrote a DIFFERENT file "
+                     "from the command channel's")
+            else:
+                fail("§2(c) channel 2: `body action save` from a .sts wrote nothing")
+        finally:
+            SCRIPT.unlink(missing_ok=True)
 
         # REFUSE: neither the frozen corpus nor the machine-owned twin is reachable.
         ss_md5, twin_md5 = md5(USERDIR / "ssystem.ini"), md5(TWIN)
@@ -669,6 +692,8 @@ def main():
         ENABLED.unlink(missing_ok=True)   # shipped state, ALWAYS
         CTL.unlink(missing_ok=True)
         CTL2.unlink(missing_ok=True)
+        FROM_SCRIPT.unlink(missing_ok=True)
+        SCRIPT.unlink(missing_ok=True)
 
     print(f"\n{'FAILED' if FAILS else 'ALL GREEN'}: {len(FAILS)} failure(s)", flush=True)
     return 1 if FAILS else 0
