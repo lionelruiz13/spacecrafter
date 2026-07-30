@@ -143,13 +143,13 @@ BODIES = [
     ("BigA",   100.0, PSI,               0.0),
     ("SmallB",  25.0, PSI + DPSI_SMALL,  0.0),
     ("FarC",    60.0, -PSI,             12.0),
-    # ON the parent's DISC (psi 20 deg, alt 0) - the recorded BOUNDARY of what
-    # this wave delivers, measured rather than asserted from reasoning: the old
-    # picker owns every click inside a drawn body's disc (its `default_object`
-    # tier, protosystem.cpp:344-355 + core.cpp:1142), and the new route runs
-    # only after old declined, so a composed body drawn on its parent is NOT
-    # clickable. Changing that means changing which body an old-body click
-    # selects => a decision, not an implementation choice (INTENT §11.106).
+    # ON the parent's DISC (psi 20 deg, alt 0) - once the recorded BOUNDARY of
+    # B24-select (§11.106(e): the old picker owned every click inside a drawn
+    # body's disc through its `default_object` tier, protosystem.cpp:344-355 +
+    # core.cpp:1142, so a composed body drawn on its parent was NOT clickable),
+    # now the SUBJECT of D26 (§11.113(e), landed §11.118): the child takes the
+    # click on its own pixels and the parent keeps the rest of its disc. P6
+    # asserts the first half, P6b the second.
     ("OnDisc", 150.0, 20.0,              0.0),
 ]
 SWAP = {"BigA": 25.0, "SmallB": 100.0, "FarC": 60.0, "OnDisc": 150.0}  # R5 size mutation
@@ -673,24 +673,62 @@ def main():
         else:
             fail(f"P3 R5: cluster click selected '{sel}' (expected the bigger, 'BigA')")
 
-        # P6 - the BOUNDARY, measured: a composed body drawn ON the parent's
-        # disc is picked by the OLD path's disc tier, so the click selects the
-        # PARENT. Locked as a fact (not a wish): if a later change makes the
-        # new route pre-empt old picking, this leg fails and the decision it
-        # implies has to be taken explicitly.
+        # P6 - the SEAM, RE-POINTED 2026-07-30 by D26 (§11.113(e), F12/§11.118):
+        # this leg asserted 'Moon' while the decision was open, as the lock on a
+        # measured residual. Vixy answered "the visible composed child TAKES the
+        # click when it lands ON the child", so the expected value INVERTS to the
+        # child's own name - re-pointed, never loosened, in the same commit as
+        # the behaviour. It stays the discriminator: a later silent flip in
+        # either direction fails here.
         ox, oy = ndc_to_window(scr["OnDisc"]["screen"])
         cam_p6, info6 = click_and_read(s, out, "clk_ondisc", ox, oy)
         sel, _ = sel_of(cam_p6)
         report["legs"]["P6_pointer_on_disc"] = dict(
             win=[ox, oy], selected=sel, ndc=scr["OnDisc"]["screen"],
-            screenSize=scr["OnDisc"]["screenSize"])
-        if sel == PARENT:
-            ok(f"P6 boundary: a click on the composed body drawn INSIDE the Moon's disc "
+            screenSize=scr["OnDisc"]["screenSize"], expect="OnDisc")
+        if sel == "OnDisc":
+            ok(f"P6 seam: a click ON the composed body drawn INSIDE the Moon's disc "
                f"(ndc {scr['OnDisc']['screen']}, ss {scr['OnDisc']['screenSize']:.4f}) selects "
-               f"'{sel}' - old's disc tier still owns it (recorded residual, §11.106)")
+               f"'{sel}' - the child takes its own pixels across the old/new seam (D26)")
         else:
-            fail(f"P6 boundary: on-disc composed click selected '{sel}' (expected '{PARENT}') - "
-                 f"the new route pre-empted old picking; that is a decision, not a fix")
+            fail(f"P6 seam: on-disc composed click selected '{sel}' (expected 'OnDisc') - "
+                 f"D26's rule is not in force")
+
+        # P6b - THE BOUND on D26, and the leg that makes "confined to the
+        # child's own pixels" a measurement rather than a claim: the SAME
+        # parent disc, one child-radius away from the child, must still select
+        # the PARENT. Without it, "the child wins" and "the child wins
+        # everywhere on the parent" pass the same test.
+        odn = scr["OnDisc"]["screen"]
+        away = (odn[0] + 3.0 * scr["OnDisc"]["screenSize"], odn[1])
+        ax, ay = ndc_to_window(away)
+        cam_p6b, info6b = click_and_read(s, out, "clk_ondisc_off", ax, ay)
+        selb, _ = sel_of(cam_p6b)
+        report["legs"]["P6b_pointer_parent_disc"] = dict(
+            win=[ax, ay], selected=selb, ndc=list(away), expect=PARENT)
+        if selb == PARENT:
+            ok(f"P6b bound: the same parent disc, {3.0 * scr['OnDisc']['screenSize']:.4f} NDC "
+               f"off the child, still selects '{selb}' - the pre-emption is confined to the "
+               f"child's own pixels")
+        else:
+            fail(f"P6b bound: a click on the parent's disc away from the child selected "
+                 f"'{selb}' (expected '{PARENT}') - the new route is taking more than D26 allows")
+
+        # P6c - the SEAM crossed a SECOND time, entering from the state the
+        # first crossing left behind (a parent selection made by P6b, not the
+        # clean state P6 started from). Count arithmetic is not a substitute:
+        # the pre-emption runs before the old picker and both sides mutate the
+        # selection, so the pair has to be traversed twice.
+        cam_p6c, info6c = click_and_read(s, out, "clk_ondisc_again", ox, oy)
+        selc, _ = sel_of(cam_p6c)
+        report["legs"]["P6c_pointer_on_disc_again"] = dict(
+            win=[ox, oy], selected=selc, expect="OnDisc", entered_from=selb)
+        if selc == "OnDisc":
+            ok(f"P6c seam re-entry: the same on-child click, now made with '{selb}' "
+               f"selected, again selects '{selc}'")
+        else:
+            fail(f"P6c seam re-entry: the same click selected '{selc}' (expected 'OnDisc') "
+                 f"after entering from '{selb}' - the seam is state-dependent")
 
         # P5 - control: empty sky selects nothing
         ex, ey = ndc_to_window((-0.85, -0.85))

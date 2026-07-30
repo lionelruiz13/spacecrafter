@@ -499,6 +499,18 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   **0** divergent fields, twin delta **exactly one line** (`primary = true`),
   `b24_equivalence` GREEN 120 and shown able to fail via the new `--strip Sun:primary`
   (`Sun.primary: True != False`). NEXT: item (ii) B24 click, then (iii) B33.
+- **WIP (2026-07-30, run 2, checkpoint 3):** item **(ii) B24 click DONE and committed**
+  (code `68967c01`; harness this commit). `searchNewOnlyObjectAt` is asked BEFORE
+  `cleverFind`; its two existing filters (new-only body, disc-or-tolerance hit) are what
+  confine the pre-emption to the child's pixels. `b24_select.py` P6 INVERTED in the same
+  commit (`Moon`→`OnDisc`) + **new P6b** (same disc, 0.224 NDC off the child ⇒ still
+  `Moon` — makes "confined" a measurement) + **new P6c** (seam re-entered from the state
+  P6b left). Same script: pre-binary RED on exactly one leg, post GREEN; 90-name parity
+  sweep identical. Residual **52 px>8 / max 200 on 1 521 226 lit px** in a frame taken
+  before any click, attributed to the camera az `0.69289571→0.69289577` bistability
+  §11.106(g) already isolated (same-binary A/A **0 px>8**; null probe lands on the post
+  value); Eris selDist Δ 7.6e-6 AU reproduces in the A/A ⇒ launch variance.
+  NEXT: item (iii) B33 heading readout, then the delivery battery + INTENT 11.118.
 - **WIP (2026-07-30, session 4):** first executor run KILLED by host OOM mid-task —
   nothing committed, no checkpoint, verification artifacts lost. SURVIVING
   uncommitted diff at code HEAD `a62ad5d7` = item (iv)'s §5.45 guard
