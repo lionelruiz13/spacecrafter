@@ -720,7 +720,16 @@ corrected: it was written, then destroyed by the same edit.]*
   datum only AFTER an explicit save, idempotent on re-save; §6.3 D9 assert: md5 of every
   data file the save did NOT target unchanged; battery green (b24_equivalence,
   b25_galactic, b40_parity, b4_anchors, scene E) + twin byte-stability (18/18).
-- **WIP:** —
+- **WIP: 2026-07-30 checkpoint 1 — code landed (`5a8881ff`): `declaredParams` on the
+  body, `ModularSystem::saveSystem` + `body action save [filename <name>]`, retained
+  composed sections + a `diagnose()` channel that says a verdict once into both the log
+  and the datum's annotation, one emitter shared with the twin. Measured already: twins
+  18/18 byte-identical to the pre-F15 baseline; the live-tree save of the shipped solar
+  tree is byte-identical to the twin EXCEPT the pushed body's own 24-line block (zero
+  removals, zero changed lines); 91 declarations written, 2 engine-minted bodies
+  (baryEarthMoon, the orbit_autour_lune anchor) correctly skipped; frozen md5 pristine.
+  NEXT: the `f15_persist.py` gate (T6 survive-relaunch + its no-save control, T4 fixed
+  point, save-over-authored, annotation leg, D9 md5 assert), then the battery.**
 
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
 - **Row / recorded:** B7 (§13.B) · §11.95 (158/0, contention hypothesis, `b7_hunt.sh` ready) · §11.97(f) (NEW abort-path datum, composed-body-count axis).
