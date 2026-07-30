@@ -502,13 +502,24 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   b5_oort 11/11, b25_galactic 130/17, b4_anchors 0, b24_equivalence 120, b24_select incl. P6c);
   md5 pristine throughout. NEW **§5.47** (`get status position` never replies) + **§5.48**
   (§11.18 ASmooth cold-launch NaN, attributed to neither binary by a 0/4-vs-0/4 repeat).
-  Deviations flagged in §11.118(j); nothing suspended for Vixy.**
+  Deviations flagged in §11.118(j); nothing suspended for Vixy.
+  **Supervisor-verified 2026-07-30** (11.118 read in full; commits/authors/both trees
+  checked; §5.45 FIXED flip + §5.47/§5.48 stubs + D26/D27/D28 implementation marks
+  verified in the ledger; harnesses NOT re-run — committed artifacts + both-ways
+  discrimination records accepted as evidence). Deviations (1)–(4) ENDORSED: (1)
+  applies §11.113(f)'s own mandated second look with the argument at the site and a
+  cheap veto (twin-only key); (2)(3) are I2/I6 operating; (4) closes
+  pass-for-wrong-reason paths. Supervisor fixed two artifacts of this session en
+  route: the stray `---` splitting INTENT §5 between rows 46/47, and the F13 header
+  (root = supervisor edit truncation, see F13's note).**
 
-### F13 — B31: the writer rework (b31-design §5.2/§5.3)  [size not stated]  ← START HERE
-*[Header RECONSTRUCTED 2026-07-30 by F12: this section had NO `###` line, so its body ran on
-inside F12's section — a staleness bug in this dispatch view (its own authority note). The title
-follows the session-4 update's own wording ("F13 (B31 writer rework)"); the size estimate was
-never written and is not invented here.]*
+### F13 — B31-impl slice 1: the §11.66(b) writer rework  [M]  ← START HERE
+*[Header restored 2026-07-30 by the supervisor. Root cause of the loss: a supervisor Edit
+whose old_string swallowed the authored `###` line while its replacement dropped it
+(edit-truncation; caught by F12's executor, who reconstructed a provisional header and
+correctly refused to invent the lost size tag). Original title + size **[M]** restored from
+the authoring context — the F12 report's "size estimate was never written" is hereby
+corrected: it was written, then destroyed by the same edit.]*
 - **Row / recorded:** B31 (§13.B — DISPATCHABLE since §11.113(i)–(o)) · `b31-design.md`
   §5.2/§5.3/§5.4 (the line-level design — the authority for this slice) · §11.66(b)
   (the contract) · §11.113(n)/D35 (composed + session files ONLY; legacy `ssystem.ini`
