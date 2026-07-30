@@ -401,15 +401,14 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   TRACE sibling); `b19_hidden_tick.py` stays green through a use channel —
   RE-VERIFIED, not inherited (§11.113(b)(iii)); `b11_trail_gate.py` hidden-leg
   INVERTS in the same commit; S10/W17 scenes live before and after; battery green.
-- **WIP (2026-07-30, Opus 5 executor):** CHECKPOINT 1 = RED BASELINE RECORDED
-  (code `5b488e84` evalCount instrument; harness `83b4c0a` `b39_hidden.py` +
-  `b39_run.sh` + evidence). Six subject legs red with in-run positive controls:
-  orbit line hidden 779 px == shown 779 px; trail hidden dAcc +1512/+4 samples ==
-  never-hidden controls; nested-hidden Io pointer 137 px vs 138 px; evalCount
-  hidden Jupiter +2074 and nested Io +2074 == controls. Next: implement the
-  structural half (hide/show deregisters the subtree from `sortedSystemBodies`,
-  `renderHidden` effective flag, `operator bool`), then the tick retirement +
-  §11.76 barrier, then the unhide module resume.
+- **WIP (2026-07-30, Opus 5 executor):** CHECKPOINT 2 = BEHAVIOUR LANDED AND
+  GREEN (code `5b488e84` instrument + `a62ad5d7` B39; harness `83b4c0a` red
+  baseline + `6521c40` green). b39 all-pass (orbit 779→0 px, trail dAcc
+  1512→0, nested pointer 137→0 px, evalCount 2074→0, reconstruction 64 samples
+  == predicted and on-orbit to 0.0315 %); b11 hidden column INVERTED 95/95;
+  b19 RE-RUN 59/59 through the barrier. Remaining: S10/W17 live scenes, D11
+  cost claim, battery (b24_equivalence/b24_select/b5_oort/b4_anchors/scenes),
+  §11.117 entry + §13 flips.
 
 ### F12 — decision-implementation batch: B27-split + B24-click + B33 readout  [S–M]
 - **Row / recorded:** B27 (§11.113(f) — D27 OVERRIDES the ratify-as-is rec+endorsement:
