@@ -373,7 +373,13 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   frozen md5 in==out on every launch. Anchor suppression NOT adopted (D29's own
   veto), 18 galactic anchors accepted. NEW **§5.45** recorded not fixed and it
   is the successor's first item: a galactic section missing x/y/z ABORTS the app
-  at startup (`stod("")`, SIGABRT measured) — reachable BECAUSE of this commit.**
+  at startup (`stod("")`, SIGABRT measured) — reachable BECAUSE of this commit.
+  **Supervisor-verified 2026-07-30** (entry, one-commit shape, `protosystem.cpp`
+  hunk confirmed comment-only by reading the diff, ledger flips, D29 marked
+  implemented, both trees clean; harnesses NOT re-run — committed artifacts +
+  three-way discrimination records accepted as evidence). §5.45's
+  record-don't-fix call ENDORSED; its fix re-homed as **F12 item (iv)** (batch
+  shape, no urgency: reachable only via malformed galactic data no install has).**
 
 ### F11 — B39: hidden = as-if-nonexistent (rendered universe only)  [M–L]  ← START HERE
 - **Row / recorded:** B39 (§13.B, opened §11.113(b)) · D23 verbatim (§11.113(b) +
@@ -408,14 +414,21 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   list carries the split; (ii) B24: D26 rule across the old/new seam — child takes
   the click when it lands ON the child; `b24_select.py` P6 INVERTS in the same
   commit, re-pointed never loosened; (iii) B33: heading readout reads the drawn
-  roll (`set heading 0` remedy stands).
+  roll (`set heading 0` remedy stands); (iv) [added 2026-07-30 from §11.115(i)]
+  §5.45: guard `name`/`x`/`y`/`z` in `SSystemFactory::loadSystem` — warn naming
+  the section and the missing key, skip the section (the same function's own
+  anchor call is the precedent; §2(f)/D12); (v) [added 2026-07-30 from
+  §11.115(i)] `b10_cmd_battery_run.sh` stale md5 echo (`62239656…` vs pristine
+  `545a51ef…`) → assert like the F0-fixed runners (§11.101(g) class).
 - **Stop boundaries (NOT yours):** A17 residual (i) (old candidate set waits for old
   picker retirement); §11.92(d) heading-offset coupling (suspended, Vixy's);
   `instanced` key (waits row 5/S4).
 - **Discriminating check:** (i) counterfactual table per moved consumer (§11.107's
   9-leg pattern) + D9 legacy parity; (ii) P6 inversion + old-body parity legs stay
   identical outside the child's pixels; (iii) readout matches drawn roll where the
-  paths diverge (§5.26/`s526_ref.py` instrument, 39 090 px case).
+  paths diverge (§5.26/`s526_ref.py` instrument, 39 090 px case); (iv) the §5.45
+  repro (one `z` line removed) flips SIGABRT → warn+skip+start, and the
+  well-formed corpus is byte-inert; (v) the runner FAILS on a mutated ssystem md5.
 - **WIP:** —
 
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
@@ -464,10 +477,18 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
-- **A15 re-ask is SENDABLE** (§11.82: the fade is complete and live; tester judges
-  threshold/band/appearance side-by-side).
-- **§11.98(c) missing datum**: the "oort too early" observation refutes on anchored-
-  Earth — which configuration produced it? (free mode / other anchor / other content).
+- ~~**A15 re-ask is SENDABLE**~~ **JOINS THE FINAL TESTER PASS** [vixy 2026-07-30,
+  batching principle → §11.116(c)]: tester items accumulate into ONE final pass
+  before testing deployment; the final-pass list is ledger-owned (members so far:
+  A15, the oort-shadow item below), round-3 file materializes at send time.
+- ~~**§11.98(c) missing datum**~~ **RESOLVED 2026-07-30 (§11.116(b))**: the
+  originating observation was recovered verbatim from session transcripts — it
+  says "oort **SHADOW** showing too early", its configuration reconstructs to
+  **free_mode/Sun-ref, fov 340 pinned** (the "(anchored on earth)" text was the
+  requested ladder's SPEC, not the watched scene); the **zoom confounder is
+  REFUTED** (closed candidate set, zero fov/zoom commands); the anchored-Earth
+  refutation never reached that configuration ⇒ genuinely-early stays live there,
+  vs expectation-wrong — discriminated in the final tester pass, state-stamped.
 - **Decision batches waiting**: §11.96(e)(1–6) + §11.98(f)(i–iii) (oort/§6.9 plan);
   D15 (expanded §11.112 — sub-item (c) mirror-all-four is recommended + mechanical);
   D21 (corrected form §11.101(f)); §11.92(d) heading-coupling; §11.94(d)
