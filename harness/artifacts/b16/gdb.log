@@ -1,4 +1,4 @@
-Breakpoint 1 at 0x187060: file /home/claude/spacecrafter/src/bodyModule/ssystem_factory.cpp, line 479.
+Breakpoint 1 at 0x18beb0: file /home/claude/spacecrafter/src/bodyModule/ssystem_factory.cpp, line 682.
 
 This GDB supports auto-downloading debuginfo from the following URLs:
   <https://debuginfod.ubuntu.com>
@@ -6,35 +6,32 @@ Debuginfod has been disabled.
 To make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.
 [Thread debugging using libthread_db enabled]
 Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
-[Detaching after fork from child process 68160]
-[New Thread 0x7fffec9b06c0 (LWP 68161)]
-[Detaching after vfork from child process 68162]
-sh: 1: kill: No such process
-
-[New Thread 0x7fffebbff6c0 (LWP 68164)]
-[New Thread 0x7fffeb30d6c0 (LWP 68166)]
-[New Thread 0x7fffe6b0c6c0 (LWP 68167)]
-[New Thread 0x7fffe4c436c0 (LWP 68168)]
-[New Thread 0x7fffdcbff6c0 (LWP 68169)]
-[New Thread 0x7fffc71ff6c0 (LWP 68170)]
-[New Thread 0x7fffc69fe6c0 (LWP 68171)]
-[New Thread 0x7fffc61fd6c0 (LWP 68172)]
-[New Thread 0x7fffc59fc6c0 (LWP 68173)]
-[New Thread 0x7fffc51fb6c0 (LWP 68174)]
-[New Thread 0x7fffc49fa6c0 (LWP 68175)]
-[New Thread 0x7fffc41f96c0 (LWP 68176)]
-[New Thread 0x7fffc39f86c0 (LWP 68177)]
-[New Thread 0x7fffc31f76c0 (LWP 68178)]
-[New Thread 0x7fffc29f66c0 (LWP 68179)]
-[New Thread 0x7fffc21f56c0 (LWP 68180)]
-[New Thread 0x7fffc19f46c0 (LWP 68181)]
-[New Thread 0x7fffc11f36c0 (LWP 68182)]
-[New Thread 0x7fffc09f26c0 (LWP 68183)]
-[New Thread 0x7fffe5f936c0 (LWP 68184)]
-[New Thread 0x7fffddbff6c0 (LWP 68185)]
-[New Thread 0x7fffca3ff6c0 (LWP 68186)]
-[New Thread 0x7fffc9bfe6c0 (LWP 68187)]
-[New Thread 0x7fffc93fd6c0 (LWP 68188)]
+[Detaching after fork from child process 29669]
+[New Thread 0x7fffec9b06c0 (LWP 29670)]
+[New Thread 0x7fffebbff6c0 (LWP 29671)]
+[New Thread 0x7fffeb30d6c0 (LWP 29673)]
+[New Thread 0x7fffeab0c6c0 (LWP 29674)]
+[New Thread 0x7fffe8c436c0 (LWP 29675)]
+[New Thread 0x7fffdcbff6c0 (LWP 29676)]
+[New Thread 0x7fffc71ff6c0 (LWP 29677)]
+[New Thread 0x7fffc69fe6c0 (LWP 29678)]
+[New Thread 0x7fffc61fd6c0 (LWP 29679)]
+[New Thread 0x7fffc59fc6c0 (LWP 29680)]
+[New Thread 0x7fffc51fb6c0 (LWP 29681)]
+[New Thread 0x7fffc49fa6c0 (LWP 29682)]
+[New Thread 0x7fffc41f96c0 (LWP 29683)]
+[New Thread 0x7fffc39f86c0 (LWP 29684)]
+[New Thread 0x7fffc31f76c0 (LWP 29685)]
+[New Thread 0x7fffc29f66c0 (LWP 29686)]
+[New Thread 0x7fffc21f56c0 (LWP 29687)]
+[New Thread 0x7fffc19f46c0 (LWP 29688)]
+[New Thread 0x7fffc11f36c0 (LWP 29689)]
+[New Thread 0x7fffc09f26c0 (LWP 29690)]
+[New Thread 0x7fffe9f936c0 (LWP 29691)]
+[New Thread 0x7fffddbff6c0 (LWP 29692)]
+[New Thread 0x7fffca3ff6c0 (LWP 29693)]
+[New Thread 0x7fffc9bfe6c0 (LWP 29694)]
+[New Thread 0x7fffc93fd6c0 (LWP 29695)]
 [37m=================================================================[0m
 [1m[32m(Info ): [0m[37mSDL init oki ![0m
 [1m[32m(Info ): [0m[37mWindows size is 1024x1024px[0m
@@ -91,7 +88,7 @@ wideLines : [92;1menabled[0m
 samplerAnisotropy : [92;1menabled[0m
 shaderFloat64 : [92;1menabled[0m
 [0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30752 MiB	used : 12 MiB    	free : 30740 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31264 MiB	used : 12 MiB    	free : 31251 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5 MiB    	free : 45472 MiB[0m
 [1m[32m(Info ): [0m[37mAdvanced event enabled[0m
 Scaling : 0.5
@@ -104,25 +101,25 @@ Rect : (2048, 2048) offset=(0, 0)
 [1m[32m(Info ): [0m[37mRear projection: false (enabled=0)[0m
 [1m[32m(Info ): [0m[37mInitializing Vulkan...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 512 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30783 MiB	used : 12 MiB    	free : 30771 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31263 MiB	used : 12 MiB    	free : 31250 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 1 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30783 MiB	used : 13 MiB    	free : 30770 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31263 MiB	used : 13 MiB    	free : 31249 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 160 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30781 MiB	used : 173 MiB    	free : 30608 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31261 MiB	used : 173 MiB    	free : 31087 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'depth attachment'[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 1280 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30778 MiB	used : 1453 MiB    	free : 29325 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31257 MiB	used : 1453 MiB    	free : 29804 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'Shadow Depth Buffer'[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 7 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30778 MiB	used : 1461 MiB    	free : 29317 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31257 MiB	used : 1461 MiB    	free : 29796 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'Shadow Stencil Buffer'[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 256 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30778 MiB	used : 1717 MiB    	free : 29061 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31257 MiB	used : 1717 MiB    	free : 29540 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'Shadow Shape Buffer'[0m
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'self shadow' with size (16384, 16384)[0m
@@ -130,35 +127,35 @@ Rect : (2048, 2048) offset=(0, 0)
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'shadow shape' with size (1280, 1280)[0m
 [1m[32m(Info ): [0m[37mBinding of 'main color 0' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30778 MiB	used : 1733 MiB    	free : 29045 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31257 MiB	used : 1733 MiB    	free : 29524 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'main color 0'[0m
 [1m[32m(Info ): [0m[37mBinding of 'multisample color 0' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30778 MiB	used : 1861 MiB    	free : 28917 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31257 MiB	used : 1861 MiB    	free : 29396 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'multisample color 0'[0m
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'main 0' with size (2048, 2048)[0m
 [1m[32m(Info ): [0m[37mBinding of 'main color 1' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30778 MiB	used : 1877 MiB    	free : 28901 MiB[0m
-[1m[36m(Debug): [0m[37mlocal memory	total : 45[New Thread 0x7fffc87fa6c0 (LWP 68189)]
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31257 MiB	used : 1877 MiB    	free : 29380 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45[New Thread 0x7fffc87fa6c0 (LWP 29696)]
 477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'main color 1'[0m
 [1m[32m(Info ): [0m[37mBinding of 'multisample color 1' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30778 MiB	used : 2005 MiB    	free : 28773 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31257 MiB	used : 2005 MiB    	free : 29252 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'multisample color 1'[0m
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'main 1' with size (2048, 2048)[0m
 [1m[32m(Info ): [0m[37mBinding of 'main color 2' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30778 MiB	used : 2021 MiB    	free : 28757 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31257 MiB	used : 2021 MiB    	free : 29236 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'main color 2'[0m
 [1m[32m(Info ): [0m[37mBinding of 'multisample color 2' view implicitly call use() (safety fallback)[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30778 MiB	used : 2149 MiB    	free : 28629 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31257 MiB	used : 2149 MiB    	free : 29108 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'multisample color 2'[0m
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'main 2' with size (2048, 2048)[0m
@@ -168,228 +165,324 @@ Rect : (2048, 2048) offset=(0, 0)
 [1m[36m(Debug): [0m[37mNo cmd given for 'splash/spacecrafter.png', creating uninitialized texture[0m
 [1m[32m(Info ): [0m[37mFinalizing Vulkan initialization...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 256 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30762 MiB	used : 2149 MiB    	free : 28613 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31243 MiB	used : 2149 MiB    	free : 29094 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 773 MiB    	free : 44704 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 1536 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30772 MiB	used : 2149 MiB    	free : 28623 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31251 MiB	used : 2149 MiB    	free : 29102 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 2309 MiB    	free : 43168 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 682 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30772 MiB	used : 2149 MiB    	free : 28623 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31251 MiB	used : 2149 MiB    	free : 29102 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 2991 MiB    	free : 42486 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 48 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30772 MiB	used : 2149 MiB    	free : 28623 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31251 MiB	used : 2149 MiB    	free : 29102 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 512 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30772 MiB	used : 2661 MiB    	free : 28111 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31251 MiB	used : 2661 MiB    	free : 28590 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 1 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	availabl[New Thread 0x7fffc7ff96c0 (LWP 68190)]
-[New Thread 0x7ffee55546c0 (LWP 68191)]
-[New Thread 0x7ffee4d536c0 (LWP 68192)]
-[New Thread 0x7ffedffff6c0 (LWP 68193)]
-[New Thread 0x7ffedf7fe6c0 (LWP 68194)]
-[New Thread 0x7ffedeffd6c0 (LWP 68195)]
-e : 30772 MiB	used : 2662 MiB    	free : 28110 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	availabl[New Thread 0x7fffc7ff96c0 (LWP 29697)]
+[New Thread 0x7fffb6dff6c0 (LWP 29698)]
+[New Thread 0x7fffb65fe6c0 (LWP 29699)]
+[New Thread 0x7fffb5dfd6c0 (LWP 29700)]
+[New Thread 0x7fffb55fc6c0 (LWP 29701)]
+[New Thread 0x7fffb4dfb6c0 (LWP 29702)]
+e : 31251 MiB	used : 2662 MiB    	free : 28589 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30772 MiB	used : 2790 MiB    	free : 27982 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31251 MiB	used : 2790 MiB    	free : 28461 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 64 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30772 MiB	used : 2854 MiB    	free : 27918 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31251 MiB	used : 2854 MiB    	free : 28397 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 1 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30772 MiB	used : 2855 MiB    	free : 27916 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31251 MiB	used : 2855 MiB    	free : 28396 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30772 MiB	used : 2871 MiB    	free : 27900 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31251 MiB	used : 2871 MiB    	free : 28380 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'star FBO'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'Projected shadows'[0m
 [1m[32m(Info ): [0m[37mVulkan initialization completed[0m
 [1m[32m(Info ): [0m[37mAudio initialization successful[0m
-[1m[32m(Info ): [0m[37mGenerating EquiSphere took : 27ms[0m
+[1m[32m(Info ): [0m[37mGenerating EquiSphere took : 28ms[0m
+[1m[32m(Info ): [0m[37mSystem 'MilkyWay' uses centre-relative navigation by class default (datum_radius = ground_radius = 0): free-mode altitude is measured from its centre and free descent reaches the centre. To override, set datum_radius/ground_radius in data or run 'body name MilkyWay datum_radius <km>'.[0m
 [1m[32m(Info ): [0m[37mLoading body Sun[0m
+[1m[36m(Debug): [0m[37mBody 'Sun': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Mercury[0m
+[1m[36m(Debug): [0m[37mBody 'Mercury': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Venus[0m
+[1m[36m(Debug): [0m[37mBody 'Venus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Earth[0m
+[1m[36m(Debug): [0m[37mBody 'Earth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Moon[0m
+[1m[36m(Debug): [0m[37mBody 'Moon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mAdding Moon to Earth binary orbit.[0m
 [1m[32m(Info ): [0m[37mLoading body Mars[0m
+[1m[36m(Debug): [0m[37mBody 'Mars': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Phobos[0m
+[1m[36m(Debug): [0m[37mBody 'Phobos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading object Phobos[0m
 [1m[32m(Info ): [0m[37mSuccesfull loading model3D Phobos[0m
 [1m[32m(Info ): [0m[37mLoading body Deimos[0m
+[1m[36m(Debug): [0m[37mBody 'Deimos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading object Deimos[0m
 [1m[32m(Info ): [0m[37mSuccesfull loading model3D Deimos[0m
 [1m[32m(Info ): [0m[37mLoading body Jupiter[0m
+[1m[36m(Debug): [0m[37mBody 'Jupiter': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Metis[0m
+[1m[36m(Debug): [0m[37mBody 'Metis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Adrastea[0m
+[1m[36m(Debug): [0m[37mBody 'Adrastea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Amalthea[0m
+[1m[36m(Debug): [0m[37mBody 'Amalthea': rot_pole_w0 (IAU W0=231.67 deg, from the ICRF-equator node) converted to rot_rotation_offset 168.121552 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37mLoading body Thebe[0m
+[1m[36m(Debug): [0m[37mBody 'Thebe': rot_pole_w0 (IAU W0=8.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 299.457397 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Io[0m
+[1m[36m(Debug): [0m[37mBody 'Io': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Europa[0m
+[1m[36m(Debug): [0m[37mBody 'Europa': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Ganymede[0m
+[1m[36m(Debug): [0m[37mBody 'Ganymede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Callisto[0m
+[1m[36m(Debug): [0m[37mBody 'Callisto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Himalia[0m
+[1m[36m(Debug): [0m[37mBody 'Himalia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Elara[0m
+[1m[36m(Debug): [0m[37mBody 'Elara': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Carme[0m
+[1m[36m(Debug): [0m[37mBody 'Carme': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Pasiphae[0m
+[1m[36m(Debug): [0m[37mBody 'Pasiphae': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Lysithea[0m
+[1m[36m(Debug): [0m[37mBody 'Lysithea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ananke[0m
+[1m[36m(Debug): [0m[37mBody 'Ananke': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sinope[0m
+[1m[36m(Debug): [0m[37mBody 'Sinope': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Leda[0m
+[1m[36m(Debug): [0m[37mBody 'Leda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Saturn[0m
+[1m[36m(Debug): [0m[37mBody 'Saturn': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Pan[0m
+[1m[36m(Debug): [0m[37mBody 'Pan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Daphnis[0m
+[1m[36m(Debug): [0m[37mBody 'Daphnis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Prometheus[0m
+[1m[36m(Debug): [0m[37mBody 'Prometheus': rot_pole_w0 (IAU W0=296.14 deg, from the ICRF-equator node) converted to rot_rotation_offset 166.175461 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Pandora[0m
+[1m[36m(Debug): [0m[37mBody 'Pandora': rot_pole_w0 (IAU W0=162.92 deg, from the ICRF-equator node) converted to rot_rotation_offset 32.955444 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37mLoading body Epimetheus[0m
+[1m[36m(Debug): [0m[37mBody 'Epimetheus': rot_pole_w0 (IAU W0=293.87 deg, from the ICRF-equator node) converted to rot_rotation_offset 164.618637 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
 [1m[32m(Info ): [0m[37mLoading body Janus[0m
+[1m[36m(Debug): [0m[37mBody 'Janus': rot_pole_w0 (IAU W0=58.83 deg, from the ICRF-equator node) converted to rot_rotation_offset 288.439484 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Titan[0m
+[1m[36m(Debug): [0m[37mBody 'Titan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient3.png[0m
 [1m[32m(Info ): [0m[37mLoading body Mimas[0m
+[1m[36m(Debug): [0m[37mBody 'Mimas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Enceladus[0m
+[1m[36m(Debug): [0m[37mBody 'Enceladus': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Dione[0m
+[1m[36m(Debug): [0m[37mBody 'Dione': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Tethys[0m
+[1m[36m(Debug): [0m[37mBody 'Tethys': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Rhea[0m
+[1m[36m(Debug): [0m[37mBody 'Rhea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Hyperion[0m
+[1m[36m(Debug): [0m[37mBody 'Hyperion': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Hyperion': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
 [1m[32m(Info ): [0m[37mLoading body Iapetus[0m
+[1m[36m(Debug): [0m[37mBody 'Iapetus': rot_pole_w0 (IAU W0=355.2 deg, from the ICRF-equator node) converted to rot_rotation_offset 171.467056 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37mLoading body Telesto[0m
+[1m[36m(Debug): [0m[37mBody 'Telesto': rot_pole_w0 (IAU W0=56.88 deg, from the ICRF-equator node) converted to rot_rotation_offset 294.588348 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Helene[0m
+[1m[36m(Debug): [0m[37mBody 'Helene': rot_pole_w0 (IAU W0=245.12 deg, from the ICRF-equator node) converted to rot_rotation_offset 115.606392 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Uranus[0m
+[1m[36m(Debug): [0m[37mBody 'Uranus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Juliet[0m
+[1m[36m(Debug): [0m[37mBody 'Juliet': rot_pole_w0 (IAU W0=302.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 217.635773 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Portia[0m
+[1m[36m(Debug): [0m[37mBody 'Portia': rot_pole_w0 (IAU W0=25.03 deg, from the ICRF-equator node) converted to rot_rotation_offset 300.123627 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Rosalind[0m
+[1m[36m(Debug): [0m[37mBody 'Rosalind': rot_pole_w0 (IAU W0=314.90 deg, from the ICRF-equator node) converted to rot_rotation_offset 229.999634 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Belinda[0m
+[1m[36m(Debug): [0m[37mBody 'Belinda': rot_pole_w0 (IAU W0=297.46 deg, from the ICRF-equator node) converted to rot_rotation_offset 212.530380 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Puck[0m
+[1m[36m(Debug): [0m[37mBody 'Puck': rot_pole_w0 (IAU W0=91.24 deg, from the ICRF-equator node) converted to rot_rotation_offset 6.381639 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Miranda[0m
+[1m[36m(Debug): [0m[37mBody 'Miranda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Ariel[0m
+[1m[36m(Debug): [0m[37mBody 'Ariel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Umbriel[0m
+[1m[36m(Debug): [0m[37mBody 'Umbriel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Titania[0m
+[1m[36m(Debug): [0m[37mBody 'Titania': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Oberon[0m
+[1m[36m(Debug): [0m[37mBody 'Oberon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Caliban[0m
+[1m[36m(Debug): [0m[37mBody 'Caliban': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sycorax[0m
+[1m[36m(Debug): [0m[37mBody 'Sycorax': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Prospero[0m
+[1m[36m(Debug): [0m[37mBody 'Prospero': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Setebos[0m
+[1m[36m(Debug): [0m[37mBody 'Setebos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Neptune[0m
+[1m[36m(Debug): [0m[37mBody 'Neptune': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Naiad[0m
+[1m[36m(Debug): [0m[37mBody 'Naiad': rot_pole_w0 (IAU W0=254.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 140.775604 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Thalassa[0m
+[1m[36m(Debug): [0m[37mBody 'Thalassa': rot_pole_w0 (IAU W0=102.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 347.728729 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Despina[0m
+[1m[36m(Debug): [0m[37mBody 'Despina': rot_pole_w0 (IAU W0=306.51 deg, from the ICRF-equator node) converted to rot_rotation_offset 192.446762 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Galatea[0m
+[1m[36m(Debug): [0m[37mBody 'Galatea': rot_pole_w0 (IAU W0=258.09 deg, from the ICRF-equator node) converted to rot_rotation_offset 144.041214 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Larissa[0m
+[1m[36m(Debug): [0m[37mBody 'Larissa': rot_pole_w0 (IAU W0=179.41 deg, from the ICRF-equator node) converted to rot_rotation_offset 65.537102 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Proteus[0m
+[1m[36m(Debug): [0m[37mBody 'Proteus': rot_pole_w0 (IAU W0=93.38 deg, from the ICRF-equator node) converted to rot_rotation_offset 339.711334 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37mLoading body Triton[0m
+[1m[36m(Debug): [0m[37mBody 'Triton': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Neried[0m
+[1m[36m(Debug): [0m[37mBody 'Neried': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Halimede[0m
+[1m[36m(Debug): [0m[37mBody 'Halimede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sao[0m
+[1m[36m(Debug): [0m[37mBody 'Sao': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Laomedeia[0m
+[1m[36m(Debug): [0m[37mBody 'Laomedeia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Psamathe[0m
+[1m[36m(Debug): [0m[37mBody 'Psamathe': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Neso[0m
+[1m[36m(Debug): [0m[37mBody 'Neso': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ceres[0m
+[1m[36m(Debug): [0m[37mBody 'Ceres': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Pallas[0m
+[1m[36m(Debug): [0m[37mBody 'Pallas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Juno[0m
+[1m[36m(Debug): [0m[37mBody 'Juno': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Juno': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Vesta[0m
+[1m[36m(Debug): [0m[37mBody 'Vesta': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Vesta': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
 [1m[32m(Info ): [0m[37mLoading object Vesta[0m
 [1m[33m(Warn.): [0m[1m[37mPerformance Issue : Too many vertices for 'model3D/Vesta/Vesta_1L.ojm' (Keep Below 4 000)[0m
-[New Thread 0x7ffec5ff76c0 (LWP 68198)]
-[New Thread 0x7ffeb4ffc6c0 (LWP 68199)]
-[New Thread 0x7ffeadffe6c0 (LWP 68200)]
-[New Thread 0x7ffead7fd6c0 (LWP 68201)]
-[New Thread 0x7ffeacffc6c0 (LWP 68202)]
-[New Thread 0x7ffea5ffe6c0 (LWP 68203)]
-[New Thread 0x7ffea57fd6c0 (LWP 68204)]
-[New Thread 0x7ffea4ffc6c0 (LWP 68205)]
-[New Thread 0x7ffe9bffd6c0 (LWP 68206)]
-[New Thread 0x7ffe9b7fc6c0 (LWP 68207)]
-[New Thread 0x7ffe9affb6c0 (LWP 68208)]
-[New Thread 0x7ffe9a7fa6c0 (LWP 68209)]
-[New Thread 0x7ffe99ff96c0 (LWP 68210)]
-[New Thread 0x7ffe997f86c0 (LWP 68211)]
-[New Thread 0x7ffe98ff76c0 (LWP 68212)]
-[New Thread 0x7ffe91ffe6c0 (LWP 68213)]
-[New Thread 0x7ffe917fd6c0 (LWP 68214)]
-[New Thread 0x7ffe90ffc6c0 (LWP 68215)]
-[New Thread 0x7ffe89ffe6c0 (LWP 68216)]
-[New Thread 0x7ffe897fd6c0 (LWP 68217)]
-[New Thread 0x7ffe88ffc6c0 (LWP 68218)]
-[New Thread 0x7ffe81ffe6c0 (LWP 68219)]
-[New Thread 0x7ffe817fd6c0 (LWP 68220)]
-[New Thread 0x7ffe80ffc6c0 (LWP 68221)]
-[Thread 0x7ffee55546c0 (LWP 68191) exited]
-[Thread 0x7fffc7ff96c0 (LWP 68190) exited]
-[Thread 0x7ffedffff6c0 (LWP 68193) exited]
-[Thread 0x7ffee4d536c0 (LWP 68192) exited]
 [1m[32m(Info ): [0m[37mSuccesfull loading model3D Vesta[0m
 [1m[32m(Info ): [0m[37mLoading body Pluto[0m
+[1m[36m(Debug): [0m[37mBody 'Pluto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Charon[0m
+[1m[36m(Debug): [0m[37mBody 'Charon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading body Nix[0m
+[1m[36m(Debug): [0m[37mBody 'Nix': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Hydra_[0m
+[1m[36m(Debug): [0m[37mBody 'Hydra_': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Styx[0m
+[1m[36m(Debug): [0m[37mBody 'Styx': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Kerberos[0m
+[1m[36m(Debug): [0m[37mBody 'Kerberos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Eris[0m
+[1m[36m(Debug): [0m[37mBody 'Eris': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Haumea[0m
+[1m[36m(Debug): [0m[37mBody 'Haumea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Namaka[0m
+[1m[36m(Debug): [0m[37mBody 'Namaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Hiiaka[0m
+[1m[36m(Debug): [0m[37mBody 'Hiiaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Makemake[0m
+[1m[36m(Debug): [0m[37mBody 'Makemake': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mIgnoring line without '=' in ssystem.ini: 'orbit_LongOfPericenter 95.58754' - a key/value line needs 'key = value'; write '#' first to make it a comment.[0m
+[New Thread 0x7ffea8ffa6c0 (LWP 29705)]
+[New Thread 0x7ffe8fffc6c0 (LWP 29706)]
+[New Thread 0x7ffe8f7fb6c0 (LWP 29707)]
+[New Thread 0x7ffe8effa6c0 (LWP 29708)]
+[New Thread 0x7ffe8e7f96c0 (LWP 29709)]
+[New Thread 0x7ffe8dff86c0 (LWP 29710)]
+[New Thread 0x7ffe8d7f76c0 (LWP 29711)]
+[New Thread 0x7ffe8cff66c0 (LWP 29712)]
+[New Thread 0x7ffe7dffd6c0 (LWP 29713)]
+[New Thread 0x7ffe7d7fc6c0 (LWP 29714)]
+[New Thread 0x7ffe7cffb6c0 (LWP 29715)]
+[New Thread 0x7ffe6dffd6c0 (LWP 29716)]
+[New Thread 0x7ffe6d7fc6c0 (LWP 29717)]
+[New Thread 0x7ffe6cffb6c0 (LWP 29718)]
+[New Thread 0x7ffe5dffe6c0 (LWP 29719)]
+[New Thread 0x7ffe5d7fd6c0 (LWP 29720)]
+[New Thread 0x7ffe5cffc6c0 (LWP 29721)]
+[New Thread 0x7ffe49ffb6c0 (LWP 29722)]
+[New Thread 0x7ffe497fa6c0 (LWP 29723)]
+[New Thread 0x7ffe48ff96c0 (LWP 29724)]
+[New Thread 0x7ffdd9ff36c0 (LWP 29725)]
+[New Thread 0x7ffdd97f26c0 (LWP 29726)]
+[New Thread 0x7ffdd8ff16c0 (LWP 29727)]
+[New Thread 0x7ffdd87f06c0 (LWP 29728)]
+[Thread 0x7fffb65fe6c0 (LWP 29699) exited]
+[Thread 0x7fffb5dfd6c0 (LWP 29700) exited]
+[Thread 0x7fffc7ff96c0 (LWP 29697) exited]
+[Thread 0x7fffb6dff6c0 (LWP 29698) exited]
 [1m[32m(Info ): [0m[37mLoading body Sedna[0m
+[1m[36m(Debug): [0m[37mBody 'Sedna': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Arrokoth[0m
+[1m[36m(Debug): [0m[37mBody 'Arrokoth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mLoading object Arrokoth[0m
 [1m[32m(Info ): [0m[37mSuccesfull loading model3D Arrokoth[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Solar_System[0m
+[1m[36m(Debug): [0m[37mBody 'Solar_System': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Goldilocks_Zone[0m
+[1m[36m(Debug): [0m[37mBody 'Goldilocks_Zone': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37m(system SolarSystem loaded)[0m
 [37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ssystem.ini generated at modularSystem/SolarSystem.ini.disabled[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/tex_nebulaes.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/tex_nebulaes.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/star16x16.png'[0m
@@ -398,7 +491,7 @@ e : 30772 MiB	used : 2662 MiB    	free : 28110 MiB[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/volum_cloud.png', creating uninitialized texture[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/volum_cloud.png[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 512 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30764 MiB	used : 3415 MiB    	free : 27348 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31244 MiB	used : 3415 MiB    	free : 27828 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/milkyway-vguerin-d128.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/milkyway-vguerin-d128.png', creating uninitialized texture[0m
@@ -533,10 +626,10 @@ e : 30772 MiB	used : 2662 MiB    	free : 28110 MiB[0m
 [1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
 [1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
 [1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
-[New Thread 0x7ffee4d536c0 (LWP 68227)]
-[New Thread 0x7ffedffff6c0 (LWP 68228)]
+[New Thread 0x7fffb6dff6c0 (LWP 29732)]
+[New Thread 0x7fffc7ff96c0 (LWP 29733)]
 [1m[36m(Debug): [0m[37mDedicated allocation of 20 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30764 MiB	used : 3435 MiB    	free : 27328 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31244 MiB	used : 3435 MiB    	free : 27808 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'depth attachment'[0m
 [1m[36m(Debug): [0m[37mBuild FrameBuffer 'hip_star single' with size (2048, 2048)[0m
@@ -548,11 +641,10 @@ e : 30772 MiB	used : 2662 MiB    	free : 28110 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'New-path projected shadows'[0m
 [1m[36m(Debug): [0m[37mNo vertex entry defined for Pipeline "SHADOW_RING#SHADOW_SHAPE+0000"[0m
 ->InSolarSystem
-[Thread 0x7ffedffff6c0 (LWP 68228) exited]
-[New Thread 0x7fffc7ff96c0 (LWP 68229)]
+[New Thread 0x7fffb5dfd6c0 (LWP 29734)]
 [1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 32 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30764 MiB	used : 3467 MiB    	free : 27296 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31244 MiB	used : 3467 MiB    	free : 27776 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
 [1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
@@ -748,9 +840,7 @@ e : 30772 MiB	used : 2662 MiB    	free : 28110 MiB[0m
 [1m[32m(Info ): [0m[37mLoading new Stellar System object... Nix[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading new Stellar System object... Hydra_[0m
-[1m[32m(Info ): ZoneArray::create(stars_2_0v0_8.cat): fopen failed
-ZoneArray::create(stars_3_1v0_4.cat): fopen failed
-[0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading new Stellar System object... Styx[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading new Stellar System object... Kerberos[0m
@@ -777,7 +867,221 @@ ZoneArray::create(stars_3_1v0_4.cat): fopen failed
 [1m[32m(Info ): [0m[37m(solar system loaded)[0m
 [37m=================================================================[0m
 [1m[32m(Info ): [0m[37mReading fileAnchor anchor.ini[0m
+[1m[32m(Info ): [0m[37mCameraAnchors: reading anchor file anchor.ini[0m
+[1m[32m(Info ): [0m[37mCameraAnchors: 10 anchor(s) declared from anchor.ini[0m
 [1m[32m(Info ): [0m[37mAnchorManager:: initFirtAnchor to Earth[0m
+Params :
+hip : 0
+name : Sun
+x : 0
+y : 0
+z : 0
+Params :
+hip : 0
+name : DarkStar
+system : stellar_systems/system_starwobble.ini
+x : 0.01
+y : 0.01
+z : 0.01
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system DarkStarSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_starwobble.ini generated at modularSystem/DarkStarSystem.ini.disabled[0m
+Params :
+hip : 70890
+name : Proxima
+system : stellar_systems/system_proxima.ini
+x : -0.472175
+y : -0.789803
+z : -0.912535
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system ProximaSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_proxima.ini generated at modularSystem/ProximaSystem.ini.disabled[0m
+Params :
+hip : 71683
+name : Toliman
+system : stellar_systems/system_alphacen.ini
+x : -0.495153
+y : -0.840304
+z : -0.896610
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system TolimanSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_alphacen.ini generated at modularSystem/TolimanSystem.ini.disabled[0m
+Params :
+hip : 32349
+name : Sirius
+system : stellar_systems/system_sirius.ini
+x : -0.494399
+y : 1.970759
+z : -1.681002
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system SiriusSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_sirius.ini generated at modularSystem/SiriusSystem.ini.disabled[0m
+Params :
+hip : 113357
+name : 51Peg
+system : stellar_systems/system_51peg.ini
+x : 14.053800
+y : -1.406837
+z : 6.642219
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system 51PegSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_51peg.ini generated at modularSystem/51PegSystem.ini.disabled[0m
+Params :
+hip : 19849
+name : Keid
+system : stellar_systems/system_40eri.ini
+x : 2.179330
+y : 3.803963
+z : -2.371937
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system KeidSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_40eri.ini generated at modularSystem/KeidSystem.ini.disabled[0m
+Params :
+hip : 0
+name : Trappist1
+system : stellar_systems/system_trappist1.ini
+x : 12.04585
+y : -3.06285
+z : 0.13738
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system Trappist1System loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_trappist1.ini generated at modularSystem/Trappist1System.ini.disabled[0m
+Params :
+hip : 0
+name : Kepler16
+system : stellar_systems/system_kepler16.ini
+x : 15.19253
+y : -16.84609
+z : -2.37194
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system Kepler16System loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_kepler16.ini generated at modularSystem/Kepler16System.ini.disabled[0m
+Params :
+hip : 0
+name : HelixDwarf
+system : stellar_systems/system_white_dwarf.ini
+x : 183.82440
+y : -100.29100
+z : -38.95769
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system HelixDwarfSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/HelixDwarfSystem.ini.disabled[0m
+Params :
+hip : 0
+name : M57Dwarf
+system : stellar_systems/system_white_dwarf.ini
+x : 135.96006
+y : -372.01262
+z : 577.13255
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system M57DwarfSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/M57DwarfSystem.ini.disabled[0m
+Params :
+hip : 0
+name : M1Pulsar
+system : stellar_systems/system_white_dwarf.ini
+x : 205.6193021
+y : 1988.889006
+z : -45.17990438
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system M1PulsarSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stelZoneArray::create(stars_2_0v0_8.cat): fopen failed
+ZoneArray::create(stars_3_1v0_4.cat): fopen failed
+lar_systems/system_white_dwarf.ini generated at modularSystem/M1PulsarSystem.ini.disabled[0m
+Params :
+hip : 0
+name : M27Dwarf
+system : stellar_systems/system_white_dwarf.ini
+x : 191.2402307
+y : -241.217185
+z : 279.6681137
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system M27DwarfSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/M27DwarfSystem.ini.disabled[0m
+Params :
+hip : 0
+name : NGC2392Dwarf
+system : stellar_systems/system_white_dwarf.ini
+x : -704.4334563
+y : 1858.478137
+z : -32.44208719
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system NGC2392DwarfSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/NGC2392DwarfSystem.ini.disabled[0m
+Params :
+hip : 24608
+name : Capella
+system : stellar_systems/system_capella.ini
+x : 1.71261
+y : 11.9702415
+z : 5.09929664
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system CapellaSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_capella.ini generated at modularSystem/CapellaSystem.ini.disabled[0m
+Params :
+hip : 91262
+name : Vega
+system : stellar_systems/system_vega.ini
+x : 0.960616811
+y : -3.507478984
+z : 6.763271954
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system VegaSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_vega.ini generated at modularSystem/VegaSystem.ini.disabled[0m
+Params :
+hip : 69673
+name : Arcturus
+system : stellar_systems/system_arcturus.ini
+x : -8.823092161
+y : -3.971477288
+z : 5.753300085
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system ArcturusSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_arcturus.ini generated at modularSystem/ArcturusSystem.ini.disabled[0m
+Params :
+hip : 80763
+name : Antares
+system : stellar_systems/system_antares.ini
+x : -149.6602614
+y : -11.4245336
+z : -76.86148241
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system AntaresSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_antares.ini generated at modularSystem/AntaresSystem.ini.disabled[0m
 [1m[32m(Info ): [0m[37mLoading star data...[0m
 [1m[32m(Info ): [0m[37mLoading catalog stars_0_0v0_5.cat[0m
 [1m[32m(Info ): [0m[37mstars_0_0v0_5.cat:0:0:0:2[0m
@@ -944,7 +1248,7 @@ ZoneArray::create(stars_3_1v0_4.cat): fopen failed
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m048-aca.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m048-aca.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 256 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30764 MiB	used : 3755 MiB    	free : 27008 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31244 MiB	used : 3755 MiB    	free : 27489 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m049-sdss2.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m049-sdss2.png', creating uninitialized texture[0m
@@ -1568,7 +1872,7 @@ ZoneArray::create(stars_3_1v0_4.cat): fopen failed
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/v838-hst.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/v838-hst.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mAllocate chunk of 256 MiB in GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30764 MiB	used : 4011 MiB    	free : 26752 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31244 MiB	used : 4011 MiB    	free : 27233 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/vela-sergio_eguivar.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/vela-sergio_eguivar.png', creating uninitialized texture[0m
@@ -1586,12 +1890,12 @@ ZoneArray::create(stars_3_1v0_4.cat): fopen failed
 [1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:base_altitude[0m
 [1m[32m(Info ): [0m[37mLandscape Spherical observatory created[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30764 MiB	used : 4055 MiB    	free : 26708 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31244 MiB	used : 4055 MiB    	free : 27189 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'landscapes/observatory-immersive_adventure.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/observatory-immersive_adventure.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30764 MiB	used : 4099 MiB    	free : 26664 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31244 MiB	used : 4099 MiB    	free : 27145 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'landscapes/observatory_night-immersive_adventure.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/observatory_night-immersive_adventure.png', creating uninitialized texture[0m
@@ -1605,23 +1909,24 @@ Body : Earth Landscape : observatory
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/milkyway.png[0m
 [1m[36m(Debug): [0m[37mMilkyway: no irisMilky define[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30764 MiB	used : 4143 MiB    	free : 26620 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31244 MiB	used : 4143 MiB    	free : 27101 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/milkyway.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/milkyway.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30764 MiB	used : 4187 MiB    	free : 26576 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31244 MiB	used : 4187 MiB    	free : 27057 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/zodiacale.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/zodiacale.png', creating uninitialized texture[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_bool rendering:flag_experimental_oort[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 32 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30764 MiB	used : 4219 MiB    	free : 26544 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31244 MiB	used : 4219 MiB    	free : 27025 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/typegals.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/typegals.png', creating uninitialized texture[0m
 [1m[32m(Info ): [0m[37mTully catalog successfully loaded: number of items 30432[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 32 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30764 MiB	used : 4251 MiB    	free : 26512 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31244 MiB	used : 4251 MiB    	free : 26993 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/dsocat.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/dsocat.png', creating uninitialized texture[0m
@@ -1649,9 +1954,9 @@ Body : Earth Landscape : observatory
 [1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
 Invalid sky culture directory: western-spacecrafter
 [1m[31m(Error): [0m[1m[37mUI: ERROR - Failed to acquire texture data for icons[0m
-[Detaching after vfork from child process 68242]
-[Detaching after vfork from child process 68246]
-[New Thread 0x7ffee55546c0 (LWP 68250)]
+[Detaching after vfork from child process 29747]
+[Detaching after vfork from child process 29751]
+[New Thread 0x7fffb65fe6c0 (LWP 29755)]
 [1m[32m(Info ): [0m[37mLandscape : observatory[0m
 [1m[32m(Info ): [0m[37mStarLines read Data scripts/internal/asterism_all.fab[0m
 [1m[32m(Info ): [0m[37mSky locale is fr[0m
@@ -1663,14 +1968,14 @@ Invalid sky culture directory: western-spacecrafter
 [1m[32m(Info ): [0m[37mVR360 loading ojml cube[0m
 [1m[32m(Info ): [0m[37mVR360 actived[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 2560 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30755 MiB	used : 4251 MiB    	free : 26504 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31235 MiB	used : 4251 MiB    	free : 26983 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[32m(Info ): [0m[37mbuffer TCP size 1024[0m
 [1m[32m(Info ): [0m[37mMemory information
-Total ram 63582711808
-Free  ram 34544836608
-Shared ram 1278128128
-Buffer ram 585134080
+Total ram 63582703616
+Free  ram 1011490816
+Shared ram 12365070336
+Buffer ram 133885952
 Total swap 0
 Free  swap 0[0m
 [37m=================================================================[0m
@@ -1681,15 +1986,15 @@ Free  swap 0[0m
 [1m[32m(Info ): [0m[37mLocalizing TUI for locale: fr[0m
 InSolarSystem->
 ->InSolarSystem
-[Thread 0x7fffc7ff96c0 (LWP 68229) exited]
-[New Thread 0x7fffc7ff96c0 (LWP 68251)]
+[Thread 0x7fffb5dfd6c0 (LWP 29734) exited]
+[New Thread 0x7fffb5dfd6c0 (LWP 29756)]
 Body : Earth Landscape : observatory
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/milkyway.png[0m
 [1m[32m(Info ): [0m[37mSky locale is fr[0m
 [1m[32m(Info ): [0m[37mRead daykeymode as <calendar>[0m
 [1m[31m(Error): [0m[1m[37mUI: ERROR - Failed to acquire texture data for icons[0m
-[Detaching after vfork from child process 68252]
-[Detaching after vfork from child process 68256]
+[Detaching after vfork from child process 29757]
+[Detaching after vfork from child process 29761]
 [1m[32m(Info ): [0m[37mLandscape : observatory[0m
 [1m[32m(Info ): [0m[37mStarLines read Data scripts/internal/asterism_all.fab[0m
 [1m[32m(Info ): [0m[37mSky locale is fr[0m
@@ -1698,7 +2003,7 @@ Body : Earth Landscape : observatory
 [1m[32m(Info ): [0m[37mMedia::playerPlayStop[0m
 [1m[33m(Warn.): [0m[1m[37mSkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_UMBRA[0m
 [1m[33m(Warn.): [0m[1m[37mSkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_PENUMBRA[0m
-[New Thread 0x7ffec57f66c0 (LWP 68260)]
+[New Thread 0x7ffec55f76c0 (LWP 29765)]
 [1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
 [1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
 [1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
@@ -1745,9 +2050,15 @@ Statistics v168767 i188160
 [1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Deimos/Deimos_2M.ojm"[0m
 [1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Phobos/Phobos_2M.ojm"[0m
 Statistics v175091 i188160
-[New Thread 0x7ffec4ff56c0 (LWP 68261)]
+[New Thread 0x7ffec4df66c0 (LWP 29766)]
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/planethalo.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/planethalo.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon.jpg'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/moon.jpg', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon_normal.jpg'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/moon_normal.jpg', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon_alti.jpg'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/moon_alti.jpg', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/earth.jpg'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/earth.jpg', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/earth_night.jpg'[0m
@@ -1758,63 +2069,60 @@ Statistics v175091 i188160
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/earth_normal.jpg', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/earth_alti.png'[0m
 [1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/earth_alti.png', creating uninitialized texture[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient3.png'[0m
-[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/atm_gradient3.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_alti.png...[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_alti.png"'[0m
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_alti.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient3.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/atm_gradient3.png', creating uninitialized texture[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient2.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/sun.jpg'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient4.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/proteus.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/venus.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/goldilocks_zone.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/triton.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/deimos.jpg'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/makemake.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/pluto.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/goldilocks_zone.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/venus.jpg'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/charon.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/oberon.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/titania.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/umbriel.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/ariel.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/pluto.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/proteus.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/deimos.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/triton.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/neptune_rings.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/miranda.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/uranusring.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/oberon.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/umbriel.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/titania.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/ariel.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/ceres.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/neptune.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/phobos.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/hyperion.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/uranusring.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/miranda.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/vesta.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/tethys.png'[0m
+[1m[36m(Debug): [0m[37[New Thread 0x7ffeaffff6c0 (LWP 29767)]
+mCreated image support for 'textures/bodies/phobos.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/hyperion.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/rhea.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/tethys.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/dione.png'[0m
-[1m[36m(Debug): [0m[New Thread 0x7ffeb7dff6c0 (LWP 68262)]
-[37mCreated image support for 'textures/bodies/mimas.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/titan.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/uranus.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/neptune.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mimas.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/titan.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/asteroid.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/saturn_rings_radial.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/enceladus.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/callisto.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/ganymede.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon_normal.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/enceladus.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/iapetus_alti.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/iapetus.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/generic.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/amalthea.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/generic.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/iapetus.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/jupiter_rings.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/europa.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/io_night.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/io.png'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/jupiter.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/europa.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/saturn.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/jupiter.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mars_alti.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon_alti.jpg'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mars_normal.jpg'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mercury.jpg'[0m
-[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon_normal.jpg'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/nomap.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/eclipse_map.png'[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mars-water.jpg'[0m
@@ -1825,30 +2133,43 @@ Statistics v175091 i188160
 [1m[36m(Debug): [0m[37mbig "textures/bodies/earth_alti.png" is ready for use[0m
 [1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_normal.jpg...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 170 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30753 MiB	used : 4423 MiB    	free : 26330 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31238 MiB	used : 4423 MiB    	free : 26814 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_normal.jpg"'[0m
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_normal.jpg'[0m
+[1m[33m(Warn.): [0m[1m[37mFrame stall detected[0m
+[37m   0# Fps::sigstacktrace(int) at /home/claude/spacecrafter/src/appModule/fps.cpp:150
+   1#      at ./signal/../sysdeps/unix/sysv/linux/x86_64/libc_sigaction.c:0
+   2# syscall at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:37
+   3# void std::__detail::__platform_wait<int>(int const*, int) at /usr/include/c++/15/bits/atomic_wait.h:114
+   4# App::draw(int) at /home/claude/spacecrafter/src/appModule/app.cpp:795
+   5# App::startMainLoop() at /home/claude/spacecrafter/src/appModule/app.cpp:995
+   6# main at /home/claude/spacecrafter/src/main.cpp:348
+   7# __libc_start_call_main at ../sysdeps/nptl/libc_start_call_main.h:58
+   8# __libc_start_main_impl at ../csu/libc-start.c:360
+   9# _start at :0
+  10# 
+[0m
 [1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Deimos/Deimos_3H.ojm"[0m
 [1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Phobos/Phobos_3H.ojm"[0m
 [1m[36m(Debug): [0m[37mbig "textures/bodies/earth_normal.jpg" is ready for use[0m
 [1m[36m(Debug): [0m[37mLoading big textures/bodies/earth.jpg...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 682 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30739 MiB	used : 5107 MiB    	free : 25632 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31223 MiB	used : 5107 MiB    	free : 26115 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth.jpg"'[0m
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth.jpg'[0m
 [1m[36m(Debug): [0m[37mbig "textures/bodies/earth.jpg" is ready for use[0m
 [1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_night.jpg...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 170 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30753 MiB	used : 5279 MiB    	free : 25474 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31238 MiB	used : 5279 MiB    	free : 25958 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_night.jpg"'[0m
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_night.jpg'[0m
 [1m[36m(Debug): [0m[37mbig "textures/bodies/earth_night.jpg" is ready for use[0m
 [1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_specular.png...[0m
 [1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
-[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30753 MiB	used : 5323 MiB    	free : 25430 MiB[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 31238 MiB	used : 5323 MiB    	free : 25914 MiB[0m
 [1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
 [1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_specular.png"'[0m
 [1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_specular.png'[0m
@@ -1880,10 +2201,10 @@ Body : Earth Landscape : observatory
 [1m[32m(Info ): [0m[37mExecute_command moveto lat 48.85 lon 2.35 alt 100 duration 0[0m
 Altitude change received 100
 Altitude change received 100
-[New Thread 0x7ffeb73fe6c0 (LWP 68271)]
-[Thread 0x7ffeb73fe6c0 (LWP 68271) exited]
-[New Thread 0x7ffeb73fe6c0 (LWP 68272)]
-[Thread 0x7ffeb73fe6c0 (LWP 68272) exited]
+[New Thread 0x7ffeaf5fe6c0 (LWP 29777)]
+[Thread 0x7ffeaf5fe6c0 (LWP 29777) exited]
+[New Thread 0x7ffeaf5fe6c0 (LWP 29780)]
+[Thread 0x7ffeaf5fe6c0 (LWP 29780) exited]
 PROBE reloadCurrentSystem ENTERED
 [1m[32m(Info ): [0m[37mget tcp : select planet Moon pointer off[0m
 [1m[32m(Info ): [0m[37mExecute_command select planet Moon pointer off[0m
@@ -1893,25 +2214,29 @@ PROBE reloadCurrentSystem ENTERED
 [1m[32m(Info ): [0m[37mExecute_command flag moon_scaled off[0m
 [1m[32m(Info ): [0m[37mget tcp : timerate rate 0[0m
 [1m[32m(Info ): [0m[37mExecute_command timerate rate 0[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_ctrl.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_ctrl.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_ctrl.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_ctrl.json[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_pre.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_pre.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_pre.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_pre.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_ctrl.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_ctrl.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_ctrl.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_ctrl.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_pre.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_pre.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_pre.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_pre.json[0m
 [1m[32m(Info ): [0m[37mget tcp : body action reload[0m
 [1m[32m(Info ): [0m[37mExecute_command body action reload[0m
 [1m[32m(Info ): [0m[37mLoading body Sun[0m
+[1m[36m(Debug): [0m[37mBody 'Sun': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/sun.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/big_halo.png[0m
 [1m[32m(Info ): [0m[37mLoading body Mercury[0m
+[1m[36m(Debug): [0m[37mBody 'Mercury': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mercury.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Venus[0m
+[1m[36m(Debug): [0m[37mBody 'Venus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/venus.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient2.png[0m
 [1m[32m(Info ): [0m[37mLoading body Earth[0m
+[1m[36m(Debug): [0m[37mBody 'Earth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_night.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_specular.png[0m
@@ -1919,427 +2244,307 @@ PROBE reloadCurrentSystem ENTERED
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_alti.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient3.png[0m
 [1m[32m(Info ): [0m[37mLoading body Moon[0m
+[1m[36m(Debug): [0m[37mBody 'Moon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mAdding Moon to Earth binary orbit.[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_normal.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_alti.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Mars[0m
+[1m[36m(Debug): [0m[37mBody 'Mars': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars_normal.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars_alti.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient4.png[0m
 [1m[32m(Info ): [0m[37mLoading body Phobos[0m
+[1m[36m(Debug): [0m[37mBody 'Phobos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/phobos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Deimos[0m
+[1m[36m(Debug): [0m[37mBody 'Deimos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Jupiter[0m
+[1m[36m(Debug): [0m[37mBody 'Jupiter': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/jupiter_rings.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/jupiter.png[0m
 [1m[32m(Info ): [0m[37mLoading body Metis[0m
+[1m[36m(Debug): [0m[37mBody 'Metis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Adrastea[0m
+[1m[36m(Debug): [0m[37mBody 'Adrastea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Amalthea[0m
+[1m[36m(Debug): [0m[37mBody 'Amalthea': rot_pole_w0 (IAU W0=231.67 deg, from the ICRF-equator node) converted to rot_rotation_offset 168.121552 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/amalthea.png[0m
 [1m[32m(Info ): [0m[37mLoading body Thebe[0m
+[1m[36m(Debug): [0m[37mBody 'Thebe': rot_pole_w0 (IAU W0=8.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 299.457397 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Io[0m
+[1m[36m(Debug): [0m[37mBody 'Io': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/io.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/io_night.png[0m
 [1m[32m(Info ): [0m[37mLoading body Europa[0m
+[1m[36m(Debug): [0m[37mBody 'Europa': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/europa.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ganymede[0m
+[1m[36m(Debug): [0m[37mBody 'Ganymede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ganymede.png[0m
 [1m[32m(Info ): [0m[37mLoading body Callisto[0m
+[1m[36m(Debug): [0m[37mBody 'Callisto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/callisto.png[0m
 [1m[32m(Info ): [0m[37mLoading body Himalia[0m
+[1m[36m(Debug): [0m[37mBody 'Himalia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Elara[0m
+[1m[36m(Debug): [0m[37mBody 'Elara': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Carme[0m
+[1m[36m(Debug): [0m[37mBody 'Carme': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Pasiphae[0m
+[1m[36m(Debug): [0m[37mBody 'Pasiphae': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Lysithea[0m
+[1m[36m(Debug): [0m[37mBody 'Lysithea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ananke[0m
+[1m[36m(Debug): [0m[37mBody 'Ananke': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sinope[0m
+[1m[36m(Debug): [0m[37mBody 'Sinope': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Leda[0m
+[1m[36m(Debug): [0m[37mBody 'Leda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Saturn[0m
+[1m[36m(Debug): [0m[37mBody 'Saturn': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/saturn_rings_radial.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/saturn.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Pan[0m
+[1m[36m(Debug): [0m[37mBody 'Pan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Daphnis[0m
+[1m[36m(Debug): [0m[37mBody 'Daphnis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Prometheus[0m
+[1m[36m(Debug): [0m[37mBody 'Prometheus': rot_pole_w0 (IAU W0=296.14 deg, from the ICRF-equator node) converted to rot_rotation_offset 166.175461 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Pandora[0m
+[1m[36m(Debug): [0m[37mBody 'Pandora': rot_pole_w0 (IAU W0=162.92 deg, from the ICRF-equator node) converted to rot_rotation_offset 32.955444 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
 [1m[32m(Info ): [0m[37mLoading body Epimetheus[0m
+[1m[36m(Debug): [0m[37mBody 'Epimetheus': rot_pole_w0 (IAU W0=293.87 deg, from the ICRF-equator node) converted to rot_rotation_offset 164.618637 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
 [1m[32m(Info ): [0m[37mLoading body Janus[0m
+[1m[36m(Debug): [0m[37mBody 'Janus': rot_pole_w0 (IAU W0=58.83 deg, from the ICRF-equator node) converted to rot_rotation_offset 288.439484 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Titan[0m
+[1m[36m(Debug): [0m[37mBody 'Titan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/titan.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient3.png[0m
 [1m[32m(Info ): [0m[37mLoading body Mimas[0m
+[1m[36m(Debug): [0m[37mBody 'Mimas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mimas.png[0m
 [1m[32m(Info ): [0m[37mLoading body Enceladus[0m
+[1m[36m(Debug): [0m[37mBody 'Enceladus': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/enceladus.png[0m
 [1m[32m(Info ): [0m[37mLoading body Dione[0m
+[1m[36m(Debug): [0m[37mBody 'Dione': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/dione.png[0m
 [1m[32m(Info ): [0m[37mLoading body Tethys[0m
+[1m[36m(Debug): [0m[37mBody 'Tethys': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/tethys.png[0m
 [1m[32m(Info ): [0m[37mLoading body Rhea[0m
+[1m[36m(Debug): [0m[37mBody 'Rhea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/rhea.png[0m
 [1m[32m(Info ): [0m[37mLoading body Hyperion[0m
+[1m[36m(Debug): [0m[37mBody 'Hyperion': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Hyperion': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/hyperion.png[0m
 [1m[32m(Info ): [0m[37mLoading body Iapetus[0m
+[1m[36m(Debug): [0m[37mBody 'Iapetus': rot_pole_w0 (IAU W0=355.2 deg, from the ICRF-equator node) converted to rot_rotation_offset 171.467056 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/iapetus.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_normal.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/iapetus_alti.png[0m
 [1m[32m(Info ): [0m[37mLoading body Telesto[0m
+[1m[36m(Debug): [0m[37mBody 'Telesto': rot_pole_w0 (IAU W0=56.88 deg, from the ICRF-equator node) converted to rot_rotation_offset 294.588348 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Helene[0m
+[1m[36m(Debug): [0m[37mBody 'Helene': rot_pole_w0 (IAU W0=245.12 deg, from the ICRF-equator node) converted to rot_rotation_offset 115.606392 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Uranus[0m
+[1m[36m(Debug): [0m[37mBody 'Uranus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/uranusring.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/uranus.png[0m
 [1m[32m(Info ): [0m[37mLoading body Juliet[0m
+[1m[36m(Debug): [0m[37mBody 'Juliet': rot_pole_w0 (IAU W0=302.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 217.635773 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Portia[0m
+[1m[36m(Debug): [0m[37mBody 'Portia': rot_pole_w0 (IAU W0=25.03 deg, from the ICRF-equator node) converted to rot_rotation_offset 300.123627 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Rosalind[0m
+[1m[36m(Debug): [0m[37mBody 'Rosalind': rot_pole_w0 (IAU W0=314.90 deg, from the ICRF-equator node) converted to rot_rotation_offset 229.999634 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Belinda[0m
+[1m[36m(Debug): [0m[37mBody 'Belinda': rot_pole_w0 (IAU W0=297.46 deg, from the ICRF-equator node) converted to rot_rotation_offset 212.530380 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Puck[0m
+[1m[36m(Debug): [0m[37mBody 'Puck': rot_pole_w0 (IAU W0=91.24 deg, from the ICRF-equator node) converted to rot_rotation_offset 6.381639 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Miranda[0m
+[1m[36m(Debug): [0m[37mBody 'Miranda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/miranda.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ariel[0m
+[1m[36m(Debug): [0m[37mBody 'Ariel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ariel.png[0m
 [1m[32m(Info ): [0m[37mLoading body Umbriel[0m
+[1m[36m(Debug): [0m[37mBody 'Umbriel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/umbriel.png[0m
 [1m[32m(Info ): [0m[37mLoading body Titania[0m
+[1m[36m(Debug): [0m[37mBody 'Titania': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/titania.png[0m
 [1m[32m(Info ): [0m[37mLoading body Oberon[0m
+[1m[36m(Debug): [0m[37mBody 'Oberon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/oberon.png[0m
 [1m[32m(Info ): [0m[37mLoading body Caliban[0m
+[1m[36m(Debug): [0m[37mBody 'Caliban': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sycorax[0m
+[1m[36m(Debug): [0m[37mBody 'Sycorax': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Prospero[0m
+[1m[36m(Debug): [0m[37mBody 'Prospero': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Setebos[0m
+[1m[36m(Debug): [0m[37mBody 'Setebos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Neptune[0m
+[1m[36m(Debug): [0m[37mBody 'Neptune': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/neptune_rings.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/neptune.png[0m
 [1m[32m(Info ): [0m[37mLoading body Naiad[0m
+[1m[36m(Debug): [0m[37mBody 'Naiad': rot_pole_w0 (IAU W0=254.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 140.775604 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Thalassa[0m
+[1m[36m(Debug): [0m[37mBody 'Thalassa': rot_pole_w0 (IAU W0=102.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 347.728729 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Despina[0m
+[1m[36m(Debug): [0m[37mBody 'Despina': rot_pole_w0 (IAU W0=306.51 deg, from the ICRF-equator node) converted to rot_rotation_offset 192.446762 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Galatea[0m
+[1m[36m(Debug): [0m[37mBody 'Galatea': rot_pole_w0 (IAU W0=258.09 deg, from the ICRF-equator node) converted to rot_rotation_offset 144.041214 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Larissa[0m
+[1m[36m(Debug): [0m[37mBody 'Larissa': rot_pole_w0 (IAU W0=179.41 deg, from the ICRF-equator node) converted to rot_rotation_offset 65.537102 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Proteus[0m
+[1m[36m(Debug): [0m[37mBody 'Proteus': rot_pole_w0 (IAU W0=93.38 deg, from the ICRF-equator node) converted to rot_rotation_offset 339.711334 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/proteus.png[0m
 [1m[32m(Info ): [0m[37mLoading body Triton[0m
+[1m[36m(Debug): [0m[37mBody 'Triton': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/triton.png[0m
 [1m[32m(Info ): [0m[37mLoading body Neried[0m
+[1m[36m(Debug): [0m[37mBody 'Neried': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Halimede[0m
+[1m[36m(Debug): [0m[37mBody 'Halimede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sao[0m
+[1m[36m(Debug): [0m[37mBody 'Sao': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Laomedeia[0m
+[1m[36m(Debug): [0m[37mBody 'Laomedeia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Psamathe[0m
+[1m[36m(Debug): [0m[37mBody 'Psamathe': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Neso[0m
+[1m[36m(Debug): [0m[37mBody 'Neso': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ceres[0m
+[1m[36m(Debug): [0m[37mBody 'Ceres': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ceres.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Pallas[0m
+[1m[36m(Debug): [0m[37mBody 'Pallas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Juno[0m
+[1m[36m(Debug): [0m[37mBody 'Juno': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Juno': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Vesta[0m
+[1m[36m(Debug): [0m[37mBody 'Vesta': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Vesta': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/vesta.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Pluto[0m
+[1m[36m(Debug): [0m[37mBody 'Pluto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/pluto.png[0m
 [1m[32m(Info ): [0m[37mLoading body Charon[0m
+[1m[36m(Debug): [0m[37mBody 'Charon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/charon.png[0m
 [1m[32m(Info ): [0m[37mLoading body Nix[0m
+[1m[36m(Debug): [0m[37mBody 'Nix': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Hydra_[0m
+[1m[36m(Debug): [0m[37mBody 'Hydra_': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Styx[0m
+[1m[36m(Debug): [0m[37mBody 'Styx': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Kerberos[0m
+[1m[36m(Debug): [0m[37mBody 'Kerberos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Eris[0m
+[1m[36m(Debug): [0m[37mBody 'Eris': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Haumea[0m
+[1m[36m(Debug): [0m[37mBody 'Haumea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Namaka[0m
+[1m[36m(Debug): [0m[37mBody 'Namaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Hiiaka[0m
+[1m[36m(Debug): [0m[37mBody 'Hiiaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Makemake[0m
+[1m[36m(Debug): [0m[37mBody 'Makemake': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/makemake.jpg[0m
-[1m[32m(Info ): [0m[37mLoading body Sedna[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Arrokoth[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Solar_System[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Goldilocks_Zone[0m
-[1m[32m(Info ): [New Thread 0x7ffeb73fe6c0 (LWP 68273)]
-[Thread 0x7ffeb73fe6c0 (LWP 68273) exited]
+[1m[33m(Warn.): [0m[1m[37mIgnoring line without '=' in ssystem.ini: 'orbit_LongOfPericenter 95.58754' - a key/value line needs 'key = value'; write '#' first to make it a comment.[0m
+[New Thread 0x7ffeaf5fe6c0 (LWP 29781)]
+[Thread 0x7ffeaf5fe6c0 (LWP 29781) exited]
 PROBE reloadCurrentSystem ENTERED
-[0m[37ms_texture: already in cache textures/bodies/goldilocks_zone.png[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37m(system SolarSystem loaded)[0m
-[37m=================================================================[0m
-[1m[32m(Info ): [0m[37mSystem 'SolarSystem' reloaded (observer state kept)[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post1.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post1.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post1.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post1.json[0m
-[1m[32m(Info ): [0m[37mget tcp : body action reload[0m
-[1m[32m(Info ): [0m[37mExecute_command body action reload[0m
-[1m[32m(Info ): [0m[37mLoading body Sun[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/sun.jpg[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/big_halo.png[0m
-[1m[32m(Info ): [0m[37mLoading body Mercury[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mercury.jpg[0m
-[1m[32m(Info ): [0m[37mLoading body Venus[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/venus.jpg[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient2.png[0m
-[1m[32m(Info ): [0m[37mLoading body Earth[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth.jpg[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_night.jpg[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_specular.png[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_normal.jpg[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_alti.png[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient3.png[0m
-[1m[32m(Info ): [0m[37mLoading body Moon[0m
-[1m[32m(Info ): [0m[37mAdding Moon to Earth binary orbit.[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon.jpg[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_normal.jpg[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_alti.jpg[0m
-[1m[32m(Info ): [0m[37mLoading body Mars[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars.jpg[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars_normal.jpg[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars_alti.jpg[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient4.png[0m
-[1m[32m(Info ): [0m[37mLoading body Phobos[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/phobos.jpg[0m
-[1m[32m(Info ): [0m[37mLoading body Deimos[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
-[1m[32m(Info ): [0m[37mLoading body Jupiter[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/jupiter_rings.png[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/jupiter.png[0m
-[1m[32m(Info ): [0m[37mLoading body Metis[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Adrastea[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Amalthea[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/amalthea.png[0m
-[1m[32m(Info ): [0m[37mLoading body Thebe[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Io[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/io.png[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/io_night.png[0m
-[1m[32m(Info ): [0m[37mLoading body Europa[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/europa.png[0m
-[1m[32m(Info ): [0m[37mLoading body Ganymede[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ganymede.png[0m
-[1m[32m(Info ): [0m[37mLoading body Callisto[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/callisto.png[0m
-[1m[32m(Info ): [0m[37mLoading body Himalia[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Elara[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Carme[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Pasiphae[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Lysithea[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Ananke[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Sinope[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Leda[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Saturn[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/saturn_rings_radial.png[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/saturn.jpg[0m
-[1m[32m(Info ): [0m[37mLoading body Pan[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
-[1m[32m(Info ): [0m[37mLoading body Daphnis[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
-[1m[32m(Info ): [0m[37mLoading body Prometheus[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Pandora[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
-[1m[32m(Info ): [0m[37mLoading body Epimetheus[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
-[1m[32m(Info ): [0m[37mLoading body Janus[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Titan[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/titan.png[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient3.png[0m
-[1m[32m(Info ): [0m[37mLoading body Mimas[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mimas.png[0m
-[1m[32m(Info ): [0m[37mLoading body Enceladus[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/enceladus.png[0m
-[1m[32m(Info ): [0m[37mLoading body Dione[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/dione.png[0m
-[1m[32m(Info ): [0m[37mLoading body Tethys[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/tethys.png[0m
-[1m[32m(Info ): [0m[37mLoading body Rhea[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/rhea.png[0m
-[1m[32m(Info ): [0m[37mLoading body Hyperion[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/hyperion.png[0m
-[1m[32m(Info ): [0m[37mLoading body Iapetus[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/iapetus.png[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_normal.png[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/iapetus_alti.png[0m
-[1m[32m(Info ): [0m[37mLoading body Telesto[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Helene[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Uranus[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/uranusring.png[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/uranus.png[0m
-[1m[32m(Info ): [0m[37mLoading body Juliet[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Portia[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Rosalind[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Belinda[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Puck[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Miranda[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/miranda.png[0m
-[1m[32m(Info ): [0m[37mLoading body Ariel[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ariel.png[0m
-[1m[32m(Info ): [0m[37mLoading body Umbriel[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/umbriel.png[0m
-[1m[32m(Info ): [0m[37mLoading body Titania[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/titania.png[0m
-[1m[32m(Info ): [0m[37mLoading body Oberon[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/oberon.png[0m
-[1m[32m(Info ): [0m[37mLoading body Caliban[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Sycorax[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Prospero[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Setebos[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Neptune[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/neptune_rings.png[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/neptune.png[0m
-[1m[32m(Info ): [0m[37mLoading body Naiad[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Thalassa[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Despina[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Galatea[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Larissa[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Proteus[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/proteus.png[0m
-[1m[32m(Info ): [0m[37mLoading body Triton[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/triton.png[0m
-[1m[32m(Info ): [0m[37mLoading body Neried[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/gener[New Thread 0x7ffeb73fe6c0 (LWP 68276)]
-[Thread 0x7ffeb73fe6c0 (LWP 68276) exited]
-ic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Halimede[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Sao[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Laomedeia[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Psamathe[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Neso[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Ceres[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ceres.jpg[0m
-[1m[32m(Info ): [0m[37mLoading body Pallas[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Juno[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Vesta[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/vesta.jpg[0m
-[1m[32m(Info ): [0m[37mLoading body Pluto[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/pluto.png[0m
-[1m[32m(Info ): [0m[37mLoading body Charon[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/charon.png[0m
-[1m[32m(Info ): [0m[37mLoading body Nix[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Hydra_[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Styx[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Kerberos[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Eris[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Haumea[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Namaka[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Hiiaka[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
-[1m[32m(Info ): [0m[37mLoading body Makemake[0m
-[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/makemake.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Sedna[0m
+[1m[36m(Debug): [0m[37mBody 'Sedna': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Arrokoth[0m
+[1m[36m(Debug): [0m[37mBody 'Arrokoth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Solar_System[0m
+[1m[36m(Debug): [0m[37mBody 'Solar_System': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Goldilocks_Zone[0m
+[1m[36m(Debug): [0m[37mBody 'Goldilocks_Zone': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/goldilocks_zone.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37m(system SolarSystem loaded)[0m
 [37m=================================================================[0m
 [1m[32m(Info ): [0m[37mSystem 'SolarSystem' reloaded (observer state kept)[0m
-[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post2.png[0m
-[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post2.png[0m
-[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claudePROBE reloadCurrentSystem ENTERED
-/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post2.json[0m
-[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/src/experimentalModule/harness/artifacts/b16/b16_post2.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_post1.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_post1.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_post1.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_post1.json[0m
 [1m[32m(Info ): [0m[37mget tcp : body action reload[0m
 [1m[32m(Info ): [0m[37mExecute_command body action reload[0m
 [1m[32m(Info ): [0m[37mLoading body Sun[0m
+[1m[36m(Debug): [0m[37mBody 'Sun': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/sun.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/big_halo.png[0m
 [1m[32m(Info ): [0m[37mLoading body Mercury[0m
+[1m[36m(Debug): [0m[37mBody 'Mercury': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mercury.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Venus[0m
+[1m[36m(Debug): [0m[37mBody 'Venus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/venus.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient2.png[0m
 [1m[32m(Info ): [0m[37mLoading body Earth[0m
+[1m[36m(Debug): [0m[37mBody 'Earth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_night.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_specular.png[0m
@@ -2347,155 +2552,578 @@ ic.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_alti.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient3.png[0m
 [1m[32m(Info ): [0m[37mLoading body Moon[0m
+[1m[36m(Debug): [0m[37mBody 'Moon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37mAdding Moon to Earth binary orbit.[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_normal.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_alti.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Mars[0m
+[1m[36m(Debug): [0m[37mBody 'Mars': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars_normal.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars_alti.jpg[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient4.png[0m
 [1m[32m(Info ): [0m[37mLoading body Phobos[0m
+[1m[36m(Debug): [0m[37mBody 'Phobos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/phobos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Deimos[0m
+[1m[36m(Debug): [0m[37mBody 'Deimos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Jupiter[0m
+[1m[36m(Debug): [0m[37mBody 'Jupiter': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/jupiter_rings.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/jupiter.png[0m
 [1m[32m(Info ): [0m[37mLoading body Metis[0m
+[1m[36m(Debug): [0m[37mBody 'Metis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Adrastea[0m
+[1m[36m(Debug): [0m[37mBody 'Adrastea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Amalthea[0m
+[1m[36m(Debug): [0m[37mBody 'Amalthea': rot_pole_w0 (IAU W0=231.67 deg, from the ICRF-equator node) converted to rot_rotation_offset 168.121552 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/amalthea.png[0m
 [1m[32m(Info ): [0m[37mLoading body Thebe[0m
+[1m[36m(Debug): [0m[37mBody 'Thebe': rot_pole_w0 (IAU W0=8.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 299.457397 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Io[0m
+[1m[36m(Debug): [0m[37mBody 'Io': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/io.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/io_night.png[0m
 [1m[32m(Info ): [0m[37mLoading body Europa[0m
+[1m[36m(Debug): [0m[37mBody 'Europa': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/europa.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ganymede[0m
+[1m[36m(Debug): [0m[37mBody 'Ganymede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ganymede.png[0m
 [1m[32m(Info ): [0m[37mLoading body Callisto[0m
+[1m[36m(Debug): [0m[37mBody 'Callisto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/callisto.png[0m
 [1m[32m(Info ): [0m[37mLoading body Himalia[0m
+[1m[36m(Debug): [0m[37mBody 'Himalia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Elara[0m
+[1m[36m(Debug): [0m[37mBody 'Elara': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Carme[0m
+[1m[36m(Debug): [0m[37mBody 'Carme': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Pasiphae[0m
+[1m[36m(Debug): [0m[37mBody 'Pasiphae': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Lysithea[0m
+[1m[36m(Debug): [0m[37mBody 'Lysithea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ananke[0m
+[1m[36m(Debug): [0m[37mBody 'Ananke': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sinope[0m
+[1m[36m(Debug): [0m[37mBody 'Sinope': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Leda[0m
+[1m[36m(Debug): [0m[37mBody 'Leda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Saturn[0m
+[1m[36m(Debug): [0m[37mBody 'Saturn': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/saturn_rings_radial.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/saturn.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Pan[0m
+[1m[36m(Debug): [0m[37mBody 'Pan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Daphnis[0m
+[1m[36m(Debug): [0m[37mBody 'Daphnis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
 [1m[32m(Info ): [0m[37mLoading body Prometheus[0m
+[1m[36m(Debug): [0m[37mBody 'Prometheus': rot_pole_w0 (IAU W0=296.14 deg, from the ICRF-equator node) converted to rot_rotation_offset 166.175461 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Pandora[0m
+[1m[36m(Debug): [0m[37mBody 'Pandora': rot_pole_w0 (IAU W0=162.92 deg, from the ICRF-equator node) converted to rot_rotation_offset 32.955444 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
 [1m[32m(Info ): [0m[37mLoading body Epimetheus[0m
+[1m[36m(Debug): [0m[37mBody 'Epimetheus': rot_pole_w0 (IAU W0=293.87 deg, from the ICRF-equator node) converted to rot_rotation_offset 164.618637 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
 [1m[32m(Info ): [0m[37mLoading body Janus[0m
+[1m[36m(Debug): [0m[37mBody 'Janus': rot_pole_w0 (IAU W0=58.83 deg, from the ICRF-equator node) converted to rot_rotation_offset 288.439484 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Titan[0m
+[1m[36m(Debug): [0m[37mBody 'Titan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/titan.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient3.png[0m
 [1m[32m(Info ): [0m[37mLoading body Mimas[0m
+[1m[36m(Debug): [0m[37mBody 'Mimas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mimas.png[0m
 [1m[32m(Info ): [0m[37mLoading body Enceladus[0m
+[1m[36m(Debug): [0m[37mBody 'Enceladus': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/enceladus.png[0m
 [1m[32m(Info ): [0m[37mLoading body Dione[0m
+[1m[36m(Debug): [0m[37mBody 'Dione': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/dione.png[0m
 [1m[32m(Info ): [0m[37mLoading body Tethys[0m
+[1m[36m(Debug): [0m[37mBody 'Tethys': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/tethys.png[0m
 [1m[32m(Info ): [0m[37mLoading body Rhea[0m
+[1m[36m(Debug): [0m[37mBody 'Rhea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/rhea.png[0m
 [1m[32m(Info ): [0m[37mLoading body Hyperion[0m
+[1m[36m(Debug): [0m[37mBody 'Hyperion': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Hyperion': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/hyperion.png[0m
 [1m[32m(Info ): [0m[37mLoading body Iapetus[0m
+[1m[36m(Debug): [0m[37mBody 'Iapetus': rot_pole_w0 (IAU W0=355.2 deg, from the ICRF-equator node) converted to rot_rotation_offset 171.467056 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/iapetus.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_normal.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/iapetus_alti.png[0m
 [1m[32m(Info ): [0m[37mLoading body Telesto[0m
+[1m[36m(Debug): [0m[37mBody 'Telesto': rot_pole_w0 (IAU W0=56.88 deg, from the ICRF-equator node) converted to rot_rotation_offset 294.588348 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Helene[0m
+[1m[36m(Debug): [0m[37mBody 'Helene': rot_pole_w0 (IAU W0=245.12 deg, from the ICRF-equator node) converted to rot_rotation_offset 115.606392 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Uranus[0m
+[1m[36m(Debug): [0m[37mBody 'Uranus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/uranusring.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/uranus.png[0m
 [1m[32m(Info ): [0m[37mLoading body Juliet[0m
+[1m[36m(Debug): [0m[37mBody 'Juliet': rot_pole_w0 (IAU W0=302.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 217.635773 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Portia[0m
+[1m[36m(Debug): [0m[37mBody 'Portia': rot_pole_w0 (IAU W0=25.03 deg, from the ICRF-equator node) converted to rot_rotation_offset 300.123627 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Rosalind[0m
+[1m[36m(Debug): [0m[37mBody 'Rosalind': rot_pole_w0 (IAU W0=314.90 deg, from the ICRF-equator node) converted to rot_rotation_offset 229.999634 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Belinda[0m
+[1m[36m(Debug): [0m[37mBody 'Belinda': rot_pole_w0 (IAU W0=297.46 deg, from the ICRF-equator node) converted to rot_rotation_offset 212.530380 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Puck[0m
+[1m[36m(Debug): [0m[37mBody 'Puck': rot_pole_w0 (IAU W0=91.24 deg, from the ICRF-equator node) converted to rot_rotation_offset 6.381639 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Miranda[0m
+[1m[36m(Debug): [0m[37mBody 'Miranda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/miranda.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ariel[0m
+[1m[36m(Debug): [0m[37mBody 'Ariel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ariel.png[0m
 [1m[32m(Info ): [0m[37mLoading body Umbriel[0m
+[1m[36m(Debug): [0m[37mBody 'Umbriel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/umbriel.png[0m
 [1m[32m(Info ): [0m[37mLoading body Titania[0m
+[1m[36m(Debug): [0m[37mBody 'Titania': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/titania.png[0m
 [1m[32m(Info ): [0m[37mLoading body Oberon[0m
+[1m[36m(Debug): [0m[37mBody 'Oberon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/oberon.png[0m
 [1m[32m(Info ): [0m[37mLoading body Caliban[0m
+[1m[36m(Debug): [0m[37mBody 'Caliban': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sycorax[0m
+[1m[36m(Debug): [0m[37mBody 'Sycorax': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Prospero[0m
+[1m[36m(Debug): [0m[37mBody 'Prospero': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Setebos[0m
+[1m[36m(Debug): [0m[37mBody 'Setebos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Neptune[0m
+[1m[36m(Debug): [0m[37mBody 'Neptune': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/neptune_rings.png[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/neptune.png[0m
 [1m[32m(Info ): [0m[37mLoading body Naiad[0m
+[1m[36m(Debug): [0m[37mBody 'Naiad': rot_pole_w0 (IAU W0=254.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 140.775604 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Thalassa[0m
+[1m[36m(Debug): [0m[37mBody 'Thalassa': rot_pole_w0 (IAU W0=102.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 347.728729 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Despina[0m
+[1m[36m(Debug): [0m[37mBody 'Despina': rot_pole_w0 (IAU W0=306.51 deg, from the ICRF-equator node) converted to rot_rotation_offset 192.446762 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Galatea[0m
+[1m[36m(Debug): [0m[37mBody 'Galatea': rot_pole_w0 (IAU W0=258.09 deg, from the ICRF-equator node) converted to rot_rotation_offset 144.041214 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Larissa[0m
+[1m[36m(Debug): [0m[37mBody 'Larissa': rot_pole_w0 (IAU W0=179.41 deg, from the ICRF-equator node) converted to rot_rotation_offset 65.537102 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Proteus[0m
+[1m[36m(Debug): [0m[37mBody 'Proteus': rot_pole_w0 (IAU W0=93.38 deg, from the ICRF-equator node) converted to rot_rotation_offset 339.711334 deg (ecliptic node).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/proteus.png[0m
 [1m[32m(Info ): [0m[37mLoading body Triton[0m
+[1m[36m(Debug): [0m[37mBody 'Triton': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/triton.png[0m
 [1m[32m(Info ): [0m[37mLoading body Neried[0m
+[1m[36m(Debug): [0m[37mBody 'Neried': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Halimede[0m
+[1m[36m(Debug): [0m[37mBody 'Halimede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Sao[0m
+[1m[36m(Debug): [0m[37mBody 'Sao': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Laomedeia[0m
+[1m[36m(Debug): [0m[37mBody 'Laomedeia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Psamathe[0m
+[1m[36m(Debug): [0m[37mBody 'Psamathe': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Neso[0m
+[1m[36m(Debug): [0m[37mBody 'Neso': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
 [1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
 [1m[32m(Info ): [0m[37mLoading body Ceres[0m
-[1m[32m(Info ): [0m[
+[1m[36m(Debug): [0m[37mBody 'Ceres': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ceres.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Pallas[0m
+[1m[36m(Debug): [0m[37mBody 'Pallas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Juno[0m
+[1m[36m(Debug): [0m[37mBody 'Juno': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Juno': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Vesta[0m
+[1m[36m(Debug): [0m[37mBody 'Vesta': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Vesta': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/vesta.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Pluto[0m
+[1m[36m(Debug): [0m[37mBody 'Pluto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/pluto.png[0m
+[1m[32m(Info ): [0m[37mLoading body Charon[0m
+[1m[36m(Debug): [0m[37mBody 'Charon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/charon.png[0m
+[1m[32m(Info ): [0m[37mLoading body Nix[0m
+[1m[36m(Debug): [0m[37mBody 'Nix': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Hydra_[0m
+[1m[36m(Debug): [0m[37mBody 'Hydra_': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Styx[0m
+[1m[36m(Debug): [0m[37mBody 'Styx': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Kerberos[0m
+[1m[36m(Debug): [0m[37mBody 'Kerberos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Eris[0m
+[1m[36m(Debug): [0m[37mBody 'Eris': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Haumea[0m
+[1m[36m(Debug): [0m[37mBody 'Haumea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Namaka[0m
+[1m[36m(Debug): [0m[37mBody 'Namaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Hiiaka[0m
+[1m[36m(Debug): [0m[37mBody 'Hiiaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Makemake[0m
+[1m[36m(Debug): [0m[37mBody 'Makemake': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/makemake.jpg[0m
+[1m[33m(Warn.): [0m[1m[37mIgnoring line without '=' in ssystem.ini: 'orbit_LongOfPericenter 95.58754' - a key/value line needs 'key = value'; write '#' first to make it a comment.[0m
+[New Thread 0x7ffeaf5fe6c0 (LWP 29789)]
+[Thread 0x7ffeaf5fe6c0 (LWP 29789) exited]
+PROBE reloadCurrentSystem ENTERED
+[1m[32m(Info ): [0m[37mLoading body Sedna[0m
+[1m[36m(Debug): [0m[37mBody 'Sedna': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Arrokoth[0m
+[1m[36m(Debug): [0m[37mBody 'Arrokoth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Solar_System[0m
+[1m[36m(Debug): [0m[37mBody 'Solar_System': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Goldilocks_Zone[0m
+[1m[36m(Debug): [0m[37mBody 'Goldilocks_Zone': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/goldilocks_zone.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37m(system SolarSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mSystem 'SolarSystem' reloaded (observer state kept)[0m
+[1m[32m(Info ): [0m[37mget tcp : body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_post2.png[0m
+[1m[32m(Info ): [0m[37mExecute_command body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_post2.png[0m
+[1m[32m(Info ): [0m[37mget tcp : body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_post2.json[0m
+[1m[32m(Info ): [0m[37mExecute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b16/b16_post2.json[0m
+[1m[32m(Info ): [0m[37mget tcp : body action reload[0m
+[1m[32m(Info ): [0m[37mExecute_command body action reload[0m
+[1m[32m(Info ): [0m[37mLoading body Sun[0m
+[1m[36m(Debug): [0m[37mBody 'Sun': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/sun.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/big_halo.png[0m
+[1m[32m(Info ): [0m[37mLoading body Mercury[0m
+[1m[36m(Debug): [0m[37mBody 'Mercury': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mercury.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Venus[0m
+[1m[36m(Debug): [0m[37mBody 'Venus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/venus.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient2.png[0m
+[1m[32m(Info ): [0m[37mLoading body Earth[0m
+[1m[36m(Debug): [0m[37mBody 'Earth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_night.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_specular.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_normal.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_alti.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient3.png[0m
+[1m[32m(Info ): [0m[37mLoading body Moon[0m
+[1m[36m(Debug): [0m[37mBody 'Moon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mAdding Moon to Earth binary orbit.[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_normal.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_alti.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Mars[0m
+[1m[36m(Debug): [0m[37mBody 'Mars': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars_normal.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars_alti.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient4.png[0m
+[1m[32m(Info ): [0m[37mLoading body Phobos[0m
+[1m[36m(Debug): [0m[37mBody 'Phobos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/phobos.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Deimos[0m
+[1m[36m(Debug): [0m[37mBody 'Deimos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Jupiter[0m
+[1m[36m(Debug): [0m[37mBody 'Jupiter': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/jupiter_rings.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/jupiter.png[0m
+[1m[32m(Info ): [0m[37mLoading body Metis[0m
+[1m[36m(Debug): [0m[37mBody 'Metis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Adrastea[0m
+[1m[36m(Debug): [0m[37mBody 'Adrastea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Amalthea[0m
+[1m[36m(Debug): [0m[37mBody 'Amalthea': rot_pole_w0 (IAU W0=231.67 deg, from the ICRF-equator node) converted to rot_rotation_offset 168.121552 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/amalthea.png[0m
+[1m[32m(Info ): [0m[37mLoading body Thebe[0m
+[1m[36m(Debug): [0m[37mBody 'Thebe': rot_pole_w0 (IAU W0=8.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 299.457397 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Io[0m
+[1m[36m(Debug): [0m[37mBody 'Io': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/io.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/io_night.png[0m
+[1m[32m(Info ): [0m[37mLoading body Europa[0m
+[1m[36m(Debug): [0m[37mBody 'Europa': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/europa.png[0m
+[1m[32m(Info ): [0m[37mLoading body Ganymede[0m
+[1m[36m(Debug): [0m[37mBody 'Ganymede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ganymede.png[0m
+[1m[32m(Info ): [0m[37mLoading body Callisto[0m
+[1m[36m(Debug): [0m[37mBody 'Callisto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/callisto.png[0m
+[1m[32m(Info ): [0m[37mLoading body Himalia[0m
+[1m[36m(Debug): [0m[37mBody 'Himalia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Elara[0m
+[1m[36m(Debug): [0m[37mBody 'Elara': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Carme[0m
+[1m[36m(Debug): [0m[37mBody 'Carme': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Pasiphae[0m
+[1m[36m(Debug): [0m[37mBody 'Pasiphae': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Lysithea[0m
+[1m[36m(Debug): [0m[37mBody 'Lysithea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Ananke[0m
+[1m[36m(Debug): [0m[37mBody 'Ananke': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Sinope[0m
+[1m[36m(Debug): [0m[37mBody 'Sinope': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Leda[0m
+[1m[36m(Debug): [0m[37mBody 'Leda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Saturn[0m
+[1m[36m(Debug): [0m[37mBody 'Saturn': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/saturn_rings_radial.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/saturn.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Pan[0m
+[1m[36m(Debug): [0m[37mBody 'Pan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Daphnis[0m
+[1m[36m(Debug): [0m[37mBody 'Daphnis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Prometheus[0m
+[1m[36m(Debug): [0m[37mBody 'Prometheus': rot_pole_w0 (IAU W0=296.14 deg, from the ICRF-equator node) converted to rot_rotation_offset 166.175461 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Pandora[0m
+[1m[36m(Debug): [0m[37mBody 'Pandora': rot_pole_w0 (IAU W0=162.92 deg, from the ICRF-equator node) converted to rot_rotation_offset 32.955444 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
+[1m[32m(Info ): [0m[37mLoading body Epimetheus[0m
+[1m[36m(Debug): [0m[37mBody 'Epimetheus': rot_pole_w0 (IAU W0=293.87 deg, from the ICRF-equator node) converted to rot_rotation_offset 164.618637 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
+[1m[32m(Info ): [0m[37mLoading body Janus[0m
+[1m[36m(Debug): [0m[37mBody 'Janus': rot_pole_w0 (IAU W0=58.83 deg, from the ICRF-equator node) converted to rot_rotation_offset 288.439484 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Titan[0m
+[1m[36m(Debug): [0m[37mBody 'Titan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/titan.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient3.png[0m
+[1m[32m(Info ): [0m[37mLoading body Mimas[0m
+[1m[36m(Debug): [0m[37mBody 'Mimas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mimas.png[0m
+[1m[32m(Info ): [0m[37mLoading body Enceladus[0m
+[1m[36m(Debug): [0m[37mBody 'Enceladus': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/enceladus.png[0m
+[1m[32m(Info ): [0m[37mLoading body Dione[0m
+[1m[36m(Debug): [0m[37mBody 'Dione': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/dione.png[0m
+[1m[32m(Info ): [0m[37mLoading body Tethys[0m
+[1m[36m(Debug): [0m[37mBody 'Tethys': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/tethys.png[0m
+[1m[32m(Info ): [0m[37mLoading body Rhea[0m
+[1m[36m(Debug): [0m[37mBody 'Rhea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/rhea.png[0m
+[1m[32m(Info ): [0m[37mLoading body Hyperion[0m
+[1m[36m(Debug): [0m[37mBody 'Hyperion': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Hyperion': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/hyperion.png[0m
+[1m[32m(Info ): [0m[37mLoading body Iapetus[0m
+[1m[36m(Debug): [0m[37mBody 'Iapetus': rot_pole_w0 (IAU W0=355.2 deg, from the ICRF-equator node) converted to rot_rotation_offset 171.467056 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/iapetus.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_normal.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/iapetus_alti.png[0m
+[1m[32m(Info ): [0m[37mLoading body Telesto[0m
+[1m[36m(Debug): [0m[37mBody 'Telesto': rot_pole_w0 (IAU W0=56.88 deg, from the ICRF-equator node) converted to rot_rotation_offset 294.588348 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Helene[0m
+[1m[36m(Debug): [0m[37mBody 'Helene': rot_pole_w0 (IAU W0=245.12 deg, from the ICRF-equator node) converted to rot_rotation_offset 115.606392 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Uranus[0m
+[1m[36m(Debug): [0m[37mBody 'Uranus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/uranusring.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/uranus.png[0m
+[1m[32m(Info ): [0m[37mLoading body Juliet[0m
+[1m[36m(Debug): [0m[37mBody 'Juliet': rot_pole_w0 (IAU W0=302.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 217.635773 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Portia[0m
+[1m[36m(Debug): [0m[37mBody 'Portia': rot_pole_w0 (IAU W0=25.03 deg, from the ICRF-equator node) converted to rot_rotation_offset 300.123627 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Rosalind[0m
+[1m[36m(Debug): [0m[37mBody 'Rosalind': rot_pole_w0 (IAU W0=314.90 deg, from the ICRF-equator node) converted to rot_rotation_offset 229.999634 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Belinda[0m
+[1m[36m(Debug): [0m[37mBody 'Belinda': rot_pole_w0 (IAU W0=297.46 deg, from the ICRF-equator node) converted to rot_rotation_offset 212.530380 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Puck[0m
+[1m[36m(Debug): [0m[37mBody 'Puck': rot_pole_w0 (IAU W0=91.24 deg, from the ICRF-equator node) converted to rot_rotation_offset 6.381639 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Miranda[0m
+[1m[36m(Debug): [0m[37mBody 'Miranda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/miranda.png[0m
+[1m[32m(Info ): [0m[37mLoading body Ariel[0m
+[1m[36m(Debug): [0m[37mBody 'Ariel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ariel.png[0m
+[1m[32m(Info ): [0m[37mLoading body Umbriel[0m
+[1m[36m(Debug): [0m[37mBody 'Umbriel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/umbriel.png[0m
+[1m[32m(Info ): [0m[37mLoading body Titania[0m
+[1m[36m(Debug): [0m[37mBody 'Titania': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/titania.png[0m
+[1m[32m(Info ): [0m[37mLoading body Oberon[0m
+[1m[36m(Debug): [0m[37mBody 'Oberon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/oberon.png[0m
+[1m[32m(Info ): [0m[37mLoading body Caliban[0m
+[1m[36m(Debug): [0m[37mBody 'Caliban': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Sycorax[0m
+[1m[36m(Debug): [0m[37mBody 'Sycorax': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Prospero[0m
+[1m[36m(Debug): [0m[37mBody 'Prospero': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Setebos[0m
+[1m[36m(Debug): [0m[37mBody 'Setebos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Neptune[0m
+[1m[36m(Debug): [0m[37mBody 'Neptune': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/neptune_rings.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/neptune.png[0m
+[1m[32m(Info ): [0m[37mLoading body Naiad[0m
+[1m[36m(Debug): [0m[37mBody 'Naiad': rot_pole_w0 (IAU W0=254.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 140.775604 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Thalassa[0m
+[1m[36m(Debug): [0m[37mBody 'Thalassa': rot_pole_w0 (IAU W0=102.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 347.728729 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Despina[0m
+[1m[36m(Debug): [0m[37mBody 'Despina': rot_pole_w0 (IAU W0=306.51 deg, from the ICRF-equator node) converted to rot_rotation_offset 192.446762 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Galatea[0m
+[1m[36m(Debug): [0m[37mBody 'Galatea': rot_pole_w0 (IAU W0=258.09 deg, from the ICRF-equator node) converted to rot_rotation_offset 144.041214 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Larissa[0m
+[1m[36m(Debug): [0m[37mBody 'Larissa': rot_pole_w0 (IAU W0=179.41 deg, from the ICRF-equator node) converted to rot_rotation_offset 65.537102 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Proteus[0m
+[1m[36m(Debug): [0m[37mBody 'Proteus': rot_pole_w0 (IAU W0=93.38 deg, from the ICRF-equator node) converted to rot_rotation_offset 339.711334 deg (ecliptic node).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/proteus.png[0m
+[1m[32m(Info ): [0m[37mLoading body Triton[0m
+[1m[36m(Debug): [0m[37mBody 'Triton': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/triton.png[0m
+[1m[32m(Info ): [0m[37mLoading body Neried[0m
+[1m[36m(Debug): [0m[37mBody 'Neried': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Halimede[0m
+[1m[36m(Debug): [0m[37mBody 'Halimede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Sao[0m
+[1m[36m(Debug): [0m[37mBody 'Sao': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Laomedeia[0m
+[1m[36m(Debug): [0m[37mBody 'Laomedeia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Psamathe[0m
+[1m[36m(Debug): [0m[37mBody 'Psamathe': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Neso[0m
+[1m[36m(Debug): [0m[37mBody 'Neso': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Ceres[0m
+[1m[36m(Debug): [0m[37mBody 'Ceres': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ceres.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Pallas[0m
+[1m[36m(Debug): [0m[37mBody 'Pallas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Juno[0m
+[1m[36m(Debug): [0m[37mBody 'Juno': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Juno': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Vesta[0m
+[1m[36m(Debug): [0m[37mBody 'Vesta': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Vesta': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/vesta.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Pluto[0m
+[1m[36m(Debug): [0m[37mBody 'Pluto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/pluto.png[0m
+[1m[32m(Info ): [0m[37mLoading body Charon[0m
+[1m[36m(Debug): [0m[37mBody 'Charon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/charon.png[0m
+[1m[32m(Info ): [0m[37mLoading body Nix[0m
+[1m[36m(Debug): [0m[37mBody 'Nix': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Hydra_[0m
+[1m[36m(Debug): [0m[37mBody 'Hydra_': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Styx[0m
+[1m[36m(Debug): [0m[37mBody 'Styx': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Kerberos[0m
+[1m[36m(Debug): [0m[37mBody 'Kerberos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Eris[0m
+[1m[36m(Debug): [0m[37mBody 'Eris': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Haumea[0m
+[1m[36m(Debug): [0m[37mBody 'Haumea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Namaka[0m
+[1m[36m(Debug): [0m[37mBody 'Namaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Hiiaka[0m
+[1m[36m(Debug): [0m[37mBody 'Hiiaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Makemake[0m
+[1m[36m(Debug): [0m[37mBody 'Makemake': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/makemake.jpg[0m
+[1m[33m(Warn.): [0m[1m[37mIgnoring line without '=' in ssystem.ini: 'orbit_LongOfPericenter 95.58754' - a key/value line needs 'key = value'; write '#' first to make it a comment.[0m
+
 Thread 1 "spacecrafter" received signal SIGINT, Interrupt.
-__syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
-warning: 56	../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S: Aucun fichier ou dossier de ce nom
+futex_wait (futex_word=0x55555f5d5a40, expected=2, private=0) at ../sysdeps/nptl/futex-internal.h:146
+warning: 146	../sysdeps/nptl/futex-internal.h: Aucun fichier ou dossier de ce nom

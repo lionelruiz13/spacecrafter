@@ -1,0 +1,41 @@
+{
+ "s10_camera": {
+  "reference": "Solar_System",
+  "tracked": "Solar_System",
+  "freeMode": false,
+  "boundToSurface": true,
+  "mount": "equatorial",
+  "skyLocked": false,
+  "viewOffset": 0,
+  "viewOffsetTransition": 1,
+  "viewOffsetEff": 0,
+  "longitude": 1.46377168e-08,
+  "latitude": 1.74532921e-08,
+  "distance": 0.0191345215,
+  "alt": 7.54979013e-08,
+  "az": -1.57079637,
+  "heading": -6.13076544,
+  "refAoI": 8.5562715e-07,
+  "refDist": 0.0191345215,
+  "refCached": true,
+  "refParent": "Sun",
+  "selected": "Solar_System",
+  "selDist": 0.0191345215,
+  "halfFov": 1.57079637,
+  "cullHalfFov": 1.57079637
+ },
+ "s10_solar_system": {
+  "relation": 1,
+  "evalCount": 3595,
+  "dist": 0.0191345215
+ },
+ "s10_reference": "Solar_System",
+ "s10_selected": "Solar_System",
+ "s10_eval": {
+  "reference_delta": 1498,
+  "earth_delta": 1498
+ },
+ "s10_reselected": "Solar_System",
+ "leg": "s10",
+ "fail": 0
+}

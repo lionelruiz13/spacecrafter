@@ -1,0 +1,667 @@
+{
+ "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "pred": {
+  "limb_deg": 10.278060278059133,
+  "alpha_big_deg": 12.670497875672929,
+  "alpha_small_deg": 12.939393542226284,
+  "alpha_far_deg": 12.723579685301615,
+  "dist_big_km": 8833.824696019272,
+  "pick_tol_ndc": 0.029296875,
+  "screenSize_big": 0.0432378456513335,
+  "screenSize_small": 0.010624070634562551,
+  "ndc_big": 0.8446998583781953,
+  "ndc_small": 0.8626262361484189,
+  "ndc_moon_limb": 0.6852040185372755,
+  "cluster_sep_ndc": 0.017926377770223656
+ },
+ "legs": {
+  "geometry": {
+   "BigA": {
+    "screen": [
+     -0.157221064,
+     0.829939187
+    ],
+    "ndc_radius": 0.8446996608756944,
+    "alpha_deg": 12.670494913135416,
+    "screenSize": 0.0432406105,
+    "dist_km": 8833.824758895706
+   },
+   "SmallB": {
+    "screen": [
+     -0.160557672,
+     0.847552478
+    ],
+    "ndc_radius": 0.8626262046807992,
+    "alpha_deg": 12.939393070211988,
+    "screenSize": 0.0106241107,
+    "dist_km": 8988.336021337986
+   },
+   "FarC": {
+    "screen": [
+     0.256082296,
+     -0.808659196
+    ],
+    "ndc_radius": 0.8482380783718673,
+    "alpha_deg": 12.723571175578009,
+    "screenSize": 0.0258652326,
+    "dist_km": 8860.730040533714
+   },
+   "OnDisc": {
+    "screen": [
+     -0.0710199922,
+     0.374899924
+    ],
+    "ndc_radius": 0.3815675461924059,
+    "alpha_deg": 5.723513192886089,
+    "screenSize": 0.0746748969,
+    "dist_km": 7673.184509649622
+   }
+  },
+  "cluster": {
+   "sep_ndc": 0.01792654380510488,
+   "tol_ndc": 0.029296875,
+   "mid": [
+    -0.158889368,
+    0.8387458325
+   ]
+  },
+  "C1_command_composed": {
+   "selected": "BigA",
+   "tracked": "BigA",
+   "selDist": 5.90504678e-05
+  },
+  "C2_command_old": {
+   "selected": "Moon",
+   "tracked": "Moon"
+  },
+  "C3_command_absent": {
+   "selected": "",
+   "tracked": ""
+  },
+  "P0_pointer_old": {
+   "win": [
+    511.4998908007678,
+    511.5001091992322
+   ],
+   "selected": "Moon",
+   "xclick": "clicked client-local (511,512) -> root (1223,703)"
+  },
+  "P0b_in": {
+   "ndc": [
+    0.0,
+    0.5942023872000001
+   ],
+   "win": [
+    511.5,
+    207.56547894719995
+   ],
+   "selected": "Moon",
+   "want": "Moon"
+  },
+  "P0b_out": {
+   "ndc": [
+    0.0,
+    0.7410053299200001
+   ],
+   "win": [
+    511.5,
+    132.47577374591992
+   ],
+   "selected": "",
+   "want": ""
+  },
+  "P1_pointer_FarC": {
+   "win": [
+    642.486094404,
+    925.129178754
+   ],
+   "selected": "FarC",
+   "xclick": "clicked client-local (642,925) -> root (1354,1116)"
+  },
+  "P2_pointer_BigA": {
+   "win": [
+    431.081425764,
+    86.9861058495
+   ],
+   "selected": "BigA",
+   "xclick": "clicked client-local (431,87) -> root (1143,278)"
+  },
+  "P3_R5_biggest": {
+   "win": [
+    430.22808826799996,
+    82.48150667624998
+   ],
+   "selected": "BigA",
+   "big": "BigA",
+   "ss_big": 0.0432406105,
+   "ss_small": 0.0106241107
+  },
+  "P6_pointer_on_disc": {
+   "win": [
+    475.17327398969996,
+    319.738688874
+   ],
+   "selected": "Moon",
+   "ndc": [
+    -0.0710199922,
+    0.374899924
+   ],
+   "screenSize": 0.0746748969
+  },
+  "P5_pointer_empty": {
+   "win": [
+    76.72500000000002,
+    946.275
+   ],
+   "selected": ""
+  },
+  "I1_info": {
+   "block": "  NEW nav: RA/DE: 09h21m12s / +60\u00b000'00\"\nSA +219\u00b042'00\" GHA +330\u00b005'53\" LHA +13\u00b023'53\"@ Az/Alt/coA: +129\u00b042'00\"/+12\u00b040'14\"/+77\u00b019'46\" LPA +13\u00b023'53\"\n  NEW inf: BigA\nMagnitude: inf\nRA/DE: 09h21m12s / +60\u00b000'00\"\nAlt/Az: +12\u00b040'14\" / +129\u00b042'00\"\nDistance: 0.00005905 AU\n",
+   "fields": [
+    "RA/DE:",
+    "Alt/Az:",
+    "Distance:",
+    "Magnitude:"
+   ],
+   "magnitude": "inf"
+  },
+  "P4_R5_mutation": {
+   "win": [
+    430.22819491575,
+    82.48149133125003
+   ],
+   "selected": "SmallB",
+   "ss_BigA": 0.0108099366,
+   "ss_SmallB": 0.0424972661
+  }
+ },
+ "window": [
+  712,
+  191,
+  1024,
+  1024
+ ],
+ "client": [
+  1024,
+  1024
+ ],
+ "rect": [
+  2048,
+  2048
+ ],
+ "mouseNorm": [
+  511.5,
+  511.5,
+  511.5,
+  511.5
+ ],
+ "cam_base": {
+  "reference": "Moon",
+  "tracked": "",
+  "freeMode": true,
+  "boundToSurface": true,
+  "mount": "equatorial",
+  "skyLocked": false,
+  "viewOffset": 0,
+  "viewOffsetTransition": 1,
+  "viewOffsetEff": 0,
+  "longitude": 0.0936660022,
+  "latitude": 0.755727589,
+  "distance": 5.80695123e-05,
+  "alt": 4.33874447e-09,
+  "az": 0.69289577,
+  "heading": -6.09596729,
+  "absFwd": [
+   0.690466762,
+   -0.723364174,
+   -0.00013448039
+  ],
+  "position": [
+   5.00806018e-05,
+   -4.15777176e-05,
+   0
+  ],
+  "refAoI": 0.00144275022,
+  "refDist": 6.50904985e-05,
+  "refCached": true,
+  "refParent": "Earth",
+  "selected": "",
+  "selDist": 0,
+  "halfFov": 0.261799395,
+  "cullHalfFov": 0.261799395,
+  "mat": [
+   -0.706323266,
+   -0.133803487,
+   -0.695128918,
+   0,
+   -0.682982087,
+   -0.129381761,
+   0.718885183,
+   0,
+   -0.186126336,
+   0.982525826,
+   -4.37113883e-08,
+   0,
+   -3.63797881e-12,
+   -3.63797881e-12,
+   -6.50904985e-05,
+   1
+  ]
+ },
+ "cam_reaimed": {
+  "reference": "Moon",
+  "tracked": "",
+  "freeMode": true,
+  "boundToSurface": true,
+  "mount": "equatorial",
+  "skyLocked": false,
+  "viewOffset": 0,
+  "viewOffsetTransition": 1,
+  "viewOffsetEff": 0,
+  "longitude": 0.0936660022,
+  "latitude": 0.755727589,
+  "distance": 5.80695123e-05,
+  "alt": 4.33874447e-09,
+  "az": 0.69289577,
+  "heading": -6.09596729,
+  "absFwd": [
+   0.690466762,
+   -0.723364174,
+   -0.00013448039
+  ],
+  "position": [
+   5.00806018e-05,
+   -4.15777176e-05,
+   0
+  ],
+  "refAoI": 0.00144275022,
+  "refDist": 6.50904985e-05,
+  "refCached": true,
+  "refParent": "Earth",
+  "selected": "",
+  "selDist": 0,
+  "halfFov": 0.261799395,
+  "cullHalfFov": 0.261799395,
+  "mat": [
+   -0.706323266,
+   -0.133803487,
+   -0.695128918,
+   0,
+   -0.682982087,
+   -0.129381761,
+   0.718885183,
+   0,
+   -0.186126336,
+   0.982525826,
+   -4.37113883e-08,
+   0,
+   -3.63797881e-12,
+   -3.63797881e-12,
+   -6.50904985e-05,
+   1
+  ]
+ },
+ "parity": {
+  "Adrastea": {
+   "selected": "Adrastea",
+   "selDist": 6.26573133
+  },
+  "Amalthea": {
+   "selected": "Amalthea",
+   "selDist": 6.26728249
+  },
+  "Ananke": {
+   "selected": "Ananke",
+   "selDist": 6.41155958
+  },
+  "Ariel": {
+   "selected": "Ariel",
+   "selDist": 20.1468773
+  },
+  "Arrokoth": {
+   "selected": "Arrokoth",
+   "selDist": 45.781311
+  },
+  "Belinda": {
+   "selected": "Belinda",
+   "selDist": 20.1469879
+  },
+  "Caliban": {
+   "selected": "Caliban",
+   "selDist": 20.1156044
+  },
+  "Callisto": {
+   "selected": "Callisto",
+   "selDist": 6.25455189
+  },
+  "Carme": {
+   "selected": "Carme",
+   "selDist": 6.12038565
+  },
+  "Ceres": {
+   "selected": "Ceres",
+   "selDist": 3.54837012
+  },
+  "Charon": {
+   "selected": "Charon",
+   "selDist": 34.5733528
+  },
+  "Daphnis": {
+   "selected": "Daphnis",
+   "selDist": 9.30599785
+  },
+  "Deimos": {
+   "selected": "Deimos",
+   "selDist": 2.06756902
+  },
+  "Despina": {
+   "selected": "Despina",
+   "selDist": 29.5877304
+  },
+  "Dione": {
+   "selected": "Dione",
+   "selDist": 9.30722141
+  },
+  "Earth": {
+   "selected": "Earth",
+   "selDist": 0.00244607474
+  },
+  "Elara": {
+   "selected": "Elara",
+   "selDist": 6.26643419
+  },
+  "Enceladus": {
+   "selected": "Enceladus",
+   "selDist": 9.30650711
+  },
+  "Epimetheus": {
+   "selected": "Epimetheus",
+   "selDist": 9.30553246
+  },
+  "Eris": {
+   "selected": "Eris",
+   "selDist": 95.9267883
+  },
+  "Europa": {
+   "selected": "Europa",
+   "selDist": 6.26302433
+  },
+  "Galatea": {
+   "selected": "Galatea",
+   "selDist": 29.5874405
+  },
+  "Ganymede": {
+   "selected": "Ganymede",
+   "selDist": 6.25888157
+  },
+  "Goldilocks_Zone": {
+   "selected": "Goldilocks_Zone",
+   "selDist": 1.01436579
+  },
+  "Halimede": {
+   "selected": "Halimede",
+   "selDist": 29.4937477
+  },
+  "Haumea": {
+   "selected": "Haumea",
+   "selDist": 49.9912186
+  },
+  "Helene": {
+   "selected": "Helene",
+   "selDist": 9.30290222
+  },
+  "Hiiaka": {
+   "selected": "Hiiaka",
+   "selDist": 49.9911423
+  },
+  "Himalia": {
+   "selected": "Himalia",
+   "selDist": 6.31104183
+  },
+  "Hydra_": {
+   "selected": "Hydra_",
+   "selDist": 34.5730934
+  },
+  "Hyperion": {
+   "selected": "Hyperion",
+   "selDist": 9.2959671
+  },
+  "Iapetus": {
+   "selected": "Iapetus",
+   "selDist": 9.29660892
+  },
+  "Io": {
+   "selected": "Io",
+   "selDist": 6.26417112
+  },
+  "Janus": {
+   "selected": "Janus",
+   "selDist": 9.304142
+  },
+  "Juliet": {
+   "selected": "Juliet",
+   "selDist": 20.1471844
+  },
+  "Juno": {
+   "selected": "Juno",
+   "selDist": 2.98382258
+  },
+  "Jupiter": {
+   "selected": "Jupiter",
+   "selDist": 6.26609087
+  },
+  "Kerberos": {
+   "selected": "Kerberos",
+   "selDist": 34.5731239
+  },
+  "Laomedeia": {
+   "selected": "Laomedeia",
+   "selDist": 29.7816868
+  },
+  "Larissa": {
+   "selected": "Larissa",
+   "selDist": 29.5871429
+  },
+  "Leda": {
+   "selected": "Leda",
+   "selDist": 6.23261023
+  },
+  "Lysithea": {
+   "selected": "Lysithea",
+   "selDist": 6.3065958
+  },
+  "Makemake": {
+   "selected": "Makemake",
+   "selDist": 50.7014427
+  },
+  "Mars": {
+   "selected": "Mars",
+   "selDist": 2.06771636
+  },
+  "Mercury": {
+   "selected": "Mercury",
+   "selDist": 0.569399536
+  },
+  "Metis": {
+   "selected": "Metis",
+   "selDist": 6.26644707
+  },
+  "Mimas": {
+   "selected": "Mimas",
+   "selDist": 9.30393791
+  },
+  "Miranda": {
+   "selected": "Miranda",
+   "selDist": 20.1471901
+  },
+  "Moon": {
+   "selected": "Moon",
+   "selDist": 6.50904985e-05
+  },
+  "Naiad": {
+   "selected": "Naiad",
+   "selDist": 29.5871353
+  },
+  "Namaka": {
+   "selected": "Namaka",
+   "selDist": 49.9910698
+  },
+  "Neptune": {
+   "selected": "Neptune",
+   "selDist": 29.5874214
+  },
+  "Neried": {
+   "selected": "Neried",
+   "selDist": 29.6079922
+  },
+  "Neso": {
+   "selected": "Neso",
+   "selDist": 29.2518291
+  },
+  "Nix": {
+   "selected": "Nix",
+   "selDist": 34.573143
+  },
+  "Oberon": {
+   "selected": "Oberon",
+   "selDist": 20.1474018
+  },
+  "Pallas": {
+   "selected": "Pallas",
+   "selDist": 2.53776622
+  },
+  "Pan": {
+   "selected": "Pan",
+   "selDist": 9.30426693
+  },
+  "Pandora": {
+   "selected": "Pandora",
+   "selDist": 9.30424023
+  },
+  "Pasiphae": {
+   "selected": "Pasiphae",
+   "selDist": 6.0886445
+  },
+  "Phobos": {
+   "selected": "Phobos",
+   "selDist": 2.06776977
+  },
+  "Pluto": {
+   "selected": "Pluto",
+   "selDist": 34.5733643
+  },
+  "Portia": {
+   "selected": "Portia",
+   "selDist": 20.1471901
+  },
+  "Prometheus": {
+   "selected": "Prometheus",
+   "selDist": 9.30528927
+  },
+  "Prospero": {
+   "selected": "Prospero",
+   "selDist": 20.0761127
+  },
+  "Proteus": {
+   "selected": "Proteus",
+   "selDist": 29.5879784
+  },
+  "Psamathe": {
+   "selected": "Psamathe",
+   "selDist": 29.3925476
+  },
+  "Puck": {
+   "selected": "Puck",
+   "selDist": 20.1471214
+  },
+  "Rhea": {
+   "selected": "Rhea",
+   "selDist": 9.30559349
+  },
+  "Rosalind": {
+   "selected": "Rosalind",
+   "selDist": 20.1471577
+  },
+  "Sao": {
+   "selected": "Sao",
+   "selDist": 29.5475998
+  },
+  "Saturn": {
+   "selected": "Saturn",
+   "selDist": 9.30509758
+  },
+  "Sedna": {
+   "selected": "Sedna",
+   "selDist": 83.5967865
+  },
+  "Setebos": {
+   "selected": "Setebos",
+   "selDist": 20.1445065
+  },
+  "Sinope": {
+   "selected": "Sinope",
+   "selDist": 6.13453293
+  },
+  "Solar_System": {
+   "selected": "Solar_System",
+   "selDist": 1.01436579
+  },
+  "Styx": {
+   "selected": "Styx",
+   "selDist": 34.5733337
+  },
+  "Sun": {
+   "selected": "Sun",
+   "selDist": 1.01436579
+  },
+  "Sycorax": {
+   "selected": "Sycorax",
+   "selDist": 20.1072884
+  },
+  "Telesto": {
+   "selected": "Telesto",
+   "selDist": 9.304739
+  },
+  "Tethys": {
+   "selected": "Tethys",
+   "selDist": 9.30512619
+  },
+  "Thalassa": {
+   "selected": "Thalassa",
+   "selDist": 29.5876331
+  },
+  "Thebe": {
+   "selected": "Thebe",
+   "selDist": 6.26626825
+  },
+  "Titan": {
+   "selected": "Titan",
+   "selDist": 9.31287193
+  },
+  "Titania": {
+   "selected": "Titania",
+   "selDist": 20.1470184
+  },
+  "Triton": {
+   "selected": "Triton",
+   "selDist": 29.5874214
+  },
+  "Umbriel": {
+   "selected": "Umbriel",
+   "selDist": 20.1471825
+  },
+  "Uranus": {
+   "selected": "Uranus",
+   "selDist": 20.1470737
+  },
+  "Venus": {
+   "selected": "Venus",
+   "selDist": 0.953912377
+  },
+  "Vesta": {
+   "selected": "Vesta",
+   "selDist": 2.89334202
+  }
+ },
+ "fails": []
+}

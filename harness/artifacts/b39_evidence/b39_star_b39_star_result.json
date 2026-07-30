@@ -1,0 +1,32 @@
+{
+ "floor_px": 0,
+ "lit_base": 17302,
+ "entries": [
+  {
+   "entry": 1,
+   "sun_relation_hidden": 1,
+   "earth_relation_hidden": 4,
+   "lit_hidden": 15462,
+   "lit_shown": 17302,
+   "px_hidden_vs_shown": 1217,
+   "max_hidden_vs_shown": 255,
+   "sun_eval_growth_over_6s": 1499,
+   "earth_eval_growth_over_6s": 1499,
+   "moon_eval_growth_over_6s": 1499
+  },
+  {
+   "entry": 2,
+   "sun_relation_hidden": 1,
+   "earth_relation_hidden": 4,
+   "lit_hidden": 15462,
+   "lit_shown": 17302,
+   "px_hidden_vs_shown": 1217,
+   "max_hidden_vs_shown": 255,
+   "sun_eval_growth_over_6s": 1498,
+   "earth_eval_growth_over_6s": 1498,
+   "moon_eval_growth_over_6s": 1498
+  }
+ ],
+ "hidden_vs_hidden_px": 0,
+ "shown_vs_shown_px": 0
+}

@@ -381,7 +381,7 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   record-don't-fix call ENDORSED; its fix re-homed as **F12 item (iv)** (batch
   shape, no urgency: reachable only via malformed galactic data no install has).**
 
-### F11 — B39: hidden = as-if-nonexistent (rendered universe only)  [M–L]  ← START HERE
+### F11 — B39: hidden = as-if-nonexistent (rendered universe only)  [M–L]  — DELIVERED 2026-07-30
 - **Row / recorded:** B39 (§13.B, opened §11.113(b)) · D23 verbatim (§11.113(b) +
   DECISIONS_PENDING §6) · §11.76 barrier (its (c) anticipated exactly this) · B32
   precedent (§11.93, cross-launch 0 ULP) · §5.31 · §5.44 (old-path, record-only) ·
@@ -401,16 +401,29 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   TRACE sibling); `b19_hidden_tick.py` stays green through a use channel —
   RE-VERIFIED, not inherited (§11.113(b)(iii)); `b11_trail_gate.py` hidden-leg
   INVERTS in the same commit; S10/W17 scenes live before and after; battery green.
-- **WIP (2026-07-30, Opus 5 executor):** CHECKPOINT 2 = BEHAVIOUR LANDED AND
-  GREEN (code `5b488e84` instrument + `a62ad5d7` B39; harness `83b4c0a` red
-  baseline + `6521c40` green). b39 all-pass (orbit 779→0 px, trail dAcc
-  1512→0, nested pointer 137→0 px, evalCount 2074→0, reconstruction 64 samples
-  == predicted and on-orbit to 0.0315 %); b11 hidden column INVERTED 95/95;
-  b19 RE-RUN 59/59 through the barrier. Remaining: S10/W17 live scenes, D11
-  cost claim, battery (b24_equivalence/b24_select/b5_oort/b4_anchors/scenes),
-  §11.117 entry + §13 flips.
+- **WIP: DELIVERED 2026-07-30 → §11.117 (code `5b488e84` instrument +
+  `a62ad5d7` behaviour; harness `83b4c0a` RED baseline, `6521c40` green, +
+  the delivery commit). §5.31 CLOSED on its own discriminator (hidden orbit
+  line 779 → 0 px, control 779 px). Implemented STRUCTURALLY: `hide()` takes
+  the parked subtree out of `sortedSystemBodies`, so ten contributions leave
+  the frame in one edit (I6). DECLARED (`relation`) vs EFFECTIVE
+  (`renderHidden`), one writer for flag + membership ⇒ §5.44 impossible here;
+  nested-hidden pointer 137 → 0 px with the child's declared flag untouched.
+  Tick RETIRED and MEASURED (2074 → 0 evaluations / ~2070 frames, new
+  `evalCount`), replaced by the §11.76 barrier with the use channels
+  enumerated; "no tick" bounded by the reference chain, which IS
+  §11.113(b)(vi). Trail reconstruction from the orbit: 64 samples ==
+  predicted, on-orbit to 0.0315 % of an h/r prediction from the run's own
+  radii. D11 measured BOTH ways against the pre-fix binary: default 42.26 →
+  42.01 µs (inside the ±1.9 µs repeatability), 0.217 µs/parked body/frame ⇒
+  ~2.2 ms/frame at D10's 10 000. S10/W17 live BEFORE and AFTER, one fresh
+  launch per leg. b11 hidden column INVERTED same commit (95/95), b19 RE-RUN
+  59/59 and sharper. Battery green; md5 pristine. Residue: **D37** (hidden
+  star still illuminates — measured, Vixy's), **§5.46** (up-chain never
+  writes `matLocalToBodyPos`), pre-existing reload loss of 2 hidden bodies
+  (attributed on the pre-fix binary). Deviations flagged in §11.117(l).**
 
-### F12 — decision-implementation batch: B27-split + B24-click + B33 readout  [S–M]
+### F12 — decision-implementation batch: B27-split + B24-click + B33 readout  [S–M]  ← START HERE
 - **Row / recorded:** B27 (§11.113(f) — D27 OVERRIDES the ratify-as-is rec+endorsement:
   split `light_source` + `primary`) · B24 (§11.113(e)/D26 — visible child takes the
   click on its own pixels) · B33 (§11.113(g)/D28 rider — `CoreLink::getHeading` reads
@@ -499,8 +512,13 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
 - **Decision batches waiting**: §11.96(e)(1–6) + §11.98(f)(i–iii) (oort/§6.9 plan);
   D15 (expanded §11.112 — sub-item (c) mirror-all-four is recommended + mechanical);
   D21 (corrected form §11.101(f)); §11.92(d) heading-coupling; §11.94(d)
-  latch-when-settled. D22–D36: ANSWERED + propagated (§11.113) — DECISIONS_PENDING
-  holds nothing else.
+  latch-when-settled. D22–D36: ANSWERED + propagated (§11.113). **NEW 2026-07-30:
+  D37** (F11/§11.117(k)(1)) — does a hidden body stop being a LIGHT SOURCE?
+  Measured: today it does not (a hidden Sun still lights the Moon, 15462 vs 17302
+  lit px); illumination is the one contribution D23's general wording reaches and
+  the B39 row does not enumerate, and no shipped hidden body is a light source, so
+  nothing in the corpus discriminates. Rec (1) keep today's behaviour; reversing
+  it later is one branch at `updateSystem`.
 - ~~**F1 instrument authorization (§11.99(h))**~~ **SERVED 2026-07-24 (manual
   approval) → root closed §11.100.** Replaced by: **D21** (DECISIONS_PENDING) —
   grounded children vs parent display scaling (`moon_scale=5` swallows the mandate

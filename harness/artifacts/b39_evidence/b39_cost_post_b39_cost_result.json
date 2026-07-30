@@ -1,0 +1,62 @@
+{
+ "dwell_target_s": 20.0,
+ "counter_body": "Earth",
+ "hidden_in_B": [
+  "Jupiter",
+  "Saturn",
+  "Uranus",
+  "Neptune"
+ ],
+ "hidden_in_C": [
+  "Jupiter",
+  "Saturn",
+  "Uranus",
+  "Neptune",
+  "Mercury",
+  "Venus",
+  "Mars"
+ ],
+ "A_default": {
+  "tag": "A",
+  "frames": 3226,
+  "dwell_s": 20.000067472457886,
+  "fps": 161.29945583646295,
+  "ms_per_frame": 6.199648937525693,
+  "bodies": 120,
+  "declared_hidden": 24,
+  "not_evaluated": 49
+ },
+ "B_outer": {
+  "tag": "B",
+  "frames": 3225,
+  "dwell_s": 20.000065803527832,
+  "fps": 161.24946946080243,
+  "ms_per_frame": 6.201570791791576,
+  "bodies": 120,
+  "declared_hidden": 28,
+  "not_evaluated": 112
+ },
+ "C_inner_too": {
+  "tag": "C",
+  "frames": 3226,
+  "dwell_s": 20.00008225440979,
+  "fps": 161.29933662091332,
+  "ms_per_frame": 6.199653519655856,
+  "bodies": 120,
+  "declared_hidden": 31,
+  "not_evaluated": 117
+ },
+ "A2_restored": {
+  "tag": "A2",
+  "frames": 3225,
+  "dwell_s": 20.000061750411987,
+  "fps": 161.2495021388405,
+  "ms_per_frame": 6.201569535011469,
+  "bodies": 120,
+  "declared_hidden": 24,
+  "not_evaluated": 49
+ },
+ "delta_ms_B_outer": 0.0019218542658823168,
+ "delta_ms_C_inner_too": 4.582130162411602e-06,
+ "delta_ms_A2_restored": 0.0019205974857756658
+}

@@ -1,0 +1,18 @@
+{
+ "mutate": false,
+ "bodies": 130,
+ "galactic_bodies": 10,
+ "subject": 27,
+ "control": 103,
+ "ecl_floor_rel": 6.159868133351009e-08,
+ "ecl_floor_abs": 1.1999999995418453e-10,
+ "ecl_floor_worst": "Tethys",
+ "systems": 17,
+ "float_within_jitter": 130,
+ "axisRot_exact_checked": 130,
+ "exit_a": 0,
+ "exit_b": 0,
+ "jd_a": 2461233.5,
+ "jd_b": 2461233.5,
+ "fails": []
+}

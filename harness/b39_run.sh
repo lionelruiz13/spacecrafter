@@ -14,6 +14,7 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 DRIVER=${1:-b39_hidden.py}
 OUT=${2:-$HERE/artifacts/b39}
+ARG=${3:-}
 mkdir -p "$OUT"
 rm -f "$OUT"/*.png "$OUT"/*.json "$OUT"/*.log
 
@@ -31,7 +32,7 @@ for i in $(seq 1 40); do
 done
 sleep 8   # let the initial async texture loads quiesce
 
-python3 "$HERE/$DRIVER" "$OUT" > "$OUT/drive.log" 2>&1
+python3 "$HERE/$DRIVER" "$OUT" $ARG > "$OUT/drive.log" 2>&1
 RC=$?
 echo "driver exit=$RC"
 sleep 2

@@ -45,12 +45,12 @@
    "flag": "on",
    "visibility": "hidden",
    "body": "Mars",
-   "points_t0": 1,
-   "points_t1": 7,
-   "dpoints": 6,
-   "daccumulateCount": 1080,
-   "recording_t1": true,
-   "fader_t1": 1,
+   "points_t0": 0,
+   "points_t1": 0,
+   "dpoints": 0,
+   "daccumulateCount": 0,
+   "recording_t1": false,
+   "fader_t1": 0,
    "relation_t1": 1,
    "djd_days": 90.0
   },
@@ -104,15 +104,15 @@
   },
   {
    "ok": true,
-   "text": "[off|hidden] Mars: +0 points over 6 jumps (expect 0 - accumulation STOPPED)"
+   "text": "[off|hidden] Mars: +0 points over 6 jumps (expect 0 - a hidden body does not record)"
   },
   {
    "ok": true,
-   "text": "[off|hidden] Mars: accumulate() ran 0 times (expect 0 - THE WORK stopped, not just the draw)"
+   "text": "[off|hidden] Mars: accumulate() ran 0 times (expect 0 - THE WORK stopped)"
   },
   {
    "ok": true,
-   "text": "[off|hidden] Mars: recording=False"
+   "text": "[off|hidden] Mars: recording=False (frozen at its pre-hide value)"
   },
   {
    "ok": true,
@@ -168,15 +168,19 @@
   },
   {
    "ok": true,
-   "text": "[on|hidden] Mars: +6 points over 6 jumps (expect +6)"
+   "text": "[on|hidden] Mars: +0 points over 6 jumps (expect 0 - a hidden body does not record)"
   },
   {
    "ok": true,
-   "text": "[on|hidden] Mars: accumulate() ran 1080 times"
+   "text": "[on|hidden] Mars: accumulate() ran 0 times (expect 0 - THE WORK stopped)"
   },
   {
    "ok": true,
-   "text": "[on|hidden] Mars: recording=True"
+   "text": "[on|hidden] Mars: recording=False (frozen at its pre-hide value)"
+  },
+  {
+   "ok": true,
+   "text": "[on|hidden] Mars: buffer empty (0 points)"
   },
   {
    "ok": true,
@@ -212,19 +216,19 @@
   },
   {
    "ok": true,
-   "text": "flag on: hidden Mars dpoints=6 == visible Venus dpoints=6 (visibility axis is inert)"
+   "text": "flag on: hidden Mars dpoints=0 vs visible Venus dpoints=6 - the HIDDEN axis is a gate of its own now"
   },
   {
    "ok": true,
-   "text": "flag on: hidden Mars dpoints=6 == visible Jupiter dpoints=6 (visibility axis is inert)"
+   "text": "flag on: hidden Mars dpoints=0 vs visible Jupiter dpoints=6 - the HIDDEN axis is a gate of its own now"
   },
   {
    "ok": true,
-   "text": "flag off: hidden Mars dpoints=0 == visible Venus dpoints=0 (visibility axis is inert)"
+   "text": "flag off: hidden Mars dpoints=0 == visible Venus dpoints=0 == 0 (the flag alone already stops both)"
   },
   {
    "ok": true,
-   "text": "flag off: hidden Mars dpoints=0 == visible Jupiter dpoints=0 (visibility axis is inert)"
+   "text": "flag off: hidden Mars dpoints=0 == visible Jupiter dpoints=0 == 0 (the flag alone already stops both)"
   },
   {
    "ok": true,
@@ -256,7 +260,7 @@
   },
   {
    "ok": true,
-   "text": "c1 Mars: there WAS history to lose (9 points)"
+   "text": "c1 Mars: there WAS history to lose (3 points)"
   },
   {
    "ok": true,
@@ -268,7 +272,7 @@
   },
   {
    "ok": true,
-   "text": "c1 Mars: re-enable -> buffer length 1 (expect 1 - starts from 0, not from 9)"
+   "text": "c1 Mars: re-enable -> buffer length 1 (expect 1 - starts from 0, not from 3)"
   },
   {
    "ok": true,
@@ -289,7 +293,7 @@
   {
    "cycle": 1,
    "body": "Mars",
-   "pre_off": 9,
+   "pre_off": 3,
    "off": 0,
    "reon": 1,
    "grown": 7
@@ -356,7 +360,7 @@
   },
   {
    "ok": true,
-   "text": "c1 Jupiter: first point jd 2461473.474196328 == body eval time 2461473.474196328 (header jd 2461473.5, light-time offset)"
+   "text": "c1 Jupiter: first point jd 2461473.474196331 == body eval time 2461473.474196331 (header jd 2461473.5, light-time offset)"
   },
   {
    "ok": true,
@@ -396,7 +400,7 @@
   },
   {
    "ok": true,
-   "text": "c2 Mars: first point jd 2461593.490702629 == body eval time 2461593.490702629 (header jd 2461593.5, light-time offset)"
+   "text": "c2 Mars: first point jd 2461593.490702628 == body eval time 2461593.490702628 (header jd 2461593.5, light-time offset)"
   },
   {
    "ok": true,

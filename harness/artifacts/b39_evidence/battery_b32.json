@@ -1,0 +1,11 @@
+{
+ "mode": "cross_launch",
+ "n_common": 120,
+ "max_dAxisRot": 0.0,
+ "max_dAxisRot_body": null,
+ "disagree": [],
+ "rc": [
+  -6,
+  0
+ ]
+}

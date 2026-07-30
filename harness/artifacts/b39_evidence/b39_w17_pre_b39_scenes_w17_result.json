@@ -1,0 +1,39 @@
+{
+ "w17": {
+  "floor_px": 0,
+  "beats": [
+   {
+    "beat": 1,
+    "relation": 4,
+    "evalCount": 5048,
+    "tag": "w17_b1"
+   },
+   {
+    "beat": 2,
+    "relation": 1,
+    "evalCount": 6431,
+    "tag": "w17_b2"
+   },
+   {
+    "beat": 3,
+    "relation": 4,
+    "evalCount": 7814,
+    "tag": "w17_b3"
+   },
+   {
+    "beat": 4,
+    "relation": 1,
+    "evalCount": 9197,
+    "tag": "w17_b4"
+   }
+  ],
+  "shown_vs_hidden_px": [
+   395,
+   395
+  ],
+  "hidden_vs_hidden_px": 0,
+  "shown_vs_shown_px": 0
+ },
+ "leg": "w17",
+ "fail": 0
+}
