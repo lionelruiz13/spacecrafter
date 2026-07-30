@@ -36,6 +36,13 @@
 // build's parser cannot read, into a legacy file - what the writers emit is
 // unchanged by this header's existence.
 //
+// ONE WRITER READS THROUGH IT TOO, and that is why `read` reports a Span: a
+// rewrite that must preserve the author's line (INTENT §11.66(b)) has to know
+// where the VALUE sits inside it, and the only thing that knows is the grammar
+// (ModularSystemFormat::Section::set is the client). Asking the writer to
+// re-find the '=' itself would be a second copy of this grammar - the exact
+// defect this header was created to end (I2).
+//
 // NOT a consumer of this authority, by construction: the OLD path's own
 // `ProtoSystem::load` (protosystem.cpp), which is the frozen comparison
 // baseline (§11.52(b)) and must keep reading exactly what it always read.
@@ -48,53 +55,87 @@ enum class Kind {
     MALFORMED,  // non-empty, no '=' - `key` holds the offending text
 };
 
+// The family's comment character, named once so no reader and no writer has to
+// spell it again (the veto point above: '#' and nothing else).
+constexpr char COMMENT_CHAR = '#';
+
+// Where a piece of text sits inside the RAW line: [begin, end), byte offsets
+// into the string that was passed to `read`. Reported for ENTRY only, and only
+// for the VALUE - it is what a line-preserving WRITER needs: replacing exactly
+// that range leaves the key text, every blank around the '=' and any trailing
+// comment byte-for-byte where the author put them (INTENT §11.66(b),
+// b31-design §5.2). An empty value yields an empty span at its insertion point.
+struct Span {
+    std::size_t begin = 0, end = 0;
+};
+
 namespace impl {
+
+inline bool isBlank(char c)
+{
+    return c == ' ' || c == '\t' || c == '\r' || c == '\n';
+}
+
+// Shrink [b, e) over `s` until neither end is a blank.
+inline void trimRange(const std::string &s, std::size_t &b, std::size_t &e)
+{
+    while (b < e && isBlank(s[b]))
+        ++b;
+    while (e > b && isBlank(s[e - 1]))
+        --e;
+}
 
 inline void trim(std::string &s)
 {
-    constexpr const char *BLANK = " \t\r\n";
-    const auto b = s.find_first_not_of(BLANK);
-    if (b == std::string::npos) {
-        s.clear();
-        return;
-    }
-    const auto e = s.find_last_not_of(BLANK);
-    s = s.substr(b, e - b + 1);
+    std::size_t b = 0, e = s.size();
+    trimRange(s, b, e);
+    s = s.substr(b, e - b);
 }
 
 } // namespace impl
 
-// Classify one raw file line. `line` is taken by value: it is consumed here.
-inline Kind read(std::string line, std::string &key, std::string &value)
+// Classify one raw file line. Nothing is consumed: `line` is read in place, so
+// the offsets `valueSpan` reports index the caller's own string.
+inline Kind read(const std::string &line, std::string &key, std::string &value,
+                 Span *valueSpan = nullptr)
 {
-    const auto comment = line.find('#');
-    if (comment != std::string::npos)
-        line.erase(comment);
-    impl::trim(line);
+    // The significant content of the line: everything before a comment, blanks
+    // stripped off both ends. Every offset below is into `line` itself.
+    std::size_t b = 0, e = line.find(COMMENT_CHAR);
+    if (e == std::string::npos)
+        e = line.size();
+    impl::trimRange(line, b, e);
     value.clear();
-    if (line.empty()) {
+    if (valueSpan)
+        *valueSpan = {b, b};
+    if (b == e) {
         key.clear();
         return Kind::EMPTY;
     }
-    if (line.front() == '[') {
-        const auto close = line.find(']');
-        key = (close == std::string::npos) ? line.substr(1) : line.substr(1, close - 1);
+    if (line[b] == '[') {
+        const auto close = line.find(']', b);
+        key = (close == std::string::npos || close >= e)
+            ? line.substr(b + 1, e - b - 1)
+            : line.substr(b + 1, close - b - 1);
         return Kind::SECTION;
     }
-    const auto eq = line.find('=');
-    if (eq == std::string::npos) {
-        key = std::move(line);
+    const auto eq = line.find('=', b);
+    if (eq == std::string::npos || eq >= e) {
+        key = line.substr(b, e - b);
         return Kind::MALFORMED;
     }
-    key = line.substr(0, eq);
-    value = line.substr(eq + 1);
-    impl::trim(key);
-    impl::trim(value);
-    if (key.empty()) {         // "= value": no key to bind to
-        value.clear();
-        key = std::move(line);
+    std::size_t kb = b, ke = eq;
+    impl::trimRange(line, kb, ke);
+    if (kb == ke) {            // "= value": no key to bind to
+        key = line.substr(b, e - b);
         return Kind::MALFORMED;
     }
+    std::size_t vb = eq + 1, ve = e;
+    impl::trimRange(line, vb, ve);
+    key = line.substr(kb, ke - kb);
+    value = line.substr(vb, ve - vb);
+    if (valueSpan)
+        *valueSpan = {vb, ve};
     return Kind::ENTRY;
 }
 

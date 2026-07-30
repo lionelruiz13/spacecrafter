@@ -1445,6 +1445,16 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
     // by the module section's own keys).
     std::map<std::string, stringHash_t> nodeParams;
     for (auto &section : sections) {
+        // The lines before the file's first '[' - a banner, a note - declare
+        // nothing. The parse keeps them so a rewrite gives them back
+        // (§11.66(b)); a loader has nothing to do with them.
+        if (section.isPreamble())
+            continue;
+        // What this section says, as the capability layer wants it. The section
+        // itself stays as the file wrote it: this is a copy, and the loaders
+        // below fill defaults into their copy (loadBody does), which is exactly
+        // why they may not be handed the file's own record of what it contains.
+        stringHash_t params = section.params();
         // D16 (INTENT §11.79(j)): ONE `type=` key carries the declaration kind.
         // A value in the module-family vocabulary (ModuleLoaderMgr's own enum,
         // I2) declares a BodyModule OF that family; anything else declares a
@@ -1458,23 +1468,23 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
         // distinct by which loader runs, §11.79(j)).
         bool isFamily;
         const BodyModuleType famType =
-            ModuleLoaderMgr::moduleTypeFromName(section.params["type"], isFamily);
+            ModuleLoaderMgr::moduleTypeFromName(params["type"], isFamily);
         if (isFamily) {
-            loadDeclaredModule(section.params, section.header, nodeParams, famType);
-        } else if (section.params.count("body")) {
-            const std::string &badType = section.params["type"];
-            cLog::get()->write("Section '[" + section.header + "]' of " + filename + ": "
+            loadDeclaredModule(params, section.getHeader(), nodeParams, famType);
+        } else if (params.count("body")) {
+            const std::string &badType = params["type"];
+            cLog::get()->write("Section '[" + section.getHeader() + "]' of " + filename + ": "
                 + (badType.empty() ? std::string("missing the type key")
                                    : "invalid type = '" + badType + "'")
-                + " for a module (it binds a body with body = '" + section.params["body"]
+                + " for a module (it binds a body with body = '" + params["body"]
                 + "'). Valid module families are: " + ModuleLoaderMgr::moduleTypeNames()
                 + ". Declaration skipped. To fix: set type to the family to instantiate, or "
                 "remove body= to declare a node instead.", LOG_TYPE::L_ERROR);
         } else {
-            loadBody(section.params);
-            const std::string &name = section.params["name"];
+            loadBody(params);
+            const std::string &name = params["name"];
             if (!name.empty())
-                nodeParams[name] = section.params;
+                nodeParams[name] = params;
         }
     }
     cLog::get()->write("(system " + englishName + " loaded, composed format)", LOG_TYPE::L_INFO);
@@ -1537,7 +1547,14 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
         return; // the legacy load already logged the unreadable file
     std::vector<ModularSystemFormat::Section> out;
     for (auto &section : sections) {
-        const std::string &name = section.params["name"];
+        if (section.isPreamble())
+            continue; // the legacy file's own banner declares no body
+        // The legacy section's content. The TWIN is machine-owned and built
+        // whole, section by section, from what the live body IS - it is not an
+        // edit of the legacy file and never carries its layout (the legacy file
+        // is READ-ONLY forever, D35 §11.113(n)).
+        stringHash_t legacy = section.params();
+        const std::string name = legacy["name"];
         if (name.empty())
             continue; // the legacy load skipped it too ("Can't load unnamed body")
         ModularBody *body = ModularBody::findBodyOnce(name);
@@ -1569,13 +1586,11 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
         // NON-family value, which is exactly what marks the section as a node -
         // no separate declaration key is emitted. `compose=explicit` turns
         // deduction off so the modules come from the declarations below.
-        ModularSystemFormat::Section node;
-        node.header = name;
-        node.params = section.params;
-        node.params["compose"] = "explicit";
-        if (Utility::isTrue(section.params["bound_to_surface"])) {
-            node.params.erase("bound_to_surface"); // translated, not duplicated -
-            node.params["relation"] = "grounded";  // one relation authority per generated file
+        stringHash_t node = legacy;
+        node["compose"] = "explicit";
+        if (Utility::isTrue(legacy["bound_to_surface"])) {
+            node.erase("bound_to_surface");   // translated, not duplicated -
+            node["relation"] = "grounded";    // one relation authority per generated file
         }
         // B25-emit / §11.73 A1+A2: materialize the capabilities the legacy name
         // sniff (applyHardcodedContent) granted this LIVE body as explicit keys,
@@ -1586,11 +1601,11 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
         // verbatim above); the sniff only ever sets these for Earth, so this is
         // the ONE node that gains them on the shipped corpus.
         if (body->getSiderealTimeModel() == SiderealTimeModel::EARTH_APPARENT
-                && !node.params.count("sidereal_time"))
-            node.params["sidereal_time"] = "earth_apparent";
-        if (!node.params.count("shadow_color")
+                && !node.count("sidereal_time"))
+            node["sidereal_time"] = "earth_apparent";
+        if (!node.count("shadow_color")
                 && body->getShadowAbsorbtion() != Vec3f{1, 1, 1})
-            node.params["shadow_color"] = Utility::vec3fToStr(body->getShadowAbsorbtion());
+            node["shadow_color"] = Utility::vec3fToStr(body->getShadowAbsorbtion());
         // B27 tail / D14 (§11.79(h)): the capabilities the legacy `type` string
         // carried are materialized as KEYS here - the format boundary is exactly
         // where they must become explicit, because the composed load no longer
@@ -1600,40 +1615,33 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
         // a twin carries a key exactly where its absence would change something
         // (the co-delivery contract, §11.73(g): every key consumed is emitted).
         if (body->getSurfaceModel() == SurfaceModel::LUNAR
-                && !node.params.count("surface_model"))
-            node.params["surface_model"] = "lunar";
+                && !node.count("surface_model"))
+            node["surface_model"] = "lunar";
         if (body->getTrailLength() != TRAIL_LENGTH_DEFAULT
-                && !node.params.count("trail_length"))
-            node.params["trail_length"] = std::to_string(body->getTrailLength());
+                && !node.count("trail_length"))
+            node["trail_length"] = std::to_string(body->getTrailLength());
         // D27's own requirement (§11.113(f)): a legacy star's `type` grants BOTH
         // halves of the split, so the twin emits BOTH keys, value for value -
         // emit one and the composed load stops reproducing strToBodyType.
-        if (body->isStar() && !node.params.count("light_source"))
-            node.params["light_source"] = "true";
-        if (body->isPrimary() && !node.params.count("primary"))
-            node.params["primary"] = "true";
-        if (body->isMinorBody() && !node.params.count("shadow_exempt"))
-            node.params["shadow_exempt"] = "true";
-        out.push_back(std::move(node));
+        if (body->isStar() && !node.count("light_source"))
+            node["light_source"] = "true";
+        if (body->isPrimary() && !node.count("primary"))
+            node["primary"] = "true";
+        if (body->isMinorBody() && !node.count("shadow_exempt"))
+            node["shadow_exempt"] = "true";
+        out.push_back(ModularSystemFormat::Section::fromParams(name, node));
         // One BodyModule declaration per family the live body deduces - the
         // decomposition the twin exists to make visible [vixy, §11.50(b)].
         // `type=<family>` is the one declaration key (was declare=BodyModule +
         // module=<family>, both retired by D16 §11.79(j)).
-        for (BodyModuleType type : body->deduceBodyModuleList(section.params)) {
-            ModularSystemFormat::Section mod;
+        for (BodyModuleType type : body->deduceBodyModuleList(legacy)) {
             const std::string typeName{ModuleLoaderMgr::moduleTypeName(type)};
-            mod.header = name + ":" + typeName;
-            mod.params["type"] = typeName;
-            mod.params["body"] = name;
-            out.push_back(std::move(mod));
+            const stringHash_t mod{{"type", typeName}, {"body", name}};
+            out.push_back(ModularSystemFormat::Section::fromParams(name + ":" + typeName, mod));
         }
-        if (Utility::isTrue(section.params["planet_grid"])) {
-            ModularSystemFormat::Section mod;
-            mod.header = name + ":GRID";
-            mod.params["type"] = "CUSTOM";
-            mod.params["body"] = name;
-            mod.params["slot"] = "GRID";
-            out.push_back(std::move(mod));
+        if (Utility::isTrue(legacy["planet_grid"])) {
+            const stringHash_t mod{{"type", "CUSTOM"}, {"body", name}, {"slot", "GRID"}};
+            out.push_back(ModularSystemFormat::Section::fromParams(name + ":GRID", mod));
         }
     }
     const std::vector<std::string> banner{
