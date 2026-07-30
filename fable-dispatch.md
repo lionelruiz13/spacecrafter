@@ -720,21 +720,29 @@ corrected: it was written, then destroyed by the same edit.]*
   datum only AFTER an explicit save, idempotent on re-save; §6.3 D9 assert: md5 of every
   data file the save did NOT target unchanged; battery green (b24_equivalence,
   b25_galactic, b40_parity, b4_anchors, scene E) + twin byte-stability (18/18).
-- **WIP: 2026-07-30 checkpoint 1 — code landed (`5a8881ff`): `declaredParams` on the
-  body, `ModularSystem::saveSystem` + `body action save [filename <name>]`, retained
-  composed sections + a `diagnose()` channel that says a verdict once into both the log
-  and the datum's annotation, one emitter shared with the twin. Measured already: twins
-  18/18 byte-identical to the pre-F15 baseline; the live-tree save of the shipped solar
-  tree is byte-identical to the twin EXCEPT the pushed body's own 24-line block (zero
-  removals, zero changed lines); 91 declarations written, 2 engine-minted bodies
-  (baryEarthMoon, the orbit_autour_lune anchor) correctly skipped; frozen md5 pristine.
-  Checkpoint 2 — `f15_persist.py` GREEN, 26 legs, 0 failures: T6 (121 bodies, 0 divergent
-  fields, rover survives) against its own no-save control (120, gone); no-delta save ==
-  twin line for line (4160 lines) and, with a body pushed, exactly its 22-line block;
-  T4 byte-identical in both regimes; PRESERVE 4169 authored lines back verbatim;
-  ANNOTATE above the datum, only after a save, idempotent, with a negative control
-  (5 -> 3 annotations); D9 8077 files, 1 changed; refusals silent-free. `--mutate` RED
-  exactly on modules/routing. NEXT: the battery (b24, b25, b40, b4, scene E) + §11.121.**
+- **WIP: DELIVERED 2026-07-30 → §11.121 (code `5a8881ff`; harness `121b238` /
+  `c676cf3` / this commit). All DoD items met.** The live tree is a serialization
+  source: every body keeps the map that DECLARED it (`declaredParams`, snapshotted
+  before the loader's own `map[]` reads author what nobody wrote), and `body action
+  save [filename <name>]` — spelling recorded as a **veto point** (B28) — walks the
+  subtree (hidden included, stopping at nested systems) writing one declaration per
+  body that carries one; 2 of 93 engine-minted bodies correctly skipped. An existing
+  file is EDITED not rebuilt; a declaration it already carries is NOT edited (that is
+  the ledger's slice). Composed loads KEEP their parsed sections ⇒ 14 diagnostic sites
+  now say their verdict once, into the log AND above the datum, written only by an
+  explicit save (D33). **Gate `f15_persist.py` 25 legs GREEN**: T6 121 bodies / 0
+  divergent fields vs its own no-save control (120, gone); live-tree save == machine
+  twin **line for line** (4160) and +32/−0 with a body pushed; T4 byte-identical in
+  both regimes; 4169 authored lines preserved; annotations idempotent + negative
+  control (5→3); D9 8077 files / 1 written; refusals mute nothing; **SCREEN** 118 of
+  8462 footprint px with **1** surviving a 2 px erosion (edge = all a cross-launch
+  jitter can move), counterfactual 98 %. `--mutate` RED exactly on modules/routing.
+  Battery: b24 120 + `--strip` RED, b25 130/17 + `--mutate` RED, b40 17/17 (18 Params,
+  frozen md5 in==out), b4 0 failures, scene E 26/0; twins **18/18** byte-identical;
+  frozen md5 pristine throughout. **B25 CLOSED**; B31 open on the session file + ledger.
+  NEW **§5.50** (record-only): `body action load … coord_func surface_point` kills the
+  app — the OLD path carries on with a null orbit (`protosystem.cpp:612-622`).
+  Instrument fix: `b40_parity.py` no longer passes vacuously.**
 
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
 - **Row / recorded:** B7 (§13.B) · §11.95 (158/0, contention hypothesis, `b7_hunt.sh` ready) · §11.97(f) (NEW abort-path datum, composed-body-count axis).

@@ -426,6 +426,8 @@ the owning authority named in §2's "owning authority" column, never to a
 
 ### 4.1 Persistent bodies (O4) — no new identity key is needed
 
+**IMPLEMENTED 2026-07-30 (F15 → INTENT §11.121, code `5a8881ff`) — this section is now a derived description; the entry wins.** The live-tree serialization source is `ModularSystem::saveSystem`, triggered by `body action save [filename <name>]`; the gap this section names (a body with no legacy section) is closed by giving every body the map that declared it (`ModularBody::declaredParams`), which is the `saveOrbit()` rule — data keys, never derived state — applied to the whole declaration. One consequence this section did not state and the implementation forced: a body no data declared at all (a camera anchor, a binary-orbit barycentre) must be SKIPPED, or the next launch loads it twice.
+
 A script-pushed body that must survive the session **becomes authored data**.
 `session action save` (or B25's script-triggered system save, the same code)
 serializes it as a section in a composed system file under
@@ -744,7 +746,7 @@ resolution. Full text with options and executor recommendations is in
 
 Sequencing that follows: **§5.39 unification → writer rework (§5.2/§5.3) →
 persistent-body serialization (§4.1, which also completes B25's half) → the
-session file (§3.2) → the ledger (§2 group D)**. The camera/latch defects
+session file (§3.2) → the ledger (§2 group D)**. **[STATE 2026-07-30: §5.39 done (§11.115), writer rework done (§11.119), persistent-body serialization done (§11.121, and B25's half closed with it). NEXT: the session file (§3.2), then the ledger.]** The camera/latch defects
 (§5.32, §5.27) must land before T3/T10 can pass, but they do not block the
 earlier steps.
 
