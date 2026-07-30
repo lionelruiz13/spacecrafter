@@ -471,6 +471,20 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   paths diverge (§5.26/`s526_ref.py` instrument, 39 090 px case); (iv) the §5.45
   repro (one `z` line removed) flips SIGABRT → warn+skip+start, and the
   well-formed corpus is byte-inert; (v) the runner FAILS on a mutated ssystem md5.
+- **WIP (2026-07-30, run 2, checkpoint 1):** items **(iv) and (v) DONE and committed**
+  (code `41f68121`; harness this commit). (iv): the predecessor's candidate diff was
+  read critically, one factually-wrong comment claim corrected (`stod("1,5")` does NOT
+  throw — measured), built, and verified fresh — `harness/f12_s545.py`, 8 launches,
+  pre-fix binary vs patched: `[Proxima] z` deleted and `[Keid] x = ,5` both rc=**-6**/no
+  port pre-fix, warn+skip+start post-fix; NEW datum — a missing `name` never aborted, it
+  built a system node called **"System"** and lost `TolimanSystem` (measured, pre-fix).
+  Byte-inert on the shipped corpus: `b40_parity` pre vs post = 120 bodies / **0**
+  divergent fields / 18 twins identical / 17-of-17 coordinates / frozen md5 in == out.
+  (v): `b10_cmd_battery_run.sh` asserts with exit codes (7 driver / 4 corpus / 3 config),
+  `SSYS_PRISTINE` measured `545a51ef…`; `b14_sat6_battery_run.sh` was a byte-for-byte
+  COPY differing only in its dead echo ⇒ collapsed to a wrapper (I2, zero callers);
+  `harness/f12_runner_exit.sh` drives the verbatim-extracted tail, 7/7 exit codes.
+  NEXT: item (i) B27 split, then (ii), then (iii); live battery legs at delivery.
 - **WIP (2026-07-30, session 4):** first executor run KILLED by host OOM mid-task —
   nothing committed, no checkpoint, verification artifacts lost. SURVIVING
   uncommitted diff at code HEAD `a62ad5d7` = item (iv)'s §5.45 guard

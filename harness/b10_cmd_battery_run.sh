@@ -4,6 +4,9 @@
 # orientation_check.py (orientation spectrum + P-d). Fresh launch 2:
 # scene_e_spine.py. init_fov=340, FISHEYE (already the config default).
 # Config restored byte-identical (md5 asserted). Stale-instance guard.
+# EXIT CODES: 0 green - 1 a launch never came up - 7 scene E failed - 4 the
+# frozen ssystem corpus is not the pristine one - 3 config.ini was not restored
+# byte-identically.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 BIN="${SC_BIN:-$HERE/../../build-claude/src/spacecrafter}"
@@ -30,6 +33,11 @@ launch() {  # $1 = attempt label; sets APPPID, UP
 }
 
 MD5_IN=$(md5sum "$CFG" | cut -d' ' -f1)
+SSYS_IN=$(md5sum ~/.spacecrafter/ssystem.ini | cut -d' ' -f1)
+# The frozen shipped corpus this battery's numbers belong to. Overridable for a
+# different delivery; measured 2026-07-30 on the installed ssystem.ini, which is
+# the same value §11.103/§11.106/§11.107/§11.115 asserted.
+SSYS_PRISTINE="${SSYS_PRISTINE:-545a51ef76294891579a1fc2fe13792b}"
 cp "$CFG" "$OUT/config.ini.bak"
 sed -i 's/^init_fov *=.*/init_fov                        = 340/' "$CFG"
 
@@ -69,6 +77,24 @@ echo "scene E FAIL lines = $FAILN"
 # ============ restore ============
 cp "$OUT/config.ini.bak" "$CFG"
 MD5_OUT=$(md5sum "$CFG" | cut -d' ' -f1)
-echo "config md5 in=$MD5_IN out=$MD5_OUT $([ "$MD5_IN" = "$MD5_OUT" ] && echo OK || echo MISMATCH)"
-echo "ssystem md5 = $(md5sum ~/.spacecrafter/ssystem.ini | cut -d' ' -f1) (expect 62239656ee1fb3835e58acc1fb34f5ba)"
+SSYS_OUT=$(md5sum ~/.spacecrafter/ssystem.ini | cut -d' ' -f1)
+# ASSERT, not echo (§11.101(g) class, F0 precedent in b5_oort_run.sh /
+# b5_ladder_run.sh): this runner EDITS config.ini, so a failed restore silently
+# re-specifies every later run (the B26 leftover-file class); and it reads the
+# frozen ssystem corpus, so a corpus that is not the pristine one makes every
+# number it prints belong to a different product (§2.0 D9).
+# The printed ssystem expectation was 62239656ee1fb3835e58acc1fb34f5ba - STALE
+# by many waves and never compared to anything, which is exactly what an echo
+# buys. It is now the measured pristine value and it is asserted.
+if [ "$MD5_IN" = "$MD5_OUT" ]; then MD5RC=0
+else MD5RC=3; fi
+echo "config md5 in=$MD5_IN out=$MD5_OUT $([ $MD5RC -eq 0 ] && echo OK || echo 'MISMATCH - config.ini NOT restored byte-identically')"
+if [ "$SSYS_IN" = "$SSYS_OUT" ] && [ "$SSYS_OUT" = "$SSYS_PRISTINE" ]; then SSYSRC=0
+else SSYSRC=4; fi
+echo "ssystem md5 in=$SSYS_IN out=$SSYS_OUT pristine=$SSYS_PRISTINE $([ $SSYSRC -eq 0 ] && echo OK || echo 'MISMATCH - the frozen corpus is not the pristine one')"
 [ "$SE" = 0 ] && [ "$FAILN" = 0 ] && echo "BATTERY: scene E GREEN" || echo "BATTERY: scene E has failures"
+# Precedence: a driver failure dominates (it is the reason the run exists), then
+# the corpus identity, then the config restore.
+[ "$SE" = 0 ] && [ "$FAILN" = 0 ] || exit 7
+[ $SSYSRC -ne 0 ] && exit $SSYSRC
+exit $MD5RC
