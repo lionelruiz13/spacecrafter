@@ -513,7 +513,7 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   route: the stray `---` splitting INTENT §5 between rows 46/47, and the F13 header
   (root = supervisor edit truncation, see F13's note).**
 
-### F13 — B31-impl slice 1: the §11.66(b) writer rework  [M]  ← START HERE
+### F13 — B31-impl slice 1: the §11.66(b) writer rework  [M]  — DELIVERED 2026-07-30
 *[Header restored 2026-07-30 by the supervisor. Root cause of the loss: a supervisor Edit
 whose old_string swallowed the authored `###` line while its replacement dropped it
 (edit-truncation; caught by F12's executor, who reconstructed a provisional header and
@@ -550,10 +550,13 @@ corrected: it was written, then destroyed by the same edit.]*
   own previous instance while human comments survive; legacy `ssystem.ini` md5 in==out
   asserted (D13); `b24_equivalence` + `b25_galactic` green (the twin still generates)
   and discriminating.
-- **WIP:** 2026-07-30 — checkpoint 1: layer landed (code `9f60d3a1`, harness
-  `a8a198f`); `b31_writeback.py` 12 legs green + 2 discrimination notes; 18/18
-  twins byte-identical to the pre-F13 binary, frozen md5 in == out. NEXT:
-  `b24_equivalence` (+ `--strip` RED) and `b25_galactic`, then the 11.119 entry.
+- **WIP:** — *(delivered: §11.119; code `9f60d3a1` + `99685172`, harness `a8a198f`
+  + the entry commit. 12 gate legs green, discriminating two ways measured;
+  18/18 twins byte-identical; b24 120 + RED, b25 130/17 + RED, b40_parity 17/17,
+  b4_anchors 0. **The next B31 slice** is persistent-body serialization (§4.1),
+  which also carries the LIVE loader→writer annotation wiring — it needs a write
+  trigger to exist before a loader may retain its parsed sections — and completes
+  B25's remaining half.)*
 
 ### F14 — B14/D22: the 90° meridian conversion fix  [S–M]
 - **Row / recorded:** B14 (§13.B, REOPENED §11.101(b)) · §11.113(a)/D22 verbatim (A33

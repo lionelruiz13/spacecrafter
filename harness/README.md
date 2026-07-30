@@ -792,3 +792,44 @@ runner - it was a byte-for-byte copy differing only in its own dead md5 echo.
   shown able to FAIL on demand (measured: `Sun.primary: True != False`).
 - **`b40_parity.py`**: a field one binary does not emit AT ALL is a dump-FORMAT
   difference, reported once, not a per-body divergence on every body.
+
+## F13 — the write-back layer's gate (`b31_writeback.py`) — INTENT §11.119, 2026-07-30
+
+    cd claude/harness && ./b31_writeback.py [outdir]        # no display, ~4 s
+
+Gates B31 slice 1: the §11.66(b) line-preserving parse/write layer
+(`b31-design.md` §5.2/§5.3, check T9). It **compiles the product sources**
+(`src/experimentalModule/ModularSystemFormat.cpp` + `src/tools/log.cpp`) into
+`b31_format/format_gate.cpp` and drives them — there is no Python parser here,
+because a Python parser would only ever test itself. `format_gate` is a general
+tool, not a fixed scenario:
+
+    format_gate <in> <out|-> [op ...]
+      set|<section>|<key>|<value>                give a key a value
+      remove|<section>|<key>|<reason>            retire a key (commented out)
+      annotate|<section>|<key>|<reason>|<text>   what a loader diagnosed
+      dump                                       the parse, as JSON with hex
+                                                 keys/values (no encoding can lie)
+    <section> = a header text (first match) or '#<n>', the 0-based index.
+    exit 2 = an operation was REFUSED (a legitimate answer the gate asserts on).
+
+Twelve legs: round-trip byte-identity, malformed-is-not-a-key, in-place value
+change, new-key placement, removal-as-comment, annotation placement, **T9
+idempotence**, stale-marker removal, annotation replacement, representability
+refusal, CRLF, last line. The corpus is inline in the script (27 lines / 654
+bytes) and every line of it exists to be destroyed by a writer that does not
+preserve — including the shipped `[Sedna]` malformed class and the shipped
+`[mimas]` trailing-comment class.
+
+**Discrimination is built in and reported on every run** (`note:` lines):
+- the **pre-rework writer**, compiled on the fly from `f1151c63` (override with
+  `B31_PRE_REV`), returns **297 bytes for 654 in and loses 14 of 27 lines**;
+- the **naive annotator** (insert above the datum, never look for an earlier
+  one) **grows the file by 3 lines per rewrite** and fails the T9 leg.
+
+Not covered here, deliberately: the app-level legs. The twin byte-identity
+check (delete `~/.spacecrafter/modularSystem/*.disabled`, relaunch, compare
+against a pre-change snapshot) and `b24_equivalence` / `b25_galactic` /
+`b40_parity` / `b4_anchors` are the run that proves the four readers of the
+`.ini` grammar still read what they read — run them whenever `ini_line.hpp` or
+this layer changes.
