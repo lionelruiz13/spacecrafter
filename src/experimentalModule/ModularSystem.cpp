@@ -1049,10 +1049,13 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
                 trailLength = legacyTrailLength;
         }
     }
-    // TIER B - the `type` -> BodyType CAPABILITY mapping (§11.73(c), D14 answered
-    // YES for the new format). The enum carries exactly TWO live capabilities:
-    // STAR (emits light - isStar(), 13 consumers) and MINOR_BODY (exempt from
-    // inter-body shadowing, D3 - isMinorBody(), 3 consumers). ANCHOR (type =
+    // TIER B - the `type` -> CAPABILITY mapping (§11.73(c), D14 answered YES for
+    // the new format). THREE capabilities since the D27 split (§11.113(f)):
+    // `light_source` (the STAR bit - emits light, isStar()), `primary` (the
+    // structural remainder of what the STAR bit used to mean, isPrimary(), its
+    // own member - see ModularBody.hpp for why it is not a second enum bit), and
+    // `shadow_exempt` (MINOR_BODY - exempt from inter-body shadowing, D3,
+    // isMinorBody(), 3 consumers). ANCHOR (type =
     // Observer/Anchor/Center) has ZERO consumers [re-verified whole-src at edit
     // time, 2026-07-25 - the A3/EARTH_MOON pattern], so a composed body that
     // resolves to CUSTOM_BODY instead of ANCHOR is behaviourally identical and
@@ -1061,15 +1064,21 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
     // below reproduces strToBodyType EXACTLY, value for value, on everything but
     // Sun/Star and Asteroid/KBO/Comet, which is precisely §11.73(c)'s Tier-B set.
     BodyType bodyType;
+    bool primary;
+    const BodyType legacyBodyType = strToBodyType(bodyTypeString);
+    const bool legacyStar = (legacyBodyType & BodyType::STAR) == BodyType::STAR;
     if (composedFile) {
         const std::string *lightSourceKey = authored(param, "light_source");
+        const std::string *primaryKey = authored(param, "primary");
         const std::string *shadowExemptKey = authored(param, "shadow_exempt");
         const bool lightSource = lightSourceKey && parseCapabilityFlag(*lightSourceKey, englishName, "light_source");
         const bool shadowExempt = shadowExemptKey && parseCapabilityFlag(*shadowExemptKey, englishName, "shadow_exempt");
+        primary = primaryKey && parseCapabilityFlag(*primaryKey, englishName, "primary");
         // Same enum VALUES strToBodyType produces (STAR = 0x40 alone, not
-        // CUSTOM_BODY|STAR): the two capabilities are not composable in this
-        // enum's shape, so declaring both is reported rather than silently
-        // half-applied (§2(f)); no shipped body is both.
+        // CUSTOM_BODY|STAR): the two BodyType capabilities are not composable in
+        // this enum's shape, so declaring both is reported rather than silently
+        // half-applied (§2(f)); no shipped body is both. `primary` is NOT in that
+        // enum and therefore composes freely with either.
         if (lightSource && shadowExempt) {
             cLog::get()->write("Body '" + englishName + "': light_source and shadow_exempt are both "
                 "declared, but a body cannot be both a light source and a shadow-exempt minor body "
@@ -1079,15 +1088,28 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         bodyType = lightSource ? BodyType::STAR
                  : shadowExempt ? BodyType::MINOR_BODY
                  : BodyType::CUSTOM_BODY;
-        if (!lightSourceKey && !shadowExemptKey) {
-            const BodyType legacyBodyType = strToBodyType(bodyTypeString);
-            if ((legacyBodyType & BodyType::STAR) == BodyType::STAR)
+        // D12/D14: name every capability this body's `type` would have granted
+        // and does not. PER CAPABILITY since the D27 split - `type = Sun` now
+        // grants TWO of them, so a single "some key is missing" gate would leave
+        // one of the two silently unmentioned, which is the co-delivery hole
+        // §11.73(g) exists to prevent. (It also stops an unrelated key - a
+        // declared `shadow_exempt = false` - from suppressing a warning about
+        // `light_source`, which the previous single gate did.)
+        if (legacyStar) {
+            if (!lightSourceKey)
                 logRetiredTypeCapability(englishName, bodyTypeString, "light_source", "true", "false");
-            else if (legacyBodyType == BodyType::MINOR_BODY)
-                logRetiredTypeCapability(englishName, bodyTypeString, "shadow_exempt", "true", "false");
+            if (!primaryKey)
+                logRetiredTypeCapability(englishName, bodyTypeString, "primary", "true", "false");
+        } else if (legacyBodyType == BodyType::MINOR_BODY && !shadowExemptKey) {
+            logRetiredTypeCapability(englishName, bodyTypeString, "shadow_exempt", "true", "false");
         }
     } else {
-        bodyType = strToBodyType(bodyTypeString);
+        bodyType = legacyBodyType;
+        // D9/D14: in a legacy file the `type` string keeps granting the whole
+        // bundle it always granted, split or not - `isStar()` and `isPrimary()`
+        // are both true for `type = Sun|Star` and both false otherwise, which is
+        // exactly what the un-split code did through the single STAR bit.
+        primary = legacyStar;
     }
 
     ModularBodyCreateInfo createInfo {
@@ -1129,6 +1151,9 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         .surfaceModel=surfaceModel,
         .trailLength=trailLength,
         .composedDeclaration=composedFile,
+        // B27 Tier B, the D27 split (§11.113(f)) - the structural half of what
+        // the STAR bit used to carry, resolved above with everything else.
+        .primary=primary,
 
         .bodyType=bodyType,
         .isHaloEnabled=Utility::isTrue(param["halo"]),
@@ -1580,8 +1605,13 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
         if (body->getTrailLength() != TRAIL_LENGTH_DEFAULT
                 && !node.params.count("trail_length"))
             node.params["trail_length"] = std::to_string(body->getTrailLength());
+        // D27's own requirement (§11.113(f)): a legacy star's `type` grants BOTH
+        // halves of the split, so the twin emits BOTH keys, value for value -
+        // emit one and the composed load stops reproducing strToBodyType.
         if (body->isStar() && !node.params.count("light_source"))
             node.params["light_source"] = "true";
+        if (body->isPrimary() && !node.params.count("primary"))
+            node.params["primary"] = "true";
         if (body->isMinorBody() && !node.params.count("shadow_exempt"))
             node.params["shadow_exempt"] = "true";
         out.push_back(std::move(node));

@@ -164,6 +164,13 @@ struct ModularBodyCreateInfo {
     // all. Consumers ask the body, never the file (I1: a module has no business
     // knowing which parser ran).
     bool composedDeclaration = false;
+    // Structural primacy (B27 Tier B, the `primary` key - D27 §11.113(f)).
+    // "isStar() purpose minus light source" [vixy]: this body is the thing its
+    // subsystem orbits, whether or not it shines. Default false ⇒ an absent key
+    // reproduces every non-star body exactly; a legacy `type = Sun|Star` sets it
+    // (D14: legacy stays type-driven forever), the composed format takes it from
+    // the key alone.
+    bool primary = false;
 
     // Deprecated
     BodyType bodyType; // Deprecated
@@ -929,10 +936,16 @@ public:
         return false;
     }
     // Old-path satellite classification (body.cpp:107-124: parent of type
-    // CENTER/SUN/STAR => not a satellite; new: SYSTEM/STAR-bit parents).
+    // CENTER/SUN/STAR => not a satellite; new: SYSTEM/PRIMARY parents).
     // Client: the ORBIT module (planet vs satellite master-flag routing).
+    // D27 split (§11.113(f)): the question is STRUCTURAL - a body orbiting the
+    // thing its system is built around is not a satellite whether or not that
+    // thing shines - so the test is the parent's PRIMACY, not its luminosity.
+    // Identical on every legacy load and on every generated twin (a legacy star
+    // is both), by construction rather than by coincidence: loadBody sets
+    // `primary` from the same `type` string that sets the STAR bit.
     inline bool isSatellite() const {
-        return parent && !(parent->isStar() || parent->isSystem());
+        return parent && !(parent->isPrimary() || parent->isSystem());
     }
     //! Read access to the orbit for ephemeris-at-date queries (client:
     //! EnvironmentManager's zodiacal ecliptic-normal sampling, the old
@@ -1333,9 +1346,27 @@ public:
     inline bool isCacheFresh() const {
         return !uncached;
     }
-    // Return true if this body has the STAR bit set, meaning it emit light
+    // Return true if this body has the STAR bit set, meaning it emit light.
+    // ILLUMINATION ONLY since the D27 split (§11.113(f), [vixy]: "Split
+    // light_source and primary flags, the first one for light purpose and the
+    // second one for isStar() purpose minus light source") - every consumer that
+    // asks a STRUCTURAL question about the body now asks isPrimary() instead.
     inline bool isStar() const {
         return (bodyType & BodyType::STAR) == BodyType::STAR;
+    }
+    // Return true if this body is the PRIMARY of its subsystem: the thing its
+    // children orbit, and the thing that sits at (or near) its parent's origin.
+    // The other half of the D27 split, and the half that survives the body going
+    // dark - a dark primary of a binary, or a planet with moons, is `primary`
+    // and is not a `light_source`.
+    // WHY IT IS ITS OWN MEMBER rather than a second BodyType bit: BodyType is a
+    // small enum of mutually-exclusive kinds plus ONE flag bit, and isMinorBody()
+    // tests it by EXACT EQUALITY - a second orthogonal bit would silently make a
+    // `shadow_exempt` + `primary` body stop being a minor body. Keeping it out of
+    // the enum also keeps `bodyType` value-for-value with the frozen legacy
+    // strToBodyType (§11.107(c)), which the corpus gate asserts.
+    inline bool isPrimary() const {
+        return primary;
     }
     // Return true if this body is a MINOR_BODY: mass-instanced small body,
     // EXEMPT from inter-body shadowing (D3, §2.0). The capability the three
@@ -1757,6 +1788,9 @@ private:
     int trailLength = TRAIL_LENGTH_DEFAULT;
     // Declaring format (D14 §11.79(h)). See ModularBodyCreateInfo.
     bool composedDeclaration = false;
+    // Structural primacy (B27 Tier B, `primary` key). See ModularBodyCreateInfo;
+    // read through isPrimary(), never directly.
+    bool primary = false;
     // EFFECTIVE hidden state (B39 §11.117) = this body's own declared hidden
     // relation OR any ancestor's. DERIVED, never authored: the DECLARED value is
     // `relation`, which D23 forbids touching for a body hidden only by nesting

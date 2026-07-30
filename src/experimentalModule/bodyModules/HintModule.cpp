@@ -20,10 +20,20 @@ void HintModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
         return;
     // Angular-separation gate (old path: ang_dist = 300·atan(|ecl|/dist)/fov°,
     // drawn only when > 0.25 - body.cpp:961 + drawHints) - suppresses the hint
-    // spam of satellites huddled around their planet at wide fov. Star-typed
-    // bodies skip it like the old BodySun::drawHints (its |ecl| ~ 0 would
-    // otherwise suppress the Sun's own hint forever).
-    if (!body->isStar()) {
+    // spam of satellites huddled around their planet at wide fov. The system's
+    // PRIMARY skips it like the old BodySun::drawHints (its |ecl| ~ 0 would
+    // otherwise suppress its own hint forever).
+    // D27 split, SECOND LOOK (§11.113(f) listed this site under `light_source`
+    // and flagged it as one of the two worth re-deriving before landing; the
+    // re-derivation moves it): the reason for the skip is that the body sits AT
+    // its parent's origin, which is a structural fact, not a luminous one. A
+    // DARK primary of a binary has the same ~0 separation and would lose its
+    // hint forever under the luminosity gate - the exact case the split exists
+    // to serve; a luminous body that is NOT primary has a real separation and
+    // the gate works correctly for it. Nothing observable changes on the shipped
+    // corpus or on any generated twin (the Sun is both), so the veto is cheap:
+    // it is one word here and a respell in the regenerated twin.
+    if (!body->isPrimary()) {
         if (ModularBody *parent = body->getParent()) {
             const float separation = (body->getObservedPosition() - parent->getObservedPosition()).length();
             // old fov° = full fov in degrees; ModularBody::halfFov is the half

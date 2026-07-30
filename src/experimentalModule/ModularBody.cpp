@@ -67,7 +67,7 @@ void BodyModule::dumpState(std::ostream &out) const
 }
 
 ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
-    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), datumRadius(info.datumRadius), groundRadius(info.groundRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), siderealTimeModel(info.siderealTimeModel), surfaceModel(info.surfaceModel), trailLength(info.trailLength), composedDeclaration(info.composedDeclaration), isHaloEnabled(info.isHaloEnabled)
+    englishName(std::move(info.englishName)), parent(parent), orbit(std::move(info.orbit)), re(info.re), haloColor(info.haloColor), albedo(info.albedo), shadowAbsorbtion(info.shadowAbsorbtion), scaling(1), radius(info.radius), datumRadius(info.datumRadius), groundRadius(info.groundRadius), one_minus_oblateness(1-info.oblateness), solLocalDay(info.solLocalDay), bodyType(info.bodyType), siderealTimeModel(info.siderealTimeModel), surfaceModel(info.surfaceModel), trailLength(info.trailLength), composedDeclaration(info.composedDeclaration), primary(info.primary), isHaloEnabled(info.isHaloEnabled)
 {
     // Nav-radius class default (B10-datum0, §11.75(a)): an UNSET (sentinel)
     // datum/ground resolves to `radius` here - the plain-body default (altitude
@@ -794,6 +794,11 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // it is the one field here that legitimately DIFFERS between the two
         // legs, and is therefore deliberately excluded from the equality gate.
         << ",\"bodyType\":" << static_cast<int>(bodyType)
+        // The OTHER half of the D27 split (§11.113(f)): `primary` is deliberately
+        // not a BodyType bit, so `bodyType` alone can no longer witness the
+        // Tier-B resolution - both fields together can, and legacy-vs-composed
+        // equality on BOTH is what makes the two-key co-delivery observable.
+        << ",\"primary\":" << (primary ? "true" : "false")
         << ",\"surfaceModel\":" << static_cast<int>(surfaceModel)
         << ",\"trailLength\":" << trailLength
         << ",\"composedDecl\":" << (composedDeclaration ? "true" : "false")

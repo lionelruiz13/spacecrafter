@@ -167,9 +167,12 @@ double ModularObject::getCloseFov(const Navigator *nav) const
 
 double ModularObject::getSatellitesFov(const Navigator *nav) const
 {
-    // Old path excluded the Sun by name; the structural equivalent is
-    // excluding stars (their "satellites" span the whole system).
-    if (body->hasChildren() && !body->isStar()) {
+    // Old path excluded the Sun by name; the structural equivalent is excluding
+    // the system's PRIMARY (its "satellites" span the whole system). D27 split
+    // (§11.113(f)): primacy, not luminosity - a dark primary's children span the
+    // system just as widely, and a companion star that orbits something else has
+    // an ordinary subsystem worth fitting.
+    if (body->hasChildren() && !body->isPrimary()) {
         const float rad = body->getSubsystemRadius();
         if (rad > 0)
             return atanf(rad/body->getDistanceToObserver())*(180./M_PI)*4;
@@ -180,7 +183,7 @@ double ModularObject::getSatellitesFov(const Navigator *nav) const
 double ModularObject::getParentSatellitesFov(const Navigator *nav) const
 {
     if (ModularBody *parent = body->getParent()) {
-        if (parent->hasChildren() && !parent->isStar()) {
+        if (parent->hasChildren() && !parent->isPrimary()) {   // D27 split, as above
             const float rad = parent->getSubsystemRadius();
             if (rad > 0)
                 return atanf(rad/parent->getDistanceToObserver())*(180./M_PI)*4;

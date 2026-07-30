@@ -216,6 +216,11 @@ void PlanetGridModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &
     // non-star bodies (old planet_grid.cpp:104, the isSatellite()/!="Sun" gate -
     // the name-sniff replaced by the clean isStar() type test, I4). The tropic/
     // polar latitudes are this body's axial_tilt (getAxialTilt, degrees).
+    // D27 split (§11.113(f)): the two halves land on DIFFERENT keys and both
+    // are correct. A tropic is defined by the ILLUMINATOR's apparent path, so
+    // the self-exclusion is luminosity (`light_source`, isStar) - a dark
+    // primary lit by its companion does have tropics; while isSatellite() is
+    // structural and now reads the parent's `primary`.
     hasTropics = !body->isSatellite() && !body->isStar();
     bodyAxialTilt = body->getAxialTilt();
     const double axialTiltRad = bodyAxialTilt * M_PI / 180.0;
