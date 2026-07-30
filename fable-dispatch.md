@@ -511,6 +511,17 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   §11.106(g) already isolated (same-binary A/A **0 px>8**; null probe lands on the post
   value); Eris selDist Δ 7.6e-6 AU reproduces in the A/A ⇒ launch variance.
   NEXT: item (iii) B33 heading readout, then the delivery battery + INTENT 11.118.
+- **WIP (2026-07-30, run 2, checkpoint 4):** item **(iii) B33 DONE and committed**
+  (code `f1151c63`; harness this commit). `getHeading` asks WHICH PATH DRAWS (not
+  "prefer the new"); `tcpGetPosition`'s duplicate read routed through it (I2).
+  `harness/f12_b33_heading.py`: after the Earth→Moon switch the drawn roll is
+  **−6.160074°** and the cross-path divergence is **39 090 px>32** (§5.26's own case);
+  fixed binary reports **−6.160070**, pre-fix reports **0.000000** while drawing
+  −6.160074. Rendered consequence: the no-op `heading delta_azimuth 0` moves the view
+  **0 px>32** fixed vs **39 114 px>32** pre-fix. Old-pinned readout = 0.000000 = exactly
+  the pre-fix value. `set heading 0` remedy intact (39090→12). ALL FIVE ITEMS DONE.
+  NEXT: delivery battery (b10_cmd live green + SSYS_PRISTINE-override red, scenes A–E,
+  b5_oort, b25_galactic, b4_anchors) + INTENT 11.118 + §13 flips.
 - **WIP (2026-07-30, session 4):** first executor run KILLED by host OOM mid-task —
   nothing committed, no checkpoint, verification artifacts lost. SURVIVING
   uncommitted diff at code HEAD `a62ad5d7` = item (iv)'s §5.45 guard
