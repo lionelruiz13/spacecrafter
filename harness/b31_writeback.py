@@ -412,6 +412,32 @@ def leg_annotation_replaces(gate, work):
            "the end of its section")
 
 
+def leg_every_op_idempotent(gate, work):
+    """T9 generalized, and the reversible-pair rule: apply the WHOLE operation
+    set - a value change, a new key, a removal, an annotation - then apply it
+    again to what came out, starting from the state the first pass produced."""
+    ops = ("set|alpha|radius|9999",
+           "set|alpha|brand_new|7",
+           "remove|alpha|unknown_key|this engine no longer reads it",
+           annotation_ops())
+    src = work / "corpus.ini"
+    first, second = work / "allops1.ini", work / "allops2.ini"
+    run_gate(gate, src, first, *ops)
+    run_gate(gate, first, second, *ops)
+    if first.read_bytes() != second.read_bytes():
+        a, b = lines_of(first.read_bytes()), lines_of(second.read_bytes())
+        moved = [i for i, (x, y) in enumerate(zip(a, b)) if x != y]
+        fail(f"second pass: {len(a)} -> {len(b)} lines, first difference at "
+             f"{moved[:1]}")
+        for i in moved[:3]:
+            print(f"      {i}: {a[i]!r} -> {b[i]!r}")
+    else:
+        ok(f"second pass: the whole operation set (value change + new key + "
+           f"removal + annotation) applied again to its own output is "
+           f"byte-identical - every operation is a fixed point, not just the "
+           f"annotation ({len(first.read_bytes())} bytes)")
+
+
 def leg_representability(gate, work):
     src = work / "corpus.ini"
     ref = work / "rt.ini"
@@ -487,6 +513,7 @@ def main():
     leg_annotation(gate, work)
     leg_stale_annotation(gate, work)
     leg_annotation_replaces(gate, work)
+    leg_every_op_idempotent(gate, work)
     leg_representability(gate, work)
     leg_crlf(gate, work)
     leg_last_line(gate, work)

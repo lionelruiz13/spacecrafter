@@ -813,13 +813,15 @@ tool, not a fixed scenario:
     <section> = a header text (first match) or '#<n>', the 0-based index.
     exit 2 = an operation was REFUSED (a legitimate answer the gate asserts on).
 
-Twelve legs: round-trip byte-identity, malformed-is-not-a-key, in-place value
-change, new-key placement, removal-as-comment, annotation placement, **T9
-idempotence**, stale-marker removal, annotation replacement, representability
-refusal, CRLF, last line. The corpus is inline in the script (27 lines / 654
-bytes) and every line of it exists to be destroyed by a writer that does not
-preserve — including the shipped `[Sedna]` malformed class and the shipped
-`[mimas]` trailing-comment class.
+Thirteen legs: round-trip byte-identity, malformed-is-not-a-key, in-place
+value change, new-key placement, removal-as-comment, annotation placement,
+**T9 idempotence**, stale-marker removal, annotation replacement, **second
+pass** (the whole operation set re-applied to its own output, so every
+operation is shown to be a fixed point and not just the annotation),
+representability refusal, CRLF, last line. The corpus is inline in the script
+(27 lines / 654 bytes) and every line of it exists to be destroyed by a writer
+that does not preserve — including the shipped `[Sedna]` malformed class and
+the shipped `[mimas]` trailing-comment class.
 
 **Discrimination is built in and reported on every run** (`note:` lines):
 - the **pre-rework writer**, compiled on the fly from `f1151c63` (override with
