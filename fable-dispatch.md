@@ -550,7 +550,10 @@ corrected: it was written, then destroyed by the same edit.]*
   own previous instance while human comments survive; legacy `ssystem.ini` md5 in==out
   asserted (D13); `b24_equivalence` + `b25_galactic` green (the twin still generates)
   and discriminating.
-- **WIP:** —
+- **WIP:** 2026-07-30 — checkpoint 1: layer landed (code `9f60d3a1`, harness
+  `a8a198f`); `b31_writeback.py` 12 legs green + 2 discrimination notes; 18/18
+  twins byte-identical to the pre-F13 binary, frozen md5 in == out. NEXT:
+  `b24_equivalence` (+ `--strip` RED) and `b25_galactic`, then the 11.119 entry.
 
 ### F14 — B14/D22: the 90° meridian conversion fix  [S–M]
 - **Row / recorded:** B14 (§13.B, REOPENED §11.101(b)) · §11.113(a)/D22 verbatim (A33
