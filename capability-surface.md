@@ -153,6 +153,7 @@ both (`app_command_interface.cpp:2125`), so it silently re-synchronises the two 
 | **drop script-added bodies** | CMD `body action clear` — **OLD ONLY** | `core.cpp:865` → `ssystem_factory.hpp:702-704` → `ProtoSystem::removeSupplementalBodies` → **B34** |
 | **preload a body's resources** | CMD `body action preload` — **OLD ONLY** | `core.cpp:827-834` → `ssystem_factory.hpp:692-694` → old; `ModularBody::preload` (`ModularBody.hpp:1031`) has **0 callers** → **B34/B36** |
 | reload the system from file | CMD `body action reload` | `ssystem_factory.cpp:649-660` (§11.55) |
+| **write the system to a composed file** (a script-pushed body becomes authored data) | CMD `body action save [filename <name>]` — **NEW-path concept, no old mirror** | `app_command_interface.cpp:3585` → `SSystemFactory::saveCurrentSystem` (`ssystem_factory.cpp:793`, path convention + D35 refusals) → `ModularSystem::saveSystem` (§11.121, B31 slice 2). Spelling is a **veto point** |
 | hide / show | CMD `body name X hidden on\|off\|toggle` (+ DATA `hidden`) | `ssystem_factory.hpp:315-317` |
 | per-body colour (halo/label/orbit/trail/all) | CMD `body name X color <ch> value r,g,b` | `ssystem_factory.hpp:455-461` (§11.65) |
 | skin texture create / switch | CMD `body name X skin_tex …` / `skin_use …` | `ssystem_factory.hpp:413,430` (§11.46) |
