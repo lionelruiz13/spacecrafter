@@ -41,6 +41,15 @@ session 3's own deferral note (B31-impl now unblocked: its §11.110 sequencing g
 §5.39 closed with F10/§11.115; B14/D22 decided §11.113(a), queued). F8/F9 stay after.
 DECISIONS_PENDING open set at session start: **D15, D21 (both SCHEDULED last week of
 August, §11.116(a)), D37**.
+**Round outcome (session 4 close):** F12 → §11.118, F13 → §11.119, F14 → §11.120 — all
+three delivered AND supervisor-verified same day; §5.28/§5.45 closed, §5.47/§5.48/§5.49
+opened, D26/D27/D28 implemented; no new Vixy decision minted (three veto points
+recorded in-entry: B27 hint-gate on `primary`, `primary`-as-own-member, §5.49's owed
+test). One host OOM killed the first F12 executor mid-task (successor verified its
+surviving diff rather than inheriting it); supervising protocol extracted → §0b.
+Remaining dispatchable: **F8** (opportunistic), **F9** (design-first), **next B31
+slice** (persistent-body serialization §4.1 — completes B25's half; section to mint
+at its dispatch).
 
 ---
 
@@ -86,6 +95,49 @@ August, §11.116(a)), D37**.
 
 Sizes: **S** ≈ short focused run · **M** ≈ one full session · **L** ≈ full session at
 high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
+
+---
+
+## 0b. Supervising-session protocol (Fable) — the user triggers a round with ONE line
+
+**Trigger phrasing (reuse verbatim):** *"Dispatch round: run a supervised dispatch
+session per claude/fable-dispatch.md §0b."*
+
+1. **Warm-up**: both trees clean + note HEADs; binary exists at code HEAD; re-read this
+   file's update notes AND the §13 rows of the candidate tasks (this file is a view —
+   §13 + the cited entries win). After any discontinuity, re-verify state before
+   relying on it (the 2026-07-30 OOM left an executor's uncommitted diff in the tree;
+   "clean expected" is an expectation, not knowledge).
+2. **Pick the next 3 dispatchable tasks** by file position, honoring deferral/queue
+   notes in the update block; a task without a section here is not dispatchable —
+   mint the section first, commit, then dispatch. Sizing is measured
+   [vixy 2026-07-30]: 6 hard tasks ≈ 80% supervisor context; fewer than 3 repays the
+   session's derivation cost too often; 3 is the sweet spot.
+3. **Dispatch sequentially** — one `opus-xhigh` executor per task, synchronous, never
+   parallel (deliveries are each other's baselines). Every prompt carries: the binding
+   SUPERSESSION BLOCK (template below, values refreshed), the task-section pointer +
+   warm-up order, the mandate verbatim or by exact ledger ref, stop boundaries,
+   discriminating checks, checkpoint discipline, and the report format (per-item DoD
+   state + evidence pointers + deviations + suspensions + what the next task must know).
+4. **Verify each delivery BEFORE the next dispatch**: read the §11 entry IN FULL;
+   check trees/commits/authors; check every claimed ledger flip (§5, §13,
+   DECISIONS_PENDING) at the ledger; judge every deviation and judgment call — endorse
+   with the argument, or escalate to a re-analysis agent on doubt. Harnesses are NOT
+   re-run when committed artifacts + both-ways discrimination records suffice; a
+   claim without such a record IS a reason to re-run or escalate. Record acceptance in
+   the task's WIP line; commit the acceptance.
+5. **Close**: refresh section 3 (For Vixy) with new veto points/decisions, append the
+   round outcome to the session update note, commit, and report to Vixy: deliveries,
+   endorsements, anything newly Vixy's, the remaining dispatchable set.
+
+**Supersession-block TEMPLATE** (the executor's standing definition is stale — every
+prompt carries this, values refreshed): intent authority =
+`/home/claude/spacecrafter/claude/INTENT.md`, expanded entries `claude/INTENT/<id>.md`
+(NO `src/experimentalModule/INTENT.md`, NO §12, NO `dispatch-2026-07-19.md`); delivery
+record = §11 entry at the next free number ⟨N⟩ + §13/§5 flips + this file's WIP line at
+every checkpoint; today's date ⟨date⟩; `claude/` is its own repo — code committed
+first, harness carries `Code: master-beta @ <sha>`; memory-bounded builds per §0.5;
+no `run_in_background`; both HEADs stated ⟨code, harness⟩.
 
 ---
 
@@ -605,6 +657,13 @@ corrected: it was written, then destroyed by the same edit.]*
   expansion, recorded §11.120(g)); NEW **§5.49** opened, not fixed — the observer's
   longitude origin is the mesh x̂ column, 90° from the map's centre column
   (derived-from-source, NOT measured at the render, veto point recorded).
+  **Supervisor-verified 2026-07-30** — 11.120 read in full; trees/commits checked;
+  harnesses not re-run, committed pre-fix predictions + both-ways-RED gate + corpus
+  anchor accepted as evidence. All deviations ENDORSED: the premise correction is
+  measurement doing its job (unregistered ≠ featureless — the corrected word is now
+  the record's); the instrument corrections are I2 operating on the §5.28 root; the
+  Mercury counterfactual finally run is D22's own named check. §5.49's
+  record-don't-fix call ENDORSED (channel not given, veto + owed test stated).
 
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
 - **Row / recorded:** B7 (§13.B) · §11.95 (158/0, contention hypothesis, `b7_hunt.sh` ready) · §11.97(f) (NEW abort-path datum, composed-body-count axis).
@@ -679,3 +738,17 @@ corrected: it was written, then destroyed by the same edit.]*
   grounded children vs parent display scaling (`moon_scale=5` swallows the mandate
   scenes; §5.27). Workflow note for shader edits [vixy]: `shaders/compile.sh` +
   `cmake --install` — not hand-copies into the install dir.
+- **Session-4 veto points (2026-07-30 — all implemented-and-live, each cheap to
+  reverse; silence = endorsed):** (1) B27 hint-suppression gate landed on `primary`,
+  not `light_source` as §11.113(f) provisionally placed it — argument at the site
+  (origin-driven, a dark primary keeps its hint suppression), byte-inert on shipped
+  data, twin-only key (§11.118(c)); (2) `primary` is its own member, NOT a second
+  `BodyType` bit (`isMinorBody()` exact-equality trap, §11.118(c)); (3) F13 removal
+  records are deliberately UNMARKED comments (a machine-marked removal would delete
+  itself on the next write, §11.119(a)).
+- **NEW §5.49 (F14, §11.120(j)) — your eye when convenient, no urgency:** the
+  OBSERVER's longitude origin is the mesh x̂ column (u=0.75), 90° from the map's
+  centre column the meridian fix now targets — derived from source, NOT yet measured
+  at the render; on Earth `moveto lon 0` would stand 90° from Greenwich. Never seen
+  because no shipped scene puts both conventions in one frame. The discriminating
+  test it owes is stated in the row; fixing it is user-visible semantics = yours.
