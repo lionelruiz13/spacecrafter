@@ -156,13 +156,40 @@ public:
         sortedSystemBodies.push_back(body);
         needCleanUp = true;
     }
-    // Internally used by ModularBody to inform the destruction of body in this system
+    // Internally used by ModularBody to inform the destruction of body in this
+    // system. BOUNDED since B39 (§11.117), and absence is now a LEGAL state, not
+    // a broken invariant: hide() takes the parked subtree OUT of this list
+    // (unregisterBody below), so a body destroyed while hidden - an anchor body
+    // dropped by `camera action drop`, a hidden body's `body action reload` -
+    // is legitimately not here. The previous unbounded `while (*ptr != body)`
+    // ran off the end of the vector in exactly that case.
     inline void removeBody(ModularBody *body) {
         auto ptr = sortedSystemBodies.data();
-        while (*ptr != body)
+        auto const end = ptr + sortedSystemBodies.size();
+        while (ptr != end) {
+            if (*ptr == body) {
+                *ptr = nullptr; // compacted by the next cleanUp()
+                needCleanUp = true;
+                return;
+            }
             ++ptr;
-        *ptr = nullptr;
-        needCleanUp = true;
+        }
+    }
+    // Take a body OUT of the rendered/pickable universe without destroying it
+    // (hide()). Distinct from removeBody deliberately: this one ERASES rather
+    // than nulling, because a null entry is dereferenced unguarded by three of
+    // the draw sweeps (they rely on cleanUp() running between the edit and the
+    // next draw, which holds for destruction inside a load but is a needless
+    // new exposure for an operator command). Erase preserves the sort order, so
+    // the near-sorted bubble sort keeps its O(N) case. No-op if absent (double
+    // hide, or a body born under a parked node and never registered).
+    inline void unregisterBody(ModularBody *body) {
+        for (auto it = sortedSystemBodies.begin(); it != sortedSystemBodies.end(); ++it) {
+            if (*it == body) {
+                sortedSystemBodies.erase(it);
+                return;
+            }
+        }
     }
     inline std::vector<ModularBody *>::const_iterator begin() const {
         return sortedSystemBodies.begin();

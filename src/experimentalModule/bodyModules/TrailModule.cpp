@@ -7,6 +7,7 @@
 #include "EntityCore/Resource/Set.hpp"
 #include "experimentalModule/Renderer.hpp"
 #include "experimentalModule/ModularBody.hpp"
+#include "tools/log.hpp"
 #include <cmath>
 #include <cstdlib>
 #include <ostream>
@@ -163,6 +164,91 @@ void TrailModule::accumulate(ModularBody *body)
     }
 }
 
+// THE UNHIDE EDGE (B39 §11.117 / D23 clause iv: "behave as if they never were
+// hidden when unhidden"). See the header for the two behind-state halves.
+void TrailModule::resumeAfterHidden(ModularBody *body)
+{
+    const bool want = wantShown(body);
+    // (1) The DISPLAY fader advances in WALL time and stopped with the sweep.
+    // Snapping it to its target is the as-if answer: a fade lasts under a second
+    // and the body was gone for at least a frame, so by the time it is back the
+    // ramp is over. Without this, a trail switched OFF while the body was hidden
+    // fades out AFTER the body reappears - visible, and visibly wrong.
+    fader.reset(want);
+    // Keep the phase-gate counter consistent with the snapped fader: update()
+    // maintains this pairing, and it did not run while the body was parked.
+    const bool nowLive = fader.getInterstate() > 1e-6f;
+    if (nowLive != live) {
+        live = nowLive;
+        activeCount += nowLive ? 1 : -1;
+    }
+    if (!want || !recording || firstPoint || points.empty())
+        return; // nothing was being recorded: nothing to reconstruct
+    // (2) The recorded HISTORY. `date` is the body's own sim time, already
+    // brought to the current frame by the D8 barrier before this call.
+    const double date = body->getLastJD();
+    const int missed = static_cast<int>((date - lastJD) / deltaTrail);
+    if (missed <= 0)
+        return; // less than one sampling period was missed
+    if (missed > maxTrail) {
+        // The hidden span is longer than the whole time window: every surviving
+        // sample would have been pruned anyway, so the honest state is a fresh
+        // start - and it is accumulate()'s OWN answer to the same situation
+        // (time jump bigger than the window), reused rather than re-decided.
+        resetTrail();
+        return;
+    }
+    const Orbit *orbit = body->getOrbit();
+    if (!orbit) {
+        // THE ONE NAMED RESIDUAL of D23 (§11.113(b)(iv)): a past that is not a
+        // function of time cannot be reconstructed. Degrade to a fresh start and
+        // SAY SO (§2.0 D12 - a behaviour the author did not write must be
+        // visible; §2(f) shape: what happened, why, what was done, what to do).
+        cLog::get()->write("Trail of '" + body->getEnglishName() + "': the "
+            + std::to_string(missed) + " sample(s) missed while the body was hidden "
+            "cannot be reconstructed, because this body has no orbit to evaluate at a "
+            "past date. The trail restarts from the current position instead of "
+            "resuming. To keep a continuous trail across a hide, give the body a "
+            "time-parametrized orbit, or leave it shown.", LOG_TYPE::L_WARNING);
+        resetTrail();
+        return;
+    }
+    // Re-evaluate the missed samples at the module's OWN declared cadence
+    // (deltaTrail), oldest first, inserting at the front so `points` stays
+    // newest-first. Each sample is evaluated 1 + RESUME_EXTRA_ITERATIONS times at
+    // its own date: EllipticalOrbit/IterativeEll advance ONE Newton step per
+    // call from the previous call's seed, so a single call at a jumped-to date
+    // would not be the position at that date - the same reason the §11.76(b)
+    // barrier exists, applied per reconstructed sample.
+    OsculatingFunctionType *osc = orbit->getOsculatingFunction();
+    Vec3d tmp;
+    double sampleJD = lastJD;
+    for (int k = 1; k <= missed; ++k) {
+        sampleJD = lastJD + k * deltaTrail;
+        for (int i = 0; i <= RESUME_EXTRA_ITERATIONS; ++i) {
+            if (osc)
+                (*osc)(date, sampleJD, tmp);
+            else
+                orbit->positionAtTimevInVSOP87Coordinates(date, sampleJD, tmp);
+        }
+        points.insert(points.begin(),
+                      {Vec3f(tmp[0], tmp[1], tmp[2]), sampleJD});
+    }
+    lastJD = sampleJD;
+    if (static_cast<int>(points.size()) > maxTrail)
+        points.resize(maxTrail); // drop the oldest (newest-first buffer)
+    // Same time-window prune as accumulate(), against the same `date`.
+    for (size_t i = 0; i < points.size(); ++i) {
+        if (std::fabs(points[i].jd - date) / deltaTrail > maxTrail) {
+            points.erase(points.begin() + i, points.end());
+            break;
+        }
+    }
+    cLog::get()->write("Trail of '" + body->getEnglishName() + "': reconstructed "
+        + std::to_string(missed) + " sample(s) missed while hidden, from the body's "
+        "orbit at their own dates.", LOG_TYPE::L_DEBUG);
+}
+
 bool TrailModule::update(ModularBody *body, float scaledRadius)
 {
     const bool want = wantShown(body);
@@ -238,11 +324,24 @@ void TrailModule::dumpState(std::ostream &out) const
         << ",\"color\":[" << color[0] << ',' << color[1] << ',' << color[2] << "]"
         << ",\"head\":";
     if (points.empty()) {
-        out << "null,\"headJD\":null";
+        out << "null,\"headJD\":null,\"tailJD\":null,\"pathLength\":0";
     } else {
         out << '[' << points.front().pos[0] << ',' << points.front().pos[1]
             << ',' << points.front().pos[2] << "],\"headJD\":"
-            << std::setprecision(17) << points.front().jd << std::setprecision(9);
+            << std::setprecision(17) << points.front().jd
+            // Oldest sample's date + the POLYLINE LENGTH (B39 §11.117): together
+            // with `points` they make the recorded history's GEOMETRY observable,
+            // not just its size. That is what separates "n samples appeared" from
+            // "n samples that trace this body's actual orbit": length/span is the
+            // body's mean orbital speed, so a reconstruction placed anywhere else
+            // fails by orders of magnitude, and a reconstruction that left a GAP
+            // shows up as a chord shortcut. AU, parent-relative (the frame the
+            // samples live in).
+            << ",\"tailJD\":" << points.back().jd << std::setprecision(9);
+        double len = 0;
+        for (size_t i = 1; i < points.size(); ++i)
+            len += (points[i].pos - points[i - 1].pos).length();
+        out << ",\"pathLength\":" << std::setprecision(12) << len << std::setprecision(9);
     }
     out << '}';
 }

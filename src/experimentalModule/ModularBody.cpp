@@ -36,6 +36,7 @@ float ModularBody::drawAlpha = 1.f;
 float ModularBody::viewportRadius = 1;
 std::vector<ModularBody *> ModularBody::notableBody;
 float ModularBody::deltaTime = 0;
+double ModularBody::currentJD = 0; // written once per frame by dispatchUpdate (B39)
 std::shared_ptr<BodyTesselation> ModularBody::bodyTesselation; // both-paths seam
 ModularBody *ModularBody::selectedBody = nullptr;
 Translator *ModularBody::translator = nullptr;
@@ -113,6 +114,11 @@ ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     }
 }
 
+// Register FIRST, then propagate: a body born under a parked node (or one that
+// inherited parked children through the name-replacement path in the ctor) is
+// taken back out by the walk, and the same walk fixes every inherited child.
+// Doing it in this order keeps ONE registration entry point (I2) instead of a
+// second, conditional one here.
 ModularBody *ModularBody::createChild(ModularBodyCreateInfo &info, BodyRelation rel)
 {
     auto owned = std::make_unique<ModularBody>(this, info);
@@ -121,6 +127,7 @@ ModularBody *ModularBody::createChild(ModularBodyCreateInfo &info, BodyRelation 
     ret->boundToSurface = (rel == BodyRelation::GROUNDED); // the cache's single write site
     listOf(rel).push_back(std::move(owned));
     registerToSystem(ret);
+    ret->propagateRenderHidden(renderHidden);
     return ret;
 }
 
@@ -132,6 +139,7 @@ ModularSystem *ModularBody::createChildSystem(ModularBodyCreateInfo &info, BodyR
     ret->boundToSurface = (rel == BodyRelation::GROUNDED);
     listOf(rel).push_back(std::move(owned));
     registerToSystem(ret);
+    ret->propagateRenderHidden(renderHidden);
     return ret;
 }
 
@@ -141,6 +149,56 @@ void ModularBody::registerToSystem(ModularBody *child)
     while (p->isNotIsolated)
         p = p->parent;
     static_cast<ModularSystem *>(p)->addBody(child);
+}
+
+ModularSystem *ModularBody::owningSystem() const
+{
+    if (!parent)
+        return nullptr; // parentless root: never registered anywhere
+    auto p = parent;
+    while (p->isNotIsolated)
+        p = p->parent;
+    return static_cast<ModularSystem *>(p);
+}
+
+// THE root fix of §5.31 (B39 §11.117). The defect the row names is that a
+// hidden body still reaches the system-level sweeps, and the reason it does is
+// structural: `sortedSystemBodies` is a FLAT per-system list that hide() never
+// edited (removeBody was destruction-only). Guarding each sweep would have been
+// one guard per sweep, forever, plus the ancestor case each of them would have
+// to re-derive; taking the parked subtree OUT of the list makes "a hidden body
+// contributes nothing to the frame" true of the orbit line, the trail DRAW and
+// its RECORDING, the tail, the body draw (with its hints/labels/axis/grid/halo
+// and its depth trace, i.e. occlusion), the shadow caster scan, the shadow
+// receiver scan, the self-shadow nomination and click-picking in ONE edit, with
+// nothing left to forget (I6: rework the structure, not the instances).
+//
+// `ancestorHidden` carries D23's nesting clause down; each node ORs it with its
+// OWN declared relation, so:
+//   - a descendant declared hidden independently stays out when the ancestor is
+//     shown again (the old path re-shows it - §5.44, tracked not reproduced);
+//   - no descendant's declared `relation` is ever written here, which is the
+//     clause "mustn't change the exposed hidden attribute/flag".
+void ModularBody::propagateRenderHidden(bool ancestorHidden)
+{
+    const bool nowHidden = ancestorHidden || (relation < BodyRelation::GROUNDED);
+    if (nowHidden != renderHidden) {
+        renderHidden = nowHidden;
+        if (ModularSystem *system = owningSystem()) {
+            if (nowHidden)
+                system->unregisterBody(this);
+            else
+                system->addBody(this);
+        }
+    }
+    forEachVisibleChild([nowHidden](ModularBody &child) {
+        child.propagateRenderHidden(nowHidden);
+    });
+    // Parked descendants ride the same walk: their own relation forces them
+    // hidden, but their SUBTREES need the flag too (a grandchild under a
+    // doubly-parked node).
+    for (auto &child : hiddenBodies)
+        child->propagateRenderHidden(nowHidden);
 }
 
 ModularBody::~ModularBody()
@@ -226,9 +284,9 @@ void ModularBody::recursiveUpdate(double jd, const Mat4f &matLocalToBodyPos)
         c->selectiveUpdate(jd, matLocalToBodyPos);
     for (auto &c : innerBodies)
         c->selectiveUpdate(jd, matLocalToBodyPos);
-    // Hidden children keep ticking (translation-only) - see updateHiddenBodies.
-    // `mat` IS the accumulated surface frame the grounded loop above uses.
-    updateHiddenBodies(jd, matLocalToBodyPos, &mat);
+    // Parked children do NOT tick (B39, D23): publish the frame their
+    // use-site barrier will need - see publishParkedFrame.
+    publishParkedFrame(jd, matLocalToBodyPos);
 }
 
 ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f mat_local_to_body)
@@ -238,6 +296,10 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
     // draw-side-only drain unbounded during old-path phases), refilled by
     // update(), read by the Renderer between this update and the next.
     notableBody.clear();
+    // The frame's SIM date, published for the D8 use-site barrier (B39): this is
+    // the one entry point of the whole update walk and the place the value
+    // arrives from TimeMgr, so it is the only honest write site for "now".
+    currentJD = jd;
     body->preUpdate(jd, mat_local_to_body);
     // The camera mat is the reference's ACCUMULATED equatorial frame (its
     // surface/spin composition and the body's lat/lon grid are defined there -
@@ -257,7 +319,7 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
         // mat_local_to_body == flat . accumulatedBodyPosToBody(jd) exactly
         // (flat was built as its inverse fold above) - the surface frame the
         // grounded loop uses, handed over instead of recomputed.
-        body->updateHiddenBodies(jd, flat, &mat_local_to_body);
+        body->publishParkedFrame(jd, flat);
     }
     while (body->isNotIsolated) {
         body->transformBodyToParent(jd, flat);
@@ -279,16 +341,63 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
             if (b.get() != body)
                 b->selectiveUpdate(jd, flat);
         }
-        // Same exclusion as the three loops above: `body` is the node the walk
-        // came up from and is already updated - and it CAN be hidden (nothing
-        // forbids hiding the camera reference).
-        parent->updateHiddenBodies(jd, flat, &parentTilted, body);
+        // No exclusion needed any more: publishParkedFrame writes a frame, it
+        // does not walk the parked children, so the node the walk came up from
+        // (which CAN itself be hidden - nothing forbids hiding the camera
+        // reference) cannot be double-updated.
+        parent->publishParkedFrame(jd, flat);
         body = parent;
         body->mat = parentTilted; // assign BEFORE update: update() reads the member
         body->preUpdate(jd, flat);
         body->update(jd, parentTilted);
     }
     return static_cast<ModularSystem *>(body);
+}
+
+// The D8 use-site barrier (§11.76(b)) - see the header for why +4 and why the
+// frame comes from the parent rather than from this body.
+void ModularBody::useNow()
+{
+    if (!renderHidden || !parent)
+        return; // the walks still evaluate this body: fresh by construction
+    if (evaluatedJD == currentJD)
+        return; // already brought up to this frame's date by an earlier use
+    // Ancestors first: a parked subtree under a parked node has no published
+    // frame of its own (publishParkedFrame runs only for nodes the walk visits),
+    // and after the parent resumes, its matLocalToBodyPos IS its fresh flat
+    // position frame (recursiveTranslationUpdate's own contract).
+    parent->useNow();
+    const Mat4f &parentFlat = parent->renderHidden ? parent->matLocalToBodyPos
+                                                   : parent->parkedChildFrame;
+    // A GROUNDED parked child rides the parent's accumulated SURFACE frame, the
+    // ORBITING/INNER variants the flat one - the same per-relation dispatch the
+    // retired updateHiddenBodies did, and the same identity its callers relied on
+    // (surface == flat . accumulatedBodyPosToBody(jd)). The test is
+    // `boundToSurface`, not `relation == HIDDEN_GROUNDED`: it is the same fact
+    // cached, and it is invariant under hide()/show()'s +-3 translation, so this
+    // reads correctly whichever side of the restore calls it (show() calls it
+    // BEFORE clearing the flag but AFTER translating the relation back).
+    const Mat4f frame = boundToSurface
+        ? parentFlat.multiplyFast(parent->accumulatedBodyPosToBody(currentJD))
+        : parentFlat;
+    for (int i = 0; i <= RESUME_EXTRA_ITERATIONS; ++i)
+        recursiveTranslationUpdate(currentJD, frame);
+}
+
+// Hand every module of this subtree the "you were out of the frame, come back as
+// if you never left" edge (D23 clause iv / §11.113(b)(iv)). The module decides
+// what that means for its own state (I4): a fader snaps to the target it would
+// have reached, the trail reconstructs the samples it did not take - or gives up
+// and LOGS (D12) where the past is not computable. Default is a no-op.
+void ModularBody::resumeModulesAfterHidden()
+{
+    for (auto &module : components) {
+        if (module)
+            module->resumeAfterHidden(this);
+    }
+    forEachVisibleChild([](ModularBody &child) {
+        child.resumeModulesAfterHidden();
+    });
 }
 
 void ModularBody::select()
@@ -458,6 +567,9 @@ bool ModularBody::hide()
         src.erase(it);
         relation = static_cast<BodyRelation>(static_cast<int>(relation) - 3); // -> HIDDEN_*
         parent->invalidateCachedState();
+        // B39 (§11.117): leave the RENDERED universe - this subtree out of the
+        // owning system's sorted list, the effective flag set on every node.
+        propagateRenderHidden(parent->renderHidden);
         return true;
     }
     return false;
@@ -475,6 +587,21 @@ bool ModularBody::show()
             parent->listOf(relation).push_back(std::move(*it));
             hid.erase(it);
             parent->invalidateCachedState();
+            // UNHIDE IS A USE [D23: "behave as if they never were hidden when
+            // unhidden"], and it is the use the barrier exists for: the very
+            // next walk would otherwise take ONE Newton step from a seed left at
+            // hide time. Runs BEFORE the flag is cleared - useNow is a no-op for
+            // a body the walks evaluate, so the order is what arms it.
+            useNow();
+            // B39 (§11.117): re-enter the RENDERED universe. A descendant that
+            // is itself declared hidden stays out - propagateRenderHidden ORs
+            // each node's own relation, which is where the old path's §5.44
+            // ("show re-shows everything") cannot happen here.
+            propagateRenderHidden(parent->renderHidden);
+            // ... and only THEN the modules, on a position that is already the
+            // one they would have seen (the trail reconstructs its missed
+            // samples from the orbit - BodyModule::resumeAfterHidden).
+            resumeModulesAfterHidden();
             return true;
         }
     }

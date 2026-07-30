@@ -258,6 +258,14 @@ enum class BodyRelation {
     INNER,
 };
 
+// EXTRA iterations of the multi-frame iterative position solve that restore
+// convergence when a frozen body is USED again [vixy, §11.76(b) verbatim:
+// "recomputed with 4 extra iterations"]. ONE authority for every consumer of the
+// D8 barrier: ModularBody::useNow (the body's own position) and
+// TrailModule::resumeAfterHidden (each reconstructed past sample) - the value is
+// Vixy-specified, so it must not be spelled twice.
+constexpr int RESUME_EXTRA_ITERATIONS = 4;
+
 // hide()/show() translate between a relation and its hidden variant by +-3.
 static_assert(static_cast<int>(BodyRelation::GROUNDED) == static_cast<int>(BodyRelation::HIDDEN_GROUNDED) + 3 &&
               static_cast<int>(BodyRelation::ORBITING) == static_cast<int>(BodyRelation::HIDDEN_ORBITING) + 3 &&
@@ -307,15 +315,27 @@ public:
     // that a hidden body is "outside every update/draw walk by construction",
     // and that held only through isVisible, which dispatchUpdate's preUpdate
     // OVERWRITES for the camera's own reference body - a hidden body CAN be the
-    // reference (updateHiddenBodies' `skip`, INTENT 11.36), and then it re-
-    // entered both the draw sweep and the pick sweep. Unreachable before B4
-    // (nothing hid the reference); reachable now that an anchor point IS a
-    // hidden reference body - and a radius-0 reference produces a NaN halo
-    // (drawHaloCore's cmag *= 0.5*rmag/screen_r with screen_r == 0) and a
-    // zero-size pick candidate at the screen centre. Asking `relation` is asking
-    // the membership authority itself (the hide/show observable, §11.36).
+    // reference (INTENT 11.36), and then it re-entered both the draw sweep and
+    // the pick sweep. Unreachable before B4 (nothing hid the reference);
+    // reachable now that an anchor point IS a hidden reference body - and a
+    // radius-0 reference produces a NaN halo (drawHaloCore's cmag *=
+    // 0.5*rmag/screen_r with screen_r == 0) and a zero-size pick candidate at
+    // the screen centre.
+    // B39 (§11.117) asks `renderHidden` instead of `relation`: `relation` is the
+    // DECLARED value and answers only for the node that was hidden, while the
+    // question here is the EFFECTIVE one - a body hidden by NESTING (D23:
+    // "hiding a body implicitly hide his child body as a side effect of
+    // nesting") is equally outside the rendered universe while its own declared
+    // flag must not move. Measured pre-fix: the selection pointer on Io under a
+    // hidden Jupiter drew 137 px, against 138 px with the parent shown.
     inline operator bool() const {
-        return isVisible & isBodyVisible & (relation >= BodyRelation::GROUNDED);
+        return isVisible & isBodyVisible & !renderHidden;
+    }
+    // EFFECTIVE hidden state: this body was hidden, or an ancestor was.
+    // Everything on the RENDER side asks this; nothing that answers "what did
+    // the data/operator declare" does (that is `relation`, D23's last clause).
+    inline bool isRenderHidden() const {
+        return renderHidden;
     }
     // The < operator compare the distance to the observer
     inline bool operator<(const ModularBody &other) const {
@@ -470,9 +490,15 @@ public:
 
     // Not inlined because unfrequently called, almost a copy-paste of the loaded test with load-checking before each module draw
     void drawLoaded(Renderer &renderer);
-    // Draw this body if it is visible
+    // Draw this body if it is visible. The gate is `operator bool` itself, not
+    // its expression re-spelled (B39 §11.117): the copy here predated the
+    // hidden clause §11.111 added, so the two answers to "does this body belong
+    // to the drawn surface" could disagree - and did, for a hidden camera
+    // reference. One authority (I2). Unreachable-and-inert for a parked body
+    // today (hide() takes it out of the sweep), which is why it is a guard and
+    // not the mechanism.
     inline void draw(Renderer &renderer) {
-        if (isVisible & isBodyVisible) {
+        if (*this) {
             if (screenSize > 0.0015) {
                 if (loaded) {
                     const auto matrix = mat.multiplyFast(computeBodyToSurface());
@@ -540,6 +566,15 @@ public:
     // are declared rotation elements (nested in the primary's equator by
     // data - the Charon proof). The two halves ride the same chain walk.
     inline void transformParentToBodyPos(double jd, Mat4f &mat_local_to_body) {
+        // The D8 barrier's idempotency stamp (B39 §11.117): the frame's SIM date,
+        // captured BEFORE the light-travel retardation below rewrites `jd`.
+        // `lastJD` carries this body's own retardation and so cannot answer
+        // "was this body brought up to the frame's date"; this member can, and
+        // it is stamped HERE because this is one of exactly two places where a
+        // body's position state becomes current (the other is
+        // transformBodyToParent) - so every walk stamps it, visible or not, and
+        // hide() needs no stamp of its own.
+        evaluatedJD = jd;
         // Light travel time (old-path parity, solarsystem_display.cpp
         // computePositions): the body is seen where it WAS one light-trip ago.
         // Uses the cached observer distance (previous frame) exactly like the
@@ -711,6 +746,7 @@ public:
     }
 
     inline void transformBodyToParent(double jd, Mat4f &mat_local_to_body) {
+        evaluatedJD = jd; // see transformParentToBodyPos (B39 barrier stamp)
         // Same retardation + NaN barrier + absurd-date clamp as
         // transformParentToBodyPos (the up-hop must mirror the down-hop).
         if (flagLightTravelTime && distance == distance) {
@@ -793,7 +829,7 @@ public:
                 c->recursiveTranslationUpdate(jd, mat_local_to_parent);
             for (auto &c : innerBodies)
                 c->recursiveTranslationUpdate(jd, mat_local_to_parent);
-            updateHiddenBodies(jd, mat_local_to_parent);
+            publishParkedFrame(jd, mat_local_to_parent);
         }
     }
 
@@ -820,49 +856,52 @@ public:
             c->recursiveTranslationUpdate(jd, frame);
         for (auto &c : innerBodies)
             c->recursiveTranslationUpdate(jd, frame);
-        updateHiddenBodies(jd, frame);
+        publishParkedFrame(jd, frame);
     }
 
-    // Hidden bodies are NOT frozen [vixy 2026-07-21, USER_QUESTIONS Q13
-    // verbatim: "It should be where it is now"; INTENT 11.48(a) A10 -> 11.54,
-    // which closes the 11.15b(b) suspension]. hide() parks a body in
-    // hiddenBodies, a list NO walk visited, so the body kept whatever
-    // eclipticPos it last had - for the bodies shipped `hidden = true` that is
-    // the position the CONSTRUCTOR evaluated at the parent's then-lastJD.
-    // A hidden body is just another NON-DRAWN body, and the requirement for
-    // that class was already stated in the selectiveUpdate else-branch
-    // ("positions of non-drawn bodies stay queryable and sortable") - so it
-    // gets the same mechanism, translation-only: eclipticPos / mat translation
-    // / distance stay current, no rotations, no visibility classification, no
-    // module updates (a hidden body draws nothing; trail RECORDING while
-    // hidden is B11's question, not this one).
-    // The relation still names the origin list, hence the per-relation frame -
-    // identical to the visible dispatch: HIDDEN_GROUNDED rides the accumulated
-    // surface frame, HIDDEN_ORBITING/HIDDEN_INNER the flat position frame.
-    // `surface` may be null: it is then derived on demand, i.e. only when a
-    // hidden GROUNDED child actually exists. `skip` excludes the body the
-    // dispatch came up from (a hidden body can still be the camera reference,
-    // and it has already been updated as the walk's root).
-    inline void updateHiddenBodies(double jd, const Mat4f &flat,
-                                   const Mat4f *surface = nullptr,
-                                   const ModularBody *skip = nullptr) {
+    // THE TICK OF A PARKED SUBTREE IS RETIRED (B39 §11.117, from D23 verbatim:
+    // "For performance reason, hidden bodies shouldn't tick"). What used to be
+    // updateHiddenBodies - a translation-only recursive walk of every parked
+    // subtree, EVERY frame, for correctness B19/§11.54 bought with it - is now
+    // this: publish the ONE thing the parked subtree cannot reconstruct for
+    // itself, and let the recompute happen AT THE USE (useNow below, the §11.76
+    // D8 barrier; the mechanism B32/§11.93 already proved on spin).
+    //
+    // Why the frame and nothing else. A parked body can recompute its own
+    // eclipticPos from its orbit at any jd, but not the frame it sits in: that
+    // is the PARENT's position frame, and the parent's cached
+    // `matLocalToBodyPos` is NOT universally fresh - dispatchUpdate's up-chain
+    // loop never writes it (recorded at §11.117; the shipped hidden bodies hang
+    // off Sun, which is exactly an up-chain ancestor for an Earth observer). So
+    // the frame is captured here, at the six sites that used to do the walk,
+    // where it is provably the parent's own flat position frame for that frame -
+    // one Mat4f copy, and only for the nodes that actually own a parked child.
+    // The GROUNDED variant's surface frame is derived from it on demand exactly
+    // as the old code derived it (flat . accumulatedBodyPosToBody(jd)), which is
+    // the identity every one of those call sites already relied on.
+    inline void publishParkedFrame(double jd, const Mat4f &flat) {
         if (hiddenBodies.empty())
             return;
-        Mat4f derivedSurface;
-        for (auto &c : hiddenBodies) {
-            if (c.get() == skip)
-                continue;
-            if (c->relation == BodyRelation::HIDDEN_GROUNDED) {
-                if (!surface) {
-                    derivedSurface = flat.multiplyFast(accumulatedBodyPosToBody(jd));
-                    surface = &derivedSurface;
-                }
-                c->recursiveTranslationUpdate(jd, *surface);
-            } else {
-                c->recursiveTranslationUpdate(jd, flat);
-            }
-        }
+        parkedChildFrame = flat;
     }
+    // The D8 USE-SITE BARRIER (§11.76(b), verbatim [vixy]: "As soon as the
+    // position is used (fetched from script, warped to) it should be computed,
+    // and if previously frozen, recomputed with 4 extra iterations").
+    // No-op for a body the walks still evaluate, and no-op twice in one frame -
+    // so a use every frame costs what the tick used to cost, and no use costs
+    // nothing, which is the whole point of the retirement.
+    //
+    // The +4 extra iterations are NOT decoration: EllipticalOrbit::
+    // eccentricAnomaly and IterativeEll/IterativeHyp perform exactly ONE Newton
+    // step per call, seeded from the previous call's result [observed:
+    // orbit.cpp:515-560, iterative_orbits.hpp:93-101]. A body that stopped being
+    // evaluated left that seed at its hide-time value, so one step from it is
+    // not the position at `jd`. Running the whole translation-only refresh
+    // 1+4 times re-converges the seed - and it does it for the SUBTREE, because
+    // every parked descendant carries its own seed.
+    void useNow();
+    // Deliver the unhide edge to every module of this subtree (see the .cpp).
+    void resumeModulesAfterHidden();
 
     // Update the body system from a given body, return the active system
     static ModularSystem *dispatchUpdate(ModularBody *body, double jd, Mat4f mat_local_to_body);
@@ -1550,6 +1589,21 @@ private:
     // (walk from THIS body: the parent side - a nested system registers in
     // its host's system, its own content registers in itself).
     void registerToSystem(ModularBody *child);
+    // The system whose sorted list holds THIS body (nullptr for a parentless
+    // root, which was never registered). Same walk as registerToSystem, from
+    // the parent side - one authority for both directions.
+    ModularSystem *owningSystem() const;
+    // ONE writer of `renderHidden` AND of this subtree's membership in the
+    // owning system's sorted list (I2/I3: the owner of the state notifies, and
+    // the flag and the membership can never disagree because the same walk sets
+    // both). Recomputes the effective-hidden state of this subtree from
+    // `ancestorHidden` and each node's OWN declared `relation`, so a descendant
+    // that is itself declared hidden keeps its subtree out when an ancestor is
+    // shown again - which is exactly the old path's §5.44 defect, absent here by
+    // construction rather than by a guard. Called by hide(), show() and
+    // createChild* (a body born under a parked node is born outside the
+    // rendered universe).
+    void propagateRenderHidden(bool ancestorHidden);
     std::vector<std::unique_ptr<EnvironmentModule>> groundedEnvironment;
     std::vector<std::unique_ptr<EnvironmentModule>> environment;
     // The "Received shadows" relation realized (S5/G7): per-frame received-
@@ -1584,6 +1638,13 @@ private:
     // child's orbit in its parent's frame reliably (row 8). Identity until the
     // first update.
     Mat4f matLocalToBodyPos = Mat4f::identity();
+    // The flat position frame this node's PARKED children ride, refreshed every
+    // frame by publishParkedFrame at the sites that used to tick them, consumed
+    // by useNow (the D8 barrier). Written only while hiddenBodies is non-empty;
+    // identity until then, and a body parked THIS frame is stamped current by the
+    // walk that evaluated it moments earlier (evaluatedJD), so no use can reach
+    // the identity value before the first publish.
+    Mat4f parkedChildFrame = Mat4f::identity();
     Vec3f eclipticPos;
     std::pair<float, float> screenPos;
     float halfAngularSize = 0; // 0 until first update (uninit class, INTENT 5.16/11.28c/11.32)
@@ -1618,6 +1679,12 @@ private:
     float rmag;
     float cmag;
     double lastJD = 0;
+    // The SIM date at which this body's position state was last brought up to
+    // date (the un-retarded frame jd, unlike lastJD which carries this body's own
+    // light-travel offset). The D8 barrier's idempotency key: a use re-evaluates
+    // at most once per frame, so uses every frame cost exactly what the retired
+    // tick cost and no use costs nothing. -1 = never (never equals a real jd).
+    double evaluatedJD = -1;
     // Harness instrument (B39 §11.117, the `accumulateCount` class of §11.56):
     // entries into the two orbit-evaluation sites (transformParentToBodyPos /
     // transformBodyToParent - the only writers of eclipticPos+lastJD). It is the
@@ -1690,6 +1757,16 @@ private:
     int trailLength = TRAIL_LENGTH_DEFAULT;
     // Declaring format (D14 §11.79(h)). See ModularBodyCreateInfo.
     bool composedDeclaration = false;
+    // EFFECTIVE hidden state (B39 §11.117) = this body's own declared hidden
+    // relation OR any ancestor's. DERIVED, never authored: the DECLARED value is
+    // `relation`, which D23 forbids touching for a body hidden only by nesting
+    // ("mustn't change the exposed hidden attribute/flag"), so the readout and
+    // the twin emitter keep reading/writing the declared one while every render
+    // consumer asks this. Written ONLY by propagateRenderHidden, which sets it
+    // and the owning system's sorted-list membership in the same walk - so
+    // "outside the rendered universe" is one fact with one writer, not a flag
+    // plus a list that can drift apart.
+    bool renderHidden = false;
     bool isHaloEnabled;
     bool isVisible = false;
     bool isBodyVisible = true;
@@ -1743,6 +1820,15 @@ public:
     // consumers are per-frame animations (module faders, pointer breathing).
     // NOT a physics/simulation dt - orbital time comes from jd only.
     static float deltaTime;
+    // The frame's SIMULATED date (B39 §11.117). Written once per frame by
+    // dispatchUpdate - the one entry point of the whole update walk, and the
+    // place the value arrives from TimeMgr - and read by the D8 use-site barrier,
+    // which needs "now" for a body no walk hands a jd to any more. Same
+    // written-once-per-frame precondition class as halfFov/deltaTime above.
+    // 0 before the first frame, and never equal to a real date, so a body hidden
+    // at LOAD time (ssystem.ini `hidden = true`) is resumed by the barrier at its
+    // first use rather than trusted at the ctor's date.
+    static double currentJD;
 
     // Both-paths tesselation seam (row 2/13, 2026-07-15): the SAME shared
     // BodyTesselation object the old path reads, injected where the old path

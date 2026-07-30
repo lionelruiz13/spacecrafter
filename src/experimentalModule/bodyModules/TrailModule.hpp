@@ -52,9 +52,18 @@ class VertexBuffer;
 //   while the fader stays the DISPLAY gate so the fade-out is unchanged.
 // - THE TWO GATES ARE INDEPENDENT, and that is a requirement, not a detail.
 //   Trail flag off => not recording, whatever the body's visibility.
-//   Body HIDDEN (or merely off-screen) => STILL recording [vixy Q13 / A10,
-//   §11.54]: drawTrails sweeps every EVALUATED body, hidden ones included.
+//   Body merely OFF-SCREEN => STILL recording [vixy Q13 / A10, §11.54]:
+//   drawTrails sweeps every EVALUATED body.
 //   Reading the two as one gate produces a wrong implementation (§13.B B11).
+// - Body HIDDEN => NO LONGER RECORDING [vixy D23 2026-07-26 -> §11.113(b),
+//   B39/§11.117; this SUPERSEDES the hidden half of §11.56, whose tester-ratified
+//   answer governs the DISPLAY-FLAG gate and is untouched]. A hidden body is
+//   as-if-nonexistent in the rendered universe, so hide() takes its subtree out
+//   of drawTrails' sweep entirely: recording stops because the module is not
+//   ticked at all, not because a third gate was added. On unhide the missed span
+//   is RECONSTRUCTED from the orbit (resumeAfterHidden below) - "as if they never
+//   were hidden when unhidden" - or, where the past is not computable, discarded
+//   with a log (§2.0 D12).
 // - Deduce: TRAIL for a non-still orbit (orbit_visualization_period>0) that is
 //   NOT a satellite and NOT type=Artificial (old BigBody+SmallBody set:
 //   Planet/Dwarf 1460, Comet 2920, Asteroid/KBO 60; Moon/Sun/Star/Center/
@@ -92,6 +101,19 @@ public:
     // (generation stamp = old bulk-set clobber parity). Enabling resets the
     // trail (old startTrail(true)) and kicks the system phase.
     virtual void setShown(bool b) override;
+
+    // THE UNHIDE EDGE (B39 §11.117 / D23 clause iv). Two things were behind:
+    //  (1) the DISPLAY fader, which advances in wall time and froze - snapped to
+    //      the state it would have settled at (a fade is under a second; anything
+    //      else would fade a trail out AFTER the body came back);
+    //  (2) the recorded HISTORY, the part that is not recoverable by definition -
+    //      unless the body's position is a function of time, which for every
+    //      orbit/ephemeris body it is. The missed samples are then re-evaluated
+    //      at their own dates through the body's own Orbit, on the same cadence
+    //      accumulate() uses, so the polyline comes back with no gap and no
+    //      invented geometry. A body with no evaluable orbit degrades to a fresh
+    //      start and LOGS it (§2.0 D12) - that is the one named residual of D23.
+    virtual void resumeAfterHidden(ModularBody *body) override;
 
     // Global master + generation (seam entry - both-paths mirror). A global
     // toggle bumps the generation, staling every per-name override.

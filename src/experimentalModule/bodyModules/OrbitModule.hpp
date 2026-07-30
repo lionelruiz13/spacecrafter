@@ -71,6 +71,23 @@ public:
         // is gated on anyActive() - see below).
         if (b && !live) { live = true; ++activeCount; }
     }
+    // THE UNHIDE EDGE (B39 §11.117 / D23 clause iv): while its body was hidden
+    // this module received no update() at all (the whole subtree was out of
+    // ModularSystem::drawOrbits' sweep), so its DISPLAY fader - which advances in
+    // wall time - froze wherever it stood. Snapping it to the target it would
+    // have settled at is the as-if answer: a fade lasts under a second, and
+    // without this an orbit line switched OFF while the body was hidden fades out
+    // AFTER the body reappears. Nothing else of this module is time-behind: the
+    // sampled polyline is re-derived from the body's own (barrier-refreshed) date
+    // by update()'s resample test on the next frame.
+    virtual void resumeAfterHidden(ModularBody *body) override {
+        fader.reset(wantShown(body));
+        const bool nowLive = fader.getInterstate() > 1e-6f;
+        if (nowLive != live) { // keep the phase-gate counter update() maintains
+            live = nowLive;
+            activeCount += nowLive ? 1 : -1;
+        }
+    }
     // Global masters + their generation (seam entry - both-paths mirror). A
     // global toggle bumps the generation, staling every per-name override.
     static void setGlobalPlanets(bool b) { showPlanets = b; ++flagGeneration; }

@@ -215,8 +215,21 @@ void ModularSystem::updateSystem()
     // lightPosition is CURRENT-SYSTEM-scoped (nested draws save/restore it,
     // drawSystem dispatch), and no body of a starless system consumes it
     // outside the delegation path.
-    if (ModularBody *s = getSystemStar())
+    // THE FRAME'S NON-RENDER USES, behind the D8 barrier (B39 §11.117). Both of
+    // these read a body's cached position every frame from OUTSIDE the draw
+    // walks, so for a body that no longer ticks they are exactly the "use" D8
+    // names - and both are reachable with a hidden body (a hidden star still
+    // illuminates, recorded §11.117; `S10.sts` SELECTS a hidden body).
+    if (ModularBody *s = getSystemStar()) {
+        s->useNow();
         s->updateAsLightSource();
+    }
+    // Being the SELECTION is a use: the ModularObject readouts (RA/DE, alt/az,
+    // distance, magnitude, on-screen size) and Camera's selection distance all
+    // poll it per frame. Refreshed here, once, rather than at each of the dozen
+    // reader sites (I2).
+    if (ModularBody *sel = ModularBody::getSelected())
+        sel->useNow();
     if (needCleanUp)
         cleanUp();
     if (sortedSystemBodies.size() > 1) { // SORT

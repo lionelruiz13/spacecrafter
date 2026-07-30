@@ -838,8 +838,15 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
         it->second.body->dumpTrace(out);
         out << ",\"new\":";
         ModularBody *nb = ModularBody::findBodyOnce(it->first);
-        if (nb)
+        if (nb) {
+            // A DUMP IS A USE (D8 §11.76(b); B32/§11.93 established this for the
+            // spin phase, B39/§11.117 extends it to the position of a body that
+            // no longer ticks). Without this the instrument would report a hidden
+            // body's hide-time position and call it "now" - i.e. it would measure
+            // the freeze instead of the barrier.
+            nb->useNow();
             nb->dumpTrace(out);
+        }
         else
             out << "null";
         {

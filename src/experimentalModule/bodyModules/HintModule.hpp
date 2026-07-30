@@ -52,6 +52,16 @@ public:
             labelColor = c;
     }
 
+    // THE UNHIDE EDGE (B39 §11.117 / D23 clause iv): this module's fader is
+    // ticked AT DRAW (see the header note above), so while the body was hidden it
+    // did not advance at all. Snap it to the global target the next draw would
+    // have aimed at - the header already records that a fade "freezes while the
+    // body is not drawn" and that on re-entry "the ramp resumes instead of being
+    // settled"; for the HIDDEN case D23 makes settled the required answer.
+    virtual void resumeAfterHidden(ModularBody *body) override {
+        fader.reset(show);
+    }
+
     static void setFont(s_font *font);
     static bool show; // Global hint visibility (old setFlagHints)
     // Default label color (config planet_names_color) - wired at the

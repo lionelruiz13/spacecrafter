@@ -220,6 +220,18 @@ public:
     // Base no-op; ORBIT (and later TRAIL) route a per-name seam toggle here
     // via ModularBody's dedicated component list. NOT the four drawing types.
     virtual void setShown(bool shown) {}
+    // The UNHIDE edge (B39 §11.117, from D23: "behave as if they never were
+    // hidden when unhidden"). While its body was hidden this module received no
+    // update() and no draw() at all - the whole subtree was outside every sweep -
+    // so any state of this module that TIME would have moved is now behind.
+    // Called once per module of the re-shown subtree, AFTER the body's position
+    // has been brought to the current date (the D8 barrier), so a module may
+    // rebuild from the body's own state or from its orbit.
+    // The base no-op is the right answer for a module holding no time-dependent
+    // state (the setShown/createTexSkin contract - no sniffing at the broadcast).
+    // Where the past is NOT computable the override must degrade to a fresh start
+    // and LOG it (§2.0 D12: a behaviour the author did not write must be visible).
+    virtual void resumeAfterHidden(ModularBody *body) {}
     // Runtime skin-texture seam (old Body::createTexSkin/switchMapSkin;
     // commands `body name X skin_tex <file>` / `body name X skin_use on|off`).
     // Contract mirrors old exactly: creating (or REPLACING) a skin never

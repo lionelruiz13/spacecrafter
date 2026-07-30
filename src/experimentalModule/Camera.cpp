@@ -300,6 +300,13 @@ void Camera::advanceView(float deltaTime)
 
 void Camera::switchToBody(ModularBody *dst)
 {
+    // BECOMING THE REFERENCE IS A USE (D8 §11.76 / B39 §11.117): a hidden body
+    // is a legal reference - `S10.sts` makes one its home_planet - and since B39
+    // it no longer ticks, so its cached position is at its hide date until asked.
+    // calculateSwitchCompensation below reads exactly that cached position, of
+    // dst AND of every hop between dst and the common parent (useNow walks up),
+    // so the barrier has to fire BEFORE the compensation, not after.
+    dst->useNow();
     bool oldFreeMode = freeMode;
     bool oldBoundToSurface = boundToSurface;
     setBoundToSurface(false);
@@ -325,6 +332,7 @@ void Camera::switchToBody(ModularBody *dst)
 
 void Camera::warpToBody(ModularBody *dst)
 {
+    dst->useNow(); // becoming the reference is a use - see switchToBody
     if (!freeMode) {
         // Anchored warp = old home-planet semantics: same lat/lon/ALTITUDE
         // over the new body (altitude preserved, never the center distance -
