@@ -34,6 +34,14 @@ persistent-body serialization → session file — next session's headline), B14
 conversion fix (decided, queued next session). DECISIONS_PENDING open set: **D15 + D21
 only**.
 
+**Update [Fable 2026-07-30, supervising session 4]:** round of 3 per the sizing lesson
+[vixy 2026-07-30: 6 hard tasks ≈ 80% supervisor context; 3 reuses the derivation cost
+without depletion risk]. This session: **F12 → F13 → F14** — F13/F14 minted below from
+session 3's own deferral note (B31-impl now unblocked: its §11.110 sequencing gate
+§5.39 closed with F10/§11.115; B14/D22 decided §11.113(a), queued). F8/F9 stay after.
+DECISIONS_PENDING open set at session start: **D15, D21 (both SCHEDULED last week of
+August, §11.116(a)), D37**.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -458,6 +466,61 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   paths diverge (§5.26/`s526_ref.py` instrument, 39 090 px case); (iv) the §5.45
   repro (one `z` line removed) flips SIGABRT → warn+skip+start, and the
   well-formed corpus is byte-inert; (v) the runner FAILS on a mutated ssystem md5.
+- **WIP:** —
+
+### F13 — B31-impl slice 1: the §11.66(b) writer rework  [M]
+- **Row / recorded:** B31 (§13.B — DISPATCHABLE since §11.113(i)–(o)) · `b31-design.md`
+  §5.2/§5.3/§5.4 (the line-level design — the authority for this slice) · §11.66(b)
+  (the contract) · §11.113(n)/D35 (composed + session files ONLY; legacy `ssystem.ini`
+  READ-ONLY forever) · §2.0 D13 (nothing written into a file an older parser reads) ·
+  §11.115 (F10's `ini_line.hpp` = the one line grammar this builds on) · §5.42
+  (counterexample surface: what a writer must never do) · §11.109(e)(h2).
+- **Why now:** §11.110's own sequencing (§5.39 parse → **writer rework** →
+  persistent-body serialization → session file); the writer is also the dependency of
+  B25's remaining half (script-triggered system save needs the same writer).
+- **Task:** implement b31-design §5.2 exactly — `Section` promoted to an ordered line
+  list (COMMENT/BLANK/KEY/RAW), parse keeps EVERY input line in order, write emits in
+  order; changed values rewritten in place preserving key text/spacing verbatim; new
+  keys append at section end; removals comment-out-with-reason, never delete; side
+  index derived, the line list is the authority (I2). Plus §5.3's annotation half:
+  loader-produced annotation set keyed (section, key, reason), written ABOVE the datum
+  (source-forced — trailing comments are swallowed into legacy values), `#!sc:` stable
+  marker, idempotent. Verify at HEAD what F10 already unified vs what §5.3's
+  "loader adopts the format parser" still requires — re-measure, never inherit.
+- **Stop boundaries (NOT yours):** the session file (§3.2), the ledger (§2 group D),
+  persistent-body serialization (§4.1) — later slices; §11.109(h2) whitespace-key
+  format semantics stays SUSPENDED; §5.41/§5.42's own surfaces are NOT reworked here
+  (they re-express on the session serializer later — record, don't fix); anything
+  D21/D28-dependent.
+- **Discriminating check:** T9 (b31-design §6.2): rewrite-twice byte-identical; a
+  round-trip corpus leg with comments + malformed (RAW) + unknown keys + irregular
+  spacing — byte-identical where unchanged; a value-change leg preserving layout; an
+  annotation leg showing the annotation lands ABOVE the right datum and REPLACES its
+  own previous instance while human comments survive; legacy `ssystem.ini` md5 in==out
+  asserted (D13); `b24_equivalence` + `b25_galactic` green (the twin still generates)
+  and discriminating.
+- **WIP:** —
+
+### F14 — B14/D22: the 90° meridian conversion fix  [S–M]
+- **Row / recorded:** B14 (§13.B, REOPENED §11.101(b)) · §11.113(a)/D22 verbatim (A33
+  closed) · §5.28 · §11.86/§11.88 (the W0 machinery being corrected) ·
+  DECISIONS_PENDING §6 D22.
+- **Why:** decided + queued by session 3; user-visible on 3 shipped bodies (Iapetus,
+  Amalthea, Proteus render 90° off); bounded blast radius (one conversion site).
+- **Task:** fix in the CONVERSION (`ModularSystem.cpp:852-858` locus — re-locate at
+  HEAD), NEVER the 20 bodies' data; `u = 0.5` (image centre) IS the convention,
+  textures NOT re-registered; the `+π/2` fudge STAYS at `getAxisRotation()` and the
+  conversion accounts for it; planet rows untouched. Code-only — both data files'
+  md5 in==out.
+- **Discriminating check:** MUST anchor on the TEXTURE (dark-centroid `u`), never the
+  conversion's own axis — §11.113(a)'s own instruction (the existing gate is blind by
+  construction). Predict the post-fix dark-centroid `u` from texture + IAU meridian
+  BEFORE the fix run, then measure, on all three textured bodies; the 17
+  placeholder-textured moons + all planets unchanged; the D22 Mercury control
+  (`rot_pole_w0` added in a TEST corpus — surface rotates 90° pre-fix, 0° post-fix)
+  is available as the cheap counterfactual; old path untouched; battery green.
+  Record-only, NOT yours: the Jupiter `rot_rotation_offset` 107-shipped-vs-60-loaded
+  divergence (§11.101(b)).
 - **WIP:** —
 
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
