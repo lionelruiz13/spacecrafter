@@ -33,7 +33,29 @@
 # asserted every cycle. No stale instance between cycles. No beta_features.ini
 # written (old path via runtime command, not the file).
 #
+# ---- 2026-07-31 EXTENSION (F8 / hunt-3, INTENT §11.122) ---------------------
+# B7_ROVERS=K adds the COMPOSED-BODY-COUNT axis (§11.97(f): an ABORT-path exit,
+# `terminate called without an active exception`, followed an 8-composed-rover
+# run while the 2-rover run exited 0). K>0 composes K grounded OJM rovers into
+# ~/.spacecrafter/modularSystem/SolarSystem.ini (twin + appended `type=`
+# sections — the §11.97 composed-file route; the push-channel route
+# `body action load ... coord_func surface_point` KILLS the app, §5.50) and adds
+# a preamble that navigates to them and takes one frame, so the modules are
+# LOADED and DRAWN before teardown. K=0 (default) reproduces §11.95 exactly.
+# Instrument chain for that axis (a scene that silently failed to load would
+# make the axis fiction): every cycle counts the app's own
+# `Loading body Rover<i>` lines and records rovload; rovload != K => INVALID,
+# never a silent CLEAN.
+# Third detector added: `terminate called` in the log => FIRE (the §11.97(f)
+# abort signature by name, independent of the exit code). Strictly ADDITIVE —
+# it can only make the instrument more sensitive than §11.95's.
+# CSV gains three trailing columns: rovers,rovload,load1 (appended at the end,
+# so column-indexed readers of the §11.95 CSVs are unaffected). load1 = the
+# 1-minute load average AT THE CYCLE, i.e. contention is recorded per teardown,
+# not asserted once per batch.
+#
 # Env:  B7_MODE=gdb|plain  B7_OUT=<subdir>  B7_APPEND=0|1  B7_CYC0=<int offset>
+#       B7_ROVERS=<K>  (0 = §11.95 behaviour)
 # Usage: DISPLAY=:2 [env...] ./b7_hunt.sh [mixfile]
 # ============================================================================
 set -u
@@ -45,8 +67,12 @@ MODE="${B7_MODE:-gdb}"
 OUT="$HERE/artifacts/${B7_OUT:-b7_hunt}"
 APPEND="${B7_APPEND:-0}"
 CYC0="${B7_CYC0:-0}"
+ROVERS="${B7_ROVERS:-0}"
 CFG=~/.spacecrafter/config.ini
 BETA=~/.spacecrafter/beta_features.ini
+MODDIR=~/.spacecrafter/modularSystem
+TWIN="$MODDIR/SolarSystem.ini.disabled"
+SCENE="$MODDIR/SolarSystem.ini"
 mkdir -p "$OUT"
 CSV="$OUT/campaign.csv"
 SUMMARY="$OUT/summary.log"
@@ -57,9 +83,43 @@ SUMMARY="$OUT/summary.log"
 MD5_REF=$(md5sum "$CFG" | cut -d' ' -f1)
 cp "$CFG" "$OUT/config.ini.ref"
 if [ "$APPEND" != 1 ]; then
-  echo "cycle,variant,path,entry,teardown,tcp_secs,outcome,detail" > "$CSV"
+  echo "cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1" > "$CSV"
   : > "$SUMMARY"
 fi
+
+# ---- composed-body-count axis (§11.97(f)) -----------------------------------
+# ONE layout function so that K=2 and K=8 differ in COUNT ALONE (the axis under
+# test) — same per-rover geometry, same OJM model, same radius; only how many.
+# Grounded OJM rovers spread along the sub-observer meridian band so all K are
+# in the preamble's field of view and therefore actually DRAWN.
+build_scene() {
+  local k="$1" i lon
+  [ -f "$TWIN" ] || { log "FATAL: composed twin missing $TWIN"; exit 2; }
+  if [ "$k" -le 0 ]; then rm -f "$SCENE"; return; fi
+  cp "$TWIN" "$SCENE"
+  for i in $(seq 0 $((k-1))); do
+    lon=$(( 60 + (i * 7) - ((k-1)*7/2) ))
+    cat >> "$SCENE" <<EOF
+
+[Rover$i]
+name = Rover$i
+parent = Moon
+relation = grounded
+compose = explicit
+type = Artificial
+coord_func = surface_point
+orbit_lon = $lon
+orbit_lat = 0
+orbit_alt = 0
+radius = 400
+model_name = Curiosity
+halo = false
+[Rover$i:OJM]
+body = Rover$i
+type = OJM
+EOF
+  done
+}
 
 log() { echo "$*" | tee -a "$SUMMARY"; }
 log "==== B7 HUNT [$MODE] batch start $(date -Iseconds)  out=$OUT append=$APPEND cyc0=$CYC0 ===="
@@ -91,6 +151,15 @@ run_cycle() {
     qda)     path=new; teardown=sig; sig=INT ;;
     qdaterm) path=new; teardown=sig; sig=TERM ;;
     galsig)  path=new; teardown=sig; sig=INT ;;
+    # POSITIVE CONTROLS (2026-07-31, F8): an injected fatal signal at the same
+    # point in the cycle a real fire would occur. They run through the SAME
+    # classifier as every hunted cycle -- a copy of the classifier would prove
+    # nothing about the one actually deciding CLEAN (I2). pcsegv = the §11.15d
+    # SIGSEGV class; pcabrt = the §11.97(f) ABORT class (same signal std::
+    # terminate raises). Both MUST come out FIRE, or no CLEAN in the batch means
+    # anything.
+    pcsegv)  path=new; teardown=sig; sig=SEGV ;;
+    pcabrt)  path=new; teardown=sig; sig=ABRT ;;
     *)       path=new; teardown=cmd ;;
   esac
   local entry; entry=$([ "$teardown" = sig ] && echo "SIG$sig" || echo "shutdown-cmd")
@@ -129,7 +198,7 @@ run_cycle() {
     fi
     kill -9 "$PROC" 2>/dev/null
     log "cyc $cyc $variant: *** NO TCP ($sd) tcp_secs=$tcp_secs ***"
-    echo "$cyc,$variant,$path,$entry,$teardown,$tcp_secs,STARTUP-DIED,$sd" >> "$CSV"
+    echo "$cyc,$variant,$path,$entry,$teardown,$tcp_secs,STARTUP-DIED,$sd,$ROVERS,0,$(cut -d' ' -f1 /proc/loadavg)" >> "$CSV"
     cp "$OUT/config.ini.ref" "$CFG"; sleep 1
     return
   fi
@@ -138,6 +207,32 @@ run_cycle() {
   local APPPID
   if [ "$MODE" = plain ]; then APPPID="$PROC"
   else APPPID=$(pgrep -x spacecrafter | head -1); fi
+
+  # ---- composed-rover preamble (only when the axis is on) ----
+  # Navigate to the grounded rovers and render one frame, so the K OJM modules
+  # are loaded AND drawn before teardown — §11.97(f)'s abort followed "valid
+  # shots". moon_scaled off is the §5.27/§11.100 instrument precondition
+  # (shipped moon_scale=5 swallows grounded children, D21 pending).
+  if [ "$ROVERS" -gt 0 ]; then
+    tcp_send "flag experimental_path on" "timerate rate 0" "meteors zhr 0" \
+             "date jday 2461234.0" "set home_planet Moon" \
+             "camera action free_mode state on" "flag atmosphere off" \
+             "flag landscape off" "flag moon_scaled off" "select planet Moon" \
+             "moveto lat 0 lon 60 alt 4000000 duration 0"
+    sleep 3
+    # track_object is what AIMS the camera (b24_screen's order). Without it the
+    # frame is empty sky and the rovers are loaded-but-never-drawn — measured
+    # 2026-07-31 on the recon cycle, which is why this is not optional.
+    # Turned off again after the shot for B30 determinism, as b24_screen does.
+    tcp_send "flag track_object on"
+    sleep 2
+    tcp_send "zoom fov 20 duration 0"
+    sleep 1
+    tcp_send "body action screenshot filename $OUT/rovershot.png"
+    sleep 2
+    tcp_send "flag track_object off"
+    sleep 1
+  fi
 
   # ---- variant activity ----
   case "$variant" in
@@ -174,6 +269,13 @@ run_cycle() {
 
   # ---- classify ----
   local outcome detail
+  # Composed-body-count axis instrument (see header): the app's own
+  # "Loading body Rover<i>" lines are the positive evidence that the K modules
+  # were really instantiated this cycle. Counted BEFORE outcome so a scene that
+  # failed to load can never be banked as a CLEAN teardown of K rovers.
+  local rovload=0 termd=0
+  [ "$ROVERS" -gt 0 ] && rovload=$(grep -ac "Loading body Rover" "$LOG")
+  termd=$(grep -ac "terminate called" "$LOG")
   if [ "$MODE" = plain ]; then
     if [ "$hung" = 1 ]; then
       outcome=HUNG; detail="no-exit-in-45s"
@@ -208,13 +310,47 @@ run_cycle() {
       log "cyc $cyc $variant: OTHER $detail (see $LOG)"
     fi
   fi
-  echo "$cyc,$variant,$path,$entry,$teardown,$tcp_secs,$outcome,\"$detail\"" >> "$CSV"
+  # Third detector, ADDITIVE to §11.95's two: the §11.97(f) abort signature by
+  # name, independent of the exit code (a `terminate called` line is a fire even
+  # if the wait status were somehow lost).
+  if [ "$termd" -gt 0 ]; then
+    detail="$detail terminate-called=$termd"
+    if [ "$outcome" != FIRE ]; then
+      outcome=FIRE
+      log "cyc $cyc $variant: *** *** FIRE *** *** 'terminate called' abort path (§11.97(f)) see $LOG"
+    fi
+  fi
+  # Axis instrument: a cycle whose composed scene did not load is not a valid
+  # denominator for "K rovers torn down" — it is INVALID, never a silent CLEAN.
+  # The admissible band is per-variant, not a constant: qda/qdaterm send
+  # `body action reload`, which loads the composed system a SECOND time, so
+  # those cycles legitimately log up to 2K "Loading body Rover" lines — and
+  # because the reload RACES the teardown signal (0.05 s later, by design), the
+  # count there is legitimately either K or 2K. Measured 2026-07-31: an
+  # expectation of exactly K flagged 3/14 qda cycles as INVALID when the scene
+  # had in fact loaded correctly twice. The rule states the requirement — the
+  # scene was instantiated at least once and no more often than the variant
+  # can explain — instead of hard-coding one variant's count.
+  if [ "$ROVERS" -gt 0 ] && [ "$outcome" != FIRE ]; then
+    local rmax="$ROVERS"
+    case "$variant" in qda|qdaterm) rmax=$((ROVERS*2)) ;; esac
+    if [ "$rovload" -lt "$ROVERS" ] || [ "$rovload" -gt "$rmax" ]; then
+      outcome=INVALID; detail="$detail rovload=$rovload outside [$ROVERS,$rmax]"
+      log "cyc $cyc $variant: !! INVALID — composed scene loaded $rovload rovers, admissible [$ROVERS,$rmax]"
+    fi
+  fi
+  echo "$cyc,$variant,$path,$entry,$teardown,$tcp_secs,$outcome,\"$detail\",$ROVERS,$rovload,$(cut -d' ' -f1 /proc/loadavg)" >> "$CSV"
 
   # restore config + assert; never leave a beta_features file
   cp "$OUT/config.ini.ref" "$CFG"
   local m; m=$(md5sum "$CFG" | cut -d' ' -f1)
   [ "$m" = "$MD5_REF" ] || log "cyc $cyc: !! config md5 drift $m != $MD5_REF"
   [ -f "$BETA" ] && { log "cyc $cyc: !! beta_features.ini appeared — removing"; rm -f "$BETA"; }
+  # the composed scene is an instrument, not shipped state: assert it survived
+  if [ "$ROVERS" -gt 0 ]; then
+    local sm; sm=$(md5sum "$SCENE" 2>/dev/null | cut -d' ' -f1)
+    [ "$sm" = "$SCENE_MD5" ] || log "cyc $cyc: !! composed-scene md5 drift $sm != $SCENE_MD5"
+  fi
   sleep 1
 }
 
@@ -226,6 +362,13 @@ else
   log "FATAL: no mix file"; exit 2
 fi
 
+SCENE_PRE_EXISTS=0
+[ -f "$SCENE" ] && SCENE_PRE_EXISTS=1
+build_scene "$ROVERS"
+SCENE_MD5=$(md5sum "$SCENE" 2>/dev/null | cut -d' ' -f1)
+log "composed-body axis: B7_ROVERS=$ROVERS  scene=$([ "$ROVERS" -gt 0 ] && echo "$SCENE md5=$SCENE_MD5" || echo 'none (§11.95 reproduction)')  scene_pre_existed=$SCENE_PRE_EXISTS"
+log "host at batch start: loadavg=$(cut -d' ' -f1-3 /proc/loadavg)  memavail=$(awk '/MemAvailable/{printf "%.1fGiB", $2/1048576}' /proc/meminfo)"
+
 log "batch teardowns: ${#VARIANTS[@]}  (cycle ids $((CYC0+1))..$((CYC0+${#VARIANTS[@]})))"
 n=0
 for v in "${VARIANTS[@]}"; do
@@ -235,6 +378,13 @@ for v in "${VARIANTS[@]}"; do
 done
 
 log "==== B7 HUNT [$MODE] batch done $(date -Iseconds) ===="
+log "host at batch end: loadavg=$(cut -d' ' -f1-3 /proc/loadavg)  memavail=$(awk '/MemAvailable/{printf "%.1fGiB", $2/1048576}' /proc/meminfo)"
+# The composed scene is an instrument: leave the user dir as found (the shipped
+# default is NO enabled SolarSystem.ini — the legacy ssystem.ini then wins).
+if [ "$ROVERS" -gt 0 ] && [ "$SCENE_PRE_EXISTS" = 0 ]; then
+  rm -f "$SCENE"; log "composed scene removed (user dir restored to shipped default)"
+fi
+log "ssystem md5 at end=$(md5sum ~/.spacecrafter/ssystem.ini | cut -d' ' -f1)"
 FINAL_MD5=$(md5sum "$CFG" | cut -d' ' -f1)
 log "final config md5=$FINAL_MD5  ref=$MD5_REF  $([ "$FINAL_MD5" = "$MD5_REF" ] && echo MATCH || echo DRIFT!!)"
 [ -f "$BETA" ] && log "WARNING beta_features present at end"

@@ -1,0 +1,3 @@
+cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1
+1,pcsegv,new,SIGSEGV,sig,13,FIRE,"segv=1 abrt=0 frame0=[#0  0x00007ffff491a96b in __GI_sched_yield () at ../sysdeps/unix/syscall-template.S:120]",8,8,14.12
+2,pcabrt,new,SIGABRT,sig,14,FIRE,"segv=0 abrt=1 frame0=[#0  0x00005555557d57f5 in std::__insertion_sort<__gnu_cxx::__normal_iterator<ModularSystem]",8,8,15.37

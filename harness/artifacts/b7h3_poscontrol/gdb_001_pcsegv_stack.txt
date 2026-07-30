@@ -1,0 +1,120 @@
+==== POST-RUN STACK (empty => clean exit; non-empty => a stop/fire) ====
+#0  0x00007ffff491a96b in __GI_sched_yield () at ../sysdeps/unix/syscall-template.S:120
+#1  0x000055555595cf9b in __gthread_yield () at /usr/include/x86_64-linux-gnu/c++/15/bits/gthr-default.h:739
+#2  std::__detail::__thread_yield () at /usr/include/c++/15/bits/atomic_wait.h:137
+#3  std::__detail::__atomic_spin<std::__detail::__waiter_base<std::__detail::__waiter_pool>::_S_do_spin_v<int, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}, std::__detail::__default_spin_policy>(int*, int const&, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}, int&, std::__detail::__default_spin_policy)::{lambda()#1} const, std::__detail::__default_spin_policy>(std::__detail::__waiter_base<std::__detail::__waiter_pool>::_S_do_spin_v<int, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}, std::__detail::__default_spin_policy>(int*, int const&, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}, int&, std::__detail::__default_spin_policy)::{lambda()#1} const&, std::__detail::__default_spin_policy) (__spin=..., __pred=...) at /usr/include/c++/15/bits/atomic_wait.h:174
+#4  std::__detail::__waiter_base<std::__detail::__waiter_pool>::_S_do_spin_v<int, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}, std::__detail::__default_spin_policy>(int*, int const&, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}, int&, std::__detail::__default_spin_policy) (__addr=<optimized out>, __old=<synthetic pointer>: <optimized out>, __vfn=..., __val=<synthetic pointer>: <optimized out>, __spin=...) at /usr/include/c++/15/bits/atomic_wait.h:338
+#5  std::__detail::__waiter_base<std::__detail::__waiter_pool>::_M_do_spin_v<int, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}, std::__detail::__default_spin_policy>(int const&, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}, int&, std::__detail::__default_spin_policy) (this=<synthetic pointer>, __old=<synthetic pointer>: <optimized out>, __vfn=..., __val=<synthetic pointer>: <optimized out>, __spin=...) at /usr/include/c++/15/bits/atomic_wait.h:347
+#6  std::__detail::__waiter<std::integral_constant<bool, true> >::_M_do_wait_v<int, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}>(int, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}) (__vfn=..., this=<synthetic pointer>, __old=0) at /usr/include/c++/15/bits/atomic_wait.h:395
+#7  std::__atomic_wait_address_v<int, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}>(int const*, int, std::__atomic_base<int>::wait(int, std::memory_order) const::{lambda()#1}) (__vfn=..., __addr=0x55555cbdd28c, __old=0) at /usr/include/c++/15/bits/atomic_wait.h:427
+#8  std::__atomic_base<int>::wait (this=0x55555cbdd28c, __old=0, __m=std::memory_order::acquire) at /usr/include/c++/15/bits/atomic_base.h:609
+#9  DrawHelper::waitFrame (this=0x55555cbd5010, frameIdx=<optimized out>) at /home/claude/spacecrafter/src/tools/draw_helper.cpp:411
+#10 0x000055555565e510 in App::draw (this=0x55555c705b70, delta_time=7) at /usr/include/c++/15/bits/unique_ptr.h:192
+#11 0x0000555555661266 in App::startMainLoop (this=this@entry=0x55555c705b70) at /home/claude/spacecrafter/src/appModule/app.cpp:995
+#12 0x00005555555ea56a in main (argc=<optimized out>, argv=<optimized out>) at /home/claude/spacecrafter/src/main.cpp:348
+
+==== ALL THREADS ====
+
+Thread 65 (Thread 0x7ffeb6bfd6c0 (LWP 107019) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff48a00ac in __internal_syscall_cancel (a1=a1@entry=93825010320360, a2=<optimized out>, a3=a3@entry=0, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff48a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x5555566943e8, expected=0, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x5555566943e8, expected=0, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x5555566943e8, expected=expected@entry=6, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff48a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x5555566943a0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x5555566943a0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007fffbef8c768 in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so
+#8  0x00007fffbef8e12f in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so
+#9  0x00007ffff4cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#10 0x00007ffff48a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#11 0x00007ffff49373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 64 (Thread 0x7ffeb77fe6c0 (LWP 107014) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff48a00ac in __internal_syscall_cancel (a1=a1@entry=93825000481104, a2=<optimized out>, a3=a3@entry=4107470680, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff48a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x555555d32150 <s_texture::bigTextureQueue+304>, expected=4107470680, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x555555d32150 <s_texture::bigTextureQueue+304>, expected=4107470680, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x555555d32150 <s_texture::bigTextureQueue+304>, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff48a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x555555d32160 <s_texture::bigTextureQueue+320>, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x555555d32160 <s_texture::bigTextureQueue+320>) at ./nptl/pthread_cond_wait.c:453
+#7  0x000055555598f16d in WorkQueue<txcache::bigTexRecap*, (unsigned short)31>::pop (this=<optimized out>, data=<optimized out>) at /home/claude/spacecrafter/src/EntityCore/Tools/SafeQueue.hpp:178
+#8  s_texture::bigTextureLoader () at /home/claude/spacecrafter/src/tools/s_texture.cpp:963
+#9  0x00007ffff4cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#10 0x00007ffff48a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#11 0x00007ffff49373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 63 (Thread 0x7ffeb7fff6c0 (LWP 107012) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff48a00ac in __internal_syscall_cancel (a1=a1@entry=140737488346744, a2=<optimized out>, a3=a3@entry=4107016708, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff48a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffde78, expected=4107016708, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffde78, expected=4107016708, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffde78, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff48a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7ffeb7ffe3c0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7ffeb7ffe3c0) at ./nptl/pthread_cond_wait.c:453
+#7  0x0000555555621a00 in AsyncLoaderMgr::threadloop (this=0x7fffffffde10) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:171
+#8  0x00007ffff4cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#9  0x00007ffff48a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#10 0x00007ffff49373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 62 (Thread 0x7fffb6dff6c0 (LWP 107003) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff48a00ac in __internal_syscall_cancel (a1=a1@entry=93825162049776, a2=<optimized out>, a3=a3@entry=1432932145, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff48a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x55555f7478f0, expected=1432932145, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x55555f7478f0, expected=1432932145, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555f7478f0, expected=expected@entry=2648, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff48a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x55555f747900, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x55555f747900) at ./nptl/pthread_cond_wait.c:453
+#7  0x00005555557ac143 in WorkQueue<std::pair<Vector3<double>, Vector3<double> >, (unsigned short)3>::pop (this=0x55555f747800, data={...}) at /home/claude/spacecrafter/src/EntityCore/Tools/SafeQueue.hpp:178
+#8  SolarSystemModule::asyncUpdateLoop (this=0x55555f7477a0) at /home/claude/spacecrafter/src/executorModule/solarSystemModule.cpp:285
+#9  0x00007ffff4cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#10 0x00007ffff48a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#11 0x00007ffff49373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 61 (Thread 0x7fffb65fe6c0 (LWP 107002) "Loop thread"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff48a013c in __internal_syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=<optimized out>, a5=140736253120896, a6=0, nr=270) at ./nptl/cancellation.c:49
+#2  __syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=<optimized out>, a5=a5@entry=140736253120992, a6=a6@entry=0, nr=270) at ./nptl/cancellation.c:75
+#3  0x00007ffff4934381 in __GI___select (nfds=<optimized out>, readfds=<optimized out>, writefds=<optimized out>, exceptfds=<optimized out>, timeout=0x7fffb65fd260) at ../sysdeps/unix/sysv/linux/select.c:69
+#4  0x00007ffff7c93c0b in SDLNet_CheckSockets () at /lib/x86_64-linux-gnu/libSDL2_net-2.0.so.0
+#5  0x0000555555973bfe in ServerSocket::run (this=0x555561586810) at /home/claude/spacecrafter/src/tools/io.cpp:375
+#6  0x00007ffff7e30d16 in ??? () at /lib/x86_64-linux-gnu/libSDL2-2.0.so.0
+#7  0x00007ffff48a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#8  0x00007ffff49373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 59 (Thread 0x7fffb5dfd6c0 (LWP 106632) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff48a00ac in __internal_syscall_cancel (a1=a1@entry=0, a2=a2@entry=0, a3=<optimized out>, a4=<optimized out>, a5=a5@entry=0, a6=a6@entry=0, nr=230) at ./nptl/cancellation.c:49
+#2  0x00007ffff48f6372 in __GI___clock_nanosleep (clock_id=<optimized out>, clock_id@entry=0, flags=flags@entry=0, req=<optimized out>, rem=<optimized out>) at ../sysdeps/unix/sysv/linux/clock_nanosleep.c:48
+#3  0x00007ffff4904057 in __GI___nanosleep (req=<optimized out>, rem=<optimized out>) at ../sysdeps/unix/sysv/linux/nanosleep.c:25
+#4  0x000055555567560f in std::this_thread::sleep_for<long, std::ratio<1l, 1000000000l> > (__rtime=<optimized out>) at /usr/include/c++/15/bits/this_thread_sleep.h:82
+#5  std::this_thread::sleep_until<std::chrono::_V2::steady_clock, std::chrono::duration<long, std::ratio<1l, 1000000000l> > > (__atime=Python Exception <class 'gdb.error'>: value has been optimized out
+<synthetic pointer>) at /usr/include/c++/15/bits/this_thread_sleep.h:101
+#6  Fps::watchdogMainloop (this=<optimized out>) at /home/claude/spacecrafter/src/appModule/fps.cpp:116
+#7  0x00007ffff4cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#8  0x00007ffff48a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#9  0x00007ffff49373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 58 (Thread 0x7fffc7ff96c0 (LWP 106631) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff48a00ac in __internal_syscall_cancel (a1=a1@entry=93825148523616, a2=<optimized out>, a3=a3@entry=2147483647, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff48a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x55555ea61460, expected=2147483647, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x55555ea61460, expected=2147483647, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555ea61460, expected=expected@entry=4, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff48a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x55555ea61418, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x55555ea61418) at ./nptl/pthread_cond_wait.c:453
+#7  0x0000555555808eff in std::condition_variable::wait<(anonymous namespace)::Registry::builderLoop()::<lambda()> > (this=<optimized out>, __lock=..., __p=...) at /usr/include/c++/15/condition_variable:107
+#8  (anonymous namespace)::Registry::builderLoop (this=0x55555ea61320) at /home/claude/spacecrafter/src/experimentalModule/PipelineRegistry.cpp:414
+#9  0x00007ffff4cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#10 0x00007ffff48a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#11 0x00007ffff49373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 57 (Thread 0x7ffe697fd6c0 (LWP 106569) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff48a00ac in __internal_syscall_cancel (a1=a1@entry=93825155143424, a2=<optimized out>, a3=a3@entry=1769981053, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff48a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x55555f0b1700, expected=1769981053, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x55555f0b1700, expected=1769981053, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x55555f0b1700, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff48a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x55555f0b16b8, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x55555f0b16b8) at ./nptl/pthread_cond_wait.c:453
+#7  0x000055555586819b in std::condition_variable::wait<ThreadPool::ThreadPool(unsigned long)::{lambda()#1}::operator()() const::{lambda()#1}>(std::unique_lock<std::mutex>&, ThreadPool::ThreadPool(unsigned long)::{lambda()#1}::operator()() const::{lambda()#1}) (this=0x55555f0b16e0, __lock=..., __p=...) at /usr/include/c++/15/condition_variable:107
+#8  ThreadPool::ThreadPool(unsigned long)::{lambda()#1}::operator()() const (__closure=0x55555f0b6548) at /home/claude/spacecrafter/src/tools/ThreadPool.hpp:45

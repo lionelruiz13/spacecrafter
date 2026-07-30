@@ -1,0 +1,20 @@
+==== B7 HUNT [gdb] batch start 2026-07-31T00:18:37+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7h3_poscontrol_gdb append=0 cyc0=0 ====
+BIN mtime=2026-07-30 22:35:11.546351253 +0200  code HEAD=5a8881ff  harness HEAD=19f8ef0
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+composed-body axis: B7_ROVERS=8  scene=/home/claude/.spacecrafter/modularSystem/SolarSystem.ini md5=0718c9015eaea6bc103c541209bf4d0a  scene_pre_existed=0
+host at batch start: loadavg=13.02 5.14 2.98  memavail=37,2GiB
+batch teardowns: 2  (cycle ids 1..2)
+cyc 1 pcsegv: *** *** FIRE *** *** segv=1 abrt=0 frame0=[#0  0x00007ffff491a96b in __GI_sched_yield () at ../sysdeps/unix/syscall-template.S:120]
+     see /home/claude/spacecrafter/claude/harness/artifacts/b7h3_poscontrol_gdb/gdb_001_pcsegv.log
+cyc 2 pcabrt: *** *** FIRE *** *** segv=0 abrt=1 frame0=[#0  0x00005555557d57f5 in std::__insertion_sort<__gnu_cxx::__normal_iterator<ModularSystem]
+     see /home/claude/spacecrafter/claude/harness/artifacts/b7h3_poscontrol_gdb/gdb_002_pcabrt.log
+==== B7 HUNT [gdb] batch done 2026-07-31T00:19:48+02:00 ====
+host at batch end: loadavg=15.26 7.60 4.01  memavail=37,6GiB
+composed scene removed (user dir restored to shipped default)
+ssystem md5 at end=545a51ef76294891579a1fc2fe13792b
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+      2 FIRE
+*** FIRE ROWS ***
+1,pcsegv,new,SIGSEGV,sig,13,FIRE,"segv=1 abrt=0 frame0=[#0  0x00007ffff491a96b in __GI_sched_yield () at ../sysdeps/unix/syscall-template.S:120]",8,8,14.12
+2,pcabrt,new,SIGABRT,sig,14,FIRE,"segv=0 abrt=1 frame0=[#0  0x00005555557d57f5 in std::__insertion_sort<__gnu_cxx::__normal_iterator<ModularSystem]",8,8,15.37

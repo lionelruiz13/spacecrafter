@@ -769,7 +769,12 @@ corrected: it was written, then destroyed by the same edit.]*
   `harness/b7_batch_0*` leftover dirs (untracked noise from the §11.95 run).
 - **Discriminating check:** positive-controlled detectors (as §11.95); any fire ⇒
   full context capture via `b7_probe.gdb`; no fire ⇒ tightened bound recorded.
-- **WIP:** —
+- **WIP:** 2026-07-31 CHECKPOINT 1 — stress load built + measured (`b7_stress.sh`,
+  loadavg 15.6–21.8 vs §11.95's quiet 0.22); both detectors positive-controlled
+  UNDER that load with rovers composed (pcsegv→139/bt, pcabrt→134/bt, all FIRE);
+  **variant 1 (stress + 2 rovers) COMPLETE: N=54, 0 fires, 0 invalid.** Next:
+  variant 2 (stress + 8 rovers, same 54-cycle mix), then ASan-if-budget, then
+  §11.122 + B7 row.
 
 ### F9 — B12: near-surface star family — DESIGN-FIRST  [L]
 - **Row / recorded:** B12 (§13.B, unblocked by Q21) · §11.44 · §2(a) (dark-Sun-disc divergence legitimised as a defect of old, i.e. new must do better).

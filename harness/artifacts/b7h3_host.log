@@ -1,0 +1,90 @@
+---- HOST STATE [V1-2rover-chunk1-pre] 2026-07-31T00:20:10+02:00 ----
+loadavg: 15.68 8.19 4.29
+               total       utilisé      libre     partagé tamp/cache   disponible
+Mem:           60637       21971       22086       12265       29697       38666
+stress pids alive: 13/13
+top cpu consumers:
+ 110493 claude    100  0.0 dd
+ 101506 claude   94.7  0.0 bash
+ 101511 claude   94.6  0.0 bash
+ 101509 claude   94.5  0.0 bash
+ 101505 claude   94.5  0.0 bash
+ 101510 claude   94.4  0.0 bash
+ 101508 claude   94.0  0.0 bash
+ 101507 claude   93.9  0.0 bash
+foreign users with procs: avahi claude colord cups-browsed foxy gnome-remote-desktop lp messagebus nvidia-persistenced ollama polkitd root rtkit syslog systemd-oom systemd-resolve systemd-timesync 
+spacecrafter instances: 
+userdir md5: cfg=03fbee59 sys=545a51ef
+userdir foreign mtimes: /home/claude/.spacecrafter/config.ini=2026-07-31 00:19:47.653294499 +0200 /home/claude/.spacecrafter/ssystem.ini=2026-07-23 21:02:47.591691294 +0200 
+---- HOST STATE [V1-2rover-chunk1] 2026-07-31T00:29:22+02:00 ----
+loadavg: 19.16 17.18 10.66
+               total       utilisé      libre     partagé tamp/cache   disponible
+Mem:           60637       22252       21801       12240       29674       38384
+stress pids alive: 13/13
+top cpu consumers:
+ 134693 claude    120  0.0 dd
+ 101511 claude   93.9  0.0 bash
+ 101505 claude   93.9  0.0 bash
+ 101506 claude   93.8  0.0 bash
+ 101510 claude   93.7  0.0 bash
+ 101509 claude   93.7  0.0 bash
+ 101512 claude   93.6  0.0 bash
+ 101508 claude   93.5  0.0 bash
+foreign users with procs: avahi claude colord cups-browsed foxy gnome-remote-desktop lp messagebus nvidia-persistenced ollama polkitd root rtkit syslog systemd-oom systemd-resolve systemd-timesync 
+spacecrafter instances: 
+userdir md5: cfg=03fbee59 sys=545a51ef
+userdir foreign mtimes: /home/claude/.spacecrafter/config.ini=2026-07-31 00:28:33.354573244 +0200 /home/claude/.spacecrafter/ssystem.ini=2026-07-23 21:02:47.591691294 +0200 
+---- HOST STATE [V1-2rover-chunk2] 2026-07-31T00:37:51+02:00 ----
+loadavg: 16.65 16.94 13.34
+               total       utilisé      libre     partagé tamp/cache   disponible
+Mem:           60637       22204       21841       12361       29803       38432
+stress pids alive: 13/13
+top cpu consumers:
+ 156948 claude    100  0.0 dd
+ 101510 claude   93.7  0.0 bash
+ 101505 claude   93.7  0.0 bash
+ 101511 claude   93.6  0.0 bash
+ 101509 claude   93.5  0.0 bash
+ 101506 claude   93.5  0.0 bash
+ 101508 claude   93.4  0.0 bash
+ 101512 claude   93.3  0.0 bash
+foreign users with procs: avahi claude colord cups-browsed foxy gnome-remote-desktop lp messagebus nvidia-persistenced ollama polkitd root rtkit syslog systemd-oom systemd-resolve systemd-timesync 
+spacecrafter instances: 
+userdir md5: cfg=03fbee59 sys=545a51ef
+userdir foreign mtimes: /home/claude/.spacecrafter/config.ini=2026-07-31 00:37:42.036013906 +0200 /home/claude/.spacecrafter/ssystem.ini=2026-07-23 21:02:47.591691294 +0200 
+---- HOST STATE [V1-2rover-chunk3] 2026-07-31T00:46:17+02:00 ----
+loadavg: 16.92 17.08 14.99
+               total       utilisé      libre     partagé tamp/cache   disponible
+Mem:           60637       23014       21018       12093       29548       37622
+stress pids alive: 13/13
+top cpu consumers:
+ 178939 claude    100  0.0 dd
+ 101511 claude   93.5  0.0 bash
+ 101510 claude   93.5  0.0 bash
+ 101506 claude   93.5  0.0 bash
+ 101505 claude   93.5  0.0 bash
+ 101509 claude   93.4  0.0 bash
+ 101508 claude   93.3  0.0 bash
+ 101512 claude   93.2  0.0 bash
+foreign users with procs: avahi claude colord cups-browsed foxy gnome-remote-desktop lp messagebus nvidia-persistenced ollama polkitd root rtkit syslog systemd-oom systemd-resolve systemd-timesync 
+spacecrafter instances: 
+userdir md5: cfg=03fbee59 sys=545a51ef
+userdir foreign mtimes: /home/claude/.spacecrafter/config.ini=2026-07-31 00:46:08.933566441 +0200 /home/claude/.spacecrafter/ssystem.ini=2026-07-23 21:02:47.591691294 +0200 
+---- HOST STATE [V1-2rover-chunk4] 2026-07-31T00:54:49+02:00 ----
+loadavg: 16.03 16.73 15.77
+               total       utilisé      libre     partagé tamp/cache   disponible
+Mem:           60637       21974       22053       11988       29449       38663
+stress pids alive: 13/13
+top cpu consumers:
+ 201255 claude    200  0.0 dd
+ 101511 claude   93.4  0.0 bash
+ 101510 claude   93.4  0.0 bash
+ 101505 claude   93.4  0.0 bash
+ 101509 claude   93.4  0.0 bash
+ 101506 claude   93.3  0.0 bash
+ 101512 claude   93.3  0.0 bash
+ 101508 claude   93.3  0.0 bash
+foreign users with procs: avahi claude colord cups-browsed foxy gnome-remote-desktop lp messagebus nvidia-persistenced ollama polkitd root rtkit syslog systemd-oom systemd-resolve systemd-timesync 
+spacecrafter instances: 
+userdir md5: cfg=03fbee59 sys=545a51ef
+userdir foreign mtimes: /home/claude/.spacecrafter/config.ini=2026-07-31 00:54:38.655158679 +0200 /home/claude/.spacecrafter/ssystem.ini=2026-07-23 21:02:47.591691294 +0200 
