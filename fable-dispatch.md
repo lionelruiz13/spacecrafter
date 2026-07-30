@@ -740,6 +740,21 @@ corrected: it was written, then destroyed by the same edit.]*
   Battery: b24 120 + `--strip` RED, b25 130/17 + `--mutate` RED, b40 17/17 (18 Params,
   frozen md5 in==out), b4 0 failures, scene E 26/0; twins **18/18** byte-identical;
   frozen md5 pristine throughout. **B25 CLOSED**; B31 open on the session file + ledger.
+  **Supervisor-verified 2026-07-31** (11.121 read in full; trees/commits/authors
+  checked; B25 close + B31 annotation + §5.50 stub verified at the ledger; diff
+  surface confirmed new-path/factory/command-seam only — `protosystem.cpp` untouched,
+  old render path unreached; harnesses NOT re-run — committed artifacts + both-ways
+  discrimination records accepted as evidence: T6 vs its no-save control, `--mutate`,
+  twins 18/18, the D9 8077-file sweep). Deviations ENDORSED: screen leg (verification
+  height; the footprint-split + erosion criterion avoids the cross-launch-floor trap
+  the entry itself cites), b40_parity vacuous-gate fix (§11.101(g) class, at the
+  instrument producing this task's evidence), deduced-module-order source (order is
+  semantic, §11.19). §5.50 record-only call ENDORSED (fix shape named — old-path
+  bail-out with §2(f); next-batch candidate, the §5.45→F12(iv) pattern). Leg-count
+  note: this WIP's "25 legs" vs §11.121(g)'s "26" — the entry wins by this file's
+  own authority rule. Veto point → §3: the `body action save [filename <name>]`
+  spelling. Foreign same-host app launch observed mid-task (§11.121(j)) → §3
+  (shared `~/.spacecrafter` is a standing md5 confound across sessions).
   NEW **§5.50** (record-only): `body action load … coord_func surface_point` kills the
   app — the OLD path carries on with a null orbit (`protosystem.cpp:612-622`).
   Instrument fix: `b40_parity.py` no longer passes vacuously.**
