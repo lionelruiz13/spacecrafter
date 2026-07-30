@@ -51,6 +51,16 @@ Remaining dispatchable: **F8** (opportunistic), **F9** (design-first), **next B3
 slice** (persistent-body serialization §4.1 — completes B25's half; section to mint
 at its dispatch).
 
+**Update [Fable 2026-07-30, supervising session 5]:** round of 3 per the sizing lesson:
+**F15 → F8 → F9**. F15 minted below (B31 slice 2 = persistent-body serialization §4.1 +
+live annotation wiring — the section session 4's close said to mint at its dispatch),
+positioned ahead of F8/F9 like F10–F14 were (mandated product line beats opportunistic
+hunt + design-first). Warm-up: both trees clean (code `f11f6a4e`, harness `2068afb`);
+binary present, mtime 16 min before the F14 delivery commit — consistent with F14's own
+build-verify-commit order, and the first executor rebuilds regardless. DECISIONS_PENDING
+open set at session start: **D15, D21 (both SCHEDULED last week of August, §11.116(a)),
+D37 (new, F11 — rec (1) keep, awaiting Vixy)**.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -664,6 +674,53 @@ corrected: it was written, then destroyed by the same edit.]*
   the record's); the instrument corrections are I2 operating on the §5.28 root; the
   Mercury counterfactual finally run is D22's own named check. §5.49's
   record-don't-fix call ENDORSED (channel not given, veto + owed test stated).
+
+### F15 — B31-impl slice 2: persistent-body serialization (§4.1) + live annotation wiring  [M–L]
+- **Row / recorded:** B31 (§13.B — slice 1 landed §11.119; the row's own text names THIS
+  slice next) · `b31-design.md` §4.1 (the authority: a persistent body becomes AUTHORED
+  DATA — no new identity key; D34's ledger key is NOT this slice) · §11.119(b)(i)
+  (annotation mechanism complete with ZERO producers; the producer wires into the slice
+  owning the explicit write trigger — supervisor endorsement: load-time rewrite is
+  decided-AGAINST per D33, not undecided) · B25 remaining half (§11.109(b) + §11.119
+  rider: the writer is ready; the LIVE-TREE SERIALIZATION SOURCE is what is missing) ·
+  §11.51(a) verbatim route (*"save a system on-the-fly as well by targeting without the
+  .disabled or under a different name from scripts"*) · D33 (explicit-only triggers) ·
+  D35 + §2.0 D13 (composed + session files ONLY; legacy read-only forever) · A32 (the
+  target file is USER-owned ⇒ write-back governed by b31-design §5 + D35).
+- **Why now:** §11.110's own sequencing (§5.39 ✓ → writer rework ✓ §11.119 → **this** →
+  session file → ledger); it completes B25's remaining half and takes the annotation
+  layer from mechanism to product.
+- **Task:** (i) the live-tree serialization source: walk the live tree, emit each body's
+  declared parameters + live capability keys through the F13 writer;
+  `generateComposedTwin` is 80 % of it (§4.1); the gap = bodies with NO legacy section
+  (runtime-created, no `stringHash_t`) — parameters come from the loaders that consumed
+  them (the `saveOrbit()` pattern: DATA KEYS, never derived state —
+  `SurfacePointOrbitLoader.hpp:47-60` is the exemplar; re-locate at HEAD); (ii) the
+  explicit save trigger, BOTH §2(c) channels (script/command), per §11.51(a): target a
+  composed file without `.disabled` or under a different name; spelling landed + recorded
+  as a veto point (B28 protocol; F7 `follow_rotation` precedent); (iii) script-pushed
+  bodies thereby survive sessions as ordinary authored data — if the push channel itself
+  does not reach the NEW tree at HEAD, minting the minimal one is IN scope (the mandate's
+  own words: *"script-pushed persistent bodies that survive sessions"*), measured first;
+  (iv) LIVE annotation wiring: composed loads RETAIN parsed sections, loader diagnoses
+  annotate them, annotations are WRITTEN only when an explicit save targets that file
+  (never at load — D33).
+- **Stop boundaries (NOT yours):** the session file (§3.2) + override ledger (§2 group D)
+  — later slices; §5.41/§5.42 surfaces (re-express on the session serializer — record,
+  don't fix); anything D21/D28-dependent (T3, heading); §11.109(h3) same-name push
+  collision (record, never decide); §11.109(h2) whitespace-key semantics (SUSPENDED);
+  legacy `ssystem.ini` never written — md5 in==out asserted every launch.
+- **Discriminating check:** T6 (b31-design §6.2): a script-pushed body EXISTS after
+  quit + fresh relaunch with same parent/relation/module set/routing — comparator
+  IMPORTED from `b24_equivalence`, never copied (I2, §11.109(b)); no-runtime-delta
+  control: the live-tree save of the shipped solar tree loads back b24-equivalent, its
+  delta vs the twin explained line-by-line or zero; save-over-existing preserves author
+  content (the F13 gate class on the LIVE path; T4's fixed-point rule: second save
+  byte-identical); annotation leg: a diagnosed datum gains its `#!sc:` line ABOVE the
+  datum only AFTER an explicit save, idempotent on re-save; §6.3 D9 assert: md5 of every
+  data file the save did NOT target unchanged; battery green (b24_equivalence,
+  b25_galactic, b40_parity, b4_anchors, scene E) + twin byte-stability (18/18).
+- **WIP:** —
 
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
 - **Row / recorded:** B7 (§13.B) · §11.95 (158/0, contention hypothesis, `b7_hunt.sh` ready) · §11.97(f) (NEW abort-path datum, composed-body-count axis).
