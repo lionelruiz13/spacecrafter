@@ -494,11 +494,17 @@ void SSystemFactory::loadGalacticSystem(const std::string &path, const std::stri
         // at wrong galactic coordinates the moment the path above is repaired.
         // That is why the two repairs are one commit and never two.
         std::string line, key, value;
+        // The header of the section whose params are currently accumulating -
+        // carried so a rejected section can be named by the name the AUTHOR
+        // wrote, which is the only identifier left when the missing key is
+        // `name` itself (§5.45 / §2(f)).
+        std::string section;
 		while(getline(file , line)) {
             switch (IniLine::read(line, key, value)) {
                 case IniLine::Kind::SECTION:
                     if (!params.empty())
-                        loadSystem(dir, params);
+                        loadSystem(dir, params, section);
+                    section = key;
                     break;
                 case IniLine::Kind::ENTRY:
                     params[key] = value;
@@ -513,26 +519,90 @@ void SSystemFactory::loadGalacticSystem(const std::string &path, const std::stri
             }
     		}
         if (!params.empty())
-            loadSystem(dir, params);
+            loadSystem(dir, params, section);
 		file.close();
     } else {
         galacticAnchorMgr->addAnchor("Sun", std::make_shared<AnchorPointObservatory>(0, 0, 0));
     }
 }
 
+// "The author declared nothing" is ABSENT-OR-EMPTY, once: stringHash_t is a
+// std::map and operator[] INSERTS an empty entry for an absent key, so a
+// find()-only test is true for keys nobody wrote (the §11.103(b) trap).
+static const std::string *declaredParam(const stringHash_t &params, const char *key)
+{
+    const auto it = params.find(key);
+    return (it == params.end() || it->second.empty()) ? nullptr : &it->second;
+}
+
 // `path` is the directory prefix ALREADY terminated by its separator - the one
 // caller (loadGalacticSystem, above) owns that normalization (INTENT §5.37).
-void SSystemFactory::loadSystem(const std::string &path, stringHash_t &params)
+//
+// §5.45 (found by B40 §11.115(i), fixed 2026-07-30): a section missing `name`,
+// `x`, `y` or `z` used to KILL THE APP AT STARTUP - `std::stod("")` throws
+// std::invalid_argument and neither main.cpp nor core.cpp has a catch, so the
+// process died before opening its port (returncode -6, measured). The shipped
+// corpus is well-formed, so this cost nothing today; a paid galactic delivery
+// with ONE malformed section refused to start the product.
+// The shape is not invented: the addAnchor call below already DECLINES such a
+// section and says so (AnchorPointCreator::handle, "x y or z parameter
+// missing") - this is that same decision, taken once, at the top, with a
+// diagnostic that names the section, the key and the fix (§2(f)) and logs the
+// acting default (SKIP - §2.0 D12).
+// Guarded on PARSEABILITY, not merely on presence: `x = ,5` (a decimal comma,
+// the same author's likely next mistake) and `x = 1e999` throw from that same
+// line - invalid_argument and out_of_range - so guarding presence alone would
+// fix the instance and leave the class alive (I6). [measured 2026-07-30:
+// stod("") / ("abc") / (",5") throw invalid_argument, stod("1e999") throws
+// out_of_range; hence catching std::exception, not one of the two.]
+// What this deliberately does NOT change: a value stod PARSES is accepted
+// exactly as before, partial parses included (`x = 1,5` has always meant 1.0
+// here, `x = 1.5 ly` 1.5). Rejecting those would be a new semantic on data
+// that loads today - out of scope, recorded at §5.45.
+void SSystemFactory::loadSystem(const std::string &path, stringHash_t &params, const std::string &section)
 {
     std::cout << "Params :\n";
     for (auto &p : params) {
         std::cout << p.first << " : " << p.second << '\n';
     }
+    // Name the section the way its author wrote it; fall back to the `name` key
+    // and then to a positional label, so the message is actionable even when
+    // the header itself is what is missing.
+    const std::string *nameKey = declaredParam(params, "name");
+    const std::string label = !section.empty() ? ("[" + section + "]")
+                            : nameKey ? ("section '" + *nameKey + "'")
+                            : std::string("a section with no header");
+    const auto reject = [&](const std::string &why) {
+        cLog::get()->write("galactic.ini: skipping " + label + " - " + why
+            + ". A star system needs name, x, y and z (galactic coordinates in "
+            "light years); the section is ignored and the rest of the file is "
+            "loaded normally.", LOG_TYPE::L_WARNING);
+        params.clear();
+    };
+    if (!nameKey) {
+        reject("no 'name' key");
+        return;
+    }
+    double coord[3];
+    static const char *const AXIS[3] = {"x", "y", "z"};
+    for (int i = 0; i < 3; ++i) {
+        const std::string *value = declaredParam(params, AXIS[i]);
+        if (!value) {
+            reject(std::string("no '") + AXIS[i] + "' key");
+            return;
+        }
+        try {
+            coord[i] = std::stod(*value);
+        } catch (const std::exception &) {
+            reject(std::string("'") + AXIS[i] + " = " + *value + "' is not a number");
+            return;
+        }
+    }
     params["type"] = "observatory";
     galacticAnchorMgr->addAnchor(params);
-    systemOffsets[params["name"]].set(stod(params["x"]), stod(params["y"]), stod(params["z"]));
+    systemOffsets[*nameKey].set(coord[0], coord[1], coord[2]);
     if (!params["system"].empty())
-        addSystem(params["name"], path + params["system"]);
+        addSystem(*nameKey, path + params["system"]);
     params.clear();
 }
 

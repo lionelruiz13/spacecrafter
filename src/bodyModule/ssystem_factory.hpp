@@ -907,7 +907,11 @@ public:
     void addSystem(const std::string &name, const std::string &file);
 
     void loadGalacticSystem(const std::string &path, const std::string &file);
-    void loadSystem(const std::string &path, stringHash_t &params);
+    //! Instantiate ONE galactic.ini section. `section` is the '[header]' the
+    //! params came from - carried in so a rejected section can be NAMED (§2(f));
+    //! it is the only identifier that survives a section whose `name` key is the
+    //! missing one (INTENT §5.45).
+    void loadSystem(const std::string &path, stringHash_t &params, const std::string &section);
     std::unique_ptr<ProtoSystem> &createSystem(const std::string &mode);
     void createModularSystem(const std::string &name, const std::string &filename, const Vec3d &pos);
 
