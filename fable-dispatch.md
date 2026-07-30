@@ -556,7 +556,15 @@ corrected: it was written, then destroyed by the same edit.]*
   b4_anchors 0. **The next B31 slice** is persistent-body serialization (§4.1),
   which also carries the LIVE loader→writer annotation wiring — it needs a write
   trigger to exist before a loader may retain its parsed sections — and completes
-  B25's remaining half.)*
+  B25's remaining half. **Supervisor-verified 2026-07-30** — 11.119 read in full;
+  trees/commits checked; harnesses not re-run, committed artifacts + three-way
+  discrimination records accepted as evidence. Both judgment calls ENDORSED: the
+  annotation-producer deferral MATCHES D33 (explicit-save only — a load-time
+  rewrite is decided-against, not undecided; the producer wires into the slice
+  owning the explicit trigger), and the unmarked removal-reason lines are the
+  correct fixed point (a machine-marked removal record would delete itself on the
+  next write; the second-pass leg proves it). cLog pre-openLog trap accepted as
+  entry-recorded (unreachable at HEAD).)*
 
 ### F14 — B14/D22: the 90° meridian conversion fix  [S–M]
 - **Row / recorded:** B14 (§13.B, REOPENED §11.101(b)) · §11.113(a)/D22 verbatim (A33
