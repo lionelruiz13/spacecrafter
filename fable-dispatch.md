@@ -421,7 +421,16 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   59/59 and sharper. Battery green; md5 pristine. Residue: **D37** (hidden
   star still illuminates — measured, Vixy's), **§5.46** (up-chain never
   writes `matLocalToBodyPos`), pre-existing reload loss of 2 hidden bodies
-  (attributed on the pre-fix binary). Deviations flagged in §11.117(l).**
+  (attributed on the pre-fix binary). Deviations flagged in §11.117(l).
+  **Supervisor-verified 2026-07-30** (entry read in full; the structural
+  class-proof ACCEPTED for the un-measured contributions — one list, all
+  sweeps observed to walk it at source, the measured observables verify the
+  removal itself; trees clean; harnesses not re-run — red→green artifacts +
+  in-run controls + pre-fix-binary counterfactuals accepted as evidence).
+  Deviation (2) ENDORSED (Reason>Rule: §5.31's literal shape overshoots into
+  out-of-cone orbit-line deletion); deviation (1) noted, verification intact.
+  D37 endorsed (1) with the shadow-asymmetry datum appended; §5.46 and the
+  reload-loss attribution accepted as recorded.**
 
 ### F12 — decision-implementation batch: B27-split + B24-click + B33 readout  [S–M]  ← START HERE
 - **Row / recorded:** B27 (§11.113(f) — D27 OVERRIDES the ratify-as-is rec+endorsement:
