@@ -1,0 +1,94 @@
+{
+ "legs": {
+  "P0_floor": {
+   "px": 0,
+   "max": 0,
+   "nonblack": 79365
+  },
+  "P2_orbit": {
+   "control_px": 779,
+   "control_max": 155,
+   "subject_px": 779,
+   "subject_max": 155,
+   "floor_px": 0
+  },
+  "P3_trail": {
+   "Mars": {
+    "state": "hidden",
+    "dAcc_shown": 1037,
+    "dAcc_test": 1512,
+    "dpoints_test": 4,
+    "points_t1": 4,
+    "points_t2": 8
+   },
+   "Venus": {
+    "state": "shown",
+    "dAcc_shown": 1037,
+    "dAcc_test": 1512,
+    "dpoints_test": 4,
+    "points_t1": 4,
+    "points_t2": 8
+   },
+   "Jupiter": {
+    "state": "shown",
+    "dAcc_shown": 1037,
+    "dAcc_test": 1512,
+    "dpoints_test": 4,
+    "points_t1": 4,
+    "points_t2": 8
+   },
+   "after_unhide": {
+    "mars_points": 8,
+    "venus_points": 8,
+    "mars_headJD": 2461338.4907478723,
+    "venus_headJD": 2461338.4982416686
+   }
+  },
+  "P4_pointer": {
+   "io_visible": true,
+   "control_px": 138,
+   "subject_px": 137,
+   "floor_px": 0
+  },
+  "P5_notick": {
+   "delta": {
+    "Jupiter": 2074,
+    "Io": 2074,
+    "Venus": 2074,
+    "Mars": 2074
+   },
+   "barrier_evals": 5
+  },
+  "P6_reversible": {
+   "tol_km": 250.9865426206153,
+   "control_max_km": 25.09865426206153,
+   "entries": [
+    {
+     "tag": "rev1_hidden",
+     "state": "hidden",
+     "relation": 1,
+     "err_km": 2.384948165438538
+    },
+    {
+     "tag": "rev1_shown",
+     "state": "shown",
+     "relation": 4,
+     "err_km": 3.6632095310801787
+    },
+    {
+     "tag": "rev2_hidden",
+     "state": "hidden",
+     "relation": 1,
+     "err_km": 7.027039412241257
+    },
+    {
+     "tag": "rev2_shown",
+     "state": "shown",
+     "relation": 4,
+     "err_km": 4.618296326302278
+    }
+   ]
+  }
+ },
+ "fail": 6
+}

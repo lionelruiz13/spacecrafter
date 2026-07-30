@@ -1,0 +1,118 @@
+>> flag experimental_path on
+>> timerate rate 0
+>> date jday 2461233.500000000
+>> flag landscape off
+>> flag atmosphere off
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> select planet Sun pointer off
+>> flag track_object on
+>> flag track_object off
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_floor_a.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_floor_b.png
+
+noise floor: px>32 = 0, max|d| = 0, nonblack px = 79365
+OK   P0 scene carries content (79365 nonblack px) - the diffs below are content-vs-content, not masked fiction
+>> body name Mars orbit true
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_orb_shown_on.png
+>> body name Mars orbit false
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_orb_shown_off.png
+>> body name Mars hidden true
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_orb_hidden_pre.json
+>> body name Mars orbit true
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_orb_hidden_on.png
+>> body name Mars orbit false
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_orb_hidden_off.png
+>> body name Mars hidden false
+>> body name Mars orbit false
+OK   P2 instrument: Mars relation=1 (hidden) while the subject pair was shot
+
+P2 orbit line: CONTROL(shown) px>32 = 779 (max 155)  |  SUBJECT(hidden) px>32 = 779 (max 155)  |  floor 0
+OK   P2 control: an ARMED orbit line on a SHOWN body is 779 px > 200 (the instrument sees orbit lines; the calibration probe measured 779 px for Mars in this scene)
+FAIL P2 SUBJECT: a HIDDEN body contributes 779 px <= floor 0 (as-if-nonexistent)
+>> flag object_trails on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_trail_t0.json
+>> date jday 2461248.500000000
+>> date jday 2461263.500000000
+>> date jday 2461278.500000000
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_trail_t1.json
+>> body name Mars hidden true
+>> date jday 2461293.500000000
+>> date jday 2461308.500000000
+>> date jday 2461323.500000000
+>> date jday 2461338.500000000
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_trail_t2.json
+>> body name Mars hidden false
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_trail_t3.json
+>> flag object_trails off
+  P3 Mars     (hidden) dAcc[shown interval]=  1037  dAcc[test interval]=  1512  points 4->8 (d=+4)
+OK   P3 Mars: recorded while shown (dAcc=1037 > 0) - the gate is armed
+FAIL P3 SUBJECT Mars: HIDDEN interval dAcc=1512 == 0 (the work stopped)
+FAIL P3 SUBJECT Mars: HIDDEN interval dpoints=4 == 0 (no sample entered the history)
+  P3 Venus    (shown ) dAcc[shown interval]=  1037  dAcc[test interval]=  1512  points 4->8 (d=+4)
+OK   P3 Venus: recorded while shown (dAcc=1037 > 0) - the gate is armed
+OK   P3 control Venus: kept recording (dAcc=1512 > 0) - only the hidden body stopped
+OK   P3 control Venus: history grew by 4 samples over the same interval
+  P3 Jupiter  (shown ) dAcc[shown interval]=  1037  dAcc[test interval]=  1512  points 4->8 (d=+4)
+OK   P3 Jupiter: recorded while shown (dAcc=1037 > 0) - the gate is armed
+OK   P3 control Jupiter: kept recording (dAcc=1512 > 0) - only the hidden body stopped
+OK   P3 control Jupiter: history grew by 4 samples over the same interval
+  P3 after unhide: Mars points=8 headJD=2461338.4907478723  |  Venus points=8 headJD=2461338.4982416686
+OK   P3 as-if-never-hidden: Mars history 8 samples == Venus 8 (the missed span reconstructed, D23 clause iv)
+OK   P3 as-if-never-hidden: newest sample dates agree to 0.007494 d < 0.2 d (light-time offsets differ per body)
+>> select planet Jupiter pointer off
+>> flag track_object on
+>> flag track_object off
+>> select planet Io pointer on
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_ptr_aim.json
+OK   P4 precondition: Io visible=True before the parent is hidden (a false here makes the leg vacuous)
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_ptr_shown_on.png
+>> select planet Io pointer off
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_ptr_shown_off.png
+>> body name Jupiter hidden true
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_ptr_nested.json
+>> select planet Io pointer on
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_ptr_hidden_on.png
+>> select planet Io pointer off
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_ptr_hidden_off.png
+>> body name Jupiter hidden false
+OK   P1 declared flag: Io relation stayed 4 (== 4) while its parent was hidden - implicit child hiding does NOT touch the exposed attribute (D23)
+OK   P1 instrument: Jupiter relation=1 (hidden)
+
+P4 pointer: CONTROL(parent shown) px>32 = 138 (max 255)  |  SUBJECT(parent hidden) px>32 = 137 (max 255)
+OK   P4 control: the pointer on a SHOWN Io is 138 px > 20 (the instrument sees the pointer)
+FAIL P4 SUBJECT: pointer on a NESTED-hidden Io is 137 px <= floor 0
+>> body name Jupiter hidden true
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_eval_t1.json
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_eval_t2.json
+>> body name Jupiter hidden false
+
+P5 evalCount over a ~12 s no-command interval: {'Jupiter': 2074, 'Io': 2074, 'Venus': 2074, 'Mars': 2074}
+OK   P5 control: shown Venus was evaluated 2074 times (> 100 rendered frames - the instrument counts)
+OK   P5 control: shown Mars was evaluated 2074 times (> 100)
+FAIL P5 SUBJECT: HIDDEN Jupiter was evaluated 2074 times <= 5 (only the use-site barrier of the one dump)
+FAIL P5 SUBJECT (nesting): Io - declared SHOWN, hidden only by its parent - was evaluated 2074 times <= 5
+>> date jday 2461233.611111111
+>> body name Mars hidden true
+>> date jday 2461233.625000000
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_rev1_hidden.json
+>> body name Mars hidden false
+>> date jday 2461233.638888889
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_rev1_shown.json
+>> body name Mars hidden true
+>> date jday 2461233.652777778
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_rev2_hidden.json
+>> body name Mars hidden false
+>> date jday 2461233.666666667
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_rev2_shown.json
+
+P6 tolerance calibrated in-run from never-hidden ['Venus', 'Jupiter', 'Io']: max old-vs-new 25.0987 km -> tol 250.9865 km
+OK   P6 rev1_hidden: Mars relation=1 matches expected hidden
+OK   P6 rev1_hidden: Mars |ecl_new-ecl_old| = 2.385 km <= 250.987 km (fresh AT THE USE, hidden)
+OK   P6 rev1_shown: Mars relation=4 matches expected shown
+OK   P6 rev1_shown: Mars |ecl_new-ecl_old| = 3.663 km <= 250.987 km (fresh AT THE USE, shown)
+OK   P6 rev2_hidden: Mars relation=1 matches expected hidden
+OK   P6 rev2_hidden: Mars |ecl_new-ecl_old| = 7.027 km <= 250.987 km (fresh AT THE USE, hidden)
+OK   P6 rev2_shown: Mars relation=4 matches expected shown
+OK   P6 rev2_shown: Mars |ecl_new-ecl_old| = 4.618 km <= 250.987 km (fresh AT THE USE, shown)
+
+6 ASSERTION(S) FAILED - /home/claude/spacecrafter/claude/harness/artifacts/b39_pre/b39_result.json

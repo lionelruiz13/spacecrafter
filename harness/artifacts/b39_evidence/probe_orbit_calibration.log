@@ -1,0 +1,48 @@
+>> flag experimental_path on
+>> timerate rate 0
+>> date jday 2461233.5
+>> flag landscape off
+>> flag atmosphere off
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> select planet Sun pointer off
+>> flag track_object on
+>> flag track_object off
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_aim.png
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_aim2.png
+FLOOR aim2 vs aim: (0, 0)
+nonblack: 79365
+>> body name Mars orbit true
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_on_Mars.png
+PERNAME Mars on vs aim: (779, 155)
+>> body name Mars orbit false
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_off_Mars.png
+PERNAME Mars on vs off: (779, 155)
+PERNAME Mars off vs aim: (0, 0)
+>> body name Venus orbit true
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_on_Venus.png
+PERNAME Venus on vs aim: (0, 0)
+>> body name Venus orbit false
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_off_Venus.png
+PERNAME Venus on vs off: (0, 0)
+PERNAME Venus off vs aim: (0, 0)
+>> body name Mercury orbit true
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_on_Mercury.png
+PERNAME Mercury on vs aim: (0, 0)
+>> body name Mercury orbit false
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_off_Mercury.png
+PERNAME Mercury on vs off: (0, 0)
+PERNAME Mercury off vs aim: (0, 0)
+>> body name Jupiter orbit true
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_on_Jupiter.png
+PERNAME Jupiter on vs aim: (761, 154)
+>> body name Jupiter orbit false
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_off_Jupiter.png
+PERNAME Jupiter on vs off: (761, 154)
+PERNAME Jupiter off vs aim: (0, 0)
+>> body name Saturn orbit true
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_on_Saturn.png
+PERNAME Saturn on vs aim: (601, 104)
+>> body name Saturn orbit false
+>> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/b39_probe/p_off_Saturn.png
+PERNAME Saturn on vs off: (601, 104)
+PERNAME Saturn off vs aim: (0, 0)
