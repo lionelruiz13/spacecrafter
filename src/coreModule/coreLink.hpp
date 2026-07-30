@@ -986,8 +986,28 @@ public:
 		core->navigation->setDefaultHeading();
 	}
 
-	double getHeading() {
-		return core->navigation->getHeading();
+	//! The environment roll around the observer, in degrees, normalised to
+	//! [-180, 180] (the old getter's own TUI-compatibility convention).
+	//! B33 (§11.108(f)) + the D28 rider (§11.113(g)): this READS THE PATH THAT
+	//! DRAWS. The setter above has always written both authorities; the getter
+	//! read only the old Navigator, so under the new path it reported a number
+	//! that was not the roll on screen - measured -6.16 deg drawn vs 0 reported
+	//! after a reference switch - and `heading delta_azimuth d`
+	//! (app_command_interface.cpp) computes its ABSOLUTE target from it.
+	//! D28 chose "the new path holds the whole orientation across a reference
+	//! switch", which makes the divergence permanent by design and this readout
+	//! the thing that makes the choice operable: the operator must be able to
+	//! see and command the roll the choice produces. `set heading 0` stays the
+	//! standing remedy for the accumulating tilt and is unaffected - it writes
+	//! both paths, as before.
+	//! Which path draws is asked, not assumed: under `flag experimental_path
+	//! off` the old Navigator IS the drawn roll and is what must be reported.
+	double getHeading() const {
+		if (!core->getExperimentalPath())
+			return core->navigation->getHeading();
+		double h = Camera::instance->getHeading() * (180.0 / M_PI);
+		h -= floor((h + 180.) / 360.) * 360.;
+		return h;
 	}
 
 	const Vec3d& getLocalVision() const { //unused

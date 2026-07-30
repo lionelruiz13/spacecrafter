@@ -558,7 +558,12 @@ std::string CoreLink::tcpGetPosition() const {
 	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;",
 		core->observatory->getLatitude(), core->observatory->getLongitude(),
 		core->observatory->getAltitude(), core->timeMgr->getJDay(),
-		core->navigation->getHeading());
+		// B33 (§11.118): this was a SECOND reader of the same readout, going
+		// straight to the old Navigator - so the TCP position query and the
+		// heading command would have reported different rolls the moment the
+		// paths diverge. One authority (I2): getHeading() reads the path that
+		// draws, and this asks it.
+		getHeading());
 	return tmp;
 }
 
