@@ -13,11 +13,13 @@
 // The file shape is the legacy ssystem.ini shape (deliberately - every legacy
 // section is a valid ModularBody declaration): '#' comments, '[header]'
 // section separators (header text is decorative - identity comes from the
-// 'name' key, legacy parity), 'key = value' lines. Differences from the
-// legacy reader (ModularSystem::loadSystem, which stays UNTOUCHED): sections
-// are returned in file order WITH their headers, whitespace around '=' is
-// tolerated (the legacy reader requires exactly "key = value"), and nothing
-// is interpreted.
+// 'name' key, legacy parity), 'key = value' lines. The LINE grammar is not
+// this file's to define: it is `tools/ini_line.hpp`, the one authority every
+// reader of the family shares (INTENT §5.39/D29 - the legacy reader
+// ModularSystem::loadSystem, the galactic reader and the anchor reader read
+// through the same grammar, so a key can no longer mean two things). What is
+// this layer's own: sections are returned in file order WITH their headers,
+// and nothing is interpreted.
 //
 // What the sections MEAN (type=/body=/relation=/compose=...) is the
 // capability layer's contract: ModularSystem::loadComposedSystem. In

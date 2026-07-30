@@ -2,6 +2,7 @@
 #include "Camera.hpp"
 #include "ModularSystem.hpp"
 #include "ModuleLoaderMgr.hpp"
+#include "tools/ini_line.hpp" // the ONE .ini line grammar (INTENT §5.39/D29)
 #include "tools/log.hpp"
 #include <fstream>
 #include <ostream>
@@ -381,31 +382,31 @@ void CameraAnchors::load(const std::string &path)
         return;
     }
     cLog::get()->write("CameraAnchors: reading anchor file " + path, LOG_TYPE::L_INFO);
-    // The shipped grammar, verbatim (ModularSystem::loadSystem's own arithmetic,
-    // which is the same dialect anchor.ini is written in): `[` starts a new
-    // block, `#` comments, `key = value` with single spaces around the `=`.
+    // The shipped grammar, through the ONE authority that owns it
+    // (tools/ini_line.hpp - INTENT §5.39/D29): `[` starts a new block, `#`
+    // comments, `key = value` with any amount of blank around the `=`. This
+    // reader used to carry a copy of the legacy loader's substr arithmetic,
+    // which is the defect class D29 unified away.
     stringHash_t params;
-    std::string line;
+    std::string line, key, value;
     unsigned int loaded = 0;
     while (getline(file, line)) {
-        if (line.size() < 2)
-            continue;
-        switch (line.front()) {
-            case '#':
-                continue;
-            case '[':
+        switch (IniLine::read(line, key, value)) {
+            case IniLine::Kind::SECTION:
                 if (!params.empty()) {
                     loaded += add(std::move(params));
                     params.clear();
                 }
                 break;
-            default:
-                if (line.back() == '\r')
-                    line.pop_back();
-                {
-                    const int pos = line.find('=', 2); // smallest is "a = b"
-                    params[line.substr(0, pos-1)] = line.substr(pos+2);
-                }
+            case IniLine::Kind::ENTRY:
+                params[key] = value;
+                break;
+            case IniLine::Kind::MALFORMED:
+                cLog::get()->write("CameraAnchors: ignoring line without '=' in " + path
+                    + ": '" + key + "' - a key/value line needs 'key = value'; write '#' "
+                    "first to make it a comment.", LOG_TYPE::L_WARNING);
+                break;
+            case IniLine::Kind::EMPTY:
                 break;
         }
     }

@@ -4,6 +4,7 @@
 #include "ModuleLoaderMgr.hpp"
 #include "environmentModules/LandscapeEnv.hpp"
 #include "environmentModules/AtmosphereEnv.hpp"
+#include "tools/ini_line.hpp" // the ONE .ini line grammar (INTENT §5.39/D29)
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp"
 #include "tools/context.hpp"
@@ -1352,26 +1353,34 @@ void ModularSystem::loadSystem(const std::string &filename)
     if (file) {
         systemFilename = filename;
         stringHash_t bodyParams;
-        std::string line;
+        // ONE line grammar for the whole .ini family (tools/ini_line.hpp,
+        // INTENT §5.39/D29): this reader used to do its own substr arithmetic,
+        // which required exactly "key = value" - `radius  = 100` bound the key
+        // "radius " and the body silently got no radius, and the twin generator
+        // reading the SAME file through ModularSystemFormat::parse disagreed
+        // with it on seven shipped keys.
+        std::string line, key, value;
         while (getline(file, line)) {
-            if (line.size() < 2) // Smallest is "[]"
-                continue;
-            switch (line.front()) {
-                case '#':
-                    continue;
-                case '[':
+            switch (IniLine::read(line, key, value)) {
+                case IniLine::Kind::SECTION:
                     if (!bodyParams.empty()) {
                         loadBody(bodyParams);
                         bodyParams.clear();
                     }
                     break;
-                default:
-                    if (line.back() == '\r')
-                        line.pop_back();
-                    {
-                        int pos = line.find('=', 2); // Smallest is "a = b", with '=' at index 2
-                        bodyParams[line.substr(0, pos-1)] = line.substr(pos+2);
-                    }
+                case IniLine::Kind::ENTRY:
+                    bodyParams[key] = value;
+                    break;
+                case IniLine::Kind::MALFORMED:
+                    // §2(f): what fired, where, and what to do. Reachable on the
+                    // SHIPPED corpus - `[Sedna] orbit_LongOfPericenter 95.58754`
+                    // has no '=' and has been silently turning into a garbage key
+                    // (never read by anything) for as long as it has shipped.
+                    cLog::get()->write("Ignoring line without '=' in " + filename + ": '"
+                        + key + "' - a key/value line needs 'key = value'; write '#' first "
+                        "to make it a comment.", LOG_TYPE::L_WARNING);
+                    break;
+                case IniLine::Kind::EMPTY:
                     break;
             }
         }

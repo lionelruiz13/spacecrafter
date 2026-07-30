@@ -1,24 +1,10 @@
 #include "ModularSystemFormat.hpp"
+#include "tools/ini_line.hpp"
 #include "tools/log.hpp"
 #include <fstream>
 #include <cstdio>
 
 namespace ModularSystemFormat {
-
-namespace {
-
-inline void trim(std::string &s)
-{
-    const auto b = s.find_first_not_of(" \t");
-    if (b == std::string::npos) {
-        s.clear();
-        return;
-    }
-    const auto e = s.find_last_not_of(" \t\r");
-    s = s.substr(b, e - b + 1);
-}
-
-} // namespace
 
 bool parse(const std::string &path, std::vector<Section> &out)
 {
@@ -29,28 +15,24 @@ bool parse(const std::string &path, std::vector<Section> &out)
     // keys; dropped if it stays empty - legacy files start with comments only.
     out.clear();
     out.emplace_back();
-    std::string line;
+    std::string line, key, value;
     while (getline(file, line)) {
-        trim(line);
-        if (line.empty() || line.front() == '#')
-            continue;
-        if (line.front() == '[') {
-            const auto close = line.find(']');
-            out.emplace_back();
-            out.back().header = (close == std::string::npos)
-                ? line.substr(1)
-                : line.substr(1, close - 1);
-            continue;
+        switch (IniLine::read(line, key, value)) {
+            case IniLine::Kind::SECTION:
+                out.emplace_back();
+                out.back().header = std::move(key);
+                break;
+            case IniLine::Kind::ENTRY:
+                out.back().params[key] = value;
+                break;
+            case IniLine::Kind::EMPTY:
+            case IniLine::Kind::MALFORMED:
+                // Silent BY CONTRACT (see the header): this layer does not know
+                // what a key means and does not judge content - the capability
+                // layer that asked for the file is where a malformed line is
+                // named (ModularSystem::loadSystem does exactly that).
+                break;
         }
-        const auto eq = line.find('=');
-        if (eq == std::string::npos)
-            continue; // not a key/value line - format layer skips, never fails
-        std::string key = line.substr(0, eq);
-        std::string value = line.substr(eq + 1);
-        trim(key);
-        trim(value);
-        if (!key.empty())
-            out.back().params[key] = value;
     }
     if (out.front().params.empty() && out.front().header.empty())
         out.erase(out.begin());

@@ -32,6 +32,7 @@
 #include "bodyModule/ssystem_factory.hpp"
 #include "experimentalModule/Camera.hpp"
 #include "tools/app_settings.hpp"
+#include "tools/ini_line.hpp" // the ONE .ini line grammar (INTENT §5.38/§5.39/D29)
 #include "tools/log.hpp"
 #include "tools/context.hpp"
 #include "navModule/anchor_point.hpp"
@@ -468,31 +469,59 @@ void SSystemFactory::createExperimentalOort(unsigned int nbr, const Vec3f &color
 
 void SSystemFactory::loadGalacticSystem(const std::string &path, const std::string &name)
 {
+    // `path` is a DIRECTORY, and the separator that joins it to a file name
+    // belongs HERE - one authority for the join, used by this open and by the
+    // per-system open in loadSystem (INTENT §5.37). It was split between caller
+    // and callee until `da858612c` (2025-09-20) replaced the caller's
+    // `getUserDir()` - a path WITH its trailing '/' - by "." in a batch where
+    // every other call had dropped its prefix entirely: from then on this
+    // opened ".galactic.ini" and ".stellar_systems/<file>", so on EVERY install
+    // no galactic entry was read, no foreign system created, no galactic anchor
+    // added (measured 0/66 applogs carry a "Params :" block, §11.109(a)).
+    std::string dir = path;
+    if (!dir.empty() && dir.back() != '/')
+        dir += '/';
+
     stringHash_t params;
 
-    std::ifstream file(path + name);
+    std::ifstream file(dir + name);
     if (file) {
-        std::string line;
+        // ONE line grammar for the whole .ini family (tools/ini_line.hpp,
+        // INTENT §5.38/§5.39/D29). The substr arithmetic this replaces assumed
+        // exactly one space on each side of the '=', and the shipped
+        // galactic.ini does not oblige: `z =-2.371937` lost its minus sign and
+        // `y =1988.889006` its leading digit, putting six of seventeen systems
+        // at wrong galactic coordinates the moment the path above is repaired.
+        // That is why the two repairs are one commit and never two.
+        std::string line, key, value;
 		while(getline(file , line)) {
-            if (line.empty() || line.front() == '#')
-                continue;
-			if (line.front() != '[' ) {
-				if (line.back() == '\r')
-					line.pop_back();
-				auto pos = line.find_first_of('=');
-                if (pos != std::string::npos)
-					params[line.substr(0,pos-1)] = line.substr(pos+2);
-			} else if (!params.empty())
-                loadSystem(path, params);
+            switch (IniLine::read(line, key, value)) {
+                case IniLine::Kind::SECTION:
+                    if (!params.empty())
+                        loadSystem(dir, params);
+                    break;
+                case IniLine::Kind::ENTRY:
+                    params[key] = value;
+                    break;
+                case IniLine::Kind::MALFORMED:
+                    cLog::get()->write("Ignoring line without '=' in " + dir + name + ": '"
+                        + key + "' - a key/value line needs 'key = value'; write '#' first "
+                        "to make it a comment.", LOG_TYPE::L_WARNING);
+                    break;
+                case IniLine::Kind::EMPTY:
+                    break;
+            }
     		}
         if (!params.empty())
-            loadSystem(path, params);
+            loadSystem(dir, params);
 		file.close();
     } else {
         galacticAnchorMgr->addAnchor("Sun", std::make_shared<AnchorPointObservatory>(0, 0, 0));
     }
 }
 
+// `path` is the directory prefix ALREADY terminated by its separator - the one
+// caller (loadGalacticSystem, above) owns that normalization (INTENT §5.37).
 void SSystemFactory::loadSystem(const std::string &path, stringHash_t &params)
 {
     std::cout << "Params :\n";

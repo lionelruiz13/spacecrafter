@@ -109,6 +109,15 @@ void ProtoSystem::load(Object &obj)
 }
 
 // Init and load the solar system data
+// DELIBERATELY NOT on the shared `.ini` line grammar (tools/ini_line.hpp), which
+// every OTHER reader of this file family now uses (INTENT §5.38/§5.39/D29). This
+// is the OLD path: the frozen comparison baseline every parity measurement is
+// taken against (§11.52(b)), so it must keep reading exactly what it has always
+// read, whitespace quirks included. Measured consequence of the asymmetry on the
+// shipped ssystem.ini: nine values are parsed differently by the two readers and
+// NONE of them changes a number - seven whitespace-only, two trailing comments,
+// all `strtod`-inert, plus `[Sedna]`'s '='-less line which both readers discard
+// (§11.115). Retire this reader with the old path, never before it.
 void ProtoSystem::load(const std::string& planetfile)
 {
 	stringHash_t bodyParams;
