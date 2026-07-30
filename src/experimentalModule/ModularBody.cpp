@@ -692,6 +692,10 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // dump PRESENCE never tracks it (the dump iterates the name registry,
         // which includes hidden bodies). INTENT 11.36 rare-path instrument.
         << ",\"relation\":" << static_cast<int>(relation)
+        // evalCount (B39 §11.117): orbit-evaluation counter - the observable
+        // under which the hidden-body tick retirement is a measured fact (see
+        // the member's own comment). Read as a DELTA over an interval.
+        << ",\"evalCount\":" << evalCount
         // Trail recording state (B11 instrument, INTENT 11.56): the ONLY
         // externally observable of the recording gate. Written by the module
         // itself (BodyModule::dumpState - no type sniffing here, I4). An

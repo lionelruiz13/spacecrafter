@@ -565,6 +565,7 @@ public:
         } else {
             orbit->positionAtTimevInVSOP87Coordinates(jd,jd,tmp);
         }
+        ++evalCount; // instrument (B39): "the position code RAN", see the member
         eclipticPos = tmp;
         lastJD = jd;
         // Surface fold (B24 grounded composition, INTENT 11.78): the PARENT's
@@ -723,6 +724,7 @@ public:
         } else {
             orbit->positionAtTimevInVSOP87Coordinates(jd,jd,tmp);
         }
+        ++evalCount; // instrument (B39): "the position code RAN", see the member
         eclipticPos = tmp;
         lastJD = jd;
         if (boundToSurface) {
@@ -1616,6 +1618,16 @@ private:
     float rmag;
     float cmag;
     double lastJD = 0;
+    // Harness instrument (B39 §11.117, the `accumulateCount` class of §11.56):
+    // entries into the two orbit-evaluation sites (transformParentToBodyPos /
+    // transformBodyToParent - the only writers of eclipticPos+lastJD). It is the
+    // ONLY external observable that separates "the body's position is fresh"
+    // from "the position code RAN this frame", i.e. the one instrument under
+    // which a tick RETIREMENT is a measurable fact rather than an inference: a
+    // shown body's counter grows once per frame, a body outside every walk grows
+    // only by the use-site barrier's own evaluations (§11.76(b)). Dumped by
+    // dumpTrace. Wraps harmlessly (deltas are what is read).
+    uint32_t evalCount = 0;
 
     // Halo system
     Vec3f haloColor;
