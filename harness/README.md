@@ -707,3 +707,88 @@ Two instrument lessons recorded here, both learned in this run:
 Also: with the observer on a far fixed point the OLD path emits bare `nan`
 screen coordinates in `dual_dump` (2 lines of 103; the NEW side has none), so
 the loader normalizes `nan` -> `NaN` rather than losing the file.
+
+## F12 — the decision-implementation batch (INTENT §11.118, 2026-07-30)
+
+Three new drivers, one runner repair, and two fixes to shared instruments.
+
+### `f12_s545.py` — a malformed `galactic.ini` section must not kill the app
+
+    cd claude/harness && DISPLAY=:2 ./f12_s545.py <absOutdir> pre=/abs/binary post=/abs/binary
+
+Temp-HOME farm in `b25_galactic.build_farm`'s `corpus=None` field-state variant
+(the real tree is never written and the run asserts it). Four corpora x two
+binaries: shipped bytes, `[Proxima] z` deleted, `[Toliman] name` deleted,
+`[Keid] x = ,5`. Each defect leg asserts its own MEASURED pre-fix outcome, which
+is not the same for all of them: the two `stod`-throwing legs abort (rc -6, no
+port), while a missing `name` never aborted - it built a system node called
+`System` and lost `TolimanSystem`. Post-fix each leg wants exactly one warning
+naming the section AND the key, the section's node absent, and every OTHER
+system still loaded.
+
+### `f12_b27_split.py` — D27's `light_source` / `primary` split
+
+    cd claude/harness && DISPLAY=:2 ./f12_b27_split.py <absOutdir> [--bin B] [--prebin B]
+
+Phase A is eight corpora over fresh launches (control, each key stripped, both,
+legacy, a DARK PRIMARY on Earth, and a `compose = deduced` pair), plus the same
+bytes on a pre-split binary. It generates the twin with the binary under test
+first, so the corpus carries whatever that binary emits.
+
+Two things it had to learn the hard way, both now enforced in the file:
+- **in a composed corpus the module SET is DECLARED** (`compose = explicit` turns
+  G6 deduction off), so `isSatellite()`'s deduction consumer is inert there and
+  NO dump field moves with it. That is why the deduced pair exists and why the
+  structural half is measured at the screen.
+- **a screen leg must fail when the app rejects a command.** `flag
+  satellite_orbits off` is `satellites_orbits`; the app said so in its own
+  diagnostic and the harness ignored it, so a leg measured 0 px for a whole run
+  with the satellite master left at its config default. Every screen leg now
+  greps the applog for the rejection message.
+
+Phase B measures the two moved consumers that a dump cannot see - the hint gate
+(boxed on the Sun, box asserted empty of other DRAWN bodies) and the orbit
+master flag (with a same-launch positive control that flips the satellite master
+and shows the same line appearing).
+
+### `f12_b33_heading.py` — the heading readout vs the drawn roll
+
+    cd claude/harness && DISPLAY=:2 ./f12_b33_heading.py <absOutdir> [--bin B] [--prebin B]
+
+`s526_ref.py`'s scene (Earth reference, then the Earth->Moon switch). **The
+readout has exactly one observable channel on this build**: the script-log line
+`heading from : X to: Y` that `heading delta_azimuth 0` writes, with X =
+`CoreLink::getHeading()` before it acts. `get status position` reads the same
+getter and is side-effect free, but its reply never reaches the driving client
+(INTENT §5.47). The channel therefore WRITES after it reads, so each sample is
+the last act of its leg and the two `experimental_path` pins need two launches.
+The leg that matters is rendered: `heading delta_azimuth 0` is a semantic no-op,
+so the drawn view must not move - and getting that honest needs EVERY old-path
+observer-frame layer off, because they legitimately follow `Navigator::heading`
+(nebula circles alone contributed 1225 px>32 before the list was widened).
+
+### `b10_cmd_battery_run.sh` — asserts now, with exit codes
+
+`0` green - `1` a launch never came up - `7` scene E failed - `4` the frozen
+ssystem corpus is not the pristine one - `3` `config.ini` was not restored
+byte-identically, in that precedence. `SSYS_PRISTINE` overrides the expected
+corpus md5 for another delivery; overriding it to a wrong value is the cheapest
+way to see the assert fire live (measured: exit 4, scene E still green).
+`f12_runner_exit.sh` drives the runner's restore/assert tail, extracted VERBATIM
+and asserted line-by-line against the runner, through all 7 exit paths including
+the two precedence cases. `b14_sat6_battery_run.sh` is now a wrapper on this
+runner - it was a byte-for-byte copy differing only in its own dead md5 echo.
+
+### Shared-instrument fixes
+
+- **`b24_equivalence.load_dump` is NaN-tolerant.** C++ prints `nan`, Python's
+  json accepts only `NaN`, and the `except` used to swallow the WHOLE BODY - so
+  a body carrying one non-finite float read as *absent* to every gate built on
+  this loader. `b4_anchors.py` had already hit this and fixed it locally; the
+  fix now lives once, in the shared loader (I2). A NaN-carrying body is visible
+  and fails a value check loudly instead of disappearing.
+- **`b24_equivalence.py --strip SECTION:KEY`** removes one key from the enabled
+  twin before phase B, so a capability field added to the compared list can be
+  shown able to FAIL on demand (measured: `Sun.primary: True != False`).
+- **`b40_parity.py`**: a field one binary does not emit AT ALL is a dump-FORMAT
+  difference, reported once, not a per-body divergence on every body.

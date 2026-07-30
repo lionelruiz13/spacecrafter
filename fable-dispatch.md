@@ -445,7 +445,7 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   D37 endorsed (1) with the shadow-asymmetry datum appended; §5.46 and the
   reload-loss attribution accepted as recorded.**
 
-### F12 — decision-implementation batch: B27-split + B24-click + B33 readout  [S–M]  ← START HERE
+### F12 — decision-implementation batch: B27-split + B24-click + B33 readout  [S–M]  — DELIVERED 2026-07-30
 - **Row / recorded:** B27 (§11.113(f) — D27 OVERRIDES the ratify-as-is rec+endorsement:
   split `light_source` + `primary`) · B24 (§11.113(e)/D26 — visible child takes the
   click on its own pixels) · B33 (§11.113(g)/D28 rider — `CoreLink::getHeading` reads
@@ -471,67 +471,44 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   paths diverge (§5.26/`s526_ref.py` instrument, 39 090 px case); (iv) the §5.45
   repro (one `z` line removed) flips SIGABRT → warn+skip+start, and the
   well-formed corpus is byte-inert; (v) the runner FAILS on a mutated ssystem md5.
-- **WIP (2026-07-30, run 2, checkpoint 1):** items **(iv) and (v) DONE and committed**
-  (code `41f68121`; harness this commit). (iv): the predecessor's candidate diff was
-  read critically, one factually-wrong comment claim corrected (`stod("1,5")` does NOT
-  throw — measured), built, and verified fresh — `harness/f12_s545.py`, 8 launches,
-  pre-fix binary vs patched: `[Proxima] z` deleted and `[Keid] x = ,5` both rc=**-6**/no
-  port pre-fix, warn+skip+start post-fix; NEW datum — a missing `name` never aborted, it
-  built a system node called **"System"** and lost `TolimanSystem` (measured, pre-fix).
-  Byte-inert on the shipped corpus: `b40_parity` pre vs post = 120 bodies / **0**
-  divergent fields / 18 twins identical / 17-of-17 coordinates / frozen md5 in == out.
-  (v): `b10_cmd_battery_run.sh` asserts with exit codes (7 driver / 4 corpus / 3 config),
-  `SSYS_PRISTINE` measured `545a51ef…`; `b14_sat6_battery_run.sh` was a byte-for-byte
-  COPY differing only in its dead echo ⇒ collapsed to a wrapper (I2, zero callers);
-  `harness/f12_runner_exit.sh` drives the verbatim-extracted tail, 7/7 exit codes.
-  NEXT: item (i) B27 split, then (ii), then (iii); live battery legs at delivery.
-- **WIP (2026-07-30, run 2, checkpoint 2):** item **(i) B27 split DONE and committed**
-  (code `62b860d1`; harness this commit). `light_source` = illumination, `primary` =
-  the structural remainder (own member, not a BodyType bit — `isMinorBody()` is an
-  exact-equality test). ONE site moves against §11.113(f)'s provisional list after the
-  mandated second look: the HINT gate → `primary` (the skip exists because the body sits
-  at its parent's origin — structural; a dark primary would lose its hint forever under
-  a luminosity gate). `system_star` second look CONFIRMS §11.113(f) (`light_source`).
-  The recorded "two shadow-sweep exclusions" is **three** at HEAD. Verified:
-  `harness/f12_b27_split.py` 23/23 checks over 10 fresh launches + 4 rendered legs
-  (hint **545 px>8 / 0 px floor**; Moon orbit master flag **1183 px>8** == its own
-  positive control), cross-binary leg on the same corpus, D9 parity 120 bodies /
-  **0** divergent fields, twin delta **exactly one line** (`primary = true`),
-  `b24_equivalence` GREEN 120 and shown able to fail via the new `--strip Sun:primary`
-  (`Sun.primary: True != False`). NEXT: item (ii) B24 click, then (iii) B33.
-- **WIP (2026-07-30, run 2, checkpoint 3):** item **(ii) B24 click DONE and committed**
-  (code `68967c01`; harness this commit). `searchNewOnlyObjectAt` is asked BEFORE
-  `cleverFind`; its two existing filters (new-only body, disc-or-tolerance hit) are what
-  confine the pre-emption to the child's pixels. `b24_select.py` P6 INVERTED in the same
-  commit (`Moon`→`OnDisc`) + **new P6b** (same disc, 0.224 NDC off the child ⇒ still
-  `Moon` — makes "confined" a measurement) + **new P6c** (seam re-entered from the state
-  P6b left). Same script: pre-binary RED on exactly one leg, post GREEN; 90-name parity
-  sweep identical. Residual **52 px>8 / max 200 on 1 521 226 lit px** in a frame taken
-  before any click, attributed to the camera az `0.69289571→0.69289577` bistability
-  §11.106(g) already isolated (same-binary A/A **0 px>8**; null probe lands on the post
-  value); Eris selDist Δ 7.6e-6 AU reproduces in the A/A ⇒ launch variance.
-  NEXT: item (iii) B33 heading readout, then the delivery battery + INTENT 11.118.
-- **WIP (2026-07-30, run 2, checkpoint 4):** item **(iii) B33 DONE and committed**
-  (code `f1151c63`; harness this commit). `getHeading` asks WHICH PATH DRAWS (not
-  "prefer the new"); `tcpGetPosition`'s duplicate read routed through it (I2).
-  `harness/f12_b33_heading.py`: after the Earth→Moon switch the drawn roll is
-  **−6.160074°** and the cross-path divergence is **39 090 px>32** (§5.26's own case);
-  fixed binary reports **−6.160070**, pre-fix reports **0.000000** while drawing
-  −6.160074. Rendered consequence: the no-op `heading delta_azimuth 0` moves the view
-  **0 px>32** fixed vs **39 114 px>32** pre-fix. Old-pinned readout = 0.000000 = exactly
-  the pre-fix value. `set heading 0` remedy intact (39090→12). ALL FIVE ITEMS DONE.
-  NEXT: delivery battery (b10_cmd live green + SSYS_PRISTINE-override red, scenes A–E,
-  b5_oort, b25_galactic, b4_anchors) + INTENT 11.118 + §13 flips.
-- **WIP (2026-07-30, session 4):** first executor run KILLED by host OOM mid-task —
-  nothing committed, no checkpoint, verification artifacts lost. SURVIVING
-  uncommitted diff at code HEAD `a62ad5d7` = item (iv)'s §5.45 guard
-  (`ssystem_factory.{cpp,hpp}`), well-shaped at supervisor read (absent-or-empty
-  `declaredParam` defusing the §11.103(b) trap; parseability-not-presence guard;
-  §2(f) label chain surviving a missing `name`; D12 log) but UNVERIFIED — its
-  comment's "measured -6" claim has no surviving artifact. Successor: treat as
-  CANDIDATE code (predecessor shape = unread requirement — verify, never inherit),
-  re-run the repro + build fresh, then proceed with items (i)(ii)(iii)(v)
-  (state: not started). Do not restart (iv) from zero.
+- **WIP: DELIVERED 2026-07-30 → §11.118 (code `41f68121` / `62b860d1` / `68967c01` /
+  `f1151c63`; harness `e09837c` / `a1f9796` / `cbaf115` / `260af49` + the delivery commit).
+  5/5 items met, each committed at its own green checkpoint.** (i) D27's split landed:
+  `light_source` = illumination, `primary` = the structural remainder as its OWN MEMBER
+  (a second `BodyType` bit would break `isMinorBody()`'s exact-equality test and the
+  value-for-value tie to legacy `strToBodyType`). Both mandated second looks taken and they
+  disagree: the **HINT gate MOVES to `primary`** (the skip exists because the body sits at its
+  parent's ORIGIN — structural; a dark primary would lose its hint forever under a luminosity
+  gate), `system_star` **CONFIRMED** on `light_source`; the map's "two shadow-sweep exclusions"
+  is **three** at HEAD. 10-leg counterfactual with the halves moving independently, a dark
+  primary on Earth un-satelliting the Moon, a `compose = deduced` pair (Earth deduces NO TRAIL),
+  the same bytes answered differently by the pre-split binary; screen legs hint **545 px>8 /
+  0 px floor** and orbit master flag **1183 px>8 == its own positive control**; D9 parity **120
+  bodies / 0 divergent fields**, twin delta **exactly one line**; `b24_equivalence` 120 GREEN and
+  RED on the new `--strip Sun:primary`. (ii) D26: the new-only route is asked BEFORE `cleverFind`;
+  P6 INVERTED in the same commit + **P6b** (the bound — same disc 0.224 NDC off the child ⇒
+  parent) + **P6c** (second traversal of the seam); pre-binary RED on exactly one leg; 90-name
+  parity identical; residual 52 px>8 in a pre-click frame attributed to §11.106(g)'s az
+  bistability (same-binary A/A 0 px>8). (iii) D28 rider: `getHeading` asks WHICH PATH DRAWS;
+  drawn **−6.160074°**, fixed reports **−6.160070**, pre-fix **0.000000**; the semantic no-op
+  `heading delta_azimuth 0` moves the drawn view **0 px>32** against **39 114**; `set heading 0`
+  remedy intact (39 090 → 12). (iv) **§5.45 CLOSED** — predecessor code VERIFIED not inherited
+  (its `stod("1,5")` claim measured FALSE and corrected); rc **−6** → warn+skip+start; NEW datum:
+  a missing `name` never aborted, it built a system node called `System`; byte-inert on the
+  shipped corpus. (v) runner asserts with exit codes (live **0** pristine / **4** wrong corpus),
+  7/7 on the verbatim-extracted tail, and its byte-for-byte clone collapsed to a wrapper (I2).
+  Two shared-instrument defects fixed at the root: `load_dump` silently DROPPED any body carrying
+  a `nan`, and screen legs ignored the app REJECTING a flag name. Battery green (scenes A–E,
+  b5_oort 11/11, b25_galactic 130/17, b4_anchors 0, b24_equivalence 120, b24_select incl. P6c);
+  md5 pristine throughout. NEW **§5.47** (`get status position` never replies) + **§5.48**
+  (§11.18 ASmooth cold-launch NaN, attributed to neither binary by a 0/4-vs-0/4 repeat).
+  Deviations flagged in §11.118(j); nothing suspended for Vixy.**
+
+### F13 — B31: the writer rework (b31-design §5.2/§5.3)  [size not stated]  ← START HERE
+*[Header RECONSTRUCTED 2026-07-30 by F12: this section had NO `###` line, so its body ran on
+inside F12's section — a staleness bug in this dispatch view (its own authority note). The title
+follows the session-4 update's own wording ("F13 (B31 writer rework)"); the size estimate was
+never written and is not invented here.]*
 - **Row / recorded:** B31 (§13.B — DISPATCHABLE since §11.113(i)–(o)) · `b31-design.md`
   §5.2/§5.3/§5.4 (the line-level design — the authority for this slice) · §11.66(b)
   (the contract) · §11.113(n)/D35 (composed + session files ONLY; legacy `ssystem.ini`
