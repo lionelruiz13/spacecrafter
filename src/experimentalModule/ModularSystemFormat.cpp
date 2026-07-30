@@ -28,6 +28,11 @@ IniLine::Kind classify(Line &line)
                 ? Line::Kind::BLANK : Line::Kind::COMMENT;
             break;
         case IniLine::Kind::SECTION:
+            // A header is not a line OF a section, it opens one: the caller
+            // that cares (parse) reads the header text out of `key`, and
+            // Section::append clears it for anything that is stored as a line.
+            line.kind = Line::Kind::RAW;
+            break;
         case IniLine::Kind::MALFORMED:
             // Neither comment nor entry: carried verbatim, never interpreted.
             line.kind = Line::Kind::RAW;
@@ -133,15 +138,24 @@ void Section::reindex()
     }
 }
 
+void Section::append(Line line)
+{
+    if (line.kind == Line::Kind::KEY) {
+        index[line.key] = lines.size();
+    } else {
+        line.key.clear(); // only an entry binds a name to a value
+        line.value.clear();
+    }
+    lines.push_back(std::move(line));
+}
+
 void Section::appendRaw(const std::string &rawLine, bool endsWithNewline)
 {
     Line line;
     line.raw = rawLine;
     line.eol = endsWithNewline;
     classify(line);
-    if (line.kind == Line::Kind::KEY)
-        index[line.key] = lines.size();
-    lines.push_back(std::move(line));
+    append(std::move(line));
 }
 
 bool Section::appendEntry(const std::string &key, const std::string &value)
@@ -309,22 +323,23 @@ bool parse(const std::string &path, std::vector<Section> &out)
     // banner and its file-level keys; dropped when the file has neither.
     out.clear();
     out.emplace_back();
-    std::string key, value;
     std::size_t pos = 0;
     while (pos < content.size()) {
         const auto nl = content.find('\n', pos);
         const bool terminated = (nl != std::string::npos);
         const std::size_t end = terminated ? nl : content.size();
-        const std::string raw = content.substr(pos, end - pos);
+        Line line;
+        line.raw = content.substr(pos, end - pos);
+        line.eol = terminated;
         pos = terminated ? nl + 1 : content.size();
-        if (IniLine::read(raw, key, value) == IniLine::Kind::SECTION) {
+        if (classify(line) == IniLine::Kind::SECTION) {
             out.emplace_back();
-            out.back().header = key;
-            out.back().rawHeader = raw;
+            out.back().header = std::move(line.key);
+            out.back().rawHeader = std::move(line.raw);
         } else {
             // EVERY other line, whatever it is: comment, blank, entry, or text
             // this layer cannot read. Dropping one loses somebody's work.
-            out.back().appendRaw(raw, terminated);
+            out.back().append(std::move(line));
         }
     }
     if (out.front().isPreamble() && out.front().lines.empty())

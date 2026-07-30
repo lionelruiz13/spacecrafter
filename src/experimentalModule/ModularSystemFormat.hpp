@@ -149,6 +149,8 @@ public:
     void setHeader(const std::string &text) { header = text; }
     // Take a raw line as-is: the grammar classifies it, the index follows.
     void appendRaw(const std::string &rawLine, bool endsWithNewline = true);
+    // Same, for a line the grammar has already classified (what `parse` has).
+    void append(Line line);
     // Append 'key = value' as a new line. Same representability contract as set.
     bool appendEntry(const std::string &key, const std::string &value);
 
