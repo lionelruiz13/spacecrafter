@@ -3,6 +3,7 @@
 
 #include "ModularBodyPtr.hpp"
 #include "ModularBody.hpp"
+#include "ModularSystemFormat.hpp"
 
 // Shadow orchestration (LIVE, S5/G7 - design: shadow-paths.md B2): the
 // system level decides WHICH bodies shadow which - per-module hooks
@@ -104,8 +105,49 @@ public:
     // ratified, D10key §11.79(e)). Until it lands, a node's legacy body-type
     // stays under `type=` here (a non-family value = a valid node declaration).
     void generateComposedTwin(const std::string &legacyFilename, const std::string &outPath);
-    // Load a body
-    void loadBody(std::map<std::string, std::string> &param);
+    // Write THIS system to a composed file (B31 slice 2, b31-design §4.1; the
+    // route is Vixy's own [§11.51(a)]: "save a system on-the-fly as well by
+    // targeting without the .disabled or under a different name from scripts").
+    // What it is FOR: a body a script pushed into the live tree exists only in
+    // memory, and this is what turns it into ordinary authored data - from the
+    // next launch it is loaded by the ordinary loader and its identity is what
+    // every authored body's identity already is (no new identity key, §4.1).
+    //
+    // A FILE THAT ALREADY EXISTS IS EDITED, NEVER REBUILT: its own content is
+    // the base (the sections this system was loaded from when it targets its own
+    // file - annotations included - otherwise a parse of the target), so
+    // comments, layout, malformed lines and keys this engine does not
+    // understand come back untouched (§11.66(b), the F13 layer). What this slice
+    // ADDS to such a file is exactly what is missing from it: a declaration for
+    // every live body the file does not declare, and the annotations the loader
+    // produced about the data it read. What it deliberately does NOT do is edit
+    // a declaration the file already carries - a value an operator changed at
+    // runtime is the session ledger's (b31-design §2 group D), a later slice, and
+    // silently rewriting an author's line here would pre-empt that decision.
+    // A target that does not exist is built whole from the tree, like the twin.
+    //
+    // WHICH BODIES: this system's own subtree, hidden bodies included (a hidden
+    // body is declared data - [Goldilocks_Zone] ships hidden = true), stopping at
+    // a nested system node (its content belongs to that system's file), and only
+    // bodies that carry a declaration (ModularBody::declaredParams) - an
+    // engine-minted body (a camera anchor, the B5 pilot oort) has nothing
+    // declared to write and must not become authored content.
+    //
+    // WHICH FILES may be written is NOT this level's decision and this level
+    // cannot enforce it: the legacy ssystem.ini is READ-ONLY forever (D35,
+    // §2.0 D13). The path convention and that enforcement live at the
+    // SSystemFactory seam that owns them (saveCurrentSystem).
+    // Returns false when the file could not be written (the writer left any
+    // previous content untouched and said why).
+    bool saveSystem(const std::string &outPath);
+    // Load a body. `origin` is the section it was declared by, when that section
+    // belongs to a file this engine may write (a composed file): the loader
+    // annotates it in place with what it diagnosed (b31-design §5.3). Null for a
+    // legacy file (READ-ONLY forever, D35) and for a script's parameter map -
+    // there is no datum in a writable file to annotate, and the log line is then
+    // the whole diagnostic channel.
+    void loadBody(std::map<std::string, std::string> &param,
+                  ModularSystemFormat::Section *origin = nullptr);
     // Update this system
     void updateSystem();
     // Draw this system - the FRAME entry (shadow orchestration, body-draw
@@ -225,7 +267,23 @@ private:
     // is BOTH the node/module selector AND the family name).
     void loadDeclaredModule(std::map<std::string, std::string> &params, const std::string &header,
                             const std::map<std::string, std::map<std::string, std::string>> &nodeParams,
-                            BodyModuleType type);
+                            BodyModuleType type, ModularSystemFormat::Section *origin);
+    // --- ONE composed-format emitter, two callers (I2) -------------------
+    // The node section's parameters for a live body: what the data declared,
+    // plus the capability keys the body CARRIES that a composed load would not
+    // otherwise reproduce (the legacy `type` string grants them; the composed
+    // format does not - D14). Reads the body, not its name (I4).
+    static stringHash_t composedNodeParams(const ModularBody *body, const stringHash_t &declared);
+    // The whole machine-built declaration of one live body: its node section
+    // (compose = explicit) followed by one BodyModule declaration per module.
+    // The two go together and are ONE decision: `compose = explicit` turns
+    // deduction off, so a file that carries it must carry the declarations too.
+    static void appendWholeDeclaration(ModularBody *body, const stringHash_t &declared,
+                                       std::vector<ModularSystemFormat::Section> &out);
+    // This system's own content, parents first (the findBody forward-reference
+    // rule is the format's ordering requirement) - see saveSystem for the
+    // membership rules.
+    static void collectContentBodies(ModularBody *node, std::vector<ModularBody *> &out);
     // Apply some hardcoded content
     void applyHardcodedContent(ModularBodyCreateInfo &createInfo, std::map<std::string, std::string> &param);
     // Clean the list when it is dirty
@@ -234,6 +292,16 @@ private:
     std::vector<ModularBody *> sortedSystemBodies;
     ModularBodyPtr star; // Star of the system
     std::string systemFilename;
+    // The composed file this system was loaded from, AS PARSED - every line of
+    // it, in order (the F13 layer's whole-file record), kept so that a save can
+    // give the file back whole instead of rebuilding it, and so that the
+    // annotations the loader produced while reading it have something to travel
+    // on until an explicit save writes them (b31-design §5.3; a load NEVER
+    // rewrites the file - D33 decided against it, §11.113(l)).
+    // EMPTY after a legacy load, deliberately: the legacy file's layout is not a
+    // write base, because that file is READ-ONLY forever (D35) and its twin is
+    // machine-owned and built whole.
+    std::vector<ModularSystemFormat::Section> loadedSections;
     // Which reader systemFilename belongs to (reloadSystem dispatch):
     // false = legacy loadSystem, true = composed loadComposedSystem.
     bool composedFile = false;

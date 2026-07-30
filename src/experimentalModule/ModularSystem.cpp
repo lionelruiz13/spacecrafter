@@ -13,6 +13,7 @@
 #include "bodyModules/TrailModule.hpp" // trail-pass activity gate (row 9)
 #include "bodyModules/TailModule.hpp"  // tail-pass activity gate (row 12)
 #include <algorithm>
+#include <set>    // the names a save target already declares
 #include <cfloat> // FLT_MAX (within-body pair rank)
 #include <cmath>  // std::sin/cos/atan2 (rot_pole_w0 -> offset conversion)
 #include "EntityCore/Core/VulkanMgr.hpp" // G8-budget overflow log
@@ -101,6 +102,29 @@ static const std::string *authored(std::map<std::string, std::string> &param, co
     return (it == param.end() || it->second.empty()) ? nullptr : &it->second;
 }
 
+// SAY IT ONCE, IN BOTH CHANNELS (I2, b31-design §5.3). A loader diagnosis has
+// always had one destination - the log, which the operator reads at launch and
+// nobody reads a month later, when the file is opened in a text editor and the
+// datum is right there with no trace of what the engine thought of it. So the
+// same sentence now also travels WITH the datum: `origin` is the section the
+// datum was read from, and the annotation lands ABOVE its line the next time an
+// explicit save writes that file (never at load - that is decided against, D33
+// §11.113(l)).
+// `origin` is null wherever there is no writable datum to annotate - a legacy
+// file (READ-ONLY forever, D35), a script's parameter map - and the log line is
+// then the whole channel, exactly as before.
+// `reason` is the diagnosis' stable machine key: the same verdict reached twice
+// is ONE annotation, which is what makes a re-save byte-identical (T9).
+// D12: this is for defaults that ACTED. A default that merely did nothing is
+// forbidden from annotating, and none of the callers below is one.
+static void diagnose(ModularSystemFormat::Section *origin, const std::string &key,
+    const char *reason, const std::string &text, LOG_TYPE severity)
+{
+    cLog::get()->write(text, severity);
+    if (origin)
+        origin->annotate(key, reason, text);
+}
+
 // D14 (§11.79(h), [vixy 2026-07-23]) — "Yes for the new star system format, no
 // for the legacy star system format". A capability whose LEGACY source is the
 // `type` data string keeps that source FOREVER in a legacy file (D9: the field is
@@ -110,10 +134,13 @@ static const std::string *authored(std::map<std::string, std::string> &param, co
 // something and no key is present - i.e. exactly on a composed file hand-written
 // from a legacy one without translating its `type`. It never fires on a generated
 // twin (the generator emits the keys), which makes its absence a co-delivery gate.
+// The datum it is about is `type`, so that is where the annotation sits.
 static void logRetiredTypeCapability(const std::string &bodyName, const std::string &type,
-    const char *key, const std::string &legacyValue, const std::string &actingValue)
+    const char *key, const std::string &legacyValue, const std::string &actingValue,
+    ModularSystemFormat::Section *origin = nullptr)
 {
-    cLog::get()->write("Body '" + bodyName + "': the composed format does not read capabilities "
+    diagnose(origin, "type", key,
+        "Body '" + bodyName + "': the composed format does not read capabilities "
         "from type = '" + type + "' (type-as-identity is retired in this format - D14). A legacy "
         "file would give " + std::string(key) + " = " + legacyValue + " here; no " + key
         + " key is declared, so " + key + " = " + actingValue + " acts instead. To keep the legacy "
@@ -983,8 +1010,17 @@ RotFrame resolveRotationFrame(std::map<std::string, std::string> &param,
 }
 } // namespace
 
-void ModularSystem::loadBody(std::map<std::string, std::string> &param)
+void ModularSystem::loadBody(std::map<std::string, std::string> &param,
+                             ModularSystemFormat::Section *origin)
 {
+    // WHAT THE DATA SAID, taken HERE and not one line later: every read below
+    // goes through operator[], which inserts an empty entry for every absent key
+    // it touches (§11.103(b)), so a snapshot taken after the load would carry a
+    // dozen keys nobody wrote - and a save built on it would author them into
+    // the user's file. This copy is the body's declaration record
+    // (ModularBody::declaredParams): the only source a runtime-pushed body will
+    // ever have for what it was asked to be (b31-design §4.1).
+    stringHash_t declared = param;
     // Avoid string copy and map search
     const std::string &englishName = param["name"];
     const std::string &parentName = param["parent"];
@@ -1047,7 +1083,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         surfaceModel = parseSurfaceModel(*v, englishName);
     } else if (bodyTypeString == "Moon") {
         if (composedFile)
-            logRetiredTypeCapability(englishName, bodyTypeString, "surface_model", "lunar", "planet");
+            logRetiredTypeCapability(englishName, bodyTypeString, "surface_model", "lunar", "planet", origin);
         else
             surfaceModel = SurfaceModel::LUNAR;
     }
@@ -1066,7 +1102,7 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         if (legacyTrailLength != TRAIL_LENGTH_DEFAULT) {
             if (composedFile)
                 logRetiredTypeCapability(englishName, bodyTypeString, "trail_length",
-                    std::to_string(legacyTrailLength), std::to_string(TRAIL_LENGTH_DEFAULT));
+                    std::to_string(legacyTrailLength), std::to_string(TRAIL_LENGTH_DEFAULT), origin);
             else
                 trailLength = legacyTrailLength;
         }
@@ -1102,7 +1138,8 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         // half-applied (§2(f)); no shipped body is both. `primary` is NOT in that
         // enum and therefore composes freely with either.
         if (lightSource && shadowExempt) {
-            cLog::get()->write("Body '" + englishName + "': light_source and shadow_exempt are both "
+            diagnose(origin, "shadow_exempt", "capability-conflict",
+                "Body '" + englishName + "': light_source and shadow_exempt are both "
                 "declared, but a body cannot be both a light source and a shadow-exempt minor body "
                 "in this engine (one BodyType tag carries both). light_source wins; shadow_exempt is "
                 "ignored. To fix: remove one of the two keys.", LOG_TYPE::L_ERROR);
@@ -1119,11 +1156,11 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         // `light_source`, which the previous single gate did.)
         if (legacyStar) {
             if (!lightSourceKey)
-                logRetiredTypeCapability(englishName, bodyTypeString, "light_source", "true", "false");
+                logRetiredTypeCapability(englishName, bodyTypeString, "light_source", "true", "false", origin);
             if (!primaryKey)
-                logRetiredTypeCapability(englishName, bodyTypeString, "primary", "true", "false");
+                logRetiredTypeCapability(englishName, bodyTypeString, "primary", "true", "false", origin);
         } else if (legacyBodyType == BodyType::MINOR_BODY && !shadowExemptKey) {
-            logRetiredTypeCapability(englishName, bodyTypeString, "shadow_exempt", "true", "false");
+            logRetiredTypeCapability(englishName, bodyTypeString, "shadow_exempt", "true", "false", origin);
         }
     } else {
         bodyType = legacyBodyType;
@@ -1227,7 +1264,8 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
             rel = BodyRelation::INNER;
         } else {
             rel = legacyRel;
-            cLog::get()->write("Body '" + englishName + "': invalid relation = '" + relDecl
+            diagnose(origin, "relation", "invalid-value",
+                "Body '" + englishName + "': invalid relation = '" + relDecl
                 + "'. Valid values are 'orbiting' (standard satellite), 'grounded' (bound to the "
                 "parent's surface - rover class) or 'inner' (inside the parent's volume, shown "
                 "while the camera is inside the parent's AoI). Falling back to '"
@@ -1237,13 +1275,20 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         }
         if (!relDecl.empty() && !param["bound_to_surface"].empty()
                 && (legacyRel == BodyRelation::GROUNDED) != (rel == BodyRelation::GROUNDED)) {
-            cLog::get()->write("Body '" + englishName + "': relation = '" + relDecl
+            diagnose(origin, "bound_to_surface", "contradicted-by-relation",
+                "Body '" + englishName + "': relation = '" + relDecl
                 + "' disagrees with bound_to_surface = '" + param["bound_to_surface"]
                 + "'. The explicit relation wins; remove bound_to_surface to silence this "
                 "(the two keys declare the same thing - keep one).", LOG_TYPE::L_ERROR);
         }
     }
     ModularBody *body = parent->createChild(createInfo, rel);
+    // The body keeps what declared it (B31 slice 2, b31-design §4.1): this is
+    // the record a save writes back, and for a script-pushed body it is the only
+    // one that will ever exist. Handed over AFTER creation, so a load that
+    // refused (unnamed, duplicate name, invalid orbit - each returns above)
+    // leaves no declaration behind for a body that is not there.
+    body->declaredParams = std::move(declared);
     // --- Attitude default resolution (B24-att; D18 §11.79(l) + D12 §2.0) ------
     // The default's home is the loader - the one site that owns rotation-key
     // resolution (I2/I4); no per-draw sniffing. `authoredSpin` = the author
@@ -1267,7 +1312,8 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
             if (!authoredSpin)
                 body->surfaceLockedAttitude = true;
         } else if (!authoredSpin && param["orbit_period"].empty()) {
-            cLog::get()->write("Body '" + englishName + "': no rotation period in "
+            diagnose(origin, "rot_periode", "default-applied",
+                "Body '" + englishName + "': no rotation period in "
                 "the data (neither rot_periode nor orbit_period) - applying the "
                 "legacy default rot_periode = 24 h, so this body rotates once every "
                 "24 h. To author its rotation explicitly, set rot_periode = <hours> "
@@ -1326,7 +1372,8 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param)
         if (compose == "explicit") {
             deduce = false;
         } else if (!compose.empty() && compose != "deduced") {
-            cLog::get()->write("Body '" + englishName + "': invalid compose = '" + compose
+            diagnose(origin, "compose", "invalid-value",
+                "Body '" + englishName + "': invalid compose = '" + compose
                 + "'. Valid values are 'deduced' (modules deduced from this body's keys, the "
                 "default) or 'explicit' (modules come only from BodyModule declarations). "
                 "Falling back to 'deduced'. To fix: set compose to one of the valid values, "
@@ -1412,6 +1459,12 @@ void ModularSystem::loadSystem(const std::string &filename)
     std::ifstream file(filename);
     if (file) {
         systemFilename = filename;
+        // A legacy file is not a write base: it is READ-ONLY forever (D35,
+        // §2.0 D13), and its composed expression is the machine-owned twin,
+        // built whole. Cleared rather than left, because reloadSystem re-enters
+        // here and a stale record of a PREVIOUS composed load would then be
+        // written back as if it described this content.
+        loadedSections.clear();
         stringHash_t bodyParams;
         // ONE line grammar for the whole .ini family (tools/ini_line.hpp,
         // INTENT §5.39/D29): this reader used to do its own substr arithmetic,
@@ -1462,11 +1515,19 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
     }
     systemFilename = filename;
     composedFile = true;
+    // The file's own record, KEPT (b31-design §5.3): every line of it, in order.
+    // Two things need it - a save gives the file back whole instead of
+    // rebuilding it, and the diagnoses the loaders produce below annotate the
+    // very sections they came from. Nothing is written here: a load NEVER
+    // rewrites the user's file (D33, §11.113(l) - decided against, not
+    // undecided). Iterating the MEMBER is what makes the section addresses
+    // handed to the loaders outlive the load.
+    loadedSections = std::move(sections);
     // This file's node sections by body name - the overlay base for module
     // declarations (a module's effective params = its node's params overlaid
     // by the module section's own keys).
     std::map<std::string, stringHash_t> nodeParams;
-    for (auto &section : sections) {
+    for (auto &section : loadedSections) {
         // The lines before the file's first '[' - a banner, a note - declare
         // nothing. The parse keeps them so a rewrite gives them back
         // (§11.66(b)); a loader has nothing to do with them.
@@ -1492,10 +1553,11 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
         const BodyModuleType famType =
             ModuleLoaderMgr::moduleTypeFromName(params["type"], isFamily);
         if (isFamily) {
-            loadDeclaredModule(params, section.getHeader(), nodeParams, famType);
+            loadDeclaredModule(params, section.getHeader(), nodeParams, famType, &section);
         } else if (params.count("body")) {
             const std::string &badType = params["type"];
-            cLog::get()->write("Section '[" + section.getHeader() + "]' of " + filename + ": "
+            diagnose(&section, "type", "invalid-module-family",
+                "Section '[" + section.getHeader() + "]' of " + filename + ": "
                 + (badType.empty() ? std::string("missing the type key")
                                    : "invalid type = '" + badType + "'")
                 + " for a module (it binds a body with body = '" + params["body"]
@@ -1503,7 +1565,7 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
                 + ". Declaration skipped. To fix: set type to the family to instantiate, or "
                 "remove body= to declare a node instead.", LOG_TYPE::L_ERROR);
         } else {
-            loadBody(params);
+            loadBody(params, &section);
             const std::string &name = params["name"];
             if (!name.empty())
                 nodeParams[name] = params;
@@ -1515,12 +1577,13 @@ void ModularSystem::loadComposedSystem(const std::string &filename)
 
 void ModularSystem::loadDeclaredModule(std::map<std::string, std::string> &params, const std::string &header,
                                        const std::map<std::string, std::map<std::string, std::string>> &nodeParams,
-                                       BodyModuleType type)
+                                       BodyModuleType type, ModularSystemFormat::Section *origin)
 {
     const std::string &bodyName = params["body"];
     ModularBody *body = bodyName.empty() ? nullptr : findBodyOnce(bodyName);
     if (!body) {
-        cLog::get()->write("BodyModule declaration '[" + header + "]': body = '" + bodyName
+        diagnose(origin, "body", "unresolved-body",
+            "BodyModule declaration '[" + header + "]': body = '" + bodyName
             + "' names no loaded body. A module's body must be declared EARLIER in the same file "
             "(or already exist). Declaration skipped. To fix: check the name, or move this "
             "section below its body's section.", LOG_TYPE::L_ERROR);
@@ -1552,7 +1615,8 @@ void ModularSystem::loadDeclaredModule(std::map<std::string, std::string> &param
         // loadModule's no-capable-loader case already logged; only re-route
         // what was actually installed.
         if (module && !ModuleLoader::reroute(body, module, relation)) {
-            cLog::get()->write("BodyModule declaration '[" + header + "]': invalid relation = '"
+            diagnose(origin, "relation", "invalid-value",
+                "BodyModule declaration '[" + header + "]': invalid relation = '"
                 + relation + "'. Valid values are far, near, grounded, in, orbit, trail, tail "
                 "(the routing lists - see ModuleLoader.hpp). The loader's own routing is kept. "
                 "To fix: set relation to one of the valid values, or remove it.",
@@ -1603,68 +1667,11 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
                 "'replace = true' to the section that should win.", LOG_TYPE::L_WARNING);
             continue;
         }
-        // Node section: legacy keys preserved verbatim (D16 §11.79(j)): the
-        // node's own `type=` (its body-type, e.g. Planet/Moon/Sun) is a
-        // NON-family value, which is exactly what marks the section as a node -
-        // no separate declaration key is emitted. `compose=explicit` turns
-        // deduction off so the modules come from the declarations below.
-        stringHash_t node = legacy;
-        node["compose"] = "explicit";
-        if (Utility::isTrue(legacy["bound_to_surface"])) {
-            node.erase("bound_to_surface");   // translated, not duplicated -
-            node["relation"] = "grounded";    // one relation authority per generated file
-        }
-        // B25-emit / §11.73 A1+A2: materialize the capabilities the legacy name
-        // sniff (applyHardcodedContent) granted this LIVE body as explicit keys,
-        // so the composed load - which does NOT run that sniff (D14 §11.79(h)) -
-        // reproduces them. Read the body's actual capability, not its name (I4):
-        // the generator emits whatever the body IS. Only ADD when the legacy
-        // section did not already carry the key (explicit data is preserved
-        // verbatim above); the sniff only ever sets these for Earth, so this is
-        // the ONE node that gains them on the shipped corpus.
-        if (body->getSiderealTimeModel() == SiderealTimeModel::EARTH_APPARENT
-                && !node.count("sidereal_time"))
-            node["sidereal_time"] = "earth_apparent";
-        if (!node.count("shadow_color")
-                && body->getShadowAbsorbtion() != Vec3f{1, 1, 1})
-            node["shadow_color"] = Utility::vec3fToStr(body->getShadowAbsorbtion());
-        // B27 tail / D14 (§11.79(h)): the capabilities the legacy `type` string
-        // carried are materialized as KEYS here - the format boundary is exactly
-        // where they must become explicit, because the composed load no longer
-        // reads `type` for any of them. Same rule as above: read what the body
-        // IS (I4), and only ADD where the legacy section did not already declare
-        // it. Emitted only when the value differs from the composed default, so
-        // a twin carries a key exactly where its absence would change something
-        // (the co-delivery contract, §11.73(g): every key consumed is emitted).
-        if (body->getSurfaceModel() == SurfaceModel::LUNAR
-                && !node.count("surface_model"))
-            node["surface_model"] = "lunar";
-        if (body->getTrailLength() != TRAIL_LENGTH_DEFAULT
-                && !node.count("trail_length"))
-            node["trail_length"] = std::to_string(body->getTrailLength());
-        // D27's own requirement (§11.113(f)): a legacy star's `type` grants BOTH
-        // halves of the split, so the twin emits BOTH keys, value for value -
-        // emit one and the composed load stops reproducing strToBodyType.
-        if (body->isStar() && !node.count("light_source"))
-            node["light_source"] = "true";
-        if (body->isPrimary() && !node.count("primary"))
-            node["primary"] = "true";
-        if (body->isMinorBody() && !node.count("shadow_exempt"))
-            node["shadow_exempt"] = "true";
-        out.push_back(ModularSystemFormat::Section::fromParams(name, node));
-        // One BodyModule declaration per family the live body deduces - the
-        // decomposition the twin exists to make visible [vixy, §11.50(b)].
-        // `type=<family>` is the one declaration key (was declare=BodyModule +
-        // module=<family>, both retired by D16 §11.79(j)).
-        for (BodyModuleType type : body->deduceBodyModuleList(legacy)) {
-            const std::string typeName{ModuleLoaderMgr::moduleTypeName(type)};
-            const stringHash_t mod{{"type", typeName}, {"body", name}};
-            out.push_back(ModularSystemFormat::Section::fromParams(name + ":" + typeName, mod));
-        }
-        if (Utility::isTrue(legacy["planet_grid"])) {
-            const stringHash_t mod{{"type", "CUSTOM"}, {"body", name}, {"slot", "GRID"}};
-            out.push_back(ModularSystemFormat::Section::fromParams(name + ":GRID", mod));
-        }
+        // ONE emitter (I2): the twin and the live-tree save write the same
+        // declaration for the same body, from the same rules - the twin's
+        // declaration record is the legacy section it just read, the save's is
+        // the body's own (b31-design §4.1).
+        appendWholeDeclaration(body, legacy, out);
     }
     const std::vector<std::string> banner{
         "Generated by spacecrafter from " + legacyFilename + " - semantically equivalent (B24/B25).",
@@ -1676,6 +1683,209 @@ void ModularSystem::generateComposedTwin(const std::string &legacyFilename, cons
     if (ModularSystemFormat::write(outPath, out, banner))
         cLog::get()->write("Composed twin of " + legacyFilename + " generated at " + outPath,
             LOG_TYPE::L_INFO);
+}
+
+stringHash_t ModularSystem::composedNodeParams(const ModularBody *body, const stringHash_t &declared)
+{
+    // What the data said, verbatim (D16 §11.79(j)): the node's own `type=` (its
+    // body-type, e.g. Planet/Moon/Sun) is a NON-family value, which is exactly
+    // what marks the section as a node - no separate declaration key is emitted.
+    stringHash_t node = declared;
+    {
+        const auto it = declared.find("bound_to_surface");
+        if (it != declared.end() && Utility::isTrue(it->second)) {
+            node.erase("bound_to_surface");   // translated, not duplicated -
+            node["relation"] = "grounded";    // one relation authority per generated file
+        }
+    }
+    // B25-emit / §11.73 A1+A2: materialize the capabilities the legacy name
+    // sniff (applyHardcodedContent) granted this LIVE body as explicit keys,
+    // so the composed load - which does NOT run that sniff (D14 §11.79(h)) -
+    // reproduces them. Read the body's actual capability, not its name (I4):
+    // the generator emits whatever the body IS. Only ADD when the declaration
+    // did not already carry the key (explicit data is preserved verbatim
+    // above); the sniff only ever sets these for Earth, so this is the ONE node
+    // that gains them on the shipped corpus.
+    if (body->getSiderealTimeModel() == SiderealTimeModel::EARTH_APPARENT
+            && !node.count("sidereal_time"))
+        node["sidereal_time"] = "earth_apparent";
+    if (!node.count("shadow_color")
+            && body->getShadowAbsorbtion() != Vec3f{1, 1, 1})
+        node["shadow_color"] = Utility::vec3fToStr(body->getShadowAbsorbtion());
+    // B27 tail / D14 (§11.79(h)): the capabilities the legacy `type` string
+    // carried are materialized as KEYS here - the format boundary is exactly
+    // where they must become explicit, because the composed load no longer
+    // reads `type` for any of them. Same rule as above: read what the body
+    // IS (I4), and only ADD where the declaration did not already declare
+    // it. Emitted only when the value differs from the composed default, so
+    // a file carries a key exactly where its absence would change something
+    // (the co-delivery contract, §11.73(g): every key consumed is emitted).
+    if (body->getSurfaceModel() == SurfaceModel::LUNAR
+            && !node.count("surface_model"))
+        node["surface_model"] = "lunar";
+    if (body->getTrailLength() != TRAIL_LENGTH_DEFAULT
+            && !node.count("trail_length"))
+        node["trail_length"] = std::to_string(body->getTrailLength());
+    // D27's own requirement (§11.113(f)): a legacy star's `type` grants BOTH
+    // halves of the split, so both keys are emitted, value for value -
+    // emit one and the composed load stops reproducing strToBodyType.
+    if (body->isStar() && !node.count("light_source"))
+        node["light_source"] = "true";
+    if (body->isPrimary() && !node.count("primary"))
+        node["primary"] = "true";
+    if (body->isMinorBody() && !node.count("shadow_exempt"))
+        node["shadow_exempt"] = "true";
+    return node;
+}
+
+void ModularSystem::appendWholeDeclaration(ModularBody *body, const stringHash_t &declared,
+                                           std::vector<ModularSystemFormat::Section> &out)
+{
+    // The section header is decorative; the name key is the identity. Use what
+    // the declaration says when it says anything, so a machine-built file reads
+    // exactly like the declaration it came from.
+    const auto nameIt = declared.find("name");
+    const std::string name = (nameIt == declared.end() || nameIt->second.empty())
+        ? body->getEnglishName() : nameIt->second;
+    stringHash_t node = composedNodeParams(body, declared);
+    // `compose = explicit` turns deduction OFF, so it and the declarations below
+    // are ONE decision and are emitted together - a file carrying the key
+    // without them would load a body with no modules at all.
+    node["compose"] = "explicit";
+    out.push_back(ModularSystemFormat::Section::fromParams(name, node));
+    // One BodyModule declaration per family - the decomposition the twin exists
+    // to make visible [vixy, §11.50(b)]. `type=<family>` is the one declaration
+    // key (was declare=BodyModule + module=<family>, both retired by D16
+    // §11.79(j)).
+    // WHICH LIST, and why it is not always the live one: the modules of a body
+    // whose declaration DEDUCES them are what deduction makes of that
+    // declaration, and re-deriving them keeps their ORDER - which is semantic
+    // (a routing list holds modules in record order, and that is the draw order:
+    // the atmosphere shell draws after the disc, §11.19). The live slot list is
+    // ordered by global slot id and would silently re-order them. A body whose
+    // modules did NOT come from deduction (`compose = explicit`) has no such
+    // derivation, and its live set is then the only honest answer.
+    const auto composeIt = declared.find("compose");
+    if (composeIt != declared.end() && composeIt->second == "explicit") {
+        for (uint32_t i = 0; i < body->components.size(); ++i) {
+            if (!body->components[i])
+                continue;
+            const std::string slotName{ModularBody::slotID.nameOf(i)};
+            const std::string typeName{ModuleLoaderMgr::moduleTypeName(body->components[i]->getType())};
+            stringHash_t mod{{"type", typeName}, {"body", name}};
+            if (slotName != typeName)
+                mod["slot"] = slotName;
+            out.push_back(ModularSystemFormat::Section::fromParams(name + ":" + slotName, mod));
+        }
+        return;
+    }
+    stringHash_t deduceFrom = declared; // deduceBodyModuleList reads through map[]
+    for (BodyModuleType type : body->deduceBodyModuleList(deduceFrom)) {
+        const std::string typeName{ModuleLoaderMgr::moduleTypeName(type)};
+        const stringHash_t mod{{"type", typeName}, {"body", name}};
+        out.push_back(ModularSystemFormat::Section::fromParams(name + ":" + typeName, mod));
+    }
+    const auto gridIt = declared.find("planet_grid");
+    if (gridIt != declared.end() && Utility::isTrue(gridIt->second)) {
+        const stringHash_t mod{{"type", "CUSTOM"}, {"body", name}, {"slot", "GRID"}};
+        out.push_back(ModularSystemFormat::Section::fromParams(name + ":GRID", mod));
+    }
+}
+
+void ModularSystem::collectContentBodies(ModularBody *node, std::vector<ModularBody *> &out)
+{
+    // Parents first: a declaration may only name a body declared before it (the
+    // findBody forward-reference rule the format inherits from the legacy
+    // loader), so the walk order IS a correctness condition, not a preference.
+    // Hidden children are walked like any other: a hidden body is declared data
+    // ([Goldilocks_Zone] ships hidden = true) and its `hidden` key travels in
+    // its own declaration, so it comes back hidden.
+    // A nested system node ENDS the walk: its content is declared by its own
+    // file, and the node itself by whoever created the system (galactic.ini,
+    // SSystemFactory) - neither is this file's to write.
+    const auto walk = [&out](ModularBody *body, const auto &self) -> void {
+        if (body->isSystem())
+            return;
+        out.push_back(body);
+        for (auto &c : body->groundedBodies) self(c.get(), self);
+        for (auto &c : body->orbitingBodies) self(c.get(), self);
+        for (auto &c : body->innerBodies)    self(c.get(), self);
+        for (auto &c : body->hiddenBodies)   self(c.get(), self);
+    };
+    for (auto &c : node->groundedBodies) walk(c.get(), walk);
+    for (auto &c : node->orbitingBodies) walk(c.get(), walk);
+    for (auto &c : node->innerBodies)    walk(c.get(), walk);
+    for (auto &c : node->hiddenBodies)   walk(c.get(), walk);
+}
+
+bool ModularSystem::saveSystem(const std::string &outPath)
+{
+    // THE BASE: what the target file already contains, whenever it contains
+    // anything. Three sources, in this order of authority:
+    //  (1) the sections this system was LOADED from, when the save targets that
+    //      same file - they are that file's content AND they carry the loader's
+    //      annotations, which is what makes an explicit save the moment the
+    //      diagnoses reach the file (b31-design §5.3, D33);
+    //  (2) a parse of the target, when it exists but is not our source - its
+    //      author's content is preserved exactly as (1)'s is;
+    //  (3) nothing: a file that does not exist yet is built whole, like the twin.
+    std::vector<ModularSystemFormat::Section> out;
+    std::vector<std::string> banner;
+    bool wholeFile = false;
+    if (composedFile && outPath == systemFilename && !loadedSections.empty()) {
+        out = loadedSections;
+    } else if (ModularSystemFormat::parse(outPath, out)) {
+        cLog::get()->write("Saving system '" + englishName + "' into the EXISTING file " + outPath
+            + ": its content is kept as it is (comments, layout and every key included) and only "
+            "what it does not declare yet is added. To write a fresh file instead, save under a "
+            "name that does not exist.", LOG_TYPE::L_INFO);
+    } else {
+        out.clear();
+        wholeFile = true;
+        banner = {
+            "Composed system file written by spacecrafter on request (system '" + englishName + "').",
+            "USER-OWNED: nothing regenerates this file - it is yours to edit, and the",
+            "engine gives back every line of it when you save again.",
+            "It is read INSTEAD of the legacy source of this system as long as it is here.",
+        };
+    }
+    // Every body of this system that the file does not declare yet. The DECLARED
+    // set is read from the file itself (a node section = one that carries a
+    // `name` and binds no body), so a file that already describes a body is
+    // never given a second, conflicting section for it.
+    std::set<std::string> alreadyDeclared;
+    for (const auto &section : out) {
+        if (section.isPreamble() || section.find("body"))
+            continue;
+        if (const std::string *name = section.find("name"))
+            alreadyDeclared.insert(*name);
+    }
+    std::vector<ModularBody *> bodies;
+    collectContentBodies(this, bodies);
+    std::size_t added = 0, skipped = 0;
+    for (ModularBody *body : bodies) {
+        // No declaration, nothing to write: an engine-minted body (a camera
+        // anchor, the B5 pilot oort) was never asked for by data, and turning
+        // one into authored content would make the next launch load it twice -
+        // once from the file, once from the code that mints it.
+        if (body->declaredParams.empty()) {
+            ++skipped;
+            continue;
+        }
+        if (alreadyDeclared.count(body->getEnglishName()))
+            continue; // the file says it already; its author's words stand
+        appendWholeDeclaration(body, body->declaredParams, out);
+        ++added;
+    }
+    if (!ModularSystemFormat::write(outPath, out, banner))
+        return false; // the writer said why, and left any previous content alone
+    cLog::get()->write("System '" + englishName + "' saved to " + outPath + " ("
+        + std::to_string(added) + " declaration" + (added == 1 ? "" : "s") + " added, "
+        + std::to_string(bodies.size() - skipped - added) + " already declared, "
+        + std::to_string(skipped) + " engine-owned bod" + (skipped == 1 ? "y" : "ies")
+        + " skipped)" + (wholeFile ? " - a new file" : "")
+        + ". It is read instead of this system's source at the next launch.", LOG_TYPE::L_INFO);
+    return true;
 }
 
 void ModularSystem::applyHardcodedContent(ModularBodyCreateInfo &createInfo, std::map<std::string, std::string> &param)

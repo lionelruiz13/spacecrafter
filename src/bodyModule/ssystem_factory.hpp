@@ -696,6 +696,30 @@ public:
     //! Returns false when the current system has no data file to reload from.
     bool reloadCurrentSystem();
 
+    //! Write the observer's current system to a composed system file (B31
+    //! slice 2, `body action save`). The system-scope sibling of
+    //! reloadCurrentSystem, and the route is Vixy's own [§11.51(a)]: "save a
+    //! system on-the-fly as well by targeting without the .disabled or under a
+    //! different name from scripts". A body a script pushed into the live tree
+    //! becomes ordinary authored data this way - loaded by the ordinary loader
+    //! at the next launch, with the identity every authored body already has
+    //! (b31-design §4.1: no new identity key).
+    //! `filename` empty = this system's OWN composed file (the one an enabled
+    //! composed file is read from, i.e. the twin's name without `.disabled`) -
+    //! the plain "make this session's system the one that loads next time".
+    //! Otherwise a file NAME (not a path) in the same directory; `.ini` is
+    //! appended when it carries no extension.
+    //! WHAT IT REFUSES, and why the refusals are here rather than in the writer:
+    //! this is the seam that owns file placement and the .ini/.ini.disabled
+    //! ownership split, so it is the level that can tell a user file from the
+    //! machine's and from the frozen legacy corpus. A path separator (the
+    //! legacy `ssystem.ini` and every other file of the install are outside this
+    //! directory, and they are READ-ONLY forever - D35, §2.0 D13) and the
+    //! `.disabled` twin name (machine-owned: the next legacy load would
+    //! overwrite the save without a word) are both refused with a §2(f)
+    //! diagnostic and nothing is written.
+    bool saveCurrentSystem(const std::string &filename);
+
     void preloadBody(stringHash_t & param) {
         currentSystem->preloadBody(param);
     }
@@ -920,6 +944,20 @@ public:
     void loadSystem(const std::string &path, stringHash_t &params, const std::string &section);
     std::unique_ptr<ProtoSystem> &createSystem(const std::string &mode);
     void createModularSystem(const std::string &name, const std::string &filename, const Vec3d &pos);
+    //! Where a system node's composed file lives - ONE authority for the
+    //! convention (I2), read by the load candidacy test and by the save. `node`
+    //! is the ModularSystem's own name (the "<X>System" node), so a caller
+    //! holding the node needs nothing else. cwd is ~/.spacecrafter (main.cpp
+    //! chdir), same convention as the legacy "ssystem.ini".
+    static std::string composedPathOf(const std::string &node) {
+        return "modularSystem/" + node + ".ini";
+    }
+    //! The machine-owned twin of the same node: the composed file with the
+    //! extension that keeps it from being read. Regenerated at every legacy
+    //! load - never a save target.
+    static std::string composedTwinPathOf(const std::string &node) {
+        return composedPathOf(node) + ".disabled";
+    }
 
     //! Enter a system (leave the galactic system)
     void enterSystem();

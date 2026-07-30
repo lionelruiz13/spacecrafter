@@ -17,6 +17,7 @@
 #include <memory>
 #include <iosfwd>
 #include <list>
+#include <map>
 #include <vector>
 
 // (TEXMAP*/TEX big-texture mapping macros moved to tools/s_texture.hpp -
@@ -1576,6 +1577,30 @@ private:
     // Identity
     std::string englishName;
     std::string nameI18;
+
+    // WHAT THE DATA DECLARED (b31-design §4.1): the parameter map this body was
+    // loaded from, snapshot at the loader's entry - before the loader's own
+    // map[] lookups insert the empty entries every absent key acquires
+    // (§11.103(b)'s operator[] trap, from the other side).
+    // WHY THE BODY OWNS IT (I4, and it is the whole point of the slice): a save
+    // must reproduce the DECLARATION, not the derived state - `rot_periode` is
+    // consumed into a rotation rate, `tex_map` into a loaded texture, the orbit
+    // keys into an Orbit object, and none of those come back out. A body
+    // declared by a FILE has its file to re-read (that is what the composed twin
+    // does); a body a script pushed has no file, and the map that created it is
+    // the only record of it there will ever be. Emitting live state instead
+    // would serialize where the body IS rather than what it WAS asked to be -
+    // the mistake `saveOrbit()` exists to avoid (DATA KEYS, never derived
+    // state).
+    // EMPTY for a body no data declared - the anchors CameraAnchors mints, the
+    // B5 pilot oort, the system spine nodes - and that emptiness is load-bearing:
+    // the live-tree save skips exactly those, because an engine-minted body has
+    // no declaration to write back and writing one would turn a camera anchor
+    // into authored content (F7/R3: anchors are camera state, never system
+    // content).
+    // Runtime overrides do NOT edit it: what an operator changed after the load
+    // is the session ledger's business (b31-design §2 group D), a later slice.
+    std::map<std::string, std::string> declaredParams;
 
     // Relations - ownership by relation (single authority: `relation` says
     // which list of the parent owns this body; boundToSurface is its hot-path

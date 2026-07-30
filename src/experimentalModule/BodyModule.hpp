@@ -273,6 +273,12 @@ public:
     // no externally-observable state contributes nothing to observe).
     // Defined in ModularBody.cpp (keeps <ostream> out of every module TU).
     virtual void dumpState(std::ostream &out) const;
+    // Which FAMILY this module belongs to - the value the composed format's
+    // `type=` key carries for it (ModuleLoaderMgr's own enumeration, I2). The
+    // module says what it is; no caller sniffs its class to find out (I4).
+    inline BodyModuleType getType() const {
+        return type;
+    }
 protected:
     // The smallest radius of a sphere enclosing the WHOLE body to be traced
     // [vixy: 2026-07-11]. This single definition is what makes one value valid

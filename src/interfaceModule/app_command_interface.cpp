@@ -3582,6 +3582,20 @@ int AppCommandInterface::commandBody()
 			// carries the contract and traces its own failures.
 			if (!coreLink->reloadSolarSystem())
 				debug_message = _("Command 'body': the current system has no data file to reload");
+		} else if (argAction == W_SAVE) {
+			// Write the observer's current system to a composed system file
+			// (B31 slice 2, INTENT §11.51(a): "save a system on-the-fly as well
+			// by targeting without the .disabled or under a different name from
+			// scripts"). The system-scope sibling of `reload`, which already
+			// lives in this slot: `reload` re-reads this system's file, `save`
+			// writes it - and a body this session pushed with `body action load`
+			// is ordinary authored data from the next launch on, which is the
+			// whole point (script-pushed bodies that survive sessions).
+			// `filename` is optional: absent = this system's own composed file.
+			// SPELLING RECORDED AS A VETO POINT (B28 protocol, F7 precedent):
+			// `body action save [filename <name>]` - landed, awaiting sign-off.
+			if (!coreLink->saveSolarSystem(args[W_FILENAME]))
+				debug_message = _("Command 'body': the current system could not be saved");
 		} else if (argAction == W_PRELOAD) {
 			auto &kt = args[W_KEEPTIME];
 			kt = std::to_string(Utility::strToInt(kt, 10) * stapp->getTargetFps());

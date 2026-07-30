@@ -362,7 +362,7 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
     // NB: keyed on the node name expression, NOT info.englishName - the
     // createChildSystem ctor above moved that string out (fired live: the
     // twin generated as ".ini.disabled", INTENT §11.78(f)).
-    const std::string composedPath = "modularSystem/" + name + "System.ini";
+    const std::string composedPath = composedPathOf(name + "System");
     if (std::filesystem::exists(composedPath)) {
         cLog::get()->write("Composed system file " + composedPath + " wins over "
             + (filename.empty() ? "the built-in " + name + " system content"
@@ -402,7 +402,7 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
                 + ec.message() + ") - composed twin of " + filename + " not generated.",
                 LOG_TYPE::L_WARNING);
         } else {
-            system->generateComposedTwin(filename, composedPath + ".disabled");
+            system->generateComposedTwin(filename, composedTwinPathOf(name + "System"));
         }
     }
 }
@@ -787,6 +787,45 @@ bool SSystemFactory::reloadCurrentSystem()
     cLog::get()->write("System '" + system->getEnglishName() + "' reloaded (observer state kept)",
         LOG_TYPE::L_INFO);
     return true;
+}
+
+// Contract + rationale: ssystem_factory.hpp (saveCurrentSystem).
+bool SSystemFactory::saveCurrentSystem(const std::string &filename)
+{
+    ModularSystem *system = camera->getCurrentSystem();
+    const std::string node = system->getEnglishName();
+    std::string target = composedPathOf(node);
+    if (!filename.empty()) {
+        if (filename.find('/') != std::string::npos || filename.find('\\') != std::string::npos) {
+            cLog::get()->write("Command 'body action save': '" + filename + "' is a path, and this "
+                "command takes a file NAME - a system file is written next to the others, in "
+                + composedPathOf("<system>") + ". Nothing was written. (The legacy system files of "
+                "this install are never written to, by design.) To fix: pass a plain name, e.g. "
+                "'body action save filename " + node + "'.", LOG_TYPE::L_ERROR);
+            return false;
+        }
+        if (filename.size() >= 9 && filename.compare(filename.size() - 9, 9, ".disabled") == 0) {
+            cLog::get()->write("Command 'body action save': '" + filename + "' is the name of a "
+                "MACHINE-OWNED file - spacecrafter regenerates it at every legacy load of this "
+                "system, so a save there would be silently overwritten. Nothing was written. "
+                "To fix: drop the '.disabled' (the name without it is the one that gets read), "
+                "or pick another name.", LOG_TYPE::L_ERROR);
+            return false;
+        }
+        // A name with no extension is a system name, not a file name: give it
+        // the one every system file has, so `filename Mars` does what it reads
+        // like instead of writing a file nothing will ever open.
+        target = "modularSystem/" + filename
+               + ((filename.find('.') == std::string::npos) ? ".ini" : "");
+    }
+    std::error_code ec;
+    std::filesystem::create_directories("modularSystem", ec);
+    if (ec) {
+        cLog::get()->write("Command 'body action save': can't create the modularSystem directory ("
+            + ec.message() + ") - system '" + node + "' NOT saved.", LOG_TYPE::L_ERROR);
+        return false;
+    }
+    return system->saveSystem(target);
 }
 
 // Dual-path trace harness (experimentalModule/INTENT.md 11.14).

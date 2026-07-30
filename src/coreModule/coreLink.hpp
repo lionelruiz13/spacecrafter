@@ -515,6 +515,14 @@ public:
 	//! \return false when the current system has no data file behind it.
 	bool reloadSolarSystem();
 
+	//! Write the observer's current system to a composed system file, so what a
+	//! script pushed into it this session is there at the next launch as
+	//! ordinary authored data (B31 slice 2). Contract, naming rules and what a
+	//! save preserves: SSystemFactory::saveCurrentSystem.
+	//! \param filename a file NAME (empty = this system's own composed file).
+	//! \return false when nothing was written (the reason is logged).
+	bool saveSolarSystem(const std::string &filename);
+
 	//hides a planet
 	void setPlanetHidden(std::string name, bool planethidden);
 

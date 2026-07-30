@@ -1208,6 +1208,10 @@ bool CoreLink::reloadSolarSystem() {
 	return core->ssystemFactory->reloadCurrentSystem();
 }
 
+bool CoreLink::saveSolarSystem(const std::string &filename) {
+	return core->ssystemFactory->saveCurrentSystem(filename);
+}
+
 void CoreLink::setPlanetHidden(std::string name, bool planethidden) {
 	core->ssystemFactory->setPlanetHidden(name, planethidden);
 }
