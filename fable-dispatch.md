@@ -69,6 +69,11 @@ August, §11.116(a)), D37**.
      check needs a display, say so instead of substituting a weaker one.
    - **No `run_in_background` for long campaigns** — foreground within-turn batches
      only (§11.98(h) template fix; three executor stalls root-caused to this).
+   - **Memory-bounded builds (2026-07-30 host-OOM incident — killed an executor
+     mid-task):** session affinity is now 12 cores, so `-j$(nproc)` self-caps at 12;
+     additionally check `free -g` BEFORE each build — available < 16 GiB ⇒ use `-j6`.
+     Other sessions share this host's RAM; memory, not cores, is the binding
+     constraint.
 6. Abort-tolerance discipline (the reason this file exists):
    - Commit code + harness at **every green checkpoint** (small commits, normal
      trailer discipline: code first, harness carries `Code: <branch> @ <short-sha>`).
@@ -466,9 +471,16 @@ high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
   paths diverge (§5.26/`s526_ref.py` instrument, 39 090 px case); (iv) the §5.45
   repro (one `z` line removed) flips SIGABRT → warn+skip+start, and the
   well-formed corpus is byte-inert; (v) the runner FAILS on a mutated ssystem md5.
-- **WIP:** —
-
-### F13 — B31-impl slice 1: the §11.66(b) writer rework  [M]
+- **WIP (2026-07-30, session 4):** first executor run KILLED by host OOM mid-task —
+  nothing committed, no checkpoint, verification artifacts lost. SURVIVING
+  uncommitted diff at code HEAD `a62ad5d7` = item (iv)'s §5.45 guard
+  (`ssystem_factory.{cpp,hpp}`), well-shaped at supervisor read (absent-or-empty
+  `declaredParam` defusing the §11.103(b) trap; parseability-not-presence guard;
+  §2(f) label chain surviving a missing `name`; D12 log) but UNVERIFIED — its
+  comment's "measured -6" claim has no surviving artifact. Successor: treat as
+  CANDIDATE code (predecessor shape = unread requirement — verify, never inherit),
+  re-run the repro + build fresh, then proceed with items (i)(ii)(iii)(v)
+  (state: not started). Do not restart (iv) from zero.
 - **Row / recorded:** B31 (§13.B — DISPATCHABLE since §11.113(i)–(o)) · `b31-design.md`
   §5.2/§5.3/§5.4 (the line-level design — the authority for this slice) · §11.66(b)
   (the contract) · §11.113(n)/D35 (composed + session files ONLY; legacy `ssystem.ini`
