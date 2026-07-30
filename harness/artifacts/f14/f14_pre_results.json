@@ -1,0 +1,118 @@
+{
+ "tag": "pre",
+ "expect": 0.5,
+ "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "rc": "reused",
+ "texture_dark_centroid_u": {
+  "Iapetus": 0.2224561573696236,
+  "Amalthea": 0.01833992856097639,
+  "Proteus": 0.1378870454232536
+ },
+ "bodies": [
+  {
+   "moon": "Iapetus",
+   "jd": 2451584.665,
+   "offset": 171.467056,
+   "axisRot": 6.13421309,
+   "spin_identity_err": 4.7796743701811195e-08,
+   "u_pm": 0.7500017259258571,
+   "pole_err_deg": 0.0029617489009671617,
+   "u_sub": 0.7455682279765832,
+   "lat_sub_deg": 0.8030946422991714,
+   "sun_lon_mesh": 0.766609744187635,
+   "delta_deg": 0.5,
+   "ncc_peak": 0.5557346748400479,
+   "vflip": true,
+   "ysign": -1.0,
+   "disc_px": [
+    128.0,
+    128.0,
+    63.99999999999999
+   ],
+   "disc_model_full": [
+    1023.9339644536832,
+    1023.955976303616,
+    244.419311616
+   ],
+   "crop_scale": 0.2618451037148346,
+   "ncc_at_-90": -0.0012561874925136498,
+   "ncc_at_90": 0.03032313080749419,
+   "ncc_at_180": -0.07553823635747955,
+   "ncc_at_0": 0.4374800261794574,
+   "lit_px": 12480,
+   "margin": 0.4071568953719632
+  },
+  {
+   "moon": "Amalthea",
+   "jd": 2451545.249,
+   "offset": 168.121552,
+   "axisRot": 6.07462054,
+   "spin_identity_err": 1.2144271188674338e-07,
+   "u_pm": 0.7500185970708135,
+   "pole_err_deg": 0.0,
+   "u_sub": 0.30492482391812614,
+   "lat_sub_deg": 12.327072689253711,
+   "sun_lon_mesh": 0.21440647795211115,
+   "delta_deg": 1.0,
+   "ncc_peak": 0.9720040909339432,
+   "vflip": true,
+   "ysign": -1.0,
+   "disc_px": [
+    127.99999999999997,
+    127.99999999999997,
+    63.99999999999999
+   ],
+   "disc_model_full": [
+    1024.0213549118464,
+    1024.0213549118464,
+    238.700775424
+   ],
+   "crop_scale": 0.2681181068068083,
+   "ncc_at_-90": -0.08227199839707326,
+   "ncc_at_90": 0.032059027666463374,
+   "ncc_at_180": -0.07863583860386335,
+   "ncc_at_0": 0.932396286285139,
+   "lit_px": 11425,
+   "margin": 0.9003372586186756
+  },
+  {
+   "moon": "Proteus",
+   "jd": 2451545.70125,
+   "offset": 339.711334,
+   "axisRot": 3.5717605,
+   "spin_identity_err": 1.5119444901623424e-07,
+   "u_pm": 0.7500036092967978,
+   "pole_err_deg": 0.0,
+   "u_sub": 0.05285616357729528,
+   "lat_sub_deg": 10.108500747182273,
+   "sun_lon_mesh": 0.13659246795409757,
+   "delta_deg": 1.0,
+   "ncc_peak": 0.8448861192097445,
+   "vflip": true,
+   "ysign": -1.0,
+   "disc_px": [
+    128.00000000000003,
+    130.00000000000003,
+    61.44
+   ],
+   "disc_model_full": [
+    1024.0049577988711,
+    1024.0049577988711,
+    236.851944448
+   ],
+   "crop_scale": 0.2702109967860153,
+   "ncc_at_-90": -0.12182998938524095,
+   "ncc_at_90": -0.11001669465345222,
+   "ncc_at_180": 0.03762582538211596,
+   "ncc_at_0": 0.8161941504888119,
+   "lit_px": 10314,
+   "margin": 0.7785683251066959
+  }
+ ],
+ "md5": "545a51ef76294891579a1fc2fe13792b  /home/claude/.spacecrafter/ssystem.ini\n03fbee59bc3ec506c58f0a3f1e1d73df  /home/claude/.spacecrafter/config.ini\n",
+ "fails": [
+  "Iapetus: IAU prime meridian on texture column u = 0.75000, expected 0.50 - off by 90.001 deg",
+  "Amalthea: IAU prime meridian on texture column u = 0.75002, expected 0.50 - off by 90.007 deg",
+  "Proteus: IAU prime meridian on texture column u = 0.75000, expected 0.50 - off by 90.001 deg"
+ ]
+}

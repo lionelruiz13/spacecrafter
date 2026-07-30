@@ -1,0 +1,226 @@
+{
+ "note": "written BEFORE the fix, from the pre-fix capture",
+ "offsets": {
+  "Earth": {
+   "pre": 280.5,
+   "keyed": false,
+   "post": 280.5
+  },
+  "Moon": {
+   "pre": 38,
+   "keyed": false,
+   "post": 38
+  },
+  "Sun": {
+   "pre": 0,
+   "keyed": false,
+   "post": 0
+  },
+  "Mercury": {
+   "pre": 291.200012,
+   "keyed": false,
+   "post": 291.200012
+  },
+  "Venus": {
+   "pre": 137.449997,
+   "keyed": false,
+   "post": 137.449997
+  },
+  "Mars": {
+   "pre": 136.005005,
+   "keyed": false,
+   "post": 136.005005
+  },
+  "Jupiter": {
+   "pre": 60,
+   "keyed": false,
+   "post": 60
+  },
+  "Saturn": {
+   "pre": 358.921997,
+   "keyed": false,
+   "post": 358.921997
+  },
+  "Uranus": {
+   "pre": 331.179993,
+   "keyed": false,
+   "post": 331.179993
+  },
+  "Neptune": {
+   "pre": 228.649994,
+   "keyed": false,
+   "post": 228.649994
+  },
+  "Pluto": {
+   "pre": 320.75,
+   "keyed": false,
+   "post": 320.75
+  },
+  "Charon": {
+   "pre": 213.300003,
+   "keyed": false,
+   "post": 213.300003
+  },
+  "Iapetus": {
+   "pre": 171.467056,
+   "keyed": true,
+   "post": 261.467056
+  },
+  "Proteus": {
+   "pre": 339.711334,
+   "keyed": true,
+   "post": 69.71133400000002
+  },
+  "Puck": {
+   "pre": 6.381639,
+   "keyed": true,
+   "post": 96.381639
+  },
+  "Janus": {
+   "pre": 288.439484,
+   "keyed": true,
+   "post": 18.439483999999993
+  },
+  "Prometheus": {
+   "pre": 166.175461,
+   "keyed": true,
+   "post": 256.17546100000004
+  },
+  "Amalthea": {
+   "pre": 168.121552,
+   "keyed": true,
+   "post": 258.121552
+  },
+  "Thebe": {
+   "pre": 299.457397,
+   "keyed": true,
+   "post": 29.457397000000014
+  },
+  "Telesto": {
+   "pre": 294.588348,
+   "keyed": true,
+   "post": 24.588347999999996
+  },
+  "Pandora": {
+   "pre": 32.9554443,
+   "keyed": true,
+   "post": 122.95544430000001
+  },
+  "Helene": {
+   "pre": 115.606392,
+   "keyed": true,
+   "post": 205.606392
+  },
+  "Epimetheus": {
+   "pre": 164.618637,
+   "keyed": true,
+   "post": 254.618637
+  },
+  "Juliet": {
+   "pre": 217.635773,
+   "keyed": true,
+   "post": 307.635773
+  },
+  "Portia": {
+   "pre": 300.123627,
+   "keyed": true,
+   "post": 30.123627
+  },
+  "Rosalind": {
+   "pre": 229.999634,
+   "keyed": true,
+   "post": 319.999634
+  },
+  "Belinda": {
+   "pre": 212.53038,
+   "keyed": true,
+   "post": 302.53038000000004
+  },
+  "Naiad": {
+   "pre": 140.775604,
+   "keyed": true,
+   "post": 230.775604
+  },
+  "Thalassa": {
+   "pre": 347.728729,
+   "keyed": true,
+   "post": 77.72872899999999
+  },
+  "Despina": {
+   "pre": 192.446762,
+   "keyed": true,
+   "post": 282.44676200000004
+  },
+  "Galatea": {
+   "pre": 144.041214,
+   "keyed": true,
+   "post": 234.041214
+  },
+  "Larissa": {
+   "pre": 65.5371017,
+   "keyed": true,
+   "post": 155.5371017
+  }
+ },
+ "bodies": {
+  "Iapetus": {
+   "u_pm_pre": 0.75,
+   "u_pm_post": 0.5,
+   "u_sub_pre": 0.7455682279765832,
+   "u_sub_post": 0.4955682279765832,
+   "dark_centroid_u": 0.2224561573696236,
+   "dark_fraction_of_lit_disc_pre": 0.25396825396825395,
+   "dark_fraction_of_lit_disc_post": 0.6659240694328413,
+   "predicted_image": "f14_pred_post_Iapetus.png",
+   "null_image": "f14_pred_null_Iapetus.png"
+  },
+  "Amalthea": {
+   "u_pm_pre": 0.75,
+   "u_pm_post": 0.5,
+   "u_sub_pre": 0.30492482391812614,
+   "u_sub_post": 0.05492482391812614,
+   "dark_centroid_u": 0.01833992856097639,
+   "dark_fraction_of_lit_disc_pre": 0.22441897150068357,
+   "dark_fraction_of_lit_disc_post": 0.12251551162056999,
+   "predicted_image": "f14_pred_post_Amalthea.png",
+   "null_image": "f14_pred_null_Amalthea.png"
+  },
+  "Proteus": {
+   "u_pm_pre": 0.75,
+   "u_pm_post": 0.5,
+   "u_sub_pre": 0.05285616357729528,
+   "u_sub_post": 0.8028561635772953,
+   "dark_centroid_u": 0.1378870454232536,
+   "dark_fraction_of_lit_disc_pre": 0.018107404191988093,
+   "dark_fraction_of_lit_disc_post": 0.00012402331638348009,
+   "predicted_image": "f14_pred_post_Proteus.png",
+   "null_image": "f14_pred_null_Proteus.png"
+  }
+ },
+ "planet_anchor": {
+  "Saturn": {
+   "file_offset": 358.922,
+   "corrected_conversion": 358.9359827407214,
+   "residual_deg": 0.013982740721360187,
+   "note": "the planets carry no rot_pole_w0, so the conversion never runs for them; this is the corpus CHECK that the corrected conversion targets the shipped convention"
+  },
+  "Mercury": {
+   "file_offset": 291.2,
+   "corrected_conversion": 291.1204307957646,
+   "residual_deg": -0.0795692042353835,
+   "note": "the planets carry no rot_pole_w0, so the conversion never runs for them; this is the corpus CHECK that the corrected conversion targets the shipped convention"
+  },
+  "Mars": {
+   "file_offset": 136.005,
+   "corrected_conversion": 135.19854814392085,
+   "residual_deg": -0.8064518560791498,
+   "note": "the planets carry no rot_pole_w0, so the conversion never runs for them; this is the corpus CHECK that the corrected conversion targets the shipped convention"
+  },
+  "Neptune": {
+   "file_offset": 228.65,
+   "corrected_conversion": 225.86217395495572,
+   "residual_deg": -2.7878260450442838,
+   "note": "the planets carry no rot_pole_w0, so the conversion never runs for them; this is the corpus CHECK that the corrected conversion targets the shipped convention"
+  }
+ }
+}

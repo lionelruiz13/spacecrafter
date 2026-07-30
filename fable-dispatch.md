@@ -586,7 +586,19 @@ corrected: it was written, then destroyed by the same edit.]*
   is available as the cheap counterfactual; old path untouched; battery green.
   Record-only, NOT yours: the Jupiter `rot_rotation_offset` 107-shipped-vs-60-loaded
   divergence (§11.101(b)).
-- **WIP:** —
+- **WIP: 2026-07-30 checkpoint 1 (harness `<this commit>`, code still `99685172` —
+  NO code change yet). Texture-anchored gate `f14_meridian.py` built and shown BOTH
+  ways: pre-fix binary reads `u_pm` = 0.75000/0.75002/0.75000 (Iapetus/Amalthea/
+  Proteus, i.e. the IAU meridian 90.001/90.007/90.001 deg off the u=0.5 convention)
+  and its screen leg selects the dumped model over the ±90/180 alternatives by
+  margins 0.407/0.900/0.779; `expect=0.50` is RED on the same capture. Prediction
+  artifact `f14_predict.py` + `artifacts/f14/f14_prediction.json` committed BEFORE
+  the fix (offset += 90.000 for exactly the 20 `rot_pole_w0` bodies, 12 hopped
+  controls unchanged; predicted post-fix images per moon; planet corpus anchor
+  residuals 0.014/-0.080/-0.806/-2.788 deg for Saturn/Mercury/Mars/Neptune).
+  NEXT: apply the conversion fix at `ModularSystem.cpp:941`, rebuild, run
+  `f14_meridian.py … post expect=0.50` + `f14_predict.py … --check`, then the
+  Mercury counterfactual farm and the battery.**
 
 ### F8 — B7-hunt-3: stress-modulated teardown hunt  [S, budgeted]
 - **Row / recorded:** B7 (§13.B) · §11.95 (158/0, contention hypothesis, `b7_hunt.sh` ready) · §11.97(f) (NEW abort-path datum, composed-body-count axis).
