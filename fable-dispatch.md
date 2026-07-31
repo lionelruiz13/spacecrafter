@@ -939,6 +939,22 @@ corrected: it was written, then destroyed by the same edit.]*
   demand) and **§5.56**, both record-don't-fix. For F17: post-F16 binary is
   `ebb41ab2`, `build-asan` rebuilt at it (re-run `cmake .` there after any new
   source), and the teardown ASan baseline is now SILENT.
+  **Supervisor-verified 2026-07-31** (11.124 read in full; trees/commits/authors
+  checked; BOTH code diffs READ — the dtor + its WHEN-bound comment, the
+  null-orbit guard after the whole determination block with the I2 duplication
+  named at the site; §5.50/§5.51 FIXED flips + §5.55/§5.56 stubs + B7-row
+  annotation verified at the ledger; harnesses not re-run — both-ways ASan
+  table re-measured on the delivered binary + positive-controlled validation
+  channel + committed artifacts accepted as evidence). Deviations (1)–(5) all
+  ENDORSED: (1) names the §11.122(b) instrument gap instead of rediscovering
+  it; (2) is single-variable isolation with §5.55 exercised in its own pair;
+  (3) buys a true A/B for one rebuild; (4) honors the stop boundary and §5.56's
+  no-safe-instrument argument carries a positive control; (5) is the honest
+  form. §5.55's record-only call ENDORSED (fix is teardown-ORDER design — F19
+  candidate with the coverage hole it names). Supervisor consequence for F17
+  carried into its dispatch: §5.55 = one-launch positive control; line-family
+  flags stay OFF in hunted cycles until §5.55 is fixed (a known deterministic
+  fire would contaminate every axis-on cycle).
 
 ### F17 — B7-hunt-4: the sanitizer mix + the HUNG settle  [M–L]
 - **Row / recorded:** B7 (§13.B) · §11.122(m) verbatim: *"run the ASan tree (83 s to
