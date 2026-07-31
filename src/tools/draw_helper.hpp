@@ -127,11 +127,14 @@ public:
     //! abandoned by abandonPendingFrames(): the frame is then NOT complete and
     //! its resources must not be reused - the caller skips the frame.
     bool waitFrame(unsigned char frameIdx);
-    //! Wait until the worker has consumed every queued command AND completed
-    //! every frame it was given. Observing only: it leaves the per-frame
-    //! bookkeeping alone, so a following waitFrame() behaves exactly as it
-    //! would have. Half of the mid-session release precondition
+    //! Wait until the worker has consumed every queued command AND really
+    //! completed every frame it was given. Observing only: it leaves the
+    //! per-frame bookkeeping alone, so a following waitFrame() behaves exactly
+    //! as it would have. Half of the mid-session release precondition
     //! (Context::quiesceFrames - the other half is the device wait).
+    //! Unlike waitFrame, an ABANDONED frame does not end this wait: the caller
+    //! is about to destroy what the frame references, and "nobody wants the
+    //! result any more" is not the same statement as "the recording is over".
     void waitAllFrames();
     //! Give up on frames that will never be needed again. TEARDOWN ONLY.
     //! waitFrame() ends in an atomic wait with no timeout and no cancellation,

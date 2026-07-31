@@ -431,14 +431,29 @@ void DrawHelper::waitAllFrames()
     for (auto &d : drawer) {
         // A drawer with no submit outstanding was never given a frame to
         // complete; waiting on it would wait for a frame that never comes.
-        if (d.submitData.frameIdx != UINT8_MAX)
-            d.hasCompleted.wait(0, std::memory_order_acquire);
+        if (d.submitData.frameIdx == UINT8_MAX)
+            continue;
+        // An ABANDONED frame does NOT satisfy this wait. Abandoning exists to
+        // release the main loop from a frame whose result nobody wants any
+        // more; here the caller is about to DESTROY what that frame
+        // references, so only real completion will do. Taking the abandon as
+        // an answer here is how a teardown arriving during a reload turned
+        // into a SIGSEGV in the worker thread (INTENT 5.58/5.59, measured).
+        int completion = d.hasCompleted.load(std::memory_order_acquire);
+        while (completion != 1) {
+            d.hasCompleted.wait(completion, std::memory_order_acquire);
+            completion = d.hasCompleted.load(std::memory_order_acquire);
+        }
     }
 }
 
 void DrawHelper::abandonPendingFrames()
 {
     for (auto &d : drawer) {
+        // Only frames somebody is actually waiting for. Marking an idle
+        // drawer would leave a stale FRAME_ABANDONED for its next user.
+        if (d.submitData.frameIdx == UINT8_MAX)
+            continue;
         int pending = 0;
         // 0 -> FRAME_ABANDONED only: a frame the worker already completed
         // keeps its 1, and the worker's own later store(1) may overwrite this
