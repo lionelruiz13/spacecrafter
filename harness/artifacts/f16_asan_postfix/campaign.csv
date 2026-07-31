@@ -1,0 +1,4 @@
+cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1
+1,frcmd,new,shutdown-cmd,cmd,22,CLEAN,"rc=0",0,0,5.34
+2,qda,new,SIGINT,sig,22,CLEAN,"rc=0",0,0,4.64
+3,oldsig,old,SIGINT,sig,21,CLEAN,"rc=0",0,0,5.18

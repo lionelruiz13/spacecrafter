@@ -1,0 +1,51 @@
+F16 (INTENT 11.124) — §5.51 ASan discrimination record
+Counts are of 'ERROR: AddressSanitizer' lines (the SUMMARY line repeats each
+type name, which is why a per-type grep reads double; the ERROR count is the
+report count).
+
+INSTRUMENT SETTING, load-bearing and NOT recorded by §11.122:
+  ASAN_OPTIONS=halt_on_error=0
+Without it (ASan default halt_on_error=1) the sanitizer prints ONE report and
+dies at rc=1, cutting the shutdown short — so the count is 1 whatever the true
+number is, and "shutdown runs to completion" cannot be read either. Measured
+both ways on the SAME pre-fix binary, 2026-07-31:
+  default options : 1 report, rc=1, shutdown cut short (artifacts deleted; the
+                    reproduction command is the one below without ASAN_OPTIONS)
+  halt_on_error=0 : 373 reports, rc=0  (artifacts/f16_asan_prefix_hoe0)
+§11.122's 373/746 figures are therefore only reproducible under halt_on_error=0.
+
+Binary: build-asan/src/spacecrafter (RelWithDebInfo + -fsanitize=address
+-fno-omit-frame-pointer -g), rebuilt at each leg. NB the ASan tree's source
+list is a CMake GLOB cached at configure time: after F9 added
+PhotosphereModule/PhotosphereLoader/SkinnableColorMap the tree failed to LINK
+until `cmake .` was re-run in build-asan (F17 will hit this on any new source).
+
+Command (both legs identical but for the binary):
+  DISPLAY=:2 ASAN_OPTIONS=halt_on_error=0 B7_MODE=plain B7_OUT=<out> \
+    B7_BIN=<build-asan>/src/spacecrafter ./b7_hunt.sh f16_asan_mix.txt
+
+PRE-FIX (code a958c05e), K=0 = shipped data, no composed scene:
+  plain_001_frcmd.log  : new-delete-type-mismatch=373  other classes=0  rc=0
+  plain_002_qda.log    : new-delete-type-mismatch=746  other classes=0  rc=0
+  plain_003_oldsig.log : new-delete-type-mismatch=373  other classes=0  rc=0
+
+POST-FIX (code 0dd0a938, `virtual ~BodyModule() = default;`), same probe:
+  plain_001_frcmd.log  : TOTAL ASan reports = 0   rc=0
+  plain_002_qda.log    : TOTAL ASan reports = 0   rc=0
+  plain_003_oldsig.log : TOTAL ASan reports = 0   rc=0
+
+So: 373 -> 0 (shutdown command), 746 -> 0 (SIGINT with a reload in flight, the
+reload doubling the population), 373 -> 0 (old render path); heap-use-after-free
+stays 0 (the §11.122(g) fix holds); and NO report of any other class appears,
+which is the check that matters most here — the 14 subclass destructors run for
+the first time ever, and releasing Sets/buffers/textures in an order nothing had
+exercised is exactly where a new class would have shown up.
+
+Not evidence, stated so it is not mistaken for it: LeakSanitizer produced no
+output in any run (0 'LeakSanitizer' lines pre- and post-fix, rc never 23), so
+the leak channel says nothing either way about the resources the skipped
+destructors used to abandon.
+
+Committed here: campaign.csv + summary.log per leg (the full plain_*.log files
+are 36 MB pre-fix and are not committed, following the b7h3_asan_reports
+convention).

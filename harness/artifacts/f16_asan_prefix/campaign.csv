@@ -1,0 +1,4 @@
+cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1
+1,frcmd,new,shutdown-cmd,cmd,21,FIRE,"rc=0 asan=373[AddressSanitizer: new-delete-type-mismatch]",0,0,2.95
+2,qda,new,SIGINT,sig,21,FIRE,"rc=0 asan=746[AddressSanitizer: new-delete-type-mismatch]",0,0,2.98
+3,oldsig,old,SIGINT,sig,22,FIRE,"rc=0 asan=373[AddressSanitizer: new-delete-type-mismatch]",0,0,3.18
