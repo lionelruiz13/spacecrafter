@@ -1284,7 +1284,15 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   b25_galactic, b40_parity, b4_anchors, scene E, f15_persist, b12 instruments, f18
   gates); frozen md5 in==out. §5.62 caution: no check may rest on a cross-epoch
   mid-band disc ratio (in-epoch pairs only).
-- **WIP:** —
+- **WIP:** 2026-08-01 — **checkpoint 1 done, code `b4105a83`**: §5.32 FIXED (reference
+  spin+reach refreshed at the top of `Camera::update`; `Camera::viewMat()` becomes the
+  one composition authority and `descend` reads it live). Both-ways gate
+  `harness/f20_s532.py` (+`--prefix`): burst-vs-spread descend 0.000 m post / 876.7 m
+  pre (179.999429 vs 180.876177 km — §11.108(e) reproduced to the digit); culled-
+  reference bound spin 36.000016° post / 0.000000° pre (36.000000 predicted). Battery
+  green (b24 120, b25 130/17, b40 17/17, b4 0 fail, scenes A–D, scene E 26/0,
+  f15_persist 26 ok), frozen md5 in==out. NEXT: the session artifact + manifest
+  (§3.2/§3.3) through the F13 writer.
 
 ---
 
