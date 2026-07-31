@@ -3,6 +3,7 @@
 
 #include "experimentalModule/BodyModule.hpp"
 #include "experimentalModule/meshModules/MeshFamilies.hpp"
+#include "experimentalModule/meshModules/SkinnableColorMap.hpp"
 #include "experimentalModule/meshModules/bodyShaderInterface.hpp"
 #include "tools/s_texture.hpp"
 #include "EntityCore/Forward.hpp"
@@ -28,26 +29,18 @@ public:
     // Skin seam (old Body::createTexSkin/switchMapSkin - contract at
     // BodyModule.hpp): swaps the color map at binding 2, never the big-texture
     // path (a script skin has no big texture; old binds tex_current the same way).
+    // The RULES live in SkinnableColorMap (I2 - shared with the star
+    // photosphere since B12); this module only binds what it is told to bind.
     virtual void createTexSkin(const std::string &texName) override;
     virtual void switchTexSkin(bool use) override;
     void invalidate();
 private:
-    // The drawn color texture (old Body::tex_current): the skin when active
-    // AND resident (a loading skin keeps the map bound - an s_texture bound
-    // before its upload is an uninitialized descriptor), else the map.
-    s_texture *activeColorTex();
     // One rebind site for every binding-state change (was 3 copy-pasted
     // blocks; the skin state would have made it 5).
     void bindColor(Texture &color);
     bool loaded = false;
-    // Binding-state key of the set's color slot: 0 = plain map,
-    // big-texture bit = TEXMAP1 mapping, BIND_SKIN = skin texture.
-    static constexpr uint16_t BIND_SKIN = 0x8000;
-    uint16_t texBinding = 0;
-    bool skinUse = false;
-    std::unique_ptr<s_texture> skinTexture;
     ObjL *mesh;
-    s_texture mapTexture;
+    SkinnableColorMap colorMap;
     PipelineFamily family; // MESH family handle (MeshFamilies::meshNormal)
     std::unique_ptr<Set> set; // allocated from the family's contract pools (Renderer::allocSet)
     SharedBuffer<globalVertProj> vert;

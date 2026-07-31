@@ -14,7 +14,7 @@
 #include "experimentalModule/bodyModules/TraceFamily.hpp"
 
 BasicMesh::BasicMesh(ObjL *mesh, const std::string &texturePath) : BodyModule(BodyModuleType::MESH),
-    mesh(mesh), mapTexture(FilePath(texturePath,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true),
+    mesh(mesh), colorMap(FilePath(texturePath,FilePath::TFP::TEXTURE).toString()),
     family(MeshFamilies::meshNormal()),
     set(Context::instance->renderer.allocSet(family, 0)),
     vert(*Context::instance->uniformMgr), frag(*Context::instance->uniformMgr)
@@ -30,11 +30,11 @@ bool BasicMesh::isLoaded()
 {
     if (loaded)
         return true;
-    if (mapTexture.isLoading())
+    if (colorMap.isLoading())
         return false;
     set->bindUniform(vert, 0);
     set->bindUniform(frag, 1);
-    set->bindTexture(mapTexture.getTexture(), 2);
+    set->bindTexture(colorMap.map().getTexture(), 2);
     // Binding 3 = the ShadowService blurred-layer array (always allocated at
     // Renderer::init, independent of the enabled flag - a valid descriptor
     // must exist even when shadows are off).
@@ -45,15 +45,7 @@ bool BasicMesh::isLoaded()
 
 void BasicMesh::preload(ModularBody *body)
 {
-    int tmp = s_texture::setBigTextureLifetime(100);
-    mapTexture.prioritize(LoadPriority::PRELOAD);
-    mapTexture.getBigTexture();
-    s_texture::setBigTextureLifetime(tmp);
-}
-
-s_texture *BasicMesh::activeColorTex()
-{
-    return (skinUse && skinTexture && !skinTexture->isLoading()) ? skinTexture.get() : &mapTexture;
+    colorMap.preload();
 }
 
 void BasicMesh::bindColor(Texture &color)
@@ -67,18 +59,12 @@ void BasicMesh::bindColor(Texture &color)
 
 void BasicMesh::createTexSkin(const std::string &texName)
 {
-    // Old parity (Body::createTexSkin): creating or replacing a skin resets
-    // the drawn texture to the map; activation is switchTexSkin's job. Load
-    // type/flags mirror old exactly (PNG_SOLID_REPEAT, mipmap, resolution).
-    skinUse = false;
-    skinTexture = std::make_unique<s_texture>(FilePath(texName, FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true, true);
+    colorMap.createSkin(texName);
 }
 
 void BasicMesh::switchTexSkin(bool use)
 {
-    if (use && !skinTexture)
-        return; // old parity: switchMapSkin(true) without a skin is a no-op
-    skinUse = use;
+    colorMap.switchSkin(use);
 }
 
 void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
@@ -99,23 +85,11 @@ void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
     vert->planetOneMinusOblateness = body->getOneMinusOblateness();
     fillPlainShadows(frag, body, this);
     const auto screenSize = body->getScreenSize();
-    // Binding-state machine: every transition (skin on/off, skin load
-    // completion, big texture appear/drop) lands on exactly one compare.
-    if (s_texture *color = activeColorTex(); color != &mapTexture) {
-        if (texBinding != BIND_SKIN) {
-            bindColor(color->getTexture());
-            texBinding = BIND_SKIN;
-        }
-    } else if (screenSize > 0.2) {
-        TEXMAP1(mapTexture);
-        if (texBinding != texmap) {
-            bindColor(TEX(0, mapTexture));
-            texBinding = texmap;
-        }
-    } else if (texBinding) {
-        bindColor(mapTexture.getTexture());
-        texBinding = 0;
-    }
+    // Binding-state machine (SkinnableColorMap - the shared authority): every
+    // transition (skin on/off, skin load completion, big texture appear/drop)
+    // lands on exactly one compare, and only a CHANGE comes back here.
+    if (Texture *color = colorMap.resolve(screenSize > 0.2))
+        bindColor(*color);
     bound.layout->bindSets(renderer, {*set, *Context::instance->uboSet});
 	mesh->draw(renderer, screenSize*1024);
 }
@@ -138,15 +112,8 @@ void BasicMesh::drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &
     fillPlainShadows(frag, body, this);
     // Same binding-state machine as draw(), minus the big-texture branch
     // (the noDepth band never engages big textures).
-    if (s_texture *color = activeColorTex(); color != &mapTexture) {
-        if (texBinding != BIND_SKIN) {
-            bindColor(color->getTexture());
-            texBinding = BIND_SKIN;
-        }
-    } else if (texBinding) {
-        bindColor(mapTexture.getTexture());
-        texBinding = 0;
-    }
+    if (Texture *color = colorMap.resolve(false))
+        bindColor(*color);
     bound.layout->bindSets(renderer, {*set, *Context::instance->uboSet});
 	mesh->drawLow(renderer);
 }
