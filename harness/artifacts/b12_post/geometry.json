@@ -1,0 +1,153 @@
+{
+  "s1_geom": {
+    "dist": 1.01658881,
+    "screen": [
+      -5.65894061e-06,
+      -3.33394183e-07
+    ],
+    "screenSize": 0.262218118,
+    "boundingRadius": 0.00465247268,
+    "visible": true,
+    "modules": [
+      "MESH",
+      "AXIS",
+      "HINT",
+      "CUSTOM"
+    ],
+    "routing": {
+      "far": 2,
+      "near": 2,
+      "grounded": 0,
+      "in": 0,
+      "orbit": 0,
+      "trail": 0,
+      "tail": 0
+    }
+  },
+  "s4_geom": {
+    "dist": 1.01658881,
+    "screen": [
+      -5.65894027e-07,
+      -3.33394183e-08
+    ],
+    "screenSize": 0.0262218118,
+    "boundingRadius": 0.00465247268,
+    "visible": true,
+    "modules": [
+      "MESH",
+      "AXIS",
+      "HINT",
+      "CUSTOM"
+    ],
+    "routing": {
+      "far": 2,
+      "near": 2,
+      "grounded": 0,
+      "in": 0,
+      "orbit": 0,
+      "trail": 0,
+      "tail": 0
+    }
+  },
+  "s5_geom": {
+    "dist": 1.01658881,
+    "screen": [
+      -1.131788e-07,
+      -6.66788313e-09
+    ],
+    "screenSize": 0.00524436217,
+    "boundingRadius": 0.00465247268,
+    "visible": true,
+    "modules": [
+      "MESH",
+      "AXIS",
+      "HINT",
+      "CUSTOM"
+    ],
+    "routing": {
+      "far": 2,
+      "near": 2,
+      "grounded": 0,
+      "in": 0,
+      "orbit": 0,
+      "trail": 0,
+      "tail": 0
+    }
+  },
+  "n4_geom": {
+    "dist": 1.01658881,
+    "screen": [
+      -6.28771133e-08,
+      -3.70437969e-09
+    ],
+    "screenSize": 0.00291353441,
+    "boundingRadius": 0.00465247268,
+    "visible": true,
+    "modules": [
+      "MESH",
+      "AXIS",
+      "HINT",
+      "CUSTOM"
+    ],
+    "routing": {
+      "far": 2,
+      "near": 2,
+      "grounded": 0,
+      "in": 0,
+      "orbit": 0,
+      "trail": 0,
+      "tail": 0
+    }
+  },
+  "s3_geom_a": {
+    "dist": 0.0116311815,
+    "screen": [
+      6.37186304e-09,
+      2.54874521e-08
+    ],
+    "screenSize": 0.261979759,
+    "boundingRadius": 0.00465247268,
+    "visible": true,
+    "modules": [
+      "MESH",
+      "AXIS",
+      "HINT",
+      "CUSTOM"
+    ],
+    "routing": {
+      "far": 2,
+      "near": 2,
+      "grounded": 0,
+      "in": 0,
+      "orbit": 0,
+      "trail": 0,
+      "tail": 0
+    }
+  },
+  "s3_geom_b": {
+    "dist": 0.0116311815,
+    "screen": [
+      -2.54874521e-08,
+      5.09749043e-08
+    ],
+    "screenSize": 0.261979759,
+    "boundingRadius": 0.00465247268,
+    "visible": true,
+    "modules": [
+      "MESH",
+      "AXIS",
+      "HINT",
+      "CUSTOM"
+    ],
+    "routing": {
+      "far": 2,
+      "near": 2,
+      "grounded": 0,
+      "in": 0,
+      "orbit": 0,
+      "trail": 0,
+      "tail": 0
+    }
+  },
+  "md5_ok": true
+}

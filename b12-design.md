@@ -220,17 +220,21 @@ makes it defensible without a Vixy tuning pass (contrast A15's constant family).
 (`distance < scaledRadius`) are meaningful for a star only if the operator can fly
 there. Free descent stops at `groundRadius` (= `radius` by default), so `in` is
 unreachable for the shipped Sun without an authored `ground_radius = 0`
-[observed: ModularBody.hpp:126-140]. The family therefore:
-- routes the photosphere into `near` **and** `grounded` (the grounded list is what
-  draws in the last two body-radii — dropping it there would blank the Sun exactly
-  when it fills the screen);
+[observed: ModularBody.hpp:126-140].
+
+**The `grounded` band is empty for EVERY shipped body, not just for stars**: no
+shipped module routes into `groundedComponents` [observed: the loaders' `add*Component`
+calls; measured: `routing.grounded == 0` on the Sun in every dump this task took], so
+between 1 and 2 body radii from a centre, a body large on screen draws *nothing at
+all*. That is the standing G4 gap — "*Surface-segment drawing (near-ground
+substitution): **Missing***" [INTENT §2.1 table] — and it belongs to D4's
+surface-segment line, not to B12. The star family therefore:
+- routes the photosphere into `near` **only**, which is byte-identical routing to
+  today's `BasicMesh`, so the slice adds no unexercised path and no star-specific
+  exception to a gap every body shares;
+- inherits the `grounded` answer from whatever closes that gap generally;
 - claims **nothing** about `in`. "What do you see inside a star" is a product question
   (§7 D2), recorded, not answered.
-
-*(Phase 2 scope note: the slice below routes `near` only — byte-identical routing to
-today's `BasicMesh` — because `grounded` for the Sun is unreachable-without-descent
-and adding a second routing target in the same slice would put an unexercised path in
-the tree. §10.1.)*
 
 ---
 
@@ -241,7 +245,7 @@ the tree. §10.1.)*
 | module | slot / loader family | regime list | owns |
 |---|---|---|---|
 | `StarModule` (**exists**, §11.44) | `CUSTOM` (deduced; StarLoader bids 200) | `far` | the unresolved star: the additive screen-space big halo |
-| **`PhotosphereModule`** (new) | `MESH` (deduced by the existing `tex_map` rule; a new `PhotosphereLoader` bids 200 on `isStar()`) | `near` (later `grounded`) | the star's own emitted surface radiance: emissive map × limb darkening; later granulation + spots as a **variant axis** |
+| **`PhotosphereModule`** (new) | `MESH` (deduced by the existing `tex_map` rule; a new `PhotosphereLoader` bids 200 on `isStar()`) | `near` (`grounded` when the general gap closes, §3.4) | the star's own emitted surface radiance: emissive map × limb darkening; later granulation + spots as a **variant axis** |
 | **`ChromosphereModule`** (later) | its own family key (§9.2 — a grammar word, sign-off) | `near`, translucent | the non-uniform reddish shell above the limb (Q21's second half); the `big_star_corona.frag` lineage |
 
 ### 4.2 How the MESH is suppressed for stars — by COMPETITION, not by a gate

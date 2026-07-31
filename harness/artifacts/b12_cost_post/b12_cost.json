@@ -1,0 +1,38 @@
+{
+  "dwell_target_s": 20.0,
+  "counter_body": "Earth",
+  "FAR": {
+    "tag": "far",
+    "frames": 3225,
+    "dwell_s": 20.0,
+    "fps": 161.249,
+    "ms_per_frame": 6.20157,
+    "sun_screenSize": 0.00291353441
+  },
+  "NEAR": {
+    "tag": "near",
+    "frames": 3226,
+    "dwell_s": 20.0,
+    "fps": 161.299,
+    "ms_per_frame": 6.19966,
+    "sun_screenSize": 0.262218118
+  },
+  "NOSUN": {
+    "tag": "nosun",
+    "frames": 3226,
+    "dwell_s": 20.0,
+    "fps": 161.299,
+    "ms_per_frame": 6.19965,
+    "sun_screenSize": 0.262218118
+  },
+  "NEAR2": {
+    "tag": "near2",
+    "frames": 3226,
+    "dwell_s": 20.0,
+    "fps": 161.299,
+    "ms_per_frame": 6.19965,
+    "sun_screenSize": 0.262218118
+  },
+  "near_minus_nosun_ms": 1e-05,
+  "near2_minus_nosun_ms": 0.0
+}

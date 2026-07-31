@@ -1,0 +1,117 @@
+{
+  "n1_earth_surface": {
+    "b12_pre vs b12_pre2": {
+      "px>0": 0,
+      "px>8": 0,
+      "px>32": 0,
+      "max": 0
+    },
+    "b12_pre vs b12_post": {
+      "px>0": 212219,
+      "px>8": 309,
+      "px>32": 110,
+      "max": 168
+    },
+    "b12_pre vs b12_post2": {
+      "px>0": 47897,
+      "px>8": 22,
+      "px>32": 0,
+      "max": 26
+    },
+    "b12_pre2 vs b12_post": {
+      "px>0": 212219,
+      "px>8": 309,
+      "px>32": 110,
+      "max": 168
+    },
+    "b12_pre2 vs b12_post2": {
+      "px>0": 47897,
+      "px>8": 22,
+      "px>32": 0,
+      "max": 26
+    },
+    "b12_post vs b12_post2": {
+      "px>0": 203830,
+      "px>8": 301,
+      "px>32": 110,
+      "max": 162
+    }
+  },
+  "n2_moon": {
+    "b12_pre vs b12_pre2": {
+      "px>0": 13094,
+      "px>8": 34,
+      "px>32": 0,
+      "max": 32
+    },
+    "b12_pre vs b12_post": {
+      "px>0": 318597,
+      "px>8": 14643,
+      "px>32": 1187,
+      "max": 108
+    },
+    "b12_pre vs b12_post2": {
+      "px>0": 174913,
+      "px>8": 2280,
+      "px>32": 19,
+      "max": 42
+    },
+    "b12_pre2 vs b12_post": {
+      "px>0": 318618,
+      "px>8": 14667,
+      "px>32": 1190,
+      "max": 108
+    },
+    "b12_pre2 vs b12_post2": {
+      "px>0": 174973,
+      "px>8": 2272,
+      "px>32": 19,
+      "max": 42
+    },
+    "b12_post vs b12_post2": {
+      "px>0": 313107,
+      "px>8": 14225,
+      "px>32": 1097,
+      "max": 100
+    }
+  },
+  "n3_mars": {
+    "b12_pre vs b12_pre2": {
+      "px>0": 704,
+      "px>8": 0,
+      "px>32": 0,
+      "max": 3
+    },
+    "b12_pre vs b12_post": {
+      "px>0": 16500,
+      "px>8": 12,
+      "px>32": 4,
+      "max": 58
+    },
+    "b12_pre vs b12_post2": {
+      "px>0": 3081,
+      "px>8": 0,
+      "px>32": 0,
+      "max": 7
+    },
+    "b12_pre2 vs b12_post": {
+      "px>0": 16023,
+      "px>8": 12,
+      "px>32": 4,
+      "max": 58
+    },
+    "b12_pre2 vs b12_post2": {
+      "px>0": 3283,
+      "px>8": 0,
+      "px>32": 0,
+      "max": 7
+    },
+    "b12_post vs b12_post2": {
+      "px>0": 15957,
+      "px>8": 11,
+      "px>32": 4,
+      "max": 57
+    }
+  },
+  "__note__": "2x2 discrimination: SAME-binary pairs (pre|pre2, post|post2) span the same range as CROSS-binary pairs, so the binary is not a discriminating variable on these scenes."
+}

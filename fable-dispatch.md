@@ -808,11 +808,13 @@ corrected: it was written, then destroyed by the same edit.]*
   emissive), spots/granulation as content later.
 - **Discriminating check:** near-Sun approach scene — disc no longer dark, limb
   darkening measurable radially; far-regime bit-inert (family gated off).
-- **WIP:** 2026-07-31 — PHASE 1 DONE: design note `claude/b12-design.md` committed
-  (regime boundary, family shape, I4 homes, rejected alts, veto points V1–V4,
-  D11 budget, D9 story = no new product surface in the slice; no STOP — D1–D4 are
-  content-slice decisions, none blocks the slice). Next: Phase 2 implementation
-  (PhotosphereModule + family + loader under MESH, near list only).
+- **WIP:** 2026-07-31 — PHASE 1 + PHASE 2 CODE DONE, measurements green. Design
+  note `claude/b12-design.md`; code `3f137ef9` (SkinnableColorMap), `be6b2a84`
+  (pool per-set capacity fix — forced, my contract exposed it), `a958c05e`
+  (PhotosphereModule + STAR_SURFACE family + loader). Measured: disc median
+  15→539 vs old 542; law rms err 0.0039 (1 AU) / 0.0031 (2.5 R☉); per-pixel
+  residual 4.1/255; 0 VUID, 0 validation warnings (7→0). Next: battery
+  (b24/b25/b40/b4/scene-E/twins), then INTENT §11.123 + §13 flip.
 
 ---
 
