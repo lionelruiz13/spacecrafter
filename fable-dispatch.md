@@ -126,15 +126,17 @@ week of August).
      On hit: record it, wait it out, launch fresh. F8's `b7h3_host.log`
      batch-boundary check is the precedent instrument.
    - **Display architecture is part of the instrument (2026-07-31, §11.122(o) +
-     §11.123(o)):** claude renders on his OWN headless GNOME/Xwayland `:2` (GPU-real;
-     the harness default); Vixy's remmina/RDP relay is view-only and its CPU is
-     coupled to what WE draw. The frame-cadence cap (161.3 fps) follows the SEAT's
-     PHYSICAL PANEL, not the session (`:2`'s virtual monitor advertises 59.96 Hz —
-     measured; mechanism = driver-level vblank pacing [derived]) — so screen
-     power-off or a mode change MOVES the cap and is a stated operator intent:
-     expected, not anomalous. Cadence/A-A-sensitive work must be in-run A/B;
-     never compare cadence across sessions; a stack change (compositor, streamer,
-     headless X) ⇒ report + re-baseline.
+     §11.123(o)/(o2)):** claude renders on his OWN headless GNOME/Xwayland `:2`
+     (GPU-real; the harness default); Vixy's remmina/RDP relay is view-only and its
+     CPU is coupled to what WE draw. The "161.3 fps" cadence label is UNATTRIBUTED
+     among three clocks that all fail to match it exactly (config `maximum_fps = 144`,
+     `:2` virtual monitor 59.96, panel 164.5) — sharpest hypothesis: the dwell's
+     "20 s" denominator was nominal and the true cadence is EXACTLY the config cap
+     (§11.123(o2), H1; discriminating check owed by the next cadence-touching task:
+     wall-clock-bracketed counter reads). Until settled: trust counter RATIOS and
+     in-run A/B only; never absolute fps labels, never cross-session cadence; a
+     stack change (compositor, streamer, headless X, screen power state) ⇒ report +
+     re-baseline.
 6. Abort-tolerance discipline (the reason this file exists):
    - Commit code + harness at **every green checkpoint** (small commits, normal
      trailer discipline: code first, harness carries `Code: <branch> @ <short-sha>`).
