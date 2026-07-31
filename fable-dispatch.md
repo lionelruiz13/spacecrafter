@@ -1229,6 +1229,63 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   discovery path). Checkpoint-WIP line consolidated into this one by the
   supervisor (protocol: cleared at delivery).
 
+### F20 — B31-impl slice 3: the session file (§3.2) + the §5.32 precondition fix  [L]
+- **Row / recorded:** B31 (§13.B — remaining sequence after §11.121: *"the session file
+  (§3.2) and the ledger (§2 group D)"*) · `b31-design.md` §3.2/§3.3/§3.5 (the authority:
+  session file `~/.spacecrafter/sessions/<name>.ini`, machine-owned + disposable; the
+  MANIFEST; trigger `session action save [filename <name>]` / `session action load
+  filename <name>`, one registration serving channels 1–5 per §11.55(h)) · §6.1 (the
+  save is a D8 USE-SITE: first consumer touching EVERY body — frozen bodies recomputed
+  at use +4 iterations per the §11.76 barrier; read the MODEL, never control-surface
+  getters (§3.4(e)/B33); **§5.32's fix is a stated PRECONDITION of a trustworthy
+  save**) · §5.32 row verbatim + its §11.108(e) measured observable (descend
+  compounding ×0.899997 linear vs ×0.9043821 geometric, residual 0.59 m) · D30/D32/D33/
+  D36 verbatim (§11.113(i)(k)(l)(o): hybrid delta-where-authored; transients snap to
+  settled target, carve-outs = view-offset armed latch, screen fader, trail points;
+  EXPLICIT ONLY, load = idempotent PRESET; declarative show state IN, time-bearing
+  OUT) · §2 state inventory groups A–C, E–K (group D is the NEXT slice) · §6.2 checks
+  T1/T2/T4/T5/T10 · §6.3 (md5 of every untargeted data file unchanged after a save).
+- **Why now:** §11.110's own sequencing, fourth step; the ledger slice builds INTO this
+  artifact, so it cannot precede it.
+- **Task:** (i) **§5.32 FIRST** — the row's own identified fix (recompute the
+  reference's spin+reach at the top of `Camera::update`); it closes spin, persistent-
+  longitude and the reference half of the B15 residual, and unblocks T10. (ii) The
+  session artifact + manifest per §3.2/§3.3, serializing the §2 inventory (groups A–C,
+  E–K by their MUST-SAVE/DERIVED/EXCLUDED classes) through the F13 writer — ONE
+  serialization authority (I2). The §3.3 in-session unload/reload twin is IN scope only
+  as far as it is the SAME code path the design claims; if it needs its own increment,
+  record the boundary, don't force it. (iii) The trigger commands per §3.5, spelling
+  recorded as a VETO POINT (B28 protocol; F7/F15 precedent). (iv) D8 use-site honored
+  (frame-boundary task, I/O off the draw thread, atomic sibling-temp-then-rename).
+  (v) Load idempotent (D33), D32 snap-to-settled with its named carve-outs, D36
+  boundary enforced.
+- **MANDATED CARVE-OUTS (state them in the entry; both behind late-August decisions):**
+  `heading` (group B6) is NOT serialized — its meaning across a reference change is
+  D28's open question; its exclusion is recorded IN the session file (annotation naming
+  D28) so a later slice can add it without archaeology. T3 (the §11.101(f) latch
+  prediction) is NOT this slice's DoD — sequenced with D21/§5.27; T1's scene must not
+  stake its criterion on the D21-gated combination (grounded child under a scaled
+  parent) — compose the scene around it and FLAG the composition as a deviation.
+- **Stop boundaries (NOT yours):** group D per-body ledger + T7/T8 (next slice); T3/
+  D21; `heading`/D28; §5.41/§5.42 old save surfaces (the session file REPLACES them —
+  record-don't-fix stands); autosave/autoload in any form incl. a config key (D33's
+  answer); legacy `ssystem.ini` never written (D35/§2.0 D13, md5 in==out asserted);
+  §11.109(h2) whitespace-key semantics (SUSPENDED); §11.109(h3) same-name collision
+  (record, never decide).
+- **Discriminating check:** §5.32: the §11.108(e) observable FLIPS (ten same-frame
+  `descend(0.99)` compound geometrically ×0.9043821 post-fix vs linear ×0.9 pre-fix,
+  both-ways on the pre-fix binary) + longitude round-trips. T1 (screen, A/A floor
+  measured in-scene per §11.80(a), same binary both sides). T2 (dump field-by-field;
+  extend with the gap dumps it names — `lockedSkyRot`, the plans — NOT the per-body
+  ledger dump). T4 (fixed point: second session file byte-identical). T5(a)(b) (the
+  instrument must be able to fail, `--mutate` shape). T10 (frozen-body save equals
+  never-frozen within the recompute tolerance — the use-site barrier proof). §6.3 md5
+  sweep (every untargeted data file unchanged). Battery green (b24_equivalence,
+  b25_galactic, b40_parity, b4_anchors, scene E, f15_persist, b12 instruments, f18
+  gates); frozen md5 in==out. §5.62 caution: no check may rest on a cross-epoch
+  mid-band disc ratio (in-epoch pairs only).
+- **WIP:** —
+
 ---
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
