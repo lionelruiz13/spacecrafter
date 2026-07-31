@@ -146,9 +146,23 @@ struct ShadowCaster {
 // stall; draw*() must be callable with partial resources (the drawLoaded path
 // draws whatever is resident - together with the always-resident lowest LoD,
 // something drawable always exists).
+// Destruction: a module is owned polymorphically (ModularBody::components is a
+// vector<unique_ptr<BodyModule>>) and therefore deleted through THIS type, so
+// the destructor must be virtual - without it every subclass destructor is
+// skipped and the module's own resources (Sets, buffers, textures) are never
+// released ([expr.delete]/3 UB; INTENT §5.51 measured it as 373 ASan
+// new-delete-type-mismatch reports per shutdown, 746 across a reload). Free in
+// layout: the class already has a vtable. What a subclass destructor may do is
+// bounded by WHEN it runs: bodies die with the tree, i.e. before Context and
+// its managers (the pools/BufferMgrs a Set or VertexBuffer releases into are
+// still alive - Renderer::allocSet states the same invariant from the other
+// side), but also mid-session on `body action reload`, where the release
+// happens between frames rather than after a waitIdle - so a module must
+// release only through the deferred-release channels its resources provide.
 class BodyModule {
 public:
     BodyModule(BodyModuleType type = BodyModuleType::CUSTOM) : type(type) {}
+    virtual ~BodyModule() = default;
     // Return true if this body module is loaded
     virtual bool isLoaded() {
         return true;
