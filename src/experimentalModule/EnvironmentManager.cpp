@@ -15,6 +15,21 @@ EnvironmentManager::EnvironmentManager(MilkyWay *milky, Atmosphere *atmosphere) 
     instance = this;
 }
 
+EnvironmentManager::~EnvironmentManager()
+{
+    // `instance` is a NON-OWNING back-reference that outlives nothing: the
+    // notifyBodyDestroyed guard below already states the invariant "no manager
+    // => nothing to notify", but nothing ever re-established it at the other
+    // end of the lifetime. SSystemFactory destroys its `environment` member
+    // BEFORE the modular system whose bodies notify it, so every ModularBody
+    // destroyed during shutdown read a FREED manager. I5: a non-owning
+    // reference is legal only if lifetime-guaranteed or destruction-notified;
+    // this one is now destruction-notified, by its owner, at the only moment
+    // that can know.
+    if (instance == this)
+        instance = nullptr;
+}
+
 void EnvironmentManager::setLandscape(Landscape *landscape)
 {
     LandscapeEnv::engine = landscape;

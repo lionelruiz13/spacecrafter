@@ -50,6 +50,7 @@ class ToneReproductor;
 class EnvironmentManager {
 public:
     EnvironmentManager(MilkyWay *milky, Atmosphere *atmosphere);
+    ~EnvironmentManager();
     // deltaTime in seconds. driveEngines: only the active (drawing) path may
     // write shared engine state - the modular phase flag during migration.
     void update(Camera &camera, double jd, float deltaTime, bool driveEngines);
