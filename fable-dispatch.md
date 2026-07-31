@@ -925,18 +925,20 @@ corrected: it was written, then destroyed by the same edit.]*
   `surface_point` body still draws (b24_screen rovers = the standing control); a valid
   push-channel body still lands. Battery green (b24_equivalence, b25_galactic,
   b40_parity, b4_anchors, scene E, f15_persist); frozen md5 in==out.
-- **WIP:** 2026-07-31 ckpt2 — §5.51 fix landed (code `0dd0a938`). ASan both-ways
-  GREEN (373/746/373 → 0/0/0, rc=0, no new class; `f16_asan_prefix` /
-  `f16_asan_postfix`; instrument setting `ASAN_OPTIONS=halt_on_error=0`, which
-  §11.122 did not record). Validation leg GREEN (layer positively loaded AND
-  shown able to fire, 0 VUID on both channels, rc=0 on the cmd AND sig arms with
-  a completed mid-session reload). NEW **§5.55** (drawing the rotation axis once
-  aborts the process at exit — deterministic, both ways, independent of the fix)
-  and **§5.56** recorded, both record-don't-fix. ckpt3 — §5.50 bail-out landed
-  (code `ebb41ab2`), both ways: pre-fix rc=139 SIGSEGV on the row's verbatim
-  repro, post-fix rc=0 + actionable warn + skipped on old / created on new
-  (dual_dump witness), controls green incl. b24_screen A1–A5. Next: native N≥50
-  quiet batch on the delivered binary, then the rest of the battery + §11.124.
+- **WIP:** — **DELIVERED 2026-07-31 → §11.124** (code `0dd0a938` §5.51 + `ebb41ab2`
+  §5.50; harness `732386e`/`39b0ac9`/`fef791b`/entry). §5.51 and §5.50 both
+  CLOSED at §5. ASan 373/746/373 → 0/0/0 with no new report class, rc=0,
+  re-measured on the delivered binary; validation layer positively loaded, its
+  channel located (`vulkan.log`) and shown able to fire, 0 VUID on both teardown
+  entries after a completed mid-session reload; native quiet batch **54/54
+  CLEAN, 0 fires, 0 hangs**; battery green (b24_equivalence 120, b25_galactic
+  130/17, b40_parity 18 twins, b4_anchors 0 fail, scene E 26/0, f15_persist all
+  green); frozen md5 in==out. NEW **§5.55** (drawing the rotation axis once kills
+  the process at exit — deterministic both ways on BOTH binaries, SIGABRT
+  natively / SIGSEGV under gdb: the first §11.15d-class fire that reproduces on
+  demand) and **§5.56**, both record-don't-fix. For F17: post-F16 binary is
+  `ebb41ab2`, `build-asan` rebuilt at it (re-run `cmake .` there after any new
+  source), and the teardown ASan baseline is now SILENT.
 
 ### F17 — B7-hunt-4: the sanitizer mix + the HUNG settle  [M–L]
 - **Row / recorded:** B7 (§13.B) · §11.122(m) verbatim: *"run the ASan tree (83 s to

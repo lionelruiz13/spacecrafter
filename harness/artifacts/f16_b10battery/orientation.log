@@ -1,0 +1,23 @@
+jd=2461233.5000139126 reference=Earth
+
+body        P-a cur|old_r  P-b fix|old_r  P-c fix|old_o  old_o|old_r
+Moon              23.4393         0.3707         0.0000       0.3704
+Charon           115.6000         0.0000         0.0000       0.0000
+Sun              163.9025       163.9025       163.9025       0.0000
+Mars               0.0000         0.0000         0.0000       0.0000
+Earth              0.0000         0.0000         0.0000       0.0000
+Pluto              0.0000         0.0000         0.0000       0.0000
+
+== planet-moon spectrum (cur = own-only vs old_r; fix = R_P.R_m vs old_r)
+  Sycorax      Uranus    cur=  83.0368 fix= 154.7452
+  Setebos      Uranus    cur=  83.0368 fix= 154.7452
+  Prospero     Uranus    cur=  83.0368 fix= 154.7452
+  Caliban      Uranus    cur=  83.0368 fix= 154.7452
+  Hyperion     Saturn    cur= 169.8409 fix= 121.4371
+  Sao          Neptune   cur=  56.0178 fix=  54.3137
+  Psamathe     Neptune   cur=  56.0178 fix=  54.3137
+  Neso         Neptune   cur=  56.0178 fix=  54.3137
+  67 moons: 17 parity-RESTORED by fix, 48 named-divergent (commutator class)
+
+== P-d reference 'Earth': angle(rot(new mat), rot(C)) = 0.0000 deg
+   (current code predicts the accumulated-vs-own gap; after the fix this must be 0.0000)

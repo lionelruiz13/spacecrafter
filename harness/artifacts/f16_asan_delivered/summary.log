@@ -1,0 +1,15 @@
+==== B7 HUNT [plain] batch start 2026-07-31T10:48:28+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/f16_asan_delivered append=0 cyc0=0 ====
+BIN mtime=2026-07-31 10:48:21.245431368 +0200  code HEAD=ebb41ab2  harness HEAD=fef791b
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+composed-body axis: B7_ROVERS=0  scene=none (§11.95 reproduction)  scene_pre_existed=0
+host at batch start: loadavg=5.86 4.20 3.37  memavail=13,6GiB
+batch teardowns: 3  (cycle ids 1..3)
+cyc 1 frcmd [new/shutdown-cmd] tcp=21s: CLEAN (rc=0)
+cyc 2 qda [new/SIGINT] tcp=21s: CLEAN (rc=0)
+cyc 3 oldsig [old/SIGINT] tcp=21s: CLEAN (rc=0)
+==== B7 HUNT [plain] batch done 2026-07-31T10:49:59+02:00 ====
+host at batch end: loadavg=4.47 4.20 3.45  memavail=14,0GiB
+ssystem md5 at end=545a51ef76294891579a1fc2fe13792b
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+      3 CLEAN
