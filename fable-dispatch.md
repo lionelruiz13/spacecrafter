@@ -125,13 +125,16 @@ week of August).
      `~/.spacecrafter`), so md5 re-asserts alone do not cover a concurrent launcher.
      On hit: record it, wait it out, launch fresh. F8's `b7h3_host.log`
      batch-boundary check is the precedent instrument.
-   - **Display architecture is part of the instrument (2026-07-31, §11.122(o)):**
-     claude renders on his OWN headless GNOME/Xwayland `:2` (GPU-real; the harness
-     default); Vixy's remmina/RDP relay is view-only and its CPU is coupled to what
-     WE draw. Frame-cadence figures and A/A floors are baselined under this stack —
-     if it ever changes (compositor, streamer, headless X), or a task suspects
-     viewer-attached vs detached pacing, re-baseline in-run instead of comparing
-     across sessions.
+   - **Display architecture is part of the instrument (2026-07-31, §11.122(o) +
+     §11.123(o)):** claude renders on his OWN headless GNOME/Xwayland `:2` (GPU-real;
+     the harness default); Vixy's remmina/RDP relay is view-only and its CPU is
+     coupled to what WE draw. The frame-cadence cap (161.3 fps) follows the SEAT's
+     PHYSICAL PANEL, not the session (`:2`'s virtual monitor advertises 59.96 Hz —
+     measured; mechanism = driver-level vblank pacing [derived]) — so screen
+     power-off or a mode change MOVES the cap and is a stated operator intent:
+     expected, not anomalous. Cadence/A-A-sensitive work must be in-run A/B;
+     never compare cadence across sessions; a stack change (compositor, streamer,
+     headless X) ⇒ report + re-baseline.
 6. Abort-tolerance discipline (the reason this file exists):
    - Commit code + harness at **every green checkpoint** (small commits, normal
      trailer discipline: code first, harness carries `Code: <branch> @ <short-sha>`).
