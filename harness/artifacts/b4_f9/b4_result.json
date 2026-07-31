@@ -1,0 +1,377 @@
+{
+ "predictions": {
+  "per_switch_euler_floor_rad": 4.799999999693938e-07,
+  "orb_px32": 3476
+ },
+ "checks": [
+  {
+   "ok": true,
+   "text": "14 anchors declared (10 shipped + 4 B4), got 14",
+   "count": 14,
+   "declared": [
+    "un_point",
+    "un_point_sur_terre",
+    "orbit_autour_lune",
+    "orbit_autour_point",
+    "baryEarthMoon",
+    "pleiades",
+    "big_dipper",
+    "center_sun",
+    "galaxy_center",
+    "sun_in_gal",
+    "b4_orbit_moon",
+    "b4_mars_keepangle",
+    "b4_mars_follow",
+    "b4_fixed"
+   ]
+  },
+  {
+   "ok": true,
+   "text": "authored anchor 'b4_orbit_moon' declared"
+  },
+  {
+   "ok": true,
+   "text": "authored anchor 'b4_mars_keepangle' declared"
+  },
+  {
+   "ok": true,
+   "text": "authored anchor 'b4_mars_follow' declared"
+  },
+  {
+   "ok": true,
+   "text": "authored anchor 'b4_fixed' declared"
+  },
+  {
+   "ok": true,
+   "text": "b4_orbit_moon is a new-path-only body of bodyType ANCHOR(1)"
+  },
+  {
+   "ok": true,
+   "text": "b4_orbit_moon is HIDDEN (relation 1 < 3) - outside the draw and pick sweeps"
+  },
+  {
+   "ok": true,
+   "text": "b4_fixed is a new-path-only body of bodyType ANCHOR(1)"
+  },
+  {
+   "ok": true,
+   "text": "b4_fixed is HIDDEN (relation 1 < 3) - outside the draw and pick sweeps"
+  },
+  {
+   "ok": true,
+   "text": "floor leg 0: POSE bit-identical across a no-op switch"
+  },
+  {
+   "ok": true,
+   "text": "floor leg 1: POSE bit-identical across a no-op switch"
+  },
+  {
+   "ok": true,
+   "text": "floor leg 2: POSE bit-identical across a no-op switch"
+  },
+  {
+   "ok": true,
+   "text": "floor leg 3: POSE bit-identical across a no-op switch"
+  },
+  {
+   "ok": true,
+   "text": "floor leg 4: POSE bit-identical across a no-op switch"
+  },
+  {
+   "ok": true,
+   "text": "floor drift is LINEAR in the extraction count: 4 switches give 1.20e-06 rad <= 4 x F (1.92e-06)",
+   "F": 4.799999999693938e-07,
+   "cumulative": 1.2000000000345068e-06
+  },
+  {
+   "ok": true,
+   "text": "camera reference is the anchor"
+  },
+  {
+   "ok": true,
+   "text": "anchor radius |ecl| = 199999.996 / 200000.002 km (authored 200000.0)",
+   "r0": 199999.99634178018,
+   "r1": 200000.00205452705
+  },
+  {
+   "ok": true,
+   "text": "anchor moved 153073.369 km, predicted 2a.sin(pi.dt/P) = 153073.373 km (2.52e-08 rel)",
+   "chord": 153073.3690937832,
+   "predicted": 153073.3729460359
+  },
+  {
+   "ok": true,
+   "text": "the MOON itself moved 5886.7 km over the same interval",
+   "moon_km": 5886.744184843598
+  },
+  {
+   "ok": true,
+   "text": "camera-to-anchor distance delta = 0.000e+00 AU (must be exactly 0)",
+   "delta": 0.0
+  },
+  {
+   "ok": true,
+   "text": "fixed-point ecl bit-identical across the date advance: [10, 0, 0]",
+   "ecl": [
+    10,
+    0,
+    0
+   ]
+  },
+  {
+   "ok": true,
+   "text": "fixed-point ecl == the authored (10,0,0) AU"
+  },
+  {
+   "ok": true,
+   "text": "reference parent is the Universe node (got 'Universe')"
+  },
+  {
+   "ok": true,
+   "text": "DISCRIMINATION: orbit anchor moved 153073.4 km, fixed point 0.000 km, same instrument"
+  },
+  {
+   "ok": true,
+   "text": "the designed out-of-Universe behaviour is LOGGED at the switch (D12)"
+  },
+  {
+   "ok": true,
+   "text": "the switch to the fixed point came FROM a solar-system reference"
+  },
+  {
+   "ok": true,
+   "text": "keepangle entry 1: reference is Mars"
+  },
+  {
+   "ok": true,
+   "text": "keepangle entry 1: boundToSurface = False (the kind's own state)"
+  },
+  {
+   "ok": true,
+   "text": "keepangle entry 1: camera frame BIT-IDENTICAL across 0.25 d (angle 0.000005 deg) while Mars spun 87.7230 deg",
+   "angle": 5.29238922767724e-06,
+   "spin": 87.7229960037684
+  },
+  {
+   "ok": true,
+   "text": "follow entry 1: reference is Mars"
+  },
+  {
+   "ok": true,
+   "text": "follow entry 1: boundToSurface = True (the kind's own state)"
+  },
+  {
+   "ok": true,
+   "text": "follow entry 1: camera frame rotated 87.723010 deg == Mars spin 87.722996 deg (d=1.36e-05)",
+   "angle": 87.72300962636895,
+   "spin": 87.7229960037684
+  },
+  {
+   "ok": true,
+   "text": "keepangle entry 2: reference is Mars"
+  },
+  {
+   "ok": true,
+   "text": "keepangle entry 2: boundToSurface = False (the kind's own state)"
+  },
+  {
+   "ok": true,
+   "text": "keepangle entry 2: camera frame BIT-IDENTICAL across 0.25 d (angle 0.000007 deg) while Mars spun 87.7230 deg",
+   "angle": 7.49268610403556e-06,
+   "spin": 87.7229960037684
+  },
+  {
+   "ok": true,
+   "text": "follow entry 2: reference is Mars"
+  },
+  {
+   "ok": true,
+   "text": "follow entry 2: boundToSurface = True (the kind's own state)"
+  },
+  {
+   "ok": true,
+   "text": "follow entry 2: camera frame rotated 87.723007 deg == Mars spin 87.722996 deg (d=1.10e-05)",
+   "angle": 87.7230069664456,
+   "spin": 87.7229960037684
+  },
+  {
+   "ok": true,
+   "text": "DISCRIMINATION entry 1: follow 87.7230 deg vs keepangle 0.000005 deg"
+  },
+  {
+   "ok": true,
+   "text": "DISCRIMINATION entry 2: follow 87.7230 deg vs keepangle 0.000007 deg"
+  },
+  {
+   "ok": true,
+   "text": "REVERSIBLE: the second entry of the keep/follow pair reproduces the first within the measured per-switch floor (2.75e-05 deg): keep 2.200e-06, follow 2.660e-06"
+  },
+  {
+   "ok": true,
+   "text": "entry 1: commanded and authored anchor ecl identical: [0.0013369174, -2.91892975e-15, -1.26615914e-15]"
+  },
+  {
+   "ok": true,
+   "text": "entry 1: DISCRIMINATION - a differently-parametrized commanded anchor differs ([0.00200537615, -4.37839462e-15, -1.89923866e-15] vs [0.0013369174, -2.91892975e-15, -1.26615914e-15])"
+  },
+  {
+   "ok": true,
+   "text": "entry 1: camera POSE identical (longitude,latitude,distance,boundToSurface,freeMode) after switching to either channel's anchor",
+   "matched": [
+    "longitude",
+    "latitude",
+    "distance",
+    "boundToSurface",
+    "freeMode"
+   ]
+  },
+  {
+   "ok": true,
+   "text": "entry 1: camera VIEW identical to within 1 x the measured switch floor (0.00e+00 rad <= 4.80e-07)",
+   "delta": 0.0
+  },
+  {
+   "ok": true,
+   "text": "entry 1: both channels report kind 'orbit'"
+  },
+  {
+   "ok": true,
+   "text": "entry 2: commanded and authored anchor ecl identical: [0.0013369174, -2.91892975e-15, -1.26615914e-15]"
+  },
+  {
+   "ok": true,
+   "text": "entry 2: DISCRIMINATION - a differently-parametrized commanded anchor differs ([0.00200537615, -4.37839462e-15, -1.89923866e-15] vs [0.0013369174, -2.91892975e-15, -1.26615914e-15])"
+  },
+  {
+   "ok": true,
+   "text": "entry 2: camera POSE identical (longitude,latitude,distance,boundToSurface,freeMode) after switching to either channel's anchor",
+   "matched": [
+    "longitude",
+    "latitude",
+    "distance",
+    "boundToSurface",
+    "freeMode"
+   ]
+  },
+  {
+   "ok": true,
+   "text": "entry 2: camera VIEW identical to within 1 x the measured switch floor (0.00e+00 rad <= 4.80e-07)",
+   "delta": 0.0
+  },
+  {
+   "ok": true,
+   "text": "entry 2: both channels report kind 'orbit'"
+  },
+  {
+   "ok": true,
+   "text": "cmd: entry 2 POSE + reference EXACTLY == entry 1"
+  },
+  {
+   "ok": true,
+   "text": "cmd: entry 2 VIEW == entry 1 within 5 x the measured switch floor (1.19e-07 <= 2.40e-06 rad)",
+   "delta": 1.1920928999999988e-07
+  },
+  {
+   "ok": true,
+   "text": "auth: entry 2 POSE + reference EXACTLY == entry 1"
+  },
+  {
+   "ok": true,
+   "text": "auth: entry 2 VIEW == entry 1 within 5 x the measured switch floor (1.19e-07 <= 2.40e-06 rad)",
+   "delta": 1.1920928999999988e-07
+  },
+  {
+   "ok": true,
+   "text": "other: entry 2 POSE + reference EXACTLY == entry 1"
+  },
+  {
+   "ok": true,
+   "text": "other: entry 2 VIEW == entry 1 within 5 x the measured switch floor (1.19e-07 <= 2.40e-06 rad)",
+   "delta": 1.1920928999999988e-07
+  },
+  {
+   "ok": true,
+   "text": "unanchor: entry 2 POSE + reference EXACTLY == entry 1"
+  },
+  {
+   "ok": true,
+   "text": "unanchor: entry 2 VIEW == entry 1 within 5 x the measured switch floor (1.19e-07 <= 2.40e-06 rad)",
+   "delta": 1.1921000000027562e-07
+  },
+  {
+   "ok": true,
+   "text": "dropped: entry 2 POSE + reference EXACTLY == entry 1"
+  },
+  {
+   "ok": true,
+   "text": "dropped: entry 2 VIEW == entry 1 within 5 x the measured switch floor (1.19e-07 <= 2.40e-06 rad)",
+   "delta": 1.1921000000027562e-07
+  },
+  {
+   "ok": true,
+   "text": "entry 1: dropped anchor is gone from the registry"
+  },
+  {
+   "ok": true,
+   "text": "entry 1: the dropped anchor's body is gone from the tree"
+  },
+  {
+   "ok": true,
+   "text": "entry 1: un-anchoring reverses (reference back to Earth)"
+  },
+  {
+   "ok": true,
+   "text": "entry 1: re-created anchor body is back in the tree"
+  },
+  {
+   "ok": true,
+   "text": "entry 2: dropped anchor is gone from the registry"
+  },
+  {
+   "ok": true,
+   "text": "entry 2: the dropped anchor's body is gone from the tree"
+  },
+  {
+   "ok": true,
+   "text": "entry 2: un-anchoring reverses (reference back to Earth)"
+  },
+  {
+   "ok": true,
+   "text": "entry 2: re-created anchor body is back in the tree"
+  },
+  {
+   "ok": true,
+   "text": "orb_t0: the anchored camera RENDERS - 87958 lit px (>16/255), floor 1000",
+   "lit": 87958
+  },
+  {
+   "ok": true,
+   "text": "orb_t1: the anchored camera RENDERS - 89312 lit px (>16/255), floor 1000",
+   "lit": 89312
+  },
+  {
+   "ok": true,
+   "text": "fix_t0: the anchored camera RENDERS - 7115 lit px (>16/255), floor 0",
+   "lit": 7115
+  },
+  {
+   "ok": true,
+   "text": "the dumped Moon position moved 512.0 px, more than the 56.6 px disc - the two windows are disjoint, so the test below has a real control"
+  },
+  {
+   "ok": true,
+   "text": "both dumped Moon positions are inside the frame (the shot can witness them)"
+  },
+  {
+   "ok": true,
+   "text": "SCREEN WITNESS: the Moon is BRIGHT where the dump puts it at each date (181 and 255 / 255)"
+  },
+  {
+   "ok": true,
+   "text": "SCREEN WITNESS control: the OTHER date's position is darker in each shot (45 < 181 and 166 < 255) - the disc moved on the composed screen exactly as the anchor's orbit says"
+  }
+ ],
+ "summary": {
+  "failures": 0
+ }
+}

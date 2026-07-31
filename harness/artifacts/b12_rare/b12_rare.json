@@ -1,0 +1,102 @@
+{
+  "base": [
+    226.38,
+    177.48,
+    86.05
+  ],
+  "use_before_create": [
+    226.38,
+    177.48,
+    86.05
+  ],
+  "after_create": [
+    226.38,
+    177.48,
+    86.05
+  ],
+  "skin_on_1": [
+    177.63,
+    37.54,
+    6.26
+  ],
+  "skin_off_1": [
+    226.38,
+    177.48,
+    86.05
+  ],
+  "skin_on_2": [
+    177.63,
+    37.54,
+    6.26
+  ],
+  "skin_off_2": [
+    226.38,
+    177.48,
+    86.05
+  ],
+  "replace_while_active": [
+    226.38,
+    177.48,
+    86.05
+  ],
+  "hidden_1": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "shown_1": [
+    226.38,
+    177.48,
+    86.05
+  ],
+  "hidden_2": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "shown_2": [
+    226.38,
+    177.48,
+    86.05
+  ],
+  "small_1": [
+    213.09,
+    206.69,
+    187.68
+  ],
+  "big_1": [
+    226.38,
+    177.48,
+    86.05
+  ],
+  "small_2": [
+    213.09,
+    206.69,
+    187.68
+  ],
+  "big_2": [
+    226.38,
+    177.48,
+    86.05
+  ],
+  "md5_ok": true,
+  "ok": [
+    "skin_use before any skin is a no-op [226.38, 177.48, 86.05] vs [226.38, 177.48, 86.05]",
+    "creating a skin does NOT activate it [226.38, 177.48, 86.05] vs [226.38, 177.48, 86.05]",
+    "skin_use on CHANGES the drawn disc (entry 1) [177.63, 37.54, 6.26] vs [226.38, 177.48, 86.05]",
+    "skin_use off REVERTS (entry 1) [226.38, 177.48, 86.05] vs [226.38, 177.48, 86.05]",
+    "skin_use on CHANGES again (entry 2, from entry 1's exit state) [177.63, 37.54, 6.26] vs [226.38, 177.48, 86.05]",
+    "entry 2 lands on the same skinned disc as entry 1 [177.63, 37.54, 6.26] vs [177.63, 37.54, 6.26]",
+    "skin_use off REVERTS (entry 2) [226.38, 177.48, 86.05] vs [226.38, 177.48, 86.05]",
+    "replacing a skin while active deactivates it [226.38, 177.48, 86.05] vs [226.38, 177.48, 86.05]",
+    "hidden star draws nothing (entry 1) [0.0, 0.0, 0.0]",
+    "shown star is back (entry 1) [226.38, 177.48, 86.05] vs [226.38, 177.48, 86.05]",
+    "hidden star draws nothing (entry 2) [0.0, 0.0, 0.0]",
+    "shown star is back (entry 2) [226.38, 177.48, 86.05] vs [226.38, 177.48, 86.05]",
+    "big-texture threshold reversible (entry 1 == entry 2, big) [226.38, 177.48, 86.05] vs [226.38, 177.48, 86.05]",
+    "big-texture threshold reversible (entry 1 == entry 2, small) [213.09, 206.69, 187.68] vs [213.09, 206.69, 187.68]",
+    "returning to the big level restores the first reading [226.38, 177.48, 86.05] vs [226.38, 177.48, 86.05]",
+    "frozen data md5 in == out "
+  ],
+  "fails": []
+}

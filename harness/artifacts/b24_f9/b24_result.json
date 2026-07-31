@@ -1,0 +1,10 @@
+{
+ "bodies": 120,
+ "float_within_jitter": 120,
+ "axisRot_exact_checked": 120,
+ "fails": [],
+ "jd_a": 2461233.5,
+ "jd_b": 2461233.5,
+ "exit_a": 0,
+ "exit_b": 0
+}

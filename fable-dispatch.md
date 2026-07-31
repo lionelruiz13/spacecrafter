@@ -808,13 +808,12 @@ corrected: it was written, then destroyed by the same edit.]*
   emissive), spots/granulation as content later.
 - **Discriminating check:** near-Sun approach scene — disc no longer dark, limb
   darkening measurable radially; far-regime bit-inert (family gated off).
-- **WIP:** 2026-07-31 — PHASE 1 + PHASE 2 CODE DONE, measurements green. Design
-  note `claude/b12-design.md`; code `3f137ef9` (SkinnableColorMap), `be6b2a84`
-  (pool per-set capacity fix — forced, my contract exposed it), `a958c05e`
-  (PhotosphereModule + STAR_SURFACE family + loader). Measured: disc median
-  15→539 vs old 542; law rms err 0.0039 (1 AU) / 0.0031 (2.5 R☉); per-pixel
-  residual 4.1/255; 0 VUID, 0 validation warnings (7→0). Next: battery
-  (b24/b25/b40/b4/scene-E/twins), then INTENT §11.123 + §13 flip.
+- **WIP:** — **DELIVERED 2026-07-31 (§11.123; design note `claude/b12-design.md`;
+  code `3f137ef9`/`be6b2a84`/`a958c05e`).** Both phases: design first, then the
+  slice that retires the dark disc. §13.B B12 flipped (open for CONTENT only);
+  §11.44's named residual closed; §5.52/§5.53/§5.54 opened (record-don't-fix).
+  Battery green: b24 (120 bodies) + its RED leg firing, b25 (130 bodies /
+  17 systems, twins 18/18), b40, b4, scene E 26/26, f15_persist, b12_rare 15/15.
 
 ---
 
