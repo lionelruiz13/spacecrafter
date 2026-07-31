@@ -27,6 +27,7 @@ extern const Mat4d mat_j2000_to_vsop87;
 
 #include "moduleLoader/BasicMeshLoader.hpp"
 #include "moduleLoader/LayeredMeshLoader.hpp"
+#include "moduleLoader/PhotosphereLoader.hpp"
 #include "moduleLoader/HintLoader.hpp"
 #include "moduleLoader/AtmExtLoader.hpp"
 #include "moduleLoader/RingLoader.hpp"
@@ -53,6 +54,7 @@ void ModuleLoaderMgr::init()
 
     registerModule(BodyModuleType::MESH, std::make_unique<BasicMeshLoader>()); // eclipse LUT retired at S5 (shadow-paths.md B4)
     registerModule(BodyModuleType::MESH, std::make_unique<LayeredMeshLoader>()); // row 2: layered discs (outbids BasicMesh on layered texture keys)
+    registerModule(BodyModuleType::MESH, std::make_unique<PhotosphereLoader>()); // B12: the star's own emitting surface (outbids every mesh loader on a light source)
     registerModule(BodyModuleType::HINT, std::make_unique<HintLoader>());
     registerModule(BodyModuleType::ATMOSPHERE, std::make_unique<AtmExtLoader>()); // from-space rim shell (row 13)
     registerModule(BodyModuleType::RING, std::make_unique<RingLoader>()); // G8 caster half (shadow-composition wave); color/trace = row 4
