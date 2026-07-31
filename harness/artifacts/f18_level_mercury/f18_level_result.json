@@ -1,0 +1,56 @@
+{
+  "body": "Mercury",
+  "jd": "2461233.5",
+  "gate_screenSize": 0.200000003,
+  "gates": {
+    "viewportRadius": 1024,
+    "px": {
+      "early": 3.07200003,
+      "depthBucket": 8.19200039,
+      "full": 16.3840008,
+      "close": 409.600006,
+      "bigTexture": 409.600006
+    },
+    "screenSize": {
+      "early": 0.00150000001,
+      "depthBucket": 0.00400000019,
+      "full": 0.00800000038,
+      "close": 0.200000003,
+      "bigTexture": 0.200000003
+    }
+  },
+  "levels": {
+    "reduced": {
+      "fov": 0.02730244119046338,
+      "screenSize": 0.120001942,
+      "r_px": 122.88,
+      "disc_mean_rgb": [
+        5.01,
+        5.01,
+        5.01
+      ],
+      "settled_same_as_previous": true,
+      "npx": 23233,
+      "nlit": 1356
+    },
+    "full": {
+      "fov": 0.010238415446423768,
+      "screenSize": 0.320012987,
+      "r_px": 327.69,
+      "disc_mean_rgb": [
+        5.02,
+        5.02,
+        5.02
+      ],
+      "settled_same_as_previous": true,
+      "npx": 165301,
+      "nlit": 12001
+    }
+  },
+  "ratio_reduced_over_full": [
+    0.998,
+    0.998,
+    0.998
+  ],
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}

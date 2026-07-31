@@ -1,0 +1,93 @@
+1785534846.386 >> flag experimental_path on
+1785534847.587 >> date jday 2461233.5
+1785534848.787 >> timerate rate 0
+1785534849.388 >> flag landscape off
+1785534849.988 >> flag atmosphere off
+1785534850.588 >> flag star_twinkle off
+1785534851.189 >> flag stars off
+1785534851.789 >> flag show_fps off
+1785534852.389 >> flag planet_names off
+1785534852.990 >> flag planet_orbits off
+1785534853.590 >> flag object_trails off
+1785534854.190 >> flag constellation_drawing off
+1785534854.791 >> flag constellation_art off
+1785534855.391 >> flag cardinal_points off
+1785534855.991 >> flag milky_way off
+1785534856.592 >> flag nebulae off
+1785534859.792 >> set home_planet Earth
+1785534861.992 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1785534863.193 >> select planet Jupiter pointer off
+1785534871.393 >> flag track_object on
+1785534872.593 >> timerate rate 0
+1785534873.794 >> body name Jupiter color halo r 0 g 0 b 0
+1785534876.994 >> zoom fov 60.0 duration 0
+1785534879.695 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_jupiter/ref.json
+1785534883.898 >> zoom fov 0.126318 duration 0
+1785534887.098 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_jupiter/reduced_0.png
+1785534890.299 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_jupiter/reduced_1.png
+1785534893.499 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_jupiter/reduced_2.png
+1785534896.200 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_jupiter/reduced_geom.json
+### reduced: ss 0.12000 rgb [np.float64(106.96), np.float64(92.96), np.float64(83.98)]
+1785534900.758 >> zoom fov 0.047369 duration 0
+1785534903.958 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_jupiter/full_0.png
+1785534907.159 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_jupiter/full_1.png
+1785534910.359 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_jupiter/full_2.png
+1785534913.060 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_jupiter/full_geom.json
+### full: ss 0.32000 rgb [np.float64(107.2), np.float64(93.16), np.float64(84.17)]
+1785534915.611 >> zoom fov 180 duration 0
+{
+  "body": "Jupiter",
+  "jd": "2461233.5",
+  "gate_screenSize": 0.200000003,
+  "gates": {
+    "viewportRadius": 1024,
+    "px": {
+      "early": 3.07200003,
+      "depthBucket": 8.19200039,
+      "full": 16.3840008,
+      "close": 409.600006,
+      "bigTexture": 409.600006
+    },
+    "screenSize": {
+      "early": 0.00150000001,
+      "depthBucket": 0.00400000019,
+      "full": 0.00800000038,
+      "close": 0.200000003,
+      "bigTexture": 0.200000003
+    }
+  },
+  "levels": {
+    "reduced": {
+      "fov": 0.12631817460522737,
+      "screenSize": 0.120000169,
+      "r_px": 122.88,
+      "disc_mean_rgb": [
+        106.96,
+        92.96,
+        83.98
+      ],
+      "settled_same_as_previous": true,
+      "npx": 23233,
+      "nlit": 14796
+    },
+    "full": {
+      "fov": 0.047369315476960265,
+      "screenSize": 0.320002139,
+      "r_px": 327.68,
+      "disc_mean_rgb": [
+        107.2,
+        93.16,
+        84.17
+      ],
+      "settled_same_as_previous": true,
+      "npx": 165293,
+      "nlit": 104870
+    }
+  },
+  "ratio_reduced_over_full": [
+    0.9978,
+    0.9979,
+    0.9977
+  ],
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}

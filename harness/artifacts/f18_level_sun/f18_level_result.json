@@ -1,0 +1,55 @@
+{
+  "body": "Sun",
+  "gate_screenSize": 0.200000003,
+  "gates": {
+    "viewportRadius": 1024,
+    "px": {
+      "early": 3.07200003,
+      "depthBucket": 8.19200039,
+      "full": 16.3840008,
+      "close": 409.600006,
+      "bigTexture": 409.600006
+    },
+    "screenSize": {
+      "early": 0.00150000001,
+      "depthBucket": 0.00400000019,
+      "full": 0.00800000038,
+      "close": 0.200000003,
+      "bigTexture": 0.200000003
+    }
+  },
+  "levels": {
+    "reduced": {
+      "fov": 4.370301429445478,
+      "screenSize": 0.12000002,
+      "r_px": 122.88,
+      "disc_mean_rgb": [
+        232.94,
+        225.99,
+        205.32
+      ],
+      "settled_same_as_previous": true,
+      "npx": 23233,
+      "nlit": 23233
+    },
+    "full": {
+      "fov": 1.6388630360420544,
+      "screenSize": 0.319999993,
+      "r_px": 327.68,
+      "disc_mean_rgb": [
+        229.37,
+        179.85,
+        87.28
+      ],
+      "settled_same_as_previous": true,
+      "npx": 165293,
+      "nlit": 165293
+    }
+  },
+  "ratio_reduced_over_full": [
+    1.0156,
+    1.2565,
+    2.3524
+  ],
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}

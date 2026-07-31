@@ -1,0 +1,92 @@
+1785534155.344 >> flag experimental_path on
+1785534156.545 >> date jday 2461233.5
+1785534157.745 >> timerate rate 0
+1785534158.345 >> flag landscape off
+1785534158.946 >> flag atmosphere off
+1785534159.546 >> flag star_twinkle off
+1785534160.146 >> flag stars off
+1785534160.746 >> flag show_fps off
+1785534161.347 >> flag planet_names off
+1785534161.947 >> flag planet_orbits off
+1785534162.547 >> flag object_trails off
+1785534163.148 >> flag constellation_drawing off
+1785534163.748 >> flag constellation_art off
+1785534164.348 >> flag cardinal_points off
+1785534164.949 >> flag milky_way off
+1785534165.549 >> flag nebulae off
+1785534168.749 >> set home_planet Earth
+1785534170.949 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1785534172.150 >> select planet Sun pointer off
+1785534180.350 >> flag track_object on
+1785534181.550 >> timerate rate 0
+1785534182.750 >> body name Sun color halo r 0 g 0 b 0
+1785534185.951 >> zoom fov 60.0 duration 0
+1785534188.651 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_sun/ref.json
+1785534192.854 >> zoom fov 4.370301 duration 0
+1785534196.055 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_sun/reduced_0.png
+1785534199.255 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_sun/reduced_1.png
+1785534202.455 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_sun/reduced_2.png
+1785534205.156 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_sun/reduced_geom.json
+### reduced: ss 0.12000 rgb [np.float64(232.94), np.float64(225.99), np.float64(205.32)]
+1785534209.690 >> zoom fov 1.638863 duration 0
+1785534212.890 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_sun/full_0.png
+1785534216.090 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_sun/full_1.png
+1785534219.291 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_sun/full_2.png
+1785534221.991 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_sun/full_geom.json
+### full: ss 0.32000 rgb [np.float64(229.37), np.float64(179.85), np.float64(87.28)]
+1785534224.554 >> zoom fov 180 duration 0
+{
+  "body": "Sun",
+  "gate_screenSize": 0.200000003,
+  "gates": {
+    "viewportRadius": 1024,
+    "px": {
+      "early": 3.07200003,
+      "depthBucket": 8.19200039,
+      "full": 16.3840008,
+      "close": 409.600006,
+      "bigTexture": 409.600006
+    },
+    "screenSize": {
+      "early": 0.00150000001,
+      "depthBucket": 0.00400000019,
+      "full": 0.00800000038,
+      "close": 0.200000003,
+      "bigTexture": 0.200000003
+    }
+  },
+  "levels": {
+    "reduced": {
+      "fov": 4.370301429445478,
+      "screenSize": 0.12000002,
+      "r_px": 122.88,
+      "disc_mean_rgb": [
+        232.94,
+        225.99,
+        205.32
+      ],
+      "settled_same_as_previous": true,
+      "npx": 23233,
+      "nlit": 23233
+    },
+    "full": {
+      "fov": 1.6388630360420544,
+      "screenSize": 0.319999993,
+      "r_px": 327.68,
+      "disc_mean_rgb": [
+        229.37,
+        179.85,
+        87.28
+      ],
+      "settled_same_as_previous": true,
+      "npx": 165293,
+      "nlit": 165293
+    }
+  },
+  "ratio_reduced_over_full": [
+    1.0156,
+    1.2565,
+    2.3524
+  ],
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}

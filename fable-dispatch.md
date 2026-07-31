@@ -1211,7 +1211,24 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   binary same scene 0.729 / 0.644 = the surface drawing where px-intent says it must not.
   VETO POINT recorded: named EARLY constant said 2 px, shipped gate is 3.07 px — preserved
   the shipped value, Vixy decides. Battery green again on this binary. Harness:
-  `f18_gate.py`, `f18_gate_run.sh`; dump header now carries `gates`. NEXT: §5.53.
+  `f18_gate.py`, `f18_gate_run.sh`; dump header now carries `gates`.
+- **WIP:** — **DELIVERED 2026-07-31 → §11.127** (code `94eb3f03`/`2117ccb0`; harness
+  `a0671a4`/`9aec4b3`/delivery commit). **§5.52 CLOSED** (candidates discriminated by
+  instrument first — candidate 2 REFUTED, candidate 1 CONFIRMED at NDC z = 11574/23588/
+  71345/29.9; fixed at the root by splitting the depth MAPPING from the slice ENTRY;
+  z = 0.5 predicted and met; disc ratios 0.84/0.88/0.99 vs 0.00/0.00/0.11 pre-fix on the
+  Sun AND on planets; b12 s5 0.0000 → 0.9917). **§5.54 CLOSED px-intent** (derived from
+  four independent lines; census wider than the row — 0.2 had six spellings; one authority
+  + derived gates owned by `setViewportRadius`; bit-identical at 2048; second width
+  measured both sides with a counterfactual leg that FAILS as predicted). **§5.53
+  root-caused and SPLIT**: (a) it is DATA — the loader prefers authored `-preview` assets
+  and the two shipped ones do not match their partners (Jupiter, with no preview, reads
+  0.998 ≈ 1.000, which is the row's own premise confirming itself); (b) old 180 px vs new
+  409.6 px MEASURED with a recommendation, not decided. NEW **§5.62** (a same-binary
+  measurement that shifted between two epochs — recorded, not chased; it does not
+  implicate the delivered code). NEW Vixy rows **A41/A42/A43**. Battery green, frozen md5
+  in == out. One decision-free rider (a D12 log) was BUILT and WITHDRAWN for failing its
+  own bar. `b12-design.md` §3.1 superseded-with-record.
 
 ---
 

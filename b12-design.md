@@ -144,6 +144,18 @@ reproduces (`StarModule` far + MESH near, §11.44). §4.4 keeps that.
 
 `ModularBody::draw` is the G4 substitution point [observed: ModularBody.hpp:508-555]:
 
+**SUPERSEDED SPELLING, same boundaries [2026-07-31, F18/§11.127, §5.54]:** the literals
+below were the shipped gates when this note was written; they are now DERIVED from px
+constants (`BODY_EARLY_VISIBILITY_BOUNDING_SIZE` = 3.072 px, `BODY_DEPTH_BUCKET_...` =
+8.192, `BODY_FULL_VISIBILITY_...` = 16.384, `BODY_CLOSE_RANGE_...` and
+`BODY_BIG_TEXTURE_...` = 409.6, all bounding **diameters**) divided by the current
+render width. At the 2048-wide render this note's measurements were taken on, the
+derived values are BIT-IDENTICAL to the literals, so every number here stands; at any
+other width the boundaries now sit at those pixel sizes instead of at these fractions.
+Read the table's conditions as `earlyVisibilityGate()` / `fullVisibilityGate()` /
+`closeRangeGate()`. Also §5.52: the depth-less mid band drew NO surface when this note
+was written — fixed in §11.127, so the second row now draws what it says it draws.
+
 | condition (screenSize = halfAngularSize / halfFov) | what draws |
 |---|---|
 | `screenSize ≤ 0.0015` | `farComponents` + `drawHalo` — **no surface at all** |
@@ -156,6 +168,8 @@ reproduces (`StarModule` far + MESH near, §11.44). §4.4 keeps that.
 `screenSize · 2 · viewportRadius` is the on-screen **diameter in px**, and
 `viewportRadius = screenWidth/2` [observed: ModularBody.cpp:639; the px identity is
 used at StarModule.cpp:29, HintModule.cpp:58, RingModule.cpp:150, Renderer.cpp:51].
+That identity is exactly what §5.54 turned from a fact repeated at seven call sites
+into one conversion with one owner (`ModularBody::setViewportRadius`).
 
 ### 3.2 The load-bearing finding: EMISSIVE is not a regime, DETAIL is
 

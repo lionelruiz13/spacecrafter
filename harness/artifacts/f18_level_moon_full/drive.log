@@ -1,0 +1,93 @@
+1785534573.511 >> flag experimental_path on
+1785534574.711 >> date jday 2461251.5
+1785534575.911 >> timerate rate 0
+1785534576.512 >> flag landscape off
+1785534577.112 >> flag atmosphere off
+1785534577.712 >> flag star_twinkle off
+1785534578.312 >> flag stars off
+1785534578.913 >> flag show_fps off
+1785534579.513 >> flag planet_names off
+1785534580.113 >> flag planet_orbits off
+1785534580.714 >> flag object_trails off
+1785534581.314 >> flag constellation_drawing off
+1785534581.914 >> flag constellation_art off
+1785534582.515 >> flag cardinal_points off
+1785534583.115 >> flag milky_way off
+1785534583.715 >> flag nebulae off
+1785534586.915 >> set home_planet Earth
+1785534589.116 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1785534590.316 >> select planet Moon pointer off
+1785534598.516 >> flag track_object on
+1785534599.717 >> timerate rate 0
+1785534600.917 >> body name Moon color halo r 0 g 0 b 0
+1785534604.117 >> zoom fov 60.0 duration 0
+1785534606.818 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_moon_full/ref.json
+1785534611.021 >> zoom fov 21.358059 duration 0
+1785534614.221 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_moon_full/reduced_0.png
+1785534617.422 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_moon_full/reduced_1.png
+1785534620.622 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_moon_full/reduced_2.png
+1785534623.322 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_moon_full/reduced_geom.json
+### reduced: ss 0.12000 rgb [np.float64(152.77), np.float64(152.15), np.float64(150.97)]
+1785534627.848 >> zoom fov 8.009272 duration 0
+1785534631.048 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_moon_full/full_0.png
+1785534634.248 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_moon_full/full_1.png
+1785534637.449 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_moon_full/full_2.png
+1785534640.149 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_moon_full/full_geom.json
+### full: ss 0.32000 rgb [np.float64(104.61), np.float64(103.31), np.float64(103.08)]
+1785534642.697 >> zoom fov 180 duration 0
+{
+  "body": "Moon",
+  "jd": "2461251.5",
+  "gate_screenSize": 0.200000003,
+  "gates": {
+    "viewportRadius": 1024,
+    "px": {
+      "early": 3.07200003,
+      "depthBucket": 8.19200039,
+      "full": 16.3840008,
+      "close": 409.600006,
+      "bigTexture": 409.600006
+    },
+    "screenSize": {
+      "early": 0.00150000001,
+      "depthBucket": 0.00400000019,
+      "full": 0.00800000038,
+      "close": 0.200000003,
+      "bigTexture": 0.200000003
+    }
+  },
+  "levels": {
+    "reduced": {
+      "fov": 21.35805937962911,
+      "screenSize": 0.120000005,
+      "r_px": 122.88,
+      "disc_mean_rgb": [
+        152.77,
+        152.15,
+        150.97
+      ],
+      "settled_same_as_previous": true,
+      "npx": 23233,
+      "nlit": 23233
+    },
+    "full": {
+      "fov": 8.009272267360917,
+      "screenSize": 0.320000023,
+      "r_px": 327.68,
+      "disc_mean_rgb": [
+        104.61,
+        103.31,
+        103.08
+      ],
+      "settled_same_as_previous": true,
+      "npx": 165293,
+      "nlit": 165293
+    }
+  },
+  "ratio_reduced_over_full": [
+    1.4604,
+    1.4728,
+    1.4646
+  ],
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}

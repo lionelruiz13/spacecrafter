@@ -1,0 +1,56 @@
+{
+  "body": "Moon",
+  "jd": "2461251.5",
+  "gate_screenSize": 0.200000003,
+  "gates": {
+    "viewportRadius": 1024,
+    "px": {
+      "early": 3.07200003,
+      "depthBucket": 8.19200039,
+      "full": 16.3840008,
+      "close": 409.600006,
+      "bigTexture": 409.600006
+    },
+    "screenSize": {
+      "early": 0.00150000001,
+      "depthBucket": 0.00400000019,
+      "full": 0.00800000038,
+      "close": 0.200000003,
+      "bigTexture": 0.200000003
+    }
+  },
+  "levels": {
+    "reduced": {
+      "fov": 21.35805937962911,
+      "screenSize": 0.120000005,
+      "r_px": 122.88,
+      "disc_mean_rgb": [
+        152.77,
+        152.15,
+        150.97
+      ],
+      "settled_same_as_previous": true,
+      "npx": 23233,
+      "nlit": 23233
+    },
+    "full": {
+      "fov": 8.009272267360917,
+      "screenSize": 0.320000023,
+      "r_px": 327.68,
+      "disc_mean_rgb": [
+        104.61,
+        103.31,
+        103.08
+      ],
+      "settled_same_as_previous": true,
+      "npx": 165293,
+      "nlit": 165293
+    }
+  },
+  "ratio_reduced_over_full": [
+    1.4604,
+    1.4728,
+    1.4646
+  ],
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}

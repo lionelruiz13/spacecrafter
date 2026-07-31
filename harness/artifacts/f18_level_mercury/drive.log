@@ -1,0 +1,93 @@
+1785534730.394 >> flag experimental_path on
+1785534731.595 >> date jday 2461233.5
+1785534732.795 >> timerate rate 0
+1785534733.395 >> flag landscape off
+1785534733.995 >> flag atmosphere off
+1785534734.596 >> flag star_twinkle off
+1785534735.196 >> flag stars off
+1785534735.796 >> flag show_fps off
+1785534736.397 >> flag planet_names off
+1785534736.997 >> flag planet_orbits off
+1785534737.597 >> flag object_trails off
+1785534738.197 >> flag constellation_drawing off
+1785534738.798 >> flag constellation_art off
+1785534739.398 >> flag cardinal_points off
+1785534739.998 >> flag milky_way off
+1785534740.599 >> flag nebulae off
+1785534743.799 >> set home_planet Earth
+1785534745.999 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1785534747.200 >> select planet Mercury pointer off
+1785534755.400 >> flag track_object on
+1785534756.600 >> timerate rate 0
+1785534757.801 >> body name Mercury color halo r 0 g 0 b 0
+1785534761.001 >> zoom fov 60.0 duration 0
+1785534763.701 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_mercury/ref.json
+1785534767.905 >> zoom fov 0.027302 duration 0
+1785534771.105 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_mercury/reduced_0.png
+1785534774.305 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_mercury/reduced_1.png
+1785534777.506 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_mercury/reduced_2.png
+1785534780.206 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_mercury/reduced_geom.json
+### reduced: ss 0.12000 rgb [np.float64(5.01), np.float64(5.01), np.float64(5.01)]
+1785534784.761 >> zoom fov 0.010238 duration 0
+1785534787.961 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_mercury/full_0.png
+1785534791.162 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_mercury/full_1.png
+1785534794.362 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_mercury/full_2.png
+1785534797.062 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_level_mercury/full_geom.json
+### full: ss 0.32001 rgb [np.float64(5.02), np.float64(5.02), np.float64(5.02)]
+1785534799.605 >> zoom fov 180 duration 0
+{
+  "body": "Mercury",
+  "jd": "2461233.5",
+  "gate_screenSize": 0.200000003,
+  "gates": {
+    "viewportRadius": 1024,
+    "px": {
+      "early": 3.07200003,
+      "depthBucket": 8.19200039,
+      "full": 16.3840008,
+      "close": 409.600006,
+      "bigTexture": 409.600006
+    },
+    "screenSize": {
+      "early": 0.00150000001,
+      "depthBucket": 0.00400000019,
+      "full": 0.00800000038,
+      "close": 0.200000003,
+      "bigTexture": 0.200000003
+    }
+  },
+  "levels": {
+    "reduced": {
+      "fov": 0.02730244119046338,
+      "screenSize": 0.120001942,
+      "r_px": 122.88,
+      "disc_mean_rgb": [
+        5.01,
+        5.01,
+        5.01
+      ],
+      "settled_same_as_previous": true,
+      "npx": 23233,
+      "nlit": 1356
+    },
+    "full": {
+      "fov": 0.010238415446423768,
+      "screenSize": 0.320012987,
+      "r_px": 327.69,
+      "disc_mean_rgb": [
+        5.02,
+        5.02,
+        5.02
+      ],
+      "settled_same_as_previous": true,
+      "npx": 165301,
+      "nlit": 12001
+    }
+  },
+  "ratio_reduced_over_full": [
+    0.998,
+    0.998,
+    0.998
+  ],
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}
