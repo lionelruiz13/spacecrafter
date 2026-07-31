@@ -60,6 +60,32 @@ binary present, mtime 16 min before the F14 delivery commit — consistent with 
 build-verify-commit order, and the first executor rebuilds regardless. DECISIONS_PENDING
 open set at session start: **D15, D21 (both SCHEDULED last week of August, §11.116(a)),
 D37 (new, F11 — rec (1) keep, awaiting Vixy)**.
+**Round outcome (session 5 close, 2026-07-31):** F15 → §11.121, F8 → §11.122,
+F9 → §11.123 — all three delivered AND supervisor-verified. **B25 CLOSED** (F15:
+live-tree save == machine twin line-for-line, T6 both ways); **B31** open on the
+session file + ledger only; **B7** open at ≤ 2.8 % pooled with
+contention-as-saturation EXCLUDED and its FIRST root-caused teardown defect FIXED
+(shutdown heap-UAF, `1e44b639` — found by re-measuring §11.95(b)'s false ASan-cost
+premise); **B12** open for CONTENT only — the dark-Sun-disc divergence is RETIRED
+(§11.44's named residual closed; design note `b12-design.md`, F6 discipline held).
+New defect rows, all record-only: **§5.50** (push-channel `surface_point` kills the
+app — old-path bail-out named), **§5.51** (no virtual `~BodyModule`, 373 dtors
+never run — masks all teardown measurement, fix needs its own dispatch),
+**§5.52/§5.53/§5.54** (G4 mid-band/texture-level/threshold-spelling cluster, F9's
+finds). No new DECISIONS_PENDING row (open set unchanged: D15, D21, D37); session-5
+veto points + B12 content decisions + host note → §3. One executor deviation class
+recurred and is worth naming: BOTH F9's inertness DoD and F3's A8/A9 line were MY
+paraphrase drift in this file, and both executors correctly followed the ledger
+over the view — the §0b.3 rule ("mandate verbatim or by exact ledger ref") exists
+for exactly this; prompts should quote rows, not restate them. Remaining
+dispatchable, next round: **F16 to mint** (teardown-integrity batch: §5.51
+virtual-dtor + its regression battery, §5.50 bail-out — F16 BEFORE any further
+hunt, §5.51 masks the instrument), **B7-hunt-4** (ASan mix N ≥ 50 + TSan + the
+§11.122(i) HUNG re-measure pre-warmed, AFTER F16), **G4-coherence batch to mint**
+(§5.52/§5.53/§5.54 — interacts with the B12 content slice's thresholds),
+**next B31 slice** (session file §3.2 — its mint must state the D28/D21 carve-outs
+explicitly: `heading` and T3 are sequenced behind Vixy decisions scheduled last
+week of August).
 
 ---
 
@@ -897,3 +923,23 @@ corrected: it was written, then destroyed by the same edit.]*
   at the render; on Earth `moveto lon 0` would stand 90° from Greenwich. Never seen
   because no shipped scene puts both conventions in one frame. The discriminating
   test it owes is stated in the row; fixing it is user-visible semantics = yours.
+- **Session-5 veto points (2026-07-31 — all implemented-and-live, each cheap to
+  reverse; silence = endorsed):** (1) F15's save-trigger spelling **`body action
+  save [filename <name>]`** — the system-scope sibling of `body action reload`,
+  one `else if` to reverse (§11.121(e), B28 protocol); (2) F9's V1–V4
+  (§11.123(l)): Eddington grey-atmosphere limb law centre-normalised (one shader
+  line to swap), star-surface type selected by `isStar()` at the loader, shadow
+  trait bits not declared on the photosphere (proved inert at source), granule
+  scale = model parameter of the procedural field, not a solar datum.
+- **B12 content-slice decisions (recorded NOT blocking; needed only before the
+  CONTENT slice — `b12-design.md` §7's LOCAL numbering, not DECISIONS_PENDING
+  rows):** authored-vs-procedural spots · is a star enterable and what is seen
+  inside · does a resolved star's halo alternate with its surface or coexist ·
+  the chromosphere module's `module =` grammar word (B28 sign-off owed BEFORE
+  that module can be built — the one of the four with a hard ordering).
+- **Host note (§11.121(j) + §11.122(j)):** a foreign same-host launch of
+  spacecrafter occurred mid-F15, and a second user (`foxy`) is active on this
+  host (measured throughout F8's batches). A shared `~/.spacecrafter` is a
+  standing md5/mtime confound — executors now re-assert frozen md5s around every
+  batch; if the second user is expected to keep using this install, say so (it
+  bears on the fresh-launch precondition).
