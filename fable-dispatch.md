@@ -211,7 +211,11 @@ session per claude/fable-dispatch.md §0b."*
    with the argument, or escalate to a re-analysis agent on doubt. Harnesses are NOT
    re-run when committed artifacts + both-ways discrimination records suffice; a
    claim without such a record IS a reason to re-run or escalate. Record acceptance in
-   the task's WIP line; commit the acceptance.
+   the task's WIP line; commit the acceptance. **After ANY WIP-tail edit, verify the
+   NEXT `###` header still exists before committing** (`grep -c '^### F'` vs expected)
+   — two headers have been destroyed by acceptance Edits whose old_string swallowed
+   the following header as anchor context (F13, F18); anchor inside the WIP block,
+   never across the section boundary.
 5. **Close**: refresh section 3 (For Vixy) with new veto points/decisions, append the
    round outcome to the session update note, commit, and report to Vixy: deliveries,
    endorsements, anything newly Vixy's, the remaining dispatchable set.
@@ -1140,6 +1144,12 @@ corrected: it was written, then destroyed by the same edit.]*
   cancellation makes a pre-existing teardown-after-stall fault REACHABLE, exactly
   as §5.51 made §5.57 reachable" — is the batch's own class seen recursively;
   endorsed as recorded. A40 correctly Vixy's (both branches user-visible).
+
+### F18 — G4-coherence batch: §5.52 mid-band surface + §5.54 threshold authority + §5.53 level step  [M–L]
+*[Header restored 2026-07-31 by the supervisor (session 7 warm-up). Root: the session-6
+close commit's acceptance Edit swallowed the blank line + `###` header as trailing
+anchor context — SECOND occurrence of the F13 edit-truncation class, both supervisor
+WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
 - **Row / recorded:** §5.52 · §5.53 · §5.54 (all opened §11.123(g); full rows at
   INTENT.md §5 — read them verbatim, they carry mechanisms + owed checks) · G4 verbatim
   (INTENT §2): *"compute only what the observer can distinguish, and draw each regime
