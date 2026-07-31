@@ -1,0 +1,1012 @@
+000000000098: (Info ): Reading GPU(s) properties
+000000000099: (Info ): GPU selected
+000000000099: ===== Device info =====
+API Version : 1.4.312
+Driver Version : 580.568.0
+Vendor : NVIDIA
+Device : NVIDIA GeForce RTX 5090 (id = 11141)
+Device type : Discrete GPU
+000000000099: ===== Used device features =====
+--- Vulkan 1.0 features ---
+geometryShader : [92;1menabled[0m
+tessellationShader : [92;1menabled[0m
+sampleRateShading : [92;1menabled[0m
+wideLines : [92;1menabled[0m
+samplerAnisotropy : [92;1menabled[0m
+shaderFloat64 : [92;1menabled[0m
+
+000000000217: (Debug): GPU memory	total : 32607 MiB   	available : 30359 MiB	used : 12 MiB    	free : 30347 MiB
+000000000217: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 5 MiB    	free : 45472 MiB
+000000000217: (Info ): Advanced event enabled
+000000000342: (Debug): Dedicated allocation of 512 MiB of GPU memory.
+000000000343: (Debug): GPU memory	total : 32607 MiB   	available : 30358 MiB	used : 12 MiB    	free : 30346 MiB
+000000000343: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000343: (Debug): Allocate chunk of 1 MiB in GPU memory.
+000000000343: (Debug): GPU memory	total : 32607 MiB   	available : 30358 MiB	used : 13 MiB    	free : 30345 MiB
+000000000343: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000344: (Debug): Dedicated allocation of 160 MiB of GPU memory.
+000000000344: (Debug): GPU memory	total : 32607 MiB   	available : 30356 MiB	used : 173 MiB    	free : 30183 MiB
+000000000344: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000344: (Debug): Created image support for 'depth attachment'
+000000000345: (Debug): Dedicated allocation of 1280 MiB of GPU memory.
+000000000345: (Debug): GPU memory	total : 32607 MiB   	available : 30353 MiB	used : 1453 MiB    	free : 28900 MiB
+000000000345: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000345: (Debug): Created image support for 'Shadow Depth Buffer'
+000000000345: (Debug): Dedicated allocation of 7 MiB of GPU memory.
+000000000345: (Debug): GPU memory	total : 32607 MiB   	available : 30353 MiB	used : 1461 MiB    	free : 28892 MiB
+000000000345: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000345: (Debug): Created image support for 'Shadow Stencil Buffer'
+000000000346: (Debug): Allocate chunk of 256 MiB in GPU memory.
+000000000346: (Debug): GPU memory	total : 32607 MiB   	available : 30353 MiB	used : 1717 MiB    	free : 28636 MiB
+000000000346: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000347: (Debug): Created image support for 'Shadow Shape Buffer'
+000000000347: (Debug): Build FrameBuffer 'self shadow' with size (16384, 16384)
+000000000347: (Debug): Build FrameBuffer 'shadow tracer' with size (1280, 1280)
+000000000347: (Debug): Build FrameBuffer 'shadow shape' with size (1280, 1280)
+000000000347: (Info ): Binding of 'main color 0' view implicitly call use() (safety fallback)
+000000000347: (Debug): Dedicated allocation of 16 MiB of GPU memory.
+000000000347: (Debug): GPU memory	total : 32607 MiB   	available : 30353 MiB	used : 1733 MiB    	free : 28620 MiB
+000000000347: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000347: (Debug): Created image support for 'main color 0'
+000000000347: (Info ): Binding of 'multisample color 0' view implicitly call use() (safety fallback)
+000000000348: (Debug): Dedicated allocation of 128 MiB of GPU memory.
+000000000348: (Debug): GPU memory	total : 32607 MiB   	available : 30353 MiB	used : 1861 MiB    	free : 28492 MiB
+000000000348: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000348: (Debug): Created image support for 'multisample color 0'
+000000000348: (Debug): Build FrameBuffer 'main 0' with size (2048, 2048)
+000000000348: (Info ): Binding of 'main color 1' view implicitly call use() (safety fallback)
+000000000348: (Debug): Dedicated allocation of 16 MiB of GPU memory.
+000000000348: (Debug): GPU memory	total : 32607 MiB   	available : 30353 MiB	used : 1877 MiB    	free : 28476 MiB
+000000000348: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000348: (Debug): Created image support for 'main color 1'
+000000000348: (Info ): Binding of 'multisample color 1' view implicitly call use() (safety fallback)
+000000000348: (Debug): Dedicated allocation of 128 MiB of GPU memory.
+000000000348: (Debug): GPU memory	total : 32607 MiB   	available : 30353 MiB	used : 2005 MiB    	free : 28348 MiB
+000000000348: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000348: (Debug): Created image support for 'multisample color 1'
+000000000348: (Debug): Build FrameBuffer 'main 1' with size (2048, 2048)
+000000000348: (Info ): Binding of 'main color 2' view implicitly call use() (safety fallback)
+000000000348: (Debug): Dedicated allocation of 16 MiB of GPU memory.
+000000000348: (Debug): GPU memory	total : 32607 MiB   	available : 30353 MiB	used : 2021 MiB    	free : 28332 MiB
+000000000348: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000348: (Debug): Created image support for 'main color 2'
+000000000348: (Info ): Binding of 'multisample color 2' view implicitly call use() (safety fallback)
+000000000348: (Debug): Dedicated allocation of 128 MiB of GPU memory.
+000000000348: (Debug): GPU memory	total : 32607 MiB   	available : 30353 MiB	used : 2149 MiB    	free : 28204 MiB
+000000000348: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB
+000000000348: (Debug): Created image support for 'multisample color 2'
+000000000348: (Debug): Build FrameBuffer 'main 2' with size (2048, 2048)
+000000000360: (Debug): No vertex entry defined for Pipeline "Use splash.vert.spv splash.frag.spv"
+000000000361: (Info ): Binding of 'splash/spacecrafter.png' view implicitly call use() (safety fallback)
+000000000361: (Debug): Created image support for 'splash/spacecrafter.png'
+000000000361: (Debug): No cmd given for 'splash/spacecrafter.png', creating uninitialized texture
+000000000397: (Debug): Dedicated allocation of 256 MiB of GPU memory.
+000000000397: (Debug): GPU memory	total : 32607 MiB   	available : 30351 MiB	used : 2149 MiB    	free : 28202 MiB
+000000000397: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 773 MiB    	free : 44704 MiB
+000000000583: (Debug): Dedicated allocation of 1536 MiB of GPU memory.
+000000000583: (Debug): GPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2149 MiB    	free : 28201 MiB
+000000000583: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 2309 MiB    	free : 43168 MiB
+000000000664: (Debug): Dedicated allocation of 682 MiB of GPU memory.
+000000000664: (Debug): GPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2149 MiB    	free : 28201 MiB
+000000000664: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 2991 MiB    	free : 42486 MiB
+000000000668: (Debug): Dedicated allocation of 48 MiB of GPU memory.
+000000000668: (Debug): GPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2149 MiB    	free : 28201 MiB
+000000000668: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB
+000000000668: (Debug): Dedicated allocation of 512 MiB of GPU memory.
+000000000668: (Debug): GPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2661 MiB    	free : 27689 MiB
+000000000668: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB
+000000000668: (Debug): Allocate chunk of 1 MiB in GPU memory.
+000000000668: (Debug): GPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2662 MiB    	free : 27688 MiB
+000000000668: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB
+000000000668: (Debug): Dedicated allocation of 128 MiB of GPU memory.
+000000000668: (Debug): GPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2790 MiB    	free : 27560 MiB
+000000000668: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB
+000000000669: (Debug): Dedicated allocation of 64 MiB of GPU memory.
+000000000669: (Debug): GPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2854 MiB    	free : 27496 MiB
+000000000669: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB
+000000000669: (Debug): Allocate chunk of 1 MiB in GPU memory.
+000000000669: (Debug): GPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2855 MiB    	free : 27494 MiB
+000000000669: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB
+000000000669: (Debug): Dedicated allocation of 16 MiB of GPU memory.
+000000000669: (Debug): GPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2871 MiB    	free : 27478 MiB
+000000000669: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB
+000000000669: (Debug): Created image support for 'star FBO'
+000000000669: (Debug): Created image support for 'Projected shadows'
+000000000880: (Debug): Created image support for 'textures/tex_nebulaes.png'
+000000000880: (Debug): No cmd given for 'textures/tex_nebulaes.png', creating uninitialized texture
+000000000916: (Debug): Created image support for 'textures/star16x16.png'
+000000000916: (Debug): No cmd given for 'textures/star16x16.png', creating uninitialized texture
+000000001160: (Debug): Created image support for 'textures/volum_cloud.png'
+000000001160: (Debug): No cmd given for 'textures/volum_cloud.png', creating uninitialized texture
+000000002552: (Debug): Dedicated allocation of 512 MiB of GPU memory.
+000000002552: (Debug): GPU memory	total : 32607 MiB   	available : 30342 MiB	used : 3415 MiB    	free : 26926 MiB
+000000002552: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB
+000000002552: (Debug): Created image support for 'textures/milkyway-vguerin-d128.png'
+000000002552: (Debug): No cmd given for 'textures/milkyway-vguerin-d128.png', creating uninitialized texture
+000000002562: (Debug): Dedicated allocation of 20 MiB of GPU memory.
+000000002562: (Debug): GPU memory	total : 32607 MiB   	available : 30342 MiB	used : 3435 MiB    	free : 26906 MiB
+000000002562: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB
+000000002562: (Debug): Created image support for 'depth attachment'
+000000002562: (Debug): Build FrameBuffer 'hip_star single' with size (2048, 2048)
+000000002562: (Debug): Build FrameBuffer 'hip_star combine' with size (2048, 2048)
+000000002566: (Debug): Created image support for 'textures/star_illuminate.png'
+000000002566: (Debug): No cmd given for 'textures/star_illuminate.png', creating uninitialized texture
+000000002595: (Debug): Created image support for 'textures/pointer_planet.png'
+000000002595: (Debug): No cmd given for 'textures/pointer_planet.png', creating uninitialized texture
+000000002595: (Debug): Created image support for 'New-path projected shadows'
+000000002595: (Debug): No vertex entry defined for Pipeline "SHADOW_RING#SHADOW_SHAPE+0000"
+000000002596: (Debug): Dedicated allocation of 32 MiB of GPU memory.
+000000002596: (Debug): GPU memory	total : 32607 MiB   	available : 30342 MiB	used : 3467 MiB    	free : 26874 MiB
+000000002596: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB
+000000002605: (Debug): Created image support for 'textures/big_halo.png'
+000000002605: (Debug): No cmd given for 'textures/big_halo.png', creating uninitialized texture
+000000002631: (Debug): Created image support for 'textures/nebulae/abell1656-stephane_dumont.png'
+000000002631: (Debug): No cmd given for 'textures/nebulae/abell1656-stephane_dumont.png', creating uninitialized texture
+000000002651: (Debug): Created image support for 'textures/nebulae/abell2151-pedro_re.png'
+000000002651: (Debug): No cmd given for 'textures/nebulae/abell2151-pedro_re.png', creating uninitialized texture
+000000002671: (Debug): Created image support for 'textures/nebulae/abell0426-naoyuki_kurita.png'
+000000002671: (Debug): No cmd given for 'textures/nebulae/abell0426-naoyuki_kurita.png', creating uninitialized texture
+000000002691: (Debug): Created image support for 'textures/nebulae/albireo.png'
+000000002691: (Debug): No cmd given for 'textures/nebulae/albireo.png', creating uninitialized texture
+000000002711: (Debug): Created image support for 'textures/nebulae/ic434-eric_courcier.png'
+000000002711: (Debug): No cmd given for 'textures/nebulae/ic434-eric_courcier.png', creating uninitialized texture
+000000002731: (Debug): Created image support for 'textures/nebulae/placeholder.png'
+000000002731: (Debug): No cmd given for 'textures/nebulae/placeholder.png', creating uninitialized texture
+000000002751: (Debug): Created image support for 'textures/nebulae/b72-68-jacques_ardissone.png'
+000000002751: (Debug): No cmd given for 'textures/nebulae/b72-68-jacques_ardissone.png', creating uninitialized texture
+000000002772: (Debug): Created image support for 'textures/nebulae/cygnusx1.png'
+000000002772: (Debug): No cmd given for 'textures/nebulae/cygnusx1.png', creating uninitialized texture
+000000002792: (Debug): Created image support for 'textures/nebulae/deepfield_north-hst.png'
+000000002792: (Debug): No cmd given for 'textures/nebulae/deepfield_north-hst.png', creating uninitialized texture
+000000002812: (Debug): Created image support for 'textures/nebulae/deepfield_south-hst.png'
+000000002812: (Debug): No cmd given for 'textures/nebulae/deepfield_south-hst.png', creating uninitialized texture
+000000002832: (Debug): Created image support for 'textures/nebulae/gamma_cyg-eric_courcier.png'
+000000002832: (Debug): No cmd given for 'textures/nebulae/gamma_cyg-eric_courcier.png', creating uninitialized texture
+000000002913: (Debug): Created image support for 'textures/nebulae/HXDF-hst.png'
+000000002913: (Debug): No cmd given for 'textures/nebulae/HXDF-hst.png', creating uninitialized texture
+000000002933: (Debug): Created image support for 'textures/nebulae/ic1396-chris_schur.png'
+000000002933: (Debug): No cmd given for 'textures/nebulae/ic1396-chris_schur.png', creating uninitialized texture
+000000002954: (Debug): Created image support for 'textures/nebulae/IC1805-eric_courcier.png'
+000000002954: (Debug): No cmd given for 'textures/nebulae/IC1805-eric_courcier.png', creating uninitialized texture
+000000002974: (Debug): Created image support for 'textures/nebulae/IC1848-eric_courcier.png'
+000000002974: (Debug): No cmd given for 'textures/nebulae/IC1848-eric_courcier.png', creating uninitialized texture
+000000003012: (Debug): Created image support for 'textures/nebulae/ic2118-george_greaney.png'
+000000003012: (Debug): No cmd given for 'textures/nebulae/ic2118-george_greaney.png', creating uninitialized texture
+000000003026: (Debug): Created image support for 'textures/nebulae/ic2177-george_greaney.png'
+000000003026: (Debug): No cmd given for 'textures/nebulae/ic2177-george_greaney.png', creating uninitialized texture
+000000003046: (Debug): Created image support for 'textures/nebulae/ic2944-laurent_ferrero.png'
+000000003046: (Debug): No cmd given for 'textures/nebulae/ic2944-laurent_ferrero.png', creating uninitialized texture
+000000003066: (Debug): Created image support for 'textures/nebulae/ic0405-chris_schur.png'
+000000003066: (Debug): No cmd given for 'textures/nebulae/ic0405-chris_schur.png', creating uninitialized texture
+000000003086: (Debug): Created image support for 'textures/nebulae/ic0418-walter_mac_donald.png'
+000000003086: (Debug): No cmd given for 'textures/nebulae/ic0418-walter_mac_donald.png', creating uninitialized texture
+000000003106: (Debug): Created image support for 'textures/nebulae/ic0443-chris_schur.png'
+000000003106: (Debug): No cmd given for 'textures/nebulae/ic0443-chris_schur.png', creating uninitialized texture
+000000003126: (Debug): Created image support for 'textures/nebulae/ic5146-tom_carrico.png'
+000000003126: (Debug): No cmd given for 'textures/nebulae/ic5146-tom_carrico.png', creating uninitialized texture
+000000003146: (Debug): Created image support for 'textures/nebulae/ic5148-observatoire_des_makes.png'
+000000003146: (Debug): No cmd given for 'textures/nebulae/ic5148-observatoire_des_makes.png', creating uninitialized texture
+000000003167: (Debug): Created image support for 'textures/nebulae/kemble_cascade-maxime_spano.png'
+000000003167: (Debug): No cmd given for 'textures/nebulae/kemble_cascade-maxime_spano.png', creating uninitialized texture
+000000003187: (Debug): Created image support for 'textures/nebulae/lmc-stephane_guisard.png'
+000000003187: (Debug): No cmd given for 'textures/nebulae/lmc-stephane_guisard.png', creating uninitialized texture
+000000003207: (Debug): Created image support for 'textures/nebulae/m001-hst.png'
+000000003207: (Debug): No cmd given for 'textures/nebulae/m001-hst.png', creating uninitialized texture
+000000003227: (Debug): Created image support for 'textures/nebulae/m002-hst.png'
+000000003227: (Debug): No cmd given for 'textures/nebulae/m002-hst.png', creating uninitialized texture
+000000003247: (Debug): Created image support for 'textures/nebulae/m003-hunter_wilson.png'
+000000003247: (Debug): No cmd given for 'textures/nebulae/m003-hunter_wilson.png', creating uninitialized texture
+000000003267: (Debug): Created image support for 'textures/nebulae/m004-antilhue.png'
+000000003267: (Debug): No cmd given for 'textures/nebulae/m004-antilhue.png', creating uninitialized texture
+000000003287: (Debug): Created image support for 'textures/nebulae/m005-hst.png'
+000000003287: (Debug): No cmd given for 'textures/nebulae/m005-hst.png', creating uninitialized texture
+000000003308: (Debug): Created image support for 'textures/nebulae/m008-jacques_ardissone.png'
+000000003308: (Debug): No cmd given for 'textures/nebulae/m008-jacques_ardissone.png', creating uninitialized texture
+000000003328: (Debug): Created image support for 'textures/nebulae/m009-hst.png'
+000000003328: (Debug): No cmd given for 'textures/nebulae/m009-hst.png', creating uninitialized texture
+000000003348: (Debug): Created image support for 'textures/nebulae/m010-hst.png'
+000000003348: (Debug): No cmd given for 'textures/nebulae/m010-hst.png', creating uninitialized texture
+000000003368: (Debug): Created image support for 'textures/nebulae/m011-maxime_spano.png'
+000000003368: (Debug): No cmd given for 'textures/nebulae/m011-maxime_spano.png', creating uninitialized texture
+000000003388: (Debug): Created image support for 'textures/nebulae/m012-paul_downing.png'
+000000003388: (Debug): No cmd given for 'textures/nebulae/m012-paul_downing.png', creating uninitialized texture
+000000003409: (Debug): Created image support for 'textures/nebulae/m013-centre_astro.png'
+000000003409: (Debug): No cmd given for 'textures/nebulae/m013-centre_astro.png', creating uninitialized texture
+000000003429: (Debug): Created image support for 'textures/nebulae/m014-hunter_wilson.png'
+000000003429: (Debug): No cmd given for 'textures/nebulae/m014-hunter_wilson.png', creating uninitialized texture
+000000003449: (Debug): Created image support for 'textures/nebulae/m015-stephane_dumont.png'
+000000003449: (Debug): No cmd given for 'textures/nebulae/m015-stephane_dumont.png', creating uninitialized texture
+000000003469: (Debug): Created image support for 'textures/nebulae/m016-eric_courcier.png'
+000000003469: (Debug): No cmd given for 'textures/nebulae/m016-eric_courcier.png', creating uninitialized texture
+000000003489: (Debug): Created image support for 'textures/nebulae/m017-jacques_ardissone.png'
+000000003489: (Debug): No cmd given for 'textures/nebulae/m017-jacques_ardissone.png', creating uninitialized texture
+000000003509: (Debug): Created image support for 'textures/nebulae/m018-2mass.png'
+000000003509: (Debug): No cmd given for 'textures/nebulae/m018-2mass.png', creating uninitialized texture
+000000003530: (Debug): Created image support for 'textures/nebulae/m019-2mass.png'
+000000003530: (Debug): No cmd given for 'textures/nebulae/m019-2mass.png', creating uninitialized texture
+000000003550: (Debug): Created image support for 'textures/nebulae/m020-jacques_ardissone.png'
+000000003550: (Debug): No cmd given for 'textures/nebulae/m020-jacques_ardissone.png', creating uninitialized texture
+000000003570: (Debug): Created image support for 'textures/nebulae/m021-noao.png'
+000000003570: (Debug): No cmd given for 'textures/nebulae/m021-noao.png', creating uninitialized texture
+000000003590: (Debug): Created image support for 'textures/nebulae/m022-lionel_ruiz.png'
+000000003590: (Debug): No cmd given for 'textures/nebulae/m022-lionel_ruiz.png', creating uninitialized texture
+000000003610: (Debug): Created image support for 'textures/nebulae/m023-aca.png'
+000000003610: (Debug): No cmd given for 'textures/nebulae/m023-aca.png', creating uninitialized texture
+000000003630: (Debug): Created image support for 'textures/nebulae/m025-noao.png'
+000000003630: (Debug): No cmd given for 'textures/nebulae/m025-noao.png', creating uninitialized texture
+000000003651: (Debug): Created image support for 'textures/nebulae/m026-aca.png'
+000000003651: (Debug): No cmd given for 'textures/nebulae/m026-aca.png', creating uninitialized texture
+000000003671: (Debug): Created image support for 'textures/nebulae/m027-stephane_dumont.png'
+000000003671: (Debug): No cmd given for 'textures/nebulae/m027-stephane_dumont.png', creating uninitialized texture
+000000003711: (Debug): Created image support for 'textures/nebulae/m028-hst.png'
+000000003711: (Debug): No cmd given for 'textures/nebulae/m028-hst.png', creating uninitialized texture
+000000003731: (Debug): Created image support for 'textures/nebulae/m029-aca.png'
+000000003731: (Debug): No cmd given for 'textures/nebulae/m029-aca.png', creating uninitialized texture
+000000003751: (Debug): Created image support for 'textures/nebulae/m030-hst.png'
+000000003751: (Debug): No cmd given for 'textures/nebulae/m030-hst.png', creating uninitialized texture
+000000003811: (Debug): Created image support for 'textures/nebulae/m031-g_seigneuret.png'
+000000003811: (Debug): No cmd given for 'textures/nebulae/m031-g_seigneuret.png', creating uninitialized texture
+000000003832: (Debug): Created image support for 'textures/nebulae/m033-g_seigneuret.png'
+000000003832: (Debug): No cmd given for 'textures/nebulae/m033-g_seigneuret.png', creating uninitialized texture
+000000003852: (Debug): Created image support for 'textures/nebulae/m034-aca.png'
+000000003852: (Debug): No cmd given for 'textures/nebulae/m034-aca.png', creating uninitialized texture
+000000003873: (Debug): Created image support for 'textures/nebulae/m035-robert_j_hawley.png'
+000000003873: (Debug): No cmd given for 'textures/nebulae/m035-robert_j_hawley.png', creating uninitialized texture
+000000003893: (Debug): Created image support for 'textures/nebulae/m036-noao.png'
+000000003893: (Debug): No cmd given for 'textures/nebulae/m036-noao.png', creating uninitialized texture
+000000003913: (Debug): Created image support for 'textures/nebulae/m037-ole_neilsen.png'
+000000003913: (Debug): No cmd given for 'textures/nebulae/m037-ole_neilsen.png', creating uninitialized texture
+000000003934: (Debug): Created image support for 'textures/nebulae/m038-hst.png'
+000000003934: (Debug): No cmd given for 'textures/nebulae/m038-hst.png', creating uninitialized texture
+000000003954: (Debug): Created image support for 'textures/nebulae/m039-noao.png'
+000000003954: (Debug): No cmd given for 'textures/nebulae/m039-noao.png', creating uninitialized texture
+000000003974: (Debug): Created image support for 'textures/nebulae/m040-aca.png'
+000000003974: (Debug): No cmd given for 'textures/nebulae/m040-aca.png', creating uninitialized texture
+000000003994: (Debug): Created image support for 'textures/nebulae/m041-aca.png'
+000000003994: (Debug): No cmd given for 'textures/nebulae/m041-aca.png', creating uninitialized texture
+000000004033: (Debug): Created image support for 'textures/nebulae/m042-hst.png'
+000000004033: (Debug): No cmd given for 'textures/nebulae/m042-hst.png', creating uninitialized texture
+000000004053: (Debug): Created image support for 'textures/nebulae/m044-maxime_spano.png'
+000000004053: (Debug): No cmd given for 'textures/nebulae/m044-maxime_spano.png', creating uninitialized texture
+000000004073: (Debug): Created image support for 'textures/nebulae/m045-jacques_ardissone.png'
+000000004073: (Debug): No cmd given for 'textures/nebulae/m045-jacques_ardissone.png', creating uninitialized texture
+000000004094: (Debug): Created image support for 'textures/nebulae/m046-noao.png'
+000000004094: (Debug): No cmd given for 'textures/nebulae/m046-noao.png', creating uninitialized texture
+000000004114: (Debug): Created image support for 'textures/nebulae/m047-aca.png'
+000000004114: (Debug): No cmd given for 'textures/nebulae/m047-aca.png', creating uninitialized texture
+000000004134: (Debug): Created image support for 'textures/nebulae/m048-aca.png'
+000000004134: (Debug): No cmd given for 'textures/nebulae/m048-aca.png', creating uninitialized texture
+000000004156: (Debug): Allocate chunk of 256 MiB in GPU memory.
+000000004156: (Debug): GPU memory	total : 32607 MiB   	available : 30342 MiB	used : 3755 MiB    	free : 26586 MiB
+000000004156: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB
+000000004156: (Debug): Created image support for 'textures/nebulae/m049-sdss2.png'
+000000004156: (Debug): No cmd given for 'textures/nebulae/m049-sdss2.png', creating uninitialized texture
+000000004176: (Debug): Created image support for 'textures/nebulae/m050-aca.png'
+000000004176: (Debug): No cmd given for 'textures/nebulae/m050-aca.png', creating uninitialized texture
+000000004196: (Debug): Created image support for 'textures/nebulae/m051-hst.png'
+000000004196: (Debug): No cmd given for 'textures/nebulae/m051-hst.png', creating uninitialized texture
+000000004216: (Debug): Created image support for 'textures/nebulae/m052-aca.png'
+000000004216: (Debug): No cmd given for 'textures/nebulae/m052-aca.png', creating uninitialized texture
+000000004236: (Debug): Created image support for 'textures/nebulae/m053-hst.png'
+000000004237: (Debug): No cmd given for 'textures/nebulae/m053-hst.png', creating uninitialized texture
+000000004257: (Debug): Created image support for 'textures/nebulae/m054-hst.png'
+000000004257: (Debug): No cmd given for 'textures/nebulae/m054-hst.png', creating uninitialized texture
+000000004277: (Debug): Created image support for 'textures/nebulae/m055-nasa.png'
+000000004277: (Debug): No cmd given for 'textures/nebulae/m055-nasa.png', creating uninitialized texture
+000000004297: (Debug): Created image support for 'textures/nebulae/m056-hst.png'
+000000004297: (Debug): No cmd given for 'textures/nebulae/m056-hst.png', creating uninitialized texture
+000000004317: (Debug): Created image support for 'textures/nebulae/m057-hst.png'
+000000004317: (Debug): No cmd given for 'textures/nebulae/m057-hst.png', creating uninitialized texture
+000000004337: (Debug): Created image support for 'textures/nebulae/m058-adam_block.png'
+000000004337: (Debug): No cmd given for 'textures/nebulae/m058-adam_block.png', creating uninitialized texture
+000000004357: (Debug): Created image support for 'textures/nebulae/m059-hst.png'
+000000004357: (Debug): No cmd given for 'textures/nebulae/m059-hst.png', creating uninitialized texture
+000000004377: (Debug): Created image support for 'textures/nebulae/m060-hst.png'
+000000004377: (Debug): No cmd given for 'textures/nebulae/m060-hst.png', creating uninitialized texture
+000000004398: (Debug): Created image support for 'textures/nebulae/m061-adam_block.png'
+000000004398: (Debug): No cmd given for 'textures/nebulae/m061-adam_block.png', creating uninitialized texture
+000000004418: (Debug): Created image support for 'textures/nebulae/m062-hst.png'
+000000004418: (Debug): No cmd given for 'textures/nebulae/m062-hst.png', creating uninitialized texture
+000000004438: (Debug): Created image support for 'textures/nebulae/m063-adam_block.png'
+000000004438: (Debug): No cmd given for 'textures/nebulae/m063-adam_block.png', creating uninitialized texture
+000000004458: (Debug): Created image support for 'textures/nebulae/m064-hst.png'
+000000004458: (Debug): No cmd given for 'textures/nebulae/m064-hst.png', creating uninitialized texture
+000000004478: (Debug): Created image support for 'textures/nebulae/m065-robert_j_hawley.png'
+000000004478: (Debug): No cmd given for 'textures/nebulae/m065-robert_j_hawley.png', creating uninitialized texture
+000000004498: (Debug): Created image support for 'textures/nebulae/m067-palomar.png'
+000000004498: (Debug): No cmd given for 'textures/nebulae/m067-palomar.png', creating uninitialized texture
+000000004518: (Debug): Created image support for 'textures/nebulae/m068-hst.png'
+000000004518: (Debug): No cmd given for 'textures/nebulae/m068-hst.png', creating uninitialized texture
+000000004539: (Debug): Created image support for 'textures/nebulae/m069-hst.png'
+000000004539: (Debug): No cmd given for 'textures/nebulae/m069-hst.png', creating uninitialized texture
+000000004559: (Debug): Created image support for 'textures/nebulae/m070-hst.png'
+000000004559: (Debug): No cmd given for 'textures/nebulae/m070-hst.png', creating uninitialized texture
+000000004579: (Debug): Created image support for 'textures/nebulae/m071-hst.png'
+000000004579: (Debug): No cmd given for 'textures/nebulae/m071-hst.png', creating uninitialized texture
+000000004599: (Debug): Created image support for 'textures/nebulae/m072-hst.png'
+000000004599: (Debug): No cmd given for 'textures/nebulae/m072-hst.png', creating uninitialized texture
+000000004619: (Debug): Created image support for 'textures/nebulae/m073-aca.png'
+000000004619: (Debug): No cmd given for 'textures/nebulae/m073-aca.png', creating uninitialized texture
+000000004639: (Debug): Created image support for 'textures/nebulae/m074-antilhue.png'
+000000004639: (Debug): No cmd given for 'textures/nebulae/m074-antilhue.png', creating uninitialized texture
+000000004659: (Debug): Created image support for 'textures/nebulae/m075-hst.png'
+000000004659: (Debug): No cmd given for 'textures/nebulae/m075-hst.png', creating uninitialized texture
+000000004680: (Debug): Created image support for 'textures/nebulae/m076-block.png'
+000000004680: (Debug): No cmd given for 'textures/nebulae/m076-block.png', creating uninitialized texture
+000000004700: (Debug): Created image support for 'textures/nebulae/m077-adam_block.png'
+000000004700: (Debug): No cmd given for 'textures/nebulae/m077-adam_block.png', creating uninitialized texture
+000000004720: (Debug): Created image support for 'textures/nebulae/m078-hst.png'
+000000004720: (Debug): No cmd given for 'textures/nebulae/m078-hst.png', creating uninitialized texture
+000000004740: (Debug): Created image support for 'textures/nebulae/m079-hst.png'
+000000004740: (Debug): No cmd given for 'textures/nebulae/m079-hst.png', creating uninitialized texture
+000000004760: (Debug): Created image support for 'textures/nebulae/m080-hst.png'
+000000004760: (Debug): No cmd given for 'textures/nebulae/m080-hst.png', creating uninitialized texture
+000000004780: (Debug): Created image support for 'textures/nebulae/m081-rainer_zmaritsch.png'
+000000004780: (Debug): No cmd given for 'textures/nebulae/m081-rainer_zmaritsch.png', creating uninitialized texture
+000000004800: (Debug): Created image support for 'textures/nebulae/m083-hst.png'
+000000004800: (Debug): No cmd given for 'textures/nebulae/m083-hst.png', creating uninitialized texture
+000000004821: (Debug): Created image support for 'textures/nebulae/m084-noao.png'
+000000004821: (Debug): No cmd given for 'textures/nebulae/m084-noao.png', creating uninitialized texture
+000000004841: (Debug): Created image support for 'textures/nebulae/m085-sdss2.png'
+000000004841: (Debug): No cmd given for 'textures/nebulae/m085-sdss2.png', creating uninitialized texture
+000000004861: (Debug): Created image support for 'textures/nebulae/m086-noao.png'
+000000004861: (Debug): No cmd given for 'textures/nebulae/m086-noao.png', creating uninitialized texture
+000000004882: (Debug): Created image support for 'textures/nebulae/m087-hst.png'
+000000004882: (Debug): No cmd given for 'textures/nebulae/m087-hst.png', creating uninitialized texture
+000000004902: (Debug): Created image support for 'textures/nebulae/m088-j_schulman.png'
+000000004902: (Debug): No cmd given for 'textures/nebulae/m088-j_schulman.png', creating uninitialized texture
+000000004922: (Debug): Created image support for 'textures/nebulae/m089-sdss2.png'
+000000004922: (Debug): No cmd given for 'textures/nebulae/m089-sdss2.png', creating uninitialized texture
+000000004942: (Debug): Created image support for 'textures/nebulae/m090-sdss1.png'
+000000004942: (Debug): No cmd given for 'textures/nebulae/m090-sdss1.png', creating uninitialized texture
+000000004963: (Debug): Created image support for 'textures/nebulae/m091-sdss2.png'
+000000004963: (Debug): No cmd given for 'textures/nebulae/m091-sdss2.png', creating uninitialized texture
+000000004983: (Debug): Created image support for 'textures/nebulae/m092-sdss2.png'
+000000004983: (Debug): No cmd given for 'textures/nebulae/m092-sdss2.png', creating uninitialized texture
+000000005002: (Debug): Created image support for 'textures/nebulae/m093-aca.png'
+000000005002: (Debug): No cmd given for 'textures/nebulae/m093-aca.png', creating uninitialized texture
+000000005022: (Debug): Created image support for 'textures/nebulae/m094-sdss2.png'
+000000005022: (Debug): No cmd given for 'textures/nebulae/m094-sdss2.png', creating uninitialized texture
+000000005042: (Debug): Created image support for 'textures/nebulae/m095-hst.png'
+000000005042: (Debug): No cmd given for 'textures/nebulae/m095-hst.png', creating uninitialized texture
+000000005062: (Debug): Created image support for 'textures/nebulae/m096-hst.png'
+000000005062: (Debug): No cmd given for 'textures/nebulae/m096-hst.png', creating uninitialized texture
+000000005083: (Debug): Created image support for 'textures/nebulae/m097-centre_astro.png'
+000000005083: (Debug): No cmd given for 'textures/nebulae/m097-centre_astro.png', creating uninitialized texture
+000000005103: (Debug): Created image support for 'textures/nebulae/m098-sdss2.png'
+000000005103: (Debug): No cmd given for 'textures/nebulae/m098-sdss2.png', creating uninitialized texture
+000000005123: (Debug): Created image support for 'textures/nebulae/m099-adam_block.png'
+000000005123: (Debug): No cmd given for 'textures/nebulae/m099-adam_block.png', creating uninitialized texture
+000000005143: (Debug): Created image support for 'textures/nebulae/m100-sdss2.png'
+000000005143: (Debug): No cmd given for 'textures/nebulae/m100-sdss2.png', creating uninitialized texture
+000000005163: (Debug): Created image support for 'textures/nebulae/m101-hst.png'
+000000005163: (Debug): No cmd given for 'textures/nebulae/m101-hst.png', creating uninitialized texture
+000000005184: (Debug): Created image support for 'textures/nebulae/m102-hst.png'
+000000005184: (Debug): No cmd given for 'textures/nebulae/m102-hst.png', creating uninitialized texture
+000000005204: (Debug): Created image support for 'textures/nebulae/m103-aca.png'
+000000005204: (Debug): No cmd given for 'textures/nebulae/m103-aca.png', creating uninitialized texture
+000000005224: (Debug): Created image support for 'textures/nebulae/m104-hst.png'
+000000005224: (Debug): No cmd given for 'textures/nebulae/m104-hst.png', creating uninitialized texture
+000000005244: (Debug): Created image support for 'textures/nebulae/m105-aca.png'
+000000005244: (Debug): No cmd given for 'textures/nebulae/m105-aca.png', creating uninitialized texture
+000000005264: (Debug): Created image support for 'textures/nebulae/m106-adam_block.png'
+000000005264: (Debug): No cmd given for 'textures/nebulae/m106-adam_block.png', creating uninitialized texture
+000000005284: (Debug): Created image support for 'textures/nebulae/m107-hst.png'
+000000005284: (Debug): No cmd given for 'textures/nebulae/m107-hst.png', creating uninitialized texture
+000000005304: (Debug): Created image support for 'textures/nebulae/m108-adam_block.png'
+000000005304: (Debug): No cmd given for 'textures/nebulae/m108-adam_block.png', creating uninitialized texture
+000000005325: (Debug): Created image support for 'textures/nebulae/m109-adam_block.png'
+000000005325: (Debug): No cmd given for 'textures/nebulae/m109-adam_block.png', creating uninitialized texture
+000000005345: (Debug): Created image support for 'textures/nebulae/ngc0040-al_kelly.png'
+000000005345: (Debug): No cmd given for 'textures/nebulae/ngc0040-al_kelly.png', creating uninitialized texture
+000000005365: (Debug): Created image support for 'textures/nebulae/ngc0055-james_foster.png'
+000000005365: (Debug): No cmd given for 'textures/nebulae/ngc0055-james_foster.png', creating uninitialized texture
+000000005385: (Debug): Created image support for 'textures/nebulae/ngc0147-john_blackwell.png'
+000000005385: (Debug): No cmd given for 'textures/nebulae/ngc0147-john_blackwell.png', creating uninitialized texture
+000000005405: (Debug): Created image support for 'textures/nebulae/ngc0281-jacques_ardissone.png'
+000000005405: (Debug): No cmd given for 'textures/nebulae/ngc0281-jacques_ardissone.png', creating uninitialized texture
+000000005426: (Debug): Created image support for 'textures/nebulae/ngc0157-al_kelly.png'
+000000005426: (Debug): No cmd given for 'textures/nebulae/ngc0157-al_kelly.png', creating uninitialized texture
+000000005446: (Debug): Created image support for 'textures/nebulae/ngc0185-kunihiko_okano.png'
+000000005446: (Debug): No cmd given for 'textures/nebulae/ngc0185-kunihiko_okano.png', creating uninitialized texture
+000000005466: (Debug): Created image support for 'textures/nebulae/ngc0188-john_gretchen.png'
+000000005466: (Debug): No cmd given for 'textures/nebulae/ngc0188-john_gretchen.png', creating uninitialized texture
+000000005486: (Debug): Created image support for 'textures/nebulae/ngc0225-laurent_ferrero.png'
+000000005486: (Debug): No cmd given for 'textures/nebulae/ngc0225-laurent_ferrero.png', creating uninitialized texture
+000000005506: (Debug): Created image support for 'textures/nebulae/ngc0246-walter_mac_donald.png'
+000000005506: (Debug): No cmd given for 'textures/nebulae/ngc0246-walter_mac_donald.png', creating uninitialized texture
+000000005527: (Debug): Created image support for 'textures/nebulae/ngc0247-marc_cesarini.png'
+000000005527: (Debug): No cmd given for 'textures/nebulae/ngc0247-marc_cesarini.png', creating uninitialized texture
+000000005547: (Debug): Created image support for 'textures/nebulae/ngc0253-noao.png'
+000000005547: (Debug): No cmd given for 'textures/nebulae/ngc0253-noao.png', creating uninitialized texture
+000000005567: (Debug): Created image support for 'textures/nebulae/ngc0288-walter_mac_donald.png'
+000000005567: (Debug): No cmd given for 'textures/nebulae/ngc0288-walter_mac_donald.png', creating uninitialized texture
+000000005587: (Debug): Created image support for 'textures/nebulae/ngc0300-walter_mac_donald.png'
+000000005587: (Debug): No cmd given for 'textures/nebulae/ngc0300-walter_mac_donald.png', creating uninitialized texture
+000000005607: (Debug): Created image support for 'textures/nebulae/ngc0404-astroclub_aubagnais.png'
+000000005607: (Debug): No cmd given for 'textures/nebulae/ngc0404-astroclub_aubagnais.png', creating uninitialized texture
+000000005627: (Debug): Created image support for 'textures/nebulae/ngc0457-astroclub_aubagnais.png'
+000000005627: (Debug): No cmd given for 'textures/nebulae/ngc0457-astroclub_aubagnais.png', creating uninitialized texture
+000000005648: (Debug): Created image support for 'textures/nebulae/ngc0488-tom_carrico.png'
+000000005648: (Debug): No cmd given for 'textures/nebulae/ngc0488-tom_carrico.png', creating uninitialized texture
+000000005668: (Debug): Created image support for 'textures/nebulae/ngc0654-harald_strauss.png'
+000000005668: (Debug): No cmd given for 'textures/nebulae/ngc0654-harald_strauss.png', creating uninitialized texture
+000000005688: (Debug): Created image support for 'textures/nebulae/ngc0663-john_gretchen.png'
+000000005688: (Debug): No cmd given for 'textures/nebulae/ngc0663-john_gretchen.png', creating uninitialized texture
+000000005708: (Debug): Created image support for 'textures/nebulae/ngc0752-james_foster.png'
+000000005708: (Debug): No cmd given for 'textures/nebulae/ngc0752-james_foster.png', creating uninitialized texture
+000000005728: (Debug): Created image support for 'textures/nebulae/ngc0772-philipp_keller.png'
+000000005728: (Debug): No cmd given for 'textures/nebulae/ngc0772-philipp_keller.png', creating uninitialized texture
+000000005749: (Debug): Created image support for 'textures/nebulae/ngc0891-centre_astro.png'
+000000005749: (Debug): No cmd given for 'textures/nebulae/ngc0891-centre_astro.png', creating uninitialized texture
+000000005769: (Debug): Created image support for 'textures/nebulae/ngc0925-al_kelly.png'
+000000005769: (Debug): No cmd given for 'textures/nebulae/ngc0925-al_kelly.png', creating uninitialized texture
+000000005789: (Debug): Created image support for 'textures/nebulae/ngc0936-tom_carrico.png'
+000000005789: (Debug): No cmd given for 'textures/nebulae/ngc0936-tom_carrico.png', creating uninitialized texture
+000000005809: (Debug): Created image support for 'textures/nebulae/ngc1023-taku.png'
+000000005809: (Debug): No cmd given for 'textures/nebulae/ngc1023-taku.png', creating uninitialized texture
+000000005829: (Debug): Created image support for 'textures/nebulae/ngc1097-observatoire_des_makes.png'
+000000005829: (Debug): No cmd given for 'textures/nebulae/ngc1097-observatoire_des_makes.png', creating uninitialized texture
+000000005850: (Debug): Created image support for 'textures/nebulae/ngc1232-hst.png'
+000000005850: (Debug): No cmd given for 'textures/nebulae/ngc1232-hst.png', creating uninitialized texture
+000000005871: (Debug): Created image support for 'textures/nebulae/ngc1291-observatoire_des_makes.png'
+000000005871: (Debug): No cmd given for 'textures/nebulae/ngc1291-observatoire_des_makes.png', creating uninitialized texture
+000000005891: (Debug): Created image support for 'textures/nebulae/ngc1300-hst.png'
+000000005891: (Debug): No cmd given for 'textures/nebulae/ngc1300-hst.png', creating uninitialized texture
+000000005911: (Debug): Created image support for 'textures/nebulae/ngc1313-kunihiko_okano.png'
+000000005911: (Debug): No cmd given for 'textures/nebulae/ngc1313-kunihiko_okano.png', creating uninitialized texture
+000000005931: (Debug): Created image support for 'textures/nebulae/ngc1316-hst.png'
+000000005931: (Debug): No cmd given for 'textures/nebulae/ngc1316-hst.png', creating uninitialized texture
+000000005951: (Debug): Created image support for 'textures/nebulae/ngc1360-david_malin.png'
+000000005951: (Debug): No cmd given for 'textures/nebulae/ngc1360-david_malin.png', creating uninitialized texture
+000000005972: (Debug): Created image support for 'textures/nebulae/ngc1365.png'
+000000005972: (Debug): No cmd given for 'textures/nebulae/ngc1365.png', creating uninitialized texture
+000000005992: (Debug): Created image support for 'textures/nebulae/ngc1399-janet_cutler.png'
+000000005992: (Debug): No cmd given for 'textures/nebulae/ngc1399-janet_cutler.png', creating uninitialized texture
+000000006011: (Debug): Created image support for 'textures/nebulae/ngc1433-steven_juchnowski.png'
+000000006011: (Debug): No cmd given for 'textures/nebulae/ngc1433-steven_juchnowski.png', creating uninitialized texture
+000000006031: (Debug): Created image support for 'textures/nebulae/ngc1499-jacques_ardissone.png'
+000000006031: (Debug): No cmd given for 'textures/nebulae/ngc1499-jacques_ardissone.png', creating uninitialized texture
+000000006051: (Debug): Created image support for 'textures/nebulae/ngc1501-stephane_dumont.png'
+000000006051: (Debug): No cmd given for 'textures/nebulae/ngc1501-stephane_dumont.png', creating uninitialized texture
+000000006071: (Debug): Created image support for 'textures/nebulae/ngc1514-taku.png'
+000000006071: (Debug): No cmd given for 'textures/nebulae/ngc1514-taku.png', creating uninitialized texture
+000000006092: (Debug): Created image support for 'textures/nebulae/ngc1528-laurent_ferrero.png'
+000000006092: (Debug): No cmd given for 'textures/nebulae/ngc1528-laurent_ferrero.png', creating uninitialized texture
+000000006112: (Debug): Created image support for 'textures/nebulae/ngc1532-steven_juchnowski.png'
+000000006112: (Debug): No cmd given for 'textures/nebulae/ngc1532-steven_juchnowski.png', creating uninitialized texture
+000000006132: (Debug): Created image support for 'textures/nebulae/ngc1535-al_kelly.png'
+000000006132: (Debug): No cmd given for 'textures/nebulae/ngc1535-al_kelly.png', creating uninitialized texture
+000000006152: (Debug): Created image support for 'textures/nebulae/ngc1553-49-observatoire_des_makes.png'
+000000006152: (Debug): No cmd given for 'textures/nebulae/ngc1553-49-observatoire_des_makes.png', creating uninitialized texture
+000000006172: (Debug): Created image support for 'textures/nebulae/ngc1566-steven_juchnowski.png'
+000000006172: (Debug): No cmd given for 'textures/nebulae/ngc1566-steven_juchnowski.png', creating uninitialized texture
+000000006192: (Debug): Created image support for 'textures/nebulae/ngc1647-laurent_ferrero.png'
+000000006192: (Debug): No cmd given for 'textures/nebulae/ngc1647-laurent_ferrero.png', creating uninitialized texture
+000000006213: (Debug): Created image support for 'textures/nebulae/ngc1788-eso.png'
+000000006213: (Debug): No cmd given for 'textures/nebulae/ngc1788-eso.png', creating uninitialized texture
+000000006233: (Debug): Created image support for 'textures/nebulae/ngc1792-steven_juchnowski.png'
+000000006233: (Debug): No cmd given for 'textures/nebulae/ngc1792-steven_juchnowski.png', creating uninitialized texture
+000000006253: (Debug): Created image support for 'textures/nebulae/ngc1808-steven_juchnowski.png'
+000000006253: (Debug): No cmd given for 'textures/nebulae/ngc1808-steven_juchnowski.png', creating uninitialized texture
+000000006273: (Debug): Created image support for 'textures/nebulae/ngc1851-walter_mac_donald.png'
+000000006273: (Debug): No cmd given for 'textures/nebulae/ngc1851-walter_mac_donald.png', creating uninitialized texture
+000000006293: (Debug): Created image support for 'textures/nebulae/ngc1893-andreas_masche.png'
+000000006293: (Debug): No cmd given for 'textures/nebulae/ngc1893-andreas_masche.png', creating uninitialized texture
+000000006313: (Debug): Created image support for 'textures/nebulae/ngc1907-pedro_re.png'
+000000006313: (Debug): No cmd given for 'textures/nebulae/ngc1907-pedro_re.png', creating uninitialized texture
+000000006334: (Debug): Created image support for 'textures/nebulae/ngc1999-chris_schur.png'
+000000006334: (Debug): No cmd given for 'textures/nebulae/ngc1999-chris_schur.png', creating uninitialized texture
+000000006354: (Debug): Created image support for 'textures/nebulae/ngc2070-kunihiko_okano.png'
+000000006354: (Debug): No cmd given for 'textures/nebulae/ngc2070-kunihiko_okano.png', creating uninitialized texture
+000000006374: (Debug): Created image support for 'textures/nebulae/ngc2158-chris_schur.png'
+000000006374: (Debug): No cmd given for 'textures/nebulae/ngc2158-chris_schur.png', creating uninitialized texture
+000000006394: (Debug): Created image support for 'textures/nebulae/ngc2174-5-andreas_masche.png'
+000000006394: (Debug): No cmd given for 'textures/nebulae/ngc2174-5-andreas_masche.png', creating uninitialized texture
+000000006414: (Debug): Created image support for 'textures/nebulae/ngc2244-eric_courcier.png'
+000000006414: (Debug): No cmd given for 'textures/nebulae/ngc2244-eric_courcier.png', creating uninitialized texture
+000000006434: (Debug): Created image support for 'textures/nebulae/ngc2261-hst.png'
+000000006434: (Debug): No cmd given for 'textures/nebulae/ngc2261-hst.png', creating uninitialized texture
+000000006455: (Debug): Created image support for 'textures/nebulae/ngc2264-eric_courcier.png'
+000000006455: (Debug): No cmd given for 'textures/nebulae/ngc2264-eric_courcier.png', creating uninitialized texture
+000000006475: (Debug): Created image support for 'textures/nebulae/ngc2359-james_foster.png'
+000000006475: (Debug): No cmd given for 'textures/nebulae/ngc2359-james_foster.png', creating uninitialized texture
+000000006495: (Debug): Created image support for 'textures/nebulae/ngc2360-pedro_re.png'
+000000006495: (Debug): No cmd given for 'textures/nebulae/ngc2360-pedro_re.png', creating uninitialized texture
+000000006515: (Debug): Created image support for 'textures/nebulae/ngc2362-chris_schur.png'
+000000006515: (Debug): No cmd given for 'textures/nebulae/ngc2362-chris_schur.png', creating uninitialized texture
+000000006535: (Debug): Created image support for 'textures/nebulae/ngc2371-2-philipp_keller.png'
+000000006535: (Debug): No cmd given for 'textures/nebulae/ngc2371-2-philipp_keller.png', creating uninitialized texture
+000000006555: (Debug): Created image support for 'textures/nebulae/ngc2392-hst.png'
+000000006555: (Debug): No cmd given for 'textures/nebulae/ngc2392-hst.png', creating uninitialized texture
+000000006576: (Debug): Created image support for 'textures/nebulae/ngc2403-centre_astro.png'
+000000006576: (Debug): No cmd given for 'textures/nebulae/ngc2403-centre_astro.png', creating uninitialized texture
+000000006596: (Debug): Created image support for 'textures/nebulae/ngc2419-chris_schur.png'
+000000006596: (Debug): No cmd given for 'textures/nebulae/ngc2419-chris_schur.png', creating uninitialized texture
+000000006616: (Debug): Created image support for 'textures/nebulae/ngc2420-pedro_re.png'
+000000006616: (Debug): No cmd given for 'textures/nebulae/ngc2420-pedro_re.png', creating uninitialized texture
+000000006636: (Debug): Created image support for 'textures/nebulae/ngc2438-stephane_dumont.png'
+000000006636: (Debug): No cmd given for 'textures/nebulae/ngc2438-stephane_dumont.png', creating uninitialized texture
+000000006656: (Debug): Created image support for 'textures/nebulae/ngc2440-kunihiko_okano.png'
+000000006656: (Debug): No cmd given for 'textures/nebulae/ngc2440-kunihiko_okano.png', creating uninitialized texture
+000000006677: (Debug): Created image support for 'textures/nebulae/ngc2442-steven_juchnowski.png'
+000000006677: (Debug): No cmd given for 'textures/nebulae/ngc2442-steven_juchnowski.png', creating uninitialized texture
+000000006697: (Debug): Created image support for 'textures/nebulae/ngc2467-steven_juchnowski.png'
+000000006697: (Debug): No cmd given for 'textures/nebulae/ngc2467-steven_juchnowski.png', creating uninitialized texture
+000000006717: (Debug): Created image support for 'textures/nebulae/ngc2477-naoyuki_kurita.png'
+000000006717: (Debug): No cmd given for 'textures/nebulae/ngc2477-naoyuki_kurita.png', creating uninitialized texture
+000000006737: (Debug): Created image support for 'textures/nebulae/ngc2613-steven_juchnowski.png'
+000000006737: (Debug): No cmd given for 'textures/nebulae/ngc2613-steven_juchnowski.png', creating uninitialized texture
+000000006757: (Debug): Created image support for 'textures/nebulae/ngc2655-dss_aura_stsci.png'
+000000006757: (Debug): No cmd given for 'textures/nebulae/ngc2655-dss_aura_stsci.png', creating uninitialized texture
+000000006778: (Debug): Created image support for 'textures/nebulae/ngc2681-harald_strauss.png'
+000000006778: (Debug): No cmd given for 'textures/nebulae/ngc2681-harald_strauss.png', creating uninitialized texture
+000000006798: (Debug): Created image support for 'textures/nebulae/ngc2683-philipp_keller.png'
+000000006798: (Debug): No cmd given for 'textures/nebulae/ngc2683-philipp_keller.png', creating uninitialized texture
+000000006818: (Debug): Created image support for 'textures/nebulae/ngc2768-harald_strauss.png'
+000000006818: (Debug): No cmd given for 'textures/nebulae/ngc2768-harald_strauss.png', creating uninitialized texture
+000000006838: (Debug): Created image support for 'textures/nebulae/ngc2775-philipp_keller.png'
+000000006838: (Debug): No cmd given for 'textures/nebulae/ngc2775-philipp_keller.png', creating uninitialized texture
+000000006858: (Debug): Created image support for 'textures/nebulae/ngc2784-observatoire_des_makes.png'
+000000006858: (Debug): No cmd given for 'textures/nebulae/ngc2784-observatoire_des_makes.png', creating uninitialized texture
+000000006879: (Debug): Created image support for 'textures/nebulae/ngc2808-steven_juchnowski.png'
+000000006879: (Debug): No cmd given for 'textures/nebulae/ngc2808-steven_juchnowski.png', creating uninitialized texture
+000000006900: (Debug): Created image support for 'textures/nebulae/ngc2818-james_foster.png'
+000000006900: (Debug): No cmd given for 'textures/nebulae/ngc2818-james_foster.png', creating uninitialized texture
+000000006920: (Debug): Created image support for 'textures/nebulae/ngc2841-kunihiko_okano.png'
+000000006920: (Debug): No cmd given for 'textures/nebulae/ngc2841-kunihiko_okano.png', creating uninitialized texture
+000000006940: (Debug): Created image support for 'textures/nebulae/ngc2903-kunihiko_okano.png'
+000000006940: (Debug): No cmd given for 'textures/nebulae/ngc2903-kunihiko_okano.png', creating uninitialized texture
+000000006960: (Debug): Created image support for 'textures/nebulae/ngc2976-james_foster_.png'
+000000006960: (Debug): No cmd given for 'textures/nebulae/ngc2976-james_foster_.png', creating uninitialized texture
+000000006980: (Debug): Created image support for 'textures/nebulae/ngc2997-steven_juchnowski.png'
+000000006980: (Debug): No cmd given for 'textures/nebulae/ngc2997-steven_juchnowski.png', creating uninitialized texture
+000000007000: (Debug): Created image support for 'textures/nebulae/ngc3077-harald_strauss.png'
+000000007000: (Debug): No cmd given for 'textures/nebulae/ngc3077-harald_strauss.png', creating uninitialized texture
+000000007020: (Debug): Created image support for 'textures/nebulae/ngc3109-steven_juchnowski.png'
+000000007020: (Debug): No cmd given for 'textures/nebulae/ngc3109-steven_juchnowski.png', creating uninitialized texture
+000000007040: (Debug): Created image support for 'textures/nebulae/ngc3114-david_malin.png'
+000000007040: (Debug): No cmd given for 'textures/nebulae/ngc3114-david_malin.png', creating uninitialized texture
+000000007060: (Debug): Created image support for 'textures/nebulae/ngc3115-chris_schur.png'
+000000007060: (Debug): No cmd given for 'textures/nebulae/ngc3115-chris_schur.png', creating uninitialized texture
+000000007080: (Debug): Created image support for 'textures/nebulae/ngc3132-hst.png'
+000000007080: (Debug): No cmd given for 'textures/nebulae/ngc3132-hst.png', creating uninitialized texture
+000000007100: (Debug): Created image support for 'textures/nebulae/ngc3184-al_kelly.png'
+000000007100: (Debug): No cmd given for 'textures/nebulae/ngc3184-al_kelly.png', creating uninitialized texture
+000000007120: (Debug): Created image support for 'textures/nebulae/ngc3190-hst.png'
+000000007120: (Debug): No cmd given for 'textures/nebulae/ngc3190-hst.png', creating uninitialized texture
+000000007140: (Debug): Created image support for 'textures/nebulae/ngc3198-taku.png'
+000000007140: (Debug): No cmd given for 'textures/nebulae/ngc3198-taku.png', creating uninitialized texture
+000000007160: (Debug): Created image support for 'textures/nebulae/ngc3201-david_malin.png'
+000000007160: (Debug): No cmd given for 'textures/nebulae/ngc3201-david_malin.png', creating uninitialized texture
+000000007181: (Debug): Created image support for 'textures/nebulae/ngc3226-7-pedro_re.png'
+000000007181: (Debug): No cmd given for 'textures/nebulae/ngc3226-7-pedro_re.png', creating uninitialized texture
+000000007201: (Debug): Created image support for 'textures/nebulae/ngc3242-al_kelly.png'
+000000007201: (Debug): No cmd given for 'textures/nebulae/ngc3242-al_kelly.png', creating uninitialized texture
+000000007221: (Debug): Created image support for 'textures/nebulae/ngc3293-janet_cutler.png'
+000000007221: (Debug): No cmd given for 'textures/nebulae/ngc3293-janet_cutler.png', creating uninitialized texture
+000000007241: (Debug): Created image support for 'textures/nebulae/ngc3344-pedro_re.png'
+000000007241: (Debug): No cmd given for 'textures/nebulae/ngc3344-pedro_re.png', creating uninitialized texture
+000000007261: (Debug): Created image support for 'textures/nebulae/ngc3372-jacques_ardissone.png'
+000000007261: (Debug): No cmd given for 'textures/nebulae/ngc3372-jacques_ardissone.png', creating uninitialized texture
+000000007281: (Debug): Created image support for 'textures/nebulae/ngc3377-pedro_re.png'
+000000007281: (Debug): No cmd given for 'textures/nebulae/ngc3377-pedro_re.png', creating uninitialized texture
+000000007302: (Debug): Created image support for 'textures/nebulae/ngc3521-steven_juchnowski.png'
+000000007302: (Debug): No cmd given for 'textures/nebulae/ngc3521-steven_juchnowski.png', creating uninitialized texture
+000000007322: (Debug): Created image support for 'textures/nebulae/ngc3585-observatoire_des_makes.png'
+000000007322: (Debug): No cmd given for 'textures/nebulae/ngc3585-observatoire_des_makes.png', creating uninitialized texture
+000000007342: (Debug): Created image support for 'textures/nebulae/ngc3607-marc_cesarini.png'
+000000007342: (Debug): No cmd given for 'textures/nebulae/ngc3607-marc_cesarini.png', creating uninitialized texture
+000000007362: (Debug): Created image support for 'textures/nebulae/ngc3621-steven_juchnowski.png'
+000000007362: (Debug): No cmd given for 'textures/nebulae/ngc3621-steven_juchnowski.png', creating uninitialized texture
+000000007382: (Debug): Created image support for 'textures/nebulae/ngc3631-taku.png'
+000000007382: (Debug): No cmd given for 'textures/nebulae/ngc3631-taku.png', creating uninitialized texture
+000000007402: (Debug): Created image support for 'textures/nebulae/ngc3726-taku.png'
+000000007402: (Debug): No cmd given for 'textures/nebulae/ngc3726-taku.png', creating uninitialized texture
+000000007422: (Debug): Created image support for 'textures/nebulae/ngc3750-james_foster.png'
+000000007422: (Debug): No cmd given for 'textures/nebulae/ngc3750-james_foster.png', creating uninitialized texture
+000000007443: (Debug): Created image support for 'textures/nebulae/ngc3766-janet_cutler.png'
+000000007443: (Debug): No cmd given for 'textures/nebulae/ngc3766-janet_cutler.png', creating uninitialized texture
+000000007463: (Debug): Created image support for 'textures/nebulae/ngc3918-hst.png'
+000000007463: (Debug): No cmd given for 'textures/nebulae/ngc3918-hst.png', creating uninitialized texture
+000000007483: (Debug): Created image support for 'textures/nebulae/ngc3953-chris_schur.png'
+000000007483: (Debug): No cmd given for 'textures/nebulae/ngc3953-chris_schur.png', creating uninitialized texture
+000000007503: (Debug): Created image support for 'textures/nebulae/ngc4038-steven_juchnowski.png'
+000000007503: (Debug): No cmd given for 'textures/nebulae/ngc4038-steven_juchnowski.png', creating uninitialized texture
+000000007523: (Debug): Created image support for 'textures/nebulae/ngc4051-taku.png'
+000000007523: (Debug): No cmd given for 'textures/nebulae/ngc4051-taku.png', creating uninitialized texture
+000000007543: (Debug): Created image support for 'textures/nebulae/ngc4103-observatoire_des_makes.png'
+000000007543: (Debug): No cmd given for 'textures/nebulae/ngc4103-observatoire_des_makes.png', creating uninitialized texture
+000000007563: (Debug): Created image support for 'textures/nebulae/ngc4214-taku.png'
+000000007563: (Debug): No cmd given for 'textures/nebulae/ngc4214-taku.png', creating uninitialized texture
+000000007584: (Debug): Created image support for 'textures/nebulae/ngc4216-tom_carrico.png'
+000000007584: (Debug): No cmd given for 'textures/nebulae/ngc4216-tom_carrico.png', creating uninitialized texture
+000000007604: (Debug): Created image support for 'textures/nebulae/ngc4236-al_kelly.png'
+000000007604: (Debug): No cmd given for 'textures/nebulae/ngc4236-al_kelly.png', creating uninitialized texture
+000000007624: (Debug): Created image support for 'textures/nebulae/ngc4244-taku.png'
+000000007624: (Debug): No cmd given for 'textures/nebulae/ngc4244-taku.png', creating uninitialized texture
+000000007644: (Debug): Created image support for 'textures/nebulae/ngc4361-steven_juchnowski.png'
+000000007644: (Debug): No cmd given for 'textures/nebulae/ngc4361-steven_juchnowski.png', creating uninitialized texture
+000000007664: (Debug): Created image support for 'textures/nebulae/ngc4372-observatoire_des_makes.png'
+000000007664: (Debug): No cmd given for 'textures/nebulae/ngc4372-observatoire_des_makes.png', creating uninitialized texture
+000000007684: (Debug): Created image support for 'textures/nebulae/ngc4395-chris_schur.png'
+000000007684: (Debug): No cmd given for 'textures/nebulae/ngc4395-chris_schur.png', creating uninitialized texture
+000000007704: (Debug): Created image support for 'textures/nebulae/ngc4414-hst.png'
+000000007704: (Debug): No cmd given for 'textures/nebulae/ngc4414-hst.png', creating uninitialized texture
+000000007725: (Debug): Created image support for 'textures/nebulae/ngc4429-pedro_re.png'
+000000007725: (Debug): No cmd given for 'textures/nebulae/ngc4429-pedro_re.png', creating uninitialized texture
+000000007745: (Debug): Created image support for 'textures/nebulae/ngc4435-8-philipp_keller.png'
+000000007745: (Debug): No cmd given for 'textures/nebulae/ngc4435-8-philipp_keller.png', creating uninitialized texture
+000000007765: (Debug): Created image support for 'textures/nebulae/ngc4449-taku.png'
+000000007765: (Debug): No cmd given for 'textures/nebulae/ngc4449-taku.png', creating uninitialized texture
+000000007785: (Debug): Created image support for 'textures/nebulae/ngc4450-pedro_re.png'
+000000007785: (Debug): No cmd given for 'textures/nebulae/ngc4450-pedro_re.png', creating uninitialized texture
+000000007805: (Debug): Created image support for 'textures/nebulae/ngc4490-chris_schur.png'
+000000007805: (Debug): No cmd given for 'textures/nebulae/ngc4490-chris_schur.png', creating uninitialized texture
+000000007825: (Debug): Created image support for 'textures/nebulae/ngc4494-pedro_re.png'
+000000007825: (Debug): No cmd given for 'textures/nebulae/ngc4494-pedro_re.png', creating uninitialized texture
+000000007845: (Debug): Created image support for 'textures/nebulae/ngc4517-al_kelly.png'
+000000007845: (Debug): No cmd given for 'textures/nebulae/ngc4517-al_kelly.png', creating uninitialized texture
+000000007866: (Debug): Created image support for 'textures/nebulae/ngc4526-pedro_re.png'
+000000007866: (Debug): No cmd given for 'textures/nebulae/ngc4526-pedro_re.png', creating uninitialized texture
+000000007887: (Debug): Created image support for 'textures/nebulae/ngc4535-james_foster.png'
+000000007887: (Debug): No cmd given for 'textures/nebulae/ngc4535-james_foster.png', creating uninitialized texture
+000000007907: (Debug): Created image support for 'textures/nebulae/ngc4559-al_kelly.png'
+000000007907: (Debug): No cmd given for 'textures/nebulae/ngc4559-al_kelly.png', creating uninitialized texture
+000000007927: (Debug): Created image support for 'textures/nebulae/ngc4565.png'
+000000007927: (Debug): No cmd given for 'textures/nebulae/ngc4565.png', creating uninitialized texture
+000000007947: (Debug): Created image support for 'textures/nebulae/ngc4567-8-michel_peyro.png'
+000000007947: (Debug): No cmd given for 'textures/nebulae/ngc4567-8-michel_peyro.png', creating uninitialized texture
+000000007967: (Debug): Created image support for 'textures/nebulae/ngc4605-pedro_re.png'
+000000007967: (Debug): No cmd given for 'textures/nebulae/ngc4605-pedro_re.png', creating uninitialized texture
+000000007987: (Debug): Created image support for 'textures/nebulae/ngc4631-chris_schur.png'
+000000007987: (Debug): No cmd given for 'textures/nebulae/ngc4631-chris_schur.png', creating uninitialized texture
+000000008006: (Debug): Created image support for 'textures/nebulae/ngc4636-pedro_re.png'
+000000008006: (Debug): No cmd given for 'textures/nebulae/ngc4636-pedro_re.png', creating uninitialized texture
+000000008026: (Debug): Created image support for 'textures/nebulae/ngc4656-7-chris_schur.png'
+000000008026: (Debug): No cmd given for 'textures/nebulae/ngc4656-7-chris_schur.png', creating uninitialized texture
+000000008047: (Debug): Created image support for 'textures/nebulae/ngc4697-steven_juchnowski.png'
+000000008047: (Debug): No cmd given for 'textures/nebulae/ngc4697-steven_juchnowski.png', creating uninitialized texture
+000000008067: (Debug): Created image support for 'textures/nebulae/ngc4699-pedro_re.png'
+000000008067: (Debug): No cmd given for 'textures/nebulae/ngc4699-pedro_re.png', creating uninitialized texture
+000000008087: (Debug): Created image support for 'textures/nebulae/ngc4725-philipp_keller.png'
+000000008087: (Debug): No cmd given for 'textures/nebulae/ngc4725-philipp_keller.png', creating uninitialized texture
+000000008107: (Debug): Created image support for 'textures/nebulae/ngc4753-observatoire_des_makes.png'
+000000008107: (Debug): No cmd given for 'textures/nebulae/ngc4753-observatoire_des_makes.png', creating uninitialized texture
+000000008127: (Debug): Created image support for 'textures/nebulae/ngc4755-jacques_ardissone.png'
+000000008127: (Debug): No cmd given for 'textures/nebulae/ngc4755-jacques_ardissone.png', creating uninitialized texture
+000000008147: (Debug): Created image support for 'textures/nebulae/ngc4762-pedro_re.png'
+000000008147: (Debug): No cmd given for 'textures/nebulae/ngc4762-pedro_re.png', creating uninitialized texture
+000000008167: (Debug): Created image support for 'textures/nebulae/ngc4833-observatoire_des_makes.png'
+000000008168: (Debug): No cmd given for 'textures/nebulae/ngc4833-observatoire_des_makes.png', creating uninitialized texture
+000000008188: (Debug): Created image support for 'textures/nebulae/ngc4945-janet_cutler.png'
+000000008188: (Debug): No cmd given for 'textures/nebulae/ngc4945-janet_cutler.png', creating uninitialized texture
+000000008208: (Debug): Created image support for 'textures/nebulae/ngc5005-taku.png'
+000000008208: (Debug): No cmd given for 'textures/nebulae/ngc5005-taku.png', creating uninitialized texture
+000000008228: (Debug): Created image support for 'textures/nebulae/ngc5102-steve_crouch.png'
+000000008228: (Debug): No cmd given for 'textures/nebulae/ngc5102-steve_crouch.png', creating uninitialized texture
+000000008248: (Debug): Created image support for 'textures/nebulae/ngc5128.png'
+000000008248: (Debug): No cmd given for 'textures/nebulae/ngc5128.png', creating uninitialized texture
+000000008268: (Debug): Created image support for 'textures/nebulae/ngc5139-jacques_ardissone.png'
+000000008268: (Debug): No cmd given for 'textures/nebulae/ngc5139-jacques_ardissone.png', creating uninitialized texture
+000000008289: (Debug): Created image support for 'textures/nebulae/ngc5189-steven_juchnowski.png'
+000000008289: (Debug): No cmd given for 'textures/nebulae/ngc5189-steven_juchnowski.png', creating uninitialized texture
+000000008309: (Debug): Created image support for 'textures/nebulae/ngc5248-pedro_re.png'
+000000008309: (Debug): No cmd given for 'textures/nebulae/ngc5248-pedro_re.png', creating uninitialized texture
+000000008329: (Debug): Created image support for 'textures/nebulae/ngc5286-janet_cutler.png'
+000000008329: (Debug): No cmd given for 'textures/nebulae/ngc5286-janet_cutler.png', creating uninitialized texture
+000000008349: (Debug): Created image support for 'textures/nebulae/ngc5466-naoyuki_kurita.png'
+000000008349: (Debug): No cmd given for 'textures/nebulae/ngc5466-naoyuki_kurita.png', creating uninitialized texture
+000000008369: (Debug): Created image support for 'textures/nebulae/ngc5634-chris_schur.png'
+000000008369: (Debug): No cmd given for 'textures/nebulae/ngc5634-chris_schur.png', creating uninitialized texture
+000000008389: (Debug): Created image support for 'textures/nebulae/ngc5746-al_kelly.png'
+000000008389: (Debug): No cmd given for 'textures/nebulae/ngc5746-al_kelly.png', creating uninitialized texture
+000000008410: (Debug): Created image support for 'textures/nebulae/ngc5846-chris_schur.png'
+000000008410: (Debug): No cmd given for 'textures/nebulae/ngc5846-chris_schur.png', creating uninitialized texture
+000000008430: (Debug): Created image support for 'textures/nebulae/ngc5897-naoyuki_kurita.png'
+000000008430: (Debug): No cmd given for 'textures/nebulae/ngc5897-naoyuki_kurita.png', creating uninitialized texture
+000000008450: (Debug): Created image support for 'textures/nebulae/ngc5907-michel_peyro.png'
+000000008450: (Debug): No cmd given for 'textures/nebulae/ngc5907-michel_peyro.png', creating uninitialized texture
+000000008470: (Debug): Created image support for 'textures/nebulae/ngc5927-observatoire_des_makes.png'
+000000008470: (Debug): No cmd given for 'textures/nebulae/ngc5927-observatoire_des_makes.png', creating uninitialized texture
+000000008490: (Debug): Created image support for 'textures/nebulae/ngc5986-steven_juchnowski.png'
+000000008490: (Debug): No cmd given for 'textures/nebulae/ngc5986-steven_juchnowski.png', creating uninitialized texture
+000000008511: (Debug): Created image support for 'textures/nebulae/ngc6027-al_kelly.png'
+000000008511: (Debug): No cmd given for 'textures/nebulae/ngc6027-al_kelly.png', creating uninitialized texture
+000000008531: (Debug): Created image support for 'textures/nebulae/ngc6067-observatoire_des_makes.png'
+000000008531: (Debug): No cmd given for 'textures/nebulae/ngc6067-observatoire_des_makes.png', creating uninitialized texture
+000000008551: (Debug): Created image support for 'textures/nebulae/ngc6124-observatoire_des_makes.png'
+000000008551: (Debug): No cmd given for 'textures/nebulae/ngc6124-observatoire_des_makes.png', creating uninitialized texture
+000000008571: (Debug): Created image support for 'textures/nebulae/ngc0613-al_kelly_.png'
+000000008571: (Debug): No cmd given for 'textures/nebulae/ngc0613-al_kelly_.png', creating uninitialized texture
+000000008592: (Debug): Created image support for 'textures/nebulae/ngc6164-5-kunihiko_okano.png'
+000000008592: (Debug): No cmd given for 'textures/nebulae/ngc6164-5-kunihiko_okano.png', creating uninitialized texture
+000000008612: (Debug): Created image support for 'textures/nebulae/ngc6188-philipp_keller.png'
+000000008612: (Debug): No cmd given for 'textures/nebulae/ngc6188-philipp_keller.png', creating uninitialized texture
+000000008632: (Debug): Created image support for 'textures/nebulae/ngc6210-philipp_keller.png'
+000000008632: (Debug): No cmd given for 'textures/nebulae/ngc6210-philipp_keller.png', creating uninitialized texture
+000000008652: (Debug): Created image support for 'textures/nebulae/ngc6221-steven_juchnowski.png'
+000000008652: (Debug): No cmd given for 'textures/nebulae/ngc6221-steven_juchnowski.png', creating uninitialized texture
+000000008672: (Debug): Created image support for 'textures/nebulae/ngc6229-walter_mac_donald.png'
+000000008672: (Debug): No cmd given for 'textures/nebulae/ngc6229-walter_mac_donald.png', creating uninitialized texture
+000000008692: (Debug): Created image support for 'textures/nebulae/ngc6293-pedro_re.png'
+000000008692: (Debug): No cmd given for 'textures/nebulae/ngc6293-pedro_re.png', creating uninitialized texture
+000000008713: (Debug): Created image support for 'textures/nebulae/ngc6302-chris_schur.png'
+000000008713: (Debug): No cmd given for 'textures/nebulae/ngc6302-chris_schur.png', creating uninitialized texture
+000000008733: (Debug): Created image support for 'textures/nebulae/ngc6334-george_greaney.png'
+000000008733: (Debug): No cmd given for 'textures/nebulae/ngc6334-george_greaney.png', creating uninitialized texture
+000000008753: (Debug): Created image support for 'textures/nebulae/ngc6362-observatoire_des_makes.png'
+000000008753: (Debug): No cmd given for 'textures/nebulae/ngc6362-observatoire_des_makes.png', creating uninitialized texture
+000000008773: (Debug): Created image support for 'textures/nebulae/ngc6388-janet_cutler.png'
+000000008773: (Debug): No cmd given for 'textures/nebulae/ngc6388-janet_cutler.png', creating uninitialized texture
+000000008793: (Debug): Created image support for 'textures/nebulae/ngc6397-jacques_ardissone.png'
+000000008793: (Debug): No cmd given for 'textures/nebulae/ngc6397-jacques_ardissone.png', creating uninitialized texture
+000000008813: (Debug): Created image support for 'textures/nebulae/ngc6441-observatoire_des_makes.png'
+000000008813: (Debug): No cmd given for 'textures/nebulae/ngc6441-observatoire_des_makes.png', creating uninitialized texture
+000000008834: (Debug): Created image support for 'textures/nebulae/ngc6520-philipp_keller.png'
+000000008834: (Debug): No cmd given for 'textures/nebulae/ngc6520-philipp_keller.png', creating uninitialized texture
+000000008854: (Debug): Created image support for 'textures/nebulae/ngc6522-pedro_re.png'
+000000008854: (Debug): No cmd given for 'textures/nebulae/ngc6522-pedro_re.png', creating uninitialized texture
+000000008875: (Debug): Created image support for 'textures/nebulae/ngc6541-steven_juchnowski.png'
+000000008875: (Debug): No cmd given for 'textures/nebulae/ngc6541-steven_juchnowski.png', creating uninitialized texture
+000000008895: (Debug): Created image support for 'textures/nebulae/ngc6543-chris_schur.png'
+000000008895: (Debug): No cmd given for 'textures/nebulae/ngc6543-chris_schur.png', creating uninitialized texture
+000000008915: (Debug): Created image support for 'textures/nebulae/ngc6544-laurent_ferrero.png'
+000000008915: (Debug): No cmd given for 'textures/nebulae/ngc6544-laurent_ferrero.png', creating uninitialized texture
+000000008935: (Debug): Created image support for 'textures/nebulae/ngc6553-laurent_ferrero.png'
+000000008935: (Debug): No cmd given for 'textures/nebulae/ngc6553-laurent_ferrero.png', creating uninitialized texture
+000000008956: (Debug): Created image support for 'textures/nebulae/ngc6572-naoyuki_kurita.png'
+000000008956: (Debug): No cmd given for 'textures/nebulae/ngc6572-naoyuki_kurita.png', creating uninitialized texture
+000000008976: (Debug): Created image support for 'textures/nebulae/ngc6624-pedro_re.png'
+000000008976: (Debug): No cmd given for 'textures/nebulae/ngc6624-pedro_re.png', creating uninitialized texture
+000000008996: (Debug): Created image support for 'textures/nebulae/ngc6664-laurent_ferrero.png'
+000000008996: (Debug): No cmd given for 'textures/nebulae/ngc6664-laurent_ferrero.png', creating uninitialized texture
+000000009015: (Debug): Created image support for 'textures/nebulae/ngc6709-laurent_ferrero.png'
+000000009015: (Debug): No cmd given for 'textures/nebulae/ngc6709-laurent_ferrero.png', creating uninitialized texture
+000000009035: (Debug): Created image support for 'textures/nebulae/ngc6712-pedro_re.png'
+000000009035: (Debug): No cmd given for 'textures/nebulae/ngc6712-pedro_re.png', creating uninitialized texture
+000000009055: (Debug): Created image support for 'textures/nebulae/ngc6723-david_malin.png'
+000000009055: (Debug): No cmd given for 'textures/nebulae/ngc6723-david_malin.png', creating uninitialized texture
+000000009076: (Debug): Created image support for 'textures/nebulae/ngc6726-george_greaney.png'
+000000009076: (Debug): No cmd given for 'textures/nebulae/ngc6726-george_greaney.png', creating uninitialized texture
+000000009096: (Debug): Created image support for 'textures/nebulae/ngc6744-andreas_masche.png'
+000000009096: (Debug): No cmd given for 'textures/nebulae/ngc6744-andreas_masche.png', creating uninitialized texture
+000000009116: (Debug): Created image support for 'textures/nebulae/ngc6752-jacques_ardissone.png'
+000000009116: (Debug): No cmd given for 'textures/nebulae/ngc6752-jacques_ardissone.png', creating uninitialized texture
+000000009136: (Debug): Created image support for 'textures/nebulae/ngc6781-stephane_dumont.png'
+000000009136: (Debug): No cmd given for 'textures/nebulae/ngc6781-stephane_dumont.png', creating uninitialized texture
+000000009156: (Debug): Created image support for 'textures/nebulae/ngc6811-laurent_ferrero.png'
+000000009156: (Debug): No cmd given for 'textures/nebulae/ngc6811-laurent_ferrero.png', creating uninitialized texture
+000000009176: (Debug): Created image support for 'textures/nebulae/ngc6818-steven_juchnowski.png'
+000000009176: (Debug): No cmd given for 'textures/nebulae/ngc6818-steven_juchnowski.png', creating uninitialized texture
+000000009196: (Debug): Created image support for 'textures/nebulae/ngc6820-3-andreas_masche.png'
+000000009196: (Debug): No cmd given for 'textures/nebulae/ngc6820-3-andreas_masche.png', creating uninitialized texture
+000000009217: (Debug): Created image support for 'textures/nebulae/ngc6822-james_foster.png'
+000000009217: (Debug): No cmd given for 'textures/nebulae/ngc6822-james_foster.png', creating uninitialized texture
+000000009237: (Debug): Created image support for 'textures/nebulae/ngc6826-hst.png'
+000000009237: (Debug): No cmd given for 'textures/nebulae/ngc6826-hst.png', creating uninitialized texture
+000000009257: (Debug): Created image support for 'textures/nebulae/ngc6830-laurent_ferrero.png'
+000000009257: (Debug): No cmd given for 'textures/nebulae/ngc6830-laurent_ferrero.png', creating uninitialized texture
+000000009277: (Debug): Created image support for 'textures/nebulae/ngc6888-jean-pierre_bousquet.png'
+000000009277: (Debug): No cmd given for 'textures/nebulae/ngc6888-jean-pierre_bousquet.png', creating uninitialized texture
+000000009297: (Debug): Created image support for 'textures/nebulae/ngc6891-hst.png'
+000000009297: (Debug): No cmd given for 'textures/nebulae/ngc6891-hst.png', creating uninitialized texture
+000000009317: (Debug): Created image support for 'textures/nebulae/ngc6905-walter_mac_donald.png'
+000000009317: (Debug): No cmd given for 'textures/nebulae/ngc6905-walter_mac_donald.png', creating uninitialized texture
+000000009338: (Debug): Created image support for 'textures/nebulae/ngc6934-chris_schur.png'
+000000009338: (Debug): No cmd given for 'textures/nebulae/ngc6934-chris_schur.png', creating uninitialized texture
+000000009358: (Debug): Created image support for 'textures/nebulae/ngc6939-chris_schur.png'
+000000009358: (Debug): No cmd given for 'textures/nebulae/ngc6939-chris_schur.png', creating uninitialized texture
+000000009378: (Debug): Created image support for 'textures/nebulae/ngc6940-laurent_ferrero.png'
+000000009378: (Debug): No cmd given for 'textures/nebulae/ngc6940-laurent_ferrero.png', creating uninitialized texture
+000000009398: (Debug): Created image support for 'textures/nebulae/ngc6946-stephane_dumont.png'
+000000009398: (Debug): No cmd given for 'textures/nebulae/ngc6946-stephane_dumont.png', creating uninitialized texture
+000000009418: (Debug): Created image support for 'textures/nebulae/veil_nebula-eric_courcier.png'
+000000009418: (Debug): No cmd given for 'textures/nebulae/veil_nebula-eric_courcier.png', creating uninitialized texture
+000000009438: (Debug): Created image support for 'textures/nebulae/ngc7000-emmanuel_beaudoin.png'
+000000009438: (Debug): No cmd given for 'textures/nebulae/ngc7000-emmanuel_beaudoin.png', creating uninitialized texture
+000000009459: (Debug): Created image support for 'textures/nebulae/ngc7006-pedro_re.png'
+000000009459: (Debug): No cmd given for 'textures/nebulae/ngc7006-pedro_re.png', creating uninitialized texture
+000000009479: (Debug): Created image support for 'textures/nebulae/ngc7008-chris_schur.png'
+000000009479: (Debug): No cmd given for 'textures/nebulae/ngc7008-chris_schur.png', creating uninitialized texture
+000000009499: (Debug): Created image support for 'textures/nebulae/ngc7009-kunihiko_okano.png'
+000000009499: (Debug): No cmd given for 'textures/nebulae/ngc7009-kunihiko_okano.png', creating uninitialized texture
+000000009519: (Debug): Created image support for 'textures/nebulae/ngc7023-george_greaney.png'
+000000009519: (Debug): No cmd given for 'textures/nebulae/ngc7023-george_greaney.png', creating uninitialized texture
+000000009539: (Debug): Created image support for 'textures/nebulae/ngc7026-walter_mac_donald.png'
+000000009539: (Debug): No cmd given for 'textures/nebulae/ngc7026-walter_mac_donald.png', creating uninitialized texture
+000000009559: (Debug): Created image support for 'textures/nebulae/ngc7027-walter_mac_donald.png'
+000000009559: (Debug): No cmd given for 'textures/nebulae/ngc7027-walter_mac_donald.png', creating uninitialized texture
+000000009579: (Debug): Created image support for 'textures/nebulae/ngc7129-al_kelly.png'
+000000009579: (Debug): No cmd given for 'textures/nebulae/ngc7129-al_kelly.png', creating uninitialized texture
+000000009600: (Debug): Created image support for 'textures/nebulae/ngc7160-chris_schur.png'
+000000009600: (Debug): No cmd given for 'textures/nebulae/ngc7160-chris_schur.png', creating uninitialized texture
+000000009620: (Debug): Created image support for 'textures/nebulae/ngc7209-laurent_ferrero.png'
+000000009620: (Debug): No cmd given for 'textures/nebulae/ngc7209-laurent_ferrero.png', creating uninitialized texture
+000000009640: (Debug): Created image support for 'textures/nebulae/ngc7217-franck_valbousquet.png'
+000000009640: (Debug): No cmd given for 'textures/nebulae/ngc7217-franck_valbousquet.png', creating uninitialized texture
+000000009660: (Debug): Created image support for 'textures/nebulae/ngc7235-harald_strauss.png'
+000000009660: (Debug): No cmd given for 'textures/nebulae/ngc7235-harald_strauss.png', creating uninitialized texture
+000000009680: (Debug): Created image support for 'textures/nebulae/ngc7293-hst.png'
+000000009680: (Debug): No cmd given for 'textures/nebulae/ngc7293-hst.png', creating uninitialized texture
+000000009700: (Debug): Created image support for 'textures/nebulae/ngc7320-hst.png'
+000000009700: (Debug): No cmd given for 'textures/nebulae/ngc7320-hst.png', creating uninitialized texture
+000000009720: (Debug): Created image support for 'textures/nebulae/ngc7331-kunihiko_okano.png'
+000000009720: (Debug): No cmd given for 'textures/nebulae/ngc7331-kunihiko_okano.png', creating uninitialized texture
+000000009741: (Debug): Created image support for 'textures/nebulae/ngc7380-tom_carrico.png'
+000000009741: (Debug): No cmd given for 'textures/nebulae/ngc7380-tom_carrico.png', creating uninitialized texture
+000000009761: (Debug): Created image support for 'textures/nebulae/ngc7410-kunihiko_okano.png'
+000000009761: (Debug): No cmd given for 'textures/nebulae/ngc7410-kunihiko_okano.png', creating uninitialized texture
+000000009781: (Debug): Created image support for 'textures/nebulae/ngc7479-al_kelly.png'
+000000009781: (Debug): No cmd given for 'textures/nebulae/ngc7479-al_kelly.png', creating uninitialized texture
+000000009801: (Debug): Created image support for 'textures/nebulae/ngc7510-pedro_re.png'
+000000009801: (Debug): No cmd given for 'textures/nebulae/ngc7510-pedro_re.png', creating uninitialized texture
+000000009821: (Debug): Created image support for 'textures/nebulae/ngc7538-walter_mac_donald.png'
+000000009821: (Debug): No cmd given for 'textures/nebulae/ngc7538-walter_mac_donald.png', creating uninitialized texture
+000000009841: (Debug): Created image support for 'textures/nebulae/ngc7552-marc_cesarini.png'
+000000009841: (Debug): No cmd given for 'textures/nebulae/ngc7552-marc_cesarini.png', creating uninitialized texture
+000000009862: (Debug): Created image support for 'textures/nebulae/ngc7635-andreas_masche.png'
+000000009862: (Debug): No cmd given for 'textures/nebulae/ngc7635-andreas_masche.png', creating uninitialized texture
+000000009883: (Debug): Created image support for 'textures/nebulae/ngc7640-tom_carrico.png'
+000000009883: (Debug): No cmd given for 'textures/nebulae/ngc7640-tom_carrico.png', creating uninitialized texture
+000000009903: (Debug): Created image support for 'textures/nebulae/ngc7662-hst.png'
+000000009903: (Debug): No cmd given for 'textures/nebulae/ngc7662-hst.png', creating uninitialized texture
+000000009923: (Debug): Created image support for 'textures/nebulae/ngc7789-lionel_ruiz.png'
+000000009923: (Debug): No cmd given for 'textures/nebulae/ngc7789-lionel_ruiz.png', creating uninitialized texture
+000000009943: (Debug): Created image support for 'textures/nebulae/ngc7793-al_kelly.png'
+000000009943: (Debug): No cmd given for 'textures/nebulae/ngc7793-al_kelly.png', creating uninitialized texture
+000000009963: (Debug): Created image support for 'textures/nebulae/ngc7814-franck_valbousquet.png'
+000000009963: (Debug): No cmd given for 'textures/nebulae/ngc7814-franck_valbousquet.png', creating uninitialized texture
+000000009983: (Debug): Created image support for 'textures/nebulae/qso3c273-hst.png'
+000000009983: (Debug): No cmd given for 'textures/nebulae/qso3c273-hst.png', creating uninitialized texture
+000000010003: (Debug): Created image support for 'textures/nebulae/rho_oph-eric_courcier.png'
+000000010003: (Debug): No cmd given for 'textures/nebulae/rho_oph-eric_courcier.png', creating uninitialized texture
+000000010023: (Debug): Created image support for 'textures/nebulae/s147-emil_ivanov.png'
+000000010023: (Debug): No cmd given for 'textures/nebulae/s147-emil_ivanov.png', creating uninitialized texture
+000000010043: (Debug): Created image support for 'textures/nebulae/smc-stephane_guisard.png'
+000000010043: (Debug): No cmd given for 'textures/nebulae/smc-stephane_guisard.png', creating uninitialized texture
+000000010064: (Debug): Created image support for 'textures/nebulae/v838-hst.png'
+000000010064: (Debug): No cmd given for 'textures/nebulae/v838-hst.png', creating uninitialized texture
+000000010086: (Debug): Allocate chunk of 256 MiB in GPU memory.
+000000010086: (Debug): GPU memory	total : 32607 MiB   	available : 30342 MiB	used : 4011 MiB    	free : 26330 MiB
+000000010086: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB
+000000010086: (Debug): Created image support for 'textures/nebulae/vela-sergio_eguivar.png'
+000000010086: (Debug): No cmd given for 'textures/nebulae/vela-sergio_eguivar.png', creating uninitialized texture
+000000010110: (Debug): Created image support for 'textures/fog.png'
+000000010110: (Debug): No cmd given for 'textures/fog.png', creating uninitialized texture
+000000010172: (Debug): Dedicated allocation of 42 MiB of GPU memory.
+000000010172: (Debug): GPU memory	total : 32607 MiB   	available : 30342 MiB	used : 4055 MiB    	free : 26286 MiB
+000000010172: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB
+000000010172: (Debug): Created image support for 'landscapes/observatory-immersive_adventure.png'
+000000010172: (Debug): No cmd given for 'landscapes/observatory-immersive_adventure.png', creating uninitialized texture
+000000010172: (Debug): Dedicated allocation of 42 MiB of GPU memory.
+000000010172: (Debug): GPU memory	total : 32607 MiB   	available : 30342 MiB	used : 4099 MiB    	free : 26242 MiB
+000000010172: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB
+000000010172: (Debug): Created image support for 'landscapes/observatory_night-immersive_adventure.png'
+000000010172: (Debug): No cmd given for 'landscapes/observatory_night-immersive_adventure.png', creating uninitialized texture
+000000010318: (Debug): Dedicated allocation of 42 MiB of GPU memory.
+000000010318: (Debug): GPU memory	total : 32607 MiB   	available : 30342 MiB	used : 4143 MiB    	free : 26198 MiB
+000000010318: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB
+000000010318: (Debug): Created image support for 'textures/milkyway.png'
+000000010318: (Debug): No cmd given for 'textures/milkyway.png', creating uninitialized texture
+000000010360: (Debug): Dedicated allocation of 42 MiB of GPU memory.
+000000010360: (Debug): GPU memory	total : 32607 MiB   	available : 30342 MiB	used : 4187 MiB    	free : 26154 MiB
+000000010360: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB
+000000010360: (Debug): Created image support for 'textures/zodiacale.png'
+000000010360: (Debug): No cmd given for 'textures/zodiacale.png', creating uninitialized texture
+000000010461: (Debug): Dedicated allocation of 32 MiB of GPU memory.
+000000010461: (Debug): GPU memory	total : 32607 MiB   	available : 30344 MiB	used : 4219 MiB    	free : 26124 MiB
+000000010461: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB
+000000010461: (Debug): Created image support for 'textures/typegals.png'
+000000010461: (Debug): No cmd given for 'textures/typegals.png', creating uninitialized texture
+000000010662: (Debug): Dedicated allocation of 32 MiB of GPU memory.
+000000010662: (Debug): GPU memory	total : 32607 MiB   	available : 30344 MiB	used : 4251 MiB    	free : 26092 MiB
+000000010662: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB
+000000010662: (Debug): Created image support for 'textures/dsocat.png'
+000000010662: (Debug): No cmd given for 'textures/dsocat.png', creating uninitialized texture
+000000010666: (Debug): Created image support for 'textures/pointer_star.png'
+000000010666: (Debug): No cmd given for 'textures/pointer_star.png', creating uninitialized texture
+000000010667: (Debug): Created image support for 'textures/pointer_nebula.png'
+000000010667: (Debug): No cmd given for 'textures/pointer_nebula.png', creating uninitialized texture
+000000011023: (Debug): Dedicated allocation of 2560 MiB of GPU memory.
+000000011023: (Debug): GPU memory	total : 32607 MiB   	available : 30334 MiB	used : 4251 MiB    	free : 26082 MiB
+000000011023: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB
+000000011053: (Debug): Created image support for 'textures/planethalo.png'
+000000011053: (Debug): No cmd given for 'textures/planethalo.png', creating uninitialized texture
+000000011053: (Debug): Created image support for 'textures/bodies/moon.jpg'
+000000011053: (Debug): No cmd given for 'textures/bodies/moon.jpg', creating uninitialized texture
+000000011053: (Debug): Created image support for 'textures/bodies/moon_normal.jpg'
+000000011053: (Debug): No cmd given for 'textures/bodies/moon_normal.jpg', creating uninitialized texture
+000000011053: (Debug): Created image support for 'textures/bodies/moon_alti.jpg'
+000000011053: (Debug): No cmd given for 'textures/bodies/moon_alti.jpg', creating uninitialized texture
+000000011053: (Debug): Created image support for 'textures/bodies/earth.jpg'
+000000011053: (Debug): No cmd given for 'textures/bodies/earth.jpg', creating uninitialized texture
+000000011053: (Debug): Created image support for 'textures/bodies/earth_night.jpg'
+000000011053: (Debug): No cmd given for 'textures/bodies/earth_night.jpg', creating uninitialized texture
+000000011053: (Debug): Created image support for 'textures/bodies/earth_specular.png'
+000000011053: (Debug): No cmd given for 'textures/bodies/earth_specular.png', creating uninitialized texture
+000000011053: (Debug): Created image support for 'textures/bodies/earth_normal.jpg'
+000000011053: (Debug): No cmd given for 'textures/bodies/earth_normal.jpg', creating uninitialized texture
+000000011053: (Debug): Created image support for 'textures/bodies/earth_alti.png'
+000000011053: (Debug): No cmd given for 'textures/bodies/earth_alti.png', creating uninitialized texture
+000000011054: (Debug): Created image support for 'textures/bodies/atm_gradient3.png'
+000000011054: (Debug): No cmd given for 'textures/bodies/atm_gradient3.png', creating uninitialized texture
+000000011054: (Debug): Created image support for 'big "textures/bodies/earth_alti.png"'
+000000011055: (Debug): Created image support for 'textures/bodies/sun.jpg'
+000000011055: (Debug): Created image support for 'textures/bodies/atm_gradient4.png'
+000000011055: (Debug): Created image support for 'textures/bodies/titan.png'
+000000011055: (Debug): Created image support for 'textures/bodies/mimas.png'
+000000011055: (Debug): Created image support for 'textures/bodies/proteus.png'
+000000011055: (Debug): Created image support for 'textures/bodies/dione.png'
+000000011055: (Debug): Created image support for 'textures/bodies/makemake.jpg'
+000000011055: (Debug): Created image support for 'textures/bodies/charon.png'
+000000011055: (Debug): Created image support for 'textures/bodies/goldilocks_zone.png'
+000000011055: (Debug): Created image support for 'textures/bodies/pluto.png'
+000000011055: (Debug): Created image support for 'textures/bodies/ceres.jpg'
+000000011055: (Debug): Created image support for 'textures/bodies/oberon.png'
+000000011055: (Debug): Created image support for 'textures/bodies/neptune_rings.png'
+000000011055: (Debug): Created image support for 'textures/bodies/umbriel.png'
+000000011055: (Debug): Created image support for 'textures/bodies/ariel.png'
+000000011055: (Debug): Created image support for 'textures/bodies/miranda.png'
+000000011055: (Debug): Created image support for 'textures/bodies/triton.png'
+000000011055: (Debug): Created image support for 'textures/bodies/uranusring.png'
+000000011055: (Debug): Created image support for 'textures/bodies/titania.png'
+000000011056: (Debug): Created image support for 'textures/bodies/phobos.jpg'
+000000011056: (Debug): Created image support for 'textures/bodies/uranus.png'
+000000011056: (Debug): Created image support for 'textures/bodies/hyperion.png'
+000000011056: (Debug): Created image support for 'textures/bodies/rhea.png'
+000000011056: (Debug): Created image support for 'textures/bodies/tethys.png'
+000000011056: (Debug): Created image support for 'textures/bodies/enceladus.png'
+000000011056: (Debug): Created image support for 'textures/bodies/asteroid.png'
+000000011056: (Debug): Created image support for 'textures/bodies/saturn_rings_radial.png'
+000000011056: (Debug): Created image support for 'textures/bodies/callisto.png'
+000000011056: (Debug): Created image support for 'textures/bodies/ganymede.png'
+000000011056: (Debug): Created image support for 'textures/bodies/vesta.jpg'
+000000011056: (Debug): Created image support for 'textures/bodies/neptune.png'
+000000011056: (Debug): Created image support for 'textures/bodies/iapetus.png'
+000000011056: (Debug): Created image support for 'textures/bodies/io_night.png'
+000000011056: (Debug): Created image support for 'textures/bodies/amalthea.png'
+000000011056: (Debug): Created image support for 'textures/bodies/generic.png'
+000000011057: (Debug): Created image support for 'textures/bodies/moon_normal.png'
+000000011057: (Debug): Created image support for 'textures/bodies/jupiter_rings.png'
+000000011057: (Debug): Created image support for 'textures/bodies/europa.png'
+000000011057: (Debug): Created image support for 'textures/bodies/iapetus_alti.png'
+000000011057: (Debug): Created image support for 'textures/bodies/atm_gradient2.png'
+000000011057: (Debug): Created image support for 'textures/bodies/io.png'
+000000011057: (Debug): Created image support for 'textures/bodies/deimos.jpg'
+000000011057: (Debug): Created image support for 'textures/bodies/jupiter.png'
+000000011057: (Debug): Created image support for 'textures/bodies/venus.jpg'
+000000011057: (Debug): Created image support for 'textures/bodies/saturn.jpg'
+000000011057: (Debug): Created image support for 'textures/bodies/mars_alti.jpg'
+000000011057: (Debug): Created image support for 'textures/bodies/mars_normal.jpg'
+000000011057: (Debug): Created image support for 'textures/bodies/mercury.jpg'
+000000011057: (Debug): Created image support for 'textures/bodies/nomap.png'
+000000011058: (Debug): Created image support for 'textures/bodies/eclipse_map.png'
+000000011058: (Debug): Created image support for 'textures/bodies/mars-water.jpg'
+000000011058: (Debug): Created image support for 'textures/bodies/venus_surface.png'
+000000011058: (Debug): Created image support for 'textures/bodies/earth_grid.png'
+000000011060: (Debug): Created image support for 'textures/bodies/mars.jpg'
+000000011072: (Debug): Created image support for 'Fallback texture'
+000000011073: (Debug): Dedicated allocation of 170 MiB of GPU memory.
+000000011073: (Debug): GPU memory	total : 32607 MiB   	available : 30336 MiB	used : 4423 MiB    	free : 25912 MiB
+000000011073: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB
+000000011073: (Debug): Created image support for 'big "textures/bodies/earth_normal.jpg"'
+000000011402: (Debug): Dedicated allocation of 682 MiB of GPU memory.
+000000011402: (Debug): GPU memory	total : 32607 MiB   	available : 30335 MiB	used : 5107 MiB    	free : 25227 MiB
+000000011402: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB
+000000011402: (Debug): Created image support for 'big "textures/bodies/earth.jpg"'
+000000013504: (Debug): Dedicated allocation of 170 MiB of GPU memory.
+000000013504: (Debug): GPU memory	total : 32607 MiB   	available : 30335 MiB	used : 5279 MiB    	free : 25055 MiB
+000000013504: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB
+000000013504: (Debug): Created image support for 'big "textures/bodies/earth_night.jpg"'
+000000013741: (Debug): Dedicated allocation of 42 MiB of GPU memory.
+000000013741: (Debug): GPU memory	total : 32607 MiB   	available : 30335 MiB	used : 5323 MiB    	free : 25011 MiB
+000000013741: (Debug): local memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB
+000000013741: (Debug): Created image support for 'big "textures/bodies/earth_specular.png"'
+000000034276: (Debug): Created image support for 'textures/bodies/atm_gradient3.png'
+000000034276: (Debug): No cmd given for 'textures/bodies/atm_gradient3.png', creating uninitialized texture
+000000034334: (Debug): Created image support for 'textures/bodies/atm_gradient2.png'
+000000034334: (Debug): Created image support for 'textures/bodies/atm_gradient4.png'
+000000043919: (Info ): Release resources
+000000043997: (Debug): No changes in the pipelineCache
+(Info ): EOF

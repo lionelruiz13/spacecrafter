@@ -1,0 +1,6 @@
+qda
+frcmd
+oldsig
+qdaterm
+actsig
+galsig

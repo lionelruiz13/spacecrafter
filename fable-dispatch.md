@@ -1074,22 +1074,33 @@ corrected: it was written, then destroyed by the same edit.]*
   cadence is bit-inert (in-run A/B); battery green (b24_equivalence, b25_galactic,
   b40_parity, b4_anchors, scene E, f15_persist); frozen md5 in==out; concurrent-
   instance assert per §0.5.
-- **WIP:** 2026-07-31 ckpt3 — code `96a94a46`. **CLASS FIX LANDED AND MEASURED**:
+- **WIP:** — **DELIVERED 2026-07-31 → §11.126** (code `83324455`/`071b817a`/`a11fbb65`/`96a94a46`;
+  harness `fbb5923`/delivery). **§5.55, §5.57, §5.58 CLOSED at the CLASS**; §5.56
+  re-derived and unchanged; **§5.59 stays OPEN with its fix built, measured and
+  WITHDRAWN**; NEW **§5.61**; NEW **§13.A A40** (the §5.59 fork, Vixy's).
+  (i) The audit ran first and is in-entry (§11.126(a)): of the ten new-path
+  family-data file-statics **exactly one captures a manager**, the other nine are
+  safe by an explicit guard (`PipelineRegistry.cpp:626-630`); of the deferred-release
+  containers, **five were not in §11.125's record**, three of them **never drained at
+  all**. The OLD path already carries this fix (`destroySC_context()` ←
+  `~SolarSystem`), so §5.55 was a generality dropped in the port. Mechanism =
   `Context::onManagerTeardown` hooks run at the START of `~Context`;
-  `s_texture::forceUnload` moved out of `main()` into `~Context` as the terminal
-  drain (+3 containers nothing ever drained); AxisModule's file-static registers
-  its `uColor`; `Context::quiesceFrames()` (worker + device) called by
-  `reloadSystem` and `ModularBody::remove`; `~App` stops the drawing worker
-  before destroying anything. **§5.59's cancellation WITHDRAWN and 5.59 stays
-  OPEN**: measured over 3 arms / 60 loaded cycles, every cycle that entered the
-  abandon path died (3/3) where the untouched binary hangs it — the as-if bar
-  (I7) is not met and the residual is unattributed; a deterministic reproducer
-  (`f19_stall.sh`, 3-arm table 2/2 each) is delivered with the row.
-  Measured: reproducer **ARM T (delivered) 30 cycles → 0 FIRE, 29 CLEAN, 1 HUNG**
-  vs **ARM R (pre-fix, md5 `1155a0b5…`) 30 → 27 FIRE, 3 HUNG, 0 CLEAN**
-  (interleaved, load pre-warmed to ~16-19); §5.55 pcaxis pair **4/4 CLEAN both
-  entries** vs pre-fix **4/4 FIRE**. Next: validation leg, ASan legs, quiet mix
-  N≥50, battery, §11.126.
+  `s_texture::forceUnload` moved out of `main()` as the terminal drain, its old
+  call site deleted (I2).
+  (ii) §5.58 = `Context::quiesceFrames()` at `reloadSystem` + `ModularBody::remove`,
+  **plus a third site the campaign found**: `~App` stops the drawing worker before
+  destroying what it records.
+  (iii) §5.59: the cancellation works deterministically (`f19_stall.sh`, 3 arms
+  2/2 each: HUNG → rc=139 → rc=0) and **costs too much** — across 3 fixed arms /
+  60 loaded cycles **every cycle that entered it died, 3 of 3**, all 57 others
+  clean. I7 not met ⇒ withdrawn, `waitFrame` byte-for-byte unchanged, fork → A40.
+  **Discriminating checks**: reproducer **27 FIRE/3 HUNG/0 CLEAN (pre-fix, 30) →
+  0 FIRE/1 HUNG/29 CLEAN (delivered, 30)**, interleaved, load pre-warmed, ARM R
+  rebuilt bit-identical to §11.125's md5; §5.55 pair **4/4 FIRE → 4/4 CLEAN both
+  entries**; ASan **0 reports** over 9 cycles incl. the K=8 reload class, leak
+  17686 → **17626 B / 194**; quiet mix **54/54 CLEAN**; validation **0 VUID both
+  entries with AXIS=on** (F16's exclusion retired), channel positive-controlled;
+  battery green; frozen md5 in==out throughout.
 
 ### F18 — G4-coherence batch: §5.52 mid-band surface + §5.54 threshold authority + §5.53 level step  [M–L]
 - **Row / recorded:** §5.52 · §5.53 · §5.54 (all opened §11.123(g); full rows at
