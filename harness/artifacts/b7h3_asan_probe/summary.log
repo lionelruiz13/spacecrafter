@@ -1,0 +1,17 @@
+==== B7 HUNT [plain] batch start 2026-07-31T01:40:55+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7h3_asan_probe append=0 cyc0=0 ====
+BIN mtime=2026-07-31 01:40:11.351165562 +0200  code HEAD=5a8881ff  harness HEAD=6d68edb
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+composed-body axis: B7_ROVERS=8  scene=/home/claude/.spacecrafter/modularSystem/SolarSystem.ini md5=0718c9015eaea6bc103c541209bf4d0a  scene_pre_existed=0
+host at batch start: loadavg=4.94 11.23 15.14  memavail=40,9GiB
+batch teardowns: 1  (cycle ids 1..1)
+cyc 1 frcmd: OTHER rc=1 (see /home/claude/spacecrafter/claude/harness/artifacts/b7h3_asan_probe/plain_001_frcmd.log)
+cyc 1 frcmd: *** *** FIRE *** *** AddressSanitizer report see /home/claude/spacecrafter/claude/harness/artifacts/b7h3_asan_probe/plain_001_frcmd.log
+==== B7 HUNT [plain] batch done 2026-07-31T01:41:38+02:00 ====
+host at batch end: loadavg=5.30 10.48 14.71  memavail=40,8GiB
+composed scene removed (user dir restored to shipped default)
+ssystem md5 at end=545a51ef76294891579a1fc2fe13792b
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+      1 FIRE
+*** FIRE ROWS ***
+1,frcmd,new,shutdown-cmd,cmd,21,FIRE,"rc=1 asan=1[AddressSanitizer: new-delete-type-mismatch]",8,8,5.30

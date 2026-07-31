@@ -61,7 +61,12 @@
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 # Hardcode the binary (do NOT honour SC_BIN — the §11.81(d)/pkill-SC_BIN trap).
-BIN="$HERE/../../build-claude/src/spacecrafter"
+# B7_BIN (2026-07-31, F8) is a NARROW, explicit override for one purpose: the
+# separate ASan build tree. It is deliberately not SC_BIN — SC_BIN is read by
+# the whole battery, which is what made it a trap; B7_BIN is read here only. The
+# override must still be a binary NAMED `spacecrafter`, because the cycle's
+# stale-instance discipline is `pkill -9 -x spacecrafter`.
+BIN="${B7_BIN:-$HERE/../../build-claude/src/spacecrafter}"
 PROBE="$HERE/b7_hunt_probe.gdb"
 MODE="${B7_MODE:-gdb}"
 OUT="$HERE/artifacts/${B7_OUT:-b7_hunt}"
@@ -273,9 +278,14 @@ run_cycle() {
   # "Loading body Rover<i>" lines are the positive evidence that the K modules
   # were really instantiated this cycle. Counted BEFORE outcome so a scene that
   # failed to load can never be banked as a CLEAN teardown of K rovers.
-  local rovload=0 termd=0
+  local rovload=0 termd=0 asan=0
   [ "$ROVERS" -gt 0 ] && rovload=$(grep -ac "Loading body Rover" "$LOG")
   termd=$(grep -ac "terminate called" "$LOG")
+  # Fourth detector (2026-07-31, F8), live only on the ASan tree: an ASan report
+  # is a fire even when the process then exits 1 instead of dying by signal —
+  # and it is the ONLY channel that can see a use-after-free whose read happened
+  # to land on still-valid memory, i.e. the silent half of the hunted race.
+  asan=$(grep -ac "ERROR: AddressSanitizer" "$LOG")
   if [ "$MODE" = plain ]; then
     if [ "$hung" = 1 ]; then
       outcome=HUNG; detail="no-exit-in-45s"
@@ -318,6 +328,13 @@ run_cycle() {
     if [ "$outcome" != FIRE ]; then
       outcome=FIRE
       log "cyc $cyc $variant: *** *** FIRE *** *** 'terminate called' abort path (§11.97(f)) see $LOG"
+    fi
+  fi
+  if [ "$asan" -gt 0 ]; then
+    detail="$detail asan=$asan[$(grep -am1 -o 'AddressSanitizer: [a-z-]*' "$LOG" | head -c 60)]"
+    if [ "$outcome" != FIRE ]; then
+      outcome=FIRE
+      log "cyc $cyc $variant: *** *** FIRE *** *** AddressSanitizer report see $LOG"
     fi
   fi
   # Axis instrument: a cycle whose composed scene did not load is not a valid

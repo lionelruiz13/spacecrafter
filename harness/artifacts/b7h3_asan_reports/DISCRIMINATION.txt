@@ -1,0 +1,15 @@
+B7 hunt-3 (F8, INTENT 11.122) — ASan discrimination record
+Counts are of 'ERROR: AddressSanitizer: <type>' lines (the SUMMARY line repeats each).
+
+PRE-FIX  (code 5a8881ff), K=0 = shipped data, NO composed scene:
+  plain_001_frcmd.log: heap-use-after-free=1  new-delete-type-mismatch=5  exit=rc1(ASan fatal, shutdown cut short)
+
+POST-FIX (code 1e44b639), same probe, three teardown entries:
+  plain_001_frcmd.log: heap-use-after-free=0  new-delete-type-mismatch=373  exit=rc0(shutdown completes)
+  plain_002_qda.log: heap-use-after-free=0  new-delete-type-mismatch=746  exit=rc0(shutdown completes)
+  plain_003_oldsig.log: heap-use-after-free=0  new-delete-type-mismatch=373  exit=rc0(shutdown completes)
+
+The rise in new-delete-type-mismatch is the shutdown no longer being killed
+partway through by the UAF: all 373 module deletes now report (746 on the
+qda cycle, whose 'body action reload' doubles the population). That defect
+is INTENT 5.51, recorded not fixed.

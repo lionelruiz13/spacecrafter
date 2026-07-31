@@ -1,0 +1,15 @@
+cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1
+1,oldsig,old,SIGINT,sig,12,CLEAN,"rc=0",8,8,18.27
+2,qda,new,SIGINT,sig,12,CLEAN,"rc=0",8,16,18.63
+3,actsig,new,SIGINT,sig,12,CLEAN,"rc=0",8,8,18.48
+4,frsig,new,SIGINT,sig,13,CLEAN,"rc=0",8,8,18.19
+5,galsig,new,SIGINT,sig,13,CLEAN,"rc=0",8,8,17.85
+6,oldcmd,old,shutdown-cmd,cmd,12,CLEAN,"rc=0",8,8,18.36
+7,qdaterm,new,SIGTERM,sig,12,CLEAN,"rc=0",8,16,17.70
+8,frcmd,new,shutdown-cmd,cmd,12,CLEAN,"rc=0",8,8,16.76
+9,oldsig,old,SIGINT,sig,13,CLEAN,"rc=0",8,8,18.30
+10,qda,new,SIGINT,sig,14,CLEAN,"rc=0",8,16,16.63
+11,actquit,new,SIGQUIT,sig,12,CLEAN,"rc=0",8,8,17.36
+12,actsig,new,SIGINT,sig,12,CLEAN,"rc=0",8,8,21.34
+13,frsig,new,SIGINT,sig,12,CLEAN,"rc=0",8,8,19.09
+14,galsig,new,SIGINT,sig,14,CLEAN,"rc=0",8,8,19.83

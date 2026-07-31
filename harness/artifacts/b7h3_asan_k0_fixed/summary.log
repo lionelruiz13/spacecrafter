@@ -1,0 +1,22 @@
+==== B7 HUNT [plain] batch start 2026-07-31T01:46:28+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/b7h3_asan_k0_fixed append=0 cyc0=0 ====
+BIN mtime=2026-07-31 01:45:36.308096842 +0200  code HEAD=5a8881ff  harness HEAD=6d68edb
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+composed-body axis: B7_ROVERS=0  scene=none (§11.95 reproduction)  scene_pre_existed=0
+host at batch start: loadavg=0.64 4.38 10.94  memavail=41,0GiB
+batch teardowns: 3  (cycle ids 1..3)
+cyc 1 frcmd [new/shutdown-cmd] tcp=22s: CLEAN (rc=0)
+cyc 1 frcmd: *** *** FIRE *** *** AddressSanitizer report see /home/claude/spacecrafter/claude/harness/artifacts/b7h3_asan_k0_fixed/plain_001_frcmd.log
+cyc 2 qda [new/SIGINT] tcp=22s: CLEAN (rc=0)
+cyc 2 qda: *** *** FIRE *** *** AddressSanitizer report see /home/claude/spacecrafter/claude/harness/artifacts/b7h3_asan_k0_fixed/plain_002_qda.log
+cyc 3 oldsig [old/SIGINT] tcp=21s: CLEAN (rc=0)
+cyc 3 oldsig: *** *** FIRE *** *** AddressSanitizer report see /home/claude/spacecrafter/claude/harness/artifacts/b7h3_asan_k0_fixed/plain_003_oldsig.log
+==== B7 HUNT [plain] batch done 2026-07-31T01:47:59+02:00 ====
+host at batch end: loadavg=2.93 4.02 10.16  memavail=40,7GiB
+ssystem md5 at end=545a51ef76294891579a1fc2fe13792b
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+      3 FIRE
+*** FIRE ROWS ***
+1,frcmd,new,shutdown-cmd,cmd,22,FIRE,"rc=0 asan=373[AddressSanitizer: new-delete-type-mismatch]",0,0,1.41
+2,qda,new,SIGINT,sig,22,FIRE,"rc=0 asan=746[AddressSanitizer: new-delete-type-mismatch]",0,0,1.52
+3,oldsig,old,SIGINT,sig,21,FIRE,"rc=0 asan=373[AddressSanitizer: new-delete-type-mismatch]",0,0,3.19

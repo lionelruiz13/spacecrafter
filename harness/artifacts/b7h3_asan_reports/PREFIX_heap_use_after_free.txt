@@ -1,0 +1,136 @@
+==314221==ERROR: AddressSanitizer: heap-use-after-free on address 0x703b32cab840 at pc 0x5677fddc0550 bp 0x7ffca18d7350 sp 0x7ffca18d7340
+READ of size 8 at 0x703b32cab840 thread T0
+    #0 0x5677fddc054f in __gnu_cxx::__normal_iterator<ModularBody**, std::vector<ModularBody*, std::allocator<ModularBody*> > >::__normal_iterator(ModularBody** const&) /usr/include/c++/15/bits/stl_iterator.h:1059
+    #1 0x5677fddc054f in std::vector<ModularBody*, std::allocator<ModularBody*> >::end() /usr/include/c++/15/bits/stl_vector.h:1019
+    #2 0x5677fddc054f in EnvironmentManager::notifyBodyDestroyed(ModularBody*) /home/claude/spacecrafter/src/experimentalModule/EnvironmentManager.cpp:28
+    #3 0x5677fdde965c in ModularBody::~ModularBody() /home/claude/spacecrafter/src/experimentalModule/ModularBody.cpp:237
+    #4 0x5677fddeaa74 in ModularBody::~ModularBody() /home/claude/spacecrafter/src/experimentalModule/ModularBody.cpp:240
+    #5 0x5677fdde8ecb in std::default_delete<ModularBody>::operator()(ModularBody*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #6 0x5677fdde8ecb in std::unique_ptr<ModularBody, std::default_delete<ModularBody> >::~unique_ptr() /usr/include/c++/15/bits/unique_ptr.h:398
+    #7 0x5677fdde8ecb in void std::destroy_at<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:88
+    #8 0x5677fdde8ecb in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:164
+    #9 0x5677fdde8ecb in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*>(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:226
+    #10 0x5677fdde8ecb in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >&) /usr/include/c++/15/bits/alloc_traits.h:1045
+    #11 0x5677fdde8ecb in std::vector<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > > >::_M_erase_at_end(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_vector.h:2238
+    #12 0x5677fdde8ecb in std::vector<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > > >::clear() /usr/include/c++/15/bits/stl_vector.h:1864
+    #13 0x5677fdde8ecb in ModularBody::clearChildren() /home/claude/spacecrafter/src/experimentalModule/ModularBody.hpp:1640
+    #14 0x5677fdde8ecb in ModularBody::~ModularBody() /home/claude/spacecrafter/src/experimentalModule/ModularBody.cpp:224
+    #15 0x5677fddeaa74 in ModularBody::~ModularBody() /home/claude/spacecrafter/src/experimentalModule/ModularBody.cpp:240
+    #16 0x5677fda5fa5a in std::default_delete<ModularBody>::operator()(ModularBody*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #17 0x5677fda5fa5a in std::unique_ptr<ModularBody, std::default_delete<ModularBody> >::~unique_ptr() /usr/include/c++/15/bits/unique_ptr.h:398
+    #18 0x5677fda5fa5a in void std::destroy_at<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:88
+    #19 0x5677fda5fa5a in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:164
+    #20 0x5677fda5fa5a in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*>(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:226
+    #21 0x5677fda5fa5a in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >&) /usr/include/c++/15/bits/alloc_traits.h:1045
+    #22 0x5677fda5fa5a in std::vector<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > > >::_M_erase_at_end(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_vector.h:2238
+    #23 0x5677fda5fa5a in std::vector<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > > >::clear() /usr/include/c++/15/bits/stl_vector.h:1864
+    #24 0x5677fda5fa5a in ModularBody::clearChildren() /home/claude/spacecrafter/src/experimentalModule/ModularBody.hpp:1640
+    #25 0x5677fda5fa5a in ModularSystem::~ModularSystem() /home/claude/spacecrafter/src/experimentalModule/ModularSystem.hpp:29
+    #26 0x5677fda604f4 in ModularSystem::~ModularSystem() /home/claude/spacecrafter/src/experimentalModule/ModularSystem.hpp:30
+    #27 0x5677fda5fb1a in std::default_delete<ModularBody>::operator()(ModularBody*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #28 0x5677fda5fb1a in std::unique_ptr<ModularBody, std::default_delete<ModularBody> >::~unique_ptr() /usr/include/c++/15/bits/unique_ptr.h:398
+    #29 0x5677fda5fb1a in void std::destroy_at<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:88
+    #30 0x5677fda5fb1a in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:164
+    #31 0x5677fda5fb1a in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*>(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:226
+    #32 0x5677fda5fb1a in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >&) /usr/include/c++/15/bits/alloc_traits.h:1045
+    #33 0x5677fda5fb1a in std::vector<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > > >::_M_erase_at_end(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_vector.h:2238
+    #34 0x5677fda5fb1a in std::vector<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > > >::clear() /usr/include/c++/15/bits/stl_vector.h:1864
+    #35 0x5677fda5fb1a in ModularBody::clearChildren() /home/claude/spacecrafter/src/experimentalModule/ModularBody.hpp:1641
+    #36 0x5677fda5fb1a in ModularSystem::~ModularSystem() /home/claude/spacecrafter/src/experimentalModule/ModularSystem.hpp:29
+    #37 0x5677fda604f4 in ModularSystem::~ModularSystem() /home/claude/spacecrafter/src/experimentalModule/ModularSystem.hpp:30
+    #38 0x5677fda5fb1a in std::default_delete<ModularBody>::operator()(ModularBody*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #39 0x5677fda5fb1a in std::unique_ptr<ModularBody, std::default_delete<ModularBody> >::~unique_ptr() /usr/include/c++/15/bits/unique_ptr.h:398
+    #40 0x5677fda5fb1a in void std::destroy_at<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:88
+    #41 0x5677fda5fb1a in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:164
+    #42 0x5677fda5fb1a in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*>(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_construct.h:226
+    #43 0x5677fda5fb1a in void std::_Destroy<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > >&) /usr/include/c++/15/bits/alloc_traits.h:1045
+    #44 0x5677fda5fb1a in std::vector<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > > >::_M_erase_at_end(std::unique_ptr<ModularBody, std::default_delete<ModularBody> >*) /usr/include/c++/15/bits/stl_vector.h:2238
+    #45 0x5677fda5fb1a in std::vector<std::unique_ptr<ModularBody, std::default_delete<ModularBody> >, std::allocator<std::unique_ptr<ModularBody, std::default_delete<ModularBody> > > >::clear() /usr/include/c++/15/bits/stl_vector.h:1864
+    #46 0x5677fda5fb1a in ModularBody::clearChildren() /home/claude/spacecrafter/src/experimentalModule/ModularBody.hpp:1641
+    #47 0x5677fda5fb1a in ModularSystem::~ModularSystem() /home/claude/spacecrafter/src/experimentalModule/ModularSystem.hpp:29
+    #48 0x5677fda341d2 in ModularSystem::~ModularSystem() /home/claude/spacecrafter/src/experimentalModule/ModularSystem.hpp:30
+    #49 0x5677fda341d2 in std::default_delete<ModularSystem>::operator()(ModularSystem*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #50 0x5677fda341d2 in std::unique_ptr<ModularSystem, std::default_delete<ModularSystem> >::~unique_ptr() /usr/include/c++/15/bits/unique_ptr.h:398
+    #51 0x5677fda341d2 in SSystemFactory::~SSystemFactory() /home/claude/spacecrafter/src/bodyModule/ssystem_factory.cpp:148
+    #52 0x5677fdae6f85 in Core::~Core() /home/claude/spacecrafter/src/coreModule/core.cpp:243
+    #53 0x5677fd7fa84f in std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release() /usr/include/c++/15/bits/shared_ptr_base.h:345
+    #54 0x5677fd7fa84f in std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release() /usr/include/c++/15/bits/shared_ptr_base.h:316
+    #55 0x5677fd83c3c4 in std::__shared_count<(__gnu_cxx::_Lock_policy)2>::~__shared_count() /usr/include/c++/15/bits/shared_ptr_base.h:1069
+    #56 0x5677fd83c3c4 in std::__shared_ptr<Core, (__gnu_cxx::_Lock_policy)2>::~__shared_ptr() /usr/include/c++/15/bits/shared_ptr_base.h:1531
+    #57 0x5677fd83c3c4 in std::shared_ptr<Core>::~shared_ptr() /usr/include/c++/15/bits/shared_ptr.h:175
+    #58 0x5677fd83c3c4 in Executor::~Executor() /home/claude/spacecrafter/src/executorModule/executor.hpp:53
+    #59 0x5677fd83c3c4 in std::default_delete<Executor>::operator()(Executor*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #60 0x5677fd83c3c4 in std::default_delete<Executor>::operator()(Executor*) const /usr/include/c++/15/bits/unique_ptr.h:86
+    #61 0x5677fd83c3c4 in std::unique_ptr<Executor, std::default_delete<Executor> >::~unique_ptr() /usr/include/c++/15/bits/unique_ptr.h:398
+    #62 0x5677fd83c3c4 in App::~App() /home/claude/spacecrafter/src/appModule/app.cpp:250
+    #63 0x5677fe166260 in std::default_delete<App>::operator()(App*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #64 0x5677fd67cc17 in std::default_delete<App>::operator()(App*) const /usr/include/c++/15/bits/unique_ptr.h:86
+    #65 0x5677fd67cc17 in std::__uniq_ptr_impl<App, std::default_delete<App> >::reset(App*) /usr/include/c++/15/bits/unique_ptr.h:204
+    #66 0x5677fd67cc17 in std::unique_ptr<App, std::default_delete<App> >::reset(App*) /usr/include/c++/15/bits/unique_ptr.h:511
+    #67 0x5677fd67cc17 in main /home/claude/spacecrafter/src/main.cpp:370
+    #68 0x730b3e62a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #69 0x730b3e62a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #70 0x5677fd682134 in _start (/home/claude/spacecrafter/build-asan/src/spacecrafter+0x19b134) (BuildId: a0a394c56dec0cfe64aa57b1c540e93b4dd6acfe)
+
+0x703b32cab840 is located 256 bytes inside of 336-byte region [0x703b32cab740,0x703b32cab890)
+freed by thread T0 here:
+    #0 0x730b42d242bb in operator delete(void*, unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:155
+    #1 0x5677fda33e27 in std::default_delete<EnvironmentManager>::operator()(EnvironmentManager*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #2 0x5677fda33e27 in std::default_delete<EnvironmentManager>::operator()(EnvironmentManager*) const /usr/include/c++/15/bits/unique_ptr.h:86
+    #3 0x5677fda33e27 in std::unique_ptr<EnvironmentManager, std::default_delete<EnvironmentManager> >::~unique_ptr() /usr/include/c++/15/bits/unique_ptr.h:398
+    #4 0x5677fda33e27 in SSystemFactory::~SSystemFactory() /home/claude/spacecrafter/src/bodyModule/ssystem_factory.cpp:148
+    #5 0x5677fdae6f85 in Core::~Core() /home/claude/spacecrafter/src/coreModule/core.cpp:243
+    #6 0x5677fd7fa84f in std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release() /usr/include/c++/15/bits/shared_ptr_base.h:345
+    #7 0x5677fd7fa84f in std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release() /usr/include/c++/15/bits/shared_ptr_base.h:316
+    #8 0x5677fd83c3c4 in std::__shared_count<(__gnu_cxx::_Lock_policy)2>::~__shared_count() /usr/include/c++/15/bits/shared_ptr_base.h:1069
+    #9 0x5677fd83c3c4 in std::__shared_ptr<Core, (__gnu_cxx::_Lock_policy)2>::~__shared_ptr() /usr/include/c++/15/bits/shared_ptr_base.h:1531
+    #10 0x5677fd83c3c4 in std::shared_ptr<Core>::~shared_ptr() /usr/include/c++/15/bits/shared_ptr.h:175
+    #11 0x5677fd83c3c4 in Executor::~Executor() /home/claude/spacecrafter/src/executorModule/executor.hpp:53
+    #12 0x5677fd83c3c4 in std::default_delete<Executor>::operator()(Executor*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #13 0x5677fd83c3c4 in std::default_delete<Executor>::operator()(Executor*) const /usr/include/c++/15/bits/unique_ptr.h:86
+    #14 0x5677fd83c3c4 in std::unique_ptr<Executor, std::default_delete<Executor> >::~unique_ptr() /usr/include/c++/15/bits/unique_ptr.h:398
+    #15 0x5677fd83c3c4 in App::~App() /home/claude/spacecrafter/src/appModule/app.cpp:250
+    #16 0x5677fe166260 in std::default_delete<App>::operator()(App*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #17 0x5677fd67cc17 in std::default_delete<App>::operator()(App*) const /usr/include/c++/15/bits/unique_ptr.h:86
+    #18 0x5677fd67cc17 in std::__uniq_ptr_impl<App, std::default_delete<App> >::reset(App*) /usr/include/c++/15/bits/unique_ptr.h:204
+    #19 0x5677fd67cc17 in std::unique_ptr<App, std::default_delete<App> >::reset(App*) /usr/include/c++/15/bits/unique_ptr.h:511
+    #20 0x5677fd67cc17 in main /home/claude/spacecrafter/src/main.cpp:370
+    #21 0x730b3e62a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #22 0x730b3e62a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #23 0x5677fd682134 in _start (/home/claude/spacecrafter/build-asan/src/spacecrafter+0x19b134) (BuildId: a0a394c56dec0cfe64aa57b1c540e93b4dd6acfe)
+
+previously allocated by thread T0 here:
+    #0 0x730b42d2319b in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:86
+    #1 0x5677fda32dd3 in std::__detail::_MakeUniq<EnvironmentManager>::__single_object std::make_unique<EnvironmentManager, MilkyWay*&, Atmosphere*&>(MilkyWay*&, Atmosphere*&) /usr/include/c++/15/bits/unique_ptr.h:1084
+    #2 0x5677fda32dd3 in SSystemFactory::wireEnvironment(MilkyWay*, Atmosphere*, ToneReproductor*) /home/claude/spacecrafter/src/bodyModule/ssystem_factory.cpp:837
+    #3 0x5677fdafb5bd in Core::Core(int, int, std::shared_ptr<Media>, std::shared_ptr<FontFactory>, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg> const&, std::shared_ptr<Observer>) /home/claude/spacecrafter/src/coreModule/core.cpp:166
+    #4 0x5677fd86756d in void std::_Construct<Core, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>, std::shared_ptr<Observer>&>(Core*, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>&&, std::shared_ptr<Observer>&) /usr/include/c++/15/bits/stl_construct.h:133
+    #5 0x5677fd86756d in void std::allocator_traits<std::allocator<void> >::construct<Core, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>, std::shared_ptr<Observer>&>(std::allocator<void>&, Core*, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>&&, std::shared_ptr<Observer>&) /usr/include/c++/15/bits/alloc_traits.h:805
+    #6 0x5677fd86756d in std::_Sp_counted_ptr_inplace<Core, std::allocator<void>, (__gnu_cxx::_Lock_policy)2>::_Sp_counted_ptr_inplace<unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>, std::shared_ptr<Observer>&>(std::allocator<void>, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>&&, std::shared_ptr<Observer>&) /usr/include/c++/15/bits/shared_ptr_base.h:606
+    #7 0x5677fd86756d in std::__shared_count<(__gnu_cxx::_Lock_policy)2>::__shared_count<Core, std::allocator<void>, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>, std::shared_ptr<Observer>&>(Core*&, std::_Sp_alloc_shared_tag<std::allocator<void> >, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>&&, std::shared_ptr<Observer>&) /usr/include/c++/15/bits/shared_ptr_base.h:969
+    #8 0x5677fd86756d in std::__shared_ptr<Core, (__gnu_cxx::_Lock_policy)2>::__shared_ptr<std::allocator<void>, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>, std::shared_ptr<Observer>&>(std::_Sp_alloc_shared_tag<std::allocator<void> >, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>&&, std::shared_ptr<Observer>&) /usr/include/c++/15/bits/shared_ptr_base.h:1719
+    #9 0x5677fd86756d in std::shared_ptr<Core>::shared_ptr<std::allocator<void>, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>, std::shared_ptr<Observer>&>(std::_Sp_alloc_shared_tag<std::allocator<void> >, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>&&, std::shared_ptr<Observer>&) /usr/include/c++/15/bits/shared_ptr.h:463
+    #10 0x5677fd86756d in std::shared_ptr<Core> std::make_shared<Core, unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>, std::shared_ptr<Observer>&>(unsigned short&, unsigned short&, std::shared_ptr<Media>&, std::shared_ptr<FontFactory>&, mBoost::callback<void, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, mBoost::details::unused_arg>&&, std::shared_ptr<Observer>&) /usr/include/c++/15/bits/shared_ptr.h:1008
+    #11 0x5677fd851344 in App::App(SDLFacade*) /home/claude/spacecrafter/src/appModule/app.cpp:159
+    #12 0x5677fd67c4b7 in std::__detail::_MakeUniq<App>::__single_object std::make_unique<App, SDLFacade*>(SDLFacade*&&) /usr/include/c++/15/bits/unique_ptr.h:1084
+    #13 0x5677fd67c4b7 in main /home/claude/spacecrafter/src/main.cpp:336
+    #14 0x730b3e62a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #15 0x730b3e62a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #16 0x5677fd682134 in _start (/home/claude/spacecrafter/build-asan/src/spacecrafter+0x19b134) (BuildId: a0a394c56dec0cfe64aa57b1c540e93b4dd6acfe)
+
+SUMMARY: AddressSanitizer: heap-use-after-free /home/claude/spacecrafter/src/experimentalModule/EnvironmentManager.cpp:28 in EnvironmentManager::notifyBodyDestroyed(ModularBody*)
+Shadow bytes around the buggy address:
+  0x703b32cab580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x703b32cab600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x703b32cab680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x703b32cab700: fa fa fa fa fa fa fa fa fd fd fd fd fd fd fd fd
+  0x703b32cab780: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+=>0x703b32cab800: fd fd fd fd fd fd fd fd[fd]fd fd fd fd fd fd fd
+  0x703b32cab880: fd fd fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x703b32cab900: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x703b32cab980: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x703b32caba00: 00 00 00 00 00 00 00 00 00 00 00 00 00 fa fa fa
+  0x703b32caba80: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
