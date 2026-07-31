@@ -165,6 +165,19 @@ struct Registry {
     // old pool -> AllocateDescriptorSets-WrongType). Coverage is re-checked
     // per allocSet, not assumed from creation order.
     uint32_t poolTypeMask = 0;
+    // ...and the per-type COUNTS pools.back() was created with. Same defect
+    // class as poolTypeMask, one dimension over (B12, INTENT §11.123): the
+    // mask says the pool KNOWS a type, never that it has ENOUGH of it. Pools
+    // are sized from the aggregate AT CREATION, so the first contract to
+    // allocate a set fixes the first pool's per-type budget - and the first
+    // body loaded is the Sun, whose STAR_SURFACE contract wants ONE texture.
+    // Every later 6-texture layered set then came out of a 4-texture pool:
+    // measured as WARNING-VkDescriptorSetAllocateInfo-descriptorCount
+    // ("allocate 6 ... this pool only has 4 ... will fail on others") - a
+    // portability failure, not a warning to tolerate. Checked per allocSet
+    // exactly like the type mask.
+    uint32_t poolCapUniform = 0, poolCapDynUniform = 0, poolCapTexture = 0;
+    uint32_t poolCapStorageBuf = 0, poolCapStorageImg = 0, poolCapSampledImg = 0;
     // Interim work domain (see file header).
     std::mutex mtx;
     std::condition_variable cv;
@@ -549,6 +562,40 @@ void createPool(Registry &r)
     r.poolTypeMask = (r.aggUniform ? 0x01 : 0) | (r.aggDynUniform ? 0x02 : 0)
                    | (r.aggTexture ? 0x04 : 0) | (r.aggStorageBuf ? 0x08 : 0)
                    | (r.aggStorageImg ? 0x10 : 0) | (r.aggSampledImg ? 0x20 : 0);
+    // What ONE set out of this pool may ask for, per type (see poolCap*).
+    r.poolCapUniform = r.aggUniform;
+    r.poolCapDynUniform = r.aggDynUniform;
+    r.poolCapTexture = r.aggTexture;
+    r.poolCapStorageBuf = r.aggStorageBuf;
+    r.poolCapStorageImg = r.aggStorageImg;
+    r.poolCapSampledImg = r.aggSampledImg;
+}
+
+// Per-SET descriptor need of a contract, by type (arraySize summed over the
+// bindings of that type). The pool-coverage question is per set, not
+// aggregate: vkAllocateDescriptorSets fails when ONE set exceeds what the pool
+// holds, whatever the total budget says.
+struct SetNeed {
+    uint32_t uniform = 0, dynUniform = 0, texture = 0;
+    uint32_t storageBuf = 0, storageImg = 0, sampledImg = 0;
+};
+
+SetNeed perSetNeed(const SetContractDesc &d)
+{
+    SetNeed n;
+    for (const auto &b : d.bindings) {
+        const uint32_t c = b.arraySize ? b.arraySize : 1;
+        switch (b.type) {
+            case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER: n.uniform += c; break;
+            case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC: n.dynUniform += c; break;
+            case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER: n.texture += c; break;
+            case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER: n.storageBuf += c; break;
+            case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE: n.storageImg += c; break;
+            case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE: n.sampledImg += c; break;
+            default: break;
+        }
+    }
+    return n;
 }
 
 } // namespace
@@ -1479,9 +1526,19 @@ Set *Renderer::allocSet(const PipelineFamily &family, uint8_t setIndex)
     uint32_t needed = 0;
     for (const auto &b : e.desc.bindings)
         needed |= typeBit(b.type);
-    if (!r.poolRemaining || (needed & ~r.poolTypeMask))
+    // A pool serves this contract only if it knows every type AND holds enough
+    // of each for ONE set (poolCap* note above - the aggregate at creation is
+    // the first allocator's, not this contract's).
+    const SetNeed n = perSetNeed(e.desc);
+    const bool tooSmall = n.uniform > r.poolCapUniform
+                       || n.dynUniform > r.poolCapDynUniform
+                       || n.texture > r.poolCapTexture
+                       || n.storageBuf > r.poolCapStorageBuf
+                       || n.storageImg > r.poolCapStorageImg
+                       || n.sampledImg > r.poolCapSampledImg;
+    if (!r.poolRemaining || (needed & ~r.poolTypeMask) || tooSmall)
         createPool(r); // budget exhausted OR the contract uses a type this
-                       // pool predates (poolTypeMask note above)
+                       // pool predates OR one of its sets does not fit
     --r.poolRemaining;
     // Caller owns (store in a unique_ptr); pools are registry-lifetime, which
     // outlives every module (modules die with the body tree, before Context).
