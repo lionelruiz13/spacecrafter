@@ -139,15 +139,6 @@ public:
 	//! modify a flag via a toggle
 	void toggle(APP_FLAG layerValue);
 
-	//! Stop waiting for frames the application will no longer draw. Called
-	//! whenever ALIVE goes false, from the signal handler included: clearing
-	//! the flag is not enough to stop the application, because the main loop
-	//! that reads it may be parked in an untimed wait for a frame the drawing
-	//! thread has not completed - and then the process never begins to exit
-	//! (INTENT 5.59). The frames themselves are unaffected on every other
-	//! path; this only ends waits whose result is no longer wanted.
-	void releaseFrameWaits();
-
 	void switchMode(const std::string setValue);
 
 	//! Script/TCP-triggered screenshot (harness A/B visual comparison,

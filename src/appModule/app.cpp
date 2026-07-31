@@ -538,10 +538,7 @@ void App::flag(APP_FLAG layerValue, bool _value) {
 		case APP_FLAG::VISIBLE :
 				flagVisible = _value; break;
 		case APP_FLAG::ALIVE :
-				flagAlive = _value;
-				if (!_value)
-					releaseFrameWaits();
-				break;
+				flagAlive = _value; break;
 		case APP_FLAG::COLOR_INVERSE :
 				flagColorInverse = _value; break;
 		case APP_FLAG::BODY_PICK :
@@ -558,27 +555,13 @@ void App::flag(APP_FLAG layerValue, bool _value) {
 	}
 }
 
-// Contract + why: app.hpp. Reached from the SIGTERM/SIGINT/SIGQUIT handler
-// (ISignals::NSSigTERM -> flag(ALIVE, false)) as well as from the shutdown
-// command, so it must do only what a signal handler may: one lock-free
-// compare-exchange per frame slot and a futex wake. The handler already writes
-// to the log, which is far more than this.
-void App::releaseFrameWaits()
-{
-	if (context.helper)
-		context.helper->abandonPendingFrames();
-}
-
 void App::toggle(APP_FLAG layerValue)
 {
 		switch(layerValue) {
 		case APP_FLAG::VISIBLE :
 				flagVisible = !flagVisible; break;
 		case APP_FLAG::ALIVE :
-				flagAlive = !flagAlive;
-				if (!flagAlive)
-					releaseFrameWaits();
-				break;
+				flagAlive = !flagAlive; break;
 		case APP_FLAG::COLOR_INVERSE :
 				flagColorInverse = !flagColorInverse; break;
 		case APP_FLAG::SUBTITLE :
@@ -819,12 +802,7 @@ void App::draw(int delta_time)
 	if (sender) {
 		sender->acquireFrame(context.frameIdx);
 	} else {
-		if (!context.helper->waitFrame(context.lastFrameIdx))
-			return; // Teardown was requested while we waited for the previous
-			        // frame, and that frame is still being recorded: drawing
-			        // over it would use resources the worker still holds. Skip
-			        // this frame - startMainLoop's flagAlive test ends the loop
-			        // on the next turn (INTENT 5.59).
+		context.helper->waitFrame(context.lastFrameIdx);
 		swapchainMutex.lock();
 		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 20000000, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx); // Timeout after 20ms, avoid rendering a frame which is out of date
 		swapchainMutex.unlock();

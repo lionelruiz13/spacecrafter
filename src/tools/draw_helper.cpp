@@ -402,24 +402,19 @@ void DrawHelper::drawNebula(DrawData::s_nebula &data)
     drawIdx += 4;
 }
 
-bool DrawHelper::waitFrame(unsigned char frameIdx)
+void DrawHelper::waitFrame(unsigned char frameIdx)
 {
     for (uint8_t i = 0; i < 3; ++i) {
         if (drawer[i].submitData.frameIdx == frameIdx) {
-            int completion = drawer[i].hasCompleted.load(std::memory_order_acquire);
-            if (completion == 0) {
+            if (drawer[i].hasCompleted.load(std::memory_order_acquire) == 0) {
                 queue.flush();
                 drawer[i].hasCompleted.wait(0, std::memory_order_acquire);
-                // Re-read ONLY on the slow path (we blocked): the fast path
-                // keeps the single load it always had.
-                completion = drawer[i].hasCompleted.load(std::memory_order_acquire);
             }
             drawer[i].submitData.frameIdx = UINT8_MAX;
             drawer[i].hasCompleted.store(false, std::memory_order_release);
-            return completion != FRAME_ABANDONED;
+            return;
         }
     }
-    return true;
 }
 
 void DrawHelper::waitAllFrames()
@@ -433,12 +428,10 @@ void DrawHelper::waitAllFrames()
         // complete; waiting on it would wait for a frame that never comes.
         if (d.submitData.frameIdx == UINT8_MAX)
             continue;
-        // An ABANDONED frame does NOT satisfy this wait. Abandoning exists to
-        // release the main loop from a frame whose result nobody wants any
-        // more; here the caller is about to DESTROY what that frame
-        // references, so only real completion will do. Taking the abandon as
-        // an answer here is how a teardown arriving during a reload turned
-        // into a SIGSEGV in the worker thread (INTENT 5.58/5.59, measured).
+        // Only REAL completion ends this wait - the caller is about to destroy
+        // what the frame references (INTENT 5.58). Written as a loop over the
+        // observed value rather than wait(0) so that a future cancellation
+        // mechanism cannot silently satisfy it (INTENT 5.59's fork).
         int completion = d.hasCompleted.load(std::memory_order_acquire);
         while (completion != 1) {
             d.hasCompleted.wait(completion, std::memory_order_acquire);
@@ -447,22 +440,6 @@ void DrawHelper::waitAllFrames()
     }
 }
 
-void DrawHelper::abandonPendingFrames()
-{
-    for (auto &d : drawer) {
-        // Only frames somebody is actually waiting for. Marking an idle
-        // drawer would leave a stale FRAME_ABANDONED for its next user.
-        if (d.submitData.frameIdx == UINT8_MAX)
-            continue;
-        int pending = 0;
-        // 0 -> FRAME_ABANDONED only: a frame the worker already completed
-        // keeps its 1, and the worker's own later store(1) may overwrite this
-        // - both are non-zero, so neither loses a wakeup.
-        if (d.hasCompleted.compare_exchange_strong(pending, FRAME_ABANDONED,
-                std::memory_order_release, std::memory_order_relaxed))
-            d.hasCompleted.notify_all();
-    }
-}
 
 void DrawHelper::submitFrame(unsigned char frameIdx, unsigned char lastFrameIdx)
 {
