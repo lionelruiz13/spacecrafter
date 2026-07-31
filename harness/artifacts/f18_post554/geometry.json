@@ -1,0 +1,203 @@
+{
+  "Sun": {
+    "ref_fov": 60.0,
+    "ref": {
+      "screenSize": 0.00874060299,
+      "screen": [
+        1.47309308e-07,
+        -2.50079761e-08
+      ],
+      "dist": 1.01658893,
+      "boundingRadius": 0.00465247268,
+      "visible": true,
+      "routing": {
+        "far": 2,
+        "near": 2,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 0,
+        "trail": 0,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "CUSTOM"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "fov": 151.39168467468443,
+    "geom": {
+      "screenSize": 0.00346410181,
+      "screen": [
+        5.83820672e-08,
+        -9.91123628e-09
+      ],
+      "dist": 1.01658893,
+      "boundingRadius": 0.00465247268,
+      "visible": true,
+      "routing": {
+        "far": 2,
+        "near": 2,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 0,
+        "trail": 0,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "CUSTOM"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "in_band": true,
+    "wanted_screenSize": 0.0034641016151377548
+  },
+  "Mars": {
+    "ref_fov": 60.0,
+    "ref": {
+      "screenSize": 2.17703764e-05,
+      "screen": [
+        3.29680944e-07,
+        -1.09893648e-07
+      ],
+      "dist": 2.07175732,
+      "boundingRadius": 2.3615843e-05,
+      "visible": true,
+      "routing": {
+        "far": 1,
+        "near": 3,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 1,
+        "trail": 1,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "ORBIT",
+        "TRAIL",
+        "ATMOSPHERE"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "fov": 0.3770739802469843,
+    "geom": {
+      "screenSize": 0.00346413814,
+      "screen": [
+        5.24593743e-05,
+        -1.74864581e-05
+      ],
+      "dist": 2.07175732,
+      "boundingRadius": 2.3615843e-05,
+      "visible": true,
+      "routing": {
+        "far": 1,
+        "near": 3,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 1,
+        "trail": 1,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "ORBIT",
+        "TRAIL",
+        "ATMOSPHERE"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "in_band": true,
+    "wanted_screenSize": 0.0034641016151377548
+  },
+  "Jupiter": {
+    "ref_fov": 60.0,
+    "ref": {
+      "screenSize": 0.000252636353,
+      "screen": [
+        2.31627368e-07,
+        2.04377102e-07
+      ],
+      "dist": 6.2661643,
+      "boundingRadius": 0.000828888791,
+      "visible": true,
+      "routing": {
+        "far": 1,
+        "near": 3,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 1,
+        "trail": 1,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "ORBIT",
+        "TRAIL",
+        "RING"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "fov": 4.375789992349059,
+    "geom": {
+      "screenSize": 0.00346410181,
+      "screen": [
+        -3.79878156e-06,
+        2.91136121e-06
+      ],
+      "dist": 6.2661643,
+      "boundingRadius": 0.000828888791,
+      "visible": true,
+      "routing": {
+        "far": 1,
+        "near": 3,
+        "grounded": 0,
+        "in": 0,
+        "orbit": 1,
+        "trail": 1,
+        "tail": 0
+      },
+      "modules": [
+        "MESH",
+        "AXIS",
+        "HINT",
+        "ORBIT",
+        "TRAIL",
+        "RING"
+      ],
+      "old_screen": [
+        1024,
+        1024
+      ]
+    },
+    "in_band": true,
+    "wanted_screenSize": 0.0034641016151377548
+  },
+  "md5_ok": true
+}

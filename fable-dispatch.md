@@ -1200,7 +1200,18 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   bucket range every call. Post-fix z = 0.5 exactly (predicted); disc ratios Sun 0.84 /
   Mars 0.88 / Jupiter 0.99 vs 0.00/0.00/0.11 pre-fix; b12 s5 0.0000 → 0.9917. Battery
   green (b24/b25/b40/b4/A–D/E/f15/b12), frozen md5 in==out. Harness: `f18_midband.py`,
-  `f18_disc.py`, `f18_run.sh`. NEXT: §5.54 threshold authority, then §5.53.
+  `f18_disc.py`, `f18_run.sh`. · **checkpoint 2 GREEN — §5.54 SETTLED px-intent + landed**
+  (code `2117ccb0`). Derivation (G4 wording + b12-design's ≥1 px + the family's own live
+  px-converted siblings + D5's 8k inversion) ⇒ PX; px constants are the authority, the
+  screenSize forms derived by `setViewportRadius` (the viewport's only writer),
+  `viewportRadius` no longer public. Census was wider than the row: 0.2 had SIX spellings,
+  0.0015 three, half double-vs-float. Gates at 2048 bit-identical to the old literals;
+  second width 1024 measured both sides vs a prediction fixed before the run — px-intent
+  0.049 (Mars, satellite halos, attributed via Venus 0.000) / 0.000 (Venus); pre-change
+  binary same scene 0.729 / 0.644 = the surface drawing where px-intent says it must not.
+  VETO POINT recorded: named EARLY constant said 2 px, shipped gate is 3.07 px — preserved
+  the shipped value, Vixy decides. Battery green again on this binary. Harness:
+  `f18_gate.py`, `f18_gate_run.sh`; dump header now carries `gates`. NEXT: §5.53.
 
 ---
 

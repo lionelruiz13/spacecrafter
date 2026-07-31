@@ -1,0 +1,36 @@
+{
+  "width_arg": 1024,
+  "body": "Venus",
+  "gates_reported": null,
+  "gate_px_predicted": 3.072,
+  "ref_screenSize": 8.30064746e-05,
+  "points": {
+    "present": {
+      "fov": 1.457119371264,
+      "wanted_px": 3.5,
+      "screenSize": 0.00341796945,
+      "measured_px": 3.5000007168,
+      "disc_sum": 1362,
+      "disc_nonzero": 8,
+      "shape": [
+        1024,
+        1024
+      ]
+    },
+    "absent": {
+      "fov": 1.8888584442311112,
+      "wanted_px": 2.7,
+      "screenSize": 0.00263671926,
+      "measured_px": 2.70000052224,
+      "disc_sum": 877,
+      "disc_nonzero": 8,
+      "shape": [
+        1024,
+        1024
+      ]
+    }
+  },
+  "absent_over_present": 0.643906020558003,
+  "verdict": "FAIL-absent-drew",
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}

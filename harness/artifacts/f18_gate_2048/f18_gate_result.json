@@ -1,0 +1,51 @@
+{
+  "width_arg": 2048,
+  "body": "Mars",
+  "gates_reported": {
+    "viewportRadius": 1024,
+    "px": {
+      "early": 3.07200003,
+      "depthBucket": 8.19200039,
+      "full": 16.3840008,
+      "close": 409.600006,
+      "bigTexture": 409.600006
+    },
+    "screenSize": {
+      "early": 0.00150000001,
+      "depthBucket": 0.00400000019,
+      "full": 0.00800000038,
+      "close": 0.200000003,
+      "bigTexture": 0.200000003
+    }
+  },
+  "gate_px_predicted": 3.072,
+  "ref_screenSize": 2.17703746e-05,
+  "points": {
+    "present": {
+      "fov": 0.7643267516708571,
+      "wanted_px": 3.5,
+      "screenSize": 0.00170898391,
+      "measured_px": 3.49999904768,
+      "disc_sum": 1300,
+      "disc_nonzero": 8,
+      "shape": [
+        2048,
+        2048
+      ]
+    },
+    "absent": {
+      "fov": 0.990793937351111,
+      "wanted_px": 2.7,
+      "screenSize": 0.0013183594,
+      "measured_px": 2.7000000512,
+      "disc_sum": 0,
+      "disc_nonzero": 0,
+      "shape": [
+        2048,
+        2048
+      ]
+    }
+  },
+  "verdict": "GREEN",
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}

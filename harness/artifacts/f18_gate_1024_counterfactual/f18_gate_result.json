@@ -1,0 +1,36 @@
+{
+  "width_arg": 1024,
+  "body": "Mars",
+  "gates_reported": null,
+  "gate_px_predicted": 3.072,
+  "ref_screenSize": 2.17703764e-05,
+  "points": {
+    "present": {
+      "fov": 0.3821634074331429,
+      "wanted_px": 3.5,
+      "screenSize": 0.00341797248,
+      "measured_px": 3.50000381952,
+      "disc_sum": 1413,
+      "disc_nonzero": 9,
+      "shape": [
+        1024,
+        1024
+      ]
+    },
+    "absent": {
+      "fov": 0.4953970096355556,
+      "wanted_px": 2.7,
+      "screenSize": 0.0026367188,
+      "measured_px": 2.7000000512,
+      "disc_sum": 1030,
+      "disc_nonzero": 8,
+      "shape": [
+        1024,
+        1024
+      ]
+    }
+  },
+  "absent_over_present": 0.7289455060155697,
+  "verdict": "FAIL-absent-drew",
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}

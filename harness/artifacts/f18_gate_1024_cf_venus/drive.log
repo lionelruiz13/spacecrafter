@@ -1,0 +1,69 @@
+1785532249.391 >> flag experimental_path on
+1785532250.592 >> date jday 2461233.5
+1785532251.792 >> timerate rate 0
+1785532252.393 >> flag landscape off
+1785532252.993 >> flag atmosphere off
+1785532253.593 >> flag star_twinkle off
+1785532254.193 >> flag stars off
+1785532254.794 >> flag show_fps off
+1785532255.394 >> flag planet_names off
+1785532255.994 >> flag planet_orbits off
+1785532256.595 >> flag object_trails off
+1785532257.195 >> flag constellation_drawing off
+1785532257.795 >> flag constellation_art off
+1785532258.396 >> flag cardinal_points off
+1785532258.996 >> flag milky_way off
+1785532259.597 >> flag nebulae off
+1785532262.797 >> set home_planet Earth
+1785532264.997 >> moveto lat 48.85 lon 2.35 alt 100 duration 0
+1785532266.198 >> select planet Venus pointer off
+1785532274.398 >> flag track_object on
+1785532275.598 >> timerate rate 0
+1785532276.799 >> body name Venus color halo r 0 g 0 b 0
+1785532279.999 >> zoom fov 60.0 duration 0
+1785532282.700 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_gate_1024_cf_venus/ref.json
+1785532285.903 >> zoom fov 1.457119 duration 0
+1785532288.603 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_gate_1024_cf_venus/present_geom.json
+1785532291.307 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_gate_1024_cf_venus/present.png
+### present: fov 1.45712 px 3.500 disc_sum 1362
+1785532294.551 >> zoom fov 1.888858 duration 0
+1785532297.252 >> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f18_gate_1024_cf_venus/absent_geom.json
+1785532299.955 >> body action screenshot filename /home/claude/spacecrafter/claude/harness/artifacts/f18_gate_1024_cf_venus/absent.png
+### absent: fov 1.88886 px 2.700 disc_sum 877
+1785532302.178 >> zoom fov 180 duration 0
+{
+  "width_arg": 1024,
+  "body": "Venus",
+  "gates_reported": null,
+  "gate_px_predicted": 3.072,
+  "ref_screenSize": 8.30064746e-05,
+  "points": {
+    "present": {
+      "fov": 1.457119371264,
+      "wanted_px": 3.5,
+      "screenSize": 0.00341796945,
+      "measured_px": 3.5000007168,
+      "disc_sum": 1362,
+      "disc_nonzero": 8,
+      "shape": [
+        1024,
+        1024
+      ]
+    },
+    "absent": {
+      "fov": 1.8888584442311112,
+      "wanted_px": 2.7,
+      "screenSize": 0.00263671926,
+      "measured_px": 2.70000052224,
+      "disc_sum": 877,
+      "disc_nonzero": 8,
+      "shape": [
+        1024,
+        1024
+      ]
+    }
+  },
+  "absent_over_present": 0.643906020558003,
+  "verdict": "FAIL-absent-drew",
+  "ssystem_md5": "545a51ef76294891579a1fc2fe13792b"
+}
