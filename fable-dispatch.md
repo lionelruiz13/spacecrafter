@@ -87,6 +87,18 @@ hunt, §5.51 masks the instrument), **B7-hunt-4** (ASan mix N ≥ 50 + TSan + th
 explicitly: `heading` and T3 are sequenced behind Vixy decisions scheduled last
 week of August).
 
+**Update [Fable 2026-07-31, supervising session 6]:** round of 3 per the sizing lesson:
+**F16 → F17 → F18**, minted below from session 5's own close queue (F16 before any
+hunt — §5.51 masks the instrument; B7-hunt-4 after F16; G4 batch). Third slot kept on
+the G4 batch over the next B31 slice: the session file carries two carve-outs behind
+late-August decisions (D28/D21) and takes a revisit wave regardless, while §5.52 is a
+user-visible hole in D3's common case. Warm-up: both trees clean (code `a958c05e`,
+harness `fe7e2dc` — the harness moved past session-5 close: cadence corrections
+§11.122(o)/§11.123(o)(o2) + INTENT archival pass 1, all verified, no code change);
+binary present (mtime 03:22, consistent with F9's build order; first executor rebuilds
+regardless). DECISIONS_PENDING open set at session start: **D15, D21 (both SCHEDULED
+last week of August, §11.116(a)), D37 (awaiting Vixy)**.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -878,6 +890,119 @@ corrected: it was written, then destroyed by the same edit.]*
   class). D11's GPU half is derived-not-measured — limitation stated in-entry,
   structural-subset argument endorsed. Veto points V1–V4 + content decisions
   D1–D4 + the chromosphere grammar word → §3.
+
+### F16 — teardown-integrity batch: §5.51 virtual `~BodyModule` + §5.50 push-channel bail-out  [M]
+- **Row / recorded:** §5.51 (opened §11.122(h); owed check stated in-row) · §5.50 (opened
+  §11.121; mechanism at `protosystem.cpp:612-622` — re-locate at HEAD) · §11.122(m)
+  sequencing verbatim: *"Fix §5.51 first in its own dispatch — 373 skipped destructors
+  per shutdown is a large enough blind spot that any further teardown result is measured
+  through it"* · B7 row (§13.B) next-hunt note · §11.122(e) (`build-asan` tree, 83 s,
+  `B7_BIN` — deliberately not `SC_BIN`).
+- **Why first:** §5.51 masks the instrument every teardown task reads (373 skipped
+  dtors/shutdown, 746 on a `qda` cycle); B7-hunt-4 is blind until it lands. §5.50 is the
+  same integrity class with its fix shape already named in-row (the §5.45→F12(iv)
+  precedent) and shares the verification apparatus.
+- **Task:** (i) §5.51: `virtual ~BodyModule() = default;` (`BodyModule.hpp:149` —
+  re-locate at HEAD) + the regression battery the row's own text demands: 13 subclass
+  dtors run for the FIRST time ever, releasing Vulkan resources in an order nothing has
+  exercised — hunt the fallout, never assume it. QUIET host on purpose: the §11.122(i)
+  HUNG question is F17's; a quiet batch compares against §11.95's own quiet 158/0
+  without touching that confound. Decision-free dtor-order defects found en route may be
+  fixed with both-ways checks (the §11.122(g) precedent); anything larger → record.
+  (ii) §5.50: bail out of the OLD path's `addBody` when the created orbit is null —
+  warn naming the body, the unknown `coord_func` and the valid values (§2(f)/D12), skip
+  the body, app survives; the new path's consumption of the same push map unchanged.
+- **Stop boundaries (NOT yours):** the hunt itself (F17: sanitizer mix, §11.122(i)
+  closure); §5.52–§5.54 (F18); any teardown-order redesign beyond making the declared
+  dtors run (a found defect whose fix needs design → record, own dispatch).
+- **Discriminating check:** (i) the §5.51 row's own: same ASan cycle,
+  `new-delete-type-mismatch` **373 → 0** (and the `qda` leg 746 → 0), heap-UAF stays 0,
+  shutdown rc=0; NO new ASan report class on teardown; validation layer POSITIVELY
+  confirmed + 0 VUID through shutdown (resource-release order is validation-visible);
+  native quiet teardown batch **N ≥ 50** across the §11.95 mix: 0 fires / 0 hangs
+  against the quiet 158/0 baseline. (ii) the §5.50 repro command (in-row, verbatim)
+  flips kill → warn+skip+app-lives, log line actionable per §2(f); a composed-file
+  `surface_point` body still draws (b24_screen rovers = the standing control); a valid
+  push-channel body still lands. Battery green (b24_equivalence, b25_galactic,
+  b40_parity, b4_anchors, scene E, f15_persist); frozen md5 in==out.
+- **WIP:** —
+
+### F17 — B7-hunt-4: the sanitizer mix + the HUNG settle  [M–L]
+- **Row / recorded:** B7 (§13.B) · §11.122(m) verbatim: *"run the ASan tree (83 s to
+  build, `B7_BIN` ready) over a full N ≥ 50 mix, since it sees the silent half of the
+  race that 266 native teardowns could not; then TSan for the thread half"* + contention
+  *"stop buying more of it"* · §11.122(i) closure path verbatim: *"re-measure HUNG rate
+  on both binaries at N ≥ 50 with the stress load pre-warmed"* · §11.122(c) detector
+  discipline (positive-controlled through the SAME classifier) · §0.5 concurrent-
+  instance assert + memory-bounded builds.
+- **Why after F16:** §11.122(m)'s own sequencing — any teardown result before the §5.51
+  fix is measured through 373 skipped destructors. F16 also re-bases what "post-fix"
+  means: state the HUNG-arm binary pair explicitly, never inherit §11.122(i)'s pair.
+- **Task:** (i) ASan mix, N ≥ 50, full §11.95 9-variant mix, `B7_BIN` = `build-asan`
+  binary at post-F16 HEAD, quiet host (the sanitizer sees the silent half regardless of
+  load — (m)); any report = a find, attributed at source; decision-free one-line fixes
+  with both-ways checks allowed (§11.122(g) precedent), larger → record. (ii) TSan tree
+  (own build dir, gitignored like `build-asan`) over the same mix; N ≥ 50 if runtime
+  permits, else the achieved N + bound recorded honestly — no silent cap. (iii) settle
+  §11.122(i) per its own closure path: stress load PRE-WARMED to steady state before
+  cycle 1 (the one measured difference the entry names), N ≥ 50 per arm, arms =
+  post-F16 HEAD + the §11.122 pre-fix reference; BOTH live theories (binary vs
+  cold-start transient) stated with predictions BEFORE the runs.
+- **Stop boundaries (NOT yours):** F16's items (landed); more load-buying (excluded by
+  (m)); non-teardown defect classes TSan surfaces in draw paths → record, don't chase;
+  cadence instruments (the §11.123(o2) wall-clock check is owed by a cadence-TOUCHING
+  task — a 45 s timeout detector is not one; do not convert this hunt into it).
+- **Discriminating check:** every detector trusted for silence shown able to FIRE in
+  the regime it is trusted in, through the same classifier (§11.122(c) pattern; TSan
+  needs its OWN positive control); fires ⇒ context capture (`b7_probe.gdb` armed);
+  no fires ⇒ tightened bounds per arm (rule of three); (iii) closes only with magnitude
+  AND mechanism predicted from the attributed cause (§11.122(i)'s own rule) — else it
+  stays open with the new record appended.
+- **WIP:** —
+
+### F18 — G4-coherence batch: §5.52 mid-band surface + §5.54 threshold authority + §5.53 level step  [M–L]
+- **Row / recorded:** §5.52 · §5.53 · §5.54 (all opened §11.123(g); full rows at
+  INTENT.md §5 — read them verbatim, they carry mechanisms + owed checks) · G4 verbatim
+  (INTENT §2): *"compute only what the observer can distinguish, and draw each regime
+  with the representation built for it"* · §11.44 correction (its "bright in both" was
+  reading the halo) · §2.0 D3 (mid-band = the common case) / D5 (1k–8k) / D11 · B12 row
+  rider (thresholds interact with the content slice — content is NOT this task).
+- **Why now:** §5.52 is a user-visible rendering hole in D3's common case (every body
+  ~3–16 px across draws NO surface on the new path; the old path draws it); §5.54's dual
+  authority (I2) sits under every regime measurement including B12's content slice;
+  §5.53 is the measurement trap this cluster already sprang once (F9's 1.34 ratio).
+  Ahead of the next B31 slice: that slice carries two carve-outs behind late-August
+  decisions (D28/D21) and takes a revisit wave regardless; this batch retires defects now.
+- **Task:** (i) §5.52 FIRST — the row's two candidate mechanisms (missing `clearDepth`
+  depth-slice clip vs `renderer.bind(family, VARIANT_NO_DEPTH)` returning no layout →
+  early return) are DISCRIMINATED BY INSTRUMENT before any fix (the row says the second
+  is NOT excluded); then fix at root; old path untouched. (ii) §5.54 — settle the one
+  question the row states (px-intent vs fraction-intent), DERIVED from G4's own wording
+  + the B12 design's use of it (*smallest added structure ≥ 1 px* is a px criterion),
+  recorded as a VETO POINT, never silently decided; ONE authority survives (I2), the
+  other deleted; behavior at a 2048-wide render preserved (the literals ARE the px
+  values there — predict 0 px scene delta at 2048); the row's own before/after scene
+  battery. (iii) §5.53(a) — root-cause the reduced-level washout in the reduction/cache
+  path (`s_texture`/`txcache`; a downscale preserves the mean, so the deviation is a
+  defect, not a taste); fix if decision-free. §5.53(b) — the two paths' switch-size
+  disagreement is MEASURED + RECORDED with a recommendation (a §11.52(b) parity
+  question only while both paths exist), not decided.
+- **Stop boundaries (NOT yours):** B12 CONTENT (granulation/spots/chromosphere — behind
+  Vixy's b12-design §7 decisions, incl. the grammar word); the D5 resolution-range
+  policy itself (your veto point informs it); the old render path (baseline by
+  construction); anything D21/D28-dependent; the §11.123(o2) cadence check UNLESS this
+  task touches a cadence instrument (then the wall-clock-bracketed counter read is
+  OWED — §0.5).
+- **Discriminating check:** (i) the §5.52 row's own: same disc-centre row, halo
+  suppressed, non-zero in BOTH paths — on the Sun AND on a planet (nothing here is
+  star-specific); RED on the pre-fix binary. (ii) at 2048: A/B scene battery 0 px (or
+  explained per-scene); at a SECOND render width: the gate position measured both sides
+  matches the prediction made BEFORE the run; grep-clean: one threshold authority
+  tree-wide. (iii)(a) disc-centre RGB across the threshold ≈ the map's known mean on
+  BOTH levels, RED pre-fix; D11 unchanged (1 ms/frame denominator). Battery green +
+  frozen md5; the b12 instruments (`b12_photosphere.py`/`b12_limb.py`) stay green (the
+  star family lives inside these thresholds).
+- **WIP:** —
 
 ---
 
