@@ -1,0 +1,18 @@
+==== B7 HUNT [plain] batch start 2026-07-31T12:40:09+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/f17_scope_K0 append=0 cyc0=0 ====
+BIN mtime=2026-07-31 11:48:32.897729245 +0200  code HEAD=550b3f9f  harness HEAD=3604b19
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+composed-body axis: B7_ROVERS=0  scene=none (§11.95 reproduction)  scene_pre_existed=0
+host at batch start: loadavg=15.12 16.08 16.11  memavail=11,5GiB
+batch teardowns: 6  (cycle ids 1..6)
+cyc 1 qda [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 2 qdaterm [new/SIGTERM] tcp=13s: CLEAN (rc=0)
+cyc 3 qda [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 4 qdaterm [new/SIGTERM] tcp=13s: CLEAN (rc=0)
+cyc 5 qda [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 6 qdaterm [new/SIGTERM] tcp=13s: CLEAN (rc=0)
+==== B7 HUNT [plain] batch done 2026-07-31T12:42:06+02:00 ====
+host at batch end: loadavg=15.91 15.98 16.07  memavail=10,7GiB
+ssystem md5 at end=545a51ef76294891579a1fc2fe13792b
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+      6 CLEAN

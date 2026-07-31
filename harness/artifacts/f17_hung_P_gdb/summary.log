@@ -1,0 +1,32 @@
+==== B7 HUNT [gdb] batch start 2026-07-31T12:25:36+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/f17_hung_P_gdb append=0 cyc0=0 ====
+BIN mtime=2026-07-31 11:48:32.897729245 +0200  code HEAD=550b3f9f  harness HEAD=3604b19
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+composed-body axis: B7_ROVERS=8  scene=/home/claude/.spacecrafter/modularSystem/SolarSystem.ini md5=0718c9015eaea6bc103c541209bf4d0a  scene_pre_existed=0
+host at batch start: loadavg=16.89 17.55 15.76  memavail=10,9GiB
+batch teardowns: 6  (cycle ids 1..6)
+cyc 1 qda: *** *** FIRE *** *** segv=1 abrt=0 frame0=[#0  BufferMgr::releaseBuffer (this=0x55555cb7be40) at /home/claude/spacecrafter/src/Entity]
+     see /home/claude/spacecrafter/claude/harness/artifacts/f17_hung_P_gdb/gdb_001_qda.log
+cyc 2 qdaterm: *** *** FIRE *** *** segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]
+     see /home/claude/spacecrafter/claude/harness/artifacts/f17_hung_P_gdb/gdb_002_qdaterm.log
+cyc 3 qda: *** *** FIRE *** *** segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]
+     see /home/claude/spacecrafter/claude/harness/artifacts/f17_hung_P_gdb/gdb_003_qda.log
+cyc 4 qdaterm: *** *** FIRE *** *** segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]
+     see /home/claude/spacecrafter/claude/harness/artifacts/f17_hung_P_gdb/gdb_004_qdaterm.log
+cyc 5 qda: *** *** FIRE *** *** segv=1 abrt=0 frame0=[#0  BufferMgr::releaseBuffer (this=0x55555cb7bf00) at /home/claude/spacecrafter/src/Entity]
+     see /home/claude/spacecrafter/claude/harness/artifacts/f17_hung_P_gdb/gdb_005_qda.log
+cyc 6 qdaterm: *** *** FIRE *** *** segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]
+     see /home/claude/spacecrafter/claude/harness/artifacts/f17_hung_P_gdb/gdb_006_qdaterm.log
+==== B7 HUNT [gdb] batch done 2026-07-31T12:29:15+02:00 ====
+host at batch end: loadavg=15.78 17.07 15.99  memavail=11,2GiB
+composed scene removed (user dir restored to shipped default)
+ssystem md5 at end=545a51ef76294891579a1fc2fe13792b
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+      6 FIRE
+*** FIRE ROWS ***
+1,qda,new,SIGINT,sig,14,FIRE,"segv=1 abrt=0 frame0=[#0  BufferMgr::releaseBuffer (this=0x55555cb7be40) at /home/claude/spacecrafter/src/Entity]",8,16,18.71
+2,qdaterm,new,SIGTERM,sig,13,FIRE,"segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]",8,8,18.27
+3,qda,new,SIGINT,sig,13,FIRE,"segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]",8,8,16.63
+4,qdaterm,new,SIGTERM,sig,13,FIRE,"segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]",8,8,16.71
+5,qda,new,SIGINT,sig,14,FIRE,"segv=1 abrt=0 frame0=[#0  BufferMgr::releaseBuffer (this=0x55555cb7bf00) at /home/claude/spacecrafter/src/Entity]",8,16,16.38
+6,qdaterm,new,SIGTERM,sig,14,FIRE,"segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]",8,8,15.78

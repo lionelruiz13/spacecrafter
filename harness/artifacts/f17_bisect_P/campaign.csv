@@ -1,0 +1,7 @@
+cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1
+1,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,16,15.49
+2,qdaterm,new,SIGTERM,sig,12,FIRE,"rc=139 SIGSEGV",8,8,15.87
+3,qda,new,SIGINT,sig,12,FIRE,"rc=139 SIGSEGV",8,16,15.53
+4,qdaterm,new,SIGTERM,sig,13,FIRE,"rc=139 SIGSEGV",8,8,15.51
+5,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,8,16.20
+6,qdaterm,new,SIGTERM,sig,12,FIRE,"rc=139 SIGSEGV",8,8,15.42

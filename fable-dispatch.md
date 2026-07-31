@@ -1021,6 +1021,18 @@ corrected: it was written, then destroyed by the same edit.]*
   the llvmpipe run reproduces exactly that stack by starving the same path. Binary pair
   for (iii) built and stated (`f17_hung/PREDICTIONS.txt`, both theories + predictions
   committed BEFORE the runs). Next: arms P/R interleaved, N=54 each, pre-warmed load.
+- **WIP (2026-07-31, F17 ckpt4) — THE HUNT CAUGHT A FIRE, AND IT IS F16's:** the (iii)
+  arms did not settle a HUNG, they produced **SIGSEGV on 6 of 6 reload-race cycles** on
+  the delivered binary and **0 of 6** on the §11.122 pre-fix one, same chunks, same
+  pre-warmed load, interleaved (`f17_hung_P` / `f17_hung_R`, 22 cycles each so far).
+  **Attributed single-variable**: the delivered source with ONLY `virtual ~BodyModule()`
+  reverted is **6/6 CLEAN** where the delivered binary is **12/12 plain + 6/6 gdb FIRE**
+  (`f17_bisect_noVirt` vs `f17_bisect_P`/`f17_hung_P_gdb`; p = 0.0011). Two faces, both
+  captured: `s_texture::forceUnload` (main.cpp:375, AFTER `app.reset()`) destroying ring
+  textures into a dead `BufferMgr` — §5.55's shape exactly — and the DRAWING thread
+  recording `Ojm::drawShadow` with buffers the reload released. Needs composed OJM
+  bodies: K=0 under the same load is 6/6 clean. Full record
+  `f17_hung/FIRE_ATTRIBUTION.txt`. Next: arms to N=54, then §5 rows + entry.
 
 ### F18 — G4-coherence batch: §5.52 mid-band surface + §5.54 threshold authority + §5.53 level step  [M–L]
 - **Row / recorded:** §5.52 · §5.53 · §5.54 (all opened §11.123(g); full rows at

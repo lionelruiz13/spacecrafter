@@ -1,0 +1,47 @@
+F17 — the reload-teardown SIGSEGV: measurement tables (INTENT §11.125). 2026-07-31.
+
+All rows below: full §11.95 mix or the 6-cycle qda mix (f17_qda_mix.txt), B7_ROVERS as
+stated, plain mode unless noted, pre-warmed stress load (loadavg band 15.4-18.7,
+recorded per teardown in each campaign.csv), frozen pair asserted every cycle.
+
+== A. THE ARM PAIR, interleaved in chunks of 11 (full mix, K=8) ==
+binary                                     N        outcome    fires (all in the reload-race class)
+ARM P  ebb41ab2  (delivered)               22       6 FIRE     qda x4, qdaterm x2 — 6 of the 6 qda-class cycles
+ARM R  5a8881ff  (§11.122 pre-fix)        22       0 FIRE     0 of its 6 qda-class cycles
+Fisher exact, one-sided, on the qda-class subset (6/6 vs 0/6): p = 1/C(12,6) = 0.0011.
+Non-qda cycles: 16/16 clean on P, 16/16 clean on R.
+
+== B. SINGLE-VARIABLE BISECT (this is the attribution) ==
+Same mix FILE, same mode, same load band, same session, 15 minutes apart. The two
+binaries differ by exactly the 14 lines commit 0dd0a938 added to BodyModule.hpp
+(`virtual ~BodyModule() = default;` + its comment) — built from the DELIVERED source
+with only that file reverted to a958c05e.
+binary                                         N      outcome
+delivered ebb41ab2 (§5.51 present)            6      6 FIRE  rc=139 SIGSEGV  [f17_bisect_P]
+delivered minus §5.51 (BodyModule.hpp only)   6      6 CLEAN rc=0          [f17_bisect_noVirt]
+plus the gdb arm on the delivered binary, same mix file: 6 FIRE / 6 [f17_hung_P_gdb].
+Delivered binary total in this class today: 12/12 plain + 6/6 gdb = 18 fires, 18 cycles.
+
+== C. WHAT THE TRIGGER NEEDS (both ways again) ==
+delivered, K=8 composed OJM rovers, under load 6      6 FIRE  [f17_bisect_P]
+delivered, K=0 (shipped scene), under load     6      6 CLEAN [f17_scope_K0]
+delivered, K=0, QUIET host (F16, §11.124(g))  14     14 CLEAN (of its 54-cycle batch)
+So the load is not sufficient and the reload is not sufficient: the fire needs bodies
+whose modules own OJM/texture resources, destroyed by a reload, with the teardown
+signal arriving 0.05 s later.
+
+== D. CAPTURED STACKS (gdb arm, b7_hunt_probe.gdb) ==
+FACE A — 2 of 6 cycles, and the one that names the site:
+  #0 BufferMgr::releaseBuffer            EntityCore/Core/BufferMgr.cpp:113
+  #1 Texture::detach                     EntityCore/Resource/Texture.cpp:299
+  #3 Texture::~Texture                   EntityCore/Resource/Texture.cpp:229
+  #11 vector<unique_ptr<Texture>>::clear  on s_texture::releaseTexture
+  #13 s_texture::forceUnload             tools/s_texture.cpp:570
+  #14 main                               main.cpp:375
+FACE B — 4 of 6 cycles, the DRAWING thread:
+  #0-#3 libVkLayer_khronos_validation.so
+  #4 VertexArray::bindGlobal             EntityCore/Resource/VertexArray.hpp:39
+  #5 Ojm::drawShadow                     ojmModule/ojm.cpp:185
+  #6 ShadowService::record               experimentalModule/ShadowService.cpp:412
+  #8 DrawHelper::submit                  tools/draw_helper.cpp:483
+  #9 DrawHelper::mainloop                tools/draw_helper.cpp:100

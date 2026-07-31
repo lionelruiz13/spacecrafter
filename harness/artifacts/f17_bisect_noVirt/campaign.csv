@@ -1,0 +1,7 @@
+cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1
+1,qda,new,SIGINT,sig,13,CLEAN,"rc=0",8,16,17.74
+2,qdaterm,new,SIGTERM,sig,14,CLEAN,"rc=0",8,16,16.78
+3,qda,new,SIGINT,sig,12,CLEAN,"rc=0",8,16,16.21
+4,qdaterm,new,SIGTERM,sig,12,CLEAN,"rc=0",8,16,16.03
+5,qda,new,SIGINT,sig,13,CLEAN,"rc=0",8,16,15.89
+6,qdaterm,new,SIGTERM,sig,13,CLEAN,"rc=0",8,16,15.86

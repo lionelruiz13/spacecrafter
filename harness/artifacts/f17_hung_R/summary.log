@@ -1,0 +1,48 @@
+==== B7 HUNT [plain] batch start 2026-07-31T12:04:26+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/f17_hung_R append=0 cyc0=0 ====
+BIN mtime=2026-07-31 11:50:23.628718535 +0200  code HEAD=550b3f9f  harness HEAD=3604b19
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+composed-body axis: B7_ROVERS=8  scene=/home/claude/.spacecrafter/modularSystem/SolarSystem.ini md5=0718c9015eaea6bc103c541209bf4d0a  scene_pre_existed=0
+host at batch start: loadavg=16.98 15.72 10.28  memavail=10,9GiB
+batch teardowns: 11  (cycle ids 1..11)
+cyc 1 oldsig [old/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 2 qda [new/SIGINT] tcp=13s: CLEAN (rc=0)
+cyc 3 actsig [new/SIGINT] tcp=13s: CLEAN (rc=0)
+cyc 4 frsig [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 5 galsig [new/SIGINT] tcp=13s: CLEAN (rc=0)
+cyc 6 oldcmd [old/shutdown-cmd] tcp=12s: CLEAN (rc=0)
+cyc 7 qdaterm [new/SIGTERM] tcp=13s: CLEAN (rc=0)
+cyc 8 frcmd [new/shutdown-cmd] tcp=12s: CLEAN (rc=0)
+cyc 9 oldsig [old/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 10 qda [new/SIGINT] tcp=14s: CLEAN (rc=0)
+cyc 11 actquit [new/SIGQUIT] tcp=14s: CLEAN (rc=0)
+==== B7 HUNT [plain] batch done 2026-07-31T12:11:01+02:00 ====
+host at batch end: loadavg=17.63 17.17 12.88  memavail=11,5GiB
+composed scene removed (user dir restored to shipped default)
+ssystem md5 at end=545a51ef76294891579a1fc2fe13792b
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     11 CLEAN
+==== B7 HUNT [plain] batch start 2026-07-31T12:18:45+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/f17_hung_R append=1 cyc0=11 ====
+BIN mtime=2026-07-31 11:50:23.628718535 +0200  code HEAD=550b3f9f  harness HEAD=3604b19
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+composed-body axis: B7_ROVERS=8  scene=/home/claude/.spacecrafter/modularSystem/SolarSystem.ini md5=0718c9015eaea6bc103c541209bf4d0a  scene_pre_existed=0
+host at batch start: loadavg=16.97 17.12 14.57  memavail=11,1GiB
+batch teardowns: 11  (cycle ids 12..22)
+cyc 12 actsig [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 13 frsig [new/SIGINT] tcp=13s: CLEAN (rc=0)
+cyc 14 galsig [new/SIGINT] tcp=13s: CLEAN (rc=0)
+cyc 15 oldsig [old/SIGINT] tcp=14s: CLEAN (rc=0)
+cyc 16 qda [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 17 actsig [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 18 oldcmd [old/shutdown-cmd] tcp=13s: CLEAN (rc=0)
+cyc 19 qdaterm [new/SIGTERM] tcp=14s: CLEAN (rc=0)
+cyc 20 frcmd [new/shutdown-cmd] tcp=12s: CLEAN (rc=0)
+cyc 21 oldsig [old/SIGINT] tcp=13s: CLEAN (rc=0)
+cyc 22 qda [new/SIGINT] tcp=12s: CLEAN (rc=0)
+==== B7 HUNT [plain] batch done 2026-07-31T12:25:19+02:00 ====
+host at batch end: loadavg=17.83 17.75 15.80  memavail=11,3GiB
+composed scene removed (user dir restored to shipped default)
+ssystem md5 at end=545a51ef76294891579a1fc2fe13792b
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+     22 CLEAN

@@ -1,0 +1,7 @@
+cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1
+1,qda,new,SIGINT,sig,14,FIRE,"segv=1 abrt=0 frame0=[#0  BufferMgr::releaseBuffer (this=0x55555cb7be40) at /home/claude/spacecrafter/src/Entity]",8,16,18.71
+2,qdaterm,new,SIGTERM,sig,13,FIRE,"segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]",8,8,18.27
+3,qda,new,SIGINT,sig,13,FIRE,"segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]",8,8,16.63
+4,qdaterm,new,SIGTERM,sig,13,FIRE,"segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]",8,8,16.71
+5,qda,new,SIGINT,sig,14,FIRE,"segv=1 abrt=0 frame0=[#0  BufferMgr::releaseBuffer (this=0x55555cb7bf00) at /home/claude/spacecrafter/src/Entity]",8,16,16.38
+6,qdaterm,new,SIGTERM,sig,14,FIRE,"segv=1 abrt=0 frame0=[#0  0x00007fffbef2f8dd in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so]",8,8,15.78
