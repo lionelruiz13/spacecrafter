@@ -617,6 +617,33 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 		}
 	}
 
+	// No orbit, no body. Every branch above either built one or returned -
+	// except the chain-of-responsibility fall-through just above, which logged
+	// and then carried ON with nullptr, while the very next statement
+	// dereferences it for ell_orbit and Body's update path dereferences it
+	// every frame. That is why a script pushing `coord_func = surface_point`
+	// (an orbit family only the experimental path knows) took the whole app
+	// down (INTENT §5.50). Skipping the body is what this path can honestly do
+	// with a declaration it cannot satisfy, and it costs nothing the author
+	// asked for: the push channel feeds BOTH paths from one map
+	// (SSystemFactory::addBody calls this, then the experimental loadBody), so
+	// the body still gets its chance there - which is where a surface_point
+	// body was meant to land in the first place.
+	// The valid values are spelled out rather than asked of the chain because
+	// no OrbitCreator exposes the keyword it handles; that duplicates their
+	// knowledge (the same duplication CameraAnchors' anchor diagnostic carries)
+	// and is named here rather than left silent.
+	if (orb == nullptr) {
+		cLog::get()->write("Body '" + englishName + "': could not build an orbit from coord_func = '"
+			+ funcname + "'. This body is NOT added to the old render path. Valid values here are "
+			"ell_orbit, comet_orbit, barycenter, still_orbit, location_orbit, earth_custom, "
+			"lunar_custom, and the *_special ephemeris functions. To fix: use one of those and "
+			"give it the keys it needs - or, for 'surface_point', nothing: that family belongs to "
+			"the experimental path, which reads this same declaration and will create the body "
+			"there.", LOG_TYPE::L_ERROR);
+		return;
+	}
+
 	if(param["coord_func"] == "ell_orbit"){
 		orbit_bounding_radius = orb->getBoundingRadius();
 	}
