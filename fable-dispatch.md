@@ -808,7 +808,11 @@ corrected: it was written, then destroyed by the same edit.]*
   emissive), spots/granulation as content later.
 - **Discriminating check:** near-Sun approach scene — disc no longer dark, limb
   darkening measurable radially; far-regime bit-inert (family gated off).
-- **WIP:** —
+- **WIP:** 2026-07-31 — PHASE 1 DONE: design note `claude/b12-design.md` committed
+  (regime boundary, family shape, I4 homes, rejected alts, veto points V1–V4,
+  D11 budget, D9 story = no new product surface in the slice; no STOP — D1–D4 are
+  content-slice decisions, none blocks the slice). Next: Phase 2 implementation
+  (PhotosphereModule + family + loader under MESH, near list only).
 
 ---
 
