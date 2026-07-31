@@ -74,6 +74,7 @@ util/server_standalone/sender_client
 # Claude Code
 build-claude
 build-asan
+build-tsan
 .claude
 claude
 artifacts
