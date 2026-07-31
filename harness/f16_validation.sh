@@ -60,6 +60,10 @@ POSCONTROL="${POSCONTROL:-0}"
 OUT=${1:-$HERE/artifacts/f16_validation_$ARM}
 CFG=~/.spacecrafter/config.ini
 mkdir -p "$OUT"
+# ABSOLUTE, always: the app's cwd is ~/.spacecrafter, so a relative filename
+# handed to `body action screenshot` resolves THERE and the write fails on a
+# missing directory - a witness that cannot succeed (measured 2026-07-31).
+OUT=$(cd "$OUT" && pwd)
 rm -f "$OUT"/*.png "$OUT"/*.log
 
 MD5_REF=$(md5sum "$CFG" | cut -d' ' -f1)

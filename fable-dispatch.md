@@ -932,8 +932,11 @@ corrected: it was written, then destroyed by the same edit.]*
   shown able to fire, 0 VUID on both channels, rc=0 on the cmd AND sig arms with
   a completed mid-session reload). NEW **§5.55** (drawing the rotation axis once
   aborts the process at exit — deterministic, both ways, independent of the fix)
-  and **§5.56** recorded, both record-don't-fix. Next: native N≥50 quiet batch,
-  then §5.50.
+  and **§5.56** recorded, both record-don't-fix. ckpt3 — §5.50 bail-out landed
+  (code `ebb41ab2`), both ways: pre-fix rc=139 SIGSEGV on the row's verbatim
+  repro, post-fix rc=0 + actionable warn + skipped on old / created on new
+  (dual_dump witness), controls green incl. b24_screen A1–A5. Next: native N≥50
+  quiet batch on the delivered binary, then the rest of the battery + §11.124.
 
 ### F17 — B7-hunt-4: the sanitizer mix + the HUNG settle  [M–L]
 - **Row / recorded:** B7 (§13.B) · §11.122(m) verbatim: *"run the ASan tree (83 s to

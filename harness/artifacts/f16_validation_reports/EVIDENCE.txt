@@ -34,8 +34,17 @@ RUN LEDGER  (term = 'terminate called' lines; layer = loader insert lines;
   f16_noaxis_prefix           pre     axis OFF only              0  0    1     0    0
   (pre = a958c05e, post = 0dd0a938; 'full' = orbits/satellite orbits/trails/
    grid/star lines/atmosphere on, Saturn tracked at fov 10, Earth at 200 km,
-   three screenshots, then `body action reload` completed — confirmed in the
-   log — then the teardown.)
+   then `body action reload` completed — confirmed in the log — then the
+   teardown.)
+  CORRECTION, recorded rather than quietly fixed: these runs also COMMANDED
+  three screenshots, and not one of them was written. The outdir was passed
+  relative, the app's cwd is ~/.spacecrafter, so the path resolved to a
+  directory that does not exist and the write failed silently. No conclusion
+  above rests on them (the layer counts and exit codes do not need a shot, and
+  the modules draw whether or not anyone captures them) — but the shots are NOT
+  evidence that these runs drew, and are not claimed as such. The script now
+  absolutises the outdir; f16_s550_postfix/shot_after_push.png is a written
+  witness from the same fix, and the drawn-rover control is b24_screen.
 
 WHAT THE LEDGER SAYS
 (a) §5.51's validation half is GREEN: with the axis flag off, the post-fix
