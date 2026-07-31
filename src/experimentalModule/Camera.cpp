@@ -135,6 +135,50 @@ Mat4f Camera::renderViewRotation() const
     return viewOffsetEyeRotation().multiplyFast(viewRotation());
 }
 
+// THE view matrix this camera's CURRENT parameters describe: eye <- the
+// reference's accumulated-equatorial frame. update() hands exactly this to
+// dispatchUpdate, so `reference->getObservedPosition()` is a COPY of its
+// translation, republished once per frame.
+//
+// It is a function and not only a stored result because the copy is a
+// per-frame SNAPSHOT and the parameters are not: anything the camera does
+// between two updates (a descent, a moveRel, a look) changes the geometry
+// while the snapshot still describes where the eye was at the last dispatch.
+// Reading the snapshot back was §11.108(e)'s measured breach — ten
+// `camera action descend` in ONE frame all saw the same reference position
+// and compounded LINEARLY (x0.9) instead of geometrically (0.99^10), a D8
+// use-site-barrier violation reachable from any script or the TCP channel.
+// Consumers that need the reference in the eye frame ask HERE (I2: the
+// composition is written once, in this function, and every reader of it is
+// exact by construction rather than by cadence).
+Mat4f Camera::viewMat() const
+{
+    // Z body_axis
+    // X statique, Y et Z bougent avec alt/az
+    // (The 2026 Moon-divergence note that lived here is resolved: the delta was
+    //  EMB wiring + per-hop tilts + this longitude sign - INTENT.md 11.14,
+    //  harness/predict.py carries the measurements.)
+    // renderViewRotation() == viewRotation() unless the B17 view offset is
+    // active (armed + non-zero); the offset is a render-only pitch (see
+    // Camera.hpp) applied downstream of tracking / sky-lock, exactly as old
+    // applied it in the navigator stage below those.
+    Mat4f mat{renderViewRotation()};
+    if (freeMode) {
+        mat.multiplyTranslation(position);
+    } else {
+        mat.multiplyTranslation(Vec3f(0, 0, -distance));
+        // -longitude: longitude is east-positive (data/UI convention). Measured
+        // against the old path (harness 2026-07-11): with +longitude the
+        // observer azimuth in the Earth frame was axisRot - lon, old (exact by
+        // its own composition) is sidereal + lon. The setBoundToSurface
+        // transitions were already consistent with the negative sign.
+        mat = mat.multiplyFast(Mat4f::xrotation(latitude-M_PI_2)).multiplyFast(Mat4f::zrotation(-longitude));
+    }
+    if (boundToSurface)
+        mat = mat.multiplyFast(reference->computeSurfaceToBody());
+    return mat;
+}
+
 void Camera::setViewOffset(double offset)
 {
     // The [-0.5,0.5] clamp lives in the ONE sink Core::setViewOffset (both §2(c)
@@ -372,6 +416,16 @@ void Camera::update(double jd, float deltaTime)
     // single per-frame entry point of the new path - before any body update
     // runs (ModularBody::deltaTime contract).
     ModularBody::deltaTime = deltaTime * 1000.f;
+    // §5.32: the reference is the ONE node dispatchUpdate can skip update()
+    // for, and every consumer below reads its spin and its reach with no drawn
+    // gate — the bound placement (placementRotation / the tail of this
+    // function), the persistent longitude conversions of setBoundToSurface /
+    // setFreeMode, and findBetterReference's threshold. Bring both to THIS
+    // frame's date here, before the first of them: without it the camera
+    // composes on the last frame the reference happened to be drawn on, which
+    // is one frame ago at best and unbounded when the observer is not looking
+    // at its own reference.
+    reference->refreshFrameState(jd);
     // Latitude interception (see fold()): keep the zenith-frame view
     // direction across observer latitude moves - old-mount parity. The
     // in-flight view plan lives in the param frame; re-express its endpoints.
@@ -459,29 +513,7 @@ void Camera::update(double jd, float deltaTime)
         else
             lockedSkyRot = viewRotation().multiplyFast(placementRotation());
     }
-    // Z body_axis
-    // X statique, Y et Z bougent avec alt/az
-    // (The 2026 Moon-divergence note that lived here is resolved: the delta was
-    //  EMB wiring + per-hop tilts + this longitude sign - INTENT.md 11.14,
-    //  harness/predict.py carries the measurements.)
-    // renderViewRotation() == viewRotation() unless the B17 view offset is
-    // active (armed + non-zero); the offset is a render-only pitch (see
-    // Camera.hpp) applied downstream of tracking / sky-lock, exactly as old
-    // applied it in the navigator stage below those.
-    Mat4f mat{renderViewRotation()};
-    if (freeMode) {
-        mat.multiplyTranslation(position);
-    } else {
-        mat.multiplyTranslation(Vec3f(0, 0, -distance));
-        // -longitude: longitude is east-positive (data/UI convention). Measured
-        // against the old path (harness 2026-07-11): with +longitude the
-        // observer azimuth in the Earth frame was axisRot - lon, old (exact by
-        // its own composition) is sidereal + lon. The setBoundToSurface
-        // transitions were already consistent with the negative sign.
-        mat = mat.multiplyFast(Mat4f::xrotation(latitude-M_PI_2)).multiplyFast(Mat4f::zrotation(-longitude));
-    }
-    if (boundToSurface)
-        mat = mat.multiplyFast(reference->computeSurfaceToBody());
+    const Mat4f mat = viewMat();
     lastDispatchedMat = mat; // harness: dump what actually ran (INTENT 11.14a)
     // harness: absolute (root-aligned) look direction (INTENT 11.61, B13). `mat`
     // is eye <- the reference's accumulated-equatorial frame; multiplying by the
@@ -851,7 +883,10 @@ void Camera::descend(float coef)
     // velocity parity, but a descent that has to reach the ground needs the
     // live position). Cast origin + s·(0,0,−1), take the near hit, and move a
     // (1−coef) fraction of the way to it; update()'s R4 clamp holds the floor.
-    const Vec3f C = reference->getObservedPosition();
+    // LIVE geometry, from this camera's own parameters (viewMat) and not from
+    // the reference's per-frame cache: N descents inside one frame must
+    // compound like N descents spread over N frames (§5.32/§11.108(e)).
+    const Vec3f C = viewMat().getTranslation();
     const float g = reference->getScaledGroundRadius();
     const float len = C.length();
     float alt = len - g;                  // live radial altitude above the ground

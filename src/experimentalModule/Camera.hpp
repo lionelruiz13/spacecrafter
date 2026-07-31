@@ -328,6 +328,13 @@ private:
     // identical to the pre-B17 path (I2: viewRotation() is the sole composition
     // authority; this mirrors it with exactly one added factor).
     Mat4f renderViewRotation() const;
+    // THE view matrix (eye <- the reference's accumulated-equatorial frame)
+    // this camera's CURRENT parameters describe — what update() hands to
+    // dispatchUpdate, and therefore what the reference's `mat` (and so
+    // getObservedPosition()) is a once-per-frame COPY of. Every consumer that
+    // needs the reference's geometry in the eye frame BETWEEN two updates asks
+    // here rather than reading that copy back (§5.32, Camera.cpp).
+    Mat4f viewMat() const;
     // The view offset as an eye-space rotation R' (mat_render == R'·mat_free);
     // identity when inert. Both the render composition and the tracking
     // feedback-undo use it (Camera.cpp).

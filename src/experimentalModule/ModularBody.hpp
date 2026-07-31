@@ -981,6 +981,29 @@ public:
     // 1+4 times re-converges the seed - and it does it for the SUBTREE, because
     // every parked descendant carries its own seed.
     void useNow();
+    //! Bring the per-frame DERIVED state (spin phase + reach) to `jd` for a
+    //! consumer that is NOT the draw walk (§5.32).
+    //!
+    //! `update()` writes both, and for every body the walk evaluates that is
+    //! fresh by construction — drawn iff visible iff updated this frame. The
+    //! ONE node for which it is not is the CAMERA REFERENCE: dispatchUpdate
+    //! skips `update()` entirely when the reference is not visible (looking
+    //! away from it, or too far to subtend the cull cone — ModularBody.cpp,
+    //! the `else` of `if (body->isVisible)`), while the camera reads its spin
+    //! (`computeSurfaceToBody`, the bound placement AND the persistent
+    //! longitude conversions) and its reach (`findBetterReference`) with no
+    //! drawn gate at all. Left alone, both freeze at whatever frame the
+    //! reference was last drawn on.
+    //!
+    //! This only moves WHEN the two values are evaluated, never HOW: the spin
+    //! goes through `computeAxisRotation` and the reach through `updateReach`,
+    //! the same single authorities `update()` calls (I2). Idempotent for a
+    //! visible reference — `update()` recomputes both from the same `jd` and
+    //! the same child positions later in the same frame.
+    inline void refreshFrameState(double jd) {
+        axisRotation = computeAxisRotation(jd);
+        updateReach();
+    }
     // Deliver the unhide edge to every module of this subtree (see the .cpp).
     void resumeModulesAfterHidden();
 
