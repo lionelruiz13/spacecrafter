@@ -212,6 +212,16 @@ App::App( SDLFacade* const sdl )
 
 App::~App()
 {
+	// Stop the drawing worker FIRST. It may still be RECORDING the last frame
+	// the main loop submitted - waitFrame only ever waited for the frame
+	// BEFORE the current one, so leaving the loop always left one in flight,
+	// and since INTENT 5.59 a teardown can also end that wait with the frame
+	// deliberately unfinished. Everything this destructor destroys is
+	// referenced by those commands (bodies, modules, media, fonts), which is
+	// INTENT 5.58's precondition at the shutdown site: the release must not
+	// overtake the recording. Idempotent - ~Context stops it again.
+	if (context.helper)
+		context.helper->stop();
 	eventHandler->remove(Event::E_VIDEO);
 	eventHandler->remove(Event::E_CHANGE_OBSERVER);
 	eventHandler->remove(Event::E_CHANGE_ALTITUDE);
