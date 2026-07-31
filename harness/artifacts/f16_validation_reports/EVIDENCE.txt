@@ -1,0 +1,57 @@
+F16 (INTENT §11.124) — validation-layer leg of §5.51, and the §5.55 find
+Runs produced by harness/f16_validation.sh, 2026-07-31, quiet host, DISPLAY=:2.
+
+INSTRUMENT CHAIN — every link measured, because a link that cannot fail turns
+the reading into fiction (§11.44's rule):
+  1. layer LOADED     VK_LOADER_DEBUG=layer makes the loader print
+                      'Insert instance layer "VK_LAYER_KHRONOS_validation"'
+                      — present, 1 line, in ALL 9 runs below.
+  2. channel LIVE     The layer's own messages never reach stdout: VulkanMgr is
+                      built with redirectLog=cLog::writeECLog, so debugCallback
+                      output goes to ~/.spacecrafter/log/vulkan.log (copied into
+                      each run dir). Counting VUIDs in app.log alone would have
+                      read 0 forever — found by running the positive control,
+                      not by assuming.
+  3. channel CAN FIRE POSCONTROL=1 (VK_LAYER_ENABLES=VK_VALIDATION_FEATURE_
+                      ENABLE_BEST_PRACTICES_EXT) on this same app produced 27
+                      layer messages and 2 VUID lines in vulkan.log. Therefore
+                      the zeroes below are measurements.
+  4. buffering        app.log is a redirected FILE, hence block-buffered: no
+                      in-run grep of it means anything. All counts are post-exit.
+
+RUN LEDGER  (term = 'terminate called' lines; layer = loader insert lines;
+             vuid / msgs = counts in that run's vulkan.log)
+
+  run                         binary  drive                    rc   term layer vuid msgs
+  f16_validation_pre_cmd      pre     full+reload, AXIS=on     134  1    1     -    -
+  f16_validation_post_cmd     post    full+reload, AXIS=off      0  0    1     0    0
+  f16_validation_post_sig     post    full+reload, AXIS=off      0  0    1     0    0
+  f16_validation_poscontrol   post    flags, no reload, AXIS=on 134  1    1     2   27
+  f16_validation_gdb          post    full+reload, AXIS=on     SEGV 0    1     0    0
+  f16_axis_axis               post    axis ON  only            134  1    1     0    0
+  f16_axis_noaxis             post    axis OFF only              0  0    1     0    0
+  f16_axis_prefix             pre     axis ON  only            134  1    1     0    0
+  f16_noaxis_prefix           pre     axis OFF only              0  0    1     0    0
+  (pre = a958c05e, post = 0dd0a938; 'full' = orbits/satellite orbits/trails/
+   grid/star lines/atmosphere on, Saturn tracked at fov 10, Earth at 200 km,
+   three screenshots, then `body action reload` completed — confirmed in the
+   log — then the teardown.)
+
+WHAT THE LEDGER SAYS
+(a) §5.51's validation half is GREEN: with the axis flag off, the post-fix
+    binary tears down at rc=0 through BOTH entries (shutdown command and
+    SIGINT), after a mid-session reload that destroyed and rebuilt every body
+    and therefore ran the 14 subclass destructors under a LIVE device, and
+    emits 0 VUID / 0 validation messages of any severity on a channel proven
+    able to carry 27.
+(b) §5.55 is NOT §5.51: the axis-only pair is identical but for one command
+    and flips 134 <-> 0 on BOTH binaries, 2/2 each. The pre-fix binary aborts
+    exactly as the post-fix one does.
+(c) The same site fires as SIGABRT natively and as SIGSEGV under gdb
+    (f16_validation_gdb/app.log:2841 + POST-RUN STACK) — one freed-object walk,
+    two faces, which is why the §11.15d hunt has found it so hard to pin: it
+    was never in the hunted mix at all, because nothing there draws an axis.
+
+Committed here: this file, the gdb run's app.log (carries the backtrace), and
+app.log/vulkan.log for the two DoD arms, the positive control and the axis pair.
+Screenshots are not committed.

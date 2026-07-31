@@ -925,11 +925,15 @@ corrected: it was written, then destroyed by the same edit.]*
   `surface_point` body still draws (b24_screen rovers = the standing control); a valid
   push-channel body still lands. Battery green (b24_equivalence, b25_galactic,
   b40_parity, b4_anchors, scene E, f15_persist); frozen md5 in==out.
-- **WIP:** 2026-07-31 ckpt1 — §5.51 fix landed (code `0dd0a938`), ASan both-ways
+- **WIP:** 2026-07-31 ckpt2 — §5.51 fix landed (code `0dd0a938`). ASan both-ways
   GREEN (373/746/373 → 0/0/0, rc=0, no new class; `f16_asan_prefix` /
   `f16_asan_postfix`; instrument setting `ASAN_OPTIONS=halt_on_error=0`, which
-  §11.122 did not record). Next: validation-layer 0-VUID leg, native N≥50 quiet
-  batch, then §5.50.
+  §11.122 did not record). Validation leg GREEN (layer positively loaded AND
+  shown able to fire, 0 VUID on both channels, rc=0 on the cmd AND sig arms with
+  a completed mid-session reload). NEW **§5.55** (drawing the rotation axis once
+  aborts the process at exit — deterministic, both ways, independent of the fix)
+  and **§5.56** recorded, both record-don't-fix. Next: native N≥50 quiet batch,
+  then §5.50.
 
 ### F17 — B7-hunt-4: the sanitizer mix + the HUNG settle  [M–L]
 - **Row / recorded:** B7 (§13.B) · §11.122(m) verbatim: *"run the ASan tree (83 s to
