@@ -1,0 +1,5 @@
+cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1
+1,pcaxis,new,shutdown-cmd,cmd,11,CLEAN,"rc=0",0,0,3.56
+2,pcaxissig,new,SIGINT,sig,11,CLEAN,"rc=0",0,0,3.90
+3,pcaxis,new,shutdown-cmd,cmd,11,CLEAN,"rc=0",0,0,3.59
+4,pcaxissig,new,SIGINT,sig,12,CLEAN,"rc=0",0,0,3.35

@@ -1,0 +1,5 @@
+cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1
+1,pcaxis,new,shutdown-cmd,cmd,11,FIRE,"rc=134 SIGABRT terminate-called=1",0,0,3.26
+2,pcaxissig,new,SIGINT,sig,11,FIRE,"rc=139 SIGSEGV",0,0,3.19
+3,pcaxis,new,shutdown-cmd,cmd,11,FIRE,"rc=134 SIGABRT terminate-called=1",0,0,3.27
+4,pcaxissig,new,SIGINT,sig,11,FIRE,"rc=134 SIGABRT terminate-called=1",0,0,2.99

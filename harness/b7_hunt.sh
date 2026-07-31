@@ -187,6 +187,13 @@ run_cycle() {
     # measured it on (2/2 on each of two binaries). NOT part of any hunted mix:
     # a known deterministic fire in the mix would make every cycle a FIRE.
     pcaxis)  path=new; teardown=cmd ;;
+    # Same drive, the OTHER teardown entry (2026-07-31, F19). §5.55's fix moves
+    # the release into ~Context, which both entries reach — but they reach it
+    # through different callers (the command sets ALIVE false from the main
+    # loop; the signal sets it from a handler), so a fix verified on one entry
+    # is not verified on the other. §11.124(e) measured both; this keeps both
+    # measurable through the same classifier.
+    pcaxissig) path=new; teardown=sig; sig=INT ;;
     *)       path=new; teardown=cmd ;;
   esac
   local entry; entry=$([ "$teardown" = sig ] && echo "SIG$sig" || echo "shutdown-cmd")
@@ -272,7 +279,7 @@ run_cycle() {
     # §5.55 positive control: the drive is f16_validation.sh's own STEPS=axis
     # probe verbatim (the one that measured rc=134 / rc=0 one command apart),
     # so what is controlled here is the DETECTOR, not a new phenomenon.
-    pcaxis) tcp_send "flag experimental_path on" "timerate rate 0" "meteors zhr 0" \
+    pcaxis*) tcp_send "flag experimental_path on" "timerate rate 0" "meteors zhr 0" \
                      "date jday 2461234.0" "select planet Earth" "flag track_object on" \
                      "flag planets_axis on"
             sleep 4

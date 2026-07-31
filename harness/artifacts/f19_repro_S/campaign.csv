@@ -1,0 +1,12 @@
+1,qda,new,SIGINT,sig,13,CLEAN,"rc=0",8,16,17.56
+2,qdaterm,new,SIGTERM,sig,13,CLEAN,"rc=0",8,16,17.71
+3,qda,new,SIGINT,sig,12,CLEAN,"rc=0",8,16,18.09
+4,qdaterm,new,SIGTERM,sig,14,CLEAN,"rc=0",8,16,17.80
+5,qda,new,SIGINT,sig,12,FIRE,"rc=139 SIGSEGV",8,8,17.55
+6,qdaterm,new,SIGTERM,sig,12,CLEAN,"rc=0",8,16,17.49
+7,qda,new,SIGINT,sig,12,CLEAN,"rc=0",8,16,17.45
+8,qdaterm,new,SIGTERM,sig,12,CLEAN,"rc=0",8,16,18.25
+9,qda,new,SIGINT,sig,13,CLEAN,"rc=0",8,16,18.65
+10,qdaterm,new,SIGTERM,sig,13,CLEAN,"rc=0",8,16,19.00
+11,qda,new,SIGINT,sig,12,CLEAN,"rc=0",8,16,18.31
+12,qdaterm,new,SIGTERM,sig,13,CLEAN,"rc=0",8,16,17.03

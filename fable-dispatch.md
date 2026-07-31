@@ -1074,7 +1074,22 @@ corrected: it was written, then destroyed by the same edit.]*
   cadence is bit-inert (in-run A/B); battery green (b24_equivalence, b25_galactic,
   b40_parity, b4_anchors, scene E, f15_persist); frozen md5 in==out; concurrent-
   instance assert per §0.5.
-- **WIP:** —
+- **WIP:** 2026-07-31 ckpt3 — code `96a94a46`. **CLASS FIX LANDED AND MEASURED**:
+  `Context::onManagerTeardown` hooks run at the START of `~Context`;
+  `s_texture::forceUnload` moved out of `main()` into `~Context` as the terminal
+  drain (+3 containers nothing ever drained); AxisModule's file-static registers
+  its `uColor`; `Context::quiesceFrames()` (worker + device) called by
+  `reloadSystem` and `ModularBody::remove`; `~App` stops the drawing worker
+  before destroying anything. **§5.59's cancellation WITHDRAWN and 5.59 stays
+  OPEN**: measured over 3 arms / 60 loaded cycles, every cycle that entered the
+  abandon path died (3/3) where the untouched binary hangs it — the as-if bar
+  (I7) is not met and the residual is unattributed; a deterministic reproducer
+  (`f19_stall.sh`, 3-arm table 2/2 each) is delivered with the row.
+  Measured: reproducer **ARM T (delivered) 30 cycles → 0 FIRE, 29 CLEAN, 1 HUNG**
+  vs **ARM R (pre-fix, md5 `1155a0b5…`) 30 → 27 FIRE, 3 HUNG, 0 CLEAN**
+  (interleaved, load pre-warmed to ~16-19); §5.55 pcaxis pair **4/4 CLEAN both
+  entries** vs pre-fix **4/4 FIRE**. Next: validation leg, ASan legs, quiet mix
+  N≥50, battery, §11.126.
 
 ### F18 — G4-coherence batch: §5.52 mid-band surface + §5.54 threshold authority + §5.53 level step  [M–L]
 - **Row / recorded:** §5.52 · §5.53 · §5.54 (all opened §11.123(g); full rows at

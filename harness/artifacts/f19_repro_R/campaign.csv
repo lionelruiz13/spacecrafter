@@ -1,0 +1,30 @@
+1,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,8,16.26
+2,qdaterm,new,SIGTERM,sig,13,FIRE,"rc=139 SIGSEGV",8,16,16.39
+3,qda,new,SIGINT,sig,12,FIRE,"rc=139 SIGSEGV",8,8,16.06
+4,qdaterm,new,SIGTERM,sig,13,FIRE,"rc=139 SIGSEGV",8,8,15.73
+5,qda,new,SIGINT,sig,12,FIRE,"rc=139 SIGSEGV",8,8,16.54
+6,qdaterm,new,SIGTERM,sig,14,HUNG,"no-exit-in-45s",8,8,17.44
+7,qda,new,SIGINT,sig,12,HUNG,"no-exit-in-45s",8,8,18.27
+8,qdaterm,new,SIGTERM,sig,13,FIRE,"rc=139 SIGSEGV",8,16,18.35
+9,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,8,17.99
+10,qdaterm,new,SIGTERM,sig,13,FIRE,"rc=139 SIGSEGV",8,16,19.36
+11,qda,new,SIGINT,sig,14,FIRE,"rc=139 SIGSEGV",8,16,19.03
+12,qdaterm,new,SIGTERM,sig,12,FIRE,"rc=139 SIGSEGV",8,8,19.01
+13,qda,new,SIGINT,sig,12,FIRE,"rc=139 SIGSEGV",8,8,18.66
+14,qdaterm,new,SIGTERM,sig,12,FIRE,"rc=139 SIGSEGV",8,16,18.40
+15,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,16,17.66
+16,qdaterm,new,SIGTERM,sig,13,FIRE,"rc=139 SIGSEGV",8,8,17.63
+17,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,16,17.83
+18,qdaterm,new,SIGTERM,sig,14,FIRE,"rc=139 SIGSEGV",8,16,18.54
+19,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,8,17.74
+20,qdaterm,new,SIGTERM,sig,14,FIRE,"rc=139 SIGSEGV",8,8,18.01
+21,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,8,17.18
+22,qdaterm,new,SIGTERM,sig,12,FIRE,"rc=139 SIGSEGV",8,8,17.53
+23,qda,new,SIGINT,sig,12,FIRE,"rc=134 SIGABRT",8,16,17.87
+24,qdaterm,new,SIGTERM,sig,14,FIRE,"rc=139 SIGSEGV",8,8,18.03
+25,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,8,17.55
+26,qdaterm,new,SIGTERM,sig,12,FIRE,"rc=139 SIGSEGV",8,8,18.25
+27,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,16,17.74
+28,qdaterm,new,SIGTERM,sig,12,HUNG,"no-exit-in-45s",8,8,17.48
+29,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,16,17.52
+30,qdaterm,new,SIGTERM,sig,13,FIRE,"rc=139 SIGSEGV",8,16,18.07

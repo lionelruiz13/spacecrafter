@@ -1,0 +1,28 @@
+F19 / INTENT 11.126 - the 5.59 three-arm table (harness/f19_stall.sh)
+====================================================================
+ONE scratch binary (delivered source + one injection, NEVER COMMITTED); the
+arms differ by a runtime variable only. Injection: the drawing worker parks
+inside submit() 25 s after start with the frame's hasCompleted never set, and
+is released exactly when teardown closes the queue (SC_F19_HOLD). Witness that
+the regime was entered: the app's own frame-stall watchdog count INCREASES
+after arming (baseline recorded per run). Detector bound 45 s = the same one
+b7_hunt.sh calls HUNG.
+
+arm                     abandon  ~App worker stop  result (2 runs each)
+----------------------- -------- ----------------- --------------------------
+prefix_all / v3_prefix   off      off               HUNG, HUNG   (no exit in 45 s)
+ckpt1_appstop / v3_      on       off               rc=139 @2007 ms, rc=139 @2009 ms
+delivered / v3_delivered on       on                rc=0  @1005 ms, rc=0  @1007 ms
+
+Reading: the abandon does end the teardown-blocking wait (arms 2 and 3 exit in
+~1-2 s where arm 1 does not exit at all), and the shutdown-site worker stop is
+required for that exit to be clean. What this table does NOT show, and what the
+LOADED reproducer did, is the third condition: with all of it in place, every
+cycle that entered this regime under real load still died (3 of 3 across three
+arms / 60 cycles) - so the mechanism was withdrawn and 5.59 stays open. This
+table is kept because it is the reproducer 5.59 never had.
+
+Second injection flavour (SC_F19_SLEEP=<D>, the worker merely LATE by D s,
++ RELOAD=1 driving `body action reload` continuously): delivered arm exits rc=0
+after 20.07 s with D=20, i.e. the mid-session quiesce waits for the worker and
+then completes normally.

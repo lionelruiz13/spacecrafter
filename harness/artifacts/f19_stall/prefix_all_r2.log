@@ -1,0 +1,2066 @@
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mSDL init oki ![0m
+[1m[32m(Info ): [0m[37mWindows size is 1024x1024px[0m
+[1m[32m(Info ): [0m[37mVideo driver is  x11[0m
+[1m[32m(Info ): [0m[37mSDL_GetNumVideoDisplays(): 1[0m
+[1m[32m(Info ): [0m[37mSDL_GetNumDisplayModes:  1[0m
+[1m[32m(Info ): [0m[37mMode 0 bpp 24 SDL_PIXELFORMAT_RGB888 0 0[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mReading GPU(s) properties[0m
+[1m[32m(Info ): [0m[37mGPU selected[0m
+[37m===== Device info =====
+API Version : 1.4.312
+Driver Version : 580.568.0
+Vendor : NVIDIA
+Device : NVIDIA GeForce RTX 5090 (id = 11141)
+Device type : Discrete GPU[0m
+[37m===== Used device features =====
+--- Vulkan 1.0 features ---
+geometryShader : [92;1menabled[0m
+tessellationShader : [92;1menabled[0m
+sampleRateShading : [92;1menabled[0m
+wideLines : [92;1menabled[0m
+samplerAnisotropy : [92;1menabled[0m
+shaderFloat64 : [92;1menabled[0m
+[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30356 MiB	used : 12 MiB    	free : 30344 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5 MiB    	free : 45472 MiB[0m
+[1m[32m(Info ): [0m[37mAdvanced event enabled[0m
+Scaling : 0.5
+Viewport : (2048, -2048)
+Swapchain : (1024, 1024)
+Rect : (2048, 2048) offset=(0, 0)
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_str video:projection[0m
+[1m[32m(Info ): [0m[37mProjection mode: FISHEYE (type=0)[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_str video:rear_projection[0m
+[1m[32m(Info ): [0m[37mRear projection: false (enabled=0)[0m
+[1m[32m(Info ): [0m[37mInitializing Vulkan...[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 512 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30355 MiB	used : 12 MiB    	free : 30343 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mAllocate chunk of 1 MiB in GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30355 MiB	used : 13 MiB    	free : 30342 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 160 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30353 MiB	used : 173 MiB    	free : 30180 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'depth attachment'[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 1280 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30350 MiB	used : 1453 MiB    	free : 28897 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'Shadow Depth Buffer'[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 7 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30350 MiB	used : 1461 MiB    	free : 28889 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'Shadow Stencil Buffer'[0m
+[1m[36m(Debug): [0m[37mAllocate chunk of 256 MiB in GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30350 MiB	used : 1717 MiB    	free : 28633 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'Shadow Shape Buffer'[0m
+[1m[36m(Debug): [0m[37mBuild FrameBuffer 'self shadow' with size (16384, 16384)[0m
+[1m[36m(Debug): [0m[37mBuild FrameBuffer 'shadow tracer' with size (1280, 1280)[0m
+[1m[36m(Debug): [0m[37mBuild FrameBuffer 'shadow shape' with size (1280, 1280)[0m
+[1m[32m(Info ): [0m[37mBinding of 'main color 0' view implicitly call use() (safety fallback)[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30350 MiB	used : 1733 MiB    	free : 28617 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'main color 0'[0m
+[1m[32m(Info ): [0m[37mBinding of 'multisample color 0' view implicitly call use() (safety fallback)[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30350 MiB	used : 1861 MiB    	free : 28489 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'multisample color 0'[0m
+[1m[36m(Debug): [0m[37mBuild FrameBuffer 'main 0' with size (2048, 2048)[0m
+[1m[32m(Info ): [0m[37mBinding of 'main color 1' view implicitly call use() (safety fallback)[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30350 MiB	used : 1877 MiB    	free : 28473 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'main color 1'[0m
+[1m[32m(Info ): [0m[37mBinding of 'multisample color 1' view implicitly call use() (safety fallback)[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2005 MiB    	free : 28345 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'multisample color 1'[0m
+[1m[36m(Debug): [0m[37mBuild FrameBuffer 'main 1' with size (2048, 2048)[0m
+[1m[32m(Info ): [0m[37mBinding of 'main color 2' view implicitly call use() (safety fallback)[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2021 MiB    	free : 28329 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'main color 2'[0m
+[1m[32m(Info ): [0m[37mBinding of 'multisample color 2' view implicitly call use() (safety fallback)[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30350 MiB	used : 2149 MiB    	free : 28201 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 517 MiB    	free : 44960 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'multisample color 2'[0m
+[1m[36m(Debug): [0m[37mBuild FrameBuffer 'main 2' with size (2048, 2048)[0m
+[1m[36m(Debug): [0m[37mNo vertex entry defined for Pipeline "Use splash.vert.spv splash.frag.spv"[0m
+[1m[32m(Info ): [0m[37mBinding of 'splash/spacecrafter.png' view implicitly call use() (safety fallback)[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'splash/spacecrafter.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'splash/spacecrafter.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37mFinalizing Vulkan initialization...[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 256 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30348 MiB	used : 2149 MiB    	free : 28199 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 773 MiB    	free : 44704 MiB[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 1536 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30348 MiB	used : 2149 MiB    	free : 28198 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 2309 MiB    	free : 43168 MiB[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 682 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30348 MiB	used : 2149 MiB    	free : 28198 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 2991 MiB    	free : 42486 MiB[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 48 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30348 MiB	used : 2149 MiB    	free : 28198 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 512 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30348 MiB	used : 2661 MiB    	free : 27686 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
+[1m[36m(Debug): [0m[37mAllocate chunk of 1 MiB in GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30348 MiB	used : 2662 MiB    	free : 27685 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 128 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30348 MiB	used : 2790 MiB    	free : 27557 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 64 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30348 MiB	used : 2854 MiB    	free : 27493 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
+[1m[36m(Debug): [0m[37mAllocate chunk of 1 MiB in GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30348 MiB	used : 2855 MiB    	free : 27492 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 16 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30348 MiB	used : 2871 MiB    	free : 27476 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3039 MiB    	free : 42438 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'star FBO'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'Projected shadows'[0m
+[1m[32m(Info ): [0m[37mVulkan initialization completed[0m
+[1m[32m(Info ): [0m[37mAudio initialization successful[0m
+[1m[32m(Info ): [0m[37mGenerating EquiSphere took : 29ms[0m
+[1m[32m(Info ): [0m[37mSystem 'MilkyWay' uses centre-relative navigation by class default (datum_radius = ground_radius = 0): free-mode altitude is measured from its centre and free descent reaches the centre. To override, set datum_radius/ground_radius in data or run 'body name MilkyWay datum_radius <km>'.[0m
+[1m[32m(Info ): [0m[37mLoading body Sun[0m
+[1m[36m(Debug): [0m[37mBody 'Sun': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Mercury[0m
+[1m[36m(Debug): [0m[37mBody 'Mercury': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Venus[0m
+[1m[36m(Debug): [0m[37mBody 'Venus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Earth[0m
+[1m[36m(Debug): [0m[37mBody 'Earth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Moon[0m
+[1m[36m(Debug): [0m[37mBody 'Moon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mAdding Moon to Earth binary orbit.[0m
+[1m[32m(Info ): [0m[37mLoading body Mars[0m
+[1m[36m(Debug): [0m[37mBody 'Mars': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Phobos[0m
+[1m[36m(Debug): [0m[37mBody 'Phobos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading object Phobos[0m
+[1m[32m(Info ): [0m[37mSuccesfull loading model3D Phobos[0m
+[1m[32m(Info ): [0m[37mLoading body Deimos[0m
+[1m[36m(Debug): [0m[37mBody 'Deimos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading object Deimos[0m
+[1m[32m(Info ): [0m[37mSuccesfull loading model3D Deimos[0m
+[1m[32m(Info ): [0m[37mLoading body Jupiter[0m
+[1m[36m(Debug): [0m[37mBody 'Jupiter': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Metis[0m
+[1m[36m(Debug): [0m[37mBody 'Metis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Adrastea[0m
+[1m[36m(Debug): [0m[37mBody 'Adrastea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Amalthea[0m
+[1m[36m(Debug): [0m[37mBody 'Amalthea': rot_pole_w0 (IAU W0=231.67 deg, from the ICRF-equator node) converted to rot_rotation_offset 258.121552 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37mLoading body Thebe[0m
+[1m[36m(Debug): [0m[37mBody 'Thebe': rot_pole_w0 (IAU W0=8.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 29.457403 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Io[0m
+[1m[36m(Debug): [0m[37mBody 'Io': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Europa[0m
+[1m[36m(Debug): [0m[37mBody 'Europa': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Ganymede[0m
+[1m[36m(Debug): [0m[37mBody 'Ganymede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Callisto[0m
+[1m[36m(Debug): [0m[37mBody 'Callisto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Himalia[0m
+[1m[36m(Debug): [0m[37mBody 'Himalia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Elara[0m
+[1m[36m(Debug): [0m[37mBody 'Elara': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Carme[0m
+[1m[36m(Debug): [0m[37mBody 'Carme': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Pasiphae[0m
+[1m[36m(Debug): [0m[37mBody 'Pasiphae': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Lysithea[0m
+[1m[36m(Debug): [0m[37mBody 'Lysithea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Ananke[0m
+[1m[36m(Debug): [0m[37mBody 'Ananke': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Sinope[0m
+[1m[36m(Debug): [0m[37mBody 'Sinope': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Leda[0m
+[1m[36m(Debug): [0m[37mBody 'Leda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Saturn[0m
+[1m[36m(Debug): [0m[37mBody 'Saturn': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Pan[0m
+[1m[36m(Debug): [0m[37mBody 'Pan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Daphnis[0m
+[1m[36m(Debug): [0m[37mBody 'Daphnis': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
+[1m[32m(Info ): [0m[37mLoading body Prometheus[0m
+[1m[36m(Debug): [0m[37mBody 'Prometheus': rot_pole_w0 (IAU W0=296.14 deg, from the ICRF-equator node) converted to rot_rotation_offset 256.175446 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Pandora[0m
+[1m[36m(Debug): [0m[37mBody 'Pandora': rot_pole_w0 (IAU W0=162.92 deg, from the ICRF-equator node) converted to rot_rotation_offset 122.955437 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37mLoading body Epimetheus[0m
+[1m[36m(Debug): [0m[37mBody 'Epimetheus': rot_pole_w0 (IAU W0=293.87 deg, from the ICRF-equator node) converted to rot_rotation_offset 254.618652 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
+[1m[32m(Info ): [0m[37mLoading body Janus[0m
+[1m[36m(Debug): [0m[37mBody 'Janus': rot_pole_w0 (IAU W0=58.83 deg, from the ICRF-equator node) converted to rot_rotation_offset 18.439495 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Titan[0m
+[1m[36m(Debug): [0m[37mBody 'Titan': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/atm_gradient3.png[0m
+[1m[32m(Info ): [0m[37mLoading body Mimas[0m
+[1m[36m(Debug): [0m[37mBody 'Mimas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Enceladus[0m
+[1m[36m(Debug): [0m[37mBody 'Enceladus': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Dione[0m
+[1m[36m(Debug): [0m[37mBody 'Dione': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Tethys[0m
+[1m[36m(Debug): [0m[37mBody 'Tethys': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Rhea[0m
+[1m[36m(Debug): [0m[37mBody 'Rhea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Hyperion[0m
+[1m[36m(Debug): [0m[37mBody 'Hyperion': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Hyperion': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
+[1m[32m(Info ): [0m[37mLoading body Iapetus[0m
+[1m[36m(Debug): [0m[37mBody 'Iapetus': rot_pole_w0 (IAU W0=355.2 deg, from the ICRF-equator node) converted to rot_rotation_offset 261.467072 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37mLoading body Telesto[0m
+[1m[36m(Debug): [0m[37mBody 'Telesto': rot_pole_w0 (IAU W0=56.88 deg, from the ICRF-equator node) converted to rot_rotation_offset 24.588358 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Helene[0m
+[1m[36m(Debug): [0m[37mBody 'Helene': rot_pole_w0 (IAU W0=245.12 deg, from the ICRF-equator node) converted to rot_rotation_offset 205.606384 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Uranus[0m
+[1m[36m(Debug): [0m[37mBody 'Uranus': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Juliet[0m
+[1m[36m(Debug): [0m[37mBody 'Juliet': rot_pole_w0 (IAU W0=302.56 deg, from the ICRF-equator node) converted to rot_rotation_offset 307.635773 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Portia[0m
+[1m[36m(Debug): [0m[37mBody 'Portia': rot_pole_w0 (IAU W0=25.03 deg, from the ICRF-equator node) converted to rot_rotation_offset 30.123623 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Rosalind[0m
+[1m[36m(Debug): [0m[37mBody 'Rosalind': rot_pole_w0 (IAU W0=314.90 deg, from the ICRF-equator node) converted to rot_rotation_offset 319.999634 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Belinda[0m
+[1m[36m(Debug): [0m[37mBody 'Belinda': rot_pole_w0 (IAU W0=297.46 deg, from the ICRF-equator node) converted to rot_rotation_offset 302.530396 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Puck[0m
+[1m[36m(Debug): [0m[37mBody 'Puck': rot_pole_w0 (IAU W0=91.24 deg, from the ICRF-equator node) converted to rot_rotation_offset 96.381638 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Miranda[0m
+[1m[36m(Debug): [0m[37mBody 'Miranda': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Ariel[0m
+[1m[36m(Debug): [0m[37mBody 'Ariel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Umbriel[0m
+[1m[36m(Debug): [0m[37mBody 'Umbriel': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Titania[0m
+[1m[36m(Debug): [0m[37mBody 'Titania': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Oberon[0m
+[1m[36m(Debug): [0m[37mBody 'Oberon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Caliban[0m
+[1m[36m(Debug): [0m[37mBody 'Caliban': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Sycorax[0m
+[1m[36m(Debug): [0m[37mBody 'Sycorax': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Prospero[0m
+[1m[36m(Debug): [0m[37mBody 'Prospero': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Setebos[0m
+[1m[36m(Debug): [0m[37mBody 'Setebos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Neptune[0m
+[1m[36m(Debug): [0m[37mBody 'Neptune': rot_frame not declared, using derived default 'absolute_pole' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Naiad[0m
+[1m[36m(Debug): [0m[37mBody 'Naiad': rot_pole_w0 (IAU W0=254.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 230.775604 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Thalassa[0m
+[1m[36m(Debug): [0m[37mBody 'Thalassa': rot_pole_w0 (IAU W0=102.06 deg, from the ICRF-equator node) converted to rot_rotation_offset 77.728737 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Despina[0m
+[1m[36m(Debug): [0m[37mBody 'Despina': rot_pole_w0 (IAU W0=306.51 deg, from the ICRF-equator node) converted to rot_rotation_offset 282.446777 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Galatea[0m
+[1m[36m(Debug): [0m[37mBody 'Galatea': rot_pole_w0 (IAU W0=258.09 deg, from the ICRF-equator node) converted to rot_rotation_offset 234.041214 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Larissa[0m
+[1m[36m(Debug): [0m[37mBody 'Larissa': rot_pole_w0 (IAU W0=179.41 deg, from the ICRF-equator node) converted to rot_rotation_offset 155.537094 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Proteus[0m
+[1m[36m(Debug): [0m[37mBody 'Proteus': rot_pole_w0 (IAU W0=93.38 deg, from the ICRF-equator node) converted to rot_rotation_offset 69.711334 deg (ecliptic node; the azimuth the texture's centre column is drawn at).[0m
+[1m[32m(Info ): [0m[37mLoading body Triton[0m
+[1m[36m(Debug): [0m[37mBody 'Triton': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Neried[0m
+[1m[36m(Debug): [0m[37mBody 'Neried': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Halimede[0m
+[1m[36m(Debug): [0m[37mBody 'Halimede': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Sao[0m
+[1m[36m(Debug): [0m[37mBody 'Sao': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Laomedeia[0m
+[1m[36m(Debug): [0m[37mBody 'Laomedeia': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Psamathe[0m
+[1m[36m(Debug): [0m[37mBody 'Psamathe': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Neso[0m
+[1m[36m(Debug): [0m[37mBody 'Neso': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Ceres[0m
+[1m[36m(Debug): [0m[37mBody 'Ceres': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Pallas[0m
+[1m[36m(Debug): [0m[37mBody 'Pallas': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Juno[0m
+[1m[36m(Debug): [0m[37mBody 'Juno': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Juno': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Vesta[0m
+[1m[36m(Debug): [0m[37mBody 'Vesta': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Vesta': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
+[1m[32m(Info ): [0m[37mLoading object Vesta[0m
+[1m[33m(Warn.): [0m[1m[37mPerformance Issue : Too many vertices for 'model3D/Vesta/Vesta_1L.ojm' (Keep Below 4 000)[0m
+[1m[32m(Info ): [0m[37mSuccesfull loading model3D Vesta[0m
+[1m[32m(Info ): [0m[37mLoading body Pluto[0m
+[1m[36m(Debug): [0m[37mBody 'Pluto': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Charon[0m
+[1m[36m(Debug): [0m[37mBody 'Charon': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading body Nix[0m
+[1m[36m(Debug): [0m[37mBody 'Nix': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Hydra_[0m
+[1m[36m(Debug): [0m[37mBody 'Hydra_': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Styx[0m
+[1m[36m(Debug): [0m[37mBody 'Styx': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Kerberos[0m
+[1m[36m(Debug): [0m[37mBody 'Kerberos': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Eris[0m
+[1m[36m(Debug): [0m[37mBody 'Eris': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Haumea[0m
+[1m[36m(Debug): [0m[37mBody 'Haumea': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Namaka[0m
+[1m[36m(Debug): [0m[37mBody 'Namaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Hiiaka[0m
+[1m[36m(Debug): [0m[37mBody 'Hiiaka': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Makemake[0m
+[1m[36m(Debug): [0m[37mBody 'Makemake': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[33m(Warn.): [0m[1m[37mIgnoring line without '=' in ssystem.ini: 'orbit_LongOfPericenter 95.58754' - a key/value line needs 'key = value'; write '#' first to make it a comment.[0m
+[1m[32m(Info ): [0m[37mLoading body Sedna[0m
+[1m[36m(Debug): [0m[37mBody 'Sedna': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Arrokoth[0m
+[1m[36m(Debug): [0m[37mBody 'Arrokoth': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37mLoading object Arrokoth[0m
+[1m[32m(Info ): [0m[37mSuccesfull loading model3D Arrokoth[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Solar_System[0m
+[1m[36m(Debug): [0m[37mBody 'Solar_System': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading body Goldilocks_Zone[0m
+[1m[36m(Debug): [0m[37mBody 'Goldilocks_Zone': rot_frame not declared, using derived default 'parent_relative' (in memory; not written - file write-back is B31).[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37m(system SolarSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ssystem.ini generated at modularSystem/SolarSystem.ini.disabled[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/tex_nebulaes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/tex_nebulaes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/star16x16.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/star16x16.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/volum_cloud.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/volum_cloud.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/volum_cloud.png[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 512 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30340 MiB	used : 3415 MiB    	free : 26924 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/milkyway-vguerin-d128.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/milkyway-vguerin-d128.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37mSkyGridMgr creating GRID_EQUATORIAL[0m
+[1m[32m(Info ): [0m[37mSkyGridMgr creating GRID_ECLIPTIC[0m
+[1m[32m(Info ): [0m[37mSkyGridMgr creating GRID_GALACTIC[0m
+[1m[32m(Info ): [0m[37mSkyGridMgr creating GRID_ALTAZIMUTAL[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_CIRCLE_POLAR[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_POINT_POLAR[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE LINE_ECLIPTIC_POLE[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE LINE_GALACTIC_POLE[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_ANALEMMA[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_ANALEMMALINE[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_CIRCUMPOLAR[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE LINE_GALACTIC_CENTER[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_VERNAL[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_GREENWICH[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_ARIES[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_EQUATOR[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_GALACTIC_EQUATOR[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_MERIDIAN[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_TROPIC[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_MERIDIAN[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_PRECESSION[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_VERTICAL[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_ZODIAC[0m
+[1m[32m(Info ): [0m[37mSkyLineMgr creating LINE_ZENITH[0m
+[1m[32m(Info ): [0m[37mSkyDisplayMgr creating SkyPersonAL[0m
+[1m[32m(Info ): [0m[37mSkyDisplayMgr creating SkyPersonEQ[0m
+[1m[32m(Info ): [0m[37mSkyDisplayMgr creating SkyNauticAL[0m
+[1m[32m(Info ): [0m[37mSkyDisplayMgr creating SkyNauticEQ[0m
+[1m[32m(Info ): [0m[37mSkyDisplayMgr creating SkyObjCoords[0m
+[1m[32m(Info ): [0m[37mSkyDisplayMgr creating SkyMouseCoords[0m
+[1m[32m(Info ): [0m[37mSkyDisplayMgr creating SkyAngDist[0m
+[1m[32m(Info ): [0m[37mSkyDisplayMgr creating SkyLoxodromy[0m
+[1m[32m(Info ): [0m[37mSkyDisplayMgr creating SkyOrthodromy[0m
+[1m[32m(Info ): [0m[37mLandscape generic created[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 20 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30340 MiB	used : 3435 MiB    	free : 26904 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'depth attachment'[0m
+[1m[36m(Debug): [0m[37mBuild FrameBuffer 'hip_star single' with size (2048, 2048)[0m
+[1m[36m(Debug): [0m[37mBuild FrameBuffer 'hip_star combine' with size (2048, 2048)[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/star_illuminate.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/star_illuminate.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/pointer_planet.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/pointer_planet.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'New-path projected shadows'[0m
+[1m[36m(Debug): [0m[37mNo vertex entry defined for Pipeline "SHADOW_RING#SHADOW_SHAPE+0000"[0m
+->InSolarSystem
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 32 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30340 MiB	used : 3467 MiB    	free : 26872 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSansMono-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_font: loading font fonts/DejaVuSans-Bold.ttf[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/planethalo.png[0m
+[1m[32m(Info ): [0m[37m(solar system) default textures loaded[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Sun[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/sun.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/big_halo.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/big_halo.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/big_halo.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Mercury[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mercury.jpg[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Venus[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/venus.jpg[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Earth[0m
+[1m[32m(Info ): [0m[37mCreating Earth orbit...[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_normal.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_alti.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_night.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/earth_specular.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Moon[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_normal.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_alti.jpg[0m
+[1m[32m(Info ): [0m[37mAdding Moon to Earth binary orbit.[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Mars[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars_normal.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mars_alti.jpg[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Phobos[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/phobos.jpg[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Deimos[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Jupiter[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/jupiter.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/jupiter_rings.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Metis[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Adrastea[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Amalthea[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/amalthea.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Thebe[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Io[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/io.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/io_night.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Europa[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/europa.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Ganymede[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ganymede.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Callisto[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/callisto.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Himalia[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Elara[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Carme[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Pasiphae[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Lysithea[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Ananke[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Sinope[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Leda[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Saturn[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/saturn.jpg[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/saturn_rings_radial.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Pan[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Daphnis[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/deimos.jpg[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Prometheus[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Pandora[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Epimetheus[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/asteroid.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Janus[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Titan[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/titan.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Mimas[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/mimas.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Enceladus[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/enceladus.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Dione[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/dione.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Tethys[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/tethys.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Rhea[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/rhea.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Hyperion[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/hyperion.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Iapetus[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/iapetus.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/moon_normal.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/iapetus_alti.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Telesto[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Helene[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Uranus[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/uranus.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/uranusring.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Juliet[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Portia[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Rosalind[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Belinda[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Puck[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Miranda[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/miranda.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Ariel[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ariel.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Umbriel[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/umbriel.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Titania[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/titania.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Oberon[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/oberon.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Caliban[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Sycorax[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Prospero[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Setebos[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Neptune[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/neptune.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/neptune_rings.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Naiad[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Thalassa[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Despina[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Galatea[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Larissa[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Proteus[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/proteus.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Triton[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/triton.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Neried[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Halimede[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Sao[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Laomedeia[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Psamathe[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Neso[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Ceres[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/ceres.jpg[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Pallas[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Juno[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Vesta[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/vesta.jpg[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Pluto[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/pluto.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Charon[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/charon.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Nix[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Hydra_[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Styx[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Kerberos[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Eris[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Haumea[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Namaka[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Hiiaka[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Makemake[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/makemake.jpg[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Sedna[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Arrokoth[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Solar_System[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37mLoading new Stellar System object... Goldilocks_Zone[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/generic.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/bodies/goldilocks_zone.png[0m
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mReading fileAnchor anchor.ini[0m
+[1m[32m(Info ): [0m[37mCameraAnchors: reading anchor file anchor.ini[0m
+[1m[32m(Info ): [0m[37mCameraAnchors: 10 anchor(s) declared from anchor.ini[0m
+[1m[32m(Info ): [0m[37mAnchorManager:: initFirtAnchor to Earth[0m
+Params :
+hip : 0
+name : Sun
+x : 0
+y : 0
+z : 0
+Params :
+hip : 0
+name : DarkStar
+system : stellar_systems/system_starwobble.ini
+x : 0.01
+y : 0.01
+z : 0.01
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system DarkStarSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_starwobble.ini generated at modularSystem/DarkStarSystem.ini.disabled[0m
+Params :
+hip : 70890
+name : Proxima
+system : stellar_systems/system_proxima.ini
+x : -0.472175
+y : -0.789803
+z : -0.912535
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system ProximaSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_proxima.ini generated at modularSystem/ProximaSystem.ini.disabled[0m
+Params :
+hip : 71683
+name : Toliman
+system : stellar_systems/system_alphacen.ini
+x : -0.495153
+y : -0.840304
+z : -0.896610
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system TolimanSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_alphacen.ini generated at modularSystem/TolimanSystem.ini.disabled[0m
+Params :
+hip : 32349
+name : Sirius
+system : stellar_systems/system_sirius.ini
+x : -0.494399
+y : 1.970759
+z : -1.681002
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system SiriusSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_sirius.ini generated at modularSystem/SiriusSystem.ini.disabled[0m
+Params :
+hip : 113357
+name : 51Peg
+system : stellar_systems/system_51peg.ini
+x : 14.053800
+y : -1.406837
+z : 6.642219
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system 51PegSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_51peg.ini generated at modularSystem/51PegSystem.ini.disabled[0m
+Params :
+hip : 19849
+name : Keid
+system : stellar_systems/system_40eri.ini
+x : 2.179330
+y : 3.803963
+z : -2.371937
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system KeidSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_40eri.ini generated at modularSystem/KeidSystem.ini.disabled[0m
+Params :
+hip : 0
+name : Trappist1
+system : stellar_systems/system_trappist1.ini
+x : 12.04585
+y : -3.06285
+z : 0.13738
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system Trappist1System loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_trappist1.ini generated at modularSystem/Trappist1System.ini.disabled[0m
+Params :
+hip : 0
+name : Kepler16
+system : stellar_systems/system_kepler16.ini
+x : 15.19253
+y : -16.84609
+z : -2.37194
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system Kepler16System loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_kepler16.ini generated at modularSystem/Kepler16System.ini.disabled[0m
+Params :
+hip : 0
+name : HelixDwarf
+system : stellar_systems/system_white_dwarf.ini
+x : 183.82440
+y : -100.29100
+z : -38.95769
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system HelixDwarfSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/HelixDwarfSystem.ini.disabled[0m
+Params :
+hip : 0
+name : M57Dwarf
+system : stellar_systems/system_white_dwarf.ini
+x : 135.96006
+y : -372.01262
+z : 577.13255
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system M57DwarfSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/M57DwarfSystem.ini.disabled[0m
+Params :
+hip : 0
+name : M1Pulsar
+system : stellar_systems/system_white_dwarf.ini
+x : 205.6193021
+y : 1988.889006
+z : -45.17990438
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system M1PulsarSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stelZoneArray::create(stars_2_0v0_8.cat): fopen failed
+ZoneArray::create(stars_3_1v0_4.cat): fopen failed
+lar_systems/system_white_dwarf.ini generated at modularSystem/M1PulsarSystem.ini.disabled[0m
+Params :
+hip : 0
+name : M27Dwarf
+system : stellar_systems/system_white_dwarf.ini
+x : 191.2402307
+y : -241.217185
+z : 279.6681137
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system M27DwarfSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/M27DwarfSystem.ini.disabled[0m
+Params :
+hip : 0
+name : NGC2392Dwarf
+system : stellar_systems/system_white_dwarf.ini
+x : -704.4334563
+y : 1858.478137
+z : -32.44208719
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system NGC2392DwarfSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_white_dwarf.ini generated at modularSystem/NGC2392DwarfSystem.ini.disabled[0m
+Params :
+hip : 24608
+name : Capella
+system : stellar_systems/system_capella.ini
+x : 1.71261
+y : 11.9702415
+z : 5.09929664
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system CapellaSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_capella.ini generated at modularSystem/CapellaSystem.ini.disabled[0m
+Params :
+hip : 91262
+name : Vega
+system : stellar_systems/system_vega.ini
+x : 0.960616811
+y : -3.507478984
+z : 6.763271954
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system VegaSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_vega.ini generated at modularSystem/VegaSystem.ini.disabled[0m
+Params :
+hip : 69673
+name : Arcturus
+system : stellar_systems/system_arcturus.ini
+x : -8.823092161
+y : -3.971477288
+z : 5.753300085
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system ArcturusSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_arcturus.ini generated at modularSystem/ArcturusSystem.ini.disabled[0m
+Params :
+hip : 80763
+name : Antares
+system : stellar_systems/system_antares.ini
+x : -149.6602614
+y : -11.4245336
+z : -76.86148241
+[1m[32m(Info ): [0m[37m(solar system loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37m(system AntaresSystem loaded)[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mComposed twin of ./stellar_systems/system_antares.ini generated at modularSystem/AntaresSystem.ini.disabled[0m
+[1m[32m(Info ): [0m[37mLoading star data...[0m
+[1m[32m(Info ): [0m[37mLoading catalog stars_0_0v0_5.cat[0m
+[1m[32m(Info ): [0m[37mstars_0_0v0_5.cat:0:0:0:2[0m
+[1m[32m(Info ): [0m[37mstars:  4964[0m
+[1m[32m(Info ): [0m[37mLoading catalog stars_1_0v0_5.cat[0m
+[1m[32m(Info ): [0m[37mstars_1_0v0_5.cat:1:0:0:2[0m
+[1m[32m(Info ): [0m[37mstars:  21597[0m
+[1m[32m(Info ): [0m[37mLoading catalog stars_2_0v0_8.cat[0m
+[1m[32m(Info ): [0m[37mLoading catalog stars_3_1v0_4.cat[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "stars:cat_file_name_04", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "stars:cat_file_name_05", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "stars:cat_file_name_06", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "stars:cat_file_name_07", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "stars:cat_file_name_08", default empty string returned[0m
+[1m[32m(Info ): [0m[37mfinished, max_geodesic_level: 1[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/star16x16.png[0m
+[1m[32m(Info ): [0m[37mLoading NGC data... [0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/abell1656-stephane_dumont.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/abell1656-stephane_dumont.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/abell2151-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/abell2151-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/abell0426-naoyuki_kurita.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/abell0426-naoyuki_kurita.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/albireo.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/albireo.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ic434-eric_courcier.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ic434-eric_courcier.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/placeholder.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/placeholder.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/b72-68-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/b72-68-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/cygnusx1.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/cygnusx1.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/deepfield_north-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/deepfield_north-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/deepfield_south-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/deepfield_south-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/gamma_cyg-eric_courcier.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/gamma_cyg-eric_courcier.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/HXDF-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/HXDF-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ic1396-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ic1396-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/IC1805-eric_courcier.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/IC1805-eric_courcier.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/IC1848-eric_courcier.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/IC1848-eric_courcier.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ic2118-george_greaney.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ic2118-george_greaney.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ic2177-george_greaney.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ic2177-george_greaney.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ic2944-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ic2944-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ic0405-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ic0405-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ic0418-walter_mac_donald.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ic0418-walter_mac_donald.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ic0443-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ic0443-chris_schur.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ic5146-tom_carrico.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ic5146-tom_carrico.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ic5148-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ic5148-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/kemble_cascade-maxime_spano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/kemble_cascade-maxime_spano.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/lmc-stephane_guisard.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/lmc-stephane_guisard.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m001-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m001-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m002-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m002-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m003-hunter_wilson.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m003-hunter_wilson.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m004-antilhue.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m004-antilhue.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m005-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m005-hst.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m008-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m008-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m009-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m009-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m010-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m010-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m011-maxime_spano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m011-maxime_spano.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m012-paul_downing.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m012-paul_downing.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m013-centre_astro.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m013-centre_astro.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m014-hunter_wilson.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m014-hunter_wilson.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m015-stephane_dumont.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m015-stephane_dumont.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m016-eric_courcier.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m016-eric_courcier.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m017-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m017-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m018-2mass.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m018-2mass.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m019-2mass.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m019-2mass.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m020-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m020-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m021-noao.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m021-noao.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m022-lionel_ruiz.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m022-lionel_ruiz.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m023-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m023-aca.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m025-noao.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m025-noao.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m026-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m026-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m027-stephane_dumont.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m027-stephane_dumont.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m028-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m028-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m029-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m029-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m030-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m030-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m031-g_seigneuret.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m031-g_seigneuret.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m033-g_seigneuret.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m033-g_seigneuret.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m034-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m034-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m035-robert_j_hawley.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m035-robert_j_hawley.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m036-noao.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m036-noao.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m037-ole_neilsen.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m037-ole_neilsen.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m038-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m038-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m039-noao.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m039-noao.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m040-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m040-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m041-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m041-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m042-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m042-hst.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m044-maxime_spano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m044-maxime_spano.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m045-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m045-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m046-noao.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m046-noao.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m047-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m047-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m048-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m048-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mAllocate chunk of 256 MiB in GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30338 MiB	used : 3755 MiB    	free : 26583 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m049-sdss2.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m049-sdss2.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m050-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m050-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m051-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m051-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m052-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m052-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m053-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m053-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m054-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m054-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m055-nasa.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m055-nasa.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m056-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m056-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m057-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m057-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m058-adam_block.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m058-adam_block.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m059-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m059-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m060-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m060-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m061-adam_block.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m061-adam_block.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m062-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m062-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m063-adam_block.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m063-adam_block.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m064-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m064-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m065-robert_j_hawley.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m065-robert_j_hawley.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m067-palomar.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m067-palomar.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m068-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m068-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m069-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m069-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m070-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m070-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m071-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m071-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m072-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m072-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m073-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m073-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m074-antilhue.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m074-antilhue.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m075-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m075-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m076-block.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m076-block.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m077-adam_block.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m077-adam_block.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m078-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m078-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m079-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m079-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m080-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m080-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m081-rainer_zmaritsch.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m081-rainer_zmaritsch.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m083-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m083-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m084-noao.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m084-noao.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m085-sdss2.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m085-sdss2.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m086-noao.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m086-noao.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m087-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m087-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m088-j_schulman.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m088-j_schulman.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m089-sdss2.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m089-sdss2.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m090-sdss1.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m090-sdss1.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m091-sdss2.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m091-sdss2.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m092-sdss2.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m092-sdss2.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m093-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m093-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m094-sdss2.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m094-sdss2.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m095-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m095-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m096-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m096-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m097-centre_astro.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m097-centre_astro.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m098-sdss2.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m098-sdss2.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m099-adam_block.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m099-adam_block.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m100-sdss2.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m100-sdss2.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m101-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m101-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m102-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m102-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m103-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m103-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m104-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m104-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m105-aca.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m105-aca.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m106-adam_block.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m106-adam_block.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m107-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m107-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m108-adam_block.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m108-adam_block.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/m109-adam_block.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/m109-adam_block.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0040-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0040-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0055-james_foster.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0055-james_foster.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0147-john_blackwell.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0147-john_blackwell.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0281-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0281-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0157-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0157-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0185-kunihiko_okano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0185-kunihiko_okano.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0188-john_gretchen.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0188-john_gretchen.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0225-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0225-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0246-walter_mac_donald.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0246-walter_mac_donald.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0247-marc_cesarini.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0247-marc_cesarini.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0253-noao.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0253-noao.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0288-walter_mac_donald.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0288-walter_mac_donald.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0300-walter_mac_donald.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0300-walter_mac_donald.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0404-astroclub_aubagnais.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0404-astroclub_aubagnais.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0457-astroclub_aubagnais.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0457-astroclub_aubagnais.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0488-tom_carrico.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0488-tom_carrico.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0654-harald_strauss.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0654-harald_strauss.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0663-john_gretchen.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0663-john_gretchen.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0752-james_foster.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0752-james_foster.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0772-philipp_keller.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0772-philipp_keller.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0891-centre_astro.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0891-centre_astro.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0925-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0925-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0936-tom_carrico.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0936-tom_carrico.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1023-taku.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1023-taku.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1097-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1097-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1232-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1232-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1291-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1291-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1300-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1300-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1313-kunihiko_okano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1313-kunihiko_okano.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1316-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1316-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1360-david_malin.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1360-david_malin.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1365.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1365.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1399-janet_cutler.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1399-janet_cutler.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1433-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1433-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1499-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1499-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1501-stephane_dumont.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1501-stephane_dumont.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1514-taku.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1514-taku.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1528-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1528-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1532-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1532-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1535-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1535-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1553-49-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1553-49-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1566-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1566-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1647-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1647-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1788-eso.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1788-eso.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1792-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1792-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1808-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1808-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1851-walter_mac_donald.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1851-walter_mac_donald.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1893-andreas_masche.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1893-andreas_masche.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1907-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1907-pedro_re.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc1999-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc1999-chris_schur.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2070-kunihiko_okano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2070-kunihiko_okano.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2158-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2158-chris_schur.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2174-5-andreas_masche.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2174-5-andreas_masche.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2244-eric_courcier.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2244-eric_courcier.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2261-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2261-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2264-eric_courcier.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2264-eric_courcier.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2359-james_foster.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2359-james_foster.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2360-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2360-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2362-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2362-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2371-2-philipp_keller.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2371-2-philipp_keller.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2392-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2392-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2403-centre_astro.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2403-centre_astro.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2419-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2419-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2420-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2420-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2438-stephane_dumont.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2438-stephane_dumont.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2440-kunihiko_okano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2440-kunihiko_okano.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2442-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2442-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2467-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2467-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2477-naoyuki_kurita.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2477-naoyuki_kurita.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2613-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2613-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2655-dss_aura_stsci.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2655-dss_aura_stsci.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2681-harald_strauss.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2681-harald_strauss.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2683-philipp_keller.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2683-philipp_keller.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2768-harald_strauss.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2768-harald_strauss.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2775-philipp_keller.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2775-philipp_keller.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2784-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2784-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2808-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2808-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2818-james_foster.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2818-james_foster.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2841-kunihiko_okano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2841-kunihiko_okano.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2903-kunihiko_okano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2903-kunihiko_okano.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2976-james_foster_.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2976-james_foster_.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc2997-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc2997-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3077-harald_strauss.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3077-harald_strauss.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3109-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3109-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3114-david_malin.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3114-david_malin.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3115-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3115-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3132-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3132-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3184-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3184-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3190-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3190-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3198-taku.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3198-taku.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3201-david_malin.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3201-david_malin.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3226-7-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3226-7-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3242-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3242-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3293-janet_cutler.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3293-janet_cutler.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3344-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3344-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3372-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3372-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3377-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3377-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3521-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3521-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3585-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3585-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3607-marc_cesarini.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3607-marc_cesarini.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3621-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3621-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3631-taku.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3631-taku.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3726-taku.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3726-taku.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3750-james_foster.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3750-james_foster.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3766-janet_cutler.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3766-janet_cutler.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3918-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3918-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc3953-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc3953-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4038-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4038-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4051-taku.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4051-taku.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4103-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4103-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4214-taku.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4214-taku.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4216-tom_carrico.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4216-tom_carrico.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4236-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4236-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4244-taku.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4244-taku.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4361-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4361-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4372-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4372-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4395-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4395-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4414-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4414-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4429-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4429-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4435-8-philipp_keller.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4435-8-philipp_keller.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4449-taku.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4449-taku.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4450-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4450-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4490-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4490-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4494-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4494-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4517-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4517-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4526-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4526-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4535-james_foster.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4535-james_foster.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4559-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4559-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4565.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4565.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4567-8-michel_peyro.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4567-8-michel_peyro.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4605-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4605-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4631-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4631-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4636-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4636-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4656-7-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4656-7-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4697-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4697-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4699-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4699-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4725-philipp_keller.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4725-philipp_keller.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4753-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4753-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4755-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4755-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4762-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4762-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4833-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4833-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc4945-janet_cutler.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc4945-janet_cutler.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5005-taku.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5005-taku.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5102-steve_crouch.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5102-steve_crouch.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5128.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5128.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5139-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5139-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5189-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5189-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5248-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5248-pedro_re.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5286-janet_cutler.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5286-janet_cutler.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5466-naoyuki_kurita.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5466-naoyuki_kurita.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5634-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5634-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5746-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5746-al_kelly.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5846-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5846-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5897-naoyuki_kurita.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5897-naoyuki_kurita.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5907-michel_peyro.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5907-michel_peyro.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5927-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5927-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc5986-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc5986-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6027-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6027-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6067-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6067-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6124-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6124-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc0613-al_kelly_.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc0613-al_kelly_.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6164-5-kunihiko_okano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6164-5-kunihiko_okano.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6188-philipp_keller.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6188-philipp_keller.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6210-philipp_keller.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6210-philipp_keller.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6221-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6221-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6229-walter_mac_donald.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6229-walter_mac_donald.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6293-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6293-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6302-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6302-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6334-george_greaney.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6334-george_greaney.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6362-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6362-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6388-janet_cutler.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6388-janet_cutler.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6397-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6397-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6441-observatoire_des_makes.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6441-observatoire_des_makes.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6520-philipp_keller.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6520-philipp_keller.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6522-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6522-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6541-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6541-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6543-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6543-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6544-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6544-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6553-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6553-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6572-naoyuki_kurita.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6572-naoyuki_kurita.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6624-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6624-pedro_re.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6664-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6664-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6709-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6709-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6712-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6712-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6723-david_malin.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6723-david_malin.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6726-george_greaney.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6726-george_greaney.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6744-andreas_masche.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6744-andreas_masche.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6752-jacques_ardissone.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6752-jacques_ardissone.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6781-stephane_dumont.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6781-stephane_dumont.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6811-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6811-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6818-steven_juchnowski.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6818-steven_juchnowski.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6820-3-andreas_masche.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6820-3-andreas_masche.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6822-james_foster.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6822-james_foster.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6826-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6826-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6830-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6830-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6888-jean-pierre_bousquet.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6888-jean-pierre_bousquet.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6891-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6891-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6905-walter_mac_donald.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6905-walter_mac_donald.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/nebulae/placeholder.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6934-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6934-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6939-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6939-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6940-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6940-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc6946-stephane_dumont.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc6946-stephane_dumont.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/veil_nebula-eric_courcier.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/veil_nebula-eric_courcier.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7000-emmanuel_beaudoin.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7000-emmanuel_beaudoin.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7006-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7006-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7008-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7008-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7009-kunihiko_okano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7009-kunihiko_okano.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7023-george_greaney.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7023-george_greaney.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7026-walter_mac_donald.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7026-walter_mac_donald.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7027-walter_mac_donald.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7027-walter_mac_donald.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7129-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7129-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7160-chris_schur.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7160-chris_schur.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7209-laurent_ferrero.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7209-laurent_ferrero.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7217-franck_valbousquet.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7217-franck_valbousquet.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7235-harald_strauss.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7235-harald_strauss.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7293-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7293-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7320-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7320-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7331-kunihiko_okano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7331-kunihiko_okano.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7380-tom_carrico.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7380-tom_carrico.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7410-kunihiko_okano.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7410-kunihiko_okano.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7479-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7479-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7510-pedro_re.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7510-pedro_re.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7538-walter_mac_donald.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7538-walter_mac_donald.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7552-marc_cesarini.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7552-marc_cesarini.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7635-andreas_masche.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7635-andreas_masche.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7640-tom_carrico.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7640-tom_carrico.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7662-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7662-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7789-lionel_ruiz.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7789-lionel_ruiz.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7793-al_kelly.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7793-al_kelly.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/ngc7814-franck_valbousquet.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/ngc7814-franck_valbousquet.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/qso3c273-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/qso3c273-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/rho_oph-eric_courcier.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/rho_oph-eric_courcier.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/s147-emil_ivanov.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/s147-emil_ivanov.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/smc-stephane_guisard.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/smc-stephane_guisard.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/v838-hst.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/v838-hst.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mAllocate chunk of 256 MiB in GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30337 MiB	used : 4011 MiB    	free : 26325 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/nebulae/vela-sergio_eguivar.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/nebulae/vela-sergio_eguivar.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37mNebula: 407 items loaded, 1 dropped[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/fog.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/fog.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37mLandscape generic created[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:fog_alt_angle[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:fog_angle_shift[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_str observatory:night_texture[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "observatory:limited_shade", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_bool observatory:texture[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:rotate_z[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:top_altitude[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:base_altitude[0m
+[1m[32m(Info ): [0m[37mLandscape Spherical observatory created[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30337 MiB	used : 4055 MiB    	free : 26281 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'landscapes/observatory-immersive_adventure.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/observatory-immersive_adventure.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30337 MiB	used : 4099 MiB    	free : 26237 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'landscapes/observatory_night-immersive_adventure.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'landscapes/observatory_night-immersive_adventure.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37mStarmanager, loading text catalogue hip2007.txt[0m
+[1m[32m(Info ): [0m[37mHyperCubes : 2366
+Cubes      : 12451
+Stars      : 117957[0m
+[1m[36m(Debug): [0m[37mStarLines cat asterism.txt[0m
+[1m[36m(Debug): [0m[37mStarLines stars readed 5044[0m
+Body : Earth Landscape : observatory
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/milkyway.png[0m
+[1m[36m(Debug): [0m[37mMilkyway: no irisMilky define[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30337 MiB	used : 4143 MiB    	free : 26193 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/milkyway.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/milkyway.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30337 MiB	used : 4187 MiB    	free : 26149 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/zodiacale.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/zodiacale.png', creating uninitialized texture[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_bool rendering:flag_experimental_oort[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 32 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30337 MiB	used : 4219 MiB    	free : 26117 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/typegals.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/typegals.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37mTully catalog successfully loaded: number of items 30432[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 32 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30337 MiB	used : 4251 MiB    	free : 26085 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 3056 MiB    	free : 42421 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/dsocat.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/dsocat.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/pointer_planet.png[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/pointer_star.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/pointer_star.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/pointer_nebula.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/pointer_nebula.png', creating uninitialized texture[0m
+[1m[32m(Info ): [0m[37mSky locale is fr[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+Invalid sky culture directory: western-spacecrafter
+[1m[31m(Error): [0m[1m[37mUI: ERROR - Failed to acquire texture data for icons[0m
+[1m[32m(Info ): [0m[37mLandscape : observatory[0m
+[1m[32m(Info ): [0m[37mStarLines read Data scripts/internal/asterism_all.fab[0m
+[1m[32m(Info ): [0m[37mSky locale is fr[0m
+[1m[32m(Info ): [0m[37mScriptMgr: script end[0m
+[1m[32m(Info ): [0m[37mLocalizing TUI for locale: system[0m
+[1m[32m(Info ): [0m[37mLocalizing TUI for locale: system[0m
+[1m[32m(Info ): [0m[37mVR360 loading ojml sphere[0m
+[1m[32m(Info ): [0m[37mVR360 actived[0m
+[1m[32m(Info ): [0m[37mVR360 loading ojml cube[0m
+[1m[32m(Info ): [0m[37mVR360 actived[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 2560 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30327 MiB	used : 4251 MiB    	free : 26076 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
+[1m[32m(Info ): [0m[37mbuffer TCP size 1024[0m
+[1m[32m(Info ): [0m[37mMemory information
+Total ram 63582703616
+Free  ram 4334960640
+Shared ram 13895790592
+Buffer ram 47804416
+Total swap 0
+Free  swap 0[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mEnd of loading SC[0m
+[1m[32m(Info ): [0m[37mEnd of loading SC[0m
+[37m=================================================================[0m
+[1m[32m(Info ): [0m[37mApplication locale is fr[0m
+[1m[32m(Info ): [0m[37mLocalizing TUI for locale: fr[0m
+InSolarSystem->
+->InSolarSystem
+Body : Earth Landscape : observatory
+[1m[32m(Info ): [0m[37ms_texture: already in cache textures/milkyway.png[0m
+[1m[32m(Info ): [0m[37mSky locale is fr[0m
+[1m[32m(Info ): [0m[37mRead daykeymode as <calendar>[0m
+[1m[31m(Error): [0m[1m[37mUI: ERROR - Failed to acquire texture data for icons[0m
+[1m[32m(Info ): [0m[37mLandscape : observatory[0m
+[1m[32m(Info ): [0m[37mStarLines read Data scripts/internal/asterism_all.fab[0m
+[1m[32m(Info ): [0m[37mSky locale is fr[0m
+[1m[32m(Info ): [0m[37mScriptMgr: script end[0m
+[1m[32m(Info ): [0m[37mLocalizing TUI for locale: fr[0m
+[1m[32m(Info ): [0m[37mMedia::playerPlayStop[0m
+[1m[33m(Warn.): [0m[1m[37mSkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_UMBRA[0m
+[1m[33m(Warn.): [0m[1m[37mSkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_PENUMBRA[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37ms_font: rebuild font succes[0m
+[1m[32m(Info ): [0m[37mScriptMgr: load scripts/fscripts/startup.sts[0m
+[1m[32m(Info ): [0m[37mScriptMgr: load scripts/fscripts/startup.sts[0m
+Statistics v2908 i16728
+Statistics v70191 i96027
+Statistics v9480 i9741
+Statistics v18352 i18816
+Statistics v2908 i16728
+Statistics v128600 i768000
+Modification observer to Earth
+Body : Earth Landscape : observatory
+Altitude change received 75
+[1m[32m(Info ): [0m[37mExecute_command deselect[0m
+Altitude change received 7.5e+07
+Modification observer to Earth
+Body : Earth Landscape : observatory
+Altitude change received 75
+[1m[32m(Info ): [0m[37mExecute_command deselect[0m
+[1m[32m(Info ): [0m[37mExecute_command timerate rate 1[0m
+[1m[32m(Info ): [0m[37mExecute_command flag subtitle off[0m
+[1m[32m(Info ): [0m[37mEnd of script[0m
+[1m[32m(Info ): [0m[37mExecute_command script action end[0m
+[1m[32m(Info ): [0m[37mScriptMgr: script end[0m
+Statistics v168767 i188160
+[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Arrokoth/Arrokoth_2M.ojm"[0m
+[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Arrokoth/Arrokoth_3H.ojm"[0m
+[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Vesta/Vesta_2M.ojm"[0m
+[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Vesta/Vesta_3H.ojm"[0m
+[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Deimos/Deimos_2M.ojm"[0m
+[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Phobos/Phobos_2M.ojm"[0m
+Statistics v175091 i188160
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/planethalo.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/planethalo.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon.jpg'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/moon.jpg', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon_normal.jpg'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/moon_normal.jpg', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon_alti.jpg'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/moon_alti.jpg', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/earth.jpg'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/earth.jpg', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/earth_night.jpg'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/earth_night.jpg', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/earth_specular.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/earth_specular.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/earth_normal.jpg'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/earth_normal.jpg', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/earth_alti.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/earth_alti.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_alti.png...[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_alti.png"'[0m
+[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_alti.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient3.png'[0m
+[1m[36m(Debug): [0m[37mNo cmd given for 'textures/bodies/atm_gradient3.png', creating uninitialized texture[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient2.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/sun.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/atm_gradient4.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/proteus.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/oberon.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/makemake.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/neptune_rings.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/goldilocks_zone.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/charon.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/titania.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/umbriel.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/ariel.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/miranda.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/pluto.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/uranusring.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/triton.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/venus.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/uranus.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/hyperion.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/ceres.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/tethys.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/dione.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/rhea.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/neptune.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/vesta.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mimas.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/titan.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/saturn_rings_radial.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/asteroid.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/ganymede.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/callisto.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/moon_normal.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/io_night.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/amalthea.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/generic.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/enceladus.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/jupiter_rings.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/iapetus.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/iapetus_alti.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/deimos.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/europa.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/saturn.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/phobos.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/io.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/jupiter.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mars_alti.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mars_normal.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mercury.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/nomap.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/eclipse_map.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mars-water.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/venus_surface.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/earth_grid.png'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'textures/bodies/mars.jpg'[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'Fallback texture'[0m
+[1m[36m(Debug): [0m[37mbig "textures/bodies/earth_alti.png" is ready for use[0m
+[1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_normal.jpg...[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 170 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30325 MiB	used : 4423 MiB    	free : 25902 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_normal.jpg"'[0m
+[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_normal.jpg'[0m
+[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Deimos/Deimos_3H.ojm"[0m
+[1m[36m(Debug): [0m[37mAsynchronously loaded OjmL "model3D/Phobos/Phobos_3H.ojm"[0m
+[1m[36m(Debug): [0m[37mbig "textures/bodies/earth_normal.jpg" is ready for use[0m
+[1m[36m(Debug): [0m[37mLoading big textures/bodies/earth.jpg...[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 682 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30325 MiB	used : 5107 MiB    	free : 25218 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth.jpg"'[0m
+[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth.jpg'[0m
+[1m[36m(Debug): [0m[37mbig "textures/bodies/earth.jpg" is ready for use[0m
+[1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_night.jpg...[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 170 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30297 MiB	used : 5279 MiB    	free : 25017 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_night.jpg"'[0m
+[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_night.jpg'[0m
+[1m[36m(Debug): [0m[37mbig "textures/bodies/earth_night.jpg" is ready for use[0m
+[1m[36m(Debug): [0m[37mLoading big textures/bodies/earth_specular.png...[0m
+[1m[36m(Debug): [0m[37mDedicated allocation of 42 MiB of GPU memory.[0m
+[1m[36m(Debug): [0m[37mGPU memory	total : 32607 MiB   	available : 30297 MiB	used : 5323 MiB    	free : 24973 MiB[0m
+[1m[36m(Debug): [0m[37mlocal memory	total : 45477 MiB   	available : 45477 MiB	used : 5616 MiB    	free : 39861 MiB[0m
+[1m[36m(Debug): [0m[37mCreated image support for 'big "textures/bodies/earth_specular.png"'[0m
+[1m[36m(Debug): [0m[37mLoading cached data for 'textures/bodies/earth_specular.png'[0m
+[1m[36m(Debug): [0m[37mbig "textures/bodies/earth_specular.png" is ready for use[0m
+[1m[33m(Warn.): [0m[1m[37mFrame stall detected[0m
+[1m[32m(Info ): [0m[37mCaught SIGTERM, shutting down.[0m
+[37m   0# Fps::sigstacktrace(int) at /home/claude/spacecrafter/src/appModule/fps.cpp:150
+   1#      at ./signal/../sysdeps/unix/sysv/linux/x86_64/libc_sigaction.c:0
+   2# syscall at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:37
+   3# void std::__detail::__platform_wait<int>(int const*, int) at /usr/include/c++/15/bits/atomic_wait.h:114
+   4# std::__atomic_base<int>::wait(int, std::memory_order) const at /usr/include/c++/15/bits/atomic_base.h:609
+   5# App::draw(int) at /home/claude/spacecrafter/src/appModule/app.cpp:833
+   6# App::startMainLoop() at /home/claude/spacecrafter/src/appModule/app.cpp:1038
+   7# main at /home/claude/spacecrafter/src/main.cpp:348
+   8# __libc_start_call_main at ../sysdeps/nptl/libc_start_call_main.h:58
+   9# __libc_start_main_impl at ../csu/libc-start.c:360
+  10# _start at :0
+  11# 
+[0m
+[1m[33m(Warn.): [0m[1m[37mThis frame stall is very long[0m
