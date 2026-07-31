@@ -1,0 +1,88 @@
+F17 (iii) — settling the §11.122(i) HUNG residual. INTENT §11.125.
+Written 2026-07-31 BEFORE the first cycle of either arm; committed before the runs.
+
+WHAT IS BEING SETTLED
+§11.122(i): the first post-fix native arm returned 2 HUNG ("no exit in 45 s") in 14
+cycles, where 0 of 108 pre-fix cycles had ever hung (Fisher one-sided p = 0.0099).
+Two further arms did not reproduce it (a pre-fix A/B arm 14/14 clean, a second
+post-fix arm 14/14 clean, both at the same load band). The entry recorded it OPEN and
+UNATTRIBUTED, with a closure path: "re-measure HUNG rate on both binaries at N >= 50
+with the stress load pre-warmed".
+
+THE BINARY PAIR, STATED (never inherited — §11.124's instruction)
+  ARM P (post-F16 HEAD)  = the DELIVERED binary, code ebb41ab2, md5 1155a0b51e9c8069db30b2498ba943a8
+                           (saved copy of build-claude/src/spacecrafter; the tree was
+                            rebuilt at HEAD afterwards and came out bit-identical)
+  ARM R (§11.122 pre-fix reference) = code 5a8881ff = 1e44b639^, md5 af8dc0fc867325ea2eac37929fc33857
+                           (built into scratch: `git checkout 5a8881ff -- src/`, the six
+                            files added since then removed, `cmake .` to refresh the
+                            source GLOB, build, then HEAD restored and rebuilt)
+ARM R is 5 commits behind ARM P (the §11.122(g) EnvironmentManager fix, F9's three B12
+commits, F16's two). It is NOT a single-variable pair, and it is not claimed to be: it
+is the pair §11.122(i)'s own closure path names, and what it discriminates is stated
+below.
+
+REGIME
+Both arms: full §11.95 9-variant mix, N = 54 each, B7_ROVERS=8 (the composed-body count
+the hung cycles ran at — 8 casters, which is what produced the `ShadowService: caster
+budget exhausted` flood in one of them), plain mode, stress load from b7_stress.sh
+(gpu=3 cpu=8 mem=2048MB io=1). The load is PRE-WARMED to steady state before cycle 1 —
+the one measured difference §11.122(i) names (its suspect arm began 8 s after the load
+started, at loadavg 3.37, where the arms that did not reproduce began at 15.46/16.88).
+Arms are INTERLEAVED in chunks of 11 (P,R,P,R,...) rather than run back to back, so a
+drift in host conditions over the hour cannot masquerade as an arm difference — the
+confound the original 14-cycle comparison could not exclude.
+
+THEORY A — "the binary" (live per §11.122(i), kept live by the supervisor)
+Claim: something in the post-fix code causes the stall.
+Prediction: ARM P hangs at about the observed 2/28 = 7.1 %, i.e. ~3.9 HUNG in 54, and
+seeing at least one is 98.2 % likely (1 - 0.929^54); ARM R stays at 0.
+Refuted if: ARM P returns 0 HUNG in 54 (P = 0.929^54 = 1.8 % under this theory).
+Standing weakness, recorded in §11.122(i) already: this theory has NO mechanism. The
+fixed code (`~EnvironmentManager`) runs at teardown and at a manager reassignment that
+never happens; the hung stacks are in the draw loop, which it cannot reach.
+
+THEORY B — "environmental stall, not the binary"
+Claim: HUNG is a DRAW-LOOP stall, and the suspect arm's distinguishing feature was the
+stress load's cold-start transient (the churner's first touch of 2 GiB + the first
+512 MB fsync), not its binary.
+Mechanism, at source [observed, this task]: App::draw's first act is
+`context.helper->waitFrame(context.lastFrameIdx)` (app.cpp:795), and
+DrawHelper::waitFrame (tools/draw_helper.cpp:405-418) ends in
+`drawer[i].hasCompleted.wait(0, std::memory_order_acquire)` — a std::atomic wait with
+NO TIMEOUT. The main thread therefore blocks unboundedly on the drawing thread's
+completion flag; the teardown signal is serviced by that same main loop, so while the
+wait is held the process cannot exit and our detector calls it HUNG at 45 s. This is a
+frame-pacing wait upstream of teardown, in a code path no teardown fix touches.
+Supporting measurement taken today, in a different way of starving the same path
+[f17_tsan_smoke/lvp_native.log]: run on the software Vulkan ICD (llvmpipe), the app
+produced exactly this stack — `__platform_wait` <- App::draw (app.cpp:795) — with the
+app's own §11.5 watchdog printing "This frame stall is very long". Slow frame work
+reproduces the stack; no teardown code is involved.
+Prediction: with the load pre-warmed, BOTH arms are ~0 HUNG in 54 and statistically
+indistinguishable from each other.
+
+WHAT EACH OUTCOME BUYS (decided before seeing the data)
+ 1. ARM P >= 1 HUNG and ARM R = 0, at N = 54 each: Theory A survives, and the residual
+    becomes attributable to the binary — it would then need the single-commit pair
+    (1e44b639 vs 1e44b639^) to localise, which this pair cannot do.
+ 2. BOTH arms 0/54: Theory A is refuted at ~98 %. Theory B is CONSISTENT but not
+    demonstrated — consistency is not attribution, and §11.122(i)'s own rule is that a
+    residual closes only with magnitude AND mechanism predicted from the attributed
+    cause. Mechanism is in hand (above); magnitude is not, because "0 everywhere" is
+    equally what a one-off would produce. ARM C then runs.
+ 3. BOTH arms hang at similar rates: the binary is excluded, and the rate itself
+    becomes the measurement; (i) closes on the environmental account with the measured
+    magnitude.
+
+ARM C — the cold-start positive control (runs only under outcome 2)
+14 cycles, ARM P binary, 8 rovers, same chunk of the mix, with the stress load started
+8 s before cycle 1 — §11.122(i)'s own conditions, reproduced deliberately instead of
+accidentally. This is not "more contention": it is the same load, and it tests the
+TRANSIENT, which is the surviving theory's named cause.
+Prediction under Theory B: >= 1 HUNG in 14 (the observation was 2/14); under Theory A's
+world, the cold start is irrelevant and C behaves like P.
+If C fires: mechanism AND magnitude are both attributed to the cold-start transient and
+(i) CLOSES. If C does not fire: (i) STAYS OPEN with this record appended — a residual
+that will not reproduce under its own named conditions is not explained, and it will be
+said that way.

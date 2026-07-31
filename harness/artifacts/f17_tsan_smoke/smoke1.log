@@ -1,0 +1,28 @@
+==================
+WARNING: ThreadSanitizer: data race (pid=449082)
+  Atomic read of size 1 at 0x720c00003240 by thread T3:
+    #0 pthread_mutex_lock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1371 (libtsan.so.2+0x5a6de) (BuildId: edd4cc50d12638c09456940b2f9b3fb7d4f8eec4)
+    #1 pa_mutex_lock <null> (libpulsecommon-17.0.so+0x57951) (BuildId: efe731340862a1f20ddb7be957ac058b76c05372)
+
+  Previous write of size 8 at 0x720c00003240 by main thread:
+    #0 malloc ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:676 (libtsan.so.2+0x8ad0c) (BuildId: edd4cc50d12638c09456940b2f9b3fb7d4f8eec4)
+    #1 pa_xmalloc <null> (libpulsecommon-17.0.so+0x1bf5a) (BuildId: efe731340862a1f20ddb7be957ac058b76c05372)
+    #2 main /home/claude/spacecrafter/src/main.cpp:277 (spacecrafter+0x97659) (BuildId: 3584e27ec70abbcb8cf96497d1e162b2d8d184ce)
+
+  Location is heap block of size 40 at 0x720c00003240 allocated by main thread:
+    #0 malloc ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:676 (libtsan.so.2+0x8ad0c) (BuildId: edd4cc50d12638c09456940b2f9b3fb7d4f8eec4)
+    #1 pa_xmalloc <null> (libpulsecommon-17.0.so+0x1bf5a) (BuildId: efe731340862a1f20ddb7be957ac058b76c05372)
+    #2 main /home/claude/spacecrafter/src/main.cpp:277 (spacecrafter+0x97659) (BuildId: 3584e27ec70abbcb8cf96497d1e162b2d8d184ce)
+
+  Thread T3 'PulseMainloop' (tid=449093, running) created by main thread at:
+    #0 pthread_create ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1041 (libtsan.so.2+0x5b237) (BuildId: edd4cc50d12638c09456940b2f9b3fb7d4f8eec4)
+    #1 pa_thread_new <null> (libpulsecommon-17.0.so+0x5be31) (BuildId: efe731340862a1f20ddb7be957ac058b76c05372)
+    #2 main /home/claude/spacecrafter/src/main.cpp:277 (spacecrafter+0x97659) (BuildId: 3584e27ec70abbcb8cf96497d1e162b2d8d184ce)
+
+SUMMARY: ThreadSanitizer: data race (/usr/lib/x86_64-linux-gnu/pulseaudio/libpulsecommon-17.0.so+0x57951) (BuildId: efe731340862a1f20ddb7be957ac058b76c05372) in pa_mutex_lock
+==================
+ThreadSanitizer:DEADLYSIGNAL
+==449082==ERROR: ThreadSanitizer: SEGV on unknown address 0x000000001048 (pc 0x7ffff6ea5070 bp 0x7fffb7a5da40 sp 0x7fffb7a5da20 T449342)
+==449082==The signal is caused by a READ memory access.
+ThreadSanitizer:DEADLYSIGNAL
+ThreadSanitizer: nested bug in the same thread, aborting.

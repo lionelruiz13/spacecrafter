@@ -1006,6 +1006,21 @@ corrected: it was written, then destroyed by the same edit.]*
   the pre-§5.51 binary and **738009 B / 1075** on its reload cycle. So §5.51 also
   recovered 367 KB per shutdown and closed a **352 KB per-reload** leak
   (`f17_asan54/LEAK_CHANNEL.txt`). Next: TSan tree.
+- **WIP (2026-07-31, F17 ckpt3):** **TSan arm BLOCKED, mechanism identified and
+  recorded** — the tree builds (`build-tsan`, 2m04 at -j6, gitignored, code `550b3f9f`)
+  but TSan's own runtime SEGVs before startup completes, 3/3 deterministic: allocator
+  local-cache `this=0x8` inside `___interceptor_calloc` on a thread created by
+  `libnvidia-glcore.so.580.142`, then "nested bug in the same thread, aborting"
+  (`f17_tsan_smoke/smoke2_gdb.log`). A suppression file cannot help — the blocker is a
+  crash in the sanitizer's allocator, not a report — and substituting the software ICD
+  does not rescue it: the app does not survive on llvmpipe NATIVELY either (exceeds
+  maxMemoryAllocationSize, rc=139). Achieved N = **0** hunted TSan cycles; stated as
+  such, no massaging. One out-of-scope find en route (→ §5.57, D13 downgrade line) and
+  one MECHANISM for (iii): `DrawHelper::waitFrame` ends in an atomic wait with **no
+  timeout** (`draw_helper.cpp:411`), reached from `app.cpp:795` — the HUNG stack — and
+  the llvmpipe run reproduces exactly that stack by starving the same path. Binary pair
+  for (iii) built and stated (`f17_hung/PREDICTIONS.txt`, both theories + predictions
+  committed BEFORE the runs). Next: arms P/R interleaved, N=54 each, pre-warmed load.
 
 ### F18 — G4-coherence batch: §5.52 mid-band surface + §5.54 threshold authority + §5.53 level step  [M–L]
 - **Row / recorded:** §5.52 · §5.53 · §5.54 (all opened §11.123(g); full rows at
