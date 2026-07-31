@@ -114,6 +114,42 @@ public:
     // a body attached between sort and draw (events-thread bridge, §8.4.1)
     // draws once at the sorted tail - S4's publish-task handoff closes it.
     void clearDepth(float zCenter, float boundingRadius);
+    // Establish one body's depth MAPPING without entering a slice (caller:
+    // ModularBody::draw/drawLoaded, once per body drawn in the depth-less mid
+    // band). This is the half of clearDepth the depth-less band needs and the
+    // ONLY half it may pay for.
+    //
+    // Why it is needed at all, given that the band's whole point is not to
+    // touch depth (INTENT §5.52): `custom_project` maps
+    //   depth = (|eye| - clipping_fov.x) / (clipping_fov.y - clipping_fov.x)
+    // and the RASTERIZER clips primitives whose NDC z leaves [0,1] - a
+    // fixed-function stage that VARIANT_NO_DEPTH does not disable (that bit
+    // turns off the depth TEST and WRITE, nothing else). So a body drawn with
+    // whatever range the last clearDepth left behind is not merely
+    // depth-unordered: it is discarded whole. Measured on the pre-fix binary:
+    // Sun z = 11574, Mars 23588, Jupiter 71345, Moon 29.9 - every mid-band
+    // body outside [0,1] by three to five orders of magnitude, drawing nothing
+    // while the old path drew its disc.
+    //
+    // What it deliberately does NOT do: no attachment clear, no command-buffer
+    // boundary, no helper segment, no bucket bookkeeping. Those are what make a
+    // depth slice expensive per body, and D3 says the mid band is the COMMON
+    // case (thousands of bodies, 3-16 px each) - paying a full slice entry
+    // there is exactly the cost the band exists to avoid. Depth test and write
+    // are off, so the mapping only has to BRACKET the body; correctness needs
+    // nothing more than [zCenter-boundingRadius, zCenter+boundingRadius], the
+    // same range clearDepth's out-of-coverage fallback uses.
+    //
+    // Ordering, and why clearDepth is robust to this call: a mid-band body may
+    // sit between two same-bucket depth bodies, so this overwrites a range a
+    // later same-bucket clearDepth used to assume untouched. clearDepth now
+    // re-establishes its bucket's range on EVERY call (same values - the range
+    // is the bucket's, an authority this call cannot reach), so the override
+    // cannot outlive the body that asked for it.
+    inline void enterDepthlessSlice(float zCenter, float boundingRadius) {
+        clippingFov.v[0] = zCenter - boundingRadius;
+        clippingFov.v[1] = zCenter + boundingRadius;
+    }
     // ---- Orbit pass (row 8) -------------------------------------------------
     // The orbit LINE + its TRACE holes are a SYSTEM-level phase after the body
     // draw (old solarsystem_display.cpp:305-338), sharing ONE depth mapping =

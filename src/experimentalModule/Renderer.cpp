@@ -153,18 +153,26 @@ void Renderer::clearDepth(float zCenter, float boundingRadius)
         && zCenter >= depthBuckets[bucketIdx].znear
         && zCenter <= depthBuckets[bucketIdx].zfar) {
         if (static_cast<int32_t>(bucketIdx) != enteredBucket) {
-            // First body of this bucket: clear, and set the SHARED depth
-            // mapping - same-bucket bodies must write comparable depth values,
-            // which is why the range is the bucket's, never per-body.
+            // First body of this bucket: clear. Same-bucket successors keep the
+            // depth content (per-pixel mutual occlusion is the point of merging).
             enteredBucket = static_cast<int32_t>(bucketIdx);
             VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
             VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
             vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
-            clippingFov.v[0] = depthBuckets[bucketIdx].znear;
-            clippingFov.v[1] = depthBuckets[bucketIdx].zfar;
         }
-        // Same bucket: keep the depth content of the previous same-bucket
-        // bodies (per-pixel mutual occlusion) and the already-set range.
+        // The SHARED depth mapping, re-established on EVERY call and not only
+        // at bucket entry: same-bucket bodies must write comparable depth
+        // values, which is why the range is the BUCKET's and never per-body -
+        // and the bucket is the authority, so reading it again costs two loads
+        // and removes an assumption. The assumption was that nothing writes
+        // clippingFov between two same-bucket bodies; enterDepthlessSlice
+        // (INTENT §5.52) is exactly such a writer, and a mid-band body can sort
+        // between two members of one bucket. Re-establishing here means the
+        // depth-less override cannot outlive the body that asked for it,
+        // without that body having to save/restore renderer state (I2: one
+        // authority for the range, consulted, not cached in a caller).
+        clippingFov.v[0] = depthBuckets[bucketIdx].znear;
+        clippingFov.v[1] = depthBuckets[bucketIdx].zfar;
     } else {
         // Out-of-coverage slice. Two known producers:
         // - out-of-ORDER: a body attached between this frame's sort and its

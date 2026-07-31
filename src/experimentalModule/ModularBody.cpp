@@ -523,6 +523,9 @@ void ModularBody::drawLoaded(Renderer &renderer)
     } else {
         for (auto &module : farComponents)
             module->draw(renderer, this, mat);
+        // Same depth-less mapping as draw()'s band (INTENT §5.52) - this is the
+        // load-checking copy of the same ladder, so it takes the same call.
+        renderer.enterDepthlessSlice(distance, boundingRadius);
         for (auto &module : nearComponents) {
             if (module->isLoaded()) {
                 module->drawNoDepth(renderer, this, matrix);

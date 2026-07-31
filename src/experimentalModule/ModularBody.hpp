@@ -538,8 +538,18 @@ public:
                             }
                         }
                     } else {
+                        // far (2D behind body) BEFORE the range is set, exactly
+                        // as they draw before clearDepth in the band above -
+                        // the depth-less band is the same ladder minus the
+                        // slice, so the hint keeps drawing behind the disc.
                         for (auto &module : farComponents)
                             module->draw(renderer, this, mat);
+                        // The mapping WITHOUT the slice (INTENT §5.52): depth
+                        // test and write are off here, but the rasterizer still
+                        // clips on NDC z, so without a range bracketing this
+                        // body its geometry is discarded whole - which is what
+                        // the new path did in this entire band.
+                        renderer.enterDepthlessSlice(distance, boundingRadius);
                         for (auto &module : nearComponents)
                             module->drawNoDepth(renderer, this, matrix);
                         drawHalo(renderer);
