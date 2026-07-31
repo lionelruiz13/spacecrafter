@@ -996,6 +996,16 @@ corrected: it was written, then destroyed by the same edit.]*
   on that tree the exit-code channel alone would miss a real SEGV; and §5.55's native
   face here was **SIGSEGV**, not the SIGABRT §11.124(e) measured — the face is
   garbage-dependent, not gdb-vs-native. Next: ASan mix N ≥ 54.
+- **WIP (2026-07-31, F17 ckpt2):** **ASan mix DONE — N = 54, 54 CLEAN, 0 fires, 0 ASan
+  reports of any class** (`f17_asan54/campaign.csv`; full 9-variant mix, new 40 / old 14,
+  SIGINT 37 / cmd 9 / TERM 5 / QUIT 3; `halt_on_error=0`; quiet host, load1 2.60–4.52).
+  Bound ≤ 5.5 % per teardown (rule of three, 95 %). The silent half of the race is
+  therefore silent too, on the delivered binary. ONE find, from a channel §11.124(c)
+  called silent and which was never silent: **LeakSanitizer reports on every cycle** —
+  17686 B / 194 allocations, byte-identical across all 54, against **385209 B / 712** on
+  the pre-§5.51 binary and **738009 B / 1075** on its reload cycle. So §5.51 also
+  recovered 367 KB per shutdown and closed a **352 KB per-reload** leak
+  (`f17_asan54/LEAK_CHANNEL.txt`). Next: TSan tree.
 
 ### F18 — G4-coherence batch: §5.52 mid-band surface + §5.54 threshold authority + §5.53 level step  [M–L]
 - **Row / recorded:** §5.52 · §5.53 · §5.54 (all opened §11.123(g); full rows at

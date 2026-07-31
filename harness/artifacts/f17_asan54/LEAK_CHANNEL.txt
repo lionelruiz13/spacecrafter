@@ -1,0 +1,40 @@
+F17 — the LeakSanitizer channel (INTENT §11.125). Date: 2026-07-31.
+
+§11.124(c) recorded: "LeakSanitizer produced no output in any run (rc never 23), so
+the leak channel is stated as saying nothing either way rather than as evidence."
+The rc half is right. The 'no output' half is FALSE: the output was in the very logs
+that entry read, on every cycle, and it is DETERMINISTIC. Re-measured here over 54 new
+ASan cycles plus F16's own 7 surviving logs:
+
+leg (binary)                           cycles       LSan SUMMARY at exit
+-------------------------------------- ------------ -----------------------------
+f16_asan_prefix (a958c05e, pre-§5.51) 2 (frcmd,oldsig) 385209 B / 712 allocations
+f16_asan_prefix (a958c05e, pre-§5.51) 1 (qda reload) 738009 B / 1075 allocations
+f16_asan_prefix_hoe0 (a958c05e)        1 (frcmd)    385209 B / 712 allocations
+f16_asan_postfix (0dd0a938)            3            17686 B / 194 allocations
+f16_asan_delivered (ebb41ab2)          3            17686 B / 194 allocations
+f17_asan54 (ebb41ab2, THIS hunt)       54 (all 9 variants) 17686 B / 194 allocations
+
+ZERO variance: all 54 cycles of the hunted mix — old path, new path, galactic
+escalation, and the qda/qdaterm cycles that reload the whole body tree — print the
+same two lines byte for byte.
+
+WHAT IT MEASURES [derived from the table]:
+ (1) §5.51's one line did not only silence 373 reports, it RECOVERED 367,523 bytes
+     and 518 allocations per shutdown (385209/712 -> 17686/194) — the memory the 373
+     never-run module destructors owned.
+ (2) It also closed a PER-RELOAD leak: pre-fix, one 'body action reload' added
+     352,800 B / 363 allocations (712->1075); post-fix the reload cycle's total is
+     identical to the no-reload one (194 allocations either way), i.e. reloading the
+     body tree now leaks nothing measurable. That one is session-lifetime, not
+     exit-time: a long session that reloads repeatedly used to grow.
+ (3) 17686 B / 194 allocations remain at exit on the delivered binary. Constant, so
+     it is startup-scope state, not per-body or per-reload accumulation. At process
+     exit the OS reclaims it; recorded as the BASELINE this channel now has, not as
+     a defect chased here.
+
+INSTRUMENT CONSEQUENCE: b7_hunt.sh's fourth detector greps 'ERROR: AddressSanitizer'
+and therefore does NOT read this channel ('ERROR: LeakSanitizer'). That is correct
+scoping for a shutdown-CRASH hunt — but it means the leak channel must be read by
+hand, as it was here, and rc is not a sanitizer channel at all on this tree
+(measured: 373 ASan errors -> rc=0 under halt_on_error=0; leak report -> rc=0).
