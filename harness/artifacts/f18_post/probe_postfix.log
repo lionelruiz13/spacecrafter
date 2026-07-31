@@ -1,0 +1,12 @@
+F18PROBE site=layeredmid body=Moon ss=0.00286703 layout=1 wanted=32770 got=0 nodepth=0 clip=[0.00259278,0.00261647] dist=0.00260463 br=1.18463e-05 zc=0.5 zn=0 zf=1
+F18PROBE site=layeredmid body=Moon ss=0.00287353 layout=1 wanted=32770 got=32770 nodepth=1 clip=[0.00261266,0.00263635] dist=0.0026245 br=1.18468e-05 zc=0.5 zn=0 zf=1
+F18PROBE site=layeredmid body=Moon ss=0.00287366 layout=1 wanted=32770 got=32770 nodepth=1 clip=[0.00261219,0.00263681] dist=0.0026245 br=1.23104e-05 zc=0.5 zn=0 zf=1
+F18PROBE site=photosphere body=Sun ss=0.00291353 layout=1 wanted=32768 got=0 nodepth=0 clip=[1.01194,1.02124] dist=1.01659 br=0.00465247 zc=0.5 zn=0 zf=1
+F18PROBE site=photosphere body=Sun ss=0.00291353 layout=1 wanted=32768 got=32768 nodepth=1 clip=[1.01194,1.02124] dist=1.01659 br=0.00465247 zc=0.5 zn=0 zf=1
+F18PROBE site=photosphere body=Sun ss=0.00291353 layout=1 wanted=32768 got=32768 nodepth=1 clip=[1.01194,1.02124] dist=1.01659 br=0.00465247 zc=0.5 zn=0 zf=1
+F18PROBE site=layeredmid body=Mars ss=0.00346414 layout=1 wanted=32770 got=0 nodepth=0 clip=[2.07173,2.07178] dist=2.07176 br=2.36158e-05 zc=0.5 zn=0 zf=1
+F18PROBE site=layeredmid body=Mars ss=0.00346414 layout=1 wanted=32770 got=32770 nodepth=1 clip=[2.07173,2.07178] dist=2.07176 br=2.36158e-05 zc=0.5 zn=0 zf=1
+F18PROBE site=layeredmid body=Mars ss=0.00346414 layout=1 wanted=32770 got=32770 nodepth=1 clip=[2.07173,2.07178] dist=2.07176 br=2.36158e-05 zc=0.5 zn=0 zf=1
+F18PROBE site=basicmesh body=Jupiter ss=0.0034641 layout=1 wanted=32768 got=0 nodepth=0 clip=[6.26534,6.26699] dist=6.26616 br=0.000828889 zc=0.5 zn=0 zf=1
+F18PROBE site=basicmesh body=Jupiter ss=0.0034641 layout=1 wanted=32768 got=32768 nodepth=1 clip=[6.26534,6.26699] dist=6.26616 br=0.000828889 zc=0.5 zn=0 zf=1
+F18PROBE site=basicmesh body=Jupiter ss=0.0034641 layout=1 wanted=32768 got=32768 nodepth=1 clip=[6.26534,6.26699] dist=6.26616 br=0.000828889 zc=0.5 zn=0 zf=1

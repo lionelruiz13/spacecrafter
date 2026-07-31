@@ -1,0 +1,423 @@
+{
+  "Sun": {
+    "screenSize": 0.00346410181,
+    "fov": 151.39168467468443,
+    "verdict": "GREEN",
+    "disc_ratio_new_over_old": 0.8354435757987764,
+    "noise_floor_max": 0,
+    "new": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 3.547,
+        "sum": 19663,
+        "mean": 531.43,
+        "npx": 37,
+        "nonzero": 37
+      },
+      "centre_rgb": [
+        249,
+        243,
+        219
+      ],
+      "centre_row_sumRGB": [
+        0,
+        218,
+        583,
+        675,
+        713,
+        711,
+        671,
+        583,
+        218,
+        0,
+        0
+      ],
+      "row_max": 713,
+      "row_nonzero": 8,
+      "win17_nonzero": 75,
+      "win17_max": 713,
+      "brightest_offset_xy_val": [
+        -577,
+        63,
+        733
+      ]
+    },
+    "old": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 3.547,
+        "sum": 23536,
+        "mean": 636.11,
+        "npx": 37,
+        "nonzero": 37
+      },
+      "centre_rgb": [
+        253,
+        245,
+        222
+      ],
+      "centre_row_sumRGB": [
+        0,
+        359,
+        722,
+        722,
+        719,
+        720,
+        720,
+        725,
+        362,
+        0,
+        0
+      ],
+      "row_max": 725,
+      "row_nonzero": 8,
+      "win17_nonzero": 86,
+      "win17_max": 725,
+      "brightest_offset_xy_val": [
+        -577,
+        63,
+        735
+      ]
+    },
+    "new_b": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 3.547,
+        "sum": 19663,
+        "mean": 531.43,
+        "npx": 37,
+        "nonzero": 37
+      },
+      "centre_rgb": [
+        249,
+        243,
+        219
+      ],
+      "centre_row_sumRGB": [
+        0,
+        218,
+        583,
+        675,
+        713,
+        711,
+        671,
+        583,
+        218,
+        0,
+        0
+      ],
+      "row_max": 713,
+      "row_nonzero": 8,
+      "win17_nonzero": 75,
+      "win17_max": 713,
+      "brightest_offset_xy_val": [
+        -577,
+        63,
+        733
+      ]
+    }
+  },
+  "Mars": {
+    "screenSize": 0.00346413814,
+    "fov": 0.3770739802469843,
+    "verdict": "GREEN",
+    "disc_ratio_new_over_old": 0.8825979435116491,
+    "noise_floor_max": 23,
+    "new": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 3.547,
+        "sum": 6781,
+        "mean": 183.27,
+        "npx": 37,
+        "nonzero": 36
+      },
+      "centre_rgb": [
+        138,
+        96,
+        54
+      ],
+      "centre_row_sumRGB": [
+        3,
+        65,
+        255,
+        280,
+        335,
+        288,
+        215,
+        102,
+        2,
+        2,
+        0
+      ],
+      "row_max": 335,
+      "row_nonzero": 10,
+      "win17_nonzero": 79,
+      "win17_max": 367,
+      "brightest_offset_xy_val": [
+        -1,
+        -1,
+        367
+      ]
+    },
+    "old": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 3.547,
+        "sum": 7683,
+        "mean": 207.65,
+        "npx": 37,
+        "nonzero": 36
+      },
+      "centre_rgb": [
+        160,
+        112,
+        64
+      ],
+      "centre_row_sumRGB": [
+        0,
+        62,
+        248,
+        300,
+        373,
+        336,
+        243,
+        120,
+        8,
+        1,
+        0
+      ],
+      "row_max": 373,
+      "row_nonzero": 9,
+      "win17_nonzero": 78,
+      "win17_max": 402,
+      "brightest_offset_xy_val": [
+        -1,
+        -1,
+        402
+      ]
+    },
+    "new_b": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 3.547,
+        "sum": 6812,
+        "mean": 184.11,
+        "npx": 37,
+        "nonzero": 36
+      },
+      "centre_rgb": [
+        140,
+        98,
+        56
+      ],
+      "centre_row_sumRGB": [
+        1,
+        67,
+        257,
+        274,
+        332,
+        294,
+        216,
+        113,
+        3,
+        1,
+        0
+      ],
+      "row_max": 332,
+      "row_nonzero": 10,
+      "win17_nonzero": 79,
+      "win17_max": 367,
+      "brightest_offset_xy_val": [
+        -1,
+        -1,
+        367
+      ]
+    }
+  },
+  "Jupiter": {
+    "screenSize": 0.00346410181,
+    "fov": 4.375789992349059,
+    "verdict": "GREEN",
+    "disc_ratio_new_over_old": 0.9938587512794268,
+    "noise_floor_max": 3,
+    "new": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 3.547,
+        "sum": 3884,
+        "mean": 104.97,
+        "npx": 37,
+        "nonzero": 25
+      },
+      "centre_rgb": [
+        172,
+        154,
+        144
+      ],
+      "centre_row_sumRGB": [
+        0,
+        0,
+        1,
+        230,
+        471,
+        470,
+        266,
+        0,
+        2,
+        0,
+        0
+      ],
+      "row_max": 471,
+      "row_nonzero": 6,
+      "win17_nonzero": 56,
+      "win17_max": 471,
+      "brightest_offset_xy_val": [
+        -9,
+        2,
+        591
+      ]
+    },
+    "old": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 3.547,
+        "sum": 3908,
+        "mean": 105.62,
+        "npx": 37,
+        "nonzero": 28
+      },
+      "centre_rgb": [
+        149,
+        132,
+        122
+      ],
+      "centre_row_sumRGB": [
+        0,
+        0,
+        27,
+        335,
+        455,
+        403,
+        260,
+        0,
+        0,
+        0,
+        0
+      ],
+      "row_max": 455,
+      "row_nonzero": 5,
+      "win17_nonzero": 67,
+      "win17_max": 455,
+      "brightest_offset_xy_val": [
+        -1,
+        0,
+        455
+      ]
+    },
+    "new_b": {
+      "shape": [
+        2048,
+        2048
+      ],
+      "centre_px": [
+        1024,
+        1024
+      ],
+      "disc": {
+        "r_px": 3.547,
+        "sum": 3880,
+        "mean": 104.86,
+        "npx": 37,
+        "nonzero": 25
+      },
+      "centre_rgb": [
+        172,
+        154,
+        142
+      ],
+      "centre_row_sumRGB": [
+        0,
+        0,
+        0,
+        233,
+        473,
+        468,
+        263,
+        1,
+        2,
+        0,
+        0
+      ],
+      "row_max": 473,
+      "row_nonzero": 6,
+      "win17_nonzero": 65,
+      "win17_max": 473,
+      "brightest_offset_xy_val": [
+        -9,
+        2,
+        590
+      ]
+    }
+  }
+}
+
+Sun        ss=0.003464 fov=151.392 VERDICT=GREEN      disc_ratio=0.8354 new_disc=19663 old_disc=23536 new_row_max=713 old_row_max=725 floor=0
+Mars       ss=0.003464 fov=0.377 VERDICT=GREEN      disc_ratio=0.8826 new_disc=6781 old_disc=7683 new_row_max=335 old_row_max=373 floor=23
+Jupiter    ss=0.003464 fov=4.376 VERDICT=GREEN      disc_ratio=0.9939 new_disc=3884 old_disc=3908 new_row_max=471 old_row_max=455 floor=3

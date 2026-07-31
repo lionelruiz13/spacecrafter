@@ -1191,7 +1191,16 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   BOTH levels, RED pre-fix; D11 unchanged (1 ms/frame denominator). Battery green +
   frozen md5; the b12 instruments (`b12_photosphere.py`/`b12_limb.py`) stay green (the
   star family lives inside these thresholds).
-- **WIP:** —
+- **WIP:** 2026-07-31 · **checkpoint 1 GREEN — §5.52 DISCRIMINATED + FIXED** (code
+  `94eb3f03`). Candidate 2 (`bind` → no layout) REFUTED by instrument: `layout` non-null
+  and `got` carrying VARIANT_NO_DEPTH at all three mesh families. Candidate 1 CONFIRMED:
+  NDC z = 11574/23588/71345/29.9 (Sun/Mars/Jupiter/Moon) with the stale range, i.e.
+  rasterizer depth-CLIP, which VARIANT_NO_DEPTH does not disable. Fix = `Renderer::
+  enterDepthlessSlice` (mapping without slice entry) + `clearDepth` re-establishing its
+  bucket range every call. Post-fix z = 0.5 exactly (predicted); disc ratios Sun 0.84 /
+  Mars 0.88 / Jupiter 0.99 vs 0.00/0.00/0.11 pre-fix; b12 s5 0.0000 → 0.9917. Battery
+  green (b24/b25/b40/b4/A–D/E/f15/b12), frozen md5 in==out. Harness: `f18_midband.py`,
+  `f18_disc.py`, `f18_run.sh`. NEXT: §5.54 threshold authority, then §5.53.
 
 ---
 

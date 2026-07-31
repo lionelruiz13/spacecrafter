@@ -1,0 +1,12 @@
+F18PROBE site=layeredmid body=Moon ss=0.00286686 layout=1 wanted=32770 got=0 nodepth=0 clip=[0,0] dist=0.00260478 br=1.18463e-05 zc=inf zn=inf zf=inf
+F18PROBE site=layeredmid body=Moon ss=0.00287235 layout=1 wanted=32770 got=32770 nodepth=1 clip=[-1.27856e-06,8.655e-05] dist=0.00262558 br=1.18468e-05 zc=29.909 zn=29.7741 zf=30.0439
+F18PROBE site=layeredmid body=Moon ss=0.00287248 layout=1 wanted=32770 got=32770 nodepth=1 clip=[-1.27856e-06,8.655e-05] dist=0.00262558 br=1.20329e-05 zc=29.909 zn=29.772 zf=30.046
+F18PROBE site=photosphere body=Sun ss=0.00291353 layout=1 wanted=32768 got=0 nodepth=0 clip=[-1.27838e-06,8.65502e-05] dist=1.01659 br=0.00465247 zc=11574.7 zn=11521.7 zf=11627.7
+F18PROBE site=photosphere body=Sun ss=0.00291353 layout=1 wanted=32768 got=32768 nodepth=1 clip=[-1.27839e-06,8.65502e-05] dist=1.01659 br=0.00465247 zc=11574.7 zn=11521.7 zf=11627.7
+F18PROBE site=photosphere body=Sun ss=0.00291353 layout=1 wanted=32768 got=32768 nodepth=1 clip=[-1.27838e-06,8.65502e-05] dist=1.01659 br=0.00465247 zc=11574.7 zn=11521.7 zf=11627.7
+F18PROBE site=layeredmid body=Mars ss=0.00346414 layout=1 wanted=32770 got=0 nodepth=0 clip=[-1.27839e-06,8.65502e-05] dist=2.07176 br=2.36158e-05 zc=23588.7 zn=23588.4 zf=23588.9
+F18PROBE site=layeredmid body=Mars ss=0.00346414 layout=1 wanted=32770 got=32770 nodepth=1 clip=[-1.27839e-06,8.65502e-05] dist=2.07176 br=2.36158e-05 zc=23588.7 zn=23588.4 zf=23588.9
+F18PROBE site=layeredmid body=Mars ss=0.00346414 layout=1 wanted=32770 got=32770 nodepth=1 clip=[-1.27839e-06,8.65502e-05] dist=2.07176 br=2.36158e-05 zc=23588.7 zn=23588.4 zf=23588.9
+F18PROBE site=basicmesh body=Jupiter ss=0.0034641 layout=1 wanted=32768 got=0 nodepth=0 clip=[-1.27839e-06,8.65502e-05] dist=6.26616 br=0.000828889 zc=71345.4 zn=71336 zf=71354.8
+F18PROBE site=basicmesh body=Jupiter ss=0.0034641 layout=1 wanted=32768 got=32768 nodepth=1 clip=[-1.27839e-06,8.65502e-05] dist=6.26616 br=0.000828889 zc=71345.4 zn=71336 zf=71354.8
+F18PROBE site=basicmesh body=Jupiter ss=0.0034641 layout=1 wanted=32768 got=32768 nodepth=1 clip=[-1.27839e-06,8.65502e-05] dist=6.26616 br=0.000828889 zc=71345.4 zn=71336 zf=71354.8
