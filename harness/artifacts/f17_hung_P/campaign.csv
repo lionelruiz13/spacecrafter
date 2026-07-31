@@ -21,3 +21,35 @@ cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1
 20,frcmd,new,shutdown-cmd,cmd,13,CLEAN,"rc=0",8,8,17.03
 21,oldsig,old,SIGINT,sig,12,CLEAN,"rc=0",8,8,17.31
 22,qda,new,SIGINT,sig,12,FIRE,"rc=139 SIGSEGV",8,8,17.10
+23,frsig,new,SIGINT,sig,14,CLEAN,"rc=0",8,8,17.96
+24,galsig,new,SIGINT,sig,14,CLEAN,"rc=0",8,8,17.96
+25,actsig,new,SIGINT,sig,13,CLEAN,"rc=0",8,8,17.63
+26,oldsig,old,SIGINT,sig,12,CLEAN,"rc=0",8,8,18.26
+27,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,16,18.56
+28,actquit,new,SIGQUIT,sig,12,CLEAN,"rc=0",8,8,18.68
+29,oldcmd,old,shutdown-cmd,cmd,12,CLEAN,"rc=0",8,8,18.61
+30,qdaterm,new,SIGTERM,sig,12,FIRE,"rc=139 SIGSEGV",8,8,18.82
+31,frcmd,new,shutdown-cmd,cmd,13,HUNG,"no-exit-in-45s",8,8,16.44
+32,frsig,new,SIGINT,sig,12,CLEAN,"rc=0",8,8,16.84
+33,galsig,new,SIGINT,sig,12,CLEAN,"rc=0",8,8,17.15
+34,actsig,new,SIGINT,sig,13,CLEAN,"rc=0",8,8,17.43
+35,oldsig,old,SIGINT,sig,12,CLEAN,"rc=0",8,8,17.04
+36,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,8,17.00
+37,oldsig,old,SIGINT,sig,13,CLEAN,"rc=0",8,8,17.05
+38,qda,new,SIGINT,sig,13,FIRE,"rc=139 SIGSEGV",8,16,16.83
+39,actsig,new,SIGINT,sig,13,CLEAN,"rc=0",8,8,16.72
+40,frsig,new,SIGINT,sig,13,CLEAN,"rc=0",8,8,17.37
+41,galsig,new,SIGINT,sig,12,HUNG,"no-exit-in-45s",8,8,17.23
+42,oldcmd,old,shutdown-cmd,cmd,12,CLEAN,"rc=0",8,8,16.90
+43,qdaterm,new,SIGTERM,sig,13,HUNG,"no-exit-in-45s",8,8,16.44
+44,frcmd,new,shutdown-cmd,cmd,12,CLEAN,"rc=0",8,8,17.35
+45,oldsig,old,SIGINT,sig,13,CLEAN,"rc=0",8,8,19.45
+46,qda,new,SIGINT,sig,14,FIRE,"rc=139 SIGSEGV",8,8,19.35
+47,actquit,new,SIGQUIT,sig,13,CLEAN,"rc=0",8,8,17.95
+48,actsig,new,SIGINT,sig,13,CLEAN,"rc=0",8,8,17.86
+49,frsig,new,SIGINT,sig,12,CLEAN,"rc=0",8,8,17.82
+50,galsig,new,SIGINT,sig,12,CLEAN,"rc=0",8,8,19.46
+51,oldsig,old,SIGINT,sig,13,CLEAN,"rc=0",8,8,18.11
+52,qda,new,SIGINT,sig,12,FIRE,"rc=139 SIGSEGV",8,8,18.43
+53,oldcmd,old,shutdown-cmd,cmd,12,CLEAN,"rc=0",8,8,17.43
+54,qdaterm,new,SIGTERM,sig,12,FIRE,"rc=139 SIGSEGV",8,8,18.80

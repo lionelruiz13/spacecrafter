@@ -987,52 +987,26 @@ corrected: it was written, then destroyed by the same edit.]*
   no fires ⇒ tightened bounds per arm (rule of three); (iii) closes only with magnitude
   AND mechanism predicted from the attributed cause (§11.122(i)'s own rule) — else it
   stays open with the new record appended.
-- **WIP (2026-07-31, F17 ckpt1):** detectors positive-controlled on BOTH binaries at
-  `ebb41ab2`, through the hunt's own classifier: native `pcsegv`/`pcabrt`/**`pcaxis`**
-  3/3 FIRE, ASan tree 3/3 FIRE (`f17_pc_native`, `f17_pc_asan`). `pcaxis` is new — the
-  §5.55 fire as a positive control, i.e. a REAL member of the hunted class, and it is
-  what shows the **ASan** detector able to fire on a genuine teardown fault. Two
-  instrument facts recorded: ASan **intercepts** SIGSEGV (rc=1 + report, never 139), so
-  on that tree the exit-code channel alone would miss a real SEGV; and §5.55's native
-  face here was **SIGSEGV**, not the SIGABRT §11.124(e) measured — the face is
-  garbage-dependent, not gdb-vs-native. Next: ASan mix N ≥ 54.
-- **WIP (2026-07-31, F17 ckpt2):** **ASan mix DONE — N = 54, 54 CLEAN, 0 fires, 0 ASan
-  reports of any class** (`f17_asan54/campaign.csv`; full 9-variant mix, new 40 / old 14,
-  SIGINT 37 / cmd 9 / TERM 5 / QUIT 3; `halt_on_error=0`; quiet host, load1 2.60–4.52).
-  Bound ≤ 5.5 % per teardown (rule of three, 95 %). The silent half of the race is
-  therefore silent too, on the delivered binary. ONE find, from a channel §11.124(c)
-  called silent and which was never silent: **LeakSanitizer reports on every cycle** —
-  17686 B / 194 allocations, byte-identical across all 54, against **385209 B / 712** on
-  the pre-§5.51 binary and **738009 B / 1075** on its reload cycle. So §5.51 also
-  recovered 367 KB per shutdown and closed a **352 KB per-reload** leak
-  (`f17_asan54/LEAK_CHANNEL.txt`). Next: TSan tree.
-- **WIP (2026-07-31, F17 ckpt3):** **TSan arm BLOCKED, mechanism identified and
-  recorded** — the tree builds (`build-tsan`, 2m04 at -j6, gitignored, code `550b3f9f`)
-  but TSan's own runtime SEGVs before startup completes, 3/3 deterministic: allocator
-  local-cache `this=0x8` inside `___interceptor_calloc` on a thread created by
-  `libnvidia-glcore.so.580.142`, then "nested bug in the same thread, aborting"
-  (`f17_tsan_smoke/smoke2_gdb.log`). A suppression file cannot help — the blocker is a
-  crash in the sanitizer's allocator, not a report — and substituting the software ICD
-  does not rescue it: the app does not survive on llvmpipe NATIVELY either (exceeds
-  maxMemoryAllocationSize, rc=139). Achieved N = **0** hunted TSan cycles; stated as
-  such, no massaging. One out-of-scope find en route (→ §5.57, D13 downgrade line) and
-  one MECHANISM for (iii): `DrawHelper::waitFrame` ends in an atomic wait with **no
-  timeout** (`draw_helper.cpp:411`), reached from `app.cpp:795` — the HUNG stack — and
-  the llvmpipe run reproduces exactly that stack by starving the same path. Binary pair
-  for (iii) built and stated (`f17_hung/PREDICTIONS.txt`, both theories + predictions
-  committed BEFORE the runs). Next: arms P/R interleaved, N=54 each, pre-warmed load.
-- **WIP (2026-07-31, F17 ckpt4) — THE HUNT CAUGHT A FIRE, AND IT IS F16's:** the (iii)
-  arms did not settle a HUNG, they produced **SIGSEGV on 6 of 6 reload-race cycles** on
-  the delivered binary and **0 of 6** on the §11.122 pre-fix one, same chunks, same
-  pre-warmed load, interleaved (`f17_hung_P` / `f17_hung_R`, 22 cycles each so far).
-  **Attributed single-variable**: the delivered source with ONLY `virtual ~BodyModule()`
-  reverted is **6/6 CLEAN** where the delivered binary is **12/12 plain + 6/6 gdb FIRE**
-  (`f17_bisect_noVirt` vs `f17_bisect_P`/`f17_hung_P_gdb`; p = 0.0011). Two faces, both
-  captured: `s_texture::forceUnload` (main.cpp:375, AFTER `app.reset()`) destroying ring
-  textures into a dead `BufferMgr` — §5.55's shape exactly — and the DRAWING thread
-  recording `Ojm::drawShadow` with buffers the reload released. Needs composed OJM
-  bodies: K=0 under the same load is 6/6 clean. Full record
-  `f17_hung/FIRE_ATTRIBUTION.txt`. Next: arms to N=54, then §5 rows + entry.
+- **WIP:** — **DELIVERED 2026-07-31 → §11.125** (code `550b3f9f` — `.gitignore` only, no
+  source change; harness `73048f7`/`befdfba`/`3604b19`/`bec15ce`/delivery). (i) **ASan mix
+  N = 54: 54 CLEAN, no report of any class**, full 9-variant mix, `halt_on_error=0`,
+  bound ≤ 5.6 %. (ii) **TSan BLOCKED, achieved N = 0**, mechanism named: its own runtime
+  SEGVs (`this=0x8` in the allocator local cache) on a `libnvidia-glcore` thread, 3/3;
+  suppressions cannot address a crash in the allocator, and the software-ICD substitute
+  fails natively (→ §5.60). (iii) **§11.122(i) settled as posed** — binary theory REFUTED
+  (HUNG 3/54 post-fix vs 1/54 pre-fix, p = 0.31; the pre-fix binary, 0 in 122 before,
+  hung) and replaced by **§5.59** (untimed `waitFrame`, teardown serviced by the same
+  loop; confirmed on 4/4 hangs by the app's own watchdog stack). **And the hunt caught a
+  fire**: `body action reload` + composed OJM bodies + quit ⇒ **SIGSEGV, 25/26 under
+  load, 2/6 quiet**, attributed SINGLE-VARIABLE to §5.51 (delivered source minus
+  `BodyModule.hpp` = 6/6 CLEAN; delivered = 6/6 plain + 6/6 gdb FIRE; pre-fix arm 0/54,
+  p = 3.7e-07). Two faces captured → **§5.57** (texture ring drained after `app.reset()`
+  — §5.55's shape at a second site) and **§5.58** (drawing thread vs reload release).
+  NEW §5.57/§5.58/§5.59/§5.60; §11.124(c)'s LeakSanitizer sentence corrected (it prints
+  every cycle and measures F16's fix: 385209 B → 17686 B per shutdown, 352 KB per-reload
+  leak closed). Deviation: **ARM C (cold-start control) NOT run** — the hour went to the
+  fire. **For the supervisor: `master-beta` now reproduces a crash on a shipped user
+  action; revert-or-fix is recorded as a product-risk decision, not taken (§11.125(j)).**
 
 ### F18 — G4-coherence batch: §5.52 mid-band surface + §5.54 threshold authority + §5.53 level step  [M–L]
 - **Row / recorded:** §5.52 · §5.53 · §5.54 (all opened §11.123(g); full rows at

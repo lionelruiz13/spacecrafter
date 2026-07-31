@@ -1,0 +1,564 @@
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Debuginfod has been disabled.
+To make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Detaching after fork from child process 449388]
+[New Thread 0x7fffe49ff6c0 (LWP 449389)]
+[New Thread 0x7fffe41fe6c0 (LWP 449391)]
+[Detaching after vfork from child process 449392]
+sh: 1: kill: No such process
+
+[New Thread 0x7fffe325f6c0 (LWP 449393)]
+[New Thread 0x7fffe271e6c0 (LWP 449397)]
+==================
+WARNING: ThreadSanitizer: data race (pid=449385)
+  Atomic read of size 1 at 0x720c00003240 by thread T3:
+    #0 pthread_mutex_lock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1371 (libtsan.so.2+0x5a6de) (BuildId: edd4cc50d12638c09456940b2f9b3fb7d4f8eec4)
+    #1 pa_mutex_lock <null> (libpulsecommon-17.0.so+0x57951) (BuildId: efe731340862a1f20ddb7be957ac058b76c05372)
+
+  Previous write of size 8 at 0x720c00003240 by main thread:
+    #0 malloc ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:676 (libtsan.so.2+0x8ad0c) (BuildId: edd4cc50d12638c09456940b2f9b3fb7d4f8eec4)
+    #1 pa_xmalloc <null> (libpulsecommon-17.0.so+0x1bf5a) (BuildId: efe731340862a1f20ddb7be957ac058b76c05372)
+    #2 main /home/claude/spacecrafter/src/main.cpp:277 (spacecrafter+0x97659) (BuildId: 3584e27ec70abbcb8cf96497d1e162b2d8d184ce)
+
+  Location is heap block of size 40 at 0x720c00003240 allocated by main thread:
+    #0 malloc ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:676 (libtsan.so.2+0x8ad0c) (BuildId: edd4cc50d12638c09456940b2f9b3fb7d4f8eec4)
+    #1 pa_xmalloc <null> (libpulsecommon-17.0.so+0x1bf5a) (BuildId: efe731340862a1f20ddb7be957ac058b76c05372)
+    #2 main /home/claude/spacecrafter/src/main.cpp:277 (spacecrafter+0x97659) (BuildId: 3584e27ec70abbcb8cf96497d1e162b2d8d184ce)
+
+  Thread T3 'PulseMainloop' (tid=449397, running) created by main thread at:
+    #0 pthread_create ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1041 (libtsan.so.2+0x5b237) (BuildId: edd4cc50d12638c09456940b2f9b3fb7d4f8eec4)
+    #1 pa_thread_new <null> (libpulsecommon-17.0.so+0x5be31) (BuildId: efe731340862a1f20ddb7be957ac058b76c05372)
+    #2 main /home/claude/spacecrafter/src/main.cpp:277 (spacecrafter+0x97659) (BuildId: 3584e27ec70abbcb8cf96497d1e162b2d8d184ce)
+
+SUMMARY: ThreadSanitizer: data race (/usr/lib/x86_64-linux-gnu/pulseaudio/libpulsecommon-17.0.so+0x57951) (BuildId: efe731340862a1f20ddb7be957ac058b76c05372) in pa_mutex_lock
+==================
+[New Thread 0x7fffd00796c0 (LWP 449398)]
+[New Thread 0x7fffb0ddf6c0 (LWP 449412)]
+[New Thread 0x7fffb05de6c0 (LWP 449413)]
+[New Thread 0x7fffafddd6c0 (LWP 449414)]
+[New Thread 0x7fffaf5dc6c0 (LWP 449415)]
+[New Thread 0x7fffae9ff6c0 (LWP 449416)]
+[New Thread 0x7fffae1fe6c0 (LWP 449417)]
+[New Thread 0x7fffad9fd6c0 (LWP 449418)]
+[New Thread 0x7fffad1fc6c0 (LWP 449419)]
+[New Thread 0x7fffac9fb6c0 (LWP 449420)]
+[New Thread 0x7fffac1fa6c0 (LWP 449421)]
+[New Thread 0x7fffab9f96c0 (LWP 449422)]
+[New Thread 0x7fffab1386c0 (LWP 449423)]
+[New Thread 0x7fffaa8776c0 (LWP 449424)]
+[New Thread 0x7fffa9dff6c0 (LWP 449425)]
+[New Thread 0x7fffa95be6c0 (LWP 449426)]
+[New Thread 0x7fffa8cfd6c0 (LWP 449427)]
+[New Thread 0x7fffb7a5f6c0 (LWP 449428)]
+[New Thread 0x7fffb6d1f6c0 (LWP 449429)]
+
+Thread 23 "spacecrafter" received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 0x7fffb7a5f6c0 (LWP 449428)]
+0x00007ffff6ea5070 in __sanitizer::SizeClassAllocator64LocalCache<__sanitizer::SizeClassAllocator64<__tsan::AP64> >::Allocate (this=0x8, allocator=<optimized out>, class_id=4) at ../../../../src/libsanitizer/sanitizer_common/sanitizer_allocator_local_cache.h:38
+warning: 38	../../../../src/libsanitizer/sanitizer_common/sanitizer_allocator_local_cache.h: Aucun fichier ou dossier de ce nom
+
+==== POST-RUN STACK (empty => clean exit; non-empty => a stop/fire) ====
+#0  0x00007ffff6ea5070 in __sanitizer::SizeClassAllocator64LocalCache<__sanitizer::SizeClassAllocator64<__tsan::AP64> >::Allocate (this=0x8, allocator=<optimized out>, class_id=4) at ../../../../src/libsanitizer/sanitizer_common/sanitizer_allocator_local_cache.h:38
+#1  __sanitizer::CombinedAllocator<__sanitizer::SizeClassAllocator64<__tsan::AP64>, __sanitizer::LargeMmapAllocatorPtrArrayDynamic>::Allocate (this=this@entry=0x7ffff6f63200 <__tsan::allocator_placeholder>, cache=cache@entry=0x8, size=<optimized out>, size@entry=56, alignment=16) at ../../../../src/libsanitizer/sanitizer_common/sanitizer_allocator_combined.h:69
+#2  0x00007ffff6ea246b in __tsan::user_alloc_internal (thr=thr@entry=0x7fffb7a5ef40, pc=140737335830480, sz=sz@entry=56, align=align@entry=16, signal=signal@entry=true) at ../../../../src/libsanitizer/tsan/tsan_mman.cpp:209
+#3  0x00007ffff6ea263e in __tsan::user_calloc (thr=thr@entry=0x7fffb7a5ef40, pc=<optimized out>, size=size@entry=56, n=n@entry=1) at ../../../../src/libsanitizer/tsan/tsan_mman.cpp:244
+#4  0x00007ffff6e8a7d5 in ___interceptor_calloc (n=1, size=56) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:699
+#5  0x00007fffcc20c5ce in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#6  0x00007fffcc2115ba in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#7  0x00007fffcc2107ae in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#8  0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#9  0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+==== ALL THREADS ====
+
+Thread 24 (Thread 0x7fffb6d1f6c0 (LWP 449429) "[vkcf] Analysis"):
+#0  futex_wait (futex_word=0x7fffcdb6c608, expected=2, private=0) at ../sysdeps/nptl/futex-internal.h:146
+#1  __GI___lll_lock_wait (futex=futex@entry=0x7fffcdb6c608, private=0) at ./nptl/lowlevellock.c:49
+#2  0x00007ffff28a7648 in lll_mutex_lock_optimized (mutex=0x7fffcdb6c608) at ./nptl/pthread_mutex_lock.c:48
+#3  ___pthread_mutex_lock (mutex=0x7fffcdb6c608) at ./nptl/pthread_mutex_lock.c:128
+#4  0x00007fffcc20c0b0 in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#5  0x00007fffcddba4e1 in ??? () at /lib/x86_64-linux-gnu/libGLX_nvidia.so.0
+#6  0x00007fffcc21175e in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#7  0x00007fffcc2107ae in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#8  0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#9  0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 23 (Thread 0x7fffb7a5f6c0 (LWP 449428) "spacecrafter"):
+#0  0x00007ffff6ea5070 in __sanitizer::SizeClassAllocator64LocalCache<__sanitizer::SizeClassAllocator64<__tsan::AP64> >::Allocate (this=0x8, allocator=<optimized out>, class_id=4) at ../../../../src/libsanitizer/sanitizer_common/sanitizer_allocator_local_cache.h:38
+#1  __sanitizer::CombinedAllocator<__sanitizer::SizeClassAllocator64<__tsan::AP64>, __sanitizer::LargeMmapAllocatorPtrArrayDynamic>::Allocate (this=this@entry=0x7ffff6f63200 <__tsan::allocator_placeholder>, cache=cache@entry=0x8, size=<optimized out>, size@entry=56, alignment=16) at ../../../../src/libsanitizer/sanitizer_common/sanitizer_allocator_combined.h:69
+#2  0x00007ffff6ea246b in __tsan::user_alloc_internal (thr=thr@entry=0x7fffb7a5ef40, pc=140737335830480, sz=sz@entry=56, align=align@entry=16, signal=signal@entry=true) at ../../../../src/libsanitizer/tsan/tsan_mman.cpp:209
+#3  0x00007ffff6ea263e in __tsan::user_calloc (thr=thr@entry=0x7fffb7a5ef40, pc=<optimized out>, size=size@entry=56, n=n@entry=1) at ../../../../src/libsanitizer/tsan/tsan_mman.cpp:244
+#4  0x00007ffff6e8a7d5 in ___interceptor_calloc (n=1, size=56) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:699
+#5  0x00007fffcc20c5ce in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#6  0x00007fffcc2115ba in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#7  0x00007fffcc2107ae in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#8  0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#9  0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 22 (Thread 0x7fffa8cfd6c0 (LWP 449427) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2832185664, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2832185664, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2832185664, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffa8cfbae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffa8cfbae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffa8cfba20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffa8cfba00, fn=..., c=0x7fffffffe2b8, m=0x7fffa8cfbae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffa8cfbae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 21 (Thread 0x7fffa95be6c0 (LWP 449426) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2841364800, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2841364800, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2841364800, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffa95bcae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffa95bcae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffa95bca20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffa95bca00, fn=..., c=0x7fffffffe2b8, m=0x7fffa95bcae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffa95bcae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 20 (Thread 0x7fffa9dff6c0 (LWP 449425) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2850019648, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2850019648, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2850019648, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffa9dfdae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffa9dfdae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffa9dfda20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffa9dfda00, fn=..., c=0x7fffffffe2b8, m=0x7fffa9dfdae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffa9dfdae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 19 (Thread 0x7fffaa8776c0 (LWP 449424) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2860996928, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2860996928, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2860996928, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffaa875ae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffaa875ae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffaa875a20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffaa875a00, fn=..., c=0x7fffffffe2b8, m=0x7fffaa875ae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffaa875ae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 18 (Thread 0x7fffab1386c0 (LWP 449423) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2870176064, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2870176064, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2870176064, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffab136ae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffab136ae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffab136a20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffab136a00, fn=..., c=0x7fffffffe2b8, m=0x7fffab136ae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffab136ae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 17 (Thread 0x7fffab9f96c0 (LWP 449422) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2879355200, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2879355200, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2879355200, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffab9f7ae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffab9f7ae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffab9f7a20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffab9f7a00, fn=..., c=0x7fffffffe2b8, m=0x7fffab9f7ae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffab9f7ae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 16 (Thread 0x7fffac1fa6c0 (LWP 449421) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2887747904, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2887747904, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2887747904, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffac1f8ae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffac1f8ae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffac1f8a20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffac1f8a00, fn=..., c=0x7fffffffe2b8, m=0x7fffac1f8ae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffac1f8ae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 15 (Thread 0x7fffac9fb6c0 (LWP 449420) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2896140608, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2896140608, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2896140608, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffac9f9ae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffac9f9ae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffac9f9a20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffac9f9a00, fn=..., c=0x7fffffffe2b8, m=0x7fffac9f9ae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffac9f9ae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 14 (Thread 0x7fffad1fc6c0 (LWP 449419) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2904533312, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2904533312, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2904533312, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffad1faae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffad1faae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffad1faa20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffad1faa00, fn=..., c=0x7fffffffe2b8, m=0x7fffad1faae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffad1faae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 13 (Thread 0x7fffad9fd6c0 (LWP 449418) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2912926016, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2912926016, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2912926016, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffad9fbae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffad9fbae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffad9fba20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffad9fba00, fn=..., c=0x7fffffffe2b8, m=0x7fffad9fbae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffad9fbae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 12 (Thread 0x7fffae1fe6c0 (LWP 449417) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2921318720, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2921318720, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2921318720, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffae1fcae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffae1fcae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffae1fca20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffae1fca00, fn=..., c=0x7fffffffe2b8, m=0x7fffae1fcae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffae1fcae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 11 (Thread 0x7fffae9ff6c0 (LWP 449416) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2929711424, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2929711424, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2929711424, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffae9fdae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffae9fdae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffae9fda20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffae9fda00, fn=..., c=0x7fffffffe2b8, m=0x7fffae9fdae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffae9fdae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 10 (Thread 0x7fffaf5dc6c0 (LWP 449415) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2942150976, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2942150976, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2942150976, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffaf5daae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffaf5daae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffaf5daa20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffaf5daa00, fn=..., c=0x7fffffffe2b8, m=0x7fffaf5daae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffaf5daae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 9 (Thread 0x7fffafddd6c0 (LWP 449414) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2950543680, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2950543680, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2950543680, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffafddbae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffafddbae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffafddba20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffafddba00, fn=..., c=0x7fffffffe2b8, m=0x7fffafddbae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffafddbae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 8 (Thread 0x7fffb05de6c0 (LWP 449413) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2958936384, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2958936384, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2958936384, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffb05dcae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffb05dcae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffb05dca20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffb05dca00, fn=..., c=0x7fffffffe2b8, m=0x7fffb05dcae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffb05dcae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 7 (Thread 0x7fffb0ddf6c0 (LWP 449412) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=140737488347864, a2=<optimized out>, a3=a3@entry=2967329088, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x7fffffffe2d8, expected=2967329088, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x7fffffffe2d8, expected=2967329088, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x7fffffffe2d8, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x7fffb0dddae0, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x7fffb0dddae0) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffb0ddda20) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffb0ddda00, fn=..., c=0x7fffffffe2b8, m=0x7fffb0dddae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x7fffb0dddae0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x000055555563efee in AsyncLoaderMgr::builderThreadLoop (this=0x7fffffffe1d0) at /home/claude/spacecrafter/src/EntityCore/Executor/AsyncLoaderMgr.cpp:214
+#11 0x0000555555a72670 in std::__invoke_impl<void, void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#12 std::__invoke<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#13 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#14 std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (AsyncLoaderMgr::*)(), AsyncLoaderMgr*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#16 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#17 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd00) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#18 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#19 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 6 (Thread 0x7fffd00796c0 (LWP 449398) "PulseHotplug"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=125395865186768, a2=<optimized out>, a3=a3@entry=3490150688, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=0, futex_word=0x720c000031d0, expected=3490150688, op=393, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x720c000031d0, expected=3490150688, clockid=0, abstime=0x0, private=0, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x720c000031d0, expected=expected@entry=4, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=private@entry=0) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28a3067 in __pthread_cond_wait_common (cond=<optimized out>, mutex=0x720c00003180, clockid=0, abstime=0x0) at ./nptl/pthread_cond_wait.c:421
+#6  ___pthread_cond_wait (cond=<optimized out>, mutex=0x720c00003180) at ./nptl/pthread_cond_wait.c:453
+#7  0x00007ffff6ea91eb in __tsan::call_pthread_cancel_with_cleanup (fn=fn@entry=0x7ffff6e506b0 <_FUN(void*)>, cleanup=cleanup@entry=0x7ffff6e593b0 <_FUN(void*)>, arg=arg@entry=0x7fffd0077a00) at ../../../../src/libsanitizer/tsan/tsan_platform_linux.cpp:590
+#8  0x00007ffff6e8b275 in cond_wait<___interceptor_pthread_cond_wait(void*, void*)::<lambda()> > (thr=<optimized out>, pc=140737335832975, si=0x7fffd00779e0, fn=..., c=0x720c000031b0, m=0x720c00003180) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1259
+#9  ___interceptor_pthread_cond_wait (c=<optimized out>, m=0x720c00003180) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1274
+#10 0x00007ffff552e3e4 in pa_threaded_mainloop_wait () at /lib/x86_64-linux-gnu/libpulse.so.0
+#11 0x00007ffff6d2469d in ??? () at /lib/x86_64-linux-gnu/libSDL2-2.0.so.0
+#12 0x00007ffff6d64d16 in ??? () at /lib/x86_64-linux-gnu/libSDL2-2.0.so.0
+#13 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdb40) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#14 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#15 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 5 (Thread 0x7fffe271e6c0 (LWP 449397) "PulseMainloop"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a013c in __internal_syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=0, a5=0, a6=0, nr=7) at ./nptl/cancellation.c:49
+#2  __syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=0, nr=7) at ./nptl/cancellation.c:75
+#3  0x00007ffff2927a8e in __GI___poll (fds=<optimized out>, nfds=<optimized out>, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:29
+#4  0x00007ffff6e6d807 in ___interceptor_poll (fds=0x720800014000, nfds=2, timeout=<optimized out>) at ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:4189
+#5  0x00007ffff552cd48 in ??? () at /lib/x86_64-linux-gnu/libpulse.so.0
+#6  0x00007ffff55164c1 in pa_mainloop_poll () at /lib/x86_64-linux-gnu/libpulse.so.0
+#7  0x00007ffff5520d41 in pa_mainloop_iterate () at /lib/x86_64-linux-gnu/libpulse.so.0
+#8  0x00007ffff5520e00 in pa_mainloop_run () at /lib/x86_64-linux-gnu/libpulse.so.0
+#9  0x00007ffff5531d2d in ??? () at /lib/x86_64-linux-gnu/libpulse.so.0
+#10 0x00007fffeb7d3d7b in ??? () at /usr/lib/x86_64-linux-gnu/pulseaudio/libpulsecommon-17.0.so
+#11 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdb40) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#12 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#13 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 4 (Thread 0x7fffe325f6c0 (LWP 449393) "SDLTimer"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a00ac in __internal_syscall_cancel (a1=a1@entry=125378685370496, a2=<optimized out>, a3=a3@entry=0, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=4294967295, nr=202) at ./nptl/cancellation.c:49
+#2  0x00007ffff28a0807 in __futex_abstimed_wait_common64 (private=<optimized out>, futex_word=0x720800010080, expected=0, op=<optimized out>, abstime=0x0, cancel=true) at ./nptl/futex-internal.c:57
+#3  __futex_abstimed_wait_common (futex_word=0x720800010080, expected=0, clockid=0, abstime=0x0, private=<optimized out>, cancel=true) at ./nptl/futex-internal.c:87
+#4  __GI___futex_abstimed_wait_cancelable64 (futex_word=futex_word@entry=0x720800010080, expected=expected@entry=0, clockid=clockid@entry=0, abstime=abstime@entry=0x0, private=<optimized out>) at ./nptl/futex-internal.c:139
+#5  0x00007ffff28ac5df in do_futex_wait (sem=sem@entry=0x720800010080, abstime=0x0, clockid=0) at ./nptl/sem_waitcommon.c:111
+#6  0x00007ffff28ac678 in __new_sem_wait_slow64 (sem=0x720800010080, abstime=0x0, clockid=0) at ./nptl/sem_waitcommon.c:183
+#7  0x00007ffff6e79c42 in ___interceptor_sem_wait (s=0x720800010080) at ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:6592
+#8  0x00007ffff6d6508e in ??? () at /lib/x86_64-linux-gnu/libSDL2-2.0.so.0
+#9  0x00007ffff6cbbbce in ??? () at /lib/x86_64-linux-gnu/libSDL2-2.0.so.0
+#10 0x00007ffff6d64d16 in ??? () at /lib/x86_64-linux-gnu/libSDL2-2.0.so.0
+#11 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdba0) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#12 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#13 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 3 (Thread 0x7fffe41fe6c0 (LWP 449391) "spacecrafter"):
+#0  __syscall_cancel_arch () at ../sysdeps/unix/sysv/linux/x86_64/syscall_cancel.S:56
+#1  0x00007ffff28a013c in __internal_syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=0, a5=0, a6=0, nr=0) at ./nptl/cancellation.c:49
+#2  __syscall_cancel (a1=<optimized out>, a2=<optimized out>, a3=<optimized out>, a4=a4@entry=0, a5=a5@entry=0, a6=a6@entry=0, nr=0) at ./nptl/cancellation.c:75
+#3  0x00007ffff2927fee in __GI___libc_read (fd=<optimized out>, buf=<optimized out>, nbytes=<optimized out>) at ../sysdeps/unix/sysv/linux/read.c:26
+#4  0x00007ffff6e5e82e in ___interceptor_read (fd=5, ptr=0x7fffe41fca80, count=16) at ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1011
+#5  0x000055555568cef1 in read (__fd=<optimized out>, __buf=0x7fffe41fca80, __nbytes=16) at /usr/include/x86_64-linux-gnu/bits/unistd.h:32
+#6  LinuxExecutor::getRequest (this=this@entry=0x7fffffffe150, datas=std::vector of length 0, capacity 0) at /home/claude/spacecrafter/src/EntityCore/Tools/LinuxExecutor.cpp:430
+#7  0x000055555568d07a in LinuxExecutor::mainloopExt (this=0x7fffffffe150) at /home/claude/spacecrafter/src/EntityCore/Tools/LinuxExecutor.cpp:307
+#8  0x000055555568f160 in std::__invoke_impl<void, void (LinuxExecutor::*)(), LinuxExecutor*> (__f=<optimized out>, __t=<optimized out>) at /usr/include/c++/15/bits/invoke.h:73
+#9  std::__invoke<void (LinuxExecutor::*)(), LinuxExecutor*> (__fn=<optimized out>) at /usr/include/c++/15/bits/invoke.h:98
+#10 std::thread::_Invoker<std::tuple<void (LinuxExecutor::*)(), LinuxExecutor*> >::_M_invoke<0ul, 1ul> (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:303
+#11 std::thread::_Invoker<std::tuple<void (LinuxExecutor::*)(), LinuxExecutor*> >::operator() (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:310
+#12 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (LinuxExecutor::*)(), LinuxExecutor*> > >::_M_run (this=<optimized out>) at /usr/include/c++/15/bits/std_thread.h:255
+#13 0x00007ffff2cf2584 in ??? () at /lib/x86_64-linux-gnu/libstdc++.so.6
+#14 0x00007ffff6e50011 in __tsan_thread_start_func (arg=0x7fffffffdd40) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1031
+#15 0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#16 0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 2 (Thread 0x7fffe49ff6c0 (LWP 449389) "spacecrafter"):
+#0  0x00007ffff6ed1bd5 in __sanitizer::internal_usleep (useconds=useconds@entry=100000) at ../../../../src/libsanitizer/sanitizer_common/sanitizer_linux.cpp:561
+#1  0x00007ffff6ec9572 in __sanitizer::SleepForMillis (millis=millis@entry=100) at ../../../../src/libsanitizer/sanitizer_common/sanitizer_common.cpp:387
+#2  0x00007ffff6eb0538 in __tsan::BackgroundThread (arg=<optimized out>) at ../../../../src/libsanitizer/tsan/tsan_rtl.cpp:474
+#3  0x00007ffff28a3d64 in start_thread (arg=<optimized out>) at ./nptl/pthread_create.c:448
+#4  0x00007ffff29373fc in __GI___clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+Thread 1 (Thread 0x7fffe7dc5a00 (LWP 449385) "spacecrafter"):
+#0  0x00007ffff6eb0fe7 in __tsan::ShadowSet (p=<optimized out>, end=<optimized out>, v=<optimized out>) at ../../../../src/libsanitizer/tsan/tsan_rtl_access.cpp:534
+#1  __tsan::MemoryRangeSet (addr=<optimized out>, size=536, val=<optimized out>) at ../../../../src/libsanitizer/tsan/tsan_rtl_access.cpp:563
+#2  __tsan::MemoryRangeSet (addr=<optimized out>, size=536, val=<optimized out>) at ../../../../src/libsanitizer/tsan/tsan_rtl_access.cpp:547
+#3  0x00007ffff6ea2553 in __tsan::user_alloc_internal (thr=thr@entry=0x7fffe7dc5280, pc=140737335830480, sz=sz@entry=536, align=align@entry=16, signal=signal@entry=true) at ../../../../src/libsanitizer/tsan/tsan_mman.cpp:218
+#4  0x00007ffff6ea263e in __tsan::user_calloc (thr=thr@entry=0x7fffe7dc5280, pc=<optimized out>, size=size@entry=536, n=n@entry=1) at ../../../../src/libsanitizer/tsan/tsan_mman.cpp:244
+#5  0x00007ffff6e8a7d5 in ___interceptor_calloc (n=1, size=536) at ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:699
+#6  0x00007fffcc20c5ce in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#7  0x00007fffcc2a5620 in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#8  0x00007fffcc22d2a3 in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#9  0x00007fffcc2767a0 in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#10 0x00007fffcc2d628d in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#11 0x00007fffcc2e3c92 in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#12 0x00007fffcc27d60d in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#13 0x00007fffcc24fd12 in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#14 0x00007fffcc66fa0a in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#15 0x00007fffcc65a0f4 in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#16 0x00007fffcc61af79 in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#17 0x00007fffcc5501e5 in ??? () at /lib/x86_64-linux-gnu/libnvidia-glcore.so.580.142
+#18 0x00007ffff7f0214d in ??? () at /lib/x86_64-linux-gnu/libvulkan.so.1
+#19 0x00007fffa5c29814 in ??? () at /lib/x86_64-linux-gnu/libVkLayer_khronos_validation.so
+#20 0x00007ffff7efc1cb in ??? () at /lib/x86_64-linux-gnu/libvulkan.so.1
+#21 0x00007ffff7efdf4c in ??? () at /lib/x86_64-linux-gnu/libvulkan.so.1
+#22 0x00007ffff7f0b56e in vkCreateDevice () at /lib/x86_64-linux-gnu/libvulkan.so.1
+#23 0x000055555560a4ea in VulkanMgr::initDevice (this=this@entry=0x727000003800, createInfo=...) at /home/claude/spacecrafter/src/EntityCore/Core/VulkanMgr.cpp:502
+#24 0x00005555556197a1 in VulkanMgr::VulkanMgr (this=this@entry=0x727000003800, createInfo=...) at /home/claude/spacecrafter/src/EntityCore/Core/VulkanMgr.cpp:72
+#25 0x00005555555ebf07 in std::make_unique<VulkanMgr, VulkanMgrCreateInfo&> () at /usr/include/c++/15/bits/unique_ptr.h:1083
+#26 main (argc=<optimized out>, argv=<optimized out>) at /home/claude/spacecrafter/src/main.cpp:335
+
+==== REGISTERS (only meaningful on a fire) ====
+rip            0x7ffff6ea5070      0x7ffff6ea5070 <__sanitizer::CombinedAllocator<__sanitizer::SizeClassAllocator64<__tsan::AP64>, __sanitizer::LargeMmapAllocatorPtrArrayDynamic>::Allocate(__sanitizer::SizeClassAllocator64LocalCache<__sanitizer::SizeClassAllocator64<__tsan::AP64> >*, unsigned long, unsigned long)+176>
+rsp            0x7fffb7a5da20      0x7fffb7a5da20
+rbp            0x7fffb7a5da40      0x7fffb7a5da40
+
+==== END PROBE ====

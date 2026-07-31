@@ -1,0 +1,23 @@
+==== B7 HUNT [plain] batch start 2026-07-31T13:30:22+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/f17_scope_quiet append=0 cyc0=0 ====
+BIN mtime=2026-07-31 11:48:32.897729245 +0200  code HEAD=550b3f9f  harness HEAD=bec15ce
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+composed-body axis: B7_ROVERS=8  scene=/home/claude/.spacecrafter/modularSystem/SolarSystem.ini md5=0718c9015eaea6bc103c541209bf4d0a  scene_pre_existed=0
+host at batch start: loadavg=3.11 11.80 15.74  memavail=15,9GiB
+batch teardowns: 6  (cycle ids 1..6)
+cyc 1 qda [new/SIGINT] tcp=12s: CLEAN (rc=0)
+cyc 2 qdaterm [new/SIGTERM] tcp=11s: CLEAN (rc=0)
+cyc 3 qda: *** *** FIRE *** *** rc=139 SIGSEGV  see /home/claude/spacecrafter/claude/harness/artifacts/f17_scope_quiet/plain_003_qda.log
+cyc 4 qdaterm [new/SIGTERM] tcp=11s: CLEAN (rc=0)
+cyc 5 qda: *** *** FIRE *** *** rc=139 SIGSEGV  see /home/claude/spacecrafter/claude/harness/artifacts/f17_scope_quiet/plain_005_qda.log
+cyc 6 qdaterm [new/SIGTERM] tcp=12s: CLEAN (rc=0)
+==== B7 HUNT [plain] batch done 2026-07-31T13:33:40+02:00 ====
+host at batch end: loadavg=2.99 7.50 13.28  memavail=14,9GiB
+composed scene removed (user dir restored to shipped default)
+ssystem md5 at end=545a51ef76294891579a1fc2fe13792b
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+      4 CLEAN
+      2 FIRE
+*** FIRE ROWS ***
+3,qda,new,SIGINT,sig,11,FIRE,"rc=139 SIGSEGV",8,16,2.42
+5,qda,new,SIGINT,sig,11,FIRE,"rc=139 SIGSEGV",8,16,3.21
