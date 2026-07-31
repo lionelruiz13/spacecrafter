@@ -54,8 +54,18 @@
 # 1-minute load average AT THE CYCLE, i.e. contention is recorded per teardown,
 # not asserted once per batch.
 #
+#
+# ---- 2026-07-31 EXTENSION (F17 / hunt-4, INTENT §11.125) --------------------
+# New variant `pcaxis`: a THIRD positive control, and the first one that is a
+# REAL fire of the hunted class rather than an injected signal (§5.55). See its
+# case arms below. It is never part of a hunted mix.
+# The ASan detector (`ERROR: AddressSanitizer`, added by F8) is only meaningful
+# with ASAN_OPTIONS=halt_on_error=0 in the environment — at ASan's default the
+# app dies at the FIRST report (rc=1) and both the report count and "the
+# shutdown completed" become unreadable (§11.124(b)).
+#
 # Env:  B7_MODE=gdb|plain  B7_OUT=<subdir>  B7_APPEND=0|1  B7_CYC0=<int offset>
-#       B7_ROVERS=<K>  (0 = §11.95 behaviour)
+#       B7_ROVERS=<K>  (0 = §11.95 behaviour)  B7_BIN=<binary named spacecrafter>
 # Usage: DISPLAY=:2 [env...] ./b7_hunt.sh [mixfile]
 # ============================================================================
 set -u
@@ -165,6 +175,18 @@ run_cycle() {
     # anything.
     pcsegv)  path=new; teardown=sig; sig=SEGV ;;
     pcabrt)  path=new; teardown=sig; sig=ABRT ;;
+    # THIRD positive control (2026-07-31, F17): a REAL member of the hunted
+    # class instead of an injected signal. §5.55 — drawing the rotation axis
+    # once constructs a file-static that returns a buffer sub-allocation to a
+    # BufferMgr destroyed with the App, so the process dies in
+    # __run_exit_handlers: SIGABRT natively (rc=134, `terminate called`),
+    # SIGSEGV under gdb, and — on the ASan tree — a heap-use-after-free report.
+    # It is therefore the one control that exercises the ASan detector on a
+    # genuine teardown fault rather than on an injected signal, in the exact
+    # class hunted. Teardown entry is `cmd` because that is the entry §11.124(e)
+    # measured it on (2/2 on each of two binaries). NOT part of any hunted mix:
+    # a known deterministic fire in the mix would make every cycle a FIRE.
+    pcaxis)  path=new; teardown=cmd ;;
     *)       path=new; teardown=cmd ;;
   esac
   local entry; entry=$([ "$teardown" = sig ] && echo "SIG$sig" || echo "shutdown-cmd")
@@ -247,6 +269,15 @@ run_cycle() {
                     "body name Mars color r 1 g 0 b 0" ; sleep 3 ;;
     gal*)  tcp_send "moveto altitude 1e12 duration 0" ; sleep 2 ;
            tcp_send "moveto altitude 1e15 duration 0" ; sleep 3 ;;
+    # §5.55 positive control: the drive is f16_validation.sh's own STEPS=axis
+    # probe verbatim (the one that measured rc=134 / rc=0 one command apart),
+    # so what is controlled here is the DETECTOR, not a new phenomenon.
+    pcaxis) tcp_send "flag experimental_path on" "timerate rate 0" "meteors zhr 0" \
+                     "date jday 2461234.0" "select planet Earth" "flag track_object on" \
+                     "flag planets_axis on"
+            sleep 4
+            tcp_send "body action screenshot filename $OUT/axisshot_$cyc.png"
+            sleep 2 ;;
     *)     sleep 1 ;;
   esac
 

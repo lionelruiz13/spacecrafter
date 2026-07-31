@@ -1,0 +1,64 @@
+F17 positive-control evidence (INTENT §11.125). Date: 2026-07-31.
+
+Every detector this hunt trusts for SILENCE is shown able to FIRE here, through the
+SAME classifier b7_hunt.sh applies to every hunted cycle (I2 — a copy would prove
+nothing about the one deciding CLEAN), on the SAME binaries the hunt uses.
+
+== NATIVE tree, build-claude @ ebb41ab2 (f17_pc_native/campaign.csv) ==
+1,pcsegv,new,SIGSEGV,sig,12,FIRE,"rc=139 SIGSEGV",0,0,2.50
+2,pcabrt,new,SIGABRT,sig,11,FIRE,"rc=134 SIGABRT",0,0,2.90
+3,pcaxis,new,shutdown-cmd,cmd,11,FIRE,"rc=139 SIGSEGV",0,0,3.57
+
+== ASan tree, build-asan @ ebb41ab2, ASAN_OPTIONS=halt_on_error=0 (f17_pc_asan) ==
+1,pcsegv,new,SIGSEGV,sig,20,FIRE,"rc=1 asan=1[AddressSanitizer: ]",0,0,3.90
+2,pcabrt,new,SIGABRT,sig,22,FIRE,"rc=134 SIGABRT",0,0,3.11
+3,pcaxis,new,shutdown-cmd,cmd,21,FIRE,"rc=1 asan=1[AddressSanitizer: heap-buffer-overflow]",0,0,3.07
+
+INSTRUMENT FACT 1 — ASan INTERCEPTS SIGSEGV: cycle 1 (pcsegv) exits rc=1 with an
+ASan report, NOT rc=139. On the ASan tree the exit-code channel alone would classify
+a real SIGSEGV fire as OTHER; the ASan detector (F8) is what makes it a FIRE.
+SIGABRT is NOT intercepted (cycle 2 = rc=134), so the two channels are complementary.
+
+INSTRUMENT FACT 2 — §5.55's native face here was SIGSEGV (rc=139), where §11.124(e)
+measured SIGABRT 2/2 on each of two binaries. Same drive, same entry. The face is
+garbage-dependent, as §5.55's own mechanism says; it is NOT a gdb-vs-native split.
+
+INSTRUMENT FACT 3 — the axis was really DRAWN in the pcaxis cycles (a control that
+did not build the family's resources would be vacuous): axisshot_3.png written by the
+app itself (640 KB) after 'Execute_command flag planets_axis on'.
+
+== ASan's own attribution of the §5.55 fire (f17_pc_asan/plain_003_pcaxis.log:2113) ==
+==435784==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x6e0a1be74d90 at pc 0x62c4527cd5f7 bp 0x7ffce4a95fe0 sp 0x7ffce4a95fd0
+READ of size 8 at 0x6e0a1be74d90 thread T0
+    #0 0x62c4527cd5f6 in std::vector<SubBuffer, std::allocator<SubBuffer> >::push_back(SubBuffer const&) /usr/include/c++/15/bits/stl_vector.h:1418
+    #1 0x62c4527cd5f6 in BufferMgr::releaseBuffer(SubBuffer&) /home/claude/spacecrafter/src/EntityCore/Core/BufferMgr.cpp:95
+    #2 0x62c45306df60 in SharedBuffer<Vector3<float> >::~SharedBuffer() /home/claude/spacecrafter/src/EntityCore/Resource/SharedBuffer.hpp:17
+    #3 0x62c45306df60 in std::default_delete<SharedBuffer<Vector3<float> > >::operator()(SharedBuffer<Vector3<float> >*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #4 0x62c45306df60 in std::default_delete<SharedBuffer<Vector3<float> > >::operator()(SharedBuffer<Vector3<float> >*) const /usr/include/c++/15/bits/unique_ptr.h:86
+    #5 0x62c45306df60 in std::unique_ptr<SharedBuffer<Vector3<float> >, std::default_delete<SharedBuffer<Vector3<float> > > >::~unique_ptr() /usr/include/c++/15/bits/unique_ptr.h:398
+    #6 0x62c45306df60 in ~AxisFamilyData /home/claude/spacecrafter/src/experimentalModule/bodyModules/AxisModule.cpp:26
+    #7 0x70fa276488a0 in __run_exit_handlers stdlib/exit.c:118
+    #8 0x70fa2764897d in __GI_exit stdlib/exit.c:148
+    #9 0x70fa2762a57b in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:74
+    #10 0x70fa2762a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #11 0x62c4527c3674 in _start (/home/claude/spacecrafter/build-asan/src/spacecrafter+0x19b674) (BuildId: 5e809812e541acf5ddb1f9ae9533a292264f5b04)
+
+0x6e0a1be74d90 is located 1080 bytes after 216-byte region [0x6e0a1be74880,0x6e0a1be74958)
+freed by thread T0 here:
+    #0 0x70fa2bf242bb in operator delete(void*, unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:155
+    #1 0x6cf9d6d95f1d  (<unknown module>)
+    #2 0x62c45281465d in VulkanMgr::~VulkanMgr() /home/claude/spacecrafter/src/EntityCore/Core/VulkanMgr.cpp:209
+    #3 0x62c4532b3f60 in std::default_delete<VulkanMgr>::operator()(VulkanMgr*) const /usr/include/c++/15/bits/unique_ptr.h:92
+    #4 0x62c4527be1c4 in std::default_delete<VulkanMgr>::operator()(VulkanMgr*) const /usr/include/c++/15/bits/unique_ptr.h:86
+    #5 0x62c4527be1c4 in std::__uniq_ptr_impl<VulkanMgr, std::default_delete<VulkanMgr> >::reset(VulkanMgr*) /usr/include/c++/15/bits/unique_ptr.h:204
+    #6 0x62c4527be1c4 in std::unique_ptr<VulkanMgr, std::default_delete<VulkanMgr> >::reset(VulkanMgr*) /usr/include/c++/15/bits/unique_ptr.h:511
+    #7 0x62c4527be1c4 in main /home/claude/spacecrafter/src/main.cpp:376
+    #8 0x70fa2762a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #9 0x70fa2762a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #10 0x62c4527c3674 in _start (/home/claude/spacecrafter/build-asan/src/spacecrafter+0x19b674) (BuildId: 5e809812e541acf5ddb1f9ae9533a292264f5b04)
+
+previously allocated by thread T0 here:
+    #0 0x70fa2bf2319b in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:86
+    #1 0x6cf9d71e8ddf  (<unknown module>)
+    #2 0x6cf9d71e8f41  (<unknown module>)
+    #3 0x6cf9d6d95ae4  (<unknown module>)

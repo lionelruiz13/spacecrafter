@@ -1,0 +1,4 @@
+cycle,variant,path,entry,teardown,tcp_secs,outcome,detail,rovers,rovload,load1
+1,pcsegv,new,SIGSEGV,sig,20,FIRE,"rc=1 asan=1[AddressSanitizer: ]",0,0,3.90
+2,pcabrt,new,SIGABRT,sig,22,FIRE,"rc=134 SIGABRT",0,0,3.11
+3,pcaxis,new,shutdown-cmd,cmd,21,FIRE,"rc=1 asan=1[AddressSanitizer: heap-buffer-overflow]",0,0,3.07

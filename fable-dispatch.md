@@ -987,7 +987,15 @@ corrected: it was written, then destroyed by the same edit.]*
   no fires ⇒ tightened bounds per arm (rule of three); (iii) closes only with magnitude
   AND mechanism predicted from the attributed cause (§11.122(i)'s own rule) — else it
   stays open with the new record appended.
-- **WIP:** —
+- **WIP (2026-07-31, F17 ckpt1):** detectors positive-controlled on BOTH binaries at
+  `ebb41ab2`, through the hunt's own classifier: native `pcsegv`/`pcabrt`/**`pcaxis`**
+  3/3 FIRE, ASan tree 3/3 FIRE (`f17_pc_native`, `f17_pc_asan`). `pcaxis` is new — the
+  §5.55 fire as a positive control, i.e. a REAL member of the hunted class, and it is
+  what shows the **ASan** detector able to fire on a genuine teardown fault. Two
+  instrument facts recorded: ASan **intercepts** SIGSEGV (rc=1 + report, never 139), so
+  on that tree the exit-code channel alone would miss a real SEGV; and §5.55's native
+  face here was **SIGSEGV**, not the SIGABRT §11.124(e) measured — the face is
+  garbage-dependent, not gdb-vs-native. Next: ASan mix N ≥ 54.
 
 ### F18 — G4-coherence batch: §5.52 mid-band surface + §5.54 threshold authority + §5.53 level step  [M–L]
 - **Row / recorded:** §5.52 · §5.53 · §5.54 (all opened §11.123(g); full rows at

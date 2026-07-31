@@ -1,0 +1,19 @@
+==== B7 HUNT [plain] batch start 2026-07-31T11:02:20+02:00  out=/home/claude/spacecrafter/claude/harness/artifacts/f17_pc_native append=0 cyc0=0 ====
+BIN mtime=2026-07-31 09:57:02.985187969 +0200  code HEAD=ebb41ab2  harness HEAD=8ce91ed
+config md5 ref=03fbee59bc3ec506c58f0a3f1e1d73df   ssystem md5=545a51ef76294891579a1fc2fe13792b
+composed-body axis: B7_ROVERS=0  scene=none (§11.95 reproduction)  scene_pre_existed=0
+host at batch start: loadavg=2.48 2.39 2.80  memavail=14,0GiB
+batch teardowns: 3  (cycle ids 1..3)
+cyc 1 pcsegv: *** *** FIRE *** *** rc=139 SIGSEGV  see /home/claude/spacecrafter/claude/harness/artifacts/f17_pc_native/plain_001_pcsegv.log
+cyc 2 pcabrt: *** *** FIRE *** *** rc=134 SIGABRT  see /home/claude/spacecrafter/claude/harness/artifacts/f17_pc_native/plain_002_pcabrt.log
+cyc 3 pcaxis: *** *** FIRE *** *** rc=139 SIGSEGV  see /home/claude/spacecrafter/claude/harness/artifacts/f17_pc_native/plain_003_pcaxis.log
+==== B7 HUNT [plain] batch done 2026-07-31T11:03:26+02:00 ====
+host at batch end: loadavg=3.57 2.71 2.88  memavail=14,0GiB
+ssystem md5 at end=545a51ef76294891579a1fc2fe13792b
+final config md5=03fbee59bc3ec506c58f0a3f1e1d73df  ref=03fbee59bc3ec506c58f0a3f1e1d73df  MATCH
+--- outcome tally (this out dir, cumulative) ---
+      3 FIRE
+*** FIRE ROWS ***
+1,pcsegv,new,SIGSEGV,sig,12,FIRE,"rc=139 SIGSEGV",0,0,2.50
+2,pcabrt,new,SIGABRT,sig,11,FIRE,"rc=134 SIGABRT",0,0,2.90
+3,pcaxis,new,shutdown-cmd,cmd,11,FIRE,"rc=139 SIGSEGV",0,0,3.57
