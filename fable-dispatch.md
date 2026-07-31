@@ -814,6 +814,26 @@ corrected: it was written, then destroyed by the same edit.]*
   §11.44's named residual closed; §5.52/§5.53/§5.54 opened (record-don't-fix).
   Battery green: b24 (120 bodies) + its RED leg firing, b25 (130 bodies /
   17 systems, twins 18/18), b40, b4, scene E 26/26, f15_persist, b12_rare 15/15.
+  **Supervisor-verified 2026-07-31** (11.123 read in full; design note structure
+  checked against all seven mandated items, design-before-code confirmed by
+  timestamps 02:42 vs 03:48 — the F6 discipline held; trees/commits/authors
+  checked; diff surface new-path only, old `body_sun.frag` untouched, pool fix
+  confined to `PipelineRegistry.cpp`; §5.52–§5.54 stubs + B12 flip verified at
+  the ledger; harnesses not re-run — both-ways law refutation on the pre-change
+  binary + committed prediction-first artifacts accepted as evidence). Deviations
+  ENDORSED: (1) the pool per-set-capacity fix is the named defect class one
+  dimension over, forced by the task's own zero-validation bar, 7→0 measured;
+  (2) the star-gated (not distance-gated) inertness re-derivation FOLLOWS THE
+  AUTHORITY over this section's own paraphrase — "far-regime bit-inert (family
+  gated off)" above was written under the distance-gate reading the design
+  refutes with physics + the row's own 1 AU acceptance measurement (the F3
+  A8/A9 drift class: the row wins, the view was stale); (3) the 2.5 R☉ scene
+  move is single-variable discipline, §5.53 records the trap. The 2×2 inertness
+  argument endorsed (pre|post2 = 0 px proves the binary is not the
+  discriminator; the one outlier launch is a same-binary A/A effect, B30
+  class). D11's GPU half is derived-not-measured — limitation stated in-entry,
+  structural-subset argument endorsed. Veto points V1–V4 + content decisions
+  D1–D4 + the chromosphere grammar word → §3.
 
 ---
 
