@@ -1191,27 +1191,6 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   BOTH levels, RED pre-fix; D11 unchanged (1 ms/frame denominator). Battery green +
   frozen md5; the b12 instruments (`b12_photosphere.py`/`b12_limb.py`) stay green (the
   star family lives inside these thresholds).
-- **WIP:** 2026-07-31 · **checkpoint 1 GREEN — §5.52 DISCRIMINATED + FIXED** (code
-  `94eb3f03`). Candidate 2 (`bind` → no layout) REFUTED by instrument: `layout` non-null
-  and `got` carrying VARIANT_NO_DEPTH at all three mesh families. Candidate 1 CONFIRMED:
-  NDC z = 11574/23588/71345/29.9 (Sun/Mars/Jupiter/Moon) with the stale range, i.e.
-  rasterizer depth-CLIP, which VARIANT_NO_DEPTH does not disable. Fix = `Renderer::
-  enterDepthlessSlice` (mapping without slice entry) + `clearDepth` re-establishing its
-  bucket range every call. Post-fix z = 0.5 exactly (predicted); disc ratios Sun 0.84 /
-  Mars 0.88 / Jupiter 0.99 vs 0.00/0.00/0.11 pre-fix; b12 s5 0.0000 → 0.9917. Battery
-  green (b24/b25/b40/b4/A–D/E/f15/b12), frozen md5 in==out. Harness: `f18_midband.py`,
-  `f18_disc.py`, `f18_run.sh`. · **checkpoint 2 GREEN — §5.54 SETTLED px-intent + landed**
-  (code `2117ccb0`). Derivation (G4 wording + b12-design's ≥1 px + the family's own live
-  px-converted siblings + D5's 8k inversion) ⇒ PX; px constants are the authority, the
-  screenSize forms derived by `setViewportRadius` (the viewport's only writer),
-  `viewportRadius` no longer public. Census was wider than the row: 0.2 had SIX spellings,
-  0.0015 three, half double-vs-float. Gates at 2048 bit-identical to the old literals;
-  second width 1024 measured both sides vs a prediction fixed before the run — px-intent
-  0.049 (Mars, satellite halos, attributed via Venus 0.000) / 0.000 (Venus); pre-change
-  binary same scene 0.729 / 0.644 = the surface drawing where px-intent says it must not.
-  VETO POINT recorded: named EARLY constant said 2 px, shipped gate is 3.07 px — preserved
-  the shipped value, Vixy decides. Battery green again on this binary. Harness:
-  `f18_gate.py`, `f18_gate_run.sh`; dump header now carries `gates`.
 - **WIP:** — **DELIVERED 2026-07-31 → §11.127** (code `94eb3f03`/`2117ccb0`; harness
   `a0671a4`/`9aec4b3`/delivery commit). **§5.52 CLOSED** (candidates discriminated by
   instrument first — candidate 2 REFUTED, candidate 1 CONFIRMED at NDC z = 11574/23588/
@@ -1229,6 +1208,26 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   implicate the delivered code). NEW Vixy rows **A41/A42/A43**. Battery green, frozen md5
   in == out. One decision-free rider (a D12 log) was BUILT and WITHDRAWN for failing its
   own bar. `b12-design.md` §3.1 superseded-with-record.
+  **Supervisor-verified 2026-08-01** (11.127 read in full; trees/commits/authors
+  checked; diff surface confirmed new-path only — all 17 files under
+  `src/experimentalModule/`, old path untouched; §5.52/§5.54 CLOSED tails +
+  §5.53 OPEN-on-(a)(b) + §5.62 row + A41/A42/A43 rows + B12 content-slice gating
+  verified at the ledger; harnesses not re-run — instrument-first discrimination
+  records + RED-pre-fix legs at three independent scales (disc ratios, the 1024
+  gate counterfactual, the per-file level predictions) + committed artifacts
+  accepted as evidence). Deviations (1)–(4) all ENDORSED: (1) keeps §5.53(b)
+  answerable as a one-token edit — the F12 one-authority-per-question move; (2)
+  is correction-validated-against-the-class (the fraction ordering inverts above
+  ~4k — found by replaying the scope, not the trigger); (3) is the instrument-
+  chain bar operating — a probe that cannot be shown to fire converts observation
+  into fiction, same bar that withdrew §5.59's fix; (4) is the §11.80(a) floor
+  discipline plus the sharper exact-arithmetic argument. §5.62's record-don't-
+  chase ENDORSED (owed check named in-row; every delivered comparison is inside
+  one epoch with its own pair, so the delivery does not rest on the unstable
+  quantity). A41/A42/A43 correctly Vixy's; A42's align-to-180 recommendation
+  endorsed — parity-instrument trap already sprang twice (F9's 1.34, §5.53's own
+  discovery path). Checkpoint-WIP line consolidated into this one by the
+  supervisor (protocol: cleared at delivery).
 
 ---
 
