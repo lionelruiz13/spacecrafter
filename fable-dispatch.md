@@ -125,6 +125,13 @@ week of August).
      `~/.spacecrafter`), so md5 re-asserts alone do not cover a concurrent launcher.
      On hit: record it, wait it out, launch fresh. F8's `b7h3_host.log`
      batch-boundary check is the precedent instrument.
+   - **Display architecture is part of the instrument (2026-07-31, §11.122(o)):**
+     claude renders on his OWN headless GNOME/Xwayland `:2` (GPU-real; the harness
+     default); Vixy's remmina/RDP relay is view-only and its CPU is coupled to what
+     WE draw. Frame-cadence figures and A/A floors are baselined under this stack —
+     if it ever changes (compositor, streamer, headless X), or a task suspects
+     viewer-attached vs detached pacing, re-baseline in-run instead of comparing
+     across sessions.
 6. Abort-tolerance discipline (the reason this file exists):
    - Commit code + harness at **every green checkpoint** (small commits, normal
      trailer discipline: code first, harness carries `Code: <branch> @ <short-sha>`).
