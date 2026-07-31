@@ -98,6 +98,26 @@ harness `fe7e2dc` — the harness moved past session-5 close: cadence correction
 binary present (mtime 03:22, consistent with F9's build order; first executor rebuilds
 regardless). DECISIONS_PENDING open set at session start: **D15, D21 (both SCHEDULED
 last week of August, §11.116(a)), D37 (awaiting Vixy)**.
+**Round outcome (session 6 close, 2026-07-31):** F16 → §11.124, F17 → §11.125,
+**F19** → §11.126 — all three delivered AND supervisor-verified same day. **The round
+restructured itself mid-flight**: F17's hunt caught the row's first reproducible
+teardown crash (reload + composed OJM + quit, ~96 % under load) and attributed it
+single-variable to F16's own §5.51 fix having made two long-standing lifetime
+violations REACHABLE; the supervisor decision (recorded at F17's WIP + §3): fix-first
+— F19 minted into slot 3, F18 deferred with its section intact. Net: **§5.50, §5.51,
+§5.55, §5.57, §5.58 CLOSED** (the teardown-order class fixed at the class, audit
+in-entry); **B7's crash class CLOSED** (27/30 → 0/30; the row is now the HUNG class
+alone = §5.59, reproducible on demand, its fork Vixy's as **A40**); §5.56 re-derived
+and open; §5.59 open with its fix BUILT, MEASURED, WITHDRAWN (I7 bar not met — it
+converts the hang into a crash); NEW §5.52–§5.54 (F9, pre-existing), §5.60 (device
+limit, Vixy), §5.61 (EntityCore lost wakeup, recorded read-only). TSan is UNUSABLE on
+this driver (§11.125(e), N=0 stated). Executor quality this round: two corrections of
+predecessor records at source (§11.124(c) LeakSan, §5.55's signal face), one
+fix-refused-on-its-own-bar — all three the discipline operating, all endorsed.
+Remaining dispatchable, next round: **F18** (minted, head of queue), **next B31
+slice** (session file §3.2 — mint must state D28/D21 carve-outs), **B7-hunt-5 only
+after A40** (and its mix gains the line-family flags — the §11.124(k) hole is now
+closable), **F18's G4/B12-content interaction** waits on Vixy's b12-design §7 set.
 
 ---
 
@@ -1101,8 +1121,25 @@ corrected: it was written, then destroyed by the same edit.]*
   17686 → **17626 B / 194**; quiet mix **54/54 CLEAN**; validation **0 VUID both
   entries with AXIS=on** (F16's exclusion retired), channel positive-controlled;
   battery green; frozen md5 in==out throughout.
-
-### F18 — G4-coherence batch: §5.52 mid-band surface + §5.54 threshold authority + §5.53 level step  [M–L]
+  **Supervisor-verified 2026-07-31** (11.126 read in full; trees/commits/authors
+  checked; cumulative diff surface read — new-path/tools/app seam only, old
+  render path untouched; the surviving `waitAllFrames` read AT SOURCE: a NEW
+  quiesce primitive, hot-path `waitFrame` byte-identical, its real-completion
+  loop written so a future cancellation cannot silently satisfy it — the A40
+  fork's precondition stated in code; §5 flips + A40 + B7 annotation verified at
+  the ledger; harnesses not re-run — interleaved arms + bit-identical ARM R +
+  both-ways controls + committed artifacts accepted as evidence). Deviations
+  (1)–(5) all ENDORSED: (1) is the mandate's own as-if bar OPERATING — building,
+  measuring, and refusing a fix that converts a rare hang into a rare crash is
+  the correct execution, and the three commits bought a reproducer + a measured
+  record; (2) the withdrawal rests on the 3/3 correlation, not the missing
+  backtrace, and says so; (3) spends bounded cycles on the scene §11.124(m)
+  named as the blind spot, with the weak bound stated; (4) is class-over-
+  instance with the idle-device cost argument; (5) is the established scratch
+  pattern with bit-identical restores. The §5.59 residual's naming — "the
+  cancellation makes a pre-existing teardown-after-stall fault REACHABLE, exactly
+  as §5.51 made §5.57 reachable" — is the batch's own class seen recursively;
+  endorsed as recorded. A40 correctly Vixy's (both branches user-visible).
 - **Row / recorded:** §5.52 · §5.53 · §5.54 (all opened §11.123(g); full rows at
   INTENT.md §5 — read them verbatim, they carry mechanisms + owed checks) · G4 verbatim
   (INTENT §2): *"compute only what the observer can distinguish, and draw each regime
@@ -1222,6 +1259,30 @@ corrected: it was written, then destroyed by the same edit.]*
   inside · does a resolved star's halo alternate with its surface or coexist ·
   the chromosphere module's `module =` grammar word (B28 sign-off owed BEFORE
   that module can be built — the one of the four with a hard ordering).
+- **NEW A40 (F19, §11.126(g)(l)) — the session-6 round's one open decision, and it
+  is load-bearing for B7's last open class:** when the drawing worker has not
+  completed the frame the main loop waits on and the user quits, should the app
+  (i) keep waiting (today: no exit, watchdog calls it hung — measured ~1–3/30 under
+  load with 8 composed rovers) or (ii) stop waiting, which MEASURABLY reaches a
+  teardown fault the waiting hides (3/3 in F19's campaign — the fix was built,
+  measured, and WITHDRAWN on exactly that result)? Both branches user-visible.
+  `harness/f19_stall.sh` makes either answer testable in three launches. §5.61 (a
+  lost wakeup in EntityCore's `WorkQueue::pop`, recorded not claimed) is a candidate
+  mechanism for the hang side and sits on the EntityCore authority line — your
+  pacing.
+- **NEW §5.60 (F17, §11.125(e)) — device-limit policy, D13-flavored, no urgency:**
+  the app requests a single 2.68 GB device allocation and dies where the limit is
+  enforced (llvmpipe's 2.15 GB cap) — a policy on `maxMemoryAllocationSize` is
+  yours; recorded, not designed.
+- **Session-6 supervisor decision (recorded as a veto point; cheap to reverse as
+  scheduling, not semantics):** F17's find made `master-beta` reproduce a SIGSEGV on
+  a shipped user action; the executor's fix-vs-revert-vs-neither suspension was
+  DECIDED fix-first by the supervisor (revert excluded structurally — the violations
+  pre-exist, §5.55 fires on both binaries, and reverting would re-mask the
+  instrument + restore a measured 352 KB/reload leak); F19 took the round's third
+  slot, F18 deferred one round. The class fix is landed and verified (§11.126);
+  reversal of the scheduling is moot post-delivery, reversal of any F19 mechanism is
+  per-commit and each carries its argument at the site.
 - **Host note — CORRECTED [vixy 2026-07-31] (§11.121(m) + §11.122(n) carry the
   annotations):** foxy the person was NOT active during session 5 (active only
   before it); F8's "second user active" measured foxy-owned leftover PROCESSES
