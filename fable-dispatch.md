@@ -781,6 +781,21 @@ corrected: it was written, then destroyed by the same edit.]*
   OPEN unattributed residual: 2 HUNG in one post-fix arm, non-reproducing across
   a second post-fix arm and a pre-fix A/B arm. B7 STAYS OPEN; next hunt = the
   ASan tree over a full mix, not more load.
+  **Supervisor-verified 2026-07-31** (11.122 read in full; trees/commits/authors
+  checked; the fix diff READ — exactly as claimed, two logic lines with the reason
+  at the site citing I5; §5.51 stub with its owed discriminating check verified at
+  the ledger; harnesses not re-run — positive-controlled detector records +
+  per-teardown load columns + committed artifacts accepted as evidence). Deviations
+  (1)–(5) ENDORSED — (3) is the §5.2 re-verify-cached-conclusions rule operating
+  exactly as intended (the false "multi-hour" premise was the only thing between
+  the row and its defect); (5) a landed fix with an unmeasured regression signal
+  would be worse. The §11.122(i) handling ENDORSED: both theories stay live
+  (binary vs load cold-start transient), the fix STAYS (no mechanism reaches a
+  pre-teardown draw stall from a teardown-only dtor; reverting would reintroduce
+  a MEASURED freed-memory write), the mandated pre-warmed N ≥ 50 re-measure is
+  the closure path. Next-hunt sequencing per §11.122(m) adopted: **§5.51 fix
+  FIRST as its own dispatch (F16 candidate — it masks all teardown measurement),
+  then ASan mix N ≥ 50, then TSan; stop buying load.**
 
 ### F9 — B12: near-surface star family — DESIGN-FIRST  [L]
 - **Row / recorded:** B12 (§13.B, unblocked by Q21) · §11.44 · §2(a) (dark-Sun-disc divergence legitimised as a defect of old, i.e. new must do better).
