@@ -1007,6 +1007,74 @@ corrected: it was written, then destroyed by the same edit.]*
   leak closed). Deviation: **ARM C (cold-start control) NOT run** — the hour went to the
   fire. **For the supervisor: `master-beta` now reproduces a crash on a shipped user
   action; revert-or-fix is recorded as a product-risk decision, not taken (§11.125(j)).**
+  **Supervisor-verified 2026-07-31** (11.125 read in full; trees/commits/authors
+  checked; `550b3f9f` confirmed .gitignore-only by its diffstat; §5.57–§5.60 rows +
+  §5.55/§11.124(l)(m)/B7-row annotations verified at the ledger; harnesses not
+  re-run — pre-committed predictions + interleaved arms + single-variable bisect +
+  both-faces gdb captures accepted as evidence). Deviations (1)–(6) all ENDORSED:
+  (1) a reproducible crash in the hunted class outranks the last increment on a
+  refuted theory, and the cost is stated in-entry, not hidden; (2) is the sharper
+  single-variable form; (3) matches the F16 rider exactly; (4) is content-free by
+  diffstat + bit-identical restore rebuild; (5)(6) are the honest forms. The
+  §11.124(c)/(d) corrections are information preservation operating as designed.
+  **SUPERVISOR DECISION on §11.125(j) (recorded as a veto point, §3): option (1)
+  FIX-FIRST, adopted as F19 and given this round's third slot; F18 defers to next
+  round, section stays.** Revert (2) is excluded structurally: §5.55 fires on BOTH
+  binaries, §5.57/§5.58 are long-standing lifetime violations made REACHABLE (not
+  created), and reverting would re-mask the instrument + restore a measured 352 KB
+  per-reload session leak — a patch protecting its own limitation. Neither (3)
+  loses to (1) on the queue's own logic: teardown integrity was this round's head
+  BECAUSE it gates every instrument; leaving a session-opened 96 %-reproducer
+  crash class across a round boundary when its fix batch is fully specified
+  (§11.125(m)) optimizes nothing.
+
+### F19 — teardown-order batch: the manager-lifetime class (§5.55+§5.57), the reload race (§5.58), the untimed wait (§5.59)  [M–L]
+- **Row / recorded:** §5.55 (fix shape in-row: the `ShadowService::release()` /
+  `Renderer::releaseRegistry()` hook pattern + the owed audit) · §5.57 + §5.58 (opened
+  §11.125(g)(h), both faces gdb-attributed at source) · §5.56 (rides: same shape at the
+  loaders, dies in the §5.55 regime) · §5.59 (opened §11.125(i): untimed
+  `hasCompleted.wait(0)`, teardown serviced by the same loop, 4/108 measured rate +
+  llvmpipe repro) · §11.125(m) verbatim: *"§5.55 and §5.57 are the SAME mechanism at
+  two sites (a resource handed back to a manager destroyed with the App), so the fix
+  should address that class, not the two instances; the audit §5.55 already owes
+  ('every file-static that captures a manager reference') should be widened to 'every
+  deferred-release container drained after `app.reset()`'"* · §11.124(a)(d) (the WHEN
+  bound + per-channel analysis the fix must keep true) · B7 row (the 96 % reproducer =
+  the batch's regression instrument).
+- **Why now (supervisor decision above):** `master-beta` reproduces a SIGSEGV on a
+  shipped user action (~33 % idle, ~96 % under load); the fix batch is fully specified
+  by §11.125; every future teardown measurement reads through this class.
+- **Task:** (i) the CLASS fix for §5.55+§5.57: no resource may be handed back to a
+  manager destroyed with the App — the audit first (*every* deferred-release container
+  drained after `app.reset()`; *every* file-static capturing a manager reference),
+  then the fix at the class (drain/release hooks ordered before manager death, the
+  §5.55 in-row pattern), instances fall out of it; §5.56's loaders handled inside the
+  same audit (their regime may CHANGE under your reordering — re-derive, don't inherit
+  §11.124(f)'s "harmless today"). (ii) §5.58: the mid-session reload release
+  synchronized against frames in flight — the existing deferred-release channels are
+  the stated safe mechanism (§11.124(d)); route or fence within that contract; a
+  genuine design fork (new ownership model, frame-contract change) → record + stop.
+  (iii) §5.59: interruptible/bounded wait ONLY under the as-if bar (I7): observable
+  behavior identical on every channel except the previously-hung teardown — no cadence
+  change (D11), no new wakeups on the hot path; if that bar cannot be met
+  decision-free → record with the fork named. (iv) §5.60 is NOT yours (device-limit
+  policy — recorded for Vixy).
+- **Stop boundaries (NOT yours):** §5.60; §5.52–§5.54 (F18, next round); any
+  frame-pacing semantics beyond §5.59's as-if bar; the old render path (baseline);
+  line-family coverage-hole mix additions (the flags stay a one-launch control until
+  this batch is VERIFIED, then the hole closes in the next hunt's mix, not yours).
+- **Discriminating check:** the 96 % reproducer RED→GREEN (`B7_ROVERS=8` +
+  `qda`/`qdaterm` under pre-warmed load: 25-26/26 FIRE on the pre-fix binary → 0/26
+  post-fix, N ≥ 26 each way); the §5.55 pcaxis pair flips (`flag planets_axis on` +
+  teardown: fire → clean, both entries); ASan legs stay silent (no new report class;
+  leak baseline 17686 B/194 unchanged or improved — §11.125(d) is the stated
+  baseline); the §11.95-mix quiet batch N ≥ 50: 0 fires / 0 hangs; the F16 validation
+  leg re-run (0 VUID through shutdown incl. a completed mid-session reload); §5.59:
+  the llvmpipe/load stall path exits within the bound while a normal session's frame
+  cadence is bit-inert (in-run A/B); battery green (b24_equivalence, b25_galactic,
+  b40_parity, b4_anchors, scene E, f15_persist); frozen md5 in==out; concurrent-
+  instance assert per §0.5.
+- **WIP:** —
 
 ### F18 — G4-coherence batch: §5.52 mid-band surface + §5.54 threshold authority + §5.53 level step  [M–L]
 - **Row / recorded:** §5.52 · §5.53 · §5.54 (all opened §11.123(g); full rows at
