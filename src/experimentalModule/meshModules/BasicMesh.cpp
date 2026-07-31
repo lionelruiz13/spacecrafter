@@ -88,7 +88,7 @@ void BasicMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
     // Binding-state machine (SkinnableColorMap - the shared authority): every
     // transition (skin on/off, skin load completion, big texture appear/drop)
     // lands on exactly one compare, and only a CHANGE comes back here.
-    if (Texture *color = colorMap.resolve(screenSize > 0.2))
+    if (Texture *color = colorMap.resolve(screenSize > ModularBody::bigTextureGate()))
         bindColor(*color);
     bound.layout->bindSets(renderer, {*set, *Context::instance->uboSet});
 	mesh->draw(renderer, screenSize*1024);

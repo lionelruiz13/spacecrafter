@@ -147,7 +147,7 @@ void RingModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
     fillPlainShadows(*uFrag, body, this);
     bound.layout->bindSet(renderer, *set);
     // LOD by on-screen px (old thresholds, ring.cpp:284-297), half by h.
-    const float px = body->getScreenSize() * 2.f * ModularBody::viewportRadius;
+    const float px = body->getScreenSize() * 2.f * ModularBody::getViewportRadius();
     const int lod = (px < 30.f) ? 0 : (px < 300.f) ? 1 : 2;
     Ring2D *strip = strips[lod * 2 + (h > 0.f ? 0 : 1)].get();
     if (strip)

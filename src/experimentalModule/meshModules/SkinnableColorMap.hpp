@@ -55,7 +55,7 @@ public:
     // Old parity (Body::switchMapSkin): switch(true) without a skin is a no-op.
     void switchSkin(bool use);
     // THE state machine. allowBigTexture = the caller's size gate (the near
-    // regime's screenSize > 0.2; the depth-less mid band never engages big
+    // regime's BODY_BIG_TEXTURE_BOUNDING_SIZE; the depth-less mid band never engages big
     // textures). Returns the texture to (re)bind, or nullptr if the binding
     // this object last reported is still the right one.
     Texture *resolve(bool allowBigTexture);

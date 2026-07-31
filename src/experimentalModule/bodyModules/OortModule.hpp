@@ -48,7 +48,8 @@ public:
     // parent's subsystemRadius/AoI - see the INTENT §6.9 coupling note.
     virtual bool update(ModularBody *body, float scaledRadius) override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
-    // Far edge of the regime band (0.0015 < screenSize < 0.008): keep drawing so
+    // Far edge of the regime band (EARLY..FULL visibility, ModularBody.hpp):
+    // keep drawing so
     // the cloud does not blink out one regime early. Same render as draw().
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
 

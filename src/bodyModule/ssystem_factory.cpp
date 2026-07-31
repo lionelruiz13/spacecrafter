@@ -933,6 +933,25 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
     // (owned anchor bodies are new-path-only, so they come out with "old":null).
     out << ",\"anchors\":";
     cameraAnchors->dumpState(out);
+    // The G4 regime gates as the app itself resolved them this frame (INTENT
+    // §5.54). Both forms: the px authority (constants) and the screenSize form
+    // the draw path compares in, plus the viewportRadius they were derived
+    // from. Without this a harness measuring a regime boundary has to
+    // reconstruct the conversion, i.e. assume the thing under test - and the
+    // whole point of the px respelling is that the screenSize gates now MOVE
+    // with the render width, which is a claim only an observable can carry.
+    out << ",\"gates\":{\"viewportRadius\":" << ModularBody::getViewportRadius()
+        << ",\"px\":{\"early\":" << BODY_EARLY_VISIBILITY_BOUNDING_SIZE
+        << ",\"depthBucket\":" << BODY_DEPTH_BUCKET_BOUNDING_SIZE
+        << ",\"full\":" << BODY_FULL_VISIBILITY_BOUNDING_SIZE
+        << ",\"close\":" << BODY_CLOSE_RANGE_BOUNDING_SIZE
+        << ",\"bigTexture\":" << BODY_BIG_TEXTURE_BOUNDING_SIZE
+        << "},\"screenSize\":{\"early\":" << ModularBody::earlyVisibilityGate()
+        << ",\"depthBucket\":" << ModularBody::depthBucketGate()
+        << ",\"full\":" << ModularBody::fullVisibilityGate()
+        << ",\"close\":" << ModularBody::closeRangeGate()
+        << ",\"bigTexture\":" << ModularBody::bigTextureGate()
+        << "}}";
     out << "}\n";
     // B9 az-convention observability (INTENT §11.4/§11.60): the alt/az the two
     // paths expose to the UI/scripting surface, per body, at the SAME frame.

@@ -318,7 +318,7 @@ void ModularSystem::computeShadows(Renderer &renderer)
         for (ModularBody *body : sortedSystemBodies) {
             if (!body || body->distance == 0)
                 break; // sorted: unevaluated tail
-            if (!(*body && body->screenSize > 0.0015f) || body->isStar() || body->isMinorBody())
+            if (!(*body && body->screenSize > earlyVisibilityGate()) || body->isStar() || body->isMinorBody())
                 continue;
             for (auto *m : body->nearComponents) {
                 if (m->getTraits() & (BMT_BASIC_SELF_SHADOW | BMT_RGBA8_SELF_SHADOW)) {
@@ -401,7 +401,7 @@ void ModularSystem::computeShadows(Renderer &renderer)
         // Receiver gate: drawn this frame (the ModularBody::draw entry test),
         // not MINOR/light-source. NOT gated by screen size beyond drawing:
         // the occlusion criterion below is the shadow-relevance gate [vixy].
-        if (!(*body && body->screenSize > 0.0015f) || body->isStar() || body->isMinorBody())
+        if (!(*body && body->screenSize > earlyVisibilityGate()) || body->isStar() || body->isMinorBody())
             continue;
         body->receivedShadows.clear();
         // ... and only surfaces that SAMPLE: a body with no BMT_RECEIVE_SHADOW
@@ -747,8 +747,8 @@ void ModularSystem::drawNested(Renderer &renderer)
     // it is saved/restored here (nested-in-band compounds multiplicatively).
     const float px = (distance > subsystemRadius)
         ? (atanf(subsystemRadius / sqrtf(distance*distance - subsystemRadius*subsystemRadius))
-           / halfFov) * 2.f * viewportRadius
-        : 2.f * viewportRadius;
+           / halfFov) * 2.f * getViewportRadius()
+        : 2.f * getViewportRadius();
     if (px >= SYSTEM_VISIBILITY_SUBSYSTEM_SIZE) {
         const float savedAlpha = drawAlpha;
         const bool inBand = px < (SYSTEM_VISIBILITY_SUBSYSTEM_SIZE + SYSTEM_COLLAPSE_CROSSFADE_BAND);

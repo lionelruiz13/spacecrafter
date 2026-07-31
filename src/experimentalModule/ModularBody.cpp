@@ -35,6 +35,16 @@ float ModularBody::haloSizeLimit = 9;
 // until the executor dissolution (§6.9), so in every shipped scene this stays 1.
 float ModularBody::drawAlpha = 1.f;
 float ModularBody::viewportRadius = 1;
+// The G4 gates in screenSize units, derived from the px authority and the
+// viewport by setViewportRadius (INTENT §5.54). Seeded here from the
+// viewportRadius seed above so a gate read before the first
+// setViewportRadius is consistent with the radius read there - not
+// meaningful, but not a different kind of not-meaningful.
+float ModularBody::earlyVisibilityScreenSize = BODY_EARLY_VISIBILITY_BOUNDING_SIZE / 2.f;
+float ModularBody::depthBucketScreenSize = BODY_DEPTH_BUCKET_BOUNDING_SIZE / 2.f;
+float ModularBody::fullVisibilityScreenSize = BODY_FULL_VISIBILITY_BOUNDING_SIZE / 2.f;
+float ModularBody::closeRangeScreenSize = BODY_CLOSE_RANGE_BOUNDING_SIZE / 2.f;
+float ModularBody::bigTextureScreenSize = BODY_BIG_TEXTURE_BOUNDING_SIZE / 2.f;
 std::vector<ModularBody *> ModularBody::notableBody;
 float ModularBody::deltaTime = 0;
 double ModularBody::currentJD = 0; // written once per frame by dispatchUpdate (B39)
@@ -485,8 +495,8 @@ void ModularBody::drawLoaded(Renderer &renderer)
 {
     loaded = true;
     const auto matrix = mat.multiplyFast(computeBodyToSurface()); // TODO Fix ojml ?
-    if (screenSize > 0.008) {
-        if (screenSize < 0.2) {
+    if (screenSize > fullVisibilityGate()) {
+        if (screenSize < closeRangeGate()) {
             // far BEFORE clearDepth - hint behind the disc (see draw())
             for (auto &module : farComponents)
                 module->draw(renderer, this, mat);
@@ -644,12 +654,29 @@ Mat4f ModularBody::calculateSwitchCompensation(const ModularBody *to) const
     return diff.multiplyFast(to->accumulatedBodyPosToBody());
 }
 
+// The px->screenSize conversion of the G4 gates, in ONE place (INTENT §5.54).
+// screenSize is the bounding DIAMETER as a fraction of the render width under
+// the fisheye transfer, and viewportRadius is half that width, so dividing the
+// px gate by 2*viewportRadius is the whole conversion. Nothing else may write
+// viewportRadius: the gates would go stale, and stale gates are silent - a body
+// would simply be drawn in the wrong regime.
+void ModularBody::setViewportRadius(float halfRenderWidthPx)
+{
+    viewportRadius = halfRenderWidthPx;
+    const float px2ss = 1.f / (2.f * halfRenderWidthPx);
+    earlyVisibilityScreenSize = BODY_EARLY_VISIBILITY_BOUNDING_SIZE * px2ss;
+    depthBucketScreenSize = BODY_DEPTH_BUCKET_BOUNDING_SIZE * px2ss;
+    fullVisibilityScreenSize = BODY_FULL_VISIBILITY_BOUNDING_SIZE * px2ss;
+    closeRangeScreenSize = BODY_CLOSE_RANGE_BOUNDING_SIZE * px2ss;
+    bigTextureScreenSize = BODY_BIG_TEXTURE_BOUNDING_SIZE * px2ss;
+}
+
 void ModularBody::setTranslator(Translator &_translator)
 {
     translator = &_translator;
     for (auto &ref : bodyReference)
         ref.second->nameI18 = _translator.translateUTF8(ref.second->englishName);
-    viewportRadius = VulkanMgr::instance->getScreenRect().extent.width/2;
+    setViewportRadius(VulkanMgr::instance->getScreenRect().extent.width / 2.f);
 }
 
 std::vector<BodyModuleType> ModularBody::deduceBodyModuleList(std::map<std::string, std::string> &param)

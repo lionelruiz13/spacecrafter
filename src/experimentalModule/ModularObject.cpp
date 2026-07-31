@@ -197,5 +197,5 @@ float ModularObject::getOnScreenSize(const Projector *prj, const Navigator *nav,
     // screenSize is the ratio of the screen taken by the body; the pointer
     // path wants pixels. Viewport radius matches ModularBody::setTranslator's
     // definition (screen width / 2).
-    return body->getScreenSize() * (VulkanMgr::instance->getScreenRect().extent.width/2);
+    return body->getScreenSize() * ModularBody::getViewportRadius();
 }

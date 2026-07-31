@@ -49,7 +49,7 @@ void Renderer::beginDraw(uint8_t _frameIdx)
     orbitBucket = {0, 0};
     // Old needOrbitDepth gate is 10 px full diameter (absolute); px =
     // screenSize * 2 * viewportRadius (the drawHalo screen_r form).
-    const float orbitScreenSize = 5.f / ModularBody::viewportRadius;
+    const float orbitScreenSize = 5.f / ModularBody::getViewportRadius();
     for (ModularBody *body : ModularBody::drainNotableBodies()) {
         if (!*body)
             continue; // old gate: only bodies visible ON SCREEN reserve a slice

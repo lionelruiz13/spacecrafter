@@ -190,10 +190,73 @@ constexpr int SYSTEM_VISIBILITY_SUBSYSTEM_SIZE = 16;
 //! apparent size, a narrow transition derived from the threshold rather than
 //! an independent magic number), NOT a tuned value. Do not tune it here.
 constexpr float SYSTEM_COLLAPSE_CROSSFADE_BAND = SYSTEM_VISIBILITY_SUBSYSTEM_SIZE / 2.f;
-//! Minimal size of the body (bounding) on screen for showing the outer BodyModule without shadows nor Grounded ModularBody, in pixels
-constexpr int BODY_EARLY_VISIBILITY_BOUNDING_SIZE = 2;
-//! Minimal size of the body (bounding) on screen for showing the body normally in pixels
-constexpr int BODY_FULL_VISIBILITY_BOUNDING_SIZE = 16;
+// ---- The G4 regime gates (INTENT §5.54) ------------------------------------
+// All five are the SAME unit: the body's bounding-sphere DIAMETER on screen, in
+// PIXELS. They are the single authority; nothing gates on a screenSize literal
+// any more. The draw path compares in screenSize units, so each has a derived
+// companion below (ModularBody::earlyVisibilityGate() and friends), recomputed
+// from the current viewport by setViewportRadius - the gates' only writer, so
+// they cannot desync from it (I3).
+//
+// PIXELS and not a fraction of the half-FOV, DERIVED and not chosen:
+//  - G4 says "compute only what the observer can distinguish". What an observer
+//    distinguishes is pixels; a fraction of the half-FOV is not a perceptual
+//    quantity. b12-design.md's regime criterion, "smallest added structure
+//    >= 1 px", is the same criterion spelled out.
+//  - Every OTHER member of this family already converts. The sibling in this
+//    very block, SYSTEM_VISIBILITY_SUBSYSTEM_SIZE, is consumed as
+//    `px = (theta/halfFov)*2*viewportRadius; if (px >= SIZE)`
+//    (ModularSystem.cpp). So do the orbit-bucket gate (Renderer.cpp, "10 px
+//    full diameter (absolute)"), the atmosphere gate (AtmExtModule, 10 px), the
+//    ring gate (RingModule) and drawHalo's screen_r - whose comment records
+//    that the un-doubled form was a BUG. The old path, which is the parity
+//    baseline, is absolute px throughout (Sun::getSet's 180 px, needOrbitDepth's
+//    10 px).
+//  - D5 spans 1k-8k screens. Under fraction-intent the 16 px full-visibility
+//    gate is 65 px at 8k: the same body drawn as a surface on a 2k dome would
+//    be halo-only on an 8k one. More resolution, less drawn - the inverse of
+//    what G4 asks for. Under px-intent a body's regime is a property of what
+//    the observer can see, which is what both G4 and D5 require.
+//
+// VALUES: these are the shipped fraction literals (0.0015 / 0.004 / 0.008 /
+// 0.2) re-expressed in the pixels they mean at the 2048-wide render they were
+// frozen at, so behaviour at 2048 is unchanged by the respelling - that is the
+// point of respelling rather than retuning. NOTE the discrepancy this makes
+// visible, and do not silently repair it: the two constants that carried NAMES
+// said 2 px and 16 px. The full-visibility gate matches (16/2048 = 0.0078,
+// shipped as 0.008), but the early-visibility one does NOT - the shipped gate
+// is 3.07 px, not 2. Which value is right is a product question about when a
+// body stops being a dot; it is recorded as a VETO POINT for Vixy (§11.127),
+// not decided here. Changing any of these moves every body's regime in every
+// scene, so a change owes the before/after scene battery.
+//! Below this the body is a halo only: the outer BodyModule draws without
+//! shadows and without grounded ModularBody.
+constexpr float BODY_EARLY_VISIBILITY_BOUNDING_SIZE = 3.072f;
+//! Below this the body needs no depth bucket of its own (Renderer's depth-range
+//! partitioning, D1/D2/D3). PRECONDITION, stated at Renderer::clearDepth and
+//! preserved here BY CONSTRUCTION rather than by coincidence: this gate is
+//! strictly below BODY_FULL_VISIBILITY_BOUNDING_SIZE, so every body that draws
+//! with depth is in the frame's notable list. As fractions the two did not keep
+//! that order across resolutions (0.008 vs 0.004 inverts above ~4k) - a real
+//! consequence of px-intent, and the reason this one converts with the family.
+constexpr float BODY_DEPTH_BUCKET_BOUNDING_SIZE = 8.192f;
+//! Below this (and above early) the body draws in the DEPTH-LESS mid band -
+//! its surface through drawNoDepth, no depth slice (INTENT §5.52). Above it the
+//! body gets its own depth slice and the full near/grounded/in ladder.
+constexpr float BODY_FULL_VISIBILITY_BOUNDING_SIZE = 16.384f;
+//! Above this the body is CLOSE: the near/grounded/in substitution ladder
+//! engages (ModularBody::draw) and far components stop drawing.
+constexpr float BODY_CLOSE_RANGE_BOUNDING_SIZE = 409.6f;
+//! Above this a mesh binds the FULL level of its colour map instead of the
+//! reduced one (LayeredMesh, BasicMesh, PhotosphereModule).
+//! DELIBERATELY a separate constant from BODY_CLOSE_RANGE_BOUNDING_SIZE though
+//! equal today: they are two concepts (which representation the body is drawn
+//! with vs which texture level it samples), and §5.53(b) has an open question
+//! about THIS one alone - the old path swaps level at 180 px diameter
+//! (Sun::getSet) and this path at 409.6, so between those sizes an A/B compares
+//! two different textures. Merging them would make that question unanswerable
+//! without moving the regime ladder too.
+constexpr float BODY_BIG_TEXTURE_BOUNDING_SIZE = 409.6f;
 //! Minimal speed while under the area of influence of a body, in body_radius/s
 constexpr double MIN_MOVEMENT_SPEED = 0.125;
 //! Anti-stuck escape floor for the interactive proximity factor (§5.18 defect,
@@ -446,7 +509,7 @@ public:
             updateCache();       // module/radius part + a fresh updateReach()
         else
             updateReach();       // AoI tracks the current jd every frame (§11.62, B15)
-        if (screenSize > 0.004)
+        if (screenSize > depthBucketGate())
             notableBody.push_back(this);
     }
 
@@ -507,11 +570,11 @@ public:
     // not the mechanism.
     inline void draw(Renderer &renderer) {
         if (*this) {
-            if (screenSize > 0.0015) {
+            if (screenSize > earlyVisibilityGate()) {
                 if (loaded) {
                     const auto matrix = mat.multiplyFast(computeBodyToSurface());
-                    if (screenSize > 0.008) {
-                        if (screenSize < 0.2) {
+                    if (screenSize > fullVisibilityGate()) {
+                        if (screenSize < closeRangeGate()) {
                             // far (2D behind body) BEFORE clearDepth: the
                             // helper segment carrying them is positioned at
                             // the clearDepth boundary, ahead of this body's
@@ -1680,8 +1743,8 @@ private:
     // TODO create an optimized std::string for limited set
     std::vector<std::unique_ptr<BodyModule>> components; // Reference every BodyModule of this ModularBody by name
 
-    std::vector<BodyModule *> farComponents; // 2D behind body, SKIP when screenSize > 20%, update NEVER called
-    std::vector<BodyModule *> nearComponents; // Drawn if screenSize >= 0.15% and distance > scaledRadius * BODY_SURFACE_HEIGHT
+    std::vector<BodyModule *> farComponents; // 2D behind body, SKIP above BODY_CLOSE_RANGE_BOUNDING_SIZE, update NEVER called
+    std::vector<BodyModule *> nearComponents; // Drawn above BODY_EARLY_VISIBILITY_BOUNDING_SIZE and distance > scaledRadius * BODY_SURFACE_HEIGHT
     std::vector<BodyModule *> groundedComponents; // Drawn if distance <= scaledRadius * BODY_SURFACE_HEIGHT
     std::vector<BodyModule *> inComponents; // Draw if distance <= scaledRadius
     std::vector<BodyModule *> orbitComponents; // Orbit lines (row 8): drawn in the system-level orbit pass (ModularSystem::drawOrbits), not a screen-size regime
@@ -1878,11 +1941,49 @@ private:
     static std::vector<ModularBody *> notableBody;
     static Vec3f defaultHaloColor;
     static std::shared_ptr<BodyTesselation> bodyTesselation; // both-paths seam (setTesselation)
-public:
-    // Frame geometry, same public-precondition class as halfFov (set by
-    // dispatchUpdate from the VulkanMgr scissor; consumed by drawHalo's px
-    // conversion, the pointer service and drawSystem's px conversion).
+    // Frame geometry: HALF the render width in px (consumed by drawHalo's px
+    // conversion, the pointer service, drawSystem's px conversion and the
+    // regime gates below). Written by setViewportRadius ONLY - which is why it
+    // is not public: the derived gates ride on it, and a second writer would
+    // leave them stale. (Correcting the previous comment here, which said
+    // "set by dispatchUpdate from the VulkanMgr scissor": the write is in
+    // setTranslator, once, at system load - §11.127.)
     static float viewportRadius;
+    // The G4 gates in screenSize units - the form the draw path compares in.
+    // screenSize = halfAngularSize/halfFov, and under the fisheye transfer the
+    // body's on-screen DIAMETER in px is screenSize * 2 * viewportRadius
+    // (drawHalo's screen_r form), so gate_screenSize = gate_px / (2*vr).
+    // Derived, never authored: the px constants are the authority (I2).
+    static float earlyVisibilityScreenSize;
+    static float depthBucketScreenSize;
+    static float fullVisibilityScreenSize;
+    static float closeRangeScreenSize;
+    static float bigTextureScreenSize;
+public:
+    inline static float getViewportRadius() {
+        return viewportRadius;
+    }
+    // The ONE writer of the viewport radius (I3): it recomputes every derived
+    // gate, so there is no state in which the gates disagree with the viewport.
+    static void setViewportRadius(float halfRenderWidthPx);
+    // Regime gates in screenSize units. Accessors and not public data for the
+    // same reason viewportRadius is not: they are derived, and a writer other
+    // than setViewportRadius would be a desync (I2/I3).
+    inline static float earlyVisibilityGate() {
+        return earlyVisibilityScreenSize;
+    }
+    inline static float depthBucketGate() {
+        return depthBucketScreenSize;
+    }
+    inline static float fullVisibilityGate() {
+        return fullVisibilityScreenSize;
+    }
+    inline static float closeRangeGate() {
+        return closeRangeScreenSize;
+    }
+    inline static float bigTextureGate() {
+        return bigTextureScreenSize;
+    }
     // Frame clock in MILLISECONDS (the old-path fader/animation convention -
     // LinearFader::update takes ms ticks). Same precondition class as halfFov:
     // written ONCE per frame by Camera::update before any body update runs;

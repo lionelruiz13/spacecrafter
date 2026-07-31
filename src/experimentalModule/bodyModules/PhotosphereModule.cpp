@@ -113,7 +113,7 @@ void PhotosphereModule::draw(Renderer &renderer, ModularBody *body, const Mat4f 
     mesh->bind(renderer);
     fillVert(body, mat);
     const auto screenSize = body->getScreenSize();
-    if (Texture *color = colorMap.resolve(screenSize > 0.2))
+    if (Texture *color = colorMap.resolve(screenSize > ModularBody::bigTextureGate()))
         bindColor(*color);
     bound.layout->bindSets(renderer, {*set});
     mesh->draw(renderer, screenSize * 1024);

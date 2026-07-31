@@ -16,6 +16,14 @@
 // Regime gate constants (header comment carries the derivation; convergence
 // point - tunable one-liners).
 constexpr float RAYMARCH_MAX_DISTANCE_RADII = 64.f;
+// The one screenSize threshold left in FRACTION units after §5.54 respelled the
+// G4 family in px. Deliberately not converted with them: it is a single-site
+// named constant (no I2 duplication to close) and it is a raymarch CAPABILITY
+// gate, not a G4 regime boundary, so converting it is a behaviour change at
+// non-2048 widths that this task had no mandate for. The px-intent argument
+// does apply to it - 0.025 is ~51 px at 2048, and this file's own comments
+// reason in px - so it is recorded with the §5.54 veto point rather than
+// silently left in a second unit.
 constexpr float RAYMARCH_MIN_SCREEN_SIZE = 0.025f;
 
 static std::unique_ptr<s_texture> makeTex(const std::string &path)
@@ -193,7 +201,7 @@ void LayeredMesh::drawMid(Renderer &renderer, ModularBody *body, const Mat4f &ma
     }
     fillPlainShadows(frag, body, this);
     const auto screenSize = body->getScreenSize();
-    if (screenSize > 0.2f && !low) {
+    if (screenSize > ModularBody::bigTextureGate() && !low) {
         Texture *big[5] = {};
         uint16_t map = 0;
         for (int i = 0; i < midSlotCount; ++i) {
@@ -286,7 +294,7 @@ void LayeredMesh::drawRay(Renderer &renderer, ModularBody *body, const Mat4f &ma
     // Big textures: the close-range regime is exactly where they engage
     // (old getSet >= 180px; the ray gate's 0.025 floor ~ 51px keeps the
     // 0.2 threshold check meaningful).
-    if (body->getScreenSize() > 0.2f) {
+    if (body->getScreenSize() > ModularBody::bigTextureGate()) {
         Texture *big[5] = {};
         uint16_t map = 0;
         for (int i = 0; i < 5; ++i) {
@@ -322,8 +330,8 @@ void LayeredMesh::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 
 void LayeredMesh::drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat)
 {
-    // The ray gate (screenSize > 0.025) never reaches the noDepth band
-    // (<= 0.008): always the mid family here.
+    // The ray gate (RAYMARCH_MIN_SCREEN_SIZE) never reaches the noDepth band
+    // (at or below BODY_FULL_VISIBILITY_BOUNDING_SIZE): always the mid family here.
     drawMid(renderer, body, mat, cfg.midVariant | VARIANT_NO_DEPTH, true);
 }
 

@@ -55,7 +55,7 @@ void HintModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
     // single authority shared with computeHintsAt's circle shape). px full
     // diameter = screenSize * 2 * viewportRadius (drawHalo screen_r form).
     const float shift = Hints::hintCircleRadius * 1.2f
-                      + body->getScreenSize() * ModularBody::viewportRadius;
+                      + body->getScreenSize() * ModularBody::getViewportRadius();
     renderer.printGravity(hintFont, body->getScreenPos(), body->getNameI18n(),
                           color, shift, shift);
 }

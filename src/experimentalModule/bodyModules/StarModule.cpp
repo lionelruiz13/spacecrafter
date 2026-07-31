@@ -26,7 +26,7 @@ void StarModule::drawBigHalo(Renderer &renderer, ModularBody *body)
         return; // old setHaloSize clamps negatives to 0 -> no halo
     // old screen_sz (body.cpp:1072 = getOnScreenSize) AND old uRadius are the
     // SAME value (getOnScreenSize) - one variable here.
-    const float screenR = body->getScreenSize() * 2.f * ModularBody::viewportRadius;
+    const float screenR = body->getScreenSize() * 2.f * ModularBody::getViewportRadius();
     float rmag = sunHaloSize / 2.f / sqrtf(body->getDistanceToObserver());
     // old: cmag = rmag/screen_sz, clamped to 1 (screen_sz==0 -> inf -> 1).
     float cmag = (screenR > 0.f) ? rmag / screenR : 1.f;

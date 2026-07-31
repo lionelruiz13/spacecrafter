@@ -113,7 +113,7 @@ void AtmExtModule::drawShell(Renderer &renderer, ModularBody *body, const Mat4f 
     // - full angular size > 2 deg, from the BODY radius (not boundingRadius -
     //   the shell itself must not feed its own gate);
     // - observer outside the shell by 1%.
-    if (body->getScreenSize() * 2.f * ModularBody::viewportRadius <= 10.f)
+    if (body->getScreenSize() * 2.f * ModularBody::getViewportRadius() <= 10.f)
         return;
     const float squaredDistance = distance * distance;
     const float squaredRadius = scaledRadius * scaledRadius;
@@ -144,7 +144,7 @@ void AtmExtModule::drawShell(Renderer &renderer, ModularBody *body, const Mat4f 
     }
     uniform->atmAlpha = 1; // old "Apply fader here" TODO kept as-is (parity)
     bound.layout->bindSet(renderer, *set);
-    mesh->draw(renderer, body->getScreenSize() * 2.f * ModularBody::viewportRadius);
+    mesh->draw(renderer, body->getScreenSize() * 2.f * ModularBody::getViewportRadius());
 }
 
 void AtmExtModule::draw(Renderer &renderer, ModularBody *body, const Mat4f &mat)
