@@ -564,21 +564,45 @@ void s_texture::stopBigTextureLoader()
 
 void s_texture::forceUnload()
 {
-	releaseMemory[0].clear();
-	releaseMemory[1].clear();
-	releaseMemory[2].clear();
+	// WHEN: from ~Context, while every BufferMgr and the SetMgr are alive.
+	// EVERY container drained below hands resources back to them - a Texture
+	// returns its staging sub-allocation (Texture::detach ->
+	// BufferMgr::releaseBuffer) and a texRecap destroys temporary mipmap Sets
+	// (SetMgr::destroySet) - so draining them after app.reset(), which is where
+	// main() used to call this, releases into destroyed managers (INTENT 5.57).
+	// ORDER: producers first, the releaseTexture ring last - it is the terminal
+	// sink (~texRecap pushes its Texture into it, s_texture.cpp:108).
+    stopBigTextureLoader(); // no producer/consumer thread left on the queues below
+	{
+		// Queues in flight. Scoped so that the last popped element - whose
+		// ~texRecap feeds the ring - is destroyed BEFORE the ring is drained.
+		std::shared_ptr<texRecap> pendingUpload;
+		while (textureQueue.pop(pendingUpload));
+		pendingUpload = nullptr;
+		std::unique_ptr<Texture> droppedTex;
+		while (droppedTextureQueue.pop(droppedTex));
+		droppedTex = nullptr;
+		// Big textures dropped by releaseUnusedMemory but not yet reclaimed:
+		// the splice at s_texture.cpp:794 keeps the Texture (the two other
+		// splices moved it to droppedTextureQueue first), and nothing ever
+		// cleared this list - it used to die at __run_exit_handlers, after
+		// even VulkanMgr was gone.
+		droppedBigTextures.clear();
+		bigTextures.clear();
+		releaseMemory[0].clear();
+		releaseMemory[1].clear();
+		releaseMemory[2].clear();
+		for (auto &value : texCache) {
+			auto tex = value.second.lock();
+			if (tex) {
+				cLog::get()->write("Force unloading of " + value.first + " used " + std::to_string(tex.use_count() - 1) + " times", LOG_TYPE::L_WARNING);
+				tex->texture = nullptr;
+			}
+		}
+	}
 	releaseTexture[0].clear();
 	releaseTexture[1].clear();
 	releaseTexture[2].clear();
-	for (auto &value : texCache) {
-		auto tex = value.second.lock();
-		if (tex) {
-			cLog::get()->write("Force unloading of " + value.first + " used " + std::to_string(tex.use_count() - 1) + " times", LOG_TYPE::L_WARNING);
-			tex->texture = nullptr;
-		}
-	}
-    stopBigTextureLoader();
-    bigTextures.clear();
     if (layoutMipmap) {
         delete layoutMipmap;
         delete pipelineMipmap4;

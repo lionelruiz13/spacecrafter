@@ -70,6 +70,20 @@ AxisFamilyData &axisFamily()
         d.set = renderer.allocSet(d.family, 0);
         d.set->bindUniform(*d.uColor, 0);
         d.set->update();
+        // This data is a function-local static: it is destroyed at
+        // __run_exit_handlers, long after ~Context destroyed uniformMgr, and
+        // ~SharedBuffer releases into the BufferMgr reference it captured at
+        // construction. That was INTENT 5.55 - one `flag planets_axis on` and
+        // the process died at exit, on every binary. Hand the sub-allocation
+        // back while the manager is alive (contract: context.hpp
+        // onManagerTeardown). Only uColor is manager-owned: vertexModel holds
+        // a VulkanMgr reference but releases nothing, `set` is registry-pool
+        // owned (dropped by releaseRegistry), and ~PipelineFamily is guarded
+        // on the reset registry (PipelineRegistry.cpp:613-630) - so what stays
+        // for static teardown provably touches no dead manager.
+        Context::onManagerTeardown([] {
+            axisFamily().uColor.reset();
+        });
         return d;
     }();
     return data;

@@ -122,7 +122,30 @@ public:
     void endNebulaDraw();
     void nextFrame();
     VkResult acquireNextFrame();
-    void waitFrame(unsigned char frameIdx);
+    //! Wait until the worker has finished compiling and submitting the frame
+    //! recorded under `frameIdx`. Returns FALSE only when that wait was
+    //! abandoned by abandonPendingFrames(): the frame is then NOT complete and
+    //! its resources must not be reused - the caller skips the frame.
+    bool waitFrame(unsigned char frameIdx);
+    //! Wait until the worker has consumed every queued command AND completed
+    //! every frame it was given. Observing only: it leaves the per-frame
+    //! bookkeeping alone, so a following waitFrame() behaves exactly as it
+    //! would have. Half of the mid-session release precondition
+    //! (Context::quiesceFrames - the other half is the device wait).
+    void waitAllFrames();
+    //! Give up on frames that will never be needed again. TEARDOWN ONLY.
+    //! waitFrame() ends in an atomic wait with no timeout and no cancellation,
+    //! and the teardown request is serviced by the very main loop that is
+    //! holding it - so a frame the worker has not completed stops the process
+    //! from exiting at all (INTENT 5.59). This stores a distinguished
+    //! completion value, which is what an atomic wait already watches for: the
+    //! waiter observes a changed value and returns. The frame path is
+    //! untouched - no new atomic, no new store, no new wakeup per frame.
+    void abandonPendingFrames();
+    //! hasCompleted value meaning "waited-for, never completed" (see above).
+    //! Any non-zero value ends the wait; this one says WHY, so waitFrame can
+    //! tell its caller the frame is not usable.
+    static constexpr int FRAME_ABANDONED = 2;
     void submitFrame(unsigned char frameIdx, unsigned char lastFrameIdx);
     void setPlayer(VideoPlayer *_player) {player = _player;}
     // Wait until the worker thread has compiled every submitted commands for this frame

@@ -253,7 +253,13 @@ public:
 	static void willRead(const std::string &_textureName);
 	// Release every big textures which have not been querried with getBigTexture() for 2 frames
 	static void update();
-	// Unload every big textures
+	//! Drain every texture container this class defers releases into, and drop
+	//! the mipmap pipelines. CALLED FROM ~Context, and only from there: each
+	//! container hands resources back to a Context-owned manager (a Texture its
+	//! staging sub-allocation, a texRecap its temporary mipmap Sets), so it is
+	//! bound to the window where those managers are alive. Called from main()
+	//! after app.reset() - where it used to be - it releases into destroyed
+	//! managers and the process dies at exit (INTENT 5.57).
 	static void forceUnload();
 
 	//! Stop and join the asynchronous big-texture loader thread. MUST run while

@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <mutex>
+#include <functional>
 #include "EntityCore/Forward.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
@@ -83,6 +84,41 @@ public:
     ~Context();
     void nextTick();
     void initShadowStructures();
+
+    //! Register a callback that gives resources BACK to the managers this
+    //! Context owns (a BufferMgr sub-allocation through ~SharedBuffer /
+    //! ~VertexBuffer / Texture::detach, a temporary Set through
+    //! SetMgr::destroySet, a registry-pool Set or a PipelineFamily handle).
+    //!
+    //! WHO MUST REGISTER: every holder that OUTLIVES the body tree - function
+    //! or class statics, and any container whose release is deferred past the
+    //! frame that dropped the resource. What a destructor may legally do is
+    //! bounded by WHEN it runs, and a static runs at __run_exit_handlers,
+    //! long after ~Context destroyed every manager here: the release then
+    //! walks a destroyed free-list and the process dies at exit (INTENT 5.55
+    //! - one drawn rotation axis; INTENT 5.57 - the deferred texture ring).
+    //! Registering is how a non-owning manager reference becomes legal (I5:
+    //! lifetime-guaranteed or destruction-notified; this is the notification).
+    //!
+    //! WHEN THEY RUN: at the START of ~Context, in reverse registration order,
+    //! with every manager and the pipeline registry still alive - the same
+    //! window Renderer::releaseRegistry() and ShadowService::release() use.
+    //! Registration is a registration-domain operation (never a frame path);
+    //! the list is process-wide because its clients are.
+    static void onManagerTeardown(std::function<void()> release);
+
+    //! Bring the frame pipeline to a stop: every queued draw consumed and
+    //! recorded by the helper thread, every submitted frame completed on the
+    //! GPU. This is the PRECONDITION for releasing anything a frame in flight
+    //! may still reference. The shutdown path establishes it with
+    //! FrameMgr::stopHelper() + waitIdle(); a MID-SESSION release needs it for
+    //! exactly the same reason and had nothing (INTENT 5.58: the helper thread
+    //! was still recording shadow geometry from Ojm buffers that
+    //! `body action reload` had already returned to their BufferMgr).
+    //! Commanded paths only (reload, body removal) - never per frame: it
+    //! blocks until the GPU is idle and would flatten the pipelining D11
+    //! depends on.
+    void quiesceFrames();
 
     static Context *instance;
     Renderer renderer;

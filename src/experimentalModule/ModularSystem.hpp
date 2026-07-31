@@ -43,16 +43,12 @@ public:
     // the universe/milkyway spine nodes, and the anchor-only systems built by
     // createSystem) - there is nothing to reload FROM, and clearing the
     // children would destroy the spine instead.
-    bool reloadSystem() {
-        if (systemFilename.empty())
-            return false;
-        clearChildren();
-        if (composedFile)
-            loadComposedSystem(systemFilename);
-        else
-            loadSystem(systemFilename);
-        return true;
-    }
+    // The rebuild waits for the frames in flight before destroying anything
+    // (Context::quiesceFrames): what it destroys is still referenced by the
+    // drawing thread's recording and by the GPU (INTENT 5.58). Defined in the
+    // .cpp for that reason - the wait is not something a header may declare
+    // away, and this is a commanded path, not an inlined one.
+    bool reloadSystem();
     // Whether this system has a data file behind it (see reloadSystem).
     inline bool hasSystemFile() const {
         return !systemFilename.empty();

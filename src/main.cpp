@@ -372,7 +372,13 @@ int main(int argc, const char *argv[])
 
 	// Log->write("EOF", LOG_TYPE::L_INFO);
 	// Log->write("EOF", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-	s_texture::forceUnload();
+	// s_texture::forceUnload() used to be called HERE, and that was the bug:
+	// app.reset() above destroys Context and with it every BufferMgr/SetMgr the
+	// unloaded textures release into (INTENT 5.57 - SIGSEGV in
+	// BufferMgr::releaseBuffer, 25 of 26 `body action reload`-then-quit cycles).
+	// It now runs from ~Context, the one place that knows those managers are
+	// still alive; keeping a second call here would be a second authority for
+	// the same drain (I2), not a safety net.
 	vulkan.reset();
 	Log->close();
 	AppSettings::close();

@@ -9,6 +9,7 @@
 #include "tools/log.hpp"
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
+#include "tools/context.hpp" // quiesceFrames (mid-session release precondition)
 #include "EntityCore/Core/VulkanMgr.hpp"
 
 Vec3f ModularBody::lightPosition;
@@ -241,6 +242,15 @@ ModularBody::~ModularBody()
 
 bool ModularBody::remove(bool recursive)
 {
+    // The mid-session release precondition (INTENT 5.58, contract in
+    // context.hpp): this body's modules own GPU resources that a frame still
+    // being recorded or executed may reference, and unlike the shutdown path
+    // nothing here has waited for those frames. Every commanded removal comes
+    // through this function, so the wait belongs here rather than at each
+    // caller; it is a no-op cost when the pipeline is already quiet, which is
+    // the case for the removals a system load performs.
+    if (Context::instance)
+        Context::instance->quiesceFrames();
     // Non-recursive removal refuses while ANY child is owned, hidden included
     // (hidden children are parent-owned now - destroying them silently on a
     // non-recursive remove would be an unasked cascade; old-path removeBody

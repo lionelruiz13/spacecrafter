@@ -1933,3 +1933,24 @@ void ModularSystem::applyHardcodedContent(ModularBodyCreateInfo &createInfo, std
     // capability key. The Moon's surface-shader lineage rides its `type=Moon`
     // (LayeredMeshLoader, A6 - a later Tier-B step, not this row).
 }
+
+// Contract + rationale: ModularSystem.hpp (reloadSystem).
+bool ModularSystem::reloadSystem()
+{
+    if (systemFilename.empty())
+        return false;
+    // Every body about to be destroyed may still be referenced by a frame in
+    // flight: the drawing thread records shadow geometry straight from
+    // module-owned Ojm buffers, and the GPU is executing the frames before it.
+    // Releasing under them is INTENT 5.58 - the SIGSEGV in Ojm::drawShadow on
+    // the helper thread. Paid once per commanded reload, against a rebuild
+    // that re-reads the whole data file.
+    if (Context::instance)
+        Context::instance->quiesceFrames();
+    clearChildren();
+    if (composedFile)
+        loadComposedSystem(systemFilename);
+    else
+        loadSystem(systemFilename);
+    return true;
+}

@@ -402,18 +402,50 @@ void DrawHelper::drawNebula(DrawData::s_nebula &data)
     drawIdx += 4;
 }
 
-void DrawHelper::waitFrame(unsigned char frameIdx)
+bool DrawHelper::waitFrame(unsigned char frameIdx)
 {
     for (uint8_t i = 0; i < 3; ++i) {
         if (drawer[i].submitData.frameIdx == frameIdx) {
-            if (drawer[i].hasCompleted.load(std::memory_order_acquire) == 0) {
+            int completion = drawer[i].hasCompleted.load(std::memory_order_acquire);
+            if (completion == 0) {
                 queue.flush();
                 drawer[i].hasCompleted.wait(0, std::memory_order_acquire);
+                // Re-read ONLY on the slow path (we blocked): the fast path
+                // keeps the single load it always had.
+                completion = drawer[i].hasCompleted.load(std::memory_order_acquire);
             }
             drawer[i].submitData.frameIdx = UINT8_MAX;
             drawer[i].hasCompleted.store(false, std::memory_order_release);
-            return;
+            return completion != FRAME_ABANDONED;
         }
+    }
+    return true;
+}
+
+void DrawHelper::waitAllFrames()
+{
+    // Every queued command consumed by the worker. waitIdle() re-notifies
+    // until the queue is empty, so it is also robust to a notification the
+    // worker missed - which a single flush() is not.
+    queue.waitIdle();
+    for (auto &d : drawer) {
+        // A drawer with no submit outstanding was never given a frame to
+        // complete; waiting on it would wait for a frame that never comes.
+        if (d.submitData.frameIdx != UINT8_MAX)
+            d.hasCompleted.wait(0, std::memory_order_acquire);
+    }
+}
+
+void DrawHelper::abandonPendingFrames()
+{
+    for (auto &d : drawer) {
+        int pending = 0;
+        // 0 -> FRAME_ABANDONED only: a frame the worker already completed
+        // keeps its 1, and the worker's own later store(1) may overwrite this
+        // - both are non-zero, so neither loses a wakeup.
+        if (d.hasCompleted.compare_exchange_strong(pending, FRAME_ABANDONED,
+                std::memory_order_release, std::memory_order_relaxed))
+            d.hasCompleted.notify_all();
     }
 }
 
