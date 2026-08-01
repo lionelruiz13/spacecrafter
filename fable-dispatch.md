@@ -319,8 +319,22 @@ latest session update note above.*
   `_run.sh` **BOTH WAYS GREEN** (`artifacts/f23/inject_post3` / `inject_pre`): the two
   LATENT members forced by gdb on the DRAWN path — offset old 0.3 / drawn 0.15 and mount
   old equatorial / drawn altaz; the delivered binary reports the drawn value, the pre-fix
-  one the old, and the pin flips both back and forth on two entries. Next: battery +
-  §11.131.
+  one the old, and the pin flips both back and forth on two entries. ·
+  **DELIVERED 2026-08-01 → §11.131.** Code `93d83ebd` (instrument) + `9770649f` (the four
+  getters + the `tcpGetPosition` place fold); harness `f6cf64b`/`cbd4c3c`/`5676057`/
+  `4b38f94` + the entry. **B33 CLOSED.** Two of the four members were NOT latent, against
+  the row's implication: altitude (`camera action descend` is new-path-only by design) and
+  the sky lock (four shipped sites write the old flag alone) — the row's own second
+  instance fires, `moveto multiply_alt 1` moving the drawn observer 0 px>8 delivered vs
+  738 266 px>8 pre-fix, and the lock toggle now locks (15.0411°/sidereal hour vs 0.0000°).
+  View offset + mount LATENT, divergence injected by gdb, both ways. Regression half
+  measured at the composed screen: 1965 px>8 pre vs post against floors 2063/2052 (below
+  launch variance), with the old observer moving 0.104276 m ONTO the camera's float grid.
+  NEW **§5.68** (dual place setters not equivalent — old clamps, the camera does not);
+  **B34** gains `position save`/`position load` (read AND restore reach the old observer
+  only — F24's class, deliberately not folded); **B35** gains the mount write-half
+  precondition. Full battery + b24/b25/b40/b4 + f15/f20/f21×2/f22/f18 green; frozen md5
+  in == out.
 
 ### F24 — B34 mechanical seam mirrors: `clear`, `preload`, trail fresh-restart  [M]
 

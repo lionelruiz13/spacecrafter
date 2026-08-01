@@ -1089,3 +1089,61 @@ transform pair would land on the launch default and fail exactly there.
 A/A floor of a sky-LOCKED scene is **not 0**. §11.128/§11.129 recorded 0;
 measured at 26–51 px>8 across six runs of two harnesses here. Measure it
 in-scene every run (§11.80(a)) — every number in §11.130 carries its own.
+
+## F23 — B33's readouts: what the control surface answers vs what draws — INTENT §11.131, 2026-08-01
+
+    cd claude/harness && DISPLAY=:2 ./f23_b33_control.py <absOutdir> [--bin B] [--prebin B]
+    cd claude/harness && DISPLAY=:2 ./f23_b33_inject_run.sh [absOutdir]      # SC_BIN=… F23_PRE=1
+
+**The readback these two gates rest on is in the app, not in them.** `body action
+dual_dump`'s header carries a `control` object — for every member of the B33
+class, `{reported, old, new}` in the getter's own units, plus `drawnPath`. Before
+it existed no member of the class could be measured on any binary: `get status
+position` queues a reply that never arrives (§5.47), the view-offset readout's
+one live reader is a TUI item, and the mount readout has no live reader at all.
+A dump therefore discriminates by itself — `reported == old` on a binary that
+reads the old authority, `reported == new` on one that reads the drawn path —
+and the RED half is the same script against a pre-fix binary.
+
+**`f23_b33_control.py` — the two members with a REAL channel.** Altitude:
+`camera action descend` is new-path-only by design, so two shipped commands
+split the authorities 4x, and `moveto multiply_alt 1` — a semantic no-op — then
+moves the drawn observer **0 px>8** on the fixed binary against **738 266 px>8**
+on the pre-fix one, which teleports it 10 000 → 40 000 km. Sky lock:
+select-while-tracking sets `flag_lock_equ_pos` alone (four shipped sites do),
+so the toggle read `true` while nothing held the sky; fixed, the toggle LOCKS
+and the camera re-derives **15.0411°** over a sidereal hour, against **0.0000°**
+pre-fix. Both branches of `Camera::getPlace()` are exercised (anchored and free).
+
+**Two scene traps this gate hit, both worth reusing.** (1) Its first altitude
+ladder sat at 200 km, i.e. inside `distance < 2·scaledRadius`, where the parent
+draws its empty `groundedComponents` and therefore draws NOTHING (the
+§11.97(e)/§11.100(g)(ii) hole — `b3_ladder.py`'s `earth_surface` site is the
+same fact). Every screenshot had 28 lit px of 4.2 M and every screen leg read 0
+whatever happened; the only leg that could catch it was the RED control. The
+ladder now runs 40 000 → 10 000 km, outside the boundary at both ends, and
+`lit()` fails the run on an empty frame. (2) Tracking the camera's OWN reference
+body does not aim at it — `lookTo` bails on a zero-length direction and the
+view stays where it was (measured: alt 0.042 rad after `select planet Earth` +
+`flag track_object on` from 200 km above Earth, anchored). b3's recipe (free
+mode, then select, then track) is the one that aims.
+
+**`f23_b33_inject.py` + `f23_b33_inject_run.sh` — the two LATENT members.**
+Nothing shipped writes one authority of the view offset or the mount without the
+other (one writer; one config key), so the check is derived from the mechanism —
+two authorities exist, the drawn one must be reported — and the divergence is
+written onto the DRAWN path in the live process through b21_keypath's gdb-FIFO
+instrument. `F23_PRE=1` asserts the DEFECT instead of the fix, so the red half
+is an assertion rather than a leg that quietly does not run. Note for anyone
+extending it: **`CameraMount::ALTAZ` is a syntax error in a gdb expression** —
+cast the value (`(CameraMount)0`). The first run did not, injected nothing, and
+the mount leg passed vacuously on two equal values; both `reported` legs now
+require the divergence they report about.
+
+**The regression half is a leg of `f23_b33_control.py`, not an argument.** The
+shipped scene with every old-path layer ON (1 136 780 lit px), pre-fix binary vs
+delivered: **1965 px>8 against in-run A/A floors of 2063 and 2052** — below
+launch variance. What does move is the old observer's own altitude,
+75.000000 → 75.104276 m, toward the drawn path: the camera holds the place as a
+float AU distance, and `UI::init` re-applies the place through the dual seam, so
+the two authorities now land on the same value instead of 0.104276 m apart.
