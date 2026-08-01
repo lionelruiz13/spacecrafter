@@ -789,7 +789,12 @@ void Core::addSolarSystemBody(stringHash_t& param)
 void Core::ssystemDualDump(const std::string& file)
 {
 	ssystemFactory->dumpTracePaths(file, [this](std::ostream &out) {
+		out << ",\"oldView\":";
 		dumpOldViewState(out);
+		// B33: what the CONTROL SURFACE answers, beside what each path holds.
+		// CoreLink owns most of those getters, so CoreLink writes it (I1).
+		out << ",\"control\":";
+		CoreLink::instance->dumpControlSurface(out);
 	});
 }
 

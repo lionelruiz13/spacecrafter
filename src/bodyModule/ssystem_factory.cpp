@@ -961,12 +961,12 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
         << ",\"close\":" << ModularBody::closeRangeGate()
         << ",\"bigTexture\":" << ModularBody::bigTextureGate()
         << "}}";
-    // The old path's own view state, written by the owner that has it (Core).
-    // §5.63 asked for exactly this readback and it did not exist.
-    if (extraHeader) {
-        out << ",\"oldView\":";
+    // The readbacks whose OWNER is outside this class, each writing its own
+    // member(s) under its own key: `oldView` (the old path's own view state,
+    // §5.63 asked for exactly it and it did not exist) and `control` (what the
+    // control surface answers, B33 / §11.131).
+    if (extraHeader)
         extraHeader(out);
-    }
     out << "}\n";
     // B9 az-convention observability (INTENT §11.4/§11.60): the alt/az the two
     // paths expose to the UI/scripting surface, per body, at the SAME frame.

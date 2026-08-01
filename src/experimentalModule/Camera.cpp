@@ -37,6 +37,21 @@ float Camera::distanceToReference() const
    return distance - reference->getAltitudeReference();
 }
 
+Vec3f Camera::getPlace() const
+{
+    if (!freeMode)
+        return Vec3f(longitude, latitude, distanceToReference());
+    // The free-mode place lives in `position`; the spherical members were
+    // frozen when free flight was entered. Converted back exactly as
+    // setFreeMode(false) does it, and `distance` is deliberately NOT used: it
+    // keeps a stale value in free mode on purpose (lateral-velocity parity,
+    // B10 §11.71), so distanceToReference() would report where the observer
+    // was when it took off.
+    float lon, lat;
+    Utility::rectToSphe(&lon, &lat, position);
+    return Vec3f(-lon, lat, position.length() - reference->getAltitudeReference());
+}
+
 // Shared proximity-factor authority (B10 iv-b, §5.2). Base measured to the
 // ground (ground_radius), NOT the datum: == distanceToReference() for every
 // default (ground==datum) body, so bit-identical to today until the two radii

@@ -308,6 +308,22 @@ public:
     }
     void setHalfFov(float halfFov, float duration = 0.5);
 
+    // The exact inverse of moveTo's target: the legacy spherical triple this
+    // camera IS at - (longitude, latitude) in radians, altitude above the
+    // reference's altitude datum in AU - in BOTH modes, for the same reason
+    // moveTo is absolute in that triple in both modes (see moveTo: "moveto is
+    // the legacy positioning surface and must stay meaningful in free flight").
+    // A control surface that can COMMAND a place must be able to report the
+    // place it is at, and the observatory getters are the readout that has to
+    // answer for the path that DRAWS (B33, §11.108(f)).
+    // Anchored: the pose members themselves. Free: derived from `position` with
+    // the SAME conversion setFreeMode(false) uses to leave free flight
+    // (rectToSphe + the longitude sign) - the spherical members are frozen at
+    // the free-mode entry, so reporting them there would name a place the
+    // camera has left. Units stay rad/AU: the deg/metres conversion is the
+    // CoreLink seam's, where observerMoveTo already does the write half of it.
+    Vec3f getPlace() const;
+
     // Compatibility methods, only work while not in freeMode
     inline void setLongitude(float l) {
         longitude = l*M_PI/180;

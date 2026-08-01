@@ -92,7 +92,10 @@ public:
     //! `extraHeader`, when set, is invoked once inside the header object so a
     //! state OWNER outside this class writes its own readback into the same
     //! file rather than exporting its internals to be written here (I1/I2).
-    //! Core uses it for the old-path view state (§5.63 / §11.130).
+    //! Contract: it appends whole MEMBERS (`,"key":value` …) to the header
+    //! object — it names its own keys, because this class must not have to know
+    //! how many readbacks the owner has. Core uses it for the old-path view
+    //! state (§5.63 / §11.130) and the control-surface readback (B33 / §11.131).
     void dumpTracePaths(const std::string &file,
                         const std::function<void(std::ostream &)> &extraHeader = {});
     //! Startup selection of the rendered body path (beta_features.ini,

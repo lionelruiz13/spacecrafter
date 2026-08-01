@@ -811,19 +811,19 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Observatory---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	double observatoryGetLatitude() {
+	double observatoryGetLatitude() const {
 		return core->observatory->getLatitude();
 	}
 
-	double observatoryGetLongitude() {
+	double observatoryGetLongitude() const {
 		return core->observatory->getLongitude();
 	}
 
-	double observatoryGetLongitudeForDisplay() {
+	double observatoryGetLongitudeForDisplay() const {
 		return core->observatory->getLongitudeForDisplay();
 	}
 
-	double observatoryGetAltitude() {
+	double observatoryGetAltitude() const {
 		return core->observatory->getAltitude();
 	}
 
@@ -1003,7 +1003,7 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Navigation -------------
 	////////////////////////////////////////////////////////////////////////////////
-	double getViewOffset() {
+	double getViewOffset() const {
 		return core->navigation->getViewOffset();
 	}
 
@@ -1055,6 +1055,23 @@ public:
 	bool getFlagTracking() {
 		return (core->getFlagTracking());
 	}
+
+	//! B33 READBACK ONLY (INTENT §11.108(f), delivered §11.131) — what the
+	//! CONTROL SURFACE answers for each member of the query half, beside the
+	//! value EACH path holds for the same readout, in one frame.
+	//! What it is FOR: the rule is that a getter reports the path that DRAWS,
+	//! and until this existed no member of the class could be MEASURED against
+	//! it on either binary — `get status position` never replies (§5.47), the
+	//! view-offset readout has one live reader and it is the TUI, and the mount
+	//! readout has no live reader at all. Each row is
+	//! `{"reported": …, "old": …, "new": …}` in the GETTER's own units, so one
+	//! dump discriminates by itself: a binary that reads the old authority has
+	//! `reported == old` whatever draws; a binary that reads the drawn path has
+	//! `reported == new` while the new path draws and `reported == old` under
+	//! `flag experimental_path off`.
+	//! Const, side-effect-free, dump-channel only (`body action dual_dump`) —
+	//! the old render path is unchanged by construction (§11.52(b)).
+	void dumpControlSurface(std::ostream &out) const;
 
     CoreLink(std::shared_ptr<Core> _core) {
 		core = _core;

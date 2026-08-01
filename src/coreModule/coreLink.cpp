@@ -20,7 +20,11 @@
  *
  */
 
+#include <cmath>
+#include <iomanip>
+#include <ostream>
 #include "coreModule/coreLink.hpp"
+#include "tools/sc_const.hpp" // AU, for the B33 control-surface readback
 #include "experimentalModule/SessionFile.hpp" // B31 slice 3
 #include "experimentalModule/ModularBody.hpp"
 #include "tools/app_settings.hpp"
@@ -552,6 +556,61 @@ std::string CoreLink::getConstellationSelectedShortName() const {
 
 std::string CoreLink::getPlanetsPosition() const {
 	return core->ssystemFactory->getPlanetsPosition();
+}
+
+// ---------------------------------------------------------------------------
+// B33 READBACK ONLY (INTENT §11.108(f) / §11.131). See the header for what it
+// is for. Const, side-effect-free, called only from the dump channel.
+// ---------------------------------------------------------------------------
+void CoreLink::dumpControlSurface(std::ostream &out) const
+{
+	const auto prec = out.precision();
+	const Camera *cam = Camera::instance;
+	// The camera's own answer to each readout, in the GETTER's units — the
+	// same conversions observerMoveTo does in the write direction, so the two
+	// halves of the seam are one convention (I2).
+	const Vec3f place = cam ? cam->getPlace() : Vec3f(0, 0, 0);
+	const double camLat = place[1] * (180.0 / M_PI);
+	const double camLon = place[0] * (180.0 / M_PI);
+	const double camAlt = static_cast<double>(place[2]) * (1000.0 * AU);
+	const double camLonDisplay = camLon - floor((camLon + 180.) / 360.) * 360.;
+	double camHeading = cam ? cam->getHeading() * (180.0 / M_PI) : 0.;
+	camHeading -= floor((camHeading + 180.) / 360.) * 360.;
+	const auto b = [](bool v) { return v ? "true" : "false"; };
+	const auto mnt = [](bool altaz) { return altaz ? "altaz" : "equatorial"; };
+
+	out << std::setprecision(17)
+	    << "{\"drawnPath\":\"" << (core->getExperimentalPath() ? "new" : "old") << "\""
+	    << ",\"cameraPresent\":" << b(cam != nullptr)
+	    << ",\"latitude\":{\"reported\":" << observatoryGetLatitude()
+	    << ",\"old\":" << core->observatory->getLatitude()
+	    << ",\"new\":" << camLat << "}"
+	    << ",\"longitude\":{\"reported\":" << observatoryGetLongitude()
+	    << ",\"old\":" << core->observatory->getLongitude()
+	    << ",\"new\":" << camLon << "}"
+	    << ",\"longitudeForDisplay\":{\"reported\":" << observatoryGetLongitudeForDisplay()
+	    << ",\"old\":" << core->observatory->getLongitudeForDisplay()
+	    << ",\"new\":" << camLonDisplay << "}"
+	    << ",\"altitude\":{\"reported\":" << observatoryGetAltitude()
+	    << ",\"old\":" << core->observatory->getAltitude()
+	    << ",\"new\":" << camAlt << "}"
+	    // heading is the member F12 already landed (§11.118(f)) — carried here
+	    // as the class's own positive control: on the delivered binary this row
+	    // behaves exactly like the four below it.
+	    << ",\"heading\":{\"reported\":" << getHeading()
+	    << ",\"old\":" << core->navigation->getHeading()
+	    << ",\"new\":" << camHeading << "}"
+	    << ",\"viewOffset\":{\"reported\":" << getViewOffset()
+	    << ",\"old\":" << core->navigation->getViewOffset()
+	    << ",\"new\":" << (cam ? cam->getViewOffset() : 0.) << "}"
+	    << ",\"mount\":{\"reported\":\"" << mnt(core->getMountMode() == Core::MOUNT_ALTAZIMUTAL)
+	    << "\",\"old\":\"" << mnt(core->navigation->getViewingMode() == Navigator::VIEW_HORIZON)
+	    << "\",\"new\":\"" << mnt(!cam || cam->getMount() == CameraMount::ALTAZ) << "\"}"
+	    << ",\"skyLock\":{\"reported\":" << b(core->getFlagLockSkyPosition())
+	    << ",\"old\":" << b(core->navigation->getFlagLockEquPos() != 0)
+	    << ",\"new\":" << b(cam && cam->getSkyLock()) << "}"
+	    << "}";
+	out.precision(prec);
 }
 
 std::string CoreLink::tcpGetPosition() const {
