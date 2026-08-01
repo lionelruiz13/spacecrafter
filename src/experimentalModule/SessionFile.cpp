@@ -29,6 +29,13 @@ std::string d2s(double v)
     return s.str();
 }
 
+std::string f2s(float v)
+{
+    std::ostringstream s;
+    s << std::setprecision(9) << v;
+    return s.str();
+}
+
 // The file a name denotes, and the refusals that stand between a name and a
 // path. Both live HERE because this is the level that owns where sessions go -
 // the same argument that put `body action save`'s refusals at the SSystemFactory
@@ -182,7 +189,19 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
     {
         double sx = 0, sy = 0, sz = 0;
         host.getSkyVision(sx, sy, sz);
-        observer.appendEntry("sky_vision", d2s(sx) + "," + d2s(sy) + "," + d2s(sz));
+        // FLOAT precision, and it is a REQUIREMENT rather than a saving. Under a
+        // live sky lock the old navigator round-trips this vector through the
+        // local<->equatorial pair every frame, and that round trip has a fixed
+        // point one double-ulp away from wherever it started - so a value
+        // written with all 17 digits comes back one ulp different and the SECOND
+        // save is not byte-identical to the first (measured: 10993 vs 11010 B,
+        // T4). Nine significant digits absorb that drift and are still three
+        // orders finer than a pixel: at fov 45 on a 2048 dome one pixel is
+        // 3.8e-4 rad. Same class as the fov-in-degrees rider, §11.128(c).
+        observer.appendEntry("sky_vision",
+                             f2s(static_cast<float>(sx)) + "," +
+                             f2s(static_cast<float>(sy)) + "," +
+                             f2s(static_cast<float>(sz)));
     }
     sections.push_back(std::move(observer));
 
