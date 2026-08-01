@@ -1318,6 +1318,55 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   §3 (Vixy: shipped-verb semantics). The orphaned-instance catch + the pgrep
   self-confirmation fix noted — the §11.121(m) protocol's first live fire.
 
+### F21 — B31-impl slice 4 (FINAL dispatchable slice): the read-half authority + E3/E4/E5 + the per-body override ledger (§2 group D) + §5.63  [L]
+- **Row / recorded:** B31 (§13.B — after §11.128 the row is open on: the ledger (§2
+  group D) · T1/§5.63 · E3/E4/E5) · `b31-design.md` §2 group D rows D1–D11 with their
+  classes + §4.2 (the ledger's identity key: the A29 hazard) · D34 verbatim
+  (§11.113(m): key = plain `englishName`, qualified path in the MISS REPORT only;
+  report-and-keep adopted; the non-body catalogue key stays an in-row design item —
+  C4's half is UNANSWERED: annotate, never invent) · D31 (§11.113(j): `body action
+  reload` is a LOAD, file wins; the ledger belongs to the SESSION save) · D32
+  (§11.113(k): trail points are a named carve-out — read its verbatim before deciding
+  D10's shape) · §11.128(e) (the E3/E4/E5 read-half statement: only `setFlag`'s
+  FV_TOGGLE branch knows a flag's value, and only while mutating; the fix shape is one
+  `readFlag` the toggle branch consumes) · §11.108 census (E4 readback "NOT
+  established") · §5.63 row (the inherited T1 blocker; its sharpest hypothesis is
+  state NO §2 inventory row carries) · §6.2 T7/T8 · B16/§11.66(d) (the ledger this
+  subsumes) · R8 (§11.70).
+- **Why now:** completes B31's dispatchable remainder in one slice; the read-half is
+  one structural problem appearing in two places (97-flag switch, per-body overrides) —
+  splitting it would build the same authority twice (I2).
+- **Task:** (0) **§5.63 attribution attempt, BOUNDED** — the slice's own T1 depends on
+  it; the sharpest hypothesis (adaptation/tone or star-magnitude state with NO
+  inventory row) is exactly a missing-row candidate: if attribution lands there, mint
+  the inventory row + carry the state + T1 flips green; if it needs a decision or
+  exceeds the bounded budget, record what was excluded and proceed (T1 stays honestly
+  blocked on §5.63). (i) The **read-half authority**: one `readFlag` (and the `set`/
+  colour readbacks it generalizes to) that `setFlag`'s FV_TOGGLE branch CONSUMES —
+  the mechanical 97-site class with its own regression check (toggle behavior
+  bit-identical: toggle twice == identity, per family; counterfactual on at least one
+  moved site). Then E3/E4/E5 into the session file per their §2 classes. (ii) The
+  **per-body override ledger** (group D rows by class; D7's created-skin content half
+  stays with content files per its own row; D11 excluded) into the session file, D34
+  key + miss report. (iii) **T7** — rename a body between save and restore: override
+  REPORTED (log + inline annotation in the session file) and NOT applied elsewhere.
+  (iv) **T8** — change an AUTHORED value between save and restore: new authored value
+  in effect AND the operator's override still applies on top (the D30 discriminator —
+  a snapshot design fails it by construction).
+- **Stop boundaries (NOT yours):** T3/D21; `heading`/D28; §5.64 (Vixy's semantics
+  decision); C4 non-body selection key (D34's unanswered half — annotate); §11.109
+  (h2)(h3); autosave in any form (D33); legacy `ssystem.ini` never written (D35/D13);
+  the §3.3 unload/reload twin enactment (boundary recorded in §11.128(b)); old render
+  path.
+- **Discriminating check:** T7 + T8 both ways (T8's snapshot-counterfactual argued or
+  measured); T5b extended to ledger keys (one hand-edited override moves exactly its
+  field); T4 STILL byte-identical with the ledger populated; T2 extended with the
+  per-body ledger dump (the §6.2 gap list's last member); readFlag regression (toggle
+  ×2 == identity across families; b10_cmd battery green); T1 re-run — green if §5.63
+  attributed, else the §5.63 record extended with what the attempt excluded; §6.3 md5
+  sweep; f20_session + f15_persist + full battery green; frozen md5 in==out.
+- **WIP:** —
+
 ---
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
