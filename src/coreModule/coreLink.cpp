@@ -1285,14 +1285,14 @@ private:
 
 } // namespace
 
-bool CoreLink::sessionSave(const std::string &filename) {
+bool CoreLink::sessionSave(const std::string &filename, SessionFile::CommandSurface *cmds) {
 	SessionHost host(*this, *core, *core->timeMgr);
-	return SessionFile::save(host, filename);
+	return SessionFile::save(host, cmds, filename);
 }
 
-bool CoreLink::sessionLoad(const std::string &filename) {
+bool CoreLink::sessionLoad(const std::string &filename, SessionFile::CommandSurface *cmds) {
 	SessionHost host(*this, *core, *core->timeMgr);
-	return SessionFile::load(host, filename);
+	return SessionFile::load(host, cmds, filename);
 }
 
 void CoreLink::setPlanetHidden(std::string name, bool planethidden) {
@@ -1510,4 +1510,22 @@ std::string CoreLink::landscapeGetName() {
 // [merge] theirs' galaxy_stars command support; defined here since StarGalaxy is incomplete in coreLink.hpp.
 void CoreLink::starGalaxyLoadCatalog(const std::string &filename) {
 	core->starGalaxy->loadCatalog(filename);
+}
+
+// The read halves of three setters that had none on this façade. Each manager
+// already owned the value; the session save is the first caller that needs to
+// ASK for it (b31-design §2 rows E4/E5, INTENT §11.129).
+const Vec3f &CoreLink::skyDisplayMgrGetColor(SKYDISPLAY_NAME nameObj)
+{
+	return core->skyDisplayMgr->getColor(nameObj);
+}
+
+const Vec3f &CoreLink::constellationGetColor() const
+{
+	return core->starLines->getColor();
+}
+
+float CoreLink::atmosphereGetFadeDuration() const
+{
+	return core->atmosphere->getFaderDuration();
 }

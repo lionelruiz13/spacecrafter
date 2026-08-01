@@ -555,6 +555,21 @@ void App::flag(APP_FLAG layerValue, bool _value) {
 	}
 }
 
+bool App::asBool(APP_FLAG layerValue) const
+{
+	switch(layerValue) {
+		case APP_FLAG::VISIBLE : return flagVisible;
+		case APP_FLAG::ALIVE : return flagAlive;
+		case APP_FLAG::COLOR_INVERSE : return flagColorInverse;
+		case APP_FLAG::BODY_PICK : return coreLink->bodyGetFlagIsolateSelected();
+		case APP_FLAG::STAR_PICK : return coreLink->starGetFlagIsolateSelected();
+		case APP_FLAG::DSO_PICK : return coreLink->nebulaGetFlagIsolateSelected();
+		case APP_FLAG::SUBTITLE : return flagSubtitle;
+		case APP_FLAG::ANTIALIAS : return appDraw->getFlagAntialiasLines();
+		default: return false;
+	}
+}
+
 void App::toggle(APP_FLAG layerValue)
 {
 		switch(layerValue) {

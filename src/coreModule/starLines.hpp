@@ -76,7 +76,7 @@ public:
 	}
 
 	//! rsends the color of the track
-	const Vec3f& getColor() {
+	const Vec3f& getColor() const {
 		return lineColor;
 	}
 

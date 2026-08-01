@@ -138,6 +138,10 @@ public:
 	void flag(APP_FLAG layerValue, bool _value);
 	//! modify a flag via a toggle
 	void toggle(APP_FLAG layerValue);
+	//! Read a flag given by APP_FLAG. The read half of flag()/toggle(): a
+	//! toggle is a read followed by a write, and before this the value was
+	//! knowable only by performing the write (INTENT §11.129).
+	bool asBool(APP_FLAG layerValue) const;
 
 	void switchMode(const std::string setValue);
 

@@ -217,6 +217,8 @@ public:
 	void flag(UI_FLAG layerValue, bool _value);
 	//! modify a flag via a toggle
 	void toggle(UI_FLAG layerValue);
+	//! Read a flag given by UI_FLAG - the read half of flag()/toggle().
+	bool asBool(UI_FLAG layerValue) const;
 
 private:
 	std::shared_ptr<Core> core;

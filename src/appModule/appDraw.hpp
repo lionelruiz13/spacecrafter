@@ -70,7 +70,7 @@ public:
 		antialiasLines = b;
 	}
 	//! Get display flag of constellation lines
-	bool getFlagAntialiasLines(void) {
+	bool getFlagAntialiasLines(void) const {
 		return antialiasLines;
 	}
 	void flipFlagAntialiasLines() {

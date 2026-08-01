@@ -99,7 +99,7 @@ public:
 		fader.setDuration(duration);
 	}
 	//! Get fade in/out duration in seconds
-	float getFaderDuration() {
+	float getFaderDuration() const {
 		return fader.getDuration();
 	}
 

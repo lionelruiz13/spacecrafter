@@ -393,6 +393,17 @@ void UI::flag(UI_FLAG layerValue, bool _value) {
 }
 
 /*******************************************************************************/
+bool UI::asBool(UI_FLAG layerValue) const
+{
+	switch(layerValue) {
+		case UI_FLAG::SHOW_LATLON : return FlagShowLatLon;
+		case UI_FLAG::SHOW_TUISHORTOBJ_INFO : return FlagShowTuiShortObjInfo;
+		case UI_FLAG::SHOW_TUIDATETIME : return FlagShowTuiDateTime;
+		case UI_FLAG::HANDLE_KEY_ONVIDEO : return handleKeyOnVideo;
+		default: return false;
+	}
+}
+
 void UI::toggle(UI_FLAG layerValue)
 {
 		switch(layerValue) {

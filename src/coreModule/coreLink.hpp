@@ -29,6 +29,8 @@
 #include "experimentalModule/Camera.hpp"
 #include "EntityCore/Executor/TickMgr.hpp"
 
+namespace SessionFile { class CommandSurface; }
+
 class CoreLink : public TickMgr<CoreLink> {
 public:
 
@@ -446,6 +448,8 @@ public:
 	void constellationSetColorLine(const Vec3f& v);
 	//! Set constellation color 3D
 	void constellationSetColor(const Vec3f& v);
+	//! Get constellation color 3D (starLines) - the read half of the above.
+	const Vec3f &constellationGetColor() const;
 	//! Get constellation names color
 	Vec3f constellationGetColorNames() const;
 	//! Set constellation names color
@@ -530,8 +534,12 @@ public:
 	//! file only on the grounds that "setters are dual so it follows".
 	//! EXPLICIT ONLY (D33): nothing calls either of these at startup or at
 	//! shutdown, and no config key selects one.
-	bool sessionSave(const std::string &filename);
-	bool sessionLoad(const std::string &filename);
+	//! `cmds` is the command surface, which owns the names, read halves and
+	//! write halves of the bulk value rows (§2 E3/E4/E5). It is passed in
+	//! rather than reached for: this façade has no business knowing what a
+	//! flag is called.
+	bool sessionSave(const std::string &filename, SessionFile::CommandSurface *cmds);
+	bool sessionLoad(const std::string &filename, SessionFile::CommandSurface *cmds);
 
 	//hides a planet
 	void setPlanetHidden(std::string name, bool planethidden);
@@ -787,6 +795,11 @@ public:
 
 	void skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v);
 
+	//! The read half of skyDisplayMgrSetColor. The manager has had the getter
+	//! all along (skydisplay_mgr.hpp:61); only this façade lacked it, so nine
+	//! `color` names had no readback at all (INTENT §11.129).
+	const Vec3f &skyDisplayMgrGetColor(SKYDISPLAY_NAME nameObj);
+
 	void skyDisplayMgrClear(SKYDISPLAY_NAME nameObj);
 
 	void skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string& fileName);
@@ -970,6 +983,8 @@ public:
 	bool atmosphereGetFlag() const;
 	//! Set atmosphere fade duration in s
 	void atmosphereSetFadeDuration(float f);
+	//! Get atmosphere fade duration in s - the read half of the above.
+	float atmosphereGetFadeDuration() const;
 	//! Set default atmosphere fade duration
 	void atmosphereSetDefaultFadeDuration();
 	//! Set moon brightness

@@ -1,7 +1,10 @@
 #ifndef SESSION_FILE_HPP_
 #define SESSION_FILE_HPP_
 
+#include <functional>
 #include <string>
+
+#include "tools/vecmath.hpp"
 
 // B31 slice 3 - THE SESSION FILE (b31-design §3.2/§3.3/§3.5).
 //
@@ -129,6 +132,35 @@ public:
     virtual void setSkyLock(bool locked) = 0;
 };
 
+// THE BULK VALUE ROWS (b31-design §2 E3/E4/E5: 97 flags, 43 `set` values, 46
+// colours) reach the session through the surface that OWNS their names, their
+// read halves and their write halves - the command interface. It is a second
+// collaborator rather than more methods on Host because the two answer to
+// different owners: Host is the model, this is the command surface, and the
+// session needs both without either knowing about the other (I1).
+//
+// Nothing here enumerates a name: the file is written from whatever the
+// surface reports it has, so a flag added to the command surface tomorrow is
+// carried by the session with no edit here (I2 - one inventory, not two).
+class CommandSurface {
+public:
+    virtual ~CommandSurface() = default;
+    // Every flag / value / colour that can be READ, with its current value. A
+    // name whose read half does not exist is simply not emitted - and the
+    // session says so, in the file, rather than writing a guess.
+    virtual void forEachFlag(const std::function<void(const std::string &, bool)> &emit) const = 0;
+    virtual void forEachValue(const std::function<void(const std::string &, const std::string &)> &emit) const = 0;
+    virtual void forEachColor(const std::function<void(const std::string &, const Vec3f &)> &emit) const = 0;
+    // The write halves, by name. False = this build does not know that name,
+    // which is what a session written by another build looks like from here.
+    virtual bool applyFlagByName(const std::string &name, bool value) = 0;
+    virtual bool applyValueByName(const std::string &name, const std::string &value) = 0;
+    virtual bool applyColorByName(const std::string &name, const Vec3f &value) = 0;
+    // How many names the surface holds in each family, readable or not - so
+    // the file can state what it did NOT carry instead of silently omitting it.
+    virtual void countNames(int &flags, int &values, int &colors) const = 0;
+};
+
 // Write the session to `~/.spacecrafter/sessions/<name>.ini`, atomically,
 // through the ONE serialization authority (ModularSystemFormat::write - the
 // same writer the content files go through, I2). `name` is a plain file NAME:
@@ -136,14 +168,14 @@ public:
 // nowhere else - and in particular never into the frozen legacy corpus (D35,
 // §2.0 D13). Returns false and says why, in the log, on any refusal or any
 // write failure; a failed write leaves any pre-existing file untouched.
-bool save(Host &host, const std::string &name);
+bool save(Host &host, CommandSurface *cmds, const std::string &name);
 
 // Restore a session. Idempotent (D33): every value is assigned, so loading the
 // same file twice - or loading it from the state it just produced - lands on
 // the same state. A value that cannot be re-established (a body the data no
 // longer declares) is REPORTED and the rest of the file still applies: a
 // silently dropped restore is a show that looks wrong with no trace of why.
-bool load(Host &host, const std::string &name);
+bool load(Host &host, CommandSurface *cmds, const std::string &name);
 
 // The default session name, used when the operator names none.
 constexpr const char *DEFAULT_NAME = "session";

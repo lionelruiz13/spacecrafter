@@ -79,9 +79,32 @@ void collectSystems(std::vector<ModularSystem *> &out)
     });
 }
 
+// A flag or a value another §2 row owns. The list is short and each entry
+// names the row that owns it, because "why is this not in the file" must be
+// answerable from the file (§2(f)).
+bool excludedFlag(const std::string &n)
+{
+    return n == "track_object"          // §2 row C5 - [selection] owns it
+        || n == "lock_sky_position"     // §2 row B9  - [observer] owns it
+        || n == "experimental_path"     // §2 row E6  - a dev gate, not show state
+        || n == "experimental_shadows"; // §2 row E6
+}
+
+bool excludedValue(const std::string &n)
+{
+    return n == "home_planet"           // §2 row B1  - [observer] owns it
+        || n == "zoom_offset"           // §2 row B10 - [observer] owns it
+        || n == "heading"               // §2 row B6  - D28's mandated carve-out
+        || n == "landscape_name"        // §2 row F1  - needs the pin, not the name
+        || n == "time_zone"             // §2 row A6  - the config channel persists it
+        || n == "date_display_format"   // §2 row A6
+        || n == "time_display_format"   // §2 row A6
+        || n == "startup_time_mode";    // §2 row A6
+}
+
 } // namespace
 
-bool save(Host &host, const std::string &name)
+bool save(Host &host, CommandSurface *cmds, const std::string &name)
 {
     std::string path;
     if (!resolve(name, path, "save"))
@@ -137,6 +160,78 @@ bool save(Host &host, const std::string &name)
     }
     sections.push_back(std::move(selection));
 
+    // THE BULK VALUE ROWS (§2 E3/E4/E5). Each is written from the command
+    // surface's own inventory, so this code names no flag and no colour: what
+    // the surface can read, the session carries.
+    //
+    // WHAT IS DELIBERATELY LEFT OUT, and it is per-ROW rather than per-group,
+    // because §2 classifies rows: a name another section of this file already
+    // owns is not written twice (I2 - two answers to one question is how a
+    // file starts contradicting itself), and a name whose §2 row excludes it
+    // stays out with its reason.
+    if (cmds) {
+        int nFlags = 0, nValues = 0, nColors = 0;
+        cmds->countNames(nFlags, nValues, nColors);
+
+        Section flags;
+        flags.setHeader("flags");
+        int wroteFlags = 0;
+        cmds->forEachFlag([&](const std::string &n, bool v) {
+            if (excludedFlag(n))
+                return;
+            flags.appendEntry(n, v ? "true" : "false");
+            ++wroteFlags;
+        });
+        flags.annotate("", "flags-not-carried", std::string("Of ") + std::to_string(nFlags) +
+            " flags this build knows, this session carries " + std::to_string(wroteFlags) +
+            ". `track_object` and `lock_sky_position` are carried by [selection] and "
+            "[observer] instead - they are the same state, and one file must not hold two "
+            "answers to one question. `experimental_path` and `experimental_shadows` are "
+            "excluded by b31-design §2 row E6: they are development gates that retire with "
+            "the old render path, and a session is a show artefact.");
+        sections.push_back(std::move(flags));
+
+        Section values;
+        values.setHeader("values");
+        int wroteValues = 0;
+        cmds->forEachValue([&](const std::string &n, const std::string &v) {
+            if (excludedValue(n))
+                return;
+            values.appendEntry(n, v);
+            ++wroteValues;
+        });
+        values.annotate("", "values-not-carried", std::string("Of ") + std::to_string(nValues) +
+            " `set` values this build knows, this session carries " + std::to_string(wroteValues) +
+            ". Left out on purpose: `home_planet` and `zoom_offset` belong to [observer]; "
+            "`heading` is DECISIONS_PENDING D28's mandated carve-out (what it means across a "
+            "reference change is unanswered, and a saved number would bake in an answer "
+            "nobody gave); `landscape_name` needs the pin-vs-auto distinction its own row "
+            "(§2 F1) carries, and the name alone would silently turn a pin into a "
+            "coincidence; the timezone and the date/time display formats are §2 row A6 "
+            "preferences the config channel already persists. Left out because they cannot "
+            "be READ - there is no getter anywhere in the tree, so nothing here can be "
+            "written honestly: moon_brightness, sun_brightness, milky_way_fader_duration, "
+            "zodiacal_intensity, milky_way_texture, star_fader_duration, "
+            "text_fading_duration, screen_fader (§2 row H6 wants it), stall_radius_unit, "
+            "datetime_display_position, datetime_display_number, init_fov - and `mode`, "
+            "which writes nothing at all (§2 row K3).");
+        sections.push_back(std::move(values));
+
+        Section colors;
+        colors.setHeader("colors");
+        int wroteColors = 0;
+        cmds->forEachColor([&](const std::string &n, const Vec3f &c) {
+            colors.appendEntry(n, d2s(c[0]) + "," + d2s(c[1]) + "," + d2s(c[2]));
+            ++wroteColors;
+        });
+        colors.annotate("", "colors-not-carried", std::string("Of ") + std::to_string(nColors) +
+            " `color` names this build knows, this session carries " + std::to_string(wroteColors) +
+            ". The rest have no read half at any level - the on-dome text colour and the star "
+            "colour table - so they are named here instead of being guessed. The PER-BODY "
+            "colours are not these: they are §2 rows D3/D4 and live in [body:*].");
+        sections.push_back(std::move(colors));
+    }
+
     // THE MANIFEST (§3.3): what this session assumed was loaded. It is what
     // makes the file readable on another install - D32 turned the artifact into
     // a diagnostic one, and a diagnostic that does not say what it assumed is a
@@ -180,7 +275,7 @@ bool save(Host &host, const std::string &name)
     return true;
 }
 
-bool load(Host &host, const std::string &name)
+bool load(Host &host, CommandSurface *cmds, const std::string &name)
 {
     std::string path;
     if (!resolve(name, path, "load"))
@@ -318,6 +413,44 @@ bool load(Host &host, const std::string &name)
         }
         if (const std::string *t = selection->find("track_object"))
             host.setTracking(*t == "true" || *t == "1");
+    }
+
+    // THE BULK ROWS, applied through the command surface's own write halves -
+    // the same code `flag`, `set` and `color` run, so a restored value goes
+    // through whatever those setters also do (I2). A name this build does not
+    // know is REPORTED and the rest still applies: a session from another build
+    // is exactly what a diagnostic artefact looks like when it arrives (D32).
+    if (cmds) {
+        int unknown = 0, applied = 0;
+        for (const Section &s : sections) {
+            const std::string &h = s.getHeader();
+            const bool isFlags = (h == "flags"), isValues = (h == "values"),
+                       isColors = (h == "colors");
+            if (!isFlags && !isValues && !isColors)
+                continue;
+            for (const auto &e : s.params()) {
+                bool ok = false;
+                if (isFlags)
+                    ok = cmds->applyFlagByName(e.first, e.second == "true" || e.second == "1");
+                else if (isValues)
+                    ok = cmds->applyValueByName(e.first, e.second);
+                else
+                    ok = cmds->applyColorByName(e.first, Utility::strToVec3f(e.second));
+                if (ok)
+                    ++applied;
+                else if (++unknown <= 8)
+                    cLog::get()->write("Session restore: this build has no " +
+                        std::string(isFlags ? "flag" : isValues ? "`set` value" : "colour") +
+                        " called '" + e.first + "', so that line was left alone. The rest of "
+                        "the session was applied. (A session written by a different build "
+                        "carries names this one may not have; the file is kept as it is.)",
+                        LOG_TYPE::L_WARNING);
+            }
+        }
+        if (unknown)
+            cLog::get()->write("Session restore: " + std::to_string(applied) + " value(s) "
+                "applied, " + std::to_string(unknown) + " name(s) unknown to this build.",
+                LOG_TYPE::L_WARNING);
     }
 
     cLog::get()->write("Session restored from " + path, LOG_TYPE::L_INFO);

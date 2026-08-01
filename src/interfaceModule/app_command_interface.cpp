@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include <string>
 #include <algorithm>
 #include <random>
@@ -336,122 +337,417 @@ void AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value)
 	executeCommandStatus();
 }
 
+//! The READ half of the flag surface - the one place that answers "what is
+//! this flag now?" (b31-design §2 row E3; INTENT §11.128(e)).
+//! `setFlag`'s toggle branch is its first consumer and the session save is its
+//! second, so the value a toggle computes and the value a session records are
+//! the same answer from the same authority (I2).
+//! Returns false when the flag name is unknown; every registered flag has a
+//! readback. Where the command drives SEVERAL underlying states (star names
+//! also drives the star-navigator's and Tully's; nebula names also drives
+//! dso3d's), this reports the PRIMARY one - the others keep their own read,
+//! because they are different state, not a second copy of this one.
+bool AppCommandInterface::readFlag(FLAG_NAMES flagName, bool &value) const
+{
+	switch(flagName) {
+		case FLAG_NAMES::FN_ANTIALIAS_LINES :
+			value = stapp->asBool(APP_FLAG::ANTIALIAS);
+			return true;
+		case FLAG_NAMES::FN_CONSTELLATION_DRAWING :
+			value = coreLink->constellationGetFlagLines();
+			return true;
+		case FLAG_NAMES::FN_CONSTELLATION_NAMES :
+			value = coreLink->constellationGetFlagNames();
+			return true;
+		case FLAG_NAMES::FN_CONSTELLATION_ART :
+			value = coreLink->constellationGetFlagArt();
+			return true;
+		case FLAG_NAMES::FN_DUAL_VIEWPORT :
+			value = coreLink->mediaGetFlagDualViewport();
+			return true;
+		case FLAG_NAMES::FN_CONSTELLATION_BOUNDARIES :
+			value = coreLink->constellationGetFlagBoundaries();
+			return true;
+		case FLAG_NAMES::FN_CONSTELLATION_PICK :
+			value = coreLink->constellationGetFlagIsolateSelected();
+			return true;
+		case FLAG_NAMES::FN_STAR_TWINKLE :
+			value = coreLink->starGetFlagTwinkle();
+			return true;
+		case FLAG_NAMES::FN_SHOW_TUI_DATETIME :
+			value = ui->asBool(UI_FLAG::SHOW_TUIDATETIME);
+			return true;
+		case FLAG_NAMES::FN_SHOW_TUI_SHORT_OBJ_INFO :
+			value = ui->asBool(UI_FLAG::SHOW_TUISHORTOBJ_INFO);
+			return true;
+		case FLAG_NAMES::FN_MANUAL_ZOOM :
+			value = stcore->getFlagManualAutoZoom();
+			return true;
+		case FLAG_NAMES::FN_NAVIGATION :
+			value = stcore->getFlagNav();
+			return true;
+		case FLAG_NAMES::FN_ASTRONOMICAL :
+			value = stcore->getFlagAstronomical();
+			return true;
+		case FLAG_NAMES::FN_LIGHT_TRAVEL_TIME :
+			value = coreLink->getFlagLightTravelTime();
+			return true;
+		case FLAG_NAMES::FN_FOG :
+			value = coreLink->fogGetFlag();
+			return true;
+		case FLAG_NAMES::FN_ATMOSPHERE :
+			value = coreLink->atmosphereGetFlag();
+			return true;
+		case FLAG_NAMES::FN_AZIMUTHAL_GRID :
+			value = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
+			return true;
+		case FLAG_NAMES::FN_EQUATORIAL_GRID :
+			value = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
+			return true;
+		case FLAG_NAMES::FN_ECLIPTIC_GRID :
+			value = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC);
+			return true;
+		case FLAG_NAMES::FN_GALACTIC_GRID :
+			value = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_GALACTIC);
+			return true;
+		case FLAG_NAMES::FN_EQUATOR_LINE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_EQUATOR);
+			return true;
+		case FLAG_NAMES::FN_GALACTIC_LINE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
+			return true;
+		case FLAG_NAMES::FN_ECLIPTIC_LINE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC);
+			return true;
+		case FLAG_NAMES::FN_PRECESSION_CIRCLE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_PRECESSION);
+			return true;
+		case FLAG_NAMES::FN_TROPIC_LINES :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_TROPIC);
+			return true;
+		case FLAG_NAMES::FN_CIRCUMPOLAR_CIRCLE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR);
+			return true;
+		case FLAG_NAMES::FN_MERIDIAN_LINE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_MERIDIAN);
+			return true;
+		case FLAG_NAMES::FN_ZENITH_LINE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ZENITH);
+			return true;
+		case FLAG_NAMES::FN_POLAR_CIRCLE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+			return true;
+		case FLAG_NAMES::FN_POLAR_POINT :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR);
+			return true;
+		case FLAG_NAMES::FN_ECLIPTIC_CENTER :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
+			return true;
+		case FLAG_NAMES::FN_GALACTIC_POLE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE);
+			return true;
+		case FLAG_NAMES::FN_GALACTIC_CENTER :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
+			return true;
+		case FLAG_NAMES::FN_VERNAL_POINTS :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_VERNAL);
+			return true;
+		case FLAG_NAMES::FN_ANALEMMA_LINE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE);
+			return true;
+		case FLAG_NAMES::FN_ANALEMMA :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ANALEMMA);
+			return true;
+		case FLAG_NAMES::FN_ARIES_LINE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ARIES);
+			return true;
+		case FLAG_NAMES::FN_ZODIAC :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ZODIAC);
+			return true;
+		case FLAG_NAMES::FN_LUNAR_ECLIPSE_UMBRA :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA);
+			return true;
+		case FLAG_NAMES::FN_LUNAR_ECLIPSE_PENUMBRA :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA);
+			return true;
+		case FLAG_NAMES::FN_GREENWICH_LINE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GREENWICH);
+			return true;
+		case FLAG_NAMES::FN_VERTICAL_LINE :
+			value = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_VERTICAL);
+			return true;
+		case FLAG_NAMES::FN_PERSONAL :
+			value = coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_PERSONAL);
+			return true;
+		case FLAG_NAMES::FN_PERSONEQ :
+			value = coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_PERSONEQ);
+			return true;
+		case FLAG_NAMES::FN_NAUTICAL :
+			value = coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_NAUTICAL);
+			return true;
+		case FLAG_NAMES::FN_NAUTICEQ :
+			value = coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_NAUTICEQ);
+			return true;
+		case FLAG_NAMES::FN_OBJCOORD :
+			value = coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_OBJCOORDS);
+			return true;
+		case FLAG_NAMES::FN_MOUSECOORD :
+			value = coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
+			return true;
+		case FLAG_NAMES::FN_ANG_DIST :
+			value = coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_ANGDIST);
+			return true;
+		case FLAG_NAMES::FN_LOXODROMY :
+			value = coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_LOXODROMY);
+			return true;
+		case FLAG_NAMES::FN_ORTHODROMY :
+			value = coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY);
+			return true;
+		case FLAG_NAMES::FN_CARDINAL_POINTS :
+			value = coreLink->cardinalsPointsGetFlag();
+			return true;
+		case FLAG_NAMES::FN_CLOUDS :
+			value = coreLink->getFlagClouds();
+			return true;
+		case FLAG_NAMES::FN_MOON_SCALED :
+			value = coreLink->getFlagMoonScaled();
+			return true;
+		case FLAG_NAMES::FN_SUN_SCALED :
+			value = coreLink->getFlagSunScaled();
+			return true;
+		case FLAG_NAMES::FN_LANDSCAPE :
+			value = coreLink->landscapeGetFlag();
+			return true;
+		case FLAG_NAMES::FN_STARS :
+			value = coreLink->starGetFlag();
+			return true;
+		case FLAG_NAMES::FN_STAR_NAMES :
+			value = coreLink->starGetFlagName();
+			return true;
+		case FLAG_NAMES::FN_STAR_PICK :
+			value = coreLink->starGetFlagIsolateSelected();
+			return true;
+		case FLAG_NAMES::FN_DSO_PICK :
+			value = coreLink->nebulaGetFlagIsolateSelected();
+			return true;
+		case FLAG_NAMES::FN_BODY_PICK :
+			value = coreLink->bodyGetFlagIsolateSelected();
+			return true;
+		case FLAG_NAMES::FN_PLANETS :
+			value = coreLink->planetsGetFlag();
+			return true;
+		case FLAG_NAMES::FN_PLANET_NAMES :
+			value = coreLink->planetsGetFlagHints();
+			return true;
+		case FLAG_NAMES::FN_PLANET_ORBITS :
+			value = coreLink->planetsGetFlagOrbits() || coreLink->satellitesGetFlagOrbits();
+			return true;
+		case FLAG_NAMES::FN_PLANETS_AXIS :
+			value = coreLink->planetsGetFlagAxis();
+			return true;
+		case FLAG_NAMES::FN_ORBITS :
+			value = coreLink->planetsGetFlagOrbits() || coreLink->satellitesGetFlagOrbits();
+			return true;
+		case FLAG_NAMES::FN_PLANETS_ORBITS :
+			value = coreLink->planetsGetFlagOrbits();
+			return true;
+		case FLAG_NAMES::FN_SATELLITES_ORBITS :
+			value = coreLink->satellitesGetFlagOrbits();
+			return true;
+		case FLAG_NAMES::FN_NEBULAE :
+			value = coreLink->nebulaGetFlag();
+			return true;
+		case FLAG_NAMES::FN_NEBULA_HINTS :
+			value = coreLink->nebulaGetFlagHints();
+			return true;
+		case FLAG_NAMES::FN_DSO_PICTOGRAMS :
+			value = stcore->getDsoPictograms();
+			return true;
+		case FLAG_NAMES::FN_NEBULA_NAMES :
+			value = coreLink->nebulaGetFlagNames();
+			return true;
+		case FLAG_NAMES::FN_MILKY_WAY :
+			value = coreLink->milkyWayGetFlag();
+			return true;
+		case FLAG_NAMES::FN_ZODIAC_LIGHT :
+			value = coreLink->milkyWayGetFlagZodiacal();
+			return true;
+		case FLAG_NAMES::FN_BRIGHT_NEBULAE :
+			value = coreLink->nebulaGetFlagBright();
+			return true;
+		case FLAG_NAMES::FN_OBJECT_TRAILS :
+			value = coreLink->planetsGetFlagTrails();
+			return true;
+		case FLAG_NAMES::FN_TRACK_OBJECT :
+			value = stcore->getFlagTracking();
+			return true;
+		case FLAG_NAMES::FN_SCRIPT_GUI_DEBUG :
+			value = cLog::get()->getDebug();
+			return true;
+		case FLAG_NAMES::FN_LOCK_SKY_POSITION :
+			value = stcore->getFlagLockSkyPosition();
+			return true;
+		case FLAG_NAMES::FN_SHOW_LATLON :
+			value = ui->asBool(UI_FLAG::SHOW_LATLON);
+			return true;
+		case FLAG_NAMES::FN_OORT :
+			value = coreLink->oortGetFlagShow();
+			return true;
+		case FLAG_NAMES::FN_TULLY :
+			value = coreLink->tullyGetFlagShow();
+			return true;
+		case FLAG_NAMES::FN_TULLY_COLOR_MODE :
+			value = coreLink->tullyGetWhiteColor();
+			return true;
+		case FLAG_NAMES::FN_BODY_TRACE :
+			value = coreLink->bodyTraceGetFlag();
+			return true;
+		case FLAG_NAMES::FN_COLOR_INVERSE :
+			value = stapp->asBool(APP_FLAG::COLOR_INVERSE);
+			return true;
+		case FLAG_NAMES::FN_SUBTITLE :
+			value = stapp->asBool(APP_FLAG::SUBTITLE);
+			return true;
+		case FLAG_NAMES::FN_STARS_TRACE :
+			value = coreLink->starGetTraceFlag();
+			return true;
+		case FLAG_NAMES::FN_STAR_LINES :
+			value = coreLink->starLinesGetFlag();
+			return true;
+		case FLAG_NAMES::FN_STAR_LINES_SELECTED :
+			value = coreLink->starLinesSelectedGetFlag();
+			return true;
+		case FLAG_NAMES::FN_SATELLITES :
+			value = coreLink->hideSatellitesFlag();
+			return true;
+		case FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION :
+			value = coreLink->atmosphericRefractionGetFlag();
+			return true;
+		case FLAG_NAMES::FN_QUATERNION_MODE :
+			value = coreLink->getQuaternionMode();
+			return true;
+		case FLAG_NAMES::FN_EYE_RELATIVE_MODE :
+			value = coreLink->getEyeRelativeMode();
+			return true;
+		case FLAG_NAMES::FN_SKIP_PAUSE :
+			value = scriptInterface->isSkipPauseDisabled();
+			return true;
+		case FLAG_NAMES::FN_IMAGE_COMPRESSION_LOSS :
+			value = saveScreenInterface->getImageCompressionLoss();
+			return true;
+		case FLAG_NAMES::FN_EXPERIMENTAL_PATH :
+			value = stcore->getExperimentalPath();
+			return true;
+		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS :
+			value = ShadowService::enabled;
+			return true;
+		default:
+			return false;
+	}
+}
+
 bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval)
 {
-	if (flag_value==FLAG_VALUES::FV_ON)
-		newval = true;
-	else if (flag_value==FLAG_VALUES::FV_OFF)
-		newval= false;
+	// A TOGGLE IS A READ FOLLOWED BY A WRITE, and the read is `readFlag`'s - not
+	// a second copy living inside every case (I2). Before this, the only code in
+	// the tree that knew a flag's current value was this switch, and it knew it
+	// only while mutating it: nothing could ask "what is this flag now?", which
+	// is why b31-design §2's row E3 had no save half (INTENT §11.128(e)).
+	// Two properties came out of the extraction and are behaviour, not cleanup:
+	//  * `newval` now reports the value the flag ENDS AT for every flag. 26 of
+	//    them (the sky grids and sky lines) used to read their value WITHOUT
+	//    negating it and then flip, so a toggle reported the value the flag had
+	//    BEFORE it - which is what the recorded command line and the status
+	//    readout carried.
+	//  * 6 more (the App/Ui-owned ones) did not write `newval` on a toggle at
+	//    all, so the caller read an UNINITIALISED bool.
+	// A flag whose value cannot be read is refused rather than half-applied: it
+	// would be a toggle with no defined direction.
+	if (flag_value == FLAG_VALUES::FV_TOGGLE) {
+		bool current;
+		if (!readFlag(flagName, current)) {
+			cLog::get()->write("Command 'flag': this flag cannot be toggled because its "
+				"current value cannot be read; pass 'on' or 'off' instead.", LOG_TYPE::L_WARNING);
+			return false;
+		}
+		newval = !current;
+	} else
+		newval = (flag_value == FLAG_VALUES::FV_ON);
 
 	switch(flagName) {
 		case FLAG_NAMES::FN_ANTIALIAS_LINES :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				stapp->toggle(APP_FLAG::ANTIALIAS);
-			else
-				stapp->flag(APP_FLAG::ANTIALIAS,newval);
+			stapp->flag(APP_FLAG::ANTIALIAS,newval);
 			break;
 
 		case FLAG_NAMES::FN_CONSTELLATION_DRAWING :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->constellationGetFlagLines();
 
 			coreLink->constellationSetFlagLines(newval);
 			break;
 
 		case FLAG_NAMES::FN_CONSTELLATION_NAMES :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->constellationGetFlagNames();
 
 			coreLink->constellationSetFlagNames(newval);
 			break;
 
 		case FLAG_NAMES::FN_CONSTELLATION_ART :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->constellationGetFlagArt();
 
 			coreLink->constellationSetFlagArt(newval);
 			break;
 
 			case FLAG_NAMES::FN_DUAL_VIEWPORT :
-				if (flag_value==FLAG_VALUES::FV_TOGGLE)
-					newval = !coreLink->mediaGetFlagDualViewport();
 
 				coreLink->mediaSetFlagDualViewport(newval);
 				break;
 
 		case FLAG_NAMES::FN_CONSTELLATION_BOUNDARIES :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->constellationGetFlagBoundaries();
 
 			coreLink->constellationSetFlagBoundaries(newval);
 			break;
 
 		case FLAG_NAMES::FN_CONSTELLATION_PICK :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->constellationGetFlagIsolateSelected();
 
 			coreLink->constellationSetFlagIsolateSelected(newval);
 			break;
 
 		case FLAG_NAMES::FN_STAR_TWINKLE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->starGetFlagTwinkle();
 
 			coreLink->starSetFlagTwinkle(newval);
 			break;
 
 		case FLAG_NAMES::FN_SHOW_TUI_DATETIME :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				ui->toggle(UI_FLAG::SHOW_TUIDATETIME);
-			else
-				ui->flag(UI_FLAG::SHOW_TUIDATETIME, newval);
+			ui->flag(UI_FLAG::SHOW_TUIDATETIME, newval);
 			break;
 
 		case FLAG_NAMES::FN_SHOW_TUI_SHORT_OBJ_INFO :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				ui->toggle(UI_FLAG::SHOW_TUISHORTOBJ_INFO);
-			else
-				ui->flag(UI_FLAG::SHOW_TUISHORTOBJ_INFO, newval);
+			ui->flag(UI_FLAG::SHOW_TUISHORTOBJ_INFO, newval);
 			break;
 
 		case FLAG_NAMES::FN_MANUAL_ZOOM :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getFlagManualAutoZoom();
 
 			stcore->setFlagManualAutoZoom(newval);
 			break;
 
 		case FLAG_NAMES::FN_NAVIGATION :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getFlagNav();
 
 			stcore->setFlagNav(newval);
 			break;
 
 		case FLAG_NAMES::FN_ASTRONOMICAL :
-			if (flag_value == FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getFlagAstronomical();
 
 			stcore->setFlagAstronomical(newval);
 			break;
 
 		case FLAG_NAMES::FN_LIGHT_TRAVEL_TIME :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->getFlagLightTravelTime();
 
 			coreLink->setFlagLightTravelTime(newval);
 			break;
 
 		case FLAG_NAMES::FN_FOG :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->fogGetFlag();
 
 			coreLink->fogSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_ATMOSPHERE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->atmosphereGetFlag();
 
 			if (!newval) coreLink->fogSetFlag(false); // turn off fog with atmosphere
 			coreLink->starSetFlagTwinkle(newval); // twinkle stars depending on atmosphere activated
@@ -459,330 +755,176 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			break;
 
 		case FLAG_NAMES::FN_AZIMUTHAL_GRID :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
-				coreLink->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
-			} else
-				coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL, newval);
+			coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_EQUATORIAL_GRID :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
-				coreLink->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
-			} else
-				coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL, newval);
+			coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_ECLIPTIC_GRID :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC);
-				coreLink->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC);
-			} else
-				coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC, newval);
+			coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC, newval);
 			break;
 
 		case FLAG_NAMES::FN_GALACTIC_GRID :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_GALACTIC);
-				coreLink->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_GALACTIC);
-			} else
-				coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_GALACTIC, newval);
+			coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_GALACTIC, newval);
 			break;
 
 		case FLAG_NAMES::FN_EQUATOR_LINE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_EQUATOR);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_EQUATOR);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_EQUATOR, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_EQUATOR, newval);
 			break;
 
 		case FLAG_NAMES::FN_GALACTIC_LINE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, newval);
 			break;
 
 		case FLAG_NAMES::FN_ECLIPTIC_LINE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC, newval);
 			break;
 
 		case FLAG_NAMES::FN_PRECESSION_CIRCLE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_PRECESSION);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_PRECESSION);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_PRECESSION, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_PRECESSION, newval);
 			break;
 
 		case FLAG_NAMES::FN_TROPIC_LINES :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_TROPIC);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_TROPIC);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_TROPIC, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_TROPIC, newval);
 			break;
 
 		case FLAG_NAMES::FN_CIRCUMPOLAR_CIRCLE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR, newval);
 			break;
 
 		case FLAG_NAMES::FN_MERIDIAN_LINE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_MERIDIAN);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_MERIDIAN);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_MERIDIAN, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_MERIDIAN, newval);
 			break;
 
 		case FLAG_NAMES::FN_ZENITH_LINE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ZENITH);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ZENITH);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ZENITH, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ZENITH, newval);
 			break;
 
 		case FLAG_NAMES::FN_POLAR_CIRCLE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR, newval);
 			break;
 
 		case FLAG_NAMES::FN_POLAR_POINT :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR, newval);
 			break;
 
 		case FLAG_NAMES::FN_ECLIPTIC_CENTER :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, newval);
 			break;
 
 		case FLAG_NAMES::FN_GALACTIC_POLE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE, newval);
 			break;
 
 		case FLAG_NAMES::FN_GALACTIC_CENTER :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER, newval);
 			break;
 
 		case FLAG_NAMES::FN_VERNAL_POINTS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_VERNAL);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_VERNAL);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_VERNAL, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_VERNAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_ANALEMMA_LINE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE, newval);
 			break;
 
 		case FLAG_NAMES::FN_ANALEMMA :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ANALEMMA);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ANALEMMA);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ANALEMMA, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ANALEMMA, newval);
 			break;
 
 		case FLAG_NAMES::FN_ARIES_LINE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ARIES);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ARIES);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ARIES, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ARIES, newval);
 			break;
 
 		case FLAG_NAMES::FN_ZODIAC :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ZODIAC);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ZODIAC);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ZODIAC, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ZODIAC, newval);
 			break;
 
 		case FLAG_NAMES::FN_LUNAR_ECLIPSE_UMBRA :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA, newval);
 			break;
 
 		case FLAG_NAMES::FN_LUNAR_ECLIPSE_PENUMBRA :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA, newval);
 			break;
 
 		case FLAG_NAMES::FN_GREENWICH_LINE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GREENWICH);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GREENWICH);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GREENWICH, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GREENWICH, newval);
 			break;
 
 		case FLAG_NAMES::FN_VERTICAL_LINE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_VERTICAL);
-				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_VERTICAL);
-			} else
-				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_VERTICAL, newval);
+			coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_VERTICAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_PERSONAL :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_PERSONAL);
-				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_PERSONAL);
-			} else
-				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_PERSONAL, newval);
+			coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_PERSONAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_PERSONEQ :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_PERSONEQ);
-				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_PERSONEQ);
-			} else
-				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_PERSONEQ, newval);
+			coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_PERSONEQ, newval);
 			break;
 
 		case FLAG_NAMES::FN_NAUTICAL :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_NAUTICAL);
-				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_NAUTICAL);
-			} else
-				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_NAUTICAL, newval);
+			coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_NAUTICAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_NAUTICEQ :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_NAUTICEQ);
-				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_NAUTICEQ);
-			} else
-				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_NAUTICEQ, newval);
+			coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_NAUTICEQ, newval);
 			break;
 
 		case FLAG_NAMES::FN_OBJCOORD :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_OBJCOORDS);
-				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_OBJCOORDS);
-			} else
-				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_OBJCOORDS, newval);
+			coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_OBJCOORDS, newval);
 			break;
 
 		case FLAG_NAMES::FN_MOUSECOORD :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
-				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
-			} else
-				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_MOUSECOORDS, newval);
+			coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_MOUSECOORDS, newval);
 			break;
 
 		case FLAG_NAMES::FN_ANG_DIST :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_ANGDIST);
-				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_ANGDIST);
-			} else
-				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_ANGDIST, newval);
+			coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_ANGDIST, newval);
 			break;
 
 		case FLAG_NAMES::FN_LOXODROMY:
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_LOXODROMY);
-				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_LOXODROMY);
-			} else
-				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_LOXODROMY, newval);
+			coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_LOXODROMY, newval);
 			break;
 
 		case FLAG_NAMES::FN_ORTHODROMY:
-			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY);
-				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY);
-			} else
-				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY, newval);
+			coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY, newval);
 			break;
 
 		case FLAG_NAMES::FN_CARDINAL_POINTS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->cardinalsPointsGetFlag();
 
 			coreLink->cardinalsPointsSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_CLOUDS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->getFlagClouds();
 
 			coreLink->setFlagClouds(newval);
 			break;
 
 		case FLAG_NAMES::FN_MOON_SCALED :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->getFlagMoonScaled();
 
 			coreLink->setFlagMoonScaled(newval);
 			break;
 
 		case FLAG_NAMES::FN_SUN_SCALED :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->getFlagSunScaled();
 
 			coreLink->setFlagSunScaled(newval);
 			break;
 
 		case FLAG_NAMES::FN_LANDSCAPE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->landscapeGetFlag();
 
 			coreLink->landscapeSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_STARS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->starGetFlag();
 
 			coreLink->starSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_STAR_NAMES :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->starGetFlagName();
 
 			coreLink->starSetFlagName(newval);
 
@@ -798,102 +940,74 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			break;
 
 		case FLAG_NAMES::FN_STAR_PICK :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->starGetFlagIsolateSelected();
 
 			coreLink->starSetFlagIsolateSelected(newval);
 			break;
 
 		case FLAG_NAMES::FN_DSO_PICK :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->nebulaGetFlagIsolateSelected();
 
 			coreLink->nebulaSetFlagIsolateSelected(newval);
 			break;
 
 		case FLAG_NAMES::FN_BODY_PICK :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->bodyGetFlagIsolateSelected();
 
 			coreLink->bodySetFlagIsolateSelected(newval);
 			break;
 
 		case FLAG_NAMES::FN_PLANETS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->planetsGetFlag();
 
 			coreLink->planetsSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_PLANET_NAMES :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->planetsGetFlagHints();
 
 			coreLink->planetsSetFlagHints(newval);
 			if (coreLink->planetsGetFlagHints()) coreLink->planetsSetFlag(true); // for safety if script turns planets off
 			break;
 
 		case FLAG_NAMES::FN_PLANET_ORBITS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->planetsGetFlagOrbits() && !coreLink->satellitesGetFlagOrbits();
 
 			coreLink->planetsSetFlagOrbits(newval);
 			coreLink->satellitesSetFlagOrbits(newval);
 			break;
 
 		case FLAG_NAMES::FN_PLANETS_AXIS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->planetsGetFlagAxis();
 
 			coreLink->planetsSetFlagAxis(newval);
 			break;
 
 		case FLAG_NAMES::FN_ORBITS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->planetsGetFlagOrbits() && !coreLink->satellitesGetFlagOrbits();
 
 			coreLink->planetsSetFlagOrbits(newval);
 			coreLink->satellitesSetFlagOrbits(newval);
 			break;
 
 		case FLAG_NAMES::FN_PLANETS_ORBITS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->planetsGetFlagOrbits();
 
 			coreLink->planetsSetFlagOrbits(newval);
 			break;
 
 		case FLAG_NAMES::FN_SATELLITES_ORBITS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->satellitesGetFlagOrbits();
 
 			coreLink->satellitesSetFlagOrbits(newval);
 			break;
 
 		case FLAG_NAMES::FN_NEBULAE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->nebulaGetFlag();
 
 			coreLink->nebulaSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_NEBULA_HINTS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->nebulaGetFlagHints();
 
 			coreLink->nebulaSetFlagHints(newval);
 			break;
 
 		case FLAG_NAMES::FN_DSO_PICTOGRAMS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getDsoPictograms();
 
 			stcore->setDsoPictograms(newval);
 			break;
 
 		case FLAG_NAMES::FN_NEBULA_NAMES :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->nebulaGetFlagNames();
 
 			if (newval) coreLink->nebulaSetFlagNames(true); // make sure visible
 			coreLink->nebulaSetFlagNames(newval);
@@ -905,188 +1019,124 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			break;
 
 		case FLAG_NAMES::FN_MILKY_WAY :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->milkyWayGetFlag();
 
 			coreLink->milkyWaySetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_ZODIAC_LIGHT :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->milkyWayGetFlagZodiacal();
 
 			coreLink->milkyWaySetFlagZodiacal(newval);
 			break;
 
 		case FLAG_NAMES::FN_BRIGHT_NEBULAE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->nebulaGetFlagBright();
 
 			coreLink->nebulaSetFlagBright(newval);
 			break;
 
 		case FLAG_NAMES::FN_OBJECT_TRAILS :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->planetsGetFlagTrails();
 
 			coreLink->planetsSetFlagTrails(newval);
 			break;
 
 		case FLAG_NAMES::FN_TRACK_OBJECT :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getFlagTracking();
 
 			stcore->setFlagTracking(newval);
 			break;
 
 		case FLAG_NAMES::FN_SCRIPT_GUI_DEBUG :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !cLog::get()->getDebug();
 
 			cLog::get()->setDebug(newval);
 			break;
 
 		case FLAG_NAMES::FN_LOCK_SKY_POSITION :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getFlagLockSkyPosition();
 
 			stcore->setFlagLockSkyPosition(newval);
 			break;
 
 		case FLAG_NAMES::FN_SHOW_LATLON :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				ui->toggle(UI_FLAG::SHOW_LATLON);
-			else
-				ui->flag(UI_FLAG::SHOW_LATLON, newval);
+			ui->flag(UI_FLAG::SHOW_LATLON, newval);
 			break;
 
 		case FLAG_NAMES::FN_OORT :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->oortGetFlagShow();
 
 			coreLink->oortSetFlagShow(newval);
 			break;
 
 		case FLAG_NAMES::FN_TULLY :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->tullyGetFlagShow();
 
 			coreLink->tullySetFlagShow(newval);
 			break;
 
 		case FLAG_NAMES::FN_TULLY_COLOR_MODE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->tullyGetWhiteColor();
 
 			coreLink->tullySetWhiteColor(newval);
 			break;
 
 		case FLAG_NAMES::FN_BODY_TRACE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->bodyTraceGetFlag();
 
 			coreLink->bodyTraceSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_COLOR_INVERSE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				stapp->toggle(APP_FLAG::COLOR_INVERSE);
-			else
-				stapp->flag(APP_FLAG::COLOR_INVERSE, newval);
+			stapp->flag(APP_FLAG::COLOR_INVERSE, newval);
 			break;
 
 		case FLAG_NAMES::FN_SUBTITLE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				stapp->toggle(APP_FLAG::SUBTITLE);
-			else
-				stapp->flag(APP_FLAG::SUBTITLE, newval);
+			stapp->flag(APP_FLAG::SUBTITLE, newval);
 			break;
 
 		case FLAG_NAMES::FN_STARS_TRACE :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->starGetTraceFlag();
 
 			coreLink->starSetTraceFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_STAR_LINES :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->starLinesGetFlag();
 
 			coreLink->starLinesSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_STAR_LINES_SELECTED :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->starLinesSelectedGetFlag();
 
 			coreLink->starLinesSelectedSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_SATELLITES :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->hideSatellitesFlag();
 
 			coreLink->setHideSatellites(newval);
 			break;
 		case FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION :
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->atmosphericRefractionGetFlag();
 
 			coreLink->atmosphericRefractionSetFlag(newval);
 			break;
 		case FLAG_NAMES::FN_QUATERNION_MODE:
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->getQuaternionMode();
 			coreLink->setQuaternionMode(newval);
 			break;
 		case FLAG_NAMES::FN_EYE_RELATIVE_MODE:
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !coreLink->getEyeRelativeMode();
 			coreLink->setEyeRelativeMode(newval);
 			break;
 		case FLAG_NAMES::FN_SKIP_PAUSE:
-			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !scriptInterface->isSkipPauseDisabled();
 			scriptInterface->setSkipPauseDisabled(newval);
 			break;
 		case FLAG_NAMES::FN_IMAGE_COMPRESSION_LOSS:
-			if (flag_value == FLAG_VALUES::FV_TOGGLE)
-				newval = !saveScreenInterface->getImageCompressionLoss();
 			saveScreenInterface->setImageCompressionLoss(newval);
 			break;
-		case FLAG_NAMES::FN_EXPERIMENTAL_PATH:
+		case FLAG_NAMES::FN_EXPERIMENTAL_PATH :
 			// Rendered-path selection (old/new), replacing the A/B time-toggle
 			// once used [vixy: 2026-07-12] - plain semantics, script-driven.
-			switch (flag_value) {
-				case FLAG_VALUES::FV_TOGGLE:
-					stcore->setExperimentalPath(!stcore->getExperimentalPath());
-					break;
-				case FLAG_VALUES::FV_ON:
-					stcore->setExperimentalPath(true);
-					break;
-				case FLAG_VALUES::FV_OFF:
-					stcore->setExperimentalPath(false);
-			}
+			stcore->setExperimentalPath(newval);
 			break;
-		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS:
-			switch (flag_value) {
-				case FLAG_VALUES::FV_TOGGLE:
-					Context::instance->experimental_shadows ^= Context::instance->default_experimental_shadows;
-					// New path: PLAIN toggle - the old XOR-against-default is a
-					// defect (no-op when the config default is false), not
-					// reproduced (shadow-paths.md A3.2/B1).
-					ShadowService::enabled = !ShadowService::enabled;
-					break;
-				case FLAG_VALUES::FV_ON:
-					Context::instance->experimental_shadows = Context::instance->default_experimental_shadows;
-					ShadowService::enabled = true;
-					break;
-				case FLAG_VALUES::FV_OFF:
-					Context::instance->experimental_shadows = false;
-					ShadowService::enabled = false;
-			}
+
+		case FLAG_NAMES::FN_EXPERIMENTAL_SHADOWS :
+			// New path: PLAIN on/off - the old XOR-against-default is a defect
+			// (no-op when the config default is false), not reproduced
+			// (shadow-paths.md A3.2/B1). Assignment and the old XOR agree for
+			// every reachable value, since the only values the old branch could
+			// produce are 0 and the default itself.
+			Context::instance->experimental_shadows =
+				newval ? Context::instance->default_experimental_shadows : 0;
+			ShadowService::enabled = newval;
 			break;
+
 		default:
 			cLog::get()->write("no effect with unknown case ",LOG_TYPE::L_DEBUG);
 			break;
@@ -1179,6 +1229,76 @@ int AppCommandInterface::commandGet()
 }
 
 // Contract + the veto point on its spelling: app_command_interface.hpp.
+
+// ---------------------------------------------------------------------------
+// SessionFile::CommandSurface - this class IS the inventory of flag, `set` and
+// colour names, so the session asks it rather than keeping a list of its own.
+// Every walk is over the name maps themselves: a name added to
+// `app_command_init.cpp` tomorrow is carried by the next session with no edit
+// anywhere else (I2). A name whose read half does not exist is not emitted -
+// the session then says so in the file, which is the only honest thing a save
+// can do about a value nothing can read.
+// ---------------------------------------------------------------------------
+void AppCommandInterface::forEachFlag(const std::function<void(const std::string &, bool)> &emit) const
+{
+	for (const auto &kv : m_flags) {
+		bool v;
+		if (readFlag(kv.second, v))
+			emit(kv.first, v);
+	}
+}
+
+void AppCommandInterface::forEachValue(const std::function<void(const std::string &, const std::string &)> &emit) const
+{
+	for (const auto &kv : m_set) {
+		std::string v;
+		if (readValue(kv.second, v))
+			emit(kv.first, v);
+	}
+}
+
+void AppCommandInterface::forEachColor(const std::function<void(const std::string &, const Vec3f &)> &emit) const
+{
+	for (const auto &kv : m_color) {
+		Vec3f c;
+		if (readColor(kv.second, c))
+			emit(kv.first, c);
+	}
+}
+
+bool AppCommandInterface::applyFlagByName(const std::string &name, bool value)
+{
+	auto it = m_flags.find(name);
+	if (it == m_flags.end())
+		return false;
+	bool newval;
+	return setFlag(it->second, value ? FLAG_VALUES::FV_ON : FLAG_VALUES::FV_OFF, newval);
+}
+
+bool AppCommandInterface::applyValueByName(const std::string &name, const std::string &value)
+{
+	if (m_set.find(name) == m_set.end())
+		return false;
+	evalCommandSet(name, value);
+	return true;
+}
+
+bool AppCommandInterface::applyColorByName(const std::string &name, const Vec3f &value)
+{
+	auto it = m_color.find(name);
+	if (it == m_color.end())
+		return false;
+	applyColor(it->second, value, 0);
+	return true;
+}
+
+void AppCommandInterface::countNames(int &flags, int &values, int &colors) const
+{
+	flags = static_cast<int>(m_flags.size());
+	values = static_cast<int>(m_set.size());
+	colors = static_cast<int>(m_color.size());
+}
+
 int AppCommandInterface::commandSession()
 {
 	const std::string argAction = args[W_ACTION];
@@ -1187,10 +1307,10 @@ int AppCommandInterface::commandSession()
 	// have to name it twice.
 	const std::string &name = args[W_FILENAME];
 	if (argAction == W_SAVE) {
-		if (!coreLink->sessionSave(name))
+		if (!coreLink->sessionSave(name, this))
 			debug_message = _("Command 'session': the session could not be saved");
 	} else if (argAction == W_LOAD) {
-		if (!coreLink->sessionLoad(name))
+		if (!coreLink->sessionLoad(name, this))
 			debug_message = _("Command 'session': the session could not be loaded");
 	} else {
 		debug_message = _("Command 'session': unknown or missing action, expected 'save' or 'load'");
@@ -1527,32 +1647,12 @@ int AppCommandInterface::commandSuntrace()
 }
 
 
-int AppCommandInterface::commandColor()
+//! Apply one colour by name. Extracted from `commandColor` so the session
+//! restore drives the SAME write the command does rather than a second copy of
+//! it (I2, b31-design §2 row E5).
+void AppCommandInterface::applyColor(COLORCOMMAND_NAMES name, const Vec3f &Vcolor, int index)
 {
-	//color management
-	Vec3f Vcolor;
-	std::string argValue = args[W_VALUE];
-	std::string argR= args[W_R];
-	std::string argG= args[W_G];
-	std::string argB= args[W_B];
-	AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
-	if (!testColor)
-		return executeCommandStatus();
-
-	std::string argProperty = args[W_PROPERTY];
-	if (argProperty.empty()) {
-		debug_message = _("Command 'color': unknown expected argument 'property'");
-		return executeCommandStatus();
-	}
-	auto m_color_it = m_color.find(argProperty);
-
-	if (m_color_it ==m_color.end()) {
-			debug_message = _("Command 'color': unknown property");
-			appInit->searchSimilarColor(argProperty);
-			return executeCommandStatus();
-	}
-
-	switch(m_color_it->second) {
+	switch(name) {
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES:	coreLink->constellationSetColorLine( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES3D:	coreLink->constellationSetColor( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_NAMES:	coreLink->constellationSetColorNames( Vcolor ); break;
@@ -1598,10 +1698,186 @@ int AppCommandInterface::commandColor()
 		case COLORCOMMAND_NAMES::CC_NEBULA_CIRCLE: 			coreLink->nebulaSetColorCircle( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_PRECESSION_CIRCLE: 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR: 		media->textSetDefaultColor( Vcolor ); break;
-		case COLORCOMMAND_NAMES::CC_STAR_TABLE:				coreLink->starSetColorTable(evalInt(args[W_INDEX]), Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_STAR_TABLE:				coreLink->starSetColorTable(index, Vcolor ); break;
 		default:
 		break;
 	}
+}
+
+//! What is this colour NOW? The read half of `applyColor`, and the session's
+//! only way to record §2 row E5. Two of the 46 have no getter at ANY level -
+//! the on-dome text colour and the star colour table - and they say so by
+//! returning false rather than by reporting a guess.
+bool AppCommandInterface::readColor(COLORCOMMAND_NAMES name, Vec3f &value) const
+{
+	switch(name) {
+		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES:
+			value = coreLink->constellationGetColorLine();
+			return true;
+		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES3D:
+			value = coreLink->constellationGetColor();
+			return true;
+		case COLORCOMMAND_NAMES::CC_CONSTELLATION_NAMES:
+			value = coreLink->constellationGetColorNames();
+			return true;
+		case COLORCOMMAND_NAMES::CC_CONSTELLATION_ART:
+			value = coreLink->constellationGetColorArt();
+			return true;
+		case COLORCOMMAND_NAMES::CC_CONSTELLATION_BOUNDARIES:
+			value = coreLink->constellationGetColorBoundaries();
+			return true;
+		case COLORCOMMAND_NAMES::CC_CARDINAL_POINTS:
+			value = coreLink->cardinalsPointsGetColor();
+			return true;
+		case COLORCOMMAND_NAMES::CC_PLANET_ORBITS:
+			value = coreLink->planetGetDefaultColor(W_ORBIT);
+			return true;
+		case COLORCOMMAND_NAMES::CC_PLANET_NAMES:
+			value = coreLink->planetGetDefaultColor(W_LABEL);
+			return true;
+		case COLORCOMMAND_NAMES::CC_PLANET_TRAILS:
+			value = coreLink->planetGetDefaultColor(W_TRAIL);
+			return true;
+		case COLORCOMMAND_NAMES::CC_AZIMUTHAL_GRID:
+			value = coreLink->skyGridMgrGetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
+			return true;
+		case COLORCOMMAND_NAMES::CC_EQUATOR_GRID:
+			value = coreLink->skyGridMgrGetColor(SKYGRID_TYPE::GRID_EQUATORIAL);
+			return true;
+		case COLORCOMMAND_NAMES::CC_ECLIPTIC_GRID:
+			value = coreLink->skyGridMgrGetColor(SKYGRID_TYPE::GRID_ECLIPTIC);
+			return true;
+		case COLORCOMMAND_NAMES::CC_GALACTIC_GRID:
+			value = coreLink->skyGridMgrGetColor(SKYGRID_TYPE::GRID_GALACTIC);
+			return true;
+		case COLORCOMMAND_NAMES::CC_EQUATOR_LINE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_EQUATOR);
+			return true;
+		case COLORCOMMAND_NAMES::CC_GALACTIC_LINE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
+			return true;
+		case COLORCOMMAND_NAMES::CC_ECLIPTIC_LINE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_ECLIPTIC);
+			return true;
+		case COLORCOMMAND_NAMES::CC_MERIDIAN_LINE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_MERIDIAN);
+			return true;
+		case COLORCOMMAND_NAMES::CC_ZENITH_LINE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_ZENITH);
+			return true;
+		case COLORCOMMAND_NAMES::CC_POLAR_POINT:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_POINT_POLAR);
+			return true;
+		case COLORCOMMAND_NAMES::CC_POLAR_CIRCLE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+			return true;
+		case COLORCOMMAND_NAMES::CC_ECLIPTIC_CENTER:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
+			return true;
+		case COLORCOMMAND_NAMES::CC_GALACTIC_POLE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_GALACTIC_POLE);
+			return true;
+		case COLORCOMMAND_NAMES::CC_GALACTIC_CENTER:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
+			return true;
+		case COLORCOMMAND_NAMES::CC_VERNAL_POINTS:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_VERNAL);
+			return true;
+		case COLORCOMMAND_NAMES::CC_ANALEMMA:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_ANALEMMA);
+			return true;
+		case COLORCOMMAND_NAMES::CC_ANALEMMA_LINE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_ANALEMMALINE);
+			return true;
+		case COLORCOMMAND_NAMES::CC_GREENWICH_LINE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_GREENWICH);
+			return true;
+		case COLORCOMMAND_NAMES::CC_ARIES_LINE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_ARIES);
+			return true;
+		case COLORCOMMAND_NAMES::CC_ZODIAC:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_ZODIAC);
+			return true;
+		case COLORCOMMAND_NAMES::CC_LUNAR_ECLIPSE_UMBRA:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_UMBRA);
+			return true;
+		case COLORCOMMAND_NAMES::CC_LUNAR_ECLIPSE_PENUMBRA:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_LUNAR_ECLIPSE_PENUMBRA);
+			return true;
+		case COLORCOMMAND_NAMES::CC_PERSONAL:
+			value = coreLink->skyDisplayMgrGetColor(SKYDISPLAY_NAME::SKY_PERSONAL);
+			return true;
+		case COLORCOMMAND_NAMES::CC_PERSONEQ:
+			value = coreLink->skyDisplayMgrGetColor(SKYDISPLAY_NAME::SKY_PERSONEQ);
+			return true;
+		case COLORCOMMAND_NAMES::CC_NAUTICAL_ALT:
+			value = coreLink->skyDisplayMgrGetColor(SKYDISPLAY_NAME::SKY_NAUTICAL);
+			return true;
+		case COLORCOMMAND_NAMES::CC_NAUTICAL_RA:
+			value = coreLink->skyDisplayMgrGetColor(SKYDISPLAY_NAME::SKY_NAUTICEQ);
+			return true;
+		case COLORCOMMAND_NAMES::CC_OBJECT_COORDINATES:
+			value = coreLink->skyDisplayMgrGetColor(SKYDISPLAY_NAME::SKY_OBJCOORDS);
+			return true;
+		case COLORCOMMAND_NAMES::CC_MOUSE_COORDINATES:
+			value = coreLink->skyDisplayMgrGetColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
+			return true;
+		case COLORCOMMAND_NAMES::CC_ANGULAR_DISTANCE:
+			value = coreLink->skyDisplayMgrGetColor(SKYDISPLAY_NAME::SKY_ANGDIST);
+			return true;
+		case COLORCOMMAND_NAMES::CC_LOXODROMY:
+			value = coreLink->skyDisplayMgrGetColor(SKYDISPLAY_NAME::SKY_LOXODROMY);
+			return true;
+		case COLORCOMMAND_NAMES::CC_ORTHODROMY:
+			value = coreLink->skyDisplayMgrGetColor(SKYDISPLAY_NAME::SKY_ORTHODROMY);
+			return true;
+		case COLORCOMMAND_NAMES::CC_VERTICAL_LINE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_VERTICAL);
+			return true;
+		case COLORCOMMAND_NAMES::CC_NEBULA_NAMES:
+			value = coreLink->nebulaGetColorLabels();
+			return true;
+		case COLORCOMMAND_NAMES::CC_NEBULA_CIRCLE:
+			value = coreLink->nebulaGetColorCircle();
+			return true;
+		case COLORCOMMAND_NAMES::CC_PRECESSION_CIRCLE:
+			value = coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_PRECESSION);
+			return true;
+		case COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR:
+			return false;   // no read half exists at any level
+		case COLORCOMMAND_NAMES::CC_STAR_TABLE:
+			return false;   // no read half exists at any level
+		default:
+			return false;
+	}
+}
+
+int AppCommandInterface::commandColor()
+{
+	//color management
+	Vec3f Vcolor;
+	std::string argValue = args[W_VALUE];
+	std::string argR= args[W_R];
+	std::string argG= args[W_G];
+	std::string argB= args[W_B];
+	AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
+	if (!testColor)
+		return executeCommandStatus();
+
+	std::string argProperty = args[W_PROPERTY];
+	if (argProperty.empty()) {
+		debug_message = _("Command 'color': unknown expected argument 'property'");
+		return executeCommandStatus();
+	}
+	auto m_color_it = m_color.find(argProperty);
+
+	if (m_color_it ==m_color.end()) {
+			debug_message = _("Command 'color': unknown property");
+			appInit->searchSimilarColor(argProperty);
+			return executeCommandStatus();
+	}
+
+	applyColor(m_color_it->second, Vcolor, evalInt(args[W_INDEX]));
 	return executeCommandStatus();
 }
 
@@ -1699,6 +1975,130 @@ int AppCommandInterface::commandPrint()
 	return executeCommandStatus();
 }
 
+
+//! What is this `set` value NOW? The read half of `evalCommandSet` (b31-design
+//! §2 row E4, whose readback §11.108(k) recorded as "NOT established").
+//! 30 of the 43 registered names can answer; the other 13 are listed together
+//! at the bottom of the switch and return false, because each writes into a
+//! sink nothing in the tree can read back - `set mode` writes nothing at all.
+//! Numbers are rendered at full double precision: a session that loses digits
+//! is a session that does not restore what it saved.
+bool AppCommandInterface::readValue(SCD_NAMES name, std::string &value) const
+{
+	auto num = [](double v) {
+		std::ostringstream s;
+		s << std::setprecision(17) << v;
+		return s.str();
+	};
+	switch(name) {
+		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION:
+			value = num(coreLink->atmosphereGetFadeDuration());
+			return true;
+		case SCD_NAMES::APP_AUTO_MOVE_DURATION:
+			value = num(stcore->getAutoMoveDuration());
+			return true;
+		case SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION:
+			value = num(coreLink->constellationGetArtFadeDuration());
+			return true;
+		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY:
+			value = num(coreLink->constellationGetArtIntensity());
+			return true;
+		case SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE:
+			value = num(stcore->getLightPollutionLimitingMagnitude());
+			return true;
+		case SCD_NAMES::APP_HOME_PLANET:
+			value = coreLink->getHomePlanetEnglishName();
+			return true;
+		case SCD_NAMES::APP_HEADING:
+			value = num(coreLink->getHeading());
+			return true;
+		case SCD_NAMES::APP_LANDSCAPE_NAME:
+			value = coreLink->landscapeGetName();
+			return true;
+		case SCD_NAMES::APP_LINE_WIDTH:
+			value = num(stapp->getLineWidth());
+			return true;
+		case SCD_NAMES::APP_MAX_MAG_NEBULA_NAME:
+			value = num(coreLink->nebulaGetMaxMagHints());
+			return true;
+		case SCD_NAMES::APP_MAX_MAG_STAR_NAME:
+			value = num(coreLink->starGetMaxMagName());
+			return true;
+		case SCD_NAMES::APP_MOON_SCALE:
+			value = num(coreLink->getMoonScale());
+			return true;
+		case SCD_NAMES::APP_SUN_SCALE:
+			value = num(coreLink->getSunScale());
+			return true;
+		case SCD_NAMES::APP_MILKY_WAY_INTENSITY:
+			value = num(coreLink->milkyWayGetIntensity());
+			return true;
+		case SCD_NAMES::APP_SKY_CULTURE:
+			value = stcore->getSkyCultureDir();
+			return true;
+		case SCD_NAMES::APP_SKY_LOCALE:
+			value = stcore->getSkyLanguage();
+			return true;
+		case SCD_NAMES::APP_SRT_LOCALE:
+			value = stcore->getSrtLanguage();
+			return true;
+		case SCD_NAMES::APP_UI_LOCALE:
+			value = stapp->getAppLanguage();
+			return true;
+		case SCD_NAMES::APP_STAR_MAG_SCALE:
+			value = num(coreLink->starGetMagScale());
+			return true;
+		case SCD_NAMES::APP_STAR_SIZE_LIMIT:
+			value = num(stcore->starGetSizeLimit());
+			return true;
+		case SCD_NAMES::APP_PLANET_SIZE_LIMIT:
+			value = num(stcore->getPlanetsSizeLimit());
+			return true;
+		case SCD_NAMES::APP_STAR_SCALE:
+			value = num(coreLink->starGetScale());
+			return true;
+		case SCD_NAMES::APP_STAR_TWINKLE_AMOUNT:
+			value = num(coreLink->starGetTwinkleAmount());
+			return true;
+		case SCD_NAMES::APP_STAR_LIMITING_MAG:
+			value = num(coreLink->starGetLimitingMag());
+			return true;
+		case SCD_NAMES::APP_TIME_ZONE:
+			value = spaceDate->getCustomTzName();
+			return true;
+		case SCD_NAMES::APP_AMBIENT_LIGHT:
+			value = num(coreLink->uboGetAmbientLight());
+			return true;
+		case SCD_NAMES::APP_ZOOM_OFFSET:
+			value = num(coreLink->getViewOffset());
+			return true;
+		case SCD_NAMES::APP_STARTUP_TIME_MODE:
+			value = stapp->getStartupTimeMode();
+			return true;
+		case SCD_NAMES::APP_DATE_DISPLAY_FORMAT:
+			value = spaceDate->getDateFormatStr();
+			return true;
+		case SCD_NAMES::APP_TIME_DISPLAY_FORMAT:
+			value = spaceDate->getTimeFormatStr();
+			return true;
+		case SCD_NAMES::APP_MOON_BRIGHTNESS:
+		case SCD_NAMES::APP_SUN_BRIGHTNESS:
+		case SCD_NAMES::APP_MILKY_WAY_FADER_DURATION:
+		case SCD_NAMES::APP_ZODIACAL_INTENSITY:
+		case SCD_NAMES::APP_MILKY_WAY_TEXTURE:
+		case SCD_NAMES::APP_STAR_FADER_DURATION:
+		case SCD_NAMES::APP_TEXT_FADING_DURATION:
+		case SCD_NAMES::APP_SCREEN_FADER:
+		case SCD_NAMES::APP_STALL_RADIUS_UNIT:
+		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION:
+		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER:
+		case SCD_NAMES::APP_INIT_FOV:
+		case SCD_NAMES::APP_MODE:
+			return false;   // no read half exists for these (see the header)
+		default:
+			return false;
+	}
+}
 
 int AppCommandInterface::commandSet()
 {
