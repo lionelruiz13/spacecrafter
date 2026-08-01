@@ -158,7 +158,7 @@ App::App( SDLFacade* const sdl )
 	observatory = std::make_shared<Observer>();
 	core = std::make_shared<Core>(width, height, media, fontFactory, mBoost::callback<void, std::string>(this, &App::recordCommand), observatory);
 	coreLink = std::make_unique<CoreLink>(core);
-	coreBackup = std::make_unique<CoreBackup>(core);
+	coreBackup = std::make_unique<CoreBackup>(core, coreLink);
 
 	screenFader->createSC_context();
 

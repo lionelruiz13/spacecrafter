@@ -959,7 +959,14 @@ void Core::removeSupplementalSolarSystemBodies()
 {
 	//  cout << "Deleting planets and object deleteable = " << selected_object.isDeleteable() << endl;
 	// Make sure an object to delete is NOT selected so won't crash
-	if (selected_object.getType()==OBJECT_BODY /*&& selected_object.isDeleteable() */) {
+	// OBJECT_MODULAR too (B24-select §11.106, the same completion
+	// removeSolarSystemBody above already carries): the clear now drops the
+	// body in BOTH trees (B34, ssystem_factory.cpp), and a composed/pushed body
+	// must lose its selection on removal exactly like an old one - otherwise the
+	// selection silently slides onto the parent (the ModularBodyPtr redirect
+	// contract) instead of clearing. Old's own rule is unconditional - any
+	// selected BODY is unselected, deleteable or not - and it is kept as is.
+	if (selected_object.getType()==OBJECT_BODY || selected_object.getType()==OBJECT_MODULAR /*&& selected_object.isDeleteable() */) {
 		unSelect();
 	}
 	ssystemFactory->removeSupplementalBodies(observatory->getHomePlanetEnglishName());

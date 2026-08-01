@@ -248,10 +248,11 @@ public:
         return ssystemDisplay->getFlagLightTravelTime();
     }
 
-    //! Fresh-restart every trail. Not the display flag - that is setFlagTrails,
-    //! dual since §11.41(d); this is the restart the two live callers mean
-    //! (config init, and `Core::setHomePlanet`'s "reset planet trails due to
-    //! changed perspective"), and it is OLD-PATH ONLY (B34 §11.108(k)).
+    //! Fresh-restart every trail, BOTH paths (B34 §11.108(k)). Not the display
+    //! flag - that is setFlagTrails, dual since §11.41(d); this is the restart
+    //! the two live callers mean (config init, and `Core::setHomePlanet`'s
+    //! "reset planet trails due to changed perspective"). Out of line: the
+    //! new-path half needs ModularSystem's definition.
     void startTrails(bool b);
 
     // Moon/Sun scale: dual-path (I2, one seam) - the new path carries it as
@@ -731,10 +732,10 @@ public:
     //! diagnostic and nothing is written.
     bool saveCurrentSystem(const std::string &filename);
 
-    //! `body action preload`. The purge half is engine-wide (s_texture's pools
-    //! are static); the per-body half reaches the OLD tree alone, so
-    //! `ModularBody::preload` - and with it BasicMesh/LayeredMesh/
-    //! PhotosphereModule::preload - has never run (B34 §11.108(f), B36).
+    //! `body action preload` on BOTH paths (B34 §11.108(f)). The purge half was
+    //! already engine-wide (s_texture's pools are static); the per-body half
+    //! reached the old tree alone, so `ModularBody::preload` - and with it
+    //! BasicMesh/LayeredMesh/PhotosphereModule::preload - had never run (B36).
     void preloadBody(stringHash_t &param);
 
 	bool removeBody(const std::string &name) {
@@ -743,11 +744,12 @@ public:
         return currentSystem->removeBody(name);
     }
 
-    //! `body action clear`: drop every body a script pushed at runtime, keeping
-    //! everything the system's data declared. OLD TREE ONLY (B34 §11.108(f)).
+    //! `body action clear` on BOTH paths (B34 §11.108(f)): drop every body a
+    //! script pushed at runtime, keeping everything the system's data declared.
     //! \param name the observer's home planet - old's refusal condition (it will
-    //! not clear while the observer stands on a supplemental body).
-    //! \return false when nothing was cleared.
+    //! not clear while the observer stands on a supplemental body), and old's
+    //! answer is the one both paths obey.
+    //! \return false when nothing was cleared, on either path.
     bool removeSupplementalBodies(const std::string &name);
 
 	Object searchByNamesI18(const std::string &planetNameI18n) const {

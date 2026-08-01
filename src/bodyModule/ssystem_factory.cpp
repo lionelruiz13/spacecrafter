@@ -698,31 +698,65 @@ void SSystemFactory::updateExperimental(int delta_time, const TimeMgr* timeMgr)
 void SSystemFactory::addBody(stringHash_t &param)
 {
     currentSystem->addBody(param);
-    // `true` = the RUNTIME push route, the bit `body action clear` will select
-    // on (B34 §11.108(f)); inert until the clear seam reads it. Old marks the
-    // same bit one layer down, in its own addBody's `deletable` argument, and
-    // this public overload is old's "always adds bodies as deletable"
-    // (protosystem.hpp) - the two paths take their provenance from the same
-    // call, so they cannot disagree about which bodies a clear owns.
+    // `true` = the RUNTIME push route, the bit `body action clear` selects on
+    // (B34 §11.108(f)). Old marks the same bit one layer down, in its own
+    // addBody's `deletable` argument, and this public overload is old's
+    // "always adds bodies as deletable" (protosystem.hpp) - the two paths take
+    // their provenance from the same call, so they cannot disagree about which
+    // bodies a clear owns.
     camera->getCurrentSystem()->loadBody(param, nullptr, true);
 }
 
 // Contract + rationale: ssystem_factory.hpp (removeSupplementalBodies).
 bool SSystemFactory::removeSupplementalBodies(const std::string &name)
 {
-    return currentSystem->removeSupplementalBodies(name);
+    // ONE decision, taken by the old path (I2). Old refuses the whole clear
+    // when the observer stands on a supplemental body ("Can't destroy
+    // suplementary bodies if attached to one") and when the named body is not
+    // there at all; reading its answer rather than re-deriving one means the two
+    // trees can never disagree about whether a clear happened - and it leaves
+    // old's behaviour untouched by construction (§11.52(b)).
+    if (!currentSystem->removeSupplementalBodies(name))
+        return false;
+    // The camera's own reference/selection may be inside what this removes: they
+    // are ModularBodyPtr holders and are redirected to the surviving ancestor by
+    // the I5 destruction contract, which is exactly the case that contract
+    // exists for. Old's guard is about the OLD home planet, so it does not cover
+    // a camera that has since taken a pushed body as its reference - stated,
+    // because adding a second guard here would be a new user-visible rule.
+    camera->getCurrentSystem()->removeSupplementalBodies();
+    return true;
 }
 
 // Contract + rationale: ssystem_factory.hpp (startTrails).
 void SSystemFactory::startTrails(bool b)
 {
     currentSystem->startTrails(b);
+    // Both-paths mirror (B34 §11.108(k)): the RESTART semantic, which is not the
+    // display flag setFlagTrails already mirrors. Same per-system scope as old
+    // (ProtoSystem::startTrails walks its own `systemBodies`). The camera guard
+    // is real: this runs from the config-init block too.
+    if (camera)
+        if (ModularSystem *system = camera->getCurrentSystem())
+            system->startTrails(b);
 }
 
 // Contract + rationale: ssystem_factory.hpp (preloadBody).
 void SSystemFactory::preloadBody(stringHash_t &param)
 {
     currentSystem->preloadBody(param);
+    // The PURGE half is already both-paths: `s_texture`'s memory pools are
+    // static and the two paths' s_texture instances share one texRecap per file
+    // name (texCache), so old's releaseAllMemory/releaseUnusedMemory above is
+    // the whole engine's. Only the per-body half was old-only (B34 §11.108(f);
+    // ModularBody::preload had no caller at all, B36).
+    // keep_time is the CALLER's own value, in frames, exactly as old passes it
+    // to s_texture::setBigTextureLifetime - the command multiplies its seconds
+    // by the target fps before this point. It is threaded through rather than
+    // dropped: the modules used to hardcode a lifetime of 100, which would have
+    // made `keep_time` a silently ignored argument on the drawn path (§2.0 D12).
+    if (ModularBody *body = ModularBody::findBodyOnce(param[W_NAME]))
+        body->preload(Utility::strToInt(param[W_KEEPTIME], 1));
 }
 
 // Contract: ssystem_factory.hpp (setSelected). Out of line because resolving
