@@ -396,12 +396,18 @@ latest session update note above.*
   effect); (c) trail-point reset on `setHomePlanet` with recording on, vs no reset
   pre-fix; suites: b11_trail_gate, the b24 suite, f15_persist + f20/f21 session
   suites (the clear interacts with persistence), battery green; frozen md5 in==out.
-- **WIP:** 2026-08-01 — warm-up done (B34 row, §11.108, §11.131, B39, B11/§11.56 re-read
-  at HEAD; both trees clean, code `9770649f`, harness `15de577`; binary verified at HEAD,
-  pre-fix copy staged `harness/sc_f24_pre` md5 `8b08a96b`; frozen pair `03fbee59`/`545a51ef`).
-  Next: land the four seam mirrors ((a) clear via a per-body `supplemental` provenance flag,
-  (b) preload with `keep_time` threaded to the modules, (c) `ModularBody::startTrail` at the
-  `SSystemFactory::startTrails` seam, (d) `CoreBackup` through the B33 getters + `observerMoveTo`).
+- **WIP:** 2026-08-01 — CODE LANDED, checkpoint 1. Instruments first (`0674d517`:
+  `supplemental` provenance bit + `preloadCount` + `s_texture::dumpBigTextures` + the
+  ModularSystem/ModularBody mechanism, nothing wired ⇒ the SAME script measures both
+  binaries), then the four seam mirrors (`d88f5be2`). Pre-fix binary = a build of
+  `0674d517`, `harness/sc_f24_pre` md5 `a10f1117`. MEASURED both ways already:
+  (a) clear — 3 pushed bodies (plain + HIDDEN + nested child) gone from both trees,
+  120 declared survive, screen **90 536 px>8** (91 856 → 1 434 lit) vs **0 px>8** pre-fix
+  where all three survive on the new path alone; old's removal set identical 93→90 on both
+  binaries; a later `body action save` authors none of them. (b) preload — `preloadCount`
+  0→1 on the named body, 0 pre-fix; on a NEW-PATH-ONLY subject the big-texture record for
+  `mars.jpg` becomes acquired (16384x8192, lifetime 176 frames) and is absent pre-fix.
+  Next: (c) b11_trail_gate phase + (d) position round trip, then the suite sweep.
 
 ---
 
