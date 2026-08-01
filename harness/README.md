@@ -990,3 +990,56 @@ on the COMMAND being the binary (`ps -e -o args=`) — a `pgrep -f spacecrafter`
 also matches the shell whose command line mentions the path, which is a
 self-confirming instrument. This caught two orphaned instances holding port 7805
 on 2026-08-01, which every socket in the session would otherwise have driven.
+
+---
+
+## F21 — the read half, the ledger, and the §5.63 probes — INTENT §11.129, 2026-08-01
+
+    cd claude/harness && DISPLAY=:2 ./f21_flags.py  [absOutdir]
+    cd claude/harness && DISPLAY=:2 ./f21_ledger.py [absOutdir]
+    cd claude/harness && DISPLAY=:2 ./f21_s563.py   [absOutdir]   # §5.63, wave 1
+    cd claude/harness && DISPLAY=:2 ./f21_s563b.py  [absOutdir]   # §5.63, wave 2
+    cd claude/harness && DISPLAY=:2 ./f21_s563c.py  [absOutdir]   # §5.63, wave 3
+
+**`f21_flags.py` — the flag surface's read half.** `AppCommandInterface::readFlag`
+made the session file's `[flags]` section a READBACK, so the gate uses it as the
+instrument for the refactor that produced it: for each of the 93 flags the file
+carries, toggle twice, save, and compare **that flag's own value**. Side effects
+on OTHER flags are printed, not failed — `flag atmosphere` deliberately drives
+fog and star twinkle, which is old behaviour. The counterfactual (an ODD number
+of toggles on three probes) must show them MOVED, or the identity leg cannot
+fail and means nothing. Also asserts the per-§2-ROW exclusions: `track_object`,
+`lock_sky_position`, `experimental_path`, `experimental_shadows` must NOT be in
+`[flags]`, and `heading`, `home_planet`, `landscape_name`, `zoom_offset` must
+NOT be in `[values]`.
+
+**`f21_ledger.py` — the per-body override ledger, T7 and T8.** Overrides of every
+group-D row that has a command, then: the ledger's own round trip through quit +
+fresh launch + restore (with a CONTROL proving the fresh launch does not already
+carry them), T4 byte-identity with the ledger populated, T5b on a hand-edited
+ledger key, **T7** (a body renamed between save and restore — reported, applied
+to nothing else, entry kept and annotated) and **T8** (an authored value changed
+between save and restore — the new value in effect with the override on top).
+T7's rename and T8's authored change both ride `body action load`, the runtime
+declaration channel, so **no file in the frozen corpus is touched** and the md5s
+are asserted in == out around the run. T7 and T8 need SEPARATE bodies: T8 needs
+its body to still exist, so sharing one would make the rename resolve and the
+miss could never fire (that is how the first version of this gate passed T7 for
+the wrong reason).
+
+**`f21_s563*.py` — the §5.63 probes, and they are ladders.** Wave 1 walks a
+CONTENT ladder (stars → milky way → nebulae → atmosphere → landscape → planets),
+shooting at each stage on three launches — saved, A/A floor, restored — so the
+stage at which the difference collapses names the content that carries it; it
+also shoots the restored scene at t0/t+15 s/t+40 s to separate a settling term
+from a persistent one. Wave 2 walks a MECHANISM ladder: each stage re-asserts
+ONE candidate state to the SAME value on both sides, so a stage that collapses
+the difference names a divergent state and a stage that does not EXCLUDES its
+state. Wave 3 does the same for the view frame. All three keep the in-scene A/A
+floor as a column, because a ladder without a floor is a list of numbers.
+
+**The lesson worth reusing**: the residual was recorded as *photometric with no
+displacement structure* on the strength of a uniform mean and a bbox. Comparing
+the two frames' lit SETS instead — 0 of 400 overlapping, median nearest
+neighbour 50.2 px — says the opposite. A difference summarised by an average has
+not been looked at.

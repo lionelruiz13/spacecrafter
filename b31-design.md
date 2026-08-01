@@ -177,6 +177,8 @@ primary class.
 
 ### D — Per-body runtime overrides (the B16/B29 ledger — §11.66(d) says B31 subsumes it)
 
+**IMPLEMENTED 2026-08-01 (F21 → INTENT §11.129, code `4dc29023`) — this table is now a derived description; the entry wins.** What the implementation forced, per row: **D2** the saved value is the COMMANDED target, kept on the body, because `ASmooth` folds its target into coefficients the moment a ramp starts and it is otherwise unrecoverable. **D5** is its own `[body_defaults]` section and a snapshot, not a delta (no body authored them). **D7** carries only `skin_use`; the created skin is a texture path and stays with content. **D8** is written only when the override is LIVE — a global toggle stales it, and `wantShown` already treats a staled override as "follows the master". **D9** has nothing per-body at all (one shared `BodyTesselation`), so it is a global `[tesselation]` section. **D10**'s shape was decided from D32's verbatim (*"persistent conditions and drawn content, not motions"*): points are written whole, because the re-derivation that exists needs an orbit and a body without one would come back empty with nothing to explain it. The delta baseline is taken where nothing else can have written yet — a module's colour in its CONSTRUCTOR, a body's at the END of `loadBody` (after `hidden = true` is applied), and again at an engine-minted body's own creation site (an anchor's body is hidden by construction, and reading that as an override put 8 spurious entries in the first file).
+
 | # | state | owning authority | class | note |
 |---|---|---|---|---|
 | D1 | hidden / shown | `relation` + `hiddenBodies` (`ModularBody.hpp:1504,1508`) | MUST-SAVE | measured reset-by-reload (§11.55(i): `relation` 1→4) |
@@ -700,6 +702,7 @@ Written as tests, each with what it can catch that the others cannot.
   with the same parent, relation, module set and routing. The comparator exists:
   import `b24_equivalence`'s per-body comparison rather than copying it (the I2
   call §11.109(b) made).
+* **[T7 and T8 are MET as of 2026-08-01 (F21, §11.129(f)), both of them both ways.** T7's vehicle is `body action load` — the runtime declaration channel — so no file in the frozen corpus is touched: the body is declared under a new name in the restoring launch, the miss is reported with the path the save recorded, the renamed body's colour does not move, and the entry is kept with a `#!sc:` annotation. T8 changes an authored `datum_radius` from 5000 to 7000 km between save and restore: 7000 is in effect afterwards AND the operator's halo override still applies, and the counterfactual is read off the file itself — the ledger carries no `datum_radius` for that body, which is exactly what a snapshot design would have carried.]**
 * **T7 — UNRESOLVED KEY.** Rename a body in the data between save and restore.
   Assert the override is **reported** (log + inline annotation in the session
   file) and NOT applied to anything else. This is the test that A29's hazard is

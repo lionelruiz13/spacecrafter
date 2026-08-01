@@ -273,6 +273,11 @@ def build_scene_a(app):
     app.cmd("select planet Mars", 1.0)            # C1 selection
     app.cmd("moveto lat 12 lon 34 alt 500000 duration 0", 2.5)  # B3
     app.cmd("zoom fov 45 duration 0", 2.0)        # B11 half_fov
+    # NB (F21, INTENT §11.129(b)): `view_offset` is NOT a registered `set`
+    # name - the app rejects this line ("view_offset is unknown. Did you mean
+    # zoom_offset ?"), so scene A does NOT exercise §2 row B10 and both sides
+    # run at offset 0. Left as it is on purpose: changing the scene would move
+    # every number this gate has recorded, including the §5.63 baseline.
     app.cmd("set view_offset 0.25", 1.5)          # B10 offset
     app.cmd("flag lock_sky_position on", 2.0)     # B9 lock + its held matrix
 
