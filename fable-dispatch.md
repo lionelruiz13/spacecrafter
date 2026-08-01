@@ -64,6 +64,21 @@ b12-design §7 set + A41/A42, **§5.64 fix** only after Vixy decides the semanti
 DECISIONS_PENDING open set at close: **D15, D21 (late Aug), D37** + ledger rows
 A40–A43 awaiting.
 
+**Update [Fable 2026-08-01, supervising session 8]:** round of 3: **F22 → F23 → F24**
+(all three minted this session). F22 is session 7's queued item (§5.63 attribution →
+T1 closure, the B10 scene hole riding). F23/F24 are NOT in session 7's "remaining
+dispatchable" enumeration — that enumeration is a queue VIEW, and §13 (the authority)
+carries two rows with recorded fix shapes and no blocking decision: **B33's
+non-heading getter residue** (D28 gated only the heading member; F12 landed the
+template) and **B34's mechanical seam mirrors** (`body action clear` / `body action
+preload` / trail fresh-restart — *"same fix shape as every landed seam mirror"*).
+Lateral search live ∪ archive found no deferral record on either ⇒ the omission is
+view staleness, not an unrecorded deferral. B34's interactive view/zoom ramps stay
+OUT (own future task — the one B34 member with a feel-reproduction surface). Warm-up:
+both trees clean, binary confirmed current at code `4dc29023` by no-op rebuild;
+A40–A43/D15/D21/D37 all still open (no Vixy commit since session 7's close) ⇒
+B7-hunt-5, B12-content, §5.64 stay blocked accordingly.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -183,9 +198,152 @@ DELIVERED and archived** — F0 §11.103 · F1 §11.104/§11.105 · F2 §11.106 
 · F4 §11.108 · F5 §11.109 · F6 §11.110 · F7 §11.111 · F8 §11.122 · F9 §11.123 ·
 F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · F15 §11.121 ·
 F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129.
-No section is live: the next dispatchable task (F22, §5.63 attribution) is to be
-minted at its dispatch per §0b.2 — the current queue lives in the latest session
-update note above.*
+Live sections: **F22–F24** (minted session 8, below). The current queue lives in the
+latest session update note above.*
+
+### F22 — §5.63 attribution: the old-path view-state readback, then T1 closure  [M–L]
+
+- **Row / recorded:** the §5.63 row VERBATIM (INTENT.md §5 — it carries F21's full
+  bounded-attribution record: seven exclusions incl. the corrected characterisation —
+  saved/restored lit sets positionally DISJOINT, 0/400 overlap, median NN 50.2 px ≈
+  1.1° at fov 45; the whole residual is old-path sky — stars 2418 / milky way 744 /
+  nebulae 2493 px, all three off ⇒ 0 px>8; transience excluded; dome-centre rotation
+  excluded — the milky way sits in the SAME place both sides while the star/DSO field
+  does not; magnitude UNSTABLE across restores — 3185/5655/7834/7830 — with the
+  divergent term on the RESTORED side) · §11.129(b) + harnesses `f21_s563{,b,c}.py`,
+  artifacts `harness/artifacts/f21s563*` · §11.128(h) (T1 origin; in-scene A/A floor
+  0) · `b31-design.md` §6.2 T1 · B31 row (this is T1's blocker, one of the row's last
+  four open items) · the OWED probe, stated in-row: *"a readback of the old path's own
+  view state (`Navigator::getLocalVision` / `getPrecEquVision` /
+  `mat_local_to_earth_equ`) on both sides — which does not exist today"* · the
+  sharpened hypothesis: what `hip_stars`/`nebulas` consume BEYOND the navigator
+  (equatorial-frame transform / geodesic grid / refraction pre-pass) diverges on a
+  restore while the milky way — same navigator — agrees · the scene hole, §5.63
+  exclusion (6): `f20_session.py` scene A's `set view_offset 0.25` is NOT a
+  registered `set` name (app: *"Did you mean zoom_offset ?"*) ⇒ §2 row B10 was never
+  exercised; the registered §2(c) channel is `set zoom_offset <v>` (B17/§11.63; dual
+  since §11.92; D32's view-offset arming-latch carve-out applies to its restore).
+- **Why now:** B31's open set is exactly four items; this is the only one that is
+  neither Vixy's (D21/D28) nor a design item (C4). Session 7 queued it first.
+- **Task:** (i) Build the READBACK — the old path's view-state fields
+  (localVision / precEquVision / the local→equ matrix; extend to the frame transforms
+  the hypothesis names if those three do not discriminate) exposed on the existing
+  dump channel, additive-only (instrument precedent: F20's T2 gap dumps; the old
+  RENDER path stays unchanged by construction — a const readback is not a render
+  change). (ii) Attribute: run the readback on both sides of the SAME save/restore
+  ladder `f21_s563` runs; fields that differ where the screen differs AND agree in the
+  stars-off control localize the consumer; the milky-way-agrees contrast bounds the
+  candidate set; restore-to-restore VARIANCE (exclusion 7) is itself a signature —
+  a term that varies on one side only smells of ordering/latch state, so diff the
+  restore's drive ORDER against the rebuilt-by-commands order. (iii) Fix at the
+  root — expected in the RESTORE/session path (drive the missing seam, or fix the
+  ordering/latch); if the root lands in OLD-path code proper, STOP: record + suspend
+  (§11.52(b) — the baseline is unchanged by construction). (iv) T1: green in
+  `f20_session.py`, or the residual accepted ONLY at the row's own bar (magnitude AND
+  mechanism predicted from the attributed cause). (v) The scene hole: re-point scene
+  A's B10 line to the registered spelling; verify the line now ACTS (did-you-mean
+  line gone + the offset observable moves) and that the restore holds it through the
+  D32 carve-out; extend T2/T5 coverage for it — an added check derives from the
+  row's MECHANISM, never its symptom sentence (§0b.3 lesson).
+- **Budget (state it, spend it, stop):** F21's 3 waves are SPENT and recorded. You get
+  the NEW instrument plus at most 3 further mechanism waves. Not attributed at
+  budget ⇒ stop, EXTEND §5.63 with the new exclusions (F21's protocol), and still
+  deliver (i) and (v) — they are unconditional deliverables; T1 then stays honestly
+  NOT-MET.
+- **Stop boundaries (NOT yours):** §5.64 (Vixy semantics); T3/D21; `heading`/D28; C4;
+  §5.62 (record-don't-chase stands — and its consequence binds YOU: in-epoch pairs
+  only, never cross-epoch); old-path render behavior; A41/A42/A43.
+- **Discriminating checks:** the readback DISCRIMINATES (differs where the screen
+  differs, agrees under the stars-off control — if it does neither, say so and widen
+  the field set, don't infer); on attribution a ONE-VARIABLE flip both ways
+  (re-drive/fix the attributed term ⇒ the lit-set disjointness collapses to the A/A
+  floor; the pre-fix binary keeps the divergence); T4 byte-identity + the full
+  f20_session suite green; the f21_s563 ladders re-run on the delivered binary;
+  scene-A fix both ways (pre-fix binary: did-you-mean logged + offset inert;
+  delivered: line absent + offset drives + restore holds); battery green; frozen md5
+  in==out; §11.121(m) concurrent-instance assert before every measurement launch.
+- **WIP:**
+
+### F23 — B33 residue: the four remaining control-surface getters read the path that draws  [M]
+
+- **Row / recorded:** B33 (§11.108(f); class residue after F12: *"`getViewOffset`, the
+  observatory lat/lon/alt getters, `Core::getMountMode`, `getFlagLockSkyPosition` —
+  none unblocked by D28"* — read as: none NEEDED D28; the heading member was the only
+  D28-gated one) · the landed template §11.118(f) (the getter asks
+  `Core::getExperimentalPath()` — reports the path that DRAWS; in ALTERNATE mode it
+  follows the toggle; units/normalisation preserved; private second readers folded
+  through the getter — `tcpGetPosition` precedent, I2) · the second instance,
+  verified at source in-row: `moveto multiply_alt`/`delta_alt` build their ABSOLUTE
+  target from `coreLink->observatoryGetAltitude()` and then move BOTH paths
+  (`app_command_interface.cpp:2983`/`:3025` as-of-§11.108 — re-locate at HEAD) ·
+  Camera's own getters exist with ZERO external readers (§11.108(f)).
+- **Why now:** every divergence source that appears (they keep appearing — heading
+  did) reports fiction through these getters until the class closes; B31's save had
+  to route AROUND them (*"read the MODEL, never control-surface getters"*) — closing
+  the class removes the trap for every FUTURE consumer that doesn't know that rule.
+- **Task:** apply the F12 template to each of the four members (the observatory group
+  is three getters, one mechanism); census private/second readers of each underlying
+  readout and fold them through the getter (I2); then VERIFY — not re-derive — that
+  the multiply_alt/delta_alt targets derive from the drawn path.
+- **Vacuity honesty (state it per getter in the entry):** where dual setters hold the
+  two paths in agreement today (viewOffset — dual since §11.92; skyLock — §11.58;
+  mount — config-only, B35), the fix is LATENT: the discriminating check must FORCE
+  divergence (gdb injection, F4's probe precedent, or the `render_path` pin) — derive
+  the check from the mechanism (two authorities exist; the drawn one must be
+  reported), never from a natural repro that may not exist today. Name per getter
+  which divergence channel is real vs injected. Altitude may have a REAL channel
+  (§11.108(d)'s B21-gap history); if one exists at HEAD, use it.
+- **Stop boundaries (NOT yours):** `configuration action save` persisting
+  `navigation->getHeading()` (B31 ledger-adjacent; §5.41/§5.42 record-don't-fix);
+  §11.102(b2) RA/DE-AltAz readout skew (rides §11.92(d), Vixy); NO new command
+  surface (B35/B37 spellings are Vixy's; the mount stays unwired — the getter fix
+  must not wire it, D15 adjacency); old render path unchanged.
+- **Discriminating checks:** per getter BOTH WAYS (diverged: delivered getter == the
+  drawn path's value while the pre-fix binary reports old's; agreed: value unchanged
+  — the regression half); the multiply_alt discriminator (diverged altitude ⇒
+  post-fix target derives from the drawn path, measured on both binaries);
+  TUI/readout consumers unchanged where the paths agree; battery green; frozen md5
+  in==out.
+- **WIP:**
+
+### F24 — B34 mechanical seam mirrors: `clear`, `preload`, trail fresh-restart  [M]
+
+- **Row / recorded:** B34 (§11.108(f)(k)); members IN scope, each with its recorded
+  source route (as-of-§11.108 — re-locate at HEAD): **(a) `body action clear`**
+  (`core.cpp:865` → `ProtoSystem::removeSupplementalBodies`) — script-added NEW-path
+  bodies survive the clear; **(b) `body action preload`** (`core.cpp:827-834`) —
+  `ModularBody::preload` has never been called (B36: it drags
+  `BasicMesh`/`LayeredMesh`/`BodyModule::preload`); **(c) trail fresh-restart** —
+  `CoreLink::startPlanetsTrails` (`coreLink.cpp:1144`), live callers `core.cpp:370`
+  (config) + `core.cpp:1833` (`setHomePlanet`), both old-only ⇒
+  `TrailModule::startTrail` never runs. Fix shape recorded in-row: *"mirror at the
+  `SSystemFactory` seam, verify on the live app through the command"*
+  (§11.45/§11.46/§11.65 precedent).
+- **Why now:** decision-free parity (the standing §11.52(b) mandate), and (b) is the
+  first live exercise of a declared capability chain — find-at-first-exercise defects
+  are the point, not a risk (B5 precedent: 3 defects at the first live exercise of
+  drawNested/drawStarProxy).
+- **Task:** (a) clear-mirror — new-path script-pushed bodies removed; respect B39's
+  nesting/hidden machinery (a hidden pushed body must also clear — verify against
+  old's rule, don't assume) and F15's `declaredParams` (a cleared body's declaration
+  must NOT be written by a later `body action save`); (b) preload-mirror — wire the
+  seam so the command reaches `ModularBody::preload`; MEASURE that it does something
+  (load-state/timing observable), and fix what first exercise exposes (in-class,
+  record each); (c) trail-restart-mirror — both events reach
+  `TrailModule::startTrail`; `b11_trail_gate.py` extended, re-pointed never loosened.
+- **Stop boundaries (NOT yours):** the interactive VIEW ramp + zoom ramp (B34's big
+  member — own future task; it carries the one feel-reproduction surface); B36's
+  `pin()`/`unpin()` (S4's client); B37/B35 command-surface additions (Vixy
+  spellings); old path unchanged; B39's pre-existing reload loss of 2 hidden bodies
+  (record if touched, don't absorb).
+- **Discriminating checks:** per mirror BOTH WAYS, on the live app THROUGH THE
+  COMMAND: (a) pushed new-path body gone after clear (name lookup + screen) vs
+  SURVIVES on the pre-fix binary; old-path clear behavior unchanged (its removal set
+  identical); (b) the preload observable flips (pre-fix: no call — post: measured
+  effect); (c) trail-point reset on `setHomePlanet` with recording on, vs no reset
+  pre-fix; suites: b11_trail_gate, the b24 suite, f15_persist + f20/f21 session
+  suites (the clear interacts with persistence), battery green; frozen md5 in==out.
+- **WIP:**
 
 ---
 
