@@ -256,6 +256,24 @@ def run_clear(out, tag, binary):
         r["px_clear"] = px8(s0, s1)
         r["shots"] = [str(s0), str(s1)]
 
+        # SECOND ENTRY of the pair, from the state the first exit produced: push
+        # the same three names again and clear again, with no re-setup in
+        # between. A clear is not reversible on its own, but push+clear is, and
+        # the second entry is what would catch a mark or a registry left behind
+        # by the first (a name that no longer takes the provenance bit, a stale
+        # bodyReference entry, a system list that never compacted).
+        for cmd in (PLAIN, HIDDEN, CHILD):
+            app.send(cmd, 2.5)
+        h2, b2 = app.dump(f"{tag}_pre2")
+        r["pre2_present"] = {n: (n in b2) for n in PUSHED}
+        r["pre2_supplemental"] = {n: (b2[n]["new"] or {}).get("supplemental")
+                                  for n in PUSHED if n in b2 and b2[n].get("new")}
+        app.send("body action clear", 3.5)
+        h3, b3 = app.dump(f"{tag}_post2")
+        r["post2_present"] = {n: (n in b3) for n in PUSHED}
+        r["post2_new_only"] = {n: (n in b3 and b3[n].get("old") is None) for n in PUSHED}
+        r["post2_new_set"] = sorted(n for n, d in b3.items() if d.get("new"))
+
         # F15 interaction: a cleared body's declaration must not be authored by
         # a later save. The farm's modularSystem is this run's own directory.
         app.send("body action save filename f24_after_clear", 3.5)
@@ -331,6 +349,16 @@ def run_preload(out, tag, binary):
         r["earth_count"] = (b2.get("Earth", {}).get("new") or {}).get("preloadCount")
         r["earth_table"] = h2.get("bigTextures")
         r["earth_acquired"] = acquired(r["earth_table"])
+
+        # SECOND ENTRY: the same command again, from the state the first left.
+        # A preload is a hint, so the honest expectation is idempotence - the
+        # count rises again and the records stay acquired with their lifetime
+        # refreshed rather than a second set being allocated.
+        app.send("body action preload name F24Only keep_time 3", 0.4)
+        h3, b3 = app.dump(f"{tag}_only2")
+        r["only2_count"] = (b3.get("F24Only", {}).get("new") or {}).get("preloadCount")
+        r["only2_table"] = h3.get("bigTextures")
+        r["only2_acquired"] = acquired(r["only2_table"])
     finally:
         app.stop()
     return r
@@ -463,6 +491,21 @@ def main():
         else:
             ok(f"CLEAR: the composed screen moved {post['px_clear']} px>8 "
                f"({post['pre_lit']} -> {post['post_lit']} lit px)")
+        left2 = [n for n in PUSHED if post["post2_present"].get(n)]
+        if all(post["pre2_present"].values()) and not left2 and \
+           all(post["pre2_supplemental"].get(n) is True for n in PUSHED):
+            ok("CLEAR: second entry of the push/clear pair, from the state the "
+               "first exit produced - the same three names take the provenance "
+               "bit again and clear again")
+        else:
+            fail(f"CLEAR: the second entry did not reproduce "
+                 f"(present {post['pre2_present']}, marks "
+                 f"{post['pre2_supplemental']}, left {left2})")
+        if set(post["post2_new_set"]) == set(post["post_new_set"]):
+            ok(f"CLEAR: and the surviving set is the same after both entries "
+               f"({len(post['post2_new_set'])} bodies)")
+        else:
+            fail("CLEAR: the surviving set differs between the two entries")
         if post.get("saved_exists"):
             if post.get("saved_has_pushed"):
                 fail(f"CLEAR/F15: a later `body action save` authored the cleared "
@@ -529,6 +572,17 @@ def main():
         else:
             fail(f"PRELOAD: {ONLY_TEX} did not become acquired "
                  f"(before {post['pre_acquired']}, after {post['only_acquired']})")
+        if post.get("only2_count") == (post.get("only_count") or 0) + 1 and \
+           ONLY_TEX in post["only2_acquired"] and \
+           len(post["only2_table"] or []) == len(post["only_table"] or []):
+            ok(f"PRELOAD: second entry of the pair - the same command again "
+               f"refreshes the same record instead of allocating a second "
+               f"(count {post['only_count']} -> {post['only2_count']}, table "
+               f"{len(post['only_table'])} records both times)")
+        else:
+            fail(f"PRELOAD: the second entry did not reproduce (count "
+                 f"{post.get('only_count')} -> {post.get('only2_count')}, "
+                 f"acquired {post.get('only2_acquired')})")
         earth_new = sorted(set(post["earth_acquired"]) - set(post["only_acquired"]))
         res["preload_earth_acquired"] = post["earth_acquired"]
         print(f"      shipped-body leg: preloading Earth acquires {earth_new} "
@@ -551,13 +605,30 @@ def main():
             else:
                 fail(f"PRELOAD RED: the pre-fix binary acquired {ONLY_TEX}")
             shared = sorted(set(pre["earth_acquired"]) & set(post["earth_acquired"]))
+            extra = sorted(set(post["earth_acquired"]) - set(pre["earth_acquired"]))
             res["preload_shared_earth"] = shared
-            print(f"      RED half of the SHIPPED body, and it is a finding rather "
-                  f"than a pass: preloading Earth acquires {len(pre['earth_acquired'])} "
-                  f"records on the PRE-fix binary too ({shared}) - the two paths "
-                  f"share one texRecap per file name, so on a body both trees carry "
-                  f"the mirror's effect is invisible in this table. The seam counter "
-                  f"is what separates them there.", flush=True)
+            res["preload_extra_earth"] = extra
+            # STRUCTURAL, not a single observation: the mirror runs AFTER old's
+            # own preload inside the same command, and the two paths share one
+            # texRecap per file name, so whatever old acquires the delivered
+            # binary also acquires. What the delivered binary adds is the set
+            # difference between the two paths' texture lists - old's selected
+            # shader vs LayeredMesh's fixed five.
+            if set(pre["earth_acquired"]) <= set(post["earth_acquired"]):
+                ok(f"PRELOAD: on a SHIPPED body the delivered binary acquires a "
+                   f"SUPERSET of what the pre-fix one does "
+                   f"({len(pre['earth_acquired'])} -> "
+                   f"{len(post['earth_acquired'])} records)")
+            else:
+                fail(f"PRELOAD: the delivered binary acquired FEWER records than "
+                     f"the pre-fix one ({pre['earth_acquired']} vs "
+                     f"{post['earth_acquired']})")
+            print(f"      the shipped-body difference, attributed: old's preload "
+                  f"pulls what its SELECTED SHADER binds and the new path's pulls "
+                  f"LayeredMesh's fixed five, so the delivered binary adds {extra} "
+                  f"and shares {shared}. On the shared names the mirror's effect "
+                  f"is invisible in this table (one texRecap per file name) - the "
+                  f"seam counter is what separates them there.", flush=True)
 
     # --------------------------------------------------------------- position
     if only in (None, "position"):
