@@ -335,8 +335,24 @@ latest session update note above.*
   only — F24's class, deliberately not folded); **B35** gains the mount write-half
   precondition. Full battery + b24/b25/b40/b4 + f15/f20/f21×2/f22/f18 green; frozen md5
   in == out.
+  **Supervisor-verified 2026-08-01** (§11.131 read in full; commits/authors/trees
+  checked; B33-CLOSED + §5.68 + B34/B35 annotations + capability-surface §3.2 verified
+  at the ledger; harnesses not re-run — per-member both-ways tables, two-entry pin
+  traversals, and committed instrument records accepted). Deviations ALL ENDORSED:
+  (1) instrument-first commit — the class survived four audits precisely because no
+  observable channel existed; building the channel before measuring IS the lesson;
+  (2) `CoreBackup` refusal — folding the read alone would store the drawn place and
+  restore it into the path that is not drawing: read and write halves move together
+  or the pair goes incoherent; routed to B34, which THIS round's F24 absorbs;
+  (3) `dragView` not folded (old-path unprojection unchanged, §11.52(b));
+  (4) mount write-half unmirrored — zero callers ⇒ a mirror could not be shown to do
+  anything; *a green build is not coverage* applied against the fix itself;
+  (5) the non-zero regression half — 1965 px>8 below in-run floors 2063/2052,
+  attributed to the float-grid place quantum with the improvement argument (both
+  authorities now on the drawn grid; §11.130(f)'s precision rule mirrored). Sky-lock
+  auto-enable divergence routing endorsed (§11.58(iii)/D15, Vixy's). §5.68 → section 3.
 
-### F24 — B34 mechanical seam mirrors: `clear`, `preload`, trail fresh-restart  [M]
+### F24 — B34 mechanical seam mirrors: `clear`, `preload`, trail fresh-restart, `position save/load`  [M]
 
 - **Row / recorded:** B34 (§11.108(f)(k)); members IN scope, each with its recorded
   source route (as-of-§11.108 — re-locate at HEAD): **(a) `body action clear`**
@@ -348,7 +364,14 @@ latest session update note above.*
   (config) + `core.cpp:1833` (`setHomePlanet`), both old-only ⇒
   `TrailModule::startTrail` never runs. Fix shape recorded in-row: *"mirror at the
   `SSystemFactory` seam, verify on the live app through the command"*
-  (§11.45/§11.46/§11.65 precedent).
+  (§11.45/§11.46/§11.65 precedent). **(d) `position save`/`position load`** [ADDED at
+  dispatch, session 8 — F23/§11.131(f)(j) routed it here]: `CoreBackup::saveBackup`
+  reads `core->observatory->get{Latitude,Longitude,Altitude}` DIRECTLY
+  (`backup_mgr.cpp:66-68`) and `loadBackup` restores via `core->observatory->moveTo`
+  (`:57`) — old alone; the fov half was mirrored at §11.45 T7. The coherent fix is
+  read half (the F23 getters) + write half (the dual seam) in ONE change; F23's
+  refusal to fold the read alone is the argument. Discriminating shape from the
+  ledger: `position save` → move → `position load` → the CAMERA is back.
 - **Why now:** decision-free parity (the standing §11.52(b) mandate), and (b) is the
   first live exercise of a declared capability chain — find-at-first-exercise defects
   are the point, not a risk (B5 precedent: 3 defects at the first live exercise of
