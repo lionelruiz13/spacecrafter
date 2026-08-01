@@ -262,7 +262,7 @@ latest session update note above.*
   scene-A fix both ways (pre-fix binary: did-you-mean logged + offset inert;
   delivered: line absent + offset drives + restore holds); battery green; frozen md5
   in==out; §11.121(m) concurrent-instance assert before every measurement launch.
-- **WIP:** 2026-08-01 · checkpoint 2: §5.63 **ATTRIBUTED AND FIXED** (code `170c3ad6` the readback + `4d31e9d0` the fix) — the old navigator's view direction was never restored and a same-batch sky lock froze a stale equatorial pair; screen 3294 → **38 px>8 against an in-scene A/A floor of 44**, direction 107.634° → 0.0°, stars 392-vs-689 → 392-vs-392 (`harness/f22_s563_view.py`, `artifacts/f22view{,_fix}`). Next: deliverable (v) the scene-A `zoom_offset` hole + T2/T5 extension, then the full battery.
+- **WIP:** 2026-08-01 · checkpoint 3: §5.63 attributed + fixed (`4d31e9d0`), B10 scene hole closed and its own restore gap with it (`42ec495a`) — `f22_b10_offset.py` ALL GREEN incl. the AIMED-direction leg (restored 0.00e+00° vs a control 101.999° away). Next: full `f20_session.py` on the repointed scene A + the battery, then §11.130.
 
 ### F23 — B33 residue: the four remaining control-surface getters read the path that draws  [M]
 

@@ -80,6 +80,16 @@ FLOAT = ["longitude", "latitude", "distance", "alt", "az", "halfFov", "viewOffse
          "viewOffsetTransition", "viewOffsetEff"]
 VEC = ["position", "lockedSkyRot"]
 PLANS = ["viewT", "hdgT", "zoomDuration", "moveDuration"]
+# THE OLD PATH'S OWN VIEW STATE (INTENT §5.63 / §11.130), read off the same dump.
+# Derived from the MECHANISM, not from §5.63's symptom: the star field, the milky
+# way and the nebulae are drawn from `Navigator`, which holds its own view
+# direction and its own copy of the view offset. A restore that reproduces every
+# camera field and none of these puts the right body in front of the wrong sky —
+# which is precisely what it did (107.634 deg apart, 392 stars drawn against
+# 689), invisible to every camera-side check. Vectors are compared by DIRECTION
+# and by norm, both of which the old path can and does change independently.
+OLDNAV_VEC = ["localVision", "equVision", "precEquVision"]
+OLDNAV_FLOAT = ["viewOffset", "viewOffsetTransition", "heading"]
 
 
 def fail(msg):
@@ -184,7 +194,7 @@ def _clean(ln):
 
 def read_dump(path):
     """-> {'hdr': header, 'cam': camera, 'bodies': {name: new-path record}}"""
-    hdr, cam, bodies = None, None, {}
+    hdr, cam, bodies, oldnav = None, None, {}, None
     with open(path) as f:
         for ln in f:
             ln = _clean(ln)
@@ -193,9 +203,10 @@ def read_dump(path):
             o = json.loads(ln)
             if o.get("type") == "header":
                 hdr, cam = o, o["camera"]
+                oldnav = o.get("oldView", {}).get("nav")
             elif o.get("type") == "body" and o.get("new"):
                 bodies[o["name"]] = o["new"]
-    return {"hdr": hdr, "cam": cam, "bodies": bodies}
+    return {"hdr": hdr, "cam": cam, "bodies": bodies, "oldnav": oldnav}
 
 
 def close(a, b, tol=1e-5):
@@ -224,6 +235,18 @@ def compare(d0, d1, tag, tol=1e-5):
     for f in PLANS:
         if not close(c0["plans"].get(f), c1["plans"].get(f), tol):
             moved.append("plans." + f)
+    o0, o1 = d0.get("oldnav"), d1.get("oldnav")
+    if o0 and o1:
+        for f in OLDNAV_FLOAT:
+            if not close(o0.get(f), o1.get(f), tol):
+                moved.append("oldnav." + f)
+        for f in OLDNAV_VEC:
+            if not close(o0.get(f), o1.get(f), tol):
+                moved.append("oldnav." + f)
+    elif o0 is None and o1 is None:
+        pass
+    else:
+        moved.append("oldnav.<present on one side only>")
     # jd gets an ABSOLUTE tolerance: a relative one on a 2.46e6 magnitude is
     # +-246 days at 1e-4, i.e. no check at all. 1e-9 d = 86 us.
     if abs(d0["hdr"].get("jd", 0) - d1["hdr"].get("jd", 0)) > 1e-9:
@@ -233,8 +256,14 @@ def compare(d0, d1, tag, tol=1e-5):
             moved.append("hdr." + f)
     if moved:
         for f in moved:
-            src = c0 if f in EXACT + FLOAT + VEC else (d0["hdr"] if f.startswith("hdr.") else c0["plans"])
-            dst = c1 if f in EXACT + FLOAT + VEC else (d1["hdr"] if f.startswith("hdr.") else c1["plans"])
+            if f.startswith("oldnav."):
+                src, dst = d0["oldnav"], d1["oldnav"]
+            elif f.startswith("hdr."):
+                src, dst = d0["hdr"], d1["hdr"]
+            elif f in EXACT + FLOAT + VEC:
+                src, dst = c0, c1
+            else:
+                src, dst = c0["plans"], c1["plans"]
             k = f.split(".")[-1]
             print(f"      {tag}: {f} {src.get(k)} -> {dst.get(k)}", flush=True)
     return moved
@@ -273,12 +302,13 @@ def build_scene_a(app):
     app.cmd("select planet Mars", 1.0)            # C1 selection
     app.cmd("moveto lat 12 lon 34 alt 500000 duration 0", 2.5)  # B3
     app.cmd("zoom fov 45 duration 0", 2.0)        # B11 half_fov
-    # NB (F21, INTENT §11.129(b)): `view_offset` is NOT a registered `set`
-    # name - the app rejects this line ("view_offset is unknown. Did you mean
-    # zoom_offset ?"), so scene A does NOT exercise §2 row B10 and both sides
-    # run at offset 0. Left as it is on purpose: changing the scene would move
-    # every number this gate has recorded, including the §5.63 baseline.
-    app.cmd("set view_offset 0.25", 1.5)          # B10 offset
+    # B10, and it took two tasks to get here. F21 found the line inert -
+    # `view_offset` is NOT a registered `set` name and the app rejects it
+    # ("Did you mean zoom_offset ?", INTENT §11.129(b)) - and left it, because
+    # changing the scene would have moved the §5.63 baseline it was hunting.
+    # §5.63 is attributed and closed (§11.130), so the line is repointed at the
+    # registered §2(c) channel and row B10 is exercised for the first time.
+    app.cmd("set zoom_offset 0.25", 1.5)          # B10 offset
     app.cmd("flag lock_sky_position on", 2.0)     # B9 lock + its held matrix
 
 
@@ -401,8 +431,9 @@ def main():
         fail(f"T2: {len(moved)} field(s) did not come back: {moved}")
     else:
         ok(f"T2: every field the session carries came back "
-           f"({len(EXACT + FLOAT + VEC + PLANS) + 3} fields, "
-           f"{len(EXACT)} exact / {len(FLOAT + VEC)} float / {len(PLANS)} plans / 3 time)")
+           f"({len(EXACT + FLOAT + VEC + PLANS + OLDNAV_VEC + OLDNAV_FLOAT) + 3} fields, "
+           f"{len(EXACT)} exact / {len(FLOAT + VEC)} float / {len(PLANS)} plans / "
+           f"{len(OLDNAV_VEC + OLDNAV_FLOAT)} old-path view / 3 time)")
 
     print("\n== T4: the fixed point, entered twice ==", flush=True)
     f2 = SESSIONS / "f20a2.ini"
@@ -482,10 +513,17 @@ def main():
     # one from another (no tracking, no lock). `distance` and `alt` were tried
     # and dropped: at 40x the distance the placement perturbs alt/az by ~6e-5
     # rad, which is a property of the scene, not of the restore.
-    cases = [("fov", None, "12.5", "halfFov"),
-             ("latitude", None, "0.5", "latitude"),
-             ("longitude", None, "0.9", "longitude")]
-    for key, oldv, newv, field in cases:
+    # `view_offset` is the fourth case and the first one with TWO expected
+    # fields, which is the point of it: §2 row B10 lives on both paths (the
+    # camera's scalar and the old navigator's, which is what pitches the star
+    # field), so a restore that moves one and not the other is the §5.63 class
+    # again. `viewOffsetEff` does not move because scene C's latch is unarmed -
+    # the scalar is stored, the ramp is what applies it (D32).
+    cases = [("fov", None, "12.5", ["halfFov"]),
+             ("latitude", None, "0.5", ["latitude"]),
+             ("longitude", None, "0.9", ["longitude"]),
+             ("view_offset", None, "0.375", ["viewOffset", "oldnav.viewOffset"])]
+    for key, oldv, newv, fields in cases:
         edited = []
         hit = False
         for line in src.split("\n"):
@@ -505,10 +543,10 @@ def main():
         moved = compare(d_c, d_mut, "T5b:" + key, tol=1e-4)
         # `mat` is a composition of the parameters and is not in the compared
         # set; every field named here is an independent parameter of the file.
-        if moved == [field]:
-            ok(f"T5b: editing '{key}' moved exactly '{field}' and nothing else")
+        if sorted(moved) == sorted(fields):
+            ok(f"T5b: editing '{key}' moved exactly {fields} and nothing else")
         else:
-            fail(f"T5b: editing '{key}' moved {moved}, expected exactly ['{field}']")
+            fail(f"T5b: editing '{key}' moved {moved}, expected exactly {fields}")
 
     # ---------------- launch 5: T10, the D8 use-site ----------------
     print("\n== T10: a FROZEN body's position survives the session ==", flush=True)

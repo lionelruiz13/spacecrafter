@@ -140,7 +140,9 @@ def build_scene_a(app):
     app.cmd("select planet Mars", 1.0)
     app.cmd("moveto lat 12 lon 34 alt 500000 duration 0", 2.5)
     app.cmd("zoom fov 45 duration 0", 2.0)
-    app.cmd("set view_offset 0.25", 1.5)
+    app.cmd("set zoom_offset 0.25", 1.5)   # B10: the REGISTERED spelling
+    # (F22/§11.130 repointed this line; `view_offset` is not a `set` name and
+    # this scene never exercised row B10 before - §11.129(b) exclusion 6.)
     app.cmd("flag lock_sky_position on", 2.0)
 
 
