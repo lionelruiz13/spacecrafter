@@ -13,6 +13,9 @@
 class Renderer;
 class ModularBody;
 class ModularSystem;
+namespace ModularSystemFormat {
+class Section;
+}
 
 // Two complementary viewing systems [vixy: 2026-07-12]: both are the SAME
 // parametrization family around a different trust axis - ALTAZ references the
@@ -47,6 +50,23 @@ public:
     // state (reference, pose, modes, halfFov) as one JSON object.
     void dumpTrace(std::ostream &out) const;
     // Change the reference body without moving
+    // b31-design §2 group B, through the session file (SessionFile.hpp): this
+    // camera's own state, written into and read back from one section. The
+    // camera writes it because the camera OWNS it — a save that asked the
+    // control surface would get the OLD path's answer for half of these
+    // (B33/§11.108(f), and §3.4(e) makes "read the model that draws" the
+    // sharpest rule in the design).
+    // saveSession writes the SETTLED value of anything in flight (D32): a move,
+    // a zoom and a view-smoothing plan are saved as the state they were heading
+    // for, never mid-ramp. `heading` is deliberately absent — see the note the
+    // save writes into the file, and D28.
+    // restoreSession ASSIGNS every value and clears every plan, so restoring
+    // twice, or restoring from the state a restore produced, lands on the same
+    // place (D33: the file is a preset, and a preset that drifts is not one).
+    // The reference body is NOT restored here: re-seating it is a warp, whose
+    // environment enter/leave edges have subscribers.
+    void saveSession(ModularSystemFormat::Section &out) const;
+    void restoreSession(const ModularSystemFormat::Section &in);
     void switchToBody(ModularBody *dst);
     // Change the reference body
     void warpToBody(ModularBody *dst);

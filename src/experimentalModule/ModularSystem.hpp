@@ -53,6 +53,17 @@ public:
     inline bool hasSystemFile() const {
         return !systemFilename.empty();
     }
+    // The file this system was loaded from, and WHICH READER it belongs to.
+    // Together they are the session manifest's per-system record (b31-design
+    // §3.3): a session says what it assumed was loaded, so that the file stays
+    // readable on an install that has something else loaded — which is what
+    // D32's diagnostic-artifact reading demands of it.
+    inline const std::string &getSystemFilename() const {
+        return systemFilename;
+    }
+    inline bool isComposedFile() const {
+        return composedFile;
+    }
     // Load a system
     void loadSystem(const std::string &filename);
     // B24 composed-system format (INTENT §11.78(d); the `type=` respell is

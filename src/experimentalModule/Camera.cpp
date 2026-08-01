@@ -1,9 +1,12 @@
 #include "Camera.hpp"
 #include "ModularSystem.hpp"
+#include "ModularSystemFormat.hpp"
 #include "RenderChain.hpp"
+#include "tools/log.hpp"
 #include <cmath>
 #include <iomanip>
 #include <ostream>
+#include <sstream>
 
 // Remark : neutral is (1, 0, 0), up is (0, 0, 1)
 // In spheToRect/rectToSphe, xyz is xzy
@@ -922,6 +925,229 @@ void Camera::descend(float coef)
     }
 }
 
+// ---- Session state (b31-design §2 group B; contract in Camera.hpp) ---------
+
+namespace {
+
+// Round-trip-exact text for the two float widths this camera stores. A session
+// that comes back to a different number than it saved is not a session, and
+// the default ostream precision is what turned a JD into a 10-day quantum in
+// the surface this file replaces (§5.41).
+std::string f2s(float v)
+{
+    std::ostringstream s;
+    s << std::setprecision(9) << v;
+    return s.str();
+}
+
+std::string d2s(double v)
+{
+    std::ostringstream s;
+    s << std::setprecision(17) << v;
+    return s.str();
+}
+
+std::string b2s(bool v)
+{
+    return v ? "true" : "false";
+}
+
+// Reading is by ASSIGNMENT or not at all: a key the file does not carry leaves
+// the live value alone, which is what makes a hand-trimmed file apply the part
+// it does carry instead of half-destroying the state (§4.2's report-and-keep,
+// on the value side).
+bool readF(const ModularSystemFormat::Section &s, const char *key, float &out)
+{
+    if (const std::string *v = s.find(key)) {
+        out = Utility::strToFloat(*v, out);
+        return true;
+    }
+    return false;
+}
+
+bool readD(const ModularSystemFormat::Section &s, const char *key, double &out)
+{
+    if (const std::string *v = s.find(key)) {
+        out = Utility::strToDouble(*v, out);
+        return true;
+    }
+    return false;
+}
+
+bool readB(const ModularSystemFormat::Section &s, const char *key, bool &out)
+{
+    if (const std::string *v = s.find(key)) {
+        out = (*v == "true" || *v == "1");
+        return true;
+    }
+    return false;
+}
+
+} // namespace
+
+void Camera::saveSession(ModularSystemFormat::Section &out) const
+{
+    out.appendEntry("reference", reference ? reference->getEnglishName() : "");
+    out.appendEntry("tracked", target ? target->getEnglishName() : "");
+    out.appendEntry("free_mode", b2s(freeMode));
+    out.appendEntry("bound_to_surface", b2s(boundToSurface));
+    out.appendEntry("mount", (mount == CameraMount::EQUATORIAL) ? "equatorial" : "altaz");
+
+    // D32: a move in flight is saved WHERE IT WAS GOING. update() integrates
+    // deltaPosition for the remaining moveDuration, so the settled state is
+    // reachable in closed form and needs no assumption about frame timing.
+    Vec3f pos = position;
+    float lon = longitude, lat = latitude, dist = distance;
+    if (moveDuration > 0.f) {
+        if (freeMode) {
+            pos += deltaPosition * moveDuration;
+        } else {
+            lon += deltaPosition[0] * moveDuration;
+            lat += deltaPosition[1] * moveDuration;
+            dist += deltaPosition[2] * moveDuration;
+        }
+    }
+    out.appendEntry("longitude", f2s(lon));   // radians, like alt/az below
+    out.appendEntry("latitude", f2s(lat));
+    // ALTITUDE, in metres above the datum - not the `distance` member it is
+    // derived from. Two reasons, and neither is cosmetic: it is the unit the
+    // operator's own `moveto` takes, so a hand-edited session says what it
+    // looks like it says; and the restore hands it straight to the seam that
+    // moves BOTH paths, which is what keeps the old-path sky under the new
+    // path's observer (§2 rows B3/B19).
+    out.appendEntry("altitude", d2s(static_cast<double>(dist - reference->getAltitudeReference())
+                                    * 1000.0 * AU));
+    out.appendEntry("position", f2s(pos[0]) + "," + f2s(pos[1]) + "," + f2s(pos[2]));
+
+    // D32 again, on the view: an in-flight smoothing plan lands on
+    // rotateAbout(viewFrom, viewAxis, viewAngle) - advanceView's own exact
+    // landing, taken here instead of a sampled mid-path direction. Tracking
+    // re-plans EVERY frame (§11.55(d)), so a mid-plan save has no fixed point
+    // and T4 could not exist.
+    float sAlt = alt, sAz = az;
+    if (viewT > 0.f) {
+        const Vec3f dir = rotateAbout(viewFrom, viewAxis, viewAngle);
+        const float r = dir.length();
+        if (dir[0] == 0.f && dir[1] == 0.f) {
+            sAlt = -std::copysign(M_PI_2, dir[2]);
+        } else {
+            sAz = -atan2f(dir[1], dir[0]);
+            sAlt = -asinf(dir[2]/r);
+        }
+    }
+    out.appendEntry("alt", f2s(sAlt));
+    out.appendEntry("az", f2s(sAz));
+    // §2 row B6. Written as a note rather than as a value, and attached to the
+    // ABSENT key so that it lands at the section's end rather than above an
+    // unrelated datum: the exclusion has to survive into the artifact, or the
+    // slice that adds it has to rediscover why it is missing.
+    out.annotate("heading", "excluded-pending-D28",
+        "`heading` is NOT part of this session. What it MEANS across a change of "
+        "reference body is an open product question (DECISIONS_PENDING D28 / "
+        "INTENT A38): the new path holds the whole orientation across a switch, "
+        "so the heading PARAMETER is rewritten by that switch and a saved number "
+        "would bake an answer nobody has given. A restored session therefore "
+        "keeps the heading the running app already has. To fix: answer D28, then "
+        "add `heading` here.");
+
+    // FOV IN DEGREES, which is what `zoom fov` takes and what the dual seam
+    // that restores it takes - one representation, converted once. Writing the
+    // camera's own half-angle instead cost a float->double->float round trip
+    // through that seam and the value came back one ulp off, which is enough to
+    // lose T4's byte-identity (measured: 3425 vs 3424 bytes).
+    out.appendEntry("fov", d2s(static_cast<double>(zoomDuration ? dstHalfFov : ModularBody::halfFov)
+                               * (360.0 / M_PI)));
+    out.appendEntry("sky_locked", b2s(skyLocked));
+    // The HELD matrix, not a derivation of it: lockedSkyRot is the rotation
+    // captured when the lock engaged and it is not recoverable from anything
+    // else in this file (§2 row B9). Written even while the lock is OFF, where
+    // it is dormant rather than absent - the alternative (omit it, and let a
+    // restore keep whatever the running app had) makes the restored state
+    // depend on what the app was doing before the restore, which is exactly
+    // what D33's idempotence forbids.
+    {
+        std::string m;
+        for (int i = 0; i < 16; ++i)
+            m += (i ? "," : "") + f2s(lockedSkyRot.r[i]);
+        out.appendEntry("sky_rot", m);
+    }
+    // D32's first named carve-out: the ARMING LATCH is a sticky condition and
+    // is saved; its ramp is a motion and snaps to the latch's endpoint.
+    out.appendEntry("view_offset", d2s(viewOffset));
+    out.appendEntry("view_offset_armed", b2s(viewOffsetArmed));
+}
+
+void Camera::restoreSession(const ModularSystemFormat::Section &in)
+{
+    // Every plan is cleared FIRST. A file describes a settled state, so a plan
+    // that survived a restore would immediately start moving away from what was
+    // just restored - and the second restore would then land somewhere else,
+    // which is exactly the idempotence D33 requires (T4's fixed point).
+    viewT = 0.f;
+    hdgT = 0.f;
+    zoomDuration = 0.f;
+    moveDuration = 0.f;
+    deltaPosition = Vec3f(0, 0, 0);
+
+    if (const std::string *v = in.find("tracked")) {
+        target = v->empty() ? nullptr : ModularBody::findBodyOnce(*v);
+        if (!v->empty() && !target)
+            cLog::get()->write("Session restore: the tracked body '" + *v + "' is not in this "
+                "tree, so tracking is off. Every other value of the session still applied. "
+                "To fix: load the system that declares it before restoring, or drop the key.",
+                LOG_TYPE::L_WARNING);
+    }
+    bool b = freeMode;
+    if (readB(in, "free_mode", b))
+        setFreeMode(b);
+    b = boundToSurface;
+    if (readB(in, "bound_to_surface", b))
+        setBoundToSurface(b);
+    if (const std::string *v = in.find("mount"))
+        setMount((*v == "equatorial") ? CameraMount::EQUATORIAL : CameraMount::ALTAZ);
+
+    // longitude / latitude / altitude are NOT assigned here: they are restored
+    // through the dual seam (SessionFile::Host::moveObserverTo), before this
+    // runs, so that the old observer - which still draws the whole sky - moves
+    // with the camera. Assigning them here would silently undo that.
+    if (const std::string *v = in.find("position")) {
+        Vec3f p = position;
+        if (std::sscanf(v->c_str(), "%f,%f,%f", &p.v[0], &p.v[1], &p.v[2]) == 3)
+            position = p;
+    }
+    readF(in, "alt", alt);
+    readF(in, "az", az);
+    // half_fov and sky_locked are NOT applied here either: both have a seam
+    // that drives the old path too (the old projector's fov scales every star;
+    // the old navigation flag is the sky lock's other half), and the session
+    // restores them through it - see SessionFile::Host.
+    if (const std::string *v = in.find("sky_rot")) {
+        Mat4f m;
+        const char *p = v->c_str();
+        int i = 0;
+        for (; i < 16 && *p; ++i) {
+            m.r[i] = static_cast<float>(atof(p));
+            const char *comma = strchr(p, ',');
+            if (!comma) { ++i; break; }
+            p = comma + 1;
+        }
+        if (i == 16)
+            lockedSkyRot = m;
+    }
+    readD(in, "view_offset", viewOffset);
+    bool armed = viewOffsetArmed;
+    if (readB(in, "view_offset_armed", armed)) {
+        viewOffsetArmed = armed;
+        // The ramp snaps to the latch it belongs to (D32): the file records a
+        // condition, and the transition is the motion into it.
+        viewOffsetTransition = armed ? 1.f : 0.f;
+    }
+    // foldLat is DERIVED (§2 row B7) and update() re-derives it; setting it
+    // here would make the first restored frame re-fold a view that is already
+    // expressed in the restored latitude's frame.
+    foldLat = latitude;
+}
+
 // Dual-path trace harness (INTENT.md 11.14).
 void Camera::dumpTrace(std::ostream &out) const
 {
@@ -962,7 +1188,17 @@ void Camera::dumpTrace(std::ostream &out) const
         << ",\"selected\":\"" << (ModularBody::getSelected() ? ModularBody::getSelected()->getEnglishName() : "")
         << "\",\"selDist\":" << (ModularBody::getSelected() ? ModularBody::getSelected()->getObservedPosition().length() : 0.f)
         << ",\"halfFov\":" << ModularBody::halfFov
-        << ",\"cullHalfFov\":" << ModularBody::cullHalfFov << ",\"mat\":[";
+        << ",\"cullHalfFov\":" << ModularBody::cullHalfFov
+        // The two gaps b31-design §6.2 T2 names: the HELD sky-lock matrix (it
+        // is state, not a derivation of anything else here) and the in-flight
+        // plans (a session snaps them to their settled target, D32 - so a dump
+        // that cannot see a plan cannot witness that they were snapped).
+        << ",\"lockedSkyRot\":[";
+    for (int i = 0; i < 16; ++i)
+        out << lockedSkyRot.r[i] << ((i < 15) ? "," : "");
+    out << "],\"plans\":{\"viewT\":" << viewT << ",\"hdgT\":" << hdgT
+        << ",\"zoomDuration\":" << zoomDuration << ",\"moveDuration\":" << moveDuration
+        << "},\"mat\":[";
     for (int i = 0; i < 16; ++i)
         out << lastDispatchedMat.r[i] << ((i < 15) ? "," : "");
     out << "]}";

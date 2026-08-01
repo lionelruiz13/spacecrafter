@@ -912,7 +912,15 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
 {
     std::ofstream out(file.empty() ? "/tmp/dual_trace.json" : file);
     out << std::setprecision(17) << "{\"type\":\"header\",\"jd\":"
-        << timeMgr->getJDay() << ",\"helioToEye\":[";
+        // The rest of §2 group A beside the date, so the session gate can
+        // witness what it restores (b31-design §6.2 T2 asks for field-by-field
+        // equality and a dump that carries only the date cannot give it).
+        // getTimeSpeedRaw, not getTimeSpeed: the latter reports 0 while a lock
+        // is held, which is the rate time IS running at, not the one that was
+        // set - and a session records what was set.
+        << timeMgr->getJDay() << ",\"timeSpeed\":" << timeMgr->getTimeSpeedRaw()
+        << ",\"timePaused\":" << (timeMgr->getTimePause() ? "true" : "false")
+        << ",\"helioToEye\":[";
     {
         const Mat4d &h = navigation->getHelioToEyeMat();
         for (int i = 0; i < 16; ++i)

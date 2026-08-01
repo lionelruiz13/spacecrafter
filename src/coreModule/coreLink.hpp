@@ -523,6 +523,16 @@ public:
 	//! \return false when nothing was written (the reason is logged).
 	bool saveSolarSystem(const std::string &filename);
 
+	//! B31 slice 3 - the session file (experimentalModule/SessionFile.hpp).
+	//! It lives HERE and not on Core because a restore has to move the observer
+	//! through the DUAL seam this class owns (observerMoveTo): the old
+	//! Observer still draws the whole sky, and §2 row B19 excludes it from the
+	//! file only on the grounds that "setters are dual so it follows".
+	//! EXPLICIT ONLY (D33): nothing calls either of these at startup or at
+	//! shutdown, and no config key selects one.
+	bool sessionSave(const std::string &filename);
+	bool sessionLoad(const std::string &filename);
+
 	//hides a planet
 	void setPlanetHidden(std::string name, bool planethidden);
 

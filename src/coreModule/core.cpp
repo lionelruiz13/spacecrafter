@@ -54,6 +54,7 @@
 #include "bodyModule/body_trace.hpp"
 #include "experimentalModule/Renderer.hpp" // dual-path pointer flag mirror
 #include "experimentalModule/Camera.hpp" // both-paths fov mirror (INTENT 11.40)
+#include "experimentalModule/ModularBody.hpp" // session restore: does this name exist?
 #include "experimentalModule/bodyModules/OortModule.hpp" // B5 §6.9 pilot: modular oort show flag
 #include "eventModule/CoreEvent.hpp"
 #include "eventModule/event_recorder.hpp"
@@ -1855,6 +1856,7 @@ void Core::bindHomePlanet()
 {
 	setLandscapeToBody();
 }
+
 
 void Core::setLightPollutionLimitingMagnitude(float mag) {
 	lightPollutionLimitingMagnitude = mag;

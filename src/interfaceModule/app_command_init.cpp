@@ -81,6 +81,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_RANDOM] = SC_COMMAND::SC_RANDOM;
 	m_commands[ACP_CN_SCRIPT] = SC_COMMAND::SC_SCRIPT;
 	m_commands[ACP_CN_SEARCH] = SC_COMMAND::SC_SEARCH;
+	m_commands[ACP_CN_SESSION] = SC_COMMAND::SC_SESSION;
 	m_commands[ACP_CN_SELECT] = SC_COMMAND::SC_SELECT;
 	m_commands[ACP_CN_SET] = SC_COMMAND::SC_SET;
 	m_commands[ACP_CN_SHUTDOWN] = SC_COMMAND::SC_SHUTDOWN;

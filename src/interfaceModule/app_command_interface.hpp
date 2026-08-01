@@ -118,6 +118,16 @@ protected:
 	int commandRandom();
 	int commandScript(uint64_t &wait);
 	int commandSearch();
+	//! `session action save|load [filename <name>]` — b31-design §3.5. ONE
+	//! registration serves all of §11.55(h)'s command channels, so the operator
+	//! reaches it from a script, the TCP line, the HTTP query, the pipe and a
+	//! joypad binding without a second artefact. EXPLICIT ONLY (D33): nothing
+	//! here is ever called by a startup or a shutdown path.
+	//! SPELLING IS A VETO POINT (B28 protocol; `body action save` §11.121(e) and
+	//! `follow_rotation` §11.111 are the precedents): the grammar is the
+	//! `<noun> action <verb>` one the surface already uses, and reversing it is
+	//! one `else if`.
+	int commandSession();
 	int commandSelect();
 	int commandSet();
 	int commandShutdown();

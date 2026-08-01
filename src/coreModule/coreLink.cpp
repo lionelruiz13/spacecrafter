@@ -21,6 +21,8 @@
  */
 
 #include "coreModule/coreLink.hpp"
+#include "experimentalModule/SessionFile.hpp" // B31 slice 3
+#include "experimentalModule/ModularBody.hpp"
 #include "tools/app_settings.hpp"
 //#include "coreModule/coreFont.hpp"
 #include "appModule/fontFactory.hpp"
@@ -1210,6 +1212,87 @@ bool CoreLink::reloadSolarSystem() {
 
 bool CoreLink::saveSolarSystem(const std::string &filename) {
 	return core->ssystemFactory->saveCurrentSystem(filename);
+}
+
+namespace {
+
+// What a session needs from the application, supplied by the object that has
+// all of it. Every method is the OWNING authority for its datum rather than a
+// convenience wrapper over another path - b31-design §3.4(e)'s "read the model
+// that draws", applied at the only place where following it is a choice.
+class SessionHost : public SessionFile::Host {
+public:
+	SessionHost(CoreLink &link, Core &core, TimeMgr &time)
+		: link(link), core(core), time(time) {}
+
+	double getJDay() const override { return time.getJDay(); }
+	void setJDay(double jd) override { time.setJDay(jd); }
+	// getTimeSpeedRaw, not getTimeSpeed: the latter reports 0 while any time
+	// lock is held, which is the rate time IS running at and not the one the
+	// operator set. A session records what was set - restoring 0 into a scene
+	// holding no lock would silently freeze it. (The lock itself is
+	// script-engine state, which D36 keeps out.)
+	double getTimeSpeed() const override { return time.getTimeSpeedRaw(); }
+	void setTimeSpeed(double speed) override { time.setTimeSpeed(speed); }
+	bool getTimePaused() const override { return time.getTimePause(); }
+	void setTimePaused(bool paused) override { time.setTimePause(paused); }
+
+	std::string getSelectedName() const override {
+		return core.getSelectedPlanetEnglishName();
+	}
+	bool selectByName(const std::string &name) override {
+		return core.selectObject("planet", name);
+	}
+	void deselect() override { core.unSelect(); }
+	bool getTracking() const override { return core.getFlagTracking(); }
+	void setTracking(bool on) override { core.setFlagTracking(on); }
+
+	bool warpToBody(const std::string &name) override {
+		// Refuse BEFORE moving anything: setHomePlanet on a name nothing
+		// declares leaves the observer where it was, but has already queued an
+		// ObserverEvent and restarted the trails, and the caller would have no
+		// way to tell that from success.
+		if (!ModularBody::findBodyOnce(name))
+			return false;
+		core.setHomePlanet(name);
+		// Confirmed on the path that DRAWS (B33): the camera's reference IS the
+		// observer, and the old home-planet name is a second answer to the same
+		// question.
+		return Camera::instance && Camera::instance->getReferenceBody() &&
+		       Camera::instance->getReferenceBody()->getEnglishName() == name;
+	}
+
+	void moveObserverTo(double latDeg, double lonDeg, double altMetres) override {
+		// The one seam that moves both paths. Duration 0: a session describes a
+		// settled state, and an eased arrival would make the restore's own
+		// result depend on when the next frame lands (D32).
+		link.observerMoveTo(latDeg, lonDeg, altMetres, 0);
+	}
+
+	// zoomTo, not setFov: `zoom fov X duration 0` is the command an operator
+	// uses and it is the one that sticks - the projector keeps an AIM fov that
+	// the per-frame mirror re-applies over a bare setFov (measured: the
+	// restored scene came back at the launch fov of 180 with setFov, and at 45
+	// with this). Duration 0: a session describes a settled state.
+	void setFov(double degrees) override { link.zoomTo(degrees, 0.f); }
+	void setSkyLock(bool locked) override { core.setFlagLockSkyPosition(locked); }
+
+private:
+	CoreLink &link;
+	Core &core;
+	TimeMgr &time;
+};
+
+} // namespace
+
+bool CoreLink::sessionSave(const std::string &filename) {
+	SessionHost host(*this, *core, *core->timeMgr);
+	return SessionFile::save(host, filename);
+}
+
+bool CoreLink::sessionLoad(const std::string &filename) {
+	SessionHost host(*this, *core, *core->timeMgr);
+	return SessionFile::load(host, filename);
 }
 
 void CoreLink::setPlanetHidden(std::string name, bool planethidden) {

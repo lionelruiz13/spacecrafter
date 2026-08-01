@@ -59,6 +59,15 @@ public:
 		return (timeLockCount) ? 0 : time_speed;
 	}
 
+	//! The rate the OPERATOR set, whatever locks are held on top of it.
+	//! getTimeSpeed() answers "how fast is time running", which is 0 while
+	//! anything holds a lock; a session records what was SET, because a restore
+	//! into a scene holding no lock would otherwise silently freeze it - and
+	//! the lock itself is script-engine state, which D36 keeps out of a session.
+	double getTimeSpeedRaw(void) const {
+		return time_speed;
+	}
+
 	double getTimePause(void) const {
 		return FlagTimePause;
 	}

@@ -279,6 +279,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 		case SC_COMMAND::SC_PRINT :	return commandPrint(); break;
 		case SC_COMMAND::SC_RANDOM :	return commandRandom(); break;
 		case SC_COMMAND::SC_SCRIPT :	return commandScript(wait); break;
+		case SC_COMMAND::SC_SESSION :	return commandSession(); break;
 		case SC_COMMAND::SC_SEARCH :	return commandSearch(); break;
 		case SC_COMMAND::SC_SELECT :	return commandSelect(); break;
 		case SC_COMMAND::SC_SET :	return commandSet(); break;
@@ -1174,6 +1175,26 @@ int AppCommandInterface::commandGet()
 	} else
 		debug_message = _("command 'get': unknown argument");
 
+	return executeCommandStatus();
+}
+
+// Contract + the veto point on its spelling: app_command_interface.hpp.
+int AppCommandInterface::commandSession()
+{
+	const std::string argAction = args[W_ACTION];
+	// `filename` is optional on save (absent = the default session name) and on
+	// load, for the same reason: an operator who keeps one preset should not
+	// have to name it twice.
+	const std::string &name = args[W_FILENAME];
+	if (argAction == W_SAVE) {
+		if (!coreLink->sessionSave(name))
+			debug_message = _("Command 'session': the session could not be saved");
+	} else if (argAction == W_LOAD) {
+		if (!coreLink->sessionLoad(name))
+			debug_message = _("Command 'session': the session could not be loaded");
+	} else {
+		debug_message = _("Command 'session': unknown or missing action, expected 'save' or 'load'");
+	}
 	return executeCommandStatus();
 }
 
