@@ -305,7 +305,13 @@ latest session update note above.*
   post-fix target derives from the drawn path, measured on both binaries);
   TUI/readout consumers unchanged where the paths agree; battery green; frozen md5
   in==out.
-- **WIP:**
+- **WIP:** 2026-08-01 · CP1 code `93d83ebd`: the INSTRUMENT — `body action dual_dump`
+  gains a `control` object ({reported, old, new} per member) because no member of the
+  class had an observable channel; `Camera::getPlace()` = the inverse of `moveTo`'s
+  target in both modes. Pre-fix binary snapshotted (`artifacts/f23/sc_f23_pre`, md5
+  `ebe92184`). First measurement already in: two `camera action descend coef 0.5`
+  leave old alt 75 m vs camera 18.50 m and the getter reports 75 — altitude's REAL
+  divergence channel, no injection needed. Next: the four getter fixes.
 
 ### F24 — B34 mechanical seam mirrors: `clear`, `preload`, trail fresh-restart  [M]
 
