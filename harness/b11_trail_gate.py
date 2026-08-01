@@ -232,6 +232,31 @@ shot("screen_reon")             # fresh: 1 point, nothing drawable (n < 2)
 advance(30)
 shot("screen_regrown")
 dump("screen_final")
+
+# --- phase 8: the FRESH-RESTART SEAM (B34 §11.108(k), delivered §11.132) ---
+# EXTENSION, 2026-08-01: `flag object_trails` is not the only thing that starts a
+# trail over.  `Core::setHomePlanet` restarts every trail "due to changed
+# perspective" (its own comment) through CoreLink::startPlanetsTrails ->
+# SSystemFactory::startTrails, and that seam reached the OLD tree alone - so on
+# the drawn path the trail carried its pre-switch span straight across the
+# perspective change.  This phase is the DISPLAY-FLAG gate's sibling and does not
+# touch it: the flag stays ON throughout, which is exactly the regime in which
+# the two are distinguishable (with the flag off there is nothing to restart).
+# The pair is entered TWICE, the second entry from the state the first exit
+# produced (Earth -> Mercury -> Earth).
+# The OTHER live caller of the same seam - the config-init call at Core::init -
+# is inert BY CONSTRUCTION and is not tested: it runs before any body has
+# accumulated a point, so a restart there has nothing to discard.
+send("flag object_trails on", 2.0)
+advance(4)                      # a span that a restart must throw away
+home_cycles = []
+for home in ("Mercury", "Earth"):
+    advance(4)                  # each entry gets its own span to lose
+    dump(f"home_pre_{home}")
+    send(f"set home_planet {home}", 4.0)
+    dump(f"home_post_{home}")
+    home_cycles.append(home)
+
 sock.close()
 
 # ========================================================== evaluate ========
@@ -414,6 +439,57 @@ for n in ALL_SUBJ:
     check(trn["points"] == 1,
           f"fast toggle {n}: {trn['points']} points (expect 1 - a re-enable "
           f"inside the fade is still a re-enable; was {tp['points']})")
+
+print("\n=== 5. the FRESH-RESTART SEAM: `set home_planet` with recording ON ===")
+print("    (B34 §11.108(k) - the restart semantic, not the display flag)")
+report["home_restart"] = {}
+for home in home_cycles:
+    hp, bp = load(f"home_pre_{home}")
+    hq, bq = load(f"home_post_{home}")
+    print(f"  -- set home_planet {home} --")
+    for n in ALL_SUBJ:
+        tp, tq = tr(bp, n), tr(bq, n)
+        cell = {"home": home, "body": n,
+                "points_pre": tp["points"], "points_post": tq["points"],
+                "recording_post": tq["recording"],
+                "headJD_pre": tp["headJD"], "headJD_post": tq["headJD"],
+                "dacc": tq["accumulateCount"] - tp["accumulateCount"]}
+        report["home_restart"][f"{home}/{n}"] = cell
+        print(f"    {n:8s} points {tp['points']:3d} -> {tq['points']:3d}  "
+              f"recording={tq['recording']}  accCount d={cell['dacc']:+d}")
+        # There WAS a span to discard - without this the reset is unobservable.
+        check(tp["points"] >= 2,
+              f"home {home} {n}: there WAS history to lose "
+              f"({tp['points']} points)")
+        # THE ASSERTION.  A restart empties the buffer; the very next frame
+        # samples the current position, so the settled count is 1 - never the
+        # pre-switch count, which is what an old-path-only seam leaves behind.
+        check(tq["points"] == 1,
+              f"home {home} {n}: the trail RESTARTED across the perspective "
+              f"change ({tq['points']} point, from {tp['points']})")
+        # ...and recording did not stop: the restart is a fresh start, not an off.
+        check(tq["recording"] is True,
+              f"home {home} {n}: still recording after the restart")
+        # THE ACCUMULATED SPAN IS GONE - the count's own corroboration, and the
+        # form that survives an observer move. NOT a head-position or head-jd
+        # comparison against the CURRENT state (section 3's form): the trail
+        # samples at the LIGHT-TIME-CORRECTED date (getLastJD), a home-planet
+        # change moves the observer between planets, and the correction then
+        # shifts by minutes in either direction - so the surviving point sits at
+        # where the body was AT THE SWITCH, correct by construction and several
+        # thousand km from where it is by the time the dump is taken (measured
+        # below). What a restart means is that the SPAN is empty.
+        check(abs(tq["headJD"] - tq["tailJD"]) < 1e-9 and tq["pathLength"] == 0,
+              f"home {home} {n}: the accumulated span is EMPTY after the "
+              f"restart (head jd == tail jd, pathLength "
+              f"{tq['pathLength']}) - it was "
+              f"{tp['headJD'] - tp['tailJD']:.1f} d / {tp['pathLength']:.6f} AU")
+        check(tq["firstPoint"] is False,
+              f"home {home} {n}: and it re-started rather than never started "
+              f"(firstPoint={tq['firstPoint']})")
+        cell["light_time_drift_km"] = d(tq["head"], bq[n]["new"]["ecl"])
+        cell["span_pre_days"] = tp["headJD"] - tp["tailJD"]
+        cell["pathLength_pre"] = tp["pathLength"]
 
 report["fail"] = fail
 with open(os.path.join(OUT, "b11_result.json"), "w") as f:

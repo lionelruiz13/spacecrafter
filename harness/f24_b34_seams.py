@@ -344,16 +344,19 @@ def run_position(out, tag, binary):
     try:
         base_scene(app)
         # b3_ladder's earth site: 40 000 km -> 10 000 km, outside 2R (12 756 km)
-        # at BOTH ends, so the disc is drawn throughout and its angular radius
-        # IS the altitude.
+        # at BOTH ends, so the disc is drawn throughout and its angular radius IS
+        # the altitude. Only the ALTITUDE moves in this leg: a lat/lon swing
+        # takes the disc out of frame and the screen legs then compare two empty
+        # frames (measured: 2834 lit px, the first version of this scene).
         app.send("camera action free_mode state on", 1.5)
         app.send("select planet Earth pointer off", 1)
         app.send("moveto lat 0 lon 270 alt 40000000 duration 0", 4)
         app.send("flag track_object on", 3)
         app.send("zoom fov 90 duration 0", 2)
-        app.send("flag track_object off", 2)
+        app.send("flag track_object off", 2)   # B30 determinism, as b3 does
 
-        # Split the two authorities with the one shipped command that does it.
+        # Split the two authorities with the one shipped command that does it:
+        # `camera action descend` is new-path-only BY DESIGN.
         app.send("camera action descend coef 0.5", 1.5)
         app.send("camera action descend coef 0.5", 2.5)
         hA, _ = app.dump(f"{tag}_A")
@@ -361,43 +364,36 @@ def run_position(out, tag, binary):
         r["A"] = hA["control"]
         r["A_lit"] = lit(sA)
 
-        app.send("position save", 2.0)
-
-        # Move away, on both paths (`moveto` is dual).
-        app.send("moveto lat 0 lon 90 alt 40000000 duration 0", 4)
-        hB, _ = app.dump(f"{tag}_B")
-        sB = app.shot(f"{tag}_B")
-        r["B"] = hB["control"]
-        r["B_lit"] = lit(sB)
-        r["px_AB"] = px8(sA, sB)
-
-        app.send("position load", 4.0)
-        hC, _ = app.dump(f"{tag}_C")
-        sC = app.shot(f"{tag}_C")
-        r["C"] = hC["control"]
-        r["C_lit"] = lit(sC)
-        r["px_AC"] = px8(sA, sC)
-        r["px_BC"] = px8(sB, sC)
-
-        # SECOND ENTRY of the reversible pair, starting from the state the first
-        # exit produced (no re-setup): save/move/load again.
-        app.send("position save", 2.0)
-        app.send("moveto lat 0 lon 90 alt 40000000 duration 0", 4)
-        hB2, _ = app.dump(f"{tag}_B2")
-        sB2 = app.shot(f"{tag}_B2")
-        r["B2"] = hB2["control"]
-        app.send("position load", 4.0)
-        hC2, _ = app.dump(f"{tag}_C2")
-        sC2 = app.shot(f"{tag}_C2")
-        r["C2"] = hC2["control"]
-        r["px_AC2"] = px8(sA, sC2)
-        r["px_BC2"] = px8(sB2, sC2)
-
-        # §5.68: the two authorities after a restore, side by side, in the
-        # dump's own units. Stated, not asserted away.
+        legs = []
+        for entry in (1, 2):
+            # The command is `position action save` / `position action load` -
+            # the spelling every shipped show uses (takeoff.sts,
+            # initialVR360.sts, 05.sts, K9.sts, M20.sts).
+            app.send("position action save", 2.0)
+            app.send("moveto altitude 40000000 duration 0", 4)
+            hB, _ = app.dump(f"{tag}_B{entry}")
+            sB = app.shot(f"{tag}_B{entry}")
+            app.send("position action load", 4.0)
+            hC, _ = app.dump(f"{tag}_C{entry}")
+            sC = app.shot(f"{tag}_C{entry}")
+            legs.append({
+                "B": hB["control"], "C": hC["control"],
+                "B_lit": lit(sB), "C_lit": lit(sC),
+                "px_AB": px8(sA, sB), "px_AC": px8(sA, sC), "px_BC": px8(sB, sC),
+                "shots": [str(sB), str(sC)],
+            })
+        # SECOND ENTRY of the reversible pair starts from the state the first
+        # exit produced - no re-setup between them.
+        r["legs"] = legs
+        r["B"], r["C"] = legs[0]["B"], legs[0]["C"]
+        r["B_lit"], r["C_lit"] = legs[0]["B_lit"], legs[0]["C_lit"]
+        r["px_AB"], r["px_AC"], r["px_BC"] = (legs[0]["px_AB"], legs[0]["px_AC"],
+                                              legs[0]["px_BC"])
+        # §5.68: the two authorities after a restore, side by side, in the dump's
+        # own units. Stated, not asserted away.
         r["asym"] = {"old": r["C"]["latitude"]["old"], "new": r["C"]["latitude"]["new"],
                      "altOld": r["C"]["altitude"]["old"], "altNew": r["C"]["altitude"]["new"]}
-        r["shots"] = [str(sA), str(sB), str(sC), str(sB2), str(sC2)]
+        r["shots"] = [str(sA)]
     finally:
         app.stop()
     return r
@@ -571,45 +567,47 @@ def main():
         def alt(c):
             return c["altitude"]
 
-        if post["A_lit"] < 1000 or post["B_lit"] < 1000 or post["C_lit"] < 1000:
-            fail(f"POSITION: an empty frame in the scene "
-                 f"({post['A_lit']}/{post['B_lit']}/{post['C_lit']} lit px)")
+        lits = [post["A_lit"]] + [x for L in post["legs"] for x in (L["B_lit"], L["C_lit"])]
+        if min(lits) < 1000:
+            fail(f"POSITION: an empty frame in the scene (lit px {lits})")
         else:
-            ok(f"POSITION: the scene is lit at every leg "
-               f"({post['A_lit']}/{post['B_lit']}/{post['C_lit']} px)")
-        dA, dB = alt(post["A"]), alt(post["B"])
+            ok(f"POSITION: the scene is lit at every leg (lit px {lits})")
+        dA = alt(post["A"])
         if abs(dA["old"] - dA["new"]) > 1e6:
             ok(f"POSITION: the two authorities ARE split before the bookmark "
                f"(old {dA['old']:.3f} m, drawn {dA['new']:.3f} m)")
         else:
             fail(f"POSITION: the authorities did not split - the leg cannot "
                  f"discriminate ({dA})")
-        if post["px_AB"] <= 0:
-            fail("POSITION: the move away did not change the screen")
+        for i, L in enumerate(post["legs"], 1):
+            dB, dC = alt(L["B"]), alt(L["C"])
+            if L["px_AB"] <= 0:
+                fail(f"POSITION[{i}]: the move away did not change the screen")
+            else:
+                ok(f"POSITION[{i}]: the move away moved the screen {L['px_AB']} px>8")
+            if abs(dC["new"] - dA["new"]) < max(1.0, 1e-6 * abs(dA["new"])):
+                ok(f"POSITION[{i}]: `position action load` brings the CAMERA back "
+                   f"({dB['new']:.3f} -> {dC['new']:.3f} m against the saved "
+                   f"{dA['new']:.3f} m)")
+            else:
+                fail(f"POSITION[{i}]: the camera did not return "
+                     f"(saved {dA['new']:.3f}, restored {dC['new']:.3f} m)")
+            if L["px_AC"] < L["px_AB"] / 10 and L["px_BC"] > L["px_AC"]:
+                ok(f"POSITION[{i}]: and the composed screen is back "
+                   f"({L['px_AC']} px>8 from the bookmark, against {L['px_AB']} for "
+                   f"the move away and {L['px_BC']} from where the move left it)")
+            else:
+                fail(f"POSITION[{i}]: the screen did not return ({L['px_AC']} px>8 "
+                     f"from the bookmark, {L['px_AB']} for the move, {L['px_BC']} "
+                     f"from the moved state)")
+        c1, c2 = alt(post["legs"][0]["C"]), alt(post["legs"][1]["C"])
+        if abs(c2["new"] - c1["new"]) < 1e-6 * max(1.0, abs(c1["new"])):
+            ok(f"POSITION: both entries of the reversible pair land on the same "
+               f"place, the second starting from the first exit's state "
+               f"({c1['new']:.6f} / {c2['new']:.6f} m)")
         else:
-            ok(f"POSITION: the move away moved the screen {post['px_AB']} px>8")
-        dC = alt(post["C"])
-        if abs(dC["new"] - dA["new"]) < max(1.0, 1e-6 * abs(dA["new"])):
-            ok(f"POSITION: `position load` brings the CAMERA back "
-               f"({dB['new']:.3f} -> {dC['new']:.3f} m against the saved "
-               f"{dA['new']:.3f} m)")
-        else:
-            fail(f"POSITION: the camera did not return "
-                 f"(saved {dA['new']:.3f}, restored {dC['new']:.3f} m)")
-        if post["px_AC"] < post["px_AB"] / 10:
-            ok(f"POSITION: and the composed screen is back "
-               f"({post['px_AC']} px>8 from the bookmark, against {post['px_AB']} "
-               f"for the move away and {post['px_BC']} from where it was)")
-        else:
-            fail(f"POSITION: the screen did not return ({post['px_AC']} px>8 from "
-                 f"the bookmark, {post['px_AB']} for the move)")
-        dC2 = alt(post["C2"])
-        if abs(dC2["new"] - dC["new"]) < max(1.0, 1e-6 * abs(dC["new"])):
-            ok(f"POSITION: second entry of the pair, from the first exit's state, "
-               f"lands on the same place ({dC2['new']:.3f} m, {post['px_AC2']} px>8)")
-        else:
-            fail(f"POSITION: the second entry diverged ({dC['new']:.3f} -> "
-                 f"{dC2['new']:.3f} m)")
+            fail(f"POSITION: the second entry diverged ({c1['new']:.6f} -> "
+                 f"{c2['new']:.6f} m)")
         a = post["asym"]
         print(f"      §5.68 after the restore: latitude old {a['old']:.9f}° / camera "
               f"{a['new']:.9f}°, altitude old {a['altOld']:.6f} m / camera "
@@ -618,22 +616,33 @@ def main():
         if prebin:
             pre = run_position(out, "position_pre", prebin)
             res["position_pre"] = pre
-            pA, pB, pC = alt(pre["A"]), alt(pre["B"]), alt(pre["C"])
+            pA = alt(pre["A"])
+            L = pre["legs"][0]
+            pB, pC = alt(L["B"]), alt(L["C"])
             if abs(pC["new"] - pA["new"]) > 1e6:
                 ok(f"POSITION RED: on the pre-fix binary the camera does NOT come "
                    f"back (saved-view {pA['new']:.3f} m, after load "
-                   f"{pC['new']:.3f} m) - it restores the old observer alone "
-                   f"({pB['old']:.3f} -> {pC['old']:.3f} m)")
+                   f"{pC['new']:.3f} m - it stays where the move left it, "
+                   f"{pB['new']:.3f} m)")
             else:
                 fail(f"POSITION RED: the pre-fix binary restored the camera "
                      f"({pA['new']:.3f} -> {pC['new']:.3f} m)")
-            if pre["px_AC"] > pre["px_BC"]:
+            if L["px_BC"] < L["px_AC"]:
                 ok(f"POSITION RED: and the pre-fix screen stays where the move left "
-                   f"it ({pre['px_BC']} px>8 from it, {pre['px_AC']} px>8 from the "
+                   f"it ({L['px_BC']} px>8 from it, {L['px_AC']} px>8 from the "
                    f"bookmark)")
             else:
                 fail(f"POSITION RED: the pre-fix screen did return "
-                     f"({pre['px_AC']} px>8 from the bookmark)")
+                     f"({L['px_AC']} px>8 from the bookmark, {L['px_BC']} from the "
+                     f"moved state)")
+            if abs(pC["old"] - pA["old"]) < 1.0:
+                ok(f"POSITION: the OLD observer's own round trip is unchanged by "
+                   f"this fix - it returns to {pC['old']:.3f} m on the pre-fix "
+                   f"binary and to {alt(post['legs'][0]['C'])['old']:.3f} m on the "
+                   f"delivered one (the saved value differs, the mechanism does not)")
+            else:
+                fail(f"POSITION: the pre-fix old observer did not round-trip "
+                     f"({pA['old']:.3f} -> {pC['old']:.3f} m)")
 
     (out / "f24_result.json").write_text(json.dumps(res, indent=1, default=str))
     print(f"\n--- {len(FAILS)} FAIL ---" if FAILS else "\n--- ALL GREEN ---", flush=True)
