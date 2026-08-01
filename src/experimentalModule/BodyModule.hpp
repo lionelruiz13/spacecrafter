@@ -262,6 +262,26 @@ public:
     // createTexSkin/setShown contract - no type sniffing at the broadcast).
     // HALO is body-owned and handled by ModularBody, not by any module.
     virtual void setColor(BodyColorType type, const Vec3f &c) {}
+    // THE READ HALF of the three seams above (b31-design §2 rows D4/D7/D8; the
+    // per-body twin of readFlag, INTENT §11.129). Same self-selection contract:
+    // a module answers for the channel it owns and stays silent otherwise, so
+    // the caller never sniffs a type to find out who holds what (I4). False =
+    // "not mine", which is not the same answer as a value.
+    virtual bool getColor(BodyColorType type, Vec3f &out) const { return false; }
+    //! The same, for what the DATA gave it - so the ledger can record a change
+    //! rather than a snapshot (D30).
+    virtual bool getAuthoredColor(BodyColorType type, Vec3f &out) const { return false; }
+    virtual bool getSkinUse(bool &out) const { return false; }
+    // The per-body visibility OVERRIDE, not the effective visibility: -1 when
+    // this body follows the global master (including when a global toggle has
+    // since staled the override), 0/1 when an operator forced it. The ledger
+    // records overrides, so it must be able to tell "forced off" from
+    // "following a master that is off".
+    virtual int getShownOverride() const { return -1; }
+    // Snapshot what the DATA gave this module, so a later save can tell an
+    // operator's change from an author's value (D30's delta rule). Called once
+    // the load has finished writing into the body.
+    virtual void captureAuthored() {}
     // Compare an object position and radius with this ModularBody
     // Precondition: update() has run at least once for this module (see update)
     virtual RelativePosition compare(const Vec3f &localPos, const Vec3f &zAxis, float radius) {

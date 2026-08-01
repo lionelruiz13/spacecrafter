@@ -63,6 +63,7 @@ public:
     // demonstrated use, not a hypothetical one. Rules in SkinnableColorMap.
     virtual void createTexSkin(const std::string &texName) override;
     virtual void switchTexSkin(bool use) override;
+    bool getSkinUse(bool &out) const override { out = colorMap.isSkinUsed(); return true; }
 private:
     // The one binding site (mirrors BasicMesh::bindColor; the set contract is
     // this family's, which is why the binding cannot live in the shared map).

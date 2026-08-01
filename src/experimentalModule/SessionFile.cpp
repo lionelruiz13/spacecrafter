@@ -3,6 +3,10 @@
 #include "ModularBody.hpp"
 #include "ModularSystem.hpp"
 #include "ModularSystemFormat.hpp"
+#include "bodyModules/TrailModule.hpp"
+#include "bodyModules/HintModule.hpp"
+#include "bodyModules/OrbitModule.hpp"
+#include "bodyModule/body_tesselation.hpp"
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 #include <cmath>
@@ -77,6 +81,33 @@ void collectSystems(std::vector<ModularSystem *> &out)
         if (sys->hasSystemFile())
             out.push_back(sys);
     });
+}
+
+std::string v2s(const Vec3f &c)
+{
+    return d2s(c[0]) + "," + d2s(c[1]) + "," + d2s(c[2]);
+}
+
+// THE MISS REPORT'S CONTEXT, and the reason it is not the key (D34,
+// §11.113(m)): the key is the plain englishName, because that is the identifier
+// users already know and the one the engine enforces uniqueness on. The
+// system-qualified tree path is what makes a MISS legible - which tree the
+// override belonged to, so "the data renamed it" reads differently from "that
+// system is not loaded" - and it is written for the report alone. Nothing
+// resolves by it.
+std::string qualifiedPath(ModularBody *b)
+{
+    std::string chain = b->getEnglishName();
+    std::string file;
+    for (ModularBody *p = b->getParent(); p; p = p->getParent()) {
+        if (p->isSystem() && file.empty()) {
+            ModularSystem *sys = static_cast<ModularSystem *>(p);
+            if (sys->hasSystemFile())
+                file = sys->getSystemFilename();
+        }
+        chain = p->getEnglishName() + "/" + chain;
+    }
+    return (file.empty() ? std::string("<no file>") : file) + "::" + chain;
 }
 
 // A flag or a value another §2 row owns. The list is short and each entry
@@ -230,6 +261,117 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
             "colour table - so they are named here instead of being guessed. The PER-BODY "
             "colours are not these: they are §2 rows D3/D4 and live in [body:*].");
         sections.push_back(std::move(colors));
+    }
+
+    // THE PER-BODY OVERRIDE LEDGER (§2 group D). One section per body that
+    // carries at least one override, keyed by plain englishName (D34).
+    //
+    // IT IS A DELTA, NOT A SNAPSHOT, and that is the whole point (D30): each
+    // field is written only when it DIFFERS from what the data gave the body at
+    // load. A body nobody touched contributes nothing, so a correction that
+    // lands in the data underneath a session reaches a session restored on top
+    // of it - and an operator's override still applies on top of the corrected
+    // value. A snapshot would pin the old authored value forever and there
+    // would be no way to tell which of the two the operator meant.
+    {
+        int ledgerBodies = 0;
+        std::vector<Section> bodySections;
+        ModularBody::forEach([&](ModularBody &b) {
+            Section s;
+            bool any = false;
+            const ModularBody::AuthoredState &a = b.getAuthored();
+            auto put = [&](const char *k, const std::string &v) {
+                s.appendEntry(k, v);
+                any = true;
+            };
+            if (b.isHiddenDeclared() != a.hidden)                       // D1
+                put("hidden", b.isHiddenDeclared() ? "true" : "false");
+            if (b.getScalingTarget() != 1.f)                            // D2
+                put("scale", d2s(b.getScalingTarget()));
+            Vec3f live, auth;
+            for (auto ch : {BodyColorType::HALO, BodyColorType::LABEL,      // D3/D4
+                            BodyColorType::ORBIT, BodyColorType::TRAIL}) {
+                if (!b.getColor(ch, live) || !b.getAuthoredColor(ch, auth) || live == auth)
+                    continue;
+                put(ch == BodyColorType::HALO ? "halo_color"
+                    : ch == BodyColorType::LABEL ? "label_color"
+                    : ch == BodyColorType::ORBIT ? "orbit_color" : "trail_color", v2s(live));
+            }
+            if (b.getDatumRadiusRaw() != a.datumRadius)                 // D6, in km
+                put("datum_radius", d2s(b.getDatumRadiusRaw() * AU));
+            if (b.getGroundRadiusRaw() != a.groundRadius)               // D6
+                put("ground_radius", d2s(b.getGroundRadiusRaw() * AU));
+            if (b.getSkinUse())                                         // D7 (scalar half)
+                put("skin_use", "true");
+            if (b.getOrbitOverride() >= 0)                              // D8
+                put("orbit", b.getOrbitOverride() ? "true" : "false");
+            if (b.getTrailOverride() >= 0)                              // D8
+                put("trail", b.getTrailOverride() ? "true" : "false");
+            // D10: the accumulated trail. D32 carves trail points OUT of
+            // "transients snap to their settled target" - a trail is drawn
+            // content, not a motion, and "as-if continued" says it is still
+            // there. Written whole rather than re-derived, because
+            // re-derivation needs an orbit and a body without one would come
+            // back empty with nothing to explain it.
+            for (BodyModule *m : b.getTrailComponents()) {
+                TrailModule *t = static_cast<TrailModule *>(m);
+                const auto &pts = t->getPoints();
+                if (pts.empty())
+                    continue;
+                std::string packed;
+                packed.reserve(pts.size() * 48);
+                for (const auto &p : pts) {
+                    if (!packed.empty())
+                        packed += ";";
+                    packed += d2s(p.jd) + ":" + d2s(p.pos[0]) + "," + d2s(p.pos[1]) +
+                              "," + d2s(p.pos[2]);
+                }
+                put("trail_points", packed);
+                break;
+            }
+            if (!any)
+                return;
+            s.setHeader("body:" + b.getEnglishName());
+            // Context for the miss report, never a key (D34).
+            s.appendEntry("path", qualifiedPath(&b));
+            bodySections.push_back(std::move(s));
+            ++ledgerBodies;
+        });
+        for (Section &s : bodySections)
+            sections.push_back(std::move(s));
+
+        // §2 row D5: the runtime colour DEFAULTS. They are not per-body and
+        // they are invisible in any per-body snapshot - they change what FUTURE
+        // bodies get - so they are their own section, and they are a snapshot
+        // rather than a delta because no body authored them.
+        Section defs;
+        defs.setHeader("body_defaults");
+        defs.appendEntry("halo_color", v2s(ModularBody::getDefaultHaloColor()));
+        defs.appendEntry("label_color", v2s(HintModule::defaultLabelColor));
+        defs.appendEntry("orbit_color", v2s(OrbitModule::defaultColor));
+        defs.appendEntry("trail_color", v2s(TrailModule::defaultColor));
+        defs.annotate("", "d5-defaults-are-not-per-body",
+            "These four are the colours a body gets when its declaration names none. "
+            "Changing one recolours NO existing body - only the ones loaded afterwards - "
+            "which is why they cannot be recovered from the [body:*] sections and have "
+            "their own place here (b31-design §2 row D5).");
+        sections.push_back(std::move(defs));
+
+        // §2 row D9: tesselation. The values are shared by both render paths
+        // through one object, so there is nothing per-body to record and the
+        // section is global.
+        if (const auto &tes = ModularBody::getTesselation()) {
+            Section ts;
+            ts.setHeader("tesselation");
+            ts.appendEntry("min_tes_level", std::to_string(tes->getMinTesLevel()));
+            ts.appendEntry("max_tes_level", std::to_string(tes->getMaxTesLevel()));
+            ts.appendEntry("planet_altimetry_level", std::to_string(tes->getPlanetAltimetryFactor()));
+            ts.appendEntry("moon_altimetry_level", std::to_string(tes->getMoonAltimetryFactor()));
+            ts.appendEntry("earth_altimetry_level", std::to_string(tes->getEarthAltimetryFactor()));
+            sections.push_back(std::move(ts));
+        }
+        cLog::get()->write("Session save: the override ledger carries " +
+            std::to_string(ledgerBodies) + " body/bodies", LOG_TYPE::L_INFO);
     }
 
     // THE MANIFEST (§3.3): what this session assumed was loaded. It is what
@@ -451,6 +593,122 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
             cLog::get()->write("Session restore: " + std::to_string(applied) + " value(s) "
                 "applied, " + std::to_string(unknown) + " name(s) unknown to this build.",
                 LOG_TYPE::L_WARNING);
+    }
+
+    // THE PER-BODY OVERRIDE LEDGER, applied on top of whatever the data now
+    // says. Every entry is a field an operator changed, so applying it leaves
+    // every field it does NOT name at its current authored value - which is
+    // what makes a data correction reach a session restored on top of it.
+    //
+    // A KEY THAT DOES NOT RESOLVE IS REPORTED AND KEPT (D34, §11.113(m)): never
+    // dropped, never bound to a near match. Dropping it silently is a show that
+    // looks wrong with no trace of why, and binding it to a same-named body
+    // another system loaded is precisely the A29 hazard the plain-name key had
+    // to answer for. The report carries the system-qualified path the save
+    // recorded, because "the data renamed it" and "that system is not loaded"
+    // are different problems with the same symptom.
+    bool ledgerAnnotated = false;
+    for (Section &s : sections) {
+        const std::string &h = s.getHeader();
+        if (h.compare(0, 5, "body:") != 0)
+            continue;
+        const std::string name = h.substr(5);
+        ModularBody *b = ModularBody::findBodyOnce(name);
+        if (!b) {
+            const std::string *where = s.find("path");
+            const std::string reason =
+                "This session recorded an override for a body called '" + name +
+                "', and no body of that name is in the tree now" +
+                (where ? " (when it was saved it was " + *where + ")" : "") +
+                ". The override was NOT applied and NOT applied to anything else - a "
+                "same-named body from another system would be the wrong body. It is kept "
+                "here so nothing is lost: if the data renamed it, rename this section to "
+                "match; if the system it belongs to is not loaded, load it and restore "
+                "again.";
+            cLog::get()->write("Session restore: " + reason, LOG_TYPE::L_WARNING);
+            s.annotate("", "override-key-unresolved", reason);
+            ledgerAnnotated = true;
+            continue;
+        }
+        if (const std::string *v = s.find("hidden")) {
+            const bool want = (*v == "true" || *v == "1");
+            if (want != b->isHiddenDeclared()) {
+                if (want) b->hide(); else b->show();
+            }
+        }
+        if (const std::string *v = s.find("scale"))
+            b->setScaling(Utility::strToFloat(*v, 1.f));
+        struct { const char *key; BodyColorType channel; } channels[] = {
+            {"halo_color", BodyColorType::HALO}, {"label_color", BodyColorType::LABEL},
+            {"orbit_color", BodyColorType::ORBIT}, {"trail_color", BodyColorType::TRAIL}};
+        for (const auto &c : channels)
+            if (const std::string *v = s.find(c.key))
+                b->setColor(c.channel, Utility::strToVec3f(*v));
+        if (const std::string *v = s.find("datum_radius"))
+            b->setDatumRadius(Utility::strToFloat(*v, 0.f) / static_cast<float>(AU));
+        if (const std::string *v = s.find("ground_radius"))
+            b->setGroundRadius(Utility::strToFloat(*v, 0.f) / static_cast<float>(AU));
+        if (const std::string *v = s.find("skin_use"))
+            b->switchTexSkin(*v == "true" || *v == "1");
+        if (const std::string *v = s.find("orbit"))
+            b->setFlagOrbit(*v == "true" || *v == "1");
+        if (const std::string *v = s.find("trail"))
+            b->setFlagTrail(*v == "true" || *v == "1");
+        if (const std::string *v = s.find("trail_points")) {
+            std::vector<TrailModule::TrailPoint> pts;
+            std::size_t i = 0;
+            while (i < v->size()) {
+                std::size_t end = v->find(';', i);
+                if (end == std::string::npos)
+                    end = v->size();
+                const std::string one = v->substr(i, end - i);
+                const std::size_t colon = one.find(':');
+                if (colon != std::string::npos) {
+                    TrailModule::TrailPoint p;
+                    p.jd = Utility::strToDouble(one.substr(0, colon), 0);
+                    p.pos = Utility::strToVec3f(one.substr(colon + 1));
+                    pts.push_back(p);
+                }
+                i = end + 1;
+            }
+            for (BodyModule *m : b->getTrailComponents()) {
+                static_cast<TrailModule *>(m)->restorePoints(std::move(pts));
+                break;
+            }
+        }
+    }
+    // §4.2: the session file is written by the same writer, so an unresolved
+    // key is annotated IN PLACE, above its own section. Idempotent by the F13
+    // rule - the same (key, reason) REPLACES - so a second restore of the same
+    // file produces the same bytes.
+    if (ledgerAnnotated)
+        ModularSystemFormat::write(path, sections, {});
+
+    // The runtime colour DEFAULTS (§2 row D5) and tesselation (D9).
+    for (const Section &s : sections) {
+        if (s.getHeader() == "body_defaults") {
+            if (const std::string *v = s.find("halo_color"))
+                ModularBody::setDefaultHaloColor(Utility::strToVec3f(*v));
+            if (const std::string *v = s.find("label_color"))
+                HintModule::defaultLabelColor = Utility::strToVec3f(*v);
+            if (const std::string *v = s.find("orbit_color"))
+                OrbitModule::defaultColor = Utility::strToVec3f(*v);
+            if (const std::string *v = s.find("trail_color"))
+                TrailModule::defaultColor = Utility::strToVec3f(*v);
+        } else if (s.getHeader() == "tesselation") {
+            if (const auto &tes = ModularBody::getTesselation()) {
+                if (const std::string *v = s.find("min_tes_level"))
+                    tes->setMinTes(Utility::strToInt(*v, tes->getMinTesLevel()));
+                if (const std::string *v = s.find("max_tes_level"))
+                    tes->setMaxTes(Utility::strToInt(*v, tes->getMaxTesLevel()));
+                if (const std::string *v = s.find("planet_altimetry_level"))
+                    tes->setPlanetTes(Utility::strToInt(*v, tes->getPlanetAltimetryFactor()));
+                if (const std::string *v = s.find("moon_altimetry_level"))
+                    tes->setMoonTes(Utility::strToInt(*v, tes->getMoonAltimetryFactor()));
+                if (const std::string *v = s.find("earth_altimetry_level"))
+                    tes->setEarthTes(Utility::strToInt(*v, tes->getEarthAltimetryFactor()));
+            }
+        }
     }
 
     cLog::get()->write("Session restored from " + path, LOG_TYPE::L_INFO);

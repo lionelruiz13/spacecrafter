@@ -1123,6 +1123,7 @@ public:
         isHaloEnabled = enabled;
     }
     inline void setScaling(float _scale) {
+        scalingTarget = _scale;
         scaling = _scale;
         uncached = true;
     }
@@ -1170,6 +1171,84 @@ public:
     // Default halo color seam (old BodyColor::defaultHalo). The LABEL/ORBIT/
     // TRAIL module defaults are module statics set at the same factory seam.
     static inline void setDefaultHaloColor(const Vec3f &c) { defaultHaloColor = c; }
+    static inline const Vec3f &getDefaultHaloColor() { return defaultHaloColor; }
+    // THE READ HALF of setColor, per channel (b31-design §2 rows D3/D4). HALO is
+    // body-owned; the other three are asked of the modules that own them, which
+    // answer for their own channel and stay silent otherwise (I4).
+    inline bool getColor(BodyColorType type, Vec3f &out) const {
+        if (type == BodyColorType::HALO) {
+            out = haloColor;
+            return true;
+        }
+        for (auto &m : components)
+            if (m && m->getColor(type, out))
+                return true;
+        return false;
+    }
+    inline bool getAuthoredColor(BodyColorType type, Vec3f &out) const {
+        if (type == BodyColorType::HALO) {
+            out = authoredState.haloColor;
+            return true;
+        }
+        for (auto &m : components)
+            if (m && m->getAuthoredColor(type, out))
+                return true;
+        return false;
+    }
+    // Is this body DECLARED hidden - as opposed to drawn-hidden because an
+    // ancestor is (isRenderHidden)? The ledger records what an operator said,
+    // and hiding a parent implicitly hides its children without touching their
+    // own flag (§11.113(b)).
+    inline bool isHiddenDeclared() const { return relation < BodyRelation::GROUNDED; }
+    // The per-body display scale an operator COMMANDED (`planet_scale`), not
+    // the value the 5 s ramp happens to be passing through: D32 says a
+    // transient is saved as the state it is heading for, and ASmooth folds its
+    // target into coefficients the moment it starts, so the target is recorded
+    // where it is known - at the seam that sets it.
+    inline float getScalingTarget() const { return scalingTarget; }
+    // The RAW nav radii, in AU, before `scaling` multiplies them. The scaled
+    // products already had getters; the ledger needs what the operator set.
+    inline float getDatumRadiusRaw() const { return datumRadius; }
+    inline float getGroundRadiusRaw() const { return groundRadius; }
+    // Is the created skin the one being drawn (§2 row D7's scalar half)? False
+    // when no module in this body owns a skin at all.
+    inline bool getSkinUse() const {
+        bool v = false;
+        for (auto &m : components)
+            if (m && m->getSkinUse(v))
+                return v;
+        return false;
+    }
+    // The per-body ORBIT / TRAIL visibility override: -1 = follows the master.
+    inline int getOrbitOverride() const { return firstOverride(orbitComponents); }
+    inline int getTrailOverride() const { return firstOverride(trailComponents); }
+    //! The TRAIL modules of this body, for the one consumer that needs the
+    //! accumulated points themselves (§2 row D10's carve-out).
+    inline const std::vector<BodyModule *> &getTrailComponents() const { return trailComponents; }
+    // WHAT THE DATA GAVE THIS BODY - D30's delta baseline. The ledger records
+    // what an operator CHANGED, which is why a correction that lands in the
+    // data underneath a session still reaches a session restored on top of it
+    // (§9(2)): a field nobody overrode is not in the file at all, so the new
+    // authored value is simply what the restore leaves in place.
+    struct AuthoredState {
+        Vec3f haloColor {0.f, 0.f, 0.f};
+        float datumRadius = 0.f;
+        float groundRadius = 0.f;
+        bool hidden = false;
+    };
+    inline const AuthoredState &getAuthored() const { return authoredState; }
+    // Snapshot it. Called by the loader once it has finished writing into the
+    // body (a `hidden = true` key is applied AFTER construction), and by the
+    // constructor so a body no loader touched still has a baseline.
+    inline void captureAuthoredState() {
+        authoredState.haloColor = haloColor;
+        authoredState.datumRadius = datumRadius;
+        authoredState.groundRadius = groundRadius;
+        authoredState.hidden = isHiddenDeclared();
+        for (auto &m : components)
+            if (m)
+                m->captureAuthored();
+    }
     inline float getRotAscendingnode(void) const {
 		return re.ascendingNode;
 	}
@@ -1770,6 +1849,15 @@ private:
     std::vector<BodyModule *> nearComponents; // Drawn above BODY_EARLY_VISIBILITY_BOUNDING_SIZE and distance > scaledRadius * BODY_SURFACE_HEIGHT
     std::vector<BodyModule *> groundedComponents; // Drawn if distance <= scaledRadius * BODY_SURFACE_HEIGHT
     std::vector<BodyModule *> inComponents; // Draw if distance <= scaledRadius
+    // -1 when no module in the list carries a live override.
+    static inline int firstOverride(const std::vector<BodyModule *> &list) {
+        for (auto *m : list) {
+            const int v = m ? m->getShownOverride() : -1;
+            if (v >= 0)
+                return v;
+        }
+        return -1;
+    }
     std::vector<BodyModule *> orbitComponents; // Orbit lines (row 8): drawn in the system-level orbit pass (ModularSystem::drawOrbits), not a screen-size regime
     std::vector<BodyModule *> trailComponents; // Trail lines (row 9): swept every frame by the system-level trail pass (ModularSystem::drawTrails) so accumulation continues while invisible, not a screen-size regime
     std::vector<BodyModule *> tailComponents; // Comet tails (row 12): instanced batch swept as a system phase (ModularSystem::drawTails) so update() ticks and the batch flushes once, not a screen-size regime
@@ -1860,6 +1948,8 @@ private:
 
     // Navigation and visibility
     ASmooth<AsyncHub, float, 5.f> scaling;
+    float scalingTarget = 1.f;   // what setScaling was last told (D32's settled value)
+    AuthoredState authoredState; // what the DATA gave this body (D30's delta baseline)
     float radius;
     // Raw (unscaled) navigation radii, both defaulting to `radius` (B10 §5.2).
     // See ModularBodyCreateInfo for the datum/ground roles.

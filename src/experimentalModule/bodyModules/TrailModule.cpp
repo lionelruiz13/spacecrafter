@@ -75,7 +75,7 @@ TrailFamilyData &trailFamily()
 } // namespace
 
 TrailModule::TrailModule(const Vec3f &color, int maxTrail, double deltaTrail)
-    : BodyModule(BodyModuleType::TRAIL), color(color), maxTrail(maxTrail), deltaTrail(deltaTrail) {}
+    : BodyModule(BodyModuleType::TRAIL), color(color), authoredColor(color), maxTrail(maxTrail), deltaTrail(deltaTrail) {}
 
 TrailModule::~TrailModule()
 {

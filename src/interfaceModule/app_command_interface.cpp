@@ -618,7 +618,14 @@ bool AppCommandInterface::readFlag(FLAG_NAMES flagName, bool &value) const
 			value = coreLink->starLinesSelectedGetFlag();
 			return true;
 		case FLAG_NAMES::FN_SATELLITES :
-			value = coreLink->hideSatellitesFlag();
+			// The stored flag is HIDE-satellites and the command's flag is
+			// SHOW-satellites: `toggleHideSatellites` inverts its argument
+			// before storing it (protosystem.cpp:261). Reading the stored bit
+			// as if it were the command's - which the old toggle branch did -
+			// makes `flag satellites toggle` a NO-OP in one direction (from
+			// shown: !false = true -> stored !true = false = still shown) and
+			// makes a save record the opposite of what it would restore.
+			value = !coreLink->hideSatellitesFlag();
 			return true;
 		case FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION :
 			value = coreLink->atmosphericRefractionGetFlag();

@@ -63,6 +63,24 @@ public:
     // regardless of the master, but only until the NEXT global toggle - the
     // generation stamp makes a later setGlobal* overwrite it (old parity:
     // setFlagPlanetsOrbits bulk-set every body's fader, clobbering per-name).
+    bool getColor(BodyColorType type, Vec3f &out) const override {
+        if (type != BodyColorType::ORBIT)
+            return false;
+        out = color;
+        return true;
+    }
+    void captureAuthored() override { authoredColor = color; }
+    bool getAuthoredColor(BodyColorType type, Vec3f &out) const override {
+        if (type != BodyColorType::ORBIT)
+            return false;
+        out = authoredColor;
+        return true;
+    }
+    //! -1 = follows the master (an override staled by a global toggle counts as
+    //! following: that is exactly what `wantShown` does with it).
+    int getShownOverride() const override {
+        return (overrideGen == flagGeneration) ? nameOverride : -1;
+    }
     virtual void setShown(bool b) override {
         nameOverride = b ? 1 : 0;
         overrideGen = flagGeneration;
@@ -119,6 +137,7 @@ protected:
 
     LinearFader fader;
     Vec3f color;
+    Vec3f authoredColor;   // what the DATA gave it (D30's delta baseline)
     bool closeOrbit;
     bool live = false;             // this module currently counts in activeCount
     int8_t nameOverride = -1;      // -1 follow master, 0/1 forced

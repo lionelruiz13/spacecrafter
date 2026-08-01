@@ -77,6 +77,7 @@ public:
     // normal/heightmap layers keep their own textures.
     virtual void createTexSkin(const std::string &texName) override;
     virtual void switchTexSkin(bool use) override;
+    bool getSkinUse(bool &out) const override { out = skinUse; return true; }
 private:
     float altimetryLevel() const; // moonClass? moon : planet level (shared BodyTesselation seam)
     // The bound day-layer texture (old tex_current): the skin when active AND

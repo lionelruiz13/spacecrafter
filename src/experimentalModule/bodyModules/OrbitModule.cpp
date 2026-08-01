@@ -71,7 +71,7 @@ OrbitFamilyData &orbitFamily()
 } // namespace
 
 OrbitModule::OrbitModule(const Vec3f &color, bool closeOrbit)
-    : BodyModule(BodyModuleType::ORBIT), color(color), closeOrbit(closeOrbit),
+    : BodyModule(BodyModuleType::ORBIT), color(color), authoredColor(color), closeOrbit(closeOrbit),
       orbitPoint(std::make_unique<Vec3d[]>(ORBIT_POINTS)) {}
 
 OrbitModule::~OrbitModule()

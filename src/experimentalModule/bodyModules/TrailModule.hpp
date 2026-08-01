@@ -100,7 +100,41 @@ public:
     // this body's trail regardless of the master, until the next global toggle
     // (generation stamp = old bulk-set clobber parity). Enabling resets the
     // trail (old startTrail(true)) and kicks the system phase.
+    struct TrailPoint {
+        Vec3f pos;   // parent-relative (root-aligned), drawn in the parent frame
+        double jd;   // sim time of the sample
+    };
     virtual void setShown(bool b) override;
+    bool getColor(BodyColorType type, Vec3f &out) const override {
+        if (type != BodyColorType::TRAIL)
+            return false;
+        out = color;
+        return true;
+    }
+    void captureAuthored() override { authoredColor = color; }
+    bool getAuthoredColor(BodyColorType type, Vec3f &out) const override {
+        if (type != BodyColorType::TRAIL)
+            return false;
+        out = authoredColor;
+        return true;
+    }
+    int getShownOverride() const override {
+        return (overrideGen == flagGeneration) ? nameOverride : -1;
+    }
+    //! THE ACCUMULATED TRAIL (b31-design §2 row D10). D32 names trail points a
+    //! carve-out from "transients snap to their settled target" - a trail is
+    //! not a motion in flight, it is drawn CONTENT that took simulated time to
+    //! accumulate, and "as-if continued" says it is still there. So it is read
+    //! and written whole rather than re-derived: re-derivation exists
+    //! (resumeAfterHidden) but needs an orbit, and a body without one would
+    //! come back with an empty trail and no way to say why.
+    const std::vector<TrailPoint> &getPoints() const { return points; }
+    void restorePoints(std::vector<TrailPoint> &&pts) {
+        points = std::move(pts);
+        firstPoint = points.empty();
+        if (!points.empty())
+            lastJD = points.front().jd;
+    }
 
     // THE UNHIDE EDGE (B39 §11.117 / D23 clause iv). Two things were behind:
     //  (1) the DISPLAY fader, which advances in wall time and froze - snapped to
@@ -142,13 +176,10 @@ protected:
     // (global flag rising edge, per-name setShown, old-path startTrail).
     void resetTrail();
 
-    struct TrailPoint {
-        Vec3f pos;   // parent-relative (root-aligned), drawn in the parent frame
-        double jd;   // sim time of the sample
-    };
     std::vector<TrailPoint> points; // NEWEST FIRST (index 0 = brightest - old push_front)
     LinearFader fader;
     Vec3f color;
+    Vec3f authoredColor;   // what the DATA gave it (D30's delta baseline)
     double lastJD = 0;      // sim time of the last appended point
     // THE recording gate's state: true = this module is accumulating. Driven by
     // the DISPLAY flag (wantShown), not by the fader - see update()'s gate

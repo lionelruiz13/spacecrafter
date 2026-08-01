@@ -54,6 +54,9 @@ public:
     void createSkin(const std::string &texName);
     // Old parity (Body::switchMapSkin): switch(true) without a skin is a no-op.
     void switchSkin(bool use);
+    //! Is the skin the one being drawn? The read half of switchSkin
+    //! (b31-design §2 row D7; INTENT §11.129).
+    bool isSkinUsed() const { return skinUse; }
     // THE state machine. allowBigTexture = the caller's size gate (the near
     // regime's BODY_BIG_TEXTURE_BOUNDING_SIZE; the depth-less mid band never engages big
     // textures). Returns the texture to (re)bind, or nullptr if the binding

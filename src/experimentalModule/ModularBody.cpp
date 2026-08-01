@@ -93,6 +93,7 @@ ModularBody::ModularBody(ModularBody *parent, ModularBodyCreateInfo &info) :
     if (groundRadius < 0.f) groundRadius = radius;
     if (translator)
         nameI18 = translator->translateUTF8(englishName);
+    captureAuthoredState();
     auto &ref = bodyReference[englishName];
     if (ref && !englishName.empty()) {
         // It is too late to abort the body creation, so we replace it.

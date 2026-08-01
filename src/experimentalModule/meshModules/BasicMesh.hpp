@@ -33,6 +33,7 @@ public:
     // photosphere since B12); this module only binds what it is told to bind.
     virtual void createTexSkin(const std::string &texName) override;
     virtual void switchTexSkin(bool use) override;
+    bool getSkinUse(bool &out) const override { out = colorMap.isSkinUsed(); return true; }
     void invalidate();
 private:
     // One rebind site for every binding-state change (was 3 copy-pasted

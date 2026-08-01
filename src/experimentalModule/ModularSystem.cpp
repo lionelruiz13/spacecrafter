@@ -1333,6 +1333,13 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
     }
     if (Utility::isTrue(param["hidden"]))
         body->hide();
+    // THE LOAD IS OVER for this body: what it holds now is what the DATA said,
+    // and that is the baseline the override ledger measures a change against
+    // (b31-design §2 group D, D30's delta rule). It is taken here rather than
+    // in the constructor because the loader keeps writing into the body
+    // afterwards - `hidden = true` is applied by calling hide(), and a body the
+    // data declares hidden must not read as an operator's override.
+    body->captureAuthoredState();
     // star is initialized to the SYSTEM itself (valid light-position default
     // for starless systems), so "unassigned" is star == this, NOT !star - the
     // old !star test was dead and the Sun never became the star (its radius

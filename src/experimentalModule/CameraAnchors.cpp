@@ -83,6 +83,10 @@ ModularBody *CameraAnchors::createAnchorBody(const std::string &name, ModularBod
     ModularBody *body = parent->createChild(info, BodyRelation::ORBITING);
     // Hidden: parent-owned, position-ticking, outside every draw/pick walk.
     body->hide();
+    // Hidden BY CONSTRUCTION, not by an operator: an anchor's body is never
+    // shown. Re-take its baseline so the override ledger does not read the
+    // engine's own decision as somebody's change (INTENT §11.129).
+    body->captureAuthoredState();
     return body;
 }
 
