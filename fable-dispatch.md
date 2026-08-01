@@ -1365,7 +1365,10 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   ×2 == identity across families; b10_cmd battery green); T1 re-run — green if §5.63
   attributed, else the §5.63 record extended with what the attempt excluded; §6.3 md5
   sweep; f20_session + f15_persist + full battery green; frozen md5 in==out.
-- **WIP:** —
+- **WIP:** 2026-08-01 — checkpoint (0) done: §5.63 bounded attribution attempt SPENT
+  (3 waves / 9 launches), NOT attributed, row EXTENDED with 7 exclusions + one
+  correction of its own characterisation (the lit sets are positionally disjoint).
+  Next: (i) the readFlag authority + E3/E4/E5.
 
 ---
 
