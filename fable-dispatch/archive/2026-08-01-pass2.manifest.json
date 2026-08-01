@@ -1,0 +1,42 @@
+{
+ "pass": "pass2",
+ "date": "2026-08-01",
+ "source": "fable-dispatch.md",
+ "pre_md5": "6f97d98166a421356bee6280e55d5edf",
+ "pre_commit": "56bc68b",
+ "reconstruction": "verified byte-exact against pre-move commit 56bc68b",
+ "units": [
+  {
+   "id": "update-s7",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s7.md",
+   "line_start": 37,
+   "line_count": 30,
+   "payload_md5": "e363dfbdd4069e3332d84a1317b02be9"
+  },
+  {
+   "id": "F22",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F22.md",
+   "line_start": 237,
+   "line_count": 64,
+   "payload_md5": "1b8e26a9b72638444c0cf2aba5ac88e1"
+  },
+  {
+   "id": "F23",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F23.md",
+   "line_start": 301,
+   "line_count": 87,
+   "payload_md5": "b81cd74f06cca4299f2fdc243bb1b564"
+  },
+  {
+   "id": "F24",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F24.md",
+   "line_start": 388,
+   "line_count": 89,
+   "payload_md5": "6cfe7a7b3f321eda4c14a2dd4af5faed"
+  }
+ ]
+}
