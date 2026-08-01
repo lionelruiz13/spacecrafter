@@ -23,6 +23,17 @@ re-analysis agent on doubt. NB: the executor's standing definition
 until Vixy resyncs it, every dispatch prompt carries a binding supersession block.
 De-staled against §11.101/§11.102 (2026-07-24 audits): F0 added, F1 spec revised.
 
+**Archival [2026-08-01, pass 1]:** a unit that no longer contributes to the current
+state (a DELIVERED+verified task section; a session update note superseded by a later
+one) leaves the live surface as a **pure byte-exact move** to
+`fable-dispatch/archive/<id>.md` (IDs: `F<n>`, `update-s<n>`; manifest per pass,
+reconstruction-verified against the pre-move commit). References are NEVER rewritten:
+resolve any section reference by probing the stated path, then with `archive/`
+inserted at the failing component. Lateral search spans live ∪ archive — grep this
+file AND `fable-dispatch/archive/` together, never the live surface alone. The
+in-file derived index (§1) is regenerable, never authoritative. A wrongly archived
+unit moves back at the cost of one probe — when in doubt, a unit stays live.
+
 **Update [Fable 2026-08-01, supervising session 7]:** round of 3: **F18 → F20 → F21**
 (F20/F21 minted this session — the two remaining B31 slices). Warm-up found the F18
 `###` header DESTROYED by session 6's own acceptance edit — the SECOND F13-class
@@ -166,6 +177,15 @@ no `run_in_background`; both HEADs stated ⟨code, harness⟩.
 ---
 
 ## 1. Dispatch order (load-bearing first; each task states why, so the order is challengeable)
+
+*Derived index (regenerable from `fable-dispatch/archive/`): sections **F0–F21 all
+DELIVERED and archived** — F0 §11.103 · F1 §11.104/§11.105 · F2 §11.106 · F3 §11.107
+· F4 §11.108 · F5 §11.109 · F6 §11.110 · F7 §11.111 · F8 §11.122 · F9 §11.123 ·
+F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · F15 §11.121 ·
+F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129.
+No section is live: the next dispatchable task (F22, §5.63 attribution) is to be
+minted at its dispatch per §0b.2 — the current queue lives in the latest session
+update note above.*
 
 ---
 
