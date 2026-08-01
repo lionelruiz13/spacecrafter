@@ -26,6 +26,7 @@
 #define _SSYSTEMFACTORY_H_
 
 #include <memory>
+#include <functional>
 
 #include "tools/no_copy.hpp"
 #include "bodyModule/solarsystem.hpp"
@@ -88,7 +89,12 @@ public:
     // Script-callable via 'body action dual_dump filename ...'.
     // Precondition: freeze time (timerate rate 0) so the 1s A/B draw toggle
     // cannot make one path's draw-side state stale relative to the other.
-    void dumpTracePaths(const std::string &file);
+    //! `extraHeader`, when set, is invoked once inside the header object so a
+    //! state OWNER outside this class writes its own readback into the same
+    //! file rather than exporting its internals to be written here (I1/I2).
+    //! Core uses it for the old-path view state (§5.63 / §11.130).
+    void dumpTracePaths(const std::string &file,
+                        const std::function<void(std::ostream &)> &extraHeader = {});
     //! Startup selection of the rendered body path (beta_features.ini,
     //! [dual_path] render_path). The DEFAULT is NEW+pinned: the new path is
     //! what a user gets with no configuration at all, and nothing alternates

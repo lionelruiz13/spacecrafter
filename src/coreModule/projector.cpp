@@ -27,6 +27,8 @@
 
 #include <iostream>
 #include <cstdio>
+#include <ostream>
+#include <iomanip>
 #include "coreModule/projector.hpp"
 #include "tools/s_font.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
@@ -741,4 +743,41 @@ void Projector::printGravity180(s_font* font, float x, float y, const std::strin
 	TRANSFO = TRANSFO*Mat4f::scaling( Vec3f(1, -1, 1) );
 
 	font->print(0, 0, str, Color, MVP*TRANSFO ,0);
+}
+
+// ---------------------------------------------------------------------------
+// READBACK ONLY (INTENT §5.63 / §11.130). See the header for what it is for.
+// Const, side-effect-free, called only from the dump channel.
+// ---------------------------------------------------------------------------
+void Projector::dumpTrace(std::ostream &out) const
+{
+	const auto prec = out.precision();
+	out << std::setprecision(17);
+	out << "{\"fov\":" << fov
+	    << ",\"aimFov\":" << getAimFov()
+	    << ",\"minFov\":" << min_fov
+	    << ",\"maxFov\":" << max_fov
+	    << ",\"flagAutoZoom\":" << (flag_auto_zoom ? "true" : "false")
+	    << ",\"zoomAim\":" << zoom_move.aim
+	    << ",\"zoomCoef\":" << zoom_move.coef
+	    << ",\"viewport\":[" << vec_viewport[0] << ',' << vec_viewport[1] << ','
+	    << vec_viewport[2] << ',' << vec_viewport[3] << ']'
+	    << ",\"viewportCenter\":[" << viewport_center[0] << ',' << viewport_center[1]
+	    << ',' << viewport_center[2] << ']'
+	    << ",\"viewportRadius\":" << viewport_radius
+	    << ",\"viewportFovDiameter\":" << viewport_fov_diameter
+	    << ",\"fisheyeScaleFactor\":" << fisheye_scale_factor
+	    << ",\"projectionType\":\"" << projectionTypeToString(static_cast<ProjectionType>(Context::projectionType)) << '"';
+	// The geodesic-zone SELECTOR itself, exactly as HipStarMgr::preDraw asks
+	// for it: a convex region of half-spaces in J2000. Two runs that differ
+	// here draw DIFFERENT STARS, which is a disjoint lit set rather than a
+	// displaced one — the shape §5.63's own correction reports.
+	const StelGeom::ConvexS cv = unprojectViewport();
+	out << ",\"unprojectViewport\":[";
+	for (size_t i = 0; i < cv.size(); ++i) {
+		out << "{\"n\":[" << cv[i].n[0] << ',' << cv[i].n[1] << ',' << cv[i].n[2]
+		    << "],\"d\":" << cv[i].d << '}' << ((i + 1 < cv.size()) ? "," : "");
+	}
+	out << "]}";
+	out.precision(prec);
 }

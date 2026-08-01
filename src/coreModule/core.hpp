@@ -64,6 +64,7 @@
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
 //#include "ojmModule/ojm_mgr.hpp"
+#include <iosfwd>
 #include "starModule/geodesic_grid.hpp"
 //#include "starModule/hip_star_mgr.hpp"
 #include "executorModule/executorModule.hpp"
@@ -425,6 +426,19 @@ public:
 	void removeSupplementalSolarSystemBodies();
 	// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
 	void ssystemDualDump(const std::string& file);
+
+	//! READBACK ONLY (INTENT §5.63 / §11.130) — the OLD path's view state, as
+	//! one JSON object, written into the dual-path dump's header.
+	//! What it is FOR: the composed screen of a restored session differs from
+	//! the saved one ONLY in old-path sky content (stars / milky way /
+	//! nebulae), while every field of the camera dump agrees. The state those
+	//! three are drawn from lives in the navigator, the observer, the projector
+	//! and the star pipeline, and none of it was observable — so the difference
+	//! could be measured but not attributed. Each owner writes its own part;
+	//! this method only composes them and adds what Core itself owns.
+	//! Const, side-effect-free, dump-channel only: the old render path is
+	//! unchanged by construction (§11.52(b)).
+	void dumpOldViewState(std::ostream &out) const;
 	//! Pin the rendered body path (flag experimental_path): old/new selection
 	//! replacing the A/B auto-toggle once used.
 	void setExperimentalPath(bool newPath);

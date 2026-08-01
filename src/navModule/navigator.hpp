@@ -27,6 +27,8 @@
 #ifndef _NAVIGATOR_H_
 #define _NAVIGATOR_H_
 
+#include <iosfwd>
+
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
 
@@ -209,6 +211,17 @@ public:
 	bool lookAt(double az, double alt, double time);
 
 	void alignUpVectorTo(const Mat4d& rot, double duration);
+
+	//! READBACK ONLY (INTENT §5.63 / §11.130) — writes this navigator's whole
+	//! view state as one JSON object onto the dual-path dump channel.
+	//! What it is FOR: the old path draws the star field, the milky way and the
+	//! nebulae from THIS object, and until this existed nothing outside could
+	//! ask it what view it was drawing from — so a restored scene whose sky
+	//! differed from the saved one could not be attributed to a field. It is a
+	//! const observer of already-computed state: it computes nothing, caches
+	//! nothing and is called only by the dump channel, so the old render path
+	//! is unchanged by construction (§11.52(b)).
+	void dumpTrace(std::ostream &out) const;
 
 private:
 

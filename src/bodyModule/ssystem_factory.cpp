@@ -908,7 +908,8 @@ bool SSystemFactory::setBodyGroundRadius(const std::string &englishName, double 
     return false;
 }
 
-void SSystemFactory::dumpTracePaths(const std::string &file)
+void SSystemFactory::dumpTracePaths(const std::string &file,
+                                    const std::function<void(std::ostream &)> &extraHeader)
 {
     std::ofstream out(file.empty() ? "/tmp/dual_trace.json" : file);
     out << std::setprecision(17) << "{\"type\":\"header\",\"jd\":"
@@ -960,6 +961,12 @@ void SSystemFactory::dumpTracePaths(const std::string &file)
         << ",\"close\":" << ModularBody::closeRangeGate()
         << ",\"bigTexture\":" << ModularBody::bigTextureGate()
         << "}}";
+    // The old path's own view state, written by the owner that has it (Core).
+    // §5.63 asked for exactly this readback and it did not exist.
+    if (extraHeader) {
+        out << ",\"oldView\":";
+        extraHeader(out);
+    }
     out << "}\n";
     // B9 az-convention observability (INTENT §11.4/§11.60): the alt/az the two
     // paths expose to the UI/scripting surface, per body, at the SAME frame.

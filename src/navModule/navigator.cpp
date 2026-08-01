@@ -29,6 +29,8 @@
 #include "navModule/observer.hpp"
 #include "tools/object.hpp"
 #include "tools/log.hpp"
+#include <ostream>
+#include <iomanip>
 
 
 
@@ -462,4 +464,79 @@ void Navigator::alignUpVectorTo(const Mat4d& rotlocalToVsop87, double duration){
 	//std::cout << angle * 180/M_PI << std::endl;
 
 	changeHeading(angle * 180/M_PI, (int)(duration*1000));
+}
+
+// ---------------------------------------------------------------------------
+// READBACK ONLY (INTENT §5.63 / §11.130). See the header for what it is for.
+// Const, side-effect-free, called only from the dump channel.
+// ---------------------------------------------------------------------------
+static void dumpMat(std::ostream &out, const char *name, const Mat4d &m)
+{
+	out << ",\"" << name << "\":[";
+	for (int i = 0; i < 16; ++i)
+		out << m.r[i] << ((i < 15) ? "," : "");
+	out << ']';
+}
+
+static void dumpVec(std::ostream &out, const char *name, const Vec3d &v)
+{
+	out << ",\"" << name << "\":[" << v[0] << ',' << v[1] << ',' << v[2] << ']';
+}
+
+void Navigator::dumpTrace(std::ostream &out) const
+{
+	const auto flags = out.flags();
+	const auto prec = out.precision();
+	out << std::setprecision(17);
+	// The three vision vectors the row names by hand. local_vision is what
+	// updateViewMat consumes; equ_vision is what a sky lock HOLDS; and
+	// prec_equ_vision is what the nebula grid and the constellation art
+	// intersect their view cone against (nebula_mgr.cpp:176,
+	// illuminate_mgr.cpp:201, constellation.cpp:180).
+	out << "{\"localVision\":[" << local_vision[0] << ',' << local_vision[1]
+	    << ',' << local_vision[2] << ']';
+	dumpVec(out, "equVision", equ_vision);
+	dumpVec(out, "precEquVision", prec_equ_vision);
+	dumpVec(out, "headingVector", heading_vector);
+	// The scalars updateViewMat folds into mat_local_to_eye AFTER the vision
+	// vector: a difference here moves the whole sky without moving any vision
+	// vector at all, which no camera-side dump can see.
+	out << ",\"heading\":" << heading
+	    << ",\"headingWrapped\":" << getHeading()
+	    << ",\"defaultHeading\":" << defaultHeading
+	    << ",\"viewOffset\":" << view_offset
+	    << ",\"viewOffsetTransition\":" << view_offset_transition
+	    << ",\"viewingMode\":" << static_cast<int>(viewing_mode)
+	    << ",\"flagTraking\":" << flag_traking
+	    << ",\"flagLockEquPos\":" << flag_lock_equ_pos;
+	// The in-flight plans. A restore lands in a scene whose old navigator may
+	// still be mid-transition (an anchor switch starts a 5 s heading ramp,
+	// anchor_manager.cpp:669), and a transition caught at a different phase is
+	// exactly the shape of a difference that VARIES from restore to restore
+	// (§5.63 exclusion 7).
+	out << ",\"plans\":{\"flagAutoMove\":" << flag_auto_move
+	    << ",\"moveCoef\":" << move.coef
+	    << ",\"moveSpeed\":" << move.speed
+	    << ",\"moveLocalPos\":" << (move.local_pos ? "true" : "false")
+	    << ",\"zoomingMode\":" << zooming_mode
+	    << ",\"flagChangeHeading\":" << (flag_change_heading ? "true" : "false")
+	    << ",\"startHeading\":" << start_heading
+	    << ",\"endHeading\":" << end_heading
+	    << ",\"moveToCoef\":" << move_to_coef
+	    << ",\"moveToMult\":" << move_to_mult
+	    << ",\"moveAim\":[" << move.aim[0] << ',' << move.aim[1] << ',' << move.aim[2]
+	    << "],\"moveStart\":[" << move.start[0] << ',' << move.start[1] << ',' << move.start[2]
+	    << "]}";
+	// The frame transforms themselves. mat_local_to_earth_equ is the one the
+	// row names; the other four are what the sky content actually consumes
+	// through Projector::setModelViewMatrices.
+	dumpMat(out, "matLocalToEarthEqu", mat_local_to_earth_equ);
+	dumpMat(out, "matEarthEquToJ2000", mat_earth_equ_to_j2000);
+	dumpMat(out, "matLocalToEye", mat_local_to_eye);
+	dumpMat(out, "matEarthEquToEye", mat_earth_equ_to_eye);
+	dumpMat(out, "matJ2000ToEye", mat_j2000_to_eye);
+	dumpMat(out, "matDome", mat_dome);
+	out << '}';
+	out.precision(prec);
+	out.flags(flags);
 }

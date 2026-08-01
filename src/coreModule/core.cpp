@@ -24,6 +24,8 @@
  */
 
 #include <algorithm>
+#include <ostream>
+#include <iomanip>
 #include "coreModule/core.hpp"
 #include "coreModule/coreLink.hpp" // Core::update ticks the CoreLink TickMgr
 #include "tools/utility.hpp"
@@ -786,7 +788,43 @@ void Core::addSolarSystemBody(stringHash_t& param)
 // Dual-path trace harness (experimentalModule/INTENT.md 11.14)
 void Core::ssystemDualDump(const std::string& file)
 {
-	ssystemFactory->dumpTracePaths(file);
+	ssystemFactory->dumpTracePaths(file, [this](std::ostream &out) {
+		dumpOldViewState(out);
+	});
+}
+
+// ---------------------------------------------------------------------------
+// READBACK ONLY (INTENT §5.63 / §11.130). See the header for what it is for.
+// Const, side-effect-free, called only from the dump channel.
+// ---------------------------------------------------------------------------
+void Core::dumpOldViewState(std::ostream &out) const
+{
+	const auto prec = out.precision();
+	out << std::setprecision(17) << "{\"nav\":";
+	navigation->dumpTrace(out);
+	out << ",\"observer\":";
+	observatory->dumpTrace(out);
+	out << ",\"projector\":";
+	projection->dumpTrace(out);
+	out << ",\"stars\":";
+	hip_stars->dumpTrace(out);
+	// What Core itself owns and the three above cannot see: the two inputs to
+	// the star pipeline's per-frame photometry, and the refraction pre-pass
+	// gate. `atmosphere->getFlagShow() && FlagAtmosphericRefraction` is the
+	// exact expression the star draw is handed (solarSystemModule.cpp:298), so
+	// the readback reports the DECISION and not two facts about it.
+	out << ",\"tone\":{\"worldAdaptationLuminance\":" << atmosphere->getWorldAdaptationLuminance()
+	    << ",\"adaptLuminanceProbe\":" << tone_converter->adaptLuminance(1.f)
+	    << ",\"atmosphereIntensity\":" << atmosphere->getIntensity()
+	    << ",\"atmosphereFadeIntensity\":" << atmosphere->getFadeIntensity()
+	    << ",\"atmosphereShown\":" << (atmosphere->getFlagShow() ? "true" : "false")
+	    << ",\"skyBrightness\":" << sky_brightness
+	    << ",\"lightPollutionLimitingMagnitude\":" << lightPollutionLimitingMagnitude
+	    << ",\"flagAtmosphericRefraction\":" << (FlagAtmosphericRefraction ? "true" : "false")
+	    << ",\"starRefractionApplied\":"
+	    << ((atmosphere->getFlagShow() && FlagAtmosphericRefraction) ? "true" : "false")
+	    << "}}";
+	out.precision(prec);
 }
 
 //! Both-paths mirror of the equatorial-mount sky-lock (old flag_lock_equ_pos).

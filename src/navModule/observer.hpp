@@ -29,6 +29,7 @@
 
 #include <string>
 #include <memory>
+#include <iosfwd>
 #include "tools/init_parser.hpp"
 #include "tools/vecmath.hpp"
 #include "tools/rotator.hpp"
@@ -209,6 +210,16 @@ public:
 		this->mat_eye_to_helio_untranslated = mat_eye_to_helio_untranslated;
 		this->mat_altitude_to_earth_equ = mat_altitude_to_earth_equ;
 	}
+
+	//! READBACK ONLY (INTENT §5.63 / §11.130) — this observer's whole place
+	//! state as one JSON object on the dual-path dump channel.
+	//! What it is FOR: the navigator's local→equatorial transform is built from
+	//! THIS object every frame (`getRotLocalToEquatorial`), so a sky that
+	//! differs while the camera agrees is answered here or in the navigator and
+	//! nowhere else. Const and side-effect-free; the old render path is
+	//! unchanged by construction (§11.52(b)).
+	void dumpTrace(std::ostream &out) const;
+
 private:
 	double longitude;			//!< Longitude in degree
 	double latitude;			//!< Latitude in degree

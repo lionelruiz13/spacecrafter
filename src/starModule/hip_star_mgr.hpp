@@ -117,6 +117,16 @@ public:
 	float getMaxScaled60DegMag(void) const {
 		return max_scaled_60deg_mag;
 	}
+	//! READBACK ONLY (INTENT §5.63 / §11.130): the two derived terms that decide
+	//! a star's radius and whether it is drawn at all — fov_factor comes from
+	//! the projector's fov, min_rmag from the tone reproductor. Neither is
+	//! reachable from any other surface, and both scale the WHOLE star field.
+	float getFovFactor(void) const {
+		return fov_factor;
+	}
+	float getMinRmag(void) const {
+		return min_rmag;
+	}
 	void setFov(float fov);
 	void setEye(const ToneReproductor *eye);
 	int computeRCMag(float mag, const ToneReproductor *eye, float rc_mag[2]) const;
@@ -490,6 +500,15 @@ public:
 	double durationToJulianDay(std::string duration/*int day, int hour, int minute, int seconde*/) const;
 	int checkVariableStar(TimeMgr* timeMgr, int hip, double refJDay, double period, double lowPeriod, double downPeriod, double upPeriod, double magMin);
 	void readFileVariableStar();
+
+	//! READBACK ONLY (INTENT §5.63 / §11.130) — the star pipeline's own state as
+	//! one JSON object on the dual-path dump channel.
+	//! What it is FOR: §5.63's saved and restored frames carry positionally
+	//! DISJOINT lit sets of different SIZE (400 vs 907 px). Both halves of that
+	//! are decided here — how many zones were searched, and how bright each
+	//! magnitude comes out — and neither was observable from outside.
+	//! Const and side-effect-free; the old render path is unchanged (§11.52(b)).
+	void dumpTrace(std::ostream &out) const;
 
 private:
 	float getVariableStarMag(int variableStarIndex);

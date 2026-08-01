@@ -27,6 +27,8 @@
 #include <string>
 #include <cstdlib>
 #include <algorithm>
+#include <ostream>
+#include <iomanip>
 #include "bodyModule/body.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
@@ -453,4 +455,43 @@ void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
 			longitude -= anchorAlt->getBody()->getSiderealTime(CoreLink::instance->getJDay());
 	} else
 		anchor = std::move(_anchor);
+}
+
+// ---------------------------------------------------------------------------
+// READBACK ONLY (INTENT §5.63 / §11.130). See the header for what it is for.
+// Const, side-effect-free, called only from the dump channel.
+// ---------------------------------------------------------------------------
+void Observer::dumpTrace(std::ostream &out) const
+{
+	const auto prec = out.precision();
+	out << std::setprecision(17);
+	out << "{\"longitude\":" << longitude
+	    << ",\"longitudeForDisplay\":" << getLongitudeForDisplay()
+	    << ",\"latitude\":" << latitude
+	    << ",\"altitude\":" << altitude
+	    << ",\"distanceFromCenter\":" << getDistanceFromCenter()
+	    << ",\"homePlanet\":\"" << getHomePlanetEnglishName() << '"'
+	    << ",\"onBody\":" << (isOnBody() ? "true" : "false")
+	    << ",\"quaternionMode\":" << (flag_quaternion_mode ? "true" : "false")
+	    << ",\"eyeRelativeMode\":" << (flag_eye_relative_mode ? "true" : "false")
+	// The place plan. `moveto ... duration 0` and a session restore both claim
+	// to land settled; a non-zero flag here says the observer is still on its
+	// way, which moves the sky between two dumps that describe "the same" place.
+	    << ",\"flagMoveTo\":" << (flag_move_to ? "true" : "false")
+	    << ",\"moveToMult\":" << move_to_mult
+	    << ",\"moveToCoef\":" << move_to_coef
+	// The quaternion rotator multiplies getRotEquatorialToVsop87 (observer.cpp
+	// :115), i.e. it sits INSIDE the equatorial frame the star field is drawn
+	// in and outside everything the camera dump can see.
+	    << ",\"rotatorQuat\":[";
+	const Vec4d &q = rotator.getCachedQuaternion();
+	out << q[0] << ',' << q[1] << ',' << q[2] << ',' << q[3] << ']';
+	out << ",\"rotatorMoving\":" << (rotator.timeBeforeEnd() ? "true" : "false")
+	    << ",\"rotatorTimeBeforeEnd\":" << rotator.timeBeforeEnd();
+	const Mat4d &rm = rotator.getCachedMatrix();
+	out << ",\"rotatorMat\":[";
+	for (int i = 0; i < 16; ++i)
+		out << rm.r[i] << ((i < 15) ? "," : "");
+	out << "]}";
+	out.precision(prec);
 }
