@@ -119,6 +119,36 @@ slice** (session file §3.2 — mint must state D28/D21 carve-outs), **B7-hunt-5
 after A40** (and its mix gains the line-family flags — the §11.124(k) hole is now
 closable), **F18's G4/B12-content interaction** waits on Vixy's b12-design §7 set.
 
+**Update [Fable 2026-08-01, supervising session 7]:** round of 3: **F18 → F20 → F21**
+(F20/F21 minted this session — the two remaining B31 slices). Warm-up found the F18
+`###` header DESTROYED by session 6's own acceptance edit — the SECOND F13-class
+edit-truncation, both supervisor WIP-tail edits; restored verbatim from `e5693f1`,
+and §0b.4 now carries a next-header guard for exactly this.
+**Round outcome (session 7 close, 2026-08-01):** F18 → §11.127, F20 → §11.128,
+F21 → §11.129 — all three delivered AND supervisor-verified same session. **§5.52,
+§5.54, §5.32 CLOSED**; §5.53 root-caused and SPLIT (renderer settled; the colour step
+is two mismatched preview ASSETS → A43; switch-size alignment → A42); the G4 gates are
+**px-authored with one authority** (the exposed 2-vs-3.07 px discrepancy → A41);
+**B31 slices 3+4 LANDED** (session file + §5.32 precondition; read-half authority +
+E3/E4/E5 + per-body ledger) — **B31 has NO dispatchable remainder** (open set exactly:
+T3/D21 · heading/D28 · C4's key · §5.63). NEW rows: **§5.62** (epoch-unstable mid-band
+ratio), **§5.63** (T1 photometric blocker — hunted 3 waves, not attributed, seven
+exclusions + a correction of its own text), **§5.64** (timerate pause does not stop
+the clock — Vixy semantics); NEW Vixy rows **A41/A42/A43**. **T1 is the round's one
+honest NOT-MET** — both B31 slices delivered partial on it, neither absorbed it.
+Executor quality: F20 REFUTED this file's added longitude-round-trip check by
+derivation (it was the DEFECT's signature, not the fix's) — sharpening the §0b.3
+lesson: an ADDED check must derive from the row's mechanism, never its symptom
+sentence; F21's T4 fixed-point caught a polarity defect by ONE byte. The §11.121(m)
+concurrent-instance assert had its first live fire (two orphaned instances) and its
+own instrument hole fixed (`pgrep -f` was self-confirming). Remaining dispatchable,
+next round: **F22 to mint** (§5.63 attribution: the owed old-path view-state readback
+— the read-half gap one layer down — then T1 closure; the `view_offset` scene hole
+rides its closure), **B7-hunt-5 only after A40**, **B12 content** after Vixy's
+b12-design §7 set + A41/A42, **§5.64 fix** only after Vixy decides the semantics.
+DECISIONS_PENDING open set at close: **D15, D21 (late Aug), D37** + ledger rows
+A40–A43 awaiting.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -1501,6 +1531,39 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   slot, F18 deferred one round. The class fix is landed and verified (§11.126);
   reversal of the scheduling is moot post-delivery, reversal of any F19 mechanism is
   per-commit and each carries its argument at the site.
+- **Session-7 veto points (2026-08-01 — all implemented-and-live, each cheap to
+  reverse; silence = endorsed):** (1) F20's save-trigger spelling **`session action
+  save|load [filename <name>]`** — the sibling of `body action save`, one `else if`
+  each way (§11.128(f), B28 protocol); (2) F21's **`flag satellites` polarity fix** —
+  the toggle was a no-op in one direction because the command read the stored HIDE
+  bit as the SHOW flag; it now toggles both ways (behavior-visible on one shipped
+  verb direction; caught by T4 failing by one line, §11.129(c)); (3) F18's
+  **px-authority conversion** is behavior-preserving at 2048 by exact arithmetic
+  (D8 as-if) — the decision it EXPOSES is A41, not the conversion itself; (4) F21's
+  restore-annotation may REWRITE the loaded session file (machine-owned, idempotent,
+  §4.2's own instruction — §11.129(h)).
+- **NEW decidable rows from session 7 (all recorded in §13.A / §5, none blocking a
+  current dispatch):** **A41** (G4 early-visibility gate: the named constant always
+  said 2 px, the shipped gate is 3.07 px — which is right is a product question;
+  `RAYMARCH_MIN_SCREEN_SIZE` rides it) · **A42** (texture-level switch: old 180 px vs
+  new 409.6 px — rec ALIGN to 180 while both paths exist, cost = big texture resident
+  earlier, a D5/D6/D10 call) · **A43** (the Sun + Moon `-preview` assets are DIFFERENT
+  PICTURES from their full-res partners — the colour step users see at the gate is the
+  DATA; rec regenerate both via `spacecrafter-data`, D9 forward-only) · **§5.64**
+  (`timerate action pause` does not stop the simulation clock — making it hold
+  changes what a shipped script's pause does mid-show; semantics = yours).
+- **B31 STATUS after session 7 — no dispatchable remainder:** slices 3+4 landed
+  (§11.128 the session file + §5.32 precondition; §11.129 the read-half authority +
+  bulk rows + per-body ledger). The row's ENTIRE open set is now: **T3 (rides your
+  D21, late Aug) · `heading` (rides your D28, late Aug) · C4's non-body catalogue key
+  (D34's unanswered half) · §5.63** (the T1 photometric blocker — 3-wave hunt spent,
+  seven exclusions recorded, next probe named). Answering D21+D28+C4 and closing
+  §5.63 closes B31.
+- **Awareness, no action needed: §5.62** (a same-binary mid-band disc ratio shifted
+  between two epochs of one session, reproducibly — cross-epoch ratios are not
+  trusted; in-epoch pairs only) · **§5.63's correction** (the residual is DISJOINT
+  lit sets ~1.1° apart, not a photometric wash — the divergent term is on the
+  RESTORED side and varies restore-to-restore).
 - **Host note — CORRECTED [vixy 2026-07-31] (§11.121(m) + §11.122(n) carry the
   annotations):** foxy the person was NOT active during session 5 (active only
   before it); F8's "second user active" measured foxy-owned leftover PROCESSES
