@@ -153,8 +153,10 @@ the drawn observer under a semantic no-op (§11.131(b)).
 
 **Second readers of the same readouts** (bypassing the getters, hence outside the fix
 until each is folded): `CoreLink::tcpGetPosition` — **folded** (§11.118(f) heading,
-§11.131(f) place); `CoreBackup::saveBackup`/`loadBackup` — **not folded**, because its
-restore reaches the old observer alone, so it needs the dual seam → **B34**;
+§11.131(f) place); `CoreBackup::saveBackup`/`loadBackup` — ~~not folded~~ **FOLDED 2026-08-01 (F24, §11.132(e))**: read
+through these getters + restore through `observerMoveTo`, in one change; `position action load` now
+brings the CAMERA back (9 999 995.009 m, screen 6 px>8 from the bookmark) where the pre-fix binary
+leaves it where the move put it (39 999 997.452 m, 0 px>8);
 `Core::dragView`'s direct `getViewingMode()` read → **B35**. The readout channel itself
 is the class's own obstacle: `get status position` never replies (§5.47), so the
 `control` object on `body action dual_dump` (§11.131(a)) is what makes any of this
@@ -166,8 +168,8 @@ measurable. → **B33 (CLOSED)**.
 |---|---|---|
 | create / replace a body from any data key | CMD `body action load name X [replace true] …` | `app_command_interface.cpp:3560` → `ModularSystem::loadBody`, replace gate `ModularSystem.cpp:960` |
 | drop a body | CMD `body action drop name X` | `ssystem_factory.hpp:698` (dual) |
-| **drop script-added bodies** | CMD `body action clear` — **OLD ONLY** | `core.cpp:865` → `ssystem_factory.hpp:702-704` → `ProtoSystem::removeSupplementalBodies` → **B34** |
-| **preload a body's resources** | CMD `body action preload` — **OLD ONLY** | `core.cpp:827-834` → `ssystem_factory.hpp:692-694` → old; `ModularBody::preload` (`ModularBody.hpp:1031`) has **0 callers** → **B34/B36** |
+| **drop script-added bodies** | CMD `body action clear` — ~~OLD ONLY~~ **DUAL since F24 (§11.132(b))** | `SSystemFactory::removeSupplementalBodies` mirrors on old's own refusal answer (I2); provenance is `ModularBody::supplemental`, written by the loader, a `replace` inheriting the NAME's provenance. Measured: 3 pushed bodies (plain + HIDDEN + nested child) gone from both trees, 120 declared surviving, screen **90 601 px>8** vs **0 px>8** pre-fix; old's removal set 93 → 90 identical on both binaries |
+| **preload a body's resources** | CMD `body action preload` — ~~OLD ONLY~~ **DUAL since F24 (§11.132(c))** | `SSystemFactory::preloadBody` mirrors the per-body half (the purge half was always engine-wide: s_texture's pools are static). `ModularBody::preload` leaves B36's list; `keep_time` is threaded to the modules, which hardcoded a lifetime of 100. Measured on a NEW-PATH-ONLY subject (old cannot see it): `preloadCount` 0 → 1 and the big-texture record ACQUIRED (16384×8192) vs 0/absent pre-fix. **`keep_time` itself is 8-bit-truncated → §5.69** |
 | reload the system from file | CMD `body action reload` | `ssystem_factory.cpp:649-660` (§11.55) |
 | **write the system to a composed file** (a script-pushed body becomes authored data) | CMD `body action save [filename <name>]` — **NEW-path concept, no old mirror** | `app_command_interface.cpp:3585` → `SSystemFactory::saveCurrentSystem` (`ssystem_factory.cpp:793`, path convention + D35 refusals) → `ModularSystem::saveSystem` (§11.121, B31 slice 2). Spelling is a **veto point** |
 | hide / show | CMD `body name X hidden on\|off\|toggle` (+ DATA `hidden`) | `ssystem_factory.hpp:315-317` |
@@ -178,7 +180,7 @@ measurable. → **B33 (CLOSED)**.
 | datum / ground radius | CMD `body name X datum_radius\|ground_radius <km>` | `ssystem_factory.cpp:755,764` (§11.71) |
 | display scaling | CMD `planet_scale name X scale s`, `flag moon_scaled\|sun_scaled`, `set moon_scale\|sun_scale` | `ssystem_factory.hpp:573` (§11.45) |
 | tesselation level | CMD `body tesselation <name> value v` | shared `BodyTesselation` (§11.26) |
-| **trail fresh-restart** | CMD `flag object_trails` — reaches the OLD trail only | `coreLink.cpp:1145` → `ssystem_factory.hpp:235-237` → old; `TrailModule::startTrail` (`TrailModule.hpp:88`) has **0 callers** → **B34** |
+| **trail fresh-restart** | not a command (the RESTART semantic: config init + `setHomePlanet`) — ~~old only~~ **DUAL since F24 (§11.132(d))** | `SSystemFactory::startTrails` mirrors through `ModularSystem::startTrails` → `ModularBody::startTrail`, old's per-system hidden-inclusive scope. `TrailModule::startTrail` leaves B36's list. Measured (`b11_trail_gate` phase 5): 39 → 1 points and a 570 d / 8.02 AU span → 0, against 39 → 39 pre-fix. The control-surface wrapper `CoreLink::startPlanetsTrails` is still a **ZERO** (§3.7 row 7) |
 | ~90 other data keys (rotation, orbit, albedo, atmosphere, textures, tails, rings…) | DATA + CMD via body replace | `ModularSystem.cpp:855-1290`, `moduleLoader/*` |
 
 ### 3.4 Per-module toggles (new path)
@@ -215,10 +217,10 @@ measurable. → **B33 (CLOSED)**.
 
 | symbol | decl | note |
 |---|---|---|
-| `ModularBody::preload` | `ModularBody.hpp:1031` | drags `BasicMesh::preload`, `LayeredMesh::preload`, `BodyModule::preload` |
+| ~~`ModularBody::preload`~~ **DRIVEN 2026-08-01 (F24, §11.132(c))** | `ModularBody.hpp` | `SSystemFactory::preloadBody` calls it, and with it `BasicMesh`/`LayeredMesh`/`PhotosphereModule::preload`; measured 0 → 1 `preloadCount` and an acquired big-texture record |
 | `ModularBody::pin` / `unpin` | `:1213` / `:1218` | the whole C2 work-domain pin mechanism, incl. `RenderChain::onPinDrained` |
 | `ModularBody::findBodyNameI18n` | `:1159` (def `ModularBody.cpp:433`) | i18n lookup |
-| `TrailModule::startTrail(bool)` | `TrailModule.hpp:88` (def `.cpp:109`) | the fresh-restart semantic |
+| ~~`TrailModule::startTrail(bool)`~~ **DRIVEN 2026-08-01 (F24, §11.132(d))** | `TrailModule.hpp` | reached from `SSystemFactory::startTrails` via `ModularSystem::startTrails` → `ModularBody::startTrail`; measured 39 → 1 points across a perspective change |
 | `Camera::multAlt` | `Camera.hpp:139` | **CLOSED by F4** (`core.cpp:1806`) |
 | `ModularSystem::hasSystemFile` | `ModularSystem.hpp:56` | |
 | `EnvironmentManager::getAtmosphereUserFlag` | `EnvironmentManager.hpp:66` | |
@@ -318,9 +320,9 @@ callee does what its name says*). Each verified at source by the recorder:
 | row | class | content |
 |---|---|---|
 | **B33** | G-QUERY | ~~the query half of the control surface reads the OLD path while setters are dual (§3.2)~~ **CLOSED 2026-08-01** — heading §11.118(f), the other four §11.131; two of them (place, sky lock) had a REAL shipped divergence channel, not a latent one. Residues belong to other rows: the mount's write half → B35, `position save`/`load` → B34, the setter clamp asymmetry → §5.68 |
-| **B34** | G-OLD-ONLY | S6 residual dual-seam set: `body action clear`, `body action preload`, trail fresh-restart |
+| **B34** | G-OLD-ONLY | ~~S6 residual dual-seam set: `body action clear`, `body action preload`, trail fresh-restart~~ **THE THREE MECHANICAL MEMBERS + `position save/load` CLOSED 2026-08-01 (F24, §11.132)**, each measured through its command on both binaries. **The row's REMAINING member is the interactive VIEW ramp + its ZOOM sibling** (§3.2's two `UI + OLD-ONLY` rows) — the feel-reproduction surface, deliberately not taken |
 | **B35** | G-CONFIG-ONLY | capabilities with no runtime channel: mount switch (both paths, dead `toggleMountMode`), `boundToSurface`, new-path fov clamps, oort cloud colour |
-| **B36** | G-UNREACHABLE | declared-but-undriven capabilities: the new-path set (§3.6) **plus the CoreLink ZERO set (14 of 330, §3.7)** — each needs a driver or a retirement |
+| **B36** | G-UNREACHABLE | declared-but-undriven capabilities: the new-path set (§3.6) **plus the CoreLink ZERO set (14 of 330, §3.7)** — each needs a driver or a retirement. **Two members left the list 2026-08-01 (F24, §11.132)**: `ModularBody::preload` (with `BasicMesh`/`LayeredMesh`/`PhotosphereModule::preload`) and `TrailModule::startTrail`, both driven from the B34 seam mirrors — `Camera::multAlt` (F4) is the precedent. `CoreLink::startPlanetsTrails` stays a ZERO: its two live callers reach `SSystemFactory::startTrails` directly |
 | **B38** | command-surface | dead tokens + the reachable-but-defective handlers (§3.8). One member fixed and measured (`script speed`); one blocked on verification (**§5.36**); the rest recorded |
 | **B37** | G-UI-ONLY | interactive-only, unscriptable: pixel pick, mouse-drag look, continuous pan/zoom ramps, relative lon/lat/alt steps, TUI-only setters, TUI open, cursor control, debug dumps |
 | **A38** | decision | reference-switch ROLL: new holds the whole orientation (B13/Q2), old re-derives the roll from its mount frame — measured 6.16°/6.49° divergence → DECISIONS_PENDING **D28** |

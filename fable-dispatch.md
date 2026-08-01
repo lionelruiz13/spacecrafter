@@ -396,18 +396,31 @@ latest session update note above.*
   effect); (c) trail-point reset on `setHomePlanet` with recording on, vs no reset
   pre-fix; suites: b11_trail_gate, the b24 suite, f15_persist + f20/f21 session
   suites (the clear interacts with persistence), battery green; frozen md5 in==out.
-- **WIP:** 2026-08-01 — CODE LANDED, checkpoint 1. Instruments first (`0674d517`:
-  `supplemental` provenance bit + `preloadCount` + `s_texture::dumpBigTextures` + the
-  ModularSystem/ModularBody mechanism, nothing wired ⇒ the SAME script measures both
-  binaries), then the four seam mirrors (`d88f5be2`). Pre-fix binary = a build of
-  `0674d517`, `harness/sc_f24_pre` md5 `a10f1117`. MEASURED both ways already:
-  (a) clear — 3 pushed bodies (plain + HIDDEN + nested child) gone from both trees,
-  120 declared survive, screen **90 536 px>8** (91 856 → 1 434 lit) vs **0 px>8** pre-fix
-  where all three survive on the new path alone; old's removal set identical 93→90 on both
-  binaries; a later `body action save` authors none of them. (b) preload — `preloadCount`
-  0→1 on the named body, 0 pre-fix; on a NEW-PATH-ONLY subject the big-texture record for
-  `mars.jpg` becomes acquired (16384x8192, lifetime 176 frames) and is absent pre-fix.
-  Next: (c) b11_trail_gate phase + (d) position round trip, then the suite sweep.
+- **WIP:** DELIVERED 2026-08-01 → **§11.132** (`claude/INTENT/11.132.md` + stub). Code
+  `0674d517` (instruments, nothing wired) + `d88f5be2` (the four seam mirrors); harness
+  `0b88234`/`d422f3f`/`32773ca`/`3a2a189` + the record commit. B34's three mechanical
+  members AND the F23-added `position action save`/`load` are closed; **the row's
+  remaining member is the interactive VIEW ramp + its ZOOM sibling**, untouched.
+  Measured both ways, through each command, on a live app: **clear** — plain + HIDDEN +
+  nested-child pushed bodies gone from both trees, 120 declared surviving, screen
+  **90 601 px>8** vs **0 px>8** pre-fix (all three survive on the new path alone), old's
+  removal set **93 → 90 identical on both binaries**, `body action save` afterwards
+  authors none of them, push+clear entered twice; **preload** — `preloadCount` 0 → 1 and
+  the `mars.jpg` big-texture record **ACQUIRED (16384×8192)** on a NEW-PATH-ONLY subject
+  vs **0/absent** pre-fix, shipped Earth 5 records vs 4 (the extra `earth_normal.jpg`
+  attributed to old's selected shader vs LayeredMesh's fixed five); **trail restart** —
+  `b11_trail_gate` phase 5, **39 → 1 points and a 570 d / 8.02 AU span → 0** vs 39 → 39,
+  and exactly those 12 assertions differ between the binaries; **position** — the CAMERA
+  returns to **9 999 995.009 m**, screen **6 px>8** from the bookmark against 738 280 for
+  the move, where the pre-fix binary leaves it at 39 999 997.452 m (0 px>8 from the moved
+  state); the 4.353871 m round-trip loss is **4.000000 float32 ulps**, both entries.
+  **The delivery is TWO commits because the first RED half was FICTION** — run against
+  the F23 HEAD it read "nothing acquired" from a binary that has no `bigTextures` key at
+  all; the pre-fix binary is now a build of the instrument commit (`sc_f24_pre`, md5
+  `a10f1117`). NEW **§5.69** (`keep_time` truncated to 8 bits: 3 s × 144 fps = 432 → 176,
+  the command's own 10 s default → 160). Gates: battery + scene E, b24_equivalence
+  (120 bodies) + b24_screen, f15, f20_session, f21×2, f22, f23×2, b16_reload; frozen md5
+  in == out everywhere. No suspended items.
 
 ---
 

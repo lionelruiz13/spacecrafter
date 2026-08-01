@@ -1147,3 +1147,63 @@ launch variance. What does move is the old observer's own altitude,
 75.000000 → 75.104276 m, toward the drawn path: the camera holds the place as a
 float AU distance, and `UI::init` re-applies the place through the dual seam, so
 the two authorities now land on the same value instead of 0.104276 m apart.
+
+## F24 — B34's mechanical seam mirrors: clear, preload, trail restart, the bookmark — INTENT §11.132, 2026-08-01
+
+    cd claude/harness && DISPLAY=:2 ./f24_b34_seams.py <absOutdir> [--bin B] [--prebin B]
+                                                       [--only clear|preload|position]
+    cd claude/harness && DISPLAY=:2 ./b11_run.sh b11_trail_gate.py <absOutdir>   # SC_BIN=…
+
+**The pre-fix binary must carry the INSTRUMENTS, and this wave learnt it the
+expensive way.** The first preload RED half ran against the F23 HEAD and reported
+*"nothing acquired on the pre-fix binary"* — that binary has no `bigTextures` key
+in its dump at all, so the reader returned `[]` for the instrument's ABSENCE and
+the leg was fiction. The delivery is therefore split in two commits, `0674d517`
+(the provenance bit, the two counters, `s_texture::dumpBigTextures` and every new
+mechanism function, **nothing wired**) and `d88f5be2` (the five call sites), and
+`--prebin` points at a build of the first. Same rule as §11.131(a), one layer up:
+build the RED binary from the instrument commit, never from the commit before it.
+
+**Three readouts this wave added, all read-only.** `supplemental` per body (the
+provenance bit `body action clear` selects on — a clear only ever shows what it
+TOOK, so without this a mistyped mark passes vacuously); `preloadCount` per body;
+and the `bigTextures` header array (`s_texture::dumpBigTextures` — the table a
+preload writes into; its only previous reader was `debugBigTexture()`, which has
+zero callers). The table reader must never call `getBigTexture()`, which acquires
+and refreshes lifetimes: an instrument that performs the act it reports is not one.
+
+**`f24_b34_seams.py`.** Each member both ways, through its command, on a live app,
+in a temp-HOME farm (`b25_galactic.build_farm`) so the `body action save` leg
+writes into this run's own `modularSystem/` and never into the installed data.
+CLEAR pushes three bodies — plain, `hidden true`, and a CHILD of the plain one
+(hidden because old's rule walks `systemBodies`, which hidden bodies are in;
+the child because the new tree owns children by `unique_ptr`) — and measures
+90 601 px>8 across the clear against 0 px>8 pre-fix, where all three survive on
+the new path alone (`"old":null` in the dump's new-only section, the §11.3
+channel). PRELOAD needs a subject OLD CANNOT SEE, because the two paths share one
+`texRecap` per file name: `body action load name F24Only parent SolarSystem …`
+names a system NODE, so old's `addBody` refuses the push and the new loader
+accepts it. POSITION uses the shipped spelling `position action save` /
+`position action load` (not `position save` — an earlier revision of this script
+sent that, got *"unknown parameter"*, and measured a no-op as a failure to
+restore); the scene moves in ALTITUDE only, because a lat/lon swing takes the disc
+out of frame and the screen legs then compare two 2834-lit-px frames.
+
+**Its residual is attributed, not tolerated**: a save/load round trip loses
+**4.353871 m** at 10 000 km, identically on both entries, which is **4.000000
+float32 ulps** of the camera's AU distance (1 ulp = 1.0884678 m at 6.6846e-5 AU) —
+the camera holds the place as a float AU distance and free-flight `getPlace()`
+derives it from `position`. 6 px>8 on a 831 386-lit-px frame.
+
+**`b11_trail_gate.py` phase 5 — the restart that is not the display flag.** The
+flag stays ON throughout (the only regime where the two are distinguishable) and
+the pair is entered twice, Earth → Mercury → Earth, each entry with its own
+accumulated span. **The check is the SPAN** (head jd == tail jd, `pathLength` 0),
+not the head's position or date: a home-planet change moves the observer between
+planets, so the light-time-corrected date the trail samples at shifts by minutes
+and the surviving point legitimately sits thousands of km from where the body is
+by dump time (measured: Mars 8006.57 km, −5.7 min). Delivered 39 → 1 points and
+570.0 d / 8.02 AU → 0; pre-fix 39 → 39 with the span intact, and **exactly those
+12 assertions differ between the binaries** — the gate is re-pointed, not loosened.
+The seam's other live caller, the config-init call, is inert by construction (no
+body has a point yet) and is stated rather than tested.
