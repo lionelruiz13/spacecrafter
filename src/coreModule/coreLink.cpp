@@ -1284,6 +1284,9 @@ public:
 	void setSkyVision(double x, double y, double z) override {
 		core.restoreSkyVision(Vec3d(x, y, z));
 	}
+	void setViewOffset(double offset, bool armed) override {
+		core.restoreViewOffset(offset, armed);
+	}
 
 private:
 	CoreLink &link;

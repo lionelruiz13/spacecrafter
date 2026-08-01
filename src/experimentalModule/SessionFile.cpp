@@ -546,6 +546,14 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
         // session actually held, which is the value §2 row B9 calls state.
         if (const std::string *v = observer->find("fov"))
             host.setFov(Utility::strToDouble(*v, 0));
+        // THE VIEW OFFSET AND ITS LATCH (§2 row B10), before the direction:
+        // the one sink re-aims the old navigator to the config's initial view,
+        // so anything that puts the direction back has to run after it.
+        if (const std::string *v = observer->find("view_offset")) {
+            const std::string *a = observer->find("view_offset_armed");
+            host.setViewOffset(Utility::strToDouble(*v, 0),
+                               a && (*a == "true" || *a == "1"));
+        }
         // THE OLD PATH'S VIEW DIRECTION, and it goes BEFORE the sky lock
         // because the lock is what makes its absence permanent. The whole
         // restore runs inside ONE command with no frame between its steps, so

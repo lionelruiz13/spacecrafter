@@ -225,6 +225,13 @@ public:
     // perceptual-parity (the new move law differs from old's atan easing).
     void armViewOffset(bool armed);
 
+    //! The latch as a RESTORED CONDITION: D32 saves the latch and snaps its
+    //! ramp, so this is `armViewOffset` with the transition landed rather than
+    //! started. It lives beside the old path's half in Core::restoreViewOffset
+    //! because one restore must not leave the two paths' offsets disagreeing -
+    //! the old one is what pitches the star field.
+    void restoreViewOffsetLatch(bool armed);
+
     // Exact rotational inverse of viewRotation(): camera(observed) frame ->
     // the frame the view acts on (zenith frame when anchored, body frame when
     // free). NOTE: observedPosToRaDe/AltAz below inherit the §11.19 frame

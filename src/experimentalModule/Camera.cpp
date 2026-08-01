@@ -189,6 +189,14 @@ void Camera::setViewOffset(double offset)
     viewOffset = offset;
 }
 
+void Camera::restoreViewOffsetLatch(bool armed)
+{
+    viewOffsetArmed = armed;
+    // The ramp snaps to the latch it belongs to (D32): the file records a
+    // condition, and the transition is the motion into it.
+    viewOffsetTransition = armed ? 1.f : 0.f;
+}
+
 void Camera::armViewOffset(bool armed)
 {
     viewOffsetArmed = armed;
@@ -1134,14 +1142,12 @@ void Camera::restoreSession(const ModularSystemFormat::Section &in)
         if (i == 16)
             lockedSkyRot = m;
     }
-    readD(in, "view_offset", viewOffset);
-    bool armed = viewOffsetArmed;
-    if (readB(in, "view_offset_armed", armed)) {
-        viewOffsetArmed = armed;
-        // The ramp snaps to the latch it belongs to (D32): the file records a
-        // condition, and the transition is the motion into it.
-        viewOffsetTransition = armed ? 1.f : 0.f;
-    }
+    // view_offset and its latch are NOT applied here: they have a seam that
+    // drives the old path too (Core::setViewOffset is the ONE sink both §2(c)
+    // channels funnel into, and the old navigator's offset is what pitches the
+    // star field), so the session restores them through it - see
+    // SessionFile::Host::setViewOffset. Same reason as the place, the fov and
+    // the sky lock above.
     // foldLat is DERIVED (§2 row B7) and update() re-derives it; setting it
     // here would make the first restored frame re-fold a view that is already
     // expressed in the restored latitude's frame.

@@ -149,6 +149,13 @@ public:
     // put its direction here", not "assign a member".
     virtual void getSkyVision(double &x, double &y, double &z) const = 0;
     virtual void setSkyVision(double x, double y, double z) = 0;
+    // The view offset and its arming latch (§2 row B10, D32's first named
+    // carve-out) - and it is here for the SAME reason the place and the fov
+    // are: the offset the old navigator holds is what pitches the star field,
+    // and restoring only the camera's leaves the two paths disagreeing about
+    // where the sky sits. Must be driven BEFORE setSkyVision: the one sink
+    // re-aims the old navigator, so the direction has to be put back after it.
+    virtual void setViewOffset(double offset, bool armed) = 0;
 };
 
 // THE BULK VALUE ROWS (b31-design §2 E3/E4/E5: 97 flags, 43 `set` values, 46

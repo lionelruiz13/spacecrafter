@@ -441,6 +441,13 @@ public:
 	//! observer; no existing caller of the old path changes.
 	void restoreSkyVision(const Vec3d& localVision);
 
+	//! §2 row B10 on BOTH paths. `setViewOffset` is already the one sink the
+	//! two §2(c) channels funnel into, so the scalar is its business; what it
+	//! cannot do is assert the ARMING LATCH, which D32 saves as a condition and
+	//! snaps. The old navigator's latch is otherwise only reachable through an
+	//! aim, and a restore must not aim. Session-restore use only.
+	void restoreViewOffset(double offset, bool armed);
+
 	//! READBACK ONLY (INTENT §5.63 / §11.130) — the OLD path's view state, as
 	//! one JSON object, written into the dual-path dump's header.
 	//! What it is FOR: the composed screen of a restored session differs from

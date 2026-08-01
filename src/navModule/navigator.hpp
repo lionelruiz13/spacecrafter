@@ -211,6 +211,19 @@ public:
 		return view_offset;
 	}
 
+	//! The old path has no view-offset LATCH: its arming ramp is a side effect
+	//! of an aim (updateVisionVector drives it from the move's zoom mode), so
+	//! there is no way to assert "armed" without also moving the view. A
+	//! restore has to assert exactly that and nothing else (D32 makes the latch
+	//! a saved condition and its ramp a motion that snaps), which is what this
+	//! is for. Restore-only (INTENT §11.130); no other caller.
+	void setViewOffsetTransition(float t) {
+		view_offset_transition = t;
+	}
+	float getViewOffsetTransition() const {
+		return view_offset_transition;
+	}
+
 	//! move gradually to a new heading
 	void changeHeading(double _heading, int duration);
 

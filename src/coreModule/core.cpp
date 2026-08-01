@@ -793,6 +793,18 @@ void Core::ssystemDualDump(const std::string& file)
 	});
 }
 
+void Core::restoreViewOffset(double offset, bool armed)
+{
+	// The scalar through the one sink (it clamps, and it reaches both paths),
+	// then the latch on both. NB for the caller: setViewOffset RE-AIMS the old
+	// navigator to InitViewPos, so a restore must do this BEFORE it puts the
+	// old view direction back, not after.
+	setViewOffset(offset);
+	navigation->setViewOffsetTransition(armed ? 1.f : 0.f);
+	if (Camera::instance)
+		Camera::instance->restoreViewOffsetLatch(armed);
+}
+
 const Vec3d& Core::getSkyVision() const
 {
 	return navigation->getLocalVision();
