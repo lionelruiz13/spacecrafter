@@ -1365,15 +1365,18 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   ×2 == identity across families; b10_cmd battery green); T1 re-run — green if §5.63
   attributed, else the §5.63 record extended with what the attempt excluded; §6.3 md5
   sweep; f20_session + f15_persist + full battery green; frozen md5 in==out.
-- **WIP:** 2026-08-01 — checkpoint (0) done: §5.63 bounded attribution attempt SPENT
-  (3 waves / 9 launches), NOT attributed, row EXTENDED with 7 exclusions + one
-  correction of its own characterisation (the lit sets are positionally disjoint).
-  Checkpoint (i) DONE (code `3c55777d`): `readFlag` + readValue + readColor +
-  applyColor; session [flags]/[values]/[colors] = 93/22/44 written from the
-  surface's own inventory; gate `f21_flags.py` GREEN (toggle x2 == identity on
-  all 93, counterfactual fires); b10_cmd battery exit 0, scene E 0 FAIL.
-  Next: (ii) the per-body override ledger.
-
+- **WIP:** DELIVERED 2026-08-01 → **INTENT §11.129** (code `3c55777d` the read-half
+  authority + the bulk rows, `4dc29023` the per-body ledger; harness `d006665`,
+  `dab74cb`, `26b9504`). readFlag/readValue/readColor/applyColor; session `[flags]`
+  93 / `[values]` 22 / `[colors]` 44; the group-D ledger as a DELTA (D30). Gates:
+  `f21_flags` ALL GREEN, `f21_ledger` ALL GREEN (T4 byte-identical 11 972 B, T5b
+  exactly `Mars.scale`, **T7 both ways**, **T8 both halves + counterfactual**),
+  `f20_session` fails ONLY T1, `f15_persist` green, battery exit 0 / scene E 0 FAIL,
+  b24 120 · b25 130/17 · b4 0 · b40 18/17/0 · f18_gate GREEN, frozen md5 in == out.
+  **§5.63 NOT attributed** (3-wave budget stated and spent) but EXTENDED with seven
+  exclusions + a correction of its own text; three defects fixed en route (26 flags
+  reporting their pre-toggle value, 6 uninitialised `newval`, `flag satellites`
+  polarity). B31's remaining open set: T3/D21 · heading/D28 · C4's key · §5.63.
 ---
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
