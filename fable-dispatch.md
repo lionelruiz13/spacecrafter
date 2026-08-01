@@ -1368,7 +1368,11 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
 - **WIP:** 2026-08-01 — checkpoint (0) done: §5.63 bounded attribution attempt SPENT
   (3 waves / 9 launches), NOT attributed, row EXTENDED with 7 exclusions + one
   correction of its own characterisation (the lit sets are positionally disjoint).
-  Next: (i) the readFlag authority + E3/E4/E5.
+  Checkpoint (i) DONE (code `3c55777d`): `readFlag` + readValue + readColor +
+  applyColor; session [flags]/[values]/[colors] = 93/22/44 written from the
+  surface's own inventory; gate `f21_flags.py` GREEN (toggle x2 == identity on
+  all 93, counterfactual fires); b10_cmd battery exit 0, scene E 0 FAIL.
+  Next: (ii) the per-body override ledger.
 
 ---
 
