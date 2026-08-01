@@ -935,3 +935,58 @@ run, and the gate asserts the difference is exactly those 3 lines.
 argument used to launch nothing and print `OK` (exit 0). It now refuses with a
 usage line and exit 2 — the §11.101(g) vacuous-gate class, met again in the F15
 battery run and fixed at the instrument.
+
+## F20 — the §5.32 both-ways gate (`f20_s532.py`) — INTENT §11.128, 2026-08-01
+
+Two legs, each self-certifying, each run on BOTH binaries:
+
+    cd claude/harness && DISPLAY=:2 ./f20_s532.py [absOutdir]
+    SC_BIN=/path/to/pre-fix-binary DISPLAY=:2 ./f20_s532.py [absOutdir] --prefix
+
+`--prefix` INVERTS every expectation, so the counterfactual run asserts the
+defect is PRESENT rather than merely failing to assert it is gone.
+
+* **DESCEND** — ten `camera action descend coef 0.99` issued two ways: all ten in
+  ONE socket write (they land in one frame) and one per send (one per frame).
+  The discriminator is the DIFFERENCE between the two cadences WITHIN one binary,
+  so the leg needs no claim about how many frames elapsed: the spread leg is its
+  own control. Pre-fix 179.999429 vs 180.876177 km (876.7 m apart); post-fix
+  0.000 m.
+* **SPIN** — a `rot_periode 24` body (period 1 d, so the spin over dJD days is
+  exactly 2π·dJD), anchored bound observer 1e6 km up, fov 30, looking away, so
+  the reference falls OUTSIDE the cull cone and `dispatchUpdate` skips its
+  `update()`. The leg COMPUTES the reference's angle off the view axis and the
+  cone it must clear, from the dump itself, and fails if the scene did not put it
+  outside — two earlier scenes did not, and the pre-fix null (0.000000° against
+  36.000000 predicted) is what proves the third one does.
+
+## F20 — the session-file gate (`f20_session.py`) — INTENT §11.128, b31-design §6.2
+
+Twelve launches, ~20 min, on the real `~/.spacecrafter`; owns the app lifecycle
+and removes the sessions it wrote.
+
+    cd claude/harness && DISPLAY=:2 ./f20_session.py [absOutdir] [--mutate]
+
+T2 (dump field-by-field after a QUIT and a fresh launch) with a T2-CONTROL taken
+before the restore · T2-tracked · T4 (byte-identical second file + dump equality
+at both exits of save→restore→save→restore) · T5a (a different scene's session
+moves the dump; and restoring back is order-free) · T5b (one key edited by hand
+moves exactly its own field) · T10 (a body hidden — frozen — for 30 simulated
+days comes back where the never-frozen scene puts it) · §6.3 (of 8077 files,
+exactly the session changed, measured across the save COMMAND).
+
+**THREE SCENES, one per question, and that is a lesson rather than a
+convenience**: under tracking, and under a live sky lock, `alt`/`az`/`heading`
+and `lockedSkyRot` are DERIVED every frame, so a leg that needs "exactly one
+field moves" cannot run on parameters the engine derives from each other.
+
+**T1 (screen) is NOT MET** — see §5.63. The A/A floor is measured IN-SCENE by a
+second launch that rebuilds the scene by commands (0 px>8 for scene A), and the
+restored-vs-saved difference is 3185 px>8, photometric and unattributed.
+`--mutate` breaks the saved file between the save and the relaunch.
+
+**Both gates assert no other spacecrafter instance first** (§11.121(m)), matching
+on the COMMAND being the binary (`ps -e -o args=`) — a `pgrep -f spacecrafter`
+also matches the shell whose command line mentions the path, which is a
+self-confirming instrument. This caught two orphaned instances holding port 7805
+on 2026-08-01, which every socket in the session would otherwise have driven.

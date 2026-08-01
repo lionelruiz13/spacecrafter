@@ -419,6 +419,11 @@ the owning authority named in §2's "owning authority" column, never to a
   boundary as a task, and the file I/O happens off the draw thread (C3, D11):
   the atomic rename means a partially written file is unobservable, so the write
   need not be synchronous with anything.
+  **[IMPLEMENTED 2026-08-01, F20 §11.128(f) — and nothing new was built for this
+  clause, which is the point: the command already executes on the main loop
+  thread between frames (NOT the draw thread, which is `RenderChain`'s worker),
+  and `ModularSystemFormat::write` is already the atomic sibling-temp-then-
+  rename of §11.52(a) clauses 1–2. Verified at source rather than assumed.]**
 
 ---
 
@@ -634,6 +639,22 @@ Two consequences, both new:
 
 Written as tests, each with what it can catch that the others cannot.
 
+* **[T1 IS NOT MET AS OF 2026-08-01 (F20, §11.128(h)) and the reason generalises:
+  a restore must drive the DUAL SEAM, not the member.** The first restore that
+  reproduced every field of `Camera::dumpTrace` — 25 of 25, exact — still
+  differed on the composed screen by **112 184 px>8 against an in-scene A/A
+  floor of 0**, because the star field, the milky way and the nebulae are drawn
+  from the OLD `Observer` at the OLD `Projector`'s fov. §2 row B19 excludes the
+  old twin from the file on the clause *"setters are dual so it follows"*, and
+  that clause holds **only if the restore uses the dual setter**; assigning the
+  camera's members bypasses it silently and no model-layer check can see it.
+  Routing the place, the fov and the sky lock through their seams took it to
+  **3 185 px**, which is PHOTOMETRIC and not attributed → **§5.63**. Second
+  lesson from the same run, for whoever writes T1's successor: a scene that
+  exercises tracking AND a sky lock AND a selection at once cannot support
+  "exactly one field moves", because under tracking and under a live lock
+  `alt`/`az`/`heading` and `lockedSkyRot` are DERIVED every frame — one scene
+  per question.]**
 * **T1 — SCREEN, the terminal observable.** Build a scene that exercises every
   group of §2 (reference + tracking + fov + armed offset + a hidden body + a
   recoloured body + a scaled parent + a pinned landscape + a composed rover),
@@ -746,7 +767,7 @@ resolution. Full text with options and executor recommendations is in
 
 Sequencing that follows: **§5.39 unification → writer rework (§5.2/§5.3) →
 persistent-body serialization (§4.1, which also completes B25's half) → the
-session file (§3.2) → the ledger (§2 group D)**. **[STATE 2026-07-30: §5.39 done (§11.115), writer rework done (§11.119), persistent-body serialization done (§11.121, and B25's half closed with it). NEXT: the session file (§3.2), then the ledger.]** The camera/latch defects
+session file (§3.2) → the ledger (§2 group D)**. **[STATE 2026-08-01: §5.39 done (§11.115), writer rework done (§11.119), persistent-body serialization done (§11.121, B25's half closed with it), **the session file done (§11.128)** — and **§5.32 is CLOSED** by that same task, so T10 is met (0.000000e+00) and the camera half of the barrier is no longer a dependency. NEXT: the ledger (§2 group D), which also inherits the two things slice 3 could not close — **T1/§5.63** and the **E3/E4/E5 read authority** (`setFlag`'s FV_TOGGLE branch is the only code that knows a flag's value, and only while mutating it).]** The camera/latch defects
 (§5.32, §5.27) must land before T3/T10 can pass, but they do not block the
 earlier steps.
 
