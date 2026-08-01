@@ -1295,6 +1295,28 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   (`timerate action pause` does not stop the clock). **NOT carried, structurally**: E3/E4/E5
   (97 flags / 43 set / 46 colours) — no READ authority exists; the fix is one `readFlag` that
   `setFlag`'s FV_TOGGLE branch consumes, and it belongs with the ledger slice.
+  **Supervisor-verified 2026-08-01** (11.128 read in full; trees/commits/authors checked;
+  diff surfaces read — §5.32 fix confined to Camera/ModularBody, session commit =
+  SessionFile + Camera + command registration + additive seam headers (coreLink/time_mgr
+  getters), old render path untouched; §5.32 CLOSED tail + §5.63/§5.64 rows + B31
+  annotation (open on ledger AND T1/§5.63 AND E3/E4/E5) verified at the ledger;
+  harnesses not re-run — both-ways §5.32 table reproducing §11.108(e) to the digit +
+  T2-CONTROL/T4-byte/T5-mutate/T10-zero discrimination records + committed artifacts
+  accepted as evidence). Deviations ALL ENDORSED: (1) the §11.108(e) correction-at-
+  source (the descend breach has its own root; composition became a function, I2);
+  (2) the refutation of THIS dispatch's added longitude-round-trip check — derived to
+  be the DEFECT's signature, not the fix's; the executor followed the row's own words
+  over the view, which is the §0b.3 rule operating, and the sharper lesson is that an
+  ADDED check must be derived from the row's mechanism, not its symptom sentence;
+  (3) the sky-locked T1 scene is the D28 carve-out composed around, as mandated;
+  (4) the three-scene gate split (an instrument that cannot state its regime reports
+  a number that means nothing — same class as (a3)). T1's NOT-MET handling ENDORSED:
+  §5.63 opened instead of a "by-design" absorption — the residual-acceptance bar
+  (mechanism + magnitude predicted from cause) applied to this slice's own delivery.
+  E3/E4/E5 structural deferral ENDORSED with its consequence adopted: the ledger
+  slice's mint (F21) carries the `readFlag` read-half as a first-class item. §5.64 →
+  §3 (Vixy: shipped-verb semantics). The orphaned-instance catch + the pgrep
+  self-confirmation fix noted — the §11.121(m) protocol's first live fire.
 
 ---
 
