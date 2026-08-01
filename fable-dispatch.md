@@ -1377,6 +1377,30 @@ WIP-tail edits. Restored verbatim from `e5693f1`; class check added to §0b.4.]*
   exclusions + a correction of its own text; three defects fixed en route (26 flags
   reporting their pre-toggle value, 6 uninitialised `newval`, `flag satellites`
   polarity). B31's remaining open set: T3/D21 · heading/D28 · C4's key · §5.63.
+  **Supervisor-verified 2026-08-01** (11.129 read in full; trees/commits/authors
+  checked; diff surface read — command-surface rewiring + additive read-half façades
+  (app/coreLink/ui headers) + SessionFile/module headers, NO old-render-path file
+  touched (the satellites polarity fix reads `!hideSatellitesFlag()` at the command
+  seam); §5.63 extension + B31 open-set annotation verified at the ledger; harnesses
+  not re-run — identity-leg + counterfactual + T7/T8 both-ways + T4-byte records +
+  committed artifacts accepted as evidence). Judgment calls ALL ENDORSED: (1) the
+  star_names/nebula_names multi-state preservation is the rewrite-generality-loss
+  monitor operating — a silent collapse named and refused; (2) the restore-rewrites-
+  for-annotation design point follows §4.2's own instruction, is the only LOAD-time
+  write, and is idempotent by the F13 rule; (3) D10-written-whole is derived from
+  D32's verbatim carve-out with the no-orbit failure case argued. The three en-route
+  fixes ENDORSED as decision-free (each restores its verb's OWN contract: an
+  uninitialised read, a readout reporting the pre-toggle value, a toggle that was a
+  no-op one way — T4's one-line failure catching the polarity is the round trip
+  out-instrumenting the eye); satellites-polarity surfaced in §3 as behavior-visible
+  (silence = endorsed). §5.63's budget-bounded non-attribution ENDORSED — the row's
+  own characterisation corrected at source (disjoint lit sets: a difference
+  summarised by an average has not been looked at), the owed next probe named
+  (old-path view-state readback — the read-half gap one layer down). The
+  `view_offset`-not-a-registered-name instrument hole stays annotated at its line,
+  deliberately un-fixed to preserve §5.63's baseline — rides §5.63's closure.
+  **B31 HAS NO DISPATCHABLE REMAINDER**: every open member is Vixy-gated (D21, D28,
+  C4) or §5.63.
 ---
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
