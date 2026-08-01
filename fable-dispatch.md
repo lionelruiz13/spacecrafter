@@ -315,8 +315,12 @@ latest session update note above.*
   lit px, pin traversed twice, `moveto multiply_alt 1` moves the drawn observer **0 px>8
   post-fix vs 738 266 px>8 pre-fix** (teleport 10 000→40 000 km), `multiply_alt 2` target
   19 999 998.7 m vs pre-fix 80 000 003.6 m, sky-lock toggle locks (camera drift 15.0411°
-  /sidereal hour) vs pre-fix 0.0000°. Next: the two LATENT members (view offset, mount)
-  by gdb injection, then the battery + §11.131.
+  /sidereal hour) vs pre-fix 0.0000°. · CP4 harness `f23_b33_inject.py` +
+  `_run.sh` **BOTH WAYS GREEN** (`artifacts/f23/inject_post3` / `inject_pre`): the two
+  LATENT members forced by gdb on the DRAWN path — offset old 0.3 / drawn 0.15 and mount
+  old equatorial / drawn altaz; the delivered binary reports the drawn value, the pre-fix
+  one the old, and the pin flips both back and forth on two entries. Next: battery +
+  §11.131.
 
 ### F24 — B34 mechanical seam mirrors: `clear`, `preload`, trail fresh-restart  [M]
 
