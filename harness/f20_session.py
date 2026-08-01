@@ -519,10 +519,21 @@ def main():
     # field), so a restore that moves one and not the other is the §5.63 class
     # again. `viewOffsetEff` does not move because scene C's latch is unarmed -
     # the scalar is stored, the ramp is what applies it (D32).
+    # Each case names EVERY field the edited key is an authority for, and the
+    # extra names are DERIVED, not incidental — the gate's own §11.128(g)
+    # lesson (a leg that needs "exactly one field moves" cannot be run on
+    # parameters the engine derives from each other), applied to the old path:
+    #   * the old navigator's equatorial and precessed vision vectors are
+    #     M(lat,lon) . localVision, so a place edit MUST move them and a place
+    #     edit that did not would mean the sky is being drawn from the old place;
+    #   * `viewOffsetEff` is scalar x latch, so it moves with the scalar exactly
+    #     when the latch is armed — which scene C's is.
+    PLACE = ["oldnav.equVision", "oldnav.precEquVision"]
     cases = [("fov", None, "12.5", ["halfFov"]),
-             ("latitude", None, "0.5", ["latitude"]),
-             ("longitude", None, "0.9", ["longitude"]),
-             ("view_offset", None, "0.375", ["viewOffset", "oldnav.viewOffset"])]
+             ("latitude", None, "0.5", ["latitude"] + PLACE),
+             ("longitude", None, "0.9", ["longitude"] + PLACE),
+             ("view_offset", None, "0.375",
+              ["viewOffset", "viewOffsetEff", "oldnav.viewOffset"])]
     for key, oldv, newv, fields in cases:
         edited = []
         hit = False
