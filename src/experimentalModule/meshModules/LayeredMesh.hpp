@@ -57,7 +57,7 @@ public:
         return BMT_USE_DEPTH | BMT_DEPTH_TRACE | BMT_PROJECT_G1_SHADOW | BMT_RECEIVE_SHADOW;
     }
     virtual bool isLoaded() override;
-    virtual void preload(ModularBody *body) override;
+    virtual void preload(ModularBody *body, int keepFrames) override;
     // boundingRadius includes the heightmap displacement headroom
     // (scaledRadius * (1 + 0.01*altimetryLevel)) for tessellated/ray bodies:
     // the new path has no depth margin (the old 1.1 bucket margin absorbed

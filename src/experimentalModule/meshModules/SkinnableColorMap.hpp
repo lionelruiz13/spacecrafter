@@ -47,8 +47,13 @@ public:
         return mapTexture;
     }
     // Preload hint (old BasicMesh::preload): pull the big level in at PRELOAD
-    // priority with a lifetime long enough to survive the approach.
-    void preload();
+    // priority, kept resident for `keepFrames` frames if nothing uses it
+    // meanwhile. The lifetime is the COMMAND's (`body action preload
+    // keep_time`, converted to frames by the command and passed down
+    // unchanged, exactly as old passes it to s_texture::setBigTextureLifetime);
+    // it used to be a hardcoded 100, which was invisible only because nothing
+    // called this at all (B36).
+    void preload(int keepFrames);
     // Old parity (Body::createTexSkin): create/replace resets the drawn texture
     // to the map; activation is switchSkin's job.
     void createSkin(const std::string &texName);

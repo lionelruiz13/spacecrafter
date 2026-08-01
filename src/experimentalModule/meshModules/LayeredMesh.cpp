@@ -150,9 +150,9 @@ bool LayeredMesh::isLoaded()
     return true;
 }
 
-void LayeredMesh::preload(ModularBody *body)
+void LayeredMesh::preload(ModularBody *body, int keepFrames)
 {
-    int tmp = s_texture::setBigTextureLifetime(100);
+    int tmp = s_texture::setBigTextureLifetime(keepFrames);
     for (s_texture *t : {&day, night.get(), specular.get(), normal.get(), heightmap.get()}) {
         if (t) {
             t->prioritize(LoadPriority::PRELOAD);

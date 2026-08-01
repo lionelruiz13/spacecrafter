@@ -1,9 +1,9 @@
 #include "SkinnableColorMap.hpp"
 #include "tools/file_path.hpp"
 
-void SkinnableColorMap::preload()
+void SkinnableColorMap::preload(int keepFrames)
 {
-    int tmp = s_texture::setBigTextureLifetime(100);
+    int tmp = s_texture::setBigTextureLifetime(keepFrames);
     mapTexture.prioritize(LoadPriority::PRELOAD);
     mapTexture.getBigTexture();
     s_texture::setBigTextureLifetime(tmp);

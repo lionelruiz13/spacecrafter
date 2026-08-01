@@ -1176,6 +1176,22 @@ void s_texture::debugBigTexture()
     }
 }
 
+// Contract + rationale: s_texture.hpp (dumpBigTextures).
+void s_texture::dumpBigTextures(std::ostream &out)
+{
+    const char *sep = "";
+    out << '[';
+    for (auto &bt : bigTextures) {
+        out << sep << "{\"name\":\"" << bt.texName << "\",\"w\":" << bt.width
+            << ",\"h\":" << bt.height
+            << ",\"acquired\":" << (bt.acquired ? "true" : "false")
+            << ",\"ready\":" << (bt.ready ? "true" : "false")
+            << ",\"lifetime\":" << static_cast<int>(bt.lifetime) << '}';
+        sep = ",";
+    }
+    out << ']';
+}
+
 void s_texture::loadCache(const std::string &path, bool _cacheTexture)
 {
     cacheDir = path;

@@ -20,7 +20,7 @@ public:
         return BMT_USE_DEPTH | BMT_DEPTH_TRACE | BMT_PROJECT_G1_SHADOW | BMT_RECEIVE_SHADOW;
     }
     virtual bool isLoaded() override;
-    virtual void preload(ModularBody *body) override;
+    virtual void preload(ModularBody *body, int keepFrames) override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawShadow(Renderer &renderer, ModularBody *body, const Mat4f &mat, int idx) override;

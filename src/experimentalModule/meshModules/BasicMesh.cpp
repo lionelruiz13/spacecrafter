@@ -43,9 +43,9 @@ bool BasicMesh::isLoaded()
     return true;
 }
 
-void BasicMesh::preload(ModularBody *body)
+void BasicMesh::preload(ModularBody *body, int keepFrames)
 {
-    colorMap.preload();
+    colorMap.preload(keepFrames);
 }
 
 void BasicMesh::bindColor(Texture &color)

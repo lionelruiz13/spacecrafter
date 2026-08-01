@@ -54,7 +54,7 @@ public:
         return BMT_USE_DEPTH | BMT_DEPTH_TRACE;
     }
     virtual bool isLoaded() override;
-    virtual void preload(ModularBody *body) override;
+    virtual void preload(ModularBody *body, int keepFrames) override;
     virtual void draw(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawNoDepth(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;
     virtual void drawTrace(Renderer &renderer, ModularBody *body, const Mat4f &mat) override;

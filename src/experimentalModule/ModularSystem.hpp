@@ -153,8 +153,33 @@ public:
     // legacy file (READ-ONLY forever, D35) and for a script's parameter map -
     // there is no datum in a writable file to annotate, and the log line is then
     // the whole diagnostic channel.
+    //! `supplemental` says the caller is the RUNTIME push route (`body action
+    //! load` -> SSystemFactory::addBody), not a file load - the provenance bit
+    //! `body action clear` selects on (ModularBody::supplemental, B34
+    //! §11.108(f); old carries the same bit as ProtoSystem::addBody's
+    //! `deletable` argument, false for file bodies). It is a parameter and not
+    //! a post-hoc mark by the caller because only THIS function knows whether
+    //! this call created the body: a load refused for a duplicate name would
+    //! otherwise re-brand the body that is already there.
     void loadBody(std::map<std::string, std::string> &param,
-                  ModularSystemFormat::Section *origin = nullptr);
+                  ModularSystemFormat::Section *origin = nullptr,
+                  bool supplemental = false);
+    //! Drop every RUNTIME-PUSHED body of this system's own content, hidden ones
+    //! included, and return true if anything was removed (old's mirror:
+    //! ProtoSystem::removeSupplementalBodies over `isDeleteable`, which walks
+    //! `systemBodies` and therefore reaches hidden bodies too - verified at
+    //! source, not assumed). The DECISION whether a clear may run at all is the
+    //! old path's and is taken at the seam (SSystemFactory), so this function is
+    //! the mechanism alone.
+    //! Content only: the walk stops at a nested system node, and a body with no
+    //! declaration (camera anchor, engine-minted node) is never supplemental, so
+    //! neither can be taken - see ModularBody::supplemental.
+    bool removeSupplementalBodies();
+    //! Fresh-restart every trail of this system's own content (old's mirror:
+    //! ProtoSystem::startTrails over `systemBodies`; same per-system scope, same
+    //! hidden-inclusive reach). `record` is the caller's own value - both live
+    //! callers pass the current global trail flag (config init, setHomePlanet).
+    void startTrails(bool record);
     // Update this system
     void updateSystem();
     // Draw this system - the FRAME entry (shadow orchestration, body-draw

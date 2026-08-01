@@ -6,6 +6,7 @@
 #include "ModularSystem.hpp"
 #include "EnvironmentManager.hpp"
 #include "RenderChain.hpp"
+#include "bodyModules/TrailModule.hpp" // startTrail: the fresh-restart seam's callee
 #include "tools/log.hpp"
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
@@ -249,6 +250,15 @@ ModularBody::~ModularBody()
     EnvironmentManager::notifyBodyDestroyed(this);
     if (pointerCount)
         ModularBodyPtr::redirect(this, parent);
+}
+
+// Contract in the header (startTrail). One line per TRAIL module, and the whole
+// decision of WHAT a restart does lives in TrailModule::resetTrail (I2: the same
+// authority the display flag's rising edge and the per-name enable already use).
+void ModularBody::startTrail(bool record)
+{
+    for (auto *m : trailComponents)
+        static_cast<TrailModule *>(m)->startTrail(record);
 }
 
 bool ModularBody::remove(bool recursive)
@@ -865,6 +875,15 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // dump PRESENCE never tracks it (the dump iterates the name registry,
         // which includes hidden bodies). INTENT 11.36 rare-path instrument.
         << ",\"relation\":" << static_cast<int>(relation)
+        // Provenance (B34 §11.108(f), F24): TRUE iff this body was pushed at
+        // runtime, i.e. iff `body action clear` removes it. Without it the
+        // clear-mirror's mark is unobservable and a mistyped mark would pass
+        // vacuously - the clear itself only shows the bodies it TOOK, never
+        // the ones it correctly left, so the RED half of "no declared body is
+        // removed" would have nothing to read. See the member's comment.
+        << ",\"supplemental\":" << (supplemental ? "true" : "false")
+        // Preload seam counter (B34, §11.132) - see the member's comment.
+        << ",\"preloadCount\":" << preloadCount
         // evalCount (B39 §11.117): orbit-evaluation counter - the observable
         // under which the hidden-body tick retirement is a measured fact (see
         // the member's own comment). Read as a DELTA over an interval.

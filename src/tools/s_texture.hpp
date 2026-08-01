@@ -28,6 +28,7 @@
 #define _S_TEXTURE_H_
 
 #include <string>
+#include <iosfwd>
 #include <map>
 #include <list>
 #include <vector>
@@ -277,6 +278,16 @@ public:
 	static void recordTransfer(VkCommandBuffer cmd);
 	// Display information about active big textures
 	static void debugBigTexture();
+	//! THE BIG-TEXTURE TABLE AS AN OBSERVABLE (B34 preload, INTENT §11.132).
+	//! One JSON array, `{"name","w","h","acquired","ready","lifetime"}` per
+	//! record, in list order. This is the table `preload()` writes into - a
+	//! preload's whole effect is "a record for this texture exists, is acquired,
+	//! and carries the requested lifetime" - and until now it had no readout at
+	//! all except debugBigTexture(), which has zero callers and writes to the
+	//! DEBUG log. Read-only and side-effect-free BY CONSTRUCTION: it must not
+	//! call getBigTexture(), which acquires and refreshes lifetimes - an
+	//! instrument that performs the act it reports is not an instrument.
+	static void dumpBigTextures(std::ostream &out);
 	// Setup cache path for textures, also enable use of cache
 	static void loadCache(const std::string &path, bool _cacheTexture);
 	// Set the new value for bigTextureLifetime, and return his previous value

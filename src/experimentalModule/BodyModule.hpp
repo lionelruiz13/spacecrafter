@@ -167,8 +167,13 @@ public:
     virtual bool isLoaded() {
         return true;
     }
-    // Preload content for use in a near future
-    virtual void preload(ModularBody *body) {}
+    // Preload content for use in a near future. `keepFrames` is how long the
+    // pulled-in resolution must be kept resident if nothing uses it meanwhile -
+    // the caller's own value (`body action preload keep_time`, converted to
+    // frames by the command), passed on to s_texture::setBigTextureLifetime
+    // exactly as the old path passes it (Body::preload). A module that carries
+    // no big resource ignores it.
+    virtual void preload(ModularBody *body, int keepFrames) {}
     // Update this body module, return true when update is no longer required for this body
     // Ordering guarantee: update() must have run at least once before compare() or
     // getBoundingRadius() - boundingRadius is undefined until then.

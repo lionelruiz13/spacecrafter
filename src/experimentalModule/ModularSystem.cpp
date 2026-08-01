@@ -1011,7 +1011,8 @@ RotFrame resolveRotationFrame(std::map<std::string, std::string> &param,
 } // namespace
 
 void ModularSystem::loadBody(std::map<std::string, std::string> &param,
-                             ModularSystemFormat::Section *origin)
+                             ModularSystemFormat::Section *origin,
+                             bool supplemental)
 {
     // WHAT THE DATA SAID, taken HERE and not one line later: every read below
     // goes through operator[], which inserts an empty entry for every absent key
@@ -1282,7 +1283,14 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
                 "(the two keys declare the same thing - keep one).", LOG_TYPE::L_ERROR);
         }
     }
+    // Provenance, resolved BEFORE the body is created because createChild's
+    // name-replacement path destroys the body this reads (ModularBody ctor).
+    // A replacement inherits the NAME's provenance rather than this call's
+    // route - contract and reason at ModularBody::supplemental.
+    if (ModularBody *replaced = ModularBody::findBodyOnce(englishName))
+        supplemental = replaced->supplemental;
     ModularBody *body = parent->createChild(createInfo, rel);
+    body->supplemental = supplemental;
     // The body keeps what declared it (B31 slice 2, b31-design §4.1): this is
     // the record a save writes back, and for a script-pushed body it is the only
     // one that will ever exist. Handed over AFTER creation, so a load that
@@ -1823,6 +1831,45 @@ void ModularSystem::collectContentBodies(ModularBody *node, std::vector<ModularB
     for (auto &c : node->orbitingBodies) walk(c.get(), walk);
     for (auto &c : node->innerBodies)    walk(c.get(), walk);
     for (auto &c : node->hiddenBodies)   walk(c.get(), walk);
+}
+
+// Contract + rationale: ModularSystem.hpp (removeSupplementalBodies).
+bool ModularSystem::removeSupplementalBodies()
+{
+    std::vector<ModularBody *> content;
+    collectContentBodies(this, content);
+    // PARENTS FIRST is collectContentBodies' own ordering guarantee, and here it
+    // is what makes the two-pass form correct: a supplemental body is destroyed
+    // WITH its subtree (children are unique_ptr-owned by the parent - a child
+    // cannot outlive it, unlike old's shared_ptr map where removeBodyNoSatellite
+    // erases one entry at a time), so a target that already has an ancestor in
+    // the target list must not be visited again through a dangling pointer.
+    std::vector<ModularBody *> targets;
+    for (ModularBody *b : content) {
+        if (!b->supplemental)
+            continue;
+        bool covered = false;
+        for (ModularBody *t : targets) {
+            for (ModularBody *p = b->parent; p && !covered; p = p->parent)
+                covered = (p == t);
+            if (covered)
+                break;
+        }
+        if (!covered)
+            targets.push_back(b);
+    }
+    for (ModularBody *t : targets)
+        t->remove(true);
+    return !targets.empty();
+}
+
+// Contract + rationale: ModularSystem.hpp (startTrails).
+void ModularSystem::startTrails(bool record)
+{
+    std::vector<ModularBody *> content;
+    collectContentBodies(this, content);
+    for (ModularBody *b : content)
+        b->startTrail(record);
 }
 
 bool ModularSystem::saveSystem(const std::string &outPath)

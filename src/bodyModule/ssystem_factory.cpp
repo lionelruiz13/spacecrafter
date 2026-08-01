@@ -46,6 +46,9 @@
 #include "experimentalModule/EnvironmentManager.hpp"
 #include "experimentalModule/environmentModules/MilkyWayEnv.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp" // screenToRect: the click-coordinate authority
+#include "interfaceModule/base_command_interface.hpp" // W_NAME/W_KEEPTIME: the ONE spelling of the command's keys (protosystem.cpp reads the same two)
+#include "tools/utility.hpp"
+#include "tools/s_texture.hpp" // dumpBigTextures: the preload seam's observable
 
 SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr) :
     observatory(observatory), navigation(navigation), timeMgr(timeMgr)
@@ -695,7 +698,31 @@ void SSystemFactory::updateExperimental(int delta_time, const TimeMgr* timeMgr)
 void SSystemFactory::addBody(stringHash_t &param)
 {
     currentSystem->addBody(param);
-    camera->getCurrentSystem()->loadBody(param);
+    // `true` = the RUNTIME push route, the bit `body action clear` will select
+    // on (B34 §11.108(f)); inert until the clear seam reads it. Old marks the
+    // same bit one layer down, in its own addBody's `deletable` argument, and
+    // this public overload is old's "always adds bodies as deletable"
+    // (protosystem.hpp) - the two paths take their provenance from the same
+    // call, so they cannot disagree about which bodies a clear owns.
+    camera->getCurrentSystem()->loadBody(param, nullptr, true);
+}
+
+// Contract + rationale: ssystem_factory.hpp (removeSupplementalBodies).
+bool SSystemFactory::removeSupplementalBodies(const std::string &name)
+{
+    return currentSystem->removeSupplementalBodies(name);
+}
+
+// Contract + rationale: ssystem_factory.hpp (startTrails).
+void SSystemFactory::startTrails(bool b)
+{
+    currentSystem->startTrails(b);
+}
+
+// Contract + rationale: ssystem_factory.hpp (preloadBody).
+void SSystemFactory::preloadBody(stringHash_t &param)
+{
+    currentSystem->preloadBody(param);
 }
 
 // Contract: ssystem_factory.hpp (setSelected). Out of line because resolving
@@ -961,6 +988,11 @@ void SSystemFactory::dumpTracePaths(const std::string &file,
         << ",\"close\":" << ModularBody::closeRangeGate()
         << ",\"bigTexture\":" << ModularBody::bigTextureGate()
         << "}}";
+    // The big-texture table (B34 preload, §11.132): what `body action preload`
+    // actually DOES, read from the engine's own record rather than inferred
+    // from a frame. Read-only (s_texture.hpp states why that matters here).
+    out << ",\"bigTextures\":";
+    s_texture::dumpBigTextures(out);
     // The readbacks whose OWNER is outside this class, each writing its own
     // member(s) under its own key: `oldView` (the old path's own view state,
     // §5.63 asked for exactly it and it did not exist) and `control` (what the

@@ -71,9 +71,9 @@ bool PhotosphereModule::isLoaded()
     return true;
 }
 
-void PhotosphereModule::preload(ModularBody *body)
+void PhotosphereModule::preload(ModularBody *body, int keepFrames)
 {
-    colorMap.preload();
+    colorMap.preload(keepFrames);
 }
 
 void PhotosphereModule::bindColor(Texture &color)

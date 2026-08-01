@@ -1141,6 +1141,20 @@ public:
         for (auto *m : trailComponents)
             m->setShown(b);
     }
+    // FRESH-RESTART seam (old Body::startTrail -> Trail::startTrail, B34
+    // §11.108(k)). Distinct from setFlagTrail and that distinction is the whole
+    // point: setFlagTrail declares a per-name DISPLAY override that survives
+    // until the next global toggle, while this one says only "whatever is being
+    // recorded, start it over from here" - which is what a PERSPECTIVE change
+    // means (`Core::setHomePlanet`: "reset planet trails due to changed
+    // perspective") and what the config-init call means (nothing recorded yet).
+    // Routes to the TRAIL module(s) through the dedicated list - the list IS the
+    // type partition (ModuleLoader fills it from BodyModuleType::TRAIL alone),
+    // so this is a partition read, not a type sniff, and it is the form
+    // SessionFile already uses on the same list. Out of line because the callee
+    // is TrailModule's own (a fresh restart is not a concept every module has -
+    // unlike setShown, which the base answers as a no-op).
+    void startTrail(bool record);
     // Skin-texture seam (old SolarSystemTex -> Body::createTexSkin/switchMapSkin;
     // S6 Textures row, INTENT 9). Broadcast to every module slot; consumers
     // self-select (BodyModule default no-op - no type sniffing here).
@@ -1284,12 +1298,20 @@ public:
     bool hide();
     // Show this body, return true if it was hidden before this call
     bool show();
-    inline void preload() {
+    // Pull this body's big content in before it is needed (`body action
+    // preload`, B34 §11.108(f)). `keepFrames` is the caller's own keep_time,
+    // already in frames - it reaches s_texture::setBigTextureLifetime through
+    // each module, which is where old puts the identical value (Body::preload).
+    // Near + in components only: those are the two regimes that own a body's
+    // high-resolution surface (mesh, photosphere, ring, atmosphere shell); the
+    // far regime is the halo/hint, which has nothing big to pull.
+    inline void preload(int keepFrames) {
+        ++preloadCount; // instrument: "the seam reached THIS body" (see the member)
         for (auto &module : nearComponents) {
-            module->preload(this);
+            module->preload(this, keepFrames);
         }
         for (auto &module : inComponents) {
-            module->preload(this);
+            module->preload(this, keepFrames);
         }
     }
     inline const std::pair<float, float> &getScreenPos() const {
@@ -1776,6 +1798,35 @@ private:
     // Runtime overrides do NOT edit it: what an operator changed after the load
     // is the session ledger's business (b31-design §2 group D), a later slice.
     std::map<std::string, std::string> declaredParams;
+
+    // WHERE THIS BODY CAME FROM, for the ONE question that needs it: is it one
+    // of the bodies `body action clear` drops? (B34 §11.108(f); old's word for
+    // the same bit is `BodyContainer::isDeleteable`, and old's own comment for
+    // the command is "removes all bodies that do not come from ssystem.ini".)
+    // TRUE only for a body pushed into the live tree at RUNTIME through
+    // SSystemFactory::addBody - the `body action load` route. Written by the
+    // loader (ModularSystem::loadBody), which is the one site that knows
+    // whether THIS call created the body, and which therefore cannot mark a
+    // pre-existing body because a load of its name was refused.
+    // FALSE for a body the system's data file declared - and equally for an
+    // engine-minted body with no declaration at all (a camera anchor, the B5
+    // pilot oort, a system spine node): those are not system CONTENT, they are
+    // camera/engine state (F7/R3), and a content clear must not take them.
+    // A REPLACEMENT INHERITS THE NAME'S PROVENANCE, it does not acquire the
+    // route's: `body action load name Earth replace true …` re-authors a
+    // FILE-declared body at runtime (old refuses that load outright, so old has
+    // no rule to copy), and treating the result as script-pushed would let a
+    // later `clear` delete a body ssystem.ini declares. The requirement the old
+    // shape encodes - a clear never removes declared data - is what survives.
+    bool supplemental = false;
+
+    // Instrument (B34 preload, §11.132): entries into preload() for this body.
+    // It answers the question the texture table alone cannot - "did the command
+    // reach THIS body on the new path" - and the two together separate a seam
+    // that did not run from a seam that ran and had nothing left to pull
+    // (the two paths share one texRecap per file name, so a texture old already
+    // acquired shows no change whichever path asked for it).
+    uint32_t preloadCount = 0;
 
     // Relations - ownership by relation (single authority: `relation` says
     // which list of the parent owns this body; boundToSurface is its hot-path
