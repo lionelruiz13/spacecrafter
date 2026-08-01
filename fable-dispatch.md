@@ -262,7 +262,7 @@ latest session update note above.*
   scene-A fix both ways (pre-fix binary: did-you-mean logged + offset inert;
   delivered: line absent + offset drives + restore holds); battery green; frozen md5
   in==out; §11.121(m) concurrent-instance assert before every measurement launch.
-- **WIP:**
+- **WIP:** 2026-08-01 · checkpoint 1: readback instrument built + built green (code `170c3ad6`) — Navigator/Observer/Projector/HipStarMgr `dumpTrace` + `Core::dumpOldViewState` on the `oldView` key of the dual dump. Next: the f22 attribution ladder (saved / A-A floor / restored) on the delivered binary.
 
 ### F23 — B33 residue: the four remaining control-surface getters read the path that draws  [M]
 
