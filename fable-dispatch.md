@@ -305,13 +305,18 @@ latest session update note above.*
   post-fix target derives from the drawn path, measured on both binaries);
   TUI/readout consumers unchanged where the paths agree; battery green; frozen md5
   in==out.
-- **WIP:** 2026-08-01 · CP1 code `93d83ebd`: the INSTRUMENT — `body action dual_dump`
-  gains a `control` object ({reported, old, new} per member) because no member of the
-  class had an observable channel; `Camera::getPlace()` = the inverse of `moveTo`'s
-  target in both modes. Pre-fix binary snapshotted (`artifacts/f23/sc_f23_pre`, md5
-  `ebe92184`). First measurement already in: two `camera action descend coef 0.5`
-  leave old alt 75 m vs camera 18.50 m and the getter reports 75 — altitude's REAL
-  divergence channel, no injection needed. Next: the four getter fixes.
+- **WIP:** 2026-08-01 · CP1 code `93d83ebd` (INSTRUMENT: `body action dual_dump` gains
+  a `control` object — {reported, old, new} per member — because no member of the class
+  had an observable channel; `Camera::getPlace()` = the inverse of `moveTo`'s target in
+  both modes; pre-fix binary `artifacts/f23/sc_f23_pre` md5 `ebe92184`) · CP2 code
+  `9770649f` (the four getters + the `tcpGetPosition` place fold) · CP3 harness
+  `f23_b33_control.py` **ALL GREEN both binaries** (`artifacts/f23/run2`): anchored
+  200 km→49999.855 m and free 40 000 km→9 999 999.363 m ladders, disc 104 120→831 450
+  lit px, pin traversed twice, `moveto multiply_alt 1` moves the drawn observer **0 px>8
+  post-fix vs 738 266 px>8 pre-fix** (teleport 10 000→40 000 km), `multiply_alt 2` target
+  19 999 998.7 m vs pre-fix 80 000 003.6 m, sky-lock toggle locks (camera drift 15.0411°
+  /sidereal hour) vs pre-fix 0.0000°. Next: the two LATENT members (view offset, mount)
+  by gdb injection, then the battery + §11.131.
 
 ### F24 — B34 mechanical seam mirrors: `clear`, `preload`, trail fresh-restart  [M]
 
