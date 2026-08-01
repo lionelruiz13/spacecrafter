@@ -292,6 +292,30 @@ def run_skylock(out, tag, binary):
     return r
 
 
+def run_default(out, tag, binary):
+    """THE REGRESSION HALF, at the composed screen. The shipped scene, nothing
+    commanded: every layer the old path draws in the observer frame is ON, and
+    the only thing this wave can change here is the place the OLD observer ends
+    up at. It DOES change it: `UI::init` re-applies the observer place through
+    the dual seam (`ui.cpp`, the "initial.sts commands" block), so post-fix it
+    writes the DRAWN place to both authorities instead of writing old's to
+    both — which puts the old observer ON the camera's float grid (0.104 m of
+    altitude and 1.3e-6 deg of latitude at the shipped Marseille place)
+    instead of that far away from it. The two paths therefore AGREE at startup
+    where before they did not; this leg measures what that costs on screen."""
+    app = App(out / f"farm_{tag}", binary, out / f"{tag}.applog")
+    app.out = out
+    try:
+        app.send("timerate rate 0", 1)
+        app.send(f"date jday {JD}", 2)
+        c = app.control(f"{tag}_D0")
+        a = app.shot(f"{tag}_D0")
+        b = app.shot(f"{tag}_D1")     # same launch, nothing between: the floor
+    finally:
+        app.stop()
+    return {"control": c, "shot": str(a), "floor": px8(a, b), "lit": lit(a)}
+
+
 def close(a, b, tol):
     return abs(a - b) <= tol
 
@@ -309,10 +333,12 @@ def main():
 
     src_md5 = b25g.real_tree_md5()
     rep = {"alt_post": run_altitude(out, "alt_post", binary),
-           "lock_post": run_skylock(out, "lock_post", binary)}
+           "lock_post": run_skylock(out, "lock_post", binary),
+           "def_post": run_default(out, "def_post", binary)}
     if prebin:
         rep["alt_pre"] = run_altitude(out, "alt_pre", prebin)
         rep["lock_pre"] = run_skylock(out, "lock_pre", prebin)
+        rep["def_pre"] = run_default(out, "def_pre", prebin)
 
     P, L = rep["alt_post"], rep["lock_post"]
 
@@ -472,6 +498,27 @@ def main():
         else:
             fail(f"RED: the pre-fix toggle locked the drawn path "
                  f"(new={m2['new']}) — not discriminating")
+
+        # --- the regression half at the composed screen -------------------
+        D, E = rep["def_post"], rep["def_pre"]
+        cross = px8(D["shot"], E["shot"])
+        dp, de = D["control"]["altitude"], E["control"]["altitude"]
+        if D["lit"] < 100000:
+            fail(f"the default scene has only {D['lit']} lit px — the cross-binary "
+                 f"screen comparison below would be a zero-diff on no content")
+        elif cross <= max(3 * max(D["floor"], E["floor"]), 200):
+            ok(f"REGRESSION HALF at the composed screen: the shipped scene with "
+               f"every old-path layer ON, {D['lit']} lit px, pre-fix vs delivered "
+               f"= {cross} px>8 against in-run floors of {D['floor']}/{E['floor']} "
+               f"— and the old observer's own altitude moved "
+               f"{abs(dp['old'] - de['old']):.6f} m (pre-fix {de['old']:.6f} -> "
+               f"delivered {dp['old']:.6f}), because `UI::init` now re-applies the "
+               f"DRAWN place through the dual seam and so lands the two "
+               f"authorities on the same value instead of "
+               f"{abs(de['new'] - de['old']):.6f} m apart")
+        else:
+            fail(f"REGRESSION HALF: the default scene moved {cross} px>8 pre vs "
+                 f"post (floors {D['floor']}/{E['floor']})")
 
     if b25g.real_tree_md5() != src_md5:
         fail("the real ~/.spacecrafter tree was written by this run")
