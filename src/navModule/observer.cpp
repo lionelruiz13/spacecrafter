@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <ostream>
 #include <iomanip>
+#include <cmath>
 #include "bodyModule/body.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
@@ -461,6 +462,22 @@ void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
 // READBACK ONLY (INTENT §5.63 / §11.130). See the header for what it is for.
 // Const, side-effect-free, called only from the dump channel.
 // ---------------------------------------------------------------------------
+
+// A JSON-legal number: the plan coefficients are legitimately infinite when a
+// duration is 0 (speed = 1/0), and a dump that emits bare `inf` is not JSON at
+// all - every consumer of this channel fails on the whole line. The value is
+// PRESERVED as a quoted token rather than nulled, because "this plan is
+// instantaneous" is exactly the state a restore has to get right.
+static void jnum(std::ostream &out, double v)
+{
+	if (std::isfinite(v))
+		out << v;
+	else if (std::isnan(v))
+		out << "\"nan\"";
+	else
+		out << (v > 0 ? "\"inf\"" : "\"-inf\"");
+}
+
 void Observer::dumpTrace(std::ostream &out) const
 {
 	const auto prec = out.precision();
@@ -478,8 +495,11 @@ void Observer::dumpTrace(std::ostream &out) const
 	// to land settled; a non-zero flag here says the observer is still on its
 	// way, which moves the sky between two dumps that describe "the same" place.
 	    << ",\"flagMoveTo\":" << (flag_move_to ? "true" : "false")
-	    << ",\"moveToMult\":" << move_to_mult
-	    << ",\"moveToCoef\":" << move_to_coef
+	    << ",\"moveToMult\":";
+	jnum(out, move_to_mult);
+	out << ",\"moveToCoef\":";
+	jnum(out, move_to_coef);
+	out
 	// The quaternion rotator multiplies getRotEquatorialToVsop87 (observer.cpp
 	// :115), i.e. it sits INSIDE the equatorial frame the star field is drawn
 	// in and outside everything the camera dump can see.

@@ -793,6 +793,21 @@ void Core::ssystemDualDump(const std::string& file)
 	});
 }
 
+const Vec3d& Core::getSkyVision() const
+{
+	return navigation->getLocalVision();
+}
+
+void Core::restoreSkyVision(const Vec3d& localVision)
+{
+	// The order is the point. Matrices from the restored observer and date,
+	// THEN the direction (which rebuilds the equatorial and precessed vectors
+	// on those matrices), THEN the view matrices the projector is handed.
+	navigation->updateTransformMatrices(observatory.get(), timeMgr->getJDay());
+	navigation->restoreVision(localVision);
+	navigation->updateViewMat(projection->getFov());
+}
+
 // ---------------------------------------------------------------------------
 // READBACK ONLY (INTENT §5.63 / §11.130). See the header for what it is for.
 // Const, side-effect-free, called only from the dump channel.

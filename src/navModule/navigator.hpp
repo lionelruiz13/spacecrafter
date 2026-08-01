@@ -89,6 +89,15 @@ public:
 
 	void setLocalVision(const Vec3d& _pos);
 
+	//! Put the view direction back to an exact recorded value, with the
+	//! equatorial and precessed vectors rebuilt from the transforms in force
+	//! NOW. This is `setLocalVision` without its view-offset compensation:
+	//! that compensation is what an AIM owes a live offset, and a restore is
+	//! not an aim - it asserts a state that already had the offset in it.
+	//! Only a session restore uses it (INTENT §5.63 / §11.130); every other
+	//! caller of the old path is unchanged.
+	void restoreVision(const Vec3d& _localVision);
+
 	//! Return the observer heliocentric position
 	Vec3d getObserverHelioPos() const;
 

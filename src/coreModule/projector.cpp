@@ -29,6 +29,7 @@
 #include <cstdio>
 #include <ostream>
 #include <iomanip>
+#include <cmath>
 #include "coreModule/projector.hpp"
 #include "tools/s_font.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
@@ -749,6 +750,22 @@ void Projector::printGravity180(s_font* font, float x, float y, const std::strin
 // READBACK ONLY (INTENT §5.63 / §11.130). See the header for what it is for.
 // Const, side-effect-free, called only from the dump channel.
 // ---------------------------------------------------------------------------
+
+// A JSON-legal number: the plan coefficients are legitimately infinite when a
+// duration is 0 (speed = 1/0), and a dump that emits bare `inf` is not JSON at
+// all - every consumer of this channel fails on the whole line. The value is
+// PRESERVED as a quoted token rather than nulled, because "this plan is
+// instantaneous" is exactly the state a restore has to get right.
+static void jnum(std::ostream &out, double v)
+{
+	if (std::isfinite(v))
+		out << v;
+	else if (std::isnan(v))
+		out << "\"nan\"";
+	else
+		out << (v > 0 ? "\"inf\"" : "\"-inf\"");
+}
+
 void Projector::dumpTrace(std::ostream &out) const
 {
 	const auto prec = out.precision();
@@ -758,9 +775,11 @@ void Projector::dumpTrace(std::ostream &out) const
 	    << ",\"minFov\":" << min_fov
 	    << ",\"maxFov\":" << max_fov
 	    << ",\"flagAutoZoom\":" << (flag_auto_zoom ? "true" : "false")
-	    << ",\"zoomAim\":" << zoom_move.aim
-	    << ",\"zoomCoef\":" << zoom_move.coef
-	    << ",\"viewport\":[" << vec_viewport[0] << ',' << vec_viewport[1] << ','
+	    << ",\"zoomAim\":";
+	jnum(out, zoom_move.aim);
+	out << ",\"zoomCoef\":";
+	jnum(out, zoom_move.coef);
+	out << ",\"viewport\":[" << vec_viewport[0] << ',' << vec_viewport[1] << ','
 	    << vec_viewport[2] << ',' << vec_viewport[3] << ']'
 	    << ",\"viewportCenter\":[" << viewport_center[0] << ',' << viewport_center[1]
 	    << ',' << viewport_center[2] << ']'

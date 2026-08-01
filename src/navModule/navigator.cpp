@@ -31,6 +31,7 @@
 #include "tools/log.hpp"
 #include <ostream>
 #include <iomanip>
+#include <cmath>
 
 
 
@@ -162,6 +163,18 @@ void Navigator::setLocalVision(const Vec3d& _pos)
 
 	equ_vision=localToEarthEqu(local_vision);
 	prec_equ_vision = mat_earth_equ_to_j2000*equ_vision;
+}
+
+
+// See the header. `setLocalVision` minus the view-offset compensation: the two
+// derived vectors are rebuilt from the CURRENT transforms, which is the half
+// that matters - a restore that runs between two frames would otherwise latch
+// an equatorial direction computed at the previous frame's place and date.
+void Navigator::restoreVision(const Vec3d& _localVision)
+{
+	local_vision = _localVision;
+	equ_vision = localToEarthEqu(local_vision);
+	prec_equ_vision = mat_earth_equ_to_j2000 * equ_vision;
 }
 
 
@@ -478,6 +491,22 @@ static void dumpMat(std::ostream &out, const char *name, const Mat4d &m)
 	out << ']';
 }
 
+
+// A JSON-legal number: the plan coefficients are legitimately infinite when a
+// duration is 0 (speed = 1/0), and a dump that emits bare `inf` is not JSON at
+// all - every consumer of this channel fails on the whole line. The value is
+// PRESERVED as a quoted token rather than nulled, because "this plan is
+// instantaneous" is exactly the state a restore has to get right.
+static void jnum(std::ostream &out, double v)
+{
+	if (std::isfinite(v))
+		out << v;
+	else if (std::isnan(v))
+		out << "\"nan\"";
+	else
+		out << (v > 0 ? "\"inf\"" : "\"-inf\"");
+}
+
 static void dumpVec(std::ostream &out, const char *name, const Vec3d &v)
 {
 	out << ",\"" << name << "\":[" << v[0] << ',' << v[1] << ',' << v[2] << ']';
@@ -515,16 +544,20 @@ void Navigator::dumpTrace(std::ostream &out) const
 	// exactly the shape of a difference that VARIES from restore to restore
 	// (§5.63 exclusion 7).
 	out << ",\"plans\":{\"flagAutoMove\":" << flag_auto_move
-	    << ",\"moveCoef\":" << move.coef
-	    << ",\"moveSpeed\":" << move.speed
-	    << ",\"moveLocalPos\":" << (move.local_pos ? "true" : "false")
+	    << ",\"moveCoef\":";
+	jnum(out, move.coef);
+	out << ",\"moveSpeed\":";
+	jnum(out, move.speed);
+	out << ",\"moveLocalPos\":" << (move.local_pos ? "true" : "false")
 	    << ",\"zoomingMode\":" << zooming_mode
 	    << ",\"flagChangeHeading\":" << (flag_change_heading ? "true" : "false")
 	    << ",\"startHeading\":" << start_heading
 	    << ",\"endHeading\":" << end_heading
-	    << ",\"moveToCoef\":" << move_to_coef
-	    << ",\"moveToMult\":" << move_to_mult
-	    << ",\"moveAim\":[" << move.aim[0] << ',' << move.aim[1] << ',' << move.aim[2]
+	    << ",\"moveToCoef\":";
+	jnum(out, move_to_coef);
+	out << ",\"moveToMult\":";
+	jnum(out, move_to_mult);
+	out << ",\"moveAim\":[" << move.aim[0] << ',' << move.aim[1] << ',' << move.aim[2]
 	    << "],\"moveStart\":[" << move.start[0] << ',' << move.start[1] << ',' << move.start[2]
 	    << "]}";
 	// The frame transforms themselves. mat_local_to_earth_equ is the one the

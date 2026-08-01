@@ -427,6 +427,20 @@ public:
 	// Dual-path trace harness (experimentalModule/INTENT.md 11.14)
 	void ssystemDualDump(const std::string& file);
 
+	//! The direction the OLD path draws the sky from (§2 row B19's twin).
+	//! The star field, the milky way and the nebulae are aimed by this vector
+	//! and by nothing the camera holds — measured 107.634 deg away from the
+	//! camera in a scene where nothing aimed either path (INTENT §11.130).
+	const Vec3d& getSkyVision() const;
+
+	//! Put that direction back where a session recorded it, and make it MEAN
+	//! something: the transforms are recomputed from the observer and the date
+	//! FIRST, because a restore runs between two frames and the navigator's
+	//! matrices are otherwise still the previous frame's — on the launch body,
+	//! at the launch date. Same two calls Core::init makes after it moves the
+	//! observer; no existing caller of the old path changes.
+	void restoreSkyVision(const Vec3d& localVision);
+
 	//! READBACK ONLY (INTENT §5.63 / §11.130) — the OLD path's view state, as
 	//! one JSON object, written into the dual-path dump's header.
 	//! What it is FOR: the composed screen of a restored session differs from

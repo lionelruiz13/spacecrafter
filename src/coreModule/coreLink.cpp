@@ -1277,6 +1277,14 @@ public:
 	void setFov(double degrees) override { link.zoomTo(degrees, 0.f); }
 	void setSkyLock(bool locked) override { core.setFlagLockSkyPosition(locked); }
 
+	void getSkyVision(double &x, double &y, double &z) const override {
+		const Vec3d &v = core.getSkyVision();
+		x = v[0]; y = v[1]; z = v[2];
+	}
+	void setSkyVision(double x, double y, double z) override {
+		core.restoreSkyVision(Vec3d(x, y, z));
+	}
+
 private:
 	CoreLink &link;
 	Core &core;

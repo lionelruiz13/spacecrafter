@@ -1,4 +1,5 @@
 #include "SessionFile.hpp"
+#include <cstdio>
 #include "Camera.hpp"
 #include "ModularBody.hpp"
 #include "ModularSystem.hpp"
@@ -175,6 +176,14 @@ bool save(Host &host, CommandSurface *cmds, const std::string &name)
     Section observer;
     observer.setHeader("observer");
     camera->saveSession(observer);
+    // §2 row B19's twin, and the one field of it that is NOT derivable from the
+    // camera: the direction the OLD path draws the sky from. See Host for the
+    // measurement that put it here rather than leaving it to B19's clause.
+    {
+        double sx = 0, sy = 0, sz = 0;
+        host.getSkyVision(sx, sy, sz);
+        observer.appendEntry("sky_vision", d2s(sx) + "," + d2s(sy) + "," + d2s(sz));
+    }
     sections.push_back(std::move(observer));
 
     Section selection;
@@ -531,12 +540,33 @@ bool load(Host &host, CommandSurface *cmds, const std::string &name)
                                 Utility::strToDouble(*lonS, 0) * (180.0 / M_PI),
                                 Utility::strToDouble(*altS, 0));
         }
-        // The other two DUAL values, before the camera's own members. The sky
+        // The other three DUAL values, before the camera's own members. The sky
         // lock is set FIRST because engaging it CAPTURES the current view -
         // restoreSession then overwrites that capture with the matrix the
         // session actually held, which is the value §2 row B9 calls state.
         if (const std::string *v = observer->find("fov"))
             host.setFov(Utility::strToDouble(*v, 0));
+        // THE OLD PATH'S VIEW DIRECTION, and it goes BEFORE the sky lock
+        // because the lock is what makes its absence permanent. The whole
+        // restore runs inside ONE command with no frame between its steps, so
+        // the old navigator's transforms and its equatorial vision vector are
+        // still the ones the previous FRAME computed - on the launch body, at
+        // the launch date (which is the system clock), at the launch place.
+        // Turning the lock on there freezes that stale pair and every later
+        // frame re-derives the local direction from it. Measured before the fix
+        // (INTENT §11.130, artifacts/f22view): the camera's alt/az identical to
+        // the digit on both sides, the OLD view direction 107.634 deg apart
+        // against an in-scene A/A floor of 1e-6 deg, 392 stars drawn against
+        // 689, and a residual that moved every restore because the launch date
+        // moved. `setSkyVision` refreshes the transforms from the place and
+        // date just restored and then puts the direction back, so the pair the
+        // lock latches is the one the session describes.
+        {
+            const std::string *v = observer->find("sky_vision");
+            double sx = 0, sy = 0, sz = 0;
+            if (v && std::sscanf(v->c_str(), "%lf,%lf,%lf", &sx, &sy, &sz) == 3)
+                host.setSkyVision(sx, sy, sz);
+        }
         if (const std::string *v = observer->find("sky_locked"))
             host.setSkyLock(*v == "true" || *v == "1");
         if (Camera::instance)

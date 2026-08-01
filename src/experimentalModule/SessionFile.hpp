@@ -130,6 +130,25 @@ public:
     // `zoom fov` takes them.
     virtual void setFov(double degrees) = 0;
     virtual void setSkyLock(bool locked) = 0;
+    // The OLD path's OWN VIEW DIRECTION (§2 row B19's twin), and it is here
+    // because B19's exclusion clause - "setters are dual so it follows" - is
+    // MEASURABLY FALSE for this one. The star field, the milky way and the
+    // nebulae are aimed by `Navigator::local_vision`, which no seam ties to the
+    // camera: in a scene where nothing aimed either path, the two sit 107.634
+    // deg apart, and feeding the camera's own alt/az through the shipped
+    // `look_at` dual seam lands 94 deg from the old direction rather than on it
+    // (INTENT §11.130, artifacts/f22view). So the direction is STATE and the
+    // file carries it.
+    // The restore also has to REFRESH the old transforms first: the whole load
+    // runs inside one command with no frame between its steps, so the
+    // navigator's matrices and its equatorial vision vector are still the ones
+    // the previous FRAME computed - on the launch body, at the launch date. A
+    // sky lock turned on there freezes that stale pair for good, which is what
+    // made the residual vary from restore to restore. `setSkyVision` therefore
+    // means "recompute the old view from the place and date just restored, and
+    // put its direction here", not "assign a member".
+    virtual void getSkyVision(double &x, double &y, double &z) const = 0;
+    virtual void setSkyVision(double x, double y, double z) = 0;
 };
 
 // THE BULK VALUE ROWS (b31-design §2 E3/E4/E5: 97 flags, 43 `set` values, 46
