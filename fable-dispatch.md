@@ -262,7 +262,7 @@ latest session update note above.*
   scene-A fix both ways (pre-fix binary: did-you-mean logged + offset inert;
   delivered: line absent + offset drives + restore holds); battery green; frozen md5
   in==out; §11.121(m) concurrent-instance assert before every measurement launch.
-- **WIP:** 2026-08-01 · checkpoint 1: readback instrument built + built green (code `170c3ad6`) — Navigator/Observer/Projector/HipStarMgr `dumpTrace` + `Core::dumpOldViewState` on the `oldView` key of the dual dump. Next: the f22 attribution ladder (saved / A-A floor / restored) on the delivered binary.
+- **WIP:** 2026-08-01 · checkpoint 2: §5.63 **ATTRIBUTED AND FIXED** (code `170c3ad6` the readback + `4d31e9d0` the fix) — the old navigator's view direction was never restored and a same-batch sky lock froze a stale equatorial pair; screen 3294 → **38 px>8 against an in-scene A/A floor of 44**, direction 107.634° → 0.0°, stars 392-vs-689 → 392-vs-392 (`harness/f22_s563_view.py`, `artifacts/f22view{,_fix}`). Next: deliverable (v) the scene-A `zoom_offset` hole + T2/T5 extension, then the full battery.
 
 ### F23 — B33 residue: the four remaining control-surface getters read the path that draws  [M]
 
