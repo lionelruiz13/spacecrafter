@@ -126,23 +126,39 @@ replace) · **DEAD** (no driver) · **OLD** (command lands on the old path only)
 | view offset | `Camera::setViewOffset` | CMD `set zoom_offset v` (+ CFG) | `core.cpp:2181-2211` (§11.92) |
 | offset ARMING | `Camera::armViewOffset` | CMD (indirect: look_at/zoom/track) | 4 of the **5** old arming sites mirrored; `gotoSelectedObject` is not → §11.102(b1) |
 
-### 3.2 Camera/observer QUERIES — the G-QUERY class
+### 3.2 Camera/observer QUERIES — the G-QUERY class — **CLASS CLOSED 2026-08-01**
 
-Every getter below is on the control surface and reads the **old** path while its setter
-is dual. Under the new render path these are readouts of a state that is not what draws.
+Every getter below was on the control surface and read the **old** path while its setter
+was dual, i.e. under the new render path it was a readout of a state that is not what
+draws. **All of them now ask `Core::getExperimentalPath()` and report the path that
+DRAWS** — F12 (`heading`, §11.118(f)) and F23 (the other four, §11.131). The table is
+kept because the ROW SHAPE is the finding, and re-verified at the delivered HEAD.
 
-| query | control-surface getter | reads | new-path value | evidence |
+| query | control-surface getter | reads NOW | the drawn path's own member | evidence |
 |---|---|---|---|---|
-| heading | `CoreLink::getHeading` | old `Navigator` | `Camera::getHeading` — **0 external readers** | `coreLink.hpp:988-991`; MEASURED divergent: 6.16° (§11.108(c)) |
-| view offset | `CoreLink::getViewOffset` | old `Navigator` | `Camera::getViewOffset` — 0 readers | `coreLink.hpp:972-975` |
-| latitude / longitude / altitude | `CoreLink::observatoryGet*` | old `Observer` | `Camera::getLatitude` — 0 readers | `coreLink.hpp:784+` |
-| mount | `Core::getMountMode` | old `Navigator` | `Camera::getMount` — 0 readers | `core.hpp:235-237` |
-| sky lock | `Core::getFlagLockSkyPosition` | old `Navigator` | `Camera::getSkyLock` — 0 readers | `core.hpp:225-228` |
+| heading | `CoreLink::getHeading` | **the path that draws** | `Camera::getHeading` | §11.118(f); pre-fix divergence 6.16° (§11.108(c)) |
+| view offset | `CoreLink::getViewOffset` | **the path that draws** | `Camera::getViewOffset` | §11.131(d) — LATENT (one writer, `Core::setViewOffset`); injected old 0.3 / drawn 0.15 |
+| latitude / longitude / altitude | `CoreLink::observatoryGet*` | **the path that draws** | `Camera::getPlace()` (the inverse of `moveTo`'s target, both modes) | §11.131(b) — REAL channel: `camera action descend`, old 40 000 000 m vs drawn 9 999 999.363 m |
+| mount | `Core::getMountMode` | **the path that draws** | `Camera::getMount` | §11.131(d) — LATENT (one config key); injected old equatorial / drawn altaz. **The WRITE half is still old-only** → B35 |
+| sky lock | `Core::getFlagLockSkyPosition` | **the path that draws** | `Camera::getSkyLock` | §11.131(c) — REAL channel: four sites write the old flag alone; the toggle was a no-op in one direction |
 | selected object RA/DE, Alt/Az | `ModularObject` | new path | — | offset-skewed while armed: §11.102(b2) (SUSPENDED with §11.92(d)) |
 
-`heading delta_azimuth d` **computes its target from the old getter** and writes it to
-both (`app_command_interface.cpp:2125`), so it silently re-synchronises the two headings
-— measured (§11.108(c)). → **B33**.
+`heading delta_azimuth d` **computed its target from the old getter** and wrote it to
+both (`app_command_interface.cpp:2125`), silently re-synchronising the two headings —
+measured (§11.108(c)), fixed §11.118(f). The same shape at the place: `moveto` with any
+absent component, `moveto multiply_alt`/`delta_alt`, `mode jump … altitude ±x`, the
+joypad height axis and the TUI location callback all build an ABSOLUTE target from these
+getters and write it to both paths — measured pre-fix as a **738 266 px>8** teleport of
+the drawn observer under a semantic no-op (§11.131(b)).
+
+**Second readers of the same readouts** (bypassing the getters, hence outside the fix
+until each is folded): `CoreLink::tcpGetPosition` — **folded** (§11.118(f) heading,
+§11.131(f) place); `CoreBackup::saveBackup`/`loadBackup` — **not folded**, because its
+restore reaches the old observer alone, so it needs the dual seam → **B34**;
+`Core::dragView`'s direct `getViewingMode()` read → **B35**. The readout channel itself
+is the class's own obstacle: `get status position` never replies (§5.47), so the
+`control` object on `body action dual_dump` (§11.131(a)) is what makes any of this
+measurable. → **B33 (CLOSED)**.
 
 ### 3.3 Bodies
 
@@ -301,7 +317,7 @@ callee does what its name says*). Each verified at source by the recorder:
 
 | row | class | content |
 |---|---|---|
-| **B33** | G-QUERY | the query half of the control surface reads the OLD path while setters are dual (§3.2); `heading delta_azimuth` computes from the wrong authority — measured |
+| **B33** | G-QUERY | ~~the query half of the control surface reads the OLD path while setters are dual (§3.2)~~ **CLOSED 2026-08-01** — heading §11.118(f), the other four §11.131; two of them (place, sky lock) had a REAL shipped divergence channel, not a latent one. Residues belong to other rows: the mount's write half → B35, `position save`/`load` → B34, the setter clamp asymmetry → §5.68 |
 | **B34** | G-OLD-ONLY | S6 residual dual-seam set: `body action clear`, `body action preload`, trail fresh-restart |
 | **B35** | G-CONFIG-ONLY | capabilities with no runtime channel: mount switch (both paths, dead `toggleMountMode`), `boundToSurface`, new-path fov clamps, oort cloud colour |
 | **B36** | G-UNREACHABLE | declared-but-undriven capabilities: the new-path set (§3.6) **plus the CoreLink ZERO set (14 of 330, §3.7)** — each needs a driver or a retirement |
