@@ -1043,3 +1043,49 @@ displacement structure* on the strength of a uniform mean and a bbox. Comparing
 the two frames' lit SETS instead — 0 of 400 overlapping, median nearest
 neighbour 50.2 px — says the opposite. A difference summarised by an average has
 not been looked at.
+
+## F22 — the old path's view-state readback and the §5.63 closer — INTENT §11.130, 2026-08-01
+
+    cd claude/harness && DISPLAY=:2 ./f22_s563_view.py  [absOutdir]
+    cd claude/harness && DISPLAY=:2 ./f22_b10_offset.py [absOutdir]
+
+**`f22_s563_view.py` — the same three launches, with the dump the row was owed.**
+Saved / in-scene A/A floor / restored, and at each one both a screenshot AND a
+`body action dual_dump`, so the field table and the pixel table come from one
+run. Every leaf of the header is flattened and compared; a field is a CANDIDATE
+only if it differs saved-vs-restored **and** agrees in the A/A floor. That
+second half is what makes it an instrument: the floor's own differing set is 26
+leaves and every one is a CAMERA field (`alt`/`az`/`lockedSkyRot`/`mat`, ~1e-3,
+because the sky lock captures at whatever frame the command lands on), while the
+old-path fields agree between two rebuilds to **1e-6 degrees**.
+
+**The control that does NOT apply, and why it is written down rather than
+silently dropped.** The dispatch asked for a stars-off control — a field that
+differs with the stars on and agrees with them off. View state does not behave
+that way and should not: turning the stars off removes the CONSEQUENCE, and a
+"cause" that vanished when you stopped drawing the thing it aims would be a
+consequence. Measured: stars off, the screen agrees (43 px>8, floor 48) and 87
+of the 88 fields still differ. The one that collapses is `stars.drawIdx`. The
+discriminating control here is the A/A floor, and the both-ways flip is the
+proof: pre-fix 3294 px>8 / direction 107.634° apart / 392 stars drawn against
+689 — delivered 38 px>8 / 0.0° / 392 against 392.
+
+**`f22_b10_offset.py` — §2 row B10, both ways, in two launches.** The old
+spelling (`set view_offset`) must still be refused and move nothing; the
+registered one (`set zoom_offset`) must move the offset on BOTH paths. Then the
+latch: unarmed the scalar is stored and the effective offset is 0, a `look_at`
+arms it on both paths, and a save→quit→restore brings back scalar AND latch on
+both. The refusal is counted from the log **after the app exits** — the app's
+stdout is block-buffered into that file, so a count taken while it runs reads 0
+whatever happened (this leg failed on its own instrument first).
+
+**Why the `look_at` matters beyond the offset**: it aims the OLD navigator away
+from its launch default, so the restore leg is run against a direction a fresh
+launch does not happen to start at — restored **0.00e+00°** from the saved one
+against a control **101.999°** away. A fix that merely refreshed the stale
+transform pair would land on the launch default and fail exactly there.
+
+**Floor note that supersedes the numbers above it in this file**: the in-scene
+A/A floor of a sky-LOCKED scene is **not 0**. §11.128/§11.129 recorded 0;
+measured at 26–51 px>8 across six runs of two harnesses here. Measure it
+in-scene every run (§11.80(a)) — every number in §11.130 carries its own.

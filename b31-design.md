@@ -163,7 +163,7 @@ primary class.
 | B16 | view-smoothing plan (`viewFrom`/`viewAxis`/`viewAngle`/`viewT1`/`viewT`/`viewTimer`/`viewV0`/`viewA`) and the heading plan (`hdg*`) | `:367-377` | DECISION | rides **D32**. NB tracking re-plans every frame (`Camera.cpp:264-266`) so this has no exact fixed point (§11.55(d)) |
 | B17 | per-MODE anchor memory (R13) | **does not exist** | DECISION | R13 mandates it; nothing to serialize until §6.9/B20 builds it. Dependency, recorded so it is not lost |
 | B18 | `minHalfFov`/`maxHalfFov` | `:422-423`, `Camera.cpp:13-14` | EXCLUDED | hard-coded, no channel (B35) — nothing to save |
-| B19 | old-path `Observer`/`Navigator` twin state | `navModule/` | EXCLUDED | old retires (§12); setters are dual so it follows. **But**: it is what the CONFIG channel currently reads (base C) — see §3.4 |
+| B19 | old-path `Observer`/`Navigator` twin state | `navModule/` | **PARTLY CARRIED [CORRECTED 2026-08-01, F22 §11.130]** | old retires (§12); setters are dual so it follows — **and for the VIEW DIRECTION that clause is measurably false**: nothing ties `Navigator::local_vision` to the camera, and a restored session reproduced every camera field to the digit while drawing its sky **107.634° away** (in-scene A/A floor 1e-6°, 392 stars drawn against 689). There is no seam to route it through either — the shipped `look_at` dual seam, driven with the camera's own alt/az, lands 94.4° from where the old navigator ends up (→ §5.66). So `[observer] sky_vision` carries it, restored through `Core::restoreSkyVision`, which ALSO refreshes the old transforms first because a restore runs between two frames (→ §5.65). The rest of the twin stays excluded and still follows its dual setters. **But**: it is what the CONFIG channel currently reads (base C) — see §3.4 |
 
 ### C — Selection / tracking
 
@@ -641,7 +641,8 @@ Two consequences, both new:
 
 Written as tests, each with what it can catch that the others cannot.
 
-* **[T1 IS NOT MET AS OF 2026-08-01 (F20, §11.128(h)) and the reason generalises:
+* **[T1 IS MET AS OF 2026-08-01 (F22, §11.130).** `f20_session.py` reads **39 px>8 against an in-scene A/A floor of 51**, and the f21_s563 content ladder on the same binary reads 29 px against a floor of 26 at EVERY stage — F21's content signature (stars 2418 + milky way 744 + nebulae 2493) is gone. What closed it was §5.63, and it was TWO things: the session carried no record of the direction the OLD path draws the sky from (row B19's exclusion clause, corrected above), and the sky lock, engaged inside the restore's frame-less batch, froze a transform/vision pair computed at the launch place and the launch DATE — the system clock, which is why the residual moved on every restore. **A third lesson for whoever writes T1's successor: the in-scene A/A floor of a sky-LOCKED scene is not 0.** §11.128(h)/§11.129 recorded 0; measured at 26–51 px>8 across six runs, because the lock captures at whatever frame the command lands on (the A/A dump names `alt`/`az`/`lockedSkyRot` itself). Measure it in-scene, every run, and never inherit it (§11.80(a)).]**
+* **[HISTORICAL — T1 WAS NOT MET AS OF 2026-08-01 (F20, §11.128(h)) and the reason generalises:
   a restore must drive the DUAL SEAM, not the member.** The first restore that
   reproduced every field of `Camera::dumpTrace` — 25 of 25, exact — still
   differed on the composed screen by **112 184 px>8 against an in-scene A/A
