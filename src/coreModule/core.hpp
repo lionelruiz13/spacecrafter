@@ -223,19 +223,31 @@ public:
 	//! Set whether sky position is to be locked. Both-paths mirror (defined in
 	//! core.cpp): old navigation flag + new-path Camera sky-lock (INTENT 11.58).
 	void setFlagLockSkyPosition(bool b);
-	//! Set whether sky position is locked
-	bool getFlagLockSkyPosition(void) {
-		return navigation->getFlagLockEquPos();
-	}
+	//! Whether the sky position is locked ON THE PATH THAT DRAWS — B33
+	//! (§11.108(f), the F12 template §11.118(f)). Defined in core.cpp: this
+	//! header does not see the Camera, and the answer is the Camera's whenever
+	//! the new path is the one drawing.
+	bool getFlagLockSkyPosition(void);
 
-	//! Set current mount type
+	//! Set current mount type.
+	//! WRITE-HALF GAP, named here because the read half above it is now right
+	//! and the pair would otherwise disagree the day this is wired: this writes
+	//! the OLD navigator only, while the drawn mount is `Camera::mount`
+	//! (`Camera::setMount`, whose transition is a deduce-identical-view
+	//! recovery the old setter has no equivalent of). Both are config-only
+	//! today — this method and toggleMountMode have ZERO callers in src/, and
+	//! both authorities are initialised from the SAME key
+	//! ([navigation] viewing_mode: core.cpp for the navigator,
+	//! ssystem_factory.cpp for the camera) — which is B35, and the spelling of
+	//! the command that would wire it is Vixy's (D15 adjacency). Whoever wires
+	//! it makes this dual FIRST; the getter is already asking the right
+	//! question. (INTENT §11.131.)
 	void setMountMode(MOUNT_MODE m) {
 		navigation->setViewingMode((m==MOUNT_ALTAZIMUTAL) ? Navigator::VIEW_HORIZON : Navigator::VIEW_EQUATOR);
 	}
-	//! Get current mount type
-	MOUNT_MODE getMountMode(void) {
-		return ((navigation->getViewingMode()==Navigator::VIEW_HORIZON) ? MOUNT_ALTAZIMUTAL : MOUNT_EQUATORIAL);
-	}
+	//! Get current mount type — of the path that DRAWS (B33). Defined in
+	//! core.cpp, same reason as getFlagLockSkyPosition.
+	MOUNT_MODE getMountMode(void);
 	//! Toggle current mount mode between equatorial and altazimutal
 	void toggleMountMode(void) {
 		if (getMountMode()==MOUNT_ALTAZIMUTAL) setMountMode(MOUNT_EQUATORIAL);

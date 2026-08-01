@@ -871,6 +871,35 @@ void Core::setFlagLockSkyPosition(bool b)
 		Camera::instance->setSkyLock(b);
 }
 
+//! B33 (§11.108(f), the F12 template §11.118(f)): the sky lock of the path that
+//! DRAWS. Its setter above is dual (§11.58) — but FOUR shipped sites write the
+//! old flag alone and are not this seam: selectObject and selectType turn the
+//! lock ON when an object is selected while tracking (core.cpp, the "keep the
+//! earth following" branch — that one is §11.58's own suspended item (iii), the
+//! old select-while-tracking auto-enable, so it stays), and autoZoomOut turns it
+//! OFF twice on the zoom-out-to-init path. So this readout diverges from the
+//! drawn path on a SHIPPED sequence, with no injection: select while tracking,
+//! and the flag command's own toggle then reads 1 while nothing is holding the
+//! sky, computes `!1` and writes 0 to both — a toggle that does nothing in one
+//! direction, which is exactly §11.129's `flag satellites` defect one layer up.
+//! The four write sites are recorded, not mirrored: making them dual changes
+//! what the sky does in a shipped scene, and one of them is suspended.
+bool Core::getFlagLockSkyPosition(void)
+{
+	if (!getExperimentalPath() || !Camera::instance)
+		return navigation->getFlagLockEquPos();
+	return Camera::instance->getSkyLock();
+}
+
+//! B33: the mount of the path that DRAWS. See the header for the write-half
+//! gap this getter deliberately does not close (B35 / D15).
+Core::MOUNT_MODE Core::getMountMode(void)
+{
+	if (!getExperimentalPath() || !Camera::instance)
+		return ((navigation->getViewingMode()==Navigator::VIEW_HORIZON) ? MOUNT_ALTAZIMUTAL : MOUNT_EQUATORIAL);
+	return ((Camera::instance->getMount()==CameraMount::ALTAZ) ? MOUNT_ALTAZIMUTAL : MOUNT_EQUATORIAL);
+}
+
 void Core::setExperimentalPath(bool newPath)
 {
 	ssystemFactory->setExperimentalPath(newPath);

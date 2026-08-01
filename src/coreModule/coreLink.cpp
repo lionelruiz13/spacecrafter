@@ -616,14 +616,15 @@ void CoreLink::dumpControlSurface(std::ostream &out) const
 std::string CoreLink::tcpGetPosition() const {
 	char tmp[512];
 	memset(tmp, '\0', 512);
+	// B33 (§11.118 for the heading, §11.131 for the place): every field here
+	// was a SECOND reader going straight to the old Observer/Navigator, so the
+	// TCP position query and the `moveto` command would have reported different
+	// places the moment the paths diverge - and `camera action descend` makes
+	// them diverge with one shipped command. One authority per readout (I2):
+	// the getters read the path that draws, and this asks them.
 	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;",
-		core->observatory->getLatitude(), core->observatory->getLongitude(),
-		core->observatory->getAltitude(), core->timeMgr->getJDay(),
-		// B33 (§11.118): this was a SECOND reader of the same readout, going
-		// straight to the old Navigator - so the TCP position query and the
-		// heading command would have reported different rolls the moment the
-		// paths diverge. One authority (I2): getHeading() reads the path that
-		// draws, and this asks it.
+		observatoryGetLatitude(), observatoryGetLongitude(),
+		observatoryGetAltitude(), core->timeMgr->getJDay(),
 		getHeading());
 	return tmp;
 }
