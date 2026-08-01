@@ -78,6 +78,39 @@ OUT (own future task — the one B34 member with a feel-reproduction surface). W
 both trees clean, binary confirmed current at code `4dc29023` by no-op rebuild;
 A40–A43/D15/D21/D37 all still open (no Vixy commit since session 7's close) ⇒
 B7-hunt-5, B12-content, §5.64 stay blocked accordingly.
+**Round outcome (session 8 close, 2026-08-01):** F22 → §11.130, F23 → §11.131,
+F24 → §11.132 — all three delivered AND supervisor-verified same session.
+**§5.63 ATTRIBUTED, FIXED, CLOSED — b31-design §6.2 T1 MET**: the residual was the
+old path's view DIRECTION, which no session ever carried (107.634° with every camera
+field exact), plus a sky lock latching a wall-clock-dated stale pair inside the
+restore's frame-less batch (= exclusion 7's restore-to-restore variance); three of
+§5.63's own recorded statements corrected en route (a low-spatial-frequency layer is
+not a displacement witness; the rotation fit excluded a roll, not a direction; a
+sky-locked scene's A/A floor is not 0). **B33 CLOSED** — all four remaining getters
+read the path that draws, and TWO had REAL shipped divergence channels (`camera
+action descend` splits the altitude authorities by design; four old-only sky-lock
+write sites made the toggle dead in one direction — the §11.129 `flag satellites`
+class one layer up). **B34's four mechanical members CLOSED** (clear / preload /
+trail-restart / position save-load; `ModularBody::preload` ran for the FIRST TIME
+EVER and its first exercise found a dropped shipped argument) — the row's one
+remaining member is the interactive VIEW/ZOOM ramp pair (feel surface). **B31's
+open set is now exactly T3/D21 · heading/D28 · C4's key — ALL Vixy's**; answering
+those three closes B31. NEW rows **§5.65–§5.69** (all record-only this round:
+§5.65/§5.69 decidable, §5.66 rides §11.92(d), §5.67/§5.68 awareness). Executor
+quality: F22 attributed in ONE wave what F21's three could not — the owed
+INSTRUMENT was the difference; F23's class survived four audits because no member
+had an observable channel; F24 caught its own RED half reading an ABSENT INSTRUMENT
+as an absent effect and split the delivery so one script measures both binaries —
+**instrument-first, now three-times-proven, goes into future task specs as
+structure** (instrument commit, then mechanism commit). Remaining dispatchable,
+next round: **B34-ramps to mint** (interactive view/zoom mirror — EXACT-parity
+reproduction of `navigation->updateMove` on `Camera::lookRel`; any point where
+exact reproduction is impossible becomes a Vixy feel item, not a silent choice),
+**§5.62's owed isolation measurement** (S — the pre-§5.52 binary in the current
+epoch), **B7-hunt-5 only after A40**, **B12 content** after b12-design §7 +
+A41/A42, **§5.64/§5.65 fixes** only after Vixy decides the semantics.
+DECISIONS_PENDING open set at close: **D15, D21 (late Aug), D37** + A40–A43
+awaiting; B31 closure now rides entirely on D21/D28/C4.
 
 ---
 
@@ -421,6 +454,25 @@ latest session update note above.*
   the command's own 10 s default → 160). Gates: battery + scene E, b24_equivalence
   (120 bodies) + b24_screen, f15, f20_session, f21×2, f22, f23×2, b16_reload; frozen md5
   in == out everywhere. No suspended items.
+  **Supervisor-verified 2026-08-01** (§11.132 read in full; commits/authors/trees
+  checked; diff surface verified — the only deletions in old-path-adjacent files are
+  the mandated `CoreBackup` rework + the unselect-test extension, no render-path
+  change; B34 annotation + §5.69 row + capability-surface updates verified at the
+  ledger; harnesses not re-run — 26-assertion both-binary records + the
+  exactly-12-differ b11 discrimination + committed artifacts accepted). Deviations
+  ALL ENDORSED: (1) the two-commit split — the first RED half read an ABSENT
+  INSTRUMENT as an absent effect and the split is what makes every RED leg an
+  effect; instrument-commit-then-seam-commit is the structural form of
+  §11.131(a)'s lesson and belongs in future task specs; (2) `keep_time` threaded
+  through the 4-module signature — a silently dropped shipped argument is an
+  unlogged acting default (D12); (3) the `OBJECT_MODULAR` unselect term — the
+  §11.106 completion already carries it, parity of the sibling path; (4)
+  replace-inherits-NAME's-provenance — the requirement old's shape encodes (*a
+  clear never removes declared data*) named and preserved; the observer-on-pushed-
+  body second guard STATED not invented (I5 redirect covers it). §5.69 → section 3
+  (decidable: honoring the documented seconds changes shipped-show residency —
+  D5/D6-adjacent). The (e) residual meets the acceptance bar (4.353871 m =
+  4.000000 float32 ulps, predicted from mechanism, both entries identical).
 
 ---
 
@@ -567,3 +619,42 @@ latest session update note above.*
   closure: §0.5 now carries a concurrent-instance assert before measurement
   launches — the confound is intra-account, md5 re-asserts alone don't cover a
   concurrent launcher. Nothing left for you to decide here.
+- **Session-8 veto points (2026-08-01 — all implemented-and-live, each cheap to
+  reverse; silence = endorsed):** (1) F22's **`sky_vision` key in `[observer]`**
+  (B28 class) — the old path's view direction, which no dual seam carries (B19's
+  exclusion clause measurably false for this member, §11.130(k)); one key + one
+  setter to reverse, older builds ignore it (D9/D13); (2) F22 asserts the old
+  path's **offset latch through a restore-only setter rather than an aim** (an aim
+  would move the view; the alternative couples what D32 separates); (3) F24's
+  **replace-inherits-NAME's-provenance** (`body action load … replace true` on a
+  file-declared body stays UNclearable — the requirement old's shape encodes: a
+  clear never removes declared data, §11.132(b)); (4) F24 adds **no second
+  clear-guard** for a camera referenced on a pushed body (old's guard covers old's
+  home planet; the I5 destruction contract redirects the camera — a second guard
+  would be a NEW user-visible rule, stated not invented).
+- **NEW decidable rows from session 8 (recorded, none blocking):** **§5.65**
+  (`moveto` + `flag lock_sky_position on` in ONE script block latches the PREVIOUS
+  frame's sky — fixing the seam changes what a shipped command does mid-show;
+  semantics = yours) · **§5.69** (`body action preload keep_time` truncated to
+  8 bits — 3 s×144 fps = 432 → 176 frames, the command's own 10 s default → 160;
+  honoring the documented seconds changes shipped-show texture residency, a
+  D5/D6-adjacent call; the fix itself is one field width).
+- **Session-8 awareness, no action needed:** **§5.66** (`look_at`'s camera half and
+  old-navigator half land 94.4° apart — B9 az-convention family, rides your
+  §11.92(d)) · **§5.67** (after any `look_at` the old path runs with norm-2 vision
+  vectors; `constellation.cpp`'s art-fade dot test is twice as permissive —
+  pre-existing old-path behaviour) · **§5.68** (the dual place setters are dual but
+  NOT equivalent: old clamps lat ±90°, maps 0→1e-6, floors alt at 0.1 m; the camera
+  clamps nothing — a write-half asymmetry every `moveto` already has).
+- **B31 STATUS after session 8 — T1 MET, the session feature is functionally
+  complete:** a saved session now restores the camera, the old path's sky direction,
+  the view offset on both paths, flags/values/colours and the per-body ledger, with
+  T4 byte-identity and T10 at 0. The row's ENTIRE open set: **T3 (rides your D21,
+  late Aug) · `heading` (rides your D28, late Aug) · C4's non-body catalogue key
+  (D34's unanswered half)**. Answering D21+D28+C4 closes B31.
+- **B33 CLOSED (session 8) — two of its four last members were lying on SHIPPED
+  commands** (altitude readout during `camera action descend`; the sky-lock toggle
+  dead in one direction after select-while-tracking). Residues named in-row and
+  routed: the four old-only sky-lock write sites ride your **D15/§11.58(iii)**;
+  the mount write-half rides **B35**'s spelling (its requirement is stated at the
+  setter).
