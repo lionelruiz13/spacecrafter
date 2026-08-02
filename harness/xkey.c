@@ -12,8 +12,11 @@
  * expected size, not the WM frame (§11.106(a)'s recorded trap) - and focus is
  * set before the press, because a key event without focus goes nowhere.
  *
- * usage:  xkey <win-name-prefix> <keysym-name> <hold-ms> [<W>x<H>]
+ * usage:  xkey <win-name-prefix> <keysym-name>[,<keysym-name>...] <hold-ms> [<W>x<H>]
  *         e.g. xkey spacecrafter Left 1500 1024x1024
+ *              xkey spacecrafter Left,Up 1500 1024x1024     (DIAGONAL: two keys
+ *              held together, released in reverse order - the two vzm.delta*
+ *              components active in the same frame, which one key cannot make)
  * Exit 0 on success, 2 when no matching window is found, 3 on a bad keysym.
  *
  * Build:  gcc -O1 -o xkey xkey.c -lX11 /usr/lib/x86_64-linux-gnu/libXtst.so.6
@@ -85,15 +88,30 @@ int main(int argc, char **argv)
         fprintf(stderr, "xkey: cannot open display\n");
         return 1;
     }
-    KeySym ks = XStringToKeysym(argv[2]);
-    if (ks == NoSymbol) {
-        fprintf(stderr, "xkey: unknown keysym '%s'\n", argv[2]);
-        XCloseDisplay(d);
-        return 3;
+    /* comma-separated keysym list: all pressed together, released in reverse */
+    KeyCode kcs[8];
+    int nkeys = 0;
+    {
+        char names[256];
+        snprintf(names, sizeof(names), "%s", argv[2]);
+        for (char *tok = strtok(names, ","); tok && nkeys < 8; tok = strtok(NULL, ",")) {
+            KeySym ks = XStringToKeysym(tok);
+            if (ks == NoSymbol) {
+                fprintf(stderr, "xkey: unknown keysym '%s'\n", tok);
+                XCloseDisplay(d);
+                return 3;
+            }
+            KeyCode kc = XKeysymToKeycode(d, ks);
+            if (!kc) {
+                fprintf(stderr, "xkey: keysym '%s' has no keycode on this layout\n", tok);
+                XCloseDisplay(d);
+                return 3;
+            }
+            kcs[nkeys++] = kc;
+        }
     }
-    KeyCode kc = XKeysymToKeycode(d, ks);
-    if (!kc) {
-        fprintf(stderr, "xkey: keysym '%s' has no keycode on this layout\n", argv[2]);
+    if (!nkeys) {
+        fprintf(stderr, "xkey: no keysym given\n");
         XCloseDisplay(d);
         return 3;
     }
@@ -117,13 +135,16 @@ int main(int argc, char **argv)
     XSetInputFocus(d, win, RevertToParent, CurrentTime);
     XFlush(d);
     usleep(200000);
-    XTestFakeKeyEvent(d, kc, 1, 0);
+    for (int i = 0; i < nkeys; ++i)
+        XTestFakeKeyEvent(d, kcs[i], 1, 0);
     XFlush(d);
     usleep((useconds_t)atoi(argv[3]) * 1000);
-    XTestFakeKeyEvent(d, kc, 0, 0);
+    for (int i = nkeys - 1; i >= 0; --i)
+        XTestFakeKeyEvent(d, kcs[i], 0, 0);
     XFlush(d);
     usleep(150000);
-    printf("held %s (keycode %u) for %s ms on window 0x%lx\n", argv[2], kc, argv[3], (unsigned long)win);
+    printf("held %s (%d key%s) for %s ms on window 0x%lx\n", argv[2], nkeys,
+           (nkeys > 1) ? "s" : "", argv[3], (unsigned long)win);
     XCloseDisplay(d);
     return 0;
 }
