@@ -82,6 +82,24 @@ A41/A42, **§5.64/§5.65 fixes** only after Vixy decides the semantics.
 DECISIONS_PENDING open set at close: **D15, D21 (late Aug), D37** + A40–A43
 awaiting; B31 closure now rides entirely on D21/D28/C4.
 
+**Update [Fable 2026-08-02, supervising session 9]:** round of 3: **F25 → F26 → F27**.
+F25 = **B34-ramps** (session 8's queued item — the row's last member; minted at
+dispatch per §0b.2). F26 = **§5.62's owed isolation measurement** (queued, S). F27 =
+**§5.47's drain path** — NOT in session 8's queue enumeration; authority check at §5:
+the row carries a recorded fix shape (*"follow `outputQueue` through
+`ServerSocket::run`'s send loop"*), names no Vixy decision, and is
+instrument-load-bearing (the ONLY side-effect-free read of observer position + heading;
+its silence forces every heading pin through a write-after-read channel at two launches
+per pin, §11.118(f)). Lateral search live ∪ archive found no deferral record ⇒ the
+omission is view staleness, same class as session 8's F23/F24. Warm-up: both trees
+clean (code `d88f5be2`, harness `87ae3f1`), binary confirmed current by no-op rebuild;
+`free -g` = 13 GiB available ⇒ **-j6 this session**; NO Vixy commit since session 8's
+close ⇒ A40–A43/D15/D21/D28-residue/D37/C4 all open — B7-hunt-5, B12-content,
+§5.64/§5.65 stay blocked; B35/B37/B38 decision-gated, B36 per-member (pin/unpin rides
+B1), B39/B27 done. Dispatch order = queue order; F25→F26 order-independence CHECKED,
+not assumed (F26 lands no code; its frozen scene never exercises F25's key-path diff;
+F26 builds both its binaries fresh at named commits regardless of HEAD).
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -202,9 +220,144 @@ DELIVERED and archived** — F0 §11.103 · F1 §11.104/§11.105 · F2 §11.106 
 F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · F15 §11.121 ·
 F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129 ·
 F22 §11.130 · F23 §11.131 · F24 §11.132.
-No section is live: the next dispatchable task (B34-ramps, the interactive
-view/zoom mirror) is to be minted at its dispatch per §0b.2 — the current queue
-lives in the latest session update note above.*
+Live sections this round (session 9): **F25 · F26 · F27** below.*
+
+### F25 — B34's last member: the interactive view/zoom ramps act on the path that draws  [L]
+
+- **Row / recorded:** B34 row (INTENT.md §13.B) — the view ramp is MEASURED, not read:
+  arrow key → `Core::turnLeft/Right/Up/Down` → `vzm` → `Core::updateMove` →
+  `navigation->updateMove` (`core.cpp:1817-1826` at the row's compile), with NO
+  `Camera::` mirror (`Camera::lookRel`'s only caller is `Core::dragView`,
+  `core.cpp:1754`) ⇒ under the new render path **the arrow keys turn nothing**. Live
+  probe on record: `harness/xkey.c` + `f4_keyprobe.py` (XTEST, Left held 2500 ms) —
+  positive control OK (old moves 73 777 px>32), new camera az/alt **bit-identical**,
+  same body in the same dump: old moves 872.79 px, new |Δ| 0.000e+00 NDC. Sibling by
+  source, **unprobed**: the continuous ZOOM ramp (`core.cpp:1799-1801` →
+  `Projector::changeFov` only). Precedents: §11.108(d) = the altitude ramp (B21),
+  whose coefficient transferred verbatim — the shape to follow where it holds; F4 §11.108
+  did NOT fix this member because the turn needs `navigation->updateMove`'s
+  sign/cadence/fov-scaling reproduced on `Camera::lookRel` — an interactive-FEEL
+  surface. Instruments that now exist and F4 lacked: `body action dual_dump`'s
+  `control` object (§11.131), `Camera::getPlace()` = exact inverse of `moveTo`
+  (§11.131), the `oldView` readback (§11.130). All file:line pointers are at the
+  row's compile — **re-locate every route at HEAD first** (F24's opening move).
+- **Mandate [session-8 queue, verbatim]:** *"EXACT-parity reproduction of
+  `navigation->updateMove` on `Camera::lookRel`; any point where exact reproduction is
+  impossible becomes a Vixy feel item, not a silent choice."*
+- **Why now:** B34's ONE remaining member — the last recorded operator action where
+  the drawn universe ignores the operator; every mechanical sibling landed (§11.132).
+- **Task:** (i) **Instrument first, own commit** (three-times-proven, session-8
+  structure): whatever per-step readout the parity measurement needs on BOTH paths
+  (additive only; dual_dump precedent), wired to nothing; the pre-fix binary is a
+  build of that commit so ONE script measures both. (ii) **Derivation-diff
+  `navigation->updateMove`**: enumerate EVERY term of the turn ramp — sign
+  conventions, cadence law (per-frame vs time-based, accel/decel of discretionary
+  movement), fov scaling of the step, clamps/poles, interaction with tracking/lock —
+  as a committed table; then map each term onto `Camera::lookRel`/the camera frame.
+  A term with no exact camera equivalent = **named Vixy feel item** (record, stop on
+  that term — never approximate silently). (iii) Wire the turn mirror at the seam
+  the route already has (the `Core::updateMove`/vzm layer, where the altitude ramp
+  mirrored) — old path unchanged by construction. (iv) ZOOM ramp: **probe before
+  mirroring** — if the new path consumes the same `Projector` fov, the ramp may
+  already reach it; measure, then mirror only what is measured missing, same
+  term-table discipline. (v) Verify through the LIVE key channel: extend
+  `f4_keyprobe` — delivered binary moves BOTH paths under XTEST hold with per-step
+  deltas EQUAL at the row's own bar (px>32 + az/alt readouts); pre-fix binary
+  reproduces F4's asymmetry; key-RELEASE deceleration parity; diagonal (two keys);
+  cadence at two fovs (the fov-scaling term is where a feel divergence hides);
+  zoom ramp both-fov readouts converge identically.
+- **Stop boundaries (NOT yours):** old-path behavior (§11.52(b) baseline); any
+  inexact-reproduction point (→ Vixy feel item, recorded); B35 mount write-half;
+  §5.66 look_at family (rides §11.92(d)); new command spellings (B28 — the ramps are
+  key-driven; want a command? record the want); D21/D28-residue/C4; §5.62's
+  consequence binds you — in-epoch pairs only, never cross-epoch.
+- **Discriminating checks:** both-ways XTEST ladder (delivered: both paths move,
+  deltas equal; pre-fix: new bit-identical while old moves); release-deceleration
+  both-ways; battery + f-suites green; frozen md5 in==out; §11.121(m)
+  concurrent-instance assert; §11.123(o2) cadence caution — counter ratios and
+  in-run A/B only, never absolute fps labels.
+- **WIP:**
+
+### F26 — §5.62's owed isolation: the pre-§5.52 binary in the current epoch  [S]
+
+- **Row / recorded:** §5.62 VERBATIM (INTENT.md §5; recorded by F18, §11.127(e)):
+  the identical source measured the identical frozen scene (mid-band disc, halo
+  suppressed, disc-integrated new/old ratio) at 23:05 → Sun 0.8356 / Mars 0.8770 /
+  Jupiter 0.9949, and at 00:02 + 00:05 → Sun 0.8356 / Mars 0.9198 / **Jupiter
+  1.2909** (brighter than old — neither noise nor a wash); build diff COMMENTS only;
+  the two late runs agree to the digit; OLD path bit-stable across epochs (Jupiter
+  old_disc 3908 both sides); every documented precondition clean at the second
+  epoch; `active.lock` = rotation marker only (retraction recorded). Owed IN-ROW:
+  *"the same scene on the pre-§5.52 binary in the current epoch, which isolates
+  whether the shift lives in the delivered code at all or in the app's accumulated
+  state."* Consequence in force for everyone: in-epoch pairs only.
+- **Why now:** S; owed before §5.62 can be judged; every future mid-band measurement
+  carries the in-epoch-only constraint until this discriminates.
+- **Task:** (i) Reconstruct the scene + measurement exactly per §11.127(e)/F18's
+  harness — if the harness has drifted and the scene cannot be reproduced, STOP and
+  say so; never substitute a weaker scene. (ii) Identify at the git log (never
+  recall) the §5.52 fix commit and its PARENT; build BOTH in separate build dirs —
+  the one-variable pair is (pre-§5.52 parent) vs (§5.52-carrying child `2117ccb0`
+  or the F18 delivery commit as logged), NOT vs current HEAD (F25 may have landed;
+  keep the pair tight). (iii) In ONE epoch — same session, minutes apart, fresh
+  launches, §11.121(m) assert before each — measure both binaries, with an in-epoch
+  A/A repeat per binary (the row's precedent: agreement to the digit). (iv)
+  Discriminate and EXTEND the row: pre-§5.52 shows the shifted values too ⇒ the
+  shift lives in accumulated app/host state, delivered code exonerated; pre-§5.52
+  shows the first-epoch values while the child shows the shifted ones in the same
+  epoch ⇒ the code is implicated and §5.62 escalates from record-don't-chase (say
+  so; do not chase further). Either way the row gains the measurement + its
+  conclusion at the row's own bar. (v) NO fixes, NO chasing beyond the owed
+  measurement — anything new = record as a row.
+- **Stop boundaries (NOT yours):** any fix; texture-cache/config mutation; old
+  path; cross-epoch comparisons (the row's own consequence).
+- **Discriminating checks:** old_disc bit-stability replicated in every launch (the
+  row's own control); per-binary in-epoch A/A agreement to the digit; frozen md5
+  in==out; fresh launches; no `t-*.dat` written during the session (the row checked
+  this — re-assert it); concurrent-instance assert.
+- **WIP:**
+
+### F27 — §5.47: the reply that never arrives — `get status position`'s drain path  [S–M]
+
+- **Row / recorded:** §5.47 VERBATIM (INTENT.md §5; recorded by F12, §11.118(i)):
+  `AppCommandInterface::commandGet` resolves the argument and calls
+  `tcp->setOutput(coreLink->tcpGetPosition())`; `ServerSocket::setOutput` pushes
+  onto `outputQueue` under its lock and returns; **nothing arrived on the driving
+  socket in a 6 s poll, twice**, in a session where `timerate`, `date`, `flag`,
+  `select`, `body action dual_dump`, `body action screenshot` all worked on that
+  SAME connection; no "No tcp : i can't send" in the app log. Consequence: this is
+  the ONLY side-effect-free read of the observer position AND the heading readout —
+  its silence forces every heading instrument through `heading delta_azimuth`,
+  which WRITES both authorities after reading (two `experimental_path` pins needed
+  two launches, §11.118(f)). Fix shape IN-ROW: *"follow `outputQueue` through
+  `ServerSocket::run`'s send loop and find out whether it is drained at all,
+  drained to a different socket, or drained only when a second client is
+  connected."*
+- **Why now:** instrument-load-bearing for every future control-surface task; no
+  Vixy decision named; the drain path is a TCP-server question isolated from the
+  body path.
+- **Task:** (i) Positively map the drain at source: `ServerSocket::run`'s send
+  loop, the `outputQueue` lifecycle, WHICH socket the drain writes to and under
+  what condition (the row's three hypotheses). (ii) If not decidable at source,
+  instrument first (own commit): a D12-class log at the drain decision (socket id,
+  queue depth) — additive. (iii) Fix at the root: a get's reply lands on the
+  connection that issued it. If the routing is a DESIGN (replies to a different
+  channel on purpose) ⇒ that is semantics: record + STOP, Vixy's. (iv) Verify
+  live, both ways: F12's 6-s-poll scenario reproduced — pre-fix binary silent,
+  delivered binary replies on the driving socket; the six working commands
+  unchanged on the same connection; a second-client leg if the mechanism
+  implicates one. (v) Reply CONTENT verified against dual_dump's `control` object
+  (B33's bar reaches this channel: the readout must agree with the path that
+  draws). (vi) Note in the entry that heading pins can now use the read-only
+  channel; ONE demonstration, no harness rewrites (future tasks pick it up).
+- **Stop boundaries (NOT yours):** protocol redesign (framing, new commands); other
+  `get` handlers beyond what the root requires; B37/B38 surfaces; reply-routing
+  semantics if that is what the root is (→ record + suspend).
+- **Discriminating checks:** both-ways driving-socket scenario (pre-fix: 6 s
+  silence ×2; delivered: reply within the poll); working-commands control set
+  green on the same connection; battery green (TCP-touching suites); frozen md5
+  in==out; concurrent-instance assert.
+- **WIP:**
 
 ---
 
