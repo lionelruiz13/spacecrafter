@@ -415,7 +415,22 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   silence ×2; delivered: reply within the poll); working-commands control set
   green on the same connection; battery green (TCP-touching suites); frozen md5
   in==out; concurrent-instance assert.
-- **WIP:**
+- **WIP:** 2026-08-02 — **CP1: the drain is MAPPED, at source AND on the wire; no code touched yet.**
+  The queue IS drained, on every pass of `ServerSocket::run` (`checkDataToSend`, io.cpp:388 +
+  630-639, the loop's own wait is a 1 ms `SDLNet_CheckSockets`), and it is drained to
+  `broadcast` (io.cpp:641-655), which sends to every client whose `clientBroadcastTab` entry is
+  true — a table set true in exactly ONE place, the `$LOGON` command (io.cpp:614). So the reply
+  goes to the FEEDBACK SUBSCRIBERS, never to the issuer as such, and with no subscriber it is
+  popped and lost. The addressee is dropped at the FIRST hop: `computeNormalString(client, …)`
+  knows the connection and pushes the bare string (io.cpp:625). Hypothesis 3 (second client)
+  REFUTED — the client count is irrelevant, the subscription is the condition. Measured pre-fix
+  (`harness/sc_f27_pre`, md5 `42f83cd3`, = code `d9de42ac`), `harness/f27_reply.py`: A 6 s
+  silence ×2 on the driving socket with all six §5.47 commands green on that same connection
+  (select 1 216 563 px>8, 2 166 878 lit px, 0 refusals); B the SAME socket after `$LOGON`
+  receives the reply in **0.006 s**, content == the dump's `control` (alt/heading authorities
+  diverge, reply follows NEW); C listener 1 copy / issuer 0, twice; D script-`get` → subscriber
+  only; E 0/3 read-only heading samples. Next: root fix (carry the issuing connection from input
+  to output).
 
 ---
 
