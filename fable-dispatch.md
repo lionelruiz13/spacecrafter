@@ -198,13 +198,16 @@ no `run_in_background`; both HEADs stated ⟨code, harness⟩.
 
 ## 1. Dispatch order (load-bearing first; each task states why, so the order is challengeable)
 
-*Derived index (regenerable from `fable-dispatch/archive/`): sections **F0–F24 all
+*Derived index (regenerable from `fable-dispatch/archive/`): sections **F0–F27 all
 DELIVERED and archived** — F0 §11.103 · F1 §11.104/§11.105 · F2 §11.106 · F3 §11.107
 · F4 §11.108 · F5 §11.109 · F6 §11.110 · F7 §11.111 · F8 §11.122 · F9 §11.123 ·
 F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · F15 §11.121 ·
 F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129 ·
-F22 §11.130 · F23 §11.131 · F24 §11.132.
-Live sections this round (session 9): **F25 · F26 · F27** below.*
+F22 §11.130 · F23 §11.131 · F24 §11.132 · F25 §11.133 · F26 §11.134 · F27 §11.135.
+No section is live: the next dispatchable candidate (§5.73's fix-shape
+verification, conditional on a decision-free sizing fix confirmed at source) is
+to be minted at its dispatch per §0b.2 — the current queue lives in the latest
+session update note above.*
 
 ---
 
