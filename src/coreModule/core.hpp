@@ -27,6 +27,7 @@
 #define _CORE_H_
 
 #include <string>
+#include <vector>
 #include "bodyModule/body_common.hpp"
 //#include "atmosphereModule/atmosphere.hpp"
 #include "atmosphereModule/skybright.hpp"
@@ -472,6 +473,40 @@ public:
 	//! Const, side-effect-free, dump-channel only: the old render path is
 	//! unchanged by construction (§11.52(b)).
 	void dumpOldViewState(std::ostream &out) const;
+
+	//! ---- THE INTERACTIVE-RAMP INSTRUMENT (INTENT §11.133, B34) -----------
+	//! READBACK ONLY. One record per `Core::updateMove` frame in which an
+	//! interactive ramp is active, plus the FIRST frame after it stops (so a
+	//! key RELEASE has a row of its own and is not read off an absence).
+	//! Written by `Core::updateMove`, read only by the dump channel
+	//! (`Core::ssystemDualDump`); nothing in the app consumes it and removing
+	//! it changes no behaviour.
+	//! What it is FOR: the parity claim B34's ramp member makes is a PER-STEP
+	//! one. A `body action dual_dump` before and after a 2.5 s key hold gives
+	//! two ABSOLUTE states — it cannot say whether the two paths took the same
+	//! step, the same number of steps, or the same law; and on a binary with no
+	//! mirror it cannot tell "the ramp did not reach the camera" from "the
+	//! readout does not exist" (§11.132(a)'s fiction, the reason instruments
+	//! come first and in their own commit). Each row therefore carries the
+	//! frame's INPUTS (delta_time, both fov authorities, the scaled steps) and
+	//! BOTH paths' view parameters before and after the step.
+	struct RampStep {
+		unsigned int frame;			//!< `Core::updateMove` call index (gaps are visible)
+		int deltaTime;				//!< ms handed to `Core::updateMove`
+		double fov, fovAfter;		//!< OLD projector fov (deg), before/after
+		double halfFov, halfFovAfter;	//!< the DRAWN fov authority `ModularBody::halfFov` (rad)
+		double dAz, dAlt, dFov, dHeight;	//!< the per-frame steps AFTER the ramp law
+		double coefAz, coefAlt;		//!< the joypad-axis coefficients that scaled them
+		//! OLD: the vision vector's spherical coordinates in the ACTIVE mount's
+		//! frame — exactly the pair `Navigator::updateMove` reads and writes.
+		double oldAz, oldAlt, oldAzAfter, oldAltAfter;
+		//! NEW: `Camera`'s own view parameters (its convention: az = −lng and
+		//! alt = −lat of the forward direction in the param frame).
+		double newAz, newAlt, newAzAfter, newAltAfter;
+		bool active;				//!< false on the release row
+	};
+	//! The ring, chronological, as one JSON object.
+	void dumpRampTrace(std::ostream &out) const;
 	//! Pin the rendered body path (flag experimental_path): old/new selection
 	//! replacing the A/B auto-toggle once used.
 	void setExperimentalPath(bool newPath);
@@ -618,6 +653,16 @@ private:
 
 	// Increment/decrement smoothly the vision field and position
 	void updateMove(int delta_time);
+
+	//! Ramp-instrument storage (see RampStep above). A fixed-size ring, filled
+	//! only while a ramp is active, so a hold longer than the ring keeps its
+	//! LAST frames and `rampTotal` says how many were dropped.
+	static constexpr unsigned int RAMP_TRACE_CAPACITY = 2048;
+	std::vector<RampStep> rampTrace;
+	unsigned int rampWrite = 0;		//!< next slot
+	unsigned int rampTotal = 0;		//!< records ever written
+	unsigned int rampFrame = 0;		//!< `updateMove` call index
+	bool rampWasActive = false;		//!< to emit the release row
 
 	// initialize CoreFont class
 	void registerCoreFont() const;

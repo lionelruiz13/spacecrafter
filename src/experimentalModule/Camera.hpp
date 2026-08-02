@@ -112,6 +112,17 @@ public:
         return skyLocked;
     }
 
+    // READBACK ONLY (INTENT §11.133, B34's ramp member): the view parameters
+    // this camera holds, in ITS OWN convention — (alt, az, heading), where
+    // az = −lng and alt = −lat of the forward direction in the param frame
+    // (paramForward / viewRotation are the authority on that, Camera.cpp).
+    // Const, side-effect-free, consumed only by the dump channel: the ramp
+    // instrument needs the NEW path's half of a per-step comparison, and
+    // `dumpTrace` only reports the state at dump time.
+    inline Vec3f getViewParams() const {
+        return Vec3f(alt, az, heading);
+    }
+
     void moveHeading(float deltaHeading);
     void setHeading(float heading, float duration = 0);
     inline float getHeading() const {

@@ -795,6 +795,11 @@ void Core::ssystemDualDump(const std::string& file)
 		// CoreLink owns most of those getters, so CoreLink writes it (I1).
 		out << ",\"control\":";
 		CoreLink::instance->dumpControlSurface(out);
+		// B34's ramp member (§11.133): the PER-STEP record of the interactive
+		// ramps. Core owns it because Core::updateMove is where the step is
+		// computed and where both paths' authorities are in scope at once.
+		out << ",\"ramp\":";
+		dumpRampTrace(out);
 	});
 }
 
@@ -1872,9 +1877,45 @@ void Core::dragView(int x1, int y1, int x2, int y2)
 	setFlagLockSkyPosition(false);
 }
 
+// The old path's half of the ramp instrument (INTENT §11.133). EXACTLY the pair
+// `Navigator::updateMove` reads and writes (navigator.cpp:186-189): the vision
+// vector of the ACTIVE mount, in spherical coordinates. Read through the
+// navigator's own const getters, so no old-path source is touched at all — the
+// §11.130 `oldView` readback precedent, one layer smaller.
+static void rampVisionAzAlt(const Navigator *nav, double &az, double &alt)
+{
+	Utility::rectToSphe(&az, &alt,
+		(nav->getViewingMode() == Navigator::VIEW_EQUATOR) ? nav->getEquVision()
+		                                                   : nav->getLocalVision());
+}
+
 //! Increment/decrement smoothly the vision field and position
 void Core::updateMove(int delta_time)
 {
+	// ---- ramp instrument, BEFORE half (INTENT §11.133; readback only) -----
+	// `active` is read before the scaling block below, which rewrites the
+	// magnitudes but never the zero/non-zero state, so this is the same
+	// predicate either side of it. The release row is the frame after the last
+	// active one: a key-up must be OBSERVED, not inferred from an absent row.
+	const bool rampActive = (vzm.deltaAz != 0 || vzm.deltaAlt != 0
+	                      || vzm.deltaFov != 0 || vzm.deltaHeight != 0);
+	const bool rampRecord = rampActive || rampWasActive;
+	RampStep step{};
+	if (rampRecord) {
+		step.frame = rampFrame;
+		step.deltaTime = delta_time;
+		step.active = rampActive;
+		step.fov = projection->getFov();
+		step.halfFov = ModularBody::halfFov;
+		rampVisionAzAlt(navigation, step.oldAz, step.oldAlt);
+		if (Camera::instance) {
+			const Vec3f p = Camera::instance->getViewParams();
+			step.newAlt = p[0];
+			step.newAz = p[1];
+		}
+	}
+	++rampFrame;
+
 	// the more it is zoomed, the more the mooving speed is low (in angle)
 	double depl=vzm.move_speed*delta_time*projection->getFov();
 	double deplzoom=vzm.zoom_speed*delta_time*projection->getFov();
@@ -1940,6 +1981,64 @@ void Core::updateMove(int delta_time)
 		// must perform call anyway, but don't record!
 		navigation->updateMove(vzm.deltaAz, vzm.deltaAlt, projection->getFov());
 	}
+
+	// ---- ramp instrument, AFTER half (INTENT §11.133; readback only) ------
+	if (rampRecord) {
+		step.dAz = vzm.deltaAz;
+		step.dAlt = vzm.deltaAlt;
+		step.dFov = vzm.deltaFov;
+		step.dHeight = vzm.deltaHeight;
+		step.coefAz = vzm.coefAz;
+		step.coefAlt = vzm.coefAlt;
+		step.fovAfter = projection->getFov();
+		step.halfFovAfter = ModularBody::halfFov;
+		rampVisionAzAlt(navigation, step.oldAzAfter, step.oldAltAfter);
+		if (Camera::instance) {
+			const Vec3f p = Camera::instance->getViewParams();
+			step.newAltAfter = p[0];
+			step.newAzAfter = p[1];
+		}
+		if (rampTrace.empty())
+			rampTrace.resize(RAMP_TRACE_CAPACITY);
+		rampTrace[rampWrite] = step;
+		rampWrite = (rampWrite + 1) % RAMP_TRACE_CAPACITY;
+		++rampTotal;
+	}
+	rampWasActive = rampActive;
+}
+
+// The ring, chronological. `dropped` is what a hold longer than the ring lost,
+// so a truncated capture says so instead of looking like a short one.
+void Core::dumpRampTrace(std::ostream &out) const
+{
+	const auto prec = out.precision();
+	const unsigned int n = (rampTotal < RAMP_TRACE_CAPACITY) ? rampTotal : RAMP_TRACE_CAPACITY;
+	const unsigned int first = (rampTotal < RAMP_TRACE_CAPACITY)
+		? 0 : (rampWrite % RAMP_TRACE_CAPACITY);
+	out << std::setprecision(17) << "{\"capacity\":" << RAMP_TRACE_CAPACITY
+	    << ",\"total\":" << rampTotal
+	    << ",\"dropped\":" << (rampTotal > RAMP_TRACE_CAPACITY ? rampTotal - RAMP_TRACE_CAPACITY : 0)
+	    << ",\"frames\":" << rampFrame
+	    << ",\"steps\":[";
+	for (unsigned int i = 0; i < n; ++i) {
+		const RampStep &s = rampTrace[(first + i) % RAMP_TRACE_CAPACITY];
+		out << (i ? "," : "")
+		    << "{\"frame\":" << s.frame
+		    << ",\"dt\":" << s.deltaTime
+		    << ",\"active\":" << (s.active ? "true" : "false")
+		    << ",\"fov\":" << s.fov << ",\"fovAfter\":" << s.fovAfter
+		    << ",\"halfFov\":" << s.halfFov << ",\"halfFovAfter\":" << s.halfFovAfter
+		    << ",\"dAz\":" << s.dAz << ",\"dAlt\":" << s.dAlt
+		    << ",\"dFov\":" << s.dFov << ",\"dHeight\":" << s.dHeight
+		    << ",\"coefAz\":" << s.coefAz << ",\"coefAlt\":" << s.coefAlt
+		    << ",\"oldAz\":" << s.oldAz << ",\"oldAlt\":" << s.oldAlt
+		    << ",\"oldAzAfter\":" << s.oldAzAfter << ",\"oldAltAfter\":" << s.oldAltAfter
+		    << ",\"newAz\":" << s.newAz << ",\"newAlt\":" << s.newAlt
+		    << ",\"newAzAfter\":" << s.newAzAfter << ",\"newAltAfter\":" << s.newAltAfter
+		    << '}';
+	}
+	out << "]}";
+	out.precision(prec);
 }
 
 
