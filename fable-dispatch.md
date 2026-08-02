@@ -356,6 +356,24 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   dichotomy is answered by a third branch — the pre-§5.52 binary cannot carry the shifted
   observable at all, so the discriminating leg is the child in a new epoch (recorded).
   §5.62's own `active.lock` statement REFUTED en route.
+  **Supervisor-verified 2026-08-02** (§11.134 read in full; code tree confirmed untouched
+  and clean at `d9de42ac`; harness commits/authors checked; §5.62 row extension verified at
+  the ledger — discrimination + refutation + STAYS-OPEN with the named next step; the
+  one-variable pair argued at three levels — §5.54 gate bit-identical at 2048, submodule
+  pointer identical across all four commits, Renderer byte-identical child→HEAD; the
+  instrument validated against the row's own five artifact sets to the digit BEFORE being
+  trusted). Deviations ALL ENDORSED: (1) -j8 at 38 GiB measured — inside the rule with OOM
+  headroom; (2) worktrees — strictly better abort tolerance, main tree never moved; (3) the
+  §11.121(m) probe REPLACED — the stock pattern both under-reports (blind to out-of-tree
+  binaries) and over-reports (pgrep -f self-match, measured 3 with nothing running), the
+  `/proc/<pid>/comm` replacement positively mapped both ways (decoy 1 / without 0) — the
+  instrument-chain bar applied to a standing precondition, PROPAGATE to §0.5 at close;
+  (4) run.log unlinked by the driver's own rm — every lost datum enumerated as held
+  elsewhere, wrapper fixed forward, re-run correctly refused to preserve the interleaving;
+  (5) the third-branch answer — the row's own owed-statement was one binary short, my F26
+  spec inherited it, the executor corrected rather than glossed (endorsed as
+  supersession-with-record). Verdict ENDORSED at the row's own bar: transient of the
+  epoch-B session; exoneration rests on a 290×-floor discrimination.
 
 ### F27 — §5.47: the reply that never arrives — `get status position`'s drain path  [S–M]
 
