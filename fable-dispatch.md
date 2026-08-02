@@ -276,7 +276,11 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   both-ways; battery + f-suites green; frozen md5 in==out; §11.121(m)
   concurrent-instance assert; §11.123(o2) cadence caution — counter ratios and
   in-run A/B only, never absolute fps labels.
-- **WIP:**
+- **WIP:** 2026-08-02 — checkpoint 1/6 INSTRUMENT landed, code `dc95d0de` (per-step
+  ramp ring in `Core::updateMove` + `"ramp"` object in `dual_dump` + `Camera::getViewParams`,
+  nothing wired); pre-fix binary staged at `harness/sc_f25_pre` (md5 `892328da`). NEXT:
+  the derivation-diff term table of `navigation->updateMove` → `Camera::lookRel`,
+  committed before any mirror.
 
 ### F26 — §5.62's owed isolation: the pre-§5.52 binary in the current epoch  [S]
 
