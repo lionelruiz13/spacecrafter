@@ -99,6 +99,33 @@ close ⇒ A40–A43/D15/D21/D28-residue/D37/C4 all open — B7-hunt-5, B12-conte
 B1), B39/B27 done. Dispatch order = queue order; F25→F26 order-independence CHECKED,
 not assumed (F26 lands no code; its frozen scene never exercises F25's key-path diff;
 F26 builds both its binaries fresh at named commits regardless of HEAD).
+**Round outcome (session 9 close, 2026-08-02):** F25 → §11.133, F26 → §11.134,
+F27 → §11.135 — all three delivered AND supervisor-verified same session.
+**B34 CLOSED** (F25): turn + zoom ramps mirrored with per-step parity through the
+live key channel; the 24-term derivation table needed NO Vixy feel item — the one
+irreproducible term was float32, not feel, and was closed by removing the
+primitive's own round-trip loss (D8); `dragView`'s vertical sign found inverted
+since its merge and fixed where the convention is stated. **§5.62's owed item
+DISCHARGED** (F26): the epoch shift is on NEITHER binary rebuilt today ⇒ transient
+of the epoch-B session, delivered code exonerated, row stays OPEN unattributed;
+the row's own `active.lock` explanation refuted; §11.121(m)'s probe REPLACED
+(`/proc/<pid>/comm` — the stock pattern under- AND over-reports, §0.5 updated).
+**§5.47 CLOSED** (F27): the queue was drained all along — to the `$LOGON`
+subscribers; the structure never carried the addressee, fixed at the first hop
+(`ClientMessage` slot+id); reply follows the path that draws; heading pins now
+1 launch. NEW rows: **§5.70/§5.72** (decidable, yours) · **§5.71/§5.73**
+(awareness). S6's operator-seam audit fully landed (B33+B34 both closed).
+Executor quality: F25 turned the mandate's feel-item escape hatch into a
+measured-exact delivery; F26 answered a two-branch dichotomy with the third
+branch the row's own wording missed and REBUILT a standing precondition's
+instrument on the way; F27 made the pre-fix binary its own positive control
+(leg B) — the no-reply-vs-no-instrument bar is now settled practice. Remaining
+dispatchable, next round: **§5.73's fix-shape verification** (S — buffer-sizing
+vs truncation policy; dispatchable only if sizing-only is confirmed
+decision-free at source), **B7-hunt-5 only after A40**, **B12 content** after
+b12-design §7 + A41/A42, **§5.64/§5.65/§5.69/§5.70/§5.72 fixes** only after
+Vixy decides the semantics. DECISIONS_PENDING open set at close: **D15, D21
+(late Aug), D37** + A40–A43 awaiting; B31 closure rides D21/D28/C4 (unchanged).
 
 ---
 
@@ -137,7 +164,12 @@ F26 builds both its binaries fresh at named commits regardless of HEAD).
      confound is INTRA-account (concurrent claude sessions/agents share
      `~/.spacecrafter`), so md5 re-asserts alone do not cover a concurrent launcher.
      On hit: record it, wait it out, launch fresh. F8's `b7h3_host.log`
-     batch-boundary check is the precedent instrument.
+     batch-boundary check is the precedent instrument. **Instrument superseded
+     2026-08-02 (F26, §11.134(b)):** the stock `f18_run.sh`-style pattern is BLIND
+     to out-of-tree binaries AND any `pgrep -f <path>` self-matches the wrapper
+     (measured: 3 reported with nothing running). Use the `/proc/<pid>/comm` probe
+     (`f26_epoch.sh`; Python port in `f27_reply.py`) — covers every account,
+     positively mapped both ways (decoy 1 / without 0).
    - **Display architecture is part of the instrument (2026-07-31, §11.122(o) +
      §11.123(o)/(o2)):** claude renders on his OWN headless GNOME/Xwayland `:2`
      (GPU-real; the harness default); Vixy's remmina/RDP relay is view-only and its
@@ -461,6 +493,18 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   as deviations: the unlocked `inputQueue` push (the routing reads what was pushed) and the never-
   released `clientBroadcastTab` (a third such array was being added). §11.118(f)'s recorded cost is
   discharged: heading pins are now readable 3/3 in ONE launch.
+  **Supervisor-verified 2026-08-02** (§11.135 read in full; commits/authors/trees checked; diff
+  surface confirmed `src/tools/io.{cpp,hpp}` ONLY — no old-path file, no other handler; §5.47
+  FIXED tail + §5.72/§5.73 rows + capability-surface supersession verified at the ledger;
+  harnesses not re-run — the six-leg both-ways table with leg B as the same-binary positive
+  control + committed artifacts accepted). Deviations ALL ENDORSED: (1) the unlocked
+  `inputQueue` push — a real cross-thread race the routing would have READ from, forced by the
+  fix, lock-order argument stated; (2) `clientBroadcastTab` release with its new sibling — I6,
+  fixing the instance while adding a third such array would re-create the class; (3) the
+  per-file log marks — instrument defect caught by its own RED leg, with the failure-direction
+  honesty note; no-instrument-commit COMPLIANT (spec gated it on decidability at source; leg B
+  is the discrimination the instrument would have bought). The no-reply-vs-no-instrument bar
+  (F24/F26 lesson) is met by leg B on the pre-fix binary itself. VETO POINT routed to §3.
 
 ---
 
@@ -646,3 +690,50 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   routed: the four old-only sky-lock write sites ride your **D15/§11.58(iii)**;
   the mount write-half rides **B35**'s spelling (its requirement is stated at the
   setter).
+- **Session-9 veto points (2026-08-02 — all implemented-and-live, each cheap to
+  reverse; silence = endorsed):** (1) F27's **additive reply routing** — `get`
+  answers now reach the connection that issued them AND the `$LOGON` subscribers
+  keep receiving every answer exactly as before (minus the duplicate when the
+  subscriber is the issuer); one condition in `ServerSocket::deliver` reverses it
+  (§11.135(c)); whether the log channel SHOULD keep carrying other clients'
+  answers is **§5.72**, deliberately preserved; (2) F25's **`lookRel` convention +
+  `Core::dragView` vertical-sign fix** — the new path's mouse-drag vertical now
+  matches old (it was INVERTED since the merge that added it, measured both ways
+  with the agreeing azimuth as control, §11.133(g)); reversal = one negation at
+  the call site; (3) F25's **pole-snap assignment** (§11.133(d)) — the float32
+  params→direction→params round trip near the pole ate old's clamp epsilon and
+  flipped the azimuth by π per frame (a 180° image roll); the snap now ASSIGNS
+  (D8 as-if, strictly more exact), keeping old's own 1e-6 epsilon; the only
+  alternative was a 345×-larger epsilon = a user-visible stopping altitude.
+- **NEW decidable rows from session 9 (recorded, none blocking):** **§5.70** (the
+  interactive turn ramp RECORDS `look delta_az …` — an unregistered command name
+  AND unregistered keys, so a recorded show cannot replay an operator's pan; what
+  the ramp should record instead is command-surface = B28-adjacent, yours) ·
+  **§5.72** (the `$LOGON` channel is greeted as the LOG feed and carries other
+  clients' command answers — semantics yours; today's additive routing preserves
+  every shipped delivery).
+- **Session-9 awareness, no action needed:** **§5.71** (`Core::panView` — the turn
+  ramp's command twin — still old-only; one-line fix shape recorded in-row, rides
+  your §5.66/§11.92(d) `look_at` family + its duration branch is perceptual-parity
+  class) · **§5.73** (a TCP answer of ≥1023 bytes overflows the server's shared
+  send buffer — pre-existing on both binaries, derived from source, not
+  reproduced; NOT fixed because a truncation policy is protocol-visible and the
+  buffer is shared with the receive path; a buffer-sizing-only fix may be
+  decision-free — next-round candidate to verify at source) · **§5.62 owed item
+  DISCHARGED** (F26, §11.134): the shift is on NEITHER binary in the current
+  epoch ⇒ transient of the epoch-B session, delivered code EXONERATED, row stays
+  OPEN unattributed; its own `active.lock` explanation REFUTED en route — the two
+  shifted runs' instrument state is simply unknown; in-epoch-only stands, now
+  with measured per-body A/A floors (Sun 0 / Jupiter 0.10 % / Mars 0.57 %).
+- **B34 CLOSED (session 9, F25/§11.133) — the mandate's escape hatch was never
+  needed:** the interactive view AND zoom ramps now act on the path that draws,
+  with per-step parity measured through the live key channel (worst per-step
+  divergence 1.965e-08 rad over a 360-step hold; zoom agreement 3.4e-06°); the
+  24-term derivation table found an exact camera equivalent for every term — **no
+  Vixy feel item is owed**. S6's operator-action seam audit (§11.108) is now fully
+  landed: B33 + B34 both closed; the class residues live in B35 (mount write-half)
+  and §5.71.
+- **`get status position` is now a working read-only channel** (F27, §11.135) for
+  observer place + heading — the reply follows the path that draws (B33's bar,
+  measured against `dual_dump.control` per field); heading pins cost one launch
+  instead of two.
