@@ -82,6 +82,16 @@ public:
     // isMaxDuration scales the duration with angle/π (old Rotator semantics).
     void lookTo(const Vec3f &direction, float duration = 1, bool isMaxDuration = false);
     void lookTo(float _alt, float _az, float duration = 1, bool isMaxDuration = false);
+    // The exact counterpart of `Navigator::updateMove(deltaAz, deltaAlt, fov)`,
+    // and its parameters are OLD'S convention, not this class's: +deltaAlt
+    // raises the VIEW and deltaAz turns it the way old's `azVision -= deltaAz`
+    // does, so a caller hands the SAME two numbers to both paths (I2 — the two
+    // call sites, the key ramp and the mouse drag, cannot drift apart). Old's
+    // pole clamp and its zero/zero guard are reproduced; a duration <= 0 snaps
+    // (which is what an interactive ramp needs: old has no acceleration and no
+    // deceleration, so a smoothing plan would ease in at the press and keep
+    // moving after the release). See Camera.cpp for the sign derivation and the
+    // measured float32 reason the snap assigns instead of round-tripping.
     void lookRel(float deltaAlt, float deltaAz, float duration = 1, bool isMaxDuration = false);
 
     // Change the mount, keeping the current view exactly (deduce-identical-
@@ -318,6 +328,16 @@ public:
         return freeMode;
     }
     void setHalfFov(float halfFov, float duration = 0.5);
+    // The interactive ZOOM ramp's sink (B34, INTENT §11.133): put the drawn fov
+    // at `halfFov` NOW, exactly as `Projector::changeFov` puts the old fov there
+    // now. It is NOT `setHalfFov(x, 0)`: with a zoom plan in flight that call
+    // RE-PLANS rather than applying, and with duration 0 the re-plan never lands
+    // at all (`zoomDuration` becomes 0 before `update()` can run the block), so
+    // the drawn fov would freeze while old's ramped on. Old writes its fov under
+    // an in-flight auto-zoom too and lets the plan overwrite it on the next
+    // frame; this reproduces that — the value lands now, any plan keeps its own
+    // schedule. Same clamp as setHalfFov (the two share the class's fov range).
+    void setHalfFovNow(float halfFov);
 
     // The exact inverse of moveTo's target: the legacy spherical triple this
     // camera IS at - (longitude, latitude) in radians, altitude above the

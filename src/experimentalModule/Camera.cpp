@@ -761,9 +761,63 @@ void Camera::lookTo(float _alt, float _az, float duration, bool isMaxDuration)
     lookTo(fold().transpose().multiplyWithoutTranslation(dirP), duration, isMaxDuration);
 }
 
+// THE EXACT COUNTERPART OF `Navigator::updateMove(deltaAz, deltaAlt, fov)`
+// (navigator.cpp:181-221), and its parameters are OLD'S, not this class's:
+// +deltaAlt raises the VIEW (old's `altVision += deltaAlt`) and deltaAz turns it
+// the way old's `azVision -= deltaAz` does. The camera's own parameters are the
+// NEGATIVES of that pair — `az = −lng`, `alt = −lat` of the forward direction in
+// the param frame (paramForward above; `viewRotation()·paramForward() == (0,0,−1)`
+// is the derivation) — so old's `+deltaAlt` is `−deltaAlt` here and old's
+// `deltaAz` is `+deltaAz` here. MEASURED before this was written, on five bodies
+// spread over 140° of azimuth: `alt_cam + altVision_old` is 0 to 1.1e-5 rad and
+// `az_cam + azVision_old` is constant at +25.264°, while both opposite mappings
+// spread by the full range (INTENT §11.133(b)(c)).
+// Stating the convention HERE, once, is what keeps the two call sites from
+// drifting apart (I2): `Core::updateMove` (the key ramp) and `Core::dragView`
+// both hand the SAME numbers to `navigation->updateMove` and to this.
 void Camera::lookRel(float deltaAlt, float deltaAz, float duration, bool isMaxDuration)
 {
-    lookTo(alt + deltaAlt, az + deltaAz, duration, isMaxDuration);
+    if (deltaAlt == 0.f && deltaAz == 0.f)
+        return; // old's `if (deltaAz || deltaAlt)` guard (navigator.cpp:201)
+    // The view altitude in old's convention, with old's pole clamp reproduced
+    // line for line INCLUDING its look-ahead: the second and third tests read
+    // the ALREADY-MUTATED value, so the clamp fires one step early (whenever
+    // altVision + 2·deltaAlt would cross a pole) and pins at ±(π/2 − 1e-6).
+    float viewAlt = -alt;
+    if (deltaAlt != 0.f) {
+        if (viewAlt + deltaAlt <= (float)M_PI_2 && viewAlt + deltaAlt >= -(float)M_PI_2)
+            viewAlt += deltaAlt;
+        if (viewAlt + deltaAlt > (float)M_PI_2)
+            viewAlt = (float)M_PI_2 - 0.000001f;   // Prevent bug
+        if (viewAlt + deltaAlt < -(float)M_PI_2)
+            viewAlt = -(float)M_PI_2 + 0.000001f;  // Prevent bug
+    }
+    float newAz = az + deltaAz;
+    if (duration > 0.f) {
+        lookTo(-viewAlt, newAz, duration, isMaxDuration);
+        return;
+    }
+    // SNAP: assign the parameters. `lookTo(alt, az, 0)` would route them through
+    // a direction and back, which is the identity in exact arithmetic (D8 as-if)
+    // but NOT in float32 near a pole — MEASURED: a clamped view altitude of
+    // π/2 − 1e-6 collapses onto EXACTLY ±π/2 (its sine rounds to 1), and once
+    // there the recovered azimuth FLIPS BY π every frame, i.e. a 180° image roll
+    // per frame, because viewRotation() composes `az` into the roll. The float32
+    // threshold is ε > 2^-11.5 = 3.45e-4 rad, 345× old's clamp epsilon.
+    // Assigning keeps old's epsilon and keeps cos(alt) > 0, so the view stays on
+    // its own side of the pole.
+    viewT = 0.f; // a snap drops any in-flight view plan (lookTo's own rule)
+    alt = -viewAlt;
+    // Keep the azimuth bounded, as old's rectToSphe round trip does: a float32
+    // parameter of magnitude 1000 rad has a 6e-5 rad quantum, which would
+    // quantize the view itself over a long uninterrupted turn. One branch, not
+    // a per-step trigonometric round trip: within (−π, π] the step is left
+    // untouched, so the mirror pays no rounding old does not pay.
+    if (newAz > (float)M_PI)
+        newAz -= 2.f * (float)M_PI;
+    else if (newAz <= -(float)M_PI)
+        newAz += 2.f * (float)M_PI;
+    az = newAz;
 }
 
 void Camera::moveRel(const Vec3f &deltaPos, float duration, bool calculateDuration)
@@ -850,6 +904,18 @@ void Camera::setHalfFov(float halfFov, float duration)
     } else { // No transition, apply the change immediately
         ModularBody::setHalfFov(halfFov); // maintains cullHalfFov (INTENT 11.33)
     }
+}
+
+// See the header: the interactive zoom ramp's sink, the immediate half of
+// setHalfFov with no re-planning.
+void Camera::setHalfFovNow(float halfFov)
+{
+    if (halfFov < minHalfFov) {
+        halfFov = minHalfFov;
+    } else if (halfFov > maxHalfFov) {
+        halfFov = maxHalfFov;
+    }
+    ModularBody::setHalfFov(halfFov); // maintains cullHalfFov (INTENT 11.33)
 }
 
 void Camera::setAltitude(double altitude)

@@ -1967,6 +1967,20 @@ void Core::updateMove(int delta_time)
 
 	if (vzm.deltaFov != 0 ) {
 		projection->changeFov(vzm.deltaFov);
+		// DUAL SEAM (B34's zoom ramp, INTENT §11.133). The drawn fov authority
+		// is ModularBody::halfFov, not the projector's, and the ramp reached
+		// only the projector - MEASURED on the instrument commit: 215 steps
+		// moving the old fov 60.00000 -> 28.40440 deg with halfFov
+		// bit-identical on every one of them. Mirrored from old's POST-clamp
+		// fov rather than from the delta, for two reasons: the step itself is
+		// already computed from projection->getFov() (so the ramp is old-fov-
+		// driven on both paths by construction), and old's [min_fov, max_fov]
+		// clamp is then the ONE clamp decision, taken once (I2) instead of
+		// re-implemented beside a camera range that is not the same (B35: the
+		// new path's fov clamps have no setter, 9.97e-5 .. 349.5 deg against
+		// old's 1e-4 .. 350) - so the two agree everywhere inside old's range.
+		if (Camera::instance)
+			Camera::instance->setHalfFovNow(projection->getFov() * M_PI / 360);
 		std::ostringstream oss;
 		oss << "zoom delta_fov " << vzm.deltaFov;
 		if (!recordActionCallback.empty()) recordActionCallback(oss.str());
@@ -1974,6 +1988,23 @@ void Core::updateMove(int delta_time)
 
 	if (vzm.deltaAz != 0 || vzm.deltaAlt != 0) {
 		navigation->updateMove(vzm.deltaAz, vzm.deltaAlt, projection->getFov());
+		// DUAL SEAM (B34's interactive VIEW ramp, INTENT §11.133 - the row's
+		// last member). Before this line the arrow keys turned the OLD
+		// navigator and left the drawn camera exactly where it was
+		// (§11.108(b2), measured: old 73 777 px>32, new az/alt bit-identical).
+		// The SAME two numbers go to both paths: Camera::lookRel is the exact
+		// counterpart of Navigator::updateMove and carries old's convention,
+		// old's pole clamp and old's zero/zero guard (the argument, the sign
+		// derivation and its measurement are AT that function). The argument
+		// ORDER is (deltaAlt, deltaAz) there and (deltaAz, deltaAlt) here -
+		// the pre-existing spelling of the one other caller, Core::dragView.
+		// duration 0 because old's ramp has NO acceleration and NO
+		// deceleration: the magnitude is recomputed from `depl` every frame
+		// and only the sign survives, so a held key is a constant rate and a
+		// release is an instant stop. A smoothing plan would ease in at the
+		// press and keep moving after the key-up.
+		if (Camera::instance)
+			Camera::instance->lookRel(vzm.deltaAlt, vzm.deltaAz, 0);
 		std::ostringstream oss;
 		oss << "look delta_az " << vzm.deltaAz << " delta_alt " << vzm.deltaAlt;
 		if (!recordActionCallback.empty()) recordActionCallback(oss.str());
