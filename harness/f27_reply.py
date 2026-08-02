@@ -232,14 +232,30 @@ class Session:
         self.clients.append(c)
         return c
 
-    def scriptlog(self):
-        txt = ""
+    def logtexts(self):
+        """PER FILE, because the app writes into six of them at once. The first
+        version of this reader concatenated them and marked a position by total
+        length, so "what was logged since the mark" was the tail of the LAST
+        file and the warning this leg looks for — written to spacecrafter.log,
+        the fourth — was invisible. It reported a diagnostic missing that was
+        in fact present, i.e. an instrument that turns a working channel into a
+        FAIL."""
+        out = {}
         for p in sorted((self.farm / ".spacecrafter" / "log").glob("*")):
             try:
-                txt += p.read_text(errors="replace")
+                out[p.name] = p.read_text(errors="replace")
             except OSError:
                 pass
-        return txt
+        return out
+
+    def scriptlog(self):
+        return "".join(self.logtexts().values())
+
+    def logmark(self):
+        return {k: len(v) for k, v in self.logtexts().items()}
+
+    def lognew(self, mark):
+        return "".join(v[mark.get(k, 0):] for k, v in self.logtexts().items())
 
     def refused(self):
         """The app's OWN report that it did not execute a command (§2(f)).
@@ -533,9 +549,69 @@ def leg_E(outdir, binary, expect):
     return r
 
 
+def leg_F(outdir, binary, expect):
+    """The two ends of the new routing that no other leg reaches.
+
+    F1  an answer NOBODY can receive (a script's `get`, no subscriber): the
+        string used to be popped off the queue in silence, and the app said
+        nothing about it — which is half of why §5.47 stayed open. It must now
+        say so in its own log (§2(f)).
+    F2  the answer's issuer is GONE by the time the answer exists. That is not
+        a contrived case: the HTTP channel (io.cpp:522-604) pushes the command
+        and closes the connection in the same pass, so every HTTP-issued `get`
+        takes this path. The answer must fall back to the subscribers — where
+        it went before — and must never be handed to whoever holds that slot
+        next."""
+    sess = Session(outdir, "F", binary)
+    driver = sess.client("driver")
+    r = {"leg": "F"}
+    sts = outdir / "f27_script_get.sts"
+    sts.write_text("timerate rate 0\nget status position\n")
+    try:
+        driver.send("timerate rate 0", 1)
+        driver.send(f"date jday {JD}", 1)
+        driver.send("moveto lat 11.5 lon 22.25 alt 3210 duration 0", 3)
+        mark = sess.logmark()
+        driver.send(f"script action play filename {sts}", 1.0)
+        raw_d = driver.read(POLL)
+        log_new = sess.lognew(mark)
+        r["F1_driver_copies"] = len(positions(raw_d))
+        r["F1_nobody_lines"] = [l for l in log_new.splitlines()
+                                if "nobody to answer" in l]
+        print(f"      F1: driver {r['F1_driver_copies']} copies, "
+              f"{len(r['F1_nobody_lines'])} 'nobody to answer' line(s)", flush=True)
+
+        # F2 — the HTTP channel: issue and hang up
+        listener = sess.client("listener")
+        listener.send("$LOGON", 1.5)
+        listener.read(0.5)
+        http = socket.create_connection(("127.0.0.1", PORT), timeout=5)
+        http.sendall(b"GET /?command=get%20status%20position HTTP/1.0\r\n\r\n")
+        time.sleep(1.0)
+        try:
+            r["F2_http_response"] = http.recv(4096).decode("latin-1")[:80]
+        except OSError as e:
+            r["F2_http_response"] = f"<{e}>"
+        http.close()
+        raw_l = listener.read(POLL)
+        r["F2_listener_copies"] = len(positions(raw_l))
+        r["F2_listener_reply"] = (positions(raw_l) or [None])[0]
+        # a client taking the freed slot must not inherit the answer
+        late = sess.client("late")
+        raw_late = late.read(2.0)
+        r["F2_late_copies"] = len(positions(raw_late))
+        r["alive"] = sess.proc.poll() is None
+        print(f"      F2: listener {r['F2_listener_copies']} copies, "
+              f"next tenant of the slot {r['F2_late_copies']}, "
+              f"app alive={r['alive']}", flush=True)
+    finally:
+        r["rc"] = sess.stop(driver)
+    return r
+
+
 # ------------------------------------------------------------------ asserts
 def check(res, expect):
-    A, B, C, D, E = (res.get(k) for k in "ABCDE")
+    A, B, C, D, E, F = (res.get(k) for k in "ABCDEF")
 
     if A:
         for i in (1, 2):
@@ -658,12 +734,46 @@ def check(res, expect):
                 ok(f"E: the pin changes the reported heading {pins}")
 
 
+    if F:
+        if F["F1_driver_copies"] != 0:
+            fail(f"F1: the script's answer was handed to the driving client "
+                 f"({F['F1_driver_copies']} copies)")
+        else:
+            ok("F1: the script's answer is not handed to the last speaker")
+        if expect == "pre":
+            if F["F1_nobody_lines"]:
+                fail(f"F1: the pre-fix binary reported {F['F1_nobody_lines']}")
+            else:
+                ok("F1: pre-fix, an answer nobody can receive is discarded in "
+                   "silence (the app's log says nothing)")
+        else:
+            if not F["F1_nobody_lines"]:
+                fail("F1: an answer with no recipient was discarded without a "
+                     "word in the log — the §2(f) diagnostic does not fire")
+            else:
+                ok(f"F1: the app reports the discard: "
+                   f"{F['F1_nobody_lines'][0].strip()[:110]}")
+        if F["F2_listener_copies"] != 1:
+            fail(f"F2: the subscriber got {F['F2_listener_copies']} copies of an "
+                 f"HTTP-issued answer (the issuer is gone: the fallback must "
+                 f"still be the subscription channel)")
+        else:
+            ok("F2: an answer whose issuer hung up still reaches the subscribers")
+        if F["F2_late_copies"] != 0:
+            fail(f"F2: the next client on that slot inherited {F['F2_late_copies']} "
+                 f"answer(s) it never asked for")
+        else:
+            ok("F2: the next tenant of the slot inherits nothing")
+        if not F["alive"]:
+            fail("F2: the app died on the HTTP path")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("outdir")
     ap.add_argument("--bin", default=DEFAULT_BIN)
     ap.add_argument("--expect", choices=("pre", "post"), required=True)
-    ap.add_argument("--legs", default="A,B,C,D,E")
+    ap.add_argument("--legs", default="A,B,C,D,E,F")
     a = ap.parse_args()
 
     out = Path(a.outdir).resolve()
@@ -675,7 +785,7 @@ def main():
     print(f"outdir   : {out}", flush=True)
     print(f"wall     : {time.strftime('%F %T %Z')}", flush=True)
 
-    legs = {"A": leg_A, "B": leg_B, "C": leg_C, "D": leg_D, "E": leg_E}
+    legs = {"A": leg_A, "B": leg_B, "C": leg_C, "D": leg_D, "E": leg_E, "F": leg_F}
     res = {"binary": str(a.bin), "md5": md5(a.bin), "expect": a.expect,
            "wall": time.strftime("%F %T %Z")}
     for name in a.legs.split(","):

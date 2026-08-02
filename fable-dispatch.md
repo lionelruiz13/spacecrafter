@@ -431,6 +431,21 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   diverge, reply follows NEW); C listener 1 copy / issuer 0, twice; D script-`get` → subscriber
   only; E 0/3 read-only heading samples. Next: root fix (carry the issuing connection from input
   to output).
+  **CP2 (2026-08-02): root fix landed + verified both ways.** Code `d13681eb` (`src/tools/io.{cpp,hpp}`
+  only): a request and an answer are a `ClientMessage` carrying the SLOT and the connection ID that
+  slot held, `getInput` latches the request being served and clears the latch when the batch is
+  drained, `setOutput` stamps the answer, `deliver` sends it to that connection AND (unchanged) to
+  the `$LOGON` subscribers, minus the double copy. Delivered binary md5 `8a93ca97`. `f27_reply.py`
+  A–F **0 FAIL both ways**: A reply in **0.002 / 0.006 s** on the driving socket (pre: 6 s silence
+  ×2), content == `control.reported` per field with the heading authorities **6.16° apart** and the
+  reply following NEW; B one copy, never two; C issuer 1 + listener 1, before AND after the issuer's
+  connection is replaced (pre: 0 + 1 twice); D/F1 a script's answer still goes to the subscribers and
+  never to the last speaker, and the app now LOGS the discard when nobody can receive it (pre:
+  silence); F2 an HTTP-issued answer (issuer already hung up) falls back to the subscribers and the
+  next tenant of the slot inherits nothing; E **3/3** heading samples in ONE launch across two pin
+  toggles (pre 0/3). Regressions green: battery exit 0 + scene E 0 FAIL, b16 channels (2/2 probe
+  entries), b10_cmd ALL PASS, frozen md5 in == out everywhere. Next: ledger (§11.135, §5.47 flip,
+  the two new rows) + the doc supersessions.
 
 ---
 
