@@ -342,7 +342,13 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   row's own control); per-binary in-epoch A/A agreement to the digit; frozen md5
   in==out; fresh launches; no `t-*.dat` written during the session (the row checked
   this — re-assert it); concurrent-instance assert.
-- **WIP:**
+- **WIP:** 2026-08-02 — checkpoint 1: scene + instrument verified (f18_disc.py on the
+  five committed F18 artifact sets reproduces every recorded value to the digit, incl.
+  the 0.9949 → 1.2909 pair and old_disc 23536/7683/3908 in ALL five); §5.52 fix
+  identified at the git log = `94eb3f03`, parent = `96a94a46`, child (F18 delivery HEAD,
+  the build that measured both epochs) = `2117ccb0`; both built in worktrees at
+  `/home/claude/sc-f26/` — pre md5 `df00c3e3`, child md5 `23ac7fdb`. Next: the
+  one-epoch campaign (child, pre, child, pre) via `harness/f26_epoch.sh`.
 
 ### F27 — §5.47: the reply that never arrives — `get status position`'s drain path  [S–M]
 
