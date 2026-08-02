@@ -331,6 +331,13 @@ def base_scene(app):
     app.send("meteors zhr 0", 0.6)
     for f in SKY_OFF:
         app.send(f"flag {f} off")
+    # STARS OFF, and it is the whole reason the composed-screen leg can attribute
+    # a camera at all: the star field is drawn by the OLD pipeline in BOTH
+    # phases, so with it on the lit content moves with the old navigator whatever
+    # `experimental_path` is pinned to — F4's recorded confound (its leg-1 delta
+    # "says nothing about the camera"), and measured again here at 1861 px>32 of
+    # 2217 lit on a PRE-FIX binary whose camera never moved a bit.
+    app.send("flag stars off")
     app.send("flag moon_scaled off", 1)
     app.send("set home_planet Earth", 3)
     app.send("timerate rate 0", 1)
@@ -415,58 +422,83 @@ def phase_turn(app, pre):
          f"fov={h['oldView']['projector']['fov']:.4f} deg, "
          f"mount={h['camera']['mount']}, maximum_fps cap per config")
 
-    # --- the row's own bar, on the SAME hold F4 measured (Left, 2500 ms) -----
-    b_new = app.shot("turn_before_new")
-    app.send("flag experimental_path off", 2)
-    b_old = app.shot("turn_before_old")
-    app.send("flag experimental_path on", 2)
+    # --- the row's own hold (Left, 2500 ms), for the per-step trace ----------
     h0, bod0 = app.dump("turn_before_cam")
     total = h0["ramp"]["total"]
     hold("Left", 2500)
     time.sleep(1.5)
     h1, bod1 = app.dump("turn_after_cam")
     rows, total = new_run(h1, total)
-    a_new = app.shot("turn_after_new")
-    app.send("flag experimental_path off", 2)
-    a_old = app.shot("turn_after_old")
-    app.send("flag experimental_path on", 2)
-
     analyse(rows, "left", pre, expect_az=+1, expect_alt=0)
-
-    old_px, new_px = px32(b_old, a_old), px32(b_new, a_new)
-    lit_old, lit_new = lit(b_old), lit(b_new)
-    # SCENE-DERIVED bar, not F4's absolute 73 777: that number came from a
-    # sky-full frame where the grid and the stars are drawn by the OLD navigator
-    # in BOTH phases, so it cannot attribute a camera (F4 said so itself and
-    # moved its own assert onto the dump). Here the sky is off and the lit
-    # content IS the body the new path draws, so the honest bar is relative to
-    # that content: a displacement larger than the content's own size.
-    note(f"composed screen across the hold: OLD phase {old_px} px>32 of {lit_old} lit, "
-         f"NEW phase {new_px} px>32 of {lit_new} lit")
-    check("left_positive_control", old_px > 0.5 * lit_old,
-          f"the OLD phase moved {old_px} px>32 against its own {lit_old} lit px — the key "
-          f"demonstrably arrived (if ~0 every null below is void)")
-    n0 = bod0.get("Moon", {}).get("new", {})
-    n1 = bod1.get("Moon", {}).get("new", {})
-    o0 = bod0.get("Moon", {}).get("old", {})
-    o1 = bod1.get("Moon", {}).get("old", {})
-    dn = math.hypot(n1["screen"][0] - n0["screen"][0], n1["screen"][1] - n0["screen"][1])
-    do = math.hypot(o1["screen"][0] - o0["screen"][0], o1["screen"][1] - o0["screen"][1])
+    n0 = bod0["Moon"]["new"]["screen"]; n1 = bod1["Moon"]["new"]["screen"]
+    o0 = bod0["Moon"]["old"]["screen"]; o1 = bod1["Moon"]["old"]["screen"]
+    dn = math.hypot(n1[0] - n0[0], n1[1] - n0[1])
+    do = math.hypot(o1[0] - o0[0], o1[1] - o0[1])
     note(f"the SAME body in the SAME dump: NEW |d| {dn:.4e} NDC, OLD |d| {do:.2f} px")
     if pre:
         check("left_per_path_screen", dn == 0.0 and do > 100.0,
               f"pre-fix: the NEW path's screen position is bit-identical across the hold "
               f"({dn:.3e} NDC) while the OLD path's moves {do:.1f} px — F4's asymmetry, reproduced")
-        check("left_new_screen_still", new_px < 0.05 * lit_new,
-              f"pre-fix: the NEW phase's composed screen does not move ({new_px} px>32 of "
-              f"{lit_new} lit) while the old phase's moves {old_px}")
     else:
         check("left_per_path_screen", dn > 0.05 and do > 100.0,
               f"delivered: BOTH paths moved — NEW |d| {dn:.4f} NDC, OLD |d| {do:.1f} px")
-        check("left_new_screen_moves", new_px > 0.5 * lit_new,
-              f"delivered: the NEW phase's composed screen moved {new_px} px>32 against its "
-              f"own {lit_new} lit px — the drawn frame changed by more than the content it "
-              f"carries (the row's own px>32 bar, taken on the frame that draws)")
+
+    # --- THE COMPOSED SCREEN, and it has to be attributable -----------------
+    # fov 10 so the disc is large enough to be the frame's content, and a 1200 ms
+    # hold so both positions stay inside the dome (2.3 deg of a 5 deg dome radius).
+    # The comparator is checked before it is used: with the sky off the two phases
+    # must draw the SAME frame at rest, or a cross-path delta after the hold is
+    # not attributable to a camera.
+    aim_at(app, "Moon", fov=10)
+    b_new = app.shot("scr_before_new")
+    app.send("flag experimental_path off", 2)
+    b_old = app.shot("scr_before_old")
+    app.send("flag experimental_path on", 2)
+    h, _ = app.dump("scr_before")
+    total = h["ramp"]["total"]
+    hold("Left", 1200)
+    time.sleep(1.2)
+    h, _ = app.dump("scr_after")
+    rows, total = new_run(h, total)
+    a_new = app.shot("scr_after_new")
+    app.send("flag experimental_path off", 2)
+    a_old = app.shot("scr_after_old")
+    app.send("flag experimental_path on", 2)
+    analyse(rows, "screen", pre, expect_az=+1, expect_alt=0)
+    lit_new, lit_old = lit(b_new), lit(b_old)
+    old_px, new_px = px32(b_old, a_old), px32(b_new, a_new)
+    cross0, cross1 = px32(b_new, b_old), px32(a_new, a_old)
+    note(f"composed screen (fov 10, stars off): lit {lit_new} new-phase / {lit_old} old-phase ; "
+         f"across the hold OLD {old_px} px>32, NEW {new_px} px>32 ; "
+         f"cross-path {cross0} px>32 before, {cross1} after")
+    check("screen_frame_carries_content", lit_new > 500 and lit_old > 500,
+          f"both phases draw a real frame ({lit_new}/{lit_old} lit px — the Moon at this date "
+          f"is a CRESCENT, so the lit set is a fraction of the ~114-px disc) — the F23 "
+          f"black-frame guard: a px>32 of 0 on an empty frame is agreement about nothing")
+    check("screen_positive_control", old_px > 0.5 * lit_old,
+          f"the OLD phase moved {old_px} px>32 against its own {lit_old} lit px — the key "
+          f"demonstrably arrived (if ~0 every null below is void)")
+    # ATTRIBUTION comes from the BOTH-WAYS pair and not from a cross-path bar:
+    # the cross-path residual at rest is §11.52(b)'s perceptual parity (here the
+    # crescent's terminator, ~25 % of a thin lit set) and is not this row's claim.
+    # What makes `new_px` a camera observable is that the SAME scene on the
+    # pre-fix binary leaves it at ~0 while the old phase moves.
+    if pre:
+        check("screen_new_still", new_px < 0.1 * lit_new,
+              f"pre-fix: the DRAWN frame does not move ({new_px} px>32 of {lit_new} lit) while "
+              f"the old phase's moves {old_px} — the operator turned the universe nobody is "
+              f"looking at")
+        check("screen_paths_diverge", cross1 > 0.5 * lit_new,
+              f"pre-fix: after the hold the two phases DISAGREE ({cross1} px>32 against "
+              f"{cross0} at rest) — the divergence the key opened up, on the composed screen")
+    else:
+        check("screen_new_moves", new_px > 0.5 * lit_new,
+              f"delivered: the DRAWN frame moved {new_px} px>32 against its own {lit_new} lit "
+              f"px — the row's own px>32 bar, taken on the frame that draws")
+        check("screen_paths_stay_together", cross1 < 2.0 * cross0,
+              f"delivered: after the hold the two phases still agree as well as they did at "
+              f"rest ({cross1} px>32 against {cross0}) — both universes turned together, and "
+              f"the residual is the pre-existing cross-path one (§11.52(b)), not a new one")
 
     # --- the other three directions ----------------------------------------
     for key, eaz, ealt in (("Right", -1, 0), ("Up", 0, +1), ("Down", 0, -1)):
