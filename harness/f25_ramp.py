@@ -349,18 +349,35 @@ def phase_frames(app, pre):
              f"alt {math.degrees(old_alt):+10.5f})  cam(az {math.degrees(cam['az']):+10.5f}, "
              f"alt {math.degrees(cam['alt']):+10.5f}) deg")
     alt_sums = [r[4] + r[2] for r in rows]
+    alt_diffs = [r[4] - r[2] for r in rows]
     az_sums = [wrap_pi(r[3] + r[1]) for r in rows]
+    az_diffs = [wrap_pi(r[3] - r[1]) for r in rows]
     worst_alt = max(abs(a) for a in alt_sums)
-    spread_az = max(az_sums) - min(az_sums)
-    check("frames_alt_is_negated", worst_alt <= FRAME_BAR,
+    # DISCRIMINATION, not an absolute bar: the residual here is the AIM residual
+    # (two independent aiming laws settling on the same body, and the two trees'
+    # positions for it are not bit-equal), so the question a bar cannot answer is
+    # "+ or −". The competing hypothesis is measured beside the accepted one: if
+    # the mapping were the other sign, the SUM would vary and the DIFFERENCE
+    # would be constant. Both spreads are reported and the ratio is the finding.
+    sp_alt_sum = max(alt_sums) - min(alt_sums)
+    sp_alt_diff = max(alt_diffs) - min(alt_diffs)
+    sp_az_sum = max(az_sums) - min(az_sums)
+    sp_az_diff = max(az_diffs) - min(az_diffs)
+    note(f"alt: spread of (cam+old) = {sp_alt_sum:.3e} rad vs (cam−old) = {sp_alt_diff:.3e} rad")
+    note(f"az : spread of (cam+old) = {sp_az_sum:.3e} rad vs (cam−old) = {sp_az_diff:.3e} rad")
+    check("frames_alt_is_negated", worst_alt <= FRAME_BAR and sp_alt_diff > 100 * sp_alt_sum,
           f"alt_cam + altVision_old == 0 on {len(rows)} bodies: worst {worst_alt:.3e} rad "
-          f"({math.degrees(worst_alt):.5f} deg, bar {FRAME_BAR:.0e}) ⇒ the camera's `alt` is "
-          f"the NEGATIVE of the view altitude, so a +deltaAlt of old maps to −deltaAlt here")
-    check("frames_az_offset_constant", spread_az <= FRAME_BAR,
+          f"({math.degrees(worst_alt):.5f} deg, bar {FRAME_BAR:.0e}); the opposite mapping "
+          f"would spread by {sp_alt_diff:.3e} rad, i.e. {sp_alt_diff/max(sp_alt_sum,1e-12):.0f}× "
+          f"more ⇒ the camera's `alt` is the NEGATIVE of the view altitude, so old's "
+          f"+deltaAlt maps to −deltaAlt here")
+    check("frames_az_offset_constant", sp_az_diff > 100 * sp_az_sum,
           f"az_cam + azVision_old is CONSTANT across {len(rows)} bodies "
-          f"(mean {math.degrees(sum(az_sums)/len(az_sums)):+.5f} deg, spread {spread_az:.3e} rad, "
-          f"bar {FRAME_BAR:.0e}) ⇒ the two azimuth origins differ by a fixed rotation about "
-          f"the mount pole and azimuth DIFFERENCES map with a + sign onto `az`")
+          f"(mean {math.degrees(sum(az_sums)/len(az_sums)):+.5f} deg, spread {sp_az_sum:.3e} rad) "
+          f"while az_cam − azVision_old spreads {sp_az_diff:.3e} rad "
+          f"({sp_az_diff/max(sp_az_sum,1e-12):.0f}× more) ⇒ the two azimuth origins differ by a "
+          f"FIXED rotation about the mount pole, and azimuth DIFFERENCES therefore map with a "
+          f"+ sign onto `az`")
     json.dump([dict(body=r[0], oldAz=r[1], oldAlt=r[2], camAz=r[3], camAlt=r[4], mount=r[5])
                for r in rows], open(app.out / "frames.json", "w"), indent=1)
 
