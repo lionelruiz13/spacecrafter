@@ -34,12 +34,21 @@ log "binary           : $BIN"
 log "binary md5       : $(md5sum "$BIN" | cut -d' ' -f1)"
 log "binary mtime     : $(stat -c %y "$BIN")"
 
-# Concurrent-instance assert (§11.121(m)) - ANY account, ANY build dir. NOT
-# f18_run.sh's own pattern: that one is 'spacecrafter/build.*/src/spacecrafter'
-# and the F26 binaries live OUTSIDE the code tree (/home/claude/sc-f26/build-*),
-# so it would miss exactly the processes this campaign can leave behind. The
-# bracket keeps the pattern from matching this script's own command line.
-CONC=$(pgrep -c -f '[s]rc/spacecrafter' || true)
+# Concurrent-instance assert (§11.121(m)) - ANY account, ANY build dir, and NOT
+# by command-line text. Two things are wrong with a `pgrep -f <path>` assert
+# here: f18_run.sh's own pattern ('spacecrafter/build.*/src/spacecrafter')
+# cannot see the F26 binaries at all, since they live OUTSIDE the code tree
+# (/home/claude/sc-f26/build-*); and any pattern that CAN see them also matches
+# this script's own command line, which carries the binary path as an argument -
+# measured: it reported 3 with nothing running. So the probe reads
+# /proc/<pid>/comm, which is the executable's own name (world-readable, so it
+# covers every account) and carries no command-line text at all.
+CONC=$(/usr/bin/grep -l -x 'spacecrafter' /proc/[0-9]*/comm 2>/dev/null | wc -l)
+if [ "$CONC" != "0" ]; then
+    for c in $(/usr/bin/grep -l -x 'spacecrafter' /proc/[0-9]*/comm 2>/dev/null); do
+        log "  running: $c  cmdline=[$(tr '\0' ' ' < "$(dirname "$c")/cmdline")]"
+    done
+fi
 log "concurrent insts : ${CONC:-0}"
 if [ "${CONC:-0}" != "0" ]; then log "ABORT: concurrent instance"; exit 2; fi
 
@@ -52,7 +61,13 @@ log "beta_features.ini   : $(test -e ~/.spacecrafter/beta_features.ini && echo P
 find ~/.spacecrafter -name 't-*.dat' -printf '%T@ %p\n' | sort > "$OUT/tdat_before.txt"
 log "t-*.dat count/newest before: $(wc -l < "$OUT/tdat_before.txt") / $(tail -1 "$OUT/tdat_before.txt" | cut -d' ' -f2-) $(date -d @$(tail -1 "$OUT/tdat_before.txt" | cut -d' ' -f1 | cut -d. -f1) '+%F %T')"
 
-SC_BIN="$BIN" "$HERE/f18_run.sh" "$OUT" > "$OUT/run.log" 2>&1
+# run_stdout.TXT, not .log: f18_run.sh clears *.log in its outdir as its first
+# act, which unlinks the file this redirect is already writing to - measured on
+# the F26 campaign, whose four run.log files were destroyed that way (nothing
+# load-bearing was lost: the binary, the concurrency count, the md5s and the
+# layer state are all in f26_meta.txt / app.log / drive.log, which are written
+# after the clear). Same class as META above.
+SC_BIN="$BIN" "$HERE/f18_run.sh" "$OUT" > "$OUT/run_stdout.txt" 2>&1
 log "f18_run.sh exit  : $?"
 
 log "config.ini  md5 out : $(md5sum $CFG | cut -d' ' -f1)"

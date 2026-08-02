@@ -1265,3 +1265,39 @@ a drag is press + MOTION + release. So `Core::dragView` is called in the live pr
 on the b21 gdb-FIFO pattern — the exact function `UI::handleMove` calls, one layer
 below SDL (§11.108(d)'s precedent, residual stated). Keep `xdrag.c`'s step report:
 without it a fake motion that goes nowhere reads as "nothing moved".
+
+## F26 — §5.62's isolation: the same mid-band scene on two named-commit binaries, in ONE epoch (`f26_epoch.sh`) — INTENT §11.134, 2026-08-02
+
+`f26_epoch.sh <label> <binary>` does one fresh-launch run of **F18's scene, unchanged**:
+it drives `f18_run.sh` + `f18_disc.py` and adds the preconditions §5.62 itself checked, as
+recorded asserts — wall clock, binary md5, concurrent-instance count, frozen
+`config.ini`/`ssystem.ini` md5 in and out, the enabled-`modularSystem` set,
+`beta_features.ini`, and the `t-*.dat` texture-cache listing before/after. Artifacts land
+in `artifacts/f26/<label>/` (`f26_meta.txt` is the per-run record).
+
+**Two instrument facts that cost a re-run to learn — keep them:**
+
+- `f18_run.sh` clears `*.log`, `*.json`, `*.png` in its outdir as its FIRST act, so any
+  file a wrapper writes there before invoking it (including the redirect capturing its own
+  stdout) is unlinked while still open. Wrapper files use `.txt`.
+- **The concurrent-instance assert must not be a `pgrep -f <path>`.** `f18_run.sh`'s own
+  pattern (`spacecrafter/build.*/src/spacecrafter`) cannot see a binary built outside the
+  code tree; and any pattern that can see it also matches the wrapper's own command line —
+  measured: 3 reported with nothing running. `f26_epoch.sh` reads `/proc/<pid>/comm`
+  instead (executable name, world-readable ⇒ covers every account, no command-line text),
+  and it is positively mapped both ways: 1 with a decoy named `spacecrafter`, 0 without.
+
+**The A/A floor of the mid-band disc measurement is per-body and NOT zero** — measured over
+two same-binary launches in one epoch, §11.134(d): Sun **0** (new_disc 19666 bit-identical),
+Jupiter **4 counts = 0.10 %**, Mars **39 counts = 0.57 %**; the pre-§5.52 binary repeats
+bit-exactly on all three. Old-path discs are 23536 / 7683 / 3908 and have been bit-stable
+across every run of both epochs. Read any new/old ratio against those floors.
+
+**Rebuilding the pair** (staged binaries `sc_f26_pre` md5 `df00c3e3` = `96a94a46`,
+`sc_f26_child` md5 `23ac7fdb` = `2117ccb0`, both untracked):
+
+    git worktree add --detach /home/claude/sc-f26/wt-pre 96a94a46
+    git -C /home/claude/sc-f26/wt-pre submodule update --init      # 224eba7a, same at both
+    cmake -S /home/claude/sc-f26/wt-pre -B /home/claude/sc-f26/build-pre \
+          -DCMAKE_BUILD_TYPE=RelWithDebInfo && make -C … -j8       # never `make install`:
+                                                                  # only install touches shaders

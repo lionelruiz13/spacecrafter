@@ -342,13 +342,20 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   row's own control); per-binary in-epoch A/A agreement to the digit; frozen md5
   in==out; fresh launches; no `t-*.dat` written during the session (the row checked
   this — re-assert it); concurrent-instance assert.
-- **WIP:** 2026-08-02 — checkpoint 1: scene + instrument verified (f18_disc.py on the
-  five committed F18 artifact sets reproduces every recorded value to the digit, incl.
-  the 0.9949 → 1.2909 pair and old_disc 23536/7683/3908 in ALL five); §5.52 fix
-  identified at the git log = `94eb3f03`, parent = `96a94a46`, child (F18 delivery HEAD,
-  the build that measured both epochs) = `2117ccb0`; both built in worktrees at
-  `/home/claude/sc-f26/` — pre md5 `df00c3e3`, child md5 `23ac7fdb`. Next: the
-  one-epoch campaign (child, pre, child, pre) via `harness/f26_epoch.sh`.
+- **WIP:** 2026-08-02 — **DELIVERED (§11.134). NO code** (code untouched at `d9de42ac`);
+  harness `42904a7` (instrument + reconstruction) + the delivery commit. Pair at the git
+  log: fix `94eb3f03`, parent `96a94a46`, child `2117ccb0`; rebuilt in worktrees, md5
+  `df00c3e3` / `23ac7fdb` (staged as `harness/sc_f26_{pre,child}`). ONE epoch
+  16:00:31–16:12:02, four interleaved fresh launches, every precondition recorded per
+  launch. **Result: the shift is on NEITHER binary** — the child reads the FIRST-epoch
+  numbers (Jupiter 0.9949 / 0.9939, new_disc 3888 / 3884 vs epoch B's 5045; Sun 19666
+  bit-identical), the pre binary reads its own recorded signature bit-identically twice
+  (0 / 0 / 444; old_disc 23536 / 7683 / 3908), A/A floor 0 / 39 / 4 counts. ⇒ delivered
+  code exonerated, **no escalation**, transient of the epoch-B session, in-epoch-only
+  consequence stands; §5.62 stays OPEN (owed item discharged, not attributed). The task's
+  dichotomy is answered by a third branch — the pre-§5.52 binary cannot carry the shifted
+  observable at all, so the discriminating leg is the child in a new epoch (recorded).
+  §5.62's own `active.lock` statement REFUTED en route.
 
 ### F27 — §5.47: the reply that never arrives — `get status position`'s drain path  [S–M]
 
