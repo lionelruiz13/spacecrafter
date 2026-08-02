@@ -25,6 +25,12 @@ and the ramp mirror must apply +deltaAz to `az` and −deltaAlt to `alt`. The
 phase measures both on several bodies at different sky positions, because a
 sign taken from one direction is a coin toss.
 
+`Core::dragView`, the other caller of `Camera::lookRel`, is NOT here: the drag
+channel is undrivable on this host (XTEST pointer motion does not move the
+pointer — measured by `xdrag.c`'s own step report, root 0x0, `XQueryPointer` at
+(0,0) after every fake motion while Button1Mask is held), so it is verified one
+layer below SDL by `f25_drag.py` on §11.108(d)'s gdb-FIFO precedent.
+
 Every phase is run on BOTH binaries. `--pre` inverts the expectations rather
 than skipping the legs: on the pre-fix binary (a build of the instrument
 commit, which HAS the readout) the new path's parameters must be BIT-IDENTICAL
