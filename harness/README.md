@@ -534,7 +534,7 @@ WALL, and the cap radius inverts to the wall height.
   Usage `xkey spacecrafter Left 2500 1024x1024`. Exists because the interactive
   navigation ramps have NO command entry: the only honest way to say what a key
   reaches is to press it (§11.36's rule).
-- **`f4_keyprobe.py`** — presses Left and asks what moved. Carries its own
+- **`f4_keyprobe.py`** (**superseded 2026-08-02 by `f25_ramp.py`, and expected to FAIL on any binary from code `d9de42ac` on** — it asserts the DEFECT, which is what a discovery probe does, so its two finding legs failing IS the fix showing; kept unchanged as F4's record and as a pre-fix witness) — presses Left and asks what moved. Carries its own
   positive control (the OLD phase must move, or the key never arrived) and
   asserts on the PER-PATH dump, not on the screenshot: in that scene the lit
   content is path-independent (48 px>32 cross-path), so a screenshot cannot

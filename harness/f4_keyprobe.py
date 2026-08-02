@@ -2,6 +2,16 @@
 # INTENT §11.108 (task F4, audit part i) - LIVE probe of the interactive
 # navigation ramp: press a real arrow key and look at what moves.
 #
+# SUPERSEDED 2026-08-02 (F25, INTENT §11.133) - AND IT IS EXPECTED TO FAIL ON
+# ANY BINARY FROM `d9de42ac` ON. This script asserts the DEFECT (`FINDING_new_
+# camera_never_turned`, `FINDING_per_path_screen`), which is what a discovery
+# probe does; the defect is now fixed, so on a current binary those two legs
+# fail and that is the fix showing. It is kept UNCHANGED as F4's record and as
+# a pre-fix witness (run it against a build of `dc95d0de` or earlier and it
+# passes). The live gate is `f25_ramp.py`, which measures the same channel PER
+# STEP and inverts its own expectations with `--pre` instead of asserting one
+# side of the history.
+#
 # The claim under test, read from source and NOT trusted until pressed:
 #   arrow key -> UI (ui.cpp:1091-1109) -> Core::turnLeft/Right/Up/Down
 #             -> vzm.deltaAz/deltaAlt -> Core::updateMove (core.cpp:1817-1826)
