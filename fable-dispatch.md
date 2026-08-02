@@ -276,13 +276,16 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   both-ways; battery + f-suites green; frozen md5 in==out; §11.121(m)
   concurrent-instance assert; §11.123(o2) cadence caution — counter ratios and
   in-run A/B only, never absolute fps labels.
-- **WIP:** 2026-08-02 — checkpoint 3/6+4/6 MIRRORS landed, code `d9de42ac` (turn + zoom, both
-  at the `Core::updateMove` seam; `Camera::lookRel` is now the exact counterpart of
-  `Navigator::updateMove`, `Camera::setHalfFovNow` is the zoom sink). Smoke: per-step view
-  deltas equal to **1.965e-08 rad** worst over 360 steps, cumulative **1.43e-06**, release
-  frame steps neither path, pole pins agree to the predicted **9.0037e-08** rad. Harness
-  `d1f1cad` + the check corrections in flight. NEXT: the full both-binaries ladder
-  (frames/turn/diag/fov/zoom on delivered AND `sc_f25_pre`), then the battery + f-suites.
+- **WIP:** 2026-08-02 — **DELIVERED, B34 CLOSED.** Code `dc95d0de` (instrument, nothing wired)
+  + `d9de42ac` (turn + zoom mirrors); harness `f823af9`/`d1f1cad`/`578575d`/`892ea0d`/`6c4ab44`/
+  `c9b1989` + the delivery commit. Record: **§11.133** (`INTENT/11.133.md`, 12 sections incl.
+  the 24-term derivation table), §13.B **B34 CLOSED**, NEW **§5.70** (the recorded turn action
+  is unreplayable) + **§5.71** (`Core::panView` old-only, the row's one residue, rides
+  §5.66/§11.92(d)), `capability-surface.md` §3.2 rows flipped, `harness/README.md` F25 section.
+  **No Vixy feel item owed** — the one inexact term is float32, predicted exactly (pole pins
+  9.0037e-08 rad apart by construction, measured 8.997e-08). `f25_ramp` 94 PASS delivered /
+  69 PASS pre-fix, 0 FAIL either way; `f25_drag` ALL PASS both ways; battery exit 0 + scene E
+  0 FAIL; b24×2, f15, f20, f22, f23, f24 green; frozen md5 in == out on every launch.
 
 ### F26 — §5.62's owed isolation: the pre-§5.52 binary in the current epoch  [S]
 

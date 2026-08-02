@@ -1207,3 +1207,61 @@ by dump time (measured: Mars 8006.57 km, −5.7 min). Delivered 39 → 1 points 
 12 assertions differ between the binaries** — the gate is re-pointed, not loosened.
 The seam's other live caller, the config-init call, is inert by construction (no
 body has a point yet) and is stated rather than tested.
+
+## F25 — the interactive VIEW and ZOOM ramps (`f25_ramp.py`, `f25_drag.py`) — INTENT §11.133, 2026-08-02
+
+    cd claude/harness && DISPLAY=:2 ./f25_ramp_run.sh <absOutdir> [--phase frames,turn,diag,fov,zoom]
+    cd claude/harness && SC_BIN=$PWD/sc_f25_pre F25_PRE=1 DISPLAY=:2 ./f25_ramp_run.sh <absOutdir>
+    cd claude/harness && DISPLAY=:2 ./f25_drag_run.sh <absOutdir>        # gdb-driven, see below
+
+**The claim is PER-STEP, so the instrument is too.** `body action dual_dump` carries
+a `"ramp"` object: one row per `Core::updateMove` frame in which a ramp is active
+**plus the first frame after it stops**, with the frame's inputs (`dt`, the OLD
+projector fov, the DRAWN `ModularBody::halfFov`, the scaled steps, the joypad
+coefficients) and BOTH paths' view parameters before and after the step. Two
+absolute dumps around a key hold cannot say *same law, same step, same count, same
+stop*; this can. The release row exists so a key-up is OBSERVED and not inferred
+from an absent row.
+
+**Compare in VIEW space, never in the camera's parameters.** The camera's `az`/`alt`
+are the NEGATIVES of the view azimuth/altitude (`Camera::paramForward`). The
+`frames` phase measures that rather than assuming it, and it is a DISCRIMINATION
+between the two candidate signs, not an absolute bar: with both paths aimed at the
+same body on five bodies over 140° of azimuth, `alt_cam + altVision_old` spreads
+9.8e-08 rad while `alt_cam − altVision_old` spreads 0.81 rad. The residual there is
+the AIM residual (two aiming laws, two trees' positions for one body), which is why
+a bit-level bar would be the wrong instrument.
+
+**Bars are derived, and one of them was wrong in an instructive way.** Per-step
+1e-06 rad (2 float32 ulps of an O(1) parameter + one ulp for the wrap); cumulative
+5e-05 (0.5 ulp per step, random walk over ~360 steps = 1.1e-06, worst case 2.2e-05
+= 0.014 px). The pole leg first FAILED at 4.418e-06 on the delivered binary, and the
+row that failed was the **clamp transition**: old does not add `deltaAlt` there, it
+PINS, so that row's size is *whatever reaches the pin* and it absorbs the float32
+divergence accumulated before it. Clamp rows now go to the pin check, which asserts
+the exactly-computed gap between old's double `π/2 − 1e-6` and the camera's float32
+form of the same expression — **9.0037e-08 predicted, 8.997e-08 measured**.
+
+**The composed-screen leg needs `flag stars off`, and forgetting it reproduces F4's
+own confound.** The star field is drawn by the OLD pipeline in BOTH phases, so with
+it on the "new phase" moved **1861 px>32 of 2217 lit on a PRE-FIX binary whose
+camera never moved a bit**. With the sky off and the leg at fov 10 the lit content
+is the body the new path draws, and the pair discriminates completely: pre-fix
+**0 px>32** of 857 lit while the old phase moves 916 and the two phases go 213 →
+**999** apart; delivered **1087** and the two phases stay at 232 against 213 at rest.
+The Moon is a CRESCENT at this date, so 857 lit px is a fraction of its ~114-px
+disc — the content guard is scene-derived, not an absolute.
+
+**`xkey.c` takes a comma-separated keysym list** (`Left,Up`), pressed together and
+released in reverse: the diagonal needs two `vzm` components live in the same frame,
+which one key cannot produce.
+
+**`f25_drag.py` is gdb-driven because the drag channel is DEAD on this host.**
+`xdrag.c` reports the pointer after each fake motion and measures it: `XQueryPointer`
+returns **(0,0) after every one of eight `XTestFakeMotionEvent`s** while
+`Button1Mask` is held — the root window is 0×0, so XTEST pointer MOTION goes
+nowhere. A fake BUTTON event still lands, which is why `xclick.c` has always worked;
+a drag is press + MOTION + release. So `Core::dragView` is called in the live process
+on the b21 gdb-FIFO pattern — the exact function `UI::handleMove` calls, one layer
+below SDL (§11.108(d)'s precedent, residual stated). Keep `xdrag.c`'s step report:
+without it a fake motion that goes nowhere reads as "nothing moved".
