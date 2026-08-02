@@ -5,7 +5,11 @@
     cd claude/harness && DISPLAY=:2 ./f23_b33_control.py <out> [--bin B] [--prebin B]
 
 THE INSTRUMENT. Until this wave no member of the class had an observable
-channel — `get status position` never replies (§5.47), the view-offset readout's
+channel — `get status position` never replies (§5.47; FIXED 2026-08-02, F27
+§11.135 — it answers the connection that asked, in 0.002 s, and `f27_reply.py`
+checks its content against this very `control` object. The dump stays the
+per-member instrument: `{reported, old, new}` is a comparison one number on a
+socket cannot make), the view-offset readout's
 one live reader is the TUI, the mount readout has no live reader at all — so
 "the getter reports the path that does not draw" could be read at source and not
 MEASURED. `body action dual_dump` therefore carries a `control` object:

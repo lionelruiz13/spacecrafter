@@ -446,6 +446,21 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   toggles (pre 0/3). Regressions green: battery exit 0 + scene E 0 FAIL, b16 channels (2/2 probe
   entries), b10_cmd ALL PASS, frozen md5 in == out everywhere. Next: ledger (§11.135, §5.47 flip,
   the two new rows) + the doc supersessions.
+  **DELIVERED 2026-08-02 — §5.47 CLOSED.** Code `d13681eb` (`src/tools/io.{cpp,hpp}` only; no
+  instrument commit was needed — the drain was decidable at source and the pre-fix binary is HEAD's
+  own build, so ONE script measured both). Harness `dba0ccd`/`6ec172a`/delivery commit. Record:
+  **§11.135** (`INTENT/11.135.md`, 12 sections), **§5.47 FIXED** with the three hypotheses answered
+  in-row, NEW **§5.72** (the `$LOGON` channel conflates the log feed with other clients' answers —
+  preserved deliberately, semantics = Vixy's) + **§5.73** (`strcpy` of a `MAX_BUFFER+1` answer into
+  a `tcp_buffer_in_size` buffer: 1023 bytes overflows, pre-existing on both binaries),
+  `capability-surface.md` §3.2 statement superseded, `harness/README.md` f27 section + the f12
+  section annotated, `f23_b33_control.py` docstring annotated. **ONE VETO POINT for §3** (implemented
+  and live, one condition in `ServerSocket::deliver` reverses it): the addressed copy is **additive**
+  — the `$LOGON` subscribers keep receiving every answer exactly as before, so no shipped client
+  loses a delivery; whether they SHOULD is §5.72. Two in-file residues fixed with the root and stated
+  as deviations: the unlocked `inputQueue` push (the routing reads what was pushed) and the never-
+  released `clientBroadcastTab` (a third such array was being added). §11.118(f)'s recorded cost is
+  discharged: heading pins are now readable 3/3 in ONE launch.
 
 ---
 

@@ -158,9 +158,15 @@ through these getters + restore through `observerMoveTo`, in one change; `positi
 brings the CAMERA back (9 999 995.009 m, screen 6 px>8 from the bookmark) where the pre-fix binary
 leaves it where the move put it (39 999 997.452 m, 0 px>8);
 `Core::dragView`'s direct `getViewingMode()` read → **B35**. The readout channel itself
-is the class's own obstacle: `get status position` never replies (§5.47), so the
-`control` object on `body action dual_dump` (§11.131(a)) is what makes any of this
-measurable. → **B33 (CLOSED)**.
+was the class's own obstacle: ~~`get status position` never replies (§5.47)~~ **FIXED
+2026-08-02 (F27, §11.135, code `d13681eb`): a `get`'s answer now lands on the connection
+that issued it — the queue was always drained, but through `broadcast`, i.e. only to the
+clients subscribed to the log feed with `$LOGON`. Measured 6.007 s of silence pre-fix vs a
+reply in 0.002 s delivered, content field-for-field equal to `control.reported` in a scene
+whose two heading authorities are 6.16° apart.** The `control` object on `body action
+dual_dump` (§11.131(a)) is what made any of this measurable, and remains the per-member
+instrument (`{reported, old, new}` is a comparison the single-value TCP answer cannot make).
+→ **B33 (CLOSED)**.
 
 ### 3.3 Bodies
 

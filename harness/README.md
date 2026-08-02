@@ -760,7 +760,12 @@ readout has exactly one observable channel on this build**: the script-log line
 `heading from : X to: Y` that `heading delta_azimuth 0` writes, with X =
 `CoreLink::getHeading()` before it acts. `get status position` reads the same
 getter and is side-effect free, but its reply never reaches the driving client
-(INTENT §5.47). The channel therefore WRITES after it reads, so each sample is
+(INTENT §5.47) - **true of the binary F12 measured, FIXED 2026-08-02 (F27,
+§11.135): that reply now lands on the connection that issued it, so a heading
+sample no longer has to write. `f27_reply.py` leg E is the demonstration (3
+samples across two `experimental_path` pins in ONE launch). This script is
+unchanged and still uses the writing channel - it is F12's record.** The channel
+therefore WRITES after it reads, so each sample is
 the last act of its leg and the two `experimental_path` pins need two launches.
 The leg that matters is rendered: `heading delta_azimuth 0` is a semantic no-op,
 so the drawn view must not move - and getting that honest needs EVERY old-path
@@ -1301,3 +1306,51 @@ across every run of both epochs. Read any new/old ratio against those floors.
     cmake -S /home/claude/sc-f26/wt-pre -B /home/claude/sc-f26/build-pre \
           -DCMAKE_BUILD_TYPE=RelWithDebInfo && make -C … -j8       # never `make install`:
                                                                   # only install touches shaders
+
+### `f27_reply.py` — where a `get`'s answer goes, measured on the wire (INTENT §5.47 / §11.135)
+
+    cd claude/harness && DISPLAY=:2 ./f27_reply.py <absOutdir> --bin <binary> \
+        --expect pre|post [--legs A,B,C,D,E,F]
+
+One script measures BOTH binaries; `--expect` selects which direction each
+discriminating leg must go. `sc_f27_pre` (untracked, md5 `42f83cd3` = code
+`d9de42ac`) is the pre-fix binary; the delivered one is `8a93ca97` = `d13681eb`.
+
+**The fact the legs are built around**: the output queue was never stuck. It is
+drained on every pass of `ServerSocket::run`, through `broadcast`, which
+addresses the clients that subscribed to the feedback channel with `$LOGON` -
+so the answer went to the log subscribers and, with nobody subscribed, was
+popped off the queue and lost. Leg B is the load-bearing control: the SAME
+socket, the SAME command, on the PRE-FIX binary, answers in 0.002 s once it has
+sent `$LOGON`. Without that leg, "no reply" cannot be told apart from "no
+instrument" - the F26 lesson, in the smallest form it takes.
+
+  A  plain driving socket: the §11.118(i) scenario (6 s poll, twice) + the six
+     commands §5.47 lists as working on that same connection + the answer's
+     CONTENT against `body action dual_dump`'s `control`, in a scene where the
+     two heading authorities are 6.16° apart
+  B  the same socket after `$LOGON` (the positive map; also asserts the
+     delivered binary does not send TWO copies to a subscriber that asked)
+  C  subscribed listener + plain issuer, then the issuer's connection replaced
+     in the same slot: an answer follows the CONNECTION, not the slot number
+  D  a `get` issued by a SCRIPT: must reach the subscribers and never the last
+     client that spoke (the latch must clear when the command batch drains)
+  E  the read-only heading pin: 3 samples across two `experimental_path`
+     toggles in ONE launch (0/3 pre-fix) - use this instead of
+     `heading delta_azimuth 0`, which writes both authorities after reading
+  F  F1 an answer nobody can receive (script `get`, no subscriber): the app
+     must SAY so; F2 the HTTP channel, which pushes a command and hangs up in
+     the same pass, so its answer always outlives its issuer
+
+**Instrument note, learned by a false FAIL**: the app writes six log files at
+once. Marking a position by the LENGTH of their concatenation makes "what was
+logged since" the tail of the last file, and a line written to the fourth is
+invisible - leg F1 reported a diagnostic missing that was present. `logmark()`
+/ `lognew()` mark per file.
+
+**Reply parsing**: `ServerSocket::send` writes `strlen(buffer)+1` bytes, so
+every message on the wire carries its terminating NUL, and the queued answers
+end in `'\n'`. Split on NUL, then match. Note that the harness's other driving
+helpers (`b25_galactic.run_phase`, `f23_b33_control.App.send`) `recv()` into
+the void after each command - which is why a missing answer was never visible
+from a harness script until this one kept what it read.
