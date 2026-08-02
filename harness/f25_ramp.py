@@ -54,12 +54,22 @@ WIN = "1024x1024"
 #    <= 0.5 ulp = 6e-8 rad per step; random walk over 360 steps = 1.1e-6 rad,
 #    worst case systematic 2.2e-5 rad = 1.2e-3 deg = 0.014 px on a 1024-px-
 #    radius 180 deg dome. Bar 5e-5 rad.
-#  * pole clamp: old pins the view altitude at pi/2 - 1e-6 (double). The camera
-#    holds it as float32 -> pi/2 - 9.5367e-7, i.e. 4.6e-8 rad = 2.7e-6 deg from
-#    old's value. Bar 1e-6 rad.
+#  * pole clamp: old pins the view altitude at the DOUBLE pi/2 - 1e-6 =
+#    1.5707953267948966; the camera computes the same expression in float32,
+#    float(float(pi/2) - float(1e-6)) = 1.5707954168319702. The two pins are
+#    therefore 9.0037e-8 rad = 5.16e-6 deg apart BY CONSTRUCTION, and that is
+#    the whole residual there. Computed exactly below, not estimated.
+#  * a CLAMP row is not a step: its size is "whatever reaches the pin", so it
+#    absorbs whatever float32 divergence the hold accumulated before it. Those
+#    rows are excluded from the per-step comparison and checked by the pin
+#    criterion instead - the accumulated divergence is REPORTED there, since
+#    that is the one place the instrument can see it directly.
 STEP_BAR = 1e-6          # rad, per step, view-space
 CUM_BAR = 5e-5           # rad, over one hold
-POLE_BAR = 1e-6          # rad, clamped altitude, old vs new
+POLE_PIN_OLD = math.pi / 2 - 1e-6
+POLE_PIN_NEW = float(np.float32(np.float32(math.pi / 2) - np.float32(1e-6)))
+POLE_PIN_GAP = POLE_PIN_NEW - POLE_PIN_OLD          # 9.0037e-8 rad, derived
+POLE_BAR = 2 * POLE_PIN_GAP
 FRAME_BAR = 2e-4         # rad, the alt_cam + altVision_old == 0 relation
                          # (the tracked-aim residual: two independent aiming
                          # laws settling on the same body, not a bit relation)
@@ -201,8 +211,9 @@ def new_run(header, prev_total):
     """The rows written since `prev_total` — one hold's worth."""
     ramp = header["ramp"]
     n = ramp["total"] - prev_total
-    if ramp["dropped"]:
-        note(f"ring dropped {ramp['dropped']} rows (capacity {ramp['capacity']})")
+    if n > ramp["capacity"]:
+        note(f"WARNING: this hold wrote {n} rows into a {ramp['capacity']} ring — truncated")
+        n = ramp["capacity"]
     return ramp["steps"][-n:] if n > 0 else [], ramp["total"]
 
 
@@ -230,6 +241,7 @@ def analyse(rows, tag, pre, expect_az=None, expect_alt=None, clamped_ok=False):
     worst_law_old = worst_law_new = 0.0
     cum = [0.0, 0.0, 0.0, 0.0]
     clamp_rows = 0
+    worst_clamp = 0.0
     for s in act:
         daz_o, dalt_o, daz_n, dalt_n = view_deltas(s)
         cum[0] += daz_o; cum[1] += dalt_o; cum[2] += daz_n; cum[3] += dalt_n
@@ -237,11 +249,17 @@ def analyse(rows, tag, pre, expect_az=None, expect_alt=None, clamped_ok=False):
         worst_law_old = max(worst_law_old, abs(daz_o - (-s["dAz"])))
         if not pre:
             worst_law_new = max(worst_law_new, abs(daz_n - (-s["dAz"])))
-        # the altitude leg is skipped on a clamp row (old pins instead of stepping)
-        if abs(dalt_o - s["dAlt"]) > STEP_BAR:
+        # A CLAMP row is not a step: old does not add deltaAlt there, it PINS.
+        # Its size is therefore "whatever reaches the pin" and it absorbs the
+        # float32 divergence the hold accumulated before it, so it belongs to
+        # the pin check (below, in the caller) and not to the per-step one.
+        clamped = abs(dalt_o - s["dAlt"]) > STEP_BAR
+        if clamped:
             clamp_rows += 1
+            worst_clamp = max(worst_clamp, abs(dalt_o - dalt_n))
             if not clamped_ok:
                 worst_law_old = max(worst_law_old, abs(dalt_o - s["dAlt"]))
+            continue
         worst_az = max(worst_az, abs(daz_o - daz_n))
         worst_alt = max(worst_alt, abs(dalt_o - dalt_n))
     n = len(act)
@@ -275,7 +293,10 @@ def analyse(rows, tag, pre, expect_az=None, expect_alt=None, clamped_ok=False):
               f"{worst_law_new:.3e} rad, bar {STEP_BAR:.0e})")
         check(f"{tag}_per_step_parity", worst_az <= STEP_BAR and worst_alt <= STEP_BAR,
               f"per-step VIEW deltas equal on both paths: worst az {worst_az:.3e}, "
-              f"alt {worst_alt:.3e} rad (bar {STEP_BAR:.0e})")
+              f"alt {worst_alt:.3e} rad over {n - clamp_rows} un-clamped rows "
+              f"(bar {STEP_BAR:.0e})"
+              + (f"; the {clamp_rows} clamp row(s) differ by up to {worst_clamp:.3e} rad "
+                 f"because a clamp is not a step — see the pin check" if clamp_rows else ""))
         check(f"{tag}_cumulative_parity",
               abs(cum[0] - cum[2]) <= CUM_BAR and abs(cum[1] - cum[3]) <= CUM_BAR,
               f"over the whole hold: d(az) {cum[0]-cum[2]:+.3e}, d(alt) {cum[1]-cum[3]:+.3e} rad "
@@ -413,10 +434,17 @@ def phase_turn(app, pre):
     analyse(rows, "left", pre, expect_az=+1, expect_alt=0)
 
     old_px, new_px = px32(b_old, a_old), px32(b_new, a_new)
-    note(f"composed screen across the hold: OLD phase {old_px} px>32 (lit {lit(b_old)}), "
-         f"NEW phase {new_px} px>32 (lit {lit(b_new)})")
-    check("left_positive_control", old_px > 5000,
-          f"the OLD phase moved {old_px} px>32 under the injected keystroke — the key "
+    lit_old, lit_new = lit(b_old), lit(b_new)
+    # SCENE-DERIVED bar, not F4's absolute 73 777: that number came from a
+    # sky-full frame where the grid and the stars are drawn by the OLD navigator
+    # in BOTH phases, so it cannot attribute a camera (F4 said so itself and
+    # moved its own assert onto the dump). Here the sky is off and the lit
+    # content IS the body the new path draws, so the honest bar is relative to
+    # that content: a displacement larger than the content's own size.
+    note(f"composed screen across the hold: OLD phase {old_px} px>32 of {lit_old} lit, "
+         f"NEW phase {new_px} px>32 of {lit_new} lit")
+    check("left_positive_control", old_px > 0.5 * lit_old,
+          f"the OLD phase moved {old_px} px>32 against its own {lit_old} lit px — the key "
           f"demonstrably arrived (if ~0 every null below is void)")
     n0 = bod0.get("Moon", {}).get("new", {})
     n1 = bod1.get("Moon", {}).get("new", {})
@@ -429,15 +457,16 @@ def phase_turn(app, pre):
         check("left_per_path_screen", dn == 0.0 and do > 100.0,
               f"pre-fix: the NEW path's screen position is bit-identical across the hold "
               f"({dn:.3e} NDC) while the OLD path's moves {do:.1f} px — F4's asymmetry, reproduced")
-        check("left_new_screen_still", new_px == 0 or new_px < old_px / 50,
-              f"pre-fix: the NEW phase's composed screen barely moves ({new_px} px>32 against "
-              f"the old phase's {old_px})")
+        check("left_new_screen_still", new_px < 0.05 * lit_new,
+              f"pre-fix: the NEW phase's composed screen does not move ({new_px} px>32 of "
+              f"{lit_new} lit) while the old phase's moves {old_px}")
     else:
         check("left_per_path_screen", dn > 0.05 and do > 100.0,
               f"delivered: BOTH paths moved — NEW |d| {dn:.4f} NDC, OLD |d| {do:.1f} px")
-        check("left_new_screen_moves", new_px > 5000,
-              f"delivered: the NEW phase's composed screen moved {new_px} px>32 (the row's "
-              f"own bar is px>32 on the drawn frame)")
+        check("left_new_screen_moves", new_px > 0.5 * lit_new,
+              f"delivered: the NEW phase's composed screen moved {new_px} px>32 against its "
+              f"own {lit_new} lit px — the drawn frame changed by more than the content it "
+              f"carries (the row's own px>32 bar, taken on the frame that draws)")
 
     # --- the other three directions ----------------------------------------
     for key, eaz, ealt in (("Right", -1, 0), ("Up", 0, +1), ("Down", 0, -1)):
@@ -480,18 +509,31 @@ def phase_turn(app, pre):
         new_view_alt = -last["newAltAfter"]
         note(f"after {len(act)} up-steps: OLD view altitude {old_view_alt:.9f} rad "
              f"({math.degrees(old_view_alt):.6f} deg), NEW {new_view_alt:.9f} rad")
-        pinned = abs(abs(old_view_alt) - (math.pi / 2 - 1e-6)) < 1e-7
+        pinned = abs(abs(old_view_alt) - POLE_PIN_OLD) < 1e-9
         check("pole_old_pinned", pinned,
-              f"the OLD path pinned at pi/2 - 1e-6 = {math.pi/2-1e-6:.9f} "
-              f"(measured {abs(old_view_alt):.9f})")
+              f"the OLD path pinned at pi/2 - 1e-6 = {POLE_PIN_OLD:.13f} "
+              f"(measured {abs(old_view_alt):.13f})")
+        # the clamp row's own size: where the accumulated float32 divergence of
+        # the hold becomes visible, because the clamp absorbs it in one row
+        trans = [s for s in act
+                 if abs((s["oldAltAfter"] - s["oldAlt"]) - s["dAlt"]) > STEP_BAR][:1]
+        if trans:
+            t = trans[0]
+            pre_gap = (-t["newAlt"]) - t["oldAlt"]
+            note(f"at the clamp transition the two paths' view altitudes were "
+                 f"{pre_gap:+.3e} rad apart — the float32 divergence accumulated over the "
+                 f"hold (predicted <= 2.2e-5 worst case), which the clamp then absorbs")
         if pre:
             check("pole_PRE_new_frozen", all(s["newAltAfter"] == s["newAlt"] for s in rows),
                   "pre-fix: the camera's altitude never moved, so it never reached a clamp")
         else:
-            check("pole_new_pinned", abs(old_view_alt - new_view_alt) <= POLE_BAR,
-                  f"BOTH paths pinned at the same altitude: |old - new| = "
-                  f"{abs(old_view_alt-new_view_alt):.3e} rad (bar {POLE_BAR:.0e}; predicted "
-                  f"4.6e-8 rad — float32 quantization of pi/2 - 1e-6)")
+            gap = abs(new_view_alt) - abs(old_view_alt)
+            check("pole_new_pinned", abs(gap - POLE_PIN_GAP) <= 1e-10,
+                  f"BOTH paths pinned, and the gap is the PREDICTED one: measured "
+                  f"{gap:.6e} rad against {POLE_PIN_GAP:.6e} predicted exactly — old pins at "
+                  f"the double pi/2-1e-6 and the camera at float(float(pi/2)-float(1e-6)); "
+                  f"{math.degrees(POLE_PIN_GAP):.2e} deg, i.e. {math.degrees(POLE_PIN_GAP)/90*1024:.1e} px "
+                  f"on a 1024-px-radius 180 deg dome")
             # the pole is where the parameter round trip used to flip the azimuth
             azs = [s["newAzAfter"] for s in act[-20:]]
             flips = sum(1 for i in range(1, len(azs)) if abs(wrap_pi(azs[i] - azs[i-1])) > 1.0)

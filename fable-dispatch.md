@@ -276,12 +276,13 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   both-ways; battery + f-suites green; frozen md5 in==out; §11.121(m)
   concurrent-instance assert; §11.123(o2) cadence caution — counter ratios and
   in-run A/B only, never absolute fps labels.
-- **WIP:** 2026-08-02 — checkpoint 2/6 TERM TABLE committed (`INTENT/11.133.md` (b), 24 terms)
-  with its two derivation measurements: the sign conventions T12/T13 discriminated on five
-  bodies (alt sum 1.1e-5 rad, az offset constant +25.264° ± 4.9e-4 rad) and the ZOOM ramp
-  MEASURED MISSING (old fov 60→28.40° over 215 steps, drawn `halfFov` bit-identical on every
-  one). Code `dc95d0de` (instrument only), harness `d1f1cad`. NEXT: the turn mirror at
-  `Core::updateMove` + `Camera::lookRel` made the exact counterpart of `Navigator::updateMove`.
+- **WIP:** 2026-08-02 — checkpoint 3/6+4/6 MIRRORS landed, code `d9de42ac` (turn + zoom, both
+  at the `Core::updateMove` seam; `Camera::lookRel` is now the exact counterpart of
+  `Navigator::updateMove`, `Camera::setHalfFovNow` is the zoom sink). Smoke: per-step view
+  deltas equal to **1.965e-08 rad** worst over 360 steps, cumulative **1.43e-06**, release
+  frame steps neither path, pole pins agree to the predicted **9.0037e-08** rad. Harness
+  `d1f1cad` + the check corrections in flight. NEXT: the full both-binaries ladder
+  (frames/turn/diag/fov/zoom on delivered AND `sc_f25_pre`), then the battery + f-suites.
 
 ### F26 — §5.62's owed isolation: the pre-§5.52 binary in the current epoch  [S]
 
