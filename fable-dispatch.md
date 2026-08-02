@@ -286,6 +286,24 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   9.0037e-08 rad apart by construction, measured 8.997e-08). `f25_ramp` 94 PASS delivered /
   69 PASS pre-fix, 0 FAIL either way; `f25_drag` ALL PASS both ways; battery exit 0 + scene E
   0 FAIL; b24×2, f15, f20, f22, f23, f24 green; frozen md5 in == out on every launch.
+  **Supervisor-verified 2026-08-02** (§11.133 read in full; commits/authors/trees checked;
+  diff surface verified at the diff level — `navModule/navigator.cpp` absent from the diff,
+  core.cpp/hpp additions only, the single deletion is Camera.cpp's snap round-trip removal;
+  B34 flip + §5.70/§5.71 rows + §11.133 stub verified at the ledger; harnesses not re-run —
+  per-step both-ways ladders with the pre-fix bit-identical column + committed artifacts
+  accepted). Deviations ALL ENDORSED: (1) `lookRel` carries old's convention — I2, the
+  convention stated once where it is written, both call sites handled; the `dragView`
+  vertical-sign fix it forced is a measured pre-existing defect (both-ways record with the
+  agreeing azimuth as control) and moves parity the mandate's direction; (2) gdb-driven drag
+  leg — the XTEST motion channel positively mapped dead (root 0×0), §11.108(d) precedent,
+  layer above source-verified and stated; (3) `f4_keyprobe` annotated as a pre-fix witness
+  rather than edited — F4's record preserved, asserts-closed-defect stated; (4) the pole-snap
+  ASSIGNMENT — D8 as-if strictly-more-exact, residual predicted-then-measured (9.0037e-08 /
+  8.997e-08 rad), the unjustifiable-epsilon feel item avoided by removing the primitive's own
+  loss (zero-patch class); (5) B34 CLOSED with `panView` routed to §5.71 — B33→B34/B35
+  routing precedent, the member is F25's own find, visibility + one-line fix shape preserved.
+  **No-feel-item claim endorsed at the row's own bar**: the 24-term table carries an exact
+  equivalent or a measured discrimination per term.
 
 ### F26 — §5.62's owed isolation: the pre-§5.52 binary in the current epoch  [S]
 
