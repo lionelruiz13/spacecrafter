@@ -48,6 +48,9 @@
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "EntityCore/Tools/SafeQueue.hpp"
 #include "EntityCore/Core/BufferMgr.hpp"
+#include "tools/video_surface_texture.hpp"
+#include <algorithm>
+#include <cctype>
 #include <filesystem>
 
 using namespace txcache;
@@ -56,6 +59,7 @@ using namespace txcache;
 
 std::string s_texture::texDir = "./";
 std::map<std::string, std::weak_ptr<texRecap>> s_texture::texCache;
+std::vector<std::weak_ptr<VideoSurfaceTexture>> s_texture::videoTextureCache;
 std::list<bigTexRecap> s_texture::bigTextures;
 std::list<bigTexRecap> s_texture::droppedBigTextures;
 WorkQueue<bigTexRecap *, 31> s_texture::bigTextureQueue;
@@ -93,6 +97,21 @@ std::mutex TextureLoader::dispatchedLoadMutex;
 std::mutex TextureLoader::cacheMutex;
 
 std::chrono::steady_clock::duration loadTime;
+
+static bool isVideoTextureName(std::string name)
+{
+    std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) {
+        return static_cast<char>(std::tolower(c));
+    });
+    return name.size() >= 4 && (
+        name.ends_with(".mp4") ||
+        name.ends_with(".webm") ||
+        name.ends_with(".mov") ||
+        name.ends_with(".avi") ||
+        name.ends_with(".mkv") ||
+        name.ends_with(".m4v")
+    );
+}
 
 // Conversion table
 const VkFormat formatTable[] = {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM, VK_FORMAT_R8G8B8A8_SNORM};
@@ -251,6 +270,7 @@ s_texture::s_texture(const s_texture *t)
 {
 	textureName = t->textureName;
 	texture = t->texture;
+    videoTexture = t->videoTexture;
 }
 
 s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap, bool resolution, int depth, int nbChannels, int channelSize, bool useBlendMipmap, bool force3D, int depthColumn) : textureName(_textureName)
@@ -282,10 +302,19 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap
 	}
 	bool succes;
     auto now = std::chrono::steady_clock::now();
-	if (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName))
-        succes = preload(textureName, _loadType, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap, force3D, depthColumn);
-	else
-		succes = preload(texDir + textureName, _loadType, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap, force3D, depthColumn);
+    const std::string fullName = (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName)) ? textureName : texDir + textureName;
+    if (isVideoTextureName(textureName)) {
+        textureName = fullName;
+        videoTexture = std::make_shared<VideoSurfaceTexture>(textureName, depth, depthColumn);
+        succes = videoTexture->isValid();
+        if (succes) {
+            videoTextureCache.emplace_back(videoTexture);
+        } else {
+            videoTexture.reset();
+        }
+    } else {
+        succes = preload(fullName, _loadType, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap, force3D, depthColumn);
+    }
 
 	if (!succes)
 		createEmptyTex();
@@ -508,6 +537,10 @@ bool TextureLoader::load(stbi_uc *data, int realWidth, int realHeight)
 
 void s_texture::getDimensions(int &width, int &height) const
 {
+    if (videoTexture) {
+        videoTexture->getDimensions(width, height);
+        return;
+    }
 	while (texture->height < 0)
 		std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
 	width = texture->width;
@@ -516,6 +549,10 @@ void s_texture::getDimensions(int &width, int &height) const
 
 void s_texture::getDimensions(int &width, int &height, int &depth) const
 {
+    if (videoTexture) {
+        videoTexture->getDimensions(width, height, depth);
+        return;
+    }
 	while (texture->height < 0)
 		std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Wait for texture loading
 	width = texture->width;
@@ -526,6 +563,8 @@ void s_texture::getDimensions(int &width, int &height, int &depth) const
 // Return the average texture luminance : 0 is black, 1 is white
 float s_texture::getAverageLuminance() const
 {
+    if (videoTexture)
+        return 0.5f;
     if (texture->averageLuminance == -1) {
         double sum = 0;
     	uint8_t *p;
@@ -592,6 +631,10 @@ void s_texture::forceUnload()
 
 void s_texture::update()
 {
+    videoTextureCache.erase(std::remove_if(videoTextureCache.begin(), videoTextureCache.end(),
+        [](const std::weak_ptr<VideoSurfaceTexture> &video) {
+            return video.expired();
+        }), videoTextureCache.end());
 	releaseTexIdx = (releaseTexIdx + 1) % 3;
 	releaseTexture[releaseTexIdx].clear();
 	for (auto &bt : bigTextures) {
@@ -608,6 +651,8 @@ void s_texture::update()
 
 Texture &s_texture::getTexture()
 {
+    if (videoTexture)
+        return videoTexture->getTexture();
     if (texture->loader) {
         auto now = std::chrono::steady_clock::now();
         auto &priority = texture->loader->priority;
@@ -628,6 +673,8 @@ Texture &s_texture::getTexture()
 
 Texture *s_texture::getBigTexture()
 {
+    if (videoTexture)
+        return videoTexture->getBigTexture();
     if (texture->bigWidth == 0) {
         return &getTexture();
     }
@@ -795,6 +842,14 @@ void s_texture::releaseAllMemory()
 
 void s_texture::recordTransfer(VkCommandBuffer cmd)
 {
+    for (auto it = videoTextureCache.begin(); it != videoTextureCache.end();) {
+        if (auto video = it->lock()) {
+            video->recordUpdate(cmd);
+            ++it;
+        } else {
+            it = videoTextureCache.erase(it);
+        }
+    }
 	for (auto &t : releaseMemory[releaseIdx]) {
 		t->texture->detach();
         for (auto &v : t->imageViews)
@@ -904,6 +959,10 @@ void s_texture::init3DBuild(texRecap &tex)
 
 void *s_texture::acquireContent(bool &nonPersistant)
 {
+    if (videoTexture) {
+        nonPersistant = false;
+        return nullptr;
+    }
     if (nonPersistant && texture->texture->isOnCPU())
         return texture->texture->acquireStagingMemoryPtr();
     nonPersistant = false;
