@@ -278,7 +278,7 @@ Live sections this round (session 9): **F25 · F26 · F27** below.*
   in-run A/B only, never absolute fps labels.
 - **WIP:** 2026-08-02 — **DELIVERED, B34 CLOSED.** Code `dc95d0de` (instrument, nothing wired)
   + `d9de42ac` (turn + zoom mirrors); harness `f823af9`/`d1f1cad`/`578575d`/`892ea0d`/`6c4ab44`/
-  `c9b1989` + the delivery commit. Record: **§11.133** (`INTENT/11.133.md`, 12 sections incl.
+  `c9b1989`/`a91e7fb`/`501acf7`. Record: **§11.133** (`INTENT/11.133.md`, 12 sections incl.
   the 24-term derivation table), §13.B **B34 CLOSED**, NEW **§5.70** (the recorded turn action
   is unreplayable) + **§5.71** (`Core::panView` old-only, the row's one residue, rides
   §5.66/§11.92(d)), `capability-surface.md` §3.2 rows flipped, `harness/README.md` F25 section.
