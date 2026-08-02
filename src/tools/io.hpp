@@ -81,6 +81,22 @@ Updated on 17/05/2016
 #define DEBUG_SEPARATOR3 				" | " //Third error in the debug
 
 
+//! A line of protocol together with the connection it belongs to.
+//! INTENT §5.47: `setOutput` names no addressee, and the addressee used to be
+//! dropped at the first hop - `computeNormalString` knows which connection a
+//! command arrived on and pushed the bare string - so a `get`'s reply had
+//! nowhere to go but the feedback subscription ($LOGON), and with nobody
+//! subscribed it was popped off the queue and lost. The socket layer is the
+//! only place that knows the origin of a request, so it is the place that has
+//! to carry it. A connection is named by its SLOT **and** by the id that slot
+//! held when the line was read: slots are reused, so the id is what makes a
+//! reply follow the connection rather than the number (I5).
+struct ClientMessage {
+	unsigned int client = 0;	//!< index in clientSocketTab
+	unsigned int id = 0;		//!< connection id, 0 = no connection asked for this
+	std::string data;
+};
+
 class ServerSocket {
 public:
 	/* Constructors and destructor */
@@ -95,9 +111,19 @@ public:
 	/* Function to display non-zero statistics */
 	void stats();
 
-	// transfer incoming data from TCP/IP inside the program
+	//! Transfer incoming data from TCP/IP inside the program.
+	//! Also latches WHICH connection this line came from, so that whatever the
+	//! application produces while serving it can be sent back there. An empty
+	//! return clears that latch: the caller has drained its batch, and output
+	//! produced afterwards (a script, the TUI, a keypress) was asked for by
+	//! nobody. So `getInput` and `setOutput` must be called from the SAME
+	//! thread, which is the application's update thread - the server thread
+	//! never touches either.
 	std::string getInput();
-	// transfer of internal data outside the program
+	//! Transfer of internal data outside the program: to the connection that
+	//! asked for it if there is one, and to the clients that subscribed to the
+	//! feedback channel with $LOGON in any case (they were the only recipients
+	//! before §5.47 and they keep receiving exactly what they received).
 	void setOutput(std::string data);
 
 private:
@@ -133,6 +159,8 @@ private:
 	SDLNet_SocketSet socketSet; //Socket monitoring table
 	TCPsocket* clientSocketTab; //Client sockets table
 	bool* clientBroadcastTab; //Feedback request table
+	unsigned int* clientIdTab; //Connection id per slot (0 = free); never reused
+	unsigned int lastClientId; //Last id handed out
 
 	/* Thread variables */
 	SDL_Thread *thread; //Thread of the server that waits for the packets
@@ -145,10 +173,15 @@ private:
 	char* buffer; //Receive buffer
 
 	/* Data storage variables */
-	std::queue<std::string> inputQueue; //Input queue
-	std::queue<std::string> outputQueue; //Output queue
+	std::queue<ClientMessage> inputQueue; //Input queue
+	std::queue<ClientMessage> outputQueue; //Output queue
 	SDL_mutex *inputting; //Input queue mutex
 	SDL_mutex *outputting; //Mutex of the output queue
+	//! The request currently being served, latched by getInput: the answer
+	//! goes back to this connection. Written and read by the application
+	//! thread only (see getInput).
+	unsigned int servingClient;
+	unsigned int servingId;
 
 	/* Initialization function and code */
 	int init(unsigned int port, unsigned int maxClients, unsigned int bufferSize); //Initialization function called by the constructors
@@ -163,8 +196,13 @@ private:
 	bool computeString(unsigned int client, std::string string); //Chain processing function
 	bool computeHttp(unsigned int client, std::string string);//HTTP request processing function (BETA)
 	void computeNormalString(unsigned int client, std::string string);//Normal request processing function
+	void pushRequest(unsigned int client, const std::string &data); //Queues a request with the connection it came from
 	void checkDataToSend(); //Sending function of data received from the application
-	int broadcast(std::string data); //Function of broadcasting to the clients
+	void deliver(const ClientMessage &out); //Sends one answer where it belongs
+	//! Broadcast to the feedback subscribers. `excludeClient` is the slot that
+	//! has already been served as the addressee, so that a client which is both
+	//! the issuer and a subscriber gets one copy and not two.
+	int broadcast(std::string data, int excludeClient = -1);
 	int close(unsigned int client); //Function to close the client socket
 
 	/* FFactoring or assistance functions */

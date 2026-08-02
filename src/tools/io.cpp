@@ -166,10 +166,19 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 		debugOut("NEW_BOOL_TAB_ERROR", LOG_TYPE::L_ERROR); //Debug
 		return NEW_BOOL_TAB_ERROR_CODE;
 	}
+	clientIdTab = new unsigned int[maxClients];
+	if(clientIdTab == NULL) {
+		debugOut("NEW_BOOL_TAB_ERROR", LOG_TYPE::L_ERROR); //Debug
+		return NEW_BOOL_TAB_ERROR_CODE;
+	}
 	for (unsigned int i = 0; i < maxClients; i++)	{
 		clientSocketTab[i] = NULL; //Initialization of all client sockets to NULL
 		clientBroadcastTab[i] = false;
+		clientIdTab[i] = 0; //No connection holds this slot
 	}
+	lastClientId = 0;
+	servingClient = 0;
+	servingId = 0; //Nobody is being served yet
 
 	/* Initialization of the buffer */
 	buffer = new char[bufferSize];
@@ -271,6 +280,8 @@ ServerSocket::~ServerSocket()
 
 	SDLNet_FreeSocketSet(socketSet);//Release of the SocketSet
 	delete[] clientSocketTab; //Release socket array
+	delete[] clientBroadcastTab; //Release the feedback-request array
+	delete[] clientIdTab; //Release the connection-id array
 	delete[] buffer; //Release buffer
 	SDL_DestroyMutex(running); //Release the mutex
 	SDLNet_Quit(); //Closing of SDL_net
@@ -326,10 +337,19 @@ std::string ServerSocket::getInput()
 {
 	if(lock(inputting) == IO_NO_ERROR) {
 		std::string data;
-		if(inputQueue.empty())
+		if(inputQueue.empty()) {
+			// The caller has drained its batch. Whatever the application
+			// produces from here on was asked for by nobody on a socket - a
+			// script, the TUI, a keypress - so it must not be attributed to
+			// the last client that happened to speak.
+			servingClient = 0;
+			servingId = 0;
 			data = "";
-		else {
-			data = inputQueue.front();
+		} else {
+			const ClientMessage &request = inputQueue.front();
+			servingClient = request.client;
+			servingId = request.id;
+			data = request.data;
 			inputQueue.pop();
 		}
 		unlock(inputting);
@@ -346,7 +366,11 @@ void ServerSocket::setOutput(std::string data)
 			cLog::get()->write("ServerSocket data setOutput too big", LOG_TYPE::L_WARNING);
 			data.resize(MAX_BUFFER);
 		}
-		outputQueue.push(data);
+		// The answer is stamped with the request being served, not with
+		// "whoever is subscribed when it goes out": the queue can be drained
+		// several passes later, and by then the connection may be somebody
+		// else's (§5.47, I5).
+		outputQueue.push(ClientMessage{servingClient, servingId, data});
 		unlock(outputting);
 	}
 }
@@ -419,6 +443,7 @@ void ServerSocket::checkNewClient()
 				} else {
 					connection++; //Increases the total number of connections
 					clientCount++; //Increases the number of connected clients
+					clientIdTab[freeSpot] = ++lastClientId; //Names THIS connection, so a reply cannot land on the next tenant of the slot
 					if(clientCount > maxSimultaneousClient)
 						maxSimultaneousClient = clientCount; //Update the maximum number of simulataneously connected clients
 
@@ -552,7 +577,12 @@ bool ServerSocket::computeHttp(unsigned int client, std::string string)
 				command = replace(command, "+", " "); //Decodes spaces
 				command = replace(command, "%3A", ":"); //Decodes ":"
 				printf("COMMAND : \"%s\"\n", command.c_str());
-				inputQueue.push(command); //Adds the string to the output queue
+				// The HTTP connection is closed a few lines below, so this
+				// request's id will no longer match its slot by the time an
+				// answer exists: the answer then falls back to the feedback
+				// subscribers, which is where it went before §5.47. Nothing
+				// here needs to say so - deliver() reads it off the slot.
+				pushRequest(client, command); //Adds the string to the input queue
 				broadcast(clientIp(client) + CLIENT_SEPARATOR2 + "HTTP" + CLIENT_SEPARATOR1 + command + '\n'); //Sends the string to all clients
 			}
 		}
@@ -622,8 +652,22 @@ void ServerSocket::computeNormalString(unsigned int client, std::string string)
 			strcpy(buffer, "REQUEST ERROR");
 		send(clientSocketTab[client]); //Send buffer to client
 	} else {
-		inputQueue.push(string); //Add string to output queue
+		pushRequest(client, string); //Add string to the input queue, WITH its origin
 		//broadcast(clientIp(client) + CLIENT_SEPARATOR1 + string + '\n'); //Send string to all clients
+	}
+}
+
+//! Queue a request together with the connection it arrived on.
+//! The lock is not a detail added for the origin: the push runs on the server
+//! thread and `getInput`'s pop runs on the application thread, and until now
+//! only the pop side took `inputting` - i.e. a std::string was being
+//! constructed in a queue another thread could be popping from. The routing
+//! this fix installs reads what was pushed, so the queue has to be sound.
+void ServerSocket::pushRequest(unsigned int client, const std::string &data)
+{
+	if(lock(inputting) == IO_NO_ERROR) {
+		inputQueue.push(ClientMessage{client, clientIdTab[client], data});
+		unlock(inputting);
 	}
 }
 
@@ -631,14 +675,49 @@ void ServerSocket::checkDataToSend()
 {
 	if(lock(outputting) == IO_NO_ERROR) {
 		while(!outputQueue.empty()) { //Non-empty queue
-			broadcast(outputQueue.front() + '\n'); //Send to all clients from the head of the queue
+			deliver(outputQueue.front()); //Send from the head of the queue
 			outputQueue.pop(); //Scrolls
 		}
 		unlock(outputting);
 	}
 }
 
-int ServerSocket::broadcast(std::string data)
+//! One answer, to the connection that asked for it and to the feedback
+//! subscribers (§5.47). Before this, an answer had only the second half, so a
+//! client that asked and did not subscribe was answered into nothing - the
+//! string was popped off the queue all the same, which is why the app's log
+//! carried no warning either.
+void ServerSocket::deliver(const ClientMessage &out)
+{
+	// The connection that asked, if it is still that same connection: a slot
+	// is freed on disconnect and handed to the next client, and the next
+	// client must not be given an answer it never asked for (I5).
+	int target = -1;
+	if(out.id != 0 && out.client < maxClients
+	   && clientSocketTab[out.client] != NULL
+	   && clientIdTab[out.client] == out.id)
+		target = (int)out.client;
+
+	unsigned int recipients = 0;
+	if(target >= 0) {
+		strcpy(buffer, (out.data + '\n').c_str()); //Prepares the message
+		send(clientSocketTab[target]);
+		recipients++;
+	}
+	// The feedback channel is unchanged: a client that subscribed with $LOGON
+	// is a control room watching what every operator asks, and it keeps
+	// receiving exactly what it received before. The addressee is excluded so
+	// that a client which is both issuer and subscriber gets one copy.
+	recipients += broadcast(out.data + '\n', target);
+
+	if(recipients == 0)
+		cLog::get()->write("TCP : nobody to answer \"" + out.data.substr(0, 60)
+		                   + "\" to - the connection that asked is gone and no client "
+		                     "subscribed to the feedback channel with $LOGON",
+		                   LOG_TYPE::L_WARNING);
+}
+
+int ServerSocket::broadcast(std::string data, int excludeClient)
 {
 	debugOut("-- BROADCAST --", LOG_TYPE::L_DEBUG); //Debug
 	debugOut("BROADCAST_DATA "+ data, LOG_TYPE::L_DEBUG); //Debug
@@ -646,7 +725,7 @@ int ServerSocket::broadcast(std::string data)
 	strcpy(buffer, data.c_str()); //Prepares the message
 	unsigned int sent = 0; //Number of clients to which the data is sent
 	for (unsigned int client = 0; client < maxClients; client++) { //Path of all connected clients
-		if(clientBroadcastTab[client]) { //If the client requests feedback
+		if(clientBroadcastTab[client] && (int)client != excludeClient) { //If the client requests feedback and has not already been served
 			send(clientSocketTab[client]); //Sends to client
 			sent++; //Increates the total number of requests sent
 		}
@@ -683,6 +762,7 @@ int ServerSocket::close(unsigned int client)
 	SDLNet_TCP_Close(clientSocketTab[client]); //Closing the client socket
 	clientSocketTab[client] = NULL; //Nullation of the client socket
 	clientBroadcastTab[client] = false; //Falsify the status of the feedback request
+	clientIdTab[client] = 0; //The connection is over: an answer still queued for it has no addressee
 	clientCount--; //Decrease the number of connected clients
 
 	debugOut("CLIENT_COUNT " + toString(clientCount) + "/" + toString(maxClients), LOG_TYPE::L_INFO); //Debug
