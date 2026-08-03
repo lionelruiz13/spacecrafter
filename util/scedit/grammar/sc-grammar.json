@@ -1,0 +1,273 @@
+{
+  "_meta": {
+    "schema_version": 1,
+    "seeded": "2026-08-03, hand-extracted from source (code master-beta @ d13681eb)",
+    "authority_chain": "Until the engine emits this file, SOURCE WINS on any divergence: src/interfaceModule/app_command_init.cpp (registration), src/interfaceModule/base_command_interface.hpp (token spellings), src/interfaceModule/app_command_interface.cpp (parse + handlers). Target state: the engine generates this file (AppCommandInit already keeps commandList/flagList/colorList/setList copies 'to futur exploitation'; SessionFile::CommandSurface forEach* hooks cover flags/values/colors) and this file becomes a build artifact. Cross-check reference: claude/capability-surface.md (census 2026-07-25, counts dated).",
+    "expected_counts": {
+      "commands": 60,
+      "flags": 97,
+      "set_names": 43,
+      "color_names": 46,
+      "obsolete_tokens": 7,
+      "reserved_variables": 24,
+      "font_targets": 10
+    },
+    "count_deltas_vs_census_2026_07_25": "commands 60 vs census 59: 'session' landed with B31 (INTENT §11.128 era). flags/set/colors unchanged (97/43/46).",
+    "documentation_requirement": "[vixy 2026-08-03] Each command AND each key carries its own line of documentation, shown interactively by cursor position; defaults shown greyed out and offered as completion when the value field is empty. Bar: someone without any knowledge of script should be able to understand and modify any script through this editor. Docs are PRODUCT SURFACE: a doc line exists only where its content is traced (handler code, ledger, or Vixy); untraceable gaps are flagged, never invented. Planned schema v2: every family names-array becomes [{name, doc, default?}] when the doc pass fills content.",
+    "diagnostic_id_style": "[vixy 2026-08-03] GNU-style kebab-case ids (unknown-command, unknown-parameter, deprecated, ...); --check output surfaces them gcc-style: file:line: severity: message [-Wid]"
+  },
+
+  "parse_model": {
+    "_source": "AppCommandInterface::parseCommand, app_command_interface.cpp:124-176; executeCommand :191-302; setFlag :306-321; script layer script.cpp:114",
+    "line_shape": "COMMAND (KEY VALUE)*  — first whitespace token is the command, remainder consumed as strict key/value pairs",
+    "command_case": "lowercased before lookup",
+    "key_case": "lowercased; VALUE case is preserved",
+    "pair_extraction": "std::istringstream 'while (str >> key >> value)': a trailing KEY with no VALUE is SILENTLY DROPPED (extraction fails mid-pair, loop exits)",
+    "duplicate_keys": "args is std::map<string,string> (tools/utility.hpp:85): a repeated key in one line keeps the LAST value; handlers iterating args see keys in ALPHABETICAL order, not line order",
+    "quoting": {
+      "value_position_only": true,
+      "quote_char": "double quote ONLY — single quotes are ordinary characters; there is NO escape sequence",
+      "single_word": "\"word\" -> word (both quotes stripped)",
+      "multi_word": "opening quote pulls raw chars (spaces included) until the next '\"' or end of line; an unclosed quote consumes to end of line without error",
+      "space_after_quote_normalization": "any ' \" ' (space,quote,space) has the char after the quote erased before tokenizing (parseCommand:135-139) — a space directly after an opening/closing quote in ' \" ' form disappears"
+    },
+    "comments": {
+      "script_layer": "a line is dropped iff its FIRST byte is '#', 0, CR or LF (script.cpp:114). An INDENTED '#' is NOT a comment — the line reaches the parser and '#...' becomes an unknown command.",
+      "live_channels": "TCP / HTTP / pipe / joypad strings get NO comment stripping at all",
+      "block_form": "'comment' / 'uncomment' commands toggle a skip state (intercepted before table lookup, executeCommand:215-219); skipped lines are logged 'this command has not been executed'",
+      "verify_next": "script_mgr.cpp:94 has a second '#' site — role not yet extracted"
+    },
+    "pre_table_commands": "comment, uncomment, struct are literal-compared BEFORE m_commands lookup (:215-222); comment/uncomment are NOT in m_commands, so the did-you-mean can never suggest them (struct is also registered)",
+    "unknown_command": "debug_message 'Unrecognized or malformed command name' + Levenshtein nearest-neighbour suggestion over the family list (searchNeighbour, app_command_init.cpp:368-387; no distance threshold — a suggestion is always produced, log-only)",
+    "flag_value_grammar": {
+      "_source": "convertStrToFlagValues + census §3.8 note (:1096-1102)",
+      "accepted": "toggle | on-values via Utility::isTrue | EVERYTHING ELSE silently means OFF",
+      "consequence": "a typo in a flag value is a silent 'off' — no diagnostic exists engine-side"
+    },
+    "flag_multi_pair": "commandFlag reads only args.begin() — with multiple pairs on one 'flag' line, only the ALPHABETICALLY FIRST key is applied, silently (census §3.8; same single-pair restriction: define/add/sub/multiply/divide/modulo/tangent/trunc/sinus)",
+    "recording_alias_loss": "m_commands_ToString is built by emplace(enum, name) over the alphabetical name map: 'camera' claims SC_CAMERA before 'flyto', so a recorded 'flyto' round-trips as 'camera'"
+  },
+
+  "families": {
+    "commands": {
+      "_source": "app_command_init.cpp:37-109 (registration) x base_command_interface.hpp:328-389 (spellings); enum SC_COMMAND base_command_interface.hpp:32-38",
+      "_args_status": "args specs UNEXTRACTED for every command — the per-handler sweep of app_command_interface.cpp (4747 lines) is the next extraction pass; nothing here is guessed",
+      "_doc_status": "doc = one plain-language line (zero-knowledge bar, see _meta.documentation_requirement). Filled now ONLY where already traced; null = pending the per-handler pass",
+      "add": {"enum": "SC_ADD", "handler": "commandAdd"},
+      "audio": {"enum": "SC_AUDIO", "handler": "commandAudio"},
+      "mode": {"enum": "SC_MODE", "handler": "commandModeJump"},
+      "body_trace": {"enum": "SC_BODY_TRACE", "handler": "commandBodyTrace"},
+      "body": {"enum": "SC_BODY", "handler": "commandBody"},
+      "camera": {"enum": "SC_CAMERA", "handler": "commandCamera"},
+      "flyto": {"enum": "SC_CAMERA", "handler": "commandCamera", "alias_of": "camera", "note": "recording emits 'camera'"},
+      "clear": {"enum": "SC_CLEAR", "handler": "commandClear"},
+      "color": {"enum": "SC_COLOR", "handler": "commandColor", "subfamily": "color_names", "doc": "Set the colour of a named sky annotation (lines, grids, labels, ...)."},
+      "configuration": {"enum": "SC_CONFIGURATION", "handler": "commandConfiguration"},
+      "constellation": {"enum": "SC_CONSTELLATION", "handler": "commandConstellation"},
+      "date": {"enum": "SC_DATE", "handler": "commandDate"},
+      "define": {"enum": "SC_DEFINE", "handler": "commandDefine"},
+      "deselect": {"enum": "SC_DESELECT", "handler": "commandDeselect"},
+      "domemasters": {"enum": "SC_DOMEMASTERS", "handler": "commandDomemasters"},
+      "dso": {"enum": "SC_DSO", "handler": "commandDso"},
+      "dso3d": {"enum": "SC_DSO3D", "handler": "commandDso3D"},
+      "dso2d": {"enum": "SC_DSO2D", "handler": "commandDso2D"},
+      "external_viewer": {"enum": "SC_EXTERNASC_VIEWER", "handler": "commandExternalViewer"},
+      "font": {"enum": "SC_FONT", "handler": "commandFont", "subfamily": "font_targets"},
+      "heading": {"enum": "SC_HEADING", "handler": "commandHeading"},
+      "flag": {"enum": "SC_FLAG", "handler": "commandFlag", "subfamily": "flags", "doc": "Turn a named display feature on, off, or toggle it."},
+      "get": {"enum": "SC_GET", "handler": "commandGet"},
+      "illuminate": {"enum": "SC_ILLUMINATE", "handler": "commandIlluminate"},
+      "image": {"enum": "SC_IMAGE", "handler": "commandImage"},
+      "landscape": {"enum": "SC_LANDSCAPE", "handler": "commandLandscape"},
+      "screen_fader": {"enum": "SC_SCREEN_FADER", "handler": "commandScreenFader"},
+      "look_at": {"enum": "SC_LOOK", "handler": "commandLook"},
+      "media": {"enum": "SC_MEDIA", "handler": "commandMedia"},
+      "meteors": {"enum": "SC_METEORS", "handler": "commandMeteors"},
+      "moveto": {"enum": "SC_MOVETO", "handler": "commandMoveto"},
+      "multiply": {"enum": "SC_MULTIPLY", "handler": "commandMultiply"},
+      "divide": {"enum": "SC_DIVIDE", "handler": "commandDivide"},
+      "modulo": {"enum": "SC_MODULO", "handler": "commandModulo"},
+      "tangent": {"enum": "SC_TANGENT", "handler": "commandTangent"},
+      "trunc": {"enum": "SC_TRUNC", "handler": "commandTrunc"},
+      "sinus": {"enum": "SC_SINUS", "handler": "commandSinus"},
+      "personal": {"enum": "SC_PERSONAL", "handler": "commandPersonal"},
+      "personeq": {"enum": "SC_PERSONEQ", "handler": "commandPersoneq"},
+      "planet_scale": {"enum": "SC_PLANET_SCALE", "handler": "commandPlanetScale"},
+      "position": {"enum": "SC_POSITION", "handler": "commandPosition"},
+      "print": {"enum": "SC_PRINT", "handler": "commandPrint"},
+      "random": {"enum": "SC_RANDOM", "handler": "commandRandom"},
+      "script": {"enum": "SC_SCRIPT", "handler": "commandScript"},
+      "search": {"enum": "SC_SEARCH", "handler": "commandSearch"},
+      "session": {"enum": "SC_SESSION", "handler": "commandSession", "note": "B31 session save/load; explicit-only by design (D33)", "doc": "Save or load a named session preset: the observed universe and the operator's settings."},
+      "select": {"enum": "SC_SELECT", "handler": "commandSelect"},
+      "set": {"enum": "SC_SET", "handler": "commandSet", "subfamily": "set_names", "doc": "Assign a value to a named application setting."},
+      "shutdown": {"enum": "SC_SHUTDOWN", "handler": "commandShutdown"},
+      "sky_culture": {"enum": "SC_SKY_CULTURE", "handler": "commandSkyCulture"},
+      "star_lines": {"enum": "SC_STAR_LINES", "handler": "commandStarLines"},
+      "galaxy_stars": {"enum": "SC_GALAXY_STARS", "handler": "commandGalaxyStars"},
+      "struct": {"enum": "SC_STRUCT", "handler": "commandStruct", "note": "also intercepted pre-table (executeCommand:221)"},
+      "sub": {"enum": "SC_SUB", "handler": "commandSub"},
+      "suntrace": {"enum": "SC_SUNTRACE", "handler": "commandSuntrace"},
+      "text": {"enum": "SC_TEXT", "handler": "commandText"},
+      "timerate": {"enum": "SC_TIMERATE", "handler": "commandTimerate"},
+      "transition": {"enum": "SC_TRANSITION", "handler": "commandTransition"},
+      "wait": {"enum": "SC_WAIT", "handler": "commandWait"},
+      "zoom": {"enum": "SC_ZOOMR", "handler": "commandZoom"},
+      "comment": {"registration": "pre-table literal (executeCommand:215)", "handler": "commandComment", "note": "not in m_commands: invisible to did-you-mean", "doc": "Start a skipped block: following lines are not executed until 'uncomment'."},
+      "uncomment": {"registration": "pre-table literal (executeCommand:218)", "handler": "commandUncomment", "note": "not in m_commands: invisible to did-you-mean", "doc": "End a block started by 'comment': execution resumes here."}
+    },
+
+    "flags": {
+      "_source": "app_command_init.cpp:113-209 x base_command_interface.hpp:393-490",
+      "names": [
+        "antialias_lines", "constellation_drawing", "constellation_names", "constellation_art",
+        "dual_viewport", "constellation_boundaries", "constellation_pick", "star_twinkle",
+        "navigation", "astronomical", "show_tui_datetime", "show_tui_short_obj_info",
+        "manual_zoom", "light_travel_time", "fog", "atmosphere",
+        "azimuthal_grid", "equatorial_grid", "ecliptic_grid", "galactic_grid",
+        "equator_line", "galactic_line", "ecliptic_line", "precession_circle",
+        "circumpolar_circle", "tropic_lines", "meridian_line", "zenith_line",
+        "polar_circle", "polar_point", "ecliptic_center", "galactic_pole",
+        "galactic_center", "vernal_points", "analemma_line", "analemma",
+        "aries_line", "zodiac", "personal", "personeq",
+        "nautical_alt", "nautical_ra", "object_coordinates", "mouse_coordinates",
+        "angular_distance", "loxodromy", "orthodromy", "greenwich_line",
+        "vertical_line", "cardinal_points", "clouds", "moon_scaled",
+        "sun_scaled", "landscape", "stars", "star_names",
+        "star_pick", "dso_pick", "body_pick", "atmospheric_refraction",
+        "planets", "planet_names", "planet_orbits", "orbits",
+        "planets_orbits", "planets_axis", "satellites_orbits", "nebulae",
+        "nebula_names", "nebula_hints", "milky_way", "bright_nebulae",
+        "object_trails", "track_object", "script_gui_debug", "lock_sky_position",
+        "body_trace", "show_latlon", "color_inverse", "oort",
+        "stars_trace", "star_lines", "star_lines_selected", "dso_pictograms",
+        "zodiacal_light", "tully", "tully_color_mode", "satellites",
+        "quaternion_mode", "eye_relative_mode", "subtitle", "experimental_shadows",
+        "experimental_path", "skip_pause", "image_compression_loss", "lunar_eclipse_umbra",
+        "lunar_eclipse_penumbra"
+      ],
+      "orphaned": {
+        "sky_draw": "spelled in base_command_interface.hpp:477 but NEVER registered in m_flags and NOT on the obsolete list — 'flag sky_draw on' takes the unknown-name path (B38, census §3.8)"
+      }
+    },
+
+    "set_names": {
+      "_source": "app_command_init.cpp:280-335 x base_command_interface.hpp:542-585 (tully_color_mode commented out on both sides)",
+      "names": [
+        "atmosphere_fade_duration", "moon_brightness", "sun_brightness", "auto_move_duration",
+        "constellation_art_fade_duration", "constellation_art_intensity",
+        "light_pollution_limiting_magnitude", "heading", "home_planet", "landscape_name",
+        "line_width", "max_mag_nebula_name", "max_mag_star_name", "moon_scale",
+        "sun_scale", "milky_way_texture", "sky_culture", "sky_locale",
+        "srt_locale", "ui_locale", "star_mag_scale", "star_size_limit",
+        "planet_size_limit", "star_scale", "star_twinkle_amount", "star_fader_duration",
+        "star_limiting_mag", "time_zone", "ambient_light", "text_fading_duration",
+        "milky_way_fader_duration", "milky_way_intensity", "zodiacal_intensity", "zoom_offset",
+        "startup_time_mode", "date_display_format", "time_display_format", "mode",
+        "screen_fader", "stall_radius_unit", "datetime_display_position", "datetime_display_number",
+        "init_fov"
+      ],
+      "known_defective": {
+        "mode": "'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; — census §3.8, app_command_interface.cpp:1801 era)"
+      }
+    },
+
+    "color_names": {
+      "_source": "app_command_init.cpp:221-278 x base_command_interface.hpp:494-539",
+      "names": [
+        "constellation_lines", "constellation_lines3d", "constellation_names", "constellation_art",
+        "constellation_boundaries", "cardinal_points", "planet_orbits", "planet_names",
+        "planet_trails", "azimuthal_grid", "equator_grid", "ecliptic_grid",
+        "galactic_grid", "equator_line", "galactic_line", "ecliptic_line",
+        "meridian_line", "zenith_line", "polar_point", "polar_circle",
+        "ecliptic_center", "galactic_pole", "galactic_center", "vernal_points",
+        "analemma", "analemma_line", "greenwich_line", "aries_line",
+        "zodiac", "personal", "personeq", "nautical_alt",
+        "nautical_ra", "object_coordinates", "mouse_coordinates", "angular_distance",
+        "loxodromy", "orthodromy", "vertical_line", "nebula_names",
+        "nebula_circle", "precession_circle", "text_usr_color", "star_table",
+        "lunar_eclipse_umbra", "lunar_eclipse_penumbra"
+      ],
+      "note": "star_table is the one color taking an 'index' argument (app_command_interface.hpp:179)"
+    },
+
+    "obsolete_tokens": {
+      "_source": "AppCommandInit::setObsoleteToken, app_command_init.cpp:14-23; engine logs '<name> is no longer used in software'",
+      "names": [
+        "constellation_isolate_selected", "point_star", "movetocity", "landscape_sets_location",
+        "external_mplayer", "font_general_size", "flag_optoma"
+      ]
+    },
+
+    "reserved_variables": {
+      "_source": "enum SC_RESERVED_VAR + ACI_RW_* base_command_interface.hpp:74, 649-672",
+      "_semantics": "UNEXTRACTED — $-substitution mechanics live in app_command_eval.cpp (376 lines), pending read",
+      "names": [
+        "longitude", "latitude", "altitude", "sun_altitude", "sun_azimuth",
+        "date_year", "date_month", "date_day", "date_hour", "date_minute",
+        "heading", "selected_ra", "selected_de", "selected_distance", "selected_magnitude",
+        "selected_star_ra", "selected_star_de", "selected_az", "selected_alt",
+        "body_selected", "language", "joypad", "current_mode", "random"
+      ]
+    },
+
+    "font_targets": {
+      "_source": "TF_* base_command_interface.hpp:675-684",
+      "names": ["text", "planets", "constellations", "cardinal_points", "stars", "menu", "nebulae", "grids", "lines", "displays"]
+    }
+  },
+
+  "argument_token_vocabulary": {
+    "_source": "W_* defines, base_command_interface.hpp:78-324",
+    "_status": "extracted spellings, NOT yet assigned to commands — keys and enumerated values are MIXED in this list; role assignment happens in the per-handler pass. Known-dead members (census §3.8, re-check at assignment): W_FALSE, W_OFF? (off is live as a value), W_TERMINATION, W_MINIMAL, W_REPLACE?, W_RECURSIVE? — census listed never-referenced tokens; verify each at assignment time.",
+    "_duplicate_defines": "same spelling defined twice in the header: size(80,93), increment(86,145), decrement(87,144), loop(169,284), ogg(266,280)",
+    "tokens": [
+      "align", "filename", "size", "action", "write", "snapshot", "record", "volume",
+      "increment", "decrement", "nopause", "name", "clear", "value", "display", "status",
+      "position", "planets_position", "constellation", "object", "media", "maxobject",
+      "scale", "duration", "load", "load_star", "star_lines", "xy", "path", "day",
+      "ra", "de", "zhr", "magnitude", "angular_size", "rotation", "rotate_z", "credit",
+      "texture_luminance_adjust", "distance", "type", "hidden", "all", "pen", "target",
+      "toggle", "hide", "sun", "property", "orbit", "label", "trail", "index", "hp",
+      "color", "color_value", "datum_radius", "ground_radius", "fader", "NONE", "default",
+      "module", "binary_mode", "save", "intensity", "state", "variable", "natural",
+      "azimuth", "delta_azimuth", "rotate", "drop", "end", "play", "cancelrecord",
+      "pause", "faster", "slower", "speed", "speed_increment", "subtitle", "subtitle_project",
+      "sync", "resume", "loop", "purge", "break", "mipmap", "alpha", "ratio", "xpos",
+      "ypos", "longitude", "latitude", "altitude", "persistent", "accelerate_alt",
+      "accelerate_az", "decelerate_alt", "decelerate_az", "base_altitude", "top_altitude",
+      "on", "off", "keycolor", "star", "planet", "nebula", "constellation_star", "pointer",
+      "delta_altitude", "asterism", "auto", "manual", "out", "initial", "fov", "delta_fov",
+      "center", "rate", "step", "lat", "lon", "alt", "delta_lat", "delta_lon", "delta_alt",
+      "multiply_alt", "video_termination", "videoname", "audioname", "subtitlename",
+      "project", "jday", "local", "relative", "relative_year", "relative_month", "sidereal",
+      "body", "point", "create", "coordinate_system", "equatorial", "switch", "equal",
+      "diff", "inf", "inf_equal", "sup", "sup_equal", "comment", "min", "max", "if",
+      "else", "print", "var", "true", "false", "follow_rotation", "free_mode", "descend",
+      "coef", "lift_off", "move_to", "transition_to", "align_with", "r", "g", "b", "now",
+      "raw", "sc", "other", "line", "avi", "mov", "mpg", "mp4", "mp3", "ogg", ".sh",
+      "bat", "swf", "png", "stop", "string", "update", "zodiac", "sincrement", "sdecrement",
+      "inverse", "vr360", "vrcube", "srt", "jump", "restart", "utc", "current", "preset",
+      "keep_time", "set", "rise", "meridian", "midnight", "pos_x", "pos_y", "pos_z",
+      "remove", "skin_use", "skin_tex", "tesselation", "x", "y", "z", "xyz", "body_name",
+      "twice", "thrice", "star_navigator", "star_name", "star_pos", "skip", "termination",
+      "preload", "reload", "loading", "background", "minimal", "replace", "recursive",
+      "landing", "video", "lock", "acquire", "release", "global"
+    ]
+  },
+
+  "lint_seeds": [
+    {"id": "unknown-command", "severity": "error", "rule": "unknown command name (with Levenshtein suggestion, threshold-capped unlike the engine's)", "source": "executeCommand:231-237"},
+    {"id": "unknown-parameter", "severity": "error", "rule": "unknown flag/set/color name for its subfamily", "source": "setFlag:309-315 + census"},
+    {"id": "deprecated", "severity": "warning", "rule": "obsolete token (7 names) — engine silently no-ops with a debug log", "source": "app_command_init.cpp:14-34"},
+    {"id": "orphaned-flag", "severity": "error", "rule": "'flag sky_draw' — name spelled in the header but never registered; engine treats it as unknown", "source": "B38 / census §3.8"},
+    {"id": "dangling-key", "severity": "error", "rule": "odd token count after command — engine silently drops the trailing key", "source": "parseCommand:148"},
+    {"id": "duplicate-key", "severity": "warning", "rule": "duplicate key in one line — engine keeps the LAST value silently", "source": "stringHash_t = std::map; parseCommand:166"},
+    {"id": "single-pair-only", "severity": "error", "rule": "multiple pairs on 'flag' (and define/add/sub/multiply/divide/modulo/tangent/trunc/sinus): engine applies only the alphabetically-first pair", "source": "census §3.8 (:1122-1140, :4035-4149)"},
+    {"id": "silent-off-value", "severity": "warning", "rule": "flag value not in {on-forms, off-forms, toggle}: engine reads it as OFF silently", "source": "flag_value_grammar"},
+    {"id": "indented-comment", "severity": "warning", "rule": "indented '#': NOT a comment at the script layer — becomes an unknown command", "source": "script.cpp:114"},
+    {"id": "unsupported-quoting", "severity": "warning", "rule": "single quotes or backslash escapes: the engine parser has neither (sts-extension currently highlights both as if legal)", "source": "parseCommand:148-164 vs extension.ts:18-59"},
+    {"id": "alias-respelled", "severity": "info", "rule": "'flyto' records back as 'camera' — round-trip changes the spelling", "source": "m_commands_ToString emplace order"},
+    {"id": "inert-command", "severity": "info", "rule": "'set mode' parses and reports success but does nothing engine-side", "source": "census §3.8 :1801"}
+  ]
+}
