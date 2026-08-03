@@ -80,7 +80,13 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   empty"*. Not a request against spacecrafter itself — an external tool — but it
   consumes three surfaces this project owns, which is why it is recorded rather
   than left in a decision file.
-- **Status:** new — recorded as design INPUT, no commitment. Three consequences
+- **Status:** accepted — tracked as `claude/util/scedit/INTENT.md` (2026-08-03:
+  work started as **scedit**, home `util/scedit` [vixy]; slice 1 landed — the
+  command surface is now a machine-readable contract
+  (`util/scedit/grammar/sc-grammar.json`) with a count-gated validator; scope
+  extended by Vixy to stellar-system files; zero-knowledge documentation bar
+  and GNU-style diagnostic ids added by Vixy in-session). Original triage note
+  kept below — the three consequences became scedit constraints. Three consequences
   worth carrying into the work that touches those surfaces:
   (1) the **command grammar** and the **data-key vocabulary** become
   MACHINE-consumed, not only human-read — B38's command census
