@@ -166,6 +166,10 @@ bool VideoSurfaceTexture::open()
 	av_image_fill_arrays(rgbaFrame->data, rgbaFrame->linesize,
 	                     static_cast<uint8_t *>(stagingBuffer->getPtr(staging)),
 	                     AV_PIX_FMT_RGBA, atlasWidth, atlasHeight, 1);
+	if (depth == 1) {
+		rgbaFrame->data[0] += rgbaFrame->linesize[0] * (atlasHeight - 1);
+		rgbaFrame->linesize[0] = -rgbaFrame->linesize[0];
+	}
 
 	texture = std::make_unique<Texture>(*VulkanMgr::instance, TextureInfo{
 		.width = width,
