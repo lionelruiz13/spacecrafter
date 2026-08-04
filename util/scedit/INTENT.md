@@ -52,6 +52,17 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   default without a source anchor (handler code, ledger, or Vixy). A doc
   gap the code cannot answer at the zero-knowledge bar is FLAGGED to Vixy,
   never invented. `UNEXTRACTED`/`null` are the honest states.
+  **[AMENDED 2026-08-04, vixy]** Fourth anchor class: `doc/superscript.sts`
+  as USAGE-WITNESS — it "served as documentation (and functional test,
+  the only one) for years" [vixy, this session]. Tier: below code, above
+  nothing; reliability precondition stated by Vixy himself: "it might
+  have (rarely) been wrong if it wasn't understood when documented."
+  Consequently a witness claim is citable as `[superscript-attested:
+  line]` ONLY cross-checked against code; code-vs-witness divergence is
+  never silently resolved — it is a finding either way (doc-error at
+  writing time, or engine drift since; the sweep already holds instances
+  of the drift mode: `date_display_*` → `datetime_display_*`,
+  `movetocity`).
 - **C3 — corpus gate (zero false positives).** Before any lint rule
   ships in `--check`: every shipped `.sts` script and the field
   `~/.spacecrafter/ssystem.ini` must pass with 0 false positives (true
@@ -156,6 +167,16 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
 8. **Engine emitter** — the grammar file becomes a build/runtime
    artifact (D5 seams); propose upstream once the contract shape has
    survived slices 1–4.
+9. **superscript.sts doc-mining pass** [added 2026-08-04 on Vixy's
+   source revelation] — extract the witness layer: comment lines +
+   per-command/per-key usage patterns (value examples, co-occurrence,
+   ordering) → candidate answers for the flagged doc gaps
+   (`[superscript-attested]`, code-cross-checked per amended C2) +
+   divergence table (each row dispositioned doc-error vs engine-drift).
+   Fragment-output pattern (`grammar/witness/…`, supervisor merges), so
+   it can run PARALLEL to item 7 (FTXUI) under the testability
+   criterion — disjoint writes, read-only corpus. Dispatchable after
+   the args merge gates.
 
 ## 6. Journal (append-only)
 
