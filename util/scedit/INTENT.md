@@ -135,8 +135,14 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
    Dispatchable in per-handler units with count gates.
 2. **Tokenizer + `--check`** (C1-faithful; GNU-style output per D6);
    then arm C3's corpus gate harness.
-3. **`script_mgr.cpp:94`** second `'#'` site — extract its exact role
-   (the parse-model's one recorded unknown).
+3. ~~**`script_mgr.cpp:94`** second `'#'` site~~ **RESOLVED 2026-08-04
+   (journal 2026-08-04c): `ScriptMgr::addScriptFirst` — a SECOND,
+   divergent line-classification model (whitespace-trim first, so an
+   indented `#` IS a comment; command indentation stripped), fed today
+   by exactly one engine-internal producer (`camera action lift_off`,
+   app_command_interface.cpp:4404-4408, synthesized comment-free text)
+   ⇒ not user-reachable, latent divergence recorded. parse_model update
+   queued for merge time (grammar frozen while the tokenizer runs).**
 4. **Stellar-system-file grammar** — second contract file: legacy
    `ssystem.ini` key set (loader grammar, base-D census residual) +
    composed/new-format B24 grammar (`type=`/`relation=`/`compose=`),
@@ -153,6 +159,31 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
 
 ## 6. Journal (append-only)
 
+- **[2026-08-04c] §5 item 3 resolved; three defects registered upstream;
+  ledger-maintenance incident.** The second `'#'` site (script_mgr.cpp:94,
+  in `addScriptFirst`) is a divergent line-classifier — trims whitespace
+  BEFORE the `#` test (indented `#` = comment, opposite of script.cpp:114)
+  and strips command indentation — whose only caller is `camera action
+  lift_off` (:4404-4408) injecting engine-synthesized text; not
+  user-reachable today, latent if ever fed user text. parse_model gains
+  an `inner_script_channel` clause at merge (grammar frozen till the
+  tokenizer lands). Unit-1's three defect-grade findings registered in
+  the parent ledger as **§5.74** (suntrace sun-as-key + error-less
+  branches), **§5.75** (dso3d raw stoi, no catch on the chain — verified
+  by grep, 'try' hits were directory_iterator substrings; z_reflection
+  inert rider), **§5.76** (color by-value debug_message — full chain
+  re-verified: the two range errors are the only messages, isOkay stays
+  false, caller returns success on empty message); softer findings
+  (get-no-TCP silent success, wait-loading fallthrough, dso2d naming
+  trap, missing units) stay in the fragment's flagged/notes — lint-seed
+  grade, not engine-defect grade. Incident, named per house honesty: a
+  python slice reordering §5 rows TRUNCATED the parent ledger (515
+  lines) and the post-edit check verified row order, not file integrity
+  — committed truncated (d4820ea), caught by the diffstat, restored
+  from HEAD~1 with an only-insertion diff gate (3f7e59b). Root: a
+  relocation executed as a hand-rolled rebuild — the pure-move rule
+  exists for exactly this; gate for any future ledger restructuring =
+  diff-against-baseline, not spot-checks of the intended change.
 - **[2026-08-04b] Unit 1 gated GREEN; protocol answers; full parallel
   dispatch.** Unit-1 fragment (grammar/args/unit-1.json, 84 317 B)
   independently re-gated by supervisor: count gate re-derived (68 lines,
