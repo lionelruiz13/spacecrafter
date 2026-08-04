@@ -1,0 +1,3100 @@
+{
+ "_meta": {
+  "unit": 2,
+  "code": "master-beta @ b12c8cdd",
+  "handler_range": "app_command_interface.cpp:2110-3095",
+  "commands_in_unit": 15,
+  "args_bracket_expected": 101,
+  "args_bracket_accounted": 101,
+  "args_bracket_measure": "101 = LINES matching 'args[' in 2110-3095 (the dispatch's measure: sed -n '2110,3095p' src/interfaceModule/app_command_interface.cpp | /usr/bin/grep -n 'args\\['). The raw TOKEN count over the same range is 105 (grep -o); the 4 extra tokens sit on 4 multi-token lines: 2578 (+1), 2579 (+1), 2580 (+1), 2630 (+1). The `accounting` table below is keyed by line and carries a `tokens` multiplicity, so both measures reconcile from it.",
+  "source_anchor_convention": "Bare 'app_command_interface.cpp:N' = src/interfaceModule/app_command_interface.cpp (the handler file, per the dispatch schema); bare 'app_command_init.cpp:N' and 'base_command_interface.hpp:N' = the same directory (registration and token spellings). Any other anchor is written repo-relative from the tree root.",
+  "schema_notes": [
+   "`required` is tri-state: true = the command cannot act without the key on any path; false = optional on every path; \"conditional\" = required only inside a branch, the branch named in the key's `notes` and in the command's `branches`.",
+   "`branches` (added field) - most handlers here are selector-shaped (`action`, `module`, `type`, `state`): a flat required/optional split would misstate them. Each row: selector, requires, optional, effect, source.",
+   "`value_docs` (added field) - where a key is enumerated and each value selects a different effect, C6's per-thing doc line is attached per value, not only per key.",
+   "`key_grammar` (added field) - for `set`, whose key is not a fixed list of this command's own but the 43-name family (cross-ref families.set_names). The 43 names are ALSO written out under `args` because unit 2's brief is their per-name value domains, defaults and docs.",
+   "`downstream` (added field, boolean) - key not read in this line range: the handler forwards the whole args map and the key is read in another file. Anchored there. Such keys consume NO row of the count gate (here: `landscape action load` -> src/coreModule/landscape.cpp).",
+   "`wait_parameter` (added field) - for the one handler of this unit that takes `uint64_t &wait` (script).",
+   "Branch/required convention (same as unit 1, e.g. dso3d `color_tex`): when a branch SELECTOR names a key, that key is repeated in the branch's `requires` for readability, while its own `required` stays false - the branch cannot be entered without it, so it is not required of the command. Examples here: constellation `intensity`, landscape `type`/`landing`, text `display`.",
+   "A key marked \"conditional\" that no branch `requires` is one of an either-or pair: the condition is stated in its `default` and the pair is listed in `exclusive_groups` (constellation color_value vs r/g/b, heading azimuth vs delta_azimuth, script action vs speed, audio volume/nopause/action).",
+   "Absent-key value for every eval* conversion is fixed IN the handler file and is not opaque: evalDouble(\"\")=0.0, evalInt(\"\")=0, evalString(\"\")=\"\" [app_command_interface.cpp:4458-4479]. What a NON-empty string evaluates to stays opaque here (app_command_eval.cpp, INTENT §5 item 5): recorded as evalDouble/evalInt/evalString, $-variable substitution possible.",
+   "Conversions that are NOT eval* are named explicitly (Utility::strToBool / strToFloat / strToDouble / strToVec3f / isTrue, std::stof): those take no $-variable and have their own absent/garbage behaviour."
+  ],
+  "other_args_uses": [
+   {
+    "line": 2113,
+    "form": "args.begin() == args.end()",
+    "role": "commandSet: emptiness test - no pair at all gives debug_message \"command_'set': malformed command\""
+   },
+   {
+    "line": 2119,
+    "form": "for (const auto&i : args )",
+    "role": "commandSet: iterates EVERY pair and applies each through evalCommandSet(i.first, i.second) - `set` is MULTI-pair, unlike `flag`; the pairs act in alphabetical key order"
+   },
+   {
+    "line": 2223,
+    "form": "//for (const auto&i : args )",
+    "role": "commented-out debug loop inside evalCommandSet's unknown-name case"
+   },
+   {
+    "line": 2225,
+    "form": "args.begin()->first",
+    "role": "evalCommandSet: the did-you-mean suggestion for an unknown set name is computed from the ALPHABETICALLY FIRST key of the line, not from the name that failed"
+   },
+   {
+    "line": 2599,
+    "form": "args (whole map)",
+    "role": "commandLandscape: forwards the entire parsed map to Core::loadLandscape(args, 0) -> Landscape::createFromHash, which reads its own keys (src/coreModule/landscape.cpp:179-219)"
+   },
+   {
+    "line": 2601,
+    "form": "args (whole map)",
+    "role": "commandLandscape: same as 2599 with landing = 1"
+   }
+  ],
+  "accounting": [
+   {
+    "line": 2131,
+    "command": "set",
+    "keys": [],
+    "tokens": 1,
+    "note": "commented-out code inside parseCommandSet (`// if (!args[it->first].empty())`) - reads no key"
+   },
+   {
+    "line": 2236,
+    "command": "shutdown",
+    "keys": [
+     "action"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2246,
+    "command": "configuration",
+    "keys": [
+     "action"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2247,
+    "command": "configuration",
+    "keys": [
+     "module"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2257,
+    "command": "configuration",
+    "keys": [
+     "name"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2262,
+    "command": "configuration",
+    "keys": [
+     "binary_mode"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2278,
+    "command": "configuration",
+    "keys": [
+     "star_name"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2279,
+    "command": "configuration",
+    "keys": [
+     "star_pos"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2295,
+    "command": "configuration",
+    "keys": [
+     "name"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2300,
+    "command": "configuration",
+    "keys": [
+     "binary_mode"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2303,
+    "command": "configuration",
+    "keys": [
+     "mode"
+    ],
+    "tokens": 1,
+    "note": "key spelled with ACP_SC_MODE (a SET-NAME define) reused as an argument key"
+   },
+   {
+    "line": 2355,
+    "command": "constellation",
+    "keys": [
+     "name"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2362,
+    "command": "constellation",
+    "keys": [
+     "intensity"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2368,
+    "command": "constellation",
+    "keys": [
+     "type"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2375,
+    "command": "constellation",
+    "keys": [
+     "color_value"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2376,
+    "command": "constellation",
+    "keys": [
+     "r"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2377,
+    "command": "constellation",
+    "keys": [
+     "g"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2378,
+    "command": "constellation",
+    "keys": [
+     "b"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2400,
+    "command": "external_viewer",
+    "keys": [
+     "action"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2401,
+    "command": "external_viewer",
+    "keys": [
+     "filename"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2470,
+    "command": "clear",
+    "keys": [
+     "state"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2538,
+    "command": "heading",
+    "keys": [
+     "azimuth"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2546,
+    "command": "heading",
+    "keys": [
+     "duration"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2550,
+    "command": "heading",
+    "keys": [
+     "delta_azimuth"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2552,
+    "command": "heading",
+    "keys": [
+     "duration"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2570,
+    "command": "meteors",
+    "keys": [
+     "action"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2576,
+    "command": "meteors",
+    "keys": [
+     "day"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2578,
+    "command": "meteors",
+    "keys": [
+     "ra"
+    ],
+    "tokens": 2,
+    "note": "same key twice on the line (emptiness test + evalDouble)"
+   },
+   {
+    "line": 2579,
+    "command": "meteors",
+    "keys": [
+     "de"
+    ],
+    "tokens": 2,
+    "note": "same key twice on the line"
+   },
+   {
+    "line": 2580,
+    "command": "meteors",
+    "keys": [
+     "zhr"
+    ],
+    "tokens": 2,
+    "note": "same key twice on the line"
+   },
+   {
+    "line": 2583,
+    "command": "meteors",
+    "keys": [
+     "zhr"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2584,
+    "command": "meteors",
+    "keys": [
+     "zhr"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2592,
+    "command": "landscape",
+    "keys": [
+     "action"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2593,
+    "command": "landscape",
+    "keys": [
+     "landing"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2597,
+    "command": "landscape",
+    "keys": [
+     "path"
+    ],
+    "tokens": 1,
+    "note": "WRITE, not a read: the handler overwrites `path` with the running script's folder before forwarding the map"
+   },
+   {
+    "line": 2603,
+    "command": "landscape",
+    "keys": [
+     "rotation"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2604,
+    "command": "landscape",
+    "keys": [
+     "rotation"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2628,
+    "command": "screen_fader",
+    "keys": [
+     "alpha"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2629,
+    "command": "screen_fader",
+    "keys": [
+     "duration"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2630,
+    "command": "screen_fader",
+    "keys": [
+     "alpha",
+     "duration"
+    ],
+    "tokens": 2,
+    "note": "two different keys on one line"
+   },
+   {
+    "line": 2632,
+    "command": "screen_fader",
+    "keys": [
+     "alpha"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2643,
+    "command": "text",
+    "keys": [
+     "action"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2650,
+    "command": "text",
+    "keys": [
+     "name"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2664,
+    "command": "text",
+    "keys": [
+     "display"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2665,
+    "command": "text",
+    "keys": [
+     "string"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2678,
+    "command": "text",
+    "keys": [
+     "write"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2687,
+    "command": "text",
+    "keys": [
+     "azimuth"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2688,
+    "command": "text",
+    "keys": [
+     "altitude"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2696,
+    "command": "text",
+    "keys": [
+     "size"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2699,
+    "command": "text",
+    "keys": [
+     "align"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2704,
+    "command": "text",
+    "keys": [
+     "color_value"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2705,
+    "command": "text",
+    "keys": [
+     "r"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2706,
+    "command": "text",
+    "keys": [
+     "g"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2707,
+    "command": "text",
+    "keys": [
+     "b"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2717,
+    "command": "text",
+    "keys": [
+     "fader"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2724,
+    "command": "text",
+    "keys": [
+     "write"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2788,
+    "command": "sky_culture",
+    "keys": [
+     "path"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2789,
+    "command": "sky_culture",
+    "keys": [
+     "action"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2799,
+    "command": "script",
+    "keys": [
+     "action"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2800,
+    "command": "script",
+    "keys": [
+     "filename"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2837,
+    "command": "script",
+    "keys": [
+     "lock"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2841,
+    "command": "script",
+    "keys": [
+     "lock"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2849,
+    "command": "script",
+    "keys": [
+     "speed"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2875,
+    "command": "audio",
+    "keys": [
+     "volume"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2887,
+    "command": "audio",
+    "keys": [
+     "nopause"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2889,
+    "command": "audio",
+    "keys": [
+     "nopause"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2894,
+    "command": "audio",
+    "keys": [
+     "action"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2909,
+    "command": "audio",
+    "keys": [
+     "filename"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2912,
+    "command": "audio",
+    "keys": [
+     "loop"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2935,
+    "command": "image",
+    "keys": [
+     "action"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2941,
+    "command": "image",
+    "keys": [
+     "name"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2947,
+    "command": "image",
+    "keys": [
+     "filename"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2949,
+    "command": "image",
+    "keys": [
+     "name"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2959,
+    "command": "image",
+    "keys": [
+     "coordinate_system"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2960,
+    "command": "image",
+    "keys": [
+     "hp"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2964,
+    "command": "image",
+    "keys": [
+     "project"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2974,
+    "command": "image",
+    "keys": [
+     "mipmap"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2991,
+    "command": "image",
+    "keys": [
+     "duration"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2992,
+    "command": "image",
+    "keys": [
+     "alpha"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2993,
+    "command": "image",
+    "keys": [
+     "scale"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2994,
+    "command": "image",
+    "keys": [
+     "rotation"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2995,
+    "command": "image",
+    "keys": [
+     "rotate_z"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2996,
+    "command": "image",
+    "keys": [
+     "ratio"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2997,
+    "command": "image",
+    "keys": [
+     "xpos"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2998,
+    "command": "image",
+    "keys": [
+     "ypos"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 2999,
+    "command": "image",
+    "keys": [
+     "altitude"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3000,
+    "command": "image",
+    "keys": [
+     "azimuth"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3001,
+    "command": "image",
+    "keys": [
+     "persistent"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3002,
+    "command": "image",
+    "keys": [
+     "accelerate_alt"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3003,
+    "command": "image",
+    "keys": [
+     "accelerate_az"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3004,
+    "command": "image",
+    "keys": [
+     "decelerate_alt"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3005,
+    "command": "image",
+    "keys": [
+     "decelerate_az"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3006,
+    "command": "image",
+    "keys": [
+     "hp"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3007,
+    "command": "image",
+    "keys": [
+     "top_altitude"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3008,
+    "command": "image",
+    "keys": [
+     "base_altitude"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3070,
+    "command": "image",
+    "keys": [
+     "keycolor"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3079,
+    "command": "image",
+    "keys": [
+     "color_value"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3080,
+    "command": "image",
+    "keys": [
+     "r"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3081,
+    "command": "image",
+    "keys": [
+     "g"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3082,
+    "command": "image",
+    "keys": [
+     "b"
+    ],
+    "tokens": 1
+   },
+   {
+    "line": 3085,
+    "command": "image",
+    "keys": [
+     "intensity"
+    ],
+    "tokens": 1
+   }
+  ],
+  "shared_context": {
+   "executeCommandStatus": "app_command_interface.cpp:1163-1177 - the return path of every handler. debug_message EMPTY = success: the line is recorded when recording is on and 'true' is returned. debug_message SET = two log lines ('Could not execute: <line>' + the message) and 'false'. A handler that returns without setting debug_message therefore reports SUCCESS even when it did nothing. It does NOT clear debug_message - only executeCommand does, once per line (:194).",
+   "args_container": "stringHash_t = std::map<std::string,std::string> (src/tools/utility.hpp:85), member `args` (src/interfaceModule/app_command_interface.hpp:204), cleared at the top of every executeCommand (app_command_interface.cpp:199). `args[KEY]` is std::map::operator[]: reading an ABSENT key INSERTS an empty entry - visible to any handler that later walks the whole map (here: `set` at :2119 and the forwarded landscape map at :2599).",
+   "nested_executeCommand": "app_command_interface.cpp:184-188 is a one-argument executeCommand that discards the `wait` it gets back. commandClear calls it about 35 times (:2479-2530); each call clears `args` and `debug_message` and replaces `commandline`. Any handler in a future unit that does the same destroys its own parsed map mid-flight.",
+   "color_triple": "`color_value` + `r`/`g`/`b` are read by AppCommandColor (src/interfaceModule/app_command_color.cpp:92-120): `color_value` wins when non-empty; the hex form is exactly 'x' + 6 hex digits; the other form is split at the letters r, g and b with each number divided by 255; on the r/g/b path the numbers are used as 0..1. Three commands of this unit use it: constellation (:2379), text (:2709), image (:3083)."
+  }
+ },
+ "commands": {
+  "set": {
+   "handler": "commandSet (+ parseCommandSet, evalCommandSet)",
+   "lines": "2110-2232",
+   "aliases": [],
+   "registration": "app_command_init.cpp:86 (ACP_CN_SET = \"set\", base_command_interface.hpp:377)",
+   "doc": "Give one or more named settings a new value.",
+   "args": {
+    "atmosphere_fade_duration": {
+     "doc": "How many seconds the sky's daylight glow takes to fade in or out.",
+     "value": "number(evalDouble) or the word \"default\" - $-variable substitution possible",
+     "values": [
+      "default",
+      "<number>"
+     ],
+     "default": "not written -> the setting is left alone; the word \"default\" puts back the value the configuration file gave",
+     "required": false,
+     "source": "app_command_interface.cpp:2155 -> src/coreModule/coreLink.hpp:1038-1043 (\"Set atmosphere fade duration in s\"); registration app_command_init.cpp:282, spelling base_command_interface.hpp:542"
+    },
+    "moon_brightness": {
+     "doc": "How bright the Moon is drawn.",
+     "value": "number(evalDouble) or the word \"default\" - $-variable substitution possible",
+     "values": [
+      "default",
+      "<number>"
+     ],
+     "default": "not written -> the setting is left alone; \"default\" puts back the value the configuration file gave",
+     "required": false,
+     "source": "app_command_interface.cpp:2156 -> src/coreModule/coreLink.hpp:1044-1047; registration app_command_init.cpp:283, spelling base_command_interface.hpp:543",
+     "notes": "The code states no allowed range for the number."
+    },
+    "sun_brightness": {
+     "doc": "How bright the Sun is drawn.",
+     "value": "number(evalDouble) or the word \"default\" - $-variable substitution possible",
+     "values": [
+      "default",
+      "<number>"
+     ],
+     "default": "not written -> the setting is left alone; \"default\" puts back the value the configuration file gave",
+     "required": false,
+     "source": "app_command_interface.cpp:2157 -> src/coreModule/coreLink.hpp:1048-1051; registration app_command_init.cpp:284, spelling base_command_interface.hpp:544",
+     "notes": "The code states no allowed range for the number."
+    },
+    "auto_move_duration": {
+     "doc": "How many seconds an automatic move to a new target takes.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone; the word \"default\" is NOT special here - it is read as a number and gives 0",
+     "required": false,
+     "source": "app_command_interface.cpp:2158 -> src/coreModule/core.hpp:273-276 (\"Set automove duration in seconds\"); registration app_command_init.cpp:285, spelling base_command_interface.hpp:545"
+    },
+    "constellation_art_fade_duration": {
+     "doc": "How many seconds constellation artwork takes to fade in or out.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2159 -> src/coreModule/coreLink.hpp:433-434 -> src/coreModule/constellation_mgr.cpp:648-653 (the number is multiplied by 1000 into a millisecond fader); registration app_command_init.cpp:286, spelling base_command_interface.hpp:546"
+    },
+    "constellation_art_intensity": {
+     "doc": "How strongly constellation artwork is drawn - for every constellation at once.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2160 -> src/coreModule/coreLink.hpp:429-430 -> src/coreModule/constellation_mgr.cpp:628-633; registration app_command_init.cpp:287, spelling base_command_interface.hpp:547",
+     "notes": "The `constellation` COMMAND sets the same thing for ONE named constellation (app_command_interface.cpp:2362-2365)."
+    },
+    "light_pollution_limiting_magnitude": {
+     "doc": "How dark the observing site is, given as the faintest star a naked eye could still see there.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2161 -> src/coreModule/core.hpp:553-554 (\"Set light pollution limiting magnitude (naked eye)\"); registration app_command_init.cpp:288, spelling base_command_interface.hpp:548"
+    },
+    "heading": {
+     "doc": "Which way the whole scene is turned around the observer, in degrees.",
+     "value": "number(evalDouble) or the word \"default\" - $-variable substitution possible",
+     "values": [
+      "default",
+      "<degrees>"
+     ],
+     "default": "not written -> the setting is left alone; \"default\" puts back the starting direction",
+     "required": false,
+     "source": "app_command_interface.cpp:2162-2163 -> src/coreModule/coreLink.hpp:1076-1085 (setHeading(degrees, duration=0) / setDefaultHeading); registration app_command_init.cpp:289, spelling base_command_interface.hpp:549",
+     "notes": "Turns at once: `set heading` passes no duration. The `heading` COMMAND does the same turn with a `duration` (app_command_interface.cpp:2536-2565)."
+    },
+    "home_planet": {
+     "doc": "Which body the observer is standing on.",
+     "value": "string (a body name; not evaluated)",
+     "values": [
+      "default",
+      "<body name>"
+     ],
+     "default": "not written -> the setting is left alone; the word \"default\" means Earth",
+     "required": false,
+     "source": "app_command_interface.cpp:2164-2165 -> src/coreModule/core.hpp:428 (Core::setHomePlanet); registration app_command_init.cpp:290, spelling base_command_interface.hpp:550",
+     "notes": "The name must be a body known to the loaded stellar system; the value is passed through unevaluated, so $-variables are NOT substituted."
+    },
+    "landscape_name": {
+     "doc": "Which ground scenery is drawn around the observer.",
+     "value": "string (a landscape name; not evaluated)",
+     "values": [
+      "default",
+      "<landscape name>"
+     ],
+     "default": "not written -> the setting is left alone; \"default\" puts back the landscape named in the configuration file",
+     "required": false,
+     "source": "app_command_interface.cpp:2166-2167 -> src/coreModule/core.hpp:182 (setLandscape) and :547-549 (setInitialLandscapeName); registration app_command_init.cpp:291, spelling base_command_interface.hpp:551"
+    },
+    "line_width": {
+     "doc": "How thick the drawn lines are.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2168 -> src/appModule/app.hpp:133 -> src/appModule/app.cpp:524-526 (AppDraw::setLineWidth); registration app_command_init.cpp:292, spelling base_command_interface.hpp:552",
+     "notes": "The code states no unit and no allowed range."
+    },
+    "max_mag_nebula_name": {
+     "doc": "The faintest nebula that still gets its marker drawn.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2169 -> src/coreModule/coreLink.hpp:755-756 (\"Set maximum magnitude at which nebulae hints are displayed\"); registration app_command_init.cpp:293, spelling base_command_interface.hpp:553"
+    },
+    "max_mag_star_name": {
+     "doc": "The faintest star that still gets its name written beside it.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2170 -> src/coreModule/coreLink.hpp:198 and :202 - applied to both star engines; registration app_command_init.cpp:294, spelling base_command_interface.hpp:554"
+    },
+    "moon_scale": {
+     "doc": "How many times its true size the Moon is drawn.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2171 -> src/coreModule/coreLink.hpp:496-497 (\"Set Moon scale\"); registration app_command_init.cpp:295, spelling base_command_interface.hpp:555"
+    },
+    "sun_scale": {
+     "doc": "How many times its true size the Sun is drawn.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2172 -> src/coreModule/coreLink.hpp:502-503 (\"Set Sun scale\"); registration app_command_init.cpp:296, spelling base_command_interface.hpp:556"
+    },
+    "milky_way_texture": {
+     "doc": "Which picture file the Milky Way is drawn from.",
+     "value": "string (file name, relative to the running script's folder; not evaluated)",
+     "values": [
+      "default",
+      "<file name>"
+     ],
+     "default": "not written -> the setting is left alone; \"default\" puts back the picture the program starts with",
+     "required": false,
+     "source": "app_command_interface.cpp:2181-2184 -> src/coreModule/coreLink.hpp:727-738 (milkyWayRestoreDefault / milkyWayChangeStateWithoutIntensity); registration app_command_init.cpp:297, spelling base_command_interface.hpp:557",
+     "notes": "The running script's folder is prefixed to the value (scriptInterface->getScriptPath() + setValue, :2183). The value is NOT evaluated, so $-variables are not substituted."
+    },
+    "sky_culture": {
+     "doc": "Which culture's constellations and star names are used.",
+     "value": "string (a sky-culture folder name; not evaluated)",
+     "values": [
+      "default",
+      "<culture folder>"
+     ],
+     "default": "not written -> the setting is left alone; \"default\" puts back the culture named in the configuration file",
+     "required": false,
+     "source": "app_command_interface.cpp:2185 -> src/coreModule/core.hpp:150-151 (\"Set the current sky culture from the passed directory\") and :160-163; registration app_command_init.cpp:298, spelling base_command_interface.hpp:558"
+    },
+    "sky_locale": {
+     "doc": "Which language the sky's labels (stars, planets, constellations) are written in.",
+     "value": "string (a locale name such as fr; not evaluated)",
+     "values": [
+      "default",
+      "<locale>"
+     ],
+     "default": "not written -> the setting is left alone; \"default\" puts back the language named in the configuration file",
+     "required": false,
+     "source": "app_command_interface.cpp:2186 -> src/coreModule/core.hpp:190-193 (\"@param newSkyLocaleName The name of the locale (e.g fr)\") and :165-168; registration app_command_init.cpp:299, spelling base_command_interface.hpp:559"
+    },
+    "srt_locale": {
+     "doc": "Which language subtitles are shown in.",
+     "value": "string (a locale name; not evaluated)",
+     "values": [
+      "default",
+      "<locale>"
+     ],
+     "default": "not written -> the setting is left alone; \"default\" puts back the language named in the configuration file",
+     "required": false,
+     "source": "app_command_interface.cpp:2187 -> src/coreModule/core.hpp:199-200 (setSrtLanguage) and :170-173; registration app_command_init.cpp:300, spelling base_command_interface.hpp:560"
+    },
+    "ui_locale": {
+     "doc": "Which language the program's own menus and messages use.",
+     "value": "string (a locale name; not evaluated)",
+     "default": "not written -> the setting is left alone; the word \"default\" is NOT special here and would be taken as a language name",
+     "required": false,
+     "source": "app_command_interface.cpp:2188 -> src/appModule/app.hpp:93-97 (\"Set the application language ... applies to GUI, console messages etc..\"); registration app_command_init.cpp:301, spelling base_command_interface.hpp:561"
+    },
+    "star_mag_scale": {
+     "doc": "Shifts how bright every star is drawn.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2189 -> src/coreModule/coreLink.hpp:211-212 -> src/coreModule/coreLink.cpp:737-740 (applied to both star engines); registration app_command_init.cpp:302, spelling base_command_interface.hpp:562",
+     "notes": "The code states no unit and no allowed range."
+    },
+    "star_size_limit": {
+     "doc": "The biggest a star is allowed to be drawn.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2190 -> src/coreModule/coreLink.hpp:205-206 -> src/coreModule/coreLink.cpp:723-726; registration app_command_init.cpp:303, spelling base_command_interface.hpp:563"
+    },
+    "planet_size_limit": {
+     "doc": "The biggest a planet is allowed to be drawn.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2191 -> src/coreModule/core.hpp:418-421 (\"This is additive to star size limit above / since makes no sense to be less\"); registration app_command_init.cpp:304, spelling base_command_interface.hpp:564"
+    },
+    "star_scale": {
+     "doc": "How big stars are drawn - this rescales the planets by the same number.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2192-2195 -> src/coreModule/coreLink.hpp:207-208 (starSetScale) AND :629-630 (planetsSetScale, \"Set base planets display scaling factor\"); registration app_command_init.cpp:305, spelling base_command_interface.hpp:565",
+     "notes": "One name, two effects: the same number is given to the star engines and to the planet drawing (app_command_interface.cpp:2193-2194)."
+    },
+    "star_twinkle_amount": {
+     "doc": "How strongly stars twinkle.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2196 -> src/coreModule/coreLink.hpp:215-216 -> src/coreModule/coreLink.cpp:746-748; registration app_command_init.cpp:306, spelling base_command_interface.hpp:566"
+    },
+    "star_fader_duration": {
+     "doc": "How many seconds stars take to fade in or out.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2197 -> src/coreModule/coreLink.hpp:177-180 -> src/tools/ScModule.hpp:67-70 (\"Fix fader duration (in s) beteween states\"); registration app_command_init.cpp:307, spelling base_command_interface.hpp:567",
+     "notes": "The same number is also given to the in-galaxy star engine, where it drives two further faders (src/coreModule/coreLink.cpp:675-677 -> src/inGalaxyModule/starNavigator.hpp:96-99); the code states no unit on that second leg."
+    },
+    "star_limiting_mag": {
+     "doc": "The faintest star the sky is allowed to show.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2198 -> src/coreModule/coreLink.hpp:189-190 -> src/coreModule/coreLink.cpp:694-696 (HipStarMgr::setMagConverterMaxScaled60DegMag); registration app_command_init.cpp:308, spelling base_command_interface.hpp:568"
+    },
+    "time_zone": {
+     "doc": "Which time zone the local clock is shown in, written as a zone name such as Europe/Paris.",
+     "value": "string (a system time-zone name; not evaluated)",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2199 -> src/appModule/space_date.hpp:109-111 -> src/appModule/space_date.cpp:563-575 (the name is put in the TZ environment variable); registration app_command_init.cpp:309, spelling base_command_interface.hpp:569",
+     "notes": "Only effective on Linux builds (the body is inside `#if __linux__`, src/appModule/space_date.cpp:566-575). Nothing checks that the zone name exists."
+    },
+    "ambient_light": {
+     "doc": "How much light reaches the parts of bodies the Sun does not light.",
+     "value": "the word \"increment\", the word \"decrement\", or number(evalDouble) - $-variable substitution possible",
+     "values": [
+      "increment",
+      "decrement",
+      "<number>"
+     ],
+     "value_docs": {
+      "increment": "raise it by 0.01",
+      "decrement": "lower it by 0.01",
+      "<number>": "set it to this number"
+     },
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2200-2207 -> src/coreModule/coreLink.hpp:281 (uboSetAmbientLight); registration app_command_init.cpp:310, spelling base_command_interface.hpp:570"
+    },
+    "text_fading_duration": {
+     "doc": "How many seconds a text on the dome takes to fade in or out.",
+     "value": "number(Utility::strToFloat) - NOT evaluated, so no $-variable substitution",
+     "default": "not written -> the setting is left alone; a value that is not a number silently becomes 0",
+     "required": false,
+     "source": "app_command_interface.cpp:2208 -> src/mediaModule/media.hpp:334-336 -> src/mediaModule/text_mgr.hpp:97-99 and :124 (\"duration of a text fading (if it exists) in seconds\"); registration app_command_init.cpp:311, spelling base_command_interface.hpp:571",
+     "notes": "Two sharp edges: the value goes through Utility::strToFloat, not evalDouble, so $-variables are NOT substituted and a non-numeric value becomes 0 without a message (src/tools/utility.cpp:409-415); and Media::textFadingDuration takes an int (src/mediaModule/media.hpp:334), so fractions of a second are truncated."
+    },
+    "milky_way_fader_duration": {
+     "doc": "How many seconds the Milky Way takes to fade in or out.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2173 -> src/coreModule/coreLink.hpp:729-730 -> src/coreModule/milkyway.hpp:162-170 (the number is multiplied by 1000); registration app_command_init.cpp:312, spelling base_command_interface.hpp:572"
+    },
+    "milky_way_intensity": {
+     "doc": "How brightly the Milky Way is drawn.",
+     "value": "number(evalDouble) or the word \"default\" - $-variable substitution possible",
+     "values": [
+      "default",
+      "<number>"
+     ],
+     "default": "not written -> the setting is left alone; \"default\" puts back the intensity the program started with",
+     "required": false,
+     "source": "app_command_interface.cpp:2174-2177 -> src/coreModule/coreLink.hpp:721-732; registration app_command_init.cpp:313, spelling base_command_interface.hpp:573",
+     "notes": "Side effect: whenever the resulting intensity is not zero the Milky Way is also switched ON (:2176), so this one setting can make it appear."
+    },
+    "zodiacal_intensity": {
+     "doc": "How brightly the zodiacal light (the faint glow along the ecliptic) is drawn.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2178-2180 -> src/coreModule/coreLink.hpp:723-724 (\"Set Zodiacal intensity\"); registration app_command_init.cpp:314, spelling base_command_interface.hpp:574",
+     "notes": "Unlike milky_way_intensity this one does NOT switch its display on."
+    },
+    "zoom_offset": {
+     "doc": "Moves the middle of the view up or down the dome, as a fraction of the view radius.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone; values below -0.5 or above 0.5 are pulled back to -0.5 / 0.5",
+     "required": false,
+     "source": "app_command_interface.cpp:2209 -> src/coreModule/core.hpp:270-271 (\"set zoom/center offset (percent of fov radius)\") -> src/coreModule/core.cpp:2440-2451; registration app_command_init.cpp:315, spelling base_command_interface.hpp:575"
+    },
+    "startup_time_mode": {
+     "doc": "Whether the program starts at the real current time or at a stored preset time.",
+     "value": "enumerated",
+     "values": [
+      "now",
+      "preset"
+     ],
+     "value_docs": {
+      "now": "start at the real current time",
+      "preset": "start at the stored preset time"
+     },
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2210 -> src/appModule/app.hpp:122-124 (stores the text) ; values src/appModule/app.cpp:652 (\"Can be \\\"now\\\" or \\\"preset\\\"\") and :656; registration app_command_init.cpp:316, spelling base_command_interface.hpp:576",
+     "notes": "The text is stored as written and only compared later (src/appModule/app.cpp:656 accepts \"preset\" or \"Preset\"); nothing rejects a wrong value at the moment the command runs."
+    },
+    "date_display_format": {
+     "doc": "How dates are written on screen.",
+     "value": "enumerated",
+     "values": [
+      "system_default",
+      "mmddyyyy",
+      "ddmmyyyy",
+      "yyyymmdd"
+     ],
+     "value_docs": {
+      "system_default": "the format the computer itself uses",
+      "mmddyyyy": "month, day, year",
+      "ddmmyyyy": "day, month, year",
+      "yyyymmdd": "year, month, day (ISO 8601)"
+     },
+     "default": "not written -> the setting is left alone; an unknown value logs \"unrecognized date_display_format\" and the system's own format is used",
+     "required": false,
+     "source": "app_command_interface.cpp:2211 -> src/appModule/space_date.hpp:136-138 -> src/appModule/space_date.cpp:620-628; registration app_command_init.cpp:317, spelling base_command_interface.hpp:577"
+    },
+    "time_display_format": {
+     "doc": "How clock times are written on screen.",
+     "value": "enumerated",
+     "values": [
+      "system_default",
+      "24h",
+      "12h"
+     ],
+     "value_docs": {
+      "system_default": "the format the computer itself uses",
+      "24h": "00:00 to 23:59",
+      "12h": "1:00 to 12:59 with am/pm"
+     },
+     "default": "not written -> the setting is left alone; an unknown value logs \"unrecognized time_display_format\" and the system's own format is used",
+     "required": false,
+     "source": "app_command_interface.cpp:2212 -> src/appModule/space_date.hpp:128-130 -> src/appModule/space_date.cpp:598-605; registration app_command_init.cpp:318, spelling base_command_interface.hpp:579"
+    },
+    "mode": {
+     "doc": null,
+     "value": "UNEXTRACTED",
+     "default": "any value is accepted and nothing happens",
+     "required": false,
+     "source": "app_command_interface.cpp:2229 -> nothing: `case SCD_NAMES::APP_MODE: break;`; registration app_command_init.cpp:319, spelling base_command_interface.hpp:580",
+     "notes": "DEFECT, recorded not fixed: the name is registered, the pair parses, the command reports SUCCESS and is recorded, and no code runs. Already carried in sc-grammar.json families.set_names.known_defective. A doc line would describe behaviour the code does not have - left null and flagged."
+    },
+    "screen_fader": {
+     "doc": "How dark the veil drawn over the whole screen is - 0 for none, 1 for black.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2213-2216 -> src/eventModule/EventScreenFader.hpp:38-41 (FIX) -> src/eventModule/EventScreenFaderHandler.cpp:45-47 -> src/appModule/screenFader.hpp:60-62 and :125-126 (\"determines the intensity of the veil on the screen\"); registration app_command_init.cpp:320, spelling base_command_interface.hpp:581",
+     "notes": "Same effect as the `screen_fader` COMMAND written with `alpha` and no `duration` (app_command_interface.cpp:2632): two spellings for one thing."
+    },
+    "stall_radius_unit": {
+     "doc": "How far from a body the view stops turning with it, counted in that body's radii.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone; a value of 1 or less is silently IGNORED",
+     "required": false,
+     "source": "app_command_interface.cpp:2217 -> src/coreModule/coreLink.hpp:386 -> src/bodyModule/ssystem_factory.hpp:909-911 -> src/navModule/anchor_manager.hpp:198-206 (\"sets the coefficient on the altitude to suspend the rotation of the anchor\"); registration app_command_init.cpp:321, spelling base_command_interface.hpp:582",
+     "notes": "Sharp edge: AnchorManager::setRotationMultiplierCondition only assigns when the value is greater than 1.0 (src/navModule/anchor_manager.hpp:202-203), yet it returns true, so `set stall_radius_unit 0.5` reports success and changes nothing."
+    },
+    "datetime_display_position": {
+     "doc": "Where on the screen the date and time are written.",
+     "value": "int(evalInt) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2218 -> src/uiModule/ui.hpp:127-129 (stores PosDateTime) -> src/uiModule/ui_tuiconf.cpp:102-114; registration app_command_init.cpp:323, spelling base_command_interface.hpp:584",
+     "notes": "What the number means is not stated in the code: it is used as a screen coordinate that is taken modulo 120 or 180 depending on how many readouts are shown (src/uiModule/ui_tuiconf.cpp:106, :112). The doc line says only what the setting is for."
+    },
+    "datetime_display_number": {
+     "doc": "How many copies of the date-and-time readout are written around the screen.",
+     "value": "int(evalInt) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2219 -> src/uiModule/ui.hpp:131-133 (stores FlagNumberPrint) -> src/uiModule/ui_tuiconf.cpp:104-118 and :142; registration app_command_init.cpp:324, spelling base_command_interface.hpp:585",
+     "notes": "The switch at src/uiModule/ui_tuiconf.cpp:104 branches on this number; the exact set of accepted numbers is decided in the uiModule and was not extracted here (out of this unit's scope)."
+    },
+    "init_fov": {
+     "doc": "How wide the view is when the program is asked to go back to its starting view, in degrees.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "not written -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2220 -> src/coreModule/core.hpp:203-204 (stores InitFov, src/coreModule/core.hpp:747 \"Default viewing FOV\") -> src/coreModule/core.cpp:1367-1407 (used by the zoom-out/initial moves); degrees per src/coreModule/projector.hpp:111 (\"Set the Field of View in degree\"); registration app_command_init.cpp:325, spelling base_command_interface.hpp:578",
+     "notes": "Changing it does not move the view by itself; it changes where `zoom auto initial` / `zoom auto out` land."
+    }
+   },
+   "key_grammar": {
+    "doc": "Each pair is the NAME of a setting and the VALUE to give it; several pairs may be written on one line.",
+    "key_domain": "families.set_names - the 43 registered names (app_command_init.cpp:282-325 x base_command_interface.hpp:542-585); an unregistered name gives \"command_'set': unknown argument\" plus a nearest-name suggestion in the log, and that pair does nothing",
+    "value": "depends on the name - see args",
+    "default": "no pair at all -> \"command_'set': malformed command\", nothing changes",
+    "required": true,
+    "source": "app_command_interface.cpp:2113-2123 (loop), :2143-2232 (per-name effects), :2127-2140 (name lookup); name table app_command_init.cpp:282-325"
+   },
+   "notes": [
+    "MULTI-PAIR, unlike `flag`: commandSet loops over EVERY pair (:2119-2122). The pairs act in ALPHABETICAL key order (args is a std::map), not in the order written - `set star_scale 2 home_planet Mars` applies home_planet first.",
+    "The line's result is the AND of every pair (:2121): one unknown name makes the whole line report failure.",
+    "C1/recorder sharp edge: debug_message is cleared once per LINE (executeCommand :194) but evalCommandSet ends EVERY pair with executeCommandStatus() (:2231). (a) Once one pair fails, every later pair of the same line also reports failure. (b) While recording, a line of N good pairs writes the WHOLE line N times into the recorded script (executeCommandStatus :1167 records `commandline`).",
+    "The did-you-mean on an unknown name is computed from args.begin()->first (:2225) - the alphabetically first key of the line, not the name that failed.",
+    "parseCommandSet (:2127-2140) is a linear scan over the 43-name map; its only `args[` occurrence (:2131) is commented out.",
+    "Two set names duplicate a command of the same name with different reach: `set heading` (no duration) vs the `heading` command, and `set screen_fader` vs the `screen_fader` command."
+   ],
+   "flagged": [
+    "set `mode`: registered, parses, reports success, does nothing (`case APP_MODE: break;` :2229). What it was meant to do - and therefore its value domain and doc line - is not answerable from the code. Vixy.",
+    "set `datetime_display_position`: the number is a screen coordinate whose meaning (units, origin, allowed values) the code never states; src/uiModule/ui_tuiconf.cpp:106/:112 only take it modulo 120 or 180. Doc line says what the setting is for, not what a given number does. Vixy (or a uiModule extraction pass).",
+    "set `datetime_display_number`: the accepted numbers are decided by the switch at src/uiModule/ui_tuiconf.cpp:104, outside this unit's range; the value domain is recorded as int only.",
+    "set `line_width`, `star_mag_scale`, `moon_brightness`, `sun_brightness`: the code states no unit and no allowed range for any of them. Recorded as plain numbers."
+   ]
+  },
+  "shutdown": {
+   "handler": "commandShutdown",
+   "lines": "2234-2242",
+   "aliases": [],
+   "registration": "app_command_init.cpp:87 (ACP_CN_SHUTDOWN = \"shutdown\", base_command_interface.hpp:378)",
+   "doc": "Close the program.",
+   "args": {
+    "action": {
+     "doc": "Confirms that the program really should close.",
+     "value": "enumerated",
+     "values": [
+      "now"
+     ],
+     "value_docs": {
+      "now": "close the program at once"
+     },
+     "default": "absent, empty or any other value -> \"Bad shutdown request.\" and nothing happens",
+     "required": true,
+     "source": "app_command_interface.cpp:2236-2239 (W_ACTION=\"action\" base_command_interface.hpp:81, W_NOW=\"now\" :256)"
+    }
+   },
+   "notes": [
+    "The only working line is `shutdown action now`; there is no confirmation and no saving.",
+    "It sets the application's ALIVE flag to false (:2237), which ends the main loop."
+   ],
+   "flagged": []
+  },
+  "configuration": {
+   "handler": "commandConfiguration",
+   "lines": "2244-2351",
+   "aliases": [],
+   "registration": "app_command_init.cpp:48 (ACP_CN_CONFIGURATION = \"configuration\", base_command_interface.hpp:337)",
+   "doc": "Load or save the program's settings, or load and save the star-line and star-catalogue files.",
+   "args": {
+    "action": {
+     "doc": "What to do.",
+     "value": "enumerated",
+     "values": [
+      "load",
+      "save",
+      "clear",
+      "load_star"
+     ],
+     "value_docs": {
+      "load": "without `module`: re-read the settings file and restart the program's setup. With `module`: read the named file into that module.",
+      "save": "without `module`: write the current settings back to the settings file. With `module`: write that module's data to the named file.",
+      "clear": "only with `module`: empty that module (drop the loaded lines or stars).",
+      "load_star": "only with `module star_lines`: add the lines of one bright star by catalogue number."
+     },
+     "default": "absent -> \"command 'configuration': unknown argument\"",
+     "required": true,
+     "source": "app_command_interface.cpp:2246, 2252, 2264, 2273, 2277, 2290, 2302, 2330, 2339-2347 (W_ACTION=\"action\" base_command_interface.hpp:81; W_LOAD=\"load\" :103, W_SAVE=\"save\" :148, W_CLEAR=\"clear\" :90, W_LOAD_STAR=\"load_star\" :104)"
+    },
+    "module": {
+     "doc": "Which part of the program to act on; leave it out to act on the settings file itself.",
+     "value": "enumerated",
+     "values": [
+      "star_lines",
+      "star_navigator"
+     ],
+     "value_docs": {
+      "star_lines": "the drawn lines that join stars",
+      "star_navigator": "the star catalogue used when travelling among the stars"
+     },
+     "default": "absent -> the command acts on the settings file (action load = re-read them, action save = write them)",
+     "required": false,
+     "source": "app_command_interface.cpp:2247-2249, 2250, 2288, 2335 (W_MODULE=\"module\" base_command_interface.hpp:146; W_STAR_LINES=\"star_lines\" :105, W_STAR_NAVIGATOR=\"star_navigator\" :307)",
+     "notes": "An unrecognised module name sets \"command 'configuration': unknown module argument\" but does NOT stop the command - see the command notes."
+    },
+    "name": {
+     "doc": "The file to read or write.",
+     "value": "string(evalString on the load paths) - $-variable substitution possible",
+     "default": "absent with `module star_lines` -> \"command 'configuration' missing name parameter\"; absent with `module star_navigator` -> \"command 'configuration', star_navigator missing name argument\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2257-2261, 2265, 2274, 2295-2299, 2304, 2331 (W_NAME=\"name\" base_command_interface.hpp:89)",
+     "notes": "On `action load` the name is evaluated and looked for in the script folder first, then used as written (FilePath TFP::DATA, src/tools/file_path.cpp:102-145); a file that does not exist gives \"command 'configuration' filename not found\". On `action save` the name is used exactly as written, unevaluated."
+    },
+    "binary_mode": {
+     "doc": "Whether the file is in the compact binary form rather than plain text.",
+     "value": "boolean(Utility::strToBool)",
+     "values": [
+      "true",
+      "1",
+      "false",
+      "0",
+      "<anything else>"
+     ],
+     "default": "absent or empty -> false (plain text); \"true\" or \"1\" (any capitalisation) -> true; anything else -> false",
+     "required": false,
+     "source": "app_command_interface.cpp:2262, 2300 (W_BINARY=\"binary_mode\" base_command_interface.hpp:147) -> src/tools/utility.cpp:432-445",
+     "notes": "Not used by `action clear` or `action load_star`; ignored on `star_navigator action load` unless `mode sc`."
+    },
+    "mode": {
+     "doc": "Which layout the star catalogue file is written in.",
+     "value": "enumerated",
+     "values": [
+      "raw",
+      "sc",
+      "other"
+     ],
+     "value_docs": {
+      "raw": "the unprocessed catalogue layout",
+      "sc": "spacecrafter's own layout - the only one that also honours `binary_mode`",
+      "other": "the third supported layout"
+     },
+     "default": "absent or empty with `module star_navigator action load` -> \"command 'configuration', star_navigator missing mode argument\"; an unknown value -> \"command 'configuration': unknown starNavigator mode parameter\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2303, 2309-2327 (key spelled ACP_SC_MODE=\"mode\", base_command_interface.hpp:580; W_RAW=\"raw\" :257, W_SC=\"sc\" :258, W_OTHER=\"other\" :259)",
+     "notes": "C2/vocabulary note: this KEY is spelled with ACP_SC_MODE, a SET-NAME define, not with a W_* argument token - the only such reuse in the unit."
+    },
+    "star_name": {
+     "doc": "The catalogue (HIP) number of the star to add lines for.",
+     "value": "int(evalInt) - $-variable substitution possible",
+     "default": "absent or empty (together with star_pos) -> \"command 'configuration': missing star_lines action load_star argument\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2278, 2280-2281 (W_STAR_NAME=\"star_name\" base_command_interface.hpp:308) -> src/coreModule/coreLink.hpp:64 (starLinesLoadHipStar(int, Vec3f))",
+     "notes": "Despite the name it is a NUMBER, not a star's name."
+    },
+    "star_pos": {
+     "doc": "Where to draw that star's lines, as three numbers separated by commas.",
+     "value": "string \"x,y,z\" (Utility::strToVec3f)",
+     "default": "absent or empty (together with star_name) -> \"command 'configuration': missing star_lines action load_star argument\"; a text that is not three comma-separated numbers becomes 0,0,0 without a message",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2279-2281 (W_STAR_POS=\"star_pos\" base_command_interface.hpp:309) -> src/tools/utility.cpp:119-124"
+    }
+   },
+   "branches": [
+    {
+     "selector": "no `module`, action load",
+     "requires": [],
+     "optional": [],
+     "effect": "re-read the settings file and run the program's setup again",
+     "source": "app_command_interface.cpp:2339-2342 (App::init)"
+    },
+    {
+     "selector": "no `module`, action save",
+     "requires": [],
+     "optional": [],
+     "effect": "write the current settings back to the settings file",
+     "source": "app_command_interface.cpp:2343-2345 (App::saveCurrentConfig)"
+    },
+    {
+     "selector": "module star_lines, action clear",
+     "requires": [],
+     "optional": [],
+     "effect": "drop every drawn star line",
+     "source": "app_command_interface.cpp:2252-2255"
+    },
+    {
+     "selector": "module star_lines, action load",
+     "requires": [
+      "name"
+     ],
+     "optional": [
+      "binary_mode"
+     ],
+     "effect": "read a star-line catalogue file",
+     "source": "app_command_interface.cpp:2264-2271"
+    },
+    {
+     "selector": "module star_lines, action save",
+     "requires": [
+      "name"
+     ],
+     "optional": [
+      "binary_mode"
+     ],
+     "effect": "write the current star lines to a file",
+     "source": "app_command_interface.cpp:2272-2275"
+    },
+    {
+     "selector": "module star_lines, action load_star",
+     "requires": [
+      "name",
+      "star_name",
+      "star_pos"
+     ],
+     "optional": [],
+     "effect": "add the lines of one catalogue star at the given position",
+     "source": "app_command_interface.cpp:2277-2284",
+     "note": "`name` is still required by the check at :2258 even though this path never uses it"
+    },
+    {
+     "selector": "module star_navigator, action clear",
+     "requires": [],
+     "optional": [],
+     "effect": "empty the travelling star catalogue",
+     "source": "app_command_interface.cpp:2290-2293"
+    },
+    {
+     "selector": "module star_navigator, action load",
+     "requires": [
+      "name",
+      "mode"
+     ],
+     "optional": [
+      "binary_mode"
+     ],
+     "effect": "read a star catalogue in the given layout",
+     "source": "app_command_interface.cpp:2302-2328"
+    },
+    {
+     "selector": "module star_navigator, action save",
+     "requires": [
+      "name"
+     ],
+     "optional": [
+      "binary_mode"
+     ],
+     "effect": "write the travelling star catalogue to a file - AND ALSO writes the program's settings file, see notes",
+     "source": "app_command_interface.cpp:2330-2331 then :2343-2345"
+    }
+   ],
+   "notes": [
+    "DEFECT, recorded not fixed (fall-through): the `module` block does not return on every path, and the block at :2339-2348 then runs on the same `action` value. `configuration module star_navigator action save name X` therefore saves the star catalogue AND overwrites the program's settings file (:2331 has no return, :2343-2345 fires). The same fall-through makes `configuration module <unknown> action load` re-run App::init() after reporting \"unknown module argument\".",
+    "DEFECT, recorded not fixed (message loss): on the paths that fall through, the specific message is overwritten by \"unknown action value\" (:2347) and then by \"unknown argument\" (:2349), so the log never shows why the command really failed.",
+    "`action clear` and `action load_star` are only meaningful with a `module`; without one they reach :2347 and report \"unknown action value\"."
+   ],
+   "flagged": []
+  },
+  "constellation": {
+   "handler": "commandConstellation",
+   "lines": "2353-2395",
+   "aliases": [],
+   "registration": "app_command_init.cpp:49 (ACP_CN_CONSTELLATION = \"constellation\", base_command_interface.hpp:338)",
+   "doc": "Change one named constellation's artwork strength, or the colour of its lines or its label.",
+   "args": {
+    "name": {
+     "doc": "Which constellation, written as its short three-letter abbreviation (for example ORI).",
+     "value": "string (upper-cased by the command)",
+     "default": "absent or empty -> \"command 'constellation': missing name\"; a name that matches no constellation changes nothing and only writes \"No constellation ... with shortName ...\" in the log",
+     "required": true,
+     "source": "app_command_interface.cpp:2355-2360 (W_NAME=\"name\" base_command_interface.hpp:89) -> src/coreModule/constellation_mgr.cpp:152-162, :174-185, :636-645 (matched against getShortName())",
+     "notes": "The value is upper-cased before use (:2356), so `ori` and `Ori` both work. It is NOT evaluated, so $-variables are not substituted."
+    },
+    "intensity": {
+     "doc": "How strongly this constellation's artwork is drawn.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the command goes on to the colour part instead",
+     "required": false,
+     "source": "app_command_interface.cpp:2362-2366 -> src/coreModule/coreLink.hpp:468 -> src/coreModule/constellation_mgr.cpp:636-645",
+     "notes": "When present it wins: the command applies it and returns, so `type`/colour keys on the same line are ignored. `set constellation_art_intensity` does the same for ALL constellations at once."
+    },
+    "type": {
+     "doc": "Which part of the constellation the colour is for.",
+     "value": "enumerated",
+     "values": [
+      "line",
+      "label"
+     ],
+     "value_docs": {
+      "line": "the lines joining the constellation's stars",
+      "label": "the constellation's name written in the sky"
+     },
+     "default": "absent or empty -> \"command 'constellation': missing type\"; any other value -> \"command 'constellation': unknown type\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2368-2372, 2385-2394 (W_TYPE=\"type\" base_command_interface.hpp:119; W_LINE=\"line\" :260, W_LABEL=\"label\" :129)"
+    },
+    "color_value": {
+     "doc": "The colour, written in one word: either x followed by six hex digits, or the three numbers 0-255 run together after the letters r, g and b.",
+     "value": "string",
+     "values": [
+      "xRRGGBB",
+      "r<0-255>g<0-255>b<0-255>"
+     ],
+     "default": "absent or empty -> the r/g/b keys are used instead",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2375, 2379 (W_COLOR_VALUE=\"color_value\" base_command_interface.hpp:134) -> src/interfaceModule/app_command_color.cpp:92-120"
+    },
+    "r": {
+     "doc": "How much red, from 0 to 1.",
+     "value": "number(Utility::strToDouble)",
+     "default": "absent -> 0 when g or b is given; all three absent AND `color_value` absent -> \"'color': missing expected argument 'r' or 'g' or 'b'\" and the command stops",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2376, 2379 -> src/interfaceModule/app_command_color.cpp:58-78, 111-119"
+    },
+    "g": {
+     "doc": "How much green, from 0 to 1.",
+     "value": "number(Utility::strToDouble)",
+     "default": "as `r`",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2377, 2379 -> src/interfaceModule/app_command_color.cpp:58-78"
+    },
+    "b": {
+     "doc": "How much blue, from 0 to 1.",
+     "value": "number(Utility::strToDouble)",
+     "default": "as `r`",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2378, 2379 -> src/interfaceModule/app_command_color.cpp:58-78"
+    }
+   },
+   "exclusive_groups": [
+    [
+     "intensity",
+     "type"
+    ],
+    [
+     "color_value",
+     "r"
+    ],
+    [
+     "color_value",
+     "g"
+    ],
+    [
+     "color_value",
+     "b"
+    ]
+   ],
+   "branches": [
+    {
+     "selector": "intensity present",
+     "requires": [
+      "name",
+      "intensity"
+     ],
+     "optional": [],
+     "effect": "set that constellation's artwork strength and stop",
+     "source": "app_command_interface.cpp:2362-2366"
+    },
+    {
+     "selector": "intensity absent",
+     "requires": [
+      "name",
+      "type"
+     ],
+     "optional": [
+      "color_value",
+      "r",
+      "g",
+      "b"
+     ],
+     "effect": "recolour that constellation's lines or its label",
+     "source": "app_command_interface.cpp:2368-2394"
+    }
+   ],
+   "notes": [
+    "Unlike the `color` command (unit 1), the colour failure here is NOT silent: AppCommandColor is given the handler's own debug_message by reference (:2379), so a bad hex string does reach the log. The r/g/b range messages are still lost to the by-value slip recorded in unit 1 (src/interfaceModule/app_command_color.cpp:58-59).",
+    "A name that matches no constellation is not an error: the command reports SUCCESS and only the log says nothing was found (src/coreModule/constellation_mgr.cpp:162, :184, :644)."
+   ],
+   "flagged": [
+    "constellation `name`: the set of legal abbreviations is data, not code - it comes from the loaded sky culture's constellation files, so the code cannot enumerate it. Recorded as a free string; completion for this key needs the data files (a stellar-system/sky-culture grammar item, INTENT §5 item 4)."
+   ]
+  },
+  "external_viewer": {
+   "handler": "commandExternalViewer",
+   "lines": "2398-2466",
+   "aliases": [],
+   "registration": "app_command_init.cpp:57 (ACP_CN_EXTERNAL_VIEWER = \"external_viewer\", base_command_interface.hpp:347)",
+   "doc": "Hand a file to another program on the computer - a video or music player, a picture viewer, or a shell script.",
+   "args": {
+    "action": {
+     "doc": "Whether to start the outside program or to stop the ones already running.",
+     "value": "enumerated",
+     "values": [
+      "play",
+      "stop"
+     ],
+     "value_docs": {
+      "play": "start the program that suits the file's last three letters",
+      "stop": "stop every running vlc and mplayer"
+     },
+     "default": "absent or any other value -> \"command 'externalviewer' : unknown argument\"",
+     "required": true,
+     "source": "app_command_interface.cpp:2400, 2403, 2458-2464 (W_ACTION=\"action\" base_command_interface.hpp:81; W_PLAY=\"play\" :158, W_STOP=\"stop\" :271)"
+    },
+    "filename": {
+     "doc": "The file to hand over. Its last three letters decide which program is used.",
+     "value": "string (not evaluated)",
+     "values": [
+      "<name>.avi",
+      "<name>.mov",
+      "<name>.mpg",
+      "<name>.mp4",
+      "<name>.mp3",
+      "<name>.ogg",
+      "<name>.sh",
+      "<name>.bat",
+      "<name>.swf",
+      "<name>.png"
+     ],
+     "value_docs": {
+      "avi / mov / mpg / mp4": "played full screen by mplayer, looked for in the video folder",
+      "mp3 / ogg": "played by cvlc, looked for in the audio folder",
+      ".sh": "run by the shell, looked for as written",
+      "bat": "run directly, looked for as written",
+      "swf": "shown by gnash",
+      "png": "shown by qiv, looked for in the picture folder"
+     },
+     "default": "absent or empty with `action play` -> the command falls through to \"command 'externalviewer' : unknown argument\"; shorter than 5 characters -> \"command 'externalviewer' : fileName too short\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2401-2448 (W_FILENAME=\"filename\" base_command_interface.hpp:79; extensions W_AVI :261, W_MOV :262, W_MPG :263, W_MP4 :264, W_MP3 :265, W_OGG :266, W_SH \".sh\" :267, W_BAT \"bat\" :268, W_SWF :269, W_PNG :270)",
+     "notes": "Sharp edge: any other ending does NOTHING and reports SUCCESS - the built command stays the sentinel \"NONE\" and the handler returns with no message (:2409, :2450-2455). The three letters are compared exactly, so upper-case endings (.AVI) are not recognised. The value is not evaluated, so $-variables are not substituted."
+    }
+   },
+   "notes": [
+    "The command builds a shell line and hands it to the system (CallSystem::useSystemCommand, :2451); a failure there gives \"command 'externalviewer': system error\".",
+    "A file that cannot be found gives a per-kind message (\"command_externalViewer media/audio/shell script/swf/png fileName not found\") but the command still returns through the same path.",
+    "`action stop` kills EVERY vlc and mplayer on the machine, not only the ones this command started (:2459-2460).",
+    "W_NONE (\"NONE\", base_command_interface.hpp:142) is used here as an internal sentinel only; it is never a value an author writes."
+   ],
+   "flagged": []
+  },
+  "clear": {
+   "handler": "commandClear",
+   "lines": "2468-2533",
+   "aliases": [],
+   "registration": "app_command_init.cpp:46 (ACP_CN_CLEAR = \"clear\", base_command_interface.hpp:335)",
+   "doc": "Put the sky back to a known plain state: standing on Earth, real time rate, starting view, all labels and lines off, stars, planets and nebulae on.",
+   "args": {
+    "state": {
+     "doc": "Which plain state to go to.",
+     "value": "enumerated",
+     "values": [
+      "variable",
+      "natural",
+      "<anything else, including absent>"
+     ],
+     "value_docs": {
+      "variable": "forget the script's own variables and change NOTHING else",
+      "natural": "the ordinary view from the ground: air and ground scenery ON",
+      "<anything else>": "the same reset with air and ground scenery OFF (the view from space)"
+     },
+     "default": "absent -> the last branch: the same reset with the air and the ground scenery switched OFF",
+     "required": false,
+     "source": "app_command_interface.cpp:2470-2487 (W_STATE=\"state\" base_command_interface.hpp:150; W_VARIABLE=\"variable\" :151, W_NATURAL=\"natural\" :152)"
+    }
+   },
+   "notes": [
+    "Everything but `state variable` is a fixed list of other commands run one after another (:2479-2530): set home_planet Earth, the atmosphere/landscape pair, the saved grid/display/line states, about thirty `flag ... off`, three `flag ... on`, then `deselect`, `timerate rate 1` and `zoom auto initial` (the last three spelled DESELECT / TIMERATE_RATE_1 / ZOOM_AUTO_INITIAL, base_command_interface.hpp:644-646).",
+    "C1-relevant: those nested calls go through the full executeCommand (:184-188 -> :191), which CLEARS `args` and `debug_message` and REPLACES `commandline` (:194-202). commandClear reads its own `state` first (:2470), so it is unaffected, but any tool modelling 'the args of this line' must know the map is destroyed mid-handler.",
+    "Recorder consequence, recorded not fixed: when recording, `clear` writes the ~35 nested lines into the recorded script and never writes `clear` itself; because `commandline` is left holding the LAST nested line, the final executeCommandStatus() (:2532) records \"zoom auto initial\" a second time.",
+    "`clear state variable` returns immediately (:2472-2475): none of the sky changes happen."
+   ],
+   "flagged": []
+  },
+  "heading": {
+   "handler": "commandHeading",
+   "lines": "2536-2565",
+   "aliases": [],
+   "registration": "app_command_init.cpp:59 (ACP_CN_HEADING = \"heading\", base_command_interface.hpp:349)",
+   "doc": "Turn the whole scene around the observer so that a new compass direction faces front.",
+   "args": {
+    "azimuth": {
+     "doc": "Which compass direction to face, in degrees.",
+     "value": "number(evalDouble), or the word \"default\" - $-variable substitution possible",
+     "values": [
+      "default",
+      "<degrees>"
+     ],
+     "value_docs": {
+      "default": "go back to the starting direction, at once, ignoring `duration`"
+     },
+     "default": "absent or empty -> `delta_azimuth` is used instead; both absent -> \"command 'heading' : unknown argument\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2538-2548 (W_AZIMUTH=\"azimuth\" base_command_interface.hpp:153, W_DEFAULT=\"default\" :143) -> src/coreModule/coreLink.hpp:1076-1085"
+    },
+    "delta_azimuth": {
+     "doc": "How far to turn from the direction now faced, in degrees.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> `azimuth` must be given instead",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2550-2561 (W_DELTA_AZIMUTH=\"delta_azimuth\" base_command_interface.hpp:154)",
+     "notes": "The result is folded back into the -180..180 range (:2555) and the move is written in the log as \"heading from : X to: Y\" (:2557-2559)."
+    },
+    "duration": {
+     "doc": "How many seconds the turn takes.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent -> 0, the turn is instant (evalDouble(\"\") = 0.0, app_command_interface.cpp:4466-4471)",
+     "required": false,
+     "source": "app_command_interface.cpp:2546, 2552 (W_DURATION=\"duration\" base_command_interface.hpp:102); seconds because the value is multiplied by 1000 into a millisecond move (:2547, :2560)",
+     "notes": "Ignored when `azimuth default` is written, because that branch returns first (:2540-2543)."
+    }
+   },
+   "exclusive_groups": [
+    [
+     "azimuth",
+     "delta_azimuth"
+    ]
+   ],
+   "notes": [
+    "`azimuth` wins: when both are written, `delta_azimuth` is never looked at (:2539-2549).",
+    "Degrees, from the handler itself: the wrap at :2555 is written in units of 360."
+   ],
+   "flagged": []
+  },
+  "meteors": {
+   "handler": "commandMeteors",
+   "lines": "2568-2588",
+   "aliases": [],
+   "registration": "app_command_init.cpp:68 (ACP_CN_METEORS = \"meteors\", base_command_interface.hpp:358)",
+   "doc": "Set how many shooting stars fall, or add a meteor shower with its own date and point of origin.",
+   "args": {
+    "action": {
+     "doc": "The one action this command knows.",
+     "value": "enumerated",
+     "values": [
+      "clear"
+     ],
+     "value_docs": {
+      "clear": "remove every shower that was added"
+     },
+     "default": "absent -> the other keys are used instead",
+     "required": false,
+     "source": "app_command_interface.cpp:2570-2574 (W_ACTION=\"action\" base_command_interface.hpp:81, W_CLEAR=\"clear\" :90) -> src/coreModule/coreLink.hpp:1029"
+    },
+    "day": {
+     "doc": "Which day of the year the shower peaks on.",
+     "value": "int(evalInt) - $-variable substitution possible",
+     "default": "absent or empty -> no shower is added; the command falls back to `zhr` alone",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2576-2581 (W_DAY=\"day\" base_command_interface.hpp:108) -> src/coreModule/coreLink.hpp:1027 (createRadiant(int day, Vec3f))"
+    },
+    "ra": {
+     "doc": "Where in the sky the shower comes from: right ascension.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> 0",
+     "required": false,
+     "source": "app_command_interface.cpp:2578, 2581 (W_RA=\"ra\" base_command_interface.hpp:109)",
+     "notes": "Only read when `day` is given. The code states no unit (degrees or hours) for it."
+    },
+    "de": {
+     "doc": "Where in the sky the shower comes from: declination.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> 0",
+     "required": false,
+     "source": "app_command_interface.cpp:2579, 2581 (W_DE=\"de\" base_command_interface.hpp:110)",
+     "notes": "Only read when `day` is given. The code states no unit for it."
+    },
+    "zhr": {
+     "doc": "How many meteors an hour the shower produces at its best.",
+     "value": "number(evalDouble) inside a shower, int(evalInt) on its own - $-variable substitution possible",
+     "default": "absent or empty inside a shower -> 0; absent everywhere and no `day` -> \"command 'meteors' : no zhr argument\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2580, 2583-2584 (W_ZHR=\"zhr\" base_command_interface.hpp:111) -> src/coreModule/coreLink.hpp:1023 (setMeteorsRate(int))",
+     "notes": "Two different conversions for one key: with `day` it goes through evalDouble into the shower's third coordinate (:2580), on its own through evalInt into the overall rate (:2584)."
+    }
+   },
+   "branches": [
+    {
+     "selector": "action clear",
+     "requires": [],
+     "optional": [],
+     "effect": "remove every added shower",
+     "source": "app_command_interface.cpp:2571-2574"
+    },
+    {
+     "selector": "day present",
+     "requires": [
+      "day"
+     ],
+     "optional": [
+      "ra",
+      "de",
+      "zhr"
+     ],
+     "effect": "add a shower peaking on that day, coming from that point, at that rate",
+     "source": "app_command_interface.cpp:2577-2582"
+    },
+    {
+     "selector": "no day, zhr present",
+     "requires": [
+      "zhr"
+     ],
+     "optional": [],
+     "effect": "set how many shooting stars an hour fall overall",
+     "source": "app_command_interface.cpp:2583-2584"
+    }
+   ],
+   "notes": [
+    "`ra`, `de` and `zhr` are packed into one three-number value (:2581), so they are only meaningful together with `day`."
+   ],
+   "flagged": [
+    "meteors `ra` / `de`: the code gives no unit for either (they go straight into a Vec3f at :2581). The doc lines say which coordinate each is, not in what unit it is written. Vixy."
+   ]
+  },
+  "landscape": {
+   "handler": "commandLandscape",
+   "lines": "2590-2623",
+   "aliases": [],
+   "registration": "app_command_init.cpp:64 (ACP_CN_LANDSCAPE = \"landscape\", base_command_interface.hpp:354)",
+   "doc": "Build a new ground scenery around the observer out of picture files, turn the one already there, or set how far the observer has landed on it.",
+   "args": {
+    "action": {
+     "doc": "What to do with the ground scenery.",
+     "value": "enumerated",
+     "values": [
+      "load",
+      "rotate"
+     ],
+     "value_docs": {
+      "load": "build a new ground scenery out of the keys written on this line",
+      "rotate": "turn the scenery already in place"
+     },
+     "default": "absent -> `landing` alone is used instead; any other value -> \"command 'landscape' : invalid action parameter\"",
+     "required": false,
+     "source": "app_command_interface.cpp:2592-2612 (W_ACTION=\"action\" base_command_interface.hpp:81; W_LOAD=\"load\" :103, W_ROTATE=\"rotate\" :155)"
+    },
+    "landing": {
+     "doc": "How far down onto the ground the observer has come, between 0 and 1.",
+     "value": "string compared literally, then read as a number (std::stof) - not evaluated",
+     "values": [
+      "0",
+      "0.<digits>",
+      "1",
+      "1.<digits>"
+     ],
+     "default": "with `action load`: absent or anything other than the exact text \"0\" -> the scenery is built WITH landing; alone: an unrecognised text -> \"command 'landscape' : invalid action parameter\"",
+     "required": false,
+     "source": "app_command_interface.cpp:2593, 2598-2601, 2613-2619 (W_LANDING=\"landing\" base_command_interface.hpp:319) -> src/coreModule/core.cpp:754-758",
+     "notes": "Compared as TEXT: only \"0\", \"1\" or a text starting \"0.\" or \"1.\" are recognised, so \".5\" is refused. A \"1.x\" value means landed, with x as the amount (the code passes the number minus 1, :2617). Only spherical sceneries react (src/coreModule/core.cpp:756)."
+    },
+    "rotation": {
+     "doc": "How far to turn the scenery, in degrees.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty with `action rotate` -> \"command 'landscape' : missing rotation parameter\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2603-2604 (W_ROTATION=\"rotation\" base_command_interface.hpp:114); degrees because the value is multiplied by PI/180 (:2604)"
+    },
+    "path": {
+     "doc": "The folder the scenery's picture files are read from.",
+     "value": "string - WRITTEN BY THE COMMAND, not read from the line",
+     "default": "whatever the author writes is OVERWRITTEN with the running script's folder before the scenery is built",
+     "required": false,
+     "source": "app_command_interface.cpp:2597 (W_PATH=\"path\" base_command_interface.hpp:107) -> src/coreModule/landscape.cpp:184, 193, 195",
+     "notes": "This is the one `args[...]` in the unit that is an assignment, not a read. Writing `path` on a `landscape action load` line has no effect."
+    },
+    "name": {
+     "doc": "The name given to this scenery.",
+     "value": "string",
+     "default": "absent -> empty; only used for the log line when the type is unknown",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:179-219, spelling L_NAME=\"name\" src/coreModule/landscape.cpp:59"
+    },
+    "type": {
+     "doc": "Which shape the scenery picture is wrapped in.",
+     "value": "enumerated",
+     "values": [
+      "fisheye",
+      "spherical"
+     ],
+     "value_docs": {
+      "fisheye": "one round picture covering the whole sky above the observer",
+      "spherical": "a picture wrapped all the way round the horizon"
+     },
+     "default": "absent or any other value -> a plain scenery is built and \"Unknown landscape type in createFromHash\" is written to the log",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:200, 207, 214-217, spelling L_TYPE=\"type\" src/coreModule/landscape.cpp:54, L_FISHEYE=\"fisheye\" :56, L_SPHERICAL=\"spherical\" :55"
+    },
+    "texture": {
+     "doc": "The picture file the scenery is drawn from.",
+     "value": "string (file name)",
+     "default": "absent or empty -> the file named by `maptex` is used instead",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:191-195, spelling L_TEXTURE=\"texture\" src/coreModule/landscape.cpp:60"
+    },
+    "maptex": {
+     "doc": "The picture file the scenery is drawn from - the older spelling.",
+     "value": "string (file name)",
+     "default": "only read when `texture` is absent or empty",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:193 (bare literal \"maptex\", no L_* or W_* define)"
+    },
+    "night_texture": {
+     "doc": "A second picture used for the night-time look of the scenery.",
+     "value": "string (file name)",
+     "default": "absent or empty -> no night picture",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:182-184, spelling L_NIGHT_TEX=\"night_texture\" src/coreModule/landscape.cpp:58"
+    },
+    "limited_shade": {
+     "doc": "How dark the scenery is allowed to get.",
+     "value": "number(Utility::strToFloat)",
+     "default": "absent or empty -> 0",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:186-189, spelling L_LIM_SHADE=\"limited_shade\" src/coreModule/landscape.cpp:62"
+    },
+    "mipmap": {
+     "doc": "Whether the picture is smoothed when drawn small.",
+     "value": "boolean(Utility::isTrue)",
+     "default": "absent or empty -> true (on)",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:197, spelling L_MIPMAP=\"mipmap\" src/coreModule/landscape.cpp:61"
+    },
+    "fov": {
+     "doc": "How much of the sky a fisheye scenery picture covers, in degrees.",
+     "value": "number(Utility::strToDouble)",
+     "default": "absent -> the value of `texturefov`; both absent -> 180",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:203 (bare literal \"fov\")"
+    },
+    "texturefov": {
+     "doc": "How much of the sky a fisheye scenery picture covers - the older spelling.",
+     "value": "number(Utility::strToDouble)",
+     "default": "absent -> 180",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:203 (bare literal \"texturefov\")"
+    },
+    "rotate_z": {
+     "doc": "How far the scenery is turned about the vertical, in degrees.",
+     "value": "number(Utility::strToDouble)",
+     "default": "absent -> 0",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:204 (fisheye), :211 (spherical) - bare literal \"rotate_z\"; a W_ROTATE_Z token exists (base_command_interface.hpp:115) and is NOT used here"
+    },
+    "base_altitude": {
+     "doc": "How low the wrapped picture reaches, in degrees.",
+     "value": "number(Utility::strToDouble)",
+     "default": "absent -> -90 (the nadir)",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:210 - bare literal \"base_altitude\"; a W_BASE_ALTITUDE token exists (base_command_interface.hpp:185) and is NOT used here"
+    },
+    "top_altitude": {
+     "doc": "How high the wrapped picture reaches, in degrees.",
+     "value": "number(Utility::strToDouble)",
+     "default": "absent -> 90 (the zenith)",
+     "required": false,
+     "downstream": true,
+     "source": "src/coreModule/landscape.cpp:211 - bare literal \"top_altitude\"; a W_TOP_ALTITUDE token exists (base_command_interface.hpp:186) and is NOT used here"
+    }
+   },
+   "branches": [
+    {
+     "selector": "action load",
+     "requires": [
+      "type"
+     ],
+     "optional": [
+      "landing",
+      "name",
+      "texture",
+      "maptex",
+      "night_texture",
+      "limited_shade",
+      "mipmap",
+      "fov",
+      "texturefov",
+      "rotate_z",
+      "base_altitude",
+      "top_altitude"
+     ],
+     "effect": "build a scenery from these picture files and put it in place",
+     "source": "app_command_interface.cpp:2595-2601 -> src/coreModule/core.cpp:762-780 -> src/coreModule/landscape.cpp:179-219"
+    },
+    {
+     "selector": "action rotate",
+     "requires": [
+      "rotation"
+     ],
+     "optional": [],
+     "effect": "turn the scenery already in place",
+     "source": "app_command_interface.cpp:2602-2609"
+    },
+    {
+     "selector": "no action, landing present",
+     "requires": [
+      "landing"
+     ],
+     "optional": [],
+     "effect": "set how far the observer has come down onto a wrapped (spherical) scenery",
+     "source": "app_command_interface.cpp:2613-2619 -> src/coreModule/core.cpp:754-758"
+    }
+   ],
+   "notes": [
+    "Forwarded-map handler: `action load` hands the WHOLE parsed map to Core::loadLandscape (:2599, :2601), so its key vocabulary lives in src/coreModule/landscape.cpp, not here. Keys marked `downstream` are read there and consume no row of the count gate.",
+    "The `landing` value has two different meanings on the two paths: with `action load` only the exact text \"0\" switches landing off; alone it is the amount of landing itself.",
+    "C1-relevant: `args[W_PATH] = ...` at :2597 WRITES into the parsed map before forwarding it, so the map handed downstream is not the set of pairs the line wrote.",
+    "The colour of the older spellings: `maptex`, `fov`, `texturefov`, `rotate_z`, `base_altitude` and `top_altitude` are bare string literals in landscape.cpp with no shared define; the last three duplicate existing W_* tokens without using them."
+   ],
+   "flagged": [
+    "landscape `limited_shade`: the number passes through Landscape::setLimitedShade (src/coreModule/landscape.cpp:188) whose meaning and range the code does not state. Doc line says what the key is for, not what a given number does. Vixy."
+   ]
+  },
+  "screen_fader": {
+   "handler": "commandScreenFader",
+   "lines": "2625-2639",
+   "aliases": [],
+   "registration": "app_command_init.cpp:65 (ACP_CN_SCREEN_FADER = \"screen_fader\", base_command_interface.hpp:355)",
+   "doc": "Draw a dark veil over the whole screen, or clear it - either at once or over a chosen time.",
+   "args": {
+    "alpha": {
+     "doc": "How dark the veil is: 0 for none, 1 for a black screen.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> \"command 'screen_fader' : invalid alpha parameter\" and nothing happens",
+     "required": true,
+     "source": "app_command_interface.cpp:2628-2633 (W_ALPHA=\"alpha\" base_command_interface.hpp:173) -> src/appModule/screenFader.hpp:60-62, :112-121, :125-126"
+    },
+    "duration": {
+     "doc": "How many seconds the veil takes to reach that darkness.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the veil changes at once",
+     "required": false,
+     "source": "app_command_interface.cpp:2629-2630 (W_DURATION=\"duration\" base_command_interface.hpp:102); seconds because the value is multiplied by 1000 (src/appModule/screenFader.hpp:119)"
+    }
+   },
+   "notes": [
+    "With `duration` the command queues a gradual change, without it an immediate one (:2630 vs :2632).",
+    "`set screen_fader <v>` is the same as `screen_fader alpha <v>` with no duration (:2213-2216)."
+   ],
+   "flagged": []
+  },
+  "text": {
+   "handler": "commandText",
+   "lines": "2641-2784",
+   "aliases": [],
+   "registration": "app_command_init.cpp:94 (ACP_CN_TEXT = \"text\", base_command_interface.hpp:385)",
+   "doc": "Put a line of writing on the dome, change its words, show or hide it, or remove it.",
+   "args": {
+    "action": {
+     "doc": "What to do with the writing.",
+     "value": "enumerated",
+     "values": [
+      "clear",
+      "drop",
+      "update",
+      "load"
+     ],
+     "value_docs": {
+      "clear": "remove every text on the dome and stop (no other key is needed)",
+      "drop": "remove the text of this name",
+      "update": "replace the words of a text that already exists",
+      "load": "create the text and place it on the dome"
+     },
+     "default": "absent -> only `display` is acted on (show or hide the text named by `name`); an unknown value with a `string` given -> \"Command 'text': unknown argument\"",
+     "required": false,
+     "source": "app_command_interface.cpp:2643-2648, 2657-2662, 2669-2765 (W_ACTION=\"action\" base_command_interface.hpp:81; W_CLEAR=\"clear\" :90, W_DROP=\"drop\" :156, W_UPDATE=\"update\" :273, W_LOAD=\"load\" :103)"
+    },
+    "name": {
+     "doc": "The name you give this writing so later commands can find it.",
+     "value": "string(evalString) - $-variable substitution possible",
+     "default": "absent or empty (with any action but `clear`) -> \"Command 'text': argument 'name' needed\"",
+     "required": true,
+     "source": "app_command_interface.cpp:2650-2655 (W_NAME=\"name\" base_command_interface.hpp:89)",
+     "notes": "Each text is really stored three times, under the name with 1, 2 and 3 added (:2658-2660, :2726-2737): that is how the `write` key can place copies around the dome."
+    },
+    "string": {
+     "doc": "The words to display.",
+     "value": "string(evalString), then translated - $-variable substitution possible",
+     "default": "absent or empty on any action -> EVERY text on the dome is removed and \"Command 'text': argument 'string' needed\" is reported",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2665-2674 (W_STRING=\"string\" base_command_interface.hpp:272) -> Translator::globalTranslator.translateUTF8 (:2667)",
+     "notes": "Sharp edge: the missing-string path calls textClear() first (:2671), so a mistyped line wipes the writing already on screen."
+    },
+    "display": {
+     "doc": "Whether the writing is shown or hidden.",
+     "value": "boolean(Utility::isTrue)",
+     "values": [
+      "1",
+      "on",
+      "true",
+      "<anything else means hidden>"
+     ],
+     "default": "absent or empty -> the writing's shown/hidden state is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2664, 2740-2757, 2769-2778 (W_DISPLAY=\"display\" base_command_interface.hpp:92) -> src/tools/utility.hpp:160-171",
+     "notes": "Written on its own (no `action`) it shows or hides all three copies of the named text (:2769-2778). Written together with `action load` it only touches the copies that `write` created (:2740-2757)."
+    },
+    "write": {
+     "doc": "How many copies of the writing are placed around the dome.",
+     "value": "enumerated",
+     "values": [
+      "twice",
+      "thrice"
+     ],
+     "value_docs": {
+      "twice": "two copies, the second half a turn round the dome (azimuth + 180)",
+      "thrice": "three copies, a third of a turn apart (azimuth + 120 and + 240)"
+     },
+     "default": "absent or empty -> one copy only",
+     "required": false,
+     "source": "app_command_interface.cpp:2678-2684, 2724-2738, 2743-2755 (W_WRITE=\"write\" base_command_interface.hpp:82; W_TWICE=\"twice\" :305, W_THRICE=\"thrice\" :306)"
+    },
+    "azimuth": {
+     "doc": "Which way round the dome the writing sits, in degrees.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty with `action load` -> \"Command 'text': parameter 'azimuth' or 'altitude' needed\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2687, 2694 (W_AZIMUTH=\"azimuth\" base_command_interface.hpp:153); degrees from the copy offsets of +180 and +120 at :2730, :2734, :2736"
+    },
+    "altitude": {
+     "doc": "How high above the horizon the writing sits, in degrees.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty with `action load` -> \"Command 'text': parameter 'azimuth' or 'altitude' needed\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2688, 2695 (W_ALTITUDE=\"altitude\" base_command_interface.hpp:179)"
+    },
+    "size": {
+     "doc": "How big the letters are.",
+     "value": "enumerated (upper-cased by the command)",
+     "values": [
+      "XX_SMALL",
+      "X_SMALL",
+      "SMALL",
+      "MEDIUM",
+      "LARGE",
+      "X_LARGE",
+      "XX_LARGE"
+     ],
+     "default": "absent or empty -> MEDIUM; an unrecognised size -> MEDIUM and \"text size was not recognized\" in the log",
+     "required": false,
+     "source": "app_command_interface.cpp:2696-2698 (W_SIZE=\"size\" base_command_interface.hpp:80) -> src/mediaModule/text_mgr.cpp:39-45, :70-78",
+     "notes": "The value is upper-cased before use (:2698), so `large` and `LARGE` both work."
+    },
+    "align": {
+     "doc": "Which edge of the writing sits at the given place.",
+     "value": "enumerated (upper-cased by the command)",
+     "values": [
+      "LEFT",
+      "RIGHT",
+      "CENTER"
+     ],
+     "default": "absent or empty -> LEFT; an unrecognised value -> LEFT and \"text alignement was not recognized\" in the log",
+     "required": false,
+     "source": "app_command_interface.cpp:2699-2701 (W_ALIGN=\"align\" base_command_interface.hpp:78) -> src/mediaModule/text_mgr.cpp:47-49, :108-116"
+    },
+    "color_value": {
+     "doc": "The colour of the letters, written in one word: either x followed by six hex digits, or the three numbers 0-255 run together after the letters r, g and b.",
+     "value": "string",
+     "values": [
+      "xRRGGBB",
+      "r<0-255>g<0-255>b<0-255>"
+     ],
+     "default": "absent or empty -> the r/g/b keys are used; all four absent -> the program's usual text colour",
+     "required": false,
+     "source": "app_command_interface.cpp:2704, 2709-2715 (W_COLOR_VALUE=\"color_value\" base_command_interface.hpp:134) -> src/interfaceModule/app_command_color.cpp:92-120; default colour src/mediaModule/text_mgr.cpp:118-124"
+    },
+    "r": {
+     "doc": "How much red in the letters, from 0 to 1.",
+     "value": "number(Utility::strToDouble)",
+     "default": "absent -> the default text colour is used",
+     "required": false,
+     "source": "app_command_interface.cpp:2705, 2709 -> src/interfaceModule/app_command_color.cpp:58-78"
+    },
+    "g": {
+     "doc": "How much green in the letters, from 0 to 1.",
+     "value": "number(Utility::strToDouble)",
+     "default": "as `r`",
+     "required": false,
+     "source": "app_command_interface.cpp:2706, 2709 -> src/interfaceModule/app_command_color.cpp:58-78"
+    },
+    "b": {
+     "doc": "How much blue in the letters, from 0 to 1.",
+     "value": "number(Utility::strToDouble)",
+     "default": "as `r`",
+     "required": false,
+     "source": "app_command_interface.cpp:2707, 2709 -> src/interfaceModule/app_command_color.cpp:58-78"
+    },
+    "fader": {
+     "doc": "Whether the writing fades in and out instead of appearing at once.",
+     "value": "boolean(Utility::isTrue)",
+     "values": [
+      "1",
+      "on",
+      "true",
+      "<anything else means no fading>"
+     ],
+     "default": "absent or empty -> no fading",
+     "required": false,
+     "source": "app_command_interface.cpp:2716-2723 (W_FADER=\"fader\" base_command_interface.hpp:141) -> src/mediaModule/text_mgr.hpp:97-99 (how long the fade lasts is `set text_fading_duration`)"
+    }
+   },
+   "branches": [
+    {
+     "selector": "action clear",
+     "requires": [],
+     "optional": [],
+     "effect": "remove every text on the dome",
+     "source": "app_command_interface.cpp:2645-2648"
+    },
+    {
+     "selector": "action drop",
+     "requires": [
+      "name"
+     ],
+     "optional": [],
+     "effect": "remove all three copies of the named text",
+     "source": "app_command_interface.cpp:2657-2662"
+    },
+    {
+     "selector": "action update",
+     "requires": [
+      "name",
+      "string"
+     ],
+     "optional": [
+      "write"
+     ],
+     "effect": "replace the words of a text that already exists",
+     "source": "app_command_interface.cpp:2676-2685"
+    },
+    {
+     "selector": "action load",
+     "requires": [
+      "name",
+      "string",
+      "azimuth",
+      "altitude"
+     ],
+     "optional": [
+      "size",
+      "align",
+      "color_value",
+      "r",
+      "g",
+      "b",
+      "fader",
+      "write",
+      "display"
+     ],
+     "effect": "create the text and place it on the dome",
+     "source": "app_command_interface.cpp:2686-2764"
+    },
+    {
+     "selector": "no action, display present",
+     "requires": [
+      "name",
+      "display"
+     ],
+     "optional": [],
+     "effect": "show or hide all three copies of the named text",
+     "source": "app_command_interface.cpp:2769-2780"
+    }
+   ],
+   "notes": [
+    "A colour that cannot be read is silent here: the constructor is given a LOCAL message (:2708-2709), so the text is simply drawn in the usual colour and the command reports success.",
+    "`action update` does not move or recolour anything - only the words change.",
+    "The names really used are `name` with 1, 2 or 3 added, so two texts whose names differ only by a trailing digit can collide."
+   ],
+   "flagged": []
+  },
+  "sky_culture": {
+   "handler": "commandSkyCulture",
+   "lines": "2786-2795",
+   "aliases": [],
+   "registration": "app_command_init.cpp:88 (ACP_CN_SKY_CULTURE = \"sky_culture\", base_command_interface.hpp:379)",
+   "doc": "Load a different set of constellations and star names (a sky culture) from a folder.",
+   "args": {
+    "path": {
+     "doc": "The folder holding the sky culture's files.",
+     "value": "string (a folder path; not evaluated)",
+     "default": "absent or empty -> \"command_sky_culture : path or action missing\"",
+     "required": true,
+     "source": "app_command_interface.cpp:2788-2793 (W_PATH=\"path\" base_command_interface.hpp:107) -> src/coreModule/core.cpp:1465-1487",
+     "notes": "Sharp edge: the path is resolved as though it were a PICTURE file (FilePath TFP::IMAGE, :2788), so a bare name is looked for in the script folder first and then in the picture folder, and the result is used even when nothing exists there - existence is never checked (src/tools/file_path.cpp:102-145). The folder is expected to contain constellation_names.eng.fab and star_names.fab (src/coreModule/core.cpp:1472, :1485)."
+    },
+    "action": {
+     "doc": "The one action this command knows.",
+     "value": "enumerated",
+     "values": [
+      "load"
+     ],
+     "value_docs": {
+      "load": "read the culture from that folder and use it"
+     },
+     "default": "absent or any other value -> \"command_sky_culture : path or action missing\"",
+     "required": true,
+     "source": "app_command_interface.cpp:2789 (W_ACTION=\"action\" base_command_interface.hpp:81, W_LOAD=\"load\" :103)"
+    }
+   },
+   "notes": [
+    "Loading this way sets the culture's name to \"Custom\" (src/coreModule/core.cpp:1468); `set sky_culture <name>` is the other way in, by culture folder name.",
+    "A folder that exists but holds no usable files gives \"Error loading sky culture from path specified.\" only when the loader itself refuses (:2790-2791)."
+   ],
+   "flagged": []
+  },
+  "script": {
+   "handler": "commandScript",
+   "lines": "2797-2870",
+   "aliases": [],
+   "registration": "app_command_init.cpp:82 (ACP_CN_SCRIPT = \"script\", base_command_interface.hpp:373)",
+   "doc": "Start, stop, pause or speed up a script, or record what is being done into a new script.",
+   "wait_parameter": "commandScript(uint64_t &wait): `script action pause` sets wait = 1, which makes the caller hold before the next line (app_command_interface.cpp:2825-2827)",
+   "args": {
+    "action": {
+     "doc": "What to do.",
+     "value": "enumerated",
+     "values": [
+      "end",
+      "play",
+      "record",
+      "cancelrecord",
+      "pause",
+      "resume",
+      "faster",
+      "slower",
+      "default",
+      "acquire",
+      "release"
+     ],
+     "value_docs": {
+      "end": "stop the running script and clear what it put on screen: texts, music and every non-permanent picture",
+      "play": "start the script named by `filename`",
+      "record": "start writing every command that follows into the file named by `filename`",
+      "cancelrecord": "stop recording and throw the recording away",
+      "pause": "hold the running script where it is",
+      "resume": "let a held script go on",
+      "faster": "run the script faster",
+      "slower": "run the script slower",
+      "default": "run the script at its normal speed",
+      "acquire": "take the global lock (only with `lock global`)",
+      "release": "give the global lock back (only with `lock global`)"
+     },
+     "default": "absent -> `speed` is used instead; both absent -> \"command_'script' : missing action argument\"; an unknown value -> \"command_script : unknown parameter from 'action' argument\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2799, 2803-2846 (W_ACTION=\"action\" base_command_interface.hpp:81; W_END=\"end\" :157, W_PLAY=\"play\" :158, W_RECORD=\"record\" :84, W_CANCEL=\"cancelrecord\" :159, W_PAUSE=\"pause\" :160, W_RESUME=\"resume\" :168, W_FASTER=\"faster\" :161, W_SLOWER=\"slower\" :162, W_DEFAULT=\"default\" :143, W_ACQUIRE=\"acquire\" :322, W_RELEASE=\"release\" :323)"
+    },
+    "filename": {
+     "doc": "The script file to play, or the file to record into.",
+     "value": "string, sometimes evaluated - see notes",
+     "default": "absent or empty with `action play` -> the line falls through to \"command_script : unknown parameter from 'action' argument\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2800-2802, 2811-2820 (W_FILENAME=\"filename\" base_command_interface.hpp:79)",
+     "notes": "Sharp edge: the name is treated as a VARIABLE and evaluated only when it does NOT look like it already has a three-letter extension - the test is 'shorter than 4 characters, or the fourth character from the end is not a dot' (:2801-2802). On `action play` the file is looked for in the script folder and the folder it is found in becomes the script path used by later commands (:2812-2817)."
+    },
+    "lock": {
+     "doc": "Takes or gives back the lock that keeps two scripts from running at once.",
+     "value": "enumerated",
+     "values": [
+      "global"
+     ],
+     "value_docs": {
+      "global": "the one lock shared by every script"
+     },
+     "default": "absent or any other value with `action acquire`/`action release` -> nothing happens and the command still reports SUCCESS",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2837, 2841 (W_LOCK=\"lock\" base_command_interface.hpp:321, W_GLOBAL=\"global\" :324)",
+     "notes": "Only read on the `acquire` and `release` paths (:2836-2843); on every other action it is ignored."
+    },
+    "speed": {
+     "doc": "Change how fast the running script goes, without an `action`.",
+     "value": "enumerated",
+     "values": [
+      "faster",
+      "slower",
+      "default"
+     ],
+     "value_docs": {
+      "faster": "run faster",
+      "slower": "run slower",
+      "default": "back to the normal speed"
+     },
+     "default": "absent -> `action` must be given instead; an unknown value -> \"command_script : unknown parameter from 'speed' argument\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2849-2865 (W_SPEED=\"speed\" base_command_interface.hpp:163)",
+     "notes": "Only read when no `action` is written: the action block always returns (:2846)."
+    }
+   },
+   "exclusive_groups": [
+    [
+     "action",
+     "speed"
+    ]
+   ],
+   "notes": [
+    "`action record` and `action cancelrecord` set recordable = 0 (:2821, :2824) so the command itself never appears in the file being recorded.",
+    "`action pause` on a script that is ALREADY paused, or when skip-pause is on, falls into the pause-or-resume branch and RESUMES it instead (:2825-2829).",
+    "The comment at :2859-2864 records why the `speed` branch returns: without it a working `script speed ...` reported failure and was dropped from every recorded show (INTENT §11.108 rider).",
+    "This is one of the three commands in the sweep that take the `wait` parameter (with `wait` and `zoom` in units 1 and 3)."
+   ],
+   "flagged": []
+  },
+  "audio": {
+   "handler": "commandAudio",
+   "lines": "2872-2931",
+   "aliases": [],
+   "registration": "app_command_init.cpp:40 (ACP_CN_AUDIO = \"audio\", base_command_interface.hpp:329)",
+   "doc": "Control the music: how loud it is, which file plays, and whether it keeps playing while a script is paused.",
+   "args": {
+    "volume": {
+     "doc": "How loud the music is.",
+     "value": "the word \"increment\", the word \"decrement\", or int(evalInt) - $-variable substitution possible",
+     "values": [
+      "increment",
+      "decrement",
+      "<number 0-128>"
+     ],
+     "value_docs": {
+      "increment": "5 louder",
+      "decrement": "5 quieter",
+      "<number>": "set the loudness; below 0 or above 128 is pulled back into range"
+     },
+     "default": "absent or empty -> the loudness is left alone and the other keys are used",
+     "required": false,
+     "source": "app_command_interface.cpp:2875-2884 (W_VOLUME=\"volume\" base_command_interface.hpp:85, W_INCREMENT=\"increment\" :86/:145, W_DECREMENT=\"decrement\" :87/:144) -> src/mediaModule/media.hpp:150-160 -> src/mediaModule/audio.cpp:240-267"
+    },
+    "nopause": {
+     "doc": "Whether the music keeps playing while the script is paused.",
+     "value": "boolean(Utility::isTrue)",
+     "values": [
+      "1",
+      "on",
+      "true",
+      "<anything else means the music stops>"
+     ],
+     "default": "absent or empty -> the setting is left alone and the other keys are used",
+     "required": false,
+     "source": "app_command_interface.cpp:2887-2891 (W_NOPAUSE=\"nopause\" base_command_interface.hpp:88) -> src/mediaModule/media.hpp:225-231 (\"@param true: the music continues to play if the script is paused\")"
+    },
+    "action": {
+     "doc": "What to do with the music track.",
+     "value": "enumerated",
+     "values": [
+      "play",
+      "pause",
+      "resume",
+      "drop",
+      "sync"
+     ],
+     "value_docs": {
+      "play": "load the file named by `filename` and start it",
+      "pause": "hold the music where it is",
+      "resume": "let held music go on",
+      "drop": "stop the music and forget the track",
+      "sync": "line the music back up with the script's clock"
+     },
+     "default": "absent or empty (and no `volume`, no `nopause`) -> \"command 'audio': unknown action value\"; an unknown value -> \"command 'audio' : unknown argument\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2894-2923 (W_ACTION=\"action\" base_command_interface.hpp:81; W_PLAY=\"play\" :158, W_PAUSE=\"pause\" :160, W_RESUME=\"resume\" :168, W_DROP=\"drop\" :156, W_SYNC=\"sync\" :167)"
+    },
+    "filename": {
+     "doc": "The music file to play.",
+     "value": "string(evalString) - $-variable substitution possible",
+     "default": "absent or empty with `action play` -> \"command 'audio': filename not found\"",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2909-2921 (W_FILENAME=\"filename\" base_command_interface.hpp:79); looked for in the script folder first, then the audio folder (src/tools/file_path.cpp:102-145)",
+     "notes": "Only read on the `action play` path (:2908-2922); every other action ignores it."
+    },
+    "loop": {
+     "doc": "Whether the track starts again when it ends.",
+     "value": "boolean(Utility::isTrue)",
+     "values": [
+      "1",
+      "on",
+      "true",
+      "<anything else means play once>"
+     ],
+     "default": "absent or empty -> played once",
+     "required": false,
+     "source": "app_command_interface.cpp:2912 (W_LOOP=\"loop\" base_command_interface.hpp:169/:284) -> src/mediaModule/media.hpp:162"
+    }
+   },
+   "exclusive_groups": [
+    [
+     "volume",
+     "nopause",
+     "action"
+    ]
+   ],
+   "notes": [
+    "Only ONE of `volume`, `nopause` and `action` acts on a line, in that order: each branch returns (:2883, :2890). `audio volume 50 action play filename x.ogg` only changes the loudness.",
+    "A missing file and an empty name give the same message, \"command 'audio': filename not found\" (:2916, :2920)."
+   ],
+   "flagged": []
+  },
+  "image": {
+   "handler": "commandImage",
+   "lines": "2933-3094",
+   "aliases": [],
+   "registration": "app_command_init.cpp:63 (ACP_CN_IMAGE = \"image\", base_command_interface.hpp:353)",
+   "doc": "Put a picture on the dome and then move, fade, turn or resize it.",
+   "args": {
+    "action": {
+     "doc": "What to do with the picture.",
+     "value": "enumerated",
+     "values": [
+      "load",
+      "drop",
+      "purge"
+     ],
+     "value_docs": {
+      "load": "read the picture file and put it on the dome under the given name",
+      "drop": "remove the picture of this name",
+      "purge": "remove every picture at once (no other key is needed)"
+     },
+     "default": "absent -> the picture named by `name` must already exist, and the keys below act on it",
+     "required": false,
+     "source": "app_command_interface.cpp:2935-2939, 2948-2953 (W_ACTION=\"action\" base_command_interface.hpp:81; W_LOAD=\"load\" :103, W_DROP=\"drop\" :156, W_PURGE=\"purge\" :170)"
+    },
+    "name": {
+     "doc": "The name you give this picture so later commands can find it.",
+     "value": "string(evalString) - $-variable substitution possible",
+     "default": "absent or empty (with any action but `purge`) -> \"Image argument name required.\"",
+     "required": true,
+     "source": "app_command_interface.cpp:2941-2945, 2949, 2978, 2985 (W_NAME=\"name\" base_command_interface.hpp:89)",
+     "notes": "A name that no picture answers to gives \"Unable to find image: <name>\" (:2985-2988)."
+    },
+    "filename": {
+     "doc": "The picture file to read.",
+     "value": "string(evalString) - $-variable substitution possible",
+     "default": "absent or empty with `action load` -> the load is skipped silently and the command goes straight on to look for a picture already carrying that name",
+     "required": "conditional",
+     "source": "app_command_interface.cpp:2947, 2953-2957 (W_FILENAME=\"filename\" base_command_interface.hpp:79); looked for in the script folder first, then the picture folder (src/tools/file_path.cpp:102-145); a file that does not exist -> \"command 'image': filename not found\""
+    },
+    "coordinate_system": {
+     "doc": "Which frame the picture is pinned to.",
+     "value": "enumerated (matched without regard to capitals)",
+     "values": [
+      "viewport",
+      "horizontal",
+      "equatorial",
+      "j2000",
+      "dome",
+      "spherical"
+     ],
+     "value_docs": {
+      "viewport": "stays put on the screen",
+      "horizontal": "pinned to the ground and the compass, so it turns with the view",
+      "equatorial": "pinned to the stars, so it turns with the sky",
+      "j2000": "pinned to the stars as they stood in the year 2000",
+      "dome": "pinned to the dome itself",
+      "spherical": "wrapped over the whole sky"
+     },
+     "default": "absent, empty or an unknown value -> viewport (fixed to the screen)",
+     "required": false,
+     "source": "app_command_interface.cpp:2959-2962, 2978 (W_COORDINATE_SYSTEM=\"coordinate_system\" base_command_interface.hpp:227) -> src/mediaModule/image_mgr.cpp:37-42, :73-83",
+     "notes": "Overridden: when `hp` is written the frame is forced to equatorial whatever this key says (:2960-2962)."
+    },
+    "hp": {
+     "doc": "The catalogue (HIP) number of a bright star to pin the picture to.",
+     "value": "int(evalInt) - $-variable substitution possible",
+     "default": "absent or empty -> the picture is placed by `xpos`/`ypos` or `altitude`/`azimuth` instead",
+     "required": false,
+     "source": "app_command_interface.cpp:2960, 3006, 3031-3045 (W_HP=\"hp\" base_command_interface.hpp:132) -> src/coreModule/core.hpp:395 (getStarEarthEquPosition)",
+     "notes": "A number that is not a star gives \"command 'image': HP number <n> is not a valid star\" and the command stops there. Writing `hp` also forces `coordinate_system` to equatorial (:2961)."
+    },
+    "project": {
+     "doc": "How many copies of the picture are wrapped around the dome.",
+     "value": "enumerated",
+     "values": [
+      "twice",
+      "thrice"
+     ],
+     "value_docs": {
+      "twice": "two copies, half a turn apart",
+      "thrice": "three copies, a third of a turn apart"
+     },
+     "default": "absent, empty or any other value -> one copy",
+     "required": false,
+     "source": "app_command_interface.cpp:2964-2971, 2978 (W_PROJECT=\"project\" base_command_interface.hpp:217; W_TWICE=\"twice\" :305, W_THRICE=\"thrice\" :306)"
+    },
+    "mipmap": {
+     "doc": "Whether the picture is smoothed when it is drawn small.",
+     "value": "boolean(Utility::isTrue)",
+     "values": [
+      "1",
+      "on",
+      "true",
+      "<anything else means off>"
+     ],
+     "default": "absent or empty -> off (\"Default off for historical reasons\", :2973)",
+     "required": false,
+     "source": "app_command_interface.cpp:2973-2975, 2978 (W_MIPMAP=\"mipmap\" base_command_interface.hpp:172)"
+    },
+    "duration": {
+     "doc": "How many seconds every change asked for on this line takes.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent -> 0, every change happens at once (evalDouble(\"\") = 0.0, app_command_interface.cpp:4466-4471)",
+     "required": false,
+     "source": "app_command_interface.cpp:2991, 3011-3060 (W_DURATION=\"duration\" base_command_interface.hpp:102); seconds because the value is multiplied by 1000 downstream (src/mediaModule/image.cpp:408, :484)",
+     "notes": "One duration for the whole line: alpha, scale, rotation, ratio and the position moves all share it."
+    },
+    "alpha": {
+     "doc": "How solid the picture is drawn - 0 is invisible.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the picture's solidity is left alone (a freshly loaded picture starts invisible)",
+     "required": false,
+     "source": "app_command_interface.cpp:2992, 3010-3011 (W_ALPHA=\"alpha\" base_command_interface.hpp:173) -> src/mediaModule/image.cpp:92 (\"image_alpha = 0;  // begin not visible\"), :362-377",
+     "notes": "A newly loaded picture is invisible until an `alpha` is given."
+    },
+    "scale": {
+     "doc": "How big the picture is drawn.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the size is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2993, 3013-3014 (W_SCALE=\"scale\" base_command_interface.hpp:101) -> src/mediaModule/image.cpp:379-393"
+    },
+    "rotation": {
+     "doc": "How far the picture is turned, in degrees.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the turn is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2994, 3016-3017 (W_ROTATION=\"rotation\" base_command_interface.hpp:114) -> src/mediaModule/image.cpp:396-410, degrees at :771 and :1005 (image_rotation * PI/180)"
+    },
+    "rotate_z": {
+     "doc": "How far the picture is turned, in degrees - a second spelling of `rotation`.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the turn is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2995, 3019-3020 (W_ROTATE_Z=\"rotate_z\" base_command_interface.hpp:115)",
+     "notes": "Same effect as `rotation`: both call imageSetRotation (:3017 and :3020). Writing both applies them one after the other, so `rotate_z` wins."
+    },
+    "ratio": {
+     "doc": "The width-to-height shape of the picture.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the shape the picture file itself has",
+     "required": false,
+     "source": "app_command_interface.cpp:2996, 3028-3029 (W_RATIO=\"ratio\" base_command_interface.hpp:174) -> src/mediaModule/image.cpp:117-119, :476-489"
+    },
+    "xpos": {
+     "doc": "Where the picture sits across the view.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the across position is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2997, 3047-3052 (W_XPOS=\"xpos\" base_command_interface.hpp:175) -> src/mediaModule/image.cpp:413-421 (\"xpos and ypos are interpreted when drawing based on image position type\")",
+     "notes": "What the number means depends on `coordinate_system` (src/mediaModule/image.cpp:415)."
+    },
+    "ypos": {
+     "doc": "Where the picture sits up and down the view.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the up-down position is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2998, 3047-3052 (W_YPOS=\"ypos\" base_command_interface.hpp:176) -> src/mediaModule/image.cpp:413-421"
+    },
+    "altitude": {
+     "doc": "How high above the horizon the picture sits, in degrees.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the height is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:2999, 3055-3060 (W_ALTITUDE=\"altitude\" base_command_interface.hpp:179); degrees because the same call takes the star position converted with 180/PI at :3032-3037",
+     "notes": "The comment at :3054 says altitude/azimuth and xpos/ypos are meant as alternatives - \"as long as someone doesn't do both\". Both pairs given: xpos/ypos is applied first, then altitude/azimuth on top."
+    },
+    "azimuth": {
+     "doc": "Which way round the horizon the picture sits, in degrees.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the direction is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:3000, 3055-3060 (W_AZIMUTH=\"azimuth\" base_command_interface.hpp:153)"
+    },
+    "persistent": {
+     "doc": "Whether the picture stays on screen when the script ends.",
+     "value": "boolean(Utility::isTrue)",
+     "values": [
+      "1",
+      "on",
+      "true",
+      "<anything else means it goes>"
+     ],
+     "default": "absent or empty -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:3001, 3062-3067 (W_PERSISTENT=\"persistent\" base_command_interface.hpp:180); `script action end` drops every non-persistent picture (:2808)"
+    },
+    "accelerate_alt": {
+     "doc": "Whether the up-and-down part of the move starts gently instead of at full speed.",
+     "value": "the exact word \"on\"",
+     "values": [
+      "on"
+     ],
+     "default": "absent or anything but \"on\" -> the move starts at full speed",
+     "required": false,
+     "source": "app_command_interface.cpp:3002, 3039, 3051, 3059 (W_ACCELERATE_ALT=\"accelerate_alt\" base_command_interface.hpp:181, W_ON=\"on\" :187)",
+     "notes": "Compared literally against \"on\" (:3039), so \"true\" and \"1\" do NOT work here, unlike the boolean keys of this same command. It governs the FIRST of the two moved coordinates, which is `xpos` on the xpos/ypos path and `altitude` on the altitude/azimuth path (:3048-3052, :3056-3060)."
+    },
+    "accelerate_az": {
+     "doc": "Whether the sideways part of the move starts gently instead of at full speed.",
+     "value": "the exact word \"on\"",
+     "values": [
+      "on"
+     ],
+     "default": "absent or anything but \"on\" -> the move starts at full speed",
+     "required": false,
+     "source": "app_command_interface.cpp:3003, 3040, 3052, 3060 (W_ACCELERATE_AZ=\"accelerate_az\" base_command_interface.hpp:182)",
+     "notes": "Governs the SECOND moved coordinate (`ypos` or `azimuth`)."
+    },
+    "decelerate_alt": {
+     "doc": "Whether the up-and-down part of the move slows down at the end instead of stopping dead.",
+     "value": "the exact word \"on\"",
+     "values": [
+      "on"
+     ],
+     "default": "absent or anything but \"on\" -> the move stops dead",
+     "required": false,
+     "source": "app_command_interface.cpp:3004, 3039, 3051, 3059 (W_DECELERATE_ALT=\"decelerate_alt\" base_command_interface.hpp:183)"
+    },
+    "decelerate_az": {
+     "doc": "Whether the sideways part of the move slows down at the end instead of stopping dead.",
+     "value": "the exact word \"on\"",
+     "values": [
+      "on"
+     ],
+     "default": "absent or anything but \"on\" -> the move stops dead",
+     "required": false,
+     "source": "app_command_interface.cpp:3005, 3040, 3052, 3060 (W_DECELERATE_AZ=\"decelerate_az\" base_command_interface.hpp:184)"
+    },
+    "top_altitude": {
+     "doc": "For a picture wrapped over the sky, how high its top edge reaches, in degrees.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the top edge is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:3007, 3022-3023 (W_TOP_ALTITUDE=\"top_altitude\" base_command_interface.hpp:186) -> src/mediaModule/media.hpp:272-275"
+    },
+    "base_altitude": {
+     "doc": "For a picture wrapped over the sky, how low its bottom edge reaches, in degrees.",
+     "value": "number(evalDouble) - $-variable substitution possible",
+     "default": "absent or empty -> the bottom edge is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:3008, 3025-3026 (W_BASE_ALTITUDE=\"base_altitude\" base_command_interface.hpp:185) -> src/mediaModule/media.hpp:268-271"
+    },
+    "keycolor": {
+     "doc": "Whether one colour of the picture is treated as see-through.",
+     "value": "boolean(Utility::isTrue)",
+     "values": [
+      "1",
+      "on",
+      "true",
+      "<anything else means off>"
+     ],
+     "default": "absent or empty -> the setting is left alone",
+     "required": false,
+     "source": "app_command_interface.cpp:3070-3076 (W_KEYCOLOR=\"keycolor\" base_command_interface.hpp:189) -> src/mediaModule/media.hpp:305-308"
+    },
+    "color_value": {
+     "doc": "Which colour is treated as see-through, written in one word: either x followed by six hex digits, or the three numbers 0-255 run together after the letters r, g and b.",
+     "value": "string",
+     "values": [
+      "xRRGGBB",
+      "r<0-255>g<0-255>b<0-255>"
+     ],
+     "default": "absent or empty -> the r/g/b keys are used; all four absent -> no see-through colour is set and NO error is reported",
+     "required": false,
+     "source": "app_command_interface.cpp:3079, 3083-3091 (W_COLOR_VALUE=\"color_value\" base_command_interface.hpp:134) -> src/interfaceModule/app_command_color.cpp:92-120"
+    },
+    "r": {
+     "doc": "How much red in the see-through colour, from 0 to 1.",
+     "value": "number(Utility::strToDouble)",
+     "default": "absent -> 0 when g or b is given",
+     "required": false,
+     "source": "app_command_interface.cpp:3080, 3083 -> src/interfaceModule/app_command_color.cpp:58-78"
+    },
+    "g": {
+     "doc": "How much green in the see-through colour, from 0 to 1.",
+     "value": "number(Utility::strToDouble)",
+     "default": "as `r`",
+     "required": false,
+     "source": "app_command_interface.cpp:3081, 3083 -> src/interfaceModule/app_command_color.cpp:58-78"
+    },
+    "b": {
+     "doc": "How much blue in the see-through colour, from 0 to 1.",
+     "value": "number(Utility::strToDouble)",
+     "default": "as `r`",
+     "required": false,
+     "source": "app_command_interface.cpp:3082, 3083 -> src/interfaceModule/app_command_color.cpp:58-78"
+    },
+    "intensity": {
+     "doc": "How close a colour has to be to the see-through colour to be hidden.",
+     "value": "number(Utility::strToDouble) - NOT evaluated, so no $-variable substitution",
+     "default": "absent or empty -> 0.05 (src/mediaModule/media.hpp:299)",
+     "required": false,
+     "source": "app_command_interface.cpp:3085-3087 (W_INTENSITY=\"intensity\" base_command_interface.hpp:149) -> src/mediaModule/media.hpp:299-303",
+     "notes": "Only read when a colour was successfully given; a value that is not a number silently becomes 0 (src/tools/utility.cpp:399-406)."
+    }
+   },
+   "branches": [
+    {
+     "selector": "action purge",
+     "requires": [],
+     "optional": [],
+     "effect": "remove every picture and stop",
+     "source": "app_command_interface.cpp:2936-2939"
+    },
+    {
+     "selector": "action drop",
+     "requires": [
+      "name"
+     ],
+     "optional": [],
+     "effect": "remove the named picture and stop",
+     "source": "app_command_interface.cpp:2948-2951"
+    },
+    {
+     "selector": "action load",
+     "requires": [
+      "name",
+      "filename"
+     ],
+     "optional": [
+      "coordinate_system",
+      "hp",
+      "project",
+      "mipmap"
+     ],
+     "effect": "read the picture file, put it up under that name, then apply every other key on the line to it",
+     "source": "app_command_interface.cpp:2953-2983"
+    },
+    {
+     "selector": "no action (or an unknown one)",
+     "requires": [
+      "name"
+     ],
+     "optional": [
+      "duration",
+      "alpha",
+      "scale",
+      "rotation",
+      "rotate_z",
+      "ratio",
+      "xpos",
+      "ypos",
+      "altitude",
+      "azimuth",
+      "hp",
+      "persistent",
+      "accelerate_alt",
+      "accelerate_az",
+      "decelerate_alt",
+      "decelerate_az",
+      "top_altitude",
+      "base_altitude",
+      "keycolor",
+      "color_value",
+      "r",
+      "g",
+      "b",
+      "intensity"
+     ],
+     "effect": "act on the picture already carrying that name",
+     "source": "app_command_interface.cpp:2985-3093"
+    }
+   ],
+   "notes": [
+    "Every key after the load block acts on whatever picture the name currently selects, so `image name x alpha 1 duration 2` works on a picture put up by an earlier line.",
+    "The colour block is deliberately quiet: when no colour key is written, AppCommandColor sets a message and the handler CLEARS it (:3090-3091), so a line with no colour keys still reports success.",
+    "The four accelerate/decelerate keys are the only ones in the unit compared literally against the word \"on\"; every other yes/no key of this command goes through Utility::isTrue, which also accepts 1 and true.",
+    "The alt/az naming of the accelerate keys does not follow the coordinate they act on: `accelerate_alt` is passed as the FIRST argument of the move and therefore governs `xpos` on the xpos/ypos path (:3002, :3051)."
+   ],
+   "flagged": [
+    "image `alpha` and `scale`: the code states no allowed range for either (src/mediaModule/image.cpp:362-393 stores them as given). The doc lines say what they do, not what the extreme values are.",
+    "image `xpos`/`ypos`: their unit depends on `coordinate_system` and the code says only \"interpreted when drawing based on image position type\" (src/mediaModule/image.cpp:415). Recorded as such; a per-frame table would need an imageModule extraction (out of scope here)."
+   ]
+  }
+ },
+ "unit_findings": {
+  "c1_parse_model": [
+   "REFINES parse_model.flag_multi_pair: the single-pair restriction is NOT general. `set` is MULTI-pair - commandSet loops over every pair (:2119-2122) and applies each. The census's single-pair list (flag/define/add/sub/multiply/divide/modulo/tangent/trunc/sinus) does not include `set`, and this unit confirms it must not.",
+   "CONFIRMS parse_model.duplicate_keys' alphabetical-iteration clause with a second user-visible consequence: a multi-pair `set` line applies its pairs in ALPHABETICAL key order, so `set star_scale 2 home_planet Mars` changes the home planet first.",
+   "ADDS a recorder rule the parse model does not carry: executeCommandStatus records the WHOLE `commandline` (:1167), and evalCommandSet calls it once PER PAIR (:2231). A recorded `set a 1 b 2` therefore appears TWICE in the recorded script. Any scedit round-trip check must expect it.",
+   "ADDS an error-state rule: debug_message is cleared once per LINE (:194), never per pair, so on a multi-pair `set` one bad name makes every later pair report failure too (and stops them being recorded).",
+   "REFINES parse_model for handlers that call executeCommand recursively: commandClear (:2479-2530) destroys its own `args`, `debug_message` and `commandline` through the nested calls. `commandline` is left holding the LAST nested line, so `clear` records the wrong line and never records itself.",
+   "CONFIRMS the unit-1 refinement that `args[KEY]` is std::map::operator[] (absent-key reads INSERT): it matters here for the forwarded landscape map (:2592-2604 read six keys before :2599 forwards the map) and for `set`, whose loop at :2119 runs BEFORE any operator[] read, so `set` is the one command whose key list is exactly what the line wrote.",
+   "ADDS: one handler WRITES into the parsed map - `args[W_PATH] = scriptInterface->getScriptPath()` (:2597). The map forwarded to the landscape loader is therefore not the map the line produced, and an author-written `path` is silently overwritten.",
+   "ADDS a value-grammar split the parse model does not yet name: boolean-looking keys are read three different ways in this unit - Utility::isTrue (display, fader, nopause, loop, mipmap, persistent, keycolor), Utility::strToBool with a default (binary_mode), and a literal comparison against the word \"on\" (image accelerate_alt/accelerate_az/decelerate_alt/decelerate_az). Only the first two accept \"true\"/\"1\"."
+  ],
+  "obsolete_tokens_in_range": "None. No handler in 2110-3095 references any of the 7 names in families.obsolete_tokens (checked against app_command_init.cpp:14-23 while reading the range). The nearest miss is `external_viewer`, whose obsolete twin `external_mplayer` is on that list but is not spelled anywhere in this range.",
+  "argument_token_vocabulary_roles": {
+   "used_as_KEYS in this unit": [
+    "W_ACTION",
+    "W_MODULE",
+    "W_NAME",
+    "W_BINARY",
+    "W_STAR_NAME",
+    "W_STAR_POS",
+    "W_INTENSITY",
+    "W_TYPE",
+    "W_COLOR_VALUE",
+    "W_R",
+    "W_G",
+    "W_B",
+    "W_FILENAME",
+    "W_STATE",
+    "W_AZIMUTH",
+    "W_DURATION",
+    "W_DELTA_AZIMUTH",
+    "W_DAY",
+    "W_RA",
+    "W_DE",
+    "W_ZHR",
+    "W_LANDING",
+    "W_PATH",
+    "W_ROTATION",
+    "W_ALPHA",
+    "W_DISPLAY",
+    "W_STRING",
+    "W_WRITE",
+    "W_ALTITUDE",
+    "W_SIZE",
+    "W_ALIGN",
+    "W_FADER",
+    "W_LOCK",
+    "W_SPEED",
+    "W_VOLUME",
+    "W_NOPAUSE",
+    "W_LOOP",
+    "W_COORDINATE_SYSTEM",
+    "W_HP",
+    "W_PROJECT",
+    "W_MIPMAP",
+    "W_SCALE",
+    "W_ROTATE_Z",
+    "W_RATIO",
+    "W_XPOS",
+    "W_YPOS",
+    "W_PERSISTENT",
+    "W_ACCELERATE_ALT",
+    "W_ACCELERATE_AZ",
+    "W_DECELERATE_ALT",
+    "W_DECELERATE_AZ",
+    "W_TOP_ALTITUDE",
+    "W_BASE_ALTITUDE",
+    "W_KEYCOLOR"
+   ],
+   "used_as_VALUES in this unit": [
+    "W_NOW",
+    "W_CLEAR",
+    "W_LOAD",
+    "W_SAVE",
+    "W_LOAD_STAR",
+    "W_STAR_LINES",
+    "W_STAR_NAVIGATOR",
+    "W_RAW",
+    "W_SC",
+    "W_OTHER",
+    "W_LINE",
+    "W_LABEL",
+    "W_PLAY",
+    "W_STOP",
+    "W_AVI",
+    "W_MOV",
+    "W_MPG",
+    "W_MP4",
+    "W_MP3",
+    "W_OGG",
+    "W_SH",
+    "W_BAT",
+    "W_SWF",
+    "W_PNG",
+    "W_VARIABLE",
+    "W_NATURAL",
+    "W_DEFAULT",
+    "W_ROTATE",
+    "W_DROP",
+    "W_UPDATE",
+    "W_TWICE",
+    "W_THRICE",
+    "W_END",
+    "W_RECORD",
+    "W_CANCEL",
+    "W_PAUSE",
+    "W_RESUME",
+    "W_FASTER",
+    "W_SLOWER",
+    "W_ACQUIRE",
+    "W_RELEASE",
+    "W_GLOBAL",
+    "W_SYNC",
+    "W_INCREMENT",
+    "W_DECREMENT",
+    "W_PURGE",
+    "W_ON"
+   ],
+   "both_roles": [
+    "W_ROTATION - key of `landscape` (:2603) and of `image` (:2994); no value role here.",
+    "W_STAR_LINES - value of `configuration module` (:2250) and, outside this unit, a registered COMMAND name (ACP_CN_STAR_LINES, unit 3): the same spelling in two families.",
+    "W_CLEAR - value of `action` on configuration/meteors/text (:2252, :2571, :2645) and a registered COMMAND name (ACP_CN_CLEAR = \"clear\", base_command_interface.hpp:335). Unit 1 recorded the same collision from the other side.",
+    "W_ALTITUDE / W_AZIMUTH - keys here (text, image); W_AZIMUTH is also the key of `heading`."
+   ],
+   "engine_written_never_authored": [
+    "W_NONE (\"NONE\", base_command_interface.hpp:142) - external_viewer's internal sentinel for 'no program chosen' (:2409, :2450). Never a token an author writes.",
+    "W_EQUATORIAL (\"equatorial\", base_command_interface.hpp:228) - written INTO the args by the image handler when `hp` is present (:2961). It is also a legal author-written value of `coordinate_system` (src/mediaModule/image_mgr.cpp:39), so it is both."
+   ],
+   "literal_strings_with_no_W_token": [
+    "`configuration`'s key \"mode\" is spelled with ACP_SC_MODE (base_command_interface.hpp:580), a SET-NAME define, not a W_* argument token (:2303) - the only such reuse in the unit.",
+    "`landscape action load`'s downstream vocabulary is spelled with L_* defines in src/coreModule/landscape.cpp:54-62 (type, spherical, fisheye, path, night_texture, name, texture, mipmap, limited_shade) plus four bare literals with no define at all: \"maptex\" (:193), \"fov\" (:203), \"texturefov\" (:203) - and \"rotate_z\" (:204, :211), \"base_altitude\" (:210), \"top_altitude\" (:211) which DUPLICATE existing W_* spellings without using the tokens.",
+    "`landscape`'s `landing` values are compared against the bare literals \"0\" and \"1\" and against the characters '0' and '1' (:2598, :2614-2617).",
+    "`text` and `image` build their internal names by appending the bare literals \"1\", \"2\", \"3\" to the author's `name` (:2658-2660, :2726-2737).",
+    "`external_viewer` builds bare shell strings (\"mplayer -fs -osdlevel 0 \", \"cvlc \", \"sh \", \"gnash \", \"qiv \", :2415-2445) - not script vocabulary."
+   ],
+   "census_dead_token_check": [
+    "W_DEFAULT is LIVE in this unit (set, heading, script) - it was never on the census's suspect list, recorded here for completeness.",
+    "W_ON is LIVE, as a literal value comparison in image (:3039-3040, :3051-3052, :3059-3060). W_OFF is NOT referenced anywhere in 2110-3095.",
+    "The census's suspect tokens W_FALSE, W_TERMINATION, W_MINIMAL, W_REPLACE, W_RECURSIVE are NOT referenced anywhere in 2110-3095; their fate belongs to units 3 and 4."
+   ]
+  },
+  "commands_with_no_registered_alias": "All 15 commands of this unit register under exactly one name (app_command_init.cpp:40-94); the only alias in the whole table is flyto -> camera (unit 4)."
+ }
+}
