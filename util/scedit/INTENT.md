@@ -63,6 +63,15 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   writing time, or engine drift since; the sweep already holds instances
   of the drift mode: `date_display_*` → `datetime_display_*`,
   `movetocity`).
+  **[AMENDED 2026-08-04 (2nd), vixy]** Flag ROUTING splits by ownership:
+  witness-vs-code divergences and script-surface semantics belong to the
+  MAIN USER/TESTER — "who own the script surface (who is the one writing
+  the most scripts by a good margin)" and drives the project's
+  development — not to Vixy; they are written to `claude/SCRIPT_SURFACE.md`
+  (SS-n ids, relay via Vixy, USER_QUESTIONS conventions: observables,
+  never internals). Vixy remains the design authority for engine
+  internals and scedit's own design (the round-2 lesson, §11.70 era:
+  route questions to the party who can answer them).
 - **C3 — corpus gate (zero false positives).** Before any lint rule
   ships in `--check`: every shipped `.sts` script and the field
   `~/.spacecrafter/ssystem.ini` must pass with 0 false positives (true
@@ -186,6 +195,24 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-04f] Ownership re-route: the script surface has an owner,
+  and it is not Vixy.** Vixy [stated]: witness-vs-code divergences and
+  script-surface semantics belong to the MAIN USER/TESTER, who owns the
+  script surface (writes the most scripts by a good margin) and drives
+  development (Vixy also pushes own ideas — e.g. experimental
+  path-traced shadows — and remains design authority for engine
+  internals and scedit itself). Created `claude/SCRIPT_SURFACE.md`
+  (SS-n ids, USER_QUESTIONS conventions, relay via Vixy): SS-1…10 the
+  known superscript divergences incl. §5.80's, SS-11…16 the
+  surface-owned decisions previously mis-addressed to Vixy (suntrace
+  §5.74, recording contract §5.79, subtitle spelling §5.36,
+  configuration-module usage §5.77, Preset casing §5.78, superscript
+  fix-vs-annotate). C2 amended (2nd): flag routing splits by ownership.
+  Parent rows 74/79/80 annotated; CLAUDE.md channel list updated. This
+  repeats round 1's recorded lesson (questions must go to the party who
+  can answer them) — the mis-addressing is named, not silently fixed.
+  Mining agent's divergence table appends to SCRIPT_SURFACE §3 when
+  gated.
 - **[2026-08-04e] Merge gated GREEN — the contract is filled and armed;
   Vixy elevates superscript.sts.** Merge (code `73cc7b80`): 324 per-key
   arg specs across 62 command entries; fragments folded FIELD-IDENTICAL

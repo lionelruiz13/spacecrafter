@@ -24,8 +24,10 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
   `[measured]` `[derived]` `[vixy:]` …). Expanded §5/§11 entries live in
   `claude/INTENT/<id>.md` (2026-07-23 split); the in-file stub is a derived label —
   the entry file wins.
-- `claude/DECISIONS_PENDING.md`, `claude/USER_QUESTIONS*.md`, `claude/FEATURE_REQUESTS.md`
-  — derived views/channels; the ledger wins on divergence.
+- `claude/DECISIONS_PENDING.md`, `claude/USER_QUESTIONS*.md`, `claude/FEATURE_REQUESTS.md`,
+  `claude/SCRIPT_SURFACE.md` (script-surface owner's channel: witness/code
+  divergences + surface decisions, SS-n ids) — derived views/channels; the
+  ledger wins on divergence.
 - `claude/harness/` — verification scripts (`b*_run.sh`, `SC_BIN` overridable,
   default `../../build-claude/src/spacecrafter`); `claude/harness/README.md` for use.
 
