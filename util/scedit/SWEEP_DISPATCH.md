@@ -171,6 +171,59 @@ gates remain per-unit at merge.
   `evalDouble("")=0.0`, `evalInt("")=0`, `evalString("")=""` (:4458-4479);
   only non-empty eval stays opaque (narrows the item-5 boundary).
 
+## Gate record (supervisor)
+
+- **Unit 1 GREEN** (2026-08-04, code `15927a11`): 68/68 lines, 84/84
+  tokens; suntrace/dso3d/color claims verified at source → §5.74-76.
+- **Unit 4 GREEN** (code `8e62cfd9`): 77/77, 83/83, 30/30 other-uses;
+  struct dead-registered-path, follow_rotation exact-"true", rotate-target
+  commented branch verified; camera double-prefix = §5.41 rediscovery.
+- **Unit 3 GREEN** (code `091713cd`): 93/93, 97/97, zero non-bracket
+  (matches supervisor pre-dispatch measure); media self-re-entry :3511,
+  subtitle wrong-variable (= §5.36, drift :3329→:3764), date W_PRESET
+  double-test :3898, date-sun no-effect statement :3937, media-speed
+  fromString :3686 + timerate stod :3317 all verified verbatim.
+- **Unit 2 GREEN** (code `091713cd`): 101/101, 105/105, 6/6; set loop,
+  external_viewer silent success, args[W_PATH] write, textClear-before-
+  error verified; configuration fall-through queued for FULL verification
+  before registration (see batch).
+
+## Merge-time upstream batch (queued; execute after tokenizer lands)
+
+New §5 rows (verify-then-write, unit-1 discipline):
+1. configuration star_navigator fall-through (:2330-2345 — save then
+   overwrite settings file; VERIFY full extent first).
+2. date pair: `W_PRESET || W_PRESET` double-test :3898 (Preset-cased
+   config starts preset but loads system date) + `date sun <unknown>`
+   silent success :3937 (no-effect `_()` statement).
+3. Recorder-semantics cluster (R2 class, §5.70 precedent): `clear`
+   records 35 nested lines + `zoom auto initial` twice; `set a 1 b 2`
+   records twice (per-pair executeCommandStatus); media audio-only
+   re-entry records the rebuilt line, spaces-in-name destroyed;
+   flag/timerate rewrites (units 1/3) — probably ONE row for the class.
+Annotations to existing rows:
+4. §5.75: unguarded-conversion inventory now complete-for-the-sweep —
+   dso3d stoi :1525; timerate stod :3317; media speed/speed_increment
+   FixedPointI16_2::fromString :3686/:3754/:3759 (throws, sole catch in
+   scope is app_command_eval.cpp:151, other path). Discharges the row's
+   "owed".
+5. §5.76: second reach — `body … color r/g/b` through the same by-value
+   setClassicColor (unit-4 note).
+6. §5.36: convergence note + line drift :3329→:3764 (unit-3 rediscovery).
+7. §5.41: convergence note + line drift (unit-4 rediscovery,
+   coreLink.cpp:65/:70 at HEAD).
+Silent-success family (lint-seed grade, record in grammar not §5 unless
+Vixy upgrades): external_viewer unknown extension; mode without jump;
+domemasters diagnostic overwritten; text empty-string clears screen
+first; set stall_radius_unit ≤1 ignored; landscape author path
+overwritten :2597; camera rotate target required-but-unused.
+Grammar merge riders: per-BRANCH value domains (unit 3); ≥3 boolean
+grammars — flag-grammar lint must be per-key (units 2/3/4);
+inner_script_channel comment model (2026-08-04c); set multi-pair vs
+flag single-pair; W_TRUE live / W_RECORD live; unit-2's four lint-seed
+candidates + unit-3 anchor convention (repo-relative paths, no bare
+basenames) adopted for the merged file.
+
 Unit-2 specific: `evalCommandSet` (:2143-2233) IS the set-family
 semantics — the 43 `families.set_names` act as keys of `set`; record
 per-name value domains/defaults/docs from the in-range code.
