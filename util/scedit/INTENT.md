@@ -177,8 +177,26 @@ notes.*
    semantics for the reserved_variables family (currently UNEXTRACTED).
 6. **TCP client mode** — line protocol + `$LOGON` feed pane;
    spacecrafter rebuild on this laptop is its prerequisite.
-7. **FTXUI shell** — editor + cursor-driven doc panel (C6) + completion
-   (defaults greyed, D31 spec).
+7. ~~**FTXUI shell** — editor + cursor-driven doc panel (C6) + completion
+   (defaults greyed, D31 spec).~~ **DONE 2026-08-04 (journal
+   2026-08-04h; gated; code `0745dc34`). D1 discharged: FTXUI v5.0.0
+   vendored, sha256 `a2991cb2…`, verbatim upstream source lists.
+   Default-greyed ghosts DORMANT BY DATA (see item 11).**
+10. **`Diagnostic` gains a `Span`** [flagged by the shell slice] —
+    sc_check's finding struct carries no column, so no consumer can
+    underline the exact byte; the editor reaches invisible-separator's
+    column from the bytes (display fact, not a rule copy). Small,
+    contract-level, next sc_check touch.
+11. **`default_value` backfill** [flagged by the shell slice] — all 324
+    arg-spec defaults are prose; D31's default-greyed ghost arms per
+    entry when a literal `default_value` lands. 35 candidates reduce to
+    bare tokens by inspection (enumerated in the slice report) — a doc
+    pass writes them as DATA, each source-anchored, never regexed from
+    prose (C2).
+12. **`completable` marker on values[]** [flagged by the shell slice] —
+    values mix literals with prose; the editor's bare-token filter has
+    one known false positive (`xRRGGBB`). Schema marker + validator
+    check at next grammar touch.
 8. **Engine emitter** — the grammar file becomes a build/runtime
    artifact (D5 seams); propose upstream once the contract shape has
    survived slices 1–4.
@@ -198,6 +216,34 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-04h] FTXUI shell gated GREEN — the D31 editor exists.**
+  Code `0745dc34`. Supervisor re-gate: clean build 0 warnings, 8/8
+  gates (5 inherited + editcore 154 checks + md5 round-trip +
+  ui-selftest, all three new ones falsification-tested by the
+  executor), grammar/tokenizer byte-untouched, write surface exact.
+  Architecture: sc_document (byte-exact buffer; CRLF lives in the line
+  TERMINATOR — mid-task correction found by pty drive: End/Enter were
+  interacting with a text-resident `\r`) → sc_editcore (headless
+  interaction: cursor→token through the normalization map, completion
+  whose ghost is BY CONSTRUCTION the bytes Tab inserts, doc bar that
+  labels what its sentence documents, findings recomputed whole-buffer
+  per edit — comment blocks make lines non-local; 2.0 ms on the
+  reference script) → sc_tui (renders, forwards, decides nothing).
+  New reader sc_docindex = second READING of the grammar, not second
+  authority (I2 stated). FTXUI v5.0.0 vendored (110 files, sha
+  recorded, upstream source lists verbatim, PROVENANCE file). Ghost
+  semantics: armed only where inserting a suffix produces the
+  candidate; args_complete:false renders as an OPEN key list. Honest
+  blanks for the 184 undocumented family names. Slice flags →
+  items 10 (Diagnostic Span), 11 (default_value backfill, 35
+  candidates), 12 (completable marker); ISO-8859-1-vs-15 display
+  assumption recorded, undecided. Two scedit-owned UX calls taken in
+  the display-cap precedent, both README-stated (offer filter;
+  selected-candidate ghost). Item 7 struck; D1 discharged.
+  **Remaining open surface: item 4 (stellar grammar — unlocks body/
+  camera args_complete + SS-answers), item 5 (eval), item 6 (TCP,
+  blocked on engine rebuild), item 8 (emitter), items 10-12, doc
+  passes (flags/colors families), S-NP-1, and the SS-1…19 answers.**
 - **[2026-08-04g] Witness mining gated GREEN — the witness answers, and
   it also indicts.** Coverage closes: 477/477 comment lines accounted,
   27/27 flagged gaps visited (8 answered code-consistent → mergeable as
