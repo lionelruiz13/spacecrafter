@@ -27,22 +27,25 @@ the composed new-format files).
 ## Build
 
 Standalone, deliberately not wired into the spacecrafter build (the `util/`
-sibling pattern). C++17, no external dependency: nlohmann/json v3.11.3 is
-vendored as a single header under `third_party/` (the `src/stb_image.h`
-precedent).
+sibling pattern). C++17, no system dependency: everything it needs is vendored
+under `third_party/` (see "Vendoring").
 
     cd util/scedit
     cmake -B build && cmake --build build
-    cd build && ctest --output-on-failure     # 5 gates, see "Verification"
+    cd build && ctest --output-on-failure     # 8 gates, see "Verification"
 
 ## Use
 
     scedit [--grammar FILE] [--list FAMILY]          # default: validate the contract
     scedit [--grammar FILE] [--rules] --check FILE...
+    scedit [--grammar FILE] [--edit] FILE            # the editor
+    scedit [--grammar FILE] --ui-selftest            # render fixed frames, no tty
 
 `--grammar FILE` — the contract to read. Default `grammar/sc-grammar.json`,
-resolved relative to the working directory, so run from `util/scedit/` or pass
-the path.
+resolved relative to the working directory; when that fails, and only when the
+default was not overridden, it is looked for beside the binary as well, so
+`scedit some/show.sts` works from wherever the scripts live. A path given
+explicitly is never second-guessed: if it does not exist, that is an error.
 
 **default action — validate the contract.** Re-derives every family count from
 the data and compares it against `_meta.expected_counts`, checks in-family
@@ -72,6 +75,85 @@ severity — retuning a severity is a data edit, not a code change. Example:
 emit, and why. An unarmed rule is visible rather than silent: a check that
 cannot be grounded in the contract at zero false positives is not armed at all,
 and this is where you see which ones and what they are waiting for.
+
+## The editor
+
+    scedit doc/superscript.sts
+
+An editor whose whole purpose is that *you do not have to know the scripting
+language to change a show*. The line under your caret is explained as you move
+through it, and what can be completed is shown before you press anything.
+
+### Keys
+
+| key | what it does |
+|---|---|
+| arrows, Home, End, PageUp/PageDown | move the caret (columns are BYTES, see below) |
+| any character | insert it; a character the file cannot hold is refused, with a message |
+| Enter | split the line — the new line ending is the one this file already uses |
+| Backspace / Delete | remove the byte before / under the caret; at a line edge, join |
+| **Tab** | insert the grey text; if it is already typed in full, show the next candidate |
+| Shift-Tab | show the previous candidate |
+| Ctrl-S, or F2 | save |
+| Ctrl-Q, Esc, or F10 | quit; with unsaved changes, once to warn and again to discard |
+
+Ctrl-S and Ctrl-Q are the terminal's own flow-control pair, so the editor turns
+flow control off while it runs and puts it back on exit. F2 and F10 do the same
+two things for terminals where that does not take.
+
+### Mouse
+
+Click to put the caret where you clicked. Wheel to scroll — and the view stays
+where you scrolled it: it only chases the caret again when you next press a key.
+
+### The documentation bar
+
+Four lines under the text, driven by where the caret is:
+
+1. **where you are** — `` `set` `star_scale` ``, `` `date` `load` = `current` ``,
+   `command `flag`` — and, in brackets, what would complete here and how many
+   candidates there are;
+2. **the sentence** the contract file holds for exactly that thing, with a note
+   saying what it documents (a command, a key, a value, or "any key of
+   `<command>`" when the file explains the command's key grammar but has no line
+   for this particular name). Where the file has none — `null`, or a family
+   whose documentation pass has not run — the bar says **"no documentation
+   extracted"** in grey and invents nothing. That is constraint C2 on a screen;
+3. **the value domain**: what kind of value the key takes, the values it names
+   (verbatim, prose entries included), the default, and whether it is required;
+4. **the findings on this line**, in full, with their id — or the engine source
+   line the sentence above came from.
+
+### What the grey text means
+
+Grey text at the caret is **exactly what Tab would insert** — never a hint,
+never an example. If several candidates share what you have typed, Tab cycles
+and the grey text follows, so the promise stays true. There is grey text
+wherever a completion exists: a command name, a key valid for this command, a
+name from the family a command draws on (`flag`'s 97 flags, `set`'s 43 settings,
+`color property`'s 46 colours), and an enumerated value — including in an empty
+value slot, where the first candidate is offered.
+
+A key list that scedit knows to be **partial** says so (`body`, `camera`,
+`flyto`: their remaining keys belong to the stellar-system contract, item 4).
+Their known keys are still offered, marked "known ones — there are more", and
+scedit never calls one of their unlisted keys wrong.
+
+### Bytes, not characters
+
+Script files are ISO-8859 and their bytes are significant — `--check`'s
+`invisible-separator` rule exists because 0xA0 in a column changes what the
+engine reads. So the editor never decodes the file: the caret moves over BYTES,
+the buffer holds bytes, and saving writes the bytes back. A file you open and
+save without editing is byte-identical (there is a gate for it); a file you edit
+on one line is byte-identical everywhere else.
+
+For the screen only, one byte becomes one cell: printable ASCII as itself,
+0x80–0xFF decoded as ISO-8859-1, and everything invisible given a visible
+marker — `·` in red for the no-break space 0xA0, a dim `»` for a tab, a dim `?`
+for a control byte. A line ending stays a line ending and is not drawn. Typing a
+character above U+00FF (from a UTF-8 terminal) is refused rather than written,
+because there is no byte for it in this file.
 
 ### Exit codes
 
@@ -143,24 +225,113 @@ and `SessionFile::CommandSurface::forEach*` enumerates flags, values and colours
 at runtime — so this file can become a build artefact the engine emits, and the
 authority chain above collapses into one link.
 
+## How the editor is put together
+
+Three layers, and the middle one is where everything happens:
+
+    src/sc_document.hpp   the buffer: bytes in, the same bytes out
+    src/sc_editcore.hpp   the interaction: cursor -> token, completion,
+                          documentation bar, live findings
+    src/sc_tui.hpp        the terminal: draws the above, forwards events,
+                          decides nothing
+
+`sc_editcore` is headless on purpose. A terminal cannot be asserted on, and this
+can: `tests/editcore_test.cpp` reaches every behaviour the editor has without a
+tty, and `--ui-selftest` then proves those answers actually reach a screen. It
+consumes four contracts through their headers and owns none of them —
+`sc_tokenizer` (the engine's reading of a line, and the raw-column↔token map),
+`sc_grammar` (the structural answers, `argKeysAreExhaustive` among them),
+`sc_docindex` (the prose half of the same contract file), `sc_check` (findings,
+recomputed over the whole buffer after an edit, never over a line alone —
+`comment`/`uncomment` make a line's meaning depend on the lines above it).
+
+## Vendoring
+
+| what | version | archive sha256 | how |
+|---|---|---|---|
+| nlohmann/json | v3.11.3 | prefix `9bea4c8066ef4a1c…`, 919 975 B | single header, `third_party/nlohmann/` |
+| FTXUI | v5.0.0 | `a2991cb222c944aee14397965d9f6b050245da849d8c5da7c72d112de2786b5b` | pruned source tree, `third_party/ftxui/` |
+
+FTXUI's archive is
+`https://github.com/ArthurSonzogni/FTXUI/archive/refs/tags/v5.0.0.tar.gz`
+(236 755 B). What is vendored: `include/` and `src/` byte-for-byte, minus the 42
+`*_test.cpp` / fuzzer files, plus `LICENSE`, `CHANGELOG.md` and upstream's
+README under its own name. What is NOT vendored: `examples/`, `doc/`, `tools/`,
+`cmake/`, `.github/` and upstream's top-level `CMakeLists.txt` — it ends with an
+unconditional `add_subdirectory(examples)`, so it cannot build a tree without
+them. `third_party/ftxui/CMakeLists.txt` is therefore **scedit's**, and its
+source lists are copied verbatim out of upstream's (lines 31–133): explicit
+lists, never a glob, so a file that disappears is a build error rather than a
+silently dropped translation unit.
+
 ## Verification
 
-Five `ctest` gates, all green on a clean build:
+Eight `ctest` gates, all green on a clean build:
 
 | gate | what it measures |
 |---|---|
 | `tokenizer` | 150 constructed lines, one per sharp edge of the parse model, each with its expected tokenization |
 | `parse_oracle` | scedit's reading vs a **verbatim copy of the engine's `parseCommand`**, over exhaustively enumerated short strings, ISO-8859 high-byte lines and every line of the real corpus: 53 058 comparisons |
+| `editcore` | 154 checks over the headless editor: the byte-preserving buffer, the cursor→token map across quoting and the space-after-quote normalisation, every completion context, the documentation bar including its honest blanks, and the live findings |
+| `roundtrip` | `doc/superscript.sts` — 1407 lines, ISO-8859, CRLF — opened in the editor and saved untouched: **same MD5**. Plus one edit that must change exactly the line it was made on |
+| `ui_selftest` | the frames the editor actually DRAWS, rendered off-screen at a fixed size, with a mask proving the ghost text is dim and another proving the look-alike-space marker lands on the column the finding names |
 | `seed_gate` | the contract file validates (counts re-derived from the data, not asserted) — **and every fact in the four `grammar/args/` fragments is still byte-identical in the merged file**, which is what keeps the granular source and the merged contract from drifting apart |
 | `lint_rules` | `tests/lint_cases.sts` — one construct per armed id, proving the rule fires with the right id, severity and shape; plus a section that must stay silent |
 | `corpus_gate` | `--check` over the real corpus produces exactly the recorded findings |
 
-The last two compare against `tests/lint-expected.txt` and
-`tests/corpus-expected.txt`. **Those files are a record, not a silencer**: every
-line in them is dispositioned in `tests/derivation-diff.md` §7 with the engine
+`tests/lint-expected.txt`, `tests/corpus-expected.txt` and
+`tests/ui-selftest-expected.txt` are a **record, not a silencer**: every line in
+the first two is dispositioned in `tests/derivation-diff.md` §7 with the engine
 site named, and a finding that appears without being recorded there fails the
 gate. That is constraint C3 — zero false positives before a rule ships — and it
 is why the expected files are edited deliberately and never regenerated blind.
+The same discipline applies to the rendered frames.
+
+`tests/fixture-grammar.json` is a tiny contract file that exists only to reach
+one code path the real one cannot arm yet (see below). It says so itself, in its
+own `_meta`, and it is not a source of facts about spacecrafter.
+
+## What the editor cannot do yet, and why
+
+Stated rather than hidden — the `--rules` discipline, applied to the editor.
+`DocIndex::dormantFeatures()` reports the first two at runtime.
+
+- **The default is shown, never typed for you.** D31 asks for the default value
+  of an empty value field to be greyed and offered. All **324** argument specs
+  at HEAD state their default as an English SENTENCE (`absent -> 0`, `absent or
+  empty -> the next form is tried`), so there is no literal a machine may type
+  on the author's behalf without reading English and guessing — and guessing is
+  what constraint C2 forbids. The mechanism is written and arms itself from the
+  data: an explicit `default_value` string in a spec becomes the first
+  completion candidate and the ghost on an empty field. Count at HEAD: **0**.
+  35 of the 324 reduce to a bare token by pattern (`absent -> 0` ×29,
+  `-> 1` ×4, `-> no`, `-> 180`) and are the obvious first batch for whoever
+  fills the field — as data, written down, not as a regex over English.
+  Meanwhile an empty value slot with an ENUMERATED domain does complete, from
+  `values` — that half is live.
+- **184 of the 227 family names have no documentation of their own.** `flags`,
+  `color_names`, `obsolete_tokens`, `reserved_variables` and `font_targets` are
+  still the v1 shape (a plain array of names). For those, the bar shows what the
+  command says about its keys in general and labels it as such; it never lets
+  that stand in for a line about the name itself.
+- **A finding marks its line, not its column.** `scedit::Diagnostic`
+  (`src/sc_check.hpp`) carries file/line/severity/message/id and no column, so no
+  consumer of that header can underline a finding at its exact byte. The editor
+  marks the line in the gutter and puts the message on the doc bar; the one
+  column that must land exactly — `invisible-separator`'s — is reached from the
+  bytes instead (`EditCore::lookalikeSpaceColumns`), which is a display fact and
+  not a second copy of the rule. Giving `Diagnostic` a `Span` would close this.
+- **`values` mixes values with prose.** An arg spec's `values` array holds both
+  literal values (`current`, `toggle`) and descriptions of the rest of the
+  domain (`<file name>`, `anything else = off`), and nothing in the schema
+  separates them. scedit offers only entries that are a bare `[A-Za-z0-9_]+`
+  word (166 of the 234 distinct entries at HEAD) and SHOWS all of them. One
+  known false positive survives that rule: `xRRGGBB`, a shape rather than a
+  value. A `completable: true` marker in the schema would end the guessing.
+- **The whole buffer is re-analysed after every keystroke** — 2.0 ms on
+  `doc/superscript.sts` (1407 lines) in a Release build, so it is not worth
+  making incremental yet, but it is linear in file size and will be one day.
+- **No TCP mode**: `§5` item 6, blocked on a spacecrafter rebuild.
 
 `tests/derivation-diff.md` is the audit that makes engine fidelity (C1) a
 measurement instead of a claim: `parseCommand` line by line against the scedit
@@ -171,10 +342,13 @@ a decision.
 ## Status
 
 Landed: the contract file (schema v2, per-key argument data merged), the
-tokenizer library (`src/sc_tokenizer.hpp` — also the TUI's cursor→token engine),
-`--check` with its lint rules, and the five gates above.
+tokenizer library (`src/sc_tokenizer.hpp` — also the editor's cursor→token
+engine), `--check` with its lint rules, the headless editor core
+(`src/sc_editcore.hpp`) with its byte-preserving buffer, completion and
+documentation bar, the FTXUI front end (`src/sc_tui.hpp`), and the eight gates
+above.
 
 Not yet: the stellar-system-file grammar (second contract file), `$`-variable
-semantics for the `reserved_variables` family, the TCP client mode, and the
-FTXUI front end. Roadmap, decisions and the open-question ledger:
-`claude/util/scedit/INTENT.md` (harness repo).
+semantics for the `reserved_variables` family, and the TCP client mode. Roadmap,
+decisions and the open-question ledger: `claude/util/scedit/INTENT.md` (harness
+repo).

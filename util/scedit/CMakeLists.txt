@@ -14,13 +14,23 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(scedit_core STATIC
 	src/sc_tokenizer.cpp
 	src/sc_grammar.cpp
-	src/sc_check.cpp)
+	src/sc_check.cpp
+	src/sc_document.cpp
+	src/sc_docindex.cpp
+	src/sc_editcore.cpp)
 target_include_directories(scedit_core PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/src
 	${CMAKE_CURRENT_SOURCE_DIR}/third_party)
 
+# The terminal layer, kept in its own target so the headless core never links
+# a UI library and cannot start depending on one (decision D1: FTXUI; vendoring
+# record in README.md § Vendoring).
+add_subdirectory(third_party/ftxui)
+add_library(scedit_tui STATIC src/sc_tui.cpp)
+target_link_libraries(scedit_tui PUBLIC scedit_core PRIVATE ftxui::component)
+
 add_executable(scedit src/main.cpp)
-target_link_libraries(scedit PRIVATE scedit_core)
+target_link_libraries(scedit PRIVATE scedit_core scedit_tui)
 
 enable_testing()
 
@@ -42,6 +52,37 @@ add_test(NAME parse_oracle COMMAND scedit_parse_oracle_test
 	${CMAKE_CURRENT_SOURCE_DIR}/../../claude/harness/fix-validation.sts
 	${CMAKE_CURRENT_SOURCE_DIR}/../../claude/harness/b10_cmd_script.sts
 	${CMAKE_CURRENT_SOURCE_DIR}/../../claude/harness/b16_reload_check.sts)
+
+# The headless interaction core: buffer, cursor->token, completion, doc bar,
+# live findings — every editor behaviour, reached without a terminal. The
+# fixture contract exists for the one path the real one cannot arm yet (D31's
+# machine-readable default); tests/fixture-grammar.json says so itself.
+add_executable(scedit_editcore_test tests/editcore_test.cpp)
+target_link_libraries(scedit_editcore_test PRIVATE scedit_core)
+add_test(NAME editcore COMMAND scedit_editcore_test
+	${CMAKE_CURRENT_SOURCE_DIR}/grammar/sc-grammar.json
+	${CMAKE_CURRENT_SOURCE_DIR}/tests/fixture-grammar.json)
+
+# Round-trip gate: open a real ISO-8859, CRLF, 1407-line script in the editor,
+# save it untouched, and compare MD5s — plus one edit that must change exactly
+# the line it was made on and nothing else.
+add_executable(scedit_roundtrip_test tests/roundtrip_test.cpp)
+target_link_libraries(scedit_roundtrip_test PRIVATE scedit_core)
+add_test(NAME roundtrip
+	COMMAND ${CMAKE_COMMAND}
+		-DWORKER=$<TARGET_FILE:scedit_roundtrip_test>
+		-DGRAMMAR=${CMAKE_CURRENT_SOURCE_DIR}/grammar/sc-grammar.json
+		-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/../../doc/superscript.sts
+		-DTMPDIR=${CMAKE_CURRENT_BINARY_DIR}/roundtrip
+		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/roundtrip_gate.cmake)
+
+# UI gate: the frames the editor actually draws, rendered off-screen.
+add_test(NAME ui_selftest
+	COMMAND ${CMAKE_COMMAND}
+		-DSCEDIT=$<TARGET_FILE:scedit>
+		-DSRC=${CMAKE_CURRENT_SOURCE_DIR}
+		-DEXPECTED=${CMAKE_CURRENT_SOURCE_DIR}/tests/ui-selftest-expected.txt
+		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/ui_gate.cmake)
 
 # Seed gate: the contract file still validates (unchanged behaviour).
 add_test(NAME seed_gate

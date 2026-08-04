@@ -15,6 +15,11 @@
  * exactly the way the engine reads them (src/sc_tokenizer.hpp), reported
  * gcc-shaped per D6 (src/sc_check.hpp). Exit 0 clean / 1 findings / 2 usage or
  * I/O error.
+ *
+ * Slice 3 (2026-08-04): the editor — `scedit FILE` / `scedit --edit FILE`.
+ * The interaction lives in src/sc_editcore.hpp (headless, tested without a
+ * tty); src/sc_tui.hpp only draws it. `--ui-selftest` renders fixed frames
+ * off-screen so a gate can assert what actually reaches the screen.
  */
 
 #include <cstdio>
@@ -22,10 +27,12 @@
 #include <string>
 #include <set>
 #include <vector>
+#include <unistd.h>
 #include <nlohmann/json.hpp>
 
 #include "sc_check.hpp"
 #include "sc_grammar.hpp"
+#include "sc_tui.hpp"
 
 using json = nlohmann::json;
 
@@ -280,8 +287,39 @@ void usage() {
 	std::fprintf(stderr,
 	             "usage: scedit [--grammar <file>] [--list commands|flags|set_names|color_names|obsolete_tokens|reserved_variables|font_targets]\n"
 	             "       scedit [--grammar <file>] [--rules] --check FILE...\n"
+	             "       scedit [--grammar <file>] [--edit] FILE\n"
+	             "       scedit [--grammar <file>] --ui-selftest\n"
 	             "default action: validate the grammar contract\n"
 	             "exit: 0 clean, 1 findings, 2 usage or I/O error\n");
+}
+
+//! The contract file sits next to the tool in the source tree, and the editor
+//! is launched from wherever the author's scripts are. So: if the DEFAULT path
+//! does not resolve against the working directory, look beside the binary
+//! before giving up. An explicit `--grammar` is never second-guessed — a path
+//! the user named and that does not exist is an error, not a hint.
+std::string resolveDefaultGrammar(const std::string &fallbackRelative) {
+	std::ifstream in(fallbackRelative);
+	if (in)
+		return fallbackRelative;
+	char buf[4096];
+	const ssize_t n = ::readlink("/proc/self/exe", buf, sizeof(buf) - 1);
+	if (n <= 0)
+		return fallbackRelative;
+	buf[n] = 0;
+	std::string exe(buf);
+	const std::size_t slash = exe.find_last_of('/');
+	if (slash == std::string::npos)
+		return fallbackRelative;
+	const std::string dir = exe.substr(0, slash);
+	for (const std::string &cand : {dir + "/" + fallbackRelative,
+	                                dir + "/../" + fallbackRelative,
+	                                dir + "/../../" + fallbackRelative}) {
+		std::ifstream t(cand);
+		if (t)
+			return cand;
+	}
+	return fallbackRelative;
 }
 
 //! `--check`: report, for every line, where the engine's reading will differ
@@ -319,21 +357,31 @@ int check(const std::string &grammarPath, const std::vector<std::string> &files,
 
 int main(int argc, char **argv) {
 	std::string grammarPath = "grammar/sc-grammar.json";
+	bool grammarGiven = false;
 	std::string list;
+	std::string editFile;
 	std::vector<std::string> checkFiles;
-	bool checkMode = false, showRules = false;
+	bool checkMode = false, showRules = false, editMode = false, uiSelfTest = false;
 	for (int i = 1; i < argc; ++i) {
 		std::string a = argv[i];
 		if (checkMode) { checkFiles.push_back(a); continue; }
-		if (a == "--grammar" && i + 1 < argc) grammarPath = argv[++i];
+		if (a == "--grammar" && i + 1 < argc) { grammarPath = argv[++i]; grammarGiven = true; }
 		else if (a == "--list" && i + 1 < argc) list = argv[++i];
 		else if (a == "--rules") showRules = true;
 		else if (a == "--check") checkMode = true;
+		else if (a == "--ui-selftest") uiSelfTest = true;
+		else if (a == "--edit" && i + 1 < argc) { editMode = true; editFile = argv[++i]; }
+		else if (!a.empty() && a[0] != '-' && editFile.empty()) { editMode = true; editFile = a; }
 		else {
 			usage();
 			return 2;
 		}
 	}
+	if (!grammarGiven)
+		grammarPath = resolveDefaultGrammar(grammarPath);
+
+	if (uiSelfTest) return scedit::uiSelfTest(grammarPath);
+	if (editMode) return scedit::runEditor(grammarPath, editFile);
 
 	if (checkMode) {
 		if (checkFiles.empty()) { usage(); return 2; }

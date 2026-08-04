@@ -1,0 +1,6 @@
+FTXUI v5.0.0, vendored (pruned). Pin, archive sha256 and the pruning manifest
+are recorded once, in util/scedit/README.md, section "Vendoring". This file is a
+pointer, not a copy (invariant I2).
+
+CMakeLists.txt in this directory is scedit's, not upstream's; every other file
+under include/ and src/ is upstream's, byte-for-byte.

@@ -1,0 +1,136 @@
+### ghost-command
+| scedit │ line 1, byte 2 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| E     1 │ zoom
+| 
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| command `zo`   [command: 1, all of them]
+| no documentation extracted — the contract file records none for this
+| 
+| error: unknown command 'zo'; did you mean 'dso'? [-Wunknown-command]
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd----dd
+mark m
+### ghost-empty-value
+| scedit │ line 1, byte 11 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| E     1 │ flag stars toggle
+| 
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| `flag` `stars` = <no value yet>   [value of `stars`: 1]
+| One pair: the KEY is the name of the feature, the VALUE says on, off or toggle.   (documents: any
+| value: boolean(flag grammar)   one of: toggle, any on-form accepted by Utility::isTrue (src/tools/
+| error: key 'stars' has no value: the engine drops it silently and runs the rest of the line withou
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd-------------dddddd
+mark m
+### ghost-enumerated-value
+| scedit │ line 1, byte 11 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+|       1 │ date load current
+| 
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| `date` `load` = `c`   [value of `load`: 1]
+| Take the date from the computer or from the program's own setting.   (documents: key)
+| value: enumerated   one of: current, preset, keep_time   default: absent or empty -> the next form
+| engine: app_command_interface.cpp:3890-3916 (W_LOAD="load", W_CURRENT="current", W_PRESET="preset"
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd-------------dddddd
+mark 
+### doc-set-name
+| scedit │ line 1, byte 10 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+|       1 │ set star_scale 2
+| 
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| `set` `star_scale`
+| How big stars are drawn - this rescales the planets by the same number.   (documents: key)
+| value: number(evalDouble) - $-variable substitution possible   default: not written -> the setting
+| engine: app_command_interface.cpp:2192-2195 -> src/coreModule/coreLink.hpp:207-208 (starSetScale)
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd
+mark 
+### open-key-list
+| scedit │ line 1, byte 7 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| E     1 │ body action
+| 
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| `body` `ac`   [key of `body`: 1, known ones — there are more]
+| no documentation extracted — the contract file records none for this
+| 
+| error: key 'ac' has no value: the engine drops it silently and runs the rest of the line without i
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd---------dddd
+mark m
+### finding-invisible-separator
+| scedit │ line 1, byte 0 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| E     1 │ body name Earth albedo·1
+| 
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| command `body`
+| Act on the objects of a star system: add one, remove one, hide it, recolour it, or change how it i
+| 
+| error: column 23 holds a no-break space, the ISO-8859 spelling (byte 0xA0), not a space: the engin
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd
+mark m-------------------------------m
+### no-doc-extracted
+| scedit │ line 1, byte 10 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+|       1 │ suntrace sun Earth
+| 
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| `suntrace` `sun`
+| no documentation extracted — the contract file records none for this
+| value: string (a body name)   default: absent -> the empty string is passed as the body to trace,
+| engine: app_command_interface.cpp:1633 -> src/coreModule/coreLink.cpp:1130-1135 -> src/bodyModule/
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd
+mark 
+### iso-8859-and-crlf
+| scedit │ line 2, byte 0 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+|       1 │ flag stars on
+| E     2 │ body name Café»x
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| command `body`
+| Act on the objects of a star system: add one, remove one, hide it, recolour it, or change how it i
+| 
+| error: key 'x' has no value: the engine drops it silently and runs the rest of the line without it
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd----------------d
+mark m

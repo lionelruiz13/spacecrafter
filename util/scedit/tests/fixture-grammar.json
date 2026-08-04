@@ -1,0 +1,61 @@
+{
+	"_meta": {
+		"what_this_is": "A tiny contract file that exists ONLY to exercise scedit code paths the real contract cannot reach yet. It is NOT a source of facts about spacecrafter and must never be read as one: every name in it is invented for the test and says so.",
+		"why_it_exists": "D31 asks for the DEFAULT value of an empty value field to be shown greyed and offered to completion. At HEAD every one of the 324 argument specs in grammar/sc-grammar.json states its default as an English SENTENCE ('absent -> 0', 'absent or empty -> the next form is tried'), so there is no literal a machine may type on the author's behalf. scedit therefore arms that feature from an explicit `default_value` field, of which the real contract has none — and this fixture has one, so the mechanism is tested rather than merely written.",
+		"see": "util/scedit/src/sc_docindex.hpp, section 'DEFAULTS ARE PROSE TODAY'"
+	},
+	"parse_model": {
+		"comments": {
+			"script_layer": "fixture: a line is dropped iff its FIRST byte is '#'"
+		}
+	},
+	"families": {
+		"commands": {
+			"fixture": {
+				"doc": "A command that exists only in this fixture.",
+				"registration": "tests/fixture-grammar.json",
+				"args_complete": true,
+				"args": {
+					"mode": {
+						"doc": "Which fixture mode to use.",
+						"value": "enumerated",
+						"values": ["alpha", "beta", "<anything else is refused>"],
+						"value_docs": {
+							"alpha": "the first fixture mode",
+							"beta": "the second fixture mode"
+						},
+						"default": "absent or empty -> beta",
+						"default_value": "beta",
+						"required": false,
+						"source": "tests/fixture-grammar.json"
+					},
+					"free": {
+						"doc": null,
+						"value": "string",
+						"default": "absent -> the empty string",
+						"required": false,
+						"source": "tests/fixture-grammar.json"
+					}
+				}
+			},
+			"fixture_open": {
+				"doc": "A fixture command whose key list is known to be partial.",
+				"registration": "tests/fixture-grammar.json",
+				"args_complete": false,
+				"args": {
+					"known": {
+						"doc": "The one key this fixture entry lists.",
+						"value": "string",
+						"default": "absent -> nothing",
+						"required": false,
+						"source": "tests/fixture-grammar.json"
+					}
+				}
+			}
+		},
+		"obsolete_tokens": {
+			"names": []
+		}
+	},
+	"lint_seeds": []
+}
