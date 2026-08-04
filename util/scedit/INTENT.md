@@ -137,15 +137,21 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
 
 ## 5. Open work (ordered)
 
-1. **Per-handler extraction sweep** — `app_command_interface.cpp` (4747
+*Items 1–3 DONE (journal 2026-08-04b/c/e; code `73cc7b80`): sweep
+merged (324 arg specs, schema v2 partial), tokenizer + `--check` live
+(oracle 53 058/0, C3 armed and holding at zero false positives), the
+second `'#'` site resolved. Struck bodies kept below for their scoping
+notes.*
+
+1. ~~**Per-handler extraction sweep** — `app_command_interface.cpp` (4747
    lines): per command, the arg keys read, value domains, defaults,
    REQUIRED/optional structure, and the C6 doc line for each; reconcile
    the `args[KEY]` occurrence count at HEAD against the census's dated
    366; assign the `argument_token_vocabulary` roles (keys vs enumerated
    values); confirm/retire the census's never-referenced `W_*` set.
-   Dispatchable in per-handler units with count gates.
-2. **Tokenizer + `--check`** (C1-faithful; GNU-style output per D6);
-   then arm C3's corpus gate harness.
+   Dispatchable in per-handler units with count gates.~~
+2. ~~**Tokenizer + `--check`** (C1-faithful; GNU-style output per D6);
+   then arm C3's corpus gate harness.~~
 3. ~~**`script_mgr.cpp:94`** second `'#'` site~~ **RESOLVED 2026-08-04
    (journal 2026-08-04c): `ScriptMgr::addScriptFirst` — a SECOND,
    divergent line-classification model (whitespace-trim first, so an
@@ -180,6 +186,34 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
 
 ## 6. Journal (append-only)
 
+- **[2026-08-04e] Merge gated GREEN — the contract is filled and armed;
+  Vixy elevates superscript.sts.** Merge (code `73cc7b80`): 324 per-key
+  arg specs across 62 command entries; fragments folded FIELD-IDENTICAL
+  under a falsification-tested equality gate that stays in the validator
+  (I2 closure for the two-copies exposure); set's 43 facts single-sourced
+  in `families.set_names` (I2, ratified); `pretable` explicit data (I6,
+  ratified — presence-inference would have promoted all 62 commands);
+  `args_complete:false` on body/camera/flyto with lint suppression
+  demonstrated; 8 parse_model riders anchored; `invisible-separator`
+  minted (veto open) with co-firing policy documented; did-you-mean
+  display cap max(2, len/3) — oracle untouched, 53 058/0 re-run;
+  **census −27 DISSOLVED: unit mismatch** (census counted tokens = 366,
+  sweep counted lines = 336@census-era; like-for-like drift +3,
+  attributed per-commit, residual zero — supervisor's own dispatch
+  framing had propagated the confusion). Supervisor re-gate: clean
+  build 5/5, probes (body-silent / flyto-alias-only / :94 names 0xA0 /
+  :306 keeps close suggestion), tokenizer+oracle byte-untouched,
+  fragment diffs = exactly the `_merged` marker, census token count
+  verified at `0453f75e`. Arg-armed corpus: six MORE dead superscript
+  lines (all dispositioned TRUE) → §5.80 extended; sharpest: `wait
+  action reset_timer` does not wait and reports failure. Residual gaps,
+  stated: `font`'s family half unarmed (FontFactory unread); five
+  families still v1 arrays awaiting their doc passes; `body nmae Earth`
+  silent BY DESIGN until item 4's grammar lands (args_complete cost).
+  Items 1–3 struck. Vixy [stated, this session]: superscript.sts =
+  years of documentation + the ONLY functional test → C2 amended
+  (usage-witness tier), item 9 queued (witness mining). NEXT: FTXUI
+  shell (item 7) ∥ witness mining (item 9) — disjoint surfaces.
 - **[2026-08-04d] All four units + tokenizer gated GREEN; upstream batch
   executed; merge dispatched.** Units 2/3/4 landed and were independently
   re-gated (counts re-derived, sharp claims verified at source — full
