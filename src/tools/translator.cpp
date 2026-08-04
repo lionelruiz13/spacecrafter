@@ -140,7 +140,16 @@ std::string Translator::getAvailableLanguagesCodes(const std::string& localeDir)
 		output += str;
 		output.push_back('\n');
 	}
-	output.pop_back(); // Remove the '\n' at the end of the list
+	// An existing-but-empty locale dir reaches here with zero entries: the
+	// directory_iterator succeeds (ec unset, so the guard above sleeps) and
+	// pop_back() on the empty string is UB — corrupts the length field, and
+	// the CONSUMER detonates (segv in addItemList's frame on a debug build,
+	// bad_alloc from the istringstream copy at -O2). Symptom lands two calls
+	// after the last log line (ui->init's asterism error), which is why the
+	// log pointed elsewhere. Empty list degrades clean: addItemList("") adds
+	// zero items; translateUTF8 already falls back to identity per contract.
+	if (!output.empty())
+		output.pop_back(); // Remove the '\n' at the end of the list
 	return output;
 }
 
