@@ -1,0 +1,87 @@
+# scedit --check fixture: one construct per armed lint id.
+# NOT a runnable script - every non-comment line here is deliberately wrong in
+# exactly one way (except where the comment says otherwise), so the expected
+# output in tests/lint-expected.txt is a per-rule proof that the rule fires,
+# with the right id, severity and D6 shape.
+
+# --- unknown-command: not in m_commands, engine logs a nearest neighbour
+zomo action now
+
+# --- deprecated: an obsolete token used as a command name
+movetocity name Paris country France
+
+# --- orphaned-flag: spelled in the engine header, never registered
+flag sky_draw on
+
+# --- deprecated: an obsolete token used as a flag name
+flag point_star on
+
+# --- unknown-parameter: a flag name that is in no family
+flag starz on
+
+# --- silent-off-value: not an on-form, off-form or 'toggle' -> silently OFF
+flag stars yes
+
+# --- silent-off-value again: W_TOGGLE is compared case-SENSITIVELY
+flag stars TOGGLE
+
+# --- single-pair-only: only the alphabetically first pair is applied
+flag stars on atmosphere on
+
+# --- dangling-key: odd token count, the trailing key is dropped
+body name x action
+
+# --- duplicate-key: std::map keeps the last value
+body halo true halo false
+
+# --- unsupported-quoting: single quotes do not group
+text string 'hello world' x
+
+# --- unsupported-quoting: there is no backslash escape
+text string "a\"b"
+
+# --- alias-respelled: recording writes this back as 'camera'
+flyto action move_to
+
+# --- inert-command: parses, reports success, does nothing
+set mode InGalaxy
+
+# --- unknown-parameter: a set name that is in no family
+set stall_radius_unitt 5
+
+# --- unknown-parameter: for 'color' the family name is the VALUE of 'property'
+color property constellation_liness value 1,0,0
+
+# --- indented comment: reaches the parser as an unknown command
+  # this line is executed, not skipped
+
+# === everything below must produce NO finding =========================
+
+# a well-formed line of each shape the rules touch
+flag stars on
+flag stars toggle
+flag stars off
+set home_planet Mars
+color property constellation_lines r 1 g 0 b 0
+font target planets filename Gloria.ttf size 14
+body name "ALSAT 1" parent Earth radius 1
+text name info string "It's your home" altitude 10 align center
+struct if a equal b
+struct loop 2
+struct loop end
+camera action move_to
+
+# a commented-out block: the engine never runs these, so neither do we
+comment
+zomo action now
+flag sky_draw on
+  # indented inside a comment block
+uncomment
+
+# the same block through the 'struct comment' spelling, entered twice
+struct comment on
+zomo action now
+struct comment off
+struct comment TRUE
+zomo action now
+struct comment off

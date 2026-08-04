@@ -10,13 +10,22 @@
  * count from the data and compares against _meta.expected_counts (guards
  * accidental edits), and checks in-family uniqueness. Engine-vs-file
  * validation is a separate concern (future emitter / extraction passes).
+ *
+ * Slice 2 (2026-08-04): `--check FILE...` — static analysis of scripts, read
+ * exactly the way the engine reads them (src/sc_tokenizer.hpp), reported
+ * gcc-shaped per D6 (src/sc_check.hpp). Exit 0 clean / 1 findings / 2 usage or
+ * I/O error.
  */
 
 #include <cstdio>
 #include <fstream>
 #include <string>
 #include <set>
+#include <vector>
 #include <nlohmann/json.hpp>
+
+#include "sc_check.hpp"
+#include "sc_grammar.hpp"
 
 using json = nlohmann::json;
 
@@ -97,22 +106,70 @@ void listFamily(const json &g, const std::string &name) {
 		std::printf("%s\n", n.get<std::string>().c_str());
 }
 
+void usage() {
+	std::fprintf(stderr,
+	             "usage: scedit [--grammar <file>] [--list commands|flags|set_names|color_names|obsolete_tokens|reserved_variables|font_targets]\n"
+	             "       scedit [--grammar <file>] [--rules] --check FILE...\n"
+	             "default action: validate the grammar contract\n"
+	             "exit: 0 clean, 1 findings, 2 usage or I/O error\n");
+}
+
+//! `--check`: report, for every line, where the engine's reading will differ
+//! from what the author plainly meant. Diagnostics go to stdout (they are the
+//! product); tool failures go to stderr.
+int check(const std::string &grammarPath, const std::vector<std::string> &files, bool showRules) {
+	scedit::Grammar g;
+	std::string err;
+	if (!g.load(grammarPath, err)) {
+		std::fprintf(stderr, "scedit: %s\n", err.c_str());
+		return 2;
+	}
+	if (showRules) {
+		for (const auto &u : scedit::unarmedRules(g))
+			std::printf("unarmed: %s: %s\n", u.id.c_str(), u.reason.c_str());
+	}
+	int findings = 0, ioErrors = 0;
+	for (const auto &f : files) {
+		std::string ioErr;
+		auto diags = scedit::checkFile(g, f, ioErr);
+		if (!ioErr.empty()) {
+			std::fprintf(stderr, "scedit: %s\n", ioErr.c_str());
+			++ioErrors;
+			continue;
+		}
+		for (const auto &d : diags)
+			std::printf("%s\n", d.format().c_str());
+		findings += (int)diags.size();
+	}
+	if (ioErrors) return 2;
+	return findings ? 1 : 0;
+}
+
 } // namespace
 
 int main(int argc, char **argv) {
 	std::string grammarPath = "grammar/sc-grammar.json";
 	std::string list;
+	std::vector<std::string> checkFiles;
+	bool checkMode = false, showRules = false;
 	for (int i = 1; i < argc; ++i) {
 		std::string a = argv[i];
+		if (checkMode) { checkFiles.push_back(a); continue; }
 		if (a == "--grammar" && i + 1 < argc) grammarPath = argv[++i];
 		else if (a == "--list" && i + 1 < argc) list = argv[++i];
+		else if (a == "--rules") showRules = true;
+		else if (a == "--check") checkMode = true;
 		else {
-			std::fprintf(stderr,
-			             "usage: scedit [--grammar <file>] [--list commands|flags|set_names|color_names|obsolete_tokens|reserved_variables|font_targets]\n"
-			             "default action: validate the grammar contract\n");
+			usage();
 			return 2;
 		}
 	}
+
+	if (checkMode) {
+		if (checkFiles.empty()) { usage(); return 2; }
+		return check(grammarPath, checkFiles, showRules);
+	}
+	if (showRules) { usage(); return 2; }
 
 	std::ifstream in(grammarPath);
 	if (!in) {

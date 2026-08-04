@@ -1,0 +1,251 @@
+/*
+ * scedit — sc_tokenizer.hpp
+ *
+ * WHAT THIS IS FOR
+ * ================
+ * One line of a spacecrafter script, read EXACTLY the way the engine reads it,
+ * with every token still pointing back at the bytes the author typed.
+ *
+ * Two consumers, one answer:
+ *   - `--check` needs "what will the engine do with this line?";
+ *   - the TUI needs "which token is under the cursor at column N?" and
+ *     "where do I draw the ghost-text for a completion?".
+ * Both are served here, so neither can drift from the engine's reading.
+ *
+ * ENGINE FIDELITY (constraint C1, scedit/INTENT.md §2)
+ * ====================================================
+ * `tokenizeLine` is a derivation of AppCommandInterface::parseCommand
+ * (src/interfaceModule/app_command_interface.cpp:124-176) and
+ * `classifyLine` of the script-layer comment rule (src/scriptModule/script.cpp:114).
+ * The clause-by-clause mapping is `util/scedit/tests/derivation-diff.md`; the
+ * differential corpus that pins it is `util/scedit/tests/tokenizer_test.cpp`.
+ * If this header and the engine ever disagree, the engine is right and this is
+ * a scedit defect — never the other way round.
+ *
+ * The sharp edges this reproduces on purpose (all engine behaviour, not choices):
+ *   - a trailing KEY with no VALUE is silently DROPPED (see Line::dangling);
+ *   - a repeated key keeps the LAST value, and handlers see keys in
+ *     ALPHABETICAL order, not line order (see Line::args);
+ *   - `"` is the only grouping character; `'` and `\` are ordinary bytes;
+ *   - an unclosed `"` runs to end of line without error (Token::quote_closed);
+ *   - the ' " ' -> ' "' normalisation erases the byte after such a quote
+ *     BEFORE tokenizing (see "NORMALISATION AND SPANS" below);
+ *   - the command token and every KEY are lowercased (ASCII only, C locale);
+ *     VALUES keep their case.
+ *
+ * NORMALISATION AND SPANS  (the part the TUI depends on)
+ * ======================================================
+ * The engine does not tokenize the line you typed. It first deletes bytes from
+ * it (leading spaces/tabs, then the byte after every ' " '), and tokenizes the
+ * RESULT. So a naive column count is wrong exactly where quoting is involved.
+ *
+ * This library therefore keeps both strings and the map between them:
+ *   raw          — the author's bytes, verbatim (what the editor buffer holds);
+ *   normalized   — the string the engine actually tokenizes;
+ *   erased       — raw offsets of the bytes normalisation deleted (ascending);
+ *   rawOfNorm[i] — raw offset of normalized[i]  (strictly increasing).
+ * `Span` is ALWAYS in RAW coordinates: a half-open [begin,end) byte range of
+ * `raw`, so it can be handed straight to a renderer. A span may cover erased
+ * bytes (they sit inside the run the engine consumed); `Token::text` is what
+ * the engine ends up with, `Line::rawText(span)` is what the author sees.
+ * `tokenAtRawColumn` is the cursor->token direction; `Token::span` is the
+ * token->cursor direction. Both are exact, including quoted multi-word values.
+ *
+ * OWNERSHIP
+ * =========
+ * Everything is by value. A `Line` owns its strings and its tokens; the
+ * `Token*` returned by `tokenAtRawColumn` points into that `Line` and dies
+ * with it (and with any reassignment of it). No global state, no allocation
+ * you must free, reentrant, no I/O.
+ */
+
+#ifndef SCEDIT_SC_TOKENIZER_HPP
+#define SCEDIT_SC_TOKENIZER_HPP
+
+#include <cstddef>
+#include <map>
+#include <string>
+#include <vector>
+
+namespace scedit {
+
+//! Half-open byte range [begin, end) into the RAW line.
+struct Span {
+	std::size_t begin = 0;
+	std::size_t end = 0;
+
+	std::size_t size() const { return end - begin; }
+	bool empty() const { return end <= begin; }
+	//! Cursor semantics: a caret sitting ON the last byte is inside; a caret
+	//! one past the token is not (use `touches` for completion anchoring).
+	bool contains(std::size_t off) const { return off >= begin && off < end; }
+	//! Cursor semantics for completion: the caret just after the token counts.
+	bool touches(std::size_t off) const { return off >= begin && off <= end; }
+	bool operator==(const Span &o) const { return begin == o.begin && end == o.end; }
+};
+
+//! What the engine does with this token.
+enum class TokenRole {
+	Command,      //!< first whitespace-separated token; lowercased; looked up in m_commands
+	Key,          //!< key half of a key/value pair; lowercased; map key
+	Value,        //!< value half; case preserved; quote processing applied
+	DanglingKey   //!< a trailing key whose value never arrived — the engine DROPS it
+};
+
+struct Token {
+	TokenRole role = TokenRole::Command;
+
+	//! What the engine ends up holding for this token:
+	//!  - Command/Key: the raw bytes, ASCII-lowercased;
+	//!  - Value: quote processing applied (outer quotes stripped, a quoted run
+	//!    joined across spaces), case preserved;
+	//!  - DanglingKey: the raw bytes, ASCII-lowercased — recorded for
+	//!    diagnostics even though the engine keeps nothing.
+	std::string text;
+
+	//! RAW byte range this token consumed, quotes included. For a quoted
+	//! multi-word value it spans from the opening `"` through the closing `"`
+	//! (or to end of line when the quote is never closed).
+	Span span;
+
+	//! 0-based index of the key/value pair this token belongs to, in LINE
+	//! order. -1 for the command token. A Key and its Value share the index;
+	//! a DanglingKey gets the index it would have had.
+	int pair = -1;
+
+	//! The value opened with `"` (Value tokens only).
+	bool quoted = false;
+	//! A closing `"` was found before end of line (meaningful when `quoted`).
+	//! False means the engine swallowed the rest of the line into this value —
+	//! not an error engine-side, but the TUI should show where the value ends.
+	bool quote_closed = false;
+};
+
+//! What the SCRIPT layer does with the line, before the parser ever sees it.
+//! Rule: `line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n'`
+//! (script.cpp:114). Note what this does NOT say: an INDENTED '#' is not a
+//! comment — the line is handed to the parser and becomes an unknown command.
+enum class LineKind {
+	Comment,   //!< first byte is '#'  — dropped by the script layer
+	Blank,     //!< empty, or first byte is NUL / CR / LF — dropped
+	Parsed     //!< handed to parseCommand (may still parse to nothing)
+};
+
+struct Line {
+	LineKind kind = LineKind::Blank;
+
+	std::string raw;          //!< the author's bytes, verbatim (no newline)
+	std::string normalized;   //!< the string parseCommand actually tokenizes
+	std::vector<std::size_t> rawOfNorm; //!< rawOfNorm[i] = raw offset of normalized[i]
+	std::vector<std::size_t> erased;    //!< raw offsets deleted by normalisation, ascending
+
+	//! Tokens in LINE order: command first (when present), then key/value.
+	std::vector<Token> tokens;
+
+	//! Lowercased command; empty when the line parses to no command at all
+	//! (whitespace-only Parsed line — the engine returns 0 and does nothing).
+	std::string command;
+	bool has_command = false;
+
+	//! The engine's `stringHash_t args`: std::map, so LAST value wins on a
+	//! repeated key and iteration is ALPHABETICAL. `args.begin()` is the pair
+	//! the single-pair commands (flag/define/add/sub/multiply/divide/modulo/
+	//! tangent/trunc/sinus) actually apply.
+	std::map<std::string, std::string> args;
+
+	//! Key/value pairs in LINE order, as token indices into `tokens`.
+	struct Pair { std::size_t key = 0, value = 0; };
+	std::vector<Pair> pairs;
+
+	//! A trailing key the engine dropped. `dangling_index` indexes `tokens`.
+	bool has_dangling = false;
+	std::size_t dangling_index = 0;
+
+	//! Some value on this line opened a `"` that was never closed.
+	bool has_unclosed_quote = false;
+
+	// --- raw <-> parsed mapping -------------------------------------------
+
+	//! Token under a raw byte offset (cursor position), or nullptr.
+	const Token *tokenAtRawColumn(std::size_t raw_off) const;
+	//! Token the caret is on OR immediately after — the anchor a completion
+	//! should extend. nullptr when the caret is in whitespace between tokens.
+	const Token *tokenTouchingRawColumn(std::size_t raw_off) const;
+
+	//! raw offset -> normalized offset. false when that raw byte was erased by
+	//! normalisation (it exists for the author, not for the engine).
+	bool rawToNormalized(std::size_t raw_off, std::size_t &norm_off) const;
+	//! normalized offset -> raw offset. Precondition: norm_off <= normalized.size().
+	std::size_t normalizedToRaw(std::size_t norm_off) const;
+
+	//! The author's bytes under a span.
+	std::string rawText(const Span &s) const;
+};
+
+//! Classify a line the way the script layer does (script.cpp:114).
+LineKind classifyLine(const std::string &raw);
+
+//! Read one line exactly as the engine reads it. `raw` must NOT contain the
+//! line terminator (see splitScriptLines). Lines the script layer drops come
+//! back with their `kind` and `raw` set and no tokens: the engine never parses
+//! them, and neither do we.
+Line tokenizeLine(const std::string &raw);
+
+//! Split a whole script file into lines the way Script::loadInternal's
+//! std::getline does: on '\n' only. A '\r' from a CRLF file STAYS at the end of
+//! the line — that is why the script layer tests `line[0] != '\r'`, and why a
+//! trailing '\r' is harmless inside a command line ('\r' is whitespace to the
+//! parser). A final '\n' does not produce a trailing empty line.
+std::vector<std::string> splitScriptLines(const std::string &file_bytes);
+
+// --- the small engine predicates callers keep needing ---------------------
+
+//! ASCII lowercase, C locale — `transform(..., ::tolower)` with LC_CTYPE="C".
+//! Bytes >= 0x80 are left alone (the engine only calls setlocale(LC_TIME,...),
+//! src/main.cpp:242, so LC_CTYPE never leaves "C").
+std::string asciiLower(const std::string &s);
+
+//! Utility::isTrue (src/tools/utility.hpp:160): case-insensitive "true"/"on",
+//! or the single character '1'. Nothing else.
+bool isTrueValue(const std::string &v);
+//! Utility::isFalse (src/tools/utility.hpp:172): case-insensitive "false"/"off",
+//! or the single character '0'.
+bool isFalseValue(const std::string &v);
+
+//! AppCommandInit::LevensteinDistance (app_command_init.cpp:337-365).
+std::size_t levenshtein(const std::string &a, const std::string &b);
+
+//! AppCommandInit::searchNeighbour (app_command_init.cpp:368-387): nearest
+//! candidate by Levenshtein distance, NO threshold, first minimum wins — and
+//! `candidates` must be supplied in the engine's own order (the m_* maps are
+//! std::map, so: alphabetical) for the tie-break to match.
+//! Returns "" only when `candidates` is empty.
+std::string nearestNeighbour(const std::string &source, const std::vector<std::string> &candidates);
+
+// --- block skip state ------------------------------------------------------
+
+//! The skip state `comment` / `uncomment` toggle, intercepted BEFORE the
+//! command table (executeCommand:215-222) and therefore still honoured while
+//! skipping. `struct comment <on|off>` reaches the same two handlers
+//! (commandStruct :4664-4672), so it is tracked too.
+//!
+//! NOT tracked, deliberately (flagged in derivation-diff.md §5): `struct loop
+//! <n>` with n < 1 also raises the same flag (:4691-4693) and `struct loop
+//! end|break` lowers it — those depend on runtime $-substitution and on the
+//! ifSwap state, so they are not statically decidable. Consequence: scedit may
+//! lint lines a zero-iteration loop would have skipped.
+class BlockSkipState {
+public:
+	//! Feed every Parsed line, in file order. Returns true when the line ITSELF
+	//! is skipped by the engine (i.e. the state was on and the line is not one
+	//! of the pre-table interceptions).
+	bool feed(const Line &line);
+	bool skipping() const { return skipping_; }
+	void reset() { skipping_ = false; }
+private:
+	bool skipping_ = false;
+};
+
+} // namespace scedit
+
+#endif // SCEDIT_SC_TOKENIZER_HPP
