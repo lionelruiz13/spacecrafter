@@ -153,6 +153,56 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
 
 ## 6. Journal (append-only)
 
+- **[2026-08-04b] Unit 1 gated GREEN; protocol answers; full parallel
+  dispatch.** Unit-1 fragment (grammar/args/unit-1.json, 84 317 B)
+  independently re-gated by supervisor: count gate re-derived (68 lines,
+  sets equal, 84/84 token multiplicity), schema fields complete, nulls =
+  exactly the 2 flagged docs; content spot-checks on the sharpest claims
+  all CONFIRMED in source — (1) suntrace pen branch reads `args[W_SUN]`
+  (the *value of a key spelled "sun"*) where its other branches pass the
+  literal, so `suntrace pen on` does not switch the trace to the Sun;
+  (2) dso3d override path calls `std::stoi(args["depth"])` raw, no catch
+  in the chain — abort on missing/non-numeric; (3) AppCommandColor::
+  setClassicColor takes `debug_message` BY VALUE (hpp:81, cpp:58) vs the
+  ctor's by-reference — r/g/b color errors vanish and the line records as
+  success. → upstream registration owed to parent ledger (engine defects,
+  not lint noise, per C3). Unit-1 C1 refinements adopted into
+  SWEEP_DISPATCH "lessons" (binding for units 2–4): operator[] inserts on
+  absent-key reads; absent-key defaults resolve in the interface file
+  (evalDouble("")=0.0 etc. :4458-4479 — narrows §5 item 5's boundary);
+  in-range helpers accounting; anchor machine-verification.
+  Vixy [stated, this session]: (a) sequentiality's reason — previously
+  unrecorded, "should have lived where the recorded protocol lives" —
+  is executor testability without cross-instance interference; parallel
+  dispatch ALLOWED when tests are side-effect-free; supervisor assessed
+  the sweep units + tokenizer as qualifying by construction (read-only
+  source, disjoint writes, no shared build) and dispatched units 2–4 +
+  tokenizer concurrently. (b) TUI ordering: D3 CONFIRMED — tokenizer +
+  --check as one task (C3 corpus gate is the tokenizer's own validation),
+  FTXUI shell immediately after, content lighting up as fragments merge.
+  Corpus boundary [measured]: ~/.spacecrafter/scripts/ EMPTY on this
+  laptop; C3 corpus here = doc/superscript.sts + engine-exercised
+  harness .sts; full shipped-scripts gate re-arms when the data package
+  lands. Merge deferral recorded in SWEEP_DISPATCH (fragments committed
+  per-unit; single sc-grammar.json merge after tokenizer lands, keeping
+  its runtime input stable).
+- **[2026-08-04] Sweep dispatched (units armed); TUI spec refinement.**
+  Vixy [stated]: next load-bearing candidate = the TUI slice, deferring to
+  the recorded plan if one exists — it does (§5 item 1, journal 2026-08-03),
+  and the plans converge: the sweep produces the TUI's content (per-key doc,
+  defaults, completion candidates), the tokenizer its cursor→token engine.
+  TUI spec refinement [vixy, this session]: "auto-completion, greyed text
+  when autocomplete with tab is possible to tell what would be completed,
+  and showing the documentation related to each case" — generalizes D31's
+  greyed-defaults to ghost-text preview for ANY tab completion, not only
+  defaults in empty value fields. Dispatch protocol per Vixy: fully-specified
+  tasks → opus-xhigh, clear DoD, pointed at this INTENT.
+  Armed: `SWEEP_DISPATCH.md` (4 units partitioning all 339 `args[`
+  occurrences at HEAD — 68/101/93/77, 0 outside the ranges [measured];
+  fragment schema; 9-item DoD; merge protocol). Unit 1 (:1180–2109, 16
+  commands) dispatched. Census reconciliation (339 vs dated 366) assigned to
+  merge time. Open with Vixy: dispatch concurrency (recorded sequential
+  protocol vs disjoint-write-surface parallel), TUI timing vs D3 ordering.
 - **[2026-08-03] Slice 1 landed — contract seeded, gate green.**
   Post-migration session (memory files not migrated; graph-memory
   effectively empty on this laptop — 5 stray nodes; assessed low-impact
