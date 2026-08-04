@@ -52,9 +52,13 @@ document).
   is empty). Did `set mode` ever work, and what did it do? Your answer
   decides whether this is a lost feature or dead vocabulary. Status:
   OPEN.
-- **SS-6** (ref: §5.80c) — Line 1205 `set stall_radius_unit 5.0` — and a
-  quirk: values ≤ 1.0 are silently ignored by the engine. Worth knowing
-  when you write it. Status: FYI unless your shows set small values.
+- **SS-6** (ref: §5.80c) — Line 1205 actually reads
+  `set stall_radius_unit = 5.0` — **the `=` sign breaks it**: the engine
+  has no `=` syntax, so `=` is taken as the value and `5.0` is dropped
+  entirely. The line sets nothing (and the engine also silently ignores
+  values ≤ 1.0, worth knowing). *(Corrected 2026-08-04: an earlier
+  version of this entry quoted the line without the `=`.)* Status: OPEN
+  — fix the line?
 - **SS-7** (ref: §5.80c) — Lines 1269/1271: `#` comments that are
   INDENTED. The engine only treats `#` as a comment at the very start of
   a line — indented ones are executed as (failing) commands. The lines
@@ -107,9 +111,52 @@ document).
   historical document and start a corrected copy? scedit can verify
   either against the engine from now on. Status: OPEN.
 
-## 3. Pending — full divergence table
+## 3. Full divergence pass — landed 2026-08-04
 
-A systematic pass over superscript.sts's comment layer and usage (what
-the file *teaches* vs what the engine *does*, both directions, every
-command it never exercises listed) is running; its table lands here
-when verified. Status: IN PROGRESS (2026-08-04).
+The systematic pass is done (full detail:
+`util/scedit/grammar/witness/` in the code repo — 477 comment lines and
+1319 written pairs, all accounted). What changes the entries above:
+
+- **SS-2, SS-4, SS-10 shift from "probable slip" toward "feature that
+  went away"**: a SECOND, independent documentation (a French per-command
+  reference from 3/06/2020 found in `util/new_parser_scripts/`) attests
+  all three spellings — `set … duration`, `moveto … name`, and
+  `wait action reset_timer` were documented behavior in 2020. Your
+  memory of whether they once worked is now the deciding evidence.
+- **SS-11 gains documentary evidence**: the same 2020 reference defines
+  `sun_trace` as "un alias de la commande body_trace avec le soleil
+  comme astre sélectionné" — i.e. `suntrace pen on` WAS meant to aim at
+  the Sun. Today's engine does not do that. Fix direction now has a
+  source; still yours to confirm.
+- **SS-5 gains intent**: the witness's own comments describe `set mode`
+  as what `mode jump` does today — likely superseded vocabulary, not a
+  lost feature.
+
+New entries:
+
+- **SS-17** (ref: §5.81) — **Saturn and Ganymede are misspelled inside
+  the engine's selection-number table** ("Satun", "Ganymed"): selecting
+  either makes `$body_selected` answer 999 (= nothing special selected),
+  so `struct if body_selected equal 600` (Saturn) or `503` (Ganymede)
+  never fires. Every other body matches its documented number. Question:
+  do any of your shows test those two numbers (or work around the 999)?
+  The fix is two spellings once you confirm nothing relies on today's
+  behavior. Status: OPEN.
+- **SS-18** — 15 more teach-vs-do divergences catalogued (full list:
+  `witness/superscript-witness.json`), the sharpest for you:
+  (a) lines 121-123 `*_altimetry_factor` — renamed engine-side
+  (tesselation vocabulary unified), the old spellings do nothing;
+  (b) lines 249/251/252 `configuration module …` — **running the
+  reference script end-to-end rewrites your config.ini twice and
+  re-runs the app's init mid-script** (SS-14's fall-through, live in
+  the reference file itself); (c) 4 × `image … action twice` — not an
+  image action (one line even labels itself "SC2020 and earlier");
+  (d) the whole `dso3d` demo section uses `action reset`, which does
+  not exist; (e) `set heading +15` is ABSOLUTE 15, not +15 relative.
+  Status: OPEN (bulk answer fine — "fix all that match my intent").
+- **SS-19** — The reference script **never exercises 12 of the 62
+  commands**: domemasters, dso2d, flyto, galaxy_stars, get, modulo,
+  search, session, shutdown, sub, suntrace, transition. Nine of those
+  have no documentation anywhere in the tree except the code itself.
+  FYI + invitation: if you have shows exercising them, they are
+  corpus gold. Status: FYI.

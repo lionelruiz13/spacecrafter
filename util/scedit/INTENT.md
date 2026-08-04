@@ -182,7 +182,10 @@ notes.*
 8. **Engine emitter** — the grammar file becomes a build/runtime
    artifact (D5 seams); propose upstream once the contract shape has
    survived slices 1–4.
-9. **superscript.sts doc-mining pass** [added 2026-08-04 on Vixy's
+9. ~~**superscript.sts doc-mining pass**~~ **DONE 2026-08-04 (journal
+   2026-08-04g; gated). Residue: S-NP-1 suspended for Vixy; 6
+   code-consistent doc answers queued for post-FTXUI grammar merge.**
+   [added 2026-08-04 on Vixy's
    source revelation] — extract the witness layer: comment lines +
    per-command/per-key usage patterns (value examples, co-occurrence,
    ordering) → candidate answers for the flagged doc gaps
@@ -195,6 +198,32 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-04g] Witness mining gated GREEN — the witness answers, and
+  it also indicts.** Coverage closes: 477/477 comment lines accounted,
+  27/27 flagged gaps visited (8 answered code-consistent → mergeable as
+  docs; 4 divergent → findings; 17 no-witness-evidence, 7 of those by
+  total absence), 25 divergences (10 re-derive §5.80's catalogue
+  independently, 15 new), 12/62 commands never exercised. Supervisor
+  spot-verified at source: core.cpp "Satun":2177/"Ganymed":2173 →
+  **§5.81** + SS-17; line-1205 bytes carry `=` → §5.80c + SS-6 QUOTE
+  CORRECTED (supervisor's recalled-anchor slip: quoted a report, not
+  the file); drift commit db7415d7 confirmed. SECOND WITNESS FOUND:
+  `util/new_parser_scripts/input_fr.txt` — a declared-format French
+  per-command/key/value reference (Nicolas Barile, 2020-06-03) with its
+  own text→HTML toolchain; fully extracted (256 slots, 0 unparsed),
+  tagged `[new-parser-fr-attested]`, kept STRICTLY separate from
+  superscript attestations. It second-attests SS-2/SS-4/SS-10
+  (→ "feature that went away" leaning) and documents `sun_trace` as a
+  body_trace-with-Sun alias (SS-11 evidence) + `sky_draw` (the orphan
+  define) as a dome point-plotter. One of its claims decided AGAINST it
+  by code (print's keys), one off-by-one (audio default 84 not 85) —
+  the reliability bound is live. **SUSPENDED FOR VIXY: S-NP-1** — does
+  input_fr.txt join C2's anchor classes as a second usage-witness, with
+  what reliability statement? Nothing from it merged pending the answer.
+  QUEUED post-FTXUI (grammar frozen while that agent reads it): merge of
+  the 6 code-consistent witness answers as docs with attestation tags.
+  SCRIPT_SURFACE.md §3 filled (SS-17/18/19 added, SS-2/4/5/6/10/11
+  updated). Item 9 struck.
 - **[2026-08-04f] Ownership re-route: the script surface has an owner,
   and it is not Vixy.** Vixy [stated]: witness-vs-code divergences and
   script-surface semantics belong to the MAIN USER/TESTER, who owns the
