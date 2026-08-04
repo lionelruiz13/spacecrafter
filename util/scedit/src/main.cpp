@@ -42,54 +42,222 @@ void check(bool ok, const std::string &what) {
 	}
 }
 
-// Count entries and enforce uniqueness for a names-array family.
+// A family member is either a plain string (v1 shape) or an object with a
+// `name` field (D7 v2 shape). Both shapes coexist on purpose: a family converts
+// when its doc pass fills content, one family at a time.
+bool memberName(const json &entry, std::string &out) {
+	if (entry.is_string()) { out = entry.get<std::string>(); return true; }
+	if (entry.is_object() && entry.contains("name") && entry.at("name").is_string()) {
+		out = entry.at("name").get<std::string>();
+		return true;
+	}
+	return false;
+}
+
+// Count entries and enforce uniqueness for a names family, in either shape.
 void checkNamesFamily(const json &family, const char *key, int expected) {
 	const auto &names = family.at("names");
 	std::set<std::string> uniq;
-	for (const auto &n : names) uniq.insert(n.get<std::string>());
+	int shaped = 0;
+	for (const auto &n : names) {
+		std::string name;
+		if (memberName(n, name)) { uniq.insert(name); ++shaped; }
+	}
 	check((int)names.size() == expected,
 	      std::string(key) + ": count " + std::to_string(names.size()) + " == expected " + std::to_string(expected));
+	check(shaped == (int)names.size(),
+	      std::string(key) + ": every entry is a name or carries one");
 	check(uniq.size() == names.size(),
 	      std::string(key) + ": all names unique");
 }
 
-int validate(const json &g) {
+// A v2 family entry that carries content must carry the SIX per-key facts the
+// extraction was gated on (SWEEP_DISPATCH DoD: doc, value, default, required,
+// source; `values` only when enumerated). A null doc is legal and means
+// "flagged, not invented" (C2) — an ABSENT one is not.
+void checkNamesFamilyV2Content(const json &family, const char *key) {
+	int objects = 0, complete = 0;
+	for (const auto &n : family.at("names")) {
+		if (!n.is_object()) continue;
+		++objects;
+		if (n.contains("doc") && n.contains("value") && n.contains("default")
+		    && n.contains("required") && n.contains("source"))
+			++complete;
+	}
+	if (objects == 0) return;   // still v1 shape: nothing to check
+	check(complete == objects,
+	      std::string(key) + ": " + std::to_string(objects) +
+	      " object entries, all carrying doc/value/default/required/source");
+}
+
+// THE MERGE'S OWN I2 EXPOSURE, CLOSED BY MEASUREMENT.
+// The four extraction fragments (grammar/args/unit-N.json) stay in the tree as
+// the granular source, and their content is also in the merged contract: two
+// copies of the same facts, which is a pending silent desync unless something
+// checks. This does. Every per-key and per-command fact in a fragment must be
+// byte-identical in the merged file, `set` included (whose keys live in
+// families.set_names in the D7 v2 shape, so they are compared there).
+// Fragments absent (a consumer who took only the merged file) = skipped, said
+// out loud, not silently passed.
+void checkFragments(const json &g, const std::string &grammarPath) {
+	const std::size_t slash = grammarPath.find_last_of('/');
+	const std::string dir = slash == std::string::npos ? std::string(".") : grammarPath.substr(0, slash);
+	static const char *kFields[] = {"handler", "lines", "aliases", "registration", "doc",
+	                                "key_grammar", "branches", "exclusive_groups", "notes",
+	                                "flagged", "signature", "handler_body_lines", "wait_parameter"};
+	const auto &cmds = g.at("families").at("commands");
+
+	// set's keys, rebuilt from the family, to compare against the fragment's
+	json setArgs = json::object();
+	for (const auto &n : g.at("families").at("set_names").at("names")) {
+		if (!n.is_object() || !n.contains("name")) continue;
+		json spec = n;
+		spec.erase("name");
+		setArgs[n.at("name").get<std::string>()] = spec;
+	}
+
+	int units = 0, entries = 0;
+	std::vector<std::string> diffs;
+	for (int u = 1; u <= 4; ++u) {
+		const std::string p = dir + "/args/unit-" + std::to_string(u) + ".json";
+		std::ifstream in(p);
+		if (!in) continue;
+		json f;
+		try { in >> f; } catch (const std::exception &e) {
+			diffs.push_back(std::string("unit-") + std::to_string(u) + ": " + e.what());
+			continue;
+		}
+		++units;
+		for (auto it = f.at("commands").begin(); it != f.at("commands").end(); ++it) {
+			++entries;
+			const std::string &name = it.key();
+			if (!cmds.contains(name)) { diffs.push_back(name + ": absent from the merged file"); continue; }
+			const auto &m = cmds.at(name);
+			for (const char *k : kFields)
+				if (it.value().contains(k) && (!m.contains(k) || m.at(k) != it.value().at(k)))
+					diffs.push_back(name + "." + k);
+			const json &fragArgs = it.value().at("args");
+			const json &mergedArgs = name == "set" ? setArgs : m.at("args");
+			if (mergedArgs != fragArgs)
+				diffs.push_back(name + ".args");
+		}
+	}
+	if (units == 0) {
+		std::printf("  skip    fragments: grammar/args/unit-*.json not present next to the contract\n");
+		return;
+	}
+	check(units == 4, "fragments: all 4 unit files present (found " + std::to_string(units) + ")");
+	check(entries == 62, "fragments: 62 command entries (found " + std::to_string(entries) + ")");
+	check(diffs.empty(), "fragments: every fact identical in the merged file" +
+	      (diffs.empty() ? std::string() : " (differs: " + diffs.front() +
+	       (diffs.size() > 1 ? " and " + std::to_string(diffs.size() - 1) + " more" : "") + ")"));
+}
+
+int validate(const json &g, const std::string &grammarPath) {
 	const auto &meta = g.at("_meta");
 	const auto &exp = meta.at("expected_counts");
 	const auto &fam = g.at("families");
 
-	// commands: object entries; those carrying "registration" are pre-table
-	// literals (comment/uncomment) and sit OUTSIDE the m_commands count.
-	int registered = 0, pretable = 0;
+	// commands: object entries; those carrying `pretable: true` are the literals
+	// compared BEFORE the m_commands lookup (comment/uncomment) and sit OUTSIDE
+	// the m_commands count. (Until the args merge this was inferred from the
+	// presence of a "registration" field; that field is now the registration
+	// SOURCE ANCHOR carried by every command, so the marker had to become
+	// explicit data rather than a shape accident.)
+	int registered = 0, pretable = 0, withArgs = 0, argsIncomplete = 0, argsSourced = 0;
 	std::set<std::string> cmdNames;
+	std::vector<std::string> missingArgsComplete, missingDoc, missingRegistration;
 	for (auto it = fam.at("commands").begin(); it != fam.at("commands").end(); ++it) {
 		if (it.key().rfind("_", 0) == 0) continue; // _source/_args_status annotations
 		cmdNames.insert(it.key());
-		if (it.value().contains("registration")) ++pretable; else ++registered;
+		const auto &e = it.value();
+		if (e.value("pretable", false)) ++pretable; else ++registered;
+		if (!e.contains("args_complete") || !e.at("args_complete").is_boolean())
+			missingArgsComplete.push_back(it.key());
+		else if (!e.at("args_complete").get<bool>())
+			++argsIncomplete;
+		if (!e.contains("doc")) missingDoc.push_back(it.key());
+		if (!e.contains("registration")) missingRegistration.push_back(it.key());
+		if (e.contains("args") && e.at("args").is_object()) {
+			int keys = 0;   // `_`-prefixed entries are annotations, not keys
+			for (auto a = e.at("args").begin(); a != e.at("args").end(); ++a)
+				if (a.key().rfind("_", 0) != 0) ++keys;
+			if (keys) ++withArgs;
+		}
+		if (e.contains("args_source")) ++argsSourced;
 	}
 	check(registered == exp.at("commands").get<int>(),
 	      "commands: registered " + std::to_string(registered) + " == expected " + std::to_string(exp.at("commands").get<int>()));
 	check(pretable == 2, "commands: pre-table literals == 2 (comment, uncomment)");
+	check(missingRegistration.empty(),
+	      "commands: every entry carries a `registration` source anchor" +
+	      (missingRegistration.empty() ? std::string() : " (missing: " + missingRegistration.front() + ", ...)"));
+	check(missingDoc.empty(),
+	      "commands: every entry carries a `doc` slot (C6)" +
+	      (missingDoc.empty() ? std::string() : " (missing: " + missingDoc.front() + ", ...)"));
+	// `args_complete` is not optional data: "I listed some keys" and "I listed
+	// all of them" are different claims, and a consumer that cannot tell which
+	// one an entry makes has to choose between silence and false accusations.
+	check(missingArgsComplete.empty(),
+	      "commands: every entry answers `args_complete`" +
+	      (missingArgsComplete.empty() ? std::string() : " (missing: " + missingArgsComplete.front() + ", ...)"));
+	std::printf("  note    commands with extracted args: %d; args_complete:false: %d; keys sourced from a family: %d\n",
+	            withArgs, argsIncomplete, argsSourced);
 
 	checkNamesFamily(fam.at("flags"), "flags", exp.at("flags").get<int>());
 	checkNamesFamily(fam.at("set_names"), "set_names", exp.at("set_names").get<int>());
+	checkNamesFamilyV2Content(fam.at("set_names"), "set_names");
 	checkNamesFamily(fam.at("color_names"), "color_names", exp.at("color_names").get<int>());
 	checkNamesFamily(fam.at("obsolete_tokens"), "obsolete_tokens", exp.at("obsolete_tokens").get<int>());
 	checkNamesFamily(fam.at("reserved_variables"), "reserved_variables", exp.at("reserved_variables").get<int>());
 	checkNamesFamily(fam.at("font_targets"), "font_targets", exp.at("font_targets").get<int>());
 
-	// every command naming a subfamily must name one that exists
+	// every command naming a subfamily must name one that exists; and a command
+	// sourcing its keys from a family must name one that exists too.
 	for (auto it = fam.at("commands").begin(); it != fam.at("commands").end(); ++it) {
 		if (it.key().rfind("_", 0) == 0) continue;
 		if (it.value().contains("subfamily"))
 			check(fam.contains(it.value().at("subfamily").get<std::string>()),
 			      "subfamily of '" + it.key() + "' exists");
+		if (it.value().contains("args_source")) {
+			const std::string s = it.value().at("args_source").get<std::string>();
+			const std::string want = "families.";
+			bool named = false;
+			if (s.rfind(want, 0) == 0) {
+				const std::size_t e = s.find_first_not_of(
+					"abcdefghijklmnopqrstuvwxyz_", want.size());
+				named = fam.contains(s.substr(want.size(), e - want.size()));
+			}
+			check(named, "args_source of '" + it.key() + "' names an existing family");
+		}
+	}
+
+	// argument token vocabulary: one entry per spelling, count re-derived
+	{
+		const auto &atv = g.at("argument_token_vocabulary");
+		const auto &toks = atv.at("tokens");
+		int roled = 0;
+		std::set<std::string> roles;
+		for (auto it = toks.begin(); it != toks.end(); ++it) {
+			if (it.key().rfind("_", 0) == 0) continue;
+			if (it.value().contains("role")) { ++roled; roles.insert(it.value().at("role").get<std::string>()); }
+		}
+		check((int)toks.size() == atv.at("_expected_count").get<int>(),
+		      "argument tokens: count " + std::to_string(toks.size()) + " == expected " +
+		      std::to_string(atv.at("_expected_count").get<int>()));
+		check(roled == (int)toks.size(), "argument tokens: every spelling carries a role");
+		std::set<std::string> legal = {"key", "value", "both", "engine_internal", "unreferenced"};
+		bool ok = true;
+		for (const auto &r : roles) if (!legal.count(r)) ok = false;
+		check(ok, "argument tokens: every role is one of key|value|both|engine_internal|unreferenced");
 	}
 
 	// lint seeds: ids unique
 	std::set<std::string> lintIds;
 	for (const auto &l : g.at("lint_seeds")) lintIds.insert(l.at("id").get<std::string>());
 	check(lintIds.size() == g.at("lint_seeds").size(), "lint_seeds: ids unique");
+
+	checkFragments(g, grammarPath);
 
 	std::printf("%s\n", failures ? "GRAMMAR INVALID" : "grammar self-consistent");
 	return failures ? 1 : 0;
@@ -102,8 +270,10 @@ void listFamily(const json &g, const std::string &name) {
 			if (it.key().rfind("_", 0) != 0) std::printf("%s\n", it.key().c_str());
 		return;
 	}
-	for (const auto &n : fam.at(name).at("names"))
-		std::printf("%s\n", n.get<std::string>().c_str());
+	for (const auto &n : fam.at(name).at("names")) {
+		std::string member;
+		if (memberName(n, member)) std::printf("%s\n", member.c_str());
+	}
 }
 
 void usage() {
@@ -189,5 +359,5 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	std::printf("scedit grammar: %s\n", grammarPath.c_str());
-	return validate(g);
+	return validate(g, grammarPath);
 }

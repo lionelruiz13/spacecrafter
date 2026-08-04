@@ -55,6 +55,32 @@ color property constellation_liness value 1,0,0
 # --- indented comment: reaches the parser as an unknown command
   # this line is executed, not skipped
 
+
+# --- unknown-parameter, ARGUMENT-KEY half: a key this command never reads.
+# Armed by the merged `args` data alone; the two rotations do nothing.
+dso3d action load zrot 0
+
+# --- unknown-parameter, argument-key half, with a suggestion inside the cap
+landscape action load nmae panorama
+
+# --- unknown-command / unknown-parameter: NO suggestion past the cap.
+# The engine would log 'nebula_names' here; that is a false lead, so it is not
+# printed (the finding itself is unchanged). doc/superscript.sts:303 is this line.
+flag date_display_number on
+
+# --- alias-respelled only: `flyto` IS `camera`, so camera's args_complete:false
+# covers it too and none of the anchor keys below is reported.
+flyto action create name observatory type point x 1 y 2 z 3
+
+# --- invisible-separator: a no-break space where a space belongs.
+# The engine reads 'hello<0xA0>world' as ONE word, so `string` swallows both.
+text name info string hello world altitude 10
+
+# --- invisible-separator + its consequence, both reported (cause first).
+# This is doc/superscript.sts:94's shape: the byte glues '2' to 'size', which
+# shifts every later pair by one and leaves '3' as a key with no value.
+dso2d action load name x ra 1 de 2 size 3
+
 # === everything below must produce NO finding =========================
 
 # a well-formed line of each shape the rules touch
@@ -85,3 +111,13 @@ struct comment off
 struct comment TRUE
 zomo action now
 struct comment off
+
+# a command whose entry says args_complete:false is silent on its keys: the
+# rest of `body`'s vocabulary is the stellar-system contract's to state, so an
+# unlisted key here is not known to be wrong (and `radius` above is the same case)
+body action load parent Sun
+camera action create name observatory type point x 1 y 2 z 3
+
+# a no-break space INSIDE a quoted value is ordinary text: the engine already
+# accepts spaces there, so the author meant the byte and nothing surprises them
+text name info string "hello world" altitude 10

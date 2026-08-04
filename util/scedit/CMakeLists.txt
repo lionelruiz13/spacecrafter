@@ -49,6 +49,10 @@ add_test(NAME seed_gate
 
 # One construct per armed lint id: proves each rule fires, with the right id,
 # severity and D6 shape — and that the "must stay silent" section stays silent.
+# NOTE: tests/lint_cases.sts is NOT pure ASCII — it carries raw 0xA0 bytes for
+# the `invisible-separator` cases (one that must fire, one inside a quoted value
+# that must not). Anything that "cleans up" that file byte-wise destroys the
+# test. Same discipline as the corpus: scripts are read as bytes, never decoded.
 add_test(NAME lint_rules
 	COMMAND ${CMAKE_COMMAND}
 		-DSCEDIT=$<TARGET_FILE:scedit>

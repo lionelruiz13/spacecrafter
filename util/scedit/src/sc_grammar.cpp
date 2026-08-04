@@ -84,6 +84,22 @@ void collectArgKeys(const json &args, std::set<std::string> &out)
 	}
 }
 
+//! A family's `names` entry: a plain string (v1) or an object with a `name`
+//! field (D7 v2). Both shapes coexist on purpose — a family converts when its
+//! doc pass fills content, one family at a time.
+bool familyMemberName(const json &entry, std::string &out)
+{
+	if (entry.is_string()) {
+		out = entry.get<std::string>();
+		return true;
+	}
+	if (entry.is_object() && entry.contains("name") && entry.at("name").is_string()) {
+		out = entry.at("name").get<std::string>();
+		return true;
+	}
+	return false;
+}
+
 void readAnnotationMap(const json &fam, const char *key, std::map<std::string, std::string> &out)
 {
 	if (!fam.contains(key) || !fam.at(key).is_object())
@@ -119,10 +135,15 @@ bool Grammar::load(const std::string &path, std::string &err)
 		for (auto it = fams.begin(); it != fams.end(); ++it) {
 			if (it.key() == "commands")
 				continue;
+			if (!it.key().empty() && it.key()[0] == '_')
+				continue;   // annotation, not a family
 			FamilyData fd;
 			if (it.value().contains("names")) {
-				for (const auto &n : it.value().at("names"))
-					fd.names.push_back(n.get<std::string>());
+				for (const auto &n : it.value().at("names")) {
+					std::string member;
+					if (familyMemberName(n, member))
+						fd.names.push_back(member);
+				}
 			}
 			fd.name_set.insert(fd.names.begin(), fd.names.end());
 			fd.sorted = fd.names;
@@ -139,7 +160,12 @@ bool Grammar::load(const std::string &path, std::string &err)
 				continue;
 			CommandData cd;
 			cd.name = it.key();
-			cd.pretable = it.value().contains("registration");
+			// `pretable` is EXPLICIT data. It used to be inferred from the
+			// presence of a "registration" field, which stopped working the
+			// moment that field became the registration SOURCE ANCHOR carried
+			// by every command (args merge, 2026-08-04).
+			if (it.value().contains("pretable") && it.value().at("pretable").is_boolean())
+				cd.pretable = it.value().at("pretable").get<bool>();
 			if (it.value().contains("subfamily"))
 				cd.subfamily = it.value().at("subfamily").get<std::string>();
 			if (it.value().contains("alias_of"))
@@ -149,6 +175,11 @@ bool Grammar::load(const std::string &path, std::string &err)
 				cd.has_args = !cd.arg_keys.empty();
 				cd.arg_keys_sorted.assign(cd.arg_keys.begin(), cd.arg_keys.end());
 			}
+			if (it.value().contains("args_complete") && it.value().at("args_complete").is_boolean())
+				cd.args_complete = it.value().at("args_complete").get<bool>();
+			if (it.value().contains("args_source") && it.value().at("args_source").is_string())
+				cd.args_source = it.value().at("args_source").get<std::string>();
+			cd.free_keys = !cd.has_args && it.value().contains("key_grammar");
 			// data first, built-in table second
 			if (it.value().contains("subfamily_position")) {
 				const auto &sp = it.value().at("subfamily_position");

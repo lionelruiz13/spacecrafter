@@ -1,4 +1,5 @@
 {
+  "_merged": "2026-08-04 into ../sc-grammar.json (schema v2, partial per D7). This fragment stays in place as the GRANULAR source: the merge relocated its content unchanged, and a correction belongs here first, then in the merged file. Its _meta count gate is the per-unit evidence the merged file cites in _meta.merge_provenance.",
   "_meta": {
     "unit": 1,
     "code": "master-beta @ b12c8cdd",

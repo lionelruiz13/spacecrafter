@@ -18,9 +18,27 @@
  * Two checks arm themselves from the file alone, so the extraction sweep can
  * land without touching this code:
  *   - a command's argument-key vocabulary arms when its entry carries `args`
- *     (object of key -> spec, or array of names, or array of {name:...});
+ *     (object of key -> spec, or array of names, or array of {name:...})
+ *     AND declares `args_complete: true`;
  *   - a family-name check arms when the command entry carries `subfamily` AND
  *     the position of that name in the line is known.
+ *
+ * WHY `args_complete` IS A SEPARATE ANSWER FROM "HAS ARGS"
+ * =======================================================
+ * "I know some of this command's keys" and "I know all of them" are different
+ * facts, and only the second one licenses calling a key UNKNOWN. Four handlers
+ * forward the whole parsed map to another module; for two of them (dso3d,
+ * landscape) that module's key set was extracted, for the other two (body,
+ * camera — and `flyto`, which IS camera) it is another contract file's
+ * deliverable. Those entries say `args_complete: false`, and no consumer may
+ * report an unlisted key of theirs. The default when the field is absent is
+ * TRUE, because a hand-written entry that lists keys is claiming to list them.
+ *
+ * A command may also point at a FAMILY instead of carrying its own key specs
+ * (`args_source`, used by `set`: its 43 keys ARE families.set_names). Such a
+ * command keeps `arg_keys` empty on purpose — the family-name check already
+ * covers every key of the line, and a second check over the same keys would
+ * report each one twice.
  *
  * ORDERING MATTERS
  * ================
@@ -58,6 +76,10 @@ struct SubfamilyPlacement {
 };
 
 struct FamilyData {
+	//! A family's `names` entry is EITHER a plain string (v1 shape, families
+	//! whose doc pass has not run) OR an object with a `name` field (D7 v2
+	//! shape, `set_names` today). Both yield the same names here; the extra
+	//! per-name content stays in the file for the doc panel to read.
 	std::vector<std::string> names;        //!< file order
 	std::vector<std::string> sorted;       //!< std::map order (suggestion candidates)
 	std::set<std::string> name_set;
@@ -70,11 +92,25 @@ struct FamilyData {
 
 struct CommandData {
 	std::string name;
-	bool pretable = false;      //!< carries "registration": intercepted before the table
+	//! `pretable: true`: compared as a literal BEFORE the m_commands lookup
+	//! (comment, uncomment). Accepted by the engine, absent from `commandList`,
+	//! so a did-you-mean can never suggest it.
+	bool pretable = false;
 	std::string subfamily;      //!< "" when the command names none
 	SubfamilyPlacement placement;
 	std::string alias_of;       //!< "" unless the entry declares an alias
 	bool has_args = false;      //!< the entry carries extracted `args` data
+	//! The entry claims its `args` list is the WHOLE accepted key vocabulary.
+	//! False = there are more legal keys than are listed, so an unlisted key
+	//! must NOT be reported as unknown. Default true (see the header note).
+	bool args_complete = true;
+	//! Set when the keys live in a family instead of in `args` (`set`). The
+	//! value is the file's own text, used to explain the dormancy in --rules.
+	std::string args_source;
+	//! The entry carries `key_grammar`: this command's keys are NOT a fixed
+	//! list of its own (a flag name, a variable name, free text...). Nothing to
+	//! check against, and nothing missing either.
+	bool free_keys = false;
 	std::set<std::string> arg_keys;
 	std::vector<std::string> arg_keys_sorted;
 };
@@ -108,6 +144,13 @@ public:
 
 	//! Commands that read only `args.begin()` and silently drop the rest.
 	bool isSinglePairCommand(const std::string &name) const { return single_pair_.count(name) != 0; }
+
+	//! May a consumer report an unlisted key of this command as unknown?
+	//! False for an unknown command too: nothing is known, so nothing is claimed.
+	bool argKeysAreExhaustive(const std::string &name) const {
+		const CommandData *cd = command(name);
+		return cd && cd->has_args && cd->args_complete;
+	}
 
 private:
 	std::map<std::string, CommandData> commands_;

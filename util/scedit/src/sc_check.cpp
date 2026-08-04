@@ -11,6 +11,7 @@
 #include "sc_tokenizer.hpp"
 
 #include <algorithm>
+#include <cstdio>
 #include <fstream>
 #include <iterator>
 #include <map>
@@ -51,6 +52,90 @@ std::string familyLabel(const std::string &key)
 
 std::string quoteName(const std::string &s) { return "'" + s + "'"; }
 
+//! DID-YOU-MEAN, DISPLAY CAP.
+//! The engine's searchNeighbour has no distance threshold: it always logs a
+//! nearest name, however far. `nearestNeighbour` in the tokenizer library
+//! reproduces that exactly and stays that way — it is the engine's behaviour and
+//! C1 owns it. What is capped here is only whether scedit PRINTS the answer.
+//!
+//! The cap: TWO edits, or one edit per three characters of what the author
+//! typed, whichever is more permissive. Two edits is the floor because the
+//! ordinary typo shapes cost two whatever the word's length — a transposition
+//! ('zomo' for 'zoom') is two substitutions — and a short name would otherwise
+//! never get a suggestion. The proportional term is what keeps a long name
+//! honest: past a third of its length the candidate no longer agrees with what
+//! was typed, it is merely the closest entry in a list, and printing it spends
+//! the reader's attention on a false lead. The corpus case that forced this:
+//! `flag date_display_number` (19 characters) drew 'nebula_names' at distance 12
+//! (doc/superscript.sts:303) while the useful 'datetime_display_number' sits at
+//! distance 4 on the neighbouring `set` lines. The FINDING is unchanged in every
+//! case; only the trailing hint disappears.
+//! Recorded in util/scedit/tests/derivation-diff.md §5.7 and in the contract
+//! file's `lint_seeds` entry for unknown-command.
+std::size_t suggestionCap(const std::string &token)
+{
+	const std::size_t proportional = token.size() / 3;
+	return proportional > 2 ? proportional : 2;
+}
+
+std::string cappedSuggestion(const std::string &token, const std::vector<std::string> &candidates)
+{
+	const std::string near = nearestNeighbour(token, candidates);
+	if (near.empty())
+		return std::string();
+	return levenshtein(token, near) <= suggestionCap(token) ? near : std::string();
+}
+
+//! BYTES THAT LOOK LIKE A SEPARATOR AND ARE NOT.
+//! The engine splits on the C locale's whitespace only (SP TAB LF VT FF CR,
+//! std::istringstream at parseCommand:141). Every other byte — including every
+//! space character Unicode has — is an ordinary character that GLUES the words
+//! around it into one token. In an editor they are all blank, so the author
+//! cannot see the difference; that is what makes the class worth an id of its
+//! own rather than only its consequences.
+//! Longest sequences first, so the UTF-8 form is named before its trailing 0xA0.
+struct InvisibleByte {
+	const char *bytes;
+	std::size_t len;
+	const char *what;
+};
+const InvisibleByte kInvisible[] = {
+	{"\xef\xbb\xbf", 3, "a byte-order mark (U+FEFF)"},
+	{"\xe2\x80\xaf", 3, "a narrow no-break space (U+202F)"},
+	{"\xe2\x80\xa8", 3, "a line separator (U+2028)"},
+	{"\xe3\x80\x80", 3, "an ideographic space (U+3000)"},
+	{"\xc2\xa0",     2, "a no-break space (U+00A0) written as UTF-8"},
+	{"\xa0",         1, "a no-break space, the ISO-8859 spelling"},
+};
+
+//! U+2000..U+200B (en quad ... zero-width space) share the E2 80 8x prefix.
+bool unicodeSpaceRun(const std::string &s, std::size_t i, std::size_t &len, std::string &what)
+{
+	if (i + 3 > s.size())
+		return false;
+	const unsigned char a = (unsigned char)s[i], b = (unsigned char)s[i + 1], c = (unsigned char)s[i + 2];
+	if (a != 0xE2 || b != 0x80 || c < 0x80 || c > 0x8B)
+		return false;
+	len = 3;
+	char buf[32];
+	std::snprintf(buf, sizeof buf, "a space of the U+20%02X kind", 0x00 + (c - 0x80));
+	what = buf;
+	return true;
+}
+
+//! "0xA0" / "0xC2 0xA0"
+std::string hexBytes(const std::string &s, std::size_t off, std::size_t len)
+{
+	std::string out;
+	for (std::size_t i = 0; i < len; ++i) {
+		char buf[8];
+		std::snprintf(buf, sizeof buf, "0x%02X", (unsigned char)s[off + i]);
+		if (!out.empty()) out += ' ';
+		out += buf;
+	}
+	return out;
+}
+
 class LineChecker {
 public:
 	LineChecker(const Grammar &g, const std::string &file, std::size_t lineno,
@@ -75,6 +160,7 @@ private:
 	//! Returns true when `name` is one the engine will not accept.
 	bool checkSubfamilyName(const Line &L, const CommandData &cd, const FamilyData &fam,
 	                        const std::string &name, const std::string &consequence);
+	void checkInvisibleSeparators(const Line &L);
 
 	const Grammar &g_;
 	std::string file_;
@@ -115,11 +201,49 @@ bool LineChecker::checkSubfamilyName(const Line &L, const CommandData &cd,
 		return true;
 	}
 	std::string msg = quoteName(name) + " is not a known " + familyLabel(cd.subfamily) + consequence;
-	std::string near = nearestNeighbour(name, fam.sorted);
+	std::string near = cappedSuggestion(name, fam.sorted);
 	if (!near.empty())
 		msg += "; did you mean " + quoteName(near) + "?";
 	emit("unknown-parameter", msg);
 	return true;
+}
+
+//! Scope: bytes OUTSIDE a quoted value. Inside a `"..."` run the engine already
+//! accepts spaces, so a no-break space there is ordinary text the author meant —
+//! reporting it would be a C3 false positive. Everywhere else the byte sits
+//! where a separator was meant, or turns a name into a name nothing knows.
+void LineChecker::checkInvisibleSeparators(const Line &L)
+{
+	auto insideQuotedValue = [&L](std::size_t off) {
+		for (const auto &t : L.tokens)
+			if (t.quoted && t.span.contains(off))
+				return true;
+		return false;
+	};
+
+	for (std::size_t i = 0; i < L.raw.size();) {
+		std::size_t len = 0;
+		std::string what;
+		for (const auto &iv : kInvisible) {
+			if (L.raw.compare(i, iv.len, iv.bytes, iv.len) == 0) {
+				len = iv.len;
+				what = iv.what;
+				break;
+			}
+		}
+		if (!len && !unicodeSpaceRun(L.raw, i, len, what)) {
+			++i;
+			continue;
+		}
+		if (!insideQuotedValue(i)) {
+			emit("invisible-separator",
+			     "column " + std::to_string(i + 1) + " holds " + what + " (byte " +
+			     hexBytes(L.raw, i, len) + "), not a space: the engine separates words on space, "
+			     "tab, CR, LF, VT and FF only, so what is written on either side of this byte is "
+			     "read as ONE word");
+		}
+		i += len;
+	}
 }
 
 void LineChecker::run(const Line &L)
@@ -140,6 +264,14 @@ void LineChecker::run(const Line &L)
 	if (!L.has_command)
 		return;   // whitespace-only line: executeCommand:207 returns without acting
 
+	// --- the cause before its consequences ------------------------------------
+	// A separator-lookalike byte changes what every later token IS, so it is
+	// reported FIRST on the line. It does not suppress the rules that report
+	// what the engine will then DO with the line: both statements are true and
+	// separately actionable, and silencing a true finding because another rule
+	// explains it would make the finding set depend on rule order.
+	checkInvisibleSeparators(L);
+
 	const CommandData *cd = g_.command(L.command);
 	if (!cd) {
 		if (g_.isObsolete(L.command)) {
@@ -149,7 +281,7 @@ void LineChecker::run(const Line &L)
 			return;
 		}
 		std::string msg = "unknown command " + quoteName(L.command);
-		std::string near = nearestNeighbour(L.command, g_.commandLookupList());
+		std::string near = cappedSuggestion(L.command, g_.commandLookupList());
 		if (!near.empty())
 			msg += "; did you mean " + quoteName(near) + "?";
 		emit("unknown-command", msg);
@@ -275,7 +407,12 @@ void LineChecker::run(const Line &L)
 	}
 
 	// --- argument vocabulary, armed by data presence alone ---------------------
-	if (cd->has_args) {
+	// `has_args` says the entry lists keys; `args_complete` says the list is the
+	// WHOLE accepted vocabulary. Only the second one licenses the word
+	// "unknown": `body` and `camera` (and `flyto`, which IS camera) forward
+	// their map to a grammar that is another contract file's deliverable, so
+	// they stay silent on their keys by construction, not by omission.
+	if (cd->has_args && cd->args_complete) {
 		const bool name_is_key = fam &&
 			(cd->placement.pos == SubfamilyPosition::AppliedKey ||
 			 cd->placement.pos == SubfamilyPosition::EveryKey);
@@ -286,7 +423,7 @@ void LineChecker::run(const Line &L)
 			if (name_is_key && fam->name_set.count(k))
 				continue;   // the key IS the family name, not an argument
 			std::string msg = quoteName(k) + " is not an argument of command " + quoteName(cd->name);
-			std::string near = nearestNeighbour(k, cd->arg_keys_sorted);
+			std::string near = cappedSuggestion(k, cd->arg_keys_sorted);
 			if (!near.empty())
 				msg += "; did you mean " + quoteName(near) + "?";
 			emit("unknown-parameter", msg);
@@ -336,33 +473,64 @@ std::vector<Diagnostic> checkFile(const Grammar &g, const std::string &path,
 std::vector<UnarmedRule> unarmedRules(const Grammar &g)
 {
 	std::vector<UnarmedRule> out;
-	// unknown-parameter has two halves; the family half is armed, the
-	// argument-key half waits for the extraction sweep to land `args` data.
+	// unknown-parameter has two halves; the family half arms per command by
+	// `subfamily` + a known placement, the argument-key half by `args` data +
+	// `args_complete`. Both report what is NOT covered, so the gap is visible.
 	int with_args = 0, subfam_unarmed = 0;
-	std::vector<std::string> unarmed_names;
+	std::vector<std::string> unarmed_names, incomplete_names, sourced_names, free_names;
 	for (const auto &name : g.commandLookupList()) {
 		const CommandData *cd = g.command(name);
 		if (!cd)
 			continue;
-		if (cd->has_args)
+		if (cd->has_args && cd->args_complete)
 			++with_args;
+		if (!cd->args_complete)
+			incomplete_names.push_back(name);
+		if (!cd->args_source.empty())
+			sourced_names.push_back(name);
+		if (cd->free_keys && cd->args_source.empty())
+			free_names.push_back(name);   // one bucket per command
 		if (!cd->subfamily.empty() && cd->placement.pos == SubfamilyPosition::Unknown) {
 			++subfam_unarmed;
 			unarmed_names.push_back(name);
 		}
 	}
+	auto join = [](const std::vector<std::string> &v) {
+		std::string s;
+		for (const auto &n : v) {
+			if (!s.empty()) s += ", ";
+			s += n;
+		}
+		return s;
+	};
 	if (with_args == 0)
 		out.push_back({"unknown-parameter",
 		               "argument-key half dormant: no command entry carries `args` data yet; "
 		               "it arms per command by data presence, with no code change"});
-	if (subfam_unarmed) {
-		std::string names;
-		for (const auto &n : unarmed_names) {
-			if (!names.empty()) names += ", ";
-			names += n;
-		}
+	else
 		out.push_back({"unknown-parameter",
-		               "family-name half unarmed for: " + names +
+		               "argument-key half ARMED for " + std::to_string(with_args) +
+		               " commands; the lines below account for every registered command that is "
+		               "not one of them"});
+	if (!incomplete_names.empty())
+		out.push_back({"unknown-parameter",
+		               "argument-key half DELIBERATELY dormant for: " + join(incomplete_names) +
+		               " (the entry says args_complete:false — the rest of the key vocabulary is "
+		               "another contract's deliverable, so an unlisted key is not known to be wrong)"});
+	if (!sourced_names.empty())
+		out.push_back({"unknown-parameter",
+		               "argument-key half not needed for: " + join(sourced_names) +
+		               " (the keys are a family, checked by the family-name half; running both "
+		               "would report the same key twice)"});
+	if (!free_names.empty())
+		out.push_back({"unknown-parameter",
+		               "argument-key half not applicable to: " + join(free_names) +
+		               " (these commands have no fixed key list — the key is a flag name, a "
+		               "variable name or free text; the entry's `key_grammar` says which). Nothing "
+		               "is missing here: every other registered command IS checked"});
+	if (subfam_unarmed) {
+		out.push_back({"unknown-parameter",
+		               "family-name half unarmed for: " + join(unarmed_names) +
 		               " (the contract names the family but not where the name sits in the line, "
 		               "and the engine's acceptance test for it was not read)"});
 	}
