@@ -159,6 +159,39 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
 
 ## 6. Journal (append-only)
 
+- **[2026-08-04d] All four units + tokenizer gated GREEN; upstream batch
+  executed; merge dispatched.** Units 2/3/4 landed and were independently
+  re-gated (counts re-derived, sharp claims verified at source — full
+  gate record in SWEEP_DISPATCH): 339/339 args[ occurrences accounted
+  across the four fragments (68+101+93+77), code `8e62cfd9`+`091713cd`.
+  §5 items 1 AND 2 of this ledger are thereby DONE pending merge.
+  Tokenizer task (code `da513e3a`): C1 is MEASURED, not asserted — a
+  verbatim copy of parseCommand vs scedit::tokenizeLine over 53 058
+  enumerated+corpus lines, 0 mismatches; 12/12 lint seeds armed;
+  unknown-parameter arms itself from args data presence (merge lights it
+  with no code change); first C3 corpus run: 12 findings, all TRUE, 0
+  false positives; exit codes 0/1/2 verified by supervisor on an
+  independent clean build (5/5 ctest). Corpus found shipped-content
+  defects → §5.80 upstream (0xA0 eats `albedo 1`; the dead
+  `set home_planet … duration 5` line = §5.79(a) materialized).
+  Upstream batch executed (harness `3b778fc`): NEW §5.77 (configuration
+  fall-through — verified fully: star-catalogue save also runs §5.42's
+  config writer; unknown module re-runs App::init before reporting),
+  §5.78 (date W_PRESET||W_PRESET + no-effect `_()` statement), §5.79
+  (recorder-rewrite class, 4 shapes), §5.80 (superscript.sts);
+  annotations: §5.75 conversion inventory discharged, §5.76 body-color
+  second reach, §5.36+§5.41 blind rediscoveries (convergence + line
+  drift recorded so nobody re-registers them). Merge task dispatched
+  (sequential — it writes the file everything reads): fragments →
+  schema v2 partial, args_complete:false on body/camera,
+  parse_model riders, invisible-separator seed mint, did-you-mean
+  display cap (scedit surface, oracle untouched), census 339-vs-366
+  attribution, full re-gate incl. arg-armed corpus at C3. Supervisor
+  decisions taken, veto open: display cap is scedit-owned UX (C1
+  governs parse, not lint message); struct/ifSwap skip-region lint
+  semantics left to the merge with C3 as the constraint. Next after
+  merge gate: FTXUI shell dispatch (D3 satisfied: --check exists,
+  corpus-validated).
 - **[2026-08-04c] §5 item 3 resolved; three defects registered upstream;
   ledger-maintenance incident.** The second `'#'` site (script_mgr.cpp:94,
   in `addScriptFirst`) is a divergent line-classifier — trims whitespace
