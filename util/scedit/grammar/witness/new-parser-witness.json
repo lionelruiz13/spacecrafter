@@ -1,0 +1,7094 @@
+{
+ "_meta": {
+  "artifact": "new_parser_scripts/input_fr.txt extraction (SECOND documentation witness)",
+  "produced": "2026-08-04, scedit INTENT §5 item 9 (witness mining), fragment output for supervisor merge",
+  "source": {
+   "path": "util/new_parser_scripts/input_fr.txt",
+   "bytes": 28763,
+   "md5": "db1e6150e9985a5339cedae9b9fca737",
+   "encoding": "ISO-8859 (French accented text), LF",
+   "author": "Nicolas Barile <n.barile.57@gmail.com> pour association-sirius.org, README.txt; 'Mise à jour le 3/06/2020'",
+   "last_touched": "git 4d57a0a3 'all console releases are now in English' (whole directory)"
+  },
+  "block_grammar": "its own README.txt: NAME <command> / @<description> / ARGUMENT <name> @ <type> / $ <value> / PARAMETER <name> @ <type> / EXEMPLE / @@ (end of command) / NAME END (end of file) / IMG <url>",
+  "tier": "NOT `[superscript-attested]`. This file is a DIFFERENT document by a DIFFERENT author; C2's amendment names doc/superscript.sts only. Claims from here are tagged [new-parser-fr-attested: line] and the question of whether this source joins the anchor classes is SUSPENDED FOR VIXY (see new-parser-scripts.md).",
+  "language": "French. The doc lines are NOT translated here: a translation is an interpretation, and the C6 doc bar is written from CODE plus a cross-checked witness, not from a paraphrase. Every quote is verbatim."
+ },
+ "census": {
+  "blocks": 37,
+  "argument_slots": 98,
+  "parameter_slots": 158,
+  "enumerated_values": 141,
+  "description_lines": 471,
+  "examples": 10,
+  "unparsed_lines": 0
+ },
+ "commands_documented": [
+  "audio",
+  "body",
+  "body_trace",
+  "clear",
+  "color",
+  "configuration",
+  "date",
+  "deselect",
+  "domemasters",
+  "dso",
+  "external_viewer",
+  "flag",
+  "illuminate",
+  "image",
+  "landscape",
+  "look",
+  "media",
+  "meteors",
+  "moveto",
+  "multiplier",
+  "personal",
+  "personeq",
+  "planet_scale",
+  "position",
+  "print",
+  "script",
+  "select",
+  "set",
+  "shutdown",
+  "sky_culture",
+  "sky_draw",
+  "star_lines",
+  "sun_trace",
+  "text",
+  "timerate",
+  "wait",
+  "zoom"
+ ],
+ "commands_documented_not_registered": [
+  "look",
+  "multiplier",
+  "sky_draw",
+  "sun_trace"
+ ],
+ "registered_commands_not_documented": [
+  "add",
+  "camera",
+  "comment",
+  "constellation",
+  "define",
+  "divide",
+  "dso2d",
+  "dso3d",
+  "flyto",
+  "font",
+  "galaxy_stars",
+  "get",
+  "heading",
+  "look_at",
+  "mode",
+  "modulo",
+  "multiply",
+  "random",
+  "screen_fader",
+  "search",
+  "session",
+  "sinus",
+  "struct",
+  "sub",
+  "suntrace",
+  "tangent",
+  "transition",
+  "trunc",
+  "uncomment"
+ ],
+ "cross_check_rows": [
+  {
+   "command": "audio",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 5
+  },
+  {
+   "command": "audio",
+   "kind": "ARGUMENT",
+   "name": "nopause",
+   "status": "key present",
+   "line": 17
+  },
+  {
+   "command": "audio",
+   "kind": "ARGUMENT",
+   "name": "volume",
+   "status": "key present",
+   "line": 20
+  },
+  {
+   "command": "audio",
+   "kind": "PARAMETER",
+   "name": "filename",
+   "status": "key present",
+   "line": 27
+  },
+  {
+   "command": "audio",
+   "kind": "PARAMETER",
+   "name": "loop",
+   "status": "key present",
+   "line": 29
+  },
+  {
+   "command": "body",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "unverifiable (args_complete false)",
+   "line": 42
+  },
+  {
+   "command": "body",
+   "kind": "ARGUMENT",
+   "name": "color",
+   "status": "unverifiable (args_complete false)",
+   "line": 53
+  },
+  {
+   "command": "body",
+   "kind": "ARGUMENT",
+   "name": "hidden",
+   "status": "unverifiable (args_complete false)",
+   "line": 63
+  },
+  {
+   "command": "body",
+   "kind": "ARGUMENT",
+   "name": "skin_use",
+   "status": "unverifiable (args_complete false)",
+   "line": 66
+  },
+  {
+   "command": "body",
+   "kind": "ARGUMENT",
+   "name": "skin_tex",
+   "status": "unverifiable (args_complete false)",
+   "line": 68
+  },
+  {
+   "command": "body",
+   "kind": "ARGUMENT",
+   "name": "tesselation",
+   "status": "unverifiable (args_complete false)",
+   "line": 71
+  },
+  {
+   "command": "body",
+   "kind": "PARAMETER",
+   "name": "name",
+   "status": "unverifiable (args_complete false)",
+   "line": 87
+  },
+  {
+   "command": "body",
+   "kind": "PARAMETER",
+   "name": "value",
+   "status": "unverifiable (args_complete false)",
+   "line": 89
+  },
+  {
+   "command": "body",
+   "kind": "PARAMETER",
+   "name": "color_value",
+   "status": "unverifiable (args_complete false)",
+   "line": 92
+  },
+  {
+   "command": "body",
+   "kind": "PARAMETER",
+   "name": "color_value",
+   "status": "unverifiable (args_complete false)",
+   "line": 94
+  },
+  {
+   "command": "body",
+   "kind": "PARAMETER",
+   "name": "r",
+   "status": "unverifiable (args_complete false)",
+   "line": 97
+  },
+  {
+   "command": "body",
+   "kind": "PARAMETER",
+   "name": "g",
+   "status": "unverifiable (args_complete false)",
+   "line": 100
+  },
+  {
+   "command": "body",
+   "kind": "PARAMETER",
+   "name": "b",
+   "status": "unverifiable (args_complete false)",
+   "line": 103
+  },
+  {
+   "command": "body_trace",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 115
+  },
+  {
+   "command": "body_trace",
+   "kind": "ARGUMENT",
+   "name": "hidde",
+   "status": "KEY ABSENT",
+   "line": 118
+  },
+  {
+   "command": "body_trace",
+   "kind": "ARGUMENT",
+   "name": "pen",
+   "status": "key present",
+   "line": 120
+  },
+  {
+   "command": "body_trace",
+   "kind": "ARGUMENT",
+   "name": "target",
+   "status": "key present",
+   "line": 127
+  },
+  {
+   "command": "clear",
+   "kind": "PARAMETER",
+   "name": "state",
+   "status": "key present",
+   "line": 134
+  },
+  {
+   "command": "color",
+   "kind": "ARGUMENT",
+   "name": "property",
+   "status": "key present",
+   "line": 143
+  },
+  {
+   "command": "color",
+   "kind": "PARAMETER",
+   "name": "index",
+   "status": "key present",
+   "line": 180
+  },
+  {
+   "command": "color",
+   "kind": "PARAMETER",
+   "name": "r",
+   "status": "key present",
+   "line": 183
+  },
+  {
+   "command": "color",
+   "kind": "PARAMETER",
+   "name": "g",
+   "status": "key present",
+   "line": 186
+  },
+  {
+   "command": "color",
+   "kind": "PARAMETER",
+   "name": "b",
+   "status": "key present",
+   "line": 189
+  },
+  {
+   "command": "color",
+   "kind": "PARAMETER",
+   "name": "value",
+   "status": "key present",
+   "line": 192
+  },
+  {
+   "command": "configuration",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 200
+  },
+  {
+   "command": "date",
+   "kind": "ARGUMENT",
+   "name": "jday",
+   "status": "key present",
+   "line": 210
+  },
+  {
+   "command": "date",
+   "kind": "ARGUMENT",
+   "name": "local",
+   "status": "key present",
+   "line": 212
+  },
+  {
+   "command": "date",
+   "kind": "ARGUMENT",
+   "name": "relative",
+   "status": "key present",
+   "line": 215
+  },
+  {
+   "command": "date",
+   "kind": "ARGUMENT",
+   "name": "relativeYear",
+   "status": "KEY ABSENT",
+   "line": 217
+  },
+  {
+   "command": "date",
+   "kind": "ARGUMENT",
+   "name": "relativeMonth",
+   "status": "KEY ABSENT",
+   "line": 219
+  },
+  {
+   "command": "date",
+   "kind": "ARGUMENT",
+   "name": "utc",
+   "status": "key present",
+   "line": 221
+  },
+  {
+   "command": "date",
+   "kind": "ARGUMENT",
+   "name": "sideral",
+   "status": "KEY ABSENT",
+   "line": 223
+  },
+  {
+   "command": "date",
+   "kind": "ARGUMENT",
+   "name": "load",
+   "status": "key present",
+   "line": 225
+  },
+  {
+   "command": "date",
+   "kind": "ARGUMENT",
+   "name": "sun",
+   "status": "key present",
+   "line": 228
+  },
+  {
+   "command": "deselect",
+   "kind": "PARAMETER",
+   "name": "constellation",
+   "status": "key present",
+   "line": 241
+  },
+  {
+   "command": "domemasters",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 249
+  },
+  {
+   "command": "dso",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 262
+  },
+  {
+   "command": "dso",
+   "kind": "ARGUMENT",
+   "name": "hidden",
+   "status": "key present",
+   "line": 270
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "name",
+   "status": "key present",
+   "line": 274
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "path",
+   "status": "key present",
+   "line": 276
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "ra",
+   "status": "key present",
+   "line": 277
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "de",
+   "status": "key present",
+   "line": 280
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "magnitude",
+   "status": "key present",
+   "line": 283
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "angular_size",
+   "status": "key present",
+   "line": 286
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "rotation",
+   "status": "key present",
+   "line": 289
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "credit",
+   "status": "key present",
+   "line": 292
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "filename",
+   "status": "key present",
+   "line": 294
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "texture_luminance_adjust",
+   "status": "key present",
+   "line": 297
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "distance",
+   "status": "key present",
+   "line": 300
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "constellation",
+   "status": "key present",
+   "line": 303
+  },
+  {
+   "command": "dso",
+   "kind": "PARAMETER",
+   "name": "type",
+   "status": "key present",
+   "line": 306
+  },
+  {
+   "command": "external_viewer",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 315
+  },
+  {
+   "command": "external_viewer",
+   "kind": "PARAMETER",
+   "name": "filename",
+   "status": "key present",
+   "line": 321
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "antialias_lines",
+   "status": "flag name present",
+   "line": 329
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "constellation_drawing",
+   "status": "flag name present",
+   "line": 330
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "constellation_names",
+   "status": "flag name present",
+   "line": 331
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "constellation_art",
+   "status": "flag name present",
+   "line": 332
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "constellation_boundaries",
+   "status": "flag name present",
+   "line": 333
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "constellation_pick",
+   "status": "flag name present",
+   "line": 334
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "star_twinkle",
+   "status": "flag name present",
+   "line": 335
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "navigation",
+   "status": "flag name present",
+   "line": 336
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "show_tui_datetime",
+   "status": "flag name present",
+   "line": 337
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "show_tui_short_obj_info",
+   "status": "flag name present",
+   "line": 338
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "manual_zoom",
+   "status": "flag name present",
+   "line": 339
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "light_travel_time",
+   "status": "flag name present",
+   "line": 340
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "fog",
+   "status": "flag name present",
+   "line": 341
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "atmosphere",
+   "status": "flag name present",
+   "line": 342
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "azimuthal_grid",
+   "status": "flag name present",
+   "line": 343
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "equatorial_grid",
+   "status": "flag name present",
+   "line": 344
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "ecliptic_grid",
+   "status": "flag name present",
+   "line": 345
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "galactic_grid",
+   "status": "flag name present",
+   "line": 346
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "equator_line",
+   "status": "flag name present",
+   "line": 347
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "galactic_line",
+   "status": "flag name present",
+   "line": 348
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "ecliptic_line",
+   "status": "flag name present",
+   "line": 349
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "precession_circle",
+   "status": "flag name present",
+   "line": 350
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "circumpolar_circle",
+   "status": "flag name present",
+   "line": 351
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "tropic_lines",
+   "status": "flag name present",
+   "line": 352
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "meridian_line",
+   "status": "flag name present",
+   "line": 353
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "zenith_line",
+   "status": "flag name present",
+   "line": 354
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "polar_circle",
+   "status": "flag name present",
+   "line": 355
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "ecliptic_center",
+   "status": "flag name present",
+   "line": 356
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "galactic_pole",
+   "status": "flag name present",
+   "line": 357
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "galactic_center",
+   "status": "flag name present",
+   "line": 358
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "vernal_points",
+   "status": "flag name present",
+   "line": 359
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "analemma_line",
+   "status": "flag name present",
+   "line": 360
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "analemma",
+   "status": "flag name present",
+   "line": 361
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "aries_line",
+   "status": "flag name present",
+   "line": 362
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "zodiac",
+   "status": "flag name present",
+   "line": 363
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "personal",
+   "status": "flag name present",
+   "line": 364
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "personeq",
+   "status": "flag name present",
+   "line": 365
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "greenwich_line",
+   "status": "flag name present",
+   "line": 366
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "vertical_line",
+   "status": "flag name present",
+   "line": 367
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "cardinal_points",
+   "status": "flag name present",
+   "line": 368
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "clouds",
+   "status": "flag name present",
+   "line": 369
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "moon_scaled",
+   "status": "flag name present",
+   "line": 370
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "sun_scaled",
+   "status": "flag name present",
+   "line": 371
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "landscape",
+   "status": "flag name present",
+   "line": 372
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "stars",
+   "status": "flag name present",
+   "line": 373
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "star_names",
+   "status": "flag name present",
+   "line": 374
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "planets",
+   "status": "flag name present",
+   "line": 375
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "planet_names",
+   "status": "flag name present",
+   "line": 376
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "planet_orbits",
+   "status": "flag name present",
+   "line": 377
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "orbits",
+   "status": "flag name present",
+   "line": 378
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "planets_orbits",
+   "status": "flag name present",
+   "line": 379
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "planets_axis",
+   "status": "flag name present",
+   "line": 380
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "satellites_orbits",
+   "status": "flag name present",
+   "line": 381
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "nebulae",
+   "status": "flag name present",
+   "line": 382
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "nebula_names",
+   "status": "flag name present",
+   "line": 383
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "nebula_hints",
+   "status": "flag name present",
+   "line": 384
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "milky_way",
+   "status": "flag name present",
+   "line": 385
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "bright_nebulae",
+   "status": "flag name present",
+   "line": 386
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "object_trails",
+   "status": "flag name present",
+   "line": 387
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "track_object",
+   "status": "flag name present",
+   "line": 388
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "script_gui_debug",
+   "status": "flag name present",
+   "line": 389
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "lock_sky_position",
+   "status": "flag name present",
+   "line": 390
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "body_trace",
+   "status": "flag name present",
+   "line": 391
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "show_latlon",
+   "status": "flag name present",
+   "line": 392
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "color_inverse",
+   "status": "flag name present",
+   "line": 393
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "subtitle",
+   "status": "flag name present",
+   "line": 394
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "oort",
+   "status": "flag name present",
+   "line": 395
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "stars_trace",
+   "status": "flag name present",
+   "line": 396
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "star_lines",
+   "status": "flag name present",
+   "line": 397
+  },
+  {
+   "command": "flag",
+   "kind": "PARAMETER",
+   "name": "sky_draw",
+   "status": "FLAG NAME ABSENT",
+   "line": 398
+  },
+  {
+   "command": "illuminate",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 406
+  },
+  {
+   "command": "illuminate",
+   "kind": "ARGUMENT",
+   "name": "display",
+   "status": "key present",
+   "line": 411
+  },
+  {
+   "command": "illuminate",
+   "kind": "ARGUMENT",
+   "name": "filename",
+   "status": "key present",
+   "line": 422
+  },
+  {
+   "command": "illuminate",
+   "kind": "PARAMETER",
+   "name": "hp",
+   "status": "key present",
+   "line": 424
+  },
+  {
+   "command": "illuminate",
+   "kind": "PARAMETER",
+   "name": "constellation",
+   "status": "key present",
+   "line": 427
+  },
+  {
+   "command": "illuminate",
+   "kind": "PARAMETER",
+   "name": "size",
+   "status": "key present",
+   "line": 429
+  },
+  {
+   "command": "illuminate",
+   "kind": "PARAMETER",
+   "name": "rotation",
+   "status": "key present",
+   "line": 432
+  },
+  {
+   "command": "illuminate",
+   "kind": "PARAMETER",
+   "name": "r",
+   "status": "key present",
+   "line": 435
+  },
+  {
+   "command": "illuminate",
+   "kind": "PARAMETER",
+   "name": "g",
+   "status": "key present",
+   "line": 438
+  },
+  {
+   "command": "illuminate",
+   "kind": "PARAMETER",
+   "name": "b",
+   "status": "key present",
+   "line": 441
+  },
+  {
+   "command": "illuminate",
+   "kind": "PARAMETER",
+   "name": "color_value",
+   "status": "key present",
+   "line": 444
+  },
+  {
+   "command": "illuminate",
+   "kind": "PARAMETER",
+   "name": "color_value",
+   "status": "key present",
+   "line": 446
+  },
+  {
+   "command": "image",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 456
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "coordinate_system",
+   "status": "key present",
+   "line": 463
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "mipmap",
+   "status": "key present",
+   "line": 468
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "name",
+   "status": "key present",
+   "line": 470
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "filename",
+   "status": "key present",
+   "line": 472
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "altitude",
+   "status": "key present",
+   "line": 474
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "azimuth",
+   "status": "key present",
+   "line": 476
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "xpos",
+   "status": "key present",
+   "line": 478
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "ypos",
+   "status": "key present",
+   "line": 480
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "duration",
+   "status": "key present",
+   "line": 482
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "alpha",
+   "status": "key present",
+   "line": 484
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "scale",
+   "status": "key present",
+   "line": 486
+  },
+  {
+   "command": "image",
+   "kind": "PARAMETER",
+   "name": "rotation",
+   "status": "key present",
+   "line": 488
+  },
+  {
+   "command": "landscape",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 495
+  },
+  {
+   "command": "landscape",
+   "kind": "PARAMETER",
+   "name": "rotation",
+   "status": "key present",
+   "line": 501
+  },
+  {
+   "command": "look",
+   "kind": "COMMAND",
+   "name": "look",
+   "status": "COMMAND NOT REGISTERED",
+   "line": 506
+  },
+  {
+   "command": "media",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 519
+  },
+  {
+   "command": "media",
+   "kind": "ARGUMENT",
+   "name": "keycolor",
+   "status": "key present",
+   "line": 527
+  },
+  {
+   "command": "media",
+   "kind": "PARAMETER",
+   "name": "intensity",
+   "status": "key present",
+   "line": 530
+  },
+  {
+   "command": "media",
+   "kind": "PARAMETER",
+   "name": "color_value",
+   "status": "key present",
+   "line": 532
+  },
+  {
+   "command": "media",
+   "kind": "PARAMETER",
+   "name": "r",
+   "status": "key present",
+   "line": 534
+  },
+  {
+   "command": "media",
+   "kind": "PARAMETER",
+   "name": "g",
+   "status": "key present",
+   "line": 537
+  },
+  {
+   "command": "media",
+   "kind": "PARAMETER",
+   "name": "b",
+   "status": "key present",
+   "line": 540
+  },
+  {
+   "command": "media",
+   "kind": "PARAMETER",
+   "name": "type",
+   "status": "key present",
+   "line": 543
+  },
+  {
+   "command": "media",
+   "kind": "PARAMETER",
+   "name": "videoname",
+   "status": "key present",
+   "line": 548
+  },
+  {
+   "command": "media",
+   "kind": "PARAMETER",
+   "name": "audioname",
+   "status": "key present",
+   "line": 551
+  },
+  {
+   "command": "meteors",
+   "kind": "ARGUMENT",
+   "name": "zhr",
+   "status": "key present",
+   "line": 560
+  },
+  {
+   "command": "moveto",
+   "kind": "ARGUMENT",
+   "name": "lat",
+   "status": "key present",
+   "line": 568
+  },
+  {
+   "command": "moveto",
+   "kind": "ARGUMENT",
+   "name": "lon",
+   "status": "key present",
+   "line": 574
+  },
+  {
+   "command": "moveto",
+   "kind": "ARGUMENT",
+   "name": "alt",
+   "status": "key present",
+   "line": 580
+  },
+  {
+   "command": "moveto",
+   "kind": "PARAMETER",
+   "name": "name",
+   "status": "KEY ABSENT",
+   "line": 585
+  },
+  {
+   "command": "moveto",
+   "kind": "PARAMETER",
+   "name": "duration",
+   "status": "key present",
+   "line": 588
+  },
+  {
+   "command": "multiplier",
+   "kind": "COMMAND",
+   "name": "multiplier",
+   "status": "COMMAND NOT REGISTERED",
+   "line": 595
+  },
+  {
+   "command": "personal",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 614
+  },
+  {
+   "command": "personal",
+   "kind": "PARAMETER",
+   "name": "filename",
+   "status": "key present",
+   "line": 620
+  },
+  {
+   "command": "personeq",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 628
+  },
+  {
+   "command": "personeq",
+   "kind": "PARAMETER",
+   "name": "filename",
+   "status": "key present",
+   "line": 633
+  },
+  {
+   "command": "planet_scale",
+   "kind": "ARGUMENT",
+   "name": "name",
+   "status": "key present",
+   "line": 641
+  },
+  {
+   "command": "planet_scale",
+   "kind": "PARAMETER",
+   "name": "scale",
+   "status": "key present",
+   "line": 644
+  },
+  {
+   "command": "position",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 651
+  },
+  {
+   "command": "print",
+   "kind": "ARGUMENT",
+   "name": "value",
+   "status": "KEY ABSENT",
+   "line": 662
+  },
+  {
+   "command": "print",
+   "kind": "PARAMETER",
+   "name": "name",
+   "status": "KEY ABSENT",
+   "line": 665
+  },
+  {
+   "command": "script",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 673
+  },
+  {
+   "command": "script",
+   "kind": "PARAMETER",
+   "name": "filename",
+   "status": "key present",
+   "line": 692
+  },
+  {
+   "command": "select",
+   "kind": "PARAMETER",
+   "name": "hp",
+   "status": "key present",
+   "line": 700
+  },
+  {
+   "command": "select",
+   "kind": "PARAMETER",
+   "name": "star",
+   "status": "key present",
+   "line": 702
+  },
+  {
+   "command": "select",
+   "kind": "PARAMETER",
+   "name": "planet",
+   "status": "key present",
+   "line": 704
+  },
+  {
+   "command": "select",
+   "kind": "PARAMETER",
+   "name": "nebula",
+   "status": "key present",
+   "line": 706
+  },
+  {
+   "command": "select",
+   "kind": "PARAMETER",
+   "name": "constellation",
+   "status": "key present",
+   "line": 708
+  },
+  {
+   "command": "select",
+   "kind": "PARAMETER",
+   "name": "constellation",
+   "status": "key present",
+   "line": 710
+  },
+  {
+   "command": "select",
+   "kind": "PARAMETER",
+   "name": "constellation_star",
+   "status": "key present",
+   "line": 712
+  },
+  {
+   "command": "select",
+   "kind": "PARAMETER",
+   "name": "pointeur",
+   "status": "KEY ABSENT",
+   "line": 714
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "atmosphere_fade_duration",
+   "status": "set name present",
+   "line": 722
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "auto_move_duration",
+   "status": "set name present",
+   "line": 725
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "constellation_art_fade_duration",
+   "status": "set name present",
+   "line": 728
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "constellation_art_intensity",
+   "status": "set name present",
+   "line": 731
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "light_pollution_limiting_magnitude",
+   "status": "set name present",
+   "line": 734
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "flight_duration",
+   "status": "SET NAME ABSENT",
+   "line": 737
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "heading",
+   "status": "set name present",
+   "line": 740
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "duration",
+   "status": "SET NAME ABSENT",
+   "line": 743
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "home_planet",
+   "status": "set name present",
+   "line": 746
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "landscape_name",
+   "status": "set name present",
+   "line": 749
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "line_width",
+   "status": "set name present",
+   "line": 752
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "max_mag_nebula_name",
+   "status": "set name present",
+   "line": 755
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "max_mag_star_name",
+   "status": "set name present",
+   "line": 758
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "moon_scale",
+   "status": "set name present",
+   "line": 761
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "sun_scale",
+   "status": "set name present",
+   "line": 764
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "milky_way_texture",
+   "status": "set name present",
+   "line": 767
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "sky_culture",
+   "status": "set name present",
+   "line": 770
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "sky_locale",
+   "status": "set name present",
+   "line": 773
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "ui_locale",
+   "status": "set name present",
+   "line": 776
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "star_mag_scale",
+   "status": "set name present",
+   "line": 779
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "star_size_limit",
+   "status": "set name present",
+   "line": 782
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "planet_size_limit",
+   "status": "set name present",
+   "line": 785
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "star_scale",
+   "status": "set name present",
+   "line": 788
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "star_twinkle_amount",
+   "status": "set name present",
+   "line": 791
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "star_fader_duration",
+   "status": "set name present",
+   "line": 794
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "star_limiting_mag",
+   "status": "set name present",
+   "line": 797
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "time_zone",
+   "status": "set name present",
+   "line": 800
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "text_fading_duration",
+   "status": "set name present",
+   "line": 803
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "milky_way_fader_duration",
+   "status": "set name present",
+   "line": 806
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "milky_way_intensity",
+   "status": "set name present",
+   "line": 809
+  },
+  {
+   "command": "set",
+   "kind": "ARGUMENT",
+   "name": "zoom_offset",
+   "status": "set name present",
+   "line": 812
+  },
+  {
+   "command": "sky_culture",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 820
+  },
+  {
+   "command": "sky_culture",
+   "kind": "PARAMETER",
+   "name": "path",
+   "status": "key present",
+   "line": 823
+  },
+  {
+   "command": "sky_draw",
+   "kind": "COMMAND",
+   "name": "sky_draw",
+   "status": "COMMAND NOT REGISTERED",
+   "line": 829
+  },
+  {
+   "command": "star_lines",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 843
+  },
+  {
+   "command": "star_lines",
+   "kind": "ARGUMENT",
+   "name": "load",
+   "status": "key present",
+   "line": 846
+  },
+  {
+   "command": "star_lines",
+   "kind": "ARGUMENT",
+   "name": "asterism",
+   "status": "key present",
+   "line": 849
+  },
+  {
+   "command": "sun_trace",
+   "kind": "COMMAND",
+   "name": "sun_trace",
+   "status": "COMMAND NOT REGISTERED",
+   "line": 855
+  },
+  {
+   "command": "shutdown",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 863
+  },
+  {
+   "command": "text",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 869
+  },
+  {
+   "command": "text",
+   "kind": "ARGUMENT",
+   "name": "display",
+   "status": "key present",
+   "line": 876
+  },
+  {
+   "command": "text",
+   "kind": "PARAMETER",
+   "name": "name",
+   "status": "key present",
+   "line": 880
+  },
+  {
+   "command": "text",
+   "kind": "PARAMETER",
+   "name": "string",
+   "status": "key present",
+   "line": 884
+  },
+  {
+   "command": "text",
+   "kind": "PARAMETER",
+   "name": "size",
+   "status": "key present",
+   "line": 887
+  },
+  {
+   "command": "text",
+   "kind": "PARAMETER",
+   "name": "azimuth",
+   "status": "key present",
+   "line": 895
+  },
+  {
+   "command": "text",
+   "kind": "PARAMETER",
+   "name": "latitude",
+   "status": "KEY ABSENT",
+   "line": 898
+  },
+  {
+   "command": "text",
+   "kind": "PARAMETER",
+   "name": "r",
+   "status": "key present",
+   "line": 901
+  },
+  {
+   "command": "text",
+   "kind": "PARAMETER",
+   "name": "g",
+   "status": "key present",
+   "line": 905
+  },
+  {
+   "command": "text",
+   "kind": "PARAMETER",
+   "name": "b",
+   "status": "key present",
+   "line": 909
+  },
+  {
+   "command": "text",
+   "kind": "PARAMETER",
+   "name": "color_value",
+   "status": "key present",
+   "line": 913
+  },
+  {
+   "command": "timerate",
+   "kind": "ARGUMENT",
+   "name": "rate",
+   "status": "key present",
+   "line": 921
+  },
+  {
+   "command": "timerate",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "key present",
+   "line": 924
+  },
+  {
+   "command": "timerate",
+   "kind": "PARAMETER",
+   "name": "step",
+   "status": "key present",
+   "line": 932
+  },
+  {
+   "command": "wait",
+   "kind": "ARGUMENT",
+   "name": "duration",
+   "status": "key present",
+   "line": 941
+  },
+  {
+   "command": "wait",
+   "kind": "ARGUMENT",
+   "name": "action",
+   "status": "KEY ABSENT",
+   "line": 943
+  },
+  {
+   "command": "zoom",
+   "kind": "ARGUMENT",
+   "name": "auto",
+   "status": "key present",
+   "line": 949
+  },
+  {
+   "command": "zoom",
+   "kind": "ARGUMENT",
+   "name": "manual",
+   "status": "key present",
+   "line": 953
+  },
+  {
+   "command": "zoom",
+   "kind": "ARGUMENT",
+   "name": "fov",
+   "status": "key present",
+   "line": 957
+  },
+  {
+   "command": "zoom",
+   "kind": "ARGUMENT",
+   "name": "delta_fov",
+   "status": "key present",
+   "line": 960
+  },
+  {
+   "command": "zoom",
+   "kind": "ARGUMENT",
+   "name": "center",
+   "status": "key present",
+   "line": 963
+  },
+  {
+   "command": "zoom",
+   "kind": "PARAMETER",
+   "name": "duration",
+   "status": "key present",
+   "line": 967
+  }
+ ],
+ "cross_check_summary": {
+  "key present": 125,
+  "unverifiable (args_complete false)": 13,
+  "KEY ABSENT": 10,
+  "flag name present": 69,
+  "FLAG NAME ABSENT": 1,
+  "COMMAND NOT REGISTERED": 4,
+  "set name present": 29,
+  "SET NAME ABSENT": 2
+ },
+ "blocks": [
+  {
+   "command": "audio",
+   "line": 1,
+   "desc": [
+    {
+     "line": 2,
+     "text": "commande gÃ©rant la piste audio du logiciel"
+    },
+    {
+     "line": 3,
+     "text": "les extentions wav, ogg et mp3 sont compatibles avec la commande"
+    },
+    {
+     "line": 4,
+     "text": "le volume est compris entre 0 et 128, par dÃ©faut, il est fixÃ© Ã  85"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "valeur fixÃ©e",
+     "line": 5,
+     "desc": [],
+     "values": [
+      {
+       "value": "drop",
+       "desc": [
+        {
+         "line": 7,
+         "text": "arrÃªte la piste audio et la dÃ©charge de la mÃ©moire"
+        }
+       ],
+       "line": 6
+      },
+      {
+       "value": "sync",
+       "desc": [
+        {
+         "line": 9,
+         "text": "synchronise la source audio avec le temps rÃ©el"
+        }
+       ],
+       "line": 8
+      },
+      {
+       "value": "pause",
+       "desc": [
+        {
+         "line": 11,
+         "text": "met la piste audio en pause"
+        }
+       ],
+       "line": 10
+      },
+      {
+       "value": "play",
+       "desc": [
+        {
+         "line": 13,
+         "text": "dÃ©bute la lecture d'une piste audio"
+        },
+        {
+         "line": 14,
+         "text": "nÃ©cessite filename, le paramÃ¨tre loop est optionel"
+        }
+       ],
+       "line": 12
+      },
+      {
+       "value": "resume",
+       "desc": [
+        {
+         "line": 16,
+         "text": "reprend la diffusion d'une source audio"
+        }
+       ],
+       "line": 15
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "nopause",
+     "type": "vrai/faux",
+     "line": 17,
+     "desc": [],
+     "values": [
+      {
+       "value": "true",
+       "desc": [],
+       "line": 18
+      },
+      {
+       "value": "false",
+       "desc": [
+        {
+         "line": 19,
+         "text": "indique si la piste audio s'arrÃªte lors de la lecture des scripts"
+        }
+       ],
+       "line": 18
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "volume",
+     "type": "fixÃ©",
+     "line": 20,
+     "desc": [],
+     "values": [
+      {
+       "value": "increment",
+       "desc": [
+        {
+         "line": 22,
+         "text": "augmente le volume de 5"
+        }
+       ],
+       "line": 21
+      },
+      {
+       "value": "decrement",
+       "desc": [
+        {
+         "line": 24,
+         "text": "diminue le volume de 5"
+        }
+       ],
+       "line": 23
+      },
+      {
+       "value": "valeur",
+       "desc": [
+        {
+         "line": 26,
+         "text": "valeur reprÃ©sente un nombre compris entre 0 (sourdine) et 128 (maximum)"
+        }
+       ],
+       "line": 25
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "filename",
+     "type": "chaine de caractÃ¨re",
+     "line": 27,
+     "desc": [
+      {
+       "line": 28,
+       "text": "nom du fichier audio"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "loop",
+     "type": "vrai/faux",
+     "line": 29,
+     "desc": [
+      {
+       "line": 30,
+       "text": "indique si la source audio doit se rÃ©pÃ©ter ou (non)"
+      },
+      {
+       "line": 31,
+       "text": "par dÃ©faut, la rÃ©pÃ©tition n'est pas active"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [
+    {
+     "line": 33,
+     "text": "audio action play filename test.ogg"
+    },
+    {
+     "line": 34,
+     "text": "audio action drop"
+    },
+    {
+     "line": 35,
+     "text": "audio volume increment"
+    },
+    {
+     "line": 36,
+     "text": "audio filename superscript/clac.ogg action play"
+    }
+   ],
+   "img": null
+  },
+  {
+   "command": "body",
+   "line": 40,
+   "desc": [
+    {
+     "line": 41,
+     "text": "permet d'insÃ©rer un astre personnalisÃ© dans le systeme solaire"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 42,
+     "desc": [],
+     "values": [
+      {
+       "value": "load",
+       "desc": [
+        {
+         "line": 44,
+         "text": "charge en mÃ©moire le nouvel astre reprÃ©sentÃ© par une sÃ©rie de commandes saisies"
+        },
+        {
+         "line": 45,
+         "text": "nÃ©cessite name"
+        }
+       ],
+       "line": 43
+      },
+      {
+       "value": "clear",
+       "desc": [
+        {
+         "line": 47,
+         "text": "supprime tous les astres insÃ©rÃ©s par des scripts dans le systeme solaire"
+        }
+       ],
+       "line": 46
+      },
+      {
+       "value": "drop",
+       "desc": [
+        {
+         "line": 49,
+         "text": "supprime dÃ©finitivement l'objet"
+        },
+        {
+         "line": 50,
+         "text": "nÃ©cessite name"
+        }
+       ],
+       "line": 48
+      },
+      {
+       "value": "initial",
+       "desc": [
+        {
+         "line": 52,
+         "text": "remet le simulateur Ã  son Ã©tat initial"
+        }
+       ],
+       "line": 51
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "color",
+     "type": "fixÃ©",
+     "line": 53,
+     "desc": [],
+     "values": [
+      {
+       "value": "orbit",
+       "desc": [
+        {
+         "line": 55,
+         "text": "change la couleur utilisÃ©e pour afficher l'orbite de l'astre"
+        },
+        {
+         "line": 56,
+         "text": "nÃ©cessite name, color_value  ou r g b"
+        }
+       ],
+       "line": 54
+      },
+      {
+       "value": "name",
+       "desc": [
+        {
+         "line": 58,
+         "text": "change la couleur utilisÃ©e pour afficher le nom de l'astre"
+        },
+        {
+         "line": 59,
+         "text": "nÃ©cessite name, color_value  ou r g b"
+        }
+       ],
+       "line": 57
+      },
+      {
+       "value": "trail",
+       "desc": [
+        {
+         "line": 61,
+         "text": "change la couleur utilisÃ©e pour afficher la trajectoire de l'astre"
+        },
+        {
+         "line": 62,
+         "text": "nÃ©cessite name, color_value  ou r g b"
+        }
+       ],
+       "line": 60
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "hidden",
+     "type": "vrai/faux",
+     "line": 63,
+     "desc": [],
+     "values": [
+      {
+       "value": "name",
+       "desc": [
+        {
+         "line": 65,
+         "text": "affiche ou masque l'astre temporairement"
+        }
+       ],
+       "line": 64
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "skin_use",
+     "type": "vrai/faux/inverse",
+     "line": 66,
+     "desc": [
+      {
+       "line": 67,
+       "text": "indique au logiciel de prendre en compte les textures alternatives"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "skin_tex",
+     "type": "chaine de caractÃ¨re",
+     "line": 68,
+     "desc": [
+      {
+       "line": 69,
+       "text": "modifie temporairement la texture de l'astre par une texture alternative"
+      },
+      {
+       "line": 70,
+       "text": "nÃ©cessite le paramÃ¨tre name"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "tesselation",
+     "type": "fixÃ©",
+     "line": 71,
+     "desc": [],
+     "values": [
+      {
+       "value": "min_tes_level",
+       "desc": [
+        {
+         "line": 73,
+         "text": "reprÃ©sente la valeur minimale au loin"
+        },
+        {
+         "line": 74,
+         "text": "nÃ©cessite value"
+        }
+       ],
+       "line": 72
+      },
+      {
+       "value": "max_tes_level",
+       "desc": [
+        {
+         "line": 76,
+         "text": "reprÃ©sente la valeur maximale de prÃªt"
+        },
+        {
+         "line": 77,
+         "text": "nÃ©cessite value"
+        }
+       ],
+       "line": 75
+      },
+      {
+       "value": "planet_altimetry_factor",
+       "desc": [
+        {
+         "line": 79,
+         "text": "modificateur d'altimÃ©trie pour des astres standard"
+        },
+        {
+         "line": 80,
+         "text": "nÃ©cessite value"
+        }
+       ],
+       "line": 78
+      },
+      {
+       "value": "earth_altimetry_factor",
+       "desc": [
+        {
+         "line": 82,
+         "text": "modificateur d'altimÃ©trie pour la Terre"
+        },
+        {
+         "line": 83,
+         "text": "nÃ©cessite value"
+        }
+       ],
+       "line": 81
+      },
+      {
+       "value": "moon_altimetry_factor",
+       "desc": [
+        {
+         "line": 85,
+         "text": "modificateur d'altimÃ©trie pour la Lune"
+        },
+        {
+         "line": 86,
+         "text": "nÃ©cessite value"
+        }
+       ],
+       "line": 84
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "name",
+     "type": "chaine de caractÃ¨re",
+     "line": 87,
+     "desc": [
+      {
+       "line": 88,
+       "text": "reprÃ©sente le nom interne de l'astre"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "value",
+     "type": "entier",
+     "line": 89,
+     "desc": [
+      {
+       "line": 90,
+       "text": "indique une valeur utilse pour la tesselation"
+      },
+      {
+       "line": 91,
+       "text": "plus la valeur est importante et plus votre machine sera sollicitÃ©e"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "color_value",
+     "type": "xRRGGBB",
+     "line": 92,
+     "desc": [
+      {
+       "line": 93,
+       "text": "fixe la couleur Ã  la dÃ©finition du web: paramÃ¨tre en hexadÃ©cimal, 2 caractÃ¨res obigatoires"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "color_value",
+     "type": "rXXXgYYYbZZZ",
+     "line": 94,
+     "desc": [
+      {
+       "line": 95,
+       "text": "fixe la couleur au format rgb informatique"
+      },
+      {
+       "line": 96,
+       "text": "XXX, YYY et ZZZ appartiennent Ã  l'intervalle [0;255]"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "r",
+     "type": "dÃ©cimal",
+     "line": 97,
+     "desc": [
+      {
+       "line": 98,
+       "text": "modifie la composante rouge de la couleur"
+      },
+      {
+       "line": 99,
+       "text": "dÃ©cimale comprise entre 0 et 1 ou entier entre 0 et 255"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "g",
+     "type": "dÃ©cimal",
+     "line": 100,
+     "desc": [
+      {
+       "line": 101,
+       "text": "modifie la composante verte de la couleur"
+      },
+      {
+       "line": 102,
+       "text": "dÃ©cimale comprise entre 0 et 1 ou entier entre 0 et 255"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "b",
+     "type": "dÃ©cimal",
+     "line": 103,
+     "desc": [
+      {
+       "line": 104,
+       "text": "modifie la composante bleu de la couleur"
+      },
+      {
+       "line": 105,
+       "text": "dÃ©cimale comprise entre 0 et 1 ou entier entre 0 et 255"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [
+    {
+     "line": 107,
+     "text": "body name Earth skin_tex courants_marins.png"
+    },
+    {
+     "line": 108,
+     "text": "body name Uranus color label color_value r12g215b215"
+    }
+   ],
+   "img": null
+  },
+  {
+   "command": "body_trace",
+   "line": 112,
+   "desc": [
+    {
+     "line": 113,
+     "text": "trace la trajectoire d'un astre sur le dÃ´me Ã  la maniÃ¨re d'un stylo. On peut tracer diffÃ©rentes trajectoires, les afficher et les masquer."
+    },
+    {
+     "line": 114,
+     "text": "le soleil est l'astre sÃ©lectionnÃ© par dÃ©faut. Chaque fois que l'on change la valeur du crayon, on dessine un nouveau tracÃ©, indÃ©pendant des autres tracÃ©s."
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 115,
+     "desc": [],
+     "values": [
+      {
+       "value": "clear",
+       "desc": [
+        {
+         "line": 117,
+         "text": "supprime toutes les trajectoires affichÃ©es"
+        }
+       ],
+       "line": 116
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "hidde",
+     "type": "chaine de caractÃ¨re",
+     "line": 118,
+     "desc": [
+      {
+       "line": 119,
+       "text": "cache le tracÃ© d'un astre"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "pen",
+     "type": "vrai/faux/inverse",
+     "line": 120,
+     "desc": [],
+     "values": [
+      {
+       "value": "true",
+       "desc": [
+        {
+         "line": 122,
+         "text": "baisse le crayon et trace la trajectoire de l'astre sÃ©lectionnÃ©"
+        }
+       ],
+       "line": 121
+      },
+      {
+       "value": "false",
+       "desc": [
+        {
+         "line": 124,
+         "text": "lÃ¨ve le crayon la trajectoire tracÃ© reste apparente"
+        }
+       ],
+       "line": 123
+      },
+      {
+       "value": "toggle",
+       "desc": [
+        {
+         "line": 126,
+         "text": "inverse le comportement du stylo"
+        }
+       ],
+       "line": 125
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "target",
+     "type": "chaine de caractÃ¨re",
+     "line": 127,
+     "desc": [
+      {
+       "line": 128,
+       "text": "indique le nom de l'astre Ã  sÃ©lectionner pour le crayon"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "clear",
+   "line": 132,
+   "desc": [
+    {
+     "line": 133,
+     "text": "place le simulateur Ã  l'Ã©tat initial"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "PARAMETER",
+     "name": "state",
+     "type": "fixÃ©",
+     "line": 134,
+     "desc": [],
+     "values": [
+      {
+       "value": "natural",
+       "desc": [
+        {
+         "line": 136,
+         "text": "active l'atmosphÃ¨re et le panorama."
+        },
+        {
+         "line": 137,
+         "text": "par defaut, l'atmosphÃ¨re et le panorama sont dÃ©sactivÃ©s."
+        }
+       ],
+       "line": 135
+      }
+     ]
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "color",
+   "line": 141,
+   "desc": [
+    {
+     "line": 142,
+     "text": "permet d'agit sur les propriÃ©tÃ©s des couleurs des objets du logiciel"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "property",
+     "type": "fixÃ©",
+     "line": 143,
+     "desc": [],
+     "values": [
+      {
+       "value": "constellation_lines",
+       "desc": [
+        "constellation_lines"
+       ],
+       "line": 144
+      },
+      {
+       "value": "constellation_names",
+       "desc": [
+        "constellation_names"
+       ],
+       "line": 145
+      },
+      {
+       "value": "constellation_art",
+       "desc": [
+        "constellation_art"
+       ],
+       "line": 146
+      },
+      {
+       "value": "constellation_boundaries",
+       "desc": [
+        "constellation_boundaries"
+       ],
+       "line": 147
+      },
+      {
+       "value": "cardinal_points",
+       "desc": [
+        "cardinal_points"
+       ],
+       "line": 148
+      },
+      {
+       "value": "planet_orbits",
+       "desc": [
+        "planet_orbits"
+       ],
+       "line": 149
+      },
+      {
+       "value": "planet_names",
+       "desc": [
+        "planet_names"
+       ],
+       "line": 150
+      },
+      {
+       "value": "planet_trails",
+       "desc": [
+        "planet_trails"
+       ],
+       "line": 151
+      },
+      {
+       "value": "azimutal_grid",
+       "desc": [
+        "azimutal_grid"
+       ],
+       "line": 152
+      },
+      {
+       "value": "equator_grid",
+       "desc": [
+        "equator_grid"
+       ],
+       "line": 153
+      },
+      {
+       "value": "ecliptic_grid",
+       "desc": [
+        "ecliptic_grid"
+       ],
+       "line": 154
+      },
+      {
+       "value": "galactic_grid",
+       "desc": [
+        "galactic_grid"
+       ],
+       "line": 155
+      },
+      {
+       "value": "equator_line",
+       "desc": [
+        "equator_line"
+       ],
+       "line": 156
+      },
+      {
+       "value": "galactic_line",
+       "desc": [
+        "galactic_line"
+       ],
+       "line": 157
+      },
+      {
+       "value": "ecliptic_line",
+       "desc": [
+        "ecliptic_line"
+       ],
+       "line": 158
+      },
+      {
+       "value": "meridian_line",
+       "desc": [
+        "meridian_line"
+       ],
+       "line": 159
+      },
+      {
+       "value": "zenith_line",
+       "desc": [
+        "zenith_line"
+       ],
+       "line": 160
+      },
+      {
+       "value": "polar_circle",
+       "desc": [
+        "polar_circle"
+       ],
+       "line": 161
+      },
+      {
+       "value": "ecliptic_center",
+       "desc": [
+        "ecliptic_center"
+       ],
+       "line": 162
+      },
+      {
+       "value": "galactic_pole",
+       "desc": [
+        "galactic_pole"
+       ],
+       "line": 163
+      },
+      {
+       "value": "galactic_center",
+       "desc": [
+        "galactic_center"
+       ],
+       "line": 164
+      },
+      {
+       "value": "vernal_points",
+       "desc": [
+        "vernal_points"
+       ],
+       "line": 165
+      },
+      {
+       "value": "analemma",
+       "desc": [
+        "analemma"
+       ],
+       "line": 166
+      },
+      {
+       "value": "analemma_line",
+       "desc": [
+        "analemma_line"
+       ],
+       "line": 167
+      },
+      {
+       "value": "greenwich_line",
+       "desc": [
+        "greenwich_line"
+       ],
+       "line": 168
+      },
+      {
+       "value": "aries_line",
+       "desc": [
+        "aries_line"
+       ],
+       "line": 169
+      },
+      {
+       "value": "zodiac",
+       "desc": [
+        "zodiac"
+       ],
+       "line": 170
+      },
+      {
+       "value": "personal",
+       "desc": [
+        "personal"
+       ],
+       "line": 171
+      },
+      {
+       "value": "personeq",
+       "desc": [
+        "personeq"
+       ],
+       "line": 172
+      },
+      {
+       "value": "vertical_line",
+       "desc": [
+        "vertical_line"
+       ],
+       "line": 173
+      },
+      {
+       "value": "nebula_names",
+       "desc": [
+        "nebula_names"
+       ],
+       "line": 174
+      },
+      {
+       "value": "nebula_circle",
+       "desc": [
+        "nebula_circle"
+       ],
+       "line": 175
+      },
+      {
+       "value": "precession_circle",
+       "desc": [
+        "precession_circle"
+       ],
+       "line": 176
+      },
+      {
+       "value": "star_table",
+       "desc": [
+        "star color",
+        {
+         "line": 178,
+         "text": "need index"
+        }
+       ],
+       "line": 177
+      },
+      {
+       "value": "text_usr_color",
+       "desc": [
+        "text_usr_color"
+       ],
+       "line": 179
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "index",
+     "type": null,
+     "line": 180,
+     "desc": [
+      {
+       "line": 181,
+       "text": "int"
+      },
+      {
+       "line": 182,
+       "text": "permet de choisir un index de star_table pour modifier la couleur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "r",
+     "type": "dÃ©cimal",
+     "line": 183,
+     "desc": [
+      {
+       "line": 184,
+       "text": "modifie la composante rouge de la couleur attribuÃ©e Ã  l'Ã©toile"
+      },
+      {
+       "line": 185,
+       "text": "comprise entre 0 et 1 (dÃ©cimal) ou entre 0 et 255 (entier)"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "g",
+     "type": "dÃ©cimal",
+     "line": 186,
+     "desc": [
+      {
+       "line": 187,
+       "text": "modifie la composante verte de la couleur attribuÃ©e Ã  l'Ã©toile"
+      },
+      {
+       "line": 188,
+       "text": "comprise entre 0 et 1 (dÃ©cimal) ou entre 0 et 255 (entier)"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "b",
+     "type": "dÃ©cimal",
+     "line": 189,
+     "desc": [
+      {
+       "line": 190,
+       "text": "modifie la composante bleu de la couleur attribuÃ©e Ã  l'Ã©toile"
+      },
+      {
+       "line": 191,
+       "text": "comprise entre 0 et 1 (dÃ©cimal) ou entre 0 et 255 (entier)"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "value",
+     "type": "xRRGGBB",
+     "line": 192,
+     "desc": [
+      {
+       "line": 193,
+       "text": "fixe la couleur Ã  la dÃ©finition du web: paramÃ¨tre en hexadÃ©cimal, 2 caractÃ¨res obigatoires"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "configuration",
+   "line": 197,
+   "desc": [
+    {
+     "line": 198,
+     "text": "sauvegarde restaure les paramÃ¨tres du menu M"
+    },
+    {
+     "line": 199,
+     "text": "fonction en cours d'amÃ©lioration"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 200,
+     "desc": [],
+     "values": [
+      {
+       "value": "load",
+       "desc": [
+        {
+         "line": 202,
+         "text": "recharge le menu M"
+        }
+       ],
+       "line": 201
+      },
+      {
+       "value": "save",
+       "desc": [
+        {
+         "line": 204,
+         "text": "sauvegarde le menu M"
+        }
+       ],
+       "line": 203
+      }
+     ]
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "date",
+   "line": 208,
+   "desc": [
+    {
+     "line": 209,
+     "text": "this command manage all time and date modification ...."
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "jday",
+     "type": "chaine de caractÃ¨re",
+     "line": 210,
+     "desc": [
+      {
+       "line": 211,
+       "text": "date time in julian calendar"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "local",
+     "type": "chaine de caractÃ¨re",
+     "line": 212,
+     "desc": [
+      {
+       "line": 213,
+       "text": "date time in local"
+      },
+      {
+       "line": 214,
+       "text": "if string begin with T, only time will be modified."
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "relative",
+     "type": "entier",
+     "line": 215,
+     "desc": [
+      {
+       "line": 216,
+       "text": "add date time with relative time"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "relativeYear",
+     "type": "nombre",
+     "line": 217,
+     "desc": [
+      {
+       "line": 218,
+       "text": "add date time with relativeYear time"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "relativeMonth",
+     "type": "nombre",
+     "line": 219,
+     "desc": [
+      {
+       "line": 220,
+       "text": "add date time with relativeMonth time"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "utc",
+     "type": "chaine de caractÃ¨re",
+     "line": 221,
+     "desc": [
+      {
+       "line": 222,
+       "text": "date time in utc time"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "sideral",
+     "type": "chaine de caractÃ¨re",
+     "line": 223,
+     "desc": [
+      {
+       "line": 224,
+       "text": "date time in sideral time"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "load",
+     "type": "chaine de caractÃ¨re",
+     "line": 225,
+     "desc": [],
+     "values": [
+      {
+       "value": "current",
+       "desc": [
+        "load saved date"
+       ],
+       "line": 226
+      },
+      {
+       "value": "preset",
+       "desc": [
+        "save date and time to be use with current"
+       ],
+       "line": 227
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "sun",
+     "type": "fixed",
+     "line": 228,
+     "desc": [],
+     "values": [
+      {
+       "value": "set",
+       "desc": [
+        "compute time to"
+       ],
+       "line": 229
+      },
+      {
+       "value": "ride",
+       "desc": [
+        "compute time to"
+       ],
+       "line": 230
+      },
+      {
+       "value": "meridian",
+       "desc": [
+        "compute time to ..."
+       ],
+       "line": 231
+      }
+     ]
+    }
+   ],
+   "example": [
+    {
+     "line": 233,
+     "text": "date utc 1918:05:08T12:00:00"
+    },
+    {
+     "line": 234,
+     "text": "date sun set"
+    },
+    {
+     "line": 235,
+     "text": "date sun meridian"
+    }
+   ],
+   "img": null
+  },
+  {
+   "command": "deselect",
+   "line": 239,
+   "desc": [
+    {
+     "line": 240,
+     "text": "dÃ©sÃ©lectionne les objets sÃ©lectionnÃ©s"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "PARAMETER",
+     "name": "constellation",
+     "type": "chaine de caractÃ¨re",
+     "line": 241,
+     "desc": [
+      {
+       "line": 242,
+       "text": "dÃ©sÃ©lectionne uniquement la constellation concernÃ©e"
+      },
+      {
+       "line": 243,
+       "text": "sans l'argument, la commande deselect dÃ©sÃ©lectionne tout objet sÃ©lectionnÃ©"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "domemasters",
+   "line": 247,
+   "desc": [
+    {
+     "line": 248,
+     "text": "permet de faire des captures d'images"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 249,
+     "desc": [],
+     "values": [
+      {
+       "value": "snapshot",
+       "desc": [
+        {
+         "line": 251,
+         "text": "rÃ©alise une capture d'Ã©cran"
+        },
+        {
+         "line": 252,
+         "text": "la capture se trouve dans le rÃ©pertoire snapshot/"
+        }
+       ],
+       "line": 250
+      },
+      {
+       "value": "record",
+       "desc": [
+        {
+         "line": 254,
+         "text": "permet de lancer une capture d'Ã©cran frame par frame"
+        },
+        {
+         "line": 255,
+         "text": "les frames se trouvent  dans le repertoire vframes/"
+        },
+        {
+         "line": 256,
+         "text": "relancer la commande stoppe la capture d'Ã©cran"
+        }
+       ],
+       "line": 253
+      }
+     ]
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "dso",
+   "line": 260,
+   "desc": [
+    {
+     "line": 261,
+     "text": "permet d'insÃ©rer un objet personnalisÃ© du ciel profond"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 262,
+     "desc": [],
+     "values": [
+      {
+       "value": "load",
+       "desc": [
+        {
+         "line": 264,
+         "text": "charge en mÃ©moire l'objet du ciel profond reprÃ©sentÃ© par name"
+        },
+        {
+         "line": 265,
+         "text": "nÃ©cessite name, ra, de, path, magnitude, angular_size, rotation, credit, filename, texture_luminance_adjust, distance, constellation, type"
+        }
+       ],
+       "line": 263
+      },
+      {
+       "value": "clear",
+       "desc": [
+        {
+         "line": 267,
+         "text": "supprime tous les objets insÃ©rÃ©s dans le logiciel"
+        }
+       ],
+       "line": 266
+      },
+      {
+       "value": "drop",
+       "desc": [
+        {
+         "line": 269,
+         "text": "supprime dÃ©finitivement l'objet reprÃ©sentÃ© par name"
+        }
+       ],
+       "line": 268
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "hidden",
+     "type": null,
+     "line": 270,
+     "desc": [],
+     "values": [
+      {
+       "value": "true",
+       "desc": [
+        "vrai/faux"
+       ],
+       "line": 271
+      },
+      {
+       "value": "false",
+       "desc": [
+        "vrai/faux"
+       ],
+       "line": 271
+      },
+      {
+       "value": "all",
+       "desc": [
+        "sÃ©lectionne tous les objets",
+        {
+         "line": 273,
+         "text": "optional type ou constellation"
+        }
+       ],
+       "line": 272
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "name",
+     "type": "chaine de caractÃ¨re",
+     "line": 274,
+     "desc": [
+      {
+       "line": 275,
+       "text": "nom interne pour la gestion du logiciel"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "path",
+     "type": "chaine de caractÃ¨re",
+     "line": 276,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "ra",
+     "type": null,
+     "line": 277,
+     "desc": [
+      {
+       "line": 278,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 279,
+       "text": "coordonnÃ©es ra"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "de",
+     "type": null,
+     "line": 280,
+     "desc": [
+      {
+       "line": 281,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 282,
+       "text": "coordonnÃ©es de"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "magnitude",
+     "type": null,
+     "line": 283,
+     "desc": [
+      {
+       "line": 284,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 285,
+       "text": "magnitude apparente de l'objet"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "angular_size",
+     "type": null,
+     "line": 286,
+     "desc": [
+      {
+       "line": 287,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 288,
+       "text": "taille angulaire en ?"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "rotation",
+     "type": null,
+     "line": 289,
+     "desc": [
+      {
+       "line": 290,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 291,
+       "text": "indication sur une rotation de l'image"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "credit",
+     "type": null,
+     "line": 292,
+     "desc": [
+      {
+       "line": 293,
+       "text": "chaine de caractÃ¨re"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "filename",
+     "type": null,
+     "line": 294,
+     "desc": [
+      {
+       "line": 295,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 296,
+       "text": "nom du fichier image reprÃ©senant l'objet"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "texture_luminance_adjust",
+     "type": null,
+     "line": 297,
+     "desc": [
+      {
+       "line": 298,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 299,
+       "text": "ajustement de la luminance de l'image"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "distance",
+     "type": null,
+     "line": 300,
+     "desc": [
+      {
+       "line": 301,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 302,
+       "text": "distance en al"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "constellation",
+     "type": null,
+     "line": 303,
+     "desc": [
+      {
+       "line": 304,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 305,
+       "text": "constellation dans laquelle elle appartient"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "type",
+     "type": null,
+     "line": 306,
+     "desc": [
+      {
+       "line": 307,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 308,
+       "text": "indique le type d'objet reprÃ©sentÃ©"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "external_viewer",
+   "line": 312,
+   "desc": [
+    {
+     "line": 313,
+     "text": "permet de lancer une opÃ©ration externe en fonction de l'extention du fichier utilisÃ©."
+    },
+    {
+     "line": 314,
+     "text": "les extentions supportÃ©es sont AVI, MP4, MOV, MPG, MP3, OGG, SH, PNG, SWF,"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixed",
+     "line": 315,
+     "desc": [],
+     "values": [
+      {
+       "value": "play",
+       "desc": [
+        {
+         "line": 317,
+         "text": "lance l'action liÃ©e au fichier"
+        },
+        {
+         "line": 318,
+         "text": "nÃ©cessite filename"
+        }
+       ],
+       "line": 316
+      },
+      {
+       "value": "stop",
+       "desc": [
+        {
+         "line": 320,
+         "text": "arrÃªte la lecture de la vidÃ©o et/ou de l'audio lancÃ©e par externalviewer"
+        }
+       ],
+       "line": 319
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "filename",
+     "type": "chaine de caractÃ¨re",
+     "line": 321,
+     "desc": [
+      {
+       "line": 322,
+       "text": "nom du fichier Ã  exploiter"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "flag",
+   "line": 326,
+   "desc": [
+    {
+     "line": 327,
+     "text": "permet de modifier un Ã©tat du simulateur"
+    },
+    {
+     "line": 328,
+     "text": "les valeurs possibles sont on, true 1, off, false, 0 ou toggle (inverse l'Ã©tat)"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "PARAMETER",
+     "name": "antialias_lines",
+     "type": "vrai/faux",
+     "line": 329,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "constellation_drawing",
+     "type": "vrai/faux",
+     "line": 330,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "constellation_names",
+     "type": "vrai/faux",
+     "line": 331,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "constellation_art",
+     "type": "vrai/faux",
+     "line": 332,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "constellation_boundaries",
+     "type": "vrai/faux",
+     "line": 333,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "constellation_pick",
+     "type": "vrai/faux",
+     "line": 334,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "star_twinkle",
+     "type": "vrai/faux",
+     "line": 335,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "navigation",
+     "type": "vrai/faux",
+     "line": 336,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "show_tui_datetime",
+     "type": "vrai/faux",
+     "line": 337,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "show_tui_short_obj_info",
+     "type": "vrai/faux",
+     "line": 338,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "manual_zoom",
+     "type": "vrai/faux",
+     "line": 339,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "light_travel_time",
+     "type": "vrai/faux",
+     "line": 340,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "fog",
+     "type": "vrai/faux",
+     "line": 341,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "atmosphere",
+     "type": "vrai/faux",
+     "line": 342,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "azimuthal_grid",
+     "type": "vrai/faux",
+     "line": 343,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "equatorial_grid",
+     "type": "vrai/faux",
+     "line": 344,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "ecliptic_grid",
+     "type": "vrai/faux",
+     "line": 345,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "galactic_grid",
+     "type": "vrai/faux",
+     "line": 346,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "equator_line",
+     "type": "vrai/faux",
+     "line": 347,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "galactic_line",
+     "type": "vrai/faux",
+     "line": 348,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "ecliptic_line",
+     "type": "vrai/faux",
+     "line": 349,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "precession_circle",
+     "type": "vrai/faux",
+     "line": 350,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "circumpolar_circle",
+     "type": "vrai/faux",
+     "line": 351,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "tropic_lines",
+     "type": "vrai/faux",
+     "line": 352,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "meridian_line",
+     "type": "vrai/faux",
+     "line": 353,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "zenith_line",
+     "type": "vrai/faux",
+     "line": 354,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "polar_circle",
+     "type": "vrai/faux",
+     "line": 355,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "ecliptic_center",
+     "type": "vrai/faux",
+     "line": 356,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "galactic_pole",
+     "type": "vrai/faux",
+     "line": 357,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "galactic_center",
+     "type": "vrai/faux",
+     "line": 358,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "vernal_points",
+     "type": "vrai/faux",
+     "line": 359,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "analemma_line",
+     "type": "vrai/faux",
+     "line": 360,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "analemma",
+     "type": "vrai/faux",
+     "line": 361,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "aries_line",
+     "type": "vrai/faux",
+     "line": 362,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "zodiac",
+     "type": "vrai/faux",
+     "line": 363,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "personal",
+     "type": "vrai/faux",
+     "line": 364,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "personeq",
+     "type": "vrai/faux",
+     "line": 365,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "greenwich_line",
+     "type": "vrai/faux",
+     "line": 366,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "vertical_line",
+     "type": "vrai/faux",
+     "line": 367,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "cardinal_points",
+     "type": "vrai/faux",
+     "line": 368,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "clouds",
+     "type": "vrai/faux",
+     "line": 369,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "moon_scaled",
+     "type": "vrai/faux",
+     "line": 370,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "sun_scaled",
+     "type": "vrai/faux",
+     "line": 371,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "landscape",
+     "type": "vrai/faux",
+     "line": 372,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "stars",
+     "type": "vrai/faux",
+     "line": 373,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "star_names",
+     "type": "vrai/faux",
+     "line": 374,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "planets",
+     "type": "vrai/faux",
+     "line": 375,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "planet_names",
+     "type": "vrai/faux",
+     "line": 376,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "planet_orbits",
+     "type": "vrai/faux",
+     "line": 377,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "orbits",
+     "type": "vrai/faux",
+     "line": 378,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "planets_orbits",
+     "type": "vrai/faux",
+     "line": 379,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "planets_axis",
+     "type": "vrai/faux",
+     "line": 380,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "satellites_orbits",
+     "type": "vrai/faux",
+     "line": 381,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "nebulae",
+     "type": "vrai/faux",
+     "line": 382,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "nebula_names",
+     "type": "vrai/faux",
+     "line": 383,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "nebula_hints",
+     "type": "vrai/faux",
+     "line": 384,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "milky_way",
+     "type": "vrai/faux",
+     "line": 385,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "bright_nebulae",
+     "type": "vrai/faux",
+     "line": 386,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "object_trails",
+     "type": "vrai/faux",
+     "line": 387,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "track_object",
+     "type": "vrai/faux",
+     "line": 388,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "script_gui_debug",
+     "type": "vrai/faux",
+     "line": 389,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "lock_sky_position",
+     "type": "vrai/faux",
+     "line": 390,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "body_trace",
+     "type": "vrai/faux",
+     "line": 391,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "show_latlon",
+     "type": "vrai/faux",
+     "line": 392,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "color_inverse",
+     "type": "vrai/faux",
+     "line": 393,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "subtitle",
+     "type": "vrai/faux",
+     "line": 394,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "oort",
+     "type": "vrai/faux",
+     "line": 395,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "stars_trace",
+     "type": "vrai/faux",
+     "line": 396,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "star_lines",
+     "type": "vrai/faux",
+     "line": 397,
+     "desc": [],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "sky_draw",
+     "type": "vrai/faux",
+     "line": 398,
+     "desc": [
+      {
+       "line": 399,
+       "text": "active le tracÃ© de points sur le dÃ´me"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "illuminate",
+   "line": 403,
+   "desc": [
+    {
+     "line": 404,
+     "text": "permet de modifier la reprÃ©sentation d'une Ã©toile en la grossissant artificiellement afin de mieux la distinguer."
+    },
+    {
+     "line": 405,
+     "text": "on peut dÃ©finir une texture alternative qui affecte le rendu de toutes les Ã©toiles"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 406,
+     "desc": [],
+     "values": [
+      {
+       "value": "clear",
+       "desc": [
+        {
+         "line": 408,
+         "text": "supprime dÃ©finitivement tous les illuminate affichÃ©s"
+        }
+       ],
+       "line": 407
+      },
+      {
+       "value": "clear_texture",
+       "desc": [
+        {
+         "line": 410,
+         "text": "supprime la texture temporaire"
+        }
+       ],
+       "line": 409
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "display",
+     "type": "fixÃ©",
+     "line": 411,
+     "desc": [],
+     "values": [
+      {
+       "value": "on",
+       "desc": [
+        {
+         "line": 413,
+         "text": "active illuminate pour l'Ã©toile donnÃ©e avec l'argument hp"
+        },
+        {
+         "line": 414,
+         "text": "nÃ©cessite hp ou constellation"
+        }
+       ],
+       "line": 412
+      },
+      {
+       "value": "off",
+       "desc": [
+        {
+         "line": 416,
+         "text": "dÃ©sactive illuminate pour l'Ã©toile donnÃ©e avec l'argument hp"
+        },
+        {
+         "line": 417,
+         "text": "nÃ©cessite hp ou constellation"
+        }
+       ],
+       "line": 415
+      },
+      {
+       "value": "all_constellation_on",
+       "desc": [
+        {
+         "line": 419,
+         "text": "illumine toutes les Ã©toiles de tous les astÃ©rismes"
+        }
+       ],
+       "line": 418
+      },
+      {
+       "value": "all_constellation_on",
+       "desc": [
+        {
+         "line": 421,
+         "text": "dÃ©sactive toutes les Ã©toiles de tous les astÃ©rismes"
+        }
+       ],
+       "line": 420
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "filename",
+     "type": "chaine de caractÃ¨re",
+     "line": 422,
+     "desc": [
+      {
+       "line": 423,
+       "text": "dÃ©fini une texture alternative"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "hp",
+     "type": "entier",
+     "line": 424,
+     "desc": [
+      {
+       "line": 425,
+       "text": "reprÃ©sente le nom de l'Ã©toile ciblÃ©e par illuminate"
+      },
+      {
+       "line": 426,
+       "text": "le paramÃ¨tre fait rÃ©fÃ©rence aux Ã©toiles du catalogue hipparcos"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "constellation",
+     "type": "chaine de caractÃ¨re",
+     "line": 427,
+     "desc": [
+      {
+       "line": 428,
+       "text": "sÃ©lectionne toutes les Ã©toiles de l'astÃ©risme issue de la constellation"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "size",
+     "type": "dÃ©cimal",
+     "line": 429,
+     "desc": [
+      {
+       "line": 430,
+       "text": "modifie le rayon de l'Ã©toile"
+      },
+      {
+       "line": 431,
+       "text": "exprimÃ© en minute d'angle, compatible avec hp ou constellation"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "rotation",
+     "type": "dÃ©cimal",
+     "line": 432,
+     "desc": [
+      {
+       "line": 433,
+       "text": "permet de faire pivoter la texture utilisÃ©e pour afficher les Ã©toiles"
+      },
+      {
+       "line": 434,
+       "text": "ce paramÃ¨tre est commun Ã  toutes les Ã©toiles"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "r",
+     "type": "dÃ©cimal",
+     "line": 435,
+     "desc": [
+      {
+       "line": 436,
+       "text": "modifie la composante rouge de la couleur attribuÃ©e Ã  l'Ã©toile"
+      },
+      {
+       "line": 437,
+       "text": "dÃ©cimale comprise entre 0 et 1 ou entier entre 0 et 255"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "g",
+     "type": "dÃ©cimal",
+     "line": 438,
+     "desc": [
+      {
+       "line": 439,
+       "text": "modifie la composante verte de la couleur attribuÃ©e Ã  l'Ã©toile"
+      },
+      {
+       "line": 440,
+       "text": "dÃ©cimale comprise entre 0 et 1 ou entier entre 0 et 255"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "b",
+     "type": "dÃ©cimal",
+     "line": 441,
+     "desc": [
+      {
+       "line": 442,
+       "text": "modifie la composante bleu de la couleur attribuÃ©e Ã  l'Ã©toile"
+      },
+      {
+       "line": 443,
+       "text": "dÃ©cimale comprise entre 0 et 1 ou entier entre 0 et 255"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "color_value",
+     "type": "xRRGGBB",
+     "line": 444,
+     "desc": [
+      {
+       "line": 445,
+       "text": "fixe la couleur Ã  la dÃ©finition du web: paramÃ¨tre en hexadÃ©cimal, 2 caractÃ¨res obigatoires"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "color_value",
+     "type": "rXXXgYYYbZZZ",
+     "line": 446,
+     "desc": [
+      {
+       "line": 447,
+       "text": "fixe la couleur au format rgb informatique"
+      },
+      {
+       "line": 448,
+       "text": "XXX, YYY et ZZZ appartiennent Ã  l'intervalle [0;255]"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [
+    {
+     "line": 450,
+     "text": "illuminate display on hp HP541"
+    }
+   ],
+   "img": null
+  },
+  {
+   "command": "image",
+   "line": 454,
+   "desc": [
+    {
+     "line": 455,
+     "text": "gestion de l'affichage des images dans les scripts"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 456,
+     "desc": [],
+     "values": [
+      {
+       "value": "load",
+       "desc": [
+        {
+         "line": 458,
+         "text": "charge une image en mÃ©moire dans les scripts"
+        },
+        {
+         "line": 459,
+         "text": "nÃ©cessite filename, name et coordinate_system."
+        }
+       ],
+       "line": 457
+      },
+      {
+       "value": "drop",
+       "desc": [
+        {
+         "line": 461,
+         "text": "supprime l'image"
+        },
+        {
+         "line": 462,
+         "text": "nÃ©cessite name"
+        }
+       ],
+       "line": 460
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "coordinate_system",
+     "type": "fixÃ©",
+     "line": 463,
+     "desc": [],
+     "values": [
+      {
+       "value": "horizontal",
+       "desc": [],
+       "line": 464
+      },
+      {
+       "value": "equatorial",
+       "desc": [],
+       "line": 465
+      },
+      {
+       "value": "j2000",
+       "desc": [],
+       "line": 466
+      },
+      {
+       "value": "dome",
+       "desc": [],
+       "line": 467
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "mipmap",
+     "type": "vrai/faux",
+     "line": 468,
+     "desc": [
+      {
+       "line": 469,
+       "text": "indique si l'on doit activer les miniatures pour de meilleurs rÃ©sultats visuels"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "name",
+     "type": "chaine de caractÃ¨re",
+     "line": 470,
+     "desc": [
+      {
+       "line": 471,
+       "text": "nom interne Ã  l'image qui permet de l'identifier"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "filename",
+     "type": "chaine de caractÃ¨re",
+     "line": 472,
+     "desc": [
+      {
+       "line": 473,
+       "text": "chemin du fichier pour accÃ©der Ã  l'image"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "altitude",
+     "type": "dÃ©cimal",
+     "line": 474,
+     "desc": [
+      {
+       "line": 475,
+       "text": "position de l'image"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "azimuth",
+     "type": "dÃ©cimal",
+     "line": 476,
+     "desc": [
+      {
+       "line": 477,
+       "text": "position de l'image"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "xpos",
+     "type": "dÃ©cimal",
+     "line": 478,
+     "desc": [
+      {
+       "line": 479,
+       "text": "position de l'image"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "ypos",
+     "type": "dÃ©cimal",
+     "line": 480,
+     "desc": [
+      {
+       "line": 481,
+       "text": "position de l'image"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "duration",
+     "type": "dÃ©cimal",
+     "line": 482,
+     "desc": [
+      {
+       "line": 483,
+       "text": "?"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "alpha",
+     "type": "dÃ©cimal",
+     "line": 484,
+     "desc": [
+      {
+       "line": 485,
+       "text": "Indique le niveau de transparence d'une image"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "scale",
+     "type": "dÃ©cimal",
+     "line": 486,
+     "desc": [
+      {
+       "line": 487,
+       "text": "Indique la taille de l'image"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "rotation",
+     "type": "dÃ©cimal",
+     "line": 488,
+     "desc": [
+      {
+       "line": 489,
+       "text": "Effectue une rotation de l'image"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "landscape",
+   "line": 493,
+   "desc": [
+    {
+     "line": 494,
+     "text": "permet de modifier le landscape actuel"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 495,
+     "desc": [],
+     "values": [
+      {
+       "value": "load",
+       "desc": [
+        {
+         "line": 497,
+         "text": "charge le nom du fichier landscape"
+        }
+       ],
+       "line": 496
+      },
+      {
+       "value": "rotate",
+       "desc": [
+        {
+         "line": 499,
+         "text": "pivote le landscape"
+        },
+        {
+         "line": 500,
+         "text": "nÃ©cessite rotation"
+        }
+       ],
+       "line": 498
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "rotation",
+     "type": "dÃ©cimale",
+     "line": 501,
+     "desc": [
+      {
+       "line": 502,
+       "text": "indique de combien de degrÃ© le landscape doit Ãªtre dÃ©placÃ©"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "look",
+   "line": 506,
+   "desc": [
+    {
+     "line": 507,
+     "text": "modifie l'angle de vue de la camÃ©ra"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "delta_az",
+     "type": null,
+     "line": 508,
+     "desc": [
+      {
+       "line": 509,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 510,
+       "text": "variation de l'angle de vue par rapport Ã  l'azimuth"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "delta_alt",
+     "type": null,
+     "line": 511,
+     "desc": [
+      {
+       "line": 512,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 513,
+       "text": "variation de l'angle de vue sur par rapport Ã  l'altitude"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "media",
+   "line": 517,
+   "desc": [
+    {
+     "line": 518,
+     "text": "permet la lecture de vidÃ©os internes au logiciel"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 519,
+     "desc": [],
+     "values": [
+      {
+       "value": "play",
+       "desc": [
+        {
+         "line": 521,
+         "text": "initialise le lancement d'une vidÃ©o"
+        },
+        {
+         "line": 522,
+         "text": "nÃ©cessite videoname et type"
+        }
+       ],
+       "line": 520
+      },
+      {
+       "value": "pause",
+       "desc": [
+        {
+         "line": 524,
+         "text": "met la vidÃ©o et le son  (si fonctionnel) en pause"
+        }
+       ],
+       "line": 523
+      },
+      {
+       "value": "stop",
+       "desc": [
+        {
+         "line": 526,
+         "text": "arrÃªte la lecture de la vidÃ©o et du son (si fonctionnel)"
+        }
+       ],
+       "line": 525
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "keycolor",
+     "type": "vrai/faux",
+     "line": 527,
+     "desc": [
+      {
+       "line": 528,
+       "text": "active la transparence de la vidÃ©o VIEWPORT sur une couleur dÃ©terminÃ©e"
+      },
+      {
+       "line": 529,
+       "text": "nÃ©cessite intensity et ( color_value ou  r g b )"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "intensity",
+     "type": "nombre",
+     "line": 530,
+     "desc": [
+      {
+       "line": 531,
+       "text": "reprÃ©sente le pourcentage de dispersion autour de la couleur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "color_value",
+     "type": "xRRGGBB",
+     "line": 532,
+     "desc": [
+      {
+       "line": 533,
+       "text": "fixe la couleur Ã  la dÃ©finition du web: paramÃ¨tre en hexadÃ©cimal, 2 caractÃ¨res obigatoires"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "r",
+     "type": "dÃ©cimal",
+     "line": 534,
+     "desc": [
+      {
+       "line": 535,
+       "text": "modifie la composante rouge de la couleur"
+      },
+      {
+       "line": 536,
+       "text": "dÃ©cimale comprise entre 0 et 1 ou entier entre 0 et 255"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "g",
+     "type": "dÃ©cimal",
+     "line": 537,
+     "desc": [
+      {
+       "line": 538,
+       "text": "modifie la composante verte de la couleur"
+      },
+      {
+       "line": 539,
+       "text": "dÃ©cimale comprise entre 0 et 1 ou entier entre 0 et 255"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "b",
+     "type": "dÃ©cimal",
+     "line": 540,
+     "desc": [
+      {
+       "line": 541,
+       "text": "modifie la composante bleu de la couleur"
+      },
+      {
+       "line": 542,
+       "text": "dÃ©cimale comprise entre 0 et 1 ou entier entre 0 et 255"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "type",
+     "type": "fixÃ©",
+     "line": 543,
+     "desc": [],
+     "values": [
+      {
+       "value": "VR360",
+       "desc": [
+        {
+         "line": 545,
+         "text": "lance une vidÃ©o Ã  360Â°"
+        }
+       ],
+       "line": 544
+      },
+      {
+       "value": "VIEWPORT",
+       "desc": [
+        {
+         "line": 547,
+         "text": "lance une vidÃ©o en premier plan"
+        }
+       ],
+       "line": 546
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "videoname",
+     "type": null,
+     "line": 548,
+     "desc": [
+      {
+       "line": 549,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 550,
+       "text": "indique quel fichier video lire"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "audioname",
+     "type": null,
+     "line": 551,
+     "desc": [
+      {
+       "line": 552,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 553,
+       "text": "indique quel fichier audio lire"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "meteors",
+   "line": 557,
+   "desc": [
+    {
+     "line": 558,
+     "text": "active l'apparition de mÃ©tÃ©ors dans le ciel"
+    },
+    {
+     "line": 559,
+     "text": "attention il faut Ãªtre au bon endroit pour les voir !"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "zhr",
+     "type": "entier",
+     "line": 560,
+     "desc": [
+      {
+       "line": 561,
+       "text": "indique la frÃ©quence d'apparition des mÃ©tÃ©ors"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "moveto",
+   "line": 565,
+   "desc": [
+    {
+     "line": 566,
+     "text": "indique au simulateur les coordonnÃ©es ou l'on dÃ©sire se rendre"
+    },
+    {
+     "line": 567,
+     "text": "lon, lat et alt sont les diminutifs de longitude, latitude, altitude. On peut utliser les diminutifs ou les noms exacts dans les arguments qui suivent"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "lat",
+     "type": null,
+     "line": 568,
+     "desc": [
+      {
+       "line": 569,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 570,
+       "text": "spÃ©cifie la latitude du lieu"
+      },
+      {
+       "line": 571,
+       "text": "le signe indique le dÃ©placement : N pour + et S pour -"
+      }
+     ],
+     "values": [
+      {
+       "value": "default",
+       "desc": [
+        {
+         "line": 573,
+         "text": "permet de revenir Ã  la longitude du lieu d'origine"
+        }
+       ],
+       "line": 572
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "lon",
+     "type": null,
+     "line": 574,
+     "desc": [
+      {
+       "line": 575,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 576,
+       "text": "spÃ©cifie la longitude du lieu"
+      },
+      {
+       "line": 577,
+       "text": "le signe indique le dÃ©placement : E pour + et W pour -"
+      }
+     ],
+     "values": [
+      {
+       "value": "default",
+       "desc": [
+        {
+         "line": 579,
+         "text": "permet de revenir Ã  la latitude du lieu d'origine"
+        }
+       ],
+       "line": 578
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "alt",
+     "type": null,
+     "line": 580,
+     "desc": [
+      {
+       "line": 581,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 582,
+       "text": "spÃ©cifie l'altitude du lieu par rapport au niveau de la mer"
+      }
+     ],
+     "values": [
+      {
+       "value": "default",
+       "desc": [
+        {
+         "line": 584,
+         "text": "permet de revenir Ã  l'altitude du lieu d'origine"
+        }
+       ],
+       "line": 583
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "name",
+     "type": null,
+     "line": 585,
+     "desc": [
+      {
+       "line": 586,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 587,
+       "text": "indique le nom de l'endroit oÃ¹ l'on se trouve"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "duration",
+     "type": null,
+     "line": 588,
+     "desc": [
+      {
+       "line": 589,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 590,
+       "text": "indique la durÃ©e du changement"
+      },
+      {
+       "line": 591,
+       "text": "sans durÃ©e spÃ©cifiÃ©e, le simulateur se place instantanÃ©ment aux nouvelles coordonnÃ©es"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "multiplier",
+   "line": 595,
+   "desc": [
+    {
+     "line": 596,
+     "text": "modifie l'Ã©coulement du temps dans le logiciel"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "rate",
+     "type": "nombre",
+     "line": 597,
+     "desc": [
+      {
+       "line": 598,
+       "text": "indique le nombre de secondes qui s'Ã©coulent dans le logiciel en une seconde dans la rÃ©alitÃ©"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 599,
+     "desc": [],
+     "values": [
+      {
+       "value": "increment",
+       "desc": [
+        {
+         "line": 601,
+         "text": "augmente le nombre de secondes qui s'Ã©coulent dans le logiciel de step secondes"
+        },
+        {
+         "line": 602,
+         "text": "utilise step si dÃ©fini"
+        }
+       ],
+       "line": 600
+      },
+      {
+       "value": "decrement",
+       "desc": [
+        {
+         "line": 604,
+         "text": "rÃ©duit le nombre de secondes qui s'Ã©coulent dans le logiciel de step secondes"
+        },
+        {
+         "line": 605,
+         "text": "minimum une seconde par seconde, utilise step si dÃ©fini"
+        }
+       ],
+       "line": 603
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "step",
+     "type": "nombre",
+     "line": 606,
+     "desc": [
+      {
+       "line": 607,
+       "text": "indique la valeur"
+      },
+      {
+       "line": 608,
+       "text": "optionel, vaut 10 par dÃ©faut"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "personal",
+   "line": 612,
+   "desc": [
+    {
+     "line": 613,
+     "text": "reprÃ©sente un tracÃ© personnalisÃ© dans le ciel en mode al"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 614,
+     "desc": [],
+     "values": [
+      {
+       "value": "load",
+       "desc": [
+        {
+         "line": 616,
+         "text": "charge un fichier de tracÃ©"
+        },
+        {
+         "line": 617,
+         "text": "nÃ©cessite filename"
+        }
+       ],
+       "line": 615
+      },
+      {
+       "value": "clear",
+       "desc": [
+        {
+         "line": 619,
+         "text": "supprime tous les tracÃ©s"
+        }
+       ],
+       "line": 618
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "filename",
+     "type": null,
+     "line": 620,
+     "desc": [
+      {
+       "line": 621,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 622,
+       "text": "charge en mÃ©moire un fichier de tracÃ© existant"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "personeq",
+   "line": 626,
+   "desc": [
+    {
+     "line": 627,
+     "text": "reprÃ©sente un tracÃ© personnalisÃ© dans le ciel en mode Ã©quatorial"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 628,
+     "desc": [],
+     "values": [
+      {
+       "value": "load",
+       "desc": [
+        {
+         "line": 630,
+         "text": "charge un fichier de tracÃ©"
+        },
+        {
+         "line": 631,
+         "text": "nÃ©cessite filename"
+        }
+       ],
+       "line": 629
+      },
+      {
+       "value": "clear",
+       "desc": [
+        "supprime tous les tracÃ©s"
+       ],
+       "line": 632
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "filename",
+     "type": null,
+     "line": 633,
+     "desc": [
+      {
+       "line": 634,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 635,
+       "text": "charge en mÃ©moire un fichier de tracÃ© existant"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "planet_scale",
+   "line": 639,
+   "desc": [
+    {
+     "line": 640,
+     "text": "Modifie le rayon d'un astre"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "name",
+     "type": "chaine de caractÃ¨re",
+     "line": 641,
+     "desc": [
+      {
+       "line": 642,
+       "text": "nom de l'astre"
+      },
+      {
+       "line": 643,
+       "text": "nÃ©cessite scale"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "scale",
+     "type": "int",
+     "line": 644,
+     "desc": [
+      {
+       "line": 645,
+       "text": "valeur multiplicative appliquÃ©e au rayon"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "position",
+   "line": 649,
+   "desc": [
+    {
+     "line": 650,
+     "text": "permet de sauvegarder/charger la position sur laquelle on se trouve actuellement"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 651,
+     "desc": [],
+     "values": [
+      {
+       "value": "load",
+       "desc": [
+        {
+         "line": 653,
+         "text": "charge la derniÃ¨re position sauvegardÃ©e"
+        }
+       ],
+       "line": 652
+      },
+      {
+       "value": "save",
+       "desc": [
+        {
+         "line": 655,
+         "text": "sauvegarde la position actuelle"
+        }
+       ],
+       "line": 654
+      }
+     ]
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "print",
+   "line": 659,
+   "desc": [
+    {
+     "line": 660,
+     "text": "affiche un commentaire dans les fichiers de logs"
+    },
+    {
+     "line": 661,
+     "text": "commande systÃ¨me"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "value",
+     "type": "chaine de caractÃ¨re",
+     "line": 662,
+     "desc": [
+      {
+       "line": 663,
+       "text": "le contenu du message"
+      },
+      {
+       "line": 664,
+       "text": "obligatoire"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "name",
+     "type": "chaine de caractÃ¨re",
+     "line": 665,
+     "desc": [
+      {
+       "line": 666,
+       "text": "le nom du message, son tag"
+      },
+      {
+       "line": 667,
+       "text": "facultatif"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "script",
+   "line": 671,
+   "desc": [
+    {
+     "line": 672,
+     "text": "centralise la gestion des scripts dans le logiciel"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 673,
+     "desc": [],
+     "values": [
+      {
+       "value": "load",
+       "desc": [
+        {
+         "line": 675,
+         "text": "charge un script et l'exÃ©cute"
+        },
+        {
+         "line": 676,
+         "text": "nÃ©cessite filename"
+        }
+       ],
+       "line": 674
+      },
+      {
+       "value": "end",
+       "desc": [
+        {
+         "line": 678,
+         "text": "arrÃªte tout script en cours"
+        }
+       ],
+       "line": 677
+      },
+      {
+       "value": "record",
+       "desc": [
+        {
+         "line": 680,
+         "text": "enregistre toutes les commandes exÃ©cutÃ©es par l'utilisateur"
+        }
+       ],
+       "line": 679
+      },
+      {
+       "value": "cancelrecord",
+       "desc": [
+        {
+         "line": 682,
+         "text": "arrÃªte l'enregistrement des commandes exÃ©cutÃ©es par l'utilisateur"
+        }
+       ],
+       "line": 681
+      },
+      {
+       "value": "pause",
+       "desc": [
+        {
+         "line": 684,
+         "text": "met en pause le script en cours"
+        },
+        {
+         "line": 685,
+         "text": "si le script est dÃ©jÃ  en pause, ce dernier reprend"
+        }
+       ],
+       "line": 683
+      },
+      {
+       "value": "resume",
+       "desc": [
+        {
+         "line": 687,
+         "text": "reprend l'exÃ©cution d'un script mis en pause"
+        }
+       ],
+       "line": 686
+      },
+      {
+       "value": "faster",
+       "desc": [
+        {
+         "line": 689,
+         "text": "accÃ©lÃ¨re l'exÃ©cution du script en cours"
+        }
+       ],
+       "line": 688
+      },
+      {
+       "value": "slower",
+       "desc": [
+        {
+         "line": 691,
+         "text": "ralenti l'exÃ©cution du scipt en cours"
+        }
+       ],
+       "line": 690
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "filename",
+     "type": "chaine de caractÃ¨re",
+     "line": 692,
+     "desc": [
+      {
+       "line": 693,
+       "text": "nom du fichier script"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "select",
+   "line": 697,
+   "desc": [
+    {
+     "line": 698,
+     "text": "permet de sÃ©lectionner un objet du ciel"
+    },
+    {
+     "line": 699,
+     "text": "un paramÃ¨te doit Ãªtre renseignÃ©"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "PARAMETER",
+     "name": "hp",
+     "type": "chaine de caractÃ¨re",
+     "line": 700,
+     "desc": [
+      {
+       "line": 701,
+       "text": "sÃ©lectionne une Ã©toile du catalogue Hipparcos"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "star",
+     "type": "string",
+     "line": 702,
+     "desc": [
+      {
+       "line": 703,
+       "text": "sÃ©lectionne une Ã©toile du catalogue Tycho"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "planet",
+     "type": "chaine de caractÃ¨re",
+     "line": 704,
+     "desc": [
+      {
+       "line": 705,
+       "text": "sÃ©lectionne l'astre consernÃ©"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "nebula",
+     "type": "chaine de caractÃ¨re",
+     "line": 706,
+     "desc": [
+      {
+       "line": 707,
+       "text": "sÃ©lection l'objet du ciel profond  consernÃ©"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "constellation",
+     "type": "chaine de caractÃ¨re",
+     "line": 708,
+     "desc": [
+      {
+       "line": 709,
+       "text": "sÃ©lectionne la constellation consernÃ©e"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "constellation",
+     "type": "chaine de caractÃ¨re ZODIAC",
+     "line": 710,
+     "desc": [
+      {
+       "line": 711,
+       "text": "sÃ©lectionne les constellations du Zodiac"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "constellation_star",
+     "type": "chaine de caractÃ¨re",
+     "line": 712,
+     "desc": [
+      {
+       "line": 713,
+       "text": "sÃ©lectionne l'Ã©toile la plus brillante de la constellation consernÃ©e"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "pointeur",
+     "type": "vrai/faux",
+     "line": 714,
+     "desc": [
+      {
+       "line": 715,
+       "text": "indique si le pointeur apparait autour de l'objet ou non"
+      },
+      {
+       "line": 716,
+       "text": "sans prÃ©cision, le pointeur est activÃ© par dÃ©faut"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "set",
+   "line": 720,
+   "desc": [
+    {
+     "line": 721,
+     "text": "fixe une valeur Ã  un argument"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "atmosphere_fade_duration",
+     "type": null,
+     "line": 722,
+     "desc": [
+      {
+       "line": 723,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 724,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "auto_move_duration",
+     "type": null,
+     "line": 725,
+     "desc": [
+      {
+       "line": 726,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 727,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "constellation_art_fade_duration",
+     "type": null,
+     "line": 728,
+     "desc": [
+      {
+       "line": 729,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 730,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "constellation_art_intensity",
+     "type": null,
+     "line": 731,
+     "desc": [
+      {
+       "line": 732,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 733,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "light_pollution_limiting_magnitude",
+     "type": null,
+     "line": 734,
+     "desc": [
+      {
+       "line": 735,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 736,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "flight_duration",
+     "type": null,
+     "line": 737,
+     "desc": [
+      {
+       "line": 738,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 739,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "heading",
+     "type": null,
+     "line": 740,
+     "desc": [
+      {
+       "line": 741,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 742,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "duration",
+     "type": null,
+     "line": 743,
+     "desc": [
+      {
+       "line": 744,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 745,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "home_planet",
+     "type": null,
+     "line": 746,
+     "desc": [
+      {
+       "line": 747,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 748,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "landscape_name",
+     "type": null,
+     "line": 749,
+     "desc": [
+      {
+       "line": 750,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 751,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "line_width",
+     "type": null,
+     "line": 752,
+     "desc": [
+      {
+       "line": 753,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 754,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "max_mag_nebula_name",
+     "type": null,
+     "line": 755,
+     "desc": [
+      {
+       "line": 756,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 757,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "max_mag_star_name",
+     "type": null,
+     "line": 758,
+     "desc": [
+      {
+       "line": 759,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 760,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "moon_scale",
+     "type": null,
+     "line": 761,
+     "desc": [
+      {
+       "line": 762,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 763,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "sun_scale",
+     "type": null,
+     "line": 764,
+     "desc": [
+      {
+       "line": 765,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 766,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "milky_way_texture",
+     "type": null,
+     "line": 767,
+     "desc": [
+      {
+       "line": 768,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 769,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "sky_culture",
+     "type": null,
+     "line": 770,
+     "desc": [
+      {
+       "line": 771,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 772,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "sky_locale",
+     "type": null,
+     "line": 773,
+     "desc": [
+      {
+       "line": 774,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 775,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "ui_locale",
+     "type": null,
+     "line": 776,
+     "desc": [
+      {
+       "line": 777,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 778,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "star_mag_scale",
+     "type": null,
+     "line": 779,
+     "desc": [
+      {
+       "line": 780,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 781,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "star_size_limit",
+     "type": null,
+     "line": 782,
+     "desc": [
+      {
+       "line": 783,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 784,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "planet_size_limit",
+     "type": null,
+     "line": 785,
+     "desc": [
+      {
+       "line": 786,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 787,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "star_scale",
+     "type": null,
+     "line": 788,
+     "desc": [
+      {
+       "line": 789,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 790,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "star_twinkle_amount",
+     "type": null,
+     "line": 791,
+     "desc": [
+      {
+       "line": 792,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 793,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "star_fader_duration",
+     "type": null,
+     "line": 794,
+     "desc": [
+      {
+       "line": 795,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 796,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "star_limiting_mag",
+     "type": null,
+     "line": 797,
+     "desc": [
+      {
+       "line": 798,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 799,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "time_zone",
+     "type": null,
+     "line": 800,
+     "desc": [
+      {
+       "line": 801,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 802,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "text_fading_duration",
+     "type": null,
+     "line": 803,
+     "desc": [
+      {
+       "line": 804,
+       "text": "int"
+      },
+      {
+       "line": 805,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "milky_way_fader_duration",
+     "type": null,
+     "line": 806,
+     "desc": [
+      {
+       "line": 807,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 808,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "milky_way_intensity",
+     "type": null,
+     "line": 809,
+     "desc": [
+      {
+       "line": 810,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 811,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "zoom_offset",
+     "type": null,
+     "line": 812,
+     "desc": [
+      {
+       "line": 813,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 814,
+       "text": "nouvelle valeur"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "sky_culture",
+   "line": 818,
+   "desc": [
+    {
+     "line": 819,
+     "text": "permet de changer la reprÃ©sentation des constellations du ciel"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": null,
+     "line": 820,
+     "desc": [
+      {
+       "line": 821,
+       "text": "fixÃ© $ load @ charge la sky_culture liÃ©e au rÃ©pertoire"
+      },
+      {
+       "line": 822,
+       "text": "necessite path"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "path",
+     "type": null,
+     "line": 823,
+     "desc": [
+      {
+       "line": 824,
+       "text": "chaine de caractÃ¨re @ indique le chemin d'accÃ¨s au rÃ©pertoire"
+      },
+      {
+       "line": 825,
+       "text": "obligatoire"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "sky_draw",
+   "line": 829,
+   "desc": [
+    {
+     "line": 830,
+     "text": "affiche une sÃ©rie de points sur le dÃ´me"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 831,
+     "desc": [],
+     "values": [
+      {
+       "value": "clear",
+       "desc": [
+        {
+         "line": 833,
+         "text": "supprime tous les points affichÃ©s sur le dÃ´me"
+        }
+       ],
+       "line": 832
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "points",
+     "type": null,
+     "line": 834,
+     "desc": [
+      {
+       "line": 835,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 836,
+       "text": "affiche une sÃ©rie de points sous la forme XXXYYY ou (XXX,YYY) reprÃ©sentent une position sur le dÃ´me exprimÃ©e en pourcentage"
+      },
+      {
+       "line": 837,
+       "text": "il est nÃ©cessaire de reprÃ©senter les positions de points par une sÃ©rie de 3 chiffres. On peut cumuler plusieurs points par arguments"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "star_lines",
+   "line": 841,
+   "desc": [
+    {
+     "line": 842,
+     "text": "affiche des asterismes personnalisÃ©s"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 843,
+     "desc": [],
+     "values": [
+      {
+       "value": "drop",
+       "desc": [
+        {
+         "line": 845,
+         "text": "supprime tous les asterismes affichÃ©s"
+        }
+       ],
+       "line": 844
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "load",
+     "type": null,
+     "line": 846,
+     "desc": [
+      {
+       "line": 847,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 848,
+       "text": "affiche les asterismes contenus dans le fichier"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "asterism",
+     "type": null,
+     "line": 849,
+     "desc": [
+      {
+       "line": 850,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 851,
+       "text": "affiche un asterism en une ligne de commande"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "sun_trace",
+   "line": 855,
+   "desc": [
+    {
+     "line": 856,
+     "text": "permet de reprÃ©senter la course du soleil en direct sous le dÃ´me."
+    },
+    {
+     "line": 857,
+     "text": "cette commande est un alias de la commande body_trace avec le soleil comme astre sÃ©lectionnÃ©"
+    }
+   ],
+   "slots": [],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "shutdown",
+   "line": 861,
+   "desc": [
+    {
+     "line": 862,
+     "text": "permet d'Ã©teindre le logiciel spacecrafter"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 863,
+     "desc": [],
+     "values": [
+      {
+       "value": "now",
+       "desc": [
+        "ordre d'extinction immÃ©diate"
+       ],
+       "line": 864
+      }
+     ]
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "text",
+   "line": 868,
+   "desc": [],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 869,
+     "desc": [],
+     "values": [
+      {
+       "value": "clear",
+       "desc": [
+        {
+         "line": 871,
+         "text": "supprime tous les text affichÃ© dans la mÃ©moire"
+        }
+       ],
+       "line": 870
+      },
+      {
+       "value": "update",
+       "desc": [
+        {
+         "line": 873,
+         "text": "met Ã  jour le contenu du texte repÃ©rÃ© par son nom interne"
+        }
+       ],
+       "line": 872
+      },
+      {
+       "value": "drop",
+       "desc": [
+        {
+         "line": 875,
+         "text": "supprime un text repÃ©rÃ© par son nom interne"
+        }
+       ],
+       "line": 874
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "display",
+     "type": null,
+     "line": 876,
+     "desc": [
+      {
+       "line": 877,
+       "text": "vrai/faux"
+      },
+      {
+       "line": 878,
+       "text": "indique si le texte doit Ãªtre affichÃ© sous le dÃ´me ou pas"
+      },
+      {
+       "line": 879,
+       "text": "par dÃ©faut, le texte n'est pas affichÃ©"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "name",
+     "type": null,
+     "line": 880,
+     "desc": [
+      {
+       "line": 881,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 882,
+       "text": "donne un nom interne au logiciel Ã  un text donnÃ©"
+      },
+      {
+       "line": 883,
+       "text": "le nom interne est obligatoire"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "string",
+     "type": null,
+     "line": 884,
+     "desc": [
+      {
+       "line": 885,
+       "text": "chaine de caractÃ¨re"
+      },
+      {
+       "line": 886,
+       "text": "reprÃ©sente le contenu du text choisi"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "size",
+     "type": null,
+     "line": 887,
+     "desc": [
+      {
+       "line": 888,
+       "text": "fixÃ©"
+      }
+     ],
+     "values": [
+      {
+       "value": "x_small",
+       "desc": [],
+       "line": 889
+      },
+      {
+       "value": "small",
+       "desc": [],
+       "line": 890
+      },
+      {
+       "value": "medium",
+       "desc": [
+        {
+         "line": 892,
+         "text": "paramÃ¨tre par dÃ©faut"
+        }
+       ],
+       "line": 891
+      },
+      {
+       "value": "large",
+       "desc": [],
+       "line": 893
+      },
+      {
+       "value": "x_large",
+       "desc": [],
+       "line": 894
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "azimuth",
+     "type": null,
+     "line": 895,
+     "desc": [
+      {
+       "line": 896,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 897,
+       "text": "indique l'azimuth Ã  partir duquel le texte sera affichÃ©"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "latitude",
+     "type": null,
+     "line": 898,
+     "desc": [
+      {
+       "line": 899,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 900,
+       "text": "indique la lattitude Ã  partir de la quelle le texte sera affichÃ©"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "r",
+     "type": null,
+     "line": 901,
+     "desc": [
+      {
+       "line": 902,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 903,
+       "text": "modifie la composante rouge de la couleur"
+      },
+      {
+       "line": 904,
+       "text": "comprise entre 0 et 1 (dÃ©cimal) ou entre 0 et 255 (entier)"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "g",
+     "type": null,
+     "line": 905,
+     "desc": [
+      {
+       "line": 906,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 907,
+       "text": "modifie la composante verte de la couleur"
+      },
+      {
+       "line": 908,
+       "text": "comprise entre 0 et 1 (dÃ©cimal) ou entre 0 et 255 (entier)"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "b",
+     "type": null,
+     "line": 909,
+     "desc": [
+      {
+       "line": 910,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 911,
+       "text": "modifie la composante bleu de la couleur"
+      },
+      {
+       "line": 912,
+       "text": "comprise entre 0 et 1 (dÃ©cimal) ou entre 0 et 255 (entier)"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "color_value",
+     "type": "xRRGGBB",
+     "line": 913,
+     "desc": [
+      {
+       "line": 914,
+       "text": "fixe la couleur Ã  la dÃ©finition du web: paramÃ¨tre en hexadÃ©cimal, 2 caractÃ¨res obigatoires"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "timerate",
+   "line": 919,
+   "desc": [
+    {
+     "line": 920,
+     "text": "modifie la vitesse d'Ã©coulement du temps"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "rate",
+     "type": null,
+     "line": 921,
+     "desc": [
+      {
+       "line": 922,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 923,
+       "text": "fixe directement par combien le temps sera multipliÃ©"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": null,
+     "line": 924,
+     "desc": [
+      {
+       "line": 925,
+       "text": "fixÃ©"
+      }
+     ],
+     "values": [
+      {
+       "value": "pause",
+       "desc": [
+        "stoppe le temps"
+       ],
+       "line": 926
+      },
+      {
+       "value": "resume",
+       "desc": [
+        "le temps recommence Ã  compter"
+       ],
+       "line": 927
+      },
+      {
+       "value": "incrÃ©ment",
+       "desc": [
+        "multiplie la vitesse du temps par step"
+       ],
+       "line": 928
+      },
+      {
+       "value": "dÃ©crÃ©ment",
+       "desc": [
+        "divise la vitesse du temps par step"
+       ],
+       "line": 929
+      },
+      {
+       "value": "sincrement",
+       "desc": [
+        "augmente la vitesse du temps"
+       ],
+       "line": 930
+      },
+      {
+       "value": "sdecrement",
+       "desc": [
+        "diminue la vitesse du temps"
+       ],
+       "line": 931
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "step",
+     "type": null,
+     "line": 932,
+     "desc": [
+      {
+       "line": 933,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 934,
+       "text": "modifie le facteur multiplicatif pour accÃ©lÃ©ration du temps"
+      },
+      {
+       "line": 935,
+       "text": "par dÃ©faut, step est fixÃ© Ã  2."
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "wait",
+   "line": 939,
+   "desc": [
+    {
+     "line": 940,
+     "text": "crÃ©e une attente entre deux commandes scripts. wait est souvent utilisÃ© pour permettre Ã  une commande de se finir avant qu'une autre ne se lance."
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "duration",
+     "type": "float",
+     "line": 941,
+     "desc": [
+      {
+       "line": 942,
+       "text": "durÃ©e de l'attente"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "action",
+     "type": "fixÃ©",
+     "line": 943,
+     "desc": [],
+     "values": [
+      {
+       "value": "reset_timer",
+       "desc": [
+        "reset le script"
+       ],
+       "line": 943
+      }
+     ]
+    }
+   ],
+   "example": [],
+   "img": null
+  },
+  {
+   "command": "zoom",
+   "line": 947,
+   "desc": [
+    {
+     "line": 948,
+     "text": "Modifie le champ de vision comme le ferait un grossissement d'une lunette"
+    }
+   ],
+   "slots": [
+    {
+     "kind": "ARGUMENT",
+     "name": "auto",
+     "type": null,
+     "line": 949,
+     "desc": [
+      {
+       "line": 950,
+       "text": "fixÃ©"
+      }
+     ],
+     "values": [
+      {
+       "value": "out",
+       "desc": [
+        "revient Ã  ?"
+       ],
+       "line": 951
+      },
+      {
+       "value": "initial",
+       "desc": [
+        "revient Ã  sa valeur d'origine"
+       ],
+       "line": 952
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "manual",
+     "type": null,
+     "line": 953,
+     "desc": [
+      {
+       "line": 954,
+       "text": "fixÃ©"
+      }
+     ],
+     "values": [
+      {
+       "value": "1",
+       "desc": [
+        "?"
+       ],
+       "line": 955
+      },
+      {
+       "value": "initial",
+       "desc": [
+        "?"
+       ],
+       "line": 956
+      }
+     ]
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "fov",
+     "type": null,
+     "line": 957,
+     "desc": [
+      {
+       "line": 958,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 959,
+       "text": "indique jusqu'Ã  quel champ de vision que le zoom doit atteindre"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "delta_fov",
+     "type": null,
+     "line": 960,
+     "desc": [
+      {
+       "line": 961,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 962,
+       "text": "?"
+      }
+     ],
+     "values": []
+    },
+    {
+     "kind": "ARGUMENT",
+     "name": "center",
+     "type": null,
+     "line": 963,
+     "desc": [
+      {
+       "line": 964,
+       "text": "fixÃ©"
+      }
+     ],
+     "values": [
+      {
+       "value": "on",
+       "desc": [
+        {
+         "line": 966,
+         "text": "fixe le centre du point de vue sur l'objet sÃ©lectionnÃ©"
+        }
+       ],
+       "line": 965
+      }
+     ]
+    },
+    {
+     "kind": "PARAMETER",
+     "name": "duration",
+     "type": null,
+     "line": 967,
+     "desc": [
+      {
+       "line": 968,
+       "text": "dÃ©cimal"
+      },
+      {
+       "line": 969,
+       "text": "indique la durÃ©e en seconde du changement de zoom"
+      }
+     ],
+     "values": []
+    }
+   ],
+   "example": [],
+   "img": null
+  }
+ ]
+}
