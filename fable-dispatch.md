@@ -324,15 +324,17 @@ stands superseded by the session-10 update note above.*
   predicted position post-fix (prediction committed pre-run, both ways on the
   pre/post pair); no-up-chain control scene bit-identical pre/post; battery
   green; frozen md5 in==out; concurrent-instance assert.
-- **WIP:** 2026-08-09 ckpt3 — FIX LANDED (code `bd3f7117`), both binaries
-  measured, `f29_compare.py` **VERDICT PASS**. Source re-verification found the
-  class is TWO sites, not one (the up-chain loop the row names + the
-  invisible-reference branch, `ModularBody.cpp:343`); both fixed. Scene N
-  (fov 140, subject tracked): subject trail passes **550.39 px** from the body
-  pre-fix / **9.2e-05 px** post-fix, control body **0.69 px on both**; pre-fix
-  it passes **0.70 px** from project(cached frame). Invariant violators
-  3 → 0 over 120 bodies; control scenes E and S bit-identical (max diff 0).
-  Next: regression battery, then §11.137 + §5.46 flip.
+- **WIP:** — **DELIVERED 2026-08-09 → §11.137** (code `bd3f7117`, harness
+  `5df7d17` prediction / `db7ec1a` baseline / `1804155` run / the entry commit).
+  §5.46 **FIXED**, and the class was TWO sites, not the one the row enumerated
+  (the up-chain loop + `dispatchUpdate`'s invisible-reference branch, found by
+  enumerating all five writers of `mat`). Prediction committed before the
+  instrument existed; every half discharged both ways with an in-frame positive
+  control. NEW **§5.75** (`TrailModule::accumulate` truncation drops trail
+  samples on date jumps — policy, so recorded not fixed). Also recorded:
+  `parkedChildFrame` is now a provable duplicate of `matLocalToBodyPos`
+  (collapsing it is B39-barrier work, Fable's call), and no planet orbit line
+  reaches the frame from a moon's surface (orbit depth bucket).
 
 ### F30 — the decision-feeder sweep: six rows' owed pre-decision data, no fixes  [S; read-only + one instrumented launch]
 

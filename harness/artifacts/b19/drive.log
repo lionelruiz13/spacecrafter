@@ -1,0 +1,102 @@
+>> flag experimental_path on
+>> timerate rate 0
+>> date jday 2461233.500000000
+>> moveto lat 48.85 lon 2.35 alt 100 duration 0
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b19/b19_base.json
+>> body name Moon hidden true
+>> body name Mars hidden true
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b19/b19_h1_t0.json
+>> date jday 2461233.513888889
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b19/b19_h1_t1.json
+>> body name Moon hidden false
+>> body name Mars hidden false
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b19/b19_s1_t0.json
+>> date jday 2461233.527777778
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b19/b19_s1_t1.json
+>> body name Moon hidden true
+>> body name Mars hidden true
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b19/b19_h2_t0.json
+>> date jday 2461233.541666667
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b19/b19_h2_t1.json
+>> body name Moon hidden false
+>> body name Mars hidden false
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b19/b19_s2_t0.json
+>> date jday 2461233.555555556
+>> body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/b19/b19_s2_t1.json
+
+--- B: time control (header jd == commanded; timerate rate 0) ---
+OK   base     jd=2461233.500000000 commanded=2461233.500000000 d=+0.000e+00 d
+OK   h1_t0    jd=2461233.500000000 commanded=2461233.500000000 d=+0.000e+00 d
+OK   h1_t1    jd=2461233.513888889 commanded=2461233.513888889 d=+0.000e+00 d
+OK   s1_t0    jd=2461233.513888889 commanded=2461233.513888889 d=+0.000e+00 d
+OK   s1_t1    jd=2461233.527777778 commanded=2461233.527777778 d=+0.000e+00 d
+OK   h2_t0    jd=2461233.527777778 commanded=2461233.527777778 d=+0.000e+00 d
+OK   h2_t1    jd=2461233.541666667 commanded=2461233.541666667 d=+0.000e+00 d
+OK   s2_t0    jd=2461233.541666667 commanded=2461233.541666667 d=+0.000e+00 d
+OK   s2_t1    jd=2461233.555555556 commanded=2461233.555555556 d=+0.000e+00 d
+
+--- A: membership (relation flipped; <3 hidden, >=3 visible) ---
+OK   base     Moon    relation=4 expected shown
+OK   base     Mars    relation=4 expected shown
+OK   h1_t0    Moon    relation=1 expected hidden
+OK   h1_t0    Mars    relation=1 expected hidden
+OK   h1_t1    Moon    relation=1 expected hidden
+OK   h1_t1    Mars    relation=1 expected hidden
+OK   s1_t0    Moon    relation=4 expected shown
+OK   s1_t0    Mars    relation=4 expected shown
+OK   s1_t1    Moon    relation=4 expected shown
+OK   s1_t1    Mars    relation=4 expected shown
+OK   h2_t0    Moon    relation=1 expected hidden
+OK   h2_t0    Mars    relation=1 expected hidden
+OK   h2_t1    Moon    relation=1 expected hidden
+OK   h2_t1    Mars    relation=1 expected hidden
+OK   s2_t0    Moon    relation=4 expected shown
+OK   s2_t0    Mars    relation=4 expected shown
+OK   s2_t1    Moon    relation=4 expected shown
+OK   s2_t1    Mars    relation=4 expected shown
+
+calibration: max old-vs-new disagreement on never-hidden ['Venus', 'Jupiter', 'Io'] over 9 dumps = 33.4413 km -> tolerance 334.4128 km
+
+--- C/D: advance and 'where it is now' ---
+  hidden entry 1 Moon    moved_old=   1308.12 km  moved_new=   1308.12 km  |new-old|@t1=   0.004 km  dlastJD=0.013888898 d
+OK   C hidden entry 1 Moon: new advance 1308.12 km >= 50% of old 1308.12 km
+OK   C hidden entry 1 Moon: |advance_new - advance_old| 0.00 km <= 5% of 1308.12 km
+OK   D hidden entry 1 Moon: new-vs-old at t1 0.004 km <= 334.413 km (a freeze would read ~1308 km)
+OK   E hidden entry 1 Moon: dlastJD 0.013888898 d vs commanded 0.013888889 d
+  hidden entry 1 Phobos  moved_old=   2578.82 km  moved_new=   2578.82 km  |new-old|@t1=   0.001 km  dlastJD=0.013889145 d
+OK   C hidden entry 1 Phobos: new advance 2578.82 km >= 50% of old 2578.82 km
+OK   C hidden entry 1 Phobos: |advance_new - advance_old| 0.00 km <= 5% of 2578.82 km
+OK   D hidden entry 1 Phobos: new-vs-old at t1 0.001 km <= 334.413 km (a freeze would read ~2579 km)
+OK   E hidden entry 1 Phobos: dlastJD 0.013889145 d vs commanded 0.013888889 d
+  shown  entry 1 Moon    moved_old=   1308.02 km  moved_new=   1308.03 km  |new-old|@t1=   0.007 km  dlastJD=0.013888899 d
+OK   C shown  entry 1 Moon: new advance 1308.03 km >= 50% of old 1308.02 km
+OK   C shown  entry 1 Moon: |advance_new - advance_old| 0.00 km <= 5% of 1308.02 km
+OK   D shown  entry 1 Moon: new-vs-old at t1 0.007 km <= 334.413 km (a freeze would read ~1308 km)
+OK   E shown  entry 1 Moon: dlastJD 0.013888899 d vs commanded 0.013888889 d
+  shown  entry 1 Phobos  moved_old=   2587.06 km  moved_new=   2587.06 km  |new-old|@t1=   0.000 km  dlastJD=0.013889118 d
+OK   C shown  entry 1 Phobos: new advance 2587.06 km >= 50% of old 2587.06 km
+OK   C shown  entry 1 Phobos: |advance_new - advance_old| 0.00 km <= 5% of 2587.06 km
+OK   D shown  entry 1 Phobos: new-vs-old at t1 0.000 km <= 334.413 km (a freeze would read ~2587 km)
+OK   E shown  entry 1 Phobos: dlastJD 0.013889118 d vs commanded 0.013888889 d
+  hidden entry 2 Moon    moved_old=   1307.92 km  moved_new=   1307.92 km  |new-old|@t1=   0.011 km  dlastJD=0.013888899 d
+OK   C hidden entry 2 Moon: new advance 1307.92 km >= 50% of old 1307.92 km
+OK   C hidden entry 2 Moon: |advance_new - advance_old| 0.00 km <= 5% of 1307.92 km
+OK   D hidden entry 2 Moon: new-vs-old at t1 0.011 km <= 334.413 km (a freeze would read ~1308 km)
+OK   E hidden entry 2 Moon: dlastJD 0.013888899 d vs commanded 0.013888889 d
+  hidden entry 2 Phobos  moved_old=   2593.17 km  moved_new=   2593.17 km  |new-old|@t1=   0.000 km  dlastJD=0.013889098 d
+OK   C hidden entry 2 Phobos: new advance 2593.17 km >= 50% of old 2593.17 km
+OK   C hidden entry 2 Phobos: |advance_new - advance_old| 0.00 km <= 5% of 2593.17 km
+OK   D hidden entry 2 Phobos: new-vs-old at t1 0.000 km <= 334.413 km (a freeze would read ~2593 km)
+OK   E hidden entry 2 Phobos: dlastJD 0.013889098 d vs commanded 0.013888889 d
+  shown  entry 2 Moon    moved_old=   1308.51 km  moved_new=   1308.51 km  |new-old|@t1=   0.008 km  dlastJD=0.013888900 d
+OK   C shown  entry 2 Moon: new advance 1308.51 km >= 50% of old 1308.51 km
+OK   C shown  entry 2 Moon: |advance_new - advance_old| 0.00 km <= 5% of 1308.51 km
+OK   D shown  entry 2 Moon: new-vs-old at t1 0.008 km <= 334.413 km (a freeze would read ~1309 km)
+OK   E shown  entry 2 Moon: dlastJD 0.013888900 d vs commanded 0.013888889 d
+  shown  entry 2 Phobos  moved_old=   2596.64 km  moved_new=   2596.64 km  |new-old|@t1=   0.000 km  dlastJD=0.013889080 d
+OK   C shown  entry 2 Phobos: new advance 2596.64 km >= 50% of old 2596.64 km
+OK   C shown  entry 2 Phobos: |advance_new - advance_old| 0.00 km <= 5% of 2596.64 km
+OK   D shown  entry 2 Phobos: new-vs-old at t1 0.000 km <= 334.413 km (a freeze would read ~2597 km)
+OK   E shown  entry 2 Phobos: dlastJD 0.013889080 d vs commanded 0.013888889 d
+
+ALL PASS - /home/claude/spacecrafter/claude/harness/artifacts/b19/b19_result.json

@@ -1411,3 +1411,48 @@ answered the default 5 and the growth control failed; and the `get` argument is
 (it failed to link on `SessionFile::save/load` after F20/F21). Report counts are
 DISTINCT-PC counts - ASan's `suppress_equal_pcs` default means a second overflow
 at the same `strcpy` is silent - so pre/post claims are presence vs absence.
+
+### `f29_upchain.py` / `f29_run.sh` / `f29_compare.py` — §5.46, where an up-chain ancestor's line draws
+
+    cd claude/harness && ./f29_run.sh <absOutdir>                    # post-fix binary
+    SC_BIN=/abs/pre-fix-binary ./f29_run.sh <absOutdir>              # counterfactual
+    ./f29_compare.py <pre_outdir> <post_outdir>                      # exit 0/1
+
+`f29_upchain.py`'s header IS the prediction (committed before the first run,
+harness `5df7d17`); `f29_compare.py` evaluates the cross-binary halves. Five
+legs in one launch: **E** observer on Earth · **S** system centre · **X** on
+Mars with the Sun tracked (the FREEZE SOURCE) · **M** on the Moon at fov 340 ·
+**N** the same instant at fov 140 with the subject tracked.
+
+Things this scene had to learn, each one measured, each one a trap for the next
+line-drawing gate:
+
+- **The ORBIT pass is depth-bucketed** (`Renderer.hpp:156-167`): from a moon's
+  surface `flag planets_orbits on` adds **0 px** — no planet orbit line reaches
+  the frame at all. The TRAIL pass is depth-free and is what a line-placement
+  gate can read. The three consumers (orbit/trail/tail) share one expression,
+  so the trail's verdict is theirs.
+- **The trail geom shader drops segments longer than 0.4 NDC** unless
+  `main_clipping_fov[2] < 2.7` (`body_trail.geom:19-24`). A trail's newest
+  vertex sits AT its body, so for a body one moon away the first segment spans
+  ~84° and the head never rasterises at fov 340. Read line ENDS at fov <= 140.
+- **`TrailModule::accumulate` truncates to int** and `date` is light-retarded,
+  so a `date jday` step of exactly `DeltaTrail` (1.0 day) records NOTHING —
+  21 of 30 samples taken, newest a full day stale (→ §5.75). Step **1.5 days**.
+  The instrument reports `trail_head_lag_days` per body so a stale head
+  disqualifies the reading instead of being read as fresh.
+- **Isolate a trail by a COLOUR DIFFERENTIAL, not by hue**: shoot it black, then
+  coloured, and diff. Recolouring does not touch the recorded points; body
+  discs are themselves red-dominant and had otherwise supplied the "brightest
+  red pixel".
+- **The gate is the CLOSEST APPROACH of the polyline to the predicted point**,
+  not the head pixel: the head pixel is `argmax` over a quantised vertex alpha
+  whose level spans ~74 px along a long segment.
+- `halfFov` is SOLVED OUT of the dump (`|screen| = acos(-z/d)/halfFov`, agreeing
+  to 8e-7 across bodies) and the y-flip is picked by the control body — the
+  projection is reconstructed, never assumed.
+
+Measured verdicts at delivery (§11.137): subject trail **550.39 px** from its
+body pre-fix / **9.2e-05 px** post-fix, control body **0.69 px on both**;
+invariant `eclRoot == mat.translation` violated by exactly the up-chain pre-fix,
+by nobody post-fix over 120 bodies; control scenes bit-identical.
