@@ -34,6 +34,32 @@ file AND `fable-dispatch/archive/` together, never the live surface alone. The
 in-file derived index (§1) is regenerable, never authoritative. A wrongly archived
 unit moves back at the cost of one probe — when in doubt, a unit stays live.
 
+**Update [Fable 2026-08-08, supervising session 10]:** round of 3: **F28 → F29 → F30**.
+F28 = **§5.73's fix-shape verification** (session 9's named queue head; authority check
+at §5: the row owes a measurement nothing has taken and a source verdict — dispatchable
+as verify-then-fix-only-if-decision-free). F29 = **§5.46's up-chain flat frame** — NOT
+in session 9's queue enumeration; authority check at §5: recorded fix shape (*"assign
+`matLocalToBodyPos = flat` in the up-chain loop"*), named discriminating check (A/B an
+up-chain ancestor's orbit/trail), no Vixy decision named — B39's record-don't-fix was
+that task's scope boundary, not a gate; lateral search live ∪ archive found no deferral
+record ⇒ view staleness, session 9's F27 class. F30 = **the decision-feeder sweep**:
+the owed pre-decision data of §5.60/§5.64/§5.65/§5.69/§5.70/§5.72 — the session-9
+deferral note gates those rows' FIXES (semantics = Vixy's, untouched); each row names
+an owed datum that is upstream of the decision and decision-free, and F26 is the
+no-code-delivery precedent. Warm-up: both trees clean modulo four session-9 instrument
+binaries (`harness/sc_f25_pre`, `sc_f26_{pre,child}`, `sc_f27_pre` — gitignored IN
+PLACE this session so §5.62's/F27's recorded paths stay valid; regenerable from the
+named commits); binary confirmed current by no-op rebuild; `free -g` = 52 GiB ⇒ -j12;
+NO Vixy commit since session 9's close ⇒ D15/D21 (late Aug), D37, A40–A43, C4 all
+open — B7-hunt-5, B12-content, §5.64/§5.65/§5.69/§5.70/§5.72 fixes stay blocked;
+B35/B37/B38 decision-gated, B36 per-member (pin/unpin rides B1). §5.34 (Object
+`operator=` leak — needs its own raw-`ObjectBase*` holder enumeration, old-path
+lifetime consequences) noted as a next-round candidate, not taken over the sweep: one
+M-sized fix with baseline risk vs six decision un-starvations. Dispatch order =
+F28→F29→F30; order-independence CHECKED, not assumed: F28 = `src/tools/io.{cpp,hpp}`,
+F29 = the experimentalModule dispatch walk (disjoint files); F30 lands no code, and
+its one §5.60 launch reads a startup-time allocation size neither fix touches.
+
 **Update [Fable 2026-08-02, supervising session 9]:** round of 3: **F25 → F26 → F27**.
 F25 = **B34-ramps** (session 8's queued item — the row's last member; minted at
 dispatch per §0b.2). F26 = **§5.62's owed isolation measurement** (queued, S). F27 =
@@ -204,10 +230,134 @@ DELIVERED and archived** — F0 §11.103 · F1 §11.104/§11.105 · F2 §11.106 
 F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · F15 §11.121 ·
 F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129 ·
 F22 §11.130 · F23 §11.131 · F24 §11.132 · F25 §11.133 · F26 §11.134 · F27 §11.135.
-No section is live: the next dispatchable candidate (§5.73's fix-shape
-verification, conditional on a decision-free sizing fix confirmed at source) is
-to be minted at its dispatch per §0b.2 — the current queue lives in the latest
-session update note above.*
+Sections F28–F30 minted 2026-08-08 (session 10) below — the prior queue note
+stands superseded by the session-10 update note above.*
+
+### F28 — §5.73: the shared send buffer vs a ≥1023-byte answer — verify the fix shape, fix only if decision-free  [S]
+
+- **Row / recorded:** §5.73 VERBATIM (INTENT.md §5; recorded by F27, §11.135(j);
+  derived from source, NOT reproduced): `setOutput` clamps the answer to
+  `MAX_BUFFER` = **1024** `[io.cpp:63, 344-348]`; the send path copies
+  `data + '\n'` with `strcpy` — **L + 2** bytes for an answer of length L — into
+  `buffer = new char[bufferSize]` `[io.cpp:175]`, where `bufferSize` =
+  `tcp_buffer_in_size` = **1024** in the loaded config. So **L ≥ 1023 writes past
+  the end**, up to 2 bytes at the clamp. Pre-existing on both binaries; untouched
+  by F27's routing change (the `strcpy` ran even when nobody received the string).
+  Unbounded producers: `get status object` (`getSelectedObjectInfo`) and `search`
+  (`getListMatchingObjects`). Owed by the row: *"measure the two commands' actual
+  output length on a shipped scene, which nothing has done."*
+- **Why now:** session 9's named queue head; the only §5 fix row whose gate is a
+  source verdict rather than a Vixy decision — IF sizing-only is decision-free.
+- **Task:** (i) Take the owed measurement first: actual reply lengths of
+  `get status object` (a selected shipped body) and `search` (a prefix with many
+  matches) on a shipped scene, on the wire. (ii) At source, decide whether a
+  sizing-only fix is decision-free. The buffer is SHARED with the receive path
+  (`tcp_buffer_in_size` semantics must not change); the honest shapes are
+  size-to-message on the SEND copy (the send path allocates/ensures L+2) or a
+  separate send buffer sized to the queue's front. Anything that changes
+  truncation behaviour, protocol output for currently-working answers, or the
+  receive path's config meaning is NOT sizing-only ⇒ record the fork at the row
+  and STOP (that is a complete delivery — the row's conditional says so).
+  (iii) If decision-free: land it, with the overflow discriminated BOTH WAYS on
+  the ASan tree (`build-asan`) — a ≥1023-byte answer must self-name as
+  `heap-buffer-overflow` pre-fix and arrive intact, byte-complete, post-fix; the
+  native tree must show the same answer delivered unchanged. (iv) F27's
+  `f27_reply.py` scenario stays green on the same connection (the routing fix and
+  this fix share the function).
+- **Stop boundaries (NOT yours):** truncation POLICY (protocol-visible — Vixy's,
+  the row says so); §5.72's `$LOGON` semantics (deliberately preserved by F27);
+  receive-path behaviour; protocol redesign; other `get` handlers.
+- **Discriminating checks:** ASan both-ways leg (overflow self-names pre-fix, 0
+  reports post-fix, same drive); reply byte-completeness vs the producer's string
+  length; `f27_reply.py` green; battery green (TCP suites); frozen md5 in==out;
+  §0.5 concurrent-instance assert (`/proc/<pid>/comm` probe).
+- **WIP:**
+
+### F29 — §5.46: the up-chain walk publishes a flat frame it never writes  [S–M]
+
+- **Row / recorded:** §5.46 VERBATIM (INTENT.md §5; found by B39, §11.117(k)(2)):
+  `dispatchUpdate`'s UP-CHAIN loop (`while (body->isNotIsolated)`) assigns
+  `body->mat = parentTilted` and calls `preUpdate`/`update`, and **nothing writes
+  `matLocalToBodyPos`** — whose own contract says *"Set on EVERY position update
+  (visible or not)"* — while every DOWNWARD path writes it explicitly and says
+  why. Consumers: `ModularSystem::drawOrbits`/`drawTrails`/`drawTails` build each
+  body's parent frame from `getMatLocalToBodyPos()`, so an up-chain ancestor's OWN
+  orbit/trail/tail is placed in a stale frame — reachable on today's corpus
+  (observer on the Moon ⇒ Earth is up-chain and carries a TRAIL module). This is
+  the class §11.39 believed closed (*"correct for EVERY body"* — true of the
+  descent, false of the climb). Fix shape IN-ROW: *"assign
+  `matLocalToBodyPos = flat` in the up-chain loop where `mat = parentTilted` is
+  assigned, and A/B the orbit/trail of an up-chain ancestor to see what moves."*
+- **Why now:** recorded fix shape + named discriminating check + no decision
+  named; B39's record-don't-fix was its scope boundary ("changes rendered output
+  for a body B39 does not otherwise touch") — rendering the CONTRACTED frame is
+  this task's whole mandate, not a side effect.
+- **Task:** (i) Re-verify the row at source (it is 9 days old; §5.2 class).
+  (ii) Instrument BEFORE fixing: the A/B scene (observer on/near the Moon, Earth's
+  trail and orbit enabled) with a measured observable of where the up-chain
+  ancestor's orbit/trail draws; commit the PREDICTION first — derive from the
+  stale-frame mechanism where the line sits pre-fix (the frame of the last
+  descent through Earth) and where the correct frame puts it. (iii) Land the
+  one-line fix. (iv) A/B both ways + the as-if control: a scene with NO up-chain
+  ancestor (observer on Earth, same content) must be bit-identical pre/post —
+  every downward-path body already had the write, so the fix must change nothing
+  for them.
+- **Stop boundaries (NOT yours):** any old-path change (§11.52(b) baseline);
+  orbit/trail rendering quality beyond frame correctness; B39/§5.44 hidden-body
+  semantics; §5.27/D21 scaling questions if they intersect the scene (route
+  around: `flag moon_scaled off` per the standing harness rule).
+- **Discriminating checks:** up-chain ancestor's orbit/trail moves to the
+  predicted position post-fix (prediction committed pre-run, both ways on the
+  pre/post pair); no-up-chain control scene bit-identical pre/post; battery
+  green; frozen md5 in==out; concurrent-instance assert.
+- **WIP:**
+
+### F30 — the decision-feeder sweep: six rows' owed pre-decision data, no fixes  [S; read-only + one instrumented launch]
+
+- **Rows / owed items (each verbatim at its row; the fixes are ALL decision-gated
+  and NOT in scope):**
+  - **§5.60** — *"WHICH allocation this is and whether it is one buffer or one
+    pool — the answer decides whether the fix is a policy on pool sizing or a
+    fallback path"* (feeds Vixy's D13 device-limit call; recorded §11.125(e)).
+  - **§5.64** — *"which consumers read `getTimeSpeed()` and therefore already
+    behave as if paused"* (the readout/clock disagreement is the defect shape;
+    feeds the pause-semantics call; §11.128(j)).
+  - **§5.65** — *"whether any shipped script actually issues the pair
+    [`moveto` + `flag lock_sky_position on`] in one block"* (§11.130(c)).
+  - **§5.69** — *"whether any shipped show relies on today's truncated
+    `keep_time` value"* (the intended-maximum half is Vixy's, not scannable;
+    §11.132(g)).
+  - **§5.70** — *"whether any archived recording already carries the broken
+    [`look delta_az`] line, since fixing the emitter does not fix a recorded
+    file"* (§11.133(j)).
+  - **§5.72** — *"whether any shipped client subscribes with `$LOGON` and parses
+    command answers off that stream"* (§11.135(c)).
+- **Why now:** all six fixes wait on Vixy; every row names the datum owed BEFORE
+  the decision can be judged; the data is decision-free and mostly read-only.
+  Batching un-starves six decisions in one S run. F26 is the precedent that a
+  measurement with no code is a full delivery.
+- **Task:** per item, acquire exactly the owed datum, with its channel positively
+  mapped: **§5.60** — identify the allocation at its callsite (one launch; the
+  validation layer names size 2684360960 — a gdb break on `vkAllocateMemory`
+  filtered on that size, or the layer's own callstack config; state buffer-vs-pool
+  and which subsystem asked). **§5.64** — whole-`src` enumeration of
+  `getTimeSpeed()` consumers, per-consumer verdict: behaves-as-paused vs
+  reads-the-raw-clock. **§5.65/§5.69/§5.70** — corpus scans: shipped scripts +
+  `~/.spacecrafter` data (ISO-8859 — `/usr/bin/grep` or Read, per the standing
+  rule), stating the corpus enumerated (paths, file counts) so absence is a
+  mapped negative, not a failed lookup. **§5.72** — tree + shipped-tools scan for
+  `$LOGON` producers/consumers. Delivery: one §11 entry for the sweep + a dated
+  EXTENSION on each of the six rows carrying its datum with provenance tags.
+- **Stop boundaries (NOT yours):** NO fixes anywhere (all six gated); no
+  EntityCore edits; no asset creation; §5.62 (cross-epoch class, its own row
+  forbids the chase); if §5.60's identification exceeds one debug session, record
+  the partial + the exact remaining step.
+- **Discriminating checks:** every negative carries a positive control on the
+  same channel (each corpus grep proven on a string known present; the gdb/layer
+  break proven by hitting the 2.68 GB allocation); §5.60's launch under the
+  fresh-launch precondition + concurrent-instance assert; no code diff at close
+  (`git -C` both repos: harness-only changes).
+- **WIP:**
 
 ---
 
