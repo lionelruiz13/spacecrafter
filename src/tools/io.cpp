@@ -64,7 +64,12 @@ std::string toString(const T& t) //ServerSocket
 
 /* Warning values */
 #define LOT_OF_CLIENTS 		32 //Limit of simulated clients considered large and untested
-#define SMALL_BUFFER_SIZE 	512 //Buffer size considered dangerously small (must be larger than the messages that can be sent by the server)
+// The parenthesis said "must be larger than the messages that can be sent by
+// the server". That requirement is RETIRED (§5.73): the server no longer sends
+// through this buffer, so the size answers one question only - how much can be
+// received in one read. It was never enforced anyway; an answer too big for it
+// was not truncated, it was written past the end.
+#define SMALL_BUFFER_SIZE 	512 //Receive buffer size considered dangerously small
 #define BIG_BUFFER_SIZE 	1048576 //Buffer size considered unnecessarily large
 
 
@@ -257,11 +262,10 @@ int ServerSocket::close()
 	killThread();
 
 	//Close all open clients
-	strcpy(buffer, "GOODBYE"); //Preparation of the message
 	for (unsigned int client = 0; client < maxClients; client++) { //Scans all clients
 		if(clientCount <= 0) break; //Si on a déjà fermé tous les sockets clients on s'arrête
 		if (clientSocketTab[client] != NULL) { //If the socket is used
-			send(clientSocketTab[client]); //Send the message to the client
+			send(clientSocketTab[client], "GOODBYE"); //Send the message to the client
 			close(client); //Closing operations of the client socket
 		}
 	}
@@ -463,8 +467,7 @@ void ServerSocket::checkNewClient()
 			debugOut("SDL_ACCEPT_CLIENT_ERROR", LOG_TYPE::L_WARNING); //Debug
 			}
 
-			strcpy(buffer, "SERVER_FULL"); //Prepares the message
-			send(tempSock); //Sends message to client
+			send(tempSock, "SERVER_FULL"); //Sends message to client
 			SDLNet_TCP_Close(tempSock); //Closes the socket
 
 		}
@@ -492,8 +495,9 @@ void ServerSocket::checkNewData()
 					close(client); //Close client socket operations
 				} else if ((unsigned int)receivedByteCount >= bufferSize) { //Buffer overflow
 					possibleBufferOverflow++; //Increments the total number of buffer overflows
-					strcpy(buffer, "SERVER_OVERFLOW"); //Prepares the message
-					send(clientSocketTab[client]); //Sends the message
+					//The answer no longer overwrites what was just received:
+					//it is its own string (§5.73)
+					send(clientSocketTab[client], "SERVER_OVERFLOW"); //Sends the message
 
 					debugOut("BUFFER_OVERFLOW too many data "+ clientIp(client), LOG_TYPE::L_WARNING); //Debug
 
@@ -602,8 +606,10 @@ bool ServerSocket::computeHttp(unsigned int client, std::string string)
 				else if(extension == "gif" || extension == "GIF") type = "image/gif";
 				else type = "text/plain";
 
-				strcpy(buffer, ("HTTP/1.0 200 OK\r\nServer: SpaceCrafter (HTTP/BETA)\r\nContent-Length: " + toString(filestat.st_size) + "\nContent-Type: " + type + "\r\n\r\n").c_str());
-				SDLNet_TCP_Send(clientSocketTab[client], (void *)buffer, strlen(buffer)); //Send headers
+				//Headers are built where they are sent, not in the receive
+				//buffer (§5.73). Unlike an answer they carry no terminator.
+				const std::string header = "HTTP/1.0 200 OK\r\nServer: SpaceCrafter (HTTP/BETA)\r\nContent-Length: " + toString(filestat.st_size) + "\nContent-Type: " + type + "\r\n\r\n";
+				SDLNet_TCP_Send(clientSocketTab[client], (void *)header.c_str(), header.size()); //Send headers
 				unsigned int size;
 				do {
 					size = fread(buffer, 1, bufferSize, file); //Read the file in the buffer
@@ -612,16 +618,14 @@ bool ServerSocket::computeHttp(unsigned int client, std::string string)
 				fclose(file); //Closing the file
 			}
 		} else { //Problem when opening the file (non-existent...)
-			strcpy(buffer, "HTTP/1.0 500 Internal Error\r\nServer: SpaceCrafter (HTTP/BETA)\r\nContent-Length: 0\r\n\r\n");
-			send(clientSocketTab[client]); //Sending of the headers
+			send(clientSocketTab[client], "HTTP/1.0 500 Internal Error\r\nServer: SpaceCrafter (HTTP/BETA)\r\nContent-Length: 0\r\n\r\n"); //Sending of the headers
 		}
 
 		close(client); //Closing the connection
 		return true;
 	} else
 	if (string.substr(0,4) == "POST") { //HTTP POST request (not supported)
-		strcpy(buffer, "HTTP/1.0 500 Internal Error\r\nServer: SpaceCrafter (HTTP/BETA)\r\nContent-Length: 0\r\n\r\n");
-		send(clientSocketTab[client]);
+		send(clientSocketTab[client], "HTTP/1.0 500 Internal Error\r\nServer: SpaceCrafter (HTTP/BETA)\r\nContent-Length: 0\r\n\r\n");
 		close(client);
 		return true;
 	} else
@@ -637,20 +641,20 @@ void ServerSocket::computeNormalString(unsigned int client, std::string string)
 {
 	//TODO proprer
 	if(string.substr(0, 7) == "$NOTICE") { //command NOTICE
-		strcpy(buffer, "$NOTICE $LOGON $LOGOFF");
-		send(clientSocketTab[client]);
+		send(clientSocketTab[client], "$NOTICE $LOGON $LOGOFF");
 	} else
 	if(string.substr(0, 4) == "$LOG") { //LOG command
+		const char *answer;
 		if(string.substr(4, 2) == "ON" && !clientBroadcastTab[client]) { //LOGON
 			clientBroadcastTab[client] = true; //Change of customer preferences
-			strcpy(buffer, "Vous receverez maintenant les logs\n");
+			answer = "Vous receverez maintenant les logs\n";
 		} else
 		if(string.substr(4, 3) == "OFF" && clientBroadcastTab[client]) { //LOGOFF
 			clientBroadcastTab[client] = false; //Change of customer's preferences
-			strcpy(buffer, "Vous receverez maintenant PLUS les logs\n");
+			answer = "Vous receverez maintenant PLUS les logs\n";
 		} else
-			strcpy(buffer, "REQUEST ERROR");
-		send(clientSocketTab[client]); //Send buffer to client
+			answer = "REQUEST ERROR";
+		send(clientSocketTab[client], answer); //Send the answer to the client
 	} else {
 		pushRequest(client, string); //Add string to the input queue, WITH its origin
 		//broadcast(clientIp(client) + CLIENT_SEPARATOR1 + string + '\n'); //Send string to all clients
@@ -698,17 +702,21 @@ void ServerSocket::deliver(const ClientMessage &out)
 	   && clientIdTab[out.client] == out.id)
 		target = (int)out.client;
 
+	// The message, once, and sized by itself: `setOutput` allows an answer of
+	// up to MAX_BUFFER bytes and this adds one more, so it does not fit in a
+	// `tcp_buffer_in_size` buffer and never had to (§5.73).
+	const std::string message = out.data + '\n';
+
 	unsigned int recipients = 0;
 	if(target >= 0) {
-		strcpy(buffer, (out.data + '\n').c_str()); //Prepares the message
-		send(clientSocketTab[target]);
+		send(clientSocketTab[target], message.c_str());
 		recipients++;
 	}
 	// The feedback channel is unchanged: a client that subscribed with $LOGON
 	// is a control room watching what every operator asks, and it keeps
 	// receiving exactly what it received before. The addressee is excluded so
 	// that a client which is both issuer and subscriber gets one copy.
-	recipients += broadcast(out.data + '\n', target);
+	recipients += broadcast(message, target);
 
 	if(recipients == 0)
 		cLog::get()->write("TCP : nobody to answer \"" + out.data.substr(0, 60)
@@ -717,28 +725,27 @@ void ServerSocket::deliver(const ClientMessage &out)
 		                   LOG_TYPE::L_WARNING);
 }
 
-int ServerSocket::broadcast(std::string data, int excludeClient)
+int ServerSocket::broadcast(const std::string &data, int excludeClient)
 {
 	debugOut("-- BROADCAST --", LOG_TYPE::L_DEBUG); //Debug
 	debugOut("BROADCAST_DATA "+ data, LOG_TYPE::L_DEBUG); //Debug
 
-	strcpy(buffer, data.c_str()); //Prepares the message
 	unsigned int sent = 0; //Number of clients to which the data is sent
 	for (unsigned int client = 0; client < maxClients; client++) { //Path of all connected clients
 		if(clientBroadcastTab[client] && (int)client != excludeClient) { //If the client requests feedback and has not already been served
-			send(clientSocketTab[client]); //Sends to client
+			send(clientSocketTab[client], data.c_str()); //Sends to client
 			sent++; //Increates the total number of requests sent
 		}
 	}
 	return sent;
 }
 
-int ServerSocket::send(TCPsocket client)
+int ServerSocket::send(TCPsocket client, const char *data)
 {
 	debugOut("-- SEND --", LOG_TYPE::L_DEBUG); //Debug
 
-	unsigned int size = strlen(buffer) + 1; //Size of the string
-	unsigned int sendCount = SDLNet_TCP_Send(client, (void *)buffer, size); //Sends the content of the buffer to the client
+	unsigned int size = strlen(data) + 1; //Size of the string, terminator included
+	unsigned int sendCount = SDLNet_TCP_Send(client, (void *)data, size); //Sends the message to the client
 	if(sendCount < size) { //Problem while sending
 		requestSendFailed++; //Increments the total number of request sending errors
 		debugOut("SDL_SEND_ERROR", LOG_TYPE::L_WARNING); //Debug
