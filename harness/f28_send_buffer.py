@@ -411,11 +411,62 @@ def mode_overflow(out, binary, tag, expect):
     return res
 
 
+# -------------------------------------------------------------------- logon
+# The other thing the fix touched: the fixed answers `computeNormalString`
+# used to `strcpy` into `buffer` before sending. Those are the `$NOTICE` /
+# `$LOGON` / `$LOGOFF` replies - a REVERSIBLE PAIR, so it is entered twice,
+# the second entry starting from the state the first exit produced, and every
+# byte is compared pre/post rather than asserted by shape.
+LOGON_DRIVE = ["$NOTICE",
+               "$LOGON",              # entry 1
+               "$LOGON",              # already subscribed -> REQUEST ERROR
+               "$LOGOFF",             # exit 1
+               "$LOGOFF",             # not subscribed -> REQUEST ERROR
+               "$LOGON",              # entry 2, from what exit 1 left behind
+               "get status position",  # subscriber AND issuer: exactly one copy
+               "$LOGOFF",             # exit 2
+               "get status position"]  # addressed copy only
+
+
+def mode_logon(out, binary, tag, expect):
+    sess = f27.Session(out, tag, binary)
+    res = {"mode": "logon", "tag": tag, "binary": str(binary),
+           "md5": f27.md5(binary), "expect": expect, "exchanges": []}
+    c = sess.client("driver")
+    blob = b""
+    try:
+        for cmd in LOGON_DRIVE:
+            raw = c.send(cmd, 1.5)
+            blob += raw
+            msgs = answers(raw)
+            res["exchanges"].append(
+                {"cmd": cmd, "messages": [m.decode("latin-1") for m in msgs],
+                 "bytes": len(raw)})
+            print(f"      {cmd!r} -> {[m.decode('latin-1')[:48] for m in msgs]}",
+                  flush=True)
+    finally:
+        res["exit"] = sess.stop(c)
+    (out / f"{tag}_logon.bin").write_bytes(blob)
+    counts = [len(e["messages"]) for e in res["exchanges"]]
+    if counts[6] != 1 or counts[8] != 1:
+        fail(f"{tag}: a `get` answered {counts[6]} / {counts[8]} times "
+             f"(subscribed / not) — one copy each is the F27 contract")
+    else:
+        ok(f"{tag}: one copy subscribed, one copy not — both entries of the "
+           f"pair")
+    applog = (out / f"{tag}.applog").read_text(errors="replace")
+    res["asan_count"] = len([l for l in applog.splitlines()
+                             if "ERROR: AddressSanitizer" in l])
+    print(f"      asan reports: {res['asan_count']}", flush=True)
+    return res
+
+
 def main():
     a = argparse.ArgumentParser()
     a.add_argument("outdir")
     a.add_argument("--bin", default=DEFAULT_BIN)
-    a.add_argument("--mode", choices=("census", "overflow"), default="census")
+    a.add_argument("--mode", choices=("census", "overflow", "logon"),
+                   default="census")
     a.add_argument("--tag", default="ovf")
     a.add_argument("--expect", choices=("pre", "post"), default="post")
     a = a.parse_args()
@@ -432,6 +483,9 @@ def main():
     if a.mode == "census":
         res = mode_census(out, a.bin)
         name = "f28_census.json"
+    elif a.mode == "logon":
+        res = mode_logon(out, a.bin, a.tag, a.expect)
+        name = f"f28_logon_{a.tag}.json"
     else:
         res = mode_overflow(out, a.bin, a.tag, a.expect)
         name = f"f28_overflow_{a.tag}.json"

@@ -1354,3 +1354,48 @@ end in `'\n'`. Split on NUL, then match. Note that the harness's other driving
 helpers (`b25_galactic.run_phase`, `f23_b33_control.App.send`) `recv()` into
 the void after each command - which is why a missing answer was never visible
 from a harness script until this one kept what it read.
+
+## F28 — how long an answer is, and where it lands (`f28_send_buffer.py`) — INTENT §5.73 / §11.136
+
+    cd claude/harness && DISPLAY=:2 ./f28_send_buffer.py <absOutdir> --mode census
+    cd claude/harness && DISPLAY=:2 [ASAN_OPTIONS=halt_on_error=0:detect_leaks=0] \
+        ./f28_send_buffer.py <absOutdir> --mode overflow|logon --tag <name> \
+        --bin <binary> --expect pre|post
+
+Launches through `f27_reply.Session` (I2 - same concurrent-instance assert, same
+frozen-md5 assert, same farm), so the two scripts cannot drift apart on what a
+fresh launch means.
+
+**`census`** - one launch, the row's owed datum: `get status object` for five
+planets and a nebula, the `maxobject` ladder, the whole a-z first-letter surface
+of `search`, and the `get status planets_position` body-load ladder. Measured on
+the shipped corpus: object info **114-142 B**; `search` **53-1024 B** with
+prefix `n` reaching the clamp; `planets_position` **854 B**.
+
+**`overflow`** - the same six answers on any binary, shortest first:
+854 / 854 / 916 / **1022** / **1023** / **1024 clamped**. 1022 is the last
+length that FITS a 1024-byte buffer once `'\n'` and the terminator are added, so
+the 1022/1023 pair is a one-byte-wide discrimination on one code path. The
+lengths are computed INSIDE the launch from what it measures (one
+`planets_position` entry costs `name + 32 B`), never from a constant carried
+between launches; 1023 cannot be reached from 1022 by adding (an entry costs
+>= 33 B), so that step drops the body and puts it back with a one-character
+longer name. Every answer is written to `<tag>_step<N>_reply.bin` - pre/post
+identity is `cmp`, not a claim.
+
+**`logon`** - the fixed answers `computeNormalString` used to `strcpy` into the
+receive buffer, driven as the reversible pair they are: `$NOTICE`, `$LOGON`,
+`$LOGON` again (`REQUEST ERROR`), `$LOGOFF`, `$LOGOFF` again, `$LOGON` a second
+time from the state the first exit left, and a `get` inside and outside the
+subscription.
+
+**Two spellings this script had to learn the hard way** (both caught by controls,
+not by reading): the `search` argument is `maxobject`, not `max_object`
+(`base_command_interface.hpp:100`) - with the wrong one every rung of the ladder
+answered the default 5 and the growth control failed; and the `get` argument is
+`planets_position`, not the macro's name `planet_p`.
+
+**ASan note**: `build-asan` needs `cmake .` before `make` if the file list moved
+(it failed to link on `SessionFile::save/load` after F20/F21). Report counts are
+DISTINCT-PC counts - ASan's `suppress_equal_pcs` default means a second overflow
+at the same `strcpy` is silent - so pre/post claims are presence vs absence.
