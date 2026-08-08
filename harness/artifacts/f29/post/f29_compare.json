@@ -1,0 +1,348 @@
+{
+ "P1": {
+  "E": {
+   "post": [],
+   "pre": [
+    "SolarSystem",
+    "Sun"
+   ]
+  },
+  "M": {
+   "post": [],
+   "pre": [
+    "Earth",
+    "SolarSystem",
+    "Sun"
+   ]
+  },
+  "N": {
+   "post": [],
+   "pre": [
+    "Earth",
+    "SolarSystem",
+    "Sun"
+   ]
+  },
+  "S": {
+   "post": [],
+   "pre": [
+    "SolarSystem",
+    "Sun"
+   ]
+  },
+  "X": {
+   "post": [],
+   "pre": [
+    "SolarSystem",
+    "Sun"
+   ]
+  }
+ },
+ "P2": {
+  "post": {
+   "drift_from_freeze_au": 1.2387919989290486,
+   "freeze_norm_au": 1.2386392844735354,
+   "ratio": 1.0001232921137149,
+   "subject_frame_norm_au": 0.0027090408933795355
+  },
+  "pre": {
+   "drift_from_freeze_au": 3.5269981568142333e-07,
+   "freeze_norm_au": 1.2386392844735354,
+   "ratio": 2.8474780357974273e-07,
+   "subject_frame_norm_au": 1.2386391598047908
+  }
+ },
+ "P3": {
+  "E": {
+   "Earth_post": {
+    "head_px": [
+     1673,
+     1134
+    ],
+    "head_to_cached_frame_px": 1560.6778094978722,
+    "head_to_own_position_px": 1560.6778094978722,
+    "n_px": 559
+   },
+   "Earth_pre": {
+    "head_px": [
+     1673,
+     1134
+    ],
+    "head_to_cached_frame_px": 1560.6778094978722,
+    "head_to_own_position_px": 1560.6778094978722,
+    "n_px": 559
+   },
+   "Mars_post": {
+    "head_px": [
+     601,
+     666
+    ],
+    "head_to_cached_frame_px": 0.9900997587825958,
+    "head_to_own_position_px": 0.9900997587825958,
+    "n_px": 305
+   },
+   "Mars_pre": {
+    "head_px": [
+     601,
+     666
+    ],
+    "head_to_cached_frame_px": 0.9900997587825958,
+    "head_to_own_position_px": 0.9900997587825958,
+    "n_px": 305
+   }
+  },
+  "M": {
+   "Earth_post": {
+    "head_px": [
+     1039,
+     1880
+    ],
+    "head_to_cached_frame_px": 524.0111730745257,
+    "head_to_own_position_px": 524.0111730745257,
+    "n_px": 462
+   },
+   "Earth_pre": {
+    "head_px": [
+     1007,
+     797
+    ],
+    "head_to_cached_frame_px": 1.4543736120704007,
+    "head_to_own_position_px": 562.5329108389932,
+    "n_px": 139
+   },
+   "Mars_post": {
+    "head_px": [
+     1056,
+     1050
+    ],
+    "head_to_cached_frame_px": 1.6439900485751189,
+    "head_to_own_position_px": 1.6439900485751189,
+    "n_px": 578
+   },
+   "Mars_pre": {
+    "head_px": [
+     1056,
+     1050
+    ],
+    "head_to_cached_frame_px": 1.6439900485751189,
+    "head_to_own_position_px": 1.6439900485751189,
+    "n_px": 578
+   }
+  },
+  "N": {
+   "Earth_post": {
+    "head_px": [
+     1024,
+     1032
+    ],
+    "head_to_cached_frame_px": 8.000019715411947,
+    "head_to_own_position_px": 8.000019715411947,
+    "n_px": 2449
+   },
+   "Earth_pre": {
+    "head_px": [
+     984,
+     473
+    ],
+    "head_to_cached_frame_px": 2.7265796701875833,
+    "head_to_own_position_px": 552.4527485382536,
+    "n_px": 371
+   },
+   "Mars_post": {
+    "head_px": [
+     1020,
+     277
+    ],
+    "head_to_cached_frame_px": 0.9999232623961569,
+    "head_to_own_position_px": 0.9999232623961569,
+    "n_px": 1391
+   },
+   "Mars_pre": {
+    "head_px": [
+     1020,
+     277
+    ],
+    "head_to_cached_frame_px": 0.9979761686124398,
+    "head_to_own_position_px": 0.9979761686124398,
+    "n_px": 1391
+   }
+  },
+  "S": {
+   "Earth_post": {
+    "head_px": [
+     775,
+     1228
+    ],
+    "head_to_cached_frame_px": 0.5509681161397333,
+    "head_to_own_position_px": 0.5509681161397333,
+    "n_px": 723
+   },
+   "Earth_pre": {
+    "head_px": [
+     775,
+     1228
+    ],
+    "head_to_cached_frame_px": 0.5509681161397333,
+    "head_to_own_position_px": 0.5509681161397333,
+    "n_px": 723
+   },
+   "Mars_post": {
+    "head_px": [
+     592,
+     741
+    ],
+    "head_to_cached_frame_px": 0.74305026694664,
+    "head_to_own_position_px": 0.74305026694664,
+    "n_px": 398
+   },
+   "Mars_pre": {
+    "head_px": [
+     592,
+     741
+    ],
+    "head_to_cached_frame_px": 0.74305026694664,
+    "head_to_own_position_px": 0.74305026694664,
+    "n_px": 398
+   }
+  },
+  "X": {
+   "Earth_post": {
+    "head_px": [
+     995,
+     573
+    ],
+    "head_to_cached_frame_px": 225.56721544100813,
+    "head_to_own_position_px": 225.56721544100813,
+    "n_px": 118
+   },
+   "Earth_pre": {
+    "head_px": [
+     995,
+     573
+    ],
+    "head_to_cached_frame_px": 225.56721544100813,
+    "head_to_own_position_px": 225.56721544100813,
+    "n_px": 118
+   },
+   "Mars_post": {
+    "head_px": [
+     991,
+     510
+    ],
+    "head_to_cached_frame_px": 668.2270688052196,
+    "head_to_own_position_px": 668.2270688052196,
+    "n_px": 8
+   },
+   "Mars_pre": {
+    "head_px": [
+     991,
+     510
+    ],
+    "head_to_cached_frame_px": 668.2270688052196,
+    "head_to_own_position_px": 668.2270688052196,
+    "n_px": 8
+   }
+  }
+ },
+ "P3_closest_approach": {
+  "Earth_post": {
+   "closest_to_cached_frame_px": 9.217786373762302e-05,
+   "closest_to_own_position_px": 9.217786373762302e-05
+  },
+  "Earth_pre": {
+   "closest_to_cached_frame_px": 0.7021832077512628,
+   "closest_to_own_position_px": 550.3862535053283
+  },
+  "Mars_post": {
+   "closest_to_cached_frame_px": 0.6888118523852624,
+   "closest_to_own_position_px": 0.6888118523852624
+  },
+  "Mars_pre": {
+   "closest_to_cached_frame_px": 0.6897814841857747,
+   "closest_to_own_position_px": 0.6897814841857747
+  }
+ },
+ "P3_post_head_to_frame_centre_px": 8.0,
+ "P3_pre_head_to_frame_centre_px": 552.4499977373517,
+ "P3_verdicts": {
+  "control_closest_own_post_px": 0.6888118523852624,
+  "control_closest_own_pre_px": 0.6897814841857747,
+  "control_positively_mapped": true,
+  "defect_present_pre": true,
+  "mechanism_holds_both_ways_closest": true,
+  "moved_px": 560.4292997336952,
+  "post_head_at_tracked_centre": true,
+  "repaired_post": true,
+  "subject_closest_own_post_px": 9.217786373762302e-05,
+  "subject_closest_own_pre_px": 550.3862535053283
+ },
+ "P4": {
+  "E_a": {
+   "in_run_AA_floor": 0,
+   "max": 0,
+   "px": 0
+  },
+  "E_b": {
+   "in_run_AA_floor": 0,
+   "max": 0,
+   "px": 0
+  },
+  "E_off": {
+   "in_run_AA_floor": 0,
+   "max": 0,
+   "px": 0
+  },
+  "M_a": {
+   "in_run_AA_floor": 0,
+   "max": 254,
+   "px": 601
+  },
+  "M_b": {
+   "in_run_AA_floor": 0,
+   "max": 254,
+   "px": 601
+  },
+  "N_a": {
+   "in_run_AA_floor": 0,
+   "max": 255,
+   "px": 2822
+  },
+  "N_b": {
+   "in_run_AA_floor": 0,
+   "max": 255,
+   "px": 2822
+  },
+  "S_a": {
+   "in_run_AA_floor": 0,
+   "max": 0,
+   "px": 0
+  },
+  "S_b": {
+   "in_run_AA_floor": 0,
+   "max": 0,
+   "px": 0
+  },
+  "S_off": {
+   "in_run_AA_floor": 0,
+   "max": 0,
+   "px": 0
+  },
+  "X_a": {
+   "in_run_AA_floor": 0,
+   "max": 2,
+   "px": 0
+  },
+  "X_b": {
+   "in_run_AA_floor": 0,
+   "max": 0,
+   "px": 0
+  }
+ },
+ "VERDICT": "PASS",
+ "X_subject_offaxis_deg": 37.582008208000715,
+ "notes": [
+  "note: subject head pixel off by >3 px (argmax tie band)"
+ ],
+ "post_dir": "/home/claude/spacecrafter/claude/harness/artifacts/f29/post",
+ "pre_dir": "/home/claude/spacecrafter/claude/harness/artifacts/f29/pre"
+}

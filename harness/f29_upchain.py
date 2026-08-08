@@ -96,6 +96,22 @@
 #      ORBIT/TAIL passes ride the identical expression, one and two lines away
 #      in the same file.  The substance of P3 is unchanged.
 #
+# P3c - WHICH FIELD THE RENDER HALF CAN BE READ AT [observed:
+#      shaders/src/body_trail.geom:19-24; measured 2026-08-09]: the trail
+#      geometry shader DROPS any segment whose two projected endpoints are more
+#      than 0.4 apart in NDC (SQUARED_TOLERANCE 0.16), unless
+#      main_clipping_fov[2] < 2.7 - the wrap-cull that stops a polyline being
+#      drawn across the fisheye seam.  The subject's FIRST segment runs from the
+#      body itself (0.0027 AU from an observer on its own moon) to the sample
+#      1.5 days back (0.026 AU away), i.e. ~84 deg of sky, so at fov 340 it is
+#      culled and the head vertex - the very end the prediction is about -
+#      never rasterises.  Measured: pre-fix the head DOES draw at fov 340 (the
+#      frozen frame is Mars's eye, from which those same two samples are 1.2 deg
+#      apart), post-fix it does not.  That asymmetry belongs to the CULL, not to
+#      the fix, so the render half is read in an extra scene N at fov 140, where
+#      the shader's own condition switches the cull off and both ends are on
+#      screen.
+#
 # P3'' - WHERE THE FREEZE STATE MUST BE PUT, and why [measured 2026-08-09,
 #      artifacts f29/pre run 1]: the frozen frame is used VERBATIM as eye
 #      coordinates, so the pre-fix line is drawn at a fixed place on screen no
@@ -152,7 +168,16 @@ os.makedirs(OUT, exist_ok=True)
 JD0 = 2461233.5
 FOV = 340.0
 LAT, LON, ALT = 48.85, 2.35, 100.0
-NSTEP = 30          # trail points, one per 1.0-sim-day `date jday` step
+NSTEP = 30          # trail samples, one per date step
+STEP = 1.5          # sim-days per step. NOT 1.0 = DeltaTrail: TrailModule::
+                    # accumulate truncates |date - lastJD| / deltaTrail to an
+                    # int, and `date` is the LIGHT-RETARDED jd, so a nominal
+                    # 1.0-day step lands a hair SHORT and records NOTHING -
+                    # measured 21 of 30 samples taken on the subject and 16 of
+                    # 30 on the control, with the newest sample a full day
+                    # behind the body (recorded as an out-of-scope observation;
+                    # pre-existing, identical on both binaries). 1.5 days
+                    # truncates to 1 whatever the retardation does.
 SUBJECT = "Earth"   # the up-chain ancestor WITH a parent, observer on the Moon
 CONTROL = "Mars"    # a descent body in the same frame, same pass, same code
 
@@ -199,10 +224,10 @@ def img(tag):
 
 
 def accumulate(n):
-    """n discrete 1.0-day date steps == exactly n trail points (DeltaTrail=1)."""
+    """n discrete STEP-day date steps == exactly n trail samples."""
     global jd
     for _ in range(n):
-        jd += 1.0
+        jd += STEP
         send(f"date jday {jd}", 0.45)
     time.sleep(1.5)
 
@@ -311,10 +336,20 @@ def scene(tag):
         b = bodies.get(who, {})
         m, s, e = b.get("mat"), b.get("screen"), b.get("eclRoot")
         hp, hv = head_px(a, mask, chan)
+        tr = (b.get("trail") or [None])[0]
         pr = {"screen_dumped": s, "eclRoot": e,
               "matT": (m or [None] * 16)[12:15], "dist": b.get("dist"),
               "routing": b.get("routing"), "head_px": hp, "head_val": hv,
-              "n_px": int(mask.sum())}
+              "n_px": int(mask.sum()),
+              # The head measurement is only meaningful while the trail's
+              # NEWEST SAMPLE is the body's current position: that is what makes
+              # translate(-ecl) cancel it. Reported, so a stale head disqualifies
+              # the measurement instead of being measured as if fresh.
+              "trail_points": tr and tr["points"],
+              "trail_head_ecl": tr and tr["head"],
+              "trail_head_lag_days": (None if not tr or not b.get("lastJD")
+                                      else b["lastJD"] - tr["headJD"]),
+              "trail_path_len_au": tr and tr["pathLength"]}
         if s and e and hf:
             pr["proj_matT_ndc"] = project(m[12:15], hf)     # == screen_dumped
             pr["proj_eclRoot_ndc"] = project(e, hf)
@@ -359,17 +394,29 @@ rep["scene_S"] = scene("S")                      # control C2: loop never runs
 # subject, with the subject CENTRED so the frozen frame's image of it is on
 # screen. Tracking is released before the switch - releasing does not move the
 # camera, so the frame that freezes is the centred one.
+# The freeze axis is aimed at the SUN, not at the subject: the subject must sit
+# OFF the frozen axis by a usable angle, or the frozen head and scene N's
+# tracked body would both land on the frame centre and could not be told apart.
+# The Sun BOUNDS that angle by construction - the subject's elongation seen from
+# Mars cannot exceed asin(1/1.52) = 41 deg, inside scene N's 70 deg half-field -
+# and it is measured, not assumed (X_subject_offaxis_deg below).
 send("set home_planet Mars", 6.0)
-send(f"select planet {SUBJECT} pointer off", 1.5)
+send("select planet Sun pointer off", 1.5)
 send("flag track_object on", 8.0)
-accumulate(NSTEP)          # tracking HELD: the subject stays centred while the
-                           # world advances 30 days under it
-rep["scene_X"] = scene("X")                      # freeze source; subject centred
+accumulate(NSTEP)          # tracking HELD while the world advances under it
+rep["scene_X"] = scene("X")                      # the freeze source
 send("flag track_object off", 2.0)   # releasing does not move the camera, so
-                                     # the frame that freezes is the centred one
+                                     # the frame that freezes is this one
 send("set home_planet Moon", 6.0)
 accumulate(NSTEP)
-rep["scene_M"] = scene("M")                      # observer on the Moon (subject)
+rep["scene_M"] = scene("M")          # observer on the Moon, wide field (fov 340)
+# Scene N: the same instant, read where the wrap-cull is OFF (P3c) and with the
+# subject TRACKED - so the fresh frame puts the head on the frame centre and the
+# frozen one puts it at the measured off-axis angle. Nothing else changes.
+send(f"select planet {SUBJECT} pointer off", 1.5)
+send("flag track_object on", 8.0)
+send("zoom fov 140 duration 0", 4.0)
+rep["scene_N"] = scene("N")
 
 # P2: the freeze, named. The subject's cached frame in the SUBJECT scene must
 # equal the one left by the last DESCENT through it - scene X - pre-fix, and
@@ -379,13 +426,15 @@ eM = rep["scene_M"][SUBJECT]["eclRoot"]
 rep["P2_subject_eclRoot_X"] = eX
 rep["P2_subject_eclRoot_M"] = eM
 rep["P2_frozen"] = (eX == eM)
-rep["X_subject_centred_ndc"] = rep["scene_X"][SUBJECT]["screen_dumped"]
+rep["X_subject_ndc"] = rep["scene_X"][SUBJECT]["screen_dumped"]
+rep["X_subject_offaxis_deg"] = (math.hypot(*rep["scene_X"][SUBJECT]["screen_dumped"])
+                                * rep["scene_X"]["half_fov"] * 180 / math.pi)
 
 with open(os.path.join(OUT, "f29_report.json"), "w") as fh:
     json.dump(rep, fh, indent=1, sort_keys=True)
 
 print("\n=== F29 single-run report ===")
-for s in ("E", "S", "X", "M"):
+for s in ("E", "S", "X", "M", "N"):
     d = rep[f"scene_{s}"]
     print(f"scene {s}: A/A floor {d['aa_floor_px']} px (max {d['aa_max']}); "
           f"halfFov {d['half_fov']} spread {d['half_fov_spread']}")
@@ -393,12 +442,14 @@ for s in ("E", "S", "X", "M"):
           f"{sorted(d['invariant_violations'])}")
     for who in (SUBJECT, CONTROL):
         b = d[who]
-        print(f"  {who}: trail {b['n_px']} px head={b['head_px']} "
+        print(f"  {who}: trail {b['n_px']} px pts={b['trail_points']} "
+              f"lag={b['trail_head_lag_days']} head={b['head_px']} "
               f"head->matT {b.get('head_to_matT_flipY')} / "
               f"head->eclRoot {b.get('head_to_eclRoot_flipY')}  (flipY)")
         print(f"        noflip: head->matT {b.get('head_to_matT_noflip')} / "
               f"head->eclRoot {b.get('head_to_eclRoot_noflip')}")
-print(f"X centred subject ndc: {rep['X_subject_centred_ndc']}")
+print(f"X subject ndc {rep['X_subject_ndc']} = "
+      f"{rep['X_subject_offaxis_deg']:.2f} deg off the frozen axis")
 print(f"P2 subject eclRoot frozen across the switch: {rep['P2_frozen']}")
 print(f"   X {eX}\n   M {eM}")
 print(f"report -> {OUT}/f29_report.json")

@@ -324,15 +324,15 @@ stands superseded by the session-10 update note above.*
   predicted position post-fix (prediction committed pre-run, both ways on the
   pre/post pair); no-up-chain control scene bit-identical pre/post; battery
   green; frozen md5 in==out; concurrent-instance assert.
-- **WIP:** 2026-08-09 ckpt2 — row RE-VERIFIED at source; PREDICTION P1–P4
-  committed pre-run (harness `5df7d17`). PRE-FIX baseline MEASURED on
-  `sc_f29_pre` (= code `5b86be0f`): P1 violated by exactly {Earth, Sun,
-  SolarSystem} in the subject scene and {Sun, SolarSystem} elsewhere; P2 the
-  subject's frame bit-identical across the switch; P3 the subject's TRAIL head
-  drawn 3.6 px from project(eclRoot) = the FRAME CENTRE and 365.8 px from the
-  body itself, against a control body at 0.72 px and the SAME body at 1.01 px
-  when descended. Next: land the one-line fix + the stale contract comments,
-  rebuild, re-run, `f29_compare.py`.
+- **WIP:** 2026-08-09 ckpt3 — FIX LANDED (code `bd3f7117`), both binaries
+  measured, `f29_compare.py` **VERDICT PASS**. Source re-verification found the
+  class is TWO sites, not one (the up-chain loop the row names + the
+  invisible-reference branch, `ModularBody.cpp:343`); both fixed. Scene N
+  (fov 140, subject tracked): subject trail passes **550.39 px** from the body
+  pre-fix / **9.2e-05 px** post-fix, control body **0.69 px on both**; pre-fix
+  it passes **0.70 px** from project(cached frame). Invariant violators
+  3 → 0 over 120 bodies; control scenes E and S bit-identical (max diff 0).
+  Next: regression battery, then §11.137 + §5.46 flip.
 
 ### F30 — the decision-feeder sweep: six rows' owed pre-decision data, no fixes  [S; read-only + one instrumented launch]
 
