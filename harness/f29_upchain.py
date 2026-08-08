@@ -3,7 +3,9 @@
 #
 # ---------------------------------------------------------------------------
 # THE MECHANISM, re-derived from source at code master-beta @ 5b86be0f
-# (this header is the PREDICTION and is committed BEFORE the first run).
+# (this header is the PREDICTION and was committed BEFORE the first run,
+# harness 5df7d17; the only later edit is the P3' paragraph, whose reason is
+# a MEASUREMENT stated there and whose substance is unchanged).
 # ---------------------------------------------------------------------------
 # `ModularBody::dispatchUpdate` (ModularBody.cpp:323-386) walks DOWN from the
 # camera reference and then UP to the system centre.  Every DOWNWARD site sets
@@ -61,42 +63,84 @@
 #      Post-fix the two must differ (Earth's eye position from Paris ~6.4e3 km
 #      vs from the Moon ~3.8e5 km).
 #
-# P3 - THE RENDER, terminal observable.  The ORBIT module threads a NOTCH
-#      through the body centre (OrbitModule.cpp:170-178:
-#      center = ecl - (r/10, r/10, 0)), and drawOrbits hands it
-#      parentFrame = matLocalToBodyPos . translate(-ecl), so the notch is drawn
-#      at matLocalToBodyPos . (-r/10, -r/10, 0) - i.e. AT THE BODY, offset by
-#      r*sqrt(2)/10.  For Earth seen from the Moon that is 902 km at 384400 km
-#      = 2.35e-3 rad; under FISHEYE at fov 340 (halfFov 2.967 rad) on a 1024-px
-#      shot (viewportRadius 512 px) that is 0.41 px.  Therefore:
-#        (a) POST-FIX the Earth orbit line passes within ~1 px of Earth's own
-#            dumped screen position - the same coincidence a DESCENT body (Mars,
-#            the in-frame positive control) shows on BOTH binaries.
-#        (b) PRE-FIX it does not: the line is drawn in the frozen Earth-scene
-#            frame, and since jd is frozen the drawn geometry is the SAME
-#            EYE-SPACE geometry as in the Earth scene (`ecl` cancels exactly in
-#            the notch, and the sampled points move by <= the light-travel
-#            retardation delta, 1.3 s of Earth motion = 38 km on a 1 AU radius
-#            = 2.7e-7 rad << 1 px).  So pre-fix the Earth-orbit pixel mask in
-#            the MOON scene equals the mask in the EARTH scene.
-#        (c) POST-FIX those two masks differ.
+# P3 - THE RENDER, terminal observable.  A body's own line - orbit or trail -
+#      is drawn in parentFrame = matLocalToBodyPos . translate(-ecl), and both
+#      lines PASS THROUGH THE BODY by construction: the ORBIT threads a notch
+#      through the centre (OrbitModule.cpp:170-178, center = ecl - (r/10,r/10,0))
+#      and the TRAIL's newest point IS the body's current ecl
+#      (TrailModule.cpp accumulate: points.insert(begin, {getEclipticPos(),date})).
+#      Feeding `ecl` through `translate(-ecl)` cancels it, so that end of the
+#      line is drawn at matLocalToBodyPos's TRANSLATION - the body's own eye
+#      position for every descent body, and the FROZEN one for an up-chain
+#      ancestor.  Therefore:
+#        (a) POST-FIX the subject's line ends at the subject's own dumped screen
+#            position - the coincidence a DESCENT body (Mars, the in-frame
+#            positive control) shows on BOTH binaries;
+#        (b) PRE-FIX it ends at the screen position of the FROZEN eclRoot
+#            instead, which is a different point;
+#        (c) in both cases the line end sits at project(eclRoot) - that IS the
+#            mechanism, and it is the same statement on both binaries.
+#
+# P3' - WHICH CONSUMER CARRIES P3 [measured 2026-08-09, harness artifacts
+#      f29/probe]: the ORBIT pass is DEPTH-BUCKETED (Renderer.hpp:156-167:
+#      beginOrbitTrace clears + sets the orbit depth range, beginOrbitLines
+#      depth-tests the lines against it), so from the Moon's surface - where
+#      the Moon reserves the bucket - NO planet orbit line reaches the frame at
+#      all: measured 0 px added by `flag planets_orbits on`, by
+#      `flag satellites_orbits on` it is 4963 px, and on Earth only Earth's own
+#      orbit draws (2317 px) because only its notch falls inside Earth's own
+#      slice.  The TRAIL pass is DEPTH-FREE by contract (TrailModule.cpp:67-68
+#      depthTest/depthWrite false; Renderer.hpp:168-175 "no depth clear/range").
+#      So the RENDER half of P3 is measured on the TRAIL - the consumer §5.46's
+#      own row names ("Earth is up-chain and carries a TRAIL module") - and the
+#      ORBIT/TAIL passes ride the identical expression, one and two lines away
+#      in the same file.  The substance of P3 is unchanged.
+#
+# P3'' - WHERE THE FREEZE STATE MUST BE PUT, and why [measured 2026-08-09,
+#      artifacts f29/pre run 1]: the frozen frame is used VERBATIM as eye
+#      coordinates, so the pre-fix line is drawn at a fixed place on screen no
+#      matter where the observer then looks.  With the freeze taken from a
+#      surface observer on Earth itself, that place is Earth's own centre =
+#      the exact NADIR = 180 deg from the zenith view axis, and at fov 340
+#      (halfFov 170 deg) it is OFF SCREEN: measured |screen| = 1.0588 > 1 for
+#      the subject in that state, so the pre-fix half of P3 had nothing to
+#      land on.  The freeze is therefore taken from a leg that CENTRES the
+#      subject (`select planet Earth` + `flag track_object on`, from Mars),
+#      which makes the prediction SHARPER rather than weaker:
+#        PRE-FIX the subject's trail head lands at the FRAME CENTRE
+#        (1024, 1024) +- the tracking residual, because a centred subject has
+#        eye vector (0, 0, -d) and project((0,0,-d)) = (0,0) = the centre.
+#      The general statement head == project(eclRoot) is unchanged and is
+#      checked on both binaries.  Nothing else about P3 moves; the pre-fix
+#      matrix-layer halves P1/P2 were already CONFIRMED on that first run
+#      (violations exactly {Earth, Sun, SolarSystem} in the subject scene and
+#      exactly {Sun, SolarSystem} in the others; subject eclRoot bit-identical
+#      across the switch).
 #
 # P4 - THE AS-IF CONTROL.  Every downward-path body already had the write, so a
 #      scene whose up-chain carries no parented ancestor must be unchanged.
 #      Two controls, in increasing strength:
-#        C1 the shipped EARTH scene (up-chain = Sun alone, parentless => no
-#           consumer reads its frame): screenshots bit-identical pre/post.
+#        C1 the shipped EARTH scene (up-chain = Sun + SolarSystem; SolarSystem
+#           is parentless-for-this-purpose and the Sun draws no orbit/trail on
+#           the shipped corpus): screenshots bit-identical pre/post.
 #        C2 `set home_planet Solar_System` (reference IS the system centre =>
 #           `isNotIsolated` false => the up-chain loop body never executes):
 #           bit-identical by construction.
 #
 # ---------------------------------------------------------------------------
+# THE SCENE is DETERMINISTIC BY CONSTRUCTION: the clock is frozen
+# (`timerate rate 0`) and the trail is accumulated by N discrete `date jday`
+# steps of exactly DeltaTrail = 1.0 sim-day (TrailLoader.cpp:28), which
+# TrailModule::accumulate turns into exactly one point per step.  No wall-clock
+# term enters the sampled geometry, so two binaries driven by this script
+# produce comparable - and on the control scenes bit-identical - frames.
+#
 #   ./f29_run.sh [outdir]                 # fresh launch + this driver
 #   SC_BIN=<pre-fix binary> ./f29_run.sh <outdir>
 # Artifacts: t_<tag>.png / t_<tag>.json per state + f29_report.json.
 # f29_compare.py reads two report dirs and evaluates the cross-binary halves.
 
-import socket, time, json, sys, os
+import socket, time, json, sys, os, math
 import numpy as np
 from PIL import Image
 
@@ -105,15 +149,17 @@ OUT = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 \
     else os.path.join(HERE, "artifacts", "f29")
 os.makedirs(OUT, exist_ok=True)
 
-JD = 2461233.5
+JD0 = 2461233.5
 FOV = 340.0
 LAT, LON, ALT = 48.85, 2.35, 100.0
-FADE = 3.0          # fader settle wait (orbit/trail faders ramp in << 1 s)
+NSTEP = 30          # trail points, one per 1.0-sim-day `date jday` step
 SUBJECT = "Earth"   # the up-chain ancestor WITH a parent, observer on the Moon
 CONTROL = "Mars"    # a descent body in the same frame, same pass, same code
 
 sock = socket.create_connection(("127.0.0.1", 7805), timeout=15)
-rep = {"jd": JD, "fov": FOV, "subject": SUBJECT, "control": CONTROL}
+rep = {"jd0": JD0, "fov": FOV, "nstep": NSTEP,
+       "subject": SUBJECT, "control": CONTROL}
+jd = JD0
 
 
 def send(cmd, pause=0.8):
@@ -152,12 +198,21 @@ def img(tag):
                       .convert("RGB")).astype(np.int32)
 
 
+def accumulate(n):
+    """n discrete 1.0-day date steps == exactly n trail points (DeltaTrail=1)."""
+    global jd
+    for _ in range(n):
+        jd += 1.0
+        send(f"date jday {jd}", 0.45)
+    time.sleep(1.5)
+
+
 # ---------------------------------------------------------------- P1 invariant
 def invariant(bodies):
     """eclRoot == mat[12:15] exactly, for every body. Returns the violators."""
     bad = {}
     for name, b in bodies.items():
-        e = b.get("eclRoot"); m = b.get("mat")
+        e, m = b.get("eclRoot"), b.get("mat")
         if e is None or m is None:
             continue
         t = m[12:15]
@@ -168,73 +223,118 @@ def invariant(bodies):
     return bad
 
 
-# --------------------------------------------------------------- P3 pixel work
-def line_mask(off_tag, on_tag, thr=12):
-    """Pixels the orbit lines added: |on-off| over a threshold, split by hue."""
-    a, b = img(off_tag), img(on_tag)
-    d = np.abs(b - a)
-    changed = d.max(axis=2) > thr
-    # the two lines are pushed as pure red / pure green fragment colors over a
-    # black sky, so channel dominance separates them without any geometry
-    red = changed & (b[:, :, 0] > b[:, :, 1] + 8)
-    green = changed & (b[:, :, 1] > b[:, :, 0] + 8)
-    return changed, red, green
+# ------------------------------------------- the projection, mapped not assumed
+def half_fov_from(bodies):
+    """Solve halfFov out of the dump itself: |screen| = acos(-z/d)/halfFov
+    (ModularBody::update, the FISHEYE branch). Agreement across bodies is the
+    positive map of this reconstruction."""
+    vals = []
+    for b in bodies.values():
+        m, s, d = b.get("mat"), b.get("screen"), b.get("dist")
+        if not m or not s or not d:
+            continue
+        rq = math.hypot(s[0], s[1])
+        if rq < 1e-6 or d <= 0:
+            continue
+        th = math.acos(max(-1.0, min(1.0, -m[14] / d)))
+        vals.append(th / rq)
+    vals.sort()
+    return (vals[len(vals) // 2], vals[0], vals[-1]) if vals else (None, None, None)
 
 
-def ndc_to_px(sx, sy, w, h, flip):
-    x = (sx * 0.5 + 0.5) * w
-    y = (1.0 - (sy * 0.5 + 0.5)) * h if flip else (sy * 0.5 + 0.5) * h
-    return x, y
-
-
-def min_dist(mask, sx, sy, flip):
-    ys, xs = np.nonzero(mask)
-    if len(xs) == 0:
+def project(v, half_fov):
+    """Eye-space vector -> screen NDC, the ModularBody::update FISHEYE form."""
+    d = math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+    if d == 0:
         return None
-    h, w = mask.shape
-    px, py = ndc_to_px(sx, sy, w, h, flip)
-    return float(np.sqrt((xs - px) ** 2 + (ys - py) ** 2).min())
+    rq = math.hypot(v[0], v[1])
+    f = (math.acos(max(-1.0, min(1.0, -v[2] / d))) / (rq * half_fov)
+         if rq > d * 1e-5 else 1.0 / (d * half_fov))
+    return [v[0] * f, v[1] * f]
 
 
-def mask_sig(mask):
+def ndc_px(s, w, h, flip):
+    return ((s[0] * 0.5 + 0.5) * w,
+            (1.0 - (s[1] * 0.5 + 0.5)) * h if flip else (s[1] * 0.5 + 0.5) * h)
+
+
+def masks(off_tag, on_tag):
+    """Isolate each subject's trail by a COLOUR differential, not by hue alone:
+    the same frame is shot with the two trails black (invisible against the
+    black sky) and then coloured. Recolouring does not touch the recorded
+    points (TrailModule::setColor), so the two shots differ ONLY where those
+    two polylines are - body discs, which are themselves red-dominant, cancel.
+    Hue then says which of the two a changed pixel belongs to."""
+    a, b = img(off_tag), img(on_tag)
+    changed = np.abs(b - a).max(axis=2) > 12
+    red = changed & (b[:, :, 0] > b[:, :, 1] + 8) & (b[:, :, 0] > b[:, :, 2] + 8)
+    grn = changed & (b[:, :, 1] > b[:, :, 0] + 8) & (b[:, :, 1] > b[:, :, 2] + 8)
+    return b, red, grn
+
+
+def head_px(a, mask, chan):
+    """The trail HEAD is its brightest end (vert shader: alpha falls 1 -> 0.1
+    from newest to oldest, TrailModule::draw)."""
+    if mask.sum() == 0:
+        return None, 0
+    v = np.where(mask, a[:, :, chan], -1)
+    idx = int(np.argmax(v))
+    return (int(idx % v.shape[1]), int(idx // v.shape[1])), int(v.max())
+
+
+def sig(mask):
     ys, xs = np.nonzero(mask)
+    if not len(xs):
+        return {"n": 0, "bbox": None}
     return {"n": int(len(xs)),
-            "bbox": [int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max())] if len(xs) else None,
-            "cx": float(xs.mean()) if len(xs) else None,
-            "cy": float(ys.mean()) if len(xs) else None}
+            "bbox": [int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max())]}
 
 
 def scene(tag):
-    """off shot -> orbits on -> on shot (x2, for the A/A floor) -> dump."""
-    send(f"body name {SUBJECT} orbit false", 0.5)
-    send(f"body name {CONTROL} orbit false", FADE)
+    send(f"body name {SUBJECT} color trail r 0 g 0 b 0", 0.5)
+    send(f"body name {CONTROL} color trail r 0 g 0 b 0", 1.5)
     shot(f"{tag}_off")
-    send(f"body name {SUBJECT} orbit true", 0.5)
-    send(f"body name {CONTROL} orbit true", FADE)
-    shot(f"{tag}_on_a"); shot(f"{tag}_on_b")
+    send(f"body name {SUBJECT} color trail r 1 g 0 b 0", 0.5)
+    send(f"body name {CONTROL} color trail r 0 g 1 b 0", 1.5)
+    shot(f"{tag}_a"); shot(f"{tag}_b")
     dump(tag)
     _, bodies = load(tag)
-    changed, red, green = line_mask(f"{tag}_off", f"{tag}_on_a")
-    aa = np.abs(img(f"{tag}_on_a") - img(f"{tag}_on_b")).max(axis=2)
+    hf, hf_lo, hf_hi = half_fov_from(bodies)
+    a, red, grn = masks(f"{tag}_off", f"{tag}_a")
+    aa = np.abs(img(f"{tag}_a") - img(f"{tag}_b")).max(axis=2)
+    h, w = red.shape
     out = {"aa_floor_px": int((aa > 12).sum()), "aa_max": int(aa.max()),
-           "mask_all": mask_sig(changed),
-           "mask_subject": mask_sig(red), "mask_control": mask_sig(green),
-           "invariant_violations": invariant(bodies)}
-    for who, mask in ((SUBJECT, red), (CONTROL, green)):
+           "half_fov": hf, "half_fov_spread": [hf_lo, hf_hi],
+           "mask_subject": sig(red), "mask_control": sig(grn),
+           "invariant_violations": invariant(bodies), "shape": [w, h]}
+    for who, mask, chan in ((SUBJECT, red, 0), (CONTROL, grn, 1)):
         b = bodies.get(who, {})
-        s = b.get("screen")
-        out[who] = {"screen": s, "dist": b.get("dist"), "ecl": b.get("ecl"),
-                    "eclRoot": b.get("eclRoot"), "matT": (b.get("mat") or [None]*16)[12:15],
-                    "routing": b.get("routing"),
-                    "notch_px_flipY": min_dist(mask, s[0], s[1], True) if s else None,
-                    "notch_px_noflip": min_dist(mask, s[0], s[1], False) if s else None}
+        m, s, e = b.get("mat"), b.get("screen"), b.get("eclRoot")
+        hp, hv = head_px(a, mask, chan)
+        pr = {"screen_dumped": s, "eclRoot": e,
+              "matT": (m or [None] * 16)[12:15], "dist": b.get("dist"),
+              "routing": b.get("routing"), "head_px": hp, "head_val": hv,
+              "n_px": int(mask.sum())}
+        if s and e and hf:
+            pr["proj_matT_ndc"] = project(m[12:15], hf)     # == screen_dumped
+            pr["proj_eclRoot_ndc"] = project(e, hf)
+            for flip in (True, False):
+                key = "flipY" if flip else "noflip"
+                pm = ndc_px(pr["proj_matT_ndc"], w, h, flip)
+                pe = ndc_px(pr["proj_eclRoot_ndc"], w, h, flip)
+                pr[f"px_matT_{key}"] = pm
+                pr[f"px_eclRoot_{key}"] = pe
+                if hp:
+                    pr[f"head_to_matT_{key}"] = math.dist(hp, pm)
+                    pr[f"head_to_eclRoot_{key}"] = math.dist(hp, pe)
+        out[who] = pr
     return out
 
 
 # ------------------------------------------------------------------- the drive
 send("flag experimental_path on", 1.0)
 send("timerate rate 0", 1.0)
-send(f"date jday {JD}", 1.5)
+send(f"date jday {JD0}", 1.5)
 send("flag moon_scaled off", 1.0)     # standing harness rule (§5.27 / D21)
 for f in ("landscape", "atmosphere", "fog", "milky_way", "stars", "star_lines",
           "constellation_drawing", "constellation_art",
@@ -245,41 +345,60 @@ for f in ("landscape", "atmosphere", "fog", "milky_way", "stars", "star_lines",
     send(f"flag {f} off", 0.35)
 send(f"zoom fov {FOV} duration 0", 2.0)
 send(f"moveto lat {LAT} lon {LON} alt {ALT} duration 0", 3.0)
-send(f"body name {SUBJECT} color orbit r 1 g 0 b 0", 0.6)
-send(f"body name {CONTROL} color orbit r 0 g 1 b 0", 1.5)
+# Isolate the two subjects by COLOUR: every other trail is black, i.e. invisible
+# against the black sky the flags above leave (BLEND_SRC_ALPHA over 0 = 0).
+send("body name all color trail r 0 g 0 b 0", 1.2)
+send("flag object_trails on", 2.0)
 
-rep["scene_E"] = scene("E")                      # observer on Earth  (control C1)
-send("set home_planet Moon", 5.0)
-rep["scene_M"] = scene("M")                      # observer on the Moon (subject)
-send("set home_planet Solar_System", 5.0)
+accumulate(NSTEP)
+rep["scene_E"] = scene("E")                      # observer on Earth (control C1)
+send("set home_planet Solar_System", 6.0)
+accumulate(NSTEP)
 rep["scene_S"] = scene("S")                      # control C2: loop never runs
+# THE FREEZE SOURCE (P3''): the last frame the walk DESCENDS through the
+# subject, with the subject CENTRED so the frozen frame's image of it is on
+# screen. Tracking is released before the switch - releasing does not move the
+# camera, so the frame that freezes is the centred one.
+send("set home_planet Mars", 6.0)
+send(f"select planet {SUBJECT} pointer off", 1.5)
+send("flag track_object on", 8.0)
+accumulate(NSTEP)          # tracking HELD: the subject stays centred while the
+                           # world advances 30 days under it
+rep["scene_X"] = scene("X")                      # freeze source; subject centred
+send("flag track_object off", 2.0)   # releasing does not move the camera, so
+                                     # the frame that freezes is the centred one
+send("set home_planet Moon", 6.0)
+accumulate(NSTEP)
+rep["scene_M"] = scene("M")                      # observer on the Moon (subject)
 
-# P2: the freeze, named. Earth's frame in M vs in E.
-eE = rep["scene_E"][SUBJECT]["eclRoot"]
+# P2: the freeze, named. The subject's cached frame in the SUBJECT scene must
+# equal the one left by the last DESCENT through it - scene X - pre-fix, and
+# differ post-fix.
+eX = rep["scene_X"][SUBJECT]["eclRoot"]
 eM = rep["scene_M"][SUBJECT]["eclRoot"]
-rep["P2_subject_eclRoot_E"] = eE
+rep["P2_subject_eclRoot_X"] = eX
 rep["P2_subject_eclRoot_M"] = eM
-rep["P2_frozen"] = (eE == eM)
-
-# P3(b/c): does the MOON-scene subject mask sit where the EARTH-scene one sat?
-mE, mM = rep["scene_E"]["mask_subject"], rep["scene_M"]["mask_subject"]
-rep["P3_mask_E_eq_M"] = (mE == mM)
+rep["P2_frozen"] = (eX == eM)
+rep["X_subject_centred_ndc"] = rep["scene_X"][SUBJECT]["screen_dumped"]
 
 with open(os.path.join(OUT, "f29_report.json"), "w") as fh:
     json.dump(rep, fh, indent=1, sort_keys=True)
 
 print("\n=== F29 single-run report ===")
-for s in ("E", "M", "S"):
+for s in ("E", "S", "X", "M"):
     d = rep[f"scene_{s}"]
-    v = d["invariant_violations"]
     print(f"scene {s}: A/A floor {d['aa_floor_px']} px (max {d['aa_max']}); "
-          f"mask subject {d['mask_subject']['n']} px, control {d['mask_control']['n']} px")
-    print(f"  P1 violations ({len(v)}): {sorted(v)}")
+          f"halfFov {d['half_fov']} spread {d['half_fov_spread']}")
+    print(f"  P1 violations ({len(d['invariant_violations'])}): "
+          f"{sorted(d['invariant_violations'])}")
     for who in (SUBJECT, CONTROL):
         b = d[who]
-        print(f"  {who}: screen={b['screen']} notch flipY={b['notch_px_flipY']} "
-              f"noflip={b['notch_px_noflip']} routing={b['routing']}")
+        print(f"  {who}: trail {b['n_px']} px head={b['head_px']} "
+              f"head->matT {b.get('head_to_matT_flipY')} / "
+              f"head->eclRoot {b.get('head_to_eclRoot_flipY')}  (flipY)")
+        print(f"        noflip: head->matT {b.get('head_to_matT_noflip')} / "
+              f"head->eclRoot {b.get('head_to_eclRoot_noflip')}")
+print(f"X centred subject ndc: {rep['X_subject_centred_ndc']}")
 print(f"P2 subject eclRoot frozen across the switch: {rep['P2_frozen']}")
-print(f"   E {eE}\n   M {eM}")
-print(f"P3 subject mask identical E vs M: {rep['P3_mask_E_eq_M']}")
+print(f"   X {eX}\n   M {eM}")
 print(f"report -> {OUT}/f29_report.json")

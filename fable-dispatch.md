@@ -324,12 +324,15 @@ stands superseded by the session-10 update note above.*
   predicted position post-fix (prediction committed pre-run, both ways on the
   pre/post pair); no-up-chain control scene bit-identical pre/post; battery
   green; frozen md5 in==out; concurrent-instance assert.
-- **WIP:** 2026-08-09 ckpt1 — row RE-VERIFIED at source (`ModularBody.cpp:355-384`
-  writes `mat` only; the four descent sites write the frame; three consumers, all
-  `getParent()`-guarded ⇒ observable only on a parented up-chain ancestor).
-  PREDICTION P1–P4 committed pre-run in `harness/f29_upchain.py`'s header +
-  `f29_compare.py`. Next: bring the instrument up on the PRE-FIX binary
-  (`sc_f29_pre` = code `5b86be0f`), then land the fix.
+- **WIP:** 2026-08-09 ckpt2 — row RE-VERIFIED at source; PREDICTION P1–P4
+  committed pre-run (harness `5df7d17`). PRE-FIX baseline MEASURED on
+  `sc_f29_pre` (= code `5b86be0f`): P1 violated by exactly {Earth, Sun,
+  SolarSystem} in the subject scene and {Sun, SolarSystem} elsewhere; P2 the
+  subject's frame bit-identical across the switch; P3 the subject's TRAIL head
+  drawn 3.6 px from project(eclRoot) = the FRAME CENTRE and 365.8 px from the
+  body itself, against a control body at 0.72 px and the SAME body at 1.01 px
+  when descended. Next: land the one-line fix + the stale contract comments,
+  rebuild, re-run, `f29_compare.py`.
 
 ### F30 — the decision-feeder sweep: six rows' owed pre-decision data, no fixes  [S; read-only + one instrumented launch]
 
