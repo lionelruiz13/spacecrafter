@@ -271,13 +271,15 @@ stands superseded by the session-10 update note above.*
   reports post-fix, same drive); reply byte-completeness vs the producer's string
   length; `f27_reply.py` green; battery green (TCP suites); frozen md5 in==out;
   §0.5 concurrent-instance assert (`/proc/<pid>/comm` probe).
-- **WIP:** 2026-08-08, checkpoint 1 — the owed MEASUREMENT is taken
-  (`harness/f28_send_buffer.py`, artifacts `harness/artifacts/f28/`): on the
-  shipped corpus `get status object` = 114–142 B, `search` reaches **1024 B
-  CLAMPED at prefix `n`** (`search name n maxobject 320`) and
-  `get status planets_position` = 854 B. The overflow drive is built and green
-  on the native pre-fix binary at 854/854/916/1022/1023/1024. Next: ASan tree
-  rebuilt at `d13681eb`, pre-fix leg.
+- **WIP:** 2026-08-08, checkpoint 2 — measurement taken AND the fix landed
+  (code `5b86be0f`; `harness/f28_send_buffer.py`, artifacts
+  `harness/artifacts/f28/`). Shipped corpus: `get status object` = 114–142 B,
+  `search` reaches **1024 B CLAMPED at prefix `n`**,
+  `get status planets_position` = 854 B. ASan both ways on the SAME drive:
+  **3 reports pre-fix** (WRITE of size 1025 at io.cpp:703, "0 bytes after
+  1024-byte region") / **0 post-fix**; four binaries deliver byte-identical
+  answers at 854/854/916/1022/1023/1024. Next: `f27_reply.py` + battery, then
+  §11.136 + the §5.73 row flip.
 
 ### F29 — §5.46: the up-chain walk publishes a flat frame it never writes  [S–M]
 
