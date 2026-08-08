@@ -324,7 +324,12 @@ stands superseded by the session-10 update note above.*
   predicted position post-fix (prediction committed pre-run, both ways on the
   pre/post pair); no-up-chain control scene bit-identical pre/post; battery
   green; frozen md5 in==out; concurrent-instance assert.
-- **WIP:**
+- **WIP:** 2026-08-09 ckpt1 — row RE-VERIFIED at source (`ModularBody.cpp:355-384`
+  writes `mat` only; the four descent sites write the frame; three consumers, all
+  `getParent()`-guarded ⇒ observable only on a parented up-chain ancestor).
+  PREDICTION P1–P4 committed pre-run in `harness/f29_upchain.py`'s header +
+  `f29_compare.py`. Next: bring the instrument up on the PRE-FIX binary
+  (`sc_f29_pre` = code `5b86be0f`), then land the fix.
 
 ### F30 — the decision-feeder sweep: six rows' owed pre-decision data, no fixes  [S; read-only + one instrumented launch]
 
