@@ -950,13 +950,22 @@ public:
     //
     // Why the frame and nothing else. A parked body can recompute its own
     // eclipticPos from its orbit at any jd, but not the frame it sits in: that
-    // is the PARENT's position frame, and the parent's cached
-    // `matLocalToBodyPos` is NOT universally fresh - dispatchUpdate's up-chain
-    // loop never writes it (recorded at §11.117; the shipped hidden bodies hang
-    // off Sun, which is exactly an up-chain ancestor for an Earth observer). So
-    // the frame is captured here, at the six sites that used to do the walk,
-    // where it is provably the parent's own flat position frame for that frame -
-    // one Mat4f copy, and only for the nodes that actually own a parked child.
+    // is the PARENT's position frame, captured here at the sites that used to
+    // do the walk, where it is provably the parent's own flat position frame
+    // for that frame - one Mat4f copy, and only for the nodes that actually own
+    // a parked child.
+    // ORIGINALLY this member existed because the parent's own
+    // `matLocalToBodyPos` was NOT universally fresh - dispatchUpdate's up-chain
+    // loop never wrote it (§11.117 -> §5.46; the shipped hidden bodies hang off
+    // Sun, which is exactly an up-chain ancestor for an Earth observer). §5.46
+    // is FIXED (F29, §11.137), so every publish site now hands the same value
+    // the node's own `matLocalToBodyPos` already holds, and this cache is a
+    // known, deliberate duplicate rather than a needed one. It is kept rather
+    // than collapsed because collapsing it changes the B39 hidden-body barrier
+    // (`useNow`'s two-branch read), which is out of §5.46's scope - and it
+    // cannot desync silently: both members are written from the SAME `flat`, on
+    // the same line pair, at every one of those sites. Retiring it is recorded
+    // at §11.137 as the simplification this fix makes possible.
     // The GROUNDED variant's surface frame is derived from it on demand exactly
     // as the old code derived it (flat . accumulatedBodyPosToBody(jd)), which is
     // the identity every one of those call sites already relied on.
@@ -1928,6 +1937,18 @@ private:
     // rotation is stale for out-of-cone bodies), so the ORBIT pass can place a
     // child's orbit in its parent's frame reliably (row 8). Identity until the
     // first update.
+    // THE WRITERS ARE ENUMERATED so the contract is checkable rather than
+    // asserted (§5.46 was two of them silently missing for 10 days): every site
+    // that assigns `mat` or `mat.r[12..14]` assigns this too, and there are
+    // exactly five - recursiveUpdate (.cpp), dispatchUpdate's invisible-
+    // reference branch and its up-chain loop (.cpp), selectiveUpdate's
+    // else-branch and recursiveTranslationUpdate (below) - plus
+    // transformParentToBodyPos, which is the descent hop the first, fourth and
+    // fifth route through. The invariant that falls out, and that the F29
+    // harness gates on: for EVERY body the walk reaches,
+    //     matLocalToBodyPos.translation == mat.translation, bit for bit,
+    // because `mat` is always this frame times a PURE rotation
+    // (accumulatedBodyPosToBody) and multiplyFast leaves the translation alone.
     Mat4f matLocalToBodyPos = Mat4f::identity();
     // The flat position frame this node's PARKED children ride, refreshed every
     // frame by publishParkedFrame at the sites that used to tick them, consumed
