@@ -143,6 +143,18 @@ Environment note: this machine has a live X server (DISPLAY=:2), no xvfb -
 launch `DISPLAY=:2 ./build-claude/src/spacecrafter` directly; the xvfb-run
 line above is the generic recipe.
 
+**XAUTHORITY may be inherited WRONG** (seen 2026-08-08, F28): a session can
+start with `DISPLAY=:0` and `XAUTHORITY=/run/user/1000/.mutter-Xwaylandauth.*`
+- another uid's runtime dir - and then every display, including `:2`, answers
+`Authorization required, but no authorization protocol specified`. The file to
+use is the one under YOUR runtime dir:
+
+    export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)
+    DISPLAY=:2 xdpyinfo | head -3      # positive check before any launch
+
+Check it with `xdpyinfo`, not with a launch: the app failing to open a display
+looks like a dozen other faults.
+
 `asmooth_sim.py` - off-domain but homed here for traceability: exact-formula
 replay behind the EntityCore ASmooth analysis (INTENT 11.18); not a
 body-path tool.
