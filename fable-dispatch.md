@@ -277,6 +277,15 @@ stands superseded by the session-10 update note above.*
   truncated anything. NEW **§5.74** (`search` returns no star and no
   constellation on the shipped corpus). Truncation POLICY remains Vixy's and
   now has a closer case: `get status planets_position` = 854 of 1024 B.
+  **ACCEPTED (Fable, 2026-08-09):** §11.136 read in full; §5.73 flip + §5.74 +
+  stub verified at the ledger; diff read (io.{cpp,hpp} only, header carries the
+  contract). All judgment calls endorsed with their arguments — the nine-site
+  conversion IS the class (I6; a two-site fix leaves `send(TCPsocket)` armed),
+  the constant strings are wire-measured pre/post, the ASan claim is correctly
+  scoped to presence/absence, and the SMALL_BUFFER comment retirement is sound
+  (never enforced; the failure it named was the overflow itself). The one-byte-
+  wide discrimination (1022 fits / 1023 fires) is the sharpest both-ways record
+  this class has had. XAUTHORITY note propagated to F29/F30 dispatch prompts.
 
 ### F29 — §5.46: the up-chain walk publishes a flat frame it never writes  [S–M]
 
