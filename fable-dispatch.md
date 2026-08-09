@@ -303,6 +303,17 @@ F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (mint
   reaches the app's own log, which says `Check sky_cultures subdirectory ok`) and
   **§5.78** (`loadSciNames` has no caller — sci index 0 before AND after a working
   load). 20/20 checks PASS, app exit 0, frozen md5 in == out.
+  **ACCEPTED 2026-08-09 (supervisor):** §11.139 read in full; §5.74 extension +
+  §5.77/§5.78 verified at the ledger; commits `ce7a97b`/`5473386` authored
+  correctly, both trees clean; the 2922×0-byte field claim re-measured
+  independently (2922 files, 0 non-empty). All six deviations ENDORSED: the
+  36-prefix widening (digit-keyed star index makes letters-only incomparable;
+  F28's 26 still reproduced), the fixture leg (closes the disjunction on both
+  sides instead of by elimination — shipped command, frozen field untouched by
+  construction), the labelled synthetic constellation tokens (§11.51(d)
+  respected: real data verbatim+md5, probe tokens claim nothing), the shared
+  `f27_reply.Session` extension (re-measured 0 FAIL on the path F31 did not
+  use), the two new §5 rows, the recorded abort (no ledger claim from it).
 
 ### F32 — §5.34: `Object::operator=` leaks the previous rep — enumeration-first fix  [M]
 
