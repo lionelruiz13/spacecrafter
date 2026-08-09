@@ -1,0 +1,60 @@
+{
+ "rows": [
+  {
+   "tag": "earth0",
+   "n_bodies": 120,
+   "violators": [
+    "SolarSystem",
+    "Sun"
+   ],
+   "subject_frame_km": 6378.2404875586
+  },
+  {
+   "tag": "moon1",
+   "n_bodies": 120,
+   "violators": [
+    "Earth",
+    "SolarSystem",
+    "Sun"
+   ],
+   "subject_frame_km": 6378.2404875586
+  },
+  {
+   "tag": "earth1",
+   "n_bodies": 120,
+   "violators": [
+    "SolarSystem",
+    "Sun"
+   ],
+   "subject_frame_km": 6378.239797492209
+  },
+  {
+   "tag": "moon2",
+   "n_bodies": 120,
+   "violators": [
+    "Earth",
+    "SolarSystem",
+    "Sun"
+   ],
+   "subject_frame_km": 6378.239797492209
+  },
+  {
+   "tag": "earth2",
+   "n_bodies": 120,
+   "violators": [
+    "SolarSystem",
+    "Sun"
+   ],
+   "subject_frame_km": 6378.240194798276
+  }
+ ],
+ "fail": [
+  "earth0: invariant violated by ['SolarSystem', 'Sun']",
+  "moon1: invariant violated by ['Earth', 'SolarSystem', 'Sun']",
+  "moon1: subject frame 6378 km is not an Earth-Moon distance",
+  "earth1: invariant violated by ['SolarSystem', 'Sun']",
+  "moon2: invariant violated by ['Earth', 'SolarSystem', 'Sun']",
+  "moon2: subject frame 6378 km is not an Earth-Moon distance",
+  "earth2: invariant violated by ['SolarSystem', 'Sun']"
+ ]
+}

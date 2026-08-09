@@ -1,0 +1,35 @@
+{
+ "rows": [
+  {
+   "tag": "earth0",
+   "n_bodies": 120,
+   "violators": [],
+   "subject_frame_km": 6378.2404875586
+  },
+  {
+   "tag": "moon1",
+   "n_bodies": 120,
+   "violators": [],
+   "subject_frame_km": 359623.7022583542
+  },
+  {
+   "tag": "earth1",
+   "n_bodies": 120,
+   "violators": [],
+   "subject_frame_km": 6378.239797492209
+  },
+  {
+   "tag": "moon2",
+   "n_bodies": 120,
+   "violators": [],
+   "subject_frame_km": 359623.6700149208
+  },
+  {
+   "tag": "earth2",
+   "n_bodies": 120,
+   "violators": [],
+   "subject_frame_km": 6378.240194798276
+  }
+ ],
+ "fail": []
+}

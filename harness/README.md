@@ -1456,3 +1456,11 @@ Measured verdicts at delivery (§11.137): subject trail **550.39 px** from its
 body pre-fix / **9.2e-05 px** post-fix, control body **0.69 px on both**;
 invariant `eclRoot == mat.translation` violated by exactly the up-chain pre-fix,
 by nobody post-fix over 120 bodies; control scenes bit-identical.
+
+`f29_reversible.py` (same runner) drives the pair this fix touches — a body's
+membership of the walk, DESCENT <-> UP-CHAIN — as `Earth -> Moon -> Earth ->
+Moon -> Earth`, asserting at every state both the invariant over 120 bodies and
+the subject's own cached frame in km. It is the shortest statement of §5.46
+there is: on the PRE-fix binary, standing on the Moon, Earth's frame says Earth
+is **6378.240 km** away (its own radius plus the observer's 100 m) instead of
+**359 624 km**, at both entries.
