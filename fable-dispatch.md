@@ -374,6 +374,21 @@ F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (mint
   in == out, app exit 0 on all 13 launches. **Nothing suspended.** Recorded not
   fixed: the sparse HIP index (§5.74 family) and `ConstellationMgr::getSelected()`
   dereferencing `begin()` of a possibly empty vector.
+  **ACCEPTED 2026-08-09 (supervisor):** §11.140 read in full; code diff read at
+  the commit (fix + header-carried enumeration match the entry); §5.34 flip
+  verified at the ledger; commits authored correctly, checkpoint-1 discipline
+  followed (pre-fix measurement committed before the fix), both trees clean.
+  All four deviations ENDORSED: the `Session` extension (inert defaults,
+  untouched path re-measured 0 FAIL), the floor-bounded screen A/B (attributed
+  WITH its A/A control carrying the same k=0.971, pinning tried and measured
+  16× worse with the mechanism named — §11.94(d)/B30), LSan-objects as the
+  composed observable (stronger than `ref.size()`: post-static, per-stack),
+  the staged pre-binaries (gitignored, session-9 precedent). ONE CORRECTION:
+  the `getSelected()` empty-deref is now **§5.79** (supervisor-minted — a
+  crash reachable from a shipped command belongs in the registry; local
+  untestability is not a mint criterion, §5.73 precedent). The HIP-sparsity
+  non-mint stands (field-content, §5.74's question already reaches it), with
+  the datum routed to the For-Vixy section at close.
 
 ### F33 — B4(iv): the C3 scripted camera transitions act on the path that draws  [M-L; mandatory checkpoints]
 
