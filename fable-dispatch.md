@@ -367,6 +367,16 @@ current queue lives in the latest session update note above.*
   here, and 17 would print twice on the console because `print_log = true` and
   `cLog` at `L_ERROR` already writes `std::cerr` (654 such lines measured on the
   run). **NO product code changed** — code clean at `04ae1d3e` at open and close.
+  **ACCEPTED same day (supervisor):** entry read in full; not-fixing verified as
+  the MANDATED outcome (the blocker is measured — the four-cell 2×/2× vs 1×/0×
+  table makes the row's own one-liner non-additive on a non-log observable);
+  §5.88/§5.89/§5.90 mints ENDORSED (all measured, all reachable, fixes routed);
+  the recorded instrument failure (relative `--bin` → a full manifest of zeros)
+  endorsed as the §11.47 probe class caught by its own MANIFEST discipline.
+  Trivia for traceability: F35's handoff quoted `core.cpp:1077-1078` for the
+  `selectObject` duplicate write, F36 observed `:1075-1076` — same unambiguous
+  site, one of the two quotes is off by 2; immaterial, site is out-of-boundary
+  either way. No re-run, no escalation.
 
 ---
 
