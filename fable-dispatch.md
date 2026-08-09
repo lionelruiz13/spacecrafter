@@ -285,6 +285,12 @@ current queue lives in the latest session update note above.*
   before each launch (§0.5); display env per §0.5 if a display is needed.
 - **WIP:** — DELIVERED 2026-08-09 (§11.142; §5.80 dated EXTENSION + NEW §5.86;
   harness `076cee2`, `460c344`, `6c9d642` + this; code UNCHANGED at `204d402e`).
+  **ACCEPTED same day (supervisor):** entry read in full; record-only honored;
+  §5.80 correction endorsed (measured both-hypothesis, supersession clause in
+  place); §5.86 mint ENDORSED (§5.79 reachability criterion met, fix routed to
+  §11.4's closer); gate-fix posture endorsed (gates corrected to true claims,
+  run 1 kept as evidence). No re-run needed — predictions-before-run at
+  `076cee2` + both-ways residuals carry the discrimination.
 
 ### F35 — the two degenerate-input guards: §5.81 distance-0 `screenPos` + §5.79 empty-selection `getSelected` — verify-then-fix-if-decision-free (S+S)
 
