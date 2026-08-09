@@ -3,7 +3,7 @@
 
     cd claude/harness && export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*) \
         && DISPLAY=:2 ./f35_degenerate.py <absOutdir> --bin <binary> --expect pre|post \
-           [--legs A,B1,B2]
+           [--legs A,B1,B2,B3]
 
 ONE MANDATE SHAPE FOR BOTH HALVES: enumerate the consumers, establish the
 reference answer for the degenerate input, fix only if decision-free. This
@@ -74,6 +74,15 @@ written; the frozen md5 pair is asserted in == out by the Session.
           POST -> O3 == "EOL"
      -> `select constellation_star F3A`       => O4 / C4 == O1 / C1 on BOTH
           binaries. THE POSITIVE CONTROL: with a real selection, nothing changes.
+
+--------------------------------------------------------------------- LEG B3
+WHAT THE §5.79 FIX LEAVES BEHIND (added after the PRE run, measured on both).
+The guard answers the EMPTY case and, by D8, must not touch any other: with a
+NON-empty `selected` an unresolved abbreviation still makes `select
+constellation_star` act on the constellation selected BEFORE the command,
+because `setSelected(abbrev)` returns without touching anything when
+`findFromAbbreviation` gives nullptr. Identical on both binaries by
+construction; driven so that the row recording it is a measurement. → §5.87.
 
 --------------------------------------------------------------- PREDICTIONS
 Stated here and committed BEFORE the first measuring run (F29/F32 discipline):
@@ -338,12 +347,50 @@ def leg_B2(out, binary, expect, res):
                 c.close()
 
 
+# ----------------------------------------------------------------- leg B3
+def leg_B3(out, binary, expect, res):
+    """WHAT THE §5.79 FIX LEAVES BEHIND, measured rather than derived.
+
+    The guard answers the EMPTY case. It does not — and must not, D8 — touch the
+    case where `selected` is NON-empty and the abbreviation does not resolve:
+    `ConstellationMgr::setSelected(abbrev)` returns without touching anything
+    when `findFromAbbreviation` gives nullptr, so `getSelected()` still answers
+    with the constellation selected BEFORE the command, and `select
+    constellation_star <unknown>` acts on a constellation it was not asked
+    about. Identical on both binaries by construction; measured here so the row
+    that records it is a measurement."""
+    fixture = out / "culture_f35"
+    if not fixture.exists():
+        res["B3_fixture"] = f31.build_fixture(fixture)
+    sess = f27.Session(out, "f35b3", binary)
+    drv = sess.client("drv")
+    r = {}
+    try:
+        ask(drv, f"sky_culture action load path {fixture}", budget=25.0, quiet=3.0)
+        ask(drv, "select constellation_star F3A")
+        r["O1"], r["C1"] = reply(drv, "get status object"), reply(drv, "get status constellation")
+        ask(drv, "select constellation_star ZZNOSUCH")
+        r["O2"], r["C2"] = reply(drv, "get status object"), reply(drv, "get status constellation")
+        r["id1"], r["id2"] = ident(r["O1"]), ident(r["O2"])
+        chk(r["id2"] == r["id1"] and r["C2"] == r["C1"] and r["C1"] == "F3A",
+            "B3 an unresolved abbreviation with a NON-empty selection still acts on "
+            "the PREVIOUS constellation — unchanged by the fix, on both binaries",
+            f"id1={r['id1']!r} id2={r['id2']!r} C1={r['C1']!r} C2={r['C2']!r}")
+    finally:
+        res["B3"] = r
+        if sess.proc.poll() is None:
+            res["B3"]["exit"] = sess.stop(drv)
+        else:
+            for c in sess.clients:
+                c.close()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("outdir")
     ap.add_argument("--bin", default=DEFAULT_BIN)
     ap.add_argument("--expect", choices=("pre", "post"), required=True)
-    ap.add_argument("--legs", default="A,B1,B2")
+    ap.add_argument("--legs", default="A,B1,B2,B3")
     a = ap.parse_args()
     out = Path(a.outdir)
     out.mkdir(parents=True, exist_ok=True)
@@ -360,6 +407,8 @@ def main():
         leg_B1(out, a.bin, a.expect, res)
     if "B2" in legs:
         leg_B2(out, a.bin, a.expect, res)
+    if "B3" in legs:
+        leg_B3(out, a.bin, a.expect, res)
 
     res["checks"] = CHECKS
     res["fails"] = [c["label"] for c in CHECKS if not c["ok"]]

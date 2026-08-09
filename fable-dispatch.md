@@ -322,11 +322,15 @@ current queue lives in the latest session update note above.*
 - **Boundaries:** no behavior change off the degenerate inputs; old render path
   untouched; the two halves are independently deliverable — a suspension on one
   does not hold the other.
-- **WIP:** 2026-08-09 ckpt-2 — BOTH halves fixed and measured both ways; code
-  `c12ed803` (§5.81) + `04ae1d3e` (§5.79). PRE 10/10 on `204d402e` (screen
-  `[nan,nan]`; `select constellation_star Ori` SIGSEGV rc −11; the cleared slot
-  re-read), POST 11/11; branch probe 0 / 1298 (all `temp_point`). Next: the
-  b24/b32/b39 regression battery, then §11.143 + the two row flips.
+- **WIP:** — DELIVERED 2026-08-09 (§11.143; **§5.81 CLOSED** + **§5.79 CLOSED**,
+  both with dated extensions, **NEW §5.87**; code `c12ed803` + `04ae1d3e`,
+  harness `c380fc8`, `17a5378`, `2177cc5` + this). BOTH halves shipped — each
+  empty-case answer was decision-free and the enumerations say why; nothing
+  suspended from the two mandates. §5.79's own "not reproducible on this
+  install" CORRECTED: `select constellation_star Ori` segfaults the default
+  field (rc −11). Gates: `f35_degenerate` 10/10 PRE + 11/11 POST + 1/1 B3,
+  `f35_branch` 0/1298, `b24_equivalence` 120 bodies, `b32` 0, `b39_scenes` ALL
+  PASS, `f33_transitions` 32/32, md5 pristine.
 
 ### F36 — §5.77's owed enumeration: startup failures that report only on stderr (S) — class fix ONLY if uniform + purely additive
 

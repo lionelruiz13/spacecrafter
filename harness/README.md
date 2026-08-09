@@ -1563,3 +1563,46 @@ default to inert.
 over a fresh F28 overflow launch of `harness/sc_f28_asan_pre` and reported
 **3 `heap-buffer-overflow`**, against 0 on all four F32 runs
 (`artifacts/f32/f32_lsan_blocks.txt`, tail).
+
+## F35 — the two degenerate-input guards (§5.81 distance-0 `screenPos`, §5.79 empty `getSelected`), INTENT §11.143
+
+    cd claude/harness && export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*) \
+        && DISPLAY=:2 ./f35_degenerate.py <absOutdir> --bin <binary> --expect pre|post \
+              [--legs A,B1,B2,B3]
+    DISPLAY=:2 ./f35_branch.py <absOutdir> [--bin <binary>]
+    ./f35_compare.py <pre_result.json> <post_result.json>
+
+`f35_degenerate.py` drives each degenerate input through a **shipped** command with a
+positive control beside it, and its predictions P1–P4 are in the docstring, committed
+before the first measuring run. Leg **A** = `camera action transition_to target point`
+(the dump's `screen` for `temp_point`: `[nan,nan]` pre, `[0,0]` post, `dist` 0, with 120
+other bodies finite either side). Legs **B1/B2** = `select constellation_star` on a
+never-grown and on a cleared selection vector — the two manifestations of one root
+(SIGSEGV rc −11 / a silent re-selection of `43 And`). Leg **B3** is what the fix
+deliberately does NOT cover (§5.87). B2/B3 build **F31's fixture culture** outside the
+frozen field via `f31_search_drive.build_fixture` (I2 — the fixture is imported, not
+re-authored).
+
+Three instrument facts worth not re-learning:
+
+- **`dual_dump` nests per-path state under `old`/`new`.** `o["new"]["screen"]` is §5.81's
+  subject; a new-tree-only body (the point anchor) has `"old": null`.
+- **`get status object` embeds alt/az and hour angle**, which move between two reads of
+  the SAME selection. Identity is the first two lines (name + HP), never the whole string.
+- **A cross-launch dump diff is NOT an inertness instrument.** `f35_compare.py` reports
+  278 differing fields between two runs of the same scene on two binaries; the control
+  that proves the instrument rather than the fix is at fault is that the **untouched old
+  path** moves the same way (`old.ecl` 22 bodies, `old.matLocalToParent` 22, `old.mat`
+  19). `evalCount` differed 2015 vs 1991 and the iterative solvers ride the evaluation
+  history. Use `b24_equivalence` (within-launch) and the branch probe instead.
+
+`f35_branch.py` + `f35_branch.gdb` observe the guard branch itself, and the reason they
+exist in this shape is a probe that lied: **`break ModularBody.hpp:508` resolves to the
+line's statement start**, which the compiler placed on the COMMON path (the `ucomiss` of
+`distance == 0.f`), so it fired **22613** times with Earth, Moon and Mercury among the
+bodies. The address is taken from the branch body's own instruction instead (`movlps` at
+`+72`, resolved after `start` because the binary is PIE) and the landed instruction is
+printed into the run's log as the probe's positive map. Measured 0 (no transition) /
+1298 (after it), every hit `temp_point`. **`handle SIGUSR1 nostop noprint pass` is
+mandatory** — the app's stall watchdog otherwise stops the inferior and a batch script
+then quits, killing the app mid-run (measured: the port never reopened for leg 2).
