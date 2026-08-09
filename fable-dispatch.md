@@ -98,6 +98,29 @@ A40**, **B12 content** after b12-design §7 + A41/A42, **§5.64/§5.65/§5.69/
 DECISIONS_PENDING open set at close: **D15, D21 (late Aug), D37** + A40–A43
 awaiting; B31 closure rides D21/D28/C4 (unchanged).
 
+**Update [Fable 2026-08-09, supervising session 11]:** round of 3: **F31 → F32 →
+F33**. Warm-up: both trees clean, code `bd3f7117` / harness `52ad1fe`, binary
+confirmed current by no-op rebuild, `free -g` = 52 GiB ⇒ -j12; NO Vixy commit
+since session 10's close ⇒ the whole blocked/decision-gated set stands unchanged
+(D15/D21 late-Aug, D37, A40–A43, C4 open; §5.64/§5.65/§5.69/§5.70/§5.72/§5.75/
+§5.76 fixes stay Vixy's). Picks per the session-10 queue, rows re-read at the
+ledger: F31 = **§5.74's owed discrimination** (S; row names the datum and the
+positive control), F32 = **§5.34** (M; session 10's named deferral, taken now —
+the enumeration-first condition is in the row), F33 = **B4(iv)**, minted after
+the owed at-the-row re-check: gate-check AT SOURCE found the travel half
+(`moveTo`×3, `transitionToPoint`) ungated pure position-frame work;
+`transitionToBody`'s heading tail is D28 territory handled by B4's own
+kind-(2) precedent (inherit-at-clause, mirror old's measured behavior, invent
+nothing); `alignCameraToBody` is an explicit up-vector command (not a switch
+default, so not D28's question) portable iff an exact camera equivalent
+derives per F25's table method — so the task is dispatchable with those three
+boundaries IN the section, not gated. Order F31→F32→F33; order-independence
+CHECKED: F31 is read-mostly (conditional fix confined to the search
+aggregation), F32 = `src/tools/object.{cpp,hpp}`, F33 = camera/command-surface
+files — disjoint; F32's lifetime fix and F33's camera work share no state, and
+sequential dispatch removes the residual risk. §5.75/§5.76 NOT taken: policy/
+semantics rows, Vixy's by their own text.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -232,10 +255,116 @@ DELIVERED and archived** — F0 §11.103 · F1 §11.104/§11.105 · F2 §11.106 
 F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · F15 §11.121 ·
 F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129 ·
 F22 §11.130 · F23 §11.131 · F24 §11.132 · F25 §11.133 · F26 §11.134 · F27 §11.135 ·
-F28 §11.136 · F29 §11.137 · F30 §11.138. No section is live: the next dispatchable
-candidates (§5.74's owed discrimination, S; §5.34, M; B4(iv) after a row re-check)
-are to be minted at their dispatch per §0b.2 — the current queue lives in the
-latest session update note above.*
+F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (minted
+2026-08-09, session 11), below.*
+
+### F31 — §5.74's owed discrimination: why `search` returns no star and no constellation  [S; one launch]
+
+- **Row (the owed item, verbatim):** §5.74 — *"Owed before it is judged: which of
+  the two it is, on one launch, with the catalogue's own count as the positive
+  control"* — the two candidates being: the star/constellation name catalogues
+  are **not loaded** in a default launch, or the prefix match **never fires**.
+  Found by F28 (§11.136(h)): 26-letter sweep at `maxobject 320`, zero `(S)` and
+  zero `(C)` over 233 sampled entries; `Core::listMatchingObjectsI18n` aggregates
+  four catalogues `[observed: coreModule/core.cpp:2367-2399]`.
+- **Why now:** S-sized, named next-round candidate by session 10; the row cannot
+  be JUDGED (code fix vs config vs product question) until the cause is
+  discriminated.
+- **Task:** one fresh launch; discriminate at each candidate cause's own surface:
+  (a) **loaded?** — the star/constellation NAME catalogues' own counts read from
+  the live process or its logs, with the answering catalogues (planets, nebulae)
+  as the positive control on the same channel; (b) **fires?** — drive `search`
+  with a prefix taken FROM the loaded catalogue's own content (never recall).
+  Record the datum as a dated EXTENSION on §5.74. **CONDITIONAL FIX (F28
+  precedent — measure first):** fix ONLY if the cause is a code defect whose fix
+  is decision-free (no user-visible-semantics choice, no config/default change);
+  a catalogue-content or default-config cause is Vixy's — record, don't fix.
+- **Stop boundaries (NOT yours):** no config/data-file changes (D9 frozen field;
+  md5 in==out); no EntityCore edits; if the fix requires choosing what `search`
+  SHOULD match (i18n vs english naming, scope), that is semantics — record.
+- **Discriminating checks:** the catalogue's own count is the control (zero from
+  `search` against a NONZERO loaded catalogue discriminates match-vs-load; zero
+  against zero discriminates load); if a fix lands: both ways on the same drive
+  (pre-fix zero / post-fix hits, prediction stated first); fresh-launch
+  precondition + `/proc`-comm concurrent-instance probe; md5 pristine.
+- **WIP:** —
+
+### F32 — §5.34: `Object::operator=` leaks the previous rep — enumeration-first fix  [M]
+
+- **Row (verbatim at §5.34):** both overloads (`tools/object.cpp:105-126`)
+  overwrite `rep` after retaining the new one — every reassignment leaks one
+  reference. Old path: each STAR selection change leaks its refcounted
+  `StarWrapperBase` (self-deletes at zero, never reaches zero). New path: each
+  composed-body selection leaks one `ModularObject` **plus a permanent
+  `ModularBodyPtr::ref` entry scanned on every body destruction**. NOT fixed
+  with the selection wave: *"releasing correctly changes object lifetime on the
+  old path … so it needs its own enumeration of who holds raw `ObjectBase*` and
+  its own verification"* (§11.106(h)).
+- **Why now:** session 10's named deferral ("one M-sized fix with baseline
+  risk"), taken this round; the permanent `ref` growth degrades every body
+  destruction and the leak class sits on BOTH paths' selection surface.
+- **Task:** (1) **ENUMERATION FIRST** — every holder of a raw `ObjectBase*` (and
+  every raw wrapper pointer that escapes an `Object`), classified: does ANY rely
+  on the wrapper outliving its last retaining `Object`? Deliver the enumeration
+  in the §11 entry (the member-doc-writer-enumeration precedent, F29). (2) Fix
+  both overloads — retain-new / release-old / assign, self-assignment safe; if
+  the enumeration shows the same hole in the copy/move ctors, fix at the class,
+  scope stays `Object`'s own special members. (3) Verify per below.
+- **Stop boundary (converts to decision, not fix):** if the enumeration finds a
+  holder that DEPENDS on the leak — uses the wrapper after its last retaining
+  `Object` is gone — STOP the fix, record holder + dependency + consequence,
+  report. That is a lifetime-design decision.
+- **Discriminating checks (both ways, one protocol):** pre-fix the leak is
+  MEASURED (LSan/ASan or a refcount trace: N selection changes ⇒ N unreleased
+  wrappers; `ModularBodyPtr::ref` size monotone under composed churn); post-fix
+  ZERO on the same drive; use-after-free hunt post-fix under ASan with selection
+  CHURN on both paths (old star churn including deselect/reselect; new
+  composed-body churn; reversible pair select⇄deselect driven twice); render
+  parity untouched (old path is the baseline: relevant b-batteries green); md5
+  pristine.
+- **WIP:** —
+
+### F33 — B4(iv): the C3 scripted camera transitions act on the path that draws  [M-L; mandatory checkpoints]
+
+- **Row:** B4 REMAINS (iv) — *"the old path's scripted transitions (moveTo /
+  transitionTo* / alignCameraToBody, the C3 time-driven half of row 19) stay
+  old-path-only — unasked by R3, unmeasured here."* Command surface: `camera
+  action move_to target point|body / transition_to target point|body /
+  align_with body` `[observed: app_command_interface.cpp:4208-4320]` — shipped
+  script commands whose effect today reaches only the old `AnchorManager`.
+- **Pre-mint gate-check (supervisor, 2026-08-09, at source):** `moveTo`×3 =
+  timed travel of a non-body anchor's heliocentric position
+  (`anchor_manager.cpp:405-486`; refuses on-body, refuses while moving) and
+  `transitionToPoint` (`:528`) = instantaneous switch capturing the observer's
+  current frames — pure position-frame work, **ungated**. `transitionToBody`
+  (`:549`) lands lon/lat by bisection then ends in a HEADING tail
+  (`setHeading(-axisAngle)`, `changeHeading(0, 5000)`) — roll-at-reference-
+  switch = **D28 territory; B4's kind-(2) precedent applies**: record the D28
+  dependency at the clause, mirror today's MEASURED old behavior, invent no
+  roll semantics. `alignCameraToBody` (`:793`) = `navigator->alignUpVectorTo`
+  — an explicit up-vector command, NOT a switch default (so not D28's
+  question); port iff an exact camera equivalent DERIVES (F25's term-table
+  method); else record the derivation gap.
+- **Task:** make the five command forms drive the new camera path (dual — old
+  `AnchorManager` untouched, baseline by construction). The new path already
+  carries `Camera::moveTo` (`Camera.cpp:601`) and the F7 anchor registry.
+  Parity target = old's measured behavior through the LIVE command channel
+  (B34's bar): travel = per-step position vs the predicted path; switches =
+  continuity invariants (position/view continuity within old's own measured
+  bounds); refusal cases answer the same (on-body, already-moving, negative
+  time, unknown name); heading tail mirrored ONLY if the new path expresses
+  heading today — otherwise deliver the rest and record the member.
+- **Stop boundaries (NOT yours):** old path untouched; no new key spellings
+  (B28); no roll semantics invented (D28 inherited-at-clause); EntityCore
+  authority line untouched; §5.71/`panView` and the `look_at` family stay
+  suspended (§11.92(d)) — do not fold them in.
+- **Discriminating checks:** per-member A/B old-vs-new through the live command
+  channel with the prediction COMMITTED before the run (F29 precedent);
+  reversible pairs driven twice (switch A→B→A→B, each entry from the previous
+  exit's state); `b4_anchors` 76/76 stays green; `b32`/`b24_equivalence`/`b39`
+  green (reference-switch adjacency — §5.32/F29 class); fresh-launch
+  precondition + concurrent-instance probe; md5 pristine.
+- **WIP:** —
 
 ---
 
