@@ -447,6 +447,26 @@ F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (mint
   `b24_equivalence` 120 bodies, `b32` 0, `b39_scenes` ALL PASS, md5 pristine.
   Remaining under B4(iv), neither Fable's: the heading tail (D28/A38) and
   `align_with` (§5.85 — measured: old does not align).
+  **ACCEPTED 2026-08-09 (supervisor):** §11.141 read in full; both code diffs
+  read (the five factory seams are the established dual shape — old member
+  called first and unchanged; NO navModule/coreModule file touched, the
+  old-path-untouched claim holds at the diff level); §5.80–§5.85, the B4(iv)
+  flip, §12 row 19 and the S7 line verified at the ledger; commits authored
+  correctly, checkpoint discipline followed (CP1/CP2/delivery visible); trees
+  clean. Both NOT-PORTED verdicts ENDORSED as executions of the gate-check's
+  own boundaries, not exceptions to them: the heading tail's start value has
+  no state-to-state law (previous-frame, projector-dependent screen angle —
+  a partial mirror would INVENT a roll, which the boundary forbade; D28
+  inherited at clause per §11.111(c)), and `align_with` was measured
+  non-idempotent + start-dependent, so porting would transcribe a frame error
+  (§11.111(k) naming precedent). Deviations ENDORSED: the §5.83 duration-0
+  divergence (D8-forced, strictly-more-forgiving, recorded), the Newton-seed
+  re-convergence (§11.117's own remedy; old's defect recorded §5.84), the
+  b24_equivalence sanitize repair (class fix, one spelling, I2). The A38
+  `placeAt` fix endorsed WITH its null control (order reversed = bit-identical
+  broken — the fix is proven, not plausible). Report's artifact path was off
+  by one component (`claude/artifacts/` for `claude/harness/artifacts/`) —
+  entry's own refs resolve; non-issue.
 
 ---
 
