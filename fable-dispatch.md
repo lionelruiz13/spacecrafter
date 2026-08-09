@@ -357,13 +357,16 @@ current queue lives in the latest session update note above.*
   `spacecrafter.log` (measured absent today, §11.139(h)); the F31 positive
   control (the lines-970-972 class) still present; stderr's pre-existing lines
   unmoved (both ways: the log gains, nothing else changes); md5 in==out.
-- **WIP:** — 2026-08-09, checkpoint 1/2: enumeration + startup-reachability
-  MEASURED (`f36_enum.py`/`f36_probe.py`/`f36_reach.py`/`f36_class.py`, one fresh
-  launch under gdb, app exit 0, 77 breakpoints / 2 unresolved / boundary seen).
-  Class sized at **37** startup failure reports the app log does not carry; the
-  uniform additive routing is **NOT** available (every one of the 37 carries a
-  blocker; see the entry). Next: §11.144 + §5.77 extension + the new rows, then
-  clear this line. No product code touched.
+- **WIP:** — DELIVERED 2026-08-09 (§11.144; **§5.77 dated EXTENSION**, stays OPEN
+  with its owed item PAID and the fix re-characterised as a decision; NEW **§5.88**,
+  **§5.89**, **§5.90**). The enumeration is **214 live console-output sites** (186
+  project, 76 functions) and the class is **37 startup failure reports the app log
+  does not carry**; the conditional fix was **NOT** applied because every one of the
+  37 carries a blocker — 2 would throw before the log exists, 13 are sentence
+  fragments needing new wording, 1 is the log itself failing, 4 are not compiled
+  here, and 17 would print twice on the console because `print_log = true` and
+  `cLog` at `L_ERROR` already writes `std::cerr` (654 such lines measured on the
+  run). **NO product code changed** — code clean at `04ae1d3e` at open and close.
 
 ---
 

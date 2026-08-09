@@ -1606,3 +1606,58 @@ printed into the run's log as the probe's positive map. Measured 0 (no transitio
 1298 (after it), every hit `temp_point`. **`handle SIGUSR1 nostop noprint pass` is
 mandatory** — the app's stall watchdog otherwise stops the inferior and a batch script
 then quits, killing the app mid-run (measured: the port never reopened for leg 2).
+
+## F36 — which startup failures never reach the app's log (`f36_*.py`), INTENT §5.77 / §11.144
+
+Four pieces, each the authority for one step, so a later run cannot measure a site
+that was never enumerated or classify one that does not exist (I2).
+
+**`f36_enum.py` — the census.** Writes `artifacts/f36/f36_sites.json`. Two things a
+`grep` gets wrong here, both learned by getting them wrong:
+
+- **Comments.** `grep 'std::cerr\|std::cout' src/` returns 335 hits (307 outside
+  EntityCore) and only 138 of the project ones are live: **169 are commented-out
+  debug prints**, two of them (`checkConfig.cpp:505,508`) inside a `/* … */` block
+  that a per-line `//` test cannot see. So the stripper is a real character-state
+  machine (code / `//` / `/* */` / string / char) that blanks comments while
+  preserving line and column numbers — an enumeration whose line numbers do not
+  open in an editor is not evidence.
+- **Channels.** The class does not live on iostreams. The largest failure-report
+  cluster in the app is `ZoneArray::create`: 13 `printf`, 1 `fprintf(stderr, …)`,
+  1 `std::cout`. `main` uses `SDL_Log`. `sprintf`/`snprintf`/`fprintf(<file>, …)`
+  are excluded by negative lookbehind and by requiring the stream argument.
+
+**`f36_probe.py` + `f36_reach.py` — is the site on the startup path.** Run as
+`DISPLAY=:2 ./f36_reach.py artifacts/f36 --bin <abs path>`. The measurable unit is
+the **enclosing function**, not the line: a failure-report line does not execute on
+a healthy startup, so reading a good launch's console enumerates what FIRED, never
+what COULD. One `gdb.Breakpoint` per function whose `stop()` records, sets
+`enabled = False` and returns False — the inferior is never left stopped, and a
+breakpoint on `FilePath::FilePath` costs one stop for the whole run instead of one
+per call. **The boundary is itself a breakpoint** on `App::startMainLoop`, so
+"during startup" is read off the same channel as the hit.
+
+Two habits worth copying:
+
+- **The MANIFEST line.** Before `run`, the probe emits one line per breakpoint with
+  its resolved location count. Without it, an unresolved breakpoint and a function
+  never entered give identical evidence — silence (§11.47). It paid immediately: the
+  first launch produced 77 pending breakpoints all reporting `locations=0` because
+  `--bin` was relative and `Session` launches with `cwd` = the farm, so gdb started
+  with no executable. **A full table of zeros reads exactly like a finding**; the
+  manifest made it one look. `--bin` is now resolved and existence-asserted.
+- **Read the applog as a second surface.** Two specs did not resolve (class-body
+  inline members, `-O2`; gdb says "No compiled code for line …"), and one of them,
+  `Executor::onAltitudeChange`, demonstrably fired **5×** during startup. The
+  breakpoint hole was covered by the app's own output on the same run.
+
+**`f36_class.py` — the classification and the sizing.** Carries a verdict per site
+(`klass` / `logged` / `blocker`) with the observation supporting it, and prints the
+row's number. `logged = PARTIAL` is the interesting bucket: the log records the
+ATTEMPT and never the outcome, so it does not merely omit — it implies success.
+
+Result on `04ae1d3e`: 214 live sites (186 project) in 76 functions; 25 functions
+entered during startup; **37 startup failure reports the app log does not carry**;
+and every one of the 37 carries a blocker, so the uniform additive `cLog` routing
+§5.77 expected does not exist. See §11.144(f) for the five blocker kinds and (j)
+for the one question that decides the fix.
