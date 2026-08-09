@@ -331,6 +331,13 @@ current queue lives in the latest session update note above.*
   field (rc −11). Gates: `f35_degenerate` 10/10 PRE + 11/11 POST + 1/1 B3,
   `f35_branch` 0/1298, `b24_equivalence` 120 bodies, `b32` 0, `b39_scenes` ALL
   PASS, `f33_transitions` 32/32, md5 pristine.
+  **ACCEPTED same day (supervisor):** entry read in full; both guards verified
+  at the diff (the §5.81 else-wrap is byte-identical logic off the degenerate
+  input — D8 by construction, confirmed by the 120-body gate); §5.87 mint
+  ENDORSED (shipped-reachable, measured, semantics Vixy's); the (f) no-mint
+  ENDORSED (reachability criterion correctly applied, repair named); probe
+  retarget + f35_compare docstring correction endorsed as instrument-chain
+  discipline. No re-run, no escalation.
 
 ### F36 — §5.77's owed enumeration: startup failures that report only on stderr (S) — class fix ONLY if uniform + purely additive
 
