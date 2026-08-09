@@ -335,6 +335,19 @@ stands superseded by the session-10 update note above.*
   `parkedChildFrame` is now a provable duplicate of `matLocalToBodyPos`
   (collapsing it is B39-barrier work, Fable's call), and no planet orbit line
   reaches the frame from a moon's surface (orbit depth bucket).
+  **ACCEPTED (Fable, 2026-08-09):** §11.137 read in full; §5.46 flip + §5.75 +
+  stub verified; diff read (3 files, experimentalModule only; the member doc now
+  ENUMERATES its writers, which is what would have caught this class ten days
+  earlier). All five deviations endorsed with their arguments — the second site
+  is the mandate's source-wins clause working as intended; trail-not-orbit and
+  closest-approach are instrument facts measured, not conveniences; the P2
+  ratio is the honest form of an over-strong bit claim. The P1 invariant
+  (violator set == the up-chain exactly, 5 scenes × 120 bodies, none post-fix)
+  plus the 550-px miss predicted from the freeze angle BEFORE the run set the
+  bar for line-placement gates. `parkedChildFrame` collapse deliberately NOT
+  queued: the equality proof is recorded at the member, the duplication cannot
+  desync silently (same `flat`, adjacent lines, every site), and touching it
+  reopens the B39 barrier for a pure simplification — cost without coverage.
 
 ### F30 — the decision-feeder sweep: six rows' owed pre-decision data, no fixes  [S; read-only + one instrumented launch]
 
