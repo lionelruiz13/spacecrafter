@@ -106,23 +106,38 @@ Object::Object(const Object &o)
 	rep->retain();
 }
 
+// RETAIN THE NEW, THEN RELEASE THE OLD (§5.34, INTENT §11.140). Both
+// assignments used to overwrite `rep` after retaining the new one and never
+// release the old, so every reassignment of an Object leaked one reference to
+// a refcounted rep: a StarWrapperBase whose count never reached zero on the old
+// path (hip_star_wrapper.hpp:67-73), a ModularObject plus a permanent
+// ModularBodyPtr::ref entry on the new one (ModularObject.hpp:24-30).
+//
+// The order is what makes the operation safe without a guard: retaining first
+// covers self-assignment AND the wider case of two DIFFERENT Objects holding
+// the same rep, where releasing first could destroy the very thing being
+// assigned. The old `if (this != &o)` only covered the narrow case, and dropping
+// it changes nothing observable for it (retain then release on one rep is a net
+// zero). The null branch retains too: the invariant "an Object has retained
+// whatever `rep` points at" now holds for the uninitialized singleton as well,
+// so the destructor's release is symmetric on every path (that instance's
+// retain/release are the ObjectBase no-ops, so this is inert today - it is the
+// invariant, not the count, that has to be uniform).
 const Object &Object::operator=(const Object &o)
 {
-	if (this != &o) {
-		rep = o.rep;
-		rep->retain();
-	}
+	ObjectBase * const previous = rep;
+	rep = o.rep;
+	rep->retain();
+	previous->release();
 	return *this;
 }
 
 const Object &Object::operator=(ObjectBase* const r)
 {
-	if(r) {
-		rep = r;
-		rep->retain();
-	} else
-		rep = &ObjectUninitialized::instance;
-
+	ObjectBase * const previous = rep;
+	rep = r ? r : &ObjectUninitialized::instance;
+	rep->retain();
+	previous->release();
 	return *this;
 }
 
