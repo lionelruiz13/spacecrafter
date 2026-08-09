@@ -90,6 +90,30 @@ fixes after Vixy). DECISIONS_PENDING open set at close: **D15, D21 (late
 Aug), D37** + A40–A43 awaiting; **D28 now carries a second shipped-command
 member**; B31 closure rides D21/D28/C4 (unchanged).
 
+**Update [Fable 2026-08-09, supervising session 12]:** round of 3: **F34 → F35 →
+F36** — likely the LAST decision-free round: after it the remaining set is
+entirely decision-gated. Warm-up: both trees clean, code `204d402e` / harness
+`8172262`, binary confirmed current by no-op rebuild, `free -g` = 52 GiB ⇒ -j12;
+NO Vixy commit since session 11's close ⇒ the blocked/decision-gated set stands
+unchanged (D15/D21 late-Aug, D37, A40–A43, C4 open; §5.64/§5.65/§5.69/§5.70/
+§5.72/§5.75/§5.76 fixes stay Vixy's). **B4-row residual re-check DONE at
+source, NO mint:** `moveRelativeXYZ`'s only route up is
+`CoreLink::cameraMoveRelativeXYZ`; all 6 of its `ui.cpp` call sites are
+commented out and no command spelling exists — nothing reaches it; old-path
+dead code, retire-with-old class. No §5 row: reachability is the mint
+criterion (§5.79's precedent) and this member is UNreachable. Picks, rows
+re-read at the ledger: F34 = **§5.80's owed datum** (S-M; record-only, the fix
+is Vixy's by the row's own text), F35 = **§5.81 + §5.79 as ONE task** (both
+shipped-reachable degenerate-input guards, identical
+verify-then-fix-if-decision-free mandate — merged, S+S), F36 = **§5.77's owed
+enumeration** (S; the row's named sizing datum; class fix ONLY if uniform +
+purely additive). §5.78's owed data-layout half checked for local
+dischargability: NO local `spacecrafter-data` checkout — stays Vixy's. Order
+F34→F35→F36; order-independence CHECKED: F34 writes no product code (record +
+harness only) and runs FIRST so its measurements baseline on unmodified code;
+F35 = `ModularBody.hpp` + `constellation_mgr.cpp`/callers; F36 = startup
+logging sites — disjoint; sequential dispatch removes the residual risk.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -225,10 +249,93 @@ F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · 
 F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129 ·
 F22 §11.130 · F23 §11.131 · F24 §11.132 · F25 §11.133 · F26 §11.134 · F27 §11.135 ·
 F28 §11.136 · F29 §11.137 · F30 §11.138 · F31 §11.139 · F32 §11.140 ·
-F33 §11.141. No section is live: the next dispatchable candidates (§5.80's
-owed datum, S-M; §5.81 verify-then-fix-if-decision-free, S; B4-row residual
-re-check before any mint) are to be minted at their dispatch per §0b.2 — the
+F33 §11.141. Live sections: **F34–F36**, minted session 12 (§0b.2); the
 current queue lives in the latest session update note above.*
+
+### F34 — §5.80's owed datum: which parametrization the free-flight movers were BUILT against (S-M) — RECORD-ONLY, the fix is Vixy's
+
+- **Mandate (re-read these before anything):** `INTENT.md` §5 row 80 +
+  `INTENT/11.141.md` (k). The owed item verbatim from the row: *"Owed before it
+  is judged: which of the two conventions the free-flight movers were BUILT
+  against — B10/B21 measured their behaviour, not their frame."*
+- **The two conventions (from the row):** (A) `spheToRect(-longitude,
+  latitude)·distance` — `Camera::setFreeMode`'s pose conversion; (B)
+  `Z(lon)·X(π/2−lat)·(0,0,distance)` — what `viewMat()`'s anchored branch
+  composes. The row names (A)'s users: `moveTo`'s free branch, `descend`,
+  `moveEyeRel`, `setFreeMode(false)`.
+- **Work:** for EACH free-flight mover, establish which convention its
+  arithmetic is consistent with — derived at source AND discriminated through
+  the live channel where drivable: write the per-convention displacement
+  prediction BEFORE the run (harness commit), measure via `get status position`
+  (F27, §11.135) / `dual_dump`, carry an A/A control per §11.141(k)'s pattern.
+  Git history is admissible as supporting provenance, never as the datum. Also
+  state, as a consequence of the datum, which side of the seam the §5.80
+  teleport lives on (the converter vs the composer) — a statement, not a fix
+  proposal.
+- **Deliver:** per-mover convention table + the answer, as a dated EXTENSION on
+  the §5.80 row + §11 entry at the next free number + this WIP line. **NO
+  product-code change** — the fix is a free-flight semantics change, Vixy's by
+  the row's own text (B10(a)/B21 feel territory is adjacent). Harness additions
+  welcome (harness repo, trailer discipline).
+- **Boundaries:** free-mode measurement only; the old path is out of scope (it
+  has no free mode); a mover consistent with NEITHER convention is a finding to
+  record, not to resolve.
+- **Checks:** predictions committed before each measured run; fresh-launch +
+  config/ssystem md5 in==out; `/proc/<pid>/comm` concurrent-instance probe
+  before each launch (§0.5); display env per §0.5 if a display is needed.
+- **WIP:**
+
+### F35 — the two degenerate-input guards: §5.81 distance-0 `screenPos` + §5.79 empty-selection `getSelected` — verify-then-fix-if-decision-free (S+S)
+
+- **Mandate (re-read these before anything):** `INTENT.md` §5 rows 81 + 79;
+  `INTENT/11.141.md` (l); `INTENT/11.140.md` (h). One shape for both halves:
+  enumerate the consumers, establish the reference answer for the degenerate
+  input, fix ONLY if decision-free, else record what makes it a decision and
+  suspend that half.
+- **§5.81 half:** the limit is unambiguous in-row (the centre); the owed
+  question is whether any CONSUMER should instead be told "this body has no
+  screen position" — enumerate `screenPos` consumers FIRST; if none needs a
+  no-answer marker, guard to the limit value at `distance == 0`
+  (`ModularBody.hpp:486-506` region). Checks: the F33 `transition_to target
+  point` scene's dump carries a finite `"screen"` for the anchor body (was
+  `[-nan,-nan]`, §11.141(l)); `b24_equivalence` 120 bodies, 0 divergent fields
+  (the guard is inert off the degenerate input — D8 as-if); both ways: the
+  branch shown taken at distance 0 and not taken on a non-degenerate scene.
+- **§5.79 half:** `constellation_mgr.cpp:717-720` returns `*selected.begin()`
+  unguarded; reachable from `select constellation_star` (`core.cpp:1063`, which
+  chains `.getBrightestStarInConstellation()` immediately — read that caller's
+  tolerance of an empty `Object` too). The sibling managers' empty answers are
+  the in-row reference — read them first. REPRODUCE with F31's fixture pattern
+  (§11.139: a culture loaded from OUTSIDE the frozen field took constellations
+  0→3; the fixture is reusable by design): drive `select constellation_star`
+  with an empty selection — defect before (crash/ASan), defined answer after;
+  positive control: with a real selection, behaviour unchanged. Field
+  integrity: fixture stays outside `~/.spacecrafter` or byte-exact restore;
+  md5 in==out asserted.
+- **Boundaries:** no behavior change off the degenerate inputs; old render path
+  untouched; the two halves are independently deliverable — a suspension on one
+  does not hold the other.
+- **WIP:**
+
+### F36 — §5.77's owed enumeration: startup failures that report only on stderr (S) — class fix ONLY if uniform + purely additive
+
+- **Mandate (re-read these before anything):** `INTENT.md` §5 row 77 +
+  `INTENT/11.139.md` (h). The owed item verbatim: *"an enumeration of the other
+  startup paths that report only on stderr would size it."*
+- **Work:** enumerate `std::cerr`/`std::cout` failure-report sites in `src/`
+  reachable during startup (the §5.77 sky-culture reject is the known member);
+  classify each: error-report vs chatter vs already-also-logged; deliver the
+  sizing. IF and ONLY IF the error-report class admits ONE uniform, PURELY
+  ADDITIVE routing through `cLog` (visibility added, nothing removed, no
+  control flow touched), apply it at the class; otherwise record and stop.
+- **Out of scope:** the `Check sky_cultures subdirectory ok` line's lying
+  semantics (the check's own logic — §5.74/§5.77 territory, Vixy's); any site
+  whose fix would change control flow or remove output.
+- **Checks:** default fresh launch — the sky-culture reject line REACHES
+  `spacecrafter.log` (measured absent today, §11.139(h)); the F31 positive
+  control (the lines-970-972 class) still present; stderr's pre-existing lines
+  unmoved (both ways: the log gains, nothing else changes); md5 in==out.
+- **WIP:**
 
 ---
 
