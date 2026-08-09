@@ -348,7 +348,13 @@ F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (mint
   composed-body churn; reversible pair select⇄deselect driven twice); render
   parity untouched (old path is the baseline: relevant b-batteries green); md5
   pristine.
-- **WIP:** —
+- **WIP:** 2026-08-09 · checkpoint 1: enumeration done at source, instrument
+  built (`harness/f32_object_leak.py`, `f27_reply.Session` gains inert
+  `prepare`/`env_extra`/`exit_wait` hooks), PRE-FIX LEAK MEASURED on the ASan
+  binary at `bd3f7117` — **11 StarWrapper1 (440 B) + 8 ModularObject (192 B)
+  unreleased**, both exactly as predicted, 0 ASan errors, app exit 0
+  (`artifacts/f32/f32_result_asan_pre.json`). Next: apply the fix in
+  `src/tools/object.cpp`, rebuild native + ASan, re-run the same drive.
 
 ### F33 — B4(iv): the C3 scripted camera transitions act on the path that draws  [M-L; mandatory checkpoints]
 
