@@ -322,7 +322,10 @@ current queue lives in the latest session update note above.*
 - **Boundaries:** no behavior change off the degenerate inputs; old render path
   untouched; the two halves are independently deliverable — a suspension on one
   does not hold the other.
-- **WIP:**
+- **WIP:** 2026-08-09 ckpt-1 — consumer enumerations DONE at source for both
+  halves; `f35_degenerate.py` + `f35_compare.py` written with P1–P4 committed
+  BEFORE the first measuring run. Next: PRE run on `204d402e`, then the two
+  fixes.
 
 ### F36 — §5.77's owed enumeration: startup failures that report only on stderr (S) — class fix ONLY if uniform + purely additive
 
