@@ -1059,10 +1059,50 @@ public:
     inline const Orbit *getOrbit() const {
         return orbit.get();
     }
+    //! Re-declare this body's MOTION LAW, returning the one it had.
+    //!
+    //! The orbit is this type's single position authority (transformParentToBodyPos
+    //! evaluates it and nothing else writes eclipticPos), so "this place now
+    //! moves differently" has exactly one legal spelling and it is this one -
+    //! not a per-frame position write beside the orbit, which would be a second
+    //! authority (I2). Client: the scripted camera travels (B4(iv), §11.141),
+    //! where the place the camera stands on travels to a destination and the
+    //! travel IS a position-at-date function.
+    //!
+    //! Carries the destructor's I5 guard: an orbit wired as the SECONDARY of the
+    //! parent's BinaryOrbit is referenced there without ownership, so it must be
+    //! unwired before it stops existing - the caller receives it alive, and what
+    //! it does with it is its own business.
+    std::unique_ptr<Orbit> setOrbit(std::unique_ptr<Orbit> newOrbit);
+    //! This body's position in the ROOT frame at an ARBITRARY date, by summing
+    //! the parent-relative orbit of every hop up to (excluding) the root - the
+    //! exact shape of the old path's `Body::getPositionAtDate` (body.cpp:1291),
+    //! which is what the scripted `move_to body` aims at, so the two paths aim
+    //! at the same point by construction.
+    //!
+    //! LIMIT, shared verbatim with the old form and stated rather than papered
+    //! over: the sum is of raw orbit outputs, so a GROUNDED hop (whose position
+    //! frame is its parent's SURFACE frame, transformParentToBodyPos) is not
+    //! folded. Exact for the ORBITING chains every shipped travel target has.
+    Vec3d getPositionAtDate(double jd) const;
     //! Current parent-relative position (root-aligned VSOP87). Client: the
     //! ORBIT module's center-notch (old Body::get_ecliptic_pos()).
     inline const Vec3f &getEclipticPos() const {
         return eclipticPos;
+    }
+    //! This body's position in the ROOT frame from the CACHED per-frame state:
+    //! the sum of `eclipticPos` up the chain, evaluating NO orbit. The frame
+    //! walk brings a parent up to date before its children, so a consumer
+    //! running INSIDE a child's own position evaluation reads a fresh answer
+    //! here - which is why the travelling anchor's motion law uses this and not
+    //! getPositionAtDate: re-entering an ancestor's orbit off-cadence would
+    //! leave its Newton seed at the wrong date (§11.117, the useNow lesson).
+    //! Same grounded-hop limit as getPositionAtDate, and for the same reason.
+    inline Vec3d getCachedRootPosition() const {
+        Vec3d p{};
+        for (const ModularBody *b = this; b->parent; b = b->parent)
+            p += Vec3d(b->eclipticPos[0], b->eclipticPos[1], b->eclipticPos[2]);
+        return p;
     }
     //! Orbit visualization period in days (old re.sidereal_period, the
     //! orbit-line draw gate); 0 = still orbit (no orbit line).

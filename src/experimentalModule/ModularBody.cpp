@@ -1,6 +1,7 @@
 #include "ModularBody.hpp"
 #include <cstring>
 #include <iomanip>
+#include <limits>
 #include <ostream>
 #include "ModularBodyPtr.hpp"
 #include "ModularSystem.hpp"
@@ -212,6 +213,46 @@ void ModularBody::propagateRenderHidden(bool ancestorHidden)
     // doubly-parked node).
     for (auto &child : hiddenBodies)
         child->propagateRenderHidden(nowHidden);
+}
+
+// The motion law is re-declared, not written around (see the header). Same I5
+// guard as the destructor: the outgoing orbit may be the parent BinaryOrbit's
+// unowned secondary, and it must stop being referenced there before it stops
+// being this body's.
+std::unique_ptr<Orbit> ModularBody::setOrbit(std::unique_ptr<Orbit> newOrbit)
+{
+    if (parent && orbit) {
+        if (auto *binary = dynamic_cast<BinaryOrbit *>(parent->orbit.get()))
+            binary->clearSecondaryOrbit(orbit.get());
+    }
+    std::unique_ptr<Orbit> previous = std::move(orbit);
+    orbit = std::move(newOrbit);
+    // The cached position was produced by the law that just stopped applying,
+    // so it is stale by definition. Clearing the D8 barrier's idempotency stamp
+    // is what says so: useNow() re-evaluates instead of returning "already
+    // brought up to this frame's date" (§11.117 - without this a place given a
+    // new law inside a frame keeps the old law's position until the next one).
+    evaluatedJD = -std::numeric_limits<double>::infinity();
+    return previous;
+}
+
+// The old path's Body::getPositionAtDate (body.cpp:1291) on this tree: the sum
+// of the parent-relative orbit of every hop. Old stops at the first body with
+// no orbit (its Sun has none); here every node carries one, so the walk stops
+// at the ROOT instead - the same set of hops on the shipped data, and the same
+// answer, because the root's own "orbit" is what its position WOULD add and the
+// root is the frame we are answering in.
+Vec3d ModularBody::getPositionAtDate(double jd) const
+{
+    Vec3d pos{};
+    Vec3d tmp;
+    for (const ModularBody *b = this; b->parent; b = b->parent) {
+        if (!b->orbit)
+            continue;
+        b->orbit->positionAtTimevInVSOP87Coordinates(jd, tmp);
+        pos += tmp;
+    }
+    return pos;
 }
 
 ModularBody::~ModularBody()

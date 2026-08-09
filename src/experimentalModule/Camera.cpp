@@ -435,6 +435,91 @@ void Camera::warpToBody(ModularBody *dst)
         setBoundToSurface(false);
 }
 
+// ---- Where the observer IS, as a vector (B4(iv), §11.141) ------------------
+// viewMat() is the affine map the renderer consumes, and its input frame is the
+// reference's ACCUMULATED EQUATORIAL frame BY CONTRACT (see viewMat's own
+// declaration and dispatchUpdate's parameter) - the surface fold, when the
+// camera is bound, is a factor INSIDE that map, not a frame outside it. The eye
+// is the origin of the eye frame, so the eye's position p in that input frame
+// is the solution of Rot·p + t = 0, i.e. p = −Rotᵀ·t.
+//
+// Derived from the drawn matrix rather than from the pose members on purpose:
+// it is then right in freeMode and anchored, bound and unbound, and with or
+// without the view offset (a left-multiplied rotation cancels in −Rotᵀ·t), and
+// it cannot fall out of step with what is on screen (I2). MEASURED against the
+// old path's own observer position on the same frame (§11.141): the two agree
+// to 2.6e-08 AU, which is the float32 floor of a 1 AU subtraction, and the
+// three rejected candidates (undoing the fold, transposing the tilt, flipping
+// the sign) miss by 1.1e-05 / 3.2e-05 / 8.5e-05 AU - so the composition below
+// is discriminated, not assumed.
+Vec3f Camera::getReferenceRelativePosition() const
+{
+    const Mat4f m = viewMat();
+    const Vec3f t = m.getTranslation();
+    return Vec3f(-(m.r[0]*t[0] + m.r[1]*t[1] + m.r[2]*t[2]),
+                 -(m.r[4]*t[0] + m.r[5]*t[1] + m.r[6]*t[2]),
+                 -(m.r[8]*t[0] + m.r[9]*t[1] + m.r[10]*t[2]));
+}
+
+// `accumulatedBodyToBodyPos` maps ROOT-ALIGNED axes to the body's equatorial
+// axes, and its transpose maps back - the direction is the MEASURED one (the
+// candidate table above), and it is the pairing that reproduces the old path's
+// observer position. Positions are accumulated in DOUBLE: the terms are ~1 AU
+// and the answer is often ~1e-5 AU, so float32 would lose 6e-08 AU (9 km) to
+// cancellation on every transition.
+Vec3d Camera::getRootPosition() const
+{
+    const Vec3f p = reference->accumulatedBodyToBodyPos(reference->getLastJD())
+        .transpose().multiplyWithoutTranslation(getReferenceRelativePosition());
+    return reference->getCachedRootPosition() + Vec3d(p[0], p[1], p[2]);
+}
+
+Vec3f Camera::positionRelativeTo(const ModularBody *body) const
+{
+    if (body == static_cast<const ModularBody *>(reference))
+        return getReferenceRelativePosition();
+    const Vec3d rel = getRootPosition() - body->getCachedRootPosition();
+    return body->accumulatedBodyToBodyPos(body->getLastJD())
+        .multiplyWithoutTranslation(Vec3f(rel[0], rel[1], rel[2]));
+}
+
+void Camera::placeAt(const Vec3f &pos, bool holdView)
+{
+    // Hold the composed orientation across the placement when asked (A38/B13:
+    // a reference switch holds the whole orientation). Captured BEFORE the
+    // pose members move, recovered after — the deduce-identical-view primitive
+    // every other transition in this class uses.
+    const Mat4f R = holdView ? viewRotation().multiplyFast(placementRotation()) : Mat4f::identity();
+    // Algebraic inverse of the SAME composition getReferenceRelativePosition
+    // reads. viewMat is [...]·X(lat−π/2)·Z(−lon)·S (or [...]·T(position)·S),
+    // with S = computeSurfaceToBody() when bound, so its input-frame eye
+    // position is Sᵀ·(the pose part) and S·pos is the pose part back.
+    const Vec3f p = boundToSurface
+        ? reference->computeSurfaceToBody().multiplyWithoutTranslation(pos)
+        : pos;
+    if (freeMode) {
+        // viewMat's free branch is mat = R·T(position) ⇒ p = −position.
+        position = -p;
+    } else {
+        // viewMat's anchored branch is mat = R·T(0,0,−distance)·X(lat−π/2)·Z(−lon),
+        // so p = Z(lon)·X(π/2−lat)·(0,0,distance) = distance·(cosφ·sinλ,
+        // −cosφ·cosλ, sinφ). Inverted below; the −π/2 the pair (sinλ, −cosλ)
+        // carries is this class's own longitude origin, not a correction.
+        const float d = p.length();
+        distance = d;
+        if (d > 0.f) {
+            latitude = std::asin(p[2]/d);
+            longitude = std::atan2(p[0], -p[1]);
+        }
+        // d == 0: the eye is AT the reference's centre, where longitude and
+        // latitude parametrize nothing — they are left alone rather than
+        // replaced by atan2(0,0), so a point anchor keeps the place readout it
+        // arrived with (the old path leaves lon/lat alone there too).
+    }
+    if (holdView)
+        recoverParams(R);
+}
+
 void Camera::update(double jd, float deltaTime)
 {
     // Frame clock for per-frame animations (module faders, pointer breathing):
@@ -1238,6 +1323,7 @@ void Camera::restoreSession(const ModularSystemFormat::Section &in)
 // Dual-path trace harness (INTENT.md 11.14).
 void Camera::dumpTrace(std::ostream &out) const
 {
+    const Vec3d rootPos = reference ? getRootPosition() : Vec3d(0, 0, 0);
     out << std::setprecision(9) << "{\"reference\":\""
         << (reference ? reference->getEnglishName() : "")
         // Tracked body by name ("" = not tracking): the only camera-side body
@@ -1262,6 +1348,16 @@ void Camera::dumpTrace(std::ostream &out) const
         // reference-change / free-mode continuity observable (INTENT 11.61).
         << ",\"absFwd\":[" << lastAbsFwd[0] << ',' << lastAbsFwd[1] << ',' << lastAbsFwd[2] << ']'
         << ",\"position\":[" << position[0] << ',' << position[1] << ',' << position[2]
+        // Where the EYE is, in the ROOT (Universe) frame, in AU (B4(iv),
+        // §11.141). The old path's observer position is recoverable from
+        // `helioToEye` the same way (−Rᵀ·t), so this is the field that makes a
+        // scripted travel comparable between the two paths per step - a pose
+        // triple cannot be compared across two different references.
+        // 17 digits, locally: this one field is a ~1 AU quantity whose
+        // INTERESTING part is often 1e-5 AU, so the dump's own 9 digits would
+        // quantize a travel's per-step comparison to 150 m.
+        << "],\"rootPos\":[" << std::setprecision(17)
+        << rootPos[0] << ',' << rootPos[1] << ',' << rootPos[2] << std::setprecision(9)
         << "],\"refAoI\":" << (reference ? reference->getAreaOfInfluence() : 0)
         << ",\"refDist\":" << (reference ? reference->getDistanceToObserver() : 0)
         << ",\"refCached\":" << ((reference && reference->isCacheFresh()) ? "true" : "false")
