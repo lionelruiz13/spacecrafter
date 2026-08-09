@@ -430,7 +430,13 @@ F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (mint
   exit's state); `b4_anchors` 76/76 stays green; `b32`/`b24_equivalence`/`b39`
   green (reference-switch adjacency — §5.32/F29 class); fresh-launch
   precondition + concurrent-instance probe; md5 pristine.
-- **WIP:** —
+- **WIP:** 2026-08-09 (Opus 5 executor) — CP1 GREEN, code `2fc0ce64`: the five
+  seams are dual, travel = a re-declared motion law on the place's body, the
+  position readbacks are calibrated against old (`rootPos` vs `helioToEye`,
+  2.63e-08 AU = the float32 floor; three rival compositions rejected at
+  1.1e-05 / 3.2e-05 / 8.5e-05 AU) and `b4_anchors` is 76/76. Next: the
+  per-member A/B campaign (`harness/f33_transitions.py`), predictions committed
+  before the run.
 
 ---
 
