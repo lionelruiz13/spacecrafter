@@ -10,11 +10,21 @@ two scenes driven identically on a stepped clock (`timerate rate 0` + an explici
 scene in which one body sits at distance 0. This script diffs the two runs
 field by field.
 
-D8 (as-if): a guard on a degenerate input must be invisible off that input. The
-discriminating statement is therefore not "the NaN is gone" but "the NaN is gone
-AND every other field of every other body is bit-identical". Reported both ways:
-the count of fields compared, the count that differ, and the differing ones in
-full.
+THE ANSWER IT GAVE IS THAT IT IS THE WRONG INSTRUMENT, and that is why it stays
+in the tree with this note rather than being deleted. It reports **278**
+differing fields between the two runs' base scenes, and the control that proves
+the instrument rather than the fix is at fault is that the **UNTOUCHED old path**
+moves the same way: `old.ecl` on 22 bodies, `old.matLocalToParent` on 22,
+`old.mat` on 19, `old.dist` on 10. `evalCount` differed 2015 vs 1991 — the two
+launches ran a different number of frames before the date was set — and the
+iterative position solvers carry their Newton seed across evaluations (§11.117),
+so a body's cached state is a function of its evaluation history. A cross-launch
+dump diff therefore cannot decide inertness at field granularity.
+
+D8 (as-if) is instead carried by two WITHIN-launch instruments: `b24_equivalence`
+(old-vs-new on 120 bodies, same launch) and `f35_branch.py` (the guard branch
+counted 0 times over a non-degenerate scene). Read this script's output as a
+census of cross-launch jitter, never as a verdict on a change.
 """
 
 import json, sys
