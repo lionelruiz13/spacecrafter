@@ -120,6 +120,39 @@ aggregation), F32 = `src/tools/object.{cpp,hpp}`, F33 = camera/command-surface
 files — disjoint; F32's lifetime fix and F33's camera work share no state, and
 sequential dispatch removes the residual risk. §5.75/§5.76 NOT taken: policy/
 semantics rows, Vixy's by their own text.
+**Round outcome (session 11 close, 2026-08-09):** F31 → §11.139, F32 → §11.140,
+F33 → §11.141 — all three delivered AND supervisor-verified same session.
+**§5.74 ANSWERED, stays OPEN as Vixy's** (F31): NOT LOADED — the load never
+ran; all 2922 sky-culture files are 0 bytes and the reject is silent (§5.77);
+the match measured sound via a fixture outside the frozen field (0 → 1085
+`(S)` on the same launch). **§5.34 CLOSED** (F32): `Object::rep` is the ONLY
+declared `ObjectBase*` in `src/`, no holder depends on the leak; retain-new /
+release-old in both overloads; 11+8 leaked → 0+0 with the heap delta exactly
+the defect; UAF churn 0 ASan errors both paths; parity 0 divergent fields on
+120 bodies. **B4(iv) CLOSED for the four position members, RECORDED for the
+two roll ones** (F33): a travel is a re-declared motion law; the observer
+position was DISCRIMINATED to the float32 floor (12 candidates, winner
+2.63e-08 AU); one A38 defect found AND fixed en route (the equatorial fold
+rebake, 1.57e-02 → 7.04e-07 rad, null control run); the heading tail is
+D28's (inherited at clause), `align_with` measured to not align (§5.85).
+NEW rows: **§5.77–§5.79** (F31/F32 riders + the supervisor mint),
+**§5.80–§5.85** (F33). Executor quality: F31 closed the disjunction on BOTH
+sides with one launch (the fixture pattern is now reusable); F32's
+enumeration lives in the header where the next holder will read it; F33's
+12-candidate composition discrimination and the null-control on the A38 fix
+are the round's method exemplars. Supervisor corrections: §5.79 minted
+(reachability, not local testability, is the mint criterion). Remaining
+dispatchable, next round: **§5.80's owed datum** (S-M — which parametrization
+the free-flight movers were built against; B10/B21 measured behaviour, not
+frame; the FIX is Vixy's after it), **§5.81 verify-then-fix-if-decision-free**
+(S — the distance-0 `screenPos` guard; the limit is unambiguous, the consumer
+question may not be), **B4-row residual re-check before minting anything**
+(`moveRelativeXYZ` has no command spelling — verify nothing reaches it),
+then the decision-gated set unchanged (B7-hunt-5 after A40, B12 content
+after b12-design §7 + A41/A42, §5.64/§5.65/§5.69/§5.70/§5.72/§5.75/§5.76
+fixes after Vixy). DECISIONS_PENDING open set at close: **D15, D21 (late
+Aug), D37** + A40–A43 awaiting; **D28 now carries a second shipped-command
+member**; B31 closure rides D21/D28/C4 (unchanged).
 
 ---
 
@@ -489,6 +522,60 @@ F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (mint
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
+- **Session-11 decision data (2026-08-09, F31/§11.139 + F32/§11.140 + F33/§11.141):**
+  - **§5.74 (search finds no stars/constellations) — the answer is the FIELD:**
+    the load never ran; every one of the **2922 files under
+    `~/.spacecrafter/sky_cultures` is 0 bytes** (`western-spacecrafter/info.ini`
+    included), so the configured culture is rejected ABOVE the loaders — and the
+    rejection reaches only stderr while `spacecrafter.log` says `Check
+    sky_cultures subdirectory ok` (§5.77). The match itself measured SOUND
+    (fixture load on the same launch: 0 → 1085 `(S)` + 3 `(C)`). **Your
+    question:** does the delivered `spacecrafter-data` carry sky-culture
+    content, or ship it empty? The field-content class now has THREE members
+    answered by that one question: `sky_cultures` (2922×0 B), `stellar_systems`
+    (13×0 B, §11.109), and the sparse HIP star index (3 of 14 swept ids
+    resolve, §11.140(h)).
+  - **D28's decision surface grew a concrete member (F33):** old's
+    `transition_to body` ends at heading 0 (measured: ramp from 49.139° over
+    5 s, start = minus the body's SCREEN axis angle); the new path holds the
+    whole orientation (A38). Which ships at a reference switch is exactly
+    D28's existing question — nothing new asked, it got a shipped-command
+    instance.
+  - **§5.85:** `align_with body` measured to NOT align (second call moves
+    heading another 25.2°; start-dependent by 29.6°), and its author's inline
+    note says why. What the command is FOR only its author or a show that
+    wants it can say; 0 shipped scripts use it.
+  - **§5.82:** `transition_to point name <X>` DROPS its documented name
+    (hard-coded `temp_point`; 19 shipped lines pass names that never had an
+    effect). Honouring it changes what shipped lines DO = product decision.
+  - **§5.80 (the round's biggest find):** entering free flight TELEPORTS the
+    observer ~125° around its reference at constant distance (11 300 km on
+    Earth, 99 450 km at Mars, 6354 px on screen vs a 0-px A/A control);
+    `selDist` is blind to it by construction. The owed datum (which
+    parametrization the free-flight movers were BUILT against) is decision-free
+    and next round's dispatch candidate; the FIX that follows is a free-flight
+    semantics change = yours.
+  - **§5.78 (F31):** `loadSciNames` has no caller (sci-name star search is
+    structurally dead) and `updateI18n` drops 1140 loaded names (several names
+    per HIP, last wins — one-name-per-star intended?). Rows carry what's owed.
+- **Session-11 veto points (all implemented-and-live, each cheap to reverse;
+  silence = endorsed):** (1) F32 replaced `operator=`'s self-assignment guard
+  with retain-first ORDER (also covers two Objects sharing one rep; net zero
+  for literal self-assignment); the holder enumeration is now `object.hpp`'s
+  header doc. (2) F33's travel = a re-declared MOTION LAW (`TravelOrbit` on
+  the anchor body) — one position authority, pure function of the date; old's
+  logistic curve transcribed QUIRKS INCLUDED (the 9.11e-04 start pop, the
+  1.5e-08 never-arrives) because old is the baseline. (3) F33's
+  `transition_to body` carries NO heading tail on the new path until D28
+  answers — the two paths' images deliberately differ at that member. (4)
+  F33's `placeAt` writes `foldLat` BEFORE `recoverParams` (A38 restoration
+  under the shipped equatorial mount, 1.57e-02 → 7.04e-07 rad; the null
+  control was run — order reversed is bit-identical broken). (5) The new
+  path's unknown-name refusal carries a diagnostic old lacks (behaviour
+  identical, §2(f) filled on the port side). (6) **§5.79 supervisor-minted**
+  from F32's in-entry record — a crash reachable from a shipped command
+  (`select constellation_star` on an empty selection) belongs in the registry;
+  local untestability is not a mint criterion.
 - **Session-10 decision data (2026-08-09, F30/§11.138 + F28/§11.136 — every
   waiting decision below now has the datum its row said it owed; nothing new is
   ASKED, the existing questions just got their facts):**
