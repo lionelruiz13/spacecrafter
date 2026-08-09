@@ -283,13 +283,8 @@ current queue lives in the latest session update note above.*
 - **Checks:** predictions committed before each measured run; fresh-launch +
   config/ssystem md5 in==out; `/proc/<pid>/comm` concurrent-instance probe
   before each launch (§0.5); display env per §0.5 if a display is needed.
-- **WIP:** 2026-08-09 ckpt-1: derivation at source DONE + predictions COMMITTED
-  before any run (harness `076cee2`: `f34_convention.py` + `f34_probe.cpp`; the
-  probe recomputes both closed forms with the project's own `Mat4f`/`spheToRect`
-  — anchored eye `== Z(θ)·pB`, free eye `== −Z(θ)·pA`, the map between them a
-  180° rotation about the equatorial axis at azimuth θ+45°, residual 5.1e-12 AU).
-  Next: the live discrimination run (one fresh launch, legs C1–C6 + A/A control
-  + screen witness), then §11.142 + the §5.80 row extension.
+- **WIP:** — DELIVERED 2026-08-09 (§11.142; §5.80 dated EXTENSION + NEW §5.86;
+  harness `076cee2`, `460c344`, `6c9d642` + this; code UNCHANGED at `204d402e`).
 
 ### F35 — the two degenerate-input guards: §5.81 distance-0 `screenPos` + §5.79 empty-selection `getSelected` — verify-then-fix-if-decision-free (S+S)
 
