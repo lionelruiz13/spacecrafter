@@ -413,6 +413,17 @@ stands superseded by the session-10 update note above.*
   −1.0 vs the control's +1.5). Also recorded not fixed: §11's stub list has two
   disjoint homes (128–138 sit inside §13.C); `timeout -s KILL` bounds nothing
   in this session type.
+  **ACCEPTED (Fable, 2026-08-09):** §11.138 read in full; code tree verified
+  untouched at `bd3f7117`; §5.76 + all six row extensions + stub verified at
+  the ledger. Judgment calls endorsed: the trailer-formatting deviation stands
+  (rewriting cited hashes for a formatting nicety is the wrong trade — future
+  commits keep the trailer block adjacent); the one-launch §5.64 measurement is
+  sound (leg B's independence proven by B0's dump, not assumed); §5.65's
+  scripts-only scope is the row's own question, the TCP-route caveat rightly
+  recorded. The stub-placement call (§11.138 placed with its ten misplaced
+  siblings, consistency over lone correctness) is endorsed AND the relocation
+  is taken by the supervisor this session — it is a pure line move (references
+  resolve by entry number, not by position), recorded at §11.138(h).
 
 ---
 
