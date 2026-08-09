@@ -1,0 +1,73 @@
+{
+ "runs": [
+  {
+   "tag": "pre",
+   "binary": "/home/claude/spacecrafter/claude/harness/sc_f32_nat_pre",
+   "rc": 0,
+   "params_blocks": 18,
+   "malformed": 1,
+   "twins": {
+    "51PegSystem.ini.disabled": "f3cb96bebb23813b2a14415979bf4f62",
+    "AntaresSystem.ini.disabled": "7b0de924b77f160a10563b1aa46fe82a",
+    "ArcturusSystem.ini.disabled": "6762affab52d576d9be8ef72427ea2fd",
+    "CapellaSystem.ini.disabled": "e6a40623737187de86d07a1d7189f7f2",
+    "DarkStarSystem.ini.disabled": "a56de49170d59cfe15ab207be0002f33",
+    "HelixDwarfSystem.ini.disabled": "523233f7fd44f911194e0bac1a4337fc",
+    "KeidSystem.ini.disabled": "b0b102ced64012ec4c51183f0bd44170",
+    "Kepler16System.ini.disabled": "0a9af75bab6049df95ff7f794c5ba691",
+    "M1PulsarSystem.ini.disabled": "523233f7fd44f911194e0bac1a4337fc",
+    "M27DwarfSystem.ini.disabled": "523233f7fd44f911194e0bac1a4337fc",
+    "M57DwarfSystem.ini.disabled": "523233f7fd44f911194e0bac1a4337fc",
+    "NGC2392DwarfSystem.ini.disabled": "523233f7fd44f911194e0bac1a4337fc",
+    "ProximaSystem.ini.disabled": "7890db70db6eef68a0fbf9c7506cd263",
+    "SiriusSystem.ini.disabled": "b3eaf41ef4cb794d96325d5be1c74294",
+    "SolarSystem.ini.disabled": "978c3a852f457cc8342b70e6cbf72b3e",
+    "TolimanSystem.ini.disabled": "d932ae4494abed137650ba5326d0ca4e",
+    "Trappist1System.ini.disabled": "31aa2f762154000bd9e5acfc7da4fd59",
+    "VegaSystem.ini.disabled": "b1714e69f7f6640eb5105b4409d44a58"
+   },
+   "nodes_checked": 17,
+   "nodes_wrong": 0
+  },
+  {
+   "tag": "post",
+   "binary": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+   "rc": 0,
+   "params_blocks": 18,
+   "malformed": 1,
+   "twins": {
+    "51PegSystem.ini.disabled": "f3cb96bebb23813b2a14415979bf4f62",
+    "AntaresSystem.ini.disabled": "7b0de924b77f160a10563b1aa46fe82a",
+    "ArcturusSystem.ini.disabled": "6762affab52d576d9be8ef72427ea2fd",
+    "CapellaSystem.ini.disabled": "e6a40623737187de86d07a1d7189f7f2",
+    "DarkStarSystem.ini.disabled": "a56de49170d59cfe15ab207be0002f33",
+    "HelixDwarfSystem.ini.disabled": "523233f7fd44f911194e0bac1a4337fc",
+    "KeidSystem.ini.disabled": "b0b102ced64012ec4c51183f0bd44170",
+    "Kepler16System.ini.disabled": "0a9af75bab6049df95ff7f794c5ba691",
+    "M1PulsarSystem.ini.disabled": "523233f7fd44f911194e0bac1a4337fc",
+    "M27DwarfSystem.ini.disabled": "523233f7fd44f911194e0bac1a4337fc",
+    "M57DwarfSystem.ini.disabled": "523233f7fd44f911194e0bac1a4337fc",
+    "NGC2392DwarfSystem.ini.disabled": "523233f7fd44f911194e0bac1a4337fc",
+    "ProximaSystem.ini.disabled": "7890db70db6eef68a0fbf9c7506cd263",
+    "SiriusSystem.ini.disabled": "b3eaf41ef4cb794d96325d5be1c74294",
+    "SolarSystem.ini.disabled": "978c3a852f457cc8342b70e6cbf72b3e",
+    "TolimanSystem.ini.disabled": "d932ae4494abed137650ba5326d0ca4e",
+    "Trappist1System.ini.disabled": "31aa2f762154000bd9e5acfc7da4fd59",
+    "VegaSystem.ini.disabled": "b1714e69f7f6640eb5105b4409d44a58"
+   },
+   "nodes_checked": 17,
+   "nodes_wrong": 0
+  }
+ ],
+ "compares": [
+  {
+   "a": "pre",
+   "b": "post",
+   "only_a": [],
+   "only_b": [],
+   "common": 120,
+   "diffs": [],
+   "twins_differing": []
+  }
+ ]
+}

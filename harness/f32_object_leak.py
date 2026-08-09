@@ -275,6 +275,246 @@ def mode_leak(args, outdir):
     return r
 
 
+# ------------------------------------------------------------- the churn hunt
+def search_names(c, prefix, tag, maxobject=40):
+    """`search name <prefix> maxobject <n>` -> `Name(P);Name(N);...`
+    (core.cpp:207-216). The names the churn selects come from the app's own
+    catalogue through this channel, never from a list written here."""
+    c.read(0.25)
+    c.send(f"search name {prefix} maxobject {maxobject}", 0)
+    t0 = time.time()
+    while time.time() - t0 < 6.0:
+        raw = c.read(0.25)
+        for m in f27.messages(raw):
+            if ";" in m or m.strip() == "NOF":
+                return [e[:-3] for e in m.strip().rstrip(";").split(";")
+                        if e.endswith(tag)]
+    return []
+
+
+def mode_churn(args, outdir):
+    """The use-after-free hunt. Post-fix an assignment CAN destroy the rep it
+    drops, so every path that reassigns a selection while something still looks
+    at one is driven, mixing counted reps (star / composed) with uncounted ones
+    (old body / nebula), and every reversible pair is entered TWICE - the second
+    entry from the state the first exit produced. The observable is ASan's own:
+    zero heap-use-after-free / double-free / invalid-free over the whole drive,
+    with the same run on the pre-fix binary as the comparison."""
+    sess = f27.Session(outdir, args.tag, args.bin, prepare=make_prepare(),
+                       env_extra=args.env_extra, port_wait=args.port_wait)
+    c = sess.client("driver")
+    hip = [h["hp"] for h in json.loads((outdir / "f32_hip.json").read_text())]
+    r = {"tag": args.tag, "bin": str(args.bin), "phases": []}
+
+    def step(cmd, pause=0.6, read=True):
+        c.send(cmd, pause)
+        return first_line(obj_info(c)) if read else None
+
+    try:
+        c.send("timerate rate 0", 1)
+        c.send("date jday 2461233.5", 1)
+        c.send("deselect", 0.5)
+        planets = search_names(c, "m", "(P)")
+        nebulae = search_names(c, "m", "(N)")
+        r["catalogue"] = {"planets": planets[:6], "nebulae": nebulae[:6]}
+        ok(f"catalogue answered {len(planets)} (P) and {len(nebulae)} (N) names for 'm'")
+        body = planets[0] if planets else "Moon"
+        neb = nebulae[0] if nebulae else None
+
+        # --- phase 1: mixed-type churn, every type next to every other -----
+        cycle = ([f"select hp {h} pointer off" for h in hip]
+                 + [f"select planet {n} pointer off" for n in COMPOSED]
+                 + [f"select planet {body} pointer off"]
+                 + ([f'select nebula "{neb}" pointer off'] if neb else [])
+                 + ["deselect"])
+        p1 = []
+        for rep in range(args.rounds):
+            for cmd in cycle:
+                p1.append({"cmd": cmd, "info": step(cmd)})
+        r["phases"].append({"phase": "mixed churn", "rounds": args.rounds, "steps": p1})
+        ok(f"phase 1: {len(p1)} selection commands over {args.rounds} rounds")
+
+        # --- phase 2: reassign WHILE tracking (setFlagTracking reads the
+        #     selection the assignment just replaced), pair entered twice ----
+        p2 = []
+        for entry in (1, 2):
+            p2.append({"entry": entry, "sel": step(f"select hp {hip[0]} pointer off")})
+            c.send("flag track_object on", 1.5)
+            p2.append({"entry": entry, "tracking_sel": step(f"select planet {COMPOSED[0]} pointer off")})
+            p2.append({"entry": entry, "tracking_sel2": step(f"select planet {body} pointer off")})
+            p2.append({"entry": entry, "off": step("deselect", 0.6)})
+            c.send("flag track_object off", 1.0)
+        r["phases"].append({"phase": "reassign while tracking", "steps": p2})
+        ok("phase 2: reassignment under tracking, pair entered twice")
+
+        # --- phase 3: the executor's own clear (`core->selected_object =
+        #     Object()` at executor.cpp:75/102) with a LIVE counted selection -
+        p3 = []
+        for entry in (1, 2):
+            p3.append({"entry": entry, "before": step(f"select hp {hip[0]} pointer off")})
+            c.send("mode jump in_galaxy", 3.0)
+            p3.append({"entry": entry, "in_galaxy": first_line(obj_info(c))})
+            p3.append({"entry": entry, "star_in_galaxy": step(f"select hp {hip[1 % len(hip)]} pointer off")})
+            c.send("mode jump in_solarsystem", 3.0)
+            p3.append({"entry": entry, "back": first_line(obj_info(c))})
+            p3.append({"entry": entry, "composed": step(f"select planet {COMPOSED[1]} pointer off")})
+            c.send("deselect", 0.6)
+        r["phases"].append({"phase": "executor mode switch clears the selection",
+                            "steps": p3})
+        ok("phase 3: mode jump with a live counted selection, entered twice")
+
+        # --- phase 4: destroy the bodies under a live composed selection ----
+        p4 = []
+        for entry in (1, 2):
+            p4.append({"entry": entry, "sel": step(f"select planet {COMPOSED[2]} pointer off")})
+            c.send("body action reload", 5.0)
+            p4.append({"entry": entry, "after_reload": first_line(obj_info(c))})
+            p4.append({"entry": entry, "reselect": step(f"select planet {COMPOSED[2]} pointer off")})
+            c.send("deselect", 0.6)
+        r["phases"].append({"phase": "system reload under a live composed selection",
+                            "steps": p4})
+        ok("phase 4: reload under a live composed selection, entered twice")
+    finally:
+        rc = sess.stop(c, exit_wait=args.exit_wait)
+        r["exit_rc"] = rc
+        note(f"app exit rc={rc}")
+
+    r["sanitizer"] = parse_sanitizer(sess.applog)
+    s = r["sanitizer"]
+    if not s["lsan_ran"]:
+        fail("the sanitizer produced no report - the instrument did not run")
+    else:
+        ok(f"sanitizer live: {s['total_allocs']} leaked allocations reported")
+    bad = [e for e in s["errors"] if e != "detected"]
+    if bad:
+        fail(f"AddressSanitizer memory errors during the churn: {bad}")
+    else:
+        ok("0 AddressSanitizer memory errors over the whole churn")
+    note(f"star wrappers unreleased {s['star_objects']}, "
+         f"modular bridges unreleased {s['modular_objects']}")
+    (outdir / f"f32_churn_{args.tag}.json").write_text(json.dumps(r, indent=1))
+    print(f"\n-> {outdir}/f32_churn_{args.tag}.json", flush=True)
+    return r
+
+
+# ------------------------------------------------------------- render parity
+SHOTS = ("empty", "star", "composed", "oldbody", "after_churn", "deselected")
+
+
+def mode_render(args, outdir):
+    """The terminal observable. The fix is in shared `tools/` code, so the
+    composed SCREEN has to be shown unmoved - not only the dump layer. One
+    fresh launch per binary, the same frozen scene and the same commands, a
+    screenshot at each selection state including the ones whose pointer the old
+    path draws itself."""
+    hip = [h["hp"] for h in json.loads((outdir / "f32_hip.json").read_text())]
+    sess = f27.Session(outdir, args.tag, args.bin, prepare=make_prepare(),
+                       env_extra=args.env_extra, port_wait=args.port_wait)
+    c = sess.client("driver")
+    shotdir = outdir / f"shots_{args.tag}"
+    shotdir.mkdir(exist_ok=True)
+    r = {"tag": args.tag, "bin": str(args.bin), "readouts": {}}
+
+    def shot(name):
+        p = shotdir / f"{name}.png"
+        p.unlink(missing_ok=True)
+        c.send(f"body action screenshot filename {p}", 2.5)
+        for _ in range(30):
+            if p.exists() and p.stat().st_size > 0:
+                return
+            time.sleep(0.3)
+        fail(f"{args.tag}: screenshot {name} never written")
+
+    try:
+        c.send("timerate rate 0", 1)
+        c.send("flag landscape off", 0.8)
+        c.send("flag atmosphere off", 0.8)
+        # star twinkling is a per-frame random modulation: with it on, two runs
+        # of the SAME binary differ by ~7000 px on this scene (measured A/A),
+        # which would swallow any A/B statement about the fix.
+        c.send("flag star_twinkle off", 0.8)
+        c.send("set home_planet Moon", 4)
+        c.send("moveto lat 0 lon 39.7 alt 8000000 duration 0", 3)
+        c.send("date jday 2461234", 1.5)
+        c.send("zoom fov 30 duration 0", 2)
+        c.send("timerate rate 0", 1)
+        c.send("deselect", 0.8)
+        c.read(8.0)                     # let the tone adaptation settle
+        shot("empty")
+        # THE VIEW IS DELIBERATELY NOT PINNED THROUGH THE TRACKER. Aiming with
+        # `select Sun` + `flag track_object on` + `auto_move_duration 0` was
+        # tried and MEASURED WORSE - A/A px>0 67593 vs 6275 - because the
+        # tracking convergence is itself launch-dependent (the suspended
+        # §11.94(d) / B30 question). So this scene's A/A floor is measured and
+        # reported alongside the A/B rather than engineered away: see
+        # `--floor`, and INTENT §11.140 for the two attributed components.
+        c.send(f"select hp {hip[0]}", 1.0)
+        r["readouts"]["star"] = first_line(obj_info(c))
+        shot("star")
+        c.send(f"select planet {COMPOSED[0]}", 1.0)
+        r["readouts"]["composed"] = first_line(obj_info(c))
+        shot("composed")
+        c.send("select planet Moon", 1.0)
+        r["readouts"]["oldbody"] = first_line(obj_info(c))
+        shot("oldbody")
+        # the churn that produced the leak, then the SAME state as `composed`
+        for rep in range(3):
+            for h in hip:
+                c.send(f"select hp {h}", 0.5)
+            for n in COMPOSED:
+                c.send(f"select planet {n}", 0.5)
+            c.send("deselect", 0.5)
+        c.send(f"select planet {COMPOSED[0]}", 1.0)
+        r["readouts"]["after_churn"] = first_line(obj_info(c))
+        shot("after_churn")
+        c.send("deselect", 1.0)
+        r["readouts"]["deselected"] = first_line(obj_info(c))
+        shot("deselected")
+    finally:
+        rc = sess.stop(c, exit_wait=args.exit_wait)
+        r["exit_rc"] = rc
+        note(f"app exit rc={rc}")
+    (outdir / f"f32_render_{args.tag}.json").write_text(json.dumps(r, indent=1))
+    return r
+
+
+def compare_render(outdir, tag_a, tag_b, floor=None):
+    import numpy as np
+    from PIL import Image
+    a_dir, b_dir = outdir / f"shots_{tag_a}", outdir / f"shots_{tag_b}"
+    rows = []
+    for name in SHOTS:
+        pa, pb = a_dir / f"{name}.png", b_dir / f"{name}.png"
+        if not (pa.exists() and pb.exists()):
+            fail(f"render compare: {name} missing on one side")
+            continue
+        A = np.asarray(Image.open(pa).convert("RGB")).astype(np.int32)
+        B = np.asarray(Image.open(pb).convert("RGB")).astype(np.int32)
+        if A.shape != B.shape:
+            fail(f"render compare: {name} shape {A.shape} vs {B.shape}")
+            continue
+        d = np.abs(A - B).max(axis=2)
+        lit = int((A.max(axis=2) > 16).sum())
+        row = {"shot": name, "lit_px": lit, "px_gt0": int((d > 0).sum()),
+               "px_gt8": int((d > 8).sum()), "max": int(d.max())}
+        rows.append(row)
+        good = row["px_gt0"] == 0 if floor is None else row["px_gt0"] <= floor
+        (ok if good else fail)(
+            f"render {name}: px>0 {row['px_gt0']} px>8 {row['px_gt8']} "
+            f"max {row['max']} on {lit} lit px"
+            + ("" if floor is None else f"  (A/A floor {floor})"))
+    ra = json.loads((outdir / f"f32_render_{tag_a}.json").read_text())
+    rb = json.loads((outdir / f"f32_render_{tag_b}.json").read_text())
+    if ra["readouts"] == rb["readouts"]:
+        ok(f"selection readouts identical: {ra['readouts']}")
+    else:
+        fail(f"selection readouts differ: {ra['readouts']} vs {rb['readouts']}")
+    (outdir / f"f32_render_compare_{tag_a}_{tag_b}.json").write_text(
+        json.dumps({"rows": rows, "readouts_a": ra["readouts"],
+                    "readouts_b": rb["readouts"]}, indent=1))
+    return rows
+
+
 # ------------------------------------------------------- sanitizer accounting
 LEAK_HDR = re.compile(r"^(Direct|Indirect) leak of (\d+) byte\(s\) in (\d+) object\(s\)")
 ERR_HDR = re.compile(r"ERROR: AddressSanitizer: ([a-z\-]+)")
@@ -355,11 +595,16 @@ def judge(r):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("outdir")
-    ap.add_argument("--mode", choices=("discover", "leak"), required=True)
+    ap.add_argument("--mode", choices=("discover", "leak", "churn", "render",
+                                       "compare"), required=True)
     ap.add_argument("--tag", default=None)
     ap.add_argument("--bin", default=DEFAULT_BIN)
     ap.add_argument("--expect", choices=("pre", "post"), default="pre")
     ap.add_argument("--stars", type=int, default=6)
+    ap.add_argument("--a", default=None)
+    ap.add_argument("--b", default=None)
+    ap.add_argument("--floor", type=int, default=None)
+    ap.add_argument("--rounds", type=int, default=3)
     ap.add_argument("--port-wait", dest="port_wait", type=int, default=90)
     ap.add_argument("--exit-wait", dest="exit_wait", type=int, default=40)
     ap.add_argument("--sweep", default="1,101,1001,5001,10001,20001,30001,"
@@ -373,6 +618,12 @@ def main():
                    if k in os.environ}
     if a.mode == "discover":
         mode_discover(a, a.outdir)
+    elif a.mode == "churn":
+        mode_churn(a, a.outdir)
+    elif a.mode == "render":
+        mode_render(a, a.outdir)
+    elif a.mode == "compare":
+        compare_render(a.outdir, a.a, a.b, a.floor)
     else:
         mode_leak(a, a.outdir)
     print(f"\n{'F32 LEAK LEG GREEN' if not FAILS else f'{len(FAILS)} FAILURES'}",

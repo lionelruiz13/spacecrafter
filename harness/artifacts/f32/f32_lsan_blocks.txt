@@ -1,0 +1,83 @@
+===== asan_pre =====
+Direct leak of 440 byte(s) in 11 object(s) allocated from:
+    #0 0x75fed392319b in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:86
+    #1 0x55a43a27c1f4 in BigStarCatalog::Star1::createStelObject(BigStarCatalog::SpecialZoneArray<BigStarCatalog::Star1> const*, BigStarCatalog::SpecialZoneData<BigStarCatalog::Star1> const*) const /home/claude/spacecrafter/src/starModule/hip_star_wrapper.cpp:248
+    #2 0x55a43a24dd2e in HipStarMgr::searchHP(int) const /home/claude/spacecrafter/src/starModule/hip_star_mgr.cpp:1061
+    #3 0x55a43996371e in Core::selectObject(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/coreModule/core.cpp:1028
+    #4 0x55a439fd2f61 in AppCommandInterface::commandSelect() /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:3138
+    #5 0x55a439ffb976 in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:285
+    #6 0x55a439ffc3dd in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:187
+    #7 0x55a43968853c in App::updateFromSharedData() /home/claude/spacecrafter/src/appModule/app.cpp:771
+    #8 0x55a439688ef1 in App::update(int) /home/claude/spacecrafter/src/appModule/app.cpp:790
+    #9 0x55a439689936 in App::startMainLoop() /home/claude/spacecrafter/src/appModule/app.cpp:1019
+    #10 0x55a4394c5951 in main /home/claude/spacecrafter/src/main.cpp:348
+    #11 0x75fecf02a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #12 0x75fecf02a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #13 0x55a4394cb1a4 in _start (/home/claude/spacecrafter/claude/harness/sc_f32_asan_pre+0x1aa1a4) (BuildId: 7c44f1dce426107ec4ff261b879e43ef7c51525c)
+Direct leak of 192 byte(s) in 8 object(s) allocated from:
+    #0 0x75fed392319b in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:86
+    #1 0x55a439883d01 in SSystemFactory::searchObjectByEnglishName(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) const /home/claude/spacecrafter/src/bodyModule/ssystem_factory.cpp:785
+    #2 0x55a439963d25 in Core::selectObject(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/coreModule/core.cpp:1045
+    #3 0x55a439fd2f61 in AppCommandInterface::commandSelect() /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:3138
+    #4 0x55a439ffb976 in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:285
+    #5 0x55a439ffc3dd in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:187
+    #6 0x55a43968853c in App::updateFromSharedData() /home/claude/spacecrafter/src/appModule/app.cpp:771
+    #7 0x55a439688ef1 in App::update(int) /home/claude/spacecrafter/src/appModule/app.cpp:790
+    #8 0x55a439689936 in App::startMainLoop() /home/claude/spacecrafter/src/appModule/app.cpp:1019
+    #9 0x55a4394c5951 in main /home/claude/spacecrafter/src/main.cpp:348
+    #10 0x75fecf02a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #11 0x75fecf02a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #12 0x55a4394cb1a4 in _start (/home/claude/spacecrafter/claude/harness/sc_f32_asan_pre+0x1aa1a4) (BuildId: 7c44f1dce426107ec4ff261b879e43ef7c51525c)
+  SUMMARY: AddressSanitizer: 20306 byte(s) leaked in 214 allocation(s).
+  AddressSanitizer ERROR lines: 0 -> []
+
+===== asan_post =====
+  (no leak block attributed to a counted rep)
+  SUMMARY: AddressSanitizer: 19674 byte(s) leaked in 195 allocation(s).
+  AddressSanitizer ERROR lines: 0 -> []
+
+===== churn_pre =====
+Direct leak of 600 byte(s) in 15 object(s) allocated from:
+    #0 0x7288bf92319b in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:86
+    #1 0x5cc9701b81f4 in BigStarCatalog::Star1::createStelObject(BigStarCatalog::SpecialZoneArray<BigStarCatalog::Star1> const*, BigStarCatalog::SpecialZoneData<BigStarCatalog::Star1> const*) const /home/claude/spacecrafter/src/starModule/hip_star_wrapper.cpp:248
+    #2 0x5cc970189d2e in HipStarMgr::searchHP(int) const /home/claude/spacecrafter/src/starModule/hip_star_mgr.cpp:1061
+    #3 0x5cc96f89f71e in Core::selectObject(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/coreModule/core.cpp:1028
+    #4 0x5cc96ff0ef61 in AppCommandInterface::commandSelect() /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:3138
+    #5 0x5cc96ff37976 in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:285
+    #6 0x5cc96ff383dd in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:187
+    #7 0x5cc96f5c453c in App::updateFromSharedData() /home/claude/spacecrafter/src/appModule/app.cpp:771
+    #8 0x5cc96f5c4ef1 in App::update(int) /home/claude/spacecrafter/src/appModule/app.cpp:790
+    #9 0x5cc96f5c5936 in App::startMainLoop() /home/claude/spacecrafter/src/appModule/app.cpp:1019
+    #10 0x5cc96f401951 in main /home/claude/spacecrafter/src/main.cpp:348
+    #11 0x7288bb02a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #12 0x7288bb02a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #13 0x5cc96f4071a4 in _start (/home/claude/spacecrafter/claude/harness/sc_f32_asan_pre+0x1aa1a4) (BuildId: 7c44f1dce426107ec4ff261b879e43ef7c51525c)
+Direct leak of 480 byte(s) in 20 object(s) allocated from:
+    #0 0x7288bf92319b in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:86
+    #1 0x5cc96f7bfd01 in SSystemFactory::searchObjectByEnglishName(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) const /home/claude/spacecrafter/src/bodyModule/ssystem_factory.cpp:785
+    #2 0x5cc96f89fd25 in Core::selectObject(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/coreModule/core.cpp:1045
+    #3 0x5cc96ff0ef61 in AppCommandInterface::commandSelect() /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:3138
+    #4 0x5cc96ff37976 in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:285
+    #5 0x5cc96ff383dd in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:187
+    #6 0x5cc96f5c453c in App::updateFromSharedData() /home/claude/spacecrafter/src/appModule/app.cpp:771
+    #7 0x5cc96f5c4ef1 in App::update(int) /home/claude/spacecrafter/src/appModule/app.cpp:790
+    #8 0x5cc96f5c5936 in App::startMainLoop() /home/claude/spacecrafter/src/appModule/app.cpp:1019
+    #9 0x5cc96f401951 in main /home/claude/spacecrafter/src/main.cpp:348
+    #10 0x7288bb02a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #11 0x7288bb02a627 in __libc_start_main_impl ../csu/libc-start.c:360
+    #12 0x5cc96f4071a4 in _start (/home/claude/spacecrafter/claude/harness/sc_f32_asan_pre+0x1aa1a4) (BuildId: 7c44f1dce426107ec4ff261b879e43ef7c51525c)
+  SUMMARY: AddressSanitizer: 20754 byte(s) leaked in 230 allocation(s).
+  AddressSanitizer ERROR lines: 0 -> []
+
+===== churn_post =====
+  (no leak block attributed to a counted rep)
+  SUMMARY: AddressSanitizer: 19674 byte(s) leaked in 195 allocation(s).
+  AddressSanitizer ERROR lines: 0 -> []
+
+===== POSITIVE CONTROL for the error channel (F28's overflow leg re-run
+this epoch on harness/sc_f28_asan_pre, the pre-F28-fix ASan binary) =====
+ERROR: AddressSanitizer: heap-buffer-overflow on address 0x74914a325f80 at pc 0x770159cb66fd bp 0x73012de31b50 sp 0x73012de312f8
+ERROR: AddressSanitizer: heap-buffer-overflow on address 0x74914a325f80 at pc 0x770159c82a88 bp 0x73012de319d0 sp 0x73012de31188
+ERROR: AddressSanitizer: heap-buffer-overflow on address 0x74914a325f80 at pc 0x770159c96955 bp 0x73012de31980 sp 0x73012de31138
+  -> the same parser that reports 0 errors on the four F32 runs above
+     reports 3 here, so the zero is a measurement.

@@ -1,0 +1,60 @@
+{
+ "rows": [
+  {
+   "shot": "empty",
+   "lit_px": 1009,
+   "px_gt0": 4155,
+   "px_gt8": 21,
+   "max": 254
+  },
+  {
+   "shot": "star",
+   "lit_px": 1009,
+   "px_gt0": 4155,
+   "px_gt8": 21,
+   "max": 254
+  },
+  {
+   "shot": "composed",
+   "lit_px": 1009,
+   "px_gt0": 4155,
+   "px_gt8": 21,
+   "max": 254
+  },
+  {
+   "shot": "oldbody",
+   "lit_px": 1009,
+   "px_gt0": 4155,
+   "px_gt8": 21,
+   "max": 254
+  },
+  {
+   "shot": "after_churn",
+   "lit_px": 1009,
+   "px_gt0": 4155,
+   "px_gt8": 21,
+   "max": 254
+  },
+  {
+   "shot": "deselected",
+   "lit_px": 1009,
+   "px_gt0": 4155,
+   "px_gt8": 21,
+   "max": 254
+  }
+ ],
+ "readouts_a": {
+  "star": "HP 3",
+  "composed": "BigA",
+  "oldbody": "Lune",
+  "after_churn": "BigA",
+  "deselected": "EOL"
+ },
+ "readouts_b": {
+  "star": "HP 3",
+  "composed": "BigA",
+  "oldbody": "Lune",
+  "after_churn": "BigA",
+  "deselected": "EOL"
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "tag": "pin_post",
+ "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "readouts": {
+  "star": "HP 3",
+  "composed": "BigA",
+  "oldbody": "Lune",
+  "after_churn": "BigA",
+  "deselected": "EOL"
+ },
+ "exit_rc": 0
+}

@@ -348,13 +348,32 @@ F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (mint
   composed-body churn; reversible pair select⇄deselect driven twice); render
   parity untouched (old path is the baseline: relevant b-batteries green); md5
   pristine.
-- **WIP:** 2026-08-09 · checkpoint 1: enumeration done at source, instrument
-  built (`harness/f32_object_leak.py`, `f27_reply.Session` gains inert
-  `prepare`/`env_extra`/`exit_wait` hooks), PRE-FIX LEAK MEASURED on the ASan
-  binary at `bd3f7117` — **11 StarWrapper1 (440 B) + 8 ModularObject (192 B)
-  unreleased**, both exactly as predicted, 0 ASan errors, app exit 0
-  (`artifacts/f32/f32_result_asan_pre.json`). Next: apply the fix in
-  `src/tools/object.cpp`, rebuild native + ASan, re-run the same drive.
+- **DELIVERED 2026-08-09** (Opus 5 executor, §11.140; code `71be9145`, harness
+  `40abba1` + the delivery commit). **§5.34 CLOSED, and the enumeration it
+  demanded is the answer: `Object::rep` is the ONLY declared `ObjectBase*` in
+  `src/`** — every other long-lived holder is a counted `Object` (four members)
+  or an `ObjectBaseP`, the only escape hatch is `as<T>()` and its **six** call
+  sites are all intra-expression, the selection sets keep NAMES not reps, and the
+  two consumers that span a selection change read through counted handles ⇒ **no
+  holder depends on the leak, the stop boundary was not hit.** Fix = retain-new /
+  release-old in both overloads (an ORDER that also covers two Objects sharing one
+  rep, replacing the narrower `if (this != &o)`; the null branch retains too). The
+  enumeration is now the class's header doc — F29's structural precedent.
+  **MEASURED both ways on one drive, per allocation site:** pre **11
+  `StarWrapper1` (440 B) + 8 `ModularObject` (192 B)** unreleased → post **0 + 0**,
+  predictions written before the launch, all 17 readouts identical, heap delta
+  exactly the defect (214→195 allocations, 632 B). HIP ladder discovered FROM the
+  app (3 of 14 ids resolve here). **UAF hunt** — mixed-type churn, tracking,
+  `mode jump`, `body action reload` under a live composed selection, every
+  reversible pair twice: **0 ASan errors both binaries** (pre 15+20 → post 0+0),
+  and the zero is mapped: the same parser reports **3 heap-buffer-overflow** on a
+  control launch this epoch. **Parity**: `b40_parity` **0 divergent fields on 120
+  bodies** pre-vs-post binary, `b32` 120 bodies max |dAxisRot| 0,
+  `b24_equivalence` green, screen A/B **inside its own A/A envelope** (A/A 4155
+  px>0 / max 254 vs A/B 4552 / max 236) with the floor attributed. Frozen md5
+  in == out, app exit 0 on all 13 launches. **Nothing suspended.** Recorded not
+  fixed: the sparse HIP index (§5.74 family) and `ConstellationMgr::getSelected()`
+  dereferencing `begin()` of a possibly empty vector.
 
 ### F33 — B4(iv): the C3 scripted camera transitions act on the path that draws  [M-L; mandatory checkpoints]
 

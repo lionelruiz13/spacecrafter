@@ -1517,3 +1517,49 @@ vs constellations **0** / star index **0**, sweep **P 84 · C 0 · N 243 · S 0*
 loaders entered **0 times**, culture gate rejected once; phase 2 catalogues
 **3** / **3183**, same 36 commands **P 84 · C 3 · N 241 · S 1085**, live-index
 prefix `1` going **0 → 104 (S)**. 20/20 checks PASS, app exit 0, md5 in == out.
+
+## F32 — what an `Object` assignment lets go of (`f32_object_leak.py`) — INTENT §5.34 / §11.140, 2026-08-09
+
+    cd claude/harness && export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*) \
+        && export DISPLAY=:2
+    ./f32_object_leak.py <absOutdir> --mode discover --bin <binary>          # HIP ladder
+    ASAN_OPTIONS=detect_leaks=1:halt_on_error=0:malloc_context_size=25 \
+      ./f32_object_leak.py <absOutdir> --mode leak  --tag asan_pre  --bin <asan bin> \
+        --expect pre  --stars 9 --port-wait 300 --exit-wait 300
+    ASAN_OPTIONS=...  ./f32_object_leak.py <absOutdir> --mode churn --tag churn_post \
+        --bin <asan bin> --rounds 3 --port-wait 300 --exit-wait 300
+    ./f32_object_leak.py <absOutdir> --mode render  --tag nat_pre --bin <native bin>
+    ./f32_object_leak.py <absOutdir> --mode compare --a nat_pre --b nat_post [--floor N]
+
+Four modes, one launch each, all through `f27_reply.Session` (so the /proc-comm
+concurrent-instance assert, the temp-HOME farm and the frozen-md5 pair come with them).
+
+- **`discover`** asks the app which HIP ids its own catalogue answers for and writes
+  `f32_hip.json`, which the other modes read: the ladder is DATA, never recalled
+  (§11.51(d)). On this install **3 of 14** swept ids resolve — the star index is sparse,
+  reproduced on two sweeps, same family as §5.74.
+- **`leak`** drives the selection surface on both paths and reads LeakSanitizer's report
+  at `shutdown action now`, split **per allocation site** (`Star1::createStelObject` for
+  the old path, `SSystemFactory::searchObjectByEnglishName` for the new one), so the count
+  is per-defect and not a heap total. The predicted counts are written to
+  `f32_predict_<tag>.json` BEFORE the launch. Measured: pre 11 + 8, post 0 + 0, with the
+  rest of the heap unmoved.
+- **`churn`** is the use-after-free hunt: mixed-type churn (the planet/nebula names come
+  out of the app's own `search` answer), reassignment while tracking, `mode jump` both
+  ways, `body action reload` under a live composed selection — every reversible pair
+  entered twice.
+- **`render`/`compare`** are the screen A/B. **Read the A/A first**: this scene's
+  launch-to-launch floor is ~4000 px>0 / ~20 px>8, from a ~2.9 % tone-adaptation
+  luminance scale plus one bright object displaced 8 px by the unpinned startup view.
+  Pinning the view with `select Sun` + `flag track_object on` was tried and is 16× WORSE
+  (A/A 67593 px>0) because tracking convergence is itself launch-dependent (§11.94(d)).
+
+The composed bodies are **b24_select's fixture, imported** (I2) and written into the farm
+by `Session`'s new `prepare` hook; `Session` also gained `env_extra` (ASan options) and
+`stop(exit_wait=)` (an ASan leak check takes real time after main returns). All three
+default to inert.
+
+**A zero from a sanitizer needs a positive map.** `parse_sanitizer` was run this epoch
+over a fresh F28 overflow launch of `harness/sc_f28_asan_pre` and reported
+**3 `heap-buffer-overflow`**, against 0 on all four F32 runs
+(`artifacts/f32/f32_lsan_blocks.txt`, tail).

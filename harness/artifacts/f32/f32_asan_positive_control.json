@@ -1,0 +1,122 @@
+{
+ "mode": "overflow",
+ "tag": "f32ctl_pre",
+ "binary": "/home/claude/spacecrafter/claude/harness/sc_f28_asan_pre",
+ "md5": "1622b583ce70b6adc09febf77e8147d8",
+ "expect": "pre",
+ "steps": [
+  {
+   "cmd": "search name m maxobject 320",
+   "raw_bytes": 856,
+   "messages": 1,
+   "clamped": false,
+   "refused": [],
+   "wire_message_bytes": 856,
+   "payload_bytes": 854,
+   "ends_with_newline": true,
+   "head": "M1(N);M10(N);M100(N);M101(N);M102(N);M103(N);M104(N);M105(N);M106(N);M107(N);M108(N);M109(N);M11(N);M110(N);M12(N);M13(N",
+   "tail": "Mel20(N);Mel25(N);Mercure(P);Mimas(P);Miranda(P);M\u00c3\u00a9tis(P);\n",
+   "step": 0,
+   "added_name_len": null
+  },
+  {
+   "cmd": "get status planets_position",
+   "raw_bytes": 856,
+   "messages": 1,
+   "clamped": false,
+   "refused": [],
+   "wire_message_bytes": 856,
+   "payload_bytes": 854,
+   "ends_with_newline": true,
+   "head": "Arrokoth:4096.000000:2013.000000:-143.000000;C\u00c3\u00a9r\u00c3\u00a8s:104.000000:252.000000:-11.000000;Terre:34.000000:-96.000000:0.00000",
+   "tail": "-51.000000:2.000000;Vesta:212.000000:131.000000:-30.000000;\n",
+   "step": 1,
+   "added_name_len": null
+  },
+  {
+   "cmd": "get status planets_position",
+   "raw_bytes": 918,
+   "messages": 1,
+   "clamped": false,
+   "refused": [],
+   "wire_message_bytes": 918,
+   "payload_bytes": 916,
+   "ends_with_newline": true,
+   "head": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:90000.000000:0.000000:0.000000;Arrokoth:4096.000000:2013.000000:-143.000000;C\u00c3\u00a9r\u00c3\u00a8s:104.0",
+   "tail": "-51.000000:2.000000;Vesta:212.000000:131.000000:-30.000000;\n",
+   "step": 2,
+   "added_name_len": 30
+  },
+  {
+   "cmd": "get status planets_position",
+   "raw_bytes": 1024,
+   "messages": 1,
+   "clamped": false,
+   "refused": [],
+   "wire_message_bytes": 1024,
+   "payload_bytes": 1022,
+   "ends_with_newline": true,
+   "head": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:90000.000000:0.000000:0.000000;Arrokoth:4096.000000:2013.000000:-143.000000;C\u00c3\u00a9r\u00c3\u00a8s:104.0",
+   "tail": "-51.000000:2.000000;Vesta:212.000000:131.000000:-30.000000;\n",
+   "step": 3,
+   "added_name_len": 74
+  },
+  {
+   "cmd": "get status planets_position",
+   "raw_bytes": 1025,
+   "messages": 1,
+   "clamped": false,
+   "refused": [],
+   "wire_message_bytes": 1025,
+   "payload_bytes": 1023,
+   "ends_with_newline": true,
+   "head": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:90000.000000:0.000000:0.000000;Arrokoth:4096.000000:2013.000000:-143.000000;C\u00c3\u00a9r\u00c3\u00a8s:104.0",
+   "tail": "-51.000000:2.000000;Vesta:212.000000:131.000000:-30.000000;\n",
+   "step": 4,
+   "added_name_len": 75
+  },
+  {
+   "cmd": "search name n maxobject 320",
+   "raw_bytes": 1026,
+   "messages": 1,
+   "clamped": true,
+   "refused": [],
+   "wire_message_bytes": 1026,
+   "payload_bytes": 1024,
+   "ends_with_newline": true,
+   "head": "NGC1023(N);NGC104(N);NGC1097(N);NGC1232(N);NGC1291(N);NGC1300(N);NGC1313(N);NGC1316(N);NGC1360(N);NGC1365(N);NGC1399(N);",
+   "tail": "C3114(N);NGC3115(N);NGC3132(N);NGC3184(N);NGC3190(N);NGC319\n",
+   "step": 5,
+   "added_name_len": null
+  }
+ ],
+ "entry_overhead": 32,
+ "after": {
+  "cmd": "get status position",
+  "raw_bytes": 50,
+  "messages": 1,
+  "clamped": false,
+  "refused": [],
+  "wire_message_bytes": 50,
+  "payload_bytes": 48,
+  "ends_with_newline": true,
+  "head": "43.30;5.37;     75.10;2461233.500000;  0.000017;\n",
+  "tail": "43.30;5.37;     75.10;2461233.500000;  0.000017;\n"
+ },
+ "refused": [],
+ "alive_before_stop": true,
+ "exit": 0,
+ "asan_reports": [
+  "==60412==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x74914a325f80 at pc 0x770159cb66fd bp 0x73012de31b50 sp 0x73012de312f8",
+  "==60412==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x74914a325f80 at pc 0x770159c82a88 bp 0x73012de319d0 sp 0x73012de31188",
+  "==60412==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x74914a325f80 at pc 0x770159c96955 bp 0x73012de31980 sp 0x73012de31138"
+ ],
+ "asan_count": 3,
+ "applog_bytes": 214885,
+ "fails": [],
+ "notes": [
+  "f32ctl_pre: one entry costs name + 32 B (854 -> 916 for a 30-char name)",
+  "f32ctl_pre: pre-fix run \u2014 an ASan build is expected to name the overflow at step 3; a native build is expected to deliver the bytes anyway (the 2 B land in malloc's slack)"
+ ],
+ "wall": "2026-08-09 10:57:42 CEST"
+}

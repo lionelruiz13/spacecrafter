@@ -1,0 +1,12 @@
+{
+ "tag": "nat_pre",
+ "bin": "/home/claude/spacecrafter/claude/harness/sc_f32_nat_pre",
+ "readouts": {
+  "star": "HP 3",
+  "composed": "BigA",
+  "oldbody": "Lune",
+  "after_churn": "BigA",
+  "deselected": "EOL"
+ },
+ "exit_rc": 0
+}

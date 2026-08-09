@@ -1,0 +1,39 @@
+{
+ "hip_ladder": [
+  3,
+  40001,
+  40010,
+  3,
+  40001,
+  40010,
+  3,
+  40001,
+  40010
+ ],
+ "composed": [
+  "BigA",
+  "SmallB",
+  "FarC",
+  "OnDisc"
+ ],
+ "star_wrappers_minted": 11,
+ "modular_bridges_minted": 8,
+ "pre": {
+  "star_wrappers_unreleased": [
+   10,
+   11
+  ],
+  "modular_bridges_unreleased": [
+   8
+  ]
+ },
+ "post": {
+  "star_wrappers_unreleased": [
+   0
+  ],
+  "modular_bridges_unreleased": [
+   0
+  ]
+ },
+ "caveat": "a leaked ModularObject stays REGISTERED in the static ModularBodyPtr::ref vector; if LSan's check runs before that global is destroyed the bridges read as reachable and the modular count is 0 on BOTH binaries - in which case the modular leg is not this instrument's to answer (gdb leg)."
+}

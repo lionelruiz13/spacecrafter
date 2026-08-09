@@ -1,0 +1,177 @@
+{
+ "tag": "asan_pre",
+ "bin": "/home/claude/spacecrafter/claude/harness/sc_f32_asan_pre",
+ "expect": "pre",
+ "pred": {
+  "hip_ladder": [
+   3,
+   40001,
+   40010,
+   3,
+   40001,
+   40010,
+   3,
+   40001,
+   40010
+  ],
+  "composed": [
+   "BigA",
+   "SmallB",
+   "FarC",
+   "OnDisc"
+  ],
+  "star_wrappers_minted": 11,
+  "modular_bridges_minted": 8,
+  "pre": {
+   "star_wrappers_unreleased": [
+    10,
+    11
+   ],
+   "modular_bridges_unreleased": [
+    8
+   ]
+  },
+  "post": {
+   "star_wrappers_unreleased": [
+    0
+   ],
+   "modular_bridges_unreleased": [
+    0
+   ]
+  },
+  "caveat": "a leaked ModularObject stays REGISTERED in the static ModularBodyPtr::ref vector; if LSan's check runs before that global is destroyed the bridges read as reachable and the modular count is 0 on BOTH binaries - in which case the modular leg is not this instrument's to answer (gdb leg)."
+ },
+ "steps": [
+  {
+   "cmd": "select hp 3",
+   "info": "HP 3"
+  },
+  {
+   "cmd": "select hp 40001",
+   "info": "HP 40001"
+  },
+  {
+   "cmd": "select hp 40010",
+   "info": "HP 40010"
+  },
+  {
+   "cmd": "select hp 3",
+   "info": "HP 3"
+  },
+  {
+   "cmd": "select hp 40001",
+   "info": "HP 40001"
+  },
+  {
+   "cmd": "select hp 40010",
+   "info": "HP 40010"
+  },
+  {
+   "cmd": "select hp 3",
+   "info": "HP 3"
+  },
+  {
+   "cmd": "select hp 40001",
+   "info": "HP 40001"
+  },
+  {
+   "cmd": "select hp 40010",
+   "info": "HP 40010"
+  },
+  {
+   "cmd": "star pair entry 1",
+   "off": "EOL",
+   "on": "HP 3"
+  },
+  {
+   "cmd": "star pair entry 2",
+   "off": "EOL",
+   "on": "HP 3"
+  },
+  {
+   "cmd": "select planet BigA",
+   "info": "BigA"
+  },
+  {
+   "cmd": "select planet SmallB",
+   "info": "SmallB"
+  },
+  {
+   "cmd": "select planet FarC",
+   "info": "FarC"
+  },
+  {
+   "cmd": "select planet OnDisc",
+   "info": "OnDisc"
+  },
+  {
+   "cmd": "composed pair entry 1",
+   "off": "EOL",
+   "on": "BigA"
+  },
+  {
+   "cmd": "composed pair entry 2",
+   "off": "EOL",
+   "on": "BigA"
+  }
+ ],
+ "empty_readout": "EOL",
+ "composed_probe": "BigA",
+ "after_reload": "EOL",
+ "after_reload_select": "BigA",
+ "exit_rc": 0,
+ "sanitizer": {
+  "lsan_ran": true,
+  "errors": [],
+  "total_blocks": 67,
+  "total_bytes": 20306,
+  "total_allocs": 214,
+  "star_blocks": [
+   {
+    "kind": "Direct",
+    "bytes": 440,
+    "objects": 11,
+    "frames": [
+     "#0 0x75fed392319b in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:86",
+     "#1 0x55a43a27c1f4 in BigStarCatalog::Star1::createStelObject(BigStarCatalog::SpecialZoneArray<BigStarCatalog::Star1> const*, BigStarCatalog::SpecialZoneData<BigStarCatalog::Star1> const*) const /home/claude/spacecrafter/src/starModule/hip_star_wrapper.cpp:248",
+     "#2 0x55a43a24dd2e in HipStarMgr::searchHP(int) const /home/claude/spacecrafter/src/starModule/hip_star_mgr.cpp:1061",
+     "#3 0x55a43996371e in Core::selectObject(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/coreModule/core.cpp:1028",
+     "#4 0x55a439fd2f61 in AppCommandInterface::commandSelect() /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:3138",
+     "#5 0x55a439ffb976 in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:285",
+     "#6 0x55a439ffc3dd in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:187",
+     "#7 0x55a43968853c in App::updateFromSharedData() /home/claude/spacecrafter/src/appModule/app.cpp:771",
+     "#8 0x55a439688ef1 in App::update(int) /home/claude/spacecrafter/src/appModule/app.cpp:790",
+     "#9 0x55a439689936 in App::startMainLoop() /home/claude/spacecrafter/src/appModule/app.cpp:1019",
+     "#10 0x55a4394c5951 in main /home/claude/spacecrafter/src/main.cpp:348",
+     "#11 0x75fecf02a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58",
+     "#12 0x75fecf02a627 in __libc_start_main_impl ../csu/libc-start.c:360",
+     "#13 0x55a4394cb1a4 in _start (/home/claude/spacecrafter/claude/harness/sc_f32_asan_pre+0x1aa1a4) (BuildId: 7c44f1dce426107ec4ff261b879e43ef7c51525c)"
+    ]
+   }
+  ],
+  "star_objects": 11,
+  "modular_blocks": [
+   {
+    "kind": "Direct",
+    "bytes": 192,
+    "objects": 8,
+    "frames": [
+     "#0 0x75fed392319b in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:86",
+     "#1 0x55a439883d01 in SSystemFactory::searchObjectByEnglishName(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) const /home/claude/spacecrafter/src/bodyModule/ssystem_factory.cpp:785",
+     "#2 0x55a439963d25 in Core::selectObject(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/coreModule/core.cpp:1045",
+     "#3 0x55a439fd2f61 in AppCommandInterface::commandSelect() /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:3138",
+     "#4 0x55a439ffb976 in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:285",
+     "#5 0x55a439ffc3dd in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:187",
+     "#6 0x55a43968853c in App::updateFromSharedData() /home/claude/spacecrafter/src/appModule/app.cpp:771",
+     "#7 0x55a439688ef1 in App::update(int) /home/claude/spacecrafter/src/appModule/app.cpp:790",
+     "#8 0x55a439689936 in App::startMainLoop() /home/claude/spacecrafter/src/appModule/app.cpp:1019",
+     "#9 0x55a4394c5951 in main /home/claude/spacecrafter/src/main.cpp:348",
+     "#10 0x75fecf02a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58",
+     "#11 0x75fecf02a627 in __libc_start_main_impl ../csu/libc-start.c:360",
+     "#12 0x55a4394cb1a4 in _start (/home/claude/spacecrafter/claude/harness/sc_f32_asan_pre+0x1aa1a4) (BuildId: 7c44f1dce426107ec4ff261b879e43ef7c51525c)"
+    ]
+   }
+  ],
+  "modular_objects": 8
+ }
+}
