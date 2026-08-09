@@ -1508,7 +1508,9 @@ never fires. Both candidates are read on ONE launch, each at its own surface.
   ones, which is the clamp and not a change of catalogue.
 
 `f27_reply.Session` gained `launch_prefix` (argv prefix, used here for gdb) and
-`port_wait`; default behaviour is unchanged, so F27/F28 are unaffected.
+`port_wait`. Default behaviour is unchanged, and that was measured rather than
+asserted: `f27_reply.py --legs A --expect post` on the prefix-free path is
+**0 FAIL** after the edit (`artifacts/f31/f27_regression/`).
 
 Measured verdict at delivery (§11.139): phase 1 planets **90** / nebulae **407**
 vs constellations **0** / star index **0**, sweep **P 84 · C 0 · N 243 · S 0**,
