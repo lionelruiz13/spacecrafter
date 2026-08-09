@@ -224,8 +224,11 @@ DELIVERED and archived** — F0 §11.103 · F1 §11.104/§11.105 · F2 §11.106 
 F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · F15 §11.121 ·
 F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129 ·
 F22 §11.130 · F23 §11.131 · F24 §11.132 · F25 §11.133 · F26 §11.134 · F27 §11.135 ·
-F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (minted
-2026-08-09, session 11), below.*
+F28 §11.136 · F29 §11.137 · F30 §11.138 · F31 §11.139 · F32 §11.140 ·
+F33 §11.141. No section is live: the next dispatchable candidates (§5.80's
+owed datum, S-M; §5.81 verify-then-fix-if-decision-free, S; B4-row residual
+re-check before any mint) are to be minted at their dispatch per §0b.2 — the
+current queue lives in the latest session update note above.*
 
 ---
 
