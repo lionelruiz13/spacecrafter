@@ -283,7 +283,11 @@ def main():
     ap.add_argument("outdir")
     ap.add_argument("--bin", default=str(HERE.parents[1] / "build-claude/src/spacecrafter"))
     a = ap.parse_args()
-    out = Path(a.outdir)
+    # RESOLVED: the farm becomes the app's `HOME`, and `main.cpp:194` chdirs to
+    # `$HOME/.spacecrafter/` — from a cwd that is already the farm.  A relative
+    # outdir therefore kills the app before it opens its port, with
+    # "cannot set current path" and nothing else (measured).
+    out = Path(a.outdir).resolve()
     out.mkdir(parents=True, exist_ok=True)
 
     sess = Session(out, "f34", a.bin)
@@ -367,7 +371,12 @@ def main():
         "C3 the distance to the reference is preserved (why selDist is blind)",
         f"{np.linalg.norm(before['E']):.9e} -> {np.linalg.norm(Eaf):.9e} AU")
     px_on = px(sh_aa2, sh_on)
-    chk(px_on > 1000, "C3 screen: the composed frame changes across the toggle",
+    # The gate is the A/A control, not a round number: at 1000 km with the
+    # atmosphere and the landscape off and the view pointing AWAY from the
+    # reference, almost every lit pixel is a star, and a star is at infinity —
+    # a 13 700 km translation moves it by nothing.  The strong screen witness
+    # is the dedicated leg at the end, with the body in frame.
+    chk(px_on > px_aa, "C3 screen: the composed frame changes across the toggle",
         f"{px_on} px>8 against the A/A control's {px_aa}")
     DATA["C3"] = {"before": before, "after": after, "resA": resA, "resB": resB,
                   "swing_meas": sw, "swing_H_A": sw_A, "swing_azimuth_only": sw_az,
@@ -383,15 +392,29 @@ def main():
     app.cmd(f"moveto lat {PHI1} lon {LAM1} alt {ALT1} duration 0", 1.5)
     m_free = app.dump("moveto_free")
     th1 = m_free["theta"]
-    d1 = m_free["dist"]
+    # THE MOVER'S OWN DISTANCE, not the `distance` member: moveTo's free branch
+    # scales by `reference->getAltitudeReference() + pos[2]` (Camera.cpp:711) and
+    # writes ONLY `position` — `distance` keeps a stale value in free flight by
+    # design (B10 §11.71, lateral-velocity parity).  Predicting with the member
+    # instead costs exactly the stale-vs-commanded gap, which is measured below
+    # as the attributed control rather than hidden in a tolerance.
+    altRef = DATA["ground"]["altitudeReference_AU"]
+    d1 = altRef + ALT1 / (1000 * AU_KM)
+    d1_stale = m_free["dist"]
     lam1, phi1 = math.radians(LAM1), math.radians(PHI1)
     predA_E1 = -zrot(th1) @ pA(lam1, phi1, d1)
     predB_E1 = zrot(th1) @ pB(lam1, phi1, d1)
     E1 = np.array(m_free["E"])
     rA1, rB1 = float(np.linalg.norm(E1 - predA_E1)), float(np.linalg.norm(E1 - predB_E1))
+    rA1_stale = float(np.linalg.norm(E1 + zrot(th1) @ pA(lam1, phi1, d1_stale)))
     chk(rA1 < POSE_FLOOR and rA1 < rB1 / 100,
         "C4 moveTo free branch: lands at -Z(theta).pA of the COMMANDED triple (A)",
         f"res_A = {rA1:.3e} AU vs res_B = {rB1:.3e} AU")
+    chk(abs(rA1_stale - abs(d1 - d1_stale)) < POSE_FLOOR,
+        "C4 control: predicting with the STALE `distance` member misses by exactly "
+        "the stale-vs-commanded gap",
+        f"res = {rA1_stale:.3e} AU, gap = {abs(d1-d1_stale):.3e} AU "
+        f"({d1_stale*AU_KM:.3f} -> {d1*AU_KM:.3f} km)")
     r2, r2r = score_state(m_free, "free_after_moveto")
     chk(r2 < POSE_FLOOR and r2 < r2r / 100,
         "C2 free composer: the drawn eye IS -Z(theta).position",
@@ -413,49 +436,81 @@ def main():
         f"{sep:.1f} km apart, {math.degrees(ang(E1a, E1)):.3f} deg")
 
     # ---------------- leg 4: descend / moveEyeRel ---------------------------
+    # AIM FIRST.  `descend`'s near-field geometry is the VIEW RAY (B21/§11.72),
+    # and after the transitions above the view points away from the reference —
+    # measured on the first run: the backward ray sat 133.4 deg off radial-out
+    # and the ray missed the ground entirely, so BOTH branches ran in their
+    # fallback/ray-independent form.  Tracking aims the view at the body, then
+    # is switched OFF so the view is static across the descend (a moving view
+    # would change the very matrix the prediction reads).  The staticity is
+    # CHECKED, not assumed.
     app.cmd("camera action free_mode state on", 1.5)
-    d0 = app.dump("desc_before")
+    app.cmd("select planet Earth pointer off", 1.0)
+    app.cmd("flag track_object on", 6.0)
+    app.cmd("flag track_object off", 1.5)
+    aim1 = app.dump("aim1")
+    aim2 = app.dump("aim2")
+    chk(np.array_equal(np.array(aim1["mat"])[:12], np.array(aim2["mat"])[:12]),
+        "C5 precondition: with tracking off the view rotation is static",
+        "mat rotation identical across two dumps")
+    d0 = aim1
     R0, t0 = mat_of(d0["mat"])
     # dE = -Rot^T . v  (derivation in the header).  Rot maps the reference's
     # accumulated-equatorial frame to the eye frame, so Rot^T . z_eye is the
     # eye's BACKWARD ray already expressed in the frame E lives in — no further
     # fold, and in particular no second Z(theta).
     up = np.array(R0[2, :])                               # == Rot^T . (0,0,1)
+    g = DATA["ground"]["altitudeReference_AU"]
     COEF_UP = 1.25
+    # ASCEND has no fallback: it always backs off along the ray (Camera.cpp:1087-1099),
+    #   step = max((coef-1)*(|C|-g), ANTISTUCK_ESCAPE_FLOOR*radius)   -> dE = +step*up
+    step_pred = max((COEF_UP - 1) * (float(np.linalg.norm(d0["E"])) - g), 1e-6 * g)
+    predU = step_pred * up
     app.cmd(f"camera action descend coef {COEF_UP}", 1.2)
     d1 = app.dump("desc_up")
     dE = np.array(d1["E"]) - np.array(d0["E"])
-    # H_composer: dE == +step * up ; H_flipped (position taken as +eye): -that
-    upB = up
-    cos_c = float(np.dot(dE, upB) / (np.linalg.norm(dE) * np.linalg.norm(upB)))
-    step = float(np.dot(dE, upB) / np.linalg.norm(upB))
-    chk(cos_c > 0.9999,
-        "C5 descend(ascend): dE is +step along the eye's BACKWARD ray (composer)",
-        f"cos = {cos_c:+.8f} (H_flipped would be {-cos_c:+.8f}), step = {step*AU_KM:.3f} km")
-    grew = np.linalg.norm(d1["E"]) - np.linalg.norm(d0["E"])
-    chk(grew > 0, "C5 descend coef>1 ASCENDS (the distance to the reference grows)",
-        f"{np.linalg.norm(d0['E'])*AU_KM:.3f} -> {np.linalg.norm(d1['E'])*AU_KM:.3f} km")
-    g_implied = float(np.linalg.norm(d0["E"]) - step / (COEF_UP - 1))
-    chk(abs(g_implied - DATA["ground"]["altitudeReference_AU"]) / max(g_implied, 1e-12) < 1e-3,
-        "C5 the step's own law: step == (coef-1)*(|E| - ground_radius)",
-        f"implied ground {g_implied*AU_KM:.3f} km vs altitudeReference "
-        f"{DATA['ground']['altitudeReference_AU']*AU_KM:.3f} km")
+    rU = float(np.linalg.norm(dE - predU))
+    rUflip = float(np.linalg.norm(dE + predU))
+    chk(rU < POSE_FLOOR and rU < rUflip / 100,
+        "C5 descend(ascend): dE == +step*(Rot^T.z), the composer's own free frame",
+        f"res = {rU:.3e} AU vs H_flipped {rUflip:.3e} AU ; "
+        f"|dE| = {np.linalg.norm(dE)*AU_KM:.3f} km predicted {step_pred*AU_KM:.3f} km")
+    dr_up = (np.linalg.norm(d1["E"]) - np.linalg.norm(d0["E"])) * AU_KM
+    cos_rad = float(np.dot(up, d0["E"]) / np.linalg.norm(d0["E"]))
     r3, r3r = score_state(d1, "free_after_ascend")
     chk(r3 < POSE_FLOOR and r3 < r3r / 100,
         "C2 after a flight the free composer still holds (E == -Z(theta).position)",
         f"res(-) = {r3:.3e} AU vs res(+) = {r3r:.3e} AU")
+    # DESCEND picks its branch from the ray/sphere intersection (Camera.cpp:1101-1115)
     COEF_DOWN = 0.8
+    R1, C1v = mat_of(d1["mat"])
+    fwd1 = np.array(-R1[2, :])                            # Rot^T.(0,0,-1)
+    Cz, disc = C1v[2], C1v[2] ** 2 - (float(C1v @ C1v) - g * g)
+    s = (-Cz - math.sqrt(disc)) if disc >= 0 else -1.0
+    if s > 0:
+        branch, predD = "ray", (1 - COEF_DOWN) * s * fwd1
+    else:
+        alt_l = max(float(np.linalg.norm(d1["E"])) - g, 0.0)
+        branch = "radial"
+        predD = np.array(d1["E"]) * ((COEF_DOWN - 1) * alt_l / float(np.linalg.norm(d1["E"])))
     app.cmd(f"camera action descend coef {COEF_DOWN}", 1.2)
     d2 = app.dump("desc_down")
     dE2 = np.array(d2["E"]) - np.array(d1["E"])
-    fwdB = -upB
-    cos_d = float(np.dot(dE2, fwdB) / (np.linalg.norm(dE2) * np.linalg.norm(fwdB)))
-    chk(cos_d > 0.9999,
-        "C5 descend(descend): dE is along the eye's FORWARD ray (composer)",
-        f"cos = {cos_d:+.8f}, |dE| = {np.linalg.norm(dE2)*AU_KM:.3f} km")
-    DATA["C5"] = {"before": d0, "up": d1, "down": d2, "cos_up": cos_c,
-                  "cos_down": cos_d, "step_km": step * AU_KM,
-                  "ground_implied_km": g_implied * AU_KM}
+    rD = float(np.linalg.norm(dE2 - predD))
+    rDflip = float(np.linalg.norm(dE2 + predD))
+    chk(rD < POSE_FLOOR and rD < rDflip / 100,
+        f"C5 descend(descend), {branch} branch: dE == the composer's own prediction",
+        f"res = {rD:.3e} AU vs H_flipped {rDflip:.3e} AU ; "
+        f"|dE| = {np.linalg.norm(dE2)*AU_KM:.3f} km predicted {np.linalg.norm(predD)*AU_KM:.3f} km")
+    chk(np.linalg.norm(d2["E"]) < np.linalg.norm(d1["E"]),
+        "C5 descend coef<1 lowers the observer", f"{np.linalg.norm(d1['E'])*AU_KM:.3f} "
+        f"-> {np.linalg.norm(d2['E'])*AU_KM:.3f} km")
+    DATA["C5"] = {"before": d0, "up": d1, "down": d2,
+                  "res_up": rU, "res_up_flipped": rUflip,
+                  "res_down": rD, "res_down_flipped": rDflip, "down_branch": branch,
+                  "step_up_km": step_pred * AU_KM, "d_radius_up_km": dr_up,
+                  "cos_backray_radial": cos_rad, "ray_s_km": s * AU_KM,
+                  "ground_used_km": g * AU_KM}
 
     # ---------------- leg 5: setFreeMode(false), twice, after a flight ------
     trav = []
@@ -490,6 +545,30 @@ def main():
         app.cmd("camera action descend coef 1.1", 1.2)
         cur = app.dump(f"fly_{i}")
     DATA["C6"] = trav
+
+    # ---------------- leg 6: the terminal observable, with the body in frame -
+    # The verification height is the composed screen (F33's own pattern): three
+    # shots around ONE toggle pair.  free->anchored is the A/B; free->free is
+    # the A/A control, and it is also the "the pair is inert" witness on the
+    # screen instead of in a number.  The reference is in frame here (the view
+    # was aimed at it in leg 4), so the teleport has something to be seen on.
+    sh0 = app.shot("scr_free_1")
+    s_free1 = app.dump("scr_free_1")
+    app.cmd("camera action free_mode state off", 1.5)
+    sh1 = app.shot("scr_anchored")
+    s_anch = app.dump("scr_anchored")
+    app.cmd("camera action free_mode state on", 1.5)
+    sh2 = app.shot("scr_free_2")
+    s_free2 = app.dump("scr_free_2")
+    px_ab, px_ctl = px(sh0, sh1), px(sh0, sh2)
+    d_pair = float(np.linalg.norm(np.array(s_free2["E"]) - np.array(s_free1["E"])))
+    chk(px_ab > 1000 and px_ctl == 0,
+        "SCREEN: the toggle moves the composed frame; the toggle PAIR does not",
+        f"free->anchored {px_ab} px>8 ; free->free (A/A) {px_ctl} px>8 ; "
+        f"pair returns to {d_pair:.3e} AU")
+    DATA["SCREEN"] = {"px_ab": px_ab, "px_pair": px_ctl, "pair_dE_AU": d_pair,
+                      "teleport_km": float(np.linalg.norm(
+                          np.array(s_anch["E"]) - np.array(s_free1["E"])) * AU_KM)}
 
     res = {"checks": CHECKS, "data": DATA,
            "failures": [c for c in CHECKS if not c["ok"]],
