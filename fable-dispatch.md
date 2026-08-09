@@ -402,8 +402,12 @@ stands superseded by the session-10 update note above.*
   confirmed on BOTH ICDs (`artifacts/f30/{lvp1,native1}/gdb.log`).
   §5.65/§5.69/§5.70/§5.72 corpus scans done with controls
   (`artifacts/f30/corpus_report.txt`). §5.64 enumeration done at source.
-  Next: the §5.64 measured leg (timerate-from-pause), then §11.138 + six row
-  extensions.
+  2026-08-09 checkpoint 2 — §5.64's measured leg green, 5/5 predictions hit as
+  written (`artifacts/f30/f30_timerate.json`): `timerate action decrement` from
+  a HELD pause lands rate **-1.0** (time runs backward at real time) where the
+  same command with no pause held gives **+1.5**; clock advanced +3.603
+  simulated seconds across the held pause. Next: §11.138 + six row extensions
+  + new row §5.76.
 
 ---
 
