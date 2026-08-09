@@ -322,10 +322,11 @@ current queue lives in the latest session update note above.*
 - **Boundaries:** no behavior change off the degenerate inputs; old render path
   untouched; the two halves are independently deliverable — a suspension on one
   does not hold the other.
-- **WIP:** 2026-08-09 ckpt-1 — consumer enumerations DONE at source for both
-  halves; `f35_degenerate.py` + `f35_compare.py` written with P1–P4 committed
-  BEFORE the first measuring run. Next: PRE run on `204d402e`, then the two
-  fixes.
+- **WIP:** 2026-08-09 ckpt-2 — BOTH halves fixed and measured both ways; code
+  `c12ed803` (§5.81) + `04ae1d3e` (§5.79). PRE 10/10 on `204d402e` (screen
+  `[nan,nan]`; `select constellation_star Ori` SIGSEGV rc −11; the cleared slot
+  re-read), POST 11/11; branch probe 0 / 1298 (all `temp_point`). Next: the
+  b24/b32/b39 regression battery, then §11.143 + the two row flips.
 
 ### F36 — §5.77's owed enumeration: startup failures that report only on stderr (S) — class fix ONLY if uniform + purely additive
 
