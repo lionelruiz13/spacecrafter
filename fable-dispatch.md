@@ -440,8 +440,13 @@ F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (mint
   per-step old-vs-new worst 5.12e-08 AU against the committed law, the start pop
   measured 9.110498e-04 vs predicted 9.110512e-04, six refusal cases answered the
   same by both paths, reversible pair twice. One real defect found and fixed by
-  the campaign (the equatorial fold rebake, 1.57e-02 → 7.04e-07 rad). Next: the
-  adjacency gates + §11.141 + the B4(iv) row.
+  the campaign (the equatorial fold rebake, 1.57e-02 → 7.04e-07 rad).
+  **DELIVERED 2026-08-09** — §11.141 (+ §5.80–§5.85), B4 clause (iv) flipped,
+  §12 row 19 + the S7 spine line de-staled. Gates on `204d402e`:
+  `f33_transitions` 32/32, `f33_field` 5/5, `b4_anchors` 76/76,
+  `b24_equivalence` 120 bodies, `b32` 0, `b39_scenes` ALL PASS, md5 pristine.
+  Remaining under B4(iv), neither Fable's: the heading tail (D28/A38) and
+  `align_with` (§5.85 — measured: old does not align).
 
 ---
 
