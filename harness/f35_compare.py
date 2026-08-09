@@ -20,14 +20,26 @@ full.
 import json, sys
 from pathlib import Path
 
-FIELDS = ("parent", "ecl", "mat", "dist", "screen", "axisRot", "lastJD",
-          "attitude", "radius", "boundingRadius", "screenSize", "visible")
+def flatten(o, prefix=""):
+    """`dual_dump` nests each path's state under `old`/`new`; the comparison is
+    per LEAF field, so a single differing number is reported as that number and
+    not as the whole sub-object it sits in."""
+    out = {}
+    for k, v in o.items():
+        if k in ("type", "name"):
+            continue
+        key = f"{prefix}{k}"
+        if isinstance(v, dict):
+            out.update(flatten(v, key + "."))
+        else:
+            out[key] = v
+    return out
 
 
 def norm(v):
-    """Exact-string comparison for numbers (the dump is printed at round-trip
-    precision, so equal strings == equal floats); NaN compares equal to NaN
-    here, which is what makes the PRE run's own self-consistency visible."""
+    """Exact-string comparison (the dump is printed at round-trip precision, so
+    equal strings == equal floats). `sanitize_nonfinite` maps a non-finite to a
+    string sentinel, so a NaN reads as itself rather than comparing unequal."""
     return json.dumps(v, sort_keys=True)
 
 
@@ -39,10 +51,8 @@ def diff_scene(a, b, tag, report):
     for n in names:
         if n not in a or n not in b:
             continue
-        ka, kb = a[n], b[n]
+        ka, kb = flatten(a[n]), flatten(b[n])
         for f in sorted(set(ka) | set(kb)):
-            if f in ("type", "name"):
-                continue
             n_fields += 1
             if norm(ka.get(f)) != norm(kb.get(f)):
                 n_diff += 1

@@ -118,6 +118,14 @@ def finite(x):
     return v == v and abs(v) != float("inf")
 
 
+def newscreen(b):
+    """`dual_dump` nests each path's per-body state under `old`/`new`; §5.81 is
+    a NEW-path member, and the old path is the untouched baseline (§11.52(b)),
+    so the subject is `new.screen`. A body the old tree does not carry has no
+    `old` object at all — that is the case for the point anchor."""
+    return b.get("new", {}).get("screen")
+
+
 def ask(c, cmd, budget=6.0, quiet=0.8):
     """Send and read until the wire is quiet; return the decoded messages."""
     c.sock.sendall((cmd + "\n").encode())
@@ -136,6 +144,18 @@ def reply(c, cmd):
     """The LAST message the app sent in answer to a `get` — the reply payload."""
     ms = ask(c, cmd)
     return ms[-1] if ms else None
+
+
+def ident(info):
+    """WHICH object `get status object` is describing, with the time-varying
+    part dropped. `Core::getSelectedObjectInfo` returns the full info string,
+    whose tail carries alt/az and hour angle — quantities that move between two
+    reads of the SAME selection, so a full-string comparison could never be an
+    identity test. The first two lines are the name and the HP number
+    (`StarWrapper::getInfoString`), which do not move."""
+    if info is None:
+        return None
+    return "\n".join(info.split("\n")[:2]).strip()
 
 
 # ----------------------------------------------------------------- leg A
@@ -166,8 +186,9 @@ def leg_A(out, binary, expect, res):
         drv.send(f"date jday {JD0:.9f}", 1.2)
 
         base = dump(sess, drv, "base", out, 1)
-        bad = {n: b["screen"] for n, b in base["_bodies"].items()
-               if not (finite(b["screen"][0]) and finite(b["screen"][1]))}
+        bad = {n: newscreen(b) for n, b in base["_bodies"].items()
+               if newscreen(b) is not None
+               and not (finite(newscreen(b)[0]) and finite(newscreen(b)[1]))}
         chk(not bad and len(base["_bodies"]) > 0,
             "A1 non-degenerate scene: every body's `screen` is finite",
             f"{len(base['_bodies'])} bodies, {len(bad)} non-finite {list(bad)[:4]}")
@@ -184,19 +205,20 @@ def leg_A(out, binary, expect, res):
         if tp is None:
             chk(False, "A3 temp_point is in the dump", "absent")
         else:
-            s = tp["screen"]
-            fin = finite(s[0]) and finite(s[1])
+            s = newscreen(tp)
+            d = tp.get("new", {}).get("dist")
+            fin = s is not None and finite(s[0]) and finite(s[1])
             if expect == "pre":
                 chk(not fin, "A3 PRE: temp_point's screen is NON-FINITE (the defect)",
-                    f"screen={s} dist={tp['dist']}")
+                    f"screen={s} dist={d}")
             else:
                 chk(fin and float(s[0]) == 0.0 and float(s[1]) == 0.0,
                     "A3 POST: temp_point's screen is exactly the centre (0,0)",
-                    f"screen={s} dist={tp['dist']}")
+                    f"screen={s} dist={d}")
 
-        bad2 = {n: b["screen"] for n, b in after["_bodies"].items()
-                if n != "temp_point"
-                and not (finite(b["screen"][0]) and finite(b["screen"][1]))}
+        bad2 = {n: newscreen(b) for n, b in after["_bodies"].items()
+                if n != "temp_point" and newscreen(b) is not None
+                and not (finite(newscreen(b)[0]) and finite(newscreen(b)[1]))}
         chk(not bad2,
             "A4 after the transition every OTHER body's `screen` is still finite",
             f"{len(after['_bodies'])} bodies, {len(bad2)} non-finite {list(bad2)[:4]}")
@@ -288,11 +310,12 @@ def leg_B2(out, binary, expect, res):
         if r["alive"]:
             r["O3"] = reply(drv, "get status object")
             r["C3"] = reply(drv, "get status constellation")
+        r["id1"], r["id3"] = ident(r["O1"]), ident(r.get("O3"))
         if expect == "pre":
-            chk(not r["alive"] or r.get("O3") == r["O1"],
+            chk(not r["alive"] or r["id3"] == r["id1"],
                 "B2 PRE: the cleared slot is re-read — the unknown abbreviation "
                 "silently re-selects the previous constellation's star (or faults)",
-                f"alive={r['alive']} O3=={str(r.get('O3'))[:50]!r} O1=={str(r['O1'])[:50]!r}")
+                f"alive={r['alive']} id3={r['id3']!r} id1={r['id1']!r}")
         else:
             chk(r["alive"] and r.get("O3") == "EOL" and r.get("C3") == "EOL",
                 "B2 POST: an unknown abbreviation selects NOTHING",
@@ -302,9 +325,10 @@ def leg_B2(out, binary, expect, res):
             ask(drv, "select constellation_star F3A")
             r["O4"] = reply(drv, "get status object")
             r["C4"] = reply(drv, "get status constellation")
-            chk(r["O4"] == r["O1"] and r["C4"] == r["C1"],
+            r["id4"] = ident(r["O4"])
+            chk(r["id4"] == r["id1"] and r["C4"] == r["C1"],
                 "B2 POSITIVE CONTROL: with a real selection the answer is unchanged",
-                f"O4==O1 {r['O4'] == r['O1']}  C4={r['C4']!r}")
+                f"id4={r['id4']!r} id1={r['id1']!r} C4={r['C4']!r} C1={r['C1']!r}")
     finally:
         res["B2"] = r
         if sess.proc.poll() is None:
