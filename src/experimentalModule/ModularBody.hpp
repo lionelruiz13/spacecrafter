@@ -483,27 +483,52 @@ public:
         // above it stays sub-pixel. (Behind-the-observer rq≈0 keeps the old
         // path's behavior: wrong-but-culled.)
         const float rq = sqrtf(mat.r[12]*mat.r[12] + mat.r[13]*mat.r[13]);
-        float f;
-        if (projectionMode == ProjectionTransfer::FISHEYE) {
-            // The main case (INTENT 11.33): byte-for-byte the historical
-            // fast path — non-fisheye modes must not tax it.
-            f = (rq > distance * 1e-5f)
-                ? acos(-mat.r[14]/distance) / (rq * halfFov)
-                : 1.f / (distance * halfFov);
+        // The SAME singularity, one level deeper (§5.81): the guard above
+        // covers rq -> 0 at a FINITE distance, but a body sitting exactly AT
+        // the eye defeats the fallback itself — 1/(distance·halfFov) = inf and
+        // mat.r[12]·inf = NaN. `distance` is the norm of (r[12], r[13], r[14]),
+        // so distance == 0 means r[12] and r[13] are EXACTLY 0 and the answer
+        // is (0·f, 0·f) = the centre for EVERY finite f: the value is forced by
+        // the arithmetic, not chosen among alternatives, and it does not depend
+        // on the transfer, on halfFov or on the guard's own 1e-5 constant.
+        // REACHABLE from the shipped `camera action transition_to target
+        // point`, which puts the camera AT its anchor body by design
+        // (§11.141(c)) — measured `"screen":[nan,nan]` at `"dist":0`.
+        // It is NOT a "this body has no screen position" marker, deliberately:
+        // every consumer that must know whether a body belongs to the drawn
+        // surface already asks the ONE authority for it — membership of the
+        // owning system's sorted list (which `propagateRenderHidden` maintains,
+        // ModularBody.cpp:196-206) plus `operator bool`, asked by the pick
+        // sweep (ModularSystem::findBodyAt) and the selection pointer
+        // (ModularSystem::draw), while the body sweeps skip the distance-0 tail
+        // outright. A second answer encoded as a NaN would duplicate that
+        // authority (I2) and would be a silent one: it already broke a JSON
+        // reader on contact (§11.141(l)).
+        if (distance == 0.f) {
+            screenPos.first = screenPos.second = 0.f;
         } else {
-            // General radial transfer, same guard structure. CPU must land
-            // on the GPU's mapping (custom_project.glsl, spec-const 8) —
-            // ProjectionTransfer is the shared authority. The guard branch
-            // drops ALLSPHERE's 5.4e-5-NDC constant term (sub-0.1 px,
-            // within-guard only; the GPU keeps it).
-            f = (rq > distance * 1e-5f)
-                ? ProjectionTransfer::radius(projectionMode,
-                      acosf(-mat.r[14]/distance) / halfFov, halfFov) / rq
-                : ProjectionTransfer::slope0(projectionMode, halfFov)
-                      / (distance * halfFov);
+            float f;
+            if (projectionMode == ProjectionTransfer::FISHEYE) {
+                // The main case (INTENT 11.33): byte-for-byte the historical
+                // fast path — non-fisheye modes must not tax it.
+                f = (rq > distance * 1e-5f)
+                    ? acos(-mat.r[14]/distance) / (rq * halfFov)
+                    : 1.f / (distance * halfFov);
+            } else {
+                // General radial transfer, same guard structure. CPU must land
+                // on the GPU's mapping (custom_project.glsl, spec-const 8) —
+                // ProjectionTransfer is the shared authority. The guard branch
+                // drops ALLSPHERE's 5.4e-5-NDC constant term (sub-0.1 px,
+                // within-guard only; the GPU keeps it).
+                f = (rq > distance * 1e-5f)
+                    ? ProjectionTransfer::radius(projectionMode,
+                          acosf(-mat.r[14]/distance) / halfFov, halfFov) / rq
+                    : ProjectionTransfer::slope0(projectionMode, halfFov)
+                          / (distance * halfFov);
+            }
+            screenPos.first = mat.r[12] * f;
+            screenPos.second = mat.r[13] * f;
         }
-        screenPos.first = mat.r[12] * f;
-        screenPos.second = mat.r[13] * f;
         axisRotation = computeAxisRotation(jd);
         if (uncached)
             updateCache();       // module/radius part + a fresh updateReach()
