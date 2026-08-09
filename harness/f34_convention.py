@@ -552,6 +552,13 @@ def main():
     # the A/A control, and it is also the "the pair is inert" witness on the
     # screen instead of in a number.  The reference is in frame here (the view
     # was aimed at it in leg 4), so the teleport has something to be seen on.
+    # RE-AIM.  Leg 4 aimed the view, but the C6 traverses then teleported the
+    # observer ~17 000 km around the reference while HOLDING the absolute
+    # orientation (A38) — so by here the reference is out of frame again, and a
+    # frame of stars witnesses a translation with 231 px (measured).  Aiming
+    # again puts the content on the surface the comparison is made on.
+    app.cmd("flag track_object on", 6.0)
+    app.cmd("flag track_object off", 1.5)
     sh0 = app.shot("scr_free_1")
     s_free1 = app.dump("scr_free_1")
     app.cmd("camera action free_mode state off", 1.5)
@@ -562,13 +569,93 @@ def main():
     s_free2 = app.dump("scr_free_2")
     px_ab, px_ctl = px(sh0, sh1), px(sh0, sh2)
     d_pair = float(np.linalg.norm(np.array(s_free2["E"]) - np.array(s_free1["E"])))
-    chk(px_ab > 1000 and px_ctl == 0,
+    # The MAGNITUDE here is small and the dump says exactly why: the reference's
+    # own `screen` is (1.8, 0.6), outside the [0,1] viewport, so the frame is
+    # stars and distant planets — and a star at infinity is invariant under a
+    # 16 700 km translation.  The claim this leg carries is therefore the
+    # DIRECTION of the two comparisons, not a size: the toggle changes the
+    # frame, the pair restores it exactly.  The magnitude witness is leg 7.
+    chk(px_ab > px_ctl and px_ctl == 0 and d_pair < 1e-11,
         "SCREEN: the toggle moves the composed frame; the toggle PAIR does not",
         f"free->anchored {px_ab} px>8 ; free->free (A/A) {px_ctl} px>8 ; "
         f"pair returns to {d_pair:.3e} AU")
     DATA["SCREEN"] = {"px_ab": px_ab, "px_pair": px_ctl, "pair_dE_AU": d_pair,
                       "teleport_km": float(np.linalg.norm(
                           np.array(s_anch["E"]) - np.array(s_free1["E"])) * AU_KM)}
+
+    # ---------------- leg 7: the SHIPPED place, on the surface --------------
+    # The leg above is weak on purpose-free grounds and the dump says why: the
+    # reference's own `screen` is (1.8, 0.6), i.e. off the [0,1] viewport, so
+    # the frame is stars and distant planets and a 16 700 km translation moves
+    # a star at infinity by nothing.  Standing ON the surface the body fills the
+    # lower dome, so the teleport has to show.  This also re-measures §5.80's
+    # OWN headline case (the shipped Marseille place, 43d18' N / 5d22' E, 75 m)
+    # against a prediction: swing 124.68 deg, chord 2*d*sin(swing/2).
+    # AND AT THE SHIPPED DEFAULTS.  With the atmosphere and the landscape off,
+    # the reference is not on the composed screen even from 75 m — MEASURED:
+    # Earth's own `screen` is (1.887, 0.184) anchored and (-0.666, 0.240) free,
+    # both outside the [0,1] viewport, because the body's CENTRE is behind an
+    # observer standing on it, and with the atmosphere off nothing else in the
+    # lower dome is drawn (a separate observation, recorded not chased).  The
+    # atmosphere is exactly the content the teleport acts on — 11 300 km of
+    # ground track moves the Sun's position in the observer's local sky, i.e.
+    # day into night — so this leg restores the shipped flags for the shot and
+    # puts them back afterwards.
+    app.cmd("camera action free_mode state off", 1.5)
+    LAM2, PHI2, ALT2 = 5.0 + 22.0 / 60.0, 43.0 + 18.0 / 60.0, 75.0
+    app.cmd(f"moveto lat {PHI2} lon {LAM2} alt {ALT2} duration 0", 1.5)
+    app.cmd("flag atmosphere on", 1.0)
+    app.cmd("flag landscape on", 6.0)      # the module faders are per-FRAME and
+    # keep ramping under a frozen simulation clock, so the control below is
+    # taken adjacent in time, at these flags, with no command between the shots
+    # (a first attempt read 10 273 px of residual fade as if it were an effect).
+    sh_ctl1 = app.shot("ship_ctl1")
+    sh_ctl2 = app.shot("ship_ctl2")
+    px_settled = px(sh_ctl1, sh_ctl2)
+    sh_s0 = app.shot("ship_anchored")
+    s_s0 = app.dump("ship_anchored")
+    app.cmd("camera action free_mode state on", 1.5)
+    sh_s1 = app.shot("ship_free")
+    s_s1 = app.dump("ship_free")
+    app.cmd("camera action free_mode state off", 1.5)
+    sh_s2 = app.shot("ship_anchored_2")
+    s_s2 = app.dump("ship_anchored_2")
+    lam2, phi2 = math.radians(LAM2), math.radians(PHI2)
+    sw2_pred = swing_signed(lam2, phi2)
+    E_s0, E_s1 = np.array(s_s0["E"]), np.array(s_s1["E"])
+    sw2 = ang(E_s0, E_s1)
+    chord = float(np.linalg.norm(E_s1 - E_s0) * AU_KM)
+    chord_pred = 2 * float(np.linalg.norm(E_s0)) * math.sin(sw2_pred / 2) * AU_KM
+    px_s, px_s_ctl = px(sh_s0, sh_s1), px(sh_s0, sh_s2)
+    chk(abs(sw2 - sw2_pred) < ANG_FLOOR and abs(chord - chord_pred) < 1.0,
+        "SHIPPED place: the swing and the chord are the predicted ones",
+        f"swing {math.degrees(sw2):.4f} deg (pred {math.degrees(sw2_pred):.4f}); "
+        f"chord {chord:.1f} km (pred {chord_pred:.1f})")
+    app.cmd("flag atmosphere off", 0.8)
+    app.cmd("flag landscape off", 0.8)
+    # The A/A floor at these flags is MEASURED, not assumed to be zero: with the
+    # atmosphere and the landscape on, per-frame faders keep moving under a
+    # frozen simulation clock (`ModularBody::deltaTime` is wall-clock), so two
+    # shots with no command between them already differ.  The leg is legal
+    # because that floor is tiny against the effect, and the round trip lands
+    # ON the floor rather than above it — both stated in the check.
+    # NOT "the round trip is <= the floor": the round-trip pair spans two more
+    # commands and one more shot than the adjacent A/A pair, so it accumulates
+    # a little more of the same drift (measured 782 against a 753 floor, 3.9 %
+    # apart — the same floor, not an effect).  The claim is that BOTH sit far
+    # below the effect, which is what licenses reading the effect off the frame.
+    chk(px_s > 1000 and px_settled < px_s / 100 and px_s_ctl < px_s / 100,
+        "SHIPPED place SCREEN (shipped flags): the toggle moves the frame, "
+        "the PAIR returns it",
+        f"anchored->free {px_s} px>8 ; the round trip back {px_s_ctl} px>8, "
+        f"the adjacent A/A floor {px_settled} px>8 — both {px_s/max(px_s_ctl,1):.0f}x "
+        f"and {px_s/max(px_settled,1):.0f}x below the effect")
+    DATA["SHIPPED"] = {"lon_deg": LAM2, "lat_deg": PHI2, "alt_m": ALT2,
+                       "swing_meas": sw2, "swing_pred": sw2_pred,
+                       "chord_km": chord, "chord_pred_km": chord_pred,
+                       "px_ab": px_s, "px_pair": px_s_ctl,
+                       "px_settled_control": px_settled,
+                       "pair_dE_AU": float(np.linalg.norm(np.array(s_s2["E"]) - E_s0))}
 
     res = {"checks": CHECKS, "data": DATA,
            "failures": [c for c in CHECKS if not c["ok"]],
