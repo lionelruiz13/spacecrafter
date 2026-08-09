@@ -515,6 +515,22 @@ void Camera::placeAt(const Vec3f &pos, bool holdView)
         // latitude parametrize nothing — they are left alone rather than
         // replaced by atan2(0,0), so a point anchor keeps the place readout it
         // arrived with (the old path leaves lon/lat alone there too).
+        //
+        // A HELD placement also re-bakes the EQUATORIAL fold, and it does so
+        // BEFORE recoverParams solves. update()'s interception re-derives the
+        // view whenever `latitude != foldLat`, to keep the ZENITH-frame
+        // direction across an observer LATITUDE MOVE (old-mount parity). A held
+        // placement is the other case: the observer stands still and only its
+        // parametrization changed — a new reference expresses the same place at
+        // a different latitude — so re-deriving would turn the sky by exactly
+        // that difference, which A38 (the switch holds the WHOLE orientation)
+        // forbids. Order matters and was measured: writing foldLat AFTER
+        // recoverParams changes fold() out from under the solution and applies
+        // the very rotation it was meant to prevent (measured: unchanged at
+        // 1.5707e-02 rad, bit for bit); written here, recoverParams solves with
+        // the new fold and reproduces the captured orientation exactly.
+        if (holdView)
+            foldLat = latitude;
     }
     if (holdView)
         recoverParams(R);
