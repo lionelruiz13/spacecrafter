@@ -59,6 +59,44 @@ M-sized fix with baseline risk vs six decision un-starvations. Dispatch order =
 F28→F29→F30; order-independence CHECKED, not assumed: F28 = `src/tools/io.{cpp,hpp}`,
 F29 = the experimentalModule dispatch walk (disjoint files); F30 lands no code, and
 its one §5.60 launch reads a startup-time allocation size neither fix touches.
+**Round outcome (session 10 close, 2026-08-09):** F28 → §11.136, F29 → §11.137,
+F30 → §11.138 — all three delivered AND supervisor-verified same session.
+**§5.73 CLOSED** (F28): the fix was decision-free for a reason the row did not
+carry — the shared buffer never truncated anything, so its size expressed no
+policy; `send()` now carries what it sends (I6, all nine call sites), the
+overflow discriminated ONE BYTE wide on ASan (1022 fits / 1023 fires / 0
+post-fix), every answer byte-identical on four binaries. **§5.46 CLOSED**
+(F29): the class was TWO sites, not one (the invisible-reference branch found
+by enumerating all five writers of `mat` — the member doc now NAMES its
+writers); the 550-px stale-trail miss was PREDICTED from the freeze angle
+before the run (549.7 predicted / 550.4 measured); P1 invariant
+(`eclRoot == mat.translation`) violated by exactly the up-chain in five scenes
+pre-fix, by nobody post-fix; controls bit-identical. **SIX DECISIONS
+UN-STARVED** (F30, no code): §5.60 is the video player's own buffer (not pool
+sizing — that redirects D13's question), §5.64's disagreement is total,
+§5.65/§5.69/§5.70 are mapped negatives with qualifiers, §5.72 is a YES with
+the two shipped clients on opposite sides. NEW rows: **§5.74** (search finds
+no stars/constellations — owed datum named, dispatch candidate) · **§5.75**
+(trail sample loss on date jumps — policy) · **§5.76** (paused decrement runs
+time backward — semantics). Supervisor maintenance: §11 stubs 128–138
+relocated home from §13.C with a boundary marker (§11.138(h)); §0.5 gains the
+XAUTHORITY + `timeout -s KILL` hazards. Executor quality: F28 turned the
+row's own framing against itself with its first measurement (the unbounded
+producer was 142 B; the bounded-looking one hit the clamp) and found the
+ledger's two wrong spellings via a growth control failing; F29's member-doc
+writer enumeration is the structural fix for the ten-day blindness, and the
+reversible-pair table (Earth 6378 km away while standing on the Moon) is the
+defect in one number; F30's every negative carries a positive control on its
+own channel, and both regime controls (llvmpipe + native) were run for §5.60.
+Remaining dispatchable, next round: **§5.74's owed discrimination** (S — one
+launch, catalogue count as positive control), **§5.34** (M — the deferred
+`Object::operator=` leak, needs its own raw-holder enumeration; old-path
+lifetime consequences), **B4(iv) re-check at the row** (old-path scripted
+transitions — verify nothing gates it before minting), **B7-hunt-5 only after
+A40**, **B12 content** after b12-design §7 + A41/A42, **§5.64/§5.65/§5.69/
+§5.70/§5.72/§5.75/§5.76 fixes** only after Vixy decides the semantics.
+DECISIONS_PENDING open set at close: **D15, D21 (late Aug), D37** + A40–A43
+awaiting; B31 closure rides D21/D28/C4 (unchanged).
 
 **Update [Fable 2026-08-02, supervising session 9]:** round of 3: **F25 → F26 → F27**.
 F25 = **B34-ramps** (session 8's queued item — the row's last member; minted at
@@ -148,6 +186,15 @@ Vixy decides the semantics. DECISIONS_PENDING open set at close: **D15, D21
      (measured: 3 reported with nothing running). Use the `/proc/<pid>/comm` probe
      (`f26_epoch.sh`; Python port in `f27_reply.py`) — covers every account,
      positively mapped both ways (decoy 1 / without 0).
+   - **Session-environment hazards (2026-08-09, F28/F30, §11.136/§11.138(i)):**
+     (a) the inherited `XAUTHORITY` belongs to another uid — every display refuses;
+     `export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)` with
+     `DISPLAY=:2` (forced, not defaulted — the inherited `DISPLAY=:0` makes
+     `${DISPLAY:-:2}` keep the wrong one), verify `xdpyinfo` BEFORE the first
+     launch (full note `harness/README.md`). (b) `timeout -s KILL` bounds NOTHING
+     in this session type (measured: rc=124 only after the child's full run;
+     mechanism unattributed, signal-mask hypothesis refuted) — use plain `timeout`
+     (measured working) or an explicit poll-and-kill watchdog.
    - **Display architecture is part of the instrument (2026-07-31, §11.122(o) +
      §11.123(o)/(o2)):** claude renders on his OWN headless GNOME/Xwayland `:2`
      (GPU-real; the harness default); Vixy's remmina/RDP relay is view-only and its
@@ -446,6 +493,63 @@ stands superseded by the session-10 update note above.*
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
+- **Session-10 decision data (2026-08-09, F30/§11.138 + F28/§11.136 — every
+  waiting decision below now has the datum its row said it owed; nothing new is
+  ASKED, the existing questions just got their facts):**
+  - **§5.60 (D13 device-limit):** the 2.68 GB allocation is ONE BUFFER — the
+    video player's staging buffer, sized `(32 MiB+80)×80` from HOST RAM tiers,
+    allocated unconditionally at startup whether or not a video ever plays.
+    NOT pool sizing: `maxMemoryAllocationSize` is queried nowhere in `src/`,
+    and `BufferMgr`'s failure branch leaves a silently unusable manager. So
+    your policy call is about the PLAYER's sizing (and/or creating a fallback
+    path that today does not exist at either end). Also sharpened: on llvmpipe
+    the allocation SUCCEEDED — it is not what caused the recorded SEGV.
+  - **§5.64 + NEW §5.76 (pause semantics):** the readout/clock disagreement is
+    TOTAL — 6 of 6 gated consumers already behave as paused; exactly ONE line
+    (`TimeMgr::update`) is on the wrong side. And the same family measured
+    worse: `timerate action decrement` from a held pause sets rate −1.0 (time
+    runs BACKWARD at real time; shipped key `J`), and each ladder command
+    RECORDS the wrong rate. Making the pause hold the clock changes no gated
+    consumer's behaviour — the decision is cleaner than the row suggested.
+  - **§5.65 (lock-after-move seam):** 0 in-block pairs in 434 shipped files;
+    the only two `lock on` scripts wait a full second first, as if the author
+    knew. The shipped corpus does not constrain your choice. (Scope: scripts —
+    a TCP client can still issue the pair in one frame.)
+  - **§5.69 (keep_time):** no shipped show sets it; but one internal script +
+    the documented example ride the command's DEFAULT, which is the worst
+    value there is (documented 10 s → 160 frames = 1.11 s at shipped fps).
+    Any change to the default's meaning reaches exactly those.
+  - **§5.70 (ramp recording):** no recording exists on THIS field (weaker than
+    "none exists" — D9 freezes fields individually; an operator's own
+    recordings are what the scan cannot see). Correction that constrains the
+    respell: `delta_alt` is ALREADY a registered word meaning an observer
+    altitude delta in metres on `moveto` — the replacement spelling must not
+    collide with it.
+  - **§5.72 ($LOGON channel):** YES — and the two shipped clients fall on
+    OPPOSITE sides: `recever_client.c` (subscribes, issues nothing) goes
+    SILENT if the broadcast copy of addressed answers is removed;
+    `send_recev_client.c` keeps working (it now gets the addressed copy).
+  - **Truncation policy (from F28/§11.136, riding §5.73's closure):** the
+    1024-byte clamp is untouched and now has a concrete case — `get status
+    planets_position` is 854 of 1024 B on shipped data, ~5 `body action
+    load`s from silently truncating mid-token with no marker. The overflow
+    is fixed; whether/how a too-long answer should be MARKED is yours.
+- **Session-10 veto points (all implemented-and-live, each cheap to reverse;
+  silence = endorsed):** (1) F28 removed the shared-buffer send path at ALL
+  NINE `send` call sites, not just the overflowing two — every constant answer
+  was wire-measured byte-identical pre/post, and the `SMALL_BUFFER` comment's
+  never-enforced claim was retired at the site; (2) F29's fix covers TWO sites
+  (§5.46 named one — the second is the invisible-reference branch), both pure
+  contract-restorations, reversible per-site; (3) the eleven §11 stubs
+  (128–138) that had accreted inside §13.C were relocated back to §11 as a
+  pure line move, with a boundary marker so the class cannot recur
+  (§11.138(h)).
+- **New awareness rows, no action needed now: §5.74** (`search` returns no star
+  and no constellation on the shipped corpus — cause not yet discriminated,
+  owed datum named in-row, next-round dispatch candidate) · **§5.75**
+  (`TrailModule::accumulate` drops samples on date jumps — every date-stepping
+  show carries a trail that lags its body; the fix is one expression but
+  changes shipped-trail sample counts = policy).
 - ~~**A15 re-ask is SENDABLE**~~ **JOINS THE FINAL TESTER PASS** [vixy 2026-07-30,
   batching principle → §11.116(c)]: tester items accumulate into ONE final pass
   before testing deployment; the final-pass list is ledger-owned (members so far:
