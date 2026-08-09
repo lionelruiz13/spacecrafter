@@ -195,7 +195,12 @@ class Client:
 
 
 class Session:
-    def __init__(self, outdir, tag, binary):
+    def __init__(self, outdir, tag, binary, launch_prefix=(), port_wait=90):
+        """`launch_prefix` is prepended to the argv, so a caller can run the same
+        launch UNDER another program without re-deriving the farm, the
+        concurrent-instance assert or the frozen-md5 pair (I2). F31 passes
+        ("gdb", "-q", "-batch", "-x", <script>, "--args") — ptrace_scope=1 blocks
+        attaching, so a probe has to be there from the first instruction."""
         self.tag, self.outdir, self.binary = tag, outdir, Path(binary)
         insts = concurrent_instances()
         if insts:
@@ -208,12 +213,12 @@ class Session:
         self.dst = b25g.build_farm(farm=self.farm, dotted=False, corpus=None)
         self.applog = outdir / f"{tag}.applog"
         self.proc = subprocess.Popen(
-            [str(self.binary)], cwd=str(self.dst),
+            [*launch_prefix, str(self.binary)], cwd=str(self.dst),
             stdout=open(self.applog, "w"), stderr=subprocess.STDOUT,
             env={**os.environ, "HOME": str(self.farm),
                  "DISPLAY": os.environ.get("DISPLAY", ":2")})
         t0 = time.time()
-        while time.time() - t0 < 90:
+        while time.time() - t0 < port_wait:
             if self.proc.poll() is not None:
                 raise RuntimeError(f"{tag}: app died before opening its port")
             try:

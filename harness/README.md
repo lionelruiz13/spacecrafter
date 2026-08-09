@@ -1464,3 +1464,54 @@ the subject's own cached frame in km. It is the shortest statement of §5.46
 there is: on the PRE-fix binary, standing on the Moon, Earth's frame says Earth
 is **6378.240 km** away (its own radius plus the observer's 100 m) instead of
 **359 624 km**, at both entries.
+
+## F31 — which of the two it is (`f31_search_drive.py`) — INTENT §5.74 / §11.139
+
+    cd claude/harness && export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*) \
+        && DISPLAY=:2 ./f31_search_drive.py <absOutdir> [--bin <binary>]
+
+§5.74 owed a discrimination: `search` returns no `(S)` and no `(C)` because the
+star/constellation NAME catalogues are not loaded, or because the prefix match
+never fires. Both candidates are read on ONE launch, each at its own surface.
+
+- The app runs UNDER gdb (`f31_search.gdb` + `f31_probe.py`, 12 breakpoints,
+  B10-cmd precedent — ptrace_scope=1 blocks attach). Every breakpoint is silent
+  and continues, so the driver on the other side sees latency, never a hang.
+- **The probe writes to its own file, not to gdb's stdout**: gdb's stream is
+  block-buffered when redirected, and evidence still in a buffer at the end of a
+  run is a silent no-op probe (§11.47). Path via `$F31_PROBE`, set by the driver.
+- **The catalogue's own count** is printed at each of the four
+  `listMatchingObjectsI18n` entries — the container the match loop walks, plus
+  the `maxNbItem` quota. Planets and nebulae are read on the SAME channel in the
+  SAME call: they are the positive control, not a second instrument.
+- **The load sites are positively mapped both ways by the run**: the two
+  breakpoints that must read 0 in phase 1 (`loadLinesAndArt`, `loadCommonNames`)
+  are the two that must read nonzero in phase 2, so a phase-1 zero is a
+  measurement rather than an unresolved symbol. `no_pending_breakpoints` is
+  checked against gdb's own `info breakpoints` in the applog for the same reason.
+- **Phase 2 loads a sky culture from a fixture OUTSIDE the frozen field** with
+  the shipped `sky_culture action load path <abs dir>`; nothing under
+  `~/.spacecrafter` is written and the frozen md5 pair is asserted in == out.
+  `star_names.fab` is a verbatim, md5-asserted copy of the installed
+  `stars/name.fab`; the two constellation files are SYNTHETIC and labelled
+  (`Zzprobe*` over HIP ids read out of that same real file) because no
+  constellation data exists on this host to copy.
+- **The prefix comes out of the LIVE index**, parsed from the probe's own sample
+  of `common_names_index_i18n`, never typed (§11.51(d)). It is one character
+  because the installed star-name file has no ASCII name with two leading
+  letters — which also makes the post-load command byte-identical to one of the
+  36 phase-1 commands, so pre/post is one command compared with itself.
+- The sweep is **36 prefixes** (26 letters + 10 digits): the index is
+  Bayer/Flamsteed, so most of it is keyed on names beginning with a digit.
+- Controls are compared only on prefixes whose post answer is under 1024 B: a
+  clamped answer can lose `(P)`/`(N)` entries to the newly interleaved `(S)`
+  ones, which is the clamp and not a change of catalogue.
+
+`f27_reply.Session` gained `launch_prefix` (argv prefix, used here for gdb) and
+`port_wait`; default behaviour is unchanged, so F27/F28 are unaffected.
+
+Measured verdict at delivery (§11.139): phase 1 planets **90** / nebulae **407**
+vs constellations **0** / star index **0**, sweep **P 84 · C 0 · N 243 · S 0**,
+loaders entered **0 times**, culture gate rejected once; phase 2 catalogues
+**3** / **3183**, same 36 commands **P 84 · C 3 · N 241 · S 1085**, live-index
+prefix `1` going **0 → 104 (S)**. 20/20 checks PASS, app exit 0, md5 in == out.

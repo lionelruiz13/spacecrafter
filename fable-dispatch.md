@@ -287,7 +287,22 @@ F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (mint
   against zero discriminates load); if a fix lands: both ways on the same drive
   (pre-fix zero / post-fix hits, prediction stated first); fresh-launch
   precondition + `/proc`-comm concurrent-instance probe; md5 pristine.
-- **WIP:** —
+- **DELIVERED 2026-08-09** (Opus 5 executor, §11.139; harness only — no product
+  code changed, code tree clean at `bd3f7117` at open AND close). **The
+  discrimination is paid: NOT LOADED, and the load never ran** — one launch under
+  gdb, planets **90** / nebulae **407** on the same channel against constellations
+  **0** / star index **0**; `loadLinesAndArt` and `loadCommonNames` entered **0
+  times** while `setSkyCultureDir`'s reject branch fired once (all 2922 files under
+  `~/.spacecrafter/sky_cultures` are 0 bytes). **The match is sound**: loading a
+  culture from outside the frozen field on the same launch took the catalogues to
+  **3**/**3183** and the same 36 commands from **S 0 · C 0** to **S 1085 · C 3**,
+  the live-index prefix going 0 → 104 `(S)`, controls unmoved on all 27 unclamped
+  prefixes. **No fix taken** — the cause is catalogue content, which the task's
+  boundary reserves to Vixy; §5.74 stays OPEN with the question stated for her
+  (does the delivered data carry these files?). NEW **§5.77** (the rejection never
+  reaches the app's own log, which says `Check sky_cultures subdirectory ok`) and
+  **§5.78** (`loadSciNames` has no caller — sci index 0 before AND after a working
+  load). 20/20 checks PASS, app exit 0, frozen md5 in == out.
 
 ### F32 — §5.34: `Object::operator=` leaks the previous rep — enumeration-first fix  [M]
 
