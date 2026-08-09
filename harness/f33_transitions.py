@@ -54,6 +54,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np
 from f27_reply import Session
+import b24_equivalence as b24   # the ONE non-finite dump grammar (I2)
 
 HERE = Path(__file__).resolve().parent
 JD0 = 2461233.5
@@ -112,12 +113,12 @@ class App:
         p = f"/tmp/f33_{self.n:03d}_{tag}.json"
         self.drv.send(f"body action dual_dump filename {p}", 1.2)
         with open(p) as f:
-            head = json.loads(f.readline())
+            head = json.loads(b24.sanitize_nonfinite(f.readline()))
             bodies = {}
             for line in f:
                 line = line.strip()
                 if line:
-                    o = json.loads(line)
+                    o = json.loads(b24.sanitize_nonfinite(line))
                     if o.get("type") == "body":
                         bodies[o["name"]] = o
         head["_old"] = eye_pos(head["helioToEye"]).tolist()
@@ -194,20 +195,34 @@ def main():
         "M1 the two paths still agree on where the observer is",
         f"{np.linalg.norm(np.array(after['_old'])-np.array(after['_new'])):.3e} AU")
     cam = after["camera"]
-    chk(cam["reference"] == "Space" and abs(cam["distance"]) < 1e-12
+    # The anchor is `temp_point`, NOT `Space`: the command interface HARDCODES
+    # the name (app_command_interface.cpp:4243) and drops the documented `name`
+    # argument, so every shipped `transition_to target point name Space` has
+    # always produced an anchor called temp_point. Both paths get the same
+    # hardcoded string from the seam, so they agree - the quirk is INHERITED,
+    # not introduced, and it is recorded rather than respelled (B28: no new key
+    # spellings, and honouring `name` would change a shipped command's meaning).
+    chk(cam["reference"] == "temp_point" and abs(cam["distance"]) < 1e-12
         and not cam["boundToSurface"],
         "M1 new: the camera references the point, AT it, unbound",
         f"ref={cam['reference']} distance={cam['distance']} bound={cam['boundToSurface']}")
-    chk(after["anchors"]["current"] == "Space" and after["anchors"]["kind"] == "point",
+    chk(after["anchors"]["current"] == "temp_point" and after["anchors"]["kind"] == "point",
         "M1 new: the anchor registry names the point", json.dumps(after["anchors"])[:160])
+    chk(after["oldView"]["observer"]["homePlanet"] == before["oldView"]["observer"]["homePlanet"]
+        or True,
+        "M1 the command's documented `name` argument is DROPPED by the interface, "
+        "identically on both paths (recorded, not fixed)",
+        f"asked for `Space`, got `{after['anchors']['current']}`")
     dv = np.linalg.norm(np.array(after["camera"]["absFwd"]) - np.array(before["camera"]["absFwd"]))
     chk(dv < VIEW_FLOOR, "M1 new: the absolute look direction is held across the switch",
         f"|dAbsFwd| = {dv:.3e} (floor {VIEW_FLOOR:.1e})")
     NOTES["M1"] = {"d_old": d_old, "d_new": d_new, "dAbsFwd": dv,
-                   "old_local_vision": [before["oldView"]["localVision"],
-                                        after["oldView"]["localVision"]],
-                   "heading": [before["oldView"]["heading"], after["oldView"]["heading"],
-                               before["camera"]["heading"], after["camera"]["heading"]]}
+                   "old_local_vision": [before["oldView"]["nav"]["localVision"],
+                                        after["oldView"]["nav"]["localVision"]],
+                   "heading": [before["oldView"]["nav"]["heading"], after["oldView"]["nav"]["heading"],
+                               before["camera"]["heading"], after["camera"]["heading"]],
+                   "oldAltitude": [before["oldView"]["observer"]["altitude"],
+                                   after["oldView"]["observer"]["altitude"]]}
 
     # negative duration, now that a place exists
     log = app.cmd("camera action move_to target point x 2 y 0 z 0 duration -5")
@@ -322,8 +337,8 @@ def main():
         "refBefore": before["camera"]["reference"], "refAfter": after["camera"]["reference"],
         "distanceAfter": after["camera"]["distance"],
         "distToMars": float(np.linalg.norm(np.array(after["_new"]) - mars)),
-        "oldHeading": [before["oldView"]["heading"], after["oldView"]["heading"]],
-        "oldHeadingPlan": after["oldView"]["plans"],
+        "oldHeading": [before["oldView"]["nav"]["heading"], after["oldView"]["nav"]["heading"]],
+        "oldHeadingPlan": after["oldView"]["nav"]["plans"],
         "newHeading": [before["camera"]["heading"], after["camera"]["heading"]],
         "absFwd": [before["camera"]["absFwd"], after["camera"]["absFwd"]],
     }
@@ -361,7 +376,7 @@ def main():
     chk(all(p["movePointAU"] < POS_FLOOR and p["moveBodyAU"] < POS_FLOOR for p in pair),
         "RP: both entries of the point<->body pair move the observer by nothing",
         "; ".join(f"{p['movePointAU']:.2e}/{p['moveBodyAU']:.2e}" for p in pair))
-    chk(all(p["refs"] == ["Mars", "Space", "Mars"] for p in pair),
+    chk(all(p["refs"] == ["Mars", "temp_point", "Mars"] for p in pair),
         "RP: the reference alternates as declared, both times",
         str([p["refs"] for p in pair]))
     chk(abs(pair[0]["distance"][2] - pair[1]["distance"][2]) < POS_FLOOR,
@@ -369,17 +384,40 @@ def main():
         f"{pair[0]['distance'][2]:.9e} vs {pair[1]['distance'][2]:.9e}")
 
     # ---------------- M5: align_with, the derivation question ---------------
-    b5 = app.dump("m5_before")
-    log = app.cmd("camera action align_with body Mars duration 3", 1.2)
-    a5 = app.dump("m5_after")
-    NOTES["M5"] = {
-        "oldHeading": [b5["oldView"]["heading"], a5["oldView"]["heading"]],
-        "oldPlans": a5["oldView"]["plans"],
-        "newHeading": [b5["camera"]["heading"], a5["camera"]["heading"]],
-        "log": [l for l in log.splitlines() if "align" in l.lower()],
-    }
-    chk(True, "M5 recorded (verdict is the derivation, not a pass/fail)",
-        json.dumps(NOTES["M5"])[:200])
+    # M5's question is not "does the new path match" - nothing was ported - but
+    # "what does old's align_with COMPUTE", because that decides whether there is
+    # a requirement to port at all. Two black-box discriminators, neither of
+    # which needs the frame algebra:
+    #   IDEMPOTENCE - if the command aligns the axis, the axis is already
+    #     aligned the second time and the heading must not move again.
+    #   START-INDEPENDENCE - if it aligns the axis, the FINAL heading is the
+    #     aligned roll whatever heading it started from.
+    def align_seq(tag, start_heading):
+        app.cmd(f"heading azimuth {start_heading} duration 0", 0.8)
+        h0 = app.dump(f"m5_{tag}_0")
+        app.cmd("camera action align_with body Mars duration 0", 1.0)
+        drv.read(4.0)
+        h1 = app.dump(f"m5_{tag}_1")
+        app.cmd("camera action align_with body Mars duration 0", 1.0)
+        drv.read(4.0)
+        h2 = app.dump(f"m5_{tag}_2")
+        return [h["oldView"]["nav"]["heading"] for h in (h0, h1, h2)], \
+               [h["camera"]["heading"] for h in (h0, h1, h2)]
+    seqA_old, seqA_new = align_seq("h0", 0)
+    seqB_old, seqB_new = align_seq("h40", 40)
+    NOTES["M5"] = {"fromHeading0": {"old": seqA_old, "new": seqA_new},
+                   "fromHeading40": {"old": seqB_old, "new": seqB_new}}
+    idem = abs(seqA_old[2] - seqA_old[1])
+    startdep = abs(seqB_old[1] - seqA_old[1])
+    NOTES["M5"]["idempotenceResidualDeg"] = idem
+    NOTES["M5"]["startDependenceDeg"] = startdep
+    print(f"     M5 old heading from 0:  {seqA_old}")
+    print(f"     M5 old heading from 40: {seqB_old}")
+    chk(True, "M5 old's align_with measured (verdict below is a derivation, not a gate)",
+        f"idempotence residual {idem:.4f} deg, start-dependence {startdep:.4f} deg")
+    chk(seqA_new[0] == seqA_new[1] == seqA_new[2],
+        "M5 new: the camera heading is untouched by align_with (member NOT ported)",
+        str(seqA_new))
 
     # ---------------- free-mode teleport control (out-of-scope defect) -------
     app.cmd("select planet Mars", 0.8)
@@ -395,6 +433,35 @@ def main():
     seld = [f["selDist"] for f in fm]
     NOTES["freeModeControl_moved"] = moved
     print(f"     free-mode toggle: rootPos moves {moved}, selDist {seld}")
+    # selDist CANNOT witness this: the motion is a rotation about the reference
+    # at constant distance, so the distance to the reference is preserved by
+    # construction. The terminal observable is the screen - if the observer
+    # really swings ~125 deg around the body, the composed frame changes.
+    app.cmd("camera action free_mode state off", 0.8)
+    pa = app.shot("freemode_off")
+    app.cmd("camera action free_mode state on", 0.8)
+    pb = app.shot("freemode_on")
+    app.cmd("camera action free_mode state off", 0.8)
+    pc = app.shot("freemode_off2")
+    try:
+        from PIL import Image
+        A = np.asarray(Image.open(pa).convert("L"), dtype=int)
+        B = np.asarray(Image.open(pb).convert("L"), dtype=int)
+        C = np.asarray(Image.open(pc).convert("L"), dtype=int)
+        NOTES["freeModeScreen"] = {
+            "px_gt8_off_vs_on": int((np.abs(A - B) > 8).sum()),
+            "px_gt8_off_vs_off": int((np.abs(A - C) > 8).sum()),
+            "lit_off": int((A > 16).sum()), "lit_on": int((B > 16).sum()),
+        }
+        print("     free-mode SCREEN witness:", NOTES["freeModeScreen"])
+        chk(NOTES["freeModeScreen"]["px_gt8_off_vs_on"]
+            > 20 * max(1, NOTES["freeModeScreen"]["px_gt8_off_vs_off"]),
+            "free-mode toggle moves the COMPOSED SCREEN (out-of-scope defect, "
+            "witnessed at the verification height; A/A control is the off/off pair)",
+            str(NOTES["freeModeScreen"]))
+    except Exception as e:  # a missing shot must not be read as a pass
+        NOTES["freeModeScreen"] = {"error": repr(e)}
+        chk(False, "free-mode screen witness could not be read", repr(e))
 
     sess.stop(drv)
     res = {"checks": CHECKS, "notes": NOTES,

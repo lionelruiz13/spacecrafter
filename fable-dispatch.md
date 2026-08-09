@@ -436,7 +436,12 @@ F28 §11.136 · F29 §11.137 · F30 §11.138. Live sections: **F31–F33** (mint
   2.63e-08 AU = the float32 floor; three rival compositions rejected at
   1.1e-05 / 3.2e-05 / 8.5e-05 AU) and `b4_anchors` is 76/76. Next: the
   per-member A/B campaign (`harness/f33_transitions.py`), predictions committed
-  before the run.
+  before the run. CP2 GREEN, code `204d402e`: `f33_transitions` 32/32 — travel
+  per-step old-vs-new worst 5.12e-08 AU against the committed law, the start pop
+  measured 9.110498e-04 vs predicted 9.110512e-04, six refusal cases answered the
+  same by both paths, reversible pair twice. One real defect found and fixed by
+  the campaign (the equatorial fold rebake, 1.57e-02 → 7.04e-07 rad). Next: the
+  adjacency gates + §11.141 + the B4(iv) row.
 
 ---
 
