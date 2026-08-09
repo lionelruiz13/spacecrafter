@@ -357,7 +357,13 @@ current queue lives in the latest session update note above.*
   `spacecrafter.log` (measured absent today, §11.139(h)); the F31 positive
   control (the lines-970-972 class) still present; stderr's pre-existing lines
   unmoved (both ways: the log gains, nothing else changes); md5 in==out.
-- **WIP:**
+- **WIP:** — 2026-08-09, checkpoint 1/2: enumeration + startup-reachability
+  MEASURED (`f36_enum.py`/`f36_probe.py`/`f36_reach.py`/`f36_class.py`, one fresh
+  launch under gdb, app exit 0, 77 breakpoints / 2 unresolved / boundary seen).
+  Class sized at **37** startup failure reports the app log does not carry; the
+  uniform additive routing is **NOT** available (every one of the 37 carries a
+  blocker; see the entry). Next: §11.144 + §5.77 extension + the new rows, then
+  clear this line. No product code touched.
 
 ---
 
