@@ -394,20 +394,25 @@ stands superseded by the session-10 update note above.*
   break proven by hitting the 2.68 GB allocation); §5.60's launch under the
   fresh-launch precondition + concurrent-instance assert; no code diff at close
   (`git -C` both repos: harness-only changes).
-- **WIP:** 2026-08-09 checkpoint 1 — instruments landed + 5 of 6 items measured.
-  §5.60 **ANSWERED**: the 2,684,360,960 B allocation is ONE BUFFER, the
-  `"Staging video buffer"` of `VideoPlayer::createTextures`
-  (`video_player.cpp:147`), size = `maxTextureSize*MAX_CACHED_FRAMES`
-  = (32 MiB+80)×80 exactly; NOT a pool (chunkSize = 256 MiB, uninvolved);
-  confirmed on BOTH ICDs (`artifacts/f30/{lvp1,native1}/gdb.log`).
-  §5.65/§5.69/§5.70/§5.72 corpus scans done with controls
-  (`artifacts/f30/corpus_report.txt`). §5.64 enumeration done at source.
-  2026-08-09 checkpoint 2 — §5.64's measured leg green, 5/5 predictions hit as
-  written (`artifacts/f30/f30_timerate.json`): `timerate action decrement` from
-  a HELD pause lands rate **-1.0** (time runs backward at real time) where the
-  same command with no pause held gives **+1.5**; clock advanced +3.603
-  simulated seconds across the held pause. Next: §11.138 + six row extensions
-  + new row §5.76.
+- **WIP:** — **DELIVERED 2026-08-09 → §11.138** (NO product code changed; harness
+  `21af186` instruments+runs / `7cc8c82` the §5.64 measured leg / the entry
+  commit). All six owed data landed, each with a positive control on its own
+  channel; all six rows stay OPEN and decision-gated as dispatched.
+  **§5.60**: ONE BUFFER — the `"Staging video buffer"` of
+  `VideoPlayer::createTextures`, `(32 MiB+80)×80` to the byte; NOT a pool
+  (chunkSize 256 MiB, `allowOverrides` read nowhere); identical on both ICDs ⇒
+  fix domain = the video player's sizing policy and/or a fallback path that
+  does not exist (`maxMemoryAllocationSize` queried nowhere in `src/`).
+  **§5.64**: 6 of 6 gated call sites behave as paused; only `TimeMgr::update`
+  reads the member — the disagreement is TOTAL. **§5.65**: 0 in-block pairs.
+  **§5.69**: `keep_time` 0 hits, but 3 `preload` sites ride the default, which
+  truncates worst (10 s → 160 frames). **§5.70**: 0 hits, and 0 recordings
+  exist on this field. **§5.72**: **YES**, and the two shipped clients fall on
+  OPPOSITE sides of the decision. NEW row **§5.76** (`timerate action
+  decrement` from a held pause runs the clock backward at real time, measured
+  −1.0 vs the control's +1.5). Also recorded not fixed: §11's stub list has two
+  disjoint homes (128–138 sit inside §13.C); `timeout -s KILL` bounds nothing
+  in this session type.
 
 ---
 
