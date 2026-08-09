@@ -394,7 +394,16 @@ stands superseded by the session-10 update note above.*
   break proven by hitting the 2.68 GB allocation); §5.60's launch under the
   fresh-launch precondition + concurrent-instance assert; no code diff at close
   (`git -C` both repos: harness-only changes).
-- **WIP:**
+- **WIP:** 2026-08-09 checkpoint 1 — instruments landed + 5 of 6 items measured.
+  §5.60 **ANSWERED**: the 2,684,360,960 B allocation is ONE BUFFER, the
+  `"Staging video buffer"` of `VideoPlayer::createTextures`
+  (`video_player.cpp:147`), size = `maxTextureSize*MAX_CACHED_FRAMES`
+  = (32 MiB+80)×80 exactly; NOT a pool (chunkSize = 256 MiB, uninvolved);
+  confirmed on BOTH ICDs (`artifacts/f30/{lvp1,native1}/gdb.log`).
+  §5.65/§5.69/§5.70/§5.72 corpus scans done with controls
+  (`artifacts/f30/corpus_report.txt`). §5.64 enumeration done at source.
+  Next: the §5.64 measured leg (timerate-from-pause), then §11.138 + six row
+  extensions.
 
 ---
 

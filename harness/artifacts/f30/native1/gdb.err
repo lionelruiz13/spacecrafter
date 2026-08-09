@@ -1,0 +1,128 @@
+sh: 1: kill: No such process
+
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_str video:projection[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_str video:rear_projection[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Hyperion': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Juno': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
+[1m[33m(Warn.): [0m[1m[37mBody 'Vesta': no rotation period in the data (neither rot_periode nor orbit_period) - applying the legacy default rot_periode = 24 h, so this body rotates once every 24 h. To author its rotation explicitly, set rot_periode = <hours> (or orbit_period for synchronous rotation).[0m
+[1m[33m(Warn.): [0m[1m[37mPerformance Issue : Too many vertices for 'model3D/Vesta/Vesta_1L.ojm' (Keep Below 4 000)[0m
+[1m[33m(Warn.): [0m[1m[37mIgnoring line without '=' in ssystem.ini: 'orbit_LongOfPericenter 95.58754' - a key/value line needs 'key = value'; write '#' first to make it a comment.[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "info:name", default empty string returned[0m
+ZoneArray::create(stars_2_0v0_8.cat): fopen failed
+ZoneArray::create(stars_3_1v0_4.cat): fopen failed
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "stars:cat_file_name_04", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "stars:cat_file_name_05", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "stars:cat_file_name_06", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "stars:cat_file_name_07", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "stars:cat_file_name_08", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:fog_alt_angle[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:fog_angle_shift[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_str observatory:night_texture[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser can't find the configuration key "observatory:limited_shade", default empty string returned[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_bool observatory:texture[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:rotate_z[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:top_altitude[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_double observatory:base_altitude[0m
+[1m[33m(Warn.): [0m[1m[37mInit_parser def_bool rendering:flag_experimental_oort[0m
+Invalid sky culture directory: western-spacecrafter
+[1m[31m(Error): [0m[1m[37mUI: ERROR - Failed to acquire texture data for icons[0m
+[1m[31m(Error): [0m[1m[37mUI: ERROR - Failed to acquire texture data for icons[0m
+[1m[33m(Warn.): [0m[1m[37mSkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_UMBRA[0m
+[1m[33m(Warn.): [0m[1m[37mSkyLineMgr error : getFlagShow not found LINE_LUNAR_ECLIPSE_PENUMBRA[0m
+[1m[33m(Warn.): [0m[1m[37mFrame stall detected[0m
