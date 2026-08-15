@@ -591,6 +591,8 @@ std::string Body::getTypePlanet(const BODY_TYPE str)  const
 			return "center";
         case STAR:
             return "star";
+        case BLACKHOLE:
+            return "black hole";
 		default :
 			return "unknown";
 	}

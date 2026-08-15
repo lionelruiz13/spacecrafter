@@ -67,7 +67,7 @@ private:
 class Ring {
 
 public:
-	Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &init);
+	Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &init, bool emissive = false);
 	~Ring(void);
 
 	void draw(VkCommandBuffer cmd, const Projector* prj, float observerDistanceToBody, const Mat4d& mat,double screen_sz,Vec3f& lightDirection,Vec3f& planetPosition, float planetRadius);
@@ -138,6 +138,7 @@ private:
 	bool fullyInitialized = false;
 	std::atomic<bool> asteroidComputed = false;
 	bool asteroidReady = false;
+	bool emissive = false;
 };
 
 

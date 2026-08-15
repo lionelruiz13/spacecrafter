@@ -60,10 +60,11 @@
 
 double Ring::fadingFactor = 40*120;
 
-Ring::Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &_init)
+Ring::Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &_init, bool _emissive)
 	:radius_min(radius_min),radius_max(radius_max)
 {
 	init = _init;
+	emissive = _emissive;
 	tex = std::make_unique<s_texture>(texname, TEX_LOAD_TYPE_PNG_ALPHA, true);
 }
 
@@ -120,14 +121,18 @@ void Ring::createSC_context()
 	vertex->addInput(VK_FORMAT_R32_SFLOAT);
 
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
-	pipeline->setCullMode(true);
+	pipeline->setCullMode(!emissive);
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 	pipeline->bindVertex(*vertex);
 	pipeline->bindShader("ring_planet.vert.spv");
 	pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	// Set specialization constant for projection type (constant_id = 8)
 	pipeline->setSpecializedConstant(8, Context::projectionType);
-	pipeline->bindShader("ring_planet.frag.spv");
+	pipeline->bindShader(emissive ? "blackhole_ring.frag.spv" : "ring_planet.frag.spv");
+	if (emissive) {
+		pipeline->setBlendMode(BLEND_ADD);
+		pipeline->setDepthStencilMode(VK_TRUE, VK_FALSE);
+	}
 	pipeline->build();
 
 	pipelineDepthTrace = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, BodyShader::getShaderDepthTrace()->layout);
@@ -146,6 +151,9 @@ void Ring::createSC_context()
 	uniform = std::make_unique<SharedBuffer<RingUniform>>(*context.uniformMgr);
 	set->bindUniform(uniform, 0);
 	set->bindTexture(tex->getTexture(), 1);
+
+	if (emissive)
+		return;
 
 	ojmlAsteroid = std::make_unique<OjmL>(AppSettings::Instance()->getModel3DDir()+"sat_ice.ojm");
 	bufferAsteroid = ojmlAsteroid->getVertexBuffer();
@@ -249,6 +257,9 @@ void Ring::draw(VkCommandBuffer cmd, const Projector* prj, float observerDistanc
 	if (!fullyInitialized)
 		initialize();
 
+	if (!pipeline || pipeline->get() == VK_NULL_HANDLE)
+		return;
+
 	// solve the ring wraparound by culling: decide if we are above or below the ring plane
 	const double h = mat.r[ 8]*mat.r[12]
 	                 + mat.r[ 9]*mat.r[13]
@@ -270,11 +281,13 @@ void Ring::draw(VkCommandBuffer cmd, const Projector* prj, float observerDistanc
 
 	if (asteroidReady && observerDistanceToBody < radius_max * 10) {
 		uniform->get().fadingFactor = fadingFactor; // calibrated over Saturn radiux_max
-		pipelineAsteroid->bind(cmd);
-		layoutAsteroid->bindSet(cmd, *setAsteroid);
-		VertexArray::bind(cmd, {bufferAsteroid, instanceAsteroid.get()});
-		vkCmdBindIndexBuffer(cmd, indexAsteroid.buffer, indexAsteroid.offset, VK_INDEX_TYPE_UINT32);
-		vkCmdDrawIndexed(cmd, indexAsteroid.size / 4, instanceAsteroid->getVertexCount(), 0, 0, 0);
+		if (pipelineAsteroid && pipelineAsteroid->get() != VK_NULL_HANDLE) {
+			pipelineAsteroid->bind(cmd);
+			layoutAsteroid->bindSet(cmd, *setAsteroid);
+			VertexArray::bind(cmd, {bufferAsteroid, instanceAsteroid.get()});
+			vkCmdBindIndexBuffer(cmd, indexAsteroid.buffer, indexAsteroid.offset, VK_INDEX_TYPE_UINT32);
+			vkCmdDrawIndexed(cmd, indexAsteroid.size / 4, instanceAsteroid->getVertexCount(), 0, 0, 0);
+		}
 	} else {
 		uniform->get().fadingFactor = 100000;
 	}
@@ -299,6 +312,9 @@ void Ring::draw(VkCommandBuffer cmd, const Projector* prj, float observerDistanc
 
 void Ring::drawDepthTrace(VkCommandBuffer cmd, VkPipelineLayout layout)
 {
+	if (!pipelineDepthTrace || pipelineDepthTrace->get() == VK_NULL_HANDLE || !lowUP)
+		return;
+
 	pipelineDepthTrace->bind(cmd);
 	vkCmdPushConstants(cmd, layout, VK_SHADER_STAGE_VERTEX_BIT, offsetof(depthTraceInfo, planetScaledRadius), sizeof(float), &mc);
 	lowUP->draw(cmd);
