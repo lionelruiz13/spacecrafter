@@ -35,9 +35,6 @@ void main(void)
 {
     vec3 PhotonColor = PhotonColorAndEventRadius.rgb;
     float EventRadius = PhotonColorAndEventRadius.a;
-    vec3 LensColor = LensColorAndStrength.rgb;
-    float LensingStrength = LensColorAndStrength.a;
-    float DiskIntensity = Controls.x;
     vec2 pixel = vec2(gl_FragCoord.x - Center.x, (viewportY - gl_FragCoord.y) - Center.y);
     pixel.x *= 0.92;
     float radiusPx = length(pixel);
@@ -46,25 +43,19 @@ void main(void)
 
     float edge = smoothstep(0.90, 1.04, r);
     float photon = ring(r, 1.055, 0.020);
-    float secondary = ring(r, 1.31, 0.070);
-    float outerLens = exp(-max(r - 1.0, 0.0) * 2.25);
 
     float frontArc = smoothstep(-0.80, 0.25, -sin(angle)) * (1.0 - smoothstep(0.25, 0.98, sin(angle)));
-    float backArc = smoothstep(-0.15, 0.95, sin(angle));
     float beaming = 0.58 + 0.70 * smoothstep(-0.88, 0.82, cos(angle - 0.28));
     float broken = 0.86 + 0.10 * sin(angle * 5.0 + r * 8.5) + 0.06 * sin(angle * 13.0 - r * 4.0);
     broken += (hash21(vec2(floor(angle * 28.0), floor(r * 18.0))) - 0.5) * 0.08;
     broken = clamp(broken, 0.62, 1.08);
 
-    vec3 color = PhotonColor * photon * 0.72 * beaming * frontArc * broken
-               + LensColor * secondary * 0.26 * beaming * broken
-               + LensColor * outerLens * 0.045 * backArc;
+    vec3 color = PhotonColor * photon * 0.72 * beaming * frontArc * broken;
     color *= edge;
 
     // The event horizon is composed after global lensing. Keeping it in the
     // source image would make the black hole lens its own silhouette.
-    float alpha = clamp(photon * 0.60 * frontArc + secondary * 0.14 + outerLens * 0.030 * edge, 0.0, 1.0);
-    alpha *= 1.0 - smoothstep(2.45, 3.05, r);
+    float alpha = clamp(photon * 0.60 * frontArc, 0.0, 1.0);
 
     FragColor = vec4(color, alpha);
 }
