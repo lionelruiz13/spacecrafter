@@ -44,7 +44,6 @@ void main(void)
     float r = radiusPx / max(EventRadius, 0.001);
     float angle = atan(pixel.y, pixel.x);
 
-    float core = 1.0 - smoothstep(0.96, 1.045, r);
     float edge = smoothstep(0.90, 1.04, r);
     float photon = ring(r, 1.055, 0.020);
     float secondary = ring(r, 1.31, 0.070);
@@ -62,7 +61,9 @@ void main(void)
                + LensColor * outerLens * 0.045 * backArc;
     color *= edge;
 
-    float alpha = clamp(core + photon * 0.60 * frontArc + secondary * 0.14 + outerLens * 0.030 * edge, 0.0, 1.0);
+    // The event horizon is composed after global lensing. Keeping it in the
+    // source image would make the black hole lens its own silhouette.
+    float alpha = clamp(photon * 0.60 * frontArc + secondary * 0.14 + outerLens * 0.030 * edge, 0.0, 1.0);
     alpha *= 1.0 - smoothstep(2.45, 3.05, r);
 
     FragColor = vec4(color, alpha);

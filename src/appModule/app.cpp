@@ -43,6 +43,7 @@
 #include "appModule/save_screen_interface.hpp"
 #include "appModule/space_date.hpp"
 #include "appModule/screenFader.hpp"
+#include "appModule/blackhole_lensing.hpp"
 #include "appModule/fontFactory.hpp"
 #include "appModule/mkfifo.hpp"
 #include "coreModule/callbacks.hpp"
@@ -137,6 +138,7 @@ App::App( SDLFacade* const sdl )
 	flushFrames = conf.getBoolean(SCS_DEBUG, SCK_FLUSH_FRAMES);
 
 	finalizeInitVulkan(conf);
+	blackHoleLensing = std::make_unique<BlackHoleLensing>(sceneColorImage, width, height);
 	s_texture::loadCache(settings->getUserDir() + "cache/", conf.getBoolean(SCS_MAIN, SCK_TEX_CACHE));
 	s_texture::setLoadingStrategy(conf.getStr(SCS_MAIN, SCK_TEXTURE_LOADING));
 	fontFactory = std::make_unique<FontFactory>();
@@ -301,7 +303,8 @@ void App::initVulkan(InitParser &conf)
 	context.shadowTrace->use();
 	// ========== DEFINE RENDERING ========== //
 	context.render = std::make_unique<RenderMgr>(vkmgr);
-	colorID = context.render->attach(VK_FORMAT_B8G8R8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, vkmgr.getSwapchainView().empty() ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL : VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+	colorID = context.render->attach(VK_FORMAT_B8G8R8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, true);
+	finalColorID = context.render->attach(VK_FORMAT_B8G8R8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, vkmgr.getSwapchainView().empty() ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL : VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, true);
 	depthID = context.render->attach(VK_FORMAT_D24_UNORM_S8_UINT, sampleCount, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, false);
 	multiColorID = colorID;
 	if (sampleCount != VK_SAMPLE_COUNT_1_BIT)
@@ -338,8 +341,14 @@ void App::initVulkan(InitParser &conf)
 	// Sync with host writes to uniform and tiny vertexBuffer using tinyMgr
 	// context.render->addDependencyFrom(-1, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT | VK_PIPELINE_STAGE_VERTEX_INPUT_BIT | VK_PIPELINE_STAGE_VERTEX_SHADER_BIT | VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT | VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT | VK_ACCESS_2_UNIFORM_READ_BIT_KHR, false);
 	context.render->pushLayer();
+	// PASS_LENS
+	context.render->bindInput(colorID, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	context.render->bindColor(finalColorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+	                              VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT);
+	context.render->pushLayer();
 	// PASS_FOREGROUND
-	context.render->bindColor(colorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	context.render->bindColor(finalColorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	// Sync with resolve
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
 	// Sync with host writes to uniform and tiny vertexBuffer using tinyMgr
@@ -401,12 +410,14 @@ void App::initVulkan(InitParser &conf)
 	context.waitFrameSync[1].semaphore = context.signalFrameSync[1].semaphore = context.collector->createSemaphore(0, "Timeline");
 	for (int i = 0; i < 3; ++i) {
 		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
+		sceneColorImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "scene color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
+		context.frame.back()->bind(colorID, *sceneColorImage.back());
 		// Use offscreen rendering if no swapchain available OR if rear projection is enabled
 		if (vkmgr.getSwapchainView().empty() || Context::rearProjection) {
 			offscreenImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
-			context.frame.back()->bind(colorID, *offscreenImage.back());
+			context.frame.back()->bind(finalColorID, *offscreenImage.back());
 		} else {
-			context.frame.back()->bind(colorID, vkmgr.getSwapchainView()[i]);
+			context.frame.back()->bind(finalColorID, vkmgr.getSwapchainView()[i]);
 		}
 		context.frame.back()->bind(depthID, *depthBuffer);
 		if (multiColorID != colorID)
@@ -801,9 +812,11 @@ void App::draw(int delta_time)
 	s_font::beginPrint();
 	context.stat->capture(Capture::DRAW_RESOURCE_READY);
 
+	BlackHoleLensing::beginFrame();
 	executor->draw(delta_time);
 	context.stat->capture(Capture::EXECUTOR_DRAW);
 	context.helper->nextDraw(PASS_FOREGROUND);
+	blackHoleLensing->draw();
 	// Draw the Graphical ui and the Text ui
 	ui->draw(executor->getExecutorModule());
 	context.stat->capture(Capture::UI_DRAW);
