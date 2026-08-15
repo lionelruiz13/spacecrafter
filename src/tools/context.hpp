@@ -44,6 +44,7 @@ enum {
     // PASS_STAR_FBO, // star framebuffer, no depth buffer
     PASS_MULTISAMPLE_DEPTH = PASS_BACKGROUND, // multi-sample, depth buffer
     PASS_MULTISAMPLE_FRONT = PASS_MULTISAMPLE_DEPTH, // multi-sample, no depth buffer
+    PASS_LENS, // single-sample gravitational lens composition
     PASS_FOREGROUND, // single sample, no depth buffer
 };
 

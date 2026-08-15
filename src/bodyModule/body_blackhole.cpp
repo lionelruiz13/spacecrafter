@@ -15,6 +15,7 @@
 #include "bodyModule/halo.hpp"
 #include "bodyModule/orbit_3d.hpp"
 #include "bodyModule/trail.hpp"
+#include "appModule/blackhole_lensing.hpp"
 #include "coreModule/projector.hpp"
 #include "tools/context.hpp"
 #include "tools/file_path.hpp"
@@ -306,6 +307,8 @@ void BlackHole::drawOverlay(VkCommandBuffer cmd, double screen_sz)
     const float outerRadius = diskEnabled ? static_cast<float>(diskOuterRadius * diskScale) : static_cast<float>(radius);
     const float eventRadius = std::max(5.f, static_cast<float>(screen_sz) * static_cast<float>(radius) / std::max(outerRadius, 0.000001f) * 0.90f);
     const float overlayRadius = std::max(28.f, eventRadius * 3.45f);
+
+    BlackHoleLensing::submit(Vec2f(screenPos.first, screenPos.second), eventRadius, visual.lensingStrength);
 
     *overlayRmag = overlayRadius;
     overlayUniform->get().photonColorAndEventRadius = Vec4f(visual.photonColor[0], visual.photonColor[1], visual.photonColor[2], eventRadius);

@@ -63,6 +63,7 @@ class Executor;
 class Observer;
 class FrameSender;
 class InitParser;
+class BlackHoleLensing;
 
 enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, COLOR_INVERSE, SUBTITLE, DSO_PICK, STAR_PICK, BODY_PICK};
 
@@ -181,6 +182,7 @@ private:
 	Context context;
 	std::unique_ptr<FrameSender> sender;
 	std::vector<std::unique_ptr<Texture>> offscreenImage; // If using sender instead of swapchain
+	std::vector<std::unique_ptr<Texture>> sceneColorImage;
 	VkSampleCountFlagBits sampleCount;
 	std::vector<std::unique_ptr<Texture>> multisampleImage;
 	std::unique_ptr<Texture> depthBuffer;
@@ -205,6 +207,7 @@ private:
 	std::unique_ptr<ServerSocket> tcp;
 	std::unique_ptr<Fps> internalFPS;			//! fine management of the frameRate
 	std::unique_ptr<AppDraw> appDraw;
+	std::unique_ptr<BlackHoleLensing> blackHoleLensing;
 	std::shared_ptr<Observer> observatory;
 	std::unique_ptr<Executor> executor;
 	std::unique_ptr<Mkfifo> mkfifo;
@@ -215,7 +218,7 @@ private:
 
 	uint16_t renderSize = 0; //! Render size, if render surface is not the screen surface
 	Uint16 width, height;  						//! Contains the resolution w and h of the SDL window
-	int colorID, depthID, multiColorID, shadowID;
+	int colorID, finalColorID, depthID, multiColorID, shadowID;
 	SDL_Event	E;
 };
 #endif
