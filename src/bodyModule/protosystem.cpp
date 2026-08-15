@@ -40,6 +40,7 @@
 #include "bodyModule/body_artificial.hpp"
 #include "bodyModule/body_center.hpp"
 #include "bodyModule/body_star.hpp"
+#include "bodyModule/body_blackhole.hpp"
 #include "tools/object.hpp"
 #include "tools/context.hpp"
 #include "interfaceModule/base_command_interface.hpp"
@@ -487,6 +488,7 @@ BODY_TYPE ProtoSystem::setPlanetType (const std::string &str)
 		CASE("Artificial", ARTIFICIAL);
 		CASE("Observer", OBSERVER);
 		CASE("Center", CENTER);
+		CASE("BlackHole", BLACKHOLE);
 		default:
 			return UNKNOWN;
 	}
@@ -795,6 +797,50 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 				bodyTrace = p;
 			}
 			p = std::move(p_big);
+		}
+		break;
+		case BLACKHOLE: {
+			BodyTexture blackHoleTexture = bodyTexture;
+			if (blackHoleTexture.tex_map.empty())
+				blackHoleTexture.tex_map = "bodies/blackhole_event_horizon.png";
+			const bool diskEnabled = Utility::strToBool(param["rings"], 1);
+			const double diskInnerRadius = diskEnabled ? Utility::strToDouble(param["ring_inner_size"], Utility::strToDouble(param["radius"]) * 2.2)/AU : 0.0;
+			const double diskOuterRadius = diskEnabled ? Utility::strToDouble(param["ring_outer_size"], Utility::strToDouble(param["radius"]) * 7.0)/AU : 0.0;
+			const std::string diskTex = diskEnabled ? (param["tex_ring"].empty() ? "bodies/blackhole_accretion_disk.png" : param["tex_ring"]) : "";
+			BlackHoleVisual blackHoleVisual;
+			if (!param["blackhole_disk_color"].empty())
+				blackHoleVisual.diskColor = Utility::strToVec3f(param["blackhole_disk_color"]);
+			if (!param["blackhole_photon_color"].empty())
+				blackHoleVisual.photonColor = Utility::strToVec3f(param["blackhole_photon_color"]);
+			if (!param["blackhole_lens_color"].empty())
+				blackHoleVisual.lensColor = Utility::strToVec3f(param["blackhole_lens_color"]);
+			blackHoleVisual.diskIntensity = Utility::strToFloat(param["blackhole_disk_intensity"], 1.f);
+			blackHoleVisual.turbulence = Utility::strToFloat(param["blackhole_turbulence"], 1.f);
+			blackHoleVisual.lensingStrength = Utility::strToFloat(param["blackhole_lensing"], 1.f);
+			std::shared_ptr<BlackHole> p_blackhole = std::make_shared<BlackHole>(std::move(parent),
+			                    englishName,
+			                    Utility::strToBool(param["halo"]),
+			                    Utility::strToDouble(param["radius"])/AU,
+			                    Utility::strToDouble(param["oblateness"], 0.0),
+			                    std::move(bodyColor),
+			                    solLocalDay,
+			                    Utility::strToDouble(param["albedo"], -1.0),
+			                    std::move(orb),
+			                    close_orbit,
+			                    currentOBJ,
+			                    orbit_bounding_radius,
+								blackHoleTexture,
+								diskInnerRadius,
+								diskOuterRadius,
+								diskTex,
+								blackHoleVisual
+								);
+
+			if (!parent && !centerObject) {
+				centerObject = p_blackhole;
+				bodyTrace = p_blackhole;
+			}
+			p = std::move(p_blackhole);
 		}
 		break;
 		case ASTEROID:
