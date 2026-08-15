@@ -152,10 +152,8 @@ void BlackHole::drawRings(VkCommandBuffer cmd, const Projector* prj, const Obser
     drawOverlay(cmd, screen_sz);
 }
 
-void BlackHole::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
+void BlackHole::drawHalo(const Navigator*, const Projector*, const ToneReproductor*)
 {
-    if (isVisible && flags.flag_halo && getOnScreenSize(prj, nav) < 10)
-        halo->drawHalo(nav, prj, eye);
 }
 
 void BlackHole::drawAxis(VkCommandBuffer, const Projector*, const Mat4d&)
@@ -296,28 +294,10 @@ void BlackHole::createOverlayContext(float viewportHeight)
     overlayPipeline->build("Black hole overlay");
 }
 
-void BlackHole::drawOverlay(VkCommandBuffer cmd, double screen_sz)
+void BlackHole::drawOverlay(VkCommandBuffer, double screen_sz)
 {
-    if (!overlayPipeline)
-        createOverlayContext(VulkanMgr::instance->getScreenRect().extent.height);
-
-    if (!overlayPipeline || overlayPipeline->get() == VK_NULL_HANDLE || !overlayScreenPos)
-        return;
-
     const float outerRadius = diskEnabled ? static_cast<float>(diskOuterRadius * diskScale) : static_cast<float>(radius);
     const float eventRadius = std::max(5.f, static_cast<float>(screen_sz) * static_cast<float>(radius) / std::max(outerRadius, 0.000001f) * 0.90f);
-    const float overlayRadius = std::max(28.f, eventRadius * 3.45f);
 
     BlackHoleLensing::submit(Vec2f(screenPos.first, screenPos.second), eventRadius, visual.lensingStrength);
-
-    *overlayRmag = overlayRadius;
-    overlayUniform->get().photonColorAndEventRadius = Vec4f(visual.photonColor[0], visual.photonColor[1], visual.photonColor[2], eventRadius);
-    overlayUniform->get().lensColorAndStrength = Vec4f(visual.lensColor[0], visual.lensColor[1], visual.lensColor[2], visual.lensingStrength);
-    overlayUniform->get().controls = Vec4f(visual.diskIntensity, 0.f, 0.f, 0.f);
-    *overlayScreenPos = screenPos;
-
-    overlayPipeline->bind(cmd);
-    overlayLayout->bindSets(cmd, {*overlaySet, *Context::instance->uboSet});
-    overlayBuffer->bind(cmd);
-    vkCmdDraw(cmd, 1, 1, 0, 0);
 }
