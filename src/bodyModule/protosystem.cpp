@@ -803,7 +803,9 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 			BodyTexture blackHoleTexture = bodyTexture;
 			if (blackHoleTexture.tex_map.empty())
 				blackHoleTexture.tex_map = "bodies/blackhole_event_horizon.png";
-			const bool diskEnabled = Utility::strToBool(param["rings"], 1);
+			const bool diskEnabled = param["blackhole_disk"].empty()
+				? Utility::strToBool(param["rings"], 0)
+				: Utility::strToBool(param["blackhole_disk"], 1);
 			const double diskInnerRadius = diskEnabled ? Utility::strToDouble(param["ring_inner_size"], Utility::strToDouble(param["radius"]) * 2.2)/AU : 0.0;
 			const double diskOuterRadius = diskEnabled ? Utility::strToDouble(param["ring_outer_size"], Utility::strToDouble(param["radius"]) * 7.0)/AU : 0.0;
 			const std::string diskTex = diskEnabled ? (param["tex_ring"].empty() ? "bodies/blackhole_accretion_disk.png" : param["tex_ring"]) : "";
@@ -817,6 +819,7 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 			blackHoleVisual.diskIntensity = Utility::strToFloat(param["blackhole_disk_intensity"], 1.f);
 			blackHoleVisual.turbulence = Utility::strToFloat(param["blackhole_turbulence"], 1.f);
 			blackHoleVisual.lensingStrength = Utility::strToFloat(param["blackhole_lensing"], 1.f);
+			blackHoleVisual.distortionEnabled = Utility::strToBool(param["blackhole_distortion"], 1);
 			std::shared_ptr<BlackHole> p_blackhole = std::make_shared<BlackHole>(std::move(parent),
 			                    englishName,
 			                    Utility::strToBool(param["halo"]),

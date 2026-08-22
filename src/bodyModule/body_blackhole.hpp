@@ -29,6 +29,7 @@ struct BlackHoleVisual {
     float diskIntensity = 1.0f;
     float turbulence = 1.0f;
     float lensingStrength = 1.0f;
+    bool distortionEnabled = true;
 };
 
 class BlackHole : public Body {
@@ -85,6 +86,12 @@ private:
         float turbulence;
     };
 
+    struct HorizonUniform {
+        Mat4f ModelViewMatrix;
+        Vec3f clipping_fov;
+        float HorizonRadius;
+    };
+
     struct OverlayUniform {
         Vec4f photonColorAndEventRadius;
         Vec4f lensColorAndStrength;
@@ -92,9 +99,12 @@ private:
     };
 
     void createDiskContext();
+    void createHorizonContext();
     void createOverlayContext(float viewportHeight);
     void buildDiskMesh();
+    void buildHorizonMesh();
     void drawDisk(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat, double screen_sz);
+    void drawHorizon(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat);
     void drawOverlay(VkCommandBuffer cmd, double screen_sz);
 
     std::unique_ptr<s_texture> diskTex;
@@ -108,6 +118,13 @@ private:
     std::unique_ptr<Set> diskSet;
     std::unique_ptr<SharedBuffer<DiskUniform>> diskUniform;
     std::unique_ptr<SharedBuffer<DiskVisualUniform>> diskVisualUniform;
+
+    std::unique_ptr<VertexArray> horizonVertex;
+    std::unique_ptr<VertexBuffer> horizonBuffer;
+    std::unique_ptr<PipelineLayout> horizonLayout;
+    std::unique_ptr<Pipeline> horizonPipeline;
+    std::unique_ptr<Set> horizonSet;
+    std::unique_ptr<SharedBuffer<HorizonUniform>> horizonUniform;
 
     std::unique_ptr<VertexArray> overlayVertex;
     std::unique_ptr<VertexBuffer> overlayBuffer;
