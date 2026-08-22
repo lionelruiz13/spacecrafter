@@ -1,2 +1,10 @@
 artifacts
 __pycache__/
+
+# Staging binaries -- a build of a named commit, kept on disk to replay a
+# measurement against (README: "Nothing derived enters history"). Derived, and
+# each one is 185+ MiB. Name-shaped, so this is the proxy layer only: the
+# criterion is githooks/pre-commit, which reads content.
+harness/sc_f*_pre
+harness/sc_f*_child
+harness/spacecrafter_pre_*

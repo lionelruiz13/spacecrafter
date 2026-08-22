@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+#
+# pre-commit -- refuse to write a DERIVATION into a history whose job is origins.
+#
+# ---------------------------------------------------------------------------
+# THE RULE, AND THE REASON UNDER IT
+# ---------------------------------------------------------------------------
+# A build output, a staging binary, a rendered artifact is not an origin: it is
+# something the origins produce. Committed, it is either
+#     reconstructible      -> redundant (the source commit + md5 already say it), or
+#     non-reconstructible  -> unreliable (nothing can ever check what it claims).
+# Either way it does not belong in the record. This repo already says so in
+# prose -- "uncommitted per the artifacts convention", written into a dozen
+# delivery entries -- and prose is enforced by whoever is paying attention at
+# `git add`. On 2026-08-01 a 187 MiB staging binary went in beside two files
+# that belonged, and the entry recording that wave states it is uncommitted:
+# the convention and the tree disagreed for three weeks and nothing said so.
+# This hook is that convention with teeth. It is not a size policy; size is one
+# of its two detectors.
+#
+# ---------------------------------------------------------------------------
+# TWO INDEPENDENT DETECTORS, BECAUSE THEY FAIL DIFFERENTLY
+# ---------------------------------------------------------------------------
+#   MAGIC  -- an executable/object file, at any size. Content, never the name:
+#             names lie, and a 2 MiB stripped binary is as much a derivation as
+#             a 187 MiB one. This is the criterion.
+#   SIZE   -- any blob >= hooks.maxBlobBytes (default 8 MiB). This is a proxy,
+#             and it is here for the class the criterion cannot name: whatever
+#             large derived thing has no magic bytes (a log, a dump, a capture).
+#             The number is set from the corpus rather than from taste: the
+#             largest legitimately tracked blob across both repos is 3.06 MB
+#             (planetsephems/vsop87.c), the largest in the harness 1.78 MB (a
+#             b18 PNG). 8 MiB is ~2.6x the real ceiling and ~12x under GitHub's
+#             100 MiB hard rejection, so it fires while a commit is still cheap
+#             to fix -- which is the whole point of catching it here and not at
+#             push time.
+#
+# Both are refusals with the repair printed, never warnings: a warning on a
+# `git add -A` scrolls past above the commit that already happened.
+#
+# Bypass: `git commit --no-verify`, or raise the ceiling for one repo with
+#   git config hooks.maxBlobBytes <n>
+# Both are deliberate, visible acts. That is the difference between an override
+# and a hole.
+#
+# Installed by githooks/install.sh (core.hooksPath). Limit, stated because it
+# is real: git config is per-clone, so a FRESH CLONE runs no hook until that
+# script is run. Nothing inside a repository can fix that -- the last-resort
+# layer is GitHub's own >100 MiB rejection, which is exactly the late, expensive
+# catch this hook exists to pre-empt.
+# ---------------------------------------------------------------------------
+set -uo pipefail
+
+LIMIT=$(git config --int hooks.maxBlobBytes 2>/dev/null || true)
+[ -n "${LIMIT}" ] || LIMIT=8388608
+
+if ! git rev-parse --verify -q HEAD >/dev/null 2>&1; then
+    BASE=$(git hash-object -t tree /dev/null)      # the empty tree: first commit
+else
+    BASE=HEAD
+fi
+
+# --diff-filter=AM: added or modified content. A deletion or a pure rename
+# introduces no new blob, so there is nothing to weigh.
+# -z + the ":<path>" index lookup: paths with spaces, quotes or UTF-8 survive
+# this loop, where a tab-split of --raw would have mangled them silently.
+BAD=0
+while IFS= read -r -d '' path; do
+    sha=$(git rev-parse ":${path}" 2>/dev/null) || continue
+    size=$(git cat-file -s "${sha}" 2>/dev/null) || continue
+    magic=$(git cat-file blob "${sha}" 2>/dev/null | head -c 4 | od -An -v -tx1 | tr -d ' \n')
+    kind=""
+    case "${magic}" in
+        7f454c46)                       kind="an ELF executable/object" ;;
+        4d5a*)                          kind="a PE/DOS executable" ;;
+        213c6172)                       kind="an ar archive (static library)" ;;
+        feedface|cefaedfe|feedfacf|cffaedfe) kind="a Mach-O binary" ;;
+        cafebabe)                       kind="a Mach-O fat binary or Java class file" ;;
+    esac
+    if [ -n "${kind}" ]; then
+        echo "REFUSED: ${path} is ${kind} (${size} bytes)." >&2
+        echo "         A binary is a derivation, not an origin -- it is either reconstructible" >&2
+        echo "         (so redundant) or not (so unreliable). Record how to rebuild it, not it." >&2
+        BAD=$((BAD + 1))
+    elif [ "${size}" -ge "${LIMIT}" ]; then
+        echo "REFUSED: ${path} is ${size} bytes, over the ${LIMIT}-byte ceiling." >&2
+        echo "         Nothing legitimate in either repo is this large (max measured: 3.06 MB)." >&2
+        echo "         If it IS legitimate: git config hooks.maxBlobBytes <n>, and say why in the commit." >&2
+        BAD=$((BAD + 1))
+    fi
+done < <(git diff --cached --name-only -z --diff-filter=AM "${BASE}" 2>/dev/null)
+
+if [ "${BAD}" -gt 0 ]; then
+    echo >&2
+    echo "  ${BAD} staged file(s) refused. Unstage with:" >&2
+    echo "      git restore --staged <path>          (and add it to .gitignore, or it comes back)" >&2
+    echo "  Deliberate override: git commit --no-verify" >&2
+    exit 1
+fi
+exit 0
