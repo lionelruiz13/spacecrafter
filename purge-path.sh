@@ -158,7 +158,7 @@ if [ "${1:-}" = "--msg-filter" ]; then
         # so a message whose token was substituted would come back one blank
         # line shorter than every message that was not -- two shapes in the
         # corpus for one rule, and a byte difference gate G5 refuses. (It did:
-        # this line's first version failed at 3f7e59b3, "14d13".)
+        # this line's first version failed at 231a149f, "14d13".)
         OUT=$(printf '%s' "${OUT}" | sed -E "s/\\b${TOK}\\b/${NEWF:0:${N}}/g"; printf X); OUT=${OUT%X}
         printf '%s %s -> %s\n' "${GIT_COMMIT}" "${TOK}" "${NEWF:0:${N}}" >> "${PURGE_REPORT}"
     done

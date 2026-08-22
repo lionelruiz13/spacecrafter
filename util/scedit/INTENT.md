@@ -331,7 +331,7 @@ notes.*
   independent clean build (5/5 ctest). Corpus found shipped-content
   defects → §5.80 upstream (0xA0 eats `albedo 1`; the dead
   `set home_planet … duration 5` line = §5.79(a) materialized).
-  Upstream batch executed (harness `3b778fc`): NEW §5.77 (configuration
+  Upstream batch executed (harness `46ee672`): NEW §5.77 (configuration
   fall-through — verified fully: star-catalogue save also runs §5.42's
   config writer; unknown module re-runs App::init before reporting),
   §5.78 (date W_PRESET||W_PRESET + no-effect `_()` statement), §5.79
@@ -369,8 +369,8 @@ notes.*
   grade, not engine-defect grade. Incident, named per house honesty: a
   python slice reordering §5 rows TRUNCATED the parent ledger (515
   lines) and the post-edit check verified row order, not file integrity
-  — committed truncated (d4820ea), caught by the diffstat, restored
-  from HEAD~1 with an only-insertion diff gate (3f7e59b). Root: a
+  — committed truncated (a105e22), caught by the diffstat, restored
+  from HEAD~1 with an only-insertion diff gate (231a149). Root: a
   relocation executed as a hand-rolled rebuild — the pure-move rule
   exists for exactly this; gate for any future ledger restructuring =
   diff-against-baseline, not spot-checks of the intended change.
