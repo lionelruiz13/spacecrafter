@@ -16,25 +16,19 @@ const T = {
 } as const;
 
 function isQuotedString(t: string): boolean {
-	if (t.length < 2) {
-		return false;
-	}
-	const a = t[0], b = t[t.length - 1];
-	return (a === `"` && b === `"`) || (a === `'` && b === `'`);
+	void t;
+	return false;
 }
 
 function isBoolean(t: string): boolean {
-	t = t.toLowerCase();
-	return t === "true" || t === "false";
+	void t;
+	return false;
 }
 
 // Gère int/float/double + notation scientifique simple
 function isNumber(t: string): boolean {
-	// refuser les trucs du genre "-" ou "."
-	if (!t || t === "-" || t === "." || t === "+") {
-		return false;
-	}
-	return /^[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?$/.test(t);
+	void t;
+	return false;
 }
 
 function findClosingQuote(s: string, start: number, quote: "'" | '"'): number {
@@ -107,10 +101,58 @@ function tokenizeLine(line: string): string[] {
 	return out;
 }
 
+interface TokenSpan {
+	text: string;
+	start: number;
+}
+
+function findContinuation(line: string): number {
+	let index = line.length - 1;
+	while (index >= 0 && /\s/.test(line[index])) {
+		index--;
+	}
+	return line[index] === "\\" ? index : -1;
+}
+
+function tokenizeLineWithPositions(line: string, end: number): TokenSpan[] {
+	const tokens: TokenSpan[] = [];
+	let index = 0;
+	while (index < end) {
+		while (index < end && /\s/.test(line[index])) {
+			index++;
+		}
+		if (index >= end) {
+			break;
+		}
+
+		const start = index;
+		if (line[index] === `"` || line[index] === `'`) {
+			const quote = line[index] as "'" | '"';
+			let closing = index + 1;
+			while (closing < end && line[closing] !== quote) {
+				closing++;
+			}
+			if (closing < end) {
+				tokens.push({ text: line.slice(index, closing + 1), start });
+				index = closing + 1;
+				continue;
+			}
+		}
+
+		while (index < end && !/\s/.test(line[index])) {
+			index++;
+		}
+		tokens.push({ text: line.slice(start, index), start });
+	}
+	return tokens;
+}
+
 export function activate(context: vscode.ExtensionContext) {
 	const provider: vscode.DocumentSemanticTokensProvider = {
 		provideDocumentSemanticTokens(document) {
 			const builder = new vscode.SemanticTokensBuilder(legend);
+			let argumentIndex = 0;
+			let isContinuing = false;
 
 			for (let lineNo = 0; lineNo < document.lineCount; lineNo++) {
 				const line = document.lineAt(lineNo).text;
@@ -121,31 +163,25 @@ export function activate(context: vscode.ExtensionContext) {
 					continue;
 				}
 
-				const trimmed = line.trim();
-				if (!trimmed) {
-					continue;
-				}
-
-				const tokens = tokenizeLine(line);
+				const continuation = findContinuation(line);
+				const tokens = tokenizeLineWithPositions(line, continuation === -1 ? line.length : continuation);
 				if (tokens.length === 0) {
 					continue;
+				}
+				if (!isContinuing) {
+					argumentIndex = 0;
 				}
 
 				// Pour placer les tokens, on cherche leurs positions dans la ligne
 				// en avançant de gauche à droite.
-				let searchFrom = 0;
-
-				for (let i = 0; i < tokens.length; i++) {
-					const t = tokens[i];
-					const col = line.indexOf(t, searchFrom);
-					if (col === -1) {
-						continue;
-					}
+				for (const token of tokens) {
+					const t = token.text;
+					const col = token.start;
 
 					let tokenType: number;
-					if (i === 0) {
+					if (argumentIndex === 0) {
 						tokenType = T.keyword;          // keyword = commande
-					} else if (i % 2 === 1) {
+					} else if (argumentIndex % 2 === 1) {
 						tokenType = T.parameter;  		// parameter = option
 					} else {
 						if (isQuotedString(t)) {
@@ -162,7 +198,11 @@ export function activate(context: vscode.ExtensionContext) {
 					}
 
 					builder.push(lineNo, col, t.length, tokenType, 0);
-					searchFrom = col + t.length;
+					argumentIndex++;
+				}
+				isContinuing = continuation !== -1;
+				if (!isContinuing) {
+					argumentIndex = 0;
 				}
 			}
 
