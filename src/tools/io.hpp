@@ -170,7 +170,12 @@ private:
 	int unlock(SDL_mutex *mutex);
 	SDL_mutex *running; //Mutex of active server
 	int activeSocketsCount; //Number of active sockets
-	char* buffer; //Receive buffer
+	//! The RECEIVE buffer, and only that (§5.73): `tcp_buffer_in_size` bytes,
+	//! filled by `SDLNet_TCP_Recv` and read back by `computeNewData`. The HTTP
+	//! branch also streams a file through it, in `bufferSize` chunks - bounded
+	//! by the buffer by construction. Nothing that the server SENDS is copied
+	//! into it any more: an answer's length is the answer's business.
+	char* buffer;
 
 	/* Data storage variables */
 	std::queue<ClientMessage> inputQueue; //Input queue
@@ -202,11 +207,22 @@ private:
 	//! Broadcast to the feedback subscribers. `excludeClient` is the slot that
 	//! has already been served as the addressee, so that a client which is both
 	//! the issuer and a subscriber gets one copy and not two.
-	int broadcast(std::string data, int excludeClient = -1);
+	int broadcast(const std::string &data, int excludeClient = -1);
 	int close(unsigned int client); //Function to close the client socket
 
 	/* FFactoring or assistance functions */
-	int send(TCPsocket client); //Function that sends the string contained in the buffer
+	//! Send ONE message to one client. The message is the caller's own, and
+	//! its length is bounded by itself.
+	//! INTENT §5.73: every sender used to `strcpy` its message into `buffer`
+	//! first, and `buffer` is the RECEIVE buffer - `tcp_buffer_in_size` bytes,
+	//! 1024 in the shipped config. An answer is clamped to `MAX_BUFFER` = 1024
+	//! by `setOutput` and then sent as `data + '\n' + '\0'`, i.e. L + 2 bytes,
+	//! so an answer of 1023 bytes or more wrote past the end of a buffer whose
+	//! size answers a different question. Nothing here truncated anything, so
+	//! nothing about what a client receives changes: the size rule is still
+	//! `strlen + 1` (the terminator is part of the message - that is how a
+	//! client frames it), only the storage is now the message's own.
+	int send(TCPsocket client, const char *data);
 	int resetThread(); //Fonction qui redémarre le thread de traiement quand il est inactif
 	int killThread(); //Function that kills the processing thread when it is inactive
 

@@ -1,6 +1,7 @@
 #include "ModularBody.hpp"
 #include <cstring>
 #include <iomanip>
+#include <limits>
 #include <ostream>
 #include "ModularBodyPtr.hpp"
 #include "ModularSystem.hpp"
@@ -214,6 +215,46 @@ void ModularBody::propagateRenderHidden(bool ancestorHidden)
         child->propagateRenderHidden(nowHidden);
 }
 
+// The motion law is re-declared, not written around (see the header). Same I5
+// guard as the destructor: the outgoing orbit may be the parent BinaryOrbit's
+// unowned secondary, and it must stop being referenced there before it stops
+// being this body's.
+std::unique_ptr<Orbit> ModularBody::setOrbit(std::unique_ptr<Orbit> newOrbit)
+{
+    if (parent && orbit) {
+        if (auto *binary = dynamic_cast<BinaryOrbit *>(parent->orbit.get()))
+            binary->clearSecondaryOrbit(orbit.get());
+    }
+    std::unique_ptr<Orbit> previous = std::move(orbit);
+    orbit = std::move(newOrbit);
+    // The cached position was produced by the law that just stopped applying,
+    // so it is stale by definition. Clearing the D8 barrier's idempotency stamp
+    // is what says so: useNow() re-evaluates instead of returning "already
+    // brought up to this frame's date" (§11.117 - without this a place given a
+    // new law inside a frame keeps the old law's position until the next one).
+    evaluatedJD = -std::numeric_limits<double>::infinity();
+    return previous;
+}
+
+// The old path's Body::getPositionAtDate (body.cpp:1291) on this tree: the sum
+// of the parent-relative orbit of every hop. Old stops at the first body with
+// no orbit (its Sun has none); here every node carries one, so the walk stops
+// at the ROOT instead - the same set of hops on the shipped data, and the same
+// answer, because the root's own "orbit" is what its position WOULD add and the
+// root is the frame we are answering in.
+Vec3d ModularBody::getPositionAtDate(double jd) const
+{
+    Vec3d pos{};
+    Vec3d tmp;
+    for (const ModularBody *b = this; b->parent; b = b->parent) {
+        if (!b->orbit)
+            continue;
+        b->orbit->positionAtTimevInVSOP87Coordinates(jd, tmp);
+        pos += tmp;
+    }
+    return pos;
+}
+
 ModularBody::~ModularBody()
 {
     // I5 guard: if this body's orbit is wired as the secondary of the parent's
@@ -341,6 +382,17 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
         body->recursiveUpdate(jd, flat);
     } else {
         body->mat = mat_local_to_body;
+        // The matLocalToBodyPos contract (member doc: "Set on EVERY position
+        // update, visible or not") - INTENT §5.46, second site. This branch is
+        // a position update of the REFERENCE that skips update() (§5.32: the
+        // one node dispatchUpdate can skip, when the observer looks away from
+        // it or it is too far to subtend the cull cone), and it left the frame
+        // at whatever the last VISIBLE frame cached. `flat` is this body's own
+        // flat position frame by construction (built one line above as
+        // mat_local_to_body . accumulatedBodyToBodyPos), i.e. exactly what
+        // recursiveUpdate caches on the visible side, so the two branches now
+        // leave the same member in the same state.
+        body->matLocalToBodyPos = flat;
         for (auto &c : body->groundedBodies)
             c->recursiveTranslationUpdate(jd, mat_local_to_body);
         for (auto &c : body->orbitingBodies)
@@ -379,6 +431,18 @@ ModularSystem *ModularBody::dispatchUpdate(ModularBody *body, double jd, Mat4f m
         parent->publishParkedFrame(jd, flat);
         body = parent;
         body->mat = parentTilted; // assign BEFORE update: update() reads the member
+        // The matLocalToBodyPos contract (member doc: "Set on EVERY position
+        // update, visible or not") - INTENT §5.46. `flat` has just climbed one
+        // level (transformBodyToParent above is the exact inverse of the
+        // descent hop), so it IS this node's own flat position frame, and
+        // `parentTilted` was formed from it by the very product recursiveUpdate
+        // uses - the climb now leaves the same two members in the same state as
+        // the descent. Without this the ORBIT/TRAIL/TAIL passes, which build a
+        // body's parent frame from getMatLocalToBodyPos(), drew an up-chain
+        // ancestor's own line in the frame of the last descent through it
+        // (measured: an observer on the Moon put Earth's trail 366 px from
+        // Earth and 3.6 px from where the frame had been left, §11.137).
+        body->matLocalToBodyPos = flat;
         body->preUpdate(jd, flat);
         body->update(jd, parentTilted);
     }

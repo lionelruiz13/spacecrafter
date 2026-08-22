@@ -76,10 +76,21 @@ class ModularSystem;
 // (the params map kept in each entry is the authority) - checked at every use
 // through the name registry, never by dereferencing a stale pointer.
 //
-// NOT HERE: cross-session persistence [Q5: explicitly not needed]; the old
-// path's scripted animated transitions (moveTo/transitionTo*) and
-// saveCameraPosition, which stay the old AnchorManager's - the old path is
-// unchanged by construction and keeps serving old-path scenes.
+// THE SCRIPTED TRANSITIONS (B4(iv), §11.141) - the C3 time-driven half of row
+// 19, dual since 2026-08-09. `camera action move_to / transition_to` now reach
+// this class as well as the old AnchorManager, and they are expressed with the
+// SAME structural answer the three kinds are: A TRAVEL MOVES THE PLACE. The old
+// path travels by writing a new heliocentric position onto the current anchor
+// every frame; here the place is a body, a body's position IS its orbit, and a
+// travel IS a position-at-date function - so a travel is a re-declared MOTION
+// LAW (ModularBody::setOrbit) and there is still exactly one position authority
+// (I2), still evaluated by the tree, still a pure function of the date (so a
+// dropped frame or a time jump lands where the date says, as old's does).
+//
+// NOT HERE: cross-session persistence [Q5: explicitly not needed];
+// saveCameraPosition, which stays the old AnchorManager's (§5.41 / B31 rule the
+// serializer); the ROLL half of transitionToBody and `align_with` - see
+// transitionToBody below and §11.141 for the terms that do not derive.
 // ============================================================================
 
 //! Which of the three R3 kinds an anchor is. The `type` data value maps here
@@ -133,6 +144,55 @@ public:
     //! documented argument being honoured here.
     bool setFollowRotation(const std::string &name, bool value, Camera &camera);
 
+    // ---- The scripted transitions (B4(iv), §11.141) ------------------------
+    // Every one of these mirrors an old `AnchorManager` member reachable from a
+    // shipped `camera action` command, and mirrors its REFUSALS too: the script
+    // must get the same answer from both paths, so the seam's `oldOk || newOk`
+    // degenerates to one answer (SSystemFactory).
+
+    //! `camera action move_to target point x y z` with NO duration: put the
+    //! place the camera stands on AT `posRoot` now (old setCurrentAnchorPos,
+    //! anchor_manager.cpp:490 - which refuses only the on-a-body case, and in
+    //! particular does NOT refuse while a travel is in flight).
+    bool placeCurrentAt(const Vec3d &posRoot, Camera &camera, double jd);
+    //! `camera action move_to target point x y z duration t`: travel the place
+    //! to `posRoot` over `seconds` of SIMULATION time, on old's own speed curve
+    //! (old moveTo(pos,time), :407). Refuses while already moving, on a body,
+    //! and on a negative time; a zero time places instantly, as old does.
+    bool travelToPoint(const Vec3d &posRoot, double seconds, Camera &camera, double jd);
+    //! `camera action move_to target body body_name X duration t [altitude km]`:
+    //! travel the place toward where body X WILL BE at arrival, stopping
+    //! `altitude` km above its surface (5 radii when no altitude is given) -
+    //! old moveTo(anchor,time,alt) (:459) and moveToBody (:487).
+    bool travelToBody(const std::string &bodyName, double seconds, double altitudeKm,
+                      Camera &camera, double jd);
+    //! `camera action transition_to target point`: become a free place AT the
+    //! observer's current position, without moving the observer (old
+    //! transitionToPoint, :528 - which captures the observer position, then
+    //! zeroes the altitude so the observer sits exactly on the new point).
+    bool transitionToPoint(const std::string &name, Camera &camera, double jd);
+    //! `camera action transition_to target body name X`: reference X while the
+    //! observer STAYS WHERE IT IS (old transitionToBody, :549, finds the
+    //! longitude/latitude that reproduce the observer's place by bisection and
+    //! sets the altitude to the measured distance to the surface; here the same
+    //! place is expressed directly, since the camera's pose is that triple).
+    //! THE HEADING TAIL IS NOT MIRRORED - old ends with setHeading(-axisAngle)
+    //! + changeHeading(0, 5s), a roll decision at a reference switch, which is
+    //! D28's open question and is already answered the other way for this path
+    //! by A38 ("the reference switch holds the WHOLE orientation"). §11.141
+    //! carries the measurement of old's tail and the terms that fail.
+    bool transitionToBody(const std::string &name, Camera &camera);
+
+    //! Per-frame: retire a travel that has landed. Mirrors the old manager's
+    //! own update-driven flag (anchor_manager.cpp:310), so "am I still moving"
+    //! flips on the same tick on both paths.
+    void update(double jd);
+    //! True while a travel is in flight - the state the refusals above and
+    //! switchTo() read (old AnchorManager::moving).
+    inline bool isMoving() const {
+        return moving;
+    }
+
     //! Name of the anchor the camera was last switched to through this class
     //! ("" if none). Not a poll of the camera: the camera can leave an anchor by
     //! other means (set home_planet, free-flight escalation), and this reports
@@ -172,10 +232,27 @@ private:
     //! Create one hidden anchor body under `parent` with the given orbit params.
     ModularBody *createAnchorBody(const std::string &name, ModularBody *parent, stringHash_t &orbitParams);
     Anchor *find(const std::string &name);
+    //! The PLACE the camera is standing on, or null - the new-path spelling of
+    //! old's `typeid(*currentAnchor) != typeid(AnchorPointBody)` test. A place
+    //! is an anchor that OWNS its body (kinds 1 and 3); an ATTACHED anchor and a
+    //! bare body reference are bodies, and a body cannot be travelled. Asked of
+    //! the anchor layer rather than of the body's type, because "is this a
+    //! place" is this layer's own fact (I4).
+    Anchor *currentPlace(const Camera &camera);
+    //! Give `place` the travel as its motion law and remember when it lands.
+    //! `targetRoot` is in ROOT coordinates; the law is evaluated in the body's
+    //! PARENT frame, so the parent's own (cached, already-evaluated) position is
+    //! subtracted at each date - no orbit is re-evaluated off-cadence and no
+    //! Newton seed is disturbed (§11.117).
+    bool installTravel(Anchor &place, const Vec3d &targetRoot, double travelDays, double jd);
 
     ModularSystem *root;
     std::vector<Anchor> anchors;
     std::string currentName;
+    //! Travel state - the exact pair the old manager keeps (`moving` +
+    //! `arrivalTime`); the trajectory itself lives in the anchor body's orbit.
+    bool moving = false;
+    double travelArrival = 0;
 };
 
 #endif /* end of include guard: CAMERA_ANCHORS_HPP_ */

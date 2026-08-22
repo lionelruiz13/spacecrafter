@@ -628,7 +628,10 @@ void ModularSystem::drawOrbits(Renderer &renderer)
         // (matLocalToBodyPos = P_frame . translation(B.ecl)) with B's own
         // offset undone. The cached frame is correct for EVERY body, visible or
         // not (unlike `mat`, whose rotation goes stale out of the view cone -
-        // the halo-only planets whose orbits were misplaced pre-fix).
+        // the halo-only planets whose orbits were misplaced pre-fix), and since
+        // §5.46 (F29) that now holds on the CLIMB as well as the descent: an
+        // up-chain ancestor - Earth for an observer on the Moon - used to draw
+        // its own orbit/trail in the frame of the last descent through it.
         Mat4f parentFrame = body.getMatLocalToBodyPos();
         parentFrame.multiplyTranslation(-body.getEclipticPos());
         for (auto *m : body.orbitComponents) {
@@ -666,10 +669,11 @@ void ModularSystem::drawTrails(Renderer &renderer)
             continue; // parentless: no parent frame to draw the trail in
         // Parent POSITION frame (matLocalToBodyPos . translation(-ecl)) - the
         // frame the parent-relative trail points live in, identical to the
-        // ORBIT pass (§11.39: the cached flat frame carries the correct rotation
-        // for a body that is at least halo-visible; a fully off-screen body's
-        // cache is stale, same shared limitation as ORBIT - the accumulation is
-        // unaffected, and the frame refreshes the instant the body returns).
+        // ORBIT pass. §11.39's "a fully off-screen body's cache is stale" no
+        // longer holds and had already stopped holding when selectiveUpdate's
+        // else-branch and recursiveTranslationUpdate took up the write; §5.46's
+        // up-chain hole (F29) was the last exception, so the frame is now fresh
+        // for every body this sweep can reach.
         Mat4f parentFrame = body.getMatLocalToBodyPos();
         parentFrame.multiplyTranslation(-body.getEclipticPos());
         for (auto *m : body.trailComponents) {

@@ -483,27 +483,52 @@ public:
         // above it stays sub-pixel. (Behind-the-observer rq≈0 keeps the old
         // path's behavior: wrong-but-culled.)
         const float rq = sqrtf(mat.r[12]*mat.r[12] + mat.r[13]*mat.r[13]);
-        float f;
-        if (projectionMode == ProjectionTransfer::FISHEYE) {
-            // The main case (INTENT 11.33): byte-for-byte the historical
-            // fast path — non-fisheye modes must not tax it.
-            f = (rq > distance * 1e-5f)
-                ? acos(-mat.r[14]/distance) / (rq * halfFov)
-                : 1.f / (distance * halfFov);
+        // The SAME singularity, one level deeper (§5.81): the guard above
+        // covers rq -> 0 at a FINITE distance, but a body sitting exactly AT
+        // the eye defeats the fallback itself — 1/(distance·halfFov) = inf and
+        // mat.r[12]·inf = NaN. `distance` is the norm of (r[12], r[13], r[14]),
+        // so distance == 0 means r[12] and r[13] are EXACTLY 0 and the answer
+        // is (0·f, 0·f) = the centre for EVERY finite f: the value is forced by
+        // the arithmetic, not chosen among alternatives, and it does not depend
+        // on the transfer, on halfFov or on the guard's own 1e-5 constant.
+        // REACHABLE from the shipped `camera action transition_to target
+        // point`, which puts the camera AT its anchor body by design
+        // (§11.141(c)) — measured `"screen":[nan,nan]` at `"dist":0`.
+        // It is NOT a "this body has no screen position" marker, deliberately:
+        // every consumer that must know whether a body belongs to the drawn
+        // surface already asks the ONE authority for it — membership of the
+        // owning system's sorted list (which `propagateRenderHidden` maintains,
+        // ModularBody.cpp:196-206) plus `operator bool`, asked by the pick
+        // sweep (ModularSystem::findBodyAt) and the selection pointer
+        // (ModularSystem::draw), while the body sweeps skip the distance-0 tail
+        // outright. A second answer encoded as a NaN would duplicate that
+        // authority (I2) and would be a silent one: it already broke a JSON
+        // reader on contact (§11.141(l)).
+        if (distance == 0.f) {
+            screenPos.first = screenPos.second = 0.f;
         } else {
-            // General radial transfer, same guard structure. CPU must land
-            // on the GPU's mapping (custom_project.glsl, spec-const 8) —
-            // ProjectionTransfer is the shared authority. The guard branch
-            // drops ALLSPHERE's 5.4e-5-NDC constant term (sub-0.1 px,
-            // within-guard only; the GPU keeps it).
-            f = (rq > distance * 1e-5f)
-                ? ProjectionTransfer::radius(projectionMode,
-                      acosf(-mat.r[14]/distance) / halfFov, halfFov) / rq
-                : ProjectionTransfer::slope0(projectionMode, halfFov)
-                      / (distance * halfFov);
+            float f;
+            if (projectionMode == ProjectionTransfer::FISHEYE) {
+                // The main case (INTENT 11.33): byte-for-byte the historical
+                // fast path — non-fisheye modes must not tax it.
+                f = (rq > distance * 1e-5f)
+                    ? acos(-mat.r[14]/distance) / (rq * halfFov)
+                    : 1.f / (distance * halfFov);
+            } else {
+                // General radial transfer, same guard structure. CPU must land
+                // on the GPU's mapping (custom_project.glsl, spec-const 8) —
+                // ProjectionTransfer is the shared authority. The guard branch
+                // drops ALLSPHERE's 5.4e-5-NDC constant term (sub-0.1 px,
+                // within-guard only; the GPU keeps it).
+                f = (rq > distance * 1e-5f)
+                    ? ProjectionTransfer::radius(projectionMode,
+                          acosf(-mat.r[14]/distance) / halfFov, halfFov) / rq
+                    : ProjectionTransfer::slope0(projectionMode, halfFov)
+                          / (distance * halfFov);
+            }
+            screenPos.first = mat.r[12] * f;
+            screenPos.second = mat.r[13] * f;
         }
-        screenPos.first = mat.r[12] * f;
-        screenPos.second = mat.r[13] * f;
         axisRotation = computeAxisRotation(jd);
         if (uncached)
             updateCache();       // module/radius part + a fresh updateReach()
@@ -950,13 +975,22 @@ public:
     //
     // Why the frame and nothing else. A parked body can recompute its own
     // eclipticPos from its orbit at any jd, but not the frame it sits in: that
-    // is the PARENT's position frame, and the parent's cached
-    // `matLocalToBodyPos` is NOT universally fresh - dispatchUpdate's up-chain
-    // loop never writes it (recorded at §11.117; the shipped hidden bodies hang
-    // off Sun, which is exactly an up-chain ancestor for an Earth observer). So
-    // the frame is captured here, at the six sites that used to do the walk,
-    // where it is provably the parent's own flat position frame for that frame -
-    // one Mat4f copy, and only for the nodes that actually own a parked child.
+    // is the PARENT's position frame, captured here at the sites that used to
+    // do the walk, where it is provably the parent's own flat position frame
+    // for that frame - one Mat4f copy, and only for the nodes that actually own
+    // a parked child.
+    // ORIGINALLY this member existed because the parent's own
+    // `matLocalToBodyPos` was NOT universally fresh - dispatchUpdate's up-chain
+    // loop never wrote it (§11.117 -> §5.46; the shipped hidden bodies hang off
+    // Sun, which is exactly an up-chain ancestor for an Earth observer). §5.46
+    // is FIXED (F29, §11.137), so every publish site now hands the same value
+    // the node's own `matLocalToBodyPos` already holds, and this cache is a
+    // known, deliberate duplicate rather than a needed one. It is kept rather
+    // than collapsed because collapsing it changes the B39 hidden-body barrier
+    // (`useNow`'s two-branch read), which is out of §5.46's scope - and it
+    // cannot desync silently: both members are written from the SAME `flat`, on
+    // the same line pair, at every one of those sites. Retiring it is recorded
+    // at §11.137 as the simplification this fix makes possible.
     // The GROUNDED variant's surface frame is derived from it on demand exactly
     // as the old code derived it (flat . accumulatedBodyPosToBody(jd)), which is
     // the identity every one of those call sites already relied on.
@@ -1050,10 +1084,50 @@ public:
     inline const Orbit *getOrbit() const {
         return orbit.get();
     }
+    //! Re-declare this body's MOTION LAW, returning the one it had.
+    //!
+    //! The orbit is this type's single position authority (transformParentToBodyPos
+    //! evaluates it and nothing else writes eclipticPos), so "this place now
+    //! moves differently" has exactly one legal spelling and it is this one -
+    //! not a per-frame position write beside the orbit, which would be a second
+    //! authority (I2). Client: the scripted camera travels (B4(iv), §11.141),
+    //! where the place the camera stands on travels to a destination and the
+    //! travel IS a position-at-date function.
+    //!
+    //! Carries the destructor's I5 guard: an orbit wired as the SECONDARY of the
+    //! parent's BinaryOrbit is referenced there without ownership, so it must be
+    //! unwired before it stops existing - the caller receives it alive, and what
+    //! it does with it is its own business.
+    std::unique_ptr<Orbit> setOrbit(std::unique_ptr<Orbit> newOrbit);
+    //! This body's position in the ROOT frame at an ARBITRARY date, by summing
+    //! the parent-relative orbit of every hop up to (excluding) the root - the
+    //! exact shape of the old path's `Body::getPositionAtDate` (body.cpp:1291),
+    //! which is what the scripted `move_to body` aims at, so the two paths aim
+    //! at the same point by construction.
+    //!
+    //! LIMIT, shared verbatim with the old form and stated rather than papered
+    //! over: the sum is of raw orbit outputs, so a GROUNDED hop (whose position
+    //! frame is its parent's SURFACE frame, transformParentToBodyPos) is not
+    //! folded. Exact for the ORBITING chains every shipped travel target has.
+    Vec3d getPositionAtDate(double jd) const;
     //! Current parent-relative position (root-aligned VSOP87). Client: the
     //! ORBIT module's center-notch (old Body::get_ecliptic_pos()).
     inline const Vec3f &getEclipticPos() const {
         return eclipticPos;
+    }
+    //! This body's position in the ROOT frame from the CACHED per-frame state:
+    //! the sum of `eclipticPos` up the chain, evaluating NO orbit. The frame
+    //! walk brings a parent up to date before its children, so a consumer
+    //! running INSIDE a child's own position evaluation reads a fresh answer
+    //! here - which is why the travelling anchor's motion law uses this and not
+    //! getPositionAtDate: re-entering an ancestor's orbit off-cadence would
+    //! leave its Newton seed at the wrong date (§11.117, the useNow lesson).
+    //! Same grounded-hop limit as getPositionAtDate, and for the same reason.
+    inline Vec3d getCachedRootPosition() const {
+        Vec3d p{};
+        for (const ModularBody *b = this; b->parent; b = b->parent)
+            p += Vec3d(b->eclipticPos[0], b->eclipticPos[1], b->eclipticPos[2]);
+        return p;
     }
     //! Orbit visualization period in days (old re.sidereal_period, the
     //! orbit-line draw gate); 0 = still orbit (no orbit line).
@@ -1928,6 +2002,18 @@ private:
     // rotation is stale for out-of-cone bodies), so the ORBIT pass can place a
     // child's orbit in its parent's frame reliably (row 8). Identity until the
     // first update.
+    // THE WRITERS ARE ENUMERATED so the contract is checkable rather than
+    // asserted (§5.46 was two of them silently missing for 10 days): every site
+    // that assigns `mat` or `mat.r[12..14]` assigns this too, and there are
+    // exactly five - recursiveUpdate (.cpp), dispatchUpdate's invisible-
+    // reference branch and its up-chain loop (.cpp), selectiveUpdate's
+    // else-branch and recursiveTranslationUpdate (below) - plus
+    // transformParentToBodyPos, which is the descent hop the first, fourth and
+    // fifth route through. The invariant that falls out, and that the F29
+    // harness gates on: for EVERY body the walk reaches,
+    //     matLocalToBodyPos.translation == mat.translation, bit for bit,
+    // because `mat` is always this frame times a PURE rotation
+    // (accumulatedBodyPosToBody) and multiplyFast leaves the translation alone.
     Mat4f matLocalToBodyPos = Mat4f::identity();
     // The flat position frame this node's PARKED children ride, refreshed every
     // frame by publishParkedFrame at the sites that used to tick them, consumed

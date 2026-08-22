@@ -872,16 +872,34 @@ public:
 		return oldOk || newOk;
 	}
 
+    // ---- Scripted transitions: DUAL since B4(iv) (§11.141) -----------------
+    // Same seam shape as the anchor surface above: ONE declaration drives both
+    // registries, the old AnchorManager unchanged. The return value is the
+    // script's answer, and here it is required to be the SAME answer from both
+    // paths - each new-path member mirrors its old counterpart's refusals
+    // (on a body / already moving / negative time / unknown name / wrong anchor
+    // type), so `oldOk || newOk` degenerates to one verdict and a script that
+    // saw an error still sees it. `wait` in the command interface rides that
+    // verdict, so a divergence here would also desynchronize the script clock.
     bool cameraMoveToPoint(double x, double y, double z){
-		return currentSystem->getAnchorManager()->setCurrentAnchorPos(Vec3d(x,y,z));
+		const bool oldOk = currentSystem->getAnchorManager()->setCurrentAnchorPos(Vec3d(x,y,z));
+		const bool newOk = camera
+			? cameraAnchors->placeCurrentAt(Vec3d(x,y,z), *camera, timeMgr->getJDay()) : false;
+		return oldOk || newOk;
 	}
 
 	bool cameraMoveToPoint(double x, double y, double z, double time){
-		return currentSystem->getAnchorManager()->moveTo(Vec3d(x,y,z),time);
+		const bool oldOk = currentSystem->getAnchorManager()->moveTo(Vec3d(x,y,z),time);
+		const bool newOk = camera
+			? cameraAnchors->travelToPoint(Vec3d(x,y,z), time, *camera, timeMgr->getJDay()) : false;
+		return oldOk || newOk;
 	}
 
     bool cameraMoveToBody(const std::string& bodyName, double time, double alt) {
-        return currentSystem->getAnchorManager()->moveToBody(bodyName, time, alt);
+        const bool oldOk = currentSystem->getAnchorManager()->moveToBody(bodyName, time, alt);
+        const bool newOk = camera
+            ? cameraAnchors->travelToBody(bodyName, time, alt, *camera, timeMgr->getJDay()) : false;
+        return oldOk || newOk;
     }
 
     bool cameraMoveRelativeXYZ( double x, double y, double z) {
@@ -889,11 +907,16 @@ public:
 	}
 
     bool cameraTransitionToPoint(const std::string& name){
-		return currentSystem->getAnchorManager()->transitionToPoint(name);
+		const bool oldOk = currentSystem->getAnchorManager()->transitionToPoint(name);
+		const bool newOk = camera
+			? cameraAnchors->transitionToPoint(name, *camera, timeMgr->getJDay()) : false;
+		return oldOk || newOk;
 	}
 
     bool cameraTransitionToBody(const std::string& name) {
-        return currentSystem->getAnchorManager()->transitionToBody(name);
+        const bool oldOk = currentSystem->getAnchorManager()->transitionToBody(name);
+        const bool newOk = camera ? cameraAnchors->transitionToBody(name, *camera) : false;
+        return oldOk || newOk;
     }
 
     //! `camera action follow_rotation name <X> value <v>`. The old path ignores
@@ -927,6 +950,11 @@ public:
 
     void updateAnchorManager() {
         currentSystem->getAnchorManager()->update();
+        // The new registry's own travel flag retires on the SAME tick as the old
+        // manager's (B4(iv), §11.141): both are cleared by the frame that finds
+        // the arrival date passed, so "am I still moving" cannot answer
+        // differently on the two paths for one frame.
+        cameraAnchors->update(timeMgr->getJDay());
     }
 
     bool switchToAnchor(const std::string& anchorName) {

@@ -339,6 +339,41 @@ public:
     // schedule. Same clamp as setHalfFov (the two share the class's fov range).
     void setHalfFovNow(float halfFov);
 
+    // ---- WHERE THE OBSERVER IS, as a vector (B4(iv), §11.141) -------------
+    // The scripted transitions ask a question the spherical triple cannot
+    // answer: "where is the eye, in a frame some OTHER body also lives in".
+    // The three methods below are one inverse pair plus its re-expression, and
+    // they are derived from viewMat() — the matrix the renderer actually uses —
+    // never from a second parametrization: whatever convention viewMat holds,
+    // the eye origin's position in the reference's frame is exactly −Rᵀ·t of
+    // that affine map, so these cannot drift from what is drawn (I2).
+    //
+    // getReferenceRelativePosition: the eye's offset from the reference body's
+    // centre, in the reference's ACCUMULATED EQUATORIAL frame (the surface fold
+    // is undone, so the value is comparable across a spinning reference and is
+    // the frame calculateSwitchCompensation speaks).
+    Vec3f getReferenceRelativePosition() const;
+    // The same offset re-expressed in `body`'s accumulated equatorial frame,
+    // through the ONE inter-body transform the reference switches use
+    // (ModularBody::calculateSwitchCompensation). `body` == reference returns
+    // the value above unchanged.
+    Vec3f positionRelativeTo(const ModularBody *body) const;
+    // The eye's position in the ROOT (Universe) frame — the frame the old
+    // path's anchors call "heliocentric ecliptic" (the chain above the Sun is
+    // at the origin on the shipped data: MEASURED, Sun/SolarSystem/MilkyWay all
+    // dump ecl [0,0,0], §11.141 — asserted by the gate, not assumed).
+    // DOUBLE, because the terms are ~1 AU and the answers ~1e-5 AU.
+    Vec3d getRootPosition() const;
+    // The exact INVERSE of getReferenceRelativePosition: put the eye at `pos`
+    // in the reference's accumulated equatorial frame. `holdView` keeps the
+    // composed orientation across the placement (A38/B13 — a reference switch
+    // holds the whole orientation), which is what a transition that must not
+    // turn the image needs; without it the view rides the placement, which is
+    // what a plain observer move does. A zero-length `pos` keeps the current
+    // longitude/latitude (they parametrize nothing at the centre) and only
+    // zeroes the distance.
+    void placeAt(const Vec3f &pos, bool holdView);
+
     // The exact inverse of moveTo's target: the legacy spherical triple this
     // camera IS at - (longitude, latitude) in radians, altitude above the
     // reference's altitude datum in AU - in BOTH modes, for the same reason

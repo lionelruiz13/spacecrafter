@@ -37,6 +37,37 @@ class Projector;
 class s_texture;
 class ObjectBase;
 
+//! A counted handle on an ObjectBase.
+//!
+//! OWNERSHIP CONTRACT (I1: this is what a caller needs, not how it is done).
+//! An Object has RETAINED whatever `rep` points at, on every path including the
+//! uninitialized singleton, and releases it when it stops pointing at it. Which
+//! reps that actually keeps alive is the rep's own business: `ObjectBase::retain`
+//! /`release` are no-ops by default (Body, Nebula, Constellation - owned by
+//! their managers) and delete-at-zero in the four refcounted subclasses
+//! (StarWrapperBase, ModularObject, TullyWrapper, Star3DWrapper), all four of
+//! which are heap-minted per query and owned by nothing else. So an Object
+//! assignment CAN be the last release, i.e. can destroy the wrapper it drops.
+//!
+//! WHO MAY THEREFORE HOLD A RAW POINTER PAST AN ASSIGNMENT - the enumeration
+//! this class's invariant depends on (§5.34 / INTENT §11.140; the F29
+//! writer-enumeration precedent: the list is here so a new holder is added
+//! against it rather than in ignorance of it).
+//!   * NOBODY stores a raw `ObjectBase*`. `Object::rep` below is the only such
+//!     member in `src/`; every other long-lived holder is either an `Object`
+//!     (Core::selected_object / Core::old_selected_object /
+//!     SolarSystemSelected::selected / SSystemFactory::selected_object) or an
+//!     `ObjectBaseP` (Constellation::asterism[], the searchAround/search results),
+//!     and both of those count.
+//!   * `as<T>()` and `operator==(ObjectBase*)` hand a raw pointer OUT. Every
+//!     call site uses it within the expression or the block, while the Object it
+//!     came from is alive, and only for `Body` (`solarsystem_selected.cpp`) and
+//!     `ModularObject` (`ssystem_factory.cpp:771`). Anything longer-lived must
+//!     hold an `Object` (or an `ObjectBaseP`), not the pointer.
+//!   * Managers keep NAMES, not reps, for their selection sets
+//!     (`HipStarMgr::selected_star*` = strings + HIP ints,
+//!     `NebulaMgr::selected_nebulas` = strings, `ConstellationMgr::selected` =
+//!     manager-owned `Constellation*`), so no selection set outlives a rep.
 class Object {
 public:
 	Object();
@@ -104,6 +135,9 @@ public:
 	static void initTextures();
 	static void deleteTextures();
 
+	//! Raw view of the rep as T, or nullptr. VALID ONLY WHILE THIS Object STILL
+	//! HOLDS IT: assigning this Object can release the last reference and
+	//! destroy the rep (see the ownership contract above).
 	template<class T>
 	T *as() const {
 		return dynamic_cast<T *>(rep);
