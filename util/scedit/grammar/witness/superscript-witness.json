@@ -14,7 +14,7 @@
   "method": [
    "line classification re-implements src/scriptModule/script.cpp:114 (a line is dropped iff its first byte is '#', 0, CR or LF)",
    "tokenization re-implements AppCommandInterface::parseCommand (app_command_interface.cpp:124-176): leading blank strip, the ' \" ' normalization, istringstream key/value pairs with C-locale whitespace (CR included), quote pulling, key lowercasing, last-duplicate-wins",
-   "the resulting finding set reproduces every line catalogued in claude/INTENT.md §5.80 and §5.80 EXTENDED, independently - see divergences whose `prior` names them",
+   "the resulting finding set reproduces every line catalogued in claude/INTENT.md §5.97 and §5.97 EXTENDED, independently - see divergences whose `prior` names them",
    "value domains were checked against the merged grammar's enumerated `values` arrays; every mismatch was then read in source before being called a divergence"
   ],
   "not_done": [
@@ -13257,7 +13257,7 @@
    "answer": null,
    "attestation": {
     "lines": [],
-    "note": "`z_reflection` occurs nowhere in the file. The whole dso3d section is two lines (:332, :333), and both are defective - see divergences D-DSO3D-RESET and §5.80 EXTENDED (:333 zrot/yrot)."
+    "note": "`z_reflection` occurs nowhere in the file. The whole dso3d section is two lines (:332, :333), and both are defective - see divergences D-DSO3D-RESET and §5.97 EXTENDED (:333 zrot/yrot)."
    },
    "code_cross_check": {
     "status": "unverifiable-from-code",
@@ -13476,7 +13476,7 @@
    },
    "code_cross_check": {
     "status": "divergent",
-    "evidence": "app_command_interface.cpp:2229 'case APP_MODE: break;' - the set name parses and reports success and does nothing, so both witness lines are dead (already registered: §5.80(c), SCRIPT_SURFACE SS-5). The witness answers SS-5's open question ('Did `set mode` ever work, and what did it do?') at the intent level: it was meant to be what `mode jump` is. Whether it EVER worked is not decidable from the witness. Note the value spelling differs between the two surfaces (InGalaxy vs in_galaxy) - the `mode jump` values are the live ones."
+    "evidence": "app_command_interface.cpp:2229 'case APP_MODE: break;' - the set name parses and reports success and does nothing, so both witness lines are dead (already registered: §5.97(c), SCRIPT_SURFACE SS-5). The witness answers SS-5's open question ('Did `set mode` ever work, and what did it do?') at the intent level: it was meant to be what `mode jump` is. Whether it EVER worked is not decidable from the witness. Note the value spelling differs between the two surfaces (InGalaxy vs in_galaxy) - the `mode jump` values are the live ones."
    }
   },
   {
@@ -13498,7 +13498,7 @@
      "# Draw the date and time.",
      "set datetime_display_position 120"
     ],
-    "note": "line 309 uses the pre-rename spelling `date_display_position` and is therefore dead (§5.80c); line 532 uses the live spelling with the same value."
+    "note": "line 309 uses the pre-rename spelling `date_display_position` and is therefore dead (§5.97c); line 532 uses the live spelling with the same value."
    },
    "code_cross_check": {
     "status": "consistent",
@@ -13563,7 +13563,7 @@
   {
    "gap_id": "G-SUN-1",
    "gap_path": "families.commands.suntrace.flagged[0]",
-   "gap": "suntrace `sun` (app_command_interface.cpp:1633): key or typo - it decides whether the editor offers a 'sun' key and whether `suntrace pen on` is documented as switching to the Sun (§5.74, SCRIPT_SURFACE SS-11)",
+   "gap": "suntrace `sun` (app_command_interface.cpp:1633): key or typo - it decides whether the editor offers a 'sun' key and whether `suntrace pen on` is documented as switching to the Sun (§5.91, SCRIPT_SURFACE SS-11)",
    "verdict": "no-witness-evidence - the command is never exercised",
    "answer": null,
    "attestation": {
@@ -13631,7 +13631,7 @@
     94
    ],
    "layer": "usage",
-   "prior": "claude/INTENT.md §5.80(a); SCRIPT_SURFACE SS-1",
+   "prior": "claude/INTENT.md §5.97(a); SCRIPT_SURFACE SS-1",
    "quote": "body action load name milkyway parent Sun absolute_magnitude 1 type Comet model3D true hidden false model_name Milkyway ... lighting true\\xA0albedo 1  [ANNOTATED: elided in the middle, and the byte 0xA0 shown as \\xA0; the verbatim line is comment_claims-adjacent line 94 of the file]",
    "witness_teaches": "that the model3D body is created with albedo 1",
    "engine_does": "byte 0xA0 (no-break space) is not whitespace to the C locale, so the pair extractor reads the value `true\\xA0albedo` and the pair `albedo 1` is silently dropped (parse_model.pair_extraction; src/interfaceModule/app_command_interface.cpp:141-167)",
@@ -13646,7 +13646,7 @@
     1167
    ],
    "layer": "usage",
-   "prior": "§5.80(b); SS-2; mechanism §5.79(a)",
+   "prior": "§5.97(b); SS-2; mechanism §5.96(a)",
    "quote": "set home_planet Mars duration 5",
    "witness_teaches": "that the home planet can be changed over 5 seconds",
    "engine_does": "`duration` is not a registered set name; commandSet folds every pair with && in ALPHABETICAL order, so `duration` fails first and the `home_planet` pair never applies - the whole line does nothing (parse_model.set_multi_pair)",
@@ -13662,7 +13662,7 @@
     309
    ],
    "layer": "usage",
-   "prior": "§5.80(c); SS-3",
+   "prior": "§5.97(c); SS-3",
    "quote": "set date_display_number 3 / set date_display_position 120 / flag date_display_number on/off/toggle",
    "witness_teaches": "that the multi-date readout is controlled by `date_display_*`",
    "engine_does": "the registered set names are `datetime_display_number` / `datetime_display_position`; `date_display_number` is not a set name and not a flag name either (the flag governing the readout is `show_tui_datetime`)",
@@ -13677,7 +13677,7 @@
     912
    ],
    "layer": "usage",
-   "prior": "§5.80(c); SS-4",
+   "prior": "§5.97(c); SS-4",
    "quote": "movetocity name Paris country France / moveto lat 43.33 lon 5.33 alt 75 name marseille",
    "witness_teaches": "that a city name can move the observer (cities.fab)",
    "engine_does": "`movetocity` is a registered OBSOLETE token - the engine logs '<name> is no longer used in software' and does nothing (app_command_init.cpp:14-23); `moveto` has no `name` key, so :912's city name is read and ignored",
@@ -13692,7 +13692,7 @@
     1153
    ],
    "layer": "usage+comment",
-   "prior": "§5.80(c); SS-5",
+   "prior": "§5.97(c); SS-5",
    "quote": "# Go to the desired mode between InGalaxy InUniverse InSolarSystem / set mode \"InGalaxy\"",
    "witness_teaches": "that `set mode` changes the viewing mode, with values InGalaxy / InUniverse / InSolarSystem",
    "engine_does": "`mode` is a registered set name whose handler is `case APP_MODE: break;` (app_command_interface.cpp:2229) - it parses, reports success and does nothing. The live spelling is the `mode` COMMAND: `mode jump in_solarsystem ...` (:904), whose values are in_solarsystem / in_galaxy / in_universe / in_stellarsystem",
@@ -13706,7 +13706,7 @@
     1205
    ],
    "layer": "usage",
-   "prior": "§5.80(c) and SS-6 BOTH QUOTE THIS LINE WITHOUT ITS `=`",
+   "prior": "§5.97(c) and SS-6 BOTH QUOTE THIS LINE WITHOUT ITS `=`",
    "quote": "set stall_radius_unit = 5.0",
    "witness_teaches": "that the stall radius is set to 5.0",
    "engine_does": "the line has THREE tokens after the command, so the pairs are (stall_radius_unit, \"=\") and the trailing `5.0` is a dangling key silently dropped (parse_model.pair_extraction). The value that reaches the engine is the text \"=\", i.e. evalDouble(\"=\") - and even a correctly written 5.0 would be filtered by src/navModule/anchor_manager.hpp:201-205, which assigns only if v > 1.0 and returns true regardless",
@@ -13721,7 +13721,7 @@
     1271
    ],
    "layer": "comment",
-   "prior": "§5.80(c); SS-7",
+   "prior": "§5.97(c); SS-7",
    "quote": "  # should do it four times / # but in fact do it just one ",
    "witness_teaches": "two comments inside a struct loop block",
    "engine_does": "a line is a comment only if its FIRST byte is '#' (src/scriptModule/script.cpp:114); indented, they reach the parser and '#' becomes an unknown command with a Levenshtein suggestion",
@@ -13735,7 +13735,7 @@
     333
    ],
    "layer": "usage",
-   "prior": "§5.80 EXTENDED",
+   "prior": "§5.97 EXTENDED",
    "quote": "dso3d action load pos_x 123 pos_y 342 pos_z 50 zrot 0 yrot 0 xscale 1 yscale 1 zscale 1 scale 10",
    "witness_teaches": "that a dso3d object is rotated with `zrot`/`yrot`",
    "engine_does": "dso3d's rotation keys are yaw / pitch / roll (families.commands.dso3d.args); `zrot` and `yrot` are read by nothing, so both rotations do nothing",
@@ -13750,7 +13750,7 @@
     769
    ],
    "layer": "usage+comment",
-   "prior": "§5.80 EXTENDED; SS-9",
+   "prior": "§5.97 EXTENDED; SS-9",
    "quote": "# This permit to keep a panorama even after a lift-off (spacecraft argument) / image ... spacecraft on ... / # Draw a landscape that will resist to take-off (as a spacecraft cockpit) / landscape ... spacecraft on ...",
    "witness_teaches": "that `spacecraft on` makes a picture or a landscape survive a take-off",
    "engine_does": "no handler reads a `spacecraft` key on either command; the spelling exists nowhere in src/",
@@ -13764,7 +13764,7 @@
     1366
    ],
    "layer": "usage+comment",
-   "prior": "§5.80 EXTENDED; SS-10",
+   "prior": "§5.97 EXTENDED; SS-10",
    "quote": "# This command permit to reset the timer to resynchronize after some images loading / # It'll wait automatically the time needed to load those images / wait action reset_timer",
    "witness_teaches": "that `wait action reset_timer` waits for pending image loads",
    "engine_does": "commandWait reads only duration / loading / video_termination; `action` is not one of its keys, so the line falls to the malformed-argument branch (:1403), does not wait, AND reports a failure",
@@ -13780,7 +13780,7 @@
     123
    ],
    "layer": "usage",
-   "prior": "NEW - not in §5.80",
+   "prior": "NEW - not in §5.97",
    "quote": "body tesselation planet_altimetry_factor value 2 / earth_altimetry_factor value 1 / moon_altimetry_factor value 1",
    "witness_teaches": "that the three altimetry factors are set with `*_altimetry_factor`",
    "engine_does": "SolarSystemTex::planetTesselation (src/bodyModule/solarsystem_tex.cpp:92-113) accepts exactly min_tes_level, max_tes_level, planet_altimetry_level, moon_altimetry_level, earth_altimetry_level and RETURNS SILENTLY on any other name - the three lines do nothing and report success",
@@ -13797,7 +13797,7 @@
     1371
    ],
    "layer": "usage+comment",
-   "prior": "NEW - not in §5.80",
+   "prior": "NEW - not in §5.97",
    "quote": "# Duplicate the image or video at 180° if Twice and +120° and -120° if Thrice / image name zodiac action twice / image name zodiac action thrice",
    "witness_teaches": "that `action twice` / `action thrice` on an `image` line duplicates the picture around the dome",
    "engine_does": "commandImage reads `action` for purge/drop/load only (app_command_interface.cpp:2935-2953); the duplication is read from the `project` key AND ONLY on the `action load` path (:2964-2971). `image name X action twice` therefore re-selects the picture and changes nothing",
@@ -13813,11 +13813,11 @@
     252
    ],
    "layer": "usage",
-   "prior": "NEW instance of claude/INTENT.md §5.77 (fall-through) in shipped content",
+   "prior": "NEW instance of claude/INTENT.md §5.94 (fall-through) in shipped content",
    "quote": "configuration module star_navigator action save binary_mode false name hip2020.txt / configuration module starlines action load name XXXX binary_mode N / configuration module starlines action save name XXXX binary_mode N",
    "witness_teaches": "that a star-line catalogue is loaded and saved with `module starlines`",
    "engine_does": "the registered module names are `star_lines` and `star_navigator`; `starlines` matches neither, so the handler sets 'unknown module argument' and FALLS THROUGH to the module-less block (:2337-2348) where the SAME `action` value is obeyed: :251 (action load) re-runs App::init() mid-script, and :252 (action save) runs App::saveCurrentConfig() and overwrites config.ini. Line 249 is spelled correctly but hits the same fall-through: starNavigatorSave at :2331 has no return, so the config file is overwritten as well",
-   "disposition": "doc-error-at-writing for the `starlines` spelling; engine defect (already registered as §5.77) for the fall-through",
+   "disposition": "doc-error-at-writing for the `starlines` spelling; engine defect (already registered as §5.94) for the fall-through",
    "evidence": "app_command_interface.cpp:2249-2348 read in full; the grammar's configuration entry records the same fall-through independently. Consequence worth stating: running the reference script end to end - its role as 'the only functional test' - re-initialises the application once and rewrites the settings file twice.",
    "disposition_class": "doc-error-at-writing+engine-defect"
   },
@@ -13827,7 +13827,7 @@
     332
    ],
    "layer": "usage",
-   "prior": "NEW - not in §5.80",
+   "prior": "NEW - not in §5.97",
    "quote": "dso3d action reset color_tex m57.png alpha_tex m57volumetric.png depth 256 color_depth 1",
    "witness_teaches": "that a volumetric dso3d object is set up with `action reset`",
    "engine_does": "commandDso3D accepts `load` and `restart` only; anything else sets \"command 'dso3d' : unknown argument\" and the line fails (app_command_interface.cpp:1514-1529)",
@@ -13841,7 +13841,7 @@
     151
    ],
    "layer": "usage",
-   "prior": "NEW - not in §5.80",
+   "prior": "NEW - not in §5.97",
    "quote": "body_trace hide on",
    "witness_teaches": "(by its spelling) that `hide` is a yes/no switch",
    "engine_does": "`hide` names WHICH trace to hide: 'all', or a trace number. CoreLink::bodyTraceHide (src/coreModule/coreLink.cpp:1123-1128) sends -1 for 'all' and Utility::strToInt(value) otherwise; strToInt(\"on\") is 0 (src/tools/utility.cpp:448-456: an istringstream extraction that fails on 'on' and leaves 0), so the line hides trace 0 - an effect, but not the one the spelling suggests, and there is no un-hide in this spelling",
@@ -13944,7 +13944,7 @@
     303
    ],
    "layer": "usage",
-   "prior": "NEW (line already dead per §5.80c for its NAME; this is about its VALUE)",
+   "prior": "NEW (line already dead per §5.97c for its NAME; this is about its VALUE)",
    "quote": "flag date_display_number on/off/toggle",
    "witness_teaches": "(by shorthand) that a flag takes on, off or toggle",
    "engine_does": "the literal text 'on/off/toggle' is not 'toggle' and is not an on-form, so under the flag value grammar it means OFF, silently (parse_model.flag_value_grammar). The line is a documentation shorthand that the engine executes as a command",

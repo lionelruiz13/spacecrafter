@@ -147,7 +147,7 @@ Disposition of the 25:
 | doc-error + engine defect | 1 | D-CONFMOD |
 | unclear (labelled, with the evidence that is missing) | 8 | D-SETDUR, D-SETMODE, D-ZROT, D-SPACECRAFT, D-WAITRESET, D-DSO3D-RESET, D-LOCKSKY, D-XPOS |
 
-**Ten rows re-derive `claude/INTENT.md` §5.80 and §5.80 EXTENDED independently**
+**Ten rows re-derive `claude/INTENT.md` §5.97 and §5.97 EXTENDED independently**
 (D-NBSP, D-SETDUR, D-DATEDISP, D-MOVETOCITY, D-SETMODE, D-STALL, D-INDENT, D-ZROT,
 D-SPACECRAFT, D-WAITRESET — every catalogued line reproduced, none missed, by a
 tokenizer written from `parseCommand` rather than by re-reading the ledger; the ten
@@ -161,7 +161,7 @@ not cover:
 the **value domains** (a key can be legal while its value is not) and the **comment
 layer** (a sentence can be wrong while every command line is legal).
 
-One correction owed upstream: `§5.80(c)` and `SCRIPT_SURFACE SS-6` both quote line
+One correction owed upstream: `§5.97(c)` and `SCRIPT_SURFACE SS-6` both quote line
 1205 as `set stall_radius_unit 5.0`. The file's bytes read
 `set stall_radius_unit = 5.0` — with a stray `=` that becomes the value, and `5.0` a
 dangling key the parser drops (D-STALL).
@@ -227,7 +227,7 @@ Merge notes:
    code-cross-check `consistent`; the six such rows are G-CONST-1, G-DATE-1, G-IMG-1,
    G-LAND-1, G-SET-2, G-SET-3 (plus G-SET-4 and G-BODY-3 as `partial`). The four
    `divergent` rows must not be merged as documentation — they are findings.
-2. **`§5.80` and `SCRIPT_SURFACE SS-6` carry a wrong quote of line 1205** (the `=` is
+2. **`§5.97` and `SCRIPT_SURFACE SS-6` carry a wrong quote of line 1205** (the `=` is
    missing). Correcting it is an upstream edit in the parent ledger, which is
    READ-ONLY for this task — recorded here, not done.
 3. **Two new engine defects** (D-SATURN, D-GANYMED) belong in the parent ledger's §5,

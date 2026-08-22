@@ -96,7 +96,7 @@ doc bar (C6) is to be met from code plus a cross-checked witness, not from a par
 
 **`sun_trace` is the highest-value line in this file.** It states the intent behind
 `suntrace` — *an alias of `body_trace` with the Sun as the selected body* — which is
-precisely the behaviour §5.74 / SCRIPT_SURFACE **SS-11** reports as broken
+precisely the behaviour §5.91 / SCRIPT_SURFACE **SS-11** reports as broken
 (`suntrace pen on` traces whatever body was last traced, because the pen branch reads
 `args[W_SUN]`, the value of a key spelled `sun`). It does not decide SS-11 — that is
 Vixy's — but SS-11 was asked with no documentary evidence at all, and now there is

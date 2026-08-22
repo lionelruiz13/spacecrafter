@@ -116,7 +116,7 @@ and the family-name paths).
 | `set_multi_pair` (`set` loops over every pair; `&&` fold short-circuits the rest) | `SubfamilyPosition::EveryKey` branch of `sc_check.cpp` | implemented, and the short-circuit consequence is said on the pair that causes it (§5.3) |
 | `recording_alias_loss` (`flyto` → `camera`) | `CommandData::alias_of` from the contract file | implemented, lint `alias-respelled` |
 | `map_operator_bracket` (`args[K]` INSERTS on an absent read; four handlers forward the whole map, three write into it first) | — | Not a parse observable: it is what a handler does after parsing. It is the reason `Line::args`/`Line::pairs` come from the tokenizer and never from handler behaviour, which is what the code already does. Its consumer-facing half is `args_complete` (§6). |
-| `executeCommand_reentry` (`media` `:3511`, `clear` `:2479-2530`; recorder keeps the rebuilt line) | — | Execution-time, not parse-time. It bounds a FUTURE feature rather than this one: a round-trip through a recording is not an identity, so no scedit check may assume it. Registered upstream as `claude/INTENT.md` §5.79. |
+| `executeCommand_reentry` (`media` `:3511`, `clear` `:2479-2530`; recorder keeps the rebuilt line) | — | Execution-time, not parse-time. It bounds a FUTURE feature rather than this one: a round-trip through a recording is not an identity, so no scedit check may assume it. Registered upstream as `claude/INTENT.md` §5.96. |
 | `value_domains_are_per_branch` (`zoom duration` is `strToPosDouble` on `auto`, `evalDouble` on `fov`/`center`) | contract data only (`branches` + per-key `notes`) | No lint reads value domains yet. It is a standing constraint on the ones that will: a per-command key→domain map would be unfaithful. |
 | `boolean_grammars` (four coexisting readings of a boolean-looking value) | `silent-off-value` fires ONLY under `flag_value_grammar` | implemented as a RESTRICTION: the flag grammar is applied where the engine applies it (`commandFlag`'s own value) and nowhere else. `camera … follow_rotation value on` is silently a NO engine-side (`:4443` compares with `"true"`), and scedit says nothing about it because the key's own domain is the authority and no rule reads it yet. |
 | `unskippable_escape` (`terminateScript` `:180`, tested `:225`, cleared `:229`) | — | No script line can raise it, so no static reader can observe it. It is why an unclosed `comment` block does not leak into the next script — which a whole-file checker never sees either, since `BlockSkipState` is per file. |
@@ -245,7 +245,7 @@ Arming it on an unread acceptance rule would be a guess (C2). Reported by
 **5.9 Non-breaking space (0xA0) — ANSWERED 2026-08-04: the seed is minted.**
 `invisible-separator`, severity error, D6 kebab-case, **veto open** (Vixy may
 rename or drop it; the upstream row that asked for it is `claude/INTENT.md`
-§5.80). It fires on a byte that looks like a space and is not one to the C
+§5.97). It fires on a byte that looks like a space and is not one to the C
 locale's `>>`: 0xA0 first (the ISO-8859 spelling), plus the UTF-8 encodings of
 U+00A0, U+2000–U+200B, U+202F, U+3000 and the U+FEFF byte-order mark. It names
 the byte in hex and the 1-based column, because the whole point is that the
@@ -361,7 +361,7 @@ merge while dispositioning findings 333/769.
 
 | line | id | disposition | argument |
 |---|---|---|---|
-| 94 | invisible-separator | TRUE, the root cause of the finding under it | Byte 433 is **0xA0**. The parser splits on the C locale's whitespace only (`std::istringstream >>`, `:141`/`:148`), so `true\xA0albedo` is ONE token: `lighting` takes it, every later pair shifts by one, and the trailing `1` becomes a key with no value. The `dangling-key` on the same line is the consequence and is still reported (§5.9). Registered upstream as `claude/INTENT.md` §5.80(a). |
+| 94 | invisible-separator | TRUE, the root cause of the finding under it | Byte 433 is **0xA0**. The parser splits on the C locale's whitespace only (`std::istringstream >>`, `:141`/`:148`), so `true\xA0albedo` is ONE token: `lighting` takes it, every later pair shifts by one, and the trailing `1` becomes a key with no value. The `dangling-key` on the same line is the consequence and is still reported (§5.9). Registered upstream as `claude/INTENT.md` §5.97(a). |
 | 333 | unknown-parameter ×2 | TRUE | `dso3d action load … zrot 0 yrot 0 …`. `dso3d` forwards its whole map to `DsoNavigator` (`:1518-1523`), whose rotation keys are `yaw`, `pitch`, `roll` (`src/inGalaxyModule/dsoNavigator.cpp:278-280`, again `:311-313`). `zrot` and `yrot` exist **nowhere in `src/` as a key** [measured, tree-wide grep: the only hits are `Mat4::zrotation`/`yrotation` matrix helpers]. The two rotations on this line do nothing, silently. |
 | 681 | unknown-parameter | TRUE | `image … spacecraft on …`. `commandImage` reads its keys in this file only — no map forwarding in its range [unit 2's accounting] — and `spacecraft` is not one of them. The spelling appears nowhere in `src/` as a key [measured]. The line's other 8 pairs act; this one is read by nothing. |
 | 769 | unknown-parameter | TRUE | `landscape … spacecraft on …`. `landscape` DOES forward its whole map (`:2599`), so the check had to be made downstream too: `Landscape::createFromHash` reads `type`/`spherical`/`fisheye`/`path`/`night_texture`/`name`/`texture`/`mipmap`/`limited_shade` (`src/coreModule/landscape.cpp:54-62`) plus the bare literals `maptex` (`:193`), `fov`/`texturefov` (`:203`), `rotate_z` (`:204`,`:211`), `base_altitude`/`top_altitude` (`:210-211`). `spacecraft` is in neither set. Same author habit as :681 — probably a scene tag that was never a key. |
@@ -403,7 +403,7 @@ Findings by id, SECOND run (2026-08-04, args merged): `dangling-key` 2,
 `doc/superscript.sts`, all engine/data findings rather than lint noise (C3's
 "true findings in shipped content are recorded upstream instead"). The seven new
 `unknown-parameter`s and the `invisible-separator` belong in the upstream row
-that already carries this file's drift, `claude/INTENT.md` §5.80 — five more
+that already carries this file's drift, `claude/INTENT.md` §5.97 — five more
 lines of the shipped reference script that the engine reads differently from
 their author: two dead rotations (:333), two dead scene tags (:681, :769), a
 decorative city name left over from `movetocity` (:912), and one line that
