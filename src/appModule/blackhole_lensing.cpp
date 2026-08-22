@@ -75,13 +75,14 @@ void BlackHoleLensing::beginFrame()
     pendingState.active = false;
 }
 
-void BlackHoleLensing::submit(const Vec2f &center, float eventRadius, float strength)
+void BlackHoleLensing::submit(const Vec2f &center, float eventRadius, float strength, bool distortionEnabled)
 {
     std::lock_guard<std::mutex> lock(stateMutex);
     if (!pendingState.active || eventRadius > pendingState.eventRadius) {
         pendingState.center = center;
         pendingState.eventRadius = eventRadius;
         pendingState.strength = strength;
+        pendingState.distortionEnabled = distortionEnabled;
         pendingState.active = true;
     }
 }
@@ -101,7 +102,9 @@ void BlackHoleLensing::draw()
 
     uniform->get().centerRadiusStrength = Vec4f(
         state.center[0], viewportHeight - state.center[1], state.eventRadius, state.strength);
-    uniform->get().viewportActive = Vec4f(viewportWidth, viewportHeight, state.active ? 1.f : 0.f, 0.f);
+    uniform->get().viewportActive = Vec4f(viewportWidth, viewportHeight,
+                                          state.active ? 1.f : 0.f,
+                                          state.distortionEnabled ? 1.f : 0.f);
 
     FrameMgr &frame = *context.frame[frameIdx];
     VkCommandBuffer cmd = frame.begin(commands[frameIdx], PASS_LENS);

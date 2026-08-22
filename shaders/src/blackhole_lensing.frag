@@ -14,6 +14,7 @@ void main()
 {
     vec2 viewport = ViewportActive.xy;
     bool lensEnabled = ViewportActive.z > 0.5;
+    bool distortionEnabled = ViewportActive.w > 0.5;
     if (!lensEnabled) {
         FragColor = texture(Scene, TexCoord);
         return;
@@ -25,6 +26,11 @@ void main()
     vec2 pixel = gl_FragCoord.xy;
     vec2 offset = pixel - center;
     float radius = length(offset);
+
+    if (!distortionEnabled) {
+        FragColor = texture(Scene, TexCoord);
+        return;
+    }
 
     if (radius < shadowRadius * 0.965) {
         FragColor = vec4(0.0, 0.0, 0.0, 1.0);

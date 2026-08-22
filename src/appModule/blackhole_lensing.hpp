@@ -28,7 +28,7 @@ public:
     ~BlackHoleLensing();
 
     static void beginFrame();
-    static void submit(const Vec2f &center, float eventRadius, float strength);
+    static void submit(const Vec2f &center, float eventRadius, float strength, bool distortionEnabled);
     void draw();
 
 private:
@@ -41,6 +41,7 @@ private:
         Vec2f center = Vec2f(0.f, 0.f);
         float eventRadius = 0.f;
         float strength = 0.f;
+        bool distortionEnabled = true;
         bool active = false;
     };
 

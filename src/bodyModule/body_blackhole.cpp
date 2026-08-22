@@ -36,6 +36,9 @@ constexpr int DISK_SLICES = 256;
 constexpr int DISK_STACKS = 12;
 constexpr int DISK_STRIP_VERTICES = (DISK_SLICES + 1) * 2;
 constexpr int DISK_VERTEX_FLOATS = 4;
+constexpr int HORIZON_SLICES = 64;
+constexpr int HORIZON_STACKS = 32;
+constexpr int HORIZON_STRIP_VERTICES = (HORIZON_SLICES + 1) * 2;
 }
 
 BlackHole::BlackHole(std::shared_ptr<Body> parent,
@@ -140,14 +143,18 @@ void BlackHole::drawHints(const Navigator*, const Projector*)
 {
 }
 
-void BlackHole::drawBody(VkCommandBuffer cmd, const Projector*, const Navigator*, const Mat4d&, float screen_sz, bool)
+void BlackHole::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator*, const Mat4d& mat, float screen_sz, bool)
 {
+    if (!diskEnabled && !visual.distortionEnabled)
+        drawHorizon(cmd, prj, mat);
     if (!diskEnabled)
         drawOverlay(cmd, screen_sz);
 }
 
 void BlackHole::drawRings(VkCommandBuffer cmd, const Projector* prj, const Observer*, const Mat4d& mat, double screen_sz, Vec3f&, Vec3f&, float)
 {
+    if (!visual.distortionEnabled)
+        drawHorizon(cmd, prj, mat);
     drawDisk(cmd, prj, mat, screen_sz);
     drawOverlay(cmd, screen_sz);
 }
@@ -234,6 +241,61 @@ void BlackHole::buildDiskMesh()
     }
 }
 
+void BlackHole::createHorizonContext()
+{
+    VulkanMgr &vkmgr = *VulkanMgr::instance;
+    Context &context = *Context::instance;
+
+    horizonLayout = std::make_unique<PipelineLayout>(vkmgr);
+    horizonLayout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
+    horizonLayout->buildLayout();
+    horizonLayout->setGlobalPipelineLayout(context.layouts.front().get());
+    horizonLayout->build();
+
+    horizonVertex = std::make_unique<VertexArray>(vkmgr);
+    horizonVertex->createBindingEntry(3 * sizeof(float));
+    horizonVertex->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+    buildHorizonMesh();
+
+    horizonSet = std::make_unique<Set>(vkmgr, *context.setMgr, horizonLayout.get(), -1, false, true);
+    horizonUniform = std::make_unique<SharedBuffer<HorizonUniform>>(*context.uniformMgr);
+    horizonSet->bindUniform(horizonUniform, 0);
+
+    horizonPipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, horizonLayout.get());
+    horizonPipeline->setCullMode(false);
+    horizonPipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+    horizonPipeline->setBlendMode(BLEND_NONE);
+    horizonPipeline->setDepthStencilMode(VK_TRUE, VK_TRUE);
+    horizonPipeline->bindVertex(*horizonVertex);
+    horizonPipeline->bindShader("blackhole_horizon.vert.spv");
+    horizonPipeline->setSpecializedConstant(7, context.isFloat64Supported);
+    horizonPipeline->setSpecializedConstant(8, Context::projectionType);
+    horizonPipeline->bindShader("blackhole_horizon.frag.spv");
+    horizonPipeline->build("Black hole horizon");
+}
+
+void BlackHole::buildHorizonMesh()
+{
+    horizonBuffer = horizonVertex->createBuffer(0, HORIZON_STACKS * HORIZON_STRIP_VERTICES, Context::instance->globalBuffer.get());
+    float *data = static_cast<float *>(Context::instance->transfer->planCopy(horizonBuffer->get()));
+
+    for (int i = 0; i < HORIZON_STACKS; ++i) {
+        const double phi0 = M_PI * static_cast<double>(i) / HORIZON_STACKS;
+        const double phi1 = M_PI * static_cast<double>(i + 1) / HORIZON_STACKS;
+        for (int j = 0; j <= HORIZON_SLICES; ++j) {
+            const double theta = 2.0 * M_PI * static_cast<double>(j) / HORIZON_SLICES;
+            const double c = cos(theta);
+            const double s = sin(theta);
+            *(data++) = static_cast<float>(sin(phi0) * c);
+            *(data++) = static_cast<float>(sin(phi0) * s);
+            *(data++) = static_cast<float>(cos(phi0));
+            *(data++) = static_cast<float>(sin(phi1) * c);
+            *(data++) = static_cast<float>(sin(phi1) * s);
+            *(data++) = static_cast<float>(cos(phi1));
+        }
+    }
+}
+
 void BlackHole::drawDisk(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat, double)
 {
     if (!diskEnabled)
@@ -257,6 +319,24 @@ void BlackHole::drawDisk(VkCommandBuffer cmd, const Projector* prj, const Mat4d&
     diskBuffer->bind(cmd);
     for (int i = 0; i < DISK_STACKS; ++i)
         vkCmdDraw(cmd, DISK_STRIP_VERTICES, 1, i * DISK_STRIP_VERTICES, 0);
+}
+
+void BlackHole::drawHorizon(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat)
+{
+    if (!horizonPipeline)
+        createHorizonContext();
+    if (!horizonPipeline || horizonPipeline->get() == VK_NULL_HANDLE)
+        return;
+
+    horizonUniform->get().ModelViewMatrix = mat.convert();
+    horizonUniform->get().clipping_fov = prj->getClippingFov();
+    horizonUniform->get().HorizonRadius = static_cast<float>(radius);
+
+    horizonPipeline->bind(cmd);
+    horizonLayout->bindSets(cmd, {*horizonSet, *Context::instance->uboSet});
+    horizonBuffer->bind(cmd);
+    for (int i = 0; i < HORIZON_STACKS; ++i)
+        vkCmdDraw(cmd, HORIZON_STRIP_VERTICES, 1, i * HORIZON_STRIP_VERTICES, 0);
 }
 
 void BlackHole::createOverlayContext(float viewportHeight)
@@ -299,5 +379,6 @@ void BlackHole::drawOverlay(VkCommandBuffer, double screen_sz)
     const float outerRadius = diskEnabled ? static_cast<float>(diskOuterRadius * diskScale) : static_cast<float>(radius);
     const float eventRadius = std::max(5.f, static_cast<float>(screen_sz) * static_cast<float>(radius) / std::max(outerRadius, 0.000001f) * 0.90f);
 
-    BlackHoleLensing::submit(Vec2f(screenPos.first, screenPos.second), eventRadius, visual.lensingStrength);
+    BlackHoleLensing::submit(Vec2f(screenPos.first, screenPos.second), eventRadius,
+                             visual.lensingStrength, visual.distortionEnabled);
 }
