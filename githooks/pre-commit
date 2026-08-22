@@ -3,56 +3,96 @@
 # pre-commit -- refuse to write a DERIVATION into a history whose job is origins.
 #
 # ---------------------------------------------------------------------------
-# THE RULE, AND THE REASON UNDER IT
+# THE CRITERION, AND WHY IT IS NOT SIZE
 # ---------------------------------------------------------------------------
-# A build output, a staging binary, a rendered artifact is not an origin: it is
-# something the origins produce. Committed, it is either
-#     reconstructible      -> redundant (the source commit + md5 already say it), or
-#     non-reconstructible  -> unreliable (nothing can ever check what it claims).
-# Either way it does not belong in the record. This repo already says so in
-# prose -- "uncommitted per the artifacts convention", written into a dozen
-# delivery entries -- and prose is enforced by whoever is paying attention at
-# `git add`. On 2026-08-01 a 187 MiB staging binary went in beside two files
-# that belonged, and the entry recording that wave states it is uncommitted:
-# the convention and the tree disagreed for three weeks and nothing said so.
-# This hook is that convention with teeth. It is not a size policy; size is one
-# of its two detectors.
+# A compiled artifact is the DETERMINED end of a one-way transformation. The
+# source determines the binary; the binary does not determine the source --
+# compilation destroys the information that would let you go back. So of the two
+# ends, exactly one carries what the other cannot be recovered from, and that is
+# the one a record keeps. Committing the binary keeps the lossy end.
+#
+# That asymmetry, not size, is the reason:
+#     reconstructible from the sources  -> redundant beside them
+#     NOT reconstructible               -> unreliable, because nothing can check it
+# Either way it does not belong. Size was never the criterion -- it is what made
+# this VISIBLE, once, at 187 MiB [vixy 2026-08-22, correcting this hook's first
+# version, which led with a size ceiling and demoted type to a hand-written list
+# of four magic numbers]. A 12 KiB .pyc is exactly as much a derivation as a
+# 187 MiB executable, and a size gate never sees it.
 #
 # ---------------------------------------------------------------------------
-# TWO INDEPENDENT DETECTORS, BECAUSE THEY FAIL DIFFERENTLY
+# HOW THE TWO LAYERS DIFFER -- refusing where it can decide, ASKING where it cannot
 # ---------------------------------------------------------------------------
-#   MAGIC  -- an executable/object file, at any size. Content, never the name:
-#             names lie, and a 2 MiB stripped binary is as much a derivation as
-#             a 187 MiB one. This is the criterion.
-#   SIZE   -- any blob >= hooks.maxBlobBytes (default 8 MiB). This is a proxy,
-#             and it is here for the class the criterion cannot name: whatever
-#             large derived thing has no magic bytes (a log, a dump, a capture).
-#             The number is set from the corpus rather than from taste: the
-#             largest legitimately tracked blob across both repos is 3.06 MB
-#             (planetsephems/vsop87.c), the largest in the harness 1.78 MB (a
-#             b18 PNG). 8 MiB is ~2.6x the real ceiling and ~12x under GitHub's
-#             100 MiB hard rejection, so it fires while a commit is still cheap
-#             to fix -- which is the whole point of catching it here and not at
-#             push time.
+# TYPE (the criterion). Content, never the name -- names lie, and `file` reads
+# what is actually there. Unconditional: no size threshold, no exemption, because
+# there is no size at which a compiled object becomes an origin.
 #
-# Both are refusals with the repair printed, never warnings: a warning on a
-# `git add -A` scrolls past above the commit that already happened.
+# SIZE (the residue). Reconstructibility is a SEMANTIC property: a 40 MiB capture
+# log and a 40 MiB star catalogue are the same bytes to any detector, and only a
+# human knows which one regenerates from a re-run. So this layer does not claim
+# to have decided anything. It stops on "large, and unclassifiable as derived"
+# and puts the question where the answer lives. It is a refusal rather than a
+# warning only because a warning printed under `git add -A` is scrollback.
 #
-# Bypass: `git commit --no-verify`, or raise the ceiling for one repo with
-#   git config hooks.maxBlobBytes <n>
-# Both are deliberate, visible acts. That is the difference between an override
-# and a hole.
+# The third layer is neither: `.gitignore` carries the artifacts convention by
+# PATH, which is what covers the harness's own commonest derivation -- measurement
+# output (PNG, logs) that no type detector can distinguish from source data.
 #
-# Installed by githooks/install.sh (core.hooksPath). Limit, stated because it
-# is real: git config is per-clone, so a FRESH CLONE runs no hook until that
-# script is run. Nothing inside a repository can fix that -- the last-resort
-# layer is GitHub's own >100 MiB rejection, which is exactly the late, expensive
-# catch this hook exists to pre-empt.
+# Bypass: `git commit --no-verify`, or `git config hooks.maxBlobBytes <n>` for the
+# size layer only. Stated limit: --no-verify bypasses every hook, including the
+# type refusal, and git offers no way to prevent that; the only unbypassable layer
+# is server-side, and GitHub does not offer custom pre-receive outside Enterprise.
+# An override here is a visible, deliberate act -- which is the difference between
+# an override and a hole -- but it is not a wall.
+#
+# Installed by githooks/install.sh (core.hooksPath). Second stated limit: git
+# config is per-clone and is not cloned, so a FRESH CLONE runs no hook until that
+# script is run. Nothing inside a repository can close that.
 # ---------------------------------------------------------------------------
 set -uo pipefail
 
 LIMIT=$(git config --int hooks.maxBlobBytes 2>/dev/null || true)
 [ -n "${LIMIT}" ] || LIMIT=8388608
+
+if ! command -v file >/dev/null 2>&1; then
+    # Said out loud, every run, rather than degrading quietly: a detector that
+    # lost its main channel and still reports success is the instrument-chain
+    # failure -- the zero that does not name itself.
+    echo "NOTE: file(1) is not installed; only the magic-byte channel is active," >&2
+    echo "      which knows four formats where file(1) knows hundreds." >&2
+fi
+
+# derived_kind <blob-sha> -> what kind of derivation it is, or empty.
+derived_kind() {
+    local sha=$1 desc magic
+    # The read is bounded to 8 KiB: identification needs a few hundred bytes, and
+    # a 187 MiB blob must not be streamed in full to learn its first four. NOTE
+    # the consequence, measured rather than assumed -- under a bounded read this
+    # file's own 187 MiB ELF reports "shared object" where a full read reports
+    # "pie executable", so the match is on ELF, never on the word "executable".
+    desc=$(git cat-file blob "${sha}" 2>/dev/null | head -c 8192 | file -b - 2>/dev/null || true)
+    case "${desc}" in
+        *ELF*|*Mach-O*|*PE32*|*"MS-DOS executable"*|*"ar archive"*|*"current ar archive"*|\
+        *"compiled Java class"*|*byte-compiled*|*bytecode*|*WebAssembly*|*"core file"*|\
+        *relocatable*|*"object file"*|*"shared library"*|*".Net assembly"*|*"LLVM IR bitcode"*|\
+        *"Dalvik dex"*|*"Debian binary package"*|*"RPM v"*)
+            printf '%s' "${desc}"; return 0 ;;
+    esac
+    # The magic bytes are a SECOND CHANNEL, not a copy of the first: they fail
+    # differently. file(1) can be absent, or reword its output between versions;
+    # these constants cannot change. The two are OR'd, so drift between them can
+    # only widen the net, never open a hole -- which is why holding both is not
+    # the duplication I2 warns about (that one is two authorities for one answer;
+    # this is two independent detectors feeding one decision).
+    magic=$(git cat-file blob "${sha}" 2>/dev/null | head -c 4 | od -An -v -tx1 | tr -d ' \n' || true)
+    case "${magic}" in
+        7f454c46) printf 'ELF object [magic bytes; file(1) did not name it]' ;;
+        4d5a*)    printf 'PE/DOS executable [magic bytes]' ;;
+        213c6172) printf 'ar archive / static library [magic bytes]' ;;
+        feedface|cefaedfe|feedfacf|cffaedfe) printf 'Mach-O binary [magic bytes]' ;;
+        cafebabe) printf 'Mach-O fat binary or Java class [magic bytes]' ;;
+    esac
+}
 
 if ! git rev-parse --verify -q HEAD >/dev/null 2>&1; then
     BASE=$(git hash-object -t tree /dev/null)      # the empty tree: first commit
@@ -68,24 +108,23 @@ BAD=0
 while IFS= read -r -d '' path; do
     sha=$(git rev-parse ":${path}" 2>/dev/null) || continue
     size=$(git cat-file -s "${sha}" 2>/dev/null) || continue
-    magic=$(git cat-file blob "${sha}" 2>/dev/null | head -c 4 | od -An -v -tx1 | tr -d ' \n')
-    kind=""
-    case "${magic}" in
-        7f454c46)                       kind="an ELF executable/object" ;;
-        4d5a*)                          kind="a PE/DOS executable" ;;
-        213c6172)                       kind="an ar archive (static library)" ;;
-        feedface|cefaedfe|feedfacf|cffaedfe) kind="a Mach-O binary" ;;
-        cafebabe)                       kind="a Mach-O fat binary or Java class file" ;;
-    esac
+    kind=$(derived_kind "${sha}")
     if [ -n "${kind}" ]; then
-        echo "REFUSED: ${path} is ${kind} (${size} bytes)." >&2
-        echo "         A binary is a derivation, not an origin -- it is either reconstructible" >&2
-        echo "         (so redundant) or not (so unreliable). Record how to rebuild it, not it." >&2
+        echo "REFUSED: ${path}" >&2
+        echo "         file(1) says: ${kind}" >&2
+        echo "         That is the determined end of a one-way transformation -- the sources" >&2
+        echo "         make it, it cannot make them back. Record how to rebuild it, not it." >&2
+        echo "         (${size} bytes, and the size is not why: there is no size at which a" >&2
+        echo "         compiled object becomes an origin.)" >&2
         BAD=$((BAD + 1))
     elif [ "${size}" -ge "${LIMIT}" ]; then
-        echo "REFUSED: ${path} is ${size} bytes, over the ${LIMIT}-byte ceiling." >&2
-        echo "         Nothing legitimate in either repo is this large (max measured: 3.06 MB)." >&2
-        echo "         If it IS legitimate: git config hooks.maxBlobBytes <n>, and say why in the commit." >&2
+        echo "REFUSED: ${path} -- ${size} bytes, over the ${LIMIT}-byte ceiling." >&2
+        echo "         This is NOT the derivation test above; that one passed -- nothing here" >&2
+        echo "         can tell whether this is reconstructible, because that is a question" >&2
+        echo "         about where it came from, not about its bytes. So it goes to you:" >&2
+        echo "           reconstructible -> record the procedure, commit that, not this" >&2
+        echo "           an origin       -> say so in the commit, then override" >&2
+        echo "         (Nothing legitimately tracked in either repo exceeds 3.06 MB today.)" >&2
         BAD=$((BAD + 1))
     fi
 done < <(git diff --cached --name-only -z --diff-filter=AM "${BASE}" 2>/dev/null)

@@ -43,36 +43,67 @@ exists nowhere.
 ## Nothing derived enters history
 
 A file belongs here if it is an ORIGIN -- reasoning, a script, a record. A
-DERIVATION -- a build output, a staging binary, a rendered artifact, a
-measurement dump -- does not: it is either reconstructible (so redundant beside
-the source commit + md5 the delivery entry already records) or not
-reconstructible (so unreliable as a record, because nothing can ever check what
-it claims). This is the "uncommitted per the artifacts convention" that delivery
-entries have stated since 2026-07. What follows is that convention with an
-enforcement, added after a 187 MiB staging binary sat in 44 commits for three
-weeks while the entry recording that wave stated it was uncommitted (INTENT
-11.137) -- prose is enforced by whoever is paying attention at `git add`.
+DERIVATION does not, and the reason is an asymmetry rather than a size: a
+compiled artifact is the DETERMINED end of a one-way transformation. The source
+determines the binary; the binary does not determine the source, because
+compilation destroys exactly the information that would let you go back. Of the
+two ends, one carries what the other cannot be recovered from -- and that is the
+one a record keeps. So:
 
-Three layers, each assuming the previous one failed:
+    reconstructible from the sources  ->  redundant beside them
+    NOT reconstructible               ->  unreliable, nothing can check it
 
-1. **`.gitignore`** -- the known staging-binary name shapes (`harness/sc_f*_pre`,
-   `harness/sc_f*_child`, `harness/spacecrafter_pre_*`) plus `artifacts`. Names,
-   so it is a proxy: a binary under a new name walks straight past it.
-2. **`githooks/pre-commit`** -- content, so it is the criterion: any
-   ELF/PE/Mach-O/ar blob refused at any size, and any blob >= 8 MiB
-   (`hooks.maxBlobBytes`) refused whatever it holds. The size number is set from
-   the corpus, not from taste: the largest legitimately tracked blob across both
-   repos is 3.06 MB. Install with `githooks/install.sh`, which wires
-   `core.hooksPath` in BOTH repos and then PROVES the hook fires -- ELF refused,
-   9 MiB refused, ordinary file passed. The negative control is not decoration:
-   a hook that refuses everything passes both positives.
-3. **GitHub's own >100 MiB rejection** -- the last resort, and the expensive one.
-   By the time it fires the commit exists, and only a history rewrite removes it.
+Either way it does not belong. Size was never the criterion; it is what made
+this visible, once, at 187 MiB (INTENT 11.137). A 12 KiB `.pyc` is exactly as
+much a derivation as a 187 MiB executable, and a size gate never sees it.
 
-**Limit, stated:** git config is per-clone and is not cloned, so a FRESH CLONE
-runs no hook until `githooks/install.sh` is run. Nothing inside a repository can
-close that -- it is a property of git. Run it at checkout, with the layout
-precondition above.
+Four layers, ordered by how directly each one encodes that reason:
+
+1. **Type -- `githooks/pre-commit`, the criterion.** `file(1)` reads the staged
+   blob's CONTENT (names lie) and anything it identifies as compiled output --
+   ELF, Mach-O, PE, ar archive, Java class, `.pyc`, WebAssembly, core dump,
+   object file -- is refused **unconditionally**: no threshold, no exemption,
+   because there is no size at which a compiled object becomes an origin. A
+   second channel checks magic bytes directly, so the gate still holds where
+   `file(1)` is absent or has reworded its output; the two are OR'd, so drift
+   between them can only widen the net.
+2. **Path -- `.gitignore`, the convention.** `artifacts`, and the staging-binary
+   name shapes (`harness/sc_f*_pre`, `harness/sc_f*_child`,
+   `harness/spacecrafter_pre_*`). This is what covers the harness's own commonest
+   derivation -- measurement output, PNG and logs -- which no type detector can
+   tell from source data. Names, so it is a proxy: a new name walks past it.
+3. **Size -- `githooks/pre-commit`, the residue.** Blobs >= 8 MiB
+   (`hooks.maxBlobBytes`). This layer makes a *different claim* from layer 1: it
+   has decided nothing. Reconstructibility is semantic -- a 40 MiB capture log
+   and a 40 MiB star catalogue are the same bytes to any detector -- so it stops
+   on "large, and unclassifiable" and puts the question where the answer lives.
+   The number is read off the corpus, not chosen: the largest legitimately
+   tracked blob across both repos is 3.06 MB. It refuses rather than warns only
+   because a warning printed under `git add -A` is scrollback.
+4. **GitHub's >100 MiB rejection** -- the last resort, and the expensive one. By
+   the time it fires the commit exists, and only a history rewrite removes it.
+
+Install with `githooks/install.sh`: it wires `core.hooksPath` in BOTH repos and
+then PROVES the hook fires, against a throwaway index so neither working tree is
+touched -- 8-byte ELF refused (size-independence, the point layer 3 cannot make),
+Java class refused, `.pyc` refused (that one has no magic-byte fallback, so it is
+the leg that dies if the `file(1)` channel dies), 9 MiB text refused by the
+residue layer, and an ordinary file PASSED. The negative control is not
+decoration: a hook that refuses everything passes every positive.
+
+Measured, both repos, every tracked file staged as new: **0 refusals across
+3 175 files**. Known blind spots, named rather than left to be discovered: an
+archive *containing* binaries (`.jar`, `.whl`, a build tarball) reads as "Zip
+archive data" and is indistinguishable from packaged source data, so it falls to
+layer 3; and layer 2 is the only thing standing between measurement artifacts and
+the history.
+
+**Limits, stated.** `--no-verify` bypasses every hook, including the type
+refusal, and git offers no way to prevent that; the only unbypassable layer is
+server-side, which GitHub does not offer outside Enterprise. And git config is
+per-clone and is not cloned, so a FRESH CLONE runs no hook until
+`githooks/install.sh` is run. Neither is closeable from inside a repository. Run
+the installer at checkout, with the layout precondition above.
 
 **When one gets in anyway:** `purge-path.sh` removes a path from history and
 keeps every pointer that cited the re-shaed commits pointing at them -- tracker
