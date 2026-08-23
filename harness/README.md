@@ -1419,7 +1419,7 @@ at the same `strcpy` is silent - so pre/post claims are presence vs absence.
     ./f29_compare.py <pre_outdir> <post_outdir>                      # exit 0/1
 
 `f29_upchain.py`'s header IS the prediction (committed before the first run,
-harness `5df7d17`); `f29_compare.py` evaluates the cross-binary halves. Five
+harness `2af2ee1`); `f29_compare.py` evaluates the cross-binary halves. Five
 legs in one launch: **E** observer on Earth · **S** system centre · **X** on
 Mars with the Sun tracked (the FREEZE SOURCE) · **M** on the Moon at fov 340 ·
 **N** the same instant at fov 140 with the subject tracked.

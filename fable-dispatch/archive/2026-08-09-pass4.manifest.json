@@ -3,7 +3,7 @@
  "date": "2026-08-09",
  "source": "fable-dispatch.md",
  "pre_md5": "141dda6812430fd21b6f18b7c0ffe10b",
- "pre_commit": "c95e7d0",
+ "pre_commit": "9aeaaa1",
  "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads re-inserted at recorded positions reproduce pre_md5)",
  "units": [
   {"id": "update-s9", "mode": "move", "dest": "fable-dispatch/archive/update-s9.md", "line_start": 101, "line_count": 45, "payload_md5": "40b3dc0d5101e5b0736c64f1b38de871"},

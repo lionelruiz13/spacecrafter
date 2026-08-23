@@ -3,7 +3,7 @@
  "date": "2026-08-09",
  "source": "fable-dispatch.md",
  "pre_md5": "dfba9d81c5e05444a11d78586372943e",
- "pre_commit": "8246f05",
+ "pre_commit": "c7f3965",
  "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads re-inserted at recorded positions reproduce pre_md5)",
  "units": [
   {

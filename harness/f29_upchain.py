@@ -4,7 +4,7 @@
 # ---------------------------------------------------------------------------
 # THE MECHANISM, re-derived from source at code master-beta @ 5b86be0f
 # (this header is the PREDICTION and was committed BEFORE the first run,
-# harness 5df7d17; the only later edit is the P3' paragraph, whose reason is
+# harness 2af2ee1; the only later edit is the P3' paragraph, whose reason is
 # a MEASUREMENT stated there and whose substance is unchanged).
 # ---------------------------------------------------------------------------
 # `ModularBody::dispatchUpdate` (ModularBody.cpp:323-386) walks DOWN from the

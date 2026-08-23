@@ -37,7 +37,7 @@ unit moves back at the cost of one probe — when in doubt, a unit stays live.
 **Update [Fable 2026-08-09, supervising session 12]:** round of 3: **F34 → F35 →
 F36** — likely the LAST decision-free round: after it the remaining set is
 entirely decision-gated. Warm-up: both trees clean, code `204d402e` / harness
-`8172262`, binary confirmed current by no-op rebuild, `free -g` = 52 GiB ⇒ -j12;
+`c8fd86d`, binary confirmed current by no-op rebuild, `free -g` = 52 GiB ⇒ -j12;
 NO Vixy commit since session 11's close ⇒ the blocked/decision-gated set stands
 unchanged (D15/D21 late-Aug, D37, A40–A43, C4 open; §5.64/§5.65/§5.69/§5.70/
 §5.72/§5.75/§5.76 fixes stay Vixy's). **B4-row residual re-check DONE at

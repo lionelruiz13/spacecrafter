@@ -3,8 +3,8 @@
  "date": "2026-08-01",
  "source": "fable-dispatch.md",
  "pre_md5": "6f97d98166a421356bee6280e55d5edf",
- "pre_commit": "56bc68b",
- "reconstruction": "verified byte-exact against pre-move commit 56bc68b",
+ "pre_commit": "37afdef",
+ "reconstruction": "verified byte-exact against pre-move commit 37afdef",
  "units": [
   {
    "id": "update-s7",
