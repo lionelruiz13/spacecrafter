@@ -1367,7 +1367,7 @@ helpers (`b25_galactic.run_phase`, `f23_b33_control.App.send`) `recv()` into
 the void after each command - which is why a missing answer was never visible
 from a harness script until this one kept what it read.
 
-## F28 — how long an answer is, and where it lands (`f28_send_buffer.py`) — INTENT §5.73 / §11.136
+## F28 — how long an answer is, and where it lands (`f28_send_buffer.py`) — INTENT §5.73 / §11.138
 
     cd claude/harness && DISPLAY=:2 ./f28_send_buffer.py <absOutdir> --mode census
     cd claude/harness && DISPLAY=:2 [ASAN_OPTIONS=halt_on_error=0:detect_leaks=0] \
@@ -1452,7 +1452,7 @@ line-drawing gate:
   to 8e-7 across bodies) and the y-flip is picked by the control body — the
   projection is reconstructed, never assumed.
 
-Measured verdicts at delivery (§11.137): subject trail **550.39 px** from its
+Measured verdicts at delivery (§11.139): subject trail **550.39 px** from its
 body pre-fix / **9.2e-05 px** post-fix, control body **0.69 px on both**;
 invariant `eclRoot == mat.translation` violated by exactly the up-chain pre-fix,
 by nobody post-fix over 120 bodies; control scenes bit-identical.
@@ -1465,7 +1465,7 @@ there is: on the PRE-fix binary, standing on the Moon, Earth's frame says Earth
 is **6378.240 km** away (its own radius plus the observer's 100 m) instead of
 **359 624 km**, at both entries.
 
-## F31 — which of the two it is (`f31_search_drive.py`) — INTENT §5.74 / §11.139
+## F31 — which of the two it is (`f31_search_drive.py`) — INTENT §5.74 / §11.141
 
     cd claude/harness && export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*) \
         && DISPLAY=:2 ./f31_search_drive.py <absOutdir> [--bin <binary>]
@@ -1512,13 +1512,13 @@ never fires. Both candidates are read on ONE launch, each at its own surface.
 asserted: `f27_reply.py --legs A --expect post` on the prefix-free path is
 **0 FAIL** after the edit (`artifacts/f31/f27_regression/`).
 
-Measured verdict at delivery (§11.139): phase 1 planets **90** / nebulae **407**
+Measured verdict at delivery (§11.141): phase 1 planets **90** / nebulae **407**
 vs constellations **0** / star index **0**, sweep **P 84 · C 0 · N 243 · S 0**,
 loaders entered **0 times**, culture gate rejected once; phase 2 catalogues
 **3** / **3183**, same 36 commands **P 84 · C 3 · N 241 · S 1085**, live-index
 prefix `1` going **0 → 104 (S)**. 20/20 checks PASS, app exit 0, md5 in == out.
 
-## F32 — what an `Object` assignment lets go of (`f32_object_leak.py`) — INTENT §5.34 / §11.140, 2026-08-09
+## F32 — what an `Object` assignment lets go of (`f32_object_leak.py`) — INTENT §5.34 / §11.142, 2026-08-09
 
     cd claude/harness && export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*) \
         && export DISPLAY=:2
@@ -1564,7 +1564,7 @@ over a fresh F28 overflow launch of `harness/sc_f28_asan_pre` and reported
 **3 `heap-buffer-overflow`**, against 0 on all four F32 runs
 (`artifacts/f32/f32_lsan_blocks.txt`, tail).
 
-## F35 — the two degenerate-input guards (§5.81 distance-0 `screenPos`, §5.79 empty `getSelected`), INTENT §11.143
+## F35 — the two degenerate-input guards (§5.81 distance-0 `screenPos`, §5.79 empty `getSelected`), INTENT §11.145
 
     cd claude/harness && export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*) \
         && DISPLAY=:2 ./f35_degenerate.py <absOutdir> --bin <binary> --expect pre|post \
@@ -1607,7 +1607,7 @@ printed into the run's log as the probe's positive map. Measured 0 (no transitio
 mandatory** — the app's stall watchdog otherwise stops the inferior and a batch script
 then quits, killing the app mid-run (measured: the port never reopened for leg 2).
 
-## F36 — which startup failures never reach the app's log (`f36_*.py`), INTENT §5.77 / §11.144
+## F36 — which startup failures never reach the app's log (`f36_*.py`), INTENT §5.77 / §11.146
 
 Four pieces, each the authority for one step, so a later run cannot measure a site
 that was never enumerated or classify one that does not exist (I2).
@@ -1659,5 +1659,5 @@ ATTEMPT and never the outcome, so it does not merely omit — it implies success
 Result on `04ae1d3e`: 214 live sites (186 project) in 76 functions; 25 functions
 entered during startup; **37 startup failure reports the app log does not carry**;
 and every one of the 37 carries a blocker, so the uniform additive `cLog` routing
-§5.77 expected does not exist. See §11.144(f) for the five blocker kinds and (j)
+§5.77 expected does not exist. See §11.146(f) for the five blocker kinds and (j)
 for the one question that decides the fix.

@@ -32,7 +32,7 @@
 # probe class, INTENT §11.47.
 #
 # Output goes to $F36_PROBE with an open/flush/close per line, deliberately not
-# through gdb's stdout, which is block-buffered when redirected (§11.139(b)).
+# through gdb's stdout, which is block-buffered when redirected (§11.141(b)).
 import json
 import os
 

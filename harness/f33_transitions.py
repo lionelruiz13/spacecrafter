@@ -6,7 +6,7 @@
 WHAT IS UNDER TEST. `camera action move_to target point|body`,
 `transition_to target point|body` and `align_with body` reached only the old
 `AnchorManager` (INTENT §13 B4 clause (iv)). They now drive the new camera path
-as well (§11.141). The bar is B34's: OLD'S MEASURED BEHAVIOUR THROUGH THE LIVE
+as well (§11.143). The bar is B34's: OLD'S MEASURED BEHAVIOUR THROUGH THE LIVE
 COMMAND CHANNEL, on the same drive wherever the two paths can be read from one
 frame.
 

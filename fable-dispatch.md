@@ -57,8 +57,8 @@ F34→F35→F36; order-independence CHECKED: F34 writes no product code (record 
 harness only) and runs FIRST so its measurements baseline on unmodified code;
 F35 = `ModularBody.hpp` + `constellation_mgr.cpp`/callers; F36 = startup
 logging sites — disjoint; sequential dispatch removes the residual risk.
-**Round outcome (session 12 close, 2026-08-09):** F34 → §11.142, F35 →
-§11.143, F36 → §11.144 — all three delivered AND supervisor-verified same
+**Round outcome (session 12 close, 2026-08-09):** F34 → §11.144, F35 →
+§11.145, F36 → §11.146 — all three delivered AND supervisor-verified same
 session; code moved `204d402e → c12ed803 → 04ae1d3e` (F35 only; F34 and F36
 are record-only, code clean at open and close). **§5.80's owed datum PAID**
 (F34): the teleport lives on the CONVERTER — (A) is used by exactly the three
@@ -74,7 +74,7 @@ default field (rc −11), now fixed. **§5.77's owed enumeration PAID** (F36):
 the class is 37 startup failure reports on FIVE channels; the expected fix
 measured NON-additive (`print_log = true` makes `cLog L_ERROR` a second
 console writer — four-cell measurement); decision handed as ONE question
-(§11.144(j)). NEW rows: **§5.86** (F34) · **§5.87** (F35) · **§5.88–§5.90**
+(§11.146(j)). NEW rows: **§5.86** (F34) · **§5.87** (F35) · **§5.88–§5.90**
 (F36). Executor quality: F34's both-hypothesis scoring with pre-run committed
 predictions + the supplementary-swing discriminator; F35's retargeted branch
 probe with positive map; F36's comment-stripping census (a grep = 2.2× wrong)
@@ -84,7 +84,7 @@ FIX they enable is Vixy's): **§5.86's owed data** (consumer dependence +
 old-path RA/DE parity target), **§5.88's owed datum** (draw-time cost of an
 empty spectral array), **§5.89's owed sweep** (other load-bearing `assert`s
 in `src/`). Then the decision-gated set unchanged PLUS the new decisions
-minted this round (§11.144(j) console duplication; §5.87/§5.88/§5.89/§5.90
+minted this round (§11.146(j) console duplication; §5.87/§5.88/§5.89/§5.90
 semantics/layout halves). DECISIONS_PENDING open set at close: **D15, D21
 (late Aug), D37** + A40–A43 awaiting — unchanged; B31 rides D21/D28/C4.
 
@@ -131,7 +131,7 @@ semantics/layout halves). DECISIONS_PENDING open set at close: **D15, D21
      (measured: 3 reported with nothing running). Use the `/proc/<pid>/comm` probe
      (`f26_epoch.sh`; Python port in `f27_reply.py`) — covers every account,
      positively mapped both ways (decoy 1 / without 0).
-   - **Session-environment hazards (2026-08-09, F28/F30, §11.136/§11.138(i)):**
+   - **Session-environment hazards (2026-08-09, F28/F30, §11.138/§11.140(i)):**
      (a) the inherited `XAUTHORITY` belongs to another uid — every display refuses;
      `export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)` with
      `DISPLAY=:2` (forced, not defaulted — the inherited `DISPLAY=:0` makes
@@ -222,8 +222,8 @@ DELIVERED and archived** — F0 §11.103 · F1 §11.104/§11.105 · F2 §11.106 
 F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · F15 §11.121 ·
 F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129 ·
 F22 §11.130 · F23 §11.131 · F24 §11.132 · F25 §11.133 · F26 §11.134 · F27 §11.135 ·
-F28 §11.136 · F29 §11.137 · F30 §11.138 · F31 §11.139 · F32 §11.140 ·
-F33 §11.141 · F34 §11.142 · F35 §11.143 · F36 §11.144. No section is live: the next
+F28 §11.138 · F29 §11.139 · F30 §11.140 · F31 §11.141 · F32 §11.142 ·
+F33 §11.143 · F34 §11.144 · F35 §11.145 · F36 §11.146. No section is live: the next
 dispatchable candidates (§5.86's owed data, S; §5.88's owed draw-cost datum,
 S; §5.89's owed assert sweep, S — every FIX they enable is Vixy's) are to be
 minted at their dispatch per §0b.2 — the current queue lives in the latest
@@ -250,8 +250,8 @@ session update note above.*
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
-- **Session-12 decision data (2026-08-09, F34/§11.142 + F35/§11.143 +
-  F36/§11.144):**
+- **Session-12 decision data (2026-08-09, F34/§11.144 + F35/§11.145 +
+  F36/§11.146):**
   - **§5.80's owed datum is PAID — the teleport lives on the CONVERTER.**
     (A) `spheToRect(−lon,lat)·d` is used by exactly the three sites that
     convert between the anchored triple and the free cartesian member
@@ -270,12 +270,12 @@ session update note above.*
     in free flight (re-expressing the converter as the composer's inverse
     leaves `descend`/`moveEyeRel` and every anchored place untouched — the
     datum's statement, not a proposal).
-  - **F36's decision (§11.144(j)) — the startup-silence fix turns on ONE
+  - **F36's decision (§11.146(j)) — the startup-silence fix turns on ONE
     question:** the silent class is 37 sites on FIVE channels (not "stderr"),
     and NO uniform additive routing exists — measured, not argued: the
     installed config has `print_log = true`, which makes `cLog L_ERROR`
     write the console too, so the §5.77 row's own expected one-liner prints
-    the message TWICE (four-cell measurement, §11.144(f)). **Should a
+    the message TWICE (four-cell measurement, §11.146(f)). **Should a
     startup failure appear on the console twice when `print_log = true`?**
     Yes ⇒ the additive call lands at 20 sites (13 need new wording first).
     No ⇒ the fix is not additive: remove raw writes (changes the console
@@ -296,7 +296,7 @@ session update note above.*
     content — the fourth member of the field question but the first whose
     data exists locally in the unread root.
   - **Supervisor hypothesis [derived, NOT measured]:** §5.90 may explain
-    §11.140(h)'s sparse HIP index (3 of 14 swept ids resolve) — the missing
+    §11.142(h)'s sparse HIP index (3 of 14 swept ids resolve) — the missing
     level-2/3 catalogues carry the bulk of HIP stars. Discriminating check
     for whoever gets it: matching list/files pair at the loader's path,
     re-sweep the 14 ids. If confirmed, the field question's third member
@@ -318,13 +318,13 @@ session update note above.*
   every finite projection factor; NO NaN sentinel, because "belongs to the
   drawn surface" already has one authority (sweep membership + hidden-list
   unregistration) and a sentinel would be a silent second one (I2); one
-  `if` to reverse (§11.143(a)). (2) F35's §5.79 guard — an empty
+  `if` to reverse (§11.145(a)). (2) F35's §5.79 guard — an empty
   constellation selection answers an empty `Object`, the sibling holders'
   own answer, tolerated end-to-end by the one caller; this also FIXES a
   measured SIGSEGV on the shipped `select constellation_star <abbrev>` at
   the default field state (rc −11 → alive, EOL/EOL); one `if` to reverse
-  (§11.143(c)(d)).
-- **Session-11 decision data (2026-08-09, F31/§11.139 + F32/§11.140 + F33/§11.141):**
+  (§11.145(c)(d)).
+- **Session-11 decision data (2026-08-09, F31/§11.141 + F32/§11.142 + F33/§11.143):**
   - **§5.74 (search finds no stars/constellations) — the answer is the FIELD:**
     the load never ran; every one of the **2922 files under
     `~/.spacecrafter/sky_cultures` is 0 bytes** (`western-spacecrafter/info.ini`
@@ -336,7 +336,7 @@ session update note above.*
     content, or ship it empty? The field-content class now has THREE members
     answered by that one question: `sky_cultures` (2922×0 B), `stellar_systems`
     (13×0 B, §11.109), and the sparse HIP star index (3 of 14 swept ids
-    resolve, §11.140(h)).
+    resolve, §11.142(h)).
   - **D28's decision surface grew a concrete member (F33):** old's
     `transition_to body` ends at heading 0 (measured: ramp from 49.139° over
     5 s, start = minus the body's SCREEN axis angle); the new path holds the
@@ -378,7 +378,7 @@ session update note above.*
   from F32's in-entry record — a crash reachable from a shipped command
   (`select constellation_star` on an empty selection) belongs in the registry;
   local untestability is not a mint criterion.
-- **Session-10 decision data (2026-08-09, F30/§11.138 + F28/§11.136 — every
+- **Session-10 decision data (2026-08-09, F30/§11.140 + F28/§11.138 — every
   waiting decision below now has the datum its row said it owed; nothing new is
   ASKED, the existing questions just got their facts):**
   - **§5.60 (D13 device-limit):** the 2.68 GB allocation is ONE BUFFER — the
@@ -414,7 +414,7 @@ session update note above.*
     OPPOSITE sides: `recever_client.c` (subscribes, issues nothing) goes
     SILENT if the broadcast copy of addressed answers is removed;
     `send_recev_client.c` keeps working (it now gets the addressed copy).
-  - **Truncation policy (from F28/§11.136, riding §5.73's closure):** the
+  - **Truncation policy (from F28/§11.138, riding §5.73's closure):** the
     1024-byte clamp is untouched and now has a concrete case — `get status
     planets_position` is 854 of 1024 B on shipped data, ~5 `body action
     load`s from silently truncating mid-token with no marker. The overflow
@@ -428,7 +428,7 @@ session update note above.*
   contract-restorations, reversible per-site; (3) the eleven §11 stubs
   (128–138) that had accreted inside §13.C were relocated back to §11 as a
   pure line move, with a boundary marker so the class cannot recur
-  (§11.138(h)).
+  (§11.140(h)).
 - **New awareness rows, no action needed now: §5.74** (`search` returns no star
   and no constellation on the shipped corpus — cause not yet discriminated,
   owed datum named in-row, next-round dispatch candidate) · **§5.75**

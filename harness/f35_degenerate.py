@@ -17,13 +17,13 @@ centre-singularity guard covers rq→0 at a FINITE distance; at distance == 0 it
 own fallback is `1/(distance·halfFov)` = inf and `mat.r[12]·inf` = NaN
 [observed: ModularBody.hpp:486-506]. Newly reachable from the shipped command
 `camera action transition_to target point`, which puts the camera AT its anchor
-body by design (§11.141(c): `placeAt({0,0,0})`, distance 0 measured < 1e-12).
+body by design (§11.143(c): `placeAt({0,0,0})`, distance 0 measured < 1e-12).
 
   A1 (positive control, the SAME launch, before the transition): every body in
      the dump carries a FINITE `screen` pair. This is the non-degenerate scene —
      the guard must not fire in it, on either binary.
   A2 the transition lands: the camera references `temp_point`, distance == 0.
-  A3 `temp_point`'s `screen`:  PRE  -> both components non-finite (§11.141(l)'s
+  A3 `temp_point`'s `screen`:  PRE  -> both components non-finite (§11.143(l)'s
      `[-nan,-nan]`);  POST -> exactly [0.0, 0.0], the centre.
   A4 every OTHER body's `screen` stays finite after the transition (both).
 
@@ -55,7 +55,7 @@ statement dereferences `selected.begin()` on whatever the vector then is.
 
 --------------------------------------------------------------------- LEG B2
 The SECOND manifestation of the same root, and the positive control, both on a
-launch where constellations actually exist — F31's fixture pattern (§11.139(f)):
+launch where constellations actually exist — F31's fixture pattern (§11.141(f)):
 a sky culture loaded from OUTSIDE the frozen field by `sky_culture action load
 path <abs dir>`, taking constellations 0 -> 3. Nothing under ~/.spacecrafter is
 written; the frozen md5 pair is asserted in == out by the Session.

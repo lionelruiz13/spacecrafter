@@ -4,7 +4,7 @@
 Three questions, one launch, all read-only except the named commands:
 
   P1  does `camera.rootPos` (the new path's observer position in the ROOT
-      frame, §11.141) agree with the OLD path's observer heliocentric position?
+      frame, §11.143) agree with the OLD path's observer heliocentric position?
       Old's is recovered from the dump's `helioToEye` the same way the new one
       is derived from viewMat: for an affine map [R|t] taking a frame to the
       eye, the eye's position in that frame is -Rᵀ·t. Agreement is BOTH the

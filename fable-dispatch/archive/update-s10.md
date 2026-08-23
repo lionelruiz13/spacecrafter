@@ -23,8 +23,8 @@ M-sized fix with baseline risk vs six decision un-starvations. Dispatch order =
 F28→F29→F30; order-independence CHECKED, not assumed: F28 = `src/tools/io.{cpp,hpp}`,
 F29 = the experimentalModule dispatch walk (disjoint files); F30 lands no code, and
 its one §5.60 launch reads a startup-time allocation size neither fix touches.
-**Round outcome (session 10 close, 2026-08-09):** F28 → §11.136, F29 → §11.137,
-F30 → §11.138 — all three delivered AND supervisor-verified same session.
+**Round outcome (session 10 close, 2026-08-09):** F28 → §11.138, F29 → §11.139,
+F30 → §11.140 — all three delivered AND supervisor-verified same session.
 **§5.73 CLOSED** (F28): the fix was decision-free for a reason the row did not
 carry — the shared buffer never truncated anything, so its size expressed no
 policy; `send()` now carries what it sends (I6, all nine call sites), the
@@ -43,7 +43,7 @@ the two shipped clients on opposite sides. NEW rows: **§5.74** (search finds
 no stars/constellations — owed datum named, dispatch candidate) · **§5.75**
 (trail sample loss on date jumps — policy) · **§5.76** (paused decrement runs
 time backward — semantics). Supervisor maintenance: §11 stubs 128–138
-relocated home from §13.C with a boundary marker (§11.138(h)); §0.5 gains the
+relocated home from §13.C with a boundary marker (§11.140(h)); §0.5 gains the
 XAUTHORITY + `timeout -s KILL` hazards. Executor quality: F28 turned the
 row's own framing against itself with its first measurement (the unbounded
 producer was 142 B; the bounded-looking one hit the clamp) and found the

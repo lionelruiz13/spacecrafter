@@ -9,7 +9,7 @@ THE ROW'S OWED ITEM (§5.74, verbatim): *"Owed before it is judged: which of the
 two it is, on one launch, with the catalogue's own count as the positive
 control"*. F28 measured the symptom only: a 26-letter `search` sweep at
 `maxobject 320` answers with `(P)` and `(N)` entries and never a `(S)` or a
-`(C)` (§11.136(h)).
+`(C)` (§11.138(h)).
 
 ONE LAUNCH, TWO SURFACES, BOTH WAYS.
 

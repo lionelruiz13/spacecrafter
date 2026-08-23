@@ -20,8 +20,8 @@ aggregation), F32 = `src/tools/object.{cpp,hpp}`, F33 = camera/command-surface
 files — disjoint; F32's lifetime fix and F33's camera work share no state, and
 sequential dispatch removes the residual risk. §5.75/§5.76 NOT taken: policy/
 semantics rows, Vixy's by their own text.
-**Round outcome (session 11 close, 2026-08-09):** F31 → §11.139, F32 → §11.140,
-F33 → §11.141 — all three delivered AND supervisor-verified same session.
+**Round outcome (session 11 close, 2026-08-09):** F31 → §11.141, F32 → §11.142,
+F33 → §11.143 — all three delivered AND supervisor-verified same session.
 **§5.74 ANSWERED, stays OPEN as Vixy's** (F31): NOT LOADED — the load never
 ran; all 2922 sky-culture files are 0 bytes and the reject is silent (§5.77);
 the match measured sound via a fixture outside the frozen field (0 → 1085

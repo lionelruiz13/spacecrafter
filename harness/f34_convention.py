@@ -32,7 +32,7 @@ sign and an azimuth handedness, and that is a checkable claim, not a reading:
     ==> swing across `free_mode on`:  cos(theta) = cos^2(phi) (1 - sin 2 lam) - 1
     An azimuth-ONLY defect would instead give cos(theta) = cos^2(phi) sin(2 lam)
     + sin^2(phi), i.e. the SUPPLEMENT.  At the shipped place (43.3 N, 5.3667 E)
-    the two read 124.68 deg and 55.32 deg — F33 measured 124.8 deg (§11.141(k)),
+    the two read 124.68 deg and 55.32 deg — F33 measured 124.8 deg (§11.143(k)),
     so the sign term is already the one the field says.  This run re-measures it
     against a prediction committed here, on places chosen to separate the pair
     much further than the shipped one does.
@@ -64,7 +64,7 @@ Each of C3/C4/C5/C6 is scored against BOTH hypotheses, and the losing one is
 reported with its own residual so the discrimination is two-sided.
 
 CONTROLS.  (i) An A/A control: two dumps and two screenshots with no command in
-between — 0 AU and 0 px, the §11.141(k) pattern, so a non-zero elsewhere is an
+between — 0 AU and 0 px, the §11.143(k) pattern, so a non-zero elsewhere is an
 effect and not the instrument.  (ii) The reversible pair is entered TWICE, the
 second entry starting from the state the first exit produced, and with a FLIGHT
 (a descend) in between so the pair is not a trivial A/A^-1 round trip.
@@ -307,7 +307,7 @@ def main():
     LAM0, PHI0, ALT0 = 70.0, 30.0, 1.0e6
     app.cmd(f"moveto lat {PHI0} lon {LAM0} alt {ALT0} duration 0", 1.2)
 
-    # ---------------- leg 0: A/A control (§11.141(k) pattern) ---------------
+    # ---------------- leg 0: A/A control (§11.143(k) pattern) ---------------
     s_aa1 = app.dump("aa1")
     sh_aa1 = app.shot("aa1")
     s_aa2 = app.dump("aa2")

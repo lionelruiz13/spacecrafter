@@ -180,7 +180,7 @@ def run_phase(tag):
 # vanish from a dump. A body carrying NaN must be VISIBLE and compared (it then
 # fails a value check loudly), never silently missing.
 # The lookbehind covers every position a VALUE can start at, not just `:`
-# (2026-08-09, F33 §11.141): the first version matched only after a colon, so
+# (2026-08-09, F33 §11.143): the first version matched only after a colon, so
 # `"screen":[-nan,-nan]` - a body sitting exactly at the eye, reachable from
 # `camera action transition_to target point` - still raised and the body was
 # still dropped WHOLE, which is precisely the silent-absence failure the note

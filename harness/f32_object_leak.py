@@ -447,7 +447,7 @@ def mode_render(args, outdir):
         # tracking convergence is itself launch-dependent (the suspended
         # §11.94(d) / B30 question). So this scene's A/A floor is measured and
         # reported alongside the A/B rather than engineered away: see
-        # `--floor`, and INTENT §11.140 for the two attributed components.
+        # `--floor`, and INTENT §11.142 for the two attributed components.
         c.send(f"select hp {hip[0]}", 1.0)
         r["readouts"]["star"] = first_line(obj_info(c))
         shot("star")
