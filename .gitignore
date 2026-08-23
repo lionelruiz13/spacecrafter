@@ -9,7 +9,13 @@ vcpkg_installed
 
 
 #cmake
-build
+# Every build tree, by shape rather than by name. Was the literal `build`
+# plus three names added one at a time; a fourth (build.stale-cmake322-gcc11,
+# 2026-08-23) arrived unnamed and showed up untracked, which is how a derived
+# artifact gets swept in by `git add -A` -- the root INTENT 11.137 records.
+# No tracked path starts with `build` (verified), and the trailing / keeps it
+# to directories.
+build*/
 src/config.h
 
 #vscode
@@ -72,9 +78,9 @@ util/new_parser_scripts/main
 util/server_standalone/sender_client
 
 # Claude Code
-build-claude
-build-asan
-build-tsan
+# build-claude / build-asan / build-tsan are covered by `build*/` above --
+# one rule, one place. Their provenance is recorded in INTENT 11.122/11.125,
+# not here.
 .claude
 claude
 artifacts
