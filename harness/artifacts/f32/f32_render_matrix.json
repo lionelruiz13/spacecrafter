@@ -1,0 +1,29 @@
+[
+ {
+  "pair": "stl_post vs stl_post2",
+  "px_gt0": 4155,
+  "px_gt8": 21,
+  "px_gt32": 16,
+  "max": 254,
+  "lit": 1009,
+  "global_scale": 0.97095
+ },
+ {
+  "pair": "stl_pre vs stl_post",
+  "px_gt0": 4552,
+  "px_gt8": 21,
+  "px_gt32": 17,
+  "max": 236,
+  "lit": 1007,
+  "global_scale": 0.97099
+ },
+ {
+  "pair": "stl_pre vs stl_post2",
+  "px_gt0": 4923,
+  "px_gt8": 18,
+  "px_gt32": 17,
+  "max": 254,
+  "lit": 1007,
+  "global_scale": 0.97099
+ }
+]

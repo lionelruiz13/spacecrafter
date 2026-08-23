@@ -195,7 +195,20 @@ class Client:
 
 
 class Session:
-    def __init__(self, outdir, tag, binary):
+    def __init__(self, outdir, tag, binary, launch_prefix=(), port_wait=90,
+                 prepare=None, env_extra=None):
+        """`launch_prefix` is prepended to the argv, so a caller can run the same
+        launch UNDER another program without re-deriving the farm, the
+        concurrent-instance assert or the frozen-md5 pair (I2). F31 passes
+        ("gdb", "-q", "-batch", "-x", <script>, "--args") — ptrace_scope=1 blocks
+        attaching, so a probe has to be there from the first instruction.
+
+        `prepare(dst)` runs on the freshly built farm BEFORE the launch, so a
+        caller can author farm-local data the app must find at startup (F32
+        writes `modularSystem/SolarSystem.ini`: a composed body exists only if
+        it is on disc when the system loads). `env_extra` is merged into the
+        child environment (F32 passes ASAN_OPTIONS). Both default to inert, so
+        every existing caller's launch is byte-identical."""
         self.tag, self.outdir, self.binary = tag, outdir, Path(binary)
         insts = concurrent_instances()
         if insts:
@@ -206,14 +219,17 @@ class Session:
                 fail(f"{tag}: {n} md5 in {m} != frozen {FROZEN[n]}")
         self.farm = outdir / f"farm_{tag}"
         self.dst = b25g.build_farm(farm=self.farm, dotted=False, corpus=None)
+        if prepare is not None:
+            prepare(self.dst)
         self.applog = outdir / f"{tag}.applog"
         self.proc = subprocess.Popen(
-            [str(self.binary)], cwd=str(self.dst),
+            [*launch_prefix, str(self.binary)], cwd=str(self.dst),
             stdout=open(self.applog, "w"), stderr=subprocess.STDOUT,
             env={**os.environ, "HOME": str(self.farm),
-                 "DISPLAY": os.environ.get("DISPLAY", ":2")})
+                 "DISPLAY": os.environ.get("DISPLAY", ":2"),
+                 **(env_extra or {})})
         t0 = time.time()
-        while time.time() - t0 < 90:
+        while time.time() - t0 < port_wait:
             if self.proc.poll() is not None:
                 raise RuntimeError(f"{tag}: app died before opening its port")
             try:
@@ -262,16 +278,19 @@ class Session:
         F12's lesson: a harness that ignores this measures nothing for a run."""
         return [l for l in self.scriptlog().splitlines() if "Could not execute" in l]
 
-    def stop(self, driver):
+    def stop(self, driver, exit_wait=40):
+        """`exit_wait` is a parameter because an ASan/LSan build spends real time
+        in the leak check after main returns (F32); 40 s stays the default, so
+        every existing caller is unchanged."""
         driver.send("shutdown action now", 1)
         for c in self.clients:
             c.close()
         try:
-            rc = self.proc.wait(timeout=40)
+            rc = self.proc.wait(timeout=exit_wait)
         except subprocess.TimeoutExpired:
             self.proc.kill()
             rc = -1
-            fail(f"{self.tag}: app did not exit within 40 s")
+            fail(f"{self.tag}: app did not exit within {exit_wait} s")
         for n in FROZEN:
             m = md5(SRC_HOME / n)
             if m != self.md5_in[n]:

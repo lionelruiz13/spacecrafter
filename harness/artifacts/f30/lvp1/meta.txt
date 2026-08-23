@@ -1,0 +1,21 @@
+=== F30 §5.60 allocation-identity run: lvp1 (icd=lvp) ===
+wall clock start : 2026-08-09 02:12:52 CEST
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : f1491c0176ddc2658dfcd26db0a11cf5
+binary mtime     : 2026-08-09 01:02:20.252954016 +0200
+concurrent insts : 0
+config.ini  md5 in  : 03fbee59bc3ec506c58f0a3f1e1d73df   (pristine 03fbee59bc3ec506c58f0a3f1e1d73df)
+ssystem.ini md5 in  : 545a51ef76294891579a1fc2fe13792b   (pristine 545a51ef76294891579a1fc2fe13792b)
+XAUTHORITY       : /run/user/1003/.mutter-Xwaylandauth.RNNRT3
+DISPLAY          : :2
+display          : OK ( dimensions: 0x0 pixels (0x0 millimeters))
+ICD              : /usr/share/vulkan/icd.d/lvp_icd.json (llvmpipe; maxMemoryAllocationSize 0x80000000)
+cwd              : /home/claude/spacecrafter/claude/harness
+--- gdb run (timeout 240s) ---
+gdb rc           : 0  (137 = killed by timeout, i.e. the app was still running)
+wall clock end   : 2026-08-09 02:13:08 CEST
+config.ini  md5 out : 03fbee59bc3ec506c58f0a3f1e1d73df
+ssystem.ini md5 out : 545a51ef76294891579a1fc2fe13792b
+alloc lines      : 434
+big allocations  : 2
+2684360960 seen  : 1

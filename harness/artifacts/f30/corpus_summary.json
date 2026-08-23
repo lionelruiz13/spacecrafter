@@ -1,0 +1,26 @@
+{
+  "corpus_sizes": {
+    "R1_installed_recordings": 0,
+    "R2_installed_sessions": 11,
+    "S1_installed_scripts_sts": 408,
+    "S2_installed_scripts_other": 11,
+    "S3_repo_doc_sts": 1,
+    "S4_repo_data": 14,
+    "T1_repo_tools": 142,
+    "T2_installed_clients": 0,
+    "X_source_tree": 583
+  },
+  "counts": {
+    "5.65_control_pairs": 1,
+    "5.65_files_with_both": 7,
+    "5.65_in_block_pairs": 0,
+    "5.65_lock_hits": 7,
+    "5.65_moveto_hits": 181,
+    "5.69_keep_time_hits": 0,
+    "5.69_preload_hits": 4,
+    "5.70_delta_az_any": 0,
+    "5.70_look_delta_az": 0,
+    "5.70_zoom_delta_fov": 1,
+    "5.72_logon_hits": 8
+  }
+}

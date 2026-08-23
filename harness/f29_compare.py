@@ -1,0 +1,239 @@
+#!/usr/bin/env python3
+# F29 / INTENT §5.46 - the CROSS-BINARY half of the prediction (see
+# f29_upchain.py's header for the derivation; this file evaluates it, it does
+# not restate it).
+#
+#   ./f29_compare.py <pre_dir> <post_dir>
+#
+# Verdicts, each named by the prediction it discharges:
+#   P1  the eclRoot == mat-translation invariant: violated pre-fix exactly on
+#       the up-chain ancestors, clean post-fix, in EVERY scene.
+#   P2  the subject's frame frozen across the reference switch pre-fix, fresh
+#       post-fix.
+#   P3  the subject's TRAIL head is drawn at project(eclRoot) on BOTH binaries
+#       (that IS the mechanism), and project(eclRoot) == the subject's own
+#       screen position only post-fix; the control body's head is at its own
+#       position on both.
+#   P4  the two control scenes are pixel identical pre vs post, against the
+#       in-run A/A floor; the subject scene is NOT (a null there would mean a
+#       dead instrument, not a clean fix).
+
+import json, math, os, sys
+import numpy as np
+from PIL import Image
+
+PRE, POST = os.path.abspath(sys.argv[1]), os.path.abspath(sys.argv[2])
+THR = 12
+TOL = 3.0    # px: the head is a rasterised line end, not a point sample
+
+
+def rep(d):
+    return json.load(open(os.path.join(d, "f29_report.json")))
+
+
+def img(d, tag):
+    return np.asarray(Image.open(os.path.join(d, f"t_{tag}.png"))
+                      .convert("RGB")).astype(np.int32)
+
+
+def dpx(tag):
+    a, b = img(PRE, tag), img(POST, tag)
+    if a.shape != b.shape:
+        return None, None
+    d = np.abs(a - b).max(axis=2)
+    return int((d > THR).sum()), int(d.max())
+
+
+A, B = rep(PRE), rep(POST)
+SUB, CTL = A["subject"], A["control"]
+out = {"pre_dir": PRE, "post_dir": POST}
+ok, notes = True, []
+
+print("=== P1  eclRoot == mat[12:15] invariant, per scene ===")
+p1 = {}
+for s in ("E", "S", "X", "M", "N"):
+    va = sorted(A[f"scene_{s}"]["invariant_violations"])
+    vb = sorted(B[f"scene_{s}"]["invariant_violations"])
+    p1[s] = {"pre": va, "post": vb}
+    print(f"  scene {s}: pre violates {va or '[]'}   post violates {vb or '[]'}")
+    if vb:
+        ok = False; notes.append(f"P1 post-fix violation in scene {s}: {vb}")
+if not p1["M"]["pre"]:
+    ok = False; notes.append("P1 pre-fix showed no violation in the subject scene")
+out["P1"] = p1
+
+print("\n=== P2  subject frame frozen across the reference switch ===")
+print(f"  pre  X={A['P2_subject_eclRoot_X']}  M={A['P2_subject_eclRoot_M']}")
+print(f"  post X={B['P2_subject_eclRoot_X']}  M={B['P2_subject_eclRoot_M']}")
+print(f"  freeze leg puts the subject {A['X_subject_offaxis_deg']:.2f} deg off the "
+      f"frozen axis (post {B['X_subject_offaxis_deg']:.2f} deg)")
+# Bit equality is too strong for P2: FRAMES RUN between the freeze-leg dump and
+# the reference switch (releasing the track, the switch itself), and each of
+# them re-evaluates the subject at its own light-retarded jd. The honest test is
+# the RATIO - how far the subject scene's cached frame sits from the freeze
+# leg's, against the size of that frame.
+def dist(a, b):
+    return math.sqrt(sum((a[i] - b[i]) ** 2 for i in range(3)))
+
+
+def norm(a):
+    return math.sqrt(sum(v * v for v in a))
+
+
+p2 = {}
+for tagname, R in (("pre", A), ("post", B)):
+    x, m = R["P2_subject_eclRoot_X"], R["P2_subject_eclRoot_M"]
+    p2[tagname] = {"drift_from_freeze_au": dist(x, m), "freeze_norm_au": norm(x),
+                   "subject_frame_norm_au": norm(m),
+                   "ratio": dist(x, m) / norm(x)}
+    print(f"  {tagname:4s} |M - X| = {dist(x, m):.6g} AU   |X| = {norm(x):.6g} AU   "
+          f"|M| = {norm(m):.6g} AU   ratio {dist(x, m) / norm(x):.3g}")
+out["P2"] = p2
+if p2["pre"]["ratio"] > 1e-4:
+    ok = False; notes.append("P2 pre-fix frame was not frozen")
+if p2["post"]["ratio"] < 0.5:
+    ok = False; notes.append("P2 post-fix frame is still frozen")
+
+print("\n=== P3  the render: where the up-chain ancestor's trail draws ===")
+p3 = {}
+for s in ("E", "S", "X", "M", "N"):
+    e = {}
+    for tagname, R in (("pre", A), ("post", B)):
+        for who in (SUB, CTL):
+            b = R[f"scene_{s}"][who]
+            e[f"{who}_{tagname}"] = {
+                "n_px": b["n_px"], "head_px": b["head_px"],
+                "head_to_own_position_px": b.get("head_to_matT_flipY"),
+                "head_to_cached_frame_px": b.get("head_to_eclRoot_flipY")}
+    p3[s] = e
+    print(f"  scene {s}:")
+    for k, v in e.items():
+        print(f"    {k:14s} trail {v['n_px']:5d} px  head {v['head_px']}  "
+              f"-> own {v['head_to_own_position_px']}  -> cached-frame "
+              f"{v['head_to_cached_frame_px']}")
+out["P3"] = p3
+
+# The head pixel is the FIRST raster-order pixel among those sharing the maximum
+# quantised alpha, and along a long first segment that tie band is tens of px
+# wide (the vertex alpha falls by only 0.9/nbPoints over the whole segment). The
+# tie-free companion statistic is the closest approach of the drawn polyline to
+# the predicted point, computed here from the images.
+def closest(d, R, scene_tag, who, chan):
+    a = img(d, f"{scene_tag}_off"); b = img(d, f"{scene_tag}_a")
+    ch = np.abs(b - a).max(axis=2) > 12
+    other = 1 - chan
+    m = ch & (b[:, :, chan] > b[:, :, other] + 8) & (b[:, :, chan] > b[:, :, 2] + 8)
+    ys, xs = np.nonzero(m)
+    if not len(xs):
+        return None, None
+    e = R[f"scene_{scene_tag}"][who]
+    pm, pe = e["px_matT_flipY"], e["px_eclRoot_flipY"]
+    return (float(np.hypot(xs - pm[0], ys - pm[1]).min()),
+            float(np.hypot(xs - pe[0], ys - pe[1]).min()))
+closest_tbl = {}
+for who, chan in ((SUB, 0), (CTL, 1)):
+    for tagname, d, R in (("pre", PRE, A), ("post", POST, B)):
+        cm, ce = closest(d, R, "N", who, chan)
+        closest_tbl[f"{who}_{tagname}"] = {"closest_to_own_position_px": cm,
+                                           "closest_to_cached_frame_px": ce}
+        print(f"  scene N closest-approach {who}_{tagname}: own {cm} px, "
+              f"cached-frame {ce} px")
+out["P3_closest_approach"] = closest_tbl
+
+sub_pre = p3["N"][f"{SUB}_pre"]
+sub_post = p3["N"][f"{SUB}_post"]
+ctl_pre = p3["N"][f"{CTL}_pre"]
+ctl_post = p3["N"][f"{CTL}_post"]
+
+
+def near(v):
+    return v is not None and v <= TOL
+
+
+# THE GATE IS THE CLOSEST APPROACH, not the head pixel. The head pixel is the
+# first RASTER-ORDER pixel among those sharing the maximum quantised alpha, and
+# the vertex alpha falls by only 0.9/nbPoints = 0.029 across a whole segment, so
+# along scene N's post-fix first segment (which runs ~84 deg of sky) one
+# quantisation level spans ~74 px: an 8 px head offset is inside that band by
+# construction, and is a property of argmax, not of the frame. The closest
+# approach of the drawn polyline to the predicted point carries no such
+# systematic - and it is the sharper number by four orders of magnitude.
+cl = closest_tbl
+sub_pre_c = cl[f"{SUB}_pre"]; sub_post_c = cl[f"{SUB}_post"]
+ctl_pre_c = cl[f"{CTL}_pre"]; ctl_post_c = cl[f"{CTL}_post"]
+if not (near(ctl_pre_c["closest_to_own_position_px"]) and near(ctl_post_c["closest_to_own_position_px"])):
+    ok = False; notes.append("P3 control body's trail does not reach its own position - "
+                             "the measurement is not positively mapped")
+if not (near(sub_pre_c["closest_to_cached_frame_px"]) and near(sub_post_c["closest_to_cached_frame_px"])):
+    ok = False; notes.append("P3 subject's trail does not reach project(eclRoot) - "
+                             "the stated mechanism is refuted")
+if near(sub_pre_c["closest_to_own_position_px"]):
+    ok = False; notes.append("P3 pre-fix subject's trail already reached the body")
+if not near(sub_post_c["closest_to_own_position_px"]):
+    ok = False; notes.append("P3 post-fix subject's trail does NOT reach the body")
+
+# The head-pixel numbers stay in the report as the secondary reading.
+if not (near(ctl_pre["head_to_own_position_px"]) and near(ctl_post["head_to_own_position_px"])):
+    notes.append("note: control head pixel off by >3 px (argmax tie band)")
+# The mechanism: the head sits at the CACHED frame, before and after.
+if not (near(sub_pre["head_to_cached_frame_px"]) and near(sub_post["head_to_cached_frame_px"])):
+    notes.append("note: subject head pixel off by >3 px (argmax tie band)")
+# The defect and its repair.
+if near(sub_pre["head_to_own_position_px"]):
+    ok = False; notes.append("P3 pre-fix subject's trail already ended at the body")
+# The pre-fix head must land at the FRAME CENTRE (P3''): the freeze state
+# centred the subject, so the frozen frame's image of it is the view axis.
+h, w = A["scene_N"]["shape"][1], A["scene_N"]["shape"][0]
+centre = (w / 2.0, h / 2.0)
+pre_head = sub_pre["head_px"]
+head_to_centre = (None if not pre_head
+                  else float(np.hypot(pre_head[0] - centre[0], pre_head[1] - centre[1])))
+post_head = sub_post["head_px"]
+post_to_centre = (None if not post_head
+                  else float(np.hypot(post_head[0] - centre[0], post_head[1] - centre[1])))
+print(f"  scene N frame centre {centre}: pre head {pre_head} -> {head_to_centre} px, "
+      f"post head {post_head} -> {post_to_centre} px "
+      f"(the subject is TRACKED here, so the centre IS the body)")
+out["P3_pre_head_to_frame_centre_px"] = head_to_centre
+out["P3_post_head_to_frame_centre_px"] = post_to_centre
+out["X_subject_offaxis_deg"] = A.get("X_subject_offaxis_deg")
+
+out["P3_verdicts"] = {
+    "post_head_at_tracked_centre": post_to_centre is not None and post_to_centre <= 12.0,
+    "control_positively_mapped": near(ctl_pre["head_to_own_position_px"]) and near(ctl_post["head_to_own_position_px"]),
+    "defect_present_pre": not near(sub_pre_c["closest_to_own_position_px"]),
+    "repaired_post": near(sub_post_c["closest_to_own_position_px"]),
+    "mechanism_holds_both_ways_closest": near(sub_pre_c["closest_to_cached_frame_px"]) and near(sub_post_c["closest_to_cached_frame_px"]),
+    "subject_closest_own_pre_px": sub_pre_c["closest_to_own_position_px"],
+    "subject_closest_own_post_px": sub_post_c["closest_to_own_position_px"],
+    "control_closest_own_pre_px": ctl_pre_c["closest_to_own_position_px"],
+    "control_closest_own_post_px": ctl_post_c["closest_to_own_position_px"],
+    "moved_px": (None if not (sub_pre["head_px"] and sub_post["head_px"])
+                 else float(np.hypot(sub_pre["head_px"][0] - sub_post["head_px"][0],
+                                     sub_pre["head_px"][1] - sub_post["head_px"][1])))}
+print(f"  verdicts: {out['P3_verdicts']}")
+
+print("\n=== P4  the as-if controls, pixel level (pre vs post) ===")
+p4 = {}
+for tag in ("E_off", "E_a", "E_b", "S_off", "S_a", "S_b", "X_a", "X_b",
+            "M_a", "M_b", "N_a", "N_b"):
+    n, mx = dpx(tag)
+    floor = A["scene_" + tag.split("_")[0]]["aa_floor_px"]
+    p4[tag] = {"px": n, "max": mx, "in_run_AA_floor": floor}
+    print(f"  {tag:5s} pre-vs-post {n} px (max {mx});  in-run A/A floor {floor} px")
+out["P4"] = p4
+for tag in ("E_a", "S_a"):
+    if p4[tag]["px"] != 0:
+        ok = False; notes.append(f"P4 control scene {tag} changed pre->post ({p4[tag]['px']} px)")
+if p4["N_a"]["px"] == 0:
+    ok = False; notes.append("P4 subject scene did not change - dead instrument")
+
+out["VERDICT"] = "PASS" if ok else "FAIL"
+out["notes"] = notes
+print(f"\nVERDICT: {out['VERDICT']}")
+for n in notes:
+    print(f"  ! {n}")
+with open(os.path.join(POST, "f29_compare.json"), "w") as fh:
+    json.dump(out, fh, indent=1, sort_keys=True)
+print(f"-> {POST}/f29_compare.json")
+sys.exit(0 if ok else 1)

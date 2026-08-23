@@ -1,0 +1,27 @@
+{
+ "binary": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "binary_md5": "85b0d12312ba7fd8b776a008513bbf9d",
+ "expect": "post",
+ "legs": [
+  "B3"
+ ],
+ "wall_start": "2026-08-09 15:21:47 CEST",
+ "B3": {
+  "O1": "43 And \nHP 5447\nMagnitude : 2.05 B-V: 1.58\nJ2000 RA/DE: 01h09m44.27s / +35\u00c2\u00b037'10.42\"\nEqu of date RA/DE: 01h11m14s / +35\u00c2\u00b045'37\"\nAlt/Az\u00c2\u00a0: -05\u00c2\u00b011'16\" / +333\u00c2\u00b006'27\"\nParallax: 0.01652\nDistance : 197.43 al\nType spectral : ",
+  "C1": "F3A",
+  "O2": "43 And \nHP 5447\nMagnitude : 2.05 B-V: 1.58\nJ2000 RA/DE: 01h09m44.27s / +35\u00c2\u00b037'10.42\"\nEqu of date RA/DE: 01h11m14s / +35\u00c2\u00b045'37\"\nAlt/Az\u00c2\u00a0: -05\u00c2\u00b011'56\" / +333\u00c2\u00b007'57\"\nParallax: 0.01652\nDistance : 197.43 al\nType spectral : ",
+  "C2": "F3A",
+  "id1": "43 And \nHP 5447",
+  "id2": "43 And \nHP 5447",
+  "exit": 0
+ },
+ "checks": [
+  {
+   "ok": true,
+   "label": "B3 an unresolved abbreviation with a NON-empty selection still acts on the PREVIOUS constellation \u2014 unchanged by the fix, on both binaries",
+   "detail": "id1='43 And \\nHP 5447' id2='43 And \\nHP 5447' C1='F3A' C2='F3A'"
+  }
+ ],
+ "fails": [],
+ "wall_end": "2026-08-09 15:22:51 CEST"
+}

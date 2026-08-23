@@ -1,0 +1,853 @@
+{
+ "checks": [
+  {
+   "ok": true,
+   "label": "baseline: the two paths report the SAME observer position",
+   "detail": "|d| = 2.896e-08 AU"
+  },
+  {
+   "ok": true,
+   "label": "R1 move_to point while ON A BODY: BOTH paths refuse",
+   "detail": "old=1 new=1"
+  },
+  {
+   "ok": true,
+   "label": "R2 move_to body while ON A BODY: BOTH paths refuse",
+   "detail": "old=1 new=1"
+  },
+  {
+   "ok": true,
+   "label": "R1/R2 changed nothing on either path",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "R3 transition_to body with an unknown name: the new path refuses and says so",
+   "detail": "new=1"
+  },
+  {
+   "ok": true,
+   "label": "M1 old: the observer does not move",
+   "detail": "6.684e-13 AU"
+  },
+  {
+   "ok": true,
+   "label": "M1 new: the observer does not move",
+   "detail": "1.800e-08 AU"
+  },
+  {
+   "ok": true,
+   "label": "M1 the two paths still agree on where the observer is",
+   "detail": "4.510e-08 AU"
+  },
+  {
+   "ok": true,
+   "label": "M1 new: the camera references the point, AT it, unbound",
+   "detail": "ref=temp_point distance=0 bound=False"
+  },
+  {
+   "ok": true,
+   "label": "M1 new: the anchor registry names the point",
+   "detail": "{\"current\": \"temp_point\", \"kind\": \"point\", \"declaresFollowRotation\": false, \"followRotation\": true, \"body\": \"temp_point\", \"moving\": false, \"travelArrival\": 0, \""
+  },
+  {
+   "ok": true,
+   "label": "M1 the command's documented `name` argument is DROPPED by the interface, identically on both paths (recorded, not fixed)",
+   "detail": "asked for `Space`, got `temp_point`"
+  },
+  {
+   "ok": true,
+   "label": "M1 new: the absolute look direction is held across the switch",
+   "detail": "|dAbsFwd| = 6.584e-07 (floor 2.0e-06)"
+  },
+  {
+   "ok": true,
+   "label": "R4 negative duration: BOTH paths refuse",
+   "detail": "old=1 new=1"
+  },
+  {
+   "ok": true,
+   "label": "R5 a second travel while one is in flight: BOTH paths refuse",
+   "detail": "old=1 new=1"
+  },
+  {
+   "ok": true,
+   "label": "R6 anchor switch while travelling: the new path refuses (old's own rule)",
+   "detail": "new=1"
+  },
+  {
+   "ok": true,
+   "label": "M2 old follows the committed law at every step",
+   "detail": "worst |old - predicted| = 6.683e-13 AU"
+  },
+  {
+   "ok": true,
+   "label": "M2 new follows the SAME committed law at every step",
+   "detail": "worst |new - predicted| = 4.996e-08 AU"
+  },
+  {
+   "ok": true,
+   "label": "M2 the two paths are on the same trajectory, step by step",
+   "detail": "worst |old - new| = 5.120e-08 AU"
+  },
+  {
+   "ok": true,
+   "label": "M2 the START POP is old's: 1/(1+e^7) of the distance, not 0",
+   "detail": "measured 9.110498e-04 vs predicted 9.110512e-04"
+  },
+  {
+   "ok": true,
+   "label": "M2 the travel flag retires after the arrival date",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "M3 the two paths travel to the body together, step by step",
+   "detail": "worst |old - new| = 3.943e-08 AU"
+  },
+  {
+   "ok": true,
+   "label": "M3 both paths stop the same distance short of the body",
+   "detail": "new 3.569419e-04 AU, old 3.569452e-04 AU, delta 3.299e-09"
+  },
+  {
+   "ok": true,
+   "label": "M4 new: the camera references the body",
+   "detail": ""
+  },
+  {
+   "ok": true,
+   "label": "M4 new: the observer moves no more than old's own bisection residual",
+   "detail": "new 0.009 km vs old 0.803 km"
+  },
+  {
+   "ok": true,
+   "label": "M4 new: the pose distance IS the distance to the body's centre",
+   "detail": "3.683490e-04 vs 3.683449e-04"
+  },
+  {
+   "ok": true,
+   "label": "M4 new: A38 - the switch holds the absolute look direction",
+   "detail": "|dAbsFwd| = 7.036e-07"
+  },
+  {
+   "ok": true,
+   "label": "RP: both entries of the point<->body pair move the observer by nothing",
+   "detail": "6.20e-11/4.24e-11; 4.24e-11/6.87e-11"
+  },
+  {
+   "ok": true,
+   "label": "RP: the reference alternates as declared, both times",
+   "detail": "[['Mars', 'temp_point', 'Mars'], ['Mars', 'temp_point', 'Mars']]"
+  },
+  {
+   "ok": true,
+   "label": "RP: the second entry lands on the state the first exit produced",
+   "detail": "3.683489920e-04 vs 3.683489920e-04"
+  },
+  {
+   "ok": true,
+   "label": "M5 old's align_with measured (verdict below is a derivation, not a gate)",
+   "detail": "idempotence residual 25.1584 deg, start-dependence 29.6345 deg"
+  },
+  {
+   "ok": true,
+   "label": "M5 new: the camera heading is untouched by align_with (member NOT ported)",
+   "detail": "[0, 0, 0]"
+  },
+  {
+   "ok": true,
+   "label": "free-mode toggle moves the COMPOSED SCREEN (out-of-scope defect, witnessed at the verification height; A/A control is the off/off pair)",
+   "detail": "{'px_gt8_off_vs_on': 6352, 'px_gt8_off_vs_off': 0, 'lit_off': 69753, 'lit_on': 75846}"
+  }
+ ],
+ "notes": {
+  "R1": {
+   "old": [
+    "000000026404: (Error): AnchorManager:: error cannot travel when on a body"
+   ],
+   "new": [
+    "000000026404: (Error): camera action move_to target point: the camera is on a BODY, so there is no place to travel. This command does nothing. To fix: 'camera action transition_to target point' first, then move_to."
+   ]
+  },
+  "R2": {
+   "old": [
+    "000000027209: (Error): AnchorManager:: error cannot travel when on a body"
+   ],
+   "new": [
+    "000000027209: (Error): camera action move_to target body: the camera is on a BODY, so there is no place to travel. This command does nothing. To fix: 'camera action transition_to target point' first, then move_to."
+   ]
+  },
+  "R3": {
+   "old": [],
+   "new": [
+    "000000029216: (Error): camera action transition_to target body: 'NoSuchBodyHere' is not a loaded body. This command does nothing. To fix: name a body of the loaded system."
+   ],
+   "log": [
+    "000000029216: (Debug): Could not execute: camera action transition_to target body name NoSuchBodyHere",
+    "000000029216: (Debug): error transition_to body",
+    "000000029216: (Info ): get tcp : camera action transition_to target body name NoSuchBodyHere",
+    "000000029216: (Error): camera action transition_to target body: 'NoSuchBodyHere' is not a loaded body. This command does nothing. To fix: name a body of the loaded system."
+   ]
+  },
+  "M1": {
+   "d_old": 6.683720135526758e-13,
+   "d_new": 1.8004402002901048e-08,
+   "dAbsFwd": 6.583760323356064e-07,
+   "old_local_vision": [
+    [
+     9.999999747378752e-05,
+     9.999999747378752e-05,
+     1
+    ],
+    [
+     9.999999747378752e-05,
+     9.999999747378752e-05,
+     1
+    ]
+   ],
+   "heading": [
+    0,
+    0,
+    -6.28318501,
+    -0.383423954
+   ],
+   "oldAltitude": [
+    75.10427587606682,
+    0.1
+   ]
+  },
+  "R4": {
+   "old": [
+    "000000033640: (Error): AnchorManager:: error negative time"
+   ],
+   "new": [
+    "000000033640: (Error): camera action move_to: duration is negative, so there is no travel to run. This command does nothing. To fix: give a duration >= 0 (0 = arrive now)."
+   ]
+  },
+  "R5": {
+   "old": [
+    "000000038661: (Error): AnchorManager:: error can't switch anchor when moving"
+   ],
+   "new": [
+    "000000038661: (Error): camera action switch 'Space': a scripted travel is in flight, and the anchor is NOT changed under it. To fix: wait for the travel to land (the move_to command's own duration) before switching."
+   ]
+  },
+  "M2": {
+   "start": [
+    0.3363950252532959,
+    -0.9593221545219421,
+    9.081703319679946e-05
+   ],
+   "target": [
+    2.0,
+    1.0,
+    0.3
+   ],
+   "jd_start": 2461233.5,
+   "travel_days": 0.006944444444444444,
+   "steps": [
+    {
+     "f": 0.0,
+     "jd": 2461233.5,
+     "old": [
+      0.33791067607210784,
+      -0.9575371513237295,
+      0.00036404965595349115
+     ],
+     "new": [
+      0.33791065216064453,
+      -0.9575371146202087,
+      0.0003640496579464525
+     ],
+     "predOld": [
+      0.3379106760721078,
+      -0.9575371513237294,
+      0.0003640496559528782
+     ],
+     "predNew": [
+      0.33791065455254976,
+      -0.9575371117328493,
+      0.0003640496525504272
+     ],
+     "errOld": 6.253956153589109e-16,
+     "errNew": 3.749411208464261e-09,
+     "oldVsNew": 4.3805325236610794e-08,
+     "moving": true
+    },
+    {
+     "f": 0.1,
+     "jd": 2461233.500694444,
+     "old": [
+      0.35467294597554766,
+      -0.9377952724703434,
+      0.0033858960754830636
+     ],
+     "new": [
+      0.35467293858528137,
+      -0.9377952218055725,
+      0.003385896096006036
+     ],
+     "predOld": [
+      0.3546729459755454,
+      -0.937795272470341,
+      0.00338589607547651
+     ],
+     "predNew": [
+      0.3546729246730134,
+      -0.9377952332787372,
+      0.003385896072108373
+     ],
+     "errOld": 7.355123617652126e-15,
+     "errNew": 1.80328943169527e-08,
+     "oldVsNew": 5.120093232364594e-08,
+     "moving": true
+    },
+    {
+     "f": 0.25,
+     "jd": 2461233.501736111,
+     "old": [
+      0.8701148169003576,
+      -0.33073005813011797,
+      0.09630804690006589
+     ],
+     "new": [
+      0.870114803314209,
+      -0.33073002099990845,
+      0.09630804508924484
+     ],
+     "predOld": [
+      0.8701148169002916,
+      -0.3307300581300465,
+      0.0963080468998749
+     ],
+     "predNew": [
+      0.8701148022713366,
+      -0.330730031216241,
+      0.09630804689756192
+     ],
+     "errOld": 2.143442850022122e-13,
+     "errNew": 1.0427417912186533e-08,
+     "oldVsNew": 3.957922392979197e-08,
+     "moving": true
+    },
+    {
+     "f": 0.5,
+     "jd": 2461233.503472222,
+     "old": [
+      1.9932288937114717,
+      0.9920252829223384,
+      0.2987793274179002
+     ],
+     "new": [
+      1.9932289123535156,
+      0.9920252561569214,
+      0.29877933859825134
+     ],
+     "predOld": [
+      1.9932288937112663,
+      0.9920252829225602,
+      0.2987793274173071
+     ],
+     "predNew": [
+      1.9932288936235987,
+      0.9920252830838476,
+      0.2987793274172933
+     ],
+     "errOld": 6.656846521451646e-13,
+     "errNew": 3.465375836506869e-08,
+     "oldVsNew": 3.4480626439600044e-08,
+     "moving": true
+    },
+    {
+     "f": 0.75,
+     "jd": 2461233.505208333,
+     "old": [
+      1.9999868753692227,
+      0.9999845423752218,
+      0.29999763393565476
+     ],
+     "new": [
+      1.9999868869781494,
+      0.9999845623970032,
+      0.29999762773513794
+     ],
+     "predOld": [
+      1.9999868753690166,
+      0.9999845423754443,
+      0.2999976339350593
+     ],
+     "predNew": [
+      1.9999868753688468,
+      0.999984542375757,
+      0.2999976339350593
+     ],
+     "errOld": 6.682388416073748e-13,
+     "errNew": 2.3959658437051515e-08,
+     "oldVsNew": 2.3960077553692162e-08,
+     "moving": true
+    },
+    {
+     "f": 0.9,
+     "jd": 2461233.50625,
+     "old": [
+      1.9999996913365412,
+      0.9999996364690192,
+      0.2999999443557337
+     ],
+     "new": [
+      1.9999996423721313,
+      0.9999996423721313,
+      0.2999999523162842
+     ],
+     "predOld": [
+      1.9999996913363347,
+      0.9999996364692416,
+      0.2999999443551382
+     ],
+     "predNew": [
+      1.9999996913363307,
+      0.9999996364692492,
+      0.2999999443551382
+     ],
+     "errOld": 6.683389651140849e-13,
+     "errNew": 4.9957148460191785e-08,
+     "oldVsNew": 4.995728705338601e-08,
+     "moving": true
+    },
+    {
+     "f": 1.0,
+     "jd": 2461233.506944444,
+     "old": [
+      1.999999974663499,
+      0.9999999701592963,
+      0.29999999543297795
+     ],
+     "new": [
+      2,
+      0.9999999403953552,
+      0.29999998211860657
+     ],
+     "predOld": [
+      1.999999974663293,
+      0.9999999701595188,
+      0.2999999954323825
+     ],
+     "predNew": [
+      1.9999999746632928,
+      0.9999999701595195,
+      0.29999999543238254
+     ],
+     "errOld": 6.682388416073748e-13,
+     "errNew": 4.129298771367535e-08,
+     "oldVsNew": 4.129289227253792e-08,
+     "moving": true
+    },
+    {
+     "f": 1.25,
+     "jd": 2461233.508680556,
+     "old": [
+      1.999999974663542,
+      0.9999999701593464,
+      0.2999999954329855
+     ],
+     "new": [
+      2,
+      0.9999999403953552,
+      0.29999998211860657
+     ],
+     "predOld": [
+      1.9999999746633355,
+      0.9999999701595688,
+      0.29999999543239014
+     ],
+     "predNew": [
+      1.9999999746633352,
+      0.9999999701595697,
+      0.2999999954323902
+     ],
+     "errOld": 6.682400497818367e-13,
+     "errNew": 4.129300033270858e-08,
+     "oldVsNew": 4.129290450334485e-08,
+     "moving": false
+    }
+   ],
+   "startPop": 0.0009110497556076905,
+   "endShort": 2.404752463813321e-08
+  },
+  "M3": {
+   "start": [
+    2.0,
+    0.9999999403953552,
+    0.29999998211860657
+   ],
+   "jd_start": 2461233.508680556,
+   "alt_km": 50000.0,
+   "marsFields": [
+    "attitude",
+    "axisRot",
+    "bodyType",
+    "boundingRadius",
+    "composedDecl",
+    "dist",
+    "ecl",
+    "eclRoot",
+    "evalCount",
+    "haloColor",
+    "lastJD",
+    "mat",
+    "modules",
+    "near",
+    "parent",
+    "preloadCount",
+    "primary",
+    "relation",
+    "routing",
+    "scaledDatumRadius",
+    "scaledGroundRadius",
+    "screen",
+    "screenSize",
+    "supplemental",
+    "surfaceLocked",
+    "surfaceModel",
+    "trail",
+    "trailLength",
+    "visible"
+   ],
+   "steps": [
+    {
+     "f": 0.0,
+     "jd": 2461233.508680556,
+     "old": [
+      1.9991624317752763,
+      0.9999767211458553,
+      0.29972125335907174
+     ],
+     "new": [
+      1.9991624355316162,
+      0.9999766945838928,
+      0.29972124099731445
+     ],
+     "oldVsNew": 2.953745055816161e-08,
+     "marsEcl": [
+      1.08045745,
+      0.974326432,
+      -0.00607498409
+     ],
+     "moving": true
+    },
+    {
+     "f": 0.3,
+     "jd": 2461233.510763889,
+     "old": [
+      1.4277639671822704,
+      0.9841155028151012,
+      0.10955452245692188
+     ],
+     "new": [
+      1.4277639389038086,
+      0.984115481376648,
+      0.10955451428890228
+     ],
+     "oldVsNew": 3.6414217314826434e-08,
+     "marsEcl": [
+      1.08040822,
+      0.974390864,
+      -0.00607242761
+     ],
+     "moving": true
+    },
+    {
+     "f": 0.7,
+     "jd": 2461233.513541667,
+     "old": [
+      1.0807104428930685,
+      0.974481784731645,
+      -0.005948122810345933
+     ],
+     "new": [
+      1.0807104110717773,
+      0.9744817614555359,
+      -0.005948122590780258
+     ],
+     "oldVsNew": 3.942613393732187e-08,
+     "marsEcl": [
+      1.08036506,
+      0.974447548,
+      -0.00607018033
+     ],
+     "moving": true
+    },
+    {
+     "f": 1.0,
+     "jd": 2461233.515625,
+     "old": [
+      1.0806851428982016,
+      0.9744810824393442,
+      -0.005956542884276364
+     ],
+     "new": [
+      1.0806851387023926,
+      0.9744811058044434,
+      -0.005956542678177357
+     ],
+     "oldVsNew": 2.3739737790207593e-08,
+     "marsEcl": [
+      1.08034658,
+      0.974471688,
+      -0.00606922293
+     ],
+     "moving": true
+    },
+    {
+     "f": 1.2,
+     "jd": 2461233.517013889,
+     "old": [
+      1.0806851428981779,
+      0.9744810824393435,
+      -0.005956542884284116
+     ],
+     "new": [
+      1.0806851387023926,
+      0.9744811058044434,
+      -0.005956542678177357
+     ],
+     "oldVsNew": 2.3739734313965124e-08,
+     "marsEcl": [
+      1.08033431,
+      0.974487722,
+      -0.00606858497
+     ],
+     "moving": false
+    }
+   ],
+   "standoff": {
+    "newAU": 0.00035694191286126206,
+    "oldAU": 0.0003569452118091929
+   }
+  },
+  "M4": {
+   "d_old_AU": 5.367518107907063e-09,
+   "d_new_AU": 6.197924462831296e-11,
+   "d_old_km": 0.8029692798382819,
+   "d_new_km": 0.009271963023432219,
+   "refBefore": "temp_point",
+   "refAfter": "Mars",
+   "distanceAfter": 0.000368348992,
+   "distToMars": 0.0003683449272291709,
+   "oldHeading": [
+    0,
+    41.296788611416005
+   ],
+   "oldHeadingPlan": {
+    "flagAutoMove": 0,
+    "moveCoef": 3.4487356505498073e-41,
+    "moveSpeed": -7132667904,
+    "moveLocalPos": true,
+    "zoomingMode": 24611,
+    "flagChangeHeading": true,
+    "startHeading": 49.139440630947206,
+    "endHeading": 0,
+    "moveToCoef": 0.00019999999494757503,
+    "moveToMult": 0.15959994494915009,
+    "moveAim": [
+     0,
+     0,
+     0
+    ],
+    "moveStart": [
+     0,
+     0,
+     0
+    ]
+   },
+   "newHeading": [
+    -0.383423954,
+    -5.42564249
+   ],
+   "absFwd": [
+    [
+     0.30869782,
+     -0.33304742,
+     0.89094609
+    ],
+    [
+     0.308697402,
+     -0.333047986,
+     0.89094609
+    ]
+   ],
+   "dAbsFwd": 7.036192152304288e-07
+  },
+  "reversible": [
+   {
+    "entry": [
+     1.080685138644185,
+     0.9744811057844345,
+     -0.005956542685453314
+    ],
+    "point": [
+     1.0806851387023926,
+     0.9744811058044434,
+     -0.005956542678177357
+    ],
+    "backOnBody": [
+     1.0806851386732887,
+     0.9744811057826155,
+     -0.005956542656349484
+    ],
+    "refs": [
+     "Mars",
+     "temp_point",
+     "Mars"
+    ],
+    "movePointAU": 6.197924462831296e-11,
+    "moveBodyAU": 4.242575883723694e-11,
+    "oldMovePointAU": 6.682679824430268e-13,
+    "oldMoveBodyAU": 6.684267464348039e-13,
+    "distance": [
+     0.000368348992,
+     0,
+     0.000368348992
+    ]
+   },
+   {
+    "entry": [
+     1.0806851386732887,
+     0.9744811057826155,
+     -0.005956542656349484
+    ],
+    "point": [
+     1.0806851387023926,
+     0.9744811058044434,
+     -0.005956542678177357
+    ],
+    "backOnBody": [
+     1.080685138644185,
+     0.9744811058008054,
+     -0.005956542641797569
+    ],
+    "refs": [
+     "Mars",
+     "temp_point",
+     "Mars"
+    ],
+    "movePointAU": 4.242575883723694e-11,
+    "moveBodyAU": 6.87375854893296e-11,
+    "oldMovePointAU": 6.68353359459113e-13,
+    "oldMoveBodyAU": 6.68353359459113e-13,
+    "distance": [
+     0.000368348992,
+     0,
+     0.000368348992
+    ]
+   }
+  ],
+  "M5": {
+   "fromHeading0": {
+    "old": [
+     0,
+     -122.61398874424697,
+     -97.45561201831887
+    ],
+    "new": [
+     0,
+     0,
+     0
+    ]
+   },
+   "fromHeading40": {
+    "old": [
+     40,
+     -92.9794551750056,
+     -113.70071104428058
+    ],
+    "new": [
+     0.69813168,
+     0.69813168,
+     0.69813168
+    ]
+   },
+   "idempotenceResidualDeg": 25.158376725928093,
+   "startDependenceDeg": 29.63453356924137
+  },
+  "freeModeControl": [
+   {
+    "state": "on",
+    "rootPos": [
+     1.080154667404713,
+     0.974246773563209,
+     -0.006281551963184029
+    ],
+    "freeMode": true,
+    "selDist": 0.000368348992,
+    "oldHelio": [
+     1.0806851445333416,
+     0.9744810827457855,
+     -0.005956547987477745
+    ]
+   },
+   {
+    "state": "off",
+    "rootPos": [
+     1.0806851387023926,
+     0.9744811058117193,
+     -0.005956542656349484
+    ],
+    "freeMode": false,
+    "selDist": 0.000368348992,
+    "oldHelio": [
+     1.0806851445333416,
+     0.9744810827457855,
+     -0.005956547987477745
+    ]
+   },
+   {
+    "state": "on",
+    "rootPos": [
+     1.080154667419265,
+     0.974246773563209,
+     -0.006281551977735944
+    ],
+    "freeMode": true,
+    "selDist": 0.000368348992,
+    "oldHelio": [
+     1.0806851445333416,
+     0.9744810827457855,
+     -0.005956547987477745
+    ]
+   },
+   {
+    "state": "off",
+    "rootPos": [
+     1.0806851386732887,
+     0.9744811057971674,
+     -0.005956542656349484
+    ],
+    "freeMode": false,
+    "selDist": 0.000368348992,
+    "oldHelio": [
+     1.0806851445333416,
+     0.9744810827457855,
+     -0.005956547987477745
+    ]
+   }
+  ],
+  "freeModeControl_moved": [
+   0.0006647875223578711,
+   0.0,
+   0.0006647875178603961,
+   3.253907165344266e-11
+  ],
+  "freeModeScreen": {
+   "px_gt8_off_vs_on": 6352,
+   "px_gt8_off_vs_off": 0,
+   "lit_off": 69753,
+   "lit_on": 75846
+  }
+ },
+ "summary": {
+  "failures": 0,
+  "n": 32
+ }
+}

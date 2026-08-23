@@ -1,0 +1,827 @@
+{
+ "checks": [
+  {
+   "ok": true,
+   "label": "A/A control: no command, the eye does not move",
+   "detail": "0.000e+00 AU"
+  },
+  {
+   "ok": true,
+   "label": "A/A control: no command, the composed screen is identical",
+   "detail": "0 px>8"
+  },
+  {
+   "ok": true,
+   "label": "C1 anchored: the drawn eye IS Z(theta).pB(lon,lat,distance)",
+   "detail": "res_B = 8.483e-11 AU vs res_A = 3.610e-05 AU (theta = 6.630637 rad)"
+  },
+  {
+   "ok": true,
+   "label": "C1 the surface fold read from the body's axisRot IS the one in the matrix",
+   "detail": "fitted 0.347454 vs axisRot+pi/2 0.347452 rad"
+  },
+  {
+   "ok": true,
+   "label": "C3 member: setFreeMode(true) writes position == spheToRect(-lon,lat)*distance",
+   "detail": "|position - pA| = 1.190e-12 AU"
+  },
+  {
+   "ok": true,
+   "label": "C3 composed: the DRAWN eye after `free_mode on` is -Z(theta).pA  (convention A)",
+   "detail": "res_A = 8.609e-11 AU vs res_B(no-move) = 9.180e-05 AU"
+  },
+  {
+   "ok": true,
+   "label": "C3 swing: the sign-AND-azimuth law, not the azimuth-only one",
+   "detail": "measured 137.0620 deg ; H_A 137.0620 ; azimuth-only 42.9380"
+  },
+  {
+   "ok": true,
+   "label": "C3 the distance to the reference is preserved (why selDist is blind)",
+   "detail": "4.931982581e-05 -> 4.931982243e-05 AU"
+  },
+  {
+   "ok": true,
+   "label": "C3 screen: the composed frame changes across the toggle",
+   "detail": "174 px>8 against the A/A control's 0"
+  },
+  {
+   "ok": true,
+   "label": "C3 readout: `get status position` reports the SAME place across the teleport",
+   "detail": "{'lat': 30.0, 'lon': 70.0, 'alt': 999999.83, 'jday': 2461233.5, 'heading': 1.7e-05} -> {'lat': 30.0, 'lon': 70.0, 'alt': 999999.83, 'jday': 2461233.5, 'heading': 1.7e-05}"
+  },
+  {
+   "ok": true,
+   "label": "C4 moveTo free branch: lands at -Z(theta).pA of the COMMANDED triple (A)",
+   "detail": "res_A = 1.263e-10 AU vs res_B = 1.116e-04 AU"
+  },
+  {
+   "ok": true,
+   "label": "C4 control: predicting with the STALE `distance` member misses by exactly the stale-vs-commanded gap",
+   "detail": "res = 6.685e-06 AU, gap = 6.685e-06 AU (7378.140 -> 8378.140 km)"
+  },
+  {
+   "ok": true,
+   "label": "C2 free composer: the drawn eye IS -Z(theta).position",
+   "detail": "res(-) = 1.235e-10 AU vs res(+) = 1.120e-04 AU"
+  },
+  {
+   "ok": true,
+   "label": "C4 control: the SAME command anchored lands at Z(theta).pB (B)",
+   "detail": "res_B = 1.174e-10 AU"
+  },
+  {
+   "ok": true,
+   "label": "C4 one command, two modes, two PLACES",
+   "detail": "16700.0 km apart, 170.604 deg"
+  },
+  {
+   "ok": true,
+   "label": "C5 precondition: with tracking off the view rotation is static",
+   "detail": "mat rotation identical across two dumps"
+  },
+  {
+   "ok": true,
+   "label": "C5 descend(ascend): dE == +step*(Rot^T.z), the composer's own free frame",
+   "detail": "res = 5.514e-12 AU vs H_flipped 6.685e-06 AU ; |dE| = 500.000 km predicted 500.000 km"
+  },
+  {
+   "ok": true,
+   "label": "C2 after a flight the free composer still holds (E == -Z(theta).position)",
+   "detail": "res(-) = 1.281e-10 AU vs res(+) = 1.187e-04 AU"
+  },
+  {
+   "ok": true,
+   "label": "C5 descend(descend), ray branch: dE == the composer's own prediction",
+   "detail": "res = 3.431e-12 AU vs H_flipped 6.685e-06 AU ; |dE| = 500.000 km predicted 500.000 km"
+  },
+  {
+   "ok": true,
+   "label": "C5 descend coef<1 lowers the observer",
+   "detail": "8878.141 -> 8378.141 km"
+  },
+  {
+   "ok": true,
+   "label": "C6 exit #1: setFreeMode(false) lands at Z(theta).pB of A^-1(position)",
+   "detail": "res_A^-1 = 1.207e-10 AU vs res(no-move) = 1.116e-04 AU ; exit teleport 16700.0 km"
+  },
+  {
+   "ok": true,
+   "label": "C3 entry #2: predicted from the state the previous exit produced",
+   "detail": "res = 1.106e-10 AU ; teleport 16700.0 km"
+  },
+  {
+   "ok": true,
+   "label": "C6 exit #2: setFreeMode(false) lands at Z(theta).pB of A^-1(position)",
+   "detail": "res_A^-1 = 1.207e-10 AU vs res(no-move) = 1.143e-04 AU ; exit teleport 17098.6 km"
+  },
+  {
+   "ok": true,
+   "label": "C3 entry #3: predicted from the state the previous exit produced",
+   "detail": "res = 1.157e-10 AU ; teleport 17098.6 km"
+  },
+  {
+   "ok": true,
+   "label": "SCREEN: the toggle moves the composed frame; the toggle PAIR does not",
+   "detail": "free->anchored 231 px>8 ; free->free (A/A) 0 px>8 ; pair returns to 2.477e-12 AU"
+  },
+  {
+   "ok": true,
+   "label": "SHIPPED place: the swing and the chord are the predicted ones",
+   "detail": "swing 124.6797 deg (pred 124.6797); chord 11298.6 km (pred 11298.6)"
+  },
+  {
+   "ok": true,
+   "label": "SHIPPED place SCREEN (shipped flags): the toggle moves the frame, the PAIR returns it",
+   "detail": "anchored->free 3300642 px>8 ; the round trip back 664 px>8, the adjacent A/A floor 861 px>8 \u2014 both 4971x and 3833x below the effect"
+  }
+ ],
+ "data": {
+  "AA": {
+   "dE": 0.0,
+   "px": 0
+  },
+  "C1": [
+   {
+    "state": "anchored_start",
+    "res_B": 8.482851992275501e-11,
+    "res_A": 3.6102004891691105e-05
+   }
+  ],
+  "theta": {
+   "fit": 0.34745375870675854,
+   "dump": 0.3474517796153105,
+   "axisRot": 5.05984076
+  },
+  "ground": {
+   "distance_AU": 4.93198204e-05,
+   "altitude_m": 999999.8274427507,
+   "altitudeReference_AU": 4.263523443080337e-05
+  },
+  "C3": {
+   "before": {
+    "tag": "aa2",
+    "ref": "Earth",
+    "free": false,
+    "bound": true,
+    "lon": 1.22173047,
+    "lat": 0.52359879,
+    "dist": 4.93198204e-05,
+    "position": [
+     -0.000316684193,
+     -0.00337110087,
+     0.00319075165
+    ],
+    "E": [
+     4.271216850041724e-05,
+     -6.885626482902504e-08,
+     2.4659909553043402e-05
+    ],
+    "mat": [
+     -0.00149643421,
+     -0.499912798,
+     -0.866074562,
+     0,
+     -0.999998927,
+     0.000747784972,
+     0.00129619241,
+     0,
+     -3.37262463e-07,
+     0.866075456,
+     -0.499913365,
+     0,
+     -4.93198193e-09,
+     -4.93280039e-09,
+     4.93198204e-05,
+     1
+    ],
+    "rootPos": [
+     0.336424656707095,
+     -0.9592984989703837,
+     7.548077701358125e-05
+    ],
+    "control": {
+     "latitude": 30.000000834826057,
+     "longitude": 69.99999967119774,
+     "altitude": 999999.8274427507
+    },
+    "axisRot": 5.05984076,
+    "theta": 6.630637086794897
+   },
+   "after": {
+    "tag": "free_on",
+    "ref": "Earth",
+    "free": true,
+    "bound": true,
+    "lon": 1.22173047,
+    "lat": 0.52359879,
+    "dist": 4.93198204e-05,
+    "position": [
+     1.46084385e-05,
+     -4.01363541e-05,
+     2.46599102e-05
+    ],
+    "E": [
+     -2.7402104222252335e-05,
+     3.276367423714623e-05,
+     -2.4659911177065452e-05
+    ],
+    "mat": [
+     -0.00149640441,
+     -0.499912739,
+     -0.866074562,
+     0,
+     -0.999998868,
+     0.000747770071,
+     0.0012961328,
+     0,
+     -3.37262236e-07,
+     0.866075456,
+     -0.499913335,
+     0,
+     3.27226262e-05,
+     7.63418302e-06,
+     -3.6102545e-05,
+     1
+    ],
+    "rootPos": [
+     0.33635461181438586,
+     -0.9592875409507542,
+     1.7170696082757786e-05
+    ],
+    "control": {
+     "latitude": 30.000000834826057,
+     "longitude": 69.99999967119774,
+     "altitude": 999999.8274427507
+    },
+    "axisRot": 5.05984076,
+    "theta": 6.630637086794897
+   },
+   "resA": 8.60910668531767e-11,
+   "resB": 9.17955936602738e-05,
+   "swing_meas": 2.392182381387506,
+   "swing_H_A": 2.3921823757024008,
+   "swing_azimuth_only": 0.7494102778873925,
+   "chord_km": 13732.42535039322,
+   "px": 174,
+   "place_before": {
+    "lat": 30.0,
+    "lon": 70.0,
+    "alt": 999999.83,
+    "jday": 2461233.5,
+    "heading": 1.7e-05
+   },
+   "place_after": {
+    "lat": 30.0,
+    "lon": 70.0,
+    "alt": 999999.83,
+    "jday": 2461233.5,
+    "heading": 1.7e-05
+   }
+  },
+  "C2": [
+   {
+    "state": "free_after_moveto",
+    "res_minus": 1.2351872492010933e-10,
+    "res_plus": 0.00011200882742609787
+   },
+   {
+    "state": "free_after_ascend",
+    "res_minus": 1.280550564763967e-10,
+    "res_plus": 0.00011869341361556549
+   }
+  ],
+  "C4": {
+   "free": {
+    "tag": "moveto_free",
+    "ref": "Earth",
+    "free": true,
+    "bound": true,
+    "lon": 1.22173047,
+    "lat": 0.52359879,
+    "dist": 4.93198204e-05,
+    "position": [
+     -3.38279424e-05,
+     4.03145677e-05,
+     -1.91546351e-05
+    ],
+    "E": [
+     4.5533789094237326e-05,
+     -2.6386899357403784e-05,
+     1.9154639178181378e-05
+    ],
+    "mat": [
+     -0.00149640441,
+     -0.499912739,
+     -0.866074562,
+     0,
+     -0.999998868,
+     0.000747770071,
+     0.0012961328,
+     0,
+     -3.37262236e-07,
+     0.866075456,
+     -0.499913335,
+     0,
+     -2.63187285e-05,
+     6.19328966e-06,
+     4.90455095e-05,
+     1
+    ],
+    "rootPos": [
+     0.3364273080151179,
+     -0.959324852865393,
+     8.089849870884791e-05
+    ],
+    "control": {
+     "latitude": -19.99999941818584,
+     "longitude": -130.00000134084985,
+     "altitude": 2000000.1991193846
+    },
+    "axisRot": 5.05984051,
+    "theta": 6.6306368367948965
+   },
+   "anchored": {
+    "tag": "moveto_anchored",
+    "ref": "Earth",
+    "free": false,
+    "bound": true,
+    "lon": -2.26892805,
+    "lat": -0.34906584,
+    "dist": 5.600441e-05,
+    "position": [
+     -3.38279424e-05,
+     4.03145677e-05,
+     -1.91546351e-05
+    ],
+    "E": [
+     -4.942405119814595e-05,
+     1.8079167868034168e-05,
+     -1.9154631843020114e-05
+    ],
+    "mat": [
+     -0.116271585,
+     0.280748308,
+     -0.952712536,
+     0,
+     -0.958014429,
+     -0.284815609,
+     0.0329882503,
+     0,
+     -0.262086034,
+     0.916548014,
+     0.302076936,
+     0,
+     6.5533327e-06,
+     3.65810956e-05,
+     -4.18971467e-05,
+     1
+    ],
+    "rootPos": [
+     0.3363325173886551,
+     -0.9592986812513118,
+     2.8062851924914867e-05
+    ],
+    "control": {
+     "latitude": -19.99999941818584,
+     "longitude": -130.00000134084985,
+     "altitude": 2000000.1991193846
+    },
+    "axisRot": 5.05984051,
+    "theta": 6.6306368367948965
+   },
+   "resA": 1.2631062602685513e-10,
+   "resB": 0.00011163255076802764,
+   "control_resB": 1.1741359893270294e-10,
+   "separation_km": 16699.989497740105,
+   "swing_deg": 170.60448180557967
+  },
+  "C5": {
+   "before": {
+    "tag": "aim1",
+    "ref": "Earth",
+    "free": true,
+    "bound": true,
+    "lon": -2.26892805,
+    "lat": -0.34906584,
+    "dist": 5.600441e-05,
+    "position": [
+     -3.38279424e-05,
+     4.03145677e-05,
+     -1.91546351e-05
+    ],
+    "E": [
+     4.553378427105673e-05,
+     -2.6386908560502963e-05,
+     1.915463745924917e-05
+    ],
+    "mat": [
+     0.563431621,
+     -0.146669924,
+     0.813039184,
+     0,
+     0.784729421,
+     0.402753234,
+     -0.4711577,
+     0,
+     -0.258349508,
+     0.903480887,
+     0.342020154,
+     0,
+     -2.72848411e-12,
+     0,
+     -5.60044136e-05,
+     1
+    ],
+    "rootPos": [
+     0.33642730800784193,
+     -0.959324852876307,
+     8.089850234682672e-05
+    ],
+    "control": {
+     "latitude": -19.99999941818584,
+     "longitude": -130.00000134084985,
+     "altitude": 2000000.1991193846
+    },
+    "axisRot": 5.05984051,
+    "theta": 6.6306368367948965
+   },
+   "up": {
+    "tag": "desc_up",
+    "ref": "Earth",
+    "free": true,
+    "bound": true,
+    "lon": -2.26892805,
+    "lat": -0.34906584,
+    "dist": 5.600441e-05,
+    "position": [
+     -3.5846766e-05,
+     4.2720505e-05,
+     -2.02977681e-05
+    ],
+    "E": [
+     4.82512000307474e-05,
+     -2.796165194019621e-05,
+     2.029776747031598e-05
+    ],
+    "mat": [
+     0.563431621,
+     -0.146669924,
+     0.813039184,
+     0,
+     0.784729421,
+     0.402753234,
+     -0.4711577,
+     0,
+     -0.258349508,
+     0.903480887,
+     0.342020154,
+     0,
+     -6.36646291e-12,
+     0,
+     -5.93467048e-05,
+     1
+    ],
+    "rootPos": [
+     0.33643001896780333,
+     -0.959325860509125,
+     8.257370063802227e-05
+    ],
+    "control": {
+     "latitude": -19.99999941818584,
+     "longitude": -130.00000134084985,
+     "altitude": 2500000.3849577014
+    },
+    "axisRot": 5.05984039,
+    "theta": 6.630636716794896
+   },
+   "down": {
+    "tag": "desc_down",
+    "ref": "Earth",
+    "free": true,
+    "bound": true,
+    "lon": -2.26892805,
+    "lat": -0.34906584,
+    "dist": 5.600441e-05,
+    "position": [
+     -3.3827946e-05,
+     4.03145677e-05,
+     -1.91546369e-05
+    ],
+    "E": [
+     4.553378579779894e-05,
+     -2.6386905329923727e-05,
+     1.9154638280285047e-05
+    ],
+    "mat": [
+     0.563431621,
+     -0.146669924,
+     0.813039184,
+     0,
+     0.784729421,
+     0.402753234,
+     -0.4711577,
+     0,
+     -0.258349508,
+     0.903480887,
+     0.342020154,
+     0,
+     -5.91171556e-12,
+     -1.8189894e-12,
+     -5.60044136e-05,
+     1
+    ],
+    "rootPos": [
+     0.3364273080114799,
+     -0.959324852872669,
+     8.089850234682672e-05
+    ],
+    "control": {
+     "latitude": -19.99999941818584,
+     "longitude": -130.00000134084985,
+     "altitude": 2000000.743353268
+    },
+    "axisRot": 5.05984051,
+    "theta": 6.6306368367948965
+   },
+   "res_up": 5.5139043239956014e-12,
+   "res_up_flipped": 6.684586806600955e-06,
+   "res_down": 3.43139492075115e-12,
+   "res_down_flipped": 6.684585536981247e-06,
+   "down_branch": "ray",
+   "step_up_km": 500.00026660184716,
+   "d_radius_up_km": 499.9996664319751,
+   "cos_backray_radial": 1.0000000393654278,
+   "ray_s_km": 2500.000383347627,
+   "ground_used_km": 6378.140287259795
+  },
+  "C6": [
+   {
+    "exit": {
+     "tag": "free_off_1",
+     "ref": "Earth",
+     "free": false,
+     "bound": true,
+     "lon": -2.26892805,
+     "lat": -0.34906584,
+     "dist": 5.60044136e-05,
+     "position": [
+      -3.3827946e-05,
+      4.03145677e-05,
+      -1.91546369e-05
+     ],
+     "E": [
+      -4.9424050597724205e-05,
+      1.8079170185750144e-05,
+      -1.9154635726440894e-05
+     ],
+     "mat": [
+      0.563431621,
+      -0.146669939,
+      0.813039064,
+      0,
+      0.784729421,
+      0.402753264,
+      -0.47115761,
+      0,
+      -0.258349508,
+      0.903480887,
+      0.342020154,
+      0,
+      8.71122938e-06,
+      2.77537902e-06,
+      5.52531055e-05,
+      1
+     ],
+     "rootPos": [
+      0.3363325173886551,
+      -0.9592986812494928,
+      2.806284828693606e-05
+     ],
+     "control": {
+      "latitude": -19.99999941818584,
+      "longitude": -130.00000134084985,
+      "altitude": 2000000.743353268
+     },
+     "axisRot": 5.05984051,
+     "theta": 6.6306368367948965
+    },
+    "entry": {
+     "tag": "free_on_1",
+     "ref": "Earth",
+     "free": true,
+     "bound": true,
+     "lon": -2.26892805,
+     "lat": -0.34906584,
+     "dist": 5.60044136e-05,
+     "position": [
+      -3.38279424e-05,
+      4.03145714e-05,
+      -1.91546369e-05
+     ],
+     "E": [
+      4.55337844020589e-05,
+      -2.638691329564082e-05,
+      1.9154636962467424e-05
+     ],
+     "mat": [
+      0.563431799,
+      -0.14666988,
+      0.813039064,
+      0,
+      0.784729362,
+      0.402753294,
+      -0.471157849,
+      0,
+      -0.258349508,
+      0.903480887,
+      0.342020154,
+      0,
+      -9.54969437e-12,
+      0,
+      -5.60044173e-05,
+      1
+     ],
+     "rootPos": [
+      0.33642730800784193,
+      -0.959324852879945,
+      8.089850234682672e-05
+     ],
+     "control": {
+      "latitude": -19.99999941818584,
+      "longitude": -130.00000134084985,
+      "altitude": 2000000.743353268
+     },
+     "axisRot": 5.05984051,
+     "theta": 6.6306368367948965
+    },
+    "res_exit": 1.2068671462670683e-10,
+    "res_exit_rival": 0.00011163253575730938,
+    "res_entry": 1.1060385620999672e-10,
+    "exit_km": 16699.989649130406,
+    "entry_km": 16699.989878531538
+   },
+   {
+    "exit": {
+     "tag": "free_off_2",
+     "ref": "Earth",
+     "free": false,
+     "bound": true,
+     "lon": -2.26892805,
+     "lat": -0.34906584,
+     "dist": 5.73413345e-05,
+     "position": [
+      -3.46354718e-05,
+      4.12769477e-05,
+      -1.96118908e-05
+     ],
+     "E": [
+      -5.0603892243120285e-05,
+      1.8510752495828226e-05,
+      -1.961188939389282e-05
+     ],
+     "mat": [
+      0.563431859,
+      -0.146669835,
+      0.813039005,
+      0,
+      0.784729302,
+      0.402753294,
+      -0.471157819,
+      0,
+      -0.258349508,
+      0.903480887,
+      0.342020154,
+      0,
+      8.91919353e-06,
+      2.84163548e-06,
+      5.65720911e-05,
+      1
+     ],
+     "rootPos": [
+      0.33633133895273204,
+      -0.9592984595437883,
+      2.7471651264932007e-05
+     ],
+     "control": {
+      "latitude": -19.99999941818584,
+      "longitude": -130.00000134084985,
+      "altitude": 2200001.253075701
+     },
+     "axisRot": 5.05984046,
+     "theta": 6.630636786794897
+    },
+    "entry": {
+     "tag": "free_on_2",
+     "ref": "Earth",
+     "free": true,
+     "bound": true,
+     "lon": -2.26892805,
+     "lat": -0.34906584,
+     "dist": 5.73413345e-05,
+     "position": [
+      -3.46354718e-05,
+      4.12769477e-05,
+      -1.96118908e-05
+     ],
+     "E": [
+      4.6620749787982316e-05,
+      -2.7016811952133543e-05,
+      1.9611891350002582e-05
+     ],
+     "mat": [
+      0.563431799,
+      -0.14666988,
+      0.813039064,
+      0,
+      0.784729362,
+      0.402753294,
+      -0.471157849,
+      0,
+      -0.258349508,
+      0.903480887,
+      0.342020154,
+      0,
+      -9.09494702e-12,
+      -1.8189894e-12,
+      -5.73413345e-05,
+      1
+     ],
+     "rootPos": [
+      0.3364283923947369,
+      -0.959325255933436,
+      8.156858712027315e-05
+     ],
+     "control": {
+      "latitude": -19.99999941818584,
+      "longitude": -130.00000134084985,
+      "altitude": 2200001.253075701
+     },
+     "axisRot": 5.05984046,
+     "theta": 6.630636786794897
+    },
+    "res_exit": 1.2065829177515532e-10,
+    "res_exit_rival": 0.00011429739768903111,
+    "res_entry": 1.1568316082122035e-10,
+    "exit_km": 17098.64731980148,
+    "entry_km": 17098.64731980148
+   }
+  ],
+  "SCREEN": {
+   "px_ab": 231,
+   "px_pair": 0,
+   "pair_dE_AU": 2.4771134688308366e-12,
+   "teleport_km": 17537.1691342339
+  },
+  "SHIPPED": {
+   "lon_deg": 5.366666666666666,
+   "lat_deg": 43.3,
+   "alt_m": 75.0,
+   "swing_meas": 2.1760715912721924,
+   "swing_pred": 2.176071631156705,
+   "chord_km": 11298.58514651711,
+   "chord_pred_km": 11298.585172311803,
+   "px_ab": 3300642,
+   "px_pair": 664,
+   "px_settled_control": 861,
+   "pair_dE_AU": 0.0
+  }
+ },
+ "failures": [],
+ "commands": [
+  "flag atmosphere off",
+  "flag landscape off",
+  "flag fog off",
+  "timerate rate 0",
+  "date jday 2461233.500000000",
+  "moveto lat 30.0 lon 70.0 alt 1000000.0 duration 0",
+  "camera action free_mode state on",
+  "moveto lat -20.0 lon -130.0 alt 2000000.0 duration 0",
+  "camera action free_mode state off",
+  "moveto lat -20.0 lon -130.0 alt 2000000.0 duration 0",
+  "camera action free_mode state on",
+  "select planet Earth pointer off",
+  "flag track_object on",
+  "flag track_object off",
+  "camera action descend coef 1.25",
+  "camera action descend coef 0.8",
+  "camera action free_mode state off",
+  "camera action free_mode state on",
+  "camera action descend coef 1.1",
+  "camera action free_mode state off",
+  "camera action free_mode state on",
+  "camera action descend coef 1.1",
+  "flag track_object on",
+  "flag track_object off",
+  "camera action free_mode state off",
+  "camera action free_mode state on",
+  "camera action free_mode state off",
+  "moveto lat 43.3 lon 5.366666666666666 alt 75.0 duration 0",
+  "flag atmosphere on",
+  "flag landscape on",
+  "camera action free_mode state on",
+  "camera action free_mode state off",
+  "flag atmosphere off",
+  "flag landscape off"
+ ]
+}

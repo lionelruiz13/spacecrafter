@@ -1,0 +1,134 @@
+{
+ "tag": "asan_post",
+ "bin": "/home/claude/spacecrafter/build-asan/src/spacecrafter",
+ "expect": "post",
+ "pred": {
+  "hip_ladder": [
+   3,
+   40001,
+   40010,
+   3,
+   40001,
+   40010,
+   3,
+   40001,
+   40010
+  ],
+  "composed": [
+   "BigA",
+   "SmallB",
+   "FarC",
+   "OnDisc"
+  ],
+  "star_wrappers_minted": 11,
+  "modular_bridges_minted": 8,
+  "pre": {
+   "star_wrappers_unreleased": [
+    10,
+    11
+   ],
+   "modular_bridges_unreleased": [
+    8
+   ]
+  },
+  "post": {
+   "star_wrappers_unreleased": [
+    0
+   ],
+   "modular_bridges_unreleased": [
+    0
+   ]
+  },
+  "caveat": "a leaked ModularObject stays REGISTERED in the static ModularBodyPtr::ref vector; if LSan's check runs before that global is destroyed the bridges read as reachable and the modular count is 0 on BOTH binaries - in which case the modular leg is not this instrument's to answer (gdb leg)."
+ },
+ "steps": [
+  {
+   "cmd": "select hp 3",
+   "info": "HP 3"
+  },
+  {
+   "cmd": "select hp 40001",
+   "info": "HP 40001"
+  },
+  {
+   "cmd": "select hp 40010",
+   "info": "HP 40010"
+  },
+  {
+   "cmd": "select hp 3",
+   "info": "HP 3"
+  },
+  {
+   "cmd": "select hp 40001",
+   "info": "HP 40001"
+  },
+  {
+   "cmd": "select hp 40010",
+   "info": "HP 40010"
+  },
+  {
+   "cmd": "select hp 3",
+   "info": "HP 3"
+  },
+  {
+   "cmd": "select hp 40001",
+   "info": "HP 40001"
+  },
+  {
+   "cmd": "select hp 40010",
+   "info": "HP 40010"
+  },
+  {
+   "cmd": "star pair entry 1",
+   "off": "EOL",
+   "on": "HP 3"
+  },
+  {
+   "cmd": "star pair entry 2",
+   "off": "EOL",
+   "on": "HP 3"
+  },
+  {
+   "cmd": "select planet BigA",
+   "info": "BigA"
+  },
+  {
+   "cmd": "select planet SmallB",
+   "info": "SmallB"
+  },
+  {
+   "cmd": "select planet FarC",
+   "info": "FarC"
+  },
+  {
+   "cmd": "select planet OnDisc",
+   "info": "OnDisc"
+  },
+  {
+   "cmd": "composed pair entry 1",
+   "off": "EOL",
+   "on": "BigA"
+  },
+  {
+   "cmd": "composed pair entry 2",
+   "off": "EOL",
+   "on": "BigA"
+  }
+ ],
+ "empty_readout": "EOL",
+ "composed_probe": "BigA",
+ "after_reload": "EOL",
+ "after_reload_select": "BigA",
+ "exit_rc": 0,
+ "sanitizer": {
+  "lsan_ran": true,
+  "errors": [],
+  "total_blocks": 65,
+  "total_bytes": 19674,
+  "total_allocs": 195,
+  "star_blocks": [],
+  "star_objects": 0,
+  "modular_blocks": [],
+  "modular_objects": 0
+ }
+}

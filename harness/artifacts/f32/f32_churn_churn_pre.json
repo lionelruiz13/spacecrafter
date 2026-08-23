@@ -1,0 +1,316 @@
+{
+ "tag": "churn_pre",
+ "bin": "/home/claude/spacecrafter/claude/harness/sc_f32_asan_pre",
+ "phases": [
+  {
+   "phase": "mixed churn",
+   "rounds": 3,
+   "steps": [
+    {
+     "cmd": "select hp 3 pointer off",
+     "info": "HP 3"
+    },
+    {
+     "cmd": "select hp 40001 pointer off",
+     "info": "HP 40001"
+    },
+    {
+     "cmd": "select hp 40010 pointer off",
+     "info": "HP 40010"
+    },
+    {
+     "cmd": "select planet BigA pointer off",
+     "info": "BigA"
+    },
+    {
+     "cmd": "select planet SmallB pointer off",
+     "info": "SmallB"
+    },
+    {
+     "cmd": "select planet FarC pointer off",
+     "info": "FarC"
+    },
+    {
+     "cmd": "select planet OnDisc pointer off",
+     "info": "OnDisc"
+    },
+    {
+     "cmd": "select planet Makemake pointer off",
+     "info": "Makemake"
+    },
+    {
+     "cmd": "select nebula \"M1\" pointer off",
+     "info": "M1"
+    },
+    {
+     "cmd": "deselect",
+     "info": "EOL"
+    },
+    {
+     "cmd": "select hp 3 pointer off",
+     "info": "HP 3"
+    },
+    {
+     "cmd": "select hp 40001 pointer off",
+     "info": "HP 40001"
+    },
+    {
+     "cmd": "select hp 40010 pointer off",
+     "info": "HP 40010"
+    },
+    {
+     "cmd": "select planet BigA pointer off",
+     "info": "BigA"
+    },
+    {
+     "cmd": "select planet SmallB pointer off",
+     "info": "SmallB"
+    },
+    {
+     "cmd": "select planet FarC pointer off",
+     "info": "FarC"
+    },
+    {
+     "cmd": "select planet OnDisc pointer off",
+     "info": "OnDisc"
+    },
+    {
+     "cmd": "select planet Makemake pointer off",
+     "info": "Makemake"
+    },
+    {
+     "cmd": "select nebula \"M1\" pointer off",
+     "info": "M1"
+    },
+    {
+     "cmd": "deselect",
+     "info": "EOL"
+    },
+    {
+     "cmd": "select hp 3 pointer off",
+     "info": "HP 3"
+    },
+    {
+     "cmd": "select hp 40001 pointer off",
+     "info": "HP 40001"
+    },
+    {
+     "cmd": "select hp 40010 pointer off",
+     "info": "HP 40010"
+    },
+    {
+     "cmd": "select planet BigA pointer off",
+     "info": "BigA"
+    },
+    {
+     "cmd": "select planet SmallB pointer off",
+     "info": "SmallB"
+    },
+    {
+     "cmd": "select planet FarC pointer off",
+     "info": "FarC"
+    },
+    {
+     "cmd": "select planet OnDisc pointer off",
+     "info": "OnDisc"
+    },
+    {
+     "cmd": "select planet Makemake pointer off",
+     "info": "Makemake"
+    },
+    {
+     "cmd": "select nebula \"M1\" pointer off",
+     "info": "M1"
+    },
+    {
+     "cmd": "deselect",
+     "info": "EOL"
+    }
+   ]
+  },
+  {
+   "phase": "reassign while tracking",
+   "steps": [
+    {
+     "entry": 1,
+     "sel": "HP 3"
+    },
+    {
+     "entry": 1,
+     "tracking_sel": "BigA"
+    },
+    {
+     "entry": 1,
+     "tracking_sel2": "Makemake"
+    },
+    {
+     "entry": 1,
+     "off": "EOL"
+    },
+    {
+     "entry": 2,
+     "sel": "HP 3"
+    },
+    {
+     "entry": 2,
+     "tracking_sel": "BigA"
+    },
+    {
+     "entry": 2,
+     "tracking_sel2": "Makemake"
+    },
+    {
+     "entry": 2,
+     "off": "EOL"
+    }
+   ]
+  },
+  {
+   "phase": "executor mode switch clears the selection",
+   "steps": [
+    {
+     "entry": 1,
+     "before": "HP 3"
+    },
+    {
+     "entry": 1,
+     "in_galaxy": "EOL"
+    },
+    {
+     "entry": 1,
+     "star_in_galaxy": "HP 40001"
+    },
+    {
+     "entry": 1,
+     "back": "EOL"
+    },
+    {
+     "entry": 1,
+     "composed": "SmallB"
+    },
+    {
+     "entry": 2,
+     "before": "HP 3"
+    },
+    {
+     "entry": 2,
+     "in_galaxy": "EOL"
+    },
+    {
+     "entry": 2,
+     "star_in_galaxy": "HP 40001"
+    },
+    {
+     "entry": 2,
+     "back": "Terre"
+    },
+    {
+     "entry": 2,
+     "composed": "SmallB"
+    }
+   ]
+  },
+  {
+   "phase": "system reload under a live composed selection",
+   "steps": [
+    {
+     "entry": 1,
+     "sel": "FarC"
+    },
+    {
+     "entry": 1,
+     "after_reload": "SolarSystem"
+    },
+    {
+     "entry": 1,
+     "reselect": "FarC"
+    },
+    {
+     "entry": 2,
+     "sel": "FarC"
+    },
+    {
+     "entry": 2,
+     "after_reload": "SolarSystem"
+    },
+    {
+     "entry": 2,
+     "reselect": "FarC"
+    }
+   ]
+  }
+ ],
+ "catalogue": {
+  "planets": [
+   "Makemake",
+   "Mars",
+   "Mercure",
+   "Mimas",
+   "Miranda",
+   "M\u00c3\u00a9tis"
+  ],
+  "nebulae": [
+   "M1",
+   "M10",
+   "M100",
+   "M101",
+   "M102",
+   "M103"
+  ]
+ },
+ "exit_rc": 0,
+ "sanitizer": {
+  "lsan_ran": true,
+  "errors": [],
+  "total_blocks": 67,
+  "total_bytes": 20754,
+  "total_allocs": 230,
+  "star_blocks": [
+   {
+    "kind": "Direct",
+    "bytes": 600,
+    "objects": 15,
+    "frames": [
+     "#0 0x7288bf92319b in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:86",
+     "#1 0x5cc9701b81f4 in BigStarCatalog::Star1::createStelObject(BigStarCatalog::SpecialZoneArray<BigStarCatalog::Star1> const*, BigStarCatalog::SpecialZoneData<BigStarCatalog::Star1> const*) const /home/claude/spacecrafter/src/starModule/hip_star_wrapper.cpp:248",
+     "#2 0x5cc970189d2e in HipStarMgr::searchHP(int) const /home/claude/spacecrafter/src/starModule/hip_star_mgr.cpp:1061",
+     "#3 0x5cc96f89f71e in Core::selectObject(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/coreModule/core.cpp:1028",
+     "#4 0x5cc96ff0ef61 in AppCommandInterface::commandSelect() /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:3138",
+     "#5 0x5cc96ff37976 in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:285",
+     "#6 0x5cc96ff383dd in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:187",
+     "#7 0x5cc96f5c453c in App::updateFromSharedData() /home/claude/spacecrafter/src/appModule/app.cpp:771",
+     "#8 0x5cc96f5c4ef1 in App::update(int) /home/claude/spacecrafter/src/appModule/app.cpp:790",
+     "#9 0x5cc96f5c5936 in App::startMainLoop() /home/claude/spacecrafter/src/appModule/app.cpp:1019",
+     "#10 0x5cc96f401951 in main /home/claude/spacecrafter/src/main.cpp:348",
+     "#11 0x7288bb02a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58",
+     "#12 0x7288bb02a627 in __libc_start_main_impl ../csu/libc-start.c:360",
+     "#13 0x5cc96f4071a4 in _start (/home/claude/spacecrafter/claude/harness/sc_f32_asan_pre+0x1aa1a4) (BuildId: 7c44f1dce426107ec4ff261b879e43ef7c51525c)"
+    ]
+   }
+  ],
+  "star_objects": 15,
+  "modular_blocks": [
+   {
+    "kind": "Direct",
+    "bytes": 480,
+    "objects": 20,
+    "frames": [
+     "#0 0x7288bf92319b in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:86",
+     "#1 0x5cc96f7bfd01 in SSystemFactory::searchObjectByEnglishName(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) const /home/claude/spacecrafter/src/bodyModule/ssystem_factory.cpp:785",
+     "#2 0x5cc96f89fd25 in Core::selectObject(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/coreModule/core.cpp:1045",
+     "#3 0x5cc96ff0ef61 in AppCommandInterface::commandSelect() /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:3138",
+     "#4 0x5cc96ff37976 in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, unsigned long&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:285",
+     "#5 0x5cc96ff383dd in AppCommandInterface::executeCommand(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) /home/claude/spacecrafter/src/interfaceModule/app_command_interface.cpp:187",
+     "#6 0x5cc96f5c453c in App::updateFromSharedData() /home/claude/spacecrafter/src/appModule/app.cpp:771",
+     "#7 0x5cc96f5c4ef1 in App::update(int) /home/claude/spacecrafter/src/appModule/app.cpp:790",
+     "#8 0x5cc96f5c5936 in App::startMainLoop() /home/claude/spacecrafter/src/appModule/app.cpp:1019",
+     "#9 0x5cc96f401951 in main /home/claude/spacecrafter/src/main.cpp:348",
+     "#10 0x7288bb02a574 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58",
+     "#11 0x7288bb02a627 in __libc_start_main_impl ../csu/libc-start.c:360",
+     "#12 0x5cc96f4071a4 in _start (/home/claude/spacecrafter/claude/harness/sc_f32_asan_pre+0x1aa1a4) (BuildId: 7c44f1dce426107ec4ff261b879e43ef7c51525c)"
+    ]
+   }
+  ],
+  "modular_objects": 20
+ }
+}

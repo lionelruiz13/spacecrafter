@@ -1,0 +1,9 @@
+{
+ "binary": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "binary_md5": "85b0d12312ba7fd8b776a008513bbf9d",
+ "G1_no_transition": 0,
+ "G1_loglines": 2266,
+ "G2_transition": 1298,
+ "G2_loglines": 3565,
+ "ok": true
+}

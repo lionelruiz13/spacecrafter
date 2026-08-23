@@ -34,50 +34,59 @@ file AND `fable-dispatch/archive/` together, never the live surface alone. The
 in-file derived index (§1) is regenerable, never authoritative. A wrongly archived
 unit moves back at the cost of one probe — when in doubt, a unit stays live.
 
-**Update [Fable 2026-08-02, supervising session 9]:** round of 3: **F25 → F26 → F27**.
-F25 = **B34-ramps** (session 8's queued item — the row's last member; minted at
-dispatch per §0b.2). F26 = **§5.62's owed isolation measurement** (queued, S). F27 =
-**§5.47's drain path** — NOT in session 8's queue enumeration; authority check at §5:
-the row carries a recorded fix shape (*"follow `outputQueue` through
-`ServerSocket::run`'s send loop"*), names no Vixy decision, and is
-instrument-load-bearing (the ONLY side-effect-free read of observer position + heading;
-its silence forces every heading pin through a write-after-read channel at two launches
-per pin, §11.118(f)). Lateral search live ∪ archive found no deferral record ⇒ the
-omission is view staleness, same class as session 8's F23/F24. Warm-up: both trees
-clean (code `d88f5be2`, harness `16eab5b`), binary confirmed current by no-op rebuild;
-`free -g` = 13 GiB available ⇒ **-j6 this session**; NO Vixy commit since session 8's
-close ⇒ A40–A43/D15/D21/D28-residue/D37/C4 all open — B7-hunt-5, B12-content,
-§5.64/§5.65 stay blocked; B35/B37/B38 decision-gated, B36 per-member (pin/unpin rides
-B1), B39/B27 done. Dispatch order = queue order; F25→F26 order-independence CHECKED,
-not assumed (F26 lands no code; its frozen scene never exercises F25's key-path diff;
-F26 builds both its binaries fresh at named commits regardless of HEAD).
-**Round outcome (session 9 close, 2026-08-02):** F25 → §11.133, F26 → §11.134,
-F27 → §11.135 — all three delivered AND supervisor-verified same session.
-**B34 CLOSED** (F25): turn + zoom ramps mirrored with per-step parity through the
-live key channel; the 24-term derivation table needed NO Vixy feel item — the one
-irreproducible term was float32, not feel, and was closed by removing the
-primitive's own round-trip loss (D8); `dragView`'s vertical sign found inverted
-since its merge and fixed where the convention is stated. **§5.62's owed item
-DISCHARGED** (F26): the epoch shift is on NEITHER binary rebuilt today ⇒ transient
-of the epoch-B session, delivered code exonerated, row stays OPEN unattributed;
-the row's own `active.lock` explanation refuted; §11.121(m)'s probe REPLACED
-(`/proc/<pid>/comm` — the stock pattern under- AND over-reports, §0.5 updated).
-**§5.47 CLOSED** (F27): the queue was drained all along — to the `$LOGON`
-subscribers; the structure never carried the addressee, fixed at the first hop
-(`ClientMessage` slot+id); reply follows the path that draws; heading pins now
-1 launch. NEW rows: **§5.70/§5.72** (decidable, yours) · **§5.71/§5.73**
-(awareness). S6's operator-seam audit fully landed (B33+B34 both closed).
-Executor quality: F25 turned the mandate's feel-item escape hatch into a
-measured-exact delivery; F26 answered a two-branch dichotomy with the third
-branch the row's own wording missed and REBUILT a standing precondition's
-instrument on the way; F27 made the pre-fix binary its own positive control
-(leg B) — the no-reply-vs-no-instrument bar is now settled practice. Remaining
-dispatchable, next round: **§5.73's fix-shape verification** (S — buffer-sizing
-vs truncation policy; dispatchable only if sizing-only is confirmed
-decision-free at source), **B7-hunt-5 only after A40**, **B12 content** after
-b12-design §7 + A41/A42, **§5.64/§5.65/§5.69/§5.70/§5.72 fixes** only after
-Vixy decides the semantics. DECISIONS_PENDING open set at close: **D15, D21
-(late Aug), D37** + A40–A43 awaiting; B31 closure rides D21/D28/C4 (unchanged).
+**Update [Fable 2026-08-09, supervising session 12]:** round of 3: **F34 → F35 →
+F36** — likely the LAST decision-free round: after it the remaining set is
+entirely decision-gated. Warm-up: both trees clean, code `204d402e` / harness
+`c8fd86d`, binary confirmed current by no-op rebuild, `free -g` = 52 GiB ⇒ -j12;
+NO Vixy commit since session 11's close ⇒ the blocked/decision-gated set stands
+unchanged (D15/D21 late-Aug, D37, A40–A43, C4 open; §5.64/§5.65/§5.69/§5.70/
+§5.72/§5.75/§5.76 fixes stay Vixy's). **B4-row residual re-check DONE at
+source, NO mint:** `moveRelativeXYZ`'s only route up is
+`CoreLink::cameraMoveRelativeXYZ`; all 6 of its `ui.cpp` call sites are
+commented out and no command spelling exists — nothing reaches it; old-path
+dead code, retire-with-old class. No §5 row: reachability is the mint
+criterion (§5.79's precedent) and this member is UNreachable. Picks, rows
+re-read at the ledger: F34 = **§5.80's owed datum** (S-M; record-only, the fix
+is Vixy's by the row's own text), F35 = **§5.81 + §5.79 as ONE task** (both
+shipped-reachable degenerate-input guards, identical
+verify-then-fix-if-decision-free mandate — merged, S+S), F36 = **§5.77's owed
+enumeration** (S; the row's named sizing datum; class fix ONLY if uniform +
+purely additive). §5.78's owed data-layout half checked for local
+dischargability: NO local `spacecrafter-data` checkout — stays Vixy's. Order
+F34→F35→F36; order-independence CHECKED: F34 writes no product code (record +
+harness only) and runs FIRST so its measurements baseline on unmodified code;
+F35 = `ModularBody.hpp` + `constellation_mgr.cpp`/callers; F36 = startup
+logging sites — disjoint; sequential dispatch removes the residual risk.
+**Round outcome (session 12 close, 2026-08-09):** F34 → §11.144, F35 →
+§11.145, F36 → §11.146 — all three delivered AND supervisor-verified same
+session; code moved `204d402e → c12ed803 → 04ae1d3e` (F35 only; F34 and F36
+are record-only, code clean at open and close). **§5.80's owed datum PAID**
+(F34): the teleport lives on the CONVERTER — (A) is used by exactly the three
+triple↔cartesian conversion sites and by nothing else; `descend`/`moveEyeRel`
+are exact against the composer (corrects the row's own mover list, measured);
+the converter is wrong by a SIGN as well as azimuth handedness (one 180°
+rotation, the observer's latitude flips); BOTH shipped readouts blind; same
+`moveto` lands 16 700 km apart on free-mode alone; fix = free-flight
+semantics, Vixy's. **§5.81 + §5.79 CLOSED** (F35): both empty-case answers
+decision-free (limit forced by algebra / siblings' empty answer); §5.79's
+"not reproducible here" CORRECTED — the shipped one-liner segfaults the
+default field (rc −11), now fixed. **§5.77's owed enumeration PAID** (F36):
+the class is 37 startup failure reports on FIVE channels; the expected fix
+measured NON-additive (`print_log = true` makes `cLog L_ERROR` a second
+console writer — four-cell measurement); decision handed as ONE question
+(§11.146(j)). NEW rows: **§5.86** (F34) · **§5.87** (F35) · **§5.88–§5.90**
+(F36). Executor quality: F34's both-hypothesis scoring with pre-run committed
+predictions + the supplementary-swing discriminator; F35's retargeted branch
+probe with positive map; F36's comment-stripping census (a grep = 2.2× wrong)
+and the four-cell duplication table are the round's method exemplars.
+Remaining dispatchable, next round (all S, owed-datum/verify class — every
+FIX they enable is Vixy's): **§5.86's owed data** (consumer dependence +
+old-path RA/DE parity target), **§5.88's owed datum** (draw-time cost of an
+empty spectral array), **§5.89's owed sweep** (other load-bearing `assert`s
+in `src/`). Then the decision-gated set unchanged PLUS the new decisions
+minted this round (§11.146(j) console duplication; §5.87/§5.88/§5.89/§5.90
+semantics/layout halves). DECISIONS_PENDING open set at close: **D15, D21
+(late Aug), D37** + A40–A43 awaiting — unchanged; B31 rides D21/D28/C4.
 
 ---
 
@@ -122,6 +131,15 @@ Vixy decides the semantics. DECISIONS_PENDING open set at close: **D15, D21
      (measured: 3 reported with nothing running). Use the `/proc/<pid>/comm` probe
      (`f26_epoch.sh`; Python port in `f27_reply.py`) — covers every account,
      positively mapped both ways (decoy 1 / without 0).
+   - **Session-environment hazards (2026-08-09, F28/F30, §11.138/§11.140(i)):**
+     (a) the inherited `XAUTHORITY` belongs to another uid — every display refuses;
+     `export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)` with
+     `DISPLAY=:2` (forced, not defaulted — the inherited `DISPLAY=:0` makes
+     `${DISPLAY:-:2}` keep the wrong one), verify `xdpyinfo` BEFORE the first
+     launch (full note `harness/README.md`). (b) `timeout -s KILL` bounds NOTHING
+     in this session type (measured: rc=124 only after the child's full run;
+     mechanism unattributed, signal-mask hypothesis refuted) — use plain `timeout`
+     (measured working) or an explicit poll-and-kill watchdog.
    - **Display architecture is part of the instrument (2026-07-31, §11.122(o) +
      §11.123(o)/(o2)):** claude renders on his OWN headless GNOME/Xwayland `:2`
      (GPU-real; the harness default); Vixy's remmina/RDP relay is view-only and its
@@ -198,15 +216,17 @@ no `run_in_background`; both HEADs stated ⟨code, harness⟩.
 
 ## 1. Dispatch order (load-bearing first; each task states why, so the order is challengeable)
 
-*Derived index (regenerable from `fable-dispatch/archive/`): sections **F0–F27 all
+*Derived index (regenerable from `fable-dispatch/archive/`): sections **F0–F36 all
 DELIVERED and archived** — F0 §11.103 · F1 §11.104/§11.105 · F2 §11.106 · F3 §11.107
 · F4 §11.108 · F5 §11.109 · F6 §11.110 · F7 §11.111 · F8 §11.122 · F9 §11.123 ·
 F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · F15 §11.121 ·
 F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129 ·
-F22 §11.130 · F23 §11.131 · F24 §11.132 · F25 §11.133 · F26 §11.134 · F27 §11.135.
-No section is live: the next dispatchable candidate (§5.73's fix-shape
-verification, conditional on a decision-free sizing fix confirmed at source) is
-to be minted at its dispatch per §0b.2 — the current queue lives in the latest
+F22 §11.130 · F23 §11.131 · F24 §11.132 · F25 §11.133 · F26 §11.134 · F27 §11.135 ·
+F28 §11.138 · F29 §11.139 · F30 §11.140 · F31 §11.141 · F32 §11.142 ·
+F33 §11.143 · F34 §11.144 · F35 §11.145 · F36 §11.146. No section is live: the next
+dispatchable candidates (§5.86's owed data, S; §5.88's owed draw-cost datum,
+S; §5.89's owed assert sweep, S — every FIX they enable is Vixy's) are to be
+minted at their dispatch per §0b.2 — the current queue lives in the latest
 session update note above.*
 
 ---
@@ -230,6 +250,191 @@ session update note above.*
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
+- **Session-12 decision data (2026-08-09, F34/§11.144 + F35/§11.145 +
+  F36/§11.146):**
+  - **§5.80's owed datum is PAID — the teleport lives on the CONVERTER.**
+    (A) `spheToRect(−lon,lat)·d` is used by exactly the three sites that
+    convert between the anchored triple and the free cartesian member
+    (`setFreeMode` both ways, `moveTo`'s free branch) and by NOTHING else:
+    `descend`/`moveEyeRel` never see the triple and are exact against the
+    composer (5.5e-12/3.4e-12 AU vs 6.7e-06 for the flipped sign) — so the
+    repair's blast radius is smaller than §5.80 first estimated, its nature
+    (free-flight semantics) unchanged. The converter is wrong TWO ways — a
+    missing negation AND azimuth handedness — composing to one 180° rotation
+    (the observer's latitude flips sign across the toggle). NEITHER shipped
+    readout can see it: `selDist` by construction, `get status position`
+    because `getPlace()` inverts what the converter just wrote (entry triple
+    returned identically across a 13 732 km teleport). One command, two
+    places: the same `moveto` lands 16 700 km / 170.6° apart depending only
+    on free-mode. **Your decision when ready:** what `moveto lat/lon` MEANS
+    in free flight (re-expressing the converter as the composer's inverse
+    leaves `descend`/`moveEyeRel` and every anchored place untouched — the
+    datum's statement, not a proposal).
+  - **F36's decision (§11.146(j)) — the startup-silence fix turns on ONE
+    question:** the silent class is 37 sites on FIVE channels (not "stderr"),
+    and NO uniform additive routing exists — measured, not argued: the
+    installed config has `print_log = true`, which makes `cLog L_ERROR`
+    write the console too, so the §5.77 row's own expected one-liner prints
+    the message TWICE (four-cell measurement, §11.146(f)). **Should a
+    startup failure appear on the console twice when `print_log = true`?**
+    Yes ⇒ the additive call lands at 20 sites (13 need new wording first).
+    No ⇒ the fix is not additive: remove raw writes (changes the console
+    for `print_log = false` installs) or give `cLog` a log-only entry point
+    (B28-adjacent). Sub-question deciding 2 more sites: extend the pre-log
+    `out`-accumulator idiom to the failure paths?
+  - **§5.90 — the round's biggest operational find: the app runs on 26 561
+    stars** instead of the level-2/3 catalogues' millions, silently. The
+    catalogue LIST is read from `~/.spacecrafter/stars.ini` but the FILES
+    from `/usr/local/share/spacecrafter/stars/`; the two disagree on
+    versions on this install — and `~/.spacecrafter/stars/`, where the
+    loader does NOT look, carries exactly the requested versions. The log
+    says `Loading catalog X` with no outcome and summarizes
+    `max_geodesic_level: 1`. **Your questions (same class as §5.74's):**
+    does the delivered `spacecrafter-data` ship a `stars.ini` matching the
+    catalogues it installs, and is `~/.spacecrafter/stars/` meant to be a
+    search path? NOTE the mechanism is CODE (split roots, I2), not field
+    content — the fourth member of the field question but the first whose
+    data exists locally in the unread root.
+  - **Supervisor hypothesis [derived, NOT measured]:** §5.90 may explain
+    §11.142(h)'s sparse HIP index (3 of 14 swept ids resolve) — the missing
+    level-2/3 catalogues carry the bulk of HIP stars. Discriminating check
+    for whoever gets it: matching list/files pair at the loader's path,
+    re-sweep the 14 ids. If confirmed, the field question's third member
+    reclassifies from field content to §5.90's code mechanism.
+  - **New rows recorded, fixes routed, none blocking:** **§5.86**
+    (`Camera::observedToBodyLocalPos` is not `viewMat`'s inverse — the new
+    path's RA/DE readout computes in a scrambled frame, 133.9° round-trip
+    error; fix belongs with §11.4's closer; the algebraic inverse is written
+    out in `f34_probe_inverse.cpp`) · **§5.87** (`select constellation_star`
+    with an unresolved abbreviation acts on the PREVIOUS selection — unselect
+    vs no-op vs today's is yours, §2(f) attached) · **§5.88** (a missing star
+    catalogue reports NOWHERE — not even the console; three contract shapes,
+    yours after the owed draw-cost datum) · **§5.89** (unknown
+    `viewing_mode` falls through a DEAD `assert` in the shipped build type —
+    abort vs named-default-and-log (D12) vs refuse-to-start, yours).
+- **Session-12 veto points (implemented-and-live, each cheap to reverse;
+  silence = endorsed):** (1) F35's §5.81 guard answers the LIMIT — a body at
+  `distance == 0` reads `screen (0,0)`, the value the algebra forces for
+  every finite projection factor; NO NaN sentinel, because "belongs to the
+  drawn surface" already has one authority (sweep membership + hidden-list
+  unregistration) and a sentinel would be a silent second one (I2); one
+  `if` to reverse (§11.145(a)). (2) F35's §5.79 guard — an empty
+  constellation selection answers an empty `Object`, the sibling holders'
+  own answer, tolerated end-to-end by the one caller; this also FIXES a
+  measured SIGSEGV on the shipped `select constellation_star <abbrev>` at
+  the default field state (rc −11 → alive, EOL/EOL); one `if` to reverse
+  (§11.145(c)(d)).
+- **Session-11 decision data (2026-08-09, F31/§11.141 + F32/§11.142 + F33/§11.143):**
+  - **§5.74 (search finds no stars/constellations) — the answer is the FIELD:**
+    the load never ran; every one of the **2922 files under
+    `~/.spacecrafter/sky_cultures` is 0 bytes** (`western-spacecrafter/info.ini`
+    included), so the configured culture is rejected ABOVE the loaders — and the
+    rejection reaches only stderr while `spacecrafter.log` says `Check
+    sky_cultures subdirectory ok` (§5.77). The match itself measured SOUND
+    (fixture load on the same launch: 0 → 1085 `(S)` + 3 `(C)`). **Your
+    question:** does the delivered `spacecrafter-data` carry sky-culture
+    content, or ship it empty? The field-content class now has THREE members
+    answered by that one question: `sky_cultures` (2922×0 B), `stellar_systems`
+    (13×0 B, §11.109), and the sparse HIP star index (3 of 14 swept ids
+    resolve, §11.142(h)).
+  - **D28's decision surface grew a concrete member (F33):** old's
+    `transition_to body` ends at heading 0 (measured: ramp from 49.139° over
+    5 s, start = minus the body's SCREEN axis angle); the new path holds the
+    whole orientation (A38). Which ships at a reference switch is exactly
+    D28's existing question — nothing new asked, it got a shipped-command
+    instance.
+  - **§5.85:** `align_with body` measured to NOT align (second call moves
+    heading another 25.2°; start-dependent by 29.6°), and its author's inline
+    note says why. What the command is FOR only its author or a show that
+    wants it can say; 0 shipped scripts use it.
+  - **§5.82:** `transition_to point name <X>` DROPS its documented name
+    (hard-coded `temp_point`; 19 shipped lines pass names that never had an
+    effect). Honouring it changes what shipped lines DO = product decision.
+  - **§5.80 (the round's biggest find):** entering free flight TELEPORTS the
+    observer ~125° around its reference at constant distance (11 300 km on
+    Earth, 99 450 km at Mars, 6354 px on screen vs a 0-px A/A control);
+    `selDist` is blind to it by construction. The owed datum (which
+    parametrization the free-flight movers were BUILT against) is decision-free
+    and next round's dispatch candidate; the FIX that follows is a free-flight
+    semantics change = yours.
+  - **§5.78 (F31):** `loadSciNames` has no caller (sci-name star search is
+    structurally dead) and `updateI18n` drops 1140 loaded names (several names
+    per HIP, last wins — one-name-per-star intended?). Rows carry what's owed.
+- **Session-11 veto points (all implemented-and-live, each cheap to reverse;
+  silence = endorsed):** (1) F32 replaced `operator=`'s self-assignment guard
+  with retain-first ORDER (also covers two Objects sharing one rep; net zero
+  for literal self-assignment); the holder enumeration is now `object.hpp`'s
+  header doc. (2) F33's travel = a re-declared MOTION LAW (`TravelOrbit` on
+  the anchor body) — one position authority, pure function of the date; old's
+  logistic curve transcribed QUIRKS INCLUDED (the 9.11e-04 start pop, the
+  1.5e-08 never-arrives) because old is the baseline. (3) F33's
+  `transition_to body` carries NO heading tail on the new path until D28
+  answers — the two paths' images deliberately differ at that member. (4)
+  F33's `placeAt` writes `foldLat` BEFORE `recoverParams` (A38 restoration
+  under the shipped equatorial mount, 1.57e-02 → 7.04e-07 rad; the null
+  control was run — order reversed is bit-identical broken). (5) The new
+  path's unknown-name refusal carries a diagnostic old lacks (behaviour
+  identical, §2(f) filled on the port side). (6) **§5.79 supervisor-minted**
+  from F32's in-entry record — a crash reachable from a shipped command
+  (`select constellation_star` on an empty selection) belongs in the registry;
+  local untestability is not a mint criterion.
+- **Session-10 decision data (2026-08-09, F30/§11.140 + F28/§11.138 — every
+  waiting decision below now has the datum its row said it owed; nothing new is
+  ASKED, the existing questions just got their facts):**
+  - **§5.60 (D13 device-limit):** the 2.68 GB allocation is ONE BUFFER — the
+    video player's staging buffer, sized `(32 MiB+80)×80` from HOST RAM tiers,
+    allocated unconditionally at startup whether or not a video ever plays.
+    NOT pool sizing: `maxMemoryAllocationSize` is queried nowhere in `src/`,
+    and `BufferMgr`'s failure branch leaves a silently unusable manager. So
+    your policy call is about the PLAYER's sizing (and/or creating a fallback
+    path that today does not exist at either end). Also sharpened: on llvmpipe
+    the allocation SUCCEEDED — it is not what caused the recorded SEGV.
+  - **§5.64 + NEW §5.76 (pause semantics):** the readout/clock disagreement is
+    TOTAL — 6 of 6 gated consumers already behave as paused; exactly ONE line
+    (`TimeMgr::update`) is on the wrong side. And the same family measured
+    worse: `timerate action decrement` from a held pause sets rate −1.0 (time
+    runs BACKWARD at real time; shipped key `J`), and each ladder command
+    RECORDS the wrong rate. Making the pause hold the clock changes no gated
+    consumer's behaviour — the decision is cleaner than the row suggested.
+  - **§5.65 (lock-after-move seam):** 0 in-block pairs in 434 shipped files;
+    the only two `lock on` scripts wait a full second first, as if the author
+    knew. The shipped corpus does not constrain your choice. (Scope: scripts —
+    a TCP client can still issue the pair in one frame.)
+  - **§5.69 (keep_time):** no shipped show sets it; but one internal script +
+    the documented example ride the command's DEFAULT, which is the worst
+    value there is (documented 10 s → 160 frames = 1.11 s at shipped fps).
+    Any change to the default's meaning reaches exactly those.
+  - **§5.70 (ramp recording):** no recording exists on THIS field (weaker than
+    "none exists" — D9 freezes fields individually; an operator's own
+    recordings are what the scan cannot see). Correction that constrains the
+    respell: `delta_alt` is ALREADY a registered word meaning an observer
+    altitude delta in metres on `moveto` — the replacement spelling must not
+    collide with it.
+  - **§5.72 ($LOGON channel):** YES — and the two shipped clients fall on
+    OPPOSITE sides: `recever_client.c` (subscribes, issues nothing) goes
+    SILENT if the broadcast copy of addressed answers is removed;
+    `send_recev_client.c` keeps working (it now gets the addressed copy).
+  - **Truncation policy (from F28/§11.138, riding §5.73's closure):** the
+    1024-byte clamp is untouched and now has a concrete case — `get status
+    planets_position` is 854 of 1024 B on shipped data, ~5 `body action
+    load`s from silently truncating mid-token with no marker. The overflow
+    is fixed; whether/how a too-long answer should be MARKED is yours.
+- **Session-10 veto points (all implemented-and-live, each cheap to reverse;
+  silence = endorsed):** (1) F28 removed the shared-buffer send path at ALL
+  NINE `send` call sites, not just the overflowing two — every constant answer
+  was wire-measured byte-identical pre/post, and the `SMALL_BUFFER` comment's
+  never-enforced claim was retired at the site; (2) F29's fix covers TWO sites
+  (§5.46 named one — the second is the invisible-reference branch), both pure
+  contract-restorations, reversible per-site; (3) the eleven §11 stubs
+  (128–138) that had accreted inside §13.C were relocated back to §11 as a
+  pure line move, with a boundary marker so the class cannot recur
+  (§11.140(h)).
+- **New awareness rows, no action needed now: §5.74** (`search` returns no star
+  and no constellation on the shipped corpus — cause not yet discriminated,
+  owed datum named in-row, next-round dispatch candidate) · **§5.75**
+  (`TrailModule::accumulate` drops samples on date jumps — every date-stepping
+  show carries a trail that lags its body; the fix is one expression but
+  changes shipped-trail sample counts = policy).
 - ~~**A15 re-ask is SENDABLE**~~ **JOINS THE FINAL TESTER PASS** [vixy 2026-07-30,
   batching principle → §11.116(c)]: tester items accumulate into ONE final pass
   before testing deployment; the final-pass list is ledger-owned (members so far:

@@ -179,7 +179,25 @@ def run_phase(tag):
 # ASmooth.hpp's own comment records the same shape) makes the Moon or the Sun
 # vanish from a dump. A body carrying NaN must be VISIBLE and compared (it then
 # fails a value check loudly), never silently missing.
-_NONFINITE = re.compile(r'(?<=:)\s*(-?)(nan|inf)\b')
+# The lookbehind covers every position a VALUE can start at, not just `:`
+# (2026-08-09, F33 §11.143): the first version matched only after a colon, so
+# `"screen":[-nan,-nan]` - a body sitting exactly at the eye, reachable from
+# `camera action transition_to target point` - still raised and the body was
+# still dropped WHOLE, which is precisely the silent-absence failure the note
+# above says this substitution exists to prevent. Found by hitting it.
+_NONFINITE = re.compile(r'(?<=[:\[,])\s*(-?)(nan|inf)\b')
+
+
+def sanitize_nonfinite(line):
+    """C++ `nan`/`inf` spellings -> the JSON ones. ONE grammar (I2): every
+    reader of this dump uses this function, never its own copy."""
+    # The SIGN is dropped for nan: Python's json accepts `NaN` and `-Infinity`
+    # but NOT `-NaN`, so carrying the sign through left the line unparseable and
+    # the body still silently dropped (measured the same day as the lookbehind,
+    # by fixing the lookbehind and hitting this one line later). A signed nan is
+    # not a distinguishable value anyway.
+    return _NONFINITE.sub(
+        lambda m: "NaN" if m.group(2) == "nan" else m.group(1) + "Infinity", line)
 
 
 def load_dump(path):
@@ -192,9 +210,7 @@ def load_dump(path):
             if not line or line in "[]{}":
                 continue
             try:
-                obj = json.loads(_NONFINITE.sub(
-                    lambda m: m.group(1) + ("NaN" if m.group(2) == "nan" else "Infinity"),
-                    line))
+                obj = json.loads(sanitize_nonfinite(line))
             except json.JSONDecodeError:
                 continue
             if header is None and obj.get("type") == "header":

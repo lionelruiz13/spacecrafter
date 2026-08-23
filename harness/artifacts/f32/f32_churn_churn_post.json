@@ -1,0 +1,273 @@
+{
+ "tag": "churn_post",
+ "bin": "/home/claude/spacecrafter/build-asan/src/spacecrafter",
+ "phases": [
+  {
+   "phase": "mixed churn",
+   "rounds": 3,
+   "steps": [
+    {
+     "cmd": "select hp 3 pointer off",
+     "info": "HP 3"
+    },
+    {
+     "cmd": "select hp 40001 pointer off",
+     "info": "HP 40001"
+    },
+    {
+     "cmd": "select hp 40010 pointer off",
+     "info": "HP 40010"
+    },
+    {
+     "cmd": "select planet BigA pointer off",
+     "info": "BigA"
+    },
+    {
+     "cmd": "select planet SmallB pointer off",
+     "info": "SmallB"
+    },
+    {
+     "cmd": "select planet FarC pointer off",
+     "info": "FarC"
+    },
+    {
+     "cmd": "select planet OnDisc pointer off",
+     "info": "OnDisc"
+    },
+    {
+     "cmd": "select planet Makemake pointer off",
+     "info": "Makemake"
+    },
+    {
+     "cmd": "select nebula \"M1\" pointer off",
+     "info": "M1"
+    },
+    {
+     "cmd": "deselect",
+     "info": "EOL"
+    },
+    {
+     "cmd": "select hp 3 pointer off",
+     "info": "HP 3"
+    },
+    {
+     "cmd": "select hp 40001 pointer off",
+     "info": "HP 40001"
+    },
+    {
+     "cmd": "select hp 40010 pointer off",
+     "info": "HP 40010"
+    },
+    {
+     "cmd": "select planet BigA pointer off",
+     "info": "BigA"
+    },
+    {
+     "cmd": "select planet SmallB pointer off",
+     "info": "SmallB"
+    },
+    {
+     "cmd": "select planet FarC pointer off",
+     "info": "FarC"
+    },
+    {
+     "cmd": "select planet OnDisc pointer off",
+     "info": "OnDisc"
+    },
+    {
+     "cmd": "select planet Makemake pointer off",
+     "info": "Makemake"
+    },
+    {
+     "cmd": "select nebula \"M1\" pointer off",
+     "info": "M1"
+    },
+    {
+     "cmd": "deselect",
+     "info": "EOL"
+    },
+    {
+     "cmd": "select hp 3 pointer off",
+     "info": "HP 3"
+    },
+    {
+     "cmd": "select hp 40001 pointer off",
+     "info": "HP 40001"
+    },
+    {
+     "cmd": "select hp 40010 pointer off",
+     "info": "HP 40010"
+    },
+    {
+     "cmd": "select planet BigA pointer off",
+     "info": "BigA"
+    },
+    {
+     "cmd": "select planet SmallB pointer off",
+     "info": "SmallB"
+    },
+    {
+     "cmd": "select planet FarC pointer off",
+     "info": "FarC"
+    },
+    {
+     "cmd": "select planet OnDisc pointer off",
+     "info": "OnDisc"
+    },
+    {
+     "cmd": "select planet Makemake pointer off",
+     "info": "Makemake"
+    },
+    {
+     "cmd": "select nebula \"M1\" pointer off",
+     "info": "M1"
+    },
+    {
+     "cmd": "deselect",
+     "info": "EOL"
+    }
+   ]
+  },
+  {
+   "phase": "reassign while tracking",
+   "steps": [
+    {
+     "entry": 1,
+     "sel": "HP 3"
+    },
+    {
+     "entry": 1,
+     "tracking_sel": "BigA"
+    },
+    {
+     "entry": 1,
+     "tracking_sel2": "Makemake"
+    },
+    {
+     "entry": 1,
+     "off": "EOL"
+    },
+    {
+     "entry": 2,
+     "sel": "HP 3"
+    },
+    {
+     "entry": 2,
+     "tracking_sel": "BigA"
+    },
+    {
+     "entry": 2,
+     "tracking_sel2": "Makemake"
+    },
+    {
+     "entry": 2,
+     "off": "EOL"
+    }
+   ]
+  },
+  {
+   "phase": "executor mode switch clears the selection",
+   "steps": [
+    {
+     "entry": 1,
+     "before": "HP 3"
+    },
+    {
+     "entry": 1,
+     "in_galaxy": "EOL"
+    },
+    {
+     "entry": 1,
+     "star_in_galaxy": "HP 40001"
+    },
+    {
+     "entry": 1,
+     "back": "EOL"
+    },
+    {
+     "entry": 1,
+     "composed": "SmallB"
+    },
+    {
+     "entry": 2,
+     "before": "HP 3"
+    },
+    {
+     "entry": 2,
+     "in_galaxy": "EOL"
+    },
+    {
+     "entry": 2,
+     "star_in_galaxy": "HP 40001"
+    },
+    {
+     "entry": 2,
+     "back": "Terre"
+    },
+    {
+     "entry": 2,
+     "composed": "SmallB"
+    }
+   ]
+  },
+  {
+   "phase": "system reload under a live composed selection",
+   "steps": [
+    {
+     "entry": 1,
+     "sel": "FarC"
+    },
+    {
+     "entry": 1,
+     "after_reload": "SolarSystem"
+    },
+    {
+     "entry": 1,
+     "reselect": "FarC"
+    },
+    {
+     "entry": 2,
+     "sel": "FarC"
+    },
+    {
+     "entry": 2,
+     "after_reload": "SolarSystem"
+    },
+    {
+     "entry": 2,
+     "reselect": "FarC"
+    }
+   ]
+  }
+ ],
+ "catalogue": {
+  "planets": [
+   "Makemake",
+   "Mars",
+   "Mercure",
+   "Mimas",
+   "Miranda",
+   "M\u00c3\u00a9tis"
+  ],
+  "nebulae": [
+   "M1",
+   "M10",
+   "M100",
+   "M101",
+   "M102",
+   "M103"
+  ]
+ },
+ "exit_rc": 0,
+ "sanitizer": {
+  "lsan_ran": true,
+  "errors": [],
+  "total_blocks": 65,
+  "total_bytes": 19674,
+  "total_allocs": 195,
+  "star_blocks": [],
+  "star_objects": 0,
+  "modular_blocks": [],
+  "modular_objects": 0
+ }
+}

@@ -1,0 +1,6 @@
+moveto lat 45 lon 5 alt 0 duration 0
+flag lock_sky_position on
+wait duration 1
+moveto lat 0 lon 0 alt 0 duration 0
+wait duration 1
+flag lock_sky_position on

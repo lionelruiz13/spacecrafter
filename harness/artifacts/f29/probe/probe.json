@@ -1,0 +1,98 @@
+[
+ {
+  "tag": "00_base",
+  "n": 2308,
+  "red": 779,
+  "green": 0
+ },
+ {
+  "tag": "01_glob_on",
+  "n": 4466,
+  "red": 779,
+  "green": 0
+ },
+ {
+  "tag": "02_glob_off",
+  "n": 2308,
+  "red": 779,
+  "green": 0
+ },
+ {
+  "tag": "03_earth_on",
+  "n": 4466,
+  "red": 779,
+  "green": 0
+ },
+ {
+  "tag": "04_mars_on",
+  "n": 4466,
+  "red": 779,
+  "green": 0
+ },
+ {
+  "tag": "05_earth_red",
+  "n": 4625,
+  "red": 3096,
+  "green": 0
+ },
+ {
+  "tag": "06_mars_green",
+  "n": 4625,
+  "red": 3096,
+  "green": 0
+ },
+ {
+  "tag": "07_mars_off",
+  "n": 4625,
+  "red": 3096,
+  "green": 0
+ },
+ {
+  "tag": "08_earth_off",
+  "n": 2308,
+  "red": 779,
+  "green": 0
+ },
+ {
+  "tag": "09_earth_on2",
+  "n": 4625,
+  "red": 3096,
+  "green": 0
+ },
+ {
+  "tag": "10_on_moon",
+  "n": 2576,
+  "red": 723,
+  "green": 0
+ },
+ {
+  "tag": "11_earth_on_moon",
+  "n": 2576,
+  "red": 723,
+  "green": 0
+ },
+ {
+  "tag": "12_glob_on_moon",
+  "n": 2576,
+  "red": 723,
+  "green": 0
+ },
+ {
+  "tag": "13_sat_on_moon",
+  "n": 7539,
+  "red": 723,
+  "green": 0
+ },
+ {
+  "tag": "14_fov60_moon",
+  "n": 8,
+  "red": 5,
+  "green": 0
+ },
+ {
+  "tag": "15_pername_fov60",
+  "n": 8,
+  "red": 5,
+  "green": 0
+ }
+]

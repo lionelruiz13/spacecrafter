@@ -143,6 +143,18 @@ Environment note: this machine has a live X server (DISPLAY=:2), no xvfb -
 launch `DISPLAY=:2 ./build-claude/src/spacecrafter` directly; the xvfb-run
 line above is the generic recipe.
 
+**XAUTHORITY may be inherited WRONG** (seen 2026-08-08, F28): a session can
+start with `DISPLAY=:0` and `XAUTHORITY=/run/user/1000/.mutter-Xwaylandauth.*`
+- another uid's runtime dir - and then every display, including `:2`, answers
+`Authorization required, but no authorization protocol specified`. The file to
+use is the one under YOUR runtime dir:
+
+    export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)
+    DISPLAY=:2 xdpyinfo | head -3      # positive check before any launch
+
+Check it with `xdpyinfo`, not with a launch: the app failing to open a display
+looks like a dozen other faults.
+
 `asmooth_sim.py` - off-domain but homed here for traceability: exact-formula
 replay behind the EntityCore ASmooth analysis (INTENT 11.18); not a
 body-path tool.
@@ -1354,3 +1366,298 @@ end in `'\n'`. Split on NUL, then match. Note that the harness's other driving
 helpers (`b25_galactic.run_phase`, `f23_b33_control.App.send`) `recv()` into
 the void after each command - which is why a missing answer was never visible
 from a harness script until this one kept what it read.
+
+## F28 — how long an answer is, and where it lands (`f28_send_buffer.py`) — INTENT §5.73 / §11.138
+
+    cd claude/harness && DISPLAY=:2 ./f28_send_buffer.py <absOutdir> --mode census
+    cd claude/harness && DISPLAY=:2 [ASAN_OPTIONS=halt_on_error=0:detect_leaks=0] \
+        ./f28_send_buffer.py <absOutdir> --mode overflow|logon --tag <name> \
+        --bin <binary> --expect pre|post
+
+Launches through `f27_reply.Session` (I2 - same concurrent-instance assert, same
+frozen-md5 assert, same farm), so the two scripts cannot drift apart on what a
+fresh launch means.
+
+**`census`** - one launch, the row's owed datum: `get status object` for five
+planets and a nebula, the `maxobject` ladder, the whole a-z first-letter surface
+of `search`, and the `get status planets_position` body-load ladder. Measured on
+the shipped corpus: object info **114-142 B**; `search` **53-1024 B** with
+prefix `n` reaching the clamp; `planets_position` **854 B**.
+
+**`overflow`** - the same six answers on any binary, shortest first:
+854 / 854 / 916 / **1022** / **1023** / **1024 clamped**. 1022 is the last
+length that FITS a 1024-byte buffer once `'\n'` and the terminator are added, so
+the 1022/1023 pair is a one-byte-wide discrimination on one code path. The
+lengths are computed INSIDE the launch from what it measures (one
+`planets_position` entry costs `name + 32 B`), never from a constant carried
+between launches; 1023 cannot be reached from 1022 by adding (an entry costs
+>= 33 B), so that step drops the body and puts it back with a one-character
+longer name. Every answer is written to `<tag>_step<N>_reply.bin` - pre/post
+identity is `cmp`, not a claim.
+
+**`logon`** - the fixed answers `computeNormalString` used to `strcpy` into the
+receive buffer, driven as the reversible pair they are: `$NOTICE`, `$LOGON`,
+`$LOGON` again (`REQUEST ERROR`), `$LOGOFF`, `$LOGOFF` again, `$LOGON` a second
+time from the state the first exit left, and a `get` inside and outside the
+subscription.
+
+**Two spellings this script had to learn the hard way** (both caught by controls,
+not by reading): the `search` argument is `maxobject`, not `max_object`
+(`base_command_interface.hpp:100`) - with the wrong one every rung of the ladder
+answered the default 5 and the growth control failed; and the `get` argument is
+`planets_position`, not the macro's name `planet_p`.
+
+**ASan note**: `build-asan` needs `cmake .` before `make` if the file list moved
+(it failed to link on `SessionFile::save/load` after F20/F21). Report counts are
+DISTINCT-PC counts - ASan's `suppress_equal_pcs` default means a second overflow
+at the same `strcpy` is silent - so pre/post claims are presence vs absence.
+
+### `f29_upchain.py` / `f29_run.sh` / `f29_compare.py` — §5.46, where an up-chain ancestor's line draws
+
+    cd claude/harness && ./f29_run.sh <absOutdir>                    # post-fix binary
+    SC_BIN=/abs/pre-fix-binary ./f29_run.sh <absOutdir>              # counterfactual
+    ./f29_compare.py <pre_outdir> <post_outdir>                      # exit 0/1
+
+`f29_upchain.py`'s header IS the prediction (committed before the first run,
+harness `2af2ee1`); `f29_compare.py` evaluates the cross-binary halves. Five
+legs in one launch: **E** observer on Earth · **S** system centre · **X** on
+Mars with the Sun tracked (the FREEZE SOURCE) · **M** on the Moon at fov 340 ·
+**N** the same instant at fov 140 with the subject tracked.
+
+Things this scene had to learn, each one measured, each one a trap for the next
+line-drawing gate:
+
+- **The ORBIT pass is depth-bucketed** (`Renderer.hpp:156-167`): from a moon's
+  surface `flag planets_orbits on` adds **0 px** — no planet orbit line reaches
+  the frame at all. The TRAIL pass is depth-free and is what a line-placement
+  gate can read. The three consumers (orbit/trail/tail) share one expression,
+  so the trail's verdict is theirs.
+- **The trail geom shader drops segments longer than 0.4 NDC** unless
+  `main_clipping_fov[2] < 2.7` (`body_trail.geom:19-24`). A trail's newest
+  vertex sits AT its body, so for a body one moon away the first segment spans
+  ~84° and the head never rasterises at fov 340. Read line ENDS at fov <= 140.
+- **`TrailModule::accumulate` truncates to int** and `date` is light-retarded,
+  so a `date jday` step of exactly `DeltaTrail` (1.0 day) records NOTHING —
+  21 of 30 samples taken, newest a full day stale (→ §5.75). Step **1.5 days**.
+  The instrument reports `trail_head_lag_days` per body so a stale head
+  disqualifies the reading instead of being read as fresh.
+- **Isolate a trail by a COLOUR DIFFERENTIAL, not by hue**: shoot it black, then
+  coloured, and diff. Recolouring does not touch the recorded points; body
+  discs are themselves red-dominant and had otherwise supplied the "brightest
+  red pixel".
+- **The gate is the CLOSEST APPROACH of the polyline to the predicted point**,
+  not the head pixel: the head pixel is `argmax` over a quantised vertex alpha
+  whose level spans ~74 px along a long segment.
+- `halfFov` is SOLVED OUT of the dump (`|screen| = acos(-z/d)/halfFov`, agreeing
+  to 8e-7 across bodies) and the y-flip is picked by the control body — the
+  projection is reconstructed, never assumed.
+
+Measured verdicts at delivery (§11.139): subject trail **550.39 px** from its
+body pre-fix / **9.2e-05 px** post-fix, control body **0.69 px on both**;
+invariant `eclRoot == mat.translation` violated by exactly the up-chain pre-fix,
+by nobody post-fix over 120 bodies; control scenes bit-identical.
+
+`f29_reversible.py` (same runner) drives the pair this fix touches — a body's
+membership of the walk, DESCENT <-> UP-CHAIN — as `Earth -> Moon -> Earth ->
+Moon -> Earth`, asserting at every state both the invariant over 120 bodies and
+the subject's own cached frame in km. It is the shortest statement of §5.46
+there is: on the PRE-fix binary, standing on the Moon, Earth's frame says Earth
+is **6378.240 km** away (its own radius plus the observer's 100 m) instead of
+**359 624 km**, at both entries.
+
+## F31 — which of the two it is (`f31_search_drive.py`) — INTENT §5.74 / §11.141
+
+    cd claude/harness && export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*) \
+        && DISPLAY=:2 ./f31_search_drive.py <absOutdir> [--bin <binary>]
+
+§5.74 owed a discrimination: `search` returns no `(S)` and no `(C)` because the
+star/constellation NAME catalogues are not loaded, or because the prefix match
+never fires. Both candidates are read on ONE launch, each at its own surface.
+
+- The app runs UNDER gdb (`f31_search.gdb` + `f31_probe.py`, 12 breakpoints,
+  B10-cmd precedent — ptrace_scope=1 blocks attach). Every breakpoint is silent
+  and continues, so the driver on the other side sees latency, never a hang.
+- **The probe writes to its own file, not to gdb's stdout**: gdb's stream is
+  block-buffered when redirected, and evidence still in a buffer at the end of a
+  run is a silent no-op probe (§11.47). Path via `$F31_PROBE`, set by the driver.
+- **The catalogue's own count** is printed at each of the four
+  `listMatchingObjectsI18n` entries — the container the match loop walks, plus
+  the `maxNbItem` quota. Planets and nebulae are read on the SAME channel in the
+  SAME call: they are the positive control, not a second instrument.
+- **The load sites are positively mapped both ways by the run**: the two
+  breakpoints that must read 0 in phase 1 (`loadLinesAndArt`, `loadCommonNames`)
+  are the two that must read nonzero in phase 2, so a phase-1 zero is a
+  measurement rather than an unresolved symbol. `no_pending_breakpoints` is
+  checked against gdb's own `info breakpoints` in the applog for the same reason.
+- **Phase 2 loads a sky culture from a fixture OUTSIDE the frozen field** with
+  the shipped `sky_culture action load path <abs dir>`; nothing under
+  `~/.spacecrafter` is written and the frozen md5 pair is asserted in == out.
+  `star_names.fab` is a verbatim, md5-asserted copy of the installed
+  `stars/name.fab`; the two constellation files are SYNTHETIC and labelled
+  (`Zzprobe*` over HIP ids read out of that same real file) because no
+  constellation data exists on this host to copy.
+- **The prefix comes out of the LIVE index**, parsed from the probe's own sample
+  of `common_names_index_i18n`, never typed (§11.51(d)). It is one character
+  because the installed star-name file has no ASCII name with two leading
+  letters — which also makes the post-load command byte-identical to one of the
+  36 phase-1 commands, so pre/post is one command compared with itself.
+- The sweep is **36 prefixes** (26 letters + 10 digits): the index is
+  Bayer/Flamsteed, so most of it is keyed on names beginning with a digit.
+- Controls are compared only on prefixes whose post answer is under 1024 B: a
+  clamped answer can lose `(P)`/`(N)` entries to the newly interleaved `(S)`
+  ones, which is the clamp and not a change of catalogue.
+
+`f27_reply.Session` gained `launch_prefix` (argv prefix, used here for gdb) and
+`port_wait`. Default behaviour is unchanged, and that was measured rather than
+asserted: `f27_reply.py --legs A --expect post` on the prefix-free path is
+**0 FAIL** after the edit (`artifacts/f31/f27_regression/`).
+
+Measured verdict at delivery (§11.141): phase 1 planets **90** / nebulae **407**
+vs constellations **0** / star index **0**, sweep **P 84 · C 0 · N 243 · S 0**,
+loaders entered **0 times**, culture gate rejected once; phase 2 catalogues
+**3** / **3183**, same 36 commands **P 84 · C 3 · N 241 · S 1085**, live-index
+prefix `1` going **0 → 104 (S)**. 20/20 checks PASS, app exit 0, md5 in == out.
+
+## F32 — what an `Object` assignment lets go of (`f32_object_leak.py`) — INTENT §5.34 / §11.142, 2026-08-09
+
+    cd claude/harness && export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*) \
+        && export DISPLAY=:2
+    ./f32_object_leak.py <absOutdir> --mode discover --bin <binary>          # HIP ladder
+    ASAN_OPTIONS=detect_leaks=1:halt_on_error=0:malloc_context_size=25 \
+      ./f32_object_leak.py <absOutdir> --mode leak  --tag asan_pre  --bin <asan bin> \
+        --expect pre  --stars 9 --port-wait 300 --exit-wait 300
+    ASAN_OPTIONS=...  ./f32_object_leak.py <absOutdir> --mode churn --tag churn_post \
+        --bin <asan bin> --rounds 3 --port-wait 300 --exit-wait 300
+    ./f32_object_leak.py <absOutdir> --mode render  --tag nat_pre --bin <native bin>
+    ./f32_object_leak.py <absOutdir> --mode compare --a nat_pre --b nat_post [--floor N]
+
+Four modes, one launch each, all through `f27_reply.Session` (so the /proc-comm
+concurrent-instance assert, the temp-HOME farm and the frozen-md5 pair come with them).
+
+- **`discover`** asks the app which HIP ids its own catalogue answers for and writes
+  `f32_hip.json`, which the other modes read: the ladder is DATA, never recalled
+  (§11.51(d)). On this install **3 of 14** swept ids resolve — the star index is sparse,
+  reproduced on two sweeps, same family as §5.74.
+- **`leak`** drives the selection surface on both paths and reads LeakSanitizer's report
+  at `shutdown action now`, split **per allocation site** (`Star1::createStelObject` for
+  the old path, `SSystemFactory::searchObjectByEnglishName` for the new one), so the count
+  is per-defect and not a heap total. The predicted counts are written to
+  `f32_predict_<tag>.json` BEFORE the launch. Measured: pre 11 + 8, post 0 + 0, with the
+  rest of the heap unmoved.
+- **`churn`** is the use-after-free hunt: mixed-type churn (the planet/nebula names come
+  out of the app's own `search` answer), reassignment while tracking, `mode jump` both
+  ways, `body action reload` under a live composed selection — every reversible pair
+  entered twice.
+- **`render`/`compare`** are the screen A/B. **Read the A/A first**: this scene's
+  launch-to-launch floor is ~4000 px>0 / ~20 px>8, from a ~2.9 % tone-adaptation
+  luminance scale plus one bright object displaced 8 px by the unpinned startup view.
+  Pinning the view with `select Sun` + `flag track_object on` was tried and is 16× WORSE
+  (A/A 67593 px>0) because tracking convergence is itself launch-dependent (§11.94(d)).
+
+The composed bodies are **b24_select's fixture, imported** (I2) and written into the farm
+by `Session`'s new `prepare` hook; `Session` also gained `env_extra` (ASan options) and
+`stop(exit_wait=)` (an ASan leak check takes real time after main returns). All three
+default to inert.
+
+**A zero from a sanitizer needs a positive map.** `parse_sanitizer` was run this epoch
+over a fresh F28 overflow launch of `harness/sc_f28_asan_pre` and reported
+**3 `heap-buffer-overflow`**, against 0 on all four F32 runs
+(`artifacts/f32/f32_lsan_blocks.txt`, tail).
+
+## F35 — the two degenerate-input guards (§5.81 distance-0 `screenPos`, §5.79 empty `getSelected`), INTENT §11.145
+
+    cd claude/harness && export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*) \
+        && DISPLAY=:2 ./f35_degenerate.py <absOutdir> --bin <binary> --expect pre|post \
+              [--legs A,B1,B2,B3]
+    DISPLAY=:2 ./f35_branch.py <absOutdir> [--bin <binary>]
+    ./f35_compare.py <pre_result.json> <post_result.json>
+
+`f35_degenerate.py` drives each degenerate input through a **shipped** command with a
+positive control beside it, and its predictions P1–P4 are in the docstring, committed
+before the first measuring run. Leg **A** = `camera action transition_to target point`
+(the dump's `screen` for `temp_point`: `[nan,nan]` pre, `[0,0]` post, `dist` 0, with 120
+other bodies finite either side). Legs **B1/B2** = `select constellation_star` on a
+never-grown and on a cleared selection vector — the two manifestations of one root
+(SIGSEGV rc −11 / a silent re-selection of `43 And`). Leg **B3** is what the fix
+deliberately does NOT cover (§5.87). B2/B3 build **F31's fixture culture** outside the
+frozen field via `f31_search_drive.build_fixture` (I2 — the fixture is imported, not
+re-authored).
+
+Three instrument facts worth not re-learning:
+
+- **`dual_dump` nests per-path state under `old`/`new`.** `o["new"]["screen"]` is §5.81's
+  subject; a new-tree-only body (the point anchor) has `"old": null`.
+- **`get status object` embeds alt/az and hour angle**, which move between two reads of
+  the SAME selection. Identity is the first two lines (name + HP), never the whole string.
+- **A cross-launch dump diff is NOT an inertness instrument.** `f35_compare.py` reports
+  278 differing fields between two runs of the same scene on two binaries; the control
+  that proves the instrument rather than the fix is at fault is that the **untouched old
+  path** moves the same way (`old.ecl` 22 bodies, `old.matLocalToParent` 22, `old.mat`
+  19). `evalCount` differed 2015 vs 1991 and the iterative solvers ride the evaluation
+  history. Use `b24_equivalence` (within-launch) and the branch probe instead.
+
+`f35_branch.py` + `f35_branch.gdb` observe the guard branch itself, and the reason they
+exist in this shape is a probe that lied: **`break ModularBody.hpp:508` resolves to the
+line's statement start**, which the compiler placed on the COMMON path (the `ucomiss` of
+`distance == 0.f`), so it fired **22613** times with Earth, Moon and Mercury among the
+bodies. The address is taken from the branch body's own instruction instead (`movlps` at
+`+72`, resolved after `start` because the binary is PIE) and the landed instruction is
+printed into the run's log as the probe's positive map. Measured 0 (no transition) /
+1298 (after it), every hit `temp_point`. **`handle SIGUSR1 nostop noprint pass` is
+mandatory** — the app's stall watchdog otherwise stops the inferior and a batch script
+then quits, killing the app mid-run (measured: the port never reopened for leg 2).
+
+## F36 — which startup failures never reach the app's log (`f36_*.py`), INTENT §5.77 / §11.146
+
+Four pieces, each the authority for one step, so a later run cannot measure a site
+that was never enumerated or classify one that does not exist (I2).
+
+**`f36_enum.py` — the census.** Writes `artifacts/f36/f36_sites.json`. Two things a
+`grep` gets wrong here, both learned by getting them wrong:
+
+- **Comments.** `grep 'std::cerr\|std::cout' src/` returns 335 hits (307 outside
+  EntityCore) and only 138 of the project ones are live: **169 are commented-out
+  debug prints**, two of them (`checkConfig.cpp:505,508`) inside a `/* … */` block
+  that a per-line `//` test cannot see. So the stripper is a real character-state
+  machine (code / `//` / `/* */` / string / char) that blanks comments while
+  preserving line and column numbers — an enumeration whose line numbers do not
+  open in an editor is not evidence.
+- **Channels.** The class does not live on iostreams. The largest failure-report
+  cluster in the app is `ZoneArray::create`: 13 `printf`, 1 `fprintf(stderr, …)`,
+  1 `std::cout`. `main` uses `SDL_Log`. `sprintf`/`snprintf`/`fprintf(<file>, …)`
+  are excluded by negative lookbehind and by requiring the stream argument.
+
+**`f36_probe.py` + `f36_reach.py` — is the site on the startup path.** Run as
+`DISPLAY=:2 ./f36_reach.py artifacts/f36 --bin <abs path>`. The measurable unit is
+the **enclosing function**, not the line: a failure-report line does not execute on
+a healthy startup, so reading a good launch's console enumerates what FIRED, never
+what COULD. One `gdb.Breakpoint` per function whose `stop()` records, sets
+`enabled = False` and returns False — the inferior is never left stopped, and a
+breakpoint on `FilePath::FilePath` costs one stop for the whole run instead of one
+per call. **The boundary is itself a breakpoint** on `App::startMainLoop`, so
+"during startup" is read off the same channel as the hit.
+
+Two habits worth copying:
+
+- **The MANIFEST line.** Before `run`, the probe emits one line per breakpoint with
+  its resolved location count. Without it, an unresolved breakpoint and a function
+  never entered give identical evidence — silence (§11.47). It paid immediately: the
+  first launch produced 77 pending breakpoints all reporting `locations=0` because
+  `--bin` was relative and `Session` launches with `cwd` = the farm, so gdb started
+  with no executable. **A full table of zeros reads exactly like a finding**; the
+  manifest made it one look. `--bin` is now resolved and existence-asserted.
+- **Read the applog as a second surface.** Two specs did not resolve (class-body
+  inline members, `-O2`; gdb says "No compiled code for line …"), and one of them,
+  `Executor::onAltitudeChange`, demonstrably fired **5×** during startup. The
+  breakpoint hole was covered by the app's own output on the same run.
+
+**`f36_class.py` — the classification and the sizing.** Carries a verdict per site
+(`klass` / `logged` / `blocker`) with the observation supporting it, and prints the
+row's number. `logged = PARTIAL` is the interesting bucket: the log records the
+ATTEMPT and never the outcome, so it does not merely omit — it implies success.
+
+Result on `04ae1d3e`: 214 live sites (186 project) in 76 functions; 25 functions
+entered during startup; **37 startup failure reports the app log does not carry**;
+and every one of the 37 carries a blocker, so the uniform additive `cLog` routing
+§5.77 expected does not exist. See §11.146(f) for the five blocker kinds and (j)
+for the one question that decides the fix.

@@ -1,0 +1,60 @@
+{
+ "rows": [
+  {
+   "shot": "empty",
+   "lit_px": 5172,
+   "px_gt0": 67593,
+   "px_gt8": 3622,
+   "max": 243
+  },
+  {
+   "shot": "star",
+   "lit_px": 5172,
+   "px_gt0": 67593,
+   "px_gt8": 3622,
+   "max": 243
+  },
+  {
+   "shot": "composed",
+   "lit_px": 5172,
+   "px_gt0": 67593,
+   "px_gt8": 3622,
+   "max": 243
+  },
+  {
+   "shot": "oldbody",
+   "lit_px": 5172,
+   "px_gt0": 67593,
+   "px_gt8": 3622,
+   "max": 243
+  },
+  {
+   "shot": "after_churn",
+   "lit_px": 5172,
+   "px_gt0": 67593,
+   "px_gt8": 3622,
+   "max": 243
+  },
+  {
+   "shot": "deselected",
+   "lit_px": 5172,
+   "px_gt0": 67593,
+   "px_gt8": 3622,
+   "max": 243
+  }
+ ],
+ "readouts_a": {
+  "star": "HP 3",
+  "composed": "BigA",
+  "oldbody": "Lune",
+  "after_churn": "BigA",
+  "deselected": "EOL"
+ },
+ "readouts_b": {
+  "star": "HP 3",
+  "composed": "BigA",
+  "oldbody": "Lune",
+  "after_churn": "BigA",
+  "deselected": "EOL"
+ }
+}

@@ -1,0 +1,190 @@
+==============================================================================
+F30 corpus scans - INTENT §5.65 / §5.69 / §5.70 / §5.72
+==============================================================================
+Corpus enumeration (paths + file counts):
+  S1_installed_scripts_sts       408 file(s)
+  S2_installed_scripts_other      11 file(s)
+  S3_repo_doc_sts                  1 file(s)
+  S4_repo_data                    14 file(s)
+  R1_installed_recordings          0 file(s)
+  R2_installed_sessions           11 file(s)
+  T1_repo_tools                  142 file(s)
+  T2_installed_clients             0 file(s)
+  X_source_tree                  583 file(s)
+
+------------------------------------------------------------------------------
+§5.65 (a) - does the sky lock appear in the shipped script corpus at all?
+  corpus   : S1_installed_scripts_sts, S2_installed_scripts_other, S3_repo_doc_sts, S4_repo_data, R1_installed_recordings
+  files    : 434
+  pattern  : lock_sky_position
+  CONTROL  : any 'flag' command line in the same corpus -> 1364 hit(s) in 170 file(s)
+  RESULT   : 7 hit(s) in 7 file(s)
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/07g.sts:30: flag lock_sky_position on
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/07isc.sts:31: flag lock_sky_position on
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/clearVR360.sts:34: flag lock_sky_position off
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initialVR360.sts:42: flag lock_sky_position off
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initial_dawn.sts:84: flag lock_sky_position off
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initial_night.sts:84: flag lock_sky_position off
+    [S3_repo_doc_sts] ~/spacecrafter/doc/superscript.sts:459: flag lock_sky_position off
+------------------------------------------------------------------------------
+§5.65 (b) - does 'moveto' appear in the shipped script corpus?
+  corpus   : S1_installed_scripts_sts, S2_installed_scripts_other, S3_repo_doc_sts, S4_repo_data, R1_installed_recordings
+  files    : 434
+  pattern  : ^\s*moveto\b
+  CONTROL  : any 'flag' command line in the same corpus -> 1364 hit(s) in 170 file(s)
+  RESULT   : 181 hit(s) in 74 file(s)
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/01.sts:206: moveto lat 90.0 lon 0.0 alt 0 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/01.sts:238: moveto lat default lon default alt default
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/05.sts:263: moveto lat default lon default alt default
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/07g.sts:26: moveto lat 66 lon 0 alt 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/07isc.sts:27: moveto lat 66 lon 0 alt 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/08.sts:28: moveto lat 43.33 lon 5.33 alt 60
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/08.sts:128: moveto lat 0 lon 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/08.sts:130: moveto lat 0 lon 0 alt 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/08.sts:162: moveto lat 43.33 lon 5.33 alt 60
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/14.sts:16: moveto lat 90 lon 0 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/14.sts:18: moveto alt 0.9E+9 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/14.sts:20: moveto alt 0.9E+10 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/14.sts:22: moveto alt 1.1E+16 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/14.sts:567: moveto lat 10 lon 121 alt 1.5E11 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/K0.sts:14: moveto lat 0 lon 0 duration 2
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/K1.sts:14: moveto lat 50 lon -45 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/K3.sts:14: moveto lat default lon default alt default duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/K4.sts:14: moveto lat -4.5 lon 137.4
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/K5.sts:14: moveto lat 0 lon 160 alt 0 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/K6.sts:14: moveto lat 0 lon 110 duration 2
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/K7.sts:13: moveto lat 25 lon 0 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/K8.sts:15: moveto lat 0 lon -120 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/K9.sts:38: moveto lat 90 lon 0 alt 1.28E+12 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/M20.sts:12: moveto lat 0 lon 0 alt 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S02.sts:13: moveto alt 0.9E+10 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S02.sts:15: moveto alt 1.1E+16 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S02.sts:21: moveto lat -53 lon -28 alt 4.2E+12 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S05.sts:19: moveto latitude -24 longitude 180 altitude 10000
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S05.sts:25: moveto latitude -24 longitude 180 altitude 10000
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S07.sts:27: moveto alt 1.1E+17 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S07.sts:29: moveto lat 4 lon 60 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S07.sts:34: moveto alt 1.6E+13 duration 30
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S09.sts:6: moveto lat 90 lon 0 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S09.sts:8: moveto alt 0.9E+9 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S09.sts:10: moveto alt 0.9E+10 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S09.sts:12: moveto alt 1.1E+16 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S09.sts:19: moveto lat 10 lon 121 alt 2.5E12 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S10.sts:21: moveto lat 0 lon 0 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S10.sts:23: moveto alt 0.9E+9 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S10.sts:25: moveto alt 0.9E+10 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S10.sts:27: moveto alt 1.1E+16 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S10.sts:29: moveto alt 1.1E+15 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S10.sts:31: moveto alt 3.0E+9 duration 0.05
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12.sts:19: moveto alt 0.9E+10 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12.sts:21: moveto alt 1.1E+16 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12.sts:23: moveto lat 26.4 lon -185 alt 1.8E+12
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12.sts:27: moveto lat 26.4 lon -185 alt 1.8E+12
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12.sts:32: moveto alt 0.9E+9 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12.sts:34: moveto alt 0.9E+9 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12.sts:51: moveto lat 0 lon 0 alt 1.8E+7
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12old.sts:6: moveto lat 90 lon 0 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12old.sts:8: moveto alt 0.9E+9 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12old.sts:10: moveto alt 0.9E+10 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12old.sts:12: moveto alt 1.1E+16 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S12old.sts:20: moveto lat 10 lon 150 alt 2.5E12 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/S13.sts:5: moveto latitude 10 longitude 0 alt 250000000 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/W14.sts:104: moveto altitude 10000000 duration 3
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/W14.sts:106: moveto altitude 100000000 duration 3
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/W14.sts:109: moveto altitude 100000000 duration 3
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/W15.sts:17: moveto alt 0.9E+10 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/W15.sts:19: moveto alt 1.1E+16 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/W15.sts:25: moveto lat 10.5 lon 151.4 alt 3.17E+13 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/W15.sts:32: moveto lat 10.5 lon 151.4 alt 3.17E+13 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/panorama0.sts:51: moveto lon mlon
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/panorama0.sts:325: moveto lon mlon
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/panorama1.sts:14: moveto lat default lon default alt default duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/panorama4.sts:14: moveto lat default lon default alt default duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/fscripts/solar_system_trip/planet_choose.sts:53: moveto alt 100000000 duration 1
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/anchor_sun.sts:13: moveto lat -48.8 lon -146.5
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/clearVR360.sts:8: moveto lat default lon default alt default
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/fly_to_selected.sts:18: moveto altitude 20000000 duration 3
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initialVR360.sts:64: moveto lat -70 lon 0 alt 0 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initial_dawn.sts:28: moveto alt 0.9E+10 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initial_dawn.sts:30: moveto alt 1.1E+16 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initial_dawn.sts:34: moveto alt 0.9E+9 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initial_dawn.sts:36: moveto alt 0.9E+10 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initial_dawn.sts:40: moveto lat default lon default alt default
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initial_night.sts:28: moveto alt 0.9E+10 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initial_night.sts:30: moveto alt 1.1E+16 duration 0
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/initial_night.sts:34: moveto alt 0.9E+9 duration 0
+    ... 101 more
+------------------------------------------------------------------------------
+§5.65 (c) - files carrying BOTH moveto and lock_sky_position: 7
+  IN-BLOCK PAIRS (moveto ... flag lock_sky_position on, no yielding command between): 0
+  CONTROL (synthetic control_5_65.sts): analyser finds 1 in-block pair(s), expected exactly 1 (the second pair is separated by a `wait`)
+------------------------------------------------------------------------------
+§5.69 (a) - does any shipped script issue `body action preload`?
+  corpus   : S1_installed_scripts_sts, S2_installed_scripts_other, S3_repo_doc_sts, S4_repo_data, R1_installed_recordings
+  files    : 434
+  pattern  : \bpreload\b
+  CONTROL  : any 'body' command line in the same corpus -> 5520 hit(s) in 43 file(s)
+  RESULT   : 4 hit(s) in 3 file(s)
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/clear_mess.sts:31: body action preload purge all
+    [S1_installed_scripts_sts] ~/.spacecrafter/scripts/internal/fly_to_selected.sts:13: body action preload name selected
+    [S3_repo_doc_sts] ~/spacecrafter/doc/superscript.sts:130: # Preload the big texture of the defined Body
+    [S3_repo_doc_sts] ~/spacecrafter/doc/superscript.sts:131: body action preload name Earth
+------------------------------------------------------------------------------
+§5.69 (b) - does any shipped script set `keep_time`?
+  corpus   : S1_installed_scripts_sts, S2_installed_scripts_other, S3_repo_doc_sts, S4_repo_data, R1_installed_recordings
+  files    : 434
+  pattern  : \bkeep_time\b
+  CONTROL  : any 'body' command line in the same corpus -> 5520 hit(s) in 43 file(s)
+  RESULT   : 0 hit(s) in 0 file(s)
+------------------------------------------------------------------------------
+§5.70 (a) - does any archived recording/script carry `look delta_az`?
+  corpus   : R1_installed_recordings, S1_installed_scripts_sts, S2_installed_scripts_other, S3_repo_doc_sts, R2_installed_sessions
+  files    : 431
+  pattern  : \blook\s+delta_az\b
+  CONTROL  : any recorded-command-shaped line in the same corpus -> 9682 hit(s) in 274 file(s)
+  RESULT   : 0 hit(s) in 0 file(s)
+------------------------------------------------------------------------------
+§5.70 (b) - any `delta_az` token at all (wider net)?
+  corpus   : R1_installed_recordings, S1_installed_scripts_sts, S2_installed_scripts_other, S3_repo_doc_sts, R2_installed_sessions
+  files    : 431
+  pattern  : delta_az\b
+  CONTROL  : any recorded-command-shaped line in the same corpus -> 9682 hit(s) in 274 file(s)
+  RESULT   : 0 hit(s) in 0 file(s)
+------------------------------------------------------------------------------
+§5.70 (c) - the ramp's CORRECT sibling `zoom delta_fov` (this is the sharpest control: if recordings of interactive ramps existed in the corpus, the zoom half would be there too)
+  corpus   : R1_installed_recordings, S1_installed_scripts_sts, S2_installed_scripts_other, S3_repo_doc_sts, R2_installed_sessions
+  files    : 431
+  pattern  : \bzoom\s+delta_fov\b
+  CONTROL  : any recorded-command-shaped line in the same corpus -> 9682 hit(s) in 274 file(s)
+  RESULT   : 1 hit(s) in 1 file(s)
+    [S3_repo_doc_sts] ~/spacecrafter/doc/superscript.sts:1396: zoom delta_fov 30
+------------------------------------------------------------------------------
+§5.72 - who produces or consumes `$LOGON`?
+  corpus   : T1_repo_tools, T2_installed_clients, X_source_tree, S1_installed_scripts_sts, S2_installed_scripts_other, S4_repo_data
+  files    : 1158
+  pattern  : \$LOGON
+  CONTROL  : any socket/tcp mention in the same corpus -> 235 hit(s) in 26 file(s)
+  RESULT   : 8 hit(s) in 4 file(s)
+    [T1_repo_tools] ~/spacecrafter/util/server_standalone/recever_client.c:46: char login[]="$LOGON";
+    [T1_repo_tools] ~/spacecrafter/util/server_standalone/send_recev_client.c:53: char login[]="$LOGON\n";
+    [T1_repo_tools] ~/spacecrafter/util/server_standalone/send_recev_client.c:61: //reception confirmation de lecture de $LOGON
+    [X_source_tree] ~/spacecrafter/src/tools/io.cpp:644: send(clientSocketTab[client], "$NOTICE $LOGON $LOGOFF");
+    [X_source_tree] ~/spacecrafter/src/tools/io.cpp:715: // The feedback channel is unchanged: a client that subscribed with $LOGON
+    [X_source_tree] ~/spacecrafter/src/tools/io.cpp:724: "subscribed to the feedback channel with $LOGON",
+    [X_source_tree] ~/spacecrafter/src/tools/io.hpp:88: //! nowhere to go but the feedback subscription ($LOGON), and with nobody
+    [X_source_tree] ~/spacecrafter/src/tools/io.hpp:125: //! feedback channel with $LOGON in any case (they were the only recipients
+------------------------------------------------------------------------------
+MACHINE SUMMARY
+{
+  "5.65_control_pairs": 1,
+  "5.65_files_with_both": 7,
+  "5.65_in_block_pairs": 0,
+  "5.65_lock_hits": 7,
+  "5.65_moveto_hits": 181,
+  "5.69_keep_time_hits": 0,
+  "5.69_preload_hits": 4,
+  "5.70_delta_az_any": 0,
+  "5.70_look_delta_az": 0,
+  "5.70_zoom_delta_fov": 1,
+  "5.72_logon_hits": 8
+}
