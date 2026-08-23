@@ -174,7 +174,7 @@ gates remain per-unit at merge.
 ## Gate record (supervisor)
 
 - **Unit 1 GREEN** (2026-08-04, code `15927a11`): 68/68 lines, 84/84
-  tokens; suntrace/dso3d/color claims verified at source → §5.74-76.
+  tokens; suntrace/dso3d/color claims verified at source → §5.91-76.
 - **Unit 4 GREEN** (code `8e62cfd9`): 77/77, 83/83, 30/30 other-uses;
   struct dead-registered-path, follow_rotation exact-"true", rotate-target
   commented branch verified; camera double-prefix = §5.41 rediscovery.
@@ -202,12 +202,12 @@ New §5 rows (verify-then-write, unit-1 discipline):
    re-entry records the rebuilt line, spaces-in-name destroyed;
    flag/timerate rewrites (units 1/3) — probably ONE row for the class.
 Annotations to existing rows:
-4. §5.75: unguarded-conversion inventory now complete-for-the-sweep —
+4. §5.92: unguarded-conversion inventory now complete-for-the-sweep —
    dso3d stoi :1525; timerate stod :3317; media speed/speed_increment
    FixedPointI16_2::fromString :3686/:3754/:3759 (throws, sole catch in
    scope is app_command_eval.cpp:151, other path). Discharges the row's
    "owed".
-5. §5.76: second reach — `body … color r/g/b` through the same by-value
+5. §5.93: second reach — `body … color r/g/b` through the same by-value
    setClassicColor (unit-4 note).
 6. §5.36: convergence note + line drift :3329→:3764 (unit-3 rediscovery).
 7. §5.41: convergence note + line drift (unit-4 rediscovery,

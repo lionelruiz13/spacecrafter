@@ -248,10 +248,10 @@ notes.*
   it also indicts.** Coverage closes: 477/477 comment lines accounted,
   27/27 flagged gaps visited (8 answered code-consistent → mergeable as
   docs; 4 divergent → findings; 17 no-witness-evidence, 7 of those by
-  total absence), 25 divergences (10 re-derive §5.80's catalogue
+  total absence), 25 divergences (10 re-derive §5.97's catalogue
   independently, 15 new), 12/62 commands never exercised. Supervisor
   spot-verified at source: core.cpp "Satun":2177/"Ganymed":2173 →
-  **§5.81** + SS-17; line-1205 bytes carry `=` → §5.80c + SS-6 QUOTE
+  **§5.98** + SS-17; line-1205 bytes carry `=` → §5.97c + SS-6 QUOTE
   CORRECTED (supervisor's recalled-anchor slip: quoted a report, not
   the file); drift commit db7415d7 confirmed. SECOND WITNESS FOUND:
   `util/new_parser_scripts/input_fr.txt` — a declared-format French
@@ -278,10 +278,10 @@ notes.*
   path-traced shadows — and remains design authority for engine
   internals and scedit itself). Created `claude/SCRIPT_SURFACE.md`
   (SS-n ids, USER_QUESTIONS conventions, relay via Vixy): SS-1…10 the
-  known superscript divergences incl. §5.80's, SS-11…16 the
+  known superscript divergences incl. §5.97's, SS-11…16 the
   surface-owned decisions previously mis-addressed to Vixy (suntrace
-  §5.74, recording contract §5.79, subtitle spelling §5.36,
-  configuration-module usage §5.77, Preset casing §5.78, superscript
+  §5.91, recording contract §5.96, subtitle spelling §5.36,
+  configuration-module usage §5.94, Preset casing §5.95, superscript
   fix-vs-annotate). C2 amended (2nd): flag routing splits by ownership.
   Parent rows 74/79/80 annotated; CLAUDE.md channel list updated. This
   repeats round 1's recorded lesson (questions must go to the party who
@@ -307,7 +307,7 @@ notes.*
   :306 keeps close suggestion), tokenizer+oracle byte-untouched,
   fragment diffs = exactly the `_merged` marker, census token count
   verified at `0453f75e`. Arg-armed corpus: six MORE dead superscript
-  lines (all dispositioned TRUE) → §5.80 extended; sharpest: `wait
+  lines (all dispositioned TRUE) → §5.97 extended; sharpest: `wait
   action reset_timer` does not wait and reports failure. Residual gaps,
   stated: `font`'s family half unarmed (FontFactory unread); five
   families still v1 arrays awaiting their doc passes; `body nmae Earth`
@@ -329,14 +329,14 @@ notes.*
   with no code change); first C3 corpus run: 12 findings, all TRUE, 0
   false positives; exit codes 0/1/2 verified by supervisor on an
   independent clean build (5/5 ctest). Corpus found shipped-content
-  defects → §5.80 upstream (0xA0 eats `albedo 1`; the dead
-  `set home_planet … duration 5` line = §5.79(a) materialized).
-  Upstream batch executed (harness `46ee672`): NEW §5.77 (configuration
+  defects → §5.97 upstream (0xA0 eats `albedo 1`; the dead
+  `set home_planet … duration 5` line = §5.96(a) materialized).
+  Upstream batch executed (harness `46ee672`): NEW §5.94 (configuration
   fall-through — verified fully: star-catalogue save also runs §5.42's
   config writer; unknown module re-runs App::init before reporting),
-  §5.78 (date W_PRESET||W_PRESET + no-effect `_()` statement), §5.79
-  (recorder-rewrite class, 4 shapes), §5.80 (superscript.sts);
-  annotations: §5.75 conversion inventory discharged, §5.76 body-color
+  §5.95 (date W_PRESET||W_PRESET + no-effect `_()` statement), §5.96
+  (recorder-rewrite class, 4 shapes), §5.97 (superscript.sts);
+  annotations: §5.92 conversion inventory discharged, §5.93 body-color
   second reach, §5.36+§5.41 blind rediscoveries (convergence + line
   drift recorded so nobody re-registers them). Merge task dispatched
   (sequential — it writes the file everything reads): fragments →
@@ -358,10 +358,10 @@ notes.*
   user-reachable today, latent if ever fed user text. parse_model gains
   an `inner_script_channel` clause at merge (grammar frozen till the
   tokenizer lands). Unit-1's three defect-grade findings registered in
-  the parent ledger as **§5.74** (suntrace sun-as-key + error-less
-  branches), **§5.75** (dso3d raw stoi, no catch on the chain — verified
+  the parent ledger as **§5.91** (suntrace sun-as-key + error-less
+  branches), **§5.92** (dso3d raw stoi, no catch on the chain — verified
   by grep, 'try' hits were directory_iterator substrings; z_reflection
-  inert rider), **§5.76** (color by-value debug_message — full chain
+  inert rider), **§5.93** (color by-value debug_message — full chain
   re-verified: the two range errors are the only messages, isOkay stays
   false, caller returns success on empty message); softer findings
   (get-no-TCP silent success, wait-loading fallthrough, dso2d naming
