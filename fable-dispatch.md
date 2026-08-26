@@ -344,24 +344,22 @@ paths agree in BOTH directions, asserted against the pre-change binary;
 old-path observables bit-identical where the old path is the baseline; battery
 green; config/ssystem md5 in==out; B18 row flip; §11 entry + stub; WIP
 discipline per §0.6.
-**WIP:** *(2026-08-26 CP2 — code LANDED and verified, code `b444d381`. (c) all four
-sites mirrored + the tracking-clear coupling at the three lock sites that carry one;
-f38 post = ALL PASS both ways, both rounds. (d) two [navigation] keys (`attached`,
-`flag_lock_sky_position`), defaults = today's behaviour, verified on a temp-HOME farm
-(4 legs incl. the D13 unknown-key probe); field config md5 03fbee59 untouched
-throughout. B18 regression green (OFF 18.0493/ON 0.0000, 0 px>32 held). NEXT: §11.150
-entry + stub + B18 row flip + the §5 rows for the three out-of-scope gaps found.)*
-*(CP1 — instrument + PRE-change baseline landed, harness only,
-code tree untouched. `harness/f38_{run.sh,mirror.py,analyze.py}`; artifacts
-`harness/artifacts/f38/pre` (gitignored per README layer 2). Census re-verified at
-`f0c8ef83`: the four sites are core.cpp 1083/1372/1410/2313 — SAME four call sites
-as §11.112's 971/2066/1251/1289, pure line drift (verified by `git show 606d6b87`).
-All four measured DESYNC on the pre binary: DISABLE 1410/1372 old_equ 18.0493° vs
-new_equ 0.0000° (131 089 / 131 182 px>32 vs 0 px floor); ENABLE 2313 old held /
-new drifting (3287 px>32); 1083 additionally shows `camera.tracked='Mars'` after
-the old-only `setFlagTraking(0)` at core.cpp:1085 ⇒ the lock mirror alone is inert
-at that site. NEXT: implement (c) mirror + the 1085/1371/1409 tracking-clear
-coupling, then (d).)*
+**WIP:** *(cleared at delivery 2026-08-26 — DELIVERED, §11.150. Code `f0c8ef83 → b444d381`
+(one commit, both items); harness `04680d5` CP1 / `2e0660d` CP2 / this commit. **(c)**: all four
+sites (`core.cpp:1083/1372/1410/2313` — census adjudicated as pure line drift from §11.112's
+`971/2066/1251/1289`, each context re-read at `606d6b87`) route through
+`Core::setFlagLockSkyPosition`; measured DESYNC both ways before (disable old 18.0493° vs new
+0.0000°, 131 089 px>32 on a 0 px floor; enable the mirror image), ALL PASS both ways on both rounds
+after. The veto-at-the-site is answered BY CONSTRUCTION: the tracking clear had to be mirrored at
+the three lock sites that carry one, because the Camera's lock is dormant while `target` is set and
+the lock mirror alone measured inert at 1083. Old path bit-identical (32 matched samples, every flag
+equal, ≤2.72e-05° = the runs' jd offset). **(d)**: `[navigation] attached = true` +
+`flag_lock_sky_position = false`, defaults = today's behaviour, `findEntry`-first read; verified on a
+temp-HOME farm (4 legs), field config `03fbee59` pristine throughout. **Name veto ADOPTED**
+(`boundToSurface` ambiguity recorded at the define, B28). **D13 measured on both parser routes.**
+B18 harness green; A–D battery run PRE and POST on one config — only non-numeric delta is
+`skyLocked` False→True in C/D/D′, where old's flag was already 1. NEW **§5.100 §5.101 §5.102
+§5.103**, all measured, none fixed. **§5.102 is F39's precondition, not an adjacency.**)*
 
 ### F39 — D21: display scaling = presentation layer; grounded children inherit it; physics unscaled [M–L]
 
