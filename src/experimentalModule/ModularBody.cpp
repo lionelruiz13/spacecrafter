@@ -1,4 +1,5 @@
 #include "ModularBody.hpp"
+#include "JsonNum.hpp"
 #include <cstring>
 #include <iomanip>
 #include <limits>
@@ -897,12 +898,12 @@ void ModularBody::dumpTrace(std::ostream &out) const
 {
     out << std::setprecision(9) << "{\"parent\":\""
         << (parent ? parent->englishName : "") << "\",\"ecl\":["
-        << eclipticPos[0] << ',' << eclipticPos[1] << ',' << eclipticPos[2]
+        << jn(eclipticPos[0]) << ',' << jn(eclipticPos[1]) << ',' << jn(eclipticPos[2])
         << "],\"mat\":[";
     for (int i = 0; i < 16; ++i)
-        out << mat.r[i] << ((i < 15) ? "," : "");
-    out << "],\"dist\":" << distance
-        << ",\"screen\":[" << screenPos.first << ',' << screenPos.second
+        out << jn(mat.r[i]) << ((i < 15) ? "," : "");
+    out << "],\"dist\":" << jn(distance)
+        << ",\"screen\":[" << jn(screenPos.first) << ',' << jn(screenPos.second)
         // B32 RECOMPUTE-AT-USE (D20 §11.79(n), the D8 §11.76 barrier): a dump is
         // a USE, so the spin phase is recomputed here from the ROOT-fresh lastJD
         // (translation tick keeps lastJD current on EVERY body, visible or not,
@@ -922,12 +923,12 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // apply to spin (that clause is the ITERATIVE Kepler position solve,
         // §11.76 territory, untouched here). Deterministic: a function of the
         // bit-identical lastJD, so two fresh launches now agree exactly.
-        << "],\"axisRot\":" << computeAxisRotation(lastJD)
+        << "],\"axisRot\":" << jn(computeAxisRotation(lastJD))
         // `attitude` == axisRot since the B32 fix (both = computeAxisRotation
         // (lastJD)); retained as the B24-att-named channel the b24_compose /
         // b25 harnesses read (§11.90/§11.91) - not removed to avoid a dump-
         // format break in landed evidence.
-        << ",\"attitude\":" << computeAxisRotation(lastJD)
+        << ",\"attitude\":" << jn(computeAxisRotation(lastJD))
         << ",\"surfaceLocked\":" << (surfaceLockedAttitude ? "true" : "false")
         // B27-tail capability instrument (§11.107): the capabilities that used
         // to be derived from the `type` data string, read at the body where they
@@ -947,16 +948,16 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // equality on BOTH is what makes the two-key co-delivery observable.
         << ",\"primary\":" << (primary ? "true" : "false")
         << ",\"surfaceModel\":" << static_cast<int>(surfaceModel)
-        << ",\"trailLength\":" << trailLength
+        << ",\"trailLength\":" << jn(trailLength)
         << ",\"composedDecl\":" << (composedDeclaration ? "true" : "false")
-        << ",\"boundingRadius\":" << boundingRadius
+        << ",\"boundingRadius\":" << jn(boundingRadius)
         // Navigation radii, scaled, in AU (B10 §5.2 / B10-cmd instrument): the
         // ONLY numeric observable of the datum_radius/ground_radius scalars, so
         // the harness can read the runtime `body name X datum_radius|ground_radius`
         // command taking effect (the behavioral discriminators - moveto altitude
         // 0 -> centre, free-descent hold at ground - ride these two values).
-        << ",\"scaledDatumRadius\":" << scaledDatumRadius
-        << ",\"scaledGroundRadius\":" << scaledGroundRadius
+        << ",\"scaledDatumRadius\":" << jn(scaledDatumRadius)
+        << ",\"scaledGroundRadius\":" << jn(scaledGroundRadius)
         // THE DISPLAY FACTOR ITSELF (§11.150(n)(5)): the three scaled radii
         // above are all `X * display`, so when one of them is wrong the dump
         // could not say whether the radius or the factor was - F38 measured a
@@ -967,24 +968,24 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // is the dilation a grounded child rides from its parent (D21). Their
         // product `scaling * inheritedScaling` is what every scaled quantity
         // here was multiplied by.
-        << ",\"scaling\":" << static_cast<float>(scaling)
-        << ",\"scalingTarget\":" << scalingTarget
-        << ",\"inheritedScaling\":" << inheritedScaling
+        << ",\"scaling\":" << jn(static_cast<float>(scaling))
+        << ",\"scalingTarget\":" << jn(scalingTarget)
+        << ",\"inheritedScaling\":" << jn(inheritedScaling)
         // The MODEL offset's display twin (D21): `ecl` above is the unscaled
         // truth the orbit produced, this is where the drawn chain put it. They
         // differ only for a grounded child of a display-scaled parent, and the
         // pair is the observable of the two-layer split.
-        << ",\"eclDisplay\":[" << getDisplayEclipticPos()[0] << ','
-        << getDisplayEclipticPos()[1] << ',' << getDisplayEclipticPos()[2] << "]"
+        << ",\"eclDisplay\":[" << jn(getDisplayEclipticPos()[0]) << ','
+        << jn(getDisplayEclipticPos()[1]) << ',' << jn(getDisplayEclipticPos()[2]) << "]"
         << ",\"visible\":" << ((isVisible & isBodyVisible) ? "true" : "false")
-        << ",\"screenSize\":" << screenSize
+        << ",\"screenSize\":" << jn(screenSize)
         // Halo color (B29 runtime-color instrument, INTENT §11.65): the
         // body-owned color channel (haloColor, consumed by drawHalo). The
         // LABEL/ORBIT/TRAIL channels live on their modules; trail's is in its
         // dumpState below, orbit/label are measured on screen. Lets the harness
         // read the runtime recolor + its reload behaviour numerically.
-        << ",\"haloColor\":[" << haloColor[0] << ',' << haloColor[1] << ','
-        << haloColor[2] << "]"
+        << ",\"haloColor\":[" << jn(haloColor[0]) << ',' << jn(haloColor[1]) << ','
+        << jn(haloColor[2]) << "]"
         // relation = the membership authority (which parent list owns this
         // body); makes hide/show structurally observable from the harness -
         // dump PRESENCE never tracks it (the dump iterates the name registry,
@@ -1039,8 +1040,8 @@ void ModularBody::dumpTrace(std::ostream &out) const
     // Kept fresh for every body by the translation tick (B19 mechanism) -
     // unlike `mat`, which is chimeric on invisible bodies (INTENT 11.14b);
     // spin freshness is the parent's (stale-spin finding, §11.78).
-    out << "],\"eclRoot\":[" << matLocalToBodyPos.r[12] << ','
-        << matLocalToBodyPos.r[13] << ',' << matLocalToBodyPos.r[14] << "]";
+    out << "],\"eclRoot\":[" << jn(matLocalToBodyPos.r[12]) << ','
+        << jn(matLocalToBodyPos.r[13]) << ',' << jn(matLocalToBodyPos.r[14]) << "]";
     // Slot inventory + routing counts (B24 equivalence instrument, INTENT
     // §11.78): `modules` = the filled slot names (module-set identity per
     // body - what the legacy-vs-composed equivalence compares); `routing` =
@@ -1063,7 +1064,7 @@ void ModularBody::dumpTrace(std::ostream &out) const
         << ",\"orbit\":" << orbitComponents.size()
         << ",\"trail\":" << trailComponents.size()
         << ",\"tail\":" << tailComponents.size()
-        << "},\"lastJD\":" << std::setprecision(17) << lastJD << '}';
+        << "},\"lastJD\":" << std::setprecision(17) << jn(lastJD) << '}';
 }
 
 // Harness (INTENT.md 11.14a): per-hop construction pieces, this body -> root.
@@ -1088,21 +1089,21 @@ void ModularBody::dumpHops(std::ostream &out) const
         // +M_PI_2 mirrors getAxisRotation()'s convention exactly.
         const Mat4f spin = Mat4f::zrotation(b->computeAxisRotation(b->lastJD) + M_PI_2);
         out << std::setprecision(9) << "{\"name\":\"" << b->englishName
-            << "\",\"ecl\":[" << b->eclipticPos[0] << ',' << b->eclipticPos[1] << ',' << b->eclipticPos[2]
-            << "],\"lastJD\":" << std::setprecision(17) << b->lastJD << std::setprecision(9)
+            << "\",\"ecl\":[" << jn(b->eclipticPos[0]) << ',' << jn(b->eclipticPos[1]) << ',' << jn(b->eclipticPos[2])
+            << "],\"lastJD\":" << std::setprecision(17) << jn(b->lastJD) << std::setprecision(9)
             // Raw rotation-frame readout (B28 bit-identical gate, INTENT 11.67):
             // the loader-resolved obliquity/ascendingNode and the declared frame
             // flag. These are projection-free and jd-only-through-precession, so
             // the frame conversion is measurable to float-ulp independent of the
             // B30 render jitter that perturbs the composed `mat`.
-            << ",\"obliquity\":" << b->re.obliquity
-            << ",\"ascendingNode\":" << b->re.ascendingNode
+            << ",\"obliquity\":" << jn(b->re.obliquity)
+            << ",\"ascendingNode\":" << jn(b->re.ascendingNode)
             // re.offset (rot_rotation_offset, DEGREES) - the prime-meridian phase
             // at epoch. Projection-free, load-time readout of the rot_pole_w0 ->
             // offset conversion (B14-W0, §11.79(a)); the DIRECT observable the
             // W0-conversion discriminator reads (visibility-independent, unlike
             // the live axisRotation which only refreshes on visible bodies).
-            << ",\"offset\":" << b->re.offset
+            << ",\"offset\":" << jn(b->re.offset)
             // re.period (rot_periode/24, DAYS, float32 as loaded) - the sidereal
             // rotation rate the spin formula (ModularBody.hpp:350) divides into.
             // Projection-free, load-time, deterministic (no jd/visibility jitter,
@@ -1111,14 +1112,14 @@ void ModularBody::dumpHops(std::ostream &out) const
             // §11.87(e)): a body's row moves iff its rot_periode was edited. Sign
             // encodes spin direction (negative = retrograde, the Venus -5832 h /
             // Uranus-moon Ẇ<0 convention).
-            << ",\"period\":" << b->re.period
+            << ",\"period\":" << jn(b->re.period)
             << ",\"absoluteTiltFrame\":" << (b->re.absoluteTiltFrame ? "true" : "false");
         const char *names[4] = {"up", "down", "tilt", "spin"};
         const Mat4f *mats[4] = {&up, &down, &tilt, &spin};
         for (int m = 0; m < 4; ++m) {
             out << ",\"" << names[m] << "\":[";
             for (int i = 0; i < 16; ++i)
-                out << mats[m]->r[i] << ((i < 15) ? "," : "");
+                out << jn(mats[m]->r[i]) << ((i < 15) ? "," : "");
             out << ']';
         }
         out << '}';

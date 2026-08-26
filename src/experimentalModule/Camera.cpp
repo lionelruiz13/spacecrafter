@@ -1,4 +1,5 @@
 #include "Camera.hpp"
+#include "JsonNum.hpp"
 #include "ModularSystem.hpp"
 #include "ModularSystemFormat.hpp"
 #include "RenderChain.hpp"
@@ -1354,16 +1355,16 @@ void Camera::dumpTrace(std::ostream &out) const
         // View offset (B17): the clamped scalar, its arming transition, and the
         // EFFECTIVE offset (scalar·transition) that the render pitch uses — the
         // numeric observable for the offset A/B and the arming state channel.
-        << ",\"viewOffset\":" << viewOffset
-        << ",\"viewOffsetTransition\":" << viewOffsetTransition
-        << ",\"viewOffsetEff\":" << effectiveViewOffset()
-        << ",\"longitude\":" << longitude << ",\"latitude\":" << latitude
-        << ",\"distance\":" << distance
-        << ",\"alt\":" << alt << ",\"az\":" << az << ",\"heading\":" << heading
+        << ",\"viewOffset\":" << jn(viewOffset)
+        << ",\"viewOffsetTransition\":" << jn(viewOffsetTransition)
+        << ",\"viewOffsetEff\":" << jn(effectiveViewOffset())
+        << ",\"longitude\":" << jn(longitude) << ",\"latitude\":" << jn(latitude)
+        << ",\"distance\":" << jn(distance)
+        << ",\"alt\":" << jn(alt) << ",\"az\":" << jn(az) << ",\"heading\":" << jn(heading)
         // Absolute (root-aligned common-inertial) look direction - the B13
         // reference-change / free-mode continuity observable (INTENT 11.61).
-        << ",\"absFwd\":[" << lastAbsFwd[0] << ',' << lastAbsFwd[1] << ',' << lastAbsFwd[2] << ']'
-        << ",\"position\":[" << position[0] << ',' << position[1] << ',' << position[2]
+        << ",\"absFwd\":[" << jn(lastAbsFwd[0]) << ',' << jn(lastAbsFwd[1]) << ',' << jn(lastAbsFwd[2]) << ']'
+        << ",\"position\":[" << jn(position[0]) << ',' << jn(position[1]) << ',' << jn(position[2])
         // Where the EYE is, in the ROOT (Universe) frame, in AU (B4(iv),
         // §11.141). The old path's observer position is recoverable from
         // `helioToEye` the same way (−Rᵀ·t), so this is the field that makes a
@@ -1373,9 +1374,9 @@ void Camera::dumpTrace(std::ostream &out) const
         // INTERESTING part is often 1e-5 AU, so the dump's own 9 digits would
         // quantize a travel's per-step comparison to 150 m.
         << "],\"rootPos\":[" << std::setprecision(17)
-        << rootPos[0] << ',' << rootPos[1] << ',' << rootPos[2] << std::setprecision(9)
-        << "],\"refAoI\":" << (reference ? reference->getAreaOfInfluence() : 0)
-        << ",\"refDist\":" << (reference ? reference->getDistanceToObserver() : 0)
+        << jn(rootPos[0]) << ',' << jn(rootPos[1]) << ',' << jn(rootPos[2]) << std::setprecision(9)
+        << "],\"refAoI\":" << jn(reference ? reference->getAreaOfInfluence() : 0.f)
+        << ",\"refDist\":" << jn(reference ? reference->getDistanceToObserver() : 0.f)
         << ",\"refCached\":" << ((reference && reference->isCacheFresh()) ? "true" : "false")
         << ",\"refParent\":\"" << ((reference && reference->getParent()) ? reference->getParent()->getEnglishName() : "") << '"'
         // Selected body + the observer's distance to it (== the far-mode
@@ -1385,20 +1386,20 @@ void Camera::dumpTrace(std::ostream &out) const
         // system-distance dump cannot read off the (old-system-driven) per-body
         // list for a runtime-loaded target.
         << ",\"selected\":\"" << (ModularBody::getSelected() ? ModularBody::getSelected()->getEnglishName() : "")
-        << "\",\"selDist\":" << (ModularBody::getSelected() ? ModularBody::getSelected()->getObservedPosition().length() : 0.f)
-        << ",\"halfFov\":" << ModularBody::halfFov
-        << ",\"cullHalfFov\":" << ModularBody::cullHalfFov
+        << "\",\"selDist\":" << jn(ModularBody::getSelected() ? ModularBody::getSelected()->getObservedPosition().length() : 0.f)
+        << ",\"halfFov\":" << jn(ModularBody::halfFov)
+        << ",\"cullHalfFov\":" << jn(ModularBody::cullHalfFov)
         // The two gaps b31-design §6.2 T2 names: the HELD sky-lock matrix (it
         // is state, not a derivation of anything else here) and the in-flight
         // plans (a session snaps them to their settled target, D32 - so a dump
         // that cannot see a plan cannot witness that they were snapped).
         << ",\"lockedSkyRot\":[";
     for (int i = 0; i < 16; ++i)
-        out << lockedSkyRot.r[i] << ((i < 15) ? "," : "");
-    out << "],\"plans\":{\"viewT\":" << viewT << ",\"hdgT\":" << hdgT
-        << ",\"zoomDuration\":" << zoomDuration << ",\"moveDuration\":" << moveDuration
+        out << jn(lockedSkyRot.r[i]) << ((i < 15) ? "," : "");
+    out << "],\"plans\":{\"viewT\":" << jn(viewT) << ",\"hdgT\":" << jn(hdgT)
+        << ",\"zoomDuration\":" << jn(zoomDuration) << ",\"moveDuration\":" << jn(moveDuration)
         << "},\"mat\":[";
     for (int i = 0; i < 16; ++i)
-        out << lastDispatchedMat.r[i] << ((i < 15) ? "," : "");
+        out << jn(lastDispatchedMat.r[i]) << ((i < 15) ? "," : "");
     out << "]}";
 }
