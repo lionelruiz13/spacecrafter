@@ -440,32 +440,58 @@ void SSystemFactory::generatePendingTwins()
 void SSystemFactory::initDisplayScaling(bool flagMoonScale, double moonScale,
                                         bool flagSunScale, double sunScale)
 {
-    // Each body is one of two cases and never both, so the two are written as
-    // two branches rather than one call plus a correction: applying the config
-    // value and then putting the file's back would make the wrong value the
-    // engine's state for as long as it takes to notice (I6).
-    // The LEGACY branch is the four command seams verbatim, in their own order,
-    // repetition included (the flag seam mirrors, then the value seam mirrors
-    // again) - nothing about the shipped startup moves, the 5 s ramp included.
-    if (fileOwnsDisplayScale("Moon")) {
-        ssystem->setFlagMoonScale(flagMoonScale);   // the OLD path takes it either way
-        ssystem->setMoonScale(moonScale, true);
-        announceDeprecatedScale("Moon", SCK_MOON_SCALE, flagMoonScale, moonScale);
-    } else {
-        setFlagMoonScale(flagMoonScale);
-        setMoonScale(moonScale, true);
+    // THE OLD PATH takes the config value whatever serves the new one - it reads
+    // the legacy file and only the legacy file (§11.52(b), untouched). These are
+    // the very calls the four command seams make, in their own order: the halo
+    // mirror sits between the Sun's flag and its value exactly where
+    // setFlagSunScale puts it, so it keeps reading the SunScale of that moment
+    // (see §11.155 on what that value is when flag_sun_scaled is true).
+    ssystem->setFlagMoonScale(flagMoonScale);
+    ssystem->setMoonScale(moonScale, true);
+    ssystem->setFlagSunScale(flagSunScale);
+    mirrorSunHaloSize();
+    ssystem->setSunScale(sunScale, true);
+    // THE NEW PATH, format-scoped.
+    initBodyDisplayScale("Moon", SCK_MOON_SCALE, flagMoonScale, moonScale);
+    initBodyDisplayScale("Sun", SCK_SUN_SCALE, flagSunScale, sunScale);
+}
+
+// Contract + rationale: ssystem_factory.hpp (initDisplayScaling).
+void SSystemFactory::initBodyDisplayScale(const char *bodyName, const char *configKey,
+                                          bool flag, double value)
+{
+    ModularBody *body = ModularBody::findBody(bodyName);
+    if (!body)
+        return;   // this field's data has no such body; nothing owns anything
+    if (body->isComposedDeclared()) {
+        // The modular file owns this body's display scale and has already
+        // applied it; config.ini's value is deprecated for it, and said so.
+        announceDeprecatedScale(bodyName, configKey, flag, value);
+        // The value is settled, the DERIVED extents are not: the file's load
+        // ran before the config-time inputs the extent cache reads (iniTess's
+        // altimetry levels, core.cpp:307 - a body loaded earlier caches the
+        // level-1 default and a body never evaluated keeps it), so the cache is
+        // re-settled here, at the same point of init as the legacy branch's
+        // restoreScaling below. Both formats therefore leave this function in
+        // the same state, which is what makes the two loads comparable at all
+        // (b24_equivalence). The LATCH ITSELF is wider than these two bodies and
+        // is recorded rather than closed here - §11.155, §5.107.
+        body->updateCache();
+        return;
     }
-    if (fileOwnsDisplayScale("Sun")) {
-        ssystem->setFlagSunScale(flagSunScale);
-        // Read at the same point, from the same state, as the seam it replaces:
-        // the halo is old's quantity and follows old's value (see the header).
-        mirrorSunHaloSize();
-        ssystem->setSunScale(sunScale, true);
-        announceDeprecatedScale("Sun", SCK_SUN_SCALE, flagSunScale, sunScale);
-    } else {
-        setFlagSunScale(flagSunScale);
-        setSunScale(sunScale, true);
-    }
+    // RESTORED, not commanded, and that is a parity fix as much as a choice:
+    // the OLD path applies the config scale INSTANTLY (Body::setSphereScale is
+    // `radius = initialRadius * s`, body.cpp:484), so the new path's 5 s ASmooth
+    // ramp at startup was a new-path-only animation of a value that is the
+    // INITIAL STATE, not a change of it. Three more things follow from making it
+    // immediate, each independent: the twin can reproduce the legacy load (the
+    // composed format states a scale, it has no way to state a transition, and
+    // reproducing that load is the twin's whole contract, §11.154(c)); init and
+    // reload now say the same thing ("the owner's value stands"); and the ramp
+    // stops depending on frames the body may never get (restoreScaling's note).
+    // The COMMAND ramp is untouched - an operator changing the size mid-show is
+    // the case the ASmooth exists for.
+    body->restoreScaling(flag ? static_cast<float>(value) : 1.f);
 }
 
 // Contract + rationale: ssystem_factory.hpp (announceDeprecatedScale).

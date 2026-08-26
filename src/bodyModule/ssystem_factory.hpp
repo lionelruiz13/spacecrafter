@@ -1107,6 +1107,12 @@ private:
         const ModularBody *body = ModularBody::findBody(bodyName);
         return body && body->isComposedDeclared();
     }
+    //! One body's half of initDisplayScaling: the format decides who owns it,
+    //! and the value is RESTORED rather than commanded (the argument is at the
+    //! definition - old applies the config scale instantly, and a twin cannot
+    //! reproduce an animation).
+    void initBodyDisplayScale(const char *bodyName, const char *configKey,
+                              bool flag, double value);
     //! Say ONCE that a config.ini display-scale value was overridden by the file
     //! that owns it, naming both sides and the way back (§2(f)). Silent when the
     //! config value was not live in the first place (`flag_*_scaled = false`):

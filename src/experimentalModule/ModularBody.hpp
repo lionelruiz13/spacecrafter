@@ -1236,13 +1236,23 @@ public:
     //! scale rather than growing into it) and the seam that re-seats a REBUILT
     //! tree at the scale its authority already had - §5.104: a state-preserving
     //! reload must not visibly re-grow the body it just rebuilt.
-    //! Immediate for a body with no movement in flight, which both callers hold
-    //! by construction (a freshly built body has none); a transiting one is
-    //! retargeted through the ordinary solve rather than left behind.
+    //! Immediate for a body with no movement in flight, which every caller
+    //! holds by construction (a freshly built body has none); a transiting one
+    //! is retargeted through the ordinary solve rather than left behind.
+    //! THE CACHE IS REFRESHED HERE, and that is the whole difference from
+    //! setScaling's deferral: an animated change needs frames, so its derived
+    //! radii follow the ramp frame by frame through update(); an immediate one
+    //! needs none, and waiting for a frame that may never come is what makes
+    //! `scaling` and `scaledRadius` disagree. update() is VISIBILITY-GATED, so
+    //! a body nothing evaluates keeps its load-time radii for ever - measured
+    //! (§11.155): a Moon at `scaling = 5` dumping `scaledDatumRadius` at x1,
+    //! and boundingRadius is what the visibility gate itself reads, so the
+    //! stale value can keep the body unevaluated that kept it stale.
     inline void restoreScaling(float _scale) {
         scalingTarget = _scale;
         scaling.set(_scale, 0.f);
         uncached = true;
+        updateCache();
     }
     // Per-name orbit toggle seam (old Body::setFlagOrbit). Routes to this
     // body's ORBIT module(s) via the dedicated list; setShown is the base
