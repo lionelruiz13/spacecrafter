@@ -88,6 +88,28 @@ minted this round (§11.146(j) console duplication; §5.87/§5.88/§5.89/§5.90
 semantics/layout halves). DECISIONS_PENDING open set at close: **D15, D21
 (late Aug), D37** + A40–A43 awaiting — unchanged; B31 rides D21/D28/C4.
 
+**Update [Fable 2026-08-26, supervising session 13]:** trigger = Vixy: *"I have
+replied to D15, D21 and D37 … run a dispatch session with opus xhigh."* Between
+sessions: §11.147 (scedit-fork folder merge, ids §5.91–98/§11.138–146 renumbered)
++ §11.148 (the 67-artifact divergence root-traced to per-evaluation satellite
+drift) landed Vixy-directed; next free §11 number is **149**. Warm-up: both trees
+clean; code `f0c8ef83` / harness `2b24a1b`; code HEAD is **Lionel RUIZ's**
+(tester) doc-only commit — `doc/superscript.sts` +267/−67 + `debug.sh`, NO `src/`
+change ⇒ the 2026-08-23 binary is current (F38 confirms by no-op rebuild).
+Answers verified at the file: D15 (a)–(d) + inform-tester line (`2b24a1b`,
+2026-08-26), D21 + D37 `[Vixy reply]` lines (`d521807a`, 2026-08-22). **Round of
+3, the answers' own unblocked set** (the decision-free S-candidates §5.86-data /
+§5.88-datum / §5.89-sweep stay queued next round): **F37 → F38 → F39** below.
+Order: record first (F37 baselines nothing, but its premise probe reads the
+unmodified tree), then the two code tasks — disjoint files (F38 `core.cpp`/
+`Camera` vs F39 `SurfacePointOrbitLoader`/`ModularBody`/factory), sequential per
+protocol. Census correction folded into F38's spec: §11.112(c)'s four bypass
+sites drifted to `core.cpp:1083/1372/1410/2313` (verified 2026-08-26; the old
+971/2066/1251/1289 no longer exist — the zoom-out family now routes through the
+mirror; these four still poke `setFlagLockEquPos` directly).
+*(Round outcome: appended at session close, from delivered results — never
+before them.)*
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -223,11 +245,143 @@ F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · 
 F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129 ·
 F22 §11.130 · F23 §11.131 · F24 §11.132 · F25 §11.133 · F26 §11.134 · F27 §11.135 ·
 F28 §11.138 · F29 §11.139 · F30 §11.140 · F31 §11.141 · F32 §11.142 ·
-F33 §11.143 · F34 §11.144 · F35 §11.145 · F36 §11.146. No section is live: the next
-dispatchable candidates (§5.86's owed data, S; §5.88's owed draw-cost datum,
-S; §5.89's owed assert sweep, S — every FIX they enable is Vixy's) are to be
-minted at their dispatch per §0b.2 — the current queue lives in the latest
-session update note above.*
+F33 §11.143 · F34 §11.144 · F35 §11.145 · F36 §11.146. Live sections:
+**F37–F39** (session 13, the D15/D21/D37-unblocked round — below). Queued after
+them: §5.86's owed data, S; §5.88's owed draw-cost datum, S; §5.89's owed
+assert sweep, S — every FIX they enable is Vixy's; to be minted at their
+dispatch per §0b.2.*
+
+### F37 — Propagation pass: the D15 + D21 + D37 answers → §11.⟨next free⟩ (record-only + ONE premise probe) [S–M]
+
+**Why now / why first:** all three answers are in the file (D15 `2b24a1b`, D21+D37
+`d521807a`); nothing downstream (F38, F39, the tester pass) may consume them
+until they are propagated with their [derived] readings and veto points — the
+§11.113 precedent, which is the mandate's shape. Record-only: NO code, NO data.
+
+**Sources (re-read, never recall):** `DECISIONS_PENDING.md` §3 D15 (answers
+(a)–(d) + the inform-tester line), §5 D21 `[Vixy reply]`, §13 D37 `[Vixy reply]`;
+`INTENT/11.112.md` (D15 expansion); §11.101(f) + `INTENT/5.27.md` (D21 corrected
+form); `INTENT/11.117.md` (k)(1) + the B39 §13 row (D37); §11.116(c) (final-pass
+batching principle, list is ledger-owned).
+
+**Scope:**
+1. §11 entry (file + stub) — full record of the three answers; every [derived]
+   reading carries its veto point.
+2. Ledger flips: **B18** suspended clause → resolved per D15 (four sub-decisions
+   recorded; (c)+(d) implementation = F38, in flight this round); **§5.27**
+   behavior half → unblocked (D21; fix = F39); **B39**'s D37 residue → the final
+   tester pass; **B31** T3 gate note updated (D21 answered); **B35** mount half
+   annotated per D15(a) (VIEW_HORIZON a workaround for old's up-vector flip, the
+   new path avoids the up vector ⇒ no longer useful on the new path — trace the
+   citation set: B18(a), B35, §5.89 is INFORMED not decided).
+3. D15(b) ⇒ **§5.80 fix unblock** [derived, veto point]: *"freeMode swapping in
+   both ways must be transparent"* reaches the position channel — the measured
+   ~125° entry teleport is not transparent — so the converter-as-composer's-
+   inverse fix (§5.80's own datum, F34/§11.144) reads as authorized. RECORD the
+   reading; implement nothing.
+4. **D37 premise probe (the one measurement/read):** Vixy's reply reasons from
+   *"every bodies have the star as parent body"* ⇒ hiding the star hides the
+   system via D23 nesting. But `b39_star.py` (§11.117(k)(1)) measured the Moon
+   DRAWN AND LIT with the Sun hidden, and B39 hides by parked SUBTREE — so on
+   the shipped tree the star appears NOT to be the planets' parent. Establish
+   the fact (composed twins under `~/.spacecrafter/modularSystem/`, or one
+   launch; `/usr/bin/grep` for ini files). Whichever way it lands, the fact +
+   the b39_star measurement + both recs travel WITH the tester question — the
+   delegation must not propagate on a premise the field data contradicts; the
+   divergence is also Vixy-reportable at close (equalize before action).
+5. Final-pass list additions (ledger-owned, §11.116(c)): D37 (question, with
+   the premise fact attached); D15(a)–(d) (INFORM, with revise/revert offer —
+   Vixy's own closing line); D15(b) heading-stays-stable default (CONFIRM).
+6. `vixy-side-ideas.txt` (`2b24a1b`): pointer entries into
+   `FEATURE_REQUESTS.md` (parallel-script · script-binding · script-trigger);
+   the txt stays the authority for its own text.
+7. Field-change awareness: code HEAD `f0c8ef83` (Lionel RUIZ, tester,
+   2026-08-26) rewrote `doc/superscript.sts` (+267/−67). Cheap staleness probe
+   ONLY (do the §5.96/§5.97 witness lines — incl. §5.97's invisible byte —
+   survive in the new file?); record hits as annotations, fix nothing.
+8. `DECISIONS_PENDING.md`: propagation arrows under all three + header open-set
+   update. If the D-set lands empty, SAY so in the header line (a first).
+
+**DoD:** arrows under D15/D21/D37; §11 entry cited by every touched row; the
+premise-probe fact recorded with its instrument; final-pass list carries the
+new members; no code tree change (`git -C /home/claude/spacecrafter status`
+clean at close).
+**WIP:**
+
+### F38 — D15(c)+(d): sky-lock write-site mirroring + init/config structural parity [M]
+
+**Mandate:** D15 answers (c) *"Continual tracking must be preserved and smooth"*
+and (d) *"init/reinit must initialize the state, which now include the freeMode
+and config.ini must enable to configure it … default attached=True"* — via F37's
+§11 record + `INTENT/11.112.md` + B18/B33 rows. Depends on F37 (propagated
+record is the authority it cites).
+
+**Scope:**
+1. **(c)** The four old-only lock write sites — current census
+   `core.cpp:1083/1372/1410/2313` (verified 2026-08-26; §11.112's
+   971/2066/1251/1289 drifted — re-verify at dispatch) — route through the
+   both-paths mirror (`Core::setFlagLockSkyPosition`), so enable AND disable
+   reach the Camera. Old-path flag transitions bit-identical: the change is the
+   mirror, never the old behavior. Policy [derived from (c), veto at the site]:
+   Camera `target` tracking participates in the select-while-tracking rule
+   identically to old `flag_traking`.
+2. **(d)** init/reinit initializes the camera state (sky-lock AND freeMode) —
+   `core.cpp:400`'s reset-to-0 becomes the both-paths init from config;
+   `config.ini` gains the key(s), default `attached=true`. **Naming check is
+   Vixy's own veto offer:** verify "attached" against the OBSERVED semantics
+   (freeMode vs `boundToSurface` collision risk; `Camera.hpp` is the source) —
+   adopt, or flag with the observed meaning. B28 protocol (new key = product
+   surface, spelling recorded as veto point). D12: a configured value that ACTS
+   at startup (lock on / freeMode on) is logged. D13: the key enters
+   `config.ini` (rewritten at shutdown) — verify the OLD parser tolerates the
+   unknown key; record the finding either way.
+3. Tester-inform obligations ride F37's final-pass entries, not this task.
+
+**DoD:** both-ways discrimination on the shipped sequence (§11.112(c): `flag
+lock_sky_position on` → unzoom-to-init; select-while-tracking → release) — both
+paths agree in BOTH directions, asserted against the pre-change binary;
+old-path observables bit-identical where the old path is the baseline; battery
+green; config/ssystem md5 in==out; B18 row flip; §11 entry + stub; WIP
+discipline per §0.6.
+**WIP:**
+
+### F39 — D21: display scaling = presentation layer; grounded children inherit it; physics unscaled [M–L]
+
+**Mandate:** D21 `[Vixy reply]`: *"Unscaled for physics (orbit, shadow received
+and casted), scaled for bounding/rendering, grounded children inherit scaling
+(to be visually identical to unscaled, given grounded bodies are
+surface-relative, so the referential is the body surface)"* — via F37's §11
+record + `INTENT/5.27.md` + §11.101(f) + §2(a)'s two-layer rule. Depends on
+F37; runs after F38 (disjoint files, sequential per protocol).
+
+**Scope:**
+1. Kill the load-time latch (`SurfacePointOrbitLoader.hpp:88/112` `altStart`
+   bake): the MODEL layer places grounded children from the UNSCALED datum,
+   read live — the closed latch class (B15/B19/B32) provides the shape;
+   §11.113(c) already rules regime selection reads LIVE state, never a latch.
+2. PRESENTATION layer: grounded children inherit the parent's display scaling —
+   including the 5 s ASmooth ramp, live — so surface content stays visually ON
+   the displayed surface (referential = the body surface, per the answer).
+3. Physics unscaled: VERIFY orbit + shadow cast/receive read unscaled radii;
+   where they read scaled today, that is in-mandate — measure before/after and
+   record magnitudes. Script-fetch position reads model truth (D8's script
+   channel — `ModularBody.hpp:193`'s own "Just visual scaling" comment becomes
+   true). Bounding stays SCALED (the answer's own words).
+4. Reach: `moon_scale`, `planet_scale`, sun-scale paths share the latch
+   (`ssystem_factory.hpp:556/240/267`) — all in scope; §11.101(f)'s untested
+   prediction (startup-loaded vs reload-loaded latch different ramp values ⇒
+   `body action reload` MOVES a composed rover) is a pre-fix discriminator to
+   confirm, then a post-fix invariant.
+
+**DoD:** the §11.78(a) mandate scene alive under the SHIPPED config
+(`moon_scale=5`, no `flag moon_scaled off` workaround): composed rover ON the
+displayed surface; `body action reload` no longer moves it; live scaling toggle
+⇒ child rides the ramp while script-fetched position is invariant; shadow
+observables recorded (unchanged if already unscaled, corrected+measured if
+not); the `b24_screen` scaling-off workaround retired or its retention argued;
+battery green; md5 pristine; §5.27 behavior half closed; B31 T3 noted
+dispatchable; §11 entry + stub.
+**WIP:**
 
 ---
 
