@@ -107,8 +107,32 @@ protocol. Census correction folded into F38's spec: §11.112(c)'s four bypass
 sites drifted to `core.cpp:1083/1372/1410/2313` (verified 2026-08-26; the old
 971/2066/1251/1289 no longer exist — the zoom-out family now routes through the
 mirror; these four still poke `setFlagLockEquPos` directly).
-*(Round outcome: appended at session close, from delivered results — never
-before them.)*
+**Round outcome (session 13 close, 2026-08-26):** F37 → §11.149 · F38 → §11.150
+· F39 → §11.152 · F40 → §11.153, plus the supervisor entry §11.151 (Vixy's two
+mid-round ratifications) — all four delivered AND supervisor-verified same
+session; round extended 3→4 per §11.151(a)'s recorded plan. Code `f0c8ef83 →
+b444d381 → fd98c8e9 → 8c2cbf61 → 7ef11aca → 18b6f13f` (+ submodule `EntityCore
+224eba7 → 7ce5835`, the ASmooth phase-timer fix, precedent = Vixy's own
+`f28c555`). **DECISIONS_PENDING's open set is EMPTY — first time since the file
+was compiled**; D37 rides the final tester pass WITH its premise fact (the
+b39_star "Moon stays lit" reading was an instrument artifact — hiding the star
+hides the system, exactly as Vixy's premise said). CLOSED: §5.27, §5.80,
+§5.102 (rooted: ORIGINAL uninitialized ASmooth phase timer — the malloc-garbage
+variance explains every divergent historical reading, incl. the Moon silently
+stuck at ×1 on some launches), §5.103, §5.31-era B18 sky-lock half, B31's T3.
+NEW: §5.99–§5.106 (8 rows), A44 (ring shadow caster: D21 vs the 2026-07-18
+extent contract), 6 final-pass members (D37 question + D15(a)–(d) INFORM ×4 +
+D15(b) heading CONFIRM). Instrument-artifact refutations this round: 4
+(b39_star `lit()`, §11.101(f)'s reload prediction, §11.144(i)'s 3.3 Mpx
+attribution, §11.58's "0.0000°" scoped to its degenerate configuration) — the
+round's meta-lesson: criterion-that-cannot-discriminate hunting pays.
+**Next-round queue, in order:** (1) the stub↔entry-file cross-check sweep
+(§11.149(h) — the authority-inversion class); (2) b24_select 4-red adjudication
++ the 28-file free-mode-longitude audit (S, §11.153(o)); (3) §5.86's owed data ·
+§5.88's owed draw-cost datum · §5.89's owed assert sweep (S each); (4) §5.100's
+one-line fix IF Vixy's answer authorizes it. Supervisor-context note: 4 hard
+tasks + verification ≈ well under budget this session (large-window regime —
+datum for the sizing rule, not a supersession of it).
 
 ---
 
@@ -489,6 +513,16 @@ sharpened and its own conclusion put in doubt** (recorded on that row, fixed now
 harness scenes re-declared** (`b24_screen`, `b24_select`) because free-flight `moveto lon` now
 means the anchored thing; 28 more files combine the two and are unaudited — README carries the
 list and the arithmetic.)*
+*(ACCEPTED by supervisor [fable 2026-08-26]: §11.153 read in full; commits/authors/trailers
+checked (CP1 correctly at the pre-change SHA — algebra licensed before the code moved); §5.80
+flip + §5.106 mint + §5.49 sharpening + §11.144(i) refutation-at-node verified. The rider
+boundary HELD with arguments and veto points at (e)/(f) — the fix restores the header's own
+stated contract, both riders reversible in ≤3 lines. Corrections to MY dispatch spec accepted
+as corrections: the FOURTH site (getPlace — leaving it would have broken the readout the riders
+protect) and the discriminator target (span-zero is the criterion; "60 stays 60" was the
+defect's own number — my derivation error). b24_screen/b24_select re-declarations endorsed
+(geometry-preserving, invariance shown both ways). Owed next round: the 28-file free-mode
+longitude audit + the b24_select 4-red adjudication (pre-existing at `7ef11aca`).)*
 
 ---
 
@@ -515,6 +549,61 @@ list and the arithmetic.)*
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-13 decision items (2026-08-26, F37–F40 / §11.149–§11.153):**
+  - **§5.100/§5.101 authorization question (ASKED in-conversation, unanswered at
+    close):** does D15(c)'s *"continual tracking must be preserved"* authorize
+    the new-path tracking start at `zoom auto in` (one line beside the existing
+    `armViewOffset`) and the `autoZoomOut` re-aim mirror (needs a Camera
+    `lookTo` + a parity question on old's eased ramp)? Yes ⇒ §5.100 dispatches
+    decision-free next round.
+  - **A44** — `RingModule`'s shadow caster is the ONE scaled shadow radius, by
+    your 2026-07-18 extent contract; D21 points the other way. Unexercised on
+    shipped content (no scaled body has rings). Which contract wins?
+  - **§5.104** — `body action reload` silently drops every display scaling
+    (`moon_scale`, `sun_scale`, `planet_scale`) — pre-existing, both binaries.
+    D31 ruled reload = load-from-file, but the scaling comes from CONFIG, not
+    the file: what should reload re-apply (config values, the D30 ledger, both)?
+    B16's seam.
+  - **§5.106** — entering free flight changes what the ENVIRONMENT draws
+    (landscape stops updating, atmosphere floods the dome: 3.3 Mpx — this, not
+    the teleport, was §11.144(i)'s pixel count). Old path's own `isOnBody()`
+    semantics; what free flight should SHOW is yours — same family as D15(b)
+    transparency.
+  - **The two §11.144 riders, now with veto points at their sites (§11.153(e)(f),
+    each ≤3 lines to reverse):** free-flight `moveto lat/lon` now names the
+    anchored place (restoring `Camera.hpp:195-197`'s own contract) — say the
+    word if free flight should give it a DIFFERENT meaning; `get status
+    position` across the toggle is byte-identical — say the word if the
+    free-flight readout should answer something else.
+  - **§5.49 reversal warning** — F40 MEASURED the observer half (pose azimuth =
+    `lon − π/2`); composing with the confirmed texture half gives `u = lon/360
+    − 0.5`, i.e. `moveto lon 0` over the map's CENTRE — the OPPOSITE of §5.49's
+    headline. Both halves stay [derived]; the render measurement the row owes
+    (`f14_meridian.py` `u_sub`) settles it before anyone "fixes" §5.49.
+  - **§5.105's owed check** — old path dumps uninitialized memory as `dist` for
+    never-sorted bodies; owed before acting: is `Body::getDistance()` read
+    outside the dump for such a body (instrument-grade vs live defect)?
+- **Session-13 veto points (implemented-and-live, each cheap to reverse;
+  silence = endorsed):** (1) F39's uniform dilation dilates the child's offset
+  AND extent but NOT the observer's altitude (`moveto alt` = real metres above
+  the displayed surface — why the gate is a ratio); (2) the ASmooth fix is
+  COMMITTED in the EntityCore submodule (precedent: your `f28c555` "Fix
+  ASmooth"); (3) `flag moon_scaled off` in the seven older harnesses is
+  re-read as a SCENE DECLARATION, not removed (their committed baselines
+  measure real geometry); (4) F38's `[navigation] attached = true` +
+  `flag_lock_sky_position = false` spellings (B28; `boundToSurface` naming
+  constraint recorded at the define); (5) F40's `getPlace` rides the corrected
+  converter (keeps the readout byte-identical — the alternative silently broke
+  it).
+- **Session-13 awareness, no action needed:** §5.99 (b39_star's whole-frame
+  `lit()` criterion — instrument, fix needs a re-run) · the A–D battery is not
+  phase-locked (same-binary control first, §11.153(i)) · `dumpread.py` is now
+  the dump channel's single reader · the tester's `superscript.sts` rewrite
+  fixed 11 of 13 script-side witnesses (§11.149(e); the +267 new lines are
+  unexamined; scedit's corpus gate not re-run) · Lionel's rewrite answered
+  SS-16 by action (fixed in place; pre-rewrite bytes citable at
+  `70dee810:doc/superscript.sts`).
 
 - **Session-13, F37/§11.149 — TWO THINGS TO EQUALIZE ON, both about facts rather
   than decisions (nothing here asks you for a choice):**
