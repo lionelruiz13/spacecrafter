@@ -320,6 +320,11 @@ whole 2048² frame, star-field-dominated). Next: superscript staleness probe, th
 annotations, NEW §5.99); DECISIONS_PENDING three arrows + header (open set EMPTY,
 a first); FEATURE_REQUESTS three pointer entries. Next: SCRIPT_SURFACE SS
 statuses, §3 D37-bullet correction + final-pass members, final verify.
+2026-08-26 — CP3: SCRIPT_SURFACE SS-1…SS-10/SS-16/SS-17/SS-18 statuses annotated
+(no entry closed — a deletion is not an answer); §3 corrected (the D37 bullet
+carried the refuted reading into the for-Vixy channel — struck, not deleted),
+final-pass members line updated, B18/D21 residual lines flipped, session-13
+equalize block added. Next: final verification sweep + WIP clear.
 
 ### F38 — D15(c)+(d): sky-lock write-site mirroring + init/config structural parity [M]
 
@@ -406,7 +411,10 @@ dispatchable; §11 entry + stub.
   §11.98(f) three — chiefly the reach-vs-visibility decoupling, now promotion-grade
   GENERAL (§11.97(c) second domain) and Vixy's call before any large content lands.
 - **B30 fix**: tracking-convergence semantics suspended (§11.94(d)).
-- **B18 residual**: D15 unanswered (the 2026-07-23 batch's only open item).
+- ~~**B18 residual**: D15 unanswered (the 2026-07-23 batch's only open item).~~
+  **D15 ANSWERED 2026-08-26 and propagated (§11.149(a)) ⇒ B18's suspension closes;
+  (c)+(d) are task F38's, (a) dissolved, (b)'s implementation half is §5.80's
+  (recorded, not authorized as a whole — see §11.149(b)'s veto point).**
 - **B17 residual**: heading≠0 offset coupling — tilted-dome question (§11.92(d)).
 - **B10(a)**: anti-stuck floor VALUE = Vixy's feel-test (§11.79(f)).
 - **B14 residuals (ii)(v)(vii)**: source-authority order, meridian texture-
@@ -416,6 +424,34 @@ dispatchable; §11 entry + stub.
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-13, F37/§11.149 — TWO THINGS TO EQUALIZE ON, both about facts rather
+  than decisions (nothing here asks you for a choice):**
+  - **Your D37 premise was right and OUR measurement's reading was wrong.** You
+    reasoned *"every bodies have the star as parent body, in which case hiding the
+    star hide every bodies in the system"*; the ledger had a measurement that
+    looked like the opposite (a hidden Sun still lighting the Moon). The probe
+    settles it your way: the shipped `ssystem.ini` has **90 body sections and
+    exactly one `parent = none` — `[sun]`**, the runtime tree is
+    `Moon → Earth → Sun → SolarSystem → MilkyWay → Universe`, **91 of 120 bodies
+    sit under the Sun** and the other 28 are system nodes and hidden anchors with
+    `boundingRadius = 0`. On the same run's own screenshots, hiding the Sun makes
+    the Moon **disappear** (disc interior 4.738 → 0.000). The instrument counted
+    the whole frame, which the star field dominates, so it could not see the Moon
+    leave (→ new defect **§5.99**; §11.117(k)(1) corrected in place, counts kept).
+    **Consequence you may care about**: D37, which is now delegated to the tester,
+    has **no observable on shipped content** — both answers give the same frame —
+    so the question needs an authored scene or the multi-star case you named. It
+    goes to the tester with that fact attached rather than as posed.
+  - **The tester rewrote `doc/superscript.sts` this morning** (`f0c8ef83`, +267/−67)
+    and **eleven of the thirteen witness lines the ledger tracked are already
+    fixed or removed** — including the invisible 0xA0 byte and both respell cases
+    (`date_display_*`, `zrot/yrot`). That answers **SS-16** (fix in place vs keep
+    as a historical document) **by action**: the historical witness now lives at
+    `70dee810:doc/superscript.sts`. Two survive: the `landscape … spacecraft on`
+    line and the `$body_selected` number table. **Owed and not done**: the 267
+    ADDED lines are unexamined and scedit is not runnable from this working copy,
+    so this was a "did the old problems go away" check, not a fresh pass.
 
 - **Session-12 decision data (2026-08-09, F34/§11.144 + F35/§11.145 +
   F36/§11.146):**
@@ -604,8 +640,14 @@ dispatchable; §11 entry + stub.
   changes shipped-trail sample counts = policy).
 - ~~**A15 re-ask is SENDABLE**~~ **JOINS THE FINAL TESTER PASS** [vixy 2026-07-30,
   batching principle → §11.116(c)]: tester items accumulate into ONE final pass
-  before testing deployment; the final-pass list is ledger-owned (members so far:
-  A15, the oort-shadow item below), round-3 file materializes at send time.
+  before testing deployment; the final-pass list is ledger-owned (~~members so far:
+  A15, the oort-shadow item below~~ **members after F37/§11.149(g): A15 · the
+  oort-SHADOW item below · D37 as a QUESTION, carrying the premise fact that on
+  shipped content its two options give the SAME frame · D15(a)(b)(c)(d) as four
+  INFORM items with Vixy's own revise/revert offer · D15(b)'s heading-stability
+  default as a CONFIRM item**), round-3 file materializes at send time. The
+  §11.116(c) state-stamp rider applies to every member; (g1)'s scene is AUTHORED,
+  so the authored file is part of its stamp.
 - ~~**§11.98(c) missing datum**~~ **RESOLVED 2026-07-30 (§11.116(b))**: the
   originating observation was recovered verbatim from session transcripts — it
   says "oort **SHADOW** showing too early", its configuration reconstructs to
@@ -615,20 +657,41 @@ dispatchable; §11 entry + stub.
   refutation never reached that configuration ⇒ genuinely-early stays live there,
   vs expectation-wrong — discriminated in the final tester pass, state-stamped.
 - **Decision batches waiting**: §11.96(e)(1–6) + §11.98(f)(i–iii) (oort/§6.9 plan);
-  D15 (expanded §11.112 — sub-item (c) mirror-all-four is recommended + mechanical);
-  D21 (corrected form §11.101(f)); §11.92(d) heading-coupling; §11.94(d)
-  latch-when-settled. D22–D36: ANSWERED + propagated (§11.113). **NEW 2026-07-30:
+  ~~D15 (expanded §11.112 — sub-item (c) mirror-all-four is recommended + mechanical);
+  D21 (corrected form §11.101(f))~~ **D15 + D21 ANSWERED 2026-08-26/08-22 and
+  propagated (§11.149) ⇒ DECISIONS_PENDING's open set is EMPTY, a first**;
+  §11.92(d) heading-coupling; §11.94(d)
+  latch-when-settled. D22–D36: ANSWERED + propagated (§11.113). ~~**NEW 2026-07-30:
   D37** (F11/§11.117(k)(1)) — does a hidden body stop being a LIGHT SOURCE?
   Measured: today it does not (a hidden Sun still lights the Moon, 15462 vs 17302
   lit px); illumination is the one contribution D23's general wording reaches and
   the B39 row does not enumerate, and no shipped hidden body is a light source, so
   nothing in the corpus discriminates. Rec (1) keep today's behaviour; reversing
-  it later is one branch at `updateSystem`.
+  it later is one branch at `updateSystem`.~~ **D37 — CORRECTED AND MOVED
+  2026-08-26 (§11.149(d)); struck rather than deleted because the struck text is
+  what this channel would have relayed.** Vixy's answer **DELEGATES** the decision
+  to the main tester/user (*"it changes the behavior of spacecrafter under
+  identical use"*) ⇒ D37 leaves this list for the final tester pass. And the
+  measurement quoted above is **REFUTED on its own committed artifacts**: with the
+  Sun hidden the Moon is **GONE, not lit** (disc-interior mean 4.738 → 0.000; 95 %
+  of the 1217 px>32 within 120 px of the Moon's centre; the Sun reads
+  `visible: false` in BOTH frames, so nothing of it can have "left"). Cause →
+  **§5.99**: `b39_star.py`'s `lit()` counts the whole 2048² frame, which the star
+  field dominates (15 462 px background vs ~1 850 px Moon). Vixy's own premise is
+  what holds: the shipped tree has **exactly one root** (`[sun] parent = none`),
+  91 of 120 runtime bodies sit under it, and the 28 that do not are all
+  `boundingRadius = 0` + `visible: false` — so **hiding the star hides the system**
+  and D37's two options are indistinguishable on shipped content. Reversal is still
+  one branch at `updateSystem`; the question is reachable only in an AUTHORED scene
+  (a body `parent = none` beside the star) or a multi-star delivery.
 - ~~**F1 instrument authorization (§11.99(h))**~~ **SERVED 2026-07-24 (manual
-  approval) → root closed §11.100.** Replaced by: **D21** (DECISIONS_PENDING) —
+  approval) → root closed §11.100.** ~~Replaced by: **D21** (DECISIONS_PENDING) —
   grounded children vs parent display scaling (`moon_scale=5` swallows the mandate
-  scenes; §5.27). Workflow note for shader edits [vixy]: `shaders/compile.sh` +
-  `cmake --install` — not hand-copies into the install dir.
+  scenes; §5.27).~~ **D21 ANSWERED 2026-08-22, propagated §11.149(c): unscaled for
+  physics, scaled for bounding/rendering, grounded children inherit — fix = task
+  F39; §5.27's behaviour half and B31's T3 both unblock.** Workflow note for shader
+  edits [vixy]: `shaders/compile.sh` + `cmake --install` — not hand-copies into the
+  install dir.
 - **Session-4 veto points (2026-07-30 — all implemented-and-live, each cheap to
   reverse; silence = endorsed):** (1) B27 hint-suppression gate landed on `primary`,
   not `light_source` as §11.113(f) provisionally placed it — argument at the site
