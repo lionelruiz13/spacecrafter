@@ -306,7 +306,14 @@ batching principle, list is ledger-owned).
 premise-probe fact recorded with its instrument; final-pass list carries the
 new members; no code tree change (`git -C /home/claude/spacecrafter status`
 clean at close).
-**WIP:**
+**WIP:** 2026-08-26 — CP1: D37 premise probe DONE and it lands on Vixy's side
+(shipped tree: `[sun] parent = none` is the ONLY root, all 89 other corpus bodies
+descend from it; runtime `Moon→Earth→Sun→SolarSystem→MilkyWay→Universe`; hiding
+the Sun REMOVES the Moon from the frame — disc interior 4.74 → 0.00, 95 % of the
+1217 px>32 inside 120 px of the Moon's centre). §11.117(k)(1)'s "the Moon stays
+lit" is REFUTED on its own committed artifacts (`b39_star`'s `lit()` counts the
+whole 2048² frame, star-field-dominated). Next: superscript staleness probe, then
+§11.149 + ledger flips + FEATURE_REQUESTS + DECISIONS_PENDING arrows.
 
 ### F38 — D15(c)+(d): sky-lock write-site mirroring + init/config structural parity [M]
 
