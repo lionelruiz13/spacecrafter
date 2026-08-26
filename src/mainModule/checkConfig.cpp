@@ -409,6 +409,13 @@ void CheckConfig::checkNavigationSettings()
 	tmpSettings[SCK_VIEWING_MODE]="equator";
 	tmpSettings[SCK_ZOOM_SPEED]="0.0001";
 	tmpSettings[SCK_STALL_RADIUS_UNIT]= "5.0";
+	// D15(d) [vixy 2026-08-26, §11.150]: the camera state init/reinit now reads.
+	// Both defaults are TODAY'S BEHAVIOUR, so the schema addition acts on
+	// nothing (D12) — and it must be here, not only at the read site, because
+	// checkUselessKey() strips any [navigation] key absent from this table the
+	// next time the version string moves.
+	tmpSettings[SCK_ATTACHED]="true";
+	tmpSettings[SCK_FLAG_LOCK_SKY_POSITION]="false";
 
 	sectionSettings.push_back(SCS_NAVIGATION );
 	insertKeyFromTmpSettings(SCS_NAVIGATION );

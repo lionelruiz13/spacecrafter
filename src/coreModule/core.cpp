@@ -397,7 +397,49 @@ void Core::init(const InitParser& conf)
 	deselect();
 	setHomePlanet("Earth");
 	navigation->setFlagTraking(0);
-	navigation->setFlagLockEquPos(0);
+	// ---- D15(d): init/reinit INITIALIZES the camera state (§11.150) --------
+	// [vixy 2026-08-26]: *"Structural parity is required here, init/reinit must
+	// initialize the state, which now include the freeMode and config.ini must
+	// enable to configure it. The default config.ini value is attached=True"*.
+	// This line used to be `navigation->setFlagLockEquPos(0)` — a force-reset of
+	// the OLD flag alone. Old had no config channel because it had no state to
+	// configure; the new-path Camera does (`skyLocked`/`lockedSkyRot`, freeMode),
+	// which is why the answer OVERRODE the standing "no key" recommendation.
+	//
+	// Read with findEntry first, NOT with the parser's own missing-key path:
+	// InitParser::getBoolean returns FALSE for an absent key (init_parser.cpp
+	// :164-178), so `attached` would read false — free flight at startup — in
+	// every fielded config.ini, none of which carries the key (D9: the installed
+	// field is frozen; the schema addition in CheckConfig only reaches a user
+	// file when the version string moves). The DEFAULTS ARE TODAY'S BEHAVIOUR:
+	// attached (not free) and the lock off, so no default acts here.
+	// The 3-argument getBoolean is deliberately not used: it writes an
+	// L_WARNING on every call, fired or not (§5.77's startup-noise class).
+	const bool attached = conf.findEntry(std::string(SCS_NAVIGATION) + ":" + SCK_ATTACHED)
+	                      ? conf.getBoolean(SCS_NAVIGATION, SCK_ATTACHED) : true;
+	const bool lockSky = conf.findEntry(std::string(SCS_NAVIGATION) + ":" + SCK_FLAG_LOCK_SKY_POSITION)
+	                     ? conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_LOCK_SKY_POSITION) : false;
+	// D12 + §2(f): a configured value that ACTS at startup says so, names what
+	// it did, and names the way back. Silence is reserved for the values that
+	// change nothing.
+	if (Camera::instance) {
+		Camera::instance->setFreeMode(!attached);
+		if (!attached)
+			cLog::get()->write("config.ini [navigation] attached = false: the observer starts in FREE "
+			                   "FLIGHT (position is a free vector around the reference body) instead of "
+			                   "anchored to the [init_location] longitude/latitude/altitude. To start "
+			                   "anchored, set attached = true; to leave free flight at runtime, send "
+			                   "'camera action free_mode state off'.", LOG_TYPE::L_INFO);
+	}
+	// Through the both-paths mirror, so init leaves the two paths agreeing —
+	// the same reason the four write sites now route through it (D15(c)).
+	setFlagLockSkyPosition(lockSky);
+	if (lockSky)
+		cLog::get()->write("config.ini [navigation] flag_lock_sky_position = true: the view starts LOCKED "
+		                   "to the sky (held in the reference body's equatorial frame as sidereal time "
+		                   "advances) instead of the local horizon. To start unlocked, set "
+		                   "flag_lock_sky_position = false; to release it at runtime, send "
+		                   "'flag lock_sky_position off'.", LOG_TYPE::L_INFO);
 
 	timeMgr->setTimeSpeed(JD_SECOND);  // reset to real time
 
@@ -877,18 +919,21 @@ void Core::setFlagLockSkyPosition(bool b)
 }
 
 //! B33 (§11.108(f), the F12 template §11.118(f)): the sky lock of the path that
-//! DRAWS. Its setter above is dual (§11.58) — but FOUR shipped sites write the
-//! old flag alone and are not this seam: selectObject and selectType turn the
-//! lock ON when an object is selected while tracking (core.cpp, the "keep the
-//! earth following" branch — that one is §11.58's own suspended item (iii), the
-//! old select-while-tracking auto-enable, so it stays), and autoZoomOut turns it
-//! OFF twice on the zoom-out-to-init path. So this readout diverges from the
-//! drawn path on a SHIPPED sequence, with no injection: select while tracking,
-//! and the flag command's own toggle then reads 1 while nothing is holding the
-//! sky, computes `!1` and writes 0 to both — a toggle that does nothing in one
-//! direction, which is exactly §11.129's `flag satellites` defect one layer up.
-//! The four write sites are recorded, not mirrored: making them dual changes
-//! what the sky does in a shipped scene, and one of them is suspended.
+//! DRAWS. Its setter above is dual (§11.58), and since §11.150 EVERY write site
+//! routes through it.
+//! ~~SUPERSEDED 2026-08-26 (§11.150), kept because it states what was true and
+//! why the fix needed a decision: "FOUR shipped sites write the old flag alone
+//! and are not this seam ... The four write sites are recorded, not mirrored:
+//! making them dual changes what the sky does in a shipped scene, and one of
+//! them is suspended."~~ The suspension was D15(c) and it is ANSWERED [vixy
+//! 2026-08-26]: *"Continual tracking must be preserved and smooth - it
+//! replicate the body tracking function of advanced telescopes. Without this,
+//! it's hard to impossible to properly observe a body while the time continue
+//! to tick."* So the four (selectObject/selectType ENABLE, autoZoomOut ×2
+//! DISABLE) are mirrored, and the toggle defect this comment described — the
+//! flag command reading 1 while nothing holds the sky, computing `!1` and
+//! writing 0 to both, §11.129's `flag satellites` shape one layer up — is gone
+//! with them.
 bool Core::getFlagLockSkyPosition(void)
 {
 	if (!getExperimentalPath() || !Camera::instance)
@@ -1079,10 +1124,27 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 	}
 
 	if (selected_object) {
+		// D15(c) [vixy 2026-08-26]: *"Continual tracking must be preserved and
+		// smooth - it replicate the body tracking function of advanced
+		// telescopes"* ⇒ both flags of this transition reach BOTH paths
+		// (§11.150). Old-side values are unchanged (setFlagLockSkyPosition
+		// writes navigation->setFlagLockEquPos(1); setFlagTracking(false)
+		// writes navigation->setFlagTraking(0)) — the change is the mirror.
+		// The tracking clear is mirrored HERE and not merely recorded because
+		// the lock mirror alone is INERT at this site: Camera's sky-lock is
+		// dormant while `target` is set (Camera::update), so leaving the old-
+		// only setFlagTraking(0) would hold `Camera::target` and the new path
+		// would keep tracking while old holds the sky (MEASURED pre-change:
+		// camera.tracked='Mars' with old flagTraking 0, §11.150).
+		// Reachability of this site, since it is not the obvious one: the
+		// `planet`/`star`/`nebula`/`hp` branches above go through
+		// selectObject(Object), which clears tracking itself — unless the
+		// object is ALREADY selected, where that overload returns early. So
+		// this fires on a RE-select of the tracked body.
 		if (navigation->getFlagTraking())
-			navigation->setFlagLockEquPos(1);
+			setFlagLockSkyPosition(true);
 
-		navigation->setFlagTraking(0);
+		setFlagTracking(false);
 		return 1;
 	}
 
@@ -1368,8 +1430,16 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 				// Need to go to init fov/direction
 				zoomToBothPaths(InitFov, move_duration);
 				navigation->moveTo(InitViewPos, move_duration, true, -1);
-				navigation->setFlagTraking(false);
-				navigation->setFlagLockEquPos(0);
+				// D15(c), §11.150: both-paths, like the fov and the offset
+				// beside them. Old-side identical (setFlagTracking(false) ->
+				// setFlagTraking(0); setFlagLockSkyPosition(false) ->
+				// setFlagLockEquPos(0)). The DISABLE half is the one that
+				// fires under SHIPPED usage: `flag lock_sky_position on` then
+				// an unzoom-to-init left old drifting while the drawn path
+				// kept holding the sky (MEASURED 18.0493 deg vs 0.0000 deg,
+				// 131 182 px>32 against a 0 px floor).
+				setFlagTracking(false);
+				setFlagLockSkyPosition(false);
 				// NEW path (B17): zoom-out-to-init disarms the view offset — the
 				// old view_offset_transition ramp-to-0 (navigator.cpp:76-77, the
 				// zooming_mode==-1 branch this -1 move sets).
@@ -1406,8 +1476,9 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 	//  cout << "Unzoom to initfov\n";
 	zoomToBothPaths(InitFov, move_duration);
 	navigation->moveTo(InitViewPos, move_duration, true, -1);
-	navigation->setFlagTraking(false);
-	navigation->setFlagLockEquPos(0);
+	// D15(c), §11.150 — same both-paths transition as the manual branch above.
+	setFlagTracking(false);
+	setFlagLockSkyPosition(false);
 	// NEW path (B17): zoom-out-to-init disarms the view offset (old
 	// view_offset_transition ramp-to-0, navigator.cpp:76-77).
 	if (Camera::instance)
@@ -2309,8 +2380,13 @@ bool Core::selectObject(const Object &obj)
 	selected_object = obj;
 	setSelectedBodyName(selected_object);
 	// If an object was selected keep the earth following
+	// D15(c), §11.150: through the both-paths mirror, so the hold the old path
+	// takes over reaches the path that DRAWS. Pre-change this site left old
+	// holding the sky (0.0000 deg over a 0.05 d sidereal advance) while the new
+	// path drifted with the horizon (18.0493 deg, 3287 px>32) — the ENABLE half
+	// of the same desync.
 	if (getFlagTracking())
-		navigation->setFlagLockEquPos(1);
+		setFlagLockSkyPosition(true);
 	setFlagTracking(false);
 
 	switch (obj.getType()) {
