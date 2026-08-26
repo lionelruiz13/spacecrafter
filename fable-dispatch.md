@@ -307,6 +307,7 @@ premise-probe fact recorded with its instrument; final-pass list carries the
 new members; no code tree change (`git -C /home/claude/spacecrafter status`
 clean at close).
 **WIP:** *(cleared at delivery 2026-08-26 — DELIVERED, §11.149; harness `313012b` CP1 / `5f213fd` CP2 / `458a71f` CP3 / this commit. Code tree untouched and clean throughout, as the section requires.)*
+*(ACCEPTED by supervisor [fable 2026-08-26]: entry read in full; commits/authors/trailers checked; all claimed flips verified at the ledger by content. Deviations endorsed: SS-18 same-class extension; FEATURE_REQUESTS header repair; the §11.149(h) authority-inversion repair — its owed stub↔entry-file cross-check sweep is NEXT ROUND's first candidate, queued. The (d5) supersession of §11.117(k)(1) is endorsed on its killer datum (Sun `visible: false` in BOTH frames of the instrument's own artifacts) — noting that the refuted reading had passed the 2026-07-30 supervision, mine.)*
 
 ### F38 — D15(c)+(d): sky-lock write-site mirroring + init/config structural parity [M]
 
