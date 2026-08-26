@@ -560,16 +560,18 @@ longitude audit + the b24_select 4-red adjudication (pre-existing at `7ef11aca`)
   - **A44** — `RingModule`'s shadow caster is the ONE scaled shadow radius, by
     your 2026-07-18 extent contract; D21 points the other way. Unexercised on
     shipped content (no scaled body has rings). Which contract wins?
-  - **§5.104** — `body action reload` silently drops every display scaling
-    (`moon_scale`, `sun_scale`, `planet_scale`) — pre-existing, both binaries.
-    D31 ruled reload = load-from-file, but the scaling comes from CONFIG, not
-    the file: what should reload re-apply (config values, the D30 ledger, both)?
-    B16's seam.
+  - ~~**§5.104** — what should reload re-apply?~~ **ANSWERED [vixy 2026-08-26 →
+    §11.154(b)]: ownership FORMAT-SCOPED** — legacy: config.ini owns scaling;
+    modular: the new FILE owns it, deprecating config.ini whenever the new
+    format serves the solar system. Implementation rides B16's seam; one gate:
+    **B28 sign-off on the new-format scaling key** before any emitter writes it.
   - **§5.106** — entering free flight changes what the ENVIRONMENT draws
     (landscape stops updating, atmosphere floods the dome: 3.3 Mpx — this, not
     the teleport, was §11.144(i)'s pixel count). Old path's own `isOnBody()`
     semantics; what free flight should SHOW is yours — same family as D15(b)
-    transparency.
+    transparency. **[DE-URGENTED per §11.154(a)'s usage-path model
+    (interactive-only path); veto point open: close-as-accepted vs keep the
+    design question — the atmosphere-flood sub-question stays owed either way.]**
   - **The two §11.144 riders, now with veto points at their sites (§11.153(e)(f),
     each ≤3 lines to reverse):** free-flight `moveto lat/lon` now names the
     anchored place (restoring `Camera.hpp:195-197`'s own contract) — say the
