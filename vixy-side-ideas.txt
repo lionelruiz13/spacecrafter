@@ -1,0 +1,24 @@
+[parallel-script]
+= Enable to execute and control more than one script at a time
+- Script launched without setting a name defaults to name ""
+- Script-local resource are bound to the named script
+- Operation on script (ex : script action pause) operate on the named script and the ones it track
+- Execution policy of script is set by exec key and defaults to "stack"
+- On either script action end or the natural end of a script, terminate (script action end) the named script it track
+- "stack" policy means the calling script is blocked on called script completion - called script tracked
+- "parallel" policy means the calling script continue - called script tracked
+- "detached" policy means the calling script continue - called script NOT tracked
+
+[script-binding]
+= Enable to dynamically override a key binding (or joystick binding)
+- script action bind on <keybind-here> launch <script_path>
+- Binding lifetime defaults to global but can be set to script-lifetime
+
+[script-trigger]
+@requires [script-binding]
+= Enable to bind a script to execute when a condition is met
+- Camera attach to named body
+- Camera detach from named body
+- Going over/below an altitude treshold (optionally - while attached on a named body)
+- Visibility change of a named body (halo - far - near - surface)
+
