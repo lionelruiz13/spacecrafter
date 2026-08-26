@@ -344,7 +344,17 @@ paths agree in BOTH directions, asserted against the pre-change binary;
 old-path observables bit-identical where the old path is the baseline; battery
 green; config/ssystem md5 in==out; B18 row flip; §11 entry + stub; WIP
 discipline per §0.6.
-**WIP:**
+**WIP:** *(2026-08-26 CP1 — instrument + PRE-change baseline landed, harness only,
+code tree untouched. `harness/f38_{run.sh,mirror.py,analyze.py}`; artifacts
+`harness/artifacts/f38/pre` (gitignored per README layer 2). Census re-verified at
+`f0c8ef83`: the four sites are core.cpp 1083/1372/1410/2313 — SAME four call sites
+as §11.112's 971/2066/1251/1289, pure line drift (verified by `git show 606d6b87`).
+All four measured DESYNC on the pre binary: DISABLE 1410/1372 old_equ 18.0493° vs
+new_equ 0.0000° (131 089 / 131 182 px>32 vs 0 px floor); ENABLE 2313 old held /
+new drifting (3287 px>32); 1083 additionally shows `camera.tracked='Mars'` after
+the old-only `setFlagTraking(0)` at core.cpp:1085 ⇒ the lock mirror alone is inert
+at that site. NEXT: implement (c) mirror + the 1085/1371/1409 tracking-clear
+coupling, then (d).)*
 
 ### F39 — D21: display scaling = presentation layer; grounded children inherit it; physics unscaled [M–L]
 
