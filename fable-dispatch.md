@@ -314,6 +314,12 @@ the Sun REMOVES the Moon from the frame — disc interior 4.74 → 0.00, 95 % of
 lit" is REFUTED on its own committed artifacts (`b39_star`'s `lit()` counts the
 whole 2048² frame, star-field-dominated). Next: superscript staleness probe, then
 §11.149 + ledger flips + FEATURE_REQUESTS + DECISIONS_PENDING arrows.
+2026-08-26 — CP2: §11.149 entry + stub written; ledger flips done (B18 resolved,
+§5.27 unblocked, B31 T3, B35 + §5.89 informed-not-decided, B39 residue routed +
+§11.117(k)(1) supersession marker, §5.80 reading, §5.96/97/98 staleness
+annotations, NEW §5.99); DECISIONS_PENDING three arrows + header (open set EMPTY,
+a first); FEATURE_REQUESTS three pointer entries. Next: SCRIPT_SURFACE SS
+statuses, §3 D37-bullet correction + final-pass members, final verify.
 
 ### F38 — D15(c)+(d): sky-lock write-site mirroring + init/config structural parity [M]
 

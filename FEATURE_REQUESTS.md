@@ -2,7 +2,7 @@
 
 Single place for feature requests coming from outside the development
 process itself (users, testers, anyone not already tracking work through
-`src/experimentalModule/INTENT.md`). This file exists so a request made
+`claude/INTENT.md`). This file exists so a request made
 today isn't lost before someone with context gets to triage it — it does
 not imply a request will be accepted, only that it's recorded and will be
 looked at.
@@ -101,3 +101,56 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   acting-default logging raises from the other end (a default that must be
   displayed and a default that must be logged both need a single place that
   knows what it is).
+
+### [2026-08-26] Parallel scripts — run and control more than one script at a time
+- **From:** Vixy (`claude/vixy-side-ideas.txt` `[parallel-script]`, written
+  with the D15 answer, harness `2b24a1b`)
+- **Request:** POINTER ENTRY — **`claude/vixy-side-ideas.txt` is the authority
+  for the request's own text and stays so**; this entry exists only so the idea
+  is reachable from the triage channel (I2: one authority, one index). In one
+  line, without restating the spec: a named-script model with an execution
+  policy (`exec` = `stack` / `parallel` / `detached`), script-local resources
+  bound to the name, script operations addressing the named script *and the
+  ones it tracks*, and termination cascading down the tracked set.
+- **Status:** new — untriaged. Three surfaces it would touch, flagged so triage
+  starts from the right rows rather than from scratch [derived]: the script
+  engine's play/pause/queue state, which **§11.113(o)/D36** deliberately
+  classified as *time-bearing ⇒ OUT of the session file* (a multi-script world
+  makes "the running show" plural, so D36's boundary is re-read against it, not
+  re-opened by it); the command grammar, which is now a machine-consumed
+  contract (`util/scedit/grammar/sc-grammar.json`) ⇒ new words are B28-protocol
+  spellings; and **§2(b)** (user scripts are immutable live-show content), which
+  bounds what a policy may do to a script already playing.
+
+### [2026-08-26] Script-bound key/joystick bindings — override a binding to launch a script
+- **From:** Vixy (`claude/vixy-side-ideas.txt` `[script-binding]`, harness
+  `2b24a1b`)
+- **Request:** POINTER ENTRY — text authority stays `vixy-side-ideas.txt`.
+  Shape only: `script action bind on <keybind> launch <script_path>`, with the
+  binding's lifetime defaulting to global and settable to script-lifetime.
+- **Status:** new — untriaged. Adjacency worth carrying into triage [derived]:
+  **B37** already tracks the UI-only capabilities (reachable by key or mouse and
+  therefore unusable in a show); this request runs the arrow the other way —
+  keys become script-reachable — so the two together decide whether the key map
+  is a *surface* with one authority or two half-surfaces. A lifetime that is
+  "script-lifetime" is also state a session save must classify (**B31** §2,
+  declarative-in / time-bearing-out per D36).
+
+### [2026-08-26] Script triggers — run a script when a condition is met
+- **From:** Vixy (`claude/vixy-side-ideas.txt` `[script-trigger]`, harness
+  `2b24a1b`; the file marks it `@requires [script-binding]`)
+- **Request:** POINTER ENTRY — text authority stays `vixy-side-ideas.txt`.
+  Shape only: bind a script to a condition — camera attach/detach to a named
+  body, crossing an altitude threshold (optionally while attached to a named
+  body), and a named body's visibility class changing (halo / far / near /
+  surface).
+- **Status:** new — untriaged. The one fact triage should not have to
+  rediscover [observed]: every condition listed already exists as engine state
+  with a named owner — camera attachment is the reference/`freeMode` pair
+  (`Camera`, **B18**/D15(b) territory), altitude is `ground_radius`-relative
+  (**B10**, §11.71), and the visibility classes are the G4/G5 regime ladder
+  whose thresholds are now px-authored with one authority (§11.127, **A41**).
+  So the request is a *notification* surface over existing state, which is I3
+  (the owner of state notifies dependents) rather than a new state machine —
+  and that is also why it wants deciding alongside **A41/A42** (a trigger that
+  fires on a regime boundary makes those constants user-visible in a new way).
