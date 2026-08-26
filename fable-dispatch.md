@@ -460,7 +460,20 @@ unchanged at their measured exactness class; anchored places bit-identical
 exit's state; battery green; md5 pristine; §5.80 closed; §11 entry + stub.
 **Dispatch condition:** after F39's verification, session health permitting
 (§11.151(a)); else heads next round's queue with the stub↔entry-file sweep.
-**WIP:**
+**WIP:** *(2026-08-26 CP1 — algebra licensed BEFORE any product change:
+`harness/f40_probe.cpp` rebuilds `viewMat` factor for factor with the project's own
+primitives and scores the proposed converter (`position = −pB`, inverse
+`atan2(p.x,−p.y)/asin(p.z/|p|)/|p|`) against today's at 8 poses × bound/unbound —
+**84/84 OK**, fixed residual ≤ 1.2e-10 AU relative-floored, today's 6.2e-05 … 1.8e-03 AU.
+Two facts the probe settles and the next step must carry: (i) the fourth converter site
+is `getPlace()` (`Camera.cpp:52`, whose own header doc says it uses "the SAME conversion
+setFreeMode(false) uses") — leaving it on (A) would CHANGE what `get status position`
+answers, updating it PRESERVES the shipped answer (entry triple), so the §11.144 rider 2
+is untouched only by updating it; (ii) the §11.152(o) discriminator's post-fix target is
+**90.0° in BOTH modes**, not "60 stays 60": 60° is today's FREE reading = the defect,
+90° is the anchored/composer reading, and anchored is bit-identical by DoD — the
+invariant is that the TOGGLE moves nothing. Next: implement the pair in `Camera`,
+rebuild, pre/post live runs.)*
 
 ---
 
