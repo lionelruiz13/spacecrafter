@@ -425,26 +425,7 @@ observables recorded (unchanged if already unscaled, corrected+measured if
 not); the `b24_screen` scaling-off workaround retired or its retention argued;
 battery green; md5 pristine; §5.27 behavior half closed; B31 T3 noted
 dispatchable; §11 entry + stub; the §5.102 root NAMED (fixed if decision-free).
-**WIP:** 2026-08-26 (Opus 5) — checkpoint 1: **§5.102 ROOTED AND FIXED** at
-`EntityCore/Executor/ASmooth.hpp` (`set`'s fresh-movement branch never wrote
-`timer`; the ctor wrote none of the coefficients) — code `fd98c8e9` +
-submodule `7ce5835`; A-D battery post-fix carries ZERO non-finite values
-(pre: 73/153 records NaN), Moon `scaledDatumRadius = 5.80690103e-05`.
-Checkpoint 2: **D21 IMPLEMENTED AND GATED** — code `8c2cbf61`; model layer reads
-the parent's raw datum live, presentation layer inherits via `inheritedScaling`
-(pushed from updateCache), dump carries `scaling`/`scalingTarget`/
-`inheritedScaling`/`eclDisplay`. Gates measured pre(`487cf096`)/post: placement
-8687.000 km == Moon scaledDatumRadius (pre 1737.400), extent ×5.0000,
-self-similarity 1.38581 vs 1.38582, `ecl` invariant in every leg, ramp tracked
-sample-for-sample, screen +267667/−40525 px, unscaled-scene control 0/3 px of
-4.19 M. Artifacts `harness/artifacts/f39/d21c`.
-Checkpoint 3: §5.103 CLOSED (`JsonNum.hpp` + `dumpread.py` as the one reader);
-regression GREEN — A-D battery pre/post **0 non-numeric differences** over 5
-scenes x 152 records, `b24_equivalence` 120/120, `b24_screen` all gates; D11
-cost bounded **<= 2.3 us/frame** on EXECUTOR_UPDATE (the instrument's own A/A2
-floor; central +1.29 us = +0.13% of 1 ms, matching the predicted ~1.2 us);
-rare paths traversed twice, every exit screen bit-identical. Code `7ef11aca`.
-Next: §11.152 entry + §5.27 flip + B31-T3 + new §5 rows.
+**WIP:** *(cleared at delivery 2026-08-26 — **DELIVERED, §11.152**; code `b444d381 → fd98c8e9` (CP1, incl. submodule `224eba7 → 7ce5835`) `→ 8c2cbf61` (CP2) `→ 7ef11aca` (CP3) + the record commit; harness `425ca0d → e890ab7 → 1533547 → 993bdce` + the record commit. DoD, item by item: mandate scene ALIVE under the shipped config with **no `flag moon_scaled off`** — rover `|eclDisplay| = 8687.000 km` == Moon `scaledDatumRadius`, 243 118 drawn px + 40 534 px of cast shadow where PRE drew **0 px and still darkened 24 560**; the ratified UNIFORM-DILATION criterion gated as one scalar, **PRE 0.27716 vs POST 1.3858165 ± 1.5e-7 over thirteen legs**; ramp live (`inheritedScaling` tracks Moon `scaling` sample for sample) while the model `ecl` is 1737.400 km in EVERY leg; shadow radii verified ALREADY unscaled (correction magnitude zero) with the ring exception SUSPENDED as **A44**; reload no longer moves it — and §11.101(f)'s prediction is **REFUTED**, the reload drops the scaling entirely ⇒ NEW **§5.104**; the workaround retired as a workaround, retained as a scene declaration with the argument; battery GREEN (A–D pre/post **0 non-numeric differences**, `b24_equivalence` 120/120, `b24_screen` all gates); md5 pristine every run; **§5.27 CLOSED**, §5.102 ROOTED+FIXED at an indeterminate `ASmooth` phase timer (original defect, not a regression — the dating question answered), §5.103 CLOSED; B31-T3 resolved; D11 cost **≤ 2.3 µs/frame**. Also NEW **§5.105** (old path dumps uninitialized memory as `dist`) and, for F40, a free discriminator: `moveto lon` vs `orbit_lon` differ by **60° free / 90° surface**.)*
 
 ### F40 — §5.80: the freeMode converter becomes the composer's exact inverse (D15(b) ratified → §11.151(a)) [S–M]
 

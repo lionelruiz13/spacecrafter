@@ -1,0 +1,39 @@
+{
+ "scaled": {
+  "rover_drawn_px_present_minus_absent": 243118,
+  "darkened_px_cast_shadow": 40534,
+  "bbox_bright": [
+   16,
+   268,
+   984,
+   1631
+  ],
+  "bbox_dark": [
+   18,
+   689,
+   778,
+   1480
+  ]
+ },
+ "unscaled": {
+  "rover_drawn_px_present_minus_absent": 4968,
+  "darkened_px_cast_shadow": 5380,
+  "bbox_bright": [
+   16,
+   907,
+   1014,
+   1198
+  ],
+  "bbox_dark": [
+   18,
+   921,
+   1015,
+   1203
+  ]
+ },
+ "pre_binary_rover_contribution_scaled": {
+  "drawn_px": 0,
+  "darkened_px": 24560,
+  "note": "PRE (487cf096) rover-present vs POST rover-absent; legitimate because pre-vs-post with the rover present in the UNSCALED scene differs by 0 brighter / 3 darker px of 4.19 M"
+ }
+}

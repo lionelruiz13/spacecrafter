@@ -92,7 +92,14 @@ def build_farm():
     twin = md / "SolarSystem.ini.disabled"
     if not twin.exists():
         raise RuntimeError("twin absent in the field modularSystem - launch once on the shipped state first")
-    (md / "SolarSystem.ini").write_bytes(twin.read_bytes() + rover_sections().encode("latin-1"))
+    # F39_NOROVER=1 builds the SCENE-ABSENT leg (b24_screen's own method,
+    # §11.80): identical camera, identical everything, no rover - so the
+    # present/absent diff isolates the rover's own drawn pixels AND its cast
+    # shadow, which no single-image count can separate from the Moon's disc.
+    body = twin.read_bytes()
+    if not os.environ.get("F39_NOROVER"):
+        body += rover_sections().encode("latin-1")
+    (md / "SolarSystem.ini").write_bytes(body)
     return FARM
 
 
@@ -274,7 +281,7 @@ def report(tag, res, out):
         m = bodies.get("Moon", {})
         r = bodies.get("F39Rover", {})
         if not r:
-            note(f"[{tag}/{label}] rover ABSENT from the dump")
+            note(f"[{tag}/{label}] rover ABSENT from the dump (expected under F39_NOROVER)")
             continue
         rows[label] = dict(
             moon_scaledDatum_km=m.get("scaledDatumRadius", float('nan')) * AU_KM,
