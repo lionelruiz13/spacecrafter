@@ -460,20 +460,28 @@ unchanged at their measured exactness class; anchored places bit-identical
 exit's state; battery green; md5 pristine; §5.80 closed; §11 entry + stub.
 **Dispatch condition:** after F39's verification, session health permitting
 (§11.151(a)); else heads next round's queue with the stub↔entry-file sweep.
-**WIP:** *(2026-08-26 CP1 — algebra licensed BEFORE any product change:
-`harness/f40_probe.cpp` rebuilds `viewMat` factor for factor with the project's own
-primitives and scores the proposed converter (`position = −pB`, inverse
-`atan2(p.x,−p.y)/asin(p.z/|p|)/|p|`) against today's at 8 poses × bound/unbound —
-**84/84 OK**, fixed residual ≤ 1.2e-10 AU relative-floored, today's 6.2e-05 … 1.8e-03 AU.
-Two facts the probe settles and the next step must carry: (i) the fourth converter site
-is `getPlace()` (`Camera.cpp:52`, whose own header doc says it uses "the SAME conversion
-setFreeMode(false) uses") — leaving it on (A) would CHANGE what `get status position`
-answers, updating it PRESERVES the shipped answer (entry triple), so the §11.144 rider 2
-is untouched only by updating it; (ii) the §11.152(o) discriminator's post-fix target is
-**90.0° in BOTH modes**, not "60 stays 60": 60° is today's FREE reading = the defect,
-90° is the anchored/composer reading, and anchored is bit-identical by DoD — the
-invariant is that the TOGGLE moves nothing. Next: implement the pair in `Camera`,
-rebuild, pre/post live runs.)*
+**WIP:** *(2026-08-26 CP2 — **the fix is in and measured both ways**. Code
+`7ef11aca → 18b6f13f` (`Camera.cpp`/`Camera.hpp` only): one authority
+`posePart`/`posePartToPose` (viewMat's anchored branch solved for the eye, and its
+exact inverse), read by all FOUR conversion sites — `setFreeMode` both ways,
+`moveTo`'s free branch, `getPlace` — and by `placeAt`, which stops restating it.
+Harness `4c1d690 → this`: `f40_inverse.py` (one instrument, both hypotheses scored at
+every site: **29/29 on the pre binary, 32/32 on the post**), `f40_env.py` (the four-cell
+flag attribution), `f40_scenes.sh` (A–D battery driver). Numbers: entry toggle
+13 732.4 km → **0.0009 km**, 174 px>8 → **0 px** on a 0 px A/A control; shipped place
+124.6797°/11 298.6 km → **0.312 m** (null control 0.207 m, float32 ulp 0.38 m) with
+**1 px>8**; Mars 39 945.9 km/5714 px → **0.0031 km / 0 px**; `moveto` both modes
+16 700 km → **1.631 m = 3.3 ulp**; reversible pair entered twice, second entry from the
+first exit's state, every teleport ≤ 2.3 m; `descend`/`moveEyeRel` 2.252e-12/2.011e-12 AU
+against F34's own predictions; `get status position` byte-identical (riders untouched).
+**NEW, out of scope, record-don't-fix:** the shipped-flags 3.3 Mpx that §11.144(i)
+attributed to the teleport is NOT the observer — it survives the fix intact
+(3 300 622 → 3 300 632 px while the observer moves 0.24 m). Four-cell measurement on
+both binaries attributes it to `EnvironmentManager.cpp:81`'s
+`onBody = !camera.isFreeMode()` gate: free flight takes the anchor branch, the
+landscape stops updating (543 834 → 543 393 px, survives) and the atmosphere floods the
+dome (lit 258 334 → 3 300 845). Next: A–D battery + `b24_equivalence` + `b24_screen`
+both legs, then §11.153 + §5.80 flip.)*
 
 ---
 
