@@ -524,6 +524,50 @@ defect's own number — my derivation error). b24_screen/b24_select re-declarati
 (geometry-preserving, invariance shown both ways). Owed next round: the 28-file free-mode
 longitude audit + the b24_select 4-red adjudication (pre-existing at `7ef11aca`).)*
 
+### F41 — §5.104 fix: format-scoped scaling ownership (`display_scale`), per §11.154(b)(c) [S–M]
+
+**Mandate:** §11.154(b) (format-scoped ownership, RATIFIED operable in (c)) +
+the §5.104 row. Key name **`display_scale`** [vixy], adopted iff its delegated
+deducibility test holds against the full format grammar (*"unambiguous in what
+it does and doesn't, the difference with radius can be deduced from name
+alone; if it doesn't hold, it's not the right name"*) — adopt or FLAG with the
+observed contrast, never silently rename (B28; supervisor vocabulary pre-check
+holds, §11.154(c)).
+
+**Scope:**
+1. Modular format gains `display_scale` (parser; the loader applies it as the
+   body's authored display scaling — the authored DEFAULT under the operator's
+   runtime `scaling`, §11.152(c)'s non-folding untouched).
+2. Twin emission: `generateComposedTwin` (`ModularSystem.cpp:1657`) translates
+   the config values (`moon_scale`/`sun_scale`/`planet_scale`) into per-body
+   `display_scale` — forced by the reproduce-legacy contract (§11.113(f)
+   precedent; §11.154(c)). Twin-only keys ⇒ no user file migrates (D13/D35 by
+   construction).
+3. Precedence: when the modular format SERVES the system, the file wins and a
+   still-present config value is ignored + logged ONCE naming what overrode it
+   (§2(f)); legacy-serving behaviour unchanged.
+4. Legacy reload: `reloadCurrentSystem` re-applies the config scaling after
+   rebuild (§5.104's legacy branch). Modular reload: by construction (D31) —
+   verify, don't assume.
+5. NO session-ledger machinery (D30 absorbs per-branch, §11.154(b) — out of
+   scope).
+
+**Constraints:** old path unchanged (§11.52(b)); no legacy-file writes (D9/D13);
+`scaling` equality gates as TOLERANCE (ASmooth settles 5→1 at 1.00000012,
+§11.152(o)); never `zoom auto in`/`zoom auto initial` for scene setup; md5
+pristine (temp-HOME farm for config variants, `f38_config.sh` pattern);
+`dumpread.py` for dumps; free-mode `moveto lon` semantics changed at F40 —
+don't reuse stale free-mode baselines.
+
+**DoD:** legacy reload preserves scaling (pre-fix 5→1 measured both binaries;
+post 5→5 within tolerance) with the F39 reload-invariance leg re-run green;
+twin emits `display_scale` matching config; the activated-twin route (§11.51(a))
+applies FILE scaling with the config value deprecated + logged once; the
+deducibility verdict recorded (adopted or flagged); discriminators both ways vs
+a pre binary; battery green; md5 pristine; §5.104 CLOSED; §11.155 entry + stub;
+WIP discipline (`grep -c '^### F'` = 5 before every commit).
+**WIP:**
+
 ---
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
@@ -565,6 +609,8 @@ longitude audit + the b24_select 4-red adjudication (pre-existing at `7ef11aca`)
     modular: the new FILE owns it, deprecating config.ini whenever the new
     format serves the solar system. Implementation rides B16's seam; one gate:
     **B28 sign-off on the new-format scaling key** before any emitter writes it.
+    **[OPERATED same day → §11.154(c): key = `display_scale` (delegated
+    deducibility test rides F41); derivation ratified verbatim; F41 dispatched.]**
   - **§5.106** — entering free flight changes what the ENVIRONMENT draws
     (landscape stops updating, atmosphere floods the dome: 3.3 Mpx — this, not
     the teleport, was §11.144(i)'s pixel count). Old path's own `isOnBody()`
