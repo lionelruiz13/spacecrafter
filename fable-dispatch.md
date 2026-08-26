@@ -566,17 +566,23 @@ applies FILE scaling with the config value deprecated + logged once; the
 deducibility verdict recorded (adopted or flagged); discriminators both ways vs
 a pre binary; battery green; md5 pristine; §5.104 CLOSED; §11.155 entry + stub;
 WIP discipline (`grep -c '^### F'` = 5 before every commit).
-**WIP:** 2026-08-26 — CHECKPOINT 1: code landed + green (binary `fd4612ac`), pre
-binary staged `/tmp/sc_f41_pre` (`98d09488`, code `18b6f13f`). Measured both ways
-on `f41_ownership.py` legs L1-L5: legacy reload 5→5 post / 5→1 pre (§5.104
-reproduced), twin emits `display_scale = 5` for the Moon and nothing for the Sun,
-file-wins discriminator L3 (config `moon_scale = 2` → post 5 / pre 2), deprecation
-logged on the composed legs only and silent when the config value was not live.
-FOUND out-of-scope: `ui.cpp:239` hardcodes `setFlagSunScaled(false)` after
-`Core::init`, so `flag_sun_scaled` has never acted (both binaries) — new §5 row
-owed. NEXT: command-control legs (a command must still act on a file-owned body),
-F39 reload-invariance re-run, A-D battery + b24_equivalence + b24_screen, B28
-deducibility verdict, §11.155 + §5.104 flip.
+**WIP:** 2026-08-26 — CHECKPOINT 2: code green (binary `fa00dead`), pre binary
+`/tmp/sc_f41_pre` (`98d09488`, code `18b6f13f`). `f41_ownership.py` L1-L5 measured
+both ways: legacy reload 5→5 post / 5→1 pre (§5.104), twin emits `display_scale = 5`
+(Moon) and nothing for the Sun, file-wins discriminator (config `moon_scale = 2` →
+post 5 / pre 2), the file's value ACTS (L5: post 5 / pre 1), deprecation logged only
+where the config value was live, commands still act on a file-owned body (Moon 7,
+Sun 3). FORCED SCOPE, argued in §11.155: the config read now APPLIES the scale
+instead of animating it (old applies it instantly, body.cpp:484 — the new path's
+5 s startup ramp was a parity divergence, and a twin cannot reproduce an
+animation), and the two format branches re-settle the extent cache at the same
+point of init. `b24_equivalence` GREEN with both phases now CORRECT (Moon
+`scaledDatumRadius` 1.16138017e-05 → 5.80690103e-05, bounding ×1.01 → ×1.02).
+NEW out-of-scope defects owed rows: `ui.cpp:239` hardcodes `setFlagSunScaled(false)`
+after `Core::init` (⇒ `flag_sun_scaled` has never acted, both binaries); the extent
+cache is a load-time latch for a body no scene evaluates. NEXT: b24_screen, A-D
+battery + same-binary control, F39 reload-invariance re-run, B28 verdict,
+§11.155 + §5.104 flip + new §5 rows.
 
 ---
 

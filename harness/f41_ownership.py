@@ -192,6 +192,31 @@ def run_leg(name, binary, tag, out, seds, twin):
         send(s, "body action reload", 4)
         time.sleep(8)                      # a ramp, if one were started, lands
         res["reloaded"] = grab("reloaded")
+        # THE COMMAND CONTROL, and it is what keeps the deprecation honest: the
+        # ruling deprecates config.ini's value, NOT the operator's command, and
+        # §11.152(c) says the file value is the authored DEFAULT under the
+        # runtime `scaling`. So a command must still act on a body whose file
+        # owns the default - on BOTH binaries, and identically.
+        send(s, "set moon_scale 7", 1)
+        send(s, "flag sun_scaled on", 1)
+        time.sleep(8)
+        res["commanded"] = grab("commanded")
+        # ...and a reload is a LOAD (D31, §11.113(j)): it re-reads the file and
+        # does NOT replay the operator's override. On a modular-served system
+        # the Moon therefore returns to the FILE's value; on a legacy-served one
+        # it keeps 7, because the command wrote the very holder config.ini owns.
+        # This is also the SECOND traverse of the reload pair, entered from the
+        # state the first exit produced.
+        send(s, "body action reload", 4)
+        time.sleep(8)
+        res["reloaded2"] = grab("reloaded2")
+        # The scaling toggle, traversed TWICE, each second entry starting from
+        # the state the first exit produced (the standing rare-path rule).
+        for i in (1, 2):
+            send(s, "flag moon_scaled off", 1); time.sleep(8)
+            res[f"moon_off{i}"] = grab(f"moon_off{i}")
+            send(s, "flag moon_scaled on", 1); time.sleep(8)
+            res[f"moon_on{i}"] = grab(f"moon_on{i}")
     finally:
         if proc.poll() is None:
             proc.terminate()
@@ -206,8 +231,11 @@ def run_leg(name, binary, tag, out, seds, twin):
         shutil.copy2(logs[-1], applog)
     res["deprecations"] = [m.groups() for m in DEPRECATION.finditer(
         applog.read_text(encoding="latin-1", errors="replace") if applog.exists() else "")]
+    # Only a LEGACY-served leg generates a twin. A composed-served leg has the
+    # field's copy sitting there untouched, and reporting it as "the twin this
+    # leg produced" would be fiction.
     twin_out = farm / ".spacecrafter" / "modularSystem" / "SolarSystem.ini.disabled"
-    if twin_out.exists():
+    if not twin and twin_out.exists():
         kept = out / f"{tag}_{name}_twin.ini.disabled"
         shutil.copy2(twin_out, kept)
         res["twin"] = str(kept)
@@ -251,8 +279,12 @@ def main():
         results[name] = run_leg(name, a.bin, a.tag, out, seds,
                                 a.twin if needs_twin else "")
         r = results[name]
-        note(f"settled  {r['settled']}")
-        note(f"reloaded {r['reloaded']}")
+        for phase in ("settled", "reloaded", "commanded", "reloaded2",
+                      "moon_off1", "moon_on1", "moon_off2", "moon_on2"):
+            if phase in r:
+                note(f"{phase:10s} " + "  ".join(
+                    f"{b}={r[phase][b]['scalingTarget']}/{r[phase][b]['scaling']}"
+                    for b in ("Moon", "Sun") if b in r[phase]))
         note(f"deprec   {r['deprecations']}")
         note(f"twin ds  {r.get('twin_display_scale')}")
     (out / f"{a.tag}_results.json").write_text(json.dumps(results, indent=1))
