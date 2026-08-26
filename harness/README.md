@@ -1761,3 +1761,60 @@ pre/post2 = 0.
 leaves the converter's output there at startup. It is expected to differ across
 the F40 boundary (by exactly the transform F40 made) and `f40_cmp.py` reports it
 instead of gating it.
+
+## F41 — who owns a body's display scale, and what a twin has to carry — INTENT §5.104 / §5.107 / §5.108 / §11.155, 2026-08-26
+
+    DISPLAY=:2 ./f41_ownership.py <absOutdir> --bin /abs/binary --tag pre|post \
+                                  [--twin /abs/composed.ini] [--legs L1,L2,…]
+    DISPLAY=:2 ./f41_scenes.sh <leg> <abs binary>     # the A–D battery, one leg
+    ./f39_cmp.py <dirA> <dirB>                        # its comparator (unchanged)
+
+**One instrument, five legs, both binaries, and every gate says what a PRE leg
+must show.** `L1_legacy` is legacy-served; `L2`–`L5` install the POST-generated
+twin as `modularSystem/SolarSystem.ini` — the documented adoption workflow, i.e.
+§11.51(a)'s activation route — and vary the config around it. The two that
+discriminate: **L3** (`moon_scale = 2` ⇒ post 5, the file wins; pre 2, config
+wins) and **L5** (`flag_moon_scaled = false` ⇒ post 5 from the file, pre **1**,
+which is the same bytes proving the new key ACTS). `--twin` is what makes both
+binaries read one file, so a difference is the binary and nothing else.
+
+Each leg is a fresh launch on a symlink temp-HOME farm with `config.ini`, `log/`
+and `modularSystem/` as REAL entries, so the field pair 03fbee59/545a51ef is
+never touched (asserted in==out per leg) and no field twin is overwritten.
+
+**Phases per leg, and why each is there**: `settled` · `reloaded` (§5.104) ·
+`commanded` (`set moon_scale 7`, `flag sun_scaled on` — the control that keeps
+the deprecation honest: the ruling deprecates config.ini, never the operator) ·
+`reloaded2` (D31 — a reload is a LOAD, so a modular system goes back to the
+FILE's value while a legacy one keeps the commanded one; also the reload pair's
+second traverse, entered from the state the first exit produced) · the
+`flag moon_scaled` toggle twice. **Every scaling equality is a TOLERANCE**: the
+ASmooth lands a 5→1 ramp at 1.00000012 / 1.00000024 (§11.152(o)).
+
+**Two things this task changed that a harness author must know.**
+1. **The startup scale no longer ramps.** The config read applies it (old always
+   did — `body.cpp:484`); the COMMAND ramp is untouched, so `f39_d21.py`'s
+   mid-ramp legs still measure it. A harness that sampled during the first 5 s of
+   a launch to catch the Moon growing will now find it already at size.
+2. **`body action reload` keeps the display scaling.** §11.152(p)(5) said the
+   opposite and is superseded: F39's own reload leg now reads
+   `moonDatum = 8687.00 km`, not 1737.40. Any baseline recorded through a reload
+   before 2026-08-26 was recorded through §5.104.
+
+**Instrument notes.** The `/proc/<pid>/comm == "spacecrafter"` probe counts **2**
+per running instance on this host (a launch forks a single-threaded child with
+the same `comm`) — it is a liveness test, not an instance count, and F26's
+"decoy 1" calibration was taken on a decoy rather than on the app. It fired
+correctly here and stopped a measurement from running against a stray. A
+composed-served leg regenerates NO twin, so `f41_ownership.py` records the twin
+only on the legacy leg — reporting the file it was handed as "the twin this leg
+produced" would be fiction.
+
+Artifacts: `artifacts/f41/` — `own_pre|own_post/*_results.json` (every leg, every
+phase, plus the deprecation lines parsed out of each applog), `vocabulary.txt`
+(the B28 evidence: the 143 loader-read and 76 twin-emitted keys, and the fact
+that `display_scale` is the only one matching `scale|display`),
+`twin_moon_sun_sections.txt`, `scale_fields_cmp.txt` (the nine scale-bearing
+fields over 120 bodies × 5 scenes, pre/post AND the same-binary floor),
+`scenes_cmp_prepost.txt`, `scenes_cmp_control.txt`, `d21post/` (F39's gate
+re-run), `b24screen/`, `b24_equivalence_result.json`.

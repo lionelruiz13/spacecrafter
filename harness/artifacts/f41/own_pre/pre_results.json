@@ -1,0 +1,714 @@
+{
+ "L2_twin": {
+  "leg": "L2_twin",
+  "tag": "pre",
+  "binary_md5": "98d09488",
+  "settled": {
+   "Moon": {
+    "scaling": 5,
+    "scalingTarget": 5,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 5.80690103e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "reloaded": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "commanded": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 5,
+    "scalingTarget": 5,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.0232623629,
+    "composedDecl": true
+   }
+  },
+  "reloaded2": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_off1": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_on1": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_off2": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_on2": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "deprecations": [],
+  "twin": "/tmp/f41c/pre_L2_twin_twin.ini.disabled",
+  "twin_display_scale": {},
+  "md5_in": [
+   "03fbee59",
+   "545a51ef"
+  ],
+  "md5_out": [
+   "03fbee59",
+   "545a51ef"
+  ]
+ },
+ "L3_twin_cfg2": {
+  "leg": "L3_twin_cfg2",
+  "tag": "pre",
+  "binary_md5": "98d09488",
+  "settled": {
+   "Moon": {
+    "scaling": 2,
+    "scalingTarget": 2,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 2.32276034e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "reloaded": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "commanded": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 5,
+    "scalingTarget": 5,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.0232623629,
+    "composedDecl": true
+   }
+  },
+  "reloaded2": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_off1": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_on1": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_off2": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_on2": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "deprecations": [],
+  "twin": "/tmp/f41c/pre_L3_twin_cfg2_twin.ini.disabled",
+  "twin_display_scale": {},
+  "md5_in": [
+   "03fbee59",
+   "545a51ef"
+  ],
+  "md5_out": [
+   "03fbee59",
+   "545a51ef"
+  ]
+ },
+ "L4_twin_sunon": {
+  "leg": "L4_twin_sunon",
+  "tag": "pre",
+  "binary_md5": "98d09488",
+  "settled": {
+   "Moon": {
+    "scaling": 5,
+    "scalingTarget": 5,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 5.80690103e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "reloaded": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "commanded": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 3,
+    "scalingTarget": 3,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.0139574185,
+    "composedDecl": true
+   }
+  },
+  "reloaded2": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_off1": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_on1": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_off2": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_on2": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "deprecations": [],
+  "twin": "/tmp/f41d/pre_L4_twin_sunon_twin.ini.disabled",
+  "twin_display_scale": {},
+  "md5_in": [
+   "03fbee59",
+   "545a51ef"
+  ],
+  "md5_out": [
+   "03fbee59",
+   "545a51ef"
+  ]
+ },
+ "L5_twin_noflag": {
+  "leg": "L5_twin_noflag",
+  "tag": "pre",
+  "binary_md5": "98d09488",
+  "settled": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "reloaded": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "commanded": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 5,
+    "scalingTarget": 5,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.0232623629,
+    "composedDecl": true
+   }
+  },
+  "reloaded2": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_off1": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_on1": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_off2": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "moon_on2": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": true
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": true
+   }
+  },
+  "deprecations": [],
+  "twin": "/tmp/f41d/pre_L5_twin_noflag_twin.ini.disabled",
+  "twin_display_scale": {},
+  "md5_in": [
+   "03fbee59",
+   "545a51ef"
+  ],
+  "md5_out": [
+   "03fbee59",
+   "545a51ef"
+  ]
+ },
+ "L1_legacy": {
+  "leg": "L1_legacy",
+  "tag": "pre",
+  "binary_md5": "98d0948858fab21df98a730eaa78cdf4",
+  "note": "reconstructed from the run's own per-phase dumps (/tmp/f41c/pre_L1_legacy_*.json); the driver's pre_results.json was overwritten by the L2/L3 batch that followed",
+  "settled": {
+   "Moon": {
+    "scaling": 5,
+    "scalingTarget": 5,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 5.80690103e-05,
+    "composedDecl": false
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": false
+   }
+  },
+  "reloaded": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": false
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": false
+   }
+  },
+  "commanded": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": false
+   },
+   "Sun": {
+    "scaling": 5,
+    "scalingTarget": 5,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.0232623629,
+    "composedDecl": false
+   }
+  },
+  "reloaded2": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": false
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": false
+   }
+  },
+  "moon_off1": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": false
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": false
+   }
+  },
+  "moon_on1": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": false
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": false
+   }
+  },
+  "moon_off2": {
+   "Moon": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 1.16138017e-05,
+    "composedDecl": false
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": false
+   }
+  },
+  "moon_on2": {
+   "Moon": {
+    "scaling": 6.99999952,
+    "scalingTarget": 7,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 8.12966027e-05,
+    "composedDecl": false
+   },
+   "Sun": {
+    "scaling": 1,
+    "scalingTarget": 1,
+    "inheritedScaling": 1,
+    "scaledDatumRadius": 0.00465247268,
+    "composedDecl": false
+   }
+  },
+  "deprecations": [],
+  "twin_display_scale": {}
+ }
+}

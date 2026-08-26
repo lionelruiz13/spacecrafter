@@ -566,23 +566,7 @@ applies FILE scaling with the config value deprecated + logged once; the
 deducibility verdict recorded (adopted or flagged); discriminators both ways vs
 a pre binary; battery green; md5 pristine; §5.104 CLOSED; §11.155 entry + stub;
 WIP discipline (`grep -c '^### F'` = 5 before every commit).
-**WIP:** 2026-08-26 — CHECKPOINT 2: code green (binary `fa00dead`), pre binary
-`/tmp/sc_f41_pre` (`98d09488`, code `18b6f13f`). `f41_ownership.py` L1-L5 measured
-both ways: legacy reload 5→5 post / 5→1 pre (§5.104), twin emits `display_scale = 5`
-(Moon) and nothing for the Sun, file-wins discriminator (config `moon_scale = 2` →
-post 5 / pre 2), the file's value ACTS (L5: post 5 / pre 1), deprecation logged only
-where the config value was live, commands still act on a file-owned body (Moon 7,
-Sun 3). FORCED SCOPE, argued in §11.155: the config read now APPLIES the scale
-instead of animating it (old applies it instantly, body.cpp:484 — the new path's
-5 s startup ramp was a parity divergence, and a twin cannot reproduce an
-animation), and the two format branches re-settle the extent cache at the same
-point of init. `b24_equivalence` GREEN with both phases now CORRECT (Moon
-`scaledDatumRadius` 1.16138017e-05 → 5.80690103e-05, bounding ×1.01 → ×1.02).
-NEW out-of-scope defects owed rows: `ui.cpp:239` hardcodes `setFlagSunScaled(false)`
-after `Core::init` (⇒ `flag_sun_scaled` has never acted, both binaries); the extent
-cache is a load-time latch for a body no scene evaluates. NEXT: b24_screen, A-D
-battery + same-binary control, F39 reload-invariance re-run, B28 verdict,
-§11.155 + §5.104 flip + new §5 rows.
+**WIP:** *(cleared at delivery 2026-08-26 — **DELIVERED, §11.155**; code `18b6f13f → 742cdc82` (CP1) `→ d6aec251` (CP2) + the record commit; harness `5d1386c → 0c1ece9 → 87b8708` + the record commit; pre binary `98d09488` staged `/tmp/sc_f41_pre`, post `fa00dead`. DoD item by item — **legacy reload preserves scaling**: pre 5 → **1** reproduced (`scaledDatumRadius` 5.80690103e-05 → 1.16138017e-05 AU = §11.152(i) to every digit), post 5 → **5**, and a commanded 7 survives it; **F39's reload-invariance leg re-run GREEN** and now reads `moonDatum = 8687.00 km` where §11.152 recorded 1737.40 ⇒ §11.152(p)(5)'s warning SUPERSEDED, ratio 1.38581–1.38582 invariant over thirteen legs; **twin emits** `[Moon] display_scale = 5`, nothing for `[Sun]` (`flag_sun_scaled = false` — the built-in negative control), byte-reproducible across two independent launches; **activated-twin route**: FILE wins with the config value deprecated and logged once per config read (twice, §11.150(h)'s double init), positive AND negative log legs (silent when `flag_moon_scaled = false`); **discriminators both ways** — config `moon_scale = 2` gives 5 post / 2 pre, `flag_moon_scaled = false` gives 5 post / **1** pre (the key ACTS), commands still act on a file-owned body (7 / 3) on both binaries; **B28 verdict ADOPTED** with its argument and its one contrary datum (`_factor` is the grammar's existing multiplier suffix); **battery green** — same-binary control FIRST (0 non-numeric differences), pre/post 0, plus **0** over nine scale-bearing fields × 120 bodies × 5 scenes; `b24_equivalence` 120/120 and `b24_screen` at §11.153's numbers to the pixel; md5 `03fbee59`/`545a51ef` pristine every run; **§5.104 CLOSED** with its owed wider-seam probe kept OPEN on the row. **FORCED SCOPE, argued in §11.155(g)**: the config read APPLIES the scale instead of animating it (old applies it instantly, `body.cpp:484`; a composed file cannot state a transition) and an immediate scale settles its derived radii — `b24_equivalence` had been green only because both phases were equally wrong (Moon `scaling = 5` with every scaled radius at ×1, both binaries). NEW **§5.107** (extent cache = load-time latch for an unevaluated body) and **§5.108** (`ui.cpp:239` kills `flag_sun_scaled` on both paths; `SunScale` uninitialized). Recorded not fixed: D30's DELTA branch for this key (`SessionFile.cpp:317` vs `AuthoredState`) — B31's. Tracker repair: §11.154's stub had been written INTO §5 between §5.80 and §5.81; moved to §11 where the maintenance marker says stubs go.)*
 
 ---
 

@@ -1,0 +1,17 @@
+fields: scaling scalingTarget inheritedScaling scaledRadius scaledDatumRadius scaledGroundRadius boundingRadius subsystemRadius areaOfInfluence
+
+=== PRE vs POST ===
+  gen_a.json: bodies=120  scale-field differences=0
+  gen_b.json: bodies=120  scale-field differences=0
+  gen_moon.json: bodies=120  scale-field differences=0
+  gen_mars.json: bodies=120  scale-field differences=0
+  gen_mars_2.json: bodies=120  scale-field differences=0
+  TOTAL PRE vs POST: 0
+
+=== POST vs POST2 (same-binary floor) ===
+  gen_a.json: bodies=120  scale-field differences=0
+  gen_b.json: bodies=120  scale-field differences=0
+  gen_moon.json: bodies=120  scale-field differences=0
+  gen_mars.json: bodies=120  scale-field differences=0
+  gen_mars_2.json: bodies=120  scale-field differences=0
+  TOTAL POST vs POST2 (same-binary floor): 0

@@ -1,0 +1,67 @@
+--- gen_a: records A=152 B=152 onlyA=0 onlyB=0 non-numeric diffs=0 fields-only-in-B=0
+    max|d| oldView.observer.moveToCoef         8.24784e+14  (e) 3.12539616e+15 -> 3.95018021e+15
+    max|d| ramp.frames                                  15  (e) 4165 -> 4180
+    max|d| new.evalCount                                15  (Adrastea) 4165 -> 4180
+    max|d| altaz_old[1]                            2.04903  (Earth) 1.54497645 -> 3.59400921
+    max|d| old.axisRot                         0.000335693  (Adrastea) 262.581726 -> 262.58139
+    max|d| old.screen[1]                       0.000244141  (Earth) 568.590881 -> 568.591125
+    max|d| old.screen[0]                        0.00012207  (Earth) 820.617432 -> 820.617554
+    max|d| new.axisRot                            5.86e-06  (Metis) 5.25615149 -> 5.25614563
+    max|d| new.attitude                           5.86e-06  (Metis) 5.25615149 -> 5.25614563
+    max|d| old.dist                            1.90735e-06  (Despina) 29.5956383 -> 29.5956364
+    max|d| old.eye[0]                          1.90735e-06  (Despina) 27.7608776 -> 27.7608757
+    max|d| old.eye[2]                          1.90735e-06  (Nix) 22.90481 -> 22.904808
+--- gen_b: records A=152 B=152 onlyA=0 onlyB=0 non-numeric diffs=0 fields-only-in-B=0
+    max|d| oldView.observer.moveToCoef         8.24784e+14  (e) 3.12539616e+15 -> 3.95018021e+15
+    max|d| ramp.frames                                  15  (e) 4943 -> 4958
+    max|d| new.evalCount                                15  (Adrastea) 4943 -> 4958
+    max|d| altaz_old[1]                            1.32397  (Earth) 1.39793089 -> 2.72189644
+    max|d| old.axisRot                         0.000335693  (Adrastea) 262.581726 -> 262.58139
+    max|d| old.screen[0]                        0.00012207  (Mimas) 1388.83899 -> 1388.83887
+    max|d| old.screen[1]                       6.10352e-05  (Hydra_) 909.588989 -> 909.588928
+    max|d| new.axisRot                            5.87e-06  (Metis) 5.25614868 -> 5.25614281
+    max|d| new.attitude                           5.87e-06  (Metis) 5.25614868 -> 5.25614281
+    max|d| old.eye[0]                          1.90735e-06  (Proteus) 27.7610741 -> 27.7610722
+    max|d| old.dist                            1.90735e-06  (Proteus) 29.5952492 -> 29.5952473
+    max|d| old.eye[2]                          9.53674e-07  (Sao) -9.11938 -> -9.11938095
+--- gen_moon: records A=152 B=152 onlyA=0 onlyB=0 non-numeric diffs=0 fields-only-in-B=0
+    max|d| oldView.observer.moveToCoef         8.24784e+14  (e) 3.12539616e+15 -> 3.95018021e+15
+    max|d| ramp.frames                                  15  (e) 8677 -> 8692
+    max|d| new.evalCount                                15  (Adrastea) 8677 -> 8692
+    max|d| altaz_old[1]                            4.24951  (Moon) 0.0038494998 -> 4.25336315
+    max|d| altaz_new[1]                            1.10715  (Moon) 2.03444393 -> 3.1415927
+    max|d| old.axisRot                         0.000335693  (Adrastea) 262.846283 -> 262.845947
+    max|d| old.screen[0]                       6.10352e-05  (Deimos) 279.837585 -> 279.837646
+    max|d| old.screen[1]                       6.10352e-05  (Io) 965.217957 -> 965.218018
+    max|d| new.screen[0]                        6.0707e-05  (Phobos) 0.226388052 -> 0.226448759
+    max|d| new.screen[1]                        1.8239e-05  (Mars) -0.972765684 -> -0.972747445
+    max|d| new.mat[0]                           1.2875e-05  (Deimos) 0.27883327 -> 0.278846145
+    max|d| new.mat[10]                          1.1921e-05  (Deimos) 0.280879438 -> 0.280891359
+--- gen_mars: records A=152 B=152 onlyA=0 onlyB=0 non-numeric diffs=0 fields-only-in-B=0
+    max|d| oldView.observer.moveToCoef         8.24784e+14  (e) 3.12539616e+15 -> 3.95018021e+15
+    max|d| ramp.frames                                  15  (e) 12517 -> 12532
+    max|d| new.evalCount                                15  (Adrastea) 12517 -> 12532
+    max|d| altaz_old[1]                           0.740965  (Mars) 4.73806994 -> 5.47903483
+    max|d| old.axisRot                         0.000335693  (Metis) 82.5689392 -> 82.5686035
+    max|d| old.screen[1]                        0.00012207  (Miranda) 1487.96777 -> 1487.96765
+    max|d| old.screen[0]                        0.00012207  (Mars) 1287.07629 -> 1287.07642
+    max|d| new.axisRot                            5.87e-06  (Metis) 1.80581968 -> 1.80581381
+    max|d| new.attitude                           5.87e-06  (Metis) 1.80581968 -> 1.80581381
+    max|d| new.mat[2]                            9.537e-07  (Portia) 0.0517347902 -> 0.0517338365
+    max|d| new.mat[8]                            8.978e-07  (Belinda) -0.0278996415 -> -0.0278987437
+    max|d| new.mat[6]                             8.35e-07  (Caliban) -0.412242472 -> -0.412243307
+--- gen_mars_2: records A=152 B=152 onlyA=0 onlyB=0 non-numeric diffs=0 fields-only-in-B=0
+    max|d| oldView.observer.moveToCoef         8.24784e+14  (e) 3.12539616e+15 -> 3.95018021e+15
+    max|d| ramp.frames                                  25  (e) 15157 -> 15182
+    max|d| new.evalCount                                25  (Adrastea) 15157 -> 15182
+    max|d| altaz_new[1]                            1.24905  (Mars) 3.60524018 -> 2.35619451
+    max|d| camera.plans.viewT                          0.2  (e) 0 -> 0.200000003
+    max|d| oldView.tone.worldAdaptationLuminance   0.00195312  (e) 15589.8154 -> 15589.8174
+    max|d| new.eclRoot[2]                         8.01e-05  (Eris) -18.3746109 -> -18.374691
+    max|d| new.mat[14]                            8.01e-05  (Eris) -18.3746109 -> -18.374691
+    max|d| new.eclRoot[0]                         3.81e-05  (Sedna) -71.9736481 -> -71.9736862
+    max|d| new.mat[12]                            3.81e-05  (Sedna) -71.9736481 -> -71.9736862
+    max|d| new.mat[13]                            2.29e-05  (Sedna) -18.0652885 -> -18.0653114
+    max|d| new.eclRoot[1]                         2.29e-05  (Sedna) -18.0652885 -> -18.0653114
+
+TOTAL non-numeric differences across all scenes: 0
