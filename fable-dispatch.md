@@ -133,6 +133,22 @@ round's meta-lesson: criterion-that-cannot-discriminate hunting pays.
 one-line fix IF Vixy's answer authorizes it. Supervisor-context note: 4 hard
 tasks + verification ≈ well under budget this session (large-window regime —
 datum for the sizing rule, not a supersession of it).
+**Post-close extension (same day):** Vixy's rulings kept landing in-conversation
+⇒ **§11.154** (residual absorbed with structure; §5.104 answered by
+format-scoped ownership) and **F41 → §11.155** (`display_scale` ADOPTED against
+the measured grammar; both reload branches fixed and discriminated both ways;
+twin carries the config value across the ownership transfer; §5.104 CLOSED).
+Round total: **five tasks, seven §11 entries (149–155)**. NEW from F41: §5.107
+(extent-cache load-time latch — first measured member of §5.104's wider-seam
+probe) · §5.108 (`flag_sun_scaled` never acted, either path — `ui.cpp:239`
+hardcode + uninitialized `SunScale`) · D30's DELTA branch located unimplemented
+for this key (B31's). Instrument corrections: F26's `/proc` comm probe counts
+2/instance (liveness test, not instance count); §11.152(p)(5)'s reload warning
+superseded from `d6aec251`. Supervisor-error tally this session, all caught by
+the defense layers: a phantom outcome block (self-caught pre-commit), a wrong
+census parenthetical (F38), a wrong discriminator target (F40), a mis-homed
+stub (F41) — three of four caught by executor verification, the layer working
+as designed.
 
 ---
 
@@ -567,6 +583,16 @@ deducibility verdict recorded (adopted or flagged); discriminators both ways vs
 a pre binary; battery green; md5 pristine; §5.104 CLOSED; §11.155 entry + stub;
 WIP discipline (`grep -c '^### F'` = 5 before every commit).
 **WIP:** *(cleared at delivery 2026-08-26 — **DELIVERED, §11.155**; code `18b6f13f → 742cdc82` (CP1) `→ d6aec251` (CP2) + the record commit; harness `5d1386c → 0c1ece9 → 87b8708` + the record commit; pre binary `98d09488` staged `/tmp/sc_f41_pre`, post `fa00dead`. DoD item by item — **legacy reload preserves scaling**: pre 5 → **1** reproduced (`scaledDatumRadius` 5.80690103e-05 → 1.16138017e-05 AU = §11.152(i) to every digit), post 5 → **5**, and a commanded 7 survives it; **F39's reload-invariance leg re-run GREEN** and now reads `moonDatum = 8687.00 km` where §11.152 recorded 1737.40 ⇒ §11.152(p)(5)'s warning SUPERSEDED, ratio 1.38581–1.38582 invariant over thirteen legs; **twin emits** `[Moon] display_scale = 5`, nothing for `[Sun]` (`flag_sun_scaled = false` — the built-in negative control), byte-reproducible across two independent launches; **activated-twin route**: FILE wins with the config value deprecated and logged once per config read (twice, §11.150(h)'s double init), positive AND negative log legs (silent when `flag_moon_scaled = false`); **discriminators both ways** — config `moon_scale = 2` gives 5 post / 2 pre, `flag_moon_scaled = false` gives 5 post / **1** pre (the key ACTS), commands still act on a file-owned body (7 / 3) on both binaries; **B28 verdict ADOPTED** with its argument and its one contrary datum (`_factor` is the grammar's existing multiplier suffix); **battery green** — same-binary control FIRST (0 non-numeric differences), pre/post 0, plus **0** over nine scale-bearing fields × 120 bodies × 5 scenes; `b24_equivalence` 120/120 and `b24_screen` at §11.153's numbers to the pixel; md5 `03fbee59`/`545a51ef` pristine every run; **§5.104 CLOSED** with its owed wider-seam probe kept OPEN on the row. **FORCED SCOPE, argued in §11.155(g)**: the config read APPLIES the scale instead of animating it (old applies it instantly, `body.cpp:484`; a composed file cannot state a transition) and an immediate scale settles its derived radii — `b24_equivalence` had been green only because both phases were equally wrong (Moon `scaling = 5` with every scaled radius at ×1, both binaries). NEW **§5.107** (extent cache = load-time latch for an unevaluated body) and **§5.108** (`ui.cpp:239` kills `flag_sun_scaled` on both paths; `SunScale` uninitialized). Recorded not fixed: D30's DELTA branch for this key (`SessionFile.cpp:317` vs `AuthoredState`) — B31's. Tracker repair: §11.154's stub had been written INTO §5 between §5.80 and §5.81; moved to §11 where the maintenance marker says stubs go.)*
+*(ACCEPTED by supervisor [fable 2026-08-26]: §11.155 read in full; commits/authors/trailers/trees
+checked; §5.104 flip + §5.107/§5.108 mints + the §11.152(p)(5) supersession-at-node verified.
+Judgment calls ENDORSED with their arguments: (g1) startup applies-not-ramps (parity restoration —
+old is the baseline and applies instantly; veto relayed to Vixy: one sentence restores the 5 s
+launch ramp); (g2) the cache settle (forced by b24_equivalence's green-at-the-wrong-value — the
+session's SIXTH criterion-that-cannot-discriminate instance); the ordinary-key non-gating; the
+deferred twin flush. The name verdict's contrary datum properly reported-not-buried. The
+mis-homed-stub repair accepted as a correction of MY anchor error (two-homes near-identical text;
+the unique match lived in the wrong region — Q-04 variant datum filed in the shared queue). F26's
+/proc-comm calibration correction noted for the next round's instrument use.)*
 
 ---
 
