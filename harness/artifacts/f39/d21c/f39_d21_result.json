@@ -1,0 +1,224 @@
+{
+ "binaries": {
+  "pre": "487cf096e8e5f1e0244471756d216ad1 (code fd98c8e9: ASmooth NaN fix only)",
+  "post": "3cbab8c5cbe14819a79eaa06b627b198 (code 8c2cbf61: D21)"
+ },
+ "config": "field config.ini 03fbee59 verbatim (moon_scale=5, flag_moon_scaled=true, FISHEYE, init_fov 180); ssystem 545a51ef; both asserted in==out",
+ "scene": "composed OJM rover F39Rover grounded on Moon, orbit_lon 60 lat 0 alt 0, radius 800 km; free mode, moveto lat 0 lon 60 alt 22000 km, fov 60, atmosphere+landscape off, tracking off before every shot; NO `flag moon_scaled off`",
+ "rows": {
+  "pre": {
+   "scaled": {
+    "moon_scaledDatum_km": 8687.00025388806,
+    "moon_scaling": null,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": null,
+    "rover_inherited": null,
+    "rover_boundingRadius_km": 2407.717624185621,
+    "rover_dist_km": 29856.23964736532,
+    "rover_screenSize": 0.154185534,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "unscaled": {
+    "moon_scaledDatum_km": 1737.400266198545,
+    "moon_scaling": null,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": null,
+    "rover_inherited": null,
+    "rover_boundingRadius_km": 2407.717624185621,
+    "rover_dist_km": 29856.23964736532,
+    "rover_screenSize": 0.154185534,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "ramp0": {
+    "moon_scaledDatum_km": 2349.189895993402,
+    "moon_scaling": null,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": null,
+    "rover_inherited": null,
+    "rover_boundingRadius_km": 2407.717624185621,
+    "rover_dist_km": 29856.23964736532,
+    "rover_screenSize": 0.154185534,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "ramp1": {
+    "moon_scaledDatum_km": 7894.387280446826,
+    "moon_scaling": null,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": null,
+    "rover_inherited": null,
+    "rover_boundingRadius_km": 2407.717624185621,
+    "rover_dist_km": 29856.23964736532,
+    "rover_screenSize": 0.154185534,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "ramp2": {
+    "moon_scaledDatum_km": 8687.00025388806,
+    "moon_scaling": null,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": null,
+    "rover_inherited": null,
+    "rover_boundingRadius_km": 2407.717624185621,
+    "rover_dist_km": 29856.23964736532,
+    "rover_screenSize": 0.154185534,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "settled": {
+    "moon_scaledDatum_km": 8687.00025388806,
+    "moon_scaling": null,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": null,
+    "rover_inherited": null,
+    "rover_boundingRadius_km": 2407.717624185621,
+    "rover_dist_km": 29856.23964736532,
+    "rover_screenSize": 0.154185534,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "reload": {
+    "moon_scaledDatum_km": 1737.399996922379,
+    "moon_scaling": null,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": null,
+    "rover_inherited": null,
+    "rover_boundingRadius_km": 2407.717624185621,
+    "rover_dist_km": 22918.14580032941,
+    "rover_screenSize": 0.201015502,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   }
+  },
+  "post": {
+   "scaled": {
+    "moon_scaledDatum_km": 8687.00025388806,
+    "moon_scaling": 5,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": 8687.000004974561,
+    "rover_inherited": 5,
+    "rover_boundingRadius_km": 12038.588405164057,
+    "rover_dist_km": 27396.67907580843,
+    "rover_screenSize": 0.868891299,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "unscaled": {
+    "moon_scaledDatum_km": 1737.400266198545,
+    "moon_scaling": 1.00000012,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": 1737.4001799714688,
+    "rover_inherited": 1.00000012,
+    "rover_boundingRadius_km": 2407.7178934617873,
+    "rover_dist_km": 29856.23964736532,
+    "rover_screenSize": 0.154185563,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "ramp0": {
+    "moon_scaledDatum_km": 2356.2083399036,
+    "moon_scaling": 1.35616922,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": 2356.2084180621396,
+    "rover_inherited": 1.35616922,
+    "rover_boundingRadius_km": 3265.272663610639,
+    "rover_dist_km": 29579.363909569318,
+    "rover_screenSize": 0.210628495,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "ramp1": {
+    "moon_scaledDatum_km": 7893.059883586529,
+    "moon_scaling": 4.54302979,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": 7893.0600825951815,
+    "rover_inherited": 4.54302979,
+    "rover_boundingRadius_km": 10938.332543274764,
+    "rover_dist_km": 27600.32710503304,
+    "rover_screenSize": 0.777425468,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "ramp2": {
+    "moon_scaledDatum_km": 8687.00025388806,
+    "moon_scaling": 5,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": 8687.000004974561,
+    "rover_inherited": 5,
+    "rover_boundingRadius_km": 12038.588405164057,
+    "rover_dist_km": 27396.67907580843,
+    "rover_screenSize": 0.868891299,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "settled": {
+    "moon_scaledDatum_km": 8687.00025388806,
+    "moon_scaling": 5,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": 8687.000004974561,
+    "rover_inherited": 5,
+    "rover_boundingRadius_km": 12038.588405164057,
+    "rover_dist_km": 27396.67907580843,
+    "rover_screenSize": 0.868891299,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   },
+   "reload": {
+    "moon_scaledDatum_km": 1737.399996922379,
+    "moon_scaling": 1,
+    "rover_ecl_km": 1737.3999823488816,
+    "rover_eclDisplay_km": 1737.3999823488816,
+    "rover_inherited": 1,
+    "rover_boundingRadius_km": 2407.717624185621,
+    "rover_dist_km": 22918.14580032941,
+    "rover_screenSize": 0.201015502,
+    "rover_visible": true,
+    "cam_dist_km": 8687.075352018801
+   }
+  }
+ },
+ "selfSimilarity_roverBounding_over_moonScaledDatum": {
+  "pre": {
+   "scaled": 0.2771632961686623,
+   "unscaled": 1.3858163090153883,
+   "ramp0": 1.0249140047350107,
+   "ramp1": 0.3049910700668517,
+   "ramp2": 0.2771632961686623,
+   "settled": 0.2771632961686623,
+   "reload": 1.3858165238002988
+  },
+  "post": {
+   "scaled": 1.3858165135630012,
+   "unscaled": 1.3858164640033734,
+   "ramp0": 1.3858166140538453,
+   "ramp1": 1.3858164900054568,
+   "ramp2": 1.3858165135630012,
+   "settled": 1.3858165135630012,
+   "reload": 1.3858165238002988
+  }
+ },
+ "screen_diff_post_minus_pre": {
+  "scaled": {
+   "post_minus_pre_brighter_px": 267667,
+   "post_minus_pre_darker_px": 40525,
+   "total_px": 4194304
+  },
+  "unscaled": {
+   "post_minus_pre_brighter_px": 0,
+   "post_minus_pre_darker_px": 3,
+   "total_px": 4194304
+  },
+  "settled": {
+   "post_minus_pre_brighter_px": 267667,
+   "post_minus_pre_darker_px": 40525,
+   "total_px": 4194304
+  },
+  "reload": {
+   "post_minus_pre_brighter_px": 0,
+   "post_minus_pre_darker_px": 0,
+   "total_px": 4194304
+  }
+ }
+}

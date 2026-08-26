@@ -430,8 +430,15 @@ dispatchable; §11 entry + stub; the §5.102 root NAMED (fixed if decision-free)
 `timer`; the ctor wrote none of the coefficients) — code `fd98c8e9` +
 submodule `7ce5835`; A-D battery post-fix carries ZERO non-finite values
 (pre: 73/153 records NaN), Moon `scaledDatumRadius = 5.80690103e-05`.
-Next: model-layer latch kill in `SurfacePointOrbitLoader.hpp` + presentation
-inheritance in `ModularBody`.
+Checkpoint 2: **D21 IMPLEMENTED AND GATED** — code `8c2cbf61`; model layer reads
+the parent's raw datum live, presentation layer inherits via `inheritedScaling`
+(pushed from updateCache), dump carries `scaling`/`scalingTarget`/
+`inheritedScaling`/`eclDisplay`. Gates measured pre(`487cf096`)/post: placement
+8687.000 km == Moon scaledDatumRadius (pre 1737.400), extent ×5.0000,
+self-similarity 1.38581 vs 1.38582, `ecl` invariant in every leg, ramp tracked
+sample-for-sample, screen +267667/−40525 px, unscaled-scene control 0/3 px of
+4.19 M. Artifacts `harness/artifacts/f39/d21c`.
+Next: §5.103 jnum, regression battery, D11 cost, §11.152 + §5.27 flip.
 
 ### F40 — §5.80: the freeMode converter becomes the composer's exact inverse (D15(b) ratified → §11.151(a)) [S–M]
 
