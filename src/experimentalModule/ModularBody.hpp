@@ -1227,6 +1227,23 @@ public:
         scaling = _scale;
         uncached = true;
     }
+    //! Put this body AT a display scale, with NO transition. The distinction
+    //! from setScaling is the WHY, and it is observable: setScaling is the
+    //! COMMAND seam (an operator asked for a different size, and the change
+    //! animates over the ASmooth's 5 s), while this one says the value IS this
+    //! body's state and never moved. Two callers, both of that second kind:
+    //! the loader applying the authored `display_scale` (a body is BORN at its
+    //! scale rather than growing into it) and the seam that re-seats a REBUILT
+    //! tree at the scale its authority already had - §5.104: a state-preserving
+    //! reload must not visibly re-grow the body it just rebuilt.
+    //! Immediate for a body with no movement in flight, which both callers hold
+    //! by construction (a freshly built body has none); a transiting one is
+    //! retargeted through the ordinary solve rather than left behind.
+    inline void restoreScaling(float _scale) {
+        scalingTarget = _scale;
+        scaling.set(_scale, 0.f);
+        uncached = true;
+    }
     // Per-name orbit toggle seam (old Body::setFlagOrbit). Routes to this
     // body's ORBIT module(s) via the dedicated list; setShown is the base
     // no-op for every other module type, so no type knowledge leaks here.

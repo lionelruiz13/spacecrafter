@@ -15,7 +15,8 @@
 #include <algorithm>
 #include <set>    // the names a save target already declares
 #include <cfloat> // FLT_MAX (within-body pair rank)
-#include <cmath>  // std::sin/cos/atan2 (rot_pole_w0 -> offset conversion)
+#include <cmath>  // std::sin/cos/atan2 (rot_pole_w0 -> offset conversion), isfinite
+#include <sstream> // a float as a file value (fileValue)
 #include "EntityCore/Core/VulkanMgr.hpp" // G8-budget overflow log
 
 // Same mapping as the old parse (protosystem.cpp setAtmosphere) - retires
@@ -117,6 +118,16 @@ static const std::string *authored(std::map<std::string, std::string> &param, co
 // is ONE annotation, which is what makes a re-save byte-identical (T9).
 // D12: this is for defaults that ACTED. A default that merely did nothing is
 // forbidden from annotating, and none of the callers below is one.
+// A number as a FILE value: the default stream form (6 significant digits, no
+// trailing zeros), so a generated line reads like a hand-written one - `5`, not
+// `5.000000`. Same `<<` the .ini value writers already use (vec3fToStr).
+static std::string fileValue(float v)
+{
+    std::ostringstream os;
+    os << v;
+    return os.str();
+}
+
 static void diagnose(ModularSystemFormat::Section *origin, const std::string &key,
     const char *reason, const std::string &text, LOG_TYPE severity)
 {
@@ -1352,6 +1363,40 @@ void ModularSystem::loadBody(std::map<std::string, std::string> &param,
             binary->setSecondaryOrbit(body->orbit.get());
         }
     }
+    // --- `display_scale`: the format's own display-scaling authority ---------
+    // §11.154(b)(c) [vixy 2026-08-26]: scaling ownership is FORMAT-SCOPED. The
+    // legacy format never held a scale, so config.ini owns it there; THIS format
+    // holds it, and deprecates config.ini's value wherever it serves (the
+    // precedence itself is decided at the config READ - SSystemFactory::
+    // initDisplayScaling - because only that seam knows a value came from
+    // config.ini rather than from an operator's command).
+    // What it is: the AUTHORED DEFAULT under the operator's runtime `scaling`
+    // (§11.152(c)'s non-folding is untouched - this writes the same member a
+    // `planet_scale` command writes, it does not add a third one), applied with
+    // no transition because a body is born at its size.
+    // NOT gated on `composedFile`: it is an ordinary body key, read wherever a
+    // body is declared (a script's `body action load` map included). No fielded
+    // legacy file carries it (D9 freezes them and nothing here ever writes one,
+    // D35/D13), and where config.ini does have something to say about a body -
+    // `moon_scale`, `sun_scale` - it still wins for a legacy-declared one, which
+    // is exactly what "config.ini owns legacy scaling" means.
+    {
+        const std::string &declaredScale = param["display_scale"];
+        if (!declaredScale.empty()) {
+            const float s = Utility::strToFloat(declaredScale, 1.f);
+            if (s > 0.f && std::isfinite(s)) {
+                body->restoreScaling(s);
+            } else {
+                diagnose(origin, "display_scale", "invalid-value",
+                    "Body '" + englishName + "': invalid display_scale = '" + declaredScale
+                    + "'. It is a DISPLAY multiplier on this body's drawn size - a positive,"
+                    " finite number, 1 meaning drawn at its true size (it changes nothing"
+                    " physical: orbit, shadows and the model position stay as authored)."
+                    " Falling back to 1. To fix: set display_scale to a positive number, or"
+                    " remove it.", LOG_TYPE::L_ERROR);
+            }
+        }
+    }
     if (Utility::isTrue(param["hidden"]))
         body->hide();
     // THE LOAD IS OVER for this body: what it holds now is what the DATA said,
@@ -1763,6 +1808,22 @@ stringHash_t ModularSystem::composedNodeParams(const ModularBody *body, const st
         node["primary"] = "true";
     if (body->isMinorBody() && !node.count("shadow_exempt"))
         node["shadow_exempt"] = "true";
+    // §11.154(c) [vixy 2026-08-26], forced by the SAME argument §11.113(f)
+    // recorded for the capability keys ("a legacy star's twin must emit BOTH
+    // keys or the composed load stops reproducing"): a legacy system's display
+    // scaling comes from config.ini, and the composed format takes ownership of
+    // it - so a twin that did not carry the value would silently LOSE the
+    // field's configured scaling at the exact moment ownership transfers
+    // (activating the twin, §11.51(a)). Read what the body IS (I4), and its
+    // TARGET rather than the live ASmooth: the config block sets the value and
+    // the 5 s ramp is still in flight when the twin is written, so the
+    // instantaneous read would emit a point of the ramp. Emitted only when it
+    // differs from the composed default (1), like every key above.
+    // This is why the twin is written AFTER the config-owned display state is
+    // applied and not at the legacy load that produced it - see
+    // SSystemFactory::generatePendingTwins.
+    if (body->getScalingTarget() != 1.f && !node.count("display_scale"))
+        node["display_scale"] = fileValue(body->getScalingTarget());
     return node;
 }
 

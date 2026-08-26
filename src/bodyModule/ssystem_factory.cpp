@@ -26,6 +26,7 @@
 #include <fstream>
 #include <iomanip>
 #include <filesystem> // B24 composed-file candidacy + twin directory
+#include <sstream>    // config/file values in the deprecation diagnostic
 #include <set> // B24 new-only dump sweep
 
 #include "ojmModule/objl_mgr.hpp"
@@ -396,17 +397,119 @@ void SSystemFactory::createModularSystem(const std::string &name, const std::str
         system->loadBody(bodyParams);
     } else {
         system->loadSystem(filename);
-        // B25 generation half: the machine-owned twin, written through the one
-        // atomic writer (failure leaves any previous twin untouched, logged).
-        std::error_code ec;
-        std::filesystem::create_directories("modularSystem", ec);
+        // B25 generation half: the machine-owned twin. RECORDED here, WRITTEN by
+        // generatePendingTwins - the load is not the whole of what a twin must
+        // reproduce, because this system's display scaling is config.ini's and
+        // has not been applied yet (§11.154(c); the contract is at the header).
+        pendingTwins.emplace_back(filename, composedTwinPathOf(name + "System"));
+        if (twinsUnblocked)
+            generatePendingTwins();
+    }
+}
+
+// Contract + rationale: ssystem_factory.hpp (generatePendingTwins).
+void SSystemFactory::generatePendingTwins()
+{
+    twinsUnblocked = true;
+    if (pendingTwins.empty())
+        return;
+    // One directory check for the batch; the twin itself goes through the one
+    // atomic writer (failure leaves any previous twin untouched, logged).
+    std::error_code ec;
+    std::filesystem::create_directories("modularSystem", ec);
+    for (const auto &[legacyFile, twinPath] : pendingTwins) {
         if (ec) {
             cLog::get()->write("Can't create the modularSystem directory ("
-                + ec.message() + ") - composed twin of " + filename + " not generated.",
+                + ec.message() + ") - composed twin of " + legacyFile + " not generated.",
                 LOG_TYPE::L_WARNING);
-        } else {
-            system->generateComposedTwin(filename, composedTwinPathOf(name + "System"));
+            continue;
         }
+        // The system is found by the twin it was recorded for: a name lookup
+        // would be a second authority for the pairing this list already holds.
+        for (const auto &[systemName, system] : modularSystemOf) {
+            if (system && composedTwinPathOf(system->getEnglishName()) == twinPath) {
+                system->generateComposedTwin(legacyFile, twinPath);
+                break;
+            }
+        }
+    }
+    pendingTwins.clear();
+}
+
+// Contract + rationale: ssystem_factory.hpp (initDisplayScaling).
+void SSystemFactory::initDisplayScaling(bool flagMoonScale, double moonScale,
+                                        bool flagSunScale, double sunScale)
+{
+    // Each body is one of two cases and never both, so the two are written as
+    // two branches rather than one call plus a correction: applying the config
+    // value and then putting the file's back would make the wrong value the
+    // engine's state for as long as it takes to notice (I6).
+    // The LEGACY branch is the four command seams verbatim, in their own order,
+    // repetition included (the flag seam mirrors, then the value seam mirrors
+    // again) - nothing about the shipped startup moves, the 5 s ramp included.
+    if (fileOwnsDisplayScale("Moon")) {
+        ssystem->setFlagMoonScale(flagMoonScale);   // the OLD path takes it either way
+        ssystem->setMoonScale(moonScale, true);
+        announceDeprecatedScale("Moon", SCK_MOON_SCALE, flagMoonScale, moonScale);
+    } else {
+        setFlagMoonScale(flagMoonScale);
+        setMoonScale(moonScale, true);
+    }
+    if (fileOwnsDisplayScale("Sun")) {
+        ssystem->setFlagSunScale(flagSunScale);
+        // Read at the same point, from the same state, as the seam it replaces:
+        // the halo is old's quantity and follows old's value (see the header).
+        mirrorSunHaloSize();
+        ssystem->setSunScale(sunScale, true);
+        announceDeprecatedScale("Sun", SCK_SUN_SCALE, flagSunScale, sunScale);
+    } else {
+        setFlagSunScale(flagSunScale);
+        setSunScale(sunScale, true);
+    }
+}
+
+// Contract + rationale: ssystem_factory.hpp (announceDeprecatedScale).
+void SSystemFactory::announceDeprecatedScale(const char *bodyName, const char *configKey,
+                                             bool flag, double value)
+{
+    if (!flag)
+        return;
+    // Which file overrode it, by name: "the modular format" is not something a
+    // user can open and edit. The pairing comes from the system that holds the
+    // body, which is also what makes the message right for a foreign system.
+    std::string source = "the modular system file that declares it";
+    const ModularBody *body = ModularBody::findBody(bodyName);
+    for (const auto &[systemName, system] : modularSystemOf) {
+        if (system && body && body->isInSubtreeOf(system)) {
+            source = system->getSystemFilename();
+            break;
+        }
+    }
+    std::ostringstream os;
+    os << value;
+    const std::string configured = os.str();
+    os.str({});
+    os << (body ? body->getScalingTarget() : 1.f);
+    const std::string authored = os.str();
+    cLog::get()->write(std::string("config.ini [viewing] ") + configKey + " = "
+        + configured + " is IGNORED for '" + bodyName + "': that body is declared by "
+        + source + ", and a modular system file owns the display scaling of the bodies it "
+        "declares (config.ini owns it for the legacy format only). '" + bodyName
+        + "' is drawn at display_scale = " + authored + ". To change it, set display_scale in "
+        "its section of " + source + "; to give the value back to config.ini, remove or rename "
+        "that file so the legacy system file is read again.", LOG_TYPE::L_INFO);
+}
+
+// Contract + rationale: ssystem_factory.hpp (restoreDisplayScaling).
+void SSystemFactory::restoreDisplayScaling()
+{
+    if (!fileOwnsDisplayScale("Moon")) {
+        if (ModularBody *moon = ModularBody::findBody("Moon"))
+            moon->restoreScaling(ssystem->getFlagMoonScale() ? ssystem->getMoonScale() : 1.f);
+    }
+    if (!fileOwnsDisplayScale("Sun")) {
+        if (ModularBody *sun = ModularBody::findBody("Sun"))
+            sun->restoreScaling(ssystem->getFlagSunScale() ? ssystem->getSunScale() : 1.f);
     }
 }
 
@@ -841,6 +944,13 @@ bool SSystemFactory::reloadCurrentSystem()
             + "'. Restore that body in the data file, or move the observer with "
               "'set home_planet <body>'.", LOG_TYPE::L_ERROR);
     }
+    // §5.104 / §11.154(b)(i): the rebuilt bodies come back at the constructor's
+    // scaling(1), because the file this system was re-read from is a LEGACY one
+    // and the legacy format never held a scale - its owner is config.ini, and
+    // the owner's value must stand across a re-read of a file that never held
+    // it. A modular-served system needs nothing here: its file holds
+    // display_scale and the rebuild has just read it (D31, by construction).
+    restoreDisplayScaling();
     if (!trackedName.empty())
         camera->rebindTarget(ModularBody::findBodyOnce(trackedName));
     if (!selectedName.empty())

@@ -260,10 +260,15 @@ public:
     // both the drawn size and the observer's altitude reference. Without the
     // mirror, an observer on the scaled body sits at radius instead of
     // scale*radius (measured: 5x |eye->Moon| divergence, scene C 2026-07-11).
+    // THESE FOUR ARE THE COMMAND SEAMS (`flag moon_scaled`, `moon_scale`, and
+    // their Sun twins): an operator asked for a size, and the new path's half
+    // animates over the ASmooth's 5 s. What config.ini says at startup is NOT
+    // one of them - display-scaling ownership is FORMAT-SCOPED (§11.154(b)) and
+    // only the config READ knows a value came from config.ini rather than from
+    // a command, so it has its own entry point: initDisplayScaling.
     void setFlagMoonScale(bool b) {
         ssystem->setFlagMoonScale(b);
-        if (ModularBody *moon = ModularBody::findBody("Moon"))
-            moon->setScaling(b ? ssystem->getMoonScale() : 1.f);
+        commandDisplayScale("Moon", b ? ssystem->getMoonScale() : 1.f);
     }
 
     bool getFlagMoonScale(void) const {
@@ -272,12 +277,8 @@ public:
 
 	void setFlagSunScale(bool b) {
         ssystem->setFlagSunScale(b);
-        if (ModularBody *sun = ModularBody::findBody("Sun"))
-            sun->setScaling(b ? ssystem->getSunScale() : 1.f);
-        // New-path mirror of old setHaloSize(200)/(200+SunScale*40)
-        // (solarsystem.hpp:100/103) - the STAR module's big-halo size; the
-        // ssystem.ini big_halo_size is dead for the Sun (INTENT §11.44).
-        StarModule::setSunHaloSize(b ? 200.f + ssystem->getSunScale() * 40.f : 200.f);
+        commandDisplayScale("Sun", b ? ssystem->getSunScale() : 1.f);
+        mirrorSunHaloSize();
     }
 
 	bool getFlagSunScale(void) const {
@@ -286,10 +287,8 @@ public:
 
 	void setMoonScale(float f, bool resident = false) {
         ssystem->setMoonScale(f, resident);
-        if (ssystem->getFlagMoonScale()) {
-            if (ModularBody *moon = ModularBody::findBody("Moon"))
-                moon->setScaling(f);
-        }
+        if (ssystem->getFlagMoonScale())
+            commandDisplayScale("Moon", f);
     }
 
 	float getMoonScale(void) const {
@@ -298,15 +297,48 @@ public:
 
 	void setSunScale(float f, bool resident = false) {
         ssystem->setSunScale(f, resident);
-        if (ssystem->getFlagSunScale()) {
-            if (ModularBody *sun = ModularBody::findBody("Sun"))
-                sun->setScaling(f);
-        }
+        if (ssystem->getFlagSunScale())
+            commandDisplayScale("Sun", f);
     }
 
 	float getSunScale(void) const {
         return ssystem->getSunScale();
     }
+
+    //! Apply the display scaling CONFIG.INI owns - one call for its four
+    //! `[viewing]` keys, because one rule governs all four and the rule is not
+    //! the caller's to know (I1).
+    //! THE RULE [vixy 2026-08-26, §11.154(b), ratified operable in (c)]: display
+    //! scaling is owned by the LEGACY format's config.ini, and by the MODULAR
+    //! format's own file wherever that format serves. So a body this engine
+    //! loaded from a modular system file keeps the scale that file authored
+    //! (`display_scale`), and config.ini's value is deprecated FOR THAT BODY -
+    //! ignored, and said once with what overrode it (§2(f): a silently dead
+    //! config line is §5.77's class from the other side). A legacy-served body
+    //! takes the config value exactly as it always has, ramp included.
+    //! The OLD path takes the config value either way and is untouched here
+    //! (§11.52(b)): it reads the legacy file and only the legacy file, so
+    //! config.ini is its scaling authority by construction.
+    //! Commands are NOT affected: `moon_scale`/`sun_scale`/`planet_scale` still
+    //! act on any body, whatever declared it - the file value is the authored
+    //! DEFAULT under the operator's runtime scaling (§11.152(c)).
+    void initDisplayScaling(bool flagMoonScale, double moonScale,
+                            bool flagSunScale, double sunScale);
+
+    //! Write the machine-owned composed twins of every legacy system loaded so
+    //! far, and forget them (B25 generation half, §11.51(a)).
+    //! WHY IT IS A SEPARATE STEP FROM THE LOAD THAT PRODUCES IT: a twin's whole
+    //! contract is that loading it reproduces the legacy load, and part of what
+    //! that load produces is config.ini's display scaling - which arrives after
+    //! the system is built (Core::init, initDisplayScaling above). A twin
+    //! written at the legacy load would describe a system whose scaling its own
+    //! authority had not set yet, and activating it would silently drop the
+    //! field's configured scale at the exact moment ownership transfers to the
+    //! file (§11.154(c), the §11.113(f) argument).
+    //! PRECONDITION, therefore: call it after initDisplayScaling. A system
+    //! created later (nothing does today: every legacy load happens at startup)
+    //! is written straight away, that condition already being met.
+    void generatePendingTwins();
 
 	void setFlagClouds(bool b) {
         currentSystem->setFlagClouds(b);
@@ -1047,8 +1079,58 @@ public:
     // pin, 2026-07-21 for the default].
     bool pathPinned = true;
 private:
+    //! The new path's mirror of a Moon/Sun display-scale COMMAND: the twin of
+    //! old's setSphereScale (ModularBody::setScaling -> scaledRadius, which
+    //! feeds both the drawn size and the observer's altitude reference). ONE
+    //! authority for the four command seams; the config read does not use it,
+    //! because whether config.ini still owns the value is format-scoped.
+    static void commandDisplayScale(const char *bodyName, float scale) {
+        if (ModularBody *body = ModularBody::findBody(bodyName))
+            body->setScaling(scale);
+    }
+    //! The new path's mirror of old setHaloSize(200)/(200+SunScale*40)
+    //! (solarsystem.hpp:100/103) - the STAR module's big-halo size; the
+    //! ssystem.ini big_halo_size is dead for the Sun (INTENT §11.44). It reads
+    //! the OLD path's own state, so it cannot disagree with the halo old draws;
+    //! that also means it keeps riding config.ini when a modular file owns the
+    //! Sun's display scale, the halo being old's quantity, not the file's.
+    void mirrorSunHaloSize() {
+        StarModule::setSunHaloSize(ssystem->getFlagSunScale()
+            ? 200.f + ssystem->getSunScale() * 40.f : 200.f);
+    }
+    //! Does the MODULAR FILE own this body's display scale (§11.154(b))? True
+    //! exactly when the body was declared by the composed format - asked of the
+    //! body, never of a file name (I1/I4: ModularBody::isComposedDeclared).
+    //! A body that does not exist owns nothing and is not an error here: the
+    //! config keys name bodies a given field's data need not contain.
+    static bool fileOwnsDisplayScale(const char *bodyName) {
+        const ModularBody *body = ModularBody::findBody(bodyName);
+        return body && body->isComposedDeclared();
+    }
+    //! Say ONCE that a config.ini display-scale value was overridden by the file
+    //! that owns it, naming both sides and the way back (§2(f)). Silent when the
+    //! config value was not live in the first place (`flag_*_scaled = false`):
+    //! nothing was overridden then, and saying so would be false.
+    void announceDeprecatedScale(const char *bodyName, const char *configKey,
+                                 bool flag, double value);
+    //! Re-seat the display scaling config.ini owns on a tree that was just
+    //! REBUILT (§5.104 / §11.154(b)(i)): the rebuild re-read a file that never
+    //! held a scale, so the owner's value has to stand across it. No transition
+    //! (the value never changed - restoreScaling), and nothing is said: the
+    //! deprecation line belongs to the config read, and repeating it per reload
+    //! would be noise. A file-owned body is skipped because its own file was
+    //! just re-read and carries `display_scale` (D31 - by construction).
+    void restoreDisplayScaling();
     //! Select current system
     void selectSystem();
+    // Legacy systems whose machine-owned twin is not written yet: {legacy file,
+    // twin path}, in load order. See generatePendingTwins for why the write is
+    // deferred at all.
+    std::vector<std::pair<std::string, std::string>> pendingTwins;
+    // True once the config-owned display state has reached the tree
+    // (generatePendingTwins ran): from then on a twin can be written as soon as
+    // its system is loaded, that write's one precondition being met.
+    bool twinsUnblocked = false;
     std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
     std::unique_ptr<SolarSystemColor> ssystemColor;
     std::unique_ptr<SolarSystemTex> ssystemTex;

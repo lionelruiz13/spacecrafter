@@ -615,10 +615,17 @@ void Core::init(const InitParser& conf)
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, conf.getBoolean(SCS_VIEWING,SCK_FLAG_VERTICAL_LINE));
 	cardinals_points->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_CARDINAL_POINTS));
 
-	ssystemFactory->setFlagMoonScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED));
-	ssystemFactory->setMoonScale(conf.getDouble (SCS_VIEWING,SCK_MOON_SCALE), true); //? always true TODO
-	ssystemFactory->setFlagSunScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED));
-	ssystemFactory->setSunScale(conf.getDouble (SCS_VIEWING,SCK_SUN_SCALE), true); //? always true TODO
+	// The four display-scaling keys go in as ONE read: they are governed by one
+	// rule - ownership is FORMAT-SCOPED (§11.154(b), config.ini for a legacy
+	// system, the modular file for a modular one) - and which of the two applies
+	// is not this level's business (I1).
+	ssystemFactory->initDisplayScaling(
+		conf.getBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED), conf.getDouble(SCS_VIEWING, SCK_MOON_SCALE),
+		conf.getBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED),  conf.getDouble(SCS_VIEWING, SCK_SUN_SCALE));
+	// ...and the machine-owned composed twins are written only now: a twin must
+	// reproduce the legacy load it came from, and the display scaling that load
+	// produces is the config value the line above has just applied (§11.154(c)).
+	ssystemFactory->generatePendingTwins();
 
 	oort->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
 	OortModule::show = conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT); // B5 §6.9 pilot: mirror to the modular oort
