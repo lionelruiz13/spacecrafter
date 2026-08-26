@@ -1706,3 +1706,58 @@ non-finite values (`src/experimentalModule/JsonNum.hpp`) and every consumer
 compares numbers; and a `missing_old` list, because a COMPOSED body has no
 old-path twin and `rec["old"].get(...)` on it raised AttributeError mid-analysis
 in `analyze.py`.
+
+## F40 — the freeMode converter as the composer's exact inverse — INTENT §5.80 / §5.106 / §11.153, 2026-08-26
+
+    g++ -O0 -std=c++20 -I../../src -o /tmp/f40_probe f40_probe.cpp && /tmp/f40_probe
+    DISPLAY=:2 ./f40_inverse.py <absOutdir> --bin B --expect pre|post
+    DISPLAY=:2 ./f40_disc.py    <absOutdir> --bin B --tag pre|post   # the rover discriminator
+    DISPLAY=:2 ./f40_env.py     <absOutdir> --bin B --tag pre|post   # the four flag cells
+    DISPLAY=:2 ./f40_anchored.py <absOutdir> --bin B                 # the anchored regression
+    ./f40_cmp.py <preOutdir> <postOutdir>                            # its comparator
+    DISPLAY=:2 ./f40_scenes.sh <leg> <abs binary>                    # A–D battery, one leg
+
+**`f40_inverse.py` is ONE instrument for BOTH conventions.** Every claim is scored
+against `H_A` (`position = spheToRect(-lon,lat)·distance`, the pre-fix converter)
+AND `H_composer` (`position = -posePart(lon,lat,distance)`), and `--expect`
+chooses which one the gates ask for; the printed numbers are identical either
+way. A pre binary answers 29/29 and a post binary 32/32 on the same nine legs,
+so a delivery is one measurement read twice rather than two harnesses. Anything
+that touches the converter again should keep that shape.
+
+**`f40_probe.cpp` needs `-std=c++20`** — `vecmath.hpp` uses `requires` clauses.
+`f34_probe.cpp`'s recorded command line omits the flag and no longer builds on
+this toolchain.
+
+**The convention hazard this task created, for every harness that follows.** A
+free-flight `moveto lat/lon` now lands where the anchored one lands. Before F40
+the free-mode sub-observer longitude was `180 - lon`; it is now the anchored
+`lon - 90` (the `-90` is §5.49's own longitude origin, unchanged). **30 harness
+files** combine `camera action free_mode state on` with a `moveto … lon`; only
+those whose gates couple the observer's longitude to authored content actually
+move, and two of those are corrected here, each with its arithmetic at the site:
+
+- `b24_screen.py` — new `OBS_LON_CAM = (OBS_LON + 150) % 360`, because
+  `180 - 60 == 210 - 90 == 120°`. Reproduces the pre-fix scene to within a pixel
+  (close rover 3751 px vs 3750, shadow 94 893 vs 94 888, far 44 748 vs 44 746).
+- `b24_select.py` — `nadir_lon()` returns `OBS_LON - 90.0` instead of
+  `180.0 - OBS_LON`. Its whole scene is authored relative to that one function,
+  so the geometry is preserved exactly; its FOUR remaining failures are older
+  than F40 (verified: pre binary + pre-convention harness gives the same four,
+  same numbers).
+
+The rest are unaudited. A committed baseline measured in free flight at a
+longitude describes a different place than it did.
+
+**The A–D battery is not phase-locked.** Two legs of the SAME binary can differ
+on `oldView.stars.faderFinal` and the whole star channel when one is caught
+mid-ramp (`camera.plans.viewT != 0` in the dump says so, and `jd` differs by
+~1 s). Run a same-binary control before reading any cross-binary difference:
+F40 measured pre/post = 5 non-numeric differences, post/post2 = the same 5,
+pre/post2 = 0.
+
+**`camera.position` is dumped non-zero while anchored, and it is dead state** —
+`switchToBody`'s internal `setFreeMode(true) … setFreeMode(old)` round trip
+leaves the converter's output there at startup. It is expected to differ across
+the F40 boundary (by exactly the transform F40 made) and `f40_cmp.py` reports it
+instead of gating it.

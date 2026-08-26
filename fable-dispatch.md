@@ -460,28 +460,35 @@ unchanged at their measured exactness class; anchored places bit-identical
 exit's state; battery green; md5 pristine; §5.80 closed; §11 entry + stub.
 **Dispatch condition:** after F39's verification, session health permitting
 (§11.151(a)); else heads next round's queue with the stub↔entry-file sweep.
-**WIP:** *(2026-08-26 CP2 — **the fix is in and measured both ways**. Code
-`7ef11aca → 18b6f13f` (`Camera.cpp`/`Camera.hpp` only): one authority
-`posePart`/`posePartToPose` (viewMat's anchored branch solved for the eye, and its
-exact inverse), read by all FOUR conversion sites — `setFreeMode` both ways,
-`moveTo`'s free branch, `getPlace` — and by `placeAt`, which stops restating it.
-Harness `4c1d690 → this`: `f40_inverse.py` (one instrument, both hypotheses scored at
-every site: **29/29 on the pre binary, 32/32 on the post**), `f40_env.py` (the four-cell
-flag attribution), `f40_scenes.sh` (A–D battery driver). Numbers: entry toggle
-13 732.4 km → **0.0009 km**, 174 px>8 → **0 px** on a 0 px A/A control; shipped place
-124.6797°/11 298.6 km → **0.312 m** (null control 0.207 m, float32 ulp 0.38 m) with
-**1 px>8**; Mars 39 945.9 km/5714 px → **0.0031 km / 0 px**; `moveto` both modes
-16 700 km → **1.631 m = 3.3 ulp**; reversible pair entered twice, second entry from the
-first exit's state, every teleport ≤ 2.3 m; `descend`/`moveEyeRel` 2.252e-12/2.011e-12 AU
-against F34's own predictions; `get status position` byte-identical (riders untouched).
-**NEW, out of scope, record-don't-fix:** the shipped-flags 3.3 Mpx that §11.144(i)
-attributed to the teleport is NOT the observer — it survives the fix intact
-(3 300 622 → 3 300 632 px while the observer moves 0.24 m). Four-cell measurement on
-both binaries attributes it to `EnvironmentManager.cpp:81`'s
-`onBody = !camera.isFreeMode()` gate: free flight takes the anchor branch, the
-landscape stops updating (543 834 → 543 393 px, survives) and the atmosphere floods the
-dome (lit 258 334 → 3 300 845). Next: A–D battery + `b24_equivalence` + `b24_screen`
-both legs, then §11.153 + §5.80 flip.)*
+**WIP:** *(cleared at delivery 2026-08-26 — **DELIVERED, §11.153; §5.80 CLOSED**. Code
+`7ef11aca → 18b6f13f` (one commit, `Camera.cpp`/`Camera.hpp`); harness `64e07d6 → 4c1d690`
+(CP1, the algebra before the code) `→ eafdb33` (CP2) `→ this`. DoD item by item: **the toggle
+both ways = 0 px against the A/A control** — 0 px at the F34 place, 0 px with the reference in
+frame, 0 px at Mars, 1 px at the shipped place flags-off on a 0 px floor, and the observer
+moves 0.0009 km / 0.312 m / 0.0031 km where it moved 13 732.4 / 11 298.6 / 39 945.9 km (pre
+numbers reproduced FIRST on a pre binary: `f34_convention.py` 27/27 replay + `f40_inverse
+--expect pre` 29/29, both to the digit of §11.144); **`descend`/`moveEyeRel` unchanged**
+(2.252e-12 / 2.011e-12 AU against F34's own predictions and floors); **anchored bit-identical**
+(8 places, 3 reference bodies incl. two `set home_planet` = `placeAt`, 32 dumped camera fields
+each, composed screens max abs pixel difference **0** over 2048×2048); **the reversible pair
+twice**, second entry from the first exit's state, every teleport ≤ 2.3 m; **battery green**
+(A–D with a same-binary phase control, `b24_equivalence` 120 bodies, `b24_screen`); md5
+`03fbee59`/`545a51ef` in==out on every run; **§5.80 CLOSED with both riders explicitly open**
+(`get status position` measured byte-identical across the toggle — the fix PRESERVES it, and
+§11.153(e) shows leaving `getPlace` alone is what would have changed it). **Corrections to my
+own dispatch, each argued in §11.153:** the converter has FOUR sites, not three (`getPlace` is
+the fourth, and its header already promised it was the same conversion); and the §11.152(o)
+discriminator's post-fix target is **the toggle moving nothing**, not "60 stays 60" — 60.0° is
+the FREE reading of `moveto lon 60`, i.e. the defect, and the anchored 90.0° is bit-identical by
+DoD. Measured on a real authored rover, two independent derivations agreeing to <0.0001°: PRE
+90→60→90 and 60→90→60 (span 30.0000° both directions), POST span **0.0000°** on all three legs,
+including one placed where the angle IS 60.0° → **60.0000 → 60.0000 → 60.0000**. **NEW §5.106**
+(the shipped-flags 3.3 Mpx is `EnvironmentManager.cpp:81`'s free-mode gate, NOT the observer —
+§11.144(i)'s attribution refuted at its node, four-cell measurement on both binaries); **§5.49
+sharpened and its own conclusion put in doubt** (recorded on that row, fixed nowhere). **Two
+harness scenes re-declared** (`b24_screen`, `b24_select`) because free-flight `moveto lon` now
+means the anchored thing; 28 more files combine the two and are unaudited — README carries the
+list and the arithmetic.)*
 
 ---
 
@@ -497,6 +504,8 @@ both legs, then §11.153 + §5.80 flip.)*
   **D15 ANSWERED 2026-08-26 and propagated (§11.149(a)) ⇒ B18's suspension closes;
   (c)+(d) are task F38's, (a) dissolved, (b)'s implementation half is §5.80's
   (recorded, not authorized as a whole — see §11.149(b)'s veto point).**
+  **[CLOSED 2026-08-26: the veto was ratified (§11.151(a)) and the fix DELIVERED by
+  F40 → §11.153; §5.80 is closed, its two riders still open ON the row.]**
 - **B17 residual**: heading≠0 offset coupling — tilted-dome question (§11.92(d)).
 - **B10(a)**: anti-stuck floor VALUE = Vixy's feel-test (§11.79(f)).
 - **B14 residuals (ii)(v)(vii)**: source-authority order, meridian texture-

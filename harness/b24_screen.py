@@ -67,6 +67,22 @@ OUT = (Path(sys.argv[1]) if len(sys.argv) > 1
 AU_KM = 149597870.0
 JD = 2461234.0          # jd where observer lon 60 on the Moon is the LIT hemisphere
 OBS_LON = 60            # lit-side sub-observer longitude (calibrated, findlit)
+# THE OBSERVER'S OWN COMMAND LONGITUDE, since F40/§11.153. This scene places the
+# observer IN FREE FLIGHT (`camera action free_mode state on` below), and free
+# flight's `moveto lat/lon` used to name a different place than the anchored one
+# - it wrote spheToRect(-lon, lat)*d into a member the composition reads as MINUS
+# the eye, so the observer's surface azimuth came out at 180 - lon (§5.80). It is
+# now the composer's own lon - 90 (the anchored azimuth, the -pi/2 being this
+# class's longitude origin, §5.49). The rover is authored at `orbit_lon =
+# OBS_LON` and is NOT moving, so reproducing THIS scene's geometry means asking
+# for the longitude that lands the observer where it used to land:
+#     old azimuth 180 - 60 = 120 deg   ==   new azimuth 210 - 90 = 120 deg
+# MEASURED, both binaries, same scene: leaving the command at OBS_LON put the
+# observer 90.0 deg from the rover instead of 60.0 deg (rover distance 5995 km
+# instead of 5096 km at a 5737 km observer radius, exactly the law of cosines),
+# i.e. the rover ON THE LIMB, where it renders 0 body px. Re-declared, not
+# widened: the gate thresholds are untouched.
+OBS_LON_CAM = (OBS_LON + 150) % 360
 # Two observer distances via moveto altitude (metres). CLOSE resolves the child in
 # the parent's depth bucket; FAR collapses the precision -> body suppressed.
 ALT_CLOSE_M = 4000000
@@ -154,7 +170,7 @@ def run(tag, with_scene, dumps):
         send(s, "flag moon_scaled off", 2)
         send(s, "select planet Moon")
         for view, alt in (("far", ALT_FAR_M), ("close", ALT_CLOSE_M)):
-            send(s, f"moveto lat 0 lon {OBS_LON} alt {alt} duration 0", 4)
+            send(s, f"moveto lat 0 lon {OBS_LON_CAM} alt {alt} duration 0", 4)
             send(s, "flag track_object on", 2)
             send(s, "zoom fov 20 duration 0", 2)
             send(s, "flag track_object off", 2)               # B30 determinism

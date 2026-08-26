@@ -97,7 +97,21 @@ def ok(m):   print(f"ok:   {m}", flush=True)
 
 
 def nadir_lon():
-    return 180.0 - OBS_LON
+    # The observer's SUB-POINT longitude for a free-flight `moveto lat/lon`.
+    # Every authored body in this scene is placed RELATIVE to it (line ~162), so
+    # this one function carries the whole convention and the geometry is
+    # preserved exactly when it changes.
+    # Was `180 - OBS_LON`: free flight's converter wrote spheToRect(-lon,lat)*d
+    # into a member the composition reads as MINUS the eye, so the sub-point came
+    # out at 180 - lon (§5.80). Since F40/§11.153 the converter is the composer's
+    # exact inverse, so free flight names the SAME place anchored flight does and
+    # the sub-point is the anchored one, `lon - 90` (the -pi/2 is this class's
+    # own longitude origin, §5.49 - unchanged by F40 and NOT corrected here).
+    # MEASURED before the change: the three authored bodies landed at ndc radius
+    # 0.575/0.603/0.589 against the Moon disc's 0.685, i.e. inside the parent's
+    # disc where the old picker sees the parent, and the harness's own alpha
+    # prediction missed by 4.038 deg.
+    return OBS_LON - 90.0
 
 
 def alpha_deg(psi_deg, alt_km):
