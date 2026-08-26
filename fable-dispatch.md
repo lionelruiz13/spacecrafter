@@ -566,7 +566,17 @@ applies FILE scaling with the config value deprecated + logged once; the
 deducibility verdict recorded (adopted or flagged); discriminators both ways vs
 a pre binary; battery green; md5 pristine; §5.104 CLOSED; §11.155 entry + stub;
 WIP discipline (`grep -c '^### F'` = 5 before every commit).
-**WIP:**
+**WIP:** 2026-08-26 — CHECKPOINT 1: code landed + green (binary `fd4612ac`), pre
+binary staged `/tmp/sc_f41_pre` (`98d09488`, code `18b6f13f`). Measured both ways
+on `f41_ownership.py` legs L1-L5: legacy reload 5→5 post / 5→1 pre (§5.104
+reproduced), twin emits `display_scale = 5` for the Moon and nothing for the Sun,
+file-wins discriminator L3 (config `moon_scale = 2` → post 5 / pre 2), deprecation
+logged on the composed legs only and silent when the config value was not live.
+FOUND out-of-scope: `ui.cpp:239` hardcodes `setFlagSunScaled(false)` after
+`Core::init`, so `flag_sun_scaled` has never acted (both binaries) — new §5 row
+owed. NEXT: command-control legs (a command must still act on a file-owned body),
+F39 reload-invariance re-run, A-D battery + b24_equivalence + b24_screen, B28
+deducibility verdict, §11.155 + §5.104 flip.
 
 ---
 
