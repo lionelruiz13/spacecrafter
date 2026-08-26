@@ -425,7 +425,13 @@ observables recorded (unchanged if already unscaled, corrected+measured if
 not); the `b24_screen` scaling-off workaround retired or its retention argued;
 battery green; md5 pristine; §5.27 behavior half closed; B31 T3 noted
 dispatchable; §11 entry + stub; the §5.102 root NAMED (fixed if decision-free).
-**WIP:**
+**WIP:** 2026-08-26 (Opus 5) — checkpoint 1: **§5.102 ROOTED AND FIXED** at
+`EntityCore/Executor/ASmooth.hpp` (`set`'s fresh-movement branch never wrote
+`timer`; the ctor wrote none of the coefficients) — code `fd98c8e9` +
+submodule `7ce5835`; A-D battery post-fix carries ZERO non-finite values
+(pre: 73/153 records NaN), Moon `scaledDatumRadius = 5.80690103e-05`.
+Next: model-layer latch kill in `SurfacePointOrbitLoader.hpp` + presentation
+inheritance in `ModularBody`.
 
 ### F40 — §5.80: the freeMode converter becomes the composer's exact inverse (D15(b) ratified → §11.151(a)) [S–M]
 
