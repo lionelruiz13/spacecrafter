@@ -384,9 +384,12 @@ public:
     // answer for the path that DRAWS (B33, §11.108(f)).
     // Anchored: the pose members themselves. Free: derived from `position` with
     // the SAME conversion setFreeMode(false) uses to leave free flight
-    // (rectToSphe + the longitude sign) - the spherical members are frozen at
+    // (posePartToPose, the one authority) - the spherical members are frozen at
     // the free-mode entry, so reporting them there would name a place the
-    // camera has left. Units stay rad/AU: the deg/metres conversion is the
+    // camera has left. That sameness is a REQUIREMENT and not a convenience:
+    // this member and the exit have to name one place, or leaving free flight
+    // moves the observer to somewhere the readout never reported (§5.80).
+    // Units stay rad/AU: the deg/metres conversion is the
     // CoreLink seam's, where observerMoveTo already does the write half of it.
     Vec3f getPlace() const;
 
@@ -404,6 +407,45 @@ public:
     // This disallow using multiple cameras, but multiple cameras can't be used simultaneously anyway
     static Camera *instance;
 private:
+    // ---- THE pose part: one authority for triple <-> cartesian ------------
+    // §5.80/§11.153. `posePart` is viewMat()'s ANCHORED branch solved for the
+    // eye, and `posePartToPose` is its exact inverse; between them they are the
+    // ONLY place in this class where the legacy spherical triple and a
+    // cartesian place convert into each other. That is the point: the free-mode
+    // teleport §5.80 recorded was FOUR independent re-statements of this
+    // conversion (setFreeMode both ways, moveTo's free branch, getPlace) drifting
+    // away from the composition viewMat actually uses — the same shape as
+    // §11.19's three drifted view compositions, which is why the fix is a single
+    // authority and not four corrected expressions (I2).
+    //
+    //   viewMat anchored = R . T(0,0,-distance) . X(lat-pi/2) . Z(-lon) [. S]
+    //     => the eye it draws is  S^-1 . posePart(lon,lat,distance)
+    //   viewMat free     = R . T(position) [. S]
+    //     => the eye it draws is  -S^-1 . position
+    //   so the two describe the SAME place exactly when position == -posePart(),
+    //   for every surface fold S — the fold cancels, which is why neither
+    //   member below mentions it (checked bound AND unbound, harness/f40_probe.cpp).
+    //
+    // NOTE the -pi/2 the pair (sin lon, -cos lon) carries: the anchored pose
+    // azimuth is `longitude - pi/2`, this class's own longitude origin (§5.49's
+    // channel — reported, never corrected here: correcting it would move every
+    // ANCHORED place, which is the baseline).
+    static inline Vec3f posePart(float lon, float lat, float dist) {
+        const float cl = std::cos(lat);
+        return Vec3f(dist * cl * std::sin(lon), -dist * cl * std::cos(lon),
+                     dist * std::sin(lat));
+    }
+    // The exact inverse: the (longitude, latitude, distance) triple whose pose
+    // part is `p`. At p == 0 the eye is AT the reference's centre, where the
+    // angles parametrize nothing — the caller's current pair is returned rather
+    // than atan2(0,0)/asin(0/0), so a point anchor keeps the place it arrived
+    // with (placeAt's own rule, which this member now carries for every caller).
+    static inline Vec3f posePartToPose(const Vec3f &p, float lonAt0, float latAt0) {
+        const float d = p.length();
+        if (d == 0.f)
+            return Vec3f(lonAt0, latAt0, 0.f);
+        return Vec3f(std::atan2(p[0], -p[1]), std::asin(p[2]/d), d);
+    }
     // Calculate intermediate zoom coefficient
     inline float calculateZoomCoef() const {
         float coef = zoomTimer / zoomDuration;

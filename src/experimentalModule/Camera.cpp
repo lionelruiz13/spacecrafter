@@ -44,13 +44,13 @@ Vec3f Camera::getPlace() const
         return Vec3f(longitude, latitude, distanceToReference());
     // The free-mode place lives in `position`; the spherical members were
     // frozen when free flight was entered. Converted back exactly as
-    // setFreeMode(false) does it, and `distance` is deliberately NOT used: it
-    // keeps a stale value in free mode on purpose (lateral-velocity parity,
+    // setFreeMode(false) does it — through the ONE authority, so the two cannot
+    // drift apart (they had: §5.80) — and `distance` is deliberately NOT used:
+    // it keeps a stale value in free mode on purpose (lateral-velocity parity,
     // B10 §11.71), so distanceToReference() would report where the observer
     // was when it took off.
-    float lon, lat;
-    Utility::rectToSphe(&lon, &lat, position);
-    return Vec3f(-lon, lat, position.length() - reference->getAltitudeReference());
+    const Vec3f place = posePartToPose(-position, longitude, latitude);
+    return Vec3f(place[0], place[1], position.length() - reference->getAltitudeReference());
 }
 
 // Shared proximity-factor authority (B10 iv-b, §5.2). Base measured to the
@@ -504,17 +504,17 @@ void Camera::placeAt(const Vec3f &pos, bool holdView)
     } else {
         // viewMat's anchored branch is mat = R·T(0,0,−distance)·X(lat−π/2)·Z(−lon),
         // so p = Z(lon)·X(π/2−lat)·(0,0,distance) = distance·(cosφ·sinλ,
-        // −cosφ·cosλ, sinφ). Inverted below; the −π/2 the pair (sinλ, −cosλ)
-        // carries is this class's own longitude origin, not a correction.
-        const float d = p.length();
-        distance = d;
-        if (d > 0.f) {
-            latitude = std::asin(p[2]/d);
-            longitude = std::atan2(p[0], -p[1]);
-        }
-        // d == 0: the eye is AT the reference's centre, where longitude and
-        // latitude parametrize nothing — they are left alone rather than
-        // replaced by atan2(0,0), so a point anchor keeps the place readout it
+        // −cosφ·cosλ, sinφ) = posePart(). This member is where that inverse was
+        // first written out (F33, §11.143); it now READS from the one authority
+        // instead of restating it, which is what makes the free-mode converter
+        // the same expression rather than a fifth copy of it (§11.153).
+        const Vec3f place = posePartToPose(p, longitude, latitude);
+        longitude = place[0];
+        latitude = place[1];
+        distance = place[2];
+        // p == 0: the eye is AT the reference's centre, where longitude and
+        // latitude parametrize nothing — posePartToPose hands them back rather
+        // than atan2(0,0), so a point anchor keeps the place readout it
         // arrived with (the old path leaves lon/lat alone there too).
         //
         // A HELD placement also re-bakes the EQUATORIAL fold, and it does so
@@ -703,13 +703,15 @@ void Camera::FrameDrawTask::start(Taskable *target)
 void Camera::moveTo(const Vec3f &pos, float duration, bool calculateDuration)
 {
     if (freeMode) {
-        // Legacy spherical target converted to a free position - the
-        // setFreeMode(true) convention (spheToRect(-lon, lat) * center
-        // distance); altitude counts from the reference's altitude reference,
-        // matching the anchored branch's distanceToReference() semantics.
-        Vec3f dst;
-        Utility::spheToRect(-pos[0], pos[1], dst);
-        dst *= reference->getAltitudeReference() + pos[2];
+        // Legacy spherical target converted to a free position through the ONE
+        // triple<->cartesian authority, so this command names the SAME place in
+        // both modes - it did not, and landed 16 700 km apart on free mode
+        // alone (§11.144(g)). Altitude counts from the reference's altitude
+        // reference, matching the anchored branch's distanceToReference()
+        // semantics: the two branches below now differ only in WHICH
+        // parametrization holds the identical place.
+        const Vec3f dst = -posePart(pos[0], pos[1],
+                                    reference->getAltitudeReference() + pos[2]);
         if (duration > 0) {
             moveRel(dst - position, duration, calculateDuration);
         } else {
@@ -737,13 +739,23 @@ void Camera::setFreeMode(bool b)
     // rotation in the OLD decomposition, convert the position state, then
     // recover the parameters under the NEW decomposition.
     const Mat4f R = viewRotation().multiplyFast(placementRotation());
+    // The POSITION half of that transition is the composer's own inverse
+    // (§11.153, authorized by §11.151(a): "swapping ... must be transparent
+    // include the position channel"). Both directions go through the one
+    // authority, so entering and leaving free flight name the same place the
+    // renderer was already drawing: the eye does not move. What used to stand
+    // here - spheToRect(-longitude, latitude)*distance and its inverse - was a
+    // different parametrization of the pose (a missing negation AND an azimuth
+    // handedness, composing to one 180 deg rotation), so the toggle teleported
+    // the observer ~125 deg around its reference at constant distance, which no
+    // shipped readout could see (§5.80, §11.144).
     if (b) {
-        Utility::spheToRect(-longitude, latitude, position);
-        position *= distance;
+        position = -posePart(longitude, latitude, distance);
     } else {
-        Utility::rectToSphe(&longitude, &latitude, position);
-        longitude = -longitude;
-        distance = position.length();
+        const Vec3f place = posePartToPose(-position, longitude, latitude);
+        longitude = place[0];
+        latitude = place[1];
+        distance = place[2];
     }
     freeMode = b;
     recoverParams(R);
