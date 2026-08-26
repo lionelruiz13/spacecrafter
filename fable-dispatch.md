@@ -360,6 +360,14 @@ temp-HOME farm (4 legs), field config `03fbee59` pristine throughout. **Name vet
 B18 harness green; A–D battery run PRE and POST on one config — only non-numeric delta is
 `skyLocked` False→True in C/D/D′, where old's flag was already 1. NEW **§5.100 §5.101 §5.102
 §5.103**, all measured, none fixed. **§5.102 is F39's precondition, not an adjacency.**)*
+*(ACCEPTED by supervisor [fable 2026-08-26]: §11.150 read in full; commits/authors/trailers
+checked (CP1 correctly carries the pre-change code SHA); code diff scope matches the no-Camera-code
+claim; all flips verified. Judgment calls ENDORSED with their arguments: the tracking-clear adjunct
+(forced — lock mirror measured inert at 1083; boundary held), §5.100 restraint (the fix is a
+new-path behaviour change outside the mandate — surfaced to Vixy at close instead), the D13
+probe-key substitution (veto recorded), `attached` adoption (the delegated check, executed as
+delegated), b18_run probe-count supersession. The census correction to MY dispatch parenthetical
+is accepted as a correction of my inference. §5.102 folded into F39's spec as precondition.)*
 
 ### F39 — D21: display scaling = presentation layer; grounded children inherit it; physics unscaled [M–L]
 
@@ -388,6 +396,26 @@ F37; runs after F38 (disjoint files, sequential per protocol).
    prediction (startup-loaded vs reload-loaded latch different ramp values ⇒
    `body action reload` MOVES a composed rover) is a pre-fix discriminator to
    confirm, then a post-fix invariant.
+5. **Preconditions from F38 (§11.150(m)(n)) and the §11.151 ratifications:**
+   (i) **§5.102 FIRST**: the `ASmooth scaling` member is NaN on the shipped
+   config for BOTH scaled bodies (§11.16's 0/0 class), reaching
+   `getAltitudeReference()` → the observer's distance and the drawn view
+   matrix (scene C: altitude readout answers NaN beside old's 100 m). Root it
+   before building inheritance on the factor. Note the tension to discriminate:
+   §11.101(f) measured FINITE ~7000 km offsets on 2026-07-24 — so the NaN is
+   config-dependent (fov-340 farm? init order?) or a later regression; date it.
+   Fixing it is in-mandate if decision-free (it is the factor D21 makes
+   load-bearing); else record + suspend.
+   (ii) **§5.103**: `analyze.py` cannot read a NaN dump — adopt old's `jnum()`
+   shape for the new path's half (instrument-grade fix, in-mandate) or carry
+   F38's null-substitute workaround, stated either way.
+   (iii) **§11.151(b)**: the acceptance criterion is RATIFIED — uniform
+   dilation, placement AND extent; the (c3) veto is closed, gate without
+   hedging.
+   (iv) **§5.100/§5.101**: `zoom auto in` / `zoom auto initial` set up
+   DIFFERENT scenes on the two paths — never use them for scene setup.
+   (v) Init-order guard from §11.150(n): `loadCamera` must stay BEFORE the new
+   config-read block in `Core::init`.
 
 **DoD:** the §11.78(a) mandate scene alive under the SHIPPED config
 (`moon_scale=5`, no `flag moon_scaled off` workaround): composed rover ON the
@@ -396,7 +424,32 @@ displayed surface; `body action reload` no longer moves it; live scaling toggle
 observables recorded (unchanged if already unscaled, corrected+measured if
 not); the `b24_screen` scaling-off workaround retired or its retention argued;
 battery green; md5 pristine; §5.27 behavior half closed; B31 T3 noted
-dispatchable; §11 entry + stub.
+dispatchable; §11 entry + stub; the §5.102 root NAMED (fixed if decision-free).
+**WIP:**
+
+### F40 — §5.80: the freeMode converter becomes the composer's exact inverse (D15(b) ratified → §11.151(a)) [S–M]
+
+**Mandate:** §5.80 row + `INTENT/11.144.md` (F34's paid datum: the teleport
+lives on the CONVERTER — a missing negation AND azimuth handedness, composing
+to one 180° rotation; used by exactly the three triple↔cartesian sites,
+`setFreeMode` both ways + `moveTo`'s free branch, and by nothing else) +
+§11.149(b) + **§11.151(a)** (RATIFIED: transparency includes the position
+channel). Fix: re-express the converter as the composer's EXACT inverse.
+`descend`/`moveEyeRel` are already exact against the composer
+(5.5e-12/3.4e-12 AU) and must stay untouched, as must every anchored place.
+
+**Boundaries:** the two §11.144 riders are NOT in scope and may not be settled
+on the way (§11.151(a)): what `moveto lat/lon` MEANS in free flight, and what
+`get status position` answers there. §5.86 (`observedToBodyLocalPos` ≠
+`viewMat` inverse — the RA/DE readout) is a DIFFERENT defect, out of scope.
+
+**DoD:** freeMode toggle both ways = 0 px against the A/A control (pre-fix:
+6354 px>8, 124.6797° swing, 11 300 km on Earth); `descend`/`moveEyeRel`
+unchanged at their measured exactness class; anchored places bit-identical
+(regression leg); reversible pair entered twice, second entry from the first
+exit's state; battery green; md5 pristine; §5.80 closed; §11 entry + stub.
+**Dispatch condition:** after F39's verification, session health permitting
+(§11.151(a)); else heads next round's queue with the stub↔entry-file sweep.
 **WIP:**
 
 ---
