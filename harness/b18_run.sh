@@ -35,7 +35,13 @@ kill -0 $GDBPID 2>/dev/null && { echo "killing app"; kill -INT $GDBPID; sleep 5;
 MD5_OUT=$(md5sum "$CFG" | cut -d' ' -f1)
 echo "config.ini md5 (out) = $MD5_OUT  MATCH=$([ "$MD5_IN" = "$MD5_OUT" ] && echo yes || echo NO)"
 
-echo "--- setSkyLock probe fires (should be one per real flag command) ---"
+# ~~"should be one per real flag command" (4 for b18_skylock.py)~~ SUPERSEDED
+# 2026-08-26 by F38/§11.150: `Core::init` now initializes the camera sky-lock
+# from config through the same mirror, and init runs TWICE at startup, so a
+# clean run shows TWO extra `b=0` entries before the script's four. The probe
+# breaks on ENTRY, and Camera::setSkyLock early-returns when the value is
+# unchanged, so those two are entered-and-inert. Expected count: 6.
+echo "--- setSkyLock probe fires (2 init + one per real flag command; §11.150) ---"
 grep -a "PROBE setSkyLock" "$OUT/gdb.log" || echo "(none)"
 echo "--- app exit ---"
 grep -a "Inferior 1" "$OUT/gdb.log" || echo "(no inferior-exit line)"

@@ -344,7 +344,14 @@ paths agree in BOTH directions, asserted against the pre-change binary;
 old-path observables bit-identical where the old path is the baseline; battery
 green; config/ssystem md5 in==out; B18 row flip; §11 entry + stub; WIP
 discipline per §0.6.
-**WIP:** *(2026-08-26 CP1 — instrument + PRE-change baseline landed, harness only,
+**WIP:** *(2026-08-26 CP2 — code LANDED and verified, code `b444d381`. (c) all four
+sites mirrored + the tracking-clear coupling at the three lock sites that carry one;
+f38 post = ALL PASS both ways, both rounds. (d) two [navigation] keys (`attached`,
+`flag_lock_sky_position`), defaults = today's behaviour, verified on a temp-HOME farm
+(4 legs incl. the D13 unknown-key probe); field config md5 03fbee59 untouched
+throughout. B18 regression green (OFF 18.0493/ON 0.0000, 0 px>32 held). NEXT: §11.150
+entry + stub + B18 row flip + the §5 rows for the three out-of-scope gaps found.)*
+*(CP1 — instrument + PRE-change baseline landed, harness only,
 code tree untouched. `harness/f38_{run.sh,mirror.py,analyze.py}`; artifacts
 `harness/artifacts/f38/pre` (gitignored per README layer 2). Census re-verified at
 `f0c8ef83`: the four sites are core.cpp 1083/1372/1410/2313 — SAME four call sites
