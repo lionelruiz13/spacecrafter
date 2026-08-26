@@ -225,6 +225,29 @@ def leg(tag, binary, out):
         grab("settled")
         shot(s, out, f"{tag}_settled")
 
+        # --- R: RARE PATHS, each traversed TWICE, the second entry starting
+        # from the state the first exit produced (the standing rule). Two
+        # reversible pairs are touched by D21: the scaling toggle (whose second
+        # entry `settled` above already matched `scaled` bit-for-bit on screen)
+        # and HIDE/SHOW of a grounded child - the path the new push over
+        # `hiddenBodies` exists for. A hidden body stays IN the dump (the dump
+        # walks the name registry), so its inherited factor is readable while
+        # hidden, which is what makes the second show a test and not a guess.
+        for i in (1, 2):
+            send(s, "body name F39Rover hidden true", 2)
+            grab(f"hidden{i}")
+            send(s, "body name F39Rover hidden false", 2)
+            grab(f"shown{i}")
+        shot(s, out, f"{tag}_shown2")
+        # second full scaling cycle, entered from the state the first left
+        send(s, "flag moon_scaled off", 1)
+        time.sleep(8)
+        grab("unscaled2")
+        send(s, "flag moon_scaled on", 1)
+        time.sleep(8)
+        grab("settled2")
+        shot(s, out, f"{tag}_settled2")
+
         # --- D: RELOAD - 11.101(f)'s pre-fix discriminator --------------------
         send(s, "body action reload", 3)
         time.sleep(8)

@@ -438,7 +438,13 @@ the parent's raw datum live, presentation layer inherits via `inheritedScaling`
 self-similarity 1.38581 vs 1.38582, `ecl` invariant in every leg, ramp tracked
 sample-for-sample, screen +267667/−40525 px, unscaled-scene control 0/3 px of
 4.19 M. Artifacts `harness/artifacts/f39/d21c`.
-Next: §5.103 jnum, regression battery, D11 cost, §11.152 + §5.27 flip.
+Checkpoint 3: §5.103 CLOSED (`JsonNum.hpp` + `dumpread.py` as the one reader);
+regression GREEN — A-D battery pre/post **0 non-numeric differences** over 5
+scenes x 152 records, `b24_equivalence` 120/120, `b24_screen` all gates; D11
+cost bounded **<= 2.3 us/frame** on EXECUTOR_UPDATE (the instrument's own A/A2
+floor; central +1.29 us = +0.13% of 1 ms, matching the predicted ~1.2 us);
+rare paths traversed twice, every exit screen bit-identical. Code `7ef11aca`.
+Next: §11.152 entry + §5.27 flip + B31-T3 + new §5 rows.
 
 ### F40 — §5.80: the freeMode converter becomes the composer's exact inverse (D15(b) ratified → §11.151(a)) [S–M]
 

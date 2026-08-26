@@ -1661,3 +1661,48 @@ entered during startup; **37 startup failure reports the app log does not carry*
 and every one of the 37 carries a blocker, so the uniform additive `cLog` routing
 §5.77 expected does not exist. See §11.146(f) for the five blocker kinds and (j)
 for the one question that decides the fix.
+
+## F39 — D21's two layers, and the `flag moon_scaled off` line's new reading — INTENT §5.27 / §5.102 / §5.103 / §11.152, 2026-08-26
+
+    DISPLAY=:2 ./f39_d21.py <absOutdir> pre=/abs/binary post=/abs/binary
+    DISPLAY=:2 ./f39_scenes.sh <leg> <abs binary>          # the A–D battery, one leg
+    ./f39_cmp.py <dirA> <dirB>                             # field-by-field, the §11.150(m) shape
+    DISPLAY=:2 ./f39_farm.sh <outdir> [--sed EXPR] [--env K=V] [--driver P] [--dwell N]
+
+`f39_d21.py` runs the §11.78(a) mandate scene — a composed OJM rover grounded on
+the Moon — **under the shipped config**, `moon_scale = 5`, no `flag moon_scaled
+off`. Two binaries through the same commands on one temp-HOME farm (symlink
+mirror; `config.ini`, `log/` and `modularSystem/` are the only real entries, so
+the field pair 03fbee59/545a51ef is asserted in==out around every run).
+
+The gate that carries D21's ratified acceptance criterion is **one scalar**:
+rover extent over the Moon's DISPLAYED datum, which *"visually identical to
+unscaled"* says must not move. Pre-fix: 1.38582 unscaled → **0.27716** scaled
+(exactly the rival reading §11.151(b) killed) and 1.0249 / 0.3050 while the ramp
+is in flight. Post: **1.3858165 ± 1.5e-7 across all seven legs**, mid-ramp
+included. A ratio, not a pixel count, because the observer's own altitude is
+NOT dilated (`moveto alt` is real metres above the displayed surface), so the
+apparent size legitimately differs while the neighbourhood stays self-similar.
+
+Rare paths, each traversed twice with the second entry starting from the state
+the first exit produced: the scaling toggle and hide/show of the grounded child
+(the path the new `hiddenBodies` push exists for). Every exit screen is
+BIT-IDENTICAL to the first (`post_scaled` == `post_settled` == `post_shown2` ==
+`post_settled2`, max abs diff 0 over 2048×2048).
+
+**Standing-rule change: `flag moon_scaled off` is no longer a workaround.**
+§5.27 is closed; a grounded child inherits its parent's display scaling. The
+line STAYS in `b24_screen`, `b3_ladder`, `b24_select`, `f23_b33_control`,
+`f24_b34_seams`, `f25_ramp` and `f29_upchain`, re-read as a **scene
+declaration** — those harnesses' subject is the REAL geometry and every one of
+their committed baselines was measured with scaling off, so removing the line
+would silently change what they measure. `f39_d21.py` is the scaled twin.
+
+**`dumpread.py` is the dump channel's single reader** (§5.103). It now holds the
+grammar `b24_equivalence.sanitize_nonfinite` used to hold — that name is
+re-exported unchanged, so all fifteen importers are unaffected — plus two things
+F39 added: `unquote_nonfinite`, because the new path's emitters now QUOTE their
+non-finite values (`src/experimentalModule/JsonNum.hpp`) and every consumer
+compares numbers; and a `missing_old` list, because a COMPOSED body has no
+old-path twin and `rec["old"].get(...)` on it raised AttributeError mid-analysis
+in `analyze.py`.

@@ -175,29 +175,16 @@ def run_phase(tag):
 # Without this substitution a single non-finite field made json.loads raise and
 # the `except` below dropped the WHOLE BODY silently - the body then reads as
 # absent to every gate built on this loader. Measured 2026-07-30 (§11.118): an
-# intermittent cold-launch ASmooth NaN on `scaling` (the §11.18 class, EntityCore
-# ASmooth.hpp's own comment records the same shape) makes the Moon or the Sun
-# vanish from a dump. A body carrying NaN must be VISIBLE and compared (it then
-# fails a value check loudly), never silently missing.
-# The lookbehind covers every position a VALUE can start at, not just `:`
-# (2026-08-09, F33 §11.143): the first version matched only after a colon, so
-# `"screen":[-nan,-nan]` - a body sitting exactly at the eye, reachable from
-# `camera action transition_to target point` - still raised and the body was
-# still dropped WHOLE, which is precisely the silent-absence failure the note
-# above says this substitution exists to prevent. Found by hitting it.
-_NONFINITE = re.compile(r'(?<=[:\[,])\s*(-?)(nan|inf)\b')
-
-
-def sanitize_nonfinite(line):
-    """C++ `nan`/`inf` spellings -> the JSON ones. ONE grammar (I2): every
-    reader of this dump uses this function, never its own copy."""
-    # The SIGN is dropped for nan: Python's json accepts `NaN` and `-Infinity`
-    # but NOT `-NaN`, so carrying the sign through left the line unparseable and
-    # the body still silently dropped (measured the same day as the lookbehind,
-    # by fixing the lookbehind and hitting this one line later). A signed nan is
-    # not a distinguishable value anyway.
-    return _NONFINITE.sub(
-        lambda m: "NaN" if m.group(2) == "nan" else m.group(1) + "Infinity", line)
+# intermittent cold-launch ASmooth NaN on `scaling` (the §11.18 class; ROOTED
+# and FIXED 2026-08-26, §11.152/§5.102 - the phase timer was indeterminate)
+# makes the Moon or the Sun vanish from a dump. A body carrying NaN must be
+# VISIBLE and compared (it then fails a value check loudly), never silently
+# missing.
+# THE GRAMMAR MOVED to `dumpread` (F39, §11.152): the new path's own emitters
+# now QUOTE their non-finite values (JsonNum.hpp), so the same problem has a
+# second layer, and two half-authorities is what I2 forbids. This module
+# re-exports the name every one of its importers uses, unchanged.
+from dumpread import sanitize_nonfinite, unquote_nonfinite  # noqa: F401
 
 
 def load_dump(path):
@@ -210,7 +197,7 @@ def load_dump(path):
             if not line or line in "[]{}":
                 continue
             try:
-                obj = json.loads(sanitize_nonfinite(line))
+                obj = unquote_nonfinite(json.loads(sanitize_nonfinite(line)))
             except json.JSONDecodeError:
                 continue
             if header is None and obj.get("type") == "header":

@@ -26,7 +26,18 @@ attributed a depth-precision collapse; REFUTED):
       occlude against. THIS HARNESS therefore runs `flag moon_scaled off` (the 5.27
       instrument precondition) and asserts the REAL-geometry scene: the rover renders
       in BOTH views with working merged-bucket occlusion (the 11.100(b) causal lever,
-      locked as a regression gate). The D1(b) grounded-slice prefill remains an
+      locked as a regression gate).
+      THE `flag moon_scaled off` LINE IS NO LONGER A WORKAROUND (F39, 11.152 -
+      5.27 CLOSED, D21 landed): a grounded child now inherits its parent's display
+      scaling as a uniform dilation, and `f39_d21.py` runs THIS composition under
+      the SHIPPED `moon_scale = 5` with the rover drawn ON the displayed surface.
+      The line STAYS, re-read as a SCENE DECLARATION: gate A4's own subject is the
+      REAL geometry, every committed baseline of this harness was measured with
+      scaling off, and `f39_d21.py` is the scaled twin. Removing it would silently
+      change what A4 measures - the opposite of retiring a workaround. Same reading
+      for every other harness carrying the line (b3_ladder, b24_select,
+      f23_b33_control, f24_b34_seams, f25_ramp, f29_upchain).
+      The D1(b) grounded-slice prefill remains an
       unimplemented capability for FINE grounded content (header-forced, B3), but no
       scene here demonstrates wrong depth ordering.
 
@@ -138,9 +149,8 @@ def run(tag, with_scene, dumps):
         send(s, "set home_planet Moon", 2)
         send(s, "camera action free_mode state on")
         send(s, "flag atmosphere off"); send(s, "flag landscape off")
-        # 5.27 instrument precondition (INTENT 11.100): the shipped moon_scale=5
-        # swallows grounded children (they don't ride display scaling, D21 pending);
-        # real-geometry scene requires scaling OFF.
+        # SCENE DECLARATION, not a workaround, since F39/11.152 (see the header):
+        # this harness's subject is the REAL geometry, so it pins scaling OFF.
         send(s, "flag moon_scaled off", 2)
         send(s, "select planet Moon")
         for view, alt in (("far", ALT_FAR_M), ("close", ALT_CLOSE_M)):

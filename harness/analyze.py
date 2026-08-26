@@ -17,6 +17,7 @@ convention (E3); divergence localized to one subtree => per-hop element error
 """
 import json, math, sys
 import numpy as np
+import dumpread
 
 def mat3(m):  # column-major 16 -> rows of the 3x3 linear part
     return [[m[0], m[4], m[8]], [m[1], m[5], m[9]], [m[2], m[6], m[10]]]
@@ -38,22 +39,17 @@ def sub(a, b): return [x-y for x, y in zip(a, b)]
 def norm(v): return math.sqrt(sum(x*x for x in v))
 
 def main(path):
-    header, bodies, missing = None, [], []
-    for line in open(path):
-        line = line.strip()
-        if not line: continue
-        rec = json.loads(line)
-        if rec["type"] == "header":
-            header = rec
-        elif rec["type"] != "body":
-            continue  # skip non-body records (e.g. type=="hops": has no "old"/"new" body pair)
-        elif rec["new"] is None:
-            missing.append(rec["name"])
-        else:
-            bodies.append(rec)
-    print(f"jd={header['jd']}\ncamera={json.dumps(header['camera'])}")
+    # ONE reader (dumpread), for two reasons this function used to get wrong:
+    # bare `nan`/`inf` are not JSON (§5.103) and a body present in only ONE path
+    # is not a comparison - a COMPOSED body has no old-path twin at all, and
+    # `rec["old"].get(...)` on it raised AttributeError mid-run.
+    header, bodies, missing, missing_old = dumpread.load_dump(path)
+    print(f"jd={header['jd']}\ncamera={json.dumps(header['camera'], default=str)}")
     if missing:
         print(f"\nMISSING in new path ({len(missing)}) [INTENT 11.3 class]: {', '.join(sorted(missing))}")
+    if missing_old:
+        print(f"\nNEW-PATH ONLY ({len(missing_old)}) [composed/new-only bodies - no old twin to compare]: "
+              f"{', '.join(sorted(missing_old))}")
     stale = [r["name"] for r in bodies if not (r["old"].get("visible", True) and r["new"].get("visible", True))]
     fresh = [r for r in bodies if r["old"].get("visible", True) and r["new"].get("visible", True)]
     if stale:

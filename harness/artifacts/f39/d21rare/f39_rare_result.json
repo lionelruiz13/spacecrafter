@@ -1,0 +1,191 @@
+{
+ "binary": "3cbab8c5cbe14819a79eaa06b627b198 (code 8c2cbf61)",
+ "note": "rare-path traversal: scaling toggle and hide/show of the grounded child, each entered TWICE, the second entry from the state the first exit produced",
+ "rows": {
+  "scaled": {
+   "moon_scaledDatum_km": 8687.00025388806,
+   "moon_scaling": 5,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 8687.000004974561,
+   "rover_inherited": 5,
+   "rover_boundingRadius_km": 12038.588405164057,
+   "rover_dist_km": 27396.67907580843,
+   "rover_screenSize": 0.868891299,
+   "rover_visible": true,
+   "cam_dist_km": 8687.075352018801
+  },
+  "unscaled": {
+   "moon_scaledDatum_km": 1737.400266198545,
+   "moon_scaling": 1.00000012,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 1737.4001799714688,
+   "rover_inherited": 1.00000012,
+   "rover_boundingRadius_km": 2407.7178934617873,
+   "rover_dist_km": 29856.23964736532,
+   "rover_screenSize": 0.154185563,
+   "rover_visible": true,
+   "cam_dist_km": 8687.075352018801
+  },
+  "ramp0": {
+   "moon_scaledDatum_km": 2348.0241545914273,
+   "moon_scaling": 1.35145855,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 2348.024119442516,
+   "rover_inherited": 1.35145855,
+   "rover_boundingRadius_km": 3253.930557021488,
+   "rover_dist_km": 29582.95799839607,
+   "rover_screenSize": 0.20976609,
+   "rover_visible": true,
+   "cam_dist_km": 8687.075352018801
+  },
+  "ramp1": {
+   "moon_scaledDatum_km": 7893.059883586529,
+   "moon_scaling": 4.54302979,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 7893.0600825951815,
+   "rover_inherited": 4.54302979,
+   "rover_boundingRadius_km": 10938.332543274764,
+   "rover_dist_km": 27600.32710503304,
+   "rover_screenSize": 0.777286112,
+   "rover_visible": true,
+   "cam_dist_km": 8687.075352018801
+  },
+  "ramp2": {
+   "moon_scaledDatum_km": 8687.00025388806,
+   "moon_scaling": 5,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 8687.000004974561,
+   "rover_inherited": 5,
+   "rover_boundingRadius_km": 12038.588405164057,
+   "rover_dist_km": 27396.67907580843,
+   "rover_screenSize": 0.868891299,
+   "rover_visible": true,
+   "cam_dist_km": 8687.075352018801
+  },
+  "settled": {
+   "moon_scaledDatum_km": 8687.00025388806,
+   "moon_scaling": 5,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 8687.000004974561,
+   "rover_inherited": 5,
+   "rover_boundingRadius_km": 12038.588405164057,
+   "rover_dist_km": 27396.67907580843,
+   "rover_screenSize": 0.868891299,
+   "rover_visible": true,
+   "cam_dist_km": 8687.075352018801
+  },
+  "hidden1": {
+   "moon_scaledDatum_km": 8687.00025388806,
+   "moon_scaling": 5,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 8687.000004974561,
+   "rover_inherited": 5,
+   "rover_boundingRadius_km": 12038.588405164057,
+   "rover_dist_km": 27396.67907580843,
+   "rover_screenSize": 0.868891299,
+   "rover_visible": false,
+   "cam_dist_km": 8687.075352018801
+  },
+  "shown1": {
+   "moon_scaledDatum_km": 8687.00025388806,
+   "moon_scaling": 5,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 8687.000004974561,
+   "rover_inherited": 5,
+   "rover_boundingRadius_km": 12038.588405164057,
+   "rover_dist_km": 27396.67907580843,
+   "rover_screenSize": 0.868891299,
+   "rover_visible": true,
+   "cam_dist_km": 8687.075352018801
+  },
+  "hidden2": {
+   "moon_scaledDatum_km": 8687.00025388806,
+   "moon_scaling": 5,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 8687.000004974561,
+   "rover_inherited": 5,
+   "rover_boundingRadius_km": 12038.588405164057,
+   "rover_dist_km": 27396.67907580843,
+   "rover_screenSize": 0.868891299,
+   "rover_visible": false,
+   "cam_dist_km": 8687.075352018801
+  },
+  "shown2": {
+   "moon_scaledDatum_km": 8687.00025388806,
+   "moon_scaling": 5,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 8687.000004974561,
+   "rover_inherited": 5,
+   "rover_boundingRadius_km": 12038.588405164057,
+   "rover_dist_km": 27396.67907580843,
+   "rover_screenSize": 0.868891299,
+   "rover_visible": true,
+   "cam_dist_km": 8687.075352018801
+  },
+  "unscaled2": {
+   "moon_scaledDatum_km": 1737.400266198545,
+   "moon_scaling": 1.00000012,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 1737.4001799714688,
+   "rover_inherited": 1.00000012,
+   "rover_boundingRadius_km": 2407.7178934617873,
+   "rover_dist_km": 29856.23964736532,
+   "rover_screenSize": 0.154185563,
+   "rover_visible": true,
+   "cam_dist_km": 8687.075352018801
+  },
+  "settled2": {
+   "moon_scaledDatum_km": 8687.00025388806,
+   "moon_scaling": 5,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 8687.000004974561,
+   "rover_inherited": 5,
+   "rover_boundingRadius_km": 12038.588405164057,
+   "rover_dist_km": 27396.67907580843,
+   "rover_screenSize": 0.868891299,
+   "rover_visible": true,
+   "cam_dist_km": 8687.075352018801
+  },
+  "reload": {
+   "moon_scaledDatum_km": 1737.399996922379,
+   "moon_scaling": 1,
+   "rover_ecl_km": 1737.3999823488816,
+   "rover_eclDisplay_km": 1737.3999823488816,
+   "rover_inherited": 1,
+   "rover_boundingRadius_km": 2407.717624185621,
+   "rover_dist_km": 22918.14580032941,
+   "rover_screenSize": 0.201015502,
+   "rover_visible": true,
+   "cam_dist_km": 8687.075352018801
+  }
+ },
+ "selfSimilarity": {
+  "scaled": 1.3858165135630012,
+  "unscaled": 1.3858164640033734,
+  "ramp0": 1.3858164749534676,
+  "ramp1": 1.3858164900054568,
+  "ramp2": 1.3858165135630012,
+  "settled": 1.3858165135630012,
+  "hidden1": 1.3858165135630012,
+  "shown1": 1.3858165135630012,
+  "hidden2": 1.3858165135630012,
+  "shown2": 1.3858165135630012,
+  "unscaled2": 1.3858164640033734,
+  "settled2": 1.3858165135630012,
+  "reload": 1.3858165238002988
+ },
+ "screen_identity": {
+  "post_scaled": {
+   "maxabs_vs_post_settled": 0,
+   "identical": true
+  },
+  "post_shown2": {
+   "maxabs_vs_post_settled": 0,
+   "identical": true
+  },
+  "post_settled2": {
+   "maxabs_vs_post_settled": 0,
+   "identical": true
+  }
+ }
+}

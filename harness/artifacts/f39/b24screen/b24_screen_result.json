@@ -1,0 +1,38 @@
+{
+ "fails": [],
+ "report": {
+  "far": {
+   "moon_km": 25536.74027713442,
+   "tot_bright": 86381,
+   "tot_dark": 46544,
+   "rover_body": 44931,
+   "behind_body": 0,
+   "rover_screenSize": 0.559083462,
+   "rover_dist_km": 24713.88467309292,
+   "rover_vis": true,
+   "behind_dist_km": 29770.470550960352
+  },
+  "close": {
+   "moon_km": 5737.400653030489,
+   "tot_bright": 3807,
+   "tot_dark": 94888,
+   "rover_body": 3750,
+   "behind_body": 0,
+   "rover_screenSize": 2.81955075,
+   "rover_dist_km": 5095.896936869864,
+   "rover_vis": true,
+   "behind_dist_km": 11243.71087900591
+  },
+  "selaim": {
+   "selected": "ScreenRover",
+   "tracked": "ScreenRover",
+   "screen": [
+    1.5297752e-07,
+    -1.5297752e-07
+   ],
+   "offset_ndc": 2.163428835222014e-07,
+   "selDist_km": 5095.896383357745,
+   "rover_dist_km": 5095.896383357745
+  }
+ }
+}
