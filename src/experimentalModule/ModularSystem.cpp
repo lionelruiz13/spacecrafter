@@ -633,7 +633,10 @@ void ModularSystem::drawOrbits(Renderer &renderer)
         // up-chain ancestor - Earth for an observer on the Moon - used to draw
         // its own orbit/trail in the frame of the last descent through it.
         Mat4f parentFrame = body.getMatLocalToBodyPos();
-        parentFrame.multiplyTranslation(-body.getEclipticPos());
+        // The DRAWN offset (D21): `matLocalToBodyPos` was built by applying
+        // getDisplayEclipticPos(), so undoing it is what recovers the parent
+        // frame. Identical to -getEclipticPos() for every non-grounded body.
+        parentFrame.multiplyTranslation(-body.getDisplayEclipticPos());
         for (auto *m : body.orbitComponents) {
             m->update(&body, body.getScaledRadius());
             m->draw(renderer, &body, parentFrame);
@@ -675,7 +678,10 @@ void ModularSystem::drawTrails(Renderer &renderer)
         // up-chain hole (F29) was the last exception, so the frame is now fresh
         // for every body this sweep can reach.
         Mat4f parentFrame = body.getMatLocalToBodyPos();
-        parentFrame.multiplyTranslation(-body.getEclipticPos());
+        // The DRAWN offset (D21): `matLocalToBodyPos` was built by applying
+        // getDisplayEclipticPos(), so undoing it is what recovers the parent
+        // frame. Identical to -getEclipticPos() for every non-grounded body.
+        parentFrame.multiplyTranslation(-body.getDisplayEclipticPos());
         for (auto *m : body.trailComponents) {
             m->update(&body, body.getScaledRadius());
             m->draw(renderer, &body, parentFrame);
@@ -709,7 +715,10 @@ void ModularSystem::drawTails(Renderer &renderer)
         if (!body.getParent())
             continue; // parentless: no parent frame to place the tail in
         Mat4f parentFrame = body.getMatLocalToBodyPos();
-        parentFrame.multiplyTranslation(-body.getEclipticPos());
+        // The DRAWN offset (D21): `matLocalToBodyPos` was built by applying
+        // getDisplayEclipticPos(), so undoing it is what recovers the parent
+        // frame. Identical to -getEclipticPos() for every non-grounded body.
+        parentFrame.multiplyTranslation(-body.getDisplayEclipticPos());
         for (auto *m : body.tailComponents) {
             m->update(&body, body.getScaledRadius());
             m->draw(renderer, &body, parentFrame);

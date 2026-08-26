@@ -511,12 +511,19 @@ void ModularBody::deselect()
 void ModularBody::updateCache()
 {
     bool cached = !scaling.isTransiting();
-    scaledRadius = radius * scaling;
+    // THE display factor, once (I2): own display scale × the dilation inherited
+    // from the parent this body stands on (D21 [vixy 2026-08-22], §11.149(c3)
+    // ratified §11.151(b)). == `scaling` for every body that is not a grounded
+    // child, so nothing shipped changes by a bit; for a grounded child it is
+    // the EXTENT half of the uniform dilation whose PLACEMENT half is
+    // getDisplayEclipticPos().
+    const float display = getDisplayScaling();
+    scaledRadius = radius * display;
     // Navigation radii scale with the same visual scaling as the render radius
     // (B10 §5.2): datum defaults to radius ⇒ scaledDatumRadius == scaledRadius
     // for every shipped body, bit-identical.
-    scaledDatumRadius = datumRadius * scaling;
-    scaledGroundRadius = groundRadius * scaling;
+    scaledDatumRadius = datumRadius * display;
+    scaledGroundRadius = groundRadius * display;
     boundingRadius = scaledRadius;
     for (auto &module : nearComponents) {
         cached &= module->update(this, scaledRadius);
@@ -526,6 +533,22 @@ void ModularBody::updateCache()
     for (auto &module : inComponents) {
         cached &= module->update(this, scaledRadius);
     }
+    // D21 PRESENTATION PUSH (I3, §11.149(c2)): a GROUNDED child rides this
+    // body's DISPLAYED surface, so it inherits this body's display factor -
+    // and it must inherit it LIVE, because `scaling` is a 5 s ASmooth ramp and
+    // a baked constant cannot inherit a ramp (that was the load-time latch,
+    // the fourth instance of the closed B15/B19/B32 class). This function
+    // re-runs every frame for as long as the ramp transits (`uncached` stays
+    // set while isTransiting()), so the push IS the ramp reaching the child.
+    // Hidden grounded children are pushed too: `boundToSurface` survives
+    // hide()/show() (it is the same fact as the relation, see hide()), so a
+    // body shown mid-ramp is already carrying the right factor instead of
+    // catching up one frame later.
+    for (auto &c : groundedBodies)
+        c->setInheritedScaling(display);
+    for (auto &c : hiddenBodies)
+        if (c->boundToSurface)
+            c->setInheritedScaling(display);
     if (parent)
         parent->invalidateCachedState();
     // Position-derived reach (subsystemRadius + areaOfInfluence) is computed
@@ -559,7 +582,16 @@ void ModularBody::updateReach()
     // body's influence IS its system's space - at ecl==0 the cap collapsed
     // AoI to zero (the Sun, system nodes at their host's origin; INTENT 5.18),
     // making every reference transition escalate and none descend.
-    float aoi = std::max(boundingRadius * 128 / scaling, subsystemRadius * 16);
+    // `/ getDisplayScaling()` and not `/ scaling`: the intent of the division is
+    // that the AoI is the UNSCALED extent times 128 (display size must not move
+    // a navigation threshold), and boundingRadius is now `radius * display`.
+    // Dividing by the same factor keeps every body's AoI - grounded children
+    // included - bit-identical to what it was before D21's inheritance existed,
+    // which is deliberate: the REACH half of the scaled-bounding coupling is
+    // §11.96(e)'s promotion-grade item and D21 does NOT decide it (§11.149(c6)).
+    // A grounded child's reach must not change as a side effect of the display
+    // fix, so it does not.
+    float aoi = std::max(boundingRadius * 128 / getDisplayScaling(), subsystemRadius * 16);
     const float sibCap = eclipticPos.length() * 0.6f;
     if (sibCap > 0)
         aoi = std::min(aoi, sibCap);
@@ -925,6 +957,25 @@ void ModularBody::dumpTrace(std::ostream &out) const
         // 0 -> centre, free-descent hold at ground - ride these two values).
         << ",\"scaledDatumRadius\":" << scaledDatumRadius
         << ",\"scaledGroundRadius\":" << scaledGroundRadius
+        // THE DISPLAY FACTOR ITSELF (§11.150(n)(5)): the three scaled radii
+        // above are all `X * display`, so when one of them is wrong the dump
+        // could not say whether the radius or the factor was - F38 measured a
+        // NaN in all three and could not name the root from this channel
+        // (§5.102). Three fields, because they answer three questions: `scaling`
+        // is the live ASmooth read (mid-ramp value included), `scalingTarget` is
+        // what an operator commanded (D32's settled value), `inheritedScaling`
+        // is the dilation a grounded child rides from its parent (D21). Their
+        // product `scaling * inheritedScaling` is what every scaled quantity
+        // here was multiplied by.
+        << ",\"scaling\":" << static_cast<float>(scaling)
+        << ",\"scalingTarget\":" << scalingTarget
+        << ",\"inheritedScaling\":" << inheritedScaling
+        // The MODEL offset's display twin (D21): `ecl` above is the unscaled
+        // truth the orbit produced, this is where the drawn chain put it. They
+        // differ only for a grounded child of a display-scaled parent, and the
+        // pair is the observable of the two-layer split.
+        << ",\"eclDisplay\":[" << getDisplayEclipticPos()[0] << ','
+        << getDisplayEclipticPos()[1] << ',' << getDisplayEclipticPos()[2] << "]"
         << ",\"visible\":" << ((isVisible & isBodyVisible) ? "true" : "false")
         << ",\"screenSize\":" << screenSize
         // Halo color (B29 runtime-color instrument, INTENT §11.65): the

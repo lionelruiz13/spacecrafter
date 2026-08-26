@@ -3,6 +3,7 @@
 
 #include "experimentalModule/OrbitLoader.hpp"
 #include "experimentalModule/ModularBody.hpp"
+#include "experimentalModule/ModularBodyPtr.hpp"
 #include "bodyModule/orbit.hpp"
 #include "tools/utility.hpp"
 #include "tools/log.hpp"
@@ -33,10 +34,10 @@
 //                                 NOT reproduced here, §11.52(b).)
 class SurfacePointOrbit : public Orbit {
 public:
-    SurfacePointOrbit(Vec3d direction, double altStart, double altEnd,
+    SurfacePointOrbit(ModularBody *parent, Vec3d direction,
                       double tStart, double tDuration,
                       double lonDeg, double latDeg, double altKm, double altEndKm) :
-        direction(direction), altStart(altStart), altEnd(altEnd),
+        parent(parent), direction(direction),
         tStart(tStart), tDuration(tDuration),
         lonDeg(lonDeg), latDeg(latDeg), altKm(altKm), altEndKm(altEndKm)
     {
@@ -59,24 +60,59 @@ public:
         return os.str();
     }
 
+    // THE MODEL LAYER (D21 [vixy 2026-08-22] via §11.149(c1)/(c2); §2(a)'s
+    // two-layer rule): the parent's UNSCALED datum, read AT EVERY EVALUATION.
+    //
+    // It used to be `datum + altKm/AU` folded into a `const double` at LOAD
+    // from `parent->getAltitudeReference()` - the SCALED datum - and replayed
+    // every frame. That was wrong twice over. (i) It is a closed load-time
+    // latch, the fourth instance of the class B15/B19/B32 already closed, and
+    // the one thing "grounded children inherit scaling" cannot mean: `scaling`
+    // is a 5 s ASmooth ramp and a baked constant cannot inherit a ramp - which
+    // is also why the same scene had DIFFERENT geometry by load route
+    // (`body action reload` MOVED a composed rover by up to
+    // radius x (scale-1) = 6949.6 km on the shipped Moon, §11.101(f)).
+    // (ii) It put a DISPLAY flag inside a PHYSICAL position: the position the
+    // orbit, the shadow geometry and every model-position consumer read
+    // depended on `flag moon_scaled` - the D8 leak §11.101(f)(iii) recorded
+    // against `ModularBody.hpp`'s own "Just visual scaling" contract.
+    //
+    // Reading the RAW datum live fixes both, and it costs one float load: the
+    // display half now lives where it belongs, in
+    // ModularBody::getDisplayEclipticPos(), which dilates THIS output for the
+    // drawn chain only. Reading it live also makes the runtime
+    // `body name <parent> datum_radius <km>` seam (B10) reach the bodies
+    // standing on that parent, which a baked value silently ignored.
+    //
+    // The ascent ramp now lerps the ALTITUDE (what the data keys mean) rather
+    // than the datum-inclusive radius; algebraically identical, since the datum
+    // is a constant of the lerp: datum + (a(1-f) + b f) == (datum+a)(1-f) +
+    // (datum+b) f.
     virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const override
     {
-        double alt = altStart;
+        ModularBody *p = parent;
+        const double datum = p ? p->getDatumRadiusRaw() : 0;
+        double alt = altKm;
         if (tDuration > 0) {
             const double f = (JD - tStart) / tDuration;
             if (f >= 1)
-                alt = altEnd;
+                alt = altEndKm;
             else if (f > 0)
-                alt = altStart * (1 - f) + altEnd * f;
+                alt = altKm * (1 - f) + altEndKm * f;
         }
-        v[0] = direction[0] * alt;
-        v[1] = direction[1] * alt;
-        v[2] = direction[2] * alt;
+        const double r = datum + alt / AU;
+        v[0] = direction[0] * r;
+        v[1] = direction[1] * r;
+        v[2] = direction[2] * r;
     }
 private:
+    // Lifetime (I5): a non-owning reference to a body this orbit outlives only
+    // if nothing destroys the parent - ModularBodyPtr is the project's
+    // destruction-notified form, and it is also what makes a body REPLACED by
+    // name (the loader's replace path) redirect this orbit to the replacement
+    // instead of leaving it on freed memory.
+    const ModularBodyPtr parent;
     const Vec3d direction; // unit vector in the parent's surface frame
-    const double altStart; // AU from the parent's center
-    const double altEnd;   // AU from the parent's center
     const double tStart;   // JD
     const double tDuration; // days
     const double lonDeg, latDeg, altKm, altEndKm; // data keys, for saveOrbit
@@ -85,7 +121,6 @@ private:
 class SurfacePointOrbitLoader : public OrbitLoader {
     virtual std::unique_ptr<Orbit> load(std::map<std::string, std::string> &params) override {
         ModularBody *parent = ModularBody::findBodyOnce(params["parent"]);
-        const double datum = parent ? parent->getAltitudeReference() : 0;
         if (!parent) {
             cLog::get()->write("surface_point orbit of '" + params["name"]
                 + "': parent '" + params["parent"] + "' not found - altitude is measured from "
@@ -109,14 +144,12 @@ class SurfacePointOrbitLoader : public OrbitLoader {
         Vec3d direction;
         Utility::spheToRect(lonDeg * (M_PI / 180), latDeg * (M_PI / 180), direction);
         const double altKm = Utility::strToDouble(params["orbit_alt"]);
-        const double altStart = datum + altKm / AU;
-        double altEndKm = altKm, altEnd = altStart, tStart = 0, tDuration = 0;
+        double altEndKm = altKm, tStart = 0, tDuration = 0;
         const bool haveEnd = !params["orbit_alt_end"].empty();
         const bool haveStart = !params["orbit_ascent_start"].empty();
         const bool haveDuration = !params["orbit_ascent_duration"].empty();
         if (haveEnd && haveStart && haveDuration) {
             altEndKm = Utility::strToDouble(params["orbit_alt_end"]);
-            altEnd = datum + altEndKm / AU;
             tStart = Utility::strToDouble(params["orbit_ascent_start"]);
             tDuration = Utility::strToDouble(params["orbit_ascent_duration"]);
             if (tDuration <= 0) {
@@ -124,7 +157,6 @@ class SurfacePointOrbitLoader : public OrbitLoader {
                     "> 0 (days). The ascent is disabled, altitude stays at orbit_alt.",
                     LOG_TYPE::L_ERROR);
                 altEndKm = altKm;
-                altEnd = altStart;
                 tDuration = 0;
             }
         } else if (haveEnd || haveStart || haveDuration) {
@@ -133,7 +165,7 @@ class SurfacePointOrbitLoader : public OrbitLoader {
                 "together. The ascent is disabled, altitude stays at orbit_alt. To fix: "
                 "declare all three, or none.", LOG_TYPE::L_ERROR);
         }
-        return std::make_unique<SurfacePointOrbit>(direction, altStart, altEnd, tStart, tDuration,
+        return std::make_unique<SurfacePointOrbit>(parent, direction, tStart, tDuration,
                                                    lonDeg, latDeg, altKm, altEndKm);
     }
 };

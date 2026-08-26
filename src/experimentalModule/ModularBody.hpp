@@ -730,7 +730,9 @@ public:
         // reflecting every body through the reference - measured as
         // eye_root_new == -eye_root_old, the deepest layer of the Moon
         // divergence (harness 2026-07-11).
-        mat_local_to_body.multiplyTranslation(eclipticPos);
+        // DRAWN offset, not the model one (D21): identical to `eclipticPos`
+        // for every body but a grounded child - see getDisplayEclipticPos.
+        mat_local_to_body.multiplyTranslation(getDisplayEclipticPos());
         // Cache the position frame for the ORBIT pass (row 8): correct for
         // every body regardless of visibility (see the member comment).
         matLocalToBodyPos = mat_local_to_body;
@@ -848,7 +850,7 @@ public:
     inline void transformParentToBody(Mat4f &mat_local_to_body) const {
         if (boundToSurface) // PARENT spin - see transformParentToBodyPos
             mat_local_to_body = mat_local_to_body.multiplyFast(parent->computeBodyToSurface());
-        mat_local_to_body.multiplyTranslation(eclipticPos);
+        mat_local_to_body.multiplyTranslation(getDisplayEclipticPos()); // D21, see there
     }
 
     inline void transformBodyToParent(double jd, Mat4f &mat_local_to_body) {
@@ -873,10 +875,13 @@ public:
             // Maybe don't inline this unfrequent case
             // Exact inverse of the fold in transformParentToBodyPos
             // (PARENT spin, see there): [spin | spin*ecl]^-1 = [spin^-1 | -ecl]
+            // `ecl` is the DRAWN offset (D21) - the down-hop applies that one,
+            // so the up-hop must undo that one.
+            const Vec3f ecl = getDisplayEclipticPos();
             auto tmp = parent->computeSurfaceToBody();
-            tmp.r[12] -= eclipticPos[0];
-            tmp.r[13] -= eclipticPos[1];
-            tmp.r[14] -= eclipticPos[2];
+            tmp.r[12] -= ecl[0];
+            tmp.r[13] -= ecl[1];
+            tmp.r[14] -= ecl[2];
             mat_local_to_body = mat_local_to_body.multiplyFast(tmp);
         } else {
             mat_local_to_body.multiplyTranslation(-eclipticPos);
@@ -888,10 +893,11 @@ public:
         if (boundToSurface) {
             // Maybe don't inline this unfrequent case
             // PARENT spin - see transformParentToBodyPos (B24 fold fix)
+            const Vec3f ecl = getDisplayEclipticPos(); // D21, see the fresh twin
             auto tmp = parent->computeSurfaceToBody();
-            tmp.r[12] -= eclipticPos[0];
-            tmp.r[13] -= eclipticPos[1];
-            tmp.r[14] -= eclipticPos[2];
+            tmp.r[12] -= ecl[0];
+            tmp.r[13] -= ecl[1];
+            tmp.r[14] -= ecl[2];
             mat_local_to_body = mat_local_to_body.multiplyFast(tmp);
         } else {
             mat_local_to_body.multiplyTranslation(-eclipticPos);
@@ -1115,6 +1121,26 @@ public:
     inline const Vec3f &getEclipticPos() const {
         return eclipticPos;
     }
+    //! THE OFFSET THE DRAWN CHAIN PLACES THIS BODY AT inside its parent's
+    //! frame - the PRESENTATION half of the position, where `eclipticPos`
+    //! above is the MODEL half (D21 [vixy 2026-08-22], §2(a)'s two-layer rule;
+    //! §11.149(c1)/(c3), ratified §11.151(b)). They differ for exactly one
+    //! kind of body: a GROUNDED child. Its parent's display scaling is a
+    //! UNIFORM DILATION of the parent's surface neighbourhood - placement AND
+    //! extent - so what stands on a displayed surface keeps standing on it and
+    //! the composition stays self-similar ("to be visually identical to
+    //! unscaled, given grounded bodies are surface-relative, so the referential
+    //! is the body surface"). Placement is this multiply; extent is the same
+    //! factor reaching the child's own radii through getDisplayScaling().
+    //! Everything else - the orbit, the shadow geometry, the script-visible
+    //! model position - keeps reading `eclipticPos`, which is why the display
+    //! flag no longer decides a physical position (the D8 leak of §11.101(f)
+    //! (iii); `scaling`'s "Just visual scaling" contract becomes true).
+    //! Exact identity for every non-grounded body: the branch returns the
+    //! member itself, no multiply, no rounding.
+    inline Vec3f getDisplayEclipticPos() const {
+        return boundToSurface ? eclipticPos * inheritedScaling : eclipticPos;
+    }
     //! This body's position in the ROOT frame from the CACHED per-frame state:
     //! the sum of `eclipticPos` up the chain, evaluating NO orbit. The frame
     //! walk brings a parent up to date before its children, so a consumer
@@ -1294,6 +1320,19 @@ public:
     // target into coefficients the moment it starts, so the target is recorded
     // where it is known - at the seam that sets it.
     inline float getScalingTarget() const { return scalingTarget; }
+    //! THE display factor this body is DRAWN with (D21): its own display scale
+    //! - the live `ASmooth`, mid-ramp value included - times the dilation it
+    //! inherits from the scaled parent it stands on. ONE authority (I2): every
+    //! scaled draw quantity (scaledRadius, the two nav radii, boundingRadius)
+    //! is `X * getDisplayScaling()`, and nothing multiplies by `scaling`
+    //! directly any more. == `scaling` for every body that is not a grounded
+    //! child, so no shipped scene's arithmetic changes by a bit.
+    inline float getDisplayScaling() const {
+        return static_cast<float>(scaling) * inheritedScaling;
+    }
+    //! The dilation this body inherits from its parent (1 unless it is a
+    //! grounded child of a display-scaled body). Instrument + ledger channel.
+    inline float getInheritedScaling() const { return inheritedScaling; }
     // The RAW nav radii, in AU, before `scaling` multiplies them. The scaled
     // products already had getters; the ledger needs what the operator set.
     inline float getDatumRadiusRaw() const { return datumRadius; }
@@ -1766,6 +1805,20 @@ public:
     static StringIDCluster slotID;
     static Tracer tracer;
 private:
+    //! D21 presentation push (I3): the PARENT tells its grounded children what
+    //! dilation they ride, from updateCache - the one place that knows the
+    //! parent's own display factor. Idempotent and change-gated: a re-push of
+    //! the same value costs a float compare and invalidates nothing, so the
+    //! per-frame push during the 5 s ramp does not force a cache rebuild once
+    //! the ramp has settled. Marking `uncached` is what carries the new factor
+    //! into the child's OWN scaled radii (and on to ITS grounded children) -
+    //! the same single scaling authority setScaling/setRadius already use.
+    inline void setInheritedScaling(float f) {
+        if (inheritedScaling != f) {
+            inheritedScaling = f;
+            uncached = true;
+        }
+    }
     // Deduce which modules are to be bound to this body from the parameters
     std::vector<BodyModuleType> deduceBodyModuleList(std::map<std::string, std::string> &param);
     void select();
@@ -2086,6 +2139,18 @@ private:
     // Navigation and visibility
     ASmooth<AsyncHub, float, 5.f> scaling;
     float scalingTarget = 1.f;   // what setScaling was last told (D32's settled value)
+    // The display dilation INHERITED from the parent this body stands on (D21;
+    // 1 for everything that is not a grounded child, and for a grounded child
+    // of an unscaled parent). It is PUSHED by the owner of the factor -
+    // updateCache, at the end of the parent's own scaling computation (I3:
+    // the owner notifies, the dependent never polls) - which is also what
+    // makes the 5 s ramp LIVE for grounded children, since updateCache re-runs
+    // every frame for as long as the ASmooth is transiting. It is deliberately
+    // NOT folded into `scaling`: `scaling` is what an operator commanded on
+    // THIS body (the D32 ledger value, `planet_scale`), this is what the scene
+    // does to it, and collapsing the two would make a restore replay the
+    // parent's dilation as the child's own command.
+    float inheritedScaling = 1.f;
     AuthoredState authoredState; // what the DATA gave this body (D30's delta baseline)
     float radius;
     // Raw (unscaled) navigation radii, both defaulting to `radius` (B10 §5.2).
