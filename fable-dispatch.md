@@ -599,22 +599,7 @@ the field, D9), no real-HOME edits. The contract choice stays Vixy's.
 no-control verdict grounded); numbers on the D11 denominator where cost is
 claimed; §5.88 annotated (stays OPEN, its fix fork untouched); md5 pristine;
 code tree clean; §11 entry + stub; WIP per §0.6.
-**WIP:** 2026-08-29 CP1 reached (harness `8150d63`+1): source read DONE — the
-spectral array feeds NO pixel (star colour is `color_table[getBVIndex()]`,
-zone_array.cpp:293…403, filled from stars.ini `[colors]`); it feeds exactly two
-TEXT builders, one ON DEMAND (TCP `get status object`) and one PER FRAME
-(`UI::drawGravityUi` → `getSelectedObjectShortInfo`). Control DESIGNED and
-GROUNDED: the split root does NOT defeat it — the spectral FILE comes from
-`getDataRoot()` (hip_star_mgr.cpp:490 = compile-time `CONFIG_DATA_DIR`,
-main.cpp:186) and the data root HAS `stars_hip_sp_0v0_0.cat` (4122 lines), so a
-temp-HOME farm naming that version populates the array with no data-root write.
-P1–P6 committed in `harness/f45_run.sh`'s header BEFORE any launch.
-2026-08-29 CP2: 9 launches done (4 empty / 4 full interleaved + 1 spInt census),
-all 6 predictions resolved, field+data-root md5 pristine on every leg. P1 null
-PROVEN by cross-leg BIT-IDENTITY (empty1 == full3, 0 px of 4 194 304); P2/P3/P5
-discriminate 4/4 both ways; P6 = **+0.0105 ms/frame (+1.05% of D11)**,
-rank-separated 4v4 with a negative control that does NOT separate. NEXT: §11.159
-entry file + stub + §5.88 annotation (+§5.90 rider), then clear this line.
+**WIP:** *(cleared 2026-08-29 — DELIVERED: §11.159 + stub, §5.88 OWED DATUM PAID annotation (row stays OPEN, fix fork untouched), §5.90 rider; 9 fresh launches, field/data-root md5 pristine on every one; code `d6aec251` untouched.)*
 
 ### F46 — §5.89's owed sweep: every load-bearing `assert` in `src/` (record-only) [S]
 
