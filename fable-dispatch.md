@@ -438,6 +438,21 @@ one gate reading could not settle (f23/f24's lit guard) MEASURED green
 b3_ladder residual NOT absorbed: +1.4-1.6 % on four metric caps vs §11.104 and
 b250's site luma 20.97 < 30 — unattributed, discriminating check named.
 NEXT: README + §11.157 + stub.*
+*(ACCEPTED by supervisor [fable 2026-08-29]: §11.157 read in full; commits/authors/scope
+checked (harness-only, code tree clean at `d6aec251` throughout); §5.109 mint + stub +
+README resolution verified at the ledger. One record defect found and repaired at
+acceptance: the entry cited CP2's PRE-AMEND sha `5a284a5` (the amend carried the 25→24
+count fix); annotated in the entry file, on-branch chain `988218d → 575d7fc → f2210a4`.
+Judgment calls ENDORSED with their arguments: the display-stack rebuild verified against
+recorded values BEFORE measuring (§11.122(o) discipline — and §0.5's XAUTHORITY recipe is
+now stale, supervisor updates it at close); b3_ladder's opposite repair (the site carries
+the instrument's illumination + DEM window — b24_screen precedent, invariance bit-identical
+×3); f34_convention documented-not-re-baselined (I2 — f40_inverse already scores both);
+the litguard control replacement (the session's next criterion-that-cannot-discriminate
+instance, replaced by a predicted disc area); b3_ladder left RED, not absorbed — its
+named check (corrected harness vs a `922701c9` build) is QUEUED next round. §5.109's
+layer half joins §3 for Vixy; its timing half is a defect either way, standing hazard
+recorded for every grounded-scene harness.)*
 
 ### F44 — §5.86's owed data: who consumes the scrambled RA/DE, and what the old path answers (record-only) [S]
 
