@@ -482,7 +482,16 @@ ways with counts; beyond-the-five members recorded if any; §11.122 finding
 recorded with both texts + proposed disposition; pair-check green; §11 entry
 at the next free number + stub, entry-file-first; code tree clean at close;
 WIP per §0.6.
-**WIP:** *(empty)*
+**WIP:** *(CP1 2026-08-29: all ten sources read in full; scan built + run
+pre-edit (71 event lines / 92 candidate pairs / 68 unmarked-at-target,
+adjudicated). FOUR of the (g) five are real unmarked events and are now
+ANNOTATED at the superseded node — §11.122(i)←§11.125(i), §11.101(f)←§11.152,
+§11.108(e)←§11.128(a2), §11.98(c)←§11.116(b) — with the two live stubs
+(§11.98, §11.122) mirrored. **The fifth is a DIRECTION INVERSION in §11.156(g)'s
+table**: §11.107(c) already carries the marker citing §11.111 (F7 is LATER than
+F3), so nothing is owed there. pair_check pre-vs-post diff = EMPTY, with a
+positive control proving it fires. NEXT: §11.156(g) back-marker for my own
+correction + INTENT/11.165.md + stub + post-edit scan.)*
 
 ### F50 — §5.110's owed live reading: the six `#selected_*` on a real composed-body selection (record-only) [S]
 
