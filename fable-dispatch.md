@@ -488,12 +488,16 @@ algebraic inverse already sits written out in `f34_probe_inverse.cpp`).
 old-path RA/DE datum recorded with its configuration stamp and stated on the
 row as the parity target; §5.86 annotated, still OPEN; §11 entry at the next
 free number + stub; no product-code change; md5 pristine; WIP per §0.6.
-**WIP:** 2026-08-29, CP1 reached — consumer census complete
-(`harness/f44_census.py`, comment-stripping self-test PASS 9 raw / 4 code).
-Next: the parity measurement (existing channel FOUND — the dual dump's
-`.navstr` sidecar already emits `OLD nav:`/`NEW nav:` RA/DE for every
-both-tree body at one frame, `ssystem_factory.cpp:1208-1211`), then §11.158
-entry + stub + the §5.86 row annotation.
+**WIP:** 2026-08-29, CP2 reached — census done (`harness/f44_census.py`) AND
+the parity measurement RUN and GREEN (`harness/f44_parity.py`,
+`artifacts/f44/`, 0 FAIL / 2 recorded refuted predictions). Existing channel
+used, nothing built for it: the dual dump's `.navstr` sidecar already carries
+both paths' RA/DE per body at one frame (`ssystem_factory.cpp:1179-1218`).
+Headline: old-vs-new median **60.3636°**; with §5.86 repaired the gap is
+**≤0.002014° for 89 of 90 bodies** once old's observer-centred origin is
+matched and a **constant −90.0003°** RA zero point (§11.4, epoch-independent
+across a 130.0552° spin move) is removed. Next: §11.158 entry file → stub →
+§5.86 row annotation → clear this line.
 
 ---
 
