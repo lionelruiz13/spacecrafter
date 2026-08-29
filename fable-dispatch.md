@@ -100,6 +100,38 @@ validation per §11.161(f) (S, git-only); (5) §5.100's one-line fix IF the §3
 authorization lands. DECISIONS_PENDING open set at close: **still EMPTY** —
 the round's Vixy items ride §3 + their rows.
 
+**Update [Fable 2026-08-29, supervising session 15]:** trigger = the §0b
+verbatim line. Round of 3: **F48 → F49 → F50** — the session-14 queue in
+order; queue item 4 (§11.161(f) INT-7 validation) + the F47-acceptance
+member (the §5.5-class row↔row staleness sweep) are extension candidates
+if health permits, minted then per §0b.2; item 5 (§5.100's fix) stays
+blocked — NO Vixy commit since session 14's close (harness HEAD at open =
+`75f8b30`, my own F47 acceptance), so the §3 authorization question is
+still unanswered and the whole decision-gated set stands unchanged (D-set
+still EMPTY). Warm-up: both trees clean at open, code `d6aec251` / harness
+`75f8b30`; binary current (code HEAD unmoved since the 2026-08-26 no-op
+rebuild confirmation, binary mtime 2026-08-26); `free -g` = 24 GiB ⇒ -j12
+OK for F48's out-of-tree build; **definition-drift assert: md5 MATCH**
+(first live use of the §0b.1 guard — the RA-reprojected definition's
+projection is faithful). Next free §11 number verified **164** (§11.163
+last). Picks, rows re-read at the ledger: F48 = **§11.157(e)'s named
+discriminating check** (corrected b3_ladder vs a `922701c9` build — the
+±1.5 % drift's product-vs-harness attribution; (h)(3) forbids treating the
+corrected file as green until this runs), F49 = **the §11.156(g) recovery
+backlog** (five cross-entry back-markers per §11.113(p); markers only —
+§11.122's both-homes-stale row state is a FINDING), F50 = **§5.110's owed
+live reading** (six `#selected_*` on a live composed-body selection +
+the bounded other-consumers census). Order = recorded queue order;
+surfaces disjoint (out-of-tree build + harness runner / INTENT entry
+files / one new harness script + row annotation); NO mandate touches
+product code — the code tree should be clean at every point, the second
+all-record/instrument round in a row. Round-open events: **archival
+pass 8** (update-s13 + F42–F47 moved byte-exact, manifest
+`2026-08-29-pass8`, commit `523f384`); the stale supersession-block
+TEMPLATE in §0b struck with its §11.161(g) pointer (it survived
+session 14's close unstruck — a staleness bug in this file, caught at
+warm-up re-read).
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -252,14 +284,20 @@ session per claude/fable-dispatch.md §0b."*
    round outcome to the session update note, commit, and report to Vixy: deliveries,
    endorsements, anything newly Vixy's, the remaining dispatchable set.
 
-**Supersession-block TEMPLATE** (the executor's standing definition is stale — every
+~~**Supersession-block TEMPLATE** (the executor's standing definition is stale — every
 prompt carries this, values refreshed): intent authority =
 `/home/claude/spacecrafter/claude/INTENT.md`, expanded entries `claude/INTENT/<id>.md`
 (NO `src/experimentalModule/INTENT.md`, NO §12, NO `dispatch-2026-07-19.md`); delivery
 record = §11 entry at the next free number ⟨N⟩ + §13/§5 flips + this file's WIP line at
 every checkpoint; today's date ⟨date⟩; `claude/` is its own repo — code committed
 first, harness carries `Code: master-beta @ <sha>`; memory-bounded builds per §0.5;
-no `run_in_background`; both HEADs stated ⟨code, harness⟩.
+no `run_in_background`; both HEADs stated ⟨code, harness⟩.~~
+**[SUPERSEDED 2026-08-29, session 15 warm-up — the era this template served is CLOSED
+per §0b.1 + §11.161(g): the standing definition is RA-reprojected (tracked authority
+`claude/agents/opus-xhigh.md`, md5-guarded projection), so prompts carry per-round
+variables only (HEADs, date, next §11 number, task pointer, live `### F` count, task
+boundaries). Struck-not-deleted: the variable list above remains the historical record
+of what a prompt had to carry while the definition was stale.]**
 
 ---
 
@@ -275,12 +313,187 @@ F28 §11.138 · F29 §11.139 · F30 §11.140 · F31 §11.141 · F32 §11.142 ·
 F33 §11.143 · F34 §11.144 · F35 §11.145 · F36 §11.146 · F37 §11.149 ·
 F38 §11.150 · F39 §11.152 · F40 §11.153 · F41 §11.155 (F37–F41 archived,
 pass 7) · F42 §11.156 · F43 §11.157 · F44 §11.158 · F45 §11.159 ·
-F46 §11.160 (session 14 — **all five DELIVERED and accepted**; sections below
-await the next archival pass). Queued for the NEXT round, in order (per the
-session-14 round outcome): b3_ladder's `922701c9` check, S · the §11.156(g)
-five back-markers, S · §5.110's live check, S · the §11.161(f) stratigraphy
-validation, S · §5.100's fix IF authorized — to be minted at their dispatch
-per §0b.2.*
+F46 §11.160 · F47 §11.163 (session 14 + its post-close extension — all six
+DELIVERED and accepted; archived pass 8). Session-15 round (2026-08-29):
+the session-14 queue minted in order as **F48** (b3_ladder's `922701c9`
+check) · **F49** (the §11.156(g) five back-markers) · **F50** (§5.110's live
+check) below; extension candidates if health permits: the §11.161(f)
+stratigraphy validation · the §5.5-class row↔row staleness sweep (F47
+acceptance). Still blocked: §5.100's fix (authorization unanswered).*
+
+### F48 — b3_ladder's discriminating check: the corrected harness against a `922701c9` build (§11.157(e)'s named check) [S]
+
+**Why now / why first:** §11.157(e) left `b3_ladder.py` deliberately RED — one
+failure (b250 `site_luma` 20.97 vs ≥30) plus an UNATTRIBUTED drift against
+§11.104(d)'s committed post-fix numbers: four metric caps +1.4–1.6 %, b250
+−6.4 %, b20 shadow witness −17 %. (h)(3) binds the successor: *"do not treat
+the corrected file as a green baseline until that is run."* The named check:
+re-run the CORRECTED harness against a binary built at `922701c9` (F1's own
+code). Caps returning to ≈28.8/30.3/58.3/125.3 ⇒ the drift is the PRODUCT's
+across five sessions; caps staying ≈29.2/30.8/59.1/127.0 ⇒ it is remaining
+harness state and §11.157's attribution is wrong. Queue position 1 (recorded
+at session-14 close).
+
+**Sources (re-read, never recall):** `INTENT/11.157.md` (e) + (h) (the
+residual's numbers, the named check, the runner note — b3_ladder dies without
+its farm; use `b3_ladder_run.sh`); `INTENT/11.104.md` (d) (F1's committed
+numbers — cite from the entry, not from this section's transcription); the
+§5.107 row (second candidate mechanism: extent-cache latch ×1.01 vs ×1.02);
+the §5.109 hazard line in §0.5; `harness/README.md`'s b3_ladder section.
+
+**Scope:**
+1. **Out-of-tree build:** `git -C /home/claude/spacecrafter worktree add
+   /tmp/sc-922701c9 922701c9` (detached — the MAIN tree stays at `d6aec251`
+   and clean throughout; NEVER checkout in the main tree), own build dir,
+   memory-bounded per §0.5 (`free -g` first; 24 GiB at round open ⇒ -j12).
+   Record build provenance (sha, cmake flags, submodule state — EntityCore at
+   whatever `922701c9` pins, state it). `git worktree remove` at close; the
+   binary may stay under /tmp (F40 precedent; /tmp is reboot-volatile, say so
+   in the entry).
+2. **Compatibility pre-check BEFORE the run:** the corrected harness polls
+   `scaling`/`scalingTarget` (`wait_scale_settled`) and asserts observer
+   radius (`P0alt`) — verify the `922701c9` dump carries those fields. If one
+   is absent, STATE it and adapt with the argument at the site; any
+   adaptation must leave the six committed geometry legs untouched (the check
+   compares geometry, not settle plumbing). Note the semantics delta: the
+   scale-ramp behaviour changed at `d6aec251` (config scale = starting state);
+   at `922701c9` the ramp §5.109 exposed may or may not exist — whichever way,
+   record what the settle probe observes on the old binary as its own datum.
+3. **Run** the corrected harness (current harness HEAD) with
+   `SC_BIN=/tmp/…/spacecrafter` per §0.5: temp-HOME farm via the runner,
+   `/proc/<pid>/comm` assert 0, `DISPLAY=:2` + the post-reboot XAUTHORITY
+   export, plain `timeout`, config/ssystem md5 in == out.
+4. **Adjudicate against BOTH committed signatures** (both predictions stated
+   before the run): product-drift ⇒ record; WHICH session introduced it is a
+   bisection this task does NOT run — name the next discriminating step.
+   Harness-state ⇒ §11.157(e)'s attribution is wrong: annotate the entry with
+   the back-marker discipline (§11.113(p), same commit). NEITHER signature ⇒
+   record as-is, both predictions kept with numbers (F44 precedent), name what
+   discriminates next. Read b250's `site_luma` and the b20 witness on the old
+   build too — the residual's other two directions are part of the signature.
+5. **Stack caveat, stated in the entry:** the display stack is REBUILT
+   post-reboot (§11.157(f)); a cross-epoch absolute comparison rides that
+   variable. The comparison here is same-stack A/B (current binary's numbers
+   vs old binary's numbers, both on TODAY's stack) — that is what makes it a
+   discriminator; §11.104(d)'s absolute numbers are the PREDICTION TARGETS,
+   not a third arm. Current-stack A/A floor: 374 px / 3-of-255 (F45 datum).
+
+**Boundaries:** NO product-code change (an out-of-tree build of an old sha is
+not a change; `git -C /home/claude/spacecrafter status` clean at every point).
+NO re-baselining of b3_ladder on the outcome — that is a follow-up with the
+attribution in hand. §5.107/§5.109 rows advanced ONLY if the outcome directly
+discriminates them (annotate, don't close).
+
+**DoD:** build provenance recorded; compatibility pre-check stated;
+run numbers cited against both committed signatures with the verdict;
+§11.157(e) annotated with the outcome (+ back-marker in the same commit if
+any claim is superseded); §11 entry at the next free number + stub,
+entry-file-first (§11.156(f)); artifacts committed (force-add —
+`.gitignore:1` ignores `artifacts/`, F44-acceptance convention); md5
+pristine on every launch; main code tree clean at close; WIP per §0.6.
+**WIP:** *(empty)*
+
+### F49 — The §11.156(g) recovery backlog: five cross-entry back-markers per §11.113(p) (markers only) [S]
+
+**Why now:** F42 measured five entry-to-entry supersessions whose superseded
+node carries no back-marker (§11.156(g), a stated lower bound); §11.161(g)(2)
+made the rule EVENT-BOUND for every future write — these five are the
+pre-rule recovery backlog, queued at session-14 close. Three of the five
+targets are archived-in-place (§11.101, §11.108, §11.111): the entry file is
+their ONLY home, so the marker there is the only place the correction can
+live. Queue position 2.
+
+**Sources (re-read, never recall):** `INTENT/11.156.md` (g) — the table with
+the five members and their superseders (the POINTER, not the content: read
+each superseded entry AND its superseder IN FULL before editing);
+`INTENT/11.113.md` (p) (the rule); §11.156(d)'s repair-form-keyed-to-home
+(§11 entries are append-only journal ⇒ ANNOTATE with pointer, original
+preserved — the §11.99 form: `[ANNOTATION <date>, §<superseder> — original
+preserved; …]`); the archival convention header in `INTENT.md` (annotations
+in archived-in-place entries are legal — it is the one home).
+
+**Scope:**
+1. Per member — §11.122(i) ← §11.125(i) · §11.101(f) ← §11.152 ·
+   §11.108(e) ← §11.128 · §11.111 (the grep result) ← §11.107 ·
+   §11.98(c) ← §11.116: place the annotation AT the superseded node, dated,
+   quoting the superseder's assertion, original preserved. Entry file first;
+   then check whether the in-file STUB relays the superseded claim — if yes,
+   mirror the marker there (entry-first order, §11.156(f)).
+2. **Discriminating check both ways:** re-run F42's (g)-style bounded scan
+   (`§N.M` within 160 chars of REFUTED/SUPERSEDED/CORRECTED/RETRACTED/
+   WITHDRAWN, target ≠ source, one line) — pre-edit it finds these 5;
+   post-edit each found member's target carries a marker citing its
+   superseder (state the post-condition precisely: the scan detects
+   supersession EVENTS, the check is that no detected event lacks its
+   back-marker). If the scan surfaces members BEYOND the five, record them
+   (mint nothing) — the (g) table said lower bound.
+3. **§11.122's both-homes-stale row state is a FINDING, not an action:** both
+   homes carry `OPEN unattributed residual` while §11.125(i) refuted-as-posed
+   and replaced the mechanism. Record the current text of both homes + what
+   §11.125(i) established; PROPOSE the disposition (does any §13/§5 row state
+   need a supervisor/Vixy action?), enact nothing.
+4. `intent_pair_check.py` must still pass post-edit (the markers must not
+   create new stub↔entry divergence).
+
+**Boundaries:** markers ONLY — no row state advance, no open/close, no
+content beyond the annotations + their stub mirrors. No product code, no
+data, no harness scripts, no launches.
+
+**DoD:** five markers placed with dates + superseder quotes; scan run both
+ways with counts; beyond-the-five members recorded if any; §11.122 finding
+recorded with both texts + proposed disposition; pair-check green; §11 entry
+at the next free number + stub, entry-file-first; code tree clean at close;
+WIP per §0.6.
+**WIP:** *(empty)*
+
+### F50 — §5.110's owed live reading: the six `#selected_*` on a real composed-body selection (record-only) [S]
+
+**Mandate:** §5.110's own owed clause: *"the LIVE reading, which this task
+attributed but did not measure, and whether `ObjectUninitialized`'s
+non-neutral returns (`(1,0,0)`, −10) reach any other consumer the same way."*
+The fix fork (widen the old aggregate's type filter / re-home the variables
+onto `Core::selected_object` / answer "nothing selected" with a §2(f)
+diagnostic) is Vixy's — three contracts, one changes what a shipped variable
+means; nothing here fixes. Queue position 3.
+
+**Sources (re-read, never recall):** the §5.110 row (the full attribution
+chain with its `file:line` cites — re-verify the lines at dispatch, they may
+have drifted); `INTENT/11.158.md` (j1) + its R1/R2 reachability reads;
+§11.158's census instrument (`f44_census.py`) for the consumer half; §0.5's
+launch discipline (incl. the §5.109 hazard if the scene grounds anything).
+
+**Scope:**
+1. **ONE script + launch per §0.5.** Select a composed body by the route that
+   reaches it (`select planet <english name>` — the row records that `select
+   object <translated>` resolves old-tree-only) and read the six variables
+   (`#selected_ra/de/az/alt/distance/magnitude`) through an observable
+   channel. Name the channel and show the probe can fail — **positive
+   control in the same launch**: the same six variables with an OLD-tree
+   body selected must answer real values (instrument chain; a probe that
+   can silently no-op is fiction).
+2. **Predictions committed FIRST** (F47 precedent): distance = 1.0,
+   magnitude = −10, ra/de/az/alt = the callers' own initializers (0). Per
+   variable: match/mismatch. A mismatch is a model error to TRACE (the row's
+   attribution chain names every hop), never absorbed.
+3. **Other-consumers census, bounded, by READING:** every consumer of
+   `ObjectUninitialized::getObsJ2000Pos`'s `(1,0,0)` and `getMag`'s −10
+   reachable from a shipped surface the same way (comment-stripped census +
+   call-graph walk, the F44 method); name what stays unread. NO second
+   launch unless one consumer's reach turns on a cheap observable in the
+   SAME launch.
+4. **Record:** §5.110 annotated (owed datum PAID, row stays OPEN, fork
+   untouched); §11 entry at the next free number + stub, entry-file-first;
+   any new distinct-mechanism defect found = mint per §5.79's criterion,
+   else it lists on §5.110.
+
+**Boundaries:** record-only for product code — NO fix, NO data writes, no
+real-HOME edits (temp-HOME farm); the contract choice stays Vixy's.
+
+**DoD:** six live readings recorded with the positive control; predictions
+vs measured stated per variable; other-consumers census with method +
+verdicts + the not-read boundary; §5.110 annotated, still OPEN; §11 entry +
+stub; md5 pristine; code tree clean at close; WIP per §0.6.
+**WIP:** *(empty)*
 
 ---
 
