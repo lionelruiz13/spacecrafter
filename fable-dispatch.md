@@ -391,26 +391,23 @@ any claim is superseded); §11 entry at the next free number + stub,
 entry-file-first (§11.156(f)); artifacts committed (force-add —
 `.gitignore:1` ignores `artifacts/`, F44-acceptance convention); md5
 pristine on every launch; main code tree clean at close; WIP per §0.6.
-**WIP:** *2026-08-29 CP2 — BOTH RUNS DONE, verdict = neither signature as
-posed: arm A (control, `fa00dead`, adapted harness) reproduces F43's committed
-run with **0 differing leg fields**, and arm B (`bb179629` = `922701c9`)
-reproduces arm A (caps 29.19/30.83/59.10/126.97, b250 316.05, centre luma
-60.71, b250 site_luma 20.97, b20 shadow 2314) ⇒ the PRODUCT's C++ is
-EXCLUDED, and so is harness state (same file, byte-identical prediction
-file). The carrier is dated environment: 4 runs on 2026-07-25 bright, 3 on
-2026-08-29 dim; NVIDIA driver 580.568.0 → 580.636.192 bracketed
-(2026-08-23 08:44, 2026-08-26 11:06] over 1721 committed applogs, and the
-app's own log gains exactly 3 "creating uninitialized texture" events, all
-three the Moon's own textures. NEXT: §11.164 entry + stub + §11.157(e)
-annotation with the back-marker. CP1 was: `922701c9` built out-of-tree (worktree
-`/tmp/sc-922701c9`, build `/tmp/sc-922701c9-build`, binary md5 `bb179629`,
-EntityCore `224eba7a`); compatibility pre-check done at source (no
-`scaling`/`scalingTarget` in that dump; free-mode lon convention is pre-F40);
-b3_ladder adapted at two sites only (`--convention pre|post`,
-`wait_scale_settled` fallback) with the prediction file byte-identical
-(md5 `80234f6e`) and both signatures + this task's own prediction committed.
-NEXT: control run on `fa00dead` with the adapted harness, then the
-`bb179629` run.*
+**WIP:** *(DELIVERED 2026-08-29 → §11.164.* Verdict: **NEITHER signature as
+§11.157(e) posed them.** Control first — the current binary with the adapted
+harness reproduces F43's committed run with **0 differing leg fields**; then the
+`922701c9` build (`bb179629`, EntityCore `224eba7a`, out-of-tree worktree, now
+removed) returns TODAY's numbers: caps 29.191/30.830/59.100/126.969, b250
+316.052, b250 `site_luma` 20.97, b20 shadow 2314, centre luma 60.7091 — so the
+PRODUCT's C++ is excluded, and so is "harness state" (one file, byte-identical
+prediction file both arms). The split is by DATE across three code shas (four
+2026-07-25 runs at centre luma 181.39, three 2026-08-29 at 60.71) with the Moon
+dump identical in all 21 fields; two measured unattributed environment
+candidates (NVIDIA driver 580.568.0 → 580.636.192 bracketed (2026-08-23 08:44,
+2026-08-26 11:06] over 1721 applogs; three extra `creating uninitialized
+texture` events, all three the Moon's own textures). §11.157(e) + (h)(3)
+annotated with back-markers, stub mirrored, README's superseded claim struck in
+place, §5.109 given the binary-dependent-ramp datum, §5.107's candidate role
+refuted. **NO §5 row minted** — restraint argued at §5.79's criterion. Both
+trees clean at close; code never left `d6aec251`.)*
 
 ### F49 — The §11.156(g) recovery backlog: five cross-entry back-markers per §11.113(p) (markers only) [S]
 

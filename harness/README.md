@@ -505,6 +505,7 @@ cap radius in px. Whatever the parent leaves in the merged depth bucket is a
 WALL, and the cap radius inverts to the wall height.
 
     b3_ladder_run.sh <state> [outdir] [--site moon|earth|earth_noatm] [--families sph,cur]
+                                     [--convention pre|post]   # of the BINARY (F48)
     b3_ladder.py <outdir> --predict [--site ...]      # prediction file only
 
 - **States are wall HYPOTHESES**, each predicted from source arithmetic before
@@ -1937,8 +1938,39 @@ b45 59.1/58.3, b90 127.0/125.3), b250 **−6.4 %** (316.0/337.5), the b20 shadow
 witness **−17 %** (2313/2790), and the one remaining failure is b250's own
 `site_luma = 20.97` against the `>= 30` gate that has been in the file since its
 first commit (`8a294d8`) and passed in F1. The site is bit-identical by
-construction, so this is NOT the correction; it is unattributed drift across
-five sessions of product change. Do not read the ladder as green.
+construction, so this is NOT the correction; ~~it is unattributed drift across
+five sessions of product change~~. Do not read the ladder as green.
+
+**[SUPERSEDED 2026-08-29, F48 / INTENT §11.164 — original struck, not deleted.
+The drift is NOT product change.** A `922701c9` build (`bb179629`, EntityCore
+at that sha's pin `224eba7a`), run with this same corrected file on the same
+stack instance the same day, returns **today's** numbers — 29.191 / 30.830 /
+59.100 / 126.969, b250 316.05, `site_luma` 20.97, b20 shadow 2314, centre luma
+60.71 — not §11.104(d)'s. And it is not harness state either: the file is one
+file across both arms and `b3_ladder_predict.json` is byte-identical under
+both conventions (md5 `80234f6e`). The split is by DATE across three code
+shas — four 2026-07-25 runs at centre luma 181.39, three 2026-08-29 runs at
+60.71 — with the new-path Moon dump identical in all 21 fields between the
+epochs. Two measured, unattributed environment candidates: the NVIDIA driver
+`580.568.0` → `580.636.192`, bracketed (2026-08-23 08:44, 2026-08-26 11:06]
+over 1721 committed applogs; and exactly three extra `creating uninitialized
+texture` events, all three the Moon's own textures.
+
+**Operating consequences for anyone using this instrument.** (1)
+**§11.104(d)'s absolute numbers are not reproducible on this host** — do not
+use them as a target; compare same-day, same-stack A/B, with
+`artifacts/f48/ladder_current/` as the current reference. (2) The one failure
+(b250 `site_luma` 20.97 < 30) is the same environment effect — the gate is
+doing its job; do not widen it. (3) `--convention pre|post` names the
+free-mode `moveto lon` convention **of the binary under test** (`pre` = older
+than F40, commands 39.7); it moves the command only, and the prediction file
+is byte-identical either way. (4) `wait_scale_settled` falls back to
+`scaledDatumRadius` when the dump carries no `scaling`/`scalingTarget`, and
+writes every sample to `<tag>_settle_trace.json`. (5) **Probably not confined
+to this harness**: any committed baseline that counts lit or bright pixels of
+a textured body and predates 2026-08-26 is a candidate for the same gap. No
+census has been run — the `Driver Version` grep over `artifacts/` partitions
+every run by epoch and is cheap.]**
 
 Artifacts: `artifacts/f43/` — `ramp/` (the seven legs), `sel_pre/` (the four
 reds with §11.153's digits), `sel_control/` (settle disabled: `L0a` fires, the
