@@ -836,6 +836,15 @@ control from the guard's own function — instrument-grade.)*
 - **STILL OPEN from session 13**: the §5.100/§5.101 authorization question
   (asked in-conversation 2026-08-26, unanswered) · A44 (ring shadow caster:
   D21 vs the 2026-07-18 extent contract).
+- **THE DEPLOYMENT MAP (2026-08-29, on your request → §11.162):**
+  `claude/DEPLOYMENT-MAP.md` — the whole space to "tester operates the new
+  path transparently", tiered: your decision gates ordered by his operational
+  weight (the zoom pair FIRST, tilted-dome §11.92(d), the DSO batch, §11.4's
+  pair…), the dispatchable work, the at-his-field checks, the INFORM cargo,
+  and the honest UNMAPPED edge (no tester-workflow rehearsal nor soak has
+  ever run). One new final-pass question: his CONTENT CENSUS. The map's own
+  claim: the decisions are the long pole — every datum they waited on is now
+  PAID.
 
 - **Session-13 decision items (2026-08-26, F37–F40 / §11.149–§11.153):**
   - **§5.100/§5.101 authorization question (ASKED in-conversation, unanswered at
