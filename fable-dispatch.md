@@ -615,6 +615,45 @@ owed; the census's comment-stripped, line-preserving instrument. The (b) reachab
 readout for all 90 — is the entry's most consequential fact and correctly bounds (f)'s
 target. §11.4's two numbered decisions join §3 for Vixy.)*
 
+### F47 — The deployment map's ⚠ triage set: re-read, verify at source, bring back the deltas (record-only) [S–M]
+
+**Mandate [vixy 2026-08-29]:** *"make the opus-xhigh agent re-read those, to
+inspect and bring back any delta the triage set could eventually reveal"* —
+the rows `DEPLOYMENT-MAP.md` flagged ⚠ (not re-read at compile time). The set:
+**§5.5, §5.20, §5.21, §5.35, §5.36, §5.41, §5.42, §5.53, §5.56, §5.83, §5.84,
+§5.98** (twelve §5 rows) + **B38's residual state** (dead tokens +
+reachable-but-defective handlers). Post-close extension of session 14,
+Vixy-ordered.
+
+**Scope, per row:**
+1. Read the row IN FULL (entry file first where one exists — it wins).
+2. Verify its load-bearing claims against the CURRENT tree (`d6aec251`):
+   citations drifted? mechanism still present at source? fixed-en-route by
+   later work (the §5.27/§5.63 class — much has landed since these rows were
+   written)? Where a delta claim needs ONE cheap discriminating check, a
+   launch per §0.5 is in-mandate; no campaigns.
+3. Triage disposition for the deployment map: T1 (decision-gated — name the
+   decision) / T2 (dispatchable — name the shape and whether decision-free) /
+   T4 (deliberate-divergence INFORM) / CLOSE-CANDIDATE (evidence decisive) /
+   UNCHANGED. With the read that grounds it.
+4. Deltas found: annotate the row in place (supersession-with-record,
+   entry-first, back-markers per §11.113(p) in the same commit). State FLIPS:
+   only where a both-ways measured discrimination shows the defect GONE at
+   current HEAD and no semantic choice is involved; anything else = proposed
+   disposition in the entry, supervisor decides at acceptance.
+5. Resolve `DEPLOYMENT-MAP.md`'s ⚠ marks to the verdicts (strike-in-place per
+   the map's own maintenance rule).
+
+**Boundaries:** NO product code, NO fixes, no row-state advances beyond rule 4.
+B38's verification is a STATE read (what remains open on the row), not a
+re-run of its sweep.
+
+**DoD:** 13/13 members with per-row verdict + grounds; deltas annotated at the
+rows; map ⚠ marks resolved; §11 entry at the next free number + stub
+(entry-first); proposed-flip list for the supervisor; md5 pristine on any
+launch; code tree clean at close; WIP per §0.6.
+**WIP:** *(empty)*
+
 ### F45 — §5.88's owed datum: what an empty spectral array costs at draw time (record-only) [S]
 
 **Mandate:** the §5.88 row's own owed clause: *"what an empty spectral array
