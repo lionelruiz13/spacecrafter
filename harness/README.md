@@ -1968,12 +1968,121 @@ is byte-identical either way. (4) `wait_scale_settled` falls back to
 `scaledDatumRadius` when the dump carries no `scaling`/`scalingTarget`, and
 writes every sample to `<tag>_settle_trace.json`. (5) **Probably not confined
 to this harness**: any committed baseline that counts lit or bright pixels of
-a textured body and predates 2026-08-26 is a candidate for the same gap. No
-census has been run — the `Driver Version` grep over `artifacts/` partitions
-every run by epoch and is cheap.]**
+a textured body and predates 2026-08-26 is a candidate for the same gap. ~~No
+census has been run~~ — the `Driver Version` grep over `artifacts/` partitions
+every run by epoch and is cheap. **[SUPERSEDED 2026-08-30, F51 / INTENT
+§11.167(i) — original struck, not deleted. The census HAS been run: 283
+tracked harness files → 59 read pixels → 46 compare a photometric quantity to
+a number → 47 members classified **34 CLEAR · 9 FLAGGED · 4 FLAGGED-WEAK**,
+each with its reason and margin. And the guess above is mostly WRONG in the
+reassuring direction: nearly every lit-pixel gate here reads **px>8**, whose
+measured exposure is **0.5 %**, because §11.164(c) measured the lit SUPPORT
+unmoved. See the F51 section below for the exposure table and the flagged
+list.]**]**
 
 Artifacts: `artifacts/f43/` — `ramp/` (the seven legs), `sel_pre/` (the four
 reds with §11.153's digits), `sel_control/` (settle disabled: `L0a` fires, the
 three geometry reds return, **P3 passes** — which is what isolates the fourth
 red as a stale coordinate), `sel_post/` (green, §11.106's numbers), `ladder_pre/`
 (19 failures), `ladder_post/` (1), `litguard/`.
+
+## F51 — the dim-Moon discriminator and the photometric-baseline census — INTENT §11.167, 2026-08-29/30
+
+    DISPLAY=:2 ./f51_run.sh <absOutdir> [--samples N] [--cadence S]  # ONE launch, the dwell
+    ./f51_disc.py --calib | --metrics <png>… | --pair <ref.png> <tgt.png>
+    ./f51_adjudicate.py [<outjson>]        # the whole adjudication, from committed inputs only
+    ./f51_census.py --driver <out.json>    # + <out>_rows.txt.gz, F48's `mtime|version|path` format
+    ./f51_census.py --gates  <out.json>    # the mechanical gate denominator
+
+**`f51_disc.py` IS §11.164(c)'s METRIC, made executable, and `--calib` proves
+it.** `L = PIL convert("L")`, `Bl = GaussianBlur(4)`, mask `r<900` about the
+FRAME centre `(w-1)/2` (not `w/2` — the centre was recovered from F48's own
+committed pixel count 2544661, which `w/2` does not reproduce) and `L>8`.
+`--calib` returns F48's four committed numbers to the last printed digit on
+both committed frames: JULY 165.258 / 6.644 / 9.513, n 2544661; TODAY 61.431 /
+2.464 / 4.230, n 2535950. Anything measured with this file is on §11.164(c)'s
+scale by construction; use it rather than re-inventing a disc metric.
+
+**THE ANSWER: the dim Moon is a SHADING change, not a lost texture upload.**
+72 samples at fov 10 over 355 s of dwell gave `disc_mean` 61.431 at every
+sample and **one md5 for all 72 PNGs** — which is also
+`artifacts/f48/ladder_current/terrain_base_zoom.png`'s. Zero texture events
+inside the window; `Can't upload … not stored in RAM` appears 0 times in 829
+committed log files. "The upload never lands" is refuted four ways
+(registered high-frequency correlation 0.619 collapsing to |r|<0.09 at an 8 px
+shift; `moon.jpg`'s own tint reproduced; the old path drawing the same image;
+and the source, where the no-cmd branch leaves the same `texRecap` on the
+queue that `recordTransfer` uploads once per frame).
+
+**THE EXPOSURE TABLE — read your own gate off this before worrying about it.**
+Ratio (2026-08-29 / 2026-07-25) of the count of pixels above T, max over
+channels, on §11.164(c)'s own frame pair:
+
+| T | 8 | 16 | 32 | 40 | 64 | 100 | 128 |
+|---|---|---|---|---|---|---|---|
+| whole frame | 0.995 | 0.875 | 0.745 | 0.673 | 0.468 | 0.163 | 0.024 |
+| inside r<900 | 0.997 | 0.920 | 0.785 | 0.702 | 0.475 | 0.137 | 0.006 |
+
+Means and maxima move far more (disc mean ×0.371, p99 ×0.612) and the effect
+is POSITION-DEPENDENT: b3_ladder's six `site_luma` legs run ×0.537 (−400 km
+lateral) to ×0.140 (+530 km, nearest the terminator). Same-run DIFFERENCE
+counts move least (ladder cap radii +1.3…+1.6 %, b20 shadow witness −17 %).
+**So a px>8 gate is essentially immune** — §11.164(c) measured the lit support
+unmoved (XOR 16 601 px of 3.3 M): the terminator did not move, the values
+behind it did. A MEAN, a MAXIMUM or a high threshold is what to worry about.
+
+**CENSUS VERDICTS** (full table with reasons and margins:
+`artifacts/f51/f51_baseline_census.json`). Denominator 283 tracked
+non-artifact harness files → 59 read pixel values → 46 compare a photometric
+quantity to a number; 47 members classified (the extra two, `f18_disc.py` and
+`f18_gate.py`, were found by reading — the mechanical selector is line-based
+and missed them). **34 CLEAR · 9 FLAGGED · 4 FLAGGED-WEAK**, no re-baselining.
+Ranked by real exposure:
+
+1. `b3_ladder.py` — `site_luma >= 30` is ALREADY red at 20.97 (§11.164); the
+   nadir gate's margin fell 6.05× → 2.02×; the surface-regime `lit < 4194`
+   gate is direction-(ii) but its committed frame reads 357, 12× below.
+2. `b4_anchors.py:477` — the corpus's ONLY absolute MAX-luminance bar
+   (`> 64` of 255) and it reads the Moon: recorded 181 / 255.
+3. `f14_meridian.py:306` — a **px>40** count (exposure 0.67×) over three
+   textured moons whose value is **never recorded**; plus an NCC bar at 1.87×.
+4. `f24_b34_seams.py:485` — the tightest margin in the corpus, **1.43×**
+   (post_lit 1434 vs 1000), though on px>8.
+5. `f25_ramp.py:480` — **1.71×** (857/856 vs 500) on a **CRESCENT** Moon, i.e.
+   entirely at grazing illumination.
+6. `f14_placeholder.py:78-81` — `LIT_FLOOR` also **SELECTS which jd** the
+   harness measures: a shift changes the scene, not just the verdict.
+7. `b39_scenes.py:150`, 8. `f23_b33_control.py:380/510`, 9. `b39_hidden.py:175`.
+
+**Two things a user of `f43_litguard.py` should know** (§11.167(i)): its scene
+is NOT f23/f24's — it sends no `SKY_OFF`, no `flag stars off`, no
+`select`/track — so its 113 357 px>8 is a proxy for their guard, not their own
+quantity; and its control band is computed from hard-coded constants, with the
+measured value 5.1 % above the predicted upper bound, passing on the ×1.2
+tolerance. The extra sky content its scene leaves on is the natural
+explanation for both.
+
+**Recording defect, worth one commit from whoever owns these**: seven gates'
+measured values exist nowhere in the repo — printed into a failure message and
+never stored (`f14_meridian` gate 1, `b39_scenes` W17-content,
+`f14_placeholder` ×2, `f14_predict` ×2, `f23_b33_control`'s `cross`). Those
+are the margins this census had to leave as "unknown".
+
+**Driver partition, current**: 1727 runs = 1639 on `580.568.0` · 86 on
+`580.636.192` · **2 on Mesa `25.2.8`** (`llvmpipe`, Device type CPU — F17's
+TSan smoke and F30's lvp leg), which is the pair §11.164(d)'s 1639 + 80 left
+unaccounted. Boundary reproduced to the minute: (2026-08-23 08:44,
+2026-08-26 11:06]. 263 artifact directories epoch-labelled; the boundary sits
+between F37 and F38, so essentially the whole corpus is pre-epoch. A directory
+whose harness committed no APPLOG cannot be dated this way (F43's `run.log`s
+carry no `Driver Version` line).
+
+Artifacts: `artifacts/f51/` — `f51_predictions.json` (committed BEFORE the
+launch, commit `0354ba0`), `f51_adjudication.json`, `f51_baseline_census.json`,
+`f51_driver_census.json` + `f51_driver_census_rows.txt.gz`,
+`f51_gate_census.json`, `dwell/` (the 72-sample series `f51_dwell.json`, the
+applog, the three dumps, the settle trace, and only the two frames that are
+NOT byte-identical to an already-committed file: `frames/old_a.png`,
+`frames/old_wide.png`), and `views/` — four 640-px **lossy JPEG** renderings
+for the eye (July new path · today new path · today old path fov 10 and 60);
+they are a visual record, never a measurement input.

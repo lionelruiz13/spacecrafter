@@ -691,38 +691,44 @@ fresh launch, plain `timeout`).
 README annotated; §11 entry at the next free number + stub, entry-file-first;
 artifacts force-added under `harness/artifacts/f51/`; md5 pristine; code tree
 clean at close; WIP per §0.6.
-**WIP:** *(2026-08-29 CP1: predictions COMMITTED before any launch —
-`artifacts/f51/f51_predictions.json`; instruments `f51_disc.py` (metric,
-`--calib` reproduces §11.164(c)'s four committed numbers exactly),
-`f51_dwell.py` + `f51_run.sh` (one launch, b3_ladder's moon base scene
-imported, 80 samples at 5.0 s). Stated before the run: the three shapes are
-NOT three on a series alone — "never lands" and "shading changed" coincide —
-so P2 (frame-pair hf correlation, no launch) and P3 (old-path control, same
-launch) are committed as the separators. NEXT: run the launch.)*
-*(2026-08-29 CP2: the launch RAN, one launch, md5 in==out, `/proc` probe 0, 0
-fails. **Verdict = shape (iii), stable dim uncorrelated with texture events**,
-and the series is not merely flat — all 72 frames over 355 s share ONE md5,
-which is also F48's committed `ladder_current/terrain_base_zoom.png` md5
-(`0c7de389`): P0 bit-exact. Liveness control: the Moon's `evalCount` went
-6063 → 57621 = 51 558 evaluations over [355.8, 358.3] s = [143.9, 144.9]/s, so
-the renderer was not stalled. Applog: 391 uninit events, 390 before the first
-command, the one after is `landscapes/moon.png` and still before sample 0;
-ZERO inside the dwell window; ZERO `Can't upload` in all 6 applogs of both
-epochs. "Upload never lands" REFUTED on four channels (registered r_hf 0.619
-collapsing to |r|<0.09 at 8 px shift; chromaticity R/B 1.0278 vs 1.0241;
-old-path witness; the source read). NEW: a dark-speckle class covering 20.5 %
-of the disc that July has none of. NEXT: (C) the census, then the entry.)*
-*(2026-08-29 CP3a: (C) part 1 DONE — `f51_census.py --driver` re-derives F48's
-partition and CROSS-CHECKS it: 1721 rows in common, **0 disagreeing, 0
-missing**, +6 new (F48's own 4, F50's, mine). Current denominator **1727** =
-1639 old · **86** new (80 + the 6) · **2 llvmpipe/CPU** (Mesa 25.2.8, F17's
-TSan smoke + F30's lvp leg) — which accounts for the 2 rows §11.164(d)'s
-"1639/80 over 1721" leaves unexplained; annotation owed at (d) + its stub.
-Boundary reproduced exactly: (2026-08-23 08:44, 2026-08-26 11:06]. Per-dir
-epoch map: 263 dirs, 252 pre-epoch, 8 post (f38/f39/f40/f41/f45/f48/f50/f51),
-3 mixed/other. Gate denominator: 283 tracked non-artifact harness files → 59
-read pixels → 46 compare a photometric quantity to a number. NEXT: per-member
-verdicts, README note, entry.)*
+**WIP:** *(DELIVERED 2026-08-30 → §11.167.* Verdict: **shape (iii), stable dim
+uncorrelated with texture events** — and the series is flat in the strongest form
+available: all **72 frames over 355 s share ONE md5**, which is ALSO F48's committed
+`ladder_current/terrain_base_zoom.png` (`0c7de389`), so P0 landed on the byte, not in a
+tolerance. Liveness control: Moon `evalCount` 6063 → 57621 = 51 558 evaluations over
+[355.79, 358.29] s = [143.9, 144.9]/s (the config cap; an independent echo of
+§11.159(k7)). Applog: 391 uninit-texture events, 390 before the first command, the one
+after (`landscapes/moon.png`) still before sample 0, **ZERO inside the window**;
+`Can't upload` = **0 in 829 committed log files**. **"Upload never lands" REFUTED on
+four channels** (registered r_hf 0.619 collapsing to |r|<0.09 at 8 px; `moon.jpg`'s own
+tint 1.0301 vs rendered 1.0278/1.0241/1.0205; the old path drawing the same image; the
+source, where the no-cmd branch leaves the same `texRecap` on the queue
+`recordTransfer` uploads per frame) ⇒ **the PRODUCT candidate of §11.164(e)(3) is
+CLOSED, not promoted; NO §5 ROW MINTED** (routing per §11.164(f), restraint argued at
+§5.79's criterion). NEW: a dark class covering **20.5 %** of the disc (522 070 px < 32
+where July was > 100; July has 0 px < 16), percentiles 110/167/201 → 10/61/123, and
+r² 0.408 for a per-bin median map ⇒ not a tone curve. **Two committed predictions
+did NOT land as posed and are kept with numbers**: P2 returns NEITHER; P3 is
+CONFOUNDED — the two paths agree on spin phase to 1e-5° but their view matrices subtend
+**7.7346°** and no shift within ±240 px registers them (recorded, routed to Vixy, NOT
+minted — `experimental_path` is a dev gate and the default pins the new path).
+**CENSUS**: driver partition re-derived and diffed against F48's — 1721 common,
+**0 disagreeing, 0 missing**, boundary reproduced to the minute; denominator **1727 =
+1639 / 86 / 2**, the last two `llvmpipe`/CPU Mesa 25.2.8 ⇒ **§11.164(d)'s arithmetic
+CORRECTED** at (d) + its stub in the delivery commit. 283 harness files → 59 read
+pixels → 46 numeric-compare → **47 members: 34 CLEAR · 9 FLAGGED · 4 FLAGGED-WEAK**,
+each with reason + margin, NO re-baselining. **Exposure table** (0.995 at px>8 · 0.745
+at 32 · 0.673 at 40 · 0.468 at 64 · 0.024 at 128; means ×0.371; per-leg ×0.537…×0.140)
+⇒ **§11.164(l)(3)'s fear is mostly NOT realised** — nearly every gate reads px>8, whose
+support never moved. Sharpest: `b3_ladder` (already red) · `b4_anchors:477` (the only
+absolute max-luma bar, 181 vs 64) · `f14_meridian:306` (px>40, value NEVER RECORDED) ·
+`f24:485` (1.43×, tightest) · `f25_ramp:480` (1.71× on a CRESCENT) · `f14_placeholder`
+(its floor SELECTS the jd). README annotated (F43's "no census has been run" struck in
+place + a new F51 section with the table). `intent_pair_check` delta = exactly **+1
+entry file, +1 live pair, all four test counters unchanged**; back-marker scan
+89/124/**83**, the single new unmarked pair being `§11.164 → §11.167` = my own marker
+read source→target, the inverted-direction class §11.165(c) names. Code never left
+`d6aec251`; both trees clean at close.)*
 
 ---
 

@@ -1,0 +1,402 @@
+{
+ "task": "F51 (C) - the photometric-baseline census, INTENT 11.164(l)(3)",
+ "written": "2026-08-30",
+ "denominator": {
+  "tracked_non_artifact_harness_files": 283,
+  "read_pixel_values": 59,
+  "compare_a_photometric_quantity_to_a_number": 46,
+  "this_task's_own_instruments_excluded": [
+   "harness/f51_disc.py",
+   "harness/f51_adjudicate.py"
+  ],
+  "members_classified": 47,
+  "instrument": "f51_census.py --gates (mechanical, line-based); the 23 files with the strongest photometric content were then read individually",
+  "stated_limit": "the mechanical selector is line-based: a gate whose comparison sits on a continuation line is invisible to it",
+  "note_on_the_47": "45 = the 46 files whose photometric comparison the mechanical filter caught, minus this task's own two; PLUS f18_disc.py and f18_gate.py, which read pixels and classify by ratio but whose comparison sits on a line the keyword filter does not match - a live instance of the stated line-based limit, found by reading"
+ },
+ "criterion": {
+  "FLAGGED": "some gate decides on pixel VALUES of a body drawn with an image texture AND its threshold is a CONSTANT (not a same-run ratio/floor/existence) AND its recorded numbers come from a pre-2026-08-26 run",
+  "FLAGGED-WEAK": "same-run DIFFERENCE count on a textured body compared to an ABSOLUTE constant - real exposure (a diff of two dimmer, flatter frames crosses a fixed |delta|>N less often; measured: F48's b20 shadow witness 2790 -> 2313, -17%), but the margin is usually large",
+  "CLEAR": "the disqualifying clause is named per member",
+  "no_re_baselining": "forbidden by the mandate and unjustified while the carrier is unattributed"
+ },
+ "members": {
+  "harness/ab_orientation.py": {
+   "verdict": "CLEAR",
+   "reason": "no photometric GATE: the px>8 statistic is a same-run diff described in the docstring; the file's gates are angular",
+   "gate": "docstring only (:30)"
+  },
+  "harness/b20d_anchored_draw.py": {
+   "verdict": "CLEAR",
+   "reason": "EXISTENCE gate (`notblack > 0`) - a level shift cannot take a lit frame to zero",
+   "gate": ":128/:199 `q['notblack'] > 0`"
+  },
+  "harness/b22_live_analyze.py": {
+   "verdict": "CLEAR",
+   "reason": "same-run diff count, RECORD-ONLY (no threshold)",
+   "gate": ":55 full_px32"
+  },
+  "harness/b23_grid.py": {
+   "verdict": "CLEAR",
+   "reason": "same-run diff (`dpx(neg_base, neg_bogus/neg_real)`) read by EXISTENCE gates (`bogus_px == 0`, `real_px > 0`); subject is the tropic/polar CIRCLES, untextured line geometry",
+   "gate": ":272-275"
+  },
+  "harness/b26_analyze.py": {
+   "verdict": "CLEAR",
+   "reason": "docstring; the discriminator is a same-run px>32 diff",
+   "gate": ":14"
+  },
+  "harness/b5_drawhalf.py": {
+   "verdict": "CLEAR",
+   "reason": "EXISTENCE gate (`notblack > 0`), screen-fader guard",
+   "gate": ":116/:168/:195"
+  },
+  "harness/b5_oort.py": {
+   "verdict": "CLEAR",
+   "reason": "EXISTENCE gate (`witness lit px > 0`)",
+   "gate": ":66/:121/:130"
+  },
+  "harness/f12_b27_split.py": {
+   "verdict": "CLEAR",
+   "reason": "same-run diff counts, RECORD-ONLY (max over pairs, no constant)",
+   "gate": ":371/:576"
+  },
+  "harness/f15_persist.py": {
+   "verdict": "CLEAR",
+   "reason": "RATIO gate (`counter < 0.5 * nfoot`)",
+   "gate": ":555"
+  },
+  "harness/f20_session.py": {
+   "verdict": "CLEAR",
+   "reason": "SAME-RUN-FLOOR gate (`d_px <= floor`, the A/A floor measured in the same run)",
+   "gate": ":459-470"
+  },
+  "harness/f21_s563b.py": {
+   "verdict": "CLEAR",
+   "reason": "RECORD-ONLY (prints lit counts, asserts nothing on them)",
+   "gate": ":105/:112"
+  },
+  "harness/f21_s563c.py": {
+   "verdict": "CLEAR",
+   "reason": "RECORD-ONLY (prints lit counts, asserts nothing on them)",
+   "gate": ":102/:109"
+  },
+  "harness/f29_compare.py": {
+   "verdict": "CLEAR",
+   "reason": "same-run diff mask; subject is a TRAIL (untextured line)",
+   "gate": ":123"
+  },
+  "harness/f29_probe.py": {
+   "verdict": "CLEAR",
+   "reason": "mask only; subject is a TRAIL (untextured line)",
+   "gate": ":30"
+  },
+  "harness/f29_upchain.py": {
+   "verdict": "CLEAR",
+   "reason": "same-run diff + SAME-RUN-FLOOR (`aa_floor_px`); subject is a TRAIL (untextured line)",
+   "gate": ":294/:331"
+  },
+  "harness/f32_object_leak.py": {
+   "verdict": "CLEAR",
+   "reason": "gate is `px_gt0 == 0` or `<= floor` measured in the same run",
+   "gate": ":501"
+  },
+  "harness/f33_field.py": {
+   "verdict": "CLEAR",
+   "reason": "RECORD-ONLY print",
+   "gate": ":118"
+  },
+  "harness/f33_transitions.py": {
+   "verdict": "CLEAR",
+   "reason": "RATIO gate (`> 20 * the same-run A/A count`)",
+   "gate": ":458"
+  },
+  "harness/f34_convention.py": {
+   "verdict": "CLEAR",
+   "reason": "A/A controls (`px_aa == 0`) + ratios; and the file is superseded-documented per harness/README.md (asserts the retired convention)",
+   "gate": ":334/:395/:593/:662"
+  },
+  "harness/f39_d21.py": {
+   "verdict": "CLEAR",
+   "reason": "same-run diff helper (px>24); the file states at :196-198 that nothing in the leg depends on the commanded longitude, and F43's audit (harness/README.md) classifies it 'free-mode moveto lon, gates radial'",
+   "gate": ":316"
+  },
+  "harness/f40_env.py": {
+   "verdict": "CLEAR",
+   "reason": "no gates at all (harness/README.md's own verdict); prints px counts",
+   "gate": ":115"
+  },
+  "harness/f40_inverse.py": {
+   "verdict": "CLEAR",
+   "reason": "A/A controls (`px_ab == px_ctl == 0`) + ratios",
+   "gate": ":272/:468/:473/:530"
+  },
+  "harness/src/b39_probe_orbit.py": {
+   "verdict": "CLEAR",
+   "reason": "same-run diff helper, no threshold",
+   "gate": ":22"
+  },
+  "harness/b3_ladder.py": {
+   "verdict": "FLAGGED",
+   "reason": "three ABSOLUTE photometric gates on a TEXTURED parent: `site_luma < 30` per leg (:932), `centre.mean() > 30` at nadir (:865), and `lit < RENDER*RENDER//1000` for the surface-regime hole (:856). The first is ALREADY FAILING on b250 (20.97 < 30) and 11.164 attributes that failure to this very epoch effect; the second's margin fell from 6.05x (181.39) to 2.02x (60.72); the third is direction-(ii) (a dimmer frame makes the hole EASIER to confirm) but its recorded value is 357 px>32 against a 4194 bar, 12x below, so the D1(b) finding is not at risk",
+   "gate": ":932 / :865 / :856",
+   "recorded": "site_luma 192-150 (2026-07-25) -> 103-21 (2026-08-29); centre_luma 181.3857 -> 60.7155; R7 surface lit px>32 = 357",
+   "margin": "b250 site_luma 0.70x of its bar TODAY (already red); centre 2.02x; R7 12x",
+   "baseline_epoch": "pre-epoch + re-measured post-epoch"
+  },
+  "harness/b24_screen.py": {
+   "verdict": "CLEAR",
+   "reason": "A2/A4 (`rc > 500`, `rf > 500`) read an untextured OJM rover; A3 (`dmax > 2000`) does read darkened px on the TEXTURED Moon, but ALL THREE were re-recorded POST-epoch by F39 (2026-08-26 13:15) and F41 (2026-08-26 18:19) and pass with 47x-89x margins. Cross-epoch datum worth keeping: A3's dmax 101564 (2026-07-31) -> 94888 / 94893 (post-epoch), -6.6%",
+   "gate": ":266 / :276 / :290",
+   "recorded": "A3 dmax 101564 -> 94888/94893; A2 rc 1069 -> 3750/3751; A4 rf 38315 -> 44931/44773",
+   "margin": "47x (A3)",
+   "baseline_epoch": "pre AND post - re-verified"
+  },
+  "harness/b24_select.py": {
+   "verdict": "CLEAR",
+   "reason": "NO photometric gate: the one pixel read (:524-527) is a bare print inside `compare_parity`, and no pixel number reaches its result JSON",
+   "gate": ":524-527"
+  },
+  "harness/b39_hidden.py": {
+   "verdict": "FLAGGED",
+   "reason": "P0 (`nb > 20000`, :175) is an ABSOLUTE single-frame lit count (px>8) of a mixed scene that includes the Sun's textured disc. Exposure is small by the table (px>8 ~ 0.995) and the margin is 3.97x. The other four gates are CLEAR: P2/P4 controls read an ORBIT LINE and the SELECTION POINTER - untextured, unshaded overlays - and the P2/P4 subjects use a same-run floor",
+   "gate": ":175 (+ :204, :207, :384, :386 CLEAR)",
+   "recorded": "P0 nonblack 79365",
+   "margin": "3.97x, exposure ~0.5%",
+   "baseline_epoch": "pre-epoch (2026-07-30)"
+  },
+  "harness/b39_scenes.py": {
+   "verdict": "FLAGGED",
+   "reason": "W17-content (`nb > 5000`, :150) is an ABSOLUTE single-frame lit count (px>8) of a mixed scene, and ITS VALUE IS NEVER RECORDED (printed only, the report stores `floor_px`) - so its margin cannot be audited without a re-run. W17-visible (:179) is a same-run diff with an absolute floor of 100 on the Goldilocks ring (a tex_ring image), recorded 395 = 3.95x. The two pair gates use the same-run floor",
+   "gate": ":150 / :179",
+   "recorded": "W17 content: NOT RECORDED; shown_vs_hidden_px 395, floor 0",
+   "margin": "unknown / 3.95x",
+   "baseline_epoch": "pre-epoch (2026-07-30)"
+  },
+  "harness/b39_star.py": {
+   "verdict": "CLEAR",
+   "reason": "no assert function in the file at all: `lit()` and `dpx()` are RECORD-ONLY. Its recorded numbers ARE pre-epoch absolute photometry of the Moon (lit_base 17302, lit_hidden 15462, px_hidden_vs_shown 1217) and must not be used as a cross-epoch target",
+   "gate": ":67-73",
+   "recorded": "lit_base 17302 / lit_hidden 15462 / diff 1217",
+   "baseline_epoch": "pre-epoch (2026-07-30)"
+  },
+  "harness/b3_earth_ab.py": {
+   "verdict": "CLEAR",
+   "reason": "no gate anywhere (`return 0` unconditionally): pure RECORD-ONLY. But its four recorded views ARE absolute photometry of a TEXTURED Earth from 2026-07-25 (lit>32 379637 / 275204 / 921806 / 920854, means 14.07 / 6.63 / 27.24 / 27.12) - by the exposure table the >32 counts would read ~0.74x today, so these numbers are a cross-epoch trap for any successor that treats them as a target",
+   "gate": ":128-137",
+   "recorded": "see reason",
+   "baseline_epoch": "pre-epoch (2026-07-25)"
+  },
+  "harness/b4_anchors.py": {
+   "verdict": "FLAGGED",
+   "reason": "the SCREEN WITNESS (`cells[(t0,t0)] > 64`, :477) is an ABSOLUTE MAXIMUM-LUMINANCE gate on the MOON's textured disc - the most exposed FORM in the corpus, since the exposure table gives 0.16x at T=100 and 0.02x at T=128. Recorded 181 and 255 against 64, i.e. 2.83x and 3.98x; the p99 ratio 0.61 puts a re-run near 110, still passing but at ~1.7x. P7 render (`lit > 1000`, :431) is px>8 at 87958/89312 = 88x, negligible exposure; its control (:479) is relative and CLEAR",
+   "gate": ":477 (+ :431)",
+   "recorded": "cells(t0,t0) 181, cells(t1,t1) 255; orb_t0 87958, orb_t1 89312",
+   "margin": "2.83x (max-luma gate), 88x (lit gate)",
+   "baseline_epoch": "pre-epoch (2026-07-31)"
+  },
+  "harness/b5_ladder.py": {
+   "verdict": "CLEAR",
+   "reason": "no assert in the file; the SHOW=100 threshold only CLASSIFIES a first-show rung, on a same-run blue-add diff of the OORT cloud - an untextured, unshaded particle overlay. And no recorded value exists anywhere under artifacts/, so there is no baseline to flag",
+   "gate": ":248/:259/:261",
+   "recorded": "none committed"
+  },
+  "harness/b12_limb.py": {
+   "verdict": "CLEAR",
+   "reason": "no gate (pure offline analyser); and the quantity it reports is a RATIO new/old measured in the SAME capture run - immune by construction, which is exactly the form 11.123(o)'s rule protects",
+   "gate": ":155-197",
+   "recorded": "centre_ratio 0.9945 / 0.9986 / 1.0 / 0.0",
+   "baseline_epoch": "pre-epoch (2026-07-31)"
+  },
+  "harness/f12_b33_heading.py": {
+   "verdict": "FLAGGED-WEAK",
+   "reason": "R1b (`nojump_px < 500`, :306) and R3's OR-branch (200, :313) are ABSOLUTE constants on same-run px>32 DIFFS of Earth's textured disc. Direction (ii): a dimmer, flatter frame produces FEWER differing pixels, so the epoch pushes these gates toward PASSING - a silent loss of discriminating power, not a false red. Measured diff-count exposure is 1.5-17%, and the recorded post value is 0 with a RED control at 39114, so no practical exposure",
+   "gate": ":306 / :313",
+   "recorded": "post nojump_px 0, cross_after 12, cross_switch 39090; pre 39114",
+   "margin": "direction-(ii); red control 39114 vs bound 10",
+   "baseline_epoch": "pre-epoch (2026-07-30)"
+  },
+  "harness/f14_mercury.py": {
+   "verdict": "FLAGGED-WEAK",
+   "reason": "the SENSITIVITY control (`pre_px < 1000` => fail, :156) is an ABSOLUTE constant on a px>32 diff of MERCURY, textured, at fov 0.02 - a small and intrinsically dim disc (f18_level records Mercury disc means near 5.0). Recorded 8766 px>32 (INTENT/11.120.md:21) = 8.77x; at the measured diff-count exposure (<=17%) it stays above. The other two gates are a ratio and an existence test",
+   "gate": ":156 (+ :159, :163 CLEAR)",
+   "recorded": "pre_px 8766 px>32 / 70329 px>8; post 1 / 1605",
+   "margin": "8.77x",
+   "baseline_epoch": "pre-epoch (2026-07-30)"
+  },
+  "harness/f14_meridian.py": {
+   "verdict": "FLAGGED",
+   "reason": "TWO exposed gates, and one of them has the corpus's worst combination. (1) `lit < 20000` on a count of px>40 (:305-306) - the exposure table gives 0.67x at T=40 - over Iapetus / Amalthea / Proteus, all textured, and THE VALUE IS NEVER RECORDED (it appears only inside the fail message), so the margin cannot be audited. (2) the meridian NCC gate (`ncc_at_0 >= 0.25 and margin >= 0.25`, :452) is a correlation against the body's own tex_map: scale-invariant to first order, hence exposed only through the NON-UNIFORM part of the change and through clipping - Iapetus sits at 0.4674 / 0.4609, i.e. 1.87x, the tightest of the three moons",
+   "gate": ":306 / :452",
+   "recorded": "gate-1 value NOT RECORDED (related crop lit_px 12276 / 11389); Iapetus ncc 0.4674 margin 0.4609; Amalthea 0.8411 / 0.8728",
+   "margin": "unknown / 1.87x",
+   "baseline_epoch": "pre-epoch (2026-07-30)"
+  },
+  "harness/f14_placeholder.py": {
+   "verdict": "FLAGGED",
+   "reason": "`LIT_FLOOR = 20000` is used TWICE and one use is not a gate but a SELECTOR (:78-81): it chooses which jd the harness measures. A photometric shift could therefore silently change WHICH SCENE the instrument records, which is a worse failure mode than a red. Both uses are px>8, so the exposure is ~0.5% by the table; neither value is recorded",
+   "gate": ":47 / :78-81 / :127",
+   "recorded": "NOT RECORDED (frames committed at artifacts/f14ph/)",
+   "margin": "unknown, exposure ~0.5%",
+   "baseline_epoch": "pre-epoch (2026-07-30)"
+  },
+  "harness/f14_predict.py": {
+   "verdict": "FLAGGED-WEAK",
+   "reason": "the predicted-image selection gate (:206) is an ABSOLUTE pair of NCC bars (0.25, 0.25) against a texture-synthesised model - scale-invariant to first order like f14_meridian's, and its values are NOT stored. The disc-fraction gate (:214) divides by a GEOMETRIC area from the same run's dump, so its bound does not move while a dimmer diff count does (direction (i)); px8 is not stored either",
+   "gate": ":206 / :214",
+   "recorded": "NOT RECORDED (prediction file holds the pre-committed fractions, not the scores)",
+   "margin": "unknown",
+   "baseline_epoch": "pre-epoch (2026-07-30)"
+  },
+  "harness/f18_level.py": {
+   "verdict": "CLEAR",
+   "reason": "no assert; the REPORTED quantity is a RATIO reduced/full measured in the SAME launch - immune. Its absolute disc means are recorded (Sun full [229.37,179.85,87.28], Moon full [104.61,103.31,103.08], Mercury 5.01/5.02) and are pre-epoch, so they are a cross-epoch trap but not a gate",
+   "gate": ":85-97 / :142-143",
+   "recorded": "ratios 1.0156-2.3524 (Sun), 1.46 (Moon), 0.998 (Jupiter/Mercury)",
+   "baseline_epoch": "pre-epoch (2026-08-01)"
+  },
+  "harness/f18_disc.py": {
+   "verdict": "CLEAR",
+   "reason": "the verdict classifier is a RATIO new/old (0.05 / 0.5) of two disc sums shot in the SAME launch with `flag experimental_path` toggled between them - the immune form; and it has no assert or exit code",
+   "gate": ":88-92",
+   "recorded": "Sun 0.8354 / Mars 0.8826 / Jupiter 0.9939 (post)",
+   "baseline_epoch": "pre-epoch (2026-07-31)"
+  },
+  "harness/f18_gate.py": {
+   "verdict": "CLEAR",
+   "reason": "the verdict classifier is a RATIO absent/present (0.10 / 0.5) of two disc sums from the SAME launch; no assert or exit code",
+   "gate": ":135-139",
+   "recorded": "GREEN 0.0 / FAIL-absent-drew 0.7289 etc.",
+   "baseline_epoch": "pre-epoch (2026-07-31)"
+  },
+  "harness/f21_s563.py": {
+   "verdict": "CLEAR",
+   "reason": "no threshold, no assert (`return 0` unconditionally): all photometry is RECORD-ONLY. Its recorded lit>32 counts on Mars (400 saved / 907 restored) are pre-epoch absolute photometry and are the numbers 5.63 itself quotes - a cross-epoch trap for anyone re-running the row, not a gate",
+   "gate": ":149-164",
+   "recorded": "base restored px8 5655 / px32 1117 / lit 400 vs 907",
+   "baseline_epoch": "pre-epoch (2026-08-01)"
+  },
+  "harness/f23_b33_control.py": {
+   "verdict": "FLAGGED",
+   "reason": "two ABSOLUTE single-frame lit gates: the ladder-lit guard (`A0_lit < 20000 or A1_lit < 20000`, :380) on EARTH's textured disc, recorded 104120 / 831450 = 5.2x / 41.6x, and the default-scene guard (`lit < 100000`, :510) recorded 1136780 = 11.4x. BOTH read px>8, whose measured exposure is ~0.5%, so neither is practically at risk. The A3 and regression gates use same-run floors and ratios. IMPORTANT QUALIFICATION on 11.157's `MEASURED green` for this guard: f43_litguard's post-epoch 113357 was taken in a scene that is NOT this one - it sends no SKY_OFF, no `flag stars off`, no `select`/track - so it is a proxy, not this guard's own quantity",
+   "gate": ":380 / :510",
+   "recorded": "A0_lit 104120, A1_lit 831450, default lit 1136780",
+   "margin": "5.2x / 11.4x, exposure ~0.5%",
+   "baseline_epoch": "pre-epoch (2026-08-01)"
+  },
+  "harness/f24_b34_seams.py": {
+   "verdict": "FLAGGED",
+   "reason": "the CLEAR-lit guard (`pre_lit < 1000 or post_lit < 1000`, :485) carries the TIGHTEST MARGIN IN THE CORPUS: post_lit = 1434 against 1000, i.e. 1.43x, on a frame whose content is the pushed textured body plus a deliberately re-enabled star field. It reads px>8 (exposure ~0.5%), so the tight margin is survivable, but it is the member a future re-baselining should measure first. POSITION-lit (:642) is the same form at 104092 = 104x",
+   "gate": ":485 / :642",
+   "recorded": "clear_post pre_lit 91919, post_lit 1434, px_clear 90601; position A_lit 831450, B_lit 104092",
+   "margin": "1.43x (tightest), 104x",
+   "baseline_epoch": "pre-epoch (2026-08-01)"
+  },
+  "harness/f25_ramp.py": {
+   "verdict": "FLAGGED",
+   "reason": "`screen_frame_carries_content` (`lit_new > 500 and lit_old > 500`, :480) is an ABSOLUTE lit gate on the MOON - textured - and the file's own message says the Moon at that date is a CRESCENT, so the whole lit set (857 / 856 px, margin 1.71x) sits at GRAZING illumination, where the leg data measures the worst factors (0.14x at the terminator-most ladder leg). It reads px>8, and 11.164(c) measured the lit SUPPORT unmoved (XOR 16601 of 3.3M), so the expected exposure is small - but this is the one member where the subject is entirely in the exposed regime AND the margin is under 2x. Its five other gates are all same-run ratios and CLEAR",
+   "gate": ":480",
+   "recorded": "lit 857 new-phase / 856 old-phase (postF and preF identical)",
+   "margin": "1.71x",
+   "baseline_epoch": "pre-epoch (2026-08-02)"
+  },
+  "harness/f27_reply.py": {
+   "verdict": "FLAGGED-WEAK",
+   "reason": "two ABSOLUTE constants (1000) on px>8 quantities of a scene left at shipped defaults, recorded at 2166892 and 1203573 - margins of 2167x and 1204x. Flagged for completeness of the enumeration; no practical exposure",
+   "gate": ":670 / :673",
+   "recorded": "lit0 2166892; select_px8 1203573",
+   "margin": "2167x / 1204x",
+   "baseline_epoch": "pre-epoch (2026-08-02)"
+  },
+  "harness/f43_litguard.py": {
+   "verdict": "CLEAR",
+   "reason": "its own three gates were MEASURED post-epoch (2026-08-29, artifacts/f43/litguard/) so its numbers are current by construction. Two things about it belong in this census rather than in its verdict: (1) its scene is NOT f23/f24's (no SKY_OFF, no `flag stars off`, no select/track), so its 113357 px>8 is a proxy for their guard, not their quantity; (2) its own control band is derived from hard-coded constants (101646-107836 predicted disc area) and the measured 113357 sits 5.1% ABOVE the upper bound, passing only on the x1.2 tolerance - consistent with the extra sky content its scene leaves on",
+   "gate": ":102 / :108 / :127",
+   "recorded": "lit_px_gt8 113357, lit_px_gt32 834, pred band [101645.60, 107835.82]",
+   "margin": "5.7x",
+   "baseline_epoch": "POST-epoch (2026-08-29)"
+  }
+ },
+ "threshold_exposure_table": {
+  "what": "the ratio (today / 2026-07-25) of the count of pixels above a threshold T, max-over-channels, on the SAME frame pair 11.164(c) measured (b3_ladder moon base, fov 10) - so any gate can be read off by its own threshold",
+  "source": "artifacts/b3_ladder/R6_moon_terrain_control/terrain_base_zoom.png vs artifacts/f48/ladder_current/terrain_base_zoom.png",
+  "whole_frame": {
+   "8": 0.995,
+   "16": 0.8754,
+   "32": 0.7448,
+   "40": 0.6726,
+   "64": 0.4679,
+   "100": 0.1631,
+   "128": 0.0243
+  },
+  "inside_disc_r900": {
+   "8": 0.9967,
+   "16": 0.9195,
+   "32": 0.7849,
+   "40": 0.702,
+   "64": 0.4745,
+   "100": 0.1372,
+   "128": 0.0057
+  },
+  "means_and_maxima": {
+   "disc_mean": 0.3713,
+   "hf_mean": 0.3736,
+   "p99": 0.612,
+   "p50": 0.365,
+   "site_luma_by_leg": {
+    "lift20": 0.5372,
+    "b20": 0.4644,
+    "b30": 0.4298,
+    "b45": 0.3821,
+    "b90": 0.3051,
+    "b250": 0.1399
+   }
+  },
+  "diff_counts": {
+   "ladder_cap_radii": "+1.3 to +1.6% (|delta|>16 present-vs-absent diffs of OJM spheres)",
+   "b20_shadow_witness": "2790 -> 2313 = -17% (darkened-px count on the textured parent)"
+  },
+  "reading": "a gate at px>8 is essentially immune (0.5% on this scene, and 11.164(c) measured the lit SUPPORT unmoved - XOR 16601 px); the exposure grows fast with the threshold and is largest for MEAN and MAX luminance gates and for content at grazing illumination"
+ },
+ "summary": {
+  "counts": {
+   "CLEAR": 34,
+   "FLAGGED": 9,
+   "FLAGGED-WEAK": 4
+  },
+  "FLAGGED": [
+   "harness/b39_hidden.py",
+   "harness/b39_scenes.py",
+   "harness/b3_ladder.py",
+   "harness/b4_anchors.py",
+   "harness/f14_meridian.py",
+   "harness/f14_placeholder.py",
+   "harness/f23_b33_control.py",
+   "harness/f24_b34_seams.py",
+   "harness/f25_ramp.py"
+  ],
+  "FLAGGED-WEAK": [
+   "harness/f12_b33_heading.py",
+   "harness/f14_mercury.py",
+   "harness/f14_predict.py",
+   "harness/f27_reply.py"
+  ],
+  "ranked_by_exposure": [
+   "harness/b3_ladder.py - site_luma >= 30 is ALREADY RED at 20.97 (11.164); centre-luma margin 6.05x -> 2.02x. The known one.",
+   "harness/b4_anchors.py - a MAX-LUMINANCE bar (>64) on the Moon at 181, the most exposed FORM (p99 ratio 0.61, T=128 ratio 0.024)",
+   "harness/f14_meridian.py - a px>40 count (exposure 0.67x) whose value was NEVER RECORDED, plus an NCC bar at 1.87x",
+   "harness/f24_b34_seams.py - the tightest margin in the corpus, 1.43x, though on px>8 (exposure ~0.5%)",
+   "harness/f25_ramp.py - margin 1.71x on a CRESCENT Moon, i.e. entirely in the grazing-illumination regime, though on px>8",
+   "harness/f14_placeholder.py - LIT_FLOOR SELECTS the measured jd: a shift changes WHICH SCENE is recorded, not just a verdict",
+   "harness/b39_scenes.py - an absolute lit gate whose value is never recorded (margin unauditable without a re-run)",
+   "harness/f23_b33_control.py - 5.2x / 11.4x on px>8; and 11.157's 'MEASURED green' for its guard used a DIFFERENT scene",
+   "harness/b39_hidden.py - 3.97x on px>8, mixed scene including the Sun's disc"
+  ],
+  "what_is_NOT_done": "no re-baselining, no gate widened, no harness re-run - the mandate forbids it and the carrier is still unattributed (11.164(f))",
+  "recommended_first_measurements_if_a_successor_is_authorised": [
+   "record f14_meridian's px>40 count and b39_scenes' W17 nb (both gates whose value has never been stored)",
+   "re-run b4_anchors' screen witness - the only MAX-luminance bar in the corpus",
+   "f24's clear_post post_lit (1434 vs 1000) and f25's crescent lit (857 vs 500) - the two tightest margins"
+  ]
+ }
+}
