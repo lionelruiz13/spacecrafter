@@ -408,6 +408,28 @@ annotated with back-markers, stub mirrored, README's superseded claim struck in
 place, §5.109 given the binary-dependent-ramp datum, §5.107's candidate role
 refuted. **NO §5 row minted** — restraint argued at §5.79's criterion. Both
 trees clean at close; code never left `d6aec251`.)*
+*(ACCEPTED by supervisor [fable 2026-08-29]: §11.164 read in full; commits/authors/scope
+checked (harness-only chain `74a1e16 → 8107ff6 → 0dc12b4`; code clean at `d6aec251`
+throughout, submodule unmoved `7ce58350`, worktree removed); (e)+(h)(3) annotations +
+stub mirror + README strike verified at the ledger, all in the delivery commit
+(§11.113(p) held); pair-check hygiene verified by DISCRIMINATING DIFF — pre-F48 vs
+post-F48 output differs by exactly `+1 entry file / +1 live pair`, nothing else (my own
+first diff probe compared the pre-tree to itself — cwd persistence — resolved against my
+own probe, supervisor-error tally). Judgment calls ENDORSED with their arguments: the
+TWO-site adaptation (invariance MEASURED, prediction file byte-identical under both
+conventions AND to F43's artifact — the six geometry legs untouched); the unmandated
+CONTROL RUN (0 differing fields vs F43's committed run — this is what licenses reading
+1.3 % as signal; without it the third verdict would be unsupported); the EntityCore
+INDEPENDENT CLONE (linked worktrees share `.git/modules`; verified after); the NO-MINT
+restraint (consequence in hand, reach unattributed between product branch and driver —
+minting would file an unattributed symptom, the §5.2 class); §5.107 refuted in ROLE only;
+the §5.109 binary-dependence datum stated as consistency, not confirmation. NEW QUEUE
+members from (e)(1)+(l)(3): the dim-Moon one-launch discriminator (disc-luminance time
+series vs applog texture events) and the cheap photometric-baseline census (Driver
+Version grep partitions all 1721 runs) — extension candidates THIS round, argued ahead
+of INT-7 at extension time: they bear on every lit-pixel baseline predating 2026-08-26.
+Newly Vixy's at close: the driver moved `580.568.0 → 580.636.192` in (2026-08-23,
+2026-08-26] — host state; a driver-side A/B is only possible from Vixy's side.)*
 
 ### F49 — The §11.156(g) recovery backlog: five cross-entry back-markers per §11.113(p) (markers only) [S]
 
