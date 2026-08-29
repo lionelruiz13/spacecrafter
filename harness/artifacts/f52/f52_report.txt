@@ -1,0 +1,79 @@
+f52_strata.py — INT-7 stratigraphy signature, git-only
+generated 2026-08-29 22:24:52Z
+code HEAD d6aec251 | EntityCore pin 7ce58350 (worktree HEAD equal: True)
+eras (UTC, from §11.161(b)): E_learn < 2021-08-30 <= E_mid < 2024-08-30 <= E_recent
+
+==============================================================================
+SCOPE A_EntityCore   ref=7ce58350
+  non-merge commits: 325   merges excluded: 0
+  author-date range:    2021-06-14 08:38:24Z .. 2026-08-26 10:24:06Z
+  committer-date range: 2021-06-14 08:38:24Z .. 2026-08-26 10:24:06Z
+  first commit: f66e7fde 2021-06-14 08:38:24Z  +674/-0 over 1 files  'Initial commit'
+  WHOLE: n=325  +28563/-17371  R=0.3782  median_r=0.2857  F_struct=0.0185  F_pureadd=0.0492
+  E_learn   n=62    +20182   -2032    R=0.0915  median_r=0.2288  F_struct=0.0645  F_pureadd=0.0484
+  E_mid     n=253   +8083    -15288   R=0.6541  median_r=0.3333  F_struct=0.0079  F_pureadd=0.0474
+  E_recent  n=10    +298     -51      R=0.1461  median_r=0.1298  F_struct=0.0000  F_pureadd=0.1000
+  year buckets (R, n; * = in trend):
+    2021  R=0.4246  median_r=0.3282  n=159  F_struct=0.0377  F_pureadd=0.0252  *
+    2022  R=0.1463  median_r=0.2857  n=125  F_struct=0.0000  F_pureadd=0.0800  *
+    2023  R=0.1254  median_r=0.1245  n=26   F_struct=0.0000  F_pureadd=0.0385  *
+    2024  R=0.3738  median_r=0.5000  n=5    F_struct=0.0000  F_pureadd=0.0000  *
+    2025  R=0.1017  median_r=0.1176  n=3    F_struct=0.0000  F_pureadd=0.0000  
+    2026  R=0.1552  median_r=0.1346  n=7    F_struct=0.0000  F_pureadd=0.1429  *
+  spearman rho(year, R) over [2021, 2022, 2023, 2024, 2026] = -0.200
+  birth-relative: first365d R=0.3950 (n=229) | last365d R=0.1531 (n=8)
+  authors: {'Calvin-Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>': 211, 'Calvin-Ruiz <calvin.ruiz@epitech.eu>': 43, 'Calvin Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>': 40, 'Calvin Ruiz <calvin.ruiz@epitech.eu>': 25, 'Ramdane Martin <martin.ramdane@epitech.eu>': 2, 'Kenan-Blasius <kenan.blasius@epitech.eu>': 1, 'Claude Fable 5 <noreply@anthropic.com>': 1, 'Claude Opus 4.8 <noreply@anthropic.com>': 1, 'Claude Opus 5 <noreply@anthropic.com>': 1}
+  rewrite signals: author!=committer time on 0/325 commits, max lag 0.0 d; first-commit add=674 (rank 6 of 325 by add, largest=12384)
+  shared committer timestamps (count, time): []
+  top files by touched lines: [('stb_image.h', 15524), ('LaserBombon/Game.cpp', 2722), ('EntityCore/Core/VulkanMgr.cpp', 2438), ('LICENSE', 1369), ('EntityLib/Core/GPUDisplay.cpp', 1000), ('Tools/SaveData.cpp', 780)]
+  spike lexicon /asmooth|taskable/ : matched 4, spiking 0 (share 0.0000)
+    ca3205f5 2023-08-24 r=0.1111 (era E_mid median_r=0.3333, roll_R=0.2143) 'Enhance some utilities, add ASmooth'
+    e38e6a69 2026-07-17 r=0.0000 (era E_recent median_r=0.1298, roll_R=0.1619) 'Introduce Task/Taskable system, with Claude Opus reviewi'
+    f28c5556 2026-07-17 r=0.1346 (era E_recent median_r=0.1298, roll_R=0.1531) 'Add SAMPLED_IMAGE type to SetMgr. Rename AsyncBase prior'
+    7ce58350 2026-08-26 r=0.1250 (era E_recent median_r=0.1298, roll_R=0.1568) 'A fresh ASmooth movement starts at phase time zero'
+
+==============================================================================
+SCOPE B_experimentalModule   ref=d6aec251
+  pathspec: src/experimentalModule/
+  non-merge commits: 149   merges excluded: 0
+  author-date range:    2025-09-20 11:59:44Z .. 2026-08-26 15:56:24Z
+  committer-date range: 2025-09-20 11:59:44Z .. 2026-08-26 15:56:24Z
+  first commit: da858612 2025-09-20 11:59:44Z  +3070/-0 over 35 files  'Merge work between body-refactoring and 2023-master'
+  WHOLE: n=149  +38358/-15769  R=0.2913  median_r=0.0807  F_struct=0.0134  F_pureadd=0.0134
+  E_learn   n=0     +0       -0       R=None    median_r=None    F_struct=None    F_pureadd=None
+  E_mid     n=0     +0       -0       R=None    median_r=None    F_struct=None    F_pureadd=None
+  E_recent  n=149   +38358   -15769   R=0.2913  median_r=0.0807  F_struct=0.0134  F_pureadd=0.0134
+  year buckets (R, n; * = in trend):
+    2025  R=0.0223  median_r=0.1834  n=2    F_struct=0.0000  F_pureadd=0.5000  
+    2026  R=0.3086  median_r=0.0807  n=147  F_struct=0.0136  F_pureadd=0.0068  *
+  spearman rho(year, R) over [2026] = None
+  birth-relative: first365d R=0.2913 (n=149) | last365d R=0.2913 (n=149)
+  authors: {'Claude Fable 5 <noreply@anthropic.com>': 49, 'Claude Opus 5 <noreply@anthropic.com>': 49, 'Claude Opus 4.8 <noreply@anthropic.com>': 45, 'Calvin Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>': 6}
+  rewrite signals: author!=committer time on 2/149 commits, max lag 0.0 d; first-commit add=3070 (rank 1 of 149 by add, largest=3070)
+  shared committer timestamps (count, time): [(2, '2026-07-31 01:49:07Z')]
+  top files by touched lines: [('src/experimentalModule/dispatch-2026-07-21-opus.md', 4502), ('src/experimentalModule/ModularBody.hpp', 3231), ('src/experimentalModule/ModularSystem.cpp', 2844), ('src/experimentalModule/INTENT.md', 2778), ('src/experimentalModule/Camera.cpp', 1797), ('src/experimentalModule/PipelineRegistry.cpp', 1618)]
+  spike lexicon /asmooth|taskable/ : matched 1, spiking 0 (share 0.0000)
+    85015585 2026-07-12 r=0.0000 (era E_recent median_r=0.0807, roll_R=0.1063) 'Mars-observer generalization: zero new defects + ASmooth'
+
+==============================================================================
+SCOPE C_control_src_minus_expmod   ref=d6aec251
+  pathspec: src/ :(exclude)src/experimentalModule/ :(exclude)src/EntityCore
+  non-merge commits: 298   merges excluded: 77
+  author-date range:    2025-09-20 11:59:44Z .. 2026-08-26 15:56:24Z
+  committer-date range: 2025-09-20 11:59:44Z .. 2026-08-26 15:56:24Z
+  first commit: da858612 2025-09-20 11:59:44Z  +450/-170 over 29 files  'Merge work between body-refactoring and 2023-master'
+  WHOLE: n=298  +19978/-7457  R=0.2718  median_r=0.2000  F_struct=0.0000  F_pureadd=0.0034
+  E_learn   n=0     +0       -0       R=None    median_r=None    F_struct=None    F_pureadd=None
+  E_mid     n=0     +0       -0       R=None    median_r=None    F_struct=None    F_pureadd=None
+  E_recent  n=298   +19978   -7457    R=0.2718  median_r=0.2000  F_struct=0.0000  F_pureadd=0.0034
+  year buckets (R, n; * = in trend):
+    2025  R=0.2754  median_r=0.2500  n=101  F_struct=0.0000  F_pureadd=0.0099  *
+    2026  R=0.2688  median_r=0.1720  n=197  F_struct=0.0000  F_pureadd=0.0000  *
+  spearman rho(year, R) over [2025, 2026] = None
+  authors: {'Kenan-Blasius <kenan.blasius@epitech.eu>': 146, 'Claude Opus 5 <noreply@anthropic.com>': 38, 'Calvin Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>': 32, 'Claude Opus 4.8 <noreply@anthropic.com>': 30, 'Claude Fable 5 <noreply@anthropic.com>': 29, 'lionelruiz13 <lionel.ruiz@live.fr>': 23}
+  rewrite signals: author!=committer time on 10/298 commits, max lag 11.54 d; first-commit add=450 (rank 7 of 298 by add, largest=1857)
+  shared committer timestamps (count, time): [(4, '2025-12-01 08:49:42Z')]
+  top files by touched lines: [('src/coreModule/core.cpp', 3573), ('src/tools/fixed_point.hpp', 3311), ('src/interfaceModule/app_command_interface.cpp', 1738), ('src/bodyModule/ssystem_factory.cpp', 1374), ('src/coreModule/coreLink.cpp', 1311), ('src/tools/vecmath.hpp', 1132)]
+
+EntityCore restricted to B's window 2025-09-20 11:59:44Z .. 2026-08-26 15:56:24Z: n=7 R=0.1552 median_r=0.1346
+EntityCore commits on main beyond the pin: 0

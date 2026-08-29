@@ -1,0 +1,1323 @@
+{
+ "generated": "2026-08-29 22:31:00Z",
+ "non_library_regex": "^(LaserBombon/|EntityLib/|cmake/|LICENSE|README|\\.gitignore)|(^|/)stb_image\\.h$",
+ "Q1_top_deleting_commits": [
+  {
+   "sha": "16381f80",
+   "date": "2021-12-20",
+   "add": 2,
+   "del": 13091,
+   "share_of_all_deletions": 0.7536123424097634,
+   "subject": "Separate EntityCore and EntityLib/LaserBombon",
+   "del_non_library": 13058,
+   "del_library": 33
+  },
+  {
+   "sha": "ba7eebc5",
+   "date": "2021-09-21",
+   "add": 21,
+   "del": 674,
+   "share_of_all_deletions": 0.03880029934949053,
+   "subject": "Switch to MIT license",
+   "del_non_library": 674,
+   "del_library": 0
+  },
+  {
+   "sha": "bc0c9451",
+   "date": "2021-07-01",
+   "add": 87,
+   "del": 590,
+   "share_of_all_deletions": 0.03396465373323355,
+   "subject": "Fix various shield bug",
+   "del_non_library": 74,
+   "del_library": 516
+  },
+  {
+   "sha": "3107cdeb",
+   "date": "2021-06-21",
+   "add": 205,
+   "del": 203,
+   "share_of_all_deletions": 0.011686143572621035,
+   "subject": "Fix core engine !",
+   "del_non_library": 199,
+   "del_library": 4
+  },
+  {
+   "sha": "4b8a5cae",
+   "date": "2021-06-20",
+   "add": 1719,
+   "del": 185,
+   "share_of_all_deletions": 0.010649933797708825,
+   "subject": "First possibly functionnal version",
+   "del_non_library": 80,
+   "del_library": 105
+  },
+  {
+   "sha": "79c691ec",
+   "date": "2021-08-11",
+   "add": 305,
+   "del": 149,
+   "share_of_all_deletions": 0.008577514247884405,
+   "subject": "Refactor VkQueue management, allow windowless rendering, add documentation",
+   "del_non_library": 0,
+   "del_library": 149
+  },
+  {
+   "sha": "e839d7f3",
+   "date": "2021-08-13",
+   "add": 0,
+   "del": 98,
+   "share_of_all_deletions": 0.00564158655229981,
+   "subject": "Remove SafeQueue of EntityLib",
+   "del_non_library": 98,
+   "del_library": 0
+  },
+  {
+   "sha": "7868d074",
+   "date": "2021-06-18",
+   "add": 753,
+   "del": 93,
+   "share_of_all_deletions": 0.005353750503713085,
+   "subject": "Build compute loop",
+   "del_non_library": 84,
+   "del_library": 9
+  }
+ ],
+ "Q1_all_deletions": 17371,
+ "Q1_full": {
+  "whole": {
+   "n": 325,
+   "n_lines": 325,
+   "add": 28563,
+   "del": 17371,
+   "R": 0.37817303087037923,
+   "median_r": 0.2857142857142857,
+   "first": "2021-06-14",
+   "last": "2026-08-26"
+  },
+  "years": {
+   "2021": {
+    "n": 159,
+    "n_lines": 159,
+    "add": 22022,
+    "del": 16248,
+    "R": 0.4245623203553697,
+    "median_r": 0.32819383259911894,
+    "first": "2021-06-14",
+    "last": "2021-12-31"
+   },
+   "2022": {
+    "n": 125,
+    "n_lines": 125,
+    "add": 5248,
+    "del": 899,
+    "R": 0.14625020335122824,
+    "median_r": 0.2857142857142857,
+    "first": "2022-01-06",
+    "last": "2022-12-06"
+   },
+   "2023": {
+    "n": 26,
+    "n_lines": 26,
+    "add": 928,
+    "del": 133,
+    "R": 0.12535344015080113,
+    "median_r": 0.12452107279693486,
+    "first": "2023-01-02",
+    "last": "2023-08-24"
+   },
+   "2024": {
+    "n": 5,
+    "n_lines": 5,
+    "add": 67,
+    "del": 40,
+    "R": 0.37383177570093457,
+    "median_r": 0.5,
+    "first": "2024-03-05",
+    "last": "2024-03-19"
+   },
+   "2025": {
+    "n": 3,
+    "n_lines": 3,
+    "add": 53,
+    "del": 6,
+    "R": 0.1016949152542373,
+    "median_r": 0.11764705882352941,
+    "first": "2025-07-19",
+    "last": "2025-09-20"
+   },
+   "2026": {
+    "n": 7,
+    "n_lines": 7,
+    "add": 245,
+    "del": 45,
+    "R": 0.15517241379310345,
+    "median_r": 0.1346153846153846,
+    "first": "2026-01-31",
+    "last": "2026-08-26"
+   }
+  }
+ },
+ "Q1_library_only": {
+  "whole": {
+   "n": 325,
+   "n_lines": 301,
+   "add": 14544,
+   "del": 2721,
+   "R": 0.1576020851433536,
+   "median_r": 0.296137339055794,
+   "first": "2021-06-14",
+   "last": "2026-08-26"
+  },
+  "years": {
+   "2021": {
+    "n": 159,
+    "n_lines": 135,
+    "add": 8003,
+    "del": 1598,
+    "R": 0.1664409957296115,
+    "median_r": 0.3333333333333333,
+    "first": "2021-06-14",
+    "last": "2021-12-31"
+   },
+   "2022": {
+    "n": 125,
+    "n_lines": 125,
+    "add": 5248,
+    "del": 899,
+    "R": 0.14625020335122824,
+    "median_r": 0.2857142857142857,
+    "first": "2022-01-06",
+    "last": "2022-12-06"
+   },
+   "2023": {
+    "n": 26,
+    "n_lines": 26,
+    "add": 928,
+    "del": 133,
+    "R": 0.12535344015080113,
+    "median_r": 0.12452107279693486,
+    "first": "2023-01-02",
+    "last": "2023-08-24"
+   },
+   "2024": {
+    "n": 5,
+    "n_lines": 5,
+    "add": 67,
+    "del": 40,
+    "R": 0.37383177570093457,
+    "median_r": 0.5,
+    "first": "2024-03-05",
+    "last": "2024-03-19"
+   },
+   "2025": {
+    "n": 3,
+    "n_lines": 3,
+    "add": 53,
+    "del": 6,
+    "R": 0.1016949152542373,
+    "median_r": 0.11764705882352941,
+    "first": "2025-07-19",
+    "last": "2025-09-20"
+   },
+   "2026": {
+    "n": 7,
+    "n_lines": 7,
+    "add": 245,
+    "del": 45,
+    "R": 0.15517241379310345,
+    "median_r": 0.1346153846153846,
+    "first": "2026-01-31",
+    "last": "2026-08-26"
+   }
+  },
+  "spearman_rho_year_vs_R": 0.09999999999999998,
+  "trend_years": [
+   2021,
+   2022,
+   2023,
+   2024,
+   2026
+  ],
+  "first_365d": {
+   "n": 229,
+   "n_lines": 205,
+   "add": 11744,
+   "del": 2170,
+   "R": 0.15595802788558286,
+   "median_r": 0.32819383259911894,
+   "first": "2021-06-14",
+   "last": "2022-06-13"
+  },
+  "last_365d": {
+   "n": 8,
+   "n_lines": 8,
+   "add": 260,
+   "del": 47,
+   "R": 0.15309446254071662,
+   "median_r": 0.1298076923076923,
+   "first": "2025-09-20",
+   "last": "2026-08-26"
+  },
+  "first_730d": {
+   "n": 304,
+   "n_lines": 280,
+   "add": 14037,
+   "del": 2613,
+   "R": 0.15693693693693694,
+   "median_r": 0.3076923076923077,
+   "first": "2021-06-14",
+   "last": "2023-06-13"
+  },
+  "after_730d": {
+   "n": 21,
+   "n_lines": 21,
+   "add": 507,
+   "del": 108,
+   "R": 0.17560975609756097,
+   "median_r": 0.15384615384615385,
+   "first": "2023-06-15",
+   "last": "2026-08-26"
+  }
+ },
+ "Q1_persons": {
+  "vixy": {
+   "n": 319,
+   "n_lines": 319,
+   "add": 28416,
+   "del": 17326,
+   "R": 0.3787766166761401,
+   "median_r": 0.2916666666666667,
+   "first": "2021-06-14",
+   "last": "2026-07-17"
+  },
+  "claude": {
+   "n": 3,
+   "n_lines": 3,
+   "add": 95,
+   "del": 15,
+   "R": 0.13636363636363635,
+   "median_r": 0.1346153846153846,
+   "first": "2026-07-17",
+   "last": "2026-08-26"
+  },
+  "other:Ramdane Martin": {
+   "n": 2,
+   "n_lines": 2,
+   "add": 37,
+   "del": 28,
+   "R": 0.4307692307692308,
+   "median_r": 0.46311475409836067,
+   "first": "2022-11-09",
+   "last": "2022-11-09"
+  },
+  "other:Kenan-Blasius": {
+   "n": 1,
+   "n_lines": 1,
+   "add": 15,
+   "del": 2,
+   "R": 0.11764705882352941,
+   "median_r": 0.11764705882352941,
+   "first": "2025-09-20",
+   "last": "2025-09-20"
+  }
+ },
+ "Q2_head_reachable": {
+  "whole": {
+   "n": 149,
+   "n_lines": 149,
+   "add": 38358,
+   "del": 15769,
+   "R": 0.29133334565004526,
+   "median_r": 0.08069164265129683,
+   "first": "2025-09-20",
+   "last": "2026-08-26"
+  },
+  "years": {
+   "2025": {
+    "n": 2,
+    "n_lines": 2,
+    "add": 3196,
+    "del": 73,
+    "R": 0.0223309880697461,
+    "median_r": 0.18341708542713567,
+    "first": "2025-09-20",
+    "last": "2025-11-11"
+   },
+   "2026": {
+    "n": 147,
+    "n_lines": 147,
+    "add": 35162,
+    "del": 15696,
+    "R": 0.30862401195485467,
+    "median_r": 0.08069164265129683,
+    "first": "2026-04-04",
+    "last": "2026-08-26"
+   }
+  },
+  "persons": {
+   "claude": {
+    "n": 143,
+    "n_lines": 143,
+    "add": 35088,
+    "del": 2840,
+    "R": 0.07487871757013288,
+    "median_r": 0.07077625570776255,
+    "first": "2026-07-11",
+    "last": "2026-08-26"
+   },
+   "vixy": {
+    "n": 6,
+    "n_lines": 6,
+    "add": 3270,
+    "del": 12929,
+    "R": 0.7981356873881104,
+    "median_r": 0.41835684446328025,
+    "first": "2025-09-20",
+    "last": "2026-07-23"
+   }
+  }
+ },
+ "Q2_branch_only": {
+  "whole": {
+   "n": 6,
+   "n_lines": 6,
+   "add": 3477,
+   "del": 407,
+   "R": 0.10478887744593203,
+   "median_r": 0.16672263567067117,
+   "first": "2023-08-05",
+   "last": "2025-09-20"
+  },
+  "years": {
+   "2023": {
+    "n": 4,
+    "n_lines": 4,
+    "add": 3171,
+    "del": 336,
+    "R": 0.09580838323353294,
+    "median_r": 0.16166441443380014,
+    "first": "2023-08-05",
+    "last": "2023-08-24"
+   },
+   "2025": {
+    "n": 2,
+    "n_lines": 2,
+    "add": 306,
+    "del": 71,
+    "R": 0.1883289124668435,
+    "median_r": 0.2343739577079581,
+    "first": "2025-08-13",
+    "last": "2025-09-20"
+   }
+  },
+  "persons": {
+   "vixy": {
+    "n": 6,
+    "n_lines": 6,
+    "add": 3477,
+    "del": 407,
+    "R": 0.10478887744593203,
+    "median_r": 0.16672263567067117,
+    "first": "2023-08-05",
+    "last": "2025-09-20"
+   }
+  },
+  "commits": [
+   {
+    "sha": "68099b77",
+    "date": "2023-08-05",
+    "person": "vixy",
+    "add": 1457,
+    "del": 0,
+    "subject": "Implement some experimental modules (may not compile yet)"
+   },
+   {
+    "sha": "6f00ae1b",
+    "date": "2023-08-08",
+    "person": "vixy",
+    "add": 826,
+    "del": 227,
+    "subject": "Fix compilation issues and implement module loaders"
+   },
+   {
+    "sha": "82a89e69",
+    "date": "2023-08-24",
+    "person": "vixy",
+    "add": 886,
+    "del": 107,
+    "subject": "First alpha version of experimental modules"
+   },
+   {
+    "sha": "a3c61eaa",
+    "date": "2023-08-24",
+    "person": "vixy",
+    "add": 2,
+    "del": 2,
+    "subject": "Fix some issues"
+   },
+   {
+    "sha": "32e4849c",
+    "date": "2025-08-13",
+    "person": "vixy",
+    "add": 232,
+    "del": 31,
+    "subject": "Partial Body Refactoring to rework"
+   },
+   {
+    "sha": "f8cd7134",
+    "date": "2025-09-20",
+    "person": "vixy",
+    "add": 74,
+    "del": 40,
+    "subject": "Merge with 2023-master"
+   }
+  ]
+ },
+ "Q2_all_refs": {
+  "whole": {
+   "n": 186,
+   "n_lines": 186,
+   "add": 52328,
+   "del": 17207,
+   "R": 0.24745811461853742,
+   "median_r": 0.0945945945945946,
+   "first": "2023-08-05",
+   "last": "2026-08-26"
+  },
+  "years": {
+   "2023": {
+    "n": 4,
+    "n_lines": 4,
+    "add": 3171,
+    "del": 336,
+    "R": 0.09580838323353294,
+    "median_r": 0.16166441443380014,
+    "first": "2023-08-05",
+    "last": "2023-08-24"
+   },
+   "2025": {
+    "n": 4,
+    "n_lines": 4,
+    "add": 3502,
+    "del": 144,
+    "R": 0.039495337356006584,
+    "median_r": 0.2343739577079581,
+    "first": "2025-08-13",
+    "last": "2025-11-11"
+   },
+   "2026": {
+    "n": 178,
+    "n_lines": 178,
+    "add": 45655,
+    "del": 16727,
+    "R": 0.2681382450065724,
+    "median_r": 0.08273381294964029,
+    "first": "2026-04-04",
+    "last": "2026-08-26"
+   }
+  },
+  "persons": {
+   "claude": {
+    "n": 174,
+    "n_lines": 174,
+    "add": 45581,
+    "del": 3871,
+    "R": 0.07827792606972418,
+    "median_r": 0.08064432878833498,
+    "first": "2026-07-11",
+    "last": "2026-08-26"
+   },
+   "vixy": {
+    "n": 12,
+    "n_lines": 12,
+    "add": 6747,
+    "del": 13336,
+    "R": 0.6640442165015187,
+    "median_r": 0.3118022328548644,
+    "first": "2023-08-05",
+    "last": "2026-07-23"
+   }
+  }
+ },
+ "Q2_import_commit": {
+  "sha": "da858612",
+  "date": "2025-09-20",
+  "add": 3070,
+  "del": 0,
+  "subject": "Merge work between body-refactoring and 2023-master",
+  "parents": [
+   "194c6074603d8463fb5a26631c9e140128f18c79"
+  ]
+ },
+ "Q3_persons": {
+  "A_EntityCore": {
+   "vixy": {
+    "n": 319,
+    "n_lines": 319,
+    "add": 28416,
+    "del": 17326,
+    "R": 0.3787766166761401,
+    "median_r": 0.2916666666666667,
+    "first": "2021-06-14",
+    "last": "2026-07-17"
+   },
+   "claude": {
+    "n": 3,
+    "n_lines": 3,
+    "add": 95,
+    "del": 15,
+    "R": 0.13636363636363635,
+    "median_r": 0.1346153846153846,
+    "first": "2026-07-17",
+    "last": "2026-08-26"
+   },
+   "other:Ramdane Martin": {
+    "n": 2,
+    "n_lines": 2,
+    "add": 37,
+    "del": 28,
+    "R": 0.4307692307692308,
+    "median_r": 0.46311475409836067,
+    "first": "2022-11-09",
+    "last": "2022-11-09"
+   },
+   "other:Kenan-Blasius": {
+    "n": 1,
+    "n_lines": 1,
+    "add": 15,
+    "del": 2,
+    "R": 0.11764705882352941,
+    "median_r": 0.11764705882352941,
+    "first": "2025-09-20",
+    "last": "2025-09-20"
+   }
+  },
+  "B_expMod_head": {
+   "claude": {
+    "n": 143,
+    "n_lines": 143,
+    "add": 35088,
+    "del": 2840,
+    "R": 0.07487871757013288,
+    "median_r": 0.07077625570776255,
+    "first": "2026-07-11",
+    "last": "2026-08-26"
+   },
+   "vixy": {
+    "n": 6,
+    "n_lines": 6,
+    "add": 3270,
+    "del": 12929,
+    "R": 0.7981356873881104,
+    "median_r": 0.41835684446328025,
+    "first": "2025-09-20",
+    "last": "2026-07-23"
+   }
+  },
+  "B_expMod_all_refs": {
+   "claude": {
+    "n": 174,
+    "n_lines": 174,
+    "add": 45581,
+    "del": 3871,
+    "R": 0.07827792606972418,
+    "median_r": 0.08064432878833498,
+    "first": "2026-07-11",
+    "last": "2026-08-26"
+   },
+   "vixy": {
+    "n": 12,
+    "n_lines": 12,
+    "add": 6747,
+    "del": 13336,
+    "R": 0.6640442165015187,
+    "median_r": 0.3118022328548644,
+    "first": "2023-08-05",
+    "last": "2026-07-23"
+   }
+  },
+  "C_control_window": {
+   "other:Kenan-Blasius": {
+    "n": 146,
+    "n_lines": 146,
+    "add": 11472,
+    "del": 4208,
+    "R": 0.2683673469387755,
+    "median_r": 0.25,
+    "first": "2025-09-23",
+    "last": "2026-07-04"
+   },
+   "claude": {
+    "n": 97,
+    "n_lines": 97,
+    "add": 6050,
+    "del": 1114,
+    "R": 0.155499720826354,
+    "median_r": 0.08502024291497975,
+    "first": "2026-07-11",
+    "last": "2026-08-26"
+   },
+   "vixy": {
+    "n": 32,
+    "n_lines": 32,
+    "add": 2317,
+    "del": 2065,
+    "R": 0.4712460063897764,
+    "median_r": 0.48566407695153535,
+    "first": "2025-09-20",
+    "last": "2026-05-25"
+   },
+   "other:lionelruiz13": {
+    "n": 23,
+    "n_lines": 23,
+    "add": 139,
+    "del": 70,
+    "R": 0.3349282296650718,
+    "median_r": 0.43478260869565216,
+    "first": "2025-09-29",
+    "last": "2026-05-24"
+   }
+  }
+ },
+ "Q3_vixy_only": {
+  "A_EntityCore": {
+   "n": 319,
+   "n_lines": 319,
+   "add": 28416,
+   "del": 17326,
+   "R": 0.3787766166761401,
+   "median_r": 0.2916666666666667,
+   "first": "2021-06-14",
+   "last": "2026-07-17"
+  },
+  "A_EntityCore_library_only": {
+   "n": 319,
+   "n_lines": 295,
+   "add": 14397,
+   "del": 2676,
+   "R": 0.1567387102442453,
+   "median_r": 0.3076923076923077,
+   "first": "2021-06-14",
+   "last": "2026-07-17"
+  },
+  "B_expMod_head": {
+   "n": 6,
+   "n_lines": 6,
+   "add": 3270,
+   "del": 12929,
+   "R": 0.7981356873881104,
+   "median_r": 0.41835684446328025,
+   "first": "2025-09-20",
+   "last": "2026-07-23"
+  },
+  "B_expMod_all_refs": {
+   "n": 12,
+   "n_lines": 12,
+   "add": 6747,
+   "del": 13336,
+   "R": 0.6640442165015187,
+   "median_r": 0.3118022328548644,
+   "first": "2023-08-05",
+   "last": "2026-07-23"
+  },
+  "B_expMod_all_refs_years": {
+   "2023": {
+    "n": 4,
+    "n_lines": 4,
+    "add": 3171,
+    "del": 336,
+    "R": 0.09580838323353294,
+    "median_r": 0.16166441443380014,
+    "first": "2023-08-05",
+    "last": "2023-08-24"
+   },
+   "2025": {
+    "n": 4,
+    "n_lines": 4,
+    "add": 3502,
+    "del": 144,
+    "R": 0.039495337356006584,
+    "median_r": 0.2343739577079581,
+    "first": "2025-08-13",
+    "last": "2025-11-11"
+   },
+   "2026": {
+    "n": 4,
+    "n_lines": 4,
+    "add": 74,
+    "del": 12856,
+    "R": 0.994276875483372,
+    "median_r": 0.4849397590361446,
+    "first": "2026-04-04",
+    "last": "2026-07-23"
+   }
+  },
+  "B_expMod_all_refs_commits": [
+   {
+    "sha": "68099b77",
+    "date": "2023-08-05",
+    "add": 1457,
+    "del": 0,
+    "r": 0.0,
+    "subject": "Implement some experimental modules (may not compile yet)"
+   },
+   {
+    "sha": "6f00ae1b",
+    "date": "2023-08-08",
+    "add": 826,
+    "del": 227,
+    "r": 0.21557454890788225,
+    "subject": "Fix compilation issues and implement module loaders"
+   },
+   {
+    "sha": "82a89e69",
+    "date": "2023-08-24",
+    "add": 886,
+    "del": 107,
+    "r": 0.10775427995971802,
+    "subject": "First alpha version of experimental modules"
+   },
+   {
+    "sha": "a3c61eaa",
+    "date": "2023-08-24",
+    "add": 2,
+    "del": 2,
+    "r": 0.5,
+    "subject": "Fix some issues"
+   },
+   {
+    "sha": "32e4849c",
+    "date": "2025-08-13",
+    "add": 232,
+    "del": 31,
+    "r": 0.11787072243346007,
+    "subject": "Partial Body Refactoring to rework"
+   },
+   {
+    "sha": "f8cd7134",
+    "date": "2025-09-20",
+    "add": 74,
+    "del": 40,
+    "r": 0.3508771929824561,
+    "subject": "Merge with 2023-master"
+   },
+   {
+    "sha": "da858612",
+    "date": "2025-09-20",
+    "add": 3070,
+    "del": 0,
+    "r": 0.0,
+    "subject": "Merge work between body-refactoring and 2023-master"
+   },
+   {
+    "sha": "128412c9",
+    "date": "2025-11-11",
+    "add": 126,
+    "del": 73,
+    "r": 0.36683417085427134,
+    "subject": "Rework slot and component management"
+   },
+   {
+    "sha": "2d111ead",
+    "date": "2026-04-04",
+    "add": 44,
+    "del": 39,
+    "r": 0.46987951807228917,
+    "subject": "Partial fixes"
+   },
+   {
+    "sha": "4dfe7bb3",
+    "date": "2026-05-23",
+    "add": 8,
+    "del": 3,
+    "r": 0.2727272727272727,
+    "subject": "Update EntityCore and s_texture system + fixes in ModularBody"
+   },
+   {
+    "sha": "c523e3b1",
+    "date": "2026-07-22",
+    "add": 0,
+    "del": 12792,
+    "r": 1.0,
+    "subject": "Reorganize files to leave source file clean and decouple work file fro"
+   },
+   {
+    "sha": "4345e334",
+    "date": "2026-07-23",
+    "add": 22,
+    "del": 22,
+    "r": 0.5,
+    "subject": "Move ModuleLoader instanciation in a dedicated moduleLoader folder"
+   }
+  ],
+  "C_control_window": {
+   "n": 32,
+   "n_lines": 32,
+   "add": 2317,
+   "del": 2065,
+   "R": 0.4712460063897764,
+   "median_r": 0.48566407695153535,
+   "first": "2025-09-20",
+   "last": "2026-05-25"
+  }
+ },
+ "Q3_claude_only": {
+  "B_expMod_head": {
+   "n": 143,
+   "n_lines": 143,
+   "add": 35088,
+   "del": 2840,
+   "R": 0.07487871757013288,
+   "median_r": 0.07077625570776255,
+   "first": "2026-07-11",
+   "last": "2026-08-26"
+  },
+  "B_expMod_all_refs": {
+   "n": 174,
+   "n_lines": 174,
+   "add": 45581,
+   "del": 3871,
+   "R": 0.07827792606972418,
+   "median_r": 0.08064432878833498,
+   "first": "2026-07-11",
+   "last": "2026-08-26"
+  },
+  "C_control_window": {
+   "n": 97,
+   "n_lines": 97,
+   "add": 6050,
+   "del": 1114,
+   "R": 0.155499720826354,
+   "median_r": 0.08502024291497975,
+   "first": "2026-07-11",
+   "last": "2026-08-26"
+  },
+  "A_EntityCore": {
+   "n": 3,
+   "n_lines": 3,
+   "add": 95,
+   "del": 15,
+   "R": 0.13636363636363635,
+   "median_r": 0.1346153846153846,
+   "first": "2026-07-17",
+   "last": "2026-08-26"
+  }
+ },
+ "Q4_non_code_regex": "\\.(md|txt)$|/harness/|\\.py$",
+ "Q4_expmod_code_only": {
+  "all": {
+   "n": 186,
+   "n_lines": 162,
+   "add": 36964,
+   "del": 3890,
+   "R": 0.09521711460322123,
+   "median_r": 0.09903399454317527,
+   "first": "2023-08-05",
+   "last": "2026-08-26"
+  },
+  "by_person": {
+   "claude": {
+    "n": 174,
+    "n_lines": 151,
+    "add": 30260,
+    "del": 3347,
+    "R": 0.09959234683250513,
+    "median_r": 0.09424083769633508,
+    "first": "2026-07-11",
+    "last": "2026-08-26"
+   },
+   "vixy": {
+    "n": 12,
+    "n_lines": 11,
+    "add": 6704,
+    "del": 543,
+    "R": 0.0749275562301642,
+    "median_r": 0.2727272727272727,
+    "first": "2023-08-05",
+    "last": "2026-07-23"
+   }
+  },
+  "by_year": {
+   "2023": {
+    "n": 4,
+    "n_lines": 4,
+    "add": 3171,
+    "del": 336,
+    "R": 0.09580838323353294,
+    "median_r": 0.16166441443380014,
+    "first": "2023-08-05",
+    "last": "2023-08-24"
+   },
+   "2025": {
+    "n": 4,
+    "n_lines": 4,
+    "add": 3459,
+    "del": 143,
+    "R": 0.039700166574125485,
+    "median_r": 0.23870390261367702,
+    "first": "2025-08-13",
+    "last": "2025-11-11"
+   },
+   "2026": {
+    "n": 178,
+    "n_lines": 154,
+    "add": 30334,
+    "del": 3411,
+    "R": 0.10108164172469995,
+    "median_r": 0.096,
+    "first": "2026-04-04",
+    "last": "2026-08-26"
+   }
+  },
+  "vixy": {
+   "n": 12,
+   "n_lines": 11,
+   "add": 6704,
+   "del": 543,
+   "R": 0.0749275562301642,
+   "median_r": 0.2727272727272727,
+   "first": "2023-08-05",
+   "last": "2026-07-23"
+  },
+  "vixy_minus_mechanical": {
+   "n": 10,
+   "n_lines": 10,
+   "add": 3652,
+   "del": 543,
+   "R": 0.1294398092967819,
+   "median_r": 0.3118022328548644,
+   "first": "2023-08-05",
+   "last": "2026-07-23"
+  },
+  "vixy_minus_mechanical_full_lines": {
+   "n": 10,
+   "n_lines": 10,
+   "add": 3677,
+   "del": 544,
+   "R": 0.128879412461502,
+   "median_r": 0.3118022328548644,
+   "first": "2023-08-05",
+   "last": "2026-07-23"
+  },
+  "claude": {
+   "n": 174,
+   "n_lines": 151,
+   "add": 30260,
+   "del": 3347,
+   "R": 0.09959234683250513,
+   "median_r": 0.09424083769633508,
+   "first": "2026-07-11",
+   "last": "2026-08-26"
+  },
+  "mechanical_excluded": [
+   {
+    "sha": "da858612",
+    "date": "2025-09-20",
+    "add": 3070,
+    "del": 0,
+    "add_code": 3052,
+    "del_code": 0,
+    "subject": "Merge work between body-refactoring and 2023-master"
+   },
+   {
+    "sha": "c523e3b1",
+    "date": "2026-07-22",
+    "add": 0,
+    "del": 12792,
+    "add_code": 0,
+    "del_code": 0,
+    "subject": "Reorganize files to leave source file clean and decouple work fi"
+   }
+  ]
+ },
+ "Q5_lib_years_median_r": {
+  "2021": {
+   "n": 159,
+   "R": 0.1664409957296115,
+   "median_r": 0.3333333333333333
+  },
+  "2022": {
+   "n": 125,
+   "R": 0.14625020335122824,
+   "median_r": 0.2857142857142857
+  },
+  "2023": {
+   "n": 26,
+   "R": 0.12535344015080113,
+   "median_r": 0.12452107279693486
+  },
+  "2024": {
+   "n": 5,
+   "R": 0.37383177570093457,
+   "median_r": 0.5
+  },
+  "2025": {
+   "n": 3,
+   "R": 0.1016949152542373,
+   "median_r": 0.11764705882352941
+  },
+  "2026": {
+   "n": 7,
+   "R": 0.15517241379310345,
+   "median_r": 0.1346153846153846
+  }
+ },
+ "Q5_top_library_deletions_after_the_split": [
+  {
+   "sha": "aa22b42a",
+   "date": "2022-05-04",
+   "add": 403,
+   "del": 93,
+   "r": 0.1875,
+   "subject": "Implement support for other vulkan version and feature extension"
+  },
+  {
+   "sha": "41b9dfa0",
+   "date": "2022-11-10",
+   "add": 40,
+   "del": 79,
+   "r": 0.6638655462184874,
+   "subject": "Enhance SaveData"
+  },
+  {
+   "sha": "f43c1599",
+   "date": "2022-04-18",
+   "add": 164,
+   "del": 69,
+   "r": 0.296137339055794,
+   "subject": "Fix compilation under windows, add CString for constant string, "
+  },
+  {
+   "sha": "f6956568",
+   "date": "2022-07-15",
+   "add": 105,
+   "del": 56,
+   "r": 0.34782608695652173,
+   "subject": "Implement swapchain recreation"
+  },
+  {
+   "sha": "39ae90d7",
+   "date": "2023-01-04",
+   "add": 47,
+   "del": 52,
+   "r": 0.5252525252525253,
+   "subject": "Use template for TransferMgr to avoid the need for cast"
+  },
+  {
+   "sha": "39a5956b",
+   "date": "2022-05-06",
+   "add": 67,
+   "del": 47,
+   "r": 0.41228070175438597,
+   "subject": "Fix runtime issues and implement explicit memory batch system"
+  },
+  {
+   "sha": "734cab7b",
+   "date": "2022-05-03",
+   "add": 42,
+   "del": 42,
+   "r": 0.5,
+   "subject": "Stop using a reference to a pointer unless it break backward com"
+  },
+  {
+   "sha": "17c8c82d",
+   "date": "2022-06-20",
+   "add": 133,
+   "del": 41,
+   "r": 0.23563218390804597,
+   "subject": "Implement extended container types to BigSave/SaveData Tool"
+  },
+  {
+   "sha": "540a9420",
+   "date": "2023-05-24",
+   "add": 167,
+   "del": 39,
+   "r": 0.18932038834951456,
+   "subject": "Add async builder threads and some other features"
+  },
+  {
+   "sha": "115e2d5f",
+   "date": "2022-05-27",
+   "add": 69,
+   "del": 34,
+   "r": 0.3300970873786408,
+   "subject": "Update Tools headers"
+  }
+ ],
+ "Q6_library_only_eras": {
+  "E_learn": {
+   "n": 62,
+   "n_lines": 41,
+   "add": 6201,
+   "del": 1123,
+   "R": 0.15333151283451665,
+   "median_r": 0.20361990950226244,
+   "first": "2021-06-14",
+   "last": "2021-08-27"
+  },
+  "E_mid": {
+   "n": 253,
+   "n_lines": 250,
+   "add": 8045,
+   "del": 1547,
+   "R": 0.16128023352793994,
+   "median_r": 0.3333333333333333,
+   "first": "2021-08-30",
+   "last": "2024-03-19"
+  },
+  "E_recent": {
+   "n": 10,
+   "n_lines": 10,
+   "add": 298,
+   "del": 51,
+   "R": 0.14613180515759314,
+   "median_r": 0.1298076923076923,
+   "first": "2025-07-19",
+   "last": "2026-08-26"
+  }
+ },
+ "Q6_dense_years": {
+  "2021": {
+   "n": 159,
+   "n_lines": 135,
+   "add": 8003,
+   "del": 1598,
+   "R": 0.1664409957296115,
+   "median_r": 0.3333333333333333,
+   "first": "2021-06-14",
+   "last": "2021-12-31"
+  },
+  "2022": {
+   "n": 125,
+   "n_lines": 125,
+   "add": 5248,
+   "del": 899,
+   "R": 0.14625020335122824,
+   "median_r": 0.2857142857142857,
+   "first": "2022-01-06",
+   "last": "2022-12-06"
+  },
+  "2023": {
+   "n": 26,
+   "n_lines": 26,
+   "add": 928,
+   "del": 133,
+   "R": 0.12535344015080113,
+   "median_r": 0.12452107279693486,
+   "first": "2023-01-02",
+   "last": "2023-08-24"
+  }
+ },
+ "Q6_dense_spearman_R": -0.9999999999999998,
+ "Q6_dense_spearman_median_r": -0.9999999999999998,
+ "Q6_commit_share_by_year": {
+  "2021": 0.48923076923076925,
+  "2022": 0.38461538461538464,
+  "2023": 0.08,
+  "2024": 0.015384615384615385,
+  "2025": 0.009230769230769232,
+  "2026": 0.021538461538461538
+ },
+ "Q7_reference_whole_src": {
+  "whole": {
+   "n": 3193,
+   "n_lines": 3188,
+   "add": 557726,
+   "del": 419260,
+   "R": 0.429136139105371,
+   "median_r": 0.4399074074074074,
+   "first": "2020-01-18",
+   "last": "2026-08-26"
+  },
+  "years": {
+   "2020": {
+    "n": 1699,
+    "n_lines": 1694,
+    "add": 450075,
+    "del": 354812,
+    "R": 0.44082212782663904,
+    "median_r": 0.4744676227727075,
+    "first": "2020-01-18",
+    "last": "2020-12-31"
+   },
+   "2021": {
+    "n": 406,
+    "n_lines": 406,
+    "add": 26385,
+    "del": 29248,
+    "R": 0.5257311308036597,
+    "median_r": 0.4828571428571429,
+    "first": "2021-01-20",
+    "last": "2021-12-31"
+   },
+   "2022": {
+    "n": 403,
+    "n_lines": 403,
+    "add": 13896,
+    "del": 7624,
+    "R": 0.354275092936803,
+    "median_r": 0.4398148148148148,
+    "first": "2022-01-06",
+    "last": "2022-12-28"
+   },
+   "2023": {
+    "n": 212,
+    "n_lines": 212,
+    "add": 6679,
+    "del": 2693,
+    "R": 0.2873452838241571,
+    "median_r": 0.4166666666666667,
+    "first": "2023-01-02",
+    "last": "2023-12-13"
+   },
+   "2024": {
+    "n": 40,
+    "n_lines": 40,
+    "add": 346,
+    "del": 154,
+    "R": 0.308,
+    "median_r": 0.45141065830721006,
+    "first": "2024-01-08",
+    "last": "2024-12-07"
+   },
+   "2025": {
+    "n": 159,
+    "n_lines": 159,
+    "add": 14274,
+    "del": 5018,
+    "R": 0.2601078167115903,
+    "median_r": 0.3684210526315789,
+    "first": "2025-01-04",
+    "last": "2025-12-23"
+   },
+   "2026": {
+    "n": 274,
+    "n_lines": 274,
+    "add": 46071,
+    "del": 19711,
+    "R": 0.2996412392447782,
+    "median_r": 0.14446376811594203,
+    "first": "2026-01-05",
+    "last": "2026-08-26"
+   }
+  },
+  "persons": {
+   "other:AssociationSirius": 1122,
+   "vixy": 774,
+   "other:lionelruiz13": 257,
+   "other:Association Sirius": 177,
+   "claude": 169,
+   "other:Kenan-Blasius": 147,
+   "other:jeremycalvo": 121,
+   "other:N.Barile": 110,
+   "other:Lionel RUIZ": 81,
+   "other:Gerard": 68,
+   "other:Ramdane Martin": 67,
+   "other:Joan Ruiz": 46,
+   "other:Elitit-40": 27,
+   "other:MartinRamdane": 17,
+   "other:Elitit": 10
+  }
+ }
+}

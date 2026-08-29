@@ -1,0 +1,917 @@
+{
+ "generated": "2026-08-29 22:24:52Z",
+ "instrument": "f52_strata.py",
+ "predictions_file": "artifacts/f52/f52_predictions.json",
+ "anchors": {
+  "code_head": "d6aec251a561598e57a579fd1a9ac300e5bd9bcf",
+  "entitycore_pin_at_code_head": "7ce58350d82e0e6931e7a70dd214e48cdaf21a2f",
+  "entitycore_worktree_head": "7ce58350d82e0e6931e7a70dd214e48cdaf21a2f",
+  "pin_equals_worktree": true
+ },
+ "era_boundaries_utc": {
+  "E_learn_end": "2021-08-30 00:00:00Z",
+  "E_recent_start": "2024-08-30 00:00:00Z",
+  "min_bucket_n": 5,
+  "rolling_window": 11,
+  "spike_regex": "asmooth|taskable"
+ },
+ "A_EntityCore": {
+  "scope": "A_EntityCore",
+  "n_commits_non_merge": 325,
+  "n_merges_excluded": 0,
+  "date_range_author": [
+   "2021-06-14 08:38:24Z",
+   "2026-08-26 10:24:06Z"
+  ],
+  "date_range_committer": [
+   "2021-06-14 08:38:24Z",
+   "2026-08-26 10:24:06Z"
+  ],
+  "first_commit": {
+   "sha": "f66e7fde35c46b51c9eb8d1ff4c1846160bb3018",
+   "at": "2021-06-14 08:38:24Z",
+   "ct": "2021-06-14 08:38:24Z",
+   "subject": "Initial commit",
+   "add": 674,
+   "del": 0,
+   "nfiles": 1
+  },
+  "last_commit": {
+   "sha": "7ce58350d82e0e6931e7a70dd214e48cdaf21a2f",
+   "at": "2026-08-26 10:24:06Z",
+   "subject": "A fresh ASmooth movement starts at phase time zero"
+  },
+  "whole": {
+   "n_commits": 325,
+   "n_with_lines": 325,
+   "zero_line_commits": 0,
+   "add": 28563,
+   "del": 17371,
+   "lines": 45934,
+   "R": 0.37817303087037923,
+   "median_r": 0.2857142857142857,
+   "F_struct": 0.018461538461538463,
+   "F_pureadd": 0.04923076923076923,
+   "binary_file_touches": 46,
+   "first": "2021-06-14 08:38:24Z",
+   "last": "2026-08-26 10:24:06Z"
+  },
+  "eras": {
+   "E_learn": {
+    "n_commits": 62,
+    "n_with_lines": 62,
+    "zero_line_commits": 0,
+    "add": 20182,
+    "del": 2032,
+    "lines": 22214,
+    "R": 0.09147384532276942,
+    "median_r": 0.22875816993464052,
+    "F_struct": 0.06451612903225806,
+    "F_pureadd": 0.04838709677419355,
+    "binary_file_touches": 35,
+    "first": "2021-06-14 08:38:24Z",
+    "last": "2021-08-27 09:54:27Z"
+   },
+   "E_mid": {
+    "n_commits": 253,
+    "n_with_lines": 253,
+    "zero_line_commits": 0,
+    "add": 8083,
+    "del": 15288,
+    "lines": 23371,
+    "R": 0.6541440246459287,
+    "median_r": 0.3333333333333333,
+    "F_struct": 0.007905138339920948,
+    "F_pureadd": 0.04743083003952569,
+    "binary_file_touches": 11,
+    "first": "2021-08-30 16:05:39Z",
+    "last": "2024-03-19 17:27:25Z"
+   },
+   "E_recent": {
+    "n_commits": 10,
+    "n_with_lines": 10,
+    "zero_line_commits": 0,
+    "add": 298,
+    "del": 51,
+    "lines": 349,
+    "R": 0.14613180515759314,
+    "median_r": 0.1298076923076923,
+    "F_struct": 0.0,
+    "F_pureadd": 0.1,
+    "binary_file_touches": 0,
+    "first": "2025-07-19 13:48:19Z",
+    "last": "2026-08-26 10:24:06Z"
+   }
+  },
+  "year_buckets": [
+   {
+    "n_commits": 159,
+    "n_with_lines": 159,
+    "zero_line_commits": 0,
+    "add": 22022,
+    "del": 16248,
+    "lines": 38270,
+    "R": 0.4245623203553697,
+    "median_r": 0.32819383259911894,
+    "F_struct": 0.03773584905660377,
+    "F_pureadd": 0.025157232704402517,
+    "binary_file_touches": 46,
+    "first": "2021-06-14 08:38:24Z",
+    "last": "2021-12-31 14:07:13Z",
+    "year": 2021,
+    "included_in_trend": true
+   },
+   {
+    "n_commits": 125,
+    "n_with_lines": 125,
+    "zero_line_commits": 0,
+    "add": 5248,
+    "del": 899,
+    "lines": 6147,
+    "R": 0.14625020335122824,
+    "median_r": 0.2857142857142857,
+    "F_struct": 0.0,
+    "F_pureadd": 0.08,
+    "binary_file_touches": 0,
+    "first": "2022-01-06 09:19:09Z",
+    "last": "2022-12-06 17:22:30Z",
+    "year": 2022,
+    "included_in_trend": true
+   },
+   {
+    "n_commits": 26,
+    "n_with_lines": 26,
+    "zero_line_commits": 0,
+    "add": 928,
+    "del": 133,
+    "lines": 1061,
+    "R": 0.12535344015080113,
+    "median_r": 0.12452107279693486,
+    "F_struct": 0.0,
+    "F_pureadd": 0.038461538461538464,
+    "binary_file_touches": 0,
+    "first": "2023-01-02 08:41:06Z",
+    "last": "2023-08-24 14:22:23Z",
+    "year": 2023,
+    "included_in_trend": true
+   },
+   {
+    "n_commits": 5,
+    "n_with_lines": 5,
+    "zero_line_commits": 0,
+    "add": 67,
+    "del": 40,
+    "lines": 107,
+    "R": 0.37383177570093457,
+    "median_r": 0.5,
+    "F_struct": 0.0,
+    "F_pureadd": 0.0,
+    "binary_file_touches": 0,
+    "first": "2024-03-05 14:54:25Z",
+    "last": "2024-03-19 17:27:25Z",
+    "year": 2024,
+    "included_in_trend": true
+   },
+   {
+    "n_commits": 3,
+    "n_with_lines": 3,
+    "zero_line_commits": 0,
+    "add": 53,
+    "del": 6,
+    "lines": 59,
+    "R": 0.1016949152542373,
+    "median_r": 0.11764705882352941,
+    "F_struct": 0.0,
+    "F_pureadd": 0.0,
+    "binary_file_touches": 0,
+    "first": "2025-07-19 13:48:19Z",
+    "last": "2025-09-20 08:21:24Z",
+    "year": 2025,
+    "included_in_trend": false
+   },
+   {
+    "n_commits": 7,
+    "n_with_lines": 7,
+    "zero_line_commits": 0,
+    "add": 245,
+    "del": 45,
+    "lines": 290,
+    "R": 0.15517241379310345,
+    "median_r": 0.1346153846153846,
+    "F_struct": 0.0,
+    "F_pureadd": 0.14285714285714285,
+    "binary_file_touches": 0,
+    "first": "2026-01-31 12:48:21Z",
+    "last": "2026-08-26 10:24:06Z",
+    "year": 2026,
+    "included_in_trend": true
+   }
+  ],
+  "spearman_rho_year_vs_R": -0.19999999999999996,
+  "trend_included_years": [
+   2021,
+   2022,
+   2023,
+   2024,
+   2026
+  ],
+  "authors_overall": {
+   "Calvin-Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>": 211,
+   "Calvin-Ruiz <calvin.ruiz@epitech.eu>": 43,
+   "Calvin Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>": 40,
+   "Calvin Ruiz <calvin.ruiz@epitech.eu>": 25,
+   "Ramdane Martin <martin.ramdane@epitech.eu>": 2,
+   "Kenan-Blasius <kenan.blasius@epitech.eu>": 1,
+   "Claude Fable 5 <noreply@anthropic.com>": 1,
+   "Claude Opus 4.8 <noreply@anthropic.com>": 1,
+   "Claude Opus 5 <noreply@anthropic.com>": 1
+  },
+  "authors_by_era": {
+   "E_learn": {
+    "Calvin-Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>": 51,
+    "Calvin Ruiz <calvin.ruiz@epitech.eu>": 6,
+    "Calvin Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>": 5
+   },
+   "E_mid": {
+    "Calvin-Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>": 160,
+    "Calvin-Ruiz <calvin.ruiz@epitech.eu>": 43,
+    "Calvin Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>": 29,
+    "Calvin Ruiz <calvin.ruiz@epitech.eu>": 19,
+    "Ramdane Martin <martin.ramdane@epitech.eu>": 2
+   },
+   "E_recent": {
+    "Calvin Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>": 6,
+    "Kenan-Blasius <kenan.blasius@epitech.eu>": 1,
+    "Claude Fable 5 <noreply@anthropic.com>": 1,
+    "Claude Opus 4.8 <noreply@anthropic.com>": 1,
+    "Claude Opus 5 <noreply@anthropic.com>": 1
+   }
+  },
+  "top_files_by_touched_lines": [
+   [
+    "stb_image.h",
+    15524
+   ],
+   [
+    "LaserBombon/Game.cpp",
+    2722
+   ],
+   [
+    "EntityCore/Core/VulkanMgr.cpp",
+    2438
+   ],
+   [
+    "LICENSE",
+    1369
+   ],
+   [
+    "EntityLib/Core/GPUDisplay.cpp",
+    1000
+   ],
+   [
+    "Tools/SaveData.cpp",
+    780
+   ],
+   [
+    "LaserBombon/Game.hpp",
+    694
+   ],
+   [
+    "Core/VulkanMgr.cpp",
+    650
+   ],
+   [
+    "EntityLib/Core/GPUEntityMgr.cpp",
+    600
+   ],
+   [
+    "Tools/LinuxExecutor.cpp",
+    553
+   ]
+  ],
+  "rewrite_signals": {
+   "n_author_ne_committer_time": 0,
+   "max_ct_minus_at_days": 0.0,
+   "shared_committer_timestamps_top10": [],
+   "first_commit_add": 674,
+   "first_commit_rank_by_add": 6,
+   "largest_commit_add": 12384,
+   "committer_names": {
+    "Calvin Ruiz": 1,
+    "Calvin-Ruiz": 1,
+    "Claude": 1,
+    "Claude Fable 5": 1,
+    "GitHub": 1,
+    "Ramdane Martin": 1
+   }
+  },
+  "ref": "7ce58350d82e0e6931e7a70dd214e48cdaf21a2f",
+  "birth_relative": {
+   "first_365d": {
+    "n_commits": 229,
+    "n_with_lines": 229,
+    "zero_line_commits": 0,
+    "add": 25763,
+    "del": 16820,
+    "lines": 42583,
+    "R": 0.3949933071883146,
+    "median_r": 0.3076923076923077,
+    "F_struct": 0.026200873362445413,
+    "F_pureadd": 0.048034934497816595,
+    "binary_file_touches": 46,
+    "first": "2021-06-14 08:38:24Z",
+    "last": "2022-06-13 09:54:31Z"
+   },
+   "last_365d": {
+    "n_commits": 8,
+    "n_with_lines": 8,
+    "zero_line_commits": 0,
+    "add": 260,
+    "del": 47,
+    "lines": 307,
+    "R": 0.15309446254071662,
+    "median_r": 0.1298076923076923,
+    "F_struct": 0.0,
+    "F_pureadd": 0.125,
+    "binary_file_touches": 0,
+    "first": "2025-09-20 08:21:24Z",
+    "last": "2026-08-26 10:24:06Z"
+   }
+  },
+  "spikes": {
+   "n_matched": 4,
+   "n_spiking": 0,
+   "share": 0.0,
+   "rows": [
+    {
+     "sha": "ca3205f5",
+     "at": "2023-08-24 14:22:23Z",
+     "subject": "Enhance some utilities, add ASmooth",
+     "add": 104,
+     "del": 13,
+     "r": 0.1111111111111111,
+     "era": "E_mid",
+     "era_median_r": 0.3333333333333333,
+     "era_R": 0.6541440246459287,
+     "roll_R": 0.21428571428571427,
+     "r_above_median_plus_0.10": false,
+     "roll_above_R_plus_0.10": false
+    },
+    {
+     "sha": "e38e6a69",
+     "at": "2026-07-17 09:53:41Z",
+     "subject": "Introduce Task/Taskable system, with Claude Opus reviewing it and writing comments.",
+     "add": 92,
+     "del": 0,
+     "r": 0.0,
+     "era": "E_recent",
+     "era_median_r": 0.1298076923076923,
+     "era_R": 0.14613180515759314,
+     "roll_R": 0.1619047619047619,
+     "r_above_median_plus_0.10": false,
+     "roll_above_R_plus_0.10": false
+    },
+    {
+     "sha": "f28c5556",
+     "at": "2026-07-17 09:59:00Z",
+     "subject": "Add SAMPLED_IMAGE type to SetMgr. Rename AsyncBase priority from NOW to ACTIVE, which should be clearer about intent. Fix ASmooth. (Commit message by Calvin-Ruiz)",
+     "add": 45,
+     "del": 7,
+     "r": 0.1346153846153846,
+     "era": "E_recent",
+     "era_median_r": 0.1298076923076923,
+     "era_R": 0.14613180515759314,
+     "roll_R": 0.15309446254071662,
+     "r_above_median_plus_0.10": false,
+     "roll_above_R_plus_0.10": false
+    },
+    {
+     "sha": "7ce58350",
+     "at": "2026-08-26 10:24:06Z",
+     "subject": "A fresh ASmooth movement starts at phase time zero",
+     "add": 28,
+     "del": 4,
+     "r": 0.125,
+     "era": "E_recent",
+     "era_median_r": 0.1298076923076923,
+     "era_R": 0.14613180515759314,
+     "roll_R": 0.156794425087108,
+     "r_above_median_plus_0.10": false,
+     "roll_above_R_plus_0.10": false
+    }
+   ]
+  },
+  "commits_on_main_beyond_pin": 0,
+  "local_branches": [
+   "refs/heads/main 7ce5835",
+   "refs/remotes/origin/HEAD 224eba7",
+   "refs/remotes/origin/SpaceCrafter 33b839b",
+   "refs/remotes/origin/main 224eba7"
+  ]
+ },
+ "B_experimentalModule": {
+  "scope": "B_experimentalModule",
+  "n_commits_non_merge": 149,
+  "n_merges_excluded": 0,
+  "date_range_author": [
+   "2025-09-20 11:59:44Z",
+   "2026-08-26 15:56:24Z"
+  ],
+  "date_range_committer": [
+   "2025-09-20 11:59:44Z",
+   "2026-08-26 15:56:24Z"
+  ],
+  "first_commit": {
+   "sha": "da858612cbcd2553b8ae9d68abd844f87130ec79",
+   "at": "2025-09-20 11:59:44Z",
+   "ct": "2025-09-20 11:59:44Z",
+   "subject": "Merge work between body-refactoring and 2023-master",
+   "add": 3070,
+   "del": 0,
+   "nfiles": 35
+  },
+  "last_commit": {
+   "sha": "d6aec251a561598e57a579fd1a9ac300e5bd9bcf",
+   "at": "2026-08-26 15:56:24Z",
+   "subject": "The configured scale is a starting state, not an animation"
+  },
+  "whole": {
+   "n_commits": 149,
+   "n_with_lines": 149,
+   "zero_line_commits": 0,
+   "add": 38358,
+   "del": 15769,
+   "lines": 54127,
+   "R": 0.29133334565004526,
+   "median_r": 0.08069164265129683,
+   "F_struct": 0.013422818791946308,
+   "F_pureadd": 0.013422818791946308,
+   "binary_file_touches": 0,
+   "first": "2025-09-20 11:59:44Z",
+   "last": "2026-08-26 15:56:24Z"
+  },
+  "eras": {
+   "E_learn": {
+    "n_commits": 0,
+    "n_with_lines": 0,
+    "zero_line_commits": 0,
+    "add": 0,
+    "del": 0,
+    "lines": 0,
+    "R": null,
+    "median_r": null,
+    "F_struct": null,
+    "F_pureadd": null,
+    "binary_file_touches": 0,
+    "first": null,
+    "last": null
+   },
+   "E_mid": {
+    "n_commits": 0,
+    "n_with_lines": 0,
+    "zero_line_commits": 0,
+    "add": 0,
+    "del": 0,
+    "lines": 0,
+    "R": null,
+    "median_r": null,
+    "F_struct": null,
+    "F_pureadd": null,
+    "binary_file_touches": 0,
+    "first": null,
+    "last": null
+   },
+   "E_recent": {
+    "n_commits": 149,
+    "n_with_lines": 149,
+    "zero_line_commits": 0,
+    "add": 38358,
+    "del": 15769,
+    "lines": 54127,
+    "R": 0.29133334565004526,
+    "median_r": 0.08069164265129683,
+    "F_struct": 0.013422818791946308,
+    "F_pureadd": 0.013422818791946308,
+    "binary_file_touches": 0,
+    "first": "2025-09-20 11:59:44Z",
+    "last": "2026-08-26 15:56:24Z"
+   }
+  },
+  "year_buckets": [
+   {
+    "n_commits": 2,
+    "n_with_lines": 2,
+    "zero_line_commits": 0,
+    "add": 3196,
+    "del": 73,
+    "lines": 3269,
+    "R": 0.0223309880697461,
+    "median_r": 0.18341708542713567,
+    "F_struct": 0.0,
+    "F_pureadd": 0.5,
+    "binary_file_touches": 0,
+    "first": "2025-09-20 11:59:44Z",
+    "last": "2025-11-11 15:32:48Z",
+    "year": 2025,
+    "included_in_trend": false
+   },
+   {
+    "n_commits": 147,
+    "n_with_lines": 147,
+    "zero_line_commits": 0,
+    "add": 35162,
+    "del": 15696,
+    "lines": 50858,
+    "R": 0.30862401195485467,
+    "median_r": 0.08069164265129683,
+    "F_struct": 0.013605442176870748,
+    "F_pureadd": 0.006802721088435374,
+    "binary_file_touches": 0,
+    "first": "2026-04-04 08:52:07Z",
+    "last": "2026-08-26 15:56:24Z",
+    "year": 2026,
+    "included_in_trend": true
+   }
+  ],
+  "spearman_rho_year_vs_R": null,
+  "trend_included_years": [
+   2026
+  ],
+  "authors_overall": {
+   "Claude Fable 5 <noreply@anthropic.com>": 49,
+   "Claude Opus 5 <noreply@anthropic.com>": 49,
+   "Claude Opus 4.8 <noreply@anthropic.com>": 45,
+   "Calvin Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>": 6
+  },
+  "authors_by_era": {
+   "E_learn": {},
+   "E_mid": {},
+   "E_recent": {
+    "Claude Fable 5 <noreply@anthropic.com>": 49,
+    "Claude Opus 5 <noreply@anthropic.com>": 49,
+    "Claude Opus 4.8 <noreply@anthropic.com>": 45,
+    "Calvin Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>": 6
+   }
+  },
+  "top_files_by_touched_lines": [
+   [
+    "src/experimentalModule/dispatch-2026-07-21-opus.md",
+    4502
+   ],
+   [
+    "src/experimentalModule/ModularBody.hpp",
+    3231
+   ],
+   [
+    "src/experimentalModule/ModularSystem.cpp",
+    2844
+   ],
+   [
+    "src/experimentalModule/INTENT.md",
+    2778
+   ],
+   [
+    "src/experimentalModule/Camera.cpp",
+    1797
+   ],
+   [
+    "src/experimentalModule/PipelineRegistry.cpp",
+    1618
+   ],
+   [
+    "src/experimentalModule/shadow-paths.md",
+    1578
+   ],
+   [
+    "src/experimentalModule/ModularBody.cpp",
+    1492
+   ],
+   [
+    "src/experimentalModule/harness/artifacts/b11_measurements.json",
+    1032
+   ],
+   [
+    "src/experimentalModule/CameraAnchors.cpp",
+    841
+   ]
+  ],
+  "rewrite_signals": {
+   "n_author_ne_committer_time": 2,
+   "max_ct_minus_at_days": 0.0,
+   "shared_committer_timestamps_top10": [
+    [
+     2,
+     "2026-07-31 01:49:07Z"
+    ]
+   ],
+   "first_commit_add": 3070,
+   "first_commit_rank_by_add": 1,
+   "largest_commit_add": 3070,
+   "committer_names": {
+    "Calvin Ruiz": 1,
+    "Claude": 1,
+    "Claude Fable 5": 1,
+    "Claude Opus 5": 1
+   }
+  },
+  "ref": "d6aec251a561598e57a579fd1a9ac300e5bd9bcf",
+  "pathspec": [
+   "src/experimentalModule/"
+  ],
+  "birth_relative": {
+   "first_365d": {
+    "n_commits": 149,
+    "n_with_lines": 149,
+    "zero_line_commits": 0,
+    "add": 38358,
+    "del": 15769,
+    "lines": 54127,
+    "R": 0.29133334565004526,
+    "median_r": 0.08069164265129683,
+    "F_struct": 0.013422818791946308,
+    "F_pureadd": 0.013422818791946308,
+    "binary_file_touches": 0,
+    "first": "2025-09-20 11:59:44Z",
+    "last": "2026-08-26 15:56:24Z"
+   },
+   "last_365d": {
+    "n_commits": 149,
+    "n_with_lines": 149,
+    "zero_line_commits": 0,
+    "add": 38358,
+    "del": 15769,
+    "lines": 54127,
+    "R": 0.29133334565004526,
+    "median_r": 0.08069164265129683,
+    "F_struct": 0.013422818791946308,
+    "F_pureadd": 0.013422818791946308,
+    "binary_file_touches": 0,
+    "first": "2025-09-20 11:59:44Z",
+    "last": "2026-08-26 15:56:24Z"
+   }
+  },
+  "spikes": {
+   "n_matched": 1,
+   "n_spiking": 0,
+   "share": 0.0,
+   "rows": [
+    {
+     "sha": "85015585",
+     "at": "2026-07-12 07:41:04Z",
+     "subject": "Mars-observer generalization: zero new defects + ASmooth formula analysis",
+     "add": 117,
+     "del": 0,
+     "r": 0.0,
+     "era": "E_recent",
+     "era_median_r": 0.08069164265129683,
+     "era_R": 0.29133334565004526,
+     "roll_R": 0.10633946830265849,
+     "r_above_median_plus_0.10": false,
+     "roll_above_R_plus_0.10": false
+    }
+   ]
+  },
+  "P7_first_commit_add": 3070,
+  "P7_p90_add": 692,
+  "P7_pass": true
+ },
+ "C_control": {
+  "scope": "C_control_src_minus_expmod",
+  "n_commits_non_merge": 298,
+  "n_merges_excluded": 77,
+  "date_range_author": [
+   "2025-09-20 11:59:44Z",
+   "2026-08-26 15:56:24Z"
+  ],
+  "date_range_committer": [
+   "2025-09-20 11:59:44Z",
+   "2026-08-26 15:56:24Z"
+  ],
+  "first_commit": {
+   "sha": "da858612cbcd2553b8ae9d68abd844f87130ec79",
+   "at": "2025-09-20 11:59:44Z",
+   "ct": "2025-09-20 11:59:44Z",
+   "subject": "Merge work between body-refactoring and 2023-master",
+   "add": 450,
+   "del": 170,
+   "nfiles": 29
+  },
+  "last_commit": {
+   "sha": "d6aec251a561598e57a579fd1a9ac300e5bd9bcf",
+   "at": "2026-08-26 15:56:24Z",
+   "subject": "The configured scale is a starting state, not an animation"
+  },
+  "whole": {
+   "n_commits": 298,
+   "n_with_lines": 298,
+   "zero_line_commits": 0,
+   "add": 19978,
+   "del": 7457,
+   "lines": 27435,
+   "R": 0.2718060871149991,
+   "median_r": 0.2,
+   "F_struct": 0.0,
+   "F_pureadd": 0.003355704697986577,
+   "binary_file_touches": 0,
+   "first": "2025-09-20 11:59:44Z",
+   "last": "2026-08-26 15:56:24Z"
+  },
+  "eras": {
+   "E_learn": {
+    "n_commits": 0,
+    "n_with_lines": 0,
+    "zero_line_commits": 0,
+    "add": 0,
+    "del": 0,
+    "lines": 0,
+    "R": null,
+    "median_r": null,
+    "F_struct": null,
+    "F_pureadd": null,
+    "binary_file_touches": 0,
+    "first": null,
+    "last": null
+   },
+   "E_mid": {
+    "n_commits": 0,
+    "n_with_lines": 0,
+    "zero_line_commits": 0,
+    "add": 0,
+    "del": 0,
+    "lines": 0,
+    "R": null,
+    "median_r": null,
+    "F_struct": null,
+    "F_pureadd": null,
+    "binary_file_touches": 0,
+    "first": null,
+    "last": null
+   },
+   "E_recent": {
+    "n_commits": 298,
+    "n_with_lines": 298,
+    "zero_line_commits": 0,
+    "add": 19978,
+    "del": 7457,
+    "lines": 27435,
+    "R": 0.2718060871149991,
+    "median_r": 0.2,
+    "F_struct": 0.0,
+    "F_pureadd": 0.003355704697986577,
+    "binary_file_touches": 0,
+    "first": "2025-09-20 11:59:44Z",
+    "last": "2026-08-26 15:56:24Z"
+   }
+  },
+  "year_buckets": [
+   {
+    "n_commits": 101,
+    "n_with_lines": 101,
+    "zero_line_commits": 0,
+    "add": 9076,
+    "del": 3449,
+    "lines": 12525,
+    "R": 0.27536926147704593,
+    "median_r": 0.25,
+    "F_struct": 0.0,
+    "F_pureadd": 0.009900990099009901,
+    "binary_file_touches": 0,
+    "first": "2025-09-20 11:59:44Z",
+    "last": "2025-12-23 18:37:56Z",
+    "year": 2025,
+    "included_in_trend": true
+   },
+   {
+    "n_commits": 197,
+    "n_with_lines": 197,
+    "zero_line_commits": 0,
+    "add": 10902,
+    "del": 4008,
+    "lines": 14910,
+    "R": 0.2688128772635815,
+    "median_r": 0.17204301075268819,
+    "F_struct": 0.0,
+    "F_pureadd": 0.0,
+    "binary_file_touches": 0,
+    "first": "2026-01-05 09:35:21Z",
+    "last": "2026-08-26 15:56:24Z",
+    "year": 2026,
+    "included_in_trend": true
+   }
+  ],
+  "spearman_rho_year_vs_R": null,
+  "trend_included_years": [
+   2025,
+   2026
+  ],
+  "authors_overall": {
+   "Kenan-Blasius <kenan.blasius@epitech.eu>": 146,
+   "Claude Opus 5 <noreply@anthropic.com>": 38,
+   "Calvin Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>": 32,
+   "Claude Opus 4.8 <noreply@anthropic.com>": 30,
+   "Claude Fable 5 <noreply@anthropic.com>": 29,
+   "lionelruiz13 <lionel.ruiz@live.fr>": 23
+  },
+  "authors_by_era": {
+   "E_learn": {},
+   "E_mid": {},
+   "E_recent": {
+    "Kenan-Blasius <kenan.blasius@epitech.eu>": 146,
+    "Claude Opus 5 <noreply@anthropic.com>": 38,
+    "Calvin Ruiz <43058983+Calvin-Ruiz@users.noreply.github.com>": 32,
+    "Claude Opus 4.8 <noreply@anthropic.com>": 30,
+    "Claude Fable 5 <noreply@anthropic.com>": 29,
+    "lionelruiz13 <lionel.ruiz@live.fr>": 23
+   }
+  },
+  "top_files_by_touched_lines": [
+   [
+    "src/coreModule/core.cpp",
+    3573
+   ],
+   [
+    "src/tools/fixed_point.hpp",
+    3311
+   ],
+   [
+    "src/interfaceModule/app_command_interface.cpp",
+    1738
+   ],
+   [
+    "src/bodyModule/ssystem_factory.cpp",
+    1374
+   ],
+   [
+    "src/coreModule/coreLink.cpp",
+    1311
+   ],
+   [
+    "src/tools/vecmath.hpp",
+    1132
+   ],
+   [
+    "src/mediaModule/video_player.cpp",
+    1061
+   ],
+   [
+    "src/tools/s_texture.cpp",
+    940
+   ],
+   [
+    "src/bodyModule/planet_grid.cpp",
+    850
+   ],
+   [
+    "src/bodyModule/ssystem_factory.hpp",
+    799
+   ]
+  ],
+  "rewrite_signals": {
+   "n_author_ne_committer_time": 10,
+   "max_ct_minus_at_days": 11.54,
+   "shared_committer_timestamps_top10": [
+    [
+     4,
+     "2025-12-01 08:49:42Z"
+    ]
+   ],
+   "first_commit_add": 450,
+   "first_commit_rank_by_add": 7,
+   "largest_commit_add": 1857,
+   "committer_names": {
+    "Calvin Ruiz": 1,
+    "Claude": 1,
+    "Claude Fable 5": 1,
+    "Claude Opus 4.8": 1,
+    "Kenan-Blasius": 1,
+    "lionelruiz13": 1
+   }
+  },
+  "ref": "d6aec251a561598e57a579fd1a9ac300e5bd9bcf",
+  "pathspec": [
+   "src/",
+   ":(exclude)src/experimentalModule/",
+   ":(exclude)src/EntityCore"
+  ],
+  "window_author_time": [
+   "2025-09-20 11:59:44Z",
+   "2026-08-26 15:56:24Z"
+  ],
+  "n_commits_all_time_before_window_filter": 3092
+ },
+ "A_EntityCore_in_B_window": {
+  "n_commits": 7,
+  "n_with_lines": 7,
+  "zero_line_commits": 0,
+  "add": 245,
+  "del": 45,
+  "lines": 290,
+  "R": 0.15517241379310345,
+  "median_r": 0.1346153846153846,
+  "F_struct": 0.0,
+  "F_pureadd": 0.14285714285714285,
+  "binary_file_touches": 0,
+  "first": "2026-01-31 12:48:21Z",
+  "last": "2026-08-26 10:24:06Z"
+ }
+}

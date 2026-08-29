@@ -818,7 +818,16 @@ WIP per §0.6.
 PASS/FAIL/NEITHER branches, era boundaries derived from §11.161(b) anchored at today,
 6 refutation conditions, 7 pre-declared limits. Only pre-write probe on either history:
 the submodule's `rev-parse` reachability (HEAD `7ce58350`, branch `main`) — no log, no
-dates, no counts. NEXT: write `harness/f52_strata.py` and measure both histories.)*
+dates, no counts.*
+*checkpoint 2: BOTH HISTORIES MEASURED. `f52_strata.py` (the committed definitions,
+verbatim) + `f52_probes.py` (the attribution probes Q1–Q7 that the primary run's own
+pre-declared limits L1–L5 forced). EntityCore 325 non-merge commits, 0 merges, 0
+rebases, 0 chronology inversions; experimentalModule 149 reachable / 186 all-refs.
+Headline numbers in `artifacts/f52/`: stratum ordering src/ 0.4291 > EntityCore-library
+0.1576 > expMod-code 0.0952; EntityCore dense-era Spearman −1.000 on both statistics;
+75.4 % of EntityCore's lifetime deletions are ONE repository-separation commit; 96 % of
+the module's commits are this project's own. NEXT: adjudicate P1–P7 and write
+INTENT/11.168.md.)*
 
 ---
 

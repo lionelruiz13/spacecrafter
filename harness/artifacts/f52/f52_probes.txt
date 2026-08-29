@@ -1,0 +1,108 @@
+=== Q1  EntityCore: is E_mid's R=0.65 premise rework? ===
+all deletions over 325 non-merge commits: 17371
+  16381f80 2021-12-20 +2     -13091  ( 75.4% of all deletions; non-library 13058) Separate EntityCore and EntityLib/LaserBombon
+  ba7eebc5 2021-09-21 +21    -674    (  3.9% of all deletions; non-library 674) Switch to MIT license
+  bc0c9451 2021-07-01 +87    -590    (  3.4% of all deletions; non-library 74) Fix various shield bug
+  3107cdeb 2021-06-21 +205   -203    (  1.2% of all deletions; non-library 199) Fix core engine !
+  4b8a5cae 2021-06-20 +1719  -185    (  1.1% of all deletions; non-library 80) First possibly functionnal version
+  79c691ec 2021-08-11 +305   -149    (  0.9% of all deletions; non-library 0) Refactor VkQueue management, allow windowless rendering,
+  e839d7f3 2021-08-13 +0     -98     (  0.6% of all deletions; non-library 98) Remove SafeQueue of EntityLib
+  7868d074 2021-06-18 +753   -93     (  0.5% of all deletions; non-library 84) Build compute loop
+
+  library-only scope excludes /^(LaserBombon/|EntityLib/|cmake/|LICENSE|README|\.gitignore)|(^|/)stb_image\.h$/
+  full     whole: +28563/-17371 R=0.3782
+  lib-only whole: +14544/-2721 R=0.1576
+  year   full-R   lib-R    n     lib +add/-del
+  2021  0.4246  0.1664  159   +8003/-1598
+  2022  0.1463  0.1463  125   +5248/-899
+  2023  0.1254  0.1254  26    +928/-133
+  2024  0.3738  0.3738  5     +67/-40
+  2025  0.1017  0.1017  3     +53/-6
+  2026  0.1552  0.1552  7     +245/-45
+  lib-only spearman rho over [2021, 2022, 2023, 2024, 2026] = 0.1000
+  lib-only first_365d n=229  +11744  -2170   R=0.1560 median_r=0.3282
+  lib-only last_365d  n=8    +260    -47     R=0.1531 median_r=0.1298
+  lib-only first_730d n=304  +14037  -2613   R=0.1569 median_r=0.3077
+  lib-only after_730d n=21   +507    -108    R=0.1756 median_r=0.1538
+  persons: {'vixy': 319, 'claude': 3, 'other:Ramdane Martin': 2, 'other:Kenan-Blasius': 1}
+
+=== Q2  experimentalModule: the flattened pre-history ===
+  HEAD-reachable : n=149  2025-09-20..2026-08-26  +38358/-15769 R=0.2913
+  branch-only    : n=6  2023-08-05..2025-09-20  +3477/-407 R=0.1048   (reachable from body-refactoring, NOT from d6aec251)
+     68099b77 2023-08-05 vixy   +1457  -0     Implement some experimental modules (may not compile yet)
+     6f00ae1b 2023-08-08 vixy   +826   -227   Fix compilation issues and implement module loaders
+     82a89e69 2023-08-24 vixy   +886   -107   First alpha version of experimental modules
+     a3c61eaa 2023-08-24 vixy   +2     -2     Fix some issues
+     32e4849c 2025-08-13 vixy   +232   -31    Partial Body Refactoring to rework
+     f8cd7134 2025-09-20 vixy   +74    -40    Merge with 2023-master
+  import commit  : {'sha': 'da858612', 'date': '2025-09-20', 'add': 3070, 'del': 0, 'subject': 'Merge work between body-refactoring and 2023-master', 'parents': ['194c6074603d8463fb5a26631c9e140128f18c79']}
+
+=== Q3  who wrote each scope ===
+  A_EntityCore         {'vixy': 319, 'claude': 3, 'other:Ramdane Martin': 2, 'other:Kenan-Blasius': 1}
+  B_expMod_head        {'claude': 143, 'vixy': 6}
+  B_expMod_all_refs    {'claude': 174, 'vixy': 12}
+  C_control_window     {'other:Kenan-Blasius': 146, 'claude': 97, 'vixy': 32, 'other:lionelruiz13': 23}
+  VIXY-ONLY subsets:
+    A_EntityCore                     n=319  2021-06-14..2026-07-17 +28416  -17326  R=0.3788 median_r=0.2917
+    A_EntityCore_library_only        n=319  2021-06-14..2026-07-17 +14397  -2676   R=0.1567 median_r=0.3077
+    B_expMod_head                    n=6    2025-09-20..2026-07-23 +3270   -12929  R=0.7981 median_r=0.4184
+    B_expMod_all_refs                n=12   2023-08-05..2026-07-23 +6747   -13336  R=0.6640 median_r=0.3118
+    C_control_window                 n=32   2025-09-20..2026-05-25 +2317   -2065   R=0.4712 median_r=0.4857
+    expMod all-refs, vixy commits:
+      68099b77 2023-08-05 +1457  -0     r=0.0000 Implement some experimental modules (may not compile yet
+      6f00ae1b 2023-08-08 +826   -227   r=0.2156 Fix compilation issues and implement module loaders
+      82a89e69 2023-08-24 +886   -107   r=0.1078 First alpha version of experimental modules
+      a3c61eaa 2023-08-24 +2     -2     r=0.5000 Fix some issues
+      32e4849c 2025-08-13 +232   -31    r=0.1179 Partial Body Refactoring to rework
+      f8cd7134 2025-09-20 +74    -40    r=0.3509 Merge with 2023-master
+      da858612 2025-09-20 +3070  -0     r=0.0000 Merge work between body-refactoring and 2023-master
+      128412c9 2025-11-11 +126   -73    r=0.3668 Rework slot and component management
+      2d111ead 2026-04-04 +44    -39    r=0.4699 Partial fixes
+      4dfe7bb3 2026-05-23 +8     -3     r=0.2727 Update EntityCore and s_texture system + fixes in Modula
+      c523e3b1 2026-07-22 +0     -12792 r=1.0000 Reorganize files to leave source file clean and decouple
+      4345e334 2026-07-23 +22    -22    r=0.5000 Move ModuleLoader instanciation in a dedicated moduleLoa
+  CLAUDE-ONLY subsets:
+    B_expMod_head                    n=143  2026-07-11..2026-08-26 +35088  -2840   R=0.0749 median_r=0.0708
+    B_expMod_all_refs                n=174  2026-07-11..2026-08-26 +45581  -3871   R=0.0783 median_r=0.0806
+    C_control_window                 n=97   2026-07-11..2026-08-26 +6050   -1114   R=0.1555 median_r=0.0850
+    A_EntityCore                     n=3    2026-07-17..2026-08-26 +95     -15     R=0.1364 median_r=0.1346
+
+=== Q4  experimentalModule, product code only (excl /\.(md|txt)$|/harness/|\.py$/) ===
+  all                      n=186  2023-08-05..2026-08-26 +36964  -3890   R=0.0952 median_r=0.0990
+  vixy                     n=12   2023-08-05..2026-07-23 +6704   -543    R=0.0749 median_r=0.2727
+  vixy_minus_mechanical    n=10   2023-08-05..2026-07-23 +3652   -543    R=0.1294 median_r=0.3118
+  claude                   n=174  2026-07-11..2026-08-26 +30260  -3347   R=0.0996 median_r=0.0942
+  by person: {'claude': (174, '0.0996'), 'vixy': (12, '0.0749')}
+  by year  : {2023: (4, '0.0958'), 2025: (4, '0.0397'), 2026: (178, '0.1011')}
+  mechanically excluded from the vixy subset: [{'sha': 'da858612', 'date': '2025-09-20', 'add': 3070, 'del': 0, 'add_code': 3052, 'del_code': 0, 'subject': 'Merge work between body-refactoring and 2023-master'}, {'sha': 'c523e3b1', 'date': '2026-07-22', 'add': 0, 'del': 12792, 'add_code': 0, 'del_code': 0, 'subject': 'Reorganize files to leave source file clean and decouple work fi'}]
+
+=== Q5  EntityCore library-only: commit-weighted trend + the real rework events ===
+  2021 n=159  R=0.1664 median_r=0.3333
+  2022 n=125  R=0.1463 median_r=0.2857
+  2023 n=26   R=0.1254 median_r=0.1245
+  2024 n=5    R=0.3738 median_r=0.5000
+  2025 n=3    R=0.1017 median_r=0.1176
+  2026 n=7    R=0.1552 median_r=0.1346
+  largest LIBRARY deletions after the 2021-12-20 separation:
+    aa22b42a 2022-05-04 +403   -93    r=0.1875 Implement support for other vulkan version and feature extension
+    41b9dfa0 2022-11-10 +40    -79    r=0.6639 Enhance SaveData
+    f43c1599 2022-04-18 +164   -69    r=0.2961 Fix compilation under windows, add CString for constant string, 
+    f6956568 2022-07-15 +105   -56    r=0.3478 Implement swapchain recreation
+    39ae90d7 2023-01-04 +47    -52    r=0.5253 Use template for TransferMgr to avoid the need for cast
+    39a5956b 2022-05-06 +67    -47    r=0.4123 Fix runtime issues and implement explicit memory batch system
+    734cab7b 2022-05-03 +42    -42    r=0.5000 Stop using a reference to a pointer unless it break backward com
+    17c8c82d 2022-06-20 +133   -41    r=0.2356 Implement extended container types to BigSave/SaveData Tool
+    540a9420 2023-05-24 +167   -39    r=0.1893 Add async builder threads and some other features
+    115e2d5f 2022-05-27 +69    -34    r=0.3301 Update Tools headers
+
+=== Q6  the committed era test, library-only scope ===
+  E_learn   n=62   +6201   -1123   R=0.1533 median_r=0.2036
+  E_mid     n=253  +8045   -1547   R=0.1613 median_r=0.3333
+  E_recent  n=10   +298    -51     R=0.1461 median_r=0.1298
+  dense years (n>=20, 95.4% of all commits): {2021: (159, '0.1664', '0.3333'), 2022: (125, '0.1463', '0.2857'), 2023: (26, '0.1254', '0.1245')}
+  dense-year spearman: R -1.0000 | median_r -1.0000
+  commit share by year: {2021: '48.9%', 2022: '38.5%', 2023: '8.0%', 2024: '1.5%', 2025: '0.9%', 2026: '2.2%'}
+
+=== Q7  reference scale: the whole code repo's src/ (the inherited tree) ===
+  n=3193  2020-01-18..2026-08-26  +557726/-419260  R=0.4291  median_r=0.4399
+  by year: {2020: (1699, '0.4408'), 2021: (406, '0.5257'), 2022: (403, '0.3543'), 2023: (212, '0.2873'), 2024: (40, '0.3080'), 2025: (159, '0.2601'), 2026: (274, '0.2996')}
