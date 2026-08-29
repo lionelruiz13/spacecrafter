@@ -96,6 +96,38 @@ census parenthetical (F38), a wrong discriminator target (F40), a mis-homed
 stub (F41) — three of four caught by executor verification, the layer working
 as designed.
 
+**Update [Fable 2026-08-29, supervising session 14]:** round of 3: **F42 → F43 →
+F44** — the session-13 queue in order; queue item 4 (§5.100's fix) stays blocked,
+its authorization question unanswered at this open. Warm-up: both trees clean at
+open, code `d6aec251` / harness `631d0c8`, binary confirmed current by no-op
+rebuild, `free -g` = 30 GiB ⇒ -j12; NO Vixy commit since session 13's close ⇒
+the decision-gated set stands unchanged (D-set still EMPTY; A40–A44,
+§11.146(j), the two §11.144 riders, §5.106's close-vs-annotate, and the
+§5.87/§5.88/§5.89/§5.90 semantics halves all wait). Next free §11 number
+verified **156**. Picks, rows re-read at the ledger: F42 = **§11.149(h)'s owed
+sweep** (stub↔entry-file cross-check, the authority-inversion class; harness
+repo only), F43 = **§11.153(o)'s owed audit** (b24_select 4-red adjudication +
+the 28 unaudited free-mode-longitude files; README carries the list and the two
+corrected precedents), F44 = **§5.86's owed data** (consumer dependence +
+old-path RA/DE parity target; record-only). Order: F42 first (every later task
+reads the ledger it repairs), then F43 (instrument), then F44 (measurement) —
+surfaces disjoint (INTENT tree / harness .py / record + one probe), and NO
+mandate touches product code: the code tree should be clean at every point of
+this round, a first. Extension to F45 (§5.88's draw-cost datum) + F46 (§5.89's
+assert sweep) only if session health permits after F44's verification, minted
+then per §0b.2. Round-open events: **archival pass 7** (update-s12 + F37–F41
+moved byte-exact, manifest `2026-08-29-pass7`, commit `4f9685f`); **host
+incident, resolved**: Vixy's 2026-08-26 morning harness commits from the foxy
+account left two foxy-owned fan-out dirs in the harness `.git/objects` (`29/`,
+`e4/`) — this round's first commit FAILED on exactly that; the local repair was
+classifier-denied and routed to Vixy per the gate protocol, resolved by
+`sudo chown claude -R /home/claude/spacecrafter` [vixy 2026-08-29: *"the only
+clean correction is on my side so reporting it to me is the only valid move
+here"*]. The code repo carried 4 foxy-owned object FILES in claude-owned dirs —
+no blockage there, checked. Recurrence condition recorded: any foreign-account
+commit that creates a NEW fan-out dir re-arms the class; the report-to-Vixy
+route is the standing answer.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -231,11 +263,154 @@ F10 §11.115 · F11 §11.117 · F12 §11.118 · F13 §11.119 · F14 §11.120 · 
 F16 §11.124 · F17 §11.125 · F18 §11.127 · F19 §11.126 · F20 §11.128 · F21 §11.129 ·
 F22 §11.130 · F23 §11.131 · F24 §11.132 · F25 §11.133 · F26 §11.134 · F27 §11.135 ·
 F28 §11.138 · F29 §11.139 · F30 §11.140 · F31 §11.141 · F32 §11.142 ·
-F33 §11.143 · F34 §11.144 · F35 §11.145 · F36 §11.146. Live sections:
-**F37–F39** (session 13, the D15/D21/D37-unblocked round — below). Queued after
-them: §5.86's owed data, S; §5.88's owed draw-cost datum, S; §5.89's owed
-assert sweep, S — every FIX they enable is Vixy's; to be minted at their
-dispatch per §0b.2.*
+F33 §11.143 · F34 §11.144 · F35 §11.145 · F36 §11.146 · F37 §11.149 ·
+F38 §11.150 · F39 §11.152 · F40 §11.153 · F41 §11.155 (F37–F41 archived,
+pass 7). Live sections: **F42–F44** (session 14, the session-13 queue — below).
+Queued after them: §5.88's owed draw-cost datum, S; §5.89's owed assert sweep,
+S (both = this round's extension candidates, minted on session health); §5.100's
+one-line fix once its §3 authorization question is answered — every FIX these
+enable is Vixy's.*
+
+### F42 — The stub↔entry-file cross-check sweep: §11.149(h)'s owed sweep of the authority-inversion class [S–M]
+
+**Why now / why first:** §11.149(h) [observed 2026-08-26]: while flipping §5.27,
+F37 found the expanded entry `INTENT/5.27.md` — the AUTHORITY by the ledger
+header's own rule — still carrying the ORIGINAL refuted root while the derived
+in-file stub carried the correction: for a month the derived view was correct
+and the authority was refuted, in exactly the direction that makes the header
+rule dangerous. That one pair was repaired; *"the class is not repaired …
+Recorded as an owed sweep, not run here."* This task runs the sweep. First in
+the round because every later task reads the ledger this repairs. Harness repo
+only — NO product code, NO data.
+
+**Sources (re-read, never recall):** `INTENT.md` header (authority rule +
+maintenance invariant + tag grammar); `INTENT/11.149.md` (h) (the class
+definition and the §5.27 repair's shape — the precedent for any repair here);
+`INTENT/5.27.md` post-repair (what a repaired pair looks like).
+
+**Scope:**
+1. Enumerate every stub↔entry pair (`INTENT/` holds 172 entry files; each has an
+   in-file stub in §5 or §11). The pair count is stated in the entry — a sweep's
+   denominator is part of its result.
+2. Per pair, cross-check STATUS-BEARING content, not prose detail (the stub is a
+   derived summary; body differences are by design): OPEN/CLOSED/SUSPENDED
+   state, supersession/correction blocks (`[CORRECTION`, `SUPERSEDED`,
+   `REFUTED`, strike-through, dated annotations postdating the pair's split or
+   creation), and citations that route authority ("fix = task Fn", "rides Dn").
+   The check: does either side carry a status change the other lacks?
+3. Classify each divergent pair: **(i) DANGEROUS** — the stub carries a
+   correction the entry file lacks (authority refuted; the §5.27 shape) ⇒
+   REPAIR in place: transcribe the correction into the entry file, strike the
+   superseded text WITH its supersession pointer (maintenance invariant), never
+   delete. **(ii) INVERSE** — the entry file carries status the stub misstates ⇒
+   refresh the stub (it is derived; that is the cheap direction). **(iii)
+   CONFLICT** — the two sides assert incompatible substance and neither is a
+   marked correction ⇒ record with BOTH texts cited, repair nothing, flag for
+   the supervisor.
+4. The method must be stated precisely enough that every "consistent" verdict is
+   a positive map, not absence-of-noticing (what was compared; what was
+   deliberately not compared).
+5. Class closure: nothing structural today prevents a correction landing on one
+   home only. PROPOSE (do not enact) a one-line addition to `INTENT.md`'s
+   maintenance header binding corrections to entry-file-first order; the
+   supervisor ratifies or routes to Vixy at acceptance.
+
+**Boundaries:** no product code, no data, no harness scripts, no §5/§13 row
+STATE changes — a repair transcribes an existing recorded status to its other
+home, it never advances one. Where a divergence suggests a row should close or
+reopen, that is a class-(iii) finding, not an action.
+
+**DoD:** pair count stated; every pair checked with the method recorded;
+divergent pairs enumerated with class + per-pair disposition; class-(i) pairs
+repaired with supersession markers; class-(iii) pairs recorded with both texts;
+the header-rule proposal stated with its argument; §11 entry at the next free
+number + stub — the entry checked against its own stub before delivery (the
+sweep includes its own delivery); code tree untouched
+(`git -C /home/claude/spacecrafter status` clean at close); WIP per §0.6.
+**WIP:** *(empty)*
+
+### F43 — b24_select's four reds adjudicated + the 28-file free-mode-longitude audit (§11.153(o), (j)(3)) [S–M]
+
+**Mandate:** §11.153(o)(3)(4) + (j)(3), owed at F40's acceptance: the b24_select
+4-red adjudication (pre-existing at `7ef11aca` — verified same failures, same
+numbers, pre binary + pre-convention harness) and the 28 unaudited harness
+files that combine `camera action free_mode state on` with `moveto … lon`. Two
+halves, one task: both are the same convention change's harness fallout.
+
+**Sources (re-read, never recall):** `INTENT/11.153.md` (j)(3) + (o);
+`harness/README.md`'s F40 section (the 30-file arithmetic + the two corrected
+precedents, each with its at-the-site arithmetic); `harness/b24_select.py` (the
+four failing gates: ndc 0.6886/0.6918 against a 0.6852 limb, alpha off its
+prediction by 2.342°, the R5 cluster click); §11.106 + §11.118(e) (what
+b24_select's legs assert and why they were built); the §5.49 row — CONSULT,
+never act on it (its own render measurement is owed elsewhere and its
+conclusion is recorded as in-doubt, §11.153(k)).
+
+**Scope:**
+1. **(A) Adjudicate the four reds** on the current binary: per failure,
+   attribute — INSTRUMENT (scene geometry / threshold / prediction arithmetic
+   stale against the harness's own history) vs PRODUCT defect (mint the §5 row,
+   record don't fix) vs UNRESOLVED (name the owed datum). Instrument repairs
+   are in-mandate; any repair must reproduce committed-baseline geometry where
+   geometry was the gate's point, arithmetic at the site (the (j)(2)(3)
+   precedent).
+2. **(B) Audit the 28 files**: per file, the discriminating read — does any
+   gate couple the free-mode observer's longitude to authored content or to a
+   committed baseline number? Classify: UNAFFECTED (no coupling — state why) /
+   AFFECTED-corrected (geometry-preserving re-declaration with its arithmetic,
+   invariance shown) / AFFECTED-stale-baseline (re-baseline with the argument;
+   the old numbers stay citable in git). Resolve README's "the rest are
+   unaudited" note to the audit's outcome.
+3. Launches per §0.5 (temp-HOME farm + md5, `/proc/<pid>/comm` assert,
+   `DISPLAY=:2` + XAUTHORITY export, plain `timeout`).
+
+**Boundaries:** NO product code — this task lives entirely in `claude/harness/`.
+Product defects found = §5 rows + report, never fixes. §5.49 must not be
+"fixed" through a harness edit. The A–D battery only if an edited file is a
+battery member; if run, same-binary phase control FIRST (§11.153(i)).
+
+**DoD:** four reds each attributed with evidence (or the named owed datum);
+b24_select green OR red-with-minted-rows, stated which; 28/28 files classified
+with per-file reasons; corrected files reproduce their intended geometry
+(numbers cited both ways); README updated; §11 entry at the next free number +
+stub; md5 pristine on every launch; code tree clean at close; WIP per §0.6.
+**WIP:** *(empty)*
+
+### F44 — §5.86's owed data: who consumes the scrambled RA/DE, and what the old path answers (record-only) [S]
+
+**Mandate:** the §5.86 row's own owed clause: *"whether any consumer depends on
+today's answer, and what the old path's RA/DE says for the same body — a parity
+target this row does not assume."* The FIX stays with §11.4's closer — the row
+routes it; it is NOT this task's even where it looks decision-free (the
+algebraic inverse already sits written out in `f34_probe_inverse.cpp`).
+
+**Sources (re-read, never recall):** the §5.86 row; `INTENT/11.144.md` (j) (the
+133.9° round-trip measurement + probe); `Camera.hpp:258` caveat +
+`Camera.hpp:264-274` / `Camera.cpp:183-197`; `ModularObject.cpp:19/:47/:115/:152`
+(the cited consumers — re-verify the lines at dispatch, they may have drifted);
+§11.153(o)(7) (`-std=c++20` for any probe rebuild).
+
+**Scope:**
+1. **Consumer census (positive map):** from `observedToBodyLocalPos` +
+   `observedPosToRaDe` UP to every observable channel (script/TCP `get`
+   answers, on-screen UI text, dumps, selection logic, anything else) — each
+   terminal consumer named REACHABLE or UNREACHABLE on the shipped surface,
+   with its route; census method stated (grep basis + call-graph walk,
+   comment-stripped — the F36 lesson: a grep alone measured 2.2× wrong).
+2. **Old-path parity target:** measure old's RA/DE for ≥1 body on a stamped
+   configuration, both paths in ONE launch (the dual dump or `get status` —
+   whichever already carries both; if neither does, SAY so and name what an
+   instrument would need rather than building beyond S-size). Record beside the
+   new path's answer for the same body + scene.
+3. Record on the §5.86 row (annotation; the row stays OPEN) + the §11 entry.
+
+**Boundaries:** record-only for product code — no fix. Measurement per §0.5.
+
+**DoD:** consumer set enumerated positively with reachability verdicts; the
+old-path RA/DE datum recorded with its configuration stamp and stated on the
+row as the parity target; §5.86 annotated, still OPEN; §11 entry at the next
+free number + stub; no product-code change; md5 pristine; WIP per §0.6.
+**WIP:** *(empty)*
 
 ---
 
