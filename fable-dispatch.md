@@ -127,6 +127,40 @@ here"*]. The code repo carried 4 foxy-owned object FILES in claude-owned dirs �
 no blockage there, checked. Recurrence condition recorded: any foreign-account
 commit that creates a NEW fan-out dir re-arms the class; the report-to-Vixy
 route is the standing answer.
+**Round outcome (session 14 close, 2026-08-29):** F42 → §11.156 · F43 →
+§11.157 · F44 → §11.158 · F45 → §11.159 · F46 → §11.160, plus the supervisor
+entry **§11.161** (RA-MODEL propagation + the code's stratigraphy, owner
+testimony mid-round) — five executor tasks + one record entry, all delivered
+AND supervisor-verified same session; round extended 3→5 per the recorded
+plan. **CODE TREE CLEAN THROUGHOUT — the first all-record/instrument round**;
+code `d6aec251` at open and at close. NEW rows: **§5.109** (F43) ·
+**§5.110/§5.111** (F44); F45/F46 minted NOTHING, each restraint argued at the
+criterion. OWED-PAID: §11.149(h)'s sweep (13 one-home corrections, 4
+authority inversions repaired; entry-first write order ratified + enacted);
+§11.153(o)'s audit (30/30 closed, b24_select GREEN, all four reds =
+instrument); §5.86's data (reach = composed-body selection only; parity
+target ≤0.002° for 89/90 behind two numbered §11.4 decisions); §5.88's datum
+(zero pixels ever; +1.05% D11 + 79.3 MB/h when reachable; default = silent);
+§5.89's sweep (150 sites, ONE load-bearing — the fork is one-site, with a
+mid-session reach correction). BONUS: §11.123(o2)'s cadence check DISCHARGED
+(H1 confirmed, cadence = config cap on the current stack). Environment:
+host rebooted 2026-08-27 — display stack REBUILT by F43 and verified against
+recorded values; F40's /tmp binaries gone; §0.5 recipe superseded in place.
+Criterion-integrity instances this round: **3** (F43's litguard
+control-that-could-not-fail replaced; F44's two refuted predictions kept with
+numbers; F45's locale false-absence caught by arithmetic) — the class now
+counts 9 across sessions; the hunting pays. Supervisor-error tally, all
+caught by the defense layers: the "inherited = archaeology" claim (REFUTED by
+owner, kept §11.161(c)); F44's dispatch prompt omitted the artifact-commit
+convention (repaired at acceptance, added to F45/F46 prompts); two
+verification-probe artifacts (trailer format, file count) resolved against my
+own probes and recorded as such. **Next-round queue, in order:** (1)
+b3_ladder's discriminating check (corrected harness vs a `922701c9` build; S);
+(2) the §11.156(g) five cross-entry back-markers (S; markers only, no state
+advance); (3) §5.110's live check (one script; S); (4) the INT-7 stratigraphy
+validation per §11.161(f) (S, git-only); (5) §5.100's one-line fix IF the §3
+authorization lands. DECISIONS_PENDING open set at close: **still EMPTY** —
+the round's Vixy items ride §3 + their rows.
 
 ---
 
@@ -199,13 +233,30 @@ route is the standing answer.
      (GPU-real; the harness default); Vixy's remmina/RDP relay is view-only and its
      CPU is coupled to what WE draw. The "161.3 fps" cadence label is UNATTRIBUTED
      among three clocks that all fail to match it exactly (config `maximum_fps = 144`,
-     `:2` virtual monitor 59.96, panel 164.5) — sharpest hypothesis: the dwell's
+     `:2` virtual monitor 59.96, panel 164.5) — ~~sharpest hypothesis: the dwell's
      "20 s" denominator was nominal and the true cadence is EXACTLY the config cap
      (§11.123(o2), H1; discriminating check owed by the next cadence-touching task:
-     wall-clock-bracketed counter reads). Until settled: trust counter RATIOS and
+     wall-clock-bracketed counter reads). Until settled:~~ **[DISCHARGED 2026-08-29,
+     F45 §11.159(k7), accepted by this item's owner: 4392 frames over a [30.0,
+     30.5] s bracket = [144.0, 146.4] fps, 4× reproduced ⇒ H1 CONFIRMED on the
+     CURRENT (post-reboot, F43-rebuilt) stack — cadence = the config cap. The
+     historical "161.3" label is permanently unattributable: its stack was
+     destroyed by the 2026-08-27 reboot (§11.121(m)'s retroactive shape).]**
+     Standing: trust counter RATIOS and
      in-run A/B only; never absolute fps labels, never cross-session cadence; a
      stack change (compositor, streamer, headless X, screen power state) ⇒ report +
      re-baseline.
+   - **Question routing by stratum (2026-08-29, §11.161(c), owner-stated):**
+     old-behavior intent/expectation questions → the main tester (*"he either
+     knows or tell what he had always expected, both are a resolution"*);
+     Vixy-strata questions (experimentalModule, EntityCore, CoI/big-texture,
+     Vulkan layer, rendering paths) → Vixy's recall. The stratigraphy is
+     §11.161(b).
+   - **Back-marker at the write (2026-08-29, §11.161(g), RA-MODEL E18/E55):** any
+     entry that supersedes/refutes/corrects ANOTHER entry's claim carries the
+     §11.113(p) back-marker at the superseded node IN THE SAME COMMIT — every
+     executor prompt binds this; the §11.156(g) five are the recovery backlog,
+     queued.
 6. Abort-tolerance discipline (the reason this file exists):
    - Commit code + harness at **every green checkpoint** (small commits, normal
      trailer discipline: code first, harness carries `Code: <branch> @ <short-sha>`).
@@ -279,11 +330,13 @@ F22 §11.130 · F23 §11.131 · F24 §11.132 · F25 §11.133 · F26 §11.134 · 
 F28 §11.138 · F29 §11.139 · F30 §11.140 · F31 §11.141 · F32 §11.142 ·
 F33 §11.143 · F34 §11.144 · F35 §11.145 · F36 §11.146 · F37 §11.149 ·
 F38 §11.150 · F39 §11.152 · F40 §11.153 · F41 §11.155 (F37–F41 archived,
-pass 7). Live sections: **F42–F44** (session 14, the session-13 queue — below).
-Queued after them: §5.88's owed draw-cost datum, S; §5.89's owed assert sweep,
-S (both = this round's extension candidates, minted on session health); §5.100's
-one-line fix once its §3 authorization question is answered — every FIX these
-enable is Vixy's.*
+pass 7) · F42 §11.156 · F43 §11.157 · F44 §11.158 · F45 §11.159 ·
+F46 §11.160 (session 14 — **all five DELIVERED and accepted**; sections below
+await the next archival pass). Queued for the NEXT round, in order (per the
+session-14 round outcome): b3_ladder's `922701c9` check, S · the §11.156(g)
+five back-markers, S · §5.110's live check, S · the §11.161(f) stratigraphy
+validation, S · §5.100's fix IF authorized — to be minted at their dispatch
+per §0b.2.*
 
 ### F42 — The stub↔entry-file cross-check sweep: §11.149(h)'s owed sweep of the authority-inversion class [S–M]
 
@@ -711,6 +764,62 @@ control from the guard's own function — instrument-grade.)*
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-14 decision items (2026-08-29, F42–F46 / §11.156–161):**
+  - **§5.109's LAYER half** — `moveto … alt` counts altitude from the
+    DISPLAY-scaled datum (measured 7 legs, f43_ramp.py; R7 separates three
+    conventions). Should a commanded altitude stand above the DRAWN surface (as
+    it does — D21's grounded-children rationale would suggest it) or the
+    physical one? D21 is silent on the observer (the §11.149(c6) shape). The
+    TIMING half (snapped once, never re-converged) is a defect either way.
+  - **§11.4's calibration is now TWO NUMBERED DECISIONS** (F44, §11.158(f)):
+    (1) the RA zero point — a constant **−90.0003°**, epoch-independent, with
+    declination already matched to 0.0036°; (2) the ORIGIN — old is
+    observer-centred (its own doc says so), a view-matrix inverse is
+    body-centred; user-visible ~1° on the Moon, invisible elsewhere. With both
+    settled + §5.86's fix, new == old to ≤0.002° for 89/90 bodies. RIDER per
+    §11.161(c): the origin sub-question ("what does a working user expect?") is
+    TESTER-routable — your call whether it joins the final pass.
+  - **§5.89's fork is a ONE-SITE decision** (F46: 150 asserts, exactly one
+    load-bearing — a project-wide assert policy would re-solve 149
+    non-problems), WITH a reach correction: the guard runs twice per startup
+    AND from `configuration action load` mid-session ⇒ a refuse-to-start
+    repair misses the live route. D15(a)'s boundary intact (EQUATORIAL the only
+    defensible named default; VIEW_HORIZON stays config vocabulary).
+  - **§5.88's fork datum** (F45 §11.159(i)): the run-time line names the
+    symptom, never the file — of the three contracts only *caller checks*
+    holds both the file name and the config key. Cost when reachable:
+    +1.05% of D11 + 79.3 MB/hour on two flushed streams; zero pixels ever
+    (the array never reaches the draw path). Default launch: no cost, no
+    report.
+  - **§5.90 sharpened, questions unchanged**: the mismatch is a NAME mismatch,
+    not an incompatible table (836 distinct spInt values over all 3215 named
+    stars, none reaching the present table's 4122) — the data root serves the
+    file, confirmed behaviourally.
+- **Session-14 veto points (implemented-and-live, each cheap to reverse;
+  silence = endorsed):** (1) **§11.156(f) entry-first write order** ratified +
+  enacted in the INTENT.md header (one line to reverse; generator RA-MODEL
+  E55/E48 per §11.161); (2) **F45's cadence discharge** — H1 confirmed on the
+  current stack, the historical "161.3" reclassified permanently
+  unattributable; (3) **the fix-shape composition** (§11.161(e)): as-if RA
+  restructuring sanctioned for new-path/seam code, old path keeps §11.52(b)
+  precedence during parity — one line reverses the composition; (4) the two
+  RA protocol lines (§0.5 routing-by-stratum; back-marker-at-the-write).
+- **Session-14 offers**: a REPROJECTION DRAFT of `.claude/agents/opus-xhigh.md`
+  (your file; RA-MODEL names the per-dispatch supersession block as manual
+  resync at the most-traversed crossing) — on request.
+- **Session-14 awareness, no action needed**: §5.110 (six `#selected_*`
+  answer uninitialized-singleton constants — 1.0 AU, mag −10 — for a composed
+  selection; attributed by reading, live check owed) · §5.111 (the new path's
+  info strings carry 0 `_()` vs old's 12 — measured in a French session) ·
+  Eris: the two trees place it 1.198° apart (§11.3 class, not chased) ·
+  b3_ladder is deliberately RED (+1.4–1.6% unattributed drift, discriminating
+  check queued) · screenshot A/A floor on this stack: 374 px / 3-of-255 ·
+  `flag planets off` does not remove the reference body from the frame
+  (measured, unattributed, §11.157(g)).
+- **STILL OPEN from session 13**: the §5.100/§5.101 authorization question
+  (asked in-conversation 2026-08-26, unanswered) · A44 (ring shadow caster:
+  D21 vs the 2026-07-18 extent contract).
 
 - **Session-13 decision items (2026-08-26, F37–F40 / §11.149–§11.153):**
   - **§5.100/§5.101 authorization question (ASKED in-conversation, unanswered at
