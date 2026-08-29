@@ -507,6 +507,29 @@ FINDING with both texts + a proposed disposition, ENACTED NOWHERE** (§11.165(d)
 no state word touched anywhere. Two audits NAMED NOT RUN: the §5-side twin, and
 the multi-claim case a per-pair test cannot see. Code never left `d6aec251`;
 both trees clean at close.)*
+*(ACCEPTED by supervisor [fable 2026-08-29]: §11.165 read in full; commits/authors/scope
+checked (`0477c59 → fd76dc7`, INTENT tree only + WIP, code clean at `d6aec251`); all five
+markers verified at the ledger by diff (correct §11.99 form, only-home statements on the
+three archived-in-place targets, the (g) count-correction carrying its own same-commit
+back-marker); member 4's inversion evidence verified at §11.107(c) — the 2026-07-25
+supervision annotation IS the marker, and the chronology argument holds. Scan re-run from
+the committed instrument: flagged output reproduced LINE-FOR-LINE; one raw-line delta
+(82→83) traced to the (g)-marker itself (`11.156.md:92`, written after the final scan in
+the same delivery commit — a compliant marker, partition untouched) ⇒ the NEXT RUNNER's
+baseline is **83/116/80 on `fd76dc7`**, partition 20/24/13/3/4 unchanged. Judgment calls
+ENDORSED with their arguments: the direction-inversion correction (chronology-forced,
+checkable without reading either claim — the round's criterion-integrity instance:
+the scan cannot distinguish its quarry from its own success without reading); the
+case-insensitive marker reader (forced by F48's measured lowercase miss); the kept I2
+flag (editing evidence to quiet a filter is the wrong direction, §11.156(e) precedent);
+the untouched retired index lines (byte-exact snapshots, not a second live home). TWO
+SUPERVISOR ENACTMENTS at this acceptance, each a veto point: (1) **§11.165(d)'s §11.122
+disposition ENACTED** — entry annotated at (i) + header, stub struck with pointer, both
+homes advanced together (pair-check diff EMPTY); grounds: the flip follows from F17's
+already-accepted measurement, no product semantics; (2) **the scan instrument COMMITTED**
+byte-exact as `intent_backmarker_scan.py` (md5 `55e7b4bf` = the file that ran; top level
+per the §11.156(h) precedent) — the (c) partition becomes machine-re-derivable. The two
+named-not-run audits (§5-side twin; multi-claim) join the queue notes.)*
 
 ### F50 — §5.110's owed live reading: the six `#selected_*` on a real composed-body selection (record-only) [S]
 
