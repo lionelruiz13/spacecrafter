@@ -186,6 +186,29 @@ def chromaticity(png):
             "R_over_B": round(r / b, 4), "G_over_B": round(g / b, 4), "n": int(m.sum())}
 
 
+def gate_margins():
+    """WHAT THE EPOCH DOES TO A GATE, taken from F48's own committed arms
+    rather than re-run: b3_ladder's `site_luma >= 30` per leg, July vs today.
+    The ratio is not one number - it runs 0.54 to 0.14 ACROSS THE DISC, so a
+    photometric gate's exposure depends on WHERE on the body it reads."""
+    arms = json.loads((A / "f48/f48_adjudication.json").read_text())["arms"]
+    j = arms["F1P2_R6_2026-07-25"]["site_luma_wide"]
+    t = arms["F48_armA_2026-08-29_fa00dead"]["site_luma_wide"]
+    legs = ["lift20", "b20", "b30", "b45", "b90", "b250"]
+    off = {"lift20": -400, "b20": -250, "b30": -160, "b45": -40, "b90": 140, "b250": 530}
+    return {"gate": "b3_ladder.py:932 `site_luma < 30` => FAIL",
+            "per_leg": {k: {"lateral_offset_km": off[k], "july": j[k], "today": t[k],
+                            "ratio": round(t[k] / j[k], 4),
+                            "margin_to_gate_today": round(t[k] / 30.0, 3)}
+                        for k in legs},
+            "centre_luma": {"july": arms["F1P2_R6_2026-07-25"]["centre_luma"],
+                            "today": arms["F48_armA_2026-08-29_fa00dead"]["centre_luma"]},
+            "reading": "the ratio falls monotonically with the leg's lateral offset "
+                       "toward the terminator (0.537 at -400 km to 0.140 at +530 km), "
+                       "and the profile's PEAK moved from b30 (-160 km) to lift20 "
+                       "(-400 km): the change is not a scale factor on the frame"}
+
+
 def main():
     res = json.loads((DWELL / "f51_dwell.json").read_text())
     legs = {l["tag"]: l for l in res["legs"]}
@@ -213,6 +236,7 @@ def main():
             "pair_july_vs_oldpath": D.pair(JULY, DWELL / "frames/old_a.png"),
             "pair_newpath_vs_oldpath": D.pair(TODAY_NEW, DWELL / "frames/old_a.png")},
         "P2_registration_control": registration(JULY, TODAY_NEW),
+        "P2_gate_margins_from_f48_arms": gate_margins(),
         "P3_registration_control_oldpath": registration(JULY, DWELL / "frames/old_a.png"),
         "chromaticity": [chromaticity(p) for p in
                          (JULY, TODAY_NEW, DWELL / "frames/old_a.png",

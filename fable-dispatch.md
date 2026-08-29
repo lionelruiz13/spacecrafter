@@ -712,6 +712,17 @@ epochs. "Upload never lands" REFUTED on four channels (registered r_hf 0.619
 collapsing to |r|<0.09 at 8 px shift; chromaticity R/B 1.0278 vs 1.0241;
 old-path witness; the source read). NEW: a dark-speckle class covering 20.5 %
 of the disc that July has none of. NEXT: (C) the census, then the entry.)*
+*(2026-08-29 CP3a: (C) part 1 DONE — `f51_census.py --driver` re-derives F48's
+partition and CROSS-CHECKS it: 1721 rows in common, **0 disagreeing, 0
+missing**, +6 new (F48's own 4, F50's, mine). Current denominator **1727** =
+1639 old · **86** new (80 + the 6) · **2 llvmpipe/CPU** (Mesa 25.2.8, F17's
+TSan smoke + F30's lvp leg) — which accounts for the 2 rows §11.164(d)'s
+"1639/80 over 1721" leaves unexplained; annotation owed at (d) + its stub.
+Boundary reproduced exactly: (2026-08-23 08:44, 2026-08-26 11:06]. Per-dir
+epoch map: 263 dirs, 252 pre-epoch, 8 post (f38/f39/f40/f41/f45/f48/f50/f51),
+3 mixed/other. Gate denominator: 283 tracked non-artifact harness files → 59
+read pixels → 46 compare a photometric quantity to a number. NEXT: per-member
+verdicts, README note, entry.)*
 
 ---
 

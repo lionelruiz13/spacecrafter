@@ -1,0 +1,345 @@
+{
+ "tracked_non_artifact_harness_files": 283,
+ "read_pixels": [
+  "harness/ab_orientation.py",
+  "harness/b12_limb.py",
+  "harness/b12_rare.py",
+  "harness/b17_screen.py",
+  "harness/b18_analyze.py",
+  "harness/b20d_anchored_draw.py",
+  "harness/b22_live_analyze.py",
+  "harness/b23_grid.py",
+  "harness/b24_screen.py",
+  "harness/b24_select.py",
+  "harness/b26_analyze.py",
+  "harness/b29_screen.py",
+  "harness/b39_hidden.py",
+  "harness/b39_scenes.py",
+  "harness/b39_star.py",
+  "harness/b3_earth_ab.py",
+  "harness/b3_ladder.py",
+  "harness/b4_anchors.py",
+  "harness/b5_drawhalf.py",
+  "harness/b5_ladder.py",
+  "harness/b5_oort.py",
+  "harness/f12_b27_split.py",
+  "harness/f12_b33_heading.py",
+  "harness/f14_mercury.py",
+  "harness/f14_meridian.py",
+  "harness/f14_placeholder.py",
+  "harness/f14_predict.py",
+  "harness/f15_persist.py",
+  "harness/f18_disc.py",
+  "harness/f18_gate.py",
+  "harness/f18_level.py",
+  "harness/f20_session.py",
+  "harness/f21_s563.py",
+  "harness/f21_s563b.py",
+  "harness/f21_s563c.py",
+  "harness/f23_b33_control.py",
+  "harness/f24_b34_seams.py",
+  "harness/f25_ramp.py",
+  "harness/f27_reply.py",
+  "harness/f29_compare.py",
+  "harness/f29_probe.py",
+  "harness/f29_upchain.py",
+  "harness/f32_object_leak.py",
+  "harness/f33_field.py",
+  "harness/f33_transitions.py",
+  "harness/f34_convention.py",
+  "harness/f38_analyze.py",
+  "harness/f39_d21.py",
+  "harness/f40_cmp.py",
+  "harness/f40_env.py",
+  "harness/f40_inverse.py",
+  "harness/f43_litguard.py",
+  "harness/f4_keyprobe.py",
+  "harness/f51_adjudicate.py",
+  "harness/f51_disc.py",
+  "harness/f51_dwell.py",
+  "harness/s526_heading.py",
+  "harness/s526_ref.py",
+  "harness/src/b39_probe_orbit.py"
+ ],
+ "read_pixels_and_compare_to_a_number": {
+  "harness/ab_orientation.py": [
+   "30: statistic  = px>8 (pixels differing by more than 8/255 in any channel) - the"
+  ],
+  "harness/b12_limb.py": [
+   "33: curve (wrong law / double-counted texture), a centre ratio != 1 (the parity",
+   "158: m = (rr < 0.97) & (old.max(axis=2) > 8)"
+  ],
+  "harness/b20d_anchored_draw.py": [
+   "128: notblack = int((n1.max(axis=2) > 16).sum())",
+   "199: check(f\"{tag}_notblack\", q[\"notblack\"] > 0, f\"lit px={q['notblack']}\")"
+  ],
+  "harness/b22_live_analyze.py": [
+   "55: def full_px32(a, b): return int((np.abs(img(a)-img(b)) > 32).any(axis=2).sum())"
+  ],
+  "harness/b23_grid.py": [
+   "272: check(gneg1[\"showTropics\"] is False and bogus_px == 0,",
+   "274: f\"screen px>0={bogus_px}\")",
+   "275: check(gneg2[\"showTropics\"] is True and real_px > 0,",
+   "298: check(g[\"tropicCount\"] == 0, f\"{name}: tropicCount=0 (no tropic geometry baked)\")",
+   "299: check(g[\"polarCount\"] > 0, f\"{name}: polarCount={g['polarCount']} (polar circles \""
+  ],
+  "harness/b24_screen.py": [
+   "280: fail(f\"A3 shadow: cast-shadow darkened px={dmax} (expected >2000)\")"
+  ],
+  "harness/b24_select.py": [
+   "527: f\"{int((A.max(axis=2) > 16).sum())} lit px\")"
+  ],
+  "harness/b26_analyze.py": [
+   "14: * discriminator = px>32 (count of pixels with any channel |delta| > 32)."
+  ],
+  "harness/b39_hidden.py": [
+   "135: return int((img(tag).max(axis=2) > 8).sum())",
+   "204: check(ctl_px > 200, f\"P2 control: an ARMED orbit line on a SHOWN body is \"",
+   "205: f\"{ctl_px} px > 200 (the instrument sees orbit lines; the \"",
+   "384: check(p_ctl_px > 20, f\"P4 control: the pointer on a SHOWN Io is {p_ctl_px} px \""
+  ],
+  "harness/b39_scenes.py": [
+   "147: nb = int((img(\"w17_floor_a\").max(axis=2) > 8).sum())"
+  ],
+  "harness/b39_star.py": [
+   "68: return int((img(tag).max(axis=2) > 16).sum())"
+  ],
+  "harness/b3_earth_ab.py": [
+   "130: rep[\"views\"][k] = {\"lit_px_gt32\": int((lum > 32).sum()),",
+   "131: \"lit_px_gt8\": int((lum > 8).sum()),",
+   "133: print(f\"[{state}] {k:8s} lit>32 {rep['views'][k]['lit_px_gt32']:8d} \"",
+   "134: f\"lit>8 {rep['views'][k]['lit_px_gt8']:8d} mean {rep['views'][k]['total_luma']:7.2f}\","
+  ],
+  "harness/b3_ladder.py": [
+   "853: lit = int((base[\"wide\"].max(axis=2) > 32).sum())",
+   "859: f\"{lit} px > 32 of {RENDER*RENDER} (centre luma {centre.mean():.1f}); \"",
+   "862: fail(f\"P1 surface regime but the parent IS drawn ({lit} px > 32, centre \"",
+   "865: elif centre.mean() > 30:",
+   "867: f\"({lit} px > 32 in frame)\")",
+   "932: if regime != \"surface\" and L[\"wide\"][\"site_luma\"] < 30:",
+   "934: f\"{L['wide']['site_luma']:.1f} < 30) - the ladder needs a lit site\")",
+   "979: res.append((d > 40, f\"{tag}: shadow witness {d} dark px in the wide box \""
+  ],
+  "harness/b4_anchors.py": [
+   "276: check(anc[\"count\"] == 14, \"14 anchors declared (10 shipped + 4 B4), got %d\" % anc[\"count\"],",
+   "305: \"floor drift is LINEAR in the extraction count: 4 switches give %.2e rad <= 4 x F (%.2e)\"",
+   "430: lit[tag] = int((a.max(axis=2) > 16).sum())",
+   "432: \"%s: the anchored camera RENDERS - %d lit px (>16/255), floor %d\"",
+   "467: check(sep_px > 4 * rpx,"
+  ],
+  "harness/b5_drawhalf.py": [
+   "116: notblack = int((n1.max(axis=2) > 16).sum())   # screen-fader guard",
+   "168: check(\"gal_notblack\", gnb > 0, f\"lit px={gnb}\")",
+   "195: check(f\"{tag}_notblack\", qnb > 0, f\"lit px={qnb}\")"
+  ],
+  "harness/b5_ladder.py": [
+   "70: \"\"\"per-channel px>32 counts (R,G,B) - the 'count channels' the spec asks.\"\"\"",
+   "191: return (dB > 32) & (on[:, :, 2] > on[:, :, 0])    # blue-dominant pixels",
+   "301: f\"point-delta px>32={rec['oldcloud_delta_px']} max={rec['oldcloud_delta_max']}\", flush=True)"
+  ],
+  "harness/b5_oort.py": [
+   "66: return int((img(name).max(axis=2) > 16).sum())",
+   "121: check(\"low_witness\", nwit > 0 and owit > 0, f\"witness lit px new/old={nwit}/{owit} (bodies drawn without the oort)\")",
+   "130: check(\"mid_witness\", nwit > 0, f\"witness lit px (oort OFF)={nwit} (bodies drawn without the oort)\")"
+  ],
+  "harness/f12_b27_split.py": [
+   "371: worst = max(worst, int((np.abs(a - b).max(axis=2) > 8).sum()))",
+   "576: cd = int((np.abs(img(ca) - img(pa[0])).max(axis=2) > 8).sum())"
+  ],
+  "harness/f12_b33_heading.py": [
+   "70: return int((np.abs(ia - ib).max(axis=2) > 32).sum())",
+   "163: return int((np.abs(ia - ib).max(axis=2) > 32).sum())",
+   "306: if p[\"nojump_px\"] < 500:",
+   "308: f\"readout to both paths - moves the drawn view by {p['nojump_px']} px>32 \"",
+   "311: fail(f\"R1b: the no-op heading command moved the drawn view by {p['nojump_px']} px>32\")",
+   "342: if q[\"nojump_px\"] > 10 * max(p[\"nojump_px\"], 1):",
+   "344: f\"view - {q['nojump_px']} px>32 against the fixed binary's {p['nojump_px']} - \"",
+   "348: f\"{q['nojump_px']} px>32 vs {p['nojump_px']} - the jump leg is not \""
+  ],
+  "harness/f14_mercury.py": [
+   "156: if results[\"pre_px\"] < 1000:",
+   "157: fail(f\"pre-fix leg moved only {results['pre_px']} px>32 - the scene \"",
+   "160: fail(f\"fixed leg moved {results['post_px']} px>32 against the pre-fix \""
+  ],
+  "harness/f14_meridian.py": [
+   "305: lit = int((np.asarray(Image.open(png).convert(\"L\")) > 40).sum())",
+   "306: if lit < 20000:",
+   "307: fail(f\"{tag}/{moon}: only {lit} px > 40 in the capture - the body did \"",
+   "435: res[\"lit_px\"] = int(((img > 8) & m).sum())"
+  ],
+  "harness/f14_placeholder.py": [
+   "78: lit = int((np.asarray(Image.open(png).convert(\"L\")) > 8).sum())",
+   "121: lit = int((pa > 8).sum())",
+   "124: f\"pre-vs-post px>32 {d32}, px>8 {d8} | lit px {lit} | jd {chosen[moon]:.5f}\")"
+  ],
+  "harness/f14_predict.py": [
+   "146: return float((aa[use] < 0.5*f[\"tex\"].max()).mean())",
+   "215: fails.append(f\"{moon}: only {px8} px>8 changed between the binaries \""
+  ],
+  "harness/f15_persist.py": [
+   "555: if counter < 0.5 * nfoot:"
+  ],
+  "harness/f18_level.py": [
+   "95: lit = m & (a.sum(axis=2) > 12)      # drop the unlit hemisphere"
+  ],
+  "harness/f20_session.py": [
+   "459: print(f\"   restored vs saved: {d_px} px>8   (A/A floor for this scene: {floor} px>8)\",",
+   "463: if floor < 0 or d_px < 0:",
+   "466: fail(f\"T1: the restored screen differs from the saved one by {d_px} px>8, above \"",
+   "470: f\"({d_px} <= {floor} px>8, same binary both sides)\")"
+  ],
+  "harness/f21_s563.py": [
+   "6: differing pixels, lit>32 441 saved vs 625 restored, no displacement structure).",
+   "27: and the lit>32 counts on both sides - the numbers \u00a75.63 itself quotes, so the",
+   "150: \"\"\"b against a: px>8, px>32, the signed mean over the differing pixels, and",
+   "151: the lit>32 count on each side - \u00a75.63's own quantities.\"\"\"",
+   "156: lit_a = int((a.max(axis=2) > 32).sum())",
+   "157: lit_b = int((b.max(axis=2) > 32).sum())",
+   "160: \"px32\": int((np.abs(d).max(axis=2) > 32).sum()),",
+   "215: f\"{'signed mean':>12} {'lit saved':>10} {'lit rest':>9}\", flush=True)",
+   "222: f\"{s['signed_mean']:>12.3f} {s['lit_a']:>10} {s['lit_b']:>9}\", flush=True)"
+  ],
+  "harness/f21_s563b.py": [
+   "105: f\"{'lit saved':>10} {'lit rest':>9}\", flush=True)",
+   "112: f\"{s['lit_a']:>10} {s['lit_b']:>9}\", flush=True)"
+  ],
+  "harness/f21_s563c.py": [
+   "102: f\"{'lit saved':>10} {'lit rest':>9}\", flush=True)",
+   "109: f\"{s['lit_a']:>10} {s['lit_b']:>9}\", flush=True)"
+  ],
+  "harness/f23_b33_control.py": [
+   "87: return int((np.abs(ia - ib).max(axis=2) > 8).sum())",
+   "94: return int((np.asarray(Image.open(p).convert(\"RGB\")).max(axis=2) > 8).sum())",
+   "380: if P[\"A0_lit\"] < 20000 or P[\"A1_lit\"] < 20000:",
+   "423: f\"{a1['new']:.3f}) and moves the composed screen {P['A3_px']} px>8 \"",
+   "427: f\"{a3['new']:.3f} m and the screen {P['A3_px']} px>8 \"",
+   "464: f\"same sky, and the composed screen moved {L['S2_screen_px']} px>8 \"",
+   "480: if Q[\"A3_px\"] > 10 * max(P[\"A3_px\"], 1):",
+   "483: f\"moving the composed screen {Q['A3_px']} px>8 against the fixed \"",
+   "486: fail(f\"RED: the no-op moved the pre-fix screen only {Q['A3_px']} px>8 \"",
+   "510: if D[\"lit\"] < 100000:"
+  ],
+  "harness/f24_b34_seams.py": [
+   "85: return int((np.abs(ia - ib).max(axis=2) > 8).sum())",
+   "91: return int((np.asarray(Image.open(p).convert(\"RGB\")).max(axis=2) > 8).sum())",
+   "485: if post[\"pre_lit\"] < 1000 or post[\"post_lit\"] < 1000:",
+   "489: elif post[\"px_clear\"] <= 0:",
+   "492: ok(f\"CLEAR: the composed screen moved {post['px_clear']} px>8 \"",
+   "539: f\"({pre['px_clear']} px>8) against {post['px_clear']} delivered\")",
+   "541: fail(f\"CLEAR RED: pre-fix screen moved {pre['px_clear']} px>8, \"",
+   "555: if post[\"pre_count\"].get(\"Earth\") == 0 and post.get(\"earth_count\", 0) >= 1:",
+   "561: if post.get(\"only_count\", 0) >= 1:",
+   "594: if (pre.get(\"only_count\") or 0) == 0 and (pre.get(\"earth_count\") or 0) == 0:",
+   "655: if L[\"px_AB\"] <= 0:",
+   "658: ok(f\"POSITION[{i}]: the move away moved the screen {L['px_AB']} px>8\")",
+   "668: f\"({L['px_AC']} px>8 from the bookmark, against {L['px_AB']} for \"",
+   "671: fail(f\"POSITION[{i}]: the screen did not return ({L['px_AC']} px>8 \"",
+   "703: f\"it ({L['px_BC']} px>8 from it, {L['px_AC']} px>8 from the \"",
+   "707: f\"({L['px_AC']} px>8 from the bookmark, {L['px_BC']} from the \""
+  ],
+  "harness/f25_ramp.py": [
+   "192: return int((np.abs(ia - ib).max(axis=2) > 32).sum())",
+   "196: return int((np.asarray(Image.open(p).convert(\"RGB\")).max(axis=2) > 8).sum())",
+   "478: f\"across the hold OLD {old_px} px>32, NEW {new_px} px>32 ; \"",
+   "480: check(\"screen_frame_carries_content\", lit_new > 500 and lit_old > 500,",
+   "484: check(\"screen_positive_control\", old_px > 0.5 * lit_old,",
+   "485: f\"the OLD phase moved {old_px} px>32 against its own {lit_old} lit px \u2014 the key \"",
+   "493: check(\"screen_new_still\", new_px < 0.1 * lit_new,",
+   "494: f\"pre-fix: the DRAWN frame does not move ({new_px} px>32 of {lit_new} lit) while \"",
+   "497: check(\"screen_paths_diverge\", cross1 > 0.5 * lit_new,",
+   "501: check(\"screen_new_moves\", new_px > 0.5 * lit_new,",
+   "502: f\"delivered: the DRAWN frame moved {new_px} px>32 against its own {lit_new} lit \""
+  ],
+  "harness/f27_reply.py": [
+   "413: six[\"select_px8\"] = int((np.abs(a - b).max(axis=2) > 8).sum())",
+   "414: six[\"lit0\"] = int((np.asarray(Image.open(shot0).convert(\"RGB\")).max(axis=2) > 8).sum())",
+   "673: elif six.get(\"select_px8\", 0) < 1000:",
+   "674: fail(f\"A/six: `select` moved {six.get('select_px8')} px>8\")",
+   "676: ok(f\"A/six: select ({six['select_px8']} px>8) + screenshot \""
+  ],
+  "harness/f29_compare.py": [
+   "123: ch = np.abs(b - a).max(axis=2) > 12"
+  ],
+  "harness/f29_probe.py": [
+   "30: m = a.max(axis=2) > 16"
+  ],
+  "harness/f29_upchain.py": [
+   "294: changed = np.abs(b - a).max(axis=2) > 12",
+   "301: \"\"\"The trail HEAD is its brightest end (vert shader: alpha falls 1 -> 0.1",
+   "331: out = {\"aa_floor_px\": int((aa > 12).sum()), \"aa_max\": int(aa.max()),"
+  ],
+  "harness/f32_object_leak.py": [
+   "497: lit = int((A.max(axis=2) > 16).sum())",
+   "498: row = {\"shot\": name, \"lit_px\": lit, \"px_gt0\": int((d > 0).sum()),",
+   "499: \"px_gt8\": int((d > 8).sum()), \"max\": int(d.max())}",
+   "501: good = row[\"px_gt0\"] == 0 if floor is None else row[\"px_gt0\"] <= floor",
+   "503: f\"render {name}: px>0 {row['px_gt0']} px>8 {row['px_gt8']} \""
+  ],
+  "harness/f33_field.py": [
+   "118: f\"{int((np.abs(A-B) > 32).sum())} px>32; lit {int((A>16).sum())} -> {int((B>16).sum())}\")"
+  ],
+  "harness/f33_transitions.py": [
+   "452: \"px_gt8_off_vs_on\": int((np.abs(A - B) > 8).sum()),",
+   "453: \"px_gt8_off_vs_off\": int((np.abs(A - C) > 8).sum()),",
+   "454: \"lit_off\": int((A > 16).sum()), \"lit_on\": int((B > 16).sum()),",
+   "458: > 20 * max(1, NOTES[\"freeModeScreen\"][\"px_gt8_off_vs_off\"]),"
+  ],
+  "harness/f34_convention.py": [
+   "334: chk(px_aa == 0, \"A/A control: no command, the composed screen is identical\",",
+   "335: f\"{px_aa} px>8\")",
+   "395: f\"{px_on} px>8 against the A/A control's {px_aa}\")",
+   "593: chk(px_ab > px_ctl and px_ctl == 0 and d_pair < 1e-11,",
+   "595: f\"free->anchored {px_ab} px>8 ; free->free (A/A) {px_ctl} px>8 ; \"",
+   "662: chk(px_s > 1000 and px_settled < px_s / 100 and px_s_ctl < px_s / 100,",
+   "665: f\"anchored->free {px_s} px>8 ; the round trip back {px_s_ctl} px>8, \"",
+   "666: f\"the adjacent A/A floor {px_settled} px>8 \u2014 both {px_s/max(px_s_ctl,1):.0f}x \""
+  ],
+  "harness/f39_d21.py": [
+   "316: return int((a.max(axis=2) > 24).sum())"
+  ],
+  "harness/f40_env.py": [
+   "115: print(f\"  {name}: atm={atm} land={land}  px_ab={cells[name]['px_ab']:>9} \"",
+   "116: f\"floor={floor:>7} pair={cells[name]['px_pair']:>7} \""
+  ],
+  "harness/f40_inverse.py": [
+   "272: chk(px_aa == 0, \"L0 A/A control: no command, the screen is identical\", f\"{px_aa} px>8\")",
+   "304: f\"{L2['px']} px>8 against the A/A control's {px_aa}\")",
+   "307: f\"{L2['px']} px>8 against the A/A control's {px_aa}\")",
+   "468: chk(px_ab == px_ctl == 0 and d_pair < 1e-11,",
+   "470: f\"free->anchored {px_ab} px>8 ; free->free (A/A) {px_ctl} px>8 ; \"",
+   "473: chk(px_ab > px_ctl and px_ctl == 0 and d_pair < 1e-11,",
+   "475: f\"free->anchored {px_ab} px>8 ; free->free (A/A) {px_ctl} px>8 ; \"",
+   "530: f\"{L7['off']['px_ab']} px>8 against the adjacent floor \"",
+   "531: f\"{L7['off']['px_floor']} px>8 (round trip {L7['off']['px_pair']})\")",
+   "533: \"the observer\", f\"{L7['on']['px_ab']} px>8 while the observer moves \"",
+   "538: and L7[\"on\"][\"px_ab\"] > 1000,",
+   "541: f\"{L7['on']['chord_km']:.1f} km ; flags ON {L7['on']['px_ab']} px>8 \"",
+   "542: f\"(floor {L7['on']['px_floor']}) ; flags OFF {L7['off']['px_ab']} px>8 \"",
+   "572: f\"{L8['px_ab']} px>8 against the adjacent floor {px_mfloor}\")",
+   "576: f\"{L8['px_ab']} px>8 against the adjacent floor {px_mfloor} ; \""
+  ],
+  "harness/f43_litguard.py": [
+   "7: `if P[\"A0_lit\"] < 20000: fail(\"the ladder's frames are EMPTY ...\")` and f24's",
+   "97: lit = int((lum > 8).sum())",
+   "99: rep[\"lit_px_gt32\"] = int((lum > 32).sum())",
+   "101: print(f\"lit px>8 = {lit} of {lum.size} (px>32 = {rep['lit_px_gt32']})\", flush=True)",
+   "103: ok(f\"f23_b33_control's lit guard holds at the POST-F40 place: {lit} px>8 \"",
+   "107: fail(f\"f23_b33_control's lit guard would FIRE: {lit} px>8 < {F23_MIN}\")",
+   "109: ok(f\"f24_b34_seams' lit guard holds: {lit} px>8 >= its {F24_MIN} threshold\")",
+   "111: fail(f\"f24_b34_seams' lit guard would FIRE: {lit} px>8 < {F24_MIN}\")",
+   "128: ok(f\"control: {lit} px>8 is the GLOBE - predicted disc area \"",
+   "132: fail(f\"control: {lit} px>8 against a predicted globe area of \"",
+   "140: rep[\"planets_off_px_gt8\"] = int((shot(s, out, \"lit_planets_off\").max(axis=2) > 8).sum())",
+   "141: print(f\"note: `flag planets off` leaves {rep['planets_off_px_gt8']} px>8 \""
+  ],
+  "harness/f51_adjudicate.py": [
+   "191: rather than re-run: b3_ladder's `site_luma >= 30` per leg, July vs today.",
+   "199: return {\"gate\": \"b3_ladder.py:932 `site_luma < 30` => FAIL\","
+  ],
+  "harness/src/b39_probe_orbit.py": [
+   "22: x = np.abs(im(a) - im(b)).max(axis=2); return int((x > 32).sum()), int(x.max())"
+  ]
+ },
+ "n_read_pixels": 59,
+ "n_with_numeric_comparison": 46
+}

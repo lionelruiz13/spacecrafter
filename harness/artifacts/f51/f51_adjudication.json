@@ -237,6 +237,58 @@
    "128": -0.0006
   }
  },
+ "P2_gate_margins_from_f48_arms": {
+  "gate": "b3_ladder.py:932 `site_luma < 30` => FAIL",
+  "per_leg": {
+   "lift20": {
+    "lateral_offset_km": -400,
+    "july": 192.13,
+    "today": 103.21,
+    "ratio": 0.5372,
+    "margin_to_gate_today": 3.44
+   },
+   "b20": {
+    "lateral_offset_km": -250,
+    "july": 194.36,
+    "today": 90.27,
+    "ratio": 0.4644,
+    "margin_to_gate_today": 3.009
+   },
+   "b30": {
+    "lateral_offset_km": -160,
+    "july": 202.43,
+    "today": 87.01,
+    "ratio": 0.4298,
+    "margin_to_gate_today": 2.9
+   },
+   "b45": {
+    "lateral_offset_km": -40,
+    "july": 186.16,
+    "today": 71.14,
+    "ratio": 0.3821,
+    "margin_to_gate_today": 2.371
+   },
+   "b90": {
+    "lateral_offset_km": 140,
+    "july": 171.96,
+    "today": 52.47,
+    "ratio": 0.3051,
+    "margin_to_gate_today": 1.749
+   },
+   "b250": {
+    "lateral_offset_km": 530,
+    "july": 149.93,
+    "today": 20.97,
+    "ratio": 0.1399,
+    "margin_to_gate_today": 0.699
+   }
+  },
+  "centre_luma": {
+   "july": 181.3857,
+   "today": 60.7155
+  },
+  "reading": "the ratio falls monotonically with the leg's lateral offset toward the terminator (0.537 at -400 km to 0.140 at +530 km), and the profile's PEAK moved from b30 (-160 km) to lift20 (-400 km): the change is not a scale factor on the frame"
+ },
  "P3_registration_control_oldpath": {
   "ref": "/home/claude/spacecrafter/claude/harness/artifacts/b3_ladder/R6_moon_terrain_control/terrain_base_zoom.png",
   "target": "/home/claude/spacecrafter/claude/harness/artifacts/f51/dwell/frames/old_a.png",
