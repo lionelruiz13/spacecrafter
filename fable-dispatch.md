@@ -317,9 +317,13 @@ F46 §11.160 · F47 §11.163 (session 14 + its post-close extension — all six
 DELIVERED and accepted; archived pass 8). Session-15 round (2026-08-29):
 the session-14 queue minted in order as **F48** (b3_ladder's `922701c9`
 check) · **F49** (the §11.156(g) five back-markers) · **F50** (§5.110's live
-check) below; extension candidates if health permits: the §11.161(f)
-stratigraphy validation · the §5.5-class row↔row staleness sweep (F47
-acceptance). Still blocked: §5.100's fix (authorization unanswered).*
+check) below — **all three DELIVERED and accepted same day**; extended to
+**F51** (the dim-Moon discriminator + photometric-baseline census, F48's
+§11.164(e)(1)+(l)(3), argued ahead of INT-7 at F48's acceptance). Remaining
+extension candidates: the §11.161(f) stratigraphy validation · the §5.5-class
+row↔row staleness sweep (F47 acceptance) · F49's two named-not-run audits
+(§5-side twin; multi-claim) · §5.113's one-launch measurement (F50). Still
+blocked: §5.100's fix (authorization unanswered).*
 
 ### F48 — b3_ladder's discriminating check: the corrected harness against a `922701c9` build (§11.157(e)'s named check) [S]
 
@@ -612,6 +616,82 @@ ZERO delta while correctly marked — reworded, 85→87 raw / 120→122 pairs /
 **82→82 unmarked**. `intent_pair_check` delta = exactly +1 entry file, +1 live
 pair, +1 inline stub, nothing else. Code never left `d6aec251`; both trees
 clean at close.)*
+*(ACCEPTED by supervisor [fable 2026-08-29]: §11.166 read in full; commits/authors/scope
+checked (chain `c7e5b29 → 17be22f → 960b911 → 7be0bb2 → ee030d6`, harness+INTENT only,
+record-only held, code clean at `d6aec251` throughout); §5.113 mint + §5.110 PAID-and-OPEN
+annotation + both §11.113(p) back-markers verified at the ledger; both instruments re-run
+by me and both recorded post-conditions reproduced EXACTLY (pair-check 182/157/25/85 =
++1/+1/+1; scan 88/123/**82** — the unmarked invariant held through my own acceptance
+commit too). Judgment calls ENDORSED with their arguments: no second launch (the mandate
+granted one; §5.113's three checks are named as one launch of extra legs — queued, not
+stretched); ONE row not three (I6 — three reaches of one missing guard; splitting files
+symptoms of one decision); the unmandated `body_selected` read (zero cost, source-derived
+prediction, two findings — the stale-400 contract break measured against the doc's own
+sentence); the self-caught count correction (corrected in place, original stated). The
+(f) finding is the entry's sharpest fact: a composed selection answers CHARACTER-IDENTICAL
+to nothing-selected while the app distinguishes them in the same frame — the fork's
+diagnostic-only option cannot repair that and Vixy should see it stated. SUPERVISOR RULING
+on (p), as the committed instrument's owner: `intent_backmarker_scan.py` stays AS-IS (it
+is the calibrated instrument that ran; its uppercase event lexicon is F42's inherited form
+and its stated coverage limit, now with a measured instance) — the operative convention is
+WRITER-SIDE: supersessions use an UPPERCASE keyword with the citation INSIDE the marker
+span (the §11.99 form, which F50's reword demonstrated costs one word); the stable
+baseline for any future runner is the UNMARKED count (82), never the raw/pair counters
+(not stable under self-description — F50's (p) correction of my own 83/116/80 note is
+accepted). §5.113 joins §3 + the deployment map at close; its one-launch measurement
+joins the queue notes.)*
+
+### F51 — The dim-Moon discriminator + the photometric-baseline census (§11.164(e)(1) + (l)(3)) [S]
+
+**Why now:** F48 measured the shipped Moon rendering **2.7× darker and 2.7×
+flatter** from bit-identical model state, the split dated (2026-08-23 08:44,
+2026-08-26 11:06] across three code shas, with TWO measured unattributed
+candidates (the NVIDIA driver bump `580.568.0 → 580.636.192`; the three extra
+`creating uninitialized texture` events that are exactly the Moon's own
+textures — a `use()` with no command buffer, `s_texture.cpp:653-654` →
+`Texture.cpp:316-317`). §11.164(e)(1) names the cheapest discriminator and
+(l)(3) the owed census. Argued ahead of INT-7 at F48's acceptance: this bears
+on EVERY lit/bright-pixel baseline in the corpus predating 2026-08-26.
+
+**Sources (re-read, never recall):** `INTENT/11.164.md` (c)(d)(e)(f)(l) — the
+finding's numbers, both candidates, the named check, the no-mint restraint and
+its criterion; §11.157(f) (the rebuilt stack); §0.5 in full.
+
+**Scope:**
+1. **(A) The discriminator, one launch per §0.5:** a scene with the Moon disc
+   large (the ladder's base scene or cheaper), dwelling MINUTES; sample the
+   disc's mean luminance on a stated cadence (screenshots; disc mask stated)
+   and timestamp the applog's texture events against the series. PREDICTIONS
+   COMMITTED FIRST — state what each hypothesis predicts for the series's
+   SHAPE before running: upload-never-lands (dim from frame 1, flat forever),
+   upload-lands-late (a step upward when the transfer completes, correlated
+   with a logged event), shading-changed (stable dim, uncorrelated with
+   texture events). A shape matching none ⇒ record as-is, both predictions
+   kept (the F44/F48 form), name what discriminates next.
+2. **(B) Consequence routing:** if (A) shows the upload landing late/never,
+   §11.164(e)(3)'s product question gains its mechanism — mint per §5.79
+   (record-only, no fix: the branch is `getTexture()`'s no-cmd path). If (A)
+   shows stable shading, the driver candidate strengthens — record, mint
+   NOTHING (host state is not a product mechanism; §11.164(f)'s restraint
+   holds).
+3. **(C) The census, no launches:** partition the committed runs by the
+   `Driver Version` line (F48's grep, 1721 runs); enumerate every committed
+   HARNESS BASELINE whose gates read lit/bright/luma pixels of a TEXTURED
+   body and whose recorded numbers predate 2026-08-26; per member: FLAGGED
+   epoch-suspect or CLEAR, with the reason (ratio-only and same-run A/B gates
+   are immune by §11.123(o)'s standing rule; absolute thresholds are not).
+   NO re-baselining — flag + README note only.
+
+**Boundaries:** NO product code; NO driver action (host state, Vixy's); NO
+re-baselining; screenshots/dumps per §0.5 (md5 in==out, concurrent assert,
+fresh launch, plain `timeout`).
+
+**DoD:** predictions committed pre-run; the series recorded with its verdict
+(or the honest neither); census denominator + per-member flags with reasons;
+README annotated; §11 entry at the next free number + stub, entry-file-first;
+artifacts force-added under `harness/artifacts/f51/`; md5 pristine; code tree
+clean at close; WIP per §0.6.
+**WIP:** *(empty)*
 
 ---
 
