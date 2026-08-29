@@ -327,26 +327,27 @@ the header-rule proposal stated with its argument; §11 entry at the next free
 number + stub — the entry checked against its own stub before delivery (the
 sweep includes its own delivery); code tree untouched
 (`git -C /home/claude/spacecrafter status` clean at close); WIP per §0.6.
-**WIP:** *CP1 — method stated + instrument `claude/intent_pair_check.py` (four tests
-D/D2/I/I2; comparison scope S1–S4 against the deliberate non-scope N1–N5). Denominator:
-**171 entry files = 146 LIVE PAIRS + 25 archived-in-place** (retired index line appended
-verbatim into the file ⇒ no live stub, nothing that can diverge); 80 further §5/§11 stubs
-are inline (no entry file, not pairs). DISCRIMINATING CHECK RUN BOTH WAYS on §5.27:
-pre-repair tree (harness `458a71f` = `d43abec^`) is FLAGGED class-(i) under D (CORRECTED /
-UNBLOCKED / ANSWERED + §11.101 + §11.149 + F39 + `d521807a` all stub-only) and under D2
-(the dated `[BEHAVIOUR HALF UNBLOCKED 2026-08-26 …]` marker span); current tree PASSES it
-(D reduces to one sub-threshold supporting citation, §11.113). CP2 — 146/146 pairs checked,
-every flag adjudicated by reading both texts. **13 divergent pairs: 4 class-(i) + 9
-class-(ii), 0 class-(iii).** Class-(i) REPAIRED in the entry files (§5 rows strike-with-pointer
-per the §5.27 precedent, §11 entries annotate-with-pointer per the §11.99 precedent):
-**§5.26** (the entry's Observable still asserted the 11583 px leg F4/§11.108(c) refuted —
-and §11.108(j) itself records *"§5.26 annotated"*, so the annotation demonstrably went to the
-stub alone), **§11.96** (B5-oort-2 DELIVERED same day → §11.98, entry still routes it as
-queued), **§11.112** ((d)'s owed propagation pass PERFORMED 2026-07-29 → §11.113),
-**§11.155** (B28 verdict + the §11.154 mis-homed-stub repair, stub-only). Class-(ii) stubs
-REFRESHED from their entries: §5.2, §11.86, §11.89, §11.97, §11.112, §11.124, §11.136,
-§11.137, §11.144. Next: delivery = §11.156 + its own stub (checked against itself), WIP
-cleared.*
+**WIP:** *DELIVERED 2026-08-29 → **§11.156** (entry file + stub). **Denominator: 171 entry
+files = 146 LIVE PAIRS + 25 archived-in-place** (retired index line verbatim inside the file
+⇒ one home left, nothing that can diverge — verified on all 25); 80 further §5/§11 stubs are
+inline, not pairs. Method stated as a positive map (compared: S1 state + strike state · S2
+supersession/correction markers · S3 authority routing · S4 dates; NOT compared, by design:
+N1 measured detail · N2 discovery provenance · N3 supporting citations · N4 wording/case ·
+N5 statements about other rows), four tests in `claude/intent_pair_check.py` + a whole-corpus
+line-level pass; every flag adjudicated by reading both texts, coverage limits stated.
+**DISCRIMINATING CHECK BOTH WAYS on §5.27**: pre-repair tree (`458a71f` = `d43abec^`) FLAGGED
+class-(i) on the right content (D + D2 both fire); current tree PASSES. **13 divergent pairs
+of 146: 4 class-(i) + 9 class-(ii) + 0 class-(iii)** — class (iii) zero as a result, not an
+absence: every divergence had a MARKED correction on exactly one side. Class-(i) repaired in
+the ENTRY (§5.26 — the §5.27 shape, with §11.108(j) recording an annotation that went to the
+stub alone; §11.96; §11.112; §11.155); class-(ii) stubs refreshed (§5.2, §11.86, §11.89,
+§11.97, §11.112, §11.124, §11.136, §11.137, §11.144) — two of them were relaying a REFUTED
+claim into the index (§11.86's texture-registered offsets, §11.144's 3.3 Mpx). Header-rule
+one-liner PROPOSED not enacted (entry-first ordering; the argument is that it makes the
+dangerous direction structurally unreachable). OUT OF SCOPE, RECORDED: 5 entry-to-entry
+supersessions with no back-marker at the superseded node (§11.113(p)) — §11.122(i) is stale
+in BOTH homes, which is why a pair sweep cannot reach it. Code tree `d6aec251` clean
+throughout. Commits `89b83cc` (CP1) · `30548d9` (CP2) · this one.*
 
 ### F43 — b24_select's four reds adjudicated + the 28-file free-mode-longitude audit (§11.153(o), (j)(3)) [S–M]
 
