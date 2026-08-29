@@ -136,8 +136,13 @@ Ordered by operational weight for the tester, not by age:
 - **B35/B36/B37 residues** — config-only / declared-but-driverless / UI-only capability
   audits: they BOUND what "the new path" can express; completing them completes the
   transparency claim's denominator.
-- Already-queued hygiene (not tester-facing): b3_ladder's `922701c9` check · the five
-  §11.156(g) back-markers · the §11.161(f) stratigraphy validation.
+- ~~Already-queued hygiene (not tester-facing): b3_ladder's `922701c9` check · the five
+  §11.156(g) back-markers · the §11.161(f) stratigraphy validation.~~
+  **[ALL THREE DISCHARGED 2026-08-29/30, session 15: F48 §11.164 (the drift is dated
+  ENVIRONMENT — neither product nor harness; a driver bump changed the rendered
+  photometry, see T3's hardware note) · F49 §11.165 (arrears paid, the class's extent
+  corrected 5→4) · F52 §11.168 (the strata ORDER measurably from git under window +
+  author controls; the spike clause refuted — premise rework lands add-alongside).]**
 
 ## T3 — Verify at HIS field (restricted-deployment-specific; mostly final-pass cargo)
 

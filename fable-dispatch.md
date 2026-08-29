@@ -131,6 +131,43 @@ pass 8** (update-s13 + F42–F47 moved byte-exact, manifest
 TEMPLATE in §0b struck with its §11.161(g) pointer (it survived
 session 14's close unstruck — a staleness bug in this file, caught at
 warm-up re-read).
+**Round outcome (session 15 close, 2026-08-30):** F48 → §11.164 · F49 →
+§11.165 · F50 → §11.166 · F51 → §11.167 · F52 → §11.168 — five executor
+tasks, all delivered AND supervisor-verified same session; round extended
+3→5 per the recorded plan (F51 argued ahead of INT-7 at F48's acceptance,
+F52 completing the session-14 queue entirely). **CODE TREE CLEAN
+THROUGHOUT** — `d6aec251` at open and close, the second all-record/
+instrument round in a row (F48's old-sha build via worktree, main tree
+never moved). NEW row: **§5.113** (F50). NO-MINT restraint held three
+times at the criterion (F48's unattributed carrier · F51's closed product
+candidate · F52's nothing-reachable). HEADLINE FINDINGS: the b3_ladder
+drift is DATED ENVIRONMENT — a driver bump changed rendered photometry
+(×0.371 mean, locally ×0.140) from bit-identical model state, the
+texture-upload candidate refuted on four channels, the driver A/B being
+Vixy's only remaining route; §5.110's live reading proved composed ≡
+nothing-selected character-identically; the §11.113(p) arrears are PAID
+(extent corrected 5→4); the stratigraphy became MEASURED (strata order
+under two author controls, 3.6× on Vixy's own hands; spike clause refuted
+— rework lands add-alongside). Instrument rulings: the back-marker scan
+committed byte-exact, then its root made REQUIRED after a second
+silent-wrong-tree incident; stable baselines at close: pair-check
+184/159/25/85 · scan 90/125/**83** (unmarked = the invariant; raw
+counters are self-description-sensitive). Criterion-integrity instances
+this round: **4** (F49's quarry-inversion · F50's litguard-proxy catch +
+case-sensitivity catch · F51's P3 confound) — the class counts 13 across
+sessions. Supervisor-error tally, all caught by the defense layers: the
+F48-acceptance cwd-diff artifact (control that could not fail, caught
+same turn) · the stale mid-run HEAD in F52's prompt (map committed after
+dispatch; correct order is commit-then-dispatch) · the 83-vs-82 baseline
+note corrected by F50's (p). **Next-round queue, in order:** (1) §5.113's
+one-launch measurement (three checks, one launch; S); (2) the
+seven never-recorded gate values (decision-free harness recording fix;
+S); (3) the first-60 s photometric sampler (S); (4) F49's §5-side twin
+audit (S); (5) the §5.5-class row↔row staleness sweep (F47 acceptance;
+S); (6) F52(k)'s two git-only checks (blame-weighted deletion age ·
+add-alongside→removal lag; S); (7) §5.100's fix IF the §3 authorization
+lands. DECISIONS_PENDING open set at close: **still EMPTY** — the round's
+Vixy items ride §3 + their rows.
 
 ---
 
@@ -844,6 +881,27 @@ counters unchanged; back-marker scan 89/124/**83** → 90/125/**83**, unmarked l
 (with a measured gotcha: the scan's root defaults to an absolute path, so a `cd`-into-pre-tree
 run silently measures the live tree — caught by a counter/list arithmetic inconsistency). Code
 never left `d6aec251`; both trees clean at close.)*
+*(ACCEPTED by supervisor [fable 2026-08-30]: §11.168 read in full; commits/authors/scope
+checked (chain `6bee25f → ce9a90f → 3e6aff7`, git-only held, submodule unmoved
+`7ce58350`); the §11.161(f) DISCHARGED annotation verified in the ratified form + stub
+mirror. Judgment calls ENDORSED with their arguments: the UNMANDATED AMBIENT CONTROL —
+the delivery's load-bearing check, computed because the primary numbers demanded it; it
+converted a soft pass into an honest NEITHER and localized the attributable signal to
+the commit-weighted statistic, which is also the statistic an execution-mode claim
+should attach to; the two pre-named exclusion scopes reported BESIDE raw numbers, never
+replacing them; the module's owner-half declared NOT TESTABLE (96 % of its commits are
+ours — the honest boundary, permanent); both P5 readings kept with the 720-day-dormancy
+structure that dissolves the letter-FAIL; no-mint/no-state-move. SUPERVISOR TALLY, my
+error: the dispatch prompt's stated harness HEAD went stale mid-run because I committed
+the deployment map AFTER dispatching F52 — correct order was commit-then-dispatch;
+benign here (disjoint surfaces, linear chain), tallied. ONE SUPERVISOR ENACTMENT: the
+scan's root argument made REQUIRED (`intent_backmarker_scan.py`; second measured
+silent-wrong-tree incident this session — F48-acceptance cwd trap, F52's default-root
+trap — the instrument-chain rule prefers loud-fail; measurement logic untouched,
+verified: usage error without root, 90/125/83 with explicit root = F52's recorded post
+state to the digit). NEW QUEUE members (git-only, named by (k)): the blame-weighted
+deletion-age metric · the add-alongside→removal lag test (the spike model's surviving
+form). The (j1)/(j2) genesis facts join §3 as equalization items.)*
 
 ---
 
@@ -871,7 +929,72 @@ never left `d6aec251`; both trees clean at close.)*
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
-- **Session-14 decision items (2026-08-29, F42–F46 / §11.156–161):**
+- **Session-15 decision items (2026-08-29/30, F48–F52 / §11.164–168):**
+  - **NEW §5.113 + §5.110's fix routing, one sitting** (F50 §11.166): ONE missing
+    truthiness-guard class, three shipped reaches with nothing selected — `set
+    home_planet selected` teleports the observer 1 AU and CACHES the fiction
+    under the empty name · `flag object_coordinates on` draws a live-looking
+    readout for nobody · `illuminate hp <absent>` feeds INDETERMINATE memory
+    into the grid. The class question: where does the truthiness test belong —
+    each read, the singleton (fail loudly), or both (I6). And §5.110's own
+    three-contract fork gained the deciding fact: the composed-selection answer
+    is CHARACTER-IDENTICAL to nothing-selected (1 AU, mag −10, vernal point —
+    plausible, not error-shaped) while the app distinguishes the two in the
+    same frame ⇒ a diagnostic-only repair cannot restore discriminability.
+    Rider on the row: `$body_selected` answers the RELEASED body after
+    `deselect` (doc's own contract sentence broken) and 999 for any composed
+    body.
+  - **The dim Moon is YOUR host's driver, as far as measurement can reach**
+    (F48 §11.164 + F51 §11.167): the shipped Moon renders mean ×0.371 (locally
+    ×0.140), a fifth of the disc below L=32 where July was above 100, from
+    BIT-IDENTICAL model state — dated (2026-08-23, 2026-08-26], coinciding
+    with the NVIDIA bump `580.568.0 → 580.636.192` and NOT the reboot. The
+    texture-upload candidate is REFUTED on four channels (72 frames/one md5
+    with a liveness control; registered fine structure; the file's own tint
+    reproduced; the source's transient branch). **The driver A/B is the only
+    remaining attribution route and it is host state — yours.** Meanwhile the
+    harness corpus is mostly immune (px>8 gates; census: 34 CLEAR · 9 FLAGGED
+    · 4 FLAGGED-WEAK, §11.167(i)) and §11.104(d)-era absolute photometry is
+    permanently non-reproducible.
+  - **The 7.73° old/new attitude divergence** (F51 §11.167(f)): same instant,
+    same eye distance to nine digits, same spin phase to 1e-5° — and the two
+    paths draw different FACES of the Moon (view-matrix attitudes subtend
+    7.7346°, most of a visible hemisphere at 10.28° angular radius). Routed to
+    you per the §11.161(c) strata rule (rendering paths); deliberately NOT
+    minted (`experimental_path` is a dev gate, the shipped default pins the
+    new path — no shipped surface shows both).
+- **Session-15 veto points (implemented-and-live, each cheap to reverse;
+  silence = endorsed):** (1) **§11.122's residual closed as posed** at F49
+  acceptance (§11.165(d) enacted: the mechanism is §5.59's, the magnitude
+  §11.125's — survives as §5.59 (open) + the ARM-C sub-question; one line each
+  home to reverse); (2) **`intent_backmarker_scan.py` committed** (the F49
+  audit instrument, byte-exact) with the writer-side convention ruling
+  (supersessions use an UPPERCASE keyword, citation INSIDE the marker span)
+  and, after a second silent-wrong-tree incident, its **root argument made
+  REQUIRED** (loud-fail; measurement logic untouched, verified to the digit);
+  (3) **§11.157's litguard claim SCOPED at the node** (a proxy scene — verdict
+  unthreatened, quantity scene-inclusive); (4) the §11.156(g) five corrected
+  to FOUR (the fifth was the scan reading its own quarry backwards — the
+  2026-07-25 marker was already yours-compliant).
+- **Session-15 equalization items (facts, no decision asked):**
+  - **EntityCore was born inside a game** — `LaserBombon` and the library grew
+    together six months, separated 2021-12-20 (*"as I learned it"*, with the
+    learning vehicle named); **experimentalModule has TWO births** — a 2023-08
+    alpha, 720 days of dormancy, the live line from 2025-08-13 (your "~1–2 yr"
+    dates the live line to the month).
+  - **The stratigraphy is now measured, not testimony** (F52 §11.168): the
+    strata ORDER by deletion ratio under a window control and two author
+    controls — your own hands, same 11 months: inherited `src/` 0.4712 vs
+    module 0.1294 (3.6×). The SPIKE clause is refuted 0-of-4: in EntityCore,
+    premise rework arrives as NEW STRUCTURE BESIDE THE OLD (the Taskable
+    introduction is a pure addition), not as deletion events.
+- **Session-15 awareness, no action needed:** §11.158's two denominators
+  corrected in place (501→584 files; 1719→1727 driver-census rows — the two
+  extras are llvmpipe) · seven harness gates print values that are recorded
+  NOWHERE (cheap decision-free fix, queued) · the first ~60 s of any launch
+  remain photometrically unobserved (sampler named, queued) · b3_ladder stays
+  deliberately red with its failure now UNDERSTOOD (environment, not
+  instrument or product).
   - **§5.109's LAYER half** — `moveto … alt` counts altitude from the
     DISPLAY-scaled datum (measured 7 legs, f43_ramp.py; R7 separates three
     conventions). Should a commanded altitude stand above the DRAWN surface (as

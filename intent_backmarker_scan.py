@@ -18,7 +18,15 @@ or the keyword may belong to a neighbouring claim.
 """
 import os, re, sys
 
-ROOT = sys.argv[1] if len(sys.argv) > 1 else "/home/claude/spacecrafter/claude"
+# Root is REQUIRED [fable 2026-08-30, F52 acceptance — §11.168(m)]: the previous
+# absolute-path default made a cd-into-pre-tree run silently measure the LIVE tree
+# (second silent-wrong-tree incident this session; instrument-chain rule: a probe
+# that can silently measure the wrong target converts observation into fiction).
+# Measurement logic untouched; input contract only.
+if len(sys.argv) < 2:
+    sys.exit("usage: intent_backmarker_scan.py <root>  (root is required; "
+             "pass the tree to scan explicitly — no default)")
+ROOT = sys.argv[1]
 KEYRE = re.compile("REFUTED|SUPERSEDED|CORRECTED|RETRACTED|WITHDRAWN")
 MARKRE = re.compile("ANNOTATION|ADDENDUM|BACK-MARKER|SUPERSED|REFUT|CORRECT|RETRACT|WITHDRAW", re.I)
 CITE = re.compile(r"§(\d+\.\d+)")
