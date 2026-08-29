@@ -578,23 +578,39 @@ real-HOME edits (temp-HOME farm); the contract choice stays Vixy's.
 vs measured stated per variable; other-consumers census with method +
 verdicts + the not-read boundary; §5.110 annotated, still OPEN; §11 entry +
 stub; md5 pristine; code tree clean at close; WIP per §0.6.
-**WIP:** *(2026-08-29, checkpoint 1: sources re-read + every §5.110 cite
-re-verified at `d6aec251` (one drift found: the row cites
-`ssystem_factory.hpp:592/597` for two of the four initialisers, but those are
-the `selected_star_*` getters — the six's own az/alt initialisers are `:580`/
-`:586`). Instrument `harness/f50_selvars.py` written; PREDICTIONS committed
-here BEFORE the run (`harness/artifacts/f50/f50_predict.json`, md5
-`4cc99992`). Next: run it (one launch, five legs O1/D1/C/D2/O2), then the
-other-consumers census.*
-*checkpoint 2: RUN GREEN, **0 FAIL, all six predictions MATCHED**. Leg C
-(`select planet BigA`, a composed body, selection witnessed both ways —
-`get status object` → `BigA`, dump `camera.selected` → `BigA`) reads
-ra/de/az/alt `0`, distance `1`, magnitude `-10`; identical to both `deselect`
-legs; O1/O2 (Mars) answer 67.6632/21.6791/44.4974/−11.6881/2.07176/1.49643
-twice over. NEW: `body_selected` reads a STALE `400` after `deselect`
-(predicted from `Core::unSelect`) — a §5 candidate. Artifacts committed under
-`harness/artifacts/f50/`; committed prediction file md5-identical to the one
-the run used. Next: the other-consumers census, then delivery.)*
+**WIP:** *(DELIVERED 2026-08-29 → §11.166.* **§5.110's owed datum PAID, row
+stays OPEN, the three-contract fork untouched.** LIVE READING, one launch, five
+legs (O1 Mars · D1 deselect · C `select planet BigA` · D2 deselect · O2 Mars),
+channel = the app's own SCRIPT log via `print <key> <token>` →
+`AppCommandEval::evalString`, predictions committed to git BEFORE the run (md5
+`4cc99992`, byte-identical to the file the run wrote): with a composed body
+selected the six answer **0 / 0 / 0 / 0 / 1 / −10 — six of six predictions
+matched**, and **character-for-character identical to both `deselect` legs**,
+while `get status object` → `BigA` and dump `camera.selected` → `BigA` in the
+same frames (the latter written by the very call whose first statement the type
+filter rejects ⇒ the rejection is WITNESSED). Positive control in the same
+launch: Mars answers 67.6632/21.6791/44.4974/−11.6881/2.07176/1.49643 before
+AND after the composed leg. 0 FAIL, md5 in==out, exit 0. CENSUS bounded
+STRUCTURALLY, not sampled: `ObjectUninitialized` has 9 code hits, all in
+`tools/object.cpp`, no header declares it ⇒ the singleton is reachable ONLY as
+an `Object`'s `rep`; 4 `Object` member slots; 3 non-neutral returns (not 2 —
+`getEarthEquPos` returns the same `(1,0,0)`); of 18 reads through an `Object`,
+**12 provably guarded, 2 undetermined, 4 REACHABLE** ⇒ NEW **§5.113** (one
+missing-guard class, three shipped reaches: `set home_planet selected` builds
+an anchor at `(1,0,0)` and caches it under the EMPTY name · the sky-display
+overlays are fed both selection slots every frame with `SkyCoords` gating on
+its fader alone · `illuminate hp 0` gets INDETERMINATE memory, not a constant).
+Listed ON §5.110, not minted: a seventh consumer of its own slot drops the
+composed selection on module re-entry; `body_selected` is STALE (400) after
+`deselect`, predicted from source and measured. Two citation corrections with
+their §11.113(p) back-markers in the delivery commit: §5.110's own
+`:592/:597`, and **§11.158(a)'s "501 files" → the walk visits 584 (501 + 83
+EntityCore)**. Instrument note, found by using F49's scan on my own write: its
+event detector is CASE-SENSITIVE, so a correction written *"corrected"* gave a
+ZERO delta while correctly marked — reworded, 85→87 raw / 120→122 pairs /
+**82→82 unmarked**. `intent_pair_check` delta = exactly +1 entry file, +1 live
+pair, +1 inline stub, nothing else. Code never left `d6aec251`; both trees
+clean at close.)*
 
 ---
 
