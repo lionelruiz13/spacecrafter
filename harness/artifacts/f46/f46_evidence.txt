@@ -1,0 +1,31 @@
+F46 assert-census evidence (2026-08-29), code HEAD d6aec251, harness a8f844d
+
+== BUILD TYPE (verified independently of 11.146(h)) ==
+25:CMAKE_BUILD_TYPE:STRING=RelWithDebInfo
+54:CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
+407://ADVANCED property for variable: CMAKE_CXX_FLAGS_RELWITHDEBINFO
+408:CMAKE_CXX_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+-- actual target flags (build-claude/src/CMakeFiles/spacecrafter.dir/flags.make):
+CXX_FLAGS = -O2 -g -DNDEBUG -std=gnu++23
+-- CMakeLists.txt defines NO branch for RelWithDebInfo (Debug/Release/LocalRelease/Coverage only)
+   => CMAKE_CXX_FLAGS stays empty and -DNDEBUG is unopposed; no -UNDEBUG anywhere in the build files
+
+== BINARY PROBE, both-ways mapped ==
+-- fixture /tmp/f46_probe.c, gcc -O2 -g [+/- -DNDEBUG]:
+   WITHOUT NDEBUG : __assert_fail syms=1  expression-string=1
+   WITH    NDEBUG : __assert_fail syms=0  expression-string=0
+-- shipped binary build-claude/src/spacecrafter (mtime 2026-08-26 17:43:30; make at HEAD
+   recompiled 0 objects and relinked 0 targets => objects up-to-date vs the clean tree at d6aec251):
+   __assert_fail in nm -DC : 0
+   __assert_fail in nm -C  : 0
+   4 probed assert expression texts : 0
+   POSITIVE CONTROL 'Unknown viewing mode type' (the std::cerr line one line ABOVE
+   5.89's assert, same function) : 1
+
+== CENSUS (f44_census.py, comment-stripped, self-test PASS re-run today) ==
+   assert          : 83 code hits = 76 call sites + 5 '#include <assert.h>' + 2 '#define X_ASSERT(x) assert(x)'
+   STBI_ASSERT     : 26 code hits = 24 call sites + '#ifndef' + '#define'  (wrapper DIES: expands to assert)
+   STBIR_ASSERT    : 52 code hits = 50 call sites + '#ifndef' + '#define'  (wrapper DIES: expands to assert)
+   static_assert   : 19 code hits -- EXCLUDED, compile-time, unaffected by NDEBUG
+   SDL_assert / SDL_assert_release / SDL_assert_paranoid / ASSERT / Assert / assert_param : 0 code hits
+   TOTAL DEAD-UNDER-NDEBUG ASSERT SITES = 76 + 24 + 50 = 150

@@ -1,0 +1,105 @@
+=== assert : 83 CODE hits, 21 comment-only hits
+  CODE    src/stb_image.h:524: #include <assert.h>
+  CODE    src/stb_image.h:525: #define STBI_ASSERT(x) assert(x)
+  CODE    src/stb_image_resize.h:390: #include <assert.h>
+  CODE    src/stb_image_resize.h:391: #define STBIR_ASSERT(x) assert(x)
+  CODE    src/tiny_jpeg.h:190: #include <assert.h>
+  CODE    src/tiny_jpeg.h:479: assert (state->output_buffer_count <= TJEI_BUFFER_SIZE - 1);
+  CODE    src/tiny_jpeg.h:499: assert(id < 4);
+  CODE    src/tiny_jpeg.h:522: assert(num_values <= 0xffff);
+  CODE    src/tiny_jpeg.h:527: assert(id < 4);
+  CODE    src/tiny_jpeg.h:561: assert(k < count);
+  CODE    src/tiny_jpeg.h:866: assert(zero_count < 0x10);
+  CODE    src/tiny_jpeg.h:867: assert(vli[1] <= 10);
+  CODE    src/tiny_jpeg.h:871: assert(huff_ac_len[sym1] != 0);
+  CODE    src/tiny_jpeg.h:904: assert(state);
+  CODE    src/tiny_jpeg.h:929: assert (256 >= spec_tables_len[i]);
+  CODE    src/tiny_jpeg.h:1020: assert(width <= 0xffff);
+  CODE    src/tiny_jpeg.h:1021: assert(height <= 0xffff);
+  CODE    src/tiny_jpeg.h:1106: assert(src_index < width * height * src_num_components);
+  CODE    src/tiny_jpeg.h:1249: assert(!"invalid code path");
+  CODE    src/appModule/appDraw.cpp:69: assert(cmds.empty());
+  CODE    src/appModule/fontFactory.cpp:167: assert(0);
+  CODE    src/appModule/fontFactory.cpp:190: assert(0);
+  CODE    src/appModule/screenFader.cpp:51: assert(!m_screenGL);
+  CODE    src/EntityCore/Executor/AsyncLoaderMgr.cpp:17: assert(!instance);
+  CODE    src/EntityCore/Tools/LinuxExecutor.cpp:35: assert(maxInputPipes == 0);
+  CODE    src/EntityCore/Tools/LinuxExecutor.cpp:36: assert(maxOutputPipes == 0);
+  CODE    src/EntityCore/Tools/LinuxExecutor.cpp:52: assert(instance == nullptr);
+  CODE    src/EntityCore/Tools/SaveData.hpp:170: assert(raw.size() >= sizeof(T));
+  CODE    src/EntityCore/Resource/PipelineLayout.cpp:116: assert(uniformsLayout.empty()); // there mustn't be unbuilded layout
+  CODE    src/EntityCore/Resource/Set.cpp:182: assert(!used);
+  CODE    src/EntityCore/Resource/TileMap.cpp:17: assert(false); // Other format are not currently supported
+  CODE    src/EntityCore/Resource/TransferMgr.hpp:15: assert(!planningCopy);
+  CODE    src/EntityCore/Resource/TransferMgr.hpp:23: assert(planningCopy);
+  CODE    src/EntityCore/Resource/TransferMgr.hpp:33: assert(!planningCopy);
+  CODE    src/EntityCore/Resource/TransferMgr.hpp:47: assert(!planningCopy);
+  CODE    src/EntityCore/Resource/VertexArray.cpp:24: default: assert(false); return 0;
+  CODE    src/EntityCore/Resource/VertexBuffer.cpp:9: assert(alignment % stride == 0);
+  CODE    src/EntityCore/Core/FrameMgr.hpp:120: assert(cmd);
+  CODE    src/EntityCore/Core/VulkanMgr.cpp:39: assert(!instance); // There must be only one VulkanMgr instance
+  CODE    src/coreModule/callbacks.hpp:87: assert(mFunctor != 0);
+  CODE    src/coreModule/callbacks.hpp:91: assert(mFunctor != 0);
+  CODE    src/coreModule/callbacks.hpp:95: assert(mFunctor != 0);
+  CODE    src/coreModule/constellation_mgr.cpp:49: assert(hipStarMgr);
+  CODE    src/coreModule/core.cpp:533: assert(0);
+  CODE    src/coreModule/core.cpp:2440: assert(0);
+  CODE    src/coreModule/landscape.cpp:91: assert(fog!=nullptr);
+  CODE    src/coreModule/landscape.cpp:120: assert(!vertexModel);
+  CODE    src/atmosphereModule/atmosphere.cpp:98: assert(!m_atmGL);
+  CODE    src/bodyModule/axis.cpp:109: assert(!vertexModel);
+  CODE    src/bodyModule/body.hpp:439: assert(defaultAtmosphereParams != nullptr);
+  CODE    src/bodyModule/halo.cpp:173: assert(!global);
+  CODE    src/bodyModule/orbit.cpp:929: assert(t1 > t0);
+  CODE    src/bodyModule/orbit_plot.cpp:56: assert(!m_Orbit);
+  CODE    src/bodyModule/planet_grid.cpp:368: assert(!vertexModel);
+  CODE    src/bodyModule/solarsystem_display.cpp:42: assert(!instance);
+  CODE    src/bodyModule/solarsystem_tex.cpp:25: #include <assert.h>
+  CODE    src/bodyModule/solarsystem_tex.cpp:37: assert(bodyTesselation != nullptr);
+  CODE    src/interfaceModule/if_swap.cpp:25: #include <assert.h>
+  CODE    src/tools/SphereGrid.hpp:350: assert(ptr == allDataCenter.data()); // There must be no reallocation
+  CODE    src/tools/draw_helper.cpp:370: assert(drawCount / 3 < MAX_HINT_IDX_);
+  CODE    src/tools/indexed.hpp:31: assert(id < N);
+  CODE    src/tools/indexed.hpp:38: assert(id < N);
+  CODE    src/tools/indexed.hpp:46: assert(idx(e) < N);
+  CODE    src/tools/indexed.hpp:60: assert(id < N);
+  CODE    src/tools/indexed.hpp:67: assert(id < N);
+  CODE    src/tools/indexed.hpp:74: assert(id < N);
+  CODE    src/tools/indexed.hpp:81: assert(id < N);
+  CODE    src/tools/indexed.hpp:95: assert(p && "Indexed: active object is null");
+  CODE    src/tools/indexed.hpp:102: assert(p && "Indexed: active object is null");
+  CODE    src/tools/indexed.hpp:109: assert(p && "Indexed: active object is null");
+  CODE    src/tools/indexed.hpp:116: assert(p && "Indexed: active object is null");
+  CODE    src/starModule/geodesic_grid.cpp:175: assert(index<20);
+  CODE    src/starModule/geodesic_grid.cpp:194: assert(0);
+  CODE    src/starModule/geodesic_grid.cpp:204: assert((c0^c1)*c2 >= 0.0);
+  CODE    src/starModule/hip_star_mgr.cpp:446: assert(max_geodesic_grid_level < 0);
+  CODE    src/starModule/hip_star_mgr.cpp:929: assert(0);
+  CODE    src/starModule/hip_star_mgr.cpp:1049: assert(0);
+  CODE    src/starModule/hip_star_wrapper.hpp:68: assert(ref_count>=0);
+  CODE    src/starModule/hip_star_wrapper.hpp:72: assert(ref_count>0);
+  CODE    src/starModule/intrusive_ptr.hpp:67: ((px != 0) ? static_cast<void> (0) : assert(true));
+  CODE    src/starModule/intrusive_ptr.hpp:72: ((px != 0) ? static_cast<void> (0) : assert(true));
+  CODE    src/inGalaxyModule/dso3d.cpp:79: assert(offsetof(pGeom_s, nbTextures) == 76); // check alignment
+  CODE    src/ojmModule/objl_mgr.cpp:23: assert(!instance);
+  comment src/stb_image.h:15: You can #define STBI_ASSERT(x) before the #include to avoid using assert.h.
+  comment src/stb_image.h:7286: 2.02  (2015-01-19) fix incorrect assert, fix warning
+  comment src/stb_image.h:7295: 1.48  (2014-12-14) fix incorrectly-named assert()
+  comment src/stb_image.h:7310: added STBI_ASSERT to avoid requiring assert.h
+  comment src/stb_image_resize.h:50: Define STBIR_ASSERT(boolval) to override assert() and not use assert.h
+  comment src/stb_image_resize.h:50: Define STBIR_ASSERT(boolval) to override assert() and not use assert.h
+  comment src/stb_image_resize.h:221: //       #define STBIR_ASSERT() to trigger an assert on parameter validation errors.
+  comment src/coreModule/core.hpp:459: //! cannot do is assert the ARMING LATCH, which D32 saves as a condition and
+  comment src/coreModule/sky_localizer.cpp:41: // 	assert(0);
+  comment src/coreModule/time_mgr.hpp:94: // assert(timeLockCount >= 0);
+  comment src/navModule/navigator.hpp:216: //! there is no way to assert "armed" without also moving the view. A
+  comment src/navModule/navigator.hpp:217: //! restore has to assert exactly that and nothing else (D32 makes the latch
+  comment src/bodyModule/orbit.cpp:928: // \todo Remove assert!
+  comment src/bodyModule/orbit.cpp:930: //assert(orbit != nullptr);
+  comment src/interfaceModule/if_swap.cpp:42: //assert(!m_ifSwapCommand.empty());
+  comment src/interfaceModule/if_swap.cpp:73: //   assert(!m_ifSwapCommand.empty());
+  comment src/interfaceModule/if_swap.cpp:92: //assert(!m_ifSwapCommand.empty());
+  comment src/tools/context.hpp:64: Padded<int> offsets[MAX_RADIUS_HARD_LIMIT+1]; // assert(radius <= 510) --> shadow_resolution <= 1024 (~1G operations)
+  comment src/starModule/hip_star_mgr.cpp:427: // 	assert(0);
+  comment src/starModule/sphere_geometry.cpp:118: assert(vertex.size()==4);
+  comment src/starModule/sphere_geometry.hpp:220: //	assert(0);

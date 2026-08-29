@@ -658,7 +658,15 @@ task — no launches expected; if one is needed to ground a reachability claim,
 class-(i) set enumerated with fall-through consequence + reach; §5.89
 annotated (stays OPEN); new rows only per the mint criterion, stated; code
 tree clean; §11 entry + stub; WIP per §0.6.
-**WIP:** *(empty)*
+**WIP:** 2026-08-29 CP1 — census DONE: **150** dead-under-NDEBUG assert sites in
+`src/` (76 direct `assert(` + 24 `STBI_ASSERT` + 50 `STBIR_ASSERT`; both wrappers
+expand to `assert` so neither survives; 19 `static_assert` excluded, 0 SDL_assert).
+Premise re-measured on the binary itself, both-ways mapped (`__assert_fail` 0 syms +
+0 expression strings vs a controlled fixture that shows 1/1 without NDEBUG, and a
+POSITIVE control string from §5.89's own function present 1×). Founding instance
+RE-DETECTED at `core.cpp:533` (row cites `:487-492` — +43 line drift). Instruments
+`harness/f46_context.py` + `harness/artifacts/f46/`. Next: classification write-up →
+§11.160 entry file, then stub, then §5.89 annotation.
 
 ---
 

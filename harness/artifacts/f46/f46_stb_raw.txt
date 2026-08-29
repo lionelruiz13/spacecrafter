@@ -1,0 +1,78 @@
+src/stb_image.h:523: #ifndef STBI_ASSERT
+src/stb_image.h:525: #define STBI_ASSERT(x) assert(x)
+src/stb_image.h:1094: STBI_ASSERT(ri.bits_per_channel == 16);
+src/stb_image.h:1118: STBI_ASSERT(ri.bits_per_channel == 8);
+src/stb_image.h:1525: STBI_ASSERT(req_comp >= 1 && req_comp <= 4);
+src/stb_image.h:1554: default: STBI_ASSERT(0);
+src/stb_image.h:1574: STBI_ASSERT(req_comp >= 1 && req_comp <= 4);
+src/stb_image.h:1603: default: STBI_ASSERT(0);
+src/stb_image.h:1886: STBI_ASSERT((((j->code_buffer) >> (32 - h->size[c])) & stbi__bmask[h->size[c]]) == h->code[c]);
+src/stb_image.h:1907: STBI_ASSERT(n >= 0 && n < (int) (sizeof(stbi__bmask)/sizeof(*stbi__bmask)));
+src/stb_image.h:3815: STBI_ASSERT(bits <= 16);
+src/stb_image.h:3897: STBI_ASSERT(z->code_buffer < (1U << z->num_bits));
+src/stb_image.h:3925: STBI_ASSERT(z->size[b] == s);
+src/stb_image.h:4055: STBI_ASSERT(c == 18);
+src/stb_image.h:4082: STBI_ASSERT(a->num_bits == 0);
+src/stb_image.h:4343: STBI_ASSERT(out_n == s->img_n || out_n == s->img_n+1);
+src/stb_image.h:4365: STBI_ASSERT(img_width_bytes <= x);
+src/stb_image.h:4427: STBI_ASSERT(img_n+1 == out_n);
+src/stb_image.h:4516: STBI_ASSERT(img_n == 3);
+src/stb_image.h:4594: STBI_ASSERT(out_n == 2 || out_n == 4);
+src/stb_image.h:4619: STBI_ASSERT(out_n == 2 || out_n == 4);
+src/stb_image.h:4700: STBI_ASSERT(s->img_out_n == 4);
+src/stb_image.h:5047: STBI_ASSERT(v >= 0 && v < 256);
+src/stb_image.h:5049: STBI_ASSERT(bits >= 0 && bits <= 8);
+src/stb_image.h:5532: STBI_ASSERT(tga_comp == STBI_rgb);
+src/stb_image.h:5581: STBI_ASSERT(tga_comp == STBI_rgb);
+src/stb_image_resize.h:389: #ifndef STBIR_ASSERT
+src/stb_image_resize.h:391: #define STBIR_ASSERT(x) assert(x)
+src/stb_image_resize.h:763: STBIR_ASSERT(scale <= 1);
+src/stb_image_resize.h:781: STBIR_ASSERT(scale <= 1);
+src/stb_image_resize.h:885: STBIR_ASSERT(filter != 0);
+src/stb_image_resize.h:886: STBIR_ASSERT(filter < STBIR__ARRAY_SIZE(stbir__filter_info_table));
+src/stb_image_resize.h:995: STBIR_ASSERT(!"Unimplemented edge type");
+src/stb_image_resize.h:1044: STBIR_ASSERT(in_last_pixel - in_first_pixel <= (int)ceil(stbir__filter_info_table[filter].support(1/scale) * 2)); // Taken directly from stbir__get_co
+src/stb_image_resize.h:1049: STBIR_ASSERT(contributor->n1 >= contributor->n0);
+src/stb_image_resize.h:1073: STBIR_ASSERT(total_filter > 0.9);
+src/stb_image_resize.h:1074: STBIR_ASSERT(total_filter < 1.1f); // Make sure it's not way off.
+src/stb_image_resize.h:1096: STBIR_ASSERT(out_last_pixel - out_first_pixel <= (int)ceil(stbir__filter_info_table[filter].support(scale_ratio) * 2)); // Taken directly from stbir__
+src/stb_image_resize.h:1101: STBIR_ASSERT(contributor->n1 >= contributor->n0);
+src/stb_image_resize.h:1149: STBIR_ASSERT(total > 0.9f);
+src/stb_image_resize.h:1150: STBIR_ASSERT(total < 1.1f);
+src/stb_image_resize.h:1377: STBIR_ASSERT(!"Unknown type/colorspace/channels combination.");
+src/stb_image_resize.h:1440: STBIR_ASSERT(ring_buffer_index != stbir_info->ring_buffer_begin_index);
+src/stb_image_resize.h:1469: STBIR_ASSERT(n1 >= n0);
+src/stb_image_resize.h:1470: STBIR_ASSERT(n0 >= -stbir_info->horizontal_filter_pixel_margin);
+src/stb_image_resize.h:1471: STBIR_ASSERT(n1 >= -stbir_info->horizontal_filter_pixel_margin);
+src/stb_image_resize.h:1472: STBIR_ASSERT(n0 < stbir_info->input_w + stbir_info->horizontal_filter_pixel_margin);
+src/stb_image_resize.h:1473: STBIR_ASSERT(n1 < stbir_info->input_w + stbir_info->horizontal_filter_pixel_margin);
+src/stb_image_resize.h:1481: STBIR_ASSERT(coefficient != 0);
+src/stb_image_resize.h:1490: STBIR_ASSERT(coefficient != 0);
+src/stb_image_resize.h:1500: STBIR_ASSERT(coefficient != 0);
+src/stb_image_resize.h:1511: STBIR_ASSERT(coefficient != 0);
+src/stb_image_resize.h:1524: STBIR_ASSERT(coefficient != 0);
+src/stb_image_resize.h:1545: STBIR_ASSERT(!stbir__use_width_upsampling(stbir_info));
+src/stb_image_resize.h:1865: STBIR_ASSERT(!"Unknown type/colorspace/channels combination.");
+src/stb_image_resize.h:1901: STBIR_ASSERT(stbir__use_height_upsampling(stbir_info));
+src/stb_image_resize.h:2008: STBIR_ASSERT(!stbir__use_height_upsampling(stbir_info));
+src/stb_image_resize.h:2073: STBIR_ASSERT(stbir__use_height_upsampling(stbir_info));
+src/stb_image_resize.h:2082: STBIR_ASSERT(in_last_scanline - in_first_scanline + 1 <= stbir_info->ring_buffer_num_entries);
+src/stb_image_resize.h:2174: STBIR_ASSERT(!stbir__use_height_upsampling(stbir_info));
+src/stb_image_resize.h:2183: STBIR_ASSERT(out_last_scanline - out_first_scanline + 1 <= stbir_info->ring_buffer_num_entries);
+src/stb_image_resize.h:2269: STBIR_ASSERT(info->horizontal_filter != 0);
+src/stb_image_resize.h:2270: STBIR_ASSERT(info->horizontal_filter < STBIR__ARRAY_SIZE(stbir__filter_info_table)); // this now happens too late
+src/stb_image_resize.h:2271: STBIR_ASSERT(info->vertical_filter != 0);
+src/stb_image_resize.h:2272: STBIR_ASSERT(info->vertical_filter < STBIR__ARRAY_SIZE(stbir__filter_info_table)); // this now happens too late
+src/stb_image_resize.h:2316: STBIR_ASSERT(info->channels >= 0);
+src/stb_image_resize.h:2317: STBIR_ASSERT(info->channels <= STBIR_MAX_CHANNELS);
+src/stb_image_resize.h:2322: STBIR_ASSERT(info->horizontal_filter < STBIR__ARRAY_SIZE(stbir__filter_info_table));
+src/stb_image_resize.h:2323: STBIR_ASSERT(info->vertical_filter < STBIR__ARRAY_SIZE(stbir__filter_info_table));
+src/stb_image_resize.h:2334: STBIR_ASSERT(alpha_channel >= 0 && alpha_channel < info->channels);
+src/stb_image_resize.h:2340: STBIR_ASSERT(tempmem);
+src/stb_image_resize.h:2345: STBIR_ASSERT(tempmem_size_in_bytes >= memory_required);
+src/stb_image_resize.h:2389: STBIR_ASSERT((size_t)STBIR__NEXT_MEMPTR(info->encode_buffer, unsigned char) == (size_t)tempmem + tempmem_size_in_bytes);
+src/stb_image_resize.h:2397: STBIR_ASSERT((size_t)STBIR__NEXT_MEMPTR(info->ring_buffer, unsigned char) == (size_t)tempmem + tempmem_size_in_bytes);
+src/stb_image_resize.h:2418: STBIR_ASSERT(memcmp(overwrite_output_before_pre, &((unsigned char*)output_data)[-OVERWRITE_ARRAY_SIZE], OVERWRITE_ARRAY_SIZE) == 0);
+src/stb_image_resize.h:2419: STBIR_ASSERT(memcmp(overwrite_output_after_pre, &((unsigned char*)output_data)[begin_forbidden], OVERWRITE_ARRAY_SIZE) == 0);
+src/stb_image_resize.h:2420: STBIR_ASSERT(memcmp(overwrite_tempmem_before_pre, &((unsigned char*)tempmem)[-OVERWRITE_ARRAY_SIZE], OVERWRITE_ARRAY_SIZE) == 0);
+src/stb_image_resize.h:2421: STBIR_ASSERT(memcmp(overwrite_tempmem_after_pre, &((unsigned char*)tempmem)[tempmem_size_in_bytes], OVERWRITE_ARRAY_SIZE) == 0);
