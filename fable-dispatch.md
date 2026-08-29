@@ -488,16 +488,43 @@ algebraic inverse already sits written out in `f34_probe_inverse.cpp`).
 old-path RA/DE datum recorded with its configuration stamp and stated on the
 row as the parity target; §5.86 annotated, still OPEN; §11 entry at the next
 free number + stub; no product-code change; md5 pristine; WIP per §0.6.
-**WIP:** 2026-08-29, CP2 reached — census done (`harness/f44_census.py`) AND
-the parity measurement RUN and GREEN (`harness/f44_parity.py`,
-`artifacts/f44/`, 0 FAIL / 2 recorded refuted predictions). Existing channel
-used, nothing built for it: the dual dump's `.navstr` sidecar already carries
-both paths' RA/DE per body at one frame (`ssystem_factory.cpp:1179-1218`).
-Headline: old-vs-new median **60.3636°**; with §5.86 repaired the gap is
-**≤0.002014° for 89 of 90 bodies** once old's observer-centred origin is
-matched and a **constant −90.0003°** RA zero point (§11.4, epoch-independent
-across a 130.0552° spin move) is removed. Next: §11.158 entry file → stub →
-§5.86 row annotation → clear this line.
+**WIP:** *(cleared at delivery 2026-08-29 — **DELIVERED, §11.158**; RECORD-ONLY,
+code `d6aec251` untouched and clean at open and close; harness `441497a →
+b8d51ec` (CP1, census instrument) `→ 04e5780` (CP2, parity measurement) + the
+record commit. DoD item by item — **consumer set enumerated positively**:
+comment-stripped census over 501 files (`harness/f44_census.py`, self-test
+suppresses 5 comment hits / keeps 4 code hits) plus a read call-graph walk;
+the row's four consumer sites are the COMPLETE set, and the bounding fact is
+that a `ModularObject` is built at only four places (product
+`ssystem_factory.cpp:914`/`:937`, instrument `:1202`/`:1239`) ⇒ **on the
+shipped surface these readouts answer only for a body the old tree does not
+carry**. **6 REACHABLE** (TCP `get status object` · the TUI nav line and every
+quantity derived from it · the five sky-display overlays, fed unconditionally
+every frame · the old path's view aiming · `set home_planet selected`, which
+caches the scrambled place under the body's name · `isSameLogicalObject`);
+**5 UNREACHABLE, each with the read that grounds it** (`Core::getDeRa` DEAD —
+one code hit, its own definition · the six `#selected_*` cut off by
+`solarsystem_selected.cpp:48`'s `OBJECT_BODY` filter · `#selected_star_*` by
+`setSelectedObject`'s single caller in `case OBJECT_STAR` · the old pointer
+twice over · `cleverFind`/`searchByNameI18n`, old-tree-only). **Old-path RA/DE
+datum recorded with its stamp**: existing channel FOUND not built (the dual
+dump's `.navstr`, `ssystem_factory.cpp:1179-1218`); 90 both-tree bodies, one
+fresh launch, shipped place, `jd 2461233.5`, md5 `03fbee59`/`545a51ef` in ==
+out, exit 0. Old vs new **median 60.3636°**, decomposed into four attributed
+terms — §5.86 itself (shipped arithmetic reproduced offline to **0.00187°**),
+§11.4's zero point (**−90.000283°**, spread 0.005378°, DE already matching to
+0.003613°, **epoch-independent**: 0.000462° while the spin moved 130.0552°),
+an **origin convention** (old is observer-centred, `navigator.hpp:140-147`;
+0.996287° measured vs 0.993226° predicted on the Moon), and **Eris** (trees
+1.198373° apart). **PARITY TARGET: ≤ 0.002014° for 89 of 90 bodies.**
+Free-branch discriminator exact both ways (|ΔDE| **0.000000°**, ΔRA
+**70.092466°** spread **0.000000°** = `−axisRot`). **§5.86 annotated, still
+OPEN**; §11.158 entry file written FIRST then the stub; forward marker added
+at §11.144(j)(1) (the §11.156 entry-to-entry class). **No product-code change;
+md5 pristine.** NEW **§5.110** + **§5.111**, record-only. Two of the task's own
+predictions REFUTED and kept with their numbers; a third guard (C1) refused a
+non-discriminating epoch pair. **Newly Vixy's/§11.4's**: the calibration is now
+two DECISIONS with numbers — which RA zero point, and which ORIGIN.)*
 
 ---
 
