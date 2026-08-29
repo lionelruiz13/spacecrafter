@@ -652,7 +652,30 @@ re-run of its sweep.
 rows; map ⚠ marks resolved; §11 entry at the next free number + stub
 (entry-first); proposed-flip list for the supervisor; md5 pristine on any
 launch; code tree clean at close; WIP per §0.6.
-**WIP:** *(empty)*
+**WIP:** *2026-08-29 CP1 — VERIFICATION PASS DONE, 13/13 members read at source
+against `d6aec251`. NO mechanism has disappeared: §5.20/§5.21/§5.35/§5.36/§5.41/
+§5.42/§5.53/§5.56/§5.83/§5.84/§5.98 + B38's 8 residual members all CONFIRMED
+present (B38's one CLOSED member stayed closed). THREE material deltas: (1)
+**§5.5 fixed-en-route and its row never updated** — the whole B27 Tier-A/Tier-B
+program landed (§11.91/§11.107/§11.118); the row's own mechanism sentence
+("TODO exists [ModularObject.cpp:68]", "Moon ⇒ EARTH_MOON") is FALSE at source;
+(2) **§5.56's stated ground is REFUTED** — `BasicMeshLoader` declares a
+user-declared `virtual ~BasicMeshLoader()` with a body (`instance = nullptr`),
+so "nothing for a destructor to do" is false; MEASURED under gdb, one launch,
+four predictions committed first, all matched: ctor 1 hit, `ModuleLoaderMgr::init`
+1, `ModuleLoaderMgr::~ModuleLoaderMgr` 1 (static teardown REACHED — the control
+that makes the zero mean something), `~BasicMeshLoader` **0 hits across all 3
+resolved locations**, inferior exited normally; the counterexample dates to
+Vixy 2025-09-20 ⇒ census error in the row, not a regression; (3) **§5.21's "not
+reproduced" is imprecise** — the new path REGISTERS `LocationOrbitLoader`
+(`modules.cpp:49`, Vixy 2025-09-20) which constructs the identical defective
+`LocationOrbit`. §5.53 re-verified with a criterion that could have failed
+(a third preview file `sun_clear-preview.jpg` exists but has NO `tex_map`
+consumer ⇒ still exactly two bodies); its (b) gate is now a DERIVED constant
+`BODY_BIG_TEXTURE_BOUNDING_SIZE = 409.6f` whose source comment cites §5.53(b)
+by name. md5 in==out `03fbee59`/`545a51ef`, no concurrent instance, code tree
+clean. Artifacts `artifacts/f47/`. NEXT: §11.163 entry file, then stub, then
+row annotations + DEPLOYMENT-MAP ⚠ resolution.*
 
 ### F45 — §5.88's owed datum: what an empty spectral array costs at draw time (record-only) [S]
 
