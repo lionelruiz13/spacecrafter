@@ -691,7 +691,14 @@ fresh launch, plain `timeout`).
 README annotated; §11 entry at the next free number + stub, entry-file-first;
 artifacts force-added under `harness/artifacts/f51/`; md5 pristine; code tree
 clean at close; WIP per §0.6.
-**WIP:** *(empty)*
+**WIP:** *(2026-08-29 CP1: predictions COMMITTED before any launch —
+`artifacts/f51/f51_predictions.json`; instruments `f51_disc.py` (metric,
+`--calib` reproduces §11.164(c)'s four committed numbers exactly),
+`f51_dwell.py` + `f51_run.sh` (one launch, b3_ladder's moon base scene
+imported, 80 samples at 5.0 s). Stated before the run: the three shapes are
+NOT three on a series alone — "never lands" and "shading changed" coincide —
+so P2 (frame-pair hf correlation, no launch) and P3 (old-path control, same
+launch) are committed as the separators. NEXT: run the launch.)*
 
 ---
 

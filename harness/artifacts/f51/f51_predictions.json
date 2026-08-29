@@ -1,0 +1,57 @@
+{
+ "task": "F51 (A) - the dim-Moon discriminator, INTENT 11.164(e)(1)",
+ "written": "2026-08-29, BEFORE any launch and before any frame-pair analysis",
+ "code": "master-beta @ d6aec251",
+ "binary_md5_expected": "fa00deade57fe02739800013364a9611",
+ "instrument": {
+  "metric": "f51_disc.py: L = PIL convert('L'); Bl = GaussianBlur(4); mask = r<900 about ((w-1)/2,(h-1)/2) AND L>8; disc_mean=mean(L[M]); hf_mean=mean(|L-Bl|[M]); hf_sd=std((L-Bl)[M])",
+  "calibration": "f51_disc.py --calib reproduces 11.164(c)'s four committed numbers to the last printed digit on BOTH committed frames: JULY 165.258/6.644/9.513 n=2544661 (committed 165.258/6.644/9.514) and TODAY 61.431/2.464/4.230 n=2535950 (committed identical). rc=0.",
+  "scene": "b3_ladder moon `base` scene, imported from b3_ladder.py (site, settle discipline, convention: ONE authority), FOV 10, `flag experimental_shadows off` - the state F48's terrain_base_zoom.png was taken in",
+  "cadence": "80 samples on a 5.0 s wall-clock schedule = 395 s of dwell (6.6 min), one launch",
+  "applog_timestamping": "the applog carries NO timestamps; the interleaving is EXACT by the app's own command echo - every screenshot command appears as `get tcp : body action screenshot filename .../sNNN.png`, so any texture event is bracketed by two named samples. Harness-side wall clock is recorded per sample as the second channel."
+ },
+ "facts_relied_on_with_provenance": [
+  "[measured: 11.164(c)] the gap on this exact frame is disc_mean 165.258 (2026-07-25) -> 61.431 (2026-08-29), hf_mean 6.644 -> 2.464, on a bit-identical model state (21/21 dump fields)",
+  "[measured: 11.164(d)] the 2026-08-29 applogs carry exactly 3 more `creating uninitialized texture` events than the 2026-07-25 ones, and they are moon.jpg, moon_normal.jpg, moon_alti.jpg",
+  "[observed: artifacts/f48/ladder_current/terrain_base.applog.gz lines 1979-1984 vs 2086] all three Moon texture events are logged BEFORE the first TCP command echo - i.e. before any dwell window can open",
+  "[observed: s_texture.cpp:653-654 -> Texture.cpp:305-318] getTexture()'s no-cmd use() calls createImage(), which sets onGPU=true, and returns WITHOUT recording any upload; the real upload is s_texture::recordTransfer -> use(cmd,true) popping the same texRecap off textureQueue (s_texture.cpp:825-838), which is reached from draw_helper.cpp:468 - so on this reading the no-cmd branch is TRANSIENT (image created early, filled at the next transfer record) unless something drops the staging copy in between (Texture::use logs `Can't upload ... not stored in RAM` in that case; ZERO such lines in either committed 2026-08-29 applog)",
+  "[observed: ~/.spacecrafter/ssystem.ini [moon] and modularSystem/SolarSystem.ini.disabled [Moon]] BOTH render paths name the SAME three files (tex_map=bodies/moon.jpg, tex_normal=bodies/moon_normal.jpg, tex_heightmap=bodies/moon_alti.jpg), and s_texture caches by file name (applog: `s_texture: already in cache textures/bodies/moon.jpg`) - so the two paths share one GPU image per file"
+ ],
+ "P0_scene_reproduction_control": {
+  "why": "an A/B against a committed frame is worth nothing if the scene moved; this is F48's own control discipline",
+  "predicted": "sample 0: disc_mean = 61.431 +- 0.10, hf_mean = 2.464 +- 0.02, n = 2535950 +- 2000",
+  "if_it_fails": "the dwell scene is NOT F48's base scene; say so and treat every comparison against 11.164(c) as suspect rather than reinterpreting the numbers"
+ },
+ "P1_series_shapes": {
+  "definitions": {
+   "flat": "max(disc_mean) - min(disc_mean) over the 80 samples < 1.0",
+   "step": "exists k with |disc_mean[k+1] - disc_mean[k]| > 5.0"
+  },
+  "H_never_lands": "disc_mean[0] in [55,70]; flat; no body-texture event inside the dwell window",
+  "H_lands_late": "at least one UPWARD step, final level > 120, and a Moon-texture applog event bracketed between the two screenshot echoes that straddle the step",
+  "H_shading_changed": "disc_mean[0] in [55,70]; flat; any texture event in the window uncorrelated with any step",
+  "DEGENERACY_STATED_BEFORE_THE_RUN": "H_never_lands and H_shading_changed make the SAME series prediction. The series alone cannot separate them; what it CAN do is refute a minutes-late upload. Separating the two survivors is P2 (no launch) and P3 (same launch).",
+  "WINDOW_LIMIT_STATED_BEFORE_THE_RUN": "the three Moon texture events are logged before the first TCP command, so the dwell window opens ~60 s after they fire. This run cannot see a step that happened during startup. What would: a sampler running from the first drawn frame - named here, not run.",
+  "my_own_bet": "FLAT and dim (F48 already measured two frames 10 s apart agreeing to 0.01 in disc mean, in both epochs). Recorded so the entry can be held to it."
+ },
+ "P2_frame_pair_discriminator_no_launch": {
+  "what": "f51_disc.py --pair JULY TODAY on the two committed frames (artifacts/b3_ladder/R6_moon_terrain_control/terrain_base_zoom.png and artifacts/f48/ladder_current/terrain_base_zoom.png), geometry bit-identical by 11.164(c)",
+  "why_hf_is_the_discriminating_statistic": "a smooth tone map g sends the high-frequency part hf -> g'(L)*hf, so it PRESERVES the fine pattern up to a local scale; a frame whose albedo content never arrived has no reason to carry the same fine pattern at all. r_L alone is weak: the large-scale shading is common to both hypotheses.",
+  "albedo_present_tone_changed": "r_hf >= 0.7 with positive slope < 1, AND r2_pointwise_median_map >= 0.8",
+  "albedo_absent": "r_hf <= 0.2 AND r2_pointwise_median_map <= 0.5",
+  "otherwise": "NEITHER - record as-is with the numbers, keep both readings, name what discriminates next"
+ },
+ "P3_old_path_control_same_launch": {
+  "what": "`flag experimental_path off` -> frames at FOV 10 and FOV 60 -> +10 s -> `flag experimental_path on` -> frame (A/B/A)",
+  "positive_control": "the old-path FOV-10 frame must carry >= 100000 px with L>8 inside the mask. If it does not (the old path's observer need not sit where the new path's camera does), the leg is INCONCLUSIVE and is read as evidence in NO direction.",
+  "albedo_absent_predicts": "the old path is albedo-less too: its hf_mean <= 3.0 and r_hf vs the JULY frame <= 0.2",
+  "albedo_present_predicts": "the old path carries albedo: hf_mean >= 5.0 and r_hf vs the JULY frame >= 0.5 (a weaker bar than P2 - the two paths are not the same shader and need not be pixel-aligned)",
+  "ABA_control": "the new-path frame after toggling back must return to within 1.0 disc_mean of the dwell level, else the toggle perturbed the scene and P3 is inconclusive",
+  "bonus_observable": "if the toggle re-requests textures, new `creating uninitialized texture` events appear in the applog INSIDE the window, bracketed by named samples - that is a second, live look at the branch"
+ },
+ "routing_committed_before_the_run": {
+  "upload_late_or_never": "11.164(e)(3)'s product question gains its mechanism -> mint per 5.79's criterion, RECORD-ONLY, no fix (the branch is s_texture.cpp:653-654's no-cmd use())",
+  "stable_shading": "the driver candidate strengthens -> record, mint NOTHING (host state is not a product mechanism; 11.164(f)'s restraint holds)",
+  "neither": "record as-is, both readings kept with their numbers, name what discriminates next (the F44/F48 form)"
+ }
+}
