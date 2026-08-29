@@ -600,6 +600,20 @@ no-control verdict grounded); numbers on the D11 denominator where cost is
 claimed; §5.88 annotated (stays OPEN, its fix fork untouched); md5 pristine;
 code tree clean; §11 entry + stub; WIP per §0.6.
 **WIP:** *(cleared 2026-08-29 — DELIVERED: §11.159 + stub, §5.88 OWED DATUM PAID annotation (row stays OPEN, fix fork untouched), §5.90 rider; 9 fresh launches, field/data-root md5 pristine on every one; code `d6aec251` untouched.)*
+*(ACCEPTED by supervisor [fable 2026-08-29]: §11.159 read in full; commits/authors/scope
+checked; §5.88/§5.90 annotations + stub + committed artifacts (incl. the P1 bit-identity
+PNGs) verified. Judgment calls ENDORSED with their arguments: the locale false-absence
+caught by ARITHMETIC with the failed leg kept as probe evidence (k1 — the round's eighth
+criterion-integrity instance); the four-runs floor-clearing (bar raised on sample, never
+lowered on threshold); the 374 px / 3-of-255 screenshot A/A floor recorded as an
+INSTRUMENT DATUM, not minted (no mechanism, restraint correct); the one-key farm
+deviation stated. **Cadence rider DISCHARGE ACCEPTED by this item's owner**: (k7)'s
+4×-reproduced [144.0, 146.4] fps bracket IS the owed wall-clock-bracketed counter read —
+H1 (config cap) CONFIRMED on the CURRENT stack; the historical "161.3" label is
+reclassified permanently unattributable (its stack was destroyed by the 2026-08-27
+reboot — the §11.121(m) retroactive-unattributability shape); §0.5 caution updated at
+close. The (i) fork datum — only the caller-check site holds both the file name and the
+config key — correctly removes a premise without choosing.)*
 
 ### F46 — §5.89's owed sweep: every load-bearing `assert` in `src/` (record-only) [S]
 
