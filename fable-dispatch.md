@@ -173,13 +173,27 @@ route is the standing answer.
      positively mapped both ways (decoy 1 / without 0).
    - **Session-environment hazards (2026-08-09, F28/F30, §11.138/§11.140(i)):**
      (a) the inherited `XAUTHORITY` belongs to another uid — every display refuses;
-     `export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)` with
+     ~~`export XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)`~~
+     **[SUPERSEDED 2026-08-29, F43 §11.157(f): the host rebooted 2026-08-27 and
+     claude has NO login session — the stack is a REBUILT headless GNOME/Xwayland
+     under `XDG_RUNTIME_DIR=/tmp/rt-claude`, verified against the recorded
+     values (Meta-0 2448x1332@59.96, GPU-real, Swapchain/Rect per §11.106);
+     `export XAUTHORITY=/tmp/rt-claude/.mutter-Xwaylandauth.*` until a real
+     login session exists; if the auth file is gone (another reboot), STOP and
+     report rather than improvise a new stack silently]** with
      `DISPLAY=:2` (forced, not defaulted — the inherited `DISPLAY=:0` makes
      `${DISPLAY:-:2}` keep the wrong one), verify `xdpyinfo` BEFORE the first
-     launch (full note `harness/README.md`). (b) `timeout -s KILL` bounds NOTHING
+     launch (full note `harness/README.md`). The stack is rebuilt-not-inherited:
+     a candidate variable for any A/A floor vs pre-2026-08-27 baselines.
+     (b) `timeout -s KILL` bounds NOTHING
      in this session type (measured: rc=124 only after the child's full run;
      mechanism unattributed, signal-mask hypothesis refuted) — use plain `timeout`
      (measured working) or an explicit poll-and-kill watchdog.
+   - **§5.109 hazard (2026-08-29, F43):** `moveto … alt` counts from the
+     DISPLAY-scaled datum, snapped once — never `flag moon_scaled off; sleep N;
+     moveto`; wait the scale settle BY MEASUREMENT (`scaling`==`scalingTarget`
+     in the dump) and assert the observer's radius (band checks pass on both
+     values).
    - **Display architecture is part of the instrument (2026-07-31, §11.122(o) +
      §11.123(o)/(o2)):** claude renders on his OWN headless GNOME/Xwayland `:2`
      (GPU-real; the harness default); Vixy's remmina/RDP relay is view-only and its
@@ -525,6 +539,8 @@ md5 pristine.** NEW **§5.110** + **§5.111**, record-only. Two of the task's ow
 predictions REFUTED and kept with their numbers; a third guard (C1) refused a
 non-discriminating epoch pair. **Newly Vixy's/§11.4's**: the calibration is now
 two DECISIONS with numbers — which RA zero point, and which ORIGIN.)*
+*(ROUND EXTENDED after this acceptance per the session-14 update note's recorded
+plan: session health excellent, F45 + F46 minted below.)*
 *(ACCEPTED by supervisor [fable 2026-08-29]: §11.158 read in full; commits/authors/scope
 checked (record-only held: `src/` untouched, code clean at `d6aec251` throughout); §5.86
 annotation + §5.110/§5.111 mints + stub + the §11.144(j)(1) forward marker verified at the
@@ -539,6 +555,96 @@ owed; the census's comment-stripped, line-preserving instrument. The (b) reachab
 — shipped blast radius = composed-body selection only, while the dump exercises the
 readout for all 90 — is the entry's most consequential fact and correctly bounds (f)'s
 target. §11.4's two numbered decisions join §3 for Vixy.)*
+
+### F45 — §5.88's owed datum: what an empty spectral array costs at draw time (record-only) [S]
+
+**Mandate:** the §5.88 row's own owed clause: *"what an empty spectral array
+costs at draw time, which this task did not measure."* The repair fork (make
+`initFromFile` report / make it throw so the existing `catch` fires / caller
+checks — three contracts, one changing control flow) is Vixy's AFTER this
+datum; nothing here fixes.
+
+**Sources (re-read, never recall):** the §5.88 row (the mechanism:
+`hip_star_mgr.cpp:489-493` try/catch that never fires;
+`string_array.cpp:33-45` silent `size == 0`; shipped `stars.ini` names
+`stars_hip_sp_0v0_4.cat`, root carries `0v0_0`); the §5.90 row (the split
+roots: the LIST from `~/.spacecrafter/stars.ini`, the FILES from
+`/usr/local/share/spacecrafter/stars/`, and `~/.spacecrafter/stars/` unread —
+CONSULT: the control below rides this mechanism and whatever it measures about
+it is recorded on §5.90, not chased); §11.146(g) (F36's measurement of the
+0-report); `f44_census.py` (reusable comment-stripped census instrument).
+
+**Scope:**
+1. **Source read first:** what consumes the spectral array on the draw path
+   (per-star per-frame lookup? colour table at load? index arithmetic on an
+   empty vector?) — the cost SHAPE, stated with file:line, so the measurement
+   knows what to look for (visuals, per-frame time, both).
+2. **Measure empty-vs-populated:** shipped state (array empty) vs a CONTROL
+   with the array populated. Control route to try first: temp-HOME farm whose
+   `stars.ini` names the catalogue version that EXISTS in the loader's file
+   root (`0v0_0`) — never edit the real `~/.spacecrafter` (md5 in==out).
+   If the §5.90 split-root mechanism defeats every no-code control, SAY SO
+   with the read that grounds it and name what a control needs — do not force
+   one. Observables: star-channel pixels/colours (screenshot compare, star
+   flags on), any per-frame cost against the **1 ms/frame** denominator (D11;
+   counter ratios only, no absolute fps), console/log.
+3. Record on the §5.88 row (+§5.90 if the control discriminates its
+   mechanism); §11 entry at the next free number + stub, entry file first
+   (§11.156(f)).
+
+**Boundaries:** NO product code, NO data-root writes (`/usr/local/share` is
+the field, D9), no real-HOME edits. The contract choice stays Vixy's.
+
+**DoD:** cost shape stated from source; empty-vs-populated measured (or the
+no-control verdict grounded); numbers on the D11 denominator where cost is
+claimed; §5.88 annotated (stays OPEN, its fix fork untouched); md5 pristine;
+code tree clean; §11 entry + stub; WIP per §0.6.
+**WIP:** *(empty)*
+
+### F46 — §5.89's owed sweep: every load-bearing `assert` in `src/` (record-only) [S]
+
+**Mandate:** the §5.89 row's own owed clause: *"whether any other `assert` in
+`src/` is load-bearing in the same way, which F36 did not sweep."* The shipped
+build type is `RelWithDebInfo` (`-DNDEBUG` — asserts compile to nothing,
+measured §11.146(h)); §5.89's instance is `core.cpp:487-492` (unknown
+`viewing_mode` reports to stderr, `assert(0)` dead, execution falls through).
+Repair choices (abort / named-default-and-log per D12 / refuse-to-start) are
+Vixy's per the row; nothing here fixes.
+
+**Sources (re-read, never recall):** the §5.89 row incl. its D15(a) INFORMED
+annotation (EQUATORIAL is the only defensible named default on the drawn path,
+but VIEW_HORIZON stays config vocabulary — D9/D13); §11.146(h);
+`f44_census.py` (the comment-stripped, line-preserving census instrument —
+reuse it; a raw grep measured 2.2× wrong, F36).
+
+**Scope:**
+1. **Census:** every `assert(`/`assert (` in `src/` (EntityCore included — it
+   is in the built binary; read-only by protocol), comment-stripped, count
+   stated with the method.
+2. **Classify each:** (i) LOAD-BEARING — the author meant it fatal (no other
+   handling; falling through changes behaviour) AND the failing condition is
+   REACHABLE from user input, config, script/TCP command, or shipped data;
+   (ii) INVARIANT-CHECK — a debug diagnostic whose removal under NDEBUG leaves
+   correct handling in place; (iii) UNREACHABLE — the condition cannot occur
+   from the shipped surface (ground the negative). For every class-(i): what
+   executes after the dead assert, reachable from what, observable how.
+   Reachability grounded the F44 way (route named, or the read that grounds
+   the negative).
+3. **Record:** on the §5.89 row (the sweep it owed); class-(i) members beyond
+   §5.89's own become §5 rows ONLY if their mechanism is distinct (§5.79's
+   mint criterion: reachable from a shipped surface); otherwise they list on
+   §5.89 as the class's members. §11 entry + stub, entry file first.
+
+**Boundaries:** NO product code; no fixes, no "obvious" guard repairs; the
+per-member repair fork is Vixy's with the class in one place. Static analysis
+task — no launches expected; if one is needed to ground a reachability claim,
+§0.5 discipline applies.
+
+**DoD:** assert census count + method; every member classified with grounds;
+class-(i) set enumerated with fall-through consequence + reach; §5.89
+annotated (stays OPEN); new rows only per the mint criterion, stated; code
+tree clean; §11 entry + stub; WIP per §0.6.
+**WIP:** *(empty)*
 
 ---
 
