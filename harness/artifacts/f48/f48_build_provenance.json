@@ -1,0 +1,36 @@
+{
+ "task": "F48 - b3_ladder's discriminating check (INTENT 11.157(e)'s named check)",
+ "date": "2026-08-29",
+ "old_build": {
+  "code_sha": "922701c93391687542178b7be0bf0c02ac764ede",
+  "code_subject": "Write the true ray-hit depth from the ray-march (INTENT \u00a75.29)",
+  "code_date": "2026-07-25 12:45:08 +0200",
+  "worktree": "/tmp/sc-922701c9 (git worktree, detached; main tree never left d6aec251)",
+  "build_dir": "/tmp/sc-922701c9-build (tmpfs - REBOOT-VOLATILE, and its 746 MB are RAM)",
+  "cmake": "cmake -S /tmp/sc-922701c9 -B /tmp/sc-922701c9-build -DCMAKE_BUILD_TYPE=RelWithDebInfo",
+  "cmake_flags_source": "reproduced from build-claude/CMakeCache.txt: BUILD_TYPE=RelWithDebInfo, CXX=/usr/bin/c++, CXX_FLAGS empty, INSTALL_PREFIX=/usr/local, generator Unix Makefiles",
+  "jobs": "-j12 (free -g available = 23 GiB >= 16 at the build, per fable-dispatch 0.5)",
+  "build_rc": 0,
+  "binary": "/tmp/sc-922701c9-build/src/spacecrafter",
+  "binary_md5": "bb179629476ae70bb6f0d9ddc2b47a98",
+  "binary_size": 179863128,
+  "binary_mtime": "2026-08-29 21:48:54.801955851 +0200",
+  "EntityCore_pin": "224eba7a69ed301732a33fc2037833e4e6e08cb7",
+  "EntityCore_populated_as": "independent local clone of /home/claude/spacecrafter/src/EntityCore checked out at the pin - NOT `git submodule update` in the linked worktree, which shares .git/modules and would have moved the MAIN tree's submodule HEAD"
+ },
+ "current_build": {
+  "code_sha": "d6aec251a561598e57a579fd1a9ac300e5bd9bcf",
+  "binary": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+  "binary_md5": "fa00deade57fe02739800013364a9611",
+  "binary_mtime": "2026-08-26 17:43:30.170070451 +0200",
+  "EntityCore_pin": "7ce58350d82e0e6931e7a70dd214e48cdaf21a2f"
+ },
+ "what_the_rollback_does_and_does_NOT_roll_back": {
+  "C++ rolled back": "yes - the whole src/ tree at 922701c9",
+  "EntityCore rolled back": "yes - 224eba7a; the ONE commit between the pins is 7ce5835 'A fresh ASmooth movement starts at phase time zero' (the 11.152/5.102 NaN fix), so the old arm carries the PRE-fix ASmooth whose `timer` is indeterminate on a first movement",
+  "shaders NOT rolled back": "the app reads .spv from the INSTALL prefix (/usr/local/share/spacecrafter/shaders, Pipeline::setShaderDir <- settings->getShaderDir(), app.cpp:110), so BOTH arms run TODAY's installed set",
+  "shader difference measured, not assumed": "installed set == d6aec251:shaders/compiled/ exactly (214 files, 0 differing md5); vs 922701c9 the ONLY differences are bodyRayMarchNight.frag.spv (modified) and bodyStarSurface.{vert,frag}.spv (added) - no deletions, so no shader the old binary asks for is missing. The MOON ladder's own shader bodyRayMarch.frag.spv is md5 cf5ca45b927a42ab67ec2981e11e2e28 at 922701c9, at d6aec251 AND installed - one byte-identical file in both arms",
+  "data NOT rolled back and unchanged": "~/.spacecrafter/textures/bodies/moon*.{jpg,png} mtimes 2019-2023, textures dir 2025-09-27; config.ini 03fbee59, ssystem.ini 545a51ef (pristine)",
+  "display stack": "the F43-rebuilt headless GNOME/Xwayland :2 is the SAME running instance (gnome-shell pid 147372, started 2026-08-29 14:51:01, i.e. before F43's own 15:52 ladder run), Meta-0 2448x1332 59.96*+ - so the A arm's committed numbers and the B arm's run share one stack instance"
+ }
+}

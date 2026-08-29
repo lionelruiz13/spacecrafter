@@ -143,8 +143,14 @@ PRECONDITIONS (violations are asserted, not assumed)
 
 usage: b3_ladder.py <outdir> <state> [--site moon|earth|earth_noatm]
                                      [--families sph,cur]
+                                     [--convention pre|post]
        b3_ladder.py <outdir> --predict [--site ...]
   state = none | shell | terrain | atm   (aliases: pre=shell, post=terrain)
+  --convention names the free-mode `moveto lon` convention THE BINARY UNDER
+  TEST implements (post = since F40, the default; pre = a binary older than
+  F40's converter fix, e.g. a `922701c9` build).  It moves the COMMAND only:
+  the sub-observer point, the DEM sample and every prediction are identical
+  under both - see CONVENTION near obs_lon_cam().
 """
 import json, math, os, re, socket, subprocess, sys, time
 from pathlib import Path
@@ -313,6 +319,23 @@ def model_radius(name):
     return math.sqrt(r2), math.sqrt(rmin), n
 
 
+# Which free-mode `moveto lon` convention the BINARY UNDER TEST implements.
+# "post" = since F40 (§11.153: sub-point = L - 90), the default and the only
+# value any current binary needs.  "pre" exists for ONE purpose: running this
+# harness against a binary built BEFORE F40's converter fix (sub-point =
+# 180 - L), which is what §11.157(e)'s named discriminating check requires -
+# a `922701c9` build, where `Camera::moveTo`'s free branch is still
+# `spheToRect(-pos[0], pos[1]) * (altitudeReference + pos[2])`
+# [observed: git show 922701c9:src/experimentalModule/Camera.cpp:543-544].
+# It is a property of the BINARY, never of the scene: both values put the
+# observer over the SAME sub-point (140.300 on moon, -90.000 on earth), so
+# `nadir_lon()`, `site_lon()`, the DEM sample and every prediction are
+# bit-identical under either - checked by diffing b3_ladder_predict.json
+# across the two settings, which is the invariance that makes a cross-binary
+# comparison a comparison of the PRODUCT and not of two different scenes.
+CONVENTION = "post"
+
+
 def obs_lon_cam():
     """The longitude to COMMAND so the observer lands on this site's own
     surface point - which is not the site's longitude, and stopped being
@@ -338,11 +361,23 @@ def obs_lon_cam():
     `180 - L`, so there is a single convention authority (I2) and the next
     convention change moves both together or fails at A0dist, as this one did
     (19 failures, `artifacts/f43/ladder_pre`).
+
+    On a PRE-F40 binary (CONVENTION == "pre") the site's own name IS the
+    command: `180 - 39.7 = 140.3` is the same sub-point `230.3 - 90` reaches
+    on a post-F40 one.  Verified bit-identical, not approximately: on moon
+    `(270.0-39.7)%360.0 - 90.0` and `180.0-39.7` are the SAME float 140.3, on
+    earth both give -90.0 [measured].
     """
+    if CONVENTION == "pre":
+        return S["obs_lon"]
     return (270.0 - S["obs_lon"]) % 360.0
 
 
 def nadir_lon():
+    """The sub-observer surface point - the SITE, held fixed across both
+    conventions (that is the whole point of the pair above)."""
+    if CONVENTION == "pre":
+        return 180.0 - obs_lon_cam()
     return obs_lon_cam() - 90.0
 
 
@@ -561,8 +596,24 @@ def load_dump(path):
 def wait_scale_settled(s, out, tag, tries=20):
     """Poll the dump until the parent's display scaling has reached its target
     and stopped moving.  See the call site for why this is a measurement and
-    not a sleep (§5.109)."""
-    prev = None; last = None
+    not a sleep (§5.109).
+
+    TWO CRITERIA, and which one applies is a property of the BINARY's dump
+    format, not a choice.  `scalingTarget` was added to `ModularBody::dumpTrace`
+    after `922701c9` (that dump carries `scaledDatumRadius` and not `scaling`
+    at all [observed: git show 922701c9:src/experimentalModule/ModularBody.cpp,
+    dumpTrace at :622-670]), so on a pre-`scalingTarget` binary the strong
+    criterion `scaling == scalingTarget` cannot be evaluated - and returning
+    early there would silently reinstate exactly the §5.109 mid-ramp bug this
+    function exists to remove.  The fallback reads the ONE quantity both dumps
+    carry and the one the ladder actually depends on: `scaledDatumRadius`, whose
+    settled value is the site's authored radius (that is what `scale_off`
+    drives it to, and what P0 asserts a few lines later).  Settled = two
+    consecutive samples equal to 1e-6 relative AND already at the authored
+    radius; the weaker "stopped moving" alone would accept a ramp plateau.
+    Every sample is written to `<tag>_settle_trace.json` so the ramp profile of
+    whichever binary ran is a recorded datum rather than an assumption."""
+    prev = None; last = None; trace = []
     for _ in range(tries):
         p = out / f"{tag}_settle.json"
         if p.exists():
@@ -573,14 +624,26 @@ def wait_scale_settled(s, out, tag, tries=20):
                 break
             time.sleep(0.2)
         m = (load_dump(p) or {}).get(S["parent"]) or {}
-        if "scaling" not in m:
-            fail(f"{tag}: no `scaling` for {S['parent']} in the dump - the scale "
-                 f"precondition cannot be verified, only assumed")
+        if "scaledDatumRadius" not in m:
+            fail(f"{tag}: no `scaledDatumRadius` for {S['parent']} in the dump - "
+                 f"the scale precondition cannot be verified, only assumed")
             return None
-        sc, tgt, last = m["scaling"], m["scalingTarget"], m["scaledDatumRadius"] * AU_KM
-        if abs(sc - tgt) < 1e-4 and prev is not None and abs(sc - prev) < 1e-4:
+        last = m["scaledDatumRadius"] * AU_KM
+        trace.append({"t": time.time(), "scaledDatumRadius_km": last,
+                      "scaling": m.get("scaling"), "scalingTarget": m.get("scalingTarget"),
+                      "boundingRadius_km": m.get("boundingRadius", 0) * AU_KM})
+        if "scaling" in m and "scalingTarget" in m:
+            sc, tgt = m["scaling"], m["scalingTarget"]
+            settled = abs(sc - tgt) < 1e-4 and prev is not None and abs(sc - prev) < 1e-4
+            prev = sc
+        else:
+            settled = (prev is not None and abs(last - prev) <= 1e-6 * max(1.0, abs(last))
+                       and abs(last - S["radius"]) <= 1e-3 * S["radius"])
+            prev = last
+        if settled:
+            (out / f"{tag}_settle_trace.json").write_text(json.dumps(trace, indent=1))
             return last
-        prev = sc
+    (out / f"{tag}_settle_trace.json").write_text(json.dumps(trace, indent=1))
     fail(f"{tag}: display scale never settled in {tries} samples (last "
          f"scaledDatumRadius {last} km) - every altitude here would be bound to "
          f"a moving reference")
@@ -662,15 +725,20 @@ def box_counts(a, b, cx, cy, half):
 
 
 def main():
-    global S
+    global S, CONVENTION
     argv = sys.argv[1:]
     site_key = "moon"
     if "--site" in argv:
         i = argv.index("--site"); site_key = argv[i + 1]; del argv[i:i + 2]
+    if "--convention" in argv:
+        i = argv.index("--convention"); CONVENTION = argv[i + 1]; del argv[i:i + 2]
+        assert CONVENTION in ("pre", "post"), "--convention pre|post (a property of the BINARY)"
     families = ["sph", "cur"]
     if "--families" in argv:
         i = argv.index("--families"); families = argv[i + 1].split(","); del argv[i:i + 2]
     S = SITES[site_key]; S["key"] = site_key
+    print(f"binary: {SC_BIN}  convention: {CONVENTION}  "
+          f"commanded lon {obs_lon_cam():.3f} -> sub-point {nadir_lon():.3f}", flush=True)
     # ABSOLUTE: the app runs with cwd = the farm's .spacecrafter, so a relative
     # outdir would make it write the dump/screenshots somewhere else (silently -
     # the failure surfaces only as a missing dump).
@@ -713,7 +781,10 @@ def main():
     # self-calibrated px scale: screenSize = scaledRadius / (dist * halfFov)
     half_fov_meas = (parent.get("scaledDatumRadius", 0) / (parent.get("dist", 1) * parent.get("screenSize", 1))
                      if parent.get("screenSize") else 0)
-    report = {"site": site_key, "state": state, "parent_dist_km": dist_km,
+    report = {"site": site_key, "state": state,
+              "binary": SC_BIN, "convention": CONVENTION,
+              "commanded_lon": obs_lon_cam(), "nadir_lon": nadir_lon(),
+              "parent_dist_km": dist_km,
               "halfFov_measured_rad": half_fov_meas,
               "halfFov_nominal_rad": FOV_WIDE * math.pi / 360.0,
               "parent_scaledDatumRadius_km": parent.get("scaledDatumRadius", 0) * AU_KM,

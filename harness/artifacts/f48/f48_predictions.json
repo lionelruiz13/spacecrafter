@@ -1,0 +1,71 @@
+{
+ "written": "2026-08-29, BEFORE either run of this task (the FM-4 rule, 11.99->11.100)",
+ "question": "INTENT 11.157(e)'s named discriminating check: run the CORRECTED b3_ladder against a 922701c9 build. Caps returning to 28.8/30.3/58.3/125.3 => the +1.4-1.6% drift is the PRODUCT's across five sessions; caps staying at 29.2/30.8/59.1/127.0 => it is remaining harness state and 11.157's attribution is wrong.",
+
+ "arm_A_committed_not_re-run": {
+  "what": "the CURRENT binary fa00dead (= code d6aec251), corrected harness, TODAY's stack",
+  "source": "harness/artifacts/f43/ladder_post/b3_ladder_moon_terrain.json (F43, 2026-08-29 15:52, gnome-shell pid 147372 = the instance still running)",
+  "zoom_eq_radius_px": {"lift20": 29.186, "b20": 0.0, "b30": 30.835, "b45": 59.100, "b90": 126.969, "b250": 316.050},
+  "zoom_changed_px": {"lift20": 2676, "b20": 0, "b30": 2987, "b45": 10973, "b90": 50646, "b250": 313806},
+  "shadow_wide_dark": {"lift20": 1132, "b20": 2313, "b30": 3520, "b45": 5826, "b90": 22662, "b250": 24840},
+  "site_luma_wide": {"lift20": 103.21, "b20": 90.27, "b30": 87.01, "b45": 71.14, "b90": 52.47, "b250": 20.97},
+  "centre_luma": 60.7155,
+  "frame_lit_px_gt32": 1909800,
+  "observer_radius_km": 9737.399932838196,
+  "parent_boundingRadius_km": 1772.148246090878,
+  "obs_to_body_dist_km": {"lift20": 7911.53, "b20": 8021.83, "b30": 8008.96, "b45": 8000.56, "b90": 8006.86, "b250": 8097.05}
+ },
+
+ "arm_TARGET_11_104_d": {
+  "what": "F1's own committed post-fix run ON code 922701c9 (2026-07-25), harness 8a294d8, PRE-reboot display stack",
+  "source": "harness/artifacts/b3_ladder/post/b3_ladder_post.json + INTENT/11.104.md (d)",
+  "zoom_eq_radius_px": {"lift20": 28.812, "b20": 0.0, "b30": 30.346, "b45": 58.265, "b90": 125.314, "b250": 337.505},
+  "zoom_changed_px": {"lift20": 2608, "b20": 0, "b30": 2893, "b45": 10665, "b90": 49334, "b250": 357858},
+  "shadow_wide_dark": {"lift20": 1333, "b20": 2790, "b30": 4456, "b45": 8801, "b90": 30383, "b250": 59163},
+  "site_luma_wide": {"lift20": 192.12, "b20": 194.36, "b30": 202.43, "b45": 186.16, "b90": 171.95, "b250": 149.95},
+  "centre_luma": 181.3887,
+  "obs_to_body_dist_km": {"lift20": 7911.53, "b20": 8021.83, "b30": 8008.96, "b45": 8000.56, "b90": 8006.86, "b250": 8097.05},
+  "note": "the six observer->body distances are IDENTICAL to the digit in both arms - the scene, the site and the observer are the same in F1's run and F43's; only what is DRAWN there differs"
+ },
+
+ "arm_B_to_be_measured": "binary bb179629 (= code 922701c9, EntityCore 224eba7a), the SAME corrected harness file, --convention pre, TODAY's stack",
+
+ "signatures_as_11_157(e)_posed_them": {
+  "P_product": "arm B reproduces 11.104(d): caps 28.8/30.3/58.3/125.3, b250 337.5, b20 shadow 2790 => the drift is the PRODUCT's between 922701c9 and d6aec251",
+  "H_harness": "arm B reproduces arm A: caps 29.2/30.8/59.1/127.0, b250 316.0, b20 shadow 2313 => (e)'s product attribution is wrong"
+ },
+
+ "correction_to_the_dichotomy_stated_before_the_run": "H as (e) worded it ('remaining harness state') is NOT what an arm-B-equals-arm-A outcome would establish, because the harness is literally the SAME FILE in both arms and its prediction file is byte-identical (md5 80234f6eb242d8917a0f92ad5ffbefed under --convention pre and post AND in F43's committed artifact). An arm-B-equals-arm-A outcome excludes the product's C++ and leaves the ENVIRONMENT - the display stack rebuilt at the 2026-08-27 reboot (11.157(f)), the GPU driver, the installed shader set - which is a THIRD attribution neither half of (e)'s dichotomy names.",
+
+ "committed_prediction_of_this_task": {
+  "verdict": "SIGNATURE P - arm B comes back BRIGHT and small-capped, i.e. close to 11.104(d)",
+  "argument": [
+   "the two committed arms differ FAR more in illumination than in geometry: centre_luma 181.39 -> 60.72 (-66%) and per-leg site_luma 192/194/202/186/172/150 -> 103/90/87/71/52/21, while all six observer->body distances agree to the digit. So the drift's carrier is what the parent's surface RETURNS, not where anything stands.",
+   "the moon ladder's own shader is one byte-identical file in both arms (bodyRayMarch.frag.spv cf5ca45b, at 922701c9, at d6aec251 and installed), the textures have not been written since 2023-2025, and config/ssystem are md5-pristine - so of the parts that could carry an illumination change, the C++ (5 sessions, incl. the 742cdc82/d6aec251 display-scaling pair and the 18b6f13f free-flight change) is the one that moved.",
+   "F43's own [derived] mechanism reads the same way: a dimmer site raises body-vs-surface contrast where the leg is lit (caps UP), loses the dim leg's own rim (b250 DOWN) and compresses the shadow witness (DOWN) - one sign pattern, and arm A shows exactly that pattern against arm TARGET."
+  ],
+  "named_alternative_that_would_refute_it": "the display stack. F1's run was on the PRE-reboot stack and both of today's arms are on the F43-rebuilt one (11.157(f)); a driver/compositor-side change in what a screenshot returns would make arm B come back DIM too, and that is precisely the outcome that refutes this prediction."
+ },
+
+ "discriminating_quantities_ranked_by_how_far_they_are_above_the_noise": {
+  "centre_luma": "181.39 (P) vs 60.72 (H) - a factor of 3. Sharp: A/A floor on this stack is 374 px differing by at most 3 of 255 (F45), and centre_luma averages a 100x100 box.",
+  "site_luma_b250": "149.95 (P) vs 20.97 (H) - a factor of 7, and it is the quantity the ladder's ONE remaining failure gates on (>= 30)",
+  "b250_zoom_changed_px": "357858 (P) vs 313806 (H) - 44052 px apart",
+  "b20_shadow_wide_dark": "2790 (P) vs 2313 (H) - 477 px apart",
+  "the_four_metric_caps": "28.812/30.346/58.265/125.314 (P) vs 29.186/30.835/59.100/126.969 (H) - only 1.3-1.6% apart, i.e. 68/94/308/1312 changed px. Still above the A/A floor because box_counts thresholds at |delta| > 16 while the A/A floor's maximum difference is 3 of 255 - no A/A pixel can even enter the count - but they are the WEAKEST of these quantities and the verdict must not rest on lift20 alone."
+ },
+
+ "pass_condition_for_each_signature": {
+  "P": "centre_luma >= 150 AND b250 site_luma >= 120 AND all four metric caps within 2% of the TARGET values",
+  "H": "centre_luma <= 80 AND b250 site_luma <= 30 AND all four metric caps within 2% of arm A's values",
+  "NEITHER": "anything else - recorded as-is with both predictions kept and the next discriminating step named (the F44 precedent)"
+ },
+
+ "compatibility_pre_check_stated_before_the_run": {
+  "scaling_scalingTarget": "ABSENT at 922701c9 - dumpTrace there emits scaledDatumRadius/scaledGroundRadius/dist/screen/screenSize/boundingRadius/relation/visible but no scaling and no scalingTarget [observed: git show 922701c9:src/experimentalModule/ModularBody.cpp, dumpTrace at :622-670]. ADAPTED: wait_scale_settled falls back to scaledDatumRadius (present in both dumps), settled = two consecutive samples equal to 1e-6 relative AND already at the authored radius; every sample is written to <tag>_settle_trace.json.",
+  "P0alt": "reads the parent's dumped `dist` - PRESENT at 922701c9, no adaptation needed.",
+  "free_mode_moveto_lon_convention": "PRE-F40 at 922701c9 (Camera::moveTo's free branch is still `Utility::spheToRect(-pos[0], pos[1], dst); dst *= reference->getAltitudeReference() + pos[2]` [observed: 922701c9:src/experimentalModule/Camera.cpp:543-544]), so the corrected harness's commanded 230.3 would put the sub-point at -50.3 instead of the site's 140.3. ADAPTED: --convention pre commands 39.7, which is what F1's own harness commanded (8a294d8: OBS_LON = 39.7, NADIR_LON = 180.0 - OBS_LON). The site, the DEM sample and every prediction are unchanged - proven by md5, not by argument.",
+  "scale_ramp_semantics_delta": "at d6aec251 a composed body's display_scale is applied at the config read as a STARTING STATE (11.155, commit d6aec251 'The configured scale is a starting state, not an animation'); at 922701c9 the twin's `display_scale = 5` is an UNKNOWN key and the Moon is scaled instead by config.ini's moon_scale=5 through ssystem_factory.hpp:251-257 -> ModularBody::setScaling, an ASmooth<...,5.f> => it RAMPS. Both arms then command `flag moon_scaled off` and both must settle at scaledDatumRadius == 1737.4 (P0 asserts it). What the settle probe observes on the old binary is recorded as its own datum, whichever way it goes - and the old arm's ASmooth is the PRE-11.152 one whose `timer` is indeterminate on a first movement, so a NaN scaledDatumRadius there is a possible outcome and would be a finding, not a failure of this task.",
+  "six_committed_geometry_legs": "UNTOUCHED - LADDER_MOON, predictions(), the A0/A0dist/P0/P1 gates and check_sphere_ladder are byte-identical to F43's committed file; the only edits are the two named above plus a provenance print and three report fields."
+ }
+}

@@ -391,7 +391,15 @@ any claim is superseded); §11 entry at the next free number + stub,
 entry-file-first (§11.156(f)); artifacts committed (force-add —
 `.gitignore:1` ignores `artifacts/`, F44-acceptance convention); md5
 pristine on every launch; main code tree clean at close; WIP per §0.6.
-**WIP:** *(empty)*
+**WIP:** *2026-08-29 CP1 — `922701c9` built out-of-tree (worktree
+`/tmp/sc-922701c9`, build `/tmp/sc-922701c9-build`, binary md5 `bb179629`,
+EntityCore `224eba7a`); compatibility pre-check done at source (no
+`scaling`/`scalingTarget` in that dump; free-mode lon convention is pre-F40);
+b3_ladder adapted at two sites only (`--convention pre|post`,
+`wait_scale_settled` fallback) with the prediction file byte-identical
+(md5 `80234f6e`) and both signatures + this task's own prediction committed.
+NEXT: control run on `fa00dead` with the adapted harness, then the
+`bb179629` run.*
 
 ### F49 — The §11.156(g) recovery backlog: five cross-entry back-markers per §11.113(p) (markers only) [S]
 
