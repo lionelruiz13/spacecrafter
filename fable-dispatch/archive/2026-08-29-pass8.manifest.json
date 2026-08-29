@@ -1,0 +1,66 @@
+{
+ "pass": "pass8",
+ "date": "2026-08-29",
+ "source": "fable-dispatch.md",
+ "pre_md5": "ed72e1f00e6a2b667647cf64f3608e41",
+ "pre_commit": "75f8b30",
+ "reconstruction": "verified byte-exact in-process against the pre-move bytes (payloads re-inserted at recorded positions reproduce pre_md5)",
+ "units": [
+  {
+   "id": "update-s13",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/update-s13.md",
+   "line_start": 37,
+   "line_count": 62,
+   "payload_md5": "867f7e4ce72321153d2d832edbeae47f"
+  },
+  {
+   "id": "F42",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F42.md",
+   "line_start": 347,
+   "line_count": 91,
+   "payload_md5": "027e538fe0843d1b1d8a397594c38163"
+  },
+  {
+   "id": "F43",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F43.md",
+   "line_start": 438,
+   "line_count": 92,
+   "payload_md5": "afd0690c70bd8024c69196f9a9770649"
+  },
+  {
+   "id": "F44",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F44.md",
+   "line_start": 530,
+   "line_count": 88,
+   "payload_md5": "0a8b8987d34e3a967bcb8bcb1e8b5d01"
+  },
+  {
+   "id": "F47",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F47.md",
+   "line_start": 618,
+   "line_count": 101,
+   "payload_md5": "8c7a69e2305904ea2826cf91e81e2fa2"
+  },
+  {
+   "id": "F45",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F45.md",
+   "line_start": 719,
+   "line_count": 59,
+   "payload_md5": "261a8c7ed8cb49de8cefd3923785b0b0"
+  },
+  {
+   "id": "F46",
+   "mode": "move",
+   "dest": "fable-dispatch/archive/F46.md",
+   "line_start": 778,
+   "line_count": 71,
+   "payload_md5": "841298a915b1c7925a835e261171bca8"
+  }
+ ]
+}
