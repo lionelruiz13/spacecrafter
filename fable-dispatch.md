@@ -699,6 +699,22 @@ consumer ⇒ still exactly two bodies); its (b) gate is now a DERIVED constant
 by name. md5 in==out `03fbee59`/`545a51ef`, no concurrent instance, code tree
 clean. Artifacts `artifacts/f47/`. NEXT: §11.163 entry file, then stub, then
 row annotations + DEPLOYMENT-MAP ⚠ resolution.*
+*(ACCEPTED by supervisor [fable 2026-08-29]: §11.163 read in full; commits/authors/scope
+checked (record-only held; one launch, md5 pristine); §5.112 mint + 13 annotations + the
+§11.124(f)/§11.126(f) back-markers (the event-bound rule's first live use) + the map's
+in-place tier updates all verified — the 7 residual ⚠ tokens are inside struck text, live
+set zero. Judgment calls ENDORSED with their arguments: §5.112 minted-not-folded (folding
+would self-contradict §5.42's measured line); the launch spent on §5.56 (converts [derived]
+to [measured] with the owner-destructor control — and records that §11.126(f) RE-DERIVED the
+wrong inference, a datum about re-derivation); the git-blame dating discipline (two deltas
+were census errors, not regressions); the both-paths structural correction to the MAP'S OWN
+READING — endorsed as T0-consistent, both-paths defects are behaviour he already has.
+**§5.5 CLOSED at this acceptance** (the proposal's scope question answered by the
+retire-with-old convention, session-12 B4 precedent; every survivor homed S8/B5/§5.98/B27;
+reopening criterion recorded). The reprojected definition's first outing: no missing
+constraint observed in the executor's conduct — the projection held. NEW next-round queue
+member: the row↔row staleness sweep (§5.5's class — §5 rows vs the §13 rows that own their
+work; nothing checks it today; F42's instrument extends).)*
 
 ### F45 — §5.88's owed datum: what an empty spectral array costs at draw time (record-only) [S]
 
