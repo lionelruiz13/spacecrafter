@@ -672,6 +672,19 @@ CORRECTED: twice per startup + `configuration action load` + 3 UI routes ⇒ a
 refuse-to-start repair misses the mid-session route. Premise re-measured on the
 binary, both-ways mapped, with a positive control from §5.89's own function.
 Code `d6aec251` untouched; no launches.)*
+*(ACCEPTED by supervisor [fable 2026-08-29]: §11.160 read in full; commits/authors/scope
+checked; §5.89 annotation + stub verified — the roster arithmetic printed in the entry
+self-checks (8+4+2+3+7+2+2+11+9+1+1+1 = 51; 1+8+51+2 = 62 = 46+16). Judgment calls
+ENDORSED with their arguments: the vendored fourth bucket (the criterion's "author meant"
+has no answerable author upstream — same boundary as EntityCore read-only, AND the
+project-supplied parameters were read anyway); `core.cpp:2440` as (iii) with the
+non-obvious negative recorded where a reader would expect (i); `hip_star_mgr.cpp:1049`
+reachable-but-(ii) — the member that keeps the classes apart; both sub-findings
+recorded-not-minted with the missing datum NAMED (the mint criterion held under
+pressure). The (d) reach correction and the one-site-decision framing go to §3 with the
+fork. The founding instance re-detected by method, its citation drift (487→526) corrected
+in passing. Discriminating check ran both ways on a controlled fixture with a positive
+control from the guard's own function — instrument-grade.)*
 
 ---
 
