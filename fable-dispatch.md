@@ -795,7 +795,11 @@ control from the guard's own function — instrument-grade.)*
   - **§5.90 sharpened, questions unchanged**: the mismatch is a NAME mismatch,
     not an incompatible table (836 distinct spInt values over all 3215 named
     stars, none reaching the present table's 4122) — the data root serves the
-    file, confirmed behaviourally.
+    file, confirmed behaviourally. **Routing candidate per §11.161(c1)
+    [vixy correction 2026-08-29]**: the tester is the data's principal author
+    ⇒ the whole FIELD-CONTENT question family (§5.74's three members + §5.90)
+    is largely tester-answerable — your call whether it joins the final pass
+    instead of waiting on your own delivery-chain knowledge.
 - **Session-14 veto points (implemented-and-live, each cheap to reverse;
   silence = endorsed):** (1) **§11.156(f) entry-first write order** ratified +
   enacted in the INTENT.md header (one line to reverse; generator RA-MODEL
