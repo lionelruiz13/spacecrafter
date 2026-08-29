@@ -729,6 +729,30 @@ entry file, +1 live pair, all four test counters unchanged**; back-marker scan
 89/124/**83**, the single new unmarked pair being `§11.164 → §11.167` = my own marker
 read source→target, the inverted-direction class §11.165(c) names. Code never left
 `d6aec251`; both trees clean at close.)*
+*(ACCEPTED by supervisor [fable 2026-08-30]: §11.167 read in full; commits/authors/scope
+checked (chain `0354ba0 → 2ab4c5b → 379de72 → 56906b0`, harness-only, code clean at
+`d6aec251`); §11.164(d)'s denominator back-marker + README strike + stub verified at the
+ledger. Judgment calls ENDORSED with their arguments: the PRE-RUN collapse of the three
+shapes into two (committed with its separators BEFORE the launch — the strongest form of
+prediction discipline this round has produced); the two extra committed legs (P3's
+confound became a finding, not a loss); P2/P3 kept-with-numbers (the new dark class —
+20.5 % of the disc below L=32 where July was above 100 — is the round's sharpest
+unpredicted datum); the FLAGGED-WEAK third class (the §11.123(o) immunity rule measured
+non-transferable to photometric diff counts on F48's own b20 witness — a standing-rule
+refinement grounded in data, not argument); the exposure-table form (locally ×7, not one
+"2.7×"); the delegated gate extraction with the three load-bearing numbers self-verified
+(delegation channel handled per the monitor); the NO-MINT (routing pre-fixed by
+§11.164(f); the product candidate CLOSED on four channels — this task removed a
+candidate rather than promoting a symptom). ONE SUPERVISOR ENACTMENT: the §11.157
+litguard SCOPE annotation placed at the node (entry + stub, §11.113(p)'s reason — the
+executor correctly recorded without enacting on another task's entry; a reader of
+§11.157 alone now sees the proxy-scene caveat; verdict unthreatened). NEWLY VIXY'S: the
+7.73° old/new attitude divergence (rendering-paths stratum) · the driver A/B (host
+state, the only remaining attribution route). NEW QUEUE candidates: the first-60 s
+sampler (named, cheap) · the seven never-recorded gate values (decision-free harness
+recording fix) · §5.113's one-launch measurement (from F50). Both instrument baselines
+for the next runner accepted as stated: pair-check 183/158/25/85; scan 89/124/83 with
+the 83rd being the inverted-direction class, not arrears.)*
 
 ---
 
