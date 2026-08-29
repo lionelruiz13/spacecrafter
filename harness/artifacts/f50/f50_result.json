@@ -1,0 +1,292 @@
+{
+ "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "pred": {
+  "channel": "print -> AppCommandEval::evalString -> script log (<farm>/.spacecrafter/log/script-*.log), line form '[key] value'",
+  "legs": [
+   "O1",
+   "D1",
+   "C",
+   "D2",
+   "O2"
+  ],
+  "O1": {
+   "six": "REAL - every one of the six must differ from the UNINIT tuple; specifically selected_distance != 1 and selected_magnitude != -10 and (ra,de,az,alt) != (0,0,0,0)",
+   "body_selected": "400",
+   "objinfo": "non-empty, names Mars, != 'EOL'"
+  },
+  "D1": {
+   "six": {
+    "selected_ra": "0",
+    "selected_de": "0",
+    "selected_az": "0",
+    "selected_alt": "0",
+    "selected_distance": "1",
+    "selected_magnitude": "-10"
+   },
+   "body_selected": "400",
+   "why": "STALE: Core::unSelect (core.cpp:2614-2618) does not call setSelectedBodyName, so the last selected body's code survives a deselect - against doc/superscript.sts:1529's own contract",
+   "objinfo": "EOL"
+  },
+  "C": {
+   "six": {
+    "selected_ra": "0",
+    "selected_de": "0",
+    "selected_az": "0",
+    "selected_alt": "0",
+    "selected_distance": "1",
+    "selected_magnitude": "-10"
+   },
+   "body_selected": "999",
+   "why": "the composed name is absent from core.cpp:2226-2276's table",
+   "objinfo": "non-empty, names BigA, != 'EOL'",
+   "dump_selected": "BigA"
+  },
+  "D2": {
+   "six": {
+    "selected_ra": "0",
+    "selected_de": "0",
+    "selected_az": "0",
+    "selected_alt": "0",
+    "selected_distance": "1",
+    "selected_magnitude": "-10"
+   },
+   "body_selected": "999",
+   "objinfo": "EOL"
+  },
+  "O2": {
+   "six": "byte-identical to O1's printed strings (frozen epoch, unmoved observer, same body)",
+   "body_selected": "400",
+   "objinfo": "non-empty, names Mars"
+  },
+  "C_vs_D": "leg C's seven printed values must equal leg D1's and D2's EXACTLY - that is \u00a75.110's 'no diagnostic' claim made measurable: through this channel a composed selection is INDISTINGUISHABLE from nothing selected, while W1/W2 show the app itself knows the difference",
+  "uninit_tuple": {
+   "selected_ra": "0",
+   "selected_de": "0",
+   "selected_az": "0",
+   "selected_alt": "0",
+   "selected_distance": "1",
+   "selected_magnitude": "-10"
+  }
+ },
+ "legs": [
+  {
+   "leg": "O1",
+   "cmd": "select planet Mars",
+   "objinfo": "Mars",
+   "dump_selected": "Mars",
+   "camera": {
+    "reference": "Earth",
+    "freeMode": false,
+    "boundToSurface": true,
+    "longitude": 0.0936660022,
+    "latitude": 0.755727589,
+    "distance": 4.26357365e-05,
+    "tracked": "",
+    "selected": "Mars"
+   },
+   "vars": {
+    "selected_ra": "67.6632",
+    "selected_de": "21.6791",
+    "selected_az": "44.4974",
+    "selected_alt": "-11.6881",
+    "selected_distance": "2.07176",
+    "selected_magnitude": "1.49643",
+    "body_selected": "400"
+   }
+  },
+  {
+   "leg": "D1",
+   "cmd": "deselect",
+   "objinfo": "EOL",
+   "dump_selected": "",
+   "camera": {
+    "reference": "Earth",
+    "freeMode": false,
+    "boundToSurface": true,
+    "longitude": 0.0936660022,
+    "latitude": 0.755727589,
+    "distance": 4.26357365e-05,
+    "tracked": "",
+    "selected": ""
+   },
+   "vars": {
+    "selected_ra": "0",
+    "selected_de": "0",
+    "selected_az": "0",
+    "selected_alt": "0",
+    "selected_distance": "1",
+    "selected_magnitude": "-10",
+    "body_selected": "400"
+   }
+  },
+  {
+   "leg": "C",
+   "cmd": "select planet BigA",
+   "objinfo": "BigA",
+   "dump_selected": "BigA",
+   "camera": {
+    "reference": "Earth",
+    "freeMode": false,
+    "boundToSurface": true,
+    "longitude": 0.0936660022,
+    "latitude": 0.755727589,
+    "distance": 4.26357365e-05,
+    "tracked": "",
+    "selected": "BigA"
+   },
+   "vars": {
+    "selected_ra": "0",
+    "selected_de": "0",
+    "selected_az": "0",
+    "selected_alt": "0",
+    "selected_distance": "1",
+    "selected_magnitude": "-10",
+    "body_selected": "999"
+   }
+  },
+  {
+   "leg": "D2",
+   "cmd": "deselect",
+   "objinfo": "EOL",
+   "dump_selected": "",
+   "camera": {
+    "reference": "Earth",
+    "freeMode": false,
+    "boundToSurface": true,
+    "longitude": 0.0936660022,
+    "latitude": 0.755727589,
+    "distance": 4.26357365e-05,
+    "tracked": "",
+    "selected": ""
+   },
+   "vars": {
+    "selected_ra": "0",
+    "selected_de": "0",
+    "selected_az": "0",
+    "selected_alt": "0",
+    "selected_distance": "1",
+    "selected_magnitude": "-10",
+    "body_selected": "999"
+   }
+  },
+  {
+   "leg": "O2",
+   "cmd": "select planet Mars",
+   "objinfo": "Mars",
+   "dump_selected": "Mars",
+   "camera": {
+    "reference": "Earth",
+    "freeMode": false,
+    "boundToSurface": true,
+    "longitude": 0.0936660022,
+    "latitude": 0.755727589,
+    "distance": 4.26357365e-05,
+    "tracked": "",
+    "selected": "Mars"
+   },
+   "vars": {
+    "selected_ra": "67.6632",
+    "selected_de": "21.6791",
+    "selected_az": "44.4974",
+    "selected_alt": "-11.6881",
+    "selected_distance": "2.07176",
+    "selected_magnitude": "1.49643",
+    "body_selected": "400"
+   }
+  }
+ ],
+ "composed_body": "BigA",
+ "old_body": "Mars",
+ "readings": {
+  "O1": {
+   "selected_ra": "67.6632",
+   "selected_de": "21.6791",
+   "selected_az": "44.4974",
+   "selected_alt": "-11.6881",
+   "selected_distance": "2.07176",
+   "selected_magnitude": "1.49643",
+   "body_selected": "400"
+  },
+  "D1": {
+   "selected_ra": "0",
+   "selected_de": "0",
+   "selected_az": "0",
+   "selected_alt": "0",
+   "selected_distance": "1",
+   "selected_magnitude": "-10",
+   "body_selected": "400"
+  },
+  "C": {
+   "selected_ra": "0",
+   "selected_de": "0",
+   "selected_az": "0",
+   "selected_alt": "0",
+   "selected_distance": "1",
+   "selected_magnitude": "-10",
+   "body_selected": "999"
+  },
+  "D2": {
+   "selected_ra": "0",
+   "selected_de": "0",
+   "selected_az": "0",
+   "selected_alt": "0",
+   "selected_distance": "1",
+   "selected_magnitude": "-10",
+   "body_selected": "999"
+  },
+  "O2": {
+   "selected_ra": "67.6632",
+   "selected_de": "21.6791",
+   "selected_az": "44.4974",
+   "selected_alt": "-11.6881",
+   "selected_distance": "2.07176",
+   "selected_magnitude": "1.49643",
+   "body_selected": "400"
+  }
+ },
+ "refused": [],
+ "exit_rc": 0,
+ "per_variable": {
+  "selected_ra": {
+   "predicted": "0",
+   "measured": "0",
+   "match": true
+  },
+  "selected_de": {
+   "predicted": "0",
+   "measured": "0",
+   "match": true
+  },
+  "selected_az": {
+   "predicted": "0",
+   "measured": "0",
+   "match": true
+  },
+  "selected_alt": {
+   "predicted": "0",
+   "measured": "0",
+   "match": true
+  },
+  "selected_distance": {
+   "predicted": "1",
+   "measured": "1",
+   "match": true
+  },
+  "selected_magnitude": {
+   "predicted": "-10",
+   "measured": "-10",
+   "match": true
+  }
+ },
+ "body_selected": {
+  "O1": "400",
+  "D1": "400",
+  "C": "999",
+  "D2": "999",
+  "O2": "400"
+ },
+ "fails": [],
+ "notes": [
+  "app exit rc=0"
+ ]
+}

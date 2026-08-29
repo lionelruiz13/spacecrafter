@@ -1,0 +1,110 @@
+000000010235: (Info ): ScriptMgr: script end
+000000010574: (Info ): End of loading SC
+000000010599: (Info ): ScriptMgr: script end
+000000010600: (Info ): ScriptMgr: load scripts/fscripts/startup.sts
+000000010601: (Info ): Execute_command deselect
+000000010601: (Info ): Execute_command deselect
+000000010601: (Info ): Execute_command timerate rate 1
+000000010601: (Info ): Execute_command flag subtitle off
+000000010601: (Info ): End of script
+000000010601: (Info ): Execute_command script action end
+000000010601: (Info ): ScriptMgr: script end
+000000020997: (Info ): Execute_command timerate rate 0
+000000021997: (Info ): Execute_command flag experimental_path on
+000000022997: (Info ): Execute_command date jday 2461233.5
+000000023997: (Info ): Execute_command deselect
+000000024601: (Info ): Execute_command select planet Mars
+000000026100: (Info ): Execute_command get status object
+000000026406: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f50/f50_O1.json
+000000028608: (Info ): Execute_command print f50leg O1
+000000028608: (Warn.): [f50leg] O1
+000000029010: (Info ): Execute_command print f50v_selected_ra selected_ra
+000000029010: (Warn.): [f50v_selected_ra] 67.6632
+000000029406: (Info ): Execute_command print f50v_selected_de selected_de
+000000029406: (Warn.): [f50v_selected_de] 21.6791
+000000029810: (Info ): Execute_command print f50v_selected_az selected_az
+000000029810: (Warn.): [f50v_selected_az] 44.4974
+000000030211: (Info ): Execute_command print f50v_selected_alt selected_alt
+000000030211: (Warn.): [f50v_selected_alt] -11.6881
+000000030615: (Info ): Execute_command print f50v_selected_distance selected_distance
+000000030615: (Warn.): [f50v_selected_distance] 2.07176
+000000031010: (Info ): Execute_command print f50v_selected_magnitude selected_magnitude
+000000031010: (Warn.): [f50v_selected_magnitude] 1.49643
+000000031413: (Info ): Execute_command print f50v_body_selected body_selected
+000000031413: (Warn.): [f50v_body_selected] 400
+000000032413: (Info ): Execute_command deselect
+000000033914: (Info ): Execute_command get status object
+000000034218: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f50/f50_D1.json
+000000036420: (Info ): Execute_command print f50leg D1
+000000036420: (Warn.): [f50leg] D1
+000000036824: (Info ): Execute_command print f50v_selected_ra selected_ra
+000000036824: (Warn.): [f50v_selected_ra] 0
+000000037218: (Info ): Execute_command print f50v_selected_de selected_de
+000000037218: (Warn.): [f50v_selected_de] 0
+000000037622: (Info ): Execute_command print f50v_selected_az selected_az
+000000037622: (Warn.): [f50v_selected_az] 0
+000000038024: (Info ): Execute_command print f50v_selected_alt selected_alt
+000000038024: (Warn.): [f50v_selected_alt] 0
+000000038420: (Info ): Execute_command print f50v_selected_distance selected_distance
+000000038420: (Warn.): [f50v_selected_distance] 1
+000000038824: (Info ): Execute_command print f50v_selected_magnitude selected_magnitude
+000000038824: (Warn.): [f50v_selected_magnitude] -10
+000000039225: (Info ): Execute_command print f50v_body_selected body_selected
+000000039225: (Warn.): [f50v_body_selected] 400
+000000040225: (Info ): Execute_command select planet BigA
+000000041726: (Info ): Execute_command get status object
+000000042031: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f50/f50_C.json
+000000044232: (Info ): Execute_command print f50leg C
+000000044232: (Warn.): [f50leg] C
+000000044636: (Info ): Execute_command print f50v_selected_ra selected_ra
+000000044636: (Warn.): [f50v_selected_ra] 0
+000000045031: (Info ): Execute_command print f50v_selected_de selected_de
+000000045031: (Warn.): [f50v_selected_de] 0
+000000045434: (Info ): Execute_command print f50v_selected_az selected_az
+000000045434: (Warn.): [f50v_selected_az] 0
+000000045838: (Info ): Execute_command print f50v_selected_alt selected_alt
+000000045838: (Warn.): [f50v_selected_alt] 0
+000000046232: (Info ): Execute_command print f50v_selected_distance selected_distance
+000000046232: (Warn.): [f50v_selected_distance] 1
+000000046636: (Info ): Execute_command print f50v_selected_magnitude selected_magnitude
+000000046636: (Warn.): [f50v_selected_magnitude] -10
+000000047038: (Info ): Execute_command print f50v_body_selected body_selected
+000000047038: (Warn.): [f50v_body_selected] 999
+000000048038: (Info ): Execute_command deselect
+000000049538: (Info ): Execute_command get status object
+000000049845: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f50/f50_D2.json
+000000052045: (Info ): Execute_command print f50leg D2
+000000052045: (Warn.): [f50leg] D2
+000000052448: (Info ): Execute_command print f50v_selected_ra selected_ra
+000000052448: (Warn.): [f50v_selected_ra] 0
+000000052845: (Info ): Execute_command print f50v_selected_de selected_de
+000000052845: (Warn.): [f50v_selected_de] 0
+000000053246: (Info ): Execute_command print f50v_selected_az selected_az
+000000053246: (Warn.): [f50v_selected_az] 0
+000000053650: (Info ): Execute_command print f50v_selected_alt selected_alt
+000000053650: (Warn.): [f50v_selected_alt] 0
+000000054045: (Info ): Execute_command print f50v_selected_distance selected_distance
+000000054045: (Warn.): [f50v_selected_distance] 1
+000000054448: (Info ): Execute_command print f50v_selected_magnitude selected_magnitude
+000000054448: (Warn.): [f50v_selected_magnitude] -10
+000000054852: (Info ): Execute_command print f50v_body_selected body_selected
+000000054852: (Warn.): [f50v_body_selected] 999
+000000055852: (Info ): Execute_command select planet Mars
+000000057351: (Info ): Execute_command get status object
+000000057657: (Info ): Execute_command body action dual_dump filename /home/claude/spacecrafter/claude/harness/artifacts/f50/f50_O2.json
+000000059859: (Info ): Execute_command print f50leg O2
+000000059859: (Warn.): [f50leg] O2
+000000060260: (Info ): Execute_command print f50v_selected_ra selected_ra
+000000060260: (Warn.): [f50v_selected_ra] 67.6632
+000000060664: (Info ): Execute_command print f50v_selected_de selected_de
+000000060664: (Warn.): [f50v_selected_de] 21.6791
+000000061059: (Info ): Execute_command print f50v_selected_az selected_az
+000000061059: (Warn.): [f50v_selected_az] 44.4974
+000000061462: (Info ): Execute_command print f50v_selected_alt selected_alt
+000000061462: (Warn.): [f50v_selected_alt] -11.6881
+000000061866: (Info ): Execute_command print f50v_selected_distance selected_distance
+000000061866: (Warn.): [f50v_selected_distance] 2.07176
+000000062260: (Info ): Execute_command print f50v_selected_magnitude selected_magnitude
+000000062260: (Warn.): [f50v_selected_magnitude] 1.49643
+000000062664: (Info ): Execute_command print f50v_body_selected body_selected
+000000062664: (Warn.): [f50v_body_selected] 400

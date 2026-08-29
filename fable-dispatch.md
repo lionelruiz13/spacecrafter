@@ -585,7 +585,16 @@ the `selected_star_*` getters — the six's own az/alt initialisers are `:580`/
 `:586`). Instrument `harness/f50_selvars.py` written; PREDICTIONS committed
 here BEFORE the run (`harness/artifacts/f50/f50_predict.json`, md5
 `4cc99992`). Next: run it (one launch, five legs O1/D1/C/D2/O2), then the
-other-consumers census.)*
+other-consumers census.*
+*checkpoint 2: RUN GREEN, **0 FAIL, all six predictions MATCHED**. Leg C
+(`select planet BigA`, a composed body, selection witnessed both ways —
+`get status object` → `BigA`, dump `camera.selected` → `BigA`) reads
+ra/de/az/alt `0`, distance `1`, magnitude `-10`; identical to both `deselect`
+legs; O1/O2 (Mars) answer 67.6632/21.6791/44.4974/−11.6881/2.07176/1.49643
+twice over. NEW: `body_selected` reads a STALE `400` after `deselect`
+(predicted from `Core::unSelect`) — a §5 candidate. Artifacts committed under
+`harness/artifacts/f50/`; committed prediction file md5-identical to the one
+the run used. Next: the other-consumers census, then delivery.)*
 
 ---
 
