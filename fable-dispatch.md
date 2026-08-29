@@ -327,7 +327,16 @@ the header-rule proposal stated with its argument; §11 entry at the next free
 number + stub — the entry checked against its own stub before delivery (the
 sweep includes its own delivery); code tree untouched
 (`git -C /home/claude/spacecrafter status` clean at close); WIP per §0.6.
-**WIP:** *(empty)*
+**WIP:** *CP1 — method stated + instrument `claude/intent_pair_check.py` (four tests
+D/D2/I/I2; comparison scope S1–S4 against the deliberate non-scope N1–N5). Denominator:
+**171 entry files = 146 LIVE PAIRS + 25 archived-in-place** (retired index line appended
+verbatim into the file ⇒ no live stub, nothing that can diverge); 80 further §5/§11 stubs
+are inline (no entry file, not pairs). DISCRIMINATING CHECK RUN BOTH WAYS on §5.27:
+pre-repair tree (harness `458a71f` = `d43abec^`) is FLAGGED class-(i) under D (CORRECTED /
+UNBLOCKED / ANSWERED + §11.101 + §11.149 + F39 + `d521807a` all stub-only) and under D2
+(the dated `[BEHAVIOUR HALF UNBLOCKED 2026-08-26 …]` marker span); current tree PASSES it
+(D reduces to one sub-threshold supporting citation, §11.113). Next: CP2 = every flag
+adjudicated, divergent pairs enumerated with class.*
 
 ### F43 — b24_select's four reds adjudicated + the 28-file free-mode-longitude audit (§11.153(o), (j)(3)) [S–M]
 
