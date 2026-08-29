@@ -1,0 +1,68 @@
+{
+ "channel": "print -> AppCommandEval::evalString -> script log (<farm>/.spacecrafter/log/script-*.log), line form '[key] value'",
+ "legs": [
+  "O1",
+  "D1",
+  "C",
+  "D2",
+  "O2"
+ ],
+ "O1": {
+  "six": "REAL - every one of the six must differ from the UNINIT tuple; specifically selected_distance != 1 and selected_magnitude != -10 and (ra,de,az,alt) != (0,0,0,0)",
+  "body_selected": "400",
+  "objinfo": "non-empty, names Mars, != 'EOL'"
+ },
+ "D1": {
+  "six": {
+   "selected_ra": "0",
+   "selected_de": "0",
+   "selected_az": "0",
+   "selected_alt": "0",
+   "selected_distance": "1",
+   "selected_magnitude": "-10"
+  },
+  "body_selected": "400",
+  "why": "STALE: Core::unSelect (core.cpp:2614-2618) does not call setSelectedBodyName, so the last selected body's code survives a deselect - against doc/superscript.sts:1529's own contract",
+  "objinfo": "EOL"
+ },
+ "C": {
+  "six": {
+   "selected_ra": "0",
+   "selected_de": "0",
+   "selected_az": "0",
+   "selected_alt": "0",
+   "selected_distance": "1",
+   "selected_magnitude": "-10"
+  },
+  "body_selected": "999",
+  "why": "the composed name is absent from core.cpp:2226-2276's table",
+  "objinfo": "non-empty, names BigA, != 'EOL'",
+  "dump_selected": "BigA"
+ },
+ "D2": {
+  "six": {
+   "selected_ra": "0",
+   "selected_de": "0",
+   "selected_az": "0",
+   "selected_alt": "0",
+   "selected_distance": "1",
+   "selected_magnitude": "-10"
+  },
+  "body_selected": "999",
+  "objinfo": "EOL"
+ },
+ "O2": {
+  "six": "byte-identical to O1's printed strings (frozen epoch, unmoved observer, same body)",
+  "body_selected": "400",
+  "objinfo": "non-empty, names Mars"
+ },
+ "C_vs_D": "leg C's seven printed values must equal leg D1's and D2's EXACTLY - that is \u00a75.110's 'no diagnostic' claim made measurable: through this channel a composed selection is INDISTINGUISHABLE from nothing selected, while W1/W2 show the app itself knows the difference",
+ "uninit_tuple": {
+  "selected_ra": "0",
+  "selected_de": "0",
+  "selected_az": "0",
+  "selected_alt": "0",
+  "selected_distance": "1",
+  "selected_magnitude": "-10"
+ }
+}

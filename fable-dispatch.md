@@ -578,7 +578,14 @@ real-HOME edits (temp-HOME farm); the contract choice stays Vixy's.
 vs measured stated per variable; other-consumers census with method +
 verdicts + the not-read boundary; §5.110 annotated, still OPEN; §11 entry +
 stub; md5 pristine; code tree clean at close; WIP per §0.6.
-**WIP:** *(empty)*
+**WIP:** *(2026-08-29, checkpoint 1: sources re-read + every §5.110 cite
+re-verified at `d6aec251` (one drift found: the row cites
+`ssystem_factory.hpp:592/597` for two of the four initialisers, but those are
+the `selected_star_*` getters — the six's own az/alt initialisers are `:580`/
+`:586`). Instrument `harness/f50_selvars.py` written; PREDICTIONS committed
+here BEFORE the run (`harness/artifacts/f50/f50_predict.json`, md5
+`4cc99992`). Next: run it (one launch, five legs O1/D1/C/D2/O2), then the
+other-consumers census.)*
 
 ---
 
