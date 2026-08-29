@@ -594,8 +594,9 @@ AND after the composed leg. 0 FAIL, md5 in==out, exit 0. CENSUS bounded
 STRUCTURALLY, not sampled: `ObjectUninitialized` has 9 code hits, all in
 `tools/object.cpp`, no header declares it ⇒ the singleton is reachable ONLY as
 an `Object`'s `rep`; 4 `Object` member slots; 3 non-neutral returns (not 2 —
-`getEarthEquPos` returns the same `(1,0,0)`); of 18 reads through an `Object`,
-**12 provably guarded, 2 undetermined, 4 REACHABLE** ⇒ NEW **§5.113** (one
+`getEarthEquPos` returns the same `(1,0,0)`); of 20 reads through an `Object`,
+**11 provably guarded, 2 undetermined, 7 REACHABLE** (two being §5.110's
+own) ⇒ NEW **§5.113** (one
 missing-guard class, three shipped reaches: `set home_planet selected` builds
 an anchor at `(1,0,0)` and caches it under the EMPTY name · the sky-display
 overlays are fed both selection slots every frame with `SkyCoords` gating on
