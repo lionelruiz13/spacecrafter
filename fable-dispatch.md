@@ -699,6 +699,19 @@ imported, 80 samples at 5.0 s). Stated before the run: the three shapes are
 NOT three on a series alone — "never lands" and "shading changed" coincide —
 so P2 (frame-pair hf correlation, no launch) and P3 (old-path control, same
 launch) are committed as the separators. NEXT: run the launch.)*
+*(2026-08-29 CP2: the launch RAN, one launch, md5 in==out, `/proc` probe 0, 0
+fails. **Verdict = shape (iii), stable dim uncorrelated with texture events**,
+and the series is not merely flat — all 72 frames over 355 s share ONE md5,
+which is also F48's committed `ladder_current/terrain_base_zoom.png` md5
+(`0c7de389`): P0 bit-exact. Liveness control: the Moon's `evalCount` went
+6063 → 57621 = 51 558 evaluations over [355.8, 358.3] s = [143.9, 144.9]/s, so
+the renderer was not stalled. Applog: 391 uninit events, 390 before the first
+command, the one after is `landscapes/moon.png` and still before sample 0;
+ZERO inside the dwell window; ZERO `Can't upload` in all 6 applogs of both
+epochs. "Upload never lands" REFUTED on four channels (registered r_hf 0.619
+collapsing to |r|<0.09 at 8 px shift; chromaticity R/B 1.0278 vs 1.0241;
+old-path witness; the source read). NEW: a dark-speckle class covering 20.5 %
+of the disc that July has none of. NEXT: (C) the census, then the entry.)*
 
 ---
 

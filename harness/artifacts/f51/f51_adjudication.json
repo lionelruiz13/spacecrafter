@@ -1,0 +1,300 @@
+{
+ "task": "F51 (A) adjudication",
+ "predictions": "artifacts/f51/f51_predictions.json (commit 0354ba0, pre-run)",
+ "binary_md5": "fa00deade57fe02739800013364a9611",
+ "P0_scene_reproduction": {
+  "sample0": {
+   "disc_mean": 61.431,
+   "hf_mean": 2.464,
+   "hf_sd": 4.23,
+   "n": 2535950,
+   "md5": "0c7de38974c5e549a083d62558cb9e60"
+  },
+  "f48_committed_frame_md5": "0c7de38974c5e549a083d62558cb9e60",
+  "predicted": "disc_mean 61.431 +- 0.10, hf_mean 2.464 +- 0.02, n 2535950 +- 2000",
+  "verdict": "BIT-EXACT: sample 0 is byte-identical to F48's committed frame"
+ },
+ "P1_series": {
+  "n": 72,
+  "cadence_s": 5.0,
+  "span_s": 355.0,
+  "disc_mean_first": 61.431,
+  "disc_mean_last": 61.431,
+  "disc_mean_min": 61.431,
+  "disc_mean_max": 61.431,
+  "range": 0.0,
+  "max_abs_successive_delta": 0.0,
+  "hf_mean_min": 2.464,
+  "hf_mean_max": 2.464,
+  "distinct_png_md5": [
+   "0c7de38974c5e549a083d62558cb9e60"
+  ],
+  "flat_by_committed_criterion": true,
+  "step_by_committed_criterion": false
+ },
+ "P1_applog": {
+  "applog_lines": 2382,
+  "uninitialized_texture_events_total": 391,
+  "first_tcp_command_line": 2099,
+  "events_before_first_command": 390,
+  "events_after_first_command": [
+   {
+    "line": 2123,
+    "text": "(Debug): No cmd given for 'landscapes/moon.png', creating uninitialized texture"
+   }
+  ],
+  "moon_body_texture_events": [
+   {
+    "line": 1980,
+    "text": "(Debug): No cmd given for 'textures/bodies/moon.jpg', creating uninitialized texture"
+   },
+   {
+    "line": 1982,
+    "text": "(Debug): No cmd given for 'textures/bodies/moon_normal.jpg', creating uninitialized texture"
+   },
+   {
+    "line": 1984,
+    "text": "(Debug): No cmd given for 'textures/bodies/moon_alti.jpg', creating uninitialized texture"
+   }
+  ],
+  "cant_upload_lines": 0,
+  "dwell_window_lines": [
+   2174,
+   2316
+  ],
+  "n_dwell_screenshot_echoes": 72,
+  "texture_events_inside_dwell_window": [],
+  "note": "the applog carries no timestamps; the interleaving is exact by the app's own command echo (one per named sample)"
+ },
+ "P1_liveness": {
+  "moon_new_half_fields_differing_start_to_end": [
+   "evalCount"
+  ],
+  "moon_old_half_identical": true,
+  "evalCount_start": 6063,
+  "evalCount_end": 57621,
+  "evalCount_delta": 51558,
+  "interval_bracket_s": [
+   355.79,
+   358.29
+  ],
+  "evals_per_s_bracket": [
+   143.9,
+   144.9
+  ],
+  "note": "compare 11.159(k7)'s discharged H1: cadence = the config cap (maximum_fps = 144) on this stack"
+ },
+ "P2_pair_july_vs_today": {
+  "ref": "/home/claude/spacecrafter/claude/harness/artifacts/b3_ladder/R6_moon_terrain_control/terrain_base_zoom.png",
+  "target": "/home/claude/spacecrafter/claude/harness/artifacts/f48/ladder_current/terrain_base_zoom.png",
+  "n_common": 2535950,
+  "ref_disc_mean": 165.429,
+  "tgt_disc_mean": 61.431,
+  "ratio_disc_mean": 0.3713,
+  "r_L": 0.622,
+  "r_hf": 0.6113,
+  "hf_slope_through_origin": 0.2749,
+  "r2_pointwise_median_map": 0.408,
+  "ref_hf_mean": 6.594,
+  "tgt_hf_mean": 2.464
+ },
+ "P2_blobs": {
+  "ref": "/home/claude/spacecrafter/claude/harness/artifacts/b3_ladder/R6_moon_terrain_control/terrain_base_zoom.png",
+  "target": "/home/claude/spacecrafter/claude/harness/artifacts/f48/ladder_current/terrain_base_zoom.png",
+  "ref_px_below_8": 0,
+  "tgt_px_below_8": 3854,
+  "ref_px_below_16": 0,
+  "tgt_px_below_16": 184437,
+  "ref_px_below_32": 3,
+  "tgt_px_below_32": 530895,
+  "ref_px_below_64": 115,
+  "tgt_px_below_64": 1343846,
+  "blob_px_tgt_lt32_ref_gt100": 522070,
+  "blob_fraction_of_disc": 0.20516,
+  "n_outside_blobs": 1982811,
+  "r_hf_outside_blobs": 0.7205,
+  "r_L_outside_blobs": 0.5292,
+  "ref_percentiles": [
+   110.0,
+   129.0,
+   151.0,
+   167.0,
+   182.0,
+   195.0,
+   201.0
+  ],
+  "tgt_percentiles": [
+   10.0,
+   12.0,
+   35.0,
+   61.0,
+   87.0,
+   113.0,
+   123.0
+  ],
+  "percentile_qs": [
+   1,
+   5,
+   25,
+   50,
+   75,
+   95,
+   99
+  ]
+ },
+ "P3_old_path": {
+  "legs": {
+   "oldpath_fov10": {
+    "disc_mean": 42.476,
+    "hf_mean": 1.744,
+    "hf_sd": 2.783,
+    "n": 2242243,
+    "frame_lit_px_gt8": 2748124,
+    "md5": "b530f84778dd1d0e90f7eac444bc1aa7"
+   },
+   "oldpath_fov60": {
+    "disc_mean": 46.192,
+    "hf_mean": 7.17,
+    "hf_sd": 10.857,
+    "n": 235756,
+    "frame_lit_px_gt8": 248047,
+    "md5": "02297112e4b618f5ae12fd801411a3a6"
+   },
+   "oldpath_fov10_plus10s": {
+    "disc_mean": 42.476,
+    "hf_mean": 1.744,
+    "hf_sd": 2.783,
+    "n": 2242243,
+    "frame_lit_px_gt8": 2748124,
+    "md5": "b530f84778dd1d0e90f7eac444bc1aa7"
+   },
+   "newpath_after": {
+    "disc_mean": 61.431,
+    "hf_mean": 2.464,
+    "hf_sd": 4.23,
+    "n": 2535950,
+    "frame_lit_px_gt8": 3283710,
+    "md5": "0c7de38974c5e549a083d62558cb9e60"
+   },
+   "newpath_after_plus10s": {
+    "disc_mean": 61.431,
+    "hf_mean": 2.464,
+    "hf_sd": 4.23,
+    "n": 2535950,
+    "frame_lit_px_gt8": 3283710,
+    "md5": "0c7de38974c5e549a083d62558cb9e60"
+   }
+  },
+  "positive_control_min_lit_px": 100000,
+  "pair_july_vs_oldpath": {
+   "ref": "/home/claude/spacecrafter/claude/harness/artifacts/b3_ladder/R6_moon_terrain_control/terrain_base_zoom.png",
+   "target": "/home/claude/spacecrafter/claude/harness/artifacts/f51/dwell/frames/old_a.png",
+   "n_common": 2242225,
+   "ref_disc_mean": 167.65,
+   "tgt_disc_mean": 42.477,
+   "ratio_disc_mean": 0.2534,
+   "r_L": 0.4933,
+   "r_hf": -0.0041,
+   "hf_slope_through_origin": -0.0012,
+   "r2_pointwise_median_map": 0.2374,
+   "ref_hf_mean": 6.581,
+   "tgt_hf_mean": 1.744
+  },
+  "pair_newpath_vs_oldpath": {
+   "ref": "/home/claude/spacecrafter/claude/harness/artifacts/f48/ladder_current/terrain_base_zoom.png",
+   "target": "/home/claude/spacecrafter/claude/harness/artifacts/f51/dwell/frames/old_a.png",
+   "n_common": 2234984,
+   "ref_disc_mean": 63.594,
+   "tgt_disc_mean": 42.528,
+   "ratio_disc_mean": 0.6687,
+   "r_L": 0.346,
+   "r_hf": -0.0043,
+   "hf_slope_through_origin": -0.0028,
+   "r2_pointwise_median_map": 0.038,
+   "ref_hf_mean": 2.479,
+   "tgt_hf_mean": 1.745
+  }
+ },
+ "P2_registration_control": {
+  "ref": "/home/claude/spacecrafter/claude/harness/artifacts/b3_ladder/R6_moon_terrain_control/terrain_base_zoom.png",
+  "target": "/home/claude/spacecrafter/claude/harness/artifacts/f48/ladder_current/terrain_base_zoom.png",
+  "r_hf_shift_x": {
+   "0": 0.6189,
+   "4": -0.2445,
+   "8": -0.0373,
+   "16": 0.004,
+   "32": 0.0021,
+   "64": -0.001,
+   "128": -0.0018
+  },
+  "r_hf_shift_y": {
+   "0": 0.6189,
+   "4": 0.0875,
+   "8": 0.0026,
+   "16": 0.0019,
+   "32": 0.0,
+   "64": 0.0008,
+   "128": -0.0006
+  }
+ },
+ "P3_registration_control_oldpath": {
+  "ref": "/home/claude/spacecrafter/claude/harness/artifacts/b3_ladder/R6_moon_terrain_control/terrain_base_zoom.png",
+  "target": "/home/claude/spacecrafter/claude/harness/artifacts/f51/dwell/frames/old_a.png",
+  "r_hf_shift_x": {
+   "0": -0.0044,
+   "4": -0.0017,
+   "8": -0.0004,
+   "16": 0.0021,
+   "32": -0.001,
+   "64": 0.0034,
+   "128": -0.0005
+  },
+  "r_hf_shift_y": {
+   "0": -0.0044,
+   "4": -0.0005,
+   "8": 0.0033,
+   "16": -0.0008,
+   "32": 0.0021,
+   "64": -0.0006,
+   "128": -0.002
+  }
+ },
+ "chromaticity": [
+  {
+   "png": "R6_moon_terrain_control/terrain_base_zoom.png",
+   "R": 168.93,
+   "G": 163.594,
+   "B": 164.363,
+   "R_over_B": 1.0278,
+   "G_over_B": 0.9953,
+   "n": 2544661
+  },
+  {
+   "png": "ladder_current/terrain_base_zoom.png",
+   "R": 62.587,
+   "G": 60.771,
+   "B": 61.113,
+   "R_over_B": 1.0241,
+   "G_over_B": 0.9944,
+   "n": 2535950
+  },
+  {
+   "png": "frames/old_a.png",
+   "R": 43.218,
+   "G": 41.974,
+   "B": 42.35,
+   "R_over_B": 1.0205,
+   "G_over_B": 0.9911,
+   "n": 2242243
+  },
+  {
+   "png": "frames/old_wide.png",
+   "R": 46.923,
+   "G": 45.711,
+   "B": 46.107,
+   "R_over_B": 1.0177,
+   "G_over_B": 0.9914,
+   "n": 235756
+  }
+ ]
+}
