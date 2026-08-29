@@ -482,16 +482,31 @@ ways with counts; beyond-the-five members recorded if any; §11.122 finding
 recorded with both texts + proposed disposition; pair-check green; §11 entry
 at the next free number + stub, entry-file-first; code tree clean at close;
 WIP per §0.6.
-**WIP:** *(CP1 2026-08-29: all ten sources read in full; scan built + run
-pre-edit (71 event lines / 92 candidate pairs / 68 unmarked-at-target,
-adjudicated). FOUR of the (g) five are real unmarked events and are now
-ANNOTATED at the superseded node — §11.122(i)←§11.125(i), §11.101(f)←§11.152,
-§11.108(e)←§11.128(a2), §11.98(c)←§11.116(b) — with the two live stubs
-(§11.98, §11.122) mirrored. **The fifth is a DIRECTION INVERSION in §11.156(g)'s
-table**: §11.107(c) already carries the marker citing §11.111 (F7 is LATER than
-F3), so nothing is owed there. pair_check pre-vs-post diff = EMPTY, with a
-positive control proving it fires. NEXT: §11.156(g) back-marker for my own
-correction + INTENT/11.165.md + stub + post-edit scan.)*
+**WIP:** *(DELIVERED 2026-08-29 → §11.165.* **FOUR markers placed at the
+superseded node**, each dated, quoting its superseder, original preserved
+(§11.99 form), each also recording what the superseder does NOT claim:
+§11.122(i)←§11.125(i) · §11.101(f)←§11.152 · §11.108(e)←§11.128(a2) ·
+§11.98(c)←§11.116(b). **The FIFTH row's direction is INVERTED**: *"the grep
+result is SUPERSEDED"* lives at **§11.107(c)** as a dated supervision
+annotation citing §11.111 — F7 is later the same day than F3, so §11.107 is the
+superseded node and its marker was already correctly placed in 2026-07-25; the
+scan assigns *source = the file, target = the citation*, exactly backwards for a
+line that IS a back-marker. **(g)'s extent is FOUR, not five** — §11.156(g) +
+stub annotated with that correction in the same commit as the entry performing
+it (§11.161(g)(2) applied to my own writing). Three targets archived-in-place
+(entry file = only home; retired index lines untouched, none relayed the claim);
+two live stubs mirrored, entry first. **Check both ways**: candidate pairs
+92→95→116, mechanically unmarked 68→64, **real unmarked events 4 → 0**; all 68
+pre-edit flags read, the 64 residual partitioned 20 inverted-direction markers /
+24 §11.156 catalogue / 13 §5 targets / 3 §5 sources / 4 co-occurrence — the
+expected signature for the next run. NO member beyond the five. `intent_pair_check`
+diff EMPTY at the markers-only checkpoint (positive control fires); full delivery
+delta = +1 entry file, +1 live pair, +1 I2 flag (a quotation of §11.99's form,
+kept — the §11.156(e) class). **§11.122's both-homes-stale state recorded as a
+FINDING with both texts + a proposed disposition, ENACTED NOWHERE** (§11.165(d)):
+no state word touched anywhere. Two audits NAMED NOT RUN: the §5-side twin, and
+the multi-claim case a per-pair test cannot see. Code never left `d6aec251`;
+both trees clean at close.)*
 
 ### F50 — §5.110's owed live reading: the six `#selected_*` on a real composed-body selection (record-only) [S]
 
