@@ -652,7 +652,30 @@ re-run of its sweep.
 rows; map ⚠ marks resolved; §11 entry at the next free number + stub
 (entry-first); proposed-flip list for the supervisor; md5 pristine on any
 launch; code tree clean at close; WIP per §0.6.
-**WIP:** *2026-08-29 CP1 — VERIFICATION PASS DONE, 13/13 members read at source
+**WIP:** *(cleared at delivery 2026-08-29 — **DELIVERED, §11.163** (entry file FIRST then stub,
+§11.156(f)); RECORD-ONLY, code `d6aec251` untouched and clean at open and close. DoD item by
+item: **13/13 members verdicted with grounds** (table in §11.163(b)) — **NO mechanism has
+disappeared**, 11 defect rows + 8/8 B38 residual members all still do what they were recorded
+doing, only citations drifted. **THREE DELTAS**: §5.5 fixed en route and never updated (a THIRD
+authority-inversion shape — §5-row stale against its own §13 row, which F42's stub↔entry sweep
+structurally cannot reach); §5.56's stated ground REFUTED and MEASURED; §5.21's reach
+understated (the new path registers the defective legacy class). **NEW §5.112** minted
+(version-bump auto-rewrite of `config.ini`, keys DELETED — §5.42's "preserved" measurement
+scoped, not refuted). **Deltas annotated at the rows** (3 entry files + 12 stubs + B38's §13
+row); **back-markers at §11.124(f) and §11.126(f) in the same commit** (§11.113(p)); **map ⚠
+marks all resolved** (strike-in-place; zero live ⚠ remain). **NOTHING FLIPPED** — no member met
+the bar (both-ways measured discrimination showing the defect GONE, no semantic choice):
+§5.56's measurement discriminates the defect PRESENT, §5.5's evidence is decisive but closure
+turns on a scope call. **Proposed-flip list** in §11.163(j). ONE launch, gdb, four predictions
+committed first, all matched, with the control that makes the zero mean something (owner's dtor
+1 / derived dtor 0 across 3 resolved locations); field md5 `03fbee59`/`545a51ef` in == out, no
+concurrent instance. **Critical-path changes**: §5.53(b) PROMOTED to T1 (the set's only
+new-path-specific visible divergence) · B38's T5.3 RESOLVED into T1.6 (not unmapped — an
+enumerated 8-member batch) · §5.112 added to T3 as a delivery-mechanism data-loss hazard ·
+§5.21/§5.83/§5.98 added to the final-pass batch · and the STRUCTURAL correction: 10 of 13 are
+BOTH-PATHS and therefore not T0 transparency holes at all. Artifacts `artifacts/f47/`.
+Commits `e279c97` (CP1) · this one.)*
+*(superseded CP1 note: 2026-08-29 CP1 — VERIFICATION PASS DONE, 13/13 members read at source
 against `d6aec251`. NO mechanism has disappeared: §5.20/§5.21/§5.35/§5.36/§5.41/
 §5.42/§5.53/§5.56/§5.83/§5.84/§5.98 + B38's 8 residual members all CONFIRMED
 present (B38's one CLOSED member stayed closed). THREE material deltas: (1)
