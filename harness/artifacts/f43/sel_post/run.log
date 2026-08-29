@@ -1,0 +1,50 @@
+farm ready: /tmp/b24_select_farm/.spacecrafter
+{
+ "limb_deg": 10.278060278059133,
+ "alpha_big_deg": 12.670497875672929,
+ "alpha_small_deg": 12.939393542226284,
+ "alpha_far_deg": 12.723579685301615,
+ "dist_big_km": 8833.824696019272,
+ "pick_tol_ndc": 0.029296875,
+ "obs_radius_km": 9737.4,
+ "screenSize_big": 0.0432378456513335,
+ "screenSize_small": 0.010624070634562551,
+ "ndc_big": 0.8446998583781953,
+ "ndc_small": 0.8626262361484189,
+ "ndc_moon_limb": 0.6852040185372755,
+ "cluster_sep_ndc": 0.017926377770223656
+}
+--- launch 1 (main scene), model radius 1.000001 ---
+ok:   main: display scale settled at 1.00000 (target 1), scaledDatumRadius 1737.40 km, after 5 samples - the observer can now be placed
+client window 1024x1024 at root +712+191 (1024x1024); render rect (2048, 2048); mouseNorm (511.5, 511.5, 511.5, 511.5)
+ok:   L0a observer: 9737.40 km from the Moon's centre = the commanded 1737.4 + 8000 km (predicted 9737.40)
+ok:   L0 scene: 3 composed bodies present (BigA ss=0.0432, SmallB ss=0.0106, FarC ss=0.0259, OnDisc ss=0.0747)
+ok:   L0 geometry: BigA at alpha 12.670 deg vs predicted 12.670 deg (limb 10.278)
+ok:   L0 cluster: BigA/SmallB centres 0.0179 NDC apart, both within the 0.0293 NDC pick tolerance of their midpoint (R5 precondition)
+ok:   C1 command/composed: `select planet BigA` -> selected='BigA' tracked='BigA' selDist=5.905047e-05 (11.97(d) inverted)
+ok:   C2 command/old: `select planet Moon` -> selected='Moon' tracked='Moon'
+ok:   C3 command/absent: an unknown name selects nothing (no false positive)
+ok:   L0b cluster (in the clicked state): centres 0.0179 NDC apart, both within the 0.0293 NDC pick tolerance of their midpoint
+ok:   P0 pointer/old: click at the Moon's screen centre (512,512) selects 'Moon' - the old picking path is live and untouched
+ok:   P0b_in: click at NDC (0,+0.594) = 0.85x the Moon's disc radius -> selected 'Moon' (expected 'Moon') - click scale calibrated to ~20 px
+ok:   P0b_out: click at NDC (0,+0.741) = 1.06x the Moon's disc radius -> selected '' (expected '') - click scale calibrated to ~20 px
+ok:   P1 pointer/composed: click at FarC's screen position (642,925) selects 'FarC'
+ok:   P2 pointer/composed: click at BigA's screen position (431,87) selects 'BigA'
+ok:   P3 R5: both centres inside one pick tolerance -> selected 'BigA' (screenSize 0.0432 vs 0.0106) - BIGGEST wins
+ok:   P6 seam: a click ON the composed body drawn INSIDE the Moon's disc (ndc [-0.0710198209, 0.374899954], ss 0.0747) selects 'OnDisc' - the child takes its own pixels across the old/new seam (D26)
+ok:   P6b bound: the same parent disc, 0.2240 NDC off the child, still selects 'Moon' - the pre-emption is confined to the child's own pixels
+ok:   P6c seam re-entry: the same on-child click, now made with 'Moon' selected, again selects 'OnDisc'
+ok:   P5 pointer/empty: a click on empty sky selects nothing (no false positive)
+note: composed-body info magnitude reads 'inf' (recorded, see 11.106)
+ok:   I1 info: the composed body's info readout is populated (RA/DE:, Alt/Az:, Distance:, Magnitude:) and its Distance 0.00005905 AU matches the dumped position 0.00005905 AU
+  parity sweep 0/90 ...
+  parity sweep 20/90 ...
+  parity sweep 40/90 ...
+  parity sweep 60/90 ...
+  parity sweep 80/90 ...
+ok:   parity sweep: 90 old-path body names selected and recorded
+--- launch 2 (R5 size mutation: BigA 25 km / SmallB 100 km) ---
+ok:   swap: display scale settled at 1.00000 (target 1), scaledDatumRadius 1737.40 km, after 5 samples - the observer can now be placed
+ok:   P4 R5 mutation: radii swapped -> the SAME cluster click now selects 'SmallB' (screenSize 0.0425 vs 0.0108) - selection FOLLOWS size
+
+B24-SELECT GREEN -> /tmp/f43/sel_post/b24_select_result.json

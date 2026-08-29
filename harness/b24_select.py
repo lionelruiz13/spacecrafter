@@ -60,7 +60,10 @@ PRECONDITIONS
   - temp-HOME symlink farm (11.103(a)) - the real ~/.spacecrafter is never
     written; the composed scene lives in the farm's modularSystem/.
   - fresh launch per scene; DISPLAY must be a real X server with XTEST.
-  - `flag moon_scaled off` (5.27 instrument precondition, 11.100).
+  - `flag moon_scaled off` (5.27 instrument precondition, 11.100) - and it is
+    a RAMP, not a state change; see wait_scale_settled() below.  This is
+    ASSERTED, not assumed: L0's observer leg reads the observer's own radius
+    back out of the dump and requires the commanded one.
 
 usage: b24_select.py <outdir> [--skip-parity]
        SC_BIN=<binary> to point at the pre-fix binary for the red run.
@@ -294,6 +297,55 @@ def farm_setup():
     subprocess.run(["bash", str(HERE / "b3_farm.sh"), str(FARM)], check=True)
 
 
+SETTLE_SAMPLES = {}
+
+
+def wait_scale_settled(s, out, tag, tries=20):
+    """`flag moon_scaled off` is a RAMP, and the observer's altitude is bound to
+    the value it reads AT THE INSTANT OF THE COMMAND.
+
+    Measured (F43, `f43_ramp.py`, artifacts artifacts/f43/ramp): `scaling` runs
+    5 -> 1 over ~5 s (4.98 at t=0.25 s, 2.90 at 2.56, 1.53 at 3.71, settled by
+    6.0); `Camera::moveTo` counts altitude from
+    `reference->getAltitudeReference()` = `scaledDatumRadius`
+    [observed: Camera.cpp:713-714,729 + ModularBody.hpp:1506-1508] and is an
+    ABSOLUTE SNAP evaluated once (Camera.cpp:723), so a `moveto` issued mid-ramp
+    binds an instantaneous radius that the finishing ramp then leaves behind and
+    NOTHING re-converges (measured: commanded 8000 km, ended 10 208.34 km above
+    the settled datum).
+
+    That is what put this harness's observer at 11 750.80 km instead of 9737.40
+    for the whole of its first dump - the four failures 11.153(j)(3) recorded.
+    The old sequence sent the flag with a 2 s pause and moved ~2.9-3.2 s in.
+
+    So the precondition is WAITED OUT BY MEASUREMENT rather than by a sleep: the
+    dump carries `scaling` and `scalingTarget`, and this polls until the two
+    agree and stop moving.  The product behaviour itself is recorded, not worked
+    around, at INTENT 5.109.
+    """
+    prev = None; samples = []
+    for _ in range(tries):
+        b, _c = dump(s, out, f"{tag}_settle", pause=0.9)
+        m = (b.get(PARENT, {}).get("new") or {})
+        if "scaling" not in m:
+            fail(f"{tag}: the dump carries no `scaling` for {PARENT} - the scale "
+                 f"precondition cannot be verified, only assumed")
+            return None
+        sc, tgt = m["scaling"], m["scalingTarget"]
+        samples.append((sc, m["scaledDatumRadius"] * AU_KM))
+        if abs(sc - tgt) < 1e-4 and prev is not None and abs(sc - prev) < 1e-4:
+            SETTLE_SAMPLES[tag] = samples
+            ok(f"{tag}: display scale settled at {sc:.5f} (target {tgt}), "
+               f"scaledDatumRadius {m['scaledDatumRadius']*AU_KM:.2f} km, after "
+               f"{len(samples)} samples - the observer can now be placed")
+            return m["scaledDatumRadius"] * AU_KM
+        prev = sc
+    SETTLE_SAMPLES[tag] = samples
+    fail(f"{tag}: display scale never settled in {tries} samples (last {samples[-1]}) "
+         f"- every altitude in this scene would be bound to a moving reference")
+    return None
+
+
 def launch(out, tag, sections):
     farmdir = FARM / ".spacecrafter"
     (farmdir / "modularSystem/SolarSystem.ini").write_bytes(TWIN + sections.encode("latin-1"))
@@ -309,7 +361,8 @@ def launch(out, tag, sections):
     send(s, "camera action free_mode state on")
     send(s, "flag atmosphere off"); send(s, "flag landscape off")
     send(s, "flag stars off"); send(s, "flag nebulae off")
-    send(s, "flag moon_scaled off", 2)          # 5.27 precondition
+    send(s, "flag moon_scaled off", 2)          # 5.27 precondition - a RAMP
+    wait_scale_settled(s, out, tag)             # ... waited out by measurement
     send(s, f"select planet {PARENT}")
     send(s, f"moveto lat {OBS_LAT} lon {OBS_LON} alt {OBS_ALT_M} duration 0", 5)
     send(s, "flag track_object on", 2)          # centre the parent -> deterministic aim
@@ -507,6 +560,10 @@ def main():
             math.cos(math.radians(PSI)) * math.cos(math.radians(12.0)))), ALT_KM),
         "dist_big_km": obs_dist_km(PSI, ALT_KM),
         "pick_tol_ndc": PICK_TOL_PX / (RENDER / 2),
+        # The observer's own radius from the Moon's centre. Asserted, not
+        # assumed: `moveto ... alt` counts from the DISPLAY-scaled datum
+        # (§5.109), so this number is the whole scene's precondition.
+        "obs_radius_km": R_KM + OBS_ALT_M / 1000.0,
         "screenSize_big": math.atan(100.0 / obs_dist_km(PSI, ALT_KM)) / math.radians(FOV / 2),
         "screenSize_small": math.atan(25.0 / obs_dist_km(PSI + DPSI_SMALL, ALT_KM)) / math.radians(FOV / 2),
     }
@@ -541,6 +598,24 @@ def main():
         report["cam_base"] = cam
         moon = bodies.get(PARENT, {}).get("new", {}) or {}
         scr = {n: (bodies.get(n, {}).get("new") or {}) for n, _r, _a, _b in BODIES}
+
+        # ---- L0a the OBSERVER is where the scene was computed for.
+        # This leg exists because its absence cost four failures for two
+        # sessions (11.153(j)(3) -> 11.157): every predicted angle below is a
+        # function of the observer's radius, and `moveto alt` binds that radius
+        # to the reference's DISPLAY-scaled datum at the instant of the command
+        # (§5.109). A scene whose observer is not where it was computed for
+        # reports geometry failures that say nothing about the product.
+        obs_r = (cam or {}).get("refDist", 0) * AU_KM
+        report["legs"]["L0a_observer"] = dict(radius_km=obs_r, pred=pred["obs_radius_km"])
+        if abs(obs_r - pred["obs_radius_km"]) < 1.0:
+            ok(f"L0a observer: {obs_r:.2f} km from the Moon's centre = the commanded "
+               f"{R_KM} + {OBS_ALT_M/1000:.0f} km (predicted {pred['obs_radius_km']:.2f})")
+        else:
+            fail(f"L0a observer: {obs_r:.2f} km from the Moon's centre, commanded "
+                 f"{pred['obs_radius_km']:.2f} km ({obs_r - pred['obs_radius_km']:+.2f}) - "
+                 f"the altitude reference was not the settled datum; every angle below "
+                 f"is measured against the wrong scene")
 
         # ---- L0 scene sanity: composed present, off the disc, geometry as predicted
         missing = [n for n in scr if not scr[n]]
@@ -627,6 +702,27 @@ def main():
         scr = {n: (bodies.get(n, {}).get("new") or {}) for n, _r, _a, _b in BODIES}
         report["cam_reaimed"] = cam
         img_scene = shot(s, out, "main_scene")
+
+        # EVERY click target below is derived from THIS dump, because this is
+        # the state the clicks are made in - the camera moved between the two
+        # dumps (tracking BigA/Moon above), so a screen position read from the
+        # first one names a different place. The cluster midpoint was the one
+        # target that still came from the base dump; when the two states
+        # diverged it clicked empty sky and P3 reported a selection failure that
+        # was really a stale coordinate (11.153(j)(3) -> 11.157). Recomputed
+        # here, with the R5 precondition re-asserted in the state that matters.
+        sepx = scr["BigA"]["screen"][0] - scr["SmallB"]["screen"][0]
+        sepy = scr["BigA"]["screen"][1] - scr["SmallB"]["screen"][1]
+        sep = math.hypot(sepx, sepy)
+        mid = ((scr["BigA"]["screen"][0] + scr["SmallB"]["screen"][0]) / 2,
+               (scr["BigA"]["screen"][1] + scr["SmallB"]["screen"][1]) / 2)
+        report["legs"]["cluster_at_click"] = dict(sep_ndc=sep, tol_ndc=tol, mid=mid)
+        if sep / 2 < tol:
+            ok(f"L0b cluster (in the clicked state): centres {sep:.4f} NDC apart, both "
+               f"within the {tol:.4f} NDC pick tolerance of their midpoint")
+        else:
+            fail(f"L0b cluster (in the clicked state): centres {sep:.4f} NDC apart - "
+                 f"half-separation {sep/2:.4f} exceeds the pick tolerance {tol:.4f}")
 
         # =============== POINTER CHANNEL ===============
         # P0 - old-body control: the Moon's own dumped centre must still pick the Moon

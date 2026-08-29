@@ -407,7 +407,19 @@ b24_select green OR red-with-minted-rows, stated which; 28/28 files classified
 with per-file reasons; corrected files reproduce their intended geometry
 (numbers cited both ways); README updated; §11 entry at the next free number +
 stub; md5 pristine on every launch; code tree clean at close; WIP per §0.6.
-**WIP:** *(empty)*
+**WIP:** *2026-08-29 CP1 — half (A) DONE. The display stack had to be
+RE-ESTABLISHED (host rebooted 2026-08-27; claude had no login session, no `:2`,
+`/tmp` wiped incl. §11.153(o)(1)'s two binaries) — headless GNOME restarted at
+the recorded `2448x1332 @ 59.96`, app GPU-real on the RTX 5090, Swapchain
+1024x1024 / Rect 2048x2048 as §11.106 recorded. All four b24_select reds
+attributed INSTRUMENT with the product cause measured and minted as **§5.109**
+(`moveto … alt` counts from the display-SCALED datum, snapped once, so the
+harness's moveto landed ~3 s into a 5 s scale ramp: observer 11 750.80 km
+instead of 9737.40). Repaired (measured settle + observer-radius gate +
+midpoint read in the clicked state): **b24_select GREEN**, reproducing
+§11.106's committed numbers (alpha 12.670, ss 0.0432/0.0106, swap 0.0425/0.0108,
+selDist 5.905047e-05, cluster 0.0179, parity 90). Discrimination both ways:
+`artifacts/f43/sel_pre|sel_control|sel_post`. NEXT: half (B), the 28-file audit.*
 
 ### F44 — §5.86's owed data: who consumes the scrambled RA/DE, and what the old path answers (record-only) [S]
 

@@ -1,0 +1,403 @@
+{
+ "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "pred": {
+  "limb_deg": 10.278060278059133,
+  "alpha_big_deg": 12.670497875672929,
+  "alpha_small_deg": 12.939393542226284,
+  "alpha_far_deg": 12.723579685301615,
+  "dist_big_km": 8833.824696019272,
+  "pick_tol_ndc": 0.029296875,
+  "obs_radius_km": 9737.4,
+  "screenSize_big": 0.0432378456513335,
+  "screenSize_small": 0.010624070634562551,
+  "ndc_big": 0.8446998583781953,
+  "ndc_small": 0.8626262361484189,
+  "ndc_moon_limb": 0.6852040185372755,
+  "cluster_sep_ndc": 0.017926377770223656
+ },
+ "legs": {
+  "L0a_observer": {
+   "radius_km": 11750.795358890558,
+   "pred": 9737.4
+  },
+  "geometry": {
+   "BigA": {
+    "screen": [
+     -0.12816149,
+     0.676536322
+    ],
+    "ndc_radius": 0.6885686331109687,
+    "alpha_deg": 10.328529496664531,
+    "screenSize": 0.0353446491,
+    "dist_km": 10807.21680196306
+   },
+   "SmallB": {
+    "screen": [
+     -0.131304666,
+     0.693128586
+    ],
+    "ndc_radius": 0.7054559887361727,
+    "alpha_deg": 10.58183983104259,
+    "screenSize": 0.00871296134,
+    "dist_km": 10959.883118753993
+   },
+   "FarC": {
+    "screen": [
+     0.208867952,
+     -0.659567058
+    ],
+    "ndc_radius": 0.6918486289438245,
+    "alpha_deg": 10.377729434157366,
+    "screenSize": 0.0211546328,
+    "dist_km": 10833.764529731983
+   },
+   "OnDisc": {
+    "screen": [
+     -0.0562698059,
+     0.297033817
+    ],
+    "ndc_radius": 0.30231668742828793,
+    "alpha_deg": 4.534750311424319,
+    "screenSize": 0.0592006333,
+    "dist_km": 9678.624859527717
+   }
+  },
+  "cluster": {
+   "sep_ndc": 0.016887355625220687,
+   "tol_ndc": 0.029296875,
+   "mid": [
+    -0.129733078,
+    0.684832454
+   ]
+  },
+  "C1_command_composed": {
+   "selected": "BigA",
+   "tracked": "BigA",
+   "selDist": 7.22417826e-05
+  },
+  "C2_command_old": {
+   "selected": "Moon",
+   "tracked": "Moon"
+  },
+  "C3_command_absent": {
+   "selected": "",
+   "tracked": ""
+  },
+  "cluster_at_click": {
+   "sep_ndc": 0.0179265411993367,
+   "tol_ndc": 0.029296875,
+   "mid": [
+    -0.15888918200000002,
+    0.8387458325
+   ]
+  },
+  "P0_pointer_old": {
+   "win": [
+    511.5,
+    511.50006824952123
+   ],
+   "selected": "Moon",
+   "xclick": "clicked client-local (512,512) -> root (1224,703)"
+  },
+  "P0b_in": {
+   "ndc": [
+    0.0,
+    0.5942023872000001
+   ],
+   "win": [
+    511.5,
+    207.56547894719995
+   ],
+   "selected": "Moon",
+   "want": "Moon"
+  },
+  "P0b_out": {
+   "ndc": [
+    0.0,
+    0.7410053299200001
+   ],
+   "win": [
+    511.5,
+    132.47577374591992
+   ],
+   "selected": "",
+   "want": ""
+  },
+  "P1_pointer_FarC": {
+   "win": [
+    642.4862013075,
+    925.1291178854999
+   ],
+   "selected": "FarC",
+   "xclick": "clicked client-local (642,925) -> root (1354,1116)"
+  },
+  "P2_pointer_BigA": {
+   "win": [
+    431.08151732249996,
+    86.9861058495
+   ],
+   "selected": "BigA",
+   "xclick": "clicked client-local (431,87) -> root (1143,278)"
+  },
+  "P3_R5_biggest": {
+   "win": [
+    430.22818340699996,
+    82.48150667624998
+   ],
+   "selected": "BigA",
+   "big": "BigA",
+   "ss_big": 0.0432406142,
+   "ss_small": 0.0106241116
+  },
+  "P6_pointer_on_disc": {
+   "win": [
+    475.17336160965,
+    319.73867352900004
+   ],
+   "selected": "OnDisc",
+   "ndc": [
+    -0.0710198209,
+    0.374899954
+   ],
+   "screenSize": 0.0746749043,
+   "expect": "OnDisc"
+  },
+  "P6b_pointer_parent_disc": {
+   "win": [
+    589.7620022579999,
+    319.73867352900004
+   ],
+   "selected": "Moon",
+   "ndc": [
+    0.15300489199999998,
+    0.374899954
+   ],
+   "expect": "Moon"
+  },
+  "P6c_pointer_on_disc_again": {
+   "win": [
+    475.17336160965,
+    319.73867352900004
+   ],
+   "selected": "OnDisc",
+   "expect": "OnDisc",
+   "entered_from": "Moon"
+  },
+  "P5_pointer_empty": {
+   "win": [
+    76.72500000000002,
+    946.275
+   ],
+   "selected": ""
+  },
+  "I1_info": {
+   "block": "  NEW nav: RA/DE: 20h38m48s / +60\u00b000'00\"\nSA +50\u00b018'00\" GHA +160\u00b041'53\" LHA +203\u00b059'53\"@ Az/Alt/coA: +320\u00b018'00\"/+12\u00b040'14\"/+77\u00b019'46\" LPA +156\u00b000'07\"\n  NEW inf: BigA\nMagnitude: inf\nRA/DE: 20h38m48s / +60\u00b000'00\"\nAlt/Az: +12\u00b040'14\" / +320\u00b018'00\"\nDistance: 0.00005905 AU\n",
+   "fields": [
+    "RA/DE:",
+    "Alt/Az:",
+    "Distance:",
+    "Magnitude:"
+   ],
+   "magnitude": "inf"
+  },
+  "P4_R5_mutation": {
+   "win": [
+    445.0518354975,
+    160.73469425474997
+   ],
+   "selected": "SmallB",
+   "ss_BigA": 0.00884795375,
+   "ss_SmallB": 0.0348985791
+  }
+ },
+ "window": [
+  712,
+  191,
+  1024,
+  1024
+ ],
+ "client": [
+  1024,
+  1024
+ ],
+ "rect": [
+  2048,
+  2048
+ ],
+ "mouseNorm": [
+  511.5,
+  511.5,
+  511.5,
+  511.5
+ ],
+ "cam_base": {
+  "reference": "Moon",
+  "tracked": "",
+  "freeMode": true,
+  "boundToSurface": true,
+  "mount": "equatorial",
+  "skyLocked": false,
+  "viewOffset": 0,
+  "viewOffsetTransition": 1,
+  "viewOffsetEff": 0,
+  "longitude": 0.0936660022,
+  "latitude": 0.755727589,
+  "distance": 5.80695123e-05,
+  "alt": 7.12961334e-09,
+  "az": -2.2636919,
+  "heading": -6.09596729,
+  "absFwd": [
+   -0.545620203,
+   0.838032544,
+   0.00015620036
+  ],
+  "position": [
+   -5.01747127e-05,
+   6.04357338e-05,
+   0
+  ],
+  "rootPos": [
+   0.34469342963711824,
+   -0.9541488385148114,
+   0.0002520371909007224
+  ],
+  "refAoI": 0.00144275022,
+  "refDist": 7.85492157e-05,
+  "refCached": true,
+  "refParent": "Earth",
+  "selected": "",
+  "selDist": 0,
+  "halfFov": 0.261799395,
+  "cullHalfFov": 0.261799395,
+  "lockedSkyRot": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   1
+  ],
+  "plans": {
+   "viewT": 0,
+   "hdgT": 0,
+   "zoomDuration": 0,
+   "moveDuration": 0
+  },
+  "mat": [
+   0.819905639,
+   0.155320153,
+   0.551026702,
+   0,
+   0.541397989,
+   0.102560557,
+   -0.834487617,
+   0,
+   -0.186126336,
+   0.982525826,
+   -4.37113883e-08,
+   0,
+   -1.45519152e-11,
+   -6.82121026e-12,
+   -7.85492157e-05,
+   1
+  ]
+ },
+ "cam_reaimed": {
+  "reference": "Moon",
+  "tracked": "",
+  "freeMode": true,
+  "boundToSurface": true,
+  "mount": "equatorial",
+  "skyLocked": false,
+  "viewOffset": 0,
+  "viewOffsetTransition": 1,
+  "viewOffsetEff": 0,
+  "longitude": 0.0936660022,
+  "latitude": 0.755727589,
+  "distance": 5.80695123e-05,
+  "alt": -9.38986489e-09,
+  "az": -2.26369214,
+  "heading": -6.09596729,
+  "absFwd": [
+   -0.545620441,
+   0.838032365,
+   0.000156200331
+  ],
+  "position": [
+   -4.15777176e-05,
+   5.00806018e-05,
+   0
+  ],
+  "rootPos": [
+   0.3446860862604808,
+   -0.9541375596636499,
+   0.0002520392913982761
+  ],
+  "refAoI": 0.00144275022,
+  "refDist": 6.50904985e-05,
+  "refCached": true,
+  "refParent": "Earth",
+  "selected": "",
+  "selDist": 0,
+  "halfFov": 0.261799395,
+  "cullHalfFov": 0.261799395,
+  "lockedSkyRot": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   1
+  ],
+  "plans": {
+   "viewT": 0,
+   "hdgT": 0,
+   "zoomDuration": 0,
+   "moveDuration": 0
+  },
+  "mat": [
+   0.819905519,
+   0.155320123,
+   0.55102694,
+   0,
+   0.541398227,
+   0.102560595,
+   -0.834487438,
+   0,
+   -0.186126336,
+   0.982525826,
+   -4.37113883e-08,
+   0,
+   0,
+   -2.27373675e-12,
+   -6.50904985e-05,
+   1
+  ]
+ },
+ "fails": [
+  "L0a observer: 11750.80 km from the Moon's centre, commanded 9737.40 km (+2013.40) - the altitude reference was not the settled datum; every angle below is measured against the wrong scene",
+  "L0 BigA: ndc radius 0.6886 is not clear of the Moon's disc (0.6852) - the old picker would see the parent there",
+  "L0 FarC: ndc radius 0.6918 is not clear of the Moon's disc (0.6852) - the old picker would see the parent there",
+  "L0 geometry: BigA alpha off prediction by 2.342 deg"
+ ]
+}

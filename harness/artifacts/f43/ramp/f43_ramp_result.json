@@ -1,0 +1,99 @@
+{
+ "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "pred": {
+  "settled_scale1_radius_km": 9737.4,
+  "settled_scale5_radius_km": 16687.0,
+  "layer_gap_km": 6949.6,
+  "b24_select_observed_radius_km": 11750.8,
+  "rover_scale1_drawn_km": 2237.4,
+  "rover_if_uniform_dilation_km": 11187.0,
+  "rover_if_camera_convention_km": 9187.0
+ },
+ "legs": {
+  "R0_shipped": {
+   "scaling": 5,
+   "sdr_km": 8687.00025388806
+  },
+  "R1_ramp_profile": [
+   {
+    "t": 0.2503948211669922,
+    "scaling": 4.97886419,
+    "sdr_km": 8650.27861433703
+   },
+   {
+    "t": 1.4033100605010986,
+    "scaling": 4.36380768,
+    "sdr_km": 7581.679202597798
+   },
+   {
+    "t": 2.5561444759368896,
+    "scaling": 2.90047598,
+    "sdr_km": 5039.286814014453
+   },
+   {
+    "t": 3.7087910175323486,
+    "scaling": 1.52757239,
+    "sdr_km": 2654.00414303614
+   },
+   {
+    "t": 4.863089561462402,
+    "scaling": 1.00557649,
+    "sdr_km": 1747.088583294633
+   },
+   {
+    "t": 6.015783071517944,
+    "scaling": 1.00000012,
+    "sdr_km": 1737.400266198545
+   },
+   {
+    "t": 7.168236494064331,
+    "scaling": 1.00000012,
+    "sdr_km": 1737.400266198545
+   }
+  ],
+  "R2_settled_scale1": {
+   "radius_km": 9737.399932838196,
+   "sdr_km": 1737.400266198545,
+   "pred": 9737.4
+  },
+  "R3_settled_scale5": {
+   "radius_km": 16687.00107243131,
+   "sdr_km": 8687.00025388806,
+   "pred": 16687.0
+  },
+  "R4_mid_ramp": {
+   "radius_km": 11961.282164983497,
+   "alt_ref_implied_km": 3961.282164983497,
+   "sdr_before_km": 6790.368583333422,
+   "sdr_after_km": 3426.4638599028813
+  },
+  "R5_after_settle": {
+   "radius_km": 11961.282164983497,
+   "sdr_km": 1737.400266198545,
+   "altitude_km": 10223.881898784952
+  },
+  "R6_second_traverse": {
+   "radius_km": 9737.399932838196,
+   "sdr_km": 1737.400266198545,
+   "settle_s": 6.921475410461426,
+   "pred": 9737.4
+  },
+  "R7_layers": {
+   "scale1": {
+    "scaling": 1.00000012,
+    "sdr_km": 1737.400266198545,
+    "visible": true,
+    "model_km": 2237.4000424007527,
+    "drawn_km": 2237.4003499499067
+   },
+   "scale5": {
+    "scaling": 5,
+    "sdr_km": 8687.00025388806,
+    "visible": true,
+    "model_km": 2237.4000424007527,
+    "drawn_km": 11187.000078300149
+   }
+  }
+ },
+ "fails": []
+}
