@@ -754,6 +754,67 @@ recording fix) · §5.113's one-launch measurement (from F50). Both instrument b
 for the next runner accepted as stated: pair-check 183/158/25/85; scan 89/124/83 with
 the 83rd being the inverted-direction class, not arrears.)*
 
+### F52 — The respecified INT-7 stratigraphy validation (§11.161(f)): the tree's genesis testimony, tested from git alone [S]
+
+**Why now:** §11.161(b) recorded the code's stratigraphy as OWNER TESTIMONY
+(EntityCore born with the OpenGL→Vulkan refactor *"as I learned it"*,
+refactoring *"almost the baseline … at varying scale"*, convergence since;
+experimentalModule born post-stabilization). §11.161(f) respecified the
+commit-signature test on that genesis data and queued it. If the predicted
+signatures show, the stratigraphy becomes a MEASURED property of the tree
+rather than testimony — load-bearing for every future fix-shape and
+question-routing decision that §0.5 now keys to strata. Last member of the
+session-14 queue.
+
+**The test (self-contained statement):** execution mode leaves a signature in
+commit history — anticipatory/converged execution produces monolithic
+post-convergence initial commits with a LOW-deletion additive tail;
+learning-mode execution produces sustained HIGH deletion/refactor ratios that
+DECLINE as premises converge, with late spikes only at premise-rework events.
+Two predictions, committed BEFORE measurement:
+- **EntityCore**: a TIME-GRADIENT — deletion/refactor ratio high in the
+  learning era, declining toward the present, with late spikes at identifiable
+  premise-rework events (e.g. the ASmooth line — the `7ce58350` fresh-phase
+  fix and its ancestors; the Taskable line).
+- **experimentalModule**: ADDITIVE-TAIL-FROM-BIRTH — born post-stabilization,
+  so high-addition/low-deletion from its first commit, no learning-era
+  gradient.
+
+**Sources (re-read, never recall):** `INTENT/11.161.md` (b) (the testimony +
+era boundaries: S-RA ~1–2 yr, S-preRA >5 yr ago) + (f) (the respecification);
+the EntityCore submodule's own git log (`src/EntityCore`, full history); the
+code repo's history filtered to `src/experimentalModule/`.
+
+**Scope:**
+1. **Predictions committed first** (`harness/artifacts/f52/f52_predictions.json`):
+   the two signatures above made NUMERIC — state the metric (per-commit
+   deletion ratio `del/(add+del)`; a refactor proxy — renames + modifications
+   vs pure additions; windowed over time), the era boundaries derived from
+   (b), and what PASS/FAIL looks like for each prediction, plus the spike
+   prediction for datable premise-rework events. State what would REFUTE the
+   testimony.
+2. **Measure** both histories (git-only; method + denominators stated:
+   commit counts, date ranges, author filter if mixed). Beware
+   presentation-order vs chronology (FM-10): use author/commit dates
+   explicitly; note squashes/rebases if detectable (a rewritten history is a
+   stated limit, not silently absorbed).
+3. **Adjudicate** each prediction with numbers; a signature matching neither
+   prediction ⇒ record as-is, kept with numbers, what discriminates next.
+4. **Record**: §11 entry at the next free number + stub, entry-file-first;
+   annotate §11.161(f) DISCHARGED with the verdict (back-marker discipline —
+   UPPERCASE keyword, citation inside the span).
+
+**Boundaries:** git-only, read-only on both repos — NO code, NO data, NO
+launches, NO builds; EntityCore read-only by protocol (reading its git history
+is reading). Analysis script + artifacts under `harness/` (`f52_*.py`,
+`artifacts/f52/`, force-added).
+
+**DoD:** predictions committed pre-measurement; both signatures measured with
+method + denominators; per-prediction verdict with numbers; §11.161(f)
+annotated; §11 entry + stub; both trees clean of everything but the delivery;
+WIP per §0.6.
+**WIP:** *(empty)*
+
 ---
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
