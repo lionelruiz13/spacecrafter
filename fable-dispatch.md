@@ -348,6 +348,19 @@ dangerous direction structurally unreachable). OUT OF SCOPE, RECORDED: 5 entry-t
 supersessions with no back-marker at the superseded node (§11.113(p)) — §11.122(i) is stale
 in BOTH homes, which is why a pair sweep cannot reach it. Code tree `d6aec251` clean
 throughout. Commits `89b83cc` (CP1) · `30548d9` (CP2) · this one.*
+*(ACCEPTED by supervisor [fable 2026-08-29]: §11.156 read in full; commits/authors/diff
+scope checked — the trailer-empty and 171-vs-172 flags both resolved AGAINST my probes (a
+non-trailer line before the block; my warm-up `ls` counted the `archive` subdir). §5.26
+repair and §11.144/§11.86 stub refreshes verified at the ledger by content; code tree clean.
+Judgment calls ENDORSED with their arguments: the (i-refuting)/(i-incomplete) split
+(differentiated repairs, no redefinition); repair form keyed to the home (§11.99 +
+§11.113(p) precedents); `intent_pair_check.py` at `claude/` top level (harness/ is the
+app-verification surface, correctly out of bounds); the refreshed-stub signature stated as
+the next run's baseline. The (f) proposal RATIFIED and enacted in the header structure
+paragraph [veto point for Vixy, one line to reverse — the archival-rule precedent:
+maintained-artifact conventions are delegated]. The (g) five back-markers = next-round
+queue candidate (mechanical §11.113(p) transcriptions; boundary: markers only, no state
+advance — §11.122's row state question rides it as a finding, not an action).)*
 
 ### F43 — b24_select's four reds adjudicated + the 28-file free-mode-longitude audit (§11.153(o), (j)(3)) [S–M]
 
