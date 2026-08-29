@@ -335,8 +335,18 @@ are inline (no entry file, not pairs). DISCRIMINATING CHECK RUN BOTH WAYS on §5
 pre-repair tree (harness `458a71f` = `d43abec^`) is FLAGGED class-(i) under D (CORRECTED /
 UNBLOCKED / ANSWERED + §11.101 + §11.149 + F39 + `d521807a` all stub-only) and under D2
 (the dated `[BEHAVIOUR HALF UNBLOCKED 2026-08-26 …]` marker span); current tree PASSES it
-(D reduces to one sub-threshold supporting citation, §11.113). Next: CP2 = every flag
-adjudicated, divergent pairs enumerated with class.*
+(D reduces to one sub-threshold supporting citation, §11.113). CP2 — 146/146 pairs checked,
+every flag adjudicated by reading both texts. **13 divergent pairs: 4 class-(i) + 9
+class-(ii), 0 class-(iii).** Class-(i) REPAIRED in the entry files (§5 rows strike-with-pointer
+per the §5.27 precedent, §11 entries annotate-with-pointer per the §11.99 precedent):
+**§5.26** (the entry's Observable still asserted the 11583 px leg F4/§11.108(c) refuted —
+and §11.108(j) itself records *"§5.26 annotated"*, so the annotation demonstrably went to the
+stub alone), **§11.96** (B5-oort-2 DELIVERED same day → §11.98, entry still routes it as
+queued), **§11.112** ((d)'s owed propagation pass PERFORMED 2026-07-29 → §11.113),
+**§11.155** (B28 verdict + the §11.154 mis-homed-stub repair, stub-only). Class-(ii) stubs
+REFRESHED from their entries: §5.2, §11.86, §11.89, §11.97, §11.112, §11.124, §11.136,
+§11.137, §11.144. Next: delivery = §11.156 + its own stub (checked against itself), WIP
+cleared.*
 
 ### F43 — b24_select's four reds adjudicated + the 28-file free-mode-longitude audit (§11.153(o), (j)(3)) [S–M]
 
