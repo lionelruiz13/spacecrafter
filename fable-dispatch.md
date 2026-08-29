@@ -525,6 +525,20 @@ md5 pristine.** NEW **§5.110** + **§5.111**, record-only. Two of the task's ow
 predictions REFUTED and kept with their numbers; a third guard (C1) refused a
 non-discriminating epoch pair. **Newly Vixy's/§11.4's**: the calibration is now
 two DECISIONS with numbers — which RA zero point, and which ORIGIN.)*
+*(ACCEPTED by supervisor [fable 2026-08-29]: §11.158 read in full; commits/authors/scope
+checked (record-only held: `src/` untouched, code clean at `d6aec251` throughout); §5.86
+annotation + §5.110/§5.111 mints + stub + the §11.144(j)(1) forward marker verified at the
+ledger. One repair at acceptance: the entry's cited artifacts (`claude/artifacts/f44*/`)
+were UNTRACKED — `.gitignore:1` ignores `artifacts` and F43/F40 force-added their cited
+discrimination records; F44's are force-added here (712K, gz/json) so the citations resolve
+by commit, not by luck. Judgment calls ENDORSED with their arguments: the two refuted
+predictions KEPT with numbers (the angular-separation-blind-to-rotation lesson + the
+sidereal-alias epoch guard — the round's method exemplars, same class as F43's litguard);
+the three-gates-not-looser-bound repair; §5.110 minted by reading with its live check named
+owed; the census's comment-stripped, line-preserving instrument. The (b) reachability gate
+— shipped blast radius = composed-body selection only, while the dump exercises the
+readout for all 90 — is the entry's most consequential fact and correctly bounds (f)'s
+target. §11.4's two numbered decisions join §3 for Vixy.)*
 
 ---
 
