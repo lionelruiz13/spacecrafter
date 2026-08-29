@@ -4,6 +4,21 @@ AGAINST.  RECORD-ONLY: this script changes nothing and asks the shipped binary.
 
     cd claude/harness && DISPLAY=:2 ./f34_convention.py <outdir> [--bin B]
 
+*** THIS INSTRUMENT IS PRE-`18b6f13f` AND ITS GATES ARE NOT RE-BASELINED. ***
+Its C3 gates assert convention A — `position == spheToRect(-lon,lat)*distance`,
+the DRAWN eye after `free_mode on` being `-Z(theta).pA` — which is exactly the
+defect §5.80 named and F40 removed (§11.153).  Run against a binary at or after
+`18b6f13f` those gates FAIL BY CONSTRUCTION; that is not a regression, it is
+the fix.  Its recorded 27/27 stands as a measurement of the PRE binary and was
+replayed as such during F40 (`artifacts/f40/f34_replay`, on `/tmp/sc_f40_pre`
+= code `7ef11aca`).
+
+It is deliberately NOT re-pointed at the new convention: `f40_inverse.py` scores
+BOTH conventions from one run under `--expect pre|post` (§11.153(o)(2)), so
+re-baselining this file would put the same claim in two homes (I2).  Use
+`f40_inverse.py` for any binary from `18b6f13f` on; keep this one for reading
+what the pre binary did.  [F43, 2026-08-29, §11.157]
+
 WHAT §5.80 RECORDS AND WHAT IT OWES.  `camera action free_mode state on` swings
 the observer ~125 deg around its reference at constant distance, because
 `Camera::setFreeMode`'s pose conversion is not the inverse of what `viewMat()`'s

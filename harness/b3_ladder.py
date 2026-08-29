@@ -165,17 +165,28 @@ SPHERE_MODEL = "Star_White"   # exact unit sphere (verified at runtime)
 ROVER_MODEL = "Curiosity"     # 11.101(c)'s body; model radius 3.009647
 
 # ---- sites ---------------------------------------------------------------
-# A site is a parent body + an observer station + a ladder.  `nadir_lon` uses
-# the MEASURED convention (F1-P1 calibration, 5 bodies, jd 2461234): the
-# sub-observer point of `moveto lat 0 lon L` sits at surface_point longitude
+# A site is a parent body + an observer station + a ladder.  A site's IDENTITY
+# is its sub-observer surface point `nadir_lon()` - that is where the ladder is
+# authored, where the DEM is sampled and where the illumination was calibrated;
+# `obs_lon` names the site, `obs_lon_cam()` is what the camera is commanded.
+#
+# The F1-P1 calibration (5 bodies, jd 2461234) measured that the sub-observer
+# point of a FREE-MODE `moveto lat 0 lon L` sat at surface_point longitude
 # 180 - L.  Derived twice, independently: (i) cos psi from each body's dumped
 # distance gives nadir_lon = 127.000 +- 0.001 for L = 53 over 5 bodies at
 # lon 41.5..67.2; (ii) the camera dump's own `position` (reference-relative-to-
 # observer, the point-reflected convention) has longitude -53.000000 exactly,
-# and the observer direction is its negation => 180 - L.  `moveto lon` and
-# `orbit_lon` are therefore NOT the same longitude authority (11.104(g),
-# recorded not fixed); here it is a calibration, ASSERTED per leg through the
-# dumped observer->body distance (A0dist), so a convention change fails loudly.
+# and the observer direction is its negation => 180 - L.
+#
+# THAT CONVENTION IS THE DEFECT §5.80 NAMED, and F40 removed it (§11.153): free
+# flight now names the place anchored flight does, so the sub-point of
+# `moveto lon L` is L - 90.  The site is held FIXED and the command corrected -
+# see obs_lon_cam().  `moveto lon` and `orbit_lon` are still NOT the same
+# longitude authority (the -90 is §5.49's own origin, 11.104(g), unchanged);
+# here it is a calibration, ASSERTED per leg through the dumped observer->body
+# distance (A0dist), so a convention change fails loudly - and it did: this
+# harness ran 19-failures RED at code d6aec251 before the correction, with
+# A0dist naming the calibration by hand (`artifacts/f43/ladder_pre`).
 #
 # ladder legs: (tag, drawn radius km, altitude km, lateral offset km from nadir)
 
@@ -302,8 +313,37 @@ def model_radius(name):
     return math.sqrt(r2), math.sqrt(rmin), n
 
 
+def obs_lon_cam():
+    """The longitude to COMMAND so the observer lands on this site's own
+    surface point - which is not the site's longitude, and stopped being
+    `S["obs_lon"]` at F40.
+
+    A site is identified by its SUB-OBSERVER SURFACE POINT: `nadir_lon()` is
+    where the ladder is authored, the DEM value is sampled and the illumination
+    was calibrated ("MEASURED lit: centre luma 177 vs 10-11" for earth; the
+    OCEAN heightmap window 0.0431-0.0471 for the terrain prediction). So the
+    correction has to hold that point fixed and move the COMMAND - the
+    b24_screen precedent (§11.153(j)(2)), not b24_select's move-the-content one,
+    because here the absolute place carries the site's own properties.
+
+        before F40   sub-point = 180 - L        (measured, F1-P1 calibration)
+        since  F40   sub-point = L - 90         (§11.153, free flight now names
+                                                 the place anchored flight does)
+        hold the sub-point  =>  L' - 90 == 180 - L  =>  L' = 270 - L (mod 360)
+
+    moon : L = 39.7  ->  L' = 230.3, sub-point 140.3 (unchanged, = 180 - 39.7)
+    earth: L = 270.0 ->  L' =   0.0, sub-point -90.0 (unchanged, = 180 - 270)
+
+    `nadir_lon()` is DERIVED from this one expression rather than restating
+    `180 - L`, so there is a single convention authority (I2) and the next
+    convention change moves both together or fails at A0dist, as this one did
+    (19 failures, `artifacts/f43/ladder_pre`).
+    """
+    return (270.0 - S["obs_lon"]) % 360.0
+
+
 def nadir_lon():
-    return 180.0 - S["obs_lon"]
+    return obs_lon_cam() - 90.0
 
 
 def site_lon(offset_km):
@@ -518,6 +558,35 @@ def load_dump(path):
     return bodies
 
 
+def wait_scale_settled(s, out, tag, tries=20):
+    """Poll the dump until the parent's display scaling has reached its target
+    and stopped moving.  See the call site for why this is a measurement and
+    not a sleep (§5.109)."""
+    prev = None; last = None
+    for _ in range(tries):
+        p = out / f"{tag}_settle.json"
+        if p.exists():
+            p.unlink()
+        send(s, f"body action dual_dump filename {p}", 0.9)
+        for _ in range(40):
+            if p.exists() and p.stat().st_size > 0:
+                break
+            time.sleep(0.2)
+        m = (load_dump(p) or {}).get(S["parent"]) or {}
+        if "scaling" not in m:
+            fail(f"{tag}: no `scaling` for {S['parent']} in the dump - the scale "
+                 f"precondition cannot be verified, only assumed")
+            return None
+        sc, tgt, last = m["scaling"], m["scalingTarget"], m["scaledDatumRadius"] * AU_KM
+        if abs(sc - tgt) < 1e-4 and prev is not None and abs(sc - prev) < 1e-4:
+            return last
+        prev = sc
+    fail(f"{tag}: display scale never settled in {tries} samples (last "
+         f"scaledDatumRadius {last} km) - every altitude here would be bound to "
+         f"a moving reference")
+    return None
+
+
 def run_scene(out, tag, sections, twin):
     """One fresh launch against the temp HOME.  Returns (images, dump)."""
     farmdir = FARM / ".spacecrafter"
@@ -537,8 +606,17 @@ def run_scene(out, tag, sections, twin):
         send(s, "flag atmosphere off"); send(s, "flag landscape off")
         for c in S["scale_off"]:
             send(s, c, 2)
+        # `flag moon_scaled off` is a RAMP (~5 s ASmooth), and `moveto ... alt`
+        # counts altitude from the reference's DISPLAY-scaled datum at the
+        # INSTANT of the command and never re-converges (§5.109, measured by
+        # `f43_ramp.py`). Placing the observer 3 s in put it at 11 534.7 km
+        # instead of 9737.40 - measured on this very harness,
+        # `artifacts/f43/ladder_pre`. So the precondition is waited out by
+        # MEASUREMENT, and the observer's own radius is asserted at P0.
+        wait_scale_settled(s, out, tag)
         send(s, f"select planet {S['parent']}")
-        send(s, f"moveto lat {S['obs_lat']} lon {S['obs_lon']} alt {S['obs_alt_m']} duration 0", 5)
+        send(s, f"moveto lat {S['obs_lat']} lon {obs_lon_cam()} "
+                f"alt {S['obs_alt_m']} duration 0", 5)
         send(s, "flag track_object on", 2)
         send(s, f"zoom fov {FOV_WIDE} duration 0", 2)
         send(s, "flag track_object off", 2)         # B30 determinism
@@ -666,6 +744,21 @@ def main():
     else:
         ok(f"P0 {S['parent']} in the declared {regime} regime: distance "
            f"{dist_km:.1f} km in {band}")
+    # P0alt: the observer is at the radius the whole prediction table assumes.
+    # A band check cannot see this: 11 534.7 km sits inside [2R, 64R] just as
+    # 9737.40 does, and that is how a mid-ramp altitude reference (§5.109) hid
+    # here for two sessions while every cap-radius prediction was computed for
+    # a different observer.
+    want_r = S["radius"] + S["obs_alt_m"] / 1000.0
+    report["obs_radius_km"] = dist_km
+    if abs(dist_km - want_r) < 1.0:
+        ok(f"P0alt observer radius {dist_km:.2f} km = the commanded "
+           f"{S['radius']} + {S['obs_alt_m']/1000:.0f} km")
+    else:
+        fail(f"P0alt observer radius {dist_km:.2f} km != the commanded "
+             f"{want_r:.2f} km ({dist_km - want_r:+.2f}) - the altitude "
+             f"reference was not the settled datum (§5.109); every cap-radius "
+             f"prediction below is computed for a different observer")
     mods = report["parent_modules"] or []
     has_atm = "ATMOSPHERE" in mods
     if regime == "surface":

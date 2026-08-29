@@ -35,7 +35,14 @@ SC_BIN = os.environ.get("SC_BIN", str(HERE.parents[1] / "build-claude/src/spacec
 FARM = Path(os.environ.get("B3_FARM", "/tmp/b3_farm"))
 REAL_HOME = Path.home()
 JD = 2461234.0
-OBS_LON = 270.0          # the lit site (b3_ladder SITES["earth"])
+OBS_SITE_LON = 270.0     # the lit site (b3_ladder SITES["earth"]) - the site is
+                         # the SUB-OBSERVER point, not the commanded longitude.
+# The command that lands on that site.  F40 (§11.153) changed the free-mode
+# sub-point of `moveto lon L` from `180 - L` to `L - 90`, so holding the site
+# fixed means L' = 270 - L (mod 360) - b3_ladder.obs_lon_cam()'s arithmetic,
+# restated here rather than imported because this driver imports nothing.
+# 270 -> 0.0, sub-point -90 == 180 - 270, unchanged.
+OBS_LON = (270.0 - OBS_SITE_LON) % 360.0     # = 0.0
 OBS_ALT_M = 10000000
 RENDER = 2048
 

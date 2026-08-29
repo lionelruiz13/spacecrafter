@@ -419,7 +419,19 @@ instead of 9737.40). Repaired (measured settle + observer-radius gate +
 midpoint read in the clicked state): **b24_select GREEN**, reproducing
 §11.106's committed numbers (alpha 12.670, ss 0.0432/0.0106, swap 0.0425/0.0108,
 selDist 5.905047e-05, cluster 0.0179, parity 90). Discrimination both ways:
-`artifacts/f43/sel_pre|sel_control|sel_post`. NEXT: half (B), the 28-file audit.*
+`artifacts/f43/sel_pre|sel_control|sel_post`.
+2026-08-29 CP2 — half (B) DONE, 30/30 classified (README's 30 = 28 + the two
+corrected precedents; arithmetic reproduced). AFFECTED-corrected: `b3_ladder.py`
+(same `nadir_lon` class as b24_select, but the SITE carries its illumination and
+DEM value so the b24_screen precedent applies — `obs_lon_cam() = (270-L)%360`,
+nadir bit-identical 140.300; 19 failures -> 1), `b3_cost.py` (routed through that
+one authority), `b3_earth_ab.py` (270 -> 0). AFFECTED-superseded, documented not
+re-baselined: `f34_convention.py`. The rest UNAFFECTED with the read named; the
+one gate reading could not settle (f23/f24's lit guard) MEASURED green
+(`f43_litguard.py`, 113 357 px>8 vs 20 000/1 000, control = predicted disc area).
+b3_ladder residual NOT absorbed: +1.4-1.6 % on four metric caps vs §11.104 and
+b250's site luma 20.97 < 30 — unattributed, discriminating check named.
+NEXT: README + §11.157 + stub.*
 
 ### F44 — §5.86's owed data: who consumes the scrambled RA/DE, and what the old path answers (record-only) [S]
 

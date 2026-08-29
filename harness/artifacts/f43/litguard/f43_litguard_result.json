@@ -1,0 +1,19 @@
+{
+ "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "jd": 2461233.5,
+ "place": [
+  0,
+  270,
+  40000000
+ ],
+ "lit_px_gt8": 113357,
+ "lit_px_gt32": 834,
+ "total_px": 4194304,
+ "disc_halfangle_deg": 7.904636774416537,
+ "pred_px_area": [
+  101645.60271426993,
+  107835.81991956898
+ ],
+ "planets_off_px_gt8": 113357,
+ "fails": []
+}

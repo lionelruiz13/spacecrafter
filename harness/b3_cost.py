@@ -81,8 +81,14 @@ def main():
         L.send(s, "flag atmosphere off"); L.send(s, "flag landscape off")
         for c in S["scale_off"]:
             L.send(s, c, 2)
+        # The site is the SUB-OBSERVER point, not the commanded longitude:
+        # b3_ladder.obs_lon_cam() is the single authority for that conversion
+        # since F40 changed it (§11.153 -> §11.157). This driver reuses the
+        # ladder's scene, so it must reuse the ladder's camera longitude too -
+        # sending S["obs_lon"] would place the observer 190.6 deg away from the
+        # scene it is measuring the cost of.
         L.send(s, f"select planet {S['parent']}")
-        L.send(s, f"moveto lat {S['obs_lat']} lon {S['obs_lon']} alt {S['obs_alt_m']} duration 0", 5)
+        L.send(s, f"moveto lat {S['obs_lat']} lon {L.obs_lon_cam()} alt {S['obs_alt_m']} duration 0", 5)
         L.send(s, "flag track_object on", 2)
         L.send(s, f"zoom fov {L.FOV_WIDE} duration 0", 2)
         L.send(s, "flag track_object off", 2)
@@ -107,9 +113,9 @@ def main():
             # frame times, so the RATIO t_close/t_far is k-free, and the
             # marginal ray-march cost is (ratio - 1) * t_far.
             for i in range(WINDOWS):
-                L.send(s, f"moveto lat {S['obs_lat']} lon {S['obs_lon']} alt {S['obs_alt_m']} duration 0", 4)
+                L.send(s, f"moveto lat {S['obs_lat']} lon {L.obs_lon_cam()} alt {S['obs_alt_m']} duration 0", 4)
                 window(f"close{i}")
-                L.send(s, f"moveto lat {S['obs_lat']} lon {S['obs_lon']} alt {FAR_ALT_M[site_key]} duration 0", 4)
+                L.send(s, f"moveto lat {S['obs_lat']} lon {L.obs_lon_cam()} alt {FAR_ALT_M[site_key]} duration 0", 4)
                 window(f"far{i}")
         else:
             for i in range(WINDOWS):
