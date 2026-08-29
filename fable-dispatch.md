@@ -813,21 +813,37 @@ is reading). Analysis script + artifacts under `harness/` (`f52_*.py`,
 method + denominators; per-prediction verdict with numbers; §11.161(f)
 annotated; §11 entry + stub; both trees clean of everything but the delivery;
 WIP per §0.6.
-**WIP:** *(2026-08-30, checkpoint 1: PREDICTIONS COMMITTED before any measurement —
-`harness/artifacts/f52/f52_predictions.json` (md5 `8053f21c`), 7 predictions P1–P7 with
-PASS/FAIL/NEITHER branches, era boundaries derived from §11.161(b) anchored at today,
-6 refutation conditions, 7 pre-declared limits. Only pre-write probe on either history:
-the submodule's `rev-parse` reachability (HEAD `7ce58350`, branch `main`) — no log, no
-dates, no counts.*
-*checkpoint 2: BOTH HISTORIES MEASURED. `f52_strata.py` (the committed definitions,
-verbatim) + `f52_probes.py` (the attribution probes Q1–Q7 that the primary run's own
-pre-declared limits L1–L5 forced). EntityCore 325 non-merge commits, 0 merges, 0
-rebases, 0 chronology inversions; experimentalModule 149 reachable / 186 all-refs.
-Headline numbers in `artifacts/f52/`: stratum ordering src/ 0.4291 > EntityCore-library
-0.1576 > expMod-code 0.0952; EntityCore dense-era Spearman −1.000 on both statistics;
-75.4 % of EntityCore's lifetime deletions are ONE repository-separation commit; 96 % of
-the module's commits are this project's own. NEXT: adjudicate P1–P7 and write
-INTENT/11.168.md.)*
+**WIP:** *(DELIVERED 2026-08-30 → §11.168.* Verdict: **SPLIT — the stratigraphy IS now a
+measured property of the tree, but not by the route §11.161(f) named.** Predictions committed
+BEFORE the first `git log` read (`artifacts/f52/f52_predictions.json`, md5 `8053f21c`, commit
+`6bee25f`, byte-identical at delivery): 7 predictions, 6 refutation conditions, 7 limits.
+**EntityCore is the ideal history** — 325 non-merge commits, **0 merges, 0 rebases, 0
+chronology inversions**, first commit the LICENSE alone. **P1 PASS** (born 2021-06-14, 5.21 yr,
+margin 2.5 months) · **P2 NEITHER**: the gradient holds in DIRECTION across the three dense
+year-buckets (95.4 % of commits, **ρ = −1.000** on both statistics) but R falls 0.041 where
+0.10 was predicted, and the line-weighted decline is REFUTED as stratum-specific by an ambient
+control (`src/` −45.3 % vs EntityCore's −24.6 %) — only the commit-weighted statistic separates
+them (−62.6 % vs −13.7 %, **4.6×**) · **P3 PASS** (weak, n=10) · **P4 FAIL 0-of-4**: the
+ASmooth/Taskable commits are ADDITIVE (r 0.1111/0.0000/0.1346/0.1250) — premise rework here
+lands as new structure BESIDE the old · **P5 PASS on the declared scope, FAIL on the full
+history by 25 days**, dissolved by a measured **720-day dormancy** between the module's 2023-08
+alpha and its 2025-08-13 live line (two births; *"~1–2 yr"* dates the working line to the
+month) · **P6 FAIL as declared / PASS on product code** · **P7 PASS for a mechanical reason**.
+**TWO CONTAMINATIONS, both pre-named as limits**: `16381f80` (2021-12-20, the repository
+separation that removed a game, a sister library and `stb_image.h`) is **75.4 % of EntityCore's
+lifetime deletions** ⇒ library-only R = 0.1576, not 0.3782; and **143 of the module's 149
+reachable commits are THIS PROJECT's**, its pre-2025 history flattened into one single-parent
+commit ⇒ the module's half is NOT TESTABLE for its owner. **WHAT IS MEASURED**: the strata
+ORDER by deletion ratio under a window control and two author controls — `src/` 0.2718 >
+EntityCore 0.1552 > module code 0.0952; Vixy's own hands, same 11 months, 0.4712 vs 0.1294
+(3.6×); ours 0.1555 vs 0.0996 (1.6×). **EntityCore was born inside a GAME** (`LaserBombon`,
+library extracted 2021-12-20) — *"as I learned it"* with its learning vehicle named.
+§11.161(f) annotated DISCHARGED at its node + stub mirrored, same commit. **NO §5 row minted,
+no §13 state moved.** Instruments: pair-check 183/158/25/85 → **184/159/25/85**, four test
+counters unchanged; back-marker scan 89/124/**83** → 90/125/**83**, unmarked list BYTE-IDENTICAL
+(with a measured gotcha: the scan's root defaults to an absolute path, so a `cd`-into-pre-tree
+run silently measures the live tree — caught by a counter/list arithmetic inconsistency). Code
+never left `d6aec251`; both trees clean at close.)*
 
 ---
 
