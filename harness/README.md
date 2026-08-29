@@ -1746,8 +1746,14 @@ move, and two of those are corrected here, each with its arithmetic at the site:
   than F40 (verified: pre binary + pre-convention harness gives the same four,
   same numbers).
 
-The rest are unaudited. A committed baseline measured in free flight at a
-longitude describes a different place than it did.
+~~The rest are unaudited.~~ **AUDITED 2026-08-29 (F43, §11.157) — see the F43
+section below for the 30/30 table.** Two more files were corrected
+(`b3_ladder.py` + the two that ride it) and one was marked superseded
+(`f34_convention.py`); everything else is unaffected, and the reason is
+one property: a committed baseline measured in free flight at a longitude
+describes a different DIRECTION than it did, but the SAME distance
+(§11.153(a) — both parametrizations have length `distance`), so only a gate
+that reads a direction can see it.
 
 **The A–D battery is not phase-locked.** Two legs of the SAME binary can differ
 on `oldView.stars.faderFinal` and the whole star channel when one is caught
@@ -1818,3 +1824,124 @@ that `display_scale` is the only one matching `scale|display`),
 fields over 120 bodies × 5 scenes, pre/post AND the same-binary floor),
 `scenes_cmp_prepost.txt`, `scenes_cmp_control.txt`, `d21post/` (F39's gate
 re-run), `b24screen/`, `b24_equivalence_result.json`.
+
+## F43 — b24_select's four reds, and the 30-file free-mode-longitude audit — INTENT §5.109 / §11.157, 2026-08-29
+
+    DISPLAY=:2 ./f43_ramp.py     <absOutdir> [--bin B]   # what `moveto alt` counts from
+    DISPLAY=:2 ./f43_litguard.py <absOutdir> [--bin B]   # f23/f24's lit guard, measured
+    DISPLAY=:2 ./b24_select.py   <absOutdir> [--skip-parity]
+    DISPLAY=:2 ./b3_ladder_run.sh terrain <absOutdir> --site moon [--families sph]
+
+**THE DISPLAY STACK HAD TO BE RE-ESTABLISHED, and that is instrument state a
+reader must know.** The host rebooted 2026-08-27; the claude account had no
+login session, so there was no `:2` at all (`/run/user/1003` absent, the README
+recipe `ls /run/user/$(id -u)/.mutter-Xwaylandauth.*` matches nothing), and
+`/tmp` was wiped — including §11.153(o)(1)'s `/tmp/sc_f40_pre` and
+`/tmp/sc_f40_post`, which no longer exist. Recreated with
+
+    mkdir -p /tmp/rt-claude && chmod 700 /tmp/rt-claude
+    XDG_RUNTIME_DIR=/tmp/rt-claude setsid nohup dbus-run-session -- \
+        gnome-shell --headless --virtual-monitor 2448x1332 &
+    export XAUTHORITY=/tmp/rt-claude/.mutter-Xwaylandauth.*   # NOT /run/user/...
+    export DISPLAY=:2
+
+and verified against the recorded stack before any measurement: `xrandr` reports
+`Meta-0 2448x1332 59.96*+` (§11.123(o)'s value to the digit), XTEST present, the
+app selects `NVIDIA GeForce RTX 5090 (Discrete GPU)`, and its own geometry lines
+read `Scaling : 0.5 / Viewport : (2048, -2048) / Swapchain : (1024, 1024) /
+Rect : (2048, 2048)` — §11.106's values. **XAUTHORITY now lives under
+`$XDG_RUNTIME_DIR`, not `/run/user/<uid>`**, so the standing recipe needs the
+explicit path until a real login session exists again.
+
+**§5.109 IS THE HAZARD EVERY GROUNDED-SCENE HARNESS HERE HAS TO HANDLE.**
+`moveto ... alt A` counts altitude from `reference->getAltitudeReference()` =
+`scaledDatumRadius` — the DISPLAY-scaled datum — and is an absolute snap
+evaluated once. `flag moon_scaled off`, which is §5.27's standing instrument
+precondition, RAMPS over ~5 s (measured: `scaling` 4.98 at t = 0.25 s, 2.90 at
+2.56, 1.53 at 3.71, settled by 6.0). A `moveto` issued inside that window binds
+an instantaneous radius and nothing re-converges it. **So: never `flag
+moon_scaled off; sleep 2; moveto`.** Wait for the settle BY MEASUREMENT — the
+dump carries `scaling`, `scalingTarget` and `scaledDatumRadius` — and then
+assert the observer's own radius, because a band check cannot see the error
+(11 534.7 km sits inside `[2R, 64R]` just as 9737.40 does). `b24_select.py`
+(`wait_scale_settled` + leg `L0a`) and `b3_ladder.py` (`wait_scale_settled` +
+`P0alt`) both carry the pattern now.
+
+**THE CONVENTION CORRECTION HAS TWO SHAPES, and which one applies is a property
+of the scene, not a style choice.**
+
+- **Move the CONTENT** when the authored bodies are placed relative to the
+  observer's sub-point and the absolute place carries nothing — `b24_select.py`
+  (`nadir_lon() = OBS_LON - 90`, F40's own correction).
+- **Move the COMMAND** when the SITE carries the instrument's properties —
+  `b24_screen.py` and now `b3_ladder.py`, whose site was chosen for its
+  illumination *and* whose terrain prediction reads that site's own heightmap
+  window. Hold the sub-point, correct the command:
+  `L' = 270 - L (mod 360)`, since `180 - L == L' - 90`. `b3_ladder.obs_lon_cam()`
+  is the single authority (moon 39.7 → 230.3, earth 270 → 0; `nadir_lon()` is
+  DERIVED from it and is bit-identical to the old `180 - L`: 140.300 / -90.000).
+  `b3_cost.py` imports it; `b3_earth_ab.py` restates the arithmetic because it
+  imports nothing.
+
+**THE AUDIT, 30/30.** The denominator is reproducible: tracked non-artifact
+files under `harness/` containing both `camera action free_mode state on` and
+`moveto` = **30** (the two-line grep in §11.157(d)). The discriminating question
+per file is whether any GATE reads a DIRECTION — a screen position, a pixel
+count of authored content, an az/heading/lat/lon readout, a lit-vs-dark measure,
+or an angle to something placed by `orbit_lon` — because the pre-F40 error was a
+pure rotation at constant radius.
+
+| verdict | files |
+|---|---|
+| **corrected, F40** | `b24_screen.py` · `b24_select.py` (+ F43's ramp and stale-midpoint repairs) |
+| **corrected, F43** | `b3_ladder.py` · `b3_cost.py` · `b3_earth_ab.py` |
+| **superseded, documented** | `f34_convention.py` — asserts the retired convention; use `f40_inverse.py --expect` |
+| **convention-aware already** | `f40_disc.py` (`--tag pre\|post`) · `f40_inverse.py` (`--expect pre\|post`) · `f40_env.py` (no gates) |
+| **no free-mode `moveto lon`; gates radial/flag** | `b10_cmd.py` · `b10_datum0.py` · `b10_nav.py` · `b20_anchored_galactic.py` · `b21_far.py` · `b22_cost.py` · `b22_live.py` · `b5_diag.py` · `b5_drawhalf.py` · `b5_oort.py` (no `lon` at all) · `b12_photosphere.py` · `b13_viewcont.py` · `scene_e_spine.py` |
+| **free-mode `moveto lon`, gates radial** | `b21_descent.py` (no gates) · `b21_keypath.py` · `f20_s532.py` · `b7_hunt.sh` (its only count gate reads `"Loading body Rover"` applog lines — scene load, view-independent) · `f39_d21.py` (says so itself at `:198`, and F41's post-F40 run confirms it) |
+| **free-mode `moveto lon`, one lit guard — MEASURED green** | `f23_b33_control.py` · `f24_b34_seams.py` (`f43_litguard.py`) |
+| **documentation** | `README.md` (this file) |
+
+**2 + 3 + 1 + 3 + 13 + 5 + 2 + 1 = 30**, i.e. **5 affected-corrected, 1
+affected-superseded, 24 unaffected** — checked against the grep's own output,
+no file in one and not the other.
+
+Two scene facts recorded rather than fixed, because no gate reads them:
+`b7_hunt.sh`'s rovers moved from 60° to 90° off the sub-observer point (they are
+outside its fov-20 field under BOTH conventions, so its "actually DRAWN" comment
+was already optimistic), and `f39_d21.py`'s rover likewise — confirmed green
+post-F40 by F41's own committed run (`artifacts/f41/d21post/post_rows.json`,
+`rover_visible: true` in all 12 phases, observer↔rover angle 90.0000° recovered
+from its distances).
+
+**`f43_ramp.py`** — seven legs, every number predicted before the run: the ramp
+profile; `moveto alt 8000 km` landing at 9737.40 km at scaling 1 and 16687.00 km
+at scaling 5 (gap 6949.60 = datum × (scale−1)); a mid-ramp landing inside the
+bracket the ramp swept; the observer NOT following the ramp afterwards
+(10 208.34 km above the datum where 8000 was asked); the flag pair traversed
+twice; and a grounded child drawn at exactly 11187.00 km — uniform dilation,
+D21's criterion — while the observer sits at `scaledDatum + altitude`, a THIRD
+convention. That last leg is §5.109's layer half.
+
+**A control has to be able to fail, and one here could not.** `f43_litguard.py`'s
+first control used `flag planets off` to show the lit count was the globe; it
+left the frame identical **to the pixel** (113 357 px>8 both ways). Replaced by
+a PREDICTED disc area (101 646–107 836 px at half-angle 7.905° in a 90° field,
+atmosphere shell included) against the measured 113 357. The `flag planets off`
+observation is recorded in the result JSON, not chased.
+
+**b3_ladder RESIDUAL, open.** With the convention and the ramp corrected the
+moon/terrain run is 19 failures → 1. The four metric caps read **+1.4–1.6 %**
+above §11.104(d)'s committed post-fix numbers (lift20 29.2/28.8, b30 30.8/30.3,
+b45 59.1/58.3, b90 127.0/125.3), b250 **−6.4 %** (316.0/337.5), the b20 shadow
+witness **−17 %** (2313/2790), and the one remaining failure is b250's own
+`site_luma = 20.97` against the `>= 30` gate that has been in the file since its
+first commit (`8a294d8`) and passed in F1. The site is bit-identical by
+construction, so this is NOT the correction; it is unattributed drift across
+five sessions of product change. Do not read the ladder as green.
+
+Artifacts: `artifacts/f43/` — `ramp/` (the seven legs), `sel_pre/` (the four
+reds with §11.153's digits), `sel_control/` (settle disabled: `L0a` fires, the
+three geometry reds return, **P3 passes** — which is what isolates the fourth
+red as a stale coordinate), `sel_post/` (green, §11.106's numbers), `ladder_pre/`
+(19 failures), `ladder_post/` (1), `litguard/`.

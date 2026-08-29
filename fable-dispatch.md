@@ -407,7 +407,13 @@ b24_select green OR red-with-minted-rows, stated which; 28/28 files classified
 with per-file reasons; corrected files reproduce their intended geometry
 (numbers cited both ways); README updated; §11 entry at the next free number +
 stub; md5 pristine on every launch; code tree clean at close; WIP per §0.6.
-**WIP:** *2026-08-29 CP1 — half (A) DONE. The display stack had to be
+**WIP:** *DELIVERED 2026-08-29 → §11.157 (+ NEW §5.109, product, record-only).
+Both halves done; b24_select GREEN reproducing §11.106's numbers; 30/30
+classified; README's "unaudited" note resolved. NOT green and stated as such:
+`b3_ladder.py` is 1-failure red after correction, with an unattributed
++1.4–1.6 % drift vs §11.104(d) and a named discriminating check. NEWLY VIXY'S:
+§5.109's layer half. Trail below.*
+*2026-08-29 CP1 — half (A) DONE. The display stack had to be
 RE-ESTABLISHED (host rebooted 2026-08-27; claude had no login session, no `:2`,
 `/tmp` wiped incl. §11.153(o)(1)'s two binaries) — headless GNOME restarted at
 the recorded `2448x1332 @ 59.96`, app GPU-real on the RTX 5090, Swapchain
