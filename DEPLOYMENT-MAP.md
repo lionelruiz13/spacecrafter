@@ -83,12 +83,29 @@ Ordered by operational weight for the tester, not by age:
    two typo'd spellings, gated on SS-17's owed answer from the script-surface owner
    (**tester-routable**, §11.161(c) — he authors `struct if body_selected equal 600`) ·
    `camera action save`, gated on B31's re-expression decision.
+11. **§5.113 + §5.110's fix routing** [ADDED 2026-08-30, F50 §11.166; both-paths at the
+   mechanism (the uninitialized `Object` singleton predates the split) ⇒ NOT T0-gating]:
+   ONE missing-guard class, three shipped reaches with nothing selected — `set
+   home_planet selected` teleports the observer 1 AU and caches the fiction under the
+   empty name · `flag object_coordinates on` draws a live-looking readout for nobody ·
+   `illuminate hp <absent>` feeds INDETERMINATE memory into the grid. The class question:
+   where does the truthiness test belong — each read, the singleton (fail loudly), or
+   both (I6). §5.110's own fork rides the same sitting: three contracts, and the live
+   check proved the composed-selection answer INDISTINGUISHABLE from nothing-selected
+   (so diagnostic-only repair cannot restore discriminability). Rider, listed on §5.110:
+   `$body_selected` is additionally STALE (answers the released body) after `deselect` —
+   the doc's own contract sentence is broken; same repair sitting.
 
 ## T2 — Work, dispatchable now or upon its T1 gate
 
 - **§5.111** — wrap the new path's info strings in `_()` (parity restoration; the tester
   operates in FRENCH; decision-free candidate, next round).
-- **§5.110** — the owed live check (one script), then the type-filter fix routing.
+- ~~**§5.110** — the owed live check (one script), then the type-filter fix routing.~~
+  **[PAID 2026-08-29, F50 §11.166: live check RUN — six of six predictions matched, and
+  the composed-selection answer is CHARACTER-IDENTICAL to nothing-selected (1 AU, mag −10,
+  vernal point: plausible, not error-shaped) while the app distinguishes the two in the
+  same frame. What remains is the FIX ROUTING → T1 (three contracts, one changes what a
+  shipped variable means). NEW sibling **§5.113** minted en route → T1 below.]**
 - **§5.49's owed render measurement** (`f14_meridian.py` `u_sub`) — settles whether
   `moveto lon 0` stands over Greenwich, the map centre, or 90° off; the row's conclusion
   is recorded in-doubt (§11.153(k)). DATA-AUTHOR-CENTRAL: he places content by lon/lat.
@@ -134,6 +151,15 @@ Ordered by operational weight for the tester, not by age:
 - **His hardware**: §5.60 (the unconditional 2.68 GB video staging allocation vs his
   GPU's limit), his real dome/projector stack vs our headless `:2` (every cadence and
   pixel baseline here is stack-local — §11.159(k7)), his `maximum_fps`.
+  **[SHARPENED 2026-08-30, F48/F51 §11.164/§11.167: "stack-local" now includes the
+  DRIVER — a host driver bump (`580.568.0 → 580.636.192`, no code change) made the
+  shipped Moon render to a different image: mean ×0.371, a fifth of the disc newly
+  below L=32, locally ×0.140, from bit-identical model state; not a lost upload
+  (refuted on four channels), most plausibly the driver's shading. Consequence for HIS
+  field: rendered APPEARANCE is a property of (binary, driver) jointly — appearance
+  claims and luminance-based expectations do not transfer across driver versions, his
+  included. Our corpus is mostly immune by construction (px>8 gates; the census is
+  §11.167(i)) but any absolute-luminance expectation he holds is not.]**
 - **His config migration**: the new keys (`attached`, `flag_lock_sky_position`,
   twin-emitted `display_scale`) measured D13-tolerant on both parser routes (§11.150) —
   re-verify on his actual config version. **[SHARPENED 2026-08-29, F47 §11.163(f) → NEW
