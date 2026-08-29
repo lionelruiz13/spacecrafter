@@ -1,0 +1,23 @@
+[
+ {
+  "t": 1788033622.4866104,
+  "scaledDatumRadius_km": 1770.774997483426,
+  "scaling": null,
+  "scalingTarget": null,
+  "boundingRadius_km": 1806.190483071699
+ },
+ {
+  "t": 1788033623.6392226,
+  "scaledDatumRadius_km": 1737.400266198545,
+  "scaling": null,
+  "scalingTarget": null,
+  "boundingRadius_km": 1772.148246090878
+ },
+ {
+  "t": 1788033624.7918527,
+  "scaledDatumRadius_km": 1737.400266198545,
+  "scaling": null,
+  "scalingTarget": null,
+  "boundingRadius_km": 1772.148246090878
+ }
+]

@@ -1,0 +1,27 @@
+farm ready: /tmp/b3_farm/.spacecrafter
+binary: /tmp/sc-922701c9-build/src/spacecrafter  convention: pre  commanded lon 39.700 -> sub-point 140.300
+--- launch base (moon/terrain) ---
+--- launch sph (moon/terrain) ---
+Moon dist 9737.4 km  halfFov meas 0.170157 nominal 0.174533
+ok:   P0 Moon drawn unscaled: scaledDatumRadius 1737.40 km
+ok:   P0 Moon in the declared ray regime: distance 9737.4 km in [2R, 64R] = [3475, 111194] km
+ok:   P0alt observer radius 9737.40 km = the commanded 1737.4 + 8000 km
+ok:   P0 module set as declared (['MESH', 'AXIS', 'HINT', 'ORBIT']), ATMOSPHERE present=False
+ok:   P1 parent present and lit at nadir: centre luma 60.7 (1909688 px > 32 in frame)
+[Slift20] r=20.0 alt=150.0 lon=127.109 pred_cap[terrain]=[20.0, 20.0, 20.0, 20.0]km (29.4-29.4px@fov10)  MEASURED wide.changed=682 eqR=14.7px  zoom.changed=2677 eqR=29.2px  shadowbox.dark=1133
+[Sb20] r=20.0 alt=0.0 lon=132.056 pred_cap[terrain]=[0.0, 0.0, 0.0, 0.0]km (0.0-0.0px@fov10)  MEASURED wide.changed=0 eqR=0.0px  zoom.changed=0 eqR=0.0px  shadowbox.dark=2314
+[Sb30] r=30.0 alt=0.0 lon=135.024 pred_cap[terrain]=[20.56, 19.77, 19.74, 20.5]km (28.9-30.1px@fov10)  MEASURED wide.changed=767 eqR=15.6px  zoom.changed=2986 eqR=30.8px  shadowbox.dark=3518
+[Sb45] r=45.0 alt=0.0 lon=138.981 pred_cap[terrain]=[40.99, 39.74, 38.5, 38.47]km (56.4-60.1px@fov10)  MEASURED wide.changed=2780 eqR=29.7px  zoom.changed=10973 eqR=59.1px  shadowbox.dark=5825
+[Sb90] r=90.0 alt=0.0 lon=144.917 pred_cap[terrain]=[88.21, 88.25, 87.81, 86.78]km (127.0-129.2px@fov10)  MEASURED wide.changed=12704 eqR=63.6px  zoom.changed=50646 eqR=127.0px  shadowbox.dark=22672
+[Sb250] r=250.0 alt=0.0 lon=157.778 pred_cap[terrain]=[249.96, 250.0, 250.0, 249.91]km (356.9-357.0px@fov10)  MEASURED wide.changed=84321 eqR=163.8px  zoom.changed=313810 eqR=316.1px  shadowbox.dark=24865
+FAIL: A0 Sb250: site not lit (baseline luma 21.0 < 30) - the ladder needs a lit site
+ok:   lift20: predicted cap radius 29.4-29.4 px, measured 29.2 px (2677 px) - 20% band
+ok:   b20: predicted INVISIBLE (cap [0.0, 0.0, 0.0, 0.0] km) - measured 0 changed px (bound 40)
+ok:   b30: predicted cap radius 28.9-30.1 px, measured 30.8 px (2986 px) - 20% band
+ok:   b45: predicted cap radius 56.4-60.1 px, measured 59.1 px (10973 px) - 20% band
+ok:   b90: predicted cap radius 127.0-129.2 px, measured 127.0 px (50646 px) - 20% band
+ok:   b250: predicted cap radius 356.9-357.0 px, measured 316.1 px (313810 px) - 20% band
+ok:   b20: shadow witness 2314 dark px in the wide box (loaded/lit/placed while its colour draw is depth-killed)
+
+1 FAILURES -> b3_ladder_moon_terrain.json
+config/ssystem md5 in=out OK
