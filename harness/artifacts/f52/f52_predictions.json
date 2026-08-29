@@ -1,0 +1,131 @@
+{
+  "task": "F52 — the respecified INT-7 stratigraphy validation (§11.161(f))",
+  "written": "2026-08-30, before any measurement of either history",
+  "author": "Claude Opus 5 (opus-xhigh executor), dispatched by Claude Fable 5",
+  "anchors": {
+    "today": "2026-08-30",
+    "code_head": "master-beta @ d6aec251",
+    "entitycore_pinned_sha": "7ce58350d82e0e6931e7a70dd214e48cdaf21a2f",
+    "harness_head_at_dispatch": "47f4f28"
+  },
+
+  "what_was_looked_at_before_writing_this_file": [
+    "INTENT/11.161.md in full (the testimony (b) and the respecification (f))",
+    "fable-dispatch.md §F52 (the mandate) and §0 (the protocol)",
+    "ONE reachability probe on the submodule: `rev-parse --is-inside-work-tree` (true), HEAD (7ce58350, branch `main`), and the .git gitfile path. NO log, NO numstat, NO dates, NO commit counts of either history were read before this file was committed."
+  ],
+
+  "hypothesis_under_test": {
+    "source": "§11.161(f), respecifying INT-7 on §11.161(b)'s owner testimony",
+    "statement": "Execution mode leaves a signature in commit history. Learning-mode execution (premises still being formed) produces sustained HIGH deletion/refactor ratios that DECLINE as premises converge, with late spikes only at premise-rework events. Anticipatory/converged execution produces monolithic post-convergence initial commits with a LOW-deletion additive tail.",
+    "testimony_being_tested": {
+      "EntityCore": "[vixy] 'EntityCore was first created along with the OpenGL → Vulkan refactoring, as I learned it. Refactorisation is almost the baseline in EntityCore, at varying scale.' — S-preRA stratum, dated '>5 years ago', with 'convergence since'.",
+      "experimentalModule": "S-RA stratum, 'Vixy, post-stabilization (~1–2 yr)' — born after the premises stabilized."
+    }
+  },
+
+  "metric_definitions": {
+    "scope_A_EntityCore": "Every commit reachable from 7ce58350 (the sha the code tree pins at d6aec251), whole repository, no pathspec. Merges EXCLUDED from all line/status aggregates (a merge's numstat is ambiguous against which parent); merge count reported separately as a denominator.",
+    "scope_B_experimentalModule": "Every commit reachable from code master-beta @ d6aec251 that touches `src/experimentalModule/`, with both numstat and name-status RESTRICTED to that pathspec (so a commit touching 3 modules contributes only its experimentalModule lines). Merges excluded, counted separately.",
+    "scope_C_control": "Same as B but pathspec `src/` with `:(exclude)src/experimentalModule/` and `:(exclude)src/EntityCore` — the era-matched contemporaneous control (same repo, same window, different stratum).",
+    "add_del": "From `git log --numstat -M`. Files whose numstat columns are `-` `-` are BINARY: excluded from line sums, counted in a separate `binary_file_touches` denominator.",
+    "r_commit": "Per-commit deletion ratio r(c) = del/(add+del). Undefined when add+del == 0 (mode-only / pure-binary / empty commits): such commits are EXCLUDED from commit-weighted statistics and counted in `zero_line_commits`.",
+    "R_era": "Line-weighted era ratio R = Σ del / Σ (add+del) over the era's non-merge commits. This is the PRIMARY statistic.",
+    "median_r": "Commit-weighted median of r(c) over the era's defined-r commits. The SECONDARY statistic (guards against one huge commit carrying an era).",
+    "F_struct": "Refactor proxy 1 = fraction of an era's non-merge commits carrying at least one file with name-status D (delete), R (rename) or C (copy), rename detection `-M50%`. Structural rework: files removed or moved.",
+    "F_pureadd": "Refactor proxy 2 = fraction of an era's non-merge commits in which EVERY in-scope file has status A and del(c) == 0. Pure growth.",
+    "bucketing": "Author timestamp (%at, epoch seconds), binned in UTC by calendar year. A bucket with n < 5 commits is REPORTED but EXCLUDED from the trend statistic (declared here, not after seeing the data).",
+    "trend_statistic": "Spearman rank correlation rho between bucket year and bucket R_era over included buckets.",
+    "rolling_window": "Centered 11-commit window over the chronological (author-time-sorted) commit sequence; rolling value = line-weighted R over the window. Used only for the spike prediction.",
+    "dates": "Author timestamp is primary (%at); committer timestamp (%ct) recorded for every commit and the divergence reported (FM-10: presentation order is not chronology)."
+  },
+
+  "era_boundaries": {
+    "derivation": "From §11.161(b)'s own words, anchored at today 2026-08-30. The table dates S-preRA at '>5 years ago' and S-RA at '~1–2 yr'. No history was read to choose these.",
+    "E_learn": "author date < 2021-08-30 (the '>5 years ago' half-open era — the learning era)",
+    "E_mid": "2021-08-30 <= author date < 2024-08-30 (the convergence/transition era; testimony says nothing directly about it, which is itself informative)",
+    "E_recent": "author date >= 2024-08-30 (the S-RA era, '~1–2 yr' read at its outer edge)",
+    "robustness_binning": "Because 'learning era' is relative to EntityCore's own birth rather than to the calendar, a SECOND binning is computed and reported: first 365 days from the repo's first commit vs last 365 days before 7ce58350. Declared in advance; the calendar bins remain PRIMARY (they are the ones (b) states)."
+  },
+
+  "predictions": [
+    {
+      "id": "P1",
+      "claim": "EntityCore era placement: its first commit's author date is more than 5 years before today.",
+      "pass": "first author date < 2021-08-30",
+      "fail": "first author date >= 2021-08-30",
+      "refutes_if_fail": "§11.161(b)'s dating of the S-preRA stratum ('>5 years ago') for EntityCore's genesis."
+    },
+    {
+      "id": "P2",
+      "claim": "EntityCore TIME-GRADIENT: deletion ratio high in the learning era, declining toward the present. This is (f)'s core prediction.",
+      "sub": {
+        "P2a": "PASS if R(E_learn) - R(E_recent) >= 0.10 ; FAIL if R(E_learn) - R(E_recent) <= 0 ; NEITHER if 0 < diff < 0.10 (declining, but below the predicted margin).",
+        "P2b": "PASS if Spearman rho(year, R_year) <= -0.5 ; FAIL if rho >= 0 ; NEITHER between.",
+        "P2c": "Commit-weighted control, sign only: PASS if median_r(E_learn) > median_r(E_recent) ; FAIL otherwise."
+      },
+      "overall": "P2 PASSES only if P2a PASS and P2b not FAIL and P2c PASS. Any other combination is reported as its own combination, never rounded up.",
+      "pre_declared_ambiguity": "A FLAT-HIGH signature (no decline, ratio high throughout) REFUTES (f)'s gradient prediction while CONFIRMING the other half of the same testimony — 'Refactorisation is almost the baseline in EntityCore, at varying scale'. These two clauses are separable and the verdict must say which one the data supports. A flat-high result is therefore NOT a refutation of (b); it is a refutation of (f)'s reading of (b)."
+    },
+    {
+      "id": "P3",
+      "claim": "EntityCore refactor-proxy gradient: structural rework declines, pure growth rises.",
+      "pass": "F_struct(E_learn) > F_struct(E_recent) AND F_pureadd(E_recent) > F_pureadd(E_learn)",
+      "fail": "both comparisons reversed",
+      "neither": "split (one direction holds, the other does not)"
+    },
+    {
+      "id": "P4",
+      "claim": "PREMISE-REWORK SPIKES: late deletion/refactor spikes coincide with premise-rework events. (f) names the events, so the lexicon is fixed in advance: commit subject matching the case-insensitive regex `asmooth|taskable`.",
+      "pass": ">= 50% of matched commits have r(c) >= (median_r of their own era) + 0.10, or sit in a rolling window whose R >= era R + 0.10",
+      "fail": "0% of matched commits meet that bar",
+      "neither": "between 0% and 50%",
+      "untestable_branch": "If the regex matches NO commit subject, P4 is recorded UNTESTABLE-AS-POSED (the events are real — the ASmooth fix is §11.152's, committed by this project — but git subjects may not name them). Declared here so an empty match cannot be re-read as a pass or a fail."
+    },
+    {
+      "id": "P5",
+      "claim": "experimentalModule era placement: born post-stabilization, ~1–2 yr ago.",
+      "pass": "first author date of any commit touching src/experimentalModule/ >= 2024-02-29 (the '1–2 yr' band read at its outer edge, plus 6 months of tolerance)",
+      "fail": "first author date < 2023-08-30 (i.e. more than 3 years ago)",
+      "neither": "first author date in [2023-08-30, 2024-02-29)",
+      "refutes_if_fail": "§11.161(b)'s placement of experimentalModule in the S-RA / post-stabilization stratum."
+    },
+    {
+      "id": "P6",
+      "claim": "experimentalModule ADDITIVE-TAIL-FROM-BIRTH: high-addition / low-deletion from its first commit, no learning-era gradient.",
+      "sub": {
+        "P6a": "Absolute: PASS if lifetime R(expMod) <= 0.35, FAIL if >= 0.50. Grounding of the numbers: R = 0.5 is the steady-state churn point (every added line matched by a deleted one, zero net growth); R <= 0.35 means additions outnumber deletions about 2:1, i.e. growth dominates.",
+        "P6b": "Era-matched control, sign only: PASS if R(expMod) < R(control scope C over the same window) AND R(expMod) < R(EntityCore restricted to the same window); FAIL if R(expMod) exceeds both; NEITHER if split.",
+        "P6c": "No learning gradient inside the module: FAIL if expMod's own buckets show a decline of >= 0.10 in R with Spearman rho <= -0.5 (that would be a learning era inside the module, contradicting 'born post-stabilization'); PASS otherwise."
+      },
+      "overall": "P6 PASSES only if P6a, P6b and P6c all pass."
+    },
+    {
+      "id": "P7",
+      "weak": true,
+      "non_gating": true,
+      "claim": "MONOLITHIC INITIAL COMMIT: the test statement says converged execution produces a monolithic post-convergence initial commit. expMod's first commit should be in the top decile of its commits by lines added.",
+      "pass": "first commit's add(c) >= 90th percentile of add(c) over the module's non-merge commits",
+      "note": "Exploratory. Recorded either way; it gates no verdict, because 'monolithic' is not quantified anywhere in the sources."
+    }
+  ],
+
+  "what_would_refute_the_testimony": [
+    "R1: EntityCore's first commit is NOT more than 5 years old (P1 FAIL) — the S-preRA dating is wrong.",
+    "R2: EntityCore's recent-era deletion ratio is at or above its learning-era ratio (P2 FAIL) — 'convergence since' is not visible in published execution. See P2's pre-declared ambiguity: this refutes (f)'s gradient reading, not (b)'s 'refactoring is almost the baseline' clause.",
+    "R3: experimentalModule's history starts more than 3 years ago (P5 FAIL) — the post-stabilization placement is wrong.",
+    "R4: experimentalModule shows its own declining high-deletion gradient (P6c FAIL) — it was NOT born additive; it had a learning era of its own.",
+    "R5: SIGNATURE REVERSAL — EntityCore additive-flat while experimentalModule is high-churn-declining. This would invert the stratigraphy's era assignment entirely and is the strongest available refutation.",
+    "R6: If BOTH histories look identical on every metric, the test has no discriminating power on this tree and the stratigraphy stays testimony (recorded as such, not as a pass)."
+  ],
+
+  "stated_limits_declared_before_measurement": [
+    "L1 — git records PUBLISHED execution, not cognition. Squash, amend and rebase compress rework invisibly. Detection attempted, not assumed: (i) author-vs-committer timestamp divergence per commit, (ii) runs of commits sharing one committer timestamp (rebase signature), (iii) an outsized first commit (import signature). Whatever is found is STATED as a limit on the verdict, never absorbed into it.",
+    "L2 — the deletion ratio conflates refactoring with feature removal and with file moves that rename detection misses.",
+    "L3 — vendored, generated or blob-like files distort line counts. Binary files are excluded by numstat; the per-era top-10 files by touched lines are reported so a distorting file is visible rather than silent.",
+    "L4 — experimentalModule is measured through a PATH-RESTRICTED history: code moved INTO the directory from elsewhere counts as addition, and a predecessor path (a different name for the same work) is invisible to this measurement. The directory's creating commit is reported so the boundary is visible.",
+    "L5 — author mixing. Per-author commit counts are reported per era; if any era has >10% non-majority-author commits, every verdict is recomputed on the majority-author subset and BOTH numbers are reported.",
+    "L6 — EntityCore is measured at the sha the code tree pins (7ce58350). Commits on `main` after that sha, and any unmerged branch, are outside the measurement. The gap is reported.",
+    "L7 — this is a signature test, not a causal one. A matching signature makes the stratigraphy a measured property of the TREE; it does not measure the owner's cognition, and no verdict here may be phrased as if it did."
+  ]
+}

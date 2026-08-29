@@ -813,7 +813,12 @@ is reading). Analysis script + artifacts under `harness/` (`f52_*.py`,
 method + denominators; per-prediction verdict with numbers; §11.161(f)
 annotated; §11 entry + stub; both trees clean of everything but the delivery;
 WIP per §0.6.
-**WIP:** *(empty)*
+**WIP:** *(2026-08-30, checkpoint 1: PREDICTIONS COMMITTED before any measurement —
+`harness/artifacts/f52/f52_predictions.json` (md5 `8053f21c`), 7 predictions P1–P7 with
+PASS/FAIL/NEITHER branches, era boundaries derived from §11.161(b) anchored at today,
+6 refutation conditions, 7 pre-declared limits. Only pre-write probe on either history:
+the submodule's `rev-parse` reachability (HEAD `7ce58350`, branch `main`) — no log, no
+dates, no counts. NEXT: write `harness/f52_strata.py` and measure both histories.)*
 
 ---
 
