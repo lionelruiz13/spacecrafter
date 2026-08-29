@@ -132,7 +132,7 @@ def main():
         cids = {h: v["compids"] for h, v in p["hp"].items()}
         cids_nonempty = [h for h, v in cids.items() if v]
         print(f"  P2  HP sampled                    : {len(p['hp'])}")
-        print(f"  P2  'Spectral Type:' line PRESENT : {len(present)}")
+        print(f"  P2  spectral-type line PRESENT    : {len(present)}")
         print(f"  P2  ... with a NON-EMPTY value    : {len(nonempty)}")
         vals = sorted({v for v in spec.values() if v})
         print(f"  P2  distinct spectral values      : {len(vals)}  {vals[:12]}")

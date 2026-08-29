@@ -1,0 +1,25 @@
+empty1   frames= 9843 tail_n= 996  EFFECT p50=0.1128 mean=0.1176  CONTROL p50=0.5279 mean=0.5399  (ms)
+empty2   frames= 9814 tail_n= 996  EFFECT p50=0.1047 mean=0.1049  CONTROL p50=0.5866 mean=0.5664  (ms)
+empty3   frames= 9816 tail_n= 996  EFFECT p50=0.1053 mean=0.1056  CONTROL p50=0.5845 mean=0.5637  (ms)
+empty4   frames= 9831 tail_n= 996  EFFECT p50=0.1069 mean=0.1081  CONTROL p50=0.5779 mean=0.5614  (ms)
+full1    frames= 9843 tail_n= 996  EFFECT p50=0.1001 mean=0.1042  CONTROL p50=0.5728 mean=0.5609  (ms)
+full2    frames= 9845 tail_n= 996  EFFECT p50=0.0949 mean=0.0972  CONTROL p50=0.5693 mean=0.5456  (ms)
+full3    frames= 9808 tail_n= 996  EFFECT p50=0.0964 mean=0.0957  CONTROL p50=0.5731 mean=0.5543  (ms)
+full4    frames= 9823 tail_n= 996  EFFECT p50=0.0963 mean=0.0977  CONTROL p50=0.6020 mean=0.5805  (ms)
+
+EFFECT  UI_DRAW phase, per-run p50
+   empty [0.1128, 0.1047, 0.1053, 0.1069]  mean=0.1074 sd=0.0037
+   full  [0.1001, 0.0949, 0.0964, 0.0963]  mean=0.0969 sd=0.0022
+   delta(empty-full) = +0.0105 ms = +1.05% of the 1 ms/frame budget (D11);  rank-separated 4v4: YES (p=1/70)
+EFFECT  UI_DRAW phase, per-run mean
+   empty [0.1176, 0.1049, 0.1056, 0.1081]  mean=0.1090 sd=0.0059
+   full  [0.1042, 0.0972, 0.0957, 0.0977]  mean=0.0987 sd=0.0037
+   delta(empty-full) = +0.0103 ms = +1.03% of the 1 ms/frame budget (D11);  rank-separated 4v4: YES (p=1/70)
+CONTROL exec phase,     per-run p50
+   empty [0.5279, 0.5866, 0.5845, 0.5779]  mean=0.5692 sd=0.0278
+   full  [0.5728, 0.5693, 0.5731, 0.602]  mean=0.5793 sd=0.0152
+   delta(empty-full) = -0.0101 ms = -1.01% of the 1 ms/frame budget (D11);  rank-separated 4v4: NO
+CONTROL exec phase,     per-run mean
+   empty [0.5399, 0.5664, 0.5637, 0.5614]  mean=0.5579 sd=0.0121
+   full  [0.5609, 0.5456, 0.5543, 0.5805]  mean=0.5603 sd=0.0148
+   delta(empty-full) = -0.0025 ms = -0.25% of the 1 ms/frame budget (D11);  rank-separated 4v4: NO

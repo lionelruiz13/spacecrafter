@@ -72,13 +72,23 @@ def ask(cmd, quiet=0.5, cap=6.0):
     return buf.decode("utf-8", "replace")
 
 
+# The label at hip_star_wrapper.cpp:151 is `_("Spectral Type: ")` — it goes through
+# the translator, and this install runs `app_locale = fr` (config.ini:68), whose
+# catalogue maps it to "Type spectral : " (~/.spacecrafter/language/fr.txt:486).
+# Matching the English literal alone measured a FALSE ABSENCE on the first run of
+# leg `empty` (the line was present, in French), which would have collapsed P2's
+# "present but empty" into "absent". Both spellings are accepted, from the file.
+SPECTRAL_LABELS = ("Spectral Type:", "Type spectral :")
+
+
 def spectral_of(info):
-    """The value the app put after 'Spectral Type: ', or None if the line is absent.
+    """The value the app put after the spectral label, or None if the line is absent.
     An EMPTY string is a DIFFERENT answer from an absent line, and P2 turns on the
     difference, so the two are never collapsed."""
     for line in info.split("\n"):
-        if "Spectral Type:" in line:
-            return line.split("Spectral Type:", 1)[1].strip()
+        for lab in SPECTRAL_LABELS:
+            if lab in line:
+                return line.split(lab, 1)[1].strip()
     return None
 
 
@@ -108,7 +118,7 @@ for hp in hp_list:
         "raw": info,
         "spectral": spectral_of(info),
         "compids": compids_of(info),
-        "is_star1": "Spectral Type:" in info or info.strip().startswith("HP "),
+        "is_star1": any(l in info for l in SPECTRAL_LABELS) or info.strip().startswith("HP "),
     }
     print(f"B hp {hp}: spectral={spectral_of(info)!r} compids={compids_of(info)!r}", flush=True)
 rec["phases"]["B_end_badindex"] = logcount("convertToSpectralType: bad index")
@@ -142,7 +152,7 @@ print("C screenshot exists:", rec["screenshot_exists"], flush=True)
 
 # ---------------------------------------------------------------- phase D
 # The per-frame route. Pick the FIRST HP of the sample that the app answered with a
-# 'Spectral Type:' line - that choice is made from the app's own answer, so it is the
+# spectral-type line - that choice is made from the app's own answer, so it is the
 # same star in both legs whenever the sample is (asserted in the analyzer).
 target = None
 for hp in hp_list:
@@ -151,7 +161,7 @@ for hp in hp_list:
         break
 rec["perframe_target_hp"] = target
 if target is None:
-    print("D SKIPPED: no sampled HP produced a Spectral Type line", flush=True)
+    print("D SKIPPED: no sampled HP produced a spectral-type line", flush=True)
 else:
     send(f"select hp {target} pointer off", pause=0.5)
     rec["phases"]["D_start_badindex"] = logcount("convertToSpectralType: bad index")

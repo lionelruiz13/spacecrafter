@@ -162,7 +162,7 @@ for i in $(seq 1 60); do
 done
 if [ "$UP" = yes ]; then
     sleep 6
-    python3 "$HERE/f45_probe.py" "$OUT" "$LOGF" > "$OUT/drive.log" 2>&1
+    python3 "$HERE/${F45_PROBE:-f45_probe.py}" "$OUT" "$LOGF" > "$OUT/drive.log" 2>&1
     log "driver exit=$?"
     for i in $(seq 1 20); do kill -0 $APPPID 2>/dev/null || break; sleep 1; done
 fi

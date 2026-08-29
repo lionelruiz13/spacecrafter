@@ -1,0 +1,467 @@
+==============================================================================
+F45 — empty vs populated spectral array
+==============================================================================
+
+### leg empty1
+  P2  HP sampled                    : 24
+  P2  spectral-type line PRESENT    : 23
+  P2  ... with a NON-EMPTY value    : 0
+  P2  distinct spectral values      : 0  []
+  P4  HP line carrying a component id (positive control): 4  ['A', 'B']
+  P3  log lines 'convertToSpectralType: bad index' : 4415   max= ['0']
+  P3  log lines 'convertToComponentIds: bad index' : 0
+  P3  log lines 'ERROR while loading data'         : 0
+  P5  per-frame lines during the 30.5s dwell : 4392   (144.0 lines/s)  target hp=677
+  P1  screenshot: 339799 bytes  crc32=a523d539
+  frames captured: 9843   (tail window = 1000)
+  P6        EXECUTOR_DRAW -> UI_DRAW             TAIL  n=  996 min=0.0000 p50=0.1128 p90=0.1467 p99=0.1921 max=0.2124 mean=0.1176  (ms)
+  P6  DRAW_RESOURCE_READY -> EXECUTOR_DRAW       TAIL  n=  996 min=0.0000 p50=0.5281 p90=0.6392 p99=0.6808 max=0.7647 mean=0.5399  (ms)
+  P6        FRAME_ACQUIRE -> ASYNC_FRAME_SUBMIT  TAIL  n=  996 min=0.0000 p50=0.7007 p90=0.8025 p99=0.9022 max=0.9741 mean=0.6996  (ms)
+  P6        EXECUTOR_DRAW -> UI_DRAW             ALL   n= 9802 min=0.0000 p50=0.0012 p90=0.1641 p99=0.2148 max=0.8368 mean=0.0641  (ms)
+
+### leg full1
+  P2  HP sampled                    : 24
+  P2  spectral-type line PRESENT    : 23
+  P2  ... with a NON-EMPTY value    : 23
+  P2  distinct spectral values      : 20  ['A2V', 'A5V', 'B5V', 'B5V_SB', 'B7III', 'B8III', 'B8V', 'B9IVn', 'B9p', 'F5III', 'F5IV', 'F8V']
+  P4  HP line carrying a component id (positive control): 4  ['A', 'B']
+  P3  log lines 'convertToSpectralType: bad index' : 0   max= []
+  P3  log lines 'convertToComponentIds: bad index' : 0
+  P3  log lines 'ERROR while loading data'         : 0
+  P5  per-frame lines during the 30.5s dwell : 0   (0.0 lines/s)  target hp=677
+  P1  screenshot: 339757 bytes  crc32=56669a99
+  frames captured: 9843   (tail window = 1000)
+  P6        EXECUTOR_DRAW -> UI_DRAW             TAIL  n=  996 min=0.0000 p50=0.1001 p90=0.1317 p99=0.1848 max=0.2154 mean=0.1042  (ms)
+  P6  DRAW_RESOURCE_READY -> EXECUTOR_DRAW       TAIL  n=  996 min=0.0000 p50=0.5729 p90=0.6422 p99=0.6770 max=0.7086 mean=0.5609  (ms)
+  P6        FRAME_ACQUIRE -> ASYNC_FRAME_SUBMIT  TAIL  n=  996 min=0.0000 p50=0.7043 p90=0.7958 p99=0.8788 max=0.9535 mean=0.6978  (ms)
+  P6        EXECUTOR_DRAW -> UI_DRAW             ALL   n= 9802 min=0.0000 p50=0.0010 p90=0.1117 p99=0.1432 max=0.5402 mean=0.0458  (ms)
+
+### leg empty2
+  P2  HP sampled                    : 24
+  P2  spectral-type line PRESENT    : 23
+  P2  ... with a NON-EMPTY value    : 0
+  P2  distinct spectral values      : 0  []
+  P4  HP line carrying a component id (positive control): 4  ['A', 'B']
+  P3  log lines 'convertToSpectralType: bad index' : 4415   max= ['0']
+  P3  log lines 'convertToComponentIds: bad index' : 0
+  P3  log lines 'ERROR while loading data'         : 0
+  P5  per-frame lines during the 30.5s dwell : 4392   (144.0 lines/s)  target hp=677
+  P1  screenshot: 339757 bytes  crc32=56669a99
+  frames captured: 9814   (tail window = 1000)
+  P6        EXECUTOR_DRAW -> UI_DRAW             TAIL  n=  996 min=0.0000 p50=0.1047 p90=0.1362 p99=0.1625 max=0.1888 mean=0.1049  (ms)
+  P6  DRAW_RESOURCE_READY -> EXECUTOR_DRAW       TAIL  n=  996 min=0.0000 p50=0.5868 p90=0.6333 p99=0.6677 max=0.7593 mean=0.5664  (ms)
+  P6        FRAME_ACQUIRE -> ASYNC_FRAME_SUBMIT  TAIL  n=  996 min=0.0000 p50=0.7177 p90=0.7860 p99=0.8442 max=0.9030 mean=0.7022  (ms)
+  P6        EXECUTOR_DRAW -> UI_DRAW             ALL   n= 9773 min=0.0000 p50=0.0008 p90=0.1221 p99=0.1547 max=0.5334 mean=0.0496  (ms)
+
+### leg full2
+  P2  HP sampled                    : 24
+  P2  spectral-type line PRESENT    : 23
+  P2  ... with a NON-EMPTY value    : 23
+  P2  distinct spectral values      : 20  ['A2V', 'A5V', 'B5V', 'B5V_SB', 'B7III', 'B8III', 'B8V', 'B9IVn', 'B9p', 'F5III', 'F5IV', 'F8V']
+  P4  HP line carrying a component id (positive control): 4  ['A', 'B']
+  P3  log lines 'convertToSpectralType: bad index' : 0   max= []
+  P3  log lines 'convertToComponentIds: bad index' : 0
+  P3  log lines 'ERROR while loading data'         : 0
+  P5  per-frame lines during the 30.5s dwell : 0   (0.0 lines/s)  target hp=677
+  P1  screenshot: 339799 bytes  crc32=a523d539
+  frames captured: 9845   (tail window = 1000)
+  P6        EXECUTOR_DRAW -> UI_DRAW             TAIL  n=  996 min=0.0000 p50=0.0949 p90=0.1243 p99=0.1431 max=0.1762 mean=0.0972  (ms)
+  P6  DRAW_RESOURCE_READY -> EXECUTOR_DRAW       TAIL  n=  996 min=0.0000 p50=0.5693 p90=0.6281 p99=0.6806 max=0.7217 mean=0.5456  (ms)
+  P6        FRAME_ACQUIRE -> ASYNC_FRAME_SUBMIT  TAIL  n=  996 min=0.0000 p50=0.6940 p90=0.7688 p99=0.8255 max=0.8636 mean=0.6717  (ms)
+  P6        EXECUTOR_DRAW -> UI_DRAW             ALL   n= 9804 min=0.0000 p50=0.0009 p90=0.1152 p99=0.1413 max=0.5229 mean=0.0461  (ms)
+
+### leg empty3
+  P2  HP sampled                    : 24
+  P2  spectral-type line PRESENT    : 23
+  P2  ... with a NON-EMPTY value    : 0
+  P2  distinct spectral values      : 0  []
+  P4  HP line carrying a component id (positive control): 4  ['A', 'B']
+  P3  log lines 'convertToSpectralType: bad index' : 4415   max= ['0']
+  P3  log lines 'convertToComponentIds: bad index' : 0
+  P3  log lines 'ERROR while loading data'         : 0
+  P5  per-frame lines during the 30.5s dwell : 4392   (144.0 lines/s)  target hp=677
+  P1  screenshot: 339799 bytes  crc32=a523d539
+  frames captured: 9816   (tail window = 1000)
+  P6        EXECUTOR_DRAW -> UI_DRAW             TAIL  n=  996 min=0.0000 p50=0.1053 p90=0.1358 p99=0.1820 max=0.2278 mean=0.1056  (ms)
+  P6  DRAW_RESOURCE_READY -> EXECUTOR_DRAW       TAIL  n=  996 min=0.0000 p50=0.5847 p90=0.6421 p99=0.6772 max=0.8487 mean=0.5637  (ms)
+  P6        FRAME_ACQUIRE -> ASYNC_FRAME_SUBMIT  TAIL  n=  996 min=0.0000 p50=0.7119 p90=0.7987 p99=0.8677 max=1.0037 mean=0.6998  (ms)
+  P6        EXECUTOR_DRAW -> UI_DRAW             ALL   n= 9775 min=0.0000 p50=0.0008 p90=0.1231 p99=0.1565 max=0.5838 mean=0.0496  (ms)
+
+### leg full3
+  P2  HP sampled                    : 24
+  P2  spectral-type line PRESENT    : 23
+  P2  ... with a NON-EMPTY value    : 23
+  P2  distinct spectral values      : 20  ['A2V', 'A5V', 'B5V', 'B5V_SB', 'B7III', 'B8III', 'B8V', 'B9IVn', 'B9p', 'F5III', 'F5IV', 'F8V']
+  P4  HP line carrying a component id (positive control): 4  ['A', 'B']
+  P3  log lines 'convertToSpectralType: bad index' : 0   max= []
+  P3  log lines 'convertToComponentIds: bad index' : 0
+  P3  log lines 'ERROR while loading data'         : 0
+  P5  per-frame lines during the 30.5s dwell : 0   (0.0 lines/s)  target hp=677
+  P1  screenshot: 339799 bytes  crc32=a523d539
+  frames captured: 9808   (tail window = 1000)
+  P6        EXECUTOR_DRAW -> UI_DRAW             TAIL  n=  996 min=0.0000 p50=0.0964 p90=0.1262 p99=0.1493 max=0.1764 mean=0.0957  (ms)
+  P6  DRAW_RESOURCE_READY -> EXECUTOR_DRAW       TAIL  n=  996 min=0.0000 p50=0.5732 p90=0.6285 p99=0.6717 max=0.7464 mean=0.5543  (ms)
+  P6        FRAME_ACQUIRE -> ASYNC_FRAME_SUBMIT  TAIL  n=  996 min=0.0000 p50=0.6957 p90=0.7721 p99=0.8420 max=0.9374 mean=0.6795  (ms)
+  P6        EXECUTOR_DRAW -> UI_DRAW             ALL   n= 9767 min=0.0000 p50=0.0008 p90=0.1154 p99=0.1411 max=0.5447 mean=0.0455  (ms)
+
+### leg empty4
+  P2  HP sampled                    : 24
+  P2  spectral-type line PRESENT    : 23
+  P2  ... with a NON-EMPTY value    : 0
+  P2  distinct spectral values      : 0  []
+  P4  HP line carrying a component id (positive control): 4  ['A', 'B']
+  P3  log lines 'convertToSpectralType: bad index' : 4415   max= ['0']
+  P3  log lines 'convertToComponentIds: bad index' : 0
+  P3  log lines 'ERROR while loading data'         : 0
+  P5  per-frame lines during the 30.5s dwell : 4392   (144.0 lines/s)  target hp=677
+  P1  screenshot: 339799 bytes  crc32=a523d539
+  frames captured: 9831   (tail window = 1000)
+  P6        EXECUTOR_DRAW -> UI_DRAW             TAIL  n=  996 min=0.0000 p50=0.1069 p90=0.1339 p99=0.1588 max=0.1915 mean=0.1081  (ms)
+  P6  DRAW_RESOURCE_READY -> EXECUTOR_DRAW       TAIL  n=  996 min=0.0000 p50=0.5784 p90=0.6362 p99=0.6656 max=0.7120 mean=0.5614  (ms)
+  P6        FRAME_ACQUIRE -> ASYNC_FRAME_SUBMIT  TAIL  n=  996 min=0.0000 p50=0.7113 p90=0.7925 p99=0.8538 max=0.8871 mean=0.7000  (ms)
+  P6        EXECUTOR_DRAW -> UI_DRAW             ALL   n= 9790 min=0.0000 p50=0.0009 p90=0.1242 p99=0.1529 max=0.5276 mean=0.0493  (ms)
+
+### leg full4
+  P2  HP sampled                    : 24
+  P2  spectral-type line PRESENT    : 23
+  P2  ... with a NON-EMPTY value    : 23
+  P2  distinct spectral values      : 20  ['A2V', 'A5V', 'B5V', 'B5V_SB', 'B7III', 'B8III', 'B8V', 'B9IVn', 'B9p', 'F5III', 'F5IV', 'F8V']
+  P4  HP line carrying a component id (positive control): 4  ['A', 'B']
+  P3  log lines 'convertToSpectralType: bad index' : 0   max= []
+  P3  log lines 'convertToComponentIds: bad index' : 0
+  P3  log lines 'ERROR while loading data'         : 0
+  P5  per-frame lines during the 30.5s dwell : 0   (0.0 lines/s)  target hp=677
+  P1  screenshot: 339757 bytes  crc32=56669a99
+  frames captured: 9823   (tail window = 1000)
+  P6        EXECUTOR_DRAW -> UI_DRAW             TAIL  n=  996 min=0.0000 p50=0.0964 p90=0.1260 p99=0.1689 max=0.1816 mean=0.0977  (ms)
+  P6  DRAW_RESOURCE_READY -> EXECUTOR_DRAW       TAIL  n=  996 min=0.0000 p50=0.6020 p90=0.6386 p99=0.6659 max=0.6946 mean=0.5805  (ms)
+  P6        FRAME_ACQUIRE -> ASYNC_FRAME_SUBMIT  TAIL  n=  996 min=0.0000 p50=0.7275 p90=0.7841 p99=0.8425 max=0.9028 mean=0.7091  (ms)
+  P6        EXECUTOR_DRAW -> UI_DRAW             ALL   n= 9782 min=0.0000 p50=0.0008 p90=0.1112 p99=0.1425 max=0.5446 mean=0.0455  (ms)
+
+==============================================================================
+PAIRWISE
+==============================================================================
+
+--- empty1  vs  full1 ---
+  P1 screenshot crc32 : a523d539 vs 56669a99  DIFFERENT
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: ''  ->  'B9p'
+       hp   1366: ''  ->  'A2V'
+       hp   1473: ''  ->  'A2V'
+       hp   1686: ''  ->  'F5III'
+       hp   2912: ''  ->  'B5V'
+       hp   3031: ''  ->  'G5III...'
+       hp   3092: ''  ->  'K3III...'
+       hp   3693: ''  ->  'K1II'
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1128 -> 0.1001 ms  (delta -0.0127 ms, -1.27% of the 1 ms/frame budget)
+     mean 0.1176 -> 0.1042 ms (delta -0.0134 ms, -1.34% of budget)
+
+--- empty1  vs  empty2 ---
+  P1 screenshot crc32 : a523d539 vs 56669a99  DIFFERENT
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1128 -> 0.1047 ms  (delta -0.0081 ms, -0.81% of the 1 ms/frame budget)
+     mean 0.1176 -> 0.1049 ms (delta -0.0127 ms, -1.27% of budget)
+
+--- empty1  vs  full2 ---
+  P1 screenshot crc32 : a523d539 vs a523d539  IDENTICAL
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: ''  ->  'B9p'
+       hp   1366: ''  ->  'A2V'
+       hp   1473: ''  ->  'A2V'
+       hp   1686: ''  ->  'F5III'
+       hp   2912: ''  ->  'B5V'
+       hp   3031: ''  ->  'G5III...'
+       hp   3092: ''  ->  'K3III...'
+       hp   3693: ''  ->  'K1II'
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1128 -> 0.0949 ms  (delta -0.0179 ms, -1.79% of the 1 ms/frame budget)
+     mean 0.1176 -> 0.0972 ms (delta -0.0204 ms, -2.04% of budget)
+
+--- empty1  vs  empty3 ---
+  P1 screenshot crc32 : a523d539 vs a523d539  IDENTICAL
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1128 -> 0.1053 ms  (delta -0.0076 ms, -0.76% of the 1 ms/frame budget)
+     mean 0.1176 -> 0.1056 ms (delta -0.0120 ms, -1.20% of budget)
+
+--- empty1  vs  full3 ---
+  P1 screenshot crc32 : a523d539 vs a523d539  IDENTICAL
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: ''  ->  'B9p'
+       hp   1366: ''  ->  'A2V'
+       hp   1473: ''  ->  'A2V'
+       hp   1686: ''  ->  'F5III'
+       hp   2912: ''  ->  'B5V'
+       hp   3031: ''  ->  'G5III...'
+       hp   3092: ''  ->  'K3III...'
+       hp   3693: ''  ->  'K1II'
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1128 -> 0.0964 ms  (delta -0.0164 ms, -1.64% of the 1 ms/frame budget)
+     mean 0.1176 -> 0.0957 ms (delta -0.0219 ms, -2.19% of budget)
+
+--- empty1  vs  empty4 ---
+  P1 screenshot crc32 : a523d539 vs a523d539  IDENTICAL
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1128 -> 0.1069 ms  (delta -0.0060 ms, -0.60% of the 1 ms/frame budget)
+     mean 0.1176 -> 0.1081 ms (delta -0.0094 ms, -0.94% of budget)
+
+--- empty1  vs  full4 ---
+  P1 screenshot crc32 : a523d539 vs 56669a99  DIFFERENT
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: ''  ->  'B9p'
+       hp   1366: ''  ->  'A2V'
+       hp   1473: ''  ->  'A2V'
+       hp   1686: ''  ->  'F5III'
+       hp   2912: ''  ->  'B5V'
+       hp   3031: ''  ->  'G5III...'
+       hp   3092: ''  ->  'K3III...'
+       hp   3693: ''  ->  'K1II'
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1128 -> 0.0964 ms  (delta -0.0165 ms, -1.65% of the 1 ms/frame budget)
+     mean 0.1176 -> 0.0977 ms (delta -0.0199 ms, -1.99% of budget)
+
+--- full1  vs  empty2 ---
+  P1 screenshot crc32 : 56669a99 vs 56669a99  IDENTICAL
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: 'B9p'  ->  ''
+       hp   1366: 'A2V'  ->  ''
+       hp   1473: 'A2V'  ->  ''
+       hp   1686: 'F5III'  ->  ''
+       hp   2912: 'B5V'  ->  ''
+       hp   3031: 'G5III...'  ->  ''
+       hp   3092: 'K3III...'  ->  ''
+       hp   3693: 'K1II'  ->  ''
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1001 -> 0.1047 ms  (delta +0.0046 ms, +0.46% of the 1 ms/frame budget)
+     mean 0.1042 -> 0.1049 ms (delta +0.0007 ms, +0.07% of budget)
+
+--- full1  vs  full2 ---
+  P1 screenshot crc32 : 56669a99 vs a523d539  DIFFERENT
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1001 -> 0.0949 ms  (delta -0.0052 ms, -0.52% of the 1 ms/frame budget)
+     mean 0.1042 -> 0.0972 ms (delta -0.0069 ms, -0.69% of budget)
+
+--- full1  vs  empty3 ---
+  P1 screenshot crc32 : 56669a99 vs a523d539  DIFFERENT
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: 'B9p'  ->  ''
+       hp   1366: 'A2V'  ->  ''
+       hp   1473: 'A2V'  ->  ''
+       hp   1686: 'F5III'  ->  ''
+       hp   2912: 'B5V'  ->  ''
+       hp   3031: 'G5III...'  ->  ''
+       hp   3092: 'K3III...'  ->  ''
+       hp   3693: 'K1II'  ->  ''
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1001 -> 0.1053 ms  (delta +0.0051 ms, +0.51% of the 1 ms/frame budget)
+     mean 0.1042 -> 0.1056 ms (delta +0.0014 ms, +0.14% of budget)
+
+--- full1  vs  full3 ---
+  P1 screenshot crc32 : 56669a99 vs a523d539  DIFFERENT
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1001 -> 0.0964 ms  (delta -0.0037 ms, -0.37% of the 1 ms/frame budget)
+     mean 0.1042 -> 0.0957 ms (delta -0.0085 ms, -0.85% of budget)
+
+--- full1  vs  empty4 ---
+  P1 screenshot crc32 : 56669a99 vs a523d539  DIFFERENT
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: 'B9p'  ->  ''
+       hp   1366: 'A2V'  ->  ''
+       hp   1473: 'A2V'  ->  ''
+       hp   1686: 'F5III'  ->  ''
+       hp   2912: 'B5V'  ->  ''
+       hp   3031: 'G5III...'  ->  ''
+       hp   3092: 'K3III...'  ->  ''
+       hp   3693: 'K1II'  ->  ''
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1001 -> 0.1069 ms  (delta +0.0068 ms, +0.68% of the 1 ms/frame budget)
+     mean 0.1042 -> 0.1081 ms (delta +0.0040 ms, +0.40% of budget)
+
+--- full1  vs  full4 ---
+  P1 screenshot crc32 : 56669a99 vs 56669a99  IDENTICAL
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1001 -> 0.0964 ms  (delta -0.0038 ms, -0.38% of the 1 ms/frame budget)
+     mean 0.1042 -> 0.0977 ms (delta -0.0065 ms, -0.65% of budget)
+
+--- empty2  vs  full2 ---
+  P1 screenshot crc32 : 56669a99 vs a523d539  DIFFERENT
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: ''  ->  'B9p'
+       hp   1366: ''  ->  'A2V'
+       hp   1473: ''  ->  'A2V'
+       hp   1686: ''  ->  'F5III'
+       hp   2912: ''  ->  'B5V'
+       hp   3031: ''  ->  'G5III...'
+       hp   3092: ''  ->  'K3III...'
+       hp   3693: ''  ->  'K1II'
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1047 -> 0.0949 ms  (delta -0.0098 ms, -0.98% of the 1 ms/frame budget)
+     mean 0.1049 -> 0.0972 ms (delta -0.0076 ms, -0.76% of budget)
+
+--- empty2  vs  empty3 ---
+  P1 screenshot crc32 : 56669a99 vs a523d539  DIFFERENT
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1047 -> 0.1053 ms  (delta +0.0005 ms, +0.05% of the 1 ms/frame budget)
+     mean 0.1049 -> 0.1056 ms (delta +0.0007 ms, +0.07% of budget)
+
+--- empty2  vs  full3 ---
+  P1 screenshot crc32 : 56669a99 vs a523d539  DIFFERENT
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: ''  ->  'B9p'
+       hp   1366: ''  ->  'A2V'
+       hp   1473: ''  ->  'A2V'
+       hp   1686: ''  ->  'F5III'
+       hp   2912: ''  ->  'B5V'
+       hp   3031: ''  ->  'G5III...'
+       hp   3092: ''  ->  'K3III...'
+       hp   3693: ''  ->  'K1II'
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1047 -> 0.0964 ms  (delta -0.0083 ms, -0.83% of the 1 ms/frame budget)
+     mean 0.1049 -> 0.0957 ms (delta -0.0091 ms, -0.91% of budget)
+
+--- empty2  vs  empty4 ---
+  P1 screenshot crc32 : 56669a99 vs a523d539  DIFFERENT
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1047 -> 0.1069 ms  (delta +0.0021 ms, +0.21% of the 1 ms/frame budget)
+     mean 0.1049 -> 0.1081 ms (delta +0.0033 ms, +0.33% of budget)
+
+--- empty2  vs  full4 ---
+  P1 screenshot crc32 : 56669a99 vs 56669a99  IDENTICAL
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: ''  ->  'B9p'
+       hp   1366: ''  ->  'A2V'
+       hp   1473: ''  ->  'A2V'
+       hp   1686: ''  ->  'F5III'
+       hp   2912: ''  ->  'B5V'
+       hp   3031: ''  ->  'G5III...'
+       hp   3092: ''  ->  'K3III...'
+       hp   3693: ''  ->  'K1II'
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1047 -> 0.0964 ms  (delta -0.0084 ms, -0.84% of the 1 ms/frame budget)
+     mean 0.1049 -> 0.0977 ms (delta -0.0072 ms, -0.72% of budget)
+
+--- full2  vs  empty3 ---
+  P1 screenshot crc32 : a523d539 vs a523d539  IDENTICAL
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: 'B9p'  ->  ''
+       hp   1366: 'A2V'  ->  ''
+       hp   1473: 'A2V'  ->  ''
+       hp   1686: 'F5III'  ->  ''
+       hp   2912: 'B5V'  ->  ''
+       hp   3031: 'G5III...'  ->  ''
+       hp   3092: 'K3III...'  ->  ''
+       hp   3693: 'K1II'  ->  ''
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.0949 -> 0.1053 ms  (delta +0.0103 ms, +1.03% of the 1 ms/frame budget)
+     mean 0.0972 -> 0.1056 ms (delta +0.0083 ms, +0.83% of budget)
+
+--- full2  vs  full3 ---
+  P1 screenshot crc32 : a523d539 vs a523d539  IDENTICAL
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.0949 -> 0.0964 ms  (delta +0.0015 ms, +0.15% of the 1 ms/frame budget)
+     mean 0.0972 -> 0.0957 ms (delta -0.0015 ms, -0.15% of budget)
+
+--- full2  vs  empty4 ---
+  P1 screenshot crc32 : a523d539 vs a523d539  IDENTICAL
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: 'B9p'  ->  ''
+       hp   1366: 'A2V'  ->  ''
+       hp   1473: 'A2V'  ->  ''
+       hp   1686: 'F5III'  ->  ''
+       hp   2912: 'B5V'  ->  ''
+       hp   3031: 'G5III...'  ->  ''
+       hp   3092: 'K3III...'  ->  ''
+       hp   3693: 'K1II'  ->  ''
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.0949 -> 0.1069 ms  (delta +0.0119 ms, +1.19% of the 1 ms/frame budget)
+     mean 0.0972 -> 0.1081 ms (delta +0.0109 ms, +1.09% of budget)
+
+--- full2  vs  full4 ---
+  P1 screenshot crc32 : a523d539 vs 56669a99  DIFFERENT
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.0949 -> 0.0964 ms  (delta +0.0014 ms, +0.14% of the 1 ms/frame budget)
+     mean 0.0972 -> 0.0977 ms (delta +0.0004 ms, +0.04% of budget)
+
+--- empty3  vs  full3 ---
+  P1 screenshot crc32 : a523d539 vs a523d539  IDENTICAL
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: ''  ->  'B9p'
+       hp   1366: ''  ->  'A2V'
+       hp   1473: ''  ->  'A2V'
+       hp   1686: ''  ->  'F5III'
+       hp   2912: ''  ->  'B5V'
+       hp   3031: ''  ->  'G5III...'
+       hp   3092: ''  ->  'K3III...'
+       hp   3693: ''  ->  'K1II'
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1053 -> 0.0964 ms  (delta -0.0088 ms, -0.88% of the 1 ms/frame budget)
+     mean 0.1056 -> 0.0957 ms (delta -0.0098 ms, -0.98% of budget)
+
+--- empty3  vs  empty4 ---
+  P1 screenshot crc32 : a523d539 vs a523d539  IDENTICAL
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1053 -> 0.1069 ms  (delta +0.0016 ms, +0.16% of the 1 ms/frame budget)
+     mean 0.1056 -> 0.1081 ms (delta +0.0026 ms, +0.26% of budget)
+
+--- empty3  vs  full4 ---
+  P1 screenshot crc32 : a523d539 vs 56669a99  DIFFERENT
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: ''  ->  'B9p'
+       hp   1366: ''  ->  'A2V'
+       hp   1473: ''  ->  'A2V'
+       hp   1686: ''  ->  'F5III'
+       hp   2912: ''  ->  'B5V'
+       hp   3031: ''  ->  'G5III...'
+       hp   3092: ''  ->  'K3III...'
+       hp   3693: ''  ->  'K1II'
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1053 -> 0.0964 ms  (delta -0.0089 ms, -0.89% of the 1 ms/frame budget)
+     mean 0.1056 -> 0.0977 ms (delta -0.0079 ms, -0.79% of budget)
+
+--- full3  vs  empty4 ---
+  P1 screenshot crc32 : a523d539 vs a523d539  IDENTICAL
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: 'B9p'  ->  ''
+       hp   1366: 'A2V'  ->  ''
+       hp   1473: 'A2V'  ->  ''
+       hp   1686: 'F5III'  ->  ''
+       hp   2912: 'B5V'  ->  ''
+       hp   3031: 'G5III...'  ->  ''
+       hp   3092: 'K3III...'  ->  ''
+       hp   3693: 'K1II'  ->  ''
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.0964 -> 0.1069 ms  (delta +0.0105 ms, +1.05% of the 1 ms/frame budget)
+     mean 0.0957 -> 0.1081 ms (delta +0.0124 ms, +1.24% of budget)
+
+--- full3  vs  full4 ---
+  P1 screenshot crc32 : a523d539 vs 56669a99  DIFFERENT
+  P2 spectral readout: 24 of 24 identical, 0 differ
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.0964 -> 0.0964 ms  (delta -0.0001 ms, -0.01% of the 1 ms/frame budget)
+     mean 0.0957 -> 0.0977 ms (delta +0.0019 ms, +0.19% of budget)
+
+--- empty4  vs  full4 ---
+  P1 screenshot crc32 : a523d539 vs 56669a99  DIFFERENT
+  P2 spectral readout: 1 of 24 identical, 23 differ
+       hp    677: ''  ->  'B9p'
+       hp   1366: ''  ->  'A2V'
+       hp   1473: ''  ->  'A2V'
+       hp   1686: ''  ->  'F5III'
+       hp   2912: ''  ->  'B5V'
+       hp   3031: ''  ->  'G5III...'
+       hp   3092: ''  ->  'K3III...'
+       hp   3693: ''  ->  'K1II'
+  P4 component-id readout (control): 0 differ (expected 0 — same file in both legs)
+  P6 EXECUTOR_DRAW->UI_DRAW tail: p50 0.1069 -> 0.0964 ms  (delta -0.0105 ms, -1.05% of the 1 ms/frame budget)
+     mean 0.1081 -> 0.0977 ms (delta -0.0105 ms, -1.05% of budget)

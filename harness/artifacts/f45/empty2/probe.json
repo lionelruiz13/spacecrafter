@@ -1,0 +1,189 @@
+{
+ "phases": {
+  "A_start_badindex": 0,
+  "B_end_badindex": 23,
+  "B_end_badindex_cids": 0,
+  "D_start_badindex": 23,
+  "D_start_wall": 1788015756.146916,
+  "D_end_wall": 1788015786.6470249,
+  "D_end_badindex": 4415,
+  "D_dwell_s": 30.50010895729065,
+  "E_final_badindex": 4415
+ },
+ "hp": {
+  "677": {
+   "raw": "HP 677\nMagnitude : 2.05 B-V: -0.03\nJ2000 RA/DE: 00h08m23.53s / +29\u00b005'21.11\"\nEqu of date RA/DE: 00h09m46s / +29\u00b014'14\"\nAlt/Az\u00a0: -13\u00b033'22\" / +23\u00b025'34\"\nParallax: 0.03362\nDistance : 97.01 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "5447": {
+   "raw": "HP 5447\nMagnitude : 2.05 B-V: 1.58\nJ2000 RA/DE: 01h09m44.27s / +35\u00b037'10.41\"\nEqu of date RA/DE: 01h11m14s / +35\u00b045'38\"\nAlt/Az\u00a0: -10\u00b018'54\" / +08\u00b059'44\"\nParallax: 0.01652\nDistance : 197.43 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "9640": {
+   "raw": "HP 9640 A\nMagnitude : 2.15 B-V: 1.42\nJ2000 RA/DE: 02h03m54.05s / +42\u00b019'46.25\"\nEqu of date RA/DE: 02h05m33s / +42\u00b027'22\"\nAlt/Az\u00a0: -04\u00b012'39\" / +358\u00b002'30\"\nParallax: 0.00919\nDistance : 354.90 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "A",
+   "is_star1": true
+  },
+  "3092": {
+   "raw": "HP 3092\nMagnitude : 3.25 B-V: 1.26\nJ2000 RA/DE: 00h39m19.90s / +30\u00b051'37.21\"\nEqu of date RA/DE: 00h40m46s / +31\u00b000'22\"\nAlt/Az\u00a0: -13\u00b046'24\" / +16\u00b018'25\"\nParallax: 0.03091\nDistance : 105.52 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "3031": {
+   "raw": "HP 3031\nMagnitude : 4.30 B-V: 0.89\nJ2000 RA/DE: 00h38m32.83s / +29\u00b018'35.88\"\nEqu of date RA/DE: 00h39m58s / +29\u00b027'21\"\nAlt/Az\u00a0: -15\u00b014'11\" / +16\u00b051'57\"\nParallax: 0.01991\nDistance : 163.82 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "3693": {
+   "raw": "HP 3693\nMagnitude : 4.05 B-V: 1.11\nJ2000 RA/DE: 00h47m20.17s / +24\u00b016'00.53\"\nEqu of date RA/DE: 00h48m45s / +24\u00b024'42\"\nAlt/Az\u00a0: -20\u00b035'47\" / +16\u00b005'45\"\nParallax: 0.01724\nDistance : 189.19 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "4463": {
+   "raw": "HP 4463\nMagnitude : 4.40 B-V: 0.95\nJ2000 RA/DE: 00h57m12.30s / +23\u00b025'02.44\"\nEqu of date RA/DE: 00h58m38s / +23\u00b033'39\"\nAlt/Az\u00a0: -21\u00b053'38\" / +13\u00b055'08\"\nParallax: 0.01420\nDistance : 229.69 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "1366": {
+   "raw": "HP 1366\nMagnitude : 4.60 B-V: 0.07\nJ2000 RA/DE: 00h17m05.38s / +38\u00b040'53.47\"\nEqu of date RA/DE: 00h18m30s / +38\u00b049'45\"\nAlt/Az\u00a0: -05\u00b000'49\" / +18\u00b038'45\"\nParallax: 0.01056\nDistance : 308.86 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "116631": {
+   "raw": "HP 116631\nMagnitude : 4.25 B-V: -0.09\nJ2000 RA/DE: 23h38m08.27s / +43\u00b016'05.07\"\nEqu of date RA/DE: 23h39m27s / +43\u00b024'56\"\nAlt/Az\u00a0: +01\u00b051'54\" / +23\u00b054'36\"\nParallax: 0.00653\nDistance : 499.47 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "116805": {
+   "raw": "HP 116805\nMagnitude : 4.15 B-V: -0.06\nJ2000 RA/DE: 23h40m24.71s / +44\u00b020'01.69\"\nEqu of date RA/DE: 23h41m44s / +44\u00b028'53\"\nAlt/Az\u00a0: +02\u00b040'34\" / +23\u00b006'24\"\nParallax: 0.01937\nDistance : 168.38 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "116584": {
+   "raw": "HP 116584\nMagnitude : 3.80 B-V: 0.98\nJ2000 RA/DE: 23h37m34.34s / +46\u00b027'17.05\"\nEqu of date RA/DE: 23h38m53s / +46\u00b036'08\"\nAlt/Az\u00a0: +04\u00b049'06\" / +22\u00b042'23\"\nParallax: 0.03787\nDistance : 86.13 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "4436": {
+   "raw": "HP 4436\nMagnitude : 3.85 B-V: 0.13\nJ2000 RA/DE: 00h56m45.47s / +38\u00b029'57.97\"\nEqu of date RA/DE: 00h58m14s / +38\u00b038'34\"\nAlt/Az\u00a0: -07\u00b003'08\" / +11\u00b008'13\"\nParallax: 0.02514\nDistance : 129.74 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "3881": {
+   "raw": "HP 3881\nMagnitude : 4.50 B-V: -0.12\nJ2000 RA/DE: 00h49m48.89s / +41\u00b004'43.51\"\nEqu of date RA/DE: 00h51m18s / +41\u00b013'24\"\nAlt/Az\u00a0: -04\u00b015'55\" / +11\u00b057'36\"\nParallax: 0.00528\nDistance : 617.72 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "6411": {
+   "raw": "HP 6411\nMagnitude : 4.85 B-V: 1.07\nJ2000 RA/DE: 01h22m20.49s / +45\u00b031'44.05\"\nEqu of date RA/DE: 01h23m55s / +45\u00b040'02\"\nAlt/Az\u00a0: -00\u00b045'48\" / +05\u00b026'17\"\nParallax: 0.01521\nDistance : 214.44 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "113726": {
+   "raw": "HP 113726 B\nMagnitude : 6.00 B-V: 0.00\nJ2000 RA/DE: 23h01m55.31s / +42\u00b019'33.61\"\nEqu of date RA/DE: 23h03m09s / +42\u00b028'10\"\nAlt/Az\u00a0: +04\u00b002'08\" / +30\u00b016'44\"\nParallax: 0.00471\nDistance : 692.48 al\n\n\u0000",
+   "spectral": null,
+   "compids": "B",
+   "is_star1": true
+  },
+  "2912": {
+   "raw": "HP 2912\nMagnitude : 4.30 B-V: -0.12\nJ2000 RA/DE: 00h36m52.88s / +33\u00b043'09.52\"\nEqu of date RA/DE: 00h38m19s / +33\u00b051'55\"\nAlt/Az\u00a0: -10\u00b051'58\" / +16\u00b008'47\"\nParallax: 0.00545\nDistance : 598.45 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "1686": {
+   "raw": "HP 1686\nMagnitude : 5.15 B-V: 0.44\nJ2000 RA/DE: 00h21m07.40s / +37\u00b058'05.85\"\nEqu of date RA/DE: 00h22m32s / +38\u00b006'57\"\nAlt/Az\u00a0: -05\u00b055'16\" / +18\u00b007'04\"\nParallax: 0.02060\nDistance : 158.33 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "1473": {
+   "raw": "HP 1473\nMagnitude : 4.50 B-V: 0.07\nJ2000 RA/DE: 00h18m19.51s / +36\u00b047'05.70\"\nEqu of date RA/DE: 00h19m44s / +36\u00b055'57\"\nAlt/Az\u00a0: -06\u00b053'22\" / +19\u00b000'11\"\nParallax: 0.02420\nDistance : 134.78 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "7818": {
+   "raw": "HP 7818\nMagnitude : 4.95 B-V: -0.06\nJ2000 RA/DE: 01h40m34.87s / +40\u00b034'36.84\"\nEqu of date RA/DE: 01h42m10s / +40\u00b042'39\"\nAlt/Az\u00a0: -05\u00b056'18\" / +02\u00b028'31\"\nParallax: 0.00458\nDistance : 712.13 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "7513": {
+   "raw": "HP 7513\nMagnitude : 4.10 B-V: 0.54\nJ2000 RA/DE: 01h36m47.77s / +41\u00b024'11.87\"\nEqu of date RA/DE: 01h38m23s / +41\u00b032'17\"\nAlt/Az\u00a0: -05\u00b004'40\" / +03\u00b009'13\"\nParallax: 0.07412\nDistance : 44.00 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "5434": {
+   "raw": "HP 5434 A\nMagnitude : 4.25 B-V: -0.06\nJ2000 RA/DE: 01h09m30.15s / +47\u00b014'30.11\"\nEqu of date RA/DE: 01h11m04s / +47\u00b022'58\"\nAlt/Az\u00a0: +01\u00b012'16\" / +07\u00b026'43\"\nParallax: 0.00443\nDistance : 736.24 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "A",
+   "is_star1": true
+  },
+  "7719": {
+   "raw": "HP 7719\nMagnitude : 5.00 B-V: 0.89\nJ2000 RA/DE: 01h39m20.94s / +44\u00b023'10.46\"\nEqu of date RA/DE: 01h40m58s / +44\u00b031'13\"\nAlt/Az\u00a0: -02\u00b007'20\" / +02\u00b032'19\"\nParallax: 0.01303\nDistance : 250.31 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  },
+  "117221": {
+   "raw": "HP 117221 A\nMagnitude : 5.20 B-V: 0.60\nJ2000 RA/DE: 23h46m02.07s / +46\u00b025'12.81\"\nEqu of date RA/DE: 23h47m22s / +46\u00b034'05\"\nAlt/Az\u00a0: +04\u00b013'04\" / +21\u00b024'07\"\nParallax: 0.00249\nDistance : 1309.86 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "A",
+   "is_star1": true
+  },
+  "6813": {
+   "raw": "HP 6813\nMagnitude : 4.80 B-V: 0.41\nJ2000 RA/DE: 01h27m40.38s / +45\u00b024'23.53\"\nEqu of date RA/DE: 01h29m16s / +45\u00b032'37\"\nAlt/Az\u00a0: -00\u00b058'09\" / +04\u00b032'26\"\nParallax: 0.03494\nDistance : 93.35 al\nType spectral : \n\n\u0000",
+   "spectral": "",
+   "compids": "",
+   "is_star1": true
+  }
+ },
+ "baseline_no_selection": "EOL\n\u0000",
+ "hp_list": [
+  677,
+  5447,
+  9640,
+  3092,
+  3031,
+  3693,
+  4463,
+  1366,
+  116631,
+  116805,
+  116584,
+  4436,
+  3881,
+  6411,
+  113726,
+  2912,
+  1686,
+  1473,
+  7818,
+  7513,
+  5434,
+  7719,
+  117221,
+  6813
+ ],
+ "screenshot": "/home/claude/spacecrafter/claude/harness/artifacts/f45/empty2/sky.png",
+ "screenshot_exists": true,
+ "perframe_target_hp": 677
+}

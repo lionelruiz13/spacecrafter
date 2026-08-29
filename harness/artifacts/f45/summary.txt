@@ -1,0 +1,52 @@
+F45 — empty vs populated spectral array: the measured deltas
+==========================================================================
+
+[P1] screenshot of the same star scene (2048x2048 PNG, app's own readback)
+   empty1   md5=a09147d7301cb4c928d8c3fb609ba8e9  339799 B
+   full1    md5=9baf6ed4e65fb90d2c18d0961a23e376  339757 B
+   empty2   md5=9baf6ed4e65fb90d2c18d0961a23e376  339757 B
+   full2    md5=a09147d7301cb4c928d8c3fb609ba8e9  339799 B
+   empty3   md5=a09147d7301cb4c928d8c3fb609ba8e9  339799 B
+   full3    md5=a09147d7301cb4c928d8c3fb609ba8e9  339799 B
+   empty4   md5=a09147d7301cb4c928d8c3fb609ba8e9  339799 B
+   full4    md5=9baf6ed4e65fb90d2c18d0961a23e376  339757 B
+
+[P3/P5] the two flushed console/log channels, per leg
+   leg       log lines   applog B   stderr B  dwell lines
+   empty1         4415     392657     382189         4392
+   full1             0      83609      15747            0
+   empty2         4415     392659     382303         4392
+   full2             0      83611      15747            0
+   empty3         4415     392659     382246         4392
+   full3             0      83611      15804            0
+   empty4         4415     392659     382303         4392
+   full4             0      83611      15861            0
+
+[P2] the readout itself, hp 677 (the per-frame target), verbatim
+   empty1: '\x00'
+   full1: '\x00'
+
+[census] spInt over the 3215 named stars, read off the empty leg's own error line
+   lines=44371  distinct spInt=836  range 4..4056
+   available table stars_hip_sp_0v0_0.cat = 4122 entries; spInt >= 4122 seen: 0
+
+[P2 corrected] the spectral line of hp 677 (the per-frame target), verbatim
+   empty1   'Type spectral : '
+   full1    'Type spectral : B9p'
+   empty2   'Type spectral : '
+   full2    'Type spectral : B9p'
+   empty3   'Type spectral : '
+   full3    'Type spectral : B9p'
+   empty4   'Type spectral : '
+   full4    'Type spectral : B9p'
+
+[P2] hp 113726, the built-in negative control (getSpInt()==0 -> the branch is
+     not taken at all, so the line is ABSENT in BOTH legs, not empty)
+   empty1   ABSENT   (component-id token: 'B')
+   full1    ABSENT   (component-id token: 'B')
+
+[P1] the pixel comparison (the null that matters, and the proof it is not a
+     dead instrument: the SAME probe resolves a 374-px, 3/255 difference)
+   empty1 vs full3  (ACROSS the legs)               px differing =      0 / 4194304   max channel delta = 0
+   empty1 vs full1  (across the legs, other class)  px differing =    374 / 4194304   max channel delta = 3
+   full1  vs full3  (WITHIN the full leg)           px differing =    374 / 4194304   max channel delta = 3

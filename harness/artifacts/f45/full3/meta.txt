@@ -1,0 +1,86 @@
+=== F45 leg 'full'  (cat_hip_sp_file_name = stars_hip_sp_0v0_0.cat) ===
+wall clock start : 2026-08-29 17:08:03 CEST
+binary           : /home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter
+binary md5       : fa00deade57fe02739800013364a9611
+binary mtime     : 2026-08-26 17:43:30.170070451 +0200
+field config.ini  md5 (in) = 03fbee59bc3ec506c58f0a3f1e1d73df
+field ssystem.ini md5 (in) = 545a51ef76294891579a1fc2fe13792b
+field stars.ini   md5 (in) = 0aec3e72c25cd709abb46e37a6c924af
+--- data root spectral/cids files, before the run ---
+total 9132
+drwxr-xr-x 2 claude root    4096 Sep 27  2025 .
+drwxr-xr-x 6 claude root    4096 Sep 27  2025 ..
+-rw-r--r-- 1 claude root   60872 May  1  2025 name.fab
+-rw-r--r-- 1 claude root  139264 May  1  2025 stars_0_0v0_5.cat
+-rw-r--r-- 1 claude root  605708 May  1  2025 stars_1_0v0_5.cat
+-rw-r--r-- 1 claude root 4203832 May  1  2025 stars_2_0v0_5.cat
+-rw-r--r-- 1 claude root 4289812 May  1  2025 stars_3_1v0_3.cat
+-rw-r--r-- 1 claude root      27 May  1  2025 stars_hip_cids_0v0_0.cat
+-rw-r--r-- 1 claude root   32435 May  1  2025 stars_hip_sp_0v0_0.cat
+data root stars/ aggregate md5 (in) = f8f51cf61b0496be5ca235a35967563f
+requested spectral file present in data root: YES
+spectral file line count (0 if absent) : 4122
+XAUTHORITY       : /tmp/rt-claude/.mutter-Xwaylandauth.Y2SUU3
+xdpyinfo         : name of display:    :2
+concurrent spacecrafter instances (pre) : 0
+--- farm stars.ini [stars] section ---
+[stars]
+cat_file_name_00               = stars_0_0v0_5.cat
+cat_file_name_01               = stars_1_0v0_5.cat
+cat_file_name_02               = stars_2_0v0_8.cat
+cat_file_name_03               = stars_3_1v0_4.cat
+cat_hip_sp_file_name           = stars_hip_sp_0v0_0.cat
+cat_hip_cids_file_name         = stars_hip_cids_0v0_0.cat
+
+
+--- farm config.ini [debug] section ---
+[debug]
+cpu_info                       = false
+debug_layer                    = true
+flush_frames                   = false
+print_log                      = true
+print_videoplayer_state        = false
+query_statistics               = true
+write_log                      = true
+gpu_info                       = false
+
+
+farm stars.ini md5 (in) = 07123315a33a8f04728df64e978beee6
+HP sample (from /usr/local/share/spacecrafter/stars/name.fab, first 24 distinct): 677 5447 9640 3092 3031 3693 4463 1366 116631 116805 116584 4436 3881 6411 113726 2912 1686 1473 7818 7513 5434 7719 117221 6813 
+app pid=183890
+tcp up after 6x2s
+driver exit=0
+app exit status  : 0
+total 1424
+drwxr-xr-x 2 claude claude     180 Aug 29 17:08 .
+drwxr-xr-x 3 claude claude    2120 Aug 29 17:08 ..
+-rw-r--r-- 1 claude claude       0 Aug 29 17:08 EntityCore-logs.txt
+-rw-r--r-- 1 claude claude    4833 Aug 29 17:09 script-26.08.29.log
+-rw-r--r-- 1 claude claude      13 Aug 29 17:09 shader.log
+-rw-r--r-- 1 claude claude   83611 Aug 29 17:09 spacecrafter.log
+-rw-r--r-- 1 claude claude 1250288 Aug 29 17:09 statistics.dat
+-rw-r--r-- 1 claude claude      13 Aug 29 17:09 tcp.log
+-rw-r--r-- 1 claude claude   99197 Aug 29 17:09 vulkan.log
+field config.ini  md5 (out) = 03fbee59bc3ec506c58f0a3f1e1d73df  MATCH=yes
+field ssystem.ini md5 (out) = 545a51ef76294891579a1fc2fe13792b  MATCH=yes
+field stars.ini   md5 (out) = 0aec3e72c25cd709abb46e37a6c924af  MATCH=yes
+data root stars/  md5 (out) = f8f51cf61b0496be5ca235a35967563f  MATCH=yes
+farm stars.ini md5 (out) = 07123315a33a8f04728df64e978beee6  REWRITTEN=no
+--- log: convertToSpectralType bad-index reports ---
+  NONE
+--- log: convertToComponentIds bad-index reports ---
+  NONE
+--- log: the catch that §5.88 says never fires ---
+  NONE
+--- positive control: the log channel carries OTHER errors (§5.90's fopen) ---
+  NONE
+--- log: how many stars this install actually loaded ---
+000000002299: (Info ): Loading catalog stars_0_0v0_5.cat
+000000002299: (Info ): Loading catalog stars_1_0v0_5.cat
+000000002299: (Info ): Loading catalog stars_2_0v0_8.cat
+000000002299: (Info ): Loading catalog stars_3_1v0_4.cat
+000000002300: (Info ): finished, max_geodesic_level: 1
+  (total matching lines: 5)
+--- stderr: the catch's console half (§5.88: expected 0 in both legs) ---
+  count = 0
+wall clock end   : 2026-08-29 17:09:26 CEST
