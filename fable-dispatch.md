@@ -1072,7 +1072,20 @@ backward **111/61**, adjacent (S/D ids) **57** sized-not-verdicted. CP2 (scope 2
 adjudicated BY READING, coverage proved by SET IDENTITY both ways (73/73 · 61/61, `f60_coverage.log`).
 FORWARD **COHERENT 32 · NON-STATE 21 · NOT-A-ROW 15 · STALE 3 · AMBIGUOUS 2**; BACKWARD **37 · 19 · 2 ·
 STALE 2 · AMBIGUOUS 1**. STALE = §5.24→B32 · §5.2→B10 · §5.44→B39 (forward, annotate) and B15→§5.32 ·
-B39→§5.46 (backward, ROUTE — §13 not edited). NEXT: annotations at the three §5 nodes, then §11.180.
+B39→§5.46 (backward, ROUTE — §13 not edited). DELIVERED 2026-08-30 → **§11.180** (`INTENT/11.180.md` +
+stub), all three scope items done, DoD met. HEADLINE: **the row id is OVERLOADED** — it names a QUEUE that
+closes AND an ARTIFACT that does not ("the B28 protocol" is live vocabulary the OWNER used 2026-08-26,
+five weeks after the row shut; B16's "seam" is code; B15/B19/B32 names the closed latch class), so 18
+references cannot go stale by construction and 21 more are provenance ⇒ the real denominator is the queue
+readings, **3 of ~19**. All three STALE forward refs name a row that DELIVERED, annotated at their nodes.
+**Structural surprise: the §13 side is the better-maintained one** (B31/B3/B39/B4 all record their §5 rows'
+closures; every stale ref sits on the §5 side) — §11.163(c)'s instance generalised. §5.24 is the sharp case:
+its retired index line already says FIXED while the entry header says OPEN, i.e. the DERIVED view fresher
+than the AUTHORITY, invisible to the pair check (no live stub). Seven namespace collisions measured (15/73
+NOT-A-ROW). Three over-calls raised and REFUTED BY READING + one self-catch (my ad-hoc locator returned
+§11.44 for "44" — F59's stub collision committed by the auditor). Instrument-or-table: TABLE + committed
+enumerator, NO pair-check extension, argued five ways; the recurring check ROUTED to the WRITE (one grep
+per §13 state flip, I6). NO mint, NO state word changed, NO §13 row edited, instruments untouched.
 
 ---
 
