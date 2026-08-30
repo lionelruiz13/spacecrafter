@@ -177,8 +177,12 @@ queued as a deliberate re-baselining act. Stable baselines at close:
 pair-check **188/163/25/87** · scan **106/136/83** with TWO named
 exceptions (`§11.171→§11.165` benign-in · `§11.164→§11.167`
 proximity-out; 83 real, twice attributed). **Next-round queue, in
-order:** (1) texture-cache instrumentation + farm isolation (md5 manifest
-in every preflight; the dim-Moon discriminator; S); (2) the tester-model
+order:** (1) ~~texture-cache instrumentation + farm isolation (md5 manifest
+in every preflight; the dim-Moon discriminator; S)~~ **[RESHAPED post-close
+per §11.174: the ENVIRONMENT CANARY + cache manifest + the affected-claims
+correction sweep across §11.156–§11.168/§11.172 — the sweep GATED on the
+owner's §11.174(c) answers; the canary (display fingerprint + photometric
+band) is dispatchable regardless; M]**; (2) the tester-model
 corpus validation (Q-55's five conditioned metrics; predictions-first;
 S); (3) the §11.169 schema audit of existing diagnostic sites (instances
 banked: the camera-line, the illuminate clamp, the bulk-script D12 shape;
@@ -852,6 +856,13 @@ committed artifacts carry every cited number and frame.)*
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
 - **Session-16 decision items (2026-08-30, F53–F55 / §11.170–172 + the conversation → §11.169/§11.173, §5.114/§5.115):**
+  - **[POST-CLOSE, 2026-08-30 → §11.174: ATTRIBUTION ARRIVED FROM YOU — sessions
+    14–15 were dispatched without a Wayland display; the dim days are the
+    faulty-dispatch days; the cache demotes to instrument gap. The item below
+    stands for its measurements; its "cannot be A/B'd" clause is SUPERSEDED —
+    the dispatch-wrong/dispatch-right A/B is now possible and is YOURS. Your
+    internal record's specifics are asked (§11.174(c)): what was missing, fix
+    timestamp, session-13 status, deliberate reproduction. Original kept.]**
   - **THE DIM MOON IS NOT THE DRIVER'S — the attribution below is REFUTED as stated**
     (F55 §11.172(e)): F51's unmodified driver, run today from a dump bit-identical in
     32/33 fields, returns **JULY's 165.258 to the last digit** — same binary, same
