@@ -412,8 +412,15 @@ verified by hand. Channels chosen: A = dump `oldView.observer`
 sim-time sweep; C = screen at fov 2, `illuminate hp V` positive control +
 name-scoped removal. CP2 — `f53_guards.py` written (compiles, all 70 flag names
 validated against the code) and the predictions COMMITTED PRE-RUN, md5
-`5799ca48`. NEXT: the single launch, outdir /tmp/f53run, artifacts copied to
-`harness/artifacts/f53/`.
+`5799ca48`. CP3 — THE LAUNCH IS DONE (one launch, exit 0, 0 refused, md5 in==out,
+comm probe 0; the committed prediction file is byte-identical to the one the run
+wrote). A: every prediction matched except the tight distance band (1.00011 vs
+[0.99995,1.00005]) — traced to light-travel-time, not to the mechanism; the latch
+is byte-identical. B: `ra :00h00m` / `dec:+00°00'` read off the crops with
+nothing selected, alt/az tracing a full diurnal arc, 7/12 steps. C: accepted,
+silent, and an Illuminate IS inserted — witnessed white at the dome edge.
+Artifacts in `harness/artifacts/f53/`. NEXT: INTENT/11.170.md, stub, §5.113
+annotation, back-markers, instrument baselines.
 
 ### F54 — The seven never-recorded gate values: decision-free recording fix in five harness files (§11.167(i)) [S]
 

@@ -1,0 +1,700 @@
+{
+ "bin": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "md5": "fa00deade57fe02739800013364a9611",
+ "pred": {
+  "code": "master-beta @ d6aec251",
+  "A": {
+   "accepted": "`set home_planet selected` with nothing selected is ACCEPTED - zero new 'Could not execute' lines; there is no test anywhere on the path [core.cpp:2160-2164]",
+   "diagnostic": "exactly ONE new log line is attributable to the command: SSystemFactory::syncCameraReference's WARNING \"New path has no body '' to re-reference the camera on\" [ssystem_factory.cpp:1084], which names the EMPTY NAME and not the absent selection. NO log line says nothing is selected, names the fictitious anchor, or states a consequence or a user action - i.e. nothing on this path is \u00a72(f)-grade.",
+   "onBody": "oldView.observer.onBody flips true -> FALSE [observer.cpp:121-123; AnchorPointObservatory is not a body]",
+   "homePlanet": "oldView.observer.homePlanet becomes the EMPTY STRING [observer.cpp:323-326, getHomeBody() null off a body]",
+   "distanceFromCenter": "drops from ~4.26e-5 AU (one Earth radius) to < 1e-8 AU, because the body-radius term disappears and only altitude/(1000*AU) is left [observer.cpp:81-91]; config altitude is 75 m => ~5.0e-10 AU",
+   "latlonalt_unchanged": "oldView.observer longitude/latitude/altitude are UNCHANGED to the last digit - Observer::setAnchorPoint's non-eye-relative branch only swaps the anchor pointer [observer.cpp:445-459]",
+   "get_status_position": "lat/lon/alt in `get status position` are UNCHANGED by the teleport (same getters, coreLink.cpp:625-628) => THE CHANNEL THE ROW'S OWED CLAUSE NAMES IS BLIND TO A ONE-AU DISPLACEMENT. Stated as a prediction so a match is evidence and a mismatch is a finding.",
+   "distance_Earth": "after the teleport, `select planet Earth` -> selected_distance = 1 AU to within one Earth radius: the anchor is at observer + 1 AU exactly [anchor_manager.cpp:381] and the observer was 4.26e-5 AU from Earth's centre, so the value lies in [0.99995, 1.00005]. BAND GATE.",
+   "distance_others_move": "the Mars and Sun distances CHANGE (bounded above by 1 AU, the triangle inequality on a 1 AU displacement). No exact value predicted; no change on any of the three would refute the displacement.",
+   "latch": "the SECOND `set home_planet selected`, still with nothing selected, finds the anchor CACHED under \"\" [anchor_manager.cpp:364-371 + :382] and re-installs it, so the observer does NOT move again: all three printed distances and the whole oldView.observer block are BYTE-IDENTICAL to the first invocation's. A rebuild would move the observer a further AU and change them. DISCRIMINATING CHECK.",
+   "restore": "`set home_planet Earth` restores homePlanet=='Earth', onBody==true and distanceFromCenter to its pre value - the positive control that the anchor machinery itself works"
+  },
+  "B": {
+   "control_dark": "with every DARK_FLAGS flag off and object_coordinates OFF, the frame carries < 5000 lit pixels (max channel > 8). If it does not, the labels-off control frame is differenced instead and the claim is unaffected.",
+   "positive": "with a real star selected, four labels are drawn and their ra/dec read the STAR's own RA/DEC, which the app reports independently as selected_star_ra / selected_star_de [app_command_eval.cpp:317-320]. This is the control for the channel AND for the reading of the crops.",
+   "drawn_with_nothing_selected": "with NOTHING selected the labels are STILL drawn in at least one step - SkyCoords::draw gates on its fader alone [skyDisplay.cpp:421-422]",
+   "ra_dec_constant": "those labels read EXACTLY `ra :00h00m` and `dec:+00\u00b000'` - rectToSphe((1,0,0)) is (0,0) and the formatting is truncf with a leading zero [skyDisplay.cpp:429-435, :535-544, :565-579]",
+   "alt_az_move": "the same labels' `alt:`/`az :` DIFFER between sim-time steps, and the label block's screen centroid MOVES by > 20 px - earthEquToLocal((1,0,0)) turns with the clock [skyDisplay.cpp:437]. A static overlay would give an immobile centroid and identical text.",
+   "off": "`flag object_coordinates off` removes them"
+  },
+  "C": {
+   "no_value_predicted": "the ra/de handed to loadIlluminate are INDETERMINATE by construction [illuminate_mgr.cpp:143 `double ra, de;` + object.cpp:40-42 empty getRaDeValue]. No value is predicted; a predicted value here would be unfalsifiable dressing.",
+   "accepted": "`illuminate hp 0 display on size 5` is ACCEPTED - zero new 'Could not execute' lines",
+   "no_diagnostic": "ZERO new log lines name HIP 0, an absent catalogue id, or an uninitialised value - the guard mismatch (`num > NR_OF_HIP` [illuminate_mgr.cpp:128] vs `0 < _HP` [hip_star_mgr.cpp:1054]) is silent",
+   "positive": "`illuminate hp <V> display on size 5` for a catalogue-answering V produces a visible blob (> 500 px changed by > 8) at the centred star's position, at fov 2 - the same channel answering a real value",
+   "size1_control": "`illuminate hp 0 display on size 1` inserts NOTHING - load returns at :136-139 BEFORE the indeterminate read - so 'the command ran' and 'an illuminate was inserted' are separated by an in-run control",
+   "branch_b1": "STALE-STACK: after `illuminate hp <V> display off` a blob REMAINS at V's position, and `illuminate hp 0 display off` then REMOVES it => an illuminate named 0 was inserted at V's coordinates, i.e. the indeterminate slots held the values V's own call had just written. Positively identified by name, not inferred.",
+   "branch_b2": "ELSEWHERE: no blob remains at V => hp 0's illuminate is outside the fov-2 cone. The wide-sky leg (fov 180, size 600) then either finds it above the horizon or does not, and if neither leg finds it the insertion is NOT witnessed and the report must say so rather than assert it.",
+   "branch_b3": "CRASH: if the residue happens to be non-finite, `spheToRect` gives a NaN XYZ, and `SphereGrid::getNearest` leaves `best` nullptr (every `>= bestDot` against NaN is false) and dereferences it on the next subdivision level [SphereGrid.hpp:369-388] => the shipped command KILLS THE APP. Named as a live branch, not as the expected one.",
+   "history": "hp 0 issued EARLY (before any valid load) and LATE (after one) - a DIFFERENCE between them is positive evidence of stack residue; sameness is consistent with residue but does not demonstrate it, and will be reported as such.",
+   "colour_secondary": "the no-colour overload reads getRGB() [illuminate_mgr.cpp:78], white (1,1,1) for the singleton [object_base.hpp:94-96] against a real star's own colour. Secondary observation, not a gate - illuminate_mgr.cpp:175 passes (r,b,g) into a ctor declared (r,g,b) [illuminate.cpp:33], so the drawn colour is channel-swapped either way."
+  },
+  "scope3_read_only": "searchAround CANNOT push a null ObjectBaseP into cleverFind's candidate vector - answered by reading before the run, five producers, no launch involved."
+ },
+ "wall": "2026-08-30 08:18:38 CEST",
+ "hip_probe": [
+  {
+   "hp": 3,
+   "info": "HP 3"
+  }
+ ],
+ "hip": 3,
+ "A": {
+  "legs": [
+   {
+    "tag": "pre",
+    "observer": {
+     "longitude": 5.366666607307548,
+     "longitudeForDisplay": 5.366666607307548,
+     "latitude": 43.30000131876876,
+     "altitude": 75.10427587606682,
+     "distanceFromCenter": 4.263573455166563e-05,
+     "homePlanet": "Earth",
+     "onBody": true,
+     "quaternionMode": false,
+     "eyeRelativeMode": false,
+     "flagMoveTo": false,
+     "moveToMult": 0,
+     "moveToCoef": 0,
+     "rotatorQuat": [
+      1,
+      0,
+      0,
+      0
+     ],
+     "rotatorMoving": false,
+     "rotatorTimeBeforeEnd": 0,
+     "rotatorMat": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+     ]
+    },
+    "settled": true,
+    "pos": {
+     "lat": 43.3,
+     "lon": 5.37,
+     "alt": 75.1,
+     "jday": 2461233.5,
+     "heading": 1.7e-05
+    },
+    "dist": {
+     "Earth": "4.26357e-05",
+     "Mars": "2.07176",
+     "Sun": "1.01659"
+    },
+    "objinfo_after_deselect": "EOL",
+    "mag": {
+     "Earth": "-22.7976",
+     "Mars": "1.49643",
+     "Sun": "-26.6943"
+    }
+   },
+   {
+    "tag": "post1",
+    "observer": {
+     "longitude": 5.366666607307548,
+     "longitudeForDisplay": 5.366666607307548,
+     "latitude": 43.30000131876876,
+     "altitude": 75.10427587606682,
+     "distanceFromCenter": 5.020410753786564e-10,
+     "homePlanet": "",
+     "onBody": false,
+     "quaternionMode": false,
+     "eyeRelativeMode": false,
+     "flagMoveTo": false,
+     "moveToMult": 0,
+     "moveToCoef": 0,
+     "rotatorQuat": [
+      1,
+      0,
+      0,
+      0
+     ],
+     "rotatorMoving": false,
+     "rotatorTimeBeforeEnd": 0,
+     "rotatorMat": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+     ]
+    },
+    "settled": true,
+    "pos": {
+     "lat": 43.3,
+     "lon": 5.37,
+     "alt": 75.1,
+     "jday": 2461233.5,
+     "heading": 1.7e-05
+    },
+    "dist": {
+     "Earth": "1.00011",
+     "Mars": "1.95675",
+     "Sun": "1.64883"
+    },
+    "objinfo_after_deselect": "EOL",
+    "mag": {
+     "Earth": "-1.15946",
+     "Mars": "1.72147",
+     "Sun": "-25.6441"
+    }
+   },
+   {
+    "tag": "post2",
+    "observer": {
+     "longitude": 5.366666607307548,
+     "longitudeForDisplay": 5.366666607307548,
+     "latitude": 43.30000131876876,
+     "altitude": 75.10427587606682,
+     "distanceFromCenter": 5.020410753786564e-10,
+     "homePlanet": "",
+     "onBody": false,
+     "quaternionMode": false,
+     "eyeRelativeMode": false,
+     "flagMoveTo": false,
+     "moveToMult": 0,
+     "moveToCoef": 0,
+     "rotatorQuat": [
+      1,
+      0,
+      0,
+      0
+     ],
+     "rotatorMoving": false,
+     "rotatorTimeBeforeEnd": 0,
+     "rotatorMat": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+     ]
+    },
+    "settled": true,
+    "pos": {
+     "lat": 43.3,
+     "lon": 5.37,
+     "alt": 75.1,
+     "jday": 2461233.5,
+     "heading": 1.7e-05
+    },
+    "dist": {
+     "Earth": "1.00011",
+     "Mars": "1.95675",
+     "Sun": "1.64883"
+    },
+    "objinfo_after_deselect": "EOL",
+    "mag": {
+     "Earth": "-1.15946",
+     "Mars": "1.72147",
+     "Sun": "-25.6441"
+    }
+   },
+   {
+    "tag": "restored",
+    "observer": {
+     "longitude": 5.366666607307548,
+     "longitudeForDisplay": 5.366666607307548,
+     "latitude": 43.30000131876876,
+     "altitude": 75.10427587606682,
+     "distanceFromCenter": 4.263573455166563e-05,
+     "homePlanet": "Earth",
+     "onBody": true,
+     "quaternionMode": false,
+     "eyeRelativeMode": false,
+     "flagMoveTo": false,
+     "moveToMult": 0,
+     "moveToCoef": 0,
+     "rotatorQuat": [
+      1,
+      0,
+      0,
+      0
+     ],
+     "rotatorMoving": false,
+     "rotatorTimeBeforeEnd": 0,
+     "rotatorMat": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+     ]
+    },
+    "settled": true,
+    "pos": {
+     "lat": 43.3,
+     "lon": 5.37,
+     "alt": 75.1,
+     "jday": 2461233.5,
+     "heading": 1.7e-05
+    },
+    "dist": {
+     "Earth": "4.26357e-05",
+     "Mars": "2.07176",
+     "Sun": "1.01659"
+    },
+    "objinfo_after_deselect": "EOL",
+    "mag": {
+     "Earth": "-22.7976",
+     "Mars": "1.49643",
+     "Sun": "-26.6943"
+    }
+   }
+  ],
+  "objinfo_before_1": "EOL",
+  "log_1": [
+   "000000046247: (Info ): Execute_command set home_planet selected",
+   "000000046247: (Info ): get tcp : set home_planet selected",
+   "000000046247: (Warn.): New path has no body '' to re-reference the camera on"
+  ],
+  "objinfo_before_2": "EOL",
+  "log_2": [
+   "000000069289: (Info ): Execute_command set home_planet selected",
+   "000000069289: (Info ): get tcp : set home_planet selected",
+   "000000069289: (Warn.): New path has no body '' to re-reference the camera on"
+  ],
+  "log_restore": [
+   "000000091728: (Info ): Execute_command set home_planet Earth",
+   "000000091728: (Info ): get tcp : set home_planet Earth"
+  ],
+  "alive": true
+ },
+ "B": {
+  "steps": [
+   {
+    "i": 0,
+    "jd": 2461233.5,
+    "on": "/tmp/f53run/B_s00_on.png",
+    "off": "/tmp/f53run/B_s00_off.png",
+    "labels": {
+     "n": 3122,
+     "cx": 287.1944266495836,
+     "cy": 1370.2860345932095,
+     "x0": 215,
+     "x1": 351,
+     "y0": 1299,
+     "y1": 1434
+    },
+    "lit_off": 0
+   },
+   {
+    "i": 1,
+    "jd": 2461233.5833333335,
+    "on": "/tmp/f53run/B_s01_on.png",
+    "off": "/tmp/f53run/B_s01_off.png",
+    "labels": {
+     "n": 3085,
+     "cx": 666.0282009724473,
+     "cy": 1507.6473257698542,
+     "x0": 587,
+     "x1": 736,
+     "y0": 1432,
+     "y1": 1578
+    },
+    "lit_off": 0
+   },
+   {
+    "i": 2,
+    "jd": 2461233.6666666665,
+    "on": "/tmp/f53run/B_s02_on.png",
+    "off": "/tmp/f53run/B_s02_off.png",
+    "labels": {
+     "n": 3033,
+     "cx": 1052.6709528519618,
+     "cy": 1514.7233761951863,
+     "x0": 992,
+     "x1": 1116,
+     "y0": 1460,
+     "y1": 1574
+    },
+    "lit_off": 0
+   },
+   {
+    "i": 3,
+    "jd": 2461233.75,
+    "on": "/tmp/f53run/B_s03_on.png",
+    "off": "/tmp/f53run/B_s03_off.png",
+    "labels": {
+     "n": 3066,
+     "cx": 1409.1379647749511,
+     "cy": 1420.37899543379,
+     "x0": 1333,
+     "x1": 1478,
+     "y0": 1351,
+     "y1": 1500
+    },
+    "lit_off": 0
+   },
+   {
+    "i": 4,
+    "jd": 2461233.8333333335,
+    "on": "/tmp/f53run/B_s04_on.png",
+    "off": "/tmp/f53run/B_s04_off.png",
+    "labels": {
+     "n": 3099,
+     "cx": 1732.7108744756374,
+     "cy": 1246.7357212003872,
+     "x0": 1665,
+     "x1": 1801,
+     "y0": 1182,
+     "y1": 1321
+    },
+    "lit_off": 0
+   },
+   {
+    "i": 5,
+    "jd": 2461233.9166666665,
+    "on": "/tmp/f53run/B_s05_on.png",
+    "off": "/tmp/f53run/B_s05_off.png",
+    "labels": {
+     "n": 2385,
+     "cx": 1989.985744234801,
+     "cy": 961.0675052410902,
+     "x0": 1951,
+     "x1": 2029,
+     "y0": 900,
+     "y1": 1021
+    },
+    "lit_off": 0
+   },
+   {
+    "i": 6,
+    "jd": 2461234.0,
+    "on": "/tmp/f53run/B_s06_on.png",
+    "off": "/tmp/f53run/B_s06_off.png",
+    "labels": null,
+    "lit_off": 0
+   },
+   {
+    "i": 7,
+    "jd": 2461234.0833333335,
+    "on": "/tmp/f53run/B_s07_on.png",
+    "off": "/tmp/f53run/B_s07_off.png",
+    "labels": null,
+    "lit_off": 0
+   },
+   {
+    "i": 8,
+    "jd": 2461234.1666666665,
+    "on": "/tmp/f53run/B_s08_on.png",
+    "off": "/tmp/f53run/B_s08_off.png",
+    "labels": null,
+    "lit_off": 0
+   },
+   {
+    "i": 9,
+    "jd": 2461234.25,
+    "on": "/tmp/f53run/B_s09_on.png",
+    "off": "/tmp/f53run/B_s09_off.png",
+    "labels": null,
+    "lit_off": 0
+   },
+   {
+    "i": 10,
+    "jd": 2461234.3333333335,
+    "on": "/tmp/f53run/B_s10_on.png",
+    "off": "/tmp/f53run/B_s10_off.png",
+    "labels": null,
+    "lit_off": 0
+   },
+   {
+    "i": 11,
+    "jd": 2461234.4166666665,
+    "on": "/tmp/f53run/B_s11_on.png",
+    "off": "/tmp/f53run/B_s11_off.png",
+    "labels": {
+     "n": 819,
+     "cx": 21.62759462759463,
+     "cy": 1090.018315018315,
+     "x0": 16,
+     "x1": 29,
+     "y0": 1033,
+     "y1": 1141
+    },
+    "lit_off": 0
+   }
+  ],
+  "hip": 3,
+  "dark_control_lit": 0,
+  "pos_on": "/tmp/f53run/B_pos_on.png",
+  "pos_off": "/tmp/f53run/B_pos_off.png",
+  "pos_labels": {
+   "n": 3056,
+   "cx": 1070.6413612565445,
+   "cy": 1095.6384162303666,
+   "x0": 995,
+   "x1": 1139,
+   "y0": 1021,
+   "y1": 1162
+  },
+  "objinfo": "EOL",
+  "centroid_spread_px": 1968.3581496072063
+ },
+ "C": {
+  "hip": 3,
+  "log_early": [
+   "000000302022: (Info ): Execute_command illuminate hp 0 display on size 5",
+   "000000302022: (Info ): get tcp : illuminate hp 0 display on size 5"
+  ],
+  "early_delta": 0,
+  "cleaned_delta": 0,
+  "size1_delta": 0,
+  "V_delta": 3764,
+  "V_box": {
+   "n": 3764,
+   "cx": 1025.518065887354,
+   "cy": 1024.653825717322,
+   "x0": 992,
+   "x1": 1060,
+   "y0": 990,
+   "y1": 1059
+  },
+  "log_late": [
+   "000000325369: (Info ): Execute_command illuminate hp 0 display on size 5",
+   "000000325369: (Info ): get tcp : illuminate hp 0 display on size 5"
+  ],
+  "both_vs_V": 0,
+  "afterV_vs_base": 0,
+  "afterV_vs_withV": 3764,
+  "afterV_box": null,
+  "after0_vs_base": 0,
+  "wide_delta": 1230,
+  "wide_box": {
+   "n": 1230,
+   "cx": 6.772357723577236,
+   "cy": 976.2715447154471,
+   "x0": 0,
+   "x1": 16,
+   "y0": 922,
+   "y1": 1031
+  },
+  "alive": true
+ },
+ "readings": {
+  "a_pre_earth": {
+   "selected_ra": "115.274",
+   "selected_de": "-43.3",
+   "selected_az": "311.652",
+   "selected_alt": "-90",
+   "selected_distance": "4.26357e-05",
+   "selected_magnitude": "-22.7976",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "300"
+  },
+  "a_pre_mars": {
+   "selected_ra": "67.6632",
+   "selected_de": "21.6791",
+   "selected_az": "44.4974",
+   "selected_alt": "-11.6881",
+   "selected_distance": "2.07176",
+   "selected_magnitude": "1.49643",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "400"
+  },
+  "a_pre_sun": {
+   "selected_ra": "111.311",
+   "selected_de": "21.9889",
+   "selected_az": "4.04192",
+   "selected_alt": "-24.6094",
+   "selected_distance": "1.01659",
+   "selected_magnitude": "-26.6943",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "0"
+  },
+  "a_post1_earth": {
+   "selected_ra": "179.631",
+   "selected_de": "-0.0021763",
+   "selected_az": "8.33284",
+   "selected_alt": "-46.3986",
+   "selected_distance": "1.00011",
+   "selected_magnitude": "-1.15946",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "300"
+  },
+  "a_post1_mars": {
+   "selected_ra": "97.5113",
+   "selected_de": "-0.180736",
+   "selected_az": "88.6603",
+   "selected_alt": "-1.68466",
+   "selected_distance": "1.95675",
+   "selected_magnitude": "1.72147",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "400"
+  },
+  "a_post1_sun": {
+   "selected_ra": "144.145",
+   "selected_de": "-0.00315585",
+   "selected_az": "51.9484",
+   "selected_alt": "-33.1916",
+   "selected_distance": "1.64883",
+   "selected_magnitude": "-25.6441",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "0"
+  },
+  "a_post2_earth": {
+   "selected_ra": "179.631",
+   "selected_de": "-0.0021763",
+   "selected_az": "8.33284",
+   "selected_alt": "-46.3986",
+   "selected_distance": "1.00011",
+   "selected_magnitude": "-1.15946",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "300"
+  },
+  "a_post2_mars": {
+   "selected_ra": "97.5113",
+   "selected_de": "-0.180736",
+   "selected_az": "88.6603",
+   "selected_alt": "-1.68466",
+   "selected_distance": "1.95675",
+   "selected_magnitude": "1.72147",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "400"
+  },
+  "a_post2_sun": {
+   "selected_ra": "144.145",
+   "selected_de": "-0.00315585",
+   "selected_az": "51.9484",
+   "selected_alt": "-33.1916",
+   "selected_distance": "1.64883",
+   "selected_magnitude": "-25.6441",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "0"
+  },
+  "a_restored_earth": {
+   "selected_ra": "115.274",
+   "selected_de": "-43.3",
+   "selected_az": "311.652",
+   "selected_alt": "-90",
+   "selected_distance": "4.26357e-05",
+   "selected_magnitude": "-22.7976",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "300"
+  },
+  "a_restored_mars": {
+   "selected_ra": "67.6632",
+   "selected_de": "21.6791",
+   "selected_az": "44.4974",
+   "selected_alt": "-11.6881",
+   "selected_distance": "2.07176",
+   "selected_magnitude": "1.49643",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "400"
+  },
+  "a_restored_sun": {
+   "selected_ra": "111.311",
+   "selected_de": "21.9889",
+   "selected_az": "4.04192",
+   "selected_alt": "-24.6094",
+   "selected_distance": "1.01659",
+   "selected_magnitude": "-26.6943",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "0"
+  },
+  "b_star": {
+   "selected_ra": "0",
+   "selected_de": "0",
+   "selected_az": "0",
+   "selected_alt": "0",
+   "selected_distance": "1",
+   "selected_magnitude": "-10",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "999"
+  },
+  "c_star": {
+   "selected_ra": "0",
+   "selected_de": "0",
+   "selected_az": "0",
+   "selected_alt": "0",
+   "selected_distance": "1",
+   "selected_magnitude": "-10",
+   "selected_star_ra": "0.00506018",
+   "selected_star_de": "38.8593",
+   "body_selected": "999"
+  }
+ },
+ "refused": [],
+ "exit_rc": 0,
+ "fails": [
+  "G5 post1: selected_distance(Earth) = 1.00011 (predicted 1 AU +/- one Earth radius)",
+  "G5 post2: selected_distance(Earth) = 1.00011 (predicted 1 AU +/- one Earth radius)",
+  "G16 log_early: 2 line(s) mention the absent id: ['000000302022: (Info ): Execute_command illuminate hp 0 display on size 5', '000000302022: (Info ): get tcp : illuminate hp 0 display on size 5']",
+  "G16 log_late: 2 line(s) mention the absent id: ['000000325369: (Info ): Execute_command illuminate hp 0 display on size 5', '000000325369: (Info ): get tcp : illuminate hp 0 display on size 5']"
+ ],
+ "notes": [
+  "B dark control: 0 lit px with every sky flag off and no overlay",
+  "app exit rc=0",
+  "G17 branch b2 ELSEWHERE: only 0 px differ from base after removing V - hp 0's illuminate is not in this cone",
+  "G18 history: hp 0 EARLY changed 0 px, LATE (after a valid load) left 0 px of difference against the with-V frame",
+  "G19 wide sky (fov 180, size 600): 1230 px, box {'n': 1230, 'cx': 6.772357723577236, 'cy': 976.2715447154471, 'x0': 0, 'x1': 16, 'y0': 922, 'y1': 1031}"
+ ]
+}
