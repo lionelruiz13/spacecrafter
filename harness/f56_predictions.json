@@ -1,0 +1,48 @@
+{
+ "task": "F56 — the environment canary + the cache manifest + the dim-era correction sweep",
+ "committed_before": "any run of this task that observes a rendered frame, and before the cadence-echo launch",
+ "date": "2026-08-30",
+ "code_head": "d6aec251",
+ "harness_head_at_write": "bdf7f44",
+ "why_this_file_exists": "Every measurement claim needs a criterion that can fail, stated before the run. The canary's own first purpose is to be ABLE to fail, so its passes have to be predicted with the same discipline as its failures.",
+
+ "P1_photometric_in_band": {
+  "claim": "the reference scene (f51_run.sh, --samples 2) on DISPLAY :2 returns disc_mean 165.258 / hf_mean 6.644 on the new path and 160.142 / 6.603 on the old path, so every banked member is IN BAND",
+  "basis": "nine launches on 2026-08-30 returned exactly these numbers (six §11.174(j) bracket runs + envB_scrubbed + toggle_indeterminate + F55's f51_today), and the July frame reads the same on the same metric",
+  "fails_if": "any member is outside ±1.0 (disc_mean) or ±0.15 (hf_mean) — the canary exits 1",
+  "would_also_be_news": "an IN-BAND member with a non-zero delta: the spread of the nine banked runs is exactly 0.000, so drift is news before it is a fault (the canary NOTEs it)"
+ },
+
+ "P2_frame_md5_identical": {
+  "claim": "the dwell frames' md5 is 5215565b11d24328a9bb01198c875b25 — byte-identical to the eight bracket-family runs of 2026-08-30",
+  "fails_if": "a different md5 appears while P1 still passes",
+  "why_separate_from_P1": "P2 is a strictly stronger claim on a channel that legitimately moves (texture-cache regeneration, driver update). It is therefore RECORDED and NOT GATED — a failing P2 with a passing P1 is a finding about reproducibility, not an environment fault. Predicting both separately is what makes that distinction observable instead of retrofitted."
+ },
+
+ "P3_cache_mutates_under_the_run": {
+  "claim": "the pre/post manifest of ~/.spacecrafter/cache reports at least ONE mutation across the canary's launch, and the mutated set includes at least one of: a t-bodies-moon*.dat entry, or pipelineCache.dat",
+  "basis": "§11.172(i) measured t-bodies-moon_normal.dat rewritten INSIDE an F55 run (mtime 2026-08-30 10:09:21, inside a run that launched at 10:09:07); b3_farm.sh symlinks cache/, so the farm writes the real one",
+  "fails_if": "zero mutations — which would NOT be a null result: it would mean the §11.172(i) event is not a per-run property but depends on cache state (e.g. only on a cold or stale entry), and that is a different and reportable finding",
+  "note": "either outcome is recorded as it comes; the manifest never prevents the write"
+ },
+
+ "P4_cadence_echo": {
+  "claim": "repeating §11.159(k7)'s wall-clock-bracketed counter read on the current (healthy) stack gives a cadence inside [144.0, 146.4] fps — H1, the cadence is the config cap [video] maximum_fps = 144",
+  "instrument": "f45_run.sh empty (unmodified, reused rather than restated) — phase D writes exactly one L_ERROR line per drawn frame; lines counted over a [30.0, 30.5] s bracket",
+  "expected_line_count": "≈4392 (F45 measured 4392 in four independent runs on the FAULTY-stack day)",
+  "fails_if": "the cadence falls outside [144.0, 146.4] — in which case §11.159(k7)'s H1 discharge REOPENS at its node rather than being absorbed here",
+  "second_criterion": "the count must be non-zero and the phase-D target star must be found; a zero would mean the instrument did not reach the per-frame route at all, which is a VOID result, not a refutation"
+ },
+
+ "P5_both_fail_directions": {
+  "fingerprint_arm": "f56_canary.sh --no-scene --expect-dims 800x600 exits 2 with a display.geometry FAIL block naming observed 2448x1332 vs expected 800x600; and --display :99 exits 3 with a display.reachable FAIL",
+  "photometric_arm": "f56_canary.sh --check-json <F51's committed 2026-08-29 dwell json> exits 1 and REFUSES it, naming the out-of-band members (the committed dim-era class is 61.431/2.464 new, 42.476/1.744 old)",
+  "fails_if": "either demonstration exits 0 — an instrument that cannot fail on the very data class it was built for is not evidence"
+ },
+
+ "P6_sweep_partition_shape": {
+  "claim": "walking §11.156–§11.168 + §11.172, the SUSPECT-STACK set is confined to entries whose claims read RENDERED PIXELS on 2026-08-29: the (d) floor members (§11.157, §11.159, §11.164, §11.167) plus whatever the walk turns up beyond them; entries whose measured content is source/git/log-text/dump-text will classify CLEAN even when they launched the app that day",
+  "fails_if": "a photometric absolute is found in an entry §11.174(d) called LIKELY CLEAN, or a (d)-named suspect member turns out to be relational after all — either way the partition is corrected AT ITS NODE and the correction is the finding",
+  "discipline": "the argument is stated PER CLAIM; 'this entry is clean' is never a class waiver"
+ }
+}

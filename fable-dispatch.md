@@ -510,7 +510,15 @@ echo recorded either way; §11 entry + stub; both instrument baselines
 re-derived as the LAST act before the delivery commit with deltas explained
 (the sweep migrates the scan — attribute the delta); code tree clean at close;
 WIP per §0.6.
-**WIP:** —
+**WIP:** 2026-08-30 CP1 — §0.7 gate PASSED on all 13 enumerated premises (both HEADs,
+§11 176 free, F count 3, binary mtime, display stack, cache dir real, no SUSPECT-STACK
+markers, baselines 191/166/25/87 + 106/137/84 re-derived). Instruments written +
+predictions committed: `f56_canary.sh`, `f56_band.py`, `f56_manifest.py`,
+`f56_predictions.json` (P1–P6). Fingerprint arm run green (exit 0) after it caught a
+real fault in ITSELF on run 1: the inherited XAUTHORITY is the owner's :4 cookie and
+:2 refuses it — auth is now banked with the stack. NEXT: the scene arm (one launch,
+cache manifest bracketed), then the fail-direction demos, then the cadence echo, then
+the sweep.
 
 ### F57 — The tester-model corpus validation: Q-55's five conditioned metrics, predictions first (§11.173(d)) [S]
 
