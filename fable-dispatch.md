@@ -759,17 +759,23 @@ classification (`b4f63ab`). **Universe** 22 files / three arms / **432 live emis
 channels; 20 further loader files **inventoried-not-classified (274 sites)**; silent half
 declared-not-claimed (8 read out of the dispatch spine). **Gap table 440 rows** with per-site cites
 and text quoted from source; the classifier SELF-ASSERTS against the census and was demonstrated
-failing in 3 directions (control green). Three instrument faults found and fixed mid-census
+failing in 3 directions (control green). **FOUR** instrument faults found and fixed
 (semicolon-inside-a-message truncated the 4 best arm-A records · block comments counted 3 dead sites
-live · an iostream-only channel list hid 24 printf faults), each recorded with the site that exposed
-it and each verified by diffing the census across it. **RESULT over 309 schema-applicable sites: the
+live · an iostream-only channel list hid 24 printf faults · `<`/`>` counted as brackets made every
+`a->b()` drive the split negative, so 6 sites swallowed their own `LOG_TYPE` and were scored at the
+default severity), each recorded with the site that exposed it and each verified by diffing the
+census across it. The FOURTH was found AFTER the delivery commit, by a human spot-check of 2 of 440
+rows against source — the census's self-checks cover site MEMBERSHIP, not field CONTENT; recorded at
+§11.178(c) with what it changed (severity table only: L_ERROR 44→46, L_INFO 9→7, so (e1)'s ratio
+0.640 → **0.633**; site count, every class verdict and every element score unchanged) and corrected
+in all three published places (§11.178(e1), §5.117, the stub) with the superseded figure kept visible. **RESULT over 309 schema-applicable sites: the
 two schemas fail on OPPOSITE sides** — errors carry WHAT 0.486 (+0.427 partial) and almost never
 CONSEQUENCES **0.069** or PREVENTION **0.059**; acting defaults carry CAUSE **0.767** and almost
 never OVERRIDE **0.093**; self-containment 0.209. 11 of 280 error records and 4 of 38 acting defaults
 carry all three elements — and **14 of those 15 were written by this project 2026-07-22..2026-08-26**
 [measured: git blame], the exception being `protosystem.cpp:530` (Calvin-Ruiz 2022-11-22): the gap is
 a legacy inventory. TWO STRUCTURAL FINDINGS, both about whether the record ARRIVES: the whole
-script-error channel is `L_DEBUG` (169/264 logged records not marked as faults) → **§5.117**; 37
+script-error channel is `L_DEBUG` (167/264 logged records not marked as faults) → **§5.117**; 37
 records reach a console and no log → **already §5.77/§11.146's class, NOT minted**. Banked instances
 reconciled: §11.170(f) confirmed N/N/N blind; the illuminate clamp confirmed AND **reclassified** as
 §5.115's bulk class (*cannot* be fixed by adding a log line); SS-6's engine half placed
@@ -784,7 +790,8 @@ no product file touched on any commit. Baselines at delivery, re-derived as the 
 the §5.114/§5.115 signature) · scan **114/150/88** (UNCHANGED to the digit — this delivery
 supersedes, refutes and corrects nothing; it discharges, confirms and enriches, and discharge
 vocabulary is outside the lexicon by the scan owner's session-16 ruling, so the instrument agreeing
-is a both-ways check on §11.178(j)'s own claim).
+is a both-ways check on §11.178(j)'s own claim). Baselines RE-DERIVED after the follow-up correction
+commit and UNCHANGED at **194/169/25/89** · **114/150/88** — fixed point confirmed, the F54 lesson held.
 
 ---
 

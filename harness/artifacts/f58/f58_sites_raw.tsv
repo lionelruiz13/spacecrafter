@@ -1,7 +1,7 @@
 arm	family	file	line	channel	commented	level	sink	text
 A	command	src/interfaceModule/app_command_interface.cpp	131	std::cout	True	(console)	(console)	str << std::endl
 A	command	src/interfaceModule/app_command_interface.cpp	170	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::INTERNAL	"Command: " + command + "Argument hash:"
-A	command	src/interfaceModule/app_command_interface.cpp	172	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"\t" + iter->first + " : " + iter->second, LOG_TYPE::L_DEBUG
+A	command	src/interfaceModule/app_command_interface.cpp	172	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::INTERNAL	"\t" + iter->first + " : " + iter->second
 A	command	src/interfaceModule/app_command_interface.cpp	210	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"Execute_command " + commandline
 A	command	src/interfaceModule/app_command_interface.cpp	226	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"this command has not been executed " + commandline
 A	command	src/interfaceModule/app_command_interface.cpp	233	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Unrecognized or malformed command name")
@@ -219,7 +219,7 @@ A	command	src/interfaceModule/app_command_eval.cpp	255	std::cout	True	(console)	
 A	command	src/interfaceModule/app_command_eval.cpp	258	std::cout	True	(console)	(console)	"No variable available" << std::endl
 A	command	src/interfaceModule/app_command_eval.cpp	259	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"Not variable available"
 A	command	src/interfaceModule/app_command_eval.cpp	263	std::cout	True	(console)	(console)	var_it->first << " => " << var_it->second << '\n'
-A	command	src/interfaceModule/app_command_eval.cpp	264	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	var_it->first + " => " + var_it->second.first, LOG_TYPE::L_INFO , LOG_FILE::SCRIPT
+A	command	src/interfaceModule/app_command_eval.cpp	264	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	var_it->first + " => " + var_it->second.first
 A	command	src/interfaceModule/app_command_eval.cpp	267	std::cout	True	(console)	(console)	"-----------------" << std::endl
 A	command	src/interfaceModule/app_command_eval.cpp	341	std::cout	True	(console)	(console)	"Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl
 A	command	src/interfaceModule/app_command_eval.cpp	342	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"Unknown reserved variable " + var +". Default 0.0 is returned."
@@ -232,7 +232,7 @@ A	command	src/interfaceModule/app_command_init.cpp	385	clog	False	LOG_TYPE::L_DE
 A	command	src/interfaceModule/app_command_init.cpp	386	std::cout	True	(console)	(console)	source << " has for close value " << solution << std::endl
 A	script	src/scriptModule/script.cpp	49	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"Token script : " + path + " : " + elmt
 A	script	src/scriptModule/script.cpp	70	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"Printing script: --BEGIN"
-A	script	src/scriptModule/script.cpp	72	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	" " + pMove->getToken(), LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT
+A	script	src/scriptModule/script.cpp	72	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	" " + pMove->getToken()
 A	script	src/scriptModule/script.cpp	75	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"Printing script: --END"
 A	script	src/scriptModule/script.cpp	100	printf	True	(console)	(console)	"s : %s p : %s\n", script_file.c_str() , script_path.c_str()
 A	script	src/scriptModule/script.cpp	104	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::SCRIPT	"Unable to open script: " + script_file
@@ -305,9 +305,9 @@ B	ssystem	src/bodyModule/ssystem_factory.cpp	645	clog	False	LOG_TYPE::L_WARNING	
 B	ssystem	src/bodyModule/ssystem_factory.cpp	696	std::cout	False	(console)	(console)	"Params :\n"
 B	ssystem	src/bodyModule/ssystem_factory.cpp	698	std::cout	False	(console)	(console)	p.first << " : " << p.second << '\n'
 B	ssystem	src/bodyModule/ssystem_factory.cpp	708	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"galactic.ini: skipping " + label + " - " + why + ". A star system needs name, x, y and z (galactic coordinates in " "light years); the section is ignored and the rest of the file is " "loaded normally."
-B	ssystem	src/bodyModule/ssystem_factory.cpp	953	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Cannot reload the system '" + system->getEnglishName() + "': it was not loaded from a data file (it is a container level of the " "hierarchy, not a system description). Move the observer into a system " "loaded from a file (e.g. 'set home_planet Earth') and reload from there.", LOG_TYPE::L_ERROR
-B	ssystem	src/bodyModule/ssystem_factory.cpp	967	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"System reload: the observer's reference body '" + referenceName + "' is not defined by the reloaded data - the observer now references '" + camera->getReferenceBody()->getEnglishName() + "'. Restore that body in the data file, or move the observer with " "'set home_planet <body>'.", LOG_TYPE::L_ERROR
-B	ssystem	src/bodyModule/ssystem_factory.cpp	984	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"System '" + system->getEnglishName() + "' reloaded (observer state kept)", LOG_TYPE::L_INFO
+B	ssystem	src/bodyModule/ssystem_factory.cpp	953	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Cannot reload the system '" + system->getEnglishName() + "': it was not loaded from a data file (it is a container level of the " "hierarchy, not a system description). Move the observer into a system " "loaded from a file (e.g. 'set home_planet Earth') and reload from there."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	967	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"System reload: the observer's reference body '" + referenceName + "' is not defined by the reloaded data - the observer now references '" + camera->getReferenceBody()->getEnglishName() + "'. Restore that body in the data file, or move the observer with " "'set home_planet <body>'."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	984	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"System '" + system->getEnglishName() + "' reloaded (observer state kept)"
 B	ssystem	src/bodyModule/ssystem_factory.cpp	997	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Command 'body action save': '" + filename + "' is a path, and this " "command takes a file NAME - a system file is written next to the others, in " + composedPathOf("<system>") + ". Nothing was written. (The legacy system files of " "this install are never written to, by design.) To fix: pass a plain name, e.g. " "'body action save filename " + node + "'."
 B	ssystem	src/bodyModule/ssystem_factory.cpp	1005	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Command 'body action save': '" + filename + "' is the name of a " "MACHINE-OWNED file - spacecrafter regenerates it at every legacy load of this " "system, so a save there would be silently overwritten. Nothing was written. " "To fix: drop the '.disabled' (the name without it is the one that gets read), " "or pick another name."
 B	ssystem	src/bodyModule/ssystem_factory.cpp	1021	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Command 'body action save': can't create the modularSystem directory (" + ec.message() + ") - system '" + node + "' NOT saved."

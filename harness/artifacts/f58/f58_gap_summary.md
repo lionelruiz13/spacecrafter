@@ -75,10 +75,10 @@ The 4 acting-default records carrying all three elements:
 |---|---:|
 | `(via executeCommandStatus L_DEBUG)` | 157 |
 | `LOG_TYPE::L_WARNING` | 51 |
-| `LOG_TYPE::L_ERROR` | 44 |
+| `LOG_TYPE::L_ERROR` | 46 |
 | `(console)` | 37 |
-| `LOG_TYPE::L_INFO` | 9 |
 | `(none)` | 8 |
+| `LOG_TYPE::L_INFO` | 7 |
 | `LOG_TYPE::L_DEBUG` | 3 |
 
 ## Per-file

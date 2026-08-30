@@ -132,7 +132,16 @@ def balanced(text, start):
 
 
 def split_top(arg):
-    """Split a C++ argument list on top-level commas."""
+    """Split a C++ argument list on top-level commas.
+
+    `<` and `>` are NOT bracket characters here.  Counting them as such makes every
+    `a->b()` in an argument drive the depth negative, after which no comma is ever seen
+    as top-level again — measured: 6 sites swallowed their own LOG_TYPE argument into
+    the message text and were scored at the default severity instead of the written one
+    (`ssystem_factory.cpp:967` is L_ERROR and was read as L_INFO).  A cLog call carrying
+    a template argument list with a top-level comma would be the opposite risk; there is
+    none in the universe.
+    """
     out, depth, cur, instr, esc = [], 0, [], False, False
     for c in arg:
         if instr:
@@ -147,10 +156,10 @@ def split_top(arg):
         if c == '"':
             instr = True
             cur.append(c)
-        elif c in "([{<":
+        elif c in "([{":
             depth += 1
             cur.append(c)
-        elif c in ")]}>":
+        elif c in ")]}":
             depth -= 1
             cur.append(c)
         elif c == "," and depth == 0:
