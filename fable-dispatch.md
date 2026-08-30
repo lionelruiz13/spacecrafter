@@ -945,7 +945,16 @@ stub's compressed wording is never the entry's, so D2 (which compares strike ATO
 construction — class N4, the class §11.156(b) excludes from comparison. Back-marker placed at
 §11.165(e) in the SAME commit (§11.161(g)), original struck-not-deleted. The second new flag is
 I2 on §11.179's own pair, two dated spans, both QUOTATIONS of §5.32's markers — the §11.156(e)
-residual class, kept not re-rendered. Baselines RE-DERIVED after this follow-up commit.
+residual class, kept not re-rendered. **AND THEN THE REPORT DELETED ITS OWN SUBJECT**: that
+marker quotes the D2 flag verbatim, and D2's strike arm asks whether the stub's struck span
+occurs in the entry body `[intent_pair_check.py:127-128]` — so the quotation satisfied the test
+and D2 fell 11 → 10 with §11.165 gone from it. Seventh §11.172(l) instance and the FIRST of
+inverse polarity (every prior one manufactured the pair it described); both states kept in
+§11.179(l), since only one end survives in the tree. **FINAL baselines, re-derived after the
+last commit and confirmed a FIXED POINT: pair-check 195/170/25/90 · scan 117/155/93** — the
+93rd is `§11.165 → §11.179`, the reconciliation marker at the superseded node read backwards
+(this entry's own direction-inversion family). Post-state partition **82 residual + 6 inherited
+named exceptions + 5 of this delivery's own, all five named**.
 
 ### F60 — The §5.5-class row↔row staleness sweep: §5 rows vs the §13 rows that own their work (F47 acceptance) [S]
 
