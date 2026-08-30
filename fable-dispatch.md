@@ -1086,6 +1086,15 @@ NOT-A-ROW). Three over-calls raised and REFUTED BY READING + one self-catch (my 
 §11.44 for "44" — F59's stub collision committed by the auditor). Instrument-or-table: TABLE + committed
 enumerator, NO pair-check extension, argued five ways; the recurring check ROUTED to the WRITE (one grep
 per §13 state flip, I6). NO mint, NO state word changed, NO §13 row edited, instruments untouched.
+Baselines re-derived as the LAST act: pair-check **196/171/25/90** (+1/+1/0/0, entry-first signature;
+the inline-stub counter holding at 90 is the no-mint check — PREDICTED and exact) · scan **118/157/95**,
+**UNCHANGED to the digit and to the SET** (pre-delivery tree extracted with `git archive` and diffed:
+unmarked sets byte-identical). My scan prediction of 119/158/96 was WRONG and is kept in §11.180(l) with
+its trace: **STALE is not in the instrument's five-word lexicon** and this entry contains zero of those
+five words, so the three markers this delivery placed are invisible to the scan for TWO independent
+reasons (§13 targets are not `§N.M` citations; the keyword is outside the lexicon) — F59's
+incompleteness-lexicon member met by a second route. Partition UNCHANGED: **82 + 6 + 5 + 2 = 95**, no
+named exception added.
 
 ---
 
