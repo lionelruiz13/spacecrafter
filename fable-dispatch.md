@@ -178,6 +178,9 @@ re-baseline (queue item 7) stays a SEPARATE deliberate act.
    After any discontinuity, re-read sources before editing them (a summary/WIP note is
    unidentified knowledge until re-extracted).
 2. Re-read the task's §13 row in `INTENT.md` + the `INTENT/<id>.md` entries it names.
+   (A task whose mandate lives elsewhere in the ledger — a §11 clause, a QUEUE item —
+   has no §13 row; its dispatch section names its mandate rows, which serve the same
+   role. Added at F57 acceptance from an executor unstated-premise report.)
 3. `git -C /home/claude/spacecrafter status` and `git -C /home/claude/spacecrafter/claude
    status` — both clean expected; note both HEADs.
 4. Build: `build-claude/src/spacecrafter` must exist (harness default `SC_BIN`);
@@ -658,6 +661,38 @@ throughout. Baselines at delivery: pair-check **193/168/25/87** (+1/+1/0/0, entr
 false positive kept as a specimen for the queued strict-credit v2 — the 87 beneath it, 83 real
 arrears and the six F56-named exceptions, are untouched) — the full three-measurement chain,
 including two wrong predictions of my own about the instrument, is attributed in §11.177(l).
+
+*(ACCEPTED by supervisor [fable 2026-08-30]: §11.177 read in full; commits/authors/scope
+checked (chain `cf2cd5e → 09b5e80 → de5acf8 → 71b3a03 → 766839d`, harness-only, all
+`Code: master-beta @ d6aec251`, code clean throughout, QUEUE.md verified UNEDITED);
+predictions md5 `4d5b2486…` confirmed by my own hash; both annotations verified at the
+diff (additive markers, originals preserved, canonical forms); both instruments re-run
+by me, recorded post-states reproduced to the digit (**193/168/25/87** · **114/150/88**);
+partition-before-predictions-before-scoring order verified at the commit chain. Judgment
+calls ENDORSED with their arguments: the two stated limits (nothing certifiable unseen;
+predictions-before-scoring not before-exposure) carried IN the entry rather than
+discovered later — the honest form; the DISSOLVED coverage rule (a moot part scored 0
+would count the answer's own decisiveness as a failure; recomputable from the TSV
+header); the three-label partition (two labels would lie about a human-observational
+model); the §11.48(b) canonical-form choice (ANNOTATION over a CORRECTED that would
+register the pair BACKWARDS — refusing to buy a number by asserting something false);
+the `§11.177 → §11.161` false positive LEFT IN PLACE (the F49/F56 direction held:
+never delete evidence to quiet a filter); m2's measurement-time assignment flagged as
+its own weakest link; the no-mint (SS-6 routed to F58, its right owner) and the
+no-§13-flip (the A17 residual marked at its node, the flip left to me). The entry's
+criterion-integrity instance is (l)'s kept three-measurement chain — two wrong
+instrument predictions traced, the sentence-creates-the-event family instanced twice
+more and both named. SCAN-OWNER RULING: the lexicon has no term for
+claim-was-incomplete — folded into the queued strict-credit v2 package as its third
+member (with the stub-collision fix and the strict-credit rule); instrument stays
+FROZEN; next runner's baseline **193/168/25/87** · **114/150/88** (83 real, six
+F56-named exceptions + ONE new named, `§11.177 → §11.161`). PROTOCOL FIX enacted in
+this commit from the executor's unstated-premise report (F57 had no §13 row and §0.2
+assumed one): §0.2 gains the no-§13-row parenthetical — ungateable-= -uncovered
+applied to the warm-up itself. FINAL-PASS MEMBERSHIP: the two owed questions (Q11's
+multi-system part; A7's multi-star re-ask) are recorded members via §11.177(h)/(i) —
+the ledger record exists; the §3 channel refresh lands at close with the seven
+consequences. F58 next, §11 number 178.)*
 
 ### F58 — The §11.169 schema audit of existing diagnostic sites: the gap list is the fix's work order (§11.169(c)) [S]
 
