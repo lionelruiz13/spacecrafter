@@ -408,10 +408,12 @@ present, XAUTH ok, comm probe 0); §5.113's three chains RE-VERIFIED at HEAD;
 scope-3 (searchAround→cleverFind null) ANSWERED **NO**, five producers, cites
 verified by hand. Channels chosen: A = dump `oldView.observer`
 (`homePlanet`/`onBody`/`distanceFromCenter`) + `selected_distance` +
-`get status position`; B = FISHEYE fov 180 screenshots, `look_at` zenith, 24-step
-sim-time sweep; C = screen, `illuminate hp V` positive control + name-scoped
-removal. NEXT: write `f53_guards.py` + predictions, commit predictions BEFORE the
-run.
+`get status position`; B = FISHEYE fov 180 screenshots, `look_at` zenith, 12-step
+sim-time sweep; C = screen at fov 2, `illuminate hp V` positive control +
+name-scoped removal. CP2 — `f53_guards.py` written (compiles, all 70 flag names
+validated against the code) and the predictions COMMITTED PRE-RUN, md5
+`5799ca48`. NEXT: the single launch, outdir /tmp/f53run, artifacts copied to
+`harness/artifacts/f53/`.
 
 ### F54 — The seven never-recorded gate values: decision-free recording fix in five harness files (§11.167(i)) [S]
 
