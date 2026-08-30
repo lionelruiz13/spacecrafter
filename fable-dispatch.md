@@ -634,18 +634,30 @@ final-pass files not rewritten.
 measured with per-prediction outcomes; §11.173(d) annotated; §11 entry +
 stub, entry-file-first; baselines re-derived as the last act with deltas
 explained; code tree clean; WIP per §0.6.
-**WIP:** 2026-08-30 — §0.7 GATE PASSED (both HEADs `d6aec251`/`c561489` clean; §11 177 free;
-`### F` count 3; three corpus files present with 27+13 answers and 19 SS ids; Q-55 CLOSED with
-body kept; baselines re-derived 192/167/25/87 · 113/148/87, both as stated). Checkpoint 1:
-scope item 1 DONE — out-of-sample partition committed (`harness/artifacts/f57/f57_partition.md`).
-Checkpoint 2: scope item 2 DONE — 19 predictions over the five metrics + the rubric + the
-per-item question-shape/parts classification (40 items, 72 parts, 64 D / 8 E) committed
-BEFORE any scoring, `harness/artifacts/f57/f57_predictions.json` md5 **`4d5b2486`**.
-Checkpoint 3: scope item 3 DONE — five metrics measured (`harness/f57_score.py` + `f57_coverage.tsv`
-+ `f57_markers.tsv` + `f57_results.md`); 15 PASS / 3 FAIL / 1 mixed, of 14 RISKY: 10 / 1 / 3.
-Headline: coverage falls 0.938 → 0.788 → 0.500 with parts-per-item, round 2's isolated re-asks
-recover at 0.944; 11/13 witnesses re-measured from both blobs; two EMPTY control cells (authority,
-evidence). Next: scope items 4+5, verdict + §11.177 entry + §11.173(d) annotation.
+**WIP:** DELIVERED 2026-08-30 → **§11.177** (`INTENT/11.177.md` + stub). All five scope items done,
+DoD met. §0.7 gate passed on every stated premise. Order held: partition committed (`cf2cd5e`)
+BEFORE predictions (`09b5e80`, `f57_predictions.json` md5 **`4d5b2486`**, 19 failure-conditioned
+predictions + the 40-item/72-part question-shape classification) BEFORE any scoring (`de5acf8`).
+Result **15 PASS / 3 FAIL / 1 mixed**; over the 14 RISKY only: **10 / 1 / 3**. HEADLINE, unpredicted:
+**the budget is per ITEM** — coverage 0.938 → 0.788 → 0.500 with parts-per-item, 0.821 → 0.765 →
+0.587 with question length, and round 2's isolated re-asks recover the dropped parts at **0.944**
+vs round 1's 0.704 (Q6's dropped part came back in two words). C2 REFUTED on length (0.970× vs
+≥1.5×) and on coverage (E 0.562 < D 0.789), CONFIRMED as **21 unrequested propositions** across 17
+of 39 items ⇒ the depth budget is spent volunteering, not covering. m2 re-measured from both blobs:
+**11/13**, counting unit recorded (10/12 by §11.149(e)'s table rows — same evidence, two units),
+0xA0 4→3 by line, 0 verbal replies / 19, commit message 2 words empty body. m3 NAMED-PARTIALLY-
+SCORED: 0 answers refuted, and the zero is an instrument boundary, not a compliment; 3 conflicts all
+INSTRUMENT-wrong; history channel 0.083 vs ≥0.75 + a new precondition (no feedback channel ⇒
+belief-lag undetectable). m5 NOT COMPUTABLE by design: two empty cells, authority and evidence;
+Q13/A10 the one demonstration. Within-class correctness **1.0**. One question LOST and still live
+(Q11's multi-system part, absent from A17). Seven final-pass consequences ROUTED to §3, enacted
+nowhere. Annotations: §11.173(d) TESTED (+ stub mirror), §11.48(b) RESIDUAL LIST INCOMPLETE. NO §5
+mint, NO §13 flip, no corpus file rewritten, QUEUE.md read-only, code tree clean at `d6aec251`
+throughout. Baselines at delivery: pair-check **193/168/25/87** (+1/+1/0/0, entry-first signature) · scan
+**114/150/88** (+1/+2/+1; the +1 unmarked is ONE named pair, `§11.177 → §11.161`, a proximity
+false positive kept as a specimen for the queued strict-credit v2 — the 87 beneath it, 83 real
+arrears and the six F56-named exceptions, are untouched) — the full three-measurement chain,
+including two wrong predictions of my own about the instrument, is attributed in §11.177(l).
 
 ### F58 — The §11.169 schema audit of existing diagnostic sites: the gap list is the fix's work order (§11.169(c)) [S]
 
