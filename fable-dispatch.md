@@ -510,28 +510,22 @@ echo recorded either way; §11 entry + stub; both instrument baselines
 re-derived as the LAST act before the delivery commit with deltas explained
 (the sweep migrates the scan — attribute the delta); code tree clean at close;
 WIP per §0.6.
-**WIP:** 2026-08-30 CP2 — §0.7 gate PASSED on all 13 enumerated premises. Instruments +
-predictions committed (CP1, `88a81b4`). Canary run 1 GREEN: 12/12 photometric members
-in band with delta EXACTLY 0.0 and the frame md5 identical to the banked eight
-(P1+P2 hold). P3 REFUTED: zero cache mutations across the run — the §11.172(i) write
-is episodic, not per-run (`t-bodies-moon_normal.dat` still carries F55's 10:09:21
-mtime, so the instrument reads the very event that entry measured). Both arms mapped
-both ways: D1 geometry→2, D2 dead display→3, D3 dim-era json→1 (152/152 refused), D4
-empty→4, D5 green control→0; manifest positive control 4/4 mutation classes, null arm
-0. CP3: cadence echo PAID and CONFIRMED twice (4392 lines / [30.0, 30.500] s =
-[144.0, 146.4] fps, F45's number to the digit, same star hp 677) — §11.159(k7) stands
-re-measured. P7/P8 committed then measured: today's star-field frame is BYTE-IDENTICAL
-to four 2026-08-29 dim-era frames (md5 a09147d7) and the 374 px / 3-of-255 A/A floor
-reproduces EXACTLY across the boundary ⇒ the dim state never touched the star channel;
-§11.174(d)'s two §11.159 suspects are CLEARED by measurement, not waived. CP4: sweep
-verdict table complete over all 14 entries (`artifacts/f56/sweep/f56_sweep.md`) — 17
-suspect clusters, all in §11.157/§11.164/§11.167; F44/F47/F50 LAUNCHED on the faulty
-stack and are clean by CHANNEL. P9 committed then run: **b3_ladder is GREEN on the
-healthy stack** — the red gate (site_luma 20.97 < 30) reads 149.93, caps back to July's
-28.8/30.3/58.3/125.3/337.5, shadow 2794 vs July's 2790, six per-leg luma values equal to
-July's to two decimals, disc metric 165.258/6.644/9.514/n2544661 identical to July's
-frame. §11.164(l)(2)'s "no longer reproducible on this host" is REFUTED. NEXT: markers
-at every swept node, then the §11.176 entry.
+**WIP:** DELIVERED 2026-08-30 → **§11.176** (`INTENT/11.176.md` + stub). All six scope
+items done, DoD met. Canary `f56_canary.sh` committed with `f56_band.py`,
+`f56_manifest.py`, `f56_starfield.py`, README section, artifacts `harness/artifacts/f56/`;
+band 165.258/6.644 · 160.142/6.603 ±1.0/±0.15 DERIVED (spread 0.000 over nine launches),
+banked on :2 with the §11.174(f) fork left OWNER'S; both fail directions demonstrated
+(geometry→2, dead display→3, dim-era json→1 with 152/152 refused, no-members→4, green
+control→0). Cache manifest: P3 REFUTED, zero mutations — the §11.172(i) write is EPISODIC
+(instrument mapped both ways). Cadence echo PAID twice (4392 lines / [30.0, 30.500] s).
+Star-field null: today's frames BYTE-IDENTICAL to four dim-era ones ⇒ the dim state never
+touched the non-textured channel; the 374 px floor reproduces and is per-scene. Sweep
+table over 14 entries: 17 suspect clusters in exactly §11.157/§11.164/§11.167, "likely
+clean" true by CHANNEL (F44/F47/F50 launched on the faulty stack and read no pixel).
+Follow-up run: **b3_ladder GREEN** — §11.104(d)'s July numbers reproduce, §11.164(l)(2)
+refuted, the driver bump measured photometrically inert. 19 markers + 6 stub mirrors,
+§11.174(d) SWEPT, (e) fix (2) delivered (fix (1) still queued). Code tree clean at
+`d6aec251` throughout. Baselines at delivery: pair-check **192/167/25/87** (+1/+1/0/0, entry-first signature) · scan **113/148/87** (+7/+11/+3, all this delivery's own markers; real arrears unchanged at 83, six named exceptions) — attributed in §11.176(l).
 
 ### F57 — The tester-model corpus validation: Q-55's five conditioned metrics, predictions first (§11.173(d)) [S]
 

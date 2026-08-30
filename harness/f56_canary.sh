@@ -35,7 +35,8 @@
 #   f56_canary.sh --no-scene [--out DIR] fingerprint + cache manifest only (seconds)
 #   f56_canary.sh --check-json FILE      photometric band applied to an existing
 #                                        f51_dwell.json (no launch)
-#   options: --display X | --expect-display X | --expect-dims WxH | --keep-frames
+#   options: --display X | --expect-display X | --expect-dims WxH | --xauth FILE
+#            --keep-frames
 #
 # exit: 0 green | 1 photometric out of band | 2 fingerprint mismatch
 #     | 3 environment MISSING (no auth file / display unreachable) | 4 harness error
@@ -317,6 +318,11 @@ if [ -z "${CS:-}" ]; then
 fi
 
 # ---------------------------------------------------------------- fingerprint.json
+# Emitted from fingerprint.txt (the one source) and RE-EMITTED before every exit, so
+# the JSON a successor reads carries the members recorded after this point too — the
+# first version of this script serialized once, here, and silently dropped the scene
+# and cache members from the machine-readable half.
+emit_json() {
 python3 - "$FP" "$OUT/fingerprint.json" <<'PY'
 import json, sys
 src, dst = sys.argv[1], sys.argv[2]
@@ -328,12 +334,15 @@ for line in open(src, encoding="utf-8", errors="replace"):
 json.dump(d, open(dst, "w"), indent=1, sort_keys=True)
 print(f"fingerprint: {len(d)} members -> {dst}")
 PY
+}
+emit_json
 
 if [ "$DO_SCENE" -eq 0 ]; then
     say ""
     say "--- cache manifest (standalone) ---"
     python3 "$HERE/f56_manifest.py" snapshot "$HOME/.spacecrafter/cache" \
         "$OUT/cache_manifest.json" 2>&1 | tee -a "$LOG"
+    emit_json
     say ""
     say "=== CANARY VERDICT: exit $RC  ($NFAIL fail, $NNOTE note; scene arm NOT run)"
     [ "$RC" -eq 0 ] && say "    fingerprint green -- but the photometric member is the one 2026-08-29 needed: run without --no-scene before trusting a measurement."
@@ -350,6 +359,7 @@ if [ "$n" -ne 0 ]; then
       "$n spacecrafter process(es) already running (/proc/<pid>/comm probe, §11.134(b))." \
       "concurrent instances share the real ~/.spacecrafter (cache, screenshots, logs), which is the confound §11.121(m) recorded; a reference measurement taken now is not a reference." \
       "wait for the other instance to exit, then re-run. If it is not yours, report it -- another account's launcher is a host-state fact the dispatcher needs."
+    emit_json
     say ""
     say "=== CANARY VERDICT: exit $RC (scene arm skipped)"
     exit $RC
@@ -409,6 +419,7 @@ if [ "$KEEP_FRAMES" -eq 0 ] && [ -d "$SCENE/frames" ]; then
       "pass --keep-frames to keep every frame"
 fi
 
+emit_json
 say ""
 say "=== CANARY VERDICT: exit $RC  ($NFAIL fail, $NNOTE note)  artifacts: $OUT"
 exit $RC

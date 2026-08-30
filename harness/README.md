@@ -2166,3 +2166,87 @@ cite), `f51_today/` (F51's own driver re-run today — the 165.258 dwell frame
 and the 160.142 old-path frame). `f55_predictions.json` (md5 `458e6eab`) is
 the pre-run commitment, including the collapse argument that did not
 materialise.
+
+## F56 — the ENVIRONMENT CANARY, the cache manifest, and the dim-era sweep — INTENT §11.176, 2026-08-30
+
+**Run this before a measuring launch.** `f56_canary.sh` is the preflight that
+would have caught the 2026-08-29 fault at the door (§11.174): two dispatch
+sessions ran without a Wayland display, the scene rendered ~2.7× dark, and
+every instrument of the day reported green because none of them checked a
+pixel against a banked value.
+
+```
+harness/f56_canary.sh                      # full: fingerprint + cache manifest + scene
+harness/f56_canary.sh --no-scene           # fingerprint + manifest only, seconds
+harness/f56_canary.sh --check-json F.json  # the band applied to an existing f51_dwell.json
+   options: --display X | --expect-display X | --expect-dims WxH | --xauth F | --keep-frames
+exit: 0 green · 1 photometric out of band · 2 fingerprint mismatch
+    · 3 environment MISSING (no auth file / display unreachable) · 4 harness error
+```
+
+**Arms.** (a) display stack — target + `xdpyinfo` geometry, compositor identity
+AND birth epoch, the X server for the target, `XDG_RUNTIME_DIR`, the
+`/tmp/.X11-unix` map; (b) GPU — `nvidia-smi` totals + the compute-process list;
+(c) RDP connection state, the `ss` one-shot of §11.174(j); (d) dispatch-method
+fingerprint — logind sessions for claude, inherited `WAYLAND_DISPLAY`/dbus;
+(e) the reference scene, `f51_run.sh --samples 2`, bracketed by a cache
+manifest. Diagnostics follow §11.169's schemas (errors: WHAT / CONSEQUENCES /
+PREVENTION; acting defaults: CAUSE / CONTENT / OVERRIDE).
+
+**The band, and why it is that wide** (the one VALUES block, top of the
+script): new path **165.258 / 6.644**, old path **160.142 / 6.603**, tolerance
+**±1.0** on `disc_mean` and **±0.15** on `hf_mean`. Measured spread over nine
+launches on 2026-08-30 is **0.000** and the dwell frames are byte-identical
+(md5 `5215565b`); the widest disagreement between two healthy readings of this
+disc anywhere in the corpus is 0.066, across two different readback paths
+(§11.172(c)). The band is 15× that, and the fault class it exists to catch
+(61.431 / 2.464 new, 42.476 / 1.744 old) sits **104 band widths** outside it.
+A non-zero in-band delta is NOTED, not failed — with a spread of exactly zero,
+drift is news before it is a fault.
+
+**Banked on `:2`** — the harness default, and the display every healthy value
+in this corpus was measured on. Which display is the CANONICAL render host
+(F43's self-owned `:2` substitute vs the owner's real `:4` session) is the
+OWNER'S open fork, §11.174(f). Re-banking is one VALUES-block edit plus one
+re-measured run; nothing else in the script knows a display number. **Never
+widen a tolerance to make a run pass** — that is the failure mode the whole
+instrument exists to prevent.
+
+**Two environment facts the canary encodes.** The auth cookie is a property of
+the STACK, not of the environment: this session inherits
+`XAUTHORITY=/run/user/1003/.mutter-Xwaylandauth.*` — the owner's `:4` cookie —
+and `:2` refuses it with `Invalid MIT-MAGIC-COOKIE-1 key`, so the canary
+resolves from the banked glob and records the inherited value as a fingerprint
+member. And per §11.174(h), a MISSING stack is reported, never mitigated
+silently: environment-fault mitigations are owner veto items.
+
+**Demonstrated able to fail, both arms** (`artifacts/f56/failproof/`):
+`--expect-dims 800x600` → 2 · `--display :99` → 3 · F51's committed dim-era
+`f51_dwell.json` → 1, 152/152 members refused · a json with no members → 4 (a
+green that cannot fail is refused) · today's own scene json → 0.
+
+**`f56_manifest.py snapshot|diff`** — recursive md5+size+mtime of
+`~/.spacecrafter/cache`, the §11.172(i) gap. It REPORTS mutations and never
+prevents them: isolating the cache would make every run a cold-cache run,
+which changes the measurement condition rather than the instrument. Mapped
+both ways on a control (added / removed / rewritten / restamped-with-identical
+-bytes, and 0 on a null arm). Measured so far: **zero mutations** across a
+reference launch, so the mid-run rewrite §11.172(i) caught is EPISODIC.
+
+**`f56_starfield.py <out.json> label=frame.png …`** — per-frame lit-pixel
+statistics and per-pair pixel diffs (`n_diff`, `n_diff_gt3`, `max_delta`,
+lit-mean ratio). Built for the star-field comparison across the dim boundary;
+generic enough for any A/A floor. **A/A floors are PER SCENE**: 374 px at
+3-of-255 is the star-field scene's (F45), while the Moon ladder frame's
+cross-epoch floor (July vs today, five weeks apart) is 28 px above 3/255 with
+max delta 15.
+
+**Artifacts** `artifacts/f56/`: `canary_run1/` (fingerprint, cache pre/post +
+diff, band verdict, the scene record), `failproof/` (both fail directions, the
+manifest control, the green control), `cadence_echo/` `cadence_echo2/`
+(§11.159(k7)'s bracketed counter read re-taken on the healthy stack),
+`starfield/`, `ladder_healthy/` (b3_ladder GREEN on the healthy stack, with
+`terrain_base_zoom.png` — 165.258/6.644, byte-identical to the canary's own
+reference frame), `sweep/f56_sweep.md` (the claim-level verdict table).
+`f56_predictions.json` (P1–P6) and `f56_predictions_addendum.json` (P7–P9) are
+the pre-run commitments.
