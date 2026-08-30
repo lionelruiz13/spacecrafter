@@ -177,7 +177,55 @@ v2 package, now THREE members by this round's rulings: strict credit +
 stub-collision fix + incompleteness lexicon) stay next-round. Baselines
 at extension: pair-check **194/169/25/90** (the 90th = §5.118, minted at
 F58 acceptance) · scan **114/150/88** (83 real, seven named exceptions
-after F57's addition — six F56 + one F57).
+after F57's addition — six F56 + one F57). **[That partition label was
+CORRECTED by F59 §11.179(a): 82 residual + 6 named at that point — the
+"83 real" was a carried-forward session-16-open total, the supervisor's
+own gloss; see the F59 acceptance.]**
+**Round outcome (session 17 close, 2026-08-30):** F56 → §11.176 · F57 →
+§11.177 · F58 → §11.178 · F59 → §11.179 · F60 → §11.180 — five executor
+tasks, all delivered AND supervisor-verified same session; round extended
+3→5 per §0b.2 (the session-15 precedent). **CODE TREE CLEAN THROUGHOUT** —
+`d6aec251` at open and close, the fourth all-record/instrument round in a
+row. NEW rows: **§5.116**/**§5.117** (F58) · **§5.118** (supervisor-minted
+at F58 acceptance, F32 precedent). HEADLINE FINDINGS: **b3_ladder was
+never red** — the four-task residual was the two wrongly-dispatched
+sessions, §11.104(d)'s July numbers reproduce, §11.164(l)(2) refuted, the
+driver bump inert both sides, and the dim state gains a REACH bound (star
+channel byte-identical ⇒ textured-body shading only); the ENVIRONMENT
+CANARY exists, refuses the dim era 152/152, and is a §0.5 standing
+precondition; the correction sweep marked all 17 suspect clusters in
+exactly three entries with "likely clean" proved clean BY CHANNEL; the
+tester model survived measurement with its mechanism MOVED (coverage per
+item, not brevity; isolated re-asks refill at 0.944; "correctness
+secondary" unsupported); the §11.169 schema audit found the two missing
+elements era-shaped (14/15 complete records post-§2(f)) with the work
+order committed; the register's three cross-reference axes audited
+(0 arrears / 0 uncovered / 5 stale of 134); §5.28's id reuse found,
+fenced at four homes, root closed (allocation = max over live ∪ archive).
+PROTOCOL GROWTH, all veto-reversible: §0.7 scope ruling · §0.2 rowless-
+mandate parenthetical · §0.5 canary line + row-flip extension ·
+ID-allocation rule · archival DEPENDS-ON ruling · `HOST-EVENTS.md`
+(§11.174(e) fix (1) DELIVERED). Criterion-integrity instances this round:
+**5** (F56's fourth-fault spot-check · F57's three-measurement scan chain
+· F59's case-blindness self-catch · F60's kept wrong prediction + its
+§11.44 self-catch) — the class counts 23 across sessions.
+Supervisor-error tally: TWO dispatcher glosses (the stale "83 real"
+partition label, four homes; the §11.163 closure-convention attribution)
+— both executor-caught via the §0.7 report-not-absorb clause, both
+corrected at their nodes; the gate's first round caught defects in BOTH
+directions. Stable baselines at close: pair-check **196/171/25/90** ·
+scan **118/157/95** (partition **82 residual + 13 named exceptions**,
+every one attributed). **Next-round queue, in order:** (1) F52(k)'s two
+git-only checks (S); (2) the strict-credit v2 + re-baseline — FIVE
+measured members, ONE deliberate instrument act (S); (3) the F60 routed
+flips, verify-then-flip (§5.24 · §5.2 · B15 · B39 · §5.89's B1-vs-B2 +
+the seven archived-cited per-case checks under the DEPENDS-ON ruling; S);
+(4) §5.116/§5.117's owed pricing launch (one deliberately bad script +
+dump; S); (5) the F58 adjacent-loader classification (274 sites
+inventoried; M) and the silent-site census (separate; M); (6) the canary
+:4 re-bank IF the owner answers the fork; (7) §5.100's fix IF the §3
+authorization lands. DECISIONS_PENDING open set at close: **still
+EMPTY** — the round's Vixy items ride §3 + their rows.
 
 ---
 
@@ -1169,6 +1217,85 @@ five for five delivered and accepted same-session; close per §0b.5 next.)*
 - **Every §13.A row**: Vixy/tester territory by protocol.
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
+
+- **Session-17 decision items (2026-08-30, F56–F60 / §11.176–§11.180):**
+  - **THE DIM ERA IS FULLY ATTRIBUTED AND FENCED, and b3_ladder WAS NEVER RED**
+    (F56 §11.176(g)): on the healthy stack the unmodified ladder returns
+    §11.104(d)'s JULY numbers to the digit — the ±1.5 % drift, the failing gate,
+    the shadow witness, all of it was the two wrongly-dispatched sessions; the
+    dim/healthy ratios re-derive §11.167(e)'s transform from the other side.
+    **§11.164(l)(2) is refuted at its node**: July's absolutes are TARGETS again —
+    behind the canary. The driver bump is photometrically inert from both sides.
+    NEW reach bound (§11.176(e)): the dim state never touched the star channel
+    (byte-identical frames across the epoch) ⇒ confined to textured-body shading,
+    every global-output-transform candidate eliminated. **YOUR ONE OPEN FORK: the
+    canary banks its band on :2 (the F43 substitute) — is :2 or :4 (your real
+    session) the canonical render host? (§11.174(f))** Re-bank = one VALUES edit +
+    one run. The correction sweep marked all 17 suspect clusters (exactly
+    §11.157/§11.164/§11.167); "likely clean" proved clean BY CHANNEL.
+  - **THE SCRIPT SURFACE CANNOT SAY NO — three rows, one family** (F58 §11.178 +
+    F58-acceptance mint): **§5.116** `flag atmosphere yes` turns the atmosphere
+    OFF and reports success (every unrecognized flag value → OFF, every
+    non-numeric set value → 0; `Utility::isBoolean` was written and never wired —
+    the tree's own evidence of oversight); **§5.118** `set stall_radius_unit`
+    silently drops any value ≤ 1.0 behind a void wrapper (composes with §5.116
+    into exactly §5.97(c)'s measured shipped line — the SS-6 witness open since
+    2026-08-04); **§5.117** all 157 script-error refusals are written at L_DEBUG
+    into the one log that never rotates (§5.115's). Parent decision = §5.116's
+    class fork: refuse vs named-default-and-log, with D9 cutting both ways
+    (shipped shows may depend on a bad value meaning OFF). Owed before pricing:
+    one launch with a deliberately bad script.
+  - **THE §11.169 SCHEMA IS ALREADY YOUR PRACTICE — the gap is legacy inventory**
+    (F58 §11.178(d)): of 309 schema-applicable log records, errors carry WHAT
+    (0.49 + 0.43 partial) but CONSEQUENCES 0.07 / PREVENTION 0.06; acting
+    defaults carry CAUSE 0.77 but OVERRIDE 0.09. **14 of the 15 complete records
+    were written by this project after §2(f) was recorded** (the 15th is your own
+    `protosystem.cpp:530`, 2022). Work order committed
+    (`harness/artifacts/f58/f58_gap_table.tsv`): the cheapest line is ONE
+    sentence at one chokepoint (a refused command stops nothing and tells
+    nobody — the return is discarded at both transports); the illuminate clamp
+    and §5.115's bulk class are ONE code path, so §5.115's compression arm is a
+    dependency of that class's fix, not an alternative to it.
+  - **THE TESTER MODEL, MEASURED — its mechanism moved** (F57 §11.177): the
+    throughput signature is neither brevity nor error (within-class correctness
+    1.0) but **COVERAGE PER ITEM** — 0.938 → 0.788 → 0.500 as a question
+    accumulates parts, and an isolated re-ask refills it (0.944). His depth is
+    spent VOLUNTEERING (21 unrequested propositions, 4 became tracker rows), not
+    covering. **"Correctness necessary, secondary" is UNSUPPORTED — stop citing
+    it as measured.** Seven final-pass question-shape rules derived and recorded
+    (§11.177(i)): one decision per item · never bundle history (0.083 answer
+    rate) · leave a volunteer slot · name the observable · no mechanism
+    questions · a re-elicitation trigger needs a feedback channel. TWO OWED
+    RE-ASKS join the final pass: Q11's *"more than one system loaded at once?"*
+    (dropped, was on NO row — conditions A30's scope) and A7's multi-star halo.
+  - **§5.28 NAMES TWO DEFECTS** (F59 §11.179(i)(M4)): the 2026-08-04 Translator
+    mint reused B14's retired number. Resolved IN PLACE (disambiguation notes at
+    four homes, allocation root closed in the archival note: max over live ∪
+    archive); **your one-line veto swaps to renumbering** if you prefer the
+    other cost curve.
+- **Session-17 veto points (implemented-and-live, each cheap to reverse;
+  silence = endorsed):** (1) the ENVIRONMENT CANARY as a §0.5 standing
+  precondition (one bullet); (2) **`HOST-EVENTS.md` created** — §11.174(e)'s fix
+  (1), the append-only dispatch-environment channel, seeded from the ledger
+  (your entries welcome; one file to delete); (3) the §0.7 SCOPE RULING (abort
+  binds on inputs; a failed output-side gloss = report + counterfactual, not
+  abort — §11.179(a)'s case); (4) the §0.5 ROW-FLIP extension (a §13 state flip
+  greps the §5 register in the same commit — I3 at the ledger layer, from
+  §11.180's finding that every stale reference sat on the non-working side);
+  (5) the archival DEPENDS-ON ruling (a citation alone does not block archival);
+  (6) §5.118 supervisor-minted (the F32 precedent — false success from a
+  shipped command belongs in the registry).
+- **Session-17 equalization items (facts, no decision asked):** the register's
+  cross-reference axes are now AUDITED — §5-side back-markers 0 arrears in 44
+  pairs, multi-claim 0 uncovered in 49, row↔row 5 stale in 134 (all annotated or
+  routed) · the scan's residual partition is **82 + named exceptions** ("83
+  real" was a carried-forward label, corrected at four homes — the executor
+  caught the supervisor's gloss, the gate's report-not-absorb clause working in
+  the new direction) · the first-60 s + dim-era instruments now compose: any
+  future photometric task opens with `f56_canary.sh` and a cache manifest ·
+  strict-credit v2 has FIVE measured members and stays ONE deliberate act ·
+  supervisor-error tally this round: two dispatcher glosses, both
+  executor-caught, both corrected at nodes.
 
 - **Session-16 decision items (2026-08-30, F53–F55 / §11.170–172 + the conversation → §11.169/§11.173, §5.114/§5.115):**
   - **[POST-CLOSE, 2026-08-30 → §11.174: ATTRIBUTION ARRIVED FROM YOU — sessions
