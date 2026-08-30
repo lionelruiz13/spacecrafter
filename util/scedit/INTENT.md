@@ -182,7 +182,11 @@ notes.*
    2026-08-04h; gated; code `0745dc34`). D1 discharged: FTXUI v5.0.0
    vendored, sha256 `a2991cb2…`, verbatim upstream source lists.
    Default-greyed ghosts DORMANT BY DATA (see item 11).**
-10. **`Diagnostic` gains a `Span`** [flagged by the shell slice] —
+10. ~~**`Diagnostic` gains a `Span`**~~ **DONE 2026-08-31 (journal
+    2026-08-31): `Diagnostic::span`, filled by every rule; the editor
+    underlines it and the look-alike marker now comes from the rule's span
+    (the byte-derived second copy is gone); printed shape unchanged (D6,
+    no column — a one-line decision left open).** [flagged by the shell slice] —
     sc_check's finding struct carries no column, so no consumer can
     underline the exact byte; the editor reaches invisible-separator's
     column from the bytes (display fact, not a rule copy). Small,
@@ -197,7 +201,11 @@ notes.*
     values mix literals with prose; the editor's bare-token filter has
     one known false positive (`xRRGGBB`). Schema marker + validator
     check at next grammar touch.
-13. **`inline-comment` seed** [flagged by the 2026-08-30 corpus run] — a
+13. ~~**`inline-comment` seed**~~ **MINTED 2026-08-31 (journal 2026-08-31;
+    derivation-diff §5.10), valid for the engine at HEAD; RETIRES with the
+    ruled engine change — that retirement (parse_model.comments.mid_line
+    flip + tokenizer + oracle re-run + seed removal) is the open half of
+    this item and stays here until the engine lands it.** [flagged by the 2026-08-30 corpus run] — a
     mid-line token whose KEY begins with `#` is an inline-comment
     attempt; the engine reads it and everything after it as parameters
     (script.cpp:114 is column-1-only). The rewritten witness holds 8
@@ -217,7 +225,10 @@ notes.*
     Implementation precondition flagged for the engine change: a `#`
     inside a quoted value must NOT open a comment (quoting-aware scan),
     and the shipped corpus wants a `#`-in-values sweep at that moment.
-14. **`unclosed-struct` seed** [same run] — a `struct if` (or loop) left
+14. ~~**`unclosed-struct` seed**~~ **DONE 2026-08-31 (journal 2026-08-31;
+    derivation-diff §5.11): `unclosed-struct` (at the OPENER) +
+    `end-without-if` / `else-without-if` / `loop-end-without-loop`; the
+    engine-side log + `#!` ruling below stays engine work.** [same run] — a `struct if` (or loop) left
     unclosed at end of file: ifSwap is a stack, popped only by `end`
     (:4611), skipped-while-set at :225 — unclosed + false condition
     silently discards the file's whole tail. One TRUE instance in the
@@ -258,6 +269,33 @@ notes.*
     ui_selftest]. Adjacent, not ruled: a `#!` whose content disagrees
     with what scedit itself derives for that line is a C1 divergence
     signal worth surfacing, not hiding.
+    **(c) DONE 2026-08-31: sc_tui already drew the caret with FTXUI's
+    `inverted` (SGR 7); the ui_selftest now prints an `inv` mask per frame
+    and the record pins one inverted cell at the caret in all 10 frames.
+    (a)/(b) wait for the `#!` format to exist engine-side.**
+16. **Shipped-corpus dispositioning sweep** [measured 2026-08-30e] — the 13
+    older seeds over the 408 shipped scripts: **1757 findings in 35 files**
+    (duplicate-key 1596 — 1500 in the generated `internal/
+    comet-particles.sts`, indented-comment 98, unknown-parameter 51,
+    dangling-key 6, unknown-command 5, silent-off-value 1). C3 requires
+    every one dispositioned before the shipped half joins the corpus gate
+    (`SCEDIT_CORPUS` still carries the superseded "EMPTY" note). By
+    inspection plausibly all TRUE, but "plausibly" is not a disposition.
+    Dispatchable (fragment pattern, per-category units); true findings
+    route to SCRIPT_SURFACE (SS-n) per C2's ownership split; a data-package
+    fact to carry: 43 md5-identical script pairs (`navigation/fscripts/`
+    mirrors `fscripts/`), so every fix lands twice.
+17. **SUSPENDED FOR VIXY — engine-version targeting.** C1 says scedit tracks
+    the engine at HEAD; D9 says the installed field is frozen. Once the
+    ruled changes land (mid-line `#` comments, `mod`/`div`/`mul`), a script
+    written for the new engine is silently wrong on every older one (an
+    inline comment becomes junk pairs again; `mod` becomes a dead line).
+    Does scedit target ONE engine version (HEAD, current behaviour), or a
+    declared version range (the grammar gains `since:`/`until:` on clauses
+    and seeds, `--check --target <version>` selects; the retiring seeds
+    become "portability" warnings instead of disappearing)? Not decided
+    here: it changes the contract's shape, and the field's version spread
+    is information only Vixy holds.
 8. **Engine emitter** — the grammar file becomes a build/runtime
    artifact (D5 seams); propose upstream once the contract shape has
    survived slices 1–4.
@@ -277,6 +315,118 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-31] The sc_check touch: spans, five seeds, the block structure
+  read — items 10, 13 (HEAD half), 14, 15(c) closed.** Code `2fe14699`.
+  Gates 8/8 on a clean build (0 warnings); tokenizer 150 → 171 and editcore
+  154 → 171 checks; both record gates falsification-tested (a tampered
+  record line → FATAL, lint and frames). What landed: (a) item 10 —
+  `Diagnostic::span`, filled by every rule; the editor underlines it and
+  the look-alike marker now comes from `invisible-separator`'s span;
+  `EditCore::lookalikeSpaceColumns` deleted — it marked 0xA0 only while the
+  rule knows six byte shapes and the quoted-value exclusion, i.e. the two
+  copies had ALREADY diverged silently (I2's failure mode, found by
+  removing the copy, not by noticing the drift). Printed shape untouched
+  (D6, no column) — adding gcc's `:col:` is a one-line decision, left
+  open. (b) item 13 — `inline-comment`, PREFIX policy: one message per
+  line stating what the tail does (computed from the engine's own `args`:
+  a tail key that IS a key → "CHANGES"; `#` pair sorting first on a
+  single-pair command → the intended pair "never applied"; first on `set`
+  → "nothing applied"; else inert → "happens to work"; args_complete:false
+  → "cannot tell"), the other rules reading the prefix the author meant.
+  Deliberate departure from §5.9's co-firing, reason recorded
+  (derivation-diff §5.10): separately-actionable is the test, and here one
+  action removes every consequence while the consequence messages point
+  away from it; precedent = indented-comment. The fixture caught MY
+  mis-designed case: `media action pause # loop on` is not a collision —
+  `loop` is the VALUE of key `#`, `on` dangles; the checker's reading was
+  the engine's, mine was not; fixture corrected to `# set loop on`. (c)
+  item 14 — `BlockSkipState` tracks the if-stack and loop pairs with line
+  numbers and spans, mirroring IfSwap (push/flip/pop, ignore-and-log on
+  empty, nothing counted inside a `comment` block per the :4605 guard);
+  `unclosed-struct` reported at the OPENER (the root — matches Vixy's
+  ruling for the engine log and the future `#!`), `end-without-if`,
+  `else-without-if`, `loop-end-without-loop`; `checkBuffer` stable-sorts
+  by line. §5.1/§5.2's questions ANSWERED as "structure yes, arms no".
+  (d) item 15(c) — the caret was already FTXUI `inverted` (SGR 7); now an
+  `inv` mask per frame pins one inverted cell at the caret in all 10
+  frames; an `under` mask pins every span at its bytes. Corpus record 33 →
+  24 (−24 generic on :37-46, +8 inline-comment, +7 unclosed-struct: the
+  six catalogue lines :1404-1409 and :1547); 408 shipped: old-id output
+  byte-identical (1757 lines, diff empty), new ids exactly the two TRUE
+  `end-without-if` at panorama5.sts:102 (+ md5 twin) → SS-25; SS-24
+  amended with the deterministic-tail-death argument; SS-20 noted. Grammar
+  18 seeds, +3 parse_model clauses (comments.mid_line, if_structure,
+  loop_structure), `_meta.amended`; families and vocabulary verified
+  byte-identical against HEAD. **Incident, named per house honesty:** the
+  first fixture write truncated `tests/lint_cases.sts` to 0 bytes —
+  `open(p,'wb')` truncates BEFORE `.encode('latin-1')` raised on an em-dash
+  in the new comment text; the loss was invisible in that script's own
+  traceback and surfaced only through the NEXT edit's exact-anchor assert;
+  restored from HEAD (md5 checked), re-applied encode-before-open. Second
+  instance of 2026-08-04c's class (destructive step before a fallible one)
+  → cross-project Q-56 (`~/shared/QUEUE.md`). Open from this slice: item
+  13's retirement half (engine change), item 16 (shipped-corpus sweep,
+  1757 undispositioned), item 17 (SUSPENDED for Vixy: engine-version
+  targeting — C1 vs D9), the D6 column micro-decision, the CMake corpus
+  note still reading "EMPTY" (item 16 owns it). Engine blockers unchanged:
+  toolchain (GCC ≥ 14; Vixy's system-upgrade offer awaits the
+  desktop-toolchain answer), display session for the `claude` user.
+- **[2026-08-30e] The rebuild fails at the toolchain, not at RAM; C3's
+  shipped half measured for the first time; two seeds grounded.** Session
+  resumed cold; 2026-08-30d's `nice -j6` incremental build died with its
+  session (46 fresh objects, last written 23:39, no process left).
+  Relaunched → FAILS: `src/appModule/fps.cpp:33: fatal error: stacktrace:
+  No such file or directory` (`<stacktrace>` added `e6fc73c5b`,
+  2025-11-22) + `CMakeLists.txt:147 link_libraries(stdc++exp)` — both
+  GCC ≥ 14 facilities; this laptop = GCC 11.4.0 (Ubuntu 22.04 stock,
+  measured); the desktop tree's `build-claude/` cache records GCC 15.2.0.
+  2026-08-30c's "configure probe CLEAN" was a FALSE GREEN — configure
+  compiles no fps.cpp (verification height: the terminal observable is the
+  binary, not the cache). Measured without root: jammy's `libstdc++-12-dev`
+  .deb ships the `<stacktrace>` header and NO backtrace library; no
+  g++-13/14 exist in stock jammy. `build.stale-cmake322-gcc11/` (CMakeCache
+  2026-08-04 23:28) is this finding's earlier, unrecorded fossil. Own
+  instrument slip: the background wrapper `cmd; echo EXIT=$?` reported
+  exit 0 to the harness (the echo's status), `EXIT=2` in the log — read
+  the log, never the notification. Vixy in-conversation: "gcc-12?" →
+  answered no (facts above); "I can upgrade the system" → answered: aim
+  the upgrade at the DESKTOP's toolchain (parity removes a compiler
+  variable from every future measurement; GCC ≥ 14 is the hard floor; the
+  NVIDIA 580 driver must survive it; the `claude`-user display session of
+  2026-08-30d is a separate blocker). Engine build, item 6 and the live
+  verification of the 2026-08-30b rulings stay BLOCKED on it; scedit
+  itself builds on GCC 11 (8/8 re-established on `build-lovely`).
+  **C3 shipped half, first measurement** (CMakeLists still carries the
+  superseded "EMPTY" note): the 13 shipped seeds over the 408 shipped
+  scripts → **1757 findings in 35 files** — duplicate-key 1596 (1500 in
+  one generated file, `internal/comet-particles.sts`), indented-comment 98,
+  unknown-parameter 51, dangling-key 6, unknown-command 5,
+  silent-off-value 1. By inspection plausibly all TRUE (`lanscape`, `ofn`,
+  `key_color`, `output_rate` ×9, `deselect pointer` ×27, `(warning`-class
+  prose …) but UNDISPOSITIONED → queued as §5 item 16; not a gate on this
+  slice (C3 binds a NEW rule to zero false positives; these are shipped
+  rules meeting the shipped corpus for the first time). Data-package
+  note: 43 md5-identical script pairs (`navigation/fscripts/` mirrors
+  `fscripts/`) — a script fix must land twice. **Pre-scan for the two
+  candidate seeds** over 408 + witness + harness (python approximation of
+  the tokenizer; the checker confirms at gate time): inline `#` in KEY
+  position = exactly the witness's 8 lines, 0 shipped; unclosed
+  `struct if` at EOF = **7** in the witness — :1547 (recorded) AND
+  :1404-1409, the six-comparison syntax catalogue, unrecorded until now;
+  `struct if end` without an opener = shipped `fscripts/panorama5.sts:102`
+  (+ its identical `navigation/` copy): block :96-97 opens two, :100-102
+  closes three. Consequence sharper than SS-24 stated: `struct if a inf
+  b` pushes skip iff a ≥ b (:4630) and `struct if a sup b` iff a ≤ b
+  (:4644); one of the two holds for ANY a, b (undefined names read as 0:
+  `evalDouble` → `strToDouble`, app_command_eval.cpp:116-128), so **every
+  line of the witness after :1405 is skipped at runtime, deterministically**
+  — the 200-line tail (:1406-1606) is dead, not conditionally dead. SS-24
+  amended, SS-25 opened (SCRIPT_SURFACE). Parent-ledger routing gap noted,
+  not fixed: the three 2026-08-30b engine rulings (mid-line `#`,
+  unclosed-if log + `#!`, mod/div/mul aliases) have no §13.B row —
+  FEATURE_REQUESTS "accepted — pending" is their only home. Slice chosen
+  and stated to Vixy (no objection at write time): items 14 + 13 + 10 +
+  15(c) in one sc_check touch, item 4 scoped after.
 - **[2026-08-30d] The build that killed the session: -j from nproc, RAM
   never consulted.** 2026-08-30c's background build ran `-j12` (from
   `nproc`) with **9.9 GiB available** — 12 × ~1.5 GiB/gcc = 18 GiB

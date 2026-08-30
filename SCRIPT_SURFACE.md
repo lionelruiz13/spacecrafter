@@ -262,7 +262,10 @@ things are not:
   comments become correct as written; no need to move them. Until that
   engine change ships, these 8 lines keep working by accident (the junk
   words are ignored), which is now understood as the reason the pattern
-  survived.
+  survived. [2026-08-31] scedit now names these eight lines with ONE finding
+  each (`inline-comment`: "does not start a comment here … the line happens
+  to work") instead of the 24 confusing ones; that finding retires when the
+  engine change lands.
 - **SS-21** — Lines 940/945: the two `(Warning! Don't forget …)` advice
   lines have no `#`, so each one is executed as a command called
   `(Warning!` and fails. The advice itself is kept and valuable; the lines
@@ -287,7 +290,27 @@ things are not:
   engine skips EVERY line after 1547, to the end of the script. In this
   file that is the last ~60 lines (the wait/media/zoom examples); in a
   show, the same shape silently cuts the whole tail. Fix: add the `end`.
-  Status: OPEN.
+  Status: OPEN. **[2026-08-31] AMENDED — it is worse, and it starts earlier:**
+  the syntax catalogue under `# STRUCT`, lines **1404-1409** (`struct if a
+  inf b` … `struct if a diff b`, the six comparison forms shown one per
+  line), has no `end` either — six more open blocks. And one of the first
+  two is ALWAYS taken as "skip": `a inf b` skips when a ≥ b, `a sup b` skips
+  when a ≤ b, and one of those is true whatever a and b are (they are not
+  even defined in the file, so both read as 0). Consequence: **every line
+  after 1405 is skipped every time this file runs** — the 200-line tail
+  (`struct comment`, `struct loop`, the variables, the languages, the wait /
+  media / zoom examples) never executes, not only when the mode test fails.
+  Fix: close each catalogue line with `struct if end` (or turn the six lines
+  into comments — they document syntax, they were not meant to run).
+  scedit now reports all seven (`unclosed-struct`, at the opener line).
+- **SS-25** — `fscripts/panorama5.sts` line 102 (and the identical copy in
+  `navigation/fscripts/panorama5.sts`): the last block, lines 96-97, opens
+  TWO `struct if` and lines 100-102 close THREE — one `struct if end` too
+  many, copied from the earlier blocks that open three. The engine logs
+  "end without if" and ignores the extra line, so the script works; the
+  log line is the only trace. Fix: delete line 102 (in both copies — the
+  two files are byte-identical, so a fix in one and not the other leaves
+  them diverging). Status: OPEN.
 
 (Minor, no decision needed: the new comet-tails demo line 181 repeats
 `halo true` twice, like the old Wirtanen line — harmless, the engine keeps
