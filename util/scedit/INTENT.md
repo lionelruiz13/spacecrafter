@@ -277,6 +277,33 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-30d] The build that killed the session: -j from nproc, RAM
+  never consulted.** 2026-08-30c's background build ran `-j12` (from
+  `nproc`) with **9.9 GiB available** — 12 × ~1.5 GiB/gcc = 18 GiB
+  requested against 15 GiB RAM + 2 GiB swap → the MACHINE FROZE
+  (thrash, before the OOM killer ever fired) and Vixy force-rebooted
+  [vixy, corrected in-session: not a process kill — a whole-machine
+  freeze]; the Claude Code session resumed cold. Both figures had sat in the
+  session's own env line for an hour — the decision step "derive -j
+  from RAM" did not exist, so in-window information stayed inert (the
+  attention-shedding class, [021]). Mitigations, both harness-side:
+  Vixy's launch script `taskset`s the session to half the cores (nproc
+  now reports 6 — measured on resume); the SessionStart env line now
+  prints `safe -j = min(nproc, floor(avail/1.5))`. Findings on inspection:
+  `build-claude/` is the DESKTOP's tree carried by the migration (binary
+  dated 2026-08-26, 272 objects) — the laptop never lacked a built
+  engine either, only the reconfigure re-dirtied it; incremental rebuild
+  relaunched at `nice -j6` — measured under load: 6 × cc1plus ≈ 1.2 GiB
+  each ≈ 7 GiB, 6.1 GiB still available, swap untouched (the 1.5 GiB
+  planning figure holds, conservative side). Open for RUNNING the engine
+  from a Claude session: the `claude` user has **no Wayland session**
+  [vixy] — no display surface for Vulkan, and Wayland offers no
+  cross-user sharing (no xhost equivalent) — build and `--check`
+  need none; engine launch, harness `b*_run.sh`, and item 6 (TCP client
+  vs a live engine) do. Vixy's proposal: log in graphically as `claude`
+  and launch the session there (real GPU, real surface) — cleaner than
+  a headless Xvfb+lavapipe stand-in, which would serve protocol tests
+  only and no measurement.
 - **[2026-08-30c] The blocker dissolves: the field was here all along.**
   Vixy traced "how to make spacecrafter work here" through dependencies
   IN MEMORY and hit his own stale cache: the `.spacecrafter` data had
