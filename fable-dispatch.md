@@ -310,6 +310,24 @@ authorization lands. DECISIONS_PENDING open set at close: **still EMPTY**
    - Never start a long verification campaign with uncommitted work.
    - Delivery = INTENT §11 entry (file + stub) + §13 row flip + harness commit, as
      usual. An abort before recording ⇒ the successor resumes at the last checkpoint.
+7. **Precondition gate (owner-stated 2026-08-30, §11.175) — the LAST warm-up act; nothing
+   mutates before it passes.** Enumerate every premise the task section and the dispatch
+   prompt state as true, and verify each against live state: both HEADs as stated; the
+   next-free §11 number actually free; the live `### F` count as stated; the ledger
+   rows/entries the task builds on in their claimed state; environment/instrument
+   preconditions (display stack per §0.5, binary at HEAD, fresh-launch conditions);
+   dependency deliveries the section names. ANY broken ⇒ **task abort**: report
+   observed-vs-stated to the dispatcher, mutate nothing, do NOT adapt or repair the premise —
+   that decision belongs to the dispatcher/owner (§11.174(h): report-over-mitigate;
+   *"different path doesn't certify same preconditions"* [vixy]). Reason the abort is
+   unconditional: a breakage absorbed at initiation propagates silently — the work can look
+   green throughout and stays premise-compromised whether or not the breakage resurfaces
+   (§11.174 is the full-scale instance); an abort costs one round-trip. A precondition
+   discovered broken MID-task has the same semantics from the discovery point: stop,
+   checkpoint-commit what is green, report — the gate moves the default leak point to
+   initiation, it does not license ignoring later discovery. The gate validates only what
+   is ENUMERATED (§0b.3 binds the dispatcher to state preconditions in checkable form);
+   a premise you rely on that no source states is itself a report-worthy finding.
 
 Sizes: **S** ≈ short focused run · **M** ≈ one full session · **L** ≈ full session at
 high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
@@ -343,6 +361,13 @@ session per claude/fable-dispatch.md §0b."*
    warm-up order, the mandate verbatim or by exact ledger ref, stop boundaries,
    discriminating checks, checkpoint discipline, and the report format (per-item DoD
    state + evidence pointers + deviations + suspensions + what the next task must know).
+   **Preconditions in checkable form (2026-08-30, §11.175):** the prompt's per-round
+   variables and the task section together must state every premise the task stands on
+   (HEADs, next §11 number, live `### F` count, ledger states built upon, environment/
+   instrument requirements, dependency deliveries) such that §0.7's gate can verify each
+   against live state — the executor aborts on any broken one, so an UNSTATED
+   precondition is a dispatcher defect (ungateable = uncovered; §11.174's canary gap is
+   the shape). Refresh the variables at dispatch time, not at round-open.
 4. **Verify each delivery BEFORE the next dispatch**: read the §11 entry IN FULL;
    check trees/commits/authors; check every claimed ledger flip (§5, §13,
    DECISIONS_PENDING) at the ledger; judge every deviation and judgment call — endorse

@@ -12,7 +12,11 @@ effort: xhigh
      supervisor's warm-up asserts md5 equality (fable-dispatch.md §0b.1). This file is a cached
      projection of the LIVE protocol sources named below — on any divergence, those sources win
      and the divergence is a staleness bug HERE (report it in your delivery). Predecessor text
-     archived byte-exact: claude/agents/opus-xhigh.2026-07-19.md (md5 21a0ce85). -->
+     archived byte-exact: claude/agents/opus-xhigh.2026-07-19.md (md5 21a0ce85). Stray
+     user-level copy ~/.claude/agents/opus-xhigh.md (its immediate ancestor, md5 03cb4138)
+     retired 2026-08-30, §11.175(d): archived byte-exact as
+     claude/agents/opus-xhigh.2026-07-19.user-level.md, then removed — authority + projection
+     are the ONLY two copies. -->
 
 # Responsibility (the managed space)
 
@@ -42,6 +46,16 @@ from recall of a previous run.
 
 # Constraints (binding; each is a compressed reason — reopen the source at any edge)
 
+- **Precondition gate — broken precondition = task abort (§11.175, owner-stated).** A task
+  spec is a cached conclusion: its premises were true at mint time, not necessarily at your
+  warm-up. Before your FIRST MUTATING ACTION, validate every precondition the task section
+  and the dispatch prompt state against live state (per fable-dispatch.md §0.7). ANY broken
+  ⇒ abort: report observed-vs-stated, mutate nothing — never repair the premise and proceed
+  (that decision is the dispatcher's/owner's; §11.174(h): a competent mitigation hides the
+  fault from the one who can fix it properly, and a different path doesn't certify the same
+  preconditions). A breakage absorbed at initiation propagates silently and may never
+  resurface; an abort costs one round-trip. Discovered broken MID-task: same semantics from
+  the discovery point — stop, checkpoint-commit what is green, report.
 - **Engineering invariants** I1–I7 as stated in the project's principles: interface = contract
   of the what-for (I1); single source of authority, duplication = pending silent desync (I2);
   owner of state pushes to dependents (I3); behavior belongs to the type (I4); non-owning
