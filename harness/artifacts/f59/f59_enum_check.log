@@ -1,0 +1,10 @@
+BASE: 44 pairs with a §5 target on /home/claude/spacecrafter/claude
+  P1   POSITIVE  pair(11.99,5.79) present=True expected=True  delta_pairs=+1  OK
+  P2   NEGATIVE  pair(11.99,5.79) present=False expected=False  delta_pairs=+0  OK
+  P3   NEGATIVE  pair(11.99,5.79) present=False expected=False  delta_pairs=+0  OK
+
+  P4   HOMES    homes('5.31') = ['archived-entry']
+       frozen stub('5.31') -> '31. **Row 10: AXIS module live (2026-07-16; wave-1 start — the first line-class family)** '
+       OK -- the frozen lookup returns §11.31's stub, mine returns the real home (this audit re-implements half 2 because of exactly this)
+
+ALL CHECKS PASS

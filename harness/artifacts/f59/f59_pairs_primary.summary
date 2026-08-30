@@ -1,0 +1,4 @@
+LEXICON            : the frozen scan's five
+CANDIDATE LINES    : 62  {"A-entry": 35, "B-stub-11": 18, "B-stub-5": 2, "B-stub-other": 7}
+DISTINCT (src,tgt) PAIRS WITH A §5 TARGET: 44
+LIVE §5 REGISTER ROWS: 95 ; RETIRED NUMBERS BELOW MAX: [3, 4, 6, 10, 11, 12, 13, 14, 15, 16, 17, 22, 23, 24, 29, 30, 31, 33, 37, 38, 39, 40, 45]

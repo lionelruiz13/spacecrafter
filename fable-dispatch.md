@@ -895,7 +895,17 @@ markers ADD, never reword (the F56-acceptance boundary).
 cites; real arrears marked; multi-claim boundary stated + walked within it;
 §11.165(h)(3) annotated DISCHARGED; §11 entry + stub; baselines re-derived as
 the last act with deltas attributed; code tree clean; WIP per §0.6.
-**WIP:** —
+**WIP:** 2026-08-30 CP1 — §0.7 gate PASSED on every stated premise (both HEADs
+`d6aec251`/`0a93d79` clean, §11 179 free, `### F` count 5, §11.165(c)(g)(h) as
+described with all 13 third-bucket pairs present, pair-check 194/169/25/90 and scan
+114/150/88 reproduced to the digit, instruments committed-clean). ONE stated gloss
+measured wrong and reported, not absorbed: the prompt's "83 real arrears + SEVEN named
+exceptions" does not close (83+7=90 vs 88) — measured on four archived trees, the live
+partition is **82 residual + 6 live named exceptions**; `§11.164 → §11.167` has been
+MARKED since session 16 and is no longer in the flagged set. Scope 1 DONE: METHOD.md +
+`f59_enum.py` + `f59_enum_check.py` (P1–P4 all pass) + primary/widened TSVs committed
+BEFORE any verdict; universe = **44 pairs** with a §5 target (the 13 are the floor).
+NEXT: scope 2, the twin verdict walk.
 
 ### F60 — The §5.5-class row↔row staleness sweep: §5 rows vs the §13 rows that own their work (F47 acceptance) [S]
 
