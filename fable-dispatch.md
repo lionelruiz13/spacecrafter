@@ -129,6 +129,45 @@ re-baseline (deliberate instrument change; S); (8) §5.100's fix IF the §3
 authorization lands. DECISIONS_PENDING open set at close: **still EMPTY**
 — the round's Vixy items ride §3 + their rows.
 
+**Update [Fable 2026-08-30, supervising session 17]:** trigger = the §0b
+verbatim line. Round of 3: **F56 → F57 → F58** — the session-16 queue in
+order (items 1–3), item 1 taken in its post-close RESHAPED form with its
+sweep gate LIFTED by §11.174(j) (*"the correction sweep proceeds
+regardless"* — the (c) arms were answered by measurement at (f)–(j) and
+the live chase closed at six exonerations). Items 4–7 (F49's two
+named-not-run audits · the §5.5-class row↔row staleness sweep · F52(k)'s
+two git-only checks · the scan strict-credit v2 re-baseline) are
+extension candidates if health permits, minted then per §0b.2; item 8
+(§5.100's fix) stays blocked — NO Vixy commit since the session-13
+authorization question (every commit through `3703e54` is
+Claude-authored), D-set verified still EMPTY at the file. Warm-up: both
+trees clean at open, code `d6aec251` / harness `3703e54`; binary current
+(code HEAD unmoved since 2026-08-26, binary mtime 2026-08-26); `free -g`
+= 23 GiB ⇒ -j12 OK, though NO build is expected — the fourth
+all-record/instrument round in a row if it holds; **definition-drift
+assert: md5 MATCH** (`a5a54d94`). Next free §11 number verified **176**
+(§11.175 last, minted post-close). Picks, rows re-read at the ledger:
+F56 = **the environment canary + cache manifest + dim-era correction
+sweep** (§11.174(e)(d)(j) + §11.172(i), the §11.159(k7) healthy-stack
+cadence echo riding; the §11.174(f) canonical-display fork stays
+OWNER'S — the canary banks on :2 with the fork flagged), F57 = **the
+tester-model corpus validation** (Q-55's five conditioned metrics,
+predictions-first, out-of-sample partition binding), F58 = **the
+§11.169 schema audit** (the gap table as the fix's work order). Order =
+recorded queue order; surfaces disjoint (harness instruments + INTENT
+annotations / read-only corpus analysis / read-only code census); NO
+mandate touches product code. Round-open events: **archival pass 10**
+(update-s15 + F53–F55 moved byte-exact, manifest `2026-08-30-pass10`,
+commit `28ca553`). Instrument baselines at open, re-derived from the
+committed instruments on this tree: pair-check **191/166/25/87**
+(+1/+1/0/0 from §11.175 vs the recorded post-close 190/165/25/87);
+back-marker scan **106/137/84** — unchanged to the digit, the 84th
+still the named benign co-occurrence (83 real, three named exceptions).
+NOTE for F56's delivery: the sweep MIGRATES the scan's numbers by
+design (every SUSPECT-STACK marker adds event lines/pairs) — the
+delivery owes the delta attribution, and the strict-credit v2
+re-baseline (queue item 7) stays a SEPARATE deliberate act.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -346,14 +385,252 @@ pass 7) · F42 §11.156 · F43 §11.157 · F44 §11.158 · F45 §11.159 ·
 F46 §11.160 · F47 §11.163 (session 14 + its post-close extension — all six
 DELIVERED and accepted; archived pass 8) · F48 §11.164 · F49 §11.165 ·
 F50 §11.166 · F51 §11.167 · F52 §11.168 (session-15 round — five for five
-DELIVERED and accepted; archived pass 9). Session-16 round (2026-08-30):
-the session-15 queue minted in order as **F53** (§5.113's one-launch
-measurement) · **F54** (the seven never-recorded gate values) · **F55** (the
-first-60 s photometric sampler) below. Extension candidates: F49's two
-named-not-run audits (§5-side twin; multi-claim) · the §5.5-class row↔row
-staleness sweep (F47 acceptance) · F52(k)'s two git-only checks · the
-§11.169 schema audit of existing diagnostic sites (named at this round's
-open). Still blocked: §5.100's fix (authorization unanswered).*
+DELIVERED and accepted; archived pass 9) · F53 §11.170 · F54 §11.171 ·
+F55 §11.172 (session-16 round — three for three DELIVERED and accepted;
+archived pass 10). Session-17 round (2026-08-30): the session-16 queue
+minted in order as **F56** (environment canary + cache manifest + the
+dim-era correction sweep) · **F57** (the tester-model corpus validation)
+· **F58** (the §11.169 schema audit) below. Extension candidates: F49's
+two named-not-run audits (§5-side twin; multi-claim) · the §5.5-class
+row↔row staleness sweep (F47 acceptance) · F52(k)'s two git-only checks ·
+the scan strict-credit v2 + re-baseline (deliberate instrument change).
+Still blocked: §5.100's fix (authorization unanswered).*
+
+### F56 — The environment canary + the cache manifest + the dim-era correction sweep (§11.174(e)(d)(j), §11.172(i)) [M]
+
+**Why now / mandate:** §11.174's disposition at (j): the live chase ended with six
+exonerations and a latched-state model — *"the ENVIRONMENT CANARY inherits the
+watch with instrumentation the dim era never had"*, and *"the correction sweep
+proceeds regardless — the dim-era numbers are wrong whatever latched them"* (the
+(d) gate on the owner's (c) answers is LIFTED by that clause; the fix-timestamp
+and mechanism arms were answered by measurement at (f)–(j)). Queue position 1
+(recorded at session-16 close, reshaped post-close per §11.174). Three folded
+parts + one echo, one task because they share the launches and the entry: the
+canary is §11.157(f)'s missing verification-surface member; the cache manifest
+is §11.172(i)'s instrument gap; the sweep is §11.174(d)'s partition done
+properly.
+
+**Sources (re-read, never recall):** `INTENT/11.174.md` IN FULL ((e)(g)(j) carry
+the accumulated canary spec: display fingerprint + loginctl + nvidia-smi VRAM
+snapshot + RDP-connection snapshot (the (j) `ss` pattern) + dispatch-method
+fingerprint + the photometric reference band **165.258/6.644 new · 160.142
+old**, `f51_run.sh`'s scene; (d) carries the sweep partition; (f) carries the
+canonical-display fork — OWNER'S, unanswered); `INTENT/11.172.md` (i)(k) (the
+cache gap: `b3_farm.sh` symlinks `cache/`, a `.dat` measured rewritten mid-run;
+the 15-s hostile window; 61.431/42.476 are NON-TARGETS); `INTENT/11.159.md`
+(k7) (the cadence H1 discharge whose measurement is now faulty-stack — the
+healthy echo this task pays); `INTENT/11.157.md` (f) (the substitute stack and
+what its verification surface missed); §0.5 in full.
+
+**Preconditions (checkable, §0.7 gate):** code HEAD `d6aec251`, tree clean;
+harness HEAD as the dispatch prompt states, tree clean; binary
+`build-claude/src/spacecrafter` present, mtime 2026-08-26 (no rebuild owed);
+next free §11 number **176**; live `### F` count **3**; display stack per §0.5
+post-reboot (`DISPLAY=:2` forced + `XAUTHORITY=/tmp/rt-claude/.mutter-Xwaylandauth.*`,
+`xdpyinfo` answers 2448x1332, gnome-shell pid **147372** alive);
+`~/.spacecrafter/cache/` exists as a real shared directory (not farm-isolated);
+§11.174(d)'s partition UNSWEPT (no SUSPECT-STACK markers yet at
+§11.157/§11.159/§11.164/§11.167); healthy reference values dated 2026-08-30;
+instrument baselines at dispatch as the prompt states. ANY broken ⇒ abort per
+§0.7.
+
+**Scope:**
+1. **The ENVIRONMENT CANARY** (new `harness/f56_canary.sh` + helper as needed):
+   one preflight instrument that (a) fingerprints the display stack (DISPLAY
+   target + `xdpyinfo` geometry; compositor pid + birth time; `loginctl`
+   session table for claude; `XDG_RUNTIME_DIR`; `/tmp/.X11-unix` map), (b)
+   snapshots GPU state (`nvidia-smi`: used MiB, util, process list), (c)
+   snapshots RDP connection state (`ss` ESTAB 127.0.0.1↔3389, one-shot — the
+   (j) pattern), (d) records the dispatch-method fingerprint (claude logind
+   sessions present y/n), and (e) runs the `f51_run.sh` reference scene and
+   asserts BOTH paths inside a band around 165.258/6.644 · 160.142 — band
+   width DERIVED from the measured spread (the (j) bracket: six runs to the
+   last digit) and stated with its argument, never guessed. Loud non-zero exit
+   on any member out of band, printing observed-vs-banked per member; the
+   canary is itself a diagnostic surface — §11.169's elements apply (cause,
+   content, override). **Banking decision, made here and flagged for the
+   owner:** the band banks on **:2** (harness default; every healthy value was
+   measured there) — the §11.174(f) canonical-display fork (:2 substitute vs
+   :4 real session) is the OWNER's; re-banking on :4 is one values-block swap,
+   and the entry says so.
+2. **Instrument chain, both directions:** the canary demonstrated ABLE TO
+   FAIL — (i) fingerprint arm against a deliberately wrong expectation (or a
+   dead DISPLAY), loud exit shown; (ii) photometric arm: the committed
+   dim-era value class (61.431) asserted against the band and REFUSED. Both
+   demonstrations committed as artifacts.
+3. **The CACHE MANIFEST:** a recursive md5+mtime manifest of
+   `~/.spacecrafter/cache/` taken pre/post inside the canary run (and usable
+   standalone in §0.5 preflights); mutations REPORTED with per-file deltas,
+   never prevented (isolation would change what runs measure — cold-cache is
+   a measurement-condition change, OUT of scope). Demonstration: one launch
+   bracketed by manifests, catching the known in-run texture-cache write
+   class (§11.172(i): `t-bodies-moon_normal.dat` rewritten mid-run) — record
+   as it comes.
+4. **The CORRECTION SWEEP** (§11.174(d) done properly): walk §11.156–§11.168
+   + §11.172 entry files. Per entry, a claim-level verdict table (committed
+   artifact): each measured claim classified **SUSPECT-STACK** (photometric
+   absolute from a 2026-08-29 dim-era session) / **RELATIONAL-SURVIVES**
+   (ratio, in-run A/B, event-locking — argument stated PER CLAIM, never as a
+   class waiver) / **CLEAN** (text/INTENT/git channel). Every SUSPECT-STACK
+   claim gets a back-marker-class annotation AT ITS NODE citing §11.174
+   (§11.161(g): UPPERCASE keyword, citation inside the span, same commit;
+   originals preserved). The (d) members are the FLOOR, not the list:
+   §11.157's stack-verification values + b24_select adjudication, §11.159's
+   A/A floor (374 px) + the cadence H1 discharge measurement, §11.164's
+   ladder/centre-luma numbers, §11.167's series + dark-class analysis —
+   *"nothing grandfathered without the sweep"*. §11.174(d) itself annotated
+   SWEPT with the table's pointer.
+5. **The healthy-stack cadence echo** (pays §11.174(d)'s owed member): repeat
+   §11.159(k7)'s wall-clock-bracketed counter read on the current stack, one
+   launch — H1 predicts the config cap (144 ⇒ [144.0, 146.4] fps on a
+   [30.0, 30.5] s bracket). Record as-is: confirm ⇒ the discharge's logic
+   stands re-measured on a healthy stack; miss ⇒ reopen AT THE NODE, never
+   absorbed. The A/A screenshot floor (374 px, same faulty-stack list) MAY
+   ride an existing launch as a same-scene capture pair if cheap; else
+   named-not-done with the boundary stated.
+6. **Record:** §11 entry at **176** + stub, entry-file-first (§11.156(f));
+   artifacts under `harness/artifacts/f56/` force-added; back-markers same
+   commit; README section for the canary. The canary becomes an enumerated
+   §0.7 precondition per §11.175(e) — the §0.5 standing-line edit itself is
+   the SUPERVISOR's at acceptance, not this task's.
+
+**Boundaries:** NO product code, NO data writes, NO re-baselining of any
+existing harness gate (the canary band is a NEW instrument's initial banking);
+real `~/.spacecrafter` READ + manifested only; temp-HOME farm for scene runs;
+§0.5 discipline throughout (fresh launch, md5 in==out, comm-probe 0, plain
+`timeout`, no `run_in_background`). Mint license: a NEW distinct-mechanism
+defect found en route = mint per §5.79's criterion, else list it on the row it
+belongs to (the F50 form).
+
+**DoD:** canary committed + both fail-directions demonstrated; band banked
+with the spread argument + the :2/:4 fork flagged; cache manifest demonstrated
+on a real launch; sweep verdict table complete over §11.156–§11.168/§11.172
+with markers at every SUSPECT-STACK node and §11.174(d) annotated; cadence
+echo recorded either way; §11 entry + stub; both instrument baselines
+re-derived as the LAST act before the delivery commit with deltas explained
+(the sweep migrates the scan — attribute the delta); code tree clean at close;
+WIP per §0.6.
+**WIP:** —
+
+### F57 — The tester-model corpus validation: Q-55's five conditioned metrics, predictions first (§11.173(d)) [S]
+
+**Why now:** §11.173(d) records the tester cognitive model (triage-default
+throughput, value-per-thought interface rule, belief-vintage) as
+VINTAGE-TAGGED AND FALSIFIABLE, with the measurement corpus identified and the
+task sketch minuted in Q-55 — and the final tester pass INHERITS the model's
+consequences (question shapes, conflict rules), so testing it before that pass
+is load-bearing. Queue position 2 (recorded at session-16 close).
+Predictions-first, the F52 form.
+
+**Sources (re-read, never recall):** `INTENT/11.173.md` (d) IN FULL; the Q-55
+body at `~/shared/QUEUE.md` (grep `Q-55`; the five metrics m1–m5 AND both
+calibration cells are THERE — read, never re-derive); `USER_QUESTIONS.md` +
+`USER_QUESTIONS_ROUND2.md` + `SCRIPT_SURFACE.md` (the corpus);
+`INTENT/11.149.md` (d)(e) (the premise-right/instrument-wrong precedent
+binding m3; the answer-by-action specimen).
+
+**Preconditions (checkable, §0.7 gate):** code HEAD `d6aec251` clean; harness
+HEAD as the prompt states, clean; next free §11 number as the prompt states;
+live `### F` count **3**; the three corpus files present, USER_QUESTIONS.md
+carrying the 27 verbatim answers (2026-07-21) and ROUND2 the tester's
+questions back; Q-55 present in QUEUE.md marked CLOSED with body kept. NO
+launches, NO display needed. ANY broken ⇒ abort per §0.7.
+
+**Scope:**
+1. **Out-of-sample discipline FIRST:** the model was built partly ON this
+   corpus (§11.173(d) names two RETRODICTED signatures). Before measuring,
+   partition each metric: what the model already saw (retrodiction — scored
+   but LABELED as such) vs what it did not (the real test: m1's variance +
+   ambiguity cases, m4's depth markers, m5's conditioned control). Re-scoring
+   training data as confirmation is the circularity failure — the entry
+   states the partition explicitly.
+2. **Predictions committed FIRST** (git, md5 cited in the entry): per metric,
+   the model's predicted direction/range conditioned exactly as Q-55 states
+   (m1 answer-shape GIVEN question-shape classified first — Q1–27 were
+   deliberately decision-shaped, fast answers there are correct behavior; m2
+   answer-by-action rate across SS-n; m3 belief-vintage lag WITH the
+   instrument-checked-first caution, §11.149(d) cutting both ways; m4
+   questions-asked-back as depth markers; m5 Vixy-control conditioned on
+   question class — the routing confound honored: structural→Vixy,
+   operational→tester BY DESIGN).
+3. **Measure all five** on the named corpus; per-metric match/mismatch,
+   mismatches TRACED, never absorbed. Calibration cells applied: Q1–27 carry
+   a self-reported HIGH-effort cell (shallow-looking answers there are NOT
+   throughput evidence); praise scores (quality − prior), not absolutes.
+4. **Verdict on the model:** which clauses survive, refine, refute — landing
+   as an ANNOTATION on §11.173(d) (belief-vintage stamped); consequences for
+   the final-pass question shapes, IF any, ROUTED via §3, not enacted.
+5. **PURPOSE BOUNDARY, in the entry verbatim:** interface/routing design
+   only — never the person.
+
+**Boundaries:** read-only everywhere (NO product code, NO data, NO launches);
+`~/shared/QUEUE.md` is cross-project — read, never edited by this task;
+final-pass files not rewritten.
+
+**DoD:** partition stated; predictions pre-committed with md5; five metrics
+measured with per-prediction outcomes; §11.173(d) annotated; §11 entry +
+stub, entry-file-first; baselines re-derived as the last act with deltas
+explained; code tree clean; WIP per §0.6.
+**WIP:** —
+
+### F58 — The §11.169 schema audit of existing diagnostic sites: the gap list is the fix's work order (§11.169(c)) [S]
+
+**Why now:** §11.169(c) names it a queue candidate, not run: audit EXISTING
+shipped diagnostic/acting-default surfaces against the two schemas (error:
+WHAT/CONSEQUENCES/PREVENTION; acting default: CAUSE/CONTENT/OVERRIDE;
+self-containment on the action element). Instances already banked: the
+camera-line (§11.170(f): `syncCameraReference`'s lone diagnostic fails all
+three error elements — the schema's first use as an evaluation standard), the
+illuminate clamp (`loadIlluminate`'s `angular_size<1 → defaultSize`, a SILENT
+acting default noted at F53 acceptance), the bulk-script D12 shape (§5.115's
+known-deliberate, cost-forced silence). Queue position 3 (recorded at
+session-16 close).
+
+**Sources (re-read, never recall):** `INTENT/11.169.md` IN FULL ((b) the
+schemas + the scope floor; (c) the reach list — §5.110/§5.113/§5.88/B28's
+loader validation as first clients); §2.0 D12 + §2(f) at INTENT.md as
+annotated; `INTENT/11.170.md` (f); the §5.115 row (the pre-classification);
+product code READ-ONLY at `d6aec251`.
+
+**Preconditions (checkable, §0.7 gate):** code HEAD `d6aec251` clean; harness
+HEAD as the prompt states, clean; next free §11 number as the prompt states;
+live `### F` count **3**; §11.169 (a)–(e) present as described. NO launches,
+NO display needed. ANY broken ⇒ abort per §0.7.
+
+**Scope:**
+1. **Universe stated and bounded FIRST** (the census is only as good as its
+   boundary): the mandatory scope floor is user-facing surfaces — script
+   errors and data errors (§11.169(b)); operationally, the emission sites
+   reachable from (i) script/TCP command handling (`app_command_interface`/
+   `app_command_eval` refusals + diagnostics), (ii) data/config loading paths
+   (ssystem/config/star/nebula/sky-culture loaders), (iii) the ledger-banked
+   instances. Internal debug channels OUT (the scope floor), stated. The
+   universe = a committed site list WITH the enumeration method (grep
+   patterns + paths walked) so the boundary is checkable.
+2. **Per site:** which schema applies (error / acting default / both, per
+   (b)'s double-face) and which elements are PRESENT vs MISSING, cited
+   `file:line`, emitted text quoted. Self-containment tested on the action
+   element (valid values enumerated, or their shape?). Known-deliberate
+   sites (§5.115's bulk-script class) carried as their own category, never
+   as naive gaps.
+3. **Output = the GAP TABLE as a committed artifact** + summary stats (sites
+   by schema, element coverage). The table IS the fix's work order — no
+   fixes, no wording changes, record-only.
+4. **Record:** §11 entry + stub, entry-file-first; §11.169(c)'s
+   queue-candidate clause annotated DISCHARGED (back-marker form). Mint
+   license per §5.79 for distinct-mechanism defects found en route — with
+   the expectation stated: this audit LISTS element gaps as the work order;
+   a missing element is NOT itself a §5 mint (a row needs its own mechanism
+   per §5.79's criterion).
+
+**Boundaries:** NO product code changes, NO data, NO launches; harness repo
+only for the artifact + entry.
+
+**DoD:** universe bounded + method committed; gap table complete over the
+stated universe with per-site citations; banked instances included and
+reconciled; §11.169(c) annotated; §11 entry + stub; baselines re-derived as
+the last act with deltas explained; code tree clean; WIP per §0.6.
+**WIP:** —
 
 ---
 
