@@ -155,6 +155,34 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   and that is also why it wants deciding alongside **A41/A42** (a trigger that
   fires on a regime boundary makes those constants user-visible in a new way).
 
+### [2026-08-30] Truncated keywords execute as-if expanded when the match is unique
+- **From:** Vixy (in-conversation, this session's harness commit): *"what about
+  (for execution, not autocomplete) making the truncated keyword working as-if
+  expanded, when it is a single-match ?"* — engine-side; intuitive command
+  truncations work as the user expected, and a whole class of
+  did-you-mean-shaped failures dissolves.
+- **Status:** new — untriaged. Facts triage should start from, all
+  [measured] against the grammar at HEAD:
+  (1) **the motivating instance fails the precondition**: `mod` prefixes BOTH
+  `mode` and `modulo` — ambiguous, no expansion, SS-22's line stays dead; the
+  rule answers the class, not that line;
+  (2) **exact match must win before expansion is attempted**, stated as a
+  clause or the rule breaks working commands: two full names are prefixes of
+  other commands — `body` → `body_trace`, `dso` → `dso2d`/`dso3d`;
+  (3) **temporal fragility**: a unique-today prefix becomes ambiguous when a
+  new command registers, so a truncation-written script can stop working on
+  engine upgrade — it fails LOUD (ambiguity = error, no silent retarget),
+  but it is a new way for field scripts to age (D9-adjacent);
+  (4) scedit consequences: C1 obliges the checker/tokenizer to mirror the
+  expansion exactly (derivable from `families.commands`, no grammar change);
+  `unknown-command` refines to no-match/ambiguous with the match set in the
+  message; and if the recorder (SS-12) normalizes truncations to canonical
+  spellings on write-back, that interacts with the what-should-a-recording-
+  contain question — same decision, one more face.
+  Scope question for triage: commands only, or every machine-listed family
+  (keys, flags, set names) — the mechanism generalizes, each family carries
+  its own ambiguity surface.
+
 **Provenance update to the three 2026-08-26 entries above [fable 2026-08-30,
 owner testimony in-conversation → §11.173]:** the file's text is the
 **RE-REFINED version** — what the main tester saw and objected to was an
@@ -175,3 +203,18 @@ script-local resource scoping attacks the stale-slot defect class at its root
 (§5.110/§5.113 riders) and is valuable single-script, separable from
 parallelism; `[script-trigger]` is the root-level answer to the poll-loop
 log-storm amplifier §5.115 records at the symptom layer.
+
+**Refinement [vixy 2026-08-30, harness `a501eb4` — the txt stays the
+authority]:** `[parallel-script]` gains two policies and changes its default —
+`exec` now defaults to **`legacy`** (names today's nesting behavior as a
+contract: whatever `script action stop` and `struct if` do when nested, even
+if inconsistent; logged-undefined-behavior when mixed with other policies),
+and **`inline`** (called script's content spliced in place, untracked). The
+observation that motivates them [derived, fable]: legacy nesting ALREADY IS
+approximately `inline` — `ScriptMgr::addScriptFirst` splices the called
+script's lines into the caller's queue (the divergent second line-classifier,
+scedit journal 2026-08-04c), and `ifSwap` is one global stack so a called
+script's open `if` leaks into the caller. Vixy's stated intent alongside
+[in-conversation]: scope if-state to the script — leaving a script leaves its
+ifs — cleaning the non-legacy policies while `legacy` preserves the old
+semantics under the old syntax.

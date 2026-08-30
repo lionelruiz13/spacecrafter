@@ -257,7 +257,12 @@ things are not:
   happen to be ignored, so the example WORKS today — but it teaches a
   syntax the engine does not have, and a copied trailing comment can
   silently change a line's meaning elsewhere. Fix: move each comment to its
-  own line? Status: OPEN.
+  own line? Status: **[2026-08-30] RESOLVED ENGINE-SIDE by Vixy's ruling** —
+  mid-line `#` will become a real comment in the engine, so your inline
+  comments become correct as written; no need to move them. Until that
+  engine change ships, these 8 lines keep working by accident (the junk
+  words are ignored), which is now understood as the reason the pattern
+  survived.
 - **SS-21** — Lines 940/945: the two `(Warning! Don't forget …)` advice
   lines have no `#`, so each one is executed as a command called
   `(Warning!` and fails. The advice itself is kept and valuable; the lines

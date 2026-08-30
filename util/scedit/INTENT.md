@@ -206,7 +206,17 @@ notes.*
     (`'#' … did you mean 'b'?`); a dedicated seed replaces them with 8
     messages naming the actual mistake. C3-groundable: no legitimate
     `#`-initial key exists anywhere in corpus or grammar. Touches
-    lint_seeds + sc_check + lint_cases + both expected files. Veto open.
+    lint_seeds + sc_check + lint_cases + both expected files.
+    **RULED [vixy 2026-08-30]: the ENGINE will treat mid-line `#` as a
+    real comment** — the legacy defect only "passes" because unrecognized
+    commands/keys are inert, so make the commenting real. Sequencing per
+    C1 (scedit tracks the engine at HEAD): the seed stays valid and
+    mintable for TODAY's engine; when the engine change lands, parse_model
+    + tokenizer + oracle update, the seed retires, and witness lines 37-46
+    become CORRECT (SS-20 resolves engine-side, no script edit needed).
+    Implementation precondition flagged for the engine change: a `#`
+    inside a quoted value must NOT open a comment (quoting-aware scan),
+    and the shipped corpus wants a `#`-in-values sweep at that moment.
 14. **`unclosed-struct` seed** [same run] — a `struct if` (or loop) left
     unclosed at end of file: ifSwap is a stack, popped only by `end`
     (:4611), skipped-while-set at :225 — unclosed + false condition
@@ -214,6 +224,15 @@ notes.*
     witness (:1547 → SS-24); rule needs the skip-region/nesting care
     that was deliberately deferred at merge time (2026-08-04d). Veto
     open.
+    **Context [vixy 2026-08-30]:** ifSwap was originally a boolean; the
+    intent is to SCOPE if-state to the script — leaving a script shall
+    leave its ifs (today the stack is global and leaks across the
+    script-in-script splice), and nested `script action stop` is messy —
+    cleaned up in the non-legacy exec policies while `legacy` preserves
+    old behavior under old syntax (`[parallel-script]` refinement,
+    harness `a501eb4`). The seed is UNAFFECTED: an unclosed `if` is a
+    defect under every policy; scoping only bounds its blast radius to
+    the script's own tail — which is exactly the witness's damage.
 8. **Engine emitter** — the grammar file becomes a build/runtime
    artifact (D5 seams); propose upstream once the contract shape has
    survived slices 1–4.
@@ -233,6 +252,28 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-30b] Rulings land the same evening, and the remotes turn
+  out diverged.** Vixy in-conversation: (1) item 13 RULED — mid-line `#`
+  becomes a real engine comment (ruling + sequencing on the item); (2)
+  item 14 gains its design context — script-scoped ifSwap intent, seed
+  unaffected; (3) NEW feature idea recorded (FEATURE_REQUESTS
+  2026-08-30): truncated keywords execute as-if expanded on unique
+  match — measured against the grammar: `mod` is AMBIGUOUS
+  (`mode`/`modulo`, the motivating line stays dead), and exact-match-
+  wins is a mandatory clause (`body`→`body_trace`, `dso`→`dso2d/3d`);
+  (4) `[parallel-script]` refined by Vixy (harness `a501eb4`, txt is
+  authority): `legacy` default policy + `inline` policy — legacy
+  nesting ≈ inline already (addScriptFirst splice + global ifSwap
+  leak). **Repo-state finding, next push is NOT fast-forward:** both
+  GitHub remotes hold desktop-side commits absent from this migrated
+  tree — code `master-beta` @ `76ee38c7` (*"empty locale dir no longer
+  detonates two calls later"*, translator.cpp pop_back guard, sits on
+  `0745dc34` — so the remote also LACKS this tree's f0c8ef83..6a4d184b
+  series), harness `CC-harness` @ `eb9af25c` (*"Reorganize files…"*).
+  Reconciliation owed before any push, from whichever machine holds
+  both lines. Probe-method note, honest: the grammar's three family
+  shapes bit a second probe today (commands = name-keyed dict with
+  `_meta` keys); accessor now verified against all three shapes.
 - **[2026-08-30] Third corpus run — the rewritten witness read by the
   checker; §11.149(e)'s stated residue discharged.** Code `6a4d184b`.
   Context: upstream rewrote `doc/superscript.sts` 2026-08-26 (`f0c8ef83`,
