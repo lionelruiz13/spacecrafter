@@ -75,6 +75,14 @@ SCENES = [
 ]
 
 FAILS = []
+# Gate 1's own measured value, kept so the run's artifact carries it instead of
+# only the failure message (§11.167(i): this value existed NOWHERE in the repo,
+# which is why its margin reads "unknown" in the photometric-baseline census).
+# Observation only - nothing reads this dict, no gate consults it. Module level,
+# like FAILS, because the gate lives in run_scenes and the artifact is written
+# in main; it therefore stays EMPTY in `reuse` mode, where no capture is taken
+# and the gate does not run.
+GATE1_LIT_PX_GT40 = {}
 def fail(m): FAILS.append(m); print(f"FAIL: {m}", flush=True)
 def ok(m): print(f"ok:   {m}", flush=True)
 
@@ -303,6 +311,7 @@ def run_scenes(out, tag):
         if not dump.exists():
             fail(f"{tag}/{moon}: no dump"); continue
         lit = int((np.asarray(Image.open(png).convert("L")) > 40).sum())
+        GATE1_LIT_PX_GT40[moon] = lit        # RECORD (observation only, F54)
         if lit < 20000:
             fail(f"{tag}/{moon}: only {lit} px > 40 in the capture - the body did "
                  f"not reach the frame (settle/phase), so this leg measured nothing")
@@ -496,6 +505,7 @@ def main(argv):
     if md5_in != md5_out:
         fail(f"frozen data changed across the run:\n{md5_in}{md5_out}")
     results["md5"] = md5_in
+    results["gate1_lit_px_gt40"] = GATE1_LIT_PX_GT40   # {} in `reuse` mode
     results["fails"] = FAILS
     (out / f"f14_{tag}_results.json").write_text(json.dumps(results, indent=1))
     print(f"\ntexture dark-centroid u (image measurement): "

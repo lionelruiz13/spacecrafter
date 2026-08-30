@@ -500,8 +500,14 @@ baselines re-derived with deltas explained; code tree clean at close; WIP per
 `f53_guards.py`'s docstring claim back-marked in the same commit. Verified: the
 dead attribute reproduced as an AttributeError first (a control that fails),
 then all four readers exercised on a synthetic `nan`/`-nan`/`-inf` dump line —
-parse OK. **Next:** read the five recording-fix targets, write the values, then
-one verification run per file.*
+parse OK. **CP2 — the five recording edits WRITTEN** (`f14_meridian` gate 1 →
+`results["gate1_lit_px_gt40"]`; `b39_scenes` W17 `nb` → `report["w17"]
+["nonblack_px"]`; `f14_placeholder` BOTH uses → a new `f14ph_values.json`
+(the file had no artifact record at all); `f14_predict` BOTH → a new
+`f14_check_results.json` (`--check` wrote nothing); `f23_b33_control`'s `cross`
+→ `rep["def_cross_px8"]`). Additive only, 52 insertions / 3 deletions, no
+threshold or verdict line touched; all five compile. **Next:** one verification
+run per file per §0.5, verdicts recorded as they come with census class.*
 
 ### F55 — The first-60 s photometric sampler: the launch window no instrument has observed (§11.167(j)(2)) [S]
 

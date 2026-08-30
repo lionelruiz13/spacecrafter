@@ -24,7 +24,7 @@ Two Saturn moons, one per placeholder family, in one launch per binary:
 Janus (`generic.png`) and Pandora (`asteroid.png`).
 """
 
-import os, re, subprocess, sys, time
+import json, os, re, subprocess, sys, time
 from pathlib import Path
 
 import numpy as np
@@ -46,6 +46,15 @@ CANDIDATES = {"Janus":   [JD + 0.6945*k/6 for k in range(6)],
               "Pandora": [JD + 0.6285*k/6 for k in range(6)]}
 LIT_FLOOR = 20000
 FAILS = []
+# The two LIT_FLOOR uses' own measured values, kept so the run leaves them in an
+# artifact instead of only in a printed line or (for the selector) nowhere at all
+# (§11.167(i): both existed NOWHERE in the repo). Observation only - nothing
+# reads these, no gate consults them. Module level, like FAILS, because the
+# selector runs inside run() while the artifact is written in main().
+#   SELECTOR_LIT[tag][moon] = [{"jd":…, "lit_px_gt8":…}, …]   the :78-81 use
+#   GATE_LIT[moon]          = lit_px_gt8                      the :127 use
+SELECTOR_LIT = {}
+GATE_LIT = {}
 
 
 def fail(m): FAILS.append(m); print(f"FAIL: {m}", flush=True)
@@ -76,6 +85,8 @@ def run(binary, out, tag, chosen=None):
             time.sleep(8)
             F.send(sock, f"body action screenshot filename {png}", 2.5)
             lit = int((np.asarray(Image.open(png).convert("L")) > 8).sum())
+            SELECTOR_LIT.setdefault(tag, {}).setdefault(moon, []).append(
+                {"jd": jd, "lit_px_gt8": lit})   # RECORD (observation only, F54)
             picked[moon] = jd
             if lit >= LIT_FLOOR or chosen:
                 break
@@ -119,6 +130,7 @@ def main(argv):
         _, _, hq = F.read_dump(caps["post"][moon][1], moon)
         turn = ((hq[0]["offset"] - hp[0]["offset"]) % 360.0)
         lit = int((pa > 8).sum())
+        GATE_LIT[moon] = lit                 # RECORD (observation only, F54)
         print(f"{moon:9s} {Path(tex).name:13s} eq-profile sigma {prof.std():5.2f} | "
               f"offset {hp[0]['offset']:.4f} -> {hq[0]['offset']:.4f} (+{turn:.4f} deg) | "
               f"pre-vs-post px>32 {d32}, px>8 {d8} | lit px {lit} | jd {chosen[moon]:.5f}")
@@ -135,6 +147,15 @@ def main(argv):
             ok(f"{moon}: turned 90 deg and the placeholder map moved with it "
                f"({d8} px>8) - featureless was the wrong word, unregistered is "
                f"the right one")
+    # This file had no artifact record at all, so neither LIT_FLOOR value had
+    # anywhere to land; both are written here (F54, §11.167(i)). Observation
+    # only: written after every gate above has already decided.
+    (out / "f14ph_values.json").write_text(json.dumps(
+        {"file": "f14_placeholder.py", "lit_floor": LIT_FLOOR,
+         "selector_lit_px_gt8": SELECTOR_LIT,      # the :78-81 use, per tried jd
+         "chosen_jd": chosen,                      # which jd the selector picked
+         "gate_lit_px_gt8": GATE_LIT,              # the :127 use, on the pre frame
+         "bins": bins, "fails": FAILS}, indent=1))
     print("RESULT:", "ALL OK" if not FAILS else f"{len(FAILS)} FAILURE(S)")
     return 0 if not FAILS else 1
 

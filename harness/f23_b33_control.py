@@ -505,6 +505,10 @@ def main():
         # --- the regression half at the composed screen -------------------
         D, E = rep["def_post"], rep["def_pre"]
         cross = px8(D["shot"], E["shot"])
+        # RECORD (observation only, F54): `cross` decided the regression half
+        # from inside a message and was stored nowhere (§11.167(i)), so the
+        # census could not audit its margin against the in-run floors.
+        rep["def_cross_px8"] = cross
         dp, de = D["control"]["altitude"], E["control"]["altitude"]
         if D["lit"] < 100000:
             fail(f"the default scene has only {D['lit']} lit px — the cross-binary "

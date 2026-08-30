@@ -176,6 +176,11 @@ def main(argv):
     # ---------------------------------------------------------------- --check
     pred = json.loads(pred_path.read_text())
     fails = []
+    # The --check leg wrote NO artifact: its two gate values (the NCC pair at
+    # :206, the changed-pixel count at :214) lived only in the printed line
+    # (§11.167(i)). Recorded below, observation only - nothing reads this dict
+    # and no gate consults it.
+    scored = {}
     for _, moon, _, _ in F.SCENES:
         post = frame(out, "post", moon, ini)
         pre = frame(out, "pre", moon, ini)
@@ -211,10 +216,16 @@ def main(argv):
         # map (Proteus) is judged against its own scene rather than a constant.
         area = math.pi*(pred["bodies"][moon].get("disc_radius_px",
                         post["body"]["screenSize"]*1024.0))**2
+        scored[moon] = {"ncc_vs_predicted": s_pred, "ncc_vs_null": s_null,
+                        "px_gt32": px, "px_gt8": px8, "disc_area_px": area,
+                        "offset_pre": off_pre, "offset_post": off_post}
         if px8 < 0.20*area:
             fails.append(f"{moon}: only {px8} px>8 changed between the binaries "
                          f"({px8/area:.1%} of the {area:.0f}-px disc) - a 90 deg "
                          f"turn cannot be that small")
+    (out / "f14_check_results.json").write_text(json.dumps(
+        {"file": "f14_predict.py --check", "bodies": scored, "fails": fails},
+        indent=1))
     for m in fails:
         print("FAIL:", m)
     print("RESULT:", "ALL OK" if not fails else f"{len(fails)} FAILURE(S)")

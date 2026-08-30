@@ -144,6 +144,9 @@ if LEG == "w17":
     send("flag track_object off", 1.5)
     shot("w17_floor_a"); shot("w17_floor_b")
     floor_px, floor_max = dpx("w17_floor_a", "w17_floor_b")
+    # `nb` is the W17-content gate's own value; it is RECORDED into the report
+    # below as well as printed (F54; §11.167(i) - it existed nowhere in the repo,
+    # so the census could not audit this gate's margin). Observation only.
     nb = int((img("w17_floor_a").max(axis=2) > 8).sum())
     print(f"\nW17 noise floor: px>{THR} = {floor_px} (max {floor_max}); "
           f"nonblack = {nb}")
@@ -183,11 +186,11 @@ if LEG == "w17":
                                  f"floor {floor_px}) - as-if-nonexistent, reproduced")
         check(px_ss <= floor_px, f"W17 both SHOWN frames identical ({px_ss} px <= "
                                  f"floor {floor_px}) - 'as if it never was hidden'")
-        report["w17"] = {"floor_px": floor_px, "beats": beats,
+        report["w17"] = {"floor_px": floor_px, "nonblack_px": nb, "beats": beats,
                          "shown_vs_hidden_px": [px_sh, px_sh2],
                          "hidden_vs_hidden_px": px_hh, "shown_vs_shown_px": px_ss}
     else:
-        report["w17"] = {"floor_px": floor_px, "beats": beats}
+        report["w17"] = {"floor_px": floor_px, "nonblack_px": nb, "beats": beats}
 
 # ===================================================== S10: hidden reference =
 if LEG == "s10":
