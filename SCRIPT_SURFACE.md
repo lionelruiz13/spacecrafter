@@ -47,6 +47,12 @@ document).
 > three of them a 2020 reference document says the spelling was real. Those
 > questions stay open and are still worth a sentence each.
 > *(Recorded in the tracking ledger at INTENT §11.149(e) / §5.97.)*
+>
+> **[2026-08-30] The two gaps above are closed**: the checker was rebuilt
+> and re-run on your new file, and the 267 added lines are now examined.
+> The fixes hold — nothing listed as fixed above re-fired. The ADDED lines
+> carry a crop of their own: **section 4 below (SS-20…24)**, plus one
+> half-fix recorded in SS-3's status.
 
 - **SS-1** (ref: §5.97a) — Line 94 contains an INVISIBLE wrong character:
   a "no-break space" (one byte, 0xA0) where a normal space belongs. The
@@ -69,7 +75,12 @@ document).
   (renamed at some point — the script predates the rename). The lines do
   nothing today. Fix spelling? Status: **[2026-08-26] DONE by you** — all
   three respelled `datetime_display_*` (lines 373/376/379). Respelled, not
-  deleted, which is the answer as well as the fix.
+  deleted, which is the answer as well as the fix. **[2026-08-30] One of the
+  three is still broken**: the checker now ran on the new file, and the
+  `flag datetime_display_number` line (373) still does nothing — there IS no
+  on/off switch of that name, under either spelling; only the two `set …`
+  lines exist. If switching the multi-date display on and off matters to
+  your shows, that switch is missing (or spelled something we don't know).
 - **SS-4** (ref: §5.97c) — Line 930 `movetocity` no longer exists (the
   engine ignores the line), and line 912's `moveto … name marseille`
   carries the city name as decoration the engine never reads. Status:
@@ -224,4 +235,52 @@ New entries:
   search, session, shutdown, sub, suntrace, transition. Nine of those
   have no documentation anywhere in the tree except the code itself.
   FYI + invitation: if you have shows exercising them, they are
-  corpus gold. Status: FYI.
+  corpus gold. Status: FYI. **[2026-08-30] Your rewrite exercises three of
+  them** — `transition`, `dso2d` and `domemasters` now appear in the file.
+  Still never exercised: flyto, galaxy_stars, get, modulo, search, session,
+  shutdown, sub, suntrace (nine — and note line 1507 writes `mod`, which
+  misses `modulo`: SS-22).
+
+## 4. The 267 added lines — first full pass, 2026-08-30
+
+The checker was rebuilt and run over your rewritten file (the pass the
+2026-08-26 note said could not be done yet). The good news dominates:
+nearly all the new material reads exactly the way the engine will read it —
+the new sections (transition, `wait loading`, preload, DSO2D, `landing`,
+media loop/speed/subtitles, the newly documented flags) are clean. Five
+things are not:
+
+- **SS-20** — Lines 37–46, the new "Usage example": comments at the END of
+  command lines (`media action pause   # Stop video & sound`). A comment
+  only exists when `#` starts the line — mid-line, the `#` and every word
+  after it are read as more parameters. On these 8 lines the extra words
+  happen to be ignored, so the example WORKS today — but it teaches a
+  syntax the engine does not have, and a copied trailing comment can
+  silently change a line's meaning elsewhere. Fix: move each comment to its
+  own line? Status: OPEN.
+- **SS-21** — Lines 940/945: the two `(Warning! Don't forget …)` advice
+  lines have no `#`, so each one is executed as a command called
+  `(Warning!` and fails. The advice itself is kept and valuable; the lines
+  just need the `#`. Status: OPEN.
+- **SS-22** — Line 1507 `mod a 2`: the engine's name for this command is
+  `modulo` — `mod` does nothing here (worse, the engine's own suggestion
+  answers "did you mean mode?", pointing away from the intent). Question,
+  same class as SS-2: does YOUR current engine accept `mod` (an alias newer
+  than this tree), or is it a slip? Status: OPEN.
+- **SS-23** — Lines 1536/1539, the language examples:
+  `text "behobachter"` / `text "observateur"`. `text` needs its named parts
+  (`name … string … action load` — your own line 1444 shows the full form);
+  a lone quoted word is dropped silently, and these two lines draw nothing.
+  Same question as SS-22 — newer-engine shorthand, or a compressed example?
+  Status: OPEN.
+- **SS-24** — Line 1547 `struct if current_mode equal 0` has **no
+  `struct if end`**. Everywhere else in the file the pair is closed; here,
+  whenever the mode test fails (any mode other than the solar system), the
+  engine skips EVERY line after 1547, to the end of the script. In this
+  file that is the last ~60 lines (the wait/media/zoom examples); in a
+  show, the same shape silently cuts the whole tail. Fix: add the `end`.
+  Status: OPEN.
+
+(Minor, no decision needed: the new comet-tails demo line 181 repeats
+`halo true` twice, like the old Wirtanen line — harmless, the engine keeps
+the last value.)

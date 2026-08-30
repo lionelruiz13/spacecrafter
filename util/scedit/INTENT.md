@@ -197,6 +197,23 @@ notes.*
     values mix literals with prose; the editor's bare-token filter has
     one known false positive (`xRRGGBB`). Schema marker + validator
     check at next grammar touch.
+13. **`inline-comment` seed** [flagged by the 2026-08-30 corpus run] — a
+    mid-line token whose KEY begins with `#` is an inline-comment
+    attempt; the engine reads it and everything after it as parameters
+    (script.cpp:114 is column-1-only). The rewritten witness holds 8
+    TRUE instances producing 24 findings under generic ids
+    (unknown-parameter / dangling-key) with actively confusing messages
+    (`'#' … did you mean 'b'?`); a dedicated seed replaces them with 8
+    messages naming the actual mistake. C3-groundable: no legitimate
+    `#`-initial key exists anywhere in corpus or grammar. Touches
+    lint_seeds + sc_check + lint_cases + both expected files. Veto open.
+14. **`unclosed-struct` seed** [same run] — a `struct if` (or loop) left
+    unclosed at end of file: ifSwap is a stack, popped only by `end`
+    (:4611), skipped-while-set at :225 — unclosed + false condition
+    silently discards the file's whole tail. One TRUE instance in the
+    witness (:1547 → SS-24); rule needs the skip-region/nesting care
+    that was deliberately deferred at merge time (2026-08-04d). Veto
+    open.
 8. **Engine emitter** — the grammar file becomes a build/runtime
    artifact (D5 seams); propose upstream once the contract shape has
    survived slices 1–4.
@@ -216,6 +233,39 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-30] Third corpus run — the rewritten witness read by the
+  checker; §11.149(e)'s stated residue discharged.** Code `6a4d184b`.
+  Context: upstream rewrote `doc/superscript.sts` 2026-08-26 (`f0c8ef83`,
+  1407 → 1606 lines, ISO-8859 + CRLF preserved); the desktop probe
+  (parent §11.149(e)) verified the old findings byte-wise but named two
+  gaps — 267 added lines unexamined, checker not re-runnable there. Both
+  closed today on LovelyFoxDev: clean rebuild (fresh `build-lovely/`;
+  the migrated tree arrived foxy-owned — Vixy chowned mid-session),
+  8/8 gates, roundtrip byte-exact on the new file. corpus-expected
+  19 → 33, every row dispositioned (derivation-diff §7.3, zero false
+  positives): 15 cleared TRUE by the rewrite; 2 line-drift survivors
+  (:76 halo dup, :875 landscape spacecraft = SS-9); 1 half-fix — the
+  `date_display_*` respell fixed the two `set` lines, not the `flag`
+  line (:373 — no such flag exists; SS-3 amended); 30 new, of which 24
+  are ONE root (trailing-`#` inline comments ×8, SS-20), plus
+  `(Warning!` prose ×2 (SS-21), `mod` vs registered `modulo` (SS-22),
+  `text "word"` shorthand ×2 dropped silently (SS-23). One
+  rule-invisible defect recorded so silence ≠ health: unclosed
+  `struct if current_mode equal 0` at :1547 — polarity verified at
+  :4615-4621 (equal-false → push(true) → skip): any non-solar-system
+  mode silently discards the file's tail (SS-24). Items 13/14 queued
+  (two candidate seeds, veto open); SCRIPT_SURFACE §4 created,
+  SS-19's never-exercised set 12 → 9 (transition/dso2d/domemasters now
+  witnessed). Witness's new DOC layer noted as mining input, not
+  merged (grammar byte-untouched this session): comments documenting
+  flags `body_pick`/`dual_viewport`/`image_compression_loss`/
+  `lunar_eclipse_*`/`skip_pause`, `illuminate` size-as-brightness
+  semantics, `landscape landing` digit encoding, and the comet-tail
+  key set + defaults (item 4 input). `z_reflection` witness claim
+  checked at code: READ on the restart path (dsoNavigator.cpp:304) —
+  code-consistent, the old "inert rider" note does not cover this
+  site. Record notes: §7.0's "20 findings / +8" prose is off-by-one
+  vs its own 19-line record (noted in §7.3, left in place).
 - **[2026-08-04h] FTXUI shell gated GREEN — the D31 editor exists.**
   Code `0745dc34`. Supervisor re-gate: clean build 0 warnings, 8/8
   gates (5 inherited + editcore 154 checks + md5 round-trip +
