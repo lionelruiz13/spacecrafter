@@ -1,0 +1,22 @@
+file	clog	debug_message	console	total
+src/coreModule/landscape.cpp	10	0	0	10
+src/coreModule/milkyway.cpp	4	0	0	4
+src/coreModule/tully.cpp	3	0	0	3
+src/coreModule/starLines.cpp	15	0	0	15
+src/inGalaxyModule/dso3d.cpp	1	0	0	1
+src/inGalaxyModule/starManager.cpp	35	0	13	48
+src/inGalaxyModule/starNavigator.cpp	1	0	2	3
+src/mediaModule/media.cpp	7	0	0	7
+src/mediaModule/audio.cpp	19	0	0	19
+src/mediaModule/text_mgr.cpp	8	0	0	8
+src/mediaModule/video_player.cpp	34	0	0	34
+src/tools/s_texture.cpp	21	0	0	21
+src/tools/s_font.cpp	14	0	0	14
+src/tools/call_system.cpp	1	0	2	3
+src/ojmModule/ojm.cpp	6	0	10	16
+src/ojmModule/ojm_mgr.cpp	5	0	0	5
+src/navModule/anchor_manager.cpp	26	0	3	29
+src/navModule/anchor_creator_cor.cpp	10	0	0	10
+src/bodyModule/orbit_creator_cor.cpp	11	0	0	11
+src/uiModule/ui.cpp	7	0	0	7
+TOTAL				268

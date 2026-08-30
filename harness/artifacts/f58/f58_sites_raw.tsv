@@ -1,0 +1,463 @@
+arm	family	file	line	channel	commented	level	sink	text
+A	command	src/interfaceModule/app_command_interface.cpp	131	std::cout	True	(console)	(console)	str << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	170	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::INTERNAL	"Command: " + command + "Argument hash:"
+A	command	src/interfaceModule/app_command_interface.cpp	172	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"\t" + iter->first + " : " + iter->second, LOG_TYPE::L_DEBUG
+A	command	src/interfaceModule/app_command_interface.cpp	210	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"Execute_command " + commandline
+A	command	src/interfaceModule/app_command_interface.cpp	226	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"this command has not been executed " + commandline
+A	command	src/interfaceModule/app_command_interface.cpp	233	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Unrecognized or malformed command name")
+A	command	src/interfaceModule/app_command_interface.cpp	234	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	debug_message
+A	command	src/interfaceModule/app_command_interface.cpp	311	debug_message	True	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Unrecognized or malformed flag name")
+A	command	src/interfaceModule/app_command_interface.cpp	312	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	debug_message
+A	command	src/interfaceModule/app_command_interface.cpp	327	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	("Unrecognized or malformed flag argument")
+A	command	src/interfaceModule/app_command_interface.cpp	676	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Command 'flag': this flag cannot be toggled because its " "current value cannot be read; pass 'on' or 'off' instead."
+A	command	src/interfaceModule/app_command_interface.cpp	1148	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::INTERNAL	"no effect with unknown case "
+A	command	src/interfaceModule/app_command_interface.cpp	1169	clog	True	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"have execute: " + commandline
+A	command	src/interfaceModule/app_command_interface.cpp	1173	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"Could not execute: " + commandline
+A	command	src/interfaceModule/app_command_interface.cpp	1174	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	debug_message
+A	command	src/interfaceModule/app_command_interface.cpp	1186	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	("Unrecognized or malformed flag argument")
+A	command	src/interfaceModule/app_command_interface.cpp	1195	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Unrecognized or malformed command_flag behaviour")
+A	command	src/interfaceModule/app_command_interface.cpp	1205	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"No tcp : i can't send "
+A	command	src/interfaceModule/app_command_interface.cpp	1230	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'get': unknown status value")
+A	command	src/interfaceModule/app_command_interface.cpp	1233	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'get': unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	1318	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'session': the session could not be saved")
+A	command	src/interfaceModule/app_command_interface.cpp	1321	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'session': the session could not be loaded")
+A	command	src/interfaceModule/app_command_interface.cpp	1323	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'session': unknown or missing action, expected 'save' or 'load'")
+A	command	src/interfaceModule/app_command_interface.cpp	1344	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'search' : missing name argument")
+A	command	src/interfaceModule/app_command_interface.cpp	1356	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'planet_scale' : missing name or scale argument")
+A	command	src/interfaceModule/app_command_interface.cpp	1403	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command_'wait' : unrecognized or malformed argument name.")
+A	command	src/interfaceModule/app_command_interface.cpp	1424	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_personal: Unknown 'action' value"
+A	command	src/interfaceModule/app_command_interface.cpp	1431	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_'personal' : unrecognized or malformed argument"
+A	command	src/interfaceModule/app_command_interface.cpp	1455	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"Error loading nebula."
+A	command	src/interfaceModule/app_command_interface.cpp	1471	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'dso': unknown action value")
+A	command	src/interfaceModule/app_command_interface.cpp	1505	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'dso': case hidden unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	1509	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'dso' : unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	1527	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'dso3d' : unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	1545	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"Error loading dso."
+A	command	src/interfaceModule/app_command_interface.cpp	1549	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'dso2D': unknown action value")
+A	command	src/interfaceModule/app_command_interface.cpp	1552	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'dso2D' : unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	1573	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_personeq: Unknown 'action' value"
+A	command	src/interfaceModule/app_command_interface.cpp	1580	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_'personeq' : unrecognized or malformed argument"
+A	command	src/interfaceModule/app_command_interface.cpp	1607	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body_trace': unknown pen value")
+A	command	src/interfaceModule/app_command_interface.cpp	1625	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'body_trace' : unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	1876	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'color': unknown expected argument 'property'")
+A	command	src/interfaceModule/app_command_interface.cpp	1882	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'color': unknown property")
+A	command	src/interfaceModule/app_command_interface.cpp	1958	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'illuminate': filename not found")
+A	command	src/interfaceModule/app_command_interface.cpp	1965	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'illuminate': argument unknown")
+A	command	src/interfaceModule/app_command_interface.cpp	1972	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_'print': malformed command"
+A	command	src/interfaceModule/app_command_interface.cpp	1978	std::cout	True	(console)	(console)	oss.str() << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	1979	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	oss.str()
+A	command	src/interfaceModule/app_command_interface.cpp	1980	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	oss.str()
+A	command	src/interfaceModule/app_command_interface.cpp	2114	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_'set': malformed command"
+A	command	src/interfaceModule/app_command_interface.cpp	2120	std::cout	True	(console)	(console)	i.first << "->" << i.second << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	2129	std::cout	True	(console)	(console)	"size "<< m_appcommand.size() << " m_appcommand" << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	2134	std::cout	True	(console)	(console)	setName << " found" << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	2138	std::cout	True	(console)	(console)	setName << " not found" << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	2148	std::cout	True	(console)	(console)	setName << " : " << setValue << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	2151	std::cout	True	(console)	(console)	"parserSet-> " << static_cast<std::underlying_type<SCD_NAMES>::type>(parserSet) << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	2222	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_'set': unknown argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2224	std::cout	True	(console)	(console)	i.first << "->" << i.second << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	2226	clog	True	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	debug_message
+A	command	src/interfaceModule/app_command_interface.cpp	2239	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"Bad shutdown request."
+A	command	src/interfaceModule/app_command_interface.cpp	2259	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration' missing name parameter"
+A	command	src/interfaceModule/app_command_interface.cpp	2267	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration' filename not found"
+A	command	src/interfaceModule/app_command_interface.cpp	2284	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration': missing star_lines action load_star argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2286	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration': unknown star_lines action argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2297	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration', star_navigator missing name argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2306	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration' filename not found"
+A	command	src/interfaceModule/app_command_interface.cpp	2310	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration', star_navigator missing mode argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2325	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration': unknown starNavigator mode parameter"
+A	command	src/interfaceModule/app_command_interface.cpp	2333	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration': unknown starNavigator action argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2335	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration': unknown module argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2347	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration': unknown action value"
+A	command	src/interfaceModule/app_command_interface.cpp	2349	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'configuration': unknown argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2358	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'constellation': missing name"
+A	command	src/interfaceModule/app_command_interface.cpp	2370	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'constellation': missing type"
+A	command	src/interfaceModule/app_command_interface.cpp	2392	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'constellation': unknown type"
+A	command	src/interfaceModule/app_command_interface.cpp	2405	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'externalviewer' : fileName too short")
+A	command	src/interfaceModule/app_command_interface.cpp	2417	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_externalViewer media fileName not found"
+A	command	src/interfaceModule/app_command_interface.cpp	2423	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_externalViewer audio fileName not found"
+A	command	src/interfaceModule/app_command_interface.cpp	2429	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_externalViewer shell script fileName not found"
+A	command	src/interfaceModule/app_command_interface.cpp	2435	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_externalViewer shell script fileName not found"
+A	command	src/interfaceModule/app_command_interface.cpp	2441	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_externalViewer swf fileName not found"
+A	command	src/interfaceModule/app_command_interface.cpp	2447	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_externalViewer png fileName not found"
+A	command	src/interfaceModule/app_command_interface.cpp	2452	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'externalviewer': system error"
+A	command	src/interfaceModule/app_command_interface.cpp	2464	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'externalviewer' : unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	2559	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	oss.str()
+A	command	src/interfaceModule/app_command_interface.cpp	2563	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'heading' : unknown argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2586	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'meteors' : no zhr argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2607	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'landscape' : missing rotation parameter"
+A	command	src/interfaceModule/app_command_interface.cpp	2611	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'landscape' : invalid action parameter"
+A	command	src/interfaceModule/app_command_interface.cpp	2619	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'landscape' : invalid action parameter"
+A	command	src/interfaceModule/app_command_interface.cpp	2621	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'landscape' : unknown argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2636	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'screen_fader' : invalid alpha parameter"
+A	command	src/interfaceModule/app_command_interface.cpp	2652	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'text': argument 'name' needed")
+A	command	src/interfaceModule/app_command_interface.cpp	2672	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'text': argument 'string' needed")
+A	command	src/interfaceModule/app_command_interface.cpp	2762	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'text': parameter 'azimuth' or 'altitude' needed")
+A	command	src/interfaceModule/app_command_interface.cpp	2782	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'text': unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	2791	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"Error loading sky culture from path specified."
+A	command	src/interfaceModule/app_command_interface.cpp	2793	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_sky_culture : path or action missing"
+A	command	src/interfaceModule/app_command_interface.cpp	2814	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"Unable to execute script : " + file_with_path
+A	command	src/interfaceModule/app_command_interface.cpp	2815	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	debug_message
+A	command	src/interfaceModule/app_command_interface.cpp	2845	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_script : unknown parameter from 'action' argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2858	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_script : unknown parameter from 'speed' argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2868	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command_'script' : missing action argument"
+A	command	src/interfaceModule/app_command_interface.cpp	2916	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'audio': filename not found")
+A	command	src/interfaceModule/app_command_interface.cpp	2920	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'audio': filename not found")
+A	command	src/interfaceModule/app_command_interface.cpp	2925	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'audio': unknown action value")
+A	command	src/interfaceModule/app_command_interface.cpp	2929	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'audio' : unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	2943	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Image argument name required.")
+A	command	src/interfaceModule/app_command_interface.cpp	2956	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'image': filename not found")
+A	command	src/interfaceModule/app_command_interface.cpp	2980	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Unable to load image: ") + argName
+A	command	src/interfaceModule/app_command_interface.cpp	2986	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Unable to find image: ") + argName
+A	command	src/interfaceModule/app_command_interface.cpp	3042	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'image': HP number ") + argHP + _(" is not a valid star")
+A	command	src/interfaceModule/app_command_interface.cpp	3134	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'select' : no object found"
+A	command	src/interfaceModule/app_command_interface.cpp	3200	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'look_at': wrong argument")
+A	command	src/interfaceModule/app_command_interface.cpp	3220	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'star_lines': wrong argument")
+A	command	src/interfaceModule/app_command_interface.cpp	3241	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'galaxy_stars': file not found: ") + argLoad
+A	command	src/interfaceModule/app_command_interface.cpp	3248	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'galaxy_stars': wrong argument. Use load filename")
+A	command	src/interfaceModule/app_command_interface.cpp	3264	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'position': unknown parameter")
+A	command	src/interfaceModule/app_command_interface.cpp	3298	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'zoom': unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	3316	std::cout	True	(console)	(console)	"Changing timerate to " << argRate << " duration: " << argDuration << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	3320	std::cout	True	(console)	(console)	"Changing timerate to pause" << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	3323	std::cout	True	(console)	(console)	"Changing timerate to resume" << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	3392	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'time_rate': unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	3413	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'move_to' : missing lat && lon && alt"
+A	command	src/interfaceModule/app_command_interface.cpp	3513	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"Command 'media' argument action need argument 'type'"
+A	command	src/interfaceModule/app_command_interface.cpp	3528	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'media': file videoname not found")
+A	command	src/interfaceModule/app_command_interface.cpp	3550	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"command 'media':: video file has no extension to build language name " + languagedVideoName
+A	command	src/interfaceModule/app_command_interface.cpp	3564	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"command 'media':: succesfull locale srt " + srtFileName
+A	command	src/interfaceModule/app_command_interface.cpp	3566	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"command 'media':: locale srt not found"
+A	command	src/interfaceModule/app_command_interface.cpp	3569	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"command 'media':: cannot build locale srt name as video file has no extension " + videoName
+A	command	src/interfaceModule/app_command_interface.cpp	3576	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"command 'media':: locale srt not found, trying " + srtName
+A	command	src/interfaceModule/app_command_interface.cpp	3581	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"command 'media':: srt file not found " + srtName
+A	command	src/interfaceModule/app_command_interface.cpp	3584	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"command 'media':: succesfull srt " + srtFileName
+A	command	src/interfaceModule/app_command_interface.cpp	3588	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"command 'media':: succesfull locale srt " + srtFileName
+A	command	src/interfaceModule/app_command_interface.cpp	3593	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"command 'media':: srt file not found " + srtName
+A	command	src/interfaceModule/app_command_interface.cpp	3596	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"command 'media':: succesfull srt " + srtFileName
+A	command	src/interfaceModule/app_command_interface.cpp	3603	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"command 'media':: subtitles activated, to show " + srtFileName
+A	command	src/interfaceModule/app_command_interface.cpp	3644	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"command 'media':: succesfull locale audio " + audioFileName
+A	command	src/interfaceModule/app_command_interface.cpp	3646	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"command 'media':: locale audio not found"
+A	command	src/interfaceModule/app_command_interface.cpp	3649	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"command 'media':: cannot build locale audio name as video file has no extension " + videoName
+A	command	src/interfaceModule/app_command_interface.cpp	3656	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"command 'media':: locale audio not found, trying " + audioName
+A	command	src/interfaceModule/app_command_interface.cpp	3661	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"command 'media':: audio file not found " + audioName
+A	command	src/interfaceModule/app_command_interface.cpp	3664	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"command 'media':: succesfull audio " + audioFileName
+A	command	src/interfaceModule/app_command_interface.cpp	3668	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"command 'media':: succesfull locale audio " + audioFileName
+A	command	src/interfaceModule/app_command_interface.cpp	3673	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"command 'media':: audio not found " + audioName
+A	command	src/interfaceModule/app_command_interface.cpp	3676	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"command 'media':: succesfull audio " + audioFileName
+A	command	src/interfaceModule/app_command_interface.cpp	3774	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'media': unknown parameter")
+A	command	src/interfaceModule/app_command_interface.cpp	3792	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'domemasters': unknown action value")
+A	command	src/interfaceModule/app_command_interface.cpp	3794	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'domemasters': unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	3825	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Error parsing date local")
+A	command	src/interfaceModule/app_command_interface.cpp	3837	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Error parsing date utc")
+A	command	src/interfaceModule/app_command_interface.cpp	3848	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Error date local, vous devez être sur un astre pour utiliser l'argument relative")
+A	command	src/interfaceModule/app_command_interface.cpp	3879	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Error date local, vous devez être sur un astre pour utiliser l'argument sideral")
+A	command	src/interfaceModule/app_command_interface.cpp	3914	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'date': unknown load value")
+A	command	src/interfaceModule/app_command_interface.cpp	3941	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'date' : unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	4012	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body': the current system has no data file to reload")
+A	command	src/interfaceModule/app_command_interface.cpp	4026	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body': the current system could not be saved")
+A	command	src/interfaceModule/app_command_interface.cpp	4041	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'body' : unknown action argument"
+A	command	src/interfaceModule/app_command_interface.cpp	4059	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body': unknown hidden value")
+A	command	src/interfaceModule/app_command_interface.cpp	4071	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body': unknown orbit value")
+A	command	src/interfaceModule/app_command_interface.cpp	4078	std::cout	True	(console)	(console)	"I receive a color info for " << argName << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	4085	std::cout	True	(console)	(console)	"RGB: " << argR << " " << argG << " " << argB << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	4088	std::cout	True	(console)	(console)	"Error color " << debug_message << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	4092	std::cout	True	(console)	(console)	"News read : " << argColor << " " << Vcolor << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	4110	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' datum_radius: value must be >= 0 km " "(0 = enterable/transparent body, the body radius = solid surface, " "radius*1.002 = terrain clearance). datum_radius unchanged
+A	command	src/interfaceModule/app_command_interface.cpp	4115	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' datum_radius: no body named '") + argName + _("'. datum_radius unchanged
+A	command	src/interfaceModule/app_command_interface.cpp	4125	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' ground_radius: value must be >= 0 km " "(0 = enterable body, descend to the centre
+A	command	src/interfaceModule/app_command_interface.cpp	4130	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' ground_radius: no body named '") + argName + _("'. ground_radius unchanged
+A	command	src/interfaceModule/app_command_interface.cpp	4136	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body': case name unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	4145	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body': unknown argument")
+A	command	src/interfaceModule/app_command_interface.cpp	4160	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'font': unknown action argument")
+A	command	src/interfaceModule/app_command_interface.cpp	4166	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'font': missing target argument")
+A	command	src/interfaceModule/app_command_interface.cpp	4177	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'font' : filename "+ fileName + " can't be found"
+A	command	src/interfaceModule/app_command_interface.cpp	4178	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	debug_message
+A	command	src/interfaceModule/app_command_interface.cpp	4182	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'font': missing filename argument")
+A	command	src/interfaceModule/app_command_interface.cpp	4193	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'camera' : action argument"
+A	command	src/interfaceModule/app_command_interface.cpp	4200	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'camera' : missing target"
+A	command	src/interfaceModule/app_command_interface.cpp	4212	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'align_with' : missing body"
+A	command	src/interfaceModule/app_command_interface.cpp	4226	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"error align_with_body body"
+A	command	src/interfaceModule/app_command_interface.cpp	4236	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'transition_to' : missing target"
+A	command	src/interfaceModule/app_command_interface.cpp	4244	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"error transition_to point"
+A	command	src/interfaceModule/app_command_interface.cpp	4252	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'transition_to' : missing target name"
+A	command	src/interfaceModule/app_command_interface.cpp	4259	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"error transition_to body"
+A	command	src/interfaceModule/app_command_interface.cpp	4263	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'transition_to' : unknown target arg"
+A	command	src/interfaceModule/app_command_interface.cpp	4272	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'move_to' : missing target"
+A	command	src/interfaceModule/app_command_interface.cpp	4283	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'move_to point' : missing a coordinate"
+A	command	src/interfaceModule/app_command_interface.cpp	4297	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"error move_to point"
+A	command	src/interfaceModule/app_command_interface.cpp	4306	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'move_to body' : missing a body_name or time"
+A	command	src/interfaceModule/app_command_interface.cpp	4320	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"error move_to body"
+A	command	src/interfaceModule/app_command_interface.cpp	4327	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'camera' : unknown target arg"
+A	command	src/interfaceModule/app_command_interface.cpp	4342	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"error saving camera"
+A	command	src/interfaceModule/app_command_interface.cpp	4350	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'camera load' : missing file name"
+A	command	src/interfaceModule/app_command_interface.cpp	4357	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"error loading CameraAnchor"
+A	command	src/interfaceModule/app_command_interface.cpp	4367	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'camera free_mode' : missing state"
+A	command	src/interfaceModule/app_command_interface.cpp	4381	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'camera descend' : missing coef"
+A	command	src/interfaceModule/app_command_interface.cpp	4394	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'camera lift_off' : missing altitude"
+A	command	src/interfaceModule/app_command_interface.cpp	4412	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'camera' : missing name"
+A	command	src/interfaceModule/app_command_interface.cpp	4420	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"error creating CameraAnchor"
+A	command	src/interfaceModule/app_command_interface.cpp	4428	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"error drop CameraAnchor"
+A	command	src/interfaceModule/app_command_interface.cpp	4436	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"error switch CameraAnchor"
+A	command	src/interfaceModule/app_command_interface.cpp	4447	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"error camera follow_rotation"
+A	command	src/interfaceModule/app_command_interface.cpp	4451	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"command 'camera' : unknown action argument"
+A	command	src/interfaceModule/app_command_interface.cpp	4487	std::cout	True	(console)	(console)	"Command define : " << mArg.c_str() << " => " << mValue.c_str() << std::endl
+A	command	src/interfaceModule/app_command_interface.cpp	4490	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"Unexpected error in command_define"
+A	command	src/interfaceModule/app_command_interface.cpp	4503	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"unexpected error in command_addition"
+A	command	src/interfaceModule/app_command_interface.cpp	4516	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"unexpected error in command_substract"
+A	command	src/interfaceModule/app_command_interface.cpp	4530	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"unexpected error in command__multiply"
+A	command	src/interfaceModule/app_command_interface.cpp	4543	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"unexpected error in command__divide"
+A	command	src/interfaceModule/app_command_interface.cpp	4556	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"unexpected error in command__modulo"
+A	command	src/interfaceModule/app_command_interface.cpp	4569	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"unexpected error in command__tangent"
+A	command	src/interfaceModule/app_command_interface.cpp	4582	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"unexpected error in command__trunc"
+A	command	src/interfaceModule/app_command_interface.cpp	4595	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	"unexpected error in command__sinus"
+A	command	src/interfaceModule/app_command_interface.cpp	4723	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("unknown random parameter")
+A	command	src/interfaceModule/app_command_interface.cpp	4745	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'transition': unknown argument")
+A	command	src/interfaceModule/app_command_eval.cpp	139	std::cout	False	(console)	(console)	mArg << " is a reservedVar so you can't define it" << std::endl
+A	command	src/interfaceModule/app_command_eval.cpp	213	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"Not possible to operate with undefined variable so define to null from ops"
+A	command	src/interfaceModule/app_command_eval.cpp	234	std::cout	False	(console)	(console)	"not possible to operate with undefined variable so define to 1" << std::endl
+A	command	src/interfaceModule/app_command_eval.cpp	255	std::cout	True	(console)	(console)	"+++++++++++++++++" << std::endl
+A	command	src/interfaceModule/app_command_eval.cpp	258	std::cout	True	(console)	(console)	"No variable available" << std::endl
+A	command	src/interfaceModule/app_command_eval.cpp	259	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"Not variable available"
+A	command	src/interfaceModule/app_command_eval.cpp	263	std::cout	True	(console)	(console)	var_it->first << " => " << var_it->second << '\n'
+A	command	src/interfaceModule/app_command_eval.cpp	264	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	var_it->first + " => " + var_it->second.first, LOG_TYPE::L_INFO , LOG_FILE::SCRIPT
+A	command	src/interfaceModule/app_command_eval.cpp	267	std::cout	True	(console)	(console)	"-----------------" << std::endl
+A	command	src/interfaceModule/app_command_eval.cpp	341	std::cout	True	(console)	(console)	"Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl
+A	command	src/interfaceModule/app_command_eval.cpp	342	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"Unknown reserved variable " + var +". Default 0.0 is returned."
+A	command	src/interfaceModule/app_command_eval.cpp	368	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"No setter with reserved variable " + var +". Do nothing."
+A	command	src/interfaceModule/app_command_eval.cpp	369	std::cout	True	(console)	(console)	"No setter with reserved variable " << var << ". Do nothing." << std::endl
+A	command	src/interfaceModule/app_command_eval.cpp	372	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"Unknown reserved variable " + var +". Do nothing."
+A	command	src/interfaceModule/app_command_eval.cpp	373	std::cout	True	(console)	(console)	"Unknown reserved variable " << var << ". Do nothing." << std::endl
+A	command	src/interfaceModule/app_command_init.cpp	29	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	source + " is no longer used in software"
+A	command	src/interfaceModule/app_command_init.cpp	385	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	helpMsg
+A	command	src/interfaceModule/app_command_init.cpp	386	std::cout	True	(console)	(console)	source << " has for close value " << solution << std::endl
+A	script	src/scriptModule/script.cpp	49	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"Token script : " + path + " : " + elmt
+A	script	src/scriptModule/script.cpp	70	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"Printing script: --BEGIN"
+A	script	src/scriptModule/script.cpp	72	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	" " + pMove->getToken(), LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT
+A	script	src/scriptModule/script.cpp	75	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"Printing script: --END"
+A	script	src/scriptModule/script.cpp	104	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::SCRIPT	"Unable to open script: " + script_file
+A	script	src/scriptModule/script.cpp	174	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"End of script"
+A	script	src/scriptModule/script.cpp	183	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"End of script detected but not at end of the execution stack"
+A	script	src/scriptModule/script_mgr.cpp	65	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"ScriptMgr: load "+ fullFileName
+A	script	src/scriptModule/script_mgr.cpp	66	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"ScriptMgr: load "+ fullFileName
+A	script	src/scriptModule/script_mgr.cpp	111	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"ScriptMgr: script end"
+A	script	src/scriptModule/script_mgr.cpp	134	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"ScriptMgr::script action pause"
+A	script	src/scriptModule/script_mgr.cpp	145	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"ScriptMgr::script action resume"
+A	script	src/scriptModule/script_mgr.cpp	200	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"ScriptMgr::Already recording script"
+A	script	src/scriptModule/script_mgr.cpp	203	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"ScriptMgr::Script recording stopped."
+A	script	src/scriptModule/script_mgr.cpp	233	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"ScriptMgr::Now recording actions to file: " + script_filename
+A	script	src/scriptModule/script_mgr.cpp	235	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::SCRIPT	"ScriptMgr::Error opening script file for writing: " + script_filename
+A	script	src/scriptModule/script_mgr.cpp	254	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"RECORD: " + commandline
+A	script	src/scriptModule/script_mgr.cpp	263	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"ScriptMgr::Script recording stopped."
+A	script	src/scriptModule/script_mgr.cpp	278	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"ScriptMgr::acquireGlobalLock - Can't simultaneously acquire more than 255 locks - one script is leaking a lock !"
+A	script	src/scriptModule/script_mgr.cpp	360	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"ScriptMgr::Unable to read script directory"
+A	tcp	src/tools/io.cpp	370	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"ServerSocket data setOutput too big"
+A	tcp	src/tools/io.cpp	384	clog	True	log	LOG_FILE::TCP	"TCP : " + msg
+A	tcp	src/tools/io.cpp	722	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"TCP : nobody to answer \"" + out.data.substr(0, 60) + "\" to - the connection that asked is gone and no client " "subscribed to the feedback channel with $LOGON"
+A	intake	src/appModule/app.cpp	124	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Projection mode: " + projectionStr + " (type=" + std::to_string(Context::projectionType) + ")"
+A	intake	src/appModule/app.cpp	128	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Rear projection: " + rearProjectionStr + " (enabled=" + std::to_string(Context::rearProjection) + ")"
+A	intake	src/appModule/app.cpp	210	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Performance issue : Frame flush is enabled -- Only enable this if you suspect a bug in the synchronization mechanism."
+A	intake	src/appModule/app.cpp	265	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Initializing Vulkan..."
+A	intake	src/appModule/app.cpp	305	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"shadow_resolution MUSTN'T exceed " + std::to_string(SHADOW_MAX_SIZE)
+A	intake	src/appModule/app.cpp	308	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"shadow_resolution MUST be a multiple of " + std::to_string(SHADOW_LOCAL_SIZE) + " - fallback to shadow_resolution of " + std::to_string(context.shadowRes)
+A	intake	src/appModule/app.cpp	475	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Finalizing Vulkan initialization..."
+A	intake	src/appModule/app.cpp	513	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Vulkan initialization completed"
+A	intake	src/appModule/app.cpp	654	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Read daykeymode as <" + DayKeyMode + ">"
+A	intake	src/appModule/app.cpp	731	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"buffer TCP size " + std::to_string(buffer_in_size)
+A	intake	src/appModule/app.cpp	741	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"buffer MKFIFO size "+ std::to_string(buffer_in_size)
+A	intake	src/appModule/app.cpp	745	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	CallSystem::getRamInfo()
+A	intake	src/appModule/app.cpp	747	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"End of loading SC"
+A	intake	src/appModule/app.cpp	748	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"End of loading SC"
+A	intake	src/appModule/app.cpp	761	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"get mkfifo: " + out
+A	intake	src/appModule/app.cpp	770	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"get tcp : " + out
+A	intake	src/appModule/app.cpp	927	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Application locale is " + Translator::globalTranslator.getLocaleName()
+A	intake	src/appModule/app.cpp	935	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Saving configuration file " + confFile + " ..."
+A	intake	src/appModule/app.cpp	980	clog	True	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"MASTERPUT is in action"
+A	intake	src/appModule/mkfifo.cpp	70	clog	False	LOG_TYPE::L_INFO	LOG_FILE::TCP	"Thread MKFIFO, buffer_in_size is "+std::to_string(buffer_size)
+A	intake	src/appModule/mkfifo.cpp	76	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Pipe named " + filename
+A	intake	src/appModule/mkfifo.cpp	80	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::TCP	"Error creating MkFifo pipe thread in_thread "+std::to_string(errno)
+A	intake	src/appModule/mkfifo.cpp	83	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Creating Mkfifo pipe successfull"
+A	intake	src/appModule/mkfifo.cpp	87	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::TCP	"Unable to open named mkfifo pipe, error code is "+std::to_string(errno)
+A	intake	src/appModule/mkfifo.cpp	95	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::TCP	"Mkfifo read() error "+std::to_string(errno)
+A	intake	src/appModule/mkfifo.cpp	106	clog	False	LOG_TYPE::L_INFO	LOG_FILE::TCP	"Closing Mkfifo pipe thread"
+A	intake	src/appModule/mkfifo.cpp	113	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::TCP	"Mkfifo is not implemented on windows"
+A	intake	src/appModule/mkfifo.cpp	128	clog	False	LOG_TYPE::L_INFO	LOG_FILE::TCP	"Mkfifo : I get " + output
+B	ssystem	src/bodyModule/solarsystem.cpp	96	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Adding Moon to Earth binary orbit."
+B	ssystem	src/bodyModule/solarsystem.cpp	99	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	englishName + " body could not be added to Earth orbit."
+B	ssystem	src/bodyModule/solarsystem.cpp	102	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	englishName + " body could not be added to Earth orbit calculation, position may be inacurate"
+B	ssystem	src/bodyModule/ssystem_factory.cpp	69	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"SolarSystem: no default objMgr loaded, system aborded"
+B	ssystem	src/bodyModule/ssystem_factory.cpp	276	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Warning: No name found for planet '" + planetName + "' in " + planetfile
+B	ssystem	src/bodyModule/ssystem_factory.cpp	371	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Composed system file " + composedPath + " wins over " + (filename.empty() ? "the built-in " + name + " system content" : "the legacy file " + filename) + " (shadowed, NOT read). To fall back, rename or remove " + composedPath + "."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	422	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Can't create the modularSystem directory (" + ec.message() + ") - composed twin of " + legacyFile + " not generated."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	520	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	std::string("config.ini [viewing] ") + configKey + " = " + configured + " is IGNORED for '" + bodyName + "': that body is declared by " + source + ", and a modular system file owns the display scaling of the bodies it " "declares (config.ini owns it for the legacy format only). '" + bodyName + "' is drawn at display_scale = " + authored + ". To change it, set display_scale in " "its section of " + source + "; to give the value back to config.ini, remove or rename " "that file so the legacy system file is read again."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	551	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"B5 §6.9 pilot: flag_experimental_oort is set, but there is no " "\"Solar\" modular system node to attach the cloud to - the experimental oort " "was NOT instantiated (the old oort cloud is unaffected)."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	598	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"B5 §6.9 pilot: experimental oort modular body instantiated at the " "SolarSystem floor (" + std::to_string(nbr) + " points)."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	645	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Ignoring line without '=' in " + dir + name + ": '" + key + "' - a key/value line needs 'key = value'; write '#' first " "to make it a comment."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	696	std::cout	False	(console)	(console)	"Params :\n"
+B	ssystem	src/bodyModule/ssystem_factory.cpp	698	std::cout	False	(console)	(console)	p.first << " : " << p.second << '\n'
+B	ssystem	src/bodyModule/ssystem_factory.cpp	708	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"galactic.ini: skipping " + label + " - " + why + ". A star system needs name, x, y and z (galactic coordinates in " "light years); the section is ignored and the rest of the file is " "loaded normally."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	953	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Cannot reload the system '" + system->getEnglishName() + "': it was not loaded from a data file (it is a container level of the " "hierarchy, not a system description). Move the observer into a system " "loaded from a file (e.g. 'set home_planet Earth') and reload from there.", LOG_TYPE::L_ERROR
+B	ssystem	src/bodyModule/ssystem_factory.cpp	967	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"System reload: the observer's reference body '" + referenceName + "' is not defined by the reloaded data - the observer now references '" + camera->getReferenceBody()->getEnglishName() + "'. Restore that body in the data file, or move the observer with " "'set home_planet <body>'.", LOG_TYPE::L_ERROR
+B	ssystem	src/bodyModule/ssystem_factory.cpp	984	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"System '" + system->getEnglishName() + "' reloaded (observer state kept)", LOG_TYPE::L_INFO
+B	ssystem	src/bodyModule/ssystem_factory.cpp	997	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Command 'body action save': '" + filename + "' is a path, and this " "command takes a file NAME - a system file is written next to the others, in " + composedPathOf("<system>") + ". Nothing was written. (The legacy system files of " "this install are never written to, by design.) To fix: pass a plain name, e.g. " "'body action save filename " + node + "'."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	1005	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Command 'body action save': '" + filename + "' is the name of a " "MACHINE-OWNED file - spacecrafter regenerates it at every legacy load of this " "system, so a save there would be silently overwritten. Nothing was written. " "To fix: drop the '.disabled' (the name without it is the one that gets read), " "or pick another name."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	1021	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Command 'body action save': can't create the modularSystem directory (" + ec.message() + ") - system '" + node + "' NOT saved."
+B	ssystem	src/bodyModule/ssystem_factory.cpp	1084	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"New path has no body '" + name + "' to re-reference the camera on"
+B	ssystem	src/bodyModule/protosystem.cpp	151	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Unable to open file "+ planetfile
+B	ssystem	src/bodyModule/protosystem.cpp	153	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"(solar system loaded)"
+B	ssystem	src/bodyModule/protosystem.cpp	166	std::cout	True	(console)	(console)	"removeBody " << name << std::endl
+B	ssystem	src/bodyModule/protosystem.cpp	170	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"SolarSystem::removeBody : Could not find a body named : " + name
+B	ssystem	src/bodyModule/protosystem.cpp	175	std::cout	True	(console)	(console)	"removeBody " << name << " but have satellite" << std::endl
+B	ssystem	src/bodyModule/protosystem.cpp	184	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"SolarSystem::removeBody : Could not remove satelite : " + satName
+B	ssystem	src/bodyModule/protosystem.cpp	188	std::cout	True	(console)	(console)	"removeBody " << name << " is oki" << std::endl
+B	ssystem	src/bodyModule/protosystem.cpp	209	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"SolarSystem::removeSupplementalBodies : Could not find a body named : " + name
+B	ssystem	src/bodyModule/protosystem.cpp	214	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"SolarSystem::removeSupplementalBodies : Can't destroy suplementary bodies if attached to one"
+B	ssystem	src/bodyModule/protosystem.cpp	473	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Unknown planet_name in bodyTraceBodyChange"
+B	ssystem	src/bodyModule/protosystem.cpp	517	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Loading new Stellar System object... " + englishName
+B	ssystem	src/bodyModule/protosystem.cpp	523	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"SolarSystem: can not add body with no name"
+B	ssystem	src/bodyModule/protosystem.cpp	530	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"No parent specified for " + englishName + ", assume parent is the center body (Specify 'none' for no parent)"
+B	ssystem	src/bodyModule/protosystem.cpp	534	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"SolarSystem: can't find parent for " + englishName
+B	ssystem	src/bodyModule/protosystem.cpp	542	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"No valid body type specified for " + englishName + ", assume 'Asteroid'"
+B	ssystem	src/bodyModule/protosystem.cpp	547	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"SolarSystem: Can not add body named " + englishName + " because a body of that name already exist"
+B	ssystem	src/bodyModule/protosystem.cpp	565	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Creating Earth orbit..."
+B	ssystem	src/bodyModule/protosystem.cpp	569	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	error
+B	ssystem	src/bodyModule/protosystem.cpp	582	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	error
+B	ssystem	src/bodyModule/protosystem.cpp	615	std::cout	False	(console)	(console)	"something went wrong when creating orbit from "<< englishName << std::endl
+B	ssystem	src/bodyModule/protosystem.cpp	616	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Error when creating orbit from " + englishName
+B	ssystem	src/bodyModule/protosystem.cpp	637	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Body '" + englishName + "': could not build an orbit from coord_func = '" + funcname + "'. This body is NOT added to the old render path. Valid values here are " "ell_orbit, comet_orbit, barycenter, still_orbit, location_orbit, earth_custom, " "lunar_custom, and the *_special ephemeris functions. To fix: use one of those and " "give it the keys it needs - or, for 'surface_point', nothing: that family belongs to " "the experimental path, which reads this same declaration and will create the body " "there."
+B	ssystem	src/bodyModule/protosystem.cpp	894	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Undefined body"
+B	ssystem	src/bodyModule/protosystem.cpp	897	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Failed to create body"
+B	config	src/mainModule/checkConfig.cpp	478	std::cout	True	(console)	(console)	"nothing to do" << std::endl
+B	config	src/mainModule/checkConfig.cpp	480	std::cout	True	(console)	(console)	user_conf.getSecname(i) << std::endl
+B	config	src/mainModule/checkConfig.cpp	484	std::cout	True	(console)	(console)	"|->" << *it << std::endl
+B	config	src/mainModule/checkConfig.cpp	486	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"config.ini is up to date"
+B	config	src/mainModule/checkConfig.cpp	512	std::cout	False	(console)	(console)	(*it) << std::endl
+B	config	src/mainModule/checkConfig.cpp	515	std::cout	False	(console)	(console)	(*it) << std::endl
+B	config	src/mainModule/checkConfig.cpp	522	std::cout	True	(console)	(console)	"i did " << std::endl
+B	config	src/mainModule/checkConfig.cpp	527	std::cout	True	(console)	(console)	"clef : " << *itKey << std::endl
+B	config	src/mainModule/checkConfig.cpp	568	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"key " + *itKey + " has been removed from config.ini"
+B	config	src/mainModule/checkConfig.cpp	571	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"section [" + test + "] has been removed from config.ini"
+B	config	src/mainModule/checkConfig.cpp	595	std::cout	True	(console)	(console)	"section " << *itSec << std::endl
+B	config	src/mainModule/checkConfig.cpp	597	std::cout	True	(console)	(console)	"tmp " << tmp << std::endl
+B	config	src/mainModule/checkConfig.cpp	601	std::cout	True	(console)	(console)	"clef candidate " << *itKey << std::endl
+B	config	src/mainModule/checkConfig.cpp	606	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"key " + *itKey + " has been removed from config.ini"
+B	config	src/tools/init_parser.cpp	62	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Init_parser : can't find config file "+ file
+B	config	src/tools/init_parser.cpp	70	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Init_parser : can't read config file "+ file
+B	config	src/tools/init_parser.cpp	83	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Init_parser : can't open config file "+ file_name
+B	config	src/tools/init_parser.cpp	95	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser can't find the configuration key \"" + key + "\", default empty string returned"
+B	config	src/tools/init_parser.cpp	106	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser def_str " + section + ":" + key
+B	config	src/tools/init_parser.cpp	120	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser : can't find the configuration key \"" + key + "\", default 0 value returned"
+B	config	src/tools/init_parser.cpp	133	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser def_int " + section + ":" + key
+B	config	src/tools/init_parser.cpp	147	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser : can't find the configuration key \"" + key + "\", default 0 value returned"
+B	config	src/tools/init_parser.cpp	160	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser def_double " + section + ":" + key
+B	config	src/tools/init_parser.cpp	174	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser : can't find the configuration key \"" + key + "\", default 0 value returned"
+B	config	src/tools/init_parser.cpp	187	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser def_bool " + section + ":" + key
+B	config	src/tools/init_parser.cpp	283	std::cout	True	(console)	(console)	nbKey<< std::endl
+B	config	src/tools/init_parser.cpp	288	std::cout	True	(console)	(console)	"|->" << keys[j]<< std::endl
+B	config	src/tools/app_settings.cpp	121	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Loaded experimental settings from " + file
+B	config	src/tools/app_settings.cpp	252	std::cout	False	(console)	(console)	"------------------------------------------------------" << std::endl
+B	config	src/tools/app_settings.cpp	253	std::cout	False	(console)	(console)	"getConfigFile " << getConfigFile() << std::endl
+B	config	src/tools/app_settings.cpp	254	std::cout	False	(console)	(console)	"getConfigDir " << getConfigDir() << std::endl
+B	config	src/tools/app_settings.cpp	255	std::cout	False	(console)	(console)	"getDataRoot " << getDataRoot() << std::endl
+B	config	src/tools/app_settings.cpp	256	std::cout	False	(console)	(console)	"getDataDir " << getDataDir() << std::endl
+B	config	src/tools/app_settings.cpp	257	std::cout	False	(console)	(console)	"getLocaleDir " << getLocaleDir() << std::endl
+B	config	src/tools/app_settings.cpp	258	std::cout	False	(console)	(console)	"getUserFontDir " << getUserFontDir() << std::endl
+B	config	src/tools/app_settings.cpp	259	std::cout	False	(console)	(console)	"getScriptDir " << getScriptDir() << std::endl
+B	config	src/tools/app_settings.cpp	260	std::cout	False	(console)	(console)	"getLogDir " << getLogDir() << std::endl
+B	config	src/tools/app_settings.cpp	261	std::cout	False	(console)	(console)	"getWebDir " << getWebDir() << std::endl
+B	config	src/tools/app_settings.cpp	262	std::cout	False	(console)	(console)	"getLandscapeDir " << getLandscapeDir() << std::endl
+B	config	src/tools/app_settings.cpp	263	std::cout	False	(console)	(console)	"getSkyCultureDir " << getSkyCultureDir() << std::endl
+B	config	src/tools/app_settings.cpp	264	std::cout	False	(console)	(console)	"getAudioDir " << getAudioDir() << std::endl
+B	config	src/tools/app_settings.cpp	265	std::cout	False	(console)	(console)	"getVideoDir " << getVideoDir() << std::endl
+B	config	src/tools/app_settings.cpp	266	std::cout	False	(console)	(console)	"getMediaDir " << getMediaDir() << std::endl
+B	config	src/tools/app_settings.cpp	267	std::cout	False	(console)	(console)	"getFtpDir " << getFtpDir() << std::endl
+B	config	src/tools/app_settings.cpp	268	std::cout	False	(console)	(console)	"getShaderDir " << getShaderDir() << std::endl
+B	config	src/tools/app_settings.cpp	269	std::cout	False	(console)	(console)	"getModel3DDir " << getModel3DDir() << std::endl
+B	config	src/tools/app_settings.cpp	270	std::cout	False	(console)	(console)	"getVR360Dir " << getVR360Dir() << std::endl
+B	config	src/tools/app_settings.cpp	271	std::cout	False	(console)	(console)	"getPictureDir " << getPictureDir() << std::endl
+B	config	src/tools/app_settings.cpp	272	std::cout	False	(console)	(console)	"getTextureDir " << getTextureDir() << std::endl
+B	config	src/tools/app_settings.cpp	273	std::cout	False	(console)	(console)	"getLanguageDir " << getLanguageDir() << std::endl
+B	config	src/tools/app_settings.cpp	274	std::cout	False	(console)	(console)	"getScreenshotDirectory " << getScreenshotDirectory() << std::endl
+B	config	src/tools/app_settings.cpp	275	std::cout	False	(console)	(console)	"getVframeDirectory " << getVframeDirectory() << std::endl
+B	config	src/tools/app_settings.cpp	276	std::cout	False	(console)	(console)	"------------------------------------------------------" << std::endl
+B	star	src/starModule/hip_star_mgr.cpp	79	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	oss.str()
+B	star	src/starModule/hip_star_mgr.cpp	90	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	oss.str()
+B	star	src/starModule/hip_star_mgr.cpp	125	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Star color not define"
+B	star	src/starModule/hip_star_mgr.cpp	134	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"ColorTable index Error"
+B	star	src/starModule/hip_star_mgr.cpp	188	std::cerr	False	(console)	(console)	"ERROR: HipStarMgr::HipStarMgr: no memory" << std::endl
+B	star	src/starModule/hip_star_mgr.cpp	426	clog	True	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"HipStarMgr: Can't create starFont"
+B	star	src/starModule/hip_star_mgr.cpp	448	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Loading star data..."
+B	star	src/starModule/hip_star_mgr.cpp	458	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	_("Loading catalog ") + std::string(cat_file_name)
+B	star	src/starModule/hip_star_mgr.cpp	466	std::cerr	False	(console)	(console)	cat_file_name << ", " << z->level << ": duplicate level" << std::endl
+B	star	src/starModule/hip_star_mgr.cpp	487	std::cerr	False	(console)	(console)	"ERROR: stars:cat_hip_sp_file_name not found" << std::endl
+B	star	src/starModule/hip_star_mgr.cpp	492	std::cerr	False	(console)	(console)	"ERROR while loading data from " << ("stars/" + cat_hip_sp_file_name) << ": " << e.what()
+B	star	src/starModule/hip_star_mgr.cpp	498	std::cerr	False	(console)	(console)	"ERROR: stars:cat_hip_cids_file_name not found" << std::endl
+B	star	src/starModule/hip_star_mgr.cpp	503	std::cerr	False	(console)	(console)	"ERROR while loading data from " << ("stars/" + cat_hip_cids_file_name) << ": " << e.what() << std::endl
+B	star	src/starModule/hip_star_mgr.cpp	510	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	oss.str()
+B	star	src/starModule/hip_star_mgr.cpp	522	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Loading star names from " + commonNameFile
+B	star	src/starModule/hip_star_mgr.cpp	526	std::cerr	False	(console)	(console)	"Warning " << commonNameFile << " not found." << std::endl
+B	star	src/starModule/hip_star_mgr.cpp	536	std::cerr	False	(console)	(console)	"ERROR: StarMgr::loadCommonNames(" << commonNameFile << "): bad line: \"" << line << '"' << std::endl
+B	star	src/starModule/hip_star_mgr.cpp	571	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Loading star sci names from " + sciNameFile
+B	star	src/starModule/hip_star_mgr.cpp	576	std::cerr	False	(console)	(console)	"Warning " << sciNameFile << " not found." << std::endl
+B	star	src/starModule/hip_star_mgr.cpp	586	std::cerr	False	(console)	(console)	"ERROR: StarMgr::loadSciNames(" << sciNameFile << "): bad line: \"" << line << '"' << std::endl
+B	star	src/starModule/hip_star_mgr.cpp	1255	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"VariableStar error, limit of 127 variable stars reached"
+B	star	src/starModule/hip_star_mgr.cpp	1354	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"VariableStar error opening "+fileName + " - Feature disabled"
+B	star	src/starModule/hip_star_mgr.cpp	1368	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"VariableStar error parsing "+record
+B	star	src/starModule/hip_star_mgr.cpp	1392	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"VariableStar error parsing "+record
+B	star	src/starModule/zone_array.cpp	102	std::cout	False	(console)	(console)	"ZoneArray::create(" << extended_file_name << "): warning while loading \"" << fname << "\": " << e.what()
+B	star	src/starModule/zone_array.cpp	161	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	oss.str()
+B	star	src/starModule/zone_array.cpp	210	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	oss.str()
+B	star	src/starModule/zone_array.cpp	249	std::cerr	False	(console)	(console)	"ERROR: ZoneArray1::updateHipIndex: invalid HP number: " << hip << std::endl
+B	star	src/starModule/zone_array.cpp	442	std::cerr	False	(console)	(console)	"ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: no memory (1)" << std::endl
+B	star	src/starModule/zone_array.cpp	448	std::cerr	False	(console)	(console)	"ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: no memory (2)" << std::endl
+B	star	src/starModule/zone_array.cpp	487	std::cerr	False	(console)	(console)	"ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: mmap(" << fileno(f) << ',' << start_in_file << ',' << (sizeof(Star)*nr_of_stars) << ") failed: " << strerror(errno) << std::endl
+B	star	src/starModule/zone_array.cpp	505	std::cerr	False	(console)	(console)	"ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: _get_osfhandle(_fileno(f)) failed" << std::endl
+B	star	src/starModule/zone_array.cpp	510	std::cerr	False	(console)	(console)	"ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: CreateFileMapping failed: " << GetLastError() << std::endl
+B	star	src/starModule/zone_array.cpp	518	std::cerr	False	(console)	(console)	"ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: " "MapViewOfFile failed: " << GetLastError() << ", page_size: " << page_size << std::endl
+B	star	src/starModule/zone_array.cpp	541	std::cerr	False	(console)	(console)	"ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: no memory (3)" << std::endl
+B	nebula	src/coreModule/nebula_mgr.cpp	49	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"DSO: error while loading pictogram texture"
+B	nebula	src/coreModule/nebula_mgr.cpp	124	std::cout	True	(console)	(console)	testName << std::endl
+B	nebula	src/coreModule/nebula_mgr.cpp	129	std::cout	True	(console)	(console)	testName << "=" << uname << std::endl
+B	nebula	src/coreModule/nebula_mgr.cpp	138	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"DSO: Requested nebula to delete not found " + name
+B	nebula	src/coreModule/nebula_mgr.cpp	369	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"nebula: replacing user added nebula with name " + _englishName
+B	nebula	src/coreModule/nebula_mgr.cpp	373	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"dso: hide nebula with name " + _englishName
+B	nebula	src/coreModule/nebula_mgr.cpp	395	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Loading NGC data... "
+B	nebula	src/coreModule/nebula_mgr.cpp	399	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"NGC data file " + cat + " not found""Loading NGC data... "
+B	nebula	src/coreModule/nebula_mgr.cpp	423	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Nebula: "+ std::to_string(i) + " items loaded, " + std::to_string(data_drop) + " dropped"
+B	skyculture	src/coreModule/sky_localizer.cpp	40	std::cerr	True	(console)	(console)	"Unable to find culture directory:" << cultureDir << std::endl
+B	skyculture	src/coreModule/constellation_mgr.cpp	162	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"No constellation Color with shortName "+_name
+B	skyculture	src/coreModule/constellation_mgr.cpp	184	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"No constellation label with shortName "+_name
+B	skyculture	src/coreModule/constellation_mgr.cpp	208	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Constellation_Mgr::loadLinesAndArt can't open constellation data file "+ fileName
+B	skyculture	src/coreModule/constellation_mgr.cpp	235	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"ConstellationMgr::loadLinesAndArt on line " + std::to_string(line) + " of " + fileName
+B	skyculture	src/coreModule/constellation_mgr.cpp	254	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"ConstellationMgr::loadLinesAndArt Can't open " + artfileName
+B	skyculture	src/coreModule/constellation_mgr.cpp	279	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"ConstellationMgr::loadLinesAndArt Can't open " + artfileName
+B	skyculture	src/coreModule/constellation_mgr.cpp	291	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"ConstellationMgr::loadLinesAndArt Error parsing constellation art record " + record
+B	skyculture	src/coreModule/constellation_mgr.cpp	308	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"ConstellationMgr::loadLinesAndArt can't find constellation called : " + shortname
+B	skyculture	src/coreModule/constellation_mgr.cpp	553	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"ConstellationMgr::loadNames :: Can't open file " + namesFile
+B	skyculture	src/coreModule/constellation_mgr.cpp	644	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"No constellation ArtIntensity with shortName "+_name
+B	skyculture	src/coreModule/constellation_mgr.cpp	904	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Boundary file " + boundaryFile + " not found"
+B	skyculture	src/coreModule/constellation_mgr.cpp	908	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Loading Constellation boundary data..."
+B	skyculture	src/coreModule/constellation_mgr.cpp	956	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"(" + std::to_string(i) + " segments loaded)"
+C	illuminate	src/coreModule/illuminate_mgr.cpp	62	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Error loading texture illuminateTex"
+C	illuminate	src/coreModule/illuminate_mgr.cpp	81	std::cout	True	(console)	(console)	num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl
+C	illuminate	src/coreModule/illuminate_mgr.cpp	82	std::cout	True	(console)	(console)	num << " only" <<std::endl
+C	illuminate	src/coreModule/illuminate_mgr.cpp	164	std::cout	True	(console)	(console)	num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl
+C	illuminate	src/coreModule/illuminate_mgr.cpp	165	std::cout	True	(console)	(console)	num << " with color" << std::endl
+C	illuminate	src/coreModule/illuminate_mgr.cpp	288	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::SCRIPT	"illuminate: error when loading user texture "+ fileName
+C	logchannel	src/tools/log.cpp	95	std::cerr	False	(console)	(console)	"(EE): Couldn't open file log!\n Please check file/directory permissions" << std::endl
+C	logchannel	src/tools/log.cpp	207	std::cerr	False	(console)	(console)	ligne
+C	logchannel	src/tools/log.cpp	209	std::cout	False	(console)	(console)	ligne
+C	logchannel	src/main.cpp	72	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Welcome to spacecrafter"
+C	logchannel	src/main.cpp	74	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	strMsg
+C	logchannel	src/main.cpp	81	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	strMsg
+C	logchannel	src/main.cpp	95	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"call to uname() with an invalid pointer"
+C	logchannel	src/main.cpp	98	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"error calling uname()"
+C	logchannel	src/main.cpp	107	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	strMsg
+C	logchannel	src/main.cpp	115	std::cout	False	(console)	(console)	APP_NAME << std::endl
+C	logchannel	src/main.cpp	116	std::cout	False	(console)	(console)	_("Usage: %s [OPTION] ...\n -v, --version \tOutput version information and exit.\n -h, --help \tDisplay this help and exit.\n")
+C	logchannel	src/main.cpp	124	std::cout	False	(console)	(console)	APP_NAME << std::endl
+C	logchannel	src/main.cpp	133	std::cout	False	(console)	(console)	APP_NAME << std::endl
+C	logchannel	src/main.cpp	134	std::cout	False	(console)	(console)	argv[0] << " don't use command line argument(s)"<< std::endl
+C	logchannel	src/main.cpp	135	std::cout	False	(console)	(console)	"Try `"<< argv[0] << " --help' for more information."<< std::endl
+C	logchannel	src/main.cpp	158	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Saved getpid is : "+ ch
+C	logchannel	src/main.cpp	171	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"File file.lock successfully deleted"
+C	logchannel	src/main.cpp	173	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Error deleting file.lock"

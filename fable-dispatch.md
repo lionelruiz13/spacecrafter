@@ -751,7 +751,12 @@ only for the artifact + entry.
 stated universe with per-site citations; banked instances included and
 reconciled; §11.169(c) annotated; §11 entry + stub; baselines re-derived as
 the last act with deltas explained; code tree clean; WIP per §0.6.
-**WIP:** —
+**WIP:** 2026-08-30 — §0.7 gate PASSED on every stated premise (both HEADs `d6aec251`/`357fa9f`
+clean, §11 178 free, `### F` count 3, §11.169 (a)–(e) as described, banked instances reachable,
+baselines 193/168/25/87 · 114/150/88 reproduced). CHECKPOINT 1: scope 1 done — universe stated and
+committed BEFORE classification (`harness/artifacts/f58/f58_universe.md` + the enumeration
+instrument `harness/f58_census.py`): 411 live emission sites over 22 files (arm A 252 · B 139 ·
+C 20), adjacent-not-swept inventory 268 sites over 20 files. Next: scope 2, per-site classification.
 
 ---
 
