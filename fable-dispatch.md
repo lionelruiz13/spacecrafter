@@ -142,6 +142,52 @@ re-derived from the committed instruments on this tree: pair-check
 **185/160/25/85** (+1/+1/0/0 from §11.169, four test counters unchanged);
 back-marker scan **90/125/83** — §11.169 added NO event lines and the
 unmarked count is the F52-acceptance invariant to the digit.
+**Round outcome (session 16 close, 2026-08-30):** F53 → §11.170 · F54 →
+§11.171 · F55 → §11.172 — three executor tasks, all delivered AND
+supervisor-verified same day; round closed at 3 per the recorded plan (the
+CONVERSATION was this round's extension: §11.169 at open + §11.173 at close +
+§5.114/§5.115 minted + Q-50–Q-55 discharged — the largest owner-testimony
+harvest of any session). **CODE TREE CLEAN THROUGHOUT** — `d6aec251` at open
+and close, the third all-record/instrument round in a row. HEADLINE
+FINDINGS: **the dim Moon does not reproduce** (F51's driver returns July's
+165.258 from a bit-identical dump, same driver/binary/boot — the driver
+attribution REFUTED as stated, §11.164/§11.167 present-tense corrected at
+four nodes; the farm's never-isolated texture cache is the surviving lead);
+the first-60 s window observed for the first time (43.4 s of every launch —
+the transient is A42/A43's preview→big swap, now with its time domain);
+§5.113's three reaches measured well-formed (the fail-loudly argument
+sharpened); the seven gate values recorded (one gate's margin proved
+UNSTABLE, not shifted — 0.199 swing on a 0.25 bar); f14's scene does not
+reproduce run-to-run (two-run rule for NCC margins). NEW rows: **§5.114**
+(illuminate g/b swap, minted at acceptance) · **§5.115** (script-log
+unbounded growth, fork collapsed by the testimony chain). Criterion-
+integrity instances this round: **5** (F53's G16 self-catch · F54's
+self-refuting red + my baseline correction · F55's prospective repeat +
+P7 refuting its own premise) — the class counts 18 across sessions.
+Supervisor-error tally: the F53 prompt's missing mint license (repaired,
+license restored) · the F54 executor's stale post-state baselines
+(corrected by measurement; baselines-as-last-act adopted) · two wrong
+side-ideas assumptions (untracked/unrouted — channel healthier than
+modeled) · the "binary consultation" over-collapse (owner-corrected) ·
+the §5.115 "unrecoverable" clause (owner-refuted, amended) · one bare-`cd`
+cwd trap (loud-caught). Scan-owner rulings: discharge vocabulary stays
+outside the supersession lexicon BY DESIGN; proximity-credit named as the
+third family property, instrument frozen this round, strict-credit v2
+queued as a deliberate re-baselining act. Stable baselines at close:
+pair-check **188/163/25/87** · scan **106/136/83** with TWO named
+exceptions (`§11.171→§11.165` benign-in · `§11.164→§11.167`
+proximity-out; 83 real, twice attributed). **Next-round queue, in
+order:** (1) texture-cache instrumentation + farm isolation (md5 manifest
+in every preflight; the dim-Moon discriminator; S); (2) the tester-model
+corpus validation (Q-55's five conditioned metrics; predictions-first;
+S); (3) the §11.169 schema audit of existing diagnostic sites (instances
+banked: the camera-line, the illuminate clamp, the bulk-script D12 shape;
+S); (4) F49's two named-not-run audits (§5-side twin; multi-claim; S);
+(5) the §5.5-class row↔row staleness sweep (F47 acceptance; S);
+(6) F52(k)'s two git-only checks (S); (7) the scan strict-credit v2 +
+re-baseline (deliberate instrument change; S); (8) §5.100's fix IF the §3
+authorization lands. DECISIONS_PENDING open set at close: **still EMPTY**
+— the round's Vixy items ride §3 + their rows.
 
 ---
 
@@ -737,6 +783,47 @@ live, D-Bus denied; ticks→wall anchor median−min 0.026 s) and the prediction
 committed at md5 `458e6eab` BEFORE any run that observes a disc. **CP3** —
 three launches, the transient measured and reproduced, F51's driver re-run
 today, artifacts staged.)*
+*(ACCEPTED by supervisor [fable 2026-08-30]: §11.172 read in full; commits/authors/scope
+checked (chain `667c16d → 2092190 → f797040 → 17bf6fc → 55183d9 → 1692d2e`,
+harness-only, code clean at `d6aec251`); all claimed flips verified at the ledger
+(§11.167(j)(2) DISCHARGED + CORRECTED at §11.167(a)/(d)(3) + §11.164(c)(f)/(l)(2) +
+the (e)(3) negative marker + both stubs + A42/A43 time-domain annotations); both
+instruments re-run by me, recorded post-states reproduced to the digit
+(**188/163/25/87** · **106/136/83**) — and the F54-lesson HELD: the two post-delivery
+follow-ups added nothing scan-visible, the recorded baselines match the final tree.
+Predictions md5 `458e6eab` confirmed. Judgment calls ENDORSED with their arguments:
+the two unmandated launches (the F51-driver re-run — the delivery's headline; the
+full sampler repeat — §11.171(e)'s lesson applied PROSPECTIVELY to its own result,
+which is what turned event-locking into a control: the events moved 1.44 s and the
+steps moved with them); the 5×-similarity phase-1 scene (validated in-run, not
+argued — identical values across both scene forms); `f55_farm.sh` closing the
+scripts/-symlink hole with the owner's `startup.sts` md5-asserted in==out; the
+no-mint ×3 (the transient is A43's mechanism gaining its time domain; the splash is
+what a loading screen is; §11.164(e)(3) closed by F48/F51's OWN committed applogs);
+five failed predictions kept with numbers — P7 refuting the task's own premise (the
+window was the driver's pacing, not the app's) is the form at its best. SCAN-OWNER
+RULING on (l): the proximity-credit property is the THIRD named family member and the
+first in the dangerous direction (a real arrears could be paid by an unrelated span);
+instrument stays AS-IS this round (changing it re-baselines every recorded number —
+a deliberate next-round act, queued: strict credit = the marker span must cite the
+exact source section); until then the stable quantity is the partitioned real-event
+residual with TWO named exceptions (`§11.171→§11.165` benign-in, `§11.164→§11.167`
+proximity-credited-out; 83 real, twice attributed). SUPERVISOR TALLY, two wrong
+assumptions on `vixy-side-ideas.txt`, both mine, both caught before damage: assumed
+UNTRACKED (it was committed by the owner in `2b24a1b`, 2026-08-26, riding the D15
+resolution — caught by his own commit subject one command before I re-committed an
+existing file); assumed UNROUTED (three I2-correct pointer entries have existed in
+FEATURE_REQUESTS.md since the same day — caught by reading the channel I had not
+read all session). The lesson is the standing one: check before modeling, the
+channel was healthier than my model of it. ENACTMENTS AT THIS ACCEPTANCE: §5.115's
+provenance amendment (Q-53's full chain); FEATURE_REQUESTS provenance updates on the
+three 2026-08-26 entries (today's version-provenance + resubmission framing);
+§11.173 minted (the session's owner-testimony batch); §3 refreshed incl. the
+DIM-MOON REWRITE (driver attribution refuted-as-stated by (e); the shared mutable
+texture cache (i) is the strongest surviving candidate and the cache-instrumentation
+task is queued as next-round position 1). Scratch `/home/claude/f55_scratch/`
+(3.3 GB, outside both repos, executor-labeled disposable) removed at close —
+committed artifacts carry every cited number and frame.)*
 
 ---
 
@@ -764,6 +851,54 @@ today, artifacts staged.)*
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
+- **Session-16 decision items (2026-08-30, F53–F55 / §11.170–172 + the conversation → §11.169/§11.173, §5.114/§5.115):**
+  - **THE DIM MOON IS NOT THE DRIVER'S — the attribution below is REFUTED as stated**
+    (F55 §11.172(e)): F51's unmodified driver, run today from a dump bit-identical in
+    32/33 fields, returns **JULY's 165.258 to the last digit** — same binary, same
+    driver `580.636.192`, same gnome-shell pid, same boot. The old path healed with it
+    (42.5 → 160.1 — BOTH paths were dim on 2026-08-29, which also CORRECTED one of
+    F51's four channels). The 2026-08-29 state is real (frames committed) but is now
+    an **unattributed one-day state that cannot be A/B'd, minted or fixed until it
+    reproduces**. The strongest surviving lead is §11.172(i): **the temp-HOME farm
+    never isolated `~/.spacecrafter/cache`** — one shared mutable texture cache under
+    every photometric measurement this corpus ever took (measured: a `.dat` rewritten
+    inside an F55 run). Cache instrumentation is next-round position 1 so any
+    recurrence is catchable. Your driver A/B is OFF the critical path.
+  - **A42's trade-off now has both sides priced** (F55 §11.172(c)(d)): the authored
+    `moon-preview.jpg` is a DIFFERENT, brighter picture than `moon.jpg`, and it is on
+    screen **1.4–3.4 s at every launch that opens on the Moon** — a visible −11.5 %
+    photometric step (hf ×1.58) locked to the `big … ready` events on two channels
+    with the events *moving between runs and the steps moving with them*. "Align or
+    leave" now reads: leave = this transient at every Moon opening.
+  - **§5.115 — the script log, fork COLLAPSED by your own testimony chain**
+    (§11.173(b)): every recovered preference (the tester's value ranking AND his 2020
+    room criterion, your debug-value AND remove-or-generalize) points at **uniform
+    bounded retention across all channels**; the 2020 consultation excludes only
+    removal, it never saw "bounded". Remaining: ONE tester scalar (window depth,
+    decision-shaped question ready) + your density direction beneath it.
+  - **§5.114** — every illuminate draws with green/blue exchanged at the loader
+    (`(r, b, g)` into a `(r, g, b)` constructor; explicit-colour reach verified).
+    One-line fix pending the compensating-swap check; record-don't-fix held.
+  - **f23_b33_control's S1/S2 skylock legs are red at `d6aec251`** (F54 §11.171(f)):
+    pre-fix binary parts the authorities, current agrees — likelier the seam
+    CONVERGED and a defect-demonstration leg outlived its defect; needs the B33
+    intent (your stratum) to be read before anyone re-baselines.
+  - **[parallel-script] routes to the final tester pass as a RESUBMISSION** —
+    your two recovered objections are answered by the file's current text
+    (FEATURE_REQUESTS provenance update; one gap: resume/speedup composition
+    structural, not yet written as clauses).
+- **Session-16 equalization items (facts, no decision asked):** the tester model +
+  its same-day refinement (triage-default, value-per-thought, belief-vintage —
+  §11.173(d), consequences already operating in this file's question shapes) · the
+  first 15 s of every launch are photometrically hostile and now MEASURED (splash
+  10.5 s → convergence → preview until 12.6–14.1 s; the generic harness opening
+  floor is 6.5 s clear on a 1.4 s-spread interval — §11.172(k)(4)) · the log FILES
+  carry `SDL_GetTicks` millisecond stamps (every applog claim in the corpus is
+  retro-timeable — §11.172(h)) · 61.431/42.476 join §11.104(d)'s numbers as
+  non-targets · the §11.169 log-content schema is now an operating evaluation
+  standard (first client §11.170(f): `set home_planet selected`'s lone diagnostic
+  fails all three elements).
+
 - **Session-15 decision items (2026-08-29/30, F48–F52 / §11.164–168):**
   - **NEW §5.113 + §5.110's fix routing, one sitting** (F50 §11.166): ONE missing
     truthiness-guard class, three shipped reaches with nothing selected — `set
@@ -780,6 +915,10 @@ today, artifacts staged.)*
     `deselect` (doc's own contract sentence broken) and 999 for any composed
     body.
   - **The dim Moon is YOUR host's driver, as far as measurement can reach**
+    **[REFUTED as stated 2026-08-30, F55 §11.172(e) — see the session-16 block
+    above: same driver, July's value back to the last digit, BOTH paths healed;
+    the shared texture cache is the surviving lead and the driver A/B is off the
+    critical path. Original kept below.]**
     (F48 §11.164 + F51 §11.167): the shipped Moon renders mean ×0.371 (locally
     ×0.140), a fifth of the disc below L=32 where July was above 100, from
     BIT-IDENTICAL model state — dated (2026-08-23, 2026-08-26], coinciding

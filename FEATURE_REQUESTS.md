@@ -154,3 +154,24 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   (the owner of state notifies dependents) rather than a new state machine —
   and that is also why it wants deciding alongside **A41/A42** (a trigger that
   fires on a regime boundary makes those constants user-visible in a new way).
+
+**Provenance update to the three 2026-08-26 entries above [fable 2026-08-30,
+owner testimony in-conversation → §11.173]:** the file's text is the
+**RE-REFINED version** — what the main tester saw and objected to was an
+EARLIER draft (no naming, weaker integration; unrecoverable — the owner's own
+reasoning engine has been refined since, *"I can't regenerate the
+lesser-quality version I used to hold"*). The two recovered objections —
+global-control composition (`script action stop/pause`, resume, speedup:
+target ambiguity) and *"hard to track"* — are **answered by the current
+text** (default name `""` preserves legacy global-control semantics;
+named-tree targeting; tracked/detached + termination cascade), with ONE named
+gap: resume/speedup composition is answered structurally but not yet written
+as clauses. **Consequence for triage**: `[parallel-script]` routes to the
+final tester pass as a RESUBMISSION — *"your two objections, addressed —
+re-evaluate"* — not as a reconsideration of a rejected idea; per §11.173's
+interface model it should arrive decision-shaped with the objection→answer
+mapping explicit. Two ledger hits recorded the same day, session 16:
+script-local resource scoping attacks the stale-slot defect class at its root
+(§5.110/§5.113 riders) and is valuable single-script, separable from
+parallelism; `[script-trigger]` is the root-level answer to the poll-loop
+log-storm amplifier §5.115 records at the symptom layer.
