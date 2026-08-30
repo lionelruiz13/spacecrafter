@@ -506,8 +506,18 @@ parse OK. **CP2 — the five recording edits WRITTEN** (`f14_meridian` gate 1 �
 (the file had no artifact record at all); `f14_predict` BOTH → a new
 `f14_check_results.json` (`--check` wrote nothing); `f23_b33_control`'s `cross`
 → `rep["def_cross_px8"]`). Additive only, 52 insertions / 3 deletions, no
-threshold or verdict line touched; all five compile. **Next:** one verification
-run per file per §0.5, verdicts recorded as they come with census class.*
+threshold or verdict line touched; all five compile. **CP3 — runs 1–2 of 5**
+(preflight: display `:2` live, comm-probe **0**, md5 `03fbee59`/`545a51ef`).
+**`f14_meridian`** (launch, exit **1**): gate 1 LANDED — Iapetus **103137**,
+Amalthea **121331**, Proteus **127034** px>40 vs the 20000 floor = **5.2× /
+6.1× / 6.4×**, the census's "unknown" margin answered. The file's OTHER gate
+went **RED** (FLAGGED member, recorded as red, NOT re-baselined): Iapetus
+meridian NCC margin **0.2390** vs the 0.25 bar — and the collapse is the
+COMPETITOR rising (`ncc_at_-90` +0.0050 → **+0.2163**), not the signal falling
+(ncc_at_0 0.4674 → 0.4553). **`b39_scenes` w17** (launch, exit **0**, ALL PASS,
+md5 in==out): `nonblack_px` **79365** vs `> 5000` = **15.9×**. Cross-epoch
+bonus datum: shown-vs-hidden 395 → **379** (−4.1 %) on a same-run diff.
+**Next:** runs 3–5 (`f14_placeholder`, `f14_predict --check`, `f23_b33_control`).*
 
 ### F55 — The first-60 s photometric sampler: the launch window no instrument has observed (§11.167(j)(2)) [S]
 

@@ -1,0 +1,40 @@
+{
+ "w17": {
+  "floor_px": 0,
+  "nonblack_px": 79365,
+  "beats": [
+   {
+    "beat": 1,
+    "relation": 4,
+    "evalCount": 753,
+    "tag": "w17_b1"
+   },
+   {
+    "beat": 2,
+    "relation": 1,
+    "evalCount": 1388,
+    "tag": "w17_b2"
+   },
+   {
+    "beat": 3,
+    "relation": 4,
+    "evalCount": 2136,
+    "tag": "w17_b3"
+   },
+   {
+    "beat": 4,
+    "relation": 1,
+    "evalCount": 2771,
+    "tag": "w17_b4"
+   }
+  ],
+  "shown_vs_hidden_px": [
+   379,
+   379
+  ],
+  "hidden_vs_hidden_px": 0,
+  "shown_vs_shown_px": 0
+ },
+ "leg": "w17",
+ "fail": 0
+}
