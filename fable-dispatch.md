@@ -638,8 +638,10 @@ explained; code tree clean; WIP per §0.6.
 `### F` count 3; three corpus files present with 27+13 answers and 19 SS ids; Q-55 CLOSED with
 body kept; baselines re-derived 192/167/25/87 · 113/148/87, both as stated). Checkpoint 1:
 scope item 1 DONE — out-of-sample partition committed (`harness/artifacts/f57/f57_partition.md`).
-Next: scope item 2, the predictions artifact (per-metric ranges + shape/parts classification
-committed before any scoring), then measure.
+Checkpoint 2: scope item 2 DONE — 19 predictions over the five metrics + the rubric + the
+per-item question-shape/parts classification (40 items, 72 parts, 64 D / 8 E) committed
+BEFORE any scoring, `harness/artifacts/f57/f57_predictions.json` md5 **`4d5b2486`**.
+Next: scope item 3, measure all five (scorer script + per-item tables), then the verdict.
 
 ### F58 — The §11.169 schema audit of existing diagnostic sites: the gap list is the fix's work order (§11.169(c)) [S]
 

@@ -1,0 +1,212 @@
+{
+  "task": "F57 — tester-model corpus validation (§11.173(d) / Q-55's five conditioned metrics)",
+  "written": "2026-08-30",
+  "code_head": "d6aec251",
+  "harness_head_at_write": "cf2cd5e",
+  "status": "COMMITTED BEFORE ANY SCORING. Nothing below was computed; every number is a prediction. The per-item shape and parts classifications are derived from QUESTION TEXT ONLY (our own authorship), never from the answers, and are committed here so the class boundaries cannot be fitted afterwards to make a prediction come true.",
+  "partition_reference": "harness/artifacts/f57/f57_partition.md (committed first, commit cf2cd5e)",
+
+  "purpose_boundary": "This measures ANSWER PATTERNS for interface/routing design only — never the person.",
+
+  "model_under_test": {
+    "source": "§11.173(d) + the Q-55 body in ~/shared/QUEUE.md (read 2026-08-30, never recalled)",
+    "clauses": {
+      "C1": "TRIAGE DEFAULT: optimizes decision throughput; correctness necessary but secondary.",
+      "C2": "NOT A DEPTH CEILING: sharp, genuinely-open questions earn a real-but-scarce depth budget.",
+      "C3": "COGNITIVE INERTIA / BELIEF-VINTAGE: does not aggressively reconstruct belief; answers carry a vintage.",
+      "C4": "HALF-OPEN LOOPS: banks decisions at first workability; loop closure is structurally the depth side's job.",
+      "C5": "ANSWER-BY-ACTION: where an action can answer, the action is the answer (the superscript.sts specimen).",
+      "C7": "ROUTING CONFOUND: structural→Vixy, operational→tester BY DESIGN — a person-comparison is confounded unless conditioned on class."
+    }
+  },
+
+  "scoring_constraints": {
+    "sc1": "Q1–27 carry a self-reported HIGH-effort calibration cell (S4). A short answer there is NOT throughput evidence.",
+    "sc2": "The tester's praise of the question document scores (quality − his usual-task prior), not an absolute [vixy's caveat: 'that's what most people score']. It is used here ONLY as an effort cell, never as a quality measurement.",
+    "sc3": "§11.149(d) precedent, both ways: any answer-vs-measurement conflict is adjudicated against the INSTRUMENT first; belief-lag is scored only after the instrument survives.",
+    "sc4": "TRAINING-labeled outcomes (partition §2) are retrodictions. A match is consistency, never confirmation.",
+    "sc5": "Every prediction carries an information class. RISKY = could plausibly fail on this corpus. CONFIRMATORY = its outcome is already visible in text the executor has read; a green one earns nothing. Where the executor's own hunch from that reading contradicts what the model implies, the hunch is stated in 'executor_hunch' — so a failed prediction is not retro-explained as 'expected all along'."
+  },
+
+  "rubric": {
+    "shape_classes": {
+      "D": "DECISION-SHAPED: the choice is enumerated or binary in the question text; a correct answer can be one word/phrase selecting an option. Fast answers here are CORRECT BEHAVIOR (Q-55's own caution).",
+      "E": "ELICITATION-SHAPED: asks for information only the respondent holds and that cannot be enumerated in advance (what for / did this ever work / which cases specifically). A one-word answer necessarily loses information.",
+      "M": "MIXED: at least one D part and at least one E part."
+    },
+    "part": "A distinct interrogative demanding distinct information. Enumerated from question text alone. A restatement of the same interrogative is NOT a second part.",
+    "coverage_scoring": {
+      "1.0": "ANSWERED — the answer contains a proposition that resolves the part.",
+      "0.5": "PARTIAL — the part is addressed but the information asked for is not delivered (e.g. 'yes' to 'do you, and what for?').",
+      "0.0": "DROPPED — nothing in the answer addresses the part."
+    },
+    "word_count": "whitespace-separated tokens of the answer block = the lines after the *(ref: …)* line up to the next blank line. Computed by harness/f57_score.py, committed with its output."
+  },
+
+  "items": {
+    "Q1":  {"ref": "A9",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "tracking case: parent or stop"}, {"id": "b", "kind": "D", "label": "anchored case: parent or neutral"}]},
+    "Q2":  {"ref": "A11", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "absolute / relative framing / re-centre"}, {"id": "b", "kind": "D", "label": "snap or ease"}]},
+    "Q3":  {"ref": "A24", "shape": "M", "parts": [{"id": "a", "kind": "D", "label": "still used or droppable"}, {"id": "b", "kind": "E", "label": "used for what (open list)"}]},
+    "Q4":  {"ref": "A25", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "still used or retire"}]},
+    "Q5":  {"ref": "B4",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "which of the three anchor kinds"}, {"id": "b", "kind": "D", "label": "hand-edit ini or script-created"}, {"id": "c", "kind": "D", "label": "rely on save/restore between sessions"}]},
+    "Q6":  {"ref": "A18", "shape": "M", "parts": [{"id": "a", "kind": "D", "label": "down = centre or looked-at point"}, {"id": "b", "kind": "D", "label": "far descent aims at last selection or vicinity"}, {"id": "c", "kind": "D", "label": "do you hit the near-zero altitude dead zone"}, {"id": "d", "kind": "E", "label": "how do you work around it today"}]},
+    "Q7":  {"ref": "A13", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "anchored-stays-anchored expected"}]},
+    "Q8":  {"ref": "A14", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "galaxy view or far solar-system view with anchor kept"}]},
+    "Q9":  {"ref": "A15", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "reference-drop threshold feel"}, {"id": "b", "kind": "D", "label": "system-collapse threshold feel"}, {"id": "c", "kind": "D", "label": "pop acceptable or cross-fade"}]},
+    "Q10": {"ref": "A19", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "do you jump dates while navigating"}]},
+    "Q11": {"ref": "A17", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "selectable inside a resolved foreign system"}, {"id": "b", "kind": "D", "label": "multi-system shows y/n"}]},
+    "Q12": {"ref": "A23", "shape": "M", "parts": [{"id": "a", "kind": "D", "label": "do your scripts do the two-body trick"}, {"id": "b", "kind": "E", "label": "what for"}, {"id": "c", "kind": "E", "label": "would the two radii reproduce it / what more were the two bodies buying"}, {"id": "d", "kind": "D", "label": "ground radius: stop-and-hold or asymptotic slow"}]},
+    "Q13": {"ref": "A10", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "hidden body keeps updating or freezes"}]},
+    "Q14": {"ref": "A1",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "trail keeps recording while off or starts fresh"}]},
+    "Q15": {"ref": "A3",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "per-object / global / other"}, {"id": "b", "kind": "D", "label": "set-them-all overrides per-body or not"}, {"id": "c", "kind": "D", "label": "runtime colour survives reload or not"}]},
+    "Q16": {"ref": "A4",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "tropics/polar circles back"}, {"id": "b", "kind": "D", "label": "sky-flag wiring deliberate or incidental"}, {"id": "c", "kind": "D", "label": "own toggle"}]},
+    "Q17": {"ref": "A28", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "one global toggle or finer control"}, {"id": "b", "kind": "D", "label": "default on or off"}]},
+    "Q18": {"ref": "A27(2)", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "body data declares its landscape y/n"}]},
+    "Q19": {"ref": "A27(4)", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "does any show depend on the old moon-in-the-sky behaviour"}]},
+    "Q20": {"ref": "A5",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "physical route or apparent_magnitude+slope"}, {"id": "b", "kind": "D", "label": "do your scripts set those two keys"}]},
+    "Q21": {"ref": "A8",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "should the Sun glow up close"}, {"id": "b", "kind": "D", "label": "uniform disc or real surface appearance"}]},
+    "Q22": {"ref": "A7",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "star surface up close or point of light"}, {"id": "b", "kind": "D", "label": "multi-star shows y/n"}]},
+    "Q23": {"ref": "A12", "shape": "M", "parts": [{"id": "a", "kind": "D", "label": "correct moon-by-moon or accept placeholders"}, {"id": "b", "kind": "E", "label": "which specific moons do you show close up"}]},
+    "Q24": {"ref": "A29", "shape": "M", "parts": [{"id": "a", "kind": "D", "label": "do name-keyed specials ever misfire y/n"}, {"id": "b", "kind": "E", "label": "which cases specifically"}]},
+    "Q25": {"ref": "A26", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "which side of the sharpness/VRAM trade"}, {"id": "b", "kind": "D", "label": "have you noticed the difference"}]},
+    "Q26": {"ref": "A2",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "do you need to force a feature explicitly"}, {"id": "b", "kind": "D", "label": "data entry or runtime command"}]},
+    "Q27": {"ref": "A20", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "expose reload as a command y/n"}, {"id": "b", "kind": "D", "label": "keep state or reset to start-up"}]},
+
+    "R1":  {"ref": "A28", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "operator control for ring shadows y/n"}, {"id": "b", "kind": "D", "label": "startup state on or off"}]},
+    "R2":  {"ref": "A9",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "veto the parent-fallback resolution or not"}]},
+    "R3":  {"ref": "B4",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "which anchor kinds (1)(2)(3)"}, {"id": "b", "kind": "D", "label": "with or without follow-the-rotation"}]},
+    "R4":  {"ref": "B10", "shape": "M", "parts": [{"id": "a", "kind": "E", "label": "what the two-body trick was for"}, {"id": "b", "kind": "D", "label": "stop dead or slow asymptotically"}]},
+    "R5":  {"ref": "A17", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "biggest / brightest / main when they disagree"}]},
+    "R6":  {"ref": "A18", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "descent aims at last selected or vicinity"}]},
+    "R7":  {"ref": "A4",  "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "own on/off for the planet grid"}, {"id": "b", "kind": "D", "label": "10 km rule back or any altitude"}]},
+    "R8":  {"ref": "A3→B29", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "preferred reload behaviour for runtime colours"}]},
+    "R9":  {"ref": "A27", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "data-declared landscape or built-in rules"}, {"id": "b", "kind": "D", "label": "how long a hand-picked landscape lasts"}]},
+    "R10": {"ref": "A29→B27", "shape": "E", "parts": [{"id": "a", "kind": "E", "label": "enumerate what you expect 'linked to Earth behaviour' to change"}]},
+    "R11": {"ref": "A24→B17", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "config-once or scripts change it during a show"}]},
+    "R12": {"ref": "A2", "shape": "none", "parts": []},
+    "R13": {"ref": "A14→B20", "shape": "D", "parts": [{"id": "a", "kind": "D", "label": "acceptable or must the anchor hold"}, {"id": "b", "kind": "D", "label": "every anchored body or only some"}]}
+  },
+
+  "item_counts_declared_before_scoring": {
+    "round1_items": 27,
+    "round2_items_with_a_question": 12,
+    "round2_items_without_a_question": 1,
+    "total_parts": 72,
+    "D_parts": 64,
+    "E_parts": 8,
+    "note": "If re-reading during measurement shows a mis-enumeration, the correction is RECORDED as a correction with both values — never silently applied."
+  },
+
+  "predictions": [
+    {
+      "id": "P1.1", "metric": "m1", "partition": "TRAINING", "info_class": "CONFIRMATORY",
+      "claim": "Answers are short in absolute terms: median answer word count over Q1–27 ≤ 20, mean ≤ 30.",
+      "fails_if": "median > 20 or mean > 30",
+      "note": "Retrodiction of C1's throughput clause. Scored, but earns the model nothing (sc4), and sc1 forbids reading it as effort evidence."
+    },
+    {
+      "id": "P1.2", "metric": "m1", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "C2 implies the depth budget is spent where depth is invited: median answer length on items carrying at least one E part (Q3, Q6, Q12, Q23, Q24, R4, R10) ≥ 1.5× the median on pure-D items.",
+      "fails_if": "ratio < 1.5",
+      "executor_hunch": "The executor, having read the answers, expects this to FAIL — several E-bearing items look answered as briefly as the D ones. Stated in advance so a failure is not retro-explained. If it fails, C2 is UNSUPPORTED on the length channel and the alternative reading is that the depth budget, if spent, is not spent on words."
+    },
+    {
+      "id": "P1.3", "metric": "m1", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "The triage signature is in coverage, not length: D-part coverage ≥ 0.85 while E-part coverage ≤ 0.65 — a gap of at least 20 percentage points.",
+      "fails_if": "the gap is < 20 pp, or E-part coverage exceeds D-part coverage",
+      "note": "This is m1's sharpest discriminator: a throughput optimizer answers what can be decided and drops what must be narrated."
+    },
+    {
+      "id": "P1.4", "metric": "m1", "partition": "SEEN-UNSCORED", "info_class": "CONFIRMATORY",
+      "claim": "At least one re-ask in round 2 is caused by an ANSWER's ambiguity, and at least one by the QUESTION's own defect — the instrument cutting both ways inside the same corpus.",
+      "fails_if": "either class is empty"
+    },
+    {
+      "id": "P2.1", "metric": "m2", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "Verbal answers to SCRIPT_SURFACE entries: exactly 0 of the 19 SS entries carry a written reply from the tester.",
+      "fails_if": "any SS entry carries a written reply"
+    },
+    {
+      "id": "P2.2", "metric": "m2", "partition": "TRAINING", "info_class": "CONFIRMATORY",
+      "claim": "11 of the 13 witness lines were fixed by the 2026-08-26 rewrite.",
+      "fails_if": "the count is not 11/13",
+      "note": "S3 — the statistic the model was built from. Retrodiction; earns nothing."
+    },
+    {
+      "id": "P2.3", "metric": "m2", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "Partition the SS entries into ACTIONABLE (a file edit can discharge them) and WORD-ONLY (only a sentence can: did this ever work / what was it for / do your shows use it). Predict ACTIONABLE answered-rate ≥ 0.75 and WORD-ONLY answered-rate = 0.",
+      "fails_if": "actionable rate < 0.75, or any word-only entry carries an answer",
+      "note": "The discriminating check for C5: it separates 'answer-by-action as a channel preference' from 'no engagement at all'. If both rates were 0 the corpus would only show silence; the contrast is what makes the action an ANSWER."
+    },
+    {
+      "id": "P2.4", "metric": "m2", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "The rewrite commit f0c8ef83 carries no explanation: subject ≤ 6 words and no body paragraph. (Checked read-only at the code repo's git history.)",
+      "fails_if": "subject > 6 words or a body paragraph exists"
+    },
+    {
+      "id": "P3.1", "metric": "m3", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "Answers whose factual premise is contradicted by a LATER ledger measurement, counted only after the instrument survives sc3: between 0 and 2.",
+      "fails_if": "3 or more survive the instrument check"
+    },
+    {
+      "id": "P3.2", "metric": "m3", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "At least one apparent answer-vs-fact conflict in this corpus resolves as INSTRUMENT-WRONG (the question was defective, or the ledger's reading was), not as belief-lag.",
+      "fails_if": "every apparent conflict is attributable to the answerer"
+    },
+    {
+      "id": "P3.3", "metric": "m3", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "The belief-vintage signature is that HISTORY is not reconstructed: answer rate on history-class questions (did this ever work / was that deliberate / what was it for — SS-2, SS-4, SS-5, SS-9, SS-10, Q16b) ≤ 0.2, while answer rate on current-practice questions ≥ 0.9.",
+      "fails_if": "history-class rate > 0.2 while current-practice rate is comparable, or the two rates are within 20 pp"
+    },
+    {
+      "id": "P4.1", "metric": "m4", "partition": "TRAINING", "info_class": "CONFIRMATORY",
+      "claim": "Exactly 2 questions asked back in the whole corpus, both inside the round-1 answers, both attached to the same question; 0 in round 2; 0 in SCRIPT_SURFACE.",
+      "fails_if": "the count differs",
+      "note": "Q-55 names the two. The count is an INPUT to the model, so it cannot test it."
+    },
+    {
+      "id": "P4.2", "metric": "m4", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "Depth markers of classes the model never enumerated exist and are rare: 3–8 instances over the answered items (39 items carry a question; R12 carries an acknowledgement with none), across the classes {unrequested elaboration, counter-proposal, framing correction, explicit 'unclear question', volunteered constraint}.",
+      "fails_if": "fewer than 3 or more than 8"
+    },
+    {
+      "id": "P4.3", "metric": "m4", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "The scarce depth budget goes to HIS OWN operational surface: at least 2 depth markers are unrequested proposals about the script surface (a command spelling, a command he wants, a script-level constraint), as against zero unrequested proposals about rendering internals.",
+      "fails_if": "fewer than 2 script-surface markers, or any unrequested proposal about rendering internals appears"
+    },
+    {
+      "id": "P4.4", "metric": "m4", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "Every question-back is triggered by a question that used engine vocabulary without defining it — i.e. the trigger is the question's own defect, not the topic's importance. (n=2: low power, stated in advance.)",
+      "fails_if": "a question-back attaches to a question whose terms were defined"
+    },
+    {
+      "id": "P5.1", "metric": "m5", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "Items answered substantively by BOTH parties (a Vixy decision AND a tester answer on the same ref) number ≤ 3 ⇒ at most 3 paired cells exist for a person-comparison.",
+      "fails_if": "4 or more paired items exist"
+    },
+    {
+      "id": "P5.2", "metric": "m5", "partition": "SEEN-UNSCORED", "info_class": "CONFIRMATORY",
+      "claim": "At least 2 of the 11 live round-2 items carry an explicit clause saying the design authority has already decided and the tester's answer is preference input only.",
+      "fails_if": "fewer than 2"
+    },
+    {
+      "id": "P5.3", "metric": "m5", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "Decisiveness is class-conditioned, not person-conditioned: the tester's answer is decisive (closes or narrows its row) at ≥ 0.8 on operational/script-class items and ≤ 0.5 on structural/architecture-class items.",
+      "fails_if": "the operational rate < 0.8 or the structural rate > 0.5"
+    },
+    {
+      "id": "P5.4", "metric": "m5", "partition": "OUT-OF-SAMPLE", "info_class": "RISKY",
+      "claim": "The class × answerer table has at least one EMPTY cell ⇒ a Vixy-vs-tester control free of the routing confound is NOT COMPUTABLE on this corpus, and that non-computability is a property of the routing DESIGN, not of either person.",
+      "fails_if": "every cell of the class × answerer table is non-empty"
+    }
+  ],
+
+  "model_verdict_criteria_committed_before_scoring": {
+    "C1": "SURVIVES if answers are short AND correctness on operational facts is not measurably damaged (no answer refuted by a surviving instrument). REFINED if brevity is uniform across classes. REFUTED if answers are long and deliberative throughout.",
+    "C2": "SURVIVES if depth appears on at least one measured channel (P1.2 length, P1.3 coverage, or P4.2/P4.3 markers) on the E-bearing items. UNSUPPORTED-ON-THIS-CORPUS (not refuted) if it appears on none — S4's self-report is testimony from a channel this corpus does not carry, and the corpus cannot refute testimony about internal effort.",
+    "C3": "SURVIVES if P3.3 holds. REFUTED if history-class questions are answered at a rate comparable to current-practice ones.",
+    "C4": "gains a fourth-family instance if word-only entries stay open while actionable ones were acted on (P2.3): the loop is left half-open exactly where closing it costs a sentence rather than an edit.",
+    "C5": "SURVIVES if P2.1 and P2.3 both hold.",
+    "C7": "CONFIRMED AS A CONFOUND if P5.4 holds — in which case m5 is reported as NAMED-NOT-SCORED with its boundary, which is a finding about routing design, not a failure."
+  }
+}
