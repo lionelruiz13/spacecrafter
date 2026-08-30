@@ -1,0 +1,7 @@
+FWD enumerated: 73  verdicted: 73
+BWD enumerated: 61  verdicted: 61
+FWD enumerated-but-unverdicted: []
+FWD verdicted-but-not-enumerated: []
+BWD enumerated-but-unverdicted: []
+BWD verdicted-but-not-enumerated: []
+SET IDENTITY BOTH DIRECTIONS: True

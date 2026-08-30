@@ -1068,7 +1068,11 @@ section attributes the §5.5 closure convention to §11.163; it lives at `INTENT
 both named sources — content present, location mislabelled). Scope 1 DONE and committed BEFORE any verdict:
 `harness/artifacts/f60/METHOD.md` + `f60_enum.py` (selftest P1–P5 PASS, incl. P5 the MEASURED §11.73 Tier-A
 key namespace collision) + the three TSVs. Universe: forward **162 refs / 83 pairs** (in scope 145/73),
-backward **111/61**, adjacent (S/D ids) **57** sized-not-verdicted. NEXT: scope 2, adjudicate by reading.
+backward **111/61**, adjacent (S/D ids) **57** sized-not-verdicted. CP2 (scope 2 DONE): every reference
+adjudicated BY READING, coverage proved by SET IDENTITY both ways (73/73 · 61/61, `f60_coverage.log`).
+FORWARD **COHERENT 32 · NON-STATE 21 · NOT-A-ROW 15 · STALE 3 · AMBIGUOUS 2**; BACKWARD **37 · 19 · 2 ·
+STALE 2 · AMBIGUOUS 1**. STALE = §5.24→B32 · §5.2→B10 · §5.44→B39 (forward, annotate) and B15→§5.32 ·
+B39→§5.46 (backward, ROUTE — §13 not edited). NEXT: annotations at the three §5 nodes, then §11.180.
 
 ---
 
