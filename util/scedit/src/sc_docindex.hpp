@@ -129,6 +129,9 @@ public:
 	//! with a line whose first byte is '#'. Shown when the caret is on such a
 	//! line, so that even "this line does nothing" is the file's own sentence.
 	const std::string &commentLineDoc() const { return comment_line_doc_; }
+	//! `parse_model.comments.mid_line`, verbatim: what the parser does with a
+	//! '#' after the command. Shown when the caret is inside such a comment.
+	const std::string &commentTailDoc() const { return comment_tail_doc_; }
 
 	//! What the file says about one name of one family. `present == false` when
 	//! the family or the name is unknown; a v1 (plain-name) family yields
@@ -149,6 +152,7 @@ private:
 	std::map<std::string, std::map<std::string, Spec>> families_;
 	std::map<std::string, bool> family_is_v2_;
 	std::string comment_line_doc_;
+	std::string comment_tail_doc_;
 	std::size_t default_literals_ = 0;
 	std::size_t arg_specs_ = 0;
 	std::size_t family_names_ = 0;

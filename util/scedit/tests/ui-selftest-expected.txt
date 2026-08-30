@@ -150,10 +150,10 @@ dim -ddddddd----------------d
 mark m
 under -------------------------u
 inv ----------i
-### finding-inline-comment
+### comment-tail
 | scedit │ line 1, byte 0 │ selftest.sts
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
-| E     1 │ media action pause # stop video
+|       1 │ media action pause # stop video
 | 
 | 
 | 
@@ -162,13 +162,32 @@ inv ----------i
 | command `media`
 | Play a video in the dome — or a sound on its own — and control it while it plays.   (documents: co
 | 
-| error: '#' does not start a comment here: only a '#' in column 1 does, so it and the 2 words after
+| engine: app_command_init.cpp:67 (ACP_CN_MEDIA = "media", base_command_interface.hpp:357)
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
 | Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
-dim -ddddddd
-mark m
-under -----------------------------uuuuuuuuuuuu
+dim -ddddddd---------------------dddddddddddd
+mark 
+under 
 inv ----------i
+### caret-in-comment
+| scedit │ line 1, byte 25 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+|       1 │ media action pause # stop video
+| 
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| comment
+| A '#' outside a "..." run starts a comment: it and everything after it are dropped BEFORE any othe
+| 
+| engine: parseCommand (parse_model.comments.mid_line)
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd---------------------dddddddddddd
+mark 
+under 
+inv -----------------------------------i
 ### finding-unclosed-struct
 | scedit │ line 1, byte 0 │ selftest.sts
 | ────────────────────────────────────────────────────────────────────────────────────────────────────

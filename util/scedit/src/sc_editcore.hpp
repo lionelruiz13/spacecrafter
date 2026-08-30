@@ -84,6 +84,7 @@ namespace scedit {
 enum class Context {
 	None,          //!< nothing to say (no command on the line, unknown command...)
 	CommentLine,   //!< the script layer drops this line whole
+	Comment,       //!< the caret is in the comment after a '#' (the engine reads none of it)
 	CommandName,   //!< the command word
 	ArgKey,        //!< the key half of a pair
 	ArgValue,      //!< the value half of a pair
@@ -189,6 +190,12 @@ public:
 	const Line &currentLine() const { return line_; }
 	const Completion &completion() const { return completion_; }
 	const DocBar &docBar() const { return docbar_; }
+
+	//! Raw offset where the comment of a 0-based line starts (its '#'), or
+	//! std::string::npos when the line has none — the engine's reading of the
+	//! line (parse_model.comments.mid_line), so the renderer can grey exactly
+	//! the bytes the engine never reads.
+	std::size_t commentBegin(std::size_t line) const;
 
 	//! Findings on a 1-based file line (Diagnostic::line's own numbering).
 	std::vector<const Diagnostic *> diagnosticsForLine(std::size_t oneBasedLine) const;

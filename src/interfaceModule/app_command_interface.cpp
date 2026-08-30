@@ -125,6 +125,21 @@ int AppCommandInterface::parseCommand(const std::string &command_line, std::stri
 {
   	std::string str = command_line;
 
+	// A '#' outside a "..." run starts a comment: it and everything after it are
+	// dropped before parsing. Quotes are counted by a plain toggle from the first
+	// byte, so a '#' inside quotes - closed or not - is ordinary text.
+	{
+		bool inQuote = false;
+		for (std::size_t i = 0; i < str.size(); ++i) {
+			if (str[i] == '"')
+				inQuote = !inQuote;
+			else if (str[i] == '#' && !inQuote) {
+				str.erase(i);
+				break;
+			}
+		}
+	}
+
 	// transformation of the beginning of character strings by deleting spaces and tabs at the beginning of the string
 	while (str[0]==' ' || str[0]=='\t') {
         str.erase(0,1);

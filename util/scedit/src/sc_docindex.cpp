@@ -118,7 +118,10 @@ bool DocIndex::load(const std::string &path, std::string &err)
 
 	if (g.contains("parse_model") && g.at("parse_model").is_object()
 	    && g.at("parse_model").contains("comments"))
+	{
 		comment_line_doc_ = str(g.at("parse_model").at("comments"), "script_layer");
+		comment_tail_doc_ = str(g.at("parse_model").at("comments"), "mid_line");
+	}
 
 	if (fam.contains("commands")) {
 		for (auto it = fam.at("commands").begin(); it != fam.at("commands").end(); ++it) {

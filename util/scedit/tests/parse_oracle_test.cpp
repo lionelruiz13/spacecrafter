@@ -15,6 +15,16 @@
  * `#ifdef PARSE_DEBUG` logging block, which the engine does not compile
  * either). Editing it to "fix" a disagreement inverts the authority chain:
  * on disagreement, the oracle is right and scedit is the defect.
+ *
+ * ONE EXCEPTION, BY RULING, AND IT IS THE TARGET, NOT A FIX. The comment cut at
+ * the top of the copy (a '#' outside a "..." run ends the command) is the
+ * behaviour Vixy ruled for the engine (2026-08-30) and ordered scedit to model
+ * FIRST (2026-08-31: "make scedit track what the HEAD would be after the
+ * behavior get corrected, then we correct spacecrafter to be in face"). The
+ * block is written here in the exact form the engine receives; the engine
+ * commit that lands it makes the copy verbatim again. Until then the oracle is
+ * the target parseCommand, and the authority chain reads: ruled engine > oracle
+ * > scedit.
  */
 
 #include "sc_tokenizer.hpp"
@@ -31,10 +41,27 @@ typedef std::map<std::string, std::string> stringHash_t;
 
 // ===========================================================================
 // VERBATIM: AppCommandInterface::parseCommand, app_command_interface.cpp:124-176
+// + the ruled comment cut (see the header note) in the exact form the engine
+// receives it.
 // ===========================================================================
 int parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments)
 {
   	std::string str = command_line;
+
+	// A '#' outside a "..." run starts a comment: it and everything after it are
+	// dropped before parsing. Quotes are counted by a plain toggle from the first
+	// byte, so a '#' inside quotes - closed or not - is ordinary text.
+	{
+		bool inQuote = false;
+		for (std::size_t i = 0; i < str.size(); ++i) {
+			if (str[i] == '"')
+				inQuote = !inQuote;
+			else if (str[i] == '#' && !inQuote) {
+				str.erase(i);
+				break;
+			}
+		}
+	}
 
 	// transformation of the beginning of character strings by deleting spaces and tabs at the beginning of the string
 	while (str[0]==' ' || str[0]=='\t') {
@@ -192,6 +219,9 @@ int main(int argc, char **argv)
 	// (a) exhaustive short strings over the branch-driving alphabet
 	enumerate("ab \t\"", 6);
 	enumerate("a \"", 9);
+	// the comment cut interacts with quotes and separators: {a, space, ", #}
+	// up to 8 bytes covers every order of quote/hash/word the rule can meet
+	enumerate("a \"#", 8);
 	long synthetic = compared;
 	std::printf("  %ld synthetic lines compared\n", synthetic);
 

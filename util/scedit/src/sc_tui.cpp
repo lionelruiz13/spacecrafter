@@ -161,6 +161,9 @@ Element renderLine(const EditCore &core, const View &v, std::size_t lineNo, bool
 				return true;
 		return false;
 	};
+	// The comment tail: bytes the engine never reads, drawn dim like every
+	// other thing on this screen that is not executed (the ghost included).
+	const std::size_t commentAt = core.commentBegin(lineNo);
 
 	Elements gut;
 	gut.push_back(text(severityMark(sev)) | color(severityColor(sev)) | bold);
@@ -173,27 +176,27 @@ Element renderLine(const EditCore &core, const View &v, std::size_t lineNo, bool
 	const std::size_t caret = core.cursor().col;
 
 	// Build the cell run, then group consecutive cells of the same style.
-	struct Cell { std::string s; bool look, under, ctrl, ghosty, caretHere; };
+	struct Cell { std::string s; bool look, under, ctrl, comment, ghosty, caretHere; };
 	std::vector<Cell> cells;
 	for (std::size_t i = 0; i <= raw.size(); ++i) {
 		if (isCursorLine && i == caret) {
 			for (std::size_t k = 0; k < ghost.size(); ++k) {
 				const Glyph g = glyphFor((unsigned char)ghost[k]);
-				cells.push_back(Cell{g.s, false, false, false, true, k == 0});
+				cells.push_back(Cell{g.s, false, false, false, false, true, k == 0});
 			}
 			if (ghost.empty() && i < raw.size()) {
 				const Glyph g = glyphFor((unsigned char)raw[i]);
-				cells.push_back(Cell{g.s, lookAt(i), underAt(i), g.control, false, true});
+				cells.push_back(Cell{g.s, lookAt(i), underAt(i), g.control, i >= commentAt, false, true});
 				continue;
 			}
 			if (ghost.empty() && i == raw.size())
-				cells.push_back(Cell{" ", false, false, false, false, true});
+				cells.push_back(Cell{" ", false, false, false, false, false, true});
 		}
 		if (i < raw.size()) {
 			const Glyph g = glyphFor((unsigned char)raw[i]);
 			// The GLYPH is this layer's business; whether the byte is part of
-			// a finding is the checker's answer, and only the checker's.
-			cells.push_back(Cell{g.s, lookAt(i), underAt(i), g.control, false, false});
+			// a finding, or of a comment, is the tokenizer's/checker's answer.
+			cells.push_back(Cell{g.s, lookAt(i), underAt(i), g.control, i >= commentAt, false, false});
 		}
 	}
 
@@ -206,8 +209,8 @@ Element renderLine(const EditCore &core, const View &v, std::size_t lineNo, bool
 		std::string run;
 		std::size_t j = i;
 		while (j < to && cells[j].look == c0.look && cells[j].under == c0.under
-		       && cells[j].ctrl == c0.ctrl && cells[j].ghosty == c0.ghosty
-		       && cells[j].caretHere == c0.caretHere) {
+		       && cells[j].ctrl == c0.ctrl && cells[j].comment == c0.comment
+		       && cells[j].ghosty == c0.ghosty && cells[j].caretHere == c0.caretHere) {
 			run += cells[j].s;
 			++j;
 		}
@@ -216,6 +219,8 @@ Element renderLine(const EditCore &core, const View &v, std::size_t lineNo, bool
 			e = e | dim | color(Color::GrayDark);
 		else if (c0.look)
 			e = e | color(Color::Red) | bold;
+		else if (c0.comment)
+			e = e | dim;
 		else if (c0.ctrl)
 			e = e | dim;
 		if (c0.under)
@@ -523,9 +528,11 @@ int uiSelfTest(const std::string &grammarPath)
 		// the letter it is, the tab as a marker, and NO line-ending marker
 		// appears, because the '\r' is the terminator and not the text.
 		{"iso-8859-and-crlf", "flag stars on\r\nbody name Caf\xE9" "\tx\r\n", 1, 0},
-		// A finding's SPAN is underlined at its bytes: the inline '#' and the
-		// words after it, to the end of the line.
-		{"finding-inline-comment", "media action pause # stop video", 0, 0},
+		// The comment after a '#': dim from the '#' to the end of the line, no
+		// finding (parse_model.comments.mid_line — the engine reads none of it).
+		{"comment-tail", "media action pause # stop video", 0, 0},
+		// The caret inside that comment: no ghost, and the bar says "comment".
+		{"caret-in-comment", "media action pause # stop video", 0, 25},
 		// An opener never closed is reported at the OPENER line (the root),
 		// although the checker only knows at the end of the file.
 		{"finding-unclosed-struct", "struct if a equal b\nflag stars on\n", 0, 0},

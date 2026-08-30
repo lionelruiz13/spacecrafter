@@ -20,6 +20,14 @@ understand and modify any script through this editor*.
 Second artefact class, same tool: stellar-system data files (`ssystem.ini` and
 the composed new-format files).
 
+**One rule runs ahead of the engine, by ruling.** A `#` outside a `"…"` run
+starts a comment that runs to the end of the line — an indented `#` is a
+whole-line comment, a `#` inside quotes is text. Vixy ruled the behaviour
+(2026-08-30) and the order (2026-08-31): scedit models the corrected engine
+first, and spacecrafter is brought into phase with the identical parser code.
+Until that engine commit lands, this is the one place where "read exactly the
+way the engine will" means the *ruled* engine (`parse_model.comments.mid_line`).
+
 **Name note:** "TUI" inside spacecrafter means the in-app dome text menu
 (`ui_tuiconf`, channel 8 in `claude/capability-surface.md`). This tool is
 *scedit* everywhere, to keep the two unambiguous.
@@ -128,10 +136,12 @@ Four lines under the text, driven by where the caret is:
    line the sentence above came from.
 
 In the text itself, every finding is **underlined at exactly the bytes it is
-about** (the misspelt word, the dropped key, the `#` and everything after it,
-the whole `struct if` that is never closed); the look-alike-space byte keeps
-its red marker. Both come from the finding's own span — there is no second
-reading of the bytes in the renderer.
+about** (the misspelt word, the dropped key, the whole `struct if` that is
+never closed); the look-alike-space byte keeps its red marker. Both come from
+the finding's own span — there is no second reading of the bytes in the
+renderer. A comment — from its `#` to the end of the line — is drawn dim, like
+the ghost: text the engine does not read. With the caret inside one, the bar
+says `comment` and nothing completes.
 
 ### What the grey text means
 
@@ -279,13 +289,13 @@ Eight `ctest` gates, all green on a clean build:
 
 | gate | what it measures |
 |---|---|
-| `tokenizer` | 171 checks: 150 constructed lines, one per sharp edge of the parse model, each with its expected tokenization, plus the block structure (`struct if`/`loop` openers, closers, closers that close nothing, the `comment`-block guard) |
-| `parse_oracle` | scedit's reading vs a **verbatim copy of the engine's `parseCommand`**, over exhaustively enumerated short strings, ISO-8859 high-byte lines and every line of the real corpus: 53 058 comparisons |
-| `editcore` | 171 checks over the headless editor: the byte-preserving buffer, the cursor→token map across quoting and the space-after-quote normalisation, every completion context, the documentation bar including its honest blanks, and the live findings with their spans (a finding points at its bytes; an opener never closed is reported on ITS line) |
+| `tokenizer` | 189 checks: constructed lines, one per sharp edge of the parse model, each with its expected tokenization — the comment cut included (quoted `#`, unclosed quote, glued `#`, indented `#`) — plus the block structure (`struct if`/`loop` openers, closers, closers that close nothing, the `comment`-block guard) |
+| `parse_oracle` | scedit's reading vs a **verbatim copy of the engine's `parseCommand`** — carrying the ruled comment cut in the exact form the engine receives it — over exhaustively enumerated short strings ({a, b, space, tab, `"`} to 6 bytes, {a, space, `"`} to 9, {a, space, `"`, `#`} to 8), ISO-8859 high-byte lines and every line of the real corpus: 119 337 comparisons |
+| `editcore` | 175 checks over the headless editor: the byte-preserving buffer, the cursor→token map across quoting and the space-after-quote normalisation, every completion context, the documentation bar including its honest blanks, and the live findings with their spans (a finding points at its bytes; an opener never closed is reported on ITS line) |
 | `roundtrip` | `doc/superscript.sts` — 1606 lines (rewritten upstream 2026-08-26, `f0c8ef83`), ISO-8859, CRLF — opened in the editor and saved untouched: **same MD5**. Plus one edit that must change exactly the line it was made on |
 | `ui_selftest` | the frames the editor actually DRAWS, rendered off-screen at a fixed size, with four masks of the caret's row: the ghost text is DIM, the look-alike-space marker lands on the column the finding names, every finding's span is UNDERLINED at exactly its bytes, and the caret is the standard SGR inversion on exactly one cell |
 | `seed_gate` | the contract file validates (counts re-derived from the data, not asserted) — **and every fact in the four `grammar/args/` fragments is still byte-identical in the merged file**, which is what keeps the granular source and the merged contract from drifting apart |
-| `lint_rules` | `tests/lint_cases.sts` — one construct per armed id (18 ids), proving the rule fires with the right id, severity and shape; plus a section that must stay silent, and a last section for what is only known at the end of the file |
+| `lint_rules` | `tests/lint_cases.sts` — one construct per armed id (16 ids), proving the rule fires with the right id, severity and shape; plus a section that must stay silent (comments in every position included), and a last section for what is only known at the end of the file |
 | `corpus_gate` | `--check` over the real corpus produces exactly the recorded findings |
 
 `tests/lint-expected.txt`, `tests/corpus-expected.txt` and

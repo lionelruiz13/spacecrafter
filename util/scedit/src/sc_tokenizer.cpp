@@ -283,13 +283,36 @@ Line tokenizeLine(const std::string &raw)
 	Line line;
 	line.raw = raw;
 	line.kind = classifyLine(raw);
-	if (line.kind != LineKind::Parsed)
+	if (line.kind != LineKind::Parsed) {
+		if (line.kind == LineKind::Comment)
+			line.comment_begin = 0;
 		return line;   // the script layer never hands this to parseCommand
+	}
 
 	// --- normalisation, replayed on (buffer, raw-offset) pairs --------------
 	std::string s = raw;
 	std::vector<std::size_t> off(s.size());
 	std::iota(off.begin(), off.end(), std::size_t(0));
+
+	// The comment cut — parse_model.comments.mid_line, the ruled rule the
+	// engine is brought into phase with (see the header). It runs FIRST, on the
+	// raw line: a '#' outside a "..." run ends the command, and quotes are
+	// counted by a plain toggle from the first byte, so a '#' inside quotes
+	// (closed or not) is ordinary text. Replayed on (s, off) like every other
+	// erase, so `erased` and the spans need no special case.
+	{
+		bool inQuote = false;
+		for (std::size_t i = 0; i < s.size(); ++i) {
+			if (s[i] == '"') {
+				inQuote = !inQuote;
+			} else if (s[i] == '#' && !inQuote) {
+				line.comment_begin = off[i];
+				s.erase(i);
+				off.erase(off.begin() + static_cast<std::ptrdiff_t>(i), off.end());
+				break;
+			}
+		}
+	}
 
 	// :129-132 — strip leading spaces and tabs (and ONLY those: a leading '\r'
 	// survives, which is why the script layer filters it first).

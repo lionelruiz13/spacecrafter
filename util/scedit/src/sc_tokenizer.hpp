@@ -22,7 +22,18 @@
  * If this header and the engine ever disagree, the engine is right and this is
  * a scedit defect — never the other way round.
  *
+ * ONE RULE IS AHEAD OF THE ENGINE, BY RULING. A '#' outside a "..." run starts
+ * a comment that runs to the end of the line (parse_model.comments.mid_line).
+ * Vixy ruled it 2026-08-30 and ruled the ORDER 2026-08-31: scedit models the
+ * corrected behaviour first, the engine is then brought into phase with the
+ * identical code (the oracle test carries that code as the TARGET copy of
+ * parseCommand). Until the engine commit lands, this is the one place where
+ * "the engine is right" reads "the ruled engine is right".
+ *
  * The sharp edges this reproduces on purpose (all engine behaviour, not choices):
+ *   - a '#' outside quotes ends the command — quotes are counted by a plain
+ *     toggle from the first byte, so a '#' inside quotes, closed or not, is
+ *     text; a '#' glued to a word cuts at the '#' (see Line::comment_begin);
  *   - a trailing KEY with no VALUE is silently DROPPED (see Line::dangling);
  *   - a repeated key keeps the LAST value, and handlers see keys in
  *     ALPHABETICAL order, not line order (see Line::args);
@@ -36,8 +47,9 @@
  * NORMALISATION AND SPANS  (the part the TUI depends on)
  * ======================================================
  * The engine does not tokenize the line you typed. It first deletes bytes from
- * it (leading spaces/tabs, then the byte after every ' " '), and tokenizes the
- * RESULT. So a naive column count is wrong exactly where quoting is involved.
+ * it (the comment from its '#' on, then leading spaces/tabs, then the byte after
+ * every ' " '), and tokenizes the RESULT. So a naive column count is wrong
+ * exactly where quoting or a comment is involved.
  *
  * This library therefore keeps both strings and the map between them:
  *   raw          — the author's bytes, verbatim (what the editor buffer holds);
@@ -163,6 +175,13 @@ struct Line {
 
 	//! Some value on this line opened a `"` that was never closed.
 	bool has_unclosed_quote = false;
+
+	//! RAW offset of the '#' that starts this line's comment, or
+	//! std::string::npos when the line has none. For a `LineKind::Comment` line
+	//! it is 0. Everything from here to the end of the line is text the engine
+	//! never reads (parse_model.comments.mid_line) — no token covers it, and
+	//! its bytes are in `erased`.
+	std::size_t comment_begin = static_cast<std::size_t>(-1);
 
 	// --- raw <-> parsed mapping -------------------------------------------
 

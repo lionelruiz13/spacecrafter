@@ -52,9 +52,6 @@ set stall_radius_unitt 5
 # --- unknown-parameter: for 'color' the family name is the VALUE of 'property'
 color property constellation_liness value 1,0,0
 
-# --- indented comment: reaches the parser as an unknown command
-  # this line is executed, not skipped
-
 
 # --- unknown-parameter, ARGUMENT-KEY half: a key this command never reads.
 # Armed by the merged `args` data alone; the two rotations do nothing.
@@ -89,30 +86,17 @@ struct if else
 # --- loop-end-without-loop: silent engine-side; nothing repeats
 struct loop end
 
-# --- inline-comment: a '#' after the command is not a comment; the tail is
-# read as key/value pairs. Here none of them is a key `media` reads, so the
-# line happens to work (the witness's shape, doc/superscript.sts:37-46).
-media action pause # stop video & sound
-
-# --- inline-comment, the pair-killing shape: `flag` applies the alphabetically
-# first pair, which is now '#' - `stars on` is never applied
-flag stars on # switch it on
-
-# --- inline-comment, the line-killing shape: `set` stops at the first unknown
-# name, which is now '#' - nothing on the line is applied
-set star_scale 2 # bigger stars
-
-# --- inline-comment, the colliding shape: a comment word that lands in KEY
-# position and IS a key ('#'='set', then 'loop'='on' - the engine keeps it)
-media action pause # set loop on
-
-# --- inline-comment, nothing after the '#': a trailing key, dropped
-media action pause #
-
 # === everything below must produce NO finding (until the last section) ==
 
 # a well-formed line of each shape the rules touch
 flag stars on
+# comments: a '#' outside quotes ends the command (parse_model.comments.mid_line),
+# an indented '#' is a whole-line comment, a '#' inside quotes is text
+flag stars on # switch it on
+  # this line is a comment too, indented
+media action pause # set loop on
+text name info string "hash # inside quotes" altitude 10
+set star_scale 2 # bigger stars
 flag stars toggle
 flag stars off
 set home_planet Mars

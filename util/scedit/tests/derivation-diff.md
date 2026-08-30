@@ -42,6 +42,7 @@ agreement; the oracle proves it.
 |---|---|---|---|
 | :124 | signature `(command_line, command&, arguments&)` | `tokenizeLine(raw) -> Line` | The engine writes into caller state; scedit returns a value that also carries provenance (spans). Same information, plus what the TUI needs. |
 | :126 | `std::string str = command_line;` | `sc_tokenizer.cpp` `std::string s = raw;` + `off` = identity offset vector | The offset vector is scedit-only: it is what makes the raw↔normalized map exact rather than recomputed. |
+| (after :126, RULED — the target block, `parse_oracle_test.cpp` carries it verbatim) | `bool inQuote=false; for i: if (str[i]=='"') inQuote=!inQuote; else if (str[i]=='#' && !inQuote) { str.erase(i); break; }` | same loop on `(s, off)`, recording `comment_begin = off[i]` before the erase | The comment cut, `parse_model.comments.mid_line`. Runs FIRST on the raw line, so a `#` after leading blanks (an indented comment) leaves nothing to parse. Quotes toggle from byte 0 whatever their token position — a deliberately simpler rule than :149's value-position-only quoting; the two agree on every corpus line (0 `#` inside quotes, 0 glued) and disagree only on pathological `"` placements. Pinned: "trailing comment" ×6 + oracle alphabet `{a, space, ", #}`. Engine landing: same block at the top of `parseCommand` (2026-08-31). |
 | :129-132 | `while (str[0]==' ' \|\| str[0]=='\t') str.erase(0,1);` | `while (k < s.size() && (s[k]==' ' \|\| s[k]=='\t')) ++k;` then erase `[0,k)` from `s` and `off` | Same set of bytes removed. The engine's `str[0]` on an exhausted string reads the NUL terminator (defined since C++11 for non-const `operator[]` at `size()`), which is why the loop terminates on an all-blank line; the bounded form is equivalent, not weaker. Only SP and TAB — a leading `\r` survives here, and that is load-bearing for CRLF files (see §3, script layer). |
 | :135 | `found = str.find(" \" ");` | `std::size_t found = s.find(" \" ");` | identical |
 | :136-139 | `while(found!=npos){ str.erase(found+2,1); found = str.find(" \" "); }` | same loop, mirrored on `off` | Re-searching from the start (not from `found`) is reproduced: it is what lets one erase create the next match. Pinned by `tokenizer_test.cpp` "two-pass normalization" (`x "  " y` → `x "" y`, two bytes erased). |
@@ -104,12 +105,12 @@ and the family-name paths).
 | `quoting.single_word` | :151-153 branch | implemented, pinned |
 | `quoting.multi_word` (unclosed runs to EOL, no error) | :156-162 branch; `Token::quote_closed`, `Line::has_unclosed_quote` | implemented, pinned. Exposed as tokenizer state, deliberately NOT a lint — see §5.4 |
 | `quoting.space_after_quote_normalization` | :135-139 replay on `(s, off)`; `Line::erased`, `rawOfNorm` | implemented, pinned, and the raw↔normalized map is tested through it |
-| `comments.script_layer` (first byte `#`/0/CR/LF) | `classifyLine`, `splitScriptLines` | implemented, pinned incl. the CRLF case; lint `indented-comment` |
-| `comments.live_channels` (no stripping on TCP/HTTP/pipe) | not applicable to a file checker | see §5.5 |
+| `comments.script_layer` (first byte `#`/0/CR/LF) | `classifyLine`, `splitScriptLines` | implemented, pinned incl. the CRLF case. The `indented-comment` seed RETIRED 2026-08-31: an indented `#` now reaches a parser that drops it whole (mid_line), so the line does nothing — 98 shipped lines stopped executing as unknown commands |
+| `comments.live_channels` (the comment rule is parseCommand's, so every channel has it) | not applicable to a file checker | see §5.5; amended 2026-08-31 — before, live channels had no comment stripping at all |
 | `comments.block_form` (`comment`/`uncomment` skip state) | `BlockSkipState` | implemented, pinned twice through the pair |
 | `comments.inner_script_channel` (`addScriptFirst` trims first, so an indented `#` IS a comment there) | not modelled | The channel is not the script file: it is fed only by `camera action lift_off`'s three synthesized lines (`:4402-4408`), which no author writes. A file checker never sees this channel. Modelling it becomes necessary the day anything pushes author text — recorded, not implemented. (Was `comments.verify_next`; §5.6.) |
 | `comments.verify_next_RESOLVED` | — | marker only |
-| `comments.mid_line` (a '#' after the first byte is an ordinary byte; the tail is pairs) | `LineChecker::run` finds the first '#'-initial KEY; lint `inline-comment` states what the tail does, the other rules read the prefix | implemented 2026-08-31, pinned (fixture: inert, pair-killing, line-killing, colliding, trailing); RETIRES with the ruled engine change (§5.10) |
+| `comments.mid_line` (a `#` outside quotes starts a comment — the RULED rule) | `tokenizeLine` step 0 on `(s, off)`; `Line::comment_begin`; the checker analyses nothing past it; the editor greys it and offers no completion inside it | implemented 2026-08-31 (same day as, and superseding, the HEAD-defect model + `inline-comment` seed — §5.10); pinned by tokenizer_test, editcore D9/E4b, ui frames, and the oracle whose copy carries the target block |
 | `pre_table_commands` | §2 `:215-222`; the accepted set includes `comment`/`uncomment`, the suggestion list does not | implemented |
 | `unknown_command` (no threshold, always a suggestion) | `nearestNeighbour`, no cap | implemented — and the seed's own wording says "threshold-capped unlike the engine's"; superseded, see §5.7 |
 | `flag_value_grammar` (toggle \| `isTrue` \| everything else silently OFF) | `isTrueValue`/`isFalseValue`, `value != "toggle"` (case-SENSITIVE, `W_TOGGLE` is compared with `==`) | implemented, pinned (`flag stars TOGGLE` is a silent OFF), lint `silent-off-value` |
@@ -288,8 +289,17 @@ Two sub-decisions, both mine, both stated so they can be reversed:
   no-break space … (byte 0xA0)` followed by the unchanged `key '1' has no
   value`.
 
-**5.10 Inline `#` — DECIDED 2026-08-31: one finding, and the rest of the line is
-read as the author meant it.** `inline-comment` (severity error, D6 kebab-case,
+**5.10 Inline `#` — DECIDED 2026-08-31 morning, SUPERSEDED the same day.** Vixy:
+*"# loop on is a comment, not to be parsed as syntax"*, then *"make scedit track
+what the HEAD would be after the behavior get corrected, then we correct
+spacecrafter to be in face"*. The `inline-comment` seed and the prefix policy
+below lived for a few hours; the tokenizer now implements the ruled rule (§1's
+new row, §3 `comments.mid_line`) and the engine receives the identical block.
+The original decision is kept below as the record of the HEAD-defect model and
+of why the co-firing question arose at all.
+
+**(original text)** One finding, and the rest of the line is read as the
+author meant it.** `inline-comment` (severity error, D6 kebab-case,
 **veto open**; scedit/INTENT.md §5 item 13) fires on the first KEY token that
 begins with `#`. Two sub-decisions, both mine, stated so they can be reversed:
 
@@ -420,6 +430,28 @@ one shape, which is worth recording.
   each one twice.
 
 ## 7. C3 corpus run — every finding, dispositioned
+
+### 7.5 Fifth run, 2026-08-31 (later) — the comment rule flips to the ruled behaviour
+
+(Sections are ordered newest-first; numbers are stable ids, not order.)
+
+Same corpus files as §7.4. **16 findings, zero false positives; harness `.sts`
+still silent.** Against §7.4's 24:
+
+| line(s) | id | disposition | argument |
+|---|---|---|---|
+| 37, 38, 39, 41, 42, 44, 45, 46 | inline-comment ×8 — GONE | were TRUE for the HEAD defect; the lines are CORRECT under the ruled rule | Trailing `# …` is a comment. SS-20 resolves as Vixy said it would: no script edit. |
+| the other 16 | unchanged | TRUE | Byte-identical to §7.4. |
+
+Over the **408 shipped scripts**: **1661 = 1759 − 98**, and the diff against
+§7.4's run minus its `indented-comment` lines is EMPTY — the 98 lines that
+vanished are exactly the indented whole-line comments, which the corrected
+parser drops instead of executing as unknown commands; every other finding is
+byte-identical. New-rule specific sweep at the change: `#` glued to a word
+outside quotes 0, `#` inside quotes 0, word-start `#` 106 = 98 indented + the
+witness's 8 — the simplest statement of the rule and the shell-style word-start
+variant agree on the whole corpus. The oracle re-ran at 119 337 comparisons /
+0 mismatches with `#` added to the enumeration alphabet.
 
 ### 7.4 Fourth run, 2026-08-31 — five seeds minted at the sc_check touch
 

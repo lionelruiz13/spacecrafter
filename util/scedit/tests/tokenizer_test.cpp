@@ -107,7 +107,7 @@ void testScriptLayer()
 	eq((int)classifyLine("\n"), (int)LineKind::Blank, "classify LF-only line");
 	eq((int)classifyLine(std::string(1, '\0')), (int)LineKind::Blank, "classify NUL-first line");
 	eq((int)classifyLine("  # indented"), (int)LineKind::Parsed,
-	   "classify indented '#': NOT a comment, it reaches the parser");
+	   "classify indented '#': the script layer passes it on (the parser's comment rule then drops it)");
 	eq((int)classifyLine("flag stars on"), (int)LineKind::Parsed, "classify command line");
 
 	// Script::loadInternal reads with std::getline: '\n' delimits, '\r' stays.
@@ -355,19 +355,61 @@ void testSpaceAfterQuoteNormalization()
 		{TokenRole::Value, "y", 7, 8}});
 }
 
-void testIndentedComment()
+void testTrailingComment()
 {
-	// An indented '#' is handed to the parser and becomes a command token.
-	expectTokens("indented '#'", "  # should do it four times", {
-		{TokenRole::Command, "#", 2, 3},
-		{TokenRole::Key, "should", 4, 10},
-		{TokenRole::Value, "do", 11, 13},
-		{TokenRole::Key, "it", 14, 16},
-		{TokenRole::Value, "four", 17, 21},
-		{TokenRole::DanglingKey, "times", 22, 27}});
+	// parse_model.comments.mid_line — the RULED rule, modelled ahead of the
+	// engine by Vixy's order (2026-08-31): a '#' outside a "..." run ends the
+	// command; the cut runs on the raw line before any other normalisation.
+	expectTokens("trailing comment", "flag stars on # switch it on", {
+		{TokenRole::Command, "flag", 0, 4},
+		{TokenRole::Key, "stars", 5, 10},
+		{TokenRole::Value, "on", 11, 13}});
 	{
-		Line L = tokenizeLine("  # hi");
-		eq(L.command, std::string("#"), "indented '#' becomes the command token");
+		Line L = tokenizeLine("flag stars on # switch it on");
+		eq(L.comment_begin, (std::size_t)14, "comment_begin is the raw offset of the '#'");
+		eq(L.normalized, std::string("flag stars on "), "the comment is gone from the normalized line");
+		ok(!L.erased.empty() && L.erased.front() == 14 && L.erased.back() == 27,
+		   "the comment bytes are in `erased`");
+		ok(L.tokenAtRawColumn(20) == nullptr, "no token covers a comment byte");
+	}
+	{
+		Line L = tokenizeLine("flag stars on");
+		eq(L.comment_begin, std::string::npos, "no '#', no comment");
+	}
+	// An INDENTED '#' passes the script layer (script.cpp:114 tests byte 0
+	// only) and the parser's cut leaves nothing: no command, nothing runs.
+	{
+		Line L = tokenizeLine("  # should do it four times");
+		eq((int)L.kind, (int)LineKind::Parsed, "indented '#': Parsed at the script layer");
+		ok(!L.has_command && L.tokens.empty(), "indented '#': no command reaches the table");
+		eq(L.comment_begin, (std::size_t)2, "indented '#': comment starts at its '#'");
+	}
+	// Quotes protect a '#': closed, unclosed, and one whose '#' is the only
+	// content; a '#' glued to a word still cuts.
+	expectTokens("'#' inside a closed quote", "text string \"a # b\" size 3", {
+		{TokenRole::Command, "text", 0, 4},
+		{TokenRole::Key, "string", 5, 11},
+		{TokenRole::Value, "a # b", 12, 19},
+		{TokenRole::Key, "size", 20, 24},
+		{TokenRole::Value, "3", 25, 26}});
+	expectTokens("'#' after an unclosed quote", "text string \"a # b", {
+		{TokenRole::Command, "text", 0, 4},
+		{TokenRole::Key, "string", 5, 11},
+		{TokenRole::Value, "a # b", 12, 18}});
+	expectTokens("'#' glued to a word cuts there", "body name Earth#x radius 1", {
+		{TokenRole::Command, "body", 0, 4},
+		{TokenRole::Key, "name", 5, 9},
+		{TokenRole::Value, "Earth", 10, 15}});
+	{
+		Line L = tokenizeLine("text string \"#\"");
+		eq(L.args.count("string") ? L.args.at("string") : std::string("<absent>"), std::string("#"),
+		   "a quoted lone '#' is the value '#'");
+		eq(L.comment_begin, std::string::npos, "... and opens no comment");
+	}
+	// The comment line itself, for the editor: comment_begin is 0.
+	{
+		Line L = tokenizeLine("# whole line");
+		eq(L.comment_begin, (std::size_t)0, "a column-1 comment line reports comment_begin 0");
 	}
 }
 
@@ -513,7 +555,7 @@ int main()
 	testDuplicateAndOrder();
 	testQuoting();
 	testSpaceAfterQuoteNormalization();
-	testIndentedComment();
+	testTrailingComment();
 	testBlockComment();
 	testBlockStructure();
 	testEnginePredicates();

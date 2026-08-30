@@ -3,8 +3,9 @@
  *
  * Each rule below states the engine site it reports. Rules fire only on lines
  * the engine will actually execute: lines the script layer drops (comment,
- * blank) and lines inside a `comment` block are not analysed, because a finding
- * on text the engine never runs is a false positive by definition (C3).
+ * blank), lines inside a `comment` block, and the comment tail after a '#'
+ * (parse_model.comments.mid_line) are not analysed, because a finding on text
+ * the engine never reads is a false positive by definition (C3).
  */
 
 #include "sc_check.hpp"
@@ -198,18 +199,15 @@ public:
 	void run(const Line &L);
 
 private:
-	//! The rules that read the line's key/value shape. `L` is the line AS THE
-	//! AUTHOR MEANT IT: the whole line normally; its prefix before an inline
-	//! '#' when `run` found one (see there).
+	//! The rules that read the line's key/value shape.
 	void rules(const Line &L, const CommandData &cd);
 	//! Returns true when `name` is one the engine will not accept. `at` is
 	//! where the name sits on the line.
 	bool checkSubfamilyName(const Line &L, const CommandData &cd, const FamilyData &fam,
 	                        const std::string &name, const Span &at,
 	                        const std::string &consequence);
-	//! Bytes before `limit` only.
-	void checkInvisibleSeparators(const Line &L, std::size_t limit);
-	void checkInlineComment(const Line &L, const CommandData &cd, std::size_t hash_index);
+	//! Bytes the engine reads only: before the comment, when the line has one.
+	void checkInvisibleSeparators(const Line &L);
 
 	const Grammar &g_;
 	std::string file_;
@@ -258,14 +256,15 @@ bool LineChecker::checkSubfamilyName(const Line &L, const CommandData &cd,
 	return true;
 }
 
-//! Scope: bytes OUTSIDE a quoted value, and before `limit`. Inside a `"..."`
-//! run the engine already accepts spaces, so a no-break space there is
-//! ordinary text the author meant — reporting it would be a C3 false positive.
+//! Scope: bytes OUTSIDE a quoted value, and before the comment when the line
+//! has one. Inside a `"..."` run the engine already accepts spaces, so a
+//! no-break space there is ordinary text the author meant — reporting it would
+//! be a C3 false positive; past the '#' the engine reads nothing at all.
 //! Everywhere else the byte sits where a separator was meant, or turns a name
-//! into a name nothing knows. `limit` is where an inline '#' starts, when one
-//! does: past it the bytes are comment prose to the author (see `run`).
-void LineChecker::checkInvisibleSeparators(const Line &L, std::size_t limit)
+//! into a name nothing knows.
+void LineChecker::checkInvisibleSeparators(const Line &L)
 {
+	const std::size_t limit = std::min(L.comment_begin, L.raw.size());
 	auto insideQuotedValue = [&L](std::size_t off) {
 		for (const auto &t : L.tokens)
 			if (t.quoted && t.span.contains(off))
@@ -298,112 +297,15 @@ void LineChecker::checkInvisibleSeparators(const Line &L, std::size_t limit)
 	}
 }
 
-//! parse_model.comments.mid_line — the engine at HEAD has no inline comments:
-//! only a '#' in the FIRST byte is one (script.cpp:114), so a '#'-initial KEY
-//! and every word after it are read as key/value pairs (parseCommand:148).
-//! What that tail does to THIS line is computed from the engine's own reading
-//! (`L.args`) and said here, once. RULED 2026-08-30 [vixy]: the engine will
-//! make mid-line '#' a real comment; this rule is right for the engine at HEAD
-//! and retires with that change (scedit/INTENT.md §5 item 13).
-void LineChecker::checkInlineComment(const Line &L, const CommandData &cd, std::size_t k)
-{
-	const Token &h = L.tokens[k];
-	const std::size_t after = L.tokens.size() - k - 1;
-	std::string msg = quoteName(h.text) + " does not start a comment here: only a '#' in "
-	                  "column 1 does, so ";
-	if (h.role == TokenRole::DanglingKey) {
-		// Nothing follows: the engine drops the trailing key silently (:148).
-		msg += "it is read as a trailing key with no value and dropped — harmless here, "
-		       "but not a comment";
-		emit("inline-comment", msg, Span{h.span.begin, L.raw.size()});
-		return;
-	}
-	msg += "it and the " + std::to_string(after) + (after == 1 ? " word" : " words") +
-	       " after it are read as key/value pairs";
-
-	const FamilyData *fam = cd.subfamily.empty() ? nullptr : g_.family(cd.subfamily);
-	const bool name_is_key = fam &&
-		(cd.placement.pos == SubfamilyPosition::AppliedKey ||
-		 cd.placement.pos == SubfamilyPosition::EveryKey);
-	// A tail word that IS a key changes the line; the engine keeps its value.
-	std::string collide;
-	for (std::size_t i = k + 1; i < L.tokens.size() && collide.empty(); ++i) {
-		const Token &t = L.tokens[i];
-		if (t.role != TokenRole::Key)
-			continue;
-		if ((cd.has_args && cd.arg_keys.count(t.text)) || (name_is_key && fam->name_set.count(t.text)))
-			collide = t.text;
-	}
-	// `args` is a std::map: '#' (0x23) sorts before every letter and digit, so
-	// on the commands that act on args.begin() the tail pair is the one applied.
-	const bool hashIsFirst = !L.args.empty() && L.args.begin()->first == h.text;
-
-	if (!collide.empty()) {
-		msg += "; and " + quoteName(collide) + " IS a " +
-		       (name_is_key && fam->name_set.count(collide) ? "name " : "key ") + quoteName(cd.name) +
-		       " reads, so the comment CHANGES what this line does";
-	} else if (hashIsFirst && g_.isSinglePairCommand(cd.name)) {
-		std::string intended;
-		if (k >= 3)
-			intended = L.tokens[1].text + " " + L.tokens[2].text;
-		msg += "; " + quoteName(cd.name) + " applies ONE pair per line, the alphabetically first, "
-		       "which is now " + quoteName(h.text) +
-		       (intended.empty() ? std::string() : ": " + quoteName(intended) + " is never applied");
-	} else if (hashIsFirst && fam && cd.placement.pos == SubfamilyPosition::EveryKey) {
-		msg += "; " + quoteName(cd.name) + " applies its pairs in alphabetical order and stops at "
-		       "the first unknown name, which is now " + quoteName(h.text) +
-		       ": nothing on this line is applied";
-	} else if (cd.has_args && cd.args_complete) {
-		msg += "; none of them is a key " + quoteName(cd.name) + " reads, so the line happens to "
-		       "work — until a comment word matches one";
-	} else if (name_is_key) {
-		msg += "; none of them is a name " + quoteName(cd.name) + " knows, so the line happens to "
-		       "work — until a comment word matches one";
-	} else {
-		msg += "; whether one of them is a key " + quoteName(cd.name) + " reads, scedit cannot "
-		       "tell (its key list is not complete)";
-	}
-	emit("inline-comment", msg, Span{h.span.begin, L.raw.size()});
-}
-
 void LineChecker::run(const Line &L)
 {
-	// --- indented '#': not a comment at the script layer (script.cpp:114) ----
-	if (!L.raw.empty() && (L.raw[0] == ' ' || L.raw[0] == '\t')) {
-		std::size_t i = 0;
-		while (i < L.raw.size() && (L.raw[i] == ' ' || L.raw[i] == '\t'))
-			++i;
-		if (i < L.raw.size() && L.raw[i] == '#') {
-			emit("indented-comment",
-			     "a '#' comment must start in column 1; indented, this line reaches the "
-			     "parser and is executed as an unknown command", Span{i, i + 1});
-			return;   // the rest of the line is comment prose, not a command
-		}
-	}
-
+	// A line that is only blanks and/or a comment: the comment cut and the
+	// leading-blank strip leave nothing, `commandstr >> command` fails, and
+	// executeCommand:207 returns without acting. (Before the comment rule, an
+	// INDENTED '#' executed as an unknown command — the retired
+	// `indented-comment` seed; parse_model.comments.script_layer.)
 	if (!L.has_command)
-		return;   // whitespace-only line: executeCommand:207 returns without acting
-
-	// --- a '#' after the command --------------------------------------------
-	// The first KEY that begins with '#' is where the author stopped writing
-	// commands and started writing prose. The engine does not know that
-	// (comments.mid_line) — the tail is pairs to it — and `checkInlineComment`
-	// says so, once, with what the tail does to the line. Everything else
-	// below reads the line THE AUTHOR MEANT, the prefix before that '#': the
-	// precedent is indented-comment, which also stops at the '#' (comment
-	// prose is not analysed as commands). Nothing true is dropped — a tail
-	// word that is a real key, a tail pair that sorts first — it is said in
-	// the one message, next to its cause. derivation-diff.md §5.10.
-	std::size_t hash = L.tokens.size();
-	for (std::size_t i = 1; i < L.tokens.size(); ++i) {
-		const Token &t = L.tokens[i];
-		if ((t.role == TokenRole::Key || t.role == TokenRole::DanglingKey)
-		    && !t.text.empty() && t.text[0] == '#') {
-			hash = i;
-			break;
-		}
-	}
-	const std::size_t limit = hash < L.tokens.size() ? L.tokens[hash].span.begin : L.raw.size();
+		return;
 
 	// --- the cause before its consequences ------------------------------------
 	// A separator-lookalike byte changes what every later token IS, so it is
@@ -411,7 +313,7 @@ void LineChecker::run(const Line &L)
 	// what the engine will then DO with the line: both statements are true and
 	// separately actionable, and silencing a true finding because another rule
 	// explains it would make the finding set depend on rule order.
-	checkInvisibleSeparators(L, limit);
+	checkInvisibleSeparators(L);
 
 	const CommandData *cd = g_.command(L.command);
 	const Span cmdSpan = L.tokens.empty() ? Span{} : L.tokens.front().span;
@@ -430,12 +332,6 @@ void LineChecker::run(const Line &L)
 		return;   // the key/value shape of a line the engine will not run is not news
 	}
 
-	if (hash < L.tokens.size()) {
-		checkInlineComment(L, *cd, hash);
-		const Line prefix = tokenizeLine(L.raw.substr(0, limit));
-		rules(prefix, *cd);
-		return;
-	}
 	rules(L, *cd);
 }
 
@@ -495,7 +391,7 @@ void LineChecker::rules(const Line &L, const CommandData &cdRef)
 			}
 		}
 		const std::size_t bs = L.raw.find("\\\"");
-		if (bs != std::string::npos)
+		if (bs != std::string::npos && bs < L.comment_begin)
 			emit("unsupported-quoting",
 			     "backslash is not an escape here: the engine has no escape sequence, so the "
 			     "value ends at this \" and the backslash is kept as an ordinary character",

@@ -240,6 +240,11 @@ void EditCore::refreshDiagnostics()
 	diags_ = checkBuffer(grammar_, path_.empty() ? std::string("<buffer>") : path_, doc_.bytes());
 }
 
+std::size_t EditCore::commentBegin(std::size_t line) const
+{
+	return tokenizeLine(doc_.engineLine(line)).comment_begin;
+}
+
 std::vector<const Diagnostic *> EditCore::diagnosticsForLine(std::size_t oneBasedLine) const
 {
 	std::vector<const Diagnostic *> out;
@@ -381,6 +386,13 @@ void EditCore::computeCompletion()
 		completion_.context = Context::CommentLine;
 		return;
 	}
+	// In the comment after a '#': the engine reads none of it, so nothing
+	// completes — a ghost there would be a promise about bytes with no meaning.
+	if (cur_.col >= line_.comment_begin) {
+		completion_.context = Context::Comment;
+		completion_.anchor = Span{cur_.col, cur_.col};
+		return;
+	}
 
 	const Token *anchor = line_.tokenTouchingRawColumn(cur_.col);
 	const bool atTokenEnd = anchor && cur_.col == anchor->span.end;
@@ -485,6 +497,14 @@ void EditCore::computeDocBar()
 		docbar_.documented = !docbar_.doc.empty();
 		docbar_.doc_of = docbar_.documented ? "comment" : "";
 		docbar_.source = "src/scriptModule/script.cpp:114";
+		return;
+	}
+	if (completion_.context == Context::Comment) {
+		docbar_.path = "comment";
+		docbar_.doc = docs_.commentTailDoc();
+		docbar_.documented = !docbar_.doc.empty();
+		docbar_.doc_of = docbar_.documented ? "comment" : "";
+		docbar_.source = "parseCommand (parse_model.comments.mid_line)";
 		return;
 	}
 

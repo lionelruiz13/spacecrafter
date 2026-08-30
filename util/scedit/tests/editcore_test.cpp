@@ -493,6 +493,20 @@ void testDocBar()
 		ok(!e.completion().armed, "D8 nothing completes inside a comment");
 	}
 
+	// D9. The caret inside a trailing comment: the parser's own sentence about
+	// it (parse_model.comments.mid_line), and no ghost — a completion there
+	// would promise a meaning to bytes the engine never reads.
+	{
+		EditCore e = at("media action pause # stop video", 25);
+		ok(e.completion().context == Context::Comment, "D9 the caret is in the comment");
+		ok(!e.completion().armed && e.completion().candidates.empty(), "D9 nothing completes there");
+		eq(e.docBar().path, std::string("comment"), "D9 the bar says so");
+		ok(e.docBar().documented && e.docBar().doc.find("starts a comment") != std::string::npos,
+		   "D9 with parse_model.comments.mid_line");
+		EditCore f = at("media action pause # stop video", 18);
+		ok(f.completion().context != Context::Comment, "D9 one byte before the '#' is still the command");
+	}
+
 	// D9. The honest-blank spelling lives in ONE place, so the screen and the
 	// tests cannot disagree about it.
 	ok(std::string(kNoDoc).find("no documentation extracted") == 0,
@@ -544,15 +558,13 @@ void testLint()
 		eqn(d.empty() ? 99 : d[0]->span.end, 4, "E4a ... to its end");
 	}
 	{
-		// An inline '#': ONE finding, spanning from the '#' to the end of the
-		// line; the tail's would-be findings are folded into it.
+		// A '#' after the command is a COMMENT (parse_model.comments.mid_line,
+		// the ruled rule): no finding, the line is what precedes the '#'.
 		const std::string line = "media action pause # stop video & sound";
 		EditCore u = at(line + "\n", 0);
-		const std::vector<const Diagnostic *> d = u.diagnosticsForLine(1);
-		eqn(d.size(), 1, "E4b one finding for the inline comment");
-		eq(d.empty() ? std::string() : d[0]->id, std::string("inline-comment"), "E4b ... inline-comment");
-		eqn(d.empty() ? 99 : d[0]->span.begin, 19, "E4b ... from the '#'");
-		eqn(d.empty() ? 99 : d[0]->span.end, line.size(), "E4b ... to the end of the line");
+		ok(u.diagnosticsForLine(1).empty(), "E4b a trailing comment is not a finding");
+		eqn(u.commentBegin(0), 19, "E4b ... and the renderer is told where it starts");
+		eqn(u.commentBegin(1), std::string::npos, "E4b ... and that the next line has none");
 	}
 	{
 		// An opener never closed: reported on ITS line, not on the last one.
