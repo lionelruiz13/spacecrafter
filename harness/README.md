@@ -2086,3 +2086,83 @@ NOT byte-identical to an already-committed file: `frames/old_a.png`,
 `frames/old_wide.png`), and `views/` — four 640-px **lossy JPEG** renderings
 for the eye (July new path · today new path · today old path fov 10 and 60);
 they are a visual record, never a measurement input.
+
+## F55 — the first-60 s photometric sampler: three channels, none of them TCP — INTENT §11.172, 2026-08-30
+
+**What it is for.** Every instrument in this collection takes its first sample
+at least 10 s after the TCP port opens, and most of them ~45 s after: the
+generic opening is `wait_port(); sleep(10)` plus a scene of paced commands.
+So the launch itself has never been observed. F55 observes it.
+
+**`f55_farm.sh <farmdir>`** — `b3_farm.sh` plus ONE change, and it is a
+correctness one: a b3 farm SYMLINKS `scripts/`, so anything that writes
+`scripts/fscripts/startup.sts` writes into the REAL home and overwrites the
+owner's own file. The F55 farm rebuilds `scripts/` and `scripts/fscripts/` as
+real directories of symlinks to the real children, minus `startup.sts`, which
+the caller writes. **`f55_run.sh` asserts the owner's `startup.sts` md5 in ==
+out** alongside `config.ini`/`ssystem.ini`.
+
+**`f55_sampler.py <absOutdir> [--no-burst] [--fps N]`** (drive it through
+`f55_run.sh`). Three channels:
+
+* **A — the app's own startup script.** `ScriptMgr::playStartupScript` reads
+  `<HOME>/.spacecrafter/scripts/fscripts/startup.sts` at the end of `App::init`
+  [app.cpp:689 → script_mgr.cpp:384-388]. Commands before the first `wait`
+  drain in one main-loop batch (the 400 ms deadline loop,
+  script_mgr.cpp:301-303), so a whole scene is established inside the first
+  drawn frame or two — **~45 s earlier than any TCP driver reaches it**. The
+  same script then takes 100 `body action screenshot` samples (the app's own
+  2048² readback, F51's exact frame format) on a 0.02 / 0.5 / 1.0 s schedule.
+  Their wall clocks come from the SCRIPT LOG's `Execute_command` ticks, not
+  from the file mtime (the write is *"~1 frame later, async"*,
+  app_command_interface.cpp:4039).
+* **B — an X-side window grab.** `ffmpeg -f x11grab -window_id <client window>`
+  at 10 fps, started the instant `xwininfo` shows the window (~0.09 s after
+  `Popen`), one PNG per frame so the mtime series IS the cadence record.
+  **MEASURED GOTCHA, and it is the whole reason this is a `-window_id` grab:
+  the ROOT grab (`-i :2+0,0`) returns an all-black frame for an entire launch**
+  while the window is mapped — the X11 root of an Xwayland server under a
+  Wayland compositor carries no composited output; the app's own source says
+  so (*"external grabs see black"*, app_command_interface.cpp:4035-4039).
+  `XGetImage` on the redirected CLIENT window does carry the scene.
+  `org.gnome.Shell.Screenshot` / `ScreenshotWindow` over the session bus are
+  **AccessDenied** here, with and without an app running.
+* **C — the app's log FILES, which are timestamped.** `cLog::write` prefixes
+  every log-FILE line with `SDL_GetTicks()` in ms when `isDebug` is set and
+  flushes per line [log.cpp:122-127, 151-156]. §11.167(c)'s *"the applog
+  carries no timestamps"* is true of STDOUT only (`writeConsole` appends no
+  prefix). A 20 Hz poller stamps each newly-appeared line with wall clock; the
+  per-line offset's MINIMUM is the `wall = ticks + t0` estimator and
+  (median − min) its uncertainty — **0.025 s** measured, 2195 lines.
+
+**The scene** is F51's under a similarity of factor 5: `moon_scaled` left at
+the configured `moon_scale = 5` (an init STATE, not a ramp, since `d6aec251`,
+so there is no §5.109 settle to wait for) and `alt` 5× F51's, giving observer
+radius 48687.006 km = 5 × 9737.4 and every angle F51's. Phase 2 then reaches
+F51's scene EXACTLY over TCP with the settle waited BY MEASUREMENT. The two
+agree to 0.000 in disc mean, which is the similarity validated in-run.
+
+**`f55_series.py <run-dir>`** recomputes the series, the event join and the
+verdict from the committed artifacts alone. Metric authority is `f51_disc.py`
+unchanged; F55 scales the mask radius with the frame width (900 px at 2048,
+450 at 1024) and adds `disc_mean_geom` — the mean over the BARE geometric mask
+— **because F51's `L > 8` cut is blind to an all-black disc** (empty mask, no
+`disc_mean` at all), which is exactly the state a missing texture would draw.
+`hf_mean` is NOT comparable between the 2048 and 1024 channels: a
+`GaussianBlur(4)` on a 2×-downscaled image is a different filter.
+
+**Standing caution this run measured (§11.172(i)): the temp-HOME farm does NOT
+isolate the texture cache.** `b3_farm.sh` symlinks every entry it does not
+name, and `cache/` is one — so every farm run in this collection reads AND
+writes the real `~/.spacecrafter/cache` (measured: `t-bodies-moon_normal.dat`
+rewritten inside an F55 run). The md5 in==out assert covers `config.ini` and
+`ssystem.ini` only. It is a shared mutable state under every photometric
+measurement here.
+
+**Artifacts** `artifacts/f55/`: `probe/` (the two channel probes, including
+the dead root grab in both directions), `run1/` `run2/` (the run records, the
+gzipped series and log lines, the dumps, and the three frames the level claims
+cite), `f51_today/` (F51's own driver re-run today — the 165.258 dwell frame
+and the 160.142 old-path frame). `f55_predictions.json` (md5 `458e6eab`) is
+the pre-run commitment, including the collapse argument that did not
+materialise.

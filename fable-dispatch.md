@@ -679,62 +679,64 @@ entry; §0.5 in full.
 committed pre-run; series + event timestamps recorded with the verdict;
 §11.167(j)(2) annotated; §11 entry + stub; instrument baselines re-derived
 with deltas explained; code tree clean at close; WIP per §0.6.
-**WIP:** *(2026-08-30 CP1 — design fixed, no launch yet.* **Channel named**:
-an X-side `ffmpeg -f x11grab` capture on `:2` started BEFORE the app exists
-(dry-run verified: 15 frames, mtimes 0.200 s apart, whole-screen mean
-**0.0053** = the no-app state, which is the failure-proof), plus the app's own
-**startup script** as the scene-establishment channel — `playStartupScript`
-reads `<HOME>/.spacecrafter/scripts/fscripts/startup.sts`
-[observed: script_mgr.cpp:384-388, app.cpp:689], entirely outside TCP.
-**A THIRD instrument found at design time**: `cLog::write` prefixes every LOG
-FILE line with `SDL_GetTicks()` ms and flushes per line
-[observed: log.cpp:122-127,151-156] — §11.167(c)'s *"the applog carries no
-timestamps"* is true of STDOUT only; `vulkan.log` carries the 391 texture
-events WITH ms stamps, and the real home's last run puts the Moon's three at
-ticks **10488**, 4 ms before the startup script loads. New: `f55_farm.sh`
-(farm with a writable `scripts/fscripts` — a b3 farm symlinks `scripts` to the
-REAL home, so writing startup.sts there would overwrite the owner's),
-`f55_probe.py` (mechanics only, measures NO disc, so it cannot pre-empt the
-predictions).*
-*(**CP2** 2026-08-30 — two probes run, channel settled, **predictions
-committed** (`f55_predictions.json`, md5 `458e6eab`) BEFORE any run that
-observes a disc. **Probe 1 killed the obvious channel**: `x11grab -i :2+0,0`
-(the ROOT grab) returns an all-black 2448x1332 frame for a whole run while the
-window is mapped at +687+129 — the app's own source says so
-[observed: app_command_interface.cpp:4035-4039, *"external grabs see black"*].
-**Probe 2 found the live one**: `x11grab -window_id <client>` on the redirected
-1024x1024 client window returns the FULL rendered scene (mean 10.45, 266182
-nonzero px, a fisheye landscape+Milky Way frame) — a case that comment does not
-cover. GNOME's `org.gnome.Shell.Screenshot` D-Bus: **AccessDenied** both ways.
-Probe 1 also measured the ticks→wall anchor: n=1952 stamped lines,
-median−min **0.026 s**. Scene: F51's under a **similarity of factor 5** —
-`moon_scaled` left at its configured `moon_scale = 5` (applied at init as a
-STATE since `d6aec251`, so no §5.109 ramp to wait for) and `alt` 5× F51's, so
-every angle including the 10.28° disc is F51's; phase 2 then reaches F51
-EXACTLY over TCP with the settle waited BY MEASUREMENT. New: `f55_probe2.py`,
-`f55_sampler.py` (3 channels: startup-script screenshot burst at 2048²,
-X-side window grab at 10 fps, log-file ticks), `f55_run.sh`.*
-*(**CP3** 2026-08-30 — three launches done, all green (comm-probe **0** before
-each, md5 `03fbee59`/`545a51ef` AND the owner's `startup.sts` `cea83254`
-in == out, 0 fails). **THE WINDOW IS OPEN AND IT HAS SOMETHING IN IT.** The
-launch transient is **three-stage and event-locked**: disc **187.3** hf 0.87
-(no albedo, no normal) → **184.25** hf 4.21 (after `big moon_normal.jpg is
-ready for use`) → **165.26** hf 6.65 (after `big moon.jpg is ready for use`),
-each step landing in the first sample after its logged event on BOTH channels;
-**reproduced in run 2 with the events 1.44 s earlier and the steps 1.52 s
-earlier**, which is the control a fixed-time artifact cannot pass. Channels
-agree to **0.04 %** (app 2048² 165.263 vs X-side 1024² 165.197). **AND THE
-HEADLINE NOBODY ORDERED: the dim Moon is GONE.** F51's own unmodified driver,
-run today, returns **165.258 / 6.644 — July's committed value to the last
-digit**, not 61.431 / 2.464, on the same binary `fa00dead`, driver
-`580.636.192`, gnome-shell instance 147372, host boot and frozen data. Its
-OLD-path leg reads **160.142 / 6.603** against F51's committed
-`old_a.png` **42.476 / 1.744** — so 2026-08-29's state hit **both** render
-paths, which corrects §11.167(d)(3). Predictions P4/P5/P7 FAILED as posed and
-are kept with their numbers; P2 fired with the **opposite sign**. Mint
-candidate: §11.164(e)(3)'s named §5 candidate now HAS its mechanism. Artifacts
-`harness/artifacts/f55/` (9.4 MB). Next: the §11.172 entry + stub, the §5 mint,
-back-markers, baselines.*
+**WIP:** *(delivered 2026-08-30 — F55 complete.* §11.167(j)(2) **DISCHARGED**,
+delivered as **§11.172** (entry file first, then stub). **Channel**: the
+obvious X-side one is MEASURED DEAD before it is trusted — the ROOT grab
+`x11grab -i :2+0,0` returns an all-black 2448×1332 frame for a whole launch
+while the window is mapped (the app's own source says so,
+`app_command_interface.cpp:4035-4039`), and GNOME's Screenshot D-Bus is
+AccessDenied; what works is `x11grab -window_id <client>` on the redirected
+window at 10 fps, plus the app's **startup script** (scene + 100 2048²
+`body action screenshot` samples, ~45 s earlier than any TCP driver reaches the
+scene), plus the log FILES, which carry `SDL_GetTicks()` ms on every line —
+§11.167(c)'s *"no timestamps"* is true of stdout only. Failure-proof ran in the
+failing direction twice (pre-present frames `frame_mean` **0.0000**, md5
+`5018f2f6`, identical across runs; mid-run empty-disc samples at
+`disc_mean_geom` 0.002). Uncovered: `[Popen, window mapped]` = **0.093 s**, and
+anything under one sampling period. **THE LAUNCH IS FIVE STATES**: nothing ·
+the SPLASH presented once and held **byte-identical for 10.5 s** · the scene
+converging · **the disc present and WRONG** · settled. **THE TRANSIENT**:
+**187.3** hf 0.87 → **184.25** hf 4.21 → **165.26** hf 6.65, each step in the
+first sample after its own logged `big … is ready for use` line, on BOTH
+channels; **the control is that the events moved 1.44 s between runs and the
+steps moved 1.52 s with them**. Channels cross-calibrate to **0.04 %**.
+**[12.0, 55.4] s of every launch newly observed.** **IT IS A42/A43's
+PREVIEW→BIG SWAP** (`moon-preview.jpg` L mean 183.357 vs `moon.jpg` 147.904) ⇒
+**NO §5 ROW MINTED**; A42/A43 annotated with the time domain they never had
+(1.4–3.4 s, −18.99 disc mean = −11.5 %, hf ×1.58). **THE RESULT NOBODY
+ORDERED: the dim Moon does not reproduce** — `f51_run.sh` unmodified returns
+**165.258 / 6.644**, §11.164(a)'s JULY value to the last digit, from a dump
+bit-identical to F51's in **32 of 33** fields, binary `fa00dead`, driver
+`580.636.192`, gnome-shell pid 147372, host boot and frozen data all
+unchanged; old path **42.476 → 160.142**, which CORRECTS §11.167(d)(3). **Five
+committed predictions FAILED** (P4/P5 the 61.431 bands · P2 right phenomenon
+wrong SIGN · P7 the port opens FIRST at 10.6 s so the window was the DRIVER's
+pacing · P6 · P0a's count clause) and all are kept with their numbers; the
+pre-run collapse argument did not materialise and is kept too. Recorded, not
+chased: **the temp-HOME farm does not isolate `~/.spacecrafter/cache`**. Five
+launches, comm-probe **0** before each, md5 `03fbee59`/`545a51ef` **and** the
+owner's `startup.sts` `cea83254` in == out around every one, code `d6aec251`
+never moved. Back-markers at §11.167(a)(d)(3)(j)(2), §11.164(e)(3)(f)(l)(2),
+both stubs, and §13 A42/A43 — same commit. Baselines: pair-check
+187/162/25/87 → **188/163/25/87** (entry-first signature: +1 file, +1 pair,
+stubs unmoved); scan 100/132/84 → **106/136/83**, all four new pairs marked,
+and the −1 is attributed by a diff against a `git archive` of `2b70732` to
+`§11.164 → §11.167` being credited by PROXIMITY to an unrelated span — the
+arrears did not move (83 real at dispatch, 83 real now). New:
+`f55_farm.sh` · `f55_probe.py` · `f55_probe2.py` · `f55_sampler.py` ·
+`f55_series.py` · `f55_run.sh` · `f55_predictions.json` (`458e6eab`),
+artifacts `harness/artifacts/f55/` (9.4 MB), README section added. Nothing
+owed. For section 3: A42's trade now has both sides priced, and §11.164(f)'s
+"is it a product defect" is unanswerable while the state does not reproduce.*
+
+*(Checkpoint trail, kept for the abort-tolerance record — superseded by the
+delivery summary above.* **CP1** — channel named, `f55_farm.sh` +
+`f55_probe.py` written; the log-file `SDL_GetTicks` prefix found by reading
+`log.cpp` for this task. **CP2** — two probes run (root grab dead, window grab
+live, D-Bus denied; ticks→wall anchor median−min 0.026 s) and the predictions
+committed at md5 `458e6eab` BEFORE any run that observes a disc. **CP3** —
+three launches, the transient measured and reproduced, F51's driver re-run
+today, artifacts staged.)*
 
 ---
 
