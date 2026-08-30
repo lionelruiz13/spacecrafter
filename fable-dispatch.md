@@ -937,6 +937,15 @@ scan **116/154/92** (+2/+4/**+4**, all four this entry's own and all named — `
 back-markers constituting the direction-inversion family: the sixth §11.172(l) instance and the
 first PREDICTED one; kept not reworded). Set diff confirms every pre-existing pair unchanged ⇒
 **82 + 6 + 4**. Re-measured after writing (l): **FIXED POINT**, unchanged to the digit.
+FOLLOW-UP COMMIT (same day): the pair-check's four counters did not move but its FLAG LIST did,
+so **§11.165(e)'s committed expected-delta prediction is reconciled and CORRECTED in one term** —
+its three predicted terms HELD (+1 entry file, +1 live pair, +1 I2 flag), its *"D2 unchanged"*
+term did not: a delivery that discharges a clause relayed in a stub must STRIKE it there, and the
+stub's compressed wording is never the entry's, so D2 (which compares strike ATOMS) fires by
+construction — class N4, the class §11.156(b) excludes from comparison. Back-marker placed at
+§11.165(e) in the SAME commit (§11.161(g)), original struck-not-deleted. The second new flag is
+I2 on §11.179's own pair, two dated spans, both QUOTATIONS of §5.32's markers — the §11.156(e)
+residual class, kept not re-rendered. Baselines RE-DERIVED after this follow-up commit.
 
 ### F60 — The §5.5-class row↔row staleness sweep: §5 rows vs the §13 rows that own their work (F47 acceptance) [S]
 
