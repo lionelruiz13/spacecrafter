@@ -404,6 +404,38 @@ annotated, still OPEN; §11 entry + stub; both instrument baselines re-derived
 post-delivery (pair-check 185/160/25/85, scan 90/125/83 at dispatch) with
 deltas explained; code tree clean at close; WIP per §0.6.
 **WIP:** *(delivered 2026-08-30 — F53 complete.* §5.113's owed datum **PAID**, row stays **OPEN**, class fork untouched. One launch, predictions committed first (md5 `5799ca48`, byte-identical after the run), probe 0, md5 in==out, 0 refused, exit 0. **A**: observer leaves the planet (`homePlanet` → `""`, `onBody` → false, `distanceFromCenter` 4.26e-5 → 5.02e-10, Earth at RA 179.631°/DEC −0.0022°), latch byte-identical, `get status position` BLIND, the one line emitted is about the camera; the single failed gate (distance band) TRACED to light-travel-time, 2.0 % agreement. **B**: `ra :00h00m`/`dec:+00°00'` with nothing selected, alt/az on a full diurnal arc, 7/12 steps, reading channel validated to the character by a star control. **C**: accepted, silent, an Illuminate inserted — white, at the dome edge; `size > 1` found to be a precondition the row omits. **Scope 3**: `searchAround` **cannot** feed `cleverFind` a null — five producers, §11.166(i) census now 13/7/0. Delivered as **§11.170** (entry file then stub), §5.113 + §5.110 annotated, back-markers at four §11.166 nodes. Baselines: pair-check 185/160/25/85 → **186/161/25/85** (+1 entry file, +1 live pair = this delivery's own matched pair; the inline-stub counter did not move, which is what entry-first buys); back-marker scan 90/125/83 → **97/128/83** — the **unmarked invariant holds at 83**, all three new pairs marked. Artifacts `harness/artifacts/f53/`, new `harness/f53_guards.py`, code `d6aec251` untouched.*
+*(ACCEPTED by supervisor [fable 2026-08-30]: §11.170 read in full; commits/authors/scope
+checked (chain `514c9a7 → 60b244e → 62208a3 → 8e07dd9`, harness-only, code clean at
+`d6aec251` throughout); all claimed flips verified at the ledger (four §11.166
+back-markers + the §5.113 strike/PAID block + the §5.110 addendum, all in the delivery
+commit — §11.113(p) held); predictions md5 `5799ca48` confirmed by my own hash;
+`f50_selvars.py` untouched since `c7e5b29`; both instruments re-run by me, recorded
+post-states reproduced to the digit (pair-check 186/161/25/85; scan 97/128/83, the
+unmarked invariant held). Judgment calls ENDORSED with their arguments: the NEW SCRIPT
+(I2 by import — the F50 driver is §5.110's statement, §5.113 needs nothing selected);
+the fov-2/size-600 adaptation (same code path; it also FOUND the `size > 1`
+precondition (a2), measured as an in-run control 0-vs-3764 px); the traced band
+failure (light-travel-time, 2.0 % arithmetic agreement, one-line discriminator named
+not taken — the kept-with-numbers form); G16's self-caught gate defect (its corpus
+included the harness's own stimulus — §11.166(p)'s lesson re-instanced; raw lines
+committed, hand derivation checkable — this task's criterion-integrity instance); the
+(j3) moved-from-pointer restraint (not reachable on this toolchain = §5.79 applied
+honestly; re-arms on any compiler/flags change); the (j1)/(j2) list-not-mint (same
+mechanism as §5.110's type filter — I6). TWO SUPERVISOR ENACTMENTS: (1) **§5.114
+MINTED** for (j4)'s colour transposition — verified by MY OWN read at both cited
+lines PLUS the reach walk (`illuminate hp <n> … color` passes an explicit Vcolor at
+`app_command_interface.cpp:1934` into the transposed call): §5.79 met on the
+transposition itself, on-screen consequence kept [derived] pending the
+compensating-swap check; the executor's record-not-mint was CORRECT execution of a
+prompt that OMITTED the standing mint-license line — supervisor omission, TALLIED
+(F44-precedent repair: the license line added to F54/F55 sections in this commit);
+(2) **§11.169 annotated (e)** with the Q-50 riders (the author's typo mechanism +
+the comma-generator exegesis rule + the Oxford-comma era boundary) — discharged at
+the acceptance point they were scheduled for. Noted for the §11.169 schema audit's
+future work order, not minted: `loadIlluminate`'s `angular_size<1 → defaultSize` is
+a SILENT acting default (D12 instance), observed during my verification read.
+NEWLY ROUTED: the six-for-a-star contract question → the main tester (j2). F54
+gains a REQUIRED PRE-STEP from (j5), added to its section in this commit.)*
 
 ### F54 — The seven never-recorded gate values: decision-free recording fix in five harness files (§11.167(i)) [S]
 
@@ -421,6 +453,15 @@ census flags those members carry) and (j) (the epoch caveats); the five files
 themselves; `harness/README.md` for each file's run recipe; §0.5 in full.
 
 **Scope:**
+0. **REQUIRED PRE-STEP (from F53 §11.170(j5), added at F53 acceptance):**
+   `f27_reply.dump()` is broken at HEAD — it references the removed
+   `b24_equivalence._NONFINITE`; the same dead reference sits in
+   `f12_b33_heading.py:143`, `f23_b33_control.py:136` (one of THIS task's five
+   files) and `f24_b34_seams.py:147`. Repair all four by switching to
+   `dumpread.sanitize_nonfinite` (one decision, four sites — I6), verify by
+   import, commit BEFORE the recording work. Mint license (restored at F53
+   acceptance): a NEW distinct-mechanism defect found en route = mint per
+   §5.79's criterion, else list it on the row it belongs to (the F50 form).
 1. **Per file, the recording fix:** every gate value in the seven-member list
    is WRITTEN to the run's committed artifact record (each file's existing
    artifact/JSON/log convention; if a file has none, a minimal
@@ -499,7 +540,10 @@ entry; §0.5 in full.
 5. **Record:** §11 entry + stub, entry-file-first; artifacts under
    `harness/artifacts/f55/` force-added; verdict against both predictions or
    the honest neither (kept with numbers, F44/F48/F51 form); annotate
-   §11.167(j)(2) DISCHARGED with the verdict (back-marker form).
+   §11.167(j)(2) DISCHARGED with the verdict (back-marker form). Mint license
+   (restored at F53 acceptance): a NEW distinct-mechanism defect found en
+   route = mint per §5.79's criterion, else list it on the row it belongs to
+   (the F50 form).
 
 **Boundaries:** NO product code, NO data, NO driver action, NO re-baselining;
 §0.5 discipline (md5 in==out, comm-probe 0, plain `timeout`, temp-HOME farm).
