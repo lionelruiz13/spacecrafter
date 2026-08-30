@@ -176,7 +176,12 @@ third family property, instrument frozen this round, strict-credit v2
 queued as a deliberate re-baselining act. Stable baselines at close:
 pair-check **188/163/25/87** · scan **106/136/83** with TWO named
 exceptions (`§11.171→§11.165` benign-in · `§11.164→§11.167`
-proximity-out; 83 real, twice attributed). **Next-round queue, in
+proximity-out; 83 real, twice attributed). **[Post-close state at
+`c193a62`: pair-check 190/165/25/87 · scan 106/137/84 — the 84th is
+`§11.172→§11.174`, a THIRD co-occurrence exception (the §11.174
+annotation's citation inside the window of the paragraph's pre-existing
+CORRECTED; direction inverse, the annotation IS the marker). 83 real,
+three named exceptions — the strict-credit v2 case strengthens.]** **Next-round queue, in
 order:** (1) ~~texture-cache instrumentation + farm isolation (md5 manifest
 in every preflight; the dim-Moon discriminator; S)~~ **[RESHAPED post-close
 per §11.174: the ENVIRONMENT CANARY + cache manifest + the affected-claims
