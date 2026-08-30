@@ -1,0 +1,25 @@
+{
+ "task": "F56 — addendum, committed BEFORE the measurement it describes",
+ "date": "2026-08-30",
+ "written_after": "the cadence echo (P4 confirmed: 4392 lines / [30.0, 30.500] s, F45's number to the digit) and before any pixel comparison of F45's star-field frames",
+ "why": "F45's phase C writes a deterministic STAR-FIELD screenshot (deselect; atmosphere/landscape/milky-way/nebula/constellation/star-names/planets off; flag stars on; date utc 2020-01-01T22:00:00; timerate rate 0). Nine of them were captured on 2026-08-29 — INSIDE the dim era — and the cadence echo just captured one on today's healthy stack from the same unmodified script. The dim-era chase never had a NON-MOON, NON-TEXTURED photometric channel from that day. This one is free: it rides launches already taken.",
+
+ "P7_star_channel_across_the_dim_boundary": {
+  "the_two_hypotheses": {
+   "H-texture": "whatever latched the stack into the dim mode acted on TEXTURED-BODY rendering (the shared s_texture content, its upload, its residency). §11.159(a) established that the star channel's pixels come from HipStarMgr::color_table (zone_array.cpp), not from any texture the Moon uses.",
+   "H-global": "the dim mode was a global output transform (gamma / colour space / swapchain format / compositor-side conversion), which would darken EVERY drawn pixel including stars."
+  },
+  "H-texture predicts": "today's sky.png is photometrically indistinguishable from the 2026-08-29 ones — ideally an exact md5 match with one of the two committed classes, at worst a difference inside §11.159(k)(4)'s measured A/A floor (374 px of 4194304 at max channel delta 3/255)",
+  "H-global predicts": "the 2026-08-29 star frames are systematically darker than today's on the lit pixels — a mean-luma ratio far from 1.0 and a difference vastly outside the A/A floor",
+  "prior_evidence_favouring_H-texture": "both render paths were dim (§11.172(f)) and they share one s_texture entry; the app logs were clean; 0 `Can't upload` in every run",
+  "prior_evidence_favouring_H-global": "BOTH paths dim is also what a global transform looks like, and §11.167's dark-patch signature was non-tone-curve (r2 0.408) which a simple gamma would not produce",
+  "fails_if": "either hypothesis's prediction lands and it is NOT the one the ledger currently leans on — recorded as it comes, at the node",
+  "bound_stated_in_advance": "the star field is a SPARSE scene; a dimming of a few dark pixels could hide inside the frame statistics. The metric is therefore taken on the LIT pixels (L > 8) and on the max channel delta, not on the whole-frame mean, and the lit-pixel COUNT is reported too — a global darkening moves pixels across the L>8 threshold and that count is the sensitive member."
+ },
+
+ "P8_AA_floor_on_the_healthy_stack": {
+  "claim": "a second f45_run.sh `empty` launch today produces a sky.png that either matches the first byte-for-byte or differs within §11.159(k)(4)'s floor (374 px of 4194304 at max channel delta 3/255)",
+  "fails_if": "the run-to-run difference on the healthy stack is LARGER than 374 px or exceeds 3/255 — in which case §11.159(k)(4)'s floor is stack-dependent and every pixel-level A/B in this corpus needs its floor re-measured per stack",
+  "note": "§11.174(d) lists the 374 px floor as SUSPECT because it was measured on the faulty stack. This is the measurement that decides whether it is suspect or merely re-confirmed."
+ }
+}
