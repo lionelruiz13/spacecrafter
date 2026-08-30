@@ -273,7 +273,7 @@ Eight `ctest` gates, all green on a clean build:
 | `tokenizer` | 150 constructed lines, one per sharp edge of the parse model, each with its expected tokenization |
 | `parse_oracle` | scedit's reading vs a **verbatim copy of the engine's `parseCommand`**, over exhaustively enumerated short strings, ISO-8859 high-byte lines and every line of the real corpus: 53 058 comparisons |
 | `editcore` | 154 checks over the headless editor: the byte-preserving buffer, the cursor→token map across quoting and the space-after-quote normalisation, every completion context, the documentation bar including its honest blanks, and the live findings |
-| `roundtrip` | `doc/superscript.sts` — 1407 lines, ISO-8859, CRLF — opened in the editor and saved untouched: **same MD5**. Plus one edit that must change exactly the line it was made on |
+| `roundtrip` | `doc/superscript.sts` — 1606 lines (rewritten upstream 2026-08-26, `f0c8ef83`), ISO-8859, CRLF — opened in the editor and saved untouched: **same MD5**. Plus one edit that must change exactly the line it was made on |
 | `ui_selftest` | the frames the editor actually DRAWS, rendered off-screen at a fixed size, with a mask proving the ghost text is dim and another proving the look-alike-space marker lands on the column the finding names |
 | `seed_gate` | the contract file validates (counts re-derived from the data, not asserted) — **and every fact in the four `grammar/args/` fragments is still byte-identical in the merged file**, which is what keeps the granular source and the merged contract from drifting apart |
 | `lint_rules` | `tests/lint_cases.sts` — one construct per armed id, proving the rule fires with the right id, severity and shape; plus a section that must stay silent |
@@ -329,8 +329,9 @@ Stated rather than hidden — the `--rules` discipline, applied to the editor.
   known false positive survives that rule: `xRRGGBB`, a shape rather than a
   value. A `completable: true` marker in the schema would end the guessing.
 - **The whole buffer is re-analysed after every keystroke** — 2.0 ms on
-  `doc/superscript.sts` (1407 lines) in a Release build, so it is not worth
-  making incremental yet, but it is linear in file size and will be one day.
+  `doc/superscript.sts` (measured 2026-08-04 on the then-1407-line file) in a
+  Release build, so it is not worth making incremental yet, but it is linear
+  in file size and will be one day.
 - **No TCP mode**: `§5` item 6, blocked on a spacecrafter rebuild.
 
 `tests/derivation-diff.md` is the audit that makes engine fidelity (C1) a

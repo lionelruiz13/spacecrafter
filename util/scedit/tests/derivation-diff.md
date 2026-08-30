@@ -325,6 +325,58 @@ one shape, which is worth recording.
 
 ## 7. C3 corpus run — every finding, dispositioned
 
+### 7.3 Third run, 2026-08-30 — the corpus itself was rewritten upstream
+
+(Sections are ordered newest-first; numbers are stable ids, not order.)
+
+The script-surface owner rewrote `doc/superscript.sts` on 2026-08-26
+(`f0c8ef83`, +267/−67, 1407 → 1606 lines, still ISO-8859 + CRLF throughout —
+the roundtrip gate passes on the new file unchanged). The desktop-side
+survival probe (`claude/INTENT.md` §11.149(e)) verified byte-wise that 11 of
+the 13 old witness lines were fixed or removed, but could not re-run the
+checker; this run completes that probe. **33 findings, all in
+`doc/superscript.sts`, zero false positives; the harness `.sts` corpus is
+still silent.**
+
+Against §7.0's record (19 findings):
+
+- **15 cleared by the rewrite** — :94 ×2, :303 (as spelled), :306, :309,
+  :333 ×2, :681, :912, :930, :1133, :1153, :1167, :1205, :1269, :1271, :1366.
+  Every one was a TRUE finding; each fix/removal was verified byte-level in
+  §11.149(e), and the checker's silence over the rewritten lines is the
+  machine half of that confirmation.
+- **2 survive with line drift** — :57 → :76 (comet `halo` duplicate) and
+  :769 → :875 (`landscape … spacecraft on`, SS-9, byte-identical).
+- **1 changed shape rather than clearing** — :303's flag line was respelled
+  and still fails, now as :373 (below): the respell fixed the two `set`
+  lines and not the `flag` line.
+- **30 findings are new**, all on lines the rewrite added. Dispositions:
+
+| line(s) | id | disposition | argument |
+|---|---|---|---|
+| 37, 38, 39, 41, 42, 44, 45, 46 — 24 findings (19 unknown-parameter, 5 dangling-key) | one root | TRUE | The new "Usage example" block writes trailing `# comments` on command lines. The language has no inline comments: the script layer tests `line[0] != '#'` (script.cpp:114) only, so a mid-line `#` and every word after it are read as ordinary key/value pairs — `(#,stop)`, `(video,&)`, a dangling last word. The commands at the head of these lines still act (their handlers read only the keys they know), so the block *behaves* in a show — but it teaches a syntax the engine does not have, and the drop is silent. One root, one candidate seed queued (`inline-comment`, scedit INTENT §5 item 13): a dedicated rule would replace these 24 messages with 8 that name the actual mistake. → SS-20. |
+| 76, 181 | duplicate-key | TRUE, benign | :76 is §7.2's :57 after line drift. :181 is a NEW instance: the added comet-tails demo ("2022E3 ZTF") copies the Wirtanen line's `halo true … halo true` construct, duplicate included. |
+| 373 | unknown-parameter | TRUE — the half-fix | `flag datetime_display_number on/off/toggle`. Upstream respelled all three `date_display_*` lines; the two `set` lines are thereby fixed (checker silent at :376/:379), but **no FLAG of this name exists** — the flag family's only date-adjacent names are `show_tui_datetime` and `light_travel_time` [measured: grammar + `m_flags`]. The comment above the line wants "activate the multiple date drawing"; there is no flag route to that, the `set` pair is the whole surface. → SS-3 status amended. |
+| 875 | unknown-parameter | TRUE | §7.0's :769, byte-identical (SS-9 stays with the owner). |
+| 940, 945 | unknown-command | TRUE | Two prose lines `(Warning! Don't forget …)` added without a leading `#`: they reach the parser and `(warning!` becomes the command (key lowercasing per parse model). The advice in the prose is real (the SC-PRO `initial360.sts` wait-skip note); the lines just need `#`. → SS-21. |
+| 1507 | unknown-command | TRUE | `mod a 2` — the registered spelling is `modulo` (`app_command_init.cpp:72`, `ACP_CN_MODULO`). The did-you-mean shows `mode` (distance 1) and not the intended `modulo` (distance 3, past the display cap max(2, 3/3) = 2 for a 3-byte token) — the cap working as designed on a short token, noted because here it points AWAY from the intent. → SS-22. |
+| 1536, 1539 | dangling-key | TRUE | `text "behobachter"` / `text "observateur"` inside the new `struct if language` examples. `text` takes key/value pairs; a bare quoted word is a KEY with no value, dropped at `:148` — the `text` line then carries no arguments at all, and the example never draws anything. → SS-23. |
+
+**One defect on the new lines that NO armed rule can see** — recorded here so
+the silence is not mistaken for health: line 1547 `struct if current_mode
+equal 0` has no matching `struct if end`. `ifSwap` is a stack (push
+`:4616-4651`, pop on `end` `:4611`, skip-while-set `:225`), so whenever
+`current_mode ≠ 0` **every line after 1547 is skipped for the rest of the
+run**. An `unclosed-struct` seed is queued (scedit INTENT §5 item 14); the
+witness line itself → SS-24.
+
+Record notes: (a) §7.0's prose says "20 findings" / "+8 new findings" while
+the recorded file held 19 = 12 (§7.2) + 7 (§7.1's rows: one
+invisible-separator + six unknown-parameter) — an off-by-one in the prose,
+never in the record; left in place, corrected here. (b) The pre-rewrite
+corpus bytes remain reachable at `70dee810:doc/superscript.sts`; old line
+numbers in §7.0-7.2 refer to that version.
+
 ### 7.0 Second run, 2026-08-04, with the argument-key half armed
 
 The run below is the post-merge one; `tests/corpus-expected.txt` records it
