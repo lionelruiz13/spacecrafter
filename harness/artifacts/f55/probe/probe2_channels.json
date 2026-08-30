@@ -1,0 +1,106 @@
+{
+ "comm_probe_before": [],
+ "md5_in": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "binary_md5": "fa00deade57fe02739800013364a9611",
+ "no_app": {
+  "M3_Screenshot": {
+   "rc": 1,
+   "secs": 0.004,
+   "stdout": "",
+   "stderr": "Erreur\u00a0: GDBus.Error:org.freedesktop.DBus.Error.AccessDenied: Screenshot is not allowed"
+  }
+ },
+ "t_launch": 1788076867.4,
+ "windows": [
+  {
+   "id": "0x400167",
+   "w": 1074,
+   "h": 1111,
+   "abs_x": 687,
+   "abs_y": 129,
+   "indent": 5,
+   "line": "0x400167 \"spacecrafter 2026.07.11\": (\"mutter-x11-frames\" \"mutter-x11-frames\")  1074x1111+687+129  +687+129"
+  },
+  {
+   "id": "0x800002",
+   "w": 1024,
+   "h": 1024,
+   "abs_x": 712,
+   "abs_y": 191,
+   "indent": 8,
+   "line": "0x800002 \"spacecrafter 2026.07.11\": (\"spacecrafter\" \"spacecrafter\")  1024x1024+25+62  +712+191"
+  }
+ ],
+ "windows_settled": [
+  {
+   "id": "0x400167",
+   "w": 1074,
+   "h": 1111,
+   "abs_x": 687,
+   "abs_y": 129,
+   "indent": 5,
+   "line": "0x400167 \"spacecrafter 2026.07.11\": (\"mutter-x11-frames\" \"mutter-x11-frames\")  1074x1111+687+129  +687+129"
+  },
+  {
+   "id": "0x800002",
+   "w": 1024,
+   "h": 1024,
+   "abs_x": 712,
+   "abs_y": 191,
+   "indent": 8,
+   "line": "0x800002 \"spacecrafter 2026.07.11\": (\"spacecrafter\" \"spacecrafter\")  1024x1024+25+62  +712+191"
+  }
+ ],
+ "M1_first_window": {
+  "rc": 0,
+  "secs": 0.325,
+  "stderr": "",
+  "shape": [
+   1111,
+   1074
+  ],
+  "mean": 11.10615,
+  "max": 255,
+  "nonzero": 303994
+ },
+ "M2_second_window": {
+  "rc": 0,
+  "secs": 0.324,
+  "stderr": "",
+  "shape": [
+   1024,
+   1024
+  ],
+  "mean": 10.45429,
+  "max": 255,
+  "nonzero": 266182
+ },
+ "M3_Screenshot": {
+  "rc": 1,
+  "secs": 0.003,
+  "stdout": "",
+  "stderr": "Erreur\u00a0: GDBus.Error:org.freedesktop.DBus.Error.AccessDenied: Screenshot is not allowed"
+ },
+ "M4_ScreenshotWindow": {
+  "rc": 1,
+  "secs": 0.003,
+  "stdout": "",
+  "stderr": "Erreur\u00a0: GDBus.Error:org.freedesktop.DBus.Error.AccessDenied: ScreenshotWindow is not allowed"
+ },
+ "M3_cadence_secs": [
+  0.003,
+  0.002,
+  0.002,
+  0.002,
+  0.002
+ ],
+ "md5_out": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "md5_in_eq_out": true,
+ "comm_probe_after": []
+}

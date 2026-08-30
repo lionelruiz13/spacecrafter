@@ -1,0 +1,81 @@
+{
+ "task": "F55 - the first-60 s photometric sampler (INTENT 11.167(j)(2))",
+ "written": "2026-08-30, BEFORE any run that observes a Moon disc",
+ "code_head": "master-beta @ d6aec251",
+ "binary_md5": "fa00deade57fe02739800013364a9611",
+
+ "channels": {
+  "series": {
+   "what": "ffmpeg -f x11grab -window_id <app client window> -framerate 20 -i :2, PNG per frame, 1024x1024 = the app's on-screen window (config screen_w/h=1024, fullscreen=false [observed: ~/.spacecrafter/config.ini:26-31])",
+   "why_outside_tcp": "a separate process reading the X server; the app is never commanded to produce these frames and cannot know they are taken",
+   "wall_clock": "each PNG's own mtime; the muxer writes one file per grab, so the mtime series IS the cadence record and reports its own drops",
+   "started": "as soon as the client window is found by polling xwininfo, ~0.6 s after Popen; the app draws its first frame ~10 s later, so every frame of the drawing window is covered",
+   "measured_dead_alternative": "ffmpeg -f x11grab -i :2+0,0 (the ROOT grab) returns an all-black 2448x1332 frame for a whole run while the window is mapped (probe 1: mean 0.0000, max 0) - the X11 root of an Xwayland server under a Wayland compositor carries no composited output. The app's own source says this: 'external grabs see black' [observed: app_command_interface.cpp:4035-4039]. What that comment does NOT cover, and what probe 2 measured, is the WINDOW grab: XGetImage on the redirected client window returns its backing pixmap and DOES carry the rendered scene (mean 10.45, 266182 nonzero px, a full fisheye landscape+Milky Way frame).",
+   "dead_alternative_2": "org.gnome.Shell.Screenshot / ScreenshotWindow over the session bus: AccessDenied, both, with and without an app running (probe 2)."
+  },
+  "scene": {
+   "what": "the app's own STARTUP SCRIPT, <HOME>/.spacecrafter/scripts/fscripts/startup.sts, played by ScriptMgr::playStartupScript at the end of App::init [observed: app.cpp:689, script_mgr.cpp:384-388]",
+   "why_outside_tcp": "it is read from the farm HOME at init; no socket is involved and the TCP port is not yet open",
+   "how_early": "ScriptMgr::update drains commands in a while(wait_time==0) loop bounded by a 400 ms deadline [observed: script_mgr.cpp:301-303], so a wait-free command block executes inside the first main-loop iteration"
+  },
+  "events": {
+   "what": "the farm's own log files, polled at 20 Hz by the driver and stamped with the wall clock at which each new line first appears",
+   "why_it_works": "cLog::write prefixes every LOG FILE line with SDL_GetTicks() in ms and flushes after every line [observed: log.cpp:122-127, 151-156]. 11.167(c)'s 'the applog carries no timestamps' is true of STDOUT (writeConsole appends no prefix) and FALSE of the files: vulkan.log carries all 391 'creating uninitialized texture' events with ms stamps.",
+   "anchor": "wall = ticks + t0; each line's own offset is an UPPER bound (first-seen lags the write), so min(offset) is the estimate and (median - min) is its uncertainty. Probe 1 measured n=1952 stamped lines, median-min = 0.026 s."
+  }
+ },
+
+ "uncovered_sub_windows": [
+  "[Popen, client window mapped + found] ~ 0.6 s (probe 1: 0.503 s). The app draws nothing in it - the first drawn frame is ~10 s later - but the channel is not watching, and that is a limit, not an absence.",
+  "[first drawn frame, first captured frame] <= 1 sampling period = 50 ms at 20 fps. This is the one that matters and it is stated as the resolution limit of the whole task: see collapse_argument.",
+  "anything shorter than one sampling period anywhere in the series."
+ ],
+
+ "scene_definition": {
+  "base": "F51's scene = b3_ladder's moon `base` scene, the very scene 11.164(c) measured the 2.7x gap in",
+  "phase1_departure": "moon_scaled is LEFT AT ITS CONFIGURED VALUE instead of being switched off. config.ini:221 flag_moon_scaled = true, :240 moon_scale = 5 [observed], and since d6aec251 the configured scale is applied AT INIT as a state, not ramped, so the Moon's scaledDatumRadius is 1737.4*5 = 8687.0 km from the first frame with no ASmooth ramp and no 5.109 settle to wait for.",
+  "phase1_alt": "40000000 m. 5.109: `alt` counts from the DISPLAY-scaled datum, so the observer radius is 8687.0 + 40000.0 = 48687.0 km = 5 x F51's 9737.4 km. The whole scene is F51's under a similarity of factor 5: every angle, including the disc's 10.28 deg angular radius and every illumination direction, is preserved. That is what makes phase 1 comparable to 61.431 without ever touching moon_scaled.",
+  "phase2": "F51 EXACTLY: flag moon_scaled off, wait the settle BY MEASUREMENT (scaling == scalingTarget in the dump, 5.109), moveto alt 8000000, fov 10. Reached over TCP, i.e. no earlier than F51 could reach it. Its role is the butt-join and the control on phase 1's similarity argument.",
+  "fov": 10.0,
+  "shared_with_f51": "date jday 2461234.0, home_planet Moon, free mode, lat 0 lon 230.3, track on/zoom/track off, atmosphere off, landscape off, experimental_path on, experimental_shadows off"
+ },
+
+ "metric": {
+  "authority": "f51_disc.py, unchanged; F55 scales only the mask radius to the capture resolution",
+  "L": "PIL Image.open(p).convert('L')",
+  "mask_geom": "(x-(w-1)/2)^2 + (y-(h-1)/2)^2 < (900*w/2048)^2   -> r<450 on a 1024 frame, r<900 on a 2048 one",
+  "disc_mean_lit": "mean(L) over mask_geom AND L>8   -- F51's quantity, the one 61.431 is on",
+  "disc_mean_geom": "mean(L) over mask_geom alone -- recorded BECAUSE F51's L>8 cut is BLIND to an all-black disc: an unfilled VkImage would give |lit| = 0 and no disc_mean at all. This is the quantity in which 'the texture never arrived' is visible.",
+  "n_lit": "|mask_geom AND L>8|; F51's frame fills 2535950 of 2544690 = 99.66 % of the mask",
+  "hf_mean": "recorded but NOT compared to F51's 2.464 on the 1024 frames: GaussianBlur(4) on a 2x-downscaled image is a different filter. Only the 2048 app screenshots are hf-comparable."
+ },
+
+ "definitions": {
+  "ESTABLISHED": "n_lit >= 0.90 * |mask_geom|",
+  "STEP": "disc_mean_lit(i) - disc_mean_lit(i-1) > +5.0 between consecutive samples (F51's committed |delta| > 5.0, upward half - only an upward step supports late-upload)",
+  "FLAT": "max - min of disc_mean_lit < 5.0 over the stated window",
+  "DARK_DISC": "a sample whose geometry is right but whose disc_mean_geom < 2.0"
+ },
+
+ "predictions": {
+  "P0a_failure_proof_negative": "Every frame captured while the window is mapped but the app has not yet drawn shows the NO-CONTENT state: disc_mean_geom < 1.0 and n_lit < 1000. If instead these frames showed a lit disc, the channel would not be observing this app and every later number would be uninterpretable. PASS = at least 20 such frames exist before the first ESTABLISHED one.",
+  "P0b_failure_proof_positive": "Frames of the established scene: n_lit >= 0.90*|mask_geom| AND disc_mean_geom > 20.",
+  "P0c_liveness": "The X-side series CHANGES at the phase1 -> phase2 transition (a scene change commanded over TCP at a known wall clock) - a frozen backing pixmap would not. Predicted: consecutive-frame md5 identity WITHIN a static phase (F51 measured 72 identical frames over 355 s) and a change at the transition.",
+  "P1_H_shading_driver": "The disc is DIM FROM THE FIRST ESTABLISHED FRAME and does not climb: (a) no STEP at any i after the first ESTABLISHED sample, anywhere in phase 1; (b) FLAT over the last 30 s of phase 1; (c) the first ESTABLISHED sample's disc_mean_lit within 15 % of the phase-1 median.",
+  "P2_H_late_upload": "A STEP, or a DARK_DISC sample, after the first drawn frame, at a wall clock LATER than the Moon's three 'creating uninitialized texture' events (which the vulkan.log ticks place at the very end of init). If this fires, 11.164(e)(3) RE-OPENS and 5.79's criterion is MET on the shipped side: the shipped default pins the new path (drawModularSystem = true, pathPinned = true [11.167(f)]), so a body drawn from an unfilled image on that path is reachable-with-consequence from a shipped surface and would be minted.",
+  "P3_channel_calibration": "The app's own 2048 screenshot and the X-side 1024 capture of the SAME app state agree on disc_mean_lit to within 3.0 (k = app/x in [0.95, 1.05]). A 2x downscale of a linear-coded image preserves a mean; a colour-space or gamma difference in the present path would break this, which is why it is measured rather than assumed.",
+  "P4_phase1_level": "The app's own 2048 screenshot in phase 1 reads disc_mean_lit = 61.431 +- 3.0 (F51's committed number for this scene). This CAN fail: phase 1 is F51's scene under a 5x similarity, and if display scaling changed the shading rather than only the size, the level moves.",
+  "P5_phase2_level": "In phase 2 (F51 EXACTLY) the app's own 2048 screenshot reads disc_mean_lit = 61.431 +- 1.0; F51 got byte-identity with F48's committed frame (md5 0c7de389) across a different launch and driver, so md5 identity is the strong form and is predicted, with the +-1.0 band as the weak form that still passes if antialiasing or the scene settle 11.171(e) measured moves a pixel.",
+  "P6_first_drawn_frame_time": "The app's first drawn frame lands 8-20 s after Popen (probe 1: 'End of loading SC' and the Moon's texture events at SDL ticks ~10.5 s), and the disc is ESTABLISHED within 0.5 s of it.",
+  "P7_port_time": "The TCP port opens LATER than the first ESTABLISHED sample - this is the whole premise of the task and it is checked, not assumed. The mark goes on the series."
+ },
+
+ "collapse_argument": {
+  "stated_before_the_run": true,
+  "prior": "F51 refuted H-late-upload on FOUR independent channels (11.167(d)): the fine structure is registered (r_hf 0.6189 at zero shift, collapsing to 0.004 one pixel-cluster away), the disc keeps the source file's own R/B tint to within 1 %, the old path draws a fully detailed Moon from the same s_texture cache entry, and the source shows getTexture()'s no-cmd branch is transient because recordTransfer pops the same queue once per frame in DrawHelper::submit. This task does not re-open that; it closes the one window that refutation could not see.",
+  "the_collapse": "vulkan.log's ms stamps (a NEW reading of an OLD file, found while designing this task) put the Moon's three 'creating uninitialized texture' events at ticks 10488 in the real home's last run - 23 ms after 'End of loading SC' (10465) and 4 ms BEFORE 'ScriptMgr: load .../startup.sts' (10492). So they fire at the very END of init, immediately before the first drawn frame. Combined with 11.167(d)(4)'s source reading - recordTransfer drains the queue once per frame - the content lands within 1-3 frames of the first draw, i.e. 7-21 ms at the 144 fps config cap (11.159(k7)). A 20 fps sampler has a 50 ms period. IT THEREFORE CANNOT RESOLVE A SUB-FRAME UPLOAD, AND UNDER THAT BRANCH BOTH HYPOTHESES PREDICT THE SAME SERIES: dim from the first measurable frame.",
+  "what_survives_the_collapse": "(1) every variant of late that is longer than 50 ms is refutable, and that is the entire window 11.167(j)(2) names: F51's series opened ~60 s after the port, and the port opens ~10 s after the first drawn frame, so 100 % of the interval [first drawn frame, first TCP command] is newly covered. (2) The ONE-SAMPLE test that reaches inside the collapse: the FIRST ESTABLISHED sample itself. Under H-late-upload's remaining branch the disc renders from an unfilled VkImage on that frame - DARK_DISC, or a disc_sd far from the settled value. Under H-shading it is already at the dim level with normal structure. That single sample is the sharpest thing this instrument has and it is committed as such. (3) The first launch-transient photometric record for the corpus, which no instrument has ever taken."
+ },
+
+ "no_mint_default": "Per 5.79 and the F50/F51 form: a NEW distinct-mechanism defect found en route is minted; otherwise it is listed on the row it belongs to. P2 firing is the one outcome that mints (its reach is stated above)."
+}

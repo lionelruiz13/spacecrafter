@@ -1,0 +1,50 @@
+{
+ "binary": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "binary_md5": "fa00deade57fe02739800013364a9611",
+ "comm_probe_before": [],
+ "md5_in": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "display": ":2",
+ "screen": "2448x1332",
+ "startup_sts": "timerate rate 0\nflag atmosphere off\n",
+ "twin_md5": "5617bd930ca173681d7354910d020d6a",
+ "t_ffmpeg": 1788076672.168,
+ "win_before_launch": null,
+ "t_launch": 1788076675.17,
+ "window_appeared": {
+  "t": 1788076675.673,
+  "id": "0x400160",
+  "w": 1074,
+  "h": 1111,
+  "abs_x": 687,
+  "abs_y": 129,
+  "line": "0x400160 \"spacecrafter 2026.07.11\": (\"mutter-x11-frames\" \"mutter-x11-frames\")  1074x1111+687+129  +687+129"
+ },
+ "t_port": 1788076720.212,
+ "md5_out": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "md5_in_eq_out": true,
+ "comm_probe_after": [],
+ "anchor": {
+  "n": 1952,
+  "free_slope": 1.008648,
+  "free_intercept": 1788076675.172,
+  "t0_min": 1788076675.182,
+  "t0_median": 1788076675.208,
+  "t0_p90": 1788076675.228,
+  "spread_min_to_median": 0.026
+ },
+ "log_files": [
+  "EntityCore-logs.txt",
+  "script-26.08.30.log",
+  "shader.log",
+  "spacecrafter.log",
+  "tcp.log",
+  "vulkan.log"
+ ],
+ "n_frames": 350
+}

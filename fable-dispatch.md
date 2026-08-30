@@ -695,7 +695,26 @@ ticks **10488**, 4 ms before the startup script loads. New: `f55_farm.sh`
 (farm with a writable `scripts/fscripts` — a b3 farm symlinks `scripts` to the
 REAL home, so writing startup.sts there would overwrite the owner's),
 `f55_probe.py` (mechanics only, measures NO disc, so it cannot pre-empt the
-predictions). Next: run the probe, then commit predictions, then the sampler.*
+predictions).*
+*(**CP2** 2026-08-30 — two probes run, channel settled, **predictions
+committed** (`f55_predictions.json`, md5 `458e6eab`) BEFORE any run that
+observes a disc. **Probe 1 killed the obvious channel**: `x11grab -i :2+0,0`
+(the ROOT grab) returns an all-black 2448x1332 frame for a whole run while the
+window is mapped at +687+129 — the app's own source says so
+[observed: app_command_interface.cpp:4035-4039, *"external grabs see black"*].
+**Probe 2 found the live one**: `x11grab -window_id <client>` on the redirected
+1024x1024 client window returns the FULL rendered scene (mean 10.45, 266182
+nonzero px, a fisheye landscape+Milky Way frame) — a case that comment does not
+cover. GNOME's `org.gnome.Shell.Screenshot` D-Bus: **AccessDenied** both ways.
+Probe 1 also measured the ticks→wall anchor: n=1952 stamped lines,
+median−min **0.026 s**. Scene: F51's under a **similarity of factor 5** —
+`moon_scaled` left at its configured `moon_scale = 5` (applied at init as a
+STATE since `d6aec251`, so no §5.109 ramp to wait for) and `alt` 5× F51's, so
+every angle including the 10.28° disc is F51's; phase 2 then reaches F51
+EXACTLY over TCP with the settle waited BY MEASUREMENT. New: `f55_probe2.py`,
+`f55_sampler.py` (3 channels: startup-script screenshot burst at 2048²,
+X-side window grab at 10 fps, log-file ticks), `f55_run.sh`. Next: the sampler
+run.*
 
 ---
 
