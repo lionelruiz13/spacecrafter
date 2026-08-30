@@ -277,6 +277,30 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-30c] The blocker dissolves: the field was here all along.**
+  Vixy traced "how to make spacecrafter work here" through dependencies
+  IN MEMORY and hit his own stale cache: the `.spacecrafter` data had
+  been brought to this laptop for **fable-free-session-01** (a free
+  session, so that instance could see the sky from here) — a state
+  change whose side-effect his planning model never registered
+  ("definitely a stale state cache, not invalidated on state change"
+  [vixy] — I3 at the human layer, writer and cache-holder the same
+  person). Verified at filesystem, not taken from recall: `~/.
+  spacecrafter` present, 11 GB; **config.ini/ssystem.ini md5 = the
+  recorded pristine pair** (`03fbee59`/`545a51ef`, §11.149(d3)) — the
+  laptop field IS the recorded field, every field-dependent conclusion
+  transfers; **`scripts/` holds 408 `.sts`** in 8 categories — the
+  2026-08-04b "EMPTY on this laptop" measurement is SUPERSEDED (it
+  carried its date and tag, so it aged honestly; the data drop
+  post-dates it). Consequences: (1) **C3's shipped-scripts half is
+  armable** — 408 scripts into SCEDIT_CORPUS, every finding
+  dispositioned (at witness density expect a real crop; dispatchable
+  sweep, fragment pattern); (2) engine configure probe on this laptop:
+  CLEAN (C++23, -Ofast, deps resolved), full build launched in
+  background — if it completes, item 6's blocker and the five
+  2026-08-30b rulings' verification blocker dissolve, and the session
+  premise "can't work on spacecrafter [on this machine]" is retired.
+  The blocker list shrank by memory-trace + one `ls` + one configure.
 - **[2026-08-30b] Rulings land the same evening, and the remotes turn
   out diverged.** Vixy in-conversation: (1) item 13 RULED — mid-line `#`
   becomes a real engine comment (ruling + sequencing on the item); (2)
