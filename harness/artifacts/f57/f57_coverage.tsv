@@ -1,0 +1,79 @@
+# F57 — per-part coverage of the tester's answers against the PRE-COMMITTED part enumeration
+# (harness/artifacts/f57/f57_predictions.json, md5 4d5b2486…, committed 09b5e80 before this file existed).
+# Columns: item <TAB> part <TAB> score <TAB> reason
+# Scores per the pre-committed rubric: 1.0 ANSWERED · 0.5 PARTIAL · 0.0 DROPPED.
+# ONE RULE ADDED AT MEASUREMENT TIME, applied uniformly and listed: a part the answer
+# makes MOOT scores 1.0 as DISSOLVED (the part no longer needs an answer). Affected: Q2b, Q26b.
+# Recompute without it by dropping those two rows from numerator and denominator.
+Q1	a	1.0	parent-fallback resolves under BOTH readings of "(a) is better" — R2 states so explicitly
+Q1	b	0.5	covered only under the option-label reading; recorded UNRESOLVED at §11.48(b) and stated back at R2. Cause = the QUESTION's case/option label collision (§11.48(d)), not the answer
+Q2	a	1.0	"Keep looking at the same absolute direction in the sky"
+Q2	b	1.0	DISSOLVED by (a) — §11.48(a): nothing reorients, so there is nothing to ease
+Q3	a	1.0	in use (implied by naming the use); §11.48(a) reads it as "in use, port not retire"
+Q3	b	1.0	"tilted dome geometry" — the use named, from the offered list
+Q4	a	1.0	"Yes, we still use it."
+Q5	a	0.0	which of the three anchor kinds: not addressed. Re-asked at R3, flagged there as design-deciding
+Q5	b	1.0	both — hand-edited AND script-created
+Q5	c	1.0	not needed between sessions
+Q6	a	1.0	"toward the specific point on the surface you're currently looking at"
+Q6	b	0.0	far-descent case dropped; re-asked at R6; recorded as A18's residual
+Q6	c	1.0	yes, he hits it — "we have to stop coming down as it doesn't move"
+Q6	d	1.0	the workaround IS stopping manually; §11.48(c4) reads it as a learned workaround
+Q7	a	1.0	"Yes." + an unrequested clarification of the anchoring model
+Q8	a	1.0	far solar-system view with the anchor kept
+Q9	a	0.0	threshold-a feel not judged — §11.48(b) rules the re-ask DEFERRED BY DESIGN (a tester cannot judge thresholds he has not seen side by side)
+Q9	b	0.0	same, threshold-b
+Q9	c	1.0	cross-fade, with a volunteered cost constraint
+Q10	a	1.0	"Yes, I sometimes do jump dates while navigating."
+Q11	a	1.0	"If a body can be seen, we must be able to select it."
+Q11	b	0.0	multi-system shows: dropped, never re-asked, and NOT recorded as a residual on the A17 row — the one lost part of the corpus
+Q12	a	1.0	"Yes" — decisive by §2(b) immutability
+Q12	b	0.0	what-for dropped; re-asked at R4 and delivered there
+Q12	c	0.0	completeness check (what more were the two bodies buying) dropped; partially recovered by R4's answer
+Q12	d	0.0	stop-and-hold vs asymptotic dropped; re-asked at R4 and delivered there
+Q13	a	1.0	"It should be where it is now." — the OBSERVABLE survives; the MECHANISM it implied was reversed by Vixy's D23 (§11.114). Scored as answered: the part was answered, the reversal is an authority fact, not a coverage fact
+Q14	a	1.0	start fresh, with the performance reason volunteered
+Q15	a	0.5	answers via a "set them all" command; the per-object / global / other enumeration is not itself selected
+Q15	b	1.0	override
+Q15	c	0.0	survive-reload dropped; re-asked at R8
+Q16	a	1.0	tropics and polar circles back
+Q16	b	0.5	states the requirement (draw them when the sky flags are on); the historical deliberate-or-incidental question is not answered
+Q16	c	0.0	own toggle dropped; re-asked at R7(a)
+Q17	a	1.0	"It must be separated"
+Q17	b	1.0	ring off / eclipse on — content delivered, but the ring half rests on a wrong referent the QUESTION caused (§11.48(d)); voided and re-asked at R1
+Q18	a	0.5	describes desired runtime behaviour; the data-declares-its-landscape question is not answered; re-asked at R9(a)
+Q19	a	1.0	"Great. Old behavior has no way to be kept."
+Q20	a	1.0	H/G stays as an authoring override (§11.48(a) reads it so)
+Q20	b	0.5	"can be forced in some cases" implies script usage without stating it
+Q21	a	1.0	actual surface appearance
+Q21	b	1.0	limb darkening / granulation / spots, plus a volunteered non-uniform red glow
+Q22	a	1.0	wants to reach a star — surface implied; §11.48(c1) reads the answer as exceeding the question
+Q22	b	0.0	multi-star per-instance halo dropped; recorded as A7's narrowed residual, never re-asked
+Q23	a	1.0	correct moon by moon
+Q23	b	0.5	names Iapetus — the question's OWN example; no moon the question did not already supply
+Q24	a	0.5	reframes a misfire question into a deliberate USE; §11.48(b) calls it decisive in direction
+Q24	b	0.5	"to do some comparisons" is a class, not the cases; re-asked at R10 as a completeness check
+Q25	a	1.0	20% ratified
+Q25	b	0.0	"have you noticed the difference" dropped; not recorded anywhere (low stakes — the decision was ratified regardless)
+Q26	a	1.0	"No."
+Q26	b	1.0	DISSOLVED by (a); the answer states the authoring contract instead
+Q27	a	1.0	yes, create the command
+Q27	b	1.0	keep the current state
+R1	a	1.0	dev-only deactivation ⇒ no operator control wanted
+R1	b	1.0	activated every time
+R2	a	1.0	"Yes." — the veto window closes unexercised
+R3	a	1.0	mostly (3); (2) is lacking; (1) only meaningful in Universe mode
+R3	b	1.0	"keeping its angle to the planet" = follow-the-rotation, stated for the kind he needs
+R4	a	1.0	"A zone we fly into and also for transparent bodies" — the E part Q12 dropped, delivered on isolated re-ask
+R4	b	1.0	stop, with the reason
+R5	a	1.0	biggest wins, with the surface-magnitude argument
+R6	a	1.0	"Last selected." — the part Q6 dropped, delivered in two words on isolated re-ask
+R7	a	1.0	must stay associated with the axis flag
+R7	b	1.0	visible at any altitude
+R8	a	1.0	reset to the body default or the script's colour
+R9	a	1.0	built-in rules
+R9	b	1.0	until they land elsewhere, or a script changes it
+R10	a	0.5	answers the going-back case; the enumeration the completeness check asked for is not delivered
+R11	a	1.0	"Yes, it can change during a show."
+R13	a	1.0	the anchor must hold
+R13	b	0.5	"memorize it for each mode" answers a per-MODE axis, not the every-body-or-some axis that was asked

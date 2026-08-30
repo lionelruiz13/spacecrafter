@@ -1,0 +1,27 @@
+# F57 m4 — depth markers: propositions in an answer that NO pre-committed part of that item asked for,
+# and that carry a design-relevant constraint, reason or proposal.
+# Classes are the ones pre-committed in f57_predictions.json P4.2:
+#   question-back · framing-correction · unrequested-elaboration (reason / requirement / extension /
+#   constraint / workaround-report) · counter-proposal (incl. request)
+# Columns: item <TAB> class <TAB> target <TAB> quote <TAB> where the project itself banked it (blank = nowhere)
+Q5	counter-proposal	script-surface	"even if it could be useful to have a command that saves it in the anchor.ini"	§11.48(c2) → FEATURE_REQUESTS, folded into B4
+Q6	workaround-report	operational	"we know where we are and we have to stop coming down as it doesn't move"	§11.48(c4) → B10(iv-b), second independent confirmation of §5.18
+Q7	unrequested-elaboration	semantics	"If we set the new body we are attached to, we are not anchored anymore."
+Q8	unrequested-elaboration	operational	"(in case we go back afterward)"	§11.48(a) quotes it as the reason
+Q9	constraint	cost	"if possible without costing too much"	§11.48(b) carries it into B22
+Q11	constraint	operational	"But the selection is always the brightest/biggest/main object if there are many objects too close to the selection."	§11.48(b) A17 residual → resolved at R5 → implemented F2/§11.106
+Q12	counter-proposal	script-surface	"for a script command, it would be better \"radius ground\" and \"radius datum\""	§11.48(c3) → B10, raises an unsettled I2 question about the data keys
+Q14	unrequested-elaboration	cost	"to avoid performance issues"	§11.48(a) quotes it as the stated reason
+Q17	framing-correction	instrument	"Unclear question."	§11.48(d) — the one question that did not survive contact
+Q17	question-back	instrument	"Is eclipse shadows the shadows casted on a body ?"	answered at the top of ROUND2
+Q17	question-back	instrument	"And ring shadows is the size of the shadow of Earth at Moon distance ?"	answered at the top of ROUND2; the guess was wrong because the QUESTION used engine vocabulary
+Q21	counter-proposal	appearance	"it could be glowing around like an atmosphere around a planet (with red glow, if possible not uniform to match the prominences)"	§11.48(a) A8 — the non-uniform chromosphere-like glow became part of the decision
+Q22	counter-proposal	operational	"select a star and get there by switching to the \"galaxy\" mode and then to the \"stellar_system\" mode (if existing or created from scratch...)"	§11.48(c1) → NEW ROW A30, FEATURE_REQUESTS first entry
+Q24	reframing	operational	"Some bodies can be linked to Earth or Moon or Sun behavior to do some comparisons."	§11.48(b) A29 — "decisive in direction", §2(a2) declarable capability
+R3	requirement	script-surface	"we are lacking (2), having an object attached to a body keeping its angle to the planet which is very important for future scripts"
+R3	unrequested-elaboration	domain	"(1) has no real interest as it doesn't exist in the solar system... For the \"Galaxy\" mode, the stars will move through time in the future."
+R4	constraint-release	script-surface	"if the behavior change, we will adapt the scripts"	overturns the §2(b) immutability presumption for THIS case
+R4	unrequested-elaboration	operational	"Slowing down will be annoying as it'll take time to go out."	§11.70 — the derivation it OVERTURNED
+R5	unrequested-elaboration	domain	"because it'll be the brightest in 99% of cases due to surface magnitude"	the argument F2 implemented against (screenSize, not boundingRadius)
+R8	requirement	script-surface	"The user must reload the rule to be applied to it as well."
+R9	extension	script-surface	"or if the user decide to change landscape by script"

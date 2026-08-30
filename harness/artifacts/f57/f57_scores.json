@@ -1,0 +1,734 @@
+{
+ "rows": [
+  {
+   "id": "Q1",
+   "ref": "A9",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 77,
+   "awords": 3,
+   "aq": 0,
+   "answer": "(a) is better"
+  },
+  {
+   "id": "Q2",
+   "ref": "A11",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 80,
+   "awords": 10,
+   "aq": 0,
+   "answer": "Keep looking at the same absolute direction in the sky"
+  },
+  {
+   "id": "Q3",
+   "ref": "A24",
+   "shape": "M",
+   "nparts": 2,
+   "nE": 1,
+   "qwords": 56,
+   "awords": 3,
+   "aq": 0,
+   "answer": "tilted dome geometry"
+  },
+  {
+   "id": "Q4",
+   "ref": "A25",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 61,
+   "awords": 5,
+   "aq": 0,
+   "answer": "Yes, we still use it."
+  },
+  {
+   "id": "Q5",
+   "ref": "B4",
+   "shape": "D",
+   "nparts": 3,
+   "nE": 0,
+   "qwords": 77,
+   "awords": 37,
+   "aq": 0,
+   "answer": "We edit anchor.ini if we need and we create anchors from scripts. But we don't need to save them between sessions (even if it could be useful to have a command that saves it in the anchor.ini)."
+  },
+  {
+   "id": "Q6",
+   "ref": "A18",
+   "shape": "M",
+   "nparts": 4,
+   "nE": 1,
+   "qwords": 140,
+   "awords": 37,
+   "aq": 0,
+   "answer": "I would say \"toward the specific point on the surface you're currently looking at\". When we are close to the surface, we know where we are and we have to stop coming down as it doesn't move."
+  },
+  {
+   "id": "Q7",
+   "ref": "A13",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 87,
+   "awords": 16,
+   "aq": 0,
+   "answer": "Yes. If we set the new body we are attached to, we are not anchored anymore."
+  },
+  {
+   "id": "Q8",
+   "ref": "A14",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 45,
+   "awords": 17,
+   "aq": 0,
+   "answer": "The solar-system view seen from very far, with my anchor kept (in case we go back afterward)."
+  },
+  {
+   "id": "Q9",
+   "ref": "A15",
+   "shape": "D",
+   "nparts": 3,
+   "nE": 0,
+   "qwords": 90,
+   "awords": 12,
+   "aq": 0,
+   "answer": "It would be better to cross-fade, if possible without costing too much."
+  },
+  {
+   "id": "Q10",
+   "ref": "A19",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 69,
+   "awords": 8,
+   "aq": 0,
+   "answer": "Yes, I sometimes do jump dates while navigating."
+  },
+  {
+   "id": "Q11",
+   "ref": "A17",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 59,
+   "awords": 31,
+   "aq": 0,
+   "answer": "If a body can be seen, we must be able to select it. But the selection is always the brightest/biggest/main object if there are many objects too close to the selection."
+  },
+  {
+   "id": "Q12",
+   "ref": "A23",
+   "shape": "M",
+   "nparts": 4,
+   "nE": 2,
+   "qwords": 301,
+   "awords": 15,
+   "aq": 0,
+   "answer": "Yes, but for a script command, it would be better \"radius ground\" and \"radius datum\"."
+  },
+  {
+   "id": "Q13",
+   "ref": "A10",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 75,
+   "awords": 7,
+   "aq": 0,
+   "answer": "It should be where it is now."
+  },
+  {
+   "id": "Q14",
+   "ref": "A1",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 46,
+   "awords": 9,
+   "aq": 0,
+   "answer": "Start fresh when enabled again to avoid performance issues."
+  },
+  {
+   "id": "Q15",
+   "ref": "A3",
+   "shape": "D",
+   "nparts": 3,
+   "nE": 0,
+   "qwords": 73,
+   "awords": 18,
+   "aq": 0,
+   "answer": "A \"set them all\" command should override colors of the selected kind of bodies we want to change."
+  },
+  {
+   "id": "Q16",
+   "ref": "A4",
+   "shape": "D",
+   "nparts": 3,
+   "nE": 0,
+   "qwords": 130,
+   "awords": 19,
+   "aq": 0,
+   "answer": "Tropics and polar circles onto the body have to be drawn if the flags related to them are activated."
+  },
+  {
+   "id": "Q17",
+   "ref": "A28",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 48,
+   "awords": 43,
+   "aq": 2,
+   "answer": "Unclear question. Is eclipse shadows the shadows casted on a body ? And ring shadows is the size of the shadow of Earth at Moon distance ? It must be separated and default value for ring is off but eclipse must be on."
+  },
+  {
+   "id": "Q18",
+   "ref": "A27(2)",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 47,
+   "awords": 25,
+   "aq": 0,
+   "answer": "By default, it changes to a specific landscape when we get there. But if the user changes it afterward, it'll switch to the wanted one."
+  },
+  {
+   "id": "Q19",
+   "ref": "A27(4)",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 46,
+   "awords": 9,
+   "aq": 0,
+   "answer": "Great. Old behavior has no way to be kept."
+  },
+  {
+   "id": "Q20",
+   "ref": "A5",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 99,
+   "awords": 13,
+   "aq": 0,
+   "answer": "apparent_magnitude and slope can be forced in some cases to fit the appearance."
+  },
+  {
+   "id": "Q21",
+   "ref": "A8",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 49,
+   "awords": 26,
+   "aq": 0,
+   "answer": "Actual surface appearance. But it could be glowing around like an atmosphere around a planet (with red glow, if possible not uniform to match the prominences)."
+  },
+  {
+   "id": "Q22",
+   "ref": "A7",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 80,
+   "awords": 39,
+   "aq": 0,
+   "answer": "We would like the possibility to select a star and get there by switching to the \"galaxy\" mode and then to the \"stellar_system\" mode (if existing or created from scratch like it is if there is no specific one)."
+  },
+  {
+   "id": "Q23",
+   "ref": "A12",
+   "shape": "M",
+   "nparts": 2,
+   "nE": 1,
+   "qwords": 128,
+   "awords": 16,
+   "aq": 0,
+   "answer": "This data must be corrected moon by moon. Especially Iapetus which is important to look at."
+  },
+  {
+   "id": "Q24",
+   "ref": "A29",
+   "shape": "M",
+   "nparts": 2,
+   "nE": 1,
+   "qwords": 52,
+   "awords": 16,
+   "aq": 0,
+   "answer": "Some bodies can be linked to Earth or Moon or Sun behavior to do some comparisons."
+  },
+  {
+   "id": "Q25",
+   "ref": "A26",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 93,
+   "awords": 7,
+   "aq": 0,
+   "answer": "20% is fine and a better choice."
+  },
+  {
+   "id": "Q26",
+   "ref": "A2",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 96,
+   "awords": 13,
+   "aq": 0,
+   "answer": "No. If it's not in the data, it will never be activated ever."
+  },
+  {
+   "id": "Q27",
+   "ref": "A20",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 67,
+   "awords": 10,
+   "aq": 0,
+   "answer": "Yes, create a command and keep to the current state."
+  },
+  {
+   "id": "R1",
+   "ref": "A28",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 135,
+   "awords": 17,
+   "aq": 0,
+   "answer": "The shadow of the planet on the rings should be activated everytime. Only desactivated for test purpose."
+  },
+  {
+   "id": "R2",
+   "ref": "A9",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 108,
+   "awords": 1,
+   "aq": 0,
+   "answer": "Yes."
+  },
+  {
+   "id": "R3",
+   "ref": "B4",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 72,
+   "awords": 66,
+   "aq": 0,
+   "answer": "We use mostly (3), but we are lacking (2), having an object attached to a body keeping its angle to the planet which is very important for future scripts. (1) has no real interest as it doesn't exist in the solar system. It is only useful in the \"Universe\" mode as nothing moves. For the \"Galaxy\" mode, the stars will move through time in the future."
+  },
+  {
+   "id": "R4",
+   "ref": "B10",
+   "shape": "M",
+   "nparts": 2,
+   "nE": 1,
+   "qwords": 85,
+   "awords": 40,
+   "aq": 0,
+   "answer": "A zone we fly into and also for transparent bodies, if the behavior change, we will adapt the scripts. We should stop if going to the lowest altitude. Slowing down will be annoying as it'll take time to go out."
+  },
+  {
+   "id": "R5",
+   "ref": "A17",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 51,
+   "awords": 17,
+   "aq": 0,
+   "answer": "The biggest should win because it'll be the brightest in 99% of cases due to surface magnitude."
+  },
+  {
+   "id": "R6",
+   "ref": "A18",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 42,
+   "awords": 2,
+   "aq": 0,
+   "answer": "Last selected."
+  },
+  {
+   "id": "R7",
+   "ref": "A4",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 65,
+   "awords": 21,
+   "aq": 0,
+   "answer": "Planet rotation axis is the toggle to make it appear onto the planet. It must stay associated. Visible at any altitude."
+  },
+  {
+   "id": "R8",
+   "ref": "A3→B29",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 111,
+   "awords": 26,
+   "aq": 0,
+   "answer": "It must reset to the body default or color asked in the script. The user must reload the rule to be applied to it as well."
+  },
+  {
+   "id": "R9",
+   "ref": "A27",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 90,
+   "awords": 19,
+   "aq": 0,
+   "answer": "Decide by built-in rules. Until they land somewhere else or if the user decide to change landscape by script."
+  },
+  {
+   "id": "R10",
+   "ref": "A29→B27",
+   "shape": "E",
+   "nparts": 1,
+   "nE": 1,
+   "qwords": 121,
+   "awords": 9,
+   "aq": 0,
+   "answer": "Nothing will have to change if we go back."
+  },
+  {
+   "id": "R11",
+   "ref": "A24→B17",
+   "shape": "D",
+   "nparts": 1,
+   "nE": 0,
+   "qwords": 75,
+   "awords": 7,
+   "aq": 0,
+   "answer": "Yes, it can change during a show."
+  },
+  {
+   "id": "R12",
+   "ref": "A2",
+   "shape": "none",
+   "nparts": 0,
+   "nE": 0,
+   "qwords": 196,
+   "awords": 1,
+   "aq": 0,
+   "answer": "Ok."
+  },
+  {
+   "id": "R13",
+   "ref": "A14→B20",
+   "shape": "D",
+   "nparts": 2,
+   "nE": 0,
+   "qwords": 183,
+   "awords": 17,
+   "aq": 0,
+   "answer": "The anchor must hold when we get back to this mode. So memorize it for each mode."
+  }
+ ],
+ "coverage": {
+  "Q1.a": [
+   1.0,
+   "parent-fallback resolves under BOTH readings of \"(a) is better\" — R2 states so explicitly"
+  ],
+  "Q1.b": [
+   0.5,
+   "covered only under the option-label reading; recorded UNRESOLVED at §11.48(b) and stated back at R2. Cause = the QUESTION's case/option label collision (§11.48(d)), not the answer"
+  ],
+  "Q2.a": [
+   1.0,
+   "\"Keep looking at the same absolute direction in the sky\""
+  ],
+  "Q2.b": [
+   1.0,
+   "DISSOLVED by (a) — §11.48(a): nothing reorients, so there is nothing to ease"
+  ],
+  "Q3.a": [
+   1.0,
+   "in use (implied by naming the use); §11.48(a) reads it as \"in use, port not retire\""
+  ],
+  "Q3.b": [
+   1.0,
+   "\"tilted dome geometry\" — the use named, from the offered list"
+  ],
+  "Q4.a": [
+   1.0,
+   "\"Yes, we still use it.\""
+  ],
+  "Q5.a": [
+   0.0,
+   "which of the three anchor kinds: not addressed. Re-asked at R3, flagged there as design-deciding"
+  ],
+  "Q5.b": [
+   1.0,
+   "both — hand-edited AND script-created"
+  ],
+  "Q5.c": [
+   1.0,
+   "not needed between sessions"
+  ],
+  "Q6.a": [
+   1.0,
+   "\"toward the specific point on the surface you're currently looking at\""
+  ],
+  "Q6.b": [
+   0.0,
+   "far-descent case dropped; re-asked at R6; recorded as A18's residual"
+  ],
+  "Q6.c": [
+   1.0,
+   "yes, he hits it — \"we have to stop coming down as it doesn't move\""
+  ],
+  "Q6.d": [
+   1.0,
+   "the workaround IS stopping manually; §11.48(c4) reads it as a learned workaround"
+  ],
+  "Q7.a": [
+   1.0,
+   "\"Yes.\" + an unrequested clarification of the anchoring model"
+  ],
+  "Q8.a": [
+   1.0,
+   "far solar-system view with the anchor kept"
+  ],
+  "Q9.a": [
+   0.0,
+   "threshold-a feel not judged — §11.48(b) rules the re-ask DEFERRED BY DESIGN (a tester cannot judge thresholds he has not seen side by side)"
+  ],
+  "Q9.b": [
+   0.0,
+   "same, threshold-b"
+  ],
+  "Q9.c": [
+   1.0,
+   "cross-fade, with a volunteered cost constraint"
+  ],
+  "Q10.a": [
+   1.0,
+   "\"Yes, I sometimes do jump dates while navigating.\""
+  ],
+  "Q11.a": [
+   1.0,
+   "\"If a body can be seen, we must be able to select it.\""
+  ],
+  "Q11.b": [
+   0.0,
+   "multi-system shows: dropped, never re-asked, and NOT recorded as a residual on the A17 row — the one lost part of the corpus"
+  ],
+  "Q12.a": [
+   1.0,
+   "\"Yes\" — decisive by §2(b) immutability"
+  ],
+  "Q12.b": [
+   0.0,
+   "what-for dropped; re-asked at R4 and delivered there"
+  ],
+  "Q12.c": [
+   0.0,
+   "completeness check (what more were the two bodies buying) dropped; partially recovered by R4's answer"
+  ],
+  "Q12.d": [
+   0.0,
+   "stop-and-hold vs asymptotic dropped; re-asked at R4 and delivered there"
+  ],
+  "Q13.a": [
+   1.0,
+   "\"It should be where it is now.\" — the OBSERVABLE survives; the MECHANISM it implied was reversed by Vixy's D23 (§11.114). Scored as answered: the part was answered, the reversal is an authority fact, not a coverage fact"
+  ],
+  "Q14.a": [
+   1.0,
+   "start fresh, with the performance reason volunteered"
+  ],
+  "Q15.a": [
+   0.5,
+   "answers via a \"set them all\" command; the per-object / global / other enumeration is not itself selected"
+  ],
+  "Q15.b": [
+   1.0,
+   "override"
+  ],
+  "Q15.c": [
+   0.0,
+   "survive-reload dropped; re-asked at R8"
+  ],
+  "Q16.a": [
+   1.0,
+   "tropics and polar circles back"
+  ],
+  "Q16.b": [
+   0.5,
+   "states the requirement (draw them when the sky flags are on); the historical deliberate-or-incidental question is not answered"
+  ],
+  "Q16.c": [
+   0.0,
+   "own toggle dropped; re-asked at R7(a)"
+  ],
+  "Q17.a": [
+   1.0,
+   "\"It must be separated\""
+  ],
+  "Q17.b": [
+   1.0,
+   "ring off / eclipse on — content delivered, but the ring half rests on a wrong referent the QUESTION caused (§11.48(d)); voided and re-asked at R1"
+  ],
+  "Q18.a": [
+   0.5,
+   "describes desired runtime behaviour; the data-declares-its-landscape question is not answered; re-asked at R9(a)"
+  ],
+  "Q19.a": [
+   1.0,
+   "\"Great. Old behavior has no way to be kept.\""
+  ],
+  "Q20.a": [
+   1.0,
+   "H/G stays as an authoring override (§11.48(a) reads it so)"
+  ],
+  "Q20.b": [
+   0.5,
+   "\"can be forced in some cases\" implies script usage without stating it"
+  ],
+  "Q21.a": [
+   1.0,
+   "actual surface appearance"
+  ],
+  "Q21.b": [
+   1.0,
+   "limb darkening / granulation / spots, plus a volunteered non-uniform red glow"
+  ],
+  "Q22.a": [
+   1.0,
+   "wants to reach a star — surface implied; §11.48(c1) reads the answer as exceeding the question"
+  ],
+  "Q22.b": [
+   0.0,
+   "multi-star per-instance halo dropped; recorded as A7's narrowed residual, never re-asked"
+  ],
+  "Q23.a": [
+   1.0,
+   "correct moon by moon"
+  ],
+  "Q23.b": [
+   0.5,
+   "names Iapetus — the question's OWN example; no moon the question did not already supply"
+  ],
+  "Q24.a": [
+   0.5,
+   "reframes a misfire question into a deliberate USE; §11.48(b) calls it decisive in direction"
+  ],
+  "Q24.b": [
+   0.5,
+   "\"to do some comparisons\" is a class, not the cases; re-asked at R10 as a completeness check"
+  ],
+  "Q25.a": [
+   1.0,
+   "20% ratified"
+  ],
+  "Q25.b": [
+   0.0,
+   "\"have you noticed the difference\" dropped; not recorded anywhere (low stakes — the decision was ratified regardless)"
+  ],
+  "Q26.a": [
+   1.0,
+   "\"No.\""
+  ],
+  "Q26.b": [
+   1.0,
+   "DISSOLVED by (a); the answer states the authoring contract instead"
+  ],
+  "Q27.a": [
+   1.0,
+   "yes, create the command"
+  ],
+  "Q27.b": [
+   1.0,
+   "keep the current state"
+  ],
+  "R1.a": [
+   1.0,
+   "dev-only deactivation ⇒ no operator control wanted"
+  ],
+  "R1.b": [
+   1.0,
+   "activated every time"
+  ],
+  "R2.a": [
+   1.0,
+   "\"Yes.\" — the veto window closes unexercised"
+  ],
+  "R3.a": [
+   1.0,
+   "mostly (3); (2) is lacking; (1) only meaningful in Universe mode"
+  ],
+  "R3.b": [
+   1.0,
+   "\"keeping its angle to the planet\" = follow-the-rotation, stated for the kind he needs"
+  ],
+  "R4.a": [
+   1.0,
+   "\"A zone we fly into and also for transparent bodies\" — the E part Q12 dropped, delivered on isolated re-ask"
+  ],
+  "R4.b": [
+   1.0,
+   "stop, with the reason"
+  ],
+  "R5.a": [
+   1.0,
+   "biggest wins, with the surface-magnitude argument"
+  ],
+  "R6.a": [
+   1.0,
+   "\"Last selected.\" — the part Q6 dropped, delivered in two words on isolated re-ask"
+  ],
+  "R7.a": [
+   1.0,
+   "must stay associated with the axis flag"
+  ],
+  "R7.b": [
+   1.0,
+   "visible at any altitude"
+  ],
+  "R8.a": [
+   1.0,
+   "reset to the body default or the script's colour"
+  ],
+  "R9.a": [
+   1.0,
+   "built-in rules"
+  ],
+  "R9.b": [
+   1.0,
+   "until they land elsewhere, or a script changes it"
+  ],
+  "R10.a": [
+   0.5,
+   "answers the going-back case; the enumeration the completeness check asked for is not delivered"
+  ],
+  "R11.a": [
+   1.0,
+   "\"Yes, it can change during a show.\""
+  ],
+  "R13.a": [
+   1.0,
+   "the anchor must hold"
+  ],
+  "R13.b": [
+   0.5,
+   "\"memorize it for each mode\" answers a per-MODE axis, not the every-body-or-some axis that was asked"
+  ]
+ }
+}

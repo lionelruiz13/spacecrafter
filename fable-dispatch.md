@@ -641,7 +641,11 @@ scope item 1 DONE — out-of-sample partition committed (`harness/artifacts/f57/
 Checkpoint 2: scope item 2 DONE — 19 predictions over the five metrics + the rubric + the
 per-item question-shape/parts classification (40 items, 72 parts, 64 D / 8 E) committed
 BEFORE any scoring, `harness/artifacts/f57/f57_predictions.json` md5 **`4d5b2486`**.
-Next: scope item 3, measure all five (scorer script + per-item tables), then the verdict.
+Checkpoint 3: scope item 3 DONE — five metrics measured (`harness/f57_score.py` + `f57_coverage.tsv`
++ `f57_markers.tsv` + `f57_results.md`); 15 PASS / 3 FAIL / 1 mixed, of 14 RISKY: 10 / 1 / 3.
+Headline: coverage falls 0.938 → 0.788 → 0.500 with parts-per-item, round 2's isolated re-asks
+recover at 0.944; 11/13 witnesses re-measured from both blobs; two EMPTY control cells (authority,
+evidence). Next: scope items 4+5, verdict + §11.177 entry + §11.173(d) annotation.
 
 ### F58 — The §11.169 schema audit of existing diagnostic sites: the gap list is the fix's work order (§11.169(c)) [S]
 
