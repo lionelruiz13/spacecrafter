@@ -895,31 +895,48 @@ markers ADD, never reword (the F56-acceptance boundary).
 cites; real arrears marked; multi-claim boundary stated + walked within it;
 §11.165(h)(3) annotated DISCHARGED; §11 entry + stub; baselines re-derived as
 the last act with deltas attributed; code tree clean; WIP per §0.6.
-**WIP:** 2026-08-30 CP1 — §0.7 gate PASSED on every stated premise (both HEADs
-`d6aec251`/`0a93d79` clean, §11 179 free, `### F` count 5, §11.165(c)(g)(h) as
-described with all 13 third-bucket pairs present, pair-check 194/169/25/90 and scan
-114/150/88 reproduced to the digit, instruments committed-clean). ONE stated gloss
-measured wrong and reported, not absorbed: the prompt's "83 real arrears + SEVEN named
-exceptions" does not close (83+7=90 vs 88) — measured on four archived trees, the live
-partition is **82 residual + 6 live named exceptions**; `§11.164 → §11.167` has been
-MARKED since session 16 and is no longer in the flagged set. Scope 1 DONE: METHOD.md +
-`f59_enum.py` + `f59_enum_check.py` (P1–P4 all pass) + primary/widened TSVs committed
-BEFORE any verdict; universe = **44 pairs** with a §5 target (the 13 are the floor).
-CP2 — scope 2 DONE: **44 pairs adjudicated by reading, UNMARKED-REAL = 0** (MARKED 15 ·
-FALSE-POSITIVE 15 · OFF-AXIS 8 · MINT-ROUTE 6 · AMBIGUOUS 0); all 13 F49 pairs verdicted;
-**no §5-node annotation owed**. Two independent widenings run so the zero can fail
-(17-word lexicon +2 · a *"the row's own"* shape probe +15) — 0 arrears in both. Findings
-ROUTED, none enacted: the marker-half lexicon blind spot (6 specimens — F57's half-1
-finding's twin), the present-tense event miss, the stub collision measured on this axis,
-and **§5.28 is a REUSED ID** (archived = B14's W0 axis / live = a Translator UB).
-CP3/CP4 — scope 3 DONE: boundary committed first (`d03f1cd`), corpus small enough to walk
-WHOLE so **no sampling rule adopted**; **23 pairs · 49 claims enumerated FROM THE
-SUPERSEDER · 49 COVERED · 0 UNCOVERED**. §5.32's two markers are the corpus's own positive
-control (§11.108(e)'s "same fix" claim left standing by the first marker, corrected by the
-second) — the shape (ii) names, alive in the ledger and repaired at the node. Two candidate
-gaps raised and both refuted BY READING: my own probes were case-blind (`smaller` vs
-`SMALLER`, `[Vv]ixy` vs `VIXY`) — the audit nearly published its own finding M1 as fact.
-NEXT: the §11.179 entry + stub + §11.165(h)(3) DISCHARGED + baselines.
+**WIP:** DELIVERED 2026-08-30 → **§11.179** (`INTENT/11.179.md` + stub). All four scope items done,
+DoD met. §0.7 gate PASSED on every stated premise (both HEADs `d6aec251`/`0a93d79` clean, §11 **179**
+free, `### F` count 5, §11.165(c)(g)(h) as described with all 13 third-bucket pairs present, both
+instruments committed-clean, pair-check **194/169/25/90** and scan **114/150/88** reproduced to the
+digit). ONE stated gloss measured wrong and REPORTED, not absorbed: the prompt's *"83 real arrears +
+SEVEN named exceptions"* does not close (83+7=90≠88) — measured by running the frozen scan against
+three archived trees (`ea30749` 90/125/83 · `c193a62` 106/137/84 · `3703e54` 106/137/84, all
+reproducing their recorded figures) and diffing the unmarked SETS: the live partition is **82
+residual + 6 live named exceptions**, because `§11.164 → §11.167` has been MARKED since session 16
+and is no longer flagged. Not an abort: the premises the task STANDS on are the three instrument
+numbers, the ledger states and the two HEADs, all verified; the gloss is an output-side cached
+conclusion of exactly the kind this task re-adjudicates, and nothing in scopes 1–4 depends on 82 vs
+83 (argument in §11.179(a); had it been an input, the gate says abort). Order held: method
+committed (`3f6c5fc`) BEFORE any verdict, multi-claim boundary (`d03f1cd`) BEFORE the walk.
+**TWIN: 44 pairs, MARKED 15 · FALSE-POSITIVE 15 · OFF-AXIS 8 · MINT-ROUTE 6 · AMBIGUOUS 0 ·
+UNMARKED-REAL 0** — F49's 13 were the floor, all 13 verdicted; **no §5-node annotation owed, so none
+placed**. Universe widened on the SOURCE side (inline stubs = 27 of 62 candidate lines, archived
+entries = 0) and half 2 RE-IMPLEMENTED because `stub("5.31")` returns §11.31's line (23 §5 numbers
+have no live register row). Enumerator mapped both ways first (P1–P4 all pass). The zero can fail
+five ways, all stated: the sibling class is non-empty (F49 found FOUR), the reading overturns the
+machine both directions (**5 of 15 MARKED pairs are invisible to it**), and two independent
+widenings (17-word lexicon +2 · a *"the row's own"* shape probe +15 new) found 0 arrears.
+**MULTI-CLAIM: corpus small enough to walk WHOLE ⇒ no sampling rule adopted — 23 pairs, 49 claims
+enumerated FROM THE SUPERSEDERS, 49 COVERED, 0 UNCOVERED**, with the corpus's own unbuilt positive
+control at §5.32 (its SECOND marker corrects the *"same fix as the row's"* claim its FIRST left
+standing). CRITERION-INTEGRITY INSTANCE: two gaps raised and both were MINE — probes searching
+`smaller` and `[Vv]ixy` where the rows say **SMALLER** and **SUSPENDED FOR VIXY**, i.e. the auditor
+committed the auditee's case-blindness and was saved only by reading the row. **NEW: §5.28 NAMES
+TWO DIFFERENT DEFECTS** (archived = B14's `rot_pole_w0` 90° axis, A33's referent; live entry +
+register row = a `Translator` `pop_back()` UB minted 2026-08-04) — the only number-reuse on the
+axis, ROUTED with both readings, NOT minted (§5.79 wants a shipped surface). Routed to
+strict-credit v2, now FOUR measured members: the **MARKER-half** lexicon blind spot (six specimens;
+F57's finding on the other half), the event lexicon's past-participle-only gap, the stub collision
+with its §5.28 second order. §11.165(h)(3) **DISCHARGED** at the node + stub mirror, same commit,
+struck-not-deleted. NO §5/§13 state advanced, NO instrument edited, NO mint. Code tree clean at
+`d6aec251` throughout. Baselines re-derived as the LAST act: pair-check **195/170/25/90**
+(+1/+1/0/0 — entry-first signature; the inline-stub counter holding at 90 is the no-mint check) ·
+scan **116/154/92** (+2/+4/**+4**, all four this entry's own and all named — `§11.179 → §11.6` ·
+`→ §5.2` · `→ §11.144` · `→ §5.106`, manufactured by ONE sentence in (e) that quotes the two
+back-markers constituting the direction-inversion family: the sixth §11.172(l) instance and the
+first PREDICTED one; kept not reworded). Set diff confirms every pre-existing pair unchanged ⇒
+**82 + 6 + 4**. Re-measured after writing (l): **FIXED POINT**, unchanged to the digit.
 
 ### F60 — The §5.5-class row↔row staleness sweep: §5 rows vs the §13 rows that own their work (F47 acceptance) [S]
 
