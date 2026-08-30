@@ -751,20 +751,40 @@ only for the artifact + entry.
 stated universe with per-site citations; banked instances included and
 reconciled; §11.169(c) annotated; §11 entry + stub; baselines re-derived as
 the last act with deltas explained; code tree clean; WIP per §0.6.
-**WIP:** 2026-08-30 — §0.7 gate PASSED on every stated premise (both HEADs `d6aec251`/`357fa9f`
-clean, §11 178 free, `### F` count 3, §11.169 (a)–(e) as described, banked instances reachable,
-baselines 193/168/25/87 · 114/150/88 reproduced). CHECKPOINT 1: scope 1 done — universe stated and
-committed BEFORE classification (`harness/artifacts/f58/f58_universe.md` + the enumeration
-instrument `harness/f58_census.py`): 411 live emission sites over 22 files (arm A 252 · B 139 ·
-C 20), adjacent-not-swept inventory 268 sites over 20 files. Next: scope 2, per-site classification.
-CHECKPOINT 2: scopes 2+3 done — gap table `harness/artifacts/f58/f58_gap_table.tsv` (440 rows =
-432 census + 8 silent) + `f58_gap_summary.md`, verdicts in `harness/f58_gaptable.py` which
-SELF-ASSERTS against the census (demonstrated failing in 3 directions, control green). Universe
-grew to 432 live sites after three instrument faults found and fixed mid-census (semicolon-in-string
-truncation, block comments, the printf channel — all recorded with the site that exposed each).
-HEADLINE: CONSEQUENCES present at 20/288 error records (0.069), PREVENTION 17/288 (0.059),
-OVERRIDE 4/43 acting defaults (0.093); 11 of 280 error records carry all three elements. Next:
-scope 4 (§11 entry 178 + stub + §11.169(c) DISCHARGED annotation).
+**WIP:** DELIVERED 2026-08-30 → **§11.178** (`INTENT/11.178.md` + stub). All four scope items done,
+DoD met. §0.7 gate PASSED on every stated premise (both HEADs `d6aec251`/`357fa9f` clean, §11 178
+free, `### F` count 3, §11.169 (a)–(e) as described, banked instances reachable, baselines
+193/168/25/87 · 114/150/88 reproduced). Order held: universe committed (`5c86bb5`) BEFORE any
+classification (`b4f63ab`). **Universe** 22 files / three arms / **432 live emission sites** on four
+channels; 20 further loader files **inventoried-not-classified (274 sites)**; silent half
+declared-not-claimed (8 read out of the dispatch spine). **Gap table 440 rows** with per-site cites
+and text quoted from source; the classifier SELF-ASSERTS against the census and was demonstrated
+failing in 3 directions (control green). Three instrument faults found and fixed mid-census
+(semicolon-inside-a-message truncated the 4 best arm-A records · block comments counted 3 dead sites
+live · an iostream-only channel list hid 24 printf faults), each recorded with the site that exposed
+it and each verified by diffing the census across it. **RESULT over 309 schema-applicable sites: the
+two schemas fail on OPPOSITE sides** — errors carry WHAT 0.486 (+0.427 partial) and almost never
+CONSEQUENCES **0.069** or PREVENTION **0.059**; acting defaults carry CAUSE **0.767** and almost
+never OVERRIDE **0.093**; self-containment 0.209. 11 of 280 error records and 4 of 38 acting defaults
+carry all three elements — and **14 of those 15 were written by this project 2026-07-22..2026-08-26**
+[measured: git blame], the exception being `protosystem.cpp:530` (Calvin-Ruiz 2022-11-22): the gap is
+a legacy inventory. TWO STRUCTURAL FINDINGS, both about whether the record ARRIVES: the whole
+script-error channel is `L_DEBUG` (169/264 logged records not marked as faults) → **§5.117**; 37
+records reach a console and no log → **already §5.77/§11.146's class, NOT minted**. Banked instances
+reconciled: §11.170(f) confirmed N/N/N blind; the illuminate clamp confirmed AND **reclassified** as
+§5.115's bulk class (*cannot* be fixed by adding a log line); SS-6's engine half placed
+(`anchor_manager.hpp:201-206`), not minted. NEW **§5.116** (coercion has no invalid state; 97 flags →
+OFF, 44 set names → 0, success reported; `Utility::isBoolean` has zero call sites) · **§5.117**.
+Three mint candidates REFUSED with their arguments (the console class = §5.77's; the TCP truncation
+documented at `io.hpp:216-224`; the bare `throw;` aborts either way). Annotations: §11.169(c)
+**DISCHARGED** (struck-not-deleted, citation inside the span), §5.115 enriched with its DELIB
+membership. NO §13 flip owed (§5 rows do not live there). Code tree clean at `d6aec251` throughout;
+no product file touched on any commit. Baselines at delivery, re-derived as the last act: pair-check
+**194/169/25/89** (+1/+1/0/**+2** — entry-first signature plus ONE new inline stub per minted §5 row,
+the §5.114/§5.115 signature) · scan **114/150/88** (UNCHANGED to the digit — this delivery
+supersedes, refutes and corrects nothing; it discharges, confirms and enriches, and discharge
+vocabulary is outside the lexicon by the scan owner's session-16 ruling, so the instrument agreeing
+is a both-ways check on §11.178(j)'s own claim).
 
 ---
 
