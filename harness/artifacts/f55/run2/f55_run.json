@@ -1,0 +1,236 @@
+{
+ "binary": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "binary_md5": "fa00deade57fe02739800013364a9611",
+ "predictions_md5": "458e6eabb2e6a7adfa4f223a55d8fd46",
+ "comm_probe_before": [],
+ "md5_in": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "fov": 10.0,
+ "alt_m": 40000000,
+ "burst": true,
+ "x_fps": 10,
+ "commanded_lon": 230.3,
+ "convention": "post",
+ "marks": {
+  "t_port": 1788078015.462,
+  "t_script_end": 1788078071.352,
+  "t_first_tcp_cmd": 1788078071.352,
+  "t_p1_shot": 1788078075.353,
+  "t_phase2_start": 1788078077.605,
+  "t_p2_settled": 1788078085.619,
+  "t_p2_shot": 1788078101.321,
+  "t_end": 1788078106.574
+ },
+ "fails": [],
+ "twin_md5": "5617bd930ca173681d7354910d020d6a",
+ "n_script_shots": 100,
+ "startup_sts_md5": "b4a6e9aa4179b2aa9c2d0d03f9ee1dc9",
+ "t_launch": 1788078004.8,
+ "window": {
+  "id": "0x800002",
+  "w": 1024,
+  "h": 1024,
+  "abs_x": 712,
+  "abs_y": 191,
+  "line": "0x800002 \"spacecrafter 2026.07.11\": (\"spacecrafter\" \"spacecrafter\")  1024x1024+25+62  +712+191"
+ },
+ "t_window": 1788078004.893,
+ "t_xgrab": 1788078004.894,
+ "p1_moon": {
+  "parent": "Earth",
+  "ecl": [
+   0.000298982457,
+   0.00237758458,
+   0.000199320144
+  ],
+  "mat": [
+   -0.624153972,
+   0.356690168,
+   -0.695128739,
+   0,
+   -0.603528023,
+   0.344902933,
+   0.718885243,
+   0,
+   0.496171176,
+   0.868224621,
+   -4.65515768e-08,
+   0,
+   -1.45519152e-11,
+   -7.27595761e-12,
+   -0.000325452536,
+   1
+  ],
+  "dist": 0.000325452536,
+  "screen": [
+   -5.12371685e-07,
+   -2.56185842e-07
+  ],
+  "axisRot": 4.60308685,
+  "attitude": 4.60308685,
+  "surfaceLocked": false,
+  "bodyType": 7,
+  "primary": false,
+  "surfaceModel": 1,
+  "trailLength": 60,
+  "composedDecl": true,
+  "boundingRadius": 5.92303877e-05,
+  "scaledDatumRadius": 5.80690103e-05,
+  "scaledGroundRadius": 5.80690103e-05,
+  "scaling": 5,
+  "scalingTarget": 5,
+  "inheritedScaling": 1,
+  "eclDisplay": [
+   0.000298982457,
+   0.00237758458,
+   0.000199320144
+  ],
+  "visible": true,
+  "screenSize": 2.09718466,
+  "haloColor": [
+   1,
+   1,
+   1
+  ],
+  "relation": 4,
+  "supplemental": false,
+  "preloadCount": 0,
+  "evalCount": 8593,
+  "trail": [],
+  "near": [
+   null,
+   null
+  ],
+  "eclRoot": [
+   -1.45519152e-11,
+   -7.27595761e-12,
+   -0.000325452536
+  ],
+  "modules": [
+   "MESH",
+   "AXIS",
+   "HINT",
+   "ORBIT"
+  ],
+  "routing": {
+   "far": 1,
+   "near": 2,
+   "grounded": 0,
+   "in": 0,
+   "orbit": 1,
+   "trail": 0,
+   "tail": 0
+  },
+  "lastJD": 2461233.99999812
+ },
+ "p1_obs_radius_km": 48687.006,
+ "p1_scaledDatumRadius_km": 8687.0,
+ "p2_settled_km": 1737.400266198545,
+ "p2_moon": {
+  "parent": "Earth",
+  "ecl": [
+   0.000298981526,
+   0.00237758458,
+   0.000199320115
+  ],
+  "mat": [
+   -0.624153912,
+   0.356690139,
+   -0.695128739,
+   0,
+   -0.603528023,
+   0.344902933,
+   0.718885183,
+   0,
+   0.496171176,
+   0.868224621,
+   -4.65515768e-08,
+   0,
+   -1.8189894e-12,
+   -1.8189894e-12,
+   -6.50904985e-05,
+   1
+  ],
+  "dist": 6.50904985e-05,
+  "screen": [
+   -3.20232374e-07,
+   -3.20232374e-07
+  ],
+  "axisRot": 4.60308719,
+  "attitude": 4.60308719,
+  "surfaceLocked": false,
+  "bodyType": 7,
+  "primary": false,
+  "surfaceModel": 1,
+  "trailLength": 60,
+  "composedDecl": true,
+  "boundingRadius": 1.18460794e-05,
+  "scaledDatumRadius": 1.16138035e-05,
+  "scaledGroundRadius": 1.16138035e-05,
+  "scaling": 1.00000012,
+  "scalingTarget": 1,
+  "inheritedScaling": 1,
+  "eclDisplay": [
+   0.000298981526,
+   0.00237758458,
+   0.000199320115
+  ],
+  "visible": true,
+  "screenSize": 2.09718513,
+  "haloColor": [
+   1,
+   1,
+   1
+  ],
+  "relation": 4,
+  "supplemental": false,
+  "preloadCount": 0,
+  "evalCount": 12332,
+  "trail": [],
+  "near": [
+   null,
+   null
+  ],
+  "eclRoot": [
+   -1.8189894e-12,
+   -1.8189894e-12,
+   -6.50904985e-05
+  ],
+  "modules": [
+   "MESH",
+   "AXIS",
+   "HINT",
+   "ORBIT"
+  ],
+  "routing": {
+   "far": 1,
+   "near": 2,
+   "grounded": 0,
+   "in": 0,
+   "orbit": 1,
+   "trail": 0,
+   "tail": 0
+  },
+  "lastJD": 2461233.999999624
+ },
+ "p2_obs_radius_km": 9737.4,
+ "p2_scaledDatumRadius_km": 1737.4,
+ "md5_out": {
+  "config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
+  "ssystem.ini": "545a51ef76294891579a1fc2fe13792b"
+ },
+ "md5_in_eq_out": true,
+ "comm_probe_after": [],
+ "anchor": {
+  "n": 2195,
+  "t0_min": 1788078004.812,
+  "t0_median": 1788078004.837,
+  "t0_p90": 1788078004.86,
+  "median_minus_min": 0.025,
+  "free_slope": 1.066881
+ },
+ "n_sts": 100,
+ "n_x": 1022
+}

@@ -1,0 +1,37 @@
+[
+ {
+  "t": 1788078081.0083325,
+  "scaledDatumRadius_km": 5872.419088614964,
+  "scaling": 3.38000417,
+  "scalingTarget": 1,
+  "boundingRadius_km": 5989.867478764744
+ },
+ {
+  "t": 1788078082.1609461,
+  "scaledDatumRadius_km": 3155.350213185245,
+  "scaling": 1.81613338,
+  "scalingTarget": 1,
+  "boundingRadius_km": 3218.457132178164
+ },
+ {
+  "t": 1788078083.3137882,
+  "scaledDatumRadius_km": 1847.4986437190591,
+  "scaling": 1.06336975,
+  "scalingTarget": 1,
+  "boundingRadius_km": 1884.448584579496
+ },
+ {
+  "t": 1788078084.46642,
+  "scaledDatumRadius_km": 1737.400266198545,
+  "scaling": 1.00000012,
+  "scalingTarget": 1,
+  "boundingRadius_km": 1772.148246090878
+ },
+ {
+  "t": 1788078085.6190922,
+  "scaledDatumRadius_km": 1737.400266198545,
+  "scaling": 1.00000012,
+  "scalingTarget": 1,
+  "boundingRadius_km": 1772.148246090878
+ }
+]

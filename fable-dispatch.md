@@ -713,8 +713,28 @@ STATE since `d6aec251`, so no §5.109 ramp to wait for) and `alt` 5× F51's, so
 every angle including the 10.28° disc is F51's; phase 2 then reaches F51
 EXACTLY over TCP with the settle waited BY MEASUREMENT. New: `f55_probe2.py`,
 `f55_sampler.py` (3 channels: startup-script screenshot burst at 2048²,
-X-side window grab at 10 fps, log-file ticks), `f55_run.sh`. Next: the sampler
-run.*
+X-side window grab at 10 fps, log-file ticks), `f55_run.sh`.*
+*(**CP3** 2026-08-30 — three launches done, all green (comm-probe **0** before
+each, md5 `03fbee59`/`545a51ef` AND the owner's `startup.sts` `cea83254`
+in == out, 0 fails). **THE WINDOW IS OPEN AND IT HAS SOMETHING IN IT.** The
+launch transient is **three-stage and event-locked**: disc **187.3** hf 0.87
+(no albedo, no normal) → **184.25** hf 4.21 (after `big moon_normal.jpg is
+ready for use`) → **165.26** hf 6.65 (after `big moon.jpg is ready for use`),
+each step landing in the first sample after its logged event on BOTH channels;
+**reproduced in run 2 with the events 1.44 s earlier and the steps 1.52 s
+earlier**, which is the control a fixed-time artifact cannot pass. Channels
+agree to **0.04 %** (app 2048² 165.263 vs X-side 1024² 165.197). **AND THE
+HEADLINE NOBODY ORDERED: the dim Moon is GONE.** F51's own unmodified driver,
+run today, returns **165.258 / 6.644 — July's committed value to the last
+digit**, not 61.431 / 2.464, on the same binary `fa00dead`, driver
+`580.636.192`, gnome-shell instance 147372, host boot and frozen data. Its
+OLD-path leg reads **160.142 / 6.603** against F51's committed
+`old_a.png` **42.476 / 1.744** — so 2026-08-29's state hit **both** render
+paths, which corrects §11.167(d)(3). Predictions P4/P5/P7 FAILED as posed and
+are kept with their numbers; P2 fired with the **opposite sign**. Mint
+candidate: §11.164(e)(3)'s named §5 candidate now HAS its mechanism. Artifacts
+`harness/artifacts/f55/` (9.4 MB). Next: the §11.172 entry + stub, the §5 mint,
+back-markers, baselines.*
 
 ---
 

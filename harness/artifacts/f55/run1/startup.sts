@@ -1,0 +1,214 @@
+timerate rate 0
+meteors zhr 0
+date jday 2461234.0
+flag atmosphere off
+flag landscape off
+flag experimental_path on
+set home_planet Moon
+camera action free_mode state on
+moveto lat 0.0 lon 230.3 alt 40000000 duration 0
+select planet Moon
+flag track_object on
+zoom fov 10.0 duration 0
+flag experimental_shadows off
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e000.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e001.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e002.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e003.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e004.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e005.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e006.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e007.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e008.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e009.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e010.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e011.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e012.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e013.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e014.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e015.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e016.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e017.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e018.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e019.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e020.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e021.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e022.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e023.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e024.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e025.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e026.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e027.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e028.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e029.png
+wait duration 0.02
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e030.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e031.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e032.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e033.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e034.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e035.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e036.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e037.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e038.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e039.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e040.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e041.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e042.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e043.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e044.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e045.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e046.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e047.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e048.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e049.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e050.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e051.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e052.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e053.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e054.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e055.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e056.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e057.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e058.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e059.png
+wait duration 0.5
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e060.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e061.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e062.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e063.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e064.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e065.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e066.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e067.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e068.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e069.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e070.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e071.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e072.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e073.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e074.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e075.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e076.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e077.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e078.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e079.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e080.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e081.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e082.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e083.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e084.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e085.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e086.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e087.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e088.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e089.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e090.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e091.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e092.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e093.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e094.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e095.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e096.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e097.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e098.png
+wait duration 1.0
+body action screenshot filename /home/claude/f55_scratch/run1/sts/e099.png
+wait duration 1.0
+flag track_object off
