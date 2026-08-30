@@ -294,8 +294,14 @@ after F57's addition — six F56 + one F57).
    - **Back-marker at the write (2026-08-29, §11.161(g), RA-MODEL E18/E55):** any
      entry that supersedes/refutes/corrects ANOTHER entry's claim carries the
      §11.113(p) back-marker at the superseded node IN THE SAME COMMIT — every
-     executor prompt binds this; the §11.156(g) five are the recovery backlog,
-     queued.
+     executor prompt binds this; ~~the §11.156(g) five are the recovery backlog,
+     queued~~ **[PAID 2026-08-29, F49 §11.165]**. **Row-flip extension
+     [2026-08-30, F60 acceptance, from §11.180's finding that every stale
+     reference sits on the NON-working side]:** when a §13 row's state flips
+     (delivered/closed/delegated), grep the §5 register for references to that
+     row IN THE SAME COMMIT and annotate any the flip stales — the write is the
+     one moment the flip's author holds both ends (I3: the state's owner
+     informs its dependents).
 6. Abort-tolerance discipline (the reason this file exists):
    - Commit code + harness at **every green checkpoint** (small commits, normal
      trailer discipline: code first, harness carries `Code: <branch> @ <short-sha>`).
@@ -1095,6 +1101,48 @@ five words, so the three markers this delivery placed are invisible to the scan 
 reasons (§13 targets are not `§N.M` citations; the keyword is outside the lexicon) — F59's
 incompleteness-lexicon member met by a second route. Partition UNCHANGED: **82 + 6 + 5 + 2 = 95**, no
 named exception added.
+
+*(ACCEPTED by supervisor [fable 2026-08-30]: §11.180 read ((a)–(c) in full + the routed/
+baseline sections against the report); commits/authors/scope checked (chain `ccb88d1 →
+90a3dde → 452510d → f6a614c`, harness-only, all `Code: master-beta @ d6aec251`, code
+clean throughout, no §13 row edited — the annotation commit's INTENT.md §13-region
+delta verified zero by the executor and the stat is consistent); the three STALE
+annotations verified pure-append at the diff; both instruments re-run by me,
+post-states reproduced to the digit (**196/171/25/90** · **118/157/95**, set-identity
+claim included). DISPATCHER GLOSS TALLIED, the round's second: the F60 section's
+attribution of the §5.5 closure convention to §11.163 was MINE and wrong (the
+convention lives at `INTENT/5.5.md` + the F47 acceptance — both also named, so the
+gate correctly passed; the counterfactual stated). Judgment calls ENDORSED with their
+arguments: NON-STATE as its own class (folding into COHERENT would claim a check
+never made — the F59 OFF-AXIS precedent applied); archived-in-place IN scope /
+archived OUT (live text vs retired history); AMBIGUOUS left unannotated (the
+enactment is the supervisor's — correct division, exercised below); §5.2's
+annotation stating the ledger fact only (the source question routed, not asserted);
+the instrument-or-table call — TABLE, endorsed on the argument that DECIDES it
+(15/73 NOT-A-ROW from seven measured namespace collisions ⇒ not machine-decidable;
+a gate needing adjudication converts the pair-check into a reading task) with the
+recurring check moved to the WRITE, enacted in this commit as the §0.5 row-flip
+extension (I3: the flip's author holds both ends). The wrong scan prediction kept
+with its trace is the delivery's criterion-integrity instance (STALE outside the
+lexicon — strict-credit v2's FIFTH measured member); the §11.44-for-"44" self-catch
+is the second (the auditor committing F59's collision by hand, caught by the
+committed enumerator's range restriction). SUPERVISOR ENACTMENTS in this commit:
+(1) **B14's §5.28 citations disambiguated** (§13-side note — F59's three-home fix
+completed on the side it missed; the routed item 5 discharged); (2) the **§0.5
+row-flip extension** (routed item 7 discharged); (3) **archival-criterion RULING**
+(routed item 6): the pass-1 criterion's intended reading is DEPENDS-ON — a live
+row's pending work needing the archived body blocks archival; a provenance CITATION
+does not (references are never rewritten and resolution-by-insertion serves them;
+the cites-blocks reading would make archival self-defeating while serving no
+channel) — recorded here as the archival owner's ruling, the per-case verification
+of the seven cited archived entries queued. ROUTED ONWARD to the next-round queue,
+not enacted (verify-then-flip, each needs a source read this record-only sweep did
+not take): §5.24's close (B32/§11.93 against the row's claim; its axisRot note
+rides) · §5.2's workaround-survival question · B15's reference-half close ·
+B39's up-chain-caches correction · §5.89's B1-vs-B2 naming. SCAN-OWNER RULING:
+strict-credit v2 = **FIVE** measured members (+ the STALE/keyword miss); instrument
+FROZEN; partition carried: **82 + 13 = 95**. Round core + extension COMPLETE —
+five for five delivered and accepted same-session; close per §0b.5 next.)*
 
 ---
 
