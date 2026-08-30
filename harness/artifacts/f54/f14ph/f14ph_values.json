@@ -1,0 +1,51 @@
+{
+ "file": "f14_placeholder.py",
+ "lit_floor": 20000,
+ "selector_lit_px_gt8": {
+  "pre": {
+   "Janus": [
+    {
+     "jd": 2451545.0,
+     "lit_px_gt8": 2337088
+    }
+   ],
+   "Pandora": [
+    {
+     "jd": 2451545.0,
+     "lit_px_gt8": 0
+    },
+    {
+     "jd": 2451545.10475,
+     "lit_px_gt8": 1195111
+    }
+   ]
+  },
+  "post": {
+   "Janus": [
+    {
+     "jd": 2451545.0,
+     "lit_px_gt8": 2453205
+    }
+   ],
+   "Pandora": [
+    {
+     "jd": 2451545.10475,
+     "lit_px_gt8": 1210981
+    }
+   ]
+  }
+ },
+ "chosen_jd": {
+  "Janus": 2451545.0,
+  "Pandora": 2451545.10475
+ },
+ "gate_lit_px_gt8": {
+  "Janus": 2337088,
+  "Pandora": 1195111
+ },
+ "bins": {
+  "pre": "/home/claude/spacecrafter/claude/harness/artifacts/spacecrafter_pre_b40_606d6b87",
+  "post": "/home/claude/spacecrafter/claude/harness/../../build-claude/src/spacecrafter"
+ },
+ "fails": []
+}

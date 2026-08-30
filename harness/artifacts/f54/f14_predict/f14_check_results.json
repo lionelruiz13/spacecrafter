@@ -1,0 +1,33 @@
+{
+ "file": "f14_predict.py --check",
+ "bodies": {
+  "Iapetus": {
+   "ncc_vs_predicted": 0.4800798080599563,
+   "ncc_vs_null": -0.006799616438338041,
+   "px_gt32": 116191,
+   "px_gt8": 159680,
+   "disc_area_px": 187681.25805663868,
+   "offset_pre": 171.467056,
+   "offset_post": 261.467072
+  },
+  "Amalthea": {
+   "ncc_vs_predicted": 0.8231251884482632,
+   "ncc_vs_null": -0.03234676324754214,
+   "px_gt32": 21925,
+   "px_gt8": 99833,
+   "disc_area_px": 179001.8553024772,
+   "offset_pre": 168.121552,
+   "offset_post": 258.121552
+  },
+  "Proteus": {
+   "ncc_vs_predicted": 0.4995578037403192,
+   "ncc_vs_null": -0.0378528600804221,
+   "px_gt32": 4453,
+   "px_gt8": 57947,
+   "disc_area_px": 176239.66917642247,
+   "offset_pre": 339.711334,
+   "offset_post": 69.7113342
+  }
+ },
+ "fails": []
+}

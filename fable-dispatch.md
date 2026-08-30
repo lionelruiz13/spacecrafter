@@ -517,7 +517,25 @@ COMPETITOR rising (`ncc_at_-90` +0.0050 → **+0.2163**), not the signal falling
 (ncc_at_0 0.4674 → 0.4553). **`b39_scenes` w17** (launch, exit **0**, ALL PASS,
 md5 in==out): `nonblack_px` **79365** vs `> 5000` = **15.9×**. Cross-epoch
 bonus datum: shown-vs-hidden 395 → **379** (−4.1 %) on a same-run diff.
-**Next:** runs 3–5 (`f14_placeholder`, `f14_predict --check`, `f23_b33_control`).*
+**CP4 — all five runs done, all seven values LANDED.** Run 3 `f14_placeholder`
+(2 launches, real pre-fix binary `606d6b87` which genuinely predates the F14 fix
+`f11f6a4e`; exit **0** ALL OK, +90.0000° reproduced): selector Janus 2337088 /
+Pandora **0 at the first candidate jd → 1195111 at the second** (the selection
+is decided by a 0-vs-1.2 M gap, so no photometric shift can flip it), gate-2
+Janus 2337088 · Pandora 1195111 = 116.9× / 59.8×. Run 4 `f14_predict` (fresh
+pre+post captures, exit **0** ALL OK): NCC +0.4801/−0.0068 · +0.8231/−0.0323 ·
++0.4996/−0.0379, px8 159680/99833/57947 = **4.25× / 2.79× / 1.64×**. Run 5
+`f23_b33_control --prebin` (6 launches, 8m04s, exit 1): `cross` = **2099** vs
+bar 6414 = 3.06×, recomputes exactly from the two committed D0 frames.
+**THE CP3 RED IS REFUTED AS AN EPOCH SIGNAL:** the identical configuration run
+twice today gives Iapetus margin **0.2390 (red) then 0.4380 (pass)** — the scene
+is not reproducible (attitude differs **0.339°** between the two runs, 9.54° vs
+July, at identical jd/axisRot/offset/screenSize), so a single post-epoch run
+cannot attribute this gate to the epoch. Two reds recorded, neither in the
+seven, neither minted: that one, and `f23`'s S1/S2 skylock legs (pre-fix binary
+parts old=true/new=false, current binary agrees true/true — reads as the seam
+having converged, i.e. a defect-demonstration leg outliving its defect).
+**Next:** §11.171 entry file + stub, back-markers, baselines, WIP → DELIVERED.*
 
 ### F55 — The first-60 s photometric sampler: the launch window no instrument has observed (§11.167(j)(2)) [S]
 

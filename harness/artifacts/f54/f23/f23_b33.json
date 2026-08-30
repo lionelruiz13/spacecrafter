@@ -1,0 +1,1301 @@
+{
+ "alt_post": {
+  "Anch0": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 0,
+    "old": 1e-06,
+    "new": 0
+   },
+   "longitude": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "longitudeForDisplay": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "altitude": {
+    "reported": 199999.96548855014,
+    "old": 200000,
+    "new": 199999.96548855014
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "Anch1": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 0,
+    "old": 1e-06,
+    "new": 0
+   },
+   "longitude": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "longitudeForDisplay": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "altitude": {
+    "reported": 49999.85531366675,
+    "old": 200000,
+    "new": 49999.85531366675
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "A0": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 0,
+    "old": 1e-06,
+    "new": 0
+   },
+   "longitude": {
+    "reported": -90.00000250447816,
+    "old": 270,
+    "new": -90.00000250447816
+   },
+   "longitudeForDisplay": {
+    "reported": -90.00000250447816,
+    "old": -90,
+    "new": -90.00000250447816
+   },
+   "altitude": {
+    "reported": 39999997.4515811,
+    "old": 40000000,
+    "new": 39999997.4515811
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "A0_shot": "/home/claude/spacecrafter/claude/harness/artifacts/f54/f23/alt_post_A0.png",
+  "A1": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 4.58747737036327e-06,
+    "old": 1e-06,
+    "new": 4.58747737036327e-06
+   },
+   "longitude": {
+    "reported": -90.00000250447816,
+    "old": 270,
+    "new": -90.00000250447816
+   },
+   "longitudeForDisplay": {
+    "reported": -90.00000250447816,
+    "old": -90,
+    "new": -90.00000250447816
+   },
+   "altitude": {
+    "reported": 9999999.362895275,
+    "old": 40000000,
+    "new": 9999999.362895275
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "A1_shot": "/home/claude/spacecrafter/claude/harness/artifacts/f54/f23/alt_post_A1.png",
+  "A1_lit": 798477,
+  "A0_lit": 98483,
+  "A2": [
+   [
+    "off",
+    {
+     "drawnPath": "old",
+     "cameraPresent": true,
+     "latitude": {
+      "reported": 1e-06,
+      "old": 1e-06,
+      "new": 4.58747737036327e-06
+     },
+     "longitude": {
+      "reported": 270,
+      "old": 270,
+      "new": -90.00000250447816
+     },
+     "longitudeForDisplay": {
+      "reported": -90,
+      "old": -90,
+      "new": -90.00000250447816
+     },
+     "altitude": {
+      "reported": 40000000,
+      "old": 40000000,
+      "new": 9999999.362895275
+     },
+     "heading": {
+      "reported": 0,
+      "old": 0,
+      "new": 1.7302844014466245e-05
+     },
+     "viewOffset": {
+      "reported": 0,
+      "old": 0,
+      "new": 0
+     },
+     "mount": {
+      "reported": "equatorial",
+      "old": "equatorial",
+      "new": "equatorial"
+     },
+     "skyLock": {
+      "reported": false,
+      "old": false,
+      "new": false
+     }
+    }
+   ],
+   [
+    "on",
+    {
+     "drawnPath": "new",
+     "cameraPresent": true,
+     "latitude": {
+      "reported": 4.58747737036327e-06,
+      "old": 1e-06,
+      "new": 4.58747737036327e-06
+     },
+     "longitude": {
+      "reported": -90.00000250447816,
+      "old": 270,
+      "new": -90.00000250447816
+     },
+     "longitudeForDisplay": {
+      "reported": -90.00000250447816,
+      "old": -90,
+      "new": -90.00000250447816
+     },
+     "altitude": {
+      "reported": 9999999.362895275,
+      "old": 40000000,
+      "new": 9999999.362895275
+     },
+     "heading": {
+      "reported": 1.7302844014466245e-05,
+      "old": 0,
+      "new": 1.7302844014466245e-05
+     },
+     "viewOffset": {
+      "reported": 0,
+      "old": 0,
+      "new": 0
+     },
+     "mount": {
+      "reported": "equatorial",
+      "old": "equatorial",
+      "new": "equatorial"
+     },
+     "skyLock": {
+      "reported": false,
+      "old": false,
+      "new": false
+     }
+    }
+   ],
+   [
+    "off",
+    {
+     "drawnPath": "old",
+     "cameraPresent": true,
+     "latitude": {
+      "reported": 1e-06,
+      "old": 1e-06,
+      "new": 4.58747737036327e-06
+     },
+     "longitude": {
+      "reported": 270,
+      "old": 270,
+      "new": -90.00000250447816
+     },
+     "longitudeForDisplay": {
+      "reported": -90,
+      "old": -90,
+      "new": -90.00000250447816
+     },
+     "altitude": {
+      "reported": 40000000,
+      "old": 40000000,
+      "new": 9999999.362895275
+     },
+     "heading": {
+      "reported": 0,
+      "old": 0,
+      "new": 1.7302844014466245e-05
+     },
+     "viewOffset": {
+      "reported": 0,
+      "old": 0,
+      "new": 0
+     },
+     "mount": {
+      "reported": "equatorial",
+      "old": "equatorial",
+      "new": "equatorial"
+     },
+     "skyLock": {
+      "reported": false,
+      "old": false,
+      "new": false
+     }
+    }
+   ],
+   [
+    "on",
+    {
+     "drawnPath": "new",
+     "cameraPresent": true,
+     "latitude": {
+      "reported": 4.58747737036327e-06,
+      "old": 1e-06,
+      "new": 4.58747737036327e-06
+     },
+     "longitude": {
+      "reported": -90.00000250447816,
+      "old": 270,
+      "new": -90.00000250447816
+     },
+     "longitudeForDisplay": {
+      "reported": -90.00000250447816,
+      "old": -90,
+      "new": -90.00000250447816
+     },
+     "altitude": {
+      "reported": 9999999.362895275,
+      "old": 40000000,
+      "new": 9999999.362895275
+     },
+     "heading": {
+      "reported": 1.7302844014466245e-05,
+      "old": 0,
+      "new": 1.7302844014466245e-05
+     },
+     "viewOffset": {
+      "reported": 0,
+      "old": 0,
+      "new": 0
+     },
+     "mount": {
+      "reported": "equatorial",
+      "old": "equatorial",
+      "new": "equatorial"
+     },
+     "skyLock": {
+      "reported": false,
+      "old": false,
+      "new": false
+     }
+    }
+   ]
+  ],
+  "A3_lit": 798477,
+  "A3": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 4.58747737036327e-06,
+    "old": 4.58747737036327e-06,
+    "new": 4.58747737036327e-06
+   },
+   "longitude": {
+    "reported": -90.00000250447816,
+    "old": -90.00000250447816,
+    "new": -90.00000250447816
+   },
+   "longitudeForDisplay": {
+    "reported": -90.00000250447816,
+    "old": -90.00000250447816,
+    "new": -90.00000250447816
+   },
+   "altitude": {
+    "reported": 9999999.362895275,
+    "old": 9999999.362895275,
+    "new": 9999999.362895275
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "A3_px": 0,
+  "A3_floor": 0,
+  "A4": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 4.58747737036327e-06,
+    "old": 4.58747737036327e-06,
+    "new": 4.58747737036327e-06
+   },
+   "longitude": {
+    "reported": -90.00000250447816,
+    "old": -90.00000250447816,
+    "new": -90.00000250447816
+   },
+   "longitudeForDisplay": {
+    "reported": -90.00000250447816,
+    "old": -90.00000250447816,
+    "new": -90.00000250447816
+   },
+   "altitude": {
+    "reported": 19999998.72579055,
+    "old": 19999998.72579055,
+    "new": 19999998.72579055
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  }
+ },
+ "lock_post": {
+  "S0": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 43.30000131876876,
+    "old": 43.3,
+    "new": 43.30000131876876
+   },
+   "longitude": {
+    "reported": 5.359999915790792,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "longitudeForDisplay": {
+    "reported": 5.359999915790792,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "altitude": {
+    "reported": 75.10427587606682,
+    "old": 75,
+    "new": 75.10427587606682
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "S1": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 43.30000131876876,
+    "old": 43.3,
+    "new": 43.30000131876876
+   },
+   "longitude": {
+    "reported": 5.359999915790792,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "longitudeForDisplay": {
+    "reported": 5.359999915790792,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "altitude": {
+    "reported": 75.10427587606682,
+    "old": 75,
+    "new": 75.10427587606682
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": true,
+    "old": true,
+    "new": true
+   }
+  },
+  "S2": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 43.30000131876876,
+    "old": 43.3,
+    "new": 43.30000131876876
+   },
+   "longitude": {
+    "reported": 5.359999915790792,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "longitudeForDisplay": {
+    "reported": 5.359999915790792,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "altitude": {
+    "reported": 75.10427587606682,
+    "old": 75,
+    "new": 75.10427587606682
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "S2_drift_deg": 0.0,
+  "S2_screen_px": 117325,
+  "S2_floor": 0
+ },
+ "def_post": {
+  "control": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 43.30000131876876,
+    "old": 43.30000131876876,
+    "new": 43.30000131876876
+   },
+   "longitude": {
+    "reported": 5.366666607307548,
+    "old": 5.366666607307548,
+    "new": 5.366666607307548
+   },
+   "longitudeForDisplay": {
+    "reported": 5.366666607307548,
+    "old": 5.366666607307548,
+    "new": 5.366666607307548
+   },
+   "altitude": {
+    "reported": 75.10427587606682,
+    "old": 75.10427587606682,
+    "new": 75.10427587606682
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "shot": "/home/claude/spacecrafter/claude/harness/artifacts/f54/f23/def_post_D0.png",
+  "floor": 2102,
+  "lit": 1136676
+ },
+ "alt_pre": {
+  "Anch0": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 1e-06,
+    "old": 1e-06,
+    "new": 0
+   },
+   "longitude": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "longitudeForDisplay": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "altitude": {
+    "reported": 200000,
+    "old": 200000,
+    "new": 199999.96548855014
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "Anch1": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 1e-06,
+    "old": 1e-06,
+    "new": 0
+   },
+   "longitude": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "longitudeForDisplay": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "altitude": {
+    "reported": 200000,
+    "old": 200000,
+    "new": 49999.85531366675
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "A0": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 1e-06,
+    "old": 1e-06,
+    "new": 0
+   },
+   "longitude": {
+    "reported": 270,
+    "old": 270,
+    "new": -90.00000250447816
+   },
+   "longitudeForDisplay": {
+    "reported": -90,
+    "old": -90,
+    "new": -90.00000250447816
+   },
+   "altitude": {
+    "reported": 40000000,
+    "old": 40000000,
+    "new": 39999997.4515811
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "A0_shot": "/home/claude/spacecrafter/claude/harness/artifacts/f54/f23/alt_pre_A0.png",
+  "A1": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 1e-06,
+    "old": 1e-06,
+    "new": -4.58747737036327e-06
+   },
+   "longitude": {
+    "reported": 270,
+    "old": 270,
+    "new": -89.99998884409983
+   },
+   "longitudeForDisplay": {
+    "reported": -90,
+    "old": -90,
+    "new": -89.99998884409983
+   },
+   "altitude": {
+    "reported": 40000000,
+    "old": 40000000,
+    "new": 9999999.362895275
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "A1_shot": "/home/claude/spacecrafter/claude/harness/artifacts/f54/f23/alt_pre_A1.png",
+  "A1_lit": 831450,
+  "A0_lit": 104120,
+  "A2": [
+   [
+    "off",
+    {
+     "drawnPath": "old",
+     "cameraPresent": true,
+     "latitude": {
+      "reported": 1e-06,
+      "old": 1e-06,
+      "new": -4.58747737036327e-06
+     },
+     "longitude": {
+      "reported": 270,
+      "old": 270,
+      "new": -89.99998884409983
+     },
+     "longitudeForDisplay": {
+      "reported": -90,
+      "old": -90,
+      "new": -89.99998884409983
+     },
+     "altitude": {
+      "reported": 40000000,
+      "old": 40000000,
+      "new": 9999999.362895275
+     },
+     "heading": {
+      "reported": 0,
+      "old": 0,
+      "new": 1.7302844014466245e-05
+     },
+     "viewOffset": {
+      "reported": 0,
+      "old": 0,
+      "new": 0
+     },
+     "mount": {
+      "reported": "equatorial",
+      "old": "equatorial",
+      "new": "equatorial"
+     },
+     "skyLock": {
+      "reported": false,
+      "old": false,
+      "new": false
+     }
+    }
+   ],
+   [
+    "on",
+    {
+     "drawnPath": "new",
+     "cameraPresent": true,
+     "latitude": {
+      "reported": 1e-06,
+      "old": 1e-06,
+      "new": -4.58747737036327e-06
+     },
+     "longitude": {
+      "reported": 270,
+      "old": 270,
+      "new": -89.99998884409983
+     },
+     "longitudeForDisplay": {
+      "reported": -90,
+      "old": -90,
+      "new": -89.99998884409983
+     },
+     "altitude": {
+      "reported": 40000000,
+      "old": 40000000,
+      "new": 9999999.362895275
+     },
+     "heading": {
+      "reported": 1.7302844014466245e-05,
+      "old": 0,
+      "new": 1.7302844014466245e-05
+     },
+     "viewOffset": {
+      "reported": 0,
+      "old": 0,
+      "new": 0
+     },
+     "mount": {
+      "reported": "equatorial",
+      "old": "equatorial",
+      "new": "equatorial"
+     },
+     "skyLock": {
+      "reported": false,
+      "old": false,
+      "new": false
+     }
+    }
+   ],
+   [
+    "off",
+    {
+     "drawnPath": "old",
+     "cameraPresent": true,
+     "latitude": {
+      "reported": 1e-06,
+      "old": 1e-06,
+      "new": -4.58747737036327e-06
+     },
+     "longitude": {
+      "reported": 270,
+      "old": 270,
+      "new": -89.99998884409983
+     },
+     "longitudeForDisplay": {
+      "reported": -90,
+      "old": -90,
+      "new": -89.99998884409983
+     },
+     "altitude": {
+      "reported": 40000000,
+      "old": 40000000,
+      "new": 9999999.362895275
+     },
+     "heading": {
+      "reported": 0,
+      "old": 0,
+      "new": 1.7302844014466245e-05
+     },
+     "viewOffset": {
+      "reported": 0,
+      "old": 0,
+      "new": 0
+     },
+     "mount": {
+      "reported": "equatorial",
+      "old": "equatorial",
+      "new": "equatorial"
+     },
+     "skyLock": {
+      "reported": false,
+      "old": false,
+      "new": false
+     }
+    }
+   ],
+   [
+    "on",
+    {
+     "drawnPath": "new",
+     "cameraPresent": true,
+     "latitude": {
+      "reported": 1e-06,
+      "old": 1e-06,
+      "new": -4.58747737036327e-06
+     },
+     "longitude": {
+      "reported": 270,
+      "old": 270,
+      "new": -89.99998884409983
+     },
+     "longitudeForDisplay": {
+      "reported": -90,
+      "old": -90,
+      "new": -89.99998884409983
+     },
+     "altitude": {
+      "reported": 40000000,
+      "old": 40000000,
+      "new": 9999999.362895275
+     },
+     "heading": {
+      "reported": 1.7302844014466245e-05,
+      "old": 0,
+      "new": 1.7302844014466245e-05
+     },
+     "viewOffset": {
+      "reported": 0,
+      "old": 0,
+      "new": 0
+     },
+     "mount": {
+      "reported": "equatorial",
+      "old": "equatorial",
+      "new": "equatorial"
+     },
+     "skyLock": {
+      "reported": false,
+      "old": false,
+      "new": false
+     }
+    }
+   ]
+  ],
+  "A3_lit": 831450,
+  "A3": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 1e-06,
+    "old": 1e-06,
+    "new": 9.99999978509566e-07
+   },
+   "longitude": {
+    "reported": 270,
+    "old": 270,
+    "new": -90.00000250447816
+   },
+   "longitudeForDisplay": {
+    "reported": -90,
+    "old": -90,
+    "new": -90.00000250447816
+   },
+   "altitude": {
+    "reported": 40000000,
+    "old": 40000000,
+    "new": 39999997.4515811
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "A3_px": 738266,
+  "A3_floor": 0,
+  "A4": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 1e-06,
+    "old": 1e-06,
+    "new": 9.99999978509566e-07
+   },
+   "longitude": {
+    "reported": 270,
+    "old": 270,
+    "new": -90.00000250447816
+   },
+   "longitudeForDisplay": {
+    "reported": -90,
+    "old": -90,
+    "new": -90.00000250447816
+   },
+   "altitude": {
+    "reported": 80000000,
+    "old": 80000000,
+    "new": 80000003.61090432
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  }
+ },
+ "lock_pre": {
+  "S0": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 43.3,
+    "old": 43.3,
+    "new": 43.30000131876876
+   },
+   "longitude": {
+    "reported": 5.36,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "longitudeForDisplay": {
+    "reported": 5.36,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "altitude": {
+    "reported": 75,
+    "old": 75,
+    "new": 75.10427587606682
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "S1": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 43.3,
+    "old": 43.3,
+    "new": 43.30000131876876
+   },
+   "longitude": {
+    "reported": 5.36,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "longitudeForDisplay": {
+    "reported": 5.36,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "altitude": {
+    "reported": 75,
+    "old": 75,
+    "new": 75.10427587606682
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": true,
+    "old": true,
+    "new": false
+   }
+  },
+  "S2": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 43.3,
+    "old": 43.3,
+    "new": 43.30000131876876
+   },
+   "longitude": {
+    "reported": 5.36,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "longitudeForDisplay": {
+    "reported": 5.36,
+    "old": 5.36,
+    "new": 5.359999915790792
+   },
+   "altitude": {
+    "reported": 75,
+    "old": 75,
+    "new": 75.10427587606682
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "S2_drift_deg": 0.0,
+  "S2_screen_px": 117320,
+  "S2_floor": 0
+ },
+ "def_pre": {
+  "control": {
+   "drawnPath": "new",
+   "cameraPresent": true,
+   "latitude": {
+    "reported": 43.3,
+    "old": 43.3,
+    "new": 43.30000131876876
+   },
+   "longitude": {
+    "reported": 5.366666666666666,
+    "old": 5.366666666666666,
+    "new": 5.366666607307548
+   },
+   "longitudeForDisplay": {
+    "reported": 5.366666666666666,
+    "old": 5.366666666666666,
+    "new": 5.366666607307548
+   },
+   "altitude": {
+    "reported": 75,
+    "old": 75,
+    "new": 75.10427587606682
+   },
+   "heading": {
+    "reported": 1.7302844014466245e-05,
+    "old": 0,
+    "new": 1.7302844014466245e-05
+   },
+   "viewOffset": {
+    "reported": 0,
+    "old": 0,
+    "new": 0
+   },
+   "mount": {
+    "reported": "equatorial",
+    "old": "equatorial",
+    "new": "equatorial"
+   },
+   "skyLock": {
+    "reported": false,
+    "old": false,
+    "new": false
+   }
+  },
+  "shot": "/home/claude/spacecrafter/claude/harness/artifacts/f54/f23/def_pre_D0.png",
+  "floor": 2138,
+  "lit": 1136900
+ },
+ "def_cross_px8": 2099
+}
