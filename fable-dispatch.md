@@ -634,7 +634,12 @@ final-pass files not rewritten.
 measured with per-prediction outcomes; §11.173(d) annotated; §11 entry +
 stub, entry-file-first; baselines re-derived as the last act with deltas
 explained; code tree clean; WIP per §0.6.
-**WIP:** —
+**WIP:** 2026-08-30 — §0.7 GATE PASSED (both HEADs `d6aec251`/`c561489` clean; §11 177 free;
+`### F` count 3; three corpus files present with 27+13 answers and 19 SS ids; Q-55 CLOSED with
+body kept; baselines re-derived 192/167/25/87 · 113/148/87, both as stated). Checkpoint 1:
+scope item 1 DONE — out-of-sample partition committed (`harness/artifacts/f57/f57_partition.md`).
+Next: scope item 2, the predictions artifact (per-metric ranges + shape/parts classification
+committed before any scoring), then measure.
 
 ### F58 — The §11.169 schema audit of existing diagnostic sites: the gap list is the fix's work order (§11.169(c)) [S]
 
