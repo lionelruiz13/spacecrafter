@@ -262,10 +262,16 @@ things are not:
   comments become correct as written; no need to move them. Until that
   engine change ships, these 8 lines keep working by accident (the junk
   words are ignored), which is now understood as the reason the pattern
-  survived. [2026-08-31] scedit now names these eight lines with ONE finding
-  each (`inline-comment`: "does not start a comment here … the line happens
-  to work") instead of the 24 confusing ones; that finding retires when the
-  engine change lands.
+  survived. [2026-08-31] scedit briefly named these eight lines with ONE
+  finding each (`inline-comment`); **later the same day the engine change
+  LANDED in the code tree (`3d9179d2`): a `#` outside quotes is a comment,
+  to the end of the line, on every channel — your eight lines are correct
+  as written and scedit reports nothing on them.** Two things to know:
+  a `#` inside `"…"` stays text (so a quoted title may contain one), and an
+  indented `#` is now a whole-line comment too (98 lines across the shipped
+  scripts used to execute as unknown commands and now do nothing, as their
+  authors meant). Status: **RESOLVED in the tree** — live confirmation on
+  a running engine still owed (no display on the build machine).
 - **SS-21** — Lines 940/945: the two `(Warning! Don't forget …)` advice
   lines have no `#`, so each one is executed as a command called
   `(Warning!` and fails. The advice itself is kept and valuable; the lines

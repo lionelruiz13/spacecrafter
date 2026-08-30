@@ -205,6 +205,9 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   (1) **ordering**: a trailing `#!` comment is only a comment if mid-line
   `#` is real — this REQUIRES the same-day mid-line-# ruling to land first
   or together, else the engine would write junk args into scripts;
+  **[2026-08-31] SATISFIED: mid-line `#` landed in the tree (`3d9179d2`,
+  parseCommand: a `#` outside a `"…"` run ends the command); a `#!` tail is
+  a comment by that rule.**
   (2) `#!` becomes RESERVED machine-owned syntax — a third comment class
   (column-1 `#`, future mid-line `#`, machine `#!`), grammar/parse_model
   entry when it lands;
@@ -236,6 +239,15 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   CORRECT when the alias lands; scedit grammar wants an `alias_of` field on
   the new names rather than duplicate entries (I2 — args/docs live once, on
   the canonical name).
+  **Implementation trap, identified 2026-08-31 [fable, from parse_model
+  `recording_alias_loss`]:** `m_commands_ToString` is built by
+  `emplace(enum, name)` over the ALPHABETICAL name map, first name per enum
+  wins — `div` < `divide`, `mod` < `modulo`, `mul` < `multiply`, so registering
+  the aliases naively flips the RECORDED spelling of every `divide`/`modulo`/
+  `multiply` line to the short form (the `flyto` → `camera` class, inverted).
+  The recorder's canonical name must be chosen explicitly (long form), not
+  inherited from map order — a one-line ordering decision, but a D9-grade
+  one (recordings are shipped artefacts).
 
 **Provenance update to the three 2026-08-26 entries above [fable 2026-08-30,
 owner testimony in-conversation → §11.173]:** the file's text is the

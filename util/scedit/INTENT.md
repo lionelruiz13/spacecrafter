@@ -48,6 +48,16 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   scedit's reading of a line and the engine's is a scedit defect class of
   its own — the editor must never claim a line means something the engine
   will read differently.
+  **[AMENDED 2026-08-31, vixy]** For a behaviour Vixy has RULED, the
+  reference is the ruled engine, ahead of HEAD: *"make scedit track what
+  the HEAD would be after the behavior get corrected, then we correct
+  spacecrafter to be in face"*. Mechanism: the oracle test's copy of
+  `parseCommand` becomes the TARGET (the ruled block written there in the
+  exact form the engine receives), scedit is measured against it, and the
+  engine gets the identical code — the copy is verbatim again the moment
+  the engine commit lands (first instance: the comment rule, code
+  `3d9179d2`, same day). Target = HEAD only, no version ranges [vixy
+  2026-08-31, "scedit target HEAD only, yes"].
 - **C2 — identified knowledge only.** No grammar entry, doc line or
   default without a source anchor (handler code, ledger, or Vixy). A doc
   gap the code cannot answer at the zero-knowledge bar is FLAGGED to Vixy,
@@ -201,11 +211,14 @@ notes.*
     values mix literals with prose; the editor's bare-token filter has
     one known false positive (`xRRGGBB`). Schema marker + validator
     check at next grammar touch.
-13. ~~**`inline-comment` seed**~~ **MINTED 2026-08-31 (journal 2026-08-31;
-    derivation-diff §5.10), valid for the engine at HEAD; RETIRES with the
-    ruled engine change — that retirement (parse_model.comments.mid_line
-    flip + tokenizer + oracle re-run + seed removal) is the open half of
-    this item and stays here until the engine lands it.** [flagged by the 2026-08-30 corpus run] — a
+13. ~~**`inline-comment` seed**~~ **DONE 2026-08-31, in two steps the same
+    day: MINTED for the HEAD defect (code `2fe14699`), then RETIRED when the
+    rule flipped to the ruled behaviour under the amended C1 — tokenizer
+    step 0 + oracle target copy + `indented-comment` retired too + the
+    engine's parseCommand given the identical block (code `3d9179d2`;
+    journal 2026-08-31b; derivation-diff §1 new row, §5.10 superseded,
+    §7.5). Witness :37-46 correct as written; SS-20 resolved in-tree.**
+    [flagged by the 2026-08-30 corpus run] — a
     mid-line token whose KEY begins with `#` is an inline-comment
     attempt; the engine reads it and everything after it as parameters
     (script.cpp:114 is column-1-only). The rewritten witness holds 8
@@ -285,7 +298,11 @@ notes.*
     route to SCRIPT_SURFACE (SS-n) per C2's ownership split; a data-package
     fact to carry: 43 md5-identical script pairs (`navigation/fscripts/`
     mirrors `fscripts/`), so every fix lands twice.
-17. **SUSPENDED FOR VIXY — engine-version targeting.** C1 says scedit tracks
+17. ~~**SUSPENDED FOR VIXY — engine-version targeting.**~~ **RESOLVED
+    [vixy 2026-08-31, verbatim: "scedit target HEAD only, yes."] — C1
+    stands as written; a retiring seed simply retires (no `since:`/
+    `until:` schema, no `--target`); the field-divergence consequence is
+    accepted by the owner. Original question kept for the record.** C1 says scedit tracks
     the engine at HEAD; D9 says the installed field is frozen. Once the
     ruled changes land (mid-line `#` comments, `mod`/`div`/`mul`), a script
     written for the new engine is silently wrong on every older one (an
@@ -296,6 +313,26 @@ notes.*
     become "portability" warnings instead of disappearing)? Not decided
     here: it changes the contract's shape, and the field's version spread
     is information only Vixy holds.
+18. ~~**IN FLIGHT 2026-08-31 00:35 — engine change, uncommitted in the code
+    tree until its build result is read:**~~ **DISCHARGED 2026-08-31: build
+    log `EXIT=0` read (208 objects, 0 errors, the 2 warnings pre-existing
+    in Camera.cpp:1009/1171), binary answers `--version`; committed
+    `a3437670`; parent §11.181 written; journal 2026-08-31b.** `std::stacktrace` guarded by a
+    CMake feature probe (`SPACECRAFTER_HAVE_STACKTRACE` + the matching
+    link library: `stdc++exp` / `stdc++_libbacktrace` / none) instead of
+    `__linux__` [vixy 2026-08-31, verbatim: "test a macro which tell if
+    stacktrace is there, instead"]; `src/appModule/fps.cpp` + top-level
+    `CMakeLists.txt`. Verified so far: probe → NOT available on GCC 11
+    (all three variants fail, message printed), `fps.cpp.o` compiles
+    clean; the GCC-15 path is identical by construction (first variant
+    succeeds → same link line, same code) — desktop confirmation owed.
+    Full engine build running (`/tmp/sc-build-2026-08-31.log`, `nice -j6`,
+    RAM 8 GiB free at 24 objects). On completion: read the log's `EXIT=`
+    line (never the notification's), commit the code change, write parent
+    §11.181 (id verified free over live ∪ archive), journal 2026-08-31b
+    here, then strike this item. If this item is still here in a later
+    session, the build result was never read: re-run the build, do not
+    assume.
 8. **Engine emitter** — the grammar file becomes a build/runtime
    artifact (D5 seams); propose upstream once the contract shape has
    survived slices 1–4.
@@ -315,6 +352,59 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-31b] The engine builds here; the comment rule flips to the
+  ruled behaviour, scedit first, engine in phase — C1 amended.** Two
+  engine commits, both compiled on GCC 11 into the probe-built tree, not
+  run (no display): (1) `a3437670` — `std::stacktrace` becomes a CMake
+  feature probe (`stdc++exp` → `stdc++_libbacktrace` → none; one answer
+  drives the compile guard AND the link line; `__linux__` keeps the signal
+  half; without stack support the SIGUSR1 handler logs WHY no stack
+  follows) [vixy: "test a macro which tell if stacktrace is there,
+  instead"]; full build `EXIT=0`, 208 objects, 0 errors — the tree had NO
+  other GCC-15-only dependency, so the toolchain blocker of 2026-08-30e is
+  gone for BUILDING (running still needs the display session). (2)
+  `3d9179d2` — the comment rule. Vixy on the morning's `inline-comment`
+  seed: *"# loop on is a comment, not to be parsed as syntax"*, then the
+  order ruling: *"make scedit track what the HEAD would be after the
+  behavior get corrected, then we correct spacecrafter to be in face"* →
+  C1 amended (ruled engine > oracle > scedit; the oracle's parseCommand
+  copy is the TARGET). Rule as written, both sides identical (diffed): a
+  `#` outside a `"…"` run ends the command, quotes counted by a plain
+  toggle from byte 0, the cut running BEFORE the leading-blank strip and
+  the ` " ` normalisation; placed in parseCommand so every channel has it
+  (alternative externalised: script-layer-only — rejected: two classifier
+  sites already diverge, parseCommand is the one choke point incl. the
+  nested executeCommand calls; observable difference only on live channels
+  with an unquoted `#`, and the sweep shows none: no ini command string
+  carries `#`, HTTP never delivers a raw `#`). Sweep before deciding the
+  shape [measured, 408 + witness + harness]: `#` glued outside quotes 0,
+  `#` inside quotes 0, word-start `#` 106 = 98 indented whole-line comments
+  + the witness's 8 — so "outside quotes, `#` starts a comment" (simplest
+  statement, zero-knowledge bar) and the shell-style word-start rule agree
+  on the whole corpus; the simplest won, veto open. scedit: comment cut =
+  tokenizer normalisation step 0 on (s, off) (erased/spans follow for
+  free), `Line::comment_begin`, editor `Context::Comment` (no completion,
+  bar says `comment` with the `mid_line` sentence), tail drawn dim;
+  seeds `inline-comment` AND `indented-comment` retired (18 → 16); oracle
+  alphabet gains `#`: 119 337 comparisons / 0 mismatches; gates 8/8;
+  tokenizer 189, editcore 175. Corpus record 24 → 16 (the 8 witness lines
+  are CORRECT as written — SS-20 resolved in-tree); 408 shipped 1759 →
+  1661, diff vs previous run minus its `indented-comment` lines EMPTY:
+  98 shipped indented comments stop executing as unknown commands. Ledger
+  effects: item 13 done (minted then retired the same day — the minting
+  was not wasted: it produced the sweep, the fixture shapes, and the
+  finding that `# loop on`'s "collision" was a parse of a comment, which
+  is what prompted the order ruling); item 17 RESOLVED (HEAD only); item
+  18 discharged; FEATURE_REQUESTS `#!` ordering clause (1) satisfied; the
+  alias entry gains an identified trap (m_commands_ToString first-name-
+  wins would flip recorded spellings to `div`/`mod`/`mul` — the recorder's
+  canonical name must be chosen, not inherited). Parent §11.181 (probe)
+  and §11.182 (comment rule) written. Pre-existing warnings noted, not
+  touched: Camera.cpp:1009 unused `decelerationDuration`, :1171 unused
+  `readD`. Open: live confirmation of both engine changes on a running
+  engine (display session; desktop build for the GCC-15 path of the
+  probe); item 16 (shipped sweep, now 1661); the D6 column micro-decision;
+  the mod/div/mul aliases (engine, with the trap above); item 4 next.
 - **[2026-08-31] The sc_check touch: spans, five seeds, the block structure
   read — items 10, 13 (HEAD half), 14, 15(c) closed.** Code `2fe14699`.
   Gates 8/8 on a clean build (0 warnings); tokenizer 150 → 171 and editcore
