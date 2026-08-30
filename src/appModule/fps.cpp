@@ -30,7 +30,15 @@
 #include <SDL2/SDL.h>
 #include <chrono>
 #include <thread>
+// std::stacktrace is a FEATURE of the toolchain, not of the platform: GCC 11
+// has no <stacktrace>, GCC 12/13 ship the header but need libstdc++_libbacktrace,
+// GCC 14+ need libstdc++exp. The probe that knows which lives in CMakeLists.txt
+// and defines SPACECRAFTER_HAVE_STACKTRACE together with the link line; this
+// file only consumes the answer. The SIGUSR1 stall tracer below keeps working
+// without it - it just says that no stack could be captured, and why.
+#if defined(SPACECRAFTER_HAVE_STACKTRACE)
 #include <stacktrace>
+#endif
 #include "EntityCore/Core/VulkanMgr.hpp"
 
 #include "appModule/fps.hpp"
@@ -39,8 +47,10 @@
 
 #ifdef __linux__
 #include <signal.h>
+#if defined(SPACECRAFTER_HAVE_STACKTRACE)
 alignas(std::stacktrace_entry) static std::array<std::byte, 65536> buffer;
 static std::basic_stacktrace<DeportedLinearAllocator<std::stacktrace_entry>> stacktrace(DeportedLinearAllocator<std::stacktrace_entry>{buffer.data(), buffer.size()});
+#endif
 static std::atomic<bool> stackDumped{false};
 #endif
 
@@ -52,6 +62,7 @@ Fps::Fps() :
 {
 	selectMaxFps();
 	#ifdef __linux__
+	#if defined(SPACECRAFTER_HAVE_STACKTRACE)
 	// Warm the unwinder OFF the signal path. The first stack capture may dlopen
 	// libgcc_s / initialise libbacktrace (malloc + loader lock); the handler
 	// already stores into a static buffer (DeportedLinearAllocator) to stay
@@ -61,6 +72,7 @@ Fps::Fps() :
 	// itself stall: do the init here, then drop the warm-up capture.
 	sigstacktrace(0);
 	stackDumped.store(false, std::memory_order_relaxed);
+	#endif
 	signal(SIGUSR1, &Fps::sigstacktrace);
 	#endif
 }
@@ -116,10 +128,17 @@ void Fps::watchdogMainloop()
 		std::this_thread::sleep_until(lastCheck += std::chrono::milliseconds(50));
 		#ifdef __linux__
 		if (stackDumped.load(std::memory_order_acquire)) {
+			#if defined(SPACECRAFTER_HAVE_STACKTRACE)
 			std::ostringstream oss;
 			oss << stacktrace;
-			stackDumped.store(false, std::memory_order_relaxed);
 			VulkanMgr::instance->putLog(oss.str(), LogType::LAYER);
+			#else
+			// The request is honoured as far as this build can: it says why no
+			// stack follows, so a reader does not take the silence for a healthy
+			// trace of nothing.
+			VulkanMgr::instance->putLog("SIGUSR1 stall trace requested, but this build has no std::stacktrace: the toolchain that built it lacks <stacktrace> or its library (GCC >= 14, or GCC 12/13 with libstdc++_libbacktrace, provide it); no stack captured", LogType::WARNING);
+			#endif
+			stackDumped.store(false, std::memory_order_relaxed);
 		}
 		#endif
 		const uint64_t currentFrame = numberFrames.load(std::memory_order_relaxed);
@@ -147,7 +166,9 @@ void Fps::watchdogMainloop()
 void Fps::sigstacktrace(int)
 {
 	#ifdef __linux__
+	#if defined(SPACECRAFTER_HAVE_STACKTRACE)
 	stacktrace = stacktrace.current(DeportedLinearAllocator<std::stacktrace_entry>{buffer.data(), buffer.size()});
+	#endif
 	stackDumped.store(true, std::memory_order_release);
 	#endif
 }

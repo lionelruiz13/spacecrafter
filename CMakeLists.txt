@@ -28,6 +28,52 @@ CONFIGURE_FILE (
 
 set (CMAKE_CXX_STANDARD 23)
 
+################# toolchain features ##################################
+# std::stacktrace (used by the SIGUSR1 stall tracer, src/appModule/fps.cpp) is
+# a feature of the TOOLCHAIN, not of the platform, and the header alone does
+# not say whether it links: GCC 14+ need libstdc++exp, GCC 12/13 need
+# libstdc++_libbacktrace, GCC 11 has no <stacktrace> at all, MSVC needs
+# nothing. One probe answers both questions - it compiles and links the same
+# call fps.cpp makes - and its answer is the ONLY source for the compile guard
+# (SPACECRAFTER_HAVE_STACKTRACE) and the link line. Without it the build is
+# complete and the tracer logs that no stack can be captured, instead of the
+# build failing on a header the toolchain does not have.
+include(CheckCXXSourceCompiles)
+set(_sc_stacktrace_probe "
+#include <stacktrace>
+#include <sstream>
+int main() { std::ostringstream o; o << std::stacktrace::current(); return o.str().empty() ? 1 : 0; }
+")
+set(SPACECRAFTER_HAVE_STACKTRACE OFF)
+set(SPACECRAFTER_STACKTRACE_LIB "")
+foreach(_sc_lib IN ITEMS stdc++exp stdc++_libbacktrace NONE)
+  if(_sc_lib STREQUAL "NONE")
+    unset(CMAKE_REQUIRED_LIBRARIES)
+    set(_sc_var SC_STACKTRACE_LINKS_ALONE)
+  else()
+    set(CMAKE_REQUIRED_LIBRARIES ${_sc_lib})
+    string(MAKE_C_IDENTIFIER "SC_STACKTRACE_LINKS_WITH_${_sc_lib}" _sc_var)
+  endif()
+  check_cxx_source_compiles("${_sc_stacktrace_probe}" ${_sc_var})
+  if(${_sc_var})
+    set(SPACECRAFTER_HAVE_STACKTRACE ON)
+    if(NOT _sc_lib STREQUAL "NONE")
+      set(SPACECRAFTER_STACKTRACE_LIB ${_sc_lib})
+    endif()
+    break()
+  endif()
+endforeach()
+unset(CMAKE_REQUIRED_LIBRARIES)
+if(SPACECRAFTER_HAVE_STACKTRACE)
+  add_compile_definitions(SPACECRAFTER_HAVE_STACKTRACE=1)
+  if(SPACECRAFTER_STACKTRACE_LIB)
+    link_libraries(${SPACECRAFTER_STACKTRACE_LIB})
+  endif()
+  message(STATUS "std::stacktrace: available (extra link library: '${SPACECRAFTER_STACKTRACE_LIB}')")
+else()
+  message(STATUS "std::stacktrace: NOT available with this toolchain - built without it; the SIGUSR1 stall tracer will log that no stack can be captured")
+endif()
+
 ################# plateform configuration ############################
 
 if(WIN32)
@@ -144,7 +190,6 @@ FIND_PACKAGE(PNG REQUIRED)
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${FFmpeg_INCLUDE_DIR})
-link_libraries(stdc++exp)
 else()
 FIND_PACKAGE(SDL2 CONFIG REQUIRED)
 FIND_PACKAGE(SDL2_mixer CONFIG REQUIRED)
