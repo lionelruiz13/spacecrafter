@@ -182,6 +182,60 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   Scope question for triage: commands only, or every machine-listed family
   (keys, flags, set names) — the mechanism generalizes, each family carries
   its own ambiguity surface.
+  **[2026-08-30, same evening] DECLINED — by the requester, on fact (3):**
+  *"a script which worked and stop working is worse than a script which never
+  worked - it's less intuitive to the user, not more, so my suggestion's
+  precondition got invalidated"* [vixy]. The idea was cached from existing
+  tooling practice (unique-prefix execution) whose unstated precondition is a
+  STABLE command set — invalid in an evolving language. Superseded by the
+  alias entry below.
+
+### [2026-08-30] `#!` — the engine annotates the faulty script line in place
+- **From:** Vixy (in-conversation, answering the unclosed-if logging
+  question): the engine MODIFIES the script — inserts a comment at the END
+  of the faulty line, starting with **`#!`** so it is added only once; a
+  `#!` tail is REPLACED by spacecrafter on execution when different from
+  what it would emit. Purpose: *"providing error feedback at the place the
+  error happened - easier for a user to debug using a casual text editor,
+  who doesn't want to ever try using scedit."* For the unclosed `struct if`,
+  the annotation lands on the OPENER line; message content follows the
+  three-part log schema (§11.169: cause + content + self-contained action).
+- **Status:** accepted — engine change pending. Consequences flagged at
+  record time [derived]:
+  (1) **ordering**: a trailing `#!` comment is only a comment if mid-line
+  `#` is real — this REQUIRES the same-day mid-line-# ruling to land first
+  or together, else the engine would write junk args into scripts;
+  (2) `#!` becomes RESERVED machine-owned syntax — a third comment class
+  (column-1 `#`, future mid-line `#`, machine `#!`), grammar/parse_model
+  entry when it lands;
+  (3) idempotent-replacement wants its completion, unstated and flagged:
+  fault fixed ⇒ stale `#!` removed on next run, else fixed scripts keep
+  dead annotations;
+  (4) §2(b) (user scripts immutable live-show content) is deliberately
+  crossed — reconciled as: the write is semantic-neutral (a comment) and
+  idempotent; a read-only file must degrade to log-only, never to failure;
+  (5) under `[parallel-script]`'s `inline` policy the spliced lines have no
+  backing file — line provenance is the open cost Vixy named (*"could make
+  it slightly hard to diagnose"* — confirmed referent: the diagnosis, not a
+  reversal of the policy).
+  scedit's half is tracked as scedit INTENT §5 item 15 (recognize,
+  navigate, error history, caret standard).
+
+### [2026-08-30] Short aliases for the long math commands: mod, div, mul
+- **From:** Vixy (in-conversation, replacing the declined expansion idea
+  above): *"adding mod as an alias for modulo became cleaner, and if not
+  already there, div for divide, sub for substract, mul for multiply, if
+  those exists."*
+- **Status:** accepted — engine change pending (registration-table addition;
+  no build on this laptop to verify, so recorded not implemented). Facts
+  [measured, grammar at HEAD]: `add` and `sub` are ALREADY the short forms;
+  `divide`/`multiply`/`modulo` are the long three; `div`/`mul`/`mod` are all
+  free as exact names — exact-match dispatch, no ambiguity mechanism, nothing
+  ages when new commands register (the property that killed the expansion
+  idea is absent here). Consequences: SS-22's witness line `mod a 2` becomes
+  CORRECT when the alias lands; scedit grammar wants an `alias_of` field on
+  the new names rather than duplicate entries (I2 — args/docs live once, on
+  the canonical name).
 
 **Provenance update to the three 2026-08-26 entries above [fable 2026-08-30,
 owner testimony in-conversation → §11.173]:** the file's text is the
@@ -217,4 +271,9 @@ scedit journal 2026-08-04c), and `ifSwap` is one global stack so a called
 script's open `if` leaks into the caller. Vixy's stated intent alongside
 [in-conversation]: scope if-state to the script — leaving a script leaves its
 ifs — cleaning the non-legacy policies while `legacy` preserves the old
-semantics under the old syntax.
+semantics under the old syntax. History that explains the shape [vixy,
+in-conversation]: *"the script system had always been thought at serial
+level, but evolved with things which made the question more complicated,
+without the model being refined, ever"* — features accreted on a serial
+model that was never revisited; `[parallel-script]` is that first model
+refinement, and `legacy` is the honest name for the accretion.

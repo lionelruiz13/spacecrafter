@@ -271,7 +271,10 @@ things are not:
   `modulo` — `mod` does nothing here (worse, the engine's own suggestion
   answers "did you mean mode?", pointing away from the intent). Question,
   same class as SS-2: does YOUR current engine accept `mod` (an alias newer
-  than this tree), or is it a slip? Status: OPEN.
+  than this tree), or is it a slip? Status: **[2026-08-30] ANSWERED by
+  Vixy's decision** — `mod` becomes a real alias of `modulo` (with `div`
+  and `mul` for divide/multiply); your line is correct as written once
+  that engine change lands. Until then it still does nothing.
 - **SS-23** — Lines 1536/1539, the language examples:
   `text "behobachter"` / `text "observateur"`. `text` needs its named parts
   (`name … string … action load` — your own line 1444 shows the full form);

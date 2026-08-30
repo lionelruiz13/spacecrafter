@@ -233,6 +233,31 @@ notes.*
     harness `a501eb4`). The seed is UNAFFECTED: an unclosed `if` is a
     defect under every policy; scoping only bounds its blast radius to
     the script's own tail — which is exactly the witness's damage.
+    **RULED [vixy 2026-08-30]: the engine must LOG the unclosed if**, per
+    the three-part log schema (INTENT.md:126, §11.169 refinement): CAUSE
+    (struct if opened at line L, never closed before script end) +
+    CONTENT (lines after L skipped / if-state discarded) + self-contained
+    ACTION (add `struct if end`; the unclosed opener's line quoted — the
+    diagnostic points at the OPENER, the root, not at EOF where the
+    damage surfaces). Both suspended micro-points RESOLVED same session
+    [vixy]: (a) "inplace" = the ENGINE writes a `#!` trailing annotation
+    on the faulty line, idempotently replaced — full mechanism and its
+    flagged consequences in FEATURE_REQUESTS [2026-08-30] `#!` entry;
+    (b) "bad idea regardless" referred to unclosed-if DIAGNOSIS under
+    the inline policy (line provenance of spliced lines), not to the
+    policy itself — no reversal.
+15. **`#!` annotation surface in the editor** [vixy 2026-08-30, ruled
+    with the `#!` engine feature]: scedit must (a) RECOGNIZE `#!`
+    machine annotations as navigable errors — shown on the doc bar when
+    the caret is on the line, otherwise listed in an error history with
+    click-to-warp-cursor; (b) never WRITE or rewrite `#!` content (the
+    engine owns that channel; roundtrip byte-exactness untouched);
+    (c) the caret must use the standard escape-sequence
+    foreground/background inversion so it is visible in a tui [vixy,
+    verbatim requirement — check what sc_tui does today and gate it in
+    ui_selftest]. Adjacent, not ruled: a `#!` whose content disagrees
+    with what scedit itself derives for that line is a C1 divergence
+    signal worth surfacing, not hiding.
 8. **Engine emitter** — the grammar file becomes a build/runtime
    artifact (D5 seams); propose upstream once the contract shape has
    survived slices 1–4.
