@@ -1,0 +1,387 @@
+{
+ "binary": "/home/claude/spacecrafter/build-claude/src/spacecrafter",
+ "binary_md5": "fa00deade57fe02739800013364a9611",
+ "site": "moon(base)",
+ "fov": 10.0,
+ "cadence_s": 5.0,
+ "n_samples": 2,
+ "convention": "post",
+ "commanded_lon": 230.3,
+ "nadir_lon": 140.3,
+ "metric": "f51_disc.metrics: L=PIL convert('L'), Bl=GaussianBlur(4), mask r<900 about ((w-1)/2,(h-1)/2) and L>8",
+ "t_launch": 1788083244.043,
+ "samples": [
+  {
+   "i": 0,
+   "tag": "dwell",
+   "t_cmd": 1788083299.419,
+   "t_ready": 1788083300.119,
+   "disc_mean": 165.258,
+   "hf_mean": 6.644,
+   "hf_sd": 9.514,
+   "n": 2544661,
+   "disc_sd": 21.214,
+   "frame_mean": 128.751,
+   "frame_lit_px_gt8": 3300859,
+   "md5": "5215565b11d24328a9bb01198c875b25",
+   "png": "s000.png"
+  },
+  {
+   "i": 1,
+   "tag": "dwell",
+   "t_cmd": 1788083304.419,
+   "t_ready": 1788083305.119,
+   "disc_mean": 165.258,
+   "hf_mean": 6.644,
+   "hf_sd": 9.514,
+   "n": 2544661,
+   "disc_sd": 21.214,
+   "frame_mean": 128.751,
+   "frame_lit_px_gt8": 3300859,
+   "md5": "5215565b11d24328a9bb01198c875b25",
+   "png": "s001.png"
+  }
+ ],
+ "legs": [
+  {
+   "i": 0,
+   "tag": "oldpath_fov10",
+   "t_cmd": 1788083310.713,
+   "t_ready": 1788083311.414,
+   "disc_mean": 160.142,
+   "hf_mean": 6.603,
+   "hf_sd": 9.403,
+   "n": 2544680,
+   "disc_sd": 21.456,
+   "frame_mean": 124.863,
+   "frame_lit_px_gt8": 3300895,
+   "md5": "88bbda7f477dee6741569df64348a8d2",
+   "png": "old_a.png"
+  },
+  {
+   "i": 1,
+   "tag": "oldpath_fov60",
+   "t_cmd": 1788083313.756,
+   "t_ready": 1788083314.457,
+   "disc_mean": 125.531,
+   "hf_mean": 6.893,
+   "hf_sd": 9.968,
+   "n": 389305,
+   "disc_sd": 45.395,
+   "frame_mean": 11.906,
+   "frame_lit_px_gt8": 401596,
+   "md5": "308724db770aac775e92d3fbce1fc445",
+   "png": "old_wide.png"
+  },
+  {
+   "i": 2,
+   "tag": "oldpath_fov10_plus10s",
+   "t_cmd": 1788083329.035,
+   "t_ready": 1788083329.735,
+   "disc_mean": 160.142,
+   "hf_mean": 6.603,
+   "hf_sd": 9.403,
+   "n": 2544680,
+   "disc_sd": 21.456,
+   "frame_mean": 124.863,
+   "frame_lit_px_gt8": 3300895,
+   "md5": "88bbda7f477dee6741569df64348a8d2",
+   "png": "old_b.png"
+  },
+  {
+   "i": 3,
+   "tag": "newpath_after",
+   "t_cmd": 1788083333.077,
+   "t_ready": 1788083333.777,
+   "disc_mean": 165.258,
+   "hf_mean": 6.644,
+   "hf_sd": 9.514,
+   "n": 2544661,
+   "disc_sd": 21.214,
+   "frame_mean": 128.751,
+   "frame_lit_px_gt8": 3300859,
+   "md5": "5215565b11d24328a9bb01198c875b25",
+   "png": "new_after.png"
+  },
+  {
+   "i": 4,
+   "tag": "newpath_after_plus10s",
+   "t_cmd": 1788083343.869,
+   "t_ready": 1788083344.569,
+   "disc_mean": 165.258,
+   "hf_mean": 6.644,
+   "hf_sd": 9.514,
+   "n": 2544661,
+   "disc_sd": 21.214,
+   "frame_mean": 128.751,
+   "frame_lit_px_gt8": 3300859,
+   "md5": "5215565b11d24328a9bb01198c875b25",
+   "png": "new_after_b.png"
+  }
+ ],
+ "fails": [],
+ "t_port": 1788083265.047,
+ "dump_start_moon": {
+  "parent": "Earth",
+  "ecl": [
+   0.000298981875,
+   0.00237758341,
+   0.000199321483
+  ],
+  "mat": [
+   -0.706323326,
+   -0.133803487,
+   -0.695128739,
+   0,
+   -0.682982028,
+   -0.129381746,
+   0.718885183,
+   0,
+   -0.186126307,
+   0.982525766,
+   -4.65515768e-08,
+   0,
+   0,
+   -2.72848411e-12,
+   -6.50904985e-05,
+   1
+  ],
+  "dist": 6.50904985e-05,
+  "screen": [
+   0,
+   -4.80348547e-07
+  ],
+  "axisRot": 4.60308719,
+  "attitude": 4.60308719,
+  "surfaceLocked": false,
+  "bodyType": 7,
+  "primary": false,
+  "surfaceModel": 1,
+  "trailLength": 60,
+  "composedDecl": true,
+  "boundingRadius": 1.18460794e-05,
+  "scaledDatumRadius": 1.16138035e-05,
+  "scaledGroundRadius": 1.16138035e-05,
+  "scaling": 1.00000012,
+  "scalingTarget": 1,
+  "inheritedScaling": 1,
+  "eclDisplay": [
+   0.000298981875,
+   0.00237758341,
+   0.000199321483
+  ],
+  "visible": true,
+  "screenSize": 2.09718513,
+  "haloColor": [
+   1,
+   1,
+   1
+  ],
+  "relation": 4,
+  "supplemental": false,
+  "preloadCount": 0,
+  "evalCount": 6085,
+  "trail": [],
+  "near": [
+   null,
+   null
+  ],
+  "eclRoot": [
+   0,
+   -2.72848411e-12,
+   -6.50904985e-05
+  ],
+  "modules": [
+   "MESH",
+   "AXIS",
+   "HINT",
+   "ORBIT"
+  ],
+  "routing": {
+   "far": 1,
+   "near": 2,
+   "grounded": 0,
+   "in": 0,
+   "orbit": 1,
+   "trail": 0,
+   "tail": 0
+  },
+  "lastJD": 2461233.999999624
+ },
+ "t_dwell_start": 1788083299.418,
+ "t_dwell_end": 1788083305.21,
+ "dump_end_moon": {
+  "parent": "Earth",
+  "ecl": [
+   0.000298981875,
+   0.00237758341,
+   0.000199321483
+  ],
+  "mat": [
+   -0.706323326,
+   -0.133803487,
+   -0.695128739,
+   0,
+   -0.682982028,
+   -0.129381746,
+   0.718885183,
+   0,
+   -0.186126307,
+   0.982525766,
+   -4.65515768e-08,
+   0,
+   0,
+   -2.72848411e-12,
+   -6.50904985e-05,
+   1
+  ],
+  "dist": 6.50904985e-05,
+  "screen": [
+   0,
+   -4.80348547e-07
+  ],
+  "axisRot": 4.60308719,
+  "attitude": 4.60308719,
+  "surfaceLocked": false,
+  "bodyType": 7,
+  "primary": false,
+  "surfaceModel": 1,
+  "trailLength": 60,
+  "composedDecl": true,
+  "boundingRadius": 1.18460794e-05,
+  "scaledDatumRadius": 1.16138035e-05,
+  "scaledGroundRadius": 1.16138035e-05,
+  "scaling": 1.00000012,
+  "scalingTarget": 1,
+  "inheritedScaling": 1,
+  "eclDisplay": [
+   0.000298981875,
+   0.00237758341,
+   0.000199321483
+  ],
+  "visible": true,
+  "screenSize": 2.09718513,
+  "haloColor": [
+   1,
+   1,
+   1
+  ],
+  "relation": 4,
+  "supplemental": false,
+  "preloadCount": 0,
+  "evalCount": 7243,
+  "trail": [],
+  "near": [
+   null,
+   null
+  ],
+  "eclRoot": [
+   0,
+   -2.72848411e-12,
+   -6.50904985e-05
+  ],
+  "modules": [
+   "MESH",
+   "AXIS",
+   "HINT",
+   "ORBIT"
+  ],
+  "routing": {
+   "far": 1,
+   "near": 2,
+   "grounded": 0,
+   "in": 0,
+   "orbit": 1,
+   "trail": 0,
+   "tail": 0
+  },
+  "lastJD": 2461233.999999624
+ },
+ "dump_old_moon": {
+  "parent": "Earth",
+  "ecl": [
+   0.000298981875,
+   0.00237758341,
+   0.000199321483
+  ],
+  "mat": [
+   -0.706323326,
+   -0.133803487,
+   -0.695128739,
+   0,
+   -0.682982028,
+   -0.129381746,
+   0.718885183,
+   0,
+   -0.186126307,
+   0.982525766,
+   -4.65515768e-08,
+   0,
+   0,
+   -2.72848411e-12,
+   -6.50904985e-05,
+   1
+  ],
+  "dist": 6.50904985e-05,
+  "screen": [
+   0,
+   -4.80348547e-07
+  ],
+  "axisRot": 4.60308719,
+  "attitude": 4.60308719,
+  "surfaceLocked": false,
+  "bodyType": 7,
+  "primary": false,
+  "surfaceModel": 1,
+  "trailLength": 60,
+  "composedDecl": true,
+  "boundingRadius": 1.18460794e-05,
+  "scaledDatumRadius": 1.16138035e-05,
+  "scaledGroundRadius": 1.16138035e-05,
+  "scaling": 1.00000012,
+  "scalingTarget": 1,
+  "inheritedScaling": 1,
+  "eclDisplay": [
+   0.000298981875,
+   0.00237758341,
+   0.000199321483
+  ],
+  "visible": true,
+  "screenSize": 2.09718513,
+  "haloColor": [
+   1,
+   1,
+   1
+  ],
+  "relation": 4,
+  "supplemental": false,
+  "preloadCount": 0,
+  "evalCount": 8910,
+  "trail": [],
+  "near": [
+   null,
+   null
+  ],
+  "eclRoot": [
+   0,
+   -2.72848411e-12,
+   -6.50904985e-05
+  ],
+  "modules": [
+   "MESH",
+   "AXIS",
+   "HINT",
+   "ORBIT"
+  ],
+  "routing": {
+   "far": 1,
+   "near": 2,
+   "grounded": 0,
+   "in": 0,
+   "orbit": 1,
+   "trail": 0,
+   "tail": 0
+  },
+  "lastJD": 2461233.999999624
+ }
+}
