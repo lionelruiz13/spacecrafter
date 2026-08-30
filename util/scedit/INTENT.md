@@ -239,7 +239,15 @@ notes.*
   1407 → 1606 lines, ISO-8859 + CRLF preserved); the desktop probe
   (parent §11.149(e)) verified the old findings byte-wise but named two
   gaps — 267 added lines unexamined, checker not re-runnable there. Both
-  closed today on LovelyFoxDev: clean rebuild (fresh `build-lovely/`;
+  closed today on ~~LovelyFoxDev~~ **TravellingFoxDev** [CORRECTED
+  2026-08-30, same session: `hostname` measured on Vixy's prompt — the
+  LAPTOP is TravellingFoxDev, the desktop is LovelyFoxDev. The original
+  name was reconstructed from a message label (itself inverted) instead
+  of measured; recall-reliability class — empirical cells are copied
+  from reads, never re-serialized. The `build-lovely/` dir name is the
+  error's fossil, kept. A SessionStart env-identification hook
+  (hostname/nproc/ram/gpu) was proposed to close the class]: clean
+  rebuild (fresh `build-lovely/`;
   the migrated tree arrived foxy-owned — Vixy chowned mid-session),
   8/8 gates, roundtrip byte-exact on the new file. corpus-expected
   19 → 33, every row dispositioned (derivation-diff §7.3, zero false
