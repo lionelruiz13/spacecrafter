@@ -757,6 +757,14 @@ baselines 193/168/25/87 · 114/150/88 reproduced). CHECKPOINT 1: scope 1 done �
 committed BEFORE classification (`harness/artifacts/f58/f58_universe.md` + the enumeration
 instrument `harness/f58_census.py`): 411 live emission sites over 22 files (arm A 252 · B 139 ·
 C 20), adjacent-not-swept inventory 268 sites over 20 files. Next: scope 2, per-site classification.
+CHECKPOINT 2: scopes 2+3 done — gap table `harness/artifacts/f58/f58_gap_table.tsv` (440 rows =
+432 census + 8 silent) + `f58_gap_summary.md`, verdicts in `harness/f58_gaptable.py` which
+SELF-ASSERTS against the census (demonstrated failing in 3 directions, control green). Universe
+grew to 432 live sites after three instrument faults found and fixed mid-census (semicolon-in-string
+truncation, block comments, the printf channel — all recorded with the site that exposed each).
+HEADLINE: CONSEQUENCES present at 20/288 error records (0.069), PREVENTION 17/288 (0.059),
+OVERRIDE 4/43 acting defaults (0.093); 11 of 280 error records carry all three elements. Next:
+scope 4 (§11 entry 178 + stub + §11.169(c) DISCHARGED annotation).
 
 ---
 

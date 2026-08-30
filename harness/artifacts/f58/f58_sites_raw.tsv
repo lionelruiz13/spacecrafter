@@ -162,10 +162,10 @@ A	command	src/interfaceModule/app_command_interface.cpp	4078	std::cout	True	(con
 A	command	src/interfaceModule/app_command_interface.cpp	4085	std::cout	True	(console)	(console)	"RGB: " << argR << " " << argG << " " << argB << std::endl
 A	command	src/interfaceModule/app_command_interface.cpp	4088	std::cout	True	(console)	(console)	"Error color " << debug_message << std::endl
 A	command	src/interfaceModule/app_command_interface.cpp	4092	std::cout	True	(console)	(console)	"News read : " << argColor << " " << Vcolor << std::endl
-A	command	src/interfaceModule/app_command_interface.cpp	4110	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' datum_radius: value must be >= 0 km " "(0 = enterable/transparent body, the body radius = solid surface, " "radius*1.002 = terrain clearance). datum_radius unchanged
-A	command	src/interfaceModule/app_command_interface.cpp	4115	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' datum_radius: no body named '") + argName + _("'. datum_radius unchanged
-A	command	src/interfaceModule/app_command_interface.cpp	4125	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' ground_radius: value must be >= 0 km " "(0 = enterable body, descend to the centre
-A	command	src/interfaceModule/app_command_interface.cpp	4130	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' ground_radius: no body named '") + argName + _("'. ground_radius unchanged
+A	command	src/interfaceModule/app_command_interface.cpp	4110	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' datum_radius: value must be >= 0 km " "(0 = enterable/transparent body, the body radius = solid surface, " "radius*1.002 = terrain clearance). datum_radius unchanged; reissue " "with a non-negative km value.")
+A	command	src/interfaceModule/app_command_interface.cpp	4115	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' datum_radius: no body named '") + argName + _("'. datum_radius unchanged; load the body first ('body action load').")
+A	command	src/interfaceModule/app_command_interface.cpp	4125	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' ground_radius: value must be >= 0 km " "(0 = enterable body, descend to the centre; the body radius = solid " "floor; radius*1.002 = terrain clearance). ground_radius unchanged; " "reissue with a non-negative km value.")
+A	command	src/interfaceModule/app_command_interface.cpp	4130	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body' ground_radius: no body named '") + argName + _("'. ground_radius unchanged; load the body first ('body action load').")
 A	command	src/interfaceModule/app_command_interface.cpp	4136	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body': case name unknown argument")
 A	command	src/interfaceModule/app_command_interface.cpp	4145	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'body': unknown argument")
 A	command	src/interfaceModule/app_command_interface.cpp	4160	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("Command 'font': unknown action argument")
@@ -214,7 +214,7 @@ A	command	src/interfaceModule/app_command_interface.cpp	4723	debug_message	False
 A	command	src/interfaceModule/app_command_interface.cpp	4745	debug_message	False	(via executeCommandStatus L_DEBUG)	LOG_FILE::SCRIPT	_("command 'transition': unknown argument")
 A	command	src/interfaceModule/app_command_eval.cpp	139	std::cout	False	(console)	(console)	mArg << " is a reservedVar so you can't define it" << std::endl
 A	command	src/interfaceModule/app_command_eval.cpp	213	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"Not possible to operate with undefined variable so define to null from ops"
-A	command	src/interfaceModule/app_command_eval.cpp	234	std::cout	False	(console)	(console)	"not possible to operate with undefined variable so define to 1" << std::endl
+A	command	src/interfaceModule/app_command_eval.cpp	234	std::cout	True	(console)	(console)	"not possible to operate with undefined variable so define to 1" << std::endl
 A	command	src/interfaceModule/app_command_eval.cpp	255	std::cout	True	(console)	(console)	"+++++++++++++++++" << std::endl
 A	command	src/interfaceModule/app_command_eval.cpp	258	std::cout	True	(console)	(console)	"No variable available" << std::endl
 A	command	src/interfaceModule/app_command_eval.cpp	259	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"Not variable available"
@@ -234,6 +234,7 @@ A	script	src/scriptModule/script.cpp	49	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::S
 A	script	src/scriptModule/script.cpp	70	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"Printing script: --BEGIN"
 A	script	src/scriptModule/script.cpp	72	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	" " + pMove->getToken(), LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT
 A	script	src/scriptModule/script.cpp	75	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"Printing script: --END"
+A	script	src/scriptModule/script.cpp	100	printf	True	(console)	(console)	"s : %s p : %s\n", script_file.c_str() , script_path.c_str()
 A	script	src/scriptModule/script.cpp	104	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::SCRIPT	"Unable to open script: " + script_file
 A	script	src/scriptModule/script.cpp	174	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"End of script"
 A	script	src/scriptModule/script.cpp	183	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"End of script detected but not at end of the execution stack"
@@ -249,9 +250,18 @@ A	script	src/scriptModule/script_mgr.cpp	235	clog	False	LOG_TYPE::L_ERROR	LOG_FI
 A	script	src/scriptModule/script_mgr.cpp	254	clog	False	LOG_TYPE::L_DEBUG	LOG_FILE::SCRIPT	"RECORD: " + commandline
 A	script	src/scriptModule/script_mgr.cpp	263	clog	False	LOG_TYPE::L_INFO	LOG_FILE::SCRIPT	"ScriptMgr::Script recording stopped."
 A	script	src/scriptModule/script_mgr.cpp	278	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"ScriptMgr::acquireGlobalLock - Can't simultaneously acquire more than 255 locks - one script is leaking a lock !"
+A	script	src/scriptModule/script_mgr.cpp	309	printf	True	(console)	(console)	"loop tour %i\n", nbrLoop
 A	script	src/scriptModule/script_mgr.cpp	360	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"ScriptMgr::Unable to read script directory"
+A	script	src/scriptModule/script_mgr.cpp	375	printf	True	(console)	(console)	"getScriptPath1 return : %s\n", AppSettings::Instance()->getScriptDir().c_str()
+A	script	src/scriptModule/script_mgr.cpp	378	printf	True	(console)	(console)	"getScriptPath2 return : %s\n", DataDir.c_str()
 A	tcp	src/tools/io.cpp	370	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"ServerSocket data setOutput too big"
 A	tcp	src/tools/io.cpp	384	clog	True	log	LOG_FILE::TCP	"TCP : " + msg
+A	tcp	src/tools/io.cpp	560	printf	False	(console)	(console)	"%s\n", string.c_str()
+A	tcp	src/tools/io.cpp	563	printf	False	(console)	(console)	"URL : \"%s\"\n", url.c_str()
+A	tcp	src/tools/io.cpp	566	printf	False	(console)	(console)	"FILE : \"%s\"\n", urlFile.c_str()
+A	tcp	src/tools/io.cpp	571	printf	False	(console)	(console)	"\"FILE PATH : %s\"\n", filename.c_str()
+A	tcp	src/tools/io.cpp	575	printf	False	(console)	(console)	"PARAM : \"%s\"\n", urlParam.c_str()
+A	tcp	src/tools/io.cpp	583	printf	False	(console)	(console)	"COMMAND : \"%s\"\n", command.c_str()
 A	tcp	src/tools/io.cpp	722	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"TCP : nobody to answer \"" + out.data.substr(0, 60) + "\" to - the connection that asked is gone and no client " "subscribed to the feedback channel with $LOGON"
 A	intake	src/appModule/app.cpp	124	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Projection mode: " + projectionStr + " (type=" + std::to_string(Context::projectionType) + ")"
 A	intake	src/appModule/app.cpp	128	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Rear projection: " + rearProjectionStr + " (enabled=" + std::to_string(Context::rearProjection) + ")"
@@ -330,8 +340,8 @@ B	config	src/mainModule/checkConfig.cpp	478	std::cout	True	(console)	(console)	"
 B	config	src/mainModule/checkConfig.cpp	480	std::cout	True	(console)	(console)	user_conf.getSecname(i) << std::endl
 B	config	src/mainModule/checkConfig.cpp	484	std::cout	True	(console)	(console)	"|->" << *it << std::endl
 B	config	src/mainModule/checkConfig.cpp	486	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"config.ini is up to date"
-B	config	src/mainModule/checkConfig.cpp	512	std::cout	False	(console)	(console)	(*it) << std::endl
-B	config	src/mainModule/checkConfig.cpp	515	std::cout	False	(console)	(console)	(*it) << std::endl
+B	config	src/mainModule/checkConfig.cpp	512	std::cout	True	(console)	(console)	(*it) << std::endl
+B	config	src/mainModule/checkConfig.cpp	515	std::cout	True	(console)	(console)	(*it) << std::endl
 B	config	src/mainModule/checkConfig.cpp	522	std::cout	True	(console)	(console)	"i did " << std::endl
 B	config	src/mainModule/checkConfig.cpp	527	std::cout	True	(console)	(console)	"clef : " << *itKey << std::endl
 B	config	src/mainModule/checkConfig.cpp	568	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"key " + *itKey + " has been removed from config.ini"
@@ -343,12 +353,16 @@ B	config	src/mainModule/checkConfig.cpp	606	clog	False	LOG_TYPE::L_WARNING	LOG_F
 B	config	src/tools/init_parser.cpp	62	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Init_parser : can't find config file "+ file
 B	config	src/tools/init_parser.cpp	70	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Init_parser : can't read config file "+ file
 B	config	src/tools/init_parser.cpp	83	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Init_parser : can't open config file "+ file_name
+B	config	src/tools/init_parser.cpp	91	printf	False	(console)	(console)	"string key %s\n", key.c_str()
 B	config	src/tools/init_parser.cpp	95	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser can't find the configuration key \"" + key + "\", default empty string returned"
 B	config	src/tools/init_parser.cpp	106	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser def_str " + section + ":" + key
+B	config	src/tools/init_parser.cpp	113	printf	False	(console)	(console)	"int key %s\n", key.c_str()
 B	config	src/tools/init_parser.cpp	120	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser : can't find the configuration key \"" + key + "\", default 0 value returned"
 B	config	src/tools/init_parser.cpp	133	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser def_int " + section + ":" + key
+B	config	src/tools/init_parser.cpp	140	printf	False	(console)	(console)	"double key %s\n", key.c_str()
 B	config	src/tools/init_parser.cpp	147	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser : can't find the configuration key \"" + key + "\", default 0 value returned"
 B	config	src/tools/init_parser.cpp	160	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser def_double " + section + ":" + key
+B	config	src/tools/init_parser.cpp	167	printf	False	(console)	(console)	"boolean key %s\n", key.c_str()
 B	config	src/tools/init_parser.cpp	174	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser : can't find the configuration key \"" + key + "\", default 0 value returned"
 B	config	src/tools/init_parser.cpp	187	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"Init_parser def_bool " + section + ":" + key
 B	config	src/tools/init_parser.cpp	283	std::cout	True	(console)	(console)	nbKey<< std::endl
@@ -404,8 +418,23 @@ B	star	src/starModule/hip_star_mgr.cpp	1354	clog	False	LOG_TYPE::L_ERROR	LOG_FIL
 B	star	src/starModule/hip_star_mgr.cpp	1368	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"VariableStar error parsing "+record
 B	star	src/starModule/hip_star_mgr.cpp	1392	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"VariableStar error parsing "+record
 B	star	src/starModule/zone_array.cpp	102	std::cout	False	(console)	(console)	"ZoneArray::create(" << extended_file_name << "): warning while loading \"" << fname << "\": " << e.what()
+B	star	src/starModule/zone_array.cpp	107	fprintf	False	(console)	(console)	stderr,"ZoneArray::create(%s): fopen failed\n", extended_file_name.c_str()
+B	star	src/starModule/zone_array.cpp	110	printf	True	(console)	(console)	"Loading %s: ",extended_file_name.c_str()
+B	star	src/starModule/zone_array.cpp	120	printf	False	(console)	(console)	"bad file\n"
+B	star	src/starModule/zone_array.cpp	127	printf	False	(console)	(console)	"you must convert catalogue " #if (!defined(__GNUC__)) "to native format " #endif "before mmap loading\n"
+B	star	src/starModule/zone_array.cpp	134	printf	False	(console)	(console)	"byteswap "
+B	star	src/starModule/zone_array.cpp	147	printf	False	(console)	(console)	"you must convert catalogue to native format before mmap loading\n"
+B	star	src/starModule/zone_array.cpp	154	printf	False	(console)	(console)	"no star catalogue file\n"
 B	star	src/starModule/zone_array.cpp	161	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	oss.str()
+B	star	src/starModule/zone_array.cpp	166	printf	False	(console)	(console)	"unsupported version, "
+B	star	src/starModule/zone_array.cpp	173	printf	False	(console)	(console)	"no memory, "
+B	star	src/starModule/zone_array.cpp	179	printf	False	(console)	(console)	"unsupported version, "
+B	star	src/starModule/zone_array.cpp	186	printf	False	(console)	(console)	"no memory, "
+B	star	src/starModule/zone_array.cpp	192	printf	False	(console)	(console)	"unsupported version, "
+B	star	src/starModule/zone_array.cpp	199	printf	False	(console)	(console)	"no memory, "
+B	star	src/starModule/zone_array.cpp	204	printf	False	(console)	(console)	"bad file type, "
 B	star	src/starModule/zone_array.cpp	210	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	oss.str()
+B	star	src/starModule/zone_array.cpp	212	printf	False	(console)	(console)	"initialization failed\n"
 B	star	src/starModule/zone_array.cpp	249	std::cerr	False	(console)	(console)	"ERROR: ZoneArray1::updateHipIndex: invalid HP number: " << hip << std::endl
 B	star	src/starModule/zone_array.cpp	442	std::cerr	False	(console)	(console)	"ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: no memory (1)" << std::endl
 B	star	src/starModule/zone_array.cpp	448	std::cerr	False	(console)	(console)	"ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: no memory (2)" << std::endl
@@ -422,9 +451,12 @@ B	nebula	src/coreModule/nebula_mgr.cpp	369	clog	False	LOG_TYPE::L_WARNING	LOG_FI
 B	nebula	src/coreModule/nebula_mgr.cpp	373	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::INTERNAL	"dso: hide nebula with name " + _englishName
 B	nebula	src/coreModule/nebula_mgr.cpp	395	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Loading NGC data... "
 B	nebula	src/coreModule/nebula_mgr.cpp	399	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"NGC data file " + cat + " not found""Loading NGC data... "
+B	nebula	src/coreModule/nebula_mgr.cpp	416	printf	True	(console)	(console)	"error creating nebula\n"
 B	nebula	src/coreModule/nebula_mgr.cpp	423	clog	False	LOG_TYPE::L_INFO	LOG_FILE::INTERNAL	"Nebula: "+ std::to_string(i) + " items loaded, " + std::to_string(data_drop) + " dropped"
 B	skyculture	src/coreModule/sky_localizer.cpp	40	std::cerr	True	(console)	(console)	"Unable to find culture directory:" << cultureDir << std::endl
+B	skyculture	src/coreModule/constellation_mgr.cpp	156	printf	True	(console)	(console)	"%s\n", (*iter)->getShortName().c_str()
 B	skyculture	src/coreModule/constellation_mgr.cpp	162	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"No constellation Color with shortName "+_name
+B	skyculture	src/coreModule/constellation_mgr.cpp	178	printf	True	(console)	(console)	"%s\n", (*iter)->getShortName().c_str()
 B	skyculture	src/coreModule/constellation_mgr.cpp	184	clog	False	LOG_TYPE::L_WARNING	LOG_FILE::SCRIPT	"No constellation label with shortName "+_name
 B	skyculture	src/coreModule/constellation_mgr.cpp	208	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"Constellation_Mgr::loadLinesAndArt can't open constellation data file "+ fileName
 B	skyculture	src/coreModule/constellation_mgr.cpp	235	clog	False	LOG_TYPE::L_ERROR	LOG_FILE::INTERNAL	"ConstellationMgr::loadLinesAndArt on line " + std::to_string(line) + " of " + fileName

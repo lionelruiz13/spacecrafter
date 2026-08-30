@@ -163,6 +163,34 @@ def split_top(arg):
     return out
 
 
+def stmt_end(text, start):
+    """Index of the statement-terminating ';' at/after start, skipping string and char
+    literals.  A bare text.find(';') truncates any message that CONTAINS a semicolon —
+    measured: four `debug_message` sites in app_command_interface.cpp lost their tail."""
+    i = start
+    instr = char = esc = False
+    while i < len(text):
+        c = text[i]
+        if esc:
+            esc = False
+        elif c == "\\":
+            esc = True
+        elif instr:
+            if c == '"':
+                instr = False
+        elif char:
+            if c == "'":
+                char = False
+        elif c == '"':
+            instr = True
+        elif c == "'":
+            char = True
+        elif c == ";":
+            return i
+        i += 1
+    return -1
+
+
 def flat(s):
     return re.sub(r"\s+", " ", s).strip()
 
@@ -189,11 +217,27 @@ def scan_file(root, arm, family, rel):
                 hi = mid - 1
         return lo + 1
 
+    # Byte map of /* ... */ block-comment interiors.  Measured need: checkConfig.cpp:512
+    # and :515 are two std::cout sites sitting inside a commented-out block; a `//`-only
+    # test reported them LIVE, which would have put two dead sites in the gap table.
+    blockcom = bytearray(len(text))
+    j = 0
+    while True:
+        o = text.find("/*", j)
+        if o < 0:
+            break
+        c = text.find("*/", o + 2)
+        c = len(text) if c < 0 else c + 2
+        for k in range(o, c):
+            blockcom[k] = 1
+        j = c
+
     def commented(pos):
-        """True if pos sits on a line whose code is commented out (// before it)."""
+        """True if pos is commented out: inside /* */, or with // earlier on its line."""
+        if blockcom[pos]:
+            return True
         ls = text.rfind("\n", 0, pos) + 1
-        head = text[ls:pos]
-        return "//" in head
+        return "//" in text[ls:pos]
 
     sites = []
     # channel 1: cLog writes
@@ -210,7 +254,7 @@ def scan_file(root, arm, family, rel):
                           sink=flat(args[2]) if len(args) > 2 else "LOG_FILE::INTERNAL"))
     # channel 2: the script surface's refusal channel
     for m in re.finditer(r"debug_message\s*(\+?=)\s*", text):
-        end = text.find(";", m.end())
+        end = stmt_end(text, m.end())
         if end < 0:
             continue
         rhs = flat(text[m.end():end])
@@ -222,9 +266,21 @@ def scan_file(root, arm, family, rel):
                           commented=commented(m.start()),
                           text=rhs, level="(via executeCommandStatus L_DEBUG)",
                           sink="LOG_FILE::SCRIPT"))
-    # channel 3: the console channel
+    # channel 4: the C console channel.  Found mid-audit: zone_array.cpp reports 14
+    # star-catalogue faults through printf/fprintf and NOTHING through cLog, so an
+    # iostream-only census would have scored that loader as almost silent.
+    for m in re.finditer(r"(?<![\w:.>])(printf|fprintf|perror)\s*\(", text):
+        op = text.index("(", m.end() - 1)
+        inner, _ = balanced(text, op)
+        ln = lineno(m.start())
+        sites.append(dict(arm=arm, family=family, file=rel, line=ln,
+                          channel=m.group(1),
+                          commented=commented(m.start()),
+                          text=flat(inner),
+                          level="(console)", sink="(console)"))
+    # channel 3: the C++ console channel
     for m in re.finditer(r"std::(cerr|cout)\s*<<", text):
-        end = text.find(";", m.end())
+        end = stmt_end(text, m.end())
         if end < 0:
             continue
         ln = lineno(m.start())

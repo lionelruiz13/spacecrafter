@@ -85,7 +85,7 @@ Family → file mapping derived by reading each family's entry point, not by nam
   extension of this audit; they are excluded because the mandate named five families and
   a boundary that drifts is not a boundary. They are **inventoried, not classified**, by
   the same instrument (`f58_census.py --adjacent` →
-  `f58_adjacent_inventory.tsv`): **268 live emission sites over 20 files**, which is the
+  `f58_adjacent_inventory.tsv`): **274 live emission sites over 20 files**, which is the
   size of the follow-on, measured rather than guessed.
 
 ## 4. Enumeration method (so the boundary is checkable)
@@ -99,13 +99,27 @@ The instrument is deliberately syntactic and complete over its file list:
    the `LOG_TYPE` / `LOG_FILE` (defaults `L_INFO` / `INTERNAL` when omitted).
 2. **`debug_message = …` / `+= …`** — the script command surface's refusal channel,
    emitted by `AppCommandInterface::executeCommandStatus` [`app_command_interface.cpp:1163-1178`].
-3. **`std::cerr <<` / `std::cout <<`** — the console channel, which bypasses `cLog`.
+3. **`std::cerr <<` / `std::cout <<`** — the C++ console channel, which bypasses `cLog`.
+4. **`printf` / `fprintf` / `perror`** — the C console channel.
 
 Sites whose line is commented out are captured and flagged (`commented`), not dropped:
 one of them is evidence (`app_command_interface.cpp:311`).
 
-Output: `f58_sites_raw.tsv`, **411 live sites** (arm A 252 · arm B 139 · arm C 20) out of
-462 captured including commented-out ones.
+Output: `f58_sites_raw.tsv`, **432 live sites** (arm A 257 · arm B 155 · arm C 20) out of
+487 captured including commented-out ones.
+
+**Three instrument faults were found and fixed WHILE censusing, each named with the site
+that exposed it — recorded because an instrument that silently mis-measures its own
+universe is this audit's own version of the defect it audits:**
+
+| fault | exposed by | effect before the fix |
+|---|---|---|
+| statement end found with a bare `find(";")` | `app_command_interface.cpp:4110` | 4 messages truncated mid-sentence — the quoted text would have been wrong for exactly the four best records in arm A |
+| only `//` comments detected, not `/* */` | `checkConfig.cpp:512` | 3 dead sites counted as live |
+| only the C++ console channel enumerated | `zone_array.cpp:212` | 24 `printf`/`fprintf` fault reports invisible — the star-catalogue loader would have scored as nearly silent instead of as loud-on-the-wrong-channel |
+
+Each fix was verified by diffing the census before and after: 4 rows changed, 3 removed,
+24 added — the fixes touched exactly what they should and nothing else.
 
 **Silent sites — the half no grep can find.** A missing diagnostic has no syntax. The
 audit therefore enumerates silent sites by a stated READ method, and does NOT claim
