@@ -371,9 +371,11 @@ def read_vars(c, leg):
 
 def dump(sess, c, tag):
     """The dual dump's header line, NaN-tolerantly parsed.  NB the harness's own
-    grammar authority is `dumpread.sanitize_nonfinite`; `f27_reply.dump` still
-    calls `b24_equivalence._NONFINITE`, which no longer exists - recorded, not
-    fixed here."""
+    grammar authority is `dumpread.sanitize_nonfinite`.  [SUPERSEDED 2026-08-30,
+    F54 pre-step: the dead `b24_equivalence._NONFINITE` call this docstring
+    recorded in `f27_reply.dump` - and in f12_b33_heading / f23_b33_control /
+    f24_b34_seams - is REPAIRED; all four now call `dumpread.sanitize_nonfinite`,
+    one grammar (I2).]"""
     p = sess.outdir / f"f53_{tag}.json"
     p.unlink(missing_ok=True)
     c.send(f"body action dual_dump filename {p}", 2.2)

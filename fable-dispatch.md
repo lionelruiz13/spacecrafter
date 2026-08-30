@@ -493,7 +493,15 @@ recorded in committed artifacts, cited in the entry with census context per
 member; verification-run verdicts recorded as-is; §11 entry + stub; instrument
 baselines re-derived with deltas explained; code tree clean at close; WIP per
 §0.6.
-**WIP:** *(empty)*
+**WIP:** *(2026-08-30, CP1 — Scope 0 PRE-STEP DONE.* The dead
+`b24_equivalence._NONFINITE` repaired at all four sites (`f27_reply.py:331`,
+`f12_b33_heading.py:143`, `f23_b33_control.py:136`, `f24_b34_seams.py:147`) →
+`dumpread.sanitize_nonfinite`, one grammar (I2); `import dumpread` added to each;
+`f53_guards.py`'s docstring claim back-marked in the same commit. Verified: the
+dead attribute reproduced as an AttributeError first (a control that fails),
+then all four readers exercised on a synthetic `nan`/`-nan`/`-inf` dump line —
+parse OK. **Next:** read the five recording-fix targets, write the values, then
+one verification run per file.*
 
 ### F55 — The first-60 s photometric sampler: the launch window no instrument has observed (§11.167(j)(2)) [S]
 

@@ -43,9 +43,10 @@ from PIL import Image
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import b25_galactic as b25g
 import b24_equivalence as b24   # the NaN-tolerant dump reader (I2)
+import dumpread              # the dump's NaN grammar lives HERE (I2)
 
 HERE = Path(__file__).resolve().parent
-JD = "2461233.5"
+JD ="2461233.5"
 DEFAULT_BIN = str(HERE.parents[1] / "build-claude/src/spacecrafter")
 
 FAILS = []
@@ -140,9 +141,7 @@ class App:
         # prints `nan`, Python's json rejects it, and the §11.18 cold-launch
         # ASmooth NaN fires intermittently on a scaled body. It never touches
         # the camera block, but it does sit in the same LINE.
-        line = b24._NONFINITE.sub(
-            lambda m: m.group(1) + ("NaN" if m.group(2) == "nan" else "Infinity"),
-            open(p).readline())
+        line = dumpread.sanitize_nonfinite(open(p).readline())
         cam = json.loads(line)["camera"]
         return norm180(math.degrees(cam["heading"])), cam
 

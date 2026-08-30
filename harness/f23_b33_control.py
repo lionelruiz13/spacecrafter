@@ -64,6 +64,7 @@ from PIL import Image
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import b25_galactic as b25g
 import b24_equivalence as b24   # the NaN-tolerant dump reader (I2)
+import dumpread              # the dump's NaN grammar lives HERE (I2)
 
 HERE = Path(__file__).resolve().parent
 JD = 2461233.5
@@ -133,9 +134,7 @@ class App:
         p = self.out / f"{tag}.json"
         p.unlink(missing_ok=True)
         self.send(f"body action dual_dump filename {p}", 2.5)
-        line = b24._NONFINITE.sub(
-            lambda m: m.group(1) + ("NaN" if m.group(2) == "nan" else "Infinity"),
-            open(p).readline())
+        line = dumpread.sanitize_nonfinite(open(p).readline())
         return json.loads(line)
 
     def control(self, tag):
