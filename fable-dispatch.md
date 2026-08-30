@@ -403,7 +403,15 @@ controls cited; the searchAround reading answered or bounded; §5.113
 annotated, still OPEN; §11 entry + stub; both instrument baselines re-derived
 post-delivery (pair-check 185/160/25/85, scan 90/125/83 at dispatch) with
 deltas explained; code tree clean at close; WIP per §0.6.
-**WIP:** *(empty)*
+**WIP:** 2026-08-30 CP1 — warm-up done (both trees clean, code `d6aec251`, binary
+present, XAUTH ok, comm probe 0); §5.113's three chains RE-VERIFIED at HEAD;
+scope-3 (searchAround→cleverFind null) ANSWERED **NO**, five producers, cites
+verified by hand. Channels chosen: A = dump `oldView.observer`
+(`homePlanet`/`onBody`/`distanceFromCenter`) + `selected_distance` +
+`get status position`; B = FISHEYE fov 180 screenshots, `look_at` zenith, 24-step
+sim-time sweep; C = screen, `illuminate hp V` positive control + name-scoped
+removal. NEXT: write `f53_guards.py` + predictions, commit predictions BEFORE the
+run.
 
 ### F54 — The seven never-recorded gate values: decision-free recording fix in five harness files (§11.167(i)) [S]
 
