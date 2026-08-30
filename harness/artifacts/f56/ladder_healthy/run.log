@@ -1,0 +1,33 @@
+farm ready: /tmp/b3_farm/.spacecrafter
+binary: /home/claude/spacecrafter/build-claude/src/spacecrafter  convention: post  commanded lon 230.300 -> sub-point 140.300
+--- launch base (moon/terrain) ---
+--- launch sph (moon/terrain) ---
+--- launch cur (moon/terrain) ---
+Moon dist 9737.4 km  halfFov meas 0.170157 nominal 0.174533
+ok:   P0 Moon drawn unscaled: scaledDatumRadius 1737.40 km
+ok:   P0 Moon in the declared ray regime: distance 9737.4 km in [2R, 64R] = [3475, 111194] km
+ok:   P0alt observer radius 9737.40 km = the commanded 1737.4 + 8000 km
+ok:   P0 module set as declared (['MESH', 'AXIS', 'HINT', 'ORBIT']), ATMOSPHERE present=False
+ok:   P1 parent present and lit at nadir: centre luma 181.4 (3207131 px > 32 in frame)
+[Slift20] r=20.0 alt=150.0 lon=127.109 pred_cap[terrain]=[20.0, 20.0, 20.0, 20.0]km (29.4-29.4px@fov10)  MEASURED wide.changed=671 eqR=14.6px  zoom.changed=2613 eqR=28.8px  shadowbox.dark=1337
+[Sb20] r=20.0 alt=0.0 lon=132.056 pred_cap[terrain]=[0.0, 0.0, 0.0, 0.0]km (0.0-0.0px@fov10)  MEASURED wide.changed=0 eqR=0.0px  zoom.changed=0 eqR=0.0px  shadowbox.dark=2794
+[Sb30] r=30.0 alt=0.0 lon=135.024 pred_cap[terrain]=[20.56, 19.77, 19.74, 20.5]km (28.9-30.1px@fov10)  MEASURED wide.changed=735 eqR=15.3px  zoom.changed=2890 eqR=30.3px  shadowbox.dark=4464
+[Sb45] r=45.0 alt=0.0 lon=138.981 pred_cap[terrain]=[40.99, 39.74, 38.5, 38.47]km (56.4-60.1px@fov10)  MEASURED wide.changed=2688 eqR=29.3px  zoom.changed=10665 eqR=58.3px  shadowbox.dark=8821
+[Sb90] r=90.0 alt=0.0 lon=144.917 pred_cap[terrain]=[88.21, 88.25, 87.81, 86.78]km (127.0-129.2px@fov10)  MEASURED wide.changed=12374 eqR=62.8px  zoom.changed=49332 eqR=125.3px  shadowbox.dark=30411
+[Sb250] r=250.0 alt=0.0 lon=157.778 pred_cap[terrain]=[249.96, 250.0, 250.0, 249.91]km (356.9-357.0px@fov10)  MEASURED wide.changed=98068 eqR=176.7px  zoom.changed=357851 eqR=337.5px  shadowbox.dark=59186
+[Clift20] r=20.0 alt=150.0 lon=127.109 pred_cap[terrain]=[20.0, 20.0, 20.0, 20.0]km (29.4-29.4px@fov10)  MEASURED wide.changed=156 eqR=7.0px  zoom.changed=564 eqR=13.4px  shadowbox.dark=454
+[Cb20] r=20.0 alt=0.0 lon=132.056 pred_cap[terrain]=[0.0, 0.0, 0.0, 0.0]km (0.0-0.0px@fov10)  MEASURED wide.changed=0 eqR=0.0px  zoom.changed=0 eqR=0.0px  shadowbox.dark=1099
+[Cb30] r=30.0 alt=0.0 lon=135.024 pred_cap[terrain]=[20.56, 19.77, 19.74, 20.5]km (28.9-30.1px@fov10)  MEASURED wide.changed=0 eqR=0.0px  zoom.changed=0 eqR=0.0px  shadowbox.dark=2240
+[Cb45] r=45.0 alt=0.0 lon=138.981 pred_cap[terrain]=[40.99, 39.74, 38.5, 38.47]km (56.4-60.1px@fov10)  MEASURED wide.changed=105 eqR=5.8px  zoom.changed=378 eqR=11.0px  shadowbox.dark=5713
+[Cb90] r=90.0 alt=0.0 lon=144.917 pred_cap[terrain]=[88.21, 88.25, 87.81, 86.78]km (127.0-129.2px@fov10)  MEASURED wide.changed=2131 eqR=26.0px  zoom.changed=8146 eqR=50.9px  shadowbox.dark=25849
+[Cb250] r=250.0 alt=0.0 lon=157.778 pred_cap[terrain]=[249.96, 250.0, 250.0, 249.91]km (356.9-357.0px@fov10)  MEASURED wide.changed=16527 eqR=72.5px  zoom.changed=65147 eqR=144.0px  shadowbox.dark=37095
+ok:   lift20: predicted cap radius 29.4-29.4 px, measured 28.8 px (2613 px) - 20% band
+ok:   b20: predicted INVISIBLE (cap [0.0, 0.0, 0.0, 0.0] km) - measured 0 changed px (bound 40)
+ok:   b30: predicted cap radius 28.9-30.1 px, measured 30.3 px (2890 px) - 20% band
+ok:   b45: predicted cap radius 56.4-60.1 px, measured 58.3 px (10665 px) - 20% band
+ok:   b90: predicted cap radius 127.0-129.2 px, measured 125.3 px (49332 px) - 20% band
+ok:   b250: predicted cap radius 356.9-357.0 px, measured 337.5 px (357851 px) - 20% band
+ok:   b20: shadow witness 2794 dark px in the wide box (loaded/lit/placed while its colour draw is depth-killed)
+
+LADDER GREEN -> b3_ladder_moon_terrain.json
+config/ssystem md5 in=out OK

@@ -523,8 +523,15 @@ empty→4, D5 green control→0; manifest positive control 4/4 mutation classes,
 re-measured. P7/P8 committed then measured: today's star-field frame is BYTE-IDENTICAL
 to four 2026-08-29 dim-era frames (md5 a09147d7) and the 374 px / 3-of-255 A/A floor
 reproduces EXACTLY across the boundary ⇒ the dim state never touched the star channel;
-§11.174(d)'s two §11.159 suspects are CLEARED by measurement, not waived. NEXT: the
-sweep (verdict table + markers), then the §11.176 entry.
+§11.174(d)'s two §11.159 suspects are CLEARED by measurement, not waived. CP4: sweep
+verdict table complete over all 14 entries (`artifacts/f56/sweep/f56_sweep.md`) — 17
+suspect clusters, all in §11.157/§11.164/§11.167; F44/F47/F50 LAUNCHED on the faulty
+stack and are clean by CHANNEL. P9 committed then run: **b3_ladder is GREEN on the
+healthy stack** — the red gate (site_luma 20.97 < 30) reads 149.93, caps back to July's
+28.8/30.3/58.3/125.3/337.5, shadow 2794 vs July's 2790, six per-leg luma values equal to
+July's to two decimals, disc metric 165.258/6.644/9.514/n2544661 identical to July's
+frame. §11.164(l)(2)'s "no longer reproducible on this host" is REFUTED. NEXT: markers
+at every swept node, then the §11.176 entry.
 
 ### F57 — The tester-model corpus validation: Q-55's five conditioned metrics, predictions first (§11.173(d)) [S]
 
