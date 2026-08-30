@@ -1,0 +1,85 @@
+=== F56 ENVIRONMENT CANARY  2026-08-30 14:39:26 CEST  out=artifacts/f56/canary_run1
+    banked stack: DISPLAY :2 2448x1332 | band: new 165.258/6.644 old 160.142/6.603 (+-1.0/+-0.15)
+
+--- (a) display stack ---
+  host.boot = 2026-08-27 07:32:05
+  host.now_epoch = 1788093566
+  display.target = :2
+  display.expected = :2
+  xauthority.inherited = /run/user/1003/.mutter-Xwaylandauth.PODXU3
+
+CANARY DEFAULT [xauthority]
+  CAUSE   : the inherited XAUTHORITY (/run/user/1003/.mutter-Xwaylandauth.PODXU3) is not the banked stack's cookie; a cookie from another stack is refused by :2 (§0.5(a))
+  CONTENT : overriding with /tmp/rt-claude/.mutter-Xwaylandauth.Y2SUU3, the first match of /tmp/rt-claude/.mutter-Xwaylandauth.* (banked with the stack, recorded above as xauthority.inherited)
+  OVERRIDE: pass --xauth <file> to choose another, or re-bank BANK_XAUTH_GLOB if the stack moved
+  xauthority = /tmp/rt-claude/.mutter-Xwaylandauth.Y2SUU3
+  display.dimensions = 2448x1332
+  display.screens = 1
+  xdg_runtime_dir = /run/user/1003
+  x11.sockets = X0 X1 X2 X3 X4 X5 
+
+--- (a2) compositor identity ---
+  compositor.cmd_banked = gnome-shell --headless --virtual-monitor 2448x1332
+  compositor.pid = 147372
+  compositor.start_epoch = 1788007861
+  compositor.start_iso = 2026-08-29 14:51:01
+  compositor.start_banked = 1788007861
+  xserver.pid = 147846
+  xserver.start_epoch = 1788007886
+  xserver.start_banked = 1788007886
+
+--- (b) GPU ---
+  gpu.query = NVIDIA GeForce RTX 5090, 580.159.03, 4285 MiB, 32607 MiB, 12 %
+  gpu.used_mib = 4285
+
+--- (c) RDP connection state / (d) dispatch method ---
+  rdp.estab_3389 = 2
+  rdp.note = count of ESTAB rows mentioning :3389 -- one loopback connection appears TWICE (both endpoints). Recorded, never gated: RDP connection state was measured NOT to sustain the dim state (§11.174(j), 896 s disconnected bracket, five runs at the banked value)
+  logind.claude_sessions = 459 460 
+  dispatch.has_logind_session = yes
+  dispatch.wayland_display = wayland-0
+  dispatch.dbus = unix:path=/run/user/1003/bus
+  dispatch.inherited_display = :2
+
+--- (e) reference scene (f51_run.sh, the §11.174(e) scene) ---
+  concurrency.spacecrafter_pre = 0
+manifest: 38 files, 680817102 B, aggregate md5 68a7d015812fbbc24c4a95f36e50f976  -> artifacts/f56/canary_run1/cache_pre.json
+    launching: f51_run.sh artifacts/f56/canary_run1/scene --samples 2   (timeout 900 s, plain timeout per §0.5(b))
+  scene.f51_run_rc = 0
+ "t_dwell_end": 1788093629.439
+}
+OUT: 03fbee59bc3ec506c58f0a3f1e1d73df  /home/claude/.spacecrafter/config.ini
+545a51ef76294891579a1fc2fe13792b  /home/claude/.spacecrafter/ssystem.ini
+config/ssystem md5 in=out OK
+  scene.md5_in_eq_out = yes
+manifest: 38 files, 680817102 B, aggregate md5 68a7d015812fbbc24c4a95f36e50f976  -> artifacts/f56/canary_run1/cache_post.json
+CACHE MANIFEST DIFF  /home/claude/.spacecrafter/cache
+  window            : 102.789 s  (2026-08-30T14:39:27+0200 -> 2026-08-30T14:41:10+0200)
+  files             : 38 -> 38
+  aggregate md5     : 68a7d015812fbbc24c4a95f36e50f976 -> 68a7d015812fbbc24c4a95f36e50f976  CHANGED=False
+  mutations         : 0
+  (no file added, removed, rewritten or re-stamped inside the window)
+  cache.mutations = 0
+=== F56 PHOTOMETRIC ARM — canary 20260830-143926
+  banked: new 165.258/6.644  old 160.142/6.603  tol disc +-1.0 hf +-0.15
+  IN-BAND     dwell.s0                     disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     dwell.s0                     hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     dwell.s1                     disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     dwell.s1                     hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     leg.newpath_after            disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     leg.newpath_after            hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     leg.newpath_after_plus10s    disc_mean observed 165.258  banked 165.258  delta 0.0
+  IN-BAND     leg.newpath_after_plus10s    hf_mean   observed 6.644  banked 6.644  delta 0.0
+  IN-BAND     leg.oldpath_fov10            disc_mean observed 160.142  banked 160.142  delta 0.0
+  IN-BAND     leg.oldpath_fov10            hf_mean   observed 6.603  banked 6.603  delta 0.0
+  IN-BAND     leg.oldpath_fov10_plus10s    disc_mean observed 160.142  banked 160.142  delta 0.0
+  IN-BAND     leg.oldpath_fov10_plus10s    hf_mean   observed 6.603  banked 6.603  delta 0.0
+  INFO        leg.oldpath_fov60          {'disc_mean': 125.531, 'hf_mean': 6.893, 'n': 389305} (not gated: different framing)
+  VERDICT     : PASS  (12/12 members in band)
+
+CANARY DEFAULT [frames.pruned]
+  CAUSE   : the reference scene writes 2048x2048 PNGs (~4 MB each) and this is a preflight, not an experiment
+  CONTENT : kept the first frame (new_after.png) as the visual record, deleted the rest of artifacts/f56/canary_run1/scene/frames
+  OVERRIDE: pass --keep-frames to keep every frame
+
+=== CANARY VERDICT: exit 0  (0 fail, 0 note)  artifacts: artifacts/f56/canary_run1

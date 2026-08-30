@@ -1,0 +1,6 @@
+CACHE MANIFEST DIFF  /tmp/f56_ctl
+  window            : 0.029 s  (2026-08-30T14:41:59+0200 -> 2026-08-30T14:41:59+0200)
+  files             : 5 -> 5
+  aggregate md5     : f2b13e9bf3c22737a02e406af6d4a867 -> f2b13e9bf3c22737a02e406af6d4a867  CHANGED=False
+  mutations         : 0
+  (no file added, removed, rewritten or re-stamped inside the window)

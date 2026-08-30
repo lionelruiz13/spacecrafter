@@ -510,15 +510,16 @@ echo recorded either way; §11 entry + stub; both instrument baselines
 re-derived as the LAST act before the delivery commit with deltas explained
 (the sweep migrates the scan — attribute the delta); code tree clean at close;
 WIP per §0.6.
-**WIP:** 2026-08-30 CP1 — §0.7 gate PASSED on all 13 enumerated premises (both HEADs,
-§11 176 free, F count 3, binary mtime, display stack, cache dir real, no SUSPECT-STACK
-markers, baselines 191/166/25/87 + 106/137/84 re-derived). Instruments written +
-predictions committed: `f56_canary.sh`, `f56_band.py`, `f56_manifest.py`,
-`f56_predictions.json` (P1–P6). Fingerprint arm run green (exit 0) after it caught a
-real fault in ITSELF on run 1: the inherited XAUTHORITY is the owner's :4 cookie and
-:2 refuses it — auth is now banked with the stack. NEXT: the scene arm (one launch,
-cache manifest bracketed), then the fail-direction demos, then the cadence echo, then
-the sweep.
+**WIP:** 2026-08-30 CP2 — §0.7 gate PASSED on all 13 enumerated premises. Instruments +
+predictions committed (CP1, `88a81b4`). Canary run 1 GREEN: 12/12 photometric members
+in band with delta EXACTLY 0.0 and the frame md5 identical to the banked eight
+(P1+P2 hold). P3 REFUTED: zero cache mutations across the run — the §11.172(i) write
+is episodic, not per-run (`t-bodies-moon_normal.dat` still carries F55's 10:09:21
+mtime, so the instrument reads the very event that entry measured). Both arms mapped
+both ways: D1 geometry→2, D2 dead display→3, D3 dim-era json→1 (152/152 refused), D4
+empty→4, D5 green control→0; manifest positive control 4/4 mutation classes, null arm
+0. NEXT: the cadence echo (one launch, f45_run.sh empty), then the sweep, then the
+§11.176 entry.
 
 ### F57 — The tester-model corpus validation: Q-55's five conditioned metrics, predictions first (§11.173(d)) [S]
 

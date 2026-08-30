@@ -1,0 +1,48 @@
+{
+ "root": "/tmp/f56_ctl",
+ "taken_wall": 1788093718.158,
+ "taken_iso": "2026-08-30T14:41:58+0200",
+ "root_exists": true,
+ "root_is_symlink": false,
+ "root_symlink_target": null,
+ "files": {
+  "keep.dat": {
+   "size": 5,
+   "mtime_ns": 1788093718146559027,
+   "mtime_iso": "2026-08-30T14:41:58",
+   "md5": "2c1743a391305fbf367df8e4f069f9f9"
+  },
+  "remove.dat": {
+   "size": 5,
+   "mtime_ns": 1788093718146559027,
+   "mtime_iso": "2026-08-30T14:41:58",
+   "md5": "63bcabf86a9a991864777c631c5b7617"
+  },
+  "rewrite.dat": {
+   "size": 4,
+   "mtime_ns": 1788093718146559027,
+   "mtime_iso": "2026-08-30T14:41:58",
+   "md5": "987bcab01b929eb2c07877b224215c92"
+  },
+  "touch.dat": {
+   "size": 5,
+   "mtime_ns": 1788093718146559027,
+   "mtime_iso": "2026-08-30T14:41:58",
+   "md5": "05b048d7242cb7b8b57cfa3b1d65ecea"
+  },
+  "sub/nested.dat": {
+   "size": 3,
+   "mtime_ns": 1788093718146559027,
+   "mtime_iso": "2026-08-30T14:41:58",
+   "md5": "ce8e4a184e2e534c09d6bf6ae773ca4a"
+  }
+ },
+ "dirs": [
+  "sub"
+ ],
+ "symlinks": {},
+ "errors": [],
+ "n_files": 5,
+ "n_bytes": 22,
+ "aggregate_md5": "417c250feb15a7dd7fc3ba5ac2a12662"
+}

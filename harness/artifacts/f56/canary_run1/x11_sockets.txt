@@ -1,0 +1,9 @@
+total 0
+drwxrwxrwt  2 root   root    160 Aug 30 13:21 .
+drwxrwxrwt 92 root   root   7860 Aug 30 14:39 ..
+srwxrwxr-x  1 foxy   foxy      0 Aug 27 07:32 X0
+srwxrwxr-x  1 foxy   foxy      0 Aug 27 07:32 X1
+srwxr-xr-x  1 claude claude    0 Aug 29 14:51 X2
+srwxr-xr-x  1 claude claude    0 Aug 29 14:51 X3
+srwxrwxr-x  1 claude claude    0 Aug 29 17:19 X4
+srwxrwxr-x  1 claude claude    0 Aug 29 17:19 X5

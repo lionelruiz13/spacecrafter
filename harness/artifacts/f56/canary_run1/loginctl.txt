@@ -1,0 +1,7 @@
+SESSION  UID USER   SEAT  LEADER CLASS   TTY  IDLE SINCE
+      2 1000 foxy   seat0 4688   user    tty2 no   -
+      3 1000 foxy   -     4822   manager -    no   -
+    459 1003 claude -     191193 user    -    no   -
+    460 1003 claude -     191296 manager -    no   -
+
+4 sessions listed.

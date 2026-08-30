@@ -1,0 +1,4 @@
+pid, process_name, used_gpu_memory [MiB]
+77415, /usr/bin/gnome-text-editor, 51 MiB
+78868, /usr/bin/nautilus, 99 MiB
+358815, /usr/bin/gnome-system-monitor, 70 MiB

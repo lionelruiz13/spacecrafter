@@ -1,0 +1,60 @@
+########## D2: dead display ##########
+=== F56 ENVIRONMENT CANARY  2026-08-30 14:42:08 CEST  out=/tmp/f56_d2
+    banked stack: DISPLAY :2 2448x1332 | band: new 165.258/6.644 old 160.142/6.603 (+-1.0/+-0.15)
+
+--- (a) display stack ---
+  host.boot = 2026-08-27 07:32:05
+  host.now_epoch = 1788093728
+  display.target = :99
+  display.expected = :2
+
+CANARY FAIL [display.target]
+  WHAT        : rendering would go to DISPLAY :99 but the band is banked on :2.
+  CONSEQUENCES: the banked photometric numbers were measured on :2; a number taken on a different display is not comparable with the ledger's, and §11.174(f)(3) measured that the two displays on this host are DIFFERENT stacks (a hand-built substitute vs a logind session), not two names for one.
+  PREVENTION  : run without --display, or re-bank deliberately: measure f51_run.sh on the new display and edit the VALUES block at the top of ./f56_canary.sh (BANK_DISPLAY + the four BANK_*_DISC/HF keys). The choice of canonical display is the OWNER'S open fork (§11.174(f)) -- report, do not decide.
+  xauthority.inherited = /run/user/1003/.mutter-Xwaylandauth.PODXU3
+
+CANARY DEFAULT [xauthority]
+  CAUSE   : the inherited XAUTHORITY (/run/user/1003/.mutter-Xwaylandauth.PODXU3) is not the banked stack's cookie; a cookie from another stack is refused by :2 (§0.5(a))
+  CONTENT : overriding with /tmp/rt-claude/.mutter-Xwaylandauth.Y2SUU3, the first match of /tmp/rt-claude/.mutter-Xwaylandauth.* (banked with the stack, recorded above as xauthority.inherited)
+  OVERRIDE: pass --xauth <file> to choose another, or re-bank BANK_XAUTH_GLOB if the stack moved
+  xauthority = /tmp/rt-claude/.mutter-Xwaylandauth.Y2SUU3
+  display.dimensions = <none>
+  display.screens = <none>
+
+CANARY FAIL [display.reachable]
+  WHAT        : xdpyinfo cannot talk to :99: xdpyinfo:  unable to open display ":99".
+  CONSEQUENCES: the display is dead or not ours; a launch would either fail or render into nothing, and the app's own comment (app_command_interface.cpp:4035-4039) says external grabs see black on a headless X, so the failure can look like a black scene rather than a crash.
+  PREVENTION  : STOP and report the host state (this is an OWNER VETO ITEM, §11.174(h)). Check: is the compositor alive ('gnome-shell --headless --virtual-monitor 2448x1332'), is /tmp/.X11-unix/X99 present, is XAUTHORITY readable?
+  xdg_runtime_dir = /run/user/1003
+  x11.sockets = X0 X1 X2 X3 X4 X5 
+
+--- (a2) compositor identity ---
+  compositor.cmd_banked = gnome-shell --headless --virtual-monitor 2448x1332
+  compositor.pid = 147372
+  compositor.start_epoch = 1788007861
+  compositor.start_iso = 2026-08-29 14:51:01
+  compositor.start_banked = 1788007861
+  xserver.pid = 147846
+  xserver.start_epoch = 1788007886
+  xserver.start_banked = 1788007886
+
+--- (b) GPU ---
+  gpu.query = NVIDIA GeForce RTX 5090, 580.159.03, 4282 MiB, 32607 MiB, 18 %
+  gpu.used_mib = 4282
+
+--- (c) RDP connection state / (d) dispatch method ---
+  rdp.estab_3389 = 2
+  rdp.note = count of ESTAB rows mentioning :3389 -- one loopback connection appears TWICE (both endpoints). Recorded, never gated: RDP connection state was measured NOT to sustain the dim state (§11.174(j), 896 s disconnected bracket, five runs at the banked value)
+  logind.claude_sessions = 459 460 
+  dispatch.has_logind_session = yes
+  dispatch.wayland_display = wayland-0
+  dispatch.dbus = unix:path=/run/user/1003/bus
+  dispatch.inherited_display = :99
+fingerprint: 27 members -> /tmp/f56_d2/fingerprint.json
+
+--- cache manifest (standalone) ---
+manifest: 38 files, 680817102 B, aggregate md5 68a7d015812fbbc24c4a95f36e50f976  -> /tmp/f56_d2/cache_manifest.json
+
+=== CANARY VERDICT: exit 3  (2 fail, 0 note; scene arm NOT run)
+EXIT=3

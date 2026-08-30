@@ -1,0 +1,12 @@
+CACHE MANIFEST DIFF  /tmp/f56_ctl
+  window            : 1.118 s  (2026-08-30T14:41:58+0200 -> 2026-08-30T14:41:59+0200)
+  files             : 5 -> 5
+  aggregate md5     : 417c250feb15a7dd7fc3ba5ac2a12662 -> f2b13e9bf3c22737a02e406af6d4a867  CHANGED=True
+  mutations         : 4
+  ADDED     added.dat
+  REMOVED   remove.dat
+  REWRITTEN rewrite.dat
+            md5   987bcab01b929eb2c07877b224215c92 -> 07b6d0ae8dcd412d43c4975e02cde9b3
+            size  4 -> 19  (+15 B)
+            mtime 2026-08-30T14:41:58 -> 2026-08-30T14:41:59
+  RESTAMPED touch.dat  2026-08-30T14:41:58 -> 2026-08-30T14:41:59  (bytes identical)

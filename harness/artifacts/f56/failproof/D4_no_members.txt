@@ -1,0 +1,13 @@
+########## D4: a dwell json with no samples and no legs ##########
+=== F56 ENVIRONMENT CANARY  2026-08-30 14:42:40 CEST  out=/tmp/f56_d4
+    banked stack: DISPLAY :2 2448x1332 | band: new 165.258/6.644 old 160.142/6.603 (+-1.0/+-0.15)
+--- photometric arm only, on /tmp/f56_empty.json (no launch) ---
+=== F56 PHOTOMETRIC ARM — /tmp/f56_empty.json
+  banked: new 165.258/6.644  old 160.142/6.603  tol disc +-1.0 hf +-0.15
+CANARY FAIL [photometric.empty]
+  WHAT        : /tmp/f56_empty.json carries no dwell sample and no leg — nothing was checked.
+  CONSEQUENCES: a pass here would be a green that cannot fail; the stack would be reported verified on zero evidence.
+  PREVENTION  : check the driver's own exit code and log (`f51_run.sh` writes `f51_dwell.json` incrementally; an empty one means the launch or the TCP phase failed).
+
+=== CANARY VERDICT: exit 4 (photometric arm only)
+EXIT=4

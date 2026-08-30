@@ -165,7 +165,9 @@ if [ -n "$CHECK_JSON" ]; then
         --exact-spread "$BANK_EXACT_SPREAD" --frame-md5 "$BANK_FRAME_MD5" \
         --label "$CHECK_JSON" --out "$OUT/band.json" 2>&1 | tee -a "$LOG"
     BRC=${PIPESTATUS[0]}
-    [ "$BRC" -ne 0 ] && worse 1
+    # 1 = out of band (a real photometric verdict); 3/4 = unusable input or nothing
+    # checked, which is a HARNESS error and must not be reported as a stack fault.
+    case "$BRC" in 0) : ;; 1) worse 1 ;; *) worse 4 ;; esac
     say ""
     say "=== CANARY VERDICT: exit $RC (photometric arm only)"
     exit $RC

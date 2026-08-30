@@ -1,0 +1,24 @@
+{
+ "root": [
+  "/tmp/f56_ctl",
+  "/tmp/f56_ctl"
+ ],
+ "window_s": 0.029,
+ "pre_iso": "2026-08-30T14:41:59+0200",
+ "post_iso": "2026-08-30T14:41:59+0200",
+ "aggregate_md5": [
+  "f2b13e9bf3c22737a02e406af6d4a867",
+  "f2b13e9bf3c22737a02e406af6d4a867"
+ ],
+ "aggregate_changed": false,
+ "n_files": [
+  5,
+  5
+ ],
+ "added": [],
+ "removed": [],
+ "content_changed": [],
+ "mtime_only": [],
+ "n_mutations": 0,
+ "symlinks_changed": false
+}

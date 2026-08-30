@@ -1,0 +1,55 @@
+########## D1: wrong expected geometry ##########
+=== F56 ENVIRONMENT CANARY  2026-08-30 14:42:08 CEST  out=/tmp/f56_d1
+    banked stack: DISPLAY :2 800x600 | band: new 165.258/6.644 old 160.142/6.603 (+-1.0/+-0.15)
+
+--- (a) display stack ---
+  host.boot = 2026-08-27 07:32:05
+  host.now_epoch = 1788093728
+  display.target = :2
+  display.expected = :2
+  xauthority.inherited = /run/user/1003/.mutter-Xwaylandauth.PODXU3
+
+CANARY DEFAULT [xauthority]
+  CAUSE   : the inherited XAUTHORITY (/run/user/1003/.mutter-Xwaylandauth.PODXU3) is not the banked stack's cookie; a cookie from another stack is refused by :2 (§0.5(a))
+  CONTENT : overriding with /tmp/rt-claude/.mutter-Xwaylandauth.Y2SUU3, the first match of /tmp/rt-claude/.mutter-Xwaylandauth.* (banked with the stack, recorded above as xauthority.inherited)
+  OVERRIDE: pass --xauth <file> to choose another, or re-bank BANK_XAUTH_GLOB if the stack moved
+  xauthority = /tmp/rt-claude/.mutter-Xwaylandauth.Y2SUU3
+  display.dimensions = 2448x1332
+  display.screens = 1
+
+CANARY FAIL [display.geometry]
+  WHAT        : :2 reports 2448x1332, banked 800x600.
+  CONSEQUENCES: the geometry is part of the instrument: the banked photometric numbers come from a 2448x1332 virtual monitor with a 1024x1024 swapchain, and a different mode changes both the app's window and what a grab reads (§11.106, §11.157(f)).
+  PREVENTION  : if the stack was rebuilt deliberately, report it and re-bank (re-measure f51_run.sh, edit BANK_DIMS + the band in ./f56_canary.sh); if not, report the change -- an unexplained mode change is exactly the class this canary exists to catch.
+  xdg_runtime_dir = /run/user/1003
+  x11.sockets = X0 X1 X2 X3 X4 X5 
+
+--- (a2) compositor identity ---
+  compositor.cmd_banked = gnome-shell --headless --virtual-monitor 2448x1332
+  compositor.pid = 147372
+  compositor.start_epoch = 1788007861
+  compositor.start_iso = 2026-08-29 14:51:01
+  compositor.start_banked = 1788007861
+  xserver.pid = 147846
+  xserver.start_epoch = 1788007886
+  xserver.start_banked = 1788007886
+
+--- (b) GPU ---
+  gpu.query = NVIDIA GeForce RTX 5090, 580.159.03, 4282 MiB, 32607 MiB, 17 %
+  gpu.used_mib = 4282
+
+--- (c) RDP connection state / (d) dispatch method ---
+  rdp.estab_3389 = 2
+  rdp.note = count of ESTAB rows mentioning :3389 -- one loopback connection appears TWICE (both endpoints). Recorded, never gated: RDP connection state was measured NOT to sustain the dim state (§11.174(j), 896 s disconnected bracket, five runs at the banked value)
+  logind.claude_sessions = 459 460 
+  dispatch.has_logind_session = yes
+  dispatch.wayland_display = wayland-0
+  dispatch.dbus = unix:path=/run/user/1003/bus
+  dispatch.inherited_display = :2
+fingerprint: 27 members -> /tmp/f56_d1/fingerprint.json
+
+--- cache manifest (standalone) ---
+manifest: 38 files, 680817102 B, aggregate md5 68a7d015812fbbc24c4a95f36e50f976  -> /tmp/f56_d1/cache_manifest.json
+
+=== CANARY VERDICT: exit 2  (1 fail, 0 note; scene arm NOT run)
+EXIT=2
