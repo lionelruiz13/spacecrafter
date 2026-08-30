@@ -103,6 +103,46 @@ add-alongside→removal lag; S); (7) §5.100's fix IF the §3 authorization
 lands. DECISIONS_PENDING open set at close: **still EMPTY** — the round's
 Vixy items ride §3 + their rows.
 
+**Update [Fable 2026-08-30, supervising session 16]:** trigger = the §0b
+verbatim line, PLUS an in-conversation Vixy transmission recorded BEFORE
+anything else moved (→ **§11.169**, commit `32066fa`: the log-content
+schema — each proactive/implicit decision logs its CAUSE + CONTENT + a
+self-contained OVERRIDE action; each user-facing error logs WHAT +
+CONSEQUENCES + PREVENTION; valid values enumerated or their SHAPE stated;
+D12 + §2(f) annotated in place with the element-by-element delta). Round
+of 3: **F53 → F54 → F55** — the session-15 queue in order (items 1–3);
+items 4–6 (F49's two named-not-run audits · the §5.5-class staleness
+sweep · F52(k)'s two git-only checks) plus the NEW §11.169 schema audit
+are extension candidates if health permits, minted then per §0b.2; item 7
+(§5.100's fix) stays blocked — NO Vixy commit since session 15's close
+(harness HEAD at open = `ea30749`, my own close commit; every commit
+since session 13's authorization question is Claude-authored), so the §3
+authorization stands unanswered and the decision-gated set is unchanged
+(D-set verified EMPTY at the file, 2026-08-26 note stands). Warm-up: both
+trees clean at open, code `d6aec251` / harness `ea30749`; binary current
+(code HEAD unmoved since the 2026-08-26 rebuild, binary mtime
+2026-08-26); `free -g` = 47 GiB ⇒ -j12 OK; **definition-drift assert:
+md5 MATCH** (`f9446618`). Next free §11 number verified **170** (§11.169
+minted at this open). Picks, rows re-read at the ledger: F53 = **§5.113's
+owed one-launch measurement** (the three shipped reaches of the unguarded
+singleton, extra legs on f50_selvars' driver), F54 = **§11.167(i)'s seven
+never-recorded gate values** (five files; recording fix, decision-free —
+no threshold moves, no re-baselining), F55 = **§11.167(j)(2)'s first-60 s
+sampler** (the launch window no instrument has ever observed). Order =
+recorded queue order; surfaces mostly disjoint (measurement legs + row
+annotation / five harness files' recording paths / one new sampler
+script) — F54 touches `f14_meridian.py` whose gate F55's window
+discussion cites, so F54 runs before F55 per queue order and F55 reads
+F54's delivery state. NO mandate touches product code — the code tree
+should be clean at every point, the third all-record/instrument round in
+a row. Round-open events: **§11.169 recorded** (above); **archival
+pass 9** (update-s14 + F48–F52 moved byte-exact, manifest
+`2026-08-30-pass9`, commit `febc8fd`). Instrument baselines at open,
+re-derived from the committed instruments on this tree: pair-check
+**185/160/25/85** (+1/+1/0/0 from §11.169, four test counters unchanged);
+back-marker scan **90/125/83** — §11.169 added NO event lines and the
+unmarked count is the F52-acceptance invariant to the digit.
+
 ---
 
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
@@ -285,16 +325,190 @@ F33 §11.143 · F34 §11.144 · F35 §11.145 · F36 §11.146 · F37 §11.149 ·
 F38 §11.150 · F39 §11.152 · F40 §11.153 · F41 §11.155 (F37–F41 archived,
 pass 7) · F42 §11.156 · F43 §11.157 · F44 §11.158 · F45 §11.159 ·
 F46 §11.160 · F47 §11.163 (session 14 + its post-close extension — all six
-DELIVERED and accepted; archived pass 8). Session-15 round (2026-08-29):
-the session-14 queue minted in order as **F48** (b3_ladder's `922701c9`
-check) · **F49** (the §11.156(g) five back-markers) · **F50** (§5.110's live
-check) below — **all three DELIVERED and accepted same day**; extended to
-**F51** (the dim-Moon discriminator + photometric-baseline census, F48's
-§11.164(e)(1)+(l)(3), argued ahead of INT-7 at F48's acceptance). Remaining
-extension candidates: the §11.161(f) stratigraphy validation · the §5.5-class
-row↔row staleness sweep (F47 acceptance) · F49's two named-not-run audits
-(§5-side twin; multi-claim) · §5.113's one-launch measurement (F50). Still
-blocked: §5.100's fix (authorization unanswered).*
+DELIVERED and accepted; archived pass 8) · F48 §11.164 · F49 §11.165 ·
+F50 §11.166 · F51 §11.167 · F52 §11.168 (session-15 round — five for five
+DELIVERED and accepted; archived pass 9). Session-16 round (2026-08-30):
+the session-15 queue minted in order as **F53** (§5.113's one-launch
+measurement) · **F54** (the seven never-recorded gate values) · **F55** (the
+first-60 s photometric sampler) below. Extension candidates: F49's two
+named-not-run audits (§5-side twin; multi-claim) · the §5.5-class row↔row
+staleness sweep (F47 acceptance) · F52(k)'s two git-only checks · the
+§11.169 schema audit of existing diagnostic sites (named at this round's
+open). Still blocked: §5.100's fix (authorization unanswered).*
+
+### F53 — §5.113's owed one-launch measurement: the three shipped reaches of the unguarded singleton (record-only) [S]
+
+**Why now / mandate:** §5.113's own owed clause: *"Owed before it is judged: the
+three reaches MEASURED — they fit in one launch (`deselect` then `set
+home_planet selected` then `get status position`; `deselect` then `flag
+object_coordinates on` then a screenshot; `illuminate hp 0 display on size 5`),
+and `f50_selvars.py`'s five-leg driver takes them as extra legs."* The class
+decision (guard at each read / fail-loudly singleton / both) is Vixy's; this
+task feeds it measurements. Queue position 1 (recorded at session-15 close).
+NOTE: §11.169 (this round's opening transmission) now binds the fail-loudly
+arm's eventual log schema — nothing here implements; the connection is stated
+so the entry can cite it.
+
+**Sources (re-read, never recall):** the §5.113 row IN FULL (re-verify its
+`file:line` cites at `d6aec251` before predicting from them);
+`INTENT/11.166.md` (F50's channel: the app's own SCRIPT log via `print`, the
+five-leg driver, the positive-control discipline); `harness/f50_selvars.py`;
+§0.5 in full (incl. the §5.109 hazard, temp-HOME farm, `/proc/<pid>/comm`
+assert, DISPLAY/XAUTHORITY post-reboot exports, plain `timeout`).
+
+**Scope:**
+1. **ONE launch per §0.5**, extra legs on the F50 driver pattern (new script
+   `f53_guards.py` or an extension — executor's call WITH the argument; the
+   committed `f50_selvars.py` must remain runnable as delivered). **Predictions
+   committed FIRST** (git, md5 cited in the entry), per check, derived from the
+   row's own chain:
+   - **Check A** (`deselect` → `set home_planet selected` → `get status
+     position` + a dump read): the observer lands on an anchor at
+     `earthPosEquToHelio((1,0,0))` — ~1 AU displaced; the anchor is CACHED
+     under the EMPTY name, so a SECOND `set home_planet selected` in the same
+     session finds the cached fiction (measure both invocations; the latch is
+     part of the prediction).
+   - **Check B** (`deselect` → `flag object_coordinates on` → screenshot): a
+     live-looking readout drawn with nothing selected — RA 0 h / DEC 0°, an
+     alt/az that MOVES with the clock (two samples at different sim times
+     discriminate "moves" from "static overlay").
+   - **Check C** (`illuminate hp 0 display on size 5`): indeterminate memory
+     reaches the grid — the PREDICTION is the mechanism, not the values
+     (indeterminate ra/de is unpredictable by construction; state that, and
+     predict what IS predictable: command accepted, no §2(f)-grade diagnostic,
+     an Illuminate inserted). Channel + positive control: `illuminate hp
+     <valid HIP>` must show a real illuminate through the SAME channel.
+2. **Positive controls in the same launch** (instrument chain): each check's
+   channel demonstrated able to answer real values (selected-body sibling legs
+   per F50's pattern).
+3. **Bounded reading, no launch:** the row's undetermined member — can
+   `searchAround` push a null `ObjectBaseP` into `cleverFind`'s candidate
+   vector (feeding `(1,0,0)`/−10 into the pick ranking at
+   `core.cpp:1321/:1324`)? Read-only call-graph answer with cites, or
+   named-not-done with the boundary stated.
+4. **Record:** measurements land ON §5.113 (annotated: owed datum PAID, row
+   stays OPEN, class decision untouched); §11 entry at the next free number +
+   stub, entry-file-first (§11.156(f)); back-marker discipline for any
+   superseded claim (§11.161(g)(2): UPPERCASE keyword, citation inside the
+   span); artifacts force-added under `harness/artifacts/f53/`.
+
+**Boundaries:** record-only — NO product code, NO fix, NO data writes,
+temp-HOME farm only (Check A teleports the observer INSIDE the farm HOME —
+that is the measurement, not a hazard, but nothing touches the real
+`~/.spacecrafter`). md5 in==out asserted.
+
+**DoD:** predictions committed pre-run with md5; three checks measured with
+per-prediction match/mismatch (a mismatch TRACED, never absorbed); positive
+controls cited; the searchAround reading answered or bounded; §5.113
+annotated, still OPEN; §11 entry + stub; both instrument baselines re-derived
+post-delivery (pair-check 185/160/25/85, scan 90/125/83 at dispatch) with
+deltas explained; code tree clean at close; WIP per §0.6.
+**WIP:** *(empty)*
+
+### F54 — The seven never-recorded gate values: decision-free recording fix in five harness files (§11.167(i)) [S]
+
+**Why now:** F51's census found **seven gate values that exist NOWHERE in the
+repo** — computed, compared, printed into a message, discarded: `f14_meridian`
+gate 1 · `b39_scenes` W17-content · `f14_placeholder` BOTH uses · `f14_predict`
+BOTH · `f23_b33_control`'s `cross` (§11.167(i), verbatim list). The cost is
+already paid once: the census's margin column reads "unknown" for exactly these
+members, and `f14_meridian:306`'s px>40 gate is flagged epoch-suspect with NO
+recorded value to compare against. Decision-free: recording changes only.
+Queue position 2.
+
+**Sources (re-read, never recall):** `INTENT/11.167.md` (i) (the list + the
+census flags those members carry) and (j) (the epoch caveats); the five files
+themselves; `harness/README.md` for each file's run recipe; §0.5 in full.
+
+**Scope:**
+1. **Per file, the recording fix:** every gate value in the seven-member list
+   is WRITTEN to the run's committed artifact record (each file's existing
+   artifact/JSON/log convention; if a file has none, a minimal
+   `artifacts/<file>/values.json` is the shape). **I7 discipline: recording is
+   observation-only** — verify the change cannot alter control flow or
+   verdicts (`f14_placeholder`'s floor SELECTS the jd — the recorded value
+   must be a COPY of what the selection already computed, never a
+   recomputation that could diverge).
+2. **NO threshold, baseline, or verdict logic touched** — that is what
+   "decision-free" means; a diff reviewer must be able to confirm it from the
+   diff alone.
+3. **Discriminating check: one verification run per fixed file** per §0.5,
+   confirming the value LANDS in the artifact. Each run's verdict is recorded
+   AS IT COMES: these are post-epoch runs — per member, state the census class
+   §11.167(i) gave it (FLAGGED / FLAGGED-WEAK / CLEAR) and record red as red
+   WITH that context; re-baselining is out of scope and forbidden
+   (§11.164(f)'s attribution is still open).
+4. **Record:** §11 entry + stub, entry-file-first; per-file diff summary + the
+   seven values cited with their artifacts; any superseded claim gets its
+   back-marker same commit.
+
+**Boundaries:** harness repo only — NO product code, NO data, NO
+threshold/baseline moves; §0.5 launch discipline for the verification runs
+(fresh launch, md5 in==out, comm-probe 0, DISPLAY/XAUTHORITY per the
+post-reboot stack, plain `timeout`).
+
+**DoD:** five files fixed with diffs reviewable as decision-free; seven values
+recorded in committed artifacts, cited in the entry with census context per
+member; verification-run verdicts recorded as-is; §11 entry + stub; instrument
+baselines re-derived with deltas explained; code tree clean at close; WIP per
+§0.6.
+**WIP:** *(empty)*
+
+### F55 — The first-60 s photometric sampler: the launch window no instrument has observed (§11.167(j)(2)) [S]
+
+**Why now:** F51 refuted "the upload never lands" on four channels, but its
+series began at the first TCP-commandable moment — *"the Moon's texture events
+fire before the first TCP command, so a sampler that starts at the first drawn
+frame is the only thing that would close it"* (§11.167(j)(2), named-not-run).
+This closes the residual window on the dim-Moon attribution AND gives the
+corpus its first launch-transient photometric record (the first ~60 s of EVERY
+launch is unobserved). Queue position 3; runs after F54 (it touches
+`f14_meridian.py` context F55 may cite — read F54's delivery state first).
+
+**Sources (re-read, never recall):** `INTENT/11.167.md` (the four-channel
+refutation, the series' numbers — disc_mean 61.431 / hf_mean 2.464 flat over
+355 s, the 391 texture events' timing) + `INTENT/11.164.md` (c)(d)(e) (the
+epoch split, both candidates); §11.157(f) (the rebuilt stack); F54's §11
+entry; §0.5 in full.
+
+**Scope:**
+1. **Design, stated before running:** the sampling channel must be OUTSIDE the
+   TCP command path (an X-side capture on `:2` on a stated cadence, started
+   before/with the launch, or an equally early in-app mechanism such as a
+   startup script in the farm HOME) — name the channel, PROVE it can fail
+   (instrument chain: a capture BEFORE the app draws must show the no-app
+   state), and state precisely which sub-window remains uncovered (e.g.
+   between process start and the first compositor frame).
+2. **Scene:** the Moon disc measurable as EARLY as achievable — if the default
+   startup view lacks a usable disc, use the earliest scene-establishment
+   mechanism available in the farm HOME (startup script/config) and STATE at
+   what t the disc becomes measurable; the uncovered prefix is a stated limit,
+   never silently absorbed.
+3. **Predictions committed FIRST** (the F51 form — including any pre-run
+   collapse argument): (H-shading/driver) the disc is dim from the FIRST
+   measurable frame, no upward step, converging to F51's level for the same
+   scene/fov; (H-late-upload) an upward STEP correlated in time with a logged
+   texture event. State the prior honestly: F51's four channels already
+   refuted late-upload — this task closes the window that refutation could not
+   see; a step here would RE-OPEN §11.164(e)(3) (state what that would take
+   per §5.79).
+4. **The series:** per-sample disc metric (mask stated) + wall-clock
+   timestamps; the applog's uninit-texture events timestamped AGAINST the
+   series; the first TCP-command moment marked ON the series (the F51 handoff
+   point — the two series should butt-join).
+5. **Record:** §11 entry + stub, entry-file-first; artifacts under
+   `harness/artifacts/f55/` force-added; verdict against both predictions or
+   the honest neither (kept with numbers, F44/F48/F51 form); annotate
+   §11.167(j)(2) DISCHARGED with the verdict (back-marker form).
+
+**Boundaries:** NO product code, NO data, NO driver action, NO re-baselining;
+§0.5 discipline (md5 in==out, comm-probe 0, plain `timeout`, temp-HOME farm).
+
+**DoD:** channel + failure-proof + uncovered-sub-window stated; predictions
+committed pre-run; series + event timestamps recorded with the verdict;
+§11.167(j)(2) annotated; §11 entry + stub; instrument baselines re-derived
+with deltas explained; code tree clean at close; WIP per §0.6.
+**WIP:** *(empty)*
 
 ---
 
