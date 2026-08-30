@@ -145,7 +145,22 @@ Element renderLine(const EditCore &core, const View &v, std::size_t lineNo, bool
 {
 	const std::string &raw = core.document().line(lineNo);
 	const std::string sev = core.severityForLine(lineNo + 1);
-	const std::vector<std::size_t> looks = core.lookalikeSpaceColumns(lineNo);
+	// What is marked is what the rules decided, read off their spans: the red
+	// look-alike-space marker on `invisible-separator`'s bytes, an underline on
+	// every other finding's bytes. No second reading of the bytes here.
+	const std::vector<const Diagnostic *> diags = core.diagnosticsForLine(lineNo + 1);
+	auto lookAt = [&diags](std::size_t i) {
+		for (const auto *d : diags)
+			if (d->id == "invisible-separator" && d->span.contains(i))
+				return true;
+		return false;
+	};
+	auto underAt = [&diags](std::size_t i) {
+		for (const auto *d : diags)
+			if (d->id != "invisible-separator" && !d->span.empty() && d->span.contains(i))
+				return true;
+		return false;
+	};
 
 	Elements gut;
 	gut.push_back(text(severityMark(sev)) | color(severityColor(sev)) | bold);
@@ -158,28 +173,27 @@ Element renderLine(const EditCore &core, const View &v, std::size_t lineNo, bool
 	const std::size_t caret = core.cursor().col;
 
 	// Build the cell run, then group consecutive cells of the same style.
-	struct Cell { std::string s; bool look, ctrl, ghosty, caretHere; };
+	struct Cell { std::string s; bool look, under, ctrl, ghosty, caretHere; };
 	std::vector<Cell> cells;
 	for (std::size_t i = 0; i <= raw.size(); ++i) {
 		if (isCursorLine && i == caret) {
 			for (std::size_t k = 0; k < ghost.size(); ++k) {
 				const Glyph g = glyphFor((unsigned char)ghost[k]);
-				cells.push_back(Cell{g.s, false, false, true, k == 0});
+				cells.push_back(Cell{g.s, false, false, false, true, k == 0});
 			}
 			if (ghost.empty() && i < raw.size()) {
 				const Glyph g = glyphFor((unsigned char)raw[i]);
-				cells.push_back(Cell{g.s, g.lookalike, g.control, false, true});
+				cells.push_back(Cell{g.s, lookAt(i), underAt(i), g.control, false, true});
 				continue;
 			}
 			if (ghost.empty() && i == raw.size())
-				cells.push_back(Cell{" ", false, false, false, true});
+				cells.push_back(Cell{" ", false, false, false, false, true});
 		}
 		if (i < raw.size()) {
 			const Glyph g = glyphFor((unsigned char)raw[i]);
-			// The GLYPH is this layer's business; whether the byte is a
-			// look-alike space is the core's answer, and only the core's.
-			const bool look = std::find(looks.begin(), looks.end(), i) != looks.end();
-			cells.push_back(Cell{g.s, look, g.control, false, false});
+			// The GLYPH is this layer's business; whether the byte is part of
+			// a finding is the checker's answer, and only the checker's.
+			cells.push_back(Cell{g.s, lookAt(i), underAt(i), g.control, false, false});
 		}
 	}
 
@@ -191,8 +205,9 @@ Element renderLine(const EditCore &core, const View &v, std::size_t lineNo, bool
 		const Cell &c0 = cells[i];
 		std::string run;
 		std::size_t j = i;
-		while (j < to && cells[j].look == c0.look && cells[j].ctrl == c0.ctrl
-		       && cells[j].ghosty == c0.ghosty && cells[j].caretHere == c0.caretHere) {
+		while (j < to && cells[j].look == c0.look && cells[j].under == c0.under
+		       && cells[j].ctrl == c0.ctrl && cells[j].ghosty == c0.ghosty
+		       && cells[j].caretHere == c0.caretHere) {
 			run += cells[j].s;
 			++j;
 		}
@@ -203,6 +218,10 @@ Element renderLine(const EditCore &core, const View &v, std::size_t lineNo, bool
 			e = e | color(Color::Red) | bold;
 		else if (c0.ctrl)
 			e = e | dim;
+		if (c0.under)
+			e = e | underlined;
+		// The caret is the terminal's standard foreground/background inversion
+		// (SGR 7): visible on every palette, and what a reader expects in a tui.
 		if (c0.caretHere)
 			e = e | inverted;
 		runs.push_back(e);
@@ -504,6 +523,12 @@ int uiSelfTest(const std::string &grammarPath)
 		// the letter it is, the tab as a marker, and NO line-ending marker
 		// appears, because the '\r' is the terminator and not the text.
 		{"iso-8859-and-crlf", "flag stars on\r\nbody name Caf\xE9" "\tx\r\n", 1, 0},
+		// A finding's SPAN is underlined at its bytes: the inline '#' and the
+		// words after it, to the end of the line.
+		{"finding-inline-comment", "media action pause # stop video", 0, 0},
+		// An opener never closed is reported at the OPENER line (the root),
+		// although the checker only knows at the end of the file.
+		{"finding-unclosed-struct", "struct if a equal b\nflag stars on\n", 0, 0},
 	};
 
 	for (const Case &c : cases) {
@@ -536,20 +561,30 @@ int uiSelfTest(const std::string &grammarPath)
 		}
 		// The greyness of the ghost is the claim; prove it from the pixels.
 		const int caretRow = 2 + (int)(core.cursor().line - v.top);
-		std::string mask, mark;
+		std::string mask, mark, under, inv;
 		for (int x = 0; x < v.width; ++x) {
 			const Pixel &p = screen.PixelAt(x, caretRow);
 			mask += p.dim ? 'd' : '-';
 			// The look-alike-space marker: red + bold. Printed as its own mask
 			// so the gate pins the COLUMN it lands on, not merely its presence.
 			mark += (p.bold && p.foreground_color == Color::Red) ? 'm' : '-';
+			// A finding's span, underlined at exactly its bytes.
+			under += p.underlined ? 'u' : '-';
+			// The caret: the standard SGR inversion, on exactly one cell.
+			inv += p.inverted ? 'i' : '-';
 		}
-		while (!mask.empty() && mask.back() == '-')
-			mask.pop_back();
-		while (!mark.empty() && mark.back() == '-')
-			mark.pop_back();
+		auto rtrim = [](std::string &m) {
+			while (!m.empty() && m.back() == '-')
+				m.pop_back();
+		};
+		rtrim(mask);
+		rtrim(mark);
+		rtrim(under);
+		rtrim(inv);
 		std::printf("dim %s\n", mask.c_str());
 		std::printf("mark %s\n", mark.c_str());
+		std::printf("under %s\n", under.c_str());
+		std::printf("inv %s\n", inv.c_str());
 	}
 	return 0;
 }

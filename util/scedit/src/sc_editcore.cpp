@@ -258,16 +258,6 @@ std::string EditCore::severityForLine(std::size_t oneBasedLine) const
 	return best;
 }
 
-std::vector<std::size_t> EditCore::lookalikeSpaceColumns(std::size_t line) const
-{
-	std::vector<std::size_t> out;
-	const std::string &raw = doc_.line(line);
-	for (std::size_t i = 0; i < raw.size(); ++i)
-		if ((unsigned char)raw[i] == 0xA0)
-			out.push_back(i);
-	return out;
-}
-
 // --- candidate sources ------------------------------------------------------
 
 Spec EditCore::specForKey(const std::string &command, const std::string &key,

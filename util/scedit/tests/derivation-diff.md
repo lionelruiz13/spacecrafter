@@ -109,12 +109,15 @@ and the family-name paths).
 | `comments.block_form` (`comment`/`uncomment` skip state) | `BlockSkipState` | implemented, pinned twice through the pair |
 | `comments.inner_script_channel` (`addScriptFirst` trims first, so an indented `#` IS a comment there) | not modelled | The channel is not the script file: it is fed only by `camera action lift_off`'s three synthesized lines (`:4402-4408`), which no author writes. A file checker never sees this channel. Modelling it becomes necessary the day anything pushes author text — recorded, not implemented. (Was `comments.verify_next`; §5.6.) |
 | `comments.verify_next_RESOLVED` | — | marker only |
+| `comments.mid_line` (a '#' after the first byte is an ordinary byte; the tail is pairs) | `LineChecker::run` finds the first '#'-initial KEY; lint `inline-comment` states what the tail does, the other rules read the prefix | implemented 2026-08-31, pinned (fixture: inert, pair-killing, line-killing, colliding, trailing); RETIRES with the ruled engine change (§5.10) |
 | `pre_table_commands` | §2 `:215-222`; the accepted set includes `comment`/`uncomment`, the suggestion list does not | implemented |
 | `unknown_command` (no threshold, always a suggestion) | `nearestNeighbour`, no cap | implemented — and the seed's own wording says "threshold-capped unlike the engine's"; superseded, see §5.7 |
 | `flag_value_grammar` (toggle \| `isTrue` \| everything else silently OFF) | `isTrueValue`/`isFalseValue`, `value != "toggle"` (case-SENSITIVE, `W_TOGGLE` is compared with `==`) | implemented, pinned (`flag stars TOGGLE` is a silent OFF), lint `silent-off-value` |
 | `flag_multi_pair` (only `args.begin()` applied — scope corrected at the merge to exactly ten commands) | `Grammar::isSinglePairCommand` + `args.begin()` | implemented, lint `single-pair-only`; the 10-command list is §6. The correction removed nothing from the code: the list was already those ten. |
 | `set_multi_pair` (`set` loops over every pair; `&&` fold short-circuits the rest) | `SubfamilyPosition::EveryKey` branch of `sc_check.cpp` | implemented, and the short-circuit consequence is said on the pair that causes it (§5.3) |
 | `recording_alias_loss` (`flyto` → `camera`) | `CommandData::alias_of` from the contract file | implemented, lint `alias-respelled` |
+| `if_structure` (ifSwap is a stack; `end`/`else` on empty logged and ignored; `comment`-block guard; cleared by `script action end`) | `BlockSkipState` tracks openers/closers with line numbers and spans; `checkBuffer` reports `unclosed-struct` at the OPENER, `end-without-if` / `else-without-if` at the closer | implemented 2026-08-31, pinned (tokenizer_test block structure; editcore E4c-e); arms are NOT decided (§5.2) |
+| `loop_structure` (one loop, not a stack; `end` replays, `break` abandons, n < 1 skips) | same tracker, pairing only; `unclosed-struct` names the consequence from a literal count, both consequences from a `$`-name; `loop-end-without-loop` | implemented 2026-08-31, pinned; the runtime half (skip for n < 1) stays unmodelled (§5.1) |
 | `map_operator_bracket` (`args[K]` INSERTS on an absent read; four handlers forward the whole map, three write into it first) | — | Not a parse observable: it is what a handler does after parsing. It is the reason `Line::args`/`Line::pairs` come from the tokenizer and never from handler behaviour, which is what the code already does. Its consumer-facing half is `args_complete` (§6). |
 | `executeCommand_reentry` (`media` `:3511`, `clear` `:2479-2530`; recorder keeps the rebuilt line) | — | Execution-time, not parse-time. It bounds a FUTURE feature rather than this one: a round-trip through a recording is not an identity, so no scedit check may assume it. Registered upstream as `claude/INTENT.md` §5.96. |
 | `value_domains_are_per_branch` (`zoom duration` is `strToPosDouble` on `auto`, `evalDouble` on `fov`/`center`) | contract data only (`branches` + per-key `notes`) | No lint reads value domains yet. It is a standing constraint on the ones that will: a per-command key→domain map would be unfaithful. |
@@ -142,7 +145,12 @@ work without them. All are pinned by `tokenizer_test.cpp`:
 
 ## 5. Engine behaviour NOT reproduced — questions for the supervisor, not decisions
 
-**5.1 `struct loop` also moves the skip flag.** `commandStruct` sets
+**5.1 `struct loop` also moves the skip flag — ANSWERED 2026-08-31 in part: the
+STRUCTURE is modelled (openers, `end`, `break`, an opener never closed →
+`unclosed-struct`; an `end` with no loop → `loop-end-without-loop`), the SKIP
+is not (a literal `struct loop 0` is still not treated as a skip region — no
+corpus instance, and modelling it would put the checker on the runtime side
+of `evalString`). Original text kept below.** `commandStruct` sets
 `swapCommand = true` when `struct loop <n>` evaluates to `n < 1` (`:4691-4693`)
 and clears it on X. `n` goes through
 `evalString` (`$`-substitution), and the whole branch is guarded by
@@ -154,7 +162,15 @@ a possible false-positive source. Not present in the corpus (`struct loop 2`,
 `struct loop 4` only). **Question:** treat a literal `struct loop 0` as a skip
 region, or leave it?
 
-**5.2 `ifSwap` (the `struct if/else/end` skip state) is not modelled.** Same
+**5.2 `ifSwap` (the `struct if/else/end` skip state) is not modelled —
+ANSWERED 2026-08-31: "structure yes, arms no". `BlockSkipState` now tracks the
+stack exactly as `IfSwap` does (push on any `struct if <cond>`, flip on `else`,
+pop on `end`, ignore-and-log on empty, nothing counted inside a `comment` block
+— the `swapCommand != true` guard at `:4605`), which is what `unclosed-struct` /
+`end-without-if` / `else-without-if` need. Findings INSIDE an `if` region are
+still reported as on any line — "demoted" was the question, and the answer is
+that a finding is a fact about the line whichever arm runs; only its execution
+is conditional, not its truth. Original text kept below.** Same
 skip test (`:225`), driven by `struct if A <cmp> B` with runtime comparison of
 `evalDouble`-substituted operands (`:4604-4660`). Statically undecidable for
 `$`-bearing operands. **Consequence:** same direction as 5.1 — scedit may lint a
@@ -272,6 +288,86 @@ Two sub-decisions, both mine, both stated so they can be reversed:
   no-break space … (byte 0xA0)` followed by the unchanged `key '1' has no
   value`.
 
+**5.10 Inline `#` — DECIDED 2026-08-31: one finding, and the rest of the line is
+read as the author meant it.** `inline-comment` (severity error, D6 kebab-case,
+**veto open**; scedit/INTENT.md §5 item 13) fires on the first KEY token that
+begins with `#`. Two sub-decisions, both mine, stated so they can be reversed:
+
+- **The generic rules then read the PREFIX before the `#`**, not the whole
+  line. This is not the co-firing policy of §5.9, and the difference is
+  structural, not a preference: a separator-lookalike's consequences are
+  separately actionable (delete the byte AND check what shifted), an inline
+  comment's are not — one action (move the comment to its own line) removes
+  every one of them, and the consequence messages point AWAY from that action
+  (`'#' … did you mean 'b'?`, `'video' is not an argument`). The precedent is in
+  the same file: `indented-comment` returns after the `#` — comment prose is
+  not analysed as commands. Nothing true is dropped: what the tail DOES to the
+  line is computed from the engine's own reading (`Line::args`) and said in the
+  one message — a tail word in key position that IS a key (`# set loop on` →
+  `loop`=`on` is kept: "CHANGES what this line does"), the `#` pair sorting
+  first on a single-pair command (`flag stars on # …` → `'#'` is the pair
+  applied, `stars on` never is), the `#` pair failing first on `set` (nothing
+  on the line applies), or nothing (the witness's eight lines: "happens to
+  work — until a comment word matches one"). The fixture pins all five shapes.
+  The prefix is re-tokenized from the raw bytes up to the `#` token, so spans
+  and the normalisation map are unchanged for what precedes it.
+- **The rule is right for the engine at HEAD and retires with the ruled
+  change.** RULED 2026-08-30 [vixy]: the engine will make a mid-line `#` a real
+  comment (quoting-aware). Per C1 scedit tracks HEAD: until that lands, the
+  eight witness lines ARE read as pairs and the message says so; when it lands,
+  `comments.mid_line` flips, the tokenizer follows, the oracle re-runs against
+  the new `parseCommand`, and this seed retires (INTENT §5 item 13 carries the
+  sequencing). Open question routed to Vixy (INTENT §5 item 17): once engines
+  in the field diverge on this, does scedit target one engine version or a
+  range? D9 (frozen field) makes it a real question, not a hypothetical.
+
+Corpus effect: the 24 findings on `doc/superscript.sts:37-46` (19
+unknown-parameter + 5 dangling-key, §7.3) become 8 `inline-comment` findings,
+one per line; the 408 shipped scripts hold no `#`-initial key at all
+(pre-scan and checker agree).
+
+**5.11 Block structure — DECIDED 2026-08-31: four seeds, reported where the
+fault is.** `unclosed-struct` (error), `end-without-if` (warning),
+`else-without-if` (warning), `loop-end-without-loop` (warning) — D6 kebab-case,
+**veto open**; scedit/INTENT.md §5 item 14. Decisions:
+
+- **An opener never closed is reported at the OPENER line**, although the
+  checker only knows at the end of the file. The opener is the root; EOF is
+  where the damage surfaces. This matches Vixy's ruling for the engine's own
+  log (2026-08-30: "the diagnostic points at the OPENER … not at EOF") and is
+  what the `#!` annotation will do. `checkBuffer` therefore sorts its output by
+  line (stable, so cause-before-consequence within a line is kept).
+- **Severities**: `unclosed-struct` is an error — the engine is SILENT and the
+  tail is lost; the three closer-without-opener forms are warnings — the two
+  if-forms are logged by the engine itself (`if_swap.cpp:45`, `:76`) and all
+  three are no-ops. The engine's own words ("end without if", "else without
+  if") are the ids.
+- **The `comment`-block guard is mirrored** (`:4605`): a `struct if` line
+  inside a `comment` block counts for nothing, `end` included — commenting out
+  a balanced block stays balanced; commenting out only its `end` unbalances it,
+  exactly as the engine sees it.
+- **Loops are tracked by pairing only.** The engine's loop case is guarded by
+  `ifSwap->get() != true` (`:4676`), a runtime fact; a `struct loop` inside a
+  false `if` region is ignored by the engine and counted by scedit. The only
+  false-positive shape this admits is a loop opened inside a never-taken `if`
+  and closed outside it — not a shape anyone writes on purpose, none in the
+  corpus, recorded rather than defended.
+- **What the message says about a loop** comes from the literal count when
+  there is one (`> 1`: runs once, never repeats; `< 1`: tail skipped; `1`:
+  harmless, no end), and names both outcomes for a `$`-name.
+
+Corpus effect: `doc/superscript.sts` gains SEVEN `unclosed-struct` findings —
+:1547 (the one §7.3 recorded, SS-24) and :1404-1409, the six-comparison syntax
+catalogue nobody had counted. The catalogue's consequence is stronger than
+SS-24 stated: `a inf b` pushes skip iff a ≥ b (`:4630`), `a sup b` iff a ≤ b
+(`:4644`), one of the two holds for ANY a, b (an undefined name reads as 0 —
+`evalDouble` → `Utility::strToDouble`, app_command_eval.cpp:116-128), so every
+line after :1405 is skipped **deterministically**: the 200-line tail is dead,
+not conditionally dead. The 408 shipped scripts hold exactly one instance of
+the whole family: `fscripts/panorama5.sts:102` `end-without-if` (block :96-97
+opens two, :100-102 closes three; the identical `navigation/fscripts/` copy
+reports the same) — TRUE, SS-25.
+
 ## 6. Two tables that live in code and should live in the contract file
 
 Both are read from the engine with a per-entry anchor, both are already
@@ -324,6 +420,31 @@ one shape, which is worth recording.
   each one twice.
 
 ## 7. C3 corpus run — every finding, dispositioned
+
+### 7.4 Fourth run, 2026-08-31 — five seeds minted at the sc_check touch
+
+(Sections are ordered newest-first; numbers are stable ids, not order.)
+
+Same corpus files as §7.3 (the witness + the engine-exercised harness
+scripts; the 408 shipped scripts are run alongside for the NEW ids only — see
+below). **24 findings, zero false positives; the harness `.sts` corpus is still
+silent (all ten files, the f30/f55 artifacts included).** Against §7.3's 33:
+
+| line(s) | id | disposition | argument |
+|---|---|---|---|
+| 37, 38, 39, 41, 42, 44, 45, 46 | inline-comment ×8 (replacing 24 = 19 unknown-parameter + 5 dangling-key) | TRUE | Same root as §7.3's first row, now named once per line. Each message counts the tail words the engine reads as pairs (4, 4, 7, 5, 2, 4, 2, 7) and states that none of them is a key `media`/`script` reads — which is exactly why the example works today (SS-20; §5.10). |
+| 76, 181, 373, 875, 940, 945, 1507, 1536, 1539 | unchanged | TRUE | Byte-identical to §7.3 (the prefix policy touches no line without a `#` key; the line sort changes no order that was already by line). |
+| 1404, 1405, 1406, 1407, 1408, 1409 | unclosed-struct ×6 | TRUE — and new | The comparison catalogue under `# STRUCT`: `struct if a inf b` … `struct if a diff b`, no `end` anywhere after. All six push; one of :1404/:1405 pushes TRUE for any a, b (§5.11), so every line from :1406 on is skipped whenever this file runs. Nothing in §7.3 could see it; SS-24 amended. |
+| 1547 | unclosed-struct | TRUE | The instance §7.3 recorded in prose as rule-invisible (SS-24). Now a finding. |
+
+New ids over the **408 shipped scripts** (`~/.spacecrafter/scripts/**/*.sts`,
+present on this machine since 2026-08-30c): `inline-comment` 0,
+`unclosed-struct` 0, `else-without-if` 0, `loop-end-without-loop` 0,
+**`end-without-if` 2** — `fscripts/panorama5.sts:102` and its md5-identical
+`navigation/fscripts/panorama5.sts:102`, both TRUE (SS-25). Every finding the
+13 older seeds produce over those 408 files is byte-identical before and
+after this change (1757 lines, `diff` empty) — that crop is undispositioned and
+is scedit/INTENT.md §5 item 16, not this run's.
 
 ### 7.3 Third run, 2026-08-30 — the corpus itself was rewritten upstream
 

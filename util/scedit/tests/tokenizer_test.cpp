@@ -409,6 +409,75 @@ void testBlockComment()
 	}
 }
 
+void testBlockStructure()
+{
+	// commandStruct :4604-4661 — ifSwap is a stack: push on `struct if <cond>`,
+	// pop on `end`, flip on `else`; a closer on an empty stack is logged and
+	// ignored (if_swap.cpp:45, :76). The if-case is guarded by
+	// `swapCommand != true` (:4605): inside a comment block nothing counts.
+	{
+		BlockSkipState st;
+		const char *lines[] = {
+			"struct if a equal 1",     // 1  push
+			"flag stars on",           // 2
+			"struct if b sup 2",       // 3  push (nested)
+			"struct if else",          // 4  flip top: still open
+			"struct if end",           // 5  pop  -> b closed
+			"struct if end",           // 6  pop  -> a closed
+			"struct if end",           // 7  end without if
+			"struct if else",          // 8  else without if
+			"comment",                 // 9
+			"struct if c equal 3",     // 10 inside a comment block: NOT counted
+			"struct if end",           // 11 not counted either
+			"uncomment",               // 12
+			"struct if d inf 4",       // 13 push, never closed
+			"struct loop 3",           // 14 loop open
+			"struct loop break",       // 15 leaves the pair open
+			"struct loop end",         // 16 loop closed
+			"struct loop end",         // 17 loop end without loop
+			"struct loop $n",          // 18 loop open, non-literal count, never closed
+		};
+		for (std::size_t i = 0; i < sizeof(lines) / sizeof(lines[0]); ++i)
+			st.feed(tokenizeLine(lines[i]), i + 1);
+		eq(st.openIfs().size(), (std::size_t)1, "block structure: one if left open");
+		eq(st.openIfs().front().line, (std::size_t)13, "block structure: the open if is line 13");
+		eq(st.openIfs().front().text, std::string("struct if d inf 4"), "block structure: opener text");
+		eq(st.openIfs().front().span.begin, (std::size_t)0, "block structure: opener span begin");
+		eq(st.openIfs().front().span.end, (std::size_t)17, "block structure: opener span end");
+		eq(st.openLoops().size(), (std::size_t)1, "block structure: one loop left open");
+		eq(st.openLoops().front().line, (std::size_t)18, "block structure: the open loop is line 18");
+		eq(st.openLoops().front().count, std::string("$n"), "block structure: loop count kept raw");
+		eq(st.unmatched().size(), (std::size_t)3, "block structure: three closers closed nothing");
+		eq(st.unmatched()[0].line, (std::size_t)7, "block structure: end without if at 7");
+		eq(st.unmatched()[0].what, std::string("end"), "block structure: ... is an 'end'");
+		eq(st.unmatched()[0].span.begin, (std::size_t)10, "block structure: ... span on the word 'end'");
+		eq(st.unmatched()[0].span.end, (std::size_t)13, "block structure: ... span end");
+		eq(st.unmatched()[1].line, (std::size_t)8, "block structure: else without if at 8");
+		eq(st.unmatched()[1].what, std::string("else"), "block structure: ... is an 'else'");
+		eq(st.unmatched()[2].line, (std::size_t)17, "block structure: loop end without loop at 17");
+		eq(st.unmatched()[2].what, std::string("loop end"), "block structure: ... is a 'loop end'");
+		ok(!st.skipping(), "block structure: the comment block was closed");
+	}
+	// The retro-compatible form `struct if <v>` (no comparison key) pushes too
+	// (:4657-4661), and a `struct if end` inside a false-if region still pops:
+	// the interception at :221-222 runs before the skip test at :225.
+	{
+		BlockSkipState st;
+		st.feed(tokenizeLine("struct if a"), 1);
+		st.feed(tokenizeLine("struct if end"), 2);
+		eq(st.openIfs().size(), (std::size_t)0, "block structure: bare `struct if a` opens, `end` closes");
+		eq(st.unmatched().size(), (std::size_t)0, "block structure: ... and nothing is unmatched");
+	}
+	// `reset()` forgets everything, the structure included.
+	{
+		BlockSkipState st;
+		st.feed(tokenizeLine("struct if a"), 1);
+		st.feed(tokenizeLine("comment"), 2);
+		st.reset();
+		ok(!st.skipping() && st.openIfs().empty(), "block structure: reset clears flag and stack");
+	}
+}
+
 void testEnginePredicates()
 {
 	// Utility::isTrue / isFalse, utility.hpp:160-180
@@ -446,6 +515,7 @@ int main()
 	testSpaceAfterQuoteNormalization();
 	testIndentedComment();
 	testBlockComment();
+	testBlockStructure();
 	testEnginePredicates();
 	std::printf("%d checks, %d failures\n", checks, failures);
 	return failures ? 1 : 0;

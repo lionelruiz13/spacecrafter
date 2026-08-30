@@ -49,18 +49,17 @@
  * command whose key list is known to be partial (body, camera, flyto) must not
  * be shown a closed list. Its candidates are offered, and labelled OPEN.
  *
- * A KNOWN GAP IN A CONSUMED CONTRACT (flagged, not worked around)
- * ==============================================================
- * `scedit::Diagnostic` (sc_check.hpp) carries file/line/severity/message/id and
- * NO COLUMN. A finding therefore cannot be underlined at its exact byte by any
- * consumer of that header; the editor marks the LINE, and shows the message —
- * which states the column in its own words where it has one — on the doc bar.
- * The one column that must land exactly, `invisible-separator`'s, is reached
- * from the other side: `lookalikeSpaceColumns()` reports every byte in the
- * buffer that looks like a space and is not one, from the bytes themselves.
- * That is a display fact about the buffer, not a second implementation of the
- * rule (which decides, e.g., that such a byte inside a quoted value is NOT a
- * finding). Proposed fix, for whoever owns sc_check: give Diagnostic a Span.
+ * FINDINGS ON THE SCREEN
+ * ======================
+ * `scedit::Diagnostic` (sc_check.hpp) carries a `span`: the raw byte range the
+ * finding is about. The renderer reads it through `diagnosticsForLine()` —
+ * the look-alike-space marker lands on `invisible-separator`'s span, an
+ * underline on every other non-empty span — so what is marked on screen is
+ * exactly what the rule decided, and decided once: a 0xA0 inside a quoted
+ * value is NOT marked, because the rule says it is ordinary text there.
+ * (Until 2026-08-31 the marker column was re-derived from the bytes by a
+ * `lookalikeSpaceColumns()` here, a second copy of half the rule; the Span
+ * closed that gap — scedit/INTENT.md §5 item 10.)
  *
  * OWNERSHIP: an EditCore owns its Document, Grammar and DocIndex. References
  * and pointers it returns die with it or with the next mutation.
@@ -196,11 +195,6 @@ public:
 	const std::vector<Diagnostic> &diagnostics() const { return diags_; }
 	//! Highest severity present on that line: "error" > "warning" > "info", "" when clean.
 	std::string severityForLine(std::size_t oneBasedLine) const;
-
-	//! Raw byte columns of this line holding a byte that LOOKS like a space to a
-	//! reader and is NOT one to the engine (0xA0, the ISO-8859 no-break space).
-	//! See the header note: a display fact, not a second copy of the lint rule.
-	std::vector<std::size_t> lookalikeSpaceColumns(std::size_t line) const;
 
 	//! Recompute the findings now (done automatically after every mutation).
 	void refreshDiagnostics();

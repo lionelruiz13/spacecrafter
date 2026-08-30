@@ -508,22 +508,20 @@ void testLint()
 	std::printf("E. live findings\n");
 
 	// A 0xA0 between `albedo` and `1` — the corpus case (superscript.sts:94),
-	// reduced. `--check` decides it is a finding; the editor must ALSO be able
-	// to put a marker on the exact byte, which it reads from the bytes.
+	// reduced. `--check` decides it is a finding, and the finding's SPAN is
+	// what puts the marker on the exact byte: one source for both.
 	const std::string buf = "flag stars on\nbody name Earth albedo\xA0""1\n";
 	EditCore e = at(buf, 0, 1);
-	const std::vector<std::size_t> cols = e.lookalikeSpaceColumns(1);
-	eqn(cols.size(), 1, "E1 one look-alike space on the line");
-	eqn(cols[0], 22, "E1 at exactly its byte offset");
-	eq(e.document().line(1).substr(22, 1), std::string("\xA0"), "E1 ... which is the 0xA0 itself");
-
 	const std::vector<const Diagnostic *> d2 = e.diagnosticsForLine(2);
 	ok(!d2.empty(), "E2 the analyser reports the line");
-	bool sep = false;
+	const Diagnostic *sep = nullptr;
 	for (const auto *d : d2)
 		if (d->id == "invisible-separator")
-			sep = true;
-	ok(sep, "E2 ... as invisible-separator");
+			sep = d;
+	ok(sep != nullptr, "E2 ... as invisible-separator");
+	eqn(sep ? sep->span.begin : 0, 22, "E1 its span starts at exactly the byte offset");
+	eqn(sep ? sep->span.size() : 0, 1, "E1 ... and covers that one byte");
+	eq(e.document().line(1).substr(22, 1), std::string("\xA0"), "E1 ... which is the 0xA0 itself");
 	eq(e.severityForLine(2), std::string("error"), "E2 with the seed's own severity");
 	eq(e.severityForLine(1), std::string(""), "E2 and the clean line stays clean");
 
@@ -535,6 +533,49 @@ void testLint()
 	ok(e.diagnosticsForLine(2).empty(), "E3 fixing the byte clears the finding");
 	eq(e.document().bytes(), std::string("flag stars on\nbody name Earth albedo 1\n"),
 	   "E3 and nothing else moved");
+
+	// E4. Spans: every finding points at its bytes (scedit/INTENT.md §5 item 10).
+	{
+		EditCore u = at("zomo action now\n", 0);
+		const std::vector<const Diagnostic *> d = u.diagnosticsForLine(1);
+		eqn(d.size(), 1, "E4a one finding on the misspelt command");
+		eq(d.empty() ? std::string() : d[0]->id, std::string("unknown-command"), "E4a ... unknown-command");
+		eqn(d.empty() ? 99 : d[0]->span.begin, 0, "E4a ... spanning the command token");
+		eqn(d.empty() ? 99 : d[0]->span.end, 4, "E4a ... to its end");
+	}
+	{
+		// An inline '#': ONE finding, spanning from the '#' to the end of the
+		// line; the tail's would-be findings are folded into it.
+		const std::string line = "media action pause # stop video & sound";
+		EditCore u = at(line + "\n", 0);
+		const std::vector<const Diagnostic *> d = u.diagnosticsForLine(1);
+		eqn(d.size(), 1, "E4b one finding for the inline comment");
+		eq(d.empty() ? std::string() : d[0]->id, std::string("inline-comment"), "E4b ... inline-comment");
+		eqn(d.empty() ? 99 : d[0]->span.begin, 19, "E4b ... from the '#'");
+		eqn(d.empty() ? 99 : d[0]->span.end, line.size(), "E4b ... to the end of the line");
+	}
+	{
+		// An opener never closed: reported on ITS line, not on the last one.
+		EditCore u = at("struct if a equal b\nflag stars on\n", 0);
+		const std::vector<const Diagnostic *> d1 = u.diagnosticsForLine(1);
+		eqn(d1.size(), 1, "E4c the unclosed if is reported on its own line");
+		eq(d1.empty() ? std::string() : d1[0]->id, std::string("unclosed-struct"), "E4c ... unclosed-struct");
+		eqn(d1.empty() ? 99 : d1[0]->span.end, 19, "E4c ... spanning the whole opener");
+		ok(u.diagnosticsForLine(2).empty(), "E4c and the last line stays clean");
+		eq(u.severityForLine(1), std::string("error"), "E4c with the seed's severity");
+		// Closing it clears the finding.
+		u.moveTo(1, 13);
+		u.insertNewline();
+		u.insertText("struct if end");
+		ok(u.diagnosticsForLine(1).empty(), "E4d adding `struct if end` clears it");
+	}
+	{
+		EditCore u = at("struct if end\n", 0);
+		const std::vector<const Diagnostic *> d = u.diagnosticsForLine(1);
+		eqn(d.size(), 1, "E4e a lone `struct if end` is reported");
+		eq(d.empty() ? std::string() : d[0]->id, std::string("end-without-if"), "E4e ... end-without-if");
+		eqn(d.empty() ? 99 : d[0]->span.begin, 10, "E4e ... on the word 'end'");
+	}
 }
 
 } // namespace

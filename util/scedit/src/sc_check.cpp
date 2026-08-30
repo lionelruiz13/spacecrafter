@@ -12,6 +12,7 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <iterator>
 #include <map>
@@ -136,31 +137,79 @@ std::string hexBytes(const std::string &s, std::size_t off, std::size_t len)
 	return out;
 }
 
+//! ONE place turns (id, message, span) into a Diagnostic: the severity comes
+//! from the contract file's seed, with a fallback that keeps an id the file
+//! does not know visible rather than dropped. Used by the per-line rules and
+//! by the end-of-file rules alike (I2).
+Diagnostic makeDiagnostic(const Grammar &g, const std::string &file, std::size_t line,
+                          const char *id, const std::string &message, const Span &span)
+{
+	Diagnostic d;
+	d.file = file;
+	d.line = line;
+	d.id = id;
+	const LintSeed *s = g.seed(id);
+	d.severity = s ? s->severity : std::string("warning");
+	d.message = message;
+	d.span = span;
+	return d;
+}
+
+//! The KEY token of the first pair (line order) carrying `key`.
+Span keySpanOf(const Line &L, const std::string &key)
+{
+	for (const auto &p : L.pairs)
+		if (L.tokens[p.key].text == key)
+			return L.tokens[p.key].span;
+	return Span{};
+}
+
+//! The VALUE token of the last pair carrying `key` — the value `args` keeps.
+Span valueSpanOf(const Line &L, const std::string &key)
+{
+	Span s;
+	for (const auto &p : L.pairs)
+		if (L.tokens[p.key].text == key)
+			s = L.tokens[p.value].span;
+	return s;
+}
+
+//! A whole number written as such (strtol consuming every byte).
+bool wholeNumber(const std::string &s, long &n)
+{
+	if (s.empty())
+		return false;
+	char *endp = nullptr;
+	n = std::strtol(s.c_str(), &endp, 10);
+	return endp && *endp == '\0';
+}
+
 class LineChecker {
 public:
 	LineChecker(const Grammar &g, const std::string &file, std::size_t lineno,
 	            std::vector<Diagnostic> &out)
 		: g_(g), file_(file), lineno_(lineno), out_(out) {}
 
-	void emit(const char *id, const std::string &message)
+	void emit(const char *id, const std::string &message, const Span &span = Span{})
 	{
-		Diagnostic d;
-		d.file = file_;
-		d.line = lineno_;
-		d.id = id;
-		const LintSeed *s = g_.seed(id);
-		d.severity = s ? s->severity : std::string("warning");
-		d.message = message;
-		out_.push_back(std::move(d));
+		out_.push_back(makeDiagnostic(g_, file_, lineno_, id, message, span));
 	}
 
 	void run(const Line &L);
 
 private:
-	//! Returns true when `name` is one the engine will not accept.
+	//! The rules that read the line's key/value shape. `L` is the line AS THE
+	//! AUTHOR MEANT IT: the whole line normally; its prefix before an inline
+	//! '#' when `run` found one (see there).
+	void rules(const Line &L, const CommandData &cd);
+	//! Returns true when `name` is one the engine will not accept. `at` is
+	//! where the name sits on the line.
 	bool checkSubfamilyName(const Line &L, const CommandData &cd, const FamilyData &fam,
-	                        const std::string &name, const std::string &consequence);
-	void checkInvisibleSeparators(const Line &L);
+	                        const std::string &name, const Span &at,
+	                        const std::string &consequence);
+	//! Bytes before `limit` only.
+	void checkInvisibleSeparators(const Line &L, std::size_t limit);
+	void checkInlineComment(const Line &L, const CommandData &cd, std::size_t hash_index);
 
 	const Grammar &g_;
 	std::string file_;
@@ -170,7 +219,7 @@ private:
 
 bool LineChecker::checkSubfamilyName(const Line &L, const CommandData &cd,
                                      const FamilyData &fam, const std::string &name,
-                                     const std::string &consequence)
+                                     const Span &at, const std::string &consequence)
 {
 	(void)L;
 	// A name the engine header spells but never registers: same failure path as
@@ -181,7 +230,8 @@ bool LineChecker::checkSubfamilyName(const Line &L, const CommandData &cd,
 		if (cd.subfamily == "flags") {
 			emit("orphaned-flag",
 			     "flag " + quoteName(name) + " is never registered by the engine, so this line "
-			     "has no effect (the name exists in the engine source but no flag is bound to it)");
+			     "has no effect (the name exists in the engine source but no flag is bound to it)",
+			     at);
 			return true;
 		}
 	} else if (fam.name_set.count(name)) {
@@ -189,7 +239,7 @@ bool LineChecker::checkSubfamilyName(const Line &L, const CommandData &cd,
 		if (def != fam.known_defective.end())
 			emit("inert-command",
 			     quoteName(cd.name + " " + name) + " is accepted and reported as successful but "
-			     "does nothing: " + def->second);
+			     "does nothing: " + def->second, at);
 		return false;   // known name
 	}
 	// AppCommandInit::searchNeighbour returns before suggesting when the name is
@@ -197,22 +247,24 @@ bool LineChecker::checkSubfamilyName(const Line &L, const CommandData &cd,
 	if (g_.isObsolete(name)) {
 		emit("deprecated",
 		     quoteName(name) + " is no longer used in this software: the engine ignores it" +
-		     consequence);
+		     consequence, at);
 		return true;
 	}
 	std::string msg = quoteName(name) + " is not a known " + familyLabel(cd.subfamily) + consequence;
 	std::string near = cappedSuggestion(name, fam.sorted);
 	if (!near.empty())
 		msg += "; did you mean " + quoteName(near) + "?";
-	emit("unknown-parameter", msg);
+	emit("unknown-parameter", msg, at);
 	return true;
 }
 
-//! Scope: bytes OUTSIDE a quoted value. Inside a `"..."` run the engine already
-//! accepts spaces, so a no-break space there is ordinary text the author meant —
-//! reporting it would be a C3 false positive. Everywhere else the byte sits
-//! where a separator was meant, or turns a name into a name nothing knows.
-void LineChecker::checkInvisibleSeparators(const Line &L)
+//! Scope: bytes OUTSIDE a quoted value, and before `limit`. Inside a `"..."`
+//! run the engine already accepts spaces, so a no-break space there is
+//! ordinary text the author meant — reporting it would be a C3 false positive.
+//! Everywhere else the byte sits where a separator was meant, or turns a name
+//! into a name nothing knows. `limit` is where an inline '#' starts, when one
+//! does: past it the bytes are comment prose to the author (see `run`).
+void LineChecker::checkInvisibleSeparators(const Line &L, std::size_t limit)
 {
 	auto insideQuotedValue = [&L](std::size_t off) {
 		for (const auto &t : L.tokens)
@@ -221,7 +273,7 @@ void LineChecker::checkInvisibleSeparators(const Line &L)
 		return false;
 	};
 
-	for (std::size_t i = 0; i < L.raw.size();) {
+	for (std::size_t i = 0; i < limit;) {
 		std::size_t len = 0;
 		std::string what;
 		for (const auto &iv : kInvisible) {
@@ -240,10 +292,78 @@ void LineChecker::checkInvisibleSeparators(const Line &L)
 			     "column " + std::to_string(i + 1) + " holds " + what + " (byte " +
 			     hexBytes(L.raw, i, len) + "), not a space: the engine separates words on space, "
 			     "tab, CR, LF, VT and FF only, so what is written on either side of this byte is "
-			     "read as ONE word");
+			     "read as ONE word", Span{i, i + len});
 		}
 		i += len;
 	}
+}
+
+//! parse_model.comments.mid_line — the engine at HEAD has no inline comments:
+//! only a '#' in the FIRST byte is one (script.cpp:114), so a '#'-initial KEY
+//! and every word after it are read as key/value pairs (parseCommand:148).
+//! What that tail does to THIS line is computed from the engine's own reading
+//! (`L.args`) and said here, once. RULED 2026-08-30 [vixy]: the engine will
+//! make mid-line '#' a real comment; this rule is right for the engine at HEAD
+//! and retires with that change (scedit/INTENT.md §5 item 13).
+void LineChecker::checkInlineComment(const Line &L, const CommandData &cd, std::size_t k)
+{
+	const Token &h = L.tokens[k];
+	const std::size_t after = L.tokens.size() - k - 1;
+	std::string msg = quoteName(h.text) + " does not start a comment here: only a '#' in "
+	                  "column 1 does, so ";
+	if (h.role == TokenRole::DanglingKey) {
+		// Nothing follows: the engine drops the trailing key silently (:148).
+		msg += "it is read as a trailing key with no value and dropped — harmless here, "
+		       "but not a comment";
+		emit("inline-comment", msg, Span{h.span.begin, L.raw.size()});
+		return;
+	}
+	msg += "it and the " + std::to_string(after) + (after == 1 ? " word" : " words") +
+	       " after it are read as key/value pairs";
+
+	const FamilyData *fam = cd.subfamily.empty() ? nullptr : g_.family(cd.subfamily);
+	const bool name_is_key = fam &&
+		(cd.placement.pos == SubfamilyPosition::AppliedKey ||
+		 cd.placement.pos == SubfamilyPosition::EveryKey);
+	// A tail word that IS a key changes the line; the engine keeps its value.
+	std::string collide;
+	for (std::size_t i = k + 1; i < L.tokens.size() && collide.empty(); ++i) {
+		const Token &t = L.tokens[i];
+		if (t.role != TokenRole::Key)
+			continue;
+		if ((cd.has_args && cd.arg_keys.count(t.text)) || (name_is_key && fam->name_set.count(t.text)))
+			collide = t.text;
+	}
+	// `args` is a std::map: '#' (0x23) sorts before every letter and digit, so
+	// on the commands that act on args.begin() the tail pair is the one applied.
+	const bool hashIsFirst = !L.args.empty() && L.args.begin()->first == h.text;
+
+	if (!collide.empty()) {
+		msg += "; and " + quoteName(collide) + " IS a " +
+		       (name_is_key && fam->name_set.count(collide) ? "name " : "key ") + quoteName(cd.name) +
+		       " reads, so the comment CHANGES what this line does";
+	} else if (hashIsFirst && g_.isSinglePairCommand(cd.name)) {
+		std::string intended;
+		if (k >= 3)
+			intended = L.tokens[1].text + " " + L.tokens[2].text;
+		msg += "; " + quoteName(cd.name) + " applies ONE pair per line, the alphabetically first, "
+		       "which is now " + quoteName(h.text) +
+		       (intended.empty() ? std::string() : ": " + quoteName(intended) + " is never applied");
+	} else if (hashIsFirst && fam && cd.placement.pos == SubfamilyPosition::EveryKey) {
+		msg += "; " + quoteName(cd.name) + " applies its pairs in alphabetical order and stops at "
+		       "the first unknown name, which is now " + quoteName(h.text) +
+		       ": nothing on this line is applied";
+	} else if (cd.has_args && cd.args_complete) {
+		msg += "; none of them is a key " + quoteName(cd.name) + " reads, so the line happens to "
+		       "work — until a comment word matches one";
+	} else if (name_is_key) {
+		msg += "; none of them is a name " + quoteName(cd.name) + " knows, so the line happens to "
+		       "work — until a comment word matches one";
+	} else {
+		msg += "; whether one of them is a key " + quoteName(cd.name) + " reads, scedit cannot "
+		       "tell (its key list is not complete)";
+	}
+	emit("inline-comment", msg, Span{h.span.begin, L.raw.size()});
 }
 
 void LineChecker::run(const Line &L)
@@ -256,7 +376,7 @@ void LineChecker::run(const Line &L)
 		if (i < L.raw.size() && L.raw[i] == '#') {
 			emit("indented-comment",
 			     "a '#' comment must start in column 1; indented, this line reaches the "
-			     "parser and is executed as an unknown command");
+			     "parser and is executed as an unknown command", Span{i, i + 1});
 			return;   // the rest of the line is comment prose, not a command
 		}
 	}
@@ -264,52 +384,91 @@ void LineChecker::run(const Line &L)
 	if (!L.has_command)
 		return;   // whitespace-only line: executeCommand:207 returns without acting
 
+	// --- a '#' after the command --------------------------------------------
+	// The first KEY that begins with '#' is where the author stopped writing
+	// commands and started writing prose. The engine does not know that
+	// (comments.mid_line) — the tail is pairs to it — and `checkInlineComment`
+	// says so, once, with what the tail does to the line. Everything else
+	// below reads the line THE AUTHOR MEANT, the prefix before that '#': the
+	// precedent is indented-comment, which also stops at the '#' (comment
+	// prose is not analysed as commands). Nothing true is dropped — a tail
+	// word that is a real key, a tail pair that sorts first — it is said in
+	// the one message, next to its cause. derivation-diff.md §5.10.
+	std::size_t hash = L.tokens.size();
+	for (std::size_t i = 1; i < L.tokens.size(); ++i) {
+		const Token &t = L.tokens[i];
+		if ((t.role == TokenRole::Key || t.role == TokenRole::DanglingKey)
+		    && !t.text.empty() && t.text[0] == '#') {
+			hash = i;
+			break;
+		}
+	}
+	const std::size_t limit = hash < L.tokens.size() ? L.tokens[hash].span.begin : L.raw.size();
+
 	// --- the cause before its consequences ------------------------------------
 	// A separator-lookalike byte changes what every later token IS, so it is
 	// reported FIRST on the line. It does not suppress the rules that report
 	// what the engine will then DO with the line: both statements are true and
 	// separately actionable, and silencing a true finding because another rule
 	// explains it would make the finding set depend on rule order.
-	checkInvisibleSeparators(L);
+	checkInvisibleSeparators(L, limit);
 
 	const CommandData *cd = g_.command(L.command);
+	const Span cmdSpan = L.tokens.empty() ? Span{} : L.tokens.front().span;
 	if (!cd) {
 		if (g_.isObsolete(L.command)) {
 			emit("deprecated",
 			     "command " + quoteName(L.command) + " is no longer used in this software: "
-			     "the line is ignored");
+			     "the line is ignored", cmdSpan);
 			return;
 		}
 		std::string msg = "unknown command " + quoteName(L.command);
 		std::string near = cappedSuggestion(L.command, g_.commandLookupList());
 		if (!near.empty())
 			msg += "; did you mean " + quoteName(near) + "?";
-		emit("unknown-command", msg);
+		emit("unknown-command", msg, cmdSpan);
 		return;   // the key/value shape of a line the engine will not run is not news
 	}
+
+	if (hash < L.tokens.size()) {
+		checkInlineComment(L, *cd, hash);
+		const Line prefix = tokenizeLine(L.raw.substr(0, limit));
+		rules(prefix, *cd);
+		return;
+	}
+	rules(L, *cd);
+}
+
+void LineChecker::rules(const Line &L, const CommandData &cdRef)
+{
+	const CommandData *cd = &cdRef;
+	const Span cmdSpan = L.tokens.empty() ? Span{} : L.tokens.front().span;
 
 	// --- parse-level facts ---------------------------------------------------
 	if (L.has_dangling)
 		emit("dangling-key",
 		     "key " + quoteName(L.tokens[L.dangling_index].text) + " has no value: the engine "
-		     "drops it silently and runs the rest of the line without it");
+		     "drops it silently and runs the rest of the line without it",
+		     L.tokens[L.dangling_index].span);
 
 	{
 		std::map<std::string, int> seen;
 		for (const auto &p : L.pairs)
 			++seen[L.tokens[p.key].text];
+		std::map<std::string, int> met;   // occurrences walked so far, to point at the repeat
 		for (const auto &p : L.pairs) {
 			const std::string &k = L.tokens[p.key].text;
+			const int nth = ++met[k];
 			auto it = seen.find(k);
-			if (it == seen.end() || it->second < 2)
-				continue;
+			if (it == seen.end() || it->second < 2 || nth != 2)
+				continue;   // report each duplicated key once, at its first repetition
 			const int count = it->second;
-			seen.erase(it);   // report each duplicated key once
 			auto a = L.args.find(k);
 			emit("duplicate-key",
 			     "key " + quoteName(k) + " is given " + std::to_string(count) + " times on this "
 			     "line: the engine keeps only the last value" +
-			     (a != L.args.end() ? " (" + quoteName(a->second) + ")" : std::string()));
+			     (a != L.args.end() ? " (" + quoteName(a->second) + ")" : std::string()),
+			     L.tokens[p.key].span);
 		}
 	}
 
@@ -322,31 +481,41 @@ void LineChecker::run(const Line &L)
 			const bool opens = !t.empty() && t[0] == '\'' && !(t.size() >= 2 && t.back() == '\'');
 			if (!opens)
 				continue;
-			bool closed_later = false;
+			std::size_t closer = L.tokens.size();
 			for (std::size_t j = i + 1; j < L.tokens.size(); ++j) {
 				const std::string u = L.rawText(L.tokens[j].span);
-				if (!u.empty() && u.back() == '\'') { closed_later = true; break; }
+				if (!u.empty() && u.back() == '\'') { closer = j; break; }
 			}
-			if (closed_later) {
+			if (closer < L.tokens.size()) {
 				emit("unsupported-quoting",
 				     "single quotes do not group words here: only \" does, so this value ends "
-				     "at the first space and the remaining words are read as key/value pairs");
+				     "at the first space and the remaining words are read as key/value pairs",
+				     Span{L.tokens[i].span.begin, L.tokens[closer].span.end});
 				break;
 			}
 		}
-		if (L.raw.find("\\\"") != std::string::npos)
+		const std::size_t bs = L.raw.find("\\\"");
+		if (bs != std::string::npos)
 			emit("unsupported-quoting",
 			     "backslash is not an escape here: the engine has no escape sequence, so the "
-			     "value ends at this \" and the backslash is kept as an ordinary character");
+			     "value ends at this \" and the backslash is kept as an ordinary character",
+			     Span{bs, bs + 2});
 	}
 
 	// --- one pair per line commands ------------------------------------------
-	if (g_.isSinglePairCommand(cd->name) && L.args.size() > 1)
+	if (g_.isSinglePairCommand(cd->name) && L.args.size() > 1) {
+		Span dropped;   // the first pair, in line order, that is NOT the applied one
+		for (const auto &p : L.pairs)
+			if (L.tokens[p.key].text != L.args.begin()->first) {
+				dropped = Span{L.tokens[p.key].span.begin, L.tokens[p.value].span.end};
+				break;
+			}
 		emit("single-pair-only",
 		     "command " + quoteName(cd->name) + " applies a single key/value pair per line: "
 		     "only " + quoteName(L.args.begin()->first) + " (first in alphabetical order, not "
 		     "line order) is applied; the other " + std::to_string(L.args.size() - 1) +
-		     " pair(s) are dropped silently");
+		     " pair(s) are dropped silently", dropped);
+	}
 
 	// --- the family this command draws its name from --------------------------
 	const FamilyData *fam = cd->subfamily.empty() ? nullptr : g_.family(cd->subfamily);
@@ -354,7 +523,8 @@ void LineChecker::run(const Line &L)
 		switch (cd->placement.pos) {
 			case SubfamilyPosition::AppliedKey:
 				if (!L.args.empty())
-					checkSubfamilyName(L, *cd, *fam, L.args.begin()->first, "");
+					checkSubfamilyName(L, *cd, *fam, L.args.begin()->first,
+					                   keySpanOf(L, L.args.begin()->first), "");
 				break;
 			case SubfamilyPosition::EveryKey: {
 				// commandSet walks `args` and folds with `&&`
@@ -376,7 +546,8 @@ void LineChecker::run(const Line &L)
 							consequence = "; the engine stops here, so " + rest +
 							              " on this line is never applied";
 					}
-					if (checkSubfamilyName(L, *cd, *fam, it->first, consequence))
+					if (checkSubfamilyName(L, *cd, *fam, it->first, keySpanOf(L, it->first),
+					                       consequence))
 						aborted = true;
 				}
 				break;
@@ -384,7 +555,8 @@ void LineChecker::run(const Line &L)
 			case SubfamilyPosition::ValueOfKey: {
 				auto it = L.args.find(cd->placement.position_key);
 				if (it != L.args.end() && !it->second.empty())
-					checkSubfamilyName(L, *cd, *fam, it->second, "");
+					checkSubfamilyName(L, *cd, *fam, it->second,
+					                   valueSpanOf(L, cd->placement.position_key), "");
 				break;
 			}
 			case SubfamilyPosition::Unknown:
@@ -403,7 +575,7 @@ void LineChecker::run(const Line &L)
 			emit("silent-off-value",
 			     "flag value " + quoteName(value) + " is not an on-form ('on', 'true', '1'), an "
 			     "off-form ('off', 'false', '0') or 'toggle': the engine reads everything else "
-			     "as OFF, with no error");
+			     "as OFF, with no error", valueSpanOf(L, name));
 	}
 
 	// --- argument vocabulary, armed by data presence alone ---------------------
@@ -426,7 +598,7 @@ void LineChecker::run(const Line &L)
 			std::string near = cappedSuggestion(k, cd->arg_keys_sorted);
 			if (!near.empty())
 				msg += "; did you mean " + quoteName(near) + "?";
-			emit("unknown-parameter", msg);
+			emit("unknown-parameter", msg, L.tokens[p.key].span);
 		}
 	}
 
@@ -435,7 +607,7 @@ void LineChecker::run(const Line &L)
 		emit("alias-respelled",
 		     "command " + quoteName(cd->name) + " is another spelling of " +
 		     quoteName(cd->alias_of) + ": a recorded session writes it back as " +
-		     quoteName(cd->alias_of));
+		     quoteName(cd->alias_of), cmdSpan);
 }
 
 } // namespace
@@ -450,10 +622,65 @@ std::vector<Diagnostic> checkBuffer(const Grammar &g, const std::string &path,
 		Line L = tokenizeLine(lines[i]);
 		if (L.kind != LineKind::Parsed)
 			continue;
-		if (skip.feed(L))
+		const std::size_t seen = skip.unmatched().size();
+		const bool skipped = skip.feed(L, i + 1);
+		// A closer that closes nothing. The engine logs the two if-forms as
+		// errors and ignores them (if_swap.cpp:45, :76); the loop form resets
+		// an empty loop and logs nothing (commandStruct :4677-4682).
+		for (std::size_t u = seen; u < skip.unmatched().size(); ++u) {
+			const auto &m = skip.unmatched()[u];
+			if (m.what == "end")
+				out.push_back(makeDiagnostic(g, path, i + 1, "end-without-if",
+					"this 'struct if end' closes nothing: no 'struct if' block is open here, so the "
+					"engine logs \"end without if\" and ignores the line — either this 'end' is one "
+					"too many, or the block it was meant to close was never opened", m.span));
+			else if (m.what == "else")
+				out.push_back(makeDiagnostic(g, path, i + 1, "else-without-if",
+					"this 'struct if else' flips nothing: no 'struct if' block is open here, so the "
+					"engine logs \"else without if\" and ignores the line", m.span));
+			else
+				out.push_back(makeDiagnostic(g, path, i + 1, "loop-end-without-loop",
+					"this 'struct loop end' closes nothing: no 'struct loop' is open here, so the "
+					"engine resets an empty loop and nothing repeats — either this 'end' is one too "
+					"many, or the 'struct loop <n>' it was meant to close is missing", m.span));
+		}
+		if (skipped)
 			continue;   // inside a `comment` block: the engine never runs this
 		LineChecker(g, path, i + 1, out).run(L);
 	}
+
+	// --- still open at the end of the file --------------------------------------
+	// Reported at the OPENER: that is the root, EOF is only where the damage
+	// surfaces. ifSwap stays pushed until `script action end` (:2810), which the
+	// end of the script runs — so the loss is bounded to this file's own tail.
+	for (const auto &b : skip.openIfs())
+		out.push_back(makeDiagnostic(g, path, b.line, "unclosed-struct",
+			quoteName(b.text) + " is never closed: no 'struct if end' follows before the end of "
+			"the file, so whenever this test fails the engine skips every line from here to the "
+			"end of the file, silently; put 'struct if end' where the block should stop", b.span));
+	for (const auto &b : skip.openLoops()) {
+		long n = 0;
+		std::string consequence;
+		if (!wholeNumber(b.count, n))
+			consequence = "depending on the value of " + quoteName(b.count) + " the lines after "
+			              "it either run once and are never repeated, or are skipped to the end of "
+			              "the file";
+		else if (n > 1)
+			consequence = "the lines after it run ONCE and are never repeated — the repetition "
+			              "only starts at 'struct loop end'";
+		else if (n < 1)
+			consequence = "every line after it is skipped to the end of the file";
+		else
+			consequence = "a count of 1 repeats nothing, so the lines after it run once — "
+			              "harmless today, but the block has no end";
+		out.push_back(makeDiagnostic(g, path, b.line, "unclosed-struct",
+			quoteName(b.text) + " is never closed: no 'struct loop end' follows before the end of "
+			"the file, so " + consequence + "; put 'struct loop end' where the block should stop",
+			b.span));
+	}
+
+	std::stable_sort(out.begin(), out.end(),
+	                 [](const Diagnostic &a, const Diagnostic &b) { return a.line < b.line; });
 	return out;
 }
 

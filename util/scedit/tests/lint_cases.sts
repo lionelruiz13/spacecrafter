@@ -81,7 +81,35 @@ text name info string hello world altitude 10
 # shifts every later pair by one and leaves '3' as a key with no value.
 dso2d action load name x ra 1 de 2 size 3
 
-# === everything below must produce NO finding =========================
+# --- end-without-if / else-without-if: closers with no open block. The engine
+# logs "end without if" / "else without if" and ignores the line.
+struct if end
+struct if else
+
+# --- loop-end-without-loop: silent engine-side; nothing repeats
+struct loop end
+
+# --- inline-comment: a '#' after the command is not a comment; the tail is
+# read as key/value pairs. Here none of them is a key `media` reads, so the
+# line happens to work (the witness's shape, doc/superscript.sts:37-46).
+media action pause # stop video & sound
+
+# --- inline-comment, the pair-killing shape: `flag` applies the alphabetically
+# first pair, which is now '#' - `stars on` is never applied
+flag stars on # switch it on
+
+# --- inline-comment, the line-killing shape: `set` stops at the first unknown
+# name, which is now '#' - nothing on the line is applied
+set star_scale 2 # bigger stars
+
+# --- inline-comment, the colliding shape: a comment word that lands in KEY
+# position and IS a key ('#'='set', then 'loop'='on' - the engine keeps it)
+media action pause # set loop on
+
+# --- inline-comment, nothing after the '#': a trailing key, dropped
+media action pause #
+
+# === everything below must produce NO finding (until the last section) ==
 
 # a well-formed line of each shape the rules touch
 flag stars on
@@ -93,6 +121,7 @@ font target planets filename Gloria.ttf size 14
 body name "ALSAT 1" parent Earth radius 1
 text name info string "It's your home" altitude 10 align center
 struct if a equal b
+struct if end
 struct loop 2
 struct loop end
 camera action move_to
@@ -121,3 +150,8 @@ camera action create name observatory type point x 1 y 2 z 3
 # a no-break space INSIDE a quoted value is ordinary text: the engine already
 # accepts spaces there, so the author meant the byte and nothing surprises them
 text name info string "hello world" altitude 10
+
+# === unclosed at end of file: reported at the OPENER line ==============
+# The checker only knows at the end of the file; the finding lands here.
+struct if a equal b
+struct loop 3

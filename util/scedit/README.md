@@ -64,7 +64,10 @@ the product); tool failures go to stderr. Output is gcc-shaped, per decision D6:
     file:line: severity: message [-Wid]
 
 Every id is a name from the contract file's `lint_seeds`, and so is its
-severity — retuning a severity is a data edit, not a code change. Example:
+severity — retuning a severity is a data edit, not a code change. Findings are
+printed in line order; two of them are only known at the end of the file and
+are reported where the fault IS, not where it surfaces: a `struct if` or
+`struct loop` never closed is reported **at its opener**. Example:
 
     doc/superscript.sts:94: error: column 433 holds a no-break space, the ISO-8859
     spelling (byte 0xA0), not a space: the engine separates words on space, tab, CR,
@@ -123,6 +126,12 @@ Four lines under the text, driven by where the caret is:
    (verbatim, prose entries included), the default, and whether it is required;
 4. **the findings on this line**, in full, with their id — or the engine source
    line the sentence above came from.
+
+In the text itself, every finding is **underlined at exactly the bytes it is
+about** (the misspelt word, the dropped key, the `#` and everything after it,
+the whole `struct if` that is never closed); the look-alike-space byte keeps
+its red marker. Both come from the finding's own span — there is no second
+reading of the bytes in the renderer.
 
 ### What the grey text means
 
@@ -270,13 +279,13 @@ Eight `ctest` gates, all green on a clean build:
 
 | gate | what it measures |
 |---|---|
-| `tokenizer` | 150 constructed lines, one per sharp edge of the parse model, each with its expected tokenization |
+| `tokenizer` | 171 checks: 150 constructed lines, one per sharp edge of the parse model, each with its expected tokenization, plus the block structure (`struct if`/`loop` openers, closers, closers that close nothing, the `comment`-block guard) |
 | `parse_oracle` | scedit's reading vs a **verbatim copy of the engine's `parseCommand`**, over exhaustively enumerated short strings, ISO-8859 high-byte lines and every line of the real corpus: 53 058 comparisons |
-| `editcore` | 154 checks over the headless editor: the byte-preserving buffer, the cursor→token map across quoting and the space-after-quote normalisation, every completion context, the documentation bar including its honest blanks, and the live findings |
+| `editcore` | 171 checks over the headless editor: the byte-preserving buffer, the cursor→token map across quoting and the space-after-quote normalisation, every completion context, the documentation bar including its honest blanks, and the live findings with their spans (a finding points at its bytes; an opener never closed is reported on ITS line) |
 | `roundtrip` | `doc/superscript.sts` — 1606 lines (rewritten upstream 2026-08-26, `f0c8ef83`), ISO-8859, CRLF — opened in the editor and saved untouched: **same MD5**. Plus one edit that must change exactly the line it was made on |
-| `ui_selftest` | the frames the editor actually DRAWS, rendered off-screen at a fixed size, with a mask proving the ghost text is dim and another proving the look-alike-space marker lands on the column the finding names |
+| `ui_selftest` | the frames the editor actually DRAWS, rendered off-screen at a fixed size, with four masks of the caret's row: the ghost text is DIM, the look-alike-space marker lands on the column the finding names, every finding's span is UNDERLINED at exactly its bytes, and the caret is the standard SGR inversion on exactly one cell |
 | `seed_gate` | the contract file validates (counts re-derived from the data, not asserted) — **and every fact in the four `grammar/args/` fragments is still byte-identical in the merged file**, which is what keeps the granular source and the merged contract from drifting apart |
-| `lint_rules` | `tests/lint_cases.sts` — one construct per armed id, proving the rule fires with the right id, severity and shape; plus a section that must stay silent |
+| `lint_rules` | `tests/lint_cases.sts` — one construct per armed id (18 ids), proving the rule fires with the right id, severity and shape; plus a section that must stay silent, and a last section for what is only known at the end of the file |
 | `corpus_gate` | `--check` over the real corpus produces exactly the recorded findings |
 
 `tests/lint-expected.txt`, `tests/corpus-expected.txt` and
@@ -314,13 +323,10 @@ Stated rather than hidden — the `--rules` discipline, applied to the editor.
   still the v1 shape (a plain array of names). For those, the bar shows what the
   command says about its keys in general and labels it as such; it never lets
   that stand in for a line about the name itself.
-- **A finding marks its line, not its column.** `scedit::Diagnostic`
-  (`src/sc_check.hpp`) carries file/line/severity/message/id and no column, so no
-  consumer of that header can underline a finding at its exact byte. The editor
-  marks the line in the gutter and puts the message on the doc bar; the one
-  column that must land exactly — `invisible-separator`'s — is reached from the
-  bytes instead (`EditCore::lookalikeSpaceColumns`), which is a display fact and
-  not a second copy of the rule. Giving `Diagnostic` a `Span` would close this.
+- **`--check` prints no column.** `scedit::Diagnostic` carries a `span` since
+  2026-08-31 (the editor underlines it), but D6's printed shape is
+  `file:line: severity: message` and the recorded expected files pin it; adding
+  gcc's `:col:` is a one-line change waiting for a decision, not for code.
 - **`values` mixes values with prose.** An arg spec's `values` array holds both
   literal values (`current`, `toggle`) and descriptions of the rest of the
   domain (`<file name>`, `anything else = off`), and nothing in the schema

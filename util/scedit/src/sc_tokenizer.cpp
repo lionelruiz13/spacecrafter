@@ -440,7 +440,33 @@ Line tokenizeLine(const std::string &raw)
 // BlockSkipState
 // ---------------------------------------------------------------------------
 
-bool BlockSkipState::feed(const Line &line)
+namespace {
+
+//! The opener as a block record: its tokens' raw range and text.
+BlockSkipState::OpenBlock openerOf(const Line &line, std::size_t lineno, const char *kind)
+{
+	BlockSkipState::OpenBlock b;
+	b.line = lineno;
+	b.kind = kind;
+	if (!line.tokens.empty())
+		b.span = Span{line.tokens.front().span.begin, line.tokens.back().span.end};
+	b.text = line.rawText(b.span);
+	return b;
+}
+
+//! The VALUE token of the last pair carrying `key` - the one `args` keeps.
+Span valueSpanOf(const Line &line, const std::string &key)
+{
+	Span s;
+	for (const auto &p : line.pairs)
+		if (line.tokens[p.key].text == key)
+			s = line.tokens[p.value].span;
+	return s;
+}
+
+} // namespace
+
+bool BlockSkipState::feed(const Line &line, std::size_t lineno)
 {
 	if (line.kind != LineKind::Parsed || !line.has_command || line.command.empty())
 		return false;                       // executeCommand:207 returns 0
@@ -458,13 +484,42 @@ bool BlockSkipState::feed(const Line &line)
 	if (line.command == "struct") {         // :221-222 -> commandStruct (:4600)
 		auto itIf = line.args.find("if");
 		const bool if_case = (itIf != line.args.end() && !itIf->second.empty() && !skipping_);
-		if (!if_case) {                     // :4664-4672, the comment case
-			auto itC = line.args.find("comment");
-			if (itC != line.args.end() && !itC->second.empty())
-				skipping_ = isTrueValue(itC->second);
+		if (if_case) {                      // :4605 guard; every branch returns
+			const std::string &v = itIf->second;
+			if (v == "else") {              // :4606-4609 -> IfSwap::revert
+				if (ifs_.empty())
+					unmatched_.push_back({lineno, "else", valueSpanOf(line, "if")});
+			} else if (v == "end") {        // :4610-4613 -> IfSwap::pop
+				if (ifs_.empty())
+					unmatched_.push_back({lineno, "end", valueSpanOf(line, "if")});
+				else
+					ifs_.pop_back();
+			} else {                        // :4614-4661 -> IfSwap::push, whichever comparison
+				ifs_.push_back(openerOf(line, lineno, "if"));
+			}
+			return false;
 		}
-		// `struct loop` also moves the same flag (:4691-4693) but only for
-		// runtime-evaluated counts — see the header note; not modelled.
+		auto itC = line.args.find("comment");   // :4664-4672, the comment case
+		if (itC != line.args.end() && !itC->second.empty()) {
+			skipping_ = isTrueValue(itC->second);
+			return false;
+		}
+		auto itL = line.args.find("loop");      // :4675-4699, the loop case
+		if (itL != line.args.end() && !itL->second.empty()) {
+			const std::string &v = itL->second;
+			if (v == "end") {               // :4677-4682
+				if (loops_.empty())
+					unmatched_.push_back({lineno, "loop end", valueSpanOf(line, "loop")});
+				else
+					loops_.pop_back();
+			} else if (v != "break") {      // :4684-4688 (break) leaves the pair open
+				OpenBlock b = openerOf(line, lineno, "loop");
+				b.count = v;                // :4690 evalString - a literal or a $-name
+				loops_.push_back(b);
+			}
+			// The runtime-only half (n < 1 raises the skip flag, :4691-4692)
+			// stays unmodelled — see the header note.
+		}
 		return false;
 	}
 

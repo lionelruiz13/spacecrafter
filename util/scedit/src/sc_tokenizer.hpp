@@ -222,28 +222,74 @@ std::size_t levenshtein(const std::string &a, const std::string &b);
 //! Returns "" only when `candidates` is empty.
 std::string nearestNeighbour(const std::string &source, const std::vector<std::string> &candidates);
 
-// --- block skip state ------------------------------------------------------
+// --- block state -----------------------------------------------------------
 
-//! The skip state `comment` / `uncomment` toggle, intercepted BEFORE the
-//! command table (executeCommand:215-222) and therefore still honoured while
-//! skipping. `struct comment <on|off>` reaches the same two handlers
-//! (commandStruct :4664-4672), so it is tracked too.
+//! The state the engine keeps BETWEEN script lines, read from the same
+//! `comment` / `uncomment` / `struct` lines it reads it from. Two facts:
 //!
-//! NOT tracked, deliberately (flagged in derivation-diff.md §5): `struct loop
-//! <n>` with n < 1 also raises the same flag (:4691-4693) and `struct loop
-//! end|break` lowers it — those depend on runtime $-substitution and on the
-//! ifSwap state, so they are not statically decidable. Consequence: scedit may
-//! lint lines a zero-iteration loop would have skipped.
+//! 1. THE SKIP FLAG. `comment` / `uncomment` toggle it; both are intercepted
+//!    BEFORE the command table (executeCommand:215-222) and therefore still
+//!    honoured while skipping. `struct comment <on|off>` reaches the same two
+//!    handlers (commandStruct :4664-4672), so it is tracked too.
+//!
+//! 2. THE BLOCK STRUCTURE: which `struct if` / `struct loop` openers are still
+//!    open, and which closer closed nothing. The engine's `ifSwap` is a stack
+//!    (`std::vector<bool>`, if_swap.hpp:71): `struct if <cond>` pushes
+//!    (commandStruct :4614-4661), `struct if else` flips the top (:4606-4609 ->
+//!    IfSwap::revert, if_swap.cpp:71-81), `struct if end` pops (:4610-4613 ->
+//!    IfSwap::pop, :40-54). An `end` or `else` on an empty stack is LOGGED
+//!    ("end without if" :45 / "else without if" :76) and ignored. The whole
+//!    if-case is guarded by `swapCommand != true` (:4605): inside a `comment`
+//!    block NO `struct if` line counts, `end` included. The stack is cleared
+//!    only by `script action end` (:2810), which the end of every script runs
+//!    (terminateScript :178-181 <- script_mgr.cpp:335) - so an opener left
+//!    open damages its own file's tail and nothing after. `struct loop <n>` ..
+//!    `struct loop end` is not a stack engine-side (one isInLoop/loopVector,
+//!    script_mgr.hpp:120-131) but it is a pair the author writes, and an
+//!    opener without its `end` is a defect in every runtime path
+//!    (:4675-4699): n > 1 -> the lines after it run once and are never
+//!    repeated (the replay starts at `end`, script_mgr.hpp:125-131), n < 1 ->
+//!    the skip flag raised at :4691-4692 is never lowered. Loops are tracked
+//!    by pairing; `break` (:4684-4688) leaves the pair open.
+//!
+//! NOT decided here, deliberately (derivation-diff.md §5.1-5.2, answered
+//! 2026-08-31 as "structure yes, arms no"): WHICH arm of an `if` runs, and
+//! whether a `struct loop <n>` with n < 1 skips - both need runtime values.
+//! Findings inside such regions are reported as on any other line. The loop
+//! case is also guarded engine-side by `ifSwap->get() != true` (:4676), a
+//! runtime fact; a loop is tracked whatever the if-state.
 class BlockSkipState {
 public:
-	//! Feed every Parsed line, in file order. Returns true when the line ITSELF
-	//! is skipped by the engine (i.e. the state was on and the line is not one
-	//! of the pre-table interceptions).
-	bool feed(const Line &line);
+	//! A `struct if` / `struct loop` opener still open after the last feed.
+	struct OpenBlock {
+		std::size_t line = 0;     //!< 1-based, as fed
+		std::string kind;         //!< "if" | "loop"
+		std::string text;         //!< the opener's tokens, as the author wrote them
+		std::string count;        //!< loop only: the raw `loop` value ("3600", "$n", ...)
+		Span span;                //!< raw byte range from the first token to the last
+	};
+	//! A closer fed while nothing of its kind was open.
+	struct Unmatched {
+		std::size_t line = 0;
+		std::string what;         //!< "end" | "else" | "loop end"
+		Span span;                //!< the closing word's token
+	};
+
+	//! Feed every Parsed line, in file order, with its 1-based line number.
+	//! Returns true when the line ITSELF is skipped by the engine (the flag
+	//! was on and the line is not one of the pre-table interceptions).
+	bool feed(const Line &line, std::size_t lineno = 0);
 	bool skipping() const { return skipping_; }
-	void reset() { skipping_ = false; }
+	//! Still open after everything fed so far, in opening order.
+	const std::vector<OpenBlock> &openIfs() const { return ifs_; }
+	const std::vector<OpenBlock> &openLoops() const { return loops_; }
+	//! Every closer that closed nothing, in feed order (never cleared).
+	const std::vector<Unmatched> &unmatched() const { return unmatched_; }
+	void reset() { *this = BlockSkipState(); }
 private:
 	bool skipping_ = false;
+	std::vector<OpenBlock> ifs_, loops_;
+	std::vector<Unmatched> unmatched_;
 };
 
 } // namespace scedit

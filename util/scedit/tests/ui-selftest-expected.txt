@@ -15,6 +15,8 @@
 | Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd----dd
 mark m
+under ----------uu
+inv ------------i
 ### ghost-empty-value
 | scedit │ line 1, byte 11 │ selftest.sts
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -32,6 +34,8 @@ mark m
 | Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd-------------dddddd
 mark m
+under ---------------uuuuu
+inv ---------------------i
 ### ghost-enumerated-value
 | scedit │ line 1, byte 11 │ selftest.sts
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -49,6 +53,8 @@ mark m
 | Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd-------------dddddd
 mark 
+under 
+inv ---------------------i
 ### doc-set-name
 | scedit │ line 1, byte 10 │ selftest.sts
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -66,6 +72,8 @@ mark
 | Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd
 mark 
+under 
+inv --------------------i
 ### open-key-list
 | scedit │ line 1, byte 7 │ selftest.sts
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -83,6 +91,8 @@ mark
 | Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd---------dddd
 mark m
+under ---------------uu
+inv -----------------i
 ### finding-invisible-separator
 | scedit │ line 1, byte 0 │ selftest.sts
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -100,6 +110,8 @@ mark m
 | Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd
 mark m-------------------------------m
+under --------------------------uuuuuuuu
+inv ----------i
 ### no-doc-extracted
 | scedit │ line 1, byte 10 │ selftest.sts
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -117,6 +129,8 @@ mark m-------------------------------m
 | Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd
 mark 
+under 
+inv --------------------i
 ### iso-8859-and-crlf
 | scedit │ line 2, byte 0 │ selftest.sts
 | ────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -134,3 +148,43 @@ mark
 | Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
 dim -ddddddd----------------d
 mark m
+under -------------------------u
+inv ----------i
+### finding-inline-comment
+| scedit │ line 1, byte 0 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| E     1 │ media action pause # stop video
+| 
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| command `media`
+| Play a video in the dome — or a sound on its own — and control it while it plays.   (documents: co
+| 
+| error: '#' does not start a comment here: only a '#' in column 1 does, so it and the 2 words after
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd
+mark m
+under -----------------------------uuuuuuuuuuuu
+inv ----------i
+### finding-unclosed-struct
+| scedit │ line 1, byte 0 │ selftest.sts
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| E     1 │ struct if a equal b
+|       2 │ flag stars on
+| 
+| 
+| 
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| command `struct`
+| Control which lines of the script run: ask a question and skip what follows when the answer is no,
+| 
+| error: 'struct if a equal b' is never closed: no 'struct if end' follows before the end of the fil
+| ────────────────────────────────────────────────────────────────────────────────────────────────────
+| Tab complete · Shift-Tab previous candidate · Ctrl-S/F2 save · Ctrl-Q/F10 quit
+dim -ddddddd
+mark m
+under ----------uuuuuuuuuuuuuuuuuuu
+inv ----------i

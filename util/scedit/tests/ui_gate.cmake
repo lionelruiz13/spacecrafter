@@ -1,11 +1,13 @@
 # The UI gate: what the EDITOR PUTS ON A SCREEN, not what its core computes.
 #
 # `scedit --ui-selftest` renders a fixed set of (buffer, cursor) cases into an
-# off-screen 100x14 terminal and prints, per case, the frame and two masks of the
-# caret's row: which cells are DIM (the greyed ghost text — D31's whole point is
-# that it is grey, and a ghost drawn in normal ink is a different promise) and
-# which carry the look-alike-space marker (whose COLUMN must be the one the
-# `invisible-separator` message names).
+# off-screen 100x14 terminal and prints, per case, the frame and four masks of
+# the caret's row: which cells are DIM (the greyed ghost text — D31's whole
+# point is that it is grey, and a ghost drawn in normal ink is a different
+# promise), which carry the look-alike-space marker (whose COLUMN must be the
+# one the `invisible-separator` message names), which are UNDERLINED (a
+# finding's span, at exactly its bytes) and which is INVERTED (the caret: the
+# standard SGR inversion, one cell — scedit/INTENT.md §5 item 15(c)).
 #
 # tests/ui-selftest-expected.txt is a RECORD, like the lint and corpus files:
 # every line of it was read and is intended. Changing the layout means editing
