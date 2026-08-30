@@ -260,6 +260,17 @@ re-baseline (queue item 7) stays a SEPARATE deliberate act.
      word" — never only as an accomplishment record; the owner's proper fix and
      the mitigation may differ in preconditions the verification surface does
      not reach (*"different path doesn't certify same preconditions"* [vixy]).
+   - **ENVIRONMENT CANARY (2026-08-30, §11.176; enumerated §0.7 precondition per
+     §11.175(e)):** before any measuring launch, run `harness/f56_canary.sh` (full,
+     ~100 s, for photometric tasks; `--no-scene`, seconds, otherwise). Non-zero exit
+     = STOP and report per §11.174(h) — never mitigate silently, never widen the band
+     to make a run pass (re-banking is one VALUES-block edit WITH an argument; the
+     :2/:4 canonical-display fork is the OWNER's, §11.174(f)). Band on `:2`:
+     165.258/6.644 new · 160.142/6.603 old, ±1.0/±0.15. §11.104(d)'s numbers are
+     TARGETS AGAIN, but only on a canary-passed stack (§11.164(l)(2) refuted at its
+     node); 61.431/42.476 stay non-targets — the canary refuses them by construction.
+     A/A floors are PER SCENE (374 px = star field; 28 px = Moon frame, cross-epoch).
+     The shared `~/.spacecrafter/cache` is WATCHED, not isolated (`f56_manifest.py`).
    - **Question routing by stratum (2026-08-29, §11.161(c), owner-stated):**
      old-behavior intent/expectation questions → the main tester (*"he either
      knows or tell what he had always expected, both are a resolution"*);
@@ -526,6 +537,43 @@ Follow-up run: **b3_ladder GREEN** — §11.104(d)'s July numbers reproduce, §1
 refuted, the driver bump measured photometrically inert. 19 markers + 6 stub mirrors,
 §11.174(d) SWEPT, (e) fix (2) delivered (fix (1) still queued). Code tree clean at
 `d6aec251` throughout. Baselines at delivery: pair-check **192/167/25/87** (+1/+1/0/0, entry-first signature) · scan **113/148/87** (+7/+11/+3, all this delivery's own markers; real arrears unchanged at 83, six named exceptions) — attributed in §11.176(l).
+
+*(ACCEPTED by supervisor [fable 2026-08-30]: §11.176 read in full; commits/authors/scope
+checked (chain `88a81b4 → b556654 → 0a76ad6 → e752760 → 5fc4200 → ef45862 → fa5d789 →
+82d2ada → d3f8cab`, harness-only, all carrying `Code: master-beta @ d6aec251`, code
+clean throughout); prediction md5s `e46040b1`/`30edf511` confirmed by my own hash;
+`f45_run.sh`/`b3_ladder_run.sh` verified UNMODIFIED at git; marker placement verified
+at the diff (`fa5d789`: six entry files + three INTENT.md stub-region hunks — §5/§13
+untouched as claimed); both instruments re-run by me, recorded post-states reproduced
+to the digit (**192/167/25/87** · **113/148/87**), and the F54 lesson HELD — baselines
+re-derived after the last follow-up commit, fixed-point confirmed. Judgment calls
+ENDORSED with their arguments: the ladder run beyond the mandate's letter (the sweep's
+own table named it, one launch, no constant moved, P9 committed first with three
+distinguishable outcomes — the round's headline: b3_ladder's ENTIRE residual was the
+dispatch fault, four tasks' cost re-attributed, §11.164(l)(2) refuted at its node);
+the RE-MEASURED CLEAN fourth verdict class (paid vs argued is a real distinction
+§11.174(d) itself owed for §11.159); `--samples 2` (a preflight, not an experiment;
+spread 0.000 measured over nine launches); frame pruning (I2 — byte-identical to the
+committed ladder frame); instrument reuse unmodified (I2, one authority per claim);
+the two in-run instrument fixes (both recorded, both re-verified — "an instrument must
+not report a stack fault it did not measure" is the chain discipline verbatim); the
+named-not-done four (each with its boundary); the no-mint ×3, each argued at §5.79
+(the dim state stays a mechanism-less symptom — §5.2 class — with its NEW reach bound
+banked at (e): the star channel never went dim, so every global-output-transform
+candidate is eliminated). SCAN-OWNER RULINGS at this acceptance: (1) the
+stub-collision property (§11.165's new record, 79 ambiguous ids) — the instrument
+stays FROZEN; its two-line fix JOINS the queued strict-credit v2 as ONE deliberate
+re-baselining package (the family now counts FIVE named properties); (2) the two
+source-edits ENDORSED with the boundary made explicit: legitimate ONLY on the
+delivery's OWN authored text and ONLY accuracy-increasing — historical evidence stays
+untouchable, the F49 ruling unmoved; (3) next runner's baseline **192/167/25/87** ·
+**113/148/87**, 83 real, SIX named exceptions. Executor tally, minor: the WIP's "19
+markers" is the stale pre-`d3f8cab` figure (the entry file wins — the derived-label
+rule applying to the WIP itself). SUPERVISOR ENACTMENT in this commit: the canary
+becomes an enumerated §0.5 standing precondition (§11.175(e)/§11.176(k)(8) — one
+bullet, cheap to reverse). Newly Vixy's, routed at close: the :2/:4 canonical-display
+fork now has a live instrument waiting on it; §11.174(e)'s fix (1), the host-events
+channel, planned as a close-time supervisor act. F57 next, §11 number 177.)*
 
 ### F57 — The tester-model corpus validation: Q-55's five conditioned metrics, predictions first (§11.173(d)) [S]
 
