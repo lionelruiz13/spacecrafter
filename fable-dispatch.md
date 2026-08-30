@@ -572,7 +572,55 @@ cannot attribute this gate to the epoch. Two reds recorded, neither in the
 seven, neither minted: that one, and `f23`'s S1/S2 skylock legs (pre-fix binary
 parts old=true/new=false, current binary agrees true/true — reads as the seam
 having converged, i.e. a defect-demonstration leg outliving its defect).
-**Next:** §11.171 entry file + stub, back-markers, baselines, WIP → DELIVERED.*
+Delivered as **§11.171** (entry file then stub), back-markers at §11.167 ×4 and
+§11.170 ×2 + stub; five files, 52 insertions / 3 deletions, no gate constant
+touched.*
+*(ACCEPTED by supervisor [fable 2026-08-30]: §11.171 read in full; commits/authors/
+scope checked (chain `ac495a6 → 7d6dbf6 → 4cbec9a → f593f71 → 47bd212 → 7a79bb7`,
+harness-only, code clean at `d6aec251`); decision-free VERIFIED AT THE DIFF
+(`7d6dbf6`: 3 deletions, each a dict literal gaining one key; no comparison,
+threshold or flow line touched); back-markers verified at both nodes + stub;
+pair-check re-run **187/162/25/86** ✓. BASELINE CORRECTION, supervisor-measured:
+the scan at the delivery commit ITSELF reads **100/132/84**, not the recorded
+98/129/83 — the entry's own final text entered the corpus after the executor's
+derivation (the F49-acceptance class), and the 84th unmarked pair
+`§11.171 → §11.165` is a CO-OCCURRENCE false positive (§11.165 sits inside the
+160-char window of the previous sentence's `SUPERSEDED`, which describes
+§11.170's marker; nothing about §11.165 is superseded) — text KEPT per the F49
+ruling (editing evidence to quiet a filter is the wrong direction). NEXT
+RUNNER'S BASELINE: **100/132/84** with the 84th named benign; refinement forced
+by this instance: even the unmarked counter is self-description-sensitive — the
+stable quantity is the PARTITIONED real-event residual. Executor tally, both
+minor, both caught by the layers: recorded post-state not re-derived after the
+final write; a stale "Next:" checkpoint line inside the delivered WIP (closed
+in this commit). Template refinement adopted for F55's prompt: baselines are
+the LAST act before the delivery commit, re-derived after any post-delivery
+commit. Judgment calls ENDORSED with their arguments: the UNMANDATED SECOND
+RUN — the round's third criterion-integrity instance: a red that read as epoch
+evidence, refuted by 2.5 minutes of repetition; "unstable" is worth more than
+a number in that margin column; fresh §0.5 captures over launchless
+re-analysis; pre-fix binaries by ANCESTRY (`merge-base --is-ancestor` —
+re-measurement, not simulation); `dumpread` over the b24 re-export (I2 at the
+grammar's home); the no-mint ×3, each argued at §5.79 (the skylock reds'
+likelier reading is a demonstration leg outliving its defect — routed to the
+B33 intent, Vixy-strata). SCAN-OWNER RULING on (k)'s offered observation: the
+vocabulary gap is BY DESIGN and stays — the scan measures SUPERSESSION debt;
+discharge-class markers (DISCHARGED / RECORDED / MEASURED / PAID) mark a claim
+TRUE at write time whose owed state is now paid — a different event class,
+correctly invisible to a supersession scanner; writer-side convention refined:
+a marker that REFUTES or REPLACES uses the five lexicon words, a marker that
+PAYS deliberately does not. TWO ENACTMENTS, discharging the queued riders:
+(1) **§11.170(a2) ANNOTATED** with the owner's illuminate testimony (tester
+request; cost-forced silence at ~100k generated commands; the memory↔code
+divergence at the 0 boundary held open) — Q-51 closed; (2) **§5.115 MINTED** —
+the script log's unbounded cross-launch growth, mechanism traced by MY OWN
+read (`main.cpp:210` `openLog(SCRIPT, "script", true)` — the tree's only
+keepHistory → `log.cpp:90` per-day dated file in append, nothing caps or
+deletes; every command echoed ×2; `[debug] write_log` default TRUE at
+`checkConfig.cpp:66`; blame `909011046` = the owner's own hand 2020-07-08,
+last-touch caveat) + the owner's field testimony (GB logs at clients) — Q-52
+closed. NEWLY VIXY'S: the §5.115 fork (retention vs density, separable
+halves); the f23 S1/S2 B33-intent question. F55 next, §11 number 172.)*
 
 ### F55 — The first-60 s photometric sampler: the launch window no instrument has observed (§11.167(j)(2)) [S]
 
