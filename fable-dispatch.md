@@ -282,6 +282,14 @@ authorization lands. DECISIONS_PENDING open set at close: **still EMPTY**
      in-run A/B only; never absolute fps labels, never cross-session cadence; a
      stack change (compositor, streamer, headless X, screen power state) ⇒ report +
      re-baseline.
+   - **Environment-fault mitigations are OWNER VETO ITEMS (2026-08-30, §11.174(h),
+     owner-stated: *"If the F43 agent reported the failure over mitigating it, I
+     would have corrected it"*):** any improvised substitute for missing host
+     state (display stack, runtime dir, auth) is reported WITH AN EXPLICIT
+     DECISION FLAG — "your correction may differ from my mitigation — say the
+     word" — never only as an accomplishment record; the owner's proper fix and
+     the mitigation may differ in preconditions the verification surface does
+     not reach (*"different path doesn't certify same preconditions"* [vixy]).
    - **Question routing by stratum (2026-08-29, §11.161(c), owner-stated):**
      old-behavior intent/expectation questions → the main tester (*"he either
      knows or tell what he had always expected, both are a resolution"*);
