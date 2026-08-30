@@ -679,7 +679,23 @@ entry; §0.5 in full.
 committed pre-run; series + event timestamps recorded with the verdict;
 §11.167(j)(2) annotated; §11 entry + stub; instrument baselines re-derived
 with deltas explained; code tree clean at close; WIP per §0.6.
-**WIP:** *(empty)*
+**WIP:** *(2026-08-30 CP1 — design fixed, no launch yet.* **Channel named**:
+an X-side `ffmpeg -f x11grab` capture on `:2` started BEFORE the app exists
+(dry-run verified: 15 frames, mtimes 0.200 s apart, whole-screen mean
+**0.0053** = the no-app state, which is the failure-proof), plus the app's own
+**startup script** as the scene-establishment channel — `playStartupScript`
+reads `<HOME>/.spacecrafter/scripts/fscripts/startup.sts`
+[observed: script_mgr.cpp:384-388, app.cpp:689], entirely outside TCP.
+**A THIRD instrument found at design time**: `cLog::write` prefixes every LOG
+FILE line with `SDL_GetTicks()` ms and flushes per line
+[observed: log.cpp:122-127,151-156] — §11.167(c)'s *"the applog carries no
+timestamps"* is true of STDOUT only; `vulkan.log` carries the 391 texture
+events WITH ms stamps, and the real home's last run puts the Moon's three at
+ticks **10488**, 4 ms before the startup script loads. New: `f55_farm.sh`
+(farm with a writable `scripts/fscripts` — a b3 farm symlinks `scripts` to the
+REAL home, so writing startup.sts there would overwrite the owner's),
+`f55_probe.py` (mechanics only, measures NO disc, so it cannot pre-empt the
+predictions). Next: run the probe, then commit predictions, then the sampler.*
 
 ---
 
