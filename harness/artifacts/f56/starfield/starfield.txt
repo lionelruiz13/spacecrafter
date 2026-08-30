@@ -1,0 +1,39 @@
+today1                 md5 a09147d7301cb4c928d8c3fb609ba8e9  lit>8   10832  lit_mean 36.5811  frame_mean 0.1056
+today2                 md5 a09147d7301cb4c928d8c3fb609ba8e9  lit>8   10832  lit_mean 36.5811  frame_mean 0.1056
+dim_empty1             md5 a09147d7301cb4c928d8c3fb609ba8e9  lit>8   10832  lit_mean 36.5811  frame_mean 0.1056
+dim_empty2             md5 9baf6ed4e65fb90d2c18d0961a23e376  lit>8   10835  lit_mean 36.5733  frame_mean 0.1056
+dim_empty3             md5 a09147d7301cb4c928d8c3fb609ba8e9  lit>8   10832  lit_mean 36.5811  frame_mean 0.1056
+dim_empty4             md5 a09147d7301cb4c928d8c3fb609ba8e9  lit>8   10832  lit_mean 36.5811  frame_mean 0.1056
+dim_full1              md5 9baf6ed4e65fb90d2c18d0961a23e376  lit>8   10835  lit_mean 36.5733  frame_mean 0.1056
+dim_full4              md5 9baf6ed4e65fb90d2c18d0961a23e376  lit>8   10835  lit_mean 36.5733  frame_mean 0.1056
+
+today1                 vs today2                 identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+today1                 vs dim_empty1             identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+today1                 vs dim_empty2             identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+today1                 vs dim_empty3             identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+today1                 vs dim_empty4             identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+today1                 vs dim_full1              identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+today1                 vs dim_full4              identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+today2                 vs dim_empty1             identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+today2                 vs dim_empty2             identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+today2                 vs dim_empty3             identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+today2                 vs dim_empty4             identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+today2                 vs dim_full1              identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+today2                 vs dim_full4              identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+dim_empty1             vs dim_empty2             identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+dim_empty1             vs dim_empty3             identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+dim_empty1             vs dim_empty4             identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+dim_empty1             vs dim_full1              identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+dim_empty1             vs dim_full4              identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+dim_empty2             vs dim_empty3             identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 0.999997
+dim_empty2             vs dim_empty4             identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 0.999997
+dim_empty2             vs dim_full1              identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+dim_empty2             vs dim_full4              identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+dim_empty3             vs dim_empty4             identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+dim_empty3             vs dim_full1              identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+dim_empty3             vs dim_full4              identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+dim_empty4             vs dim_full1              identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+dim_empty4             vs dim_full4              identical=False n_diff     374 n_diff>3       0 max_delta   3 lit_ratio 1.000003
+dim_full1              vs dim_full4              identical=True  n_diff       0 n_diff>3       0 max_delta   0 lit_ratio 1.0
+
+-> artifacts/f56/starfield/starfield.json

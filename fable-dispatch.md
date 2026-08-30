@@ -518,8 +518,13 @@ is episodic, not per-run (`t-bodies-moon_normal.dat` still carries F55's 10:09:2
 mtime, so the instrument reads the very event that entry measured). Both arms mapped
 both ways: D1 geometry→2, D2 dead display→3, D3 dim-era json→1 (152/152 refused), D4
 empty→4, D5 green control→0; manifest positive control 4/4 mutation classes, null arm
-0. NEXT: the cadence echo (one launch, f45_run.sh empty), then the sweep, then the
-§11.176 entry.
+0. CP3: cadence echo PAID and CONFIRMED twice (4392 lines / [30.0, 30.500] s =
+[144.0, 146.4] fps, F45's number to the digit, same star hp 677) — §11.159(k7) stands
+re-measured. P7/P8 committed then measured: today's star-field frame is BYTE-IDENTICAL
+to four 2026-08-29 dim-era frames (md5 a09147d7) and the 374 px / 3-of-255 A/A floor
+reproduces EXACTLY across the boundary ⇒ the dim state never touched the star channel;
+§11.174(d)'s two §11.159 suspects are CLEARED by measurement, not waived. NEXT: the
+sweep (verdict table + markers), then the §11.176 entry.
 
 ### F57 — The tester-model corpus validation: Q-55's five conditioned metrics, predictions first (§11.173(d)) [S]
 
