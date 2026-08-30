@@ -167,6 +167,17 @@ NOTE for F56's delivery: the sweep MIGRATES the scan's numbers by
 design (every SUSPECT-STACK marker adds event lines/pairs) — the
 delivery owes the delta attribution, and the strict-credit v2
 re-baseline (queue item 7) stays a SEPARATE deliberate act.
+**EXTENSION [same day, after F58's acceptance]:** the core three are
+DELIVERED and accepted (F56 → §11.176 · F57 → §11.177 · F58 → §11.178);
+health permits, so queue items 4–5 mint as **F59** (F49's two
+named-not-run audits, §11.165(h)(3)) and **F60** (the §5.5-class
+row↔row staleness sweep, F47 acceptance) — the session-15 extension
+precedent (3→5). Items 6–7 (F52(k)'s git-only checks · the strict-credit
+v2 package, now THREE members by this round's rulings: strict credit +
+stub-collision fix + incompleteness lexicon) stay next-round. Baselines
+at extension: pair-check **194/169/25/90** (the 90th = §5.118, minted at
+F58 acceptance) · scan **114/150/88** (83 real, seven named exceptions
+after F57's addition — six F56 + one F57).
 
 ---
 
@@ -404,11 +415,12 @@ F55 §11.172 (session-16 round — three for three DELIVERED and accepted;
 archived pass 10). Session-17 round (2026-08-30): the session-16 queue
 minted in order as **F56** (environment canary + cache manifest + the
 dim-era correction sweep) · **F57** (the tester-model corpus validation)
-· **F58** (the §11.169 schema audit) below. Extension candidates: F49's
-two named-not-run audits (§5-side twin; multi-claim) · the §5.5-class
-row↔row staleness sweep (F47 acceptance) · F52(k)'s two git-only checks ·
-the scan strict-credit v2 + re-baseline (deliberate instrument change).
-Still blocked: §5.100's fix (authorization unanswered).*
+· **F58** (the §11.169 schema audit) below; extension after F58's
+acceptance minted queue items 4–5 as **F59** (F49's two named-not-run
+audits) · **F60** (the §5.5-class row↔row staleness sweep). Remaining
+candidates next-round: F52(k)'s two git-only checks · the strict-credit
+v2 package (three members). Still blocked: §5.100's fix (authorization
+unanswered).*
 
 ### F56 — The environment canary + the cache manifest + the dim-era correction sweep (§11.174(e)(d)(j), §11.172(i)) [M]
 
@@ -824,6 +836,119 @@ trailer-parsing observation were both correct and both recorded. The two rows' o
 launches (§5.116/§5.117 consequence pricing) are next-round queue candidates. F58
 closes the session-16 queue's front three: round core COMPLETE, extension decision
 next per §0b.2.)*
+
+### F59 — F49's two named-not-run audits: the §5-side twin and the multi-claim case (§11.165(h)(3)) [S]
+
+**Why now:** §11.165(h)(3) names both and runs neither: (i) the **§5-side twin** —
+*"does every §5 row carry the marker for the §11 entry that corrected it"* — the
+back-marker discipline was audited §11→§11 only; 13 candidate pairs sit in
+§11.165(c)'s third bucket, whose own note rules mint/route relations OUT of the
+§11 class *"by its own definition"* while naming the twin *"a different sweep"*;
+(ii) the **multi-claim case** — a superseder correcting TWO claims of one target
+where only one is marked; the per-PAIR test cannot see it (§11.165(g)'s honesty
+clause). Queue position 4 (recorded at session-15 close, carried through
+session-16). Extension slot 1 of this round.
+
+**Sources (re-read, never recall):** `INTENT/11.165.md` IN FULL ((c)'s partition +
+the 13-pair third bucket, (g)'s lower-bound clauses, (h)(3));
+`intent_backmarker_scan.py` (the instrument whose blind spots these are — FROZEN
+per this round's acceptances: observations join the strict-credit v2 package,
+never applied now); §11.161(g) (the marker convention) + §11.113(p) (the
+back-marker rule); the §5 register at INTENT.md + `INTENT/5.*.md` entry files.
+
+**Preconditions (checkable, §0.7 gate):** code HEAD `d6aec251` clean; harness HEAD
+as the prompt states, clean; next free §11 number as the prompt states; live
+`### F` count **5**; §11.165(c)(g)(h) present as described (the 13-pair third
+bucket, the (h)(3) named-not-run clause); instrument baselines as the prompt
+states; the scan FROZEN (no uncommitted instrument diff). NO launches, NO
+display. ANY broken ⇒ abort per §0.7.
+
+**Scope:**
+1. **Method committed FIRST** (the F58 form — the boundary before the
+   classification): how §11→§5 correcting relations are enumerated — the scan's
+   own pair output filtered to §5 targets PLUS a stated grep over entry
+   files/stubs for §5-ids within reach of the five lexicon words; the
+   enumeration method is the audit's boundary and a committed artifact.
+2. **The §5-side twin:** per enumerated pair (a §11 entry
+   corrects/supersedes/refutes a §5 row's claim), does the §5 row carry the
+   marker naming that §11 entry (§11.113(p) at the row)? Verdict per pair:
+   MARKED / UNMARKED-REAL (arrears — annotate per §11.161(g), same commit) /
+   MINT-ROUTE (out of class, the §11.165(c) bucket's own ruling) /
+   FALSE-POSITIVE (named, the F56/F57 exception discipline). The 13 known
+   bucket pairs are the FLOOR, not the list.
+3. **The multi-claim audit, bounded and stated:** over the MARKED pairs, a
+   per-claim reading of the superseder against its target: does the marker
+   cover ALL claims the superseder corrects? Bound the corpus honestly — a
+   full per-claim walk of every marked pair may exceed S; a sampled walk is
+   acceptable ONLY with the sampling rule committed BEFORE the walk (never
+   convenience-sampled), and the uncovered remainder stated.
+4. **Record:** §11 entry + stub, entry-file-first (§11.156(f)); real arrears
+   marked at their nodes same commit; instrument observations ROUTED to the
+   strict-credit v2 package (instrument untouched); mint license per §5.79
+   (the F50 form); artifacts under `harness/artifacts/f59/`.
+
+**Boundaries:** NO product code, NO data, NO launches; instruments FROZEN
+(annotations at nodes, never instrument edits); historical evidence untouchable —
+markers ADD, never reword (the F56-acceptance boundary).
+
+**DoD:** enumeration method committed; twin verdict table complete with per-pair
+cites; real arrears marked; multi-claim boundary stated + walked within it;
+§11.165(h)(3) annotated DISCHARGED; §11 entry + stub; baselines re-derived as
+the last act with deltas attributed; code tree clean; WIP per §0.6.
+**WIP:** —
+
+### F60 — The §5.5-class row↔row staleness sweep: §5 rows vs the §13 rows that own their work (F47 acceptance) [S]
+
+**Why now:** minted by the F47 acceptance (2026-08-29, archived F47 WIP): *"the
+row↔row staleness sweep (§5.5's class — §5 rows vs the §13 rows that own their
+work; nothing checks it today; F42's instrument extends)"*. §5 rows carry routing
+text ("rides B16's seam", "fix routed to B28", "joins the final tester pass")
+whose referenced §13 rows have since moved state (closed, delivered, delegated,
+answered); a §5 row citing a dead routing is §5.5's class — a stale cached
+conclusion BETWEEN rows — and nothing checks the axis today (the pair-check
+covers stub↔entry-file, the scan covers §11↔§11 supersession). Queue position 5.
+Extension slot 2 of this round; runs AFTER F59 (both walk the §5 register —
+F60 reads F59's delivery state first, the F54/F55 ordering precedent).
+
+**Sources (re-read, never recall):** `fable-dispatch/archive/F47.md` (the
+acceptance block: the queue-member sentence + the §5.5-closure context);
+`INTENT/11.163.md` (the §5.5 closure convention — retire-with-old, the
+session-12 B4 precedent, the reopening criterion); `intent_pair_check.py` (F42's
+instrument — the named extension candidate); the §5 register + §13 at INTENT.md.
+
+**Preconditions (checkable, §0.7 gate):** code HEAD `d6aec251` clean; harness
+HEAD as the prompt states, clean; next free §11 number as the prompt states;
+live `### F` count **5**; the archived F47 acceptance present at the stated path
+with the queue-member sentence; §11.163 as described; F59 DELIVERED and its WIP
+reflecting acceptance; baselines as the prompt states. NO launches, NO display.
+ANY broken ⇒ abort per §0.7.
+
+**Scope:**
+1. **The axis enumerated, method committed FIRST:** every reference from a live
+   §5 row to a §13 row (and §13→§5 backward where a §13 row claims ownership of
+   a §5 fix), by stated grep + read; the method is the boundary, committed
+   before any verdict.
+2. **Per reference, the staleness verdict:** the §13 row's CURRENT state vs
+   what the §5 row's text assumes — COHERENT / STALE (the referenced row moved:
+   annotate the §5 row per §11.161(g), same commit, original preserved) /
+   AMBIGUOUS (listed with the reading options, never resolved by guess — §5.2's
+   class). Whether to deliver a repeatable checker (an `intent_pair_check.py`
+   extension — this axis has no counter yet, so extending re-baselines nothing)
+   or a one-off committed table is the executor's call WITH the argument —
+   weigh the maintained-surface cost against the recurrence risk.
+3. **Record:** §11 entry + stub, entry-file-first; stale references annotated
+   at their §5 nodes; anything needing a state DECISION (a row that should
+   close or move) is ROUTED, never enacted — flips are the supervisor's; mint
+   license per §5.79; artifacts under `harness/artifacts/f60/`.
+
+**Boundaries:** NO product code, NO data, NO launches; §13 rows NOT edited
+(routing only); markers ADD, never reword.
+
+**DoD:** axis enumeration committed; verdict table complete with per-reference
+cites; stale §5 nodes annotated; decisions routed; the instrument-or-table
+choice argued; §11 entry + stub; baselines re-derived as the last act with
+deltas attributed; code tree clean; WIP per §0.6.
+**WIP:** —
 
 ---
 
