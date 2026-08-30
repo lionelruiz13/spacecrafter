@@ -403,24 +403,7 @@ controls cited; the searchAround reading answered or bounded; §5.113
 annotated, still OPEN; §11 entry + stub; both instrument baselines re-derived
 post-delivery (pair-check 185/160/25/85, scan 90/125/83 at dispatch) with
 deltas explained; code tree clean at close; WIP per §0.6.
-**WIP:** 2026-08-30 CP1 — warm-up done (both trees clean, code `d6aec251`, binary
-present, XAUTH ok, comm probe 0); §5.113's three chains RE-VERIFIED at HEAD;
-scope-3 (searchAround→cleverFind null) ANSWERED **NO**, five producers, cites
-verified by hand. Channels chosen: A = dump `oldView.observer`
-(`homePlanet`/`onBody`/`distanceFromCenter`) + `selected_distance` +
-`get status position`; B = FISHEYE fov 180 screenshots, `look_at` zenith, 12-step
-sim-time sweep; C = screen at fov 2, `illuminate hp V` positive control +
-name-scoped removal. CP2 — `f53_guards.py` written (compiles, all 70 flag names
-validated against the code) and the predictions COMMITTED PRE-RUN, md5
-`5799ca48`. CP3 — THE LAUNCH IS DONE (one launch, exit 0, 0 refused, md5 in==out,
-comm probe 0; the committed prediction file is byte-identical to the one the run
-wrote). A: every prediction matched except the tight distance band (1.00011 vs
-[0.99995,1.00005]) — traced to light-travel-time, not to the mechanism; the latch
-is byte-identical. B: `ra :00h00m` / `dec:+00°00'` read off the crops with
-nothing selected, alt/az tracing a full diurnal arc, 7/12 steps. C: accepted,
-silent, and an Illuminate IS inserted — witnessed white at the dome edge.
-Artifacts in `harness/artifacts/f53/`. NEXT: INTENT/11.170.md, stub, §5.113
-annotation, back-markers, instrument baselines.
+**WIP:** *(delivered 2026-08-30 — F53 complete.* §5.113's owed datum **PAID**, row stays **OPEN**, class fork untouched. One launch, predictions committed first (md5 `5799ca48`, byte-identical after the run), probe 0, md5 in==out, 0 refused, exit 0. **A**: observer leaves the planet (`homePlanet` → `""`, `onBody` → false, `distanceFromCenter` 4.26e-5 → 5.02e-10, Earth at RA 179.631°/DEC −0.0022°), latch byte-identical, `get status position` BLIND, the one line emitted is about the camera; the single failed gate (distance band) TRACED to light-travel-time, 2.0 % agreement. **B**: `ra :00h00m`/`dec:+00°00'` with nothing selected, alt/az on a full diurnal arc, 7/12 steps, reading channel validated to the character by a star control. **C**: accepted, silent, an Illuminate inserted — white, at the dome edge; `size > 1` found to be a precondition the row omits. **Scope 3**: `searchAround` **cannot** feed `cleverFind` a null — five producers, §11.166(i) census now 13/7/0. Delivered as **§11.170** (entry file then stub), §5.113 + §5.110 annotated, back-markers at four §11.166 nodes. Baselines: pair-check 185/160/25/85 → **186/161/25/85** (+1 entry file, +1 live pair = this delivery's own matched pair; the inline-stub counter did not move, which is what entry-first buys); back-marker scan 90/125/83 → **97/128/83** — the **unmarked invariant holds at 83**, all three new pairs marked. Artifacts `harness/artifacts/f53/`, new `harness/f53_guards.py`, code `d6aec251` untouched.*
 
 ### F54 — The seven never-recorded gate values: decision-free recording fix in five harness files (§11.167(i)) [S]
 
