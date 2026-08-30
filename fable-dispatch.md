@@ -905,7 +905,14 @@ partition is **82 residual + 6 live named exceptions**; `§11.164 → §11.167` 
 MARKED since session 16 and is no longer in the flagged set. Scope 1 DONE: METHOD.md +
 `f59_enum.py` + `f59_enum_check.py` (P1–P4 all pass) + primary/widened TSVs committed
 BEFORE any verdict; universe = **44 pairs** with a §5 target (the 13 are the floor).
-NEXT: scope 2, the twin verdict walk.
+CP2 — scope 2 DONE: **44 pairs adjudicated by reading, UNMARKED-REAL = 0** (MARKED 15 ·
+FALSE-POSITIVE 15 · OFF-AXIS 8 · MINT-ROUTE 6 · AMBIGUOUS 0); all 13 F49 pairs verdicted;
+**no §5-node annotation owed**. Two independent widenings run so the zero can fail
+(17-word lexicon +2 · a *"the row's own"* shape probe +15) — 0 arrears in both. Findings
+ROUTED, none enacted: the marker-half lexicon blind spot (6 specimens — F57's half-1
+finding's twin), the present-tense event miss, the stub collision measured on this axis,
+and **§5.28 is a REUSED ID** (archived = B14's W0 axis / live = a Translator UB).
+NEXT: scope 3, the multi-claim walk (boundary committed first).
 
 ### F60 — The §5.5-class row↔row staleness sweep: §5 rows vs the §13 rows that own their work (F47 acceptance) [S]
 

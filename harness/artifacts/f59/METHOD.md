@@ -78,6 +78,15 @@ every pair in the delivered table is read at both ends.
 | **NO-LIVE-NODE** | the §5 row has no live home to carry a marker (archived/closed) — recorded, and what the archived home says is stated |
 | **AMBIGUOUS** | cannot be honestly adjudicated: listed with both readings, never resolved by guess |
 
+**[CLASS ADDED DURING THE WALK, with its argument — 2026-08-30, scope 2.** A seventh
+verdict, **OFF-AXIS**: the source is a §13 row or a §5 row, not a §11 entry, so the
+twin's question (*"does the §5 row carry the marker for the §11 entry that corrected
+it"*) has no §11 entry to ask about. 8 of the 44 pairs are this shape. Filing them under
+FALSE-POSITIVE would have been a lie about why they are not arrears, and §11.165(c) had
+already given the §5-source case its own bucket — this only names the §13-source case
+too. The class is additive: it removes nothing from the six above and changes no
+verdict.]**
+
 ## 4. The floor assertion
 
 §11.165(c)'s third bucket names 13 pairs. All 13 are present in this enumeration and are
