@@ -3,11 +3,13 @@
 - Script launched without setting a name defaults to name ""
 - Script-local resource are bound to the named script
 - Operation on script (ex : script action pause) operate on the named script and the ones it track
-- Execution policy of script is set by exec key and defaults to "stack"
+- Execution policy of script is set by exec key and defaults to "legacy"
 - On either script action end or the natural end of a script, terminate (script action end) the named script it track
 - "stack" policy means the calling script is blocked on called script completion - called script tracked
 - "parallel" policy means the calling script continue - called script tracked
 - "detached" policy means the calling script continue - called script NOT tracked
+- "legacy" policy means legacy behavior, whatever "script action stop" and "struct if" does when nested, even if unconsistent - logged undefined behavior when script nesting with other policies
+- "inline" policy means the content of the called script is inlined here - called script NOT tracked
 
 [script-binding]
 = Enable to dynamically override a key binding (or joystick binding)
@@ -21,4 +23,3 @@
 - Camera detach from named body
 - Going over/below an altitude treshold (optionally - while attached on a named body)
 - Visibility change of a named body (halo - far - near - surface)
-
