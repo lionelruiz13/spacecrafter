@@ -323,6 +323,13 @@ after F57's addition — six F56 + one F57).
    initiation, it does not license ignoring later discovery. The gate validates only what
    is ENUMERATED (§0b.3 binds the dispatcher to state preconditions in checkable form);
    a premise you rely on that no source states is itself a report-worthy finding.
+   Scope ruling [F59 acceptance 2026-08-30, §11.179(a)]: the abort binds on premises the
+   work STANDS ON (inputs); a stated premise the task does not consume — an output-side
+   gloss, a label the task itself re-adjudicates — that fails verification is a
+   REPORT-worthy dispatcher defect, not an abort trigger. Treating any stated premise as
+   non-load-bearing must itself be reported with the argument and the counterfactual
+   ("had it been an input, abort") — silence about the reclassification is what the gate
+   forbids.
 
 Sizes: **S** ≈ short focused run · **M** ≈ one full session · **L** ≈ full session at
 high effort, mandatory checkpoints. Estimates are mine [derived], not measured.
@@ -955,6 +962,52 @@ last commit and confirmed a FIXED POINT: pair-check 195/170/25/90 · scan 117/15
 93rd is `§11.165 → §11.179`, the reconciliation marker at the superseded node read backwards
 (this entry's own direction-inversion family). Post-state partition **82 residual + 6 inherited
 named exceptions + 5 of this delivery's own, all five named**.
+
+*(ACCEPTED by supervisor [fable 2026-08-30]: §11.179 read in full; commits/authors/scope
+checked (chain `3f6c5fc → f345b33 → 651490a → d03f1cd → eb0fe59 → c97b879 → a616238 →
+e00f8c2`, harness-only, all `Code: master-beta @ d6aec251`, code clean throughout,
+instruments verified UNTOUCHED at git); §11.165(h)(3) DISCHARGED verified at the node +
+stub mirror + the (e) reconciliation; both instruments re-run by me, post-states
+reproduced to the digit (**195/170/25/90** · **117/155/93** pre-acceptance). THE
+NON-ABORT RULING, adjudicated first: ENDORSED and PROMOTED to a §0.7 scope ruling in
+this commit — the executor verified every premise the work STANDS ON, measured the
+broken gloss on three archived trees before touching anything, reported instead of
+adapting, and stated the counterfactual; aborting a partition-audit because the
+partition label is stale would make the audit un-runnable by its own subject
+(Reason > Rule at the gate's own letter). SUPERVISOR ERROR, TALLIED: the "83 real,
+SEVEN named exceptions" gloss was MINE — arithmetically incoherent as stated (83+7≠88)
+and carrying a label stale since session 16; corrected in this commit at all four
+homes (markers at §11.176(l) + §11.177(l); this note covers the F58 acceptance's and
+the round note's instances). Judgment calls ENDORSED with their arguments: the
+OFF-AXIS seventh class (filing §13/§5-source pairs FALSE-POSITIVE would misstate why
+they are not arrears); the task-local enumerator (the F58 committed-boundary
+precedent, instruments frozen); the whole-corpus multi-claim walk (strictly better
+than any sampling rule); the load-bearing zero with its five properties; the kept
+case-blindness self-catch (the auditor committing the auditee's defect, caught by the
+committed method's own rule — this delivery's criterion-integrity instance); the four
+sentence-creates-event pairs kept unworded (sixth family instance, the first
+PREDICTED); the no-mint ×2 (§5.28 fails §5.79's shipped-surface criterion; M6 is not
+a defect). SUPERVISOR ENACTMENTS in this commit: (1) the §0.7 SCOPE RULING (abort
+binds on inputs; a failed output-side gloss is a report-worthy dispatcher defect;
+reclassification must be reported with the counterfactual); (2) §5.28 ID-REUSE
+resolved IN PLACE — option (β), disambiguation notes at all three homes; renumbering
+rejected because references are never rewritten (the archival convention's own
+reason; (α) stays available as the veto alternative); (3) the ROOT closed: the
+INTENT.md archival note gains the ID-ALLOCATION rule (successor of the max over
+live ∪ archive — an archived number is retired, never free; the 2026-08-04 mint read
+"next free" off the live register only, FM-9's absence-of-hit shape); (4) the two
+LABEL-CORRECTED markers. SCAN-OWNER RULINGS: the strict-credit v2 package counts
+FOUR measured members (strict credit · stub-collision fix + M3's second order ·
+incompleteness lexicon, F57's event half + M1's marker half with six specimens ·
+M2's past-participle gap); M5's third axis (§13-source pairs) is F60 input; the
+DISCHARGED-invisible-to-half-1 closing measurement joins M1's specimens; instrument
+FROZEN. ADOPTED PARTITION for every future runner: **82 residual + named
+exceptions** — "83 real" retired. Post-ACCEPTANCE baselines, my own deltas measured
+and attributed: pair-check **195/170/25/90** (unchanged — append-only notes); scan
+**117/155/93 → 118/157/95** (+1 raw/+2 pairs/+2 unmarked = my two LABEL-CORRECTED
+markers, both direction-inversion family, one appended to an already-event line;
+partition **82 + 6 inherited + 5 F59 + 2 acceptance = 95**). F60 next, §11
+number 180.)*
 
 ### F60 — The §5.5-class row↔row staleness sweep: §5 rows vs the §13 rows that own their work (F47 acceptance) [S]
 
