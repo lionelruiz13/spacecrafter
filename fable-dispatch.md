@@ -1060,7 +1060,15 @@ ANY broken ⇒ abort per §0.7.
 cites; stale §5 nodes annotated; decisions routed; the instrument-or-table
 choice argued; §11 entry + stub; baselines re-derived as the last act with
 deltas attributed; code tree clean; WIP per §0.6.
-**WIP:** —
+**WIP:** 2026-08-30 CP1 — §0.7 gate PASSED on every stated premise (both HEADs `d6aec251`/`7b1d252` clean,
+§11 **180** free over live ∪ archive, `### F` = 5, the F47 acceptance sentence at `archive/F47.md:99-100`,
+§11.163 present with the row↔row class at (c)/(k)(1), F59 delivered + accepted, pair-check **195/170/25/90**
+and scan **118/157/95** reproduced to the digit). ONE source-pointer gloss reported not absorbed (the F60
+section attributes the §5.5 closure convention to §11.163; it lives at `INTENT/5.5.md` + the F47 acceptance,
+both named sources — content present, location mislabelled). Scope 1 DONE and committed BEFORE any verdict:
+`harness/artifacts/f60/METHOD.md` + `f60_enum.py` (selftest P1–P5 PASS, incl. P5 the MEASURED §11.73 Tier-A
+key namespace collision) + the three TSVs. Universe: forward **162 refs / 83 pairs** (in scope 145/73),
+backward **111/61**, adjacent (S/D ids) **57** sized-not-verdicted. NEXT: scope 2, adjudicate by reading.
 
 ---
 

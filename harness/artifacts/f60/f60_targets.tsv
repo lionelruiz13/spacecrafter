@@ -1,0 +1,85 @@
+id	kind	line	head
+A1	CLOSED-PTR	1038	(pointer-only in §13.C)
+A2	CLOSED-PTR	1038	(pointer-only in §13.C)
+A3	CLOSED-PTR	1038	(pointer-only in §13.C)
+A4	LIVE-A	989	| A4 | Old planet-grid observable — **NARROWED [Q16]; tropics+polar DONE (B23, §11.57)** | tropics + polar circles **restored on the body, keyed to LINE_TROPIC / LINE_CIRCLE_POLAR*
+A5	CLOSED-PTR	1038	(pointer-only in §13.C)
+A6	CLOSED-PTR	1038	(pointer-only in §13.C)
+A7	LIVE-A	990	| A7 | STAR_VIEWER / CORONA families — **NARROWED [Q22]** | surface direction answered (→ A8/B12); what stays here = **multi-star per-instance halo colour/texture**, unreachable to
+A8	CLOSED-PTR	1038	(pointer-only in §13.C)
+A9	CLOSED-PTR	1038	(pointer-only in §13.C)
+A10	CLOSED-PTR	1038	(pointer-only in §13.C)
+A11	CLOSED-PTR	1038	(pointer-only in §13.C)
+A12	CLOSED-PTR	1038	(pointer-only in §13.C)
+A13	CLOSED-PTR	1038	(pointer-only in §13.C)
+A14	CLOSED-PTR	1038	(pointer-only in §13.C)
+A15	LIVE-A	991	| A15 | Milkyway/AoI data + tuning — **NARROWED [Q9]; cross-fade now EXISTS (B22, §11.64)** | **cross-fade DONE + cost-bounded (~22.6 ns/frame, 0 draw calls ⇒ "not too costly" meas
+A16	LIVE-A	992	| A16 | UNIVERSE BodyType enum | structural `isSystem()` makes it non-load-bearing — add or drop | §11.36 |
+A17	LIVE-A	993	| A17 | Nested-subsystem pointer/selection — **NARROWED [Q11]** | **visibility is the selection domain** (*"if a body can be seen, we must be able to select it"*), not system membe
+A18	LIVE-A	994	| A18 | Earth-directed free descent — **NARROWED [Q6]** | descent aims at **the surface point under the view ray**, not the centre → B21. **Residual: the far/galactic-distance case
+A19	CLOSED-PTR	1038	(pointer-only in §13.C)
+A20	CLOSED-PTR	1038	(pointer-only in §13.C)
+A21	LIVE-A	995	| A21 | §6.2 inline policy | which header inlines are load-bearing (stay) vs drafting residue (migrate post-parity) | §6.2 |
+A22	LIVE-A	996	| A22 | §6.3 BodyType collapse | sign-off on the 2026-07-19 derivation: SPHERICAL/SINGLE/CUSTOM → one default value (zero consumers/producers measured) | §6.3 |
+A23	LIVE-A	997	| ~~A23~~ | ~~`solid` / altitudeRelativeToRadius~~ | **RESOLVED [vixy 2026-07-20]; implementation LANDED as B10 2026-07-22 → §11.71** — intent stated (per-body flag, surface defaul
+A24	CLOSED-PTR	1038	(pointer-only in §13.C)
+A25	CLOSED-PTR	1038	(pointer-only in §13.C)
+A26	LIVE-A	998	| A26 | Row-2/13 convergence points — **NARROWED [Q25]** | big-texture threshold **ratified at 20%** ("fine and a better choice"); remaining = regime gate constants, shell screenSi
+A27	LIVE-A	999	| A27 | EnvironmentModule convergence points — **NARROWED [Q18/Q19]** | "moon" generalisation **accepted** (A3-class win, old behavior unrecoverable by the user's own statement). L
+A28	LIVE-A	1000	| A28 | Shadow flag shipping semantics — **RE-ASK [Q17 failed]** | the question used engine vocabulary (`ring_shadow`) in a document that assumes no implementation knowledge; the t
+A29	CLOSED-PTR	1038	(pointer-only in §13.C)
+A30	LIVE-A	1001	| A30 | Star-system reachability — **(i) RESOLVED [vixy 2026-07-21, §11.51(b)]**, (ii)(iii) open | Stars behave **as-if** ModularBody (real instances too expensive); only 3D stars 
+A31	CLOSED-PTR	1038	(pointer-only in §13.C)
+A32	CLOSED-PTR	1038	(pointer-only in §13.C)
+A33	CLOSED-PTR	1038	(pointer-only in §13.C)
+A34	CLOSED-PTR	1038	(pointer-only in §13.C)
+A35	CLOSED-PTR	1038	(pointer-only in §13.C)
+A36	CLOSED-PTR	1038	(pointer-only in §13.C)
+A37	CLOSED-PTR	1038	(pointer-only in §13.C)
+A38	CLOSED-PTR	1038	(pointer-only in §13.C)
+A39	CLOSED-PTR	1038	(pointer-only in §13.C)
+A40	LIVE-A	1002	| A40 | **Teardown vs an incomplete frame — §5.59's fork** (NEW 2026-07-31, §11.126(g)(l)) | When the drawing worker has not completed the frame the main loop is waiting for and th
+A41	LIVE-A	1003	| A41 | **The G4 EARLY-visibility gate: 2 px or 3.07 px?** (NEW 2026-07-31, §11.127(b), F18) | The constant that names this gate has always said **2 px** ("minimal size of the body
+A42	LIVE-A	1004	| A42 | **The two paths swap texture level at different sizes — align, or leave?** (NEW 2026-07-31, §11.127(d), F18) | Old swaps to the full-resolution colour map at **180 px** dia
+A43	LIVE-A	1005	| A43 | **The Sun and Moon preview textures do not match their full-resolution partners** (NEW 2026-07-31, §11.127(c), F18) | A body visibly changes colour when it crosses the big-
+A44	LIVE-A	1006	| A44 | **The RING shadow caster is the one SCALED shadow radius, and D21 and the 2026-07-18 extent contract point opposite ways** (NEW 2026-08-26, §11.152(h), F39) | D21 [vixy 202
+B1	LIVE-B	1012	| B1 | S4 — G5 handoff implementation | architecture converged (§6.4); §8.5 parameters at plan time; §8.2.10 capture integration; §8.6 AsyncLoaderMgr races fixed at the same open; 
+B2	LIVE-B	1013	| B2 | D4 surface streaming (row 16) + RING asteroid (row 5) | ride S4; ~~row 5 also blocked on A6~~ **A6 RESOLVED [§11.51(e)]: ONE Renderer instanced-batch service (the INSTANCED 
+B3	LIVE-B	1014	| B3 | H4 shadow remainder | (a) SECONDARY ladder, (b) grounded prefill, (c) RGBA8 SELF_COLOR — assessed 2026-07-19: beyond-shipped-content, needs counterfactual scenes/models; str
+B4	LIVE-B	1015	| B4 | CameraAnchors (row 19, S7) | design at port vs anchor.ini. **[Q5 2026-07-21]**: anchors are hand-edited **and** script-created (both channels live, §2(c)); **cross-session p
+B5	LIVE-B	1016	| B5 | §6.9 executor-mode dissolution | **DRAW-HALF DONE 2026-07-23 (§11.80, code `14931a18`)** — the new path draws in EVERY executor mode (`drawExperimental` from inGalaxy/inUniv
+B6	ARCHIVED	0	# B6 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer 
+B7	LIVE-B	1017	| B7 | §11.15d shutdown segfault | **CONSOLIDATED 2026-07-22 (§11.74), STAYS OPEN** — wave sample = **1 true fire** (B23, teardown-race after driver exit) vs dozens of clean teardo
+B8	LIVE-B	1018	| B8 | body_trace relocation | to coreModule at old-path removal (retirement map) | §12 retirement map |
+B9	ARCHIVED	0	# B9 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer 
+B10	LIVE-B	1019	| B10 | `datum_radius` + `ground_radius` (ex-A23; supersedes the `solid` flag) | **DONE 2026-07-22 → §11.71** (bit-identical regression proven [Earth/Default/anchored identical, sc
+B11	ARCHIVED	0	# B11 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B12	LIVE-B	1020	| B12 | Sun/star near-surface family (ex-A8) | **UNBLOCKED [Q21]**: real surface appearance (limb darkening, granulation, spots) + non-uniform reddish chromosphere glow matching th
+B13	ARCHIVED	0	# B13 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B14	LIVE-B	1021	| B14 | Axial-orientation data correction (ex-A12) | **LAND HALF DONE — 14 of 28 shipped cluster moons landed with CITED IAU-2015 poles; 14 STOPPED-for-no-pole; W0/drift/loaded-6 S
+B15	LIVE-B	1022	| B15 | AoI re-derivation on date change (ex-A19) | **DONE 2026-07-22 (§11.62)** — `areaOfInfluence` was computed only inside `updateCache()` (gated by `uncached`, which no date ch
+B16	ARCHIVED	0	# B16 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B17	LIVE-B	1023	| B17 | view_offset / zoom_offset port (ex-A24) | **CHARACTERISED 2026-07-22 (§11.63); UNBLOCKED 2026-07-23 (D6 → option (1), §11.79(c))** — the premise is FALSE at source: old app
+B18	LIVE-B	1024	| B18 | Equatorial-mount sky-lock port (ex-A25) | **DONE 2026-07-22 (§11.58)** — `flag lock_sky_position` mirrored to Camera `setSkyLock`: with the lock ON the view holds fixed in 
+B19	ARCHIVED	0	# B19 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B20	ARCHIVED	0	# B20 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B21	LIVE-B	1026	| B21 | View-directed free descent (ex-A18) | **DONE 2026-07-22 (§11.72)** — new authority `Camera::descend(coef)` (multAlt forwards) + command driver `camera action descend coef <
+B22	ARCHIVED	0	# B22 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B23	ARCHIVED	0	# B23 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B24	LIVE-B	1027	| B24 | Module-composition authoring path (ex-D2/§6.7 grammar) | **CORE LANDED 2026-07-22 (§11.78) — ~~spellings pending sign-off (B28 protocol)~~ spellings ANSWERED 2026-07-23 wit
+B25	ARCHIVED	0	# B25 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B26	ARCHIVED	0	# B26 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B27	LIVE-B	1035	| B27 | Hardcode retirement audit (ex-A29) | **STEPS 1–2 DONE (audit + key design) — 2026-07-22 (§11.73); STEP 3 (emit) → B25; consume-code → B24/B25.** **Site inventory COMPLETE**
+B28	ARCHIVED	0	# B28 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B29	ARCHIVED	0	# B29 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B30	LIVE-B	1028	| B30 | New-path frozen-scene micro-instability (spun out of B26) | **INVESTIGATED 2026-07-24 (§11.94): hypothesis REFUTED, mechanism ATTRIBUTED to active-tracking view-reconstruct
+B31	LIVE-B	1025	| B31 | Exhaustive state save + persistent-body file write-back (from B16/B28/B29) | **NEW [vixy 2026-07-22, §11.66(d)] — MANDATED, needs a design pass before dispatch (NOT dispatc
+B32	ARCHIVED	0	# B32 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer
+B33	LIVE-B	1029	| B33 | **The QUERY half of the control surface reads the OLD path** (NEW 2026-07-25, §11.108(f)) | Setters are dual, getters are not: `CoreLink::getHeading` (`coreLink.hpp:988-991
+B34	LIVE-B	1030	| B34 | **S6 residual dual seams — operator actions that land on the OLD path only** (NEW 2026-07-25, §11.108(f)) | **THE INTERACTIVE VIEW RAMP IS THE BIG ONE, and it is MEASURED, 
+B35	LIVE-B	1031	| B35 | **Config-only capabilities — reachable at startup, not dynamically** (NEW 2026-07-25, §11.108(f)) | The §11.55 bar is *dynamic* reachability. Found: the ALTAZ↔EQUATORIAL **
+B36	LIVE-B	1032	| B36 | **Declared new-path capabilities with NO driver** (NEW 2026-07-25, §11.108(f)) | Each needs a driver or an explicit retirement: `ModularBody::preload` (`:1031`, drags `Basi
+B37	LIVE-B	1033	| B37 | **UI-only capabilities — unscriptable, hence unusable in a show** (NEW 2026-07-25, §11.108(f)) | Reachable only by moving a mouse or pressing a key, with no command string 
+B38	LIVE-B	1034	| B38 | **Command-surface defects: dead tokens + reachable-but-defective handlers** (NEW 2026-07-25, §11.108(k)) | The base-F census closed the dead-token class: exactly ONE genuin
+B39	LIVE-B	1036	| B39 | **`hidden` semantics per D23 — as-if-nonexistent while hidden, as-if-never-hidden when unhidden** (NEW 2026-07-29, from §11.113(b); A34's implementation) | **DONE 2026-07-3
+B40	ARCHIVED	0	# B40 — archived 2026-07-31 (INTENT.md archival pass1)  *Moved verbatim from INTENT.md (§13.B row; closed, read by no open row/decision). This file is the entry. A one-line pointer

@@ -1,0 +1,15 @@
+FORWARD references: 162
+  ARCHIVE-ENTRY  -> ARCHIVED     7
+  ARCHIVE-ENTRY  -> CLOSED-PTR   6
+  ARCHIVE-ENTRY  -> LIVE-B       4
+  INPLACE-ENTRY  -> ARCHIVED     7
+  INPLACE-ENTRY  -> LIVE-B       5
+  LIVE-ENTRY     -> ARCHIVED     11
+  LIVE-ENTRY     -> CLOSED-PTR   13
+  LIVE-ENTRY     -> LIVE-A       2
+  LIVE-ENTRY     -> LIVE-B       27
+  LIVE-STUB      -> ARCHIVED     19
+  LIVE-STUB      -> CLOSED-PTR   5
+  LIVE-STUB      -> LIVE-B       56
+distinct (src,target) pairs: 83
+BACKWARD references: 111 distinct: 61

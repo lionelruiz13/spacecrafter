@@ -1,0 +1,8 @@
+P1 positive detect            : ['B28', 'B16']  (expect ['B28','B16'])
+P2 in-word / hex refused      : []  (expect [])
+P3 unallocated id B99         : False (expect False -> UNKNOWN)
+P4a B27 (live)                : LIVE-B (expect LIVE-B)
+P4b B32 (archived)            : ARCHIVED (expect ARCHIVED)
+P4c A33 (closed pointer)      : CLOSED-PTR (expect CLOSED-PTR)
+P5 §5.5 Tier-A key collision  : 12 hits (expect >0, all NOT-A-ROW)
+SELFTEST: PASS
