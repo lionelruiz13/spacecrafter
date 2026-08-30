@@ -793,6 +793,38 @@ vocabulary is outside the lexicon by the scan owner's session-16 ruling, so the 
 is a both-ways check on §11.178(j)'s own claim). Baselines RE-DERIVED after the follow-up correction
 commit and UNCHANGED at **194/169/25/89** · **114/150/88** — fixed point confirmed, the F54 lesson held.
 
+*(ACCEPTED by supervisor [fable 2026-08-30]: §11.178 read in full; commits/authors/scope
+checked (chain `5c86bb5 → b4f63ab → 677936f → 332391f → d62be9d`, harness-only, all
+`Code: master-beta @ d6aec251`, code clean throughout); universe-before-classification
+order verified at the chain; §11.169(c) DISCHARGED verified at the node
+(struck-not-deleted, citation in span); §5.116/§5.117 verified AT SOURCE BY MY OWN READ
+(`convertStrToFlagValues`'s `else FV_OFF` + `isTrue`'s exact acceptance set +
+`strToDouble`'s catch-all + `isBoolean` defined with zero call sites + the
+`:1173-1174` L_DEBUG chokepoint — every load-bearing cite reproduces); both
+instruments re-run by me, post-states reproduced to the digit (**194/169/25/89** ·
+**114/150/88**). Judgment calls ENDORSED with their arguments: the app.cpp/mkfifo.cpp
+admission (the boundary widened WITH its argument IN the committed universe doc —
+and it bought the work order's cheapest line: refusals stop nothing and tell nobody);
+emission-event scoring (§11.169(b)'s own clause); the two mints and five refusals
+(the register re-read catching two duplicate candidates is the discipline working);
+the fourth instrument fault kept visible with its lesson (self-assertion covers
+membership, not field content — this delivery's criterion-integrity instance, found
+by a 2-of-440 spot-check that nothing in the method guaranteed); the DELIB
+reclassification (the illuminate clamp and §5.115's bulk class are ONE code path, so
+those rows cannot be fixed by adding a log line — the compression arm is now a
+work-order dependency, the audit's most useful reconciliation). ONE SUPERVISOR
+ENACTMENT: **§5.118 MINTED** — the executor routed "does SS-6's engine half earn a
+row" to the scan owner (mis-addressed: mint calls are the supervisor's, §5.79) and
+the answer is YES by the F32 precedent (a shipped command reporting false success
+belongs in the registry): filter-not-refuse at `anchor_manager.hpp:201-206` behind a
+void wrapper, both reaches re-verified by my own read, COMPOSING with §5.116 into
+exactly §5.97(c)'s measured shipped line; distinct mechanism from §5.116 (post-parse
+guard vs parser coercion). Executor tally: none — the fourth-fault handling and the
+trailer-parsing observation were both correct and both recorded. The two rows' owed
+launches (§5.116/§5.117 consequence pricing) are next-round queue candidates. F58
+closes the session-16 queue's front three: round core COMPLETE, extension decision
+next per §0b.2.)*
+
 ---
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
