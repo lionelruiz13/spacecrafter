@@ -912,7 +912,14 @@ FALSE-POSITIVE 15 · OFF-AXIS 8 · MINT-ROUTE 6 · AMBIGUOUS 0); all 13 F49 pair
 ROUTED, none enacted: the marker-half lexicon blind spot (6 specimens — F57's half-1
 finding's twin), the present-tense event miss, the stub collision measured on this axis,
 and **§5.28 is a REUSED ID** (archived = B14's W0 axis / live = a Translator UB).
-NEXT: scope 3, the multi-claim walk (boundary committed first).
+CP3/CP4 — scope 3 DONE: boundary committed first (`d03f1cd`), corpus small enough to walk
+WHOLE so **no sampling rule adopted**; **23 pairs · 49 claims enumerated FROM THE
+SUPERSEDER · 49 COVERED · 0 UNCOVERED**. §5.32's two markers are the corpus's own positive
+control (§11.108(e)'s "same fix" claim left standing by the first marker, corrected by the
+second) — the shape (ii) names, alive in the ledger and repaired at the node. Two candidate
+gaps raised and both refuted BY READING: my own probes were case-blind (`smaller` vs
+`SMALLER`, `[Vv]ixy` vs `VIXY`) — the audit nearly published its own finding M1 as fact.
+NEXT: the §11.179 entry + stub + §11.165(h)(3) DISCHARGED + baselines.
 
 ### F60 — The §5.5-class row↔row staleness sweep: §5 rows vs the §13 rows that own their work (F47 acceptance) [S]
 
