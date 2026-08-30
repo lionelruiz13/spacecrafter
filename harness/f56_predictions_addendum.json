@@ -1,25 +1,37 @@
 {
- "task": "F56 — addendum, committed BEFORE the measurement it describes",
+ "task": "F56 \u2014 addendum, committed BEFORE the measurement it describes",
  "date": "2026-08-30",
  "written_after": "the cadence echo (P4 confirmed: 4392 lines / [30.0, 30.500] s, F45's number to the digit) and before any pixel comparison of F45's star-field frames",
- "why": "F45's phase C writes a deterministic STAR-FIELD screenshot (deselect; atmosphere/landscape/milky-way/nebula/constellation/star-names/planets off; flag stars on; date utc 2020-01-01T22:00:00; timerate rate 0). Nine of them were captured on 2026-08-29 — INSIDE the dim era — and the cadence echo just captured one on today's healthy stack from the same unmodified script. The dim-era chase never had a NON-MOON, NON-TEXTURED photometric channel from that day. This one is free: it rides launches already taken.",
-
+ "why": "F45's phase C writes a deterministic STAR-FIELD screenshot (deselect; atmosphere/landscape/milky-way/nebula/constellation/star-names/planets off; flag stars on; date utc 2020-01-01T22:00:00; timerate rate 0). Nine of them were captured on 2026-08-29 \u2014 INSIDE the dim era \u2014 and the cadence echo just captured one on today's healthy stack from the same unmodified script. The dim-era chase never had a NON-MOON, NON-TEXTURED photometric channel from that day. This one is free: it rides launches already taken.",
  "P7_star_channel_across_the_dim_boundary": {
   "the_two_hypotheses": {
-   "H-texture": "whatever latched the stack into the dim mode acted on TEXTURED-BODY rendering (the shared s_texture content, its upload, its residency). §11.159(a) established that the star channel's pixels come from HipStarMgr::color_table (zone_array.cpp), not from any texture the Moon uses.",
+   "H-texture": "whatever latched the stack into the dim mode acted on TEXTURED-BODY rendering (the shared s_texture content, its upload, its residency). \u00a711.159(a) established that the star channel's pixels come from HipStarMgr::color_table (zone_array.cpp), not from any texture the Moon uses.",
    "H-global": "the dim mode was a global output transform (gamma / colour space / swapchain format / compositor-side conversion), which would darken EVERY drawn pixel including stars."
   },
-  "H-texture predicts": "today's sky.png is photometrically indistinguishable from the 2026-08-29 ones — ideally an exact md5 match with one of the two committed classes, at worst a difference inside §11.159(k)(4)'s measured A/A floor (374 px of 4194304 at max channel delta 3/255)",
-  "H-global predicts": "the 2026-08-29 star frames are systematically darker than today's on the lit pixels — a mean-luma ratio far from 1.0 and a difference vastly outside the A/A floor",
-  "prior_evidence_favouring_H-texture": "both render paths were dim (§11.172(f)) and they share one s_texture entry; the app logs were clean; 0 `Can't upload` in every run",
-  "prior_evidence_favouring_H-global": "BOTH paths dim is also what a global transform looks like, and §11.167's dark-patch signature was non-tone-curve (r2 0.408) which a simple gamma would not produce",
-  "fails_if": "either hypothesis's prediction lands and it is NOT the one the ledger currently leans on — recorded as it comes, at the node",
-  "bound_stated_in_advance": "the star field is a SPARSE scene; a dimming of a few dark pixels could hide inside the frame statistics. The metric is therefore taken on the LIT pixels (L > 8) and on the max channel delta, not on the whole-frame mean, and the lit-pixel COUNT is reported too — a global darkening moves pixels across the L>8 threshold and that count is the sensitive member."
+  "H-texture predicts": "today's sky.png is photometrically indistinguishable from the 2026-08-29 ones \u2014 ideally an exact md5 match with one of the two committed classes, at worst a difference inside \u00a711.159(k)(4)'s measured A/A floor (374 px of 4194304 at max channel delta 3/255)",
+  "H-global predicts": "the 2026-08-29 star frames are systematically darker than today's on the lit pixels \u2014 a mean-luma ratio far from 1.0 and a difference vastly outside the A/A floor",
+  "prior_evidence_favouring_H-texture": "both render paths were dim (\u00a711.172(f)) and they share one s_texture entry; the app logs were clean; 0 `Can't upload` in every run",
+  "prior_evidence_favouring_H-global": "BOTH paths dim is also what a global transform looks like, and \u00a711.167's dark-patch signature was non-tone-curve (r2 0.408) which a simple gamma would not produce",
+  "fails_if": "either hypothesis's prediction lands and it is NOT the one the ledger currently leans on \u2014 recorded as it comes, at the node",
+  "bound_stated_in_advance": "the star field is a SPARSE scene; a dimming of a few dark pixels could hide inside the frame statistics. The metric is therefore taken on the LIT pixels (L > 8) and on the max channel delta, not on the whole-frame mean, and the lit-pixel COUNT is reported too \u2014 a global darkening moves pixels across the L>8 threshold and that count is the sensitive member."
  },
-
  "P8_AA_floor_on_the_healthy_stack": {
-  "claim": "a second f45_run.sh `empty` launch today produces a sky.png that either matches the first byte-for-byte or differs within §11.159(k)(4)'s floor (374 px of 4194304 at max channel delta 3/255)",
-  "fails_if": "the run-to-run difference on the healthy stack is LARGER than 374 px or exceeds 3/255 — in which case §11.159(k)(4)'s floor is stack-dependent and every pixel-level A/B in this corpus needs its floor re-measured per stack",
-  "note": "§11.174(d) lists the 374 px floor as SUSPECT because it was measured on the faulty stack. This is the measurement that decides whether it is suspect or merely re-confirmed."
+  "claim": "a second f45_run.sh `empty` launch today produces a sky.png that either matches the first byte-for-byte or differs within \u00a711.159(k)(4)'s floor (374 px of 4194304 at max channel delta 3/255)",
+  "fails_if": "the run-to-run difference on the healthy stack is LARGER than 374 px or exceeds 3/255 \u2014 in which case \u00a711.159(k)(4)'s floor is stack-dependent and every pixel-level A/B in this corpus needs its floor re-measured per stack",
+  "note": "\u00a711.174(d) lists the 374 px floor as SUSPECT because it was measured on the faulty stack. This is the measurement that decides whether it is suspect or merely re-confirmed."
+ },
+ "P9_ladder_on_the_healthy_stack": {
+  "why": "The sweep's highest-value follow-up: b3_ladder's `site_luma >= 30` gate FAILS at 20.97, and that red was attributed by \u00a711.164 to 'dated environment' with the NVIDIA driver bump as its leading candidate \u2014 a candidate \u00a711.172(e) has since refuted. \u00a711.174 named the real environment difference: the faulty dispatch. One launch of the UNMODIFIED corrected harness on today's healthy stack decides whether that red exists at all.",
+  "instrument": "b3_ladder_run.sh terrain --site moon, unchanged; no gate constant touched, nothing re-baselined; the run RECORDS what the existing gates say",
+  "P9a_centre_luma": "predicted ~181.39 (the four 2026-07-25 runs' value), NOT 60.71 (the three 2026-08-29 runs')",
+  "P9b_site_luma_b250": "predicted ~149.93 (July) and therefore ABOVE the >= 30 bar, i.e. the single FAILURE becomes 0 FAILURES",
+  "P9c_caps": "predicted to return toward July's 28.812 / 30.346 / 58.265 / 125.314 / 337.505 px and the b20 shadow witness toward 2790",
+  "outcomes_and_what_each_would_mean": {
+   "all three land": "the ladder's whole residual \u2014 the red, the +-1.5% cap drift, the -17% shadow witness \u2014 was the faulty dispatch; \u00a711.157(e)/(h)(3) and \u00a711.164(a)/(l) are corrected at their nodes and the file is green again",
+   "luma returns but caps stay at 29.2/30.8/59.1/127.0": "the cap drift is INDEPENDENT of the photometric state and survives as a real, still-unattributed residual \u2014 the sweep would have separated two effects that have been read as one",
+   "luma stays ~60.7": "the dim state is NOT what the ladder measured, \u00a711.174's attribution does not reach this instrument, and the whole dim-era partition needs re-opening at this node",
+   "anything else": "recorded as it comes"
+  },
+  "committed_before": "the run"
  }
 }
