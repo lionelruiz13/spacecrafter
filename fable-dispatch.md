@@ -493,7 +493,44 @@ recorded in committed artifacts, cited in the entry with census context per
 member; verification-run verdicts recorded as-is; §11 entry + stub; instrument
 baselines re-derived with deltas explained; code tree clean at close; WIP per
 §0.6.
-**WIP:** *(2026-08-30, CP1 — Scope 0 PRE-STEP DONE.* The dead
+**WIP:** *(delivered 2026-08-30 — F54 complete.* All **seven** never-recorded
+gate values are RECORDED and MEASURED, delivered as **§11.171** (entry file
+first, then stub). **Scope 0 pre-step**: the dead `b24_equivalence._NONFINITE`
+repaired at four sites → `dumpread.sanitize_nonfinite` (one decision, four
+sites, I6), the AttributeError reproduced as a failing control first
+(`ac495a6`). **The seven**: `f14_meridian:306` **103137/121331/127034** px>40
+(5.16×/6.07×/6.35×) · `b39_scenes:150` **79365** (15.87×) ·
+`f14_placeholder`'s SELECTOR **0 at the first candidate jd → 1195111 at the
+second** and its gate **2337088/1195111** (116.9×/59.8×) · `f14_predict` NCC
+**+0.4801/−0.0068 · +0.8231/−0.0323 · +0.4996/−0.0379** and px8
+**4.25×/2.79×/1.64×** · `f23_b33_control`'s `cross` **2099** vs 6414 (3.06×,
+recomputable from the two committed frames). Diff decision-free: 52 insertions
+/ 3 deletions, every deletion a dict literal gaining a key, no threshold or
+verdict touched. Five verification runs, **twelve launches**, comm-probe 0
+before each, md5 `03fbee59`/`545a51ef` in==out throughout, code `d6aec251`
+never moved. **HEADLINE: this task refuted its own first result** — the
+`f14_meridian` Iapetus red (margin 0.2390 vs the 0.25 bar) came back **0.4380,
+a pass**, from the identical configuration 35 min later; the scene is not
+reproducible (attitude 0.339° apart at identical jd/axisRot/offset/screenSize,
+22293 px>8 between frames), so that gate's margin is **unstable, not a
+number**, and no single post-epoch run can attribute it. NOT re-baselined.
+**No §5 row minted** (three candidates, each argued at §5.79). Second red
+recorded with both readings and routed, not settled: `f23`'s S1/S2 skylock
+legs (pre-fix binary parts old/new, current binary agrees) — likelier reading
+is a defect-demonstration leg outliving its defect; its drift probe reads
+0.0000 on BOTH binaries and cannot discriminate. Census worst-case worry
+(§11.167(i) member 6) answered: **0 vs 1195111**. Back-markers at five nodes
+(§11.167 ×4, §11.170 ×2 + its stub) same commit. Baselines: pair-check
+185/160/25/85 → **187/162/25/86** (+1 entry file, +1 live pair — the
+entry-first signature); scan 97/128/83 → **98/129/83**, the **unmarked
+invariant HOLDS at 83** (the +1 event/pair is this delivery's own SUPERSEDED
+marker; `185/160/25/85` was session-16's OPEN figure, `186/161/25/86` the
+dispatch one this delta is measured from). Artifacts `harness/artifacts/f54/`
+(6.8 MB, trimmed to what the
+citations need). Nothing owed; nothing suspended for Vixy by this task.*
+
+*(Checkpoint trail below, kept for the abort-tolerance record — superseded by the
+delivery summary above.* **CP1** — the dead
 `b24_equivalence._NONFINITE` repaired at all four sites (`f27_reply.py:331`,
 `f12_b33_heading.py:143`, `f23_b33_control.py:136`, `f24_b34_seams.py:147`) →
 `dumpread.sanitize_nonfinite`, one grammar (I2); `import dumpread` added to each;
