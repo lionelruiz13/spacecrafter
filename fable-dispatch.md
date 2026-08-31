@@ -1630,7 +1630,13 @@ binary at HEAD; display :2 1920x1080; screensaver ACTIVE at open; canary
 `--no-scene` exit 2 / 2 FAIL recorded not gated; no instance; md5 pair pristine;
 §11.185 free; journal letter `h` free). ONE dispatcher path gloss: `INTENT/5.47.md`
 does not exist — §5.47 is CLOSED, its record is `INTENT/11.135.md` + live §5.72;
-read there, not an abort (content reachable). NEXT: scope 1, `sc_tcpclient`.
+read there, not an abort (content reachable). CHECKPOINTS: code `584edade`
+(scope 1 — `sc_tcpclient` + fake engine + gate 13 `tcp_client`, 12→13 gates) →
+`8a5c7ce3` (scope 3 headless half — diskState/reload/save-refusal/saveOverwriting,
+editcore 223→266) → `917b0e2b` (scope 2 — `--tcp`, feed pane, keys, the one
+clock; ui frames 17→20, the 17 old ones byte-identical). 13/13 green; 3 tampers
+shown red and restored md5-verified. NEXT: scope 4 (MCP `run_command`), then
+README, then the live campaign.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
