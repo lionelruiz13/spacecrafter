@@ -40,7 +40,7 @@ under `third_party/` (see "Vendoring").
 
     cd util/scedit
     cmake -B build && cmake --build build
-    cd build && ctest --output-on-failure     # 12 gates, see "Verification"
+    cd build && ctest --output-on-failure     # 13 gates, see "Verification"
 
 `-Wall -Wextra` are set on scedit's OWN targets (library, TUI layer, binary,
 test binaries) and on nothing else: the vendored trees under `third_party/`
@@ -59,6 +59,7 @@ compiled.
     scedit [--grammar FILE] --search WORDS...        # which page answers this?
     scedit [--grammar FILE] --check --json FILE...   # the findings, as JSON
     scedit [--grammar FILE] --mcp                    # MCP server on stdio
+    scedit [--grammar FILE] [--tcp [[HOST:]PORT]] FILE   # the editor, with a live engine
     scedit [--grammar FILE] [--edit] FILE            # the editor
     scedit [--grammar FILE] --ui-selftest            # render fixed frames, no tty
 
@@ -122,6 +123,17 @@ The shape is a contract, not a print: `claude/harness/f63_scedit_agree.py`
 consumes it to compare scedit's reading of a script with the verdict the engine
 wrote into that same file.
 
+**`--tcp [[HOST:]PORT]`** — open the editor with a running spacecrafter at the
+other end: send the line under the caret, play the file, watch what the engine
+says. Default `127.0.0.1:7805`, the shipped `io:tcp_port_in`; `--tcp 7805` and
+`--tcp dome:7805` both work. The argument is optional and is taken only if it
+parses as an endpoint, so `scedit --tcp show.sts` opens `show.sts` with live
+mode on the default engine — a script whose name is a bare number would be
+taken as a port, which is the whole of the ambiguity. Without `--tcp` scedit
+opens no socket, starts no thread, and shows nothing about live mode. With
+`--mcp` instead of a file, it sets where the `run_command` tool sends by
+default. See "Live mode" below.
+
 **`--doc`, `--search`, `--check --json`, `--mcp`** — the same answers, addressed
 to a program instead of to a reader. See "For machines" below.
 
@@ -146,7 +158,18 @@ through it, and what can be completed is shown before you press anything.
 | **F5**, or Ctrl-E | show or hide the error pane |
 | **F3**, or Ctrl-N | go to the next error; **F4**, or Ctrl-P, the previous one |
 | Ctrl-S, or F2 | save |
+| Ctrl-U | re-read the file from disk, losing this buffer's unsaved edits |
 | Ctrl-Q, Esc, or F10 | quit; with unsaved changes, once to warn and again to discard |
+
+With `--tcp`, five more — and only with `--tcp`: no socket key exists otherwise.
+
+| key | what it does |
+|---|---|
+| **F6**, or Ctrl-T | connect to the engine, or disconnect from it |
+| **F7**, or Ctrl-L | send the line under the caret, as a command |
+| **F8**, or Ctrl-R | play this file on the engine (saving it first if needed) |
+| **F9**, or Ctrl-W | show or hide the feed |
+| F11 / F12, or Ctrl-B / Ctrl-F | older / newer lines in the feed |
 
 Ctrl-S and Ctrl-Q are the terminal's own flow-control pair, so the editor turns
 flow control off while it runs and puts it back on exit. F2 and F10 do the same
@@ -156,7 +179,8 @@ two things for terminals where that does not take.
 
 Click to put the caret where you clicked, in the text or on a row of the error
 pane. Wheel to scroll — and the view stays where you scrolled it: it only chases
-the caret again when you next press a key.
+the caret again when you next press a key. The wheel over the live feed scrolls
+the feed, because that is what the pointer is on.
 
 ### The documentation bar
 
@@ -278,6 +302,84 @@ because there is no byte for it in this file.
 | 1 | findings were reported (or the contract failed validation) |
 | 2 | usage error, or a file could not be read / parsed |
 
+## Live mode
+
+    scedit --tcp show.sts          # the engine on 127.0.0.1:7805
+    scedit --tcp dome:7805 show.sts
+
+spacecrafter listens on a TCP line protocol (`io:enable_tcp`, shipped **true**,
+`io:tcp_port_in` = **7805**) and executes a line arriving there exactly as it
+executes a line of a script file. With `--tcp`, the editor can use it: **F6**
+connects, **F7** sends the line under the caret, **F8** plays the whole file,
+**F9** shows the feed.
+
+**Nothing is sent unless you press a key.** There is no auto-connect, no
+reconnect after a drop, no keep-alive and no replay. `run_command` (below) is
+the same client, and the same rule.
+
+### What comes back, and what does not
+
+Two things reach a client, and no others:
+
+- the answer to `get status …` and to `search name …`
+  (`src/interfaceModule/app_command_interface.cpp:1284-1301,1415` — the only
+  callers of `ServerSocket::setOutput` in the tree);
+- the replies to `$NOTICE` / `$LOGON` / `$LOGOFF` (`src/tools/io.cpp:640-663`).
+
+**Everything else is silence.** `flag stars on` that worked and `flag stars onn`
+that did not are the same nothing on this wire: a refusal is written to the
+script log at debug level (INTENT §5.117) and never sent. So the feed showing
+nothing after a command is not a report of success, and scedit does not present
+it as one. To find out what happened, read a state back — `get status position`
+— or look at the engine's log.
+
+The connection subscribes with `$LOGON`, so the feed also carries **other
+clients' answers**: that subscription's greeting promises the logs, and what it
+actually delivers is every command answer the engine produces (INTENT §5.72).
+That is why the pane is a feed rather than a reply box, and why an answer in it
+is not necessarily an answer to you.
+
+The feed keeps the last **500 lines**; older ones are dropped and the header
+says how many, because a bounded buffer that discards in silence is one you
+cannot trust. Lines scedit wrote itself — what it sent, what it did — are dim
+and marked `>`; the engine's are not.
+
+### The engine writes into your file, and neither side loses
+
+When a played script reaches its natural end, spacecrafter **rewrites the
+file**: a `#!` tail on each faulty line, and the tails of lines that are now
+clean removed (`src/scriptModule/script_annotator.hpp`). So the file under your
+buffer changes, written by another program, while you may have been typing.
+
+Nothing announces this. The engine has no end-of-script event on any channel a
+client can see — measured: over a whole play that produced findings, the wire
+carried not one byte after the subscription confirmation
+(`claude/harness/f67_tcp_live.py`, leg D). So, **after a play and only then**,
+scedit re-reads that file at most **once a second**, for at most **five
+minutes**, until it changes. That is the only clock in the editor. It is a
+convenience, not the guarantee — the guarantee is that scedit compares the file
+with what it read **before every save, always**, play or no play.
+
+What happens then depends on you, and never on scedit:
+
+- **buffer clean** → the file is reloaded, the error pane opens, and the
+  engine's findings are in it (`F3` walks them). Nothing of yours can be lost:
+  you had not changed anything.
+- **buffer modified** → **nothing happens to either side.** The status line says
+  the engine rewrote the file and names the two ways out, and a save is
+  REFUSED with the same sentence. **Ctrl-U** reloads (your edits go);
+  **Ctrl-S a second time** saves anyway (the engine's tails go). One of the two
+  has to lose, and the editor will not choose for you.
+
+Playing a modified buffer saves it first — the engine opens the FILE, not your
+buffer — and if that save is refused, the play does not happen either, with the
+save's reason. Playing a buffer that has never been written anywhere is refused
+for the same reason.
+
+A UX call, veto open (scedit's, as the keys are): the second Ctrl-S is what
+takes the destructive branch, on the model of the quit warning above it, and the
+refusal message names both losses before either can be chosen.
+
 ## For machines
 
 The editor shows a human what the contract file says about the thing under the
@@ -286,8 +388,10 @@ or a language model through the MCP server below — and they exist because the
 alternative is a model answering from its recollection of a planetarium's script
 language. Nothing here is a second reader of the grammar: every answer comes
 from `Grammar` and `DocIndex`, the two objects the doc bar reads
-(`src/sc_docjson.hpp`). No model is ever called, and nothing in scedit opens a
-network connection.
+(`src/sc_docjson.hpp`). **No model is ever called.** One thing opens a network
+connection: the MCP tool `run_command`, which sends a command to a live engine
+over the same client the editor uses (see "Live mode"). Everything else — the
+documentation, the search, the checker — reads a file and nothing else.
 
 **The honest null survives.** A `doc` field that is JSON `null` means *no
 documentation has been extracted for this name*, and it is the one field that
@@ -374,7 +478,7 @@ Binding it to a harness, e.g. Claude Code:
 
     claude mcp add scedit -- /path/to/scedit --grammar /path/to/sc-grammar.json --mcp
 
-Three tools, and their descriptions are written for a reader who knows nothing —
+Four tools, and their descriptions are written for a reader who knows nothing —
 they are what the outside model sees before it decides to call one:
 
 | tool | what it answers |
@@ -382,12 +486,25 @@ they are what the outside model sees before it decides to call one:
 | `doc_lookup` | `{command?, name?}` → one page, or the catalogue when called with no arguments |
 | `doc_search` | `{query, scope?, limit?}` → the ranked pages, each with the `page` to look up |
 | `check_script` | `{text? \| path?, label?}` → the findings, over a buffer or a file on disk |
+| `run_command` | `{command, host?, port?, wait_ms?}` → **runs one line on a LIVE engine** and returns what it says |
+
+`run_command` is the only one that changes anything: the dome moves, the show
+changes, and there is no undo. Its description says so, and says the three
+things a caller cannot work out for itself — that most commands answer with
+silence which is neither success nor failure, that a reply may be an answer to
+another client's command (the `$LOGON` subscription), and that playing a script
+returns when the script STARTS because nothing announces that it ended. Its
+`wait_ms` is bounded at both ends (100–10000): asking for 1 ms and then
+reporting a reply as absent is not a measurement. `--tcp` before `--mcp` sets
+where it sends by default:
+
+    claude mcp add scedit -- /path/to/scedit --grammar /path/to/sc-grammar.json --tcp 7805 --mcp
 
 A tool is declared in exactly one place, `registeredTools()` in
 `src/sc_mcp.cpp`: name, description, input schema, handler. The protocol code
-names no tool and knows no tool's arguments — adding `run_command` over the live
-engine's TCP line (the next slice) is one entry in that vector plus one field on
-`ToolContext`.
+names no tool and knows no tool's arguments — `run_command` was added as
+exactly one entry in that vector plus one field on `ToolContext`, with no line
+of protocol code touched, which is what that seam was written to make possible.
 
 An unknown TOOL is a protocol error (`-32602`); an unknown argument VALUE — a
 command that does not exist, a file that cannot be read, a missing `query` — is
@@ -425,7 +542,11 @@ the client features they need — elicitation, sampling, roots; `outputSchema` a
 `icons` on the tools; JSON-RPC batches (an array is refused with `-32600` rather
 than half-answered); extensions (tasks, apps); and the authorization framework,
 which the specification itself says stdio servers should not implement — a stdio
-server takes its credentials from the environment, and this one needs none.
+server takes its credentials from the environment, and this one needs none. The
+engine's control socket has no authentication of any kind, at either end: a
+`run_command` call reaches whatever is listening on that host and port, and
+binding this server to a machine that can reach a dome is a decision about who
+may move that dome.
 
 ## The grammar file
 
@@ -543,21 +664,22 @@ silently dropped translation unit.
 
 ## Verification
 
-Twelve `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings):
+Thirteen `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings):
 
 | gate | what it measures |
 |---|---|
 | `tokenizer` | 189 checks: constructed lines, one per sharp edge of the parse model, each with its expected tokenization — the comment cut included (quoted `#`, unclosed quote, glued `#`, indented `#`) — plus the block structure (`struct if`/`loop` openers, closers, closers that close nothing, the `comment`-block guard) |
 | `parse_oracle` | scedit's reading vs a **verbatim copy of the engine's `parseCommand`** — carrying the ruled comment cut in the exact form the engine receives it — over exhaustively enumerated short strings ({a, b, space, tab, `"`} to 6 bytes, {a, space, `"`} to 9, {a, space, `"`, `#`} to 8), ISO-8859 high-byte lines and every line of the real corpus: 119 337 comparisons |
-| `editcore` | 223 checks over the headless editor: the byte-preserving buffer, the cursor→token map across quoting and the space-after-quote normalisation, every completion context, the documentation bar including its honest blanks, and the live findings with their spans (a finding points at its bytes; an opener never closed is reported on ITS line), and the error history: both sources in line order, a warp landing on the stated byte, an edit that removes an entry, and the shapes that carry a `#!` and are NOT tails |
+| `editcore` | 266 checks over the headless editor: the byte-preserving buffer, the cursor→token map across quoting and the space-after-quote normalisation, every completion context, the documentation bar including its honest blanks, and the live findings with their spans (a finding points at its bytes; an opener never closed is reported on ITS line), and the error history: both sources in line order, a warp landing on the stated byte, an edit that removes an entry, and the shapes that carry a `#!` and are NOT tails; and the write-back rule against a real file on disk — the change seen, a clean buffer reloading with the engine's tail listed and the caret kept, a dirty one's save refused with the file byte-identical afterwards, each of the two explicit choices doing exactly what it says, a deleted file answered differently from a changed one |
 | `roundtrip` | `doc/superscript.sts` — 1606 lines (rewritten upstream 2026-08-26, `f0c8ef83`), ISO-8859, CRLF — opened in the editor and saved untouched: **same MD5**. Plus one edit that must change exactly the line it was made on |
-| `ui_selftest` | 17 frames the editor actually DRAWS, rendered off-screen at a fixed size — the error pane among them, with both sources mixed, after one warp and after two, and empty on a clean buffer — each with four masks of the caret's row: the ghost text is DIM, the look-alike-space marker lands on the column the finding names, every finding's span is UNDERLINED at exactly its bytes, and the caret is the standard SGR inversion on exactly one cell |
+| `ui_selftest` | 20 frames the editor actually DRAWS, rendered off-screen at a fixed size — the error pane among them, with both sources mixed, after one warp and after two, and empty on a clean buffer — each with four masks of the caret's row: the ghost text is DIM, the look-alike-space marker lands on the column the finding names, every finding's span is UNDERLINED at exactly its bytes, and the caret is the standard SGR inversion on exactly one cell. Three of the twenty are live mode, with a fifth mask (`feed LELEL`) that reads off the pixels which lines scedit wrote and which the engine did; the other seventeen are byte-identical to what they were before live mode existed, which is how "no `--tcp`, nothing on the screen" is checked rather than asserted |
 | `seed_gate` | the contract file validates (counts re-derived from the data, not asserted) — **and every fact in the four `grammar/args/` fragments is still byte-identical in the merged file**, which is what keeps the granular source and the merged contract from drifting apart |
 | `lint_rules` | `tests/lint_cases.sts` — one construct per armed id (15 ids), proving the rule fires with the right id, severity and shape; plus a section that must stay silent (comments in every position included), and a last section for what is only known at the end of the file |
 | `history_list` | `--history` over the lint fixture and `tests/history_cases.sts` produces exactly the recorded rows. Two inputs on purpose: the fixture's scedit rows include the 27 the `--check` record already pins, so one reader's two printers cannot drift apart silently; history_cases is F63-SHAPED — every `#!` in it is a sentence the ENGINE wrote — and three of its ten cases are deliberate ABSENCES (a `#!` in quotes, in a column-0 comment, in an indented one) |
 | `check_json` | `--check --json` over the lint fixture produces exactly the recorded objects — the same comparator as the text record above, with `--json` added to its mode, so the two printers of one finding set cannot drift apart |
 | `doc_queries` | ten recorded (arguments → stdout + exit code) answers of `--doc` and `--search`, each line of `tests/doc-queries.txt` saying what it pins: both flagged keys answering `doc: null`, a v1 family name beside a v2 one, an alias, both not-found vocabularies with their did-you-mean and exit 2, the ranking, and a query that matches nothing. stderr must stay empty for every one |
-| `mcp_protocol` | 55 checks from a stdlib-only Python client (`tests/mcp_gate.py`) that spawns `scedit --mcp` — a second implementation on purpose: both protocol eras, every tool with good and bad arguments, the honest null arriving as JSON `null` through the whole chain, the catalogue's counts, and the five refusals (parse error, no method, unknown method, unknown tool, unsupported version) |
+| `mcp_protocol` | 77 checks from a stdlib-only Python client (`tests/mcp_gate.py`) that spawns `scedit --mcp` — a second implementation on purpose: both protocol eras, every tool with good and bad arguments, the honest null arriving as JSON `null` through the whole chain, the catalogue's counts, the five refusals (parse error, no method, unknown method, unknown tool, unsupported version), and `run_command` driven against the stand-in engine with both sides asserted — the answer verbatim, the stand-in's own record of what arrived, a silent command with the note that says silence is neither outcome, and the no-engine path as a tool error naming what to check |
+| `tcp_client` | 23 gate checks over 65 leg checks: `sc_tcpclient` against `tests/fake_engine.py`, a stand-in whose framing rules are each read from a named line of `src/tools/io.cpp`. One leg per process, and after each one the gate asserts what the stand-in RECEIVED — so a leg cannot pass by agreeing with itself. Endpoint parsing and its refusals, a port nothing listens on, subscribe/ask/answer/disconnect/reconnect, a two-line command refused with nothing sent, latin-1 and 0xA0 bytes arriving as bytes, the bounded feed counting what it drops, another client's answer arriving because we subscribed, and the engine closing the connection |
 | `corpus_gate` | `--check` over the real corpus produces exactly the recorded findings |
 
 `tests/lint-expected.txt`, `tests/corpus-expected.txt`,
@@ -623,7 +745,22 @@ Stated rather than hidden — the `--rules` discipline, applied to the editor.
   me only the engine's", "only errors", "group by id" are one accessor away
   (`EditCore::errorHistory` is a plain vector) and are not built because nobody
   has asked for them yet.
-- **No TCP mode**: `§5` item 6, blocked on a spacecrafter rebuild.
+- **Live mode's keys are not driven by a terminal in any gate.** What the
+  editor DRAWS is pinned by twenty rendered frames, and what its actions DO is
+  pinned by the same core and client calls, in the same order, run headlessly
+  against the real engine (`claude/harness/f67_tcp_live.py`, and the `live_*`
+  legs of `tests/tcpclient_test.cpp`). What sits between them — that F8 is bound
+  to the play sequence — is read from `src/sc_tui.cpp` and not measured. A gate
+  driving the editor under a pseudo-terminal would close that, and does not
+  exist.
+- **The engine cannot be asked whether a command worked.** Not a scedit
+  limitation: the wire carries answers to `get`/`search` and nothing else, so
+  after `flag stars on` there is nothing to show but the fact that it was sent.
+  Routed to the project's owner rather than worked around here.
+- **A play's write-back is watched for five minutes.** A show longer than that
+  finishes with scedit no longer looking; the file is still compared before the
+  next save, so nothing can be lost — but the pane will not light up on its own.
+  The bound exists because there is no end-of-script event to wait for.
 
 `tests/derivation-diff.md` is the audit that makes engine fidelity (C1) a
 measurement instead of a claim: `parseCommand` line by line against the scedit
@@ -639,11 +776,12 @@ engine), `--check` with its lint rules, the headless editor core
 (`src/sc_editcore.hpp`) with its byte-preserving buffer, completion and
 documentation bar, the error pane and its `--history` twin, the FTXUI front end
 (`src/sc_tui.hpp`), the machine surface (`--doc`, `--search`, `--check --json`
-and the MCP server over the same readers), and the twelve gates above.
+and the MCP server over the same readers), live mode (`--tcp`: the client, the
+feed, the play, the `#!` write-back that loses neither side, and the
+`run_command` tool over the same client), and the thirteen gates above.
 
-Not yet: the stellar-system-file grammar (second contract file), `$`-variable
-semantics for the `reserved_variables` family, and the TCP client mode (with it,
-the MCP tool that would run a command on a live engine). The router half of the
+Not yet: the stellar-system-file grammar (second contract file) and `$`-variable
+semantics for the `reserved_variables` family. The router half of the
 LLM assistance — a model that picks the page to show, and whether the checker
 gates what such a model writes — is Vixy's to triage; scedit's side of it is the
 tools above, and it calls no model. Roadmap,

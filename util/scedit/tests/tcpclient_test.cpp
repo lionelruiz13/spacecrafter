@@ -324,6 +324,12 @@ static void legLiveSend(const Endpoint &ep, const std::vector<std::string> &comm
 	std::string err;
 	check(c.connect(ep, err), "connect to the live engine: " + err);
 	c.pollFor(2000, 1);
+	// The subscription's confirmation IS an engine line, and counting it among
+	// the answers to the commands is how a count of 0 becomes a count of 1 and
+	// says nothing. It is asserted here and then cleared, so what follows is
+	// about the commands and nothing else.
+	check(!engineLines(c).empty(), "the $LOGON subscription was confirmed by the engine");
+	c.clearFeed();
 	for (const std::string &command : commands) {
 		check(c.send(command, err), "send `" + command + "`: " + err);
 		c.pollFor(800);
@@ -418,6 +424,8 @@ static void legLivePlay(const Endpoint &ep, const std::string &grammar,
 	TcpClient c;
 	check(c.connect(ep, err), "connect: " + err);
 	c.pollFor(2000, 1);
+	check(!engineLines(c).empty(), "the $LOGON subscription was confirmed by the engine");
+	c.clearFeed();   // from here, everything on this wire is about the script
 	check(!core.dirty(), "the buffer is clean, so the play needs no save first");
 	check(c.send("script action play filename " + file, err), "play the file: " + err);
 
@@ -435,7 +443,7 @@ static void legLivePlay(const Endpoint &ep, const std::string &grammar,
 	// the file above had to be watched.
 	for (const FeedLine &f : c.feed())
 		std::printf("  feed[%s] %s\n", f.kind == FeedKind::Local ? "L" : "E", f.text.c_str());
-	std::printf("  engine lines during the whole play: %zu\n", engineLines(c).size());
+	std::printf("  engine lines after the subscription: %zu\n", engineLines(c).size());
 	c.disconnect();
 }
 
