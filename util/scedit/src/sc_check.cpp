@@ -338,7 +338,6 @@ void LineChecker::run(const Line &L)
 void LineChecker::rules(const Line &L, const CommandData &cdRef)
 {
 	const CommandData *cd = &cdRef;
-	const Span cmdSpan = L.tokens.empty() ? Span{} : L.tokens.front().span;
 
 	// --- parse-level facts ---------------------------------------------------
 	if (L.has_dangling)

@@ -9,6 +9,17 @@ project(scedit LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# WARNINGS, ON SCEDIT'S OWN TARGETS ONLY (2026-08-31, F66 scope 7).
+# Until now the project set no warning flags at all, so every "clean build, 0
+# warnings" claim in a delivery was a criterion that COULD NOT FAIL. It can now.
+# Target-scoped rather than global on purpose: third_party/ftxui and
+# third_party/nlohmann are vendored upstream trees (README § Vendoring) compiled
+# exactly as their authors ship them — warnings there are neither ours to fix
+# nor evidence about our code, and a global add_compile_options() would bury
+# ours in theirs. Every target below is one we write; the list is the whole of
+# scedit's own code.
+set(SCEDIT_WARNINGS -Wall -Wextra)
+
 # Headless core, library first: the TUI slice links this and reads the headers,
 # never the .cpp (scedit/INTENT.md C1 + engineering invariant I1).
 add_library(scedit_core STATIC
@@ -18,6 +29,7 @@ add_library(scedit_core STATIC
 	src/sc_document.cpp
 	src/sc_docindex.cpp
 	src/sc_editcore.cpp)
+target_compile_options(scedit_core PRIVATE ${SCEDIT_WARNINGS})
 target_include_directories(scedit_core PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/src
 	${CMAKE_CURRENT_SOURCE_DIR}/third_party)
@@ -27,9 +39,11 @@ target_include_directories(scedit_core PUBLIC
 # record in README.md § Vendoring).
 add_subdirectory(third_party/ftxui)
 add_library(scedit_tui STATIC src/sc_tui.cpp)
+target_compile_options(scedit_tui PRIVATE ${SCEDIT_WARNINGS})
 target_link_libraries(scedit_tui PUBLIC scedit_core PRIVATE ftxui::component)
 
 add_executable(scedit src/main.cpp)
+target_compile_options(scedit PRIVATE ${SCEDIT_WARNINGS})
 target_link_libraries(scedit PRIVATE scedit_core scedit_tui)
 
 enable_testing()
@@ -37,6 +51,7 @@ enable_testing()
 # Differential self-test: constructed lines with expected tokenizations, one
 # per sharp edge of the parse model. No grammar file needed.
 add_executable(scedit_tokenizer_test tests/tokenizer_test.cpp)
+target_compile_options(scedit_tokenizer_test PRIVATE ${SCEDIT_WARNINGS})
 target_link_libraries(scedit_tokenizer_test PRIVATE scedit_core)
 add_test(NAME tokenizer COMMAND scedit_tokenizer_test)
 
@@ -44,6 +59,7 @@ add_test(NAME tokenizer COMMAND scedit_tokenizer_test)
 # exhaustive short strings over the branch-driving alphabet, plus every line of
 # the real corpus. This is what makes C1 a measurement instead of a claim.
 add_executable(scedit_parse_oracle_test tests/parse_oracle_test.cpp)
+target_compile_options(scedit_parse_oracle_test PRIVATE ${SCEDIT_WARNINGS})
 target_link_libraries(scedit_parse_oracle_test PRIVATE scedit_core)
 add_test(NAME parse_oracle COMMAND scedit_parse_oracle_test
 	${CMAKE_CURRENT_SOURCE_DIR}/../../doc/superscript.sts
@@ -58,6 +74,7 @@ add_test(NAME parse_oracle COMMAND scedit_parse_oracle_test
 # fixture contract exists for the one path the real one cannot arm yet (D31's
 # machine-readable default); tests/fixture-grammar.json says so itself.
 add_executable(scedit_editcore_test tests/editcore_test.cpp)
+target_compile_options(scedit_editcore_test PRIVATE ${SCEDIT_WARNINGS})
 target_link_libraries(scedit_editcore_test PRIVATE scedit_core)
 add_test(NAME editcore COMMAND scedit_editcore_test
 	${CMAKE_CURRENT_SOURCE_DIR}/grammar/sc-grammar.json
@@ -67,6 +84,7 @@ add_test(NAME editcore COMMAND scedit_editcore_test
 # save it untouched, and compare MD5s — plus one edit that must change exactly
 # the line it was made on and nothing else.
 add_executable(scedit_roundtrip_test tests/roundtrip_test.cpp)
+target_compile_options(scedit_roundtrip_test PRIVATE ${SCEDIT_WARNINGS})
 target_link_libraries(scedit_roundtrip_test PRIVATE scedit_core)
 add_test(NAME roundtrip
 	COMMAND ${CMAKE_COMMAND}
