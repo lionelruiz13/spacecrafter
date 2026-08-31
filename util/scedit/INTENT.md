@@ -163,11 +163,11 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   md5 in==out) plus this host's own precondition — a LOCKED screen throttles
   the engine to 1 Hz (`HOST-EVENTS.md` 2026-08-31).**
 - **Gate inventory at 2026-08-31 (F67 delivered; `ctest` in `build-lovely` and in
-  a fresh `build-f67`): 13 gates — tokenizer 189 · parse_oracle 119 337/0 ·
+  a fresh `build-f67`): 14 gates — tokenizer 189 · parse_oracle 119 337/0 ·
   editcore 266 · roundtrip · ui_selftest 20 frames · seed_gate · lint_rules 27 ·
   history_list 36 · corpus_gate 15 · check_json · doc_queries 10 ·
-  mcp_protocol 77 · tcp_client 23/65. `-Wall -Wextra` on scedit's own targets,
-  0 warnings. Live: `claude/harness/f67_tcp_live.py` 28/28, twice.**
+  mcp_protocol 77 · tcp_client 23/65 · pty_keys 11. `-Wall -Wextra` on scedit's
+  own targets, 0 warnings. Live: `claude/harness/f67_tcp_live.py` 28/28, twice.**
 - ~~**Gate inventory at 2026-08-31 (F66 delivered; `ctest` in `build-lovely`):
   12** — tokenizer 189 · parse_oracle 119 337/0 · editcore 223 · roundtrip
   (md5) · ui_selftest 17 frames · seed_gate · lint_rules 27 · history_list 36 ·
@@ -217,13 +217,15 @@ notes.*
    tails without an explicit choice, and MCP `run_command` over the same
    client. Gates 12 -> 13 (`tcp_client`), editcore 223 -> 266, ui 17 -> 20,
    mcp 55 -> 77; live 28/28 twice (`claude/harness/f67_tcp_live.py`).
-   **THREE THINGS LEFT, none of them scedit's to decide:** the engine sends a
+   **TWO THINGS LEFT, neither of them scedit's to decide:** the engine sends a
    client NOTHING about a script it plays (parent **§11.185**, routed to Vixy
-   with the workaround's bounds); the write-back UX (second Ctrl-S takes the
-   destructive branch) is a scedit call with the veto open; and no gate drives
-   the editor's KEYS through a terminal — what is drawn is pinned by 20 frames
-   and what the actions do by the same calls run headlessly, and the seam
-   between them is read, not measured (README § What the editor cannot do yet).
+   with the workaround's bounds), and the write-back UX (a second Ctrl-S takes
+   the destructive branch) is a scedit call with the veto open. The third — that
+   no gate pressed the editor's KEYS — was closed in the same round by
+   `pty_keys` (gate 14, 11 checks on a pseudo-terminal, the stand-in engine
+   asserting what arrived); what remains read rather than measured is one `||`
+   per key, the F-key beside its control twin (README § What the editor cannot
+   do yet).
    *(prerequisite MET 2026-08-31: the engine builds and RUNS here — display
    session for the `claude` user; F61/F62 drove it over port 7805.)*
 7. ~~**FTXUI shell** — editor + cursor-driven doc panel (C6) + completion
@@ -562,7 +564,20 @@ notes.*
   LOCKED at the first live run; the instrument read that, recorded it, woke the
   session and recorded that too. 1 and 2 frame stalls per run against 105/run
   locked (§11.183). No claim here is a timing claim.
-  **State:** 13/13 gates green in `build-lovely` AND in a fresh `build-f67`
+  **The seam nothing measured, closed in the same round (`e2c8477b`).** Between
+  what the editor DRAWS (20 rendered frames) and what its core and client DO
+  (the live legs) sat a claim read from `sc_tui.cpp` and believed: that F8 is
+  bound to the play sequence. Gate 14 `pty_keys` runs the real binary on a
+  PSEUDO-TERMINAL, presses the control twins, and asserts on the stand-in
+  ENGINE's side what arrived — `--tcp` alone connects to nothing, Ctrl-T
+  subscribes, Ctrl-L sends the caret's line verbatim and sends NOTHING from a
+  comment line, Ctrl-R plays by absolute path, the engine's words reach the pane
+  on screen, Ctrl-Q exits 0 having unsubscribed. Shown able to fail: the play
+  key's branch disabled → exactly that check red. Run three times before being
+  wired in. What stays READ rather than measured is now one `||` per key (the
+  F-key beside its twin), and that no single run holds a real terminal and a
+  real engine together.
+  **State:** 14/14 gates green in `build-lovely` AND in a fresh `build-f67`
   (Release), **0 warnings** with the flags on scedit's own targets and absent
   from ftxui's. Item 6 struck; item 19's router half and items 11/12 unchanged.
 

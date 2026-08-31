@@ -2540,7 +2540,8 @@ mean something other than what it says.
 The `live_*` legs live in `util/scedit/tests/tcpclient_test.cpp` and are built by
 scedit's own CMake (`build-lovely/scedit_tcpclient_test`), so the live run drives
 the SAME client and the same `EditCore` calls the editor's keys drive, in the
-editor's order. What it does NOT drive is the terminal: a claim about a KEY rests
-on the ui gate's 20 rendered frames plus these legs, and the seam between them is
-read from `sc_tui.cpp`, not measured. Overridable: `SC_BIN`, `SCEDIT_BIN`,
-`SCEDIT_DRIVER`.
+editor's order. What it does NOT drive is the terminal — that half is
+`util/scedit/tests/pty_gate.py` (ctest gate `pty_keys`), which presses the keys
+on a pseudo-terminal against the stand-in engine. The two together cover the
+path; **no single run holds a real terminal and a real engine at once**, which is
+the honest remaining gap. Overridable: `SC_BIN`, `SCEDIT_BIN`, `SCEDIT_DRIVER`.

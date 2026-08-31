@@ -1634,20 +1634,22 @@ save-refusal / saveOverwriting, editcore 223→266) → `917b0e2b` (scope 2: `--
 feed pane, five keys, the one clock; ui 17→**20**, the 17 old frames
 byte-identical) → `7b78229d` (scope 4: MCP `run_command`, mcp 55→**77**, no
 protocol code touched) → `4bf3f6cb`/`5d3d577f` (the `live_*` legs) → `51cfc24d`
-(scope 6: README). Harness `29f03c2` (the instrument) → `54f79d4` (the run +
-artifacts) → this commit (records). **13/13 gates green, 0 warnings, in
+(scope 6: README) → `e2c8477b` (gate 14 `pty_keys`: the editor's keys pressed on a
+pseudo-terminal, closing the one seam the delivery had named as read-not-measured).
+Harness `29f03c2` (the instrument) → `54f79d4` (the run + artifacts) → `50c0c65`
+(records) → this commit (gate 14's records). **14/14 gates green, 0 warnings, in
 `build-lovely` AND in a fresh `build-f67`; live 28/28 TWICE.** Falsifications, all
 restored md5-verified: a canned reply altered → `tcp_client` red; `save()`'s disk
 check short-circuited → 11 editcore checks red; the feed's local styling removed →
 `ui_selftest` red; `run_command`'s note rewritten to claim silence means success →
-`mcp_protocol` red; and the live (e) control FORCED, where the engine's tail is
-lost. Suspended for Vixy: §11.185's three items (should the control channel carry
+`mcp_protocol` red; the play key's branch disabled → exactly that `pty_keys` check
+red; and the live (e) control FORCED, where the engine's tail is lost. Suspended for Vixy: §11.185's three items (should the control channel carry
 script lifecycle · own §5 row or §5.72+§5.117 read together, BOTH readings recorded
 and the reversible option taken · who may move the dome, the socket authenticates
 nobody); the write-back UX (second Ctrl-S takes the destructive branch) and the
-five keys/feed bound, README-stated, veto open. Gaps stated, not hidden: no gate
-drives the editor's KEYS through a terminal; the write-back watch stops after 5
-minutes. Canary `--no-scene` exit 2 / 2 FAIL, recorded not re-banked. Screensaver
+five keys/feed bound, README-stated, veto open. Gaps stated, not hidden: the F-key beside each
+control twin is one `||` read rather than pressed; no single run holds a real
+terminal and a real engine at once; the write-back watch stops after 5 minutes. Canary `--no-scene` exit 2 / 2 FAIL, recorded not re-banked. Screensaver
 ACTIVE at the first live launch → woken and disclosed (owner veto item);
 1 and 2 frame stalls per run. One dispatcher path gloss: `INTENT/5.47.md` does not
 exist — §5.47 is CLOSED, its record is `INTENT/11.135.md` + the live §5.72 row.
