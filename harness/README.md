@@ -2471,3 +2471,76 @@ Instrument facts learned, both worth carrying:
   (untracked, so nothing in git; the numbers stay recorded in FEATURE_REQUESTS
   and the two-level `*_members.json` rows are intact). Re-derivable with
   `./f64_doc_router.py gemma4:latest` (≈5 min, CPU-only).
+
+## F67 — does scedit's live TCP mode do what it says, on a real engine? (`f67_tcp_live.py`) — scedit INTENT §5 item 6, parent INTENT §11.185, 2026-08-31
+
+```
+DISPLAY=:2 ./f67_tcp_live.py [absOutdir]      # default artifacts/f67
+```
+
+One fresh launch on a temp-HOME farm (`b3_farm.sh`), the `/proc/<pid>/comm`
+instance probe, frozen config/ssystem md5 asserted in == out, and seven legs
+over port 7805. **28/28, twice** (2026-08-31, code `master-beta @ 5d3d577f`,
+engine sources unmoved since `2b8ec034`). Predictions are printed before the run
+AND written into `artifacts/f67/f67_result.json` before a leg executes; each
+leg's observable is read through a channel scedit's client never touches.
+
+| leg | claim | observable |
+|---|---|---|
+| A | a command scedit's client sends is EXECUTED | `session action save` twice — `stars = false` then `stars = true`, a TRANSITION, so the initial state cannot fake it (§11.129's `readFlag` is what a session save writes) |
+| B | a `get` reply reaches the connection that ASKED (§5.47) | the five-field position reply on scedit's own socket, **exactly one copy** although it is also a `$LOGON` subscriber |
+| C | the `$LOGON` feed carries what the engine broadcasts (§5.72) | a SECOND, plain client's answer arriving on the subscriber's feed |
+| D | the `#!` write-back into a CLEAN buffer | the file on disk (tail on line 3, every other byte identical), the reloaded buffer's history, and a separate `scedit --history` process reporting the same row and its relation |
+| E | a DIRTY buffer's save is REFUSED | the file byte-exactly what the engine left; the author's edit absent; the refusal naming both choices |
+| E' | **the control**: the same driver FORCED | the edit on disk and the engine's tail GONE — which is what makes E a fact about the code |
+| F | disconnect and reconnect | both connections answered |
+
+**THE FACT THE ROUND PRODUCED, in leg D**: after the subscription's own
+confirmation, the engine sent **zero bytes** for an entire play that wrote five
+diagnostics into the file — no start, no end, no diagnostic. That is why scedit
+watches the FILE, and it is §11.185's subject, routed to Vixy.
+
+The offline twin is `util/scedit/tests/tcp_gate.py` (ctest gate `tcp_client`),
+which asks the same questions of `tests/fake_engine.py`, a stand-in whose every
+framing rule is read from a named line of `src/tools/io.cpp`. The two exist as a
+pair on purpose: the stand-in checks scedit against my reading of the engine,
+this checks the reading.
+
+Instrument facts, all four worth carrying:
+
+- **The `$LOGON` confirmation is an engine line.** Counting it among the replies
+  to the commands turned a true "0 replies" into a red "1", twice, on the first
+  live run. The legs now assert the confirmation and then CLEAR the feed, so the
+  count is about the commands. The refined check still has teeth: leg B is the
+  positive map, where a reply does arrive.
+- **`close()` does not close a socket another thread is blocked on** (Linux):
+  the blocked `recv()`/`accept()` holds the open file description, no FIN goes
+  out, and a "stopped" listener goes on listening. Two reds in the offline gate
+  came from that, and scedit was right both times to report nothing. `shutdown()`
+  first — the fix is in `fake_engine.py`'s `stop()`, in both places.
+- **This instrument overwrote its own evidence on its second run** — F66's
+  `f64_doc_router.py` class, met again. The first run's host record (the one that
+  captured a LOCKED session and the wake) was lost. Each run now also writes
+  `f67_result-<timestamp>.json` beside the stable name; the stable name is what a
+  record cites.
+- **Never wait a fixed time for the engine.** The legs wait on the script log for
+  `ScriptMgr: script end` (startup) and, for the write-back, poll the FILE at the
+  editor's own cadence — 1 Hz inside a stated window — because there is no event
+  to wait on (that is the finding, not a shortcut).
+
+Host state is READ, RECORDED and, if the session is locked, MITIGATED with the
+mitigation disclosed (§11.174(h), an owner veto item): a locked screen throttles
+the engine to a 1 Hz frame clock, so the run calls
+`org.gnome.ScreenSaver.SetActive false` plus `SimulateUserActivity` once a
+minute and writes all of it into the result JSON. Frame stalls observed: **1 and
+2 per run** awake, against **105/run** locked (§11.183). No claim here is a
+timing claim; the wake matters because a 1 Hz engine makes a five-minute window
+mean something other than what it says.
+
+The `live_*` legs live in `util/scedit/tests/tcpclient_test.cpp` and are built by
+scedit's own CMake (`build-lovely/scedit_tcpclient_test`), so the live run drives
+the SAME client and the same `EditCore` calls the editor's keys drive, in the
+editor's order. What it does NOT drive is the terminal: a claim about a KEY rests
+on the ui gate's 20 rendered frames plus these legs, and the seam between them is
+read from `sc_tui.cpp`, not measured. Overridable: `SC_BIN`, `SCEDIT_BIN`,
+`SCEDIT_DRIVER`.

@@ -85,7 +85,33 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   command surface is now a machine-readable contract
   (`util/scedit/grammar/sc-grammar.json`) with a count-gated validator; scope
   extended by Vixy to stellar-system files; zero-knowledge documentation bar
-  and GNU-style diagnostic ids added by Vixy in-session). Original triage note
+  and GNU-style diagnostic ids added by Vixy in-session).
+  **STATUS 2026-08-31 — THE D31 SPEC IS COMPLETE BUT FOR ONE HALF OF ONE
+  CLAUSE.** *tui with mouse support* (the FTXUI shell, click-to-warp),
+  *autocomplete* (ghost text = exactly what Tab inserts), *static analysis to
+  report errors early* (`--check`, 15 armed rules, C3 zero false positives),
+  *documentation of the currently edited call + attribute key documentation
+  corresponding to the key/value the cursor is on* (the four-line doc bar, with
+  an honest blank where the contract has none) and now *direct tcp mode*
+  (**F67**, scedit journal `2026-08-31h`: `--tcp`, the `$LOGON` feed pane, the
+  engine's `#!` write-back handled so that neither the author's edits nor the
+  engine's findings are lost without a choice, and an MCP `run_command` over the
+  same client) are ALL LANDED. What is not: *"with default value shown greyed out
+  and candidate for autocomplete when the value field is empty"* — the MECHANISM
+  is built and arms itself from the data, but all 324 argument specs state their
+  default as an English SENTENCE, so there is no literal a machine may type
+  without guessing (C2 forbids guessing). It waits on a DOC PASS writing
+  `default_value` as data, source-anchored, never regexed out of prose — scedit
+  INTENT §5 items 11 and 12. Count of literals at HEAD: **0**; 35 of the 324
+  reduce to a bare token by inspection and are the obvious first batch. An empty
+  value slot with an ENUMERATED domain does complete today, from `values`; that
+  half is live.
+  **Consequence (2) below is discharged by measurement**: the TCP channel HAS
+  become an editor-facing API and its error reporting was judged against that.
+  The answer is **§11.185**, routed to Vixy — the engine tells a client nothing
+  about a script it plays (no start, no end, no diagnostic; only `get`/`search`
+  are ever answered), so an editor has to watch the FILE.
+  Original triage note
   kept below — the three consequences became scedit constraints. Three consequences
   worth carrying into the work that touches those surfaces:
   (1) the **command grammar** and the **data-key vocabulary** become

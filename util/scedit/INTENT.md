@@ -162,13 +162,21 @@ MACHINE-consumed; (2) the TCP channel becomes an editor-facing API (its
   (`f27_reply.Session`: fresh temp-HOME launch, concurrent-instance probe,
   md5 in==out) plus this host's own precondition — a LOCKED screen throttles
   the engine to 1 Hz (`HOST-EVENTS.md` 2026-08-31).**
-- **Gate inventory at 2026-08-31 (F66 delivered; `ctest` in `build-lovely`):
+- **Gate inventory at 2026-08-31 (F67 delivered; `ctest` in `build-lovely` and in
+  a fresh `build-f67`): 13 gates — tokenizer 189 · parse_oracle 119 337/0 ·
+  editcore 266 · roundtrip · ui_selftest 20 frames · seed_gate · lint_rules 27 ·
+  history_list 36 · corpus_gate 15 · check_json · doc_queries 10 ·
+  mcp_protocol 77 · tcp_client 23/65. `-Wall -Wextra` on scedit's own targets,
+  0 warnings. Live: `claude/harness/f67_tcp_live.py` 28/28, twice.**
+- ~~**Gate inventory at 2026-08-31 (F66 delivered; `ctest` in `build-lovely`):
   12** — tokenizer 189 · parse_oracle 119 337/0 · editcore 223 · roundtrip
   (md5) · ui_selftest 17 frames · seed_gate · lint_rules 27 · history_list 36 ·
   corpus_gate 15 · check_json · doc_queries 10 · mcp_protocol 55; `-Wall
   -Wextra` on scedit's own targets, 0 warnings (item 20). Each record gate is
   edited deliberately and shown able to fail at the touch that adds it (README
-  § Verification is the per-gate description; this line is the count of record).
+  § Verification is the per-gate description; this line is the count of record).~~
+  **[SUPERSEDED 2026-08-31 by the F67 line above; kept as the F66 state of
+  record, per the maintenance invariant.]**
 
 ## 5. Open work (ordered)
 
@@ -201,11 +209,23 @@ notes.*
    two-regime lint per C4, ISO-8859 handling at the file boundary.
 5. **`app_command_eval.cpp`** (376 lines) — `$`-variable substitution
    semantics for the reserved_variables family (currently UNEXTRACTED).
-6. **TCP client mode** — line protocol + `$LOGON` feed pane;
-   ~~spacecrafter rebuild on this laptop is its prerequisite~~ **prerequisite
-   MET 2026-08-31: the engine builds and RUNS here (display session for the
-   `claude` user; F61/F62 drove it over port 7805)**. **MINTED as dispatch task
-   F67 (2026-08-31e, `claude/fable-dispatch.md`).**
+6. ~~**TCP client mode** — line protocol + `$LOGON` feed pane~~ **DONE
+   2026-08-31 (F67; journal 2026-08-31h; code `584edade` -> `51cfc24d`).**
+   `--tcp [[host:]port]`, `sc_tcpclient` (connect/$LOGON/send/$LOGOFF, bounded
+   500-line feed, latin-1 both ways), the feed pane with its five keys, the
+   `#!` write-back rule that loses neither the author's edits nor the engine's
+   tails without an explicit choice, and MCP `run_command` over the same
+   client. Gates 12 -> 13 (`tcp_client`), editcore 223 -> 266, ui 17 -> 20,
+   mcp 55 -> 77; live 28/28 twice (`claude/harness/f67_tcp_live.py`).
+   **THREE THINGS LEFT, none of them scedit's to decide:** the engine sends a
+   client NOTHING about a script it plays (parent **§11.185**, routed to Vixy
+   with the workaround's bounds); the write-back UX (second Ctrl-S takes the
+   destructive branch) is a scedit call with the veto open; and no gate drives
+   the editor's KEYS through a terminal — what is drawn is pinned by 20 frames
+   and what the actions do by the same calls run headlessly, and the seam
+   between them is read, not measured (README § What the editor cannot do yet).
+   *(prerequisite MET 2026-08-31: the engine builds and RUNS here — display
+   session for the `claude` user; F61/F62 drove it over port 7805.)*
 7. ~~**FTXUI shell** — editor + cursor-driven doc panel (C6) + completion
    (defaults greyed, D31 spec).~~ **DONE 2026-08-04 (journal
    2026-08-04h; gated; code `0745dc34`). D1 discharged: FTXUI v5.0.0
@@ -440,6 +460,111 @@ notes.*
    the args merge gates.
 
 ## 6. Journal (append-only)
+
+- **[2026-08-31h] The engine at the other end of the editor: `--tcp`, the feed,
+  the `#!` write-back that loses neither side — and the measured fact that the
+  engine says nothing about a script it plays.** Dispatch task F67
+  (`claude/fable-dispatch.md`), executor run, all six scopes delivered.
+  Preconditions verified live before anything moved (§0.7): both HEADs and clean
+  trees, **12/12** gates with every stated count re-measured from the gate's own
+  output (tokenizer 189, oracle 119 337/0, editcore 223, ui 17 frames, lint 27,
+  history 36, corpus 15, doc_queries 10, mcp 55), the engine binary at code HEAD,
+  the display answering 1920x1080 on `:2`, the canary failing by construction and
+  recorded rather than re-banked, no concurrent instance, the frozen md5 pair,
+  §11.185 free, journal letter `h` free. No abort. One dispatcher path gloss
+  reported: the section's sources name `INTENT/5.47.md`, which does not exist —
+  §5.47 is CLOSED and its record is `INTENT/11.135.md` plus the live §5.72 row.
+  **THE DESIGN IS DECIDED BY A MEASUREMENT, NOT BY A PREFERENCE.** Before writing
+  a line of the client I asked the tree who can hear the engine: `setOutput` has
+  exactly **two** callers, `get status …` and `search name …`
+  (app_command_interface.cpp:1284-1301, :1415), plus the inline
+  `$NOTICE`/`$LOGON`/`$LOGOFF` replies (io.cpp:640-663). **Everything else is
+  silence** — a refused command, a script's start, a script's end, all of it goes
+  to `debug_message` and the log (§5.117). Confirmed live: an entire play that
+  produced findings put **zero bytes** on the wire after the subscription's own
+  confirmation. So: the feed pane cannot be a success report, the `#!` reload
+  cannot wait on an event, and `run_command`'s description has to say all of this
+  to the model reading it. Parent **§11.185** records the gap with both readings
+  and routes it; §5.72 and §5.117 carry back-markers to it in the same commit.
+  **The client (`584edade`).** `sc_tcpclient`: connect + `$LOGON`, one line out,
+  non-blocking read, `$LOGOFF` + close, state as data, ISO-8859 bytes untouched
+  in both directions, a 500-line feed that COUNTS what its bound discards. The
+  framing is the server's own — `ServerSocket::send` writes `strlen+1`, so a
+  record ends in a NUL and `deliver` puts the `\n` inside it, and `$NOTICE`'s
+  reply has no newline at all. Gate 13 `tcp_client`: `tests/fake_engine.py` is a
+  stand-in whose every framing rule is read from a named line of `io.cpp`, and
+  `tests/tcp_gate.py` runs one leg per process and then asserts what the stand-in
+  RECEIVED — a leg cannot pass by agreeing with itself. 23 gate checks over 65
+  leg checks.
+  **The write-back, as a rule rather than a feature (`8a5c7ce3`).**
+  `EditCore::diskState()` compares the file with `diskImage()`, the bytes this
+  buffer was read from or last wrote — byte comparison, not a digest: it is a
+  script, the cost is one read, and there is then no collision to reason about.
+  `save()` runs it ALWAYS and REFUSES on Changed, naming both losses and taking
+  neither; `reloadFromDisk()` and `saveOverwriting()` are the two ways out. A
+  clean buffer is refused too, because a clean buffer holds the bytes from
+  BEFORE the run. editcore **223 → 266**.
+  **The editor (`917b0e2b`).** `--tcp [[host:]port]`, F6 connect, F7 send the
+  caret's line, F8 play the file, F9 the feed, F11/F12 and the wheel to scroll
+  it, Ctrl-U reload; control twins for all of them; **bound only when `--tcp` was
+  given**, and the way that claim is checked rather than asserted is that all
+  **seventeen** frames recorded before this commit are byte-identical after it.
+  Three new frames carry a fifth mask (`feed LELEL`) read off the pixels: which
+  lines scedit wrote and which the engine did is visible on the screen. ONE
+  clock, with both numbers in the header and the README: the socket is drained
+  4×/s while connected (reading what the peer pushed), and the played FILE is
+  re-read **≤1 Hz, for ≤5 minutes, only after a play** — I3's admitted
+  external-writer case, a convenience whose guarantee lives in `save()`.
+  **`run_command` (`7b78229d`), and F66's seam held to the letter**: one entry in
+  `registeredTools()` and one field on `ToolContext`, **no protocol code
+  touched**. Its description carries the three things a model cannot work out —
+  live dome, no undo; silence is neither success nor failure; a reply may be
+  another client's. `wait_ms` bounded 100–10000 (asking for 1 ms and calling the
+  absence a result is not a measurement). mcp **55 → 77**.
+  **Live, 28/28, twice** (`claude/harness/f67_tcp_live.py`, predictions printed
+  and written into the JSON before any leg ran): a command scedit sent is
+  EXECUTED — `session action save` writes `stars = false` then `stars = true`, a
+  TRANSITION read through a channel the client never touches; a `get` answered on
+  scedit's own connection **exactly once** although it is also a subscriber
+  (§5.47 live, by an implementation that is not the harness); a second client's
+  answer arriving on the feed (§5.72 live); the write-back into a clean buffer
+  with the tail on line 3, every other byte identical, and a separate
+  `scedit --history` process reporting the same row and relating it to scedit's
+  own (*agrees with scedit's `end-without-if`* — the C1 signal, agreeing);
+  the dirty buffer REFUSED with the file byte-exactly what the engine left; and
+  **the same driver FORCED**, where the tail is gone — the control that makes the
+  refusal a fact about the code rather than a hope about the situation.
+  **[measured 2026-08-31] Three reds on a stand-in engine, and two of them were
+  Linux, not Python.** `close()` on a socket another thread is blocked in
+  `recv()` or `accept()` on tears nothing down: the blocked call holds the open
+  file description, no FIN goes out, and the port goes on listening. So the
+  stand-in's "the engine went away" did not go away and its "nothing is
+  listening" was still listening — and scedit was right both times to report
+  nothing. `shutdown()` first, in both places.
+  **[measured 2026-08-31] Four of my own checks were wrong before any code was.**
+  The `$LOGOFF` count (the leg disconnects twice), the sent-lines count (the
+  subscription is not a command), the close event asserted against ENGINE lines
+  when it is by design a local one, and — twice, live — the `$LOGON`
+  confirmation counted among the replies to the commands, which turned a true
+  "0 replies" into a red "1". Each is corrected in place with the miscount
+  written down beside it, and the refined count keeps its teeth because leg B is
+  the positive map where a reply does arrive.
+  **[measured 2026-08-31] An instrument that overwrote its own evidence, again.**
+  F66 banked that class from `f64_doc_router.py`; my own live instrument met it
+  on its second run — the first run's host record, the one that captured the
+  LOCKED session, was overwritten by the second. Each run now writes a
+  timestamped copy beside the stable name. The lost values are in the delivery.
+  **[measured 2026-08-31] A label had been standing in for a path.** `openBytes`
+  stored its LABEL where `open` stores a path, so a buffer with no file answered
+  a question about a file that never existed ("gone"). Found by the new
+  write-back check asking it. `hasFile()` now says which kind of buffer this is.
+  **Host, disclosed (§11.174(h), owner veto item):** the session's screen was
+  LOCKED at the first live run; the instrument read that, recorded it, woke the
+  session and recorded that too. 1 and 2 frame stalls per run against 105/run
+  locked (§11.183). No claim here is a timing claim.
+  **State:** 13/13 gates green in `build-lovely` AND in a fresh `build-f67`
+  (Release), **0 warnings** with the flags on scedit's own targets and absent
+  from ftxui's. Item 6 struck; item 19's router half and items 11/12 unchanged.
 
 - **[2026-08-31g] The documentation answers a machine: `--doc`, `--search`,
   `--check --json`, an MCP server over the same readers — and the warning bar

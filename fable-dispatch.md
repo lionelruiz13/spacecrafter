@@ -1623,20 +1623,34 @@ grammar content; NO writes into `~/.spacecrafter` (farm launches only).
 **DoD:** scope 1–6; offline gates green on a clean build, 0 warnings; the live
 instrument committed with its both-ways discrimination record; canary output
 recorded; code tree clean; WIP per §0.6.
-**WIP:** 2026-08-31 — §0.7 gate PASSED (both HEADs `116f6d19`/`feea097` clean; 12/12
-gates with every stated count re-measured: tokenizer 189, oracle 119337/0, editcore
-223, ui 17 frames, lint 27, history 36, corpus 15, doc_queries 10, mcp 55; engine
-binary at HEAD; display :2 1920x1080; screensaver ACTIVE at open; canary
-`--no-scene` exit 2 / 2 FAIL recorded not gated; no instance; md5 pair pristine;
-§11.185 free; journal letter `h` free). ONE dispatcher path gloss: `INTENT/5.47.md`
-does not exist — §5.47 is CLOSED, its record is `INTENT/11.135.md` + live §5.72;
-read there, not an abort (content reachable). CHECKPOINTS: code `584edade`
-(scope 1 — `sc_tcpclient` + fake engine + gate 13 `tcp_client`, 12→13 gates) →
-`8a5c7ce3` (scope 3 headless half — diskState/reload/save-refusal/saveOverwriting,
-editcore 223→266) → `917b0e2b` (scope 2 — `--tcp`, feed pane, keys, the one
-clock; ui frames 17→20, the 17 old ones byte-identical). 13/13 green; 3 tampers
-shown red and restored md5-verified. NEXT: scope 4 (MCP `run_command`), then
-README, then the live campaign.
+**WIP:** — **DELIVERED 2026-08-31** (scedit mirror ledger journal
+**[2026-08-31h]**, §5 item 6 STRUCK, gate inventory line superseded with record;
+parent **§11.185** MINTED — an engine-side fact was produced, so the number was
+consumed: the engine tells a TCP client nothing about a script it plays; §5.72
+and §5.117 carry back-markers to it in the same commit; entry file first, then
+the derived stub). Code `584edade` (scope 1: `sc_tcpclient` + `tests/fake_engine.py`
++ gate `tcp_client`, 12→13) → `8a5c7ce3` (scope 3 headless: diskState / reload /
+save-refusal / saveOverwriting, editcore 223→266) → `917b0e2b` (scope 2: `--tcp`,
+feed pane, five keys, the one clock; ui 17→**20**, the 17 old frames
+byte-identical) → `7b78229d` (scope 4: MCP `run_command`, mcp 55→**77**, no
+protocol code touched) → `4bf3f6cb`/`5d3d577f` (the `live_*` legs) → `51cfc24d`
+(scope 6: README). Harness `29f03c2` (the instrument) → `54f79d4` (the run +
+artifacts) → this commit (records). **13/13 gates green, 0 warnings, in
+`build-lovely` AND in a fresh `build-f67`; live 28/28 TWICE.** Falsifications, all
+restored md5-verified: a canned reply altered → `tcp_client` red; `save()`'s disk
+check short-circuited → 11 editcore checks red; the feed's local styling removed →
+`ui_selftest` red; `run_command`'s note rewritten to claim silence means success →
+`mcp_protocol` red; and the live (e) control FORCED, where the engine's tail is
+lost. Suspended for Vixy: §11.185's three items (should the control channel carry
+script lifecycle · own §5 row or §5.72+§5.117 read together, BOTH readings recorded
+and the reversible option taken · who may move the dome, the socket authenticates
+nobody); the write-back UX (second Ctrl-S takes the destructive branch) and the
+five keys/feed bound, README-stated, veto open. Gaps stated, not hidden: no gate
+drives the editor's KEYS through a terminal; the write-back watch stops after 5
+minutes. Canary `--no-scene` exit 2 / 2 FAIL, recorded not re-banked. Screensaver
+ACTIVE at the first live launch → woken and disclosed (owner veto item);
+1 and 2 frame stalls per run. One dispatcher path gloss: `INTENT/5.47.md` does not
+exist — §5.47 is CLOSED, its record is `INTENT/11.135.md` + the live §5.72 row.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
