@@ -1,0 +1,22 @@
+# One `scedit` argument line per query — the record beside it (tests/doc-expected.txt)
+# is what these arguments must print and exit. Chosen for what each one PINS:
+#
+# the honest-null rule, on the two keys the extraction could not answer
+--doc dso3d z_reflection
+--doc suntrace sun
+# a v1 family name: the name exists, the documentation does not
+--doc flag stars
+# a v2 family name: the same shape, filled
+--doc set atmosphere_fade_duration
+# an alias answers with its OWN doc and registration and the canonical's keys
+--doc div
+# a name that is not in the vocabulary: the error object, the vocabulary named,
+# the checker's did-you-mean, and exit 2 — twice, once per vocabulary
+--doc zomo
+--doc image filenam
+# the ranking, in the scope the f64 baseline measured
+--search --scope commands --limit 3 play a sound in the dome
+# the ranking over pages that are not commands
+--search --limit 4 constellation lines colour
+# no shared word is not a weak answer, it is no answer
+--search xyzzy plugh

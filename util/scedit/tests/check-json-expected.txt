@@ -1,0 +1,311 @@
+{
+  "counts": {
+    "error": 16,
+    "info": 1,
+    "total": 27,
+    "warning": 10
+  },
+  "diagnostics": [
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unknown-command",
+      "line": 8,
+      "message": "unknown command 'zomo'; did you mean 'zoom'?",
+      "severity": "error",
+      "span": {
+        "begin": 0,
+        "end": 4
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "deprecated",
+      "line": 11,
+      "message": "command 'movetocity' is no longer used in this software: the line is ignored",
+      "severity": "warning",
+      "span": {
+        "begin": 0,
+        "end": 10
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "orphaned-flag",
+      "line": 14,
+      "message": "flag 'sky_draw' is never registered by the engine, so this line has no effect (the name exists in the engine source but no flag is bound to it)",
+      "severity": "error",
+      "span": {
+        "begin": 5,
+        "end": 13
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "deprecated",
+      "line": 17,
+      "message": "'point_star' is no longer used in this software: the engine ignores it",
+      "severity": "warning",
+      "span": {
+        "begin": 5,
+        "end": 15
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unknown-parameter",
+      "line": 20,
+      "message": "'starz' is not a known flag; did you mean 'stars'?",
+      "severity": "error",
+      "span": {
+        "begin": 5,
+        "end": 10
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "silent-off-value",
+      "line": 23,
+      "message": "flag value 'yes' is not an on-form ('on', 'true', '1'), an off-form ('off', 'false', '0') or 'toggle': the engine reads everything else as OFF, with no error",
+      "severity": "warning",
+      "span": {
+        "begin": 11,
+        "end": 14
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "silent-off-value",
+      "line": 26,
+      "message": "flag value 'TOGGLE' is not an on-form ('on', 'true', '1'), an off-form ('off', 'false', '0') or 'toggle': the engine reads everything else as OFF, with no error",
+      "severity": "warning",
+      "span": {
+        "begin": 11,
+        "end": 17
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "single-pair-only",
+      "line": 29,
+      "message": "command 'flag' applies a single key/value pair per line: only 'atmosphere' (first in alphabetical order, not line order) is applied; the other 1 pair(s) are dropped silently",
+      "severity": "error",
+      "span": {
+        "begin": 5,
+        "end": 13
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "dangling-key",
+      "line": 32,
+      "message": "key 'action' has no value: the engine drops it silently and runs the rest of the line without it",
+      "severity": "error",
+      "span": {
+        "begin": 12,
+        "end": 18
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "duplicate-key",
+      "line": 35,
+      "message": "key 'halo' is given 2 times on this line: the engine keeps only the last value ('false')",
+      "severity": "warning",
+      "span": {
+        "begin": 15,
+        "end": 19
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unsupported-quoting",
+      "line": 38,
+      "message": "single quotes do not group words here: only \" does, so this value ends at the first space and the remaining words are read as key/value pairs",
+      "severity": "warning",
+      "span": {
+        "begin": 12,
+        "end": 25
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unknown-parameter",
+      "line": 38,
+      "message": "'world'' is not an argument of command 'text'",
+      "severity": "error",
+      "span": {
+        "begin": 19,
+        "end": 25
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unsupported-quoting",
+      "line": 41,
+      "message": "backslash is not an escape here: the engine has no escape sequence, so the value ends at this \" and the backslash is kept as an ordinary character",
+      "severity": "warning",
+      "span": {
+        "begin": 14,
+        "end": 16
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "inert-command",
+      "line": 44,
+      "message": "'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; — census §3.8, app_command_interface.cpp:1801 era)",
+      "severity": "info",
+      "span": {
+        "begin": 4,
+        "end": 8
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unknown-parameter",
+      "line": 47,
+      "message": "'stall_radius_unitt' is not a known set name; did you mean 'stall_radius_unit'?",
+      "severity": "error",
+      "span": {
+        "begin": 4,
+        "end": 22
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unknown-parameter",
+      "line": 50,
+      "message": "'constellation_liness' is not a known color name; did you mean 'constellation_lines'?",
+      "severity": "error",
+      "span": {
+        "begin": 15,
+        "end": 35
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unknown-parameter",
+      "line": 55,
+      "message": "'zrot' is not an argument of command 'dso3d'",
+      "severity": "error",
+      "span": {
+        "begin": 18,
+        "end": 22
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unknown-parameter",
+      "line": 58,
+      "message": "'nmae' is not an argument of command 'landscape'; did you mean 'name'?",
+      "severity": "error",
+      "span": {
+        "begin": 22,
+        "end": 26
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unknown-parameter",
+      "line": 63,
+      "message": "'date_display_number' is not a known flag",
+      "severity": "error",
+      "span": {
+        "begin": 5,
+        "end": 24
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "invisible-separator",
+      "line": 67,
+      "message": "column 28 holds a no-break space, the ISO-8859 spelling (byte 0xA0), not a space: the engine separates words on space, tab, CR, LF, VT and FF only, so what is written on either side of this byte is read as ONE word",
+      "severity": "error",
+      "span": {
+        "begin": 27,
+        "end": 28
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "invisible-separator",
+      "line": 72,
+      "message": "column 35 holds a no-break space, the ISO-8859 spelling (byte 0xA0), not a space: the engine separates words on space, tab, CR, LF, VT and FF only, so what is written on either side of this byte is read as ONE word",
+      "severity": "error",
+      "span": {
+        "begin": 34,
+        "end": 35
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "dangling-key",
+      "line": 72,
+      "message": "key '3' has no value: the engine drops it silently and runs the rest of the line without it",
+      "severity": "error",
+      "span": {
+        "begin": 40,
+        "end": 41
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "end-without-if",
+      "line": 76,
+      "message": "this 'struct if end' closes nothing: no 'struct if' block is open here, so the engine logs \"end without if\" and ignores the line — either this 'end' is one too many, or the block it was meant to close was never opened",
+      "severity": "warning",
+      "span": {
+        "begin": 10,
+        "end": 13
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "else-without-if",
+      "line": 77,
+      "message": "this 'struct if else' flips nothing: no 'struct if' block is open here, so the engine logs \"else without if\" and ignores the line",
+      "severity": "warning",
+      "span": {
+        "begin": 10,
+        "end": 14
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "loop-end-without-loop",
+      "line": 80,
+      "message": "this 'struct loop end' closes nothing: no 'struct loop' is open here, so the engine resets an empty loop and nothing repeats — either this 'end' is one too many, or the 'struct loop <n>' it was meant to close is missing",
+      "severity": "warning",
+      "span": {
+        "begin": 12,
+        "end": 15
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unclosed-struct",
+      "line": 142,
+      "message": "'struct if a equal b' is never closed: no 'struct if end' follows before the end of the file, so whenever this test fails the engine skips every line from here to the end of the file, silently; put 'struct if end' where the block should stop",
+      "severity": "error",
+      "span": {
+        "begin": 0,
+        "end": 19
+      }
+    },
+    {
+      "file": "tests/lint_cases.sts",
+      "id": "unclosed-struct",
+      "line": 143,
+      "message": "'struct loop 3' is never closed: no 'struct loop end' follows before the end of the file, so the lines after it run ONCE and are never repeated — the repetition only starts at 'struct loop end'; put 'struct loop end' where the block should stop",
+      "severity": "error",
+      "span": {
+        "begin": 0,
+        "end": 13
+      }
+    }
+  ],
+  "files": [
+    "tests/lint_cases.sts"
+  ],
+  "kind": "check"
+}

@@ -1,0 +1,215 @@
+$ scedit --doc dso3d z_reflection
+{
+  "command": "dso3d",
+  "completable": [],
+  "default": "no effect whatever the value",
+  "default_literal": null,
+  "doc": null,
+  "kind": "key",
+  "name": "z_reflection",
+  "notes": "DEFECT (out of scope, recorded not fixed): the key is looked up and the comparison result is discarded ('it->second == \"true\";' is a statement with no effect), so z_reflection is always false. A doc line would describe behaviour the code does not have — left null and flagged.",
+  "present": true,
+  "required": "false",
+  "source": "src/inGalaxyModule/dsoNavigator.cpp:304-306",
+  "value_docs": {},
+  "value_domain": "read but never used",
+  "values": []
+}
+exit 0
+$ scedit --doc suntrace sun
+{
+  "command": "suntrace",
+  "completable": [],
+  "default": "absent -> the empty string is passed as the body to trace, which logs 'Unknown planet_name in bodyTraceBodyChange' and leaves the traced body unchanged",
+  "default_literal": null,
+  "doc": null,
+  "kind": "key",
+  "name": "sun",
+  "notes": "SUSPECTED TYPO, recorded not fixed: line 1633 reads `bodyTraceBodyChange(args[W_SUN])` — the VALUE of a key spelled 'sun' — while the other two branches of the same handler pass the literal token `W_SUN` (:1646, :1650). Under the code as written, `suntrace pen on` does not switch the trail to the Sun. Doc left null because the two readings (an undocumented body-name key, or a mis-typed literal) have opposite meanings for the editor's user.",
+  "present": true,
+  "required": "false",
+  "source": "app_command_interface.cpp:1633 -> src/coreModule/coreLink.cpp:1130-1135 -> src/bodyModule/protosystem.cpp:468-475",
+  "value_docs": {},
+  "value_domain": "string (a body name)",
+  "values": []
+}
+exit 0
+$ scedit --doc flag stars
+{
+  "command": "flag",
+  "completable": [],
+  "default": "",
+  "default_literal": null,
+  "doc": null,
+  "family": "flags",
+  "kind": "member",
+  "name": "stars",
+  "notes": "",
+  "present": true,
+  "required": "",
+  "source": "",
+  "value_docs": {},
+  "value_domain": "",
+  "values": []
+}
+exit 0
+$ scedit --doc set atmosphere_fade_duration
+{
+  "command": "set",
+  "completable": [
+    "default"
+  ],
+  "default": "not written -> the setting is left alone; the word \"default\" puts back the value the configuration file gave",
+  "default_literal": null,
+  "doc": "How many seconds the sky's daylight glow takes to fade in or out.",
+  "family": "set_names",
+  "kind": "member",
+  "name": "atmosphere_fade_duration",
+  "notes": "",
+  "present": true,
+  "required": "false",
+  "source": "app_command_interface.cpp:2155 -> src/coreModule/coreLink.hpp:1038-1043 (\"Set atmosphere fade duration in s\"); registration app_command_init.cpp:282, spelling base_command_interface.hpp:542",
+  "value_docs": {},
+  "value_domain": "number(evalDouble) or the word \"default\" - $-variable substitution possible",
+  "values": [
+    "default",
+    "<number>"
+  ]
+}
+exit 0
+$ scedit --doc div
+{
+  "alias_of": "divide",
+  "args": {},
+  "args_complete": true,
+  "args_source": "",
+  "doc": "Short spelling of `divide`: it does exactly the same thing, with the same key.",
+  "family": null,
+  "key_grammar": {
+    "completable": [],
+    "default": "no pair at all -> debug_message \"unexpected error in command__divide\"",
+    "default_literal": null,
+    "doc": "One pair: the KEY is the name of the value to change, the VALUE is what to divide it by.",
+    "notes": "",
+    "present": true,
+    "required": "true",
+    "source": "app_command_interface.cpp:4538-4544 -> src/interfaceModule/app_command_eval.cpp:176-179, 202-218 (f_div = x/y, :10)",
+    "value_docs": {},
+    "value_domain": "number, or the name of another variable",
+    "values": []
+  },
+  "keys": [],
+  "kind": "command",
+  "name": "div",
+  "registration": "app_command_init.cpp:116 (ACP_CN_DIV = \"div\", base_command_interface.hpp:370) — the same enum value as `divide`; registered in the aliases block AFTER the reverse map is built, so it is accepted on input and never becomes the canonical spelling"
+}
+exit 0
+$ scedit --doc zomo
+{
+  "did_you_mean": "zoom",
+  "error": "unknown-command",
+  "message": "no command named 'zomo' in the grammar contract",
+  "vocabulary": "families.commands (65 names the engine accepts)"
+}
+exit 2
+$ scedit --doc image filenam
+{
+  "command": "image",
+  "did_you_mean": "filename",
+  "error": "unknown-name",
+  "message": "'image' has no key or family name 'filenam'",
+  "vocabulary": "the argument keys of 'image' (30 extracted, the file claims the list is complete)"
+}
+exit 2
+$ scedit --search --scope commands --limit 3 play a sound in the dome
+{
+  "kind": "search",
+  "query": "play a sound in the dome",
+  "results": [
+    {
+      "command": "media",
+      "doc": "Play a video in the dome — or a sound on its own — and control it while it plays.",
+      "family": null,
+      "kind": "command",
+      "name": null,
+      "page": "media",
+      "score": 0.896037
+    },
+    {
+      "command": "image",
+      "doc": "Put a picture on the dome and then move, fade, turn or resize it.",
+      "family": null,
+      "kind": "command",
+      "name": null,
+      "page": "image",
+      "score": 0.463325
+    },
+    {
+      "command": "text",
+      "doc": "Put a line of writing on the dome, change its words, show or hide it, or remove it.",
+      "family": null,
+      "kind": "command",
+      "name": null,
+      "page": "text",
+      "score": 0.448018
+    }
+  ],
+  "scope": "commands",
+  "total_matches": 51
+}
+exit 0
+$ scedit --search --limit 4 constellation lines colour
+{
+  "kind": "search",
+  "query": "constellation lines colour",
+  "results": [
+    {
+      "command": "color",
+      "doc": null,
+      "family": "color_names",
+      "kind": "member",
+      "name": "constellation_lines",
+      "page": "color constellation_lines",
+      "score": 0.828427
+    },
+    {
+      "command": "color",
+      "doc": null,
+      "family": "color_names",
+      "kind": "member",
+      "name": "constellation_lines3d",
+      "page": "color constellation_lines3d",
+      "score": 0.828427
+    },
+    {
+      "command": "constellation",
+      "doc": "Change one named constellation's artwork strength, or the colour of its lines or its label.",
+      "family": null,
+      "kind": "command",
+      "name": null,
+      "page": "constellation",
+      "score": 0.694987
+    },
+    {
+      "command": "constellation",
+      "doc": "Which part of the constellation the colour is for.",
+      "family": null,
+      "kind": "key",
+      "name": "type",
+      "page": "constellation type",
+      "score": 0.548584
+    }
+  ],
+  "scope": "all",
+  "total_matches": 66
+}
+exit 0
+$ scedit --search xyzzy plugh
+{
+  "kind": "search",
+  "query": "xyzzy plugh",
+  "results": [],
+  "scope": "all",
+  "total_matches": 0
+}
+exit 0

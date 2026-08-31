@@ -50,6 +50,10 @@ target_link_libraries(scedit PRIVATE scedit_core scedit_tui)
 
 enable_testing()
 
+# The MCP gate's client is Python (stdlib only): it has to be a real second
+# implementation of the protocol, not this code checking itself.
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+
 # Differential self-test: constructed lines with expected tokenizations, one
 # per sharp edge of the parse model. No grammar file needed.
 add_executable(scedit_tokenizer_test tests/tokenizer_test.cpp)
@@ -137,6 +141,38 @@ add_test(NAME history_list
 		"-DFILES=${CMAKE_CURRENT_SOURCE_DIR}/tests/lint_cases.sts;${CMAKE_CURRENT_SOURCE_DIR}/tests/history_cases.sts"
 		-DEXPECTED=${CMAKE_CURRENT_SOURCE_DIR}/tests/history-expected.txt
 		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_gate.cmake)
+
+# JSON check gate: the SAME findings as objects. Runs the same comparator as the
+# text record above with `--json` added to the mode, which is the point — one
+# finding set, two printers, and if they ever disagree about what was found, one
+# of these two gates goes red.
+add_test(NAME check_json
+	COMMAND ${CMAKE_COMMAND}
+		-DSCEDIT=$<TARGET_FILE:scedit>
+		-DSRC=${CMAKE_CURRENT_SOURCE_DIR}
+		"-DMODE=--check;--json"
+		"-DFILES=${CMAKE_CURRENT_SOURCE_DIR}/tests/lint_cases.sts"
+		-DEXPECTED=${CMAKE_CURRENT_SOURCE_DIR}/tests/check-json-expected.txt
+		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/check_gate.cmake)
+
+# Query gate: `--doc` and `--search`, one recorded (arguments -> stdout + exit)
+# per line of tests/doc-queries.txt, each line saying in a comment what it pins.
+add_test(NAME doc_queries
+	COMMAND ${CMAKE_COMMAND}
+		-DSCEDIT=$<TARGET_FILE:scedit>
+		-DSRC=${CMAKE_CURRENT_SOURCE_DIR}
+		-DQUERIES=${CMAKE_CURRENT_SOURCE_DIR}/tests/doc-queries.txt
+		-DEXPECTED=${CMAKE_CURRENT_SOURCE_DIR}/tests/doc-expected.txt
+		-P ${CMAKE_CURRENT_SOURCE_DIR}/tests/query_gate.cmake)
+
+# MCP gate: a stdlib-only client spawns `scedit --mcp`, speaks both protocol
+# eras at it, calls every registered tool with good and bad arguments, and
+# asserts the shapes the fetched specification defines — including that a `doc`
+# the contract file does not have arrives as JSON null through the protocol.
+add_test(NAME mcp_protocol
+	COMMAND ${CMAKE_COMMAND} -E env
+		${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/mcp_gate.py
+		$<TARGET_FILE:scedit> ${CMAKE_CURRENT_SOURCE_DIR}/grammar/sc-grammar.json)
 
 # C3 corpus gate: the engine-exercised scripts must stay clean of NEW findings.
 # Boundary [measured 2026-08-04]: ~/.spacecrafter/scripts/ is EMPTY on this
