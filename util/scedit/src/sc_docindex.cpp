@@ -6,7 +6,17 @@
 
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
+//! ORDERED, and the reason is a measurement.
+//! nlohmann's default `json` stores an object in a std::map, so parsing loses
+//! the order the file was written in. Every lookup here is by name and does not
+//! care — but the machine surface (sc_docjson.cpp) RANKS pages, and a tie has
+//! to be broken by something. The contract file's own order is that something:
+//! measured over the 340 witness questions of harness/f64_doc_router.py, 6 of
+//! them tie at the top score, and file order and alphabetical order disagree on
+//! all 6. Parsing ordered here is what lets `commandFileOrder()` exist; nothing
+//! else in this file changes, because every other structure it fills is a
+//! std::map or a JSON array.
+using json = nlohmann::ordered_json;
 
 namespace scedit {
 
@@ -161,6 +171,7 @@ bool DocIndex::load(const std::string &path, std::string &err)
 				ci.keys.push_back(kv.first);   // std::map: byte-lexicographic
 			commands_[ci.name] = ci;
 			command_names_.push_back(ci.name);
+			command_file_order_.push_back(ci.name);
 		}
 		// Aliases take the key-level facts of their target (one resolution
 		// point for this reader, as Grammar::load is for the structural one).

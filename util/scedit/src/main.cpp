@@ -21,6 +21,11 @@
  * tty); src/sc_tui.hpp only draws it. `--ui-selftest` renders fixed frames
  * off-screen so a gate can assert what actually reaches the screen.
  *
+ * Slice 5 (2026-08-31): the machine surface — `--doc`, `--search`,
+ * `--check --json` and `--mcp`. The same readers answer a program that a human
+ * reads on screen (src/sc_docjson.hpp, src/sc_mcp.hpp); JSON goes to stdout
+ * because it is the product, and nothing else does.
+ *
  * Slice 4 (2026-08-31): the error pane and `--history FILE...` — every `#!`
  * tail spacecrafter wrote and every finding scedit makes, listed in line order
  * with click-to-warp (scedit/INTENT.md §5 item 15(a-ii)). One reader
@@ -29,6 +34,7 @@
  */
 
 #include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <string>
 #include <set>
@@ -37,8 +43,11 @@
 #include <nlohmann/json.hpp>
 
 #include "sc_check.hpp"
+#include "sc_docindex.hpp"
+#include "sc_docjson.hpp"
 #include "sc_editcore.hpp"
 #include "sc_grammar.hpp"
+#include "sc_mcp.hpp"
 #include "sc_tui.hpp"
 
 using json = nlohmann::json;
@@ -314,8 +323,11 @@ void listFamily(const json &g, const std::string &name) {
 void usage() {
 	std::fprintf(stderr,
 	             "usage: scedit [--grammar <file>] [--list commands|flags|set_names|color_names|obsolete_tokens|reserved_variables|font_targets]\n"
-	             "       scedit [--grammar <file>] [--rules] --check FILE...\n"
+	             "       scedit [--grammar <file>] [--rules] --check [--json] FILE...\n"
 	             "       scedit [--grammar <file>] --history FILE...\n"
+	             "       scedit [--grammar <file>] --doc [<command> [<key>|<family name>]]\n"
+	             "       scedit [--grammar <file>] --search [--scope all|commands] [--limit N] <words>...\n"
+	             "       scedit [--grammar <file>] --mcp\n"
 	             "       scedit [--grammar <file>] [--edit] FILE\n"
 	             "       scedit [--grammar <file>] --ui-selftest\n"
 	             "default action: validate the grammar contract\n"
@@ -354,18 +366,20 @@ std::string resolveDefaultGrammar(const std::string &fallbackRelative) {
 //! `--check`: report, for every line, where the engine's reading will differ
 //! from what the author plainly meant. Diagnostics go to stdout (they are the
 //! product); tool failures go to stderr.
-int check(const std::string &grammarPath, const std::vector<std::string> &files, bool showRules) {
+int check(const std::string &grammarPath, const std::vector<std::string> &files, bool showRules,
+          bool asJson) {
 	scedit::Grammar g;
 	std::string err;
 	if (!g.load(grammarPath, err)) {
 		std::fprintf(stderr, "scedit: %s\n", err.c_str());
 		return 2;
 	}
-	if (showRules) {
+	if (showRules && !asJson) {
 		for (const auto &u : scedit::unarmedRules(g))
 			std::printf("unarmed: %s: %s\n", u.id.c_str(), u.reason.c_str());
 	}
 	int findings = 0, ioErrors = 0;
+	std::vector<scedit::Diagnostic> all;
 	for (const auto &f : files) {
 		std::string ioErr;
 		auto diags = scedit::checkFile(g, f, ioErr);
@@ -374,12 +388,87 @@ int check(const std::string &grammarPath, const std::vector<std::string> &files,
 			++ioErrors;
 			continue;
 		}
-		for (const auto &d : diags)
-			std::printf("%s\n", d.format().c_str());
+		if (!asJson)
+			for (const auto &d : diags)
+				std::printf("%s\n", d.format().c_str());
+		else
+			all.insert(all.end(), diags.begin(), diags.end());
 		findings += (int)diags.size();
+	}
+	if (asJson) {
+		// The SAME diagnostics, as objects. The D6 text shape above is a
+		// contract three recorded gates pin, so this is a second PRINTER of one
+		// finding set, never a second analysis (I2).
+		json out = scedit::diagnosticsJson(files, all);
+		if (showRules) {
+			json unarmed = json::array();
+			for (const auto &u : scedit::unarmedRules(g)) {
+				json j;
+				j["id"] = u.id;
+				j["reason"] = u.reason;
+				unarmed.push_back(j);
+			}
+			out["unarmed"] = unarmed;
+		}
+		std::printf("%s\n", out.dump(2).c_str());
 	}
 	if (ioErrors) return 2;
 	return findings ? 1 : 0;
+}
+
+//! `--doc`: one page, or the catalogue. Exit 2 with a JSON error object when a
+//! name is not in the vocabulary — a machine reading stdout gets the same
+//! answer either way, and the exit code says which it is without parsing.
+int doc(const std::string &grammarPath, const std::vector<std::string> &args)
+{
+	if (args.size() > 2) {
+		std::fprintf(stderr, "scedit: --doc takes a command and at most one key or family name\n");
+		usage();
+		return 2;
+	}
+	scedit::Grammar g;
+	scedit::DocIndex d;
+	std::string err;
+	if (!g.load(grammarPath, err) || !d.load(grammarPath, err)) {
+		std::fprintf(stderr, "scedit: %s\n", err.c_str());
+		return 2;
+	}
+	if (args.empty()) {
+		std::printf("%s\n", scedit::docCatalogue(g, d).dump(2).c_str());
+		return 0;
+	}
+	const scedit::DocAnswer a =
+		scedit::docLookup(g, d, args[0], args.size() > 1 ? args[1] : std::string());
+	std::printf("%s\n", a.value.dump(2).c_str());
+	return a.found ? 0 : 2;
+}
+
+//! `--search`: which pages the words are about, ranked by the stated score.
+//! No hit is not an error: the answer "nothing in the contract matches these
+//! words" is exactly what a consumer must be able to receive.
+int search(const std::string &grammarPath, const std::vector<std::string> &words,
+           scedit::SearchScope scope, std::size_t limit)
+{
+	if (words.empty()) {
+		std::fprintf(stderr, "scedit: --search needs at least one word\n");
+		usage();
+		return 2;
+	}
+	scedit::Grammar g;
+	scedit::DocIndex d;
+	std::string err;
+	if (!g.load(grammarPath, err) || !d.load(grammarPath, err)) {
+		std::fprintf(stderr, "scedit: %s\n", err.c_str());
+		return 2;
+	}
+	std::string query;
+	for (const auto &w : words) {
+		if (!query.empty())
+			query += ' ';
+		query += w;
+	}
+	std::printf("%s\n", scedit::docSearch(g, d, query, scope, limit).dump(2).c_str());
+	return 0;
 }
 
 //! `--history`: the list the editor's error pane shows, for a caller with no
@@ -433,17 +522,41 @@ int main(int argc, char **argv) {
 	bool grammarGiven = false;
 	std::string list;
 	std::string editFile;
-	std::vector<std::string> checkFiles;
+	std::vector<std::string> operands;   // files (--check/--history) or words (--doc/--search)
 	bool checkMode = false, showRules = false, editMode = false, uiSelfTest = false;
-	bool historyMode = false;
+	bool historyMode = false, docMode = false, searchMode = false, mcpMode = false;
+	bool asJson = false;
+	scedit::SearchScope scope = scedit::SearchScope::All;
+	std::size_t limit = 0;
 	for (int i = 1; i < argc; ++i) {
 		std::string a = argv[i];
-		if (checkMode || historyMode) { checkFiles.push_back(a); continue; }
+		// After a mode flag every remaining argument is an OPERAND of that mode
+		// — a file name, or a word of a search query — with three exceptions
+		// that stay readable in either position (`--json`, `--scope`, `--limit`).
+		// A script's file name may look like anything; a query word may not
+		// start with `--`.
+		if (checkMode || historyMode || docMode || searchMode) {
+			if (a == "--json") { asJson = true; continue; }
+			if (a == "--scope" && i + 1 < argc) {
+				const std::string v = argv[++i];
+				if (v == "commands") scope = scedit::SearchScope::Commands;
+				else if (v == "all") scope = scedit::SearchScope::All;
+				else { std::fprintf(stderr, "scedit: --scope takes `all` or `commands`\n"); return 2; }
+				continue;
+			}
+			if (a == "--limit" && i + 1 < argc) { limit = (std::size_t)std::strtoul(argv[++i], nullptr, 10); continue; }
+			operands.push_back(a);
+			continue;
+		}
 		if (a == "--grammar" && i + 1 < argc) { grammarPath = argv[++i]; grammarGiven = true; }
 		else if (a == "--list" && i + 1 < argc) list = argv[++i];
 		else if (a == "--rules") showRules = true;
+		else if (a == "--json") asJson = true;
 		else if (a == "--history") historyMode = true;
 		else if (a == "--check") checkMode = true;
+		else if (a == "--doc") docMode = true;
+		else if (a == "--search") searchMode = true;
+		else if (a == "--mcp") mcpMode = true;
 		else if (a == "--ui-selftest") uiSelfTest = true;
 		else if (a == "--edit" && i + 1 < argc) { editMode = true; editFile = argv[++i]; }
 		else if (!a.empty() && a[0] != '-' && editFile.empty()) { editMode = true; editFile = a; }
@@ -457,15 +570,20 @@ int main(int argc, char **argv) {
 
 	if (uiSelfTest) return scedit::uiSelfTest(grammarPath);
 	if (editMode) return scedit::runEditor(grammarPath, editFile);
+	// stdout belongs to the protocol from here on: the server writes nothing
+	// else to it, and everything it has to say otherwise goes to stderr.
+	if (mcpMode) return scedit::runMcpServer(grammarPath);
 
 	if (checkMode) {
-		if (checkFiles.empty()) { usage(); return 2; }
-		return check(grammarPath, checkFiles, showRules);
+		if (operands.empty()) { usage(); return 2; }
+		return check(grammarPath, operands, showRules, asJson);
 	}
 	if (historyMode) {
-		if (checkFiles.empty() || showRules) { usage(); return 2; }
-		return history(grammarPath, checkFiles);
+		if (operands.empty() || showRules) { usage(); return 2; }
+		return history(grammarPath, operands);
 	}
+	if (docMode) return doc(grammarPath, operands);
+	if (searchMode) return search(grammarPath, operands, scope, limit);
 	if (showRules) { usage(); return 2; }
 
 	std::ifstream in(grammarPath);

@@ -29,31 +29,6 @@ std::string Diagnostic::format() const
 	return o.str();
 }
 
-namespace {
-
-//! Human label for a family key: "set_names" -> "set name".
-std::string familyLabel(const std::string &key)
-{
-	std::string out;
-	std::string word;
-	auto flush = [&]() {
-		if (word.size() > 2 && word.back() == 's' && word[word.size() - 2] != 's')
-			word.pop_back();
-		if (!out.empty())
-			out += ' ';
-		out += word;
-		word.clear();
-	};
-	for (char c : key) {
-		if (c == '_') flush();
-		else word.push_back(c);
-	}
-	flush();
-	return out;
-}
-
-std::string quoteName(const std::string &s) { return "'" + s + "'"; }
-
 //! DID-YOU-MEAN, DISPLAY CAP.
 //! The engine's searchNeighbour has no distance threshold: it always logs a
 //! nearest name, however far. `nearestNeighbour` in the tokenizer library
@@ -87,6 +62,31 @@ std::string cappedSuggestion(const std::string &token, const std::vector<std::st
 		return std::string();
 	return levenshtein(token, near) <= suggestionCap(token) ? near : std::string();
 }
+
+namespace {
+
+//! Human label for a family key: "set_names" -> "set name".
+std::string familyLabel(const std::string &key)
+{
+	std::string out;
+	std::string word;
+	auto flush = [&]() {
+		if (word.size() > 2 && word.back() == 's' && word[word.size() - 2] != 's')
+			word.pop_back();
+		if (!out.empty())
+			out += ' ';
+		out += word;
+		word.clear();
+	};
+	for (char c : key) {
+		if (c == '_') flush();
+		else word.push_back(c);
+	}
+	flush();
+	return out;
+}
+
+std::string quoteName(const std::string &s) { return "'" + s + "'"; }
 
 //! BYTES THAT LOOK LIKE A SEPARATOR AND ARE NOT.
 //! The engine splits on the C locale's whitespace only (SP TAB LF VT FF CR,

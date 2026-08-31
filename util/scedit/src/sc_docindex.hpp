@@ -128,6 +128,14 @@ public:
 	//! literals (comment, uncomment) included, because the engine accepts them
 	//! and so the editor may offer them.
 	const std::vector<std::string> &commandNames() const { return command_names_; }
+	//! The same names in the order the CONTRACT FILE lists them. Two orders
+	//! exist because two questions do: a did-you-mean must answer in the
+	//! engine's own order (byte-lexicographic, `commandNames`), while anything
+	//! that ENUMERATES the surface — the machine catalogue, the search ranking's
+	//! tie-break — answers in the file's order, so that the page a tie picks is
+	//! the file's own first answer and not an alphabetical accident. Recording
+	//! it is why this reader parses with `ordered_json` (sc_docindex.cpp).
+	const std::vector<std::string> &commandFileOrder() const { return command_file_order_; }
 
 	//! `parse_model.comments.script_layer`, verbatim: what the script layer does
 	//! with a line whose first byte is '#'. Shown when the caret is on such a
@@ -156,6 +164,7 @@ public:
 private:
 	std::map<std::string, CommandInfo> commands_;
 	std::vector<std::string> command_names_;
+	std::vector<std::string> command_file_order_;
 	std::map<std::string, std::map<std::string, Spec>> families_;
 	std::map<std::string, bool> family_is_v2_;
 	std::string comment_line_doc_;

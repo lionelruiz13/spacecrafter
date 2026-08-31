@@ -65,6 +65,14 @@ std::vector<Diagnostic> checkBuffer(const Grammar &g, const std::string &path,
 std::vector<Diagnostic> checkFile(const Grammar &g, const std::string &path,
                                   std::string &io_error);
 
+//! The did-you-mean the checker prints, exposed because it must not be written
+//! twice: the machine surface (sc_docjson.hpp) answers an unknown name in a
+//! `--doc` query with the same suggestion an author gets from `--check` on the
+//! same misspelling, or the two surfaces would disagree about what the engine's
+//! nearest name is. Empty = nothing near enough to be worth printing; the cap
+//! and its argument are at the definition (sc_check.cpp).
+std::string cappedSuggestion(const std::string &token, const std::vector<std::string> &candidates);
+
 //! Rules the seeds define but this build does NOT emit, with the reason.
 struct UnarmedRule { std::string id, reason; };
 std::vector<UnarmedRule> unarmedRules(const Grammar &g);

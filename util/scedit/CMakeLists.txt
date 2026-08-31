@@ -28,7 +28,9 @@ add_library(scedit_core STATIC
 	src/sc_check.cpp
 	src/sc_document.cpp
 	src/sc_docindex.cpp
-	src/sc_editcore.cpp)
+	src/sc_docjson.cpp
+	src/sc_editcore.cpp
+	src/sc_mcp.cpp)
 target_compile_options(scedit_core PRIVATE ${SCEDIT_WARNINGS})
 target_include_directories(scedit_core PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/src
