@@ -524,6 +524,24 @@ without the model being refined, ever"* — features accreted on a serial
 model that was never revisited; `[parallel-script]` is that first model
 refinement, and `legacy` is the honest name for the accretion.
 
+**Refinement [vixy 2026-08-31, in-conversation — the txt stays the
+authority]:** the special name `*` matches every running script —
+`script action <verb> name *` addresses all of them at once, so the
+one-word whole-system stop survives into the named-script world
+(strengthens the answer to the tester's global-control objection; carried
+into `USER_QUESTIONS_ROUND3.md` R25 the same day). Same conversation, two
+concrete instances for the binding half (a button cycling modes;
+script-run navigation — close to the tester's existing warp-to-selected
+practice) and one for the trigger half: the tester's two-appearance
+bodies (distinct normal/miniature skins — the LoD misuse Vixy has warned
+him is fragile, breaking e.g. far-but-zoomed), which a trigger firing on
+distance/visibility plus the existing `skin_tex`/`skin_use` swap replaces
+with a supported mechanism. That same testimony REFRAMES ledger row
+A43's premise (the Sun/Moon preview↔full mismatch may be the tester's
+authored design, not a data slip — regenerating would destroy it):
+routed as round-3 question **R29**, A43's fix direction gated on its
+answer; the ledger-row flip itself is the supervising session's.
+
 ### [2026-08-31] Command provenance (file/tcp + line) carried by the engine, and TCP feedback on a link dedicated to scedit
 - **From:** Vixy (in-conversation, session-19 trigger line; full record §11.186(b)(c))
 - **Request:** verbatim: *"spacecrafter script engine must carry the provenance
