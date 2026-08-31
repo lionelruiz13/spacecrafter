@@ -738,35 +738,49 @@ own `_meta`, and it is not a source of facts about spacecrafter.
 Stated rather than hidden -- the `--rules` discipline, applied to the editor.
 `DocIndex::dormantFeatures()` reports the first two at runtime.
 
-- **The default is shown, never typed for you.** D31 asks for the default value
-  of an empty value field to be greyed and offered. All **324** argument specs
-  at HEAD state their default as an English SENTENCE (`absent -> 0`, `absent or
-  empty -> the next form is tried`), so there is no literal a machine may type
-  on the author's behalf without reading English and guessing -- and guessing is
-  what constraint C2 forbids. The mechanism is written and arms itself from the
-  data: an explicit `default_value` string in a spec becomes the first
-  completion candidate and the ghost on an empty field. Count at HEAD: **0**.
-  35 of the 324 reduce to a bare token by pattern (`absent -> 0` x29,
-  `-> 1` x4, `-> no`, `-> 180`) and are the obvious first batch for whoever
-  fills the field -- as data, written down, not as a regex over English.
-  Meanwhile an empty value slot with an ENUMERATED domain does complete, from
-  `values` -- that half is live.
-- **184 of the 227 family names have no documentation of their own.** `flags`,
-  `color_names`, `obsolete_tokens`, `reserved_variables` and `font_targets` are
-  still the v1 shape (a plain array of names). For those, the bar shows what the
-  command says about its keys in general and labels it as such; it never lets
-  that stand in for a line about the name itself.
+- **The default is typed for you on 60 of the 324, and shown on the rest.**
+  D31 asks for the default value of an empty value field to be greyed and
+  offered. Every spec states its default as an English SENTENCE (`absent -> 0`);
+  a sentence is not something a machine may type without reading English and
+  guessing, and guessing is what C2 forbids. So the literals were read at
+  source: **60** specs now carry an explicit `default_value` (with a
+  `default_value_source` anchor), and the editor ghosts and offers it. The
+  other **264** show the sentence and type nothing, which `--rules` reports as
+  coverage rather than as an on/off. Some of the 264 never will get one, for
+  reasons that are facts about the engine: a default that depends on which form
+  the line takes has no single literal (`camera duration` is 2 s on `rotate`
+  and 0 on `align_with`), and the FALSE side of a boolean has no spelling the
+  engine recognises -- `Utility::isTrue` accepts `TRUE`/`ON`/`1` and calls
+  everything else false, so there is a word for yes and none for no. The
+  criterion each of the 60 had to pass, and the argued exclusions, are in
+  `claude/harness/f71_defaults.py`.
+- **31 of the 227 family names have no documentation of their own** (was 184
+  until 2026-08-31). `flags` (97), `color_names` (46) and `font_targets` (10)
+  are documented per name and are the v2 shape. The two left are v1 and say why
+  in their own `_schema_note`: `obsolete_tokens` (7) -- the engine logs "<name>
+  is no longer used in software" and does nothing, so what they USED to do is
+  not in the tree to read -- and `reserved_variables` (24), blocked on
+  `app_command_eval.cpp`. For those two the bar shows what the command says
+  about its keys in general and labels it as such; it never lets that stand in
+  for a line about the name itself.
 - **`--check` prints no column.** `scedit::Diagnostic` carries a `span` since
   2026-08-31 (the editor underlines it), but D6's printed shape is
   `file:line: severity: message` and the recorded expected files pin it; adding
   gcc's `:col:` is a one-line change waiting for a decision, not for code.
-- **`values` mixes values with prose.** An arg spec's `values` array holds both
-  literal values (`current`, `toggle`) and descriptions of the rest of the
-  domain (`<file name>`, `anything else = off`), and nothing in the schema
-  separates them. scedit offers only entries that are a bare `[A-Za-z0-9_]+`
-  word (166 of the 234 distinct entries at HEAD) and SHOWS all of them. One
-  known false positive survives that rule: `xRRGGBB`, a shape rather than a
-  value. A `completable: true` marker in the schema would end the guessing.
+- ~~**`values` mixes values with prose.**~~ **Closed 2026-08-31.** An arg spec's
+  `values` array still holds both literal values (`current`, `toggle`) and
+  descriptions of the rest of the domain (`<file name>`, `anything else = off`),
+  but the schema now separates them: every spec with a value domain carries
+  `completable`, the subset scedit may type, and `completable_excluded`, which
+  names what was left out and why. scedit reads that instead of guessing; the
+  old bare-`[A-Za-z0-9_]+` rule survives only as a fallback for a contract
+  without the field. Writing the list down found **five** entries the guess got
+  wrong where one was known: `xRRGGBB` (a shape), the three file-extension keys
+  of `external_viewer.filename`, and `zoom.auto`'s `in` -- typeable and it
+  works, but only because that domain is OPEN, so offering it would teach a
+  token the engine does not recognise. The seed gate checks that every
+  bare-token entry is accounted for, so a value added later cannot inherit a
+  guess.
 - **The whole buffer is re-analysed after every keystroke** -- 2.0 ms on
   `doc/superscript.sts` (measured 2026-08-04 on the then-1407-line file) in a
   Release build, so it is not worth making incremental yet, but it is linear
