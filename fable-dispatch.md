@@ -1471,8 +1471,14 @@ HEADs, 9/9 gates with the stated counts, lint_seeds 15, `--history` 7 fields,
 §11.185 free, F count 8, f64 baseline 80/340 reproduced by measurement, MCP spec
 reachable — latest revision **2026-07-28**). CP1 done: scope 7 landed (code
 `ac3e752e`, target-scoped `-Wall -Wextra`, `cmdSpan` deleted, 0 warnings, 9/9
-green, flag shown live by a throwaway that warned). Next: scope 1 (`--doc` JSON
-over DocIndex) + its query gate.
+green, flag shown live by a throwaway that warned). CP2: scopes 1–4 landed
+(code `170ce615`; `--doc`/`--search`/`--check --json`/`--mcp` dual-era over the
+same readers) + parity 340/340 with F64's 80/340 reproduced (harness `3e28c92`,
+falsified at the third tamper — the first two never reached the criterion). CP3:
+gates 9 → **12** (`check_json`, `doc_queries`, `mcp_protocol` 55 checks; code
+`fbdf1d48`), all four new criteria tamper-shown red and restored. Next: the
+Claude Code binding smoke, the fresh-dir clean build, then README + mirror
+ledger + FEATURE_REQUESTS.
 
 ### F67 — scedit: direct TCP mode — the live engine as target, the `$LOGON` feed as a pane, and the engine's `#!` write-back handled by requirement (D31 "direct tcp mode"; scedit INTENT §5 item 6) [M]
 
