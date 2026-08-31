@@ -385,6 +385,16 @@ ruling, by design). Parent §5 register untouched at open.
      (11 hits without `-I`, none with). `/usr/bin/grep` or Read on every ISO-8859 file.
      CLAUDE.md (one file: the code-tree path is a link to `claude/CLAUDE.md`) carries
      the corrected rule.]**
+     **[SUPERSEDED IN PART 2026-08-31, F70 §11.189(a) — post-D14 state: every
+     tracked CONVERT-set file is pure ASCII (code `1012c643`+`d64fd437`); the
+     wrapper hazard survives ONLY in `~/.spacecrafter/ssystem.ini`,
+     `doc/superscript.sts` and the EXCLUDE rows of `harness/f70_partition.tsv`.
+     The "ISO-8859 file(s) in src/" DIAGNOSIS was wrong both times: the
+     `app_command_interface` pair were UTF-8 with one stray 0xA7 each —
+     whole-file Latin-1 decoding mojibakes such files. SECOND hazard, same
+     class: `grep -P '[\x80-\xff]'` under a UTF-8 locale matches code points,
+     not bytes — `LC_ALL=C` for byte classes. D14 standing gate:
+     `python3 harness/f70_ascii.py gate`. CLAUDE.md carries the clean rule.]**
    - Cost claims use the **1 ms/frame** denominator (§2.0 D11). Acting defaults are
      LOGGED (§2.0 D12). Actionable diagnostics per §2(f).
    - A green build is not coverage — every task names its discriminating check; if a
@@ -2155,6 +2165,34 @@ Baselines LAST: pair-check **205/180/25/90** (F69 post-state 204/179/25/90:
 documented inversion F68 recorded for §11.184→§11.186 and F69 for
 §11.187→§11.188: the line AT the corrected node IS the back-marker, and
 §11.189 is the entry it cites).
+**ACCEPTED 2026-08-31 (Fable, session 19):** entry read in full; trees/
+commits verified; ALL THREE proofs re-run BY ME on the delivered tree —
+census gate PASS (0 non-ASCII over 957 CONVERT-matched files), `verify
+--from 630b06fd` PASS (the tree IS the derivation), `f70_binary_equal.py`
+PASS (27/27 allocated sections, 7 938 005 B) — plus baselines reproduced to
+the digit. Judgment calls ENDORSED: the ESCAPE RULE as the D8/D9-conservative
+reading of D14 (the mandate's stated purpose — ASCII files — fully met;
+rendered output, wire bytes and pinned fixtures untouched; the alternative's
+cost named and routed to §3 as the round's sharpest veto point); the map's
+three deliberate deviations with their arguments (`·`→`*` reads as member
+access otherwise); the five record re-recordings (diff read, committed,
+grammar-prose-only — the 4-red first attempt is the criterion that forced
+the right mechanism); the in-tree PRE rebuild (Release/NDEBUG + 0 source
+paths in .rodata measured, md5 reproduced across the reboot); the
+partition self-audit that reclassified two GLSL files out of its own
+EXCLUDE row (fixed at the root, refusal mechanism exercised on U+200B).
+THE ENCODING-DIAGNOSIS CORRECTION ACCEPTED: the app_command_interface pair
+were never ISO-8859 files (UTF-8 + one stray 0xA7 each, both from
+`2b8ec034`) — my F70 section's "decode as ISO-8859 first" method clause
+would have mojibaked them; executor-caught, dispatcher tally (with F69's
+"non-UTF-8-decodable" measurement standing — it was the CLASSIFICATION
+that was wrong). The "199" gloss handled correctly under §11.179(a) with
+the counterfactual stated — third dispatcher gloss this round, tallied.
+CLAUDE.md/§0.5 rule corrected AND narrowed at acceptance (this commit);
+reboot audit accepted (nothing resumed on trust; the discontinuity
+measurably cost zero — the rebuilt PRE reproduced its pre-reboot md5).
+Canary exit 3 folded into the §3 canary item (BANK_DISPLAY=":2" now names
+a display that does not exist on this host).
 
 ### F71 — EXTENSION: the missing documentation, extracted — scedit items 11/12 from the current superscript.sts, code-dug where silent (§11.186(e); session-18 queue position 1) [M]
 
@@ -2257,7 +2295,22 @@ moved.
     fail-2 — **on the desktop this can falsely abort any photometric task**.
     Fix = one line (btime+starttime) PLUS a re-bank of two banked epochs ON
     THE DESKTOP (one VALUES edit with argument, §0.5). Queued as next
-    desktop-round position 1; not fixable from this laptop.
+    desktop-round position 1; not fixable from this laptop. **[EXTENDED at
+    F70 acceptance: the 20:57 reboot moved this laptop's display to `:0` —
+    `BANK_DISPLAY=":2"` now names a display that does not exist here, canary
+    exit 3 (was 2). Same disposition: per-host banks are your §11.174(f)
+    fork; nothing re-banked.]**
+  - **D14'S ONE DESIGN FORK — the ESCAPE RULE (F70 §11.189(c)(h), veto-open,
+    the round's sharpest):** the tree is 100% ASCII (282 files, 8269 bytes,
+    gate standing), but C-family STRING LITERALS were re-spelled as `\xNN`
+    escapes of the SAME bytes rather than transliterated — so the dome still
+    draws `°` at 22 sites, wire records and pinned fixtures are byte-identical
+    (27/27 ELF sections equal), and D9's shipped surfaces never moved. If
+    *"accents are to be removed"* was meant to reach the RENDERED text too,
+    say the word: the cost is `45deg` in the dome's labels and five scedit
+    records re-recorded. Also veto-open there: `§`→`S`, `°`→`deg`, `·`→`*`
+    map rows; the vendored trees excluded; one visible loss (`Jérôme`→
+    `Jerome` in a CMake banner — no escape exists in CMake).
   - **`$DIAGON`/`$DIAGOFF` — the dedicated link's protocol, three calls
     veto-open** (F69 §11.188(b)(c)(g)): (1) the VERB NAME (`$SCEDITON`
     rejected on I1, `$FEEDBACK` on a word collision — the channel is named

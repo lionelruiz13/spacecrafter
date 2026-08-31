@@ -36,16 +36,25 @@ Authoritative detail lives in `claude/README.md` (repo contract) and `claude/INT
 - Old render path = comparison baseline, unchanged by construction; parity per
   §11.52(b) (perceptual, conditioned on old being physically exact).
 - Data values (poles, W0, physical constants): NEVER from recall — cited fetch only
-  (§11.51(d) red line). Loaded data = `~/.spacecrafter/ssystem.ini` (ISO-8859; the
-  Bash-tool `grep` wrapper is ugrep with `-I`: any file holding non-UTF-8 bytes is
-  classed BINARY and skipped SILENTLY — not only that ini: `src/interfaceModule/
-  app_command_interface.cpp` ~~(the one ISO-8859 file among 500 tracked `src/` files)~~
-  **[CORRECTED 2026-08-31, F69 §11.188(k): there are TWO, not one — the `.cpp`
-  (55 non-ASCII bytes) AND `app_command_interface.hpp` (18), both non-UTF-8-decodable,
-  the `.hpp` already so at `423cbe23~1` so F68 did not introduce it; census over all
-  505 tracked regular files under `src/`]** and `doc/superscript.sts` too
-  [measured 2026-08-31, F67 executor + supervisor: 11 hits without `-I`, none with].
-  Use `/usr/bin/grep` or Read on any ISO-8859 file).
+  (§11.51(d) red line). Loaded data = `~/.spacecrafter/ssystem.ini` (ISO-8859).
+- Encoding hazards, post-D14 state (records: §11.188(k), §11.189(a); rule rewritten
+  at F70 acceptance — the pre-F70 wording lived here through 2026-08-31):
+  (1) the Bash-tool `grep` wrapper is ugrep with `-I`: any file holding
+  non-UTF-8-decodable bytes is classed BINARY and skipped SILENTLY. Since F70
+  (code `1012c643`+`d64fd437`) every tracked CONVERT-set file is pure ASCII —
+  the hazard now lives ONLY in: `~/.spacecrafter/ssystem.ini` (untracked),
+  `doc/superscript.sts`, and the EXCLUDE-listed files of
+  `claude/harness/f70_partition.tsv` (witness fixtures, expected-output
+  records, vendored trees, `data/`). `/usr/bin/grep` or Read on those.
+  (2) `/usr/bin/grep -P '[\x80-\xff]'` under a UTF-8 locale matches CODE
+  POINTS, not bytes — 0 hits on pure box-drawing. `LC_ALL=C` for byte classes.
+  (3) The old "ISO-8859 file(s) in src/" diagnosis was WRONG: the
+  `app_command_interface` pair were UTF-8 with one stray 0xA7 byte each —
+  whole-file ISO-8859 decoding mojibakes such files; F70's greedy-UTF-8 +
+  per-byte-fallback decoder is the reference method.
+  (4) D14 standing gate: `python3 claude/harness/f70_ascii.py gate` — a new
+  non-ASCII file in an unclassified path FAILS it; new source is pure ASCII,
+  string literals by `\xNN` escape (§11.189(c), veto-open).
 - Suspended-for-Vixy items: work on them is blocked by protocol, not dependencies.
 - Corrections propagate forward only (`spacecrafter-data` → future deliveries); the
   installed field is frozen — backward compatibility is forced (§2.0 D9).
