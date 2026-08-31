@@ -2259,25 +2259,26 @@ findings route SS-n per C2; S-NP-1 stays suspended; no router/LLM work
 incl. `font`; missing-doc proposal artifact + SS-n rows; gates green;
 mirror journal; WIP cleared; baselines re-derived only if a parent row
 moved.
-**WIP:** 2026-08-31 **CP1** — §0.7 gate PASSED on every stated premise (code
-`d64fd437` clean, harness `c4c35fc` at entry, superscript.sts md5 as stated,
-§11.190 free, `### F` = 12, items 11/12 open, F68–F70 ACCEPTED). Harness HEAD
-has since moved to `2a4d0b0` — ONE commit, author Claude Fable 5, touching only
-`PENDING_LEDGER-2026-08-31.md`: Allowance 1 satisfied (file differs from the two
-the prompt named; reported, not an abort). **Items 11+12 LANDED AND GATED** at
-code `50185663`: 60 `default_value` literals + 120 `completable` arrays, in the
-merged contract AND the four fragments; 3 new seed-gate checks, each
-falsification-tested; ctest **14/14**, 0 warnings, D14 ASCII gate PASS. Scope 1
-finding: the grammar's per-spec `source` anchors are pinned by `_meta.merged` to
-`b12c8cdd` and `app_command_interface.cpp` is +141 lines since (4747 -> 4888), so
-no anchor resolves at HEAD — new rows self-pin with `@ <sha>`. **CP2** (code `94f2af65`): scope 3 LANDED — 153 family
-names documented (97 flags / 46 colours / 10 font targets), the three families
-moved to D7 v2, and the `font` family check ARMED (updateFont read: closed,
-case-sensitive, ten members; corpus gate 0 false positives). ctest **14/14**.
-Router datum, no target: F66 parity 340/340, hit rate 80/340 UNCHANGED (additive,
-not perturbing); the recorded `--search` query 66 -> 110 total matches. NEXT:
-scope 4 (missing-doc proposal + SS-n rows), then the mirror journal + item flips. Parent-ledger fact pending verification: §5.92's
-"INVENTORY DISCHARGED" list omits `dsoNavigator.cpp:264-265` EXTRACT/IEXTRACT.
+**WIP:** — **DELIVERED 2026-08-31** → parent **§11.190** (`INTENT/11.190.md` +
+stub) + **§5.119**/**§5.120** minted + back-markers at **§5.92** and **§5.116**
+(same commit, §11.161(g)); scedit mirror ledger journal `2026-08-31j` with items
+**11 and 12 struck**; tester's channel **SS-26…SS-31**. Code `50185663`,
+`94f2af65`, `96cfc352`. All five scope items done. **60** `default_value`
+literals of 324 (34 of the slice's 35 survive the code; `camera value` rejected
+with its argument) · **120** `completable` arrays, **five** false positives
+where the ledger recorded one · **153** family names documented (97 flags / 46
+colours / 10 font targets) and the **`font` family check ARMED** · missing-doc
+proposal artifact + content read of the 266/67 delta. Gates on a fresh
+`build-f71final`: seed gate **43 ok / 0 FAIL** with 3 NEW checks each
+falsification-tested · `ctest` **14/14** · 0 warnings · D14 ASCII gate **PASS** ·
+C3 corpus gate green with a newly armed rule · F66 parity **340/340**, hit rate
+**80/340 unchanged**. Two things the round close must carry: (1) a **dispatcher
+premise did not hold** — the "+267 unexamined lines" had a checker pass on
+2026-08-30 (SCRIPT_SURFACE §4, SS-20…25); reported per §11.179(a), not an abort,
+measured delta **266/67**; (2) harness HEAD moved to `2a4d0b0` mid-task, one
+commit by the concurrent Fable session touching only
+`PENDING_LEDGER-2026-08-31.md` — Allowance 1 satisfied, though that file is not
+one of the two the prompt named.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 

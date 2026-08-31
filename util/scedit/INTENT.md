@@ -254,13 +254,40 @@ notes.*
     underline the exact byte; the editor reaches invisible-separator's
     column from the bytes (display fact, not a rule copy). Small,
     contract-level, next sc_check touch.
-11. **`default_value` backfill** [flagged by the shell slice] — all 324
+11. ~~**`default_value` backfill**~~ **DONE 2026-08-31 (journal
+    2026-08-31j; code `50185663`): 60 literals landed as DATA, each with its
+    own `default_value_source` anchor, in the merged contract AND the four
+    fragments. The slice's 35 reproduce exactly (29 zeros, 4 ones, `no`, 180)
+    and **34 survive the code**; `camera value`'s `no` does not — the handler
+    is a bare `valueStr == W_TRUE` compare, so `no` is the doc author's word
+    for the else-branch and offering it would teach that `yes` means yes. The
+    criterion is written out in `claude/harness/f71_defaults.py`: EQUIVALENCE
+    (typing it == omitting the key) AND non-misleading at the zero-knowledge
+    bar, which is what excludes the false side of every boolean (isTrue has an
+    accepted TRUE set and no accepted FALSE set) and `font size` (its 12
+    bypasses `fontFactor`). One predicate became two: a verified literal is
+    filtered by the tokenizer's real condition (`isTypeableValue`, no
+    whitespace and no quote), not by the strict values-prose rule, which was
+    silently dropping `0.05`, `-90` and `personal.txt`.** [flagged by the shell slice] — all 324
     arg-spec defaults are prose; D31's default-greyed ghost arms per
     entry when a literal `default_value` lands. 35 candidates reduce to
     bare tokens by inspection (enumerated in the slice report) — a doc
     pass writes them as DATA, each source-anchored, never regexed from
     prose (C2).
-12. **`completable` marker on values[]** [flagged by the shell slice] —
+12. ~~**`completable` marker on values[]**~~ **DONE 2026-08-31 (journal
+    2026-08-31j; code `50185663`): `completable` + `completable_excluded` on
+    all 120 specs with a value domain — 304 value slots offered, 11 excluded
+    with a stated reason. **FIVE false positives, not one**: `xRRGGBB` (7
+    specs) plus `bat`/`swf`/`png` in `external_viewer.filename` (value_docs
+    KEYS naming file extensions, while the values are `<name>.bat`) and
+    `zoom.auto`'s `in` (typeable and it works, but only because the domain is
+    OPEN — every word that is not `out` or `initial` zooms in, so offering it
+    teaches a token the engine does not have). `sc_docindex` reads the data and
+    keeps the heuristic only as a fallback for a contract that lacks the field.
+    Gated on the STRONG property: the bare-token entries of a domain must be
+    EXACTLY accounted for, offered or excluded, so a value added later cannot
+    inherit a guess — the gate cannot be satisfied by silence. Falsification-
+    tested at the touch that adds it.** [flagged by the shell slice] —
     values mix literals with prose; the editor's bare-token filter has
     one known false positive (`xRRGGBB`). Schema marker + validator
     check at next grammar touch.
@@ -474,6 +501,87 @@ notes.*
    the args merge gates.
 
 ## 6. Journal (append-only)
+
+- **[2026-08-31j] The documentation extracted: 60 defaults, 153 names, and the
+  one function that was blocking a check.** Dispatch task F71
+  (`claude/fable-dispatch.md`), executor run; code `50185663` + `94f2af65`,
+  harness `fd25fa4`. The parent half — four engine facts, the stale-anchor
+  finding, the tester's channel — is at **INTENT §11.190**. Cross-cited both
+  ways. Mandate [vixy §11.186(e)]: *"extract the missing documentation from the
+  current version of superscript.sts (and dig the code where needed)"*. The
+  value was in the digging: most of what was missing was not in superscript.sts
+  to extract.
+
+  **Items 11 and 12 are struck above with their content.** What is worth
+  keeping here is what the two passes taught about the contract's own shape.
+
+  **A prose default is not a literal, and the gap between them is where a
+  plausible wrong answer lives.** The slice's 35 candidates were found by a
+  pattern over English; 34 of them are right and one is not, and the one is not
+  a near miss — `camera value`'s `absent -> no` is behaviourally correct and
+  pedagogically false. That is the whole content of C2's "never regexed from
+  prose", and it took reading 39 handlers to find one instance. Two more
+  exclusions came out of the code rather than out of taste: `font size`'s 12 is
+  applied AFTER the screen scaling, so a typed 12 is a different number; and
+  the false side of a boolean has no spelling at all, because `Utility::isTrue`
+  defines a TRUE set and calls the complement false.
+
+  **The editor was filtering the answer as if it were still a guess.** Once
+  `default_value` is verified data with a source anchor and a gate, running it
+  through `isCompletableLiteral` — the rule that keeps prose out of `values` —
+  is the wrong question, and it was silently dropping five defaults for
+  containing a dot or a minus. `isTypeableValue` asks the only question that
+  survives contact with the parser: can the tokenizer read these bytes back as
+  one unquoted value. Two predicates, documented as two, in the header.
+
+  **A gate that cannot be satisfied by silence.** Both new fields duplicate
+  something (`completable` re-lists tokens that are already in `values`;
+  `default_value` restates what `default` says in English). The seed gate now
+  checks the strong property rather than containment: the bare-token entries of
+  a domain must be EXACTLY accounted for, each offered or excluded WITH A
+  REASON. A value added later leaves the gate red until somebody classifies it.
+  This is the `checkFragments` resolution reused — duplication is acceptable
+  when divergence is loud.
+
+  **`checkNamesFamilyV2Content` split, and the split is a small I2 ruling.**
+  Its old rule wanted the six per-key facts from every v2 entry. That is right
+  for `set_names`, whose members ARE argument keys with their own value
+  domains, and wrong for flags/colours/font targets, where 97 names share ONE
+  value grammar that lives on the command entry. Writing `value`/`default`/
+  `required` per flag would have been 97 copies of one fact.
+
+  **The `font` family check is armed**, and the blocker was exactly what the
+  contract said it was: `FontFactory::updateFont` had never been read. It is a
+  closed, case-sensitive, ten-member set (`fontFactory.cpp:41-53, 149-153`),
+  and it is worth checking because the engine's refusal is invisible from a
+  script — unknown target logs, returns, and `commandFont` reports SUCCESS.
+  C3 held: 0 false positives with the rule armed.
+
+  **Four record gates changed and none was regenerated blindly.** editcore D4
+  and D6 asserted the honest blank; D6 keeps its principle by now testing BOTH
+  directions, since an unknown name must still fall back to the key grammar
+  with the label that says so. The MCP gate's "the 97 flag names are honest
+  blanks" became a check that each sentence is ABOUT its name — which is what
+  distinguishes a fill from a copy of the command's line. `--doc` moved 32
+  lines; `--ui-selftest` moved exactly ONE, the doc bar for `flag stars`, and
+  that line is the whole feature.
+
+  **Gates:** seed gate green with three new checks, each shown able to fail at
+  the touch that adds it (unclassified token / offered-but-not-in-domain /
+  unsourced literal, one decoy each, each turning only its own check red);
+  `ctest` **14/14** in a fresh `build-f71`; 0 warnings; D14 ASCII gate PASS.
+  **Gate inventory unchanged at 14** — this task widened the seed gate rather
+  than adding one. Router datum, no target: F66 parity **340/340**, hit rate
+  **80/340 unchanged** — the enrichment is additive to the command-scope
+  router, not perturbing; the all-scope surface grew (`--search` 66 -> 110).
+
+  **Open after this**, for whoever takes the next grammar touch: the 324 `source`
+  anchors are pinned once by `_meta.merged` at `b12c8cdd` and
+  `app_command_interface.cpp` is 4747 -> 4888 lines since, so none resolves at
+  HEAD (§11.190(e)); `_meta.schema_version_note` now says so. 264 specs still
+  have no `default_value` and some never can; `obsolete_tokens` (7) and
+  `reserved_variables` (24) are still v1, each with its reason in its own
+  `_schema_note`.
 
 - **[2026-08-31i] The dedicated link, consumed: scedit asks for refusals and
   gets them, and the wire the closed-source client speaks did not move.**
