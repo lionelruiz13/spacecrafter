@@ -113,6 +113,28 @@ point, not sure it's really clean now though."*
   to R21's census (does portrait exist anywhere in the field?);
   harness-side portrait leg is a cheap candidate (supervisor's queue).
   Annotation owed wherever the verification-surface map lives.
+- **Stratum datum** [vixy 2026-08-31, fourth message]: the owner asked
+  *what the view offset is* (*"the fact I ask means it was even less
+  exercised than heading"*) ⇒ the offset is confirmed
+  inherited-stratum (consistent: it lives in `navigator.cpp`, one of
+  the three §11.161(d) maximal-struggle headers). Remaining intent
+  holders: the tester (R28), the 2020 French reference, git's fix
+  history. Answered from source, same conversation: one scalar, draw
+  pitches the view by `view_offset × fov/2` ramped by
+  `view_offset_transition` [observed: navigator.cpp:324]; config
+  `view_offset` + runtime `set zoom_offset` [observed: core.cpp:2531-49
+  comments]; purpose = tilted-dome re-aim, fov-coupling makes zoom
+  converge on the off-center sweet spot [tester Q3 + derived].
+- **DEFECT CANDIDATE found while answering, NOT minted** [observed;
+  consequence derived, callers untraced]: two application sites with
+  DIFFERENT couplings — draw applies `fraction × fov/2`
+  [navigator.cpp:324] while `setLocalVision`'s aim-compensation undoes
+  `fraction × 90° FIXED` [navigator.cpp:162, feeding equ_vision and
+  downstream]. They cancel exactly at fov = 180 (the standard dome) and
+  nowhere else — offset 0.3 at fov 40 ⇒ ~21° aim-vs-draw mismatch. The
+  hard-coded dome-case shape is exactly the testified fix-accretion.
+  §5 mint + verification = supervisor's; also a concrete entry point
+  for the R28/heading-corner work.
 - **Named lead, RE-SCOPED**: the long-standing view-offset fixes in git
   — an archaeology pass (navigator/projector territory, §11.161(d)'s
   maximal-struggle cell) is now only worth running for the HEADING
