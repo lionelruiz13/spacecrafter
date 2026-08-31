@@ -81,3 +81,17 @@ never rewrite (maintenance invariant). Archival per the standing convention
   hazard is treated as LIVE, and every live-launch executor keeps the F67 wake
   mitigation (`SetActive false` + `SimulateUserActivity`, recorded per run) —
   it keys on GetActive, which covers both attributions. Full record §11.186(a).
+- 2026-08-31 [stated: vixy, in-conversation mid-round; measured same minute]
+  **IDLE-DELAY DISABLED TOO** — `org.gnome.desktop.session idle-delay` = **0**
+  (`lock-enabled` false, `GetActive` false at the read). Both arms of the 1 Hz
+  hazard (lock AND blank) are now removed; the lock-vs-blank attribution
+  question closes as MOOT (neither state can occur on idle — epistemically
+  undiscriminated, operationally dead; reopen only if a throttle recurs).
+  Cause of the earlier partial enactment, owner-stated: *"you pointed
+  explicitly the session lock in your report ... so I reduced the scope to
+  just the lock screen"* — the session-18 report's HEADLINE said "a locked
+  screen runs the engine at 1 Hz" while the mechanism line said "blanked
+  output"; headline label != operative variable, a supervisor report-shaping
+  defect, tallied session 19. Standing consequence: executors keep a
+  CHECK-AND-RECORD of `GetActive` at launch (defense in depth, cost ~0); the
+  per-minute wake loop is no longer load-bearing.
