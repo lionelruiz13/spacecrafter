@@ -303,6 +303,50 @@ the round's Vixy items ride §3 + §11.185(d) + the scedit README's veto points.
 
 ---
 
+**Update [Fable 2026-08-31, supervising session 19 — TravellingFoxDev, the
+provenance/ASCII round]:** trigger = the §0b verbatim line PLUS four in-line
+transmissions, recorded BEFORE anything else moved (→ **§11.186**, commit
+`a3a03e1`, the §11.169 precedent): (a) auto lock-screen disabled —
+CONFIRMED at the setting (`lock-enabled false` [measured]) with a NAMED
+residual (idle-delay still 300, blank still fires, and the 1 Hz attribution
+keys on the BLANK — F67's wake mitigation stays in every live-launch prompt
+until a blank-only run discriminates; HOST-EVENTS.md twin entry); (b) the
+engine must carry command provenance (file/tcp + line) — extends §11.184's
+half exactly where it stopped; (c) feedback about TCP-origin commands sent
+back on a link DEDICATED to scedit — §11.185(d)(1) answered in part,
+masterput's channel FROZEN byte-identical (closed-source client, tolerance
+unknowable ⇒ control-leg proof, `$LOGON` reuse excluded); (d) every source
+file ASCII, accents removed — new §2.0 constraint **D14**; (e) superscript.sts
+missing-doc extraction proposed ("could") — coincides with the session-18
+queue's own position 1 (scedit items 11/12). Warm-up: both trees clean at
+open, code `e2c8477b` / harness `8c92006`; binary current (`cmake --build -n`
+empty; mtime 2026-08-31 08:20); **definition-drift assert: md5 MATCH**
+(`a5a54d94`); next free §11 number **186** verified at open (live ∪ archive),
+CONSUMED by the transmission entry ⇒ **187** free at first dispatch; RAM
+11 GiB avail ⇒ **-j6** builds (§0.5); display per HOST-EVENTS 2026-08-31
+(laptop: REAL claude logind session, F28 XAUTHORITY recipe, `:2` =
+1920x1080@143.88); canary bank is the DESKTOP's — `--no-scene` fails 2 by
+construction here, REPORTED (§3, session-18 line stands); this round's
+launches are FUNCTIONAL (log/wire assertions, no photometry). Picks (§0b.2,
+mandate order + dependency): **F68** (TCP provenance, M) → **F69** (the
+dedicated feedback link, consumes F68's origin, M) → **F70** (the ASCII
+conversion, AFTER both so the sweep converts the settled tree exactly once
+and its census stands as the terminal gate, M); **F71** (superscript.sts doc
+extraction → scedit items 11/12, M, mirror-ledger delivery) minted as the
+EXTENSION member, dispatched only if health permits after the core three.
+F68/F69 are the first product-code mandates in five rounds — the "engine on
+Vixy's word only" line is DISCHARGED for exactly their scope (§11.186(f)).
+D14 binds all four executors' own writes immediately (new code pure ASCII).
+Archival pass 11 (update-s16/s17 + F56–F60/F65–F67, all delivered+verified)
+is DEFERRED to the round close — recorded here so the deferral is not
+silent. Instrument baselines at open, re-derived post-§11.186: pair-check
+**202/177/25/90** (+1/+1/0/0 = the transmission entry, no §5 mint);
+back-marker scan **119/159/97** — unchanged to the digit (§11.186's markers
+use discharge vocabulary — ANSWERED — outside the scan lexicon by the F52
+ruling, by design). Parent §5 register untouched at open.
+
+---
+
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
 
 1. `CLAUDE.md` auto-loads (the map). Read THIS file; locate your task's section; read
@@ -1735,6 +1779,325 @@ round-open tree `f157778` ALREADY reads 119/159/97, so F67 moved the scan by
 ZERO: its markers sit on §5 targets, outside the §11↔§11 lexicon — F60's
 finding a third time; the delta is the morning session's, attributed in the
 round outcome).)*
+
+### F68 — Command provenance: the engine knows a TCP line IS a TCP line (§11.186(b); FEATURE_REQUESTS 2026-08-31 provenance entry) [M]
+
+**Why now / mandate:** Vixy, verbatim (§11.186): *"spacecrafter script engine
+must carry the provenance (file/tcp + line)"*. §11.184 built the file half —
+`ScriptOrigin` (file, 1-based line, raw text) rides `Script::load` → token
+queue → loop replay → `executeCommand`'s origin overload — and stopped, by
+recorded decision, exactly at *"the two-argument overloads — TCP/HTTP/UI,
+`clear`/`media`/`lift_off` nesting — pass none: log-only"*. The mandate names
+TCP as an origin a command must CARRY, not merely lack.
+
+**Sources (re-read, never recall):** `INTENT/11.186.md` (b)(c) (the mandate +
+the F69 boundary this task must not pre-empt); `INTENT/11.184.md` IN FULL
+(the origin architecture: RAII restore of `currentOrigin`, the annotator's
+contract, the `#!` tail rules); `INTENT/11.185.md` (a)(e) (what reaches a TCP
+client today; the latch); `src/scriptModule/script_origin.hpp` (the struct +
+its header contract); `src/tools/io.hpp` (ClientMessage, `servingClient`
+latch, `clientIdTab` never-reused ids, the getInput/setOutput same-thread
+contract); `src/appModule/app.cpp` `updateFromSharedData` (the TCP drain
+loop); `src/interfaceModule/app_command_interface.{hpp,cpp}` (`currentOrigin`
+:220, the overloads :66-74, `executeCommandStatus` :1236). WARNING:
+`app_command_interface.cpp` is ISO-8859 until F70 lands — the Bash `grep`
+wrapper SKIPS it silently; use `/usr/bin/grep` or Read (§0.5).
+
+**Preconditions (checkable, §0.7 gate):** code HEAD `e2c8477b`, tree clean;
+harness HEAD as the dispatch prompt states, tree clean; binary
+`build-claude/src/spacecrafter` current at code HEAD (`cmake --build -n`
+empty at dispatch); next free §11 number **187**; live `### F` count **12**;
+`ScriptOrigin` at `script_origin.hpp` with `valid()` = file+line (as §11.184
+left it); the origin overload + `currentOrigin` member present as cited;
+display stack per HOST-EVENTS 2026-08-31 laptop entry (F28 XAUTHORITY recipe,
+`DISPLAY=:2`, real logind session) — verify `xdpyinfo` answers BEFORE any
+launch; RAM < 16 GiB ⇒ `-j6` builds. ANY broken ⇒ abort per §0.7.
+
+**Scope:**
+1. **`ScriptOrigin` gains a channel kind** (design yours, contract-first in
+   the header): a command's origin distinguishes at minimum FILE (path+line,
+   exactly today's semantics) and TCP (with the connection identity — the
+   never-reused `clientIdTab` id, which is what makes a later reply follow
+   the connection, I5/§5.47's own argument). `valid()`'s meaning (file+line,
+   the `#!` writer's gate) MUST NOT widen — the annotator writes files only;
+   re-read `script_annotator.hpp`'s contract before touching the struct and
+   state in the header what each consumer may assume. UI/nested/synthesised
+   lines stay origin-less (log-only) — the mandate names file/tcp; map and
+   REPORT the other producers (HTTP `?command=`, mkfifo, joypad) with their
+   observed entry points, do not wire them without a word.
+2. **The TCP drain threads the origin**: `App::updateFromSharedData`'s loop
+   passes an origin naming TCP + the serving connection's id. The socket
+   layer is the only place that knows it (io.hpp's own doctrine) — expose it
+   from `ServerSocket` alongside `getInput()` without changing any wire
+   behaviour (D8: a client must see byte-identical traffic; this task sends
+   NOTHING new on any socket — that is F69's, and only behind its opt-in).
+3. **Diagnostics carry it**: at the funnel (`executeCommandStatus`, and the
+   sibling refusal sites that bypass it — map them: :306/:385/:400 class,
+   `"Unable to execute script"` :2889), a TCP-origin command's log line names
+   its origin (e.g. `tcp#<id>: <what>`) exactly as a file-origin line names
+   `<file>:<line>` (§11.184's shape). §2(f)/§11.169 content untouched or
+   improved, never regressed. No new bytes on any socket (F69's boundary).
+4. **Gate** (new `harness/f68_provenance.py`, temp-HOME farm, fresh launch,
+   md5 in==out, comm-probe 0, plain `timeout`, §0.5 discipline + the wake
+   mitigation recorded per run): legs proving (i) a file-origin fault logs
+   `file:line` (control, §11.184's behaviour unchanged); (ii) the SAME fault
+   sent as a TCP line logs the TCP origin with the id; (iii) a nested call
+   (`clear`/`media` class) still restores the outer origin (the RAII leg);
+   (iv) a `$LOGON` subscriber + a plain client observe ZERO new bytes across
+   the whole battery vs pre-change (record the wire both sides — this is
+   F69's baseline control, committed as an artifact it will cite); (v) the
+   `#!` writer still writes ONLY for file-origin faults (a TCP fault must
+   not touch any file). Both-ways discrimination on (ii): the pre-change
+   binary shows the origin-less line.
+5. **Record:** §11 entry at **187** + stub (entry-first, §11.156(f));
+   code committed FIRST (engine), harness commits carry `Code: master-beta @
+   <sha>`; README section; WIP line per §0.6; new code PURE ASCII (D14).
+
+**Boundaries:** NO wire-visible change on any socket (masterput frozen —
+that whole surface is F69's, behind opt-in); NO annotator file-writes for
+non-file origins; NO data writes; old render path untouched; UI/HTTP/mkfifo
+origins mapped-not-wired; mint license per §5.79 for distinct-mechanism
+defects found en route, else list on the entry.
+
+**DoD:** kind carried + threaded + logged; gate green with both-ways records;
+wire-silence leg (iv) committed as F69's citable baseline; build green at
+`-j6`; §11.187 + stub + README; both instrument baselines re-derived as the
+LAST act with deltas attributed; trees clean; WIP cleared.
+**WIP:** —
+
+### F69 — The dedicated feedback link: TCP-origin feedback comes back on an opt-in channel; masterput's wire is frozen (§11.186(c); §11.185(d)(1) ruling; FEATURE_REQUESTS 2026-08-31) [M]
+
+**Why now / mandate:** Vixy, verbatim (§11.186): *"feedback about tcp sent
+back (note: an existing tcp path exists, used by masterput (which is
+closed-source), do not modify this channel) - and sent it back through the
+tcp link dedicated for scedit."* This is §11.185(d)(1) answered in specific
+form. Consumes F68's origin — dispatched only after F68's acceptance.
+
+**Sources (re-read, never recall):** `INTENT/11.186.md` (c) (the two
+structural consequences: FROZEN wire for the unsubscribed, opt-in dedicated
+link, `$LOGON` reuse EXCLUDED); `INTENT/11.185.md` IN FULL ((a) the two
+existing reply classes; (e) the addressed-reply/broadcast semantics F27
+left); `INTENT.md` §5.47/§5.72/§5.117 stubs (the channel's three open rows —
+this task composes with, never silently resolves, any of them);
+`src/tools/io.{hpp,cpp}` (verb dispatch `computeNormalString` :640-,
+`clientBroadcastTab`, `deliver`, the same-thread contract);
+F68's delivery entry + its leg-(iv) wire baseline artifact;
+`util/scedit/src/sc_tcpclient.*` + the feed pane (scedit's consumer half);
+scedit mirror ledger §2 constraints + §4 verification bar. ISO-8859 grep
+warning as in F68 until F70 lands.
+
+**Preconditions (checkable, §0.7 gate):** F68 DELIVERED and accepted (its
+§11.187 entry exists; its WIP line reads DELIVERED); code HEAD = F68's
+delivery sha, tree clean; harness HEAD as the prompt states; next free §11
+number **188**; live `### F` count **12**; `computeNormalString` still
+dispatches exactly `$NOTICE`/`$LOGON`/`$LOGOFF` (no other verb landed);
+display + RAM + canary stance as F68's. ANY broken ⇒ abort.
+
+**Scope:**
+1. **The opt-in verb** (engine, io.cpp): a connection declares itself a
+   feedback subscriber by an explicit new `$`-verb (name yours — state the
+   candidates and the choice's reason; advertise it in the `$NOTICE` reply,
+   which is itself a wire change VISIBLE to any client that asks — argue its
+   safety or withhold it, your call, stated either way); a per-slot table in
+   the ServerSocket idiom (`clientBroadcastTab`'s shape), cleared on
+   disconnect/slot-reuse; a send path addressed to feedback subscribers
+   ONLY. The same-thread contract holds (application thread sends; the
+   server thread never composes).
+2. **The routing** (engine, command interface): at the diagnostic funnel
+   F68 mapped, a refusal/diagnostic for a **TCP-origin** command is ALSO
+   delivered to feedback subscribers, carrying its provenance (`tcp#<id>`)
+   and the §11.169 three-part content. Scope = feedback about TCP-origin
+   commands, exactly the mandate; script lifecycle events and file-origin
+   `#!` mirroring are NOT ruled — leave unwired, state the boundary in the
+   entry (the (d)(1) poll-replacement line stays a routed question).
+   Success-acks: not feedback in the ruled sense — unwired unless you find
+   a §2(f) argument, stated either way. The log keeps everything it has
+   today (the wire ADDS a copy for subscribers; it never diverts).
+3. **The frozen-wire proof** (the mandate's hard boundary): extend F68's
+   leg-(iv) battery — a plain client and a `$LOGON`-only subscriber each
+   record their full wire across a scenario set (refused command, played
+   script with faults, `get status`, second client's answer) on the PRE-F69
+   binary and on the delivered one: **byte-identical for both**, diffed and
+   committed. The feedback subscriber's OWN wire is the positive
+   discrimination (receives every routed diagnostic). Both directions
+   demonstrated, artifacts committed.
+4. **scedit consumes it** (the "dedicated for scedit" half):
+   `sc_tcpclient` gains the subscription; the feed pane shows feedback
+   lines (existing 500-line bounded feed; visual distinction yours,
+   README-stated); the `--tcp` path documents it. scedit's tcp gate
+   extends to assert the subscription + at least one received feedback
+   line against a stand-in server; the LIVE leg (real engine, one launch,
+   a refused TCP command seen coming back) rides the same launch as leg 3
+   where possible. Mirror-ledger journal entry for the scedit half.
+5. **Record:** parent §11 entry at **188** + stub (the engine half is
+   parent territory; the scedit half journals in the mirror, cross-cited);
+   code-first commit discipline; README (harness + scedit) sections; WIP
+   per §0.6; new code PURE ASCII (D14). Annotate §5.72/§5.117 at their
+   nodes (the wire now carries a copy for subscribers — their severity/
+   place claims gain a conditioned clause), back-markers same commit;
+   §11.185(d)(1) flipped to ANSWERED+IMPLEMENTED at its node.
+
+**Boundaries:** the unsubscribed wire is BYTE-IDENTICAL — any observed
+delta is a delivery-blocking defect, never a judgment call; `$LOGON`
+semantics untouched (§5.72's conflation stays as recorded); no new port
+unless the verb route fails a stated constraint (then STOP and report —
+config surface is B28-protocol territory); no auth work (the (d)(3) dome
+question stays Vixy's); no lifecycle events; mint license per §5.79.
+
+**DoD:** verb + routing + frozen-wire proof (both directions, committed
+diffs) + scedit consumption with gates; parent §11.188 + mirror journal +
+row annotations; builds green both trees (`-j6`); baselines re-derived as
+last act, deltas attributed; trees clean; WIP cleared.
+**WIP:** —
+
+### F70 — Every source file pure ASCII: census, conversion, exclusion table (D14, §11.186(d)) [M]
+
+**Why now / mandate:** D14, verbatim: *"Every source file must be in ASCII,
+accents are to be removed for this purpose."* One-shot conversion of the
+existing tree + the standing census instrument that keeps it true. Runs
+AFTER F68/F69 so the sweep converts the settled tree exactly once and the
+terminal census gates the round's own new code too.
+
+**Sources (re-read, never recall):** `INTENT.md` §2.0 **D14** (the boundary
+clause is veto-open — your exclusion table is its challengeable form);
+`INTENT/11.186.md` (d) (the 199-file open census, the named exclusion
+candidate); CLAUDE.md's ISO-8859 rule (what narrows after this lands);
+scedit `grammar/witness/` READMEs/notes (what the witness files PIN);
+`po/`-or-equivalent translation catalogs IF any tracked (find them first).
+
+**Preconditions (checkable, §0.7 gate):** F69 delivered and accepted; code
+HEAD = F69's delivery sha, tree clean; harness HEAD as the prompt states;
+next free §11 number **189**; live `### F` count **12**; the round-open
+census reproduces to the file (199 tracked files non-ASCII at `e2c8477b`;
+re-derive at YOUR HEAD and attribute any delta to F68/F69's diffs — their
+prompts bind ASCII-only new code, so the expected delta is 0). ANY broken ⇒
+abort.
+
+**Scope:**
+1. **Census instrument** (`harness/f70_ascii.py`, committed BEFORE any
+   conversion): enumerate ALL tracked files in the code repo; per file:
+   encoding class (ASCII / UTF-8 / ISO-8859 / binary), non-ASCII line count,
+   and context classification (comment / string literal / other) for source
+   files. Output committed as the pre-state artifact.
+2. **The boundary, stated then applied**: partition every non-ASCII file
+   into CONVERT (source: C/C++/headers/CMake/GLSL/scripts/scedit sources +
+   tests + grammar DATA whose prose scedit displays) vs EXCLUDE (files
+   whose non-ASCII bytes are their FUNCTION: `grammar/witness/*` pinning
+   `doc/superscript.sts` bytes; translation payloads; `doc/`; `data/`;
+   binary assets). The table is the deliverable Vixy vetoes against — every
+   EXCLUDE row carries its one-line reason. In doubt ⇒ EXCLUDE + flag,
+   never silent conversion.
+3. **String-literal hazard pass, BEFORE converting them**: for every
+   non-ASCII **string literal** in CONVERT files, trace the consumer:
+   gettext key (does a catalog msgid match byte-for-byte? then conversion
+   BREAKS the lookup — convert both or exclude+flag), protocol/data-matching
+   string (compare target), user-visible text (conversion intended by the
+   mandate). Committed as a per-literal disposition list — this is the step
+   that keeps the sweep from being a semantic change in disguise. The known
+   wire string (*"Vous receverez maintenant les logs"*, io.cpp) is ASCII
+   already — masterput's frozen wire is NOT at risk from accent removal,
+   verify rather than assume (any literal that REACHES a socket is in the
+   trace set).
+4. **Conversion**: accents transliterated to ASCII (é→e class, both UTF-8
+   and ISO-8859 sources; `app_command_interface.cpp` decoded from ISO-8859
+   first — verify with `iconv`, never byte-strip); non-accent non-ASCII
+   (arrows, °, œ→oe, typographic quotes) transliterated to nearest-ASCII
+   with the per-character map committed; NO other byte changes (whitespace,
+   line endings, content untouched — the diff must be reviewable as pure
+   transliteration). Mechanical verification: a script re-derives the diff
+   from the map and asserts equality, committed with the sweep.
+5. **Terminal gates**: census reruns → ZERO non-ASCII in the CONVERT set;
+   engine full build green (`-j6`); scedit build + its OWN full gate suite
+   green (its tests may pin accented bytes in expected outputs — reconcile
+   at the root, report any witness-class collision instead of editing a
+   witness); one engine smoke launch (functional, §0.5 + wake mitigation)
+   proving boot + one script play unaffected.
+6. **Record:** §11 entry at **189** + stub; the CLAUDE.md/§0.5 ISO-8859
+   rule narrowing is the SUPERVISOR's at acceptance (flag it, don't edit
+   CLAUDE.md yourself); README; WIP per §0.6; commits sized per checkpoint
+   discipline (census / hazard pass / conversion / gates — an abort must
+   lose at most one).
+
+**Boundaries:** NO semantic change — a literal whose conversion could
+change behaviour lands in the disposition list, not in the diff, unless
+traced safe; witness files NEVER edited; `doc/superscript.sts` NEVER
+edited; translation catalogs edited ONLY as the traced pair of a converted
+key, listed; the code repo only (harness/ledger files are exempt from D14's
+letter — "source file" — flag any you think should follow); mint license
+per §5.79.
+
+**DoD:** pre-census + exclusion table + literal dispositions + pure-
+transliteration proof + zero-count terminal census + both builds green +
+scedit gates green + smoke launch; §11.189 + stub + README; baselines
+re-derived as last act; trees clean; WIP cleared.
+**WIP:** —
+
+### F71 — EXTENSION: the missing documentation, extracted — scedit items 11/12 from the current superscript.sts, code-dug where silent (§11.186(e); session-18 queue position 1) [M]
+
+**Why now / mandate:** Vixy (§11.186(e)): *"One of the task could be to
+extract the missing documentation from the current version of
+superscript.sts (and dig the code where needed)"* — read as the proposal it
+is; it coincides with the session-18 queue's position 1: scedit items
+**11/12** (doc DATA passes: `default_value` literals, `completable` marker,
+per-name docs for flags/colours — the default-greyed ghost's arming AND the
+doc router's next lever, F64 58.5%). Dispatched ONLY after the core three
+deliver and health permits (§0b.2).
+
+**Sources (re-read, never recall):** scedit mirror ledger
+(`claude/util/scedit/INTENT.md`) items 11, 12, and 9's residue (the 2026-08-04
+doc-mining journal + its 6 queued code-consistent answers + S-NP-1's
+suspension — do not re-answer what it already banked); `doc/superscript.sts`
+CURRENT bytes (ISO-8859 — Read or `/usr/bin/grep`; the tester's rewrite,
++267 lines unexamined since §11.149(e)); `grammar/sc-grammar.json` schema +
+the 324 arg specs; `app_command_interface.cpp` per-handler truth (post-F70:
+plain ASCII by then); `SCRIPT_SURFACE.md` (SS-n grammar, C2 ownership
+split); F64/F66's doc-surface shape (what `--doc` serves — the data this
+task feeds).
+
+**Preconditions (checkable, §0.7 gate):** F68–F70 delivered and accepted;
+code HEAD = F70's delivery sha, tree clean; harness HEAD as the prompt
+states; next free §11 number as the prompt states; live `### F` count
+**12**; `doc/superscript.sts` md5 as the prompt states (the extraction's
+input pinned); items 11/12 still OPEN at the mirror ledger. ANY broken ⇒
+abort.
+
+**Scope:**
+1. **`default_value` backfill (item 11)**: the 35 bare-token candidates
+   from the shell-slice report first, then the rest of the 324 — each
+   default as DATA, each source-anchored (superscript.sts line, or code
+   file:line when the doc is silent — the `[superscript-attested]` /
+   code-cited tag discipline of item 9), NEVER regexed from prose (C2).
+   A doc-vs-code disagreement is a FINDING (SS-n row), not a silent pick.
+2. **`completable` marker (item 12)**: schema marker on values[], the
+   known false positive (`xRRGGBB`) resolved, validator check added at
+   the grammar gate.
+3. **Per-name docs for flags/colours**: the family F64 measured as the
+   router's lever — per-name entries (incl. the `font` family F64's map
+   missed), source-anchored as above.
+4. **The missing-doc report**: commands/args/flags reachable in code but
+   absent or under-documented in the CURRENT superscript.sts — extracted
+   as a structured PROPOSAL artifact for the tester (his file, §11.149(e);
+   NEVER edit `doc/superscript.sts`), plus SS-n rows where a doc claim and
+   code diverge. The +267 unexamined lines get their first systematic
+   read; bank what they answer.
+5. **Gates + record**: grammar validator + scedit's doc gates green;
+   `--doc`/`--search` still serve (F66's gates re-run); one measured
+   router datum IF cheap (the f64 harness re-run on the enriched data —
+   record as it comes, no target); mirror-ledger journal entry + items
+   11/12 state flips; parent stub only if a parent-ledger fact surfaces
+   (else the mirror entry suffices, cross-cited from the WIP line); WIP
+   per §0.6; all new data PURE ASCII (D14 — transliterate sourced prose
+   at extraction time, noting each).
+
+**Boundaries:** `doc/superscript.sts` read-only; engine code read-only;
+findings route SS-n per C2; S-NP-1 stays suspended; no router/LLM work
+(the triage is still Vixy's, §3); mint license per §5.79.
+
+**DoD:** items 11/12 flipped with data landed + validator; per-name pass
+incl. `font`; missing-doc proposal artifact + SS-n rows; gates green;
+mirror journal; WIP cleared; baselines re-derived only if a parent row
+moved.
+**WIP:** —
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
