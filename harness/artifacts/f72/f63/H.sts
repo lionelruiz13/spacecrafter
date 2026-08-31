@@ -1,0 +1,4 @@
+# H: plays I, whose if is never closed
+flag stars on
+script action play filename /tmp/sc-farm-f63/f63/I.sts
+flag stars off

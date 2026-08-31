@@ -10,12 +10,33 @@ channel) - and sent it back through the tcp link dedicated for scedit."
 That sentence has two halves and they pull in opposite directions, so this
 instrument measures both in ONE battery, three times:
 
-  phase pre   the binary at master-beta 423cbe23 (SC_BIN_PRE) - F68's delivery,
-              which is to say the last engine that had no diagnostic channel
+  phase pre   the PRE-change binary (SC_BIN_PRE)
   phase pre2  the same binary again: the A/A control that says whether this
               battery's WIRE is deterministic at all. Without it, "the wire did
               not change" is a sentence about one sample.
   phase post  the delivered binary (SC_BIN)
+
+THE PRE BINARY'S ERA IS DECLARED, NOT GUESSED (SC_PRE_ERA, added at F72). This
+instrument is re-run by every later task that touches a socket, and by then the
+"pre" binary is not the one F69 was written against. Which engine the pre
+binary IS decides what several legs must assert, so it is an INPUT: inferring
+it from the run would make those legs assert whatever they measured.
+
+  SC_PRE_ERA=f68  pre is master-beta 423cbe23 or earlier: no diagnostic
+                  channel at all. `$DIAGON` is an ordinary (unrecognised)
+                  command to it, D's wire is empty, and scedit's live leg is
+                  given the opposite expectation. The era F69 delivered against.
+  SC_PRE_ERA=f69  pre is be2ddd81..96cfc352: the channel exists, and file-origin
+                  refusals are NOT tagged in the log. THE DEFAULT, and the era
+                  F72 delivered against - where D's wire on the pre binary must
+                  be non-empty and BYTE-IDENTICAL to post's, which is how "a
+                  file-origin refusal adds zero wire bytes" gets measured
+                  inside one run instead of across two.
+
+A wrong declaration turns those legs RED; it cannot make a run pass. (Before
+F72 there was no such input: F70 ran this instrument against an f69-era pre and
+took three known-false reds, which is the failure mode 11.191(c) rules out for
+a gating instrument - a false positive is a defect to remove at its root.)
 
 WHAT IS ASSERTED, and what each check could have found instead:
 
@@ -85,17 +106,31 @@ SCEDIT_TEST = os.environ.get("SCEDIT_TCP_TEST",
 FAULT = "struct if end"
 MSG_FAULT = "this 'struct if end' closes nothing"
 UNREC = "Unrecognized or malformed command name"
+# Which engine the PRE binary is. Declared by the caller, never inferred from the
+# run - see the docstring. "f69" is be2ddd81..96cfc352, "f68" is 423cbe23 or older.
+PRE_ERA = os.environ.get("SC_PRE_ERA", "f69")
 
 # The bytes F68 measured, on another run of another binary on another day.
 F68_WIRE = {"S": 71, "P": 5, "Q": 0, "HTTP": 85}
+# F70 re-measured the same four AND recorded the SUBSCRIBED wire, which F68 had
+# no channel to record. 939 B is the frozen diagnostic wire; F72 must reproduce
+# it byte for byte, because a file-origin refusal that leaked onto a socket
+# would show up here and nowhere else.
+F70_WIRE_DIR = HARNESS / "artifacts/f70/wire"
+F70_D_BYTES = 939
 
 PREDICTIONS = {
     "iv": "S/P/Q/HTTP wires: pre == pre2 (deterministic) and pre == post (frozen), and each "
           "equal BYTE FOR BYTE to F68's committed wire - 71 / 5 / 0 / 85 B",
     "iv-S": "the $LOGON subscriber receives NO record beginning `$DIAG` in any phase",
-    "vi-pre": "on the pre binary D's wire is EMPTY (0 B): `$DIAGON` is not a verb there, it is a "
-              "command, and the script log carries `Unrecognized or malformed command name` for "
-              "it - twice, for $DIAGON and $DIAGOFF - which post does NOT",
+    "iv-D": "the SUBSCRIBED wire too: D's 939 B reproduce F70's committed recording byte for "
+            "byte (a file-origin refusal that leaked onto a socket would show here and nowhere "
+            "else) - asserted when SC_PRE_ERA=f69, where pre and post both have the channel",
+    "vi-pre": "SC_PRE_ERA=f68: on the pre binary D's wire is EMPTY (0 B), `$DIAGON` is not a verb "
+              "there but a command, and the script log carries `Unrecognized or malformed command "
+              "name` THREE times ($DIAGON, $DIAGOFF, flagg) where post carries it once. "
+              "SC_PRE_ERA=f69: D's wire is NON-empty and byte-identical to post's, and both logs "
+              "carry that line exactly once",
     "vi-post": "D's wire opens with `$DIAGON ok:` and then carries one `$DIAG|tcp#<id>|msg|subject` "
                "record per TCP-origin refusal: the cold fault, the funnel's `get status nonsense`, "
                "the bypassed `flagg stars on`, ~~the nested audio refusal~~, the fault after "
@@ -110,12 +145,18 @@ PREDICTIONS = {
     "vi-none": "NO `$DIAG` record names a file path or an empty origin: the HTTP-origin fault and "
                "every fault of the played FILE route nowhere",
     "ix": "scedit's OWN client, on the same launch: `live_diag` green on post (a refused command "
-          "comes back, split into origin/message/subject) and green on pre WITH `none` (the same "
-          "leg, the opposite expectation, because that engine has no such verb)",
+          "comes back, split into origin/message/subject); on pre green WITH `none` when "
+          "SC_PRE_ERA=f68 (the same leg, the opposite expectation, because that engine has no "
+          "such verb) and green WITHOUT it when SC_PRE_ERA=f69 (that engine has the verb, and a "
+          "green there says F72 did not break the consumer)",
     "vii": "after `$DIAGOFF` the confirmation arrives and then nothing: one more fault from P adds "
            "0 bytes to D",
     "viii": "the script log carries the SAME number of `Could not execute: get status nonsense` "
             "lines (2) and of `struct if end` faults on both binaries: the wire added a copy",
+    "viii-f72": "the file-origin funnel refusal, which 11.187(d) left UNTAGGED and 11.191(b) "
+                "reversed, now reads `<file>:5: Could not execute: get status nonsense` on the "
+                "delivered binary and stays bare on the pre one - and D's wire does not gain one "
+                "byte for it, which is the whole boundary of F72 stated as one pair of legs",
     "v": "no farm file changes during the TCP battery; after the play exactly one `#!` tail, on "
          "line 3, every other byte identical",
 }
@@ -342,8 +383,12 @@ def battery(phase, binary):
     # green that means two different things.
     scedit_leg = None
     if Path(SCEDIT_TEST).exists():
+        # The expectation is the DECLARED era's, not the phase's: an f68-era pre
+        # engine has no verb and must come back with nothing; an f69-era one has
+        # it and must come back with a diagnostic, exactly as post does.
+        expect_none = (phase != "post" and PRE_ERA == "f68")
         argv = [SCEDIT_TEST, "live_diag", "127.0.0.1:%d" % PORT] + \
-               ([] if phase == "post" else ["none"])
+               (["none"] if expect_none else [])
         try:
             r = subprocess.run(argv, capture_output=True, text=True, timeout=180)
             scedit_leg = {"rc": r.returncode, "argv": argv}
@@ -388,6 +433,10 @@ for k, v in PREDICTIONS.items():
 print(flush=True)
 
 OUT.mkdir(parents=True, exist_ok=True)
+if PRE_ERA not in ("f68", "f69"):
+    die("SC_PRE_ERA must be `f68` or `f69` (see the docstring), not %r" % PRE_ERA)
+notes["pre_era_declared"] = PRE_ERA
+print("PRE binary era, DECLARED: SC_PRE_ERA=%s\n" % PRE_ERA, flush=True)
 for f in (BIN, PRE):
     if not Path(f).exists():
         die("not found: " + f)
@@ -505,6 +554,20 @@ check("iv-S the $LOGON subscriber received NO `$DIAG` record - the right nothing
 check("iv-S ... and neither did the plain clients P and Q",
       b"$DIAG" not in post["wires"]["P"] and b"$DIAG" not in post["wires"]["Q"],
       "%r / %r" % (post["wires"]["P"][:80], post["wires"]["Q"][:80]))
+# The SUBSCRIBED wire, frozen against F70's committed recording. F68 could not
+# record this one (it had no channel), so the baseline starts at F70 - and it is
+# the only place a diagnostic that leaked to a socket would appear.
+f70_D = F70_WIRE_DIR / "wire.post.D.bin"
+if f70_D.exists():
+    want_D = f70_D.read_bytes()
+    check("iv-D the SUBSCRIBED wire == F70's committed %d B recording, byte for byte "
+          "(another task, another binary, another day)" % F70_D_BYTES,
+          post["wires"]["D"] == want_D and len(want_D) == F70_D_BYTES,
+          "%d B now vs %d B then; %s"
+          % (len(post["wires"]["D"]), len(want_D), first_diff(want_D, post["wires"]["D"])))
+else:
+    check("iv-D F70's committed subscribed wire is present to compare against", False,
+          "missing: %s" % f70_D)
 
 # ---------------------------------------- vi: the subscribed wire carries it
 dpost = post["wires"]["D"]
@@ -512,14 +575,24 @@ dpre = pre["wires"]["D"]
 notes["D_wire_post_len"] = len(dpost)
 notes["D_wire_pre_len"] = len(dpre)
 notes["D_records_post"] = records(dpost)
-check("vi-pre  D's wire on the PRE binary is EMPTY: `$DIAGON` was not a verb there",
-      len(dpre) == 0 and len(pre2["wires"]["D"]) == 0,
-      "pre %d B / pre2 %d B: %r" % (len(dpre), len(pre2["wires"]["D"]), dpre[:120]))
 unrec_pre = lines_with(pre["log"], UNREC)
 unrec_post = lines_with(post["log"], UNREC)
-check("vi-pre  ... and the PRE engine logged THREE unrecognised commands: $DIAGON, $DIAGOFF and "
-      "`flagg` - the two verbs were ordinary commands to it", len(unrec_pre) == 3,
-      json.dumps(unrec_pre))
+if PRE_ERA == "f68":
+    check("vi-pre  D's wire on the PRE binary is EMPTY: `$DIAGON` was not a verb there",
+          len(dpre) == 0 and len(pre2["wires"]["D"]) == 0,
+          "pre %d B / pre2 %d B: %r" % (len(dpre), len(pre2["wires"]["D"]), dpre[:120]))
+    check("vi-pre  ... and the PRE engine logged THREE unrecognised commands: $DIAGON, $DIAGOFF "
+          "and `flagg` - the two verbs were ordinary commands to it", len(unrec_pre) == 3,
+          json.dumps(unrec_pre))
+else:
+    check("vi-pre  (SC_PRE_ERA=f69) D's wire on the PRE binary is NON-EMPTY and BYTE-IDENTICAL "
+          "to post's: this engine already had the channel, and the delivered one adds not one "
+          "byte to it - a file-origin refusal routes to no socket",
+          len(dpre) > 0 and dpre == dpost and dpre == pre2["wires"]["D"],
+          "pre %d B / pre2 %d B / post %d B; %s"
+          % (len(dpre), len(pre2["wires"]["D"]), len(dpost), first_diff(dpre, dpost)))
+    check("vi-pre  ... and the PRE engine logged the unrecognised command ONCE, as post does: "
+          "the two verbs were already verbs to it", len(unrec_pre) == 1, json.dumps(unrec_pre))
 check("vi-post the POST engine logs exactly ONE (`flagg` alone): the socket layer consumed the "
       "two verbs before the application ever saw them", len(unrec_post) == 1,
       json.dumps(unrec_post))
@@ -593,9 +666,18 @@ check("viii the structure faults are in the log in the same number on both",
       len(fault_origins(post["log"])) == len(fault_origins(pre["log"])) > 0,
       "post %s / pre %s" % (json.dumps(fault_origins(post["log"])),
                             json.dumps(fault_origins(pre["log"]))))
-check("viii the file-origin funnel refusal is still UNTAGGED (11.187(d)'s asymmetry, unmoved)",
-      len(cne_post) == 2 and cne_post[1] == "Could not execute: get status nonsense",
+FILE_TAG = pf + ":5: "
+check("viii-f72 the file-origin funnel refusal NAMES ITS LINE now (11.191(b) reversed "
+      "11.187(d)'s asymmetry; this leg asserted the opposite until F72)",
+      len(cne_post) == 2 and cne_post[1] == FILE_TAG + "Could not execute: get status nonsense",
       json.dumps(cne_post))
+check("viii-f72 ... and it was BARE on the pre binary - the log gained a prefix and nothing else",
+      len(cne_pre) == 2 and cne_pre[1] == "Could not execute: get status nonsense"
+      and cne_post[1] == FILE_TAG + cne_pre[1], json.dumps([cne_pre[1], cne_post[1]]))
+check("viii-f72 ... while D's wire carries NO record whose origin is that file: the log half "
+      "moved and the socket half did not, which is the whole boundary of F72",
+      not any(pf in r["raw"] for r in dr) and not any(pf in r["origin"] for r in dr),
+      json.dumps([r["raw"] for r in dr]))
 
 # ---------------------------------------- v: no file is touched
 DECOY = b"# f69: never played, never annotated\nflag stars on\n"
@@ -616,16 +698,30 @@ check("v    the never-played file is untouched after the play too",
 
 # ---------------------------------------- ix: scedit consumes it, live
 notes["scedit_legs"] = {k: runs[k]["scedit_leg"] for k in runs}
-for phase, what in (("post", "a refused command COMES BACK"),
-                    ("pre", "the same leg, expecting NOTHING (this engine has no verb)")):
+pre_what = ("the same leg, expecting NOTHING (this engine has no verb)" if PRE_ERA == "f68"
+            else "the same leg, same expectation (this engine has the verb): a green says the "
+                 "consumer still reads what it read before")
+for phase, what in (("post", "a refused command COMES BACK"), ("pre", pre_what)):
     leg = runs[phase]["scedit_leg"]
     check("ix   scedit's own client on the live engine, phase %-4s: %s" % (phase, what),
           leg is not None and leg["rc"] == 0, json.dumps(leg))
-check("ix   the two phases were given OPPOSITE expectations (otherwise both greens are one)",
-      runs["post"]["scedit_leg"] is not None and runs["pre"]["scedit_leg"] is not None
-      and "none" not in runs["post"]["scedit_leg"]["argv"]
-      and "none" in runs["pre"]["scedit_leg"]["argv"],
-      json.dumps([runs["post"]["scedit_leg"], runs["pre"]["scedit_leg"]]))
+if PRE_ERA == "f68":
+    check("ix   the two phases were given OPPOSITE expectations (otherwise both greens are one)",
+          runs["post"]["scedit_leg"] is not None and runs["pre"]["scedit_leg"] is not None
+          and "none" not in runs["post"]["scedit_leg"]["argv"]
+          and "none" in runs["pre"]["scedit_leg"]["argv"],
+          json.dumps([runs["post"]["scedit_leg"], runs["pre"]["scedit_leg"]]))
+else:
+    # No opposite expectation is available in this era, and saying so is better
+    # than pretending: what discriminates HERE is that the leg has a failing
+    # form at all - it goes red against an engine with no channel, which is the
+    # f68 arm, and the wire-identity leg above carries the F72 claim instead.
+    check("ix   both phases were given the SAME (positive) expectation, per SC_PRE_ERA=f69 - "
+          "the discrimination for this run is iv-D/vi-pre wire identity, not this leg",
+          runs["post"]["scedit_leg"] is not None and runs["pre"]["scedit_leg"] is not None
+          and "none" not in runs["post"]["scedit_leg"]["argv"]
+          and "none" not in runs["pre"]["scedit_leg"]["argv"],
+          json.dumps([runs["post"]["scedit_leg"], runs["pre"]["scedit_leg"]]))
 
 md5_out = {k: md5(REAL / k) for k in PRISTINE}
 check("real ~/.spacecrafter config/ssystem md5 in == out", md5_out == md5_in)

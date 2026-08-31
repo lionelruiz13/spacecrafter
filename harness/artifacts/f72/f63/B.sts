@@ -1,0 +1,4 @@
+# B: an unclosed if, alone
+struct if 1 equal 1
+flag stars on
+struct if end

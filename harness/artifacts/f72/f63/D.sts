@@ -1,0 +1,9 @@
+# A: one of each block-structure fault
+flag stars on
+struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close
+struct if else #! this 'struct if else' flips nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it belongs to
+struct loop end #! this 'struct loop end' closes nothing: no 'struct loop <n>' is open here, so nothing repeats - remove it, or add the 'struct loop <n>' it was meant to close
+struct loop 2 #! this 'struct loop' is never closed: no 'struct loop end' follows before the end of the script, so the lines after it run once and never repeat - add 'struct loop end' where the loop should stop
+flag stars off
+struct if 1 equal 1 #! this 'struct if' is never closed: no 'struct if end' follows before the end of the script, so whenever its test is false every line after it is skipped silently - add 'struct if end' where the block should stop
+flag stars on

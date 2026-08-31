@@ -1,0 +1,3 @@
+# F: a #! inside quotes is text
+text name f63 string "a #! b" altitude 10
+flag stars on

@@ -1034,12 +1034,13 @@ mint license per §5.79.
 **DoD:** condition + flipped gate legs green both ways; f63 green; frozen
 wire reproduced; §11.192 + markers; builds green; trees clean; WIP cleared;
 baselines re-derived LAST with deltas attributed.
-**WIP:** 2026-08-31 ckpt1 — §0.7 gate PASSED (all premises as stated; canary
-exit 3 = display.reachable + compositor.absent, predicted); PRE binary staged
-`/tmp/f72-pre/spacecrafter` md5 `c69c96c0` (= F70's post binary, byte-identical
-at HEAD); code `1014e5a5` (originTag reversed, 16/16 lines so no line number
-moved), build green -j6, 0 warnings, binary md5 `9f935785`. NEXT: flip the
-f68/f69 gate legs, then run f68 / f63 / f69.
+**WIP:** 2026-09-01 ckpt2 — code `1014e5a5` (originTag reversed, 16/16 lines so
+no line number moved), build green -j6 / 0 warnings / D14 gate PASS. ALL THREE
+GATES GREEN both ways: f68 **47/47** (was 43/43), f63 **34/34**, f69 **52/52**
+(was 49/49); wire 71/5/0/85 B == F68's committed baselines and D == F70's
+committed 939 B. Artifacts `harness/artifacts/f72/`. NEXT: §11.192 entry-first,
+stub, back-markers at §11.187(d) (entry + stub), §5.117 annotation, README,
+baselines re-derived LAST.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 

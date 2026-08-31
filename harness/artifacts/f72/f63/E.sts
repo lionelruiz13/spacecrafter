@@ -1,0 +1,9 @@
+# A: one of each block-structure fault
+flag stars on
+struct if end
+struct if else
+struct loop end
+struct loop 2
+flag stars off
+struct if 1 equal 1
+flag stars on

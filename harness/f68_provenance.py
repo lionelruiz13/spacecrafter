@@ -1,19 +1,35 @@
 #!/usr/bin/env python3
-"""F68 - the engine knows a TCP line IS a TCP line, and says so where it matters.
+"""F68/F72 - the engine knows where a command line came from, and says so where it matters.
 
-    cd claude/harness && DISPLAY=:2 ./f68_provenance.py [absOutdir]  # default artifacts/f68
+    cd claude/harness && DISPLAY=:0 ./f68_provenance.py [absOutdir]  # default artifacts/f68
 
 MANDATE [vixy 2026-08-31]: "spacecrafter script engine must carry the provenance
 (file/tcp + line)". INTENT 11.184 built the file half and stopped at the
-two-argument overloads; 11.187 is the tcp half. This instrument runs the SAME
-battery three times - twice on the PRE-change binary and once on the delivered
-one - so that every claim below is measured against what the engine did before.
+two-argument overloads; 11.187 is the tcp half. 11.191(b) - *"good idea"*, the
+same owner, later the same day - reverses the one asymmetry 11.187(d) left: the
+diagnostic funnel and its bypassing sibling now name a FILE origin too. This
+instrument runs the SAME battery three times - twice on the PRE-change binary
+and once on the delivered one - so that every claim below is measured against
+what the engine did before.
 
-  phase pre   the binary at master-beta e2c8477b (SC_BIN_PRE)
+  phase pre   the PRE-change binary (SC_BIN_PRE)
   phase pre2  the same binary again: the A/A control that says whether this
               battery's WIRE is deterministic at all. Without it, "the wire did
               not change" is a sentence about one sample.
   phase post  the delivered binary (SC_BIN)
+
+THE PRE BINARY'S ERA IS DECLARED, NOT GUESSED (SC_PRE_TAGS, added at F72).
+Which origins the pre binary tags is half of what this instrument checks, so it
+is an INPUT: inferring it from the run would make every pre-side leg assert
+whatever it happened to measure, which is a green that cannot fail.
+
+  SC_PRE_TAGS=none  pre predates F68 (master-beta e2c8477b): no origin tag at
+                    all. The era F68 was delivered against.
+  SC_PRE_TAGS=tcp   pre is F68..F71 (423cbe23 .. 96cfc352): `tcp#<id>: ` on a
+                    control-line refusal and NOTHING on a file one. THE
+                    DEFAULT, and the era F72 was delivered against.
+
+A wrong declaration turns the pre-side legs RED; it cannot make a run pass.
 
 WHAT IS ASSERTED, and what each check could have found instead:
 
@@ -32,11 +48,18 @@ WHAT IS ASSERTED, and what each check could have found instead:
       origin (11.184's rule, unchanged) - and the NEXT fault from the same
       connection carries tcp#<idP> again, so nothing was lost on the way back.
       Had the nested call inherited the outer origin, the first half fails.
-  i   THE FILE HALF IS UNCHANGED (control). The file-origin fault still logs
-      `script <file>:3: <what> [<line>]` and still gets its `#!` tail; and the
-      file-origin FUNNEL refusal (`get status nonsense` on line 5) carries NO
-      tag - the generic channel stays where 11.184 left it, Vixy's to open.
-      The full 11.184 control is f63_annotations.py on the same binary.
+  i   THE FILE HALF - and since F72 this is a CHANGE leg, not a control one.
+      The file-origin structure fault still logs `script <file>:3: <what>
+      [<line>]` and still gets its `#!` tail: reportScriptError named a file
+      line from the start and F72 does not touch it. What MOVED is the funnel
+      (`get status nonsense`, line 5) and its bypassing sibling (`flagg stars
+      on`, line 7, added to the played file at F72 so the second emitter's file
+      half is measured rather than assumed): both carry `<file>:<line>: ` on
+      the delivered binary and NOTHING on the pre one. The sharpest form of the
+      claim is asserted directly - the post line is the pre line with the tag
+      PREPENDED and nothing else changed. What is NOT widened: the `#!` channel
+      (leg v md5s every farm file; the full 11.184 control is
+      f63_annotations.py on the same binary) and the wire (leg iv).
   v   THE `#!` WRITER STILL WRITES FOR FILE ORIGINS ONLY. Every farm file is
       md5'd after the TCP battery and before the play: a TCP-origin fault must
       not have touched one byte of one file. Then exactly one tail, on line 3.
@@ -69,21 +92,32 @@ PRISTINE = {"config.ini": "03fbee59bc3ec506c58f0a3f1e1d73df",
 PORT = 7805
 FAULT = "struct if end"
 MSG_FAULT = "this 'struct if end' closes nothing"
+UNREC = "Unrecognized or malformed command name"
+# Which origins the PRE binary tags. Declared by the caller, never inferred from
+# the run - see the docstring. "tcp" is F68..F71, "none" is anything before F68.
+PRE_TAGS = os.environ.get("SC_PRE_TAGS", "tcp")
 
 PREDICTIONS = {
     "ii": "post: the five identical faults are tagged tcp#idP | tcp#idP | tcp#idQ | (none, HTTP) "
-          "| <file>:3 ; pre: (none) for the first four, <file>:3 for the last",
+          "| <file>:3 ; pre: per SC_PRE_TAGS for the first four, <file>:3 for the last either way",
     "ii-id": "idP != idQ, and the ids follow the connection order (probe 1, S 2, P 3, Q 4, HTTP 5)",
     "ii-funnel": "post: 'tcp#idP: Could not execute: get status nonsense' AND "
-                 "'tcp#idP: command 'get': unknown status value'; pre: both untagged",
+                 "'tcp#idP: command 'get': unknown status value'; pre: tagged iff SC_PRE_TAGS=tcp",
     "ii-306": "post: 'tcp#idP: Unrecognized or malformed command name' for `flagg stars on`, "
               "with no 'Could not execute' companion (that emitter bypasses the funnel)",
-    "iii": "the NESTED audio refusal is untagged on BOTH binaries; the fault sent after `clear` "
-           "is tagged tcp#idP again",
-    "i": "the file-origin fault logs `script <file>:3: ... [struct if end]` on both binaries, and "
-         "the file-origin funnel refusal (line 5) is untagged on both",
+    "iii": "the NESTED audio refusal is untagged on BOTH binaries - no tcp# and no file path, "
+           "which is what says F72 did not widen 11.184's nesting rule; the fault sent after "
+           "`clear` is tagged tcp#idP again",
+    "i": "the file-origin structure fault logs `script <file>:3: ... [struct if end]` on both "
+         "binaries (reportScriptError is unmoved by F72)",
+    "i-f72": "post: the file-origin FUNNEL refusal on line 5 reads '<file>:5: Could not execute: "
+             "get status nonsense' AND '<file>:5: command ...: unknown status value'; the "
+             "bypassing sibling on line 7 reads '<file>:7: Unrecognized or malformed command "
+             "name'. PRE: all three bare, whatever SC_PRE_TAGS says (no era tags a file). Post "
+             "is pre with the prefix PREPENDED, nothing else changed",
     "v": "no farm file changes during the TCP battery; after the play exactly one `#!` tail, on "
-         "line 3, every other byte identical",
+         "line 3, every other byte identical - F72 adds a refusing line to the played file and "
+         "the annotator must still write nothing for it",
     "iv": "S/P/Q/HTTP wires: pre == pre2 (deterministic) and pre == post (frozen), all non-empty",
 }
 
@@ -94,6 +128,10 @@ FILE_LINES = [
     "media action play audioname nosuch.ogg",
     "get status nonsense",
     "flag stars on",
+    # F72: the emitter that BYPASSES the funnel, reached from a FILE this time.
+    # Appended rather than inserted so lines 3 and 5 keep their numbers and every
+    # expectation F68 recorded against this file still reads the same line.
+    "flagg stars on",
 ]
 
 results = []
@@ -302,6 +340,10 @@ for k, v in PREDICTIONS.items():
 print(flush=True)
 
 OUT.mkdir(parents=True, exist_ok=True)
+if PRE_TAGS not in ("none", "tcp"):
+    die("SC_PRE_TAGS must be `none` or `tcp` (see the docstring), not %r" % PRE_TAGS)
+notes["pre_tags_declared"] = PRE_TAGS
+print("PRE binary era, DECLARED: SC_PRE_TAGS=%s\n" % PRE_TAGS, flush=True)
 for f in (BIN, PRE):
     if not Path(f).exists():
         die("not found: " + f)
@@ -386,6 +428,14 @@ def tails(raw):
     return out
 
 
+def pre_tcp_line(line, body):
+    """What the PRE binary is DECLARED to have written for a TCP-origin
+    diagnostic whose body is `body` - read off SC_PRE_TAGS, never off the run."""
+    if PRE_TAGS == "none":
+        return line == body
+    return re.fullmatch(r"tcp#\d+: " + re.escape(body), line) is not None
+
+
 post, pre, pre2 = runs["post"], runs["pre"], runs["pre2"]
 pf = post["play_file"]
 
@@ -414,8 +464,18 @@ check("ii   post: the HTTP `?command=` door carries NO origin (mapped, not wired
       len(seq_post) > 3 and seq_post[3] == "", json.dumps(seq_post))
 check("ii   post: the FILE fault still names <file>:3",
       len(seq_post) > 4 and seq_post[4] == pf + ":3", json.dumps(seq_post[4:]))
-check("ii   PRE (both ways): the same four wire faults name NOTHING at all",
-      seq_pre[:4] == ["", "", "", ""], json.dumps(seq_pre))
+if PRE_TAGS == "none":
+    pre_wire_ok = seq_pre[:4] == ["", "", "", ""]
+    pre_wire_what = "name NOTHING at all"
+else:
+    pre_wire_ok = (len(seq_pre) > 3
+                   and re.fullmatch(r"tcp#\d+", seq_pre[0]) is not None
+                   and seq_pre[1] == seq_pre[0]
+                   and re.fullmatch(r"tcp#\d+", seq_pre[2]) is not None
+                   and seq_pre[2] != seq_pre[0] and seq_pre[3] == "")
+    pre_wire_what = "ALREADY name their connection (tcp#idP | tcp#idP | tcp#idQ | none, HTTP)"
+check("ii   PRE (declared SC_PRE_TAGS=%s): the four wire faults %s" % (PRE_TAGS, pre_wire_what),
+      pre_wire_ok, json.dumps(seq_pre))
 check("ii   PRE: and its FILE fault names <file>:3 exactly as post does",
       len(seq_pre) > 4 and seq_pre[4] == pre["play_file"] + ":3", json.dumps(seq_pre[4:]))
 check("ii   post: the tagged diagnostic quotes the offending line, as the file one does",
@@ -432,35 +492,59 @@ check("ii   post: the funnel's SECOND line (the message) carries it too",
       any(l.startswith(idP + ": ") and "unknown status value" in l
           for l in lines_with(post["log"], "unknown status value")),
       json.dumps(lines_with(post["log"], "unknown status value")))
-check("ii   PRE (both ways): the same refusal named no origin",
-      len(cne_pre) == 2 and not any(l.startswith("tcp#") for l in cne_pre), json.dumps(cne_pre))
-unrec_post = lines_with(post["log"], "Unrecognized or malformed command name")
-unrec_pre = lines_with(pre["log"], "Unrecognized or malformed command name")
-check("ii-306 post: the emitter that bypasses the funnel carries the origin too",
-      len(unrec_post) == 1 and unrec_post[0] == idP + ": Unrecognized or malformed command name",
-      json.dumps(unrec_post))
-check("ii-306 PRE: it named no origin", len(unrec_pre) == 1 and unrec_pre[0].startswith("Unrec"),
+check("ii   PRE (declared %s): the TCP funnel line matches its era, and the FILE one is bare"
+      % PRE_TAGS,
+      len(cne_pre) == 2 and pre_tcp_line(cne_pre[0], "Could not execute: get status nonsense")
+      and cne_pre[1] == "Could not execute: get status nonsense", json.dumps(cne_pre))
+unrec_post = lines_with(post["log"], UNREC)
+unrec_pre = lines_with(pre["log"], UNREC)
+check("ii-306 post: the emitter that bypasses the funnel carries the TCP origin too",
+      len(unrec_post) == 2 and unrec_post[0] == idP + ": " + UNREC, json.dumps(unrec_post))
+check("ii-306 post (F72): ... and its FILE half names line 7 - the SECOND site the reversal "
+      "touches, measured and not assumed from the funnel's behaviour",
+      len(unrec_post) == 2 and unrec_post[1] == pf + ":7: " + UNREC, json.dumps(unrec_post))
+check("ii-306 PRE (declared %s): the TCP one per its era, the FILE one bare in EVERY era"
+      % PRE_TAGS,
+      len(unrec_pre) == 2 and pre_tcp_line(unrec_pre[0], UNREC) and unrec_pre[1] == UNREC,
       json.dumps(unrec_pre))
-check("ii-306 post: and still no 'Could not execute' companion for it (5.117's map holds)",
+check("ii-306 post: and still no 'Could not execute' companion for either (5.117's map holds "
+      "for the file half too)",
       not any("flagg" in l for l in lines_with(post["log"], "Could not execute")),
       json.dumps(lines_with(post["log"], "Could not execute")))
 
 # ------------------------------------------------- iii: nesting
 nested_post = lines_with(post["log"], "Could not execute: audio filename")
 nested_pre = lines_with(pre["log"], "Could not execute: audio filename")
-check("iii  post: a NESTED command's refusal carries NO tag (11.184's rule, unchanged)",
-      len(nested_post) == 2 and not any(l.startswith("tcp#") for l in nested_post),
+check("iii  post: a NESTED command's refusal carries NO tag - not tcp#, and since F72 not a "
+      "file path either (11.184's nesting rule, NOT widened by the reversal)",
+      len(nested_post) == 2
+      and not any(l.startswith("tcp#") or l.startswith(pf) for l in nested_post),
       json.dumps(nested_post))
 check("iii  PRE: the same two lines, identically untagged",
       [l for l in nested_pre] == [l for l in nested_post], json.dumps(nested_pre))
 check("iii  post: the fault sent AFTER `clear` (thirty nested calls) still names tcp#idP",
       len(seq_post) > 1 and seq_post[1] == idP, json.dumps(seq_post[:2]))
 
-# ------------------------------------------------- i: the file half, unchanged
-file_funnel_post = [l for l in lines_with(post["log"], "Could not execute: get status nonsense")]
-check("i    post: the FILE funnel refusal is UNTAGGED - the generic channel stays Vixy's",
-      len(file_funnel_post) == 2 and file_funnel_post[1] == "Could not execute: get status nonsense",
-      json.dumps(file_funnel_post))
+# ------------------------------------------------- i: the file half - F72's own leg, both ways
+FILE_TAG = pf + ":5: "
+msg_post = lines_with(post["log"], "unknown status value")
+msg_pre = lines_with(pre["log"], "unknown status value")
+check("i-f72 post: the FILE funnel refusal NAMES ITS LINE - 11.191(b) reverses 11.187(d)",
+      len(cne_post) == 2 and cne_post[1] == FILE_TAG + "Could not execute: get status nonsense",
+      json.dumps(cne_post))
+check("i-f72 post: BOTH funnel lines carry it, as they do for a control line",
+      len(msg_post) == 2 and msg_post[1].startswith(FILE_TAG), json.dumps(msg_post))
+check("i-f72 PRE (both ways, EVERY era): the same two file lines carried NO tag - this is the "
+      "control that says the tag above is the change and not the battery",
+      len(cne_pre) == 2 and len(msg_pre) == 2
+      and cne_pre[1] == "Could not execute: get status nonsense"
+      and not msg_pre[1].startswith(pf) and not msg_pre[1].startswith("tcp#"),
+      json.dumps([cne_pre[1:], msg_pre[1:]]))
+check("i-f72 the post line is the pre line with the prefix PREPENDED and NOTHING else changed - "
+      "the strongest form of 'the log gained an origin and lost nothing'",
+      len(cne_post) == 2 and len(msg_post) == 2
+      and cne_post[1] == FILE_TAG + cne_pre[1] and msg_post[1] == FILE_TAG + msg_pre[1],
+      json.dumps({"pre": [cne_pre[1], msg_pre[1]], "post": [cne_post[1], msg_post[1]]}))
 tp, tpre = tails(post["played"]), tails(pre["played"])
 check("i    post: exactly one `#!` tail, on line 3", sorted(tp) == [3], json.dumps(sorted(tp)))
 check("i    post: the tail is the engine's diagnosis", MSG_FAULT in tp.get(3, ""), tp.get(3, ""))

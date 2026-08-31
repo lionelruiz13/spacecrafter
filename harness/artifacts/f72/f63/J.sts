@@ -1,0 +1,5 @@
+# J: a fault inside a loop body, replayed
+struct loop 2
+struct if end #! this 'struct if end' closes nothing: no 'struct if' is open here, so the engine ignores the line - remove it, or add the 'struct if' it was meant to close
+flag stars on
+struct loop end
