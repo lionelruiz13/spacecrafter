@@ -2686,3 +2686,78 @@ Instrument facts worth carrying:
 - Frame stalls **27 / 28 / 23**, `GetActive` false at all six reads (both arms
   of the blank hazard removed by the owner mid-round, §11.186(a)); no wake
   mitigation applied or needed. Recorded, unattributed, no timing claim.
+
+## F70 — every source file pure ASCII: the census, the sweep, and the proof it changed nothing (`f70_ascii.py`, `f70_translit.py`, `f70_binary_equal.py`) — INTENT §11.189, 2026-08-31
+
+D14 [vixy]: *"Every source file must be in ASCII, accents are to be removed for
+this purpose."* Five scripts, and they are meant to outlive the one-shot sweep:
+`f70_ascii.py` is the STANDING gate.
+
+```
+python3 f70_ascii.py census   [--tsv OUT] [--summary]   # every tracked file, how it decodes, where its non-ASCII sits
+python3 f70_ascii.py literals [--convert-only]          # non-ASCII inside STRING literals - the risky set
+python3 f70_ascii.py chars    [--convert-only]          # the character histogram the map must cover
+python3 f70_ascii.py gate                               # 0 = D14 holds; 1 = a CONVERT file has non-ASCII, OR an
+                                                        #     unclassified one appeared (the boundary must COVER the tree)
+python3 f70_translit.py plan | apply | verify --from REV
+python3 f70_binary_equal.py PRE POST                    # every SHF_ALLOC section, hashed
+python3 f70_dispositions.py                             # every non-ASCII literal + its TRACED consumer
+python3 f70_regen_records.py --scedit BIN [--write]     # re-record scedit's pinned outputs, diff first
+```
+
+Data, not code, and reviewed as such: **`f70_partition.tsv`** (the CONVERT /
+EXCLUDE boundary, one reason per row) and **`f70_map.tsv`** (82 transliteration
+rows, one note per row — a row without a note is rejected at parse).
+
+**The one design decision worth carrying forward.** The sweep transliterates
+PROSE but re-spells C-family STRING LITERALS as `\xNN` escapes of the same
+bytes. A literal is an output: 22 sites concatenate a degree sign into the
+dome's angle labels, a `debug_message` reaches a `$DIAG` subscriber, and
+scedit's fixtures pin message bytes exactly. Escaping made all of that a
+non-question instead of sixty judgment calls. The tree already used the idiom
+(`sc_tui.cpp:640`, `:1215`); the converter re-derives its string-split guard,
+because a hex escape swallows a following hex digit (`"%d\xc2\xb0" "E"`), and
+REFUSES rather than guesses where the language has no such guard (TypeScript,
+PHP, CSS) or where the literal is a raw string.
+
+**Measured gotchas — both cost real time, both are instrument bugs, not tree bugs:**
+
+- **`/usr/bin/grep -P '[\x80-\xff]'` under a UTF-8 locale matches CODE POINTS
+  U+0080..U+00FF, not bytes.** It finds the accents and misses everything above:
+  **0 hits** on FTXUI's `border.cpp`, a file made of box drawing. `LC_ALL=C`, or
+  read bytes. This is a SECOND hazard beside the ugrep `-I` one in CLAUDE.md, and
+  it is nastier: ugrep skips the file loudly enough to be noticed once you know,
+  this one returns a confident, wrong, non-empty answer.
+- **A multi-codepoint map key may BEGIN with an ASCII character** (`Ch<U+FFFD>reau`
+  does), so a converter's ASCII fast path must not run before key matching. Caught
+  by the map's own output: the two repaired author names came out `Ch?reau` and
+  `J?r?me` on the first pass.
+
+**Encoding classes, and why `mixed` is its own name.** `ascii` / `utf8` /
+`mixed` / `iso8859` / `binary`, decided by how the non-ASCII bytes decode rather
+than by a heuristic (`binary` = holds a NUL; every text format in this tree is
+NUL-free and every compiled artifact carries NULs). `mixed` is the worst case and
+the one D14 exists to kill: `src/interfaceModule/app_command_interface.{cpp,hpp}`
+were each valid UTF-8 but for ONE stray 0xA7 byte, which is enough to make every
+UTF-8-aware tool call the file binary AND to make a wholesale Latin-1 read
+mojibake its real accents. One decoder — greedy UTF-8, per-byte Latin-1 fallback
+— serves all three text classes, so the census and the converter cannot disagree.
+
+**What `verify --from REV` proves, and what it does not.** It re-derives every
+CONVERT file from REV's committed blobs and asserts the tree is exactly that, and
+that no CONVERT file the rules would not touch moved a byte. So: no whitespace,
+no line endings, no content, no "while I was here". It says nothing about whether
+a map row is the RIGHT replacement — that is what the per-row notes are for, and
+a person reads those. `f70_binary_equal.py` is the check that outranks the test
+suite: all 27 allocated sections identical, 7 938 005 B, with only DWARF column
+numbers and the build-id moving; one flipped bit in `.text` makes it exit 1.
+
+**Re-recording a pinned fixture.** Do not run the map over it. scedit's records
+MIX grammar-derived text (which the sweep transliterates) with code-literal text
+(which it does not), so mapping the record converts the wrong half and reddens a
+gate against unchanged code — measured, 4 red. `f70_regen_records.py` reproduces
+each gate's own comparison string, including `check_gate.cmake`'s two path
+rewrites and every gate's final STRIP, prints the diff, and only writes on
+`--write`. It preserves each record's leading and trailing whitespace: the gates
+STRIP both sides so they cannot see it, but a diff can, and a diff with an
+unexplained byte in it is not reviewable.

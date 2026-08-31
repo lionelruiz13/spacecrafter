@@ -2114,45 +2114,44 @@ per §5.79.
 transliteration proof + zero-count terminal census + both builds green +
 scedit gates green + smoke launch; §11.189 + stub + README; baselines
 re-derived as last act; trees clean; WIP cleared.
-**WIP:** 2026-08-31 CP2 — SWEEP LANDED, code `1012c643`: 280 files
-converted, 8250 non-ASCII bytes → 0, diff 2731/2731 with added==removed in
-EVERY file. Gate PASS, `f70_translit.py verify --from 630b06fd` PASS (the
-tree IS the map+escape derivation, nothing else moved). scedit ctest
-**14/14**, 0 warnings, re-run AFTER the 20:57 reboot. 5 output records
-re-recorded deliberately (9 lines, all grammar prose; diff committed at
-`artifacts/f70/record-rerecord.diff`); witness/, doc/, data/, third_party/
-byte-untouched (0 files). REBOOT AUDIT: nothing of the sweep was taken on
-trust — gate+verify re-derived the whole tree from the committed base after
-the boot. `/tmp/f70-pre` was lost; PRE binary rebuilt IN-TREE (measured:
-Release/NDEBUG, 0 source paths in .rodata, so build location cannot affect
-the section comparison — cheaper than a worktree and no submodule hazard).
-CP3 — ALL GATES GREEN. Engine build green `-j6`, 0 new warnings; binary
-`c69c96c0` vs PRE `2ea5d54b` (rebuilt in-tree; md5 reproduced its pre-reboot
-value exactly, so the build is deterministic and the pre/post delta is the
-source change and nothing else). `f70_binary_equal.py`: **all 27 allocated
-sections identical, 7938005 B** — only DWARF columns + build-id moved;
-decoy 1 bit ⇒ exit 1. FROZEN WIRE **71/5/0/85 B**, A/A == post == F68's
-committed wires; and the 939 B SUBSCRIBED wire is byte-identical too (all
-five recordings, `artifacts/f70/wire-summary.tsv`). Engine stdout pre vs
-post textually identical (only an ASLR handle + GPU free-MiB drift).
-3 of 49 wire checks FAIL by construction: they assert the PRE binary LACKS
-`$DIAGON`, and F70's PRE is F69's binary, which has it. Canary exit **3**
-(not the stated 2): `display.reachable` + `compositor.absent`, both from
-`BANK_DISPLAY=":2"` — no X2 socket exists post-reboot; ran on `:0`
-(1920x1080, verified by my own xdpyinfo). GetActive false at all 6 reads.
-NO re-banking (§11.174(f) is the owner's). Next: §11.189 entry + stub +
-README + baselines.
-**WIP-CP1:** census instrument `harness/f70_ascii.py` +
-`f70_partition.tsv` (boundary) + `f70_map.tsv` (82 rows) + `f70_translit.py`
-+ `f70_dispositions.py` committed BEFORE any conversion, with the pre-state
-artifacts (`artifacts/f70/`). Census re-derived at `630b06fd`: 1498 tracked
-regular files, 561 non-ASCII (339 text / 222 binary); partition covers the
-tree with 0 UNCLASSIFIED, 284 CONVERT / 277 EXCLUDE; gate exits 1 pre-sweep.
-Delta vs round-open `e2c8477b` = 0 files added/removed. The prompt's "199"
-reconstructed as the ENGINE-CORE subset (text non-ASCII outside util/ doc/
-data/ include/ iniparser/ www/ sts-extension/) — reported, not an abort
-(11.179(a): the census IS this task's output). Next: apply the sweep,
-`f70_translit.py verify --from 630b06fd`, then the gates.
+**WIP:** DELIVERED 2026-08-31 — §11.189 (entry file + stub); code
+`1012c643`. **280 files converted, 8250 non-ASCII bytes → 0**; census 561
+non-ASCII files → 280, every survivor an EXCLUDE member; `mixed` class 2→0;
+CONVERT-set characters **0**. Diff 2731/2731 with added==removed in EVERY
+file. Gates: `f70_ascii.py gate` PASS · `f70_translit.py verify --from
+630b06fd` PASS · **`f70_binary_equal.py`: all 27 allocated ELF sections
+identical, 7 938 005 B** (decoy 1 bit ⇒ exit 1) · engine build `-j6` green,
+0 new warnings · scedit `ctest` **14/14**, 0 warnings · **frozen wire
+71/5/0/85 B**, A/A == post == F68's committed wires, and the 939 B SUBSCRIBED
+wire byte-identical too · engine stdout pre/post identical across 2359 lines
+but an ASLR handle and 1 MiB of GPU free memory · smoke launch = the
+battery's post phase (boot, Vulkan, script play, `#!` on line 3, md5 in==out,
+comm probe). Two rules: prose transliterated (`f70_map.tsv`, 82 noted rows),
+C-family string literals re-spelled as `\xNN` escapes of the SAME bytes —
+which is why the dome's 22 degree-sign sites, the $DIAG wire and every pinned
+fixture are untouched. 619 literals dispositioned with a traced consumer each;
+`_()` proven NOT gettext and all 71 catalogues proven to carry ZERO non-ASCII
+keys, so no catalogue was edited. 5 records re-recorded deliberately (9 lines,
+all grammar prose, diff committed); witness/, doc/, data/, third_party/
+byte-untouched. Back-markers at §11.186(d), §11.188(k), §11.188's
+ui-selftest note and §2.0 D14's boundary clause, all this commit.
+**OWED TO THE SUPERVISOR:** the CLAUDE.md/§0.5 ISO-8859 rule NARROWS (src/ now
+holds no non-UTF-8-decodable file) and must also be CORRECTED — the two
+`app_command_interface.*` files were never ISO-8859 files (UTF-8 + one stray
+0xA7 each, code `2b8ec034`) — plus a second grep hazard belongs beside it
+(`-P '[\x80-\xff]'` under a UTF-8 locale matches code points, not bytes).
+**ENVIRONMENT, reported not mitigated:** `:2` is gone after the 20:57 reboot;
+ran on `:0` 1920x1080 (own `xdpyinfo`); canary exit **3** not 2, both failures
+from the hard-coded `BANK_DISPLAY=":2"`; nothing re-banked (§11.174(f) is the
+owner's). GetActive false at all 6 reads. 3 of 49 wire checks fail BY
+CONSTRUCTION (they assert the PRE binary lacks `$DIAGON`; F70's PRE is F69's).
+Baselines LAST: pair-check **205/180/25/90** (F69 post-state 204/179/25/90:
++1/+1/0/0 = this entry and its stub); scan **123/164/101** (F69 post-state
+121/162/99: +2/+2/+2 = the two back-markers placed at §11.186(d) and
+§11.188(k), each read source-and-target-backwards by the detector — the SAME
+documented inversion F68 recorded for §11.184→§11.186 and F69 for
+§11.187→§11.188: the line AT the corrected node IS the back-marker, and
+§11.189 is the entry it cites).
 
 ### F71 — EXTENSION: the missing documentation, extracted — scedit items 11/12 from the current superscript.sts, code-dug where silent (§11.186(e); session-18 queue position 1) [M]
 
