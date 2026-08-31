@@ -1,0 +1,531 @@
+{
+  "_extracted": "2026-08-31, F71, code master-beta @ d64fd437",
+  "_method": "one sentence per flag traced app_command_init registration -> FLAG_NAMES -> setFlag switch case -> coreLink/module, doxygen where present",
+  "names": [
+    {
+      "name": "antialias_lines",
+      "doc": "Remembers a smooth-lines preference; nothing in the drawing reads it, so the picture does not change.",
+      "source": "app_command_init.cpp:133 (FN_ANTIALIAS_LINES); base_command_interface.hpp:402; app_command_interface.cpp:803-804 -> src/appModule/app.cpp:552-553 -> src/appModule/appDraw.hpp:68-78,95",
+      "notes": "No-op on screen: the only readers of AppDraw::antialiasLines are the text menu (src/uiModule/ui_tuiconf.cpp:735) and the config save (src/appModule/app.cpp:969). The member comment at src/appModule/appDraw.hpp:95 says 'using GL_LINE_SMOOTH', an OpenGL notion, in a Vulkan renderer."
+    },
+    {
+      "name": "constellation_drawing",
+      "doc": "Show the stick-figure lines that join the stars of each constellation.",
+      "source": "app_command_init.cpp:134 (FN_CONSTELLATION_DRAWING); base_command_interface.hpp:403; app_command_interface.cpp:807-809 -> src/coreModule/coreLink.hpp:407-408 -> src/coreModule/constellation_mgr.hpp:98-99, constellation_mgr.cpp:657-670"
+    },
+    {
+      "name": "constellation_names",
+      "doc": "Show the name of each constellation written across the sky beside its figure.",
+      "source": "app_command_init.cpp:135 (FN_CONSTELLATION_NAMES); base_command_interface.hpp:404; app_command_interface.cpp:812-814 -> src/coreModule/coreLink.hpp:415-416 -> src/coreModule/constellation_mgr.hpp:112-113, constellation_mgr.cpp:702-715"
+    },
+    {
+      "name": "constellation_art",
+      "doc": "Show the painted artwork of each constellation laid over its stars.",
+      "source": "app_command_init.cpp:136 (FN_CONSTELLATION_ART); base_command_interface.hpp:405; app_command_interface.cpp:817-819 -> src/coreModule/coreLink.hpp:411-412 -> src/coreModule/constellation_mgr.hpp:91-92, constellation_mgr.cpp:687-700"
+    },
+    {
+      "name": "dual_viewport",
+      "doc": "Show a playing video as two half-dome images instead of one image over the whole dome.",
+      "source": "app_command_init.cpp:137 (FN_DUAL_VIEWPORT); base_command_interface.hpp:406; app_command_interface.cpp:822-824 -> src/coreModule/coreLink.hpp:423-424 -> src/mediaModule/media.hpp:381-387 -> src/mediaModule/viewport.hpp:61-64"
+    },
+    {
+      "name": "constellation_boundaries",
+      "doc": "Show the official boundary lines that divide the sky up between the constellations.",
+      "source": "app_command_init.cpp:138 (FN_CONSTELLATION_BOUNDARIES); base_command_interface.hpp:407; app_command_interface.cpp:827-829 -> src/coreModule/coreLink.hpp:419-420 -> src/coreModule/constellation_mgr.hpp:105-106, constellation_mgr.cpp:672-685"
+    },
+    {
+      "name": "constellation_pick",
+      "doc": "Draw only the constellation you have selected, instead of every constellation at once.",
+      "source": "app_command_init.cpp:139 (FN_CONSTELLATION_PICK); base_command_interface.hpp:408; app_command_interface.cpp:832-834 -> src/coreModule/coreLink.hpp:437-438 -> src/coreModule/constellation_mgr.hpp:119-126, constellation_mgr.cpp:661-715,800-855"
+    },
+    {
+      "name": "star_twinkle",
+      "doc": "Make the stars twinkle, the way they do when you look at them through the air.",
+      "source": "app_command_init.cpp:140 (FN_STAR_TWINKLE); base_command_interface.hpp:409; app_command_interface.cpp:837-839 -> src/coreModule/coreLink.hpp:194 -> src/starModule/hip_star_mgr.hpp:301-308",
+      "notes": "Overwritten as a side effect of `flag atmosphere`: app_command_interface.cpp:878 forces twinkle to follow the atmosphere value on every atmosphere on/off."
+    },
+    {
+      "name": "navigation",
+      "doc": "Add navigator markings: the in-between compass points, degree ticks on the sky lines and a navigation clock.",
+      "source": "app_command_init.cpp:141 (FN_NAVIGATION); base_command_interface.hpp:410; app_command_interface.cpp:855-857 -> src/coreModule/core.cpp:265-271 -> src/coreModule/cardinals.cpp:95-119, skyline.cpp:766,944,1015,1335, skygrid.cpp:276-279, src/uiModule/ui_tuiconf.cpp:94-100,129-136"
+    },
+    {
+      "name": "astronomical",
+      "doc": "The same extra sky markings as navigation, except that it does not relabel the equatorial grid.",
+      "source": "app_command_init.cpp:142 (FN_ASTRONOMICAL); base_command_interface.hpp:411; app_command_interface.cpp:860-862 -> src/coreModule/core.cpp:273-279 -> src/coreModule/cardinals.cpp:95, skyline.cpp:766,944,1015,1335, src/uiModule/ui_tuiconf.cpp:94,129",
+      "notes": "Near-duplicate of `navigation`: every consumer tests `internalNav || internalAstronomical` (cardinals.cpp:95; skyline.cpp:766,944,1015,1040,1058,1060,1335). The one place that reads internalNav alone is skygrid.cpp:276, the equatorial-grid hour/degree labels, which `astronomical` therefore does not reach."
+    },
+    {
+      "name": "show_tui_datetime",
+      "doc": "Write the date and time across the dome, together with the place name, field of view and frame rate if those are on.",
+      "source": "app_command_init.cpp:143 (FN_SHOW_TUI_DATETIME); base_command_interface.hpp:412; app_command_interface.cpp:842-843 -> src/uiModule/ui.cpp:385-387 -> src/uiModule/ui_tuiconf.cpp:56-124"
+    },
+    {
+      "name": "show_tui_short_obj_info",
+      "doc": "Write a short line of information about the object you have selected onto the dome.",
+      "source": "app_command_init.cpp:144 (FN_SHOW_TUI_SHORT_OBJ_INFO); base_command_interface.hpp:413; app_command_interface.cpp:846-847 -> src/uiModule/ui.cpp:382-384 -> src/uiModule/ui_tuiconf.cpp:125-140"
+    },
+    {
+      "name": "manual_zoom",
+      "doc": "Let zoom in and zoom out step the view by halves each time instead of jumping straight to the object.",
+      "source": "app_command_init.cpp:145 (FN_MANUAL_ZOOM); base_command_interface.hpp:414; app_command_interface.cpp:850-852 -> src/coreModule/core.hpp:288-295 -> src/coreModule/core.cpp:1409-1424,1433-1439"
+    },
+    {
+      "name": "light_travel_time",
+      "doc": "Place every body where its light left it, so you see the solar system as the light actually reaches you.",
+      "source": "app_command_init.cpp:146 (FN_LIGHT_TRAVEL_TIME); base_command_interface.hpp:415; app_command_interface.cpp:865-867 -> src/coreModule/coreLink.hpp:473 -> src/bodyModule/ssystem_factory.hpp:242-245 -> src/bodyModule/solarsystem_display.cpp:343-380"
+    },
+    {
+      "name": "fog",
+      "doc": "Show the band of haze that sits along the horizon of the landscape.",
+      "source": "app_command_init.cpp:147 (FN_FOG); base_command_interface.hpp:416; app_command_interface.cpp:870-872 -> src/coreModule/coreLink.hpp:691-692 -> src/coreModule/coreLink.cpp:1552-1554 (landscape->fogSetFlagShow)",
+      "notes": "Turned off for you whenever `flag atmosphere off` runs (app_command_interface.cpp:877)."
+    },
+    {
+      "name": "atmosphere",
+      "doc": "Show the sky's daylight glow; switching it off also clears the fog and stops the stars twinkling.",
+      "source": "app_command_init.cpp:148 (FN_ATMOSPHERE); base_command_interface.hpp:417; app_command_interface.cpp:875-879 -> src/coreModule/coreLink.hpp:1034-1035 -> src/coreModule/coreLink.cpp:438-443 -> src/bodyModule/body_decor.hpp:61-63",
+      "notes": "Three writes in one case: fog off when turning off (line 877), star twinkle set to the same value (878), then the atmosphere itself (879)."
+    },
+    {
+      "name": "azimuthal_grid",
+      "doc": "Show the grid of height and compass-bearing lines that stays fixed to your horizon.",
+      "source": "app_command_init.cpp:149 (FN_AZIMUTHAL_GRID); base_command_interface.hpp:418; app_command_interface.cpp:882-883 -> src/coreModule/coreLink.hpp:83 -> src/coreModule/skygrid_mgr.cpp:197-202 (GridAltAzimutal) -> src/coreModule/skygrid.cpp:262-295"
+    },
+    {
+      "name": "equatorial_grid",
+      "doc": "Show the coordinate grid that turns with the stars, labelled in hours of right ascension.",
+      "source": "app_command_init.cpp:150 (FN_EQUATORIAL_GRID); base_command_interface.hpp:419; app_command_interface.cpp:886-887 -> src/coreModule/coreLink.hpp:83 -> src/coreModule/skygrid_mgr.cpp:190-195 (GridEquatorial) -> src/coreModule/skygrid.cpp:275-284",
+      "notes": "With `flag navigation on` the same labels are written in degrees East instead of hours (skygrid.cpp:276-279)."
+    },
+    {
+      "name": "ecliptic_grid",
+      "doc": "Show the coordinate grid built around the path the Sun follows through the year.",
+      "source": "app_command_init.cpp:151 (FN_ECLIPTIC_GRID); base_command_interface.hpp:420; app_command_interface.cpp:890-891 -> src/coreModule/coreLink.hpp:83 -> src/coreModule/skygrid_mgr.cpp:204-209 (GridEcliptic)"
+    },
+    {
+      "name": "galactic_grid",
+      "doc": "Show the coordinate grid built around the plane of the Milky Way.",
+      "source": "app_command_init.cpp:152 (FN_GALACTIC_GRID); base_command_interface.hpp:421; app_command_interface.cpp:894-895 -> src/coreModule/coreLink.hpp:83 -> src/coreModule/skygrid_mgr.cpp:211-215 (GridGalactic)"
+    },
+    {
+      "name": "equator_line",
+      "doc": "Show the celestial equator, the great circle standing over the Earth's equator, with hour marks along it.",
+      "source": "app_command_init.cpp:153 (FN_EQUATOR_LINE); base_command_interface.hpp:422; app_command_interface.cpp:898-899 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:887-901,921-1069 (SkyLine_Equator EQUATOR)"
+    },
+    {
+      "name": "galactic_line",
+      "doc": "Show the line of the Milky Way's own equator running right around the sky, marked in degrees.",
+      "source": "app_command_init.cpp:154 (FN_GALACTIC_LINE); base_command_interface.hpp:423; app_command_interface.cpp:902-903 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:892-901,1030-1031 (SkyLine_Equator GALACTIC_EQUATOR)"
+    },
+    {
+      "name": "ecliptic_line",
+      "doc": "Show the Sun's yearly path around the sky, ticked day by day and labelled with the months.",
+      "source": "app_command_init.cpp:155 (FN_ECLIPTIC_LINE); base_command_interface.hpp:424; app_command_interface.cpp:906-907 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1224-1355 (SkyLine_Ecliptic)"
+    },
+    {
+      "name": "precession_circle",
+      "doc": "Show the slow circle each sky pole walks around over the ages, labelled in thousands of years.",
+      "source": "app_command_init.cpp:156 (FN_PRECESSION_CIRCLE); base_command_interface.hpp:425; app_command_interface.cpp:910-911 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1372-1440 (SkyLine_Precession)",
+      "notes": "Only drawn from Earth (skyline.cpp:1378)."
+    },
+    {
+      "name": "circumpolar_circle",
+      "doc": "Show the circles that separate the stars that never set from those that never rise where you stand.",
+      "source": "app_command_init.cpp:157 (FN_CIRCUMPOLAR_CIRCLE); base_command_interface.hpp:426; app_command_interface.cpp:918-919 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:377-416 (SkyLine_CircumPolar; radius follows your latitude, line 388)"
+    },
+    {
+      "name": "tropic_lines",
+      "doc": "Show the equator and the two tropic circles of the world you are standing on.",
+      "source": "app_command_init.cpp:158 (FN_TROPIC_LINES); base_command_interface.hpp:427; app_command_interface.cpp:914-915 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1094-1218 (SkyLine_Tropic; circles at the body's own axial tilt, line 1115)",
+      "notes": "Not drawn in space, on a moon, on the Sun, or above 10 km with the planet grid on (skyline.cpp:1099-1107)."
+    },
+    {
+      "name": "meridian_line",
+      "doc": "Show the meridian, the graduated north-south circle that passes right over your head.",
+      "source": "app_command_init.cpp:159 (FN_MERIDIAN_LINE); base_command_interface.hpp:428; app_command_interface.cpp:922-923 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:727-881 (SkyLine_Meridian)"
+    },
+    {
+      "name": "zenith_line",
+      "doc": "Mark the point straight overhead with a small ring lettered Z, and the point straight down with N.",
+      "source": "app_command_init.cpp:160 (FN_ZENITH_LINE); base_command_interface.hpp:429; app_command_interface.cpp:926-927 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1564-1681 (SkyLine_Zenith; labels at lines 1627 and 1669)"
+    },
+    {
+      "name": "polar_circle",
+      "doc": "Show the two polar circles, the rings drawn 66.5 degrees away from the celestial equator.",
+      "source": "app_command_init.cpp:161 (FN_POLAR_CIRCLE); base_command_interface.hpp:430; app_command_interface.cpp:930-931 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline_mgr.cpp:289 (CIRCLE_POLE, 66.5) -> skyline.cpp:195-234"
+    },
+    {
+      "name": "polar_point",
+      "doc": "Mark the two poles of the turning sky, each with a small ring drawn one degree across.",
+      "source": "app_command_init.cpp:162 (FN_POLAR_POINT); base_command_interface.hpp:431; app_command_interface.cpp:934-935 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline_mgr.cpp:296 (POINT_POLE, 89) -> skyline.cpp:195-234"
+    },
+    {
+      "name": "ecliptic_center",
+      "doc": "Mark the two poles of the Sun's yearly path, each with a small ring drawn one degree across.",
+      "source": "app_command_init.cpp:163 (FN_ECLIPTIC_CENTER); base_command_interface.hpp:432; app_command_interface.cpp:938-939 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline_mgr.cpp:303 (ECLIPTIC_POLE, 89) -> skyline.cpp:180-182,195-234",
+      "notes": "Name contradicts what is drawn: the spelling says 'center' but the flag maps to SKYLINE_TYPE::LINE_ECLIPTIC_POLE, built as SkyLine_Pole::ECLIPTIC_POLE at radius 89 deg, i.e. rings around the ecliptic POLES."
+    },
+    {
+      "name": "galactic_pole",
+      "doc": "Mark the two poles of the Milky Way's plane, each with a small ring drawn one degree across.",
+      "source": "app_command_init.cpp:164 (FN_GALACTIC_POLE); base_command_interface.hpp:433; app_command_interface.cpp:942-943 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline_mgr.cpp:310 (GALACTIC_POLE, 89) -> skyline.cpp:183-185,195-234"
+    },
+    {
+      "name": "galactic_center",
+      "doc": "Mark the direction of the centre of the Milky Way, and the point opposite it, with small rings.",
+      "source": "app_command_init.cpp:165 (FN_GALACTIC_CENTER); base_command_interface.hpp:434; app_command_interface.cpp:946-947 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:509-549 (SkyLine_Galactic_Center)"
+    },
+    {
+      "name": "vernal_points",
+      "doc": "Mark the two points where the Sun crosses the celestial equator, in spring and in autumn.",
+      "source": "app_command_init.cpp:166 (FN_VERNAL_POINTS); base_command_interface.hpp:435; app_command_interface.cpp:950-951 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:554-593 (SkyLine_Vernal)",
+      "notes": "SkyLine_Vernal::draw (skyline.cpp:566-593) and SkyLine_Galactic_Center::draw (skyline.cpp:521-549) are the same code line for line; the only difference is the frame chosen in the constructors (projectEarthEqu at line 557 vs projectJ2000Galactic at line 512)."
+    },
+    {
+      "name": "analemma_line",
+      "doc": "Draw the Sun's yearly figure-of-eight out in the turning sky, carried round by the current date.",
+      "source": "app_command_init.cpp:167 (FN_ANALEMMA_LINE); base_command_interface.hpp:436; app_command_interface.cpp:954-955 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:421-434,464-504 (SkyLine_Analemme ANALEMMALINE)",
+      "notes": "The ANALEMMALINE half uses the rotating equatorial frame (projectEarthEqu, skyline.cpp:427) with longitude 0 and a date term T (skyline.cpp:477-481); ANALEMMA uses the fixed frame with your own longitude and T=0 (482-486). Only drawn from Earth (line 467)."
+    },
+    {
+      "name": "analemma",
+      "doc": "Draw the Sun's yearly figure-of-eight held at a fixed place above your own horizon.",
+      "source": "app_command_init.cpp:168 (FN_ANALEMMA); base_command_interface.hpp:437; app_command_interface.cpp:958-959 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:429-431,482-486 (SkyLine_Analemme ANALEMMA, projectEarthEquFixed)",
+      "notes": "'Fixed' here means the frame that ignores the sky's daily turn (src/coreModule/projector.hpp:173-175 -> src/navModule/navigator.cpp:343 -> src/navModule/observer.cpp:108-114). Only drawn from Earth (skyline.cpp:467)."
+    },
+    {
+      "name": "aries_line",
+      "doc": "Show the circle of sky running through the Sun's spring crossing point, labelled Aries.",
+      "source": "app_command_init.cpp:169 (FN_ARIES_LINE); base_command_interface.hpp:438; app_command_interface.cpp:962-963 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:665-722 (SkyLine_Aries; label at line 716)",
+      "notes": "Only drawn from Earth (skyline.cpp:678)."
+    },
+    {
+      "name": "zodiac",
+      "doc": "Show the band along the Sun's path, split into the twelve zodiac signs and labelled with their names.",
+      "source": "app_command_init.cpp:170 (FN_ZODIAC); base_command_interface.hpp:439; app_command_interface.cpp:966-967 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:239-346 (SkyLine_Zodiac; names at lines 242-253, band at +/-16 deg, lines 296,332)",
+      "notes": "Only drawn from Earth (skyline.cpp:266)."
+    },
+    {
+      "name": "personal",
+      "doc": "Show your own drawing, loaded with the personal command, pinned to your horizon.",
+      "source": "app_command_init.cpp:171 (FN_PERSONAL); base_command_interface.hpp:440; app_command_interface.cpp:986-987 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:176-181 (SkyPerson, AL) -> src/coreModule/skyDisplay.cpp:62-77,240-345",
+      "notes": "Nothing is drawn until points are loaded by `personal action load` or `personal xy ...` (app_command_interface.cpp:1534-1561); an empty drawing returns early at skyDisplay.cpp:222."
+    },
+    {
+      "name": "personeq",
+      "doc": "Show your own drawing, loaded with the personeq command, pinned to the turning sky.",
+      "source": "app_command_init.cpp:172 (FN_PERSONEQ); base_command_interface.hpp:441; app_command_interface.cpp:990-991 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:183-188 (SkyPerson, EQ) -> src/coreModule/skyDisplay.cpp:62-77",
+      "notes": "Same class as `personal`, only the frame differs (EQ = equatorial, skyDisplay.cpp:70-72). Loaded by the personeq command (app_command_interface.cpp:1693,1704)."
+    },
+    {
+      "name": "nautical_alt",
+      "doc": "Show a scale graduated in degrees running through the selected object, measured from your horizon.",
+      "source": "app_command_init.cpp:173 (FN_NAUTICAL); base_command_interface.hpp:442; app_command_interface.cpp:994-995 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:190-194 (SkyNautic, AL) -> src/coreModule/skyDisplay.cpp:351-413,189-218"
+    },
+    {
+      "name": "nautical_ra",
+      "doc": "Show a scale graduated in degrees running through the selected object, measured on the turning sky.",
+      "source": "app_command_init.cpp:174 (FN_NAUTICEQ); base_command_interface.hpp:443; app_command_interface.cpp:998-999 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:196-200 (SkyNautic, EQ) -> src/coreModule/skyDisplay.cpp:351-413",
+      "notes": "Same class as nautical_alt; the AL branch converts to alt/az first (skyDisplay.cpp:367-375), the EQ branch keeps right ascension (line 366)."
+    },
+    {
+      "name": "object_coordinates",
+      "doc": "Write the height, bearing, right ascension and declination of the selected object beside it.",
+      "source": "app_command_init.cpp:175 (FN_OBJCOORD); base_command_interface.hpp:444; app_command_interface.cpp:1002-1003 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:202-206 (SkyCoords) -> src/coreModule/skyDisplay.cpp:419-582"
+    },
+    {
+      "name": "mouse_coordinates",
+      "doc": "Write the height, bearing, right ascension and declination of the spot under the mouse pointer.",
+      "source": "app_command_init.cpp:176 (FN_MOUSECOORD); base_command_interface.hpp:445; app_command_interface.cpp:1006-1007 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:208-212 (SkyMouse) -> src/coreModule/skyDisplay.cpp:588-766"
+    },
+    {
+      "name": "angular_distance",
+      "doc": "Draw the shortest arc between the object you selected and the one before it, with the angle written on it.",
+      "source": "app_command_init.cpp:177 (FN_ANG_DIST); base_command_interface.hpp:446; app_command_interface.cpp:1010-1011 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:214-218 (SkyAngDist) -> src/coreModule/skyDisplay.cpp:771-871",
+      "notes": "The two ends are the current and the previous selection, passed in at src/executorModule/solarSystemModule.cpp:210 and stellarSystemModule.cpp:205."
+    },
+    {
+      "name": "loxodromy",
+      "doc": "Draw the constant-bearing track between your previous and current selection, with its length in miles.",
+      "source": "app_command_init.cpp:178 (FN_LOXODROMY); base_command_interface.hpp:447; app_command_interface.cpp:1014-1015 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:220-224 (SkyLoxodromy) -> src/coreModule/skyDisplay.cpp:876-937",
+      "notes": "Draws nothing while the two selections are the same point (skyDisplay.cpp:878)."
+    },
+    {
+      "name": "orthodromy",
+      "doc": "Draw the great-circle shortest track between your previous and current selection, with its length in miles.",
+      "source": "app_command_init.cpp:179 (FN_ORTHODROMY); base_command_interface.hpp:448; app_command_interface.cpp:1018-1019 -> src/coreModule/coreLink.hpp:792 -> src/coreModule/skydisplay_mgr.cpp:226-230 (SkyOrthodromy) -> src/coreModule/skyDisplay.cpp:942-1031"
+    },
+    {
+      "name": "greenwich_line",
+      "doc": "Show the circle of sky standing over the Greenwich meridian, labelled GM.",
+      "source": "app_command_init.cpp:180 (FN_GREENWICH_LINE); base_command_interface.hpp:449; app_command_interface.cpp:978-979 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:600-660 (SkyLine_Greenwich; label at line 654)",
+      "notes": "Only drawn from Earth (skyline.cpp:613)."
+    },
+    {
+      "name": "vertical_line",
+      "doc": "Show a circle graduated in degrees, running up from the horizon, over your head and down the far side.",
+      "source": "app_command_init.cpp:181 (FN_VERTICAL_LINE); base_command_interface.hpp:450; app_command_interface.cpp:982-983 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.cpp:1471-1548 (SkyLine_Vertical, drawn in local coordinates)"
+    },
+    {
+      "name": "cardinal_points",
+      "doc": "Show the compass letters N, S, E and W standing around the edge of the horizon.",
+      "source": "app_command_init.cpp:182 (FN_CARDINAL_POINTS); base_command_interface.hpp:451; app_command_interface.cpp:1022-1024 -> src/coreModule/coreLink.hpp:394-395 -> src/coreModule/coreLink.cpp:275-277 -> src/coreModule/cardinals.cpp:80-119",
+      "notes": "With navigation or astronomical on, the in-between points (NE, NW, SE, SW) are added too (cardinals.cpp:95-119)."
+    },
+    {
+      "name": "clouds",
+      "doc": "Show the cloud layer painted over the planets that have one.",
+      "source": "app_command_init.cpp:183 (FN_CLOUDS); base_command_interface.hpp:452; app_command_interface.cpp:1027-1029 -> src/coreModule/coreLink.hpp:508-509 -> src/coreModule/coreLink.cpp:1253-1255 -> src/bodyModule/protosystem.hpp:128-131 (Body::setFlagClouds)"
+    },
+    {
+      "name": "moon_scaled",
+      "doc": "Draw the Moon at the enlarged size set by moon_scale, so it reads clearly on the dome.",
+      "source": "app_command_init.cpp:184 (FN_MOON_SCALED); base_command_interface.hpp:453; app_command_interface.cpp:1032-1034 -> src/coreModule/coreLink.hpp:484-485 -> src/coreModule/coreLink.cpp:1223-1225 -> src/bodyModule/ssystem_factory.hpp:263-272",
+      "notes": "Off puts the scale back to 1; the new path animates the change over about 5 s (ssystem_factory.hpp:263-268)."
+    },
+    {
+      "name": "sun_scaled",
+      "doc": "Draw the Sun at the enlarged size set by sun_scale, so it reads clearly on the dome.",
+      "source": "app_command_init.cpp:185 (FN_SUN_SCALED); base_command_interface.hpp:454; app_command_interface.cpp:1037-1039 -> src/coreModule/coreLink.hpp:490-491 -> src/coreModule/coreLink.cpp:1231-1237 -> src/bodyModule/ssystem_factory.hpp:278-282",
+      "notes": "Also resizes the Sun's halo (ssystem_factory.hpp:281)."
+    },
+    {
+      "name": "landscape",
+      "doc": "Show the ground panorama standing around the observer, which hides the sky below the horizon.",
+      "source": "app_command_init.cpp:186 (FN_LANDSCAPE); base_command_interface.hpp:455; app_command_interface.cpp:1042-1044 -> src/coreModule/coreLink.hpp:700-701 -> src/coreModule/coreLink.cpp:1565-1567 (landscape->setFlagShow)"
+    },
+    {
+      "name": "stars",
+      "doc": "Show the stars, both the ones drawn on the sky and the ones you fly among.",
+      "source": "app_command_init.cpp:187 (FN_STARS); base_command_interface.hpp:456; app_command_interface.cpp:1047-1049 -> src/coreModule/coreLink.hpp:168 -> src/coreModule/coreLink.cpp:650-653 (hip_stars->setFlagShow and starNav->setFlagStars)"
+    },
+    {
+      "name": "star_names",
+      "doc": "Show star names - on the sky, in the fly-through star field, and on the Tully galaxies.",
+      "source": "app_command_init.cpp:188 (FN_STAR_NAMES); base_command_interface.hpp:457; app_command_interface.cpp:1052-1065 -> src/coreModule/coreLink.hpp:182,186,134 -> src/coreModule/coreLink.cpp:679-692,963-969",
+      "notes": "One name drives three separate states (hip_stars, starNav, tully). On a toggle the case recomputes newval twice (app_command_interface.cpp:1056-1063), so the value reported back and recorded into the script is the negation of TULLY's name state, not of the star names. readFlag reports only the primary (app_command_interface.cpp:642-644, contract at 464-467)."
+    },
+    {
+      "name": "star_pick",
+      "doc": "Show star names only for the stars you have selected, instead of for every named star.",
+      "source": "app_command_init.cpp:189 (FN_STAR_PICK); base_command_interface.hpp:458; app_command_interface.cpp:1067-1069 -> src/coreModule/coreLink.hpp:441-442 -> src/starModule/hip_star_mgr.hpp:282-290, hip_star_mgr.cpp:828-834 -> src/starModule/zone_array.cpp:296-320,385"
+    },
+    {
+      "name": "dso_pick",
+      "doc": "Show the name and the marker only for the deep-sky objects you have selected.",
+      "source": "app_command_init.cpp:190 (FN_DSO_PICK); base_command_interface.hpp:459; app_command_interface.cpp:1072-1074 -> src/coreModule/coreLink.hpp:769-770 -> src/coreModule/nebula_mgr.hpp:191-192 -> src/coreModule/nebula_mgr.cpp:199-224"
+    },
+    {
+      "name": "body_pick",
+      "doc": "Show the name only for the planet or moon you have selected, instead of for every body.",
+      "source": "app_command_init.cpp:191 (FN_BODY_PICK); base_command_interface.hpp:460; app_command_interface.cpp:1077-1079 -> src/coreModule/coreLink.hpp:668-669 -> src/bodyModule/ssystem_factory.hpp:436 -> src/bodyModule/solarsystem_selected.cpp:81-92",
+      "notes": "Suspected bug at src/bodyModule/solarsystem_selected.cpp:85-89 (and the same shape at 98-102): the selected body's hint is set true, then the loop over ALL bodies of the system sets every hint false - including the selected one. So turning body_pick on while something is already selected clears its label too; the label only comes back on the next selection (solarsystem_selected.cpp:50-51)."
+    },
+    {
+      "name": "atmospheric_refraction",
+      "doc": "Bend the star positions near the horizon the way real air does; only acts while the air is being drawn.",
+      "source": "app_command_init.cpp:192 (FN_ATMOSPHERIC_REFRACTION); base_command_interface.hpp:461; app_command_interface.cpp:1232-1234 -> src/coreModule/coreLink.hpp:1052-1053 -> src/coreModule/coreLink.cpp:480-482 -> src/executorModule/stellarSystemModule.cpp:285, solarSystemModule.cpp:298",
+      "notes": "Gated by the atmosphere: the draw sites pass `atmosphere->getFlagShow() && FlagAtmosphericRefraction`, so with `flag atmosphere off` this does nothing."
+    },
+    {
+      "name": "planets",
+      "doc": "Show the planets, moons and other bodies of the solar system.",
+      "source": "app_command_init.cpp:193 (FN_PLANETS); base_command_interface.hpp:462; app_command_interface.cpp:1082-1084 -> src/coreModule/coreLink.hpp:553-554 -> src/coreModule/coreLink.cpp:1377-1379 (ssystemFactory->setFlagPlanets)"
+    },
+    {
+      "name": "planet_names",
+      "doc": "Show the name beside each planet and moon; it also switches the bodies back on if they were hidden.",
+      "source": "app_command_init.cpp:194 (FN_PLANET_NAMES); base_command_interface.hpp:463; app_command_interface.cpp:1087-1090 -> src/coreModule/coreLink.hpp:579-580 -> src/coreModule/coreLink.cpp:1407-1409 -> src/bodyModule/ssystem_factory.hpp:431-434",
+      "notes": "The second line of the case (app_command_interface.cpp:1090) force-shows the planets whenever hints end up on - a comment there calls it 'for safety if script turns planets off'."
+    },
+    {
+      "name": "planet_orbits",
+      "doc": "Show the orbit paths of the planets and of the moons together.",
+      "source": "app_command_init.cpp:195 (FN_PLANET_ORBITS); base_command_interface.hpp:464; app_command_interface.cpp:1093-1096 -> src/coreModule/coreLink.hpp:585-586,602-603 -> src/coreModule/coreLink.cpp:1415-1417,1441-1443",
+      "notes": "Exact synonym of `orbits`: the two cases (app_command_interface.cpp:1093-1097 and 1104-1108) are identical, and so are their read halves (readFlag lines 660-662 and 666-668)."
+    },
+    {
+      "name": "orbits",
+      "doc": "Show the orbit paths of the planets and of the moons together - the same thing as planet_orbits.",
+      "source": "app_command_init.cpp:196 (FN_ORBITS); base_command_interface.hpp:465; app_command_interface.cpp:1104-1107 -> src/coreModule/coreLink.hpp:585-586,602-603 -> src/coreModule/coreLink.cpp:1415-1417,1441-1443",
+      "notes": "Exact synonym of `planet_orbits` (identical setFlag case and identical readFlag)."
+    },
+    {
+      "name": "planets_orbits",
+      "doc": "Show the orbit paths of the planets only, leaving the moons' orbits as they were.",
+      "source": "app_command_init.cpp:197 (FN_PLANETS_ORBITS); base_command_interface.hpp:466; app_command_interface.cpp:1110-1112 -> src/coreModule/coreLink.hpp:585-586 -> src/coreModule/coreLink.cpp:1415-1417 -> src/bodyModule/ssystem_factory.hpp:440-443",
+      "notes": "Not a synonym of `planet_orbits`/`orbits`, despite the near-identical spelling: this one does not touch the moons."
+    },
+    {
+      "name": "planets_axis",
+      "doc": "Show the line of the rotation axis drawn through each planet and moon.",
+      "source": "app_command_init.cpp:198 (FN_PLANETS_AXIS); base_command_interface.hpp:467; app_command_interface.cpp:1099-1101 -> src/coreModule/coreLink.hpp:565-566 -> src/coreModule/coreLink.cpp:1393-1398"
+    },
+    {
+      "name": "satellites_orbits",
+      "doc": "Show the orbit paths of the moons only, leaving the planets' orbits as they were.",
+      "source": "app_command_init.cpp:199 (FN_SATELLITES_ORBITS); base_command_interface.hpp:468; app_command_interface.cpp:1115-1117 -> src/coreModule/coreLink.hpp:602-603 -> src/coreModule/coreLink.cpp:1441-1443"
+    },
+    {
+      "name": "nebulae",
+      "doc": "Show the deep-sky objects, both the pictures on the sky and the point cloud you see out in the galaxy.",
+      "source": "app_command_init.cpp:200 (FN_NEBULAE); base_command_interface.hpp:469; app_command_interface.cpp:1120-1122 -> src/coreModule/coreLink.hpp:743-744 -> src/coreModule/coreLink.cpp:858-861 (nebulas->setFlagShow and dso3d->setFlagShow)"
+    },
+    {
+      "name": "nebula_names",
+      "doc": "Show the names of the deep-sky objects, on the sky and in the 3D galaxy view.",
+      "source": "app_command_init.cpp:201 (FN_NEBULA_NAMES); base_command_interface.hpp:470; app_command_interface.cpp:1135-1143 -> src/coreModule/coreLink.hpp:763-764,775-776 -> src/coreModule/coreLink.cpp:918-920,867-869",
+      "notes": "Two states from one name (nebulas, dso3d). Line 1137 calls nebulaSetFlagNames(true) and line 1138 immediately calls it again with newval - the first call is dead. On a toggle, newval is recomputed from dso3d at line 1141, so the value reported back and recorded is dso3d's, not the primary's."
+    },
+    {
+      "name": "nebula_hints",
+      "doc": "Show the small markers that stand in for the deep-sky objects too small to show as a picture.",
+      "source": "app_command_init.cpp:202 (FN_NEBULA_HINTS); base_command_interface.hpp:471; app_command_interface.cpp:1125-1127 -> src/coreModule/coreLink.hpp:747-748 -> src/coreModule/coreLink.cpp:881-883 -> src/coreModule/nebula_mgr.cpp:190,210-224"
+    },
+    {
+      "name": "milky_way",
+      "doc": "Show the picture of the Milky Way spread across the whole sky.",
+      "source": "app_command_init.cpp:203 (FN_MILKY_WAY); base_command_interface.hpp:472; app_command_interface.cpp:1146-1148 -> src/coreModule/coreLink.hpp:713-714 -> src/coreModule/coreLink.cpp:201-203 -> src/coreModule/milkyway.hpp:122-123"
+    },
+    {
+      "name": "bright_nebulae",
+      "doc": "Keep deep-sky pictures bright in a dark sky instead of dimming them to their true faintness.",
+      "source": "app_command_init.cpp:204 (FN_BRIGHT_NEBULAE); base_command_interface.hpp:473; app_command_interface.cpp:1156-1158 -> src/coreModule/coreLink.hpp:751-752 -> src/coreModule/nebula_mgr.hpp:155-158 -> src/coreModule/nebula.cpp:350-379"
+    },
+    {
+      "name": "object_trails",
+      "doc": "Leave a trail behind each body as it moves, so you can see the shape of its motion.",
+      "source": "app_command_init.cpp:205 (FN_OBJECT_TRAILS); base_command_interface.hpp:474; app_command_interface.cpp:1161-1163 -> src/coreModule/coreLink.hpp:559-560 -> src/coreModule/coreLink.cpp:1385-1391 -> src/bodyModule/solarsystem_selected.cpp:62-79",
+      "notes": "With a body selected, only that body's and its parent's trails are kept (solarsystem_selected.cpp:70-78)."
+    },
+    {
+      "name": "track_object",
+      "doc": "Keep the view locked onto the object you have selected as time runs on.",
+      "source": "app_command_init.cpp:206 (FN_TRACK_OBJECT); base_command_interface.hpp:475; app_command_interface.cpp:1166-1168 -> src/coreModule/core.hpp:217-218 -> src/coreModule/core.cpp:2484-2498"
+    },
+    {
+      "name": "script_gui_debug",
+      "doc": "Print every log message to the terminal as it happens, each one stamped with the time.",
+      "source": "app_command_init.cpp:207 (FN_SCRIPT_GUI_DEBUG); base_command_interface.hpp:476; app_command_interface.cpp:1171-1173 -> src/tools/log.hpp:99-105 -> src/tools/log.cpp:117-127",
+      "notes": "The spelling suggests something about the on-screen interface, but the only effect is cLog::isDebug, i.e. echoing the log to the console (log.cpp:122-127)."
+    },
+    {
+      "name": "lock_sky_position",
+      "doc": "Hold the view on the same patch of sky, so the ground turns underneath it instead.",
+      "source": "app_command_init.cpp:208 (FN_LOCK_SKY_POSITION); base_command_interface.hpp:477; app_command_interface.cpp:1176-1178 -> src/coreModule/core.hpp:224-226 -> src/coreModule/core.cpp:921-926"
+    },
+    {
+      "name": "body_trace",
+      "doc": "Draw a pen line following the chosen body across the sky; switching it off erases the line drawn so far.",
+      "source": "app_command_init.cpp:209 (FN_BODY_TRACE); base_command_interface.hpp:478; app_command_interface.cpp:1200-1202 -> src/coreModule/coreLink.hpp:250-251 -> src/coreModule/coreLink.cpp:1099-1101 -> src/bodyModule/ssystem_factory.hpp:846-848 -> src/bodyModule/body_trace.hpp:86-90",
+      "notes": "Off is destructive, not just hiding: setFlagShow(false) calls clear() (body_trace.hpp:86-90)."
+    },
+    {
+      "name": "show_latlon",
+      "doc": "Add your latitude and longitude - and, when high up, altitude and speed - to the date-and-time readout.",
+      "source": "app_command_init.cpp:210 (FN_SHOW_LATLON); base_command_interface.hpp:479; app_command_interface.cpp:1181-1182 -> src/uiModule/ui.cpp:379-381 -> src/uiModule/ui_tuiconf.cpp:72-93",
+      "notes": "Does nothing on its own: the whole block is inside `if (FlagShowTuiDateTime)` (ui_tuiconf.cpp:56), so `flag show_tui_datetime on` is needed first. The altitude and speed part only appears above 1000 units of altitude (ui_tuiconf.cpp:75)."
+    },
+    {
+      "name": "color_inverse",
+      "doc": "Turn every colour on the screen into its opposite, which gives a white sky with black stars.",
+      "source": "app_command_init.cpp:211 (FN_COLOR_INVERSE); base_command_interface.hpp:480; app_command_interface.cpp:1205-1206 -> src/appModule/app.cpp:542-543 -> src/appModule/app.cpp:897-898 (appDraw->drawColorInverse), app.hpp:169"
+    },
+    {
+      "name": "oort",
+      "doc": "Show the Oort cloud, the shell of icy bodies lying far out beyond the planets.",
+      "source": "app_command_init.cpp:212 (FN_OORT); base_command_interface.hpp:482; app_command_interface.cpp:1185-1187 -> src/coreModule/coreLink.hpp:785 -> src/coreModule/coreLink.cpp:189-196 (oort->setFlagShow and OortModule::show)"
+    },
+    {
+      "name": "stars_trace",
+      "doc": "Keep each frame's stars on screen instead of wiping them, so moving stars smear into trails.",
+      "source": "app_command_init.cpp:213 (FN_STARS_TRACE); base_command_interface.hpp:483; app_command_interface.cpp:1213-1215 -> src/coreModule/coreLink.hpp:172 -> src/coreModule/coreLink.cpp:659-661 -> src/starModule/hip_star_mgr.hpp:310-317, hip_star_mgr.cpp:846,881-892"
+    },
+    {
+      "name": "star_lines",
+      "doc": "Show the custom star-to-star figures loaded from your own asterism file.",
+      "source": "app_command_init.cpp:214 (FN_STAR_LINES); base_command_interface.hpp:484; app_command_interface.cpp:1218-1220 -> src/coreModule/coreLink.hpp:42-43 -> src/coreModule/coreLink.cpp:333-335 -> src/coreModule/starLines.hpp:39-43,54-57, starLines.cpp:344-370"
+    },
+    {
+      "name": "star_lines_selected",
+      "doc": "Stores a value, but nothing in the drawing reads it, so the picture does not change.",
+      "source": "app_command_init.cpp:215 (FN_STAR_LINES_SELECTED); base_command_interface.hpp:485; app_command_interface.cpp:1223-1225 -> src/coreModule/coreLink.hpp:45 -> src/coreModule/coreLink.cpp:337-343 -> src/coreModule/starLines.hpp:59-66,166",
+      "notes": "Suspected dead flag: StarLines::selectedFader appears at exactly three places in the tree (starLines.hpp:60, 65, 166) - written by the setter, read by the getter, declared. No draw path consults it and it is never even updated, so the flag has no visible effect."
+    },
+    {
+      "name": "dso_pictograms",
+      "doc": "Mark each deep-sky object with a symbol for its kind instead of one plain circle for all of them.",
+      "source": "app_command_init.cpp:216 (FN_DSO_PICTOGRAMS); base_command_interface.hpp:487; app_command_interface.cpp:1130-1132 -> src/coreModule/core.hpp:520-521 -> src/coreModule/core.cpp:668-670 -> src/coreModule/nebula_mgr.hpp:119-122, nebula.cpp:381-406"
+    },
+    {
+      "name": "zodiacal_light",
+      "doc": "Show the zodiacal light, the faint glow lying along the Sun's path through the sky.",
+      "source": "app_command_init.cpp:217 (FN_ZODIAC_LIGHT); base_command_interface.hpp:488; app_command_interface.cpp:1151-1153 -> src/coreModule/coreLink.hpp:717-718 -> src/coreModule/coreLink.cpp:209-215 -> src/coreModule/milkyway.hpp:46-53,152-153"
+    },
+    {
+      "name": "tully",
+      "doc": "Show the Tully catalogue of galaxies as a cloud of points around our own.",
+      "source": "app_command_init.cpp:218 (FN_TULLY); base_command_interface.hpp:489; app_command_interface.cpp:1190-1192 -> src/coreModule/coreLink.hpp:124 -> src/coreModule/coreLink.cpp:946-948 -> src/coreModule/tully.hpp:40,79-87"
+    },
+    {
+      "name": "tully_color_mode",
+      "doc": "Draw every Tully galaxy plain white instead of in the colour its catalogue gives it.",
+      "source": "app_command_init.cpp:219 (FN_TULLY_COLOR_MODE); base_command_interface.hpp:491; app_command_interface.cpp:1195-1197 -> src/coreModule/coreLink.hpp:128 -> src/coreModule/coreLink.cpp:954-957 -> src/coreModule/tully.hpp:99-105, tully.cpp:93-94,553-556 -> shaders/src/tully.vert:7,25"
+    },
+    {
+      "name": "satellites",
+      "doc": "Show the moons that go round the planets; off hides every one of them at once.",
+      "source": "app_command_init.cpp:220 (FN_SATELLITES); base_command_interface.hpp:490; app_command_interface.cpp:1228-1230 -> src/coreModule/coreLink.hpp:627 -> src/coreModule/coreLink.cpp:1483-1485 -> src/bodyModule/ssystem_factory.hpp:562-564 -> src/bodyModule/protosystem.cpp:259-278",
+      "notes": "Name/call mismatch worth knowing: the case calls setHideSatellites with the SHOW value, and ProtoSystem::toggleHideSatellites inverts its argument on the first line (protosystem.cpp:261), so `flag satellites on` really does show them. The read half negates the stored bit back (app_command_interface.cpp:738-747) and carries a comment about the toggle defect that used to follow from not doing so."
+    },
+    {
+      "name": "quaternion_mode",
+      "doc": "Steer the observer by free rotation rather than by latitude and longitude.",
+      "source": "app_command_init.cpp:221 (FN_QUATERNION_MODE); base_command_interface.hpp:492; app_command_interface.cpp:1236-1237 -> src/coreModule/coreLink.hpp:992-994 -> src/navModule/observer.hpp:190-196 -> src/navModule/observer.cpp:394-423"
+    },
+    {
+      "name": "eye_relative_mode",
+      "doc": "Make up-and-down moves go forwards along your line of sight; time is held still while it is on.",
+      "source": "app_command_init.cpp:222 (FN_EYE_RELATIVE_MODE); base_command_interface.hpp:493; app_command_interface.cpp:1239-1241 -> src/coreModule/coreLink.hpp:1000-1007 -> src/navModule/observer.hpp:198-204 -> src/navModule/observer.cpp:425-443",
+      "notes": "Entering the mode calls timeLock() and leaving it calls timeUnlock() (observer.cpp:432,436)."
+    },
+    {
+      "name": "subtitle",
+      "doc": "Draw your on-screen text over the top of a playing video instead of underneath it.",
+      "source": "app_command_init.cpp:223 (FN_SUBTITLE); base_command_interface.hpp:481; app_command_interface.cpp:1209-1210 -> src/appModule/app.cpp:550-551 -> src/appModule/app.cpp:900-914, app.hpp:170"
+    },
+    {
+      "name": "experimental_shadows",
+      "doc": "Let the bodies cast shadows on one another and on their own relief, as they do in an eclipse.",
+      "source": "app_command_init.cpp:224 (FN_EXPERIMENTAL_SHADOWS); base_command_interface.hpp:494; app_command_interface.cpp:1254-1263 -> src/tools/context.hpp:199-200 + src/experimentalModule/ShadowService.hpp:110-121 -> src/experimentalModule/ModularSystem.cpp:305-335, src/bodyModule/protosystem.cpp:1028",
+      "notes": "The case comment (app_command_interface.cpp:1255-1259) records that the old XOR-against-default behaviour was a defect and is deliberately not reproduced."
+    },
+    {
+      "name": "experimental_path",
+      "doc": "Draw the planets with the new rendering engine; turn it off to fall back to the old drawing.",
+      "source": "app_command_init.cpp:225 (FN_EXPERIMENTAL_PATH); base_command_interface.hpp:495; app_command_interface.cpp:1248-1251 -> src/coreModule/core.hpp:510-512 -> src/coreModule/core.cpp:960-963 (ssystemFactory->setExperimentalPath)"
+    },
+    {
+      "name": "skip_pause",
+      "doc": "Make a script run straight through its own pause commands instead of stopping at them.",
+      "source": "app_command_init.cpp:226 (FN_SKIP_PAUSE); base_command_interface.hpp:496; app_command_interface.cpp:1242-1243 -> src/scriptModule/script_interface.cpp:54-56 -> src/scriptModule/script_mgr.hpp:162-168,211 -> app_command_interface.cpp:2954-2958",
+      "notes": "With it on, `script action pause` falls through to the resume branch (app_command_interface.cpp:2954-2958)."
+    },
+    {
+      "name": "image_compression_loss",
+      "doc": "Save screenshots and recorded frames as JPEG rather than PNG: smaller files, a little quality lost.",
+      "source": "app_command_init.cpp:227 (FN_IMAGE_COMPRESSION_LOSS); base_command_interface.hpp:497; app_command_interface.cpp:1245-1246 -> src/appModule/save_screen_interface.hpp:84-90 -> src/appModule/save_screen_interface.cpp:121-124,354-357,371-376"
+    },
+    {
+      "name": "lunar_eclipse_umbra",
+      "doc": "Show the circle of the Earth's deep shadow at the Moon's distance, where a total eclipse happens.",
+      "source": "app_command_init.cpp:228 (FN_LUNAR_ECLIPSE_UMBRA); base_command_interface.hpp:498; app_command_interface.cpp:970-971 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.hpp:388-403 -> src/coreModule/skyline.cpp:1696-1820 (umbra radius, lines 1761-1766)"
+    },
+    {
+      "name": "lunar_eclipse_penumbra",
+      "doc": "Show the wider circle of the Earth's partial shadow at the Moon's distance, where the Moon just dims.",
+      "source": "app_command_init.cpp:229 (FN_LUNAR_ECLIPSE_PENUMBRA); base_command_interface.hpp:499; app_command_interface.cpp:974-975 -> src/coreModule/coreLink.hpp:81 -> src/coreModule/skyline.hpp:388-403 -> src/coreModule/skyline.cpp:1696-1820 (penumbra radius, lines 1767-1773)"
+    }
+  ]
+}

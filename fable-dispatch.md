@@ -2270,10 +2270,13 @@ merged contract AND the four fragments; 3 new seed-gate checks, each
 falsification-tested; ctest **14/14**, 0 warnings, D14 ASCII gate PASS. Scope 1
 finding: the grammar's per-spec `source` anchors are pinned by `_meta.merged` to
 `b12c8cdd` and `app_command_interface.cpp` is +141 lines since (4747 -> 4888), so
-no anchor resolves at HEAD — new rows self-pin with `@ <sha>`. NEXT: merge the
-three extraction passes (97 flags / 46 colours / 10 font targets, all returned)
-into the v2 family shape, then scope 4 (missing-doc proposal + SS-n rows), then
-the mirror journal + item flips. Parent-ledger fact pending verification: §5.92's
+no anchor resolves at HEAD — new rows self-pin with `@ <sha>`. **CP2** (code `94f2af65`): scope 3 LANDED — 153 family
+names documented (97 flags / 46 colours / 10 font targets), the three families
+moved to D7 v2, and the `font` family check ARMED (updateFont read: closed,
+case-sensitive, ten members; corpus gate 0 false positives). ctest **14/14**.
+Router datum, no target: F66 parity 340/340, hit rate 80/340 UNCHANGED (additive,
+not perturbing); the recorded `--search` query 66 -> 110 total matches. NEXT:
+scope 4 (missing-doc proposal + SS-n rows), then the mirror journal + item flips. Parent-ledger fact pending verification: §5.92's
 "INVENTORY DISCHARGED" list omits `dsoNavigator.cpp:264-265` EXTRACT/IEXTRACT.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)

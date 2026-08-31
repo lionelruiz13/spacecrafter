@@ -1,0 +1,326 @@
+{
+  "_extracted": "2026-08-31, F71, code master-beta @ d64fd437",
+  "_method": "Read-only trace at HEAD d64fd437, four hops per name: (1) registration into m_color, AppCommandInit::initialiseColorCommand, app_command_init.cpp:243-288; (2) the spelling macro, base_command_interface.hpp:503-548; (3) the routing switch AppCommandInterface::applyColor, app_command_interface.cpp:1787-1839, reached from commandColor app_command_interface.cpp:1989-2016; (4) the CoreLink setter and the module that actually paints, read line by line. Nothing here is recalled: every claim carries a file:line opened in this session. NOTE ON THE BRIEF'S ANCHORS: the brief pointed at app_command_init.cpp:221-278 and base_command_interface.hpp:494-539; at this HEAD the blocks are at :243-288 and :503-548 respectively (an offset of 22 and 9 lines). The line numbers recorded below are the observed ones.",
+  "_command_shape": {
+    "handler": "AppCommandInterface::commandColor, app_command_interface.cpp:1989-2016",
+    "keys_read": [
+      "property (W_PROPERTY, base_command_interface.hpp:127) - required; an unknown spelling sets debug_message \"Command 'color': unknown property\" and runs a did-you-mean search (app_command_interface.cpp:2008-2012), so a misspelt colour IS reported to the script",
+      "value / r / g / b (W_VALUE base_command_interface.hpp:91, W_R/W_G/W_B :253-255) - parsed by AppCommandColor at app_command_interface.cpp:1997; a bad colour aborts the command at :1998-1999",
+      "index (W_INDEX, base_command_interface.hpp:131) - read by every invocation via evalInt at app_command_interface.cpp:2014, but consumed by exactly one name, star_table (app_command_interface.cpp:1835). evalInt of a missing key returns 0 (app_command_interface.cpp:4605-4606), so an omitted index means slot 0."
+    ],
+    "switch_completeness": "All 46 registered names have a case in applyColor (app_command_interface.cpp:1790-1835). None is missing, none is empty, and the default: branch at :1836-1837 is unreachable from commandColor because the name comes out of the same m_color map that was filled with those 46."
+  },
+  "names": [
+    {
+      "name": "constellation_lines",
+      "doc": "The colour of the stick-figure lines that join the stars of every constellation.",
+      "source": "registration app_command_init.cpp:243, spelling base_command_interface.hpp:503, case app_command_interface.cpp:1790 -> coreLink.cpp:1059-1061 -> ConstellationMgr::setLineColor constellation_mgr.cpp:143-150 (loops over every asterism)"
+    },
+    {
+      "name": "constellation_lines3d",
+      "doc": "The colour of the hand-made star figures that keep their shape as you fly out among the stars.",
+      "source": "registration app_command_init.cpp:244, spelling base_command_interface.hpp:504, case app_command_interface.cpp:1791 -> coreLink.cpp:1063-1065 -> StarLines::setColor starLines.hpp:74-76",
+      "notes": "Different module from the other four constellation_* colours: this is StarLines ('a custom asterism from an uploaded HIP star catalog', starLines.hpp:39-43), the drawing switched on by the star_lines flag, not the flat constellation figures."
+    },
+    {
+      "name": "constellation_names",
+      "doc": "The colour of the constellation names written across the sky.",
+      "source": "registration app_command_init.cpp:245, spelling base_command_interface.hpp:505, case app_command_interface.cpp:1792 -> coreLink.cpp:1071-1073 -> ConstellationMgr::setLabelColor constellation_mgr.cpp:165-172 -> printed by Constellation::drawName constellation.cpp:150-161",
+      "notes": "Sets every constellation at once; ConstellationMgr also has a one-named-constellation form (constellation_mgr.cpp:174-185) reached from the `constellation` command, not from `color`."
+    },
+    {
+      "name": "constellation_art",
+      "doc": "The colour tint laid over the constellation artwork pictures.",
+      "source": "registration app_command_init.cpp:246, spelling base_command_interface.hpp:506, case app_command_interface.cpp:1793 -> coreLink.cpp:1083-1085 -> ConstellationMgr::setArtColor constellation_mgr.cpp:187-190; the value is pushed to the shader as push.color at constellation_mgr.cpp:411",
+      "notes": "One colour for all the artwork at once - unlike the per-constellation art intensity."
+    },
+    {
+      "name": "constellation_boundaries",
+      "doc": "The colour of the lines marking the official borders between constellations.",
+      "source": "registration app_command_init.cpp:247, spelling base_command_interface.hpp:507, case app_command_interface.cpp:1794 -> coreLink.cpp:1087-1089 -> ConstellationMgr::setBoundaryColor constellation_mgr.cpp:1015-1019 (writes the shared shader uniform *uColor)"
+    },
+    {
+      "name": "cardinal_points",
+      "doc": "The colour of the N, S, E and W letters set around the horizon.",
+      "source": "registration app_command_init.cpp:248, spelling base_command_interface.hpp:508, case app_command_interface.cpp:1795 -> coreLink.cpp:283-285 -> Cardinals::draw cardinals.cpp:73 (colour) and cardinals.cpp:82-94 (the four letters)",
+      "notes": "In navigation and astronomical modes the same colour also carries the in-between markings drawn at cardinals.cpp:95-118."
+    },
+    {
+      "name": "planet_orbits",
+      "doc": "The orbit-line colour given to planets and moons loaded from now on that carry no colour of their own.",
+      "source": "registration app_command_init.cpp:249, spelling base_command_interface.hpp:509, case app_command_interface.cpp:1796 -> coreLink.cpp:1471-1473 -> SolarSystemColor::setDefaultBodyColor solarsystem_color.cpp:60-62 -> BodyColor::setDefault body_color.cpp:82-99 (writes the static defaultOrbit)",
+      "notes": "IMPORTANT and easy to get wrong: this writes a STATIC DEFAULT, not the colour of anything already on screen. A body copies defaultOrbit into its own initialOrbit only in the BodyColor constructor (body_color.cpp:26-29, 36), and drawing reads the body's own value (orbit_2d.cpp:54, orbit_3d.cpp:46). BodyColor::reset is called from nowhere but that constructor. So setting this mid-script changes nothing you can see until a body is loaded afterwards. To recolour a body that is already there, use the `body` command's per-body colour (solarsystem_color.cpp:35-45)."
+    },
+    {
+      "name": "planet_names",
+      "doc": "The label colour given to planets and moons loaded from now on that carry no colour of their own.",
+      "source": "registration app_command_init.cpp:250, spelling base_command_interface.hpp:510, case app_command_interface.cpp:1797 -> coreLink.cpp:1471-1473 -> solarsystem_color.cpp:60-62 -> BodyColor::setDefault body_color.cpp:89-91 (defaultLabel); the label is drawn from the body's own value at hints.cpp:75",
+      "notes": "Same default-only behaviour as planet_orbits - see that entry."
+    },
+    {
+      "name": "planet_trails",
+      "doc": "The trail colour given to planets and moons loaded from now on that carry no colour of their own.",
+      "source": "registration app_command_init.cpp:251, spelling base_command_interface.hpp:511, case app_command_interface.cpp:1798 -> coreLink.cpp:1471-1473 -> solarsystem_color.cpp:60-62 -> BodyColor::setDefault body_color.cpp:93-95 (defaultTrail); the trail is drawn from the body's own value at trail.cpp:106",
+      "notes": "Same default-only behaviour as planet_orbits - see that entry."
+    },
+    {
+      "name": "azimuthal_grid",
+      "doc": "The colour of the horizon grid and of the degree figures printed along it.",
+      "source": "registration app_command_init.cpp:252, spelling base_command_interface.hpp:512, case app_command_interface.cpp:1799 -> coreLink.cpp:146-148 -> SkyGridMgr::setColor skygrid_mgr.cpp:124 -> SkyGrid::setColor skygrid.hpp:58-60; the lines take it at skygrid.cpp:227 and the figures at skygrid.cpp:252 with the azimuth text built at skygrid.cpp:281 and the altitude text at skygrid.cpp:305",
+      "notes": "The grid of altitude and azimuth circles, fixed to the horizon (GridAltAzimutal, skygrid_mgr.cpp:199)."
+    },
+    {
+      "name": "equator_grid",
+      "doc": "The colour of the equatorial grid, of its hour and degree figures, and of the meridians drawn on the ground.",
+      "source": "registration app_command_init.cpp:253, spelling base_command_interface.hpp:513, case app_command_interface.cpp:1800 -> coreLink.cpp:146-148 -> skygrid_mgr.cpp:124 (GridEquatorial, skygrid_mgr.cpp:192); lines skygrid.cpp:227, figures skygrid.cpp:252 with the right-ascension text at skygrid.cpp:279",
+      "notes": "The only colour besides equator_line that carries a second write: applyColor also calls coreLink->planetsSyncGridColor() on the same line (app_command_interface.cpp:1800 -> coreLink.cpp:1401-1405 -> ssystem_factory.hpp:417-419), which hands this colour to the meridians of the grid painted on the surface of the body you are standing on. The old drawing path reads the same colour straight back each frame at body.cpp:1261."
+    },
+    {
+      "name": "ecliptic_grid",
+      "doc": "The colour of the grid built around the Sun's yearly path, and of the degree figures along it.",
+      "source": "registration app_command_init.cpp:254, spelling base_command_interface.hpp:514, case app_command_interface.cpp:1801 -> coreLink.cpp:146-148 -> skygrid_mgr.cpp:124 (GridEcliptic, skygrid_mgr.cpp:206); lines skygrid.cpp:227, figures skygrid.cpp:252 and :283"
+    },
+    {
+      "name": "galactic_grid",
+      "doc": "The colour of the grid built around the plane of the Milky Way, and of the degree figures along it.",
+      "source": "registration app_command_init.cpp:255, spelling base_command_interface.hpp:515, case app_command_interface.cpp:1802 -> coreLink.cpp:146-148 -> skygrid_mgr.cpp:124 (GridGalactic, skygrid_mgr.cpp:213); lines skygrid.cpp:227, figures skygrid.cpp:252 and :283"
+    },
+    {
+      "name": "equator_line",
+      "doc": "The colour of the celestial equator, its hour marks, and the equator drawn on the ground beneath you.",
+      "source": "registration app_command_init.cpp:256, spelling base_command_interface.hpp:516, case app_command_interface.cpp:1803 -> coreLink.cpp:142-144 -> SkyLineMgr::setColor skyline_mgr.cpp:144-154 -> SkyLine_Equator, built at skyline_mgr.cpp:366 and skyline.cpp:887-913, drawn skyline.cpp:921-1069 with the hour labels at skyline.cpp:1012-1034 and :1058-1061",
+      "notes": "Like equator_grid this line also calls coreLink->planetsSyncGridColor() (app_command_interface.cpp:1803 -> coreLink.cpp:1401-1405), which gives the same colour to the equator of the grid painted on the body under your feet (body.cpp:1262). In navigation and astronomical modes the same object also draws a second circle 70 degrees up (skyline.cpp:936-986)."
+    },
+    {
+      "name": "galactic_line",
+      "doc": "The colour of the line running down the middle of the Milky Way, and of its degree figures.",
+      "source": "registration app_command_init.cpp:257, spelling base_command_interface.hpp:517, case app_command_interface.cpp:1804 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Equator in galactic mode, built skyline_mgr.cpp:372, projection chosen at skyline.cpp:896-898, labels skyline.cpp:1030-1031 and :1061"
+    },
+    {
+      "name": "ecliptic_line",
+      "doc": "The colour of the Sun's yearly path, with its day-by-day ticks and its month names.",
+      "source": "registration app_command_init.cpp:258, spelling base_command_interface.hpp:518, case app_command_interface.cpp:1805 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Ecliptic built at skyline_mgr.cpp:422, drawn skyline.cpp:1235-1355, month names translated at skyline.cpp:144-160 and printed at skyline.cpp:1336-1345",
+      "notes": "The ticks and month names appear only while the observer is on Earth (skyline.cpp:1248)."
+    },
+    {
+      "name": "meridian_line",
+      "doc": "The colour of the circle that runs from due north up over your head and down to due south.",
+      "source": "registration app_command_init.cpp:259, spelling base_command_interface.hpp:519, case app_command_interface.cpp:1806 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Meridian built at skyline_mgr.cpp:378 and skyline.cpp:727-742, drawn skyline.cpp:750-881 with the altitude figures at skyline.cpp:841-875",
+      "notes": "The full circle, so it continues below the horizon through the point underfoot. In navigation and astronomical modes the same object also draws a ring 70 degrees up (skyline.cpp:759-817)."
+    },
+    {
+      "name": "zenith_line",
+      "doc": "The colour of the small ringed cross marking the point straight overhead, and its twin underfoot.",
+      "source": "registration app_command_init.cpp:260, spelling base_command_interface.hpp:520, case app_command_interface.cpp:1807 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Zenith built at skyline_mgr.cpp:408, drawn skyline.cpp:1564-1681: two small rings of about 1.3 degrees radius with crossing diameters (skyline.cpp:1573-1609, :1636-1651)",
+      "notes": "It carries two one-letter labels, 'Z' overhead (skyline.cpp:1627, printed :1633) and 'N' underfoot (skyline.cpp:1669, printed :1675); the 'N' means nadir, not north."
+    },
+    {
+      "name": "polar_point",
+      "doc": "The colour of the tiny rings that mark the north and south poles of the sky.",
+      "source": "registration app_command_init.cpp:261, spelling base_command_interface.hpp:521, case app_command_interface.cpp:1808 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Pole(POINT_POLE, 89, 72) built at skyline_mgr.cpp:301, drawn skyline.cpp:195-234 as circles at declination +89 and -89",
+      "notes": "The 'point' is really a ring about one degree across, and there are two of them. No text."
+    },
+    {
+      "name": "polar_circle",
+      "doc": "The colour of the two polar circles, and of the polar circles drawn on the ground beneath you.",
+      "source": "registration app_command_init.cpp:262, spelling base_command_interface.hpp:522, case app_command_interface.cpp:1809 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Pole(CIRCLE_POLE, 66.5, 72) built at skyline_mgr.cpp:294, drawn skyline.cpp:195-234 as circles at declination +66.5 and -66.5",
+      "notes": "Same class as polar_point; only the 89-versus-66.5 argument differs. The ground grid of the body you stand on reads this same colour back for its own polar circles (body.cpp:1264). Hidden above 10 km altitude when that ground grid is on (skyline.cpp:199-203). No text."
+    },
+    {
+      "name": "ecliptic_center",
+      "doc": "The colour of the tiny rings that mark the two poles of the Sun's yearly path.",
+      "source": "registration app_command_init.cpp:263, spelling base_command_interface.hpp:523, case app_command_interface.cpp:1810 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Pole(ECLIPTIC_POLE, 89, 72) built at skyline_mgr.cpp:308, ecliptic projection chosen at skyline.cpp:180-182, drawn skyline.cpp:195-234",
+      "notes": "NAME DOES NOT MATCH THE DRAWING. The script spelling says 'center'; the geometry is the two ecliptic POLES (the enumerator is LINE_ECLIPTIC_POLE, core_common.hpp:4-27). Nothing is drawn at any 'centre'. Kept as spelt because the installed field depends on it. No text."
+    },
+    {
+      "name": "galactic_pole",
+      "doc": "The colour of the tiny rings that mark the north and south poles of the Milky Way.",
+      "source": "registration app_command_init.cpp:264, spelling base_command_interface.hpp:524, case app_command_interface.cpp:1811 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Pole(GALACTIC_POLE, 89, 72) built at skyline_mgr.cpp:315, galactic projection at skyline.cpp:183-185, drawn skyline.cpp:195-234",
+      "notes": "No text."
+    },
+    {
+      "name": "galactic_center",
+      "doc": "The colour of the small rings marking the centre of the Milky Way and the point right opposite it.",
+      "source": "registration app_command_init.cpp:265, spelling base_command_interface.hpp:525, case app_command_interface.cpp:1812 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Galactic_Center built at skyline_mgr.cpp:343 and skyline.cpp:509-515, drawn skyline.cpp:521-549 as two loops 180 degrees apart (the +j*M_PI term at skyline.cpp:535)",
+      "notes": "The name is singular but two markers are drawn. No text."
+    },
+    {
+      "name": "vernal_points",
+      "doc": "The colour of the small rings marking the two equinox points on the celestial equator.",
+      "source": "registration app_command_init.cpp:266, spelling base_command_interface.hpp:526, case app_command_interface.cpp:1813 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Vernal built at skyline_mgr.cpp:350 and skyline.cpp:554-560, drawn skyline.cpp:566-593",
+      "notes": "The maths is the same as galactic_center's (skyline.cpp:566-593 versus :521-549); only the projection differs (skyline.cpp:557). No text."
+    },
+    {
+      "name": "analemma",
+      "doc": "The colour of the figure-of-eight showing where the Sun stands at the same clock time all year.",
+      "source": "registration app_command_init.cpp:267, spelling base_command_interface.hpp:527, case app_command_interface.cpp:1814 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Analemme(ANALEMMA) built at skyline_mgr.cpp:322, 93-point table at skyline.cpp:421-458, drawn skyline.cpp:464-504 through the branch at skyline.cpp:482-486",
+      "notes": "Drawn in the frame that turns with the ground, anchored at the observer's own longitude, so it stays put over the landscape. Earth only (skyline.cpp:467). No text."
+    },
+    {
+      "name": "analemma_line",
+      "doc": "The colour of the second figure-of-eight, the one that turns with the date to follow today's Sun.",
+      "source": "registration app_command_init.cpp:268, spelling base_command_interface.hpp:528, case app_command_interface.cpp:1815 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Analemme(ANALEMMALINE) built at skyline_mgr.cpp:329, same 93-point table (skyline.cpp:421-458), drawn through the branch at skyline.cpp:477-481",
+      "notes": "Same class and same curve as analemma. Only the frame and the offset differ: this one is drawn against the stars with a date-driven rotation, analemma against the ground at your longitude. Despite the name it is not a straight line. No text."
+    },
+    {
+      "name": "greenwich_line",
+      "doc": "The colour of the circle standing for the Greenwich meridian projected on the sky, labelled GM.",
+      "source": "registration app_command_init.cpp:269, spelling base_command_interface.hpp:529, case app_command_interface.cpp:1816 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Greenwich built at skyline_mgr.cpp:357 and skyline.cpp:600-604, drawn skyline.cpp:610-660 with the literal 'GM' printed at skyline.cpp:654",
+      "notes": "Suspect: the circle is placed at fixed longitude -2 * observer longitude (skyline.cpp:623), so it sits on the true Greenwich meridian only when the observer is at longitude 0 or 180. Earth only (skyline.cpp:613)."
+    },
+    {
+      "name": "aries_line",
+      "doc": "The colour of the circle through both sky poles and the spring equinox point, labelled Aries.",
+      "source": "registration app_command_init.cpp:270, spelling base_command_interface.hpp:530, case app_command_interface.cpp:1817 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Aries built at skyline_mgr.cpp:364 and skyline.cpp:665-669, drawn skyline.cpp:675-722 with the literal 'Aries' printed at skyline.cpp:716",
+      "notes": "Not the same thing as vernal_points: this is the whole great circle at 0 hours, while vernal_points are two little rings sitting on the equator. The word 'Aries' is never translated. Earth only (skyline.cpp:678)."
+    },
+    {
+      "name": "zodiac",
+      "doc": "The colour of the ladder-shaped band along the Sun's path that is split into the twelve zodiac signs.",
+      "source": "registration app_command_init.cpp:271, spelling base_command_interface.hpp:531, case app_command_interface.cpp:1818 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Zodiac built at skyline_mgr.cpp:415 and skyline.cpp:239-256, drawn skyline.cpp:262-346: twelve cross-rungs at skyline.cpp:277-290 and two rails 16 degrees either side of the ecliptic at skyline.cpp:293-341",
+      "notes": "The sign names are printed in the same colour at skyline.cpp:318 and :324; they are hardcoded and untranslated (skyline.cpp:242-253), and skyline.cpp:318 appends a degree sign after the name, so the screen reads e.g. LEO followed by a degree symbol. Earth only (skyline.cpp:266)."
+    },
+    {
+      "name": "personal",
+      "doc": "The colour of your own drawing loaded onto the sky, the copy that stays fixed to the horizon.",
+      "source": "registration app_command_init.cpp:272, spelling base_command_interface.hpp:532, case app_command_interface.cpp:1821 -> coreLink.cpp:306-308 -> SkyDisplayMgr::setColor skydisplay_mgr.cpp:142 -> SkyPerson(AL) built at skydisplay_mgr.cpp:177, ctor skyDisplay.cpp:237, drawn by the base SkyDisplay::draw skyDisplay.cpp:220-228",
+      "notes": "The shape comes from the `personal` command (app_command_interface.cpp:1534-1561), which loads a point file (default personal.txt) or an inline list; the engine computes nothing. No text. This overlay and personeq are the only two of the nine still drawn once you leave the solar system view."
+    },
+    {
+      "name": "personeq",
+      "doc": "The colour of your own drawing loaded onto the sky, the copy that rides along with the stars.",
+      "source": "registration app_command_init.cpp:273, spelling base_command_interface.hpp:533, case app_command_interface.cpp:1822 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyPerson(EQ) built at skydisplay_mgr.cpp:184; frame chosen at skyDisplay.cpp:226",
+      "notes": "Same class as personal but a separate set of points, fed by the `personeq` command (app_command_interface.cpp:1683-1709, default personeq.txt). Loading one does not fill the other. No text."
+    },
+    {
+      "name": "nautical_alt",
+      "doc": "The colour of the graduated height scale drawn through the selected object, like a sextant arc.",
+      "source": "registration app_command_init.cpp:274, spelling base_command_interface.hpp:534, case app_command_interface.cpp:1823 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyNautic(AL) built at skydisplay_mgr.cpp:191, drawn skyDisplay.cpp:351-413, figures printed by SkyDisplay::draw_text skyDisplay.cpp:189-218",
+      "notes": "Runs from -90 to +90 degrees of altitude through the selected object's bearing, ticked every degree, numbered every ten. Needs a selected object."
+    },
+    {
+      "name": "nautical_ra",
+      "doc": "The colour of the graduated scale drawn along the selected object's hour circle among the stars.",
+      "source": "registration app_command_init.cpp:275, spelling base_command_interface.hpp:535, case app_command_interface.cpp:1824 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyNautic(EQ) built at skydisplay_mgr.cpp:197, same draw skyDisplay.cpp:351-413 with the alt-az branch at :367-375 skipped",
+      "notes": "Same scale as nautical_alt but in the star frame, so the figures read as declination. Needs a selected object."
+    },
+    {
+      "name": "object_coordinates",
+      "doc": "The colour of the four-line position readout printed beside the object you have selected.",
+      "source": "registration app_command_init.cpp:276, spelling base_command_interface.hpp:536, case app_command_interface.cpp:1825 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyCoords built at skydisplay_mgr.cpp:203, drawn skyDisplay.cpp:419-582",
+      "notes": "Text only, no lines: height, bearing, right ascension and declination, stacked in the sky next to the object rather than in a screen corner. Needs a selected object."
+    },
+    {
+      "name": "mouse_coordinates",
+      "doc": "The colour of the position readout that follows the mouse pointer around the sky.",
+      "source": "registration app_command_init.cpp:277, spelling base_command_interface.hpp:537, case app_command_interface.cpp:1826 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyMouse built at skydisplay_mgr.cpp:209, drawn skyDisplay.cpp:588-766, pointer read at skyDisplay.cpp:594-596",
+      "notes": "The same four lines as object_coordinates but for whatever the pointer is over. Text only, no lines."
+    },
+    {
+      "name": "angular_distance",
+      "doc": "The colour of the arc and figure giving the angle between the last two objects you selected.",
+      "source": "registration app_command_init.cpp:278, spelling base_command_interface.hpp:538, case app_command_interface.cpp:1827 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyAngDist built at skydisplay_mgr.cpp:215, arc skyDisplay.cpp:805-830, figure skyDisplay.cpp:834-870",
+      "notes": "The figure reads degrees and minutes above one degree, minutes and seconds below (skyDisplay.cpp:856-868). The arc itself is the same curve orthodromy draws, so switching both on stacks two curves and two labels."
+    },
+    {
+      "name": "loxodromy",
+      "doc": "The colour of the steady-bearing track between the last two selected objects, marked in nautical miles.",
+      "source": "registration app_command_init.cpp:279, spelling base_command_interface.hpp:539, case app_command_interface.cpp:1828 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyLoxodromy built at skydisplay_mgr.cpp:221, curve skyDisplay.cpp:910-919, figure skyDisplay.cpp:930-936",
+      "notes": "Drawn among the stars, unlike orthodromy which is drawn against the horizon; nothing at all is drawn when the two positions are identical (skyDisplay.cpp:878)."
+    },
+    {
+      "name": "orthodromy",
+      "doc": "The colour of the shortest-path arc between the last two selected objects, marked in nautical miles.",
+      "source": "registration app_command_init.cpp:280, spelling base_command_interface.hpp:540, case app_command_interface.cpp:1829 -> coreLink.cpp:306-308 -> skydisplay_mgr.cpp:142 -> SkyOrthodromy built at skydisplay_mgr.cpp:227, arc skyDisplay.cpp:976-1001, figure skyDisplay.cpp:1005-1029"
+    },
+    {
+      "name": "vertical_line",
+      "doc": "The colour of the half circle running from due east up over your head down to due west.",
+      "source": "registration app_command_init.cpp:281, spelling base_command_interface.hpp:541, case app_command_interface.cpp:1830 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Vertical built at skyline_mgr.cpp:400 and skyline.cpp:1471-1476, drawn skyline.cpp:1484-1548 with the height figures at skyline.cpp:1514-1541",
+      "notes": "Sits square across the meridian line and, unlike it, stops at the horizon instead of continuing underneath."
+    },
+    {
+      "name": "nebula_names",
+      "doc": "The colour of the names written next to nebulae, galaxies and star clusters.",
+      "source": "registration app_command_init.cpp:282, spelling base_command_interface.hpp:542, case app_command_interface.cpp:1831 -> coreLink.cpp:927-929 -> NebulaMgr::setLabelColor nebula_mgr.hpp:110-112, used at nebula_mgr.cpp:203 and :206 -> Nebula::drawName nebula.cpp:408-418"
+    },
+    {
+      "name": "nebula_circle",
+      "doc": "The colour of the little marker rings put on deep-sky objects that are too small to show as pictures.",
+      "source": "registration app_command_init.cpp:283, spelling base_command_interface.hpp:543, case app_command_interface.cpp:1832 -> coreLink.cpp:930-932 -> NebulaMgr::setCircleColor nebula_mgr.hpp:130-132, used at nebula_mgr.cpp:212 and :222 -> Nebula::drawHint nebula.cpp:401-404",
+      "notes": "nebula_names paints the words, nebula_circle paints the marker. The marker is only reached for objects below the size limit (nebula_mgr.cpp:210). It has NO effect while the dso_pictograms flag is on and the object qualifies: that branch draws the per-type pictogram with the object's own neb_color instead (nebula.cpp:395-399, selected at nebula_mgr.cpp:211-222)."
+    },
+    {
+      "name": "precession_circle",
+      "doc": "The colour of the big circle the sky pole slowly walks around, with its year markers.",
+      "source": "registration app_command_init.cpp:284, spelling base_command_interface.hpp:544, case app_command_interface.cpp:1833 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154 -> SkyLine_Precession built at skyline_mgr.cpp:394, drawn skyline.cpp:1372-1464 with the year labels at skyline.cpp:1423-1447",
+      "notes": "Two circles are drawn, one around each ecliptic pole. The labels are calendar years every thousand years. Earth only (skyline.cpp:1378)."
+    },
+    {
+      "name": "text_usr_color",
+      "doc": "The colour given to text put on the dome from now on when the text command names no colour of its own.",
+      "source": "registration app_command_init.cpp:285, spelling base_command_interface.hpp:545, case app_command_interface.cpp:1834 -> Media::textSetDefaultColor media.hpp:338-340 -> TextMgr::setColor text_mgr.cpp:130-133 (writes defaultTextColor), consumed when a text is created at text_mgr.cpp:118-125",
+      "notes": "Belongs to the `text` command (app_command_interface.cpp:2813-2837), NOT to `print`: `print` only writes its arguments to the log and draws nothing (app_command_interface.cpp:2096-2110). The colour is copied into each text as it is created, so texts already on the dome keep the colour they were given. It is also the only colour besides star_table with no getter anywhere in the tree (app_command_interface.cpp:1841-1844), so a saved session cannot read it back."
+    },
+    {
+      "name": "star_table",
+      "doc": "The colour used for stars of one shade; index picks the shade, 0 for the bluest through 127 for the reddest.",
+      "source": "registration app_command_init.cpp:286, spelling base_command_interface.hpp:546, case app_command_interface.cpp:1835 (the only case that passes index) -> coreLink.cpp:667-669 -> HipStarMgr::setColorStarTable hip_star_mgr.cpp:131-138, writing the static color_table[128] declared hip_star_mgr.cpp:104; every star is drawn with color_table[its own shade index] at zone_array.cpp:293 and :382 and hip_star_wrapper.hpp:93",
+      "notes": "WHAT THE INDEX SELECTS: one of the 128 slots of the star colour table, keyed on the star's colour index. Slot i stands for B-V = i*(4/127) - 0.5 (IndexToBV, hip_star.hpp:46-49), so slot 0 is B-V -0.5 (hottest, blue) and slot 127 is B-V +3.5 (coolest, red). The slots are filled at startup from the 'colors' section of stars.ini, keys color_000 to color_127 (hip_star_mgr.cpp:112-129). An index outside 0-127 changes nothing and logs 'ColorTable index Error' (hip_star_mgr.cpp:133-135). An omitted index means slot 0, because evalInt of an absent key returns 0 (app_command_interface.cpp:2014 and :4605-4606) - so `color property star_table value 1,0,0` silently repaints the bluest stars red. This is the only colour with no getter at any level (app_command_interface.cpp:1841-1844)."
+    },
+    {
+      "name": "lunar_eclipse_umbra",
+      "doc": "Meant for the ring of Earth's deep shadow at the Moon's distance, but nothing is drawn, so this has no effect.",
+      "source": "registration app_command_init.cpp:287, spelling base_command_interface.hpp:547, case app_command_interface.cpp:1819 -> coreLink.cpp:142-144 -> SkyLineMgr::setColor skyline_mgr.cpp:144-154; the target class SkyLine_LunarEclipse(UMBRA) exists (factory case skyline_mgr.cpp:427-433, geometry skyline.cpp:1696-1820, umbra radius skyline.cpp:1761-1766) but is never instantiated",
+      "notes": "DEAD AT THIS HEAD. Core builds exactly twenty sky lines at core.cpp:128-149 and neither eclipse type is among them; a search of src/ finds no other skyLineMgr->Create call site. So SkyLineMgr::setColor walks an empty match, logs 'SkyLineMgr error : setColor not found LINE_LUNAR_ECLIPSE_UMBRA' at skyline_mgr.cpp:153 and returns. The script sees success. The matching flag `flag lunar_eclipse_umbra on` is equally inert. Worse for a saved session: the read side, SkyLineMgr::getColor, returns the fallback baseColor for a missing line (skyline_mgr.cpp:164-165) rather than failing, so a session would record a colour that was never anyone's."
+    },
+    {
+      "name": "lunar_eclipse_penumbra",
+      "doc": "Meant for the wider ring of Earth's part-shadow at the Moon, but nothing is drawn, so this has no effect.",
+      "source": "registration app_command_init.cpp:288, spelling base_command_interface.hpp:548, case app_command_interface.cpp:1820 -> coreLink.cpp:142-144 -> skyline_mgr.cpp:144-154; the target class SkyLine_LunarEclipse(PENUMBRA) exists (factory case skyline_mgr.cpp:434-440, penumbra radius skyline.cpp:1767-1773) but is never instantiated",
+      "notes": "Same dead path as lunar_eclipse_umbra - see that entry for the full trace."
+    }
+  ],
+  "_suspected_bugs": [
+    {
+      "what": "Two registered colours drive an object the engine never builds",
+      "source": "core.cpp:128-149 (the twenty Create calls) against app_command_init.cpp:287-288, applyColor app_command_interface.cpp:1819-1820, SkyLineMgr::setColor skyline_mgr.cpp:144-154",
+      "detail": "lunar_eclipse_umbra and lunar_eclipse_penumbra are registered, routed and fully implemented (skyline.cpp:1685-1820), but SkyLineMgr::Create is never called for either type, so the map lookup always misses. setColor logs a warning and returns; the script is told the command succeeded. The paired flags (app_command_init.cpp:228-229) are inert for the same reason."
+    },
+    {
+      "what": "getColor invents a value for a missing line instead of refusing",
+      "source": "src/coreModule/skyline_mgr.cpp:156-166",
+      "detail": "When the type is absent the getter logs a warning and returns the member baseColor. AppCommandInterface::readColor (app_command_interface.cpp:1935-1940 for the two eclipse types) has no way to tell that apart from a real answer, so a saved session records baseColor as though it were the live colour of a line that does not exist."
+    },
+    {
+      "what": "planet_orbits / planet_names / planet_trails cannot recolour anything already on screen",
+      "source": "app_command_interface.cpp:1796-1798 -> coreLink.cpp:1471-1473 -> solarsystem_color.cpp:60-62 -> body_color.cpp:82-107, against the constructor at body_color.cpp:14-37 and the draw-time reads at hints.cpp:75, orbit_2d.cpp:54, orbit_3d.cpp:46, trail.cpp:106",
+      "detail": "The three commands write static defaults that a body reads once, in its constructor. BodyColor::reset (body_color.cpp:42-48) is called from nowhere else, so nothing ever re-applies a changed default to an existing body. A script author who writes `color property planet_orbits value 1,0,0` and sees no change is looking at correct behaviour, which is exactly why it needs saying in the tooltip."
+    },
+    {
+      "what": "galactic_line's object reads uninitialised memory in navigation and astronomical modes",
+      "source": "src/coreModule/skyline.cpp:943-988 (the extra-circle block) against skyline.cpp:936-942 (where the extra points are filled) and the allocation at skyline.cpp:907",
+      "detail": "SkyLine_Equator fills points[nb_segment+1 ...] only for the EQUATOR variant, but the drawing block that consumes them runs for any variant whenever internalNav or internalAstronomical is set. For LINE_GALACTIC_EQUATOR that block reads never-written heap. Reported as observed from the source; not reproduced at runtime in this pass."
+    },
+    {
+      "what": "ecliptic_center is a script spelling that contradicts its own drawing",
+      "source": "base_command_interface.hpp:523 against skyline_mgr.cpp:308 and skyline.cpp:180-182",
+      "detail": "The name promises a centre; the code draws the two ecliptic poles. Frozen-field compatibility makes the spelling unchangeable, so the tooltip is the only place the mismatch can be resolved for a user."
+    },
+    {
+      "what": "The zodiac sign names are printed with a degree sign glued on",
+      "source": "src/coreModule/skyline.cpp:318",
+      "detail": "oss << zod[...] << \"\\xc2\\xb0\" appends the degree character to a constellation name, so the dome shows e.g. LEO followed by a degree symbol. The names are also hardcoded with leading pad spaces (skyline.cpp:242-253) and are never translated."
+    },
+    {
+      "what": "The Greenwich circle is placed at twice the observer's longitude",
+      "source": "src/coreModule/skyline.cpp:623 (fixed longitude -2 * observer longitude) with the frame convention at observer.cpp:108-114",
+      "detail": "In the body-fixed frame the true Greenwich meridian is frame longitude 0, so the factor of -2 puts the circle on geographic longitude 2*L. It lands on the real prime meridian only from longitude 0 or 180. Reported as observed from the source; not measured at runtime in this pass."
+    },
+    {
+      "what": "Copy-paste in the sky-line default colours and in one log line",
+      "source": "core.cpp:1654-1656 and skyline_mgr.cpp:421",
+      "detail": "core.cpp:1654-1656 reads LINE_ANALEMMALINE's default colour from the constellation-boundary key, LINE_ANALEMMA's from the constellation-names key and LINE_ARIES's from the constellation-art key. Separately, the LINE_ECLIPTIC factory case logs 'SkyLineMgr creating LINE_MERIDIAN' (skyline_mgr.cpp:421). Neither affects the `color` command, but both mislead anyone reading the log or the defaults."
+    }
+  ]
+}

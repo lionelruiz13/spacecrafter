@@ -1,0 +1,117 @@
+{
+  "_extracted": "2026-08-31, F71, code master-beta @ d64fd437",
+  "_method": "Read-only trace at HEAD d64fd437: spellings base_command_interface.hpp:684-693 (TF_*) -> handler AppCommandInterface::commandFont app_command_interface.cpp:4278-4313 -> acceptance test FontFactory::updateFont fontFactory.cpp:141-169, whose accepted set is the map built in FontFactory::setStrToTarget fontFactory.cpp:41-53 -> CLASSEFONT consumer resolved through FontFactory::registerFont fontFactory.cpp:182-193 and its call sites (core.cpp:191-204, app.cpp:705), then one hop into the module that prints with that s_font. Cross-check on the accepted set: core.cpp:1594-1603 calls updateFont with nine literal target strings. Nothing here is recalled; every claim carries a file:line read in this session.",
+  "_command_shape": {
+    "handler": "app_command_interface.cpp:4278-4313",
+    "keys_read": [
+      "action (W_ACTION, base_command_interface.hpp:81) - only value understood is \"initial\" (W_INITIAL, base_command_interface.hpp:200), which calls FontFactory::reloadAllFont (fontFactory.cpp:196-200) and ignores target/filename/size; anything else sets debug_message \"Command 'font': unknown action argument\" (app_command_interface.cpp:4289)",
+      "target (W_TARGET, base_command_interface.hpp:123) - required when no action is given (app_command_interface.cpp:4294-4297)",
+      "filename (W_FILENAME, base_command_interface.hpp:79) - required; resolved through FilePath(..., FilePath::TFP::FONTS) at app_command_interface.cpp:4300 and the command fails with \"can't be found\" at :4306 if the file is not in the fonts directory",
+      "size (W_SIZE, base_command_interface.hpp:80) - forwarded as a raw string to updateFont (app_command_interface.cpp:4302)"
+    ],
+    "forwards": "fontFactory->updateFont(targetName, resolvedFontPath, args[\"size\"]) at app_command_interface.cpp:4302",
+    "size_handling": "fontFactory.cpp:144-146: size = Utility::strToDouble(sizeValue) * fontFactor, and if the product is 0 the size becomes 12. Utility::strToDouble returns 0 on an unparsable or empty string (utility.cpp:399-406), so omitting `size` gives a 12-point font that is NOT multiplied by the resolution factor fontFactor (fontFactory.cpp:86)."
+  },
+  "_acceptance_test": {
+    "function": "FontFactory::updateFont",
+    "source": "src/appModule/fontFactory.cpp:141-169 (lookup at :149-153); the accepted set is the std::map m_strToTarget filled in FontFactory::setStrToTarget, src/appModule/fontFactory.cpp:41-53",
+    "accepted_spellings": [
+      "text",
+      "planets",
+      "constellations",
+      "cardinal_points",
+      "stars",
+      "menu",
+      "nebulae",
+      "grids",
+      "lines",
+      "displays"
+    ],
+    "case_sensitive": true,
+    "case_sensitive_evidence": "fontFactory.cpp:149 is m_strToTarget.find(targetName) on a std::map<std::string, CLASSEFONT> (declared fontFactory.hpp:115) with the default std::less<std::string>, i.e. a plain byte comparison. Neither commandFont (app_command_interface.cpp:4278-4313) nor updateFont applies any case folding to the target, unlike the `size` and `align` keys of the `text` command which are explicitly upper-cased (app_command_interface.cpp:2825, 2828). So \"Text\" or \"STARS\" are rejected.",
+    "on_unknown": "Silent-to-the-script no-op with a log line: fontFactory.cpp:150-153 writes \"Unknown FontFactory target \" + targetName at LOG_TYPE::L_WARNING (fontFactory.cpp:151) and returns. No exception, no assert, no abort. updateFont returns void and commandFont does not test anything after calling it (app_command_interface.cpp:4302-4304), so debug_message stays empty and the `font` command reports SUCCESS to the script for a misspelt target. A wrong target name is therefore invisible in the script and visible only in the engine log.",
+    "differs_from_TF_list": "no - the accepted set is EXACTLY the ten TF_* spellings. setStrToTarget (fontFactory.cpp:43-52) inserts exactly the ten macros TF_TEXT, TF_PLANETS, TF_CONSTELLATIONS, TF_CARDINAL, TF_STARS, TF_MENU, TF_NEBULAE, TF_GRIDS, TF_LINES, TF_DISPLAYS (base_command_interface.hpp:684-693), one entry each, and setStrToTarget is the only writer of m_strToTarget (it is called only from the constructor, fontFactory.cpp:38). The family check for `font` can be armed as a closed, case-sensitive, exactly-ten-member set.",
+    "cross_check": "core.cpp:1594-1603 calls updateFont with nine literal targets (text, menu, planets, constellations, cardinal_points, grids, lines, displays, stars) at every sky-locale change; the tenth, \"nebulae\", is at core.cpp:1603. All ten literals are in the accepted set, and no literal outside the TF_* list appears.",
+    "notes": [
+      "Naming inversion worth knowing: TF_TEXT (\"text\") maps to CLASSEFONT::CLASS_MENU and TF_MENU (\"menu\") maps to CLASSEFONT::CLASS_UI (fontFactory.cpp:43 and :48). CLASS_MENU is the Media/TextMgr font, not a menu font. Reading the enumerator name instead of the map will give the wrong answer for both targets.",
+      "CLASS_MENU is the only accepted target that is not in listFont: it is special-cased and returns early at fontFactory.cpp:156-159 via media->updateTextFont. The other nine are pushed into listFont by FontFactory::init (fontFactory.cpp:91-131).",
+      "The assert(0) at fontFactory.cpp:167 fires only if an accepted target resolves to a CLASSEFONT absent from listFont; after a normal init() that cannot happen for any of the ten, so it is dead code on the `font` command path.",
+      "The `font` command surface also has the target-free form `font action initial`, which rebuilds every font at its startup size and name (fontFactory.cpp:196-200) and never consults the accepted set."
+    ]
+  },
+  "names": [
+    {
+      "name": "text",
+      "doc": "The typeface used for the text a script puts on the dome with the 'text' command.",
+      "source": "spelling TF_TEXT base_command_interface.hpp:684; mapped to CLASSEFONT::CLASS_MENU at fontFactory.cpp:43; handled by the early-return branch fontFactory.cpp:156-159 -> media.hpp:362-364 -> TextMgr::updateFont text_mgr.cpp:216-222; the text itself is created by the `text` command, app_command_interface.cpp:2813-2837, and drawn by TextMgr::draw text_mgr.cpp:207-214",
+      "notes": "Side effect a script author will see: TextMgr::updateFont calls clearCache() and clear() (text_mgr.cpp:218-219), and clear() empties textUsr (text_mgr.cpp:136-139) - so changing this font ERASES every text currently on the dome. TextMgr keeps seven sizes around the requested one (mFontSize+2*(i-3), text_mgr.cpp:220-221), which is what the `text` command's size words select. Despite the enumerator being called CLASS_MENU this is the script-text font, not the menu font."
+    },
+    {
+      "name": "planets",
+      "doc": "The typeface used for the names printed next to planets and moons.",
+      "source": "spelling TF_PLANETS base_command_interface.hpp:685; mapped to CLASSEFONT::CLASS_SSYSTEM at fontFactory.cpp:44; font handed to the solar system at core.cpp:197 (ssystemFactory->registerFont); the label is drawn in hints.cpp:75 using the body's label colour"
+    },
+    {
+      "name": "constellations",
+      "doc": "The typeface used for the constellation names written across the sky.",
+      "source": "spelling TF_CONSTELLATIONS base_command_interface.hpp:686; mapped to CLASSEFONT::CLASS_ASTERIMS at fontFactory.cpp:45; font handed over at core.cpp:203 (asterisms->registerFont); drawn by Constellation::drawName constellation.cpp:150-161"
+    },
+    {
+      "name": "cardinal_points",
+      "doc": "The typeface used for the N, S, E and W letters around the horizon.",
+      "source": "spelling TF_CARDINAL base_command_interface.hpp:687; mapped to CLASSEFONT::CLASS_CARDINALS at fontFactory.cpp:46; font handed over at core.cpp:204 (cardinals_points->registerFont); the four letters are printed in Cardinals::draw cardinals.cpp:78-94, with the intercardinal pairs added at cardinals.cpp:95-118 in navigation and astronomical modes"
+    },
+    {
+      "name": "stars",
+      "doc": "The typeface used for star names, and for the labels in the star-flight and galaxy views.",
+      "source": "spelling TF_STARS base_command_interface.hpp:688; mapped to CLASSEFONT::CLASS_HIPSTARS at fontFactory.cpp:47; the same s_font pointer is handed to three modules - hip_stars at core.cpp:191, starNav at core.cpp:194 and tully at core.cpp:195; star names are printed in hip_star_mgr.cpp:919",
+      "notes": "One target, three consumers: changing it also changes the star-navigation and Tully-galaxy labels, not only the star names."
+    },
+    {
+      "name": "menu",
+      "doc": "The typeface used for the setup menu and the date, time and object readouts drawn over the sky.",
+      "source": "spelling TF_MENU base_command_interface.hpp:689; mapped to CLASSEFONT::CLASS_UI at fontFactory.cpp:48; font handed over at app.cpp:705 (ui->registerFont) and stored as tuiFont in UI::registerFont ui.cpp:93-96; used for the date/time line at ui_tuiconf.cpp:99-118, the selected-object line at ui_tuiconf.cpp:134-151 and the menu itself further down the same file",
+      "notes": "Despite the spelling this is CLASSEFONT::CLASS_UI; the enumerator CLASS_MENU belongs to the `text` target instead."
+    },
+    {
+      "name": "nebulae",
+      "doc": "The typeface used for the names of nebulae, galaxies and clusters.",
+      "source": "spelling TF_NEBULAE base_command_interface.hpp:690; mapped to CLASSEFONT::CLASS_NEBULAE at fontFactory.cpp:49; font handed to nebulas at core.cpp:192 and again at core.cpp:202, and to dso3d at core.cpp:193; the name is printed in Nebula::drawName nebula.cpp:408-418",
+      "notes": "Also drives the labels of the 3D deep-sky catalogue (dso3d, core.cpp:193)."
+    },
+    {
+      "name": "grids",
+      "doc": "The typeface used for the degree and hour numbers printed along the sky grids.",
+      "source": "spelling TF_GRIDS base_command_interface.hpp:691; mapped to CLASSEFONT::CLASS_SKYGRID at fontFactory.cpp:50; font handed over at core.cpp:198 (skyGridMgr->registerFont), declared static in skygrid.cpp:45; the right-ascension / azimuth figures are printed at skygrid.cpp:290 and :292 and the declination / altitude figures at skygrid.cpp:314"
+    },
+    {
+      "name": "lines",
+      "doc": "The typeface used for the words and figures written along the sky lines and circles.",
+      "source": "spelling TF_LINES base_command_interface.hpp:692; mapped to CLASSEFONT::CLASS_SKYLINE at fontFactory.cpp:51; font handed over at core.cpp:199 (skyLineMgr->registerFont); examples of what it prints: \"GM\" on the Greenwich line skyline.cpp:654, \"Aries\" skyline.cpp:716, and the graduations at skyline.cpp:324, :816, :875, :985, :1059-1061, :1345, :1447, :1541, :1633, :1675"
+    },
+    {
+      "name": "displays",
+      "doc": "The typeface used for the coordinate readouts and the graduated scales drawn beside the selected object.",
+      "source": "spelling TF_DISPLAYS base_command_interface.hpp:693; mapped to CLASSEFONT::CLASS_SKYDISPLAY at fontFactory.cpp:52; font handed over at core.cpp:200 (skyDisplayMgr->registerFont); printed through skydisplay_font in SkyDisplay::draw_text skyDisplay.cpp:214, which serves the nautical scales, and the same font carries the object and mouse coordinate readouts and the angular-distance / loxodromy / orthodromy figures drawn in skyDisplay.cpp:419-1031",
+      "notes": "These are the overlays switched on by the flags personal, personeq, nautical_alt, nautical_ra, object_coordinates, mouse_coordinates, angular_distance, loxodromy and orthodromy."
+    }
+  ],
+  "_suspected_bugs": [
+    {
+      "what": "FontFactory::updateAllFont dereferences a past-the-end list iterator for the \"text\" target",
+      "source": "src/appModule/fontFactory.cpp:171-180, specifically the find_if at :176 and the dereference at :177",
+      "detail": "updateAllFont walks every entry of m_strToTarget and, for each, searches listFont for a FontContener with that CLASSEFONT. CLASS_MENU (the \"text\" target, fontFactory.cpp:43) is never pushed into listFont - FontFactory::init pushes only the other nine (fontFactory.cpp:91-131) - so find_if returns listFont.end() and line 177 evaluates it2->fontPtr->getFontSize() on the end iterator. m_strToTarget is a std::map ordered by string, so \"text\" is the last key visited and the undefined behaviour lands at the very end of the loop.",
+      "when_reachable": "core.cpp:1590 and core.cpp:1592 - updateAllFont is called whenever the sky locale is switched to one starting with \"zh\" or \"ja\". The else branch (core.cpp:1594-1603) avoids it by calling updateFont per target, which is why the ordinary locales do not hit it."
+    },
+    {
+      "what": "A misspelt `font target` is reported to the script as a success",
+      "source": "src/appModule/fontFactory.cpp:150-153 together with src/interfaceModule/app_command_interface.cpp:4302-4304",
+      "detail": "updateFont returns void after logging a warning, and commandFont neither checks nor sets debug_message afterwards, so the script's status is the same as for a target that worked. This is exactly the gap an editor-side family check closes."
+    },
+    {
+      "what": "W_SIZE is defined twice with the same replacement text",
+      "source": "src/interfaceModule/base_command_interface.hpp:80 and :93",
+      "detail": "Both expand to \"size\", so the redefinition is legal and harmless, but it means the `font` command's size key and another command's size key are two macros away from diverging silently."
+    }
+  ]
+}
