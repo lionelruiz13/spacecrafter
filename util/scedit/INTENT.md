@@ -383,9 +383,24 @@ notes.*
     pages, baseline 23.5%); its next lever is the flags/colours per-name doc
     pass (items 11/12's neighbour). Waits for Vixy's triage (which mode
     first, local-only default, checker as a hard gate in agent mode).
-    **Scedit-side surface (the tools, no model call) MINTED as dispatch task
-    F66 (2026-08-31e); the triage questions stand.**
-20. **The build sets no warning flags** [measured 2026-08-31, F65] — so
+    **Scedit-side surface DONE 2026-08-31 (F66, journal 2026-08-31g):
+    `--doc` / `--search` / `--check --json` and a dual-era MCP stdio server over
+    the same C++ readers, three tools (`doc_lookup`, `doc_search`,
+    `check_script`) in one registry, 3 new gates, `--search` measured identical
+    to the f64 baseline on all 340 witness questions. What is NOT done and is
+    not scedit's to decide — the router/LLM half — with its three questions
+    unchanged and unanswered: WHICH MODE FIRST (natural language → script,
+    script → explanation, or NL → live command over TCP); LOCAL-ONLY DEFAULT or
+    not; and IS THE CHECKER'S VERDICT A HARD GATE on execution in agent mode
+    (rec: yes — C3's zero-false-positive discipline is what makes a hard gate
+    acceptable). The MCP path needs none of them answered to be used today; the
+    standalone router mode needs all three.**
+20. ~~**The build sets no warning flags**~~ **DONE 2026-08-31 (F66 scope 7,
+    journal 2026-08-31g): `-Wall -Wextra` on scedit's seven own targets only
+    (the vendored trees compile as upstream ships them — the build-shape call,
+    taken with its argument in `CMakeLists.txt`, veto open), `cmdSpan` deleted,
+    0 warnings on a fresh build, and the flag shown live by a throwaway that
+    warned. "0 warnings" can now be false.** [measured 2026-08-31, F65] — so
     "clean build, 0 warnings" has been a criterion that cannot fail. Under
     `-Wall -Wextra` the whole tree yields exactly ONE: `cmdSpan` set but not
     used, `src/sc_check.cpp:341` (there since `7fd5ea75`; no file F65 touched
@@ -409,6 +424,108 @@ notes.*
    the args merge gates.
 
 ## 6. Journal (append-only)
+
+- **[2026-08-31g] The documentation answers a machine: `--doc`, `--search`,
+  `--check --json`, an MCP server over the same readers — and the warning bar
+  that could not fail.** Dispatch task F66 (`claude/fable-dispatch.md`), executor
+  run, all seven scopes delivered. Preconditions verified live before anything
+  moved (§0.7): both HEADs and clean trees, 9/9 gates with the stated counts
+  (tokenizer 189, parse_oracle 119337/0, editcore 223, lint 27, history 36,
+  corpus 15), lint_seeds 15, `--history`'s seven fields, and — by measurement,
+  not by reading — f64_doc_router.py's recorded baseline **80/340 reproduced**.
+  No abort.
+  **The surface (`170ce615`):** `--doc <cmd> [<key>|<family name>]` prints one
+  page and `--doc` alone the two-level catalogue; `--search <words>` ranks pages;
+  `--check --json` prints the findings as objects beside the untouched D6 text;
+  `--mcp` serves all three as MCP tools on stdio. New module `sc_docjson`
+  (serialisation only) and `sc_mcp` (the adapter); no second reader of the
+  grammar, no model call, no network. **The honest-null rule survives
+  serialisation**: `dso3d z_reflection` and `suntrace sun` answer `"doc": null`,
+  `flag stars` answers `"present": true, "doc": null`, and all three are pinned
+  by two gates. A name outside the vocabulary exits 2 with an object naming the
+  vocabulary AND the nearest name — the CHECKER's `cappedSuggestion`, moved out
+  of sc_check.cpp's anonymous namespace rather than written a second time, so
+  `--doc` and `--check` cannot disagree about the engine's nearest name.
+  **The ranking is F64's baseline, ported and measured (`3e28c92`):** the score
+  is published in the header and in the README
+  (`|words(Q) & words(P)| / (1 + sqrt(|words(P)|))`), and
+  `harness/f66_search_parity.py` asks scedit all 340 witness questions and
+  compares its top-1 against the baseline **question by question: 340/340 agree,
+  both sides 80/340 = 23.5%**. Two things had to be right for that. (1) TIES:
+  measured, 6 of the 340 tie at the top score and file order and alphabetical
+  order disagree on all 6 — so `DocIndex` now parses with `ordered_json` and
+  records `commandFileOrder()`, and enumeration order (the contract file's own)
+  is the stated tie-break. (2) THE DEGENERATE CASE: 21 questions share no word
+  with any command, where the baseline returns whichever command the file lists
+  first; scedit returns nothing, the parity check reads
+  `score > 0 ⇒ same pick; score == 0 ⇒ no answer`, and those 21 were hits zero
+  times, which is why the recorded hit rate is untouched. `f64_doc_router.py`
+  was refactored minimally to be importable without side effects (argv, prints,
+  the model loop and the artifact writing moved into `main()`); its script path
+  was re-run against ollama to prove it still works.
+  **The MCP server is DUAL-ERA, and that is a fetched fact, not a recalled one.**
+  `https://modelcontextprotocol.io/specification/`'s own "latest" pointer
+  resolved to revision **2026-07-28** (fetched 2026-08-31). That revision has NO
+  `initialize` handshake: it is stateless, carries the protocol version and the
+  client capabilities in each request's `_meta`, and requires `server/discover`.
+  The dispatch section assumed the handshake — it is the *legacy* era there
+  (2025-11-25 and earlier), and it is what deployed clients still speak:
+  **Claude Code 2.1.251 opens with `"protocolVersion": "2025-11-25"`, measured on
+  this host** (`harness/artifacts/f66/claude_code_binding.log`: initialize →
+  initialized → tools/list, the three tools returned; the model turn itself never
+  ran, "Credit balance is too low", which the binding does not depend on). So the
+  server answers per request in whichever era the request is in. A tool is
+  declared in ONE place (`registeredTools()`); the protocol code names no tool,
+  which is the seam item 6's `run_command` needs. What is not implemented is a
+  LIST in the README, not a silence (resources, prompts, logging, completions,
+  pagination, caching, subscriptions/list-changed, progress, cancellation,
+  multi-round-trip + the client features it needs, outputSchema, icons, batches,
+  extensions, authorization).
+  **Gates 9 → 12 (`fbdf1d48`):** `check_json` (the same comparator, `--json` in
+  its MODE — one finding set, two printers), `doc_queries` (ten recorded
+  arguments → stdout + exit code, through a new comparator that says why it is
+  not `check_gate.cmake`: many invocations, arguments that are not files, and an
+  exit code that is part of the record), and `mcp_protocol` (**55 checks** from a
+  stdlib-only Python client — a second implementation on purpose). Every new
+  criterion shown able to fail, four tampers at once, all restored and
+  md5-verified: an accept-any-tool-name and a wrong error code → exactly two red
+  checks in `mcp_protocol`; one recorded `did_you_mean` and one recorded severity
+  → `doc_queries` and `check_json` red.
+  **The warning bar (`ac3e752e`, item 20 struck):** `-Wall -Wextra` on scedit's
+  seven own targets only, with the argument in the file (the vendored trees
+  compile as their authors ship them; measured after configuring: our objects
+  carry the flags, ftxui's carry `-O3 -DNDEBUG -fPIC -std=gnu++17` and no more).
+  The one warning the tree then yielded — `cmdSpan` set-but-unused in
+  `LineChecker::rules`, nothing reading it — is deleted. Shown able to fail: a
+  throwaway `int f66_throwaway = 0;` compiled with `-Wunused-variable` and the
+  compile line carrying the flags; removed again. **From here "0 warnings" is a
+  claim that can be false.**
+  **[measured 2026-08-31] A hand-written copy of a contract fact was wrong, and
+  the port found it.** F64's Python catalogue maps three commands to families
+  (`{flag, set, color}`); the contract says **four** — `font` names
+  `families.font_targets` (10 names). scedit's catalogue reads `subfamily` from
+  the Grammar and lists all four, so the first mcp_protocol run failed on MY
+  assertion, not on the code. Consequence for F64's numbers, recorded not fixed:
+  its two-level run (199/340) showed the model 97 + 43 + 46 names and NOT the 10
+  font targets, so any `font <target>` question was unanswerable at member level
+  there. The instrument keeps its measured shape; the divergence is the point of
+  this task — one authority, read, instead of a copy, retyped.
+  **[measured 2026-08-31] A tamper must be shown to reach the criterion.** The
+  parity check went green under two successive falsification attempts before the
+  third worked: the first flipped a verdict for a question that is not in the
+  set, the second patched `baseline()` while the check reads `baseline_scored()`.
+  A green run whose tamper never fired is not evidence of anything.
+  **[measured 2026-08-31] An instrument that overwrites its own evidence.**
+  `f64_doc_router.py` names its artifact by model alone, so the `--limit 5`
+  re-run that proved its script path still works overwrote the ROWS of F64's
+  full one-level run (`artifacts/f64/gemma4_latest.json`, `summary.json`;
+  untracked, so nothing in git was lost — the numbers stay in FEATURE_REQUESTS
+  and the two-level `*_members.json` is intact). Recorded in
+  `harness/README.md`; re-derivable in ~5 minutes. Left unfixed on purpose: the
+  artifact paths are cited by name in the FR entry.
+  **State:** 12/12 gates green in `build-lovely` AND in a fresh dir (`build-f66`,
+  Release), **0 warnings** under the new flags. Item 19's scedit half is done;
+  its three triage questions stay Vixy's. Item 20 struck.
 
 - **[2026-08-31f] Item 15 closed whole: the error pane, the `--history` twin,
   the rule that says which lines can carry a `#!` — and the third reader of

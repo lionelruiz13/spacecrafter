@@ -2430,3 +2430,44 @@ decomposition: FEATURE_REQUESTS, the LLM entry. Instrument facts learned:
 ollama on this laptop runs every model on CPU (`size_vram 0`); a `pkill -f`
 / `pgrep -f` pattern that contains the script's name kills the calling shell
 (exit 144) — use a pidfile.
+
+## F66 — does scedit's `--search` rank the way the measured baseline ranks? (`f66_search_parity.py`) — scedit INTENT §5 item 19, 2026-08-31
+
+    cd claude/harness && ./f66_search_parity.py [--scedit PATH] [--limit N]
+
+F64's model-free control was moved INTO scedit as `--search` (C++, over the same
+contract file), because a ranking that only exists in a throwaway script cannot
+be a product surface and a second Python reader of the grammar is the I2 defect
+the move removes. This is the check that the move changed nothing: question by
+question over F64's 340 witness pairs, scedit's top-ranked command page must be
+the command the baseline picks. **340/340 agree; both sides 80/340 = 23.5%**,
+F64's recorded number reproduced at the authority (2026-08-31, code
+`fbdf1d48`). Rows: `artifacts/f66/search_parity.json` (`.gz` committed).
+
+The pairs and the scorer are IMPORTED from `f64_doc_router.py` — which was
+refactored the same day so that importing it has no side effects (everything
+reading argv, printing, calling a model or writing an artifact moved into
+`main()`; the script path is unchanged and was re-run against ollama to prove
+it). One witness parser, one formula. The Python side supplies the questions and
+the control verdict; scedit answers, as a subprocess, through the surface a
+machine consumer uses (`--search --scope commands --limit 1`).
+
+One stated difference, in the docstring: the baseline picks a command for all
+340 questions, including the 21 that share no word with any command — every
+score is 0 there, so the "answer" is whichever command the file lists first.
+scedit returns nothing instead, and the criterion reads "score > 0 ⇒ same pick;
+score == 0 ⇒ no answer", which every question can fail in both directions. Those
+21 were hits zero times, so the hit rate is untouched.
+
+Instrument facts learned, both worth carrying:
+- **A tamper must be shown to REACH the criterion.** Two falsification attempts
+  passed green before the third worked: one flipped a verdict for a question
+  that is not in the set, the other patched `baseline()` while the check reads
+  `baseline_scored()`. A green run whose tamper never fired says nothing.
+- **`f64_doc_router.py` writes `artifacts/f64/<model>.json` keyed on the model
+  name alone**, so ANY re-run overwrites the rows of an earlier one — including
+  a `--limit 5` smoke run over a full 340-question run. That is how the
+  one-level `gemma4_latest.json` / `summary.json` rows of F64 were lost here
+  (untracked, so nothing in git; the numbers stay recorded in FEATURE_REQUESTS
+  and the two-level `*_members.json` rows are intact). Re-derivable with
+  `./f64_doc_router.py gemma4:latest` (≈5 min, CPU-only).

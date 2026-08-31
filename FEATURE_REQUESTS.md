@@ -298,8 +298,17 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   To make spacecrafter script more accessible, is there a way to integrate
   ollama/OpenAI LLM support ? It would require to interface the command
   documentation."*
-- **Status:** new — untriaged. Facts triage starts from [fable, recorded at
-  receipt]:
+- **Status:** new — untriaged **for the two decisions it needs** (below); the
+  TOOL half is DELIVERED. **[2026-08-31, F66]** scedit now exposes the
+  documentation and the checker as `--doc` / `--search` / `--check --json` and as
+  an MCP stdio server (`scedit --mcp`, three tools over the same C++ readers) —
+  so any harness with an MCP client, Claude Code included (binding measured on
+  this host), has the grammar in its hands today with no model call anywhere in
+  scedit. What still waits on Vixy is unchanged: which mode first, local-only
+  default or not, and whether the checker's verdict is a hard gate in agent mode.
+  Detail: `util/scedit/INTENT.md` journal 2026-08-31g + §5 item 19;
+  `util/scedit/README.md` § For machines. Facts triage starts from [fable,
+  recorded at receipt]:
   (1) **the interface it needs already exists as data**: `util/scedit/grammar/
   sc-grammar.json` is the machine-readable command contract — per-command and
   per-key one-liners written to the zero-knowledge bar (C6, "someone without any
@@ -422,6 +431,18 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   presentation not measured yet; the cheapest known gain is the per-name doc
   pass on flags/colours, which serves scedit's bar and the router alike.
   Rows: `harness/artifacts/f64/gemma4_latest*.json` (not tracked).
+  **[2026-08-31, F66 — two corrections to the run above, measured, recorded not
+  re-run]** (1) the two-level catalogue showed the model 97 flag + 43 set + 46
+  colour names and NOT the **10 `font` targets**: `font` names
+  `families.font_targets` in the contract, and the instrument's hand-written
+  `fam_of` map lists only three commands. A `font <target>` question was
+  therefore unanswerable at member level in the 199/340 run — the exact defect
+  class the new surface removes, since scedit reads `subfamily` from the
+  contract and its catalogue lists all four families. (2) the one-level run's
+  ROWS were lost: `f64_doc_router.py` names its artifact by model alone, so the
+  `--limit 5` re-run that verified the script path after F66's refactor
+  overwrote `gemma4_latest.json` and `summary.json` (untracked; the numbers here
+  stand, `*_members.json` is intact, re-derivable in ~5 min).
 
 **Provenance update to the three 2026-08-26 entries above [fable 2026-08-30,
 owner testimony in-conversation → §11.173]:** the file's text is the
