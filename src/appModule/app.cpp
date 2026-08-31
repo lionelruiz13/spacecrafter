@@ -768,7 +768,18 @@ void App::updateFromSharedData()
 			out = tcp->getInput();
 			if (!out.empty()) {
 				cLog::get()->write("get tcp : " + out);
-				commander->executeCommand(out);
+				// The line's provenance, from the only layer that knows it
+				// (io.hpp's own doctrine): the connection it was read on. An
+				// HTTP `?command=` query shares this queue and its connection
+				// is already closed - it is not a control origin and carries
+				// none, exactly as before (INTENT 11.187).
+				const unsigned int connection =
+					tcp->servingIsHttp() ? 0 : tcp->servingConnection();
+				if (connection) {
+					uint64_t delay;
+					commander->executeCommand(out, delay, ScriptOrigin::fromTcp(connection, out));
+				} else
+					commander->executeCommand(out);
 			}
 		} while (!out.empty());
 	}

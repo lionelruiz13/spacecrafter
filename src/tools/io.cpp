@@ -184,6 +184,7 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	lastClientId = 0;
 	servingClient = 0;
 	servingId = 0; //Nobody is being served yet
+	servingHttp = false;
 
 	/* Initialization of the buffer */
 	buffer = new char[bufferSize];
@@ -348,11 +349,13 @@ std::string ServerSocket::getInput()
 			// the last client that happened to speak.
 			servingClient = 0;
 			servingId = 0;
+			servingHttp = false;
 			data = "";
 		} else {
 			const ClientMessage &request = inputQueue.front();
 			servingClient = request.client;
 			servingId = request.id;
+			servingHttp = request.http;
 			data = request.data;
 			inputQueue.pop();
 		}
@@ -586,7 +589,11 @@ bool ServerSocket::computeHttp(unsigned int client, std::string string)
 				// answer exists: the answer then falls back to the feedback
 				// subscribers, which is where it went before §5.47. Nothing
 				// here needs to say so - deliver() reads it off the slot.
-				pushRequest(client, command); //Adds the string to the input queue
+				// Queued through the HTTP door: the application must be able to
+				// tell this from a control line, because this connection is
+				// closed four lines below (INTENT 11.187 - HTTP is mapped, not
+				// wired: the command carries no origin at all).
+				pushRequest(client, command, true); //Adds the string to the input queue
 				broadcast(clientIp(client) + CLIENT_SEPARATOR2 + "HTTP" + CLIENT_SEPARATOR1 + command + '\n'); //Sends the string to all clients
 			}
 		}
@@ -667,10 +674,10 @@ void ServerSocket::computeNormalString(unsigned int client, std::string string)
 //! only the pop side took `inputting` - i.e. a std::string was being
 //! constructed in a queue another thread could be popping from. The routing
 //! this fix installs reads what was pushed, so the queue has to be sound.
-void ServerSocket::pushRequest(unsigned int client, const std::string &data)
+void ServerSocket::pushRequest(unsigned int client, const std::string &data, bool http)
 {
 	if(lock(inputting) == IO_NO_ERROR) {
-		inputQueue.push(ClientMessage{client, clientIdTab[client], data});
+		inputQueue.push(ClientMessage{client, clientIdTab[client], data, http});
 		unlock(inputting);
 	}
 }

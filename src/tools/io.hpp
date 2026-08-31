@@ -95,6 +95,12 @@ struct ClientMessage {
 	unsigned int client = 0;	//!< index in clientSocketTab
 	unsigned int id = 0;		//!< connection id, 0 = no connection asked for this
 	std::string data;
+	//! Which door an incoming line came in by. An HTTP `?command=` query is
+	//! queued through the same path as a control line (computeHttp), and the
+	//! connection it arrived on is CLOSED before the application ever sees the
+	//! command - so it is not a control connection and must not be reported as
+	//! one. Unused on the output side. INTENT 11.187.
+	bool http = false;
 };
 
 class ServerSocket {
@@ -120,6 +126,19 @@ public:
 	//! thread, which is the application's update thread - the server thread
 	//! never touches either.
 	std::string getInput();
+	//! WHO sent the line `getInput` just returned: the never-reused connection
+	//! id (io.hpp `clientIdTab`), 0 when nothing is being served - the batch is
+	//! drained, and what the application does now was asked for by nobody.
+	//! This layer is the only one that knows it, so it is the one that says so
+	//! (the same argument that put the addressee in ClientMessage, INTENT
+	//! 5.47); the application turns it into the command's provenance
+	//! (ScriptOrigin::fromTcp, INTENT 11.187). Reads the same latch as
+	//! `setOutput`, so it belongs to the same thread as `getInput`.
+	unsigned int servingConnection() const { return servingId; }
+	//! ... and whether that line came in through the HTTP `?command=` door
+	//! rather than as a control line. HTTP shares this queue and its connection
+	//! is already closed: it is NOT a TCP control origin.
+	bool servingIsHttp() const { return servingHttp; }
 	//! Transfer of internal data outside the program: to the connection that
 	//! asked for it if there is one, and to the clients that subscribed to the
 	//! feedback channel with $LOGON in any case (they were the only recipients
@@ -187,6 +206,7 @@ private:
 	//! thread only (see getInput).
 	unsigned int servingClient;
 	unsigned int servingId;
+	bool servingHttp;			//!< that request came in through the HTTP door
 
 	/* Initialization function and code */
 	int init(unsigned int port, unsigned int maxClients, unsigned int bufferSize); //Initialization function called by the constructors
@@ -201,7 +221,7 @@ private:
 	bool computeString(unsigned int client, std::string string); //Chain processing function
 	bool computeHttp(unsigned int client, std::string string);//HTTP request processing function (BETA)
 	void computeNormalString(unsigned int client, std::string string);//Normal request processing function
-	void pushRequest(unsigned int client, const std::string &data); //Queues a request with the connection it came from
+	void pushRequest(unsigned int client, const std::string &data, bool http = false); //Queues a request with the connection it came from, and the door it came in by
 	void checkDataToSend(); //Sending function of data received from the application
 	void deliver(const ClientMessage &out); //Sends one answer where it belongs
 	//! Broadcast to the feedback subscribers. `excludeClient` is the slot that

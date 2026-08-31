@@ -224,6 +224,11 @@ private:
 	//! the action that prevents it - INTENT §11.169): to the script log with
 	//! the line quoted, and to the `#!` channel when `at` names a file line.
 	void reportScriptError(const ScriptOrigin &at, const std::string &what);
+	//! How a diagnostic log line names the origin of the command being
+	//! executed: "tcp#<id>: " for a line read on the control socket, "" for
+	//! every other origin. The file half is deliberately absent - the reason
+	//! is at the definition, and it is one condition to add.
+	std::string originTag() const;
 
 	// transcription between the text and the associated command
 	std::map<const std::string, SC_COMMAND> m_commands;

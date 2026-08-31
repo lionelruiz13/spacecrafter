@@ -116,7 +116,7 @@ int Script::loadInternal(const std::string &script_file,const std::string & scri
 
 		if ( line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n') {
 			//cout << "[script.cpp => Line is: " << line << "]"<< endl;
-			token=new Token(line, script_path, ScriptOrigin{script_file, lineNo, line});
+			token=new Token(line, script_path, ScriptOrigin::fromFile(script_file, lineNo, line));
 			is_script_empty=false;
 			if (wp==ListPosition::first)
 				addFirst(token);

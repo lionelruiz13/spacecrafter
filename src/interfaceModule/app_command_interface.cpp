@@ -213,7 +213,11 @@ static const char MSG_LOOP_END_WITHOUT_LOOP[] =
 
 void AppCommandInterface::reportScriptError(const ScriptOrigin &at, const std::string &what)
 {
-	std::string line = at.valid() ? "script " + at.where() + ": " + what : "script: " + what;
+	// `where()` names a file line AND a control connection; `valid()` still
+	// means "a file line the annotator may write into", and only that
+	// (INTENT 11.187).
+	const std::string origin = at.where();
+	std::string line = origin.empty() ? "script: " + what : "script " + origin + ": " + what;
 	if (!at.text.empty()) {
 		std::string quoted = at.text;
 		while (!quoted.empty() && (quoted.back() == '\r' || quoted.back() == '\n'))
@@ -223,6 +227,22 @@ void AppCommandInterface::reportScriptError(const ScriptOrigin &at, const std::s
 	cLog::get()->write(line, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
 	if (at.valid())
 		scriptInterface->annotate(at, what);
+}
+
+std::string AppCommandInterface::originTag() const
+{
+	// TCP only, deliberately. A line that came from a FILE already has a
+	// channel that reports AT the line - reportScriptError above and the `#!`
+	// tail it writes - and whether EVERY failing command joins that channel is
+	// a decision that would write about 1661 annotations into 35 shipped
+	// scripts: it is Vixy's, recorded open at INTENT 11.184, and this is not
+	// the task that takes it. A line that came from the control socket has no
+	// such channel and no file to write into, so the log line is the only
+	// place its provenance can appear at all (INTENT 11.187). Adding the file
+	// half here later is this one condition.
+	if (currentOrigin.channel != ScriptChannel::TCP)
+		return std::string();
+	return currentOrigin.where() + ": ";
 }
 
 int AppCommandInterface::terminateScript()
@@ -304,7 +324,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 	auto m_commands_it = m_commands.find(command);
 	if (m_commands_it == m_commands.end()) {
 		debug_message = _("Unrecognized or malformed command name");
-		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		cLog::get()->write( originTag() + debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		appInit->searchSimilarCommand(command);
 		return 0;
 	}
@@ -1243,8 +1263,13 @@ int AppCommandInterface::executeCommandStatus()
 		return true;
 	} else {
 		//std::stringstream oss;
-		cLog::get()->write( "Could not execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		// Both lines carry the tag: a reader that greps for the message alone
+		// still finds its origin, and a reader that greps for the command line
+		// alone does too. Empty for every origin but TCP, so a file script's
+		// refusals are byte-identical to what they were (INTENT 11.187).
+		const std::string tag = originTag();
+		cLog::get()->write( tag + "Could not execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		cLog::get()->write( tag + debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		return false;
 	}
 }
