@@ -26,14 +26,23 @@
  * deliberately NOT implemented is listed in README.md § For machines, because a
  * silent omission is indistinguishable from a bug.
  *
- * THE REGISTRY IS THE SEAM
- * ========================
+ * THE REGISTRY IS THE SEAM — AND IT HELD
+ * =====================================
  * A tool is DECLARED in exactly one place — `registeredTools()` — as a name, a
  * description written to the zero-knowledge bar (it is what an outside model
  * reads before deciding to call it), an input schema and a handler. The
- * protocol code below names no tool and knows no tool's arguments: adding
- * `run_command` over the live engine's TCP line (dispatch task F67) is one
- * entry in that vector plus one field on ToolContext, and touches nothing here.
+ * protocol code below names no tool and knows no tool's arguments. `run_command`
+ * (F67) was added exactly as this note predicted: one entry in that vector and
+ * one field on ToolContext, with no line of protocol code touched.
+ *
+ * ONE OF THE TOOLS ACTS ON A LIVE DOME
+ * ====================================
+ * `run_command` opens a TCP connection to a RUNNING spacecrafter and executes a
+ * command on it — a projector moves, a show changes. Three things follow, and
+ * they are in the tool's own description because that is what the outside model
+ * reads: it is not a dry run; the engine answers only `get status …` and
+ * `search name …`, so silence is neither success nor failure; and nothing here
+ * retries, reconnects or keeps a connection alive between calls.
  *
  * STDOUT IS THE PROTOCOL. Every diagnostic, every load failure and every
  * unparseable line goes to stderr; stdout carries newline-delimited JSON-RPC
@@ -51,6 +60,7 @@
 
 #include "sc_docindex.hpp"
 #include "sc_grammar.hpp"
+#include "sc_tcpclient.hpp"
 
 namespace scedit {
 
@@ -61,6 +71,10 @@ struct ToolContext {
 	const Grammar &grammar;
 	const DocIndex &docs;
 	std::string grammar_path;
+	//! Where `run_command` sends when the call names no host or port: the
+	//! shipped 127.0.0.1:7805, or whatever `--tcp` said on the command line.
+	//! One field, which is the whole cost F66 predicted for this tool.
+	Endpoint live_endpoint;
 };
 
 //! What a tool handler returns. `structured` is the answer as data (the
@@ -87,7 +101,9 @@ const std::vector<Tool> &registeredTools();
 
 //! Run the server on stdin/stdout until end of input. Returns a process exit
 //! code: 0 for a clean end of stream, 2 when the contract file cannot be read.
-int runMcpServer(const std::string &grammarPath);
+//! `liveEndpoint` is `run_command`'s default target.
+int runMcpServer(const std::string &grammarPath,
+                 const Endpoint &liveEndpoint = Endpoint());
 
 } // namespace scedit
 

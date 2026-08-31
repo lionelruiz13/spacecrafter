@@ -334,7 +334,7 @@ void usage() {
 	             "       scedit [--grammar <file>] --history FILE...\n"
 	             "       scedit [--grammar <file>] --doc [<command> [<key>|<family name>]]\n"
 	             "       scedit [--grammar <file>] --search [--scope all|commands] [--limit N] <words>...\n"
-	             "       scedit [--grammar <file>] --mcp\n"
+	             "       scedit [--grammar <file>] [--tcp [[host:]port]] --mcp\n"
 	             "       scedit [--grammar <file>] [--tcp [[host:]port]] [--edit] FILE\n"
 	             "       scedit [--grammar <file>] --ui-selftest\n"
 	             "default action: validate the grammar contract\n"
@@ -596,15 +596,18 @@ int main(int argc, char **argv) {
 	// `--tcp` on its own is live mode for the EDITOR: with no file to edit
 	// there is nothing for it to be live about, and the usage says so rather
 	// than opening a socket nobody asked about.
-	if (live.enabled && !editMode) {
-		std::fprintf(stderr, "scedit: --tcp is the editor's live mode; give a file to edit\n");
+	if (live.enabled && !editMode && !mcpMode) {
+		std::fprintf(stderr, "scedit: --tcp names a live engine for the editor or for --mcp; "
+	                     "give a file to edit, or --mcp\n");
 		usage();
 		return 2;
 	}
 	if (editMode) return scedit::runEditor(grammarPath, editFile, live);
 	// stdout belongs to the protocol from here on: the server writes nothing
 	// else to it, and everything it has to say otherwise goes to stderr.
-	if (mcpMode) return scedit::runMcpServer(grammarPath);
+	// `--tcp` before `--mcp` sets where `run_command` sends by default, so a
+	// binding line can name the dome once instead of every call naming it.
+	if (mcpMode) return scedit::runMcpServer(grammarPath, live.endpoint);
 
 	if (checkMode) {
 		if (operands.empty()) { usage(); return 2; }

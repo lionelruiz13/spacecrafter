@@ -17,7 +17,10 @@ plus the handshake era 2025-11-25 that deployed clients still speak).
 
 Stdlib only, no third-party client library, and no network.
 """
-import json, signal, subprocess, sys
+import json, os, signal, subprocess, sys, threading, time
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from fake_engine import FakeEngine, POSITION
 
 MODERN = "2026-07-28"
 LEGACY = "2025-11-25"
@@ -100,7 +103,7 @@ def main():
     if len(sys.argv) != 3:
         raise SystemExit(__doc__)
     binary, grammar = sys.argv[1], sys.argv[2]
-    signal.alarm(120)   # a hung server is a failure, not a stalled gate
+    signal.alarm(180)   # a hung server is a failure, not a stalled gate
     s = Server(binary, grammar)
 
     print("A. the handshake era (2025-11-25): initialize, initialized, tools/list")
@@ -120,8 +123,8 @@ def main():
     r = s.request("tools/list")
     tools = r["result"]["tools"]
     names = [t["name"] for t in tools]
-    check(names == ["doc_lookup", "doc_search", "check_script"],
-          f"tools/list returns the three registered tools in a fixed order: {names}")
+    check(names == ["doc_lookup", "doc_search", "check_script", "run_command"],
+          f"tools/list returns the four registered tools in a fixed order: {names}")
     for t in tools:
         check(bool(t.get("description")) and len(t["description"]) > 80,
               f"{t['name']}: a description written for a reader who knows nothing")
@@ -198,6 +201,57 @@ def main():
     check(r["result"]["structuredContent"]["counts"]["total"] == 0,
           "a clean line yields no findings")
 
+    print("B2. run_command, against a stand-in engine (tests/fake_engine.py)")
+    # The tool opens a real socket, so the gate gives it something real to open
+    # one to. What the stand-in RECEIVED is asserted as well as what came back:
+    # a tool that reports a reply it invented would pass the second check alone.
+    with FakeEngine() as eng:
+        r = call(s, "run_command", {"command": "get status position",
+                                    "host": eng.host, "port": eng.port, "wait_ms": 2000})
+        sc = r["result"]["structuredContent"]
+        check(r["result"]["isError"] is False, "run_command against a live engine is not an error")
+        check(sc["sent"] is True and sc["endpoint"] == "%s:%d" % (eng.host, eng.port),
+              "it reports what it sent and where")
+        # VERBATIM includes the leading space the engine's own printf writes:
+        # the client strips the record's terminators and nothing else.
+        check(sc["replies"] == [POSITION],
+              "the engine's answer comes back verbatim: %r" % sc["replies"])
+        check(sc["reply_count"] == 1, "with its count")
+        check("$LOGON" in eng.lines() and "get status position" in eng.lines(),
+              "the stand-in saw the subscription and the command: %s" % eng.lines())
+        check("$LOGOFF" in eng.lines(),
+              "and the connection was closed politely — one call, one connection")
+        check("$LOGON" in sc["note"] and "OTHER clients" in sc["note"],
+              "the note warns that a reply may be another client's: %s" % sc["note"][:80])
+
+        # A command the engine answers with silence — which is MOST of them. The
+        # tool must not dress that up as either outcome.
+        r = call(s, "run_command", {"command": "flag stars on",
+                                    "host": eng.host, "port": eng.port, "wait_ms": 300})
+        sc = r["result"]["structuredContent"]
+        check(r["result"]["isError"] is False and sc["sent"] is True,
+              "an ordinary command is sent successfully")
+        check(sc["replies"] == [], "and answered with nothing")
+        check("NOT evidence that the command succeeded" in sc["note"]
+              and "NOT evidence that it failed" in sc["note"],
+              "and the note says that silence is neither outcome")
+        check("flag stars on" in eng.lines(), "the stand-in did receive it")
+
+    # NOW nothing is listening: the same call must fail with a sentence the
+    # caller can act on, not a crash and not a fake success. The port is one
+    # that was bound and released, so the refusal is the operating system's.
+    import socket as _socket
+    _s = _socket.socket(); _s.bind(("127.0.0.1", 0)); dead_port = _s.getsockname()[1]; _s.close()
+    r = call(s, "run_command", {"command": "flag stars on",
+                                "host": "127.0.0.1", "port": dead_port, "wait_ms": 300})
+    sc = r["result"]["structuredContent"]
+    check(r["result"]["isError"] is True, "with no engine listening, run_command is a tool error")
+    check(sc["sent"] is False and sc["error"] == "no-engine",
+          "it says plainly that nothing was sent")
+    check("io:enable_tcp" in sc["message"],
+          "and names what to check on the engine: %s" % sc["message"][:120])
+    check(sc["replies"] == [], "with no replies invented")
+
     print("C. what must be refused")
     r = call(s, "doc_lookup", {"command": "zomo"})
     sc = r["result"]["structuredContent"]
@@ -213,6 +267,16 @@ def main():
     check(r["result"]["isError"] is True, "check_script refuses both text and path at once")
     r = call(s, "check_script", {"path": "/nonexistent/f66.sts"})
     check(r["result"]["isError"] is True, "an unreadable path is a tool error, not a crash")
+    r = call(s, "run_command", {})
+    check(r["result"]["isError"] is True, "run_command without a command is refused")
+    r = call(s, "run_command", {"command": "flag stars on\nflag planets on"})
+    check(r["result"]["isError"] is True and "ONE line" in r["result"]["structuredContent"]["message"],
+          "a two-line command is refused before any socket is opened")
+    r = call(s, "run_command", {"command": "flag stars on", "port": 0})
+    check(r["result"]["isError"] is True, "an impossible port is refused")
+    r = call(s, "run_command", {"command": "flag stars on", "wait_ms": 1})
+    check(r["result"]["isError"] is True,
+          "a wait too short to mean anything is refused rather than silently raised")
 
     r = s.request("tools/call", {"name": "no_such_tool", "arguments": {}})
     check(r.get("error", {}).get("code") == -32602 and "no_such_tool" in r["error"]["message"],
@@ -249,6 +313,10 @@ def main():
     r = s.request("tools/list", meta=modern_meta(caps=False))
     check(r.get("error", {}).get("code") == -32602,
           "a modern request missing clientCapabilities is -32602, as the spec prescribes")
+    r = call(s, "run_command", {"command": "flag stars on", "port": 1},
+             meta=modern_meta())
+    check(r["result"]["resultType"] == "complete" and r["result"]["isError"] is True,
+          "the live tool answers in the stateless era too, refusal and all")
     r = call(s, "doc_lookup", {"command": "flag", "name": "stars"}, meta=modern_meta())
     check(r["result"]["resultType"] == "complete"
           and r["result"]["structuredContent"]["doc"] is None,

@@ -144,6 +144,109 @@ ToolResult checkScriptTool(const ToolContext &ctx, const json &args)
 	return r;
 }
 
+//! The tool that touches the world. Everything else in this server reads a
+//! file; this one opens a socket to a running planetarium and makes it do
+//! something.
+ToolResult runCommandTool(const ToolContext &ctx, const json &args)
+{
+	bool hasCommand = false;
+	const std::string command = argString(args, "command", hasCommand);
+	if (!hasCommand || command.empty())
+		return toolError("`command` is required: one line of the spacecrafter script "
+		                 "language, e.g. `flag stars on`");
+	if (command.find('\n') != std::string::npos || command.find('\r') != std::string::npos)
+		return toolError("`command` is ONE line: this text carries a line break. Send the "
+		                 "lines one call at a time, so that you know which of them ran.");
+
+	Endpoint ep = ctx.live_endpoint;
+	bool hasHost = false;
+	const std::string host = argString(args, "host", hasHost);
+	if (hasHost) {
+		if (host.empty())
+			return toolError("`host` is empty; omit it to use " + ctx.live_endpoint.host);
+		ep.host = host;
+	}
+	if (args.is_object() && args.contains("port")) {
+		const json &p = args.at("port");
+		if (!p.is_number_integer() || p.get<long long>() < 1 || p.get<long long>() > 65535)
+			return toolError("`port` is a TCP port between 1 and 65535");
+		ep.port = (int)p.get<long long>();
+	}
+	// The wait is bounded on BOTH sides: a caller cannot ask for zero (and then
+	// report a reply as absent when it simply had not arrived) and cannot hold
+	// the server for a minute (this is a stdio server answering one line at a
+	// time).
+	long waitMs = 1500;
+	if (args.is_object() && args.contains("wait_ms")) {
+		const json &w = args.at("wait_ms");
+		if (!w.is_number_integer() || w.get<long long>() < 100 || w.get<long long>() > 10000)
+			return toolError("`wait_ms` is how long to wait for a reply, between 100 and 10000");
+		waitMs = (long)w.get<long long>();
+	}
+
+	json out;
+	out["command"] = command;
+	out["endpoint"] = ep.text();
+	out["waited_ms"] = waitMs;
+
+	TcpClient client;
+	std::string err;
+	if (!client.connect(ep, err)) {
+		ToolResult r;
+		r.is_error = true;
+		out["sent"] = false;
+		out["error"] = "no-engine";
+		out["message"] = err;
+		out["replies"] = json::array();
+		r.structured = out;
+		return r;
+	}
+	// The subscription confirmation is the engine's answer to $LOGON, not to
+	// this command; it is read and dropped so that `replies` holds what the
+	// command produced and nothing else.
+	client.pollFor(500, 1);
+	client.clearFeed();
+
+	if (!client.send(command, err)) {
+		client.disconnect();
+		ToolResult r;
+		r.is_error = true;
+		out["sent"] = false;
+		out["error"] = "not-sent";
+		out["message"] = err;
+		out["replies"] = json::array();
+		r.structured = out;
+		return r;
+	}
+	client.pollFor((int)waitMs);
+	json replies = json::array();
+	for (const FeedLine &f : client.feed())
+		if (f.kind == FeedKind::Engine)
+			replies.push_back(f.text);
+	client.disconnect();
+
+	out["sent"] = true;
+	out["replies"] = replies;
+	out["reply_count"] = replies.size();
+	// The single most important field for a model reading this: what an empty
+	// reply list means. Saying it once, here, is cheaper than a model guessing
+	// it every time.
+	out["note"] = replies.empty()
+	                      ? "The engine sent nothing back. That is the normal case: only "
+	                        "`get status ...` and `search name ...` produce a reply, and every "
+	                        "other command runs in silence. This is NOT evidence that the "
+	                        "command succeeded, and NOT evidence that it failed — the engine "
+	                        "writes its refusals to its own log file, which is not on this "
+	                        "channel. Read a state back with `get status ...` if you need to "
+	                        "know what happened."
+	                      : "Replies to this connection, and anything the engine broadcast to "
+	                        "its $LOGON feed while we waited — which includes answers to OTHER "
+	                        "clients' commands.";
+	ToolResult r;
+	r.structured = out;
+	return r;
+}
+
 // ------------------------------------------------------------- the registry
 
 std::vector<Tool> buildRegistry()
@@ -222,6 +325,35 @@ std::vector<Tool> buildRegistry()
 	})");
 	check.handler = checkScriptTool;
 	tools.push_back(check);
+
+	Tool run;
+	run.name = "run_command";
+	run.title = "Run one command on a live spacecrafter";
+	run.description =
+		"Send ONE line of the spacecrafter script language to a RUNNING planetarium engine over "
+		"its control socket, and return whatever it says back. This is not a simulation and not "
+		"a dry run: the dome moves, the show changes, and there is no undo. Ask the person you "
+		"are working for before using it, and check the line with check_script first. "
+		"WHAT COMES BACK: only `get status <what>` and `search name <name>` produce a reply. "
+		"Every other command runs in SILENCE, so an empty `replies` means neither success nor "
+		"failure — the engine writes its refusals to a log file that is not on this channel. To "
+		"find out what actually happened, read a state back with `get status ...`. The `replies` "
+		"list can also carry answers to OTHER clients' commands: this connection subscribes to "
+		"the engine's feedback channel while it waits. A command that plays a script returns as "
+		"soon as the script STARTS; nothing announces that it has ended.";
+	run.input_schema = json::parse(R"({
+		"type": "object",
+		"properties": {
+			"command": {"type": "string", "description": "One command line, exactly as it would be written in a script, e.g. `flag stars on` or `get status position`."},
+			"host": {"type": "string", "description": "Where the engine is. Default 127.0.0.1 (or whatever --tcp named when this server was started)."},
+			"port": {"type": "integer", "minimum": 1, "maximum": 65535, "description": "The engine's control port. Default 7805, the shipped `io:tcp_port_in`."},
+			"wait_ms": {"type": "integer", "minimum": 100, "maximum": 10000, "description": "How long to wait for a reply before answering, in milliseconds (default 1500). Waiting longer does not make a silent command speak."}
+		},
+		"required": ["command"],
+		"additionalProperties": false
+	})");
+	run.handler = runCommandTool;
+	tools.push_back(run);
 
 	return tools;
 }
@@ -391,7 +523,7 @@ const std::vector<Tool> &registeredTools()
 	return tools;
 }
 
-int runMcpServer(const std::string &grammarPath)
+int runMcpServer(const std::string &grammarPath, const Endpoint &liveEndpoint)
 {
 	Grammar g;
 	DocIndex d;
@@ -400,7 +532,7 @@ int runMcpServer(const std::string &grammarPath)
 		std::fprintf(stderr, "scedit: %s\n", err.c_str());
 		return 2;
 	}
-	const ToolContext ctx{g, d, grammarPath};
+	const ToolContext ctx{g, d, grammarPath, liveEndpoint};
 	std::fprintf(stderr, "scedit: MCP server on stdio, %zu tools, contract %s\n",
 	             registeredTools().size(), grammarPath.c_str());
 

@@ -72,6 +72,16 @@ class FakeEngine:
     def stop(self):
         self.stop_flag = True
         try:
+            # Same reason as the connection sockets below: a thread is blocked in
+            # accept() on this fd, and close() alone leaves the open file
+            # description — and therefore the LISTEN — alive, so the port goes on
+            # accepting after stop() returns. Measured: a gate that stopped the
+            # engine and then asked scedit to connect "where nothing listens" was
+            # answered by a socket that was still there.
+            self.sock.shutdown(socket.SHUT_RDWR)
+        except OSError:
+            pass
+        try:
             self.sock.close()
         except OSError:
             pass
