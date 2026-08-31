@@ -2279,6 +2279,26 @@ measured delta **266/67**; (2) harness HEAD moved to `2a4d0b0` mid-task, one
 commit by the concurrent Fable session touching only
 `PENDING_LEDGER-2026-08-31.md` — Allowance 1 satisfied, though that file is not
 one of the two the prompt named.
+**ACCEPTED 2026-08-31 (Fable, session 19):** entry read in full; trees/
+commits verified (THREE code commits — the entry header names two; the third,
+`96cfc352`, is the README/contract tail of the same delivery: verified
+grammar+README only, noted as a header omission, not a defect); ctest 14/14 +
+ASCII gate PASS re-run by me; item 11/12 flips, journal 2026-08-31j,
+§5.119/§5.120 stubs and SS-26…31 all verified at their homes; baselines
+reproduced to the digit. ENDORSED: the two-clause default criterion with the
+`camera value no` rejection as C2's demonstration; the strong-property
+completable gate (silence cannot satisfy it); the per-name split of
+`checkNamesFamilyV2Content` (I2 — 97 copies of one fact refused); the
+self-pinning anchors with the 324 stale ones recorded-not-repaired
+(re-anchoring queued below); the 8 unverified divergences kept OUT of SS
+rows with the distinction stated — the SS channel's integrity is worth more
+than its row count. Both §11.179(a) handlings correct (the "+267" premise —
+FIFTH dispatcher gloss this round, mine, tallied: carried from §11.149(e)
+without checking SCRIPT_SURFACE §4's 2026-08-30 pass). §5.119's NUMBER
+consumed by this mint — §11.185(d)(2)'s forward-looking "§5.119" annotated
+at its node THIS commit (F60's stale-forward-reference class, caught at
+the write). Scan limitation (only INTENT/<id>.md as event sources — a
+§5-sourced back-marker is invisible) joins the strict-credit v2 package.
 
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
@@ -2345,6 +2365,21 @@ one of the two the prompt named.
     refusal routes to no wire and no `#!` — the subscriber is told nothing
     while the log carries it twice. Making a nested call inherit the outer
     origin is a change to §11.184's recorded rule: yours to say.
+  - **F71'S ENGINE HARVEST — two new §5 rows and a retraction, all READ not
+    RUN** (§11.190(d)): **§5.119** `FontFactory::updateAllFont` dereferences a
+    past-the-end iterator, reached by ONE script line (`set sky_locale zh_CN`)
+    — record-don't-fix held; the fix looks one-line and is yours to word;
+    **§5.120** the lunar-eclipse colour/flag quartet is routed-and-inert,
+    reporting success (§5.116's family); §5.92's "inventory discharged"
+    RETRACTED at its node (forwarding crosses files — `dso3d action load
+    index abc` still reaches an uncaught `std::stof` terminate). TESTER
+    CHANNEL: **SS-26…SS-31** minted — sharpest: `on` means yes on every
+    `flag` and NO on `media pause` (two coercion functions, field data
+    measured clean today); `transition action skip duration` is documented
+    seconds, is milliseconds; only 18 of 46 colour names are ever driven as
+    colours in his own file. The 324 grammar `source` anchors are pinned at
+    `b12c8cdd` and no longer resolve at HEAD (+141 lines) — re-anchoring
+    queued, new rows self-pin.
   - **SHOULD A FILE-ORIGIN REFUSAL NAME `<file>:<line>` IN THE LOG?** (F68
     §11.187(d)): the funnel now prefixes TCP-origin refusals with `tcp#<id>`;
     the file half is DELIBERATELY absent — the executor read "every failing
