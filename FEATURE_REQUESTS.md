@@ -212,7 +212,13 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   natural end); (4) IMPLEMENTED (read-only degrades to the log with the count);
   (5) confined to `addScriptFirst`'s engine-synthesised lines — a script played
   BY another keeps its own file and line (gate leg H+I); (2) the parse_model
-  clause is scedit's half, with item 15(a)/(b), still owed. **DECISION FOR VIXY,
+  clause is scedit's half, with item 15(a)/(b), ~~still owed~~ **[2026-08-31
+  later: (2) LANDED — `parse_model.comments.machine_tail`, code `4a00cf31`,
+  with 15(a-i) (the tail recognised on the bar and RELATED to scedit's own
+  finding); 15(b) holds by construction (the editor writes bytes back, never
+  composes a `#!`); 15(a-ii), the error-history pane, minted as dispatch task
+  F65 the same day; scedit's reading agrees with the engine on all 12 lines the
+  engine annotated in F63's artifacts (`harness/f63_scedit_agree.py`)]**. **DECISION FOR VIXY,
   disclosed with its measurement**: the generic channel — every failing
   command's `debug_message` written on its line — is three lines away and NOT
   wired: it would put ~1661 `#!` tails into 35 of the 408 shipped scripts on

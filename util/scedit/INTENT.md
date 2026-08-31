@@ -188,7 +188,8 @@ notes.*
 6. **TCP client mode** — line protocol + `$LOGON` feed pane;
    ~~spacecrafter rebuild on this laptop is its prerequisite~~ **prerequisite
    MET 2026-08-31: the engine builds and RUNS here (display session for the
-   `claude` user; F61/F62 drove it over port 7805)**.
+   `claude` user; F61/F62 drove it over port 7805)**. **MINTED as dispatch task
+   F67 (2026-08-31e, `claude/fable-dispatch.md`).**
 7. ~~**FTXUI shell** — editor + cursor-driven doc panel (C6) + completion
    (defaults greyed, D31 spec).~~ **DONE 2026-08-04 (journal
    2026-08-04h; gated; code `0745dc34`). D1 discharged: FTXUI v5.0.0
@@ -303,7 +304,9 @@ notes.*
     block seeds, anchored to the engine's MSG_* constants);
     `parse_model.comments.machine_tail` written; two selftest frames + E4f.
     (a-ii) OPEN: the error-history pane in sc_tui listing every `#!` line
-    (and scedit's findings) with click-to-warp-cursor.**
+    (and scedit's findings) with click-to-warp-cursor.** **(a-ii) MINTED as
+    dispatch task F65 (2026-08-31e); the agreement scedit↔engine measured on
+    F63's files: 12/12 (`harness/f63_scedit_agree.py`).**
 16. **Shipped-corpus dispositioning sweep** [measured 2026-08-30e] — the 13
     older seeds over the 408 shipped scripts: **1757 findings in 35 files**
     (duplicate-key 1596 — 1500 in the generated `internal/
@@ -366,6 +369,8 @@ notes.*
     pages, baseline 23.5%); its next lever is the flags/colours per-name doc
     pass (items 11/12's neighbour). Waits for Vixy's triage (which mode
     first, local-only default, checker as a hard gate in agent mode).
+    **Scedit-side surface (the tools, no model call) MINTED as dispatch task
+    F66 (2026-08-31e); the triage questions stand.**
 9. ~~**superscript.sts doc-mining pass**~~ **DONE 2026-08-04 (journal
    2026-08-04g; gated). Residue: S-NP-1 suspended for Vixy; 6
    code-consistent doc answers queued for post-FTXUI grammar merge.**
@@ -382,6 +387,51 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-31e] The previous changes verified live on this host, the `#!`
+  agreement measured on engine-written files, one criterion corrected at its
+  root, and the round minted (F65–F67).** Session 18, Vixy's dispatch line:
+  *"Continue the work on scedit … test the previous changes landed properly
+  before working on the next FEATURE_REQUEST.md entries related to scedit and
+  script engine. Use one agent per feature to implement."* Verified (every
+  number read from a log or a tool result, never from a notification): engine
+  binary at HEAD (`cmake --build -n` lists nothing; last engine commit
+  `2b8ec034`); scedit **8/8** on a rebuild (tokenizer 189, editcore 193, oracle
+  119 337/0, 13 selftest frames); **F62 11/11, F63 34/34** on `2b8ec034`;
+  **F61 15/16** at first — the one RED leg an INSTRUMENT defect, traced rather
+  than explained away: the watchdog sends the process its own SIGUSR1 on every
+  frame stall (fps.cpp:150-156), so "the WARNING exactly once" presupposed a
+  stall-free window; the host was stalling at exactly 1000 ms for whole runs
+  (105/run) on HEAD AND on the pre-fix control `a3437670` (which reproduced its
+  8/16, the eight comment-rule legs) — cause: the claude session's SCREEN LOCK
+  (compositor throttling; `HOST-EVENTS.md` 2026-08-31); criterion refined
+  (quiescence wait + watchdog pairing, degrades LOUDLY when attribution is
+  impossible); control run awake → **16/16, 1 stall/run**, prediction stated
+  first, held. NEW instrument `harness/f63_scedit_agree.py`: scedit's reading vs
+  the engine's `#!` verdict on F63's real artifacts — **12 tails / 12 agree / 0
+  disagreements**, 6 expected findings in the refused-write files (E read-only
+  directory, G changed-since-load); its first version mis-read F.sts:1
+  (`# F: a #! …`, a column-0 comment) as a tail because the grammar sentence
+  omits that only EXECUTED lines carry one (script.cpp:114 drops comment lines
+  before executeCommand; `sc_editcore.cpp:252-255` already requires a command
+  + a comment) → data-precision item folded into F65 scope 4; the script's own
+  reader is a third reading, to be replaced by `--history` (F65 scope 3).
+  Canary `--no-scene`: 2 FAIL on this host by construction (the desktop's bank)
+  — reported, not re-banked. Remotes: local CONTAINS origin on both repos (push
+  = fast-forward; `git fetch` itself refused — auth); the 2026-08-30b non-ff
+  note is superseded by measurement. FEATURE_REQUESTS `#!` entry: the stale
+  "(2) still owed" annotated (landed `4a00cf31`). Round minted in
+  `claude/fable-dispatch.md` (§0b: a task without a section is not
+  dispatchable; scedit tasks deliver to THIS ledger, stated in F65's header):
+  **F65** = item 15(a-ii) error-history pane + `--history` CLI twin + the
+  grammar clause; **F66** = item 19's scedit-side surface (`--doc` / `--search`
+  / `--check --json` + an MCP stdio server over the C++ readers; NO LLM call —
+  the router/triage half stays Vixy's); **F67** = item 6 direct TCP mode +
+  `$LOGON` feed pane + the `#!` write-back handled by requirement + MCP
+  `run_command`. NOT dispatched: the three untriaged engine requests
+  (`[parallel-script]` → tester resubmission; `[script-binding]` /
+  `[script-trigger]` → design decisions named at record time) — listed for
+  Vixy in fable-dispatch §3. Order F65 → F66 → F67 (smallest and ruled first;
+  the display-needing one last, while the display exists).
 - **[2026-08-31d] The `#!` channel exists — engine half of item 15 landed
   (code `2b8ec034`, parent §11.184, harness `f63_annotations.py` 34/34).**
   Design, from the session's reading: provenance threaded (Token → LoopStep →

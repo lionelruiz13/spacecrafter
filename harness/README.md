@@ -2300,6 +2300,29 @@ the quoted-`#` legs GREEN on both binaries (same code there). One vacuous PASS
 to know about: P3 (on→off) passes on the pre binary only because P1 had already
 failed to turn the flag on — the P1+P3 pair discriminates, P3 alone does not.
 
+**2026-08-31, later (11:44–12:03), four more runs — the leg that could not be
+"exactly once":** re-run on `2b8ec034` with the claude session's screen LOCKED →
+**15/16**, the SIGUSR1 count leg RED at count=3 — and the mechanism is the
+watchdog's own: fps.cpp:150-156 sends the process SIGUSR1 on every frame stall,
+so the same WARNING is written once per stall, 50 ms after each `Frame stall
+detected`; the morning's 16/16 held only because its 1.5 s window happened to
+be stall-free. Under the locked session the engine stalls at exactly 1000 ms for
+the whole run (105/run; the pre-fix control `sc_f61_pre` shows the SAME 105 —
+binary exonerated, host attributed: the compositor throttles a blanked output;
+`HOST-EVENTS.md` 2026-08-31), so no log count can attribute a WARNING to the
+driver's signal. Driver now: waits up to 90 s for 3 s without a new stall line,
+then pairs away every WARNING within 100 ms after a stall line and demands
+exactly ONE driver-owned; if quiet is never reached it DEGRADES to "WARNING
+present after the signal" and says so in the check's own name (never a silent
+pass). Results: locked, HEAD → 15/16 RED under the strict criterion (attribution
+impossible, as predicted); locked, pre-fix control → **8/16**, the eight
+comment-rule legs exactly (the RED control reproduced today); screen AWAKE
+(`org.gnome.ScreenSaver.SetActive false`, kept awake by `SimulateUserActivity`
+for the run only), HEAD → **16/16**, quiet after 3.0 s, **1 stall in the whole
+run**, driver-owned WARNING = 1. The result JSON now carries
+`frame_stalls_whole_run`, `frame_stalls_before_signal`, `quiet_after_s`,
+`sigusr1_watchdog_paired_in_window`.
+
 ## F62 — `mod`/`div`/`mul` as aliases, and what a recording keeps (`f62_aliases.py`) — INTENT §11.183, 2026-08-31
 
     cd claude/harness && DISPLAY=:2 ./f62_aliases.py [absOutdir]     # default artifacts/f62
@@ -2343,6 +2366,34 @@ warning, the edit intact; H+I: a fault in a script played BY another →
 annotated in ITS file, the caller untouched; J: a fault inside a `struct loop
 2` body → two log lines (first pass + replay, the replayed line keeps its
 origin), one tail. Measured 2026-08-31 on `2b8ec034`: **34/34**.
+
+## F63 × scedit — does scedit's reading of a line agree with the `#!` verdict the engine wrote on it? (`f63_scedit_agree.py`) — scedit INTENT §5 item 15(a-i), 2026-08-31
+
+    cd claude/harness && ./f63_scedit_agree.py [artifacts/f63] [scedit-binary]
+
+Constraint C1 measured on the FILE rather than on the parser: F63 leaves the
+scripts the engine annotated (`artifacts/f63/*.sts`, written by `ScriptAnnotator`
+at script end); for every line carrying a `#!` tail the tail's first clause is
+mapped to the lint id whose `engine_tail` data in the grammar starts with it
+(the editor's own `MachineTail::relation` mapping), and `scedit --check` must
+report exactly that id on exactly that line — and, the other way, every finding
+scedit reports on those files must sit on a line the engine annotated with the
+same class, except in the two files where the engine's write was REFUSED by the
+leg's design (E: read-only directory; G: the line changed since load), where
+scedit's findings are the expected state. Leg F's quoted `#!` maps to nothing on
+both sides. **Measured 2026-08-31 (F63 on `2b8ec034`, scedit `4a00cf31`): 12
+tails / 12 agree / 0 disagreements / 6 expected findings in E+G.**
+
+What the first version got wrong, kept as record: its own `#!` reader applied the
+grammar sentence ("the first `#!` at or after the first `#` outside quotes")
+without the clause the sentence omits — the annotator only holds notes for lines
+that EXECUTE (a comment-only line is dropped at `script.cpp:114` before
+`executeCommand`), so a `#!` inside a column-0 comment (leg F's line 1) is
+neither written nor cleared by the engine, and scedit's `machineTail` ignores it
+by construction (`sc_editcore.cpp:252-255`). The script's reader is a THIRD
+reading of that rule and is tolerated only until scedit exposes its list
+(`--history`, dispatch task F65) — then it is deleted and the script consumes
+scedit's own reading (I2).
 
 ## F64 — can a small local model route a request to the right command page? (`f64_doc_router.py`) — FEATURE_REQUESTS 2026-08-31 (LLM assistance), 2026-08-31
 

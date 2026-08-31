@@ -229,6 +229,36 @@ EMPTY** — the round's Vixy items ride §3 + their rows.
 
 ---
 
+**Update [Fable 2026-08-31, supervising session 18 — TravellingFoxDev, the scedit
+round]:** trigger = Vixy's line *"Sequential dispatch: Continue the work on scedit
+… test the previous changes landed properly before working on the next
+FEATURE_REQUEST.md entries related to scedit and script engine. Use one agent per
+feature to implement."* Warm-up: both trees clean, code `4a00cf31` / harness
+`f157778`; engine binary at HEAD (`cmake --build -n` empty; last engine commit
+`2b8ec034`); definition-drift assert md5 MATCH (`a5a54d94`); next free §11
+**185** (live ∪ archive); display `:2` answers with the F28 recipe (this laptop
+has a REAL claude login session — §0.5's `/tmp/rt-claude` note is the desktop's);
+canary `--no-scene` **2 FAIL by construction** (the desktop's bank: geometry
+2448x1332 vs 1920x1080, headless compositor absent) — REPORTED (§3), not
+re-banked. PREVIOUS-CHANGES VERIFICATION (the dispatch's first clause): scedit
+8/8; F62 11/11; F63 34/34; F61 15/16 → traced to the INSTRUMENT (fps.cpp:150-156,
+the watchdog's own SIGUSR1 per stall) and to the HOST (screen lock ⇒ 1 Hz frame
+clock, 105 stalls/run on HEAD and on the pre-fix control alike; awake ⇒ 1 stall,
+**16/16**; `HOST-EVENTS.md` 2026-08-31); the pre-fix RED control reproduced
+(8/16); NEW `f63_scedit_agree.py` 12/12 on engine-written files. Picks (§0b.2,
+by mandate position + display availability): **F65** (scedit item 15 a-ii, S) →
+**F66** (item 19's scedit-side surface, M) → **F67** (item 6 direct TCP, M —
+display-needing, hence in this round while the display exists); scedit tasks
+deliver to the MIRROR ledger (stated in F65's header, binding for all three).
+NOT dispatchable, listed in §3: the three untriaged engine requests. Remotes:
+local CONTAINS origin on both repos (push = ff; fetch refused — auth); the
+2026-08-30b non-ff note is superseded. Parent-ledger baselines (pair-check /
+scan) untouched by construction: no parent §5/§11 row is written this round
+(the mirror ledger is outside both instruments' scope) — re-derive only if a
+delivery mints one.
+
+---
+
 ## 0. Cold-session warm-up protocol (run this first, every dispatch)
 
 1. `CLAUDE.md` auto-loads (the map). Read THIS file; locate your task's section; read
@@ -1194,6 +1224,321 @@ five for five delivered and accepted same-session; close per §0b.5 next.)*
 
 ---
 
+### F65 — scedit: the error-history pane — every `#!` line and every finding listed, click-to-warp (scedit INTENT §5 item 15(a-ii); FEATURE_REQUESTS 2026-08-30 `#!`) [S]
+
+**Why now / mandate:** Vixy's ruling [2026-08-30, scedit INTENT §5 item 15(a),
+verbatim]: *"RECOGNIZE `#!` machine annotations as navigable errors — shown on
+the doc bar when the caret is on the line, otherwise listed in an error history
+with click-to-warp-cursor"*. (a-i) — recognise + relate on the bar — landed
+`4a00cf31`; (a-ii) is the pane. The channel is live engine-side (`2b8ec034`,
+F63 34/34 re-run 2026-08-31 11:45) and scedit's reading agrees with the engine
+on every line the engine annotated (`harness/f63_scedit_agree.py`: 12 tails /
+12 agree on F63's real artifacts, same day). Round position 1: smallest,
+ruled, closes item 15 whole.
+
+**Delivery record for scedit tasks (F65–F67):** the MIRROR ledger
+`claude/util/scedit/INTENT.md` — dated append-only journal entry + §5 item
+flips (strike + pointer, supersession-with-record) — and `util/scedit/README.md`;
+a parent `INTENT.md` §11 entry ONLY if an engine-side fact/defect is produced
+(parent mint rules). Build/test: `util/scedit/build-lovely` (`cmake --build .
+-- -j8`; `ctest --output-on-failure`). Executor author `Claude Opus 5`; code
+commit(s) first, harness commit carries `Code: master-beta @ <sha>`.
+
+**Sources (re-read, never recall):** scedit INTENT.md §5 item 15 + journal
+2026-08-31d; `util/scedit/src/sc_editcore.hpp` (MachineTail, `machineTail()`,
+`diagnostics()`, `moveTo`, the FINDINGS ON THE SCREEN note), `sc_tui.cpp`
+(`renderFrame`, the mouse path at `CatchEvent` :419-437, `View`/scroll),
+`tests/editcore_test.cpp`, `tests/ui-selftest-expected.txt` (13 frames, four
+masks per frame), README § The editor; `grammar/sc-grammar.json`
+`parse_model.comments.machine_tail` + the `engine_tail` data on the four block
+seeds; `src/scriptModule/script_annotator.hpp` + `.cpp` (`annotationBegin`,
+`flush` — the writer's contract; READ-ONLY here); `harness/f63_scedit_agree.py`
+(today's instrument, with the I2 defect named in scope 3).
+
+**Preconditions (checkable, §0.7 gate):** code HEAD `4a00cf31`, tree clean;
+harness HEAD as the dispatch prompt states, tree clean; scedit builds in
+`build-lovely` with **8/8** gates (tokenizer **189** checks, editcore **193**,
+parse_oracle **119 337/0**, ui_selftest **13** frames, `lint-expected.txt`
+**27** lines, `corpus-expected.txt` **15**, `lint_seeds` **15**, DocIndex
+commands **65**); `harness/artifacts/f63/*.sts` present (A/D/I/J annotated,
+F's line 1 a column-0 comment holding `#!`, E/G unwritten by design); NO engine
+launch, NO display, NO rebuild; live `### F` count **8**; next free §11 **185**
+(not expected to be consumed). ANY broken ⇒ abort per §0.7.
+
+**Scope:**
+1. **Headless first (EditCore):** an accessor listing the buffer's ERROR
+   ENTRIES in line order — every line carrying a `#!` tail (source ENGINE: the
+   tail's sentence(s) and their relation, per MachineTail) and every scedit
+   finding (source SCEDIT: id, severity, message, span) — recomputed with the
+   findings after every edit; and `warpTo(entry)`: caret to the entry's line,
+   at the span's begin (a finding) or at the `#!` (a tail). State in the header
+   what "history" means here — the CURRENT buffer's set: the engine's tails
+   persist in the file until the fault is fixed, so the file IS the history —
+   and mark that reading of Vixy's word as an interpretation, flagged in the
+   README (veto open).
+2. **The pane (sc_tui):** a list region showing the entries (line number,
+   source mark, severity, message truncated to width); click on a row → warp
+   through the existing click→core path; keyboard equivalents (next/previous
+   entry; toggle the pane) — scedit-owned UX calls, README-stated (the
+   display-cap precedent, 2026-08-04h); the caret's entry highlighted; the
+   view chases the caret after a warp. The doc-bar behaviour of (a-i) is
+   unchanged.
+3. **CLI twin — `scedit --history FILE...`:** prints the same list (one entry
+   per line, a stable machine-readable shape stated in the README: file, line,
+   source, id-or-`#!`, relation/message) — so a harness measures the pane's
+   content without a tty. Then **retire the instrument's own reader**:
+   `harness/f63_scedit_agree.py` carries a Python `tail_of` approximating the
+   grammar sentence (a THIRD reading of the `#!` rule — I2), and it mis-read
+   F.sts:1 today; rewrite it to consume `--history`, delete `tail_of`, add the
+   leg table (E = read-only directory, G = line changed since load: engine
+   writes REFUSED by design, so scedit's findings there are expected and are
+   not disagreements), keep 12/12 as the recorded result.
+4. **Grammar precision, DATA only:** `parse_model.comments.machine_tail` says
+   the tail begins at "the first `#!` at or after the first '#' outside
+   quotes" — incomplete: the annotator only holds notes for lines that
+   EXECUTED (comment-only lines are dropped at `script.cpp:114` before
+   `executeCommand`; `ScriptAnnotator::flush` iterates its notes), so a `#!`
+   inside a column-0 comment is neither written nor cleared by the engine —
+   and scedit's `machineTail` already ignores such lines by construction
+   (`sc_editcore.cpp:252-255`: no tail unless the line HAS a command and a
+   comment; verified 2026-08-31 on F63's F.sts:1 — no tail reported). Add the
+   executes-only clause with all three anchors; note it in `_meta.amended`;
+   families/counts byte-untouched (seed gate proves it).
+5. **Verification:** editcore_test cases (entries in order; a line with a
+   tail AND a finding — state whether that is one entry or two and why; warp
+   lands on the stated byte; an edit that fixes a fault removes its entry;
+   F.sts:1's shape yields NO engine entry); ui_selftest frames with the pane
+   (mixed entries; after a warp — the `inv` mask pins the caret on the warped
+   line; a clean buffer's empty pane), record lines added deliberately and the
+   tamper-test shown; a `--history` gate over `tests/lint_cases.sts` plus an
+   F63-shaped fixture carrying `#!` tails (expected file, dispositioned);
+   roundtrip gate unchanged (the pane never writes). All gates green on a
+   clean build, 0 warnings.
+6. **Record:** scedit INTENT journal entry (dated), item 15 struck (a-ii
+   DONE, the "history" reading flagged), README (keys table, the pane,
+   `--history`, "What the editor cannot do yet" adjusted), FEATURE_REQUESTS
+   `#!` entry: one-line status annotation "scedit half complete (F65)"; harness
+   README: the `f63_scedit_agree.py` section.
+
+**Boundaries:** scedit NEVER writes or rewrites a `#!` (roundtrip byte-exact
+stays gated); NO engine code; NO grammar content beyond scope 4; NO LLM, NO
+TCP (F66/F67); `--check`'s printed shape untouched (D6).
+
+**DoD:** scope 1–6; every gate green on a clean build; each new record gate
+falsification-tested (a tampered expected line → FAIL, shown in the report);
+`f63_scedit_agree.py` green through `--history` with its own reader deleted;
+ledger + README + FR annotation committed; code tree clean; WIP per §0.6.
+**WIP:**
+
+### F66 — scedit: the documentation surface for machines — `--doc`, `--search`, `--check` as JSON, and an MCP stdio server over the same readers (FEATURE_REQUESTS 2026-08-31 "LLM assistance"; scedit INTENT §5 item 19) [M]
+
+**Why now / mandate:** Vixy [2026-08-31, verbatim]: *"The documentation-helper
+LLM gate which documentation page and command to show given what the user
+asked - the coding-helper LLM write or edit spacecrafter script (or just bind
+the documentation-helper as MCP - for instance, to claude code - which can be
+run with ollama launch using local LLM - or another harness), vibe scripting is
+probably the easiest path"*. The recorded structural read (FR entry, "placement
+rec, veto open", unvetoed at dispatch): the tools' AUTHORITY stays scedit's C++
+readers (Grammar, DocIndex, checker) — a `--doc`/`--search` JSON surface — and
+the MCP layer is a thin stdio JSON-RPC adapter over it; no second reader of the
+grammar (I2). NOT in this task: any LLM call and the standalone router mode —
+those wait for Vixy's triage (which mode first · local-only default · checker
+as a hard gate in agent mode). The tools serve the router later and every
+harness now; F64's measurement built its catalogue in Python from the JSON —
+a second reader this task replaces at the authority.
+
+**Sources (re-read, never recall):** FEATURE_REQUESTS.md "LLM assistance" entry
+IN FULL (facts (1)–(6), the refinement, the F64 results); `harness/
+f64_doc_router.py` (the model-free bag-of-words BASELINE and the 340 witness
+(comment → command) pairs it scores — this task's discriminating check);
+scedit `src/sc_docindex.hpp` (Spec/CommandInfo/`familyMember`/
+`dormantFeatures`/`kNoDoc`), `sc_grammar.hpp`, `sc_check.hpp` (Diagnostic,
+`checkBuffer`, `unarmedRules`), `src/main.cpp` (CLI shape, exit codes 0/1/2),
+README § Use + § The grammar file; `third_party/nlohmann/` (vendored, D4); the
+MCP specification — FETCH at implementation time from
+`https://modelcontextprotocol.io/specification/` (latest revision), never
+recalled; record revision + fetch date in the README. Delivery record: as
+stated at F65.
+
+**Preconditions (checkable, §0.7 gate):** code HEAD as the dispatch prompt
+states (F65 DELIVERED and accepted), tree clean; harness HEAD as stated,
+clean; scedit gates all green on `build-lovely` (count as the prompt states);
+network reachable for the one spec fetch (2026-08-31 11:4x: `raw.githubusercontent`
+answered 200, `modelcontextprotocol.io` 308); `harness/f64_doc_router.py`
+present with its baseline scorer and pair extraction; NO engine launch, NO
+display; live `### F` count **8**; next free §11 **185** (none expected). ANY
+broken ⇒ abort per §0.7.
+
+**Scope:**
+1. **`scedit --doc <command> [<key> | <family member>]`** → JSON on stdout,
+   exactly what DocIndex holds: `doc` (JSON `null` where `doc_known` is false —
+   the honest-null rule must survive serialisation), value domain, `values`
+   (verbatim) with the completable subset marked, default sentence (+ literal
+   when present), required, source anchor, notes, `args_complete`, `alias_of`
+   (an alias answers with the canonical's keys and its own doc/registration,
+   as both readers already resolve it); a family member (`--doc flag stars`)
+   through `familyMember`; an unknown name → exit 2 with a JSON error naming
+   the vocabulary it is missing from (did-you-mean permitted, from the same
+   readers). `--doc` alone → the catalogue (every command + its one-liner +
+   its family's pages where the command draws on one) — the shape F64 built
+   in Python, now from the authority.
+2. **`scedit --search <words...>`** → JSON ranked pages (command /
+   command+key / family member) under a STATED deterministic score over names
+   and doc lines; no inference, no invented synonyms. Discriminating check:
+   over F64's 340 pairs, `--search`'s top-1 must equal the Python baseline's
+   verdict pair by pair (the baseline's algorithm is the spec — port it
+   exactly, or state precisely where it differs and why, and re-measure both
+   sides); committed as `harness/f66_search_parity.py` + result; the hit count
+   (80/340 at F64) is RECORDED, never optimised here.
+3. **`--check` as JSON** (`--check --json` or a sibling flag): the diagnostics
+   as objects (file, line, severity, id, message, span begin/end) beside the D6
+   text shape, which stays byte-identical (the expected files pin it).
+4. **`scedit --mcp`:** an MCP server on stdio (JSON-RPC 2.0 per the fetched
+   spec: `initialize`/`initialized`, `tools/list`, `tools/call`, the error
+   shapes) exposing `doc_lookup` (= 1), `doc_search` (= 2), `check_script`
+   (= 3, over text or a path). A tool REGISTRY (name, description, input
+   schema, handler) is the single place a tool is declared, so F67 adds
+   `run_command` without touching protocol code. Tool descriptions written to
+   the zero-knowledge bar (they are what the outside model reads). No network,
+   no LLM, no state between calls beyond the loaded grammar; stdout is the
+   protocol, everything else to stderr.
+5. **Verification:** ctest gate `mcp_protocol` — a Python (stdlib-only) client
+   in `tests/` that spawns `scedit --mcp`, performs the handshake, lists
+   tools, calls each with good and bad arguments, asserts shapes and the
+   honest-null survival (`dso3d` `z_reflection` → `null`); gates for
+   `--doc`/`--search`/`--check --json` with expected files (deliberate records,
+   dispositioned); the parity script green; optional EVIDENCE, not DoD: a
+   non-interactive Claude Code binding smoke (`claude mcp add … -- scedit --mcp`
+   / `claude -p`) if it runs here without a tty.
+6. **Record:** README (Use; a "For machines" section: JSON shapes, the MCP
+   binding line, the spec revision fetched); scedit INTENT journal entry +
+   item 19 updated (scedit-side surface DONE; the router/LLM half stays with
+   Vixy's triage, questions restated); FEATURE_REQUESTS entry status
+   annotation; harness README section for the parity script.
+
+**Boundaries:** NO LLM call anywhere in scedit; NO grammar CONTENT change
+(items 11/12's doc passes are separate); NO engine code; NO TCP (F67); NO
+second parser of the grammar (the Python parity script may read the JSON only
+to extract the witness pairs, never to answer a query); no ollama/OpenAI client.
+
+**DoD:** scope 1–6; every gate green on a clean build, 0 warnings; the parity
+check committed with its result and falsification-tested; the spec revision
+recorded; code tree clean; WIP per §0.6.
+**WIP:**
+
+### F67 — scedit: direct TCP mode — the live engine as target, the `$LOGON` feed as a pane, and the engine's `#!` write-back handled by requirement (D31 "direct tcp mode"; scedit INTENT §5 item 6) [M]
+
+**Why now / mandate:** the original request (FEATURE_REQUESTS 2026-07-29, D31
+side-note): *"direct tcp mode"*; scedit INTENT §5 item 6: *"TCP client mode —
+line protocol + `$LOGON` feed pane"*, prerequisite MET 2026-08-31 (the engine
+builds and runs here; F61–F63 drove it over 7805 twice today). The display
+session exists in THIS session — the reason the display-needing task is in
+the round now. Runs LAST: it consumes F66's tool registry.
+
+**Sources (re-read, never recall):** `src/tools/io.hpp` (ClientMessage; the
+`getInput`/`setOutput` notes = §5.47's reply routing: a reply goes to the
+connection that asked AND to `$LOGON` subscribers), `src/tools/io.cpp:625-730`
+(`$NOTICE $LOGON $LOGOFF`, the feedback channel), `claude/capability-surface.md`
+§1 row 2 (channel 2: `io:enable_tcp` shipped true, port `io:tcp_port_in` =
+7805, line protocol), `INTENT/5.47.md`; harness `f27_reply.py`
+(`Client.send`/`poll_for_reply`, `Session` = the fresh-launch / temp-HOME farm /
+concurrent-instance instrument — REUSE it), `f61_live_rulings.py` and
+`f63_annotations.py` (protocol witnesses: newline-terminated latin-1 lines,
+`script action play filename <absolute>`, the script log's `ScriptMgr: script
+end`, `session action save` as the flag-state read channel);
+`src/scriptModule/script_annotator.hpp` (WHEN the engine writes the file:
+batch at script end, sibling temp + rename, a line changed since load skipped
+with a warning); scedit `sc_editcore.hpp`, `sc_document.hpp` (`dirty()`, the
+loaded bytes), `sc_tui.cpp`, README; harness README §F28 (the XAUTHORITY
+recipe) and the §0.5 environment bullets. Delivery record: as stated at F65.
+
+**Preconditions (checkable, §0.7 gate):** code HEAD as the dispatch prompt
+states (F65 + F66 DELIVERED and accepted), tree clean; harness HEAD as stated,
+clean; engine binary `build-claude/src/spacecrafter` at code HEAD for every
+engine source (`cmake --build build-claude --target spacecrafter -- -n` lists
+nothing to build; scedit commits touch no engine source, so no rebuild is
+expected — if one is owed, `free -g` first, `nice -j6`); display on THIS host:
+`DISPLAY=:2` with `XAUTHORITY=$(ls /run/user/$(id -u)/.mutter-Xwaylandauth.*)`
+(the F28 recipe — TravellingFoxDev has a real login session for `claude`;
+§0.5's `/tmp/rt-claude` note is the DESKTOP's and does not apply), `xdpyinfo`
+answers 1920x1080; the environment canary (`harness/f56_canary.sh --no-scene`)
+is banked for the desktop and FAILS here by construction on `display.geometry`
+(1920x1080 vs banked 2448x1332) and `compositor.absent` — REPORTED to Vixy at
+round open (session-18 note, §3): run it, RECORD its output in the delivery,
+do NOT gate on it and do NOT re-bank (the owner's fork, §11.174(f)); no other
+spacecrafter instance (the `/proc/<pid>/comm` probe); pristine md5 pair
+`03fbee59`/`545a51ef` in == out asserted; live `### F` count **8**; next free
+§11 **185** (an engine-side PROTOCOL GAP found → recorded there per parent
+rules, never fixed here). Known host fact, a PRECONDITION of any timing: with the
+claude session's screen LOCKED the compositor throttles the engine to a 1 Hz
+frame clock (`Frame stall detected` every 1000 ms for the whole run; measured
+2026-08-31, `HOST-EVENTS.md`) — before each launch read
+`gdbus call --session --dest org.gnome.ScreenSaver --object-path /org/gnome/ScreenSaver --method org.gnome.ScreenSaver.GetActive`
+and RECORD it; if true, wake it (`SetActive false`, then `SimulateUserActivity`
+once a minute for the run's length — the session-18 control, reported to Vixy as
+a veto item) and record that too; never wait on fixed sleeps for engine-side
+events — wait on the script log (`ScriptMgr: script end`) as F63 does.
+ANY broken ⇒ abort per §0.7.
+
+**Scope:**
+1. **A headless client component** (`sc_tcpclient.hpp/.cpp`; ownership and the
+   I5 relation to EditCore stated in the header): connect/disconnect, send one
+   line, non-blocking receipt of reply lines and feed lines, `$LOGON` on
+   connect and `$LOGOFF` on disconnect, latin-1 bytes both ways, connection
+   state as data. Testable WITHOUT the engine: a Python (stdlib) fake engine in
+   `tests/` that records what arrives and answers canned lines → ctest gate.
+2. **The editor surface:** `--tcp [host:]port` (default 127.0.0.1:7805;
+   connect on demand; state shown); SEND the caret's line as a live command;
+   PLAY the open file (`script action play filename <absolute path>` — the
+   engine reads the FILE, so a dirty buffer is saved first or the play refused
+   with the reason stated); the FEED PANE showing what the engine sends
+   (replies to this connection + the `$LOGON` feed), scrolling, bounded (state
+   the bound). Keys/layout: scedit-owned UX, README-stated.
+3. **The `#!` write-back, by REQUIREMENT:** the engine rewrites the played
+   file at the script's natural end. scedit must (a) DETECT that the on-disk
+   file changed since load (md5 of the loaded bytes vs disk) — after a play,
+   on a bounded poll while a play is in flight (an external writer with no
+   notification channel is I3's admitted poll case: bounded, ≤ 1 Hz, never
+   several times per second), and ALWAYS before a save; (b) with a CLEAN buffer,
+   reload and show the new tails (a-i/a-ii light up); (c) with a DIRTY buffer,
+   never overwrite silently: refuse the save with a message naming the choice
+   (reload-and-lose-edits / write-over-the-engine's-tails) — the exact UX is
+   scedit's call, README-stated; the INVARIANT is that no author edit and no
+   engine tail is lost without an explicit choice. Mirror of the engine's own
+   rule (a line changed since load is skipped with a warning).
+4. **MCP `run_command`** through F66's registry over the same client (one
+   authority): send a line, return the reply lines gathered within a stated
+   wait; host/port as tool arguments with the same defaults; description on
+   the zero-knowledge bar, stating that it acts on a LIVE dome.
+5. **Live verification, discriminating, on a fresh temp-HOME launch through
+   `f27_reply.Session`** (or an equivalent keeping its asserts): (a) a line
+   sent by scedit's client is EXECUTED — flag state read back through
+   `session action save` as a TRANSITION (F61's observable); (b) a `get` reply
+   reaches scedit's own connection (§5.47) and the feed shows it; (c) the
+   `$LOGON` feed receives what the engine broadcasts; (d) play-the-open-file
+   with a block fault → the engine writes `#!` → scedit's clean buffer reloads
+   with the tail recognised (`--history` lists it); (e) the dirty-buffer path
+   REFUSES to overwrite and the on-disk file keeps the engine's tail
+   byte-exact; (f) disconnect/reconnect. Committed as `harness/f67_tcp_live.py`
+   + result JSON; predictions stated before the run; the observable named per
+   leg; one leg shown ABLE TO FAIL (the (e) path forced through).
+6. **Record:** README (Use: `--tcp`; a "Live mode" section: the feed, the
+   write-back rule, the refusal), scedit INTENT journal + item 6 struck;
+   FEATURE_REQUESTS 2026-07-29 entry status annotation (D31's spec complete but
+   for the default-greyed ghost DATA, items 11/12); harness README F67 section;
+   any protocol gap → parent §5/§11 per rules, routed to Vixy.
+
+**Boundaries:** NO engine code (a protocol gap — e.g. no script-end
+notification on the feed — is RECORDED with the workaround, never fixed here);
+scedit never writes a `#!`; nothing is sent to the engine without an explicit
+user action (no auto-play, no reconnect loops); NO photometric claim; NO
+grammar content; NO writes into `~/.spacecrafter` (farm launches only).
+
+**DoD:** scope 1–6; offline gates green on a clean build, 0 warnings; the live
+instrument committed with its both-ways discrimination record; canary output
+recorded; code tree clean; WIP per §0.6.
+**WIP:**
+
 ## 2. Blocked — NOT dispatchable (reason stated so the exclusion is challengeable)
 
 - **B1/S4 + B2 + riding rows** (D4 surface streaming, RING asteroid, INSTANCED
@@ -1218,6 +1563,39 @@ five for five delivered and accepted same-session; close per §0b.5 next.)*
 
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
+- **Session-18 decision items (2026-08-31, the scedit round on TravellingFoxDev):**
+  - **YOUR DISPLAY DURING DISPATCH: a locked screen runs the engine at 1 Hz.**
+    Measured: screensaver active → `Frame stall detected` every 1000 ms for
+    whole runs (105/run, HEAD and the pre-fix control alike); awake → 1. Any
+    fixed-sleep instrument or per-frame claim taken on a locked session is
+    wrong by up to a second per frame (F63's 34/34 survived it only because it
+    waits on the script log). Options: (a) the claude session never blanks/locks
+    while dispatch runs (`idle-delay 0`, lock off) — a host setting, YOURS;
+    (b) each launch wakes the display itself (`org.gnome.ScreenSaver.SetActive
+    false` + `SimulateUserActivity`, what the control did once) — an instrument
+    mitigation reported here per §11.174(h): say the word. Side fact: that D-Bus
+    call DISMISSED THE LOCK from inside the session (`LockedHint` yes→no) — a
+    process in claude's session can unlock claude's screen.
+  - **THE CANARY BANK IS THE DESKTOP'S** — on this laptop it fails
+    `display.geometry` (1920x1080) and `compositor.absent` by construction.
+    Per-host banks (a host key in the VALUES block) = one edit + one scene run
+    per host; the :2/:4 fork stays open on the desktop. Not done.
+  - **THE `#!` GENERIC CHANNEL** (FEATURE_REQUESTS 2026-08-30): still yours —
+    yes / no / which subset (unknown command and unknown flag dominate; ~1661
+    tails into 35 shipped scripts on first run).
+  - **LLM ASSISTANCE TRIAGE** (FEATURE_REQUESTS 2026-08-31): F66 builds the
+    tool surface (no model call); the standalone router (gemma4 on CPU, 58.5%
+    two-level) waits for: which mode first · local-only default · checker as a
+    hard gate in agent mode.
+  - **THREE UNTRIAGED ENGINE REQUESTS NOT DISPATCHED** — `[parallel-script]`
+    routes to the tester as a RESUBMISSION (§11.173's interface; the
+    resume/speedup clauses still unwritten); `[script-binding]` needs the
+    key-map authority decision (one surface or two, B37); `[script-trigger]`
+    `@requires` binding. Implementable only after your triage — say which, in
+    what order, and they get sections.
+  - **Remotes:** local contains origin on BOTH repos (a push would
+    fast-forward); `git fetch` is refused for this user (auth) — the
+    2026-08-30b "not fast-forward" note is superseded by measurement.
 - **Session-17 decision items (2026-08-30, F56–F60 / §11.176–§11.180):**
   - **THE DIM ERA IS FULLY ATTRIBUTED AND FENCED, and b3_ladder WAS NEVER RED**
     (F56 §11.176(g)): on the healthy stack the unmodified ladder returns

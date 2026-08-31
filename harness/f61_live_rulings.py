@@ -45,6 +45,18 @@ whose behaviour the corpus runs of 2026-08-30 measured on 408 scripts):
   (fps.cpp:131-139) must write the WARNING naming the missing facility into
   vulkan.log, and the process must SURVIVE the signal (SIGUSR1's default
   disposition is termination — survival proves the handler is installed).
+  The watchdog sends SIGUSR1 to the process ITSELF on every frame stall
+  (fps.cpp:150-156: two 50 ms ticks without a new frame -> `Frame stall
+  detected` + kill(pid, SIGUSR1)), so the same WARNING is also written once
+  per stall, one tick (50 ms) after the stall line. The 2026-08-31 morning
+  criterion "exactly one WARNING" therefore held only because no stall fell
+  in the 1.5 s window (measured the same day, 11:44: a 1 Hz stall train
+  during the big-texture load put 2 watchdog WARNINGs in the window ->
+  count=3, RED on a binary whose handler was fine). Now: the driver waits
+  for the stall train to be quiet (no `Frame stall detected` for 3 s, up to
+  90 s), and a WARNING counts as the driver's only when NO stall line sits
+  within the 100 ms before it — the watchdog's own are paired away. The
+  whole run's stall count is recorded as an observation, never gated here.
 
 Every launch is fresh, on a temp-HOME farm (b3_farm.sh) with `sessions/` made
 a REAL dir (the farm would symlink it into the field, and a session save would
@@ -193,13 +205,40 @@ time.sleep(1.0)
 
 # ---------------------------------------------------------------- SIGUSR1
 vk = sc / "log" / "vulkan.log"
-before = vk.read_text(encoding="latin-1", errors="replace").count(STACK_WARN) if vk.exists() else 0
+STALL = "Frame stall detected"
+TS = re.compile(r"^(\d+): \(\w+\.?\): (.*)$")
+
+def stamped(text, needle):
+    """[t_ms, ...] of every log line carrying `needle` (vulkan.log lines start with the ms stamp)."""
+    out = []
+    for ln in text.splitlines():
+        m = TS.match(ln)
+        if m and needle in m.group(2): out.append(int(m.group(1)))
+    return out
+
+def vk_text():
+    return vk.read_text(encoding="latin-1", errors="replace") if vk.exists() else ""
+
+# The watchdog's own SIGUSR1 per frame stall (fps.cpp:150-156) writes the same
+# WARNING; wait until the stall train is quiet so the driver's signal lands alone.
+t = time.time(); quiet_at = None
+while time.time() - t < 90:
+    st = stamped(vk_text(), STALL)
+    time.sleep(3.0)
+    if stamped(vk_text(), STALL) == st:      # no new stall line in 3 s
+        quiet_at = time.time() - t; break
+stalls_before_signal = len(stamped(vk_text(), STALL))
+before_txt = vk_text()
 os.kill(proc.pid, signal.SIGUSR1)
 time.sleep(1.5)
 alive = proc.poll() is None
-after_txt = vk.read_text(encoding="latin-1", errors="replace") if vk.exists() else ""
-warn_count = after_txt.count(STACK_WARN) - before
-stack_dump = bool(re.search(r"^\S+: \(Layer\)", after_txt, re.M)) if have_stacktrace else None
+after_txt = vk_text()
+delta = after_txt[len(before_txt):] if after_txt.startswith(before_txt) else after_txt
+warns = stamped(delta, STACK_WARN); stalls_in_window = stamped(delta, STALL)
+all_stalls_so_far = stamped(after_txt, STALL)
+paired = [w for w in warns if any(0 <= w - s_ <= 100 for s_ in all_stalls_so_far)]
+warn_count = len(warns) - len(paired)          # WARNINGs the driver's signal owns
+stack_dump = bool(re.search(r"^\S+: \(Layer\)", delta, re.M)) if have_stacktrace else None
 
 # ---------------------------------------------------------------- shutdown
 try: send("shutdown action now", 0.2)
@@ -274,7 +313,21 @@ check("SIGUSR1: process survived the signal (handler installed)", alive)
 if have_stacktrace:
     check("SIGUSR1: a stack was written (HAVE_STACKTRACE build)", stack_dump)
 else:
-    check("SIGUSR1: the watchdog wrote the 'no std::stacktrace' WARNING exactly once", warn_count == 1, "count=%d" % warn_count)
+    # Under a PERMANENT stall train (measured 2026-08-31 11:52 on this host: 105
+    # stalls per run at exactly 1000 ms, on HEAD and on the pre-fix control alike)
+    # the watchdog signals itself every second and the flag is a boolean, so no
+    # log count can attribute a WARNING to the driver's signal. The leg then
+    # keeps what still discriminates - survival (the handler is installed) and
+    # the WARNING text itself (the probe's message is what this build prints) -
+    # and SAYS which criterion applied; it never passes silently.
+    if quiet_at is not None:
+        check("SIGUSR1: the watchdog wrote the 'no std::stacktrace' WARNING exactly once for the DRIVER's signal (watchdog-paired ones excluded)",
+              warn_count == 1, "driver-owned=%d, watchdog-paired in window=%d, stalls in window=%d, stalls whole run=%d, quiet after %.1f s"
+              % (warn_count, len(paired), len(stalls_in_window), len(stamped(after_txt, STALL)), quiet_at))
+    else:
+        check("SIGUSR1: WARNING present after the signal - DEGRADED criterion: the stall train never went quiet (90 s), attribution to the driver impossible",
+              len(warns) >= 1, "warnings in window=%d (all watchdog-pairable), stalls in window=%d, stalls whole run=%d"
+              % (len(warns), len(stalls_in_window), len(stamped(after_txt, STALL))))
 
 md5_out = {k: md5(REAL / k) for k in PRISTINE}
 check("real ~/.spacecrafter config/ssystem md5 in == out", md5_out == md5_in, json.dumps(md5_out))
@@ -285,6 +338,8 @@ ok = all(r["ok"] for r in results)
     "sessions": {"p1": s_p1, "p3": s_p3, "t1": s_t1}, "executed": execd,
     "unrecognized_culprits": culprits, "flag_unknown": flag_unk, "echo": echo,
     "sigusr1_warn_count": warn_count, "alive_after_sigusr1": alive,
+    "sigusr1_watchdog_paired_in_window": len(paired), "frame_stalls_whole_run": len(stamped(after_txt, STALL)),
+    "frame_stalls_before_signal": stalls_before_signal, "quiet_after_s": quiet_at,
     "results": results, "all_ok": ok}, indent=1))
 print("\n%s: %d/%d checks" % ("ALL GREEN" if ok else "RED", sum(r["ok"] for r in results), len(results)))
 sys.exit(0 if ok else 1)

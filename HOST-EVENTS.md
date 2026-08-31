@@ -42,3 +42,30 @@ never rewrite (maintenance invariant). Archival per the standing convention
   OPEN, owner's** (§11.174(f)); re-bank = one VALUES-block edit + one run.
 - 2026-08-30 [fable, session-17 close] this file created; all prior entries seeded
   from the cited ledger nodes.
+- 2026-08-31 [measured, fable session 18 — the scedit round on **TravellingFoxDev**, the
+  LAPTOP; every entry above is LovelyFoxDev's] host identity: `claude` holds a REAL logind
+  session (id 5, seat0, tty2, Active=yes, `wayland-0`, `XDG_RUNTIME_DIR=/run/user/1003`);
+  `:2` = XWAYLAND0 **1920x1080@143.88**, GTX 1660 Ti 6144 MiB, driver 580.173.02; the F28
+  XAUTHORITY recipe (`/run/user/$(id -u)/.mutter-Xwaylandauth.*`) applies — §0.5's
+  `/tmp/rt-claude` note does NOT. Consequence: `f56_canary.sh --no-scene` FAILS here by
+  construction (`display.geometry` 1920x1080 vs banked 2448x1332; `compositor.absent`: no
+  headless gnome-shell) — the bank is the desktop's; per-host re-banking is the owner's
+  fork (§11.174(f)), reported not done; the functional launches (F61–F63) proceeded, none
+  photometric.
+- 2026-08-31 11:44–12:03 [measured, F61 ×4 + F62/F63 logs] **SCREEN LOCK ⇒ 1 Hz FRAME
+  CLOCK.** With the claude session's screensaver ACTIVE (`org.gnome.ScreenSaver.GetActive`
+  true, `LockedHint=yes`, `lock-enabled true`, `idle-delay 300`) the engine logs `Frame
+  stall detected` every **1000 ms** for the whole run (105 stalls/run; 101 of 104
+  intervals exactly 1000 ms) on HEAD `2b8ec034` AND on the pre-fix control `a3437670`
+  alike — the compositor throttling a blanked output, not the binary; each stall makes
+  the watchdog send itself SIGUSR1 (fps.cpp:150-156). Screensaver deactivated: **1 stall
+  in the whole run**, F61 16/16 (prediction stated before the run, held). Instrument
+  consequence: any fixed-`sleep` timing or per-frame claim taken on a locked session is
+  wrong by up to 1 s per frame; F61's SIGUSR1 leg now waits for stall quiescence and
+  pairs the watchdog's own WARNINGs away (or says it could not). HOST FACT for the
+  owner: `gdbus … org.gnome.ScreenSaver.SetActive false` from inside the session
+  DISMISSED THE LOCK (`LockedHint` yes→no) — used once as the discriminating control
+  (self-reverting after idle-delay, kept awake by `SimulateUserActivity` for the run's
+  length only); keeping the display awake during dispatch (idle-delay 0 / lock off) vs a
+  per-launch wake is the OWNER's call — decision flag in the session-18 report. Auto-suspend
+  inert: `sleep-inactive-ac-timeout 0`, on AC.
