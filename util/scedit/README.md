@@ -40,13 +40,25 @@ under `third_party/` (see "Vendoring").
 
     cd util/scedit
     cmake -B build && cmake --build build
-    cd build && ctest --output-on-failure     # 9 gates, see "Verification"
+    cd build && ctest --output-on-failure     # 12 gates, see "Verification"
+
+`-Wall -Wextra` are set on scedit's OWN targets (library, TUI layer, binary,
+test binaries) and on nothing else: the vendored trees under `third_party/`
+compile exactly as their authors ship them, because a warning there is neither
+ours to fix nor evidence about our code. The build is at zero warnings, and
+since 2026-08-31 that is a statement which can be false — before that date the
+project set no warning flags at all, so "clean build" proved only that it
+compiled.
 
 ## Use
 
     scedit [--grammar FILE] [--list FAMILY]          # default: validate the contract
     scedit [--grammar FILE] [--rules] --check FILE...
     scedit [--grammar FILE] --history FILE...        # the error pane's list, no tty
+    scedit [--grammar FILE] --doc [CMD [KEY|NAME]]   # the documentation, as JSON
+    scedit [--grammar FILE] --search WORDS...        # which page answers this?
+    scedit [--grammar FILE] --check --json FILE...   # the findings, as JSON
+    scedit [--grammar FILE] --mcp                    # MCP server on stdio
     scedit [--grammar FILE] [--edit] FILE            # the editor
     scedit [--grammar FILE] --ui-selftest            # render fixed frames, no tty
 
@@ -109,6 +121,9 @@ printed, 2 a file could not be read.
 The shape is a contract, not a print: `claude/harness/f63_scedit_agree.py`
 consumes it to compare scedit's reading of a script with the verdict the engine
 wrote into that same file.
+
+**`--doc`, `--search`, `--check --json`, `--mcp`** — the same answers, addressed
+to a program instead of to a reader. See "For machines" below.
 
 ## The editor
 
@@ -263,6 +278,155 @@ because there is no byte for it in this file.
 | 1 | findings were reported (or the contract failed validation) |
 | 2 | usage error, or a file could not be read / parsed |
 
+## For machines
+
+The editor shows a human what the contract file says about the thing under the
+cursor. These four modes say the same thing to a program — a harness, a script,
+or a language model through the MCP server below — and they exist because the
+alternative is a model answering from its recollection of a planetarium's script
+language. Nothing here is a second reader of the grammar: every answer comes
+from `Grammar` and `DocIndex`, the two objects the doc bar reads
+(`src/sc_docjson.hpp`). No model is ever called, and nothing in scedit opens a
+network connection.
+
+**The honest null survives.** A `doc` field that is JSON `null` means *no
+documentation has been extracted for this name*, and it is the one field that
+carries that distinction, because it is the one the file draws. Two argument
+keys are null today (`dso3d z_reflection`, `suntrace sun` — both flagged, the
+code does not support a sentence) and so are all 184 names of the five families
+whose doc pass has not run. `"present": true, "doc": null` says the name exists
+and its documentation does not. Every other field is the file's own text, empty
+where the file says nothing.
+
+### `--doc [<command> [<key> | <family name>]]`
+
+    scedit --doc                       # the catalogue
+    scedit --doc image                 # one command: its doc, keys, key specs, family
+    scedit --doc image filename        # one argument key
+    scedit --doc flag stars            # one family name (flag/set/color/font)
+
+One JSON document on stdout. A command page carries `doc`, `registration` (the
+engine site the command is registered at), `alias_of`, `args_complete`,
+`args_source`, `keys`, the full spec of each key under `args`, `key_grammar`
+where the command's keys are not a fixed list, and — for the four commands that
+name a family — `family` and its `members`. A key or family-name page carries
+`doc`, `value_domain`, `values` (verbatim, prose entries included) with the
+subset that may be OFFERED as a completion under `completable`, `value_docs`,
+`default` (a sentence today, see D31), `default_literal`, `required`, `source`
+and `notes`. An alias answers with its own `doc` and `registration` and the
+canonical command's keys, which is how both readers resolve it.
+
+The catalogue is the two-level shape a model is given as context: every command
+with its one-liner, and under `flag`, `set`, `color` and `font` the names that
+family accepts. Argument keys are not in it — they are one `--doc` away and
+would quadruple it.
+
+A name that is not in the vocabulary is answered, not guessed at: exit **2**,
+and on stdout an object with `error`, `message`, `vocabulary` (which vocabulary
+was searched, and whether the file claims it is complete) and `did_you_mean` —
+the checker's own suggestion, so `--doc` and `--check` cannot disagree about
+what the engine's nearest name is.
+
+### `--search <words>...`
+
+Ranked pages for a few words of a request, best first, `--scope all` (default:
+commands, argument keys and family names) or `--scope commands`, `--limit N`.
+Each result carries `page`, which is exactly the arguments to pass to `--doc`.
+
+The score is published, and there is no inference and no synonym anywhere in it:
+
+    score(page) = |words(query) & words(page)| / (1 + sqrt(|words(page)|))
+
+where `words` lowercases, cuts on anything outside `[a-z_]` and keeps runs of
+three letters or more, and a page's words are its own name (underscores read as
+spaces) plus its doc line. A page that shares no word with the query is not an
+answer and is not returned — the empty result set is a real answer, and exit is
+still 0. Ties keep enumeration order: commands in the contract file's order,
+then each command's keys and family names.
+
+The formula is not invented here. It is the model-free baseline of
+`claude/harness/f64_doc_router.py`, which measured the documentation-router role
+on 340 real (comment → command) questions mined from `doc/superscript.sts`.
+Porting it — rather than writing a nicer one — is what lets the measurement and
+the product be about the same ranking: `claude/harness/f66_search_parity.py`
+asks scedit all 340 questions and compares its top-ranked command against the
+baseline question by question. **340/340 agree**, and both sides score
+**80/340 = 23.5%**, F64's recorded number. That gate can fail on any question,
+in either direction, and the one stated difference is the empty-answer rule
+above (21 of the 340 share no word with any command; the baseline picks the
+file's first command there, scedit picks nothing, and those 21 were hits zero
+times).
+
+### `--check --json`
+
+The findings of `--check` as objects — `file`, `line`, `severity`, `id`,
+`message` and `span` (the raw byte range on the line, `null` when the finding is
+about the line as a whole) — plus `counts` and, with `--rules`, the unarmed
+rules. The gcc-shaped text of plain `--check` is a contract three recorded gates
+pin and is untouched: one finding set, two printers. Exit codes are unchanged:
+0 clean, 1 findings, 2 usage or I/O error.
+
+### `--mcp` — the Model Context Protocol server
+
+    scedit --mcp        # newline-delimited JSON-RPC 2.0 on stdin/stdout
+
+Binding it to a harness, e.g. Claude Code:
+
+    claude mcp add scedit -- /path/to/scedit --grammar /path/to/sc-grammar.json --mcp
+
+Three tools, and their descriptions are written for a reader who knows nothing —
+they are what the outside model sees before it decides to call one:
+
+| tool | what it answers |
+|---|---|
+| `doc_lookup` | `{command?, name?}` → one page, or the catalogue when called with no arguments |
+| `doc_search` | `{query, scope?, limit?}` → the ranked pages, each with the `page` to look up |
+| `check_script` | `{text? \| path?, label?}` → the findings, over a buffer or a file on disk |
+
+A tool is declared in exactly one place, `registeredTools()` in
+`src/sc_mcp.cpp`: name, description, input schema, handler. The protocol code
+names no tool and knows no tool's arguments — adding `run_command` over the live
+engine's TCP line (the next slice) is one entry in that vector plus one field on
+`ToolContext`.
+
+An unknown TOOL is a protocol error (`-32602`); an unknown argument VALUE — a
+command that does not exist, a file that cannot be read, a missing `query` — is
+a tool result with `isError: true` carrying the same explanation a human gets,
+because that is the one the calling model can act on.
+
+**The specification was fetched, not recalled.** `https://modelcontextprotocol.io/
+specification/`, whose own "latest" pointer resolved to revision **2026-07-28**
+when this was written (fetched **2026-08-31**). That revision has no
+initialization handshake: it is stateless, every request carries
+`_meta["io.modelcontextprotocol/protocolVersion"]` and
+`_meta["io.modelcontextprotocol/clientCapabilities"]`, and a server MUST
+implement `server/discover`. The handshake era it calls "legacy" (`initialize` +
+`notifications/initialized`, revision **2025-11-25** and earlier) is what
+deployed clients still speak — Claude Code 2.1.251 opens with
+`"protocolVersion": "2025-11-25"`, measured. So the server is **dual-era**,
+which is the specification's own name for this case: a request carrying the
+modern `_meta` is served per 2026-07-28 (with `resultType`, with the version
+validated and `-32022` listing what is supported), anything else is served per
+2025-11-25. Nothing is inferred from an earlier request on the same connection.
+
+Implemented: `initialize`, `notifications/initialized` (and any other
+notification, which is ignored in silence, as a notification must be),
+`server/discover`, `ping`, `tools/list`, `tools/call`, and the JSON-RPC error
+shapes (`-32700`, `-32600`, `-32601`, `-32602`, `-32022`).
+
+Deliberately NOT implemented, listed because a silent omission cannot be told
+from a bug: resources, prompts, logging, completions; pagination (`cursor` /
+`nextCursor`) and result caching (`ttlMs`, `cacheScope`) — the tool list is
+fixed at build time and short; `subscriptions/listen` and
+`notifications/tools/list_changed` (the server declares `listChanged: false`);
+progress notifications and `notifications/cancelled` (every call answers
+synchronously in microseconds); multi-round-trip results (`input_required`) and
+the client features they need — elicitation, sampling, roots; `outputSchema` and
+`icons` on the tools; JSON-RPC batches (an array is refused with `-32600` rather
+than half-answered); extensions (tasks, apps); and the authorization framework,
+which the specification itself says stdio servers should not implement — a stdio
+server takes its credentials from the environment, and this one needs none.
+
 ## The grammar file
 
 `grammar/sc-grammar.json` is the single machine-readable contract for
@@ -379,7 +543,7 @@ silently dropped translation unit.
 
 ## Verification
 
-Nine `ctest` gates, all green on a clean build:
+Twelve `ctest` gates, all green on a clean build (`-Wall -Wextra`, 0 warnings):
 
 | gate | what it measures |
 |---|---|
@@ -391,10 +555,14 @@ Nine `ctest` gates, all green on a clean build:
 | `seed_gate` | the contract file validates (counts re-derived from the data, not asserted) — **and every fact in the four `grammar/args/` fragments is still byte-identical in the merged file**, which is what keeps the granular source and the merged contract from drifting apart |
 | `lint_rules` | `tests/lint_cases.sts` — one construct per armed id (15 ids), proving the rule fires with the right id, severity and shape; plus a section that must stay silent (comments in every position included), and a last section for what is only known at the end of the file |
 | `history_list` | `--history` over the lint fixture and `tests/history_cases.sts` produces exactly the recorded rows. Two inputs on purpose: the fixture's scedit rows include the 27 the `--check` record already pins, so one reader's two printers cannot drift apart silently; history_cases is F63-SHAPED — every `#!` in it is a sentence the ENGINE wrote — and three of its ten cases are deliberate ABSENCES (a `#!` in quotes, in a column-0 comment, in an indented one) |
+| `check_json` | `--check --json` over the lint fixture produces exactly the recorded objects — the same comparator as the text record above, with `--json` added to its mode, so the two printers of one finding set cannot drift apart |
+| `doc_queries` | ten recorded (arguments → stdout + exit code) answers of `--doc` and `--search`, each line of `tests/doc-queries.txt` saying what it pins: both flagged keys answering `doc: null`, a v1 family name beside a v2 one, an alias, both not-found vocabularies with their did-you-mean and exit 2, the ranking, and a query that matches nothing. stderr must stay empty for every one |
+| `mcp_protocol` | 55 checks from a stdlib-only Python client (`tests/mcp_gate.py`) that spawns `scedit --mcp` — a second implementation on purpose: both protocol eras, every tool with good and bad arguments, the honest null arriving as JSON `null` through the whole chain, the catalogue's counts, and the five refusals (parse error, no method, unknown method, unknown tool, unsupported version) |
 | `corpus_gate` | `--check` over the real corpus produces exactly the recorded findings |
 
 `tests/lint-expected.txt`, `tests/corpus-expected.txt`,
-`tests/history-expected.txt` and `tests/ui-selftest-expected.txt` are a
+`tests/history-expected.txt`, `tests/check-json-expected.txt`,
+`tests/doc-expected.txt` and `tests/ui-selftest-expected.txt` are a
 **record, not a silencer**: every line in the first two is dispositioned in
 `tests/derivation-diff.md` §7 with the engine site named, every row of the third
 in a comment beside the bytes that produce it in `tests/history_cases.sts`, and
@@ -470,9 +638,14 @@ tokenizer library (`src/sc_tokenizer.hpp` — also the editor's cursor→token
 engine), `--check` with its lint rules, the headless editor core
 (`src/sc_editcore.hpp`) with its byte-preserving buffer, completion and
 documentation bar, the error pane and its `--history` twin, the FTXUI front end
-(`src/sc_tui.hpp`), and the nine gates above.
+(`src/sc_tui.hpp`), the machine surface (`--doc`, `--search`, `--check --json`
+and the MCP server over the same readers), and the twelve gates above.
 
 Not yet: the stellar-system-file grammar (second contract file), `$`-variable
-semantics for the `reserved_variables` family, and the TCP client mode. Roadmap,
+semantics for the `reserved_variables` family, and the TCP client mode (with it,
+the MCP tool that would run a command on a live engine). The router half of the
+LLM assistance — a model that picks the page to show, and whether the checker
+gates what such a model writes — is Vixy's to triage; scedit's side of it is the
+tools above, and it calls no model. Roadmap,
 decisions and the open-question ledger: `claude/util/scedit/INTENT.md` (harness
 repo).
