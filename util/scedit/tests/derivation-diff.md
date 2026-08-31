@@ -214,7 +214,7 @@ point rather than letting the caller pre-strip.
 upstream).** `ScriptMgr::addScriptFirst` (`script_mgr.cpp:81-107`) is a SECOND
 line classifier: it trims leading blanks BEFORE testing the first character
 (`:90-93`), so an indented `#` IS a comment there, and it strips a command's own
-indentation (`:99`) — the opposite of `script.cpp:114` on both counts. Its only
+indentation (`:99`) — the opposite of `script.cpp:117` on both counts (`:114` before engine `2b8ec034` moved it). Its only
 producer is `camera action lift_off`, pushing three engine-synthesized lines
 (`:4402-4408`). No author text reaches it, so nothing in a file checker changes;
 the contract file now carries it as `parse_model.comments.inner_script_channel`
