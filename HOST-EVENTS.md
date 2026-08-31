@@ -101,3 +101,15 @@ never rewrite (maintenance invariant). Archival per the standing convention
   exit still 2 (the two desktop-bank fail-by-construction members). No claim
   rides it; echoed here because a display-stack birth-time change is exactly
   what this channel exists to carry (§11.121(m) retroactive shape).
+- 2026-08-31 [measured, F69 §11.188(j)] **CORRECTION: the `xserver.restarted`
+  entry above records a NON-EVENT.** The canary's start-epoch probe reads
+  `stat -c %Y /proc/<pid>` — a directory MTIME, not a start time; pid 14079
+  answers 2026-08-30 23:54:51 on both `ps -o lstart` and btime+starttime while
+  that mtime moved 19 h with no restart (probe committed,
+  `harness/artifacts/f69/xserver-epoch-probe.txt`). The X server for `:2` did
+  NOT restart; the earlier entry stands as the record of what the instrument
+  said, this one as why it was wrong. Same proxy backs the GATING
+  `compositor.restarted` check — false-red abort hazard on the desktop until
+  the probe is fixed AND `BANK_XSERVER_START`/`compositor.start_epoch` are
+  re-banked there (one VALUES edit with argument, §0.5; queued for the next
+  desktop round, owner-visible in fable-dispatch §3).

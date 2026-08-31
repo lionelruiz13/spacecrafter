@@ -2010,6 +2010,29 @@ proxy backs a GATING check) and `app_command_interface.hpp` is ISO-8859 too, so
 tracked `src/` holds TWO such files — rule corrected at CLAUDE.md and §0.5.
 Baselines re-derived LAST: pair-check **204/179/25/90** (F68's post-state
 203/178/25/90: +1/+1/0/0 = this entry and its stub); scan **121/162/99** (F68 post-state **120/161/98**: +1 raw = the §11.187(i) CORRECTED line, +1 pair = its citation, +1 unmatched = §11.187→§11.188 — the SAME documented inversion F68 recorded for §11.184→§11.186, the line at the corrected node IS the back-marker; the §11.185/§11.186 flips used discharge vocabulary and moved the scan by zero, by the F52 ruling).
+**ACCEPTED 2026-08-31 (Fable, session 19):** entry read in full; commit
+chain/authors/trees verified; all four unsubscribed wires re-compared BY ME
+against F68's committed baseline (S/P/Q/HTTP equal; D 939 B); scedit ctest
+**14/14 re-run by me** in the executor's build dir. Judgment calls ENDORSED
+with arguments: `$DIAG` naming (I1/I2 — carries what it is, avoids the
+"feedback" word collision); `$NOTICE` NOT advertised (the reply IS bytes on
+masterput's wire — the conservative side of the same residual-information
+argument; veto-open, §3); idempotent `$DIAGON` (§2(f), `$LOG` untouched);
+`sc_mcp` visited beyond named scope (I3 — the alternative was a silently
+false `note` contract; reported not absorbed); the mcp_gate wait-not-sample
+fix (a real race made visible, argued); the `§`-in-ledger encoding line
+(D14's own boundary clause). The ONE wire delta (the `$DIAGON` string itself
+now answered at the socket layer) accepted as the structural minimum of the
+opt-in the ruling mandated — bounded to the exact novel string, disclosed in
+§3. Criterion-integrity instance on record: the vi-post prediction refuted
+by its own committed check, kept untidied. THE CANARY FINDING accepted as
+delivered evidence: §11.187(i)'s NOTE and MY HOST-EVENTS echo described a
+NON-EVENT (the proxy is `/proc/<pid>` dir mtime) — my echo corrected at
+HOST-EVENTS this commit, supervisor tally (echoed an instrument's claim
+before its probe was verified); canary fix + re-bank queued as a DESKTOP
+act (§3 — the same proxy backs a GATING member: false-red abort hazard for
+any desktop photometric task until fixed). Nested-refusal gap routed to §3
+as a §11.184-rule decision.
 
 ### F70 — Every source file pure ASCII: census, conversion, exclusion table (D14, §11.186(d)) [M]
 
@@ -2185,6 +2208,31 @@ moved.
 ## 3. For Vixy — sendable/decidable now (not tasks; parallel to any dispatch)
 
 - **Session-19 decision items (2026-08-31, the provenance/ASCII round):**
+  - **THE CANARY'S START-EPOCH PROBE IS WRONG, AND ONE OF ITS TWO MEMBERS
+    GATES** (F69 §11.188(j)): `f56_canary.sh:270` reads `/proc/<pid>`
+    directory MTIME as a start time — pid 14079 "restarted" 19 h into its
+    own life by that probe (three-way measurement committed). The
+    `xserver.restarted` NOTE F68 saw was a non-event (HOST-EVENTS
+    corrected); the SAME proxy backs `compositor.restarted`, a GATING
+    fail-2 — **on the desktop this can falsely abort any photometric task**.
+    Fix = one line (btime+starttime) PLUS a re-bank of two banked epochs ON
+    THE DESKTOP (one VALUES edit with argument, §0.5). Queued as next
+    desktop-round position 1; not fixable from this laptop.
+  - **`$DIAGON`/`$DIAGOFF` — the dedicated link's protocol, three calls
+    veto-open** (F69 §11.188(b)(c)(g)): (1) the VERB NAME (`$SCEDITON`
+    rejected on I1, `$FEEDBACK` on a word collision — the channel is named
+    by what it carries); (2) **`$NOTICE` does NOT advertise it** — that
+    reply is itself bytes on masterput's wire; one line reverses if you
+    want discovery over the freeze; (3) the one wire delta on unsubscribed
+    connections: the literal string `$DIAGON` is now answered at the socket
+    layer instead of silently refused by the app — the structural minimum
+    of the opt-in your ruling mandated, bounded to that exact novel string.
+  - **NESTED REFUSALS REACH NOBODY — the feature's sharpest gap, and it is
+    §11.184's rule** (F69 §11.188(h), measured): a command run inside
+    another (`media` → `audio`, `clear`'s thirty) passes no origin, so its
+    refusal routes to no wire and no `#!` — the subscriber is told nothing
+    while the log carries it twice. Making a nested call inherit the outer
+    origin is a change to §11.184's recorded rule: yours to say.
   - **SHOULD A FILE-ORIGIN REFUSAL NAME `<file>:<line>` IN THE LOG?** (F68
     §11.187(d)): the funnel now prefixes TCP-origin refusals with `tcp#<id>`;
     the file half is DELIBERATELY absent — the executor read "every failing
