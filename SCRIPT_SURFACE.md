@@ -284,6 +284,10 @@ things are not:
   Vixy's decision** — `mod` becomes a real alias of `modulo` (with `div`
   and `mul` for divide/multiply); your line is correct as written once
   that engine change lands. Until then it still does nothing.
+  **[2026-08-31] RESOLVED IN-TREE: `mod`, `div`, `mul` are registered as
+  aliases of `modulo`, `divide`, `multiply` (app_command_init.cpp:116-118);
+  your line is correct as written. scedit no longer reports it (corpus
+  record 16 → 15).**
 - **SS-23** — Lines 1536/1539, the language examples:
   `text "behobachter"` / `text "observateur"`. `text` needs its named parts
   (`name … string … action load` — your own line 1444 shows the full form);

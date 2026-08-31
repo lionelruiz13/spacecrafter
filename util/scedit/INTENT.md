@@ -186,7 +186,9 @@ notes.*
 5. **`app_command_eval.cpp`** (376 lines) — `$`-variable substitution
    semantics for the reserved_variables family (currently UNEXTRACTED).
 6. **TCP client mode** — line protocol + `$LOGON` feed pane;
-   spacecrafter rebuild on this laptop is its prerequisite.
+   ~~spacecrafter rebuild on this laptop is its prerequisite~~ **prerequisite
+   MET 2026-08-31: the engine builds and RUNS here (display session for the
+   `claude` user; F61/F62 drove it over port 7805)**.
 7. ~~**FTXUI shell** — editor + cursor-driven doc panel (C6) + completion
    (defaults greyed, D31 spec).~~ **DONE 2026-08-04 (journal
    2026-08-04h; gated; code `0745dc34`). D1 discharged: FTXUI v5.0.0
@@ -352,6 +354,50 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-31c] The engine runs here: both rulings confirmed live, the
+  aliases land, and a claim three records carried turns out to name a map
+  nothing reads.** Display session available for `claude` (`DISPLAY=:2`,
+  XAUTHORITY under the user's own runtime dir — the harness README's F28
+  recipe). (1) **F61** (`harness/f61_live_rulings.py`, parent §11.183): one
+  fresh launch on a temp-HOME farm pays the confirmation §11.181/§11.182 owed
+  — the comment rule on BOTH external channels (script file + TCP; trailing,
+  glued, indented ×2, quoted, unquoted twin), flag state read back as
+  TRANSITIONS through `session action save`, quoted `#` proven by the engine
+  echoing the value it parsed, comment-only lines by the count of
+  "Unrecognized" equalling the positive controls; SIGUSR1 → the watchdog's
+  WARNING once, process alive. **16/16 on `3d9179d2`**; RED control on a
+  staging build of `a3437670` (worktree; EntityCore submodule copied in, then
+  RE-configured — the first link failed on `Set::~Set()` because CMake had
+  globbed the empty dir): **8/16, the eight comment legs exactly**, SIGUSR1
+  and quoted legs green on both. Driver slips kept as record: the
+  "X is unknown" regex matched the command-lookup's did-you-mean too (fixed
+  to the truthful shape); the session files lived only in the farm (copied to
+  the artifact dir now); the foreign asan/tsan binaries do not load here
+  (`libavcodec.so.61`). (2) **Aliases** (code `7fd5ea75`; F62 11/11): engine
+  `div`/`mul`/`mod`, reverse map canonical-first with aliases added after;
+  scedit alias entries resolved ONCE at load in both readers (Grammar,
+  DocIndex), validator rule, C4b test, commands 60 → 63, corpus 16 → 15
+  (`mod a 2` correct — SS-22 resolved in-tree). (3) **The correction**: the
+  "recording trap" (m_commands_ToString first-name-wins flips recorded
+  spellings) — carried by B38's row, §11.182, FEATURE_REQUESTS and scedit's
+  own `alias-respelled` seed — named a map with NO consumer at HEAD;
+  `recordCommand` writes the raw line and only `flag` toggles are
+  re-serialised (measured: F62's recording holds `div y 2` verbatim and
+  `flag stars 0`). Seed RETIRED (16 → 15); `recording_alias_loss` rewritten
+  to the measured engine; every carrier annotated. Class: a claim about a
+  data structure's construction propagated as a claim about behaviour, four
+  records deep, without one grep for a consumer — the check cost one command.
+  (4) Latent UB in editcore_test D5 (pointer into a temporary `EditCore`'s
+  DocIndex) exposed when `CommandInfo` grew; fixed by binding the host. (5)
+  Driver design lesson, F62: a recorded command must SUCCEED to be written;
+  three `flyto` forms guessed blind all failed on camera state — the grammar
+  scedit carries (`camera.args.target`) would have answered first; the claim
+  rides on `div y 2` alone and the docstring says so. Next: the `#!`
+  annotation (FEATURE_REQUESTS 2026-08-30; item 15's engine half) — design
+  from the reading done this session: tokens carry no provenance (Token =
+  text + script DIR), IfSwap holds booleans only, the natural end is
+  `ScriptMgr::update`'s "script done" branch → `terminateScript()` →
+  `ifSwap->reset()` silently, loop bodies replay from bare strings.
 - **[2026-08-31b] The engine builds here; the comment rule flips to the
   ruled behaviour, scedit first, engine in phase — C1 amended.** Two
   engine commits, both compiled on GCC 11 into the probe-built tree, not

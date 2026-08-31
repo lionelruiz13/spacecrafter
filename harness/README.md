@@ -2250,3 +2250,72 @@ manifest control, the green control), `cadence_echo/` `cadence_echo2/`
 reference frame), `sweep/f56_sweep.md` (the claim-level verdict table).
 `f56_predictions.json` (P1–P6) and `f56_predictions_addendum.json` (P7–P9) are
 the pre-run commitments.
+
+## F61 — the two 2026-08-31 engine commits on a RUNNING engine (`f61_live_rulings.py`) — INTENT §11.183, 2026-08-31
+
+    cd claude/harness && DISPLAY=:2 ./f61_live_rulings.py [absOutdir]     # default artifacts/f61
+    SC_BIN=/abs/pre-fix/binary ./f61_live_rulings.py /abs/outdir           # the RED control
+
+Both commits (`a3437670` stacktrace probe, `3d9179d2` comment rule) were compiled
+on GCC 11 and never run when they landed (no display session for this user then).
+One fresh launch on a temp-HOME farm pays the owed confirmation:
+
+- **comment rule**, every clause once, on BOTH external channels (script file,
+  TCP line): trailing `# …` after a command with a pair (`flag stars on # …`),
+  glued `#`, indented whole-line comments (spaces and tab), a `#` inside quotes,
+  the unquoted twin. The observable for "the tail did not eat the pair" is the
+  flag's STATE read back through `session action save` (the only read channel
+  for a flag) as a TRANSITION (off→on, on→off, off→on) so the initial state
+  cannot fake it; for the quoted `#` it is the engine ECHOING the value it
+  parsed (`Unable to execute script : <value>` on a file that does not exist);
+  for comment-only lines it is the COUNT of "Unrecognized or malformed command
+  name" lines, which must equal the positive controls (one genuinely unknown
+  command per channel) and nothing else. Pre-fix each indented comment was an
+  unknown command and `#` was the alphabetically-first pair `flag` applied.
+- **stacktrace probe**: `kill -USR1` on the live process — the 50 ms watchdog
+  (fps.cpp:131-139) must write the WARNING naming the missing facility into
+  vulkan.log exactly once (this binary: all three link probes empty in its
+  CMakeCache ⇒ `SPACECRAFTER_HAVE_STACKTRACE` OFF), and the process must
+  SURVIVE the signal (SIGUSR1's default disposition is termination — survival
+  is the proof the handler is installed).
+
+Measured 2026-08-31 on `build-claude` @ `3d9179d2`: **16/16**. The two things
+the first version got wrong, kept as record: the "X is unknown. Did you
+mean…?" line is printed by BOTH lookups (command and flag), so the did-you-mean
+count is the three controls, and the flag-specific count is "Unrecognized or
+malformed flag argument"; and the session files lived only in the farm, which
+the next run wipes — they are copied into the artifact dir now. The farm's
+`sessions/` must be a REAL dir (b3_farm.sh symlinks it into the field, and a
+session save would then write the real tree). The only foreign pre-fix binaries
+on this laptop do not load here (`build-asan`: `libavcodec.so.61` missing —
+a desktop link), so the RED control is a staging build of `a3437670` (probe
+landed, comment rule not yet — the only pre-fix tree GCC 11 compiles; a git
+worktree whose EntityCore submodule had to be copied in AND configured after
+the copy, or the link fails on `Set::~Set()` — CMake globbed an empty dir),
+kept as `sc_f61_pre`. **Measured: 8/16** — the eight comment-rule legs RED
+exactly (11 `Execute_command` lines for 9 commands: both indented comments ran;
+six "Unrecognized" for two controls; `#` the applied pair on P1/T1 so `stars`
+stays off; the unquoted echo carries `glued#name.sts`), the SIGUSR1 legs and
+the quoted-`#` legs GREEN on both binaries (same code there). One vacuous PASS
+to know about: P3 (on→off) passes on the pre binary only because P1 had already
+failed to turn the flag on — the P1+P3 pair discriminates, P3 alone does not.
+
+## F62 — `mod`/`div`/`mul` as aliases, and what a recording keeps (`f62_aliases.py`) — INTENT §11.183, 2026-08-31
+
+    cd claude/harness && DISPLAY=:2 ./f62_aliases.py [absOutdir]     # default artifacts/f62
+
+Two claims in one fresh launch (temp-HOME farm), each with its control beside
+it: ARITHMETIC — `define x 7`, `mod x 3` → 1; `define y 8`, `div y 2`,
+`mul y 3` → 12; `modulo`/`divide`/`multiply` on other variables with the same
+expectations; readback = `struct print var` (`name => value` in the script
+log). RECORDING — `script action record filename <farm>/rec.sts`, then
+`div y 2`, `modulo x 3`, `flag stars toggle`, `script action cancel`: the
+file must carry `div y 2` AS TYPED (ScriptMgr::recordCommand writes the raw
+line; the enum-to-name map has no consumer), and the control `flag stars
+toggle` must be re-serialised as `flag stars 0|1` (the one rewrite site,
+`m_flags_ToString`) — the measurement behind retiring scedit's
+`alias-respelled` seed. Measured 2026-08-31 on `7fd5ea75`: **11/11**.
+Instrument lesson, recorded in the file: a recorded line must SUCCEED to be
+written, and three `camera`/`flyto` forms tried blind failed for camera-state
+reasons — read `families.commands.camera.args` in the grammar before choosing
+a form; `div y 2` carries the claim alone.

@@ -229,8 +229,12 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   above): *"adding mod as an alias for modulo became cleaner, and if not
   already there, div for divide, sub for substract, mul for multiply, if
   those exists."*
-- **Status:** accepted — engine change pending (registration-table addition;
-  no build on this laptop to verify, so recorded not implemented). Facts
+- **Status:** ~~accepted — engine change pending (registration-table addition;
+  no build on this laptop to verify, so recorded not implemented)~~ **LANDED
+  2026-08-31 (code `7fd5ea75`; live: harness `f62_aliases.py` 11/11 — `mod x 3`
+  → 1, `div`/`mul` → 12, canonical forms beside them, no "Unrecognized"; scedit
+  models the aliases with `alias_of` resolved once at load, corpus record
+  `mod a 2` cleared, SS-22 resolved in-tree).** Facts
   [measured, grammar at HEAD]: `add` and `sub` are ALREADY the short forms;
   `divide`/`multiply`/`modulo` are the long three; `div`/`mul`/`mod` are all
   free as exact names — exact-match dispatch, no ambiguity mechanism, nothing
@@ -239,6 +243,15 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   CORRECT when the alias lands; scedit grammar wants an `alias_of` field on
   the new names rather than duplicate entries (I2 — args/docs live once, on
   the canonical name).
+  **[2026-08-31, later — CORRECTION, §11.183]: the "trap" below was in a map
+  NOTHING READS. `m_commands_ToString` has no consumer at HEAD (grep over the
+  tree; measured live: F62's recording carries `div y 2` as typed, and the one
+  re-serialised command is `flag <name> toggle` → `flag <name> 0|1`, from
+  `m_flags_ToString`). The canonical-first construction landed anyway — it is
+  the contract for the "futur exploitation" the member was kept for — but no
+  recorded spelling was ever at stake. The claim came from B38's reading of the
+  map's construction and was propagated (§11.182, scedit's `alias-respelled`
+  seed, this note) without anyone checking for a consumer; the seed is retired.**
   **Implementation trap, identified 2026-08-31 [fable, from parse_model
   `recording_alias_loss`]:** `m_commands_ToString` is built by
   `emplace(enum, name)` over the ALPHABETICAL name map, first name per enum
