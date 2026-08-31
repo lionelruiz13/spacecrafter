@@ -1863,7 +1863,13 @@ defects found en route, else list on the entry.
 wire-silence leg (iv) committed as F69's citable baseline; build green at
 `-j6`; §11.187 + stub + README; both instrument baselines re-derived as the
 LAST act with deltas attributed; trees clean; WIP cleared.
-**WIP:** —
+**WIP:** 2026-08-31 CP1 — §0.7 gate PASSED (canary exit 2 as stated, two
+fail-by-construction members + a new `xserver.restarted` NOTE). Engine change
+committed `423cbe23` (ScriptOrigin channel + io.hpp servingConnection/
+servingIsHttp + drain threads it + funnel/:306 tags), build green `-j6`,
+pre-change binary preserved at `/tmp/f68-pre/spacecrafter-e2c8477b` (md5
+fc651978) for the both-ways leg. NEXT: write `harness/f68_provenance.py`
+(3 launches: pre, pre A/A, post).
 
 ### F69 — The dedicated feedback link: TCP-origin feedback comes back on an opt-in channel; masterput's wire is frozen (§11.186(c); §11.185(d)(1) ruling; FEATURE_REQUESTS 2026-08-31) [M]
 
