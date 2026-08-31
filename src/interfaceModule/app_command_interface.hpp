@@ -229,6 +229,25 @@ private:
 	//! every other origin. The file half is deliberately absent - the reason
 	//! is at the definition, and it is one condition to add.
 	std::string originTag() const;
+	//! The same diagnostic, sent BACK on the dedicated link - and only for a
+	//! command that arrived on the control socket, which is the whole of what
+	//! was mandated [vixy 2026-08-31: "feedback about tcp sent back ... through
+	//! the tcp link dedicated for scedit"]. Recipients are the connections that
+	//! subscribed with $DIAGON and nobody else, so an unsubscribed connection -
+	//! masterput's, for all anyone here can know - sees not one byte of this
+	//! (INTENT 11.186(c), 11.188).
+	//!
+	//! `at` is the origin of the command being REPORTED ON, which is not always
+	//! `currentOrigin`: an unclosed block is reported at its opener, and that
+	//! opener may have come from a different line than the one executing now.
+	//! `message` is the engine's own text (the log gets the same string) and
+	//! `subject` is the line it is about; the record is
+	//! `$DIAG|<origin>|<message>|<subject>`, engine-controlled fields first so
+	//! that a subject containing the separator still splits correctly.
+	//!
+	//! Nothing is REMOVED from the log by this: the wire gets a copy.
+	void sendFeedback(const ScriptOrigin &at, const std::string &message,
+	                  const std::string &subject);
 
 	// transcription between the text and the associated command
 	std::map<const std::string, SC_COMMAND> m_commands;

@@ -101,6 +101,12 @@ struct ClientMessage {
 	//! command - so it is not a control connection and must not be reported as
 	//! one. Unused on the output side. INTENT 11.187.
 	bool http = false;
+	//! OUTPUT side only: this record is a DIAGNOSTIC, not an answer. It goes to
+	//! the connections that asked for diagnostics with $DIAGON and to nobody
+	//! else - never to the addressee, never to the $LOGON subscribers. It rides
+	//! the same queue as an answer so that a client subscribed to both sees the
+	//! two in the order the application produced them. INTENT 11.188.
+	bool diag = false;
 };
 
 class ServerSocket {
@@ -144,6 +150,30 @@ public:
 	//! feedback channel with $LOGON in any case (they were the only recipients
 	//! before §5.47 and they keep receiving exactly what they received).
 	void setOutput(std::string data);
+	//! Send ONE diagnostic line to the connections that subscribed with
+	//! $DIAGON, and to NO other connection.
+	//!
+	//! WHY A SECOND CHANNEL AND NOT $LOGON. The existing subscription is
+	//! spoken by a shipped closed-source client (masterput) whose tolerance for
+	//! unexpected records cannot be established from here, so the rule is to
+	//! bound ALL of its possible behaviours at once: a connection that did not
+	//! ask for diagnostics must see BYTE-IDENTICAL traffic before and after
+	//! this change [vixy 2026-08-31: "an existing tcp path exists, used by
+	//! masterput (which is closed-source), do not modify this channel"].
+	//! Whether masterput subscribes with $LOGON is exactly the thing that is
+	//! unknowable, so reusing $LOGON is excluded rather than weighed
+	//! (INTENT 11.186(c), 11.188).
+	//!
+	//! CALLED FROM THE APPLICATION THREAD, like `setOutput` and for the same
+	//! reason: the record is composed by whoever produced the diagnostic and
+	//! handed to the server thread through the output queue. This function
+	//! never reads the subscription table - that table belongs to the server
+	//! thread, which is the only one that writes it.
+	//!
+	//! The message is clamped like an answer (MAX_BUFFER) and its line breaks
+	//! are folded to spaces, because one diagnostic is one record and a client
+	//! frames on them.
+	void sendDiagnostic(const std::string &data);
 
 private:
 	/* Configurable variables */
@@ -177,7 +207,14 @@ private:
 	TCPsocket serverSocket; //Server listening socket
 	SDLNet_SocketSet socketSet; //Socket monitoring table
 	TCPsocket* clientSocketTab; //Client sockets table
-	bool* clientBroadcastTab; //Feedback request table
+	bool* clientBroadcastTab; //Feedback request table ($LOGON: the log/answer feed)
+	//! Diagnostic-channel subscription per slot ($DIAGON). A SECOND and
+	//! separate table on purpose: `clientBroadcastTab` is the wire masterput
+	//! may be speaking and it does not move, so a subscription that did not
+	//! exist before cannot be expressed by changing what that one means.
+	//! Cleared on disconnect (`close`) like its neighbour, so the next tenant
+	//! of a slot inherits no subscription (I5). INTENT 11.188.
+	bool* clientDiagTab;
 	unsigned int* clientIdTab; //Connection id per slot (0 = free); never reused
 	unsigned int lastClientId; //Last id handed out
 
@@ -224,6 +261,12 @@ private:
 	void pushRequest(unsigned int client, const std::string &data, bool http = false); //Queues a request with the connection it came from, and the door it came in by
 	void checkDataToSend(); //Sending function of data received from the application
 	void deliver(const ClientMessage &out); //Sends one answer where it belongs
+	//! Sends one diagnostic to the $DIAGON subscribers and to nobody else.
+	//! No fallback and no warning when there is no subscriber: an opt-in
+	//! channel with nobody listening is its normal state, not a fault, and the
+	//! diagnostic is in the log either way - the wire adds a copy for
+	//! subscribers, it never diverts one. INTENT 11.188.
+	void deliverDiagnostic(const ClientMessage &out);
 	//! Broadcast to the feedback subscribers. `excludeClient` is the slot that
 	//! has already been served as the addressee, so that a client which is both
 	//! the issuer and a subscriber gets one copy and not two.

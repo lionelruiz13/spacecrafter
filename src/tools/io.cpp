@@ -171,6 +171,11 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 		debugOut("NEW_BOOL_TAB_ERROR", LOG_TYPE::L_ERROR); //Debug
 		return NEW_BOOL_TAB_ERROR_CODE;
 	}
+	clientDiagTab = new bool[maxClients];
+	if(clientDiagTab == NULL) {
+		debugOut("NEW_BOOL_TAB_ERROR", LOG_TYPE::L_ERROR); //Debug
+		return NEW_BOOL_TAB_ERROR_CODE;
+	}
 	clientIdTab = new unsigned int[maxClients];
 	if(clientIdTab == NULL) {
 		debugOut("NEW_BOOL_TAB_ERROR", LOG_TYPE::L_ERROR); //Debug
@@ -179,6 +184,7 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	for (unsigned int i = 0; i < maxClients; i++)	{
 		clientSocketTab[i] = NULL; //Initialization of all client sockets to NULL
 		clientBroadcastTab[i] = false;
+		clientDiagTab[i] = false; //Nobody asked for diagnostics
 		clientIdTab[i] = 0; //No connection holds this slot
 	}
 	lastClientId = 0;
@@ -286,6 +292,7 @@ ServerSocket::~ServerSocket()
 	SDLNet_FreeSocketSet(socketSet);//Release of the SocketSet
 	delete[] clientSocketTab; //Release socket array
 	delete[] clientBroadcastTab; //Release the feedback-request array
+	delete[] clientDiagTab; //Release the diagnostic-subscription array
 	delete[] clientIdTab; //Release the connection-id array
 	delete[] buffer; //Release buffer
 	SDL_DestroyMutex(running); //Release the mutex
@@ -378,6 +385,29 @@ void ServerSocket::setOutput(std::string data)
 		// several passes later, and by then the connection may be somebody
 		// else's (§5.47, I5).
 		outputQueue.push(ClientMessage{servingClient, servingId, data});
+		unlock(outputting);
+	}
+}
+
+void ServerSocket::sendDiagnostic(const std::string &data)
+{
+	// One diagnostic is one record, so a line break inside it would frame as
+	// two. Folded to spaces rather than dropped: what the engine said is what
+	// the subscriber reads, and the log keeps the original either way.
+	std::string line = data;
+	for (char &c : line)
+		if (c == '\n' || c == '\r')
+			c = ' ';
+	if (line.size() > MAX_BUFFER)
+		line.resize(MAX_BUFFER); //An answer's clamp, and for the same reason
+	if(lock(outputting) == IO_NO_ERROR) {
+		// Addressed to nobody in particular: `deliverDiagnostic` reads the
+		// subscription table on the server thread, which is the thread that
+		// owns it. Queued even when nobody has subscribed - the queue is
+		// drained on every pass of the server loop, so an unread diagnostic
+		// costs one string and no growth, and testing the table here would be
+		// a read of the server thread's state from the application's.
+		outputQueue.push(ClientMessage{0, 0, line, false, true});
 		unlock(outputting);
 	}
 }
@@ -662,6 +692,35 @@ void ServerSocket::computeNormalString(unsigned int client, std::string string)
 		} else
 			answer = "REQUEST ERROR";
 		send(clientSocketTab[client], answer); //Send the answer to the client
+	} else
+	// The DEDICATED diagnostic link, opt-in [vixy 2026-08-31: "feedback about
+	// tcp sent back ... through the tcp link dedicated for scedit"]. It is a
+	// new verb rather than a second port because a port is config surface a
+	// dome operator would have to be told about, and because a verb costs
+	// exactly nothing to a connection that never sends it: everything below
+	// this point is reached only by a client that asked for it by name.
+	// $LOG is NOT reused - see the argument at ServerSocket::sendDiagnostic.
+	// The prefix cannot collide with the two verbs above ($NOTICE, $LOG), and
+	// this verb is deliberately absent from the $NOTICE reply: that reply is
+	// itself bytes on masterput's wire (INTENT 11.188).
+	if(string.substr(0, 5) == "$DIAG") { //DIAG command
+		const char *answer;
+		if(string.substr(5, 2) == "ON") { //DIAGON
+			// Subscribing twice is not an error: the answer states the state
+			// the connection is now in, which is what a client asking again
+			// wants to know. ($LOG answers "REQUEST ERROR" to a repeat; that
+			// is its behaviour and INTENT 5.72's row, and it is not touched.)
+			clientDiagTab[client] = true;
+			answer = "$DIAGON ok: this connection now receives every diagnostic the engine "
+			         "produces about a command read on the control socket, one record per "
+			         "diagnostic, as $DIAG|<origin>|<message>|<command>\n";
+		} else
+		if(string.substr(5, 3) == "OFF") { //DIAGOFF
+			clientDiagTab[client] = false;
+			answer = "$DIAGOFF ok: this connection no longer receives command diagnostics\n";
+		} else
+			answer = "$DIAG ERROR: the verb is $DIAGON or $DIAGOFF; nothing was changed\n";
+		send(clientSocketTab[client], answer); //Send the answer to the client
 	} else {
 		pushRequest(client, string); //Add string to the input queue, WITH its origin
 		//broadcast(clientIp(client) + CLIENT_SEPARATOR1 + string + '\n'); //Send string to all clients
@@ -686,7 +745,13 @@ void ServerSocket::checkDataToSend()
 {
 	if(lock(outputting) == IO_NO_ERROR) {
 		while(!outputQueue.empty()) { //Non-empty queue
-			deliver(outputQueue.front()); //Send from the head of the queue
+			const ClientMessage &out = outputQueue.front();
+			// One queue, two kinds of record, so that a client subscribed to
+			// both sees them in the order the application produced them.
+			if(out.diag)
+				deliverDiagnostic(out); //To the $DIAGON subscribers only
+			else
+				deliver(out); //Send from the head of the queue
 			outputQueue.pop(); //Scrolls
 		}
 		unlock(outputting);
@@ -730,6 +795,21 @@ void ServerSocket::deliver(const ClientMessage &out)
 		                   + "\" to - the connection that asked is gone and no client "
 		                     "subscribed to the feedback channel with $LOGON",
 		                   LOG_TYPE::L_WARNING);
+}
+
+//! One diagnostic, to the connections that asked for diagnostics and to no
+//! other connection. This is the whole of what INTENT 11.186(c) added to the
+//! wire: it touches `clientDiagTab` and never `clientBroadcastTab`, so a
+//! connection that did not send $DIAGON receives exactly the bytes it received
+//! before this existed - which is the boundary, proven by measurement rather
+//! than argued (harness/f69_feedback.py leg iv).
+void ServerSocket::deliverDiagnostic(const ClientMessage &out)
+{
+	const std::string message = out.data + '\n';
+	for (unsigned int client = 0; client < maxClients; client++) {
+		if(clientDiagTab[client] && clientSocketTab[client] != NULL)
+			send(clientSocketTab[client], message.c_str());
+	}
 }
 
 int ServerSocket::broadcast(const std::string &data, int excludeClient)
@@ -776,6 +856,7 @@ int ServerSocket::close(unsigned int client)
 	SDLNet_TCP_Close(clientSocketTab[client]); //Closing the client socket
 	clientSocketTab[client] = NULL; //Nullation of the client socket
 	clientBroadcastTab[client] = false; //Falsify the status of the feedback request
+	clientDiagTab[client] = false; //and the diagnostic subscription: the next tenant of this slot never asked for it
 	clientIdTab[client] = 0; //The connection is over: an answer still queued for it has no addressee
 	clientCount--; //Decrease the number of connected clients
 

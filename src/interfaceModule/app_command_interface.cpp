@@ -218,15 +218,20 @@ void AppCommandInterface::reportScriptError(const ScriptOrigin &at, const std::s
 	// (INTENT 11.187).
 	const std::string origin = at.where();
 	std::string line = origin.empty() ? "script: " + what : "script " + origin + ": " + what;
-	if (!at.text.empty()) {
-		std::string quoted = at.text;
-		while (!quoted.empty() && (quoted.back() == '\r' || quoted.back() == '\n'))
-			quoted.pop_back();
+	// Hoisted out of the `if` so the routed copy below quotes the same text the
+	// log does; the log line itself is byte for byte what it was (the gate is
+	// still `at.text` non-empty, not `quoted` non-empty - a line that is only a
+	// line ending still logs its empty brackets, as it always did).
+	std::string quoted = at.text;
+	while (!quoted.empty() && (quoted.back() == '\r' || quoted.back() == '\n'))
+		quoted.pop_back();
+	if (!at.text.empty())
 		line += " [" + quoted + "]";
-	}
 	cLog::get()->write(line, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
 	if (at.valid())
 		scriptInterface->annotate(at, what);
+	// ... and to the dedicated link, if this line came in on one.
+	sendFeedback(at, what, quoted);
 }
 
 std::string AppCommandInterface::originTag() const
@@ -243,6 +248,22 @@ std::string AppCommandInterface::originTag() const
 	if (currentOrigin.channel != ScriptChannel::TCP)
 		return std::string();
 	return currentOrigin.where() + ": ";
+}
+
+void AppCommandInterface::sendFeedback(const ScriptOrigin &at, const std::string &message,
+                                       const std::string &subject)
+{
+	// The routing key is the ORIGIN, and only TCP routes. HTTP shares the input
+	// queue but carries no origin at all and its connection is closed before the
+	// application sees the command, so it routes nowhere by construction; a FILE
+	// line reports at its own line and through the `#!` tail, and whether its
+	// refusals should also go on a socket is a separate decision, still open
+	// (INTENT 11.184, 11.187(c)(d)). `!tcp` is the no-server case: with
+	// `io:enable_tcp` false there is no origin of this kind either, and this
+	// guard is what makes that true rather than assumed.
+	if (!tcp || at.channel != ScriptChannel::TCP)
+		return;
+	tcp->sendDiagnostic("$DIAG|" + at.where() + "|" + message + "|" + subject);
 }
 
 int AppCommandInterface::terminateScript()
@@ -325,6 +346,10 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 	if (m_commands_it == m_commands.end()) {
 		debug_message = _("Unrecognized or malformed command name");
 		cLog::get()->write( originTag() + debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		// This site never reaches executeCommandStatus (11.187(d)), so it routes
+		// its own copy or an unknown command name would be the one refusal a
+		// subscriber never hears about.
+		sendFeedback(currentOrigin, debug_message, commandline);
 		appInit->searchSimilarCommand(command);
 		return 0;
 	}
@@ -1270,6 +1295,10 @@ int AppCommandInterface::executeCommandStatus()
 		const std::string tag = originTag();
 		cLog::get()->write( tag + "Could not execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		cLog::get()->write( tag + debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		// One record for the two lines: what went wrong, and the line it went
+		// wrong on. Both stay in the log exactly as they are above - a
+		// subscriber gets a copy, never the only copy.
+		sendFeedback(currentOrigin, debug_message, commandline);
 		return false;
 	}
 }
