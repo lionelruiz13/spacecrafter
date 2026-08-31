@@ -303,10 +303,24 @@ notes.*
     scedit checks — the mapping carried as data (`engine_tail` on the four
     block seeds, anchored to the engine's MSG_* constants);
     `parse_model.comments.machine_tail` written; two selftest frames + E4f.
-    (a-ii) OPEN: the error-history pane in sc_tui listing every `#!` line
-    (and scedit's findings) with click-to-warp-cursor.** **(a-ii) MINTED as
+    ~~(a-ii) OPEN: the error-history pane in sc_tui listing every `#!` line
+    (and scedit's findings) with click-to-warp-cursor.~~** ~~**(a-ii) MINTED as
     dispatch task F65 (2026-08-31e); the agreement scedit↔engine measured on
-    F63's files: 12/12 (`harness/f63_scedit_agree.py`).**
+    F63's files: 12/12 (`harness/f63_scedit_agree.py`).**~~
+    **ITEM 15 CLOSED WHOLE 2026-08-31 (F65; journal 2026-08-31f). (a-ii) DONE:
+    `EditCore::errorHistory()` + `warpTo()` (code `cdda1ee4`), the pane with
+    F5/F3/F4 and click-to-warp (`4c70f2aa`), the `--history` CLI twin over the
+    same reader (`99260e28`). (a) and (b) therefore both discharged; (c) was
+    done 2026-08-31 above. ONE READING FLAGGED FOR VIXY, NOT A DECISION I OWN:
+    "history" is taken as the CURRENT BUFFER'S SET, not a log of past editing
+    sessions — the argument is that the engine's `#!` channel already IS the
+    log (a tail stays in the file until the fault is fixed and a run reaches a
+    natural end), so the file carries the history and a second store could only
+    go stale (I2). If the word meant the other thing — every diagnostic this
+    session has seen, kept after it was fixed — it is a different feature with
+    a store of its own: say the word. Stated in `util/scedit/README.md` § The
+    error pane, with the keys, the placement, the toggle and the
+    default-closed named as scedit's own calls, all veto-open.**
 16. **Shipped-corpus dispositioning sweep** [measured 2026-08-30e] — the 13
     older seeds over the 408 shipped scripts: **1757 findings in 35 files**
     (duplicate-key 1596 — 1500 in the generated `internal/
@@ -371,6 +385,15 @@ notes.*
     first, local-only default, checker as a hard gate in agent mode).
     **Scedit-side surface (the tools, no model call) MINTED as dispatch task
     F66 (2026-08-31e); the triage questions stand.**
+20. **The build sets no warning flags** [measured 2026-08-31, F65] — so
+    "clean build, 0 warnings" has been a criterion that cannot fail. Under
+    `-Wall -Wextra` the whole tree yields exactly ONE: `cmdSpan` set but not
+    used, `src/sc_check.cpp:341` (there since `7fd5ea75`; no file F65 touched
+    warns). The fix is two lines — an `add_compile_options(-Wall -Wextra)` in
+    `CMakeLists.txt` and that variable's deletion — and it is left undone
+    deliberately: it belongs to whoever can also decide whether the vendored
+    FTXUI target should be excluded from the flags, which is a build-shape
+    call rather than a defect. S.
 9. ~~**superscript.sts doc-mining pass**~~ **DONE 2026-08-04 (journal
    2026-08-04g; gated). Residue: S-NP-1 suspended for Vixy; 6
    code-consistent doc answers queued for post-FTXUI grammar merge.**
@@ -387,6 +410,84 @@ notes.*
 
 ## 6. Journal (append-only)
 
+- **[2026-08-31f] Item 15 closed whole: the error pane, the `--history` twin,
+  the rule that says which lines can carry a `#!` — and the third reader of
+  that rule deleted.** Dispatch task F65 (`claude/fable-dispatch.md`), executor
+  run, all six scopes delivered. Preconditions verified live before anything
+  moved (§0.7): both HEADs, the nine stated counts, F63's ten artifacts in
+  their stated shapes — all as dispatched, no abort.
+  **Headless first (`cdda1ee4`):** `EditCore::errorHistory()` lists every `#!`
+  tail and every finding in line order, rebuilt with the diagnostics after each
+  edit; `warpTo()` moves the caret to one, at the byte its span begins on.
+  A line carrying BOTH gives TWO entries, the engine's first — they are two
+  claims by two authors about one line (what happened when it RAN vs what the
+  bytes say NOW) and the case where they differ IS the C1 signal item 15 names;
+  merging them would hide it. editcore **193 → 223** checks.
+  **`--history` (`99260e28`):** the same list printed, seven TAB-separated
+  fields (file, line, source, id, severity, message, relation), so a harness
+  reads what an author sees. New gate `history_list`, **8 → 9**, through the
+  same comparator as the two `--check` records (`check_gate.cmake` gained a
+  MODE rather than being copied a third time). Its fixture
+  `tests/history_cases.sts` is F63-SHAPED — every `#!` in it is a sentence the
+  engine wrote — and three of its ten cases are deliberate ABSENCES.
+  **The pane (`4c70f2aa`):** F5/Ctrl-E show-hide, F3/Ctrl-N next, F4/Ctrl-P
+  previous, click a row to go there; `>` + inversion mark the row the caret is
+  on; ui_selftest **13 → 17** frames. Off by default with the COUNT always on
+  the status line — the count is what makes it findable. **A design fault
+  caught by its own record, worth keeping:** the first version stepped in BYTE
+  order, and on a line carrying both, the engine's `#!` sits to the RIGHT of
+  the finding's span — so F3 skipped that finding going down AND on the wrap,
+  an entry the keyboard could never reach. Seen in a rendered frame
+  (`pane-warp-twice` landed on line 3 instead of line 2), not by inspection.
+  The stepper now walks the LIST, and the pane keeps exactly one piece of
+  state — the row the last warp landed on — trusted only while the caret still
+  stands where that row begins.
+  **The rule, written where it belongs (`a3e44b64`):**
+  `parse_model.comments.machine_tail` gains its EXECUTES-ONLY clause with three
+  anchors — the script layer drops a line whose first byte is `#` before it is
+  dispatched (`script.cpp:117`), so `ScriptAnnotator::saw`/`note` are never
+  called for it (sole call site `script_mgr.cpp:337`) and `flush` iterates ONLY
+  the notes it holds (`script_annotator.cpp:130`), so such a line is neither
+  written NOR CLEARED; scedit reads it that way by construction
+  (`sc_editcore.cpp:306`). Families, counts, seeds and the argument-token
+  vocabulary md5-identical; the whole diff is 7 prose lines.
+  **The third reader deleted (harness `1bd49f6`):** `f63_scedit_agree.py`
+  carried its own copy of the `#!` locating rule — written from the grammar
+  sentence, which lacked the clause, so the copy lacked it too and mis-read
+  F.sts:1. It now consumes `--history`; result unchanged on the same artifacts,
+  **12 tails / 12 agree / 0 disagreements / 6 expected**, and it gained the leg
+  table for all ten of F63's files (an unknown artifact is now a loud failure,
+  not a smaller pass).
+  **Every new record gate shown able to fail** (each restored after): inverting
+  the entry order → 9 red editcore checks; dropping `machineTail`'s
+  executes-only guard → the three F4 checks red, which is EXACTLY the harness's
+  original bug reproduced as a test; one recorded `--history` relation changed
+  agrees→disagrees → `history_list` red; warping to column 0 → `ui_selftest`
+  AND editcore red; one `>` removed from a recorded pane row → `ui_selftest`
+  red; a tail rewritten to another fault class in a COPY of A.sts (the
+  committed artifacts md5-untouched) → agree 11 / disagreements 2, one per
+  direction.
+  **[measured 2026-08-31] A citation-staleness instance, three copies of one
+  line number:** engine `2b8ec034` inserted the annotator's line-provenance
+  counter above `script.cpp`'s drop filter and moved it **114 → 117**. Three
+  scedit-side citations of `:114` went stale in that one commit and none was
+  updated with it — `parse_model.comments.script_layer`, `derivation-diff.md`
+  §inner_script_channel, and the harness copy. All three corrected here. The
+  shape is the lesson: a line-number anchor is a cached conclusion with no
+  gate, and the commit that invalidates it is the one moment its author holds
+  both ends.
+  **[measured 2026-08-31] The "0 warnings" bar was not discriminating.** The
+  project sets NO warning flags, so a green build proves only that it compiles.
+  Rebuilt with `-Wall -Wextra`: **one** warning in the whole tree, a
+  pre-existing `cmdSpan` set-but-unused in `sc_check.cpp:341` (last touched at
+  `7fd5ea75`, before this task) — **none** in any file F65 changed. Left as
+  found, out of this task's scope; a `-Wall -Wextra` line in `CMakeLists.txt`
+  plus that one deletion is the whole fix, and is worth a future item.
+  **State:** 9/9 gates green in a FRESH build dir (`build-f65`, Release) and in
+  `build-lovely`. tokenizer 189 · parse_oracle 119 337/0 · editcore 223 ·
+  roundtrip byte-exact · ui_selftest 17 frames · seed gate self-consistent ·
+  lint 27 · history 36 · corpus 15. Item 15 closed; the "history" reading is
+  the one thing flagged for Vixy.
 - **[2026-08-31e] The previous changes verified live on this host, the `#!`
   agreement measured on engine-written files, one criterion corrected at its
   root, and the round minted (F65–F67).** Session 18, Vixy's dispatch line:

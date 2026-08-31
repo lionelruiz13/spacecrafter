@@ -218,7 +218,14 @@ field once triaged (`new` → `under consideration` / `accepted — tracked as
   finding); 15(b) holds by construction (the editor writes bytes back, never
   composes a `#!`); 15(a-ii), the error-history pane, minted as dispatch task
   F65 the same day; scedit's reading agrees with the engine on all 12 lines the
-  engine annotated in F63's artifacts (`harness/f63_scedit_agree.py`)]**. **DECISION FOR VIXY,
+  engine annotated in F63's artifacts (`harness/f63_scedit_agree.py`)]**.
+  **[2026-08-31, later — SCEDIT HALF COMPLETE (F65): item 15 closed whole. The
+  error-history pane lists every `#!` line and every scedit finding with
+  click-to-warp; `scedit --history` prints the same list for a machine; the
+  grammar's `machine_tail` clause now states that only a line that EXECUTED can
+  carry a tail. scedit still writes none. The engine half's remaining open
+  decision is the one below: the generic `debug_message` channel, yours to say
+  yes / no / which subset.]** **DECISION FOR VIXY,
   disclosed with its measurement**: the generic channel — every failing
   command's `debug_message` written on its line — is three lines away and NOT
   wired: it would put ~1661 `#!` tails into 35 of the 408 shipped scripts on

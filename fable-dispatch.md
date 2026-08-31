@@ -1328,16 +1328,22 @@ TCP (F66/F67); `--check`'s printed shape untouched (D6).
 falsification-tested (a tampered expected line → FAIL, shown in the report);
 `f63_scedit_agree.py` green through `--history` with its own reader deleted;
 ledger + README + FR annotation committed; code tree clean; WIP per §0.6.
-**WIP:** 2026-08-31 — §0.7 gate PASSED (all 9 stated counts + artifacts + both
-HEADs verified live). CP1 done, code `cdda1ee4`: scope 1 (EditCore
-`errorHistory()`/`warpTo()`, the "history" reading stated in the header,
-tail+finding = two entries), editcore 193 → 223, two tampers shown red.
-CP2 `99260e28`: scope 3 (`--history`, 7 TAB fields; new gate `history_list`,
-8 → 9 gates; check_gate.cmake gains a MODE rather than a third copy).
-CP3 `4c70f2aa`: scope 2 (the pane, F5/F3/F4 + click; ui_selftest 13 → 17
-frames, the 13 old ones changed on the status row only, diff-verified).
-Next: scope 4 (grammar executes-only clause), the f63 instrument rewrite,
-then the records (mirror ledger + READMEs + FR) and the fresh-build proof.
+**DELIVERED 2026-08-31** (scedit INTENT journal `2026-08-31f`, item 15 closed
+whole; parent §11 NOT consumed — no engine-side fact or defect, §11.185 stays
+free). Scopes 1–6 all done. Code `cdda1ee4` (core: `errorHistory()`/`warpTo()`)
+· `99260e28` (`--history` + the `history_list` gate, 8 → 9) · `4c70f2aa` (the
+pane: F5/F3/F4 + click, ui_selftest 13 → 17) · `a3e44b64` (the grammar's
+EXECUTES-ONLY clause, 3 anchors, families md5-identical) · `1ea75d0d` (README).
+Harness `1bd49f6` (`f63_scedit_agree.py` on `--history`, its `tail_of` deleted,
+leg table added; 12/12/0/6 unchanged). Gates 9/9 green in a FRESH dir
+(`build-f65`) and in `build-lovely`; editcore 193 → 223. Six falsifications
+shown red and restored. FOR VIXY: the "history" reading (current buffer's set,
+not a session log) + the pane's UX calls, README § The error pane, veto open.
+NEW §5 item 20 (the build sets no warning flags — the "0 warnings" bar could
+not fail; one pre-existing `-Wall` warning in sc_check.cpp, left as found).
+For F66: `EditCore::errorHistory()`/`warpTo()` are the accessors, `--history`'s
+7-field TAB shape is a stated contract with a consumer, and `check_gate.cmake`
+takes a `MODE` so a `--doc`/`--search` record gate needs no fourth copy.
 
 ### F66 — scedit: the documentation surface for machines — `--doc`, `--search`, `--check` as JSON, and an MCP stdio server over the same readers (FEATURE_REQUESTS 2026-08-31 "LLM assistance"; scedit INTENT §5 item 19) [M]
 
