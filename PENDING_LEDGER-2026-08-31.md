@@ -258,6 +258,26 @@ remainder; weekend-spanning sessions plan for ZERO steering
 function list gains, explicitly: continuity of state across the
 owner's attention windows.
 
+**Two comparison-table corrections** [vixy 2026-08-31, eighth
+message]: (1) "persistent store: none" for the model is WRONG — the
+`claude/` directory IS the model's persistent store and demonstrably
+works (*"INTENT.md and QUEUE.md let you continue the work
+transparently, without me ever needing to remember them all"*).
+Corrected asymmetry: the owner's store is deep but its ACQUISITION
+channel is lossy (vocal-dominant, unreplayable, origins fade — his
+stated envy: *"the ability to reliably store everything at lowest
+cost - and every sessions here can be retraced to the word"*); the
+model's store is thin per-session but lossless and
+retraceable-to-the-word. (2) "authority/judgment: none" conflated two
+axes — authority is the owner's, gated; JUDGMENT is exercised on both
+sides (*"you also have some judgment, otherwise you wouldn't be good
+at orchestration"*) with a DESIGNED conversion channel: structural
+arguments that hold (userPreferences' own line) convert judgment into
+authority. Related architecture-genealogy disclosure routed
+cross-project → `~/shared/QUEUE.md` Q-57 (error/attack as one failure
+surface under two sampling distributions; integration owed to the
+fork by the next architecture-touching session).
+
 ## 7. Provenance note
 
 The three script requests ([parallel-script]/[script-binding]/
