@@ -171,17 +171,35 @@ int validate(const json &g, const std::string &grammarPath) {
 	// presence of a "registration" field; that field is now the registration
 	// SOURCE ANCHOR carried by every command, so the marker had to become
 	// explicit data rather than a shape accident.)
-	int registered = 0, pretable = 0, withArgs = 0, argsIncomplete = 0, argsSourced = 0;
+	int registered = 0, pretable = 0, withArgs = 0, argsIncomplete = 0, argsSourced = 0, aliases = 0;
 	std::set<std::string> cmdNames;
-	std::vector<std::string> missingArgsComplete, missingDoc, missingRegistration;
+	std::vector<std::string> missingArgsComplete, missingDoc, missingRegistration, badAliases;
 	for (auto it = fam.at("commands").begin(); it != fam.at("commands").end(); ++it) {
 		if (it.key().rfind("_", 0) == 0) continue; // _source/_args_status annotations
 		cmdNames.insert(it.key());
 		const auto &e = it.value();
 		if (e.value("pretable", false)) ++pretable; else ++registered;
-		if (!e.contains("args_complete") || !e.at("args_complete").is_boolean())
-			missingArgsComplete.push_back(it.key());
-		else if (!e.at("args_complete").get<bool>())
+		// An alias names a canonical command and carries no argument data of
+		// its own (resolved at load by both readers); if it states
+		// args_complete at all, it must agree with its target.
+		const bool isAlias = e.contains("alias_of");
+		if (isAlias) {
+			++aliases;
+			const std::string t = e.at("alias_of").is_string() ? e.at("alias_of").get<std::string>() : std::string();
+			const auto &all = fam.at("commands");
+			if (t.empty() || !all.contains(t))
+				badAliases.push_back(it.key() + " -> `" + t + "` (no such command)");
+			else if (all.at(t).contains("alias_of"))
+				badAliases.push_back(it.key() + " -> `" + t + "` (itself an alias)");
+			else if (e.contains("args_complete") && all.at(t).value("args_complete", true) != e.at("args_complete"))
+				badAliases.push_back(it.key() + ": states args_complete differently from `" + t + "`");
+			if (e.contains("args") && e.at("args").is_object())
+				for (auto a = e.at("args").begin(); a != e.at("args").end(); ++a)
+					if (a.key().rfind("_", 0) != 0) { badAliases.push_back(it.key() + ": carries its own argument keys"); break; }
+		}
+		if (!e.contains("args_complete") || !e.at("args_complete").is_boolean()) {
+			if (!isAlias) missingArgsComplete.push_back(it.key());
+		} else if (!e.at("args_complete").get<bool>())
 			++argsIncomplete;
 		if (!e.contains("doc")) missingDoc.push_back(it.key());
 		if (!e.contains("registration")) missingRegistration.push_back(it.key());
@@ -196,6 +214,9 @@ int validate(const json &g, const std::string &grammarPath) {
 	check(registered == exp.at("commands").get<int>(),
 	      "commands: registered " + std::to_string(registered) + " == expected " + std::to_string(exp.at("commands").get<int>()));
 	check(pretable == 2, "commands: pre-table literals == 2 (comment, uncomment)");
+	check(badAliases.empty(), "commands: " + std::to_string(aliases) + " alias entries, each naming a canonical "
+	      "command and carrying no argument data of its own" +
+	      (badAliases.empty() ? std::string() : " (" + badAliases.front() + ")"));
 	check(missingRegistration.empty(),
 	      "commands: every entry carries a `registration` source anchor" +
 	      (missingRegistration.empty() ? std::string() : " (missing: " + missingRegistration.front() + ", ...)"));

@@ -498,12 +498,10 @@ void LineChecker::rules(const Line &L, const CommandData &cdRef)
 		}
 	}
 
-	// --- spelling that does not survive a round trip ---------------------------
-	if (!cd->alias_of.empty())
-		emit("alias-respelled",
-		     "command " + quoteName(cd->name) + " is another spelling of " +
-		     quoteName(cd->alias_of) + ": a recorded session writes it back as " +
-		     quoteName(cd->alias_of), cmdSpan);
+	// An alias (`flyto`, `div`, `mul`, `mod`) is not a finding: the engine runs
+	// the same handler, and a recording keeps the spelling as typed
+	// (parse_model.recording_alias_loss, corrected 2026-08-31). The seed
+	// `alias-respelled` that claimed otherwise is retired.
 }
 
 } // namespace

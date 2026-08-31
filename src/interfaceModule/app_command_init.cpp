@@ -42,7 +42,6 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_BODY_TRACE] = SC_COMMAND::SC_BODY_TRACE;
 	m_commands[ACP_CN_BODY] = SC_COMMAND::SC_BODY;
 	m_commands[ACP_CN_CAMERA] = SC_COMMAND::SC_CAMERA;
-	m_commands[ACP_CN_FLYTO] = SC_COMMAND::SC_CAMERA; //alias of camera
 	m_commands[ACP_CN_CLEAR] = SC_COMMAND::SC_CLEAR;
 	m_commands[ACP_CN_COLOR] = SC_COMMAND::SC_COLOR;
 	m_commands[ACP_CN_CONFIGURATION] = SC_COMMAND::SC_CONFIGURATION;
@@ -97,11 +96,32 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_WAIT] = SC_COMMAND::SC_WAIT;
 	m_commands[ACP_CN_ZOOM] = SC_COMMAND::SC_ZOOMR;
 
+	// The reverse map names ONE spelling per command - the canonical one - and
+	// is built from the registrations above and from nothing else. `emplace`
+	// keeps the first name it sees per enum: until 2026-08-31 this loop ran
+	// over the whole map INCLUDING the aliases, and `camera` beat `flyto` only
+	// because 'c' < 'f' in std::map order; registering `div` would have made
+	// `div` the canonical spelling of SC_DIVIDE the same way. The canonical
+	// name is a decision, not an accident of sort order, so the aliases are
+	// added AFTER this loop and can never be chosen here. Measured 2026-08-31:
+	// the map has NO consumer at this revision (a recording writes the line as
+	// typed - ScriptMgr::recordCommand; only `flag` toggles are re-serialised,
+	// from m_flags_ToString), so this is the contract for the exploitation the
+	// member was kept for, not a change of behaviour.
 	for (auto it = m_commands.begin(); it != m_commands.end(); ++it) {
         m_commandsToString.emplace(it->second, it->first);
     }
 
-	//make a copy to futur exploitation
+	// Aliases: accepted on input, never written back (see above). Same enum,
+	// same handler, same arguments as the canonical name.
+	m_commands[ACP_CN_FLYTO] = SC_COMMAND::SC_CAMERA;
+	m_commands[ACP_CN_DIV] = SC_COMMAND::SC_DIVIDE;
+	m_commands[ACP_CN_MUL] = SC_COMMAND::SC_MULTIPLY;
+	m_commands[ACP_CN_MOD] = SC_COMMAND::SC_MODULO;
+
+	//make a copy to futur exploitation (aliases included: a did-you-mean may
+	//suggest `mod`, and the command surface a consumer enumerates is what the
+	//engine accepts)
 	for (const auto& i : m_commands) {
 		commandList.push_back(i.first);
 	}

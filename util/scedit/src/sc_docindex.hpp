@@ -112,6 +112,10 @@ struct CommandInfo {
 	std::map<std::string, Spec> args;
 	bool has_key_grammar = false;
 	Spec key_grammar;               //!< what a KEY means for this command
+	//! "" unless the entry is an alias; then keys/args/key_grammar/args_complete
+	//! are the target's (resolved once at load, mirroring sc_grammar), while
+	//! `doc` and `registration` stay the alias's own.
+	std::string alias_of;
 };
 
 class DocIndex {

@@ -137,6 +137,7 @@ bool DocIndex::load(const std::string &path, std::string &err)
 				ci.doc_known = !ci.doc.empty();
 			}
 			ci.registration = str(e, "registration");
+			ci.alias_of = str(e, "alias_of");
 			if (e.contains("args_complete") && e.at("args_complete").is_boolean())
 				ci.args_complete = e.at("args_complete").get<bool>();
 			ci.args_source = str(e, "args_source");
@@ -159,6 +160,26 @@ bool DocIndex::load(const std::string &path, std::string &err)
 				ci.keys.push_back(kv.first);   // std::map: byte-lexicographic
 			commands_[ci.name] = ci;
 			command_names_.push_back(ci.name);
+		}
+		// Aliases take the key-level facts of their target (one resolution
+		// point for this reader, as Grammar::load is for the structural one).
+		for (auto &kv : commands_) {
+			CommandInfo &ci = kv.second;
+			if (ci.alias_of.empty())
+				continue;
+			auto t = commands_.find(ci.alias_of);
+			if (t == commands_.end() || !t->second.alias_of.empty()) {
+				err = path + ": command `" + ci.name + "` is an alias of `" + ci.alias_of + "`, which " +
+				      (t == commands_.end() ? "does not exist" : "is itself an alias");
+				return false;
+			}
+			const CommandInfo &c = t->second;
+			ci.args_complete = c.args_complete;
+			ci.args_source = c.args_source;
+			ci.keys = c.keys;
+			ci.args = c.args;
+			ci.has_key_grammar = c.has_key_grammar;
+			ci.key_grammar = c.key_grammar;
 		}
 	}
 	std::sort(command_names_.begin(), command_names_.end());

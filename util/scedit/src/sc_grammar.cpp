@@ -218,6 +218,38 @@ bool Grammar::load(const std::string &path, std::string &err)
 			if (commands_.count(bs.command))
 				single_pair_.insert(bs.command);
 
+		// --- aliases resolve ONCE, here ---------------------------------------
+		// An alias entry (`alias_of`) carries no argument data of its own: the
+		// engine registers a second name on the SAME enum, so the handler, the
+		// keys and every claim about them are the canonical entry's, and the
+		// file holds them once (I2). Every consumer reads CommandData, so this
+		// is the one resolution point; `name` and `alias_of` stay the alias's
+		// own. Runs after the built-in placement/single-pair passes so the
+		// copy is of the FINISHED target. A dangling or chained alias is a
+		// contract error here, not a nullptr somewhere later.
+		for (auto &kv : commands_) {
+			CommandData &cd = kv.second;
+			if (cd.alias_of.empty())
+				continue;
+			auto t = commands_.find(cd.alias_of);
+			if (t == commands_.end() || !t->second.alias_of.empty()) {
+				err = path + ": command `" + cd.name + "` is an alias of `" + cd.alias_of + "`, which " +
+				      (t == commands_.end() ? "does not exist" : "is itself an alias");
+				return false;
+			}
+			const CommandData &c = t->second;
+			cd.subfamily = c.subfamily;
+			cd.placement = c.placement;
+			cd.has_args = c.has_args;
+			cd.arg_keys = c.arg_keys;
+			cd.arg_keys_sorted = c.arg_keys_sorted;
+			cd.args_complete = c.args_complete;
+			cd.args_source = c.args_source;
+			cd.free_keys = c.free_keys;
+			if (single_pair_.count(c.name))
+				single_pair_.insert(cd.name);
+		}
+
 		// --- obsolete tokens ------------------------------------------------
 		auto obs = families_.find("obsolete_tokens");
 		if (obs != families_.end())

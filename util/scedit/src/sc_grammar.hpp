@@ -98,7 +98,10 @@ struct CommandData {
 	bool pretable = false;
 	std::string subfamily;      //!< "" when the command names none
 	SubfamilyPlacement placement;
-	std::string alias_of;       //!< "" unless the entry declares an alias
+	//! "" unless the entry declares an alias. Then every argument-shaped field
+	//! below is the TARGET's, copied once at load (Grammar::load): the file
+	//! holds those facts on the canonical entry only.
+	std::string alias_of;
 	bool has_args = false;      //!< the entry carries extracted `args` data
 	//! The entry claims its `args` list is the WHOLE accepted key vocabulary.
 	//! False = there are more legal keys than are listed, so an unlisted key

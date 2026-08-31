@@ -676,12 +676,12 @@
       "handler": "commandCamera",
       "lines": "4186-4453",
       "alias_of": "camera",
-      "registration": "app_command_init.cpp:45 (ACP_CN_FLYTO = \"flyto\", base_command_interface.hpp:334) — the same enum value as `camera`, so the same handler and the SAME arguments",
+      "registration": "app_command_init.cpp:115 (ACP_CN_FLYTO = \"flyto\", base_command_interface.hpp:334) — the same enum value as `camera`, so the same handler and the SAME arguments; registered in the aliases block AFTER the reverse map is built (:112-118, since 2026-08-31)",
       "doc": "Another spelling of `camera`: it does exactly the same thing, with the same keys.",
       "args": {},
       "notes": [
         "Alias stub: the argument grammar is the `camera` entry, byte for byte — one handler, two registered names (app_command_init.cpp:44-45).",
-        "Recording rewrites the spelling: a recorded script says `camera` even where the author wrote `flyto` (the enum-to-name map is built from the alphabetical name map, so 'camera' claims the enum first — parse_model.recording_alias_loss, app_command_init.cpp:100-102). Cross-ref lint seed 'alias-respelled'."
+        "Recording keeps the spelling the author typed: ScriptMgr::recordCommand (script_mgr.cpp:252) writes the raw line, and m_commands_ToString has NO consumer at this revision (measured 2026-08-31) — parse_model.recording_alias_loss. The earlier note here (\"recording rewrites the spelling\") was an inference from the map's construction, never from a consumer; corrected with the record kept in the journal (scedit INTENT 2026-08-31c). The lint seed 'alias-respelled' that carried it is retired."
       ],
       "flagged": []
     },

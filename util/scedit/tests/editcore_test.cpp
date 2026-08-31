@@ -229,12 +229,13 @@ void testCompletion()
 		eqn(e.cursor().col, 4, "C1 the caret follows the insertion");
 	}
 
-	// C2. An empty line offers every command the engine accepts. 62 = the 60
-	// registered ones plus the two pre-table literals (comment, uncomment),
-	// which the engine does accept and so the editor may offer.
+	// C2. An empty line offers every command the engine accepts. 65 = the 63
+	// registered names (59 canonical + the aliases flyto/div/mul/mod) plus the
+	// two pre-table literals (comment, uncomment), which the engine does
+	// accept and so the editor may offer.
 	{
 		EditCore e = at("", 0);
-		eqn(e.completion().candidates.size(), 62, "C2 every accepted command is offered");
+		eqn(e.completion().candidates.size(), 65, "C2 every accepted command is offered");
 		eq(e.completion().candidates[0], std::string("add"), "C2 byte-lexicographic order");
 		eq(e.completion().ghost(), std::string("add"), "C2 the ghost shows the selected one whole");
 		ok(e.completion().openness == Openness::Exhaustive, "C2 the command list is the whole vocabulary");
@@ -270,6 +271,25 @@ void testCompletion()
 		// drift: this IS Grammar::argKeysAreExhaustive.
 		ok(!open.grammar().argKeysAreExhaustive("body"), "C4 the grammar says so too (body)");
 		ok(open.grammar().argKeysAreExhaustive("moveto"), "C4 the grammar says so too (moveto)");
+	}
+
+	// C4b. An alias resolves to its canonical entry ONCE, at load: what the
+	// grammar, the completion and the bar answer for `div` is what they answer
+	// for `divide` (the file holds the facts once — I2). `div counter 2` is a
+	// key of the free-key kind (divide's key_grammar), so nothing is unknown.
+	{
+		EditCore a = at("div counter 2", 4);
+		EditCore c = at("divide counter 2", 7);
+		ok(a.grammar().argKeysAreExhaustive("div") == a.grammar().argKeysAreExhaustive("divide"),
+		   "C4b div and divide agree on whether their key list is exhaustive");
+		ok(a.grammar().command("div") != nullptr && a.grammar().command("div")->alias_of == "divide",
+		   "C4b div is an alias entry of divide");
+		ok(a.docBar().doc_of.rfind("any key of", 0) == 0, "C4b the bar documents the key GRAMMAR for div");
+		eq(a.docBar().doc, c.docBar().doc, "C4b ... with divide's own sentence");
+		ok(a.diagnostics().empty() && c.diagnostics().empty(), "C4b neither line has a finding");
+		EditCore cmd = at("div counter 2", 1);
+		eq(cmd.docBar().doc, std::string("Short spelling of `divide`: it does exactly the same thing, with the same key."),
+		   "C4b the command's own doc line is the alias's");
 	}
 
 	// C5. Enumerated values: `date load` takes one of three words
@@ -447,10 +467,15 @@ void testDocBar()
 	// D5. `"doc": null` — the sweep could not answer from the code and FLAGGED
 	// it. That is a state the bar must carry to the screen intact.
 	{
-		const CommandInfo *st = at("suntrace", 0).docIndex().command("suntrace");
+		// The host must outlive the pointer: `at()` returns an EditCore by
+		// value, and a pointer into a temporary's DocIndex dangles at the end
+		// of the full expression (it READ INTACT MEMORY by luck until
+		// 2026-08-31, when CommandInfo grew by one string and the heap moved).
+		EditCore host = at("suntrace", 0);
+		const CommandInfo *st = host.docIndex().command("suntrace");
 		ok(st != nullptr, "D5 suntrace is in the contract");
 		ok(st && st->args.count("sun") == 1, "D5 ... with a `sun` key");
-		ok(st && !st->args.at("sun").doc_known, "D5 whose doc is null");
+		ok(st && st->args.count("sun") == 1 && !st->args.at("sun").doc_known, "D5 whose doc is null");
 		EditCore e = at("suntrace sun Earth", 10);
 		ok(!e.docBar().documented, "D5 the bar reports the gap");
 		eq(e.docBar().doc, std::string(""), "D5 ... with no text at all");

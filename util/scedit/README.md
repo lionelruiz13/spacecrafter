@@ -193,12 +193,22 @@ scedit.
                                  count deltas against the dated census
     parse_model                  how a line becomes (command, args) — including
                                  every sharp edge, each with its engine line
-    families.commands            60 registered + comment/uncomment, each with a
+    families.commands            63 registered names (59 canonical + 4 aliases:
+                                 flyto, div, mul, mod) + comment/uncomment, each with a
                                  doc line, its argument keys and their specs
     families.flags / set_names / color_names / obsolete_tokens /
     reserved_variables / font_targets
     argument_token_vocabulary    the 238 W_* spellings, with the role each plays
     lint_seeds                   diagnostic id, severity, rule, engine source
+
+An **alias** entry (`flyto`, `div`, `mul`, `mod`) carries `alias_of` and its
+own `doc`/`registration`, and nothing else: the engine registers a second name
+on the same handler, so the keys and every claim about them are the canonical
+entry's, held once. Both readers resolve an alias ONCE, at load
+(`Grammar::load`, `DocIndex::load`), and the validator refuses an alias that
+names a missing or chained target or carries keys of its own. A recording
+keeps the spelling the author typed (the engine's enum-to-name map has no
+consumer — `parse_model.recording_alias_loss`), so an alias is not a finding.
 
 Two shapes coexist in the families on purpose. A family whose documentation
 pass has run carries objects (`[{name, doc, value, default, required, source}]`
@@ -295,7 +305,7 @@ Eight `ctest` gates, all green on a clean build:
 | `roundtrip` | `doc/superscript.sts` — 1606 lines (rewritten upstream 2026-08-26, `f0c8ef83`), ISO-8859, CRLF — opened in the editor and saved untouched: **same MD5**. Plus one edit that must change exactly the line it was made on |
 | `ui_selftest` | the frames the editor actually DRAWS, rendered off-screen at a fixed size, with four masks of the caret's row: the ghost text is DIM, the look-alike-space marker lands on the column the finding names, every finding's span is UNDERLINED at exactly its bytes, and the caret is the standard SGR inversion on exactly one cell |
 | `seed_gate` | the contract file validates (counts re-derived from the data, not asserted) — **and every fact in the four `grammar/args/` fragments is still byte-identical in the merged file**, which is what keeps the granular source and the merged contract from drifting apart |
-| `lint_rules` | `tests/lint_cases.sts` — one construct per armed id (16 ids), proving the rule fires with the right id, severity and shape; plus a section that must stay silent (comments in every position included), and a last section for what is only known at the end of the file |
+| `lint_rules` | `tests/lint_cases.sts` — one construct per armed id (15 ids), proving the rule fires with the right id, severity and shape; plus a section that must stay silent (comments in every position included), and a last section for what is only known at the end of the file |
 | `corpus_gate` | `--check` over the real corpus produces exactly the recorded findings |
 
 `tests/lint-expected.txt`, `tests/corpus-expected.txt` and

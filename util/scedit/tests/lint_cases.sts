@@ -40,9 +40,6 @@ text string 'hello world' x
 # --- unsupported-quoting: there is no backslash escape
 text string "a\"b"
 
-# --- alias-respelled: recording writes this back as 'camera'
-flyto action move_to
-
 # --- inert-command: parses, reports success, does nothing
 set mode InGalaxy
 
@@ -64,10 +61,6 @@ landscape action load nmae panorama
 # The engine would log 'nebula_names' here; that is a false lead, so it is not
 # printed (the finding itself is unchanged). doc/superscript.sts:303 is this line.
 flag date_display_number on
-
-# --- alias-respelled only: `flyto` IS `camera`, so camera's args_complete:false
-# covers it too and none of the anchor keys below is reported.
-flyto action create name observatory type point x 1 y 2 z 3
 
 # --- invisible-separator: a no-break space where a space belongs.
 # The engine reads 'hello<0xA0>world' as ONE word, so `string` swallows both.
@@ -109,6 +102,15 @@ struct if end
 struct loop 2
 struct loop end
 camera action move_to
+
+# aliases: the same handler and keys as the canonical name, resolved once at
+# load; a recording keeps what you typed (script_mgr.cpp:252) - nothing to report.
+# `flyto` inherits camera's args_complete:false, so its anchor keys are not reported either.
+flyto action move_to
+flyto action create name observatory type point x 1 y 2 z 3
+div counter 2
+mul counter 2.5
+mod counter 3
 
 # a commented-out block: the engine never runs these, so neither do we
 comment

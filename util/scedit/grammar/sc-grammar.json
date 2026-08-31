@@ -6,7 +6,8 @@
     "merged": "2026-08-04, grammar/args/unit-{1,2,3,4}.json folded in (code master-beta @ b12c8cdd). The four fragments STAY in place as the granular source and each carries a `_merged` marker; this file is the merged contract the tool reads at runtime. Content was RELOCATED, not rewritten: every per-key doc/value/values/default/required/source/notes and every command-level branches/exclusive_groups/key_grammar/notes/flagged is the fragment's own text.",
     "amended": [
       "2026-08-31: five lint seeds minted (inline-comment, unclosed-struct, end-without-if, else-without-if, loop-end-without-loop) and three parse_model clauses added (comments.mid_line, if_structure, loop_structure) at the sc_check touch of scedit/INTENT.md §5 items 10/13/14; families byte-untouched (code master-beta @ 6a4d184b at the time of the edit).",
-      "2026-08-31 (same day, later): the comment rule flips to the RULED behaviour - a '#' outside quotes starts a comment (comments.mid_line rewritten; script_layer and live_channels amended); seeds inline-comment (minted hours earlier) and indented-comment RETIRED, 18 -> 16; families byte-untouched. Order per Vixy: scedit first, engine brought into phase with the identical parseCommand block."
+      "2026-08-31 (same day, later): the comment rule flips to the RULED behaviour - a '#' outside quotes starts a comment (comments.mid_line rewritten; script_layer and live_channels amended); seeds inline-comment (minted hours earlier) and indented-comment RETIRED, 18 -> 16; families byte-untouched. Order per Vixy: scedit first, engine brought into phase with the identical parseCommand block.",
+      "2026-08-31 (later still): aliases div/mul/mod added as alias entries (families.commands, registration order: the four aliases sit at the end, where the engine now registers them; flyto moved there, its registration anchor and its second note corrected); expected_counts.commands 60 -> 63 (count_deltas.commands_aliases_2026_08_31); parse_model.recording_alias_loss CORRECTED to the measured engine (no consumer of m_commands_ToString; recording writes the raw line); seed alias-respelled RETIRED, 16 -> 15. Code master-beta @ 3d9179d2 + the alias commit."
     ],
     "merge_provenance": {
       "units": {
@@ -46,7 +47,7 @@
       ]
     },
     "expected_counts": {
-      "commands": 60,
+      "commands": 63,
       "flags": 97,
       "set_names": 43,
       "color_names": 46,
@@ -69,6 +70,11 @@
           "e3a5b19c (2026-07-25), 4dc29023 (2026-08-01): 0 `args[` lines touched."
         ],
         "residual": "NONE. 366 + 3 = 369 tokens and 336 + 3 = 339 lines, both exact [measured 2026-08-04 by `git show <rev>:src/interfaceModule/app_command_interface.cpp | grep -o 'args\\[' | wc -l` and `grep -c`]."
+      },
+      "commands_aliases_2026_08_31": {
+        "before": 60,
+        "after": 63,
+        "attribution": "the alias landing of 2026-08-31: `div`, `mul`, `mod` registered as aliases of `divide`, `multiply`, `modulo` (app_command_init.cpp:116-118) [vixy 2026-08-30]. `flyto` was already counted (60 = 59 canonical + flyto). Registered names = m_commands entries, aliases included, as the engine's own commandList counts them."
       }
     },
     "documentation_requirement": "[vixy 2026-08-03] Each command AND each key carries its own line of documentation, shown interactively by cursor position; defaults shown greyed out and offered as completion when the value field is empty. Bar: someone without any knowledge of script should be able to understand and modify any script through this editor. Docs are PRODUCT SURFACE: a doc line exists only where its content is traced (handler code, ledger, or Vixy); untraceable gaps are flagged, never invented. Planned schema v2: every family names-array becomes [{name, doc, default?}] when the doc pass fills content.",
@@ -117,13 +123,13 @@
     "flag_multi_pair": "SCOPE, corrected at the args merge. The single-pair restriction covers EXACTLY ten commands: `flag` (:1183 reads args.begin() and never loops - the code says so itself, '// could loop if want to allow that syntax' :1182) and the nine variable commands define (:4484), add (:4498), sub (:4511), multiply (:4525), divide (:4538), modulo (:4551), tangent (:4564), trunc (:4577), sinus (:4590). On such a line only the ALPHABETICALLY first key is applied, silently: `add b 2 a 1` changes `a`. It does NOT extend to `set` - see set_multi_pair. [units 1/4]",
     "set_multi_pair": "`set` is MULTI-pair: commandSet loops over EVERY pair (:2119-2122) and applies each through evalCommandSet, folding the results with `&&` (:2121). Two consequences the author cannot see: the pairs act in ALPHABETICAL key order, so `set star_scale 2 home_planet Mars` changes the home planet first; and because executeCommandStatus() returns false once debug_message is set (:1171-1174) while debug_message is cleared only once per LINE (:194), the FIRST failing pair makes every later pair fail too - one unknown name and the rest of the line never applies. [unit 2]",
     "unknown_command": "debug_message 'Unrecognized or malformed command name' + Levenshtein nearest-neighbour suggestion over the family list (searchNeighbour, app_command_init.cpp:368-387; no distance threshold — a suggestion is always produced, log-only). scedit reproduces searchNeighbour exactly (no threshold) in its tokenizer library; what it CAPS is only the DISPLAY of the suggestion in a diagnostic - see lint_seeds `unknown-command` and util/scedit/tests/derivation-diff.md §5.7",
-    "recording_alias_loss": "m_commands_ToString is built by emplace(enum, name) over the alphabetical name map: 'camera' claims SC_CAMERA before 'flyto', so a recorded 'flyto' round-trips as 'camera'",
+    "recording_alias_loss": "CORRECTED 2026-08-31 (the earlier text claimed a recorded `flyto` round-trips as `camera`): a recording writes the line AS TYPED — ScriptMgr::recordCommand (script_mgr.cpp:252) receives `commandline`, the raw input — and m_commands_ToString (the enum-to-name map) has NO consumer at this revision, so no alias is respelled anywhere. The one re-serialisation is `flag <name> toggle`, rewritten as `flag <name> <0|1>` from m_flags_ToString (app_command_interface.cpp:347-349). The map itself is now built CANONICAL-FIRST (app_command_init.cpp:99-111, aliases added after :112-118), so a future consumer names `camera`/`divide`/`multiply`/`modulo`, never `flyto`/`div`/`mul`/`mod`; until 2026-08-31 it came from the alphabetical name map and `camera` won only by sort order. Lint seed 'alias-respelled' retired with this correction: an alias has no user-facing consequence to report.",
     "if_structure": "`struct if` is a STACK, not a flag: IfSwap holds a std::vector<bool> (src/interfaceModule/if_swap.hpp:71). `struct if <cond>` pushes (commandStruct :4614-4661; the pushed value is TRUE when the test FAILS - push(true) means skip), `struct if else` flips the top (:4606-4609 -> revert, if_swap.cpp:71-81), `struct if end` pops (:4610-4613 -> pop, :40-54). The skip test at :225 reads get(), which is the OR over the stack (defineCommandSwap :90): one true entry anywhere skips everything. A closer on an empty stack is LOGGED as an error and ignored ('end without if' :45, 'else without if' :76). The whole if-case is guarded by `swapCommand != true` (:4605): inside a `comment` block no `struct if` line counts, `end` included. `struct` lines are intercepted BEFORE the skip test (:221-222 vs :225), so an `end` inside a skipped region still pops - which is what makes nesting work. The stack is cleared only by `script action end` (:2810), which the end of every script runs (terminateScript :178-181 <- script_mgr.cpp:335): an opener left open discards its own file's tail and nothing after. Static consequence: an opener with no `end` before EOF is a defect on every runtime path; lint `unclosed-struct` (reported at the OPENER), `end-without-if`, `else-without-if`. Witness: doc/superscript.sts:1404-1409 (six openers, the comparison catalogue - `a inf b` pushes skip iff a >= b and `a sup b` iff a <= b, one of them holds for any a, b, so the tail from :1405 is skipped deterministically) and :1547 (SS-24); shipped fscripts/panorama5.sts:102 (SS-25). RULED 2026-08-30 [vixy]: the engine will LOG the unclosed if (three-part schema) and annotate the opener with a `#!` tail; the if-state will be scoped to the script in the non-legacy exec policies. Added 2026-08-31.",
     "loop_structure": "`struct loop <n>` .. `struct loop end` is NOT a stack engine-side: one isInLoop / loopVector / nbrLoop (script_mgr.hpp:120-131, script_mgr.cpp:266-272). `struct loop <n>` with n > 1 (:4690-4698; n through evalString then strToInt) starts copying the following lines; `struct loop end` (:4677-4682) stops copying and replays them nbrLoop-1 times (initIterator :125-131 pops the `end` line itself, the replay loop is script_mgr.cpp:306-324); `struct loop break` (:4684-4688) abandons the repetition and leaves the pair syntactically open; n < 1 raises the skip flag (:4691-4692) that only `struct loop end` lowers. The loop case is guarded by `ifSwap->get() != true` (:4676) - a runtime fact. Static consequence: an opener with no `end` before EOF is a defect on every path - n > 1: the block runs once and never repeats; n < 1: the tail is skipped; lint `unclosed-struct`. `struct loop end` with no loop open resets an empty loop and logs NOTHING; lint `loop-end-without-loop`. Not in the corpus (`struct loop 2`, `3600`, `4` only, all closed). Added 2026-08-31."
   },
   "families": {
     "commands": {
-      "_source": "app_command_init.cpp:37-109 (registration) x base_command_interface.hpp:328-389 (spellings); enum SC_COMMAND base_command_interface.hpp:32-38",
+      "_source": "app_command_init.cpp:37-126 (registration; aliases block :112-118) x base_command_interface.hpp:328-398 (spellings); enum SC_COMMAND base_command_interface.hpp:32-38",
       "_args_status": "args specs EXTRACTED for every command (2026-08-04, the per-handler sweep of app_command_interface.cpp, 4 units, count-gated 339/339 `args[` lines). Per-key facts: `doc`, `value` (domain), `values` (when enumerated), `value_docs` (per value, when each selects a different effect), `default` (or the ABSENT-key behaviour stated explicitly), `required` (tri-state: true / false / \"conditional\"), `source` (file:line), `notes`, and `downstream` (true = the key is not read in the handler at all: the handler forwards the whole args map and the key is read in another file, anchored there). Command-level: `branches` for selector-shaped handlers, `exclusive_groups`, `key_grammar` for the commands whose key is not from a fixed list, `notes`, `flagged` (C2 gaps for Vixy - never invented).",
       "_doc_status": "doc = one plain-language line at the zero-knowledge bar (see _meta.documentation_requirement), on every command AND every key. Filled from the handler code only; `null` + an entry in `flagged` is the honest state where the code cannot answer.",
       "_schema_note": "Per-entry fields and who reads them. `enum`/`handler`/`subfamily`/`alias_of` are the v1 identity. `unit` names the sweep fragment this entry's content came from (grammar/args/unit-<N>.json) — that fragment is where a correction goes first. `lines` is the handler's extent in app_command_interface.cpp. `registration` is a SOURCE ANCHOR (app_command_init.cpp line + the ACP_CN_* macro and its spelling) - it is NOT the pre-table marker any more. `pretable: true` marks the two commands compared as literals BEFORE the m_commands lookup (comment, uncomment): they are accepted by the engine but are absent from `commandList`, so a did-you-mean can never suggest them. `args_complete` (on every entry) answers ONE question: 'is the key vocabulary in `args` the whole vocabulary this command accepts?' false = there are more legal keys than are listed here, so no consumer may report an unlisted key as unknown; the reason and the owning work item are in the entry's `flagged`/`notes`. For a command with an empty `args` and a `key_grammar` (flag, print, set, comment, uncomment, define/add/sub/multiply/divide/modulo/tangent/trunc/sinus, flyto), `args_complete` says nothing extra: `key_grammar` already states that the key is not drawn from a fixed list of this command's own.",
@@ -1474,23 +1480,6 @@
           "camera anchors/anchors double prefix (`action save` / `action load`, src/coreModule/coreLink.cpp:65,70 x src/bodyModule/ssystem_factory.hpp:946,950): a real path defect found while extracting. Recorded, not fixed (out of scope). Until it is decided, the doc line cannot honestly promise where the file lands, so it states what the code does. Vixy/supervisor: is this a fix or a documented path?",
           "camera `action rotate` target: the value is required but unused (src/coreModule/core.cpp:2549-2559 has the per-name branch commented out). Whether the editor should offer completion for a key whose value does nothing — and whether the intent was to restore the branch — is not answerable from the code. Vixy."
         ]
-      },
-      "flyto": {
-        "enum": "SC_CAMERA",
-        "handler": "commandCamera",
-        "alias_of": "camera",
-        "unit": 4,
-        "lines": "4186-4453",
-        "registration": "app_command_init.cpp:45 (ACP_CN_FLYTO = \"flyto\", base_command_interface.hpp:334) — the same enum value as `camera`, so the same handler and the SAME arguments",
-        "doc": "Another spelling of `camera`: it does exactly the same thing, with the same keys.",
-        "args": {},
-        "args_complete": false,
-        "args_complete_reason": "the argument grammar of `flyto` IS `camera`'s (one handler, two registered names); this entry holds no copy of it (I2). `camera` is itself args_complete:false, so the same suppression applies here.",
-        "notes": [
-          "Alias stub: the argument grammar is the `camera` entry, byte for byte — one handler, two registered names (app_command_init.cpp:44-45).",
-          "Recording rewrites the spelling: a recorded script says `camera` even where the author wrote `flyto` (the enum-to-name map is built from the alphabetical name map, so 'camera' claims the enum first — parse_model.recording_alias_loss, app_command_init.cpp:100-102). Cross-ref lint seed 'alias-respelled'."
-        ],
-        "flagged": []
       },
       "clear": {
         "enum": "SC_CLEAR",
@@ -6654,6 +6643,65 @@
           "It does NOT close the other skip state: `struct if`'s own flag (ifSwap) is tested in the same condition (:225) and is cleared by its own commands, not by this one."
         ],
         "flagged": []
+      },
+      "flyto": {
+        "enum": "SC_CAMERA",
+        "handler": "commandCamera",
+        "alias_of": "camera",
+        "unit": 4,
+        "lines": "4186-4453",
+        "registration": "app_command_init.cpp:115 (ACP_CN_FLYTO = \"flyto\", base_command_interface.hpp:334) — the same enum value as `camera`, so the same handler and the SAME arguments; registered in the aliases block AFTER the reverse map is built (:112-118, since 2026-08-31)",
+        "doc": "Another spelling of `camera`: it does exactly the same thing, with the same keys.",
+        "args": {},
+        "args_complete": false,
+        "args_complete_reason": "the argument grammar of `flyto` IS `camera`'s (one handler, two registered names); this entry holds no copy of it (I2). `camera` is itself args_complete:false, so the same suppression applies here.",
+        "notes": [
+          "Alias stub: the argument grammar is the `camera` entry, byte for byte — one handler, two registered names (app_command_init.cpp:44-45).",
+          "Recording keeps the spelling the author typed: ScriptMgr::recordCommand (script_mgr.cpp:252) writes the raw line, and m_commands_ToString has NO consumer at this revision (measured 2026-08-31) — parse_model.recording_alias_loss. The earlier note here (\"recording rewrites the spelling\") was an inference from the map's construction, never from a consumer; corrected with the record kept in the journal (scedit INTENT 2026-08-31c). The lint seed 'alias-respelled' that carried it is retired."
+        ],
+        "flagged": []
+      },
+      "div": {
+        "enum": "SC_DIVIDE",
+        "handler": "commandDivide",
+        "alias_of": "divide",
+        "unit": 4,
+        "lines": "4535-4546",
+        "registration": "app_command_init.cpp:116 (ACP_CN_DIV = \"div\", base_command_interface.hpp:370) — the same enum value as `divide`; registered in the aliases block AFTER the reverse map is built, so it is accepted on input and never becomes the canonical spelling",
+        "doc": "Short spelling of `divide`: it does exactly the same thing, with the same key.",
+        "notes": [
+          "Alias: the argument grammar is the `divide` entry (one handler, two registered names); this entry holds no copy of it — scedit resolves the alias ONCE at load (sc_grammar.cpp, sc_docindex.cpp) and the file holds the facts once (I2).",
+          "Landed 2026-08-31 with the other two short forms [vixy 2026-08-30, FEATURE_REQUESTS \"Short aliases for the long math commands\"]; `add`/`sub` were already the short spellings. Exact-match names: nothing ages when a new command registers (the property the declined unique-prefix expansion lacked)."
+        ],
+        "flagged": []
+      },
+      "mul": {
+        "enum": "SC_MULTIPLY",
+        "handler": "commandMultiply",
+        "alias_of": "multiply",
+        "unit": 4,
+        "lines": "4522-4533",
+        "registration": "app_command_init.cpp:117 (ACP_CN_MUL = \"mul\", base_command_interface.hpp:371) — the same enum value as `multiply`; registered in the aliases block AFTER the reverse map is built, so it is accepted on input and never becomes the canonical spelling",
+        "doc": "Short spelling of `multiply`: it does exactly the same thing, with the same key.",
+        "notes": [
+          "Alias: the argument grammar is the `multiply` entry (one handler, two registered names); this entry holds no copy of it — scedit resolves the alias ONCE at load (sc_grammar.cpp, sc_docindex.cpp) and the file holds the facts once (I2).",
+          "Landed 2026-08-31 with the other two short forms [vixy 2026-08-30, FEATURE_REQUESTS \"Short aliases for the long math commands\"]; `add`/`sub` were already the short spellings. Exact-match names: nothing ages when a new command registers (the property the declined unique-prefix expansion lacked)."
+        ],
+        "flagged": []
+      },
+      "mod": {
+        "enum": "SC_MODULO",
+        "handler": "commandModulo",
+        "alias_of": "modulo",
+        "unit": 4,
+        "lines": "4548-4559",
+        "registration": "app_command_init.cpp:118 (ACP_CN_MOD = \"mod\", base_command_interface.hpp:372) — the same enum value as `modulo`; registered in the aliases block AFTER the reverse map is built, so it is accepted on input and never becomes the canonical spelling",
+        "doc": "Short spelling of `modulo`: it does exactly the same thing, with the same key.",
+        "notes": [
+          "Alias: the argument grammar is the `modulo` entry (one handler, two registered names); this entry holds no copy of it — scedit resolves the alias ONCE at load (sc_grammar.cpp, sc_docindex.cpp) and the file holds the facts once (I2).",
+          "Landed 2026-08-31 with the other two short forms [vixy 2026-08-30, FEATURE_REQUESTS \"Short aliases for the long math commands\"]; `add`/`sub` were already the short spellings. Exact-match names: nothing ages when a new command registers (the property the declined unique-prefix expansion lacked)."
+        ],
+        "flagged": []
       }
     },
     "flags": {
@@ -9448,12 +9496,6 @@
       "severity": "warning",
       "rule": "single quotes or backslash escapes: the engine parser has neither (sts-extension currently highlights both as if legal)",
       "source": "parseCommand:148-164 vs extension.ts:18-59"
-    },
-    {
-      "id": "alias-respelled",
-      "severity": "info",
-      "rule": "'flyto' records back as 'camera' — round-trip changes the spelling",
-      "source": "m_commands_ToString emplace order"
     },
     {
       "id": "inert-command",

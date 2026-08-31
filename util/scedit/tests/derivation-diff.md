@@ -116,7 +116,7 @@ and the family-name paths).
 | `flag_value_grammar` (toggle \| `isTrue` \| everything else silently OFF) | `isTrueValue`/`isFalseValue`, `value != "toggle"` (case-SENSITIVE, `W_TOGGLE` is compared with `==`) | implemented, pinned (`flag stars TOGGLE` is a silent OFF), lint `silent-off-value` |
 | `flag_multi_pair` (only `args.begin()` applied — scope corrected at the merge to exactly ten commands) | `Grammar::isSinglePairCommand` + `args.begin()` | implemented, lint `single-pair-only`; the 10-command list is §6. The correction removed nothing from the code: the list was already those ten. |
 | `set_multi_pair` (`set` loops over every pair; `&&` fold short-circuits the rest) | `SubfamilyPosition::EveryKey` branch of `sc_check.cpp` | implemented, and the short-circuit consequence is said on the pair that causes it (§5.3) |
-| `recording_alias_loss` (`flyto` → `camera`) | `CommandData::alias_of` from the contract file | implemented, lint `alias-respelled` |
+| `recording_alias_loss` (CORRECTED 2026-08-31: a recording keeps the spelling as typed — `recordCommand` writes the raw line, and `m_commands_ToString` has no consumer at HEAD) | `CommandData::alias_of` → resolved to the target's fields once at load (`Grammar::load`; `DocIndex::load` for the prose) | implemented; lint `alias-respelled` RETIRED — it asserted a respelling the engine does not perform (the claim came from B38's reading of the map's construction, never from a consumer). Aliases at HEAD: `flyto`, `div`, `mul`, `mod` (the last three landed 2026-08-31). |
 | `if_structure` (ifSwap is a stack; `end`/`else` on empty logged and ignored; `comment`-block guard; cleared by `script action end`) | `BlockSkipState` tracks openers/closers with line numbers and spans; `checkBuffer` reports `unclosed-struct` at the OPENER, `end-without-if` / `else-without-if` at the closer | implemented 2026-08-31, pinned (tokenizer_test block structure; editcore E4c-e); arms are NOT decided (§5.2) |
 | `loop_structure` (one loop, not a stack; `end` replays, `break` abandons, n < 1 skips) | same tracker, pairing only; `unclosed-struct` names the consequence from a literal count, both consequences from a `$`-name; `loop-end-without-loop` | implemented 2026-08-31, pinned; the runtime half (skip for n < 1) stays unmodelled (§5.1) |
 | `map_operator_bracket` (`args[K]` INSERTS on an absent read; four handlers forward the whole map, three write into it first) | — | Not a parse observable: it is what a handler does after parsing. It is the reason `Line::args`/`Line::pairs` come from the tokenizer and never from handler behaviour, which is what the code already does. Its consumer-facing half is `args_complete` (§6). |
@@ -430,6 +430,25 @@ one shape, which is worth recording.
   each one twice.
 
 ## 7. C3 corpus run — every finding, dispositioned
+
+### 7.6 Sixth run, 2026-08-31 (later still) — `mod` becomes a real command
+
+Same corpus files as §7.5. **15 findings, zero false positives; harness `.sts`
+still silent.** Against §7.5's 16:
+
+| line(s) | id | disposition | argument |
+|---|---|---|---|
+| 1507 | unknown-command — GONE | was TRUE for the engine before the alias landing; `mod a 2` is CORRECT once `mod` is registered as an alias of `modulo` (app_command_init.cpp:118) | SS-22 resolves as Vixy said it would: no script edit. The did-you-mean that pointed at `mode` (§7.3) is moot. |
+| the other 15 | unchanged | TRUE | Byte-identical to §7.5. |
+
+Retired with this run: lint seed `alias-respelled` (§1, `recording_alias_loss`).
+Its two fixture lines produced no true consequence — the recording keeps the
+spelling as typed — so the fixture's alias cases moved to the must-stay-silent
+section, joined by `div`/`mul`/`mod` lines that prove the load-time resolution:
+`div counter 2` is checked exactly as `divide counter 2` (free key, no
+finding). The regenerated `lint-expected.txt` was gated by a set comparison —
+every (message, id) of the previous file minus the two retired lines, nothing
+lost, nothing gained; only line numbers moved.
 
 ### 7.5 Fifth run, 2026-08-31 (later) — the comment rule flips to the ruled behaviour
 

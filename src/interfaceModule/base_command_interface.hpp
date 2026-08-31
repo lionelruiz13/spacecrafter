@@ -361,6 +361,15 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_CN_MULTIPLY                             "multiply"
 #define ACP_CN_DIVIDE                             	"divide"
 #define ACP_CN_MODULO                             	"modulo"
+// Short aliases of the three long arithmetic commands [vixy 2026-08-30,
+// FEATURE_REQUESTS "Short aliases for the long math commands"]: `add` and `sub`
+// are already the short forms; these give `divide`/`multiply`/`modulo` theirs.
+// Exact-match names, so nothing ages when a new command registers (the
+// property the declined unique-prefix expansion lacked). A recording writes
+// the LONG form back: AppCommandInit::initialiseCommandsName.
+#define ACP_CN_DIV                                  "div"
+#define ACP_CN_MUL                                  "mul"
+#define ACP_CN_MOD                                  "mod"
 #define ACP_CN_TANGENT                             	"tangent"
 #define ACP_CN_TRUNC                             	"trunc"
 #define ACP_CN_SINUS                             	"sinus"
