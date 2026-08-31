@@ -81,6 +81,11 @@ EXCLUDE	data/	shipped field data - D9 freezes the installed field, and city/star
 #     artifact's output cannot be converted without destroying what it pins.
 EXCLUDE	util/scedit/grammar/witness/	witness fixtures pinning doc/superscript.sts bytes - converting them breaks the pin against an unchanged doc (the exclusion candidate named at D14's record, 11.186(d))
 EXCLUDE	util/scedit/tests/ui-selftest-expected.txt	a RECORD of rendered terminal frames (ui_gate.cmake: "never regenerating it blind"); 7193 of its 7330 non-ASCII characters are FTXUI's box drawing, which stays - converting it would break the gate against an unchanged renderer
+EXCLUDE	util/scedit/tests/lint-expected.txt	a RECORD of scedit's own output: its bytes are the lint messages, which rule (2) leaves byte-identical, so converting the record alone would break a gate against unchanged code
+EXCLUDE	util/scedit/tests/history-expected.txt	a RECORD of scedit's own output (same reason)
+EXCLUDE	util/scedit/tests/check-json-expected.txt	a RECORD of scedit's own output (same reason)
+EXCLUDE	util/scedit/tests/doc-expected.txt	a RECORD of scedit's own output (same reason)
+EXCLUDE	util/scedit/tests/corpus-expected.txt	a RECORD of scedit's own output (same reason)
 EXCLUDE	util/scedit/tests/lint_cases.sts	the lint corpus: its three 0xA0 bytes ARE the test subject (the look-alike-space finding) - converting them deletes the cases
 
 # (5) Inputs and outputs of the doc-generation tools: data, not code.

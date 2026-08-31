@@ -1,0 +1,44 @@
+--- recorded/lint-expected.txt
++++ produced/lint-expected.txt
+@@ -14 +14 @@
+-tests/lint_cases.sts:44: info: 'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; — census §3.8, app_command_interface.cpp:1801 era) [-Winert-command]
++tests/lint_cases.sts:44: info: 'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; -- census S3.8, app_command_interface.cpp:1801 era) [-Winert-command]
+*** rewritten: lint-expected.txt
+--- recorded/history-expected.txt
++++ produced/history-expected.txt
+@@ -14 +14 @@
+-tests/lint_cases.sts	44	scedit	inert-command	info	'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; — census §3.8, app_command_interface.cpp:1801 era)	
++tests/lint_cases.sts	44	scedit	inert-command	info	'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; -- census S3.8, app_command_interface.cpp:1801 era)	
+*** rewritten: history-expected.txt
+--- recorded/check-json-expected.txt
++++ produced/check-json-expected.txt
+@@ -156 +156 @@
+-      "message": "'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; — census §3.8, app_command_interface.cpp:1801 era)",
++      "message": "'set mode' is accepted and reported as successful but does nothing: 'set mode <v>' parses, reports success, calls NOTHING (case APP_MODE: break; -- census S3.8, app_command_interface.cpp:1801 era)",
+*** rewritten: check-json-expected.txt
+--- recorded/doc-expected.txt
++++ produced/doc-expected.txt
+@@ -10 +10 @@
+-  "notes": "DEFECT (out of scope, recorded not fixed): the key is looked up and the comparison result is discarded ('it->second == \"true\";' is a statement with no effect), so z_reflection is always false. A doc line would describe behaviour the code does not have — left null and flagged.",
++  "notes": "DEFECT (out of scope, recorded not fixed): the key is looked up and the comparison result is discarded ('it->second == \"true\";' is a statement with no effect), so z_reflection is always false. A doc line would describe behaviour the code does not have -- left null and flagged.",
+@@ -28 +28 @@
+-  "notes": "SUSPECTED TYPO, recorded not fixed: line 1633 reads `bodyTraceBodyChange(args[W_SUN])` — the VALUE of a key spelled 'sun' — while the other two branches of the same handler pass the literal token `W_SUN` (:1646, :1650). Under the code as written, `suntrace pen on` does not switch the trail to the Sun. Doc left null because the two readings (an undocumented body-name key, or a mis-typed literal) have opposite meanings for the editor's user.",
++  "notes": "SUSPECTED TYPO, recorded not fixed: line 1633 reads `bodyTraceBodyChange(args[W_SUN])` -- the VALUE of a key spelled 'sun' -- while the other two branches of the same handler pass the literal token `W_SUN` (:1646, :1650). Under the code as written, `suntrace pen on` does not switch the trail to the Sun. Doc left null because the two readings (an undocumented body-name key, or a mis-typed literal) have opposite meanings for the editor's user.",
+@@ -104 +104 @@
+-  "registration": "app_command_init.cpp:116 (ACP_CN_DIV = \"div\", base_command_interface.hpp:370) — the same enum value as `divide`; registered in the aliases block AFTER the reverse map is built, so it is accepted on input and never becomes the canonical spelling"
++  "registration": "app_command_init.cpp:116 (ACP_CN_DIV = \"div\", base_command_interface.hpp:370) -- the same enum value as `divide`; registered in the aliases block AFTER the reverse map is built, so it is accepted on input and never becomes the canonical spelling"
+@@ -131 +131 @@
+-      "doc": "Play a video in the dome — or a sound on its own — and control it while it plays.",
++      "doc": "Play a video in the dome -- or a sound on its own -- and control it while it plays.",
+*** rewritten: doc-expected.txt
+--- recorded/ui-selftest-expected.txt
++++ produced/ui-selftest-expected.txt
+@@ -163 +163 @@
+-| Play a video in the dome — or a sound on its own — and control it while it plays.   (documents: co
++| Play a video in the dome -- or a sound on its own -- and control it while it plays.   (documents:
+@@ -315 +315 @@
+-| value: number(evalDouble) — $-variable substitution possible | enumerated   one of: else, end, <a
++| value: number(evalDouble) -- $-variable substitution possible | enumerated   one of: else, end, <a
+*** rewritten: ui-selftest-expected.txt
+---
+9 changed line(s) across the records

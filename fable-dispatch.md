@@ -2114,7 +2114,21 @@ per §5.79.
 transliteration proof + zero-count terminal census + both builds green +
 scedit gates green + smoke launch; §11.189 + stub + README; baselines
 re-derived as last act; trees clean; WIP cleared.
-**WIP:** 2026-08-31 CP1 — census instrument `harness/f70_ascii.py` +
+**WIP:** 2026-08-31 CP2 — SWEEP LANDED, code `1012c643`: 280 files
+converted, 8250 non-ASCII bytes → 0, diff 2731/2731 with added==removed in
+EVERY file. Gate PASS, `f70_translit.py verify --from 630b06fd` PASS (the
+tree IS the map+escape derivation, nothing else moved). scedit ctest
+**14/14**, 0 warnings, re-run AFTER the 20:57 reboot. 5 output records
+re-recorded deliberately (9 lines, all grammar prose; diff committed at
+`artifacts/f70/record-rerecord.diff`); witness/, doc/, data/, third_party/
+byte-untouched (0 files). REBOOT AUDIT: nothing of the sweep was taken on
+trust — gate+verify re-derived the whole tree from the committed base after
+the boot. `/tmp/f70-pre` was lost; PRE binary rebuilt IN-TREE (measured:
+Release/NDEBUG, 0 source paths in .rodata, so build location cannot affect
+the section comparison — cheaper than a worktree and no submodule hazard).
+Next: PRE build → `f70_binary_equal.py` → `f69_feedback.py` frozen wire →
+smoke launch on `:0` → §11.189.
+**WIP-CP1:** census instrument `harness/f70_ascii.py` +
 `f70_partition.tsv` (boundary) + `f70_map.tsv` (82 rows) + `f70_translit.py`
 + `f70_dispositions.py` committed BEFORE any conversion, with the pre-state
 artifacts (`artifacts/f70/`). Census re-derived at `630b06fd`: 1498 tracked

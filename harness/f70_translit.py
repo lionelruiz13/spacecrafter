@@ -85,6 +85,22 @@ def read_map(path=MAP_FILE):
     return table
 
 
+def match_key(text, i, table, widths):
+    """Longest map key matching at position i, or None.
+
+    Tried BEFORE the ASCII fast path, and that ordering is load-bearing: a
+    multi-codepoint key can BEGIN with an ASCII character - "Ch<U+FFFD>reau"
+    does - and skipping ahead on the 'C' would silently leave the single-char
+    rule to fire on the damaged byte alone.  Measured the first time this ran:
+    the two repaired names came out as "Ch?reau" and "J?r?me".
+    """
+    for w in widths:
+        seg = text[i:i + w]
+        if len(seg) == w and seg in table:
+            return w, table[seg]
+    return None
+
+
 def translit(text, table, refusals, where):
     """Apply the map to PROSE.  Longest key wins; an unmapped non-ASCII
     character is a REFUSAL, never a silent drop - the map must grow instead."""
@@ -93,21 +109,19 @@ def translit(text, table, refusals, where):
     i = 0
     n = len(text)
     while i < n:
+        hit = match_key(text, i, table, widths)
+        if hit:
+            out.append(hit[1])
+            i += hit[0]
+            continue
         ch = text[i]
         if ord(ch) < 0x80:
             out.append(ch)
             i += 1
             continue
-        for w in widths:
-            seg = text[i:i + w]
-            if seg in table:
-                out.append(table[seg])
-                i += w
-                break
-        else:
-            refusals.append((where, i, ch))
-            out.append(ch)
-            i += 1
+        refusals.append((where, i, ch))
+        out.append(ch)
+        i += 1
     return "".join(out)
 
 
@@ -127,12 +141,22 @@ def convert_text(path, data, table, refusals):
         return translit(text, table, refusals, path)
 
     ctx = A.scan_c(text)
+    widths = sorted({len(k) for k in table}, reverse=True)
     out = []
     i = 0
     n = len(text)
     while i < n:
         ch = text[i]
         if ord(ch) < 0x80:
+            # A multi-codepoint key may START here even though this character
+            # is ASCII - but only outside a literal, where rule (2) owns the
+            # bytes and nothing is transliterated at all.
+            hit = None if ctx[i] in ("string", "char") else \
+                match_key(text, i, table, widths)
+            if hit and any(ord(c) >= 0x80 for c in text[i:i + hit[0]]):
+                out.append(hit[1])
+                i += hit[0]
+                continue
             out.append(ch)
             i += 1
             continue
@@ -157,16 +181,14 @@ def convert_text(path, data, table, refusals):
             i = j
             continue
         # Rule (1) for the prose parts of a C-family file.
-        for w in sorted({len(k) for k in table}, reverse=True):
-            seg = text[i:i + w]
-            if seg in table:
-                out.append(table[seg])
-                i += w
-                break
-        else:
-            refusals.append((path, i, ch))
-            out.append(ch)
-            i += 1
+        hit = match_key(text, i, table, widths)
+        if hit:
+            out.append(hit[1])
+            i += hit[0]
+            continue
+        refusals.append((path, i, ch))
+        out.append(ch)
+        i += 1
     return "".join(out)
 
 
