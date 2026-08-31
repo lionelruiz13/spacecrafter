@@ -26,6 +26,12 @@
  * reads on screen (src/sc_docjson.hpp, src/sc_mcp.hpp); JSON goes to stdout
  * because it is the product, and nothing else does.
  *
+ * Slice 6 (2026-08-31): live mode — `--tcp [host:]port` puts a running engine
+ * at the other end of the editor (src/sc_tcpclient.hpp): send the caret's line,
+ * play the open file, watch the `$LOGON` feed, and take back the `#!` findings
+ * the engine writes into the script when the run ends. Without `--tcp` nothing
+ * in this binary opens a socket.
+ *
  * Slice 4 (2026-08-31): the error pane and `--history FILE...` — every `#!`
  * tail spacecrafter wrote and every finding scedit makes, listed in line order
  * with click-to-warp (scedit/INTENT.md §5 item 15(a-ii)). One reader
@@ -48,6 +54,7 @@
 #include "sc_editcore.hpp"
 #include "sc_grammar.hpp"
 #include "sc_mcp.hpp"
+#include "sc_tcpclient.hpp"
 #include "sc_tui.hpp"
 
 using json = nlohmann::json;
@@ -328,7 +335,7 @@ void usage() {
 	             "       scedit [--grammar <file>] --doc [<command> [<key>|<family name>]]\n"
 	             "       scedit [--grammar <file>] --search [--scope all|commands] [--limit N] <words>...\n"
 	             "       scedit [--grammar <file>] --mcp\n"
-	             "       scedit [--grammar <file>] [--edit] FILE\n"
+	             "       scedit [--grammar <file>] [--tcp [[host:]port]] [--edit] FILE\n"
 	             "       scedit [--grammar <file>] --ui-selftest\n"
 	             "default action: validate the grammar contract\n"
 	             "exit: 0 clean, 1 findings, 2 usage or I/O error\n");
@@ -524,6 +531,7 @@ int main(int argc, char **argv) {
 	std::string editFile;
 	std::vector<std::string> operands;   // files (--check/--history) or words (--doc/--search)
 	bool checkMode = false, showRules = false, editMode = false, uiSelfTest = false;
+	scedit::LiveOptions live;
 	bool historyMode = false, docMode = false, searchMode = false, mcpMode = false;
 	bool asJson = false;
 	scedit::SearchScope scope = scedit::SearchScope::All;
@@ -557,6 +565,22 @@ int main(int argc, char **argv) {
 		else if (a == "--doc") docMode = true;
 		else if (a == "--search") searchMode = true;
 		else if (a == "--mcp") mcpMode = true;
+		else if (a == "--tcp") {
+			// The argument is OPTIONAL, and it is consumed only if it parses as an
+			// endpoint — `--tcp show.sts` opens the file with live mode on the
+			// default engine, rather than eating the file name. A script called
+			// `7805` would be taken as a port; that is the whole ambiguity and it
+			// is written down here and in the README rather than hidden.
+			live.enabled = true;
+			if (i + 1 < argc) {
+				scedit::Endpoint ep;
+				std::string eerr;
+				if (scedit::parseEndpoint(argv[i + 1], ep, eerr)) {
+					live.endpoint = ep;
+					++i;
+				}
+			}
+		}
 		else if (a == "--ui-selftest") uiSelfTest = true;
 		else if (a == "--edit" && i + 1 < argc) { editMode = true; editFile = argv[++i]; }
 		else if (!a.empty() && a[0] != '-' && editFile.empty()) { editMode = true; editFile = a; }
@@ -569,7 +593,15 @@ int main(int argc, char **argv) {
 		grammarPath = resolveDefaultGrammar(grammarPath);
 
 	if (uiSelfTest) return scedit::uiSelfTest(grammarPath);
-	if (editMode) return scedit::runEditor(grammarPath, editFile);
+	// `--tcp` on its own is live mode for the EDITOR: with no file to edit
+	// there is nothing for it to be live about, and the usage says so rather
+	// than opening a socket nobody asked about.
+	if (live.enabled && !editMode) {
+		std::fprintf(stderr, "scedit: --tcp is the editor's live mode; give a file to edit\n");
+		usage();
+		return 2;
+	}
+	if (editMode) return scedit::runEditor(grammarPath, editFile, live);
 	// stdout belongs to the protocol from here on: the server writes nothing
 	// else to it, and everything it has to say otherwise goes to stderr.
 	if (mcpMode) return scedit::runMcpServer(grammarPath);

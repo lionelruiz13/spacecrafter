@@ -1,8 +1,14 @@
 #include "sc_tui.hpp"
 
 #include <algorithm>
+#include <atomic>
+#include <chrono>
+#include <climits>
 #include <cstdio>
+#include <cstdlib>
+#include <deque>
 #include <termios.h>
+#include <thread>
 #include <unistd.h>
 #include <string>
 #include <vector>
@@ -28,10 +34,20 @@ namespace {
 constexpr int kGutter = 10;    //!< severity + line number + separator, in cells
 constexpr int kDocRows = 4;    //!< the documentation bar (see renderDocBar)
 constexpr int kPaneRows = 4;   //!< entry rows of the error pane (see renderPane)
+constexpr int kFeedRows = 5;   //!< lines of the live feed (see renderFeed)
 //! title + separator + [text] + separator + doc bar + separator + status
 constexpr int kChrome = 1 + 1 + 1 + kDocRows + 1 + 1;
 //! separator + header + the entry rows, added to kChrome while the pane is open
 constexpr int kPaneChrome = 1 + 1 + kPaneRows;
+//! idem for the feed pane
+constexpr int kFeedChrome = 1 + 1 + kFeedRows;
+
+//! HOW OFTEN the two clocked things happen. Both bounds are in the header's
+//! contract and in README § Live mode, because "it polls" with no number is not
+//! a statement anybody can check.
+constexpr long kDrainMs = 250;        //!< drain the socket (reading what was pushed)
+constexpr long kFileCheckMs = 1000;   //!< re-read the played file: never faster than 1 Hz
+constexpr long kPlayWindowMs = 300000;//!< and never longer than five minutes after a play
 
 //! One byte of the buffer -> one display cell. See sc_tui.hpp for the rules.
 struct Glyph {
@@ -105,6 +121,25 @@ std::string opennessLabel(Openness o)
 	return "";
 }
 
+//! What the feed pane draws, as data. The LINES are borrowed, not copied: the
+//! pointer is set immediately before a render and is a `TcpClient`'s own deque
+//! (or, in the self-test, a local one) — non-owning, valid for the render call
+//! only (I5). Everything else is a snapshot of the link's state, so the
+//! renderer never asks a socket anything.
+struct FeedView {
+	bool enabled = false;                    //!< --tcp was given
+	std::string endpoint = "127.0.0.1:7805";
+	LinkState state = LinkState::Offline;
+	std::size_t dropped = 0;
+	std::size_t sent = 0;
+	std::size_t bytes = 0;
+	bool playing = false;                    //!< a play is in flight (the poll window)
+	const std::deque<FeedLine> *lines = nullptr;
+	//! How many lines back from the newest the pane's bottom sits. 0 = live.
+	std::size_t back = 0;
+	std::size_t count() const { return lines ? lines->size() : 0; }
+};
+
 //! What the editor is showing, over and above what the core knows.
 struct View {
 	std::size_t top = 0;        //!< first buffer line drawn
@@ -123,13 +158,22 @@ struct View {
 	//! out of range and are treated as "not on a row".
 	std::size_t sel = (std::size_t)-1;
 	std::string status;
+	//! Is the live feed pane open? Same reasoning as `pane`: it costs rows, and
+	//! the status line carries its state at all times so it is findable.
+	bool feedPane = false;
+	FeedView feed;
 	int width = 100;
 	int height = 30;
 	Box textBox;                //!< filled by the renderer, read by the mouse
 	Box paneBox;                //!< idem, for the pane's rows
+	Box feedBox;                //!< idem, for the feed's rows (the wheel scrolls it)
 };
 
-int textRows(const View &v) { return std::max(1, v.height - kChrome - (v.pane ? kPaneChrome : 0)); }
+int textRows(const View &v)
+{
+	return std::max(1, v.height - kChrome - (v.pane ? kPaneChrome : 0)
+	                   - (v.feedPane ? kFeedChrome : 0));
+}
 int textCols(const View &v) { return std::max(1, v.width - kGutter); }
 
 // --- the error pane ---------------------------------------------------------
@@ -477,6 +521,69 @@ Element renderPane(const EditCore &core, View &v)
 	});
 }
 
+//! The live feed: what scedit sent (marked `>`, dim — it is not the engine
+//! speaking) and what the engine sent back, newest at the bottom.
+//!
+//! WHAT THE HEADER SAYS, and why each part is there: the endpoint and the link
+//! state, because "nothing is happening" has two very different causes; the
+//! line count and the DROPPED count, because a bounded buffer that discards in
+//! silence is a buffer that lies; `+N` when the pane has been scrolled back, so
+//! nobody reads an old line as the latest; and `playing` while the write-back
+//! window is open, which is the only period in which anything here touches the
+//! clock.
+Element renderFeed(View &v)
+{
+	const FeedView &f = v.feed;
+	const std::size_t n = f.count();
+
+	std::string state;
+	switch (f.state) {
+	case LinkState::Connected: state = "connected"; break;
+	case LinkState::Offline:   state = "not connected"; break;
+	case LinkState::Failed:    state = "connection failed"; break;
+	}
+	std::string head = "live " + f.endpoint + " \xE2\x80\x94 " + state;
+	if (f.state == LinkState::Connected)
+		head += ", " + std::to_string(f.sent) + " sent, " + std::to_string(f.bytes) + " B in";
+	if (f.playing)
+		head += ", playing (watching the file)";
+	head += "   \xC2\xB7 " + std::to_string(n) + " lines";
+	if (f.dropped)
+		head += ", " + std::to_string(f.dropped) + " dropped";
+	if (f.back)
+		head += ", +" + std::to_string(f.back) + " newer below";
+	head += "   \xC2\xB7 F6 connect \xC2\xB7 F7 send line \xC2\xB7 F8 play \xC2\xB7 F11/F12 scroll \xC2\xB7 F9 hide";
+
+	// The window: `back` counts lines from the newest, so back == 0 is live.
+	const std::size_t rows = (std::size_t)kFeedRows;
+	const std::size_t back = std::min(f.back, n > rows ? n - rows : (std::size_t)0);
+	const std::size_t last = n - back;                     // one past the newest shown
+	const std::size_t first = last > rows ? last - rows : 0;
+
+	Elements out;
+	for (std::size_t r = 0; r < rows; ++r) {
+		const std::size_t i = first + r;
+		if (i >= last || f.lines == nullptr) {
+			out.push_back(text(""));
+			continue;
+		}
+		const FeedLine &l = (*f.lines)[i];
+		// The bytes are the file's alphabet, not the terminal's: the same
+		// byte->cell map the buffer uses, so an ISO-8859 answer is readable and
+		// a control byte is visible rather than swallowed.
+		std::string shown;
+		for (const char c : l.text)
+			shown += glyphFor((unsigned char)c).s;
+		Element e = text(truncate(shown, v.width));
+		e = l.kind == FeedKind::Local ? (e | dim | color(Color::Cyan)) : e;
+		out.push_back(e);
+	}
+	return vbox({
+		text(truncate(head, v.width)) | dim,
+		vbox(std::move(out)) | reflect(v.feedBox),
+	});
+}
+
 Element renderFrame(const EditCore &core, View &v)
 {
 	Elements lines;
@@ -495,8 +602,21 @@ Element renderFrame(const EditCore &core, View &v)
 	char pos[64];
 	std::snprintf(pos, sizeof(pos), "line %zu, byte %zu",
 	              core.cursor().line + 1, core.cursor().col);
+	// The live marker goes right after the caret position and BEFORE the path,
+	// for the reason the position is first: it changes, it matters, and the tail
+	// of this row is what truncation takes. Nothing is added when --tcp was not
+	// given — an editor with no live mode says nothing about one.
+	std::string live;
+	if (v.feed.enabled) {
+		switch (v.feed.state) {
+		case LinkState::Connected: live = " \xE2\x94\x82 live " + v.feed.endpoint; break;
+		case LinkState::Offline:   live = " \xE2\x94\x82 live off"; break;
+		case LinkState::Failed:    live = " \xE2\x94\x82 live FAILED"; break;
+		}
+	}
 	std::string title = std::string("scedit \xE2\x94\x82 ") + pos
 	                    + (core.dirty() ? "  *modified*" : "")
+	                    + live
 	                    + " \xE2\x94\x82 "
 	                    + (core.path().empty() ? std::string("(new buffer)") : core.path());
 
@@ -506,7 +626,9 @@ Element renderFrame(const EditCore &core, View &v)
 	// an author the pane exists.
 	const std::string help =
 		"F5 errors (" + std::to_string(core.errorHistory().size()) + ")"
-		" \xC2\xB7 Tab complete \xC2\xB7 Shift-Tab previous candidate"
+		+ (v.feed.enabled ? std::string(" \xC2\xB7 F6 live \xC2\xB7 F7 send \xC2\xB7 F8 play"
+		                                " \xC2\xB7 F9 feed") : std::string())
+		+ " \xC2\xB7 Tab complete \xC2\xB7 Shift-Tab previous candidate"
 		" \xC2\xB7 Ctrl-S/F2 save \xC2\xB7 Ctrl-Q/F10 quit";
 	std::string status = v.status.empty() ? help : v.status;
 
@@ -517,6 +639,10 @@ Element renderFrame(const EditCore &core, View &v)
 	if (v.pane) {
 		frame.push_back(separator());
 		frame.push_back(renderPane(core, v));
+	}
+	if (v.feedPane) {
+		frame.push_back(separator());
+		frame.push_back(renderFeed(v));
 	}
 	frame.push_back(separator());
 	frame.push_back(renderDocBar(core, v));
@@ -546,11 +672,123 @@ bool isoByteOf(const std::string &utf8, char &out)
 	return false;
 }
 
+// --- live mode ---------------------------------------------------------------
+// Everything with a socket or a clock in it is here, and every one of these
+// functions is called from a key handler except `tick`, which is the one
+// clocked path (sc_tui.hpp § LIVE MODE).
+
+long nowMs()
+{
+	using namespace std::chrono;
+	return (long)duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
+}
+
+//! The editor's half of live mode: the connection, and the window in which the
+//! played file is watched for the engine's write-back.
+struct Live {
+	TcpClient client;
+	Endpoint endpoint;
+	bool enabled = false;
+	//! A play is in flight: from the moment the command went out until the file
+	//! changes, the window expires, or something else is played. Nothing about
+	//! this is the engine telling us anything — it cannot (sc_tcpclient.hpp).
+	bool playing = false;
+	long playStart = 0;
+	long lastFileCheck = 0;
+	//! Set when a write-back was seen that could NOT be taken, because the
+	//! buffer was dirty. It stays set until the author resolves it, so the
+	//! warning does not scroll away with the next keystroke.
+	bool writeBackHeld = false;
+};
+
+//! The absolute path the engine must be given: it opens the file itself, and
+//! its working directory is not the editor's.
+std::string absolutePath(const std::string &p)
+{
+	char buf[PATH_MAX];
+	if (::realpath(p.c_str(), buf) != nullptr)
+		return std::string(buf);
+	return p;
+}
+
+//! Take the engine's write-back into a CLEAN buffer, or refuse to and say so.
+//! Returns the status line.
+std::string takeWriteBack(EditCore &core, Live &live, View &view)
+{
+	if (core.dirty()) {
+		live.writeBackHeld = true;
+		return "spacecrafter rewrote this file (its `#!` findings) while you have unsaved "
+		       "edits. Ctrl-U reloads it and your edits go; Ctrl-S twice saves over it and "
+		       "the engine's findings go. Nothing has happened yet.";
+	}
+	std::string err;
+	if (!core.reloadFromDisk(err))
+		return "spacecrafter rewrote this file but it cannot be re-read: " + err;
+	live.writeBackHeld = false;
+	view.pane = true;   // the findings are the reason the file changed: show them
+	const std::size_t tails = core.engineTailCount();
+	return tails == 0
+	               ? std::string("spacecrafter rewrote this file and left no findings: the "
+	                             "tails it had written are cleared")
+	               : "spacecrafter rewrote this file: " + std::to_string(tails) +
+	                         " `#!` finding(s) — F3 walks them";
+}
+
+//! The one clocked path. Drains the socket, and — at most once a second, only
+//! while a play is in flight, and only for the stated window — reads the played
+//! file to see whether the engine has rewritten it.
+void tick(EditCore &core, Live &live, View &view)
+{
+	if (!live.enabled)
+		return;
+	live.client.poll();
+	if (!live.playing)
+		return;
+	const long now = nowMs();
+	if (now - live.lastFileCheck < kFileCheckMs)
+		return;
+	live.lastFileCheck = now;
+	switch (core.diskState()) {
+	case DiskState::Changed:
+		// The write-back HAS happened; that is also the only end-of-run signal
+		// this editor can observe, so the window closes here.
+		live.playing = false;
+		view.status = takeWriteBack(core, live, view);
+		return;
+	case DiskState::Gone:
+		live.playing = false;
+		view.status = "the file this buffer came from can no longer be read";
+		return;
+	case DiskState::Same:
+	case DiskState::NoFile:
+		break;
+	}
+	if (now - live.playStart > kPlayWindowMs) {
+		live.playing = false;
+		view.status = "no write-back after 5 minutes — scedit has stopped watching the file. "
+		              "It is still compared before every save.";
+	}
+}
+
+//! Copy the link's state into the render's view. Called once per frame, so the
+//! renderer reads a snapshot and never a live socket.
+void syncFeedView(View &view, Live &live)
+{
+	view.feed.enabled = live.enabled;
+	view.feed.endpoint = live.endpoint.text();
+	view.feed.state = live.client.state();
+	view.feed.dropped = live.client.dropped();
+	view.feed.sent = live.client.linesSent();
+	view.feed.bytes = live.client.bytesIn();
+	view.feed.playing = live.playing;
+	view.feed.lines = &live.client.feed();
+}
+
 } // namespace
 
 // ---------------------------------------------------------------------------
 
-int runEditor(const std::string &grammarPath, const std::string &file)
+int runEditor(const std::string &grammarPath, const std::string &file, const LiveOptions &opts)
 {
 	EditCore core;
 	std::string err;
@@ -560,7 +798,16 @@ int runEditor(const std::string &grammarPath, const std::string &file)
 	}
 
 	View view;
+	Live live;
+	live.enabled = opts.enabled;
+	live.endpoint = opts.endpoint;
+	view.feed.enabled = opts.enabled;
+	view.feed.endpoint = opts.endpoint.text();
 	bool quitPending = false;
+	//! A save that was refused because the file changed under it. The second
+	//! Ctrl-S is the explicit "my edits win" — same shape as the quit warning
+	//! above it, and the refusal message names both ways out before it.
+	bool overwritePending = false;
 	auto screen = ScreenInteractive::Fullscreen();
 	screen.TrackMouse(true);
 
@@ -586,6 +833,14 @@ int runEditor(const std::string &grammarPath, const std::string &file)
 	const Event kCtrlE = Event::Special(std::string(1, (char)5));    // toggle
 	const Event kCtrlN = Event::Special(std::string(1, (char)14));   // next
 	const Event kCtrlP = Event::Special(std::string(1, (char)16));   // previous
+	// Live mode's, each with a control-code twin for the same reason.
+	const Event kCtrlT = Event::Special(std::string(1, (char)20));   // connect/disconnect
+	const Event kCtrlL = Event::Special(std::string(1, (char)12));   // send this line
+	const Event kCtrlR = Event::Special(std::string(1, (char)18));   // run (play) this file
+	const Event kCtrlW = Event::Special(std::string(1, (char)23));   // show/hide the feed
+	const Event kCtrlB = Event::Special(std::string(1, (char)2));    // feed: older
+	const Event kCtrlF = Event::Special(std::string(1, (char)6));    // feed: newer
+	const Event kCtrlU = Event::Special(std::string(1, (char)21));   // reload from disk
 
 	auto renderer = Renderer([&] {
 		// Terminal::Size(), NOT screen.dimx()/dimy(): a ScreenInteractive learns
@@ -595,6 +850,7 @@ int runEditor(const std::string &grammarPath, const std::string &file)
 		const Dimensions d = Terminal::Size();
 		view.width = d.dimx;
 		view.height = d.dimy;
+		syncFeedView(view, live);
 		if (view.follow)
 			scrollToCursor(core, view);
 		return renderFrame(core, view);
@@ -602,11 +858,35 @@ int runEditor(const std::string &grammarPath, const std::string &file)
 
 	auto app = CatchEvent(renderer, [&](Event e) {
 		const std::string keep = view.status;
+		// The clocked event is not an action: it must not clear the status the
+		// author is reading, must not move the view, and must not cancel a
+		// pending confirmation.
+		if (e == Event::Custom) {
+			tick(core, live, view);
+			if (view.status.empty())
+				view.status = keep;
+			return true;
+		}
 		view.status.clear();
 		view.follow = true;   // any deliberate action brings the caret back
 
 		if (e.is_mouse()) {
 			const Mouse &m = e.mouse();
+			// The wheel over the FEED scrolls the feed: the pointer is on it, and
+			// scrolling the text under a pointer that is somewhere else is the
+			// behaviour nobody means.
+			const bool onFeed = view.feedPane && m.y >= view.feedBox.y_min
+			                   && m.y <= view.feedBox.y_max;
+			if (onFeed && (m.button == Mouse::WheelUp || m.button == Mouse::WheelDown)) {
+				const std::size_t n = live.client.feed().size();
+				const std::size_t cap = n > (std::size_t)kFeedRows ? n - (std::size_t)kFeedRows : 0;
+				if (m.button == Mouse::WheelUp)
+					view.feed.back = std::min(cap, view.feed.back + 3);
+				else
+					view.feed.back = view.feed.back >= 3 ? view.feed.back - 3 : 0;
+				view.status = keep;
+				return true;
+			}
 			if (m.button == Mouse::WheelUp) {
 				view.top = view.top >= 3 ? view.top - 3 : 0;
 				view.follow = false;
@@ -663,9 +943,30 @@ int runEditor(const std::string &grammarPath, const std::string &file)
 
 		if (e == kCtrlS || e == Event::F2) {
 			std::string serr;
-			view.status = core.save(serr) ? "saved " + core.path() : "NOT saved: " + serr;
+			if (overwritePending) {
+				// The author was told what would be lost and pressed it again.
+				overwritePending = false;
+				live.writeBackHeld = false;
+				view.status = core.saveOverwriting(serr)
+					                      ? "saved over spacecrafter's write: " + core.path()
+					                      : "NOT saved: " + serr;
+				return true;
+			}
+			if (core.save(serr)) {
+				view.status = "saved " + core.path();
+				return true;
+			}
+			// The one refusal that has a way through: the file changed under us.
+			// Ctrl-S again takes it, and the message says what that costs.
+			if (core.diskState() == DiskState::Changed) {
+				overwritePending = true;
+				view.status = "NOT saved: " + serr + "  [Ctrl-U reload \xC2\xB7 Ctrl-S again to save anyway]";
+				return true;
+			}
+			view.status = "NOT saved: " + serr;
 			return true;
 		}
+		overwritePending = false;
 		// The error pane (scedit/INTENT.md §5 item 15(a-ii)). F3/F4 open it as
 		// well as move in it: an author who wants the next error should not
 		// have to know the pane exists first.
@@ -680,6 +981,119 @@ int runEditor(const std::string &grammarPath, const std::string &file)
 			}
 			view.pane = true;
 			warpStep(core, view, (e == Event::F3 || e == kCtrlN) ? +1 : -1);
+			return true;
+		}
+		// --- live mode -------------------------------------------------
+		// Every one of these is bound ONLY when --tcp was given, so an editor
+		// without live mode cannot reach a socket by a mis-typed key.
+		if (live.enabled && (e == Event::F6 || e == kCtrlT)) {
+			if (live.client.connected()) {
+				live.client.disconnect();
+				view.status = "disconnected from " + live.endpoint.text();
+			} else {
+				std::string cerr;
+				view.feedPane = true;
+				view.status = live.client.connect(live.endpoint, cerr)
+					                      ? "connected to " + live.endpoint.text()
+					                      : cerr;
+			}
+			return true;
+		}
+		if (live.enabled && (e == Event::F7 || e == kCtrlL)) {
+			if (!live.client.connected()) {
+				view.status = "not connected — F6 connects to " + live.endpoint.text();
+				return true;
+			}
+			// The line as the author wrote it. The comment cut is the ENGINE's
+			// (parseCommand does it on every channel), so scedit sends the bytes
+			// and does not pre-chew them — but it does refuse to send a line the
+			// engine would read as no command at all, which is scedit's own
+			// reading of that same rule and saves a pointless round trip.
+			const std::string raw = core.document().line(core.cursor().line);
+			if (!core.currentLine().has_command) {
+				view.status = "this line is not a command the engine would run "
+					              "(blank, or a comment): nothing was sent";
+				return true;
+			}
+			std::string serr;
+			view.feedPane = true;
+			view.feed.back = 0;   // anything you send brings the feed back to now
+			view.status = live.client.send(raw, serr)
+				                      ? "sent line " + std::to_string(core.cursor().line + 1)
+				                      : "NOT sent: " + serr;
+			return true;
+		}
+		if (live.enabled && (e == Event::F8 || e == kCtrlR)) {
+			if (!live.client.connected()) {
+				view.status = "not connected — F6 connects to " + live.endpoint.text();
+				return true;
+			}
+			if (!core.hasFile()) {
+				view.status = "there is no file to play: the engine opens the file "
+					              "itself, so this buffer must be saved somewhere first";
+				return true;
+			}
+			// The engine reads the FILE, not this buffer, so what is on disk must
+			// be what the author is looking at. A save that cannot happen stops
+			// the play, with the save's own reason: playing the old bytes and
+			// reporting them as this file's is exactly the confusion to avoid.
+			if (core.dirty()) {
+				std::string serr;
+				if (!core.save(serr)) {
+					if (core.diskState() == DiskState::Changed)
+						overwritePending = true;
+					view.status = "not played, because it could not be saved first: " + serr;
+					return true;
+				}
+			}
+			const std::string abs = absolutePath(core.path());
+			std::string serr;
+			if (!live.client.send("script action play filename " + abs, serr)) {
+				view.status = "NOT played: " + serr;
+				return true;
+			}
+			live.playing = true;
+			live.playStart = nowMs();
+			live.lastFileCheck = live.playStart;
+			view.feedPane = true;
+			view.feed.back = 0;
+			view.status = "playing " + abs + " — the engine says nothing when a "
+				              "script ends, so scedit now watches this file for the "
+				              "`#!` findings it writes at the end of a run";
+			return true;
+		}
+		if (live.enabled && (e == Event::F9 || e == kCtrlW)) {
+			view.feedPane = !view.feedPane;
+			return true;
+		}
+		if (live.enabled && (e == Event::F11 || e == kCtrlB || e == Event::F12 || e == kCtrlF)) {
+			view.feedPane = true;
+			const std::size_t n = live.client.feed().size();
+			const std::size_t cap = n > (std::size_t)kFeedRows ? n - (std::size_t)kFeedRows : 0;
+			if (e == Event::F11 || e == kCtrlB)
+				view.feed.back = std::min(cap, view.feed.back + (std::size_t)kFeedRows);
+			else
+				view.feed.back = view.feed.back >= (std::size_t)kFeedRows
+					                         ? view.feed.back - (std::size_t)kFeedRows : 0;
+			return true;
+		}
+		// Reload — the other half of the write-back choice, and useful on its own
+		// whenever something else has written the file.
+		if (e == kCtrlU) {
+			std::string rerr;
+			const bool wasDirty = core.dirty();
+			if (!core.reloadFromDisk(rerr)) {
+				view.status = "NOT reloaded: " + rerr;
+				return true;
+			}
+			live.writeBackHeld = false;
+			const std::size_t tails = core.engineTailCount();
+			view.status = std::string("reloaded ") + core.path()
+				              + (wasDirty ? " — the unsaved edits in this buffer are gone" : "")
+				              + (tails ? ", " + std::to_string(tails) + " `#!` finding(s) from spacecrafter"
+					                       : "");
+			if (tails)
+				view.pane = true;
 			return true;
 		}
 		if (e == Event::Tab) {
@@ -718,7 +1132,34 @@ int runEditor(const std::string &grammarPath, const std::string &file)
 		return false;
 	});
 
+	// THE CLOCK, and there is exactly one. It runs only in live mode, it only
+	// posts an event, and the handler decides what that event means (drain the
+	// socket; at most once a second, and only inside a play window, read the
+	// file). Without --tcp this thread is never started, so an editor with no
+	// live mode has no timer in it at all.
+	std::atomic<bool> stopTicker{false};
+	std::thread ticker;
+	if (live.enabled) {
+		ticker = std::thread([&] {
+			while (!stopTicker.load()) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(kDrainMs));
+				if (stopTicker.load())
+					break;
+				if (live.client.connected() || live.playing)
+					screen.PostEvent(Event::Custom);
+			}
+		});
+	}
+
 	screen.Loop(app);
+
+	stopTicker.store(true);
+	if (ticker.joinable())
+		ticker.join();
+	// The socket is closed politely rather than by the destructor, so the engine
+	// sees the $LOGOFF it was told to expect.
+	if (live.client.connected())
+		live.client.disconnect();
 	if (haveTty)
 		::tcsetattr(STDIN_FILENO, TCSANOW, &saved);
 	return 0;
@@ -741,6 +1182,14 @@ int uiSelfTest(const std::string &grammarPath)
 		//! rather than one text row. Every other frame keeps 14, so the record
 		//! of the frames that existed before the pane is unchanged by it.
 		int height = 14;
+		//! Live mode. `feedLines` is a canned conversation — the pane is drawn
+		//! from a deque, and here that deque is a literal rather than a socket,
+		//! which is the whole reason the renderer takes data and not a client.
+		bool live = false;
+		LinkState link = LinkState::Connected;
+		int feedBack = 0;
+		std::size_t dropped = 0;
+		std::vector<FeedLine> feedLines = {};
 	};
 	// Each case exists to put ONE claim of the D31 spec on a real screen.
 	static const Case cases[] = {
@@ -800,6 +1249,32 @@ int uiSelfTest(const std::string &grammarPath)
 		// A clean buffer: the pane is open and says so, rather than showing an
 		// unexplained empty box.
 		{"pane-empty", "flag stars on\nbody name Earth\n", 0, 0, true, 0, 20},
+		// LIVE MODE (--tcp). A conversation: what scedit sent is dim and marked
+		// `>`, what the engine sent is not — because one of them is the engine
+		// speaking and the other is not, and a feed that draws them alike is a
+		// feed you cannot read. The title row and the status row gain live
+		// text HERE and nowhere else: with --tcp absent, every frame above is
+		// byte-identical to what it was before live mode existed.
+		{"live-feed", "flag stars on\nstruct if end\n", 0, 0, false, 0, 22, true,
+		 LinkState::Connected, 0, 0,
+		 {{FeedKind::Local, "connected to 127.0.0.1:7805, subscribed with $LOGON"},
+		  {FeedKind::Engine, "Vous receverez maintenant les logs"},
+		  {FeedKind::Local, "> get status position"},
+		  {FeedKind::Engine, " 45.00; 3.00;  75.00;2461233.500000;  12.500000;"},
+		  {FeedKind::Local, "> flag stars on"}}},
+		// --tcp given, nothing connected: the header says which of the two
+		// reasons for silence this is, and the title says `live off`.
+		{"live-offline", "flag stars on\n", 0, 0, false, 0, 22, true,
+		 LinkState::Offline, 0, 0, {}},
+		// Scrolled back, with lines already discarded by the bound: `+2 newer
+		// below` and `3 dropped` are both on the header, because a pane that
+		// hides either is showing an old line as the latest.
+		{"live-feed-scrolled", "flag stars on\n", 0, 0, false, 0, 22, true,
+		 LinkState::Connected, 2, 3,
+		 {{FeedKind::Engine, "line one"}, {FeedKind::Engine, "line two"},
+		  {FeedKind::Engine, "line three"}, {FeedKind::Engine, "line four"},
+		  {FeedKind::Engine, "line five"}, {FeedKind::Engine, "line six"},
+		  {FeedKind::Engine, "line seven"}}},
 	};
 
 	for (const Case &c : cases) {
@@ -816,6 +1291,17 @@ int uiSelfTest(const std::string &grammarPath)
 		v.width = 100;
 		v.height = c.height;
 		v.pane = c.pane;
+		// The feed's lines live here for the length of this frame; the view
+		// borrows them exactly as it borrows a TcpClient's deque (I5).
+		std::deque<FeedLine> feed(c.feedLines.begin(), c.feedLines.end());
+		v.feedPane = c.live;
+		v.feed.enabled = c.live;
+		v.feed.state = c.link;
+		v.feed.lines = &feed;
+		v.feed.back = (std::size_t)c.feedBack;
+		v.feed.dropped = c.dropped;
+		v.feed.sent = c.live && c.link == LinkState::Connected ? 2 : 0;
+		v.feed.bytes = c.live && c.link == LinkState::Connected ? 96 : 0;
 		// The pane's own action, through the same call the F3 key makes.
 		for (int w = 0; w < c.warps; ++w)
 			warpStep(core, v, +1);
@@ -859,6 +1345,30 @@ int uiSelfTest(const std::string &grammarPath)
 		std::printf("mark %s\n", mark.c_str());
 		std::printf("under %s\n", under.c_str());
 		std::printf("inv %s\n", inv.c_str());
+		// LIVE CASES ONLY, so every frame recorded before live mode existed
+		// keeps its four lines exactly. One character per feed row, read off
+		// the pixels of the box the renderer reflected: `L` = drawn as scedit's
+		// own line (dim + cyan), `E` = drawn as the engine's, `.` = empty. This
+		// is the claim "you can tell who said it", proved from the screen.
+		if (c.live) {
+			std::string kinds;
+			for (int r = 0; r < kFeedRows; ++r) {
+				const int y = v.feedBox.y_min + r;
+				// The first cell that is not blank: an engine answer can begin
+				// with a space (`get status position` does), and reading column
+				// zero alone would call that row empty.
+				char k = '.';
+				for (int x = v.feedBox.x_min; x <= v.feedBox.x_max; ++x) {
+					const Pixel &p = screen.PixelAt(x, y);
+					if (p.character == " " || p.character.empty())
+						continue;
+					k = (p.dim && p.foreground_color == Color::Cyan) ? 'L' : 'E';
+					break;
+				}
+				kinds += k;
+			}
+			std::printf("feed %s\n", kinds.c_str());
+		}
 	}
 	return 0;
 }
